@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Interface for LCLS's iocAdmin record. This is an EPICS module that provides
-basic IOC information over channel access.
+Define interface to the IOCAdmin record. This should be shared across LCLS
+devices.
 """
 from ophyd import Device, Component, EpicsSignal, EpicsSignalRO
 
 class IOCAdmin(Device):
+    """
+    Interface for an ioc's IOCAdmin record. This gives us information about the
+    IOC's status and allows us to restart it via EPICS.
+    """
     heartbeat = Component(EpicsSignalRO, ":HEARTBEAT")
     hostname = Component(EpicsSignalRO, ":HOSTNAME")
     uptime = Component(EpicsSignalRO, ":UPTIME")
