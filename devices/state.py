@@ -34,7 +34,6 @@ class State(Device):
         super().__init__(prefix, **kwargs)
         self._prev_value = None
         self._lock = threading.RLock()
-    __init__.__doc__ = Device.__init__.__doc__
 
     def _update(self, *args, **kwargs):
         """
@@ -56,7 +55,6 @@ class PVState(State):
         super().__init__(prefix, **kwargs)
         for device in self._sub_devices:
             device.subscribe(self._update, event_type=self.state.SUB_VALUE)
-    __init__.__doc__ = State.__init__.__doc__
 
     @property
     def states(self):
@@ -120,7 +118,6 @@ class DeviceStatesRecord(State):
     def __init__(self, prefix, **kwargs):
         super().__init__(prefix, **kwargs)
         self.state.subscribe(self._update, event_type=self.state.SUB_VALUE)
-    __init__.__doc__ = State.__init__.__doc__
 
     @property
     def value(self):
