@@ -48,9 +48,9 @@ class State(Device):
                 self._pref_value = self.value
 
 
-class StatesPVsBase(State):
+class PVState(State):
     """
-    States that come from some arbitrary set of pvs
+    State that comes from some arbitrary set of pvs
     """
     def __init__(self, prefix, **kwargs):
         super().__init__(prefix, **kwargs)
@@ -77,9 +77,9 @@ class StatesPVsBase(State):
         self._setter(self, value)
 
 
-def statespv_class(classname, states, doc="", setter=None):
+def pvstate_class(classname, states, doc="", setter=None):
     """
-    Create a subclass of StatesPVsBase for a particular device.
+    Create a subclass of PVState for a particular device.
 
     Parameters
     ----------
@@ -108,12 +108,12 @@ def statespv_class(classname, states, doc="", setter=None):
     components = dict(_states=states, __doc__=doc, _setter=setter)
     for state_name, info in states.items():
         components[state_name] = Component(EpicsSignalRO, info["pvname"])
-    return type(classname, (StatesPVsBase,), components)
+    return type(classname, (PVState,), components)
 
 
-class StatesIOCBase(State):
+class DeviceStatesRecord(State):
     """
-    States that come from the standardized lcls position states record
+    States that come from the standardized lcls device states record
     """
     state = Component(EpicsSignal, "", ":GO")
 
@@ -131,20 +131,21 @@ class StatesIOCBase(State):
         self.state.put(value)
 
 
-class StatesIOCPart(Device):
+class DeviceStatesPart(Device):
     at_state = Component(EpicsSignalRO, "")
     setpos = Component(EpicsSignal, "_SET")
     delta = Component(EpicsSignal, "_DELTA")
 
 
-def statesioc_class(classname, *states, doc=""):
+def statesrecord_class(classname, *states, doc=""):
     """
-    Create a StatesIOC class for a particular device.
+    Create a DeviceStatesRecord class for a particular device.
     """
     components = dict(states=states, __doc__=doc)
     for state_name in states:
-        components[state_name.lower()] = Component(StatesIOCPart, state_name)
-    return type(classname, (StatesIOCBase,), components)
+        components[state_name.lower()] = Component(DeviceStatesPart, state_name)
+    return type(classname, (DeviceStatesRecord,), components)
 
 
-InOutStates = statesioc_class("InOutStates", "IN", "OUT")
+inoutdoc = "Standard LCLS states record with an IN state and an OUT state."
+InOutStates = statesrecord_class("InOutStates", "IN", "OUT", doc=inoutdoc)
