@@ -5,10 +5,11 @@ Module to define records that act as state getter/setters for more complicated
 devices.
 """
 import threading
-from ophyd import Device, Component, EpicsSignal, EpicsSignalRO
+from ophyd import Component, EpicsSignal, EpicsSignalRO
+from .lclsdevice import LCLSDevice
 
 
-class State(Device):
+class State(LCLSDevice):
     """
     Base class for any state device.
 
@@ -128,7 +129,7 @@ class DeviceStatesRecord(State):
         self.state.put(value)
 
 
-class DeviceStatesPart(Device):
+class DeviceStatesPart(LCLSDevice):
     at_state = Component(EpicsSignalRO, "")
     setpos = Component(EpicsSignal, "_SET")
     delta = Component(EpicsSignal, "_DELTA")
