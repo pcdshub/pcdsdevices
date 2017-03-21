@@ -114,7 +114,7 @@ class DeviceStatesRecord(State):
     """
     States that come from the standardized lcls device states record
     """
-    state = Component(EpicsSignal, "", ":GO")
+    state = Component(EpicsSignal, "", write_pv=":GO")
 
     def __init__(self, prefix, **kwargs):
         super().__init__(prefix, **kwargs)
