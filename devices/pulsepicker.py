@@ -18,9 +18,8 @@ class PulsePicker(LCLSDevice):
     def __init__(self, prefix, *, in_out_prefix="", ioc="",
                  read_attrs=None, name=None, **kwargs):
         self._in_out = in_out_prefix
-        append_kwargs = dict(ioc=ioc, read_attrs=read_attrs, name=name)
-        kwargs.update(append_kwargs)
-        super().__init__(self, prefix, **kwargs)
+        super().__init__(self, prefix, ioc=ioc, read_attrs=read_attrs,
+                         name=name, **kwargs)
 
 
 class PulsePickerCCM(PulsePicker):

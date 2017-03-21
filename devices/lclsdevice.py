@@ -18,6 +18,5 @@ class LCLSDevice(Device):
     def __init__(self, prefix, *, ioc="", read_attrs=None, name=None,
                  **kwargs):
         self._iocadmin = ioc
-        kwargs["read_attrs"] = read_attrs
-        kwargs["name"] = name
-        super().__init__(self, prefix, **kwargs)
+        super().__init__(self, prefix, read_attrs=read_attrs, name=name,
+                         **kwargs)
