@@ -12,7 +12,7 @@ class PulsePicker(LCLSDevice):
     """
     Device that lets us pick which beam pulses reach the sample.
     """
-    position = FormattedComponent(InOutStates, "{self._in_out}")
+    state = FormattedComponent(InOutStates, "{self._in_out}")
     mode = Component(EpicsSignalRO, ":SE")
 
     def __init__(self, prefix, *, in_out_prefix="", ioc="",
