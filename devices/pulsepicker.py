@@ -28,4 +28,4 @@ class PulsePickerCCM(PulsePicker):
     This is the version with a third position state in addition to IN and OUT,
     and that's the CCM state: IN but at the CCM offset.
     """
-    position = Component(InOutCCMStates)
+    position = FormattedComponent(InOutCCMStates, "{self._in_out}")
