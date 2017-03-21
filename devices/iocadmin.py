@@ -21,10 +21,10 @@ class IOCAdmin(Device):
     sysreset = Component(EpicsSignal, ":SYSRESET")
 
     def __init__(self, prefix=None, **kwargs):
+        if prefix is None and kwargs.get("parent") is None:
+            raise ValueError("No prefix or parent provided to IOCAdmin Device")
         self._prefix = prefix
         super().__init__(prefix, **kwargs)
-        if self.prefix is None and self.parent is None:
-            raise ValueError("No prefix or parent provided to IOCAdmin Device")
 
     def soft_reboot(self):
         """
