@@ -14,7 +14,8 @@ class IOCAdmin(Device):
     """
     heartbeat = Component(EpicsSignalRO, ":HEARTBEAT")
     hostname = Component(EpicsSignalRO, ":HOSTNAME")
-    port = Component(EpicsSignalRO, ":CA_SRVR_PORT")
+    # Pulsepicker ioc doesn't have this one...
+    # port = Component(EpicsSignalRO, ":CA_SRVR_PORT")
     uptime = Component(EpicsSignalRO, ":UPTIME")
     tod = Component(EpicsSignalRO, ":TOD")
     start_tod = Component(EpicsSignalRO, ":STARTTOD")
