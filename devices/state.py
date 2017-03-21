@@ -141,9 +141,13 @@ def statesrecord_class(classname, *states, doc=""):
     """
     components = dict(states=states, __doc__=doc)
     for state_name in states:
-        components[state_name.lower()] = Component(DeviceStatesPart, state_name)
+        components[state_name.lower()] = Component(DeviceStatesPart,
+                                                   state_name)
     return type(classname, (DeviceStatesRecord,), components)
 
 
 inoutdoc = "Standard LCLS states record with an IN state and an OUT state."
 InOutStates = statesrecord_class("InOutStates", "IN", "OUT", doc=inoutdoc)
+inoutccmdoc = "Standard LCLS states record with IN, OUT, and CCM states."
+InOutCCMStates = statesrecord_class("InOutCCMStates", "IN", "OUT", "CCM",
+                                    doc=inoutccmdoc)
