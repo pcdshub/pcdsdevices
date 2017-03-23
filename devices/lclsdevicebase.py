@@ -33,8 +33,8 @@ class LCLSDeviceBase(Device):
         return values
 
     def _get_thread(self, attr, value_queue, **kwargs):
-        signal = getattr(self, attr)
         try:
+            signal = getattr(self, attr)
             value = signal.get(**kwargs)
         except:
             value = None
