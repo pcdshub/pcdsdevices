@@ -4,10 +4,11 @@
 Define interface to the IOCAdmin record. This should be shared across LCLS
 devices.
 """
-from ophyd import Device, Component, EpicsSignal, EpicsSignalRO
+from ophyd import Component, EpicsSignal, EpicsSignalRO
+from .lclsdevicebase import LCLSDeviceBase
 
 
-class IOCAdmin(Device):
+class IOCAdmin(LCLSDeviceBase):
     """
     Interface for an ioc's IOCAdmin record. This gives us information about the
     IOC's status and allows us to restart it via EPICS.
