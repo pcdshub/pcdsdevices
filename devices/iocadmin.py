@@ -12,14 +12,14 @@ class IOCAdmin(Device):
     Interface for an ioc's IOCAdmin record. This gives us information about the
     IOC's status and allows us to restart it via EPICS.
     """
-    heartbeat = Component(EpicsSignalRO, ":HEARTBEAT")
-    hostname = Component(EpicsSignalRO, ":HOSTNAME")
+    heartbeat = Component(EpicsSignalRO, ":HEARTBEAT", lazy=True)
+    hostname = Component(EpicsSignalRO, ":HOSTNAME", lazy=True)
     # Pulsepicker ioc doesn't have this one...
-    # port = Component(EpicsSignalRO, ":CA_SRVR_PORT")
-    uptime = Component(EpicsSignalRO, ":UPTIME")
-    tod = Component(EpicsSignalRO, ":TOD")
-    start_tod = Component(EpicsSignalRO, ":STARTTOD")
-    sysreset = Component(EpicsSignal, ":SYSRESET")
+    # port = Component(EpicsSignalRO, ":CA_SRVR_PORT", lazy=True)
+    uptime = Component(EpicsSignalRO, ":UPTIME", lazy=True)
+    tod = Component(EpicsSignalRO, ":TOD", lazy=True)
+    start_tod = Component(EpicsSignalRO, ":STARTTOD", lazy=True)
+    sysreset = Component(EpicsSignal, ":SYSRESET", lazy=True)
 
     def soft_reboot(self):
         """
