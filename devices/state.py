@@ -6,7 +6,7 @@ devices.
 """
 import threading
 from ophyd import Component, EpicsSignal, EpicsSignalRO
-from .lclsdevice import LCLSDevice
+from .lclsdevice import LCLSDevice, LCLSDeviceBase
 
 
 class State(LCLSDevice):
@@ -106,7 +106,8 @@ def pvstate_class(classname, states, doc="", setter=None):
     """
     components = dict(_states=states, __doc__=doc, _setter=setter)
     for state_name, info in states.items():
-        components[state_name] = Component(EpicsSignalRO, info["pvname"])
+        components[state_name] = Component(EpicsSignalRO, info["pvname"],
+                                           lazy=True)
     return type(classname, (PVState,), components)
 
 
@@ -114,7 +115,7 @@ class DeviceStatesRecord(State):
     """
     States that come from the standardized lcls device states record
     """
-    state = Component(EpicsSignal, "", write_pv=":GO")
+    state = Component(EpicsSignal, "", write_pv=":GO", string=True, lazy=True)
 
     def __init__(self, prefix, **kwargs):
         super().__init__(prefix, **kwargs)
@@ -122,17 +123,17 @@ class DeviceStatesRecord(State):
 
     @property
     def value(self):
-        return self.state.get(as_string=True, use_monitor=True)
+        return self.state.get(use_monitor=True)
 
     @value.setter
     def value(self, value):
         self.state.put(value)
 
 
-class DeviceStatesPart(LCLSDevice):
-    at_state = Component(EpicsSignalRO, "")
-    setpos = Component(EpicsSignal, "_SET")
-    delta = Component(EpicsSignal, "_DELTA")
+class DeviceStatesPart(LCLSDeviceBase):
+    at_state = Component(EpicsSignalRO, "", string=True, lazy=True)
+    setpos = Component(EpicsSignal, "_SET", lazy=True)
+    delta = Component(EpicsSignal, "_DELTA", lazy=True)
 
 
 def statesrecord_class(classname, *states, doc=""):
@@ -141,13 +142,13 @@ def statesrecord_class(classname, *states, doc=""):
     """
     components = dict(states=states, __doc__=doc)
     for state_name in states:
-        components[state_name.lower()] = Component(DeviceStatesPart,
-                                                   state_name)
+        name = state_name.lower().replace(":", "")
+        components[name] = Component(DeviceStatesPart, state_name)
     return type(classname, (DeviceStatesRecord,), components)
 
 
 inoutdoc = "Standard LCLS states record with an IN state and an OUT state."
-InOutStates = statesrecord_class("InOutStates", "IN", "OUT", doc=inoutdoc)
+InOutStates = statesrecord_class("InOutStates", ":IN", ":OUT", doc=inoutdoc)
 inoutccmdoc = "Standard LCLS states record with IN, OUT, and CCM states."
-InOutCCMStates = statesrecord_class("InOutCCMStates", "IN", "OUT", "CCM",
+InOutCCMStates = statesrecord_class("InOutCCMStates", ":IN", ":OUT", ":CCM",
                                     doc=inoutccmdoc)
