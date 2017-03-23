@@ -13,7 +13,7 @@ class PulsePicker(LCLSDevice):
     Device that lets us pick which beam pulses reach the sample.
     """
     state = FormattedComponent(InOutStates, "{self._in_out}")
-    mode = Component(EpicsSignalRO, ":SE", lazy=True)
+    mode = Component(EpicsSignalRO, ":SE", string=True, lazy=True)
 
     def __init__(self, prefix, *, in_out_prefix="", ioc="",
                  read_attrs=None, name=None, **kwargs):
@@ -29,6 +29,7 @@ class PulsePickerCCM(PulsePicker):
     and that's the CCM state: IN but at the CCM offset.
     """
     state = FormattedComponent(InOutCCMStates, "{self._in_out}")
+
 
 TempStates = statesrecord_class("TempStates", ":PINK", ":CCM", ":OUT")
 class PulsePickerPink(PulsePicker):
