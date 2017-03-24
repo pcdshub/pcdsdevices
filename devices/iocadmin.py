@@ -4,23 +4,24 @@
 Define interface to the IOCAdmin record. This should be shared across LCLS
 devices.
 """
-from ophyd import Component, EpicsSignal, EpicsSignalRO
-from .lclsdevicebase import LCLSDeviceBase
+from ophyd import EpicsSignal, EpicsSignalRO
+from .lclscomponent import LCLSComponent as Component
+from .lclsdevicebase import LCLSDeviceBase as DeviceBase
 
 
-class IOCAdmin(LCLSDeviceBase):
+class IOCAdminOld(DeviceBase):
     """
     Interface for an ioc's IOCAdmin record. This gives us information about the
     IOC's status and allows us to restart it via EPICS.
+
+    Fully compatible IOC interface for older devices
     """
-    heartbeat = Component(EpicsSignalRO, ":HEARTBEAT", lazy=True)
-    hostname = Component(EpicsSignalRO, ":HOSTNAME", lazy=True)
-    # Pulsepicker ioc doesn't have this one...
-    # port = Component(EpicsSignalRO, ":CA_SRVR_PORT", lazy=True)
-    uptime = Component(EpicsSignalRO, ":UPTIME", lazy=True)
-    tod = Component(EpicsSignalRO, ":TOD", lazy=True)
-    start_tod = Component(EpicsSignalRO, ":STARTTOD", lazy=True)
-    sysreset = Component(EpicsSignal, ":SYSRESET", lazy=True)
+    heartbeat = Component(EpicsSignalRO, ":HEARTBEAT")
+    hostname = Component(EpicsSignalRO, ":HOSTNAME")
+    uptime = Component(EpicsSignalRO, ":UPTIME")
+    tod = Component(EpicsSignalRO, ":TOD")
+    start_tod = Component(EpicsSignalRO, ":STARTTOD")
+    sysreset = Component(EpicsSignal, ":SYSRESET")
 
     def soft_reboot(self):
         """
@@ -28,3 +29,13 @@ class IOCAdmin(LCLSDeviceBase):
         IOC process.
         """
         self.sysreset.put(1)
+
+class IOCAdmin(IOCAdminOld):
+    """
+    Interface for an ioc's IOCAdmin record. This gives us information about the
+    IOC's status and allows us to restart it via EPICS.
+
+    Includes the latest additions to the record
+    """
+    port = Component(EpicsSignalRO, ":CA_SRVR_PORT")
+    # I think there's a way to implement hard_reboot with this PV

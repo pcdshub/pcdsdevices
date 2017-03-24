@@ -4,12 +4,14 @@
 Module to define records that act as state getter/setters for more complicated
 devices.
 """
-import threading
-from ophyd import Component, EpicsSignal, EpicsSignalRO
-from .lclsdevice import LCLSDevice, LCLSDeviceBase
+from threading import RLock
+from keyword import iskeyword
+from ophyd import EpicsSignal, EpicsSignalRO
+from .lclscomponent import LCLSComponent as Component
+from .lclsdevice import LCLSDevice as Device, LCLSDeviceBase as DeviceBase
 
 
-class State(LCLSDevice):
+class State(Device):
     """
     Base class for any state device.
 
@@ -34,7 +36,7 @@ class State(LCLSDevice):
     def __init__(self, prefix, **kwargs):
         super().__init__(prefix, **kwargs)
         self._prev_value = None
-        self._lock = threading.RLock()
+        self._lock = RLock()
 
     def _update(self, *args, **kwargs):
         """
@@ -106,8 +108,10 @@ def pvstate_class(classname, states, doc="", setter=None):
     """
     components = dict(_states=states, __doc__=doc, _setter=setter)
     for state_name, info in states.items():
-        components[state_name] = Component(EpicsSignalRO, info["pvname"],
-                                           lazy=True)
+        if iskeyword(state_name):
+            raise ValueError("State name '{}' is invalid".format(state_name) +
+                             "because this is a reserved python keyword.")
+        components[state_name] = Component(EpicsSignalRO, info["pvname"])
     return type(classname, (PVState,), components)
 
 
@@ -115,7 +119,7 @@ class DeviceStatesRecord(State):
     """
     States that come from the standardized lcls device states record
     """
-    state = Component(EpicsSignal, "", write_pv=":GO", string=True, lazy=True)
+    state = Component(EpicsSignal, "", write_pv=":GO", string=True)
 
     def __init__(self, prefix, **kwargs):
         super().__init__(prefix, **kwargs)
@@ -130,10 +134,10 @@ class DeviceStatesRecord(State):
         self.state.put(value)
 
 
-class DeviceStatesPart(LCLSDeviceBase):
-    at_state = Component(EpicsSignalRO, "", string=True, lazy=True)
-    setpos = Component(EpicsSignal, "_SET", lazy=True)
-    delta = Component(EpicsSignal, "_DELTA", lazy=True)
+class DeviceStatesPart(DeviceBase):
+    at_state = Component(EpicsSignalRO, "", string=True)
+    setpos = Component(EpicsSignal, "_SET")
+    delta = Component(EpicsSignal, "_DELTA")
 
 
 def statesrecord_class(classname, *states, doc=""):
@@ -142,7 +146,7 @@ def statesrecord_class(classname, *states, doc=""):
     """
     components = dict(states=states, __doc__=doc)
     for state_name in states:
-        name = state_name.lower().replace(":", "")
+        name = state_name.lower().replace(":", "") + "_state"
         components[name] = Component(DeviceStatesPart, state_name)
     return type(classname, (DeviceStatesRecord,), components)
 
