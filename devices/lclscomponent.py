@@ -13,6 +13,7 @@ formatted as well.
 from copy import copy
 from ophyd import Component, FormattedComponent
 
+
 class LCLSComponent(Component):
     def __init__(self, cls, suffix=None, *, lazy=True, trigger_value=None,
                  add_prefix=None, doc=None, **kwargs):
@@ -27,6 +28,7 @@ class LCLSComponent(Component):
                               trigger_value=self.trigger_value,
                               add_prefix=self.add_prefix, doc=self.doc,
                               **kwargs)
+
 
 class LCLSFormattedComponent(LCLSComponent, FormattedComponent):
     def __init__(self, cls, suffix=None, *, lazy=True, trigger_value=None,
