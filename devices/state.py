@@ -54,8 +54,14 @@ class PVState(State):
     """
     State that comes from some arbitrary set of pvs
     """
-    def __init__(self, prefix, **kwargs):
-        super().__init__(prefix, **kwargs)
+    _states = {}
+
+    def __init__(self, prefix, *, ioc="", read_attrs=None, name=None,
+                 **kwargs):
+        if read_attrs is None:
+            read_attrs = self.states
+        super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
+                         **kwargs)
         for device in self._sub_devices:
             device.subscribe(self._update, event_type=self.state.SUB_VALUE)
 
@@ -121,8 +127,12 @@ class DeviceStatesRecord(State):
     """
     state = Component(EpicsSignal, "", write_pv=":GO", string=True)
 
-    def __init__(self, prefix, **kwargs):
-        super().__init__(prefix, **kwargs)
+    def __init__(self, prefix, *, ioc="", read_attrs=None, name=None,
+                 **kwargs):
+        if read_attrs is None:
+            read_attrs = ["state"]
+        super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
+                         **kwargs)
         self.state.subscribe(self._update, event_type=self.state.SUB_VALUE)
 
     @property
