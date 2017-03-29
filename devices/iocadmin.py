@@ -23,6 +23,12 @@ class IOCAdminOld(DeviceBase):
     start_tod = Component(EpicsSignalRO, ":STARTTOD")
     sysreset = Component(EpicsSignal, ":SYSRESET")
 
+
+    def __init__(self, prefix, *, read_attrs=None, name=None, **kwargs):
+        if read_attrs is None:
+            read_attrs = ["heartbeat"]
+        super().__init__(prefix, read_attrs=read_attrs, name=name, **kwargs)
+
     def soft_reboot(self):
         """
         Stop the IOC process in the procServ, letting the procServ restart the
