@@ -28,6 +28,8 @@ class PulsePicker(Device):
                  read_attrs=None, name=None, **kwargs):
         self._in_out = in_out
         self._in_out_ioc = in_out_ioc
+        if read_attrs is None:
+            read_attrs = ["mode", "blade", "in_out"]
         super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
                          **kwargs)
 
