@@ -45,7 +45,8 @@ class LCLSDeviceBase(Device):
         for attr in attr_list:
             values[attr] = None
             thread = Thread(target=self._value_thread,
-                            args=(attr, method, value_queue, **kwargs))
+                            args=(attr, method, value_queue),
+                            kwargs=kwargs)
             thread.start()
         for t in threads:
             t.join()
@@ -60,8 +61,8 @@ class LCLSDeviceBase(Device):
         """
         try:
             obj = getattr(self, attr)
-            method = getattr(obj, method)
-            value = method(**kwargs)
+            func = getattr(obj, method)
+            value = func(**kwargs)
         except:
             value = None
         value_queue.put((attr, value))
