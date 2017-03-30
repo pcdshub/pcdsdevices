@@ -12,9 +12,13 @@ class Params:
     def __init__(self, name, cls, prefix, **kwargs):
         self.cls = cls
         self.prefix = prefix
+        self.name = name
         kwargs["name"] = name
         self.kwargs = kwargs
         self.registry[name] = self
+
+    def __del__(self):
+        del self.registry[self.name]
 
     @classmethod
     def get(cls, param="name", regex=None):
@@ -26,7 +30,11 @@ class Params:
                 if param == "cls":
                     string = param_obj.cls.__name__
                 else:
-                    string = str(getattr(param_obj, param))
+                    try:
+                        attr = getattr(param_obj, param)
+                    except AttributeError:
+                        attr = param_obj.kwargs[param]
+                    string = str(attr)
                 if re.search(string, regex):
                     params.append(param_obj)
         return params
