@@ -47,6 +47,7 @@ class LCLSDeviceBase(Device):
             thread = Thread(target=self._value_thread,
                             args=(attr, method, value_queue),
                             kwargs=kwargs)
+            threads.append(thread)
             thread.start()
         for t in threads:
             t.join()
