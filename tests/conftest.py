@@ -52,8 +52,8 @@ all_labels = [p.name for p in all_params]
 @pytest.fixture(scope="module",
                 params=all_params,
                 ids=all_labels)
-def all_devices(fxt):
-    cls = fxt.param.cls
-    prefix = fxt.param.prefix
-    kwargs = fxt.param.kwargs
+def all_devices(request):
+    cls = request.param.cls
+    prefix = request.param.prefix
+    kwargs = request.param.kwargs
     return cls(prefix, **kwargs)
