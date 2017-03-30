@@ -8,7 +8,7 @@ record.
 """
 from queue import Queue
 from collections import OrderedDict
-from epics.ca import CAThread as Thread
+from epics.ca import poll, CAThread as Thread
 from ophyd import Device
 
 
@@ -16,22 +16,25 @@ class LCLSDeviceBase(Device):
     """
     Tweaks to Ophyd.Device
     """
+    def __init__(self, prefix, **kwargs):
+        poll()
+        super().__init__(prefix, **kwargs)
+
     def get(self, **kwargs):
         values = self._list_values(self.signal_names, method="get",
-                                   config=False, **kwargs)
-        try:
-            values.move_to_end("ioc")
-        except:
-            pass
-        return values
+                                   config=False, attr_keys=True, **kwargs)
+        return self._device_tuple(**values)
 
     def _read_attr_list(self, attr_list, *, config=False):
-        return self._list_values(attr_list, method="read", config=config)
+        return self._list_values(attr_list, method="read", config=config,
+                                 attr_keys=False)
 
     def _describe_attr_list(self, attr_list, *, config=False):
-        return self._list_values(attr_list, method="describe", config=config)
+        return self._list_values(attr_list, method="describe", config=config,
+                                 attr_keys=False)
 
-    def _list_values(self, attr_list, *, method="get", config=False, **kwargs):
+    def _list_values(self, attr_list, *, method="get", config=False,
+                     attr_keys=True, **kwargs):
         """
         For attr in attr_list, call attr.method(**kwargs) in separate threads,
         assembling the results in an OrderedDict with the same order as
@@ -43,7 +46,8 @@ class LCLSDeviceBase(Device):
         if config:
             method += "_configuration"
         for attr in attr_list:
-            values[attr] = None
+            if attr_keys:
+                values[attr] = None
             thread = Thread(target=self._value_thread,
                             args=(attr, method, value_queue),
                             kwargs=kwargs)
@@ -53,7 +57,10 @@ class LCLSDeviceBase(Device):
             t.join()
         while not value_queue.empty():
             attr, value = value_queue.get()
-            values[attr] = value
+            if isinstance(value, dict) and not attr_keys:
+                values.update(value)
+            else:
+                values[attr] = value
         return values
 
     def _value_thread(self, attr, method, value_queue, **kwargs):
