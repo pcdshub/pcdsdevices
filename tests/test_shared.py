@@ -8,7 +8,7 @@ component when we look at values from our live IOCs.
 Errors will be one of:
     1. Major bug
     2. Our interface is wrong
-    3. The IOC has changed
+    3. The IOC has changed or is down
 """
 
 
@@ -22,7 +22,8 @@ def recursive_not_none(val):
     if isinstance(val, dict):
         recursive_not_none(list(val.values()))
     elif isinstance(val, (list, tuple)):
-        (recursive_not_none(v) for v in val)
+        for v in val:
+            recursive_not_none(v)
     else:
         assert(val is not None)
 
