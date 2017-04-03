@@ -40,10 +40,12 @@ class Params:
         return params
 
 
-Params("pp_pink_noioc", PulsePickerPink, "XCS:SB2:MMS:09",
-       in_out="XCS:SB2:PP:Y")
+# XCS PulsePicker
 Params("pp_pink", PulsePickerPink, "XCS:SB2:MMS:09", in_out="XCS:SB2:PP:Y",
        ioc="XCS:IOC:PULSEPICKER:IMS", in_out_ioc="IOC:XCS:DEVICE:STATES")
+# It should still work without the ioc arguments
+Params("pp_pink_noioc", PulsePickerPink, "XCS:SB2:MMS:09",
+       in_out="XCS:SB2:PP:Y")
 
 all_params = Params.get()
 all_labels = [p.name for p in all_params]
