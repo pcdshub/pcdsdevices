@@ -5,6 +5,9 @@ Test methods shared between all devices
 We basically just need to make sure that "something" is returned for every
 component when we look at values from our live IOCs.
 
+None should only be returned if something we asked for does not exist.
+Devices should know to not make the component if we didn't pass the argument.`
+
 Errors will be one of:
     1. Major bug
     2. Our interface is wrong
