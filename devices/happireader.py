@@ -63,6 +63,10 @@ def pick_class(base, module, info):
         this will be passed as kwargs to instantiate the device object. This
         may be mutated in this function to pass additional args.
     """
-    # TODO pick subclass based on context for pulsepicker
+    clsname = base
+    if base == "PulsePicker":
+        if info["beamline"] in ("XCS", "XPP"):
+            clsname += "Pink"
     # TODO find ioc pvs as needed and add to info
-    return getattr(module, base)
+    # probably scrape iocmanager and iocdata
+    return getattr(module, clsname)
