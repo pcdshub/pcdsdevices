@@ -6,16 +6,29 @@ Read the beamline database and construct objects
 from importlib import import_module
 import happi
 
+_client = None
 
-def read_happi():
+
+def read_happi(client=None):
     """
     Connect to the happi database and return a list of all devices.
+
+    Parameters
+    ----------
+    client : happi.Client, optional
+        Instance of Client to use for the read. Included as a parameter to be
+        substituted with the mock client for testing. If not provided, we'll
+        use the default client.
 
     Returns
     -------
     devices : list of happi.Device
     """
-    client = happi.Client()
+    if client is None:
+        if _client is None:
+            global _client
+            _client = happi.Client()
+        client = _client
     return client.all_devices
 
 
