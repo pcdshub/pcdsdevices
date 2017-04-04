@@ -1,3 +1,6 @@
+"""
+Standard classes for LCLS Gate Valves
+"""
 ############
 # Standard #
 ############
@@ -15,8 +18,8 @@ from .state         import pvstate_class
 from .lclsdevice    import LCLSDevice as Device
 from .lclssignal    import LCLSEpicsSignalRO as EpicsSignalRO
 from .lclssignal    import LCLSEpicsSignal as EpicsSignal
-from .lclscomponent import LCLSComponent as Component 
-from .lclscomponent import LCLSComponent as Component 
+from .lclscomponent import LCLSComponent as C
+from .lclscomponent import LCLSFormattedComponent as FC
 
 
 class Commands(Enum):
@@ -33,6 +36,15 @@ class InterlockError(Exception):
     """
     pass
 
+Limits = pvstate_class('Limits',
+                       {'open_limit'  : {'pvname' :':OPN_DI',
+                                          0       : 'defer',
+                                          1       : 'out'},
+                       'closed_limit' : {'pvname' :':CLS_DI',
+                                          0       : 'defer',
+                                          1       : 'in'}},
+                       doc='State description of valve limits')
+
 
 class GateValve(Device):
     """
@@ -43,25 +55,20 @@ class GateValve(Device):
     commands : Enum
         Command aliases for valve
     """
-    command   = Component(EpicsSignal,   ':OPN_SW')
-    interlock = Component(EpicsSignalRO, ':OPN_OK')
-    limits    = pvstate_class('limits',
-                              {'open_limit'  : {'pvname' :':OPN_DI',
-                                                '0'      : 'defer',
-                                                '1'      : 'out'},
-                              'closed_limit' : {'pvname' :':CLS_DI',
-                                                '0'      : 'defer',
-                                                '1'      : 'in'}},
-                              doc='State description of valve limits')
-                
+    command   = C(EpicsSignal,   ':OPN_SW')
+    interlock = C(EpicsSignalRO, ':OPN_OK')
+    limits    = C(Limits, '')
+
+    #Command mapping 
     commands = Commands
 
     def __init__(self, prefix, *, name=None,
-                 read_attrs=None, ioc=None, **kwargs):
+                 read_attrs=None, ioc=None,
+                 mps=None, **kwargs):
 
         #Configure read attributes
         if read_attrs is None:
-            read_attrs = ['interlock']
+            read_attrs = ['interlock', 'limits']
 
         super().__init__(prefix, ioc=ioc,
                          read_attrs=read_attrs,
@@ -91,7 +98,3 @@ class GateValve(Device):
         Close the valve
         """
         self.command.put(self.commands.close_valve)
-
-
-
-
