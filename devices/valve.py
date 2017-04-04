@@ -43,18 +43,18 @@ class GateValve(Device):
     commands : Enum
         Command aliases for valve
     """
-    command   = Component(EpisSignal,    ':OPN_SW')
+    command   = Component(EpicsSignal,   ':OPN_SW')
     interlock = Component(EpicsSignalRO, ':OPN_OK')
     limits    = pvstate_class('limits',
-                              {'open_limit'  : {'pv' :':OPN_DI',
-                                                '0'  : 'defer',
-                                                '1'  : 'out'},
-                              'closed_limit' : {'pv' :':CLS_DI',
-                                                '0'  : 'defer',
-                                                '1'  : 'in'}}
+                              {'open_limit'  : {'pvname' :':OPN_DI',
+                                                '0'      : 'defer',
+                                                '1'      : 'out'},
+                              'closed_limit' : {'pvname' :':CLS_DI',
+                                                '0'      : 'defer',
+                                                '1'      : 'in'}},
                               doc='State description of valve limits')
                 
-    commands = Commands()
+    commands = Commands
 
     def __init__(self, prefix, *, name=None,
                  read_attrs=None, ioc=None, **kwargs):
