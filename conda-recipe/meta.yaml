@@ -21,6 +21,7 @@ requirements:
 test:
   imports:
    - devices
+   - pcaspy
 
 about:
   home: https://github.com/slaclab/pcds-devices
