@@ -19,6 +19,9 @@ class LCLSDeviceBase(Device):
     def __init__(self, prefix, **kwargs):
         poll()
         super().__init__(prefix, **kwargs)
+        db_info = kwargs.get("db_info")
+        if db_info:
+            self.db = HappiData(db_info)
 
     def get(self, **kwargs):
         values = self._list_values(self.signal_names, method="get",
@@ -74,3 +77,10 @@ class LCLSDeviceBase(Device):
         except:
             value = None
         value_queue.put((attr, value))
+
+
+class HappiData:
+    def __init__(self, db_info):
+        self.info = db_info
+        for entry, value in db_info.items():
+            setattr(self, entry, value)
