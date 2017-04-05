@@ -13,8 +13,22 @@ Errors will be one of:
     2. Our interface is wrong
     3. The IOC has changed or is down
 """
+import pytest
+try:
+    import epics
+    pv = epics.PV("XCS:USR:MMS:01")
+    try:
+        val = pv.get()
+    except:
+        val = None
+except:
+    val = None
+epics_subnet = val is not None
+requires_epics = pytest.mark.skipif(not epics_subnet,
+                                    reason="Could not connect to sample PV")
 
 
+@requires_epics
 def test_get(all_devices):
     values = all_devices.get()
     for val in values:
@@ -31,6 +45,7 @@ def recursive_not_none(val):
         assert(val is not None)
 
 
+@requires_epics
 def test_get_nested(all_devices):
     values = all_devices.get()
     recursive_not_none(values)

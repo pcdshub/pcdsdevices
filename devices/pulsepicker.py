@@ -9,25 +9,24 @@ from .lclscomponent import (LCLSComponent as Component,
                             LCLSFormattedComponent as FormattedComponent)
 from .lclsdevice import LCLSDevice as Device
 from .iocadmin import IOCAdminOld
-from .state import (InOutStates, InOutCCMStates,
-                    pvstate_class, statesrecord_class)
+from .state import InOutStates, InOutCCMStates, statesrecord_class
 
 
 class PulsePicker(Device):
     """
     Device that lets us pick which beam pulses reach the sample.
     """
-    in_out = FormattedComponent(InOutStates, "{self._in_out}",
-                                ioc="{self._in_out_ioc}")
+    in_out = FormattedComponent(InOutStates, "{self._states}",
+                                ioc="{self._states_ioc}")
     blade = Component(EpicsSignalRO, ":READ_DF", string=True)
     mode = Component(EpicsSignalRO, ":SE", string=True)
     ioc = copy(Device.ioc)
     ioc.cls = IOCAdminOld
 
-    def __init__(self, prefix, *, in_out="", ioc="", in_out_ioc="",
+    def __init__(self, prefix, *, states="", ioc="", states_ioc="",
                  read_attrs=None, name=None, **kwargs):
-        self._in_out = in_out
-        self._in_out_ioc = in_out_ioc
+        self._states = states
+        self._states_ioc = states_ioc
         if read_attrs is None:
             read_attrs = ["mode", "blade", "in_out"]
         super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
@@ -54,6 +53,8 @@ class PulsePickerCCM(PulsePicker):
 
 
 TempStates = statesrecord_class("TempStates", ":PINK", ":CCM", ":OUT")
+
+
 class PulsePickerPink(PulsePickerCCM):
     """
     Current state syntax that I plan to change
