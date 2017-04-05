@@ -16,20 +16,18 @@ requires_happi = pytest.mark.skipif(not has_happi,
 @pytest.fixture(scope="function")
 def mockclient():
     client = MockClient()
-    client.create_device("PulsePicker", dict(name="xpp_pp",
-                                             prefix="XPP:SB2:MMS:29",
-                                             beamline="XPP", z=785.574,
-                                             stand="SB2"))
-    client.create_device("GateValve", dict(name="xpp_sb2_valve",
-                                           prefix="XPP:SB2:VGC:01",
-                                           beamline="XPP", z=784.132,
-                                           stand="SB2"))
+    client.create_device("PulsePicker", name="xpp_pp", prefix="XPP:SB2:MMS:29",
+                         beamline="XPP", z=785.574, stand="SB2")
+    client.create_device("GateValve", name="xpp_sb2_valve",
+                         prefix="XPP:SB2:VGC:01", beamline="XPP", z=784.132,
+                         stand="SB2")
     return client
 
 
 @requires_happi
 def test_read_happi_basic():
-    happireader.read_happi()
+    with pytest.raises(happi.errors.DatabaseError):
+        happireader.read_happi()
 
 
 @requires_happi
