@@ -12,18 +12,27 @@ except ImportError:
 requires_happi = pytest.mark.skipif(not has_happi,
                                     reason="Missing happi or mongomock")
 
+pp_args = dict(device_cls="PulsePicker", name="xpp_pp",
+               prefix="XPP:SB2:MMS:29", states="XPP:SB2:PP:Y", beamline="XPP",
+               z=785.574, stand="SB2")
+valve_args = dict(device_cls="GateValve", name="xpp_sb2_valve",
+                  prefix="XPP:SB2:VGC:01", mps="placeholder",
+                  beamline="XPP", z=784.132, stand="SB2")
 
-@pytest.fixture(scope="function")
-def mockclient():
+
+@pytest.fixture(scope="function",
+                params=(pp_args, valve_args),
+                ids=("pp", "valve"))
+def mockclient(request):
     client = MockClient()
-    pp = client.create_device("PulsePicker", name="xpp_pp",
-                              prefix="XPP:SB2:MMS:29", states="XPP:SB2:PP:Y",
-                              beamline="XPP", z=785.574, stand="SB2")
-    valve = client.create_device("GateValve", name="xpp_sb2_valve",
-                                 prefix="XPP:SB2:VGC:01", mps="placeholder",
-                                 beamline="XPP", z=784.132, stand="SB2")
-    pp.save()
-    valve.save()
+    info = request.param
+    if isinstance(info, (list, tuple)):
+        for kwargs in info:
+            dev = client.create_device(**kwargs)
+            dev.save()
+    else:
+        dev = client.create_device(**info)
+        dev.save()
     return client
 
 
