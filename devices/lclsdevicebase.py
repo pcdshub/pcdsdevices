@@ -11,17 +11,27 @@ from collections import OrderedDict
 from epics.ca import poll, CAThread as Thread
 from ophyd import Device
 
+# ophyd.Device claims to accept extra **kwargs, but does not use them. One of
+# its parent classes, OphydObject, does not have **kwargs in the __init__
+# statement and will throw an exception. We use this list to lay a safety net
+# and avoid raising an exception in OphydObject.__init__
+VALID_OPHYD_KWARGS = ("name", "parent", "prefix", "read_attrs",
+                      "configuration_attrs")
+
 
 class LCLSDeviceBase(Device):
     """
     Tweaks to Ophyd.Device
     """
     def __init__(self, prefix, **kwargs):
+        # Bizarrely, this poll call in conjunction with lazy=True fixes an
+        # issue where calling .get early could fail.
         poll()
-        super().__init__(prefix, **kwargs)
         db_info = kwargs.get("db_info")
         if db_info:
             self.db = HappiData(db_info)
+        kwargs = {k: v for k, v in kwargs.items() if k in VALID_OPHYD_KWARGS}
+        super().__init__(prefix, **kwargs)
 
     def get(self, **kwargs):
         values = self._list_values(self.signal_names, method="get",
