@@ -6,12 +6,12 @@ Module to define the PulsePicker device subclass.
 from copy import copy
 from .signal import EpicsSignalRO
 from ..component import Component, FormattedComponent
-from .lclsdevice import LCLSDevice as Device
-from .iocadmin import IOCAdminOld
+from .iocdevice import IocDevice
+from .iocadmin import IocAdminOld
 from .state import InOutStates, InOutCCMStates, statesrecord_class
 
 
-class PulsePicker(Device):
+class PulsePicker(IocDevice):
     """
     Device that lets us pick which beam pulses reach the sample.
     """
@@ -20,7 +20,7 @@ class PulsePicker(Device):
     blade = Component(EpicsSignalRO, ":READ_DF", string=True)
     mode = Component(EpicsSignalRO, ":SE", string=True)
     ioc = copy(Device.ioc)
-    ioc.cls = IOCAdminOld
+    ioc.cls = IocAdminOld
 
     def __init__(self, prefix, *, states="", ioc="", states_ioc="",
                  read_attrs=None, name=None, **kwargs):

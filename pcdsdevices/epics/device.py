@@ -9,7 +9,7 @@ record.
 from queue import Queue
 from collections import OrderedDict
 from epics.ca import poll, CAThread as Thread
-from ophyd import Device
+import ophyd
 
 # ophyd.Device claims to accept extra **kwargs, but does not use them. One of
 # its parent classes, OphydObject, does not have **kwargs in the __init__
@@ -19,7 +19,7 @@ VALID_OPHYD_KWARGS = ("name", "parent", "prefix", "read_attrs",
                       "configuration_attrs")
 
 
-class LCLSDeviceBase(Device):
+class Device(ophyd.Device):
     """
     Tweaks to Ophyd.Device
     """

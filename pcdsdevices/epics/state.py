@@ -8,10 +8,11 @@ from threading import RLock
 from keyword import iskeyword
 from .signal import EpicsSignal, EpicsSignalRO
 from ..component import Component
-from .lclsdevice import LCLSDevice as Device, LCLSDeviceBase as DeviceBase
+from .device import Device
+from .iocdevice import IocDevice
 
 
-class State(Device):
+class State(IocDevice):
     """
     Base class for any state device.
 
@@ -144,7 +145,7 @@ class DeviceStatesRecord(State):
         self.state.put(value)
 
 
-class DeviceStatesPart(DeviceBase):
+class DeviceStatesPart(Device):
     at_state = Component(EpicsSignalRO, "", string=True)
     setpos = Component(EpicsSignal, "_SET")
     delta = Component(EpicsSignal, "_DELTA")

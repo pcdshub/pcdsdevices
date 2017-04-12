@@ -12,7 +12,7 @@ from enum import Enum
 # Module #
 ##########
 from .state         import pvstate_class 
-from .lclsdevice    import LCLSDevice as Device
+from .device    import Device
 from .signal    import EpicsSignalRO
 from .signal    import EpicsSignal
 from ..component import Component

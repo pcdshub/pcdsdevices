@@ -6,10 +6,10 @@ devices.
 """
 from .signal import EpicsSignal, EpicsSignalRO
 from ..component import Component
-from .lclsdevicebase import LCLSDeviceBase as DeviceBase
+from .device import Device
 
 
-class IOCAdminOld(DeviceBase):
+class IocAdminOld(Device):
     """
     Interface for an ioc's IOCAdmin record. This gives us information about the
     IOC's status and allows us to restart it via EPICS.
@@ -36,7 +36,7 @@ class IOCAdminOld(DeviceBase):
         """
         self.sysreset.put(1)
 
-class IOCAdmin(IOCAdminOld):
+class IocAdmin(IocAdminOld):
     """
     Interface for an ioc's IOCAdmin record. This gives us information about the
     IOC's status and allows us to restart it via EPICS.
