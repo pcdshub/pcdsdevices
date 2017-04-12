@@ -6,7 +6,7 @@ devices.
 """
 from threading import RLock
 from keyword import iskeyword
-from .pcdssignal import (PcdsEpicsSignal as EpicsSignal,
+from .pcdsepicssignal import (PcdsEpicsSignal as EpicsSignal,
                          PcdsEpicsSignalRO as EpicsSignalRO)
 from ..pcdscomponent import PcdsComponent as Component
 from .lclsdevice import LCLSDevice as Device, LCLSDeviceBase as DeviceBase

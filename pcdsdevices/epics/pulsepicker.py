@@ -4,7 +4,7 @@
 Module to define the PulsePicker device subclass.
 """
 from copy import copy
-from .pcdssignal import PcdsEpicsSignalRO as EpicsSignalRO
+from .pcdsepicssignal import PcdsEpicsSignalRO as EpicsSignalRO
 from ..pcdscomponent import (PcdsComponent as Component,
                             PcdsFormattedComponent as FormattedComponent)
 from .lclsdevice import LCLSDevice as Device

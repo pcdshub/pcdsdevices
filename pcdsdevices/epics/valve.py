@@ -13,8 +13,8 @@ from enum import Enum
 ##########
 from .state         import pvstate_class 
 from .lclsdevice    import LCLSDevice as Device
-from .pcdssignal    import PcdsEpicsSignalRO as EpicsSignalRO
-from .pcdssignal    import PcdsEpicsSignal as EpicsSignal
+from .pcdsepicssignal    import PcdsEpicsSignalRO as EpicsSignalRO
+from .pcdsepicssignal    import PcdsEpicsSignal as EpicsSignal
 from ..pcdscomponent import PcdsComponent as Component 
 
 
