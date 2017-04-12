@@ -7,13 +7,13 @@ Overrides for Epics Signals
 from ophyd.signal import EpicsSignalBase, EpicsSignal, EpicsSignalRO
 
 
-class LCLSEpicsSignalBase(EpicsSignalBase):
+class PcdsEpicsSignalBase(EpicsSignalBase):
     pass
 
 
-class LCLSEpicsSignal(EpicsSignal, LCLSEpicsSignalBase):
+class PcdsEpicsSignal(EpicsSignal, PcdsEpicsSignalBase):
     pass
 
 
-class LCLSEpicsSignalRO(EpicsSignalRO, LCLSEpicsSignalBase):
+class PcdsEpicsSignalRO(EpicsSignalRO, PcdsEpicsSignalBase):
     pass

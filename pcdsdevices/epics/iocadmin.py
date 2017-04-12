@@ -4,8 +4,8 @@
 Define interface to the IOCAdmin record. This should be shared across LCLS
 devices.
 """
-from .pcdssignal import (LCLSEpicsSignal as EpicsSignal,
-                         LCLSEpicsSignalRO as EpicsSignalRO)
+from .pcdssignal import (PcdsEpicsSignal as EpicsSignal,
+                         PcdsEpicsSignalRO as EpicsSignalRO)
 from ..pcdscomponent import LCLSComponent as Component
 from .lclsdevicebase import LCLSDeviceBase as DeviceBase
 
