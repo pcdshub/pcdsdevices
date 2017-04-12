@@ -3,7 +3,7 @@
 from collections import OrderedDict
 import re
 import pytest
-from pcdsdevices.epics.pulsepicker import PulsePickerPink
+from pcdsdevices.pulsepicker import PulsePickerPink
 
 
 class Params:
