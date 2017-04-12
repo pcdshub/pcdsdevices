@@ -15,7 +15,7 @@ from .state         import pvstate_class
 from .lclsdevice    import LCLSDevice as Device
 from .pcdssignal    import PcdsEpicsSignalRO as EpicsSignalRO
 from .pcdssignal    import PcdsEpicsSignal as EpicsSignal
-from ..pcdscomponent import LCLSComponent as Component 
+from ..pcdscomponent import PcdsComponent as Component 
 
 
 class Commands(Enum):

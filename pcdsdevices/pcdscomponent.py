@@ -14,7 +14,7 @@ from copy import copy
 from ophyd import Component, FormattedComponent
 
 
-class LCLSComponent(Component):
+class PcdsComponent(Component):
     def __init__(self, cls, suffix=None, *, lazy=True, trigger_value=None,
                  add_prefix=None, doc=None, **kwargs):
         super().__init__(cls, suffix=suffix, lazy=lazy,
@@ -30,7 +30,7 @@ class LCLSComponent(Component):
                               **kwargs)
 
 
-class LCLSFormattedComponent(LCLSComponent, FormattedComponent):
+class PcdsFormattedComponent(PcdsComponent, FormattedComponent):
     def __init__(self, cls, suffix=None, *, lazy=True, trigger_value=None,
                  add_prefix=None, doc=None, **kwargs):
         if add_prefix is None:
