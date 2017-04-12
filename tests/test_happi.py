@@ -4,7 +4,7 @@ import pytest
 try:
     import happi
     from happi.tests import MockClient
-    from devices import happireader
+    from pcdsdevices import happireader
     has_happi = True
 except ImportError:
     has_happi = False
