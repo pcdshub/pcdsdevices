@@ -20,7 +20,7 @@ requirements:
 
 test:
   imports:
-   - pcdsdevices
+    - pcdsdevices
 
 about:
   home: https://github.com/slaclab/pcds-devices
