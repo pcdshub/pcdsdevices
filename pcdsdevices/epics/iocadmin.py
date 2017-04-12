@@ -6,7 +6,7 @@ devices.
 """
 from .pcdsepicssignal import (PcdsEpicsSignal as EpicsSignal,
                          PcdsEpicsSignalRO as EpicsSignalRO)
-from ..pcdscomponent import PcdsComponent as Component
+from ..component import PcdsComponent as Component
 from .lclsdevicebase import LCLSDeviceBase as DeviceBase
 
 
