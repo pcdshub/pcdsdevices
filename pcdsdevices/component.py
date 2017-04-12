@@ -11,10 +11,10 @@ For formatted components, put "ioc" onto default add_prefix so it gets
 formatted as well.
 """
 from copy import copy
-from ophyd import Component, FormattedComponent
+import ophyd
 
 
-class PcdsComponent(Component):
+class Component(ophyd.Component):
     def __init__(self, cls, suffix=None, *, lazy=True, trigger_value=None,
                  add_prefix=None, doc=None, **kwargs):
         super().__init__(cls, suffix=suffix, lazy=lazy,
@@ -30,7 +30,7 @@ class PcdsComponent(Component):
                               **kwargs)
 
 
-class PcdsFormattedComponent(PcdsComponent, FormattedComponent):
+class FormattedComponent(Component, ophyd.FormattedComponent):
     def __init__(self, cls, suffix=None, *, lazy=True, trigger_value=None,
                  add_prefix=None, doc=None, **kwargs):
         if add_prefix is None:

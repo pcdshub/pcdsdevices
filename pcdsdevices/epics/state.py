@@ -8,7 +8,7 @@ from threading import RLock
 from keyword import iskeyword
 from .pcdsepicssignal import (PcdsEpicsSignal as EpicsSignal,
                          PcdsEpicsSignalRO as EpicsSignalRO)
-from ..component import PcdsComponent as Component
+from ..component import Component
 from .lclsdevice import LCLSDevice as Device, LCLSDeviceBase as DeviceBase
 
 
