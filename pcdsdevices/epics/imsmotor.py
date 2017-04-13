@@ -1,8 +1,9 @@
 from ophyd import EpicsMotor
-from ophyd.device import Component
-from ophyd.signal import Signal
+from ..component import Component
+from .iocdevice import IocDevice
+from .signal import Signal
 
-class IMSMotor(EpicsMotor):
+class IMSMotor(EpicsMotor, IocDevice):
     """
     Subclass of EpicsMotor to deal with our IOC that's missing the .TDIR field.
     The correct solution is to fix our IMS record, this is a temporary
