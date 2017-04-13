@@ -15,7 +15,7 @@ class Device(ophyd.Device):
     happi device database.
     """
     def __init__(self, prefix, **kwargs):
-        db_info = kwargs.get("db_info")
+        db_info = kwargs.pop("db_info", None)
         if db_info:
             self.db = HappiData(db_info)
         for key in list(kwargs.keys()):
