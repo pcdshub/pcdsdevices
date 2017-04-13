@@ -1,6 +1,7 @@
 *.swp
 __pycache__
 build
+*.pyc
 
 #Coverage Reports
 htmlcov
