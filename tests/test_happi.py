@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pytest
+import epics # Needed to be able to load pcdsdevice.epics classes
 try:
     import happi
     from happi.tests import MockClient
