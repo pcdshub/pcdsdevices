@@ -1,7 +1,7 @@
 from enum import Enum
 
 from .state import pvstate_class
-from .device import Device
+from .iocdevice import IocDevice
 from .signal import EpicsSignalRO
 from .signal import EpicsSignal
 from .component import Component
@@ -22,7 +22,7 @@ class InterlockError(Exception):
     pass
 
 
-class GateValve(Device):
+class GateValve(IocDevice):
     """
     Basic Vacuum Valve
 
@@ -53,7 +53,7 @@ class GateValve(Device):
 
         super().__init__(prefix, ioc=ioc,
                          read_attrs=read_attrs,
-                         name=name)
+                         name=name, **kwargs)
 
     @property
     def interlocked(self):
