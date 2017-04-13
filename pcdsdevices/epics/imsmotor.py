@@ -26,8 +26,9 @@ class ImsMotor(EpicsMotor, IocDevice):
     direction_of_travel = Component(FakeTDIR)
 
     def _pos_changed(self, timestamp=None, value=None, **kwargs):
-        if value > self.position:
-            self.direction_of_travel.stored_tdir = 1
-        else:
-            self.direction_of_travel.stored_tdir = 0
+        if None not in (value, self.position):
+            if value > self.position:
+                self.direction_of_travel.stored_tdir = 1
+            else:
+                self.direction_of_travel.stored_tdir = 0
         super()._pos_changed(self, timestamp=timestamp, value=value, **kwargs)
