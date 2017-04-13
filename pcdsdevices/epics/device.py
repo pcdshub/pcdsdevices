@@ -11,13 +11,6 @@ from collections import OrderedDict
 from epics.ca import poll, CAThread as Thread
 from ..device import Device
 
-# ophyd.Device claims to accept extra **kwargs, but does not use them. One of
-# its parent classes, OphydObject, does not have **kwargs in the __init__
-# statement and will throw an exception. We use this list to lay a safety net
-# and avoid raising an exception in OphydObject.__init__
-VALID_OPHYD_KWARGS = ("name", "parent", "prefix", "read_attrs",
-                      "configuration_attrs")
-
 
 class Device(Device):
     """
