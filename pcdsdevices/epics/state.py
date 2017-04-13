@@ -7,7 +7,7 @@ devices.
 from threading import RLock
 from keyword import iskeyword
 from .signal import EpicsSignal, EpicsSignalRO
-from ..component import Component
+from .component import Component
 from .device import Device
 from .iocdevice import IocDevice
 

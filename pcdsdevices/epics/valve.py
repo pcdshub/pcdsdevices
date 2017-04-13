@@ -4,7 +4,7 @@ from .state import pvstate_class
 from .device import Device
 from .signal import EpicsSignalRO
 from .signal import EpicsSignal
-from ..component import Component
+from .component import Component
 
 
 class Commands(Enum):

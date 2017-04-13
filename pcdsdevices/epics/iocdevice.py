@@ -5,7 +5,7 @@ Define common features among LCLS devices. This includes things like the
 iocAdmin module that all LCLS devices share but are not guaranteed outside of
 LCLS.
 """
-from ..component import FormattedComponent
+from .component import FormattedComponent
 from .device import Device
 from .iocadmin import IocAdmin
 

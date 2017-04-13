@@ -1,5 +1,5 @@
 from ophyd import EpicsMotor
-from ..component import Component
+from .component import Component
 from .iocdevice import IocDevice
 from .signal import Signal
 

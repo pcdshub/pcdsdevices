@@ -5,7 +5,7 @@ Module to define the PulsePicker device subclass.
 """
 from copy import copy
 from .signal import EpicsSignalRO
-from ..component import Component, FormattedComponent
+from .component import Component, FormattedComponent
 from .iocdevice import IocDevice
 from .iocadmin import IocAdminOld
 from .state import InOutStates, InOutCCMStates, statesrecord_class
