@@ -52,7 +52,7 @@ def construct_device(happi_object):
         except AttributeError:
             pass
     device_type = happi_object.__class__.__name__
-    cls = pick_class(device_type, module, info)
+    cls = pick_class(device_type, info)
     return cls(db_info=info, **info)
 
 
