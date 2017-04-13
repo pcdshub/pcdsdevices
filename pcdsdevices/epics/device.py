@@ -7,7 +7,7 @@ from queue import Queue
 from collections import OrderedDict
 
 from epics.ca import poll, CAThread as Thread
-from ophyd.utils import doc_annotation_forwarder
+# from ophyd.utils import doc_annotation_forwarder
 
 from ..device import Device
 
@@ -23,18 +23,18 @@ class Device(Device):
         poll()
         super().__init__(prefix, **kwargs)
 
-    @doc_annotation_forwarder(Device)
+    # @doc_annotation_forwarder(Device)
     def get(self, **kwargs):
         values = self._list_values(self.signal_names, method="get",
                                    config=False, attr_keys=True, **kwargs)
         return self._device_tuple(**values)
 
-    @doc_annotation_forwarder(Device)
+    # @doc_annotation_forwarder(Device)
     def _read_attr_list(self, attr_list, *, config=False):
         return self._list_values(attr_list, method="read", config=config,
                                  attr_keys=False)
 
-    @doc_annotation_forwarder(Device)
+    # @doc_annotation_forwarder(Device)
     def _describe_attr_list(self, attr_list, *, config=False):
         return self._list_values(attr_list, method="describe", config=config,
                                  attr_keys=False)
