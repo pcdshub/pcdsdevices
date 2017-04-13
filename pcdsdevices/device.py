@@ -1,32 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Define functional changes to ophyd.Device. This module really only exists
-because iocadmin needs to be an LCLSDevice but we must avoid the circular
-dependency that arises because iocadmin should not contain another iocadmin
-record.
+Define functional changes to ophyd.Device.
 """
 import ophyd
 
-# ophyd.Device claims to accept extra **kwargs, but does not use them. One of
-# its parent classes, OphydObject, does not have **kwargs in the __init__
-# statement and will throw an exception. We use this list to lay a safety net
-# and avoid raising an exception in OphydObject.__init__
 VALID_OPHYD_KWARGS = ("name", "parent", "prefix", "read_attrs",
                       "configuration_attrs")
 
 
 class Device(ophyd.Device):
     """
-    Tweaks to Ophyd.Device
+    Subclass of ophyd.Device that soaks up and stores information from the
+    happi device database.
     """
     def __init__(self, prefix, **kwargs):
-        # Bizarrely, this poll call in conjunction with lazy=True fixes an
-        # issue where calling .get early could fail.
         db_info = kwargs.get("db_info")
         if db_info:
             self.db = HappiData(db_info)
-        kwargs = {k: v for k, v in kwargs.items() if k in VALID_OPHYD_KWARGS}
+        for key in list(kwargs.keys()):
+            # Remove keys in kwargs if they were from the happi import but they
+            # cannot be passed to ophyd.Device
+            if key in db_info and key not in VALID_OPHYD_KWARGS:
+                kwargs.pop(key)
         super().__init__(prefix, **kwargs)
 
 
