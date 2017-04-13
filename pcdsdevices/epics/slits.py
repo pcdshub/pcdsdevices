@@ -16,19 +16,15 @@ class SlitPositioner(PVPositioner, Device):
     PVPositioner subclass for the slit center and width pseudomotors.
     """
     setpoint = FormattedComponent(EpicsSignal,
-                                  "{self._mainslit}{self.prefix}"
-                                  + ":{self._dirshort}_REQ")
+                                  "{self.prefix}:{self._dirshort}_REQ")
     readback = FormattedComponent(EpicsSignalRO,
-                                  "{self._mainslit}{self.prefix}"
-                                  + ":ACTUAL_{self._dirlong}")
+                                  "{self.prefix}:ACTUAL_{self._dirlong}")
     done = Component(EpicsSignalRO, ":DMOV")
 
     def __init__(self, prefix="", *, slit_type="", limits=None, name=None,
                  read_attrs=None, parent=None, egu="", **kwargs):
-        if parent is None:
-            self._mainslit = ""
-        else:
-            self._mainslit = parent.prefix
+        if parent is not None:
+            prefix = parent.prefix + prefix
         self._dirlong = slit_type
         self._dirshort = slit_type[:4]
         if read_attrs is None:
