@@ -18,11 +18,11 @@ class Device(ophyd.Device):
         db_info = kwargs.pop("db_info", None)
         if db_info:
             self.db = HappiData(db_info)
-        for key in list(kwargs.keys()):
-            # Remove keys in kwargs if they were from the happi import but they
-            # cannot be passed to ophyd.Device
-            if key in db_info and key not in VALID_OPHYD_KWARGS:
-                kwargs.pop(key)
+            for key in list(kwargs.keys()):
+                # Remove keys in kwargs if they were from the happi import but they
+                # cannot be passed to ophyd.Device
+                if key in db_info and key not in VALID_OPHYD_KWARGS:
+                    kwargs.pop(key)
         super().__init__(prefix, **kwargs)
 
 
