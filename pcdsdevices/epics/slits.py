@@ -53,3 +53,12 @@ class Slits(IocDevice):
             read_attrs = ['xcenter', 'xwidth', 'ycenter', 'ywidth', 'blocked']
         super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
                          **kwargs)
+
+    def open(self):
+        self.open_cmd.put(1)
+
+    def close(self):
+        self.close_cmd.put(1)
+
+    def block(self):
+        self.block_cmd.put(1)
