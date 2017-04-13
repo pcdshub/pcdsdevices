@@ -4,15 +4,14 @@
 Module to define the PulsePicker device subclass.
 """
 from copy import copy
-from .lclssignal import LCLSEpicsSignalRO as EpicsSignalRO
-from .lclscomponent import (LCLSComponent as Component,
-                            LCLSFormattedComponent as FormattedComponent)
-from .lclsdevice import LCLSDevice as Device
-from .iocadmin import IOCAdminOld
+from .signal import EpicsSignalRO
+from .component import Component, FormattedComponent
+from .iocdevice import IocDevice
+from .iocadmin import IocAdminOld
 from .state import InOutStates, InOutCCMStates, statesrecord_class
 
 
-class PulsePicker(Device):
+class PulsePicker(IocDevice):
     """
     Device that lets us pick which beam pulses reach the sample.
     """
@@ -20,8 +19,8 @@ class PulsePicker(Device):
                                 ioc="{self._states_ioc}")
     blade = Component(EpicsSignalRO, ":READ_DF", string=True)
     mode = Component(EpicsSignalRO, ":SE", string=True)
-    ioc = copy(Device.ioc)
-    ioc.cls = IOCAdminOld
+    ioc = copy(IocDevice.ioc)
+    ioc.cls = IocAdminOld
 
     def __init__(self, prefix, *, states="", ioc="", states_ioc="",
                  read_attrs=None, name=None, **kwargs):
@@ -33,9 +32,15 @@ class PulsePicker(Device):
                          **kwargs)
 
     def move_out(self):
+        """
+        Move the pulsepicker to the "out" position in y.
+        """
         self.in_out.value = "OUT"
 
     def move_in(self):
+        """
+        Move the pulsepicker to the "in" position in y.
+        """
         self.in_out.value = "IN"
 
 
@@ -49,6 +54,9 @@ class PulsePickerCCM(PulsePicker):
     in_out.cls = InOutCCMStates
 
     def move_ccm(self):
+        """
+        Move the pulsepicker to the "ccm" position in y.
+        """
         self.in_out.value = "CCM"
 
 

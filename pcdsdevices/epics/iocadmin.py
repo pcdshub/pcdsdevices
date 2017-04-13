@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Define interface to the IOCAdmin record. This should be shared across LCLS
+Define interface to the IOCAdmin record. This should be shared across PCDS
 devices.
 """
-from .lclssignal import (LCLSEpicsSignal as EpicsSignal,
-                         LCLSEpicsSignalRO as EpicsSignalRO)
-from .lclscomponent import LCLSComponent as Component
-from .lclsdevicebase import LCLSDeviceBase as DeviceBase
+from .signal import EpicsSignal, EpicsSignalRO
+from .component import Component
+from .device import Device
 
 
-class IOCAdminOld(DeviceBase):
+class IocAdminOld(Device):
     """
     Interface for an ioc's IOCAdmin record. This gives us information about the
     IOC's status and allows us to restart it via EPICS.
@@ -24,7 +23,6 @@ class IOCAdminOld(DeviceBase):
     start_tod = Component(EpicsSignalRO, ":STARTTOD")
     sysreset = Component(EpicsSignal, ":SYSRESET")
 
-
     def __init__(self, prefix, *, read_attrs=None, name=None, **kwargs):
         if read_attrs is None:
             read_attrs = ["heartbeat"]
@@ -37,7 +35,8 @@ class IOCAdminOld(DeviceBase):
         """
         self.sysreset.put(1)
 
-class IOCAdmin(IOCAdminOld):
+
+class IocAdmin(IocAdminOld):
     """
     Interface for an ioc's IOCAdmin record. This gives us information about the
     IOC's status and allows us to restart it via EPICS.

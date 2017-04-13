@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pytest
+import epics # Needed to be able to load pcdsdevice.epics classes
 try:
     import happi
     from happi.tests import MockClient
-    from devices import happireader
+    from pcdsdevices import happireader
     has_happi = True
 except ImportError:
     has_happi = False
