@@ -5,9 +5,10 @@ Overrides for Epics Signals
 """
 
 import ophyd.signal
+from ..signal import Signal
 
 
-class EpicsSignalBase(ophyd.signal.EpicsSignalBase):
+class EpicsSignalBase(ophyd.signal.EpicsSignalBase, Signal):
     pass
 
 
