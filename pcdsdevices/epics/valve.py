@@ -1,20 +1,9 @@
-############
-# Standard #
-############
-from copy import copy
 from enum import Enum
-###############
-# Third Party #
-###############
 
-
-##########
-# Module #
-##########
-from .state         import pvstate_class 
-from .device    import Device
-from .signal    import EpicsSignalRO
-from .signal    import EpicsSignal
+from .state import pvstate_class
+from .device import Device
+from .signal import EpicsSignalRO
+from .signal import EpicsSignal
 from ..component import Component
 
 
@@ -23,7 +12,7 @@ class Commands(Enum):
     Command aliases for ``OPN_SW``
     """
     close_valve = 0
-    open_valve  = 1 
+    open_valve = 1
 
 
 class InterlockError(Exception):
@@ -42,23 +31,23 @@ class GateValve(Device):
     commands : Enum
         Command aliases for valve
     """
-    command   = Component(EpicsSignal,   ':OPN_SW')
+    command = Component(EpicsSignal,   ':OPN_SW')
     interlock = Component(EpicsSignalRO, ':OPN_OK')
-    limits    = pvstate_class('limits',
-                              {'open_limit'  : {'pvname' :':OPN_DI',
-                                                '0'      : 'defer',
-                                                '1'      : 'out'},
-                              'closed_limit' : {'pvname' :':CLS_DI',
-                                                '0'      : 'defer',
-                                                '1'      : 'in'}},
-                              doc='State description of valve limits')
-                
+    limits = pvstate_class('limits',
+                           {'open_limit': {'pvname': ':OPN_DI',
+                                           '0': 'defer',
+                                           '1': 'out'},
+                            'closed_limit': {'pvname': ':CLS_DI',
+                                             '0': 'defer',
+                                             '1': 'in'}},
+                           doc='State description of valve limits')
+
     commands = Commands
 
     def __init__(self, prefix, *, name=None,
                  read_attrs=None, ioc=None, **kwargs):
 
-        #Configure read attributes
+        # Configure read attributes
         if read_attrs is None:
             read_attrs = ['interlock']
 
@@ -74,7 +63,6 @@ class GateValve(Device):
         """
         return bool(self.interlock.get())
 
-
     def open(self):
         """
         Remove the valve from the beam
@@ -84,13 +72,8 @@ class GateValve(Device):
 
         self.command.put(self.commands.open_valve)
 
-
     def close(self):
         """
         Close the valve
         """
         self.command.put(self.commands.close_valve)
-
-
-
-

@@ -3,7 +3,6 @@
 """
 Read the beamline database and construct objects
 """
-from importlib import import_module
 import happi
 import pcdsdevices
 

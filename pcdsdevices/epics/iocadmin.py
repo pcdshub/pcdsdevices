@@ -23,7 +23,6 @@ class IocAdminOld(Device):
     start_tod = Component(EpicsSignalRO, ":STARTTOD")
     sysreset = Component(EpicsSignal, ":SYSRESET")
 
-
     def __init__(self, prefix, *, read_attrs=None, name=None, **kwargs):
         if read_attrs is None:
             read_attrs = ["heartbeat"]
@@ -35,6 +34,7 @@ class IocAdminOld(Device):
         IOC process.
         """
         self.sysreset.put(1)
+
 
 class IocAdmin(IocAdminOld):
     """

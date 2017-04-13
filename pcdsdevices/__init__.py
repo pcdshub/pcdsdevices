@@ -3,6 +3,6 @@ __version__ = get_versions()['version']
 del get_versions
 
 try:
-    from .epics import *
+    from .epics import * # NOQA
 except ImportError:
     pass
