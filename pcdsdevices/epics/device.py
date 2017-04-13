@@ -9,7 +9,7 @@ record.
 from queue import Queue
 from collections import OrderedDict
 from epics.ca import poll, CAThread as Thread
-import ophyd
+from ..device import Device
 
 # ophyd.Device claims to accept extra **kwargs, but does not use them. One of
 # its parent classes, OphydObject, does not have **kwargs in the __init__
@@ -19,7 +19,7 @@ VALID_OPHYD_KWARGS = ("name", "parent", "prefix", "read_attrs",
                       "configuration_attrs")
 
 
-class Device(ophyd.Device):
+class Device(Device):
     """
     Tweaks to Ophyd.Device
     """
@@ -27,10 +27,6 @@ class Device(ophyd.Device):
         # Bizarrely, this poll call in conjunction with lazy=True fixes an
         # issue where calling .get early could fail.
         poll()
-        db_info = kwargs.get("db_info")
-        if db_info:
-            self.db = HappiData(db_info)
-        kwargs = {k: v for k, v in kwargs.items() if k in VALID_OPHYD_KWARGS}
         super().__init__(prefix, **kwargs)
 
     def get(self, **kwargs):
@@ -87,10 +83,3 @@ class Device(ophyd.Device):
         except:
             value = None
         value_queue.put((attr, value))
-
-
-class HappiData:
-    def __init__(self, db_info):
-        self.info = db_info
-        for entry, value in db_info.items():
-            setattr(self, entry, value)
