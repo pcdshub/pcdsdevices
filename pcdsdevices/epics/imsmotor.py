@@ -16,7 +16,7 @@ class FakeTDIR(Signal):
         return self.stored_tdir
 
 
-class IMSMotor(EpicsMotor, IocDevice):
+class ImsMotor(EpicsMotor, IocDevice):
     """
     Subclass of EpicsMotor to deal with our IOC that's missing the .TDIR field.
     The correct solution is to fix our IMS record, this is a temporary
