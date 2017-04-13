@@ -31,18 +31,17 @@ requires_epics = pytest.mark.skipif(not epics_subnet,
 @requires_epics
 def test_get(all_devices):
     values = all_devices.get()
-    for val in values:
-        assert(val is not None)
+    for name, val in values._asdict().items():
+        assert val is not None, "Failed to find {}".format(name)
 
 
-def recursive_not_none(val):
-    if isinstance(val, dict):
-        recursive_not_none(list(val.values()))
-    elif isinstance(val, (list, tuple)):
-        for v in val:
-            recursive_not_none(v)
-    else:
-        assert(val is not None)
+def recursive_not_none(namedtuple, name=""):
+    for key, value in namedtuple._asdict().items():
+        name = "{}_{}".format(name, key).strip("_")
+        if hasattr(value, "_asdict"):
+            recursive_not_none(value, name)
+        else:
+            assert val is not None, "Failed to find {}".format(name)
 
 
 @requires_epics
