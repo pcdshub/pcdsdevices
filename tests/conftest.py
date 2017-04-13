@@ -3,7 +3,7 @@
 from collections import OrderedDict
 import re
 import pytest
-from pcdsdevices import PulsePickerPink
+from pcdsdevices import (ImsMotor, GateValve, PulsePickerPink)
 
 
 class Params:
@@ -39,7 +39,10 @@ class Params:
                     params.append(param_obj)
         return params
 
-
+# XCS Last User Motor
+Params("xcs_ims_usr32", ImsMotor, "XCS:USR:MMS:32", ioc="IOC:XCS:USR:DUMB:IMS")
+# XCS Random Gate Valve
+Params("xcs_lam_valve1", GateValve, "XCS:LAM:VGC:01", ioc="XCS:R51:IOC:39")
 # XCS PulsePicker
 Params("pp_pink", PulsePickerPink, "XCS:SB2:MMS:09", states="XCS:SB2:PP:Y",
        ioc="XCS:IOC:PULSEPICKER:IMS", states_ioc="IOC:XCS:DEVICE:STATES")
