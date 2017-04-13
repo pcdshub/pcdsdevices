@@ -27,7 +27,17 @@ class Device(ophyd.Device):
 
 
 class HappiData:
+    """
+    Class to hold data from happi in a tab-accessible format and in a
+    dictionary-accessible format.
+    """
     def __init__(self, db_info):
+        """
+        Parameters
+        ----------
+        db_info: dict
+            Mapping from happi keyword to value
+        """
         self.info = db_info
         for entry, value in db_info.items():
             setattr(self, entry, value)

@@ -5,6 +5,9 @@ from .signal import Signal
 
 
 class FakeTDIR(Signal):
+    """
+    Fake stand-in for the missing TDIR signal.
+    """
     def __init__(self, *args, **kwargs):
         self.stored_tdir = 0
         super().__init__(*args, **kwargs)

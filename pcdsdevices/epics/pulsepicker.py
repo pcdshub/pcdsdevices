@@ -32,9 +32,15 @@ class PulsePicker(IocDevice):
                          **kwargs)
 
     def move_out(self):
+        """
+        Move the pulsepicker to the "out" position in y.
+        """
         self.in_out.value = "OUT"
 
     def move_in(self):
+        """
+        Move the pulsepicker to the "in" position in y.
+        """
         self.in_out.value = "IN"
 
 
@@ -48,6 +54,9 @@ class PulsePickerCCM(PulsePicker):
     in_out.cls = InOutCCMStates
 
     def move_ccm(self):
+        """
+        Move the pulsepicker to the "ccm" position in y.
+        """
         self.in_out.value = "CCM"
 
 

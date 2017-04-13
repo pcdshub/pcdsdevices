@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+"""
+Overrides for ophyd.Component and subclasses only relevant for epics devices.
+"""
 from ..component import Component
 
 import ophyd

@@ -4,6 +4,7 @@
 Read the beamline database and construct objects
 """
 import happi
+
 import pcdsdevices
 
 _client = None

@@ -20,6 +20,10 @@ class Component(ophyd.Component):
                          doc=doc, **kwargs)
 
     def __copy__(self):
+        """
+        Allows use of the copy module to duplicate a Component object for
+        tweaks in a subclass.
+        """
         add_prefix = copy(self.add_prefix)
         kwargs = copy(self.kwargs)
         return self.__class__(self.cls, suffix=self.suffix, lazy=self.lazy,

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Define interface to the IOCAdmin record. This should be shared across LCLS
+Define interface to the IOCAdmin record. This should be shared across PCDS
 devices.
 """
 from .signal import EpicsSignal, EpicsSignalRO
