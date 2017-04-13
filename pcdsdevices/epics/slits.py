@@ -44,7 +44,7 @@ class Slits(IocDevice):
     ywidth = Component(SlitPositioner, slit_type="YWIDTH", egu="mm")
     blocked = Component(EpicsSignalRO, ":BLOCKED")
     open_cmd = Component(EpicsSignal, ":OPEN")
-    close_cmd = Component(EpicsSignal, "CLOSE")
+    close_cmd = Component(EpicsSignal, ":CLOSE")
     block_cmd = Component(EpicsSignal, ":BLOCK")
 
     def __init__(self, prefix, *, ioc="", read_attrs=None, name=None,
