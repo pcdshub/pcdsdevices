@@ -19,7 +19,7 @@ class PulsePicker(IocDevice):
                                 ioc="{self._states_ioc}")
     blade = Component(EpicsSignalRO, ":READ_DF", string=True)
     mode = Component(EpicsSignalRO, ":SE", string=True)
-    ioc = copy(Device.ioc)
+    ioc = copy(IocDevice.ioc)
     ioc.cls = IocAdminOld
 
     def __init__(self, prefix, *, states="", ioc="", states_ioc="",
