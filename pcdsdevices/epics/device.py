@@ -20,8 +20,8 @@ class Device(Device):
       time out in series
     """
     def __init__(self, prefix, **kwargs):
-        poll()
         super().__init__(prefix, **kwargs)
+        poll()
 
     # @doc_annotation_forwarder(Device)
     def get(self, **kwargs):
