@@ -1,10 +1,12 @@
 from enum import Enum
+from copy import copy
 
 from .state import pvstate_class
 from .iocdevice import IocDevice
 from .signal import EpicsSignalRO
 from .signal import EpicsSignal
 from .component import Component
+from .iocadmin import IocAdminOld
 
 
 class Commands(Enum):
@@ -22,6 +24,16 @@ class InterlockError(Exception):
     pass
 
 
+ValveLimits = pvstate_class('ValveLimits',
+                            {'open_limit': {'pvname': ':OPN_DI',
+                                            0: 'defer',
+                                            1: 'out'},
+                             'closed_limit': {'pvname': ':CLS_DI',
+                                              0: 'defer',
+                                              1: 'in'}},
+                            doc='State description of valve limits')
+
+
 class GateValve(IocDevice):
     """
     Basic Vacuum Valve
@@ -31,16 +43,11 @@ class GateValve(IocDevice):
     commands : Enum
         Command aliases for valve
     """
+    ioc = copy(IocDevice.ioc)
+    ioc.cls = IocAdminOld
     command = Component(EpicsSignal,   ':OPN_SW')
     interlock = Component(EpicsSignalRO, ':OPN_OK')
-    limits = pvstate_class('limits',
-                           {'open_limit': {'pvname': ':OPN_DI',
-                                           '0': 'defer',
-                                           '1': 'out'},
-                            'closed_limit': {'pvname': ':CLS_DI',
-                                             '0': 'defer',
-                                             '1': 'in'}},
-                           doc='State description of valve limits')
+    limits = Component(ValveLimits, "")
 
     commands = Commands
 
