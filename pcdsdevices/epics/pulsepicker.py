@@ -8,14 +8,14 @@ from .signal import EpicsSignalRO
 from .component import Component, FormattedComponent
 from .iocdevice import IocDevice
 from .iocadmin import IocAdminOld
-from .state import InOutStates, InOutCCMStates, statesrecord_class
+from .state import InOutStatesIoc, InOutCCMStatesIoc, statesrecord_class
 
 
 class PulsePicker(IocDevice):
     """
     Device that lets us pick which beam pulses reach the sample.
     """
-    in_out = FormattedComponent(InOutStates, "{self._states}",
+    in_out = FormattedComponent(InOutStatesIoc, "{self._states}",
                                 ioc="{self._states_ioc}")
     blade = Component(EpicsSignalRO, ":READ_DF", string=True)
     mode = Component(EpicsSignalRO, ":SE", string=True)
@@ -51,7 +51,7 @@ class PulsePickerCCM(PulsePicker):
     and that's the CCM state: IN but at the CCM offset.
     """
     in_out = copy(PulsePicker.in_out)
-    in_out.cls = InOutCCMStates
+    in_out.cls = InOutCCMStatesIoc
 
     def move_ccm(self):
         """
@@ -60,7 +60,8 @@ class PulsePickerCCM(PulsePicker):
         self.in_out.value = "CCM"
 
 
-TempStates = statesrecord_class("TempStates", ":PINK", ":CCM", ":OUT")
+TempStates = statesrecord_class("TempStates", ":PINK", ":CCM", ":OUT",
+                                has_ioc=True)
 
 
 class PulsePickerPink(PulsePickerCCM):
