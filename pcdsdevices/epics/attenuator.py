@@ -12,6 +12,9 @@ from .signal import EpicsSignal, EpicsSignalRO
 
 
 class Filter(Device):
+    """
+    A single attenuation blade.
+    """
     state_sig = Component(EpicsSignal, ":STATE", write_pv=":GO")
     thickness_sig = Component(EpicsSignal, ":THICK")
     material_sig = Component(EpicsSignal, ":MATERIAL")
@@ -28,29 +31,70 @@ class Filter(Device):
 
     @property
     def value(self):
+        """
+        The blade's current position.
+
+        Returns
+        -------
+        value: str
+            "IN" if the blade is in, "OUT" if the blade is out, and "UNKNOWN"
+            if the blade is between the two segments.
+        """
         return self.FilterStates(self.state_sig.get()).name
 
     def move_in(self):
+        """
+        Moves the blade to the "IN" position.
+        """
         self.state_sig.put(self.FilterStates.IN.value)
 
     def move_out(self):
+        """
+        Moves the blade to the "OUT" position.
+        """
         self.state_sig.put(self.FilterStates.OUT.value)
 
     @property
     def stuck(self):
+        """
+        Whether or not the blade is currently stuck. The attenuator IOC will
+        handle stuck blades and try to reach the desired transmission given the
+        constraints.
+
+        Returns
+        -------
+        stuck: str
+            "NOT_STUCK" if the blade is not stuck. "STUCK_IN" if the blade is
+            stuck in the "IN" position. "STUCK_OUT" if the blade is stuck in
+            the "OUT" position.
+        """
         return self.StuckEnum(self.stuck_sig.get()).name
 
     def mark_stuck_in(self):
+        """
+        Mark this blade as "STUCK_IN"
+        """
         self.stuck_sig.put(self.StuckEnum.STUCK_IN.value)
 
     def mark_stuck_out(self):
+        """
+        Mark this blade as "STUCK_OUT"
+        """
         self.stuck_sig.put(self.StuckEnum.STUCK_OUT.value)
 
     def mark_not_stuck(self):
+        """
+        Mark this blade as "NOT_STUCK"
+        """
         self.stuck_sig.put(self.StuckEnum.NOT_STUCK.value)
 
 
 class AttenuatorBase(IocDevice):
+    """
+    Interface to the attenuator IOC, which handles all the calculations. This
+    base class does not include any filters. You may pass n_filters to the
+    Attenuator class to connect to the correct number of filters.
+    """
     user_energy = Component(EpicsSignal, ":EDES")
     energy = Component(EpicsSignalRO, ":T_CALC.VALE")
     desired_transmission = Component(EpicsSignal, ":RDES")
@@ -84,18 +128,75 @@ class AttenuatorBase(IocDevice):
                          ioc=ioc, **kwargs)
 
     def __call__(self, transmission=None, **kwargs):
+        """
+        Delegate object calls to getting or setting the transmission.
+
+        Parameters
+        ----------
+        transmission: number, optional
+            If provided, the attenuator will set the transmission to this
+            value. If this is omitted, we will just return the current
+            transmission.
+        **kwargs: optional
+            See set_energy and set_transmission for valid kwargs.
+
+        Returns
+        -------
+        transmission: float
+            Returns the current attenuator transmission, after the filters are
+            done moving if applicable.
+        """
         if transmission is None:
             return self.transmission.get()
         else:
             return self.set_transmission(transmission, **kwargs)
 
-    def set_energy(self, energy, use3rd=False):
+    def set_energy(self, energy=None, use3rd=False):
+        """
+        Sets the energy to use for transmission calculations.
+
+        Parameters:
+        -----------
+        energy: number, optional
+            If provided, this is the energy we'll use for the transmission
+            calcluations. If omitted, we'll use the current beam energy.
+        use3rd: bool, optional
+            If True, set the 3rd harmonic energy instead of the fundamental
+            energy. This defaults to False.
+        """
+        if energy is None:
+            raise NotImplementedError() #TODO
         if use3rd:
             self.user_energy_3rd.put(energy)
         else:
             self.user_energy.put(energy)
 
-    def set_transmission(self, transmission, E=None, use3rd=False):
+    def set_transmission(self, transmission, E=None, use3rd=False, wait=False):
+        """
+        Moves the filters to most closely match the desired transmission.
+
+        Parameters:
+        -----------
+        transmission: number
+            Desired transmission ratio
+        E: number, optional
+            Desired energy to use for the calculation. If not provided, use the
+            current set energy.
+        use3rd: bool, optional
+            If True, use the 3rd harmonic energy and transmission instead of
+            the fundamental. Defaults to False.
+        wait: bool, optional
+            If True, waits for the filters to stop moving. Return the actual
+            transmission if we waited.
+
+        Returns:
+        --------
+        transmission: number or None
+            If we waited, return the actual transmission. Otherwise, return
+            None.
+        """
+        if wait:
+            raise NotImplementedError()
         with self._set_lock:
             if E is not None:
                 self.set_energy(E, use3rd=use3rd)
@@ -113,3 +214,6 @@ class AttenuatorBase(IocDevice):
                 self.go_cmd.put(3)
             else:
                 self.go_cmd.put(2)
+
+    def calc_transmission(self):
+        pass
