@@ -7,9 +7,7 @@ from enum import Enum
 from .state import pvstate_class
 from .device import Device
 from .signal import EpicsSignal
-from .signal import EpicsSignalRO
 from .component import Component as C
-from .component import FormattedComponent as FC
 
 
 logger = logging.getLogger(__name__)
