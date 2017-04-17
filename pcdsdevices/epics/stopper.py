@@ -2,7 +2,6 @@
 Generic X-Ray Stoppers
 """
 import logging
-from copy import copy
 from enum import Enum
 
 from .state         import pvstate_class
