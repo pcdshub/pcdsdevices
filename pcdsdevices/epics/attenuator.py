@@ -346,5 +346,5 @@ def Attenuator(prefix, n_filters, *, name=None, read_attrs=None, ioc="",
     Factory function for instantiating an attenuator with the correct filter
     components given the number required.
     """
-    return att_classes[n_filters](prefix, name=name, read_atts=read_attrs,
+    return att_classes[n_filters](prefix, name=name, read_attrs=read_attrs,
                                   ioc=ioc, **kwargs)
