@@ -29,8 +29,7 @@ class Filter(Device):
     def __init__(self, prefix, *, name=None, read_attrs=None, **kwargs):
         if read_attrs is None:
             read_attrs = ['state_sig']
-        super().__init__(self, prefix, name=name, read_attrs=read_attrs,
-                         **kwargs)
+        super().__init__(prefix, name=name, read_attrs=read_attrs, **kwargs)
 
     @property
     def value(self):
@@ -130,7 +129,7 @@ class AttenuatorBase(IocDevice):
         self._set_lock = RLock()
         if read_attrs is None:
             read_attrs = ["transmission", "transmission_3rd"]
-        super().__init__(self, prefix, name=name, read_attrs=read_attrs,
+        super().__init__(prefix, name=name, read_attrs=read_attrs,
                          ioc=ioc, **kwargs)
 
     def __call__(self, transmission=None, **kwargs):
