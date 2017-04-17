@@ -4,7 +4,7 @@ from collections import OrderedDict
 import re
 import pytest
 from pcdsdevices import (ImsMotor, GateValve, Slits, Attenuator,
-                         PulsePickerPink, Stopper, PPSStopper)
+                         PulsePickerPink, Stopper, PPSStopper, IPM)
 
 
 class Params:
@@ -56,6 +56,9 @@ Params("xcs_att", Attenuator, "XCS:ATT", n_filters=10, ioc="IOC:XCS:ATT")
 Params("dg2_stopper", Stopper, "HFX:DG2:STP:01")
 # XCS MONO PPS Stopper
 Params("s5_pps_stopper", PPSStopper, "PPS:FEH1:4:S4STPRSUM")
+# XCS IPM
+Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06",
+       data="XCS:SB2:IMB:01:SUM")
 
 all_params = Params.get()
 all_labels = [p.name for p in all_params]
