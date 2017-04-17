@@ -55,7 +55,8 @@ Params("s5_pps_stopper", PPSStopper, "PPS:FEH1:4:S4STPRSUM")
 #        data="XCS:SB2:IMB:01:SUM")
 # TODO: uncomment when I figure out what's wrong with the ipimb
 Params("xcs_pim", PIM, "XCS:SB2:PIM6", ioc="IOC:XCS:SB2:PIM06:IMS")
-Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
+# Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
+# TODO: uncomment when LODCM comes online
 # TODO: add Mirror when mirrors come online
 # TODO: add xpp table when xpp comes online
 
