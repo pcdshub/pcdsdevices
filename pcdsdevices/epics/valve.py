@@ -1,3 +1,6 @@
+"""
+Standard classes for LCLS Gate Valves
+"""
 from enum import Enum
 from copy import copy
 
@@ -22,7 +25,6 @@ class InterlockError(Exception):
     Error when request is blocked by interlock logic
     """
     pass
-
 
 ValveLimits = pvstate_class('ValveLimits',
                             {'open_limit': {'pvname': ':OPN_DI',
@@ -52,11 +54,12 @@ class GateValve(IocDevice):
     commands = Commands
 
     def __init__(self, prefix, *, name=None,
-                 read_attrs=None, ioc=None, **kwargs):
+                 read_attrs=None, ioc=None,
+                 mps=None, **kwargs):
 
         # Configure read attributes
         if read_attrs is None:
-            read_attrs = ['interlock']
+            read_attrs = ['interlock', 'limits']
 
         super().__init__(prefix, ioc=ioc,
                          read_attrs=read_attrs,
