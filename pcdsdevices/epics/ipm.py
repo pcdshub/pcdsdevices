@@ -10,6 +10,19 @@ TargetStates = statesrecord_class("TargetStates", ":OUT", ":TARGET1",
 
 
 class IPM(IocDevice):
+    """
+    Standard intensity position monitor. Consists of two stages, one for the
+    diode and one for the target. This creates a scalar readback that is also
+    available over EPICS.
+    """
     diode = Component(InOutStates, ":DIODE")
     target = Component(TargetStates, ":TARGET")
     data = FormattedComponent(EpicsSignalRO, "{self._data}")
+
+    def __init__(self, prefix, *, data="", ioc="", name=None, parent=None,
+                 read_attrs=None, **kwargs):
+        self._data = data
+        if read_attrs is None:
+            read_attrs = ["data"]
+        super().__init__(self, prefix, ioc=ioc, name=name, parent=parent,
+                         read_attrs=read_attrs, **kwargs)
