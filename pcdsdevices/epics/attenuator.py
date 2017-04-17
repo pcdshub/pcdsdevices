@@ -6,7 +6,8 @@ Define operation of the lcls attenuator IOCs
 from enum import Enum
 from threading import Event, RLock
 
-from .device import Device, IocDevice
+from .device import Device
+from .iocdevice import IocDevice
 from .component import Component
 from .signal import EpicsSignal, EpicsSignalRO
 
