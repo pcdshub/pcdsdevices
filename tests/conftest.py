@@ -49,9 +49,9 @@ Params("pp_pink", PulsePickerPink, "XCS:SB2:MMS:09", states="XCS:SB2:PP:Y",
 Params("xcs_att", Attenuator, "XCS:ATT", n_filters=10, ioc="IOC:XCS:ATT")
 Params("dg2_stopper", Stopper, "HFX:DG2:STP:01")
 Params("s5_pps_stopper", PPSStopper, "PPS:FEH1:4:S4STPRSUM")
-Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06",
+Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06:IMS",
        data="XCS:SB2:IMB:01:SUM")
-Params("xcs_pim", PIM, "XCS:SB2:PIM6", ioc="IOC:XCS:SB2:PIM06")
+Params("xcs_pim", PIM, "XCS:SB2:PIM6", ioc="IOC:XCS:SB2:PIM06:IMS")
 
 all_params = Params.get()
 all_labels = [p.name for p in all_params]
