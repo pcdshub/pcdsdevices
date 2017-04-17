@@ -103,14 +103,14 @@ class AttenuatorBase(IocDevice):
     """
     user_energy = Component(EpicsSignal, ":EDES")
     energy = Component(EpicsSignalRO, ":T_CALC.VALE")
-    desired_transmission = Component(EpicsSignal, ":RDES")
+    desired_transmission = Component(EpicsSignal, ":R_DES")
     transmission = Component(EpicsSignalRO, ":R_CUR")
     transmission_ceiling = Component(EpicsSignalRO, ":R_CEIL")
     transmission_floor = Component(EpicsSignalRO, ":R_FLOOR")
 
     user_energy_3rd = Component(EpicsSignal, ":E3DES")
     energy_3rd = Component(EpicsSignalRO, ":T_CALC.VALH")
-    desired_transmission_3rd = Component(EpicsSignal, ":R3DES")
+    desired_transmission_3rd = Component(EpicsSignal, ":R3_DES")
     transmission_3rd = Component(EpicsSignalRO, ":R3_CUR")
     transmission_ceiling_3rd = Component(EpicsSignalRO, ":R3_CEIL")
     transmission_floor_3rd = Component(EpicsSignalRO, ":R3_FLOOR")
