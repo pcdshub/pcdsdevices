@@ -53,7 +53,7 @@ Params("pp_pink", PulsePickerPink, "XCS:SB2:MMS:09", states="XCS:SB2:PP:Y",
 # XCS Attenuator
 Params("xcs_att", Attenuator, "XCS:ATT", n_filters=10, ioc="IOC:XCS:ATT")
 # CXI DG2 Stopper
-Params("dg2_stopper", Stopper, "HFX:DG2:STP_01")
+Params("dg2_stopper", Stopper, "HFX:DG2:STP:01")
 # XCS MONO PPS Stopper
 Params("s5_pps_stopper", PPSStopper, "PPS:FEH1:4:S4STPRSUM")
 
