@@ -52,15 +52,15 @@ class PPSStopper(Device):
     summary = C(PPS, '')
 
     def __init__(self, prefix, *, name=None,
-                 read_attrs=None, ioc=None,
+                 read_attrs=None,
                  mps=None, **kwargs):
 
         if not read_attrs:
             read_attrs = ['summary']
 
-        super().__init__(prefix, ioc=ioc,
+        super().__init__(prefix,
                          read_attrs=read_attrs,
-                         name=name)
+                         name=name, **kwargs)
 
 
 class Stopper(Device):
@@ -77,15 +77,15 @@ class Stopper(Device):
     commands = Commands
 
     def __init__(self, prefix, *, name=None,
-                 read_attrs=None, ioc=None,
+                 read_attrs=None,
                  mps=None, **kwargs):
 
         if read_attrs is None:
             read_attrs = ['limits']
 
-        super().__init__(prefix, ioc=ioc,
+        super().__init__(prefix,
                          read_attrs=read_attrs,
-                         name=name)
+                         name=name, **kwargs)
 
     def open(self):
         """
