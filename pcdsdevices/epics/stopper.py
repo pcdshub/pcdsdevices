@@ -1,21 +1,10 @@
 """
 Generic X-Ray Stoppers
 """
-############
-# Standard #
-############
 import logging
 from copy import copy
 from enum import Enum
 
-###############
-# Third Party #
-###############
-
-
-##########
-# Module #
-##########
 from .state         import pvstate_class
 from .lclsdevice    import LCLSDevice             as Device
 from .lclssignal    import LCLSEpicsSignal        as EpicsSignal
@@ -94,7 +83,6 @@ class Stopper(Device):
                  read_attrs=None, ioc=None,
                  mps=None, **kwargs):
 
-        #Configure read attributes
         if read_attrs is None:
             read_attrs = ['limits']
 
