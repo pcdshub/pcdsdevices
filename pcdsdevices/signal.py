@@ -13,7 +13,7 @@ class Signal(ophyd.signal.Signal):
                  tolerance=None, rtolerance=None):
         self._wfv_event = Event()
         self._wfv_lock = RLock()
-        super().__init__(self, value=value, timestamp=timestamp, name=name,
+        super().__init__(value=value, timestamp=timestamp, name=name,
                          parent=parent, tolerance=tolerance,
                          rtolerance=rtolerance)
 
