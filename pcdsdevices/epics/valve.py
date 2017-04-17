@@ -2,7 +2,7 @@
 Standard classes for LCLS Gate Valves
 """
 from enum import Enum
-from copy import copy
+from copy import deepcopy
 
 from .state import pvstate_class
 from .iocdevice import IocDevice
@@ -45,7 +45,7 @@ class GateValve(IocDevice):
     commands : Enum
         Command aliases for valve
     """
-    ioc = copy(IocDevice.ioc)
+    ioc = deepcopy(IocDevice.ioc)
     ioc.cls = IocAdminOld
     command = Component(EpicsSignal,   ':OPN_SW')
     interlock = Component(EpicsSignalRO, ':OPN_OK')
