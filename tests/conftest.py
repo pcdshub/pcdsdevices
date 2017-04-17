@@ -51,7 +51,7 @@ Params("xcs_slits6", Slits, "XCS:SB2:DS:JAWS", ioc="IOC:XCS:SB2:SLITS:IMS")
 Params("pp_pink", PulsePickerPink, "XCS:SB2:MMS:09", states="XCS:SB2:PP:Y",
        ioc="XCS:IOC:PULSEPICKER:IMS", states_ioc="IOC:XCS:DEVICE:STATES")
 # XCS Attenuator
-Params("xcs_att", Attenuator, "XCS:ATT:COM", n_filters=10, ioc="IOC:XCS:ATT")
+Params("xcs_att", Attenuator, "XCS:ATT", n_filters=10, ioc="IOC:XCS:ATT")
 
 all_params = Params.get()
 all_labels = [p.name for p in all_params]

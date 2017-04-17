@@ -101,27 +101,27 @@ class AttenuatorBase(IocDevice):
     base class does not include any filters. You may pass n_filters to the
     Attenuator class to connect to the correct number of filters.
     """
-    user_energy = Component(EpicsSignal, ":EDES")
-    energy = Component(EpicsSignalRO, ":T_CALC.VALE")
-    desired_transmission = Component(EpicsSignal, ":R_DES")
-    transmission = Component(EpicsSignalRO, ":R_CUR")
-    transmission_ceiling = Component(EpicsSignalRO, ":R_CEIL")
-    transmission_floor = Component(EpicsSignalRO, ":R_FLOOR")
+    user_energy = Component(EpicsSignal, ":COM:EDES")
+    energy = Component(EpicsSignalRO, ":COM:T_CALC.VALE")
+    desired_transmission = Component(EpicsSignal, ":COM:R_DES")
+    transmission = Component(EpicsSignalRO, ":COM:R_CUR")
+    transmission_ceiling = Component(EpicsSignalRO, ":COM:R_CEIL")
+    transmission_floor = Component(EpicsSignalRO, ":COM:R_FLOOR")
 
-    user_energy_3rd = Component(EpicsSignal, ":E3DES")
-    energy_3rd = Component(EpicsSignalRO, ":T_CALC.VALH")
-    desired_transmission_3rd = Component(EpicsSignal, ":R3_DES")
-    transmission_3rd = Component(EpicsSignalRO, ":R3_CUR")
-    transmission_ceiling_3rd = Component(EpicsSignalRO, ":R3_CEIL")
-    transmission_floor_3rd = Component(EpicsSignalRO, ":R3_FLOOR")
+    user_energy_3rd = Component(EpicsSignal, ":COM:E3DES")
+    energy_3rd = Component(EpicsSignalRO, ":COM:T_CALC.VALH")
+    desired_transmission_3rd = Component(EpicsSignal, ":COM:R3_DES")
+    transmission_3rd = Component(EpicsSignalRO, ":COM:R3_CUR")
+    transmission_ceiling_3rd = Component(EpicsSignalRO, ":COM:R3_CEIL")
+    transmission_floor_3rd = Component(EpicsSignalRO, ":COM:R3_FLOOR")
 
-    num_att = Component(EpicsSignalRO, ":NATT")
-    status = Component(EpicsSignalRO, ":STATUS")
-    calcpend = Component(EpicsSignalRO, ":CALCP")
+    num_att = Component(EpicsSignalRO, ":COM:NATT")
+    status = Component(EpicsSignalRO, ":COM:STATUS")
+    calcpend = Component(EpicsSignalRO, ":COM:CALCP")
 
-    eget_cmd = Component(EpicsSignal, ":EACT.SCAN")
-    mode_cmd = Component(EpicsSignal, ":MODE")
-    go_cmd = Component(EpicsSignal, ":GO")
+    eget_cmd = Component(EpicsSignal, ":COM:EACT.SCAN")
+    mode_cmd = Component(EpicsSignal, ":COM:MODE")
+    go_cmd = Component(EpicsSignal, ":COM:GO")
 
     def __init__(self, prefix, *, name=None, read_attrs=None, ioc="",
                  **kwargs):
