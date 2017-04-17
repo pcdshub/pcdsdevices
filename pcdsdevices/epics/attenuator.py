@@ -23,8 +23,8 @@ class Filter(Device):
     material_sig = Component(EpicsSignal, ":MATERIAL")
     stuck_sig = Component(EpicsSignal, ":IS_STUCK")
 
-    FilterStates = Enum("FilterStates", "UNKNOWN IN OUT")
-    StuckEnum = Enum("StuckEnum", "NOT_STUCK STUCK_IN STUCK_OUT")
+    filter_states = Enum("FilterStates", "UNKNOWN IN OUT", start=0)
+    stuck_enum = Enum("StuckEnum", "NOT_STUCK STUCK_IN STUCK_OUT", start=0)
 
     def __init__(self, prefix, *, name=None, read_attrs=None, **kwargs):
         if read_attrs is None:
@@ -42,19 +42,19 @@ class Filter(Device):
             "IN" if the blade is in, "OUT" if the blade is out, and "UNKNOWN"
             if the blade is between the two segments.
         """
-        return self.FilterStates(self.state_sig.get()).name
+        return self.filter_states(self.state_sig.get()).name
 
     def move_in(self):
         """
         Moves the blade to the "IN" position.
         """
-        self.state_sig.put(self.FilterStates.IN.value)
+        self.state_sig.put(self.filter_states.IN.value)
 
     def move_out(self):
         """
         Moves the blade to the "OUT" position.
         """
-        self.state_sig.put(self.FilterStates.OUT.value)
+        self.state_sig.put(self.filter_states.OUT.value)
 
     @property
     def stuck(self):
@@ -70,25 +70,25 @@ class Filter(Device):
             stuck in the "IN" position. "STUCK_OUT" if the blade is stuck in
             the "OUT" position.
         """
-        return self.StuckEnum(self.stuck_sig.get()).name
+        return self.stuck_enum(self.stuck_sig.get()).name
 
     def mark_stuck_in(self):
         """
         Mark this blade as "STUCK_IN"
         """
-        self.stuck_sig.put(self.StuckEnum.STUCK_IN.value)
+        self.stuck_sig.put(self.stuck_enum.STUCK_IN.value)
 
     def mark_stuck_out(self):
         """
         Mark this blade as "STUCK_OUT"
         """
-        self.stuck_sig.put(self.StuckEnum.STUCK_OUT.value)
+        self.stuck_sig.put(self.stuck_enum.STUCK_OUT.value)
 
     def mark_not_stuck(self):
         """
         Mark this blade as "NOT_STUCK"
         """
-        self.stuck_sig.put(self.StuckEnum.NOT_STUCK.value)
+        self.stuck_sig.put(self.stuck_enum.NOT_STUCK.value)
 
     @property
     def thickness(self):

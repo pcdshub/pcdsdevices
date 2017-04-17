@@ -3,7 +3,7 @@
 """
 Module to define the PulsePicker device subclass.
 """
-from copy import copy
+from copy import deepcopy
 from .signal import EpicsSignalRO
 from .component import Component, FormattedComponent
 from .iocdevice import IocDevice
@@ -19,7 +19,7 @@ class PulsePicker(IocDevice):
                                 ioc="{self._states_ioc}")
     blade = Component(EpicsSignalRO, ":READ_DF", string=True)
     mode = Component(EpicsSignalRO, ":SE", string=True)
-    ioc = copy(IocDevice.ioc)
+    ioc = deepcopy(IocDevice.ioc)
     ioc.cls = IocAdminOld
 
     def __init__(self, prefix, *, states="", ioc="", states_ioc="",
@@ -50,7 +50,7 @@ class PulsePickerCCM(PulsePicker):
     This is the version with a third position state in addition to IN and OUT,
     and that's the CCM state: IN but at the CCM offset.
     """
-    in_out = copy(PulsePicker.in_out)
+    in_out = deepcopy(PulsePicker.in_out)
     in_out.cls = InOutCCMStatesIoc
 
     def move_ccm(self):
@@ -68,7 +68,7 @@ class PulsePickerPink(PulsePickerCCM):
     """
     Current state syntax that I plan to change
     """
-    in_out = copy(PulsePickerCCM.in_out)
+    in_out = deepcopy(PulsePickerCCM.in_out)
     in_out.cls = TempStates
 
     def move_in(self):
