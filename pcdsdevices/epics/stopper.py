@@ -4,11 +4,11 @@ Generic X-Ray Stoppers
 import logging
 from enum import Enum
 
-from .state         import pvstate_class
-from .lclsdevice    import LCLSDevice             as Device
-from .lclssignal    import LCLSEpicsSignal        as EpicsSignal
-from .lclssignal    import LCLSEpicsSignalRO      as EpicsSignalRO
-from .lclscomponent import LCLSComponent          as C
+from .state import pvstate_class
+from .lclsdevice import LCLSDevice as Device
+from .lclssignal import LCLSEpicsSignal as EpicsSignal
+from .lclssignal import LCLSEpicsSignalRO as EpicsSignalRO
+from .lclscomponent import LCLSComponent as C
 from .lclscomponent import LCLSFormattedComponent as FC
 
 
@@ -20,26 +20,26 @@ class Commands(Enum):
     Command aliases for ``CMD``
     """
     close_stopper = 0
-    open_stopper  = 1 
+    open_stopper = 1
 
 
 PPS = pvstate_class('PPS',
-                    {'summary' : {'pvname' : '',
-                                        0  : 'out',
-                                        1  : 'unknown',
-                                        2  : 'unknown',
-                                        3  : 'unknown',
-                                        4  : 'in'}},
+                    {'summary': {'pvname': '',
+                                 0: 'out',
+                                 1: 'unknown',
+                                 2: 'unknown',
+                                 3: 'unknown',
+                                 4: 'in'}},
                     doc='MPS Summary of Stopper state')
 
 
 Limits = pvstate_class('Limits',
-                       {'open_limit'  : {'pvname' :':OPEN',
-                                          0       : 'defer',
-                                          1       : 'out'},
-                       'closed_limit' : {'pvname' :':CLOSE',
-                                          0       : 'defer',
-                                          1       : 'in'}},
+                       {'open_limit': {'pvname': ':OPEN',
+                                       0: 'defer',
+                                       1: 'out'},
+                        'closed_limit': {'pvname': ':CLOSE',
+                                         0: 'defer',
+                                         1: 'in'}},
                        doc='State description of Stopper limits')
 
 
@@ -73,11 +73,11 @@ class Stopper(Device):
     support for Controls stoppers i.e stoppers that can be commanded from
     outside the PPS system
     """
-    command   = C(EpicsSignal, ':CMD')
-    limits    = C(Limits, '')
+    command = C(EpicsSignal, ':CMD')
+    limits = C(Limits, '')
 
-    commands  = Commands
-    
+    commands = Commands
+
     def __init__(self, prefix, *, name=None,
                  read_attrs=None, ioc=None,
                  mps=None, **kwargs):
@@ -88,13 +88,12 @@ class Stopper(Device):
         super().__init__(prefix, ioc=ioc,
                          read_attrs=read_attrs,
                          name=name)
-    
+
     def open(self):
         """
         Remove the stopper from the beam
         """
         self.command.put(self.commands.open_stopper)
-
 
     def close(self):
         """
