@@ -24,7 +24,7 @@ class IPM(IocDevice):
         self._data = data
         if read_attrs is None:
             read_attrs = ["data"]
-        super().__init__(self, prefix, ioc=ioc, name=name, parent=parent,
+        super().__init__(prefix, ioc=ioc, name=name, parent=parent,
                          read_attrs=read_attrs, **kwargs)
 
     def target_out(self):
