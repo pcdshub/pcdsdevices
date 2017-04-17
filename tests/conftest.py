@@ -3,7 +3,8 @@
 from collections import OrderedDict
 import re
 import pytest
-from pcdsdevices import (ImsMotor, GateValve, Slits, PulsePickerPink)
+from pcdsdevices import (ImsMotor, GateValve, Slits, Attenuator,
+                         PulsePickerPink)
 
 
 class Params:
@@ -39,6 +40,7 @@ class Params:
                     params.append(param_obj)
         return params
 
+
 # XCS Last User Motor
 Params("xcs_ims_usr32", ImsMotor, "XCS:USR:MMS:32", ioc="IOC:XCS:USR:DUMB:IMS")
 # XCS Random Gate Valve
@@ -48,10 +50,8 @@ Params("xcs_slits6", Slits, "XCS:SB2:DS:JAWS", ioc="IOC:XCS:SB2:SLITS:IMS")
 # XCS PulsePicker
 Params("pp_pink", PulsePickerPink, "XCS:SB2:MMS:09", states="XCS:SB2:PP:Y",
        ioc="XCS:IOC:PULSEPICKER:IMS", states_ioc="IOC:XCS:DEVICE:STATES")
-# It should still work without the ioc arguments
-# Skip this test for now, more important things to work on
-# Params("pp_pink_noioc", PulsePickerPink, "XCS:SB2:MMS:09",
-#        states="XCS:SB2:PP:Y")
+# XCS Attenuator
+Params("xcs_att", Attenuator, "XCS:ATT:COM", n_filters=10, ioc="IOC:XCS:ATT")
 
 all_params = Params.get()
 all_labels = [p.name for p in all_params]
