@@ -31,4 +31,4 @@ class ImsMotor(EpicsMotor, IocDevice):
                 self.direction_of_travel.stored_tdir = 1
             else:
                 self.direction_of_travel.stored_tdir = 0
-        super()._pos_changed(self, timestamp=timestamp, value=value, **kwargs)
+        super()._pos_changed(timestamp=timestamp, value=value, **kwargs)
