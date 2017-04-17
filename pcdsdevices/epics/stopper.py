@@ -5,11 +5,11 @@ import logging
 from enum import Enum
 
 from .state import pvstate_class
-from .lclsdevice import LCLSDevice as Device
-from .lclssignal import LCLSEpicsSignal as EpicsSignal
-from .lclssignal import LCLSEpicsSignalRO as EpicsSignalRO
-from .lclscomponent import LCLSComponent as C
-from .lclscomponent import LCLSFormattedComponent as FC
+from .device import Device
+from .signal import EpicsSignal
+from .signal import EpicsSignalRO
+from .component import Component as C
+from .component import FormattedComponent as FC
 
 
 logger = logging.getLogger(__name__)
