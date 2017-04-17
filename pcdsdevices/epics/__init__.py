@@ -6,3 +6,4 @@ from .slits import Slits
 from .valve import GateValve
 from .attenuator import Attenuator
 from .stopper import PPSStopper, Stopper
+from .ipm import IPM
