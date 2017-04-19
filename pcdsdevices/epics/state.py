@@ -4,6 +4,7 @@
 Module to define records that act as state getter/setters for more complicated
 devices.
 """
+import logging
 from threading import RLock
 from keyword import iskeyword
 
@@ -11,6 +12,8 @@ from .signal import EpicsSignal, EpicsSignalRO
 from .component import Component
 from .device import Device
 from .iocdevice import IocDevice
+
+logger = logging.getLogger(__name__)
 
 
 class State(Device):
@@ -48,8 +51,10 @@ class State(Device):
         """
         with self._lock:
             if self.value != self._prev_value:
+                logger.debug("State of %s has changed from %s to %s",
+                             self.name or self, self._prev_value, self.value)
                 self._run_subs(sub_type=self.SUB_STATE)
-                self._pref_value = self.value
+                self._prev_value = self.value
 
 
 class PVState(State):
@@ -62,8 +67,9 @@ class PVState(State):
         if read_attrs is None:
             read_attrs = self.states
         super().__init__(prefix, read_attrs=read_attrs, name=name, **kwargs)
-        for device in self._sub_devices:
-            device.subscribe(self._update, event_type=self.state.SUB_VALUE)
+        for sig_name in self.signal_names:
+            obj = getattr(self, sig_name)
+            obj.subscribe(self._update, event_type=obj.SUB_VALUE)
 
     @property
     def states(self):
@@ -81,6 +87,8 @@ class PVState(State):
 
     @value.setter
     def value(self, value):
+        logger.debug("Changing state of %s from %s to %s",
+                     self, self.value, value)
         self._setter(value)
 
 
