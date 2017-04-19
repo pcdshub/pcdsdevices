@@ -14,9 +14,9 @@ def test_base_component():
     In pcdsdevices.component.Component, the only change is that lazy is set to
     True. Let's be thorough and make sure the flag is set.
     """
-    class testcls:
+    class Test:
         pass
-    comp = component.Component(testcls)
+    comp = component.Component(Test)
     assert(comp.lazy is True)
 
 
@@ -49,7 +49,7 @@ def wait_and_put_thread(sig_obj, value, wait_time):
     Helper function for setting a signal to a value in a thread.
     """
     set_thread = Thread(target=wait_and_put, args=(sig_obj, value, wait_time))
-    set_thread.run()
+    set_thread.start()
     return set_thread
 
 
@@ -64,8 +64,9 @@ def test_base_signal_wait_success():
     assert(sig.get() == 0)
     sig.wait_for_value(1, timeout=2)
     end = time.time()
-    assert(end - start < 2)
+    duration = end - start
     assert(sig.get() == 1)
+    assert(duration < 2)
 
 
 def test_base_signal_wait_timeout():
@@ -85,9 +86,13 @@ def test_base_signal_wait_context():
     Repeat the success test with the context manager.
     """
     sig = signal.Signal(value=4)
+    start = time.time()
     with sig.wait_for_value_context(5, timeout=1):
         sig.put(5)
+    end = time.time()
+    duration = end - start
     assert(sig.get() == 5)
+    assert(duration < 1)
 
 
 def test_base_signal_wait_transitions():
@@ -100,8 +105,9 @@ def test_base_signal_wait_transitions():
     assert(sig.get() == 6)
     sig.wait_for_value(7, old_value=6, timeout=2)
     end = time.time()
-    assert(end - start < 2)
+    duration = end - start
     assert(sig.get() == 7)
+    assert(duration < 2)
 
 
 def test_base_signal_wait_transition_timeout():
@@ -114,4 +120,5 @@ def test_base_signal_wait_transition_timeout():
     assert(sig.get() == 8)
     sig.wait_for_value(9, old_value=4, timeout=3)
     end = time.time()
-    assert(start-end > 2)
+    duration = end - start
+    assert(duration > 2)

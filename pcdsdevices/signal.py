@@ -58,8 +58,7 @@ class Signal(ophyd.signal.Signal):
         """
         with self._wfv_lock:
             self._wfv_event.clear()
-            self.subscribe(self._wait_for_value_cb(value, old_value),
-                           event_type=self.SUB_VALUE)
+            self.subscribe(self._wait_for_value_cb(value, old_value))
 
     def _wait_for_value_cb(self, value, old_value=None):
         """
@@ -70,7 +69,7 @@ class Signal(ophyd.signal.Signal):
         -------
         cb: function
         """
-        def cb(self, *args, obj, sub_type, **kwargs):
+        def cb(*args, obj, sub_type, **kwargs):
             ok = True
             if old_value is not None:
                 old = kwargs["old_value"]
