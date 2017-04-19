@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pytest
-import epics # Needed to be able to load pcdsdevice.epics classes
 try:
     import happi
     from happi.tests import MockClient
@@ -13,10 +12,10 @@ except ImportError:
 requires_happi = pytest.mark.skipif(not has_happi,
                                     reason="Missing happi or mongomock")
 
-pp_args = dict(device_cls="PulsePicker", name="xpp_pp",
+pp_args = dict(device_cls="Device", name="xpp_pp",
                prefix="XPP:SB2:MMS:29", states="XPP:SB2:PP:Y", beamline="XPP",
                z=785.574, stand="SB2")
-valve_args = dict(device_cls="GateValve", name="xpp_sb2_valve",
+valve_args = dict(device_cls="Device", name="xpp_sb2_valve",
                   prefix="XPP:SB2:VGC:01", mps="placeholder",
                   beamline="XPP", z=784.132, stand="SB2")
 

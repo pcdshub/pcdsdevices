@@ -8,6 +8,19 @@ from pcdsdevices import (ImsMotor, GateValve, Slits, Attenuator,
                          LODCM)
 
 
+try:
+    import epics
+    pv = epics.PV("XCS:USR:MMS:01")
+    try:
+        val = pv.get()
+    except:
+        val = None
+except:
+    val = None
+epics_subnet = val is not None
+requires_epics = pytest.mark.skipif(not epics_subnet,
+                                    reason="Could not connect to sample PV")
+
 class Params:
     registry = OrderedDict()
 
@@ -51,9 +64,8 @@ Params("xcs_att", Attenuator, "XCS:ATT", n_filters=10, ioc="IOC:XCS:ATT")
 # Params("dg2_stopper", Stopper, "HFX:DG2:STP:01")
 # TODO: uncomment when stoppers come online
 Params("s5_pps_stopper", PPSStopper, "PPS:FEH1:4:S4STPRSUM")
-# Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06:IMS",
-#        data="XCS:SB2:IMB:01:SUM")
-# TODO: uncomment when I figure out what's wrong with the ipimb
+Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06:IMS",
+       data="XCS:SB2:IMB:01:SUM")
 Params("xcs_pim", PIM, "XCS:SB2:PIM6", ioc="IOC:XCS:SB2:PIM06:IMS")
 # Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
 # TODO: uncomment when LODCM comes online

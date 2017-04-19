@@ -81,10 +81,11 @@ class PVState(State):
 
     @value.setter
     def value(self, value):
-        self._setter(self, value)
+        self._setter(value)
 
 
-def pvstate_class(classname, states, doc="", setter=None, has_ioc=False):
+def pvstate_class(classname, states, doc="", setter=None, has_ioc=False,
+                  signal_class=EpicsSignalRO):
     """
     Create a subclass of PVState for a particular device.
 
@@ -114,13 +115,19 @@ def pvstate_class(classname, states, doc="", setter=None, has_ioc=False):
     has_ioc: bool, optional
         If True, this class will expect an ioc argument for the iocadmin pvname
         prefix. Defaults to False.
+    signal_class: class, optional
+        Hook to use a different signal class than EpicsSignalRO for testing.
+
+    Returns
+    -------
+    cls: class
     """
     components = dict(_states=states, __doc__=doc, _setter=setter)
     for state_name, info in states.items():
         if iskeyword(state_name):
             raise ValueError("State name '{}' is invalid".format(state_name) +
                              "because this is a reserved python keyword.")
-        components[state_name] = Component(EpicsSignalRO, info["pvname"])
+        components[state_name] = Component(signal_class, info["pvname"])
     if has_ioc:
         bases = (PVState, IocDevice)
     else:
