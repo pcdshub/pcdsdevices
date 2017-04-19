@@ -3,7 +3,6 @@
 """
 Overrides for Epics Signals
 """
-
 import ophyd.signal
 from ..signal import Signal
 

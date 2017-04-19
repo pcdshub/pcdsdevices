@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-ophyd.Component overrides
-"""
 import ophyd
 
 
