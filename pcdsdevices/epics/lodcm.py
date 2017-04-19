@@ -48,7 +48,7 @@ class LODCM(IocDevice):
         if line == self.light_states.MAIN:
             # H2N:     OUT      C       Si
             table = [["MAIN", "MAIN", "MAIN"],  # H1N at OUT
-                     ["MAIN", "BOTH", "MAIN"]   # H1N at C
+                     ["MAIN", "BOTH", "MAIN"],  # H1N at C
                      ["BLOCKED", "BLOCKED", "MONO"]]  # H1N at Si
             try:
                 n1 = ("OUT", "C", "Si").index(self.h1n_state.value)
