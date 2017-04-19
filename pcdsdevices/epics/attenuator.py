@@ -329,7 +329,7 @@ def make_att_classes(max_filters):
     att_classes = {}
     for i in range(1, max_filters + 1):
         att_filters = {}
-        for n in range(1, i):
+        for n in range(1, i + 1):
             att_filters["filter{}".format(n)] = Component(Filter,
                                                           ":{:02}".format(n))
         att_classes[i] = type("Attenuator{}".format(i), (AttenuatorBase,),

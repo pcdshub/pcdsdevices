@@ -61,14 +61,12 @@ Params("xcs_slits6", Slits, "XCS:SB2:DS:JAWS", ioc="IOC:XCS:SB2:SLITS:IMS")
 Params("pp_pink", PulsePickerPink, "XCS:SB2:MMS:09", states="XCS:SB2:PP:Y",
        ioc="XCS:IOC:PULSEPICKER:IMS", states_ioc="IOC:XCS:DEVICE:STATES")
 Params("xcs_att", Attenuator, "XCS:ATT", n_filters=10, ioc="IOC:XCS:ATT")
-# Params("dg2_stopper", Stopper, "HFX:DG2:STP:01")
-# TODO: uncomment when stoppers come online
+Params("dg2_stopper", Stopper, "HFX:DG2:STP:01")
 Params("s5_pps_stopper", PPSStopper, "PPS:FEH1:4:S4STPRSUM")
 Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06:IMS",
        data="XCS:SB2:IMB:01:SUM")
 Params("xcs_pim", PIM, "XCS:SB2:PIM6", ioc="IOC:XCS:SB2:PIM06:IMS")
-# Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
-# TODO: uncomment when LODCM comes online
+Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
 # TODO: add Mirror when mirrors come online
 # TODO: add xpp table when xpp comes online
 
