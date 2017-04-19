@@ -63,7 +63,7 @@ def test_pvstate_class():
 def test_statesrecord_class():
     """
     Nothing special can be done without live hosts, just make sure we can
-    instantiate it.
+    create a class.
     """
     state.statesrecord_class("Classname", "state0", "state1", "state2")
 
