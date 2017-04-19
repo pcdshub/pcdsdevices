@@ -67,6 +67,8 @@ class PVState(State):
         if read_attrs is None:
             read_attrs = self.states
         super().__init__(prefix, read_attrs=read_attrs, name=name, **kwargs)
+        # TODO: Don't subscribe to child signals unless someone is subscribed
+        # to us
         for sig_name in self.signal_names:
             obj = getattr(self, sig_name)
             obj.subscribe(self._update, event_type=obj.SUB_VALUE)
@@ -153,6 +155,8 @@ class DeviceStatesRecord(State):
         if read_attrs is None:
             read_attrs = ["state"]
         super().__init__(prefix, read_attrs=read_attrs, name=name, **kwargs)
+        # TODO: Don't subscribe to child signals unless someone is subscribed
+        # to us
         self.state.subscribe(self._update, event_type=self.state.SUB_VALUE)
 
     @property
