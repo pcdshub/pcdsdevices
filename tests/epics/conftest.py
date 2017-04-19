@@ -8,6 +8,19 @@ from pcdsdevices import (ImsMotor, GateValve, Slits, Attenuator,
                          LODCM)
 
 
+try:
+    import epics
+    pv = epics.PV("XCS:USR:MMS:01")
+    try:
+        val = pv.get()
+    except:
+        val = None
+except:
+    val = None
+epics_subnet = val is not None
+requires_epics = pytest.mark.skipif(not epics_subnet,
+                                    reason="Could not connect to sample PV")
+
 class Params:
     registry = OrderedDict()
 
@@ -71,17 +84,3 @@ def all_devices(request):
     prefix = request.param.prefix
     kwargs = request.param.kwargs
     return cls(prefix, **kwargs)
-
-
-try:
-    import epics
-    pv = epics.PV("XCS:USR:MMS:01")
-    try:
-        val = pv.get()
-    except:
-        val = None
-except:
-    val = None
-epics_subnet = val is not None
-requires_epics = pytest.mark.skipif(not epics_subnet,
-                                    reason="Could not connect to sample PV")
