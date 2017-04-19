@@ -3,6 +3,7 @@
 """
 Define operation of the lcls attenuator IOCs
 """
+import logging
 from enum import Enum
 from threading import Event, RLock
 
@@ -11,6 +12,7 @@ from .iocdevice import IocDevice
 from .component import Component
 from .signal import EpicsSignal, EpicsSignalRO
 
+logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
 
 
@@ -160,18 +162,21 @@ class AttenuatorBase(IocDevice):
         """
         Move all filters to the "IN" position.
         """
+        logger.debug("For %s, moving all filters IN!", self.name or self)
         self.go_cmd.put(1)
 
     def all_out(self):
         """
         Move all filters to the "OUT" position.
         """
+        logger.debug("For %s, moving all filters OUT!", self.name or self)
         self.go_cmd.put(0)
 
     def thickest_filter_in(self):
         """
         Move just the thickest filter in to block the beam.
         """
+        logger.debug("For %s, moving thickest filter IN!", self.name or self)
         filt = self._thickest_filter()
         filt.move_in()
 
@@ -179,6 +184,7 @@ class AttenuatorBase(IocDevice):
         """
         Move just the thickest filter out to stop blocking the beam.
         """
+        logger.debug("For %s, moving thickest filter OUT!", self.name or self)
         filt = self._thickest_filter()
         filt.move_out()
 
@@ -222,8 +228,12 @@ class AttenuatorBase(IocDevice):
             energy. This defaults to False.
         """
         if energy is None:
+            logger.debug("Setting %s to use live energy", self.name or self)
             self.eget_cmd.put(6)
+            self.eget_cmd.wait_for_value(6, timeout=1)
         else:
+            logger.debug("Setting %s to use energy=%s, use3rd=%s",
+                         self.name or self, energy, use3rd)
             self.eget_cmd.put(0)
             self.eget_cmd.wait_for_value(0, timeout=1)
             if use3rd:
@@ -275,6 +285,7 @@ class AttenuatorBase(IocDevice):
         with self._set_lock:
             floor, ceiling = self.calc_transmission(transmission, E=E,
                                                     use3rd=use3rd)
+            logger.debug("Changing attenuation of %s!", self.name or self)
             if abs(floor - transmission) >= abs(ceiling - transmission):
                 self.go_cmd.put(3)
             else:

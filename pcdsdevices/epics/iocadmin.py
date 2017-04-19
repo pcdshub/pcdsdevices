@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-Define interface to the IOCAdmin record. This should be shared across PCDS
-devices.
-"""
+import logging
 from .signal import EpicsSignal, EpicsSignalRO
 from .component import Component
 from .device import Device
+
+logger = logging.getLogger(__name__)
 
 
 class IocAdminOld(Device):
@@ -33,6 +32,8 @@ class IocAdminOld(Device):
         Stop the IOC process in the procServ, letting the procServ restart the
         IOC process.
         """
+        logger.debug("Putting %s through a soft reboot!",
+                     self.name or self)
         self.sysreset.put(1)
 
 
