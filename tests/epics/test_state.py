@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from ophyd.signal import Signal
 from pcdsdevices.epics import state
+from conftest import requires_epics
 
 
 class PrefixSignal(Signal):
@@ -65,3 +66,12 @@ def test_statesrecord_class():
     instantiate it.
     """
     state.statesrecord_class("Classname", "state0", "state1", "state2")
+
+
+@requires_epics
+def test_statesrecord_class_reads():
+    """
+    Instantiate one if we can and make sure value makes sense.
+    """
+    inout = state.InOutStates("XCS:SB2:IPM6:DIODE")
+    assert(inout.value in ("IN", "OUT", "Unknown"))
