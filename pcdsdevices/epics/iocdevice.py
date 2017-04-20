@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-Define a device that has an IOC with PVs that we can refer to.
-"""
 from .component import FormattedComponent
 from .device import Device
 from .iocadmin import IocAdmin

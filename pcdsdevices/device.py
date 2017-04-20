@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-Define functional changes to ophyd.Device.
-"""
 import ophyd
 
 VALID_OPHYD_KWARGS = ("name", "parent", "prefix", "read_attrs",
@@ -19,8 +16,8 @@ class Device(ophyd.Device):
         if db_info:
             self.db = HappiData(db_info)
             for key in list(kwargs.keys()):
-                # Remove keys in kwargs if they were from the happi import but they
-                # cannot be passed to ophyd.Device
+                # Remove keys in kwargs if they were from the happi import but
+                # they cannot be passed to ophyd.Device
                 if key in db_info and key not in VALID_OPHYD_KWARGS:
                     kwargs.pop(key)
         super().__init__(prefix, **kwargs)

@@ -3,11 +3,15 @@
 """
 Test functions in attenuator that don't change live devices
 """
+import pytest
+
 from pcdsdevices.epics import attenuator
+
 from conftest import requires_epics
 
 
 @requires_epics
+@pytest.mark.timeout(3)
 def test_filter_reads():
     filt = attenuator.Filter("XCS:ATT:01")
     assert(filt.value in dir(filt.filter_states))
@@ -16,6 +20,7 @@ def test_filter_reads():
 
 
 @requires_epics
+@pytest.mark.timeout(3)
 def test_att_reads():
     n = 10
     att = attenuator.Attenuator("XCS:ATT", n_filters=n, ioc="IOC:XCS:ATT")

@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-Module to define the Slits device subclass.
-"""
 from ophyd.pv_positioner import PVPositioner
 
 from .signal import EpicsSignal, EpicsSignalRO

@@ -3,10 +3,13 @@
 """
 Read the beamline database and construct objects
 """
+import logging
+
 import happi
 
 import pcdsdevices
 
+logger = logging.getLogger(__name__)
 _client = None
 
 
@@ -28,8 +31,11 @@ def read_happi(client=None):
     if client is None:
         if _client is None:
             global _client
+            logger.info("Instantiating happi client")
             _client = happi.Client()
         client = _client
+    logger.info("Requesting all devices from happi client of class %s",
+                type(client))
     return client.all_devices
 
 
@@ -51,6 +57,7 @@ def construct_device(happi_object):
             info[entry] = getattr(happi_object, entry)
         except AttributeError:
             pass
+    logger.debug("Extracted info dictionary from happi: %s", info)
     device_type = happi_object.__class__.__name__
     cls = pick_class(device_type, info)
     return cls(db_info=info, **info)

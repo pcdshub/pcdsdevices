@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-Module to define the PulsePicker device subclass.
-"""
 from copy import deepcopy
 from .signal import EpicsSignalRO
 from .component import Component, FormattedComponent

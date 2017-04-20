@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import pytest
+
 from ophyd.signal import Signal
+
 from pcdsdevices.epics import state
+
 from conftest import requires_epics
 
 
@@ -69,6 +73,7 @@ def test_statesrecord_class():
 
 
 @requires_epics
+@pytest.mark.timeout(3)
 def test_statesrecord_class_reads():
     """
     Instantiate one if we can and make sure value makes sense.

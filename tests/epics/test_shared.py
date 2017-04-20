@@ -13,10 +13,13 @@ Errors will be one of:
     2. Our interface is wrong
     3. The IOC has changed or is down
 """
+import pytest
+
 from conftest import requires_epics
 
 
 @requires_epics
+@pytest.mark.timeout(3)
 def test_get(all_devices):
     values = all_devices.get()
     for name, val in values._asdict().items():
@@ -33,6 +36,7 @@ def recursive_not_none(namedtuple, name=""):
 
 
 @requires_epics
+@pytest.mark.timeout(3)
 def test_get_nested(all_devices):
     values = all_devices.get()
     recursive_not_none(values)
