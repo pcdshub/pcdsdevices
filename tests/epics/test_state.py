@@ -73,7 +73,7 @@ def test_statesrecord_class():
 
 
 @requires_epics
-@pytest.mark.timeout(10)
+@pytest.mark.timeout(3)
 def test_statesrecord_class_reads():
     """
     Instantiate one if we can and make sure value makes sense.

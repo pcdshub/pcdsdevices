@@ -19,7 +19,7 @@ from conftest import requires_epics
 
 
 @requires_epics
-@pytest.mark.timeout(10)
+@pytest.mark.timeout(3)
 def test_get(all_devices):
     values = all_devices.get()
     for name, val in values._asdict().items():
@@ -36,7 +36,7 @@ def recursive_not_none(namedtuple, name=""):
 
 
 @requires_epics
-@pytest.mark.timeout(10)
+@pytest.mark.timeout(3)
 def test_get_nested(all_devices):
     values = all_devices.get()
     recursive_not_none(values)
