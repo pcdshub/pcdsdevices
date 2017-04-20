@@ -4,6 +4,7 @@
 Module to define records that act as state getter/setters for more complicated
 devices.
 """
+import logging
 from threading import RLock
 from keyword import iskeyword
 
@@ -12,8 +13,10 @@ from .component import Component
 from .device import Device
 from .iocdevice import IocDevice
 
+logger = logging.getLogger(__name__)
 
-class State(IocDevice):
+
+class State(Device):
     """
     Base class for any state device.
 
@@ -48,8 +51,10 @@ class State(IocDevice):
         """
         with self._lock:
             if self.value != self._prev_value:
+                logger.debug("State of %s has changed from %s to %s",
+                             self.name or self, self._prev_value, self.value)
                 self._run_subs(sub_type=self.SUB_STATE)
-                self._pref_value = self.value
+                self._prev_value = self.value
 
 
 class PVState(State):
@@ -58,14 +63,15 @@ class PVState(State):
     """
     _states = {}
 
-    def __init__(self, prefix, *, ioc="", read_attrs=None, name=None,
-                 **kwargs):
+    def __init__(self, prefix, *, read_attrs=None, name=None, **kwargs):
         if read_attrs is None:
             read_attrs = self.states
-        super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
-                         **kwargs)
-        for device in self._sub_devices:
-            device.subscribe(self._update, event_type=self.state.SUB_VALUE)
+        super().__init__(prefix, read_attrs=read_attrs, name=name, **kwargs)
+        # TODO: Don't subscribe to child signals unless someone is subscribed
+        # to us
+        for sig_name in self.signal_names:
+            obj = getattr(self, sig_name)
+            obj.subscribe(self._update, event_type=obj.SUB_VALUE)
 
     @property
     def states(self):
@@ -83,10 +89,13 @@ class PVState(State):
 
     @value.setter
     def value(self, value):
-        self._setter(self, value)
+        logger.debug("Changing state of %s from %s to %s",
+                     self, self.value, value)
+        self._setter(value)
 
 
-def pvstate_class(classname, states, doc="", setter=None):
+def pvstate_class(classname, states, doc="", setter=None, has_ioc=False,
+                  signal_class=EpicsSignalRO):
     """
     Create a subclass of PVState for a particular device.
 
@@ -113,14 +122,27 @@ def pvstate_class(classname, states, doc="", setter=None):
     setter : function, optional
         Function that defines how to change the state of the physical device.
         Takes two arguments: self, and the new state value.
+    has_ioc: bool, optional
+        If True, this class will expect an ioc argument for the iocadmin pvname
+        prefix. Defaults to False.
+    signal_class: class, optional
+        Hook to use a different signal class than EpicsSignalRO for testing.
+
+    Returns
+    -------
+    cls: class
     """
     components = dict(_states=states, __doc__=doc, _setter=setter)
     for state_name, info in states.items():
         if iskeyword(state_name):
             raise ValueError("State name '{}' is invalid".format(state_name) +
                              "because this is a reserved python keyword.")
-        components[state_name] = Component(EpicsSignalRO, info["pvname"])
-    return type(classname, (PVState,), components)
+        components[state_name] = Component(signal_class, info["pvname"])
+    if has_ioc:
+        bases = (PVState, IocDevice)
+    else:
+        bases = (PVState,)
+    return type(classname, bases, components)
 
 
 class DeviceStatesRecord(State):
@@ -129,12 +151,12 @@ class DeviceStatesRecord(State):
     """
     state = Component(EpicsSignal, "", write_pv=":GO", string=True)
 
-    def __init__(self, prefix, *, ioc="", read_attrs=None, name=None,
-                 **kwargs):
+    def __init__(self, prefix, *, read_attrs=None, name=None, **kwargs):
         if read_attrs is None:
             read_attrs = ["state"]
-        super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
-                         **kwargs)
+        super().__init__(prefix, read_attrs=read_attrs, name=name, **kwargs)
+        # TODO: Don't subscribe to child signals unless someone is subscribed
+        # to us
         self.state.subscribe(self._update, event_type=self.state.SUB_VALUE)
 
     @property
@@ -155,7 +177,7 @@ class DeviceStatesPart(Device):
     delta = Component(EpicsSignal, "_DELTA")
 
 
-def statesrecord_class(classname, *states, doc=""):
+def statesrecord_class(classname, *states, doc="", has_ioc=False):
     """
     Create a DeviceStatesRecord class for a particular device.
     """
@@ -163,11 +185,19 @@ def statesrecord_class(classname, *states, doc=""):
     for state_name in states:
         name = state_name.lower().replace(":", "") + "_state"
         components[name] = Component(DeviceStatesPart, state_name)
-    return type(classname, (DeviceStatesRecord,), components)
+    if has_ioc:
+        bases = (DeviceStatesRecord, IocDevice)
+    else:
+        bases = (DeviceStatesRecord,)
+    return type(classname, bases, components)
 
 
 inoutdoc = "Standard PCDS states record with an IN state and an OUT state."
 InOutStates = statesrecord_class("InOutStates", ":IN", ":OUT", doc=inoutdoc)
+InOutStatesIoc = statesrecord_class("InOutStatesIoc", ":IN", ":OUT",
+                                    doc=inoutdoc, has_ioc=True)
 inoutccmdoc = "Standard PCDS states record with IN, OUT, and CCM states."
 InOutCCMStates = statesrecord_class("InOutCCMStates", ":IN", ":OUT", ":CCM",
                                     doc=inoutccmdoc)
+InOutCCMStatesIoc = statesrecord_class("InOutCCMStatesIoc", ":IN", ":OUT",
+                                       ":CCM", doc=inoutccmdoc, has_ioc=True)

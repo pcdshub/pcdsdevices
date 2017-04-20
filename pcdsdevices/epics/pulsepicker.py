@@ -1,25 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-Module to define the PulsePicker device subclass.
-"""
-from copy import copy
+from copy import deepcopy
 from .signal import EpicsSignalRO
 from .component import Component, FormattedComponent
 from .iocdevice import IocDevice
 from .iocadmin import IocAdminOld
-from .state import InOutStates, InOutCCMStates, statesrecord_class
+from .state import InOutStatesIoc, InOutCCMStatesIoc, statesrecord_class
 
 
 class PulsePicker(IocDevice):
     """
     Device that lets us pick which beam pulses reach the sample.
     """
-    in_out = FormattedComponent(InOutStates, "{self._states}",
+    in_out = FormattedComponent(InOutStatesIoc, "{self._states}",
                                 ioc="{self._states_ioc}")
     blade = Component(EpicsSignalRO, ":READ_DF", string=True)
     mode = Component(EpicsSignalRO, ":SE", string=True)
-    ioc = copy(IocDevice.ioc)
+    ioc = deepcopy(IocDevice.ioc)
     ioc.cls = IocAdminOld
 
     def __init__(self, prefix, *, states="", ioc="", states_ioc="",
@@ -50,8 +47,8 @@ class PulsePickerCCM(PulsePicker):
     This is the version with a third position state in addition to IN and OUT,
     and that's the CCM state: IN but at the CCM offset.
     """
-    in_out = copy(PulsePicker.in_out)
-    in_out.cls = InOutCCMStates
+    in_out = deepcopy(PulsePicker.in_out)
+    in_out.cls = InOutCCMStatesIoc
 
     def move_ccm(self):
         """
@@ -60,14 +57,15 @@ class PulsePickerCCM(PulsePicker):
         self.in_out.value = "CCM"
 
 
-TempStates = statesrecord_class("TempStates", ":PINK", ":CCM", ":OUT")
+TempStates = statesrecord_class("TempStates", ":PINK", ":CCM", ":OUT",
+                                has_ioc=True)
 
 
 class PulsePickerPink(PulsePickerCCM):
     """
     Current state syntax that I plan to change
     """
-    in_out = copy(PulsePickerCCM.in_out)
+    in_out = deepcopy(PulsePickerCCM.in_out)
     in_out.cls = TempStates
 
     def move_in(self):

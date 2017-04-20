@@ -3,8 +3,23 @@
 from collections import OrderedDict
 import re
 import pytest
-from pcdsdevices import PulsePickerPink
+from pcdsdevices import (ImsMotor, GateValve, Slits, Attenuator,
+                         PulsePickerPink, Stopper, PPSStopper, IPM, PIM,
+                         LODCM)
 
+
+try:
+    import epics
+    pv = epics.PV("XCS:USR:MMS:01")
+    try:
+        val = pv.get()
+    except:
+        val = None
+except:
+    val = None
+epics_subnet = val is not None
+requires_epics = pytest.mark.skipif(not epics_subnet,
+                                    reason="Could not connect to sample PV")
 
 class Params:
     registry = OrderedDict()
@@ -40,13 +55,20 @@ class Params:
         return params
 
 
-# XCS PulsePicker
+Params("xcs_ims_usr32", ImsMotor, "XCS:USR:MMS:32", ioc="IOC:XCS:USR:DUMB:IMS")
+Params("xcs_lam_valve1", GateValve, "XCS:LAM:VGC:01", ioc="XCS:R51:IOC:39")
+Params("xcs_slits6", Slits, "XCS:SB2:DS:JAWS", ioc="IOC:XCS:SB2:SLITS:IMS")
 Params("pp_pink", PulsePickerPink, "XCS:SB2:MMS:09", states="XCS:SB2:PP:Y",
        ioc="XCS:IOC:PULSEPICKER:IMS", states_ioc="IOC:XCS:DEVICE:STATES")
-# It should still work without the ioc arguments
-# Skip this test for now, more important things to work on
-# Params("pp_pink_noioc", PulsePickerPink, "XCS:SB2:MMS:09",
-#        states="XCS:SB2:PP:Y")
+Params("xcs_att", Attenuator, "XCS:ATT", n_filters=10, ioc="IOC:XCS:ATT")
+Params("dg2_stopper", Stopper, "HFX:DG2:STP:01")
+Params("s5_pps_stopper", PPSStopper, "PPS:FEH1:4:S4STPRSUM")
+Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06:IMS",
+       data="XCS:SB2:IMB:01:SUM")
+Params("xcs_pim", PIM, "XCS:SB2:PIM6", ioc="IOC:XCS:SB2:PIM06:IMS")
+Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
+# TODO: add Mirror when mirrors come online
+# TODO: add xpp table when xpp comes online
 
 all_params = Params.get()
 all_labels = [p.name for p in all_params]

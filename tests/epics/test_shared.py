@@ -14,38 +14,29 @@ Errors will be one of:
     3. The IOC has changed or is down
 """
 import pytest
-try:
-    import epics
-    pv = epics.PV("XCS:USR:MMS:01")
-    try:
-        val = pv.get()
-    except:
-        val = None
-except:
-    val = None
-epics_subnet = val is not None
-requires_epics = pytest.mark.skipif(not epics_subnet,
-                                    reason="Could not connect to sample PV")
+
+from conftest import requires_epics
 
 
 @requires_epics
+@pytest.mark.timeout(3)
 def test_get(all_devices):
     values = all_devices.get()
-    for val in values:
-        assert(val is not None)
+    for name, val in values._asdict().items():
+        assert val is not None, "Failed to find {}".format(name)
 
 
-def recursive_not_none(val):
-    if isinstance(val, dict):
-        recursive_not_none(list(val.values()))
-    elif isinstance(val, (list, tuple)):
-        for v in val:
-            recursive_not_none(v)
-    else:
-        assert(val is not None)
+def recursive_not_none(namedtuple, name=""):
+    for key, value in namedtuple._asdict().items():
+        name = "{}_{}".format(name, key).strip("_")
+        if hasattr(value, "_asdict"):
+            recursive_not_none(value, name)
+        else:
+            assert value is not None, "Failed to find {}".format(name)
 
 
 @requires_epics
+@pytest.mark.timeout(3)
 def test_get_nested(all_devices):
     values = all_devices.get()
     recursive_not_none(values)

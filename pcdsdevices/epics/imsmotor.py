@@ -16,7 +16,7 @@ class FakeTDIR(Signal):
         return self.stored_tdir
 
 
-class IMSMotor(EpicsMotor, IocDevice):
+class ImsMotor(EpicsMotor, IocDevice):
     """
     Subclass of EpicsMotor to deal with our IOC that's missing the .TDIR field.
     The correct solution is to fix our IMS record, this is a temporary
@@ -26,8 +26,9 @@ class IMSMotor(EpicsMotor, IocDevice):
     direction_of_travel = Component(FakeTDIR)
 
     def _pos_changed(self, timestamp=None, value=None, **kwargs):
-        if value > self.position:
-            self.direction_of_travel.stored_tdir = 1
-        else:
-            self.direction_of_travel.stored_tdir = 0
-        super()._pos_changed(self, timestamp=timestamp, value=value, **kwargs)
+        if None not in (value, self.position):
+            if value > self.position:
+                self.direction_of_travel.stored_tdir = 1
+            else:
+                self.direction_of_travel.stored_tdir = 0
+        super()._pos_changed(timestamp=timestamp, value=value, **kwargs)

@@ -3,9 +3,11 @@
 """
 Overrides for Epics Signals
 """
-
+import logging
 import ophyd.signal
 from ..signal import Signal
+
+logger = logging.getLogger(__name__)
 
 
 class EpicsSignalBase(ophyd.signal.EpicsSignalBase, Signal):
@@ -13,7 +15,12 @@ class EpicsSignalBase(ophyd.signal.EpicsSignalBase, Signal):
 
 
 class EpicsSignal(ophyd.signal.EpicsSignal, EpicsSignalBase):
-    pass
+    def put(self, value, force=False, connection_timeout=1.0,
+            use_complete=None, **kwargs):
+        logger.debug("Putting PV value of %s from %s to %s",
+                     self.name or self, self.get(), value)
+        super().put(value, force=force, connection_timeout=connection_timeout,
+                    use_complete=use_complete, **kwargs)
 
 
 class EpicsSignalRO(ophyd.signal.EpicsSignalRO, EpicsSignalBase):

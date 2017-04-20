@@ -1,10 +1,17 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Standard classes for LCLS Gate Valves
+"""
 from enum import Enum
+from copy import deepcopy
 
 from .state import pvstate_class
 from .iocdevice import IocDevice
 from .signal import EpicsSignalRO
 from .signal import EpicsSignal
 from .component import Component
+from .iocadmin import IocAdminOld
 
 
 class Commands(Enum):
@@ -21,6 +28,15 @@ class InterlockError(Exception):
     """
     pass
 
+ValveLimits = pvstate_class('ValveLimits',
+                            {'open_limit': {'pvname': ':OPN_DI',
+                                            0: 'defer',
+                                            1: 'out'},
+                             'closed_limit': {'pvname': ':CLS_DI',
+                                              0: 'defer',
+                                              1: 'in'}},
+                            doc='State description of valve limits')
+
 
 class GateValve(IocDevice):
     """
@@ -31,25 +47,21 @@ class GateValve(IocDevice):
     commands : Enum
         Command aliases for valve
     """
+    ioc = deepcopy(IocDevice.ioc)
+    ioc.cls = IocAdminOld
     command = Component(EpicsSignal,   ':OPN_SW')
     interlock = Component(EpicsSignalRO, ':OPN_OK')
-    limits = pvstate_class('limits',
-                           {'open_limit': {'pvname': ':OPN_DI',
-                                           '0': 'defer',
-                                           '1': 'out'},
-                            'closed_limit': {'pvname': ':CLS_DI',
-                                             '0': 'defer',
-                                             '1': 'in'}},
-                           doc='State description of valve limits')
+    limits = Component(ValveLimits, "")
 
     commands = Commands
 
     def __init__(self, prefix, *, name=None,
-                 read_attrs=None, ioc=None, **kwargs):
+                 read_attrs=None, ioc=None,
+                 mps=None, **kwargs):
 
         # Configure read attributes
         if read_attrs is None:
-            read_attrs = ['interlock']
+            read_attrs = ['interlock', 'limits']
 
         super().__init__(prefix, ioc=ioc,
                          read_attrs=read_attrs,
