@@ -26,7 +26,7 @@ class Signal(ophyd.signal.Signal):
 
     # @doc_annotation_forwarder(ophyd.signal.Signal)
     def put(self, value, *, timestamp=None, force=False, **kwargs):
-        logger.debug("Putting value of %s from %s to %s at time=%s",
+        logger.debug("Changing stored value of %s from %s to %s at time=%s",
                      self.name or self, self.get(), value, timestamp)
         super().put(value, timestamp=timestamp, force=force, **kwargs)
 
