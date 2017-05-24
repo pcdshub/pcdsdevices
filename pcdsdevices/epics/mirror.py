@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from .signal import (EpicsSignal, EpicsSignalRO)
 from .device import Device
 from .imsmotor import ImsMotor
-from .component import FormattedComponent
+from .component import (FormattedComponent, Component) 
 
 
 class Mirror(Device):
@@ -17,3 +18,8 @@ class Mirror(Device):
         self._ioc = ioc
         super().__init__(prefix, name=name, read_attrs=read_attrs,
                          parent=parent, **kwargs)
+        interlock = Component(EpicsSignalRO, '.INTERLOCK')
+        enabled = Component(EpicsSignalRO, '.ENABLED')
+
+if __name__ is "__main__":
+    m = Mirror("TEST:PREF", name='tst', ioc="TEST:IOC")
