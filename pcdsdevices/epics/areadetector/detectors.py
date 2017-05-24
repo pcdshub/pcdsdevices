@@ -15,6 +15,10 @@ class DetectorBase(ophyd.detectors.DetectorBase, ADBase):
     pass
 
 
+class OpalDetector(DetectorBase):
+    pass
+
+
 class AreaDetector(ophyd.detectors.AreaDetector, DetectorBase):
     pass
 
