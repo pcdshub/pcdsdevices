@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Overrides for AreaDetector Cam.
+PCDS cams and overrides for ophyd Cams.
 """
 import logging
 import ophyd.cam
@@ -43,8 +43,11 @@ class CamBase(ophyd.cam.CamBase, ADBase):
     pass
 
 
+class AreaDetectorCam(ophyd.cam.AreaDetectorCam, Cambase):
+    pass
+
+
 class OpalCam(CamBase):
-    
     # Enums?
     trigger_modes = Enum("Internal", "External", start=0)
     exposure_modes = Enum("Full Frame", "HW ROI", start=0)
@@ -119,10 +122,6 @@ class OpalCam(CamBase):
     plugin_type = ADComponent(EpicsSignalRO, 'PluginType_RBV', string=True)
     sdk_version = ADComponent(EpicsSignalRO, 'SDKVersion_RBV', string=True)
     ufdt = ADComponent(EpicsSignalRO, 'UFDT_RBV', string=True)
-
-
-class AreaDetectorCam(ophyd.cam.AreaDetectorCam, Cambase):
-    pass
 
 
 class SimDetectorCam(ophyd.cam.SimDetectorCam, Cambase):

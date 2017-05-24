@@ -1,26 +1,50 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Overrides for detectors.
+PCDS detectors and overrides for ophyd detectors.
 """
 import logging
 import ophyd.detectors
-import .cam
-from .base import ADBase
+import cam
+from .base import (ADBase, ADComponent)
 
 logger = logging.getLogger(__name__)
+
+__all__ = ['DetectorBase',
+           'AreaDetector',
+           'OpalDetector',
+           'AdscDetector',
+           'Andor3Detector',
+           'AndorDetector',
+           'BrukerDetector',
+           'FirewireLinDetector',
+           'FirewireWinDetector',
+           'LightFieldDetector',
+           'Mar345Detector',
+           'MarCCDDetector',
+           'PerkinElmerDetector',
+           'PilatusDetector',
+           'PixiradDetector',
+           'PointGreyDetector',
+           'ProsilicaDetector',
+           'PSLDetector',
+           'PvcamDetector',
+           'RoperDetector',
+           'SimDetector',
+           'URLDetector',
+]
 
 
 class DetectorBase(ophyd.detectors.DetectorBase, ADBase):
     pass
 
 
-class OpalDetector(DetectorBase):
-    pass
-
-
 class AreaDetector(ophyd.detectors.AreaDetector, DetectorBase):
     pass
+
+
+class OpalDetector(DetectorBase):
+    cam = ADComponent(cam.OpalCam, "")
 
 
 class SimDetector(ophyd.detectors.SimDetector, DetectorBase):
