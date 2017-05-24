@@ -6,7 +6,8 @@ Overrides for AreaDetector Cam.
 import logging
 import ophyd.cam
 
-from .base import (ADBase, EpicsSignalWithRBV)
+from ophyd.enum import Enum
+from .base import (ADBase, ADComponent, EpicsSignalWithRBV)
 from ..signal import (EpicsSignal, EpicsSignalRO)
 
 logger = logging.getLogger(__name__)
@@ -42,7 +43,7 @@ class CamBase(ophyd.cam.CamBase, ADBase):
     pass
 
 
-class OpalCam(ophyd.cam.CamBase, ADBass):
+class OpalCam(CamBase):
     
     # Enums?
     trigger_modes = Enum("Internal", "External", start=0)
