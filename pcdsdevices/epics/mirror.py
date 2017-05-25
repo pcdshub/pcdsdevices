@@ -20,6 +20,3 @@ class Mirror(Device):
                          parent=parent, **kwargs)
         interlock = Component(EpicsSignalRO, '.INTERLOCK')
         enabled = Component(EpicsSignalRO, '.ENABLED')
-
-if __name__ is "__main__":
-    m = Mirror("TEST:PREF", name='tst', ioc="TEST:IOC")
