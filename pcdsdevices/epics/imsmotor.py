@@ -1,4 +1,4 @@
-from ophyd import EpicsMotor
+from .epicsmotor import EpicsMotor
 from .component import Component
 from .iocdevice import IocDevice
 from .signal import Signal
