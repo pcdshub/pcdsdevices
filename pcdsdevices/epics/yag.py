@@ -4,13 +4,14 @@
 Define the YAG screens used at LCLS.
 """
 import logging
-from ophyd.enum import Enum
+from ophyd.utils import enum
 from threading import Event, RLock
 
 from .device import Device
 from .imsmotor import ImsMotor
 from .iocdevice import IocDevice
 from .areadetector.detectors import OpalDetector
+from .signal import EpicsSignalRO
 from ..component import Component
 
 logger = logging.getLogger(__name__)
@@ -23,16 +24,16 @@ class FEEYag(Device):
     def __init__(self, prefix, *, ioc="", pos_prefix="", read_attrs=None, 
                  name=None, **kwargs):
         imager  = Component(OpalDetector, prefix=prefix, name="Opal Camera")
-        zoom = Component(ImsMotor, prefix=prefix+":CLZ:01", ioc=motor_ioc,
+        zoom = Component(ImsMotor, prefix=prefix+":CLZ:01", ioc=ioc,
                          name="Zoom Motor")
-        focus = Component(ImsMotor, prefix=prefix+":CLF:01", ioc=motor_ioc,
+        focus = Component(ImsMotor, prefix=prefix+":CLF:01", ioc=ioc,
                          name="Focus Motor")
-        yag = Component(ImsMotor, prefix=prefix+":MOTR", ioc=motor_ioc,
+        yag = Component(ImsMotor, prefix=prefix+":MOTR", ioc=ioc,
                          name="Yag Motor")
         position = Component(EpicsSignalRO, ":POSITION", add_prefix=pos_prefix)
         
         if read_attrs is None:
             read_attrs = ['imager', 'zoom', 'focus', 'yag', 'position']
-        super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
+        super().__init__(prefix, read_attrs=read_attrs, name=name,
                          **kwargs)
     
