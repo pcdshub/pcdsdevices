@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from ophyd import PositionerBase
+from ophyd.utils import DisconnectedError
 from .signal import (EpicsSignal, EpicsSignalRO)
 from .device import Device
 from .component import (FormattedComponent, Component)
@@ -132,9 +133,7 @@ class OMMotor(Device, PositionerBase):
         pos
            Position to set.
         """
-        self.set_use_switch.put(1, wait=True)
         self.user_setpoint.put(pos, wait=True)
-        self.set_use_switch.put(0, wait=True)
 
     def check_value(self, pos):
         """Check that the position is within the soft limits"""
@@ -193,38 +192,138 @@ class OMMotor(Device, PositionerBase):
         rep['pv'] = self.user_readback.pvname
         return rep
 
+class Piezo(Device, PositionerBase):
+    """
+    Piezo driver object used for fine pitch adjustments.
+    """
+    # position
+    user_readback = Component(EpicsSignalRO, ':VRBV')
+    user_setpoint = Component(EpicsSignal, ':VSET', limits=True)
+
+    # configuration
+    high_limit = Component(EpicsSignal, ':VMAX')
+    low_limit = Component(EpicsSignal, ':VMIN')
+
+    # status
+    enable = Component(EpicsSignalRO, ':Enable')
+    stop = Component(EpicsSignalRO, ':STOP')
+
+    def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
+                 name=None, parent=None, **kwargs):
+        if read_attrs is None:
+            read_attrs = ['user_readback', 'user_setpoint', 'enable']
+
+        if configuration_attrs is None:
+            configuration_attrs = ['high_limit', 'low_limit', 'enable', 
+                                   'user_offset', 'user_offset_dir']
+
+        super().__init__(prefix, read_attrs=read_attrs,
+                         configuration_attrs=configuration_attrs,
+                         name=name, parent=parent, **kwargs)
+
+    @property
+    @raise_if_disconnected
+    def precision(self):
+        '''The precision of the readback PV, as reported by EPICS'''
+        return self.user_readback.precision
+
+    @property
+    @raise_if_disconnected
+    def limits(self):
+        return self.user_setpoint.limits
+
+    @raise_if_disconnected
+    def stop(self, *, success=False):
+        self.motor_stop.put(1, wait=False)
+        super().stop(success=success)
+
+    @raise_if_disconnected
+    def move(self, position, wait=True, **kwargs):
+        '''Move to a specified position, optionally waiting for motion to
+        complete.
+        Parameters
+        ----------
+        position
+            Position to move to
+        moved_cb : callable
+            Call this callback when movement has finished. This callback must
+            accept one keyword argument: 'obj' which will be set to this
+            positioner instance.
+        timeout : float, optional
+            Maximum time to wait for the motion. If None, the default timeout
+            for this positioner is used.
+        Returns
+        -------
+        status : MoveStatus
+        Raises
+        ------
+        TimeoutError
+            When motion takes longer than `timeout`
+        ValueError
+            On invalid positions
+        RuntimeError
+            If motion fails other than timing out
+        '''
+        self._started_moving = False
+
+        status = super().move(position, **kwargs)
+        self.user_setpoint.put(position, wait=False)
+
+        try:
+            if wait:
+                status_wait(status)
+        except KeyboardInterrupt:
+            self.stop()
+            raise
+
+        return status
+
+    @property
+    @raise_if_disconnected
+    def position(self):
+        '''The current position of the motor in its engineering units
+        Returns
+        -------
+        position : float
+        '''
+        return self._position
+
+    @raise_if_disconnected
+    def set_current_position(self, pos):
+        '''Configure the motor user position to the given value
+        Parameters
+        ----------
+        pos
+           Position to set.
+        '''
+        self.set_use_switch.put(1, wait=True)
+        self.user_setpoint.put(pos, wait=True)
+        self.set_use_switch.put(0, wait=True)
+
+    def check_value(self, pos):
+        '''Check that the position is within the soft limits'''
+        if pos < self.low_limit or pos > self.high_limit:
+            raise ValueError
+
+    def _pos_changed(self, timestamp=None, value=None, **kwargs):
+        '''Callback from EPICS, indicating a change in position'''
+        self._set_position(value)
+
+    @property
+    def report(self):
+        try:
+            rep = super().report
+        except DisconnectedError:
+            # TODO there might be more in this that gets lost
+            rep = {'position': 'disconnected'}
+        rep['pv'] = self.user_readback.pvname
+        return rep
+    
+
 class OffsetMirror(EpicsMotor):
     """
     Device that steers the beam.
     """
-    # Override EpicsMotor components
-    user_readback = Component(EpicsSignalRO, ':RBV')
-    user_setpoint = Component(EpicsSignal, ':VAL', limits=True)
-
-    # calibration dial <-> user
-    user_offset = Component(EpicsSignal, ':OFF')
-    user_offset_dir = Component(EpicsSignal, ':DIR')
-    offset_freeze_switch = Component(EpicsSignal, ':FOFF')
-    set_use_switch = Component(EpicsSignal, ':SET')
-
-    # configuration
-    velocity = Component(EpicsSignal, ':VELO')
-    acceleration = Component(EpicsSignal, ':ACCL')
-    motor_egu = Component(EpicsSignal, ':EGU')
-
-    # motor status
-    motor_is_moving = Component(EpicsSignalRO, ':MOVN')
-    motor_done_move = Component(EpicsSignalRO, ':DMOV')
-    high_limit_switch = Component(EpicsSignal, ':HLS')
-    low_limit_switch = Component(EpicsSignal, ':LLS')
-    direction_of_travel = Component(EpicsSignal, ':TDIR')
-
-    # commands
-    motor_stop = Component(EpicsSignal, ':STOP')
-    home_forward = Component(EpicsSignal, ':HOMF')
-    home_reverse = Component(EpicsSignal, ':HOMR')
-    interlock = Component(EpicsSignalRO, ':INTERLOCK')
-    enabled = Component(EpicsSignalRO, ':ENABLED')
     # Currently structured to pass the ioc argument down to the pitch motor
     def __init__(self, prefix, *, name=None, ioc="", read_attrs=None,
                  parent=None, **kwargs):
