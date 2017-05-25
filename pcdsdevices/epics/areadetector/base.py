@@ -5,8 +5,8 @@ Overrides for AreaDetector Base.
 """
 import logging
 import ophyd
-import ophyd.base
-import ophyd.signal
+import signal
+from ophyd import base
 
 from ..signal import EpicsSignal
 from ...component import Component
@@ -15,13 +15,13 @@ from ...device import Device
 logger = logging.getLogger(__name__)
 
 
-class EpicsSignalWithRBV(ophyd.base.EpicsSignalWithRBV, EpicsSignal):
+class EpicsSignalWithRBV(base.EpicsSignalWithRBV, EpicsSignal):
     pass
 
 
-class ADComponent(ophyd.base.ADComponent, Component):
+class ADComponent(base.ADComponent, Component):
     pass
 
 
-class ADBase(ophyd.base.ADBase, Device):
+class ADBase(base.ADBase, Device):
     pass

@@ -4,8 +4,8 @@
 PCDS detectors and overrides for ophyd detectors.
 """
 import logging
-import ophyd.detectors
-import cam
+from ophyd import detectors
+from . import cam
 from .base import (ADBase, ADComponent)
 
 logger = logging.getLogger(__name__)
@@ -35,11 +35,11 @@ __all__ = ['DetectorBase',
 ]
 
 
-class DetectorBase(ophyd.detectors.DetectorBase, ADBase):
+class DetectorBase(detectors.DetectorBase, ADBase):
     pass
 
 
-class AreaDetector(ophyd.detectors.AreaDetector, DetectorBase):
+class AreaDetector(detectors.AreaDetector, DetectorBase):
     pass
 
 
@@ -47,77 +47,77 @@ class OpalDetector(DetectorBase):
     cam = ADComponent(cam.OpalCam, "")
 
 
-class SimDetector(ophyd.detectors.SimDetector, DetectorBase):
+class SimDetector(detectors.SimDetector, DetectorBase):
     pass
 
 
-class AdscDetector(ophyd.detectors.AdscDetector, DetectorBase):
+class AdscDetector(detectors.AdscDetector, DetectorBase):
     pass
 
 
-class AndorDetector(ophyd.detectors.AndorDetector, DetectorBase):
+class AndorDetector(detectors.AndorDetector, DetectorBase):
     pass
 
 
-class Andor3Detector(ophyd.detectors.Andor3Detector, DetectorBase):
+class Andor3Detector(detectors.Andor3Detector, DetectorBase):
     pass
 
 
-class BrukerDetector(ophyd.detectors.BrukerDetector, DetectorBase):
+class BrukerDetector(detectors.BrukerDetector, DetectorBase):
     pass
 
 
-class FirewireLinDetector(ophyd.detectors.FirewireLinDetector, DetectorBase):
+class FirewireLinDetector(detectors.FirewireLinDetector, DetectorBase):
     pass
 
 
-class FirewireWinDetector(ophyd.detectors.FirewireWinDetector, DetectorBase):
+class FirewireWinDetector(detectors.FirewireWinDetector, DetectorBase):
     pass
 
 
-class LightFieldDetector(ophyd.detectors.LightFieldDetector, DetectorBase):
+class LightFieldDetector(detectors.LightFieldDetector, DetectorBase):
     pass
 
 
-class Mar345Detector(ophyd.detectors.Mar345Detector, DetectorBase):
+class Mar345Detector(detectors.Mar345Detector, DetectorBase):
     pass
 
 
-class MarCCDDetector(ophyd.detectors.MarCCDDetector, DetectorBase):
+class MarCCDDetector(detectors.MarCCDDetector, DetectorBase):
     pass
 
 
-class PerkinElmerDetector(ophyd.detectors.PerkinElmerDetector, DetectorBase):
+class PerkinElmerDetector(detectors.PerkinElmerDetector, DetectorBase):
     pass
 
 
-class PSLDetector(ophyd.detectors.PSLDetector, DetectorBase):
+class PSLDetector(detectors.PSLDetector, DetectorBase):
     pass
 
 
-class PilatusDetector(ophyd.detectors.PilatusDetector, DetectorBase):
+class PilatusDetector(detectors.PilatusDetector, DetectorBase):
     pass
 
 
-class PixiradDetector(ophyd.detectors.PixiradDetector, DetectorBase):
+class PixiradDetector(detectors.PixiradDetector, DetectorBase):
     pass
 
 
-class PointGreyDetector(ophyd.detectors.PointGreyDetector, DetectorBase):
+class PointGreyDetector(detectors.PointGreyDetector, DetectorBase):
     pass
 
 
-class ProsilicaDetector(ophyd.detectors.ProsilicaDetector, DetectorBase):
+class ProsilicaDetector(detectors.ProsilicaDetector, DetectorBase):
     pass
 
 
-class PvcamDetector(ophyd.detectors.PvcamDetector, DetectorBase):
+class PvcamDetector(detectors.PvcamDetector, DetectorBase):
     pass
 
 
-class RoperDetector(ophyd.detectors.RoperDetector, DetectorBase):
+class RoperDetector(detectors.RoperDetector, DetectorBase):
     pass
 
 
-class URLDetector(ophyd.detectors.URLDetector, DetectorBase):
+class URLDetector(detectors.URLDetector, DetectorBase):
     pass

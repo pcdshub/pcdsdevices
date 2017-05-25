@@ -4,9 +4,9 @@
 PCDS cams and overrides for ophyd Cams.
 """
 import logging
-import ophyd.cam
+from ophyd import cam
 
-from ophyd.enum import Enum
+from ophyd.utils import enum
 from .base import (ADBase, ADComponent, EpicsSignalWithRBV)
 from ..signal import (EpicsSignal, EpicsSignalRO)
 
@@ -39,26 +39,26 @@ __all__ = ['CamBase',
 ]
 
 
-class CamBase(ophyd.cam.CamBase, ADBase):
+class CamBase(cam.CamBase, ADBase):
     pass
 
 
-class AreaDetectorCam(ophyd.cam.AreaDetectorCam, Cambase):
+class AreaDetectorCam(cam.AreaDetectorCam, CamBase):
     pass
 
 
 class OpalCam(CamBase):
-    # Enums?
-    trigger_modes = Enum("Internal", "External", start=0)
-    exposure_modes = Enum("Full Frame", "HW ROI", start=0)
-    acquire_enum = Enum("Done", "Acquire", start=0)
-    test_patterns = Enum("Off", "On", start=0)
-    trigger_line_enum = Enum("CC1", "CC2", "CC3", "CC4", start=0)
-    polarity_enum = Enum("Normal", "Inverted", start=0)
-    prescale_enum = Enum("119 : 1 us", "1 : 1/119 us", start=0)
-    pack_enum = Enum("24", "16", start=0)
-    video_out_enum = Enum("Top Down", "Top & Bottom", start=0)
-    baud_rates = Enum("9600", "19200", "38400", "57600", "115200", start=0)
+    # enums?
+    # trigger_modes = enum("Internal", "External", start=0)
+    # exposure_modes = enum("Full Frame", "HW ROI", start=0)
+    # acquire_enum = enum("Done", "Acquire", start=0)
+    # test_patterns = enum("Off", "On", start=0)
+    # trigger_line_enum = enum("CC1", "CC2", "CC3", "CC4", start=0)
+    # polarity_enum = enum("Normal", "Inverted", start=0)
+    # prescale_enum = enum("119 : 1 us", "1 : 1/119 us", start=0)
+    # pack_enum = enum("24", "16", start=0)
+    # video_out_enum = enum("Top Down", "Top & Bottom", start=0)
+    # baud_rates = enum("9600", "19200", "38400", "57600", "115200", start=0)
 
     # Signals with RBV
     min_callback_time = ADComponent(EpicsSignalWithRBV, 'MinCallbackTime')
@@ -124,91 +124,91 @@ class OpalCam(CamBase):
     ufdt = ADComponent(EpicsSignalRO, 'UFDT_RBV', string=True)
 
 
-class SimDetectorCam(ophyd.cam.SimDetectorCam, Cambase):
+class SimDetectorCam(cam.SimDetectorCam, CamBase):
     pass
 
 
-class AdscDetectorCam(ophyd.cam.AdscDetectorCam, Cambase):
+class AdscDetectorCam(cam.AdscDetectorCam, CamBase):
     pass
 
 
-class AndorDetectorCam(ophyd.cam.AndorDetectorCam, Cambase):
+class AndorDetectorCam(cam.AndorDetectorCam, CamBase):
     pass
 
 
-class Andor3DetectorCam(ophyd.cam.Andor3DetectorCam, Cambase):
+class Andor3DetectorCam(cam.Andor3DetectorCam, CamBase):
     pass
 
 
-class BrukerDetectorCam(ophyd.cam.BrukerDetectorCam, Cambase):
+class BrukerDetectorCam(cam.BrukerDetectorCam, CamBase):
     pass
 
 
-class FirewireLinDetectorCam(ophyd.cam.FirewireLinDetectorCam, Cambase):
+class FirewireLinDetectorCam(cam.FirewireLinDetectorCam, CamBase):
     pass
 
 
-class FirewireWinDetectorCam(ophyd.cam.FirewireWinDetectorCam, Cambase):
+class FirewireWinDetectorCam(cam.FirewireWinDetectorCam, CamBase):
     pass
 
 
-class LightFieldDetectorCam(ophyd.cam.LightFieldDetectorCam, Cambase):
+class LightFieldDetectorCam(cam.LightFieldDetectorCam, CamBase):
     pass
 
 
-class Mar345DetectorCam(ophyd.cam.Mar345DetectorCam, Cambase):
+class Mar345DetectorCam(cam.Mar345DetectorCam, CamBase):
     pass
 
 
-class MarCCDDetectorCam(ophyd.cam.MarCCDDetectorCam, Cambase):
+class MarCCDDetectorCam(cam.MarCCDDetectorCam, CamBase):
     pass
 
 
-class PcoDetectorCam(ophyd.cam.PcoDetectorCam, Cambase):
+class PcoDetectorCam(cam.PcoDetectorCam, CamBase):
     pass
 
 
-class PcoDetectorIO(ophyd.cam.PcoDetectorIO, ADBase):
+class PcoDetectorIO(cam.PcoDetectorIO, ADBase):
     pass
 
 
-class PcoDetectorSimIO(ophyd.cam.PcoDetectorSimIO, ADBase):
+class PcoDetectorSimIO(cam.PcoDetectorSimIO, ADBase):
     pass
 
 
-class PerkinElmerDetectorCam(ophyd.cam.PerkinElmerDetectorCam, Cambase):
+class PerkinElmerDetectorCam(cam.PerkinElmerDetectorCam, CamBase):
     pass
 
 
-class PSLDetectorCam(ophyd.cam.PSLDetectorCam, Cambase):
+class PSLDetectorCam(cam.PSLDetectorCam, CamBase):
     pass
 
 
-class PilatusDetectorCam(ophyd.cam.PilatusDetectorCam, Cambase):
+class PilatusDetectorCam(cam.PilatusDetectorCam, CamBase):
     pass
 
 
-class PixiradDetectorCam(ophyd.cam.PixiradDetectorCam, Cambase):
+class PixiradDetectorCam(cam.PixiradDetectorCam, CamBase):
     pass
 
 
-class PointGreyDetectorCam(ophyd.cam.PointGreyDetectorCam, Cambase):
+class PointGreyDetectorCam(cam.PointGreyDetectorCam, CamBase):
     pass
 
 
-class ProsilicaDetectorCam(ophyd.cam.ProsilicaDetectorCam, Cambase):
+class ProsilicaDetectorCam(cam.ProsilicaDetectorCam, CamBase):
     pass
 
 
-class PvcamDetectorCam(ophyd.cam.PvcamDetectorCam, Cambase):
+class PvcamDetectorCam(cam.PvcamDetectorCam, CamBase):
     pass
 
 
-class RoperDetectorCam(ophyd.cam.RoperDetectorCam, Cambase):
+class RoperDetectorCam(cam.RoperDetectorCam, CamBase):
     pass
 
 
-class URLDetectorCam(ophyd.cam.URLDetectorCam, Cambase):
+class URLDetectorCam(cam.URLDetectorCam, CamBase):
     pass
 
 

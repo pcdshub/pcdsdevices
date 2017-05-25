@@ -5,74 +5,74 @@ Overrides for AreaDetector Plugins.
 """
 
 import logging
-import ophyd.plugins
-from ophyd import GenerateDatumInterface
+from ophyd import plugins
+from ophyd.device import GenerateDatumInterface
 from .base import ADBase
 
 logger = logging.getLogger(__name__)
 
 
-class PluginBase(ophyd.plugins.PluginBase, ADBase):
+class PluginBase(plugins.PluginBase, ADBase):
     pass
 
 
-class ImagePlugin(ophyd.plugins.ImagePlugin, PluginBase):
+class ImagePlugin(plugins.ImagePlugin, PluginBase):
     pass
 
 
-class StatsPlugin(ophyd.plugins.StatsPlugin, PluginBase):
+class StatsPlugin(plugins.StatsPlugin, PluginBase):
     pass
 
 
-class ColorConvPlugin(ophyd.plugins.ColorConvPlugin, PluginBase):
+class ColorConvPlugin(plugins.ColorConvPlugin, PluginBase):
     pass
 
 
-class ProcessPlugin(ophyd.plugins.ProcessPlugin, PluginBase):
+class ProcessPlugin(plugins.ProcessPlugin, PluginBase):
     pass
 
 
-class Overlay(ophyd.plugins.Overlay, ADBase):
+class Overlay(plugins.Overlay, ADBase):
     pass
 
 
-class OverlayPlugin(ophyd.plugins.OverlayPlugin, PluginBase):
+class OverlayPlugin(plugins.OverlayPlugin, PluginBase):
     pass
 
 
-class ROIPlugin(ophyd.plugins.ROIPlugin, PluginBase):
+class ROIPlugin(plugins.ROIPlugin, PluginBase):
     pass
 
 
-class TransformPlugin(ophyd.plugins.TransformPlugin, PluginBase):
+class TransformPlugin(plugins.TransformPlugin, PluginBase):
     pass
 
 
-class FilePlugin(ophyd.plugins.FilePlugin, PluginBase, GenerateDatumInterface):
+class FilePlugin(plugins.FilePlugin, PluginBase, GenerateDatumInterface):
     pass
 
 
-class NetCDFPlugin(ophyd.plugins.NetCDFPlugin, FilePlugin):
+class NetCDFPlugin(plugins.NetCDFPlugin, FilePlugin):
     pass
 
 
-class TIFFPlugin(ophyd.plugins.TIFFPlugin, FilePlugin):
+class TIFFPlugin(plugins.TIFFPlugin, FilePlugin):
     pass
 
 
-class JPEGPlugin(ophyd.plugins.JPEGPlugin, FilePlugin):
+class JPEGPlugin(plugins.JPEGPlugin, FilePlugin):
     pass
 
 
-class NexusPlugin(ophyd.plugins.NexusPlugin, FilePlugin):
+class NexusPlugin(plugins.NexusPlugin, FilePlugin):
     pass
 
 
-class HDF5Plugin(ophyd.plugins.HDF5Plugin, FilePlugin):
+class HDF5Plugin(plugins.HDF5Plugin, FilePlugin):
     pass
 
 
-class MagickPlugin(ophyd.plugins.MagickPlugin, FilePlugin):
+class MagickPlugin(plugins.MagickPlugin, FilePlugin):
     pass
 
 
