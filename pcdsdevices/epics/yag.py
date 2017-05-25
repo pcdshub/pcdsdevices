@@ -16,22 +16,23 @@ from ..component import Component
 logger = logging.getLogger(__name__)
 
 
-class FEEYag(OpalDetector, IocDevice):
+class FEEYag(Device):
     """
     YAG detector using Dehongs IOC.
     """
-    def __init__(self, prefix, *, ioc="", motor_ioc="", pos="", read_attrs=None, 
+    def __init__(self, prefix, *, ioc="", pos_prefix="", read_attrs=None, 
                  name=None, **kwargs):
+        imager  = Component(OpalDetector, prefix=prefix, name="Opal Camera")
         zoom = Component(ImsMotor, prefix=prefix+":CLZ:01", ioc=motor_ioc,
                          name="Zoom Motor")
         focus = Component(ImsMotor, prefix=prefix+":CLF:01", ioc=motor_ioc,
                          name="Focus Motor")
         yag = Component(ImsMotor, prefix=prefix+":MOTR", ioc=motor_ioc,
                          name="Yag Motor")
-        position = Component(EpicsSignalRO, ":POSITION")
+        position = Component(EpicsSignalRO, ":POSITION", add_prefix=pos_prefix)
         
         if read_attrs is None:
-            read_attrs = ['zoom', 'focus', 'yag', 'position', 'array_data']
+            read_attrs = ['imager', 'zoom', 'focus', 'yag', 'position']
         super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
                          **kwargs)
     

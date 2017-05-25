@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Test functions in attenuator that don't change live devices
+Test functions in the HOMS mirror that don't change live devices
 """
 import pytest
 

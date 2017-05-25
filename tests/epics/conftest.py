@@ -67,7 +67,9 @@ Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06:IMS",
        data="XCS:SB2:IMB:01:SUM")
 Params("xcs_pim", PIM, "XCS:SB2:PIM6", ioc="IOC:XCS:SB2:PIM06:IMS")
 Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
-# TODO: add Mirror when mirrors come online
+Params("fee_homs", Mirror, "MIRR:FEE1:M1H", ioc="IOC:FEE:HOMS")
+Params("fee_yag", FEEYag, "CAMR:FEE1:913", ioc="IOC:FEE1:PROFILEMON",
+       pos_prefix="FEE1:P3H"
 # TODO: add xpp table when xpp comes online
 
 all_params = Params.get()
