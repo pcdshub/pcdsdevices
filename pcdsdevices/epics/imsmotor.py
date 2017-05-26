@@ -1,20 +1,7 @@
-from ophyd import EpicsMotor
+from .epicsmotor import EpicsMotor
 from .component import Component
 from .iocdevice import IocDevice
-from .signal import Signal
-
-
-class FakeTDIR(Signal):
-    """
-    Fake stand-in for the missing TDIR signal.
-    """
-    def __init__(self, *args, **kwargs):
-        self.stored_tdir = 0
-        super().__init__(*args, **kwargs)
-
-    def get(self):
-        return self.stored_tdir
-
+from .signal import (Signal, FakeSignal)
 
 class ImsMotor(EpicsMotor, IocDevice):
     """
@@ -23,7 +10,7 @@ class ImsMotor(EpicsMotor, IocDevice):
     band-aid.
     """
     # Disable missing field that our IMS module lacks
-    direction_of_travel = Component(FakeTDIR)
+    direction_of_travel = Component(FakeSignal)
 
     def _pos_changed(self, timestamp=None, value=None, **kwargs):
         if None not in (value, self.position):

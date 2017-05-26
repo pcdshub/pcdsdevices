@@ -25,3 +25,15 @@ class EpicsSignal(ophyd.signal.EpicsSignal, EpicsSignalBase):
 
 class EpicsSignalRO(ophyd.signal.EpicsSignalRO, EpicsSignalBase):
     pass
+
+
+class FakeSignal(Signal):
+    """
+    Fake signal to appease ophyd.
+    """
+    def __init__(self, *args, **kwargs):
+        self.stored_val = 0
+        super().__init__(*args, **kwargs)
+
+    def get(self):
+        return self.stored_val
