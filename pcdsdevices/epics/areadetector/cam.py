@@ -163,7 +163,7 @@ class FEEOpalCam(CamBase):
                  #     doc='Size of the array in the XYZ dimensions')
     color_mode = Component(FakeSignal) # C(SignalWithRBV, 'ColorMode')
     data_type = Component(FakeSignal) # C(SignalWithRBV, 'DataType')
-    array_size_bytes = Component(FakeSignal)
+    array_size_bytes = Component(FakeSignal) # C(EpicsSignalRO, 'ArraySize_RBV')
     
 
 
