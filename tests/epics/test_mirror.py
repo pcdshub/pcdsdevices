@@ -5,12 +5,12 @@ Test functions in the HOMS mirror that don't change live devices
 """
 import pytest
 
-from pcdsdevices.epics.mirror import Mirror
+from pcdsdevices.epics.mirror import OffsetMirror
 
 from conftest import requires_epics
 
 @requires_epics
 @pytest.mark.timeout(3)
 def test_mirror_reads():
-    m1h = Mirror("MIRR:FEE1:M1H", ioc="IOC:FEE:HOMS")
-    assert(isinstance(m1h, Mirror))
+    m1h = OffsetMirror("MIRR:FEE1:M1H")
+    assert(isinstance(m1h, OffsetMirror))
