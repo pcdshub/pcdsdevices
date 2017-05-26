@@ -10,7 +10,7 @@ from ophyd import cam
 from ophyd.utils import enum
 
 from .base import (ADBase, ADComponent, EpicsSignalWithRBV)
-from ..signal import (EpicsSignal, EpicsSignalRO, Signal)
+from ..signal import (EpicsSignal, EpicsSignalRO, FakeSignal)
 from ...device import DynamicDeviceComponent
 from ...component import Component
 
@@ -146,24 +146,24 @@ class FEEOpalCam(CamBase):
     array_rate = Component(EpicsSignalRO, 'FrameRate')
 
     # Attrs that arent in the fee opal
-    array_counter = Component(Signal) # C(SignalWithRBV, 'ArrayCounter')
-    nd_attributes_file = Component(Signal) # C(EpicsSignal, 'NDAttributesFile', string=True)
-    pool_alloc_buffers = Component(Signal) # C(EpicsSignalRO, 'PoolAllocBuffers')
-    pool_free_buffers = Component(Signal) # C(EpicsSignalRO, 'PoolFreeBuffers')
-    pool_max_buffers = Component(Signal) # C(EpicsSignalRO, 'PoolMaxBuffers')
-    pool_max_mem = Component(Signal) # C(EpicsSignalRO, 'PoolMaxMem')
-    pool_used_buffers = Component(Signal) # C(EpicsSignalRO, 'PoolUsedBuffers')
-    pool_used_mem = Component(Signal) # C(EpicsSignalRO, 'PoolUsedMem')
-    port_name = Component(Signal) # C(EpicsSignalRO, 'PortName_RBV', string=True)
-    array_callbacks = Component(Signal) # C(SignalWithRBV, 'ArrayCallbacks')
-    array_size = Component(Signal) # DDC(ad_group(EpicsSignalRO,
+    array_counter = Component(FakeSignal) # C(SignalWithRBV, 'ArrayCounter')
+    nd_attributes_file = Component(FakeSignal) # C(EpicsSignal, 'NDAttributesFile', string=True)
+    pool_alloc_buffers = Component(FakeSignal) # C(EpicsSignalRO, 'PoolAllocBuffers')
+    pool_free_buffers = Component(FakeSignal) # C(EpicsSignalRO, 'PoolFreeBuffers')
+    pool_max_buffers = Component(FakeSignal) # C(EpicsSignalRO, 'PoolMaxBuffers')
+    pool_max_mem = Component(FakeSignal) # C(EpicsSignalRO, 'PoolMaxMem')
+    pool_used_buffers = Component(FakeSignal) # C(EpicsSignalRO, 'PoolUsedBuffers')
+    pool_used_mem = Component(FakeSignal) # C(EpicsSignalRO, 'PoolUsedMem')
+    port_name = Component(FakeSignal) # C(EpicsSignalRO, 'PortName_RBV', string=True)
+    array_callbacks = Component(FakeSignal) # C(SignalWithRBV, 'ArrayCallbacks')
+    array_size = Component(FakeSignal) # DDC(ad_group(EpicsSignalRO,
                  #              (('array_size_x', 'ArraySizeX_RBV'),
                  #               ('array_size_y', 'ArraySizeY_RBV'),
                  #               ('array_size_z', 'ArraySizeZ_RBV'))),
                  #     doc='Size of the array in the XYZ dimensions')
-    color_mode = Component(Signal) # C(SignalWithRBV, 'ColorMode')
-    data_type = Component(Signal) # C(SignalWithRBV, 'DataType')
-    array_size_bytes = Component(Signal)
+    color_mode = Component(FakeSignal) # C(SignalWithRBV, 'ColorMode')
+    data_type = Component(FakeSignal) # C(SignalWithRBV, 'DataType')
+    array_size_bytes = Component(FakeSignal)
     
 
 
