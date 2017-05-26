@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
+from epics.pv import fmt_time
 from ophyd import PositionerBase
 from ophyd.utils import DisconnectedError
 from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
@@ -320,6 +321,37 @@ class Piezo(Device, PositionerBase):
         rep['pv'] = self.user_readback.pvname
         return rep    
 
+class CouplingMotor(Device):
+    """
+    Device that manages the coupling between gantry motors.
+    """
+    gdif = Component(EpicsSignalRO, ':GDIF')
+    gtol = Component(EpicsSignal, ':GTOL', limits=True)
+    enabled = Component(EpicsSignal, ':ENABLED')
+    decouple = Component(EpicsSignal, ':DECOUPLE')
+
+    high_limit_switch = Component(EpicsSignal, ':HLS')
+    low_limit_switch = Component(EpicsSignal, ':LLS')
+
+    fault = Component(EpicsSignalRO, ':FAULT')
+
+    def __init__(self, prefix, *, name=None, read_attrs=None, parent=None, 
+                 configuration_attrs=None, **kwargs):
+        if read_attrs is None:
+            read_attrs = ['pitch', 'piezo', 'gan_x_p', 'gan_x_s']
+            
+        if configuration_attrs is None:
+            configuration_attrs = ['gdif', 'gtol', 'enabled', 'decouple', 
+                                   'fault', 'high_limit_switch', 
+                                   'low_limit_switch']
+
+        super().__init__(prefix, read_attrs=read_attrs,
+                         configuration_attrs=configuration_attrs,
+                         name=name, parent=parent, **kwargs)
+        
+
+    
+
 class OffsetMirror(Device):
     """
     Device that steers the beam.
@@ -331,20 +363,30 @@ class OffsetMirror(Device):
     gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:S")
 
     # Piezo motor
-    piezo = FormattedComponent(Piezo, "PIEZO:{self._section}:{self._mirror}")
-
+    piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")
+    
+    # Coupling motor
+    coupling = FormattedComponent(CouplingMotor, 
+                                  "STEP:{self._area}:{self._section}:MOTR")
+    
     # Pitch Motor
     pitch = FormattedComponent(OMMotor, "{self._prefix}")
     
     # Currently structured to pass the ioc argument down to the pitch motor
-    def __init__(self, prefix, *, name=None, read_attrs=None,
-                 parent=None, **kwargs):
+    def __init__(self, prefix, *, name=None, read_attrs=None, parent=None, 
+                 configuration_attrs=None, section="", **kwargs):
         self._prefix = prefix
-        self._section = prefix.split(":")[1]
+        self._area = prefix.split(":")[1]
         self._mirror = prefix.split(":")[2]
+        self._section = section
 
         if read_attrs is None:
             read_attrs = ['pitch', 'piezo', 'gan_x_p', 'gan_x_s']
 
-        super().__init__(prefix, name=name, read_attrs=read_attrs,
-                         parent=parent, **kwargs)
+        if configuration_attrs is None:
+            configuration_attrs = ['pitch', 'piezo', 'gan_x_p', 'gan_x_s',
+                                   'gan_y_p', 'gan_y_s', 'coupling']
+
+        super().__init__(prefix, read_attrs=read_attrs,
+                         configuration_attrs=configuration_attrs,
+                         name=name, parent=parent, **kwargs)
