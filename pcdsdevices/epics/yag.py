@@ -22,28 +22,32 @@ class FEEYag(Device):
     YAG detector using Dehongs IOC.
     """
     # Opal
-    imager  = FormattedComponent(FEEOpalDetector, prefix="{self._prefix}:", 
-                                 name="Opal Camera")
+    imager = FormattedComponent(FEEOpalDetector, "{self._prefix}:", 
+                                name="Opal Camera")
 
     # Yag Motors
-    zoom = FormattedComponent(ImsMotor, prefix="{self._prefix}:CLZ:01", 
+    zoom = FormattedComponent(ImsMotor, "{self._prefix}:CLZ:01", 
                               ioc="{self._ioc}", name="Zoom Motor")
-    focus = FormattedComponent(ImsMotor, prefix="{self._prefix}:CLF:01", 
+    focus = FormattedComponent(ImsMotor, "{self._prefix}:CLF:01", 
                                ioc="{self._ioc}", name="Focus Motor")
-    yag = FormattedComponent(ImsMotor, prefix="{self._prefix}:MOTR", 
+    yag = FormattedComponent(ImsMotor, "{self._prefix}:MOTR", 
                              ioc="{self._ioc}", name="Yag Motor")
     
     # Position PV
-    pos = FormattedComponent(EpicsSignalRO, "{self._prefix}:POSITION", 
-                             add_prefix="{self._pos_pref}")
+    pos = FormattedComponent(EpicsSignalRO, "{self._pos_pref}:POSITION")
 
-    def __init__(self, prefix, *, ioc="", pos_pref="", read_attrs=None, 
-                 name=None, **kwargs):        
+    def __init__(self, prefix, *, pos_pref="", ioc="", read_attrs=None, 
+                 name=None, parent=None, configuration_attrs=None, **kwargs):        
         self._prefix = prefix
         self._pos_pref = pos_pref
-        self._ioc = ioc
+        self._ioc=ioc
+
         if read_attrs is None:
             read_attrs = ['imager', 'zoom', 'focus', 'yag', 'pos']
-        super().__init__(prefix, read_attrs=read_attrs, name=name,
-                         **kwargs)
+
+        if configuration_attrs is None:
+            configuration_attrs = ['imager', 'zoom', 'focus', 'yag', 'pos']
+            
+        super().__init__(prefix, read_attrs=read_attrs, name=name, parent=parent,
+                         configuration_attrs=configuration_attrs, **kwargs)
     

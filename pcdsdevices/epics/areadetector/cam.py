@@ -142,8 +142,8 @@ class FEEOpalCam(CamBase):
     ufdt = ADComponent(EpicsSignalRO, 'UFDT_RBV', string=True)
 
     # Overridden Components
-    array_rate = Component(Signal)
-    # array_rate = Component(EpicsSignalRO, 'FrameRate')
+    # array_rate = Component(Signal)
+    array_rate = Component(EpicsSignalRO, 'FrameRate')
 
     # Attrs that arent in the fee opal
     array_counter = Component(Signal) # C(SignalWithRBV, 'ArrayCounter')
@@ -163,6 +163,7 @@ class FEEOpalCam(CamBase):
                  #     doc='Size of the array in the XYZ dimensions')
     color_mode = Component(Signal) # C(SignalWithRBV, 'ColorMode')
     data_type = Component(Signal) # C(SignalWithRBV, 'DataType')
+    array_size_bytes = Component(Signal)
     
 
 

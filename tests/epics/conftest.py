@@ -67,8 +67,9 @@ Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06:IMS",
        data="XCS:SB2:IMB:01:SUM")
 Params("xcs_pim", PIM, "XCS:SB2:PIM6", ioc="IOC:XCS:SB2:PIM06:IMS")
 Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
-Params("fee_homs", OffsetMirror, "MIRR:FEE1:M1H")
-Params("fee_yag", FEEYag, "CAMR:FEE1:913:", pos_pref="FEE1:P3H")
+Params("fee_homs", OffsetMirror, "MIRR:FEE1:M1H", section="611")
+Params("fee_yag", FEEYag, "CAMR:FEE1:913", pos_pref="FEE1:P3H", 
+       ioc="IOC:FEE1:PROFILEMON")
 # TODO: add xpp table when xpp comes online
 
 all_params = Params.get()
