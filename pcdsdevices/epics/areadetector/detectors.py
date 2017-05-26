@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 __all__ = ['DetectorBase',
            'AreaDetector',
-           'OpalDetector',
+           'FEEOpalDetector',
            'AdscDetector',
            'Andor3Detector',
            'AndorDetector',
@@ -43,8 +43,8 @@ class AreaDetector(detectors.AreaDetector, DetectorBase):
     pass
 
 
-class OpalDetector(DetectorBase):
-    cam = ADComponent(cam.OpalCam, "")
+class FEEOpalDetector(DetectorBase):
+    cam = ADComponent(cam.FEEOpalCam, "")
 
 
 class SimDetector(detectors.SimDetector, DetectorBase):

@@ -4,16 +4,20 @@
 PCDS cams and overrides for ophyd Cams.
 """
 import logging
-from ophyd import cam
 
+import ophyd
+from ophyd import cam
 from ophyd.utils import enum
+
 from .base import (ADBase, ADComponent, EpicsSignalWithRBV)
-from ..signal import (EpicsSignal, EpicsSignalRO)
+from ..signal import (EpicsSignal, EpicsSignalRO, Signal)
+from ...device import DynamicDeviceComponent
+from ...component import Component
 
 logger = logging.getLogger(__name__)
 
 __all__ = ['CamBase',
-           'OpalCam',
+           'FEEOpalCam',
            'AdscDetectorCam',
            'Andor3DetectorCam',
            'AndorDetectorCam',
@@ -40,14 +44,28 @@ __all__ = ['CamBase',
 
 
 class CamBase(cam.CamBase, ADBase):
+    array_size = DynamicDeviceComponent(ophyd.base.ad_group(EpicsSignalRO,
+                              (('array_size_x', 'ArraySizeX_RBV'),
+                               ('array_size_y', 'ArraySizeY_RBV'),
+                               ('array_size_z', 'ArraySizeZ_RBV'))),
+                     doc='Size of the array in the XYZ dimensions')
+    max_size = DynamicDeviceComponent(ophyd.base.ad_group(EpicsSignalRO,
+                            (('max_size_x', 'MaxSizeX_RBV'),
+                             ('max_size_y', 'MaxSizeY_RBV'))),
+                   doc='Maximum sensor size in the XY directions')
+    reverse = DynamicDeviceComponent(ophyd.base.ad_group(EpicsSignalWithRBV,
+                           (('reverse_x', 'ReverseX'),
+                            ('reverse_y', 'ReverseY'))))
+    size = DynamicDeviceComponent(ophyd.base.ad_group(EpicsSignalWithRBV,
+                        (('size_x', 'SizeX'),
+                         ('size_y', 'SizeY'))))
     pass
-
 
 class AreaDetectorCam(cam.AreaDetectorCam, CamBase):
     pass
 
 
-class OpalCam(CamBase):
+class FEEOpalCam(CamBase):
     # enums?
     # trigger_modes = enum("Internal", "External", start=0)
     # exposure_modes = enum("Full Frame", "HW ROI", start=0)
@@ -122,6 +140,30 @@ class OpalCam(CamBase):
     plugin_type = ADComponent(EpicsSignalRO, 'PluginType_RBV', string=True)
     sdk_version = ADComponent(EpicsSignalRO, 'SDKVersion_RBV', string=True)
     ufdt = ADComponent(EpicsSignalRO, 'UFDT_RBV', string=True)
+
+    # Overridden Components
+    array_rate = Component(Signal)
+    # array_rate = Component(EpicsSignalRO, 'FrameRate')
+
+    # Attrs that arent in the fee opal
+    array_counter = Component(Signal) # C(SignalWithRBV, 'ArrayCounter')
+    nd_attributes_file = Component(Signal) # C(EpicsSignal, 'NDAttributesFile', string=True)
+    pool_alloc_buffers = Component(Signal) # C(EpicsSignalRO, 'PoolAllocBuffers')
+    pool_free_buffers = Component(Signal) # C(EpicsSignalRO, 'PoolFreeBuffers')
+    pool_max_buffers = Component(Signal) # C(EpicsSignalRO, 'PoolMaxBuffers')
+    pool_max_mem = Component(Signal) # C(EpicsSignalRO, 'PoolMaxMem')
+    pool_used_buffers = Component(Signal) # C(EpicsSignalRO, 'PoolUsedBuffers')
+    pool_used_mem = Component(Signal) # C(EpicsSignalRO, 'PoolUsedMem')
+    port_name = Component(Signal) # C(EpicsSignalRO, 'PortName_RBV', string=True)
+    array_callbacks = Component(Signal) # C(SignalWithRBV, 'ArrayCallbacks')
+    array_size = Component(Signal) # DDC(ad_group(EpicsSignalRO,
+                 #              (('array_size_x', 'ArraySizeX_RBV'),
+                 #               ('array_size_y', 'ArraySizeY_RBV'),
+                 #               ('array_size_z', 'ArraySizeZ_RBV'))),
+                 #     doc='Size of the array in the XYZ dimensions')
+    color_mode = Component(Signal) # C(SignalWithRBV, 'ColorMode')
+    data_type = Component(Signal) # C(SignalWithRBV, 'DataType')
+    
 
 
 class SimDetectorCam(cam.SimDetectorCam, CamBase):

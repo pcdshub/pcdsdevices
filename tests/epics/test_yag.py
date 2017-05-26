@@ -12,6 +12,5 @@ from conftest import requires_epics
 @requires_epics
 @pytest.mark.timeout(3)
 def test_yag_reads():
-    p3h = FEEYag("CAMR:FEE1:913", ioc="IOC:FEE1:PROFILEMON",
-                 pos_prefix="FEE1:P3H")
+    p3h = FEEYag("CAMR:FEE1:913:", pos_pref="FEE1:P3H")
     assert(isinstance(p3h, FEEYag))
