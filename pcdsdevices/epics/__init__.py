@@ -8,7 +8,7 @@ from .attenuator import Attenuator
 from .stopper import PPSStopper, Stopper
 from .ipm import IPM
 from .pim import PIM
-from .mirror import Mirror
+from .mirror import OffsetMirror
 from .lodcm import LODCM
 from .movablestand import MovableStand
 from .yag import FEEYag

@@ -3,6 +3,7 @@
 import logging
 from ophyd import PositionerBase
 from ophyd.utils import DisconnectedError
+from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
 from .signal import (EpicsSignal, EpicsSignalRO)
 from .device import Device
 from .component import (FormattedComponent, Component)
@@ -317,16 +318,33 @@ class Piezo(Device, PositionerBase):
             # TODO there might be more in this that gets lost
             rep = {'position': 'disconnected'}
         rep['pv'] = self.user_readback.pvname
-        return rep
-    
+        return rep    
 
-class OffsetMirror(EpicsMotor):
+class OffsetMirror(Device):
     """
     Device that steers the beam.
     """
+    # Gantry motors
+    gan_x_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
+    gan_x_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:S")
+    gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
+    gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:S")
+
+    # Piezo motor
+    piezo = FormattedComponent(Piezo, "PIEZO:{self._section}:{self._mirror}")
+
+    # Pitch Motor
+    pitch = FormattedComponent(OMMotor, "{self._prefix}")
+    
     # Currently structured to pass the ioc argument down to the pitch motor
-    def __init__(self, prefix, *, name=None, ioc="", read_attrs=None,
+    def __init__(self, prefix, *, name=None, read_attrs=None,
                  parent=None, **kwargs):
-        self._ioc = ioc
+        self._prefix = prefix
+        self._section = prefix.split(":")[1]
+        self._mirror = prefix.split(":")[2]
+
+        if read_attrs is None:
+            read_attrs = ['pitch', 'piezo', 'gan_x_p', 'gan_x_s']
+
         super().__init__(prefix, name=name, read_attrs=read_attrs,
                          parent=parent, **kwargs)
