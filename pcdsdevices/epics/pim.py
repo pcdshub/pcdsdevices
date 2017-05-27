@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from .iocdevice import IocDevice
-from .component import Component
+from .device import Device
+from .component import (Component, FormattedComponent)
 from .state import statesrecord_class
+from .areadetector.detectors import PulnixDetector
 
 PIMStates = statesrecord_class("PIMStates", ":OUT", ":YAG", ":DIODE")
 
 
-class PIM(IocDevice):
+class PIM(Device):
     """
     Standard position monitor. Consists of one stage that can either block the
     beam with a YAG crystal or put a diode in. Has a camera that looks at the
@@ -38,3 +40,18 @@ class PIM(IocDevice):
         Move the PIM to the DIODE position.
         """
         self.states.value = "DIODE"
+
+class PIMYag(PIM):
+    """
+    PIM device that also includes a yag.
+    """
+    imager = FormattedComponent(PulnixDetector, "{self._imager}", name="Pulnix")
+
+    def __init__(self, prefix, *, ioc="", imager="", configuration_attrs=None,
+                 **kwargs):
+        self._imager = imager
+
+        if configuration_attrs is None:
+            configuration_attrs = ['imager', 'states']
+        super().__init__(prefix, configuration_attrs=configuration_attrs, 
+                         **kwargs)

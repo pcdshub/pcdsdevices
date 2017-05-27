@@ -13,5 +13,11 @@ from conftest import requires_epics
 @requires_epics
 @pytest.mark.timeout(3)
 def test_pim_reads():
-    pim6 = pim.PIM("XCS:SB2:PIM6", ioc="IOC:XCS:SB2:PIM06:IMS")
+    pim6 = pim.PIM("XCS:SB2:PIM6")
     assert(isinstance(pim6.blocking, bool))
+
+@requires_epics
+@pytest.mark.timeout(3)
+def test_pim_imager_reads():
+    dg3 = pim.PIMYag("HFX:DG3:PIM", imager="HFX:DG3:CVV:01")
+

@@ -4,14 +4,18 @@
 PCDS detectors and overrides for ophyd detectors.
 """
 import logging
+
 from ophyd import detectors
+
 from . import cam
 from .base import (ADBase, ADComponent)
+from ..component import Component
 
 logger = logging.getLogger(__name__)
 
 __all__ = ['DetectorBase',
            'AreaDetector',
+           'PulnixDetector',
            'FEEOpalDetector',
            'AdscDetector',
            'Andor3Detector',
@@ -43,8 +47,12 @@ class AreaDetector(detectors.AreaDetector, DetectorBase):
     pass
 
 
+class PulnixDetector(DetectorBase):
+    cam = ADComponent(cam.PulnixCam, "")
+
+
 class FEEOpalDetector(DetectorBase):
-    cam = ADComponent(cam.FEEOpalCam, "")
+    cam = ADComponent(cam.FEEOpalCam, ":")
 
 
 class SimDetector(detectors.SimDetector, DetectorBase):
