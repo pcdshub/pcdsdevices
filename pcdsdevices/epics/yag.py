@@ -4,15 +4,15 @@
 Define the YAG screens used at LCLS.
 """
 import logging
+
 from ophyd.utils import enum
-from threading import Event, RLock
 
 from .device import Device
 from .imsmotor import ImsMotor
 from .iocdevice import IocDevice
-from .areadetector.detectors import FEEOpalDetector
 from .signal import EpicsSignalRO
 from .component import FormattedComponent
+from .areadetector.detectors import FEEOpalDetector
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ class FEEYag(Device):
     YAG detector using Dehongs IOC.
     """
     # Opal
-    imager = FormattedComponent(FEEOpalDetector, "{self._prefix}:", 
+    imager = FormattedComponent(FEEOpalDetector, "{self._prefix}", 
                                 name="Opal Camera")
 
     # Yag Motors
@@ -49,5 +49,4 @@ class FEEYag(Device):
             configuration_attrs = ['imager', 'zoom', 'focus', 'yag', 'pos']
             
         super().__init__(prefix, read_attrs=read_attrs, name=name, parent=parent,
-                         configuration_attrs=configuration_attrs, **kwargs)
-    
+                         configuration_attrs=configuration_attrs, **kwargs)    
