@@ -78,5 +78,5 @@ def test_statesrecord_class_reads():
     """
     Instantiate one if we can and make sure value makes sense.
     """
-    inout = state.InOutStates("XCS:SB2:IPM6:DIODE")
+    inout = state.InOutStates("XCS:SB2:PIM6:DIODE")
     assert(inout.value in ("IN", "OUT", "Unknown"))
