@@ -6,6 +6,8 @@ import pytest
 from pcdsdevices import (ImsMotor, GateValve, Slits, Attenuator,
                          PulsePickerPink, Stopper, PPSStopper, IPM, PIM, PIMYag,
                          LODCM, OffsetMirror, FEEYag)
+from pcdsdevices.epics.areadetector.detectors import (FEEOpalDetector,
+                                                       PulnixDetector)
 
 
 try:
@@ -68,10 +70,12 @@ class Params:
 # Params("xcs_pim", PIM, "XCS:SB2:PIM6")
 # Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
 # Params("fee_homs", OffsetMirror, "MIRR:FEE1:M1H", section="611")
+# Params("det_p3h", FEEOpalDetector, "CAMR:FEE1:913")
+Params("det_dg3", PulnixDetector, "HFX:DG3:CVV:01")
 # Params("fee_yag", FEEYag, "CAMR:FEE1:913", pos_pref="FEE1:P3H", 
 #        ioc="IOC:FEE1:PROFILEMON")
 # Params("dg3_pim", PIMYag, "HFX:DG3:PIM", imager="HFX:DG3:CVV:01")
-Params("dg3_pim", PIMYag, "XCS:SB2:PIM6", imager="HFX:DG3:CVV:01")
+# Params("dg3_pim", PIMYag, "XCS:SB2:PIM6", imager="HFX:DG3:CVV:01")
 
 # TODO: add xpp table when xpp comes online
 
