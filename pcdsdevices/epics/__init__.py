@@ -7,7 +7,7 @@ from .valve import GateValve
 from .attenuator import Attenuator
 from .stopper import PPSStopper, Stopper
 from .ipm import IPM
-from .pim import PIM, PIMYag
+from .pim import PIM, PIMMotor, PIMPulnixDetector
 from .mirror import OffsetMirror
 from .lodcm import LODCM
 from .movablestand import MovableStand

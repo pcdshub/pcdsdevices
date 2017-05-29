@@ -9,11 +9,10 @@ import ophyd
 from ophyd import cam
 from ophyd.utils import enum
 
-from .plugins import (ImagePlugin, StatsPlugin)
 from .base import (ADBase, ADComponent, EpicsSignalWithRBV)
 from ..signal import (EpicsSignal, EpicsSignalRO, FakeSignal)
-from ...device import DynamicDeviceComponent
-from ...component import Component
+from ..component import (Component, FormattedComponent)
+from ..device import DynamicDeviceComponent
 
 logger = logging.getLogger(__name__)
 
@@ -68,9 +67,7 @@ class AreaDetectorCam(cam.AreaDetectorCam, CamBase):
 
 
 class PulnixCam(CamBase):
-    image2 = Component(ImagePlugin, "IMAGE2:")
-    stats1 = Component(StatsPlugin, "Stats1:")
-    stats2 = Component(StatsPlugin, "Stats2:")
+    pass
 
 
 class FEEOpalCam(CamBase):

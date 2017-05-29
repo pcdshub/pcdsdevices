@@ -1,15 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+import logging
+
 from .iocdevice import IocDevice
 from .device import Device
 from .component import (Component, FormattedComponent)
 from .state import statesrecord_class
 from .areadetector.detectors import PulnixDetector
+from .areadetector.plugins import (ImagePlugin, StatsPlugin)
+
+logger = logging.getLogger(__name__)
 
 PIMStates = statesrecord_class("PIMStates", ":OUT", ":YAG", ":DIODE")
 
 
-class PIM(Device):
+class PIMPulnixDetector(PulnixDetector):
+    image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
+    stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid'])
+    stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid'])
+    
+
+class PIMMotor(Device):
     """
     Standard position monitor. Consists of one stage that can either block the
     beam with a YAG crystal or put a diode in. Has a camera that looks at the
@@ -41,17 +53,14 @@ class PIM(Device):
         """
         self.states.value = "DIODE"
 
-class PIMYag(PIM):
+class PIM(Device):
     """
     PIM device that also includes a yag.
     """
-    imager = FormattedComponent(PulnixDetector, "{self._imager}", name="Pulnix")
+    imager = FormattedComponent(PIMPulnixDetector, "{self._imager}")
+    motor = Component(PIMMotor, "")
 
-    def __init__(self, prefix, *, ioc="", imager="", configuration_attrs=None,
-                 **kwargs):
+    def __init__(self, prefix, *, imager="", **kwargs):
         self._imager = imager
 
-        if configuration_attrs is None:
-            configuration_attrs = ['imager', 'states']
-        super().__init__(prefix, configuration_attrs=configuration_attrs, 
-                         **kwargs)
+        super().__init__(prefix, **kwargs)

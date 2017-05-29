@@ -48,7 +48,7 @@ class AreaDetector(detectors.AreaDetector, DetectorBase):
 
 
 class PulnixDetector(DetectorBase):
-    cam = ADComponent(cam.PulnixCam, "")
+    cam = ADComponent(cam.PulnixCam, ":")
 
 
 class FEEOpalDetector(DetectorBase):
