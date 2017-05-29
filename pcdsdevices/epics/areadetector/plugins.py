@@ -5,74 +5,93 @@ Overrides for AreaDetector Plugins.
 """
 
 import logging
-from ophyd import plugins
+
+import ophyd
 from ophyd.device import GenerateDatumInterface
+
 from .base import ADBase
 
 logger = logging.getLogger(__name__)
 
 
-class PluginBase(plugins.PluginBase, ADBase):
+class PluginBase(ophyd.plugins.PluginBase, ADBase):
+    # Original:
+    #    @property
+    #    def _asyn_pipeline_configuration_names(self):
+    #        return [_.configuration_names.name for _ in self._asyn_pipeline]
+    # This broke any instantiated plugin b/c _asyn_pipeline is a list that can
+    # have None.
+    @property
+    def _asyn_pipeline_configuration_names(self):
+        return [_.configuration_names.name for _ in self._asyn_pipeline if 
+                hasattr(_, 'configuration_names')]
+
+    def describe_configuration(self):
+        # Avoid the method we are overriding
+        ret = ADBase.describe_configuration(self)
+        source_plugin = self.source_plugin
+        if source_plugin is not None:
+            ret.update(source_plugin.describe_configuration())
+        return ret
+
+
+class ImagePlugin(ophyd.plugins.ImagePlugin, PluginBase):
     pass
 
 
-class ImagePlugin(plugins.ImagePlugin, PluginBase):
+class StatsPlugin(ophyd.plugins.StatsPlugin, PluginBase):
     pass
 
 
-class StatsPlugin(plugins.StatsPlugin, PluginBase):
+class ColorConvPlugin(ophyd.plugins.ColorConvPlugin, PluginBase):
     pass
 
 
-class ColorConvPlugin(plugins.ColorConvPlugin, PluginBase):
+class ProcessPlugin(ophyd.plugins.ProcessPlugin, PluginBase):
     pass
 
 
-class ProcessPlugin(plugins.ProcessPlugin, PluginBase):
+class Overlay(ophyd.plugins.Overlay, ADBase):
     pass
 
 
-class Overlay(plugins.Overlay, ADBase):
+class OverlayPlugin(ophyd.plugins.OverlayPlugin, PluginBase):
     pass
 
 
-class OverlayPlugin(plugins.OverlayPlugin, PluginBase):
+class ROIPlugin(ophyd.plugins.ROIPlugin, PluginBase):
     pass
 
 
-class ROIPlugin(plugins.ROIPlugin, PluginBase):
+class TransformPlugin(ophyd.plugins.TransformPlugin, PluginBase):
     pass
 
 
-class TransformPlugin(plugins.TransformPlugin, PluginBase):
+class FilePlugin(ophyd.plugins.FilePlugin, PluginBase, GenerateDatumInterface):
     pass
 
 
-class FilePlugin(plugins.FilePlugin, PluginBase, GenerateDatumInterface):
+class NetCDFPlugin(ophyd.plugins.NetCDFPlugin, FilePlugin):
     pass
 
 
-class NetCDFPlugin(plugins.NetCDFPlugin, FilePlugin):
+class TIFFPlugin(ophyd.plugins.TIFFPlugin, FilePlugin):
     pass
 
 
-class TIFFPlugin(plugins.TIFFPlugin, FilePlugin):
+class JPEGPlugin(ophyd.plugins.JPEGPlugin, FilePlugin):
     pass
 
 
-class JPEGPlugin(plugins.JPEGPlugin, FilePlugin):
+class NexusPlugin(ophyd.plugins.NexusPlugin, FilePlugin):
     pass
 
 
-class NexusPlugin(plugins.NexusPlugin, FilePlugin):
+class HDF5Plugin(ophyd.plugins.HDF5Plugin, FilePlugin):
     pass
 
 
-class HDF5Plugin(plugins.HDF5Plugin, FilePlugin):
-    pass
-
-
-class MagickPlugin(plugins.MagickPlugin, FilePlugin):
+class MagickPlugin(ophyd.plugins.MagickPlugin, FilePlugin):
     pass
 
 
