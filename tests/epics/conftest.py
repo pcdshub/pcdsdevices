@@ -96,6 +96,22 @@ def get_m1h():
     return OffsetMirror("MIRR:FEE1:M1H", section="611")
 
 @pytest.fixture(scope="module")
-def get_p3h():
+def get_p3h_pim():
     return PIMFee("CAMR:FEE1:913", pos_pref="FEE1:P3H", 
                   ioc="IOC:FEE1:PROFILEMON")
+
+@pytest.fixture(scope="module")
+def get_p3h_det():
+    return FeeOpalDetector("CAMR:FEE1:913")
+
+@pytest.fixture(scope="module")
+def get_dg3_pim():
+    return PIM("HFX:DG3:PIM")
+
+@pytest.fixture(scope="module")
+def get_dg3_det():
+    return PIMPulnixDetector("HFX:DG3:CVV:01")
+
+@pytest.fixture(scope="module")
+def get_dg3_mot():
+    return PIMMotor("HFX:DG3:PIM")
