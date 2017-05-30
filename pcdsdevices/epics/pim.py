@@ -57,10 +57,12 @@ class PIM(Device):
     """
     PIM device that also includes a yag.
     """
-    imager = FormattedComponent(PIMPulnixDetector, "{self._imager}")
+    imager = FormattedComponent(PIMPulnixDetector, "{self._section}:{self._imager}:CVV:01")
     motor = Component(PIMMotor, "")
 
-    def __init__(self, prefix, *, imager="", **kwargs):
-        self._imager = imager
-
+    def __init__(self, prefix, **kwargs):
+        self._section = prefix.split(":")[0]
+        self._imager = prefix.split(":")[1]
         super().__init__(prefix, **kwargs)
+
+    
