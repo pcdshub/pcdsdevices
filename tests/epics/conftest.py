@@ -4,8 +4,9 @@ from collections import OrderedDict
 import re
 import pytest
 from pcdsdevices import (ImsMotor, GateValve, Slits, Attenuator,
-                         PulsePickerPink, Stopper, PPSStopper, IPM, PIM, PIMYag,
-                         LODCM, OffsetMirror, FEEYag)
+                         PulsePickerPink, Stopper, PPSStopper, IPM, PIM, 
+                         PIMMotor, PIMPulnixDetector, LODCM, OffsetMirror, 
+                         FEEYag)
 from pcdsdevices.epics.areadetector.detectors import (FEEOpalDetector,
                                                        PulnixDetector)
 
@@ -57,26 +58,25 @@ class Params:
         return params
 
 
-# Params("xcs_ims_usr32", ImsMotor, "XCS:USR:MMS:32", ioc="IOC:XCS:USR:DUMB:IMS")
-# Params("xcs_lam_valve1", GateValve, "XCS:LAM:VGC:01", ioc="XCS:R51:IOC:39")
-# Params("xcs_slits6", Slits, "XCS:SB2:DS:JAWS", ioc="IOC:XCS:SB2:SLITS:IMS")
-# Params("pp_pink", PulsePickerPink, "XCS:SB2:MMS:09", states="XCS:SB2:PP:Y",
-#        ioc="XCS:IOC:PULSEPICKER:IMS", states_ioc="IOC:XCS:DEVICE:STATES")
-# Params("xcs_att", Attenuator, "XCS:ATT", n_filters=10, ioc="IOC:XCS:ATT")
-# Params("dg2_stopper", Stopper, "HFX:DG2:STP:01")
-# Params("s5_pps_stopper", PPSStopper, "PPS:FEH1:4:S4STPRSUM")
-# Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06:IMS",
-#        data="XCS:SB2:IMB:01:SUM")
-# Params("xcs_pim", PIM, "XCS:SB2:PIM6")
-# Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
-# Params("fee_homs", OffsetMirror, "MIRR:FEE1:M1H", section="611")
-# Params("det_p3h", FEEOpalDetector, "CAMR:FEE1:913")
-Params("det_dg3", PulnixDetector, "HFX:DG3:CVV:01")
-# Params("fee_yag", FEEYag, "CAMR:FEE1:913", pos_pref="FEE1:P3H", 
-#        ioc="IOC:FEE1:PROFILEMON")
-# Params("dg3_pim", PIMYag, "HFX:DG3:PIM", imager="HFX:DG3:CVV:01")
-# Params("dg3_pim", PIMYag, "XCS:SB2:PIM6", imager="HFX:DG3:CVV:01")
-
+Params("xcs_ims_usr32", ImsMotor, "XCS:USR:MMS:32", ioc="IOC:XCS:USR:DUMB:IMS")
+Params("xcs_lam_valve1", GateValve, "XCS:LAM:VGC:01", ioc="XCS:R51:IOC:39")
+Params("xcs_slits6", Slits, "XCS:SB2:DS:JAWS", ioc="IOC:XCS:SB2:SLITS:IMS")
+Params("pp_pink", PulsePickerPink, "XCS:SB2:MMS:09", states="XCS:SB2:PP:Y",
+       ioc="XCS:IOC:PULSEPICKER:IMS", states_ioc="IOC:XCS:DEVICE:STATES")
+Params("xcs_att", Attenuator, "XCS:ATT", n_filters=10, ioc="IOC:XCS:ATT")
+Params("dg2_stopper", Stopper, "HFX:DG2:STP:01")
+Params("s5_pps_stopper", PPSStopper, "PPS:FEH1:4:S4STPRSUM")
+Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06:IMS",
+       data="XCS:SB2:IMB:01:SUM")
+Params("xcs_pim", PIM, "XCS:SB2:PIM6")
+Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
+Params("fee_homs", OffsetMirror, "MIRR:FEE1:M1H", section="611")
+Params("det_p3h", FEEOpalDetector, "CAMR:FEE1:913")
+Params("det_dg3", PIMPulnixDetector, "HFX:DG3:CVV:01")
+Params("fee_yag", FEEYag, "CAMR:FEE1:913", pos_pref="FEE1:P3H", 
+       ioc="IOC:FEE1:PROFILEMON")
+Params("dg3_motor", PIMMotor, "HFX:DG3:PIM")
+Params("dg3_pim", PIM, "HFX:DG3:PIM")
 # TODO: add xpp table when xpp comes online
 
 all_params = Params.get()

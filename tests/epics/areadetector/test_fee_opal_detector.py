@@ -11,6 +11,6 @@ from conftest import requires_epics
 
 @requires_epics
 @pytest.mark.timeout(3)
-def test_pulnix_reads():
+def test_fee_opal_reads():
     p3h = FEEOpalDetector("CAMR:FEE1:913")
     assert(isinstance(p3h, FEEOpalDetector))
