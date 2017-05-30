@@ -23,7 +23,7 @@ class PIMPulnixDetector(PulnixDetector):
     stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid'])
     proc1 = Component(ProcessPlugin, ":Proc1:", read_attrs=['num_filter'])
-    
+        
 
 class PIMMotor(Device):
     """
@@ -74,8 +74,9 @@ class PIM(PIMMotor):
         self._section = prefix.split(":")[0]
         self._imager = prefix.split(":")[1]
         super().__init__(prefix, **kwargs)
+        
 
-    def _check_camera(self):
+    def check_camera(self):
         if not self.acquiring:
             raise NotAcquiringError
         if not self.inserted:
@@ -102,14 +103,14 @@ class PIM(PIMMotor):
     @raise_if_disconnected
     def centroid_x(self):
         """Returns the beam centroid in x."""
-        self._check_camera()
+        self.check_camera()
         return self.detector.stats2.centroid.x.value
 
     @property
     @raise_if_disconnected
     def centroid_y(self):
         """Returns the beam centroid in y."""
-        self._check_camera()
+        self.check_camera()
         return self.detector.stats2.centroid.x.value
 
     @property
@@ -156,7 +157,7 @@ class PIMFee(Device):
         super().__init__(prefix, read_attrs=read_attrs, name=name, parent=parent,
                          configuration_attrs=configuration_attrs, **kwargs)    
 
-    def _check_camera(self):
+    def check_camera(self):
         if not self.acquiring:
             raise NotAcquiringError
         if not self.inserted:
@@ -178,7 +179,7 @@ class PIMFee(Device):
     @raise_if_disconnected
     def image(self):
         """Returns an image from the detector."""
-        return self.detector.array_data.value
+        return self.detector.cam.array_data.value
                          
     @property
     @raise_if_disconnected
@@ -204,14 +205,14 @@ class PIMFee(Device):
     @raise_if_disconnected
     def centroid_x(self):
         """Returns the beam centroid in x."""
-        self._check_camera()
+        self.check_camera()
         raise NotImplementedError
 
     @property
     @raise_if_disconnected
     def centroid_y(self):
         """Returns the beam centroid in y."""
-        self._check_camera()
+        self.check_camera()
         raise NotImplementedError
 
     @property

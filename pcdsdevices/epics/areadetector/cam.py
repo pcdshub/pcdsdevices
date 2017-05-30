@@ -149,6 +149,7 @@ class FeeOpalCam(CamBase):
     # Overridden Components
     # array_rate = Component(Signal)
     array_rate = Component(EpicsSignalRO, 'FrameRate')
+    acquire = Component(EpicsSignal, 'Acquire')
 
     # Attrs that arent in the fee opal
     array_counter = Component(FakeSignal) # C(SignalWithRBV, 'ArrayCounter')
