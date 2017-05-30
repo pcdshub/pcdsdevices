@@ -10,7 +10,6 @@ from pcdsdevices import (ImsMotor, GateValve, Slits, Attenuator,
 from pcdsdevices.epics.areadetector.detectors import (FEEOpalDetector,
                                                        PulnixDetector)
 
-
 try:
     import epics
     pv = epics.PV("XCS:USR:MMS:01")
@@ -57,7 +56,6 @@ class Params:
                     params.append(param_obj)
         return params
 
-
 Params("xcs_ims_usr32", ImsMotor, "XCS:USR:MMS:32", ioc="IOC:XCS:USR:DUMB:IMS")
 Params("xcs_lam_valve1", GateValve, "XCS:LAM:VGC:01", ioc="XCS:R51:IOC:39")
 Params("xcs_slits6", Slits, "XCS:SB2:DS:JAWS", ioc="IOC:XCS:SB2:SLITS:IMS")
@@ -91,3 +89,7 @@ def all_devices(request):
     prefix = request.param.prefix
     kwargs = request.param.kwargs
     return cls(prefix, **kwargs)
+
+@pytest.fixture(scope="module")
+def get_m1h():
+    return OffsetMirror("MIRR:FEE1:M1H", section="611")
