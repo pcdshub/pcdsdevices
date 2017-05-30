@@ -15,6 +15,18 @@ logger = logging.getLogger(__name__)
 
 
 class PluginBase(ophyd.plugins.PluginBase, ADBase):
+
+    @property
+    def source_plugin(self):
+        '''The PluginBase object that is the asyn source for this plugin.
+        '''
+        source_port = self.nd_array_port.get()
+        if source_port == 'CAM' or not hasattr(
+                self.root, 'get_plugin_by_asyn_port'):
+            return None
+        source_plugin = self.root.get_plugin_by_asyn_port(source_port)
+        return source_plugin
+
     @property
     def _asyn_pipeline_configuration_names(self):
     # This broke any instantiated plugin b/c _asyn_pipeline is a list that can
@@ -25,9 +37,10 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
     @property
     def _asyn_pipeline(self):
         parent = None
-        if hasattr(parent, '_asyn_pipeline'):
+        if hasattr(self.root, 'get_plugin_by_asyn_port'):
             parent = self.root.get_plugin_by_asyn_port(self.nd_array_port.get())
-            return parent._asyn_pipeline + (self, )
+            if hasattr(parent, '_asyn_pipeline'):
+                return parent._asyn_pipeline + (self, )
         return (parent, self)
 
     def describe_configuration(self):
