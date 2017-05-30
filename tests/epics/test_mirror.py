@@ -11,7 +11,7 @@ from epics import caget
 from pcdsdevices.epics.mirror import OffsetMirror
 from conftest import requires_epics
 
-TOL = 1e-4
+TOL = 5e-4
 AVE = 10
 
 @requires_epics
