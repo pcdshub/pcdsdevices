@@ -11,8 +11,8 @@ from .iocdevice import IocDevice
 from .state import statesrecord_class
 from .signal import (EpicsSignal, EpicsSignalRO)
 from .component import (Component, FormattedComponent)
-from .areadetector.plugins import (ImagePlugin, StatsPlugin)
 from .areadetector.detectors import (PulnixDetector, FeeOpalDetector)
+from .areadetector.plugins import (ImagePlugin, StatsPlugin, ProcessPlugin)
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +22,7 @@ class PIMPulnixDetector(PulnixDetector):
     image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
     stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid'])
+    proc1 = Component(ProcessPlugin, ":Proc1:", read_attrs=['num_filter'])
     
 
 class PIMMotor(Device):
@@ -31,16 +32,6 @@ class PIMMotor(Device):
     YAG crystal to determine beam position.
     """
     states = Component(PIMStates, "")
-
-    @property
-    def blocking(self):
-        if self.states.value in ("OUT", "DIODE"):
-            return False
-        return True
-
-    @property
-    def inserted(self):
-        return not self.blocking
 
     def move_in(self):
         """
@@ -60,12 +51,23 @@ class PIMMotor(Device):
         """
         self.states.value = "DIODE"
 
+    @property
+    def blocking(self):
+        if self.states.value in ("OUT", "DIODE"):
+            return False
+        return True
+
+    @property
+    def inserted(self):
+        return not self.blocking
+
 
 class PIM(PIMMotor):
     """
     PIM device that also includes a yag.
     """
-    imager = FormattedComponent(PIMPulnixDetector, "{self._section}:{self._imager}:CVV:01")
+    detector = FormattedComponent(PIMPulnixDetector, 
+                                  "{self._section}:{self._imager}:CVV:01")
     # motor = Component(PIMMotor, "")
 
     def __init__(self, prefix, **kwargs):
@@ -81,23 +83,34 @@ class PIM(PIMMotor):
 
     @property
     @raise_if_disconnected
+    def image(self):
+        """Returns an image from the detector."""
+        return self.detector.image2.array_data.value
+
+    @property
+    @raise_if_disconnected
     def acquiring(self):
         """Checks to see if the camera is currently acquiring iamges."""
-        return bool(self.imager.cam.acquire.value)
+        return bool(self.detector.cam.acquire.value)
+
+    @acquiring.setter
+    def acquiring(self, val):
+        """Setter for acquiring."""
+        self.detector.cam.acquire.put(bool(val))
 
     @property
     @raise_if_disconnected
     def centroid_x(self):
         """Returns the beam centroid in x."""
         self._check_camera()
-        return self.imager.stats2.centroid.x.value
+        return self.detector.stats2.centroid.x.value
 
     @property
     @raise_if_disconnected
     def centroid_y(self):
         """Returns the beam centroid in y."""
         self._check_camera()
-        return self.imager.stats2.centroid.x.value
+        return self.detector.stats2.centroid.x.value
 
     @property
     def centroid(self):
@@ -110,7 +123,7 @@ class PIMFee(Device):
     YAG detector using Dehongs IOC.
     """
     # Opal
-    imager = FormattedComponent(FeeOpalDetector, "{self._prefix}", 
+    detector = FormattedComponent(FeeOpalDetector, "{self._prefix}", 
                                 name="Opal Camera")
 
     # Yag Motors
@@ -135,10 +148,10 @@ class PIMFee(Device):
         self.out_pos = out_pos
 
         if read_attrs is None:
-            read_attrs = ['imager', 'zoom', 'focus', 'yag', 'pos']
+            read_attrs = ['detector', 'zoom', 'focus', 'yag', 'pos']
 
         if configuration_attrs is None:
-            configuration_attrs = ['imager', 'zoom', 'focus', 'yag', 'pos']
+            configuration_attrs = ['detector', 'zoom', 'focus', 'yag', 'pos']
             
         super().__init__(prefix, read_attrs=read_attrs, name=name, parent=parent,
                          configuration_attrs=configuration_attrs, **kwargs)    
@@ -148,15 +161,6 @@ class PIMFee(Device):
             raise NotAcquiringError
         if not self.inserted:
             raise NotInsertedError
-                         
-    @property
-    @raise_if_disconnected
-    def blocking(self):
-        return bool(self.pos.value)
-
-    @property
-    def inserted(self):
-        return not self.blocking
 
     def move_in(self):
         """
@@ -172,9 +176,29 @@ class PIMFee(Device):
 
     @property
     @raise_if_disconnected
+    def image(self):
+        """Returns an image from the detector."""
+        return self.detector.array_data.value
+                         
+    @property
+    @raise_if_disconnected
+    def blocking(self):
+        return bool(self.pos.value)
+
+    @property
+    def inserted(self):
+        return not self.blocking
+
+    @property
+    @raise_if_disconnected
     def acquiring(self):
         """Checks to see if the camera is currently acquiring iamges."""
-        raise NotImplementedError
+        return bool(self.detector.cam.acquire.value)
+
+    @acquiring.setter
+    def acquiring(self, val):
+        """Setter for acquiring."""
+        self.detector.cam.acquire.put(bool(val))
 
     @property
     @raise_if_disconnected
@@ -202,7 +226,7 @@ class PIMExceptions(Exception):
 
 class NotAcquiringError(PIMExceptions):
     def __init__(self, *args, **kwargs):
-        self.msg = kwargs.pop("msg", "Camera currently acquiring images.")
+        self.msg = kwargs.pop("msg", "Camera currently not acquiring images.")
         super().__init__(*args, **kwargs)
     def __str__(self):
         return repr(self.msg)
