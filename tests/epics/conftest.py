@@ -94,3 +94,8 @@ def all_devices(request):
 @pytest.fixture(scope="module")
 def get_m1h():
     return OffsetMirror("MIRR:FEE1:M1H", section="611")
+
+@pytest.fixture(scope="module")
+def get_p3h():
+    return PIMFee("CAMR:FEE1:913", pos_pref="FEE1:P3H", 
+                  ioc="IOC:FEE1:PROFILEMON")
