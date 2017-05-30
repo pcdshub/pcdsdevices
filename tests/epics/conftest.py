@@ -4,9 +4,11 @@ from collections import OrderedDict
 import re
 import pytest
 from pcdsdevices import (ImsMotor, GateValve, Slits, Attenuator,
-                         PulsePickerPink, Stopper, PPSStopper, IPM, PIM,
-                         LODCM, OffsetMirror, FEEYag)
-
+                         PulsePickerPink, Stopper, PPSStopper, IPM, PIM, 
+                         PIMMotor, PIMPulnixDetector, LODCM, OffsetMirror, 
+                         PIMFee )
+from pcdsdevices.epics.areadetector.detectors import (FeeOpalDetector,
+                                                       PulnixDetector)
 
 try:
     import epics
@@ -54,7 +56,6 @@ class Params:
                     params.append(param_obj)
         return params
 
-
 Params("xcs_ims_usr32", ImsMotor, "XCS:USR:MMS:32", ioc="IOC:XCS:USR:DUMB:IMS")
 Params("xcs_lam_valve1", GateValve, "XCS:LAM:VGC:01", ioc="XCS:R51:IOC:39")
 Params("xcs_slits6", Slits, "XCS:SB2:DS:JAWS", ioc="IOC:XCS:SB2:SLITS:IMS")
@@ -65,11 +66,16 @@ Params("dg2_stopper", Stopper, "HFX:DG2:STP:01")
 Params("s5_pps_stopper", PPSStopper, "PPS:FEH1:4:S4STPRSUM")
 Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06:IMS",
        data="XCS:SB2:IMB:01:SUM")
-Params("xcs_pim", PIM, "XCS:SB2:PIM6", ioc="IOC:XCS:SB2:PIM06:IMS")
+Params("xcs_pim", PIM, "XCS:SB2:PIM6")
 Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
 Params("fee_homs", OffsetMirror, "MIRR:FEE1:M1H", section="611")
-Params("fee_yag", FEEYag, "CAMR:FEE1:913", pos_pref="FEE1:P3H", 
+Params("det_p3h", FeeOpalDetector, "CAMR:FEE1:913")
+Params("det_dg3", PIMPulnixDetector, "HFX:DG3:CVV:01")
+Params("fee_yag", PIMFee, "CAMR:FEE1:913", pos_pref="FEE1:P3H", 
        ioc="IOC:FEE1:PROFILEMON")
+Params("dg3_motor", PIMMotor, "HFX:DG3:PIM")
+Params("dg3_pim", PIM, "HFX:DG3:PIM")
+
 # TODO: add xpp table when xpp comes online
 
 all_params = Params.get()
@@ -84,3 +90,28 @@ def all_devices(request):
     prefix = request.param.prefix
     kwargs = request.param.kwargs
     return cls(prefix, **kwargs)
+
+@pytest.fixture(scope="module")
+def get_m1h():
+    return OffsetMirror("MIRR:FEE1:M1H", section="611")
+
+@pytest.fixture(scope="module")
+def get_p3h_pim():
+    return PIMFee("CAMR:FEE1:913", pos_pref="FEE1:P3H", 
+                  ioc="IOC:FEE1:PROFILEMON")
+
+@pytest.fixture(scope="module")
+def get_p3h_det():
+    return FeeOpalDetector("CAMR:FEE1:913")
+
+@pytest.fixture(scope="module")
+def get_dg3_pim():
+    return PIM("HFX:DG3:PIM")
+
+@pytest.fixture(scope="module")
+def get_dg3_det():
+    return PIMPulnixDetector("HFX:DG3:CVV:01")
+
+@pytest.fixture(scope="module")
+def get_dg3_mot():
+    return PIMMotor("HFX:DG3:PIM")

@@ -11,13 +11,14 @@ from ophyd.utils import enum
 
 from .base import (ADBase, ADComponent, EpicsSignalWithRBV)
 from ..signal import (EpicsSignal, EpicsSignalRO, FakeSignal)
-from ...device import DynamicDeviceComponent
-from ...component import Component
+from ..component import (Component, FormattedComponent)
+from ..device import DynamicDeviceComponent
 
 logger = logging.getLogger(__name__)
 
 __all__ = ['CamBase',
-           'FEEOpalCam',
+           'PulnixCam',
+           'FeeOpalCam',
            'AdscDetectorCam',
            'Andor3DetectorCam',
            'AndorDetectorCam',
@@ -65,7 +66,11 @@ class AreaDetectorCam(cam.AreaDetectorCam, CamBase):
     pass
 
 
-class FEEOpalCam(CamBase):
+class PulnixCam(CamBase):
+    pass
+
+
+class FeeOpalCam(CamBase):
     # enums?
     # trigger_modes = enum("Internal", "External", start=0)
     # exposure_modes = enum("Full Frame", "HW ROI", start=0)
@@ -144,6 +149,7 @@ class FEEOpalCam(CamBase):
     # Overridden Components
     # array_rate = Component(Signal)
     array_rate = Component(EpicsSignalRO, 'FrameRate')
+    acquire = Component(EpicsSignal, 'Acquire')
 
     # Attrs that arent in the fee opal
     array_counter = Component(FakeSignal) # C(SignalWithRBV, 'ArrayCounter')

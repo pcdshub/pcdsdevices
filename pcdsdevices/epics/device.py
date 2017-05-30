@@ -3,5 +3,5 @@
 """
 Overrides to ophyd.Device that are relevant for epics devices.
 """
-from ..device import Device
+from ..device import (Device, DynamicDeviceComponent)
 # Nothing here right now, but there could be later

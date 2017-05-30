@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
+from enum import Enum
 from epics.pv import fmt_time
+
 from ophyd import PositionerBase
 from ophyd.utils import DisconnectedError
 from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
+
 from .signal import (EpicsSignal, EpicsSignalRO)
 from .device import Device
 from .component import (FormattedComponent, Component)
@@ -38,7 +41,7 @@ class OMMotor(Device, PositionerBase):
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, **kwargs):
         if read_attrs is None:
-            read_attrs = ['user_readback', 'user_setpoint']
+            read_attrs = ['user_readback', 'user_setpoint', 'interlock']
 
         if configuration_attrs is None:
             configuration_attrs = ['velocity', 'acceleration', 'interlock',
@@ -325,32 +328,28 @@ class CouplingMotor(Device):
     """
     Device that manages the coupling between gantry motors.
     """
-    gdif = Component(EpicsSignalRO, ':GDIF')
-    gtol = Component(EpicsSignal, ':GTOL', limits=True)
+    gan_diff = Component(EpicsSignalRO, ':GDIF')
+    gan_tol = Component(EpicsSignal, ':GTOL', limits=True)
     enabled = Component(EpicsSignal, ':ENABLED')
     decouple = Component(EpicsSignal, ':DECOUPLE')
-
     high_limit_switch = Component(EpicsSignal, ':HLS')
     low_limit_switch = Component(EpicsSignal, ':LLS')
-
     fault = Component(EpicsSignalRO, ':FAULT')
 
     def __init__(self, prefix, *, name=None, read_attrs=None, parent=None, 
                  configuration_attrs=None, **kwargs):
         if read_attrs is None:
-            read_attrs = ['pitch', 'piezo', 'gan_x_p', 'gan_x_s']
+            read_attrs = ['gan_diff', 'decouple']
             
         if configuration_attrs is None:
-            configuration_attrs = ['gdif', 'gtol', 'enabled', 'decouple', 
-                                   'fault', 'high_limit_switch', 
+            configuration_attrs = ['gan_dif', 'gan_tol', 'enabled', 
+                                   'decouple', 'fault', 'high_limit_switch', 
                                    'low_limit_switch']
 
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
                          name=name, parent=parent, **kwargs)
         
-
-    
 
 class OffsetMirror(Device):
     """
@@ -359,8 +358,8 @@ class OffsetMirror(Device):
     # Gantry motors
     gan_x_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
     gan_x_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:S")
-    gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
-    gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:S")
+    gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:P")
+    gan_y_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:S")
 
     # Piezo motor
     piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")
@@ -381,7 +380,7 @@ class OffsetMirror(Device):
         self._section = section
 
         if read_attrs is None:
-            read_attrs = ['pitch', 'piezo', 'gan_x_p', 'gan_x_s']
+            read_attrs = ['pitch', 'piezo', 'gan_x_p', 'gan_x_s', 'coupling']
 
         if configuration_attrs is None:
             configuration_attrs = ['pitch', 'piezo', 'gan_x_p', 'gan_x_s',
@@ -390,3 +389,44 @@ class OffsetMirror(Device):
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
                          name=name, parent=parent, **kwargs)
+
+    @property
+    @raise_if_disconnected
+    def alpha(self):
+        """Mirror pitch readback."""
+        return self.pitch.user_readback.value
+
+    @alpha.setter
+    def alpha(self, position, **kwargs):
+        """Mirror pitch setter."""
+        return self.pitch.move(position, **kwargs)
+
+    @property
+    @raise_if_disconnected
+    def x(self):
+        """Mirror x position readback."""
+        return self.gan_x_p.user_readback.value
+
+    @x.setter
+    def x(self, position):
+        """Mirror x position setter."""
+        return self.gan_x_p.move(position, **kwargs)
+
+    @property
+    @raise_if_disconnected
+    def decoupled(self):
+        """Checks to see if the gantry x motors are coupled."""
+        return bool(self.coupling.decouple.value)
+
+    @property
+    @raise_if_disconnected
+    def fault(self):
+        """Checks if the coupling motor is faulted."""
+        return bool(self.coupling.fault.value)
+
+    @property
+    @raise_if_disconnected
+    def gdif(self):
+        """Returns the gantry difference of the x gantry motors."""
+        return self.coupling.gan_diff.value
+
