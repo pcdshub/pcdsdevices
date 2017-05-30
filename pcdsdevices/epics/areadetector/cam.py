@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 __all__ = ['CamBase',
            'PulnixCam',
-           'FEEOpalCam',
+           'FeeOpalCam',
            'AdscDetectorCam',
            'Andor3DetectorCam',
            'AndorDetectorCam',
@@ -70,7 +70,7 @@ class PulnixCam(CamBase):
     pass
 
 
-class FEEOpalCam(CamBase):
+class FeeOpalCam(CamBase):
     # enums?
     # trigger_modes = enum("Internal", "External", start=0)
     # exposure_modes = enum("Full Frame", "HW ROI", start=0)

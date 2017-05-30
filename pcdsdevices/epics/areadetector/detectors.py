@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 __all__ = ['DetectorBase',
            'AreaDetector',
            'PulnixDetector',
-           'FEEOpalDetector',
+           'FeeOpalDetector',
            'AdscDetector',
            'Andor3Detector',
            'AndorDetector',
@@ -51,8 +51,8 @@ class PulnixDetector(DetectorBase):
     cam = ADComponent(cam.PulnixCam, ":")
 
 
-class FEEOpalDetector(DetectorBase):
-    cam = ADComponent(cam.FEEOpalCam, ":")
+class FeeOpalDetector(DetectorBase):
+    cam = ADComponent(cam.FeeOpalCam, ":")
 
 
 class SimDetector(detectors.SimDetector, DetectorBase):

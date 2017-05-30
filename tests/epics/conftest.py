@@ -6,8 +6,8 @@ import pytest
 from pcdsdevices import (ImsMotor, GateValve, Slits, Attenuator,
                          PulsePickerPink, Stopper, PPSStopper, IPM, PIM, 
                          PIMMotor, PIMPulnixDetector, LODCM, OffsetMirror, 
-                         FEEYag)
-from pcdsdevices.epics.areadetector.detectors import (FEEOpalDetector,
+                         PIMFee )
+from pcdsdevices.epics.areadetector.detectors import (FeeOpalDetector,
                                                        PulnixDetector)
 
 try:
@@ -69,12 +69,13 @@ Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06:IMS",
 Params("xcs_pim", PIM, "XCS:SB2:PIM6")
 Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
 Params("fee_homs", OffsetMirror, "MIRR:FEE1:M1H", section="611")
-Params("det_p3h", FEEOpalDetector, "CAMR:FEE1:913")
+Params("det_p3h", FeeOpalDetector, "CAMR:FEE1:913")
 Params("det_dg3", PIMPulnixDetector, "HFX:DG3:CVV:01")
-Params("fee_yag", FEEYag, "CAMR:FEE1:913", pos_pref="FEE1:P3H", 
+Params("fee_yag", PIMFee, "CAMR:FEE1:913", pos_pref="FEE1:P3H", 
        ioc="IOC:FEE1:PROFILEMON")
 Params("dg3_motor", PIMMotor, "HFX:DG3:PIM")
 Params("dg3_pim", PIM, "HFX:DG3:PIM")
+
 # TODO: add xpp table when xpp comes online
 
 all_params = Params.get()

@@ -34,3 +34,8 @@ from conftest import requires_epics
 #     dg3_pim = pim.PIM("HFX:DG3:PIM", imager="HFX:DG3:CVV:01")
 #     assert(dg3_pim.read())
 
+@requires_epics
+@pytest.mark.timeout(3)
+def test_pim_fee_reads():
+    p3h = pim.PIMFee("CAMR:FEE1:913:", pos_pref="FEE1:P3H")
+    assert isinstance(p3h, pim.PIMFee)
