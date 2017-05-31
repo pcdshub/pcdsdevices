@@ -390,16 +390,26 @@ class OffsetMirror(Device):
                          configuration_attrs=configuration_attrs,
                          name=name, parent=parent, **kwargs)
 
+    def move(self, position, **kwargs):
+        """Move to the inputted position in pitch."""
+        return self.pitch.move(position, **kwargs)
+    
+    @property
+    @raise_if_disconnected
+    def position(self):
+        """Readback the current pitch position."""
+        return self.pitch.user_readback.value        
+
     @property
     @raise_if_disconnected
     def alpha(self):
-        """Mirror pitch readback."""
-        return self.pitch.user_readback.value
+        """Mirror pitch readback. Does the same thing as self.position."""
+        return self.position
 
     @alpha.setter
     def alpha(self, position, **kwargs):
-        """Mirror pitch setter."""
-        return self.pitch.move(position, **kwargs)
+        """Mirror pitch setter. Does the same thing as self.move."""
+        return self.move(position, **kwargs)
 
     @property
     @raise_if_disconnected

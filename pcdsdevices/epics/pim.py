@@ -13,6 +13,7 @@ from .signal import (EpicsSignal, EpicsSignalRO)
 from .component import (Component, FormattedComponent)
 from .areadetector.detectors import (PulnixDetector, FeeOpalDetector)
 from .areadetector.plugins import (ImagePlugin, StatsPlugin, ProcessPlugin)
+from ..utils.pyutils import isnumber
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +34,7 @@ class PIMMotor(Device):
     """
     states = Component(PIMStates, "")
 
+
     def move_in(self):
         """
         Move the PIM to the YAG position.
@@ -50,6 +52,33 @@ class PIMMotor(Device):
         Move the PIM to the DIODE position.
         """
         self.states.value = "DIODE"
+
+    def move(self, position, **kwargs):
+        """
+        Move the PIM to the inputted position.
+        """
+        if isnumber(position) and position in (1, 2, 3):
+            return self.states.state.set(position)
+        elif isinstance(position, str):
+            if position.upper() in ("DIODE", "YAG", "OUT"): 
+                return self.states.state.set(position.upper())
+        raise ValueError("Position must be a PIM valid state.")
+        
+    @property
+    @raise_if_disconnected
+    def position(self):
+        """
+        Return the current position of the yag.
+        """
+        return self.states.state.value
+
+    @property
+    @raise_if_disconnected
+    def state(self):
+        """
+        Alias for self.position.
+        """
+        return self.position
 
     @property
     def blocking(self):
@@ -174,6 +203,38 @@ class PIMFee(Device):
         Move the PIM to the OUT position.
         """
         return self.yag.move(self.out_pos)
+
+    def move(self, position, **kwargs):
+        """
+        Move the PIM to the inputted position.
+        """
+        if isnumber(position):
+            if position == 0:
+                return self.move_out()
+            elif position == 1:
+                return self.move_in()            
+        elif isinstance(position, str):
+            if position.upper() == "IN":
+                return self.move_in()
+            elif position.upper() == "OUT":
+                return self.move_out()
+        raise ValueError("Position must be a PIM valid state.")
+        
+    @property
+    @raise_if_disconnected
+    def position(self):
+        """
+        Return the current position of the yag.
+        """
+        return self.states.state.value
+
+    @property
+    @raise_if_disconnected
+    def state(self):
+        """
+        Alias for self.position.
+        """
+        return self.position
 
     @property
     @raise_if_disconnected
