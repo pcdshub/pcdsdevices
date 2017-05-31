@@ -3,10 +3,12 @@
 import logging
 from enum import Enum
 from epics.pv import fmt_time
+import time
 
 from ophyd import PositionerBase
 from ophyd.utils import DisconnectedError
 from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
+from ophyd.status import wait as status_wait
 
 from .signal import (EpicsSignal, EpicsSignalRO)
 from .device import Device
@@ -26,10 +28,11 @@ class OMMotor(Device, PositionerBase):
 
     # configuration
     velocity = Component(EpicsSignal, ':VELO')
-    acceleration = Component(EpicsSignal, ':ACCL')
+    # acceleration = Component(EpicsSignal, ':ACCL')
 
     # motor status
     motor_is_moving = Component(EpicsSignalRO, ':MOVN')
+    # Commented out to speed up connection time
     motor_done_move = Component(EpicsSignalRO, ':DMOV')
     high_limit_switch = Component(EpicsSignal, ':HLS')
     low_limit_switch = Component(EpicsSignal, ':LLS')
@@ -44,7 +47,7 @@ class OMMotor(Device, PositionerBase):
             read_attrs = ['user_readback', 'user_setpoint', 'interlock']
 
         if configuration_attrs is None:
-            configuration_attrs = ['velocity', 'acceleration', 'interlock',
+            configuration_attrs = ['velocity', 'interlock',
                                    'enabled', 'user_offset', 'user_offset_dir']
 
         super().__init__(prefix, read_attrs=read_attrs,
@@ -355,11 +358,12 @@ class OffsetMirror(Device):
     """
     Device that steers the beam.
     """
+    # Commenting out to increase the move time.
     # Gantry motors
-    gan_x_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
-    gan_x_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:S")
-    gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:P")
-    gan_y_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:S")
+    # gan_x_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
+    # gan_x_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:S")
+    # gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:P")
+    # gan_y_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:S")
 
     # Piezo motor
     piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")
@@ -391,8 +395,11 @@ class OffsetMirror(Device):
                          name=name, parent=parent, **kwargs)
 
     def move(self, position, **kwargs):
-        """Move to the inputted position in pitch."""
+        """Move to the inputted position in pitch."""        
         return self.pitch.move(position, **kwargs)
+        # status = self.pitch.user_setpoint.set(position)
+        # time.sleep(10)
+        # return status
 
     def set(self, position, **kwargs):
         """Alias for move."""
@@ -415,16 +422,16 @@ class OffsetMirror(Device):
         """Mirror pitch setter. Does the same thing as self.move."""
         return self.move(position, **kwargs)
 
-    @property
-    @raise_if_disconnected
-    def x(self):
-        """Mirror x position readback."""
-        return self.gan_x_p.user_readback.value
+    # @property
+    # @raise_if_disconnected
+    # def x(self):
+    #     """Mirror x position readback."""
+    #     return self.gan_x_p.user_readback.value
 
-    @x.setter
-    def x(self, position):
-        """Mirror x position setter."""
-        return self.gan_x_p.move(position, **kwargs)
+    # @x.setter
+    # def x(self, position):
+    #     """Mirror x position setter."""
+    #     return self.gan_x_p.move(position, **kwargs)
 
     @property
     @raise_if_disconnected

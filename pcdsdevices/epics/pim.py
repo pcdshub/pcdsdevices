@@ -20,10 +20,10 @@ logger = logging.getLogger(__name__)
 PIMStates = statesrecord_class("PIMStates", ":OUT", ":YAG", ":DIODE")
 
 class PIMPulnixDetector(PulnixDetector):
-    image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
-    stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid'])
+    # image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
+    # stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid'])
-    proc1 = Component(ProcessPlugin, ":Proc1:", read_attrs=['num_filter'])
+    # proc1 = Component(ProcessPlugin, ":Proc1:", read_attrs=['num_filter'])
         
 
 class PIMMotor(Device):
