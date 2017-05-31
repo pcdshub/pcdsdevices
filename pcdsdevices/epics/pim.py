@@ -34,7 +34,6 @@ class PIMMotor(Device):
     """
     states = Component(PIMStates, "")
 
-
     def move_in(self):
         """
         Move the PIM to the YAG position.
@@ -57,10 +56,13 @@ class PIMMotor(Device):
         """
         Move the PIM to the inputted position.
         """
+        # Adding the ability to input "IN" in addition to yag for bluesky
         if isnumber(position) and position in (1, 2, 3):
             return self.states.state.set(position)
         elif isinstance(position, str):
-            if position.upper() in ("DIODE", "YAG", "OUT"): 
+            if position.upper() in ("DIODE", "OUT", "IN", "YAG"): 
+                if position.upper() == "IN":
+                    return self.states.state.set("YAG")
                 return self.states.state.set(position.upper())
         raise ValueError("Position must be a PIM valid state.")
 
@@ -76,7 +78,11 @@ class PIMMotor(Device):
         """
         Return the current position of the yag.
         """
-        return self.states.state.value
+        # Changing readback for "YAG" to "IN" for bluesky
+        pos = self.states.state.value
+        if pos == "YAG":
+            return "IN"
+        return pos
 
     @property
     @raise_if_disconnected
