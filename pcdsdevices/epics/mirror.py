@@ -393,6 +393,10 @@ class OffsetMirror(Device):
     def move(self, position, **kwargs):
         """Move to the inputted position in pitch."""
         return self.pitch.move(position, **kwargs)
+
+    def set(self, position, **kwargs):
+        """Alias for move."""
+        return self.move(position, **kwargs)
     
     @property
     @raise_if_disconnected

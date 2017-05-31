@@ -63,6 +63,12 @@ class PIMMotor(Device):
             if position.upper() in ("DIODE", "YAG", "OUT"): 
                 return self.states.state.set(position.upper())
         raise ValueError("Position must be a PIM valid state.")
+
+    def set(self, position, **kwargs):
+        """
+        Alias for move.
+        """
+        self.move(position, **kwargs)
         
     @property
     @raise_if_disconnected
