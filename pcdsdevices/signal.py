@@ -5,7 +5,6 @@ from threading import Event, RLock
 from contextlib import contextmanager
 
 import ophyd.signal
-# from ophyd.utils import doc_annotation_forwarder
 
 logger = logging.getLogger(__name__)
 
@@ -23,12 +22,6 @@ class Signal(ophyd.signal.Signal):
         super().__init__(value=value, timestamp=timestamp, name=name,
                          parent=parent, tolerance=tolerance,
                          rtolerance=rtolerance)
-
-    # @doc_annotation_forwarder(ophyd.signal.Signal)
-    def put(self, value, *, timestamp=None, force=False, **kwargs):
-        logger.debug("Changing stored value of %s from %s to %s at time=%s",
-                     self.name or self, self.get(), value, timestamp)
-        super().put(value, timestamp=timestamp, force=force, **kwargs)
 
     def wait_for_value(self, value, old_value=None, timeout=None, prep=True):
         """
