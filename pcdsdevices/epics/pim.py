@@ -70,7 +70,7 @@ class PIMMotor(Device):
         """
         Alias for move.
         """
-        self.move(position, **kwargs)
+        return self.move(position, **kwargs)
         
     @property
     @raise_if_disconnected
