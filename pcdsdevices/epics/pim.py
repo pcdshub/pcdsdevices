@@ -138,7 +138,7 @@ class PIM(PIMMotor):
     @acquiring.setter
     def acquiring(self, val):
         """Setter for acquiring."""
-        self.detector.cam.acquire.put(bool(val))
+        return self.detector.cam.acquire.set(bool(val))
 
     @property
     @raise_if_disconnected
@@ -272,7 +272,7 @@ class PIMFee(Device):
     @acquiring.setter
     def acquiring(self, val):
         """Setter for acquiring."""
-        self.detector.cam.acquire.put(bool(val))
+        return self.detector.cam.acquire.set(bool(val))
 
     @property
     @raise_if_disconnected
