@@ -20,10 +20,11 @@ logger = logging.getLogger(__name__)
 PIMStates = statesrecord_class("PIMStates", ":OUT", ":YAG", ":DIODE")
 
 class PIMPulnixDetector(PulnixDetector):
-    # image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
-    # stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid'])
-    stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid'])
-    # proc1 = Component(ProcessPlugin, ":Proc1:", read_attrs=['num_filter'])
+    #image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
+    #stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid'])
+    stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
+                                                            'mean_value'])
+    #proc1 = Component(ProcessPlugin, ":Proc1:", read_attrs=['num_filter'])
         
 
 class PIMMotor(Device):
@@ -108,8 +109,8 @@ class PIM(PIMMotor):
     PIM device that also includes a yag.
     """
     detector = FormattedComponent(PIMPulnixDetector, 
-                                  "{self._section}:{self._imager}:CVV:01")
-    # motor = Component(PIMMotor, "")
+                                  "{self._section}:{self._imager}:CVV:01",
+                                  read_attrs=['stats2'])
 
     def __init__(self, prefix, **kwargs):
         self._section = prefix.split(":")[0]

@@ -48,7 +48,7 @@ class OMMotor(Device, PositionerBase):
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, **kwargs):
         if read_attrs is None:
-            read_attrs = ['user_readback', 'user_setpoint', 'interlock']
+            read_attrs = ['user_readback']
 
         if configuration_attrs is None:
             configuration_attrs = ['velocity', 'interlock',
@@ -364,10 +364,10 @@ class OffsetMirror(Device):
     """
     # Commenting out to increase the move time.
     # Gantry motors
-    # gan_x_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
-    # gan_x_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:S")
-    # gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:P")
-    # gan_y_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:S")
+    gan_x_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
+    gan_x_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:S")
+    gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:P")
+    gan_y_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:S")
 
     # Piezo motor
     piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")
@@ -390,11 +390,10 @@ class OffsetMirror(Device):
         self._section = section
 
         if read_attrs is None:
-            read_attrs = ['pitch', 'piezo', 'gan_x_p', 'gan_x_s', 'coupling']
+            read_attrs = ['pitch', 'gan_x_p', 'gan_x_s']
 
         if configuration_attrs is None:
-            configuration_attrs = ['pitch', 'piezo', 'gan_x_p', 'gan_x_s',
-                                   'gan_y_p', 'gan_y_s', 'coupling']
+            configuration_attrs = []
 
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
@@ -428,16 +427,16 @@ class OffsetMirror(Device):
         """Mirror pitch setter. Does the same thing as self.move."""
         return self.move(position, **kwargs)
 
-    # @property
-    # @raise_if_disconnected
-    # def x(self):
-    #     """Mirror x position readback."""
-    #     return self.gan_x_p.user_readback.value
+    @property
+    @raise_if_disconnected
+    def x(self):
+        """Mirror x position readback."""
+        return self.gan_x_p.user_readback.value
 
-    # @x.setter
-    # def x(self, position):
-    #     """Mirror x position setter."""
-    #     return self.gan_x_p.move(position, **kwargs)
+    @x.setter
+    def x(self, position):
+        """Mirror x position setter."""
+        return self.gan_x_p.move(position, **kwargs)
 
     @property
     @raise_if_disconnected
