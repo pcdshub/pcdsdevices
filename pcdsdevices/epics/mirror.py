@@ -9,6 +9,7 @@ from ophyd import PositionerBase
 from ophyd.utils import DisconnectedError
 from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
 from ophyd.status import wait as status_wait
+from ophyd.signal import Signal
 
 from .signal import (EpicsSignal, EpicsSignalRO)
 from .device import Device
@@ -23,7 +24,7 @@ class OMMotor(Device, PositionerBase):
     from ophyd.epics_motor.
     """
     # position
-    user_readback = Component(EpicsSignalRO, ':RBV')
+    user_readback = Component(EpicsSignalRO, ':RBV', auto_monitor=True)
     user_setpoint = Component(EpicsSignal, ':VAL', limits=True)
 
     # configuration
@@ -33,13 +34,16 @@ class OMMotor(Device, PositionerBase):
     # motor status
     motor_is_moving = Component(EpicsSignalRO, ':MOVN')
     # Commented out to speed up connection time
-    motor_done_move = Component(EpicsSignalRO, ':DMOV')
+#    motor_done_move = Component(EpicsSignalRO, ':DMOV')
+    motor_done_move = Component(EpicsSignalRO, ':DMOV', auto_monitor=True)
     high_limit_switch = Component(EpicsSignal, ':HLS')
     low_limit_switch = Component(EpicsSignal, ':LLS')
 
     # status
     interlock = Component(EpicsSignalRO, ':INTERLOCK')
     enabled = Component(EpicsSignalRO, ':ENABLED')
+
+    motor_stop = Component(Signal)
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, **kwargs):
@@ -171,22 +175,20 @@ class OMMotor(Device, PositionerBase):
         if was_moving and not self._moving:
             success = True
             # Check if we are moving towards the low limit switch
-            if self.direction_of_travel.get() == 0:
-                if self.low_limit_switch.get() == 1:
-                    success = False
-            # No, we are going to the high limit switch
-            else:
-                if self.high_limit_switch.get() == 1:
-                    success = False
+            #if self.low_limit_switch.get() == 1:
+            #    success = False
+            #if self.high_limit_switch.get() == 1:
+            #    success = False
 
-            severity = self.user_readback.alarm_severity
+            # Some issues with severity, ctrl timeouts, etc.
+            #severity = self.user_readback.alarm_severity
 
-            if severity != AlarmSeverity.NO_ALARM:
-                status = self.user_readback.alarm_status
-                logger.error('Motion failed: %s is in an alarm state '
-                             'status=%s severity=%s',
-                             self.name, status, severity)
-                success = False
+            #if severity != AlarmSeverity.NO_ALARM:
+            #    status = self.user_readback.alarm_status
+            #    logger.error('Motion failed: %s is in an alarm state '
+            #                 'status=%s severity=%s',
+            #                 self.name, status, severity)
+            #    success = False
 
             self._done_moving(success=success, timestamp=timestamp, value=value)
 
@@ -215,6 +217,8 @@ class Piezo(Device, PositionerBase):
     # status
     enable = Component(EpicsSignalRO, ':Enable')
     stop = Component(EpicsSignalRO, ':STOP')
+
+    motor_stop = Component(Signal)
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, **kwargs):
@@ -368,12 +372,14 @@ class OffsetMirror(Device):
     # Piezo motor
     piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")
     
-    # Coupling motor
-    coupling = FormattedComponent(CouplingMotor, 
-                                  "STEP:{self._area}:{self._section}:MOTR")
+    # # Coupling motor
+    # coupling = FormattedComponent(CouplingMotor, 
+    #                               "STEP:{self._area}:{self._section}:MOTR")
     
     # Pitch Motor
     pitch = FormattedComponent(OMMotor, "{self._prefix}")
+
+    motor_stop = Component(Signal)
     
     # Currently structured to pass the ioc argument down to the pitch motor
     def __init__(self, prefix, *, name=None, read_attrs=None, parent=None, 

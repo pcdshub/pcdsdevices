@@ -149,7 +149,8 @@ class DeviceStatesRecord(State):
     """
     States that come from the standardized lcls device states record
     """
-    state = Component(EpicsSignal, "", write_pv=":GO", string=True)
+    state = Component(EpicsSignal, "", write_pv=":GO", string=True,
+                      auto_monitor=True, limits=False)
 
     def __init__(self, prefix, *, read_attrs=None, name=None, **kwargs):
         if read_attrs is None:
@@ -172,7 +173,8 @@ class DeviceStatesPart(Device):
     """
     Device to manipulate a specific set position.
     """
-    at_state = Component(EpicsSignalRO, "", string=True)
+    at_state = Component(EpicsSignalRO, "", string=True, 
+            limits=False, connection_timeout=2)
     setpos = Component(EpicsSignal, "_SET")
     delta = Component(EpicsSignal, "_DELTA")
 
