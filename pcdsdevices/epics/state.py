@@ -177,8 +177,7 @@ class DeviceStatesPart(Device):
     """
     Device to manipulate a specific set position.
     """
-    at_state = Component(EpicsSignalRO, "", string=True, 
-            limits=False, connection_timeout=2)
+    at_state = Component(EpicsSignalRO, "", string=True) 
     setpos = Component(EpicsSignal, "_SET")
     delta = Component(EpicsSignal, "_DELTA")
 
