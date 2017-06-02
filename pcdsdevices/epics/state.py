@@ -156,9 +156,13 @@ class DeviceStatesRecord(State):
         if read_attrs is None:
             read_attrs = ["state"]
         super().__init__(prefix, read_attrs=read_attrs, name=name, **kwargs)
-        # TODO: Don't subscribe to child signals unless someone is subscribed
-        # to us
-        self.state.subscribe(self._update, event_type=self.state.SUB_VALUE)
+        self._subbed_to_state = False
+
+    def subscribe(self, *args, **kwargs):
+        if not self._subbed_to_state:
+            self.state.subscribe(self._update, event_type=self.state.SUB_VALUE)
+            self._subbed_to_state = True
+        super().subscribe(*args, **kwargs)
 
     @property
     def value(self):
