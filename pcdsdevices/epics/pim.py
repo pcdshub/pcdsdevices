@@ -101,7 +101,7 @@ class PIMMotor(Device):
 
     @property
     def inserted(self):
-        return not self.blocking
+        return self.blocking
 
 
 class PIM(PIMMotor):
