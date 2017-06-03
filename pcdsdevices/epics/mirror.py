@@ -56,11 +56,12 @@ class OMMotor(Device, PositionerBase):
 
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
-                         name=name, parent=parent, **kwargs)
+                         name=name, parent=parent, settle_time=1, **kwargs)
         
         # Make the default alias for the user_readback the name of the
         # motor itself.
         self.user_readback.name = self.name
+        self._start_seen = False
 
         self.motor_done_move.subscribe(self._move_changed)
         self.user_readback.subscribe(self._pos_changed)
@@ -117,6 +118,9 @@ class OMMotor(Device, PositionerBase):
 
         status = super().move(position, **kwargs)
         self.user_setpoint.put(position, wait=False)
+        check_ignore = threading.Thread(target=self._move_ignored_check,
+                                        args=(status,))
+        check_ignore.start()
 
         try:
             if wait:
@@ -160,13 +164,15 @@ class OMMotor(Device, PositionerBase):
         """Callback from EPICS, indicating that movement status has changed"""
         was_moving = self._moving
         self._moving = (value != 1)
+        if self._moving:
+            self._start_seen = True
 
         started = False
         if not self._started_moving:
             started = self._started_moving = (not was_moving and self._moving)
 
-        logger.debug('[ts=%s] %s moving: %s (value=%s)', fmt_time(timestamp),
-                     self, self._moving, value)
+        #logger.debug('[ts=%s] %s moving: %s (value=%s)', fmt_time(timestamp),
+        #             self, self._moving, value)
 
         if started:
             self._run_subs(sub_type=self.SUB_START, timestamp=timestamp,
@@ -189,8 +195,16 @@ class OMMotor(Device, PositionerBase):
             #                 'status=%s severity=%s',
             #                 self.name, status, severity)
             #    success = False
-
+            self._start_seen = False
             self._done_moving(success=success, timestamp=timestamp, value=value)
+
+    def _move_ignored_check(self, status):
+        time.sleep(self.settle_time)
+        if not self._start_seen and not status.done:
+            if abs(status.target - self.position) < self.tol:
+                status._finished(success=True)
+            else:
+                status._finished(success=False)
 
     @property
     def report(self):
