@@ -28,12 +28,11 @@ class OMMotor(Device, PositionerBase):
 
     # configuration
     velocity = Component(EpicsSignal, ':VELO')
-    # acceleration = Component(EpicsSignal, ':ACCL')
 
     # motor status
     motor_is_moving = Component(EpicsSignalRO, ':MOVN')
     # Commented out to speed up connection time
-#    motor_done_move = Component(EpicsSignalRO, ':DMOV')
+    # motor_done_move = Component(EpicsSignalRO, ':DMOV')
     motor_done_move = Component(EpicsSignalRO, ':DMOV', auto_monitor=True)
     high_limit_switch = Component(EpicsSignal, ':HLS')
     low_limit_switch = Component(EpicsSignal, ':LLS')
@@ -68,18 +67,25 @@ class OMMotor(Device, PositionerBase):
     @property
     @raise_if_disconnected
     def precision(self):
-        """The precision of the readback PV, as reported by EPICS"""
+        """
+        The precision of the readback PV, as reported by EPICS.
+        """
         return self.user_readback.precision
 
     @property
     @raise_if_disconnected
     def limits(self):
+        """
+        Returns the EPICS limits of the user_setpoint pv.
+        """
         return self.user_setpoint.limits
 
     @property
     @raise_if_disconnected
     def moving(self):
-        """Whether or not the motor is moving
+        """
+        Whether or not the motor is moving.
+
         Returns
         -------
         moving : bool
@@ -88,8 +94,10 @@ class OMMotor(Device, PositionerBase):
 
     @raise_if_disconnected
     def move(self, position, wait=True, **kwargs):
-        """Move to a specified position, optionally waiting for motion to
+        """
+        Move to a specified position, optionally waiting for motion to
         complete.
+
         Parameters
         ----------
         position
@@ -133,7 +141,9 @@ class OMMotor(Device, PositionerBase):
     @property
     @raise_if_disconnected
     def position(self):
-        """The current position of the motor in its engineering units
+        """
+        The current position of the motor in its engineering units.
+
         Returns
         -------
         position : float
@@ -142,7 +152,9 @@ class OMMotor(Device, PositionerBase):
 
     @raise_if_disconnected
     def set_current_position(self, pos):
-        """Configure the motor user position to the given value
+        """
+        Configure the motor user position to the given value.
+
         Parameters
         ----------
         pos
@@ -151,25 +163,28 @@ class OMMotor(Device, PositionerBase):
         self.user_setpoint.put(pos, wait=True)
 
     def check_value(self, pos):
-        """Check that the position is within the soft limits"""
+        """
+        Check that the position is within the soft limits.
+        """
         self.user_setpoint.check_value(pos)
 
     def _pos_changed(self, timestamp=None, value=None, **kwargs):
-        """Callback from EPICS, indicating a change in position"""
+        """
+        Callback from EPICS, indicating a change in position.
+        """
         self._set_position(value)
 
     def _move_changed(self, timestamp=None, value=None, sub_type=None,
                       **kwargs):
-        """Callback from EPICS, indicating that movement status has changed"""
+        """
+        Callback from EPICS, indicating that movement status has changed.
+        """
         was_moving = self._moving
         self._moving = (value != 1)
 
         started = False
         if not self._started_moving:
             started = self._started_moving = (not was_moving and self._moving)
-
-        #logger.debug('[ts=%s] %s moving: %s (value=%s)', fmt_time(timestamp),
-        #             self, self._moving, value)
 
         if started:
             self._run_subs(sub_type=self.SUB_START, timestamp=timestamp,
@@ -194,17 +209,16 @@ class OMMotor(Device, PositionerBase):
             #    success = False
             self._done_moving(success=success, timestamp=timestamp, value=value)
 
-
     @property
     def report(self):
         try:
             rep = super().report
         except DisconnectedError:
-            # TODO there might be more in this that gets lost
             rep = {'position': 'disconnected'}
         rep['pv'] = self.user_readback.pvname
         return rep
 
+    
 class Piezo(Device, PositionerBase):
     """
     Piezo driver object used for fine pitch adjustments.
@@ -239,23 +253,33 @@ class Piezo(Device, PositionerBase):
     @property
     @raise_if_disconnected
     def precision(self):
-        '''The precision of the readback PV, as reported by EPICS'''
+        """
+        The precision of the readback PV, as reported by EPICS.
+        """
         return self.user_readback.precision
 
     @property
     @raise_if_disconnected
     def limits(self):
+        """
+        Returns the EPICS limits of the user_setpoint pv.
+        """
         return self.user_setpoint.limits
 
     @raise_if_disconnected
     def stop(self, *, success=False):
+        """
+        Stops the motor.
+        """
         self.motor_stop.put(1, wait=False)
         super().stop(success=success)
 
     @raise_if_disconnected
     def move(self, position, wait=True, **kwargs):
-        '''Move to a specified position, optionally waiting for motion to
+        """
+        Move to a specified position, optionally waiting for motion to
         complete.
+
         Parameters
         ----------
         position
@@ -278,7 +302,7 @@ class Piezo(Device, PositionerBase):
             On invalid positions
         RuntimeError
             If motion fails other than timing out
-        '''
+        """
         self._started_moving = False
 
         status = super().move(position, **kwargs)
@@ -296,32 +320,40 @@ class Piezo(Device, PositionerBase):
     @property
     @raise_if_disconnected
     def position(self):
-        '''The current position of the motor in its engineering units
+        """
+        The current position of the motor in its engineering units.
+
         Returns
         -------
         position : float
-        '''
+        """
         return self._position
 
     @raise_if_disconnected
     def set_current_position(self, pos):
-        '''Configure the motor user position to the given value
+        """
+        Configure the motor user position to the given value.
+
         Parameters
         ----------
         pos
            Position to set.
-        '''
+        """
         self.set_use_switch.put(1, wait=True)
         self.user_setpoint.put(pos, wait=True)
         self.set_use_switch.put(0, wait=True)
 
     def check_value(self, pos):
-        '''Check that the position is within the soft limits'''
+        """
+        Check that the position is within the soft limits.
+        """
         if pos < self.low_limit or pos > self.high_limit:
             raise ValueError
 
     def _pos_changed(self, timestamp=None, value=None, **kwargs):
-        '''Callback from EPICS, indicating a change in position'''
+        """
+        Callback from EPICS, indicating a change in position.
+        """
         self._set_position(value)
 
     @property
@@ -334,6 +366,7 @@ class Piezo(Device, PositionerBase):
         rep['pv'] = self.user_readback.pvname
         return rep    
 
+    
 class CouplingMotor(Device):
     """
     Device that manages the coupling between gantry motors.
@@ -363,9 +396,9 @@ class CouplingMotor(Device):
 
 class OffsetMirror(Device):
     """
-    Device that steers the beam.
+    X-Ray offset mirror class to represent the various mirrors we use in the FEE
+    and XRT to steer the beam.
     """
-    # Commenting out to increase the move time.
     # Gantry motors
     gan_x_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
     gan_x_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:S")
@@ -376,12 +409,13 @@ class OffsetMirror(Device):
     piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")
     
     # # Coupling motor
-    # coupling = FormattedComponent(CouplingMotor, 
-    #                               "STEP:{self._area}:{self._section}:MOTR")
+    coupling = FormattedComponent(
+        CouplingMotor, "STEP:{self._area}:{self._section}:MOTR")
     
     # Pitch Motor
     pitch = FormattedComponent(OMMotor, "{self._prefix}")
 
+    # This needs to be properly implemented
     motor_stop = Component(Signal)
     
     # Currently structured to pass the ioc argument down to the pitch motor
@@ -403,59 +437,79 @@ class OffsetMirror(Device):
                          name=name, parent=parent, **kwargs)
 
     def move(self, position, **kwargs):
-        """Move to the inputted position in pitch."""        
+        """
+        Move to the inputted position in pitch.
+        """        
         return self.pitch.move(position, **kwargs)
         # status = self.pitch.user_setpoint.set(position)
         # time.sleep(10)
         # return status
 
     def set(self, position, **kwargs):
-        """Alias for move."""
+        """
+        Alias for move.
+        """
         return self.move(position, **kwargs)
     
     @property
     @raise_if_disconnected
     def position(self):
-        """Readback the current pitch position."""
+        """
+        Readback the current pitch position.
+        """
         return self.pitch.user_readback.value        
 
     @property
     @raise_if_disconnected
     def alpha(self):
-        """Mirror pitch readback. Does the same thing as self.position."""
+        """
+        Mirror pitch readback. Does the same thing as self.position.
+        """
         return self.position
 
     @alpha.setter
     def alpha(self, position, **kwargs):
-        """Mirror pitch setter. Does the same thing as self.move."""
+        """
+        Mirror pitch setter. Does the same thing as self.move.
+        """
         return self.move(position, **kwargs)
 
     @property
     @raise_if_disconnected
     def x(self):
-        """Mirror x position readback."""
+        """
+        Mirror x position readback.
+        """
         return self.gan_x_p.user_readback.value
 
     @x.setter
     def x(self, position):
-        """Mirror x position setter."""
+        """
+        Mirror x position setter.
+        """
         return self.gan_x_p.move(position, **kwargs)
 
     @property
     @raise_if_disconnected
     def decoupled(self):
-        """Checks to see if the gantry x motors are coupled."""
+        """
+        Checks to see if the gantry x motors are coupled.
+        """
         return bool(self.coupling.decouple.value)
 
     @property
     @raise_if_disconnected
     def fault(self):
-        """Checks if the coupling motor is faulted."""
+        """
+        Checks if the coupling motor is faulted.
+        """
         return bool(self.coupling.fault.value)
 
     @property
     @raise_if_disconnected
     def gdif(self):
-        """Returns the gantry difference of the x gantry motors."""
+        """
+        Returns the gantry difference of the x gantry motors.
+        """
         return self.coupling.gan_diff.value
 

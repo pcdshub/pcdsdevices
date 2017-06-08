@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 PCDS cams and overrides for ophyd Cams.
+
+All components (EPICS PVs) associated with a specific camera are added here.
 """
 import logging
 
@@ -10,9 +12,9 @@ from ophyd import cam
 from ophyd.utils import enum
 
 from .base import (ADBase, ADComponent, EpicsSignalWithRBV)
-from ..signal import (EpicsSignal, EpicsSignalRO, FakeSignal)
-from ..component import (Component, FormattedComponent)
 from ..device import DynamicDeviceComponent
+from ..component import (Component, FormattedComponent)
+from ..signal import (EpicsSignal, EpicsSignalRO, FakeSignal)
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +47,10 @@ __all__ = ['CamBase',
 
 
 class CamBase(cam.CamBase, ADBase):
+    """
+    Overrides for CamBase. Primarily so we are using our version of
+    DynamicDeviceComponent.
+    """
     array_size = DynamicDeviceComponent(ophyd.base.ad_group(EpicsSignalRO,
                               (('array_size_x', 'ArraySizeX_RBV'),
                                ('array_size_y', 'ArraySizeY_RBV'),
@@ -60,8 +66,8 @@ class CamBase(cam.CamBase, ADBase):
     size = DynamicDeviceComponent(ophyd.base.ad_group(EpicsSignalWithRBV,
                         (('size_x', 'SizeX'),
                          ('size_y', 'SizeY'))))
-    pass
 
+    
 class AreaDetectorCam(cam.AreaDetectorCam, CamBase):
     pass
 
@@ -71,6 +77,9 @@ class PulnixCam(CamBase):
 
 
 class FeeOpalCam(CamBase):
+    """
+    Opal camera used in the FEE for the PIMs.
+    """
     # enums?
     # trigger_modes = enum("Internal", "External", start=0)
     # exposure_modes = enum("Full Frame", "HW ROI", start=0)
@@ -171,7 +180,6 @@ class FeeOpalCam(CamBase):
     data_type = Component(FakeSignal) # C(SignalWithRBV, 'DataType')
     array_size_bytes = Component(FakeSignal) # C(EpicsSignalRO, 'ArraySize_RBV')
     
-
 
 class SimDetectorCam(cam.SimDetectorCam, CamBase):
     pass
