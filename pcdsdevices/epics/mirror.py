@@ -3,7 +3,6 @@
 import logging
 from enum import Enum
 from epics.pv import fmt_time
-import time
 
 from ophyd import PositionerBase
 from ophyd.utils import DisconnectedError
@@ -61,7 +60,7 @@ class OMMotor(Device, PositionerBase):
         # Make the default alias for the user_readback the name of the
         # motor itself.
         self.user_readback.name = self.name
-        self._start_seen = False
+        self.tol = 0.0001
 
         self.motor_done_move.subscribe(self._move_changed)
         self.user_readback.subscribe(self._pos_changed)
@@ -118,9 +117,9 @@ class OMMotor(Device, PositionerBase):
 
         status = super().move(position, **kwargs)
         self.user_setpoint.put(position, wait=False)
-        check_ignore = threading.Thread(target=self._move_ignored_check,
-                                        args=(status,))
-        check_ignore.start()
+
+        if abs(self.position - position) < self.tol:
+            status._finished(success=True)
 
         try:
             if wait:
@@ -164,8 +163,6 @@ class OMMotor(Device, PositionerBase):
         """Callback from EPICS, indicating that movement status has changed"""
         was_moving = self._moving
         self._moving = (value != 1)
-        if self._moving:
-            self._start_seen = True
 
         started = False
         if not self._started_moving:
@@ -195,16 +192,8 @@ class OMMotor(Device, PositionerBase):
             #                 'status=%s severity=%s',
             #                 self.name, status, severity)
             #    success = False
-            self._start_seen = False
             self._done_moving(success=success, timestamp=timestamp, value=value)
 
-    def _move_ignored_check(self, status):
-        time.sleep(self.settle_time)
-        if not self._start_seen and not status.done:
-            if abs(status.target - self.position) < self.tol:
-                status._finished(success=True)
-            else:
-                status._finished(success=False)
 
     @property
     def report(self):
