@@ -31,8 +31,6 @@ class OMMotor(Device, PositionerBase):
 
     # motor status
     motor_is_moving = Component(EpicsSignalRO, ':MOVN')
-    # Commented out to speed up connection time
-    # motor_done_move = Component(EpicsSignalRO, ':DMOV')
     motor_done_move = Component(EpicsSignalRO, ':DMOV', auto_monitor=True)
     high_limit_switch = Component(EpicsSignal, ':HLS')
     low_limit_switch = Component(EpicsSignal, ':LLS')
@@ -148,7 +146,7 @@ class OMMotor(Device, PositionerBase):
         -------
         position : float
         """
-        return self._position
+        return self.user_readback.value
 
     @raise_if_disconnected
     def set_current_position(self, pos):
@@ -327,7 +325,7 @@ class Piezo(Device, PositionerBase):
         -------
         position : float
         """
-        return self._position
+        return self.user_readback.value
 
     @raise_if_disconnected
     def set_current_position(self, pos):
@@ -483,7 +481,7 @@ class OffsetMirror(Device):
         return self.gan_x_p.user_readback.value
 
     @x.setter
-    def x(self, position):
+    def x(self, position, **kwargs):
         """
         Mirror x position setter.
         """
