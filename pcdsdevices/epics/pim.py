@@ -177,7 +177,7 @@ class PIM(PIMMotor):
         Returns the beam centroid in y.
         """
         self.check_camera()
-        return self.detector.stats2.centroid.x.value
+        return self.detector.stats2.centroid.y.value
 
     @property
     def centroid(self):

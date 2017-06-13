@@ -40,7 +40,7 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
     def _asyn_pipeline(self):
         parent = None
         # Add a check to make sure root has this attr, otherwise return None
-        if hasattr(self.root, 'get_plugin_by_asyn_port'):
+        if hasattr(self.root, 'get_plugin_by_asyn_port') and self.root != self:
             parent = self.root.get_plugin_by_asyn_port(self.nd_array_port.get())
             if hasattr(parent, '_asyn_pipeline'):
                 return parent._asyn_pipeline + (self, )
@@ -50,8 +50,14 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
         # Use the overridden describe_configuration defined above
         ret = ADBase.describe_configuration(self)
         source_plugin = self.source_plugin
-        if source_plugin is not None:
+        if source_plugin is not None and source_plugin is not self:
             ret.update(source_plugin.describe_configuration())
+        return ret
+
+    def read_configuration(self):
+        ret = ADBase.read_configuration(self)
+        if self.source_plugin is not self:
+            ret.update(self.source_plugin.read_configuration())
         return ret
 
 

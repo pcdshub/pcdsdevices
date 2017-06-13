@@ -42,17 +42,16 @@ class OMMotor(Device, PositionerBase):
     motor_stop = Component(Signal)
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
-                 name=None, parent=None, **kwargs):
+                 name=None, parent=None, settle_time=1, **kwargs):
         if read_attrs is None:
             read_attrs = ['user_readback']
 
         if configuration_attrs is None:
-            configuration_attrs = ['velocity', 'interlock',
-                                   'enabled', 'user_offset', 'user_offset_dir']
+            configuration_attrs = ['velocity', 'interlock', 'enabled']
 
         super().__init__(prefix, read_attrs=read_attrs,
-                         configuration_attrs=configuration_attrs,
-                         name=name, parent=parent, settle_time=1, **kwargs)
+                         configuration_attrs=configuration_attrs, name=name, 
+                         parent=parent, settle_time=settle_time, **kwargs)
         
         # Make the default alias for the user_readback the name of the
         # motor itself.
@@ -241,8 +240,7 @@ class Piezo(Device, PositionerBase):
             read_attrs = ['user_readback', 'user_setpoint', 'enable']
 
         if configuration_attrs is None:
-            configuration_attrs = ['high_limit', 'low_limit', 'enable', 
-                                   'user_offset', 'user_offset_dir']
+            configuration_attrs = ['high_limit', 'low_limit', 'enable']
 
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
