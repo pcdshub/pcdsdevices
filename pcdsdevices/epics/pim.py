@@ -25,9 +25,9 @@ class PIMPulnixDetector(PulnixDetector):
     Pulnix detector that is used in the PIM. Plugins should be added on an as
     needed basis here.
     """
-    #proc1 = Component(ProcessPlugin, ":Proc1:", read_attrs=['num_filter'])
-    #image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
-    #stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid'])
+    proc1 = Component(ProcessPlugin, ":Proc1:", read_attrs=['num_filter'])
+    image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
+    stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
                                                             'mean_value'])
         

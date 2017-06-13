@@ -21,9 +21,13 @@ from ..epics import pim
 
 
 class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
+    proc1 = Component(Signal)
+    image2 = Component(Signal)
+    stats1 = Component(StatsPlugin, "Stats1:", read_attrs=['centroid',
+                                                            'mean_value'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
                                                             'mean_value'])
-
+    
 
 class PIMMotor(pim.PIMMotor):
     states = Component(Signal, value="OUT")
