@@ -8,6 +8,7 @@ from collections import OrderedDict
 # Module #
 ##########
 from pcdsdevices.sim.areadetector.plugins import (PluginBase, StatsPlugin)
+
 # PluginBase Tests
 
 def test_PluginBase_instantiates():
