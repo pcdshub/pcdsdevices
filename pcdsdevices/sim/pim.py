@@ -28,6 +28,61 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
                                                             'mean_value'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
                                                             'mean_value'])
+
+    def __init__(self, prefix, *, noise_x=0, noise_y=0, **kwargs):
+        self.noise_x = noise_x
+        self.noise_y = noise_y
+        super().__init__(prefix, **kwargs)
+
+    @property
+    def image(self):
+        """
+        Returns a blank image using the correct shape of the camera.
+        """
+        return np.zeros((self.cam.size.size_y.value, 
+                         self.cam.size.size_x.value))
+
+    @property
+    def centroid_x(self, **kwargs):
+        """
+        Returns the beam centroid in x.
+        """
+        self.check_camera()
+        # Override _cent_x with centroid calculator
+        self._cent_x(**kwargs)
+        return int(np.round(self.stats2.centroid.x.value + \
+          np.random.uniform(-1,1) * self.noise_x))
+
+    @property
+    def centroid_y(self, **kwargs):
+        """
+        Returns the beam centroid in y.
+        """
+        self.check_camera()
+        # Override _cent_y with centroid calculator
+        self._cent_y(**kwargs)
+        return int(np.round(self.stats2.centroid.y.value + \
+          np.random.uniform(-1,1) * self.noise_y))
+
+    def _cent_x(self, **kwargs):
+        """
+        Place holder method that is can be overriden to calculate the centroid.
+        
+        Make sure at the end to include a put to the correct centroid field like
+        so:
+            self.stats2.centroid.x.put(new_cent_calc_x)
+        """
+        pass
+    
+    def _cent_y(self, **kwargs):
+        """
+        Place holder method that is can be overriden to calculate the centroid.
+        
+        Make sure at the end to include a put to the correct centroid field like
+        so:
+            self.stats2.centroid.x.put(new_cent_calc_y)
+        """
+        pass
     
 
 class PIMMotor(pim.PIMMotor):
@@ -77,7 +132,7 @@ class PIM(pim.PIM, PIMMotor):
                                   "{self._section}:{self._imager}:CVV:01",
                                   read_attrs=['stats2'])
     def __init__(self, prefix, x=0, y=0, z=0, noise_x=0, noise_y=0, noise_z=0, 
-                 fake_sleep_y=0, **kwargs):
+                 fake_sleep_y=0, centroid_noise=(0,0), **kwargs):
         if len(prefix.split(":")) < 2:
             prefix = "TST:{0}".format(prefix)
         self.i_x = x
@@ -86,6 +141,10 @@ class PIM(pim.PIM, PIMMotor):
         self.noise_z = noise_z
         super().__init__(prefix, pos_in=y, noise=noise_y, 
                          fake_sleep=fake_sleep_y, **kwargs)
+        if not isinstance(centroid_noise, (tuple, list)):
+            centroid_noise = (centroid_noise, centroid_noise)
+        self.detector.noise_x = centroid_noise[0]
+        self.detector.noise_y = centroid_noise[1]
 
     @property
     def _x(self):

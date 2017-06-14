@@ -22,16 +22,42 @@ def test_PIMPulnixDetector_instantiates():
     assert(PIMPulnixDetector("TEST"))
 
 def test_PIMPulnixDetector_runs_ophyd_functions():
-    pim_pulnix_det = PIMPulnixDetector("TEST")
-    assert(isinstance(pim_pulnix_det.read(), OrderedDict))
-    assert(isinstance(pim_pulnix_det.describe(), OrderedDict))
-    assert(isinstance(pim_pulnix_det.describe_configuration(), OrderedDict))
-    assert(isinstance(pim_pulnix_det.read_configuration(), OrderedDict))
+    pim_pdet = PIMPulnixDetector("TEST")
+    assert(isinstance(pim_pdet.read(), OrderedDict))
+    assert(isinstance(pim_pdet.describe(), OrderedDict))
+    assert(isinstance(pim_pdet.describe_configuration(), OrderedDict))
+    assert(isinstance(pim_pdet.read_configuration(), OrderedDict))
 
 def test_PIMPulnixDetector_stats_plugin_reads():
-    pim_pulnix_det = PIMPulnixDetector("TEST")
-    assert(isinstance(pim_pulnix_det.stats2.read(), OrderedDict))
+    pim_pdet = PIMPulnixDetector("TEST")
+    assert(isinstance(pim_pdet.stats2.read(), OrderedDict))
 
+def test_PIMPulnixDetector_centroid_noise():
+    pim_pdet = PIMPulnixDetector("TEST", noise_x=5, noise_y=20)
+    pim_pdet.stats2.centroid.x.put(300)
+    pim_pdet.stats2.centroid.y.put(400)
+    test_x = 300 + int(np.round(300 + np.random.uniform(-1,1)*5))
+    test_y = 400 + int(np.round(400 + np.random.uniform(-1,1)*20))
+    assert(pim_pdet.centroid_x == test_x or 
+           np.isclose(pim_pdet.centroid_x, 300, atol=5))
+    assert(pim_pdet.centroid_x == test_y or 
+           np.isclose(pim_pdet.centroid_y, 400, atol=20))
+    
+def test_PIMPulnixDetector_centroid_override():
+    pim_pdet = PIMPulnixDetector("TEST")
+    def centroid_override_x():
+        pim_pdet.stats2.centroid.x.put(pim_pdet.stats2.centroid.x.value + 10)
+    pim_pdet._cent_x = centroid_override_x    
+    assert(pim_pdet.centroid_x == 10)
+    assert(pim_pdet.centroid_x == 20)
+    assert(pim_pdet.centroid_x == 30)
+    def centroid_override_y():
+        pim_pdet.stats2.centroid.y.put(pim_pdet.stats2.centroid.y.value + 20)
+    pim_pdet._cent_y = centroid_override_y
+    assert(pim_pdet.centroid_y == 20)
+    assert(pim_pdet.centroid_y == 40)
+    assert(pim_pdet.centroid_y == 60)
+    
 # PIMMotor Tests
 
 def test_PIMMotor_instantiates():
