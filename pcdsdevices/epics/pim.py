@@ -27,9 +27,65 @@ class PIMPulnixDetector(PulnixDetector):
     """
     proc1 = Component(ProcessPlugin, ":Proc1:", read_attrs=['num_filter'])
     image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
-    stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid'])
+    stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid',
+                                                            'mean_value'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
                                                             'mean_value'])
+
+    def check_camera(self):
+        """
+        Checks if the camera is acquiring images.
+        """
+        if not self.acquiring:
+            raise NotAcquiringError
+
+    @property
+    @raise_if_disconnected
+    def image(self):
+        """
+        Returns an image from the detector.
+        """
+        return self.image2.array_data.value
+
+    @property
+    @raise_if_disconnected
+    def acquiring(self):
+        """
+        Checks to see if the camera is currently acquiring iamges.
+        """
+        return bool(self.cam.acquire.value)
+
+    @acquiring.setter
+    def acquiring(self, val):
+        """
+        Setter for acquiring.
+        """
+        return self.cam.acquire.set(bool(val))
+
+    @property
+    @raise_if_disconnected
+    def centroid_x(self):
+        """
+        Returns the beam centroid in x.
+        """
+        self.check_camera()
+        return self.stats2.centroid.x.value
+
+    @property
+    @raise_if_disconnected
+    def centroid_y(self):
+        """
+        Returns the beam centroid in y.
+        """
+        self.check_camera()
+        return self.stats2.centroid.y.value
+
+    @property
+    def centroid(self):
+        """
+        Returns the beam centroid in y.
+        """
+        return (self.centroid_x, self.centroid_y)
         
 
 class PIMMotor(Device):
@@ -127,64 +183,16 @@ class PIM(PIMMotor):
         self._section = prefix.split(":")[0]
         self._imager = prefix.split(":")[1]
         super().__init__(prefix, **kwargs)
-        
+        self.detector.check_camera = self.check_camera
 
     def check_camera(self):
         """
-        Checks if the camera is acquiring images and the yag is inserted.
+        Checks if the camera is acquiring images.
         """
-        if not self.acquiring:
+        if not self.detecotor.acquiring:
             raise NotAcquiringError
         if not self.inserted:
             raise NotInsertedError
-
-    @property
-    @raise_if_disconnected
-    def image(self):
-        """
-        Returns an image from the detector.
-        """
-        return self.detector.image2.array_data.value
-
-    @property
-    @raise_if_disconnected
-    def acquiring(self):
-        """
-        Checks to see if the camera is currently acquiring iamges.
-        """
-        return bool(self.detector.cam.acquire.value)
-
-    @acquiring.setter
-    def acquiring(self, val):
-        """
-        Setter for acquiring.
-        """
-        return self.detector.cam.acquire.set(bool(val))
-
-    @property
-    @raise_if_disconnected
-    def centroid_x(self):
-        """
-        Returns the beam centroid in x.
-        """
-        self.check_camera()
-        return self.detector.stats2.centroid.x.value
-
-    @property
-    @raise_if_disconnected
-    def centroid_y(self):
-        """
-        Returns the beam centroid in y.
-        """
-        self.check_camera()
-        return self.detector.stats2.centroid.y.value
-
-    @property
-    def centroid(self):
-        """
-        Returns the beam centroid in y.
-        """
-        return (self.centroid_x, self.centroid_y)
     
     
 class PIMFee(Device):
@@ -301,45 +309,6 @@ class PIMFee(Device):
         """
         return not self.blocking
 
-    @property
-    @raise_if_disconnected
-    def acquiring(self):
-        """
-        Checks to see if the camera is currently acquiring iamges.
-        """
-        return bool(self.detector.cam.acquire.value)
-
-    @acquiring.setter
-    def acquiring(self, val):
-        """
-        Setter for acquiring.
-        """
-        return self.detector.cam.acquire.set(bool(val))
-
-    @property
-    @raise_if_disconnected
-    def centroid_x(self):
-        """
-        Returns the beam centroid in x.
-        """
-        self.check_camera()
-        raise NotImplementedError
-
-    @property
-    @raise_if_disconnected
-    def centroid_y(self):
-        """
-        Returns the beam centroid in y.
-        """
-        self.check_camera()
-        raise NotImplementedError
-
-    @property
-    def centroid(self):
-        """
-        Returns the beam centroid in y.
-        """
-        raise NotImplementedError
 
 
 class PIMExceptions(Exception):
