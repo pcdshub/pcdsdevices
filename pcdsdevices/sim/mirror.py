@@ -44,13 +44,13 @@ class OMMotor(mirror.OMMotor):
     motor_stop = Component(Signal)
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
-                 name=None, parent=None, velocity=0, fake_noise=0, fake_sleep=0, 
+                 name=None, parent=None, velocity=0, noise=0, fake_sleep=0, 
                  refresh=0, settle_time=0, **kwargs):
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs, name=name, 
                          parent=parent, settle_time=settle_time, **kwargs)
         self.velocity.put(velocity)
-        self.fake_noise = fake_noise
+        self.noise = noise
         self.fake_sleep = fake_sleep
         self.refresh = refresh
 
@@ -83,7 +83,7 @@ class OMMotor(mirror.OMMotor):
         self.motor_done_move.put(0)
 
         # # Add uniform noise
-        # pos = position + np.random.uniform(-1, 1)*self.fake_noise
+        # pos = position + np.random.uniform(-1, 1)*self.noise
 
         # Make sure refresh is set to something sensible if using velo or sleep
         refresh = self.refresh or self.fake_sleep/10 or 0.1
@@ -114,12 +114,12 @@ class OMMotor(mirror.OMMotor):
     @property
     def position(self):
         self.user_readback.put(
-            self.user_readback.value + np.random.uniform(-1,1)*self.fake_noise)
+            self.user_setpoint.value + np.random.uniform(-1,1)*self.noise)
         return self.user_readback.value
 
     def read(self, **kwargs):
         self.user_readback.put(
-            self.user_readback.value + np.random.uniform(-1,1)*self.fake_noise)
+            self.user_setpoint.value + np.random.uniform(-1,1)*self.noise)
         return super().read(**kwargs)
 
 
@@ -187,9 +187,9 @@ class OffsetMirror(mirror.OffsetMirror):
 
         # Simulation Attributes
         # Fake noise to readback and moves
-        self.gan_x_p.fake_noise = self.gan_x_s.fake_noise = noise_x
-        self.gan_y_p.fake_noise = self.gan_y_s.fake_noise = noise_y
-        self.pitch.fake_noise = noise_alpha
+        self.gan_x_p.noise = self.gan_x_s.noise = noise_x
+        self.gan_y_p.noise = self.gan_y_s.noise = noise_y
+        self.pitch.noise = noise_alpha
         
         # Fake sleep for every move
         self.gan_x_p.fake_sleep = self.gan_x_s.fake_sleep = fake_sleep_x
@@ -217,7 +217,8 @@ class OffsetMirror(mirror.OffsetMirror):
         self.gan_y_s.user_readback.put(y)
         self.pitch.user_setpoint.put(alpha)
         self.pitch.user_readback.put(alpha)
-        self._z = z
+        self.i_z = z
+        self.noise_z = noise_z
 
     # Coupling motor isnt implemented as an example so override its properties
     @property
@@ -233,22 +234,22 @@ class OffsetMirror(mirror.OffsetMirror):
         return 0.0
 
     @property
-    def x(self):
-        return self.gan_x_p.user_readback.value
+    def _x(self):
+        return self.gan_x_p.position
 
     @property
-    def y(self):
-        return self.gan_y_p.user_readback.value
+    def _y(self):
+        return self.gan_y_p.position
 
     @property
-    def z(self):
-        return self._z + np.random.uniform(-1,1)*self.noise_z
+    def _z(self):
+        return self.i_z + np.random.uniform(-1,1)*self.noise_z
 
-    @z.setter
-    def z(self, val):
-        self._z = val
+    @_z.setter
+    def _z(self, val):
+        self.i_z = val
 
     @property
-    def alpha(self):
-        return self.pitch.user_readback.value
+    def _alpha(self):
+        return self.pitch.position
 
