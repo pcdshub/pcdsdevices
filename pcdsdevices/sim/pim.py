@@ -8,6 +8,7 @@ import time
 ###############
 # Third Party #
 ###############
+import numpy as np
 from ophyd.signal import ArrayAttributeSignal
 
 ##########
@@ -37,7 +38,7 @@ class PIMMotor(pim.PIMMotor):
         if pos_diode < pos_in:
             pos_diode = pos_in + 0.5
         if pos_out < pos_diode:
-            t_out = t_out + 0.5
+            pos_out = pos_diode + 0.5
         self.pos_d = {"DIODE":pos_diode, "OUT":pos_out, 
                       "IN":pos_in, "YAG":pos_in}
         self.fake_sleep = fake_sleep
@@ -79,29 +80,31 @@ class PIM(pim.PIM, PIMMotor):
                  fake_sleep_y=0, **kwargs):
         if len(prefix.split(":")) < 2:
             prefix = "TST:{0}".format(prefix)
-        self._x = x
-        self._z = z
+        self.i_x = x
+        self.i_z = z
+        self.noise_x = noise_x
+        self.noise_z = noise_z
         super().__init__(prefix, pos_in=y, noise=noise_y, 
                          fake_sleep=fake_sleep_y, **kwargs)
 
     @property
-    def x(self):
-        return self._x + np.random.uniform(-1,1)*self.noise_x
+    def _x(self):
+        return self.i_x + np.random.uniform(-1,1)*self.noise_x
 
-    @x.setter
-    def x(self, val):
-        self._x = val
+    @_x.setter
+    def _x(self, val):
+        self.i_x = val
 
     @property
-    def y(self):
+    def _y(self):
         return self.pos
 
     @property
-    def z(self):
-        return self._z + np.random.uniform(-1,1)*self.noise_z
+    def _z(self):
+        return self.i_z + np.random.uniform(-1,1)*self.noise_z
 
-    @z.setter
-    def z(self, val):
-        self._z = val
+    @_z.setter
+    def _z(self, val):
+        self.i_z = val
 
 

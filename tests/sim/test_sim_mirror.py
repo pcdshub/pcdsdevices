@@ -123,7 +123,7 @@ def test_OffsetMirror_noise_changes_on_every_read():
     # Check y and z
     y_vals = [om._y for i in range(10)]
     assert(len(y_vals) == len(set(y_vals)))
-    z_vals = [om._y for i in range(10)]
+    z_vals = [om._z for i in range(10)]
     assert(len(z_vals) == len(set(z_vals)))
     
 

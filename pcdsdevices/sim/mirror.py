@@ -252,4 +252,6 @@ class OffsetMirror(mirror.OffsetMirror):
     @property
     def _alpha(self):
         return self.pitch.position
+    
+    #TODO Add all args as properties
 
