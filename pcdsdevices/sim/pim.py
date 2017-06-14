@@ -29,9 +29,11 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
                                                             'mean_value'])
 
-    def __init__(self, prefix, *, noise_x=0, noise_y=0, **kwargs):
+    def __init__(self, prefix, *, noise_x=0, noise_y=0, zero_outside_yag=False,
+                 **kwargs):
         self.noise_x = noise_x
         self.noise_y = noise_y
+        self.zero_outside_yag = zero_outside_yag
         super().__init__(prefix, **kwargs)
 
     @property
@@ -40,7 +42,7 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
         Returns a blank image using the correct shape of the camera.
         """
         return np.zeros((self.cam.size.size_y.value, 
-                         self.cam.size.size_x.value))
+                         self.cam.size.size_x.value), dtype=np.uint8)
 
     @property
     def centroid_x(self, **kwargs):
@@ -50,8 +52,13 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
         self.check_camera()
         # Override _cent_x with centroid calculator
         self._cent_x(**kwargs)
-        return int(np.round(self.stats2.centroid.x.value + \
+        # Make sure centroid is an int
+        cent_x = int(np.round(self.stats2.centroid.x.value + \
           np.random.uniform(-1,1) * self.noise_x))
+        # Check we arent out of bounds
+        if self.zero_outside_yag and self._centroid_out_of_bounds():
+            cent_x = 0
+        return cent_x
 
     @property
     def centroid_y(self, **kwargs):
@@ -61,8 +68,22 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
         self.check_camera()
         # Override _cent_y with centroid calculator
         self._cent_y(**kwargs)
-        return int(np.round(self.stats2.centroid.y.value + \
+        # Make sure centroid is an int
+        cent_y = int(np.round(self.stats2.centroid.y.value + \
           np.random.uniform(-1,1) * self.noise_y))
+        # Check we arent out of bounds
+        if self.zero_outside_yag and self._centroid_out_of_bounds():
+            cent_y = 0
+        return cent_y
+          
+    def _centroid_out_of_bounds(self):
+        """
+        Checks if the centroid is outside the edges of the yag.
+        """
+        if ((0 <= self.stats2.centroid.y.value <= self.image.shape[0]) and 
+            (0 <= self.stats2.centroid.x.value <= self.image.shape[1])):
+            return False
+        return True
 
     def _cent_x(self, **kwargs):
         """

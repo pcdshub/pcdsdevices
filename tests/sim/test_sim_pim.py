@@ -57,6 +57,45 @@ def test_PIMPulnixDetector_centroid_override():
     assert(pim_pdet.centroid_y == 20)
     assert(pim_pdet.centroid_y == 40)
     assert(pim_pdet.centroid_y == 60)
+
+def test_PIMPulnixDetector_zeros_centroid_outside_yag():
+    pim_pdet = PIMPulnixDetector("TEST", zero_outside_yag=True)
+    pim_pdet.stats2.centroid.x.put(300)
+    pim_pdet.stats2.centroid.y.put(400)
+    assert(pim_pdet.centroid_x == 300)
+    assert(pim_pdet.centroid_y == 400)
+    # Left side
+    pim_pdet.stats2.centroid.x.put(-100)
+    assert(pim_pdet.centroid_x == 0)
+    assert(pim_pdet.centroid_y == 0)
+    # Reset
+    pim_pdet.stats2.centroid.x.put(300)
+    assert(pim_pdet.centroid_x == 300)
+    assert(pim_pdet.centroid_y == 400)
+    # Right side
+    pim_pdet.stats2.centroid.x.put(pim_pdet.cam.size.size_x.value + 100)
+    assert(pim_pdet.centroid_x == 0)
+    assert(pim_pdet.centroid_y == 0)
+    # Reset
+    pim_pdet.stats2.centroid.x.put(300)
+    assert(pim_pdet.centroid_x == 300)
+    assert(pim_pdet.centroid_y == 400)
+    # Below
+    pim_pdet.stats2.centroid.y.put(-100)
+    assert(pim_pdet.centroid_x == 0)
+    assert(pim_pdet.centroid_y == 0)
+    # Reset
+    pim_pdet.stats2.centroid.y.put(400)
+    assert(pim_pdet.centroid_x == 300)
+    assert(pim_pdet.centroid_y == 400)
+    # Right side
+    pim_pdet.stats2.centroid.y.put(pim_pdet.cam.size.size_y.value + 200)
+    assert(pim_pdet.centroid_x == 0)
+    assert(pim_pdet.centroid_y == 0)
+    # Reset
+    pim_pdet.stats2.centroid.y.put(400)
+    assert(pim_pdet.centroid_x == 300)
+    assert(pim_pdet.centroid_y == 400)
     
 # PIMMotor Tests
 
