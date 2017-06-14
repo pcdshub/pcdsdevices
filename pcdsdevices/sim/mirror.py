@@ -82,8 +82,8 @@ class OMMotor(mirror.OMMotor):
         self.motor_is_moving.put(1)
         self.motor_done_move.put(0)
 
-        # Add uniform noise
-        pos = position + np.random.uniform(-1, 1)*self.fake_noise
+        # # Add uniform noise
+        # pos = position + np.random.uniform(-1, 1)*self.fake_noise
 
         # Make sure refresh is set to something sensible if using velo or sleep
         refresh = self.refresh or self.fake_sleep/10 or 0.1
@@ -91,7 +91,7 @@ class OMMotor(mirror.OMMotor):
         # If velo is set, incrementally set the readback according to the refresh
         if self.velocity.value:
             next_pos = self.user_readback.value
-            while next_pos < pos:
+            while next_pos < position:
                 self.user_readback.put(next_pos) 
                 time.sleep(refresh)
                 next_pos += self.velocity.value*refresh
@@ -102,14 +102,25 @@ class OMMotor(mirror.OMMotor):
             while wait < self.fake_sleep:
                 time.sleep(refresh)
                 wait += refresh
-                self.user_readback.put(wait/self.fake_sleep * pos)
-        status = self.user_readback.set(pos)
+                self.user_readback.put(wait/self.fake_sleep * position)
+        status = self.user_readback.set(position)
 
         # Switch to finished state and wait for status to update
         self.motor_is_moving.put(0)
         self.motor_done_move.put(1)
         time.sleep(0.1)
         return status
+
+    @property
+    def position(self):
+        self.user_readback.put(
+            self.user_readback.value + np.random.uniform(-1,1)*self.fake_noise)
+        return self.user_readback.value
+
+    def read(self, **kwargs):
+        self.user_readback.put(
+            self.user_readback.value + np.random.uniform(-1,1)*self.fake_noise)
+        return super().read(**kwargs)
 
 
 class OffsetMirror(mirror.OffsetMirror):
@@ -166,7 +177,7 @@ class OffsetMirror(mirror.OffsetMirror):
     def __init__(self, prefix, *, name=None, read_attrs=None, parent=None, 
                  configuration_attrs=None, section="", x=0, y=0, z=0, alpha=0, 
                  velo_x=0, velo_y=0, velo_alpha=0, refresh_x=0, refresh_y=0, 
-                 refresh_alpha=0, noise_x=0, noise_y=0, noise_alpha=0, 
+                 refresh_alpha=0, noise_x=0, noise_y=0, noise_z=0, noise_alpha=0, 
                  fake_sleep_x=0, fake_sleep_y=0, fake_sleep_alpha=0, **kwargs):
         if len(prefix.split(":")) < 3:
             prefix = "MIRR:TST:{0}".format(prefix)
@@ -206,7 +217,7 @@ class OffsetMirror(mirror.OffsetMirror):
         self.gan_y_s.user_readback.put(y)
         self.pitch.user_setpoint.put(alpha)
         self.pitch.user_readback.put(alpha)
-        self.z = z
+        self._z = z
 
     # Coupling motor isnt implemented as an example so override its properties
     @property
@@ -220,3 +231,24 @@ class OffsetMirror(mirror.OffsetMirror):
     @property
     def gdif(self):
         return 0.0
+
+    @property
+    def x(self):
+        return self.gan_x_p.user_readback.value
+
+    @property
+    def y(self):
+        return self.gan_y_p.user_readback.value
+
+    @property
+    def z(self):
+        return self._z + np.random.uniform(-1,1)*self.noise_z
+
+    @z.setter
+    def z(self, val):
+        self._z = val
+
+    @property
+    def alpha(self):
+        return self.pitch.user_readback.value
+

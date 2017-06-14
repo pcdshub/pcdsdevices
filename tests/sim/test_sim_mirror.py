@@ -82,3 +82,9 @@ def test_OffsetMirror_move_method():
     om.move(10)
     assert(om.position == 10)
     assert(om.pitch.position == 10)
+
+def test_OffsetMirror_noise():
+    om = OffsetMirror("TEST", noise_x=0.1, noise_y=0.1, noise_z=0.1, 
+                      noise_alpha=0.1)
+    
+    
