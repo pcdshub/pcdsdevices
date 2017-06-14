@@ -92,4 +92,25 @@ class CamBase(cam.CamBase):
 
 
 class PulnixCam(cam.PulnixCam, CamBase):
-    pass
+    def __init__(self, prefix, **kwargs):
+        super().__init__(prefix, **kwargs)
+        # Set some default values that are the same as the actual camera
+        self.array_rate.put(120.0)
+        self.nd_attributes_file.put('')
+        self.port_name.put('CAM')
+        self.acquire.put(1)
+        self.acquire_time.put(0.000299991596655155)        
+        self.array_size.array_size_x.put(640)
+        self.array_size.array_size_y.put(480)
+        self.array_size_bytes.put(307200)
+        self.data_type.put(3)
+        self.image_mode.put(2)
+        self.manufacturer.put('PULNIX')
+        self.max_size.max_size_x.put(640)
+        self.max_size.max_size_y.put(480)
+        self.model.put('SIMULATED')
+        self.num_exposures.put(1)
+        self.num_images.put(1)
+        self.size.size_x.put(640)
+        self.size.size_y.put(480)
+        self.trigger_mode.put(2)
