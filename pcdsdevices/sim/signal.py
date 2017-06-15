@@ -21,6 +21,14 @@ from ..signal import Signal
 
 
 class FakeSignal(Signal):
+    """
+    Empty signal class with some extra features to better simulate real devices.
+    
+    The main additions are the ability to noise to the readback, add static 
+    sleep times to the read or set, add sleep time on every set based on a 
+    velocity parameter, and setting the value of the signal according to an
+    outside function/method.
+    """
     def __init__(self, value=0, put_sleep=0, get_sleep=0, 
                  noise=0, noise_type="uni", noise_func=None, noise_args=None, 
                  noise_kwargs=None, velocity=None, **kwargs):
@@ -84,14 +92,26 @@ class FakeSignal(Signal):
             
 
     def put(self, value, **kwargs):
-        time.sleep(self.put_sleep)
         if self.velocity is not None:
-            time_to_dest = (value - self._raw_readback) / self.velocity
+            try:
+                time_to_dest = (value - self._raw_readback) / self.velocity
+            except TypeError:
+                try:
+                    time_to_dest = (value - self._raw_readback) / self.velocity()
+                except ZeroDivisionError:
+                    time_to_dest = 0
             time.sleep(time_to_dest)
+        try:
+            time.sleep(self.put_sleep)
+        except TypeError:
+            time.sleep(self.put_sleep())
         return super().put(value, **kwargs)
 
     def get(self, **kwargs):
-        time.sleep(self.get_sleep)
+        try:
+            time.sleep(self.get_sleep)
+        except:
+            time.sleep(self.get_sleep())
         return super().get(**kwargs)
 
     @property
