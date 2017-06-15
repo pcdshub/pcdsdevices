@@ -3,5 +3,118 @@
 """
 Overrides for Epics Signals
 """
+############
+# Standard #
+############
+import time
+import logging
+
+###############
+# Third Party #
+###############
+import numpy as np
+
+##########
+# Module #
+##########
 from ..signal import Signal
+
+
+class FakeSignal(Signal):
+    def __init__(self, value=0, put_sleep=0, get_sleep=0, 
+                 noise=0, noise_type="uni", noise_func=None, noise_args=None, 
+                 noise_kwargs=None, velocity=None, **kwargs):
+        self.put_sleep = put_sleep
+        self.get_sleep = get_sleep
+        self.noise = noise
+        self.noise_type = noise_type
+        self.noise_args = noise_args
+        self.noise_kwargs = noise_kwargs
+        self.velocity = velocity
+        self._supported_noise_types = {"uni":np.random.uniform, 
+                                       "norm":np.random.normal}
+        self._check_noise_args = {"uni":self._check_args_uni,
+                                  "norm":self._check_args_norm}
+        
+        # If a custom noise function is supplied use that
+        if noise_func:
+            self._check_args_not_none()
+            self._noise_func = lambda : noise_func(*self.noise_args,
+                                                   **self.noise_kwargs)
+        # Otherwise check the noise type and use a default
+        elif self.noise_type.lower() not in self._supported_noise_types.keys():
+            logging.warning("Inputted noise type not supported. Must be one of "
+                            "the following: {0}.\nSetting to 'uni'.".format(
+                                self._supported_noise_types.keys()))
+            self.noise_type = "uni"
+        if self.noise_type.lower() in self._supported_noise_types.keys():
+            self._check_noise_args[self.noise_type]()
+            self._noise_func = lambda : self._supported_noise_types[
+                self.noise_type](*self.noise_args, **self.noise_kwargs)
+        super().__init__(value=value, **kwargs)
+
+    def _check_args_not_none(self, args=(), kwargs={}):
+        """
+        Checks if the noise args or the kwargs are set to None. They are
+        replaced with an empty tuple and dictionary or the inputted args or
+        kwargs.
+        """
+        if self.noise_args is None:
+            self.noise_args = args
+        if self.noise_kwargs is None:
+            self.noise_kwargs = kwargs
+
+    def _check_args_uni(self):
+        """
+        Sets default values for numpy.random.uniform. See URL below for 
+        full documentation:
+
+        https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.uniform.html
+        """
+        self._check_args_not_none((-1, 1), {})
+
+    def _check_args_norm(self):
+        """
+        Sets default values for numpy.random.normal. See URL below for full 
+        documentation:
+        
+        https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.normal.html
+        """
+        self._check_args_not_none((0, 0.25), {})
+            
+
+    def put(self, value, **kwargs):
+        time.sleep(self.put_sleep)
+        if self.velocity is not None:
+            time_to_dest = (value - self._raw_readback) / self.velocity
+            time.sleep(time_to_dest)
+        return super().put(value, **kwargs)
+
+    def get(self, **kwargs):
+        time.sleep(self.get_sleep)
+        return super().get(**kwargs)
+
+    @property
+    def _readback(self):
+        return self._get_readback() + self._noise_func() * self.noise
+
+    @_readback.setter
+    def _readback(self, value):
+        self._set_readback(value)
+
+    def _get_readback(self, **kwargs):
+        """
+        Placeholder method that can be overridden to calculate the returned
+        readback.
+        """
+        return self._raw_readback
+
+    def _set_readback(self, value, **kwargs):
+        """
+        Placeholder method that can be overridden to calculate the raw readback 
+        value that will be set.
+        """
+        self._raw_readback = value
+
+
 
