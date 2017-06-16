@@ -30,7 +30,7 @@ class FakeSignal(Signal):
     outside function/method.
     """
     def __init__(self, value=0, put_sleep=0, get_sleep=0, 
-                 noise=False, noise_type="norm", noise_func=None, noise_args={}, 
+                 noise=False, noise_type="norm", noise_func=None, noise_args=(), 
                  noise_kwargs={}, velocity=None, use_string=False, **kwargs):
         self.put_sleep = put_sleep
         self.get_sleep = get_sleep
@@ -158,17 +158,21 @@ class FakeSignal(Signal):
 
     def noise_uni(self, *args, **kwargs):
         """
-        Wrapper for numpy.random.uniform.
+        Wrapper for numpy.random.uniform. See URL below for full documentation:
+
+        https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.uniform.html
         """
-        noise_scale = kwargs.pop("scale", self.noise)
-        return np.random.uniform(*args, **kwargs) * noise_scale
+        scale = kwargs.pop("scale", self.noise)
+        return np.random.uniform(*args, **kwargs) * scale
 
     def noise_norm(self, *args, **kwargs):
         """
-        Wrapper for numpy.random.normal.
+        Wrapper for numpy.random.normal. See URL below for full documentation:
+        
+        https://docs.scipy.org/doc/numpy/reference/generated/numpy.random.normal.html
         """
-        noise_scale = kwargs.pop("scale", self.noise)
-        return np.random.normal(*args, **kwargs) * noise_scale
+        scale = kwargs.pop("scale", self.noise)
+        return np.random.normal(*args, **kwargs) * scale
     
     
 

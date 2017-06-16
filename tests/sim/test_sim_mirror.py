@@ -80,13 +80,15 @@ def test_OffsetMirror_move_method():
     assert(om.pitch.position == 10)
 
 def test_OffsetMirror_noise():
-    om = OffsetMirror("TEST", x=5, y=10, z=15, alpha=20, noise_x=0.1, 
-                      noise_y=0.1, noise_z=0.1, noise_alpha=0.1)
-    assert(om.sim_x.value != 5 and np.isclose(om.sim_x.value, 5, atol=0.1))
-    assert(om.sim_y.value != 10 and np.isclose(om.sim_y.value, 10, atol=0.1))
-    assert(om.sim_z.value != 15 and np.isclose(om.sim_z.value, 15, atol=0.1))
+    om = OffsetMirror("TEST", x=5, y=10, z=15, alpha=20, noise_x=True, 
+                      noise_y=True, noise_z=True, noise_alpha=True, 
+                      noise_kwargs={"scale":0.25}, noise_type="uni")
+    # import ipdb; ipdb.set_trace()
+    assert(om.sim_x.value != 5 and np.isclose(om.sim_x.value, 5, atol=0.25))
+    assert(om.sim_y.value != 10 and np.isclose(om.sim_y.value, 10, atol=0.25))
+    assert(om.sim_z.value != 15 and np.isclose(om.sim_z.value, 15, atol=0.25))
     assert(om.sim_alpha.value != 20 and np.isclose(om.sim_alpha.value, 20, 
-                                                   atol=0.1))
+                                                   atol=0.25))
 
 def test_OffsetMirror_noise_changes_on_every_read():
     om = OffsetMirror("TEST", x=5, y=5, z=5, alpha=5, noise_x=0.1, noise_y=0.1, 

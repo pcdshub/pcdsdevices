@@ -92,7 +92,7 @@ class OMMotor(mirror.OMMotor):
 
     @noise.setter
     def noise(self, val):
-        self.user_readback.noise = val
+        self.user_readback.noise = bool(val)
 
     @property
     def settle_time(self):
@@ -238,6 +238,12 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
         self.pitch.user_setpoint.put(alpha)
         self.pitch.user_readback.put(alpha)
 
+        # Noise parameters
+        self.noise_func = noise_func
+        self.noise_type = noise_type
+        self.noise_args = noise_args
+        self.noise_kwargs = noise_kwargs
+
         # Simulation values
         self.sim_x._get_readback = lambda : self.gan_x_p.user_readback.value
         self.sim_y._get_readback = lambda : self.gan_y_p.user_readback.value
@@ -263,7 +269,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @noise_x.setter
     def noise_x(self, val):
-        self.gan_x_p.noise = self.gan_x_s.noise = val
+        self.gan_x_p.noise = self.gan_x_s.noise = bool(val)
 
     @property
     def noise_y(self):
@@ -271,7 +277,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @noise_y.setter
     def noise_y(self, val):
-        self.gan_y_p.noise = self.gan_y_s.noise = val
+        self.gan_y_p.noise = self.gan_y_s.noise = bool(val)
 
     @property
     def noise_z(self):
@@ -279,7 +285,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @noise_z.setter
     def noise_z(self, val):
-        self.sim_z.noise = val
+        self.sim_z.noise = bool(val)
 
     @property
     def noise_alpha(self):
@@ -287,7 +293,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @noise_alpha.setter
     def noise_alpha(self, val):
-        self.pitch.noise = val
+        self.pitch.noise = bool(val)
     
     @property
     def settle_time_x(self):
@@ -355,47 +361,47 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @property
     def noise_func(self):
-        if callable(self.sim_alpha.noise_func):
-            return self.sim_alpha.noise_func()
-        return self.sim_alpha.noise_func
+        if callable(self.pitch.noise_func):
+            return self.pitch.noise_func()
+        return self.pitch.noise_func
 
     @noise_func.setter
     def noise_func(self, val):
-        self.sim_x.noise_func = val
-        self.sim_y.noise_func = val
+        self.gan_x_p.noise_func = val
+        self.gan_y_p.noise_func = val
         self.sim_z.noise_func = val
-        self.sim_alpha.noise_func = val
+        self.pitch.noise_func = val
 
     @property
     def noise_type(self):
-        return self.sim_alpha.noise_type
+        return self.pitch.noise_type
 
     @noise_type.setter
     def noise_type(self, val):
-        self.sim_x.noise_type = val
-        self.sim_y.noise_type = val
+        self.gan_x_p.noise_type = val
+        self.gan_y_p.noise_type = val
         self.sim_z.noise_type = val
-        self.sim_alpha.noise_type = val
+        self.pitch.noise_type = val
 
     @property
     def noise_args(self):
-        return self.sim_alpha.noise_args
+        return self.pitch.noise_args
 
     @noise_args.setter
     def noise_args(self, val):
-        self.sim_x.noise_args = val
-        self.sim_y.noise_args = val
+        self.gan_x_p.noise_args = val
+        self.gan_y_p.noise_args = val
         self.sim_z.noise_args = val
-        self.sim_alpha.noise_args = val
+        self.pitch.noise_args = val
 
     @property
     def noise_kwargs(self):
-        return self.sim_alpha.noise_kwargs
+        return self.pitch.noise_kwargs
 
     @noise_kwargs.setter
     def noise_kwargs(self, val):
-        self.sim_x.noise_kwargs = val
-        self.sim_y.noise_kwargs = val
+        self.gan_x_p.noise_kwargs = val
+        self.gan_y_p.noise_kwargs = val
         self.sim_z.noise_kwargs = val
-        self.sim_alpha.noise_kwargs = val
+        self.pitch.noise_kwargs = val
 
