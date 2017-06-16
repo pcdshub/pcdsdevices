@@ -30,8 +30,8 @@ class FakeSignal(Signal):
     outside function/method.
     """
     def __init__(self, value=0, put_sleep=0, get_sleep=0, 
-                 noise=0, noise_type="norm", noise_func=None, noise_args=None, 
-                 noise_kwargs=None, velocity=None, use_string=False, **kwargs):
+                 noise=0, noise_type="norm", noise_func=None, noise_args={}, 
+                 noise_kwargs={}, velocity=None, use_string=False, **kwargs):
         self.put_sleep = put_sleep
         self.get_sleep = get_sleep
         self.noise = noise
@@ -106,7 +106,10 @@ class FakeSignal(Signal):
                     time_to_dest = (value - self._raw_readback)/self.velocity
                 time.sleep(time_to_dest)
             except TypeError:
-                self.use_string = True
+                if isinstance(value , str):
+                    self.use_string = True
+                else:
+                    raise
         # Wait before putting
         try:
             time.sleep(self.put_sleep)
@@ -128,7 +131,10 @@ class FakeSignal(Signal):
             try:
                 return self._get_readback() + self._noise_func() * self.noise
             except TypeError:
-                self.use_string = True
+                if isinstance(self._get_readback(), str):
+                    self.use_string = True
+                else:
+                    raise
         return self._get_readback()
 
     @_readback.setter
