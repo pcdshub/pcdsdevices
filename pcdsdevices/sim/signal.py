@@ -31,7 +31,7 @@ class FakeSignal(Signal):
     """
     def __init__(self, value=0, put_sleep=0, get_sleep=0, 
                  noise=0, noise_type="norm", noise_func=None, noise_args=None, 
-                 noise_kwargs=None, velocity=None, **kwargs):
+                 noise_kwargs=None, velocity=None, use_string=False, **kwargs):
         self.put_sleep = put_sleep
         self.get_sleep = get_sleep
         self.noise = noise
@@ -39,6 +39,7 @@ class FakeSignal(Signal):
         self.noise_args = noise_args
         self.noise_kwargs = noise_kwargs
         self.velocity = velocity
+        self.use_string = use_string
         self._supported_noise_types = {"uni":np.random.uniform, 
                                        "norm":np.random.normal}
         self._check_noise_args = {"uni":self._check_args_uni,
@@ -93,15 +94,19 @@ class FakeSignal(Signal):
 
     def put(self, value, **kwargs):
         # Wait using the velocity
-        time_to_dest = 0
-        if callable(self.velocity):
+        if not self.use_string:
             try:
-                time_to_dest = (value - self._raw_readback)/self.velocity()
-            except ZeroDivisionError:
-                pass        
-        elif self.velocity is not None:
-            time_to_dest = (value - self._raw_readback)/self.velocity
-        time.sleep(time_to_dest)
+                time_to_dest = 0
+                if callable(self.velocity):
+                    try:
+                        time_to_dest = (value - self._raw_readback)/self.velocity()
+                    except ZeroDivisionError:
+                        pass        
+                elif self.velocity is not None:
+                    time_to_dest = (value - self._raw_readback)/self.velocity
+                time.sleep(time_to_dest)
+            except TypeError:
+                self.use_string = True
         # Wait before putting
         try:
             time.sleep(self.put_sleep)
@@ -113,17 +118,22 @@ class FakeSignal(Signal):
         # Wait before getting
         try:
             time.sleep(self.get_sleep)
-        except:
+        except TypeError:
             time.sleep(self.get_sleep())
         return super().get(**kwargs)
 
     @property
     def _readback(self):
-        return self._get_readback() + self._noise_func() * self.noise
+        if not self.use_string:
+            try:
+                return self._get_readback() + self._noise_func() * self.noise
+            except TypeError:
+                self.use_string = True
+        return self._get_readback()
 
     @_readback.setter
     def _readback(self, value):
-        self._set_readback(value)
+        self._put_readback(value)
 
     def _get_readback(self, **kwargs):
         """
@@ -132,7 +142,7 @@ class FakeSignal(Signal):
         """
         return self._raw_readback
 
-    def _set_readback(self, value, **kwargs):
+    def _put_readback(self, value, **kwargs):
         """
         Placeholder method that can be overridden to calculate the raw readback 
         value that will be set.
