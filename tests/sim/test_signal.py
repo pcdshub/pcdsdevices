@@ -26,7 +26,8 @@ def test_FakeSignal_runs_ophyd_functions():
     assert(isinstance(sig.read_configuration(), dict))
 
 def test_FakeSignal_uni_noise_readback():
-    sig = FakeSignal(name="TEST", noise=5, noise_type="uni", noise_args=(-1,1))
+    sig = FakeSignal(name="TEST", noise=True, noise_type="uni", 
+                     noise_args=(-1,1), noise_kwargs={'scale':5})
     for i in range(10):
         test_val = np.random.uniform(-1,1) * 5
         assert(sig.value == test_val or np.isclose(sig.value, 0, atol=5))
@@ -35,7 +36,8 @@ def test_FakeSignal_uni_noise_readback():
             sig.read()["TEST"]['value'], 0, atol=5))
 
 def test_FakeSignal_norm_noise_readback():
-    sig = FakeSignal(name="TEST", noise=1, noise_type="norm", noise_args=(0,0.25))
+    sig = FakeSignal(name="TEST", noise=True, noise_type="norm", 
+                     noise_args=(0,0.25))
     for i in range(10):
         test_val = np.random.normal(0, 0.25)
         assert(sig.value == test_val or np.isclose(sig.value, 0, atol=5))
@@ -44,7 +46,7 @@ def test_FakeSignal_norm_noise_readback():
             sig.read()["TEST"]['value'], 0, atol=5))
     
 def test_FakeSignal_noise_changes_every_read():
-    sig = FakeSignal(name="TEST", noise=5)
+    sig = FakeSignal(name="TEST", noise=True, noise_kwargs={'scale':5})
     val = [sig.value for i in range(10)]
     get = [sig.get() for i in range(10)]
     read = [sig.read()["TEST"]['value'] for i in range(10)]

@@ -30,20 +30,20 @@ class FakeSignal(Signal):
     outside function/method.
     """
     def __init__(self, value=0, put_sleep=0, get_sleep=0, 
-                 noise=0, noise_type="norm", noise_func=None, noise_args={}, 
+                 noise=False, noise_type="norm", noise_func=None, noise_args={}, 
                  noise_kwargs={}, velocity=None, use_string=False, **kwargs):
         self.put_sleep = put_sleep
         self.get_sleep = get_sleep
-        self.noise = noise
+        self.noise = bool(noise)
         self.noise_type = noise_type
         self.noise_args = noise_args
         self.noise_kwargs = noise_kwargs
         self.velocity = velocity
         self.use_string = use_string
-        self._supported_noise_types = {"uni":np.random.uniform, 
-                                       "norm":np.random.normal}
-        self._check_noise_args = {"uni":self._check_args_uni,
-                                  "norm":self._check_args_norm}
+        self._supported_noise_types = {"uni" : self.noise_uni, 
+                                       "norm" : self.noise_norm}
+        self._check_noise_args = {"uni" : self._check_args_uni,
+                                  "norm" : self._check_args_norm}
         
         # If a custom noise function is supplied use that
         if noise_func:
@@ -99,11 +99,12 @@ class FakeSignal(Signal):
                 time_to_dest = 0
                 if callable(self.velocity):
                     try:
-                        time_to_dest = (value - self._raw_readback)/self.velocity()
+                        time_to_dest = (value - \
+                                        self._raw_readback) / self.velocity()
                     except ZeroDivisionError:
                         pass        
                 elif self.velocity is not None:
-                    time_to_dest = (value - self._raw_readback)/self.velocity
+                    time_to_dest = (value - self._raw_readback) / self.velocity
                 time.sleep(time_to_dest)
             except TypeError:
                 if isinstance(value , str):
@@ -155,5 +156,19 @@ class FakeSignal(Signal):
         """
         self._raw_readback = value
 
+    def noise_uni(self, *args, **kwargs):
+        """
+        Wrapper for numpy.random.uniform.
+        """
+        noise_scale = kwargs.pop("scale", self.noise)
+        return np.random.uniform(*args, **kwargs) * noise_scale
 
+    def noise_norm(self, *args, **kwargs):
+        """
+        Wrapper for numpy.random.normal.
+        """
+        noise_scale = kwargs.pop("scale", self.noise)
+        return np.random.normal(*args, **kwargs) * noise_scale
+    
+    
 
