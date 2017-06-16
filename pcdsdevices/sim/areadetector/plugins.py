@@ -68,6 +68,13 @@ class PluginBase(plugins.PluginBase):
 class StatsPlugin(plugins.StatsPlugin, PluginBase):
     """
     StatsPlugin but with components instantiated to be empty signals.
+
+    To override centroid values, patch methods:
+
+        _get_readback_centroid_x - Centroid x
+        _get_readback_centroid_y - Centroid y
+
+    This will guarantee that returned centroid will always be an int.
     """
     plugin_type = Component(FakeSignal, value='NDPluginStats')
     bgd_width = Component(FakeSignal, value=0)
@@ -133,10 +140,10 @@ class StatsPlugin(plugins.StatsPlugin, PluginBase):
     ts_total = Component(FakeSignal, value=0)
     total = Component(FakeSignal, value=0)
 
-    def __init__(self, prefix, *, noise_x=0, noise_y=0, noise_func_x=None,
-                 noise_func_y=None, noise_type_x="uni", noise_type_y="uni", 
-                 noise_args_x=(), noise_args_y=(), noise_kwargs_x={},
-                 noise_kwargs_y={}, noise_scale_x=1, noise_scale_y=1, **kwargs):
+    def __init__(self, prefix, *, noise_x=False, noise_y=False, 
+                 noise_func_x=None, noise_func_y=None, noise_type_x="uni", 
+                 noise_type_y="uni", noise_args_x=(), noise_args_y=(), 
+                 noise_kwargs_x={}, noise_kwargs_y={}, **kwargs):
         super().__init__(prefix, **kwargs)
         self.noise_x = noise_x
         self.noise_y = noise_y
@@ -148,21 +155,19 @@ class StatsPlugin(plugins.StatsPlugin, PluginBase):
             self.centroid.y))
         self.noise_args_x = noise_args_x
         self.noise_args_y = noise_args_y
-        self.noise_scale_x = noise_scale_x
-        self.noise_scale_y = noise_scale_y
         self.noise_kwargs_x = noise_kwargs_x
         self.noise_kwargs_y = noise_kwargs_y
         # Override the default centroid calculator to always output ints
-        self.centroid.x._get_readback = lambda : self._get_readback_int(
-            self.centroid.x)
-        self.centroid.y._get_readback = lambda : self._get_readback_int(
-            self.centroid.y)
+        self.centroid.x._get_readback = lambda **kwargs : int(np.round(
+            self._get_readback_centroid_x()))
+        self.centroid.y._get_readback = lambda **kwargs : int(np.round(
+            self._get_readback_centroid_y()))
 
-    def _get_readback_int(self, sig, **kwargs):
-        """
-        Returns _raw_readback as an int.
-        """
-        return int(np.round(sig._raw_readback))
+    def _get_readback_centroid_x(self, **kwargs):
+        return self.centroid.x._raw_readback
+
+    def _get_readback_centroid_y(self, **kwargs):
+        return self.centroid.y._raw_readback
 
     def _int_noise_func(self, sig):
         if sig.noise_type == "uni":

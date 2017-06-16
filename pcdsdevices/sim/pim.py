@@ -14,7 +14,8 @@ from ophyd.signal import ArrayAttributeSignal
 ##########
 # Module #
 ##########
-from .signal import Signal
+from .device import SimDevice
+from .signal import FakeSignal
 from .component import (FormattedComponent, Component)
 from .areadetector.plugins import StatsPlugin
 from .areadetector.detectors import PulnixDetector
@@ -22,22 +23,28 @@ from ..epics import pim
 
 
 class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
-    proc1 = Component(Signal)
-    image2 = Component(Signal)
+    proc1 = Component(FakeSignal)
+    image2 = Component(FakeSignal)
     stats1 = Component(StatsPlugin, "Stats1:", read_attrs=['centroid',
                                                             'mean_value'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
                                                             'mean_value'])
 
-    def __init__(self, prefix, *, noise_x=0, noise_y=0, zero_outside_yag=False,
-                 **kwargs):
-        self.zero_outside_yag = zero_outside_yag
+    def __init__(self, prefix, *, noise_x=False, noise_y=False, noise_func=None, 
+                 noise_type="norm", noise_args=(), noise_kwargs={}, 
+                 zero_outside_yag=True, **kwargs):
         super().__init__(prefix, **kwargs)
-        # Override the lower level centroid read 
-        self.stats2.noise_x = noise_x
-        self.stats2.noise_y = noise_y
-        self.stats2.zero_outside_yag = zero_outside_yag
-        self.stats2._centroid_out_of_bounds = self._centroid_out_of_bounds
+        self.noise_x = noise_x
+        self.noise_y = noise_y
+        self.noise_func = noise_func
+        self.noise_type = noise_type
+        self.noise_args = noise_args
+        self.noise_kwargs = noise_kwargs
+        self.zero_outside_yag = zero_outside_yag
+        self.stats2._get_readback_centroid_x = lambda **kwargs : (
+            self._get_readback_centroid_x() * self._centroid_within_bounds())
+        self.stats2._get_readback_centroid_y = lambda **kwargs : (
+            self._get_readback_centroid_y() * self._centroid_within_bounds())
 
     @property
     def image(self):
@@ -45,8 +52,8 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
         Returns a blank image using the correct shape of the camera. Override
         this if you want spoof images.
         """
-        return np.zeros((self.cam.size.size_y.value, 
-                         self.cam.size.size_x.value), dtype=np.uint8)
+        return np.zeros((int(self.cam.size.size_y.value), 
+                         int(self.cam.size.size_x.value)), dtype=np.uint8)
 
     @property
     def centroid_x(self, **kwargs):
@@ -54,8 +61,7 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
         Returns the beam centroid in x.
         """
         self.check_camera()
-        read = self.stats2.read()
-        return read["{0}_centroid_x".format(self.stats2.name)]['value']
+        return self.stats2.centroid.x.value
         
     @property
     def centroid_y(self, **kwargs):
@@ -63,21 +69,79 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
         Returns the beam centroid in y.
         """
         self.check_camera()
-        read = self.stats2.read()
-        return read["{0}_centroid_y".format(self.stats2.name)]['value']
+        return self.stats2.centroid.y.value
           
-    def _centroid_out_of_bounds(self):
+    def _centroid_within_bounds(self):
         """
         Checks if the centroid is outside the edges of the yag.
         """
-        if ((0 <= self.stats2.centroid.y.value <= self.image.shape[0]) and 
-            (0 <= self.stats2.centroid.x.value <= self.image.shape[1])):
-            return False
-        return True
+        in_x = 0 <= self.stats2.centroid.x._raw_readback <= self.image.shape[0]
+        in_y = 0 <= self.stats2.centroid.y._raw_readback <= self.image.shape[1]
+        if not self.zero_outside_yag or (in_x and in_y):
+            return True
+        return False
+    
+    def _get_readback_centroid_x(self):
+        return self.stats2.centroid.x._raw_readback
+
+    def _get_readback_centroid_y(self):
+        return self.stats2.centroid.y._raw_readback
+
+    @property
+    def noise_x(self):
+        return self.stats2.noise_x
+
+    @noise_x.setter
+    def noise_x(self, val):
+        self.stats2.noise_x = bool(val)
+
+    @property
+    def noise_y(self):
+        return self.stats2.noise_y
+
+    @noise_y.setter
+    def noise_y(self, val):
+        self.stats2.noise_y = bool(val)
+
+    @property
+    def noise_func(self):
+        return (self.stats2.noise_func_x(), self.stats2.noise_func_y())
+        
+    @noise_func.setter
+    def noise_func(self, val):
+        self.stats2.noise_func_x = val
+        self.stats2.noise_func_y = val
+
+    @property
+    def noise_type(self):
+        return (self.stats2.noise_type_x, self.stats2.noise_type_y)
+
+    @noise_type.setter
+    def noise_type(self, val):
+        self.stats2.noise_type_x = val
+        self.stats2.noise_type_y = val
+
+    @property
+    def noise_args(self):
+        return (self.stats2.noise_args_x, self.stats2.noise_args_y)
+
+    @noise_args.setter
+    def noise_args(self, val):
+        self.stats2.noise_args_x = val
+        self.stats2.noise_args_y = val
+
+    @property
+    def noise_kwargs(self):
+        return (self.stats2.noise_kwargs_x, self.stats2.noise_kwargs_y)
+
+    @noise_kwargs.setter
+    def noise_kwargs(self, val):
+        self.stats2.noise_kwargs_x = val
+        self.stats2.noise_kwargs_y = val
     
 
 class PIMMotor(pim.PIMMotor):
-    states = Component(Signal, value="OUT")
+    states = Component(FakeSignal, value="OUT")
 
     def __init__(self, prefix, pos_in=0, pos_diode=0.5, pos_out=1, fake_sleep=0,
                  noise=0, **kwargs):
@@ -99,8 +163,6 @@ class PIMMotor(pim.PIMMotor):
                     pos = "YAG"
                 else:
                     pos = position.upper()
-                if self.fake_sleep:
-                    time.sleep(self.fake_sleep)
                 status = self.states.set(position.upper())
                 time.sleep(0.1)
                 return status
@@ -118,43 +180,22 @@ class PIMMotor(pim.PIMMotor):
         return self.pos_d[self.position]+np.random.uniform(-1,1)*self.noise
 
 
-class PIM(pim.PIM, PIMMotor):
+class PIM(pim.PIM, PIMMotor, SimDevice):
     detector = FormattedComponent(PIMPulnixDetector, 
                                   "{self._section}:{self._imager}:CVV:01",
                                   read_attrs=['stats2'])
     def __init__(self, prefix, x=0, y=0, z=0, noise_x=0, noise_y=0, noise_z=0, 
-                 fake_sleep_y=0, centroid_noise=(0,0), **kwargs):
+                 settle_time_y=0, centroid_noise=(0,0), **kwargs):
         if len(prefix.split(":")) < 2:
             prefix = "TST:{0}".format(prefix)
-        self.i_x = x
-        self.i_z = z
-        self.noise_x = noise_x
-        self.noise_z = noise_z
         super().__init__(prefix, pos_in=y, noise=noise_y, 
                          fake_sleep=fake_sleep_y, **kwargs)
+        self.noise_x = noise_x
+        self.noise_z = noise_z
         if not isinstance(centroid_noise, (tuple, list)):
             centroid_noise = (centroid_noise, centroid_noise)
         self.detector.noise_x = centroid_noise[0]
         self.detector.noise_y = centroid_noise[1]
 
-    @property
-    def _x(self):
-        return self.i_x + np.random.uniform(-1,1)*self.noise_x
-
-    @_x.setter
-    def _x(self, val):
-        self.i_x = val
-
-    @property
-    def _y(self):
-        return self.pos
-
-    @property
-    def _z(self):
-        return self.i_z + np.random.uniform(-1,1)*self.noise_z
-
-    @_z.setter
-    def _z(self, val):
-        self.i_z = val
-
+        # Simulation values
 
