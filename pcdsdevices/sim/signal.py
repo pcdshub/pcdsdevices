@@ -30,7 +30,7 @@ class FakeSignal(Signal):
     outside function/method.
     """
     def __init__(self, value=0, put_sleep=0, get_sleep=0, 
-                 noise=0, noise_type="uni", noise_func=None, noise_args=None, 
+                 noise=0, noise_type="norm", noise_func=None, noise_args=None, 
                  noise_kwargs=None, velocity=None, **kwargs):
         self.put_sleep = put_sleep
         self.get_sleep = get_sleep
@@ -67,9 +67,9 @@ class FakeSignal(Signal):
         replaced with an empty tuple and dictionary or the inputted args or
         kwargs.
         """
-        if self.noise_args is None:
+        if not self.noise_args:
             self.noise_args = args
-        if self.noise_kwargs is None:
+        if not self.noise_kwargs:
             self.noise_kwargs = kwargs
 
     def _check_args_uni(self):
@@ -92,15 +92,17 @@ class FakeSignal(Signal):
             
 
     def put(self, value, **kwargs):
-        if self.velocity is not None:
+        # Wait using the velocity
+        time_to_dest = 0
+        if callable(self.velocity):
             try:
-                time_to_dest = (value - self._raw_readback) / self.velocity
-            except TypeError:
-                try:
-                    time_to_dest = (value - self._raw_readback) / self.velocity()
-                except ZeroDivisionError:
-                    time_to_dest = 0
-            time.sleep(time_to_dest)
+                time_to_dest = (value - self._raw_readback)/self.velocity()
+            except ZeroDivisionError:
+                pass        
+        elif self.velocity is not None:
+            time_to_dest = (value - self._raw_readback)/self.velocity
+        time.sleep(time_to_dest)
+        # Wait before putting
         try:
             time.sleep(self.put_sleep)
         except TypeError:
@@ -108,6 +110,7 @@ class FakeSignal(Signal):
         return super().put(value, **kwargs)
 
     def get(self, **kwargs):
+        # Wait before getting
         try:
             time.sleep(self.get_sleep)
         except:

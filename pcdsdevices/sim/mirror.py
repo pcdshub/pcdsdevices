@@ -13,7 +13,8 @@ import numpy as np
 ##########
 # Module #
 ##########
-from .signal import Signal
+from .sim import SimDevice
+from .signal import (Signal, FakeSignal)
 from .component import (FormattedComponent, Component, DynamicDeviceComponent)
 from ..epics import mirror
 
@@ -25,34 +26,38 @@ class OMMotor(mirror.OMMotor):
     from ophyd.epics_motor.
     """
     # position
-    user_readback = Component(Signal, value=0)
-    user_setpoint = Component(Signal, value=0)
+    user_readback = Component(FakeSignal, value=0)
+    user_setpoint = Component(FakeSignal, value=0)
 
     # configuration
     velocity = Component(Signal)
 
     # motor status
-    motor_is_moving = Component(Signal, value=0)
-    motor_done_move = Component(Signal, value=1)
-    high_limit_switch = Component(Signal, value=10000)
-    low_limit_switch = Component(Signal, value=-10000)
+    motor_is_moving = Component(FakeSignal, value=0)
+    motor_done_move = Component(FakeSignal, value=1)
+    high_limit_switch = Component(FakeSignal, value=10000)
+    low_limit_switch = Component(FakeSignal, value=-10000)
 
     # status
-    interlock = Component(Signal)
-    enabled = Component(Signal)
+    interlock = Component(FakeSignal)
+    enabled = Component(FakeSignal)
 
-    motor_stop = Component(Signal)
+    motor_stop = Component(FakeSignal)
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
-                 name=None, parent=None, velocity=0, noise=0, fake_sleep=0, 
-                 refresh=0, settle_time=0, **kwargs):
+                 name=None, parent=None, velocity=0, noise=0, settle_time=0, 
+                 noise_func=None, noise_type="uni", noise_args=(), 
+                 noise_kwargs={}, **kwargs):
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs, name=name, 
                          parent=parent, settle_time=settle_time, **kwargs)
         self.velocity.put(velocity)
         self.noise = noise
-        self.fake_sleep = fake_sleep
-        self.refresh = refresh
+        self.settle_time = settle_time
+        self.noise_type = noise_type
+        self.noise_args = noise_args
+        self.noise_kwargs = noise_kwargs
+        self.user_setpoint.velocity = lambda : self.velocity.value
 
     def move(self, position, **kwargs):
         """
@@ -67,63 +72,74 @@ class OMMotor(mirror.OMMotor):
         Returns
         -------
         status : MoveStatus
-        Raises
-        ------
-        TimeoutError
-            When motion takes longer than `timeout`
-        ValueError
-            On invalid positions
-        RuntimeError
-            If motion fails other than timing out
         """
         self.user_setpoint.put(position)
 
         # Switch to moving state
         self.motor_is_moving.put(1)
         self.motor_done_move.put(0)
-
-        # # Add uniform noise
-        # pos = position + np.random.uniform(-1, 1)*self.noise
-
-        # Make sure refresh is set to something sensible if using velo or sleep
-        refresh = self.refresh or self.fake_sleep/10 or 0.1
-
-        # If velo is set, incrementally set the readback according to the refresh
-        if self.velocity.value:
-            next_pos = self.user_readback.value
-            while next_pos < position:
-                self.user_readback.put(next_pos) 
-                time.sleep(refresh)
-                next_pos += self.velocity.value*refresh
-
-        # If fake sleep is set, incrementatlly sleep while setting the readback
-        elif self.fake_sleep:
-            wait = 0
-            while wait < self.fake_sleep:
-                time.sleep(refresh)
-                wait += refresh
-                self.user_readback.put(wait/self.fake_sleep * position)
         status = self.user_readback.set(position)
 
-        # Switch to finished state and wait for status to update
+        # # Switch to finished state and wait for status to update
         self.motor_is_moving.put(0)
         self.motor_done_move.put(1)
         time.sleep(0.1)
         return status
 
     @property
-    def position(self):
-        self.user_readback.put(
-            self.user_setpoint.value + np.random.uniform(-1,1)*self.noise)
-        return self.user_readback.value
+    def noise(self):
+        return self.user_readback.noise
 
-    def read(self, **kwargs):
-        self.user_readback.put(
-            self.user_setpoint.value + np.random.uniform(-1,1)*self.noise)
-        return super().read(**kwargs)
+    @noise.setter
+    def noise(self, val):
+        self.user_readback.noise = val
+
+    @property
+    def settle_time(self):
+        if callable(self.user_setpoint.put_sleep):
+            return self.user_setpoint.put_sleep()
+        return self.user_setpoint.put_sleep
+
+    @settle_time.setter
+    def settle_time(self, val):
+        self.user_setpoint.put_sleep = val
+
+    @property
+    def noise_func(self):
+        if callable(self.user_readback.noise_func):
+            return self.user_readback.noise_func()
+        return self.user_readback.noise_func
+
+    @noise_func.setter
+    def noise_func(self, val):
+        self.user_readback.noise_func = val
+
+    @property
+    def noise_type(self):
+        return self.user_readback.noise_type
+
+    @noise_type.setter
+    def noise_type(self, val):
+        self.user_readback.noise_type = val
+
+    @property
+    def noise_args(self):
+        return self.user_readback.noise_args
+
+    @noise_args.setter
+    def noise_args(self, val):
+        self.user_readback.noise_args = val
+
+    @property
+    def noise_kwargs(self):
+        return self.user_readback.noise_kwargs
+
+    @noise_kwargs.setter
+    def noise_kwargs(self, val):
+        self.user_readback.noise_kwargs = val
 
 
-class OffsetMirror(mirror.OffsetMirror):
+class OffsetMirror(mirror.OffsetMirror, SimDevice):
     # TODO: Add all parameters to doc string
     """
     Simulation of a simple flat mirror with assorted motors.
@@ -170,15 +186,20 @@ class OffsetMirror(mirror.OffsetMirror):
     pitch = FormattedComponent(OMMotor, "{self._prefix}")
 
     # Placeholder signals for non-implemented components
-    piezo = Component(Signal)
-    coupling = Component(Signal)
-    motor_stop = Component(Signal)
+    piezo = Component(FakeSignal)
+    coupling = Component(FakeSignal)
+    motor_stop = Component(FakeSignal)
+
+    # Simulation component
+    sim_alpha = Component(FakeSignal)
 
     def __init__(self, prefix, *, name=None, read_attrs=None, parent=None, 
                  configuration_attrs=None, section="", x=0, y=0, z=0, alpha=0, 
-                 velo_x=0, velo_y=0, velo_alpha=0, refresh_x=0, refresh_y=0, 
-                 refresh_alpha=0, noise_x=0, noise_y=0, noise_z=0, noise_alpha=0, 
-                 fake_sleep_x=0, fake_sleep_y=0, fake_sleep_alpha=0, **kwargs):
+                 velo_x=0, velo_y=0, velo_z=0, velo_alpha=0, noise_x=0, 
+                 noise_y=0, noise_z=0, noise_alpha=0, settle_time_x=0, 
+                 settle_time_y=0, settle_time_z=0, settle_time_alpha=0, 
+                 noise_func=None, noise_type="uni", noise_args=(), 
+                 noise_kwargs={}, **kwargs):
         if len(prefix.split(":")) < 3:
             prefix = "MIRR:TST:{0}".format(prefix)
         super().__init__(prefix, read_attrs=read_attrs,
@@ -187,24 +208,22 @@ class OffsetMirror(mirror.OffsetMirror):
 
         # Simulation Attributes
         # Fake noise to readback and moves
-        self.gan_x_p.noise = self.gan_x_s.noise = noise_x
-        self.gan_y_p.noise = self.gan_y_s.noise = noise_y
-        self.pitch.noise = noise_alpha
+        self.noise_x = noise_x
+        self.noise_y = noise_y
+        self.noise_z = noise_z
+        self.noise_alpha = noise_alpha
         
-        # Fake sleep for every move
-        self.gan_x_p.fake_sleep = self.gan_x_s.fake_sleep = fake_sleep_x
-        self.gan_y_p.fake_sleep = self.gan_y_s.fake_sleep = fake_sleep_y
-        self.pitch.fake_sleep = fake_sleep_alpha
+        # Settle time for every move
+        self.settle_time_x = settle_time_x
+        self.settle_time_y = settle_time_y
+        self.settle_time_z = settle_time_z
+        self.settle_time_alpha = settle_time_alpha
 
         # Velocity for every move
-        self.gan_x_p.velocity.value = self.gan_x_s.velocity.value = velo_x
-        self.gan_y_p.velocity.value = self.gan_y_s.velocity.value = velo_y
-        self.pitch.velocity.value = velo_alpha
-
-        # Refresh rate for moves
-        self.gan_x_p.refresh = self.gan_x_s.refresh = refresh_x
-        self.gan_y_p.refresh = self.gan_y_s.refresh = refresh_y
-        self.pitch.refresh = refresh_alpha
+        self.velo_x = velo_x
+        self.velo_y = velo_y
+        self.velo_z = velo_z
+        self.velo_alpha = velo_alpha
         
         # Set initial position values
         self.gan_x_p.user_setpoint.put(x)
@@ -215,10 +234,15 @@ class OffsetMirror(mirror.OffsetMirror):
         self.gan_y_p.user_readback.put(y)
         self.gan_y_s.user_setpoint.put(y)
         self.gan_y_s.user_readback.put(y)
+        self.sim_z.put(z)
         self.pitch.user_setpoint.put(alpha)
         self.pitch.user_readback.put(alpha)
-        self.i_z = z
-        self.noise_z = noise_z
+
+        # Simulation values
+        self.sim_x._get_readback = lambda : self.gan_x_p.user_readback.value
+        self.sim_y._get_readback = lambda : self.gan_y_p.user_readback.value
+        self.sim_z.put(z)
+        self.sim_alpha._get_readback = lambda : self.pitch.user_readback.value
 
     # Coupling motor isnt implemented as an example so override its properties
     @property
@@ -232,26 +256,146 @@ class OffsetMirror(mirror.OffsetMirror):
     @property
     def gdif(self):
         return 0.0
-
-    @property
-    def _x(self):
-        return self.gan_x_p.position
-
-    @property
-    def _y(self):
-        return self.gan_y_p.position
-
-    @property
-    def _z(self):
-        return self.i_z + np.random.uniform(-1,1)*self.noise_z
-
-    @_z.setter
-    def _z(self, val):
-        self.i_z = val
-
-    @property
-    def _alpha(self):
-        return self.pitch.position
     
-    #TODO Add all args as properties
+    @property
+    def noise_x(self):
+        return self.gan_x_p.noise
+
+    @noise_x.setter
+    def noise_x(self, val):
+        self.gan_x_p.noise = self.gan_x_s.noise = val
+
+    @property
+    def noise_y(self):
+        return self.gan_y_p.noise
+
+    @noise_y.setter
+    def noise_y(self, val):
+        self.gan_y_p.noise = self.gan_y_s.noise = val
+
+    @property
+    def noise_z(self):
+        return self.sim_z.noise
+
+    @noise_z.setter
+    def noise_z(self, val):
+        self.sim_z.noise = val
+
+    @property
+    def noise_alpha(self):
+        return self.pitch.noise
+
+    @noise_alpha.setter
+    def noise_alpha(self, val):
+        self.pitch.noise = val
+    
+    @property
+    def settle_time_x(self):
+        return self.gan_x_p.settle_time
+
+    @settle_time_x.setter
+    def settle_time_x(self, val):
+        self.gan_x_p.settle_time = self.gan_x_s.settle_time = val
+
+    @property
+    def settle_time_y(self):
+        return self.gan_y_p.settle_time
+
+    @settle_time_y.setter
+    def settle_time_y(self, val):
+        self.gan_y_p.settle_time = self.gan_y_s.settle_time = val
+
+    @property
+    def settle_time_z(self):
+        return self.sim_z.put_sleep
+
+    @noise_z.setter
+    def settle_time_z(self, val):
+        self.sim_z.put_sleep = val
+
+    @property
+    def settle_time_alpha(self):
+        return self.pitch.settle_time
+
+    @settle_time_alpha.setter
+    def settle_time_alpha(self, val):
+        self.pitch.settle_time = val
+
+    @property
+    def velocity_x(self):
+        return self.gan_x_p.velocity.value
+
+    @velocity_x.setter
+    def velocity_x(self, val):
+        self.gan_x_p.velocity.value = self.gan_x_s.velocity.value = val
+
+    @property
+    def velocity_y(self):
+        return self.gan_y_p.velocity.value
+
+    @velocity_y.setter
+    def velocity_y(self, val):
+        self.gan_y_p.velocity.value = self.gan_y_s.velocity.value = val
+
+    @property
+    def velocity_z(self):
+        return self.sim_z.velocity
+
+    @velocity_z.setter
+    def velocity_z(self, val):
+        self.sim_z.velocity = val
+
+    @property
+    def velocity_alpha(self):
+        return self.pitch.velocity.value
+
+    @velocity_alpha.setter
+    def velocity_alpha(self, val):
+        self.pitch.velocity.value = val
+
+    @property
+    def noise_func(self):
+        if callable(self.sim_alpha.noise_func):
+            return self.sim_alpha.noise_func()
+        return self.sim_alpha.noise_func
+
+    @noise_func.setter
+    def noise_func(self, val):
+        self.sim_x.noise_func = val
+        self.sim_y.noise_func = val
+        self.sim_z.noise_func = val
+        self.sim_alpha.noise_func = val
+
+    @property
+    def noise_type(self):
+        return self.sim_alpha.noise_type
+
+    @noise_type.setter
+    def noise_type(self, val):
+        self.sim_x.noise_type = val
+        self.sim_y.noise_type = val
+        self.sim_z.noise_type = val
+        self.sim_alpha.noise_type = val
+
+    @property
+    def noise_args(self):
+        return self.sim_alpha.noise_args
+
+    @noise_args.setter
+    def noise_args(self, val):
+        self.sim_x.noise_args = val
+        self.sim_y.noise_args = val
+        self.sim_z.noise_args = val
+        self.sim_alpha.noise_args = val
+
+    @property
+    def noise_kwargs(self):
+        return self.sim_alpha.noise_kwargs
+
+    @noise_kwargs.setter
+    def noise_kwargs(self, val):
+        self.sim_x.noise_kwargs = val
+        self.sim_y.noise_kwargs = val
+        self.sim_z.noise_kwargs = val
+        self.sim_alpha.noise_kwargs = val
 
