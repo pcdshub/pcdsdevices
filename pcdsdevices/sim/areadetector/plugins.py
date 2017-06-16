@@ -133,33 +133,46 @@ class StatsPlugin(plugins.StatsPlugin, PluginBase):
     ts_total = Component(FakeSignal, value=0)
     total = Component(FakeSignal, value=0)
 
-    def __init__(self, prefix, *, noise_x=0, noise_y=0, noise_func=None, 
-                 noise_type="uni", noise_args=(), noise_kwargs={}, **kwargs):
+    def __init__(self, prefix, *, noise_x=0, noise_y=0, noise_func_x=None,
+                 noise_func_y=None, noise_type_x="uni", noise_type_y="uni", 
+                 noise_args_x=(), noise_args_y=(), noise_kwargs_x={},
+                 noise_kwargs_y={}, noise_scale_x=1, noise_scale_y=1, **kwargs):
+        super().__init__(prefix, **kwargs)
         self.noise_x = noise_x
         self.noise_y = noise_y
-        self.noise_type = noise_type
-        self.noise_func = noise_func or self._int_noise_func
-        self.noise_args = noise_args
-        self.noise_kwargs = noise_kwargs
-        super().__init__(prefix, **kwargs)
+        self.noise_type_x = noise_type_x
+        self.noise_type_y = noise_type_y
+        self.noise_func_x = noise_func_x or (lambda : self._int_noise_func(
+            self.centroid.x))
+        self.noise_func_y = noise_func_y or (lambda : self._int_noise_func(
+            self.centroid.y))
+        self.noise_args_x = noise_args_x
+        self.noise_args_y = noise_args_y
+        self.noise_scale_x = noise_scale_x
+        self.noise_scale_y = noise_scale_y
+        self.noise_kwargs_x = noise_kwargs_x
+        self.noise_kwargs_y = noise_kwargs_y
+        # Override the default centroid calculator to always output ints
+        self.centroid.x._get_readback = lambda : self._get_readback_int(
+            self.centroid.x)
+        self.centroid.y._get_readback = lambda : self._get_readback_int(
+            self.centroid.y)
 
-    def _int_noise_func(self):
-        if self.noise_type == "uni":
-            if not self.noise_args:
-                self.noise_args = (-1,1)
-            if not self.noise_kwargs:
-                self.noise_kwargs = {}
-            return int(np.round(np.random.uniform(*self.noise_args,
-                                                  **self.noise_kwargs)))
+    def _get_readback_int(self, sig, **kwargs):
+        """
+        Returns _raw_readback as an int.
+        """
+        return int(np.round(sig._raw_readback))
+
+    def _int_noise_func(self, sig):
+        if sig.noise_type == "uni":
+            sig._check_args_uni()
+            return int(np.round(sig.noise_uni()))
         elif self.noise_type == "norm":
-            if not self.noise_args:
-                self.noise_args = (0,0.25)
-            if not self.noise_kwargs:
-                self.noise_kwargs = {}
-            return int(np.round(np.random.normal(*self.noise_args,
-                                                 **self.noise_kwargs)))
+            sig._check_args_norm()
+            return int(np.round(sig.noise_norm()))
         else:
-            raise ValueError("Invalid noise type. Must be 'uni' or 'norm'") 
+            raise ValueError("Invalid noise type. Must be 'uni' or 'norm'")        
                                             
     @property
     def noise_x(self):
@@ -167,7 +180,7 @@ class StatsPlugin(plugins.StatsPlugin, PluginBase):
 
     @noise_x.setter
     def noise_x(self, val):
-        self.centroid.x.noise = val
+        self.centroid.x.noise = bool(val)
 
     @property
     def noise_y(self):
@@ -175,9 +188,71 @@ class StatsPlugin(plugins.StatsPlugin, PluginBase):
 
     @noise_y.setter
     def noise_y(self, val):
-        self.centroid.y.noise = val
+        self.centroid.y.noise = bool(val)
 
+    @property
+    def noise_func_x(self):
+        return self.centroid.x.noise_func()
 
+    @noise_func_x.setter
+    def noise_func_x(self, val):
+        self.centroid.x.noise_func = val
+
+    @property
+    def noise_func_y(self):
+        return self.centroid.y.noise_func()
+
+    @noise_func_y.setter
+    def noise_func_y(self, val):
+        self.centroid.y.noise_func = val
+
+    @property
+    def noise_type_x(self):
+        return self.centroid.x.noise_type
+
+    @noise_type_x.setter
+    def noise_type_x(self, val):
+        self.centroid.x.noise_type = val
+
+    @property
+    def noise_type_y(self):
+        return self.centroid.y.noise_type
+
+    @noise_type_y.setter
+    def noise_type_y(self, val):
+        self.centroid.y.noise_type = val
+
+    @property
+    def noise_args_x(self):
+        return self.centroid.x.noise_args
+
+    @noise_args_x.setter
+    def noise_args_x(self, val):
+        self.centroid.x.noise_args = val
+
+    @property
+    def noise_args_y(self):
+        return self.centroid.y.noise_args
+
+    @noise_args_y.setter
+    def noise_args_y(self, val):
+        self.centroid.y.noise_args = val
+
+    @property
+    def noise_kwargs_x(self):
+        return self.centroid.x.noise_kwargs
+
+    @noise_kwargs_x.setter
+    def noise_kwargs_x(self, val):
+        self.centroid.x.noise_kwargs = val
+
+    @property
+    def noise_kwargs_y(self):
+        return self.centroid.y.noise_kwargs
+
+    @noise_kwargs_y.setter
+    def noise_kwargs_y(self, val):
+        self.centroid.y.noise_kwargs = val
         
     # def read(self, **kwargs):
     #     # Run custom centroid function
