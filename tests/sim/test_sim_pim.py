@@ -36,27 +36,27 @@ def test_PIMPulnixDetector_centroid_noise():
     pim_pdet = PIMPulnixDetector("TEST", noise_x=5, noise_y=20)
     pim_pdet.stats2.centroid.x.put(300)
     pim_pdet.stats2.centroid.y.put(400)
-    test_x = 300 + int(np.round(300 + np.random.uniform(-1,1)*5))
-    test_y = 400 + int(np.round(400 + np.random.uniform(-1,1)*20))
+    test_x = 300 + int(np.round(np.random.uniform(-1,1)*5))
+    test_y = 400 + int(np.round(np.random.uniform(-1,1)*20))
     assert(pim_pdet.centroid_x == test_x or 
            np.isclose(pim_pdet.centroid_x, 300, atol=5))
-    assert(pim_pdet.centroid_x == test_y or 
+    assert(pim_pdet.centroid_y == test_y or 
            np.isclose(pim_pdet.centroid_y, 400, atol=20))
     
 def test_PIMPulnixDetector_centroid_override():
     pim_pdet = PIMPulnixDetector("TEST")
     def centroid_override_x():
-        pim_pdet.stats2.centroid.x.put(pim_pdet.stats2.centroid.x.value + 10)
-    pim_pdet._cent_x = centroid_override_x    
+        return pim_pdet.stats2.centroid.x.value + 10
+    pim_pdet.stats2._cent_x = centroid_override_x    
     assert(pim_pdet.centroid_x == 10)
     assert(pim_pdet.centroid_x == 20)
     assert(pim_pdet.centroid_x == 30)
     def centroid_override_y():
-        pim_pdet.stats2.centroid.y.put(pim_pdet.stats2.centroid.y.value + 20)
-    pim_pdet._cent_y = centroid_override_y
-    assert(pim_pdet.centroid_y == 20)
-    assert(pim_pdet.centroid_y == 40)
-    assert(pim_pdet.centroid_y == 60)
+        return pim_pdet.stats2.centroid.y.value + 50
+    pim_pdet.stats2._cent_y = centroid_override_y
+    assert(pim_pdet.centroid_y == 50)
+    assert(pim_pdet.centroid_y == 100)
+    assert(pim_pdet.centroid_y == 150)
 
 def test_PIMPulnixDetector_zeros_centroid_outside_yag():
     pim_pdet = PIMPulnixDetector("TEST", zero_outside_yag=True)
