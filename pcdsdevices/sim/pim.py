@@ -14,7 +14,7 @@ from ophyd.signal import ArrayAttributeSignal
 ##########
 # Module #
 ##########
-from .device import SimDevice
+from .sim import SimDevice
 from .signal import FakeSignal
 from .component import (FormattedComponent, Component)
 from .areadetector.plugins import StatsPlugin
@@ -142,18 +142,27 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
 
 class PIMMotor(pim.PIMMotor):
     states = Component(FakeSignal, value="OUT")
+    # A new component to keep track of actual y positions
+    _pos = Component(FakeSignal, value=0)
 
-    def __init__(self, prefix, pos_in=0, pos_diode=0.5, pos_out=1, fake_sleep=0,
-                 noise=0, **kwargs):
+    def __init__(self, prefix, pos_in=0, pos_diode=0.5, pos_out=1, 
+                 settle_time=0, velocity=None, noise=False, noise_func=None,
+                 noise_type="uni", noise_args=(), noise_kwargs={}, **kwargs):
+        super().__init__(prefix, **kwargs)
         if pos_diode < pos_in:
             pos_diode = pos_in + 0.5
         if pos_out < pos_diode:
             pos_out = pos_diode + 0.5
         self.pos_d = {"DIODE":pos_diode, "OUT":pos_out, 
                       "IN":pos_in, "YAG":pos_in}
-        self.fake_sleep = fake_sleep
+        self.settle_time = settle_time
+        self.velocity = velocity
         self.noise = noise
-        super().__init__(prefix, **kwargs)
+        self.noise_func = noise_func
+        self.noise_type = noise_type
+        self.noise_args = noise_args
+        self.noise_kwargs = noise_kwargs
+        self._pos._get_readback = lambda : self.pos_d[self.position]
     
     def move(self, position, **kwargs):
         if isinstance(position, str):
@@ -165,7 +174,9 @@ class PIMMotor(pim.PIMMotor):
                     pos = position.upper()
                 status = self.states.set(position.upper())
                 time.sleep(0.1)
-                return status
+            # Match the inputted state in y
+            self._pos.put(self.pos_d[position.upper()])
+            return status
         raise ValueError("Position must be a PIM valid state.")
 
     @property
@@ -176,26 +187,86 @@ class PIMMotor(pim.PIMMotor):
         return pos
 
     @property
-    def pos(self):
-        return self.pos_d[self.position]+np.random.uniform(-1,1)*self.noise
+    def settle_time(self):
+        if callable(self._pos.put_sleep):
+            return self._pos.put_sleep()
+        return self._pos.put_sleep
+
+    @settle_time.setter
+    def settle_time(self, val):
+        self._pos.put_sleep = val
+
+    @property
+    def velocity(self):
+        return self._pos.velocity
+
+    @velocity.setter
+    def velocity(self, val):
+        self._pos.velocity = val
+
+    @property
+    def noise(self):
+        return self._pos.noise
+
+    @noise.setter
+    def noise(self, val):
+        self._pos.noise = bool(val)
+
+    @property
+    def noise_func(self):
+        return self._pos.noise_func
+    
+    @noise_func.setter
+    def noise_func(self, val):
+        self._pos.noise_func = val
+
+    @property
+    def noise_type(self):
+        return self._pos.noise_type
+
+    @noise_type.setter
+    def noise_type(self, val):
+        self._pos.noise_type = val
+
+    @property
+    def noise_args(self):
+        return self._pos.noise_args
+
+    @noise_args.setter
+    def noise_args(self, val):
+         self._pos.noise_args = val
+
+    @property
+    def noise_kwargs(self):
+        return self._pos.noise_kwargs
+
+    @noise_kwargs.setter
+    def noise_kwargs(self, val):
+        self._pos.noise_kwargs = val
 
 
 class PIM(pim.PIM, PIMMotor, SimDevice):
     detector = FormattedComponent(PIMPulnixDetector, 
                                   "{self._section}:{self._imager}:CVV:01",
                                   read_attrs=['stats2'])
-    def __init__(self, prefix, x=0, y=0, z=0, noise_x=0, noise_y=0, noise_z=0, 
-                 settle_time_y=0, centroid_noise=(0,0), **kwargs):
+    def __init__(self, prefix, x=0, y=0, z=0, noise=0, settle_time=0, 
+                 centroid_noise=True, **kwargs):
         if len(prefix.split(":")) < 2:
             prefix = "TST:{0}".format(prefix)
-        super().__init__(prefix, pos_in=y, noise=noise_y, 
-                         fake_sleep=fake_sleep_y, **kwargs)
-        self.noise_x = noise_x
-        self.noise_z = noise_z
-        if not isinstance(centroid_noise, (tuple, list)):
-            centroid_noise = (centroid_noise, centroid_noise)
-        self.detector.noise_x = centroid_noise[0]
-        self.detector.noise_y = centroid_noise[1]
+        super().__init__(prefix, pos_in=y, noise=noise, 
+                         settle_time=settle_time, **kwargs)
 
-        # Simulation values
+        # Simulation Values
+        self.sim_x.put(x)
+        self.sim_y._get_readback = lambda : self._pos.value
+        self.sim_z.put(z)
+            
+    @property
+    def centroid_noise(self):
+        return (self.detector.noise_x, self.detector.noise_y)
+
+    @centroid_noise.setter
+    def centroid_noise(self, val):
+        self.detector.noise_x = bool(val)
+        self.detector.noise_y = bool(val)
 
