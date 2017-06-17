@@ -149,15 +149,20 @@ class DeviceStatesRecord(State):
     """
     States that come from the standardized lcls device states record
     """
-    state = Component(EpicsSignal, "", write_pv=":GO", string=True)
+    state = Component(EpicsSignal, "", write_pv=":GO", string=True,
+                      auto_monitor=True, limits=False)
 
     def __init__(self, prefix, *, read_attrs=None, name=None, **kwargs):
         if read_attrs is None:
             read_attrs = ["state"]
         super().__init__(prefix, read_attrs=read_attrs, name=name, **kwargs)
-        # TODO: Don't subscribe to child signals unless someone is subscribed
-        # to us
-        self.state.subscribe(self._update, event_type=self.state.SUB_VALUE)
+        self._subbed_to_state = False
+
+    def subscribe(self, *args, **kwargs):
+        if not self._subbed_to_state:
+            self.state.subscribe(self._update, event_type=self.state.SUB_VALUE)
+            self._subbed_to_state = True
+        super().subscribe(*args, **kwargs)
 
     @property
     def value(self):
@@ -172,7 +177,7 @@ class DeviceStatesPart(Device):
     """
     Device to manipulate a specific set position.
     """
-    at_state = Component(EpicsSignalRO, "", string=True)
+    at_state = Component(EpicsSignalRO, "", string=True) 
     setpos = Component(EpicsSignal, "_SET")
     delta = Component(EpicsSignal, "_DELTA")
 

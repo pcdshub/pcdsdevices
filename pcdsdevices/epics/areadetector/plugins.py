@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Overrides for AreaDetector Plugins.
+PCDS plugins and Overrides for AreaDetector Plugins.
 """
 
 import logging
@@ -15,11 +15,13 @@ logger = logging.getLogger(__name__)
 
 
 class PluginBase(ophyd.plugins.PluginBase, ADBase):
-
+    """
+    Overridden PluginBase to make it work when the root device is not a CamBase
+    class.
+    """
     @property
     def source_plugin(self):
-        '''The PluginBase object that is the asyn source for this plugin.
-        '''
+        # The PluginBase object that is the asyn source for this plugin.
         source_port = self.nd_array_port.get()
         if source_port == 'CAM' or not hasattr(
                 self.root, 'get_plugin_by_asyn_port'):
@@ -29,26 +31,33 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
 
     @property
     def _asyn_pipeline_configuration_names(self):
-    # This broke any instantiated plugin b/c _asyn_pipeline is a list that can
-    # have None.
+        # This broke any instantiated plugin b/c _asyn_pipeline is a list that
+        # can have None.
         return [_.configuration_names.name for _ in self._asyn_pipeline if 
                 hasattr(_, 'configuration_names')]
 
     @property
     def _asyn_pipeline(self):
         parent = None
-        if hasattr(self.root, 'get_plugin_by_asyn_port'):
+        # Add a check to make sure root has this attr, otherwise return None
+        if hasattr(self.root, 'get_plugin_by_asyn_port') and self.root != self:
             parent = self.root.get_plugin_by_asyn_port(self.nd_array_port.get())
             if hasattr(parent, '_asyn_pipeline'):
                 return parent._asyn_pipeline + (self, )
         return (parent, self)
 
     def describe_configuration(self):
-        # Avoid the method we are overriding
+        # Use the overridden describe_configuration defined above
         ret = ADBase.describe_configuration(self)
         source_plugin = self.source_plugin
-        if source_plugin is not None:
+        if source_plugin is not None and source_plugin is not self:
             ret.update(source_plugin.describe_configuration())
+        return ret
+
+    def read_configuration(self):
+        ret = ADBase.read_configuration(self)
+        if self.source_plugin is not self:
+            ret.update(self.source_plugin.read_configuration())
         return ret
 
 

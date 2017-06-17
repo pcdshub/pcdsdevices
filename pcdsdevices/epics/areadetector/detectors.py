@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 PCDS detectors and overrides for ophyd detectors.
+
+All components at the detector level such as plugins  or image processing
+functions needed by all instances of a detector are added here.
 """
 import logging
 
@@ -48,10 +51,16 @@ class AreaDetector(detectors.AreaDetector, DetectorBase):
 
 
 class PulnixDetector(DetectorBase):
+    """
+    Standard pulnix detector.
+    """
     cam = ADComponent(cam.PulnixCam, ":")
 
 
 class FeeOpalDetector(DetectorBase):
+    """
+    Opal detector that in the FEE running using Dehong's IOC.
+    """
     cam = ADComponent(cam.FeeOpalCam, ":")
 
 

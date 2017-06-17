@@ -2,9 +2,9 @@ from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
 
-import logging # NOQA
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+#import logging # NOQA
+#logging.basicConfig(level=logging.INFO)
+#logger = logging.getLogger(__name__)
 
 from .device import Device # NOQA
 

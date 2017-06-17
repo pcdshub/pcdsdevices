@@ -4,6 +4,8 @@
 Overrides for Epics Signals
 """
 import logging
+import math
+
 import ophyd.signal
 from ..signal import Signal
 
@@ -19,8 +21,13 @@ class EpicsSignal(ophyd.signal.EpicsSignal, EpicsSignalBase):
             use_complete=None, **kwargs):
         logger.debug("Putting PV value of %s from %s to %s",
                      self.name or self, self.get(), value)
-        super().put(value, force=force, connection_timeout=connection_timeout,
-                    use_complete=use_complete, **kwargs)
+
+        if not isinstance(value, str) and math.isnan(value):
+            raise RuntimeError("Recieved a NaN value in EPICS put")
+        else:
+            super().put(value, force=force,
+                        connection_timeout=connection_timeout,
+                        use_complete=use_complete, **kwargs)
 
 
 class EpicsSignalRO(ophyd.signal.EpicsSignalRO, EpicsSignalBase):
