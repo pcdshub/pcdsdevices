@@ -135,6 +135,10 @@ class OMMotor(Device, PositionerBase):
 
         return status
 
+    @raise_if_disconnected
+    def mv(self, position, wait=True, **kwargs):
+        return self.move(position, wait=wait, **kwargs)
+
     @property
     @raise_if_disconnected
     def position(self):
@@ -313,6 +317,10 @@ class Piezo(Device, PositionerBase):
 
         return status
 
+    @raise_if_disconnected
+    def mv(self, position, wait=True, **kwargs):
+        return self.move(position, wait=wait, **kwargs)
+
     @property
     @raise_if_disconnected
     def position(self):
@@ -440,6 +448,10 @@ class OffsetMirror(Device):
         # status = self.pitch.user_setpoint.set(position)
         # time.sleep(10)
         # return status
+
+    @raise_if_disconnected
+    def mv(self, position, **kwargs):
+        return self.move(position, wait=wait, **kwargs)
 
     def set(self, position, **kwargs):
         """

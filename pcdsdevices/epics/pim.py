@@ -137,6 +137,9 @@ class PIMMotor(Device):
                 return self.states.state.set(position.upper())
         raise ValueError("Position must be a PIM valid state.")
 
+    def mv(self, position, **kwargs):
+        return self.move(position, **kwargs)
+
     def set(self, position, **kwargs):
         """
         Alias for move.
@@ -278,6 +281,9 @@ class PIMFee(Device):
             elif position.upper() == "OUT":
                 return self.move_out()
         raise ValueError("Position must be a PIM valid state.")
+
+    def mv(self, position, **kwargs):
+        return self.move(position, **kwargs)
         
     @property
     @raise_if_disconnected
@@ -317,7 +323,6 @@ class PIMFee(Device):
         Alias for blocking.
         """
         return not self.blocking
-
 
 
 class PIMExceptions(Exception):
