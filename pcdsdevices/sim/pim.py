@@ -32,7 +32,8 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
 
     def __init__(self, prefix, *, noise_x=False, noise_y=False, noise_func=None, 
                  noise_type="norm", noise_args=(), noise_kwargs={}, 
-                 zero_outside_yag=True, **kwargs):
+                 zero_outside_yag=True, size=(640,480), 
+                 resolution=(0.0076,0.0062), **kwargs):
         super().__init__(prefix, **kwargs)
         self.noise_x = noise_x
         self.noise_y = noise_y
@@ -41,6 +42,9 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
         self.noise_args = noise_args
         self.noise_kwargs = noise_kwargs
         self.zero_outside_yag = zero_outside_yag
+        self.size = size
+        self.resolution = resolution
+        # Override stats2 centroid function
         self.stats2._get_readback_centroid_x = lambda **kwargs : (
             self._get_readback_centroid_x() * self._centroid_within_bounds())
         self.stats2._get_readback_centroid_y = lambda **kwargs : (
@@ -138,7 +142,26 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
     def noise_kwargs(self, val):
         self.stats2.noise_kwargs_x = val
         self.stats2.noise_kwargs_y = val
-    
+
+    @property
+    def size(self):
+        return (self.cam.size.size_x.value, self.cam.size.size_y.value)
+
+    @size.setter
+    def size(self, val):
+        self.cam.size.size_x.put(val[0])
+        self.cam.size.size_y.put(val[1])
+
+    @property
+    def resolution(self):
+        return (self.cam.resolution.resolution_x.value, 
+                self.cam.resolution.resolution_y.value)
+
+    @resolution.setter
+    def resolution(self, val):
+        self.cam.resolution.resolution_x.put(val[0])
+        self.cam.resolution.resolution_y.put(val[1])
+
 
 class PIMMotor(pim.PIMMotor):
     states = Component(FakeSignal, value="OUT")
@@ -250,7 +273,8 @@ class PIM(pim.PIM, PIMMotor, SimDevice):
                                   "{self._section}:{self._imager}:CVV:01",
                                   read_attrs=['stats2'])
     def __init__(self, prefix, x=0, y=0, z=0, noise=0, settle_time=0, 
-                 centroid_noise=True, **kwargs):
+                 centroid_noise=True, size=(640,480), 
+                 resolution=(0.0076,0.0062), **kwargs):
         if len(prefix.split(":")) < 2:
             prefix = "TST:{0}".format(prefix)
         super().__init__(prefix, pos_in=y, noise=noise, 
@@ -270,3 +294,18 @@ class PIM(pim.PIM, PIMMotor, SimDevice):
         self.detector.noise_x = bool(val)
         self.detector.noise_y = bool(val)
 
+    @property
+    def size(self):
+        return self.detector.size
+
+    @size.setter
+    def size(self, val):
+        self.detector.size = val
+
+    @property
+    def resolution(self):
+        return self.detector.resolution
+        
+    @resolution.setter
+    def resolution(self, val):
+        self.detector.resolution = val
