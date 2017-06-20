@@ -1,10 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+############
+# Standard #
+############
 import logging
 
+###############
+# Third Party #
+###############
 from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
 
+##########
+# Module #
+##########
 from .device import Device
 from .imsmotor import ImsMotor
 from .iocdevice import IocDevice

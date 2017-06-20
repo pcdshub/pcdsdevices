@@ -89,6 +89,11 @@ class CamBase(cam.CamBase):
     temperature_actual = Component(FakeSignal, value=0)
     time_remaining = Component(FakeSignal, value=0)
     trigger_mode = Component(FakeSignal, value=0)
+    
+    # Extra
+    resolution = DynamicDeviceComponent(ad_group(FakeSignal,
+                                                 (('resolution_x'),
+                                                  ('resolution_y')), value=0))
 
 
 class PulnixCam(cam.PulnixCam, CamBase):
@@ -114,3 +119,5 @@ class PulnixCam(cam.PulnixCam, CamBase):
         self.size.size_x.put(640)
         self.size.size_y.put(480)
         self.trigger_mode.put(2)
+        self.resolution.resolution_x.put(0.0076)
+        self.resolution.resolution_y.put(0.0062)
