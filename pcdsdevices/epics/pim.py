@@ -9,6 +9,7 @@ import logging
 ###############
 # Third Party #
 ###############
+import numpy as np
 from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
 
 ##########
@@ -52,9 +53,12 @@ class PIMPulnixDetector(PulnixDetector):
     @raise_if_disconnected
     def image(self):
         """
-        Returns an image from the detector.
+        Returns the image stream reshaped to be the correct size using the size
+        component in cam.
         """
-        return self.image2.array_data.value
+        return np.reshape(np.array(self.image2.array_data.value),
+                          (self.image2.cam.size.size_y.value,
+                           self.image2.cam.size.size_x.value))
 
     @property
     @raise_if_disconnected
