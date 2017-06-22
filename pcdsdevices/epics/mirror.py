@@ -431,7 +431,6 @@ class OffsetMirror(Device):
         self._mirror = prefix.split(":")[2]
         self._xy_prefix = xy_prefix
         self._gan_x = gantry_x_prefix
-        self._section = section
 
         if read_attrs is None:
             read_attrs = ['pitch', 'gan_x_p', 'gan_x_s']

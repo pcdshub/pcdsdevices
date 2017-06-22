@@ -193,8 +193,9 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
     # Simulation component
     sim_alpha = Component(FakeSignal)
 
-    def __init__(self, prefix, *, name=None, read_attrs=None, parent=None, 
-                 configuration_attrs=None, section="", x=0, y=0, z=0, alpha=0, 
+    def __init__(self, prefix, *, xy_prefix=None, gantry_x_prefix=None,
+                 name=None, read_attrs=None, parent=None, 
+                 configuration_attrs=None, x=0, y=0, z=0, alpha=0, 
                  velo_x=0, velo_y=0, velo_z=0, velo_alpha=0, noise_x=0, 
                  noise_y=0, noise_z=0, noise_alpha=0, settle_time_x=0, 
                  settle_time_y=0, settle_time_z=0, settle_time_alpha=0, 
@@ -202,7 +203,8 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
                  noise_kwargs={}, **kwargs):
         if len(prefix.split(":")) < 3:
             prefix = "MIRR:TST:{0}".format(prefix)
-        super().__init__(prefix, read_attrs=read_attrs,
+        super().__init__(prefix, xy_prefix, gantry_x_prefix,
+                         read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
                          name=name, parent=parent, **kwargs)
         self.log_pref = "{0} (OffsetMirror) - ".format(self.name)
