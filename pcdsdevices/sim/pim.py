@@ -24,6 +24,7 @@ from ..epics import pim
 
 class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
     proc1 = Component(FakeSignal)
+    image1 = Component(FakeSignal)
     image2 = Component(FakeSignal)
     stats1 = Component(StatsPlugin, "Stats1:", read_attrs=['centroid',
                                                             'mean_value'])
