@@ -205,6 +205,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
                          name=name, parent=parent, **kwargs)
+        self.log_pref = "{0} (OffsetMirror) - ".format(self.name)
 
         # Simulation Attributes
         # Fake noise to readback and moves

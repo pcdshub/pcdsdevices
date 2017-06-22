@@ -32,7 +32,7 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
 
     def __init__(self, prefix, *, noise_x=False, noise_y=False, noise_func=None, 
                  noise_type="norm", noise_args=(), noise_kwargs={}, 
-                 zero_outside_yag=True, size=(640,480), 
+                 zero_outside_yag=False, size=(640,480), 
                  resolution=(0.0076,0.0062), **kwargs):
         super().__init__(prefix, **kwargs)
         self.noise_x = noise_x
@@ -274,7 +274,7 @@ class PIM(pim.PIM, PIMMotor, SimDevice):
                                   read_attrs=['stats2'])
     def __init__(self, prefix, x=0, y=0, z=0, noise=0, settle_time=0, 
                  centroid_noise=True, size=(640,480), 
-                 resolution=(0.0076,0.0062), **kwargs):
+                 resolution=(0.0076,0.0062), zero_outside_yag=False, **kwargs):
         if len(prefix.split(":")) < 2:
             prefix = "TST:{0}".format(prefix)
         super().__init__(prefix, pos_in=y, noise=noise, 
@@ -284,6 +284,7 @@ class PIM(pim.PIM, PIMMotor, SimDevice):
         self.sim_x.put(x)
         self.sim_y._get_readback = lambda : self._pos.value
         self.sim_z.put(z)
+        self.log_pref = "{0} (PIM) - ".format(self.name)
             
     @property
     def centroid_noise(self):
@@ -309,3 +310,12 @@ class PIM(pim.PIM, PIMMotor, SimDevice):
     @resolution.setter
     def resolution(self, val):
         self.detector.resolution = val
+
+    @property
+    def zero_outside_yag(self):
+        return self.detector.zero_outside_yag
+        
+    @zero_outside_yag.setter
+    def zero_outside_yag(self, val):
+        self.detector.zero_outside_yag = bool(val)
+    

@@ -98,11 +98,9 @@ class FakeSignal(Signal):
             try:
                 time_to_dest = 0
                 if callable(self.velocity):
-                    try:
-                        time_to_dest = (value - \
-                                        self._raw_readback) / self.velocity()
-                    except ZeroDivisionError:
-                        pass        
+                    if self.velocity():
+                        time_to_dest = ((value - self._raw_readback) / 
+                                        self.velocity())
                 elif self.velocity is not None:
                     time_to_dest = (value - self._raw_readback) / self.velocity
                 time.sleep(time_to_dest)

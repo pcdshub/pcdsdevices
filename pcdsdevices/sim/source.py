@@ -33,6 +33,7 @@ class Undulator(source.Undulator, SimDevice):
                  settle_time_z=0, noise_func=None, noise_type="uni", 
                  noise_args=(), noise_kwargs={}, **kwargs):
         super().__init__(prefix, **kwargs)
+        self.log_pref = "{0} (Undulator) - ".format(self.name)
         # Simulation Attributes
         # Initial Values
         self.sim_x.put(x)
