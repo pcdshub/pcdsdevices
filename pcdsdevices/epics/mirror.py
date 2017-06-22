@@ -404,17 +404,17 @@ class OffsetMirror(Device):
     and XRT to steer the beam.
     """
     # Gantry motors
-    gan_x_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
-    gan_x_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:S")
-    gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:P")
-    gan_y_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:S")
+    gan_x_p = FormattedComponent(OMMotor, "{self._xy_prefix}:X:P")
+    gan_x_s = FormattedComponent(OMMotor, "{self._xy_prefix}:X:S")
+    gan_y_p = FormattedComponent(OMMotor, "{self._xy_prefix}:Y:P")
+    gan_y_s = FormattedComponent(OMMotor, "{self._xy_prefix}:Y:S")
 
     # Piezo motor
     piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")
     
     # # Coupling motor
     coupling = FormattedComponent(
-        CouplingMotor, "STEP:{self._area}:{self._section}:MOTR")
+        CouplingMotor, "{self._gan_x}")
     
     # Pitch Motor
     pitch = FormattedComponent(OMMotor, "{self._prefix}")
@@ -423,11 +423,14 @@ class OffsetMirror(Device):
     motor_stop = Component(Signal)
     
     # Currently structured to pass the ioc argument down to the pitch motor
-    def __init__(self, prefix, *, name=None, read_attrs=None, parent=None, 
-                 configuration_attrs=None, section="", **kwargs):
+    def __init__(self, prefix, xy_prefix, gantry_x_prefix, *, name=None,
+                 read_attrs=None, parent=None, configuration_attrs=None,
+                 **kwargs):
         self._prefix = prefix
         self._area = prefix.split(":")[1]
         self._mirror = prefix.split(":")[2]
+        self._xy_prefix = xy_prefix
+        self._gan_x = gantry_x_prefix
         self._section = section
 
         if read_attrs is None:
