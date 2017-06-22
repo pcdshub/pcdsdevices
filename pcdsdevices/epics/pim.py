@@ -57,8 +57,8 @@ class PIMPulnixDetector(PulnixDetector):
         component in cam.
         """
         return np.reshape(np.array(self.image2.array_data.value),
-                          (self.image2.cam.size.size_y.value,
-                           self.image2.cam.size.size_x.value))
+                          (self.cam.size.size_y.value,
+                           self.cam.size.size_x.value))
 
     @property
     @raise_if_disconnected
