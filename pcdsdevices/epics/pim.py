@@ -192,13 +192,16 @@ class PIM(PIMMotor):
     """
     PIM device that also includes a yag.
     """
-    detector = FormattedComponent(PIMPulnixDetector, 
-                                  "{self._section}:{self._imager}:CVV:01",
+    detector = FormattedComponent(PIMPulnixDetector, "{self._det_pv}",
                                   read_attrs=['stats2'])
 
-    def __init__(self, prefix, **kwargs):
-        self._section = prefix.split(":")[0]
-        self._imager = prefix.split(":")[1]
+    def __init__(self, prefix, det_pv=None, **kwargs):
+        if not det_pv:
+            self._section = prefix.split(":")[0]
+            self._imager = prefix.split(":")[1]
+            self._det_pv = "{0}:{1}:CVV:01".format(self._section, self._imager)
+        else:
+            self._det_pv = det_pv
         super().__init__(prefix, **kwargs)
         self.detector.check_camera = self.check_camera
 
