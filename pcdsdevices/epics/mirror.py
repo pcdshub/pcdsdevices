@@ -1,15 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Mirror classes and components.
+"""
+############
+# Standard #
+############
 import logging
 from enum import Enum
 from epics.pv import fmt_time
 
+###############
+# Third Party #
+###############
 from ophyd import PositionerBase
 from ophyd.utils import DisconnectedError
 from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
 from ophyd.status import wait as status_wait
 from ophyd.signal import Signal
 
+##########
+# Module #
+##########
 from .signal import (EpicsSignal, EpicsSignalRO)
 from .device import Device
 from .component import (FormattedComponent, Component)

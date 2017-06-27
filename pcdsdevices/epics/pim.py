@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+"""
+Profile intensity monitor classes and components.
+"""
 ############
 # Standard #
 ############
