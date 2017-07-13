@@ -211,7 +211,7 @@ class PIM(PIMMotor):
         """
         Checks if the camera is acquiring images.
         """
-        if not self.detecotor.acquiring:
+        if not self.detector.acquiring:
             raise NotAcquiringError
         if not self.inserted:
             raise NotInsertedError
