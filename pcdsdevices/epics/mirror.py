@@ -464,7 +464,7 @@ class OffsetMirror(Device):
         # return status
 
     @raise_if_disconnected
-    def mv(self, position, **kwargs):
+    def mv(self, position, wait=True, **kwargs):
         return self.move(position, wait=wait, **kwargs)
 
     def set(self, position, **kwargs):
