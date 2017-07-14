@@ -44,7 +44,7 @@ def test_mirror_decoupled_reads_correctly(get_m1h):
     m1h = get_m1h
     assert isinstance(m1h.decoupled, bool)
     assert m1h.decoupled is bool(caget(
-        "STEP:{0}:{1}:MOTR:DECOUPLE".format(m1h._area, m1h._section)))
+        "{0}:DECOUPLE".format(m1h._gan_x)))
 
 @requires_epics
 @pytest.mark.timeout(3)
@@ -52,13 +52,13 @@ def test_mirror_fault_reads_correctly(get_m1h):
     m1h = get_m1h
     assert isinstance(m1h.fault, bool)
     assert m1h.fault is bool(caget(
-        "STEP:{0}:{1}:MOTR:FAULT".format(m1h._area, m1h._section)))
+        "{0}:FAULT".format(m1h._gan_x)))
 
 @requires_epics
 @pytest.mark.timeout(3)
 def test_mirror_gdif_reads_correctly(get_m1h):
     m1h = get_m1h
     m1h_gdif = np.array([m1h.gdif for i in range(AVE)])
-    ca_gdif = np.array([caget("STEP:{0}:{1}:MOTR:GDIF".format(
-        m1h._area, m1h._section)) for i in range(AVE)])
+    ca_gdif = np.array([caget("{0}:GDIF".format(m1h._gan_x)) for i 
+                        in range(AVE)])
     assert np.isclose(m1h_gdif.mean(), ca_gdif.mean(), atol=TOL)
