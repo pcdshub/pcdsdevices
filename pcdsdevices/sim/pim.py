@@ -274,7 +274,7 @@ class PIM(pim.PIM, PIMMotor, SimDevice):
                                   "{self._section}:{self._imager}:CVV:01",
                                   read_attrs=['stats2'])
     def __init__(self, prefix, x=0, y=0, z=0, noise=0, settle_time=0, 
-                 centroid_noise=True, size=(640,480), 
+                 centroid_noise=False, size=(640,480), 
                  resolution=(0.0076,0.0062), zero_outside_yag=False, **kwargs):
         if len(prefix.split(":")) < 2:
             prefix = "TST:{0}".format(prefix)
@@ -286,7 +286,12 @@ class PIM(pim.PIM, PIMMotor, SimDevice):
         self.sim_y._get_readback = lambda : self._pos.value
         self.sim_z.put(z)
         self.log_pref = "{0} (PIM) - ".format(self.name)
-            
+        # Detector args
+        self.zero_outside_yag = zero_outside_yag
+        self.resolution = resolution
+        self.size = size
+        self.centroid_noise = centroid_noise
+        
     @property
     def centroid_noise(self):
         return (self.detector.noise_x, self.detector.noise_y)
