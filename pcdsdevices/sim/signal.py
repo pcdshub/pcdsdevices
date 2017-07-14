@@ -171,6 +171,12 @@ class FakeSignal(Signal):
         """
         scale = kwargs.pop("scale", self.noise)
         return np.random.normal(*args, **kwargs) * scale
+
+    def stop(self, *args, **kwargs):
+        """
+        A hack to appease bluesky.
+        """
+        pass
     
     
 
