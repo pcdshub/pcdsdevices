@@ -52,15 +52,15 @@ def test_pim_instantiates(get_dg3_pim):
 @pytest.mark.timeout(3)
 def test_pim_image(get_dg3_pim):
     dg3_pim = get_dg3_pim
-    assert(isinstance(dg3_pim.image, np.ndarray))
-    assert(dg3_pim.image.any())
+    assert(isinstance(dg3_pim.detector.image, np.ndarray))
+    assert(dg3_pim.detector.image.any())
 
 @requires_epics
 @pytest.mark.timeout(3)
 def test_pim_acquiring_reads_correctly(get_dg3_pim):
     dg3_pim = get_dg3_pim
-    assert(isinstance(dg3_pim.acquiring, bool))
-    assert(dg3_pim.acquiring is bool(caget("{0}:{1}:CVV:01:Acquire_RBV".format(
+    assert(isinstance(dg3_pim.detector.acquiring, bool))
+    assert(dg3_pim.detector.acquiring is bool(caget("{0}:{1}:CVV:01:Acquire_RBV".format(
         dg3_pim._section, dg3_pim._imager))))
 
 @requires_epics
@@ -89,20 +89,20 @@ def test_pim_fee_blocking_reads_correctly(get_p3h_pim):
     assert(p3h_pim.blocking is bool(caget("{0}:POSITION".format(
         p3h_pim._pos_pref))))
 
-@requires_epics
-@pytest.mark.timeout(3)
-def test_pim_fee_image(get_p3h_pim):
-    p3h_pim = get_p3h_pim
-    assert(isinstance(p3h_pim.image, np.ndarray))
-    assert(p3h_pim.image.any())
+# @requires_epics
+# @pytest.mark.timeout(3)
+# def test_pim_fee_image(get_p3h_pim):
+#     p3h_pim = get_p3h_pim
+#     assert(isinstance(p3h_pim.detector.image, np.ndarray))
+#     assert(p3h_pim.detector.image.any())
 
-@requires_epics
-@pytest.mark.timeout(3)
-def test_pim_fee_acquiring_reads_correctly(get_p3h_pim):
-    p3h_pim = get_p3h_pim
-    assert(isinstance(p3h_pim.acquiring, bool))
-    assert(p3h_pim.acquiring is bool(caget("{0}:Acquire".format(
-        p3h_pim.prefix))))
+# @requires_epics
+# @pytest.mark.timeout(3)
+# def test_pim_fee_acquiring_reads_correctly(get_p3h_pim):
+#     p3h_pim = get_p3h_pim
+#     assert(isinstance(p3h_pim.detector.acquiring, bool))
+#     assert(p3h_pim.detector.acquiring is bool(caget("{0}:Acquire".format(
+#         p3h_pim.detector.prefix))))
 
 # # Uncomment this once centroids is implemented for fee pims
 # @requires_epics
