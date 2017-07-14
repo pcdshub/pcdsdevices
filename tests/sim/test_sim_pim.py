@@ -65,7 +65,7 @@ def test_PIMPulnixDetector_centroid_override():
     assert(pim_pdet.centroid_y == 3)
 
 def test_PIMPulnixDetector_zeros_centroid_outside_yag():
-    pim_pdet = PIMPulnixDetector("TEST")
+    pim_pdet = PIMPulnixDetector("TEST", zero_outside_yag=True)
     pim_pdet.stats2.centroid.x.put(300)
     pim_pdet.stats2.centroid.y.put(400)
     assert(pim_pdet.centroid_x == 300)
