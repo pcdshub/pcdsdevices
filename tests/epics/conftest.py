@@ -26,11 +26,12 @@ requires_epics = pytest.mark.skipif(not epics_subnet,
 class Params:
     registry = OrderedDict()
 
-    def __init__(self, name, cls, prefix, **kwargs):
+    def __init__(self, name, cls, prefix, *args, **kwargs):
         self.cls = cls
         self.prefix = prefix
         self.name = name
         kwargs["name"] = name
+        self.args = args
         self.kwargs = kwargs
         self.registry[name] = self
 
@@ -68,7 +69,7 @@ Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06:IMS",
        data="XCS:SB2:IMB:01:SUM")
 Params("xcs_pim", PIM, "XCS:SB2:PIM6")
 Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
-Params("fee_homs", OffsetMirror, "MIRR:FEE1:M1H", section="611")
+Params("fee_homs", OffsetMirror, "MIRR:FEE1:M1H", 'STEP:M1H', 'STEP:FEE1:611:MOTR')
 Params("det_p3h", FeeOpalDetector, "CAMR:FEE1:913")
 Params("det_dg3", PIMPulnixDetector, "HFX:DG3:CVV:01")
 Params("fee_yag", PIMFee, "CAMR:FEE1:913", pos_pref="FEE1:P3H", 
@@ -88,12 +89,13 @@ all_labels = [p.name for p in all_params]
 def all_devices(request):
     cls = request.param.cls
     prefix = request.param.prefix
+    args = request.param.args
     kwargs = request.param.kwargs
-    return cls(prefix, **kwargs)
+    return cls(prefix, *args, **kwargs)
 
 @pytest.fixture(scope="module")
 def get_m1h():
-    return OffsetMirror("MIRR:FEE1:M1H", section="611")
+    return OffsetMirror("MIRR:FEE1:M1H", 'STEP:M1H', 'STEP:FEE1:611:MOTR')
 
 @pytest.fixture(scope="module")
 def get_p3h_pim():
