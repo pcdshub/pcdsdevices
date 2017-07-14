@@ -205,6 +205,7 @@ class PIM(PIMMotor):
         else:
             self._det_pv = det_pv
         super().__init__(prefix, **kwargs)
+        # Override check_camera to include checking the yag has been inserted
         self.detector.check_camera = self.check_camera
 
     def check_camera(self):
@@ -259,7 +260,7 @@ class PIMFee(Device):
         """
         Checks if the camera is acquiring images and the yag is inserted.
         """
-        if not self.acquiring:
+        if not self.detector.acquiring:
             raise NotAcquiringError
         if not self.inserted:
             raise NotInsertedError
