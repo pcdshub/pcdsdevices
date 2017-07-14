@@ -9,7 +9,7 @@ Mirror classes and components.
 import logging
 from enum import Enum
 from epics.pv import fmt_time
-
+import time
 ###############
 # Third Party #
 ###############
@@ -68,7 +68,7 @@ class OMMotor(Device, PositionerBase):
         # Make the default alias for the user_readback the name of the
         # motor itself.
         self.user_readback.name = self.name
-        self.tol = 0.0001
+        self.tol = 0.3
 
         self.motor_done_move.subscribe(self._move_changed)
         self.user_readback.subscribe(self._pos_changed)
@@ -131,9 +131,14 @@ class OMMotor(Device, PositionerBase):
             If motion fails other than timing out
         """
         self._started_moving = False
-
+        # time.sleep(10)
         status = super().move(position, **kwargs)
+        # import ipdb; ipdb.set_trace()
         self.user_setpoint.put(position, wait=False)
+
+        # while wait and self.motor_is_moving.value:
+        #     pass
+        # time.sleep(1)
 
         if abs(self.position - position) < self.tol:
             status._finished(success=True)
@@ -144,6 +149,8 @@ class OMMotor(Device, PositionerBase):
         except KeyboardInterrupt:
             self.stop()
             raise
+
+        # self.stop()
 
         return status
 
@@ -173,7 +180,7 @@ class OMMotor(Device, PositionerBase):
         pos
            Position to set.
         """
-        self.user_setpoint.put(pos, wait=True)
+        self.user_setpoint.put(pos, wait=False)
 
     def check_value(self, pos):
         """
@@ -192,9 +199,9 @@ class OMMotor(Device, PositionerBase):
         """
         Callback from EPICS, indicating that movement status has changed.
         """
+        
         was_moving = self._moving
         self._moving = (value != 1)
-
         started = False
         if not self._started_moving:
             started = self._started_moving = (not was_moving and self._moving)
@@ -437,7 +444,7 @@ class OffsetMirror(Device):
     # Currently structured to pass the ioc argument down to the pitch motor
     def __init__(self, prefix, xy_prefix, gantry_x_prefix, *, name=None,
                  read_attrs=None, parent=None, configuration_attrs=None,
-                 **kwargs):
+                  pitch_settle_time=10, **kwargs):
         self._prefix = prefix
         self._area = prefix.split(":")[1]
         self._mirror = prefix.split(":")[2]
@@ -453,6 +460,7 @@ class OffsetMirror(Device):
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
                          name=name, parent=parent, **kwargs)
+        self.pitch_settle_time = pitch_settle_time
 
     def move(self, position, **kwargs):
         """
@@ -535,3 +543,18 @@ class OffsetMirror(Device):
         """
         return self.coupling.gan_diff.value
 
+    @property
+    def pitch_settle_time(self):
+        """
+        This is swrong
+        Readback the 
+        """
+        return self.pitch.settle_time
+
+    @pitch_settle_time.setter
+    def pitch_settle_time(self, settle_time):
+        """
+        This is swrong
+        Mirror pitch readback. Does the same thing as self.position.
+        """
+        self.pitch.settle_time = settle_time
