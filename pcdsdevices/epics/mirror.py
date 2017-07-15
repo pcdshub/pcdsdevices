@@ -54,7 +54,8 @@ class OMMotor(Device, PositionerBase):
     motor_stop = Component(Signal)
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
-                 name=None, parent=None, settle_time=1, **kwargs):
+                 name=None, parent=None, settle_time=1, tolerance=0.01, 
+                 **kwargs):
         if read_attrs is None:
             read_attrs = ['user_readback']
 
@@ -68,7 +69,7 @@ class OMMotor(Device, PositionerBase):
         # Make the default alias for the user_readback the name of the
         # motor itself.
         self.user_readback.name = self.name
-        self.tol = 0.3
+        self.tolerance = tolerance
 
         self.motor_done_move.subscribe(self._move_changed)
         self.user_readback.subscribe(self._pos_changed)
@@ -131,16 +132,10 @@ class OMMotor(Device, PositionerBase):
             If motion fails other than timing out
         """
         self._started_moving = False
-        # time.sleep(10)
         status = super().move(position, **kwargs)
-        # import ipdb; ipdb.set_trace()
         self.user_setpoint.put(position, wait=False)
 
-        # while wait and self.motor_is_moving.value:
-        #     pass
-        # time.sleep(1)
-
-        if abs(self.position - position) < self.tol:
+        if abs(self.position - position) < self.tolerance:
             status._finished(success=True)
 
         try:
@@ -149,8 +144,6 @@ class OMMotor(Device, PositionerBase):
         except KeyboardInterrupt:
             self.stop()
             raise
-
-        # self.stop()
 
         return status
 
@@ -444,7 +437,7 @@ class OffsetMirror(Device):
     # Currently structured to pass the ioc argument down to the pitch motor
     def __init__(self, prefix, xy_prefix, gantry_x_prefix, *, name=None,
                  read_attrs=None, parent=None, configuration_attrs=None,
-                  pitch_settle_time=10, **kwargs):
+                 settle_time=1, tolerance=0.01, **kwargs):
         self._prefix = prefix
         self._area = prefix.split(":")[1]
         self._mirror = prefix.split(":")[2]
@@ -460,16 +453,14 @@ class OffsetMirror(Device):
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
                          name=name, parent=parent, **kwargs)
-        self.pitch_settle_time = pitch_settle_time
+        self.settle_time = settle_time
+        self.tolerance = tolerance
 
     def move(self, position, **kwargs):
         """
         Move to the inputted position in pitch.
         """        
         return self.pitch.move(position, **kwargs)
-        # status = self.pitch.user_setpoint.set(position)
-        # time.sleep(10)
-        # return status
 
     @raise_if_disconnected
     def mv(self, position, wait=True, **kwargs):
@@ -544,17 +535,29 @@ class OffsetMirror(Device):
         return self.coupling.gan_diff.value
 
     @property
-    def pitch_settle_time(self):
+    def settle_time(self):
         """
-        This is swrong
-        Readback the 
+        Returns the settle time of the pitch motor.
         """
         return self.pitch.settle_time
 
-    @pitch_settle_time.setter
-    def pitch_settle_time(self, settle_time):
+    @settle_time.setter
+    def settle_time(self, settle_time):
         """
-        This is swrong
-        Mirror pitch readback. Does the same thing as self.position.
+        Sets the settle time of the pitch motor.
         """
         self.pitch.settle_time = settle_time
+
+    @property
+    def tolerance(self):
+        """
+        Returns the tolerance of the pitch motor.
+        """
+        return self.pitch.tolerance
+
+    @tolerance.setter
+    def tolerance(self, tolerance):
+        """
+        Sets the tolerance of the pitch motor.
+        """
+        self.pitch.tolerance = tolerance
