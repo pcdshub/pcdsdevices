@@ -29,8 +29,8 @@ def read_happi(client=None):
     devices : list of happi.Device
     """
     if client is None:
+        global _client
         if _client is None:
-            global _client
             logger.info("Instantiating happi client")
             _client = happi.Client()
         client = _client
