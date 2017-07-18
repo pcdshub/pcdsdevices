@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Mirror classes and components.
+Classes relating to the offset mirrors used in the FEE and XRT.
 """
 ############
 # Standard #
 ############
+import time
 import logging
 from enum import Enum
 from epics.pv import fmt_time
-import time
+
 ###############
 # Third Party #
 ###############
@@ -22,8 +23,8 @@ from ophyd.signal import Signal
 ##########
 # Module #
 ##########
-from .signal import (EpicsSignal, EpicsSignalRO)
 from .device import Device
+from .signal import (EpicsSignal, EpicsSignalRO)
 from .component import (FormattedComponent, Component)
 
 logger = logging.getLogger(__name__)
@@ -31,8 +32,62 @@ logger = logging.getLogger(__name__)
 
 class OMMotor(Device, PositionerBase):
     """
-    Offset Mirror Motor object used in the offset mirror systems. Mostly taken
-    from ophyd.epics_motor.
+    Base class for each motor in the LCLS offset mirror system.
+
+    Components
+    ----------
+    user_readback : EpicsSignalRO, ":RBV"
+        Readback for current motor position
+
+    user_setpoint : EpicsSignal, ":VAL"
+        Setpoint signal for motor position
+
+    velocity : EpicsSignal, ":VELO"
+        Velocity signal for the motor
+
+    motor_is_moving : EpicsSignalRO, ":MOVN"
+        Readback for bit that indicates if the motor is currenly moving
+
+    motor_done_move : EpicsSignalRO, ":DMOV"
+        Readback for bit that indicates the motor has completed the desired
+        motion
+
+    high_limit_switch : EpicsSignalRO, ":HLS"
+        Readback for high limit switch bit
+
+    low_limit_switch : EpicsSignalRO, ":LLS"
+        Readback for low limit switch bit
+
+    interlock : EpicsSignalRO, ":INTERLOCK"
+        Readback indicating if safe torque off (STO) is enabled
+
+    enabled : EpicsSignalRO, ":ENABLED"
+        Readback for stepper motor enabled bit
+
+    Parameters
+    ---------- 
+    prefix : str
+        The EPICS base pv to use
+
+    read_attrs : sequence of attribute names, optional
+        The signals to be read during data acquisition (i.e., in read() and
+        describe() calls)
+
+    configuration_attrs : sequence of attribute names, optional
+        The signals to be returned when asked for the motor configuration (i.e.
+        in read_configuration(), and describe_configuration() calls)
+
+    name : str, optional
+        The name of the motor
+
+    parent : instance or None, optional
+        The instance of the parent device, if applicable
+
+    settle_time : float, optional
+        The amount of time to wait after moves to report status completion
+
+    tolerance : float, optional
+        Tolerance used to judge if the motor has reached its final position
     """
     # position
     user_readback = Component(EpicsSignalRO, ':RBV', auto_monitor=True)
@@ -51,6 +106,7 @@ class OMMotor(Device, PositionerBase):
     interlock = Component(EpicsSignalRO, ':INTERLOCK')
     enabled = Component(EpicsSignalRO, ':ENABLED')
 
+    # appease bluesky since there is no stop pv for these motors
     motor_stop = Component(Signal)
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
@@ -58,7 +114,6 @@ class OMMotor(Device, PositionerBase):
                  **kwargs):
         if read_attrs is None:
             read_attrs = ['user_readback']
-
         if configuration_attrs is None:
             configuration_attrs = ['velocity', 'interlock', 'enabled']
 
@@ -71,6 +126,7 @@ class OMMotor(Device, PositionerBase):
         self.user_readback.name = self.name
         self.tolerance = tolerance
 
+        # Set up subscriptions
         self.motor_done_move.subscribe(self._move_changed)
         self.user_readback.subscribe(self._pos_changed)
 
@@ -79,6 +135,10 @@ class OMMotor(Device, PositionerBase):
     def precision(self):
         """
         The precision of the readback PV, as reported by EPICS.
+
+        Returns
+        -------
+        precision : int
         """
         return self.user_readback.precision
 
@@ -87,6 +147,10 @@ class OMMotor(Device, PositionerBase):
     def limits(self):
         """
         Returns the EPICS limits of the user_setpoint pv.
+
+        Returns
+        -------
+        limits : tuple
         """
         return self.user_setpoint.limits
 
@@ -110,34 +174,47 @@ class OMMotor(Device, PositionerBase):
 
         Parameters
         ----------
-        position
+        position : float
             Position to move to
-        moved_cb : callable
+
+        wait : bool, optional
+            Wait for the status object to complete the move before returning
+
+        moved_cb : callable, optional
             Call this callback when movement has finished. This callback must
             accept one keyword argument: 'obj' which will be set to this
-            positioner instance.
+            positioner instance
+
         timeout : float, optional
             Maximum time to wait for the motion. If None, the default timeout
-            for this positioner is used.
+            for this positioner is used
+
         Returns
         -------
         status : MoveStatus
+            Status object of the move
+
         Raises
         ------
         TimeoutError
             When motion takes longer than `timeout`
+
         ValueError
             On invalid positions
+
         RuntimeError
             If motion fails other than timing out
         """
         self._started_moving = False
+        # Begin the move process
         status = super().move(position, **kwargs)
         self.user_setpoint.put(position, wait=False)
 
+        # If we are within the tolerance we have completed the move
         if abs(self.position - position) < self.tolerance:
             status._finished(success=True)
 
+        # Wait for the status object to register the move as complete
         try:
             if wait:
                 status_wait(status)
@@ -149,6 +226,14 @@ class OMMotor(Device, PositionerBase):
 
     @raise_if_disconnected
     def mv(self, position, wait=True, **kwargs):
+        """
+        Alias for the move() method.
+
+        Returns
+        -------
+        status : MoveStatus
+            Status object of the move
+        """
         return self.move(position, wait=wait, **kwargs)
 
     @property
@@ -170,14 +255,21 @@ class OMMotor(Device, PositionerBase):
 
         Parameters
         ----------
-        pos
-           Position to set.
+        pos : float
         """
         self.user_setpoint.put(pos, wait=False)
 
     def check_value(self, pos):
         """
         Check that the position is within the soft limits.
+
+        Raises
+        ------
+        LimitError
+            When the inputted position is outside the motor limits
+
+        ValueError
+            On invalid positions        
         """
         self.user_setpoint.check_value(pos)
 
@@ -224,6 +316,13 @@ class OMMotor(Device, PositionerBase):
 
     @property
     def report(self):
+        """
+        Returns a dictionary containing current report values of the motor.
+
+        Returns
+        -------
+        rep : dict
+        """
         try:
             rep = super().report
         except DisconnectedError:
@@ -425,13 +524,12 @@ class OffsetMirror(Device):
     piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")
     
     # # Coupling motor
-    coupling = FormattedComponent(
-        CouplingMotor, "{self._gan_x}")
+    coupling = FormattedComponent(CouplingMotor, "{self._gan_x}")
     
     # Pitch Motor
     pitch = FormattedComponent(OMMotor, "{self._prefix}")
 
-    # This needs to be properly implemented
+    # This is not implemented in the PLC. Included to appease bluesky
     motor_stop = Component(Signal)
     
     # Currently structured to pass the ioc argument down to the pitch motor
