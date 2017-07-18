@@ -111,7 +111,7 @@ class OMMotor(Device, PositionerBase):
     enabled = Component(EpicsSignalRO, ':ENABLED')
 
     # appease bluesky since there is no stop pv for these motors
-    motor_stop = Component(Signal)
+    motor_stop = Component(Signal, value=0)
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, settle_time=1, tolerance=0.01, 
@@ -396,7 +396,7 @@ class OffsetMirror(Device):
     gan_y_p = FormattedComponent(OMMotor, "{self._prefix_xy}:Y:P")
 
     # This is not implemented in the PLC. Included to appease bluesky
-    motor_stop = Component(Signal)
+    motor_stop = Component(Signal, value=0)
     
     # Currently structured to pass the ioc argument down to the pitch motor
     def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None, 
@@ -419,7 +419,7 @@ class OffsetMirror(Device):
 
     def move(self, position, wait=True, **kwargs):
         """
-        Move to the inputted position in pitch. Alias for pitch.move()
+        Move the pitch motor to the inputted position. Alias for pitch.move()
 
         Parameters
         ----------
@@ -469,7 +469,7 @@ class OffsetMirror(Device):
         """
         return self.move(position, wait=wait, **kwargs)
 
-    def set(self, position, wait=True**kwargs):
+    def set(self, position, wait=True, **kwargs):
         """
         Set the pitch motoro to the inputted position. Alias for the move() 
         method.
