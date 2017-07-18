@@ -34,31 +34,15 @@ def test_mirror_alpha_reads_correctly(get_m1h):
 def test_mirror_x_reads_correctly(get_m1h):
     m1h = get_m1h
     m1h_x = np.array([m1h.x for i in range(AVE)])
-    ca_x = np.array([caget("STEP:{0}:X:P:RBV".format(m1h._mirror)) 
+    ca_x = np.array([caget("{0}:X:P:RBV".format(m1h._prefix_xy)) 
                      for i in range(AVE)])
     assert np.isclose(m1h_x.mean(), ca_x.mean(), atol=TOL)
 
 @requires_epics
 @pytest.mark.timeout(3)
-def test_mirror_decoupled_reads_correctly(get_m1h):
+def test_mirror_y_reads_correctly(get_m1h):
     m1h = get_m1h
-    assert isinstance(m1h.decoupled, bool)
-    assert m1h.decoupled is bool(caget(
-        "{0}:DECOUPLE".format(m1h._gan_x)))
-
-@requires_epics
-@pytest.mark.timeout(3)
-def test_mirror_fault_reads_correctly(get_m1h):
-    m1h = get_m1h
-    assert isinstance(m1h.fault, bool)
-    assert m1h.fault is bool(caget(
-        "{0}:FAULT".format(m1h._gan_x)))
-
-@requires_epics
-@pytest.mark.timeout(3)
-def test_mirror_gdif_reads_correctly(get_m1h):
-    m1h = get_m1h
-    m1h_gdif = np.array([m1h.gdif for i in range(AVE)])
-    ca_gdif = np.array([caget("{0}:GDIF".format(m1h._gan_x)) for i 
-                        in range(AVE)])
-    assert np.isclose(m1h_gdif.mean(), ca_gdif.mean(), atol=TOL)
+    m1h_y = np.array([m1h.y for i in range(AVE)])
+    ca_y = np.array([caget("{0}:Y:P:RBV".format(m1h._prefix_xy)) 
+                     for i in range(AVE)])
+    assert np.isclose(m1h_y.mean(), ca_y.mean(), atol=TOL)
