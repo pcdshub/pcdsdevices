@@ -20,11 +20,70 @@ from ..epics import mirror
 
 
 class OMMotor(mirror.OMMotor):
-    # TODO: Write a proper docstring
     """
-    Offset Mirror Motor object used in the offset mirror systems. Mostly taken
-    from ophyd.epics_motor.
+    Simulated base class for each motor in the LCLS offset mirror system.
+
+    Components
+    ----------
+    user_readback : FakeSignal
+        Readback for current motor position
+
+    user_setpoint : FakeSignal
+        Setpoint signal for motor position
+
+    velocity : FakeSignal
+        Velocity signal for the motor
+
+    motor_is_moving : FakeSignal
+        Readback for bit that indicates if the motor is currenly moving
+
+    motor_done_move : FakeSignal
+        Readback for bit that indicates the motor has completed the desired
+        motion
+
+    high_limit_switch : FakeSignal
+        Readback for high limit switch bit
+
+    low_limit_switch : FakeSignal
+        Readback for low limit switch bit
+
+    interlock : FakeSignal
+        Readback indicating if safe torque off (STO) is enabled
+
+    enabled : FakeSignal
+        Readback for stepper motor enabled bit
+
+    motor_stop : FakeSignal
+        Not implemented in the PLC/EPICS but included as an empty signal to
+        appease the Bluesky interface
+
+    Parameters
+    ---------- 
+    prefix : str
+        Prefix of the motor
+
+    read_attrs : sequence of attribute names, optional
+        The signals to be read during data acquisition (i.e., in read() and
+        describe() calls)
+
+    configuration_attrs : sequence of attribute names, optional
+        The signals to be returned when asked for the motor configuration (i.e.
+        in read_configuration(), and describe_configuration() calls)
+
+    name : str, optional
+        The name of the motor
+
+    parent : instance or None, optional
+        The instance of the parent device, if applicable
+
+    settle_time : float, optional
+        The amount of time to wait after moves to report status completion
+
+    tolerance : float, optional
+        Tolerance used to judge if the motor has reached its final position
+
     """
+    # Simulated components
     # position
     user_readback = Component(FakeSignal, value=0)
     user_setpoint = Component(FakeSignal, value=0)
@@ -42,9 +101,10 @@ class OMMotor(mirror.OMMotor):
     interlock = Component(FakeSignal)
     enabled = Component(FakeSignal)
 
+    # appease bluesky since there is no stop pv for these motors
     motor_stop = Component(FakeSignal)
 
-    def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
+    def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None, 
                  name=None, parent=None, velocity=0, noise=0, settle_time=0, 
                  noise_func=None, noise_type="uni", noise_args=(), 
                  noise_kwargs={}, **kwargs):
