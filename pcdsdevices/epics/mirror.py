@@ -11,19 +11,19 @@ motor control the coupling between the gantry motor pairs.
 Classes implemented here are as follows:
 
 OMMotor
-	Motor class that will represent all the individual motors on the offset
-	mirror system. The pitch stepper and all the gantry motors are interfaced
-	with using this class.
+    Motor class that will represent all the individual motors on the offset
+    mirror system. The pitch stepper and all the gantry motors are interfaced
+    with using this class.
 
 Piezo
-	Motor class to represent the piezo stepper motor. Unless the motor is set
-	to be in 'manual' mode this class should never be usable.
+    Motor class to represent the piezo stepper motor. Unless the motor is set
+    to be in 'manual' mode this class should never be usable.
 
 OffsetMirror
-	High level device that includes all the relevant components of the offset
-	mirror. This includes a pitch, piezo, primary gantry x, and primary gantry
-	y motors. This is the class that should be used to control the offset
-	mirrors.
+    High level device that includes all the relevant components of the offset
+    mirror. This includes a pitch, piezo, primary gantry x, and primary gantry
+    y motors. This is the class that should be used to control the offset
+    mirrors.
 """
 
 ############
@@ -371,7 +371,7 @@ class Piezo(Device, PositionerBase):
         Low limit of piezo voltage
 
     enable : EpicsSignalRO, ":Enable"
-   		Readback for if the piezo is enabled
+        Readback for if the piezo is enabled
 
     motor_stop : Signal
         Not implemented in the PLC/EPICS but included as an empty signal to
@@ -443,7 +443,7 @@ class Piezo(Device, PositionerBase):
         Returns
         -------
         limits : tuple
-        	Tuple of (low_limit, high_limit)
+            Tuple of (low_limit, high_limit)
         """
         return (self.low_limit.value, self.high_limit.value)
 
@@ -598,7 +598,7 @@ class OffsetMirror(Device):
         Stepper motor of the pitch mechanism
 
     piezo : Piezo
-    	Piezo motor of the pitch mechanism
+        Piezo motor of the pitch mechanism
 
     gan_x_p : OMMotor
         Primary X gantry motor
@@ -710,7 +710,7 @@ class OffsetMirror(Device):
         RuntimeError
             If motion fails other than timing out
         """        
-        return self.pitch.move(position, wait=wait**kwargs)
+        return self.pitch.move(position, wait=wait, **kwargs)
 
     @raise_if_disconnected
     def mv(self, position, wait=True, **kwargs):
