@@ -681,7 +681,7 @@ class PIMFee(Device):
         -------
         blocking : bool
         """        
-        return bool(self.pos.value)
+        return not bool(self.pos.value)
 
     @property
     def inserted(self):
