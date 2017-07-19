@@ -36,7 +36,7 @@ import logging
 # Third Party #
 ###############
 import numpy as np
-from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
+from ophyd.utils.epics_pvs import raise_if_disconnected
 
 ##########
 # Module #
