@@ -108,9 +108,9 @@ class OMMotor(mirror.OMMotor):
                  name=None, parent=None, velocity=0, noise=0, settle_time=0, 
                  noise_func=None, noise_type="uni", noise_args=(), 
                  noise_kwargs={}, **kwargs):
-        super().__init__(prefix, prefix+"_XY", read_attrs=read_attrs,
+        super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs, name=name, 
-                         parent=parent, settle_time=settle_time, **kwargs)
+                         parent=parent, **kwargs)
         self.velocity.put(velocity)
         self.noise = noise
         self.settle_time = settle_time
@@ -234,27 +234,21 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     fake_sleep_alpha : float, optional
         Amount of time to wait after moving alpha-motor
-    """
-    # Gantry Motors
-    gan_x_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
-    gan_x_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:S")
-    gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:P")
-    gan_y_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:S")
-    
+    """    
     # Pitch Motor
     pitch = FormattedComponent(OMMotor, "{self._prefix}")
+    # Gantry Motors
+    gan_x_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
+    gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:P")
 
     # Placeholder signals for non-implemented components
     piezo = Component(FakeSignal)
-    coupling = Component(FakeSignal)
-    motor_stop = Component(FakeSignal)
 
     # Simulation component
     sim_alpha = Component(FakeSignal)
 
-    def __init__(self, prefix, *, xy_prefix=None, gantry_x_prefix=None,
-                 name=None, read_attrs=None, parent=None, 
-                 configuration_attrs=None, x=0, y=0, z=0, alpha=0, 
+    def __init__(self, prefix, prefix_xy,*, name=None, read_attrs=None,
+                 parent=None, configuration_attrs=None, x=0, y=0, z=0, alpha=0, 
                  velo_x=0, velo_y=0, velo_z=0, velo_alpha=0, noise_x=0, 
                  noise_y=0, noise_z=0, noise_alpha=0, settle_time_x=0, 
                  settle_time_y=0, settle_time_z=0, settle_time_alpha=0, 
@@ -262,8 +256,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
                  noise_kwargs={}, **kwargs):
         if len(prefix.split(":")) < 3:
             prefix = "MIRR:TST:{0}".format(prefix)
-        super().__init__(prefix, xy_prefix, gantry_x_prefix,
-                         read_attrs=read_attrs,
+        super().__init__(prefix, prefix_xy, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
                          name=name, parent=parent, **kwargs)
         self.log_pref = "{0} (OffsetMirror) - ".format(self.name)
@@ -290,12 +283,8 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
         # Set initial position values
         self.gan_x_p.user_setpoint.put(x)
         self.gan_x_p.user_readback.put(x)
-        self.gan_x_s.user_setpoint.put(x)
-        self.gan_x_s.user_readback.put(x)
         self.gan_y_p.user_setpoint.put(y)
         self.gan_y_p.user_readback.put(y)
-        self.gan_y_s.user_setpoint.put(y)
-        self.gan_y_s.user_readback.put(y)
         self.sim_z.put(z)
         self.pitch.user_setpoint.put(alpha)
         self.pitch.user_readback.put(alpha)
