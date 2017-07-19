@@ -36,6 +36,23 @@ class PIMPulnixDetector(PulnixDetector):
     """
     Pulnix detector that is used in the PIM. Plugins should be added on an as
     needed basis here.
+
+    Components
+    ----------
+    proc1 : ProcessPlugin, ":Proc1:"
+    	Plugin component corresponding to Proc1 plugin in AD
+
+    image1 : ImagePlugin, ":IMAGE1:"
+    	Plugin component corresponding to image1 plugin in AD
+
+    image2 : ImagePlugin, ":IMAGE2:"
+    	Plugin component corresponding to image2 plugin in AD
+
+    stats1 : StatsPlugin, ":Stats1:"
+    	Plugin component corresponding to stats1 plugin in AD
+
+    stats2 : StatsPlugin, ":Stats2:"
+    	Plugin component corresponding to stats2 plugin in AD    
     """
     proc1 = Component(ProcessPlugin, ":Proc1:", read_attrs=['num_filter'])
     image1 = Component(ImagePlugin, ":IMAGE1:", read_attrs=['array_data'])
@@ -48,6 +65,11 @@ class PIMPulnixDetector(PulnixDetector):
     def check_camera(self):
         """
         Checks if the camera is acquiring images.
+
+        Raises
+        ------
+        NotAcquiringError
+        	Error raised if called when the camera is not acquiring
         """
         if not self.acquiring:
             raise NotAcquiringError
@@ -58,16 +80,26 @@ class PIMPulnixDetector(PulnixDetector):
         """
         Returns the image stream reshaped to be the correct size using the size
         component in cam.
+
+        Returns
+        -------
+        image : np.ndarray
+        	Image array
         """
         return np.reshape(np.array(self.image2.array_data.value),
                           (self.cam.size.size_y.value,
                            self.cam.size.size_x.value))
-
+    
     @property
     @raise_if_disconnected
     def acquiring(self):
         """
-        Checks to see if the camera is currently acquiring iamges.
+        Checks to see if the camera is currently acquiring images. Alias for
+        cam.acquire
+
+        Returns
+        -------
+        acquiring : bool
         """
         return bool(self.cam.acquire.value)
 
@@ -75,6 +107,10 @@ class PIMPulnixDetector(PulnixDetector):
     def acquiring(self, val):
         """
         Setter for acquiring.
+
+        Returns
+        -------
+        status : StatusObject
         """
         return self.cam.acquire.set(bool(val))
 
@@ -82,8 +118,19 @@ class PIMPulnixDetector(PulnixDetector):
     @raise_if_disconnected
     def centroid_x(self):
         """
-        Returns the beam centroid in x.
+        Returns the beam centroid in x. Alias for stats2.centroids.x.
+
+        Returns
+        -------
+        centroid_x : float
+        	Centroid of the image in x.
+
+        Raises
+        ------
+        NotAcquiringError
+        	When this property is called but the camera isn't acquiring.
         """
+        # Make sure the camera is acquiring
         self.check_camera()
         return self.stats2.centroid.x.value
 
@@ -91,7 +138,17 @@ class PIMPulnixDetector(PulnixDetector):
     @raise_if_disconnected
     def centroid_y(self):
         """
-        Returns the beam centroid in y.
+        Returns the beam centroid in y. Alias for stats2.centroids.y.
+
+        Returns
+        -------
+        centroid_y : float
+        	Centroid of the image in y.
+
+        Raises
+        ------
+        NotAcquiringError
+        	When this property is called but the camera isn't acquiring.        
         """
         self.check_camera()
         return self.stats2.centroid.y.value
@@ -99,7 +156,17 @@ class PIMPulnixDetector(PulnixDetector):
     @property
     def centroid(self):
         """
-        Returns the beam centroid in y.
+        Returns the beam centroid in x and y. Alias for (centroid_x, centroid_y)
+
+        Returns
+        -------
+        centroids : tuple
+        	Tuple of the centroids in x and y
+
+        Raises
+        ------
+        NotAcquiringError
+        	When this property is called but the camera isn't acquiring.                
         """
         return (self.centroid_x, self.centroid_y)
         

@@ -200,7 +200,6 @@ class OMMotor(mirror.OMMotor):
 
 
 class OffsetMirror(mirror.OffsetMirror, SimDevice):
-    # TODO: Add all parameters to doc string
     """
     Simulation of a simple flat mirror with assorted motors.
     
