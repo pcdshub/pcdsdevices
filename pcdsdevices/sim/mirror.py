@@ -108,7 +108,7 @@ class OMMotor(mirror.OMMotor):
                  name=None, parent=None, velocity=0, noise=0, settle_time=0, 
                  noise_func=None, noise_type="uni", noise_args=(), 
                  noise_kwargs={}, **kwargs):
-        super().__init__(prefix, read_attrs=read_attrs,
+        super().__init__(prefix, prefix+"_XY", read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs, name=name, 
                          parent=parent, settle_time=settle_time, **kwargs)
         self.velocity.put(velocity)
