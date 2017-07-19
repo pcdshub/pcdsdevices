@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Classes relating to the offset mirrors used in the FEE and XRT.
+Offset Mirror Classes
 """
 ############
 # Standard #
@@ -14,6 +14,7 @@ from epics.pv import fmt_time
 ###############
 # Third Party #
 ###############
+import numpy as np
 from ophyd import PositionerBase
 from ophyd.utils import DisconnectedError
 from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
@@ -269,11 +270,8 @@ class OMMotor(Device, PositionerBase):
 
         Raises
         ------
-        LimitError
-            When the inputted position is outside the motor limits
-
         ValueError
-            On invalid positions        
+            On invalid positions, or outside the limits
         """
         self.user_setpoint.check_value(pos)
 
@@ -333,21 +331,262 @@ class OMMotor(Device, PositionerBase):
             rep = {'position': 'disconnected'}
         rep['pv'] = self.user_readback.pvname
         return rep
+
+
+class Piezo(Device, PositionerBase):
+    """
+    Class to handle the piezo motor on the mirror pitch mechanism.
+
+    Note: If the motor is set to 'PID' mode then none of the PVs will be
+    controllable.
+
+    Components
+    ----------
+    user_readback : EpicsSignalRO, ":VRBV"
+        Readback for current motor position
+
+    user_setpoint : EpicsSignal, ":VSET"
+        Setpoint signal for motor position
+    
+    high_limit : EpicsSignalRO, ":VMAX"
+        High limit of piezo voltage
+
+    low_limit : EpicsSignalRO, ":VMIN"
+        Low limit of piezo voltage
+
+    enable : EpicsSignalRO, ":Enable"
+   		Readback for if the piezo is enabled
+
+    motor_stop : Signal
+        Not implemented in the PLC/EPICS but included as an empty signal to
+        appease the Bluesky interface
+
+    Parameters
+    ---------- 
+    prefix : str
+        The EPICS base pv to use
+
+    read_attrs : sequence of attribute names, optional
+        The signals to be read during data acquisition (i.e., in read() and
+        describe() calls)
+
+    configuration_attrs : sequence of attribute names, optional
+        The signals to be returned when asked for the motor configuration (i.e.
+        in read_configuration(), and describe_configuration() calls)
+
+    name : str, optional
+        The name of the piezo
+
+    parent : instance or None, optional
+        The instance of the parent device, if applicable    
+    """    
+    # position
+    user_readback = Component(EpicsSignalRO, ':VRBV')
+    user_setpoint = Component(EpicsSignal, ':VSET', limits=True)
+
+    # configuration
+    high_limit = Component(EpicsSignal, ':VMAX')
+    low_limit = Component(EpicsSignal, ':VMIN')
+
+    # status
+    enable = Component(EpicsSignalRO, ':Enable')
+
+    # Stop
+    motor_stop = Component(Signal, value=0)
+    
+    def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
+                 name=None, parent=None, **kwargs):
+        if read_attrs is None:
+            read_attrs = ['user_readback', 'user_setpoint', 'enable']
+
+        if configuration_attrs is None:
+            configuration_attrs = ['high_limit', 'low_limit', 'enable']
+
+        super().__init__(prefix, read_attrs=read_attrs,
+                         configuration_attrs=configuration_attrs,
+                         name=name, parent=parent, **kwargs)
+
+    @property
+    @raise_if_disconnected
+    def precision(self):
+        """
+        The precision of the readback PV, as reported by EPICS.
+
+        Returns
+        -------
+        precision : int        
+        """
+        return self.user_readback.precision
+
+    @property
+    @raise_if_disconnected
+    def limits(self):
+        """
+        Returns the minimum and maximum voltage of the piezo.
+
+        Returns
+        -------
+        limits : tuple
+        	Tuple of (low_limit, high_limit)
+        """
+        return (self.low_limit.value, self.high_limit.value)
+
+    @raise_if_disconnected
+    def move(self, position, wait=True, **kwargs):
+        """
+        Move to a specified position, optionally waiting for motion to
+        complete.
+
+        Note: This will only work if the motor is in 'manual' mode.
+
+        Parameters
+        ----------
+        position : float
+            Position to move to
+
+        wait : bool, optional
+            Wait for the status object to complete the move before returning
+
+        moved_cb : callable, optional
+            Call this callback when movement has finished. This callback must
+            accept one keyword argument: 'obj' which will be set to this
+            positioner instance
+
+        timeout : float, optional
+            Maximum time to wait for the motion. If None, the default timeout
+            for this positioner is used
+
+        Returns
+        -------
+        status : MoveStatus
+            Status object of the move
+
+        Raises
+        ------
+        TimeoutError
+            When motion takes longer than `timeout`
+
+        ValueError
+            On invalid positions
+
+        RuntimeError
+            If motion fails other than timing out
+        """
+        self._started_moving = False
+
+        status = super().move(position, **kwargs)
+        self.user_setpoint.put(position, wait=False)
+
+        # Wait for status
+        try:
+            if wait:
+                status_wait(status)
+        except KeyboardInterrupt:
+            self.stop()
+            raise
+
+        return status
+
+    @raise_if_disconnected
+    def mv(self, position, wait=True, **kwargs):
+        """
+        Alias for the move() method.
+
+        Returns
+        -------
+        status : MoveStatus
+            Status object of the move
+        """
+        return self.move(position, wait=wait, **kwargs)
+
+    @property
+    @raise_if_disconnected
+    def position(self):
+        """
+        The current position of the motor in its engineering units.
         
+        Returns
+        -------
+        position : float
+        """
+        return self.user_readback.value
+
+    @raise_if_disconnected
+    def set_current_position(self, pos):
+        """
+        Configure the motor user position to the given value.
+        
+        Parameters
+        ----------
+        pos
+           Position to set.
+        """
+        self.set_use_switch.put(1, wait=True)
+        self.user_setpoint.put(pos, wait=True)
+        self.set_use_switch.put(0, wait=True)
+
+    def check_value(self, pos):
+        """
+        Check that the position is within the soft limits.
+
+        Raises
+        ------
+        ValueError
+            On invalid positions, or outside the limits
+        """
+        # Check it is a valid position
+        if np.isnan(pos) or np.isinf(pos):
+            raise ValueError("Invalid position inputted.")
+        # Check it is within the limits
+        if pos < self.low_limit or pos > self.high_limit:
+            raise ValueError("Position outside voltage limits.")
+
+    def _pos_changed(self, timestamp=None, value=None, **kwargs):
+        """
+        Callback from EPICS, indicating a change in position.
+        """
+        self._set_position(value)
+
+    @property
+    def report(self):
+        """
+        Returns a dictionary containing current report values of the motor.
+
+        Returns
+        -------
+        rep : dict
+        """        
+        try:
+            rep = super().report
+        except DisconnectedError:
+            # TODO there might be more in this that gets lost
+            rep = {'position': 'disconnected'}
+        rep['pv'] = self.user_readback.pvname
+        return rep
+    
 
 class OffsetMirror(Device):
     """
     X-Ray offset mirror class for each individual mirror system used in the FEE
     and XRT. Controls for the pitch, and primary gantry x and y motors are
-    included. 
+    included.
 
-    Note: Interfaces to the piezo motor, coupling motor, and both secondary
-    gantry motors are not provided.
+    When controlling the pitch motor, if the piezo is set to 'PID' mode, then
+    the pitch mechanism is setup to first move the stepper as close to the
+    desired position, then the piezo will kick in to constantly try and correct
+    any positional changes. When in this mode the piezo cannot be controlled
+    via EPICS, and must first be switched to 'manual' mode.
+
+    Note: Interfaces to the coupling motor and both secondary gantry motors are
+    not provided.
 
     Components
     ----------
     pitch : OMMotor
-        Pitch motor (Both stepper and piezo)
+        Stepper motor of the pitch mechanism
+
+    piezo : Piezo
+    	Piezo motor of the pitch mechanism
 
     gan_x_p : OMMotor
         Primary X gantry motor
@@ -391,6 +630,8 @@ class OffsetMirror(Device):
     """    
     # Pitch Motor
     pitch = FormattedComponent(OMMotor, "{self._prefix}")
+    # Piezo Motor
+    piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")    
     # Gantry motors
     gan_x_p = FormattedComponent(OMMotor, "{self._prefix_xy}:X:P")
     gan_y_p = FormattedComponent(OMMotor, "{self._prefix_xy}:Y:P")
@@ -404,7 +645,9 @@ class OffsetMirror(Device):
                  tolerance=0.01, **kwargs):
         self._prefix = prefix
         self._prefix_xy = prefix_xy
-
+        self._area = prefix.split(":")[1]
+        self._mirror = prefix.split(":")[2]
+        
         if read_attrs is None:
             read_attrs = ['pitch', 'gan_x_p', 'gan_y_p']
 
