@@ -76,7 +76,7 @@ def test_areadetector_detectors():
     """
     detectors.DetectorBase
     detectors.AreaDetector
-    detectors.FEEOpalDetector
+    detectors.FeeOpalDetector
     detectors.AdscDetector
     detectors.Andor3Detector
     detectors.AndorDetector
