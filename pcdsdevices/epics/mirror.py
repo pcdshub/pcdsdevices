@@ -25,13 +25,11 @@ OffsetMirror
 	y motors. This is the class that should be used to control the offset
 	mirrors.
 """
+
 ############
 # Standard #
 ############
-import time
 import logging
-from enum import Enum
-from epics.pv import fmt_time
 
 ###############
 # Third Party #
@@ -137,7 +135,7 @@ class OMMotor(Device, PositionerBase):
     motor_stop = Component(Signal, value=0)
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
-                 name=None, parent=None, settle_time=1, tolerance=0.01, 
+                 name=None, parent=None, settle_time=0, tolerance=0.01, 
                  **kwargs):
         if read_attrs is None:
             read_attrs = ['user_readback']
@@ -242,12 +240,8 @@ class OMMotor(Device, PositionerBase):
             status._finished(success=True)
 
         # Wait for the status object to register the move as complete
-        try:
-            if wait:
-                status_wait(status)
-        except KeyboardInterrupt:
-            self.stop()
-            raise
+        if wait:
+            status_wait(status)
 
         return status
 
@@ -500,12 +494,8 @@ class Piezo(Device, PositionerBase):
         self.user_setpoint.put(position, wait=False)
 
         # Wait for status
-        try:
-            if wait:
-                status_wait(status)
-        except KeyboardInterrupt:
-            self.stop()
-            raise
+        if wait:
+            status_wait(status)
 
         return status
 
@@ -663,7 +653,7 @@ class OffsetMirror(Device):
     
     # Currently structured to pass the ioc argument down to the pitch motor
     def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None, 
-                 parent=None, configuration_attrs=None, settle_time=1, 
+                 parent=None, configuration_attrs=None, settle_time=0, 
                  tolerance=0.01, **kwargs):
         self._prefix = prefix
         self._prefix_xy = prefix_xy
@@ -684,7 +674,8 @@ class OffsetMirror(Device):
 
     def move(self, position, wait=True, **kwargs):
         """
-        Move the pitch motor to the inputted position. Alias for pitch.move()
+        Move the pitch motor to the inputted position, optionally waiting for
+        the move to complete.
 
         Parameters
         ----------
