@@ -320,7 +320,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @noise_x.setter
     def noise_x(self, val):
-        self.gan_x_p.noise = self.gan_x_s.noise = bool(val)
+        self.gan_x_p.noise = bool(val)
 
     @property
     def noise_y(self):
@@ -328,7 +328,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @noise_y.setter
     def noise_y(self, val):
-        self.gan_y_p.noise = self.gan_y_s.noise = bool(val)
+        self.gan_y_p.noise = bool(val)
 
     @property
     def noise_z(self):
@@ -352,7 +352,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @settle_time_x.setter
     def settle_time_x(self, val):
-        self.gan_x_p.settle_time = self.gan_x_s.settle_time = val
+        self.gan_x_p.settle_time = val
 
     @property
     def settle_time_y(self):
@@ -360,7 +360,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @settle_time_y.setter
     def settle_time_y(self, val):
-        self.gan_y_p.settle_time = self.gan_y_s.settle_time = val
+        self.gan_y_p.settle_time = val
 
     @property
     def settle_time_z(self):
@@ -384,7 +384,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @velocity_x.setter
     def velocity_x(self, val):
-        self.gan_x_p.velocity.value = self.gan_x_s.velocity.value = val
+        self.gan_x_p.velocity.value = val
 
     @property
     def velocity_y(self):
@@ -392,7 +392,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @velocity_y.setter
     def velocity_y(self, val):
-        self.gan_y_p.velocity.value = self.gan_y_s.velocity.value = val
+        self.gan_y_p.velocity.value = val
 
     @property
     def velocity_z(self):

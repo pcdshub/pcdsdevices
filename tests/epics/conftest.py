@@ -72,7 +72,7 @@ Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
 Params("fee_homs", OffsetMirror, "MIRR:FEE1:M1H", 'STEP:M1H')
 Params("det_p3h", FeeOpalDetector, "CAMR:FEE1:913")
 Params("det_dg3", PIMPulnixDetector, "HFX:DG3:CVV:01")
-Params("fee_yag", PIMFee, "CAMR:FEE1:913", pos_pref="FEE1:P3H", 
+Params("fee_yag", PIMFee, "CAMR:FEE1:913", prefix_pos="FEE1:P3H", 
        ioc="IOC:FEE1:PROFILEMON")
 Params("dg3_motor", PIMMotor, "HFX:DG3:PIM")
 Params("dg3_pim", PIM, "HFX:DG3:PIM")
@@ -99,7 +99,7 @@ def get_m1h():
 
 @pytest.fixture(scope="module")
 def get_p3h_pim():
-    return PIMFee("CAMR:FEE1:913", pos_pref="FEE1:P3H", 
+    return PIMFee("CAMR:FEE1:913", prefix_pos="FEE1:P3H", 
                   ioc="IOC:FEE1:PROFILEMON")
 
 @pytest.fixture(scope="module")
