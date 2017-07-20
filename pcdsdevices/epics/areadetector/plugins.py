@@ -60,6 +60,10 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
             ret.update(self.source_plugin.read_configuration())
         return ret
 
+    def stage(self):
+        # Ensure the plugin is enabled. We do not disable it on unstage
+        set_and_wait(self.enable, 1)
+        ADBase.stage(self)
 
 class ImagePlugin(ophyd.plugins.ImagePlugin, PluginBase):
     pass
