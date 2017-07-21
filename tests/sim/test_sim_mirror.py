@@ -7,7 +7,9 @@ from collections import OrderedDict
 ###############
 # Third Party #
 ###############
+import pytest
 import numpy as np
+from ophyd.utils import LimitError
 
 ##########
 # Module #
@@ -49,9 +51,27 @@ def test_OMMotor_settle_time():
     t0 = time.time()
     status = ommotor.move(1)
     t1 = time.time() - t0
-    assert(np.isclose(t1, ommotor.settle_time + 0.1, rtol=0.1))
+    assert(np.isclose(t1, ommotor.settle_time,  rtol=0.1))
     assert(ommotor.position == 1)
     assert(status.success)
+
+def test_OMMotor_raises_value_error_on_invalid_positions():
+    ommotor = OMMotor("TEST")
+    with pytest.raises(ValueError):   
+        ommotor.move(None)
+    with pytest.raises(ValueError):   
+        ommotor.move(np.nan)
+    with pytest.raises(ValueError):   
+        ommotor.move(np.inf)
+
+def test_OMMotor_raises_limit_error_on_oob_positions():
+    ommotor = OMMotor("TEST")
+    ommotor.limits = (-10, 10)
+    with pytest.raises(ValueError):   
+        ommotor.move(-11)
+    with pytest.raises(ValueError):   
+        ommotor.move(11)
+    assert(ommotor.move(0))
     
 # OffsetMirror tests
 
@@ -100,9 +120,26 @@ def test_OffsetMirror_noise_changes_on_every_read():
     z_vals = [om.sim_z.value for i in range(10)]
     assert(len(z_vals) == len(set(z_vals)))
     alpha_vals = [om.sim_alpha.value for i in range(10)]
-    assert(len(alpha_vals) == len(set(alpha_vals)))
-    
+    assert(len(alpha_vals) == len(set(alpha_vals)))    
 
+def test_OffsetMirror_raises_value_error_on_invalid_positions():
+    om = OffsetMirror("TEST")
+    with pytest.raises(ValueError):   
+        om.move(None)
+    with pytest.raises(ValueError):   
+        om.move(np.nan)
+    with pytest.raises(ValueError):   
+        om.move(np.inf)
+
+def test_OffsetMirror_raises_limit_error_on_oob_positions():
+    om = OffsetMirror("TEST")
+    om.limits = (-10, 10)
+    with pytest.raises(ValueError):   
+        om.move(-11)
+    with pytest.raises(ValueError):   
+        om.move(11)
+    assert(om.move(0))
+    
     
     
     
