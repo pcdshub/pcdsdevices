@@ -16,7 +16,7 @@ import time
 ###############
 import numpy as np
 from ophyd import PositionerBase
-from ophyd.utils import DisconnectedError
+from ophyd.utils import (DisconnectedError, LimitError)
 from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
 from ophyd.status import wait as status_wait
 from ophyd.signal import Signal
@@ -76,6 +76,7 @@ class OMMotor(Device, PositionerBase):
         # motor itself.
         self.user_readback.name = self.name
         self.tolerance = tolerance
+        self.use_limits = use_limits
 
         self.motor_done_move.subscribe(self._move_changed)
         self.user_readback.subscribe(self._pos_changed)
@@ -87,14 +88,6 @@ class OMMotor(Device, PositionerBase):
         The precision of the readback PV, as reported by EPICS.
         """
         return self.user_readback.precision
-
-    @property
-    @raise_if_disconnected
-    def limits(self):
-        """
-        Returns the EPICS limits of the user_setpoint pv.
-        """
-        return self.user_setpoint.limits
 
     @property
     @raise_if_disconnected
@@ -165,19 +158,19 @@ class OMMotor(Device, PositionerBase):
         Parameters
         ----------
         position : float
-        	Position to check for validity
+            Position to check for validity
 
         Raises
         ------
         ValueError
-        	If position is None, NaN or Inf
+            If position is None, NaN or Inf
 
         LimitError
-        	If the position is outside the soft limits
+            If the position is outside the soft limits
         """
         # Check for invalid positions
-        if value is None or np.isnan(value) or np.isinf(value):
-            raise ValueError("Invalid value inputted: '{0}'".format(position)))
+        if position is None or np.isnan(position) or np.isinf(position):
+            raise ValueError("Invalid value inputted: '{0}'".format(position))
         if not self.use_limits:
             return
 
@@ -311,6 +304,26 @@ class OMMotor(Device, PositionerBase):
         Sets the high limit for user setpoint.
         """
         self.lower_ctrl_limit.put(value)
+
+    @property
+    def limits(self):
+        """
+        Returns the limits of the motor.
+
+        Returns 
+        -------
+        limits : tuple
+        """
+        return (self.low_limit, self.high_limit)
+
+    @limits.setter
+    def limits(self, value):
+        """
+        Sets the limits for user setpoint.
+        """
+        self.low_limit = value[0]
+        self.high_limit = value[1]
+
         
     
 class Piezo(Device, PositionerBase):
@@ -686,3 +699,21 @@ class OffsetMirror(Device):
         status : StatusObject
         """
         self.pitch.low_limit = value
+
+    @property
+    def limits(self):
+        """
+        Returns the EPICS limits of the user_setpoint pv.
+
+        Returns
+        -------
+        limits : tuple
+        """
+        return self.pitch.limits
+
+    @limits.setter
+    def limits(self, value):
+        """
+        Sets the limits of the user_setpoint pv
+        """
+        self.pitch.limits = value
