@@ -38,6 +38,10 @@ class OMMotor(Device, PositionerBase):
     user_readback = Component(EpicsSignalRO, ':RBV', auto_monitor=True)
     user_setpoint = Component(EpicsSignal, ':VAL', limits=True)
 
+    # limits
+    upper_ctrl_limit = Component(EpicsSignal, ':VAL.DRVH')
+    lower_ctrl_limit = Component(EpicsSignal, ':VAL.DRVL')
+
     # configuration
     velocity = Component(EpicsSignal, ':VELO')
 
@@ -54,7 +58,7 @@ class OMMotor(Device, PositionerBase):
     motor_stop = Component(Signal)
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
-                 name=None, parent=None, settle_time=1, tolerance=0.01, 
+                 name=None, parent=None, settle_time=1, tolerance=0.01,
                  **kwargs):
         if read_attrs is None:
             read_attrs = ['user_readback']
@@ -230,6 +234,44 @@ class OMMotor(Device, PositionerBase):
             rep = {'position': 'disconnected'}
         rep['pv'] = self.user_readback.pvname
         return rep
+
+    @property
+    def high_limit(self):
+        """
+        Returns the upper limit fot the user setpoint.
+
+        Returns 
+        -------
+        high_limit : float
+        """
+        return self.upper_ctrl_limit.value
+
+    @high_limit.setter
+    def high_limit(self, value):
+        """
+        Sets the high limit for user setpoint.
+        """
+        self.upper_ctrl_limit.put(value)
+
+    @property
+    def low_limit(self):
+        """
+        Returns the lower limit fot the user setpoint.
+
+        Returns 
+        -------
+        low_limit : float
+        """
+        return self.lower_ctrl_limit.value
+
+    @low_limit.setter
+    def low_limit(self, value):
+        """
+        Sets the high limit for user setpoint.
+        """
+        self.lower_ctrl_limit.put(value)
+
+
 
     
 class Piezo(Device, PositionerBase):
@@ -561,3 +603,47 @@ class OffsetMirror(Device):
         Sets the tolerance of the pitch motor.
         """
         self.pitch.tolerance = tolerance
+
+    @property
+    def high_limit(self):
+        """
+        Returns the upper limit fot the pitch motor.
+
+        Returns 
+        -------
+        high_limit : float
+        """
+        return self.pitch.high_limit
+
+    @high_limit.setter
+    def high_limit(self, value):
+        """
+        Sets the high limit for pitch motor.
+
+        Returns 
+        -------
+        status : StatusObject
+        """
+        self.pitch.high_limit = value
+
+    @property
+    def low_limit(self):
+        """
+        Returns the lower limit fot the pitch motor.
+
+        Returns 
+        -------
+        low_limit : float
+        """
+        return self.pitch.low_limit
+
+    @low_limit.setter
+    def low_limit(self, value):
+        """
+        Sets the high limit for pitch motor.
+
+        Returns 
+        -------
+        status : StatusObject
+        """
+        self.pitch.low_limit = value
