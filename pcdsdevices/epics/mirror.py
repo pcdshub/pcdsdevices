@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+ #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Mirror classes and components.
@@ -60,7 +60,7 @@ class OMMotor(Device, PositionerBase):
     motor_stop = Component(Signal)
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
-                 name=None, parent=None, settle_time=1, tolerance=0.01,
+                 name=None, parent=None, settle_time=0, tolerance=0.01,
                  use_limits=True, **kwargs):
         if read_attrs is None:
             read_attrs = ['user_readback']
@@ -132,7 +132,7 @@ class OMMotor(Device, PositionerBase):
         """
         # Check if the move is valid
         self._check_value(position)
-
+    
         # Begin the move process
         self._started_moving = False
         status = super().move(position, **kwargs)
@@ -140,7 +140,7 @@ class OMMotor(Device, PositionerBase):
 
         if abs(self.position - position) < self.tolerance:
             status._finished(success=True)
-
+        
         try:
             if wait:
                 status_wait(status)
@@ -531,7 +531,7 @@ class OffsetMirror(Device):
     # Currently structured to pass the ioc argument down to the pitch motor
     def __init__(self, prefix, xy_prefix, gantry_x_prefix, *, name=None,
                  read_attrs=None, parent=None, configuration_attrs=None,
-                 settle_time=1, tolerance=0.01, **kwargs):
+                 settle_time=0, tolerance=0.01, **kwargs):
         self._prefix = prefix
         self._area = prefix.split(":")[1]
         self._mirror = prefix.split(":")[2]
