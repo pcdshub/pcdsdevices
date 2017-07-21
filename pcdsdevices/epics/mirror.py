@@ -10,9 +10,11 @@ import logging
 from enum import Enum
 from epics.pv import fmt_time
 import time
+
 ###############
 # Third Party #
 ###############
+import numpy as np
 from ophyd import PositionerBase
 from ophyd.utils import DisconnectedError
 from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
@@ -59,7 +61,7 @@ class OMMotor(Device, PositionerBase):
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, settle_time=1, tolerance=0.01,
-                 **kwargs):
+                 use_limits=True, **kwargs):
         if read_attrs is None:
             read_attrs = ['user_readback']
 
@@ -135,6 +137,10 @@ class OMMotor(Device, PositionerBase):
         RuntimeError
             If motion fails other than timing out
         """
+        # Check if the move is valid
+        self._check_value(position)
+
+        # Begin the move process
         self._started_moving = False
         status = super().move(position, **kwargs)
         self.user_setpoint.put(position, wait=False)
@@ -151,6 +157,41 @@ class OMMotor(Device, PositionerBase):
 
         return status
 
+    def _check_value(self, position):
+        """
+        Checks to make sure the inputted value is both valid and within the
+        soft limits of the motor.
+
+        Parameters
+        ----------
+        position : float
+        	Position to check for validity
+
+        Raises
+        ------
+        ValueError
+        	If position is None, NaN or Inf
+
+        LimitError
+        	If the position is outside the soft limits
+        """
+        # Check for invalid positions
+        if value is None or np.isnan(value) or np.isinf(value):
+            raise ValueError("Invalid value inputted: '{0}'".format(position)))
+        if not self.use_limits:
+            return
+
+        # If the limits are the same value or lower limit is > upper limit, pass
+        if self.low_limit >= self.high_limit:
+            return
+
+        # Check if it is within the soft limits
+        if not (self.low_limit <= position <= self.high_limit):
+            err_str = "Requested value {0} outside of range: [{1}, {2}]".format(
+                position, self.low_limit, self.high_limit)
+            logger.warn(err_str)
+            raise LimitError(err_str)
+        
     @raise_if_disconnected
     def mv(self, position, wait=True, **kwargs):
         return self.move(position, wait=wait, **kwargs)
@@ -233,7 +274,7 @@ class OMMotor(Device, PositionerBase):
         except DisconnectedError:
             rep = {'position': 'disconnected'}
         rep['pv'] = self.user_readback.pvname
-        return rep
+        return rep    
 
     @property
     def high_limit(self):
@@ -270,9 +311,7 @@ class OMMotor(Device, PositionerBase):
         Sets the high limit for user setpoint.
         """
         self.lower_ctrl_limit.put(value)
-
-
-
+        
     
 class Piezo(Device, PositionerBase):
     """
