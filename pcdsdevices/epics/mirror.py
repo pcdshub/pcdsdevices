@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+ #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Mirror classes and components.
@@ -10,11 +10,13 @@ import logging
 from enum import Enum
 from epics.pv import fmt_time
 import time
+
 ###############
 # Third Party #
 ###############
+import numpy as np
 from ophyd import PositionerBase
-from ophyd.utils import DisconnectedError
+from ophyd.utils import (DisconnectedError, LimitError)
 from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
 from ophyd.status import wait as status_wait
 from ophyd.signal import Signal
@@ -38,6 +40,10 @@ class OMMotor(Device, PositionerBase):
     user_readback = Component(EpicsSignalRO, ':RBV', auto_monitor=True)
     user_setpoint = Component(EpicsSignal, ':VAL', limits=True)
 
+    # limits
+    upper_ctrl_limit = Component(EpicsSignal, ':VAL.DRVH')
+    lower_ctrl_limit = Component(EpicsSignal, ':VAL.DRVL')
+
     # configuration
     velocity = Component(EpicsSignal, ':VELO')
 
@@ -54,8 +60,8 @@ class OMMotor(Device, PositionerBase):
     motor_stop = Component(Signal)
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
-                 name=None, parent=None, settle_time=1, tolerance=0.01, 
-                 **kwargs):
+                 name=None, parent=None, settle_time=0, tolerance=0.01,
+                 use_limits=True, **kwargs):
         if read_attrs is None:
             read_attrs = ['user_readback']
 
@@ -70,6 +76,7 @@ class OMMotor(Device, PositionerBase):
         # motor itself.
         self.user_readback.name = self.name
         self.tolerance = tolerance
+        self.use_limits = use_limits
 
         self.motor_done_move.subscribe(self._move_changed)
         self.user_readback.subscribe(self._pos_changed)
@@ -81,14 +88,6 @@ class OMMotor(Device, PositionerBase):
         The precision of the readback PV, as reported by EPICS.
         """
         return self.user_readback.precision
-
-    @property
-    @raise_if_disconnected
-    def limits(self):
-        """
-        Returns the EPICS limits of the user_setpoint pv.
-        """
-        return self.user_setpoint.limits
 
     @property
     @raise_if_disconnected
@@ -131,13 +130,17 @@ class OMMotor(Device, PositionerBase):
         RuntimeError
             If motion fails other than timing out
         """
+        # Check if the move is valid
+        self._check_value(position)
+    
+        # Begin the move process
         self._started_moving = False
         status = super().move(position, **kwargs)
         self.user_setpoint.put(position, wait=False)
 
         if abs(self.position - position) < self.tolerance:
             status._finished(success=True)
-
+        
         try:
             if wait:
                 status_wait(status)
@@ -147,6 +150,41 @@ class OMMotor(Device, PositionerBase):
 
         return status
 
+    def _check_value(self, position):
+        """
+        Checks to make sure the inputted value is both valid and within the
+        soft limits of the motor.
+
+        Parameters
+        ----------
+        position : float
+            Position to check for validity
+
+        Raises
+        ------
+        ValueError
+            If position is None, NaN or Inf
+
+        LimitError
+            If the position is outside the soft limits
+        """
+        # Check for invalid positions
+        if position is None or np.isnan(position) or np.isinf(position):
+            raise ValueError("Invalid value inputted: '{0}'".format(position))
+        if not self.use_limits:
+            return
+
+        # If the limits are the same value or lower limit is > upper limit, pass
+        if self.low_limit >= self.high_limit:
+            return
+
+        # Check if it is within the soft limits
+        if not (self.low_limit <= position <= self.high_limit):
+            err_str = "Requested value {0} outside of range: [{1}, {2}]".format(
+                position, self.low_limit, self.high_limit)
+            logger.warn(err_str)
+            raise LimitError(err_str)
+        
     @raise_if_disconnected
     def mv(self, position, wait=True, **kwargs):
         return self.move(position, wait=wait, **kwargs)
@@ -229,8 +267,64 @@ class OMMotor(Device, PositionerBase):
         except DisconnectedError:
             rep = {'position': 'disconnected'}
         rep['pv'] = self.user_readback.pvname
-        return rep
+        return rep    
 
+    @property
+    def high_limit(self):
+        """
+        Returns the upper limit fot the user setpoint.
+
+        Returns 
+        -------
+        high_limit : float
+        """
+        return self.upper_ctrl_limit.value
+
+    @high_limit.setter
+    def high_limit(self, value):
+        """
+        Sets the high limit for user setpoint.
+        """
+        self.upper_ctrl_limit.put(value)
+
+    @property
+    def low_limit(self):
+        """
+        Returns the lower limit fot the user setpoint.
+
+        Returns 
+        -------
+        low_limit : float
+        """
+        return self.lower_ctrl_limit.value
+
+    @low_limit.setter
+    def low_limit(self, value):
+        """
+        Sets the high limit for user setpoint.
+        """
+        self.lower_ctrl_limit.put(value)
+
+    @property
+    def limits(self):
+        """
+        Returns the limits of the motor.
+
+        Returns 
+        -------
+        limits : tuple
+        """
+        return (self.low_limit, self.high_limit)
+
+    @limits.setter
+    def limits(self, value):
+        """
+        Sets the limits for user setpoint.
+        """
+        self.low_limit = value[0]
+        self.high_limit = value[1]
+
+        
     
 class Piezo(Device, PositionerBase):
     """
@@ -437,7 +531,7 @@ class OffsetMirror(Device):
     # Currently structured to pass the ioc argument down to the pitch motor
     def __init__(self, prefix, xy_prefix, gantry_x_prefix, *, name=None,
                  read_attrs=None, parent=None, configuration_attrs=None,
-                 settle_time=1, tolerance=0.01, **kwargs):
+                 settle_time=0, tolerance=0.01, **kwargs):
         self._prefix = prefix
         self._area = prefix.split(":")[1]
         self._mirror = prefix.split(":")[2]
@@ -561,3 +655,65 @@ class OffsetMirror(Device):
         Sets the tolerance of the pitch motor.
         """
         self.pitch.tolerance = tolerance
+
+    @property
+    def high_limit(self):
+        """
+        Returns the upper limit fot the pitch motor.
+
+        Returns 
+        -------
+        high_limit : float
+        """
+        return self.pitch.high_limit
+
+    @high_limit.setter
+    def high_limit(self, value):
+        """
+        Sets the high limit for pitch motor.
+
+        Returns 
+        -------
+        status : StatusObject
+        """
+        self.pitch.high_limit = value
+
+    @property
+    def low_limit(self):
+        """
+        Returns the lower limit fot the pitch motor.
+
+        Returns 
+        -------
+        low_limit : float
+        """
+        return self.pitch.low_limit
+
+    @low_limit.setter
+    def low_limit(self, value):
+        """
+        Sets the high limit for pitch motor.
+
+        Returns 
+        -------
+        status : StatusObject
+        """
+        self.pitch.low_limit = value
+
+    @property
+    def limits(self):
+        """
+        Returns the EPICS limits of the user_setpoint pv.
+
+        Returns
+        -------
+        limits : tuple
+        """
+        return self.pitch.limits
+
+    @limits.setter
+    def limits(self, value):
+        """
+        Sets the limits of the user_setpoint pv
+        """
+        self.pitch.limits = value

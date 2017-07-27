@@ -62,3 +62,17 @@ def test_mirror_gdif_reads_correctly(get_m1h):
     ca_gdif = np.array([caget("{0}:GDIF".format(m1h._gan_x)) for i 
                         in range(AVE)])
     assert np.isclose(m1h_gdif.mean(), ca_gdif.mean(), atol=TOL)
+
+@requires_epics
+@pytest.mark.timeout(3)
+def test_mirror_limits_read_properly(get_m1h):
+    m1h = get_m1h
+    low_limit = caget("{0}:VAL.DRVL".format(m1h._prefix))
+    high_limit = caget("{0}:VAL.DRVH".format(m1h._prefix))
+    assert(m1h.pitch.low_limit == low_limit)
+    assert(m1h.pitch.high_limit == high_limit)
+    assert(m1h.pitch.limits == (low_limit, high_limit))
+    assert(m1h.low_limit == low_limit)
+    assert(m1h.high_limit == high_limit)
+    assert(m1h.limits == (low_limit, high_limit))
+
