@@ -20,11 +20,70 @@ from ..epics import mirror
 
 
 class OMMotor(mirror.OMMotor):
-    # TODO: Write a proper docstring
     """
-    Offset Mirror Motor object used in the offset mirror systems. Mostly taken
-    from ophyd.epics_motor.
+    Simulated base class for each motor in the LCLS offset mirror system.
+
+    Components
+    ----------
+    user_readback : FakeSignal
+        Readback for current motor position
+
+    user_setpoint : FakeSignal
+        Setpoint signal for motor position
+
+    velocity : FakeSignal
+        Velocity signal for the motor
+
+    motor_is_moving : FakeSignal
+        Readback for bit that indicates if the motor is currenly moving
+
+    motor_done_move : FakeSignal
+        Readback for bit that indicates the motor has completed the desired
+        motion
+
+    high_limit_switch : FakeSignal
+        Readback for high limit switch bit
+
+    low_limit_switch : FakeSignal
+        Readback for low limit switch bit
+
+    interlock : FakeSignal
+        Readback indicating if safe torque off (STO) is enabled
+
+    enabled : FakeSignal
+        Readback for stepper motor enabled bit
+
+    motor_stop : FakeSignal
+        Not implemented in the PLC/EPICS but included as an empty signal to
+        appease the Bluesky interface
+
+    Parameters
+    ---------- 
+    prefix : str
+        Prefix of the motor
+
+    read_attrs : sequence of attribute names, optional
+        The signals to be read during data acquisition (i.e., in read() and
+        describe() calls)
+
+    configuration_attrs : sequence of attribute names, optional
+        The signals to be returned when asked for the motor configuration (i.e.
+        in read_configuration(), and describe_configuration() calls)
+
+    name : str, optional
+        The name of the motor
+
+    parent : instance or None, optional
+        The instance of the parent device, if applicable
+
+    settle_time : float, optional
+        The amount of time to wait after moves to report status completion
+
+    tolerance : float, optional
+        Tolerance used to judge if the motor has reached its final position
+
     """
+    # Simulated components
     # position
     user_readback = Component(FakeSignal, value=0)
     user_setpoint = Component(FakeSignal, value=0)
@@ -46,15 +105,16 @@ class OMMotor(mirror.OMMotor):
     interlock = Component(FakeSignal)
     enabled = Component(FakeSignal)
 
+    # appease bluesky since there is no stop pv for these motors
     motor_stop = Component(FakeSignal)
 
-    def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
+    def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None, 
                  name=None, parent=None, velocity=0, noise=0, settle_time=0, 
                  noise_func=None, noise_type="uni", noise_args=(), 
                  noise_kwargs={}, **kwargs):
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs, name=name, 
-                         parent=parent, settle_time=settle_time, **kwargs)
+                         parent=parent, **kwargs)
         self.velocity.put(velocity)
         self.noise = noise
         self.settle_time = settle_time
@@ -127,7 +187,6 @@ class OMMotor(mirror.OMMotor):
 
 
 class OffsetMirror(mirror.OffsetMirror, SimDevice):
-    # TODO: Add all parameters to doc string
     """
     Simulation of a simple flat mirror with assorted motors.
     
@@ -162,27 +221,21 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     fake_sleep_alpha : float, optional
         Amount of time to wait after moving alpha-motor
-    """
-    # Gantry Motors
-    gan_x_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
-    gan_x_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:S")
-    gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:P")
-    gan_y_s = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:S")
-    
+    """    
     # Pitch Motor
     pitch = FormattedComponent(OMMotor, "{self._prefix}")
+    # Gantry Motors
+    gan_x_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
+    gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:P")
 
     # Placeholder signals for non-implemented components
     piezo = Component(FakeSignal)
-    coupling = Component(FakeSignal)
-    motor_stop = Component(FakeSignal)
 
     # Simulation component
     sim_alpha = Component(FakeSignal)
 
-    def __init__(self, prefix, *, xy_prefix=None, gantry_x_prefix=None,
-                 name=None, read_attrs=None, parent=None, 
-                 configuration_attrs=None, x=0, y=0, z=0, alpha=0, 
+    def __init__(self, prefix, prefix_xy,*, name=None, read_attrs=None,
+                 parent=None, configuration_attrs=None, x=0, y=0, z=0, alpha=0, 
                  velo_x=0, velo_y=0, velo_z=0, velo_alpha=0, noise_x=0, 
                  noise_y=0, noise_z=0, noise_alpha=0, settle_time_x=0, 
                  settle_time_y=0, settle_time_z=0, settle_time_alpha=0, 
@@ -190,8 +243,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
                  noise_kwargs={}, **kwargs):
         if len(prefix.split(":")) < 3:
             prefix = "MIRR:TST:{0}".format(prefix)
-        super().__init__(prefix, xy_prefix, gantry_x_prefix,
-                         read_attrs=read_attrs,
+        super().__init__(prefix, prefix_xy, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
                          name=name, parent=parent, **kwargs)
         self.log_pref = "{0} (OffsetMirror) - ".format(self.name)
@@ -218,12 +270,8 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
         # Set initial position values
         self.gan_x_p.user_setpoint.put(x)
         self.gan_x_p.user_readback.put(x)
-        self.gan_x_s.user_setpoint.put(x)
-        self.gan_x_s.user_readback.put(x)
         self.gan_y_p.user_setpoint.put(y)
         self.gan_y_p.user_readback.put(y)
-        self.gan_y_s.user_setpoint.put(y)
-        self.gan_y_s.user_readback.put(y)
         self.sim_z.put(z)
         self.pitch.user_setpoint.put(alpha)
         self.pitch.user_readback.put(alpha)
@@ -259,7 +307,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @noise_x.setter
     def noise_x(self, val):
-        self.gan_x_p.noise = self.gan_x_s.noise = bool(val)
+        self.gan_x_p.noise = bool(val)
 
     @property
     def noise_y(self):
@@ -267,7 +315,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @noise_y.setter
     def noise_y(self, val):
-        self.gan_y_p.noise = self.gan_y_s.noise = bool(val)
+        self.gan_y_p.noise = bool(val)
 
     @property
     def noise_z(self):
@@ -291,7 +339,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @settle_time_x.setter
     def settle_time_x(self, val):
-        self.gan_x_p.settle_time = self.gan_x_s.settle_time = val
+        self.gan_x_p.settle_time = val
 
     @property
     def settle_time_y(self):
@@ -299,7 +347,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @settle_time_y.setter
     def settle_time_y(self, val):
-        self.gan_y_p.settle_time = self.gan_y_s.settle_time = val
+        self.gan_y_p.settle_time = val
 
     @property
     def settle_time_z(self):
@@ -323,7 +371,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @velocity_x.setter
     def velocity_x(self, val):
-        self.gan_x_p.velocity.value = self.gan_x_s.velocity.value = val
+        self.gan_x_p.velocity.value = val
 
     @property
     def velocity_y(self):
@@ -331,7 +379,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     @velocity_y.setter
     def velocity_y(self, val):
-        self.gan_y_p.velocity.value = self.gan_y_s.velocity.value = val
+        self.gan_y_p.velocity.value = val
 
     @property
     def velocity_z(self):
