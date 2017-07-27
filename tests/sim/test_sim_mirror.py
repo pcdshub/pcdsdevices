@@ -122,7 +122,7 @@ def test_OffsetMirror_noise_changes_on_every_read():
     assert(len(alpha_vals) == len(set(alpha_vals)))    
 
 def test_OffsetMirror_raises_value_error_on_invalid_positions():
-    om = OffsetMirror("TEST")
+    om = OffsetMirror("TEST", "TEST_XY")
     with pytest.raises(ValueError):   
         om.move(None)
     with pytest.raises(ValueError):   
@@ -131,7 +131,7 @@ def test_OffsetMirror_raises_value_error_on_invalid_positions():
         om.move(np.inf)
 
 def test_OffsetMirror_raises_limit_error_on_oob_positions():
-    om = OffsetMirror("TEST")
+    om = OffsetMirror("TEST", "TEST_XY")
     om.limits = (-10, 10)
     with pytest.raises(ValueError):   
         om.move(-11)
