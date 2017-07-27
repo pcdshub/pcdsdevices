@@ -88,6 +88,10 @@ class OMMotor(mirror.OMMotor):
     user_readback = Component(FakeSignal, value=0)
     user_setpoint = Component(FakeSignal, value=0)
 
+    # limits
+    upper_ctrl_limit = Component(FakeSignal, value=0)
+    lower_ctrl_limit = Component(FakeSignal, value=0)
+
     # configuration
     velocity = Component(Signal)
 
@@ -118,32 +122,15 @@ class OMMotor(mirror.OMMotor):
         self.noise_args = noise_args
         self.noise_kwargs = noise_kwargs
         self.user_setpoint.velocity = lambda : self.velocity.value
+        
+        # Set the readback val to always be the setpoint val
+        self.user_readback._get_readback = lambda : self.user_setpoint.value
 
-    def move(self, position, **kwargs):
-        """
-        Move to a specified position, optionally waiting for motion to
-        complete.
-
-        Parameters
-        ----------
-        position
-            Position to move to
-
-        Returns
-        -------
-        status : MoveStatus
-        """
-        self.user_setpoint.put(position)
-
-        # Switch to moving state
-        self.motor_is_moving.put(1)
-        self.motor_done_move.put(0)
-        status = self.user_readback.set(position)
-
-        # # Switch to finished state and wait for status to update
-        self.motor_is_moving.put(0)
-        self.motor_done_move.put(1)
-        time.sleep(0.1)
+    def move(self, position, wait=False, **kwargs):
+        status = super().move(position, wait=wait, **kwargs)
+        # It takes one second for the status object to object update so set it
+        # manually.
+        status.success = True
         return status
 
     @property
