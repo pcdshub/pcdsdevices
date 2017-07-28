@@ -54,7 +54,7 @@ class PluginBase(plugins.PluginBase):
     nd_array_address = Component(FakeSignal, value=0)
     nd_array_port = Component(FakeSignal, value=0)
     ndimensions = Component(FakeSignal, value=0)
-    plugin_type = Component(FakeSignal, value=0)
+    plugin_type = Component(FakeSignal, value="TEST", use_string=True)
     queue_free = Component(FakeSignal, value=0)
     queue_free_low = Component(FakeSignal, value=0)
     queue_size = Component(FakeSignal, value=0)
@@ -258,3 +258,30 @@ class StatsPlugin(plugins.StatsPlugin, PluginBase):
     @noise_kwargs_y.setter
     def noise_kwargs_y(self, val):
         self.centroid.y.noise_kwargs = val
+
+class ImagePlugin(plugins.ImagePlugin, PluginBase):
+    """
+    Image plugin with a couple of the signals spoofed.
+
+    To set ImagePlugin to return images using the array_data signal, override
+    the _image method to be a method that returns the desired image
+    """
+    plugin_type = Component(FakeSignal, value="NDPluginStdArrays")
+    array_data = Component(FakeSignal, value=np.zeros((256,256)))
+
+    def __init__(self, prefix, *args, **kwargs):
+        super().__init__(prefix, *args, **kwargs)
+        # Spoof the different components
+        self.array_data._get_readback = lambda : self._image().flatten()
+        self.ndimensions._get_readback = lambda : len(self.array_size.get())
+        self.array_size.height._get_readback = lambda : self._get_shape()[0]
+        self.array_size.width._get_readback = lambda : self._get_shape()[1]
+        self.array_size.depth._get_readback = lambda : self._get_shape()[2]
+
+    def _get_shape(self):
+        image_shape = self._image().shape
+        pad_zeros = [0] * (3 - len(image_shape))
+        return [*image_shape, *pad_zeros]
+
+    def _image(self):
+        return np.zeros((256, 256))

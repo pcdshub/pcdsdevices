@@ -7,6 +7,7 @@ PCDS plugins and Overrides for AreaDetector Plugins.
 import logging
 
 import ophyd
+import numpy as np
 from ophyd.device import GenerateDatumInterface
 
 from .base import ADBase
@@ -65,10 +66,43 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
         set_and_wait(self.enable, 1)
         ADBase.stage(self)
 
+    @property
+    def array_pixels(self):
+        """
+        The total number of pixels, calculated from array_size
+        """
+        array_size = list(self.array_size.get())
+        dimensions = int(self.ndimensions.get())
+        
+        if dimensions == 0:
+            return 0
+
+        pixels = array_size[0]
+        for dim in array_size[1:dimensions]:
+            if dim:
+                pixels *= dim
+
+        return int(pixels)    
+
+    
 class ImagePlugin(ophyd.plugins.ImagePlugin, PluginBase):
-    pass
+    @property
+    def image(self):
+        """
+        Overriden image method to add in some corrections
+        """
+        array_size = [int(val) for val in self.array_size.get()]
+        if array_size == [0, 0, 0]:
+            raise RuntimeError('Invalid image; ensure array_callbacks are on')
 
+        if array_size[-1] == 0:
+            array_size = array_size[:-1]
 
+        pixel_count = self.array_pixels
+        image = self.array_data.get(count=pixel_count)
+        return np.array(image).reshape(array_size)    
+
+    
 class StatsPlugin(ophyd.plugins.StatsPlugin, PluginBase):
     pass
 

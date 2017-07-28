@@ -111,9 +111,7 @@ class PIMPulnixDetector(PulnixDetector):
         image : np.ndarray
         	Image array
         """
-        return np.reshape(np.array(self.image2.array_data.value),
-                          (self.cam.size.size_y.value,
-                           self.cam.size.size_x.value))
+        return self.image2.image
     
     @property
     @raise_if_disconnected
