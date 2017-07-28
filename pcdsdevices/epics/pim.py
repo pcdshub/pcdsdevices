@@ -388,6 +388,14 @@ class PIMMotor(Device):
         """
         return self.blocking
 
+    def stage(self):
+        self.move_in(wait=True)
+        return super().stage()
+
+    def unstage(self):
+        self.move_out(wait=False)
+        return super().unstage()
+
 
 class PIM(PIMMotor):
     """
