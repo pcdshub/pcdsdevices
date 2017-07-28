@@ -224,6 +224,7 @@ class OMMotor(Device, PositionerBase):
         RuntimeError
             If motion fails other than timing out
         """
+        logger.debug("Moving {} to {}".format(self.name, position))
         # Check if the move is valid
         self._check_value(position)
     
@@ -239,6 +240,8 @@ class OMMotor(Device, PositionerBase):
 
         # Wait for the status object to register the move as complete
         if wait:
+            logger.info("Waiting for {} to finish move ..."
+                        "".format(self.name))
             status_wait(status)
 
         return status
