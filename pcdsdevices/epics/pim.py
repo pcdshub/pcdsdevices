@@ -103,17 +103,14 @@ class PIMPulnixDetector(PulnixDetector):
     @raise_if_disconnected
     def image(self):
         """
-        Returns the image stream reshaped to be the correct size using the size
-        component in cam.
+        Returns the image from image2
 
         Returns
         -------
         image : np.ndarray
         	Image array
         """
-        return np.reshape(np.array(self.image2.array_data.value),
-                          (self.cam.size.size_y.value,
-                           self.cam.size.size_x.value))
+        return self.image2.image
     
     @property
     @raise_if_disconnected
