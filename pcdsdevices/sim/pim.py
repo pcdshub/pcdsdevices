@@ -179,7 +179,7 @@ class PIMMotor(pim.PIMMotor):
         self.noise_type = noise_type
         self.noise_args = noise_args
         self.noise_kwargs = noise_kwargs
-        self._pos._get_readback = lambda : self.pos_d[self.position]
+        self._pos._get_readback = lambda : self.pos_d.get(self.position)
     
     def move(self, position, **kwargs):
         if isinstance(position, str):
