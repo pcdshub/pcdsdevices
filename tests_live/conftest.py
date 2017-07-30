@@ -1,6 +1,19 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+############
+# Standard #
+############
+import logging
+
+###############
+# Third Party #
+###############
+import epics
 import pytest
+
+##########
+# Module #
+##########
+
+logger = logging.getLogger(__name__)
 
 try:
     import epics
