@@ -79,13 +79,22 @@ class PIMPulnixDetector(PulnixDetector):
     stats2 : StatsPlugin, ":Stats2:"
     	Plugin component corresponding to stats2 plugin in AD    
     """
-    proc1 = Component(ProcessPlugin, ":Proc1:", read_attrs=['num_filter'])
     image1 = Component(ImagePlugin, ":IMAGE1:", read_attrs=['array_data'])
     image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
     stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid',
                                                             'mean_value'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
                                                             'mean_value'])
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.stats2.stage_sigs[self.stats2.enable] = 1
+        self.stats2.stage_sigs[self.stats2.port_name] = 'CAM'
+        self.stats2.stage_sigs[self.stats2.blocking_callbacks] = 'Yes'
+        self.stats2.stage_sigs[self.stats2.compute_statistics] = 'Yes'
+        self.stats2.stage_sigs[self.stats2.compute_centroid] = 'Yes'
+        self.stats2.stage_sigs[self.stats2.centroid_threshold] = 200
 
     def check_camera(self):
         """
