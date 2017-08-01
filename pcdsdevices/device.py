@@ -24,7 +24,7 @@ class Device(ophyd.Device, metaclass=LightInterface):
         db_info = kwargs.pop("db_info", None)
         if db_info:
             self.db = HappiData(db_info)
-            #Create mandatory attributes from Happi Information
+            #Create mandatory lightpath attributes from Happi Information
             #Placing None as default
             for key in LIGHTPATH_KWARGS:
                 setattr(self, key, kwargs.get(key, None))
@@ -38,7 +38,7 @@ class Device(ophyd.Device, metaclass=LightInterface):
     @property
     def removed(self):
         """
-        Report if the device is currently removed into the beam
+        Report if the device is currently removed from the beam
         """
         raise NotImplementedError
 
