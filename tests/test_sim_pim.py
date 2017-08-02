@@ -174,3 +174,12 @@ def test_PIM_noise():
     status = pim.move("IN")
     assert(status.success)
     assert(pim.sim_y.value != 5 and np.isclose(pim.sim_y.value, 5, atol=0.1))
+
+def test_PIMMotor_stage():
+    pim = PIMMotor("TEST", pos_in=5)
+    pim.move_out(wait=True)
+    pim.stage()
+    assert(pim.position == "IN")
+    pim.unstage()
+    time.sleep(0.2)
+    assert(pim.position == "OUT")

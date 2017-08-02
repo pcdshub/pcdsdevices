@@ -105,6 +105,11 @@ class OMMotor(Device, PositionerBase):
     name : str, optional
         The name of the motor
 
+    nominal_position : float, optional
+        The position believed to be aligned to the beam. This can either be the
+        previously aligned position, or the position given by the alignment
+        team
+
     parent : instance or None, optional
         The instance of the parent device, if applicable
 
@@ -140,8 +145,9 @@ class OMMotor(Device, PositionerBase):
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, settle_time=0, tolerance=0.01,
-                 use_limits=True, **kwargs):
-
+                 use_limits=True, nominal_position=None, **kwargs):
+        
+        self.nominal_position = nominal_position
         if read_attrs is None:
             read_attrs = ['user_readback']
         if configuration_attrs is None:
@@ -224,6 +230,7 @@ class OMMotor(Device, PositionerBase):
         RuntimeError
             If motion fails other than timing out
         """
+        logger.debug("Moving {} to {}".format(self.name, position))
         # Check if the move is valid
         self._check_value(position)
     
@@ -239,6 +246,8 @@ class OMMotor(Device, PositionerBase):
 
         # Wait for the status object to register the move as complete
         if wait:
+            logger.info("Waiting for {} to finish move ..."
+                        "".format(self.name))
             status_wait(status)
 
         return status
@@ -427,6 +436,18 @@ class OMMotor(Device, PositionerBase):
         limits : tuple
         """
         return (self.low_limit, self.high_limit)
+
+
+    def stage(self):
+        """
+        Stage the OMS motor to nominal position
+        """
+        if self.nominal_position is not None:
+            logger.debug("Moving {} to nominal aligned position"
+                         "".format(self.name))
+            self.move(self.nominal_position, wait=True)
+        super().stage()
+
 
     @limits.setter
     def limits(self, value):
