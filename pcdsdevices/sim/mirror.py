@@ -288,6 +288,9 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
         self.sim_z.put(z)
         self.sim_alpha._get_readback = lambda : self.pitch.user_readback.value
 
+    def move(self, position, wait=False, **kwargs):
+        return super().move(position, wait=wait, **kwargs)
+
     # Coupling motor isnt implemented as an example so override its properties
     @property
     def decoupled(self):
