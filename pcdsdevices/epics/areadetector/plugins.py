@@ -8,7 +8,8 @@ import logging
 
 import ophyd
 import numpy as np
-from ophyd.device import GenerateDatumInterface
+from ophyd.device import GenerateDatumInterface, Component as C
+from ophyd.signal import EpicsSignal
 from ophyd.utils import set_and_wait
 from .base import ADBase
 
@@ -20,6 +21,8 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
     Overridden PluginBase to make it work when the root device is not a CamBase
     class.
     """
+    enable = C(EpicsSignal, 'EnableCallbacks_RBV.RVAL', write_pv="EnableCallbacks", string=False)
+
     @property
     def source_plugin(self):
         # The PluginBase object that is the asyn source for this plugin.

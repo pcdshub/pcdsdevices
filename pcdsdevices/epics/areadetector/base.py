@@ -27,4 +27,12 @@ class ADComponent(base.ADComponent, Component):
 
 
 class ADBase(base.ADBase, Device):
-    pass
+    def stage(self, *args, **kwargs):
+        ret = Device.stage(self, *args, **kwargs)
+        try:
+            self.validate_asyn_ports()
+        except RuntimeError as err:
+            self.unstage(*args, **kwargs)
+            raise err
+        return ret 
+
