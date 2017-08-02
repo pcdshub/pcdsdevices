@@ -64,37 +64,29 @@ class PIMPulnixDetector(PulnixDetector):
 
     Components
     ----------
-    proc1 : ProcessPlugin, ":Proc1:"
-    	Plugin component corresponding to Proc1 plugin in AD
-
     image1 : ImagePlugin, ":IMAGE1:"
     	Plugin component corresponding to image1 plugin in AD
-
-    image2 : ImagePlugin, ":IMAGE2:"
-    	Plugin component corresponding to image2 plugin in AD
-
-    stats1 : StatsPlugin, ":Stats1:"
-    	Plugin component corresponding to stats1 plugin in AD
 
     stats2 : StatsPlugin, ":Stats2:"
     	Plugin component corresponding to stats2 plugin in AD    
     """
     image1 = Component(ImagePlugin, ":IMAGE1:", read_attrs=['array_data'])
-    image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
-    stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid',
-                                                            'mean_value'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
                                                             'mean_value'])
-
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.stats2.stage_sigs[self.stats2.enable] = 1
-        self.stats2.stage_sigs[self.stats2.port_name] = 'CAM'
+
+        self.image1.stage_sigs[self.image1.nd_array_port] = 'CAM'
+        self.image1.stage_sigs[self.image1.blocking_callbacks] = 'Yes'
+        self.image1.stage_sigs[self.image1.enable] = 1
+
+        self.stats2.stage_sigs[self.stats2.nd_array_port] = 'CAM'
         self.stats2.stage_sigs[self.stats2.blocking_callbacks] = 'Yes'
         self.stats2.stage_sigs[self.stats2.compute_statistics] = 'Yes'
         self.stats2.stage_sigs[self.stats2.compute_centroid] = 'Yes'
         self.stats2.stage_sigs[self.stats2.centroid_threshold] = 200
+        self.stats2.stage_sigs[self.stats2.min_callback_time] = 0.0
+        self.stats2.stage_sigs[self.stats2.enable] = 1
 
     def check_camera(self):
         """
@@ -112,14 +104,14 @@ class PIMPulnixDetector(PulnixDetector):
     @raise_if_disconnected
     def image(self):
         """
-        Returns the image from image2
+        Returns the image from image1
 
         Returns
         -------
         image : np.ndarray
         	Image array
         """
-        return self.image2.image
+        return self.image1.image
     
     @property
     @raise_if_disconnected

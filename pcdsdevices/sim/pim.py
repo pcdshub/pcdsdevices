@@ -23,11 +23,7 @@ from ..epics import pim
 
 
 class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
-    proc1 = Component(FakeSignal)
     image1 = Component(ImagePlugin, ":IMAGE1:", read_attrs=['array_data'])
-    image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
-    stats1 = Component(StatsPlugin, ":Stats1:", read_attrs=['centroid',
-                                                            'mean_value'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
                                                             'mean_value'])
 
@@ -142,7 +138,7 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
 
     @size.setter
     def size(self, val):
-        self.image2._image = lambda : np.zeros(val)
+        self.image1._image = lambda : np.zeros(val)
         self.cam.size.size_x.put(val[0])
         self.cam.size.size_y.put(val[1])
 

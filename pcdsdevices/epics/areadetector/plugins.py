@@ -9,7 +9,7 @@ import logging
 import ophyd
 import numpy as np
 from ophyd.device import GenerateDatumInterface
-
+from ophyd.utils import set_and_wait
 from .base import ADBase
 
 logger = logging.getLogger(__name__)
@@ -63,7 +63,8 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
 
     def stage(self):
         # Ensure the plugin is enabled. We do not disable it on unstage
-        set_and_wait(self.enable, 1)
+        if self.enable not in self.stage_sigs:
+            set_and_wait(self.enable, 1)
         ADBase.stage(self)
 
     @property
