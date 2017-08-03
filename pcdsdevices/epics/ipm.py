@@ -17,7 +17,7 @@ class IPM(IocDevice):
     diode and one for the target. This creates a scalar readback that is also
     available over EPICS.
     """
-    diode = Component(InOutStates, " :DIODE")
+    diode = Component(InOutStates,   ":DIODE")
     target = Component(TargetStates, ":TARGET")
     data = FormattedComponent(EpicsSignalRO, "{self._data}")
 
