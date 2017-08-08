@@ -164,7 +164,8 @@ class PIMMotor(pim.PIMMotor):
 
     def __init__(self, prefix, pos_in=0, pos_diode=0.5, pos_out=1, 
                  settle_time=0, velocity=None, noise=False, noise_func=None,
-                 noise_type="uni", noise_args=(), noise_kwargs={}, **kwargs):
+                 noise_type="uni", noise_args=(), noise_kwargs={}, timeout=None,
+                 **kwargs):
         super().__init__(prefix, **kwargs)
         if pos_diode < pos_in:
             pos_diode = pos_in + 0.5
@@ -172,6 +173,7 @@ class PIMMotor(pim.PIMMotor):
             pos_out = pos_diode + 0.5
         self.pos_d = {"DIODE":pos_diode, "OUT":pos_out, 
                       "IN":pos_in, "YAG":pos_in}
+        self.timeout = timeout
         self.settle_time = settle_time
         self.velocity = velocity
         self.noise = noise
@@ -189,7 +191,7 @@ class PIMMotor(pim.PIMMotor):
                     pos = "YAG"
                 else:
                     pos = position.upper()
-                status = self.states.set(position.upper())
+                status = self.states.set(position.upper(), timeout=self.timeout)
                 time.sleep(0.1)
             # Match the inputted state in y
             self._pos.put(self.pos_d[position.upper()])
