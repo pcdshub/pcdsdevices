@@ -1,2 +1,3 @@
 git+https://github.com/slaclab/happi.git#egg=happi
+git+https://github.com/slaclab/lightpath.git#egg=lightpath
 ophyd 

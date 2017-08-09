@@ -150,19 +150,23 @@ class DeviceStatesRecord(State):
     States that come from the standardized lcls device states record
     """
     state = Component(EpicsSignal, "", write_pv=":GO", string=True,
-                      auto_monitor=True, limits=False)
+                      auto_monitor=True, limits=False, put_complete=True)
+    SUB_RBK_CHG  = 'state_readback_changed'
+    SUB_SET_CHG  = 'state_setpoint_changed'
+    _default_sub = SUB_RBK_CHG
 
     def __init__(self, prefix, *, read_attrs=None, name=None, **kwargs):
+        #Initialize device
         if read_attrs is None:
             read_attrs = ["state"]
         super().__init__(prefix, read_attrs=read_attrs, name=name, **kwargs)
-        self._subbed_to_state = False
-
-    def subscribe(self, *args, **kwargs):
-        if not self._subbed_to_state:
-            self.state.subscribe(self._update, event_type=self.state.SUB_VALUE)
-            self._subbed_to_state = True
-        super().subscribe(*args, **kwargs)
+        #Add subscriptions
+        self.state.subscribe(self._setpoint_changed,
+                             event_type=self.state.SUB_SETPOINT,
+                             run=False)
+        self.state.subscribe(self._read_changed,
+                             event_type=self.state.SUB_VALUE,
+                             run=False)
 
     @property
     def value(self):
@@ -171,6 +175,18 @@ class DeviceStatesRecord(State):
     @value.setter
     def value(self, value):
         self.state.put(value)
+
+    def _setpoint_changed(self, **kwargs):
+        #Avoid duplicate keywords
+        kwargs.pop('sub_type', None)
+        #Run subscriptions
+        self._run_subs(sub_type=self.SUB_SET_CHG, **kwargs)
+
+    def _read_changed(self, **kwargs):
+        #Avoid duplicate keywords
+        kwargs.pop('sub_type', None)
+        #Run subscriptions
+        self._run_subs(sub_type=self.SUB_RBK_CHG, **kwargs)
 
 
 class DeviceStatesPart(Device):

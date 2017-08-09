@@ -6,28 +6,55 @@ PCDS Ophyd Device overrides.
 from collections import OrderedDict
 
 import ophyd
+from lightpath import LightInterface
 
 from .component import Component
-
 VALID_OPHYD_KWARGS = ("name", "parent", "prefix", "read_attrs",
                       "configuration_attrs")
 
+LIGHTPATH_KWARGS = ('beamline', 'z')
 
-class Device(ophyd.Device):
+class Device(ophyd.Device, metaclass=LightInterface):
     """
     Subclass of ophyd.Device that soaks up and stores information from the
     happi device database.
     """
+    transmission = 0.0
     def __init__(self, prefix, **kwargs):
         db_info = kwargs.pop("db_info", None)
         if db_info:
             self.db = HappiData(db_info)
+            #Create mandatory lightpath attributes from Happi Information
+            #Placing None as default
+            for key in LIGHTPATH_KWARGS:
+                setattr(self, key, kwargs.get(key, None))
             for key in list(kwargs.keys()):
                 # Remove keys in kwargs if they were from the happi import but
                 # they cannot be passed to ophyd.Device
                 if key in db_info and key not in VALID_OPHYD_KWARGS:
                     kwargs.pop(key)
         super().__init__(prefix, **kwargs)
+
+    @property
+    def removed(self):
+        """
+        Report if the device is currently removed from the beam
+        """
+        raise NotImplementedError
+
+    @property
+    def inserted(self):
+        """
+        Report if the device is currently inserted into the beam
+        """
+        raise NotImplementedError
+
+
+    def remove(self, *args, **kwargs):
+        """
+        Remove the device from the beamline
+        """
+        raise NotImplementedError
 
 
 class HappiData:
