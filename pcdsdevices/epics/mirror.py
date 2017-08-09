@@ -750,7 +750,8 @@ class OffsetMirror(Device):
         position
     """    
     # Pitch Motor
-    pitch = FormattedComponent(OMMotor, "{self._prefix}")
+    pitch = FormattedComponent(OMMotor, "{self._prefix}",
+                               timeout="{self._timeout}")
     # Piezo Motor
     piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")    
     # Gantry motors
@@ -763,7 +764,7 @@ class OffsetMirror(Device):
     # Currently structured to pass the ioc argument down to the pitch motor
     def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None, 
                  parent=None, configuration_attrs=None, settle_time=0, 
-                 tolerance=0.01, **kwargs):
+                 tolerance=0.01, timeout=None, **kwargs):
 
         self._prefix = prefix
         self._prefix_xy = prefix_xy
@@ -781,6 +782,7 @@ class OffsetMirror(Device):
                          name=name, parent=parent, **kwargs)
         self.settle_time = settle_time
         self.tolerance = tolerance
+        self._timeout=timeout
 
     def move(self, position, wait=True, **kwargs):
         """
