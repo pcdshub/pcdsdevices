@@ -1,4 +1,4 @@
- #!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Offset Mirror Classes
@@ -686,7 +686,7 @@ class Piezo(Device, PositionerBase):
         return rep
     
 
-class OffsetMirror(Device):
+class OffsetMirror(Device, PositionerBase):
     """
     X-Ray offset mirror class for each individual mirror system used in the FEE
     and XRT. Controls for the pitch, and primary gantry x and y motors are
@@ -750,13 +750,16 @@ class OffsetMirror(Device):
         position
     """    
     # Pitch Motor
-    pitch = FormattedComponent(OMMotor, "{self._prefix}",
-                               timeout="{self._timeout}")
+    pitch = FormattedComponent(OMMotor, "{self.prefix}",
+                               timeout="{self.timeout}")
     # Piezo Motor
-    piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")    
+    piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}",
+                               timeout="{self.timeout}")
     # Gantry motors
-    gan_x_p = FormattedComponent(OMMotor, "{self._prefix_xy}:X:P")
-    gan_y_p = FormattedComponent(OMMotor, "{self._prefix_xy}:Y:P")
+    gan_x_p = FormattedComponent(OMMotor, "{self._prefix_xy}:X:P",
+                                 timeout="{self.timeout}")
+    gan_y_p = FormattedComponent(OMMotor, "{self._prefix_xy}:Y:P",
+                                 timeout="{self.timeout}")
 
     # This is not implemented in the PLC. Included to appease bluesky
     motor_stop = Component(Signal, value=0)
@@ -766,7 +769,6 @@ class OffsetMirror(Device):
                  parent=None, configuration_attrs=None, settle_time=0, 
                  tolerance=0.01, timeout=None, **kwargs):
 
-        self._prefix = prefix
         self._prefix_xy = prefix_xy
         self._area = prefix.split(":")[1]
         self._mirror = prefix.split(":")[2]
@@ -779,10 +781,11 @@ class OffsetMirror(Device):
 
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
-                         name=name, parent=parent, **kwargs)
+                         name=name, parent=parent, timeout=timeout,
+                         settle_time=settle_time,
+                         **kwargs)
         self.settle_time = settle_time
         self.tolerance = tolerance
-        self._timeout=timeout
 
     def move(self, position, wait=True, **kwargs):
         """
@@ -824,31 +827,8 @@ class OffsetMirror(Device):
         """        
         return self.pitch.move(position, wait=wait, **kwargs)
 
-    @raise_if_disconnected
-    def mv(self, position, wait=True, **kwargs):
-        """
-        Move the pitch motor to the inputted position. Alias for the move() 
-        method.
+    mv = move
 
-        Returns
-        -------
-        status : MoveStatus
-            Status object of the move
-        """
-        return self.move(position, wait=wait, **kwargs)
-
-    def set(self, position, wait=True, **kwargs):
-        """
-        Set the pitch motoro to the inputted position. Alias for the move() 
-        method.
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object of the move        
-        """
-        return self.move(position, wait=wait, **kwargs)
-    
     @property
     @raise_if_disconnected
     def position(self):
