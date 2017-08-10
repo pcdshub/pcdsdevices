@@ -5,8 +5,8 @@ Offset Mirror Classes
 
 This script contains all the classes relating to the offset mirrors used in the
 FEE and XRT. Each offset mirror contains a stepper motor and piezo motor to
-control the pitch, two pairs of motors to control the gantry and then a coupling
-motor control the coupling between the gantry motor pairs.
+control the pitch, two pairs of motors to control the gantry and then a
+coupling motor control the coupling between the gantry motor pairs.
 
 Classes implemented here are as follows:
 
@@ -37,7 +37,7 @@ import logging
 import numpy as np
 from ophyd import PositionerBase
 from ophyd.utils import (DisconnectedError, LimitError)
-from ophyd.utils.epics_pvs import (raise_if_disconnected, AlarmSeverity)
+from ophyd.utils.epics_pvs import raise_if_disconnected
 from ophyd.status import wait as status_wait
 from ophyd.signal import Signal
 
@@ -90,7 +90,7 @@ class OMMotor(Device, PositionerBase):
         appease the Bluesky interface
 
     Parameters
-    ---------- 
+    ----------
     prefix : str
         The EPICS base pv to use
 
@@ -146,7 +146,7 @@ class OMMotor(Device, PositionerBase):
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, settle_time=0, tolerance=0.01,
                  use_limits=True, nominal_position=None, **kwargs):
-        
+
         self.nominal_position = nominal_position
         if read_attrs is None:
             read_attrs = ['user_readback']
@@ -154,9 +154,9 @@ class OMMotor(Device, PositionerBase):
             configuration_attrs = ['velocity', 'interlock', 'enabled']
 
         super().__init__(prefix, read_attrs=read_attrs,
-                         configuration_attrs=configuration_attrs, name=name, 
+                         configuration_attrs=configuration_attrs, name=name,
                          parent=parent, settle_time=settle_time, **kwargs)
-        
+
         # Make the default alias for the user_readback the name of the
         # motor itself.
         self.user_readback.name = self.name
@@ -233,7 +233,7 @@ class OMMotor(Device, PositionerBase):
         logger.debug("Moving {} to {}".format(self.name, position))
         # Check if the move is valid
         self._check_value(position)
-    
+
         # Begin the move process
         self._started_moving = False
         # Begin the move process
@@ -276,17 +276,17 @@ class OMMotor(Device, PositionerBase):
         if not self.use_limits:
             return
 
-        # If the limits are the same value or lower limit is > upper limit, pass
+        # Make sure limits are logical
         if self.low_limit >= self.high_limit:
             return
 
         # Check if it is within the soft limits
         if not (self.low_limit <= position <= self.high_limit):
-            err_str = "Requested value {0} outside of range: [{1}, {2}]".format(
-                position, self.low_limit, self.high_limit)
-            logger.warn(err_str)
+            err_str = "Requested value {0} outside of range: [{1}, {2}]"
+            logger.warn(err_str.format(position, self.low_limit,
+                                       self.high_limit))
             raise LimitError(err_str)
-        
+
     @raise_if_disconnected
     def mv(self, position, wait=True, **kwargs):
         """
@@ -344,7 +344,6 @@ class OMMotor(Device, PositionerBase):
         """
         Callback from EPICS, indicating that movement status has changed.
         """
-        
         was_moving = self._moving
         self._moving = (value != 1)
         started = False
@@ -357,22 +356,8 @@ class OMMotor(Device, PositionerBase):
 
         if was_moving and not self._moving:
             success = True
-            # Check if we are moving towards the low limit switch
-            #if self.low_limit_switch.get() == 1:
-            #    success = False
-            #if self.high_limit_switch.get() == 1:
-            #    success = False
-
-            # Some issues with severity, ctrl timeouts, etc.
-            #severity = self.user_readback.alarm_severity
-
-            #if severity != AlarmSeverity.NO_ALARM:
-            #    status = self.user_readback.alarm_status
-            #    logger.error('Motion failed: %s is in an alarm state '
-            #                 'status=%s severity=%s',
-            #                 self.name, status, severity)
-            #    success = False
-            self._done_moving(success=success, timestamp=timestamp, value=value)
+            self._done_moving(success=success, timestamp=timestamp,
+                              value=value)
 
     @property
     def report(self):
@@ -388,14 +373,14 @@ class OMMotor(Device, PositionerBase):
         except DisconnectedError:
             rep = {'position': 'disconnected'}
         rep['pv'] = self.user_readback.pvname
-        return rep    
+        return rep
 
     @property
     def high_limit(self):
         """
         Returns the upper limit fot the user setpoint.
 
-        Returns 
+        Returns
         -------
         high_limit : float
         """
@@ -413,7 +398,7 @@ class OMMotor(Device, PositionerBase):
         """
         Returns the lower limit fot the user setpoint.
 
-        Returns 
+        Returns
         -------
         low_limit : float
         """
@@ -431,12 +416,11 @@ class OMMotor(Device, PositionerBase):
         """
         Returns the limits of the motor.
 
-        Returns 
+        Returns
         -------
         limits : tuple
         """
         return (self.low_limit, self.high_limit)
-
 
     def stage(self):
         """
@@ -447,7 +431,6 @@ class OMMotor(Device, PositionerBase):
                          "".format(self.name))
             self.move(self.nominal_position, wait=True)
         super().stage()
-
 
     @limits.setter
     def limits(self, value):
@@ -472,7 +455,7 @@ class Piezo(Device, PositionerBase):
 
     user_setpoint : EpicsSignal, ":VSET"
         Setpoint signal for motor position
-    
+
     high_limit : EpicsSignalRO, ":VMAX"
         High limit of piezo voltage
 
@@ -487,7 +470,7 @@ class Piezo(Device, PositionerBase):
         appease the Bluesky interface
 
     Parameters
-    ---------- 
+    ----------
     prefix : str
         The EPICS base pv to use
 
@@ -503,8 +486,8 @@ class Piezo(Device, PositionerBase):
         The name of the piezo
 
     parent : instance or None, optional
-        The instance of the parent device, if applicable    
-    """    
+        The instance of the parent device, if applicable
+    """
     # position
     user_readback = Component(EpicsSignalRO, ':VRBV')
     user_setpoint = Component(EpicsSignal, ':VSET', limits=True)
@@ -518,7 +501,7 @@ class Piezo(Device, PositionerBase):
 
     # Stop
     motor_stop = Component(Signal, value=0)
-    
+
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, **kwargs):
         if read_attrs is None:
@@ -539,7 +522,7 @@ class Piezo(Device, PositionerBase):
 
         Returns
         -------
-        precision : int        
+        precision : int
         """
         return self.user_readback.precision
 
@@ -625,7 +608,7 @@ class Piezo(Device, PositionerBase):
     def position(self):
         """
         The current position of the motor in its engineering units.
-        
+
         Returns
         -------
         position : float
@@ -636,7 +619,7 @@ class Piezo(Device, PositionerBase):
     def set_current_position(self, pos):
         """
         Configure the motor user position to the given value.
-        
+
         Parameters
         ----------
         pos
@@ -676,7 +659,7 @@ class Piezo(Device, PositionerBase):
         Returns
         -------
         rep : dict
-        """        
+        """
         try:
             rep = super().report
         except DisconnectedError:
@@ -684,7 +667,7 @@ class Piezo(Device, PositionerBase):
             rep = {'position': 'disconnected'}
         rep['pv'] = self.user_readback.pvname
         return rep
-    
+
 
 class OffsetMirror(Device, PositionerBase):
     """
@@ -720,7 +703,7 @@ class OffsetMirror(Device, PositionerBase):
         appease the Bluesky interface
 
     Parameters
-    ---------- 
+    ----------
     prefix : str
         The EPICS base PV of the pitch motor
 
@@ -746,9 +729,9 @@ class OffsetMirror(Device, PositionerBase):
         completion
 
     tolerance : float, optional
-        Tolerance used to judge if the pitch motor has reached its final 
+        Tolerance used to judge if the pitch motor has reached its final
         position
-    """    
+    """
     # Pitch Motor
     pitch = FormattedComponent(OMMotor, "{self.prefix}",
                                timeout="{self.timeout}")
@@ -763,16 +746,16 @@ class OffsetMirror(Device, PositionerBase):
 
     # This is not implemented in the PLC. Included to appease bluesky
     motor_stop = Component(Signal, value=0)
-    
+
     # Currently structured to pass the ioc argument down to the pitch motor
-    def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None, 
-                 parent=None, configuration_attrs=None, settle_time=0, 
+    def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None,
+                 parent=None, configuration_attrs=None, settle_time=0,
                  tolerance=0.01, timeout=None, **kwargs):
 
         self._prefix_xy = prefix_xy
         self._area = prefix.split(":")[1]
         self._mirror = prefix.split(":")[2]
-        
+
         if read_attrs is None:
             read_attrs = ['pitch', 'gan_x_p', 'gan_y_p']
 
@@ -824,7 +807,7 @@ class OffsetMirror(Device, PositionerBase):
 
         RuntimeError
             If motion fails other than timing out
-        """        
+        """
         return self.pitch.move(position, wait=wait, **kwargs)
 
     mv = move
@@ -840,7 +823,7 @@ class OffsetMirror(Device, PositionerBase):
         -------
         position : float
         """
-        return self.pitch.user_readback.value        
+        return self.pitch.user_readback.value
 
     @property
     @raise_if_disconnected
@@ -850,7 +833,7 @@ class OffsetMirror(Device, PositionerBase):
 
         Returns
         -------
-        alpha : float        
+        alpha : float
         """
         return self.position
 
@@ -862,7 +845,7 @@ class OffsetMirror(Device, PositionerBase):
         Returns
         -------
         status : MoveStatus
-            Status object of the move        
+            Status object of the move
         """
         return self.move(position, wait=wait, **kwargs)
 
@@ -870,7 +853,7 @@ class OffsetMirror(Device, PositionerBase):
     @raise_if_disconnected
     def x(self):
         """
-        Primary gantry X readback position. Alias for the gan_x_p.position 
+        Primary gantry X readback position. Alias for the gan_x_p.position
         property.
 
         Returns
@@ -882,13 +865,13 @@ class OffsetMirror(Device, PositionerBase):
     @x.setter
     def x(self, position, **kwargs):
         """
-        Setter for the primary gantry X motor. Alias for the gan_x_p.move() 
+        Setter for the primary gantry X motor. Alias for the gan_x_p.move()
         method.
 
         Returns
         -------
         status : MoveStatus
-            Status object of the move        
+            Status object of the move
         """
         return self.gan_x_p.move(position, **kwargs)
 
@@ -896,7 +879,7 @@ class OffsetMirror(Device, PositionerBase):
     @raise_if_disconnected
     def y(self):
         """
-        Primary gantry Y readback position. Alias for the gan_y_p.position 
+        Primary gantry Y readback position. Alias for the gan_y_p.position
         property.
 
         Returns
@@ -908,13 +891,13 @@ class OffsetMirror(Device, PositionerBase):
     @y.setter
     def y(self, position, **kwargs):
         """
-        Setter for the primary gantry Y motor. Alias for the gan_y_p.move() 
+        Setter for the primary gantry Y motor. Alias for the gan_y_p.move()
         method.
 
         Returns
         -------
         status : MoveStatus
-            Status object of the move        
+            Status object of the move
         """
         return self.gan_y_p.move(position, **kwargs)
 
@@ -959,7 +942,7 @@ class OffsetMirror(Device, PositionerBase):
         """
         Returns the upper limit fot the pitch motor.
 
-        Returns 
+        Returns
         -------
         high_limit : float
         """
@@ -970,7 +953,7 @@ class OffsetMirror(Device, PositionerBase):
         """
         Sets the high limit for pitch motor.
 
-        Returns 
+        Returns
         -------
         status : StatusObject
         """
@@ -981,7 +964,7 @@ class OffsetMirror(Device, PositionerBase):
         """
         Returns the lower limit fot the pitch motor.
 
-        Returns 
+        Returns
         -------
         low_limit : float
         """
@@ -992,7 +975,7 @@ class OffsetMirror(Device, PositionerBase):
         """
         Sets the high limit for pitch motor.
 
-        Returns 
+        Returns
         -------
         status : StatusObject
         """
