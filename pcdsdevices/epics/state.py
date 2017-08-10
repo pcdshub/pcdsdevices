@@ -155,18 +155,18 @@ class DeviceStatesRecord(State, PositionerBase):
     """
     state = Component(EpicsSignal, "", write_pv=":GO", string=True,
                       auto_monitor=True, limits=False, put_complete=True)
-    SUB_RBK_CHG  = 'state_readback_changed'
-    SUB_SET_CHG  = 'state_setpoint_changed'
+    SUB_RBK_CHG = 'state_readback_changed'
+    SUB_SET_CHG = 'state_setpoint_changed'
     _default_sub = SUB_RBK_CHG
 
     def __init__(self, prefix, *, read_attrs=None, name=None, timeout=None,
                  **kwargs):
-        #Initialize device
+        # Initialize device
         if read_attrs is None:
             read_attrs = ["state"]
         super().__init__(prefix, read_attrs=read_attrs, name=name,
                          timeout=timeout, **kwargs)
-        #Add subscriptions
+        # Add subscriptions
         self.state.subscribe(self._setpoint_changed,
                              event_type=self.state.SUB_SETPOINT,
                              run=False)
@@ -202,15 +202,15 @@ class DeviceStatesRecord(State, PositionerBase):
         self.state.put(value)
 
     def _setpoint_changed(self, **kwargs):
-        #Avoid duplicate keywords
+        # Avoid duplicate keywords
         kwargs.pop('sub_type', None)
-        #Run subscriptions
+        # Run subscriptions
         self._run_subs(sub_type=self.SUB_SET_CHG, **kwargs)
 
     def _read_changed(self, **kwargs):
-        #Avoid duplicate keywords
+        # Avoid duplicate keywords
         kwargs.pop('sub_type', None)
-        #Run subscriptions
+        # Run subscriptions
         self._run_subs(sub_type=self.SUB_RBK_CHG, **kwargs)
 
         # Handle move status
@@ -229,7 +229,7 @@ class DeviceStatesPart(Device):
     """
     Device to manipulate a specific set position.
     """
-    at_state = Component(EpicsSignalRO, "", string=True) 
+    at_state = Component(EpicsSignalRO, "", string=True)
     setpos = Component(EpicsSignal, "_SET")
     delta = Component(EpicsSignal, "_DELTA")
 
