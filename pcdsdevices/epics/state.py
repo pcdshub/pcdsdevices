@@ -7,6 +7,10 @@ devices.
 import logging
 from threading import RLock
 from keyword import iskeyword
+import time
+
+from ophyd.positioner import PositionerBase
+from ophyd.status import wait as status_wait
 
 from .signal import EpicsSignal, EpicsSignalRO
 from .component import Component
@@ -145,7 +149,7 @@ def pvstate_class(classname, states, doc="", setter=None, has_ioc=False,
     return type(classname, bases, components)
 
 
-class DeviceStatesRecord(State):
+class DeviceStatesRecord(State, PositionerBase):
     """
     States that come from the standardized lcls device states record
     """
@@ -155,11 +159,13 @@ class DeviceStatesRecord(State):
     SUB_SET_CHG  = 'state_setpoint_changed'
     _default_sub = SUB_RBK_CHG
 
-    def __init__(self, prefix, *, read_attrs=None, name=None, **kwargs):
+    def __init__(self, prefix, *, read_attrs=None, name=None, timeout=None,
+                 **kwargs):
         #Initialize device
         if read_attrs is None:
             read_attrs = ["state"]
-        super().__init__(prefix, read_attrs=read_attrs, name=name, **kwargs)
+        super().__init__(prefix, read_attrs=read_attrs, name=name,
+                         timeout=timeout, **kwargs)
         #Add subscriptions
         self.state.subscribe(self._setpoint_changed,
                              event_type=self.state.SUB_SETPOINT,
@@ -167,6 +173,25 @@ class DeviceStatesRecord(State):
         self.state.subscribe(self._read_changed,
                              event_type=self.state.SUB_VALUE,
                              run=False)
+
+    def move(self, position, moved_cb=None, timeout=None, wait=False,
+             **kwargs):
+        status = super().move(position, moved_cb=moved_cb, timeout=timeout,
+                              **kwargs)
+        self._move_requested = True
+        self.state.put(position, wait=False)
+
+        if wait:
+            status_wait(status)
+
+        return status
+
+    def check_value(self, value):
+        enums = self.state.enum_strs()
+        if value in enums or value in range(len(enums)):
+            return
+        else:
+            raise StateError("Value %s invalid. Enums are %s", value, enums)
 
     @property
     def value(self):
@@ -187,6 +212,17 @@ class DeviceStatesRecord(State):
         kwargs.pop('sub_type', None)
         #Run subscriptions
         self._run_subs(sub_type=self.SUB_RBK_CHG, **kwargs)
+
+        # Handle move status
+        if self._move_requested:
+            readback = self.value
+            if readback != "Unknown":
+                self._move_requested = False
+                setpoint = self.state.get_setpoint()
+                success = setpoint == readback
+                timestamp = kwargs.pop("timestamp", time.time())
+                self._done_moving(success=success, timestamp=timestamp,
+                                  value=readback)
 
 
 class DeviceStatesPart(Device):
@@ -222,3 +258,7 @@ InOutCCMStates = statesrecord_class("InOutCCMStates", ":IN", ":OUT", ":CCM",
                                     doc=inoutccmdoc)
 InOutCCMStatesIoc = statesrecord_class("InOutCCMStatesIoc", ":IN", ":OUT",
                                        ":CCM", doc=inoutccmdoc, has_ioc=True)
+
+
+class StateError(Exception):
+    pass
