@@ -747,7 +747,6 @@ class OffsetMirror(Device, PositionerBase):
     # This is not implemented in the PLC. Included to appease bluesky
     motor_stop = Component(Signal, value=0)
 
-    # Currently structured to pass the ioc argument down to the pitch motor
     def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None,
                  parent=None, configuration_attrs=None, settle_time=0,
                  tolerance=0.01, timeout=None, **kwargs):
@@ -823,7 +822,7 @@ class OffsetMirror(Device, PositionerBase):
         -------
         position : float
         """
-        return self.pitch.user_readback.value
+        return self.pitch.position
 
     @property
     @raise_if_disconnected
