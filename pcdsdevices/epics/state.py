@@ -194,6 +194,10 @@ class DeviceStatesRecord(State, PositionerBase):
             raise StateError("Value %s invalid. Enums are %s", value, enums)
 
     @property
+    def position(self):
+        return self.value
+
+    @property
     def value(self):
         return self.state.get(use_monitor=True)
 
