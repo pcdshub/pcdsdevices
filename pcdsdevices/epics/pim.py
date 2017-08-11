@@ -222,8 +222,7 @@ class PIMMotor(Device, PositionerBase):
     name : str, optional
         The name of the offset mirror
     """
-    states = FormattedComponent(PIMStates, "{self.prefix}",
-                                timeout="{self.timeout}")
+    states = FormattedComponent(PIMStates, "{self.prefix}")
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, timeout=None, **kwargs):
@@ -232,6 +231,7 @@ class PIMMotor(Device, PositionerBase):
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs, name=name,
                          parent=parent, timeout=timeout, **kwargs)
+        self.states.timeout = timeout
 
     def move_in(self, wait=True, **kwargs):
         """
