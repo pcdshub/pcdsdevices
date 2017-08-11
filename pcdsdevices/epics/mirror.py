@@ -733,16 +733,14 @@ class OffsetMirror(Device, PositionerBase):
         position
     """
     # Pitch Motor
-    pitch = FormattedComponent(OMMotor, "{self.prefix}",
-                               timeout="{self.timeout}")
+    pitch = FormattedComponent(OMMotor, "{self.prefix}")
+
     # Piezo Motor
-    piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}",
-                               timeout="{self.timeout}")
+    piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")
+
     # Gantry motors
-    gan_x_p = FormattedComponent(OMMotor, "{self._prefix_xy}:X:P",
-                                 timeout="{self.timeout}")
-    gan_y_p = FormattedComponent(OMMotor, "{self._prefix_xy}:Y:P",
-                                 timeout="{self.timeout}")
+    gan_x_p = FormattedComponent(OMMotor, "{self._prefix_xy}:X:P")
+    gan_y_p = FormattedComponent(OMMotor, "{self._prefix_xy}:Y:P")
 
     # This is not implemented in the PLC. Included to appease bluesky
     motor_stop = Component(Signal, value=0)
@@ -768,6 +766,10 @@ class OffsetMirror(Device, PositionerBase):
                          **kwargs)
         self.settle_time = settle_time
         self.tolerance = tolerance
+        self.pitch.timeout = self.timeout
+        self.piezo.timeout = self.timeout
+        self.gan_x_p.timeout = self.timeout
+        self.gan_y_p.timeout = self.timeout
 
     def move(self, position, wait=True, **kwargs):
         """

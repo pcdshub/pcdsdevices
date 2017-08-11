@@ -111,10 +111,10 @@ class OMMotor(mirror.OMMotor):
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None, 
                  name=None, parent=None, velocity=0, noise=0, settle_time=0, 
                  noise_func=None, noise_type="uni", noise_args=(), 
-                 noise_kwargs={}, **kwargs):
+                 noise_kwargs={}, timeout=None, **kwargs):
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs, name=name, 
-                         parent=parent, **kwargs)
+                         parent=parent, timeout=timeout, **kwargs)
         self.velocity.put(velocity)
         self.noise = noise
         self.settle_time = settle_time
@@ -240,12 +240,13 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
                  noise_y=0, noise_z=0, noise_alpha=0, settle_time_x=0, 
                  settle_time_y=0, settle_time_z=0, settle_time_alpha=0, 
                  noise_func=None, noise_type="uni", noise_args=(), 
-                 noise_kwargs={}, **kwargs):
+                 noise_kwargs={}, timeout=None, **kwargs):
         if len(prefix.split(":")) < 3:
             prefix = "MIRR:TST:{0}".format(prefix)
         super().__init__(prefix, prefix_xy, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
-                         name=name, parent=parent, **kwargs)
+                         name=name, parent=parent, timeout=timeout,
+                         **kwargs)
         self.log_pref = "{0} (OffsetMirror) - ".format(self.name)
 
         # Simulation Attributes
