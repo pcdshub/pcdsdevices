@@ -5,26 +5,26 @@ Profile Intensity Monitor Classes
 
 This script contains all the classes relating to the profile intensity monitor
 classes at the user level. A PIM will usually have at least a motor to control
-yag position and a camera to view the yag. Additional motors to adjust focus and
-zoom can also be included as in the case of the PIMs in the FEE.
+yag position and a camera to view the yag. Additional motors to adjust focus
+and zoom can also be included as in the case of the PIMs in the FEE.
 
 Classes Implemented here are as follows:
 
 PIMPulnixDetector
-	Pulnix detector with only the plugins used by the PIMs.
+    Pulnix detector with only the plugins used by the PIMs.
 
 PIMMotor
-	Profile intensity monitor motor that moves the yag and diode into and out of
-	the beam.
+    Profile intensity monitor motor that moves the yag and diode into and out
+    of the beam.
 
 PIM
-	High level profile intensity monitor class that inherits from PIMMotor and
-	has a PIMPulnixDetector as a component.
+    High level profile intensity monitor class that inherits from PIMMotor and
+    has a PIMPulnixDetector as a component.
 
 PIMFee
-	High level profile inensity monitor class that is used in the fee. It has
-	three IMS motors to control zoom, focus and the position of the yag in
-	addition to a FeeOpalDetector as the detector.
+    High level profile inensity monitor class that is used in the fee. It has
+    three IMS motors to control zoom, focus and the position of the yag in
+    addition to a FeeOpalDetector as the detector.
 """
 
 ############
@@ -44,13 +44,12 @@ from ophyd.utils.epics_pvs import raise_if_disconnected
 ##########
 from .device import Device
 from .imsmotor import ImsMotor
-from .iocdevice import IocDevice
 from .state import statesrecord_class
 from ophyd.status import wait as status_wait
 from .signal import (EpicsSignal, EpicsSignalRO)
 from .component import (Component, FormattedComponent)
 from .areadetector.detectors import (PulnixDetector, FeeOpalDetector)
-from .areadetector.plugins import (ImagePlugin, StatsPlugin, ProcessPlugin)
+from .areadetector.plugins import (ImagePlugin, StatsPlugin)
 from ..utils.pyutils import isnumber
 
 logger = logging.getLogger(__name__)
@@ -66,14 +65,15 @@ class PIMPulnixDetector(PulnixDetector):
     Components
     ----------
     image1 : ImagePlugin, ":IMAGE1:"
-    	Plugin component corresponding to image1 plugin in AD
+        Plugin component corresponding to image1 plugin in AD
 
     stats2 : StatsPlugin, ":Stats2:"
-    	Plugin component corresponding to stats2 plugin in AD    
+        Plugin component corresponding to stats2 plugin in AD
     """
     image1 = Component(ImagePlugin, ":IMAGE1:", read_attrs=['array_data'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
                                                             'mean_value'])
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.image1.stage_sigs[self.image1.nd_array_port] = 'CAM'
@@ -95,7 +95,7 @@ class PIMPulnixDetector(PulnixDetector):
         Raises
         ------
         NotAcquiringError
-        	Error raised if called when the camera is not acquiring
+            Error raised if called when the camera is not acquiring
         """
         if not self.acquiring:
             raise NotAcquiringError
@@ -109,10 +109,10 @@ class PIMPulnixDetector(PulnixDetector):
         Returns
         -------
         image : np.ndarray
-        	Image array
+            Image array
         """
         return self.image1.image
-    
+
     @property
     @raise_if_disconnected
     def acquiring(self):
@@ -146,12 +146,12 @@ class PIMPulnixDetector(PulnixDetector):
         Returns
         -------
         centroid_x : float
-        	Centroid of the image in x.
+            Centroid of the image in x.
 
         Raises
         ------
         NotAcquiringError
-        	When this property is called but the camera isn't acquiring.
+            When this property is called but the camera isn't acquiring.
         """
         # Make sure the camera is acquiring
         self.check_camera()
@@ -166,12 +166,12 @@ class PIMPulnixDetector(PulnixDetector):
         Returns
         -------
         centroid_y : float
-        	Centroid of the image in y.
+            Centroid of the image in y.
 
         Raises
         ------
         NotAcquiringError
-        	When this property is called but the camera isn't acquiring.        
+            When this property is called but the camera isn't acquiring.
         """
         self.check_camera()
         return self.stats2.centroid.y.value
@@ -179,30 +179,32 @@ class PIMPulnixDetector(PulnixDetector):
     @property
     def centroid(self):
         """
-        Returns the beam centroid in x and y. Alias for (centroid_x, centroid_y)
+        Returns the beam centroid in x and y. Alias for
+        (centroid_x, centroid_y)
 
         Returns
         -------
         centroids : tuple
-        	Tuple of the centroids in x and y
+            Tuple of the centroids in x and y
 
         Raises
         ------
         NotAcquiringError
-        	When this property is called but the camera isn't acquiring.                
+            When this property is called but the camera isn't
+            acquiring.
         """
         return (self.centroid_x, self.centroid_y)
-        
+
 
 class PIMMotor(Device, PositionerBase):
     """
-    Standard position monitor motor that can move the stage to insert the yag or
-    diode, or retract it from the beam path.
+    Standard position monitor motor that can move the stage to insert the yag
+    or diode, or retract it from the beam path.
 
     Components
     ----------
     states : PIMStates
-    	States component that handles all the motor states.
+        States component that handles all the motor states.
 
     Parameters
     ----------
@@ -218,7 +220,7 @@ class PIMMotor(Device, PositionerBase):
         in read_configuration(), and describe_configuration() calls)
 
     name : str, optional
-        The name of the offset mirror    
+        The name of the offset mirror
     """
     states = FormattedComponent(PIMStates, "{self.prefix}",
                                 timeout="{self.timeout}")
@@ -238,14 +240,14 @@ class PIMMotor(Device, PositionerBase):
         Returns
         -------
         status : MoveStatus
-            Status object of the move        
+            Status object of the move
         """
         return self.move("YAG", wait=wait, **kwargs)
 
     def move_out(self, wait=True, **kwargs):
         """
         Move the PIM to the OUT position. Alias for move("OUTx").
-        
+
         Returns
         -------
         status : MoveStatus
@@ -270,17 +272,17 @@ class PIMMotor(Device, PositionerBase):
         to complete. String inputs are not case sensitive and must be one of
         the following:
 
-        	"DIODE", "OUT", "IN", "YAG"
+            "DIODE", "OUT", "IN", "YAG"
 
         Enumerated positions can also be inputted where:
 
-        	1 : "DIODE", 2 : "OUT", 3 : "IN", 3 : "YAG"
-        
+            1 : "DIODE", 2 : "OUT", 3 : "IN", 3 : "YAG"
+
         Parameters
         ----------
         position : str or number
             String or enumerated position to move to.
-        
+
         wait : bool, optional
             Wait for the status object to complete the move before returning
 
@@ -289,8 +291,8 @@ class PIMMotor(Device, PositionerBase):
             for this positioner is used
 
         settle_time: float, optional
-        	Delay after the set() has completed to indicate completion to the
-        	caller        
+            Delay after the set() has completed to indicate completion to the
+            caller
 
         Returns
         -------
@@ -300,7 +302,7 @@ class PIMMotor(Device, PositionerBase):
         Raises
         ------
         ValueError
-        	If the inputted position to move to is not a valid position
+            If the inputted position to move to is not a valid position
         """
         # If position is a number, check it is a valid enumeration state
         if isnumber(position) and position in (1, 2, 3):
@@ -308,7 +310,7 @@ class PIMMotor(Device, PositionerBase):
 
         # If string check it is a valid state for the motor
         elif isinstance(position, str) and position.upper() in ("DIODE", "OUT",
-                                                                "IN", "YAG"): 
+                                                                "IN", "YAG"):
             if position.upper() == "IN":
                 status = self.states.move("YAG", **kwargs)
             else:
@@ -324,7 +326,7 @@ class PIMMotor(Device, PositionerBase):
         return status
 
     mv = move
-        
+
     @property
     @raise_if_disconnected
     def position(self):
@@ -385,7 +387,7 @@ class PIM(PIMMotor):
     Components
     ----------
     detector : PIMPulnixDetector
-    	Pulnix detector used in the PIMs
+        Pulnix detector used in the PIMs
 
     Parameters
     ----------
@@ -393,8 +395,8 @@ class PIM(PIMMotor):
         The EPICS base of the motor
 
     prefix_det : str, optional
-        The EPICS base PV of the detector. If None, it will be inferred from the
-    	motor prefix
+        The EPICS base PV of the detector. If None, it will be inferred from
+        the motor prefix
 
     read_attrs : sequence of attribute names, optional
         The signals to be read during data acquisition (i.e., in read() and
@@ -420,7 +422,7 @@ class PIM(PIMMotor):
         else:
             self._prefix_det = prefix_det
         super().__init__(prefix, **kwargs)
-        
+
         # Override check_camera to include checking the yag has been inserted
         self.detector.check_camera = self.check_camera
 
@@ -431,16 +433,16 @@ class PIM(PIMMotor):
         Raises
         ------
         NotInsertedError
-        	Error raised if the camera is not in the inserted position
+            Error raised if the camera is not in the inserted position
         NotAcquiringError
-        	Error raised if the camera is not acquiring
+            Error raised if the camera is not acquiring
         """
         if not self.detector.acquiring:
             raise NotAcquiringError
         if not self.inserted:
             raise NotInsertedError
-    
-    
+
+
 class PIMFee(Device):
     """
     PIM class for the PIMs in the FEE that run using Dehong's custom ioc.
@@ -448,22 +450,22 @@ class PIMFee(Device):
     Components
     ----------
     detector : FeeOpalDetector
-    	Detector used in the PIM
+        Detector used in the PIM
 
     yag : ImsMotor
-    	Motor that controls the position of the yag
-    
+        Motor that controls the position of the yag
+
     zoom : ImsMotor
-    	Motor that controls the zoom
+        Motor that controls the zoom
 
     focus : ImsMotor
-    	Motor that controls the focus
+        Motor that controls the focus
 
     go : EpicsSignal
-    	Signal to move the yag in and out
+        Signal to move the yag in and out
 
     pos : EpicsSignalRO
-    	Readback for the position as a state
+        Readback for the position as a state
 
     Parameters
     ----------
@@ -485,27 +487,27 @@ class PIMFee(Device):
         The name of the offset mirror
     """
     # Opal
-    detector = FormattedComponent(FeeOpalDetector, "{self._prefix}", 
-                                name="Opal Camera")
+    detector = FormattedComponent(FeeOpalDetector, "{self._prefix}",
+                                  name="Opal Camera")
 
     # Yag Motors
-    yag = FormattedComponent(ImsMotor, "{self._prefix}:MOTR", 
+    yag = FormattedComponent(ImsMotor, "{self._prefix}:MOTR",
                              ioc="{self._ioc}", name="Yag Motor")
-    zoom = FormattedComponent(ImsMotor, "{self._prefix}:CLZ:01", 
+    zoom = FormattedComponent(ImsMotor, "{self._prefix}:CLZ:01",
                               ioc="{self._ioc}", name="Zoom Motor")
-    focus = FormattedComponent(ImsMotor, "{self._prefix}:CLF:01", 
+    focus = FormattedComponent(ImsMotor, "{self._prefix}:CLF:01",
                                ioc="{self._ioc}", name="Focus Motor")
-    
+
     # Position PV
     go = FormattedComponent(EpicsSignal, "{self._prefix_pos}:YAG:GO")
     pos = FormattedComponent(EpicsSignalRO, "{self._prefix_pos}:POSITION")
 
-    def __init__(self, prefix, *, prefix_pos="", ioc="", in_pos=0, out_pos=43, 
-                 read_attrs=None, name=None, parent=None, 
-                 configuration_attrs=None, **kwargs):        
+    def __init__(self, prefix, *, prefix_pos="", ioc="", in_pos=0, out_pos=43,
+                 read_attrs=None, name=None, parent=None,
+                 configuration_attrs=None, **kwargs):
         self._prefix = prefix
         self._prefix_pos = prefix_pos
-        self._ioc=ioc
+        self._ioc = ioc
         self.in_pos = in_pos
         self.out_pos = out_pos
 
@@ -513,9 +515,10 @@ class PIMFee(Device):
             read_attrs = ['detector', 'zoom', 'focus', 'yag', 'pos']
         if configuration_attrs is None:
             configuration_attrs = ['detector', 'zoom', 'focus', 'yag', 'pos']
-            
-        super().__init__(prefix, read_attrs=read_attrs, name=name, parent=parent,
-                         configuration_attrs=configuration_attrs, **kwargs)    
+
+        super().__init__(prefix, read_attrs=read_attrs, name=name,
+                         parent=parent,
+                         configuration_attrs=configuration_attrs, **kwargs)
 
     def check_camera(self):
         """
@@ -524,9 +527,9 @@ class PIMFee(Device):
         Raises
         ------
         NotInsertedError
-        	Error raised if the camera is not in the inserted position
+            Error raised if the camera is not in the inserted position
         NotAcquiringError
-        	Error raised if the camera is not acquiring
+            Error raised if the camera is not acquiring
         """
         if not self.detector.acquiring:
             raise NotAcquiringError
@@ -536,7 +539,7 @@ class PIMFee(Device):
     def move_in(self, wait=True, **kwargs):
         """
         Move the PIM to the IN position. Alias for move("IN").
-        
+
         Returns
         -------
         status : MoveStatus
@@ -558,19 +561,19 @@ class PIMFee(Device):
     def move(self, position, wait=True, **kwargs):
         """
         Move the yag motor to the inputted state, optionally waiting for the
-        move to complete. String inputs are not case sensitive and must be one of
-        the following:
+        move to complete. String inputs are not case sensitive and must be one
+        of the following:
 
-        	"IN", "OUT"
+            "IN", "OUT"
 
         If a number is passed then the yag motor will be moved the inputted
         position.
-        
+
         Parameters
         ----------
         position : str or number
             String or position to move to.
-        
+
         wait : bool, optional
             Wait for the status object to complete the move before returning
 
@@ -579,8 +582,8 @@ class PIMFee(Device):
             for this positioner is used
 
         settle_time: float, optional
-        	Delay after the set() has completed to indicate completion to the
-        	caller                
+            Delay after the set() has completed to indicate completion to the
+            caller
 
         Returns
         -------
@@ -590,7 +593,7 @@ class PIMFee(Device):
         Raises
         ------
         ValueError
-        	If the inputted position to move to is not a valid position        
+            If the inputted position to move to is not a valid position
         """
         # Handle string inputs
         if isinstance(position, str):
@@ -615,7 +618,7 @@ class PIMFee(Device):
 
     def mv(self, position, **kwargs):
         return self.move(position, **kwargs)
-        
+
     @property
     @raise_if_disconnected
     def position(self):
@@ -624,7 +627,7 @@ class PIMFee(Device):
 
         Returns
         -------
-        position : str        
+        position : str
         """
         return self.pos.value
 
@@ -636,7 +639,7 @@ class PIMFee(Device):
 
         Returns
         -------
-        position : str                
+        position : str
         """
         return self.position
 
@@ -650,12 +653,12 @@ class PIMFee(Device):
         Returns
         -------
         image : np.ndarray
-        	Image array
+            Image array
         """
         return np.reshape(np.array(self.cam.array_data.value),
                           (self.cam.size.size_y.value,
                            self.cam.size.size_x.value))
-                         
+
     @property
     @raise_if_disconnected
     def blocking(self):
@@ -665,7 +668,7 @@ class PIMFee(Device):
         Returns
         -------
         blocking : bool
-        """        
+        """
         return not bool(self.pos.value)
 
     @property
@@ -700,6 +703,7 @@ class NotAcquiringError(PIMExceptions):
     def __init__(self, *args, **kwargs):
         self.msg = kwargs.pop("msg", "Camera currently not acquiring images.")
         super().__init__(*args, **kwargs)
+
     def __str__(self):
         return repr(self.msg)
 
@@ -713,5 +717,6 @@ class NotInsertedError(PIMExceptions):
         self.msg = kwargs.pop(
             "msg", "Camera currently not in inserted position.")
         super().__init__(*args, **kwargs)
+
     def __str__(self):
         return repr(self.msg)
