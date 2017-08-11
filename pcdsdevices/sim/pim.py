@@ -182,7 +182,7 @@ class PIMMotor(pim.PIMMotor):
     def move(self, position, **kwargs):
         if isinstance(position, str):
             if position.upper() in ("DIODE", "OUT", "IN", "YAG"): 
-                self.states.put("MOVING")
+                self.states.put("Unknown")
                 if position.upper() == "IN":
                     pos = "YAG"
                 else:
