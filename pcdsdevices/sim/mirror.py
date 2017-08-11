@@ -223,7 +223,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
         Amount of time to wait after moving alpha-motor
     """    
     # Pitch Motor
-    pitch = FormattedComponent(OMMotor, "{self._prefix}")
+    pitch = FormattedComponent(OMMotor, "{self.prefix}")
     # Gantry Motors
     gan_x_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:X:P")
     gan_y_p = FormattedComponent(OMMotor, "STEP:{self._mirror}:Y:P")
