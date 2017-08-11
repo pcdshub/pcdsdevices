@@ -36,6 +36,7 @@ import logging
 # Third Party #
 ###############
 import numpy as np
+from ophyd.positioner import PositionerBase
 from ophyd.utils.epics_pvs import raise_if_disconnected
 
 ##########
@@ -193,7 +194,7 @@ class PIMPulnixDetector(PulnixDetector):
         return (self.centroid_x, self.centroid_y)
         
 
-class PIMMotor(Device):
+class PIMMotor(Device, PositionerBase):
     """
     Standard position monitor motor that can move the stage to insert the yag or
     diode, or retract it from the beam path.
@@ -219,7 +220,16 @@ class PIMMotor(Device):
     name : str, optional
         The name of the offset mirror    
     """
-    states = Component(PIMStates, "")
+    states = FormattedComponent(PIMStates, "{self.prefix}",
+                                timeout="{self.timeout}")
+
+    def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
+                 name=None, parent=None, timeout=None, **kwargs):
+        if read_attrs is None:
+            read_attrs = ["states"]
+        super().__init__(prefix, read_attrs=read_attrs,
+                         configuration_attrs=configuration_attrs, name=name,
+                         parent=parent, timeout=timeout, **kwargs)
 
     def move_in(self, wait=True, **kwargs):
         """
@@ -313,27 +323,7 @@ class PIMMotor(Device):
 
         return status
 
-    def mv(self, position, wait=True, **kwargs):
-        """
-        Moves to the inputted position. Alias for the move() method.
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object of the move
-        """        
-        return self.move(position, wait=wait, **kwargs)
-
-    def set(self, position, wait=True, **kwargs):
-        """
-        Moves to the inputted position. Alias for the move() method.
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object of the move
-        """        
-        return self.move(position, wait=wait, **kwargs)
+    mv = move
         
     @property
     @raise_if_disconnected
@@ -346,22 +336,12 @@ class PIMMotor(Device):
         position : str
         """
         # Changing readback for "YAG" to "IN" for bluesky
-        pos = self.states.state.value
+        pos = self.states.position
         if pos == "YAG":
             return "IN"
         return pos
 
-    @property
-    @raise_if_disconnected
-    def state(self):
-        """
-        Returns the current state of pim. Alias for self.position.
-
-        Returns
-        -------
-        position : str        
-        """
-        return self.position
+    state = position
 
     @property
     def blocking(self):
