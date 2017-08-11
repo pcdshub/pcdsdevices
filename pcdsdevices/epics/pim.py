@@ -598,13 +598,13 @@ class PIMFee(Device):
         # Handle string inputs
         if isinstance(position, str):
             if position.upper() in ("IN", "OUT"):
-                status = go.set(position.upper(), **kwargs)
+                status = self.go.set(position.upper(), **kwargs)
             else:
                 raise ValueError("Position must be a PIM valid state.")
 
         # Handle position inputs
         elif isnumber(position):
-            status = yag.move(position, wait=wait, **kwargs)
+            status = self.yag.move(position, wait=wait, **kwargs)
 
         # Everything else
         else:
