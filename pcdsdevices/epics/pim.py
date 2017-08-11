@@ -226,8 +226,6 @@ class PIMMotor(Device, PositionerBase):
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, timeout=None, **kwargs):
-        if read_attrs is None:
-            read_attrs = ["states"]
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs, name=name,
                          parent=parent, timeout=timeout, **kwargs)
@@ -412,7 +410,7 @@ class PIM(PIMMotor):
     detector = FormattedComponent(PIMPulnixDetector, "{self._prefix_det}",
                                   read_attrs=['stats2'])
 
-    def __init__(self, prefix, prefix_det=None, **kwargs):
+    def __init__(self, prefix, prefix_det=None, read_attrs=None, **kwargs):
         # Infer the detector PV from the motor PV
         if not prefix_det:
             self._section = prefix.split(":")[0]
@@ -421,7 +419,7 @@ class PIM(PIMMotor):
                 self._section, self._imager)
         else:
             self._prefix_det = prefix_det
-        super().__init__(prefix, **kwargs)
+        super().__init__(prefix, read_attrs=read_attrs, **kwargs)
 
         # Override check_camera to include checking the yag has been inserted
         self.detector.check_camera = self.check_camera
