@@ -294,15 +294,15 @@ class PIMMotor(Device):
         """
         # If position is a number, check it is a valid enumeration state
         if isnumber(position) and position in (1, 2, 3):
-            status = self.states.state.set(position, **kwargs)
+            status = self.states.move(position, **kwargs)
 
         # If string check it is a valid state for the motor
         elif isinstance(position, str) and position.upper() in ("DIODE", "OUT",
                                                                 "IN", "YAG"): 
             if position.upper() == "IN":
-                status = self.states.state.set("YAG", **kwargs)
+                status = self.states.move("YAG", **kwargs)
             else:
-                status = self.states.state.set(position.upper(), **kwargs)
+                status = self.states.move(position.upper(), **kwargs)
         else:
             # Invalid position inputted
             raise ValueError("Position must be a PIM valid state.")
