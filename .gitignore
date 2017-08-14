@@ -7,3 +7,5 @@ build
 htmlcov
 .coverage
 .cache
+
+*.egg-info

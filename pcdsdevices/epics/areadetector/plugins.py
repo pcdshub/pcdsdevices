@@ -7,8 +7,10 @@ PCDS plugins and Overrides for AreaDetector Plugins.
 import logging
 
 import ophyd
-from ophyd.device import GenerateDatumInterface
-
+import numpy as np
+from ophyd.device import GenerateDatumInterface, Component as C
+from ophyd.signal import EpicsSignal
+from ophyd.utils import set_and_wait
 from .base import ADBase
 
 logger = logging.getLogger(__name__)
@@ -19,6 +21,8 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
     Overridden PluginBase to make it work when the root device is not a CamBase
     class.
     """
+    enable = C(EpicsSignal, 'EnableCallbacks_RBV.RVAL', write_pv="EnableCallbacks", string=False)
+
     @property
     def source_plugin(self):
         # The PluginBase object that is the asyn source for this plugin.
@@ -62,13 +66,47 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
 
     def stage(self):
         # Ensure the plugin is enabled. We do not disable it on unstage
-        set_and_wait(self.enable, 1)
+        if self.enable not in self.stage_sigs:
+            set_and_wait(self.enable, 1)
         ADBase.stage(self)
 
+    @property
+    def array_pixels(self):
+        """
+        The total number of pixels, calculated from array_size
+        """
+        array_size = list(self.array_size.get())
+        dimensions = int(self.ndimensions.get())
+        
+        if dimensions == 0:
+            return 0
+
+        pixels = array_size[0]
+        for dim in array_size[1:dimensions]:
+            if dim:
+                pixels *= dim
+
+        return int(pixels)    
+
+    
 class ImagePlugin(ophyd.plugins.ImagePlugin, PluginBase):
-    pass
+    @property
+    def image(self):
+        """
+        Overriden image method to add in some corrections
+        """
+        array_size = [int(val) for val in self.array_size.get()]
+        if array_size == [0, 0, 0]:
+            raise RuntimeError('Invalid image; ensure array_callbacks are on')
 
+        if array_size[-1] == 0:
+            array_size = array_size[:-1]
 
+        pixel_count = self.array_pixels
+        image = self.array_data.get(count=pixel_count)
+        return np.array(image).reshape(array_size)    
+
+    
 class StatsPlugin(ophyd.plugins.StatsPlugin, PluginBase):
     pass
 

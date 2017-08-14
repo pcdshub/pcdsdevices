@@ -17,17 +17,13 @@ from ophyd.signal import ArrayAttributeSignal
 from .sim import SimDevice
 from .signal import FakeSignal
 from .component import (FormattedComponent, Component)
-from .areadetector.plugins import StatsPlugin
+from .areadetector.plugins import (StatsPlugin, ImagePlugin)
 from .areadetector.detectors import PulnixDetector
 from ..epics import pim
 
 
 class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
-    proc1 = Component(FakeSignal)
-    image1 = Component(FakeSignal)
-    image2 = Component(FakeSignal)
-    stats1 = Component(StatsPlugin, "Stats1:", read_attrs=['centroid',
-                                                            'mean_value'])
+    image1 = Component(ImagePlugin, ":IMAGE1:", read_attrs=['array_data'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
                                                             'mean_value'])
 
@@ -50,16 +46,8 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
             self._get_readback_centroid_x() * self._centroid_within_bounds())
         self.stats2._get_readback_centroid_y = lambda **kwargs : (
             self._get_readback_centroid_y() * self._centroid_within_bounds())
-
-    @property
-    def image(self):
-        """
-        Returns a blank image using the correct shape of the camera. Override
-        this if you want spoof images.
-        """
-        return np.zeros((int(self.cam.size.size_y.value), 
-                         int(self.cam.size.size_x.value)), dtype=np.uint8)
-
+        # Override the image size signal
+        
     @property
     def centroid_x(self, **kwargs):
         """
@@ -150,6 +138,7 @@ class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
 
     @size.setter
     def size(self, val):
+        self.image1._image = lambda : np.zeros(val)
         self.cam.size.size_x.put(val[0])
         self.cam.size.size_y.put(val[1])
 
@@ -171,7 +160,8 @@ class PIMMotor(pim.PIMMotor):
 
     def __init__(self, prefix, pos_in=0, pos_diode=0.5, pos_out=1, 
                  settle_time=0, velocity=None, noise=False, noise_func=None,
-                 noise_type="uni", noise_args=(), noise_kwargs={}, **kwargs):
+                 noise_type="uni", noise_args=(), noise_kwargs={}, timeout=None,
+                 **kwargs):
         super().__init__(prefix, **kwargs)
         if pos_diode < pos_in:
             pos_diode = pos_in + 0.5
@@ -179,6 +169,7 @@ class PIMMotor(pim.PIMMotor):
             pos_out = pos_diode + 0.5
         self.pos_d = {"DIODE":pos_diode, "OUT":pos_out, 
                       "IN":pos_in, "YAG":pos_in}
+        self.timeout = timeout
         self.settle_time = settle_time
         self.velocity = velocity
         self.noise = noise
@@ -186,7 +177,7 @@ class PIMMotor(pim.PIMMotor):
         self.noise_type = noise_type
         self.noise_args = noise_args
         self.noise_kwargs = noise_kwargs
-        self._pos._get_readback = lambda : self.pos_d[self.position]
+        self._pos._get_readback = lambda : self.pos_d.get(self.position)
     
     def move(self, position, **kwargs):
         if isinstance(position, str):
@@ -196,7 +187,7 @@ class PIMMotor(pim.PIMMotor):
                     pos = "YAG"
                 else:
                     pos = position.upper()
-                status = self.states.set(position.upper())
+                status = self.states.set(position.upper(), timeout=self.timeout)
                 time.sleep(0.1)
             # Match the inputted state in y
             self._pos.put(self.pos_d[position.upper()])
