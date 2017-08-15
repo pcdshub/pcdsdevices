@@ -229,7 +229,7 @@ class PIMMotor(Device, PositionerBase):
         super().__init__(prefix, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs, name=name,
                          parent=parent, timeout=timeout, **kwargs)
-        self.states.timeout = timeout
+        self.timeout = timeout
 
     def move_in(self, wait=True, **kwargs):
         """
@@ -375,6 +375,14 @@ class PIMMotor(Device, PositionerBase):
     def unstage(self):
         self.move_out(wait=False)
         return super().unstage()
+
+    @property
+    def timeout(self):
+        return self.states.timeout
+
+    @timeout.setter
+    def timeout(self, tmo):
+        self.states.timeout = float(tmo)
 
 
 class PIM(PIMMotor):
