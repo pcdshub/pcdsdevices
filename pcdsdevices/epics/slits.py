@@ -82,6 +82,28 @@ class Slits(IocDevice):
         """
         return self.move(width,wait,**kwargs)
 
+    def stage(self):
+        """
+        Record starting position of slits. This allows @stage_wrapper to make
+        plans involving the slits to return to their starting positions.
+        """
+        self.stage_cache_xwidth = xwidth.position
+        self.stage_cache_ywidth = ywidth.position
+        self.stage_cache_xcenter = xcenter.position
+        self.stage_cache_ycenter = ycenter.position
+        super().stage()
+
+    def unstage(self):
+        """
+        Place slits back in their starting positions. This allows 
+        @stage_wrapper to make plans involving the slits to return to their
+        starting positions.
+        """
+        xwidth.move(self.stage_cache_xwidth,wait=False)
+        ywidth.move(self.stage_cache_ywidth,wait=False)
+        xcenter.move(self.stage_cache_xcenter,wait=False)
+        ycenter.move(self.stage_cache_ycenter,wait=True)
+        super().unstage()
 
     def open(self):
         self.open_cmd.put(1)
