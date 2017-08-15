@@ -51,6 +51,38 @@ class Slits(IocDevice):
         super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
                          **kwargs)
 
+    def move(self,width,wait=True,**kwargs):
+        """
+        Set the dimensions of the width/height of the gap to width paramater.
+        It's OK to only return one of the statuses because they share the same
+        completion flag (I think).
+
+        Paramters
+        ---------
+        width : float
+            target width for slits in both x and y axis. EGU: mm
+
+        wait : bool
+            If true, block until move is completed
+
+        Returns
+        -------
+        status : MoveStauts
+            status object of the move
+
+        """
+        xwidth.move(width,wait=wait)
+        return ywidth.move(width,wait=wait)
+
+
+
+    def set(self,width,wait=True,**kwargs):
+        """
+        alias for move method 
+        """
+        return self.move(width,wait,**kwargs)
+
+
     def open(self):
         self.open_cmd.put(1)
 
