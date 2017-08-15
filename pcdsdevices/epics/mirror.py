@@ -747,7 +747,8 @@ class OffsetMirror(Device, PositionerBase):
 
     def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None,
                  parent=None, configuration_attrs=None, settle_time=0,
-                 tolerance=0.01, timeout=None, **kwargs):
+                 tolerance=0.01, timeout=None, nominal_position=None,
+                 **kwargs):
 
         self._prefix_xy = prefix_xy
         self._area = prefix.split(":")[1]
@@ -766,10 +767,8 @@ class OffsetMirror(Device, PositionerBase):
                          **kwargs)
         self.settle_time = settle_time
         self.tolerance = tolerance
-        self.pitch.timeout = self.timeout
-        self.piezo.timeout = self.timeout
-        self.gan_x_p.timeout = self.timeout
-        self.gan_y_p.timeout = self.timeout
+        self.timeout = timeout
+        self.nominal_position = nominal_position
 
     def move(self, position, wait=True, **kwargs):
         """
@@ -999,3 +998,26 @@ class OffsetMirror(Device, PositionerBase):
         Sets the limits of the user_setpoint pv
         """
         self.pitch.limits = value
+
+    @property
+    def timeout(self):
+        return self.pitch.timeout
+
+    @timeout.setter
+    def timeout(self, tmo):
+        if tmo is not None:
+            tmo = float(tmo)
+        self.pitch.timeout = tmo
+        self.piezo.timeout = tmo
+        self.gan_x_p.timeout = tmo
+        self.gan_y_p.timeout = tmo
+
+    @property
+    def nominal_position(self):
+        return self.pitch.nominal_position
+
+    @nominal_position.setter
+    def nominal_position(self, pos):
+        if pos is not None:
+            pos = float(pos)
+        self.pitch.nominal_position = pos
