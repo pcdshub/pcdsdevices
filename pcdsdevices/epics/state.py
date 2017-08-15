@@ -187,11 +187,12 @@ class DeviceStatesRecord(State, PositionerBase):
         return status
 
     def check_value(self, value):
-        enums = self.state.enum_strs()
+        enums = self.state.enum_strs
         if value in enums or value in range(len(enums)):
             return
         else:
-            raise StateError("Value %s invalid. Enums are %s", value, enums)
+            raise StateError("Value {} invalid. Enums are {}".format(value,
+                                                                     enums))
 
     @property
     def position(self):
@@ -222,7 +223,7 @@ class DeviceStatesRecord(State, PositionerBase):
             readback = self.value
             if readback != "Unknown":
                 self._move_requested = False
-                setpoint = self.state.get_setpoint()
+                setpoint = self.state.get_setpoint(as_string=True)
                 success = setpoint == readback
                 timestamp = kwargs.pop("timestamp", time.time())
                 self._done_moving(success=success, timestamp=timestamp,
