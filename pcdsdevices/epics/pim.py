@@ -382,7 +382,9 @@ class PIMMotor(Device, PositionerBase):
 
     @timeout.setter
     def timeout(self, tmo):
-        self.states.timeout = float(tmo)
+        if tmo is not None:
+            tmo = float(tmo)
+        self.states.timeout = tmo
 
 
 class PIM(PIMMotor):
