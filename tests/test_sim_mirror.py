@@ -143,7 +143,9 @@ def test_OffsetMirror_raises_limit_error_on_oob_positions():
     with pytest.raises(ValueError):   
         om.move(11)
     assert(om.move(0))
-    
-    
-    
-    
+
+def test_OffsetMirror_timeout():
+    tmo = 1.0
+    om = OffsetMirror("TEST", "TEST_XY", timeout=tmo)
+    om.move(42)
+    assert(om.pitch.timeout == tmo)

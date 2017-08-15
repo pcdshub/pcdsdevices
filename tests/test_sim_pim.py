@@ -5,6 +5,7 @@
 ############
 import time
 from collections import OrderedDict
+import pytest
 
 ###############
 # Third Party #
@@ -183,3 +184,10 @@ def test_PIMMotor_stage():
     pim.unstage()
     time.sleep(0.2)
     assert(pim.position == "OUT")
+
+@pytest.mark.skipif(True, reason="No proper states sim class yet")
+def test_PIM_timeout():
+    tmo = 1.0
+    pim = PIM("TEST", timeout=tmo)
+    pim.move_in()
+    assert(pim.states.timeout == tmo)
