@@ -308,12 +308,14 @@ class BasicAttenuatorBase(IocDevice):
             return (floor, ceiling)
 
     def stage(self):
-        self._cached_trans = self.get_transmission()
-        self.set_transmission(self._stage_setting)
+        self.all_in()
+        #self._cached_trans = self.get_transmission()
+        #self.set_transmission(self._stage_setting)
         return super().stage()
 
     def unstage(self):
-        self.set_transmission(self._cached_trans)
+        self.all_out()
+        #self.set_transmission(self._cached_trans)
         return super().unstage()
 
 
