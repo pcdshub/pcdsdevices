@@ -438,7 +438,7 @@ class FeeAtt(BasicAttenuatorBase):
     filter8 = FormattedComponent(BasicFilter, "{self._filterbase}8")
     filter9 = FormattedComponent(BasicFilter, "{self._filterbase}9")
 
-    def __init__(self, prefix="SATT:FEE:320", *, name=None, read_attrs=None,
+    def __init__(self, prefix="SATT:FEE1:320", *, name=None, read_attrs=None,
                  ioc="", **kwargs):
         self._filterbase = prefix[:-1]
         super().__init__(prefix, name=name, read_attrs=read_attrs, ioc=ioc,
