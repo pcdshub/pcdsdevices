@@ -51,6 +51,60 @@ class Slits(IocDevice):
         super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
                          **kwargs)
 
+    def move(self,width,wait=True,**kwargs):
+        """
+        Set the dimensions of the width/height of the gap to width paramater.
+        It's OK to only return one of the statuses because they share the same
+        completion flag (I think).
+
+        Paramters
+        ---------
+        width : float
+            target width for slits in both x and y axis. EGU: mm
+
+        wait : bool
+            If true, block until move is completed
+
+        Returns
+        -------
+        status : MoveStauts
+            status object of the move
+
+        """
+        self.xwidth.move(width,wait=False,**kwargs)
+        return self.ywidth.move(width,wait=wait,**kwargs)
+
+
+
+    def set(self,width,wait=True,**kwargs):
+        """
+        alias for move method 
+        """
+        return self.move(width,wait,**kwargs)
+
+    def stage(self):
+        """
+        Record starting position of slits. This allows @stage_wrapper to make
+        plans involving the slits to return to their starting positions.
+        """
+        self.stage_cache_xwidth = self.xwidth.position
+        self.stage_cache_ywidth = self.ywidth.position
+        self.stage_cache_xcenter = self.xcenter.position
+        self.stage_cache_ycenter = self.ycenter.position
+        return super().stage()
+
+    def unstage(self):
+        """
+        Place slits back in their starting positions. This allows 
+        @stage_wrapper to make plans involving the slits to return to their
+        starting positions.
+        """
+        self.xwidth.move(self.stage_cache_xwidth,wait=False)
+        self.ywidth.move(self.stage_cache_ywidth,wait=False)
+        self.xcenter.move(self.stage_cache_xcenter,wait=False)
+        self.ycenter.move(self.stage_cache_ycenter,wait=True)
+        return super().unstage()
+
     def open(self):
         self.open_cmd.put(1)
 
