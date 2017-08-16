@@ -71,8 +71,8 @@ class Slits(IocDevice):
             status object of the move
 
         """
-        xwidth.move(width,wait=wait)
-        return ywidth.move(width,wait=wait)
+        self.xwidth.move(width,wait=False,**kwargs)
+        return self.ywidth.move(width,wait=wait,**kwargs)
 
 
 
@@ -87,11 +87,11 @@ class Slits(IocDevice):
         Record starting position of slits. This allows @stage_wrapper to make
         plans involving the slits to return to their starting positions.
         """
-        self.stage_cache_xwidth = xwidth.position
-        self.stage_cache_ywidth = ywidth.position
-        self.stage_cache_xcenter = xcenter.position
-        self.stage_cache_ycenter = ycenter.position
-        super().stage()
+        self.stage_cache_xwidth = self.xwidth.position
+        self.stage_cache_ywidth = self.ywidth.position
+        self.stage_cache_xcenter = self.xcenter.position
+        self.stage_cache_ycenter = self.ycenter.position
+        return super().stage()
 
     def unstage(self):
         """
@@ -99,11 +99,11 @@ class Slits(IocDevice):
         @stage_wrapper to make plans involving the slits to return to their
         starting positions.
         """
-        xwidth.move(self.stage_cache_xwidth,wait=False)
-        ywidth.move(self.stage_cache_ywidth,wait=False)
-        xcenter.move(self.stage_cache_xcenter,wait=False)
-        ycenter.move(self.stage_cache_ycenter,wait=True)
-        super().unstage()
+        self.xwidth.move(self.stage_cache_xwidth,wait=False)
+        self.ywidth.move(self.stage_cache_ywidth,wait=False)
+        self.xcenter.move(self.stage_cache_xcenter,wait=False)
+        self.ycenter.move(self.stage_cache_ycenter,wait=True)
+        return super().unstage()
 
     def open(self):
         self.open_cmd.put(1)
