@@ -22,8 +22,9 @@ class BasicFilter(Device):
     A single attenuation blade.
     Contains only basic features as available in the FEE attenuator IOC.
     """
-    state_sig = Component(EpicsSignal, ":STATE", write_pv=":GO")
-    filter_states = Enum("FilterStates", "UNKNOWN IN OUT", start=0)
+    state_sig = Component(EpicsSignal, ":STATE", write_pv=":CMD")
+    filter_states = Enum("FilterStates", "XSTN IN OUT FAIL", start=0)
+    filter_sets = Enum("FilterStates", "IN OUT", start=0)
 
     def __init__(self, prefix, *, name=None, read_attrs=None, **kwargs):
         if read_attrs is None:
@@ -47,13 +48,13 @@ class BasicFilter(Device):
         """
         Moves the blade to the "IN" position.
         """
-        self.state_sig.put(self.filter_states.IN.value)
+        self.state_sig.put(self.filter_sets.IN.value)
 
     def move_out(self):
         """
         Moves the blade to the "OUT" position.
         """
-        self.state_sig.put(self.filter_states.OUT.value)
+        self.state_sig.put(self.filter_sets.OUT.value)
 
 
 class Filter(BasicFilter):
@@ -61,6 +62,12 @@ class Filter(BasicFilter):
     A single attenuation blade.
     Contains all features available in the lusiAtt IOC.
     """
+    # Redefine basic pvs that changed
+    state_sig = Component(EpicsSignal, ":STATE", write_pv=":GO")
+    filter_states = Enum("FilterStates", "UNKNOWN IN OUT", start=0)
+    filter_sets = filter_states
+
+    # Add features
     thickness_sig = Component(EpicsSignal, ":THICK")
     material_sig = Component(EpicsSignal, ":MATERIAL")
     stuck_sig = Component(EpicsSignal, ":IS_STUCK")
@@ -120,8 +127,8 @@ class BasicAttenuatorBase(IocDevice):
     transmission_floor = Component(EpicsSignalRO, ":R_FLOOR")
 
     # Define eget mode and move
-    eget_cmd = Component(EpicsSignal, ":COM:EACT.SCAN")
-    go_cmd = Component(EpicsSignal, ":COM:GO")
+    eget_cmd = Component(EpicsSignal, ":EACT.SCAN")
+    go_cmd = Component(EpicsSignal, ":GO")
 
     def __init__(self, prefix, *, name=None, read_attrs=None, ioc="",
                  stage_setting=0, **kwargs):
@@ -309,13 +316,13 @@ class BasicAttenuatorBase(IocDevice):
 
     def stage(self):
         self.all_in()
-        #self._cached_trans = self.get_transmission()
-        #self.set_transmission(self._stage_setting)
+        # self._cached_trans = self.get_transmission()
+        # self.set_transmission(self._stage_setting)
         return super().stage()
 
     def unstage(self):
         self.all_out()
-        #self.set_transmission(self._cached_trans)
+        # self.set_transmission(self._cached_trans)
         return super().unstage()
 
 
@@ -353,6 +360,7 @@ class AttenuatorBase(BasicAttenuatorBase):
     def __init__(self, prefix, *, name=None, read_attrs=None, ioc="",
                  stage_setting=0, **kwargs):
         prefix = prefix + ":ATT:COM"
+        self._filter_prefix = prefix + ":ATT"
         if read_attrs is None:
             read_attrs = ["transmission", "transmission_3rd"]
         super().__init__(prefix, name=name, read_attrs=read_attrs,
@@ -405,8 +413,10 @@ def make_att_classes(max_filters):
     for i in range(1, max_filters + 1):
         att_filters = {}
         for n in range(1, i + 1):
-            att_filters["filter{}".format(n)] = Component(Filter,
-                                                          ":{:02}".format(n))
+            num = ":{:02}".format(n)
+            comp = FormattedComponent(Filter, "{self._filter_prefix}" + num)
+            att_filters["filter{}".format(n)] = comp
+
         name = "Attenuator{}".format(i)
         cls = type(name, (AttenuatorBase,), att_filters)
         globals()[name] = cls
@@ -428,18 +438,18 @@ def Attenuator(prefix, n_filters, *, name=None, read_attrs=None, ioc="",
 
 
 class FeeAtt(BasicAttenuatorBase):
-    filter1 = FormattedComponent(BasicFilter, "{self._filterbase}1")
-    filter2 = FormattedComponent(BasicFilter, "{self._filterbase}2")
-    filter3 = FormattedComponent(BasicFilter, "{self._filterbase}3")
-    filter4 = FormattedComponent(BasicFilter, "{self._filterbase}4")
-    filter5 = FormattedComponent(BasicFilter, "{self._filterbase}5")
-    filter6 = FormattedComponent(BasicFilter, "{self._filterbase}6")
-    filter7 = FormattedComponent(BasicFilter, "{self._filterbase}7")
-    filter8 = FormattedComponent(BasicFilter, "{self._filterbase}8")
-    filter9 = FormattedComponent(BasicFilter, "{self._filterbase}9")
+    filter1 = FormattedComponent(BasicFilter, "{self._filter_prefix}1")
+    filter2 = FormattedComponent(BasicFilter, "{self._filter_prefix}2")
+    filter3 = FormattedComponent(BasicFilter, "{self._filter_prefix}3")
+    filter4 = FormattedComponent(BasicFilter, "{self._filter_prefix}4")
+    filter5 = FormattedComponent(BasicFilter, "{self._filter_prefix}5")
+    filter6 = FormattedComponent(BasicFilter, "{self._filter_prefix}6")
+    filter7 = FormattedComponent(BasicFilter, "{self._filter_prefix}7")
+    filter8 = FormattedComponent(BasicFilter, "{self._filter_prefix}8")
+    filter9 = FormattedComponent(BasicFilter, "{self._filter_prefix}9")
 
     def __init__(self, prefix="SATT:FEE1:320", *, name=None, read_attrs=None,
                  ioc="", **kwargs):
-        self._filterbase = prefix[:-1]
+        self._filter_prefix = prefix[:-1]
         super().__init__(prefix, name=name, read_attrs=read_attrs, ioc=ioc,
                          **kwargs)
