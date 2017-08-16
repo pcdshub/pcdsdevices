@@ -124,8 +124,9 @@ class BasicAttenuatorBase(IocDevice):
     go_cmd = Component(EpicsSignal, ":COM:GO")
 
     def __init__(self, prefix, *, name=None, read_attrs=None, ioc="",
-                 **kwargs):
+                 stage_setting=0, **kwargs):
         self._set_lock = RLock()
+        self._stage_setting = stage_setting
         if read_attrs is None:
             read_attrs = ["transmission"]
         super().__init__(prefix, name=name, read_attrs=read_attrs,
@@ -306,6 +307,15 @@ class BasicAttenuatorBase(IocDevice):
                 ceiling = self.transmission_ceiling.get()
             return (floor, ceiling)
 
+    def stage(self):
+        self._cached_trans = self.get_transmission()
+        self.set_transmission(self._stage_setting)
+        return super().stage()
+
+    def unstage(self):
+        self.set_transmission(self._cached_trans)
+        return super().unstage()
+
 
 class FeeAttImplError(NotImplementedError):
     def __init__(self, *args, **kwargs):
@@ -339,12 +349,12 @@ class AttenuatorBase(BasicAttenuatorBase):
     mode_cmd = Component(EpicsSignal, ":MODE")
 
     def __init__(self, prefix, *, name=None, read_attrs=None, ioc="",
-                 **kwargs):
+                 stage_setting=0, **kwargs):
         prefix = prefix + ":ATT:COM"
         if read_attrs is None:
             read_attrs = ["transmission", "transmission_3rd"]
         super().__init__(prefix, name=name, read_attrs=read_attrs,
-                         ioc=ioc, **kwargs)
+                         ioc=ioc, stage_setting=stage_setting, **kwargs)
 
     def thickest_filter_in(self):
         """
