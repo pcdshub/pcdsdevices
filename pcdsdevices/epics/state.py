@@ -161,6 +161,7 @@ class DeviceStatesRecord(State, PositionerBase):
 
     def __init__(self, prefix, *, read_attrs=None, name=None, timeout=None,
                  **kwargs):
+        self._move_requested = False
         # Initialize device
         if read_attrs is None:
             read_attrs = ["state"]
@@ -179,7 +180,11 @@ class DeviceStatesRecord(State, PositionerBase):
         status = super().move(position, moved_cb=moved_cb, timeout=timeout,
                               **kwargs)
         self._move_requested = True
-        self.state.put(position, wait=False)
+
+        if self.position != position:
+            self.state.put(position, wait=False)
+        else:
+            status._finished(success=True)
 
         if wait:
             status_wait(status)
