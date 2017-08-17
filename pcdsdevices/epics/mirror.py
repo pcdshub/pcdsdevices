@@ -747,7 +747,7 @@ class OffsetMirror(Device, PositionerBase):
 
     def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None,
                  parent=None, configuration_attrs=None, settle_time=0,
-                 tolerance=0.01, timeout=None, nominal_position=None,
+                 tolerance=0.5, timeout=None, nominal_position=None,
                  **kwargs):
 
         self._prefix_xy = prefix_xy
