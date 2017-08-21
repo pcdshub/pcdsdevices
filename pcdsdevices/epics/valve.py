@@ -21,14 +21,15 @@ from ophyd.utils.epics_pvs import raise_if_disconnected
 ##########
 # Module #
 ##########
+from .device import Device
 from .state import pvstate_class
 from .iocdevice import IocDevice
 from .signal import EpicsSignalRO
 from .signal import EpicsSignal
-from .component import Component
+from .component import (Component, FormattedComponent)
 from .iocadmin import IocAdminOld
 
-logger = logger.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Commands(Enum):
@@ -174,7 +175,7 @@ class ValveBase(Device, PositionerBase):
         """
         return self.move(position, **kwargs)
 
-    def open(self **kwargs):
+    def open(self, **kwargs):
         """
         Remove the valve from the beam. Alias for self.move("OPEN").
 
