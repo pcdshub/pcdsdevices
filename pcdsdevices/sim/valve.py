@@ -18,19 +18,28 @@ from ophyd.utils.epics_pvs import raise_if_disconnected
 ##########
 # Module #
 ##########
-from ..epics import valve
+from ..epics import (valve, state)
 from .signal import FakeSignal
 from .component import (FormattedComponent, Component)
 
+ValveLimits = state.pvstate_class('ValveLimits',
+                                  {'open_limit': {'pvname': ':OPN_DI',
+                                                  0: 'defer',
+                                                  1: 'out'},
+                                   'closed_limit': {'pvname': ':CLS_DI',
+                                                    0: 'defer',
+                                                    1: 'in'}},
+                                  doc='State description of valve limits',
+                                  signal_class=FakeSignal)
 
 class ValveBase(valve.ValveBase):
     """
     Base class for the valve simulated device.
     """
     # Simulated components
-    command = FormattedComponent(FakeSignal, "{self._prefix}:OPN_DO")
-    interlock = Component(FakeSignal, ":ILKSTATUS")
-
+    command = Component(FakeSignal)
+    interlock = Component(FakeSignal, value=0)
+    limits = Component(ValveLimits, "")
     
 class PositionValve(valve.PositionValve, ValveBase):
     """

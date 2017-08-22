@@ -77,22 +77,16 @@ class ValveBase(Device, PositionerBase):
                                  write_pv="{self._prefix}:OPN_SW")
     interlock = Component(EpicsSignalRO, ":ILKSTATUS")
     limits = Component(ValveLimits, "")
-
     commands = Commands
 
     def __init__(self, prefix, *, name=None, read_attrs=None, **kwargs):
-
+        self._prefix = prefix
         # Configure read attributes
         if read_attrs is None:
             read_attrs = ["interlock", "command", "limits"]
 
         super().__init__(prefix, read_attrs=read_attrs, name=name, **kwargs)
-
-        # Warn the user if the valve is in bypass mode
-        if self.bypass is True:
-            logger.warning("Valve '{0}' is currently in bypass mode".format(
-                self.name))
-
+        
     @raise_if_disconnected
     def move(self, position, wait=True, **kwargs):
         """
@@ -133,18 +127,17 @@ class ValveBase(Device, PositionerBase):
             If motion fails other than timing out.
         """
         # Begin the move process
-        self._started_moving = False
-        status = super().move(position, **kwargs)
+        self.check_value(position)
         logger.debug("Moving {} to {}".format(self.name, position))
 
         # Close the valve
         if position == 0 or isinstance(position, str) and \
           position.lower() == "close":
-            self.command.put(self.commands.close_valve, wait=False)
+            status = self.command.set(self.commands.close_valve.value)
         # Open the valve
         if position == 1 or isinstance(position, str) and \
           position.lower() == "open":
-            self.command.put(self.commands.open_valve, wait=False)
+            status = self.command.set(self.commands.open_valve.value)
 
         # Wait for the status object to register the move as complete
         if wait:
@@ -216,8 +209,10 @@ class ValveBase(Device, PositionerBase):
             If an open move is requested but the interlock does not permit it.
         """
         # Check for invalid moves
-        if (value not in [0, 1] or isinstance(value, str)) and value.lower() \
-          not in ["open", "close"]:
+        if not isinstance(value, bool) and value in [0, 1] or isinstance(
+                value, str) and value.lower() in ["open", "close"]:
+            pass
+        else:
             err_str = "Invalid move entry '{0}', must be 'close' / 'open' or " \
               "'0' / '1'.".format(value)
             logger.error(err_str)
@@ -235,7 +230,7 @@ class ValveBase(Device, PositionerBase):
         Whether the interlock on the valve is active, preventing the valve from
         opening
         """
-        return bool(self.interlock.get())
+        return bool(self.interlock.value)
 
 
 class PositionValve(ValveBase):
@@ -257,18 +252,13 @@ class PositionValve(ValveBase):
 
         super().__init__(prefix, read_attrs=read_attrs, **kwargs)
 
-        # Warn the user if the valve is in bypass mode
-        if self.bypass is True:
-            logger.warning("Valve '{0}' is currently in bypass mode".format(
-                self.name))
-
     @property
     @raise_if_disconnected
     def position(self):
         """
         Read back for the position of the valve.
         """
-        return pos.get()
+        return self.pos.value
 
 
 class BypassValve(ValveBase):
@@ -285,7 +275,7 @@ class BypassValve(ValveBase):
     def __init__(self, prefix, *, read_attrs=None, **kwargs):
         # Configure read attributes
         if read_attrs is None:
-            read_attrs = ["interlock", "command", "limits, bypass_mode"]
+            read_attrs = ["interlock", "command", "limits", "bypass_mode"]
 
         super().__init__(prefix, read_attrs=read_attrs, **kwargs)
 
@@ -305,7 +295,7 @@ class BypassValve(ValveBase):
         bypass : bool
             Whether the valve is currently in bypass mode.
         """
-        return bool(self.bypass_mode.get())
+        return bool(self.bypass_mode.value)
 
     @bypass.setter
     def bypass(self, mode):
@@ -320,9 +310,9 @@ class BypassValve(ValveBase):
         if bool(mode) is True:
             logger.warning("Setting valve '{0}' to bypass mode.".format(
                 self.name))
-            return self.bypass_mode.set(1)
+            return self.bypass_mode.put(1)
         else:
-            return self.bypass_mode.set(0)
+            return self.bypass_mode.put(0)
 
 class OverrideValve(ValveBase):
     """
@@ -338,7 +328,7 @@ class OverrideValve(ValveBase):
     def __init__(self, prefix, *, read_attrs=None, **kwargs):
         # Configure read attributes
         if read_attrs is None:
-            read_attrs = ["interlock", "command", "limits, override_mode"]
+            read_attrs = ["interlock", "command", "limits", "override_mode"]
 
         super().__init__(prefix, read_attrs=read_attrs, **kwargs)
 
@@ -358,7 +348,7 @@ class OverrideValve(ValveBase):
         override : bool
             Whether the valve is currently in override mode.
         """
-        return bool(self.override_mode.get())
+        return bool(self.override_mode.value)
 
     @override.setter
     def override(self, mode):
