@@ -16,10 +16,10 @@ import logging
 # Module #
 ##########
 from .signal import FakeSignal
-from .component import Component
+from .component import (Component, FormattedComponent)
 from ..epics import gauge
 
-logger = getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class GaugeBase(gauge.GaugeBase):
@@ -27,7 +27,7 @@ class GaugeBase(gauge.GaugeBase):
     Simulated base gauge class.
     """
     pressure = Component(FakeSignal)
-    status = Component(FakseSignal)
+    status = Component(FakeSignal)
 
     
 class Pirani(gauge.Pirani, GaugeBase):
@@ -41,4 +41,4 @@ class ColdCathode(gauge.ColdCathode, GaugeBase):
     """
     Simulated cold cathode class.
     """
-    pirani = FormattedComponent(Pirani, "self._prefix_pirani")    
+    pirani = FormattedComponent(Pirani, "{self._prefix_pirani}")

@@ -11,16 +11,13 @@ import logging
 ###############
 # Third Party #
 ###############
-from ophyd.positioner import PositionerBase
-from ophyd.status import wait as status_wait
-from ophyd.utils.epics_pvs import raise_if_disconnected
 
 ##########
 # Module #
 ##########
-from ..epics import (valve, state)
 from .signal import FakeSignal
-from .component import (FormattedComponent, Component)
+from .component import Component
+from ..epics import (valve, state)
 
 ValveLimits = state.pvstate_class('ValveLimits',
                                   {'open_limit': {'pvname': ':OPN_DI',
