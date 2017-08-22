@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Standard classes for LCLS Gate Valves
+Standard classes for valves used throughout LCLS.
 """
 
 ############
@@ -31,6 +31,15 @@ from .iocadmin import IocAdminOld
 
 logger = logging.getLogger(__name__)
 
+ValveLimits = pvstate_class('ValveLimits',
+                            {'open_limit': {'pvname': ':OPN_DI',
+                                            0: 'defer',
+                                            1: 'out'},
+                             'closed_limit': {'pvname': ':CLS_DI',
+                                              0: 'defer',
+                                              1: 'in'}},
+                            doc='State description of valve limits')
+
 
 class Commands(Enum):
     """
@@ -46,19 +55,14 @@ class InterlockError(Exception):
     """
     pass
 
-ValveLimits = pvstate_class('ValveLimits',
-                            {'open_limit': {'pvname': ':OPN_DI',
-                                            0: 'defer',
-                                            1: 'out'},
-                             'closed_limit': {'pvname': ':CLS_DI',
-                                              0: 'defer',
-                                              1: 'in'}},
-                            doc='State description of valve limits')
-
 
 class ValveBase(Device, PositionerBase):
     """
-    Basic Vacuum Valve
+    Base Vacuum Valve Class
+
+    This class implements functionality common to all valves at LCLS which are
+    the ability to open/close and read an interlock. All other valves should
+    inherit from this class when adding additional features.
 
     Components
     ----------
@@ -91,7 +95,9 @@ class ValveBase(Device, PositionerBase):
     def move(self, position, wait=True, **kwargs):
         """
         Move to a specified position, optionally waiting for motion to
-        complete.
+        complete. Valves can only be set to an open or closed position. Valid
+        inputs for the 'position' argument are 'open', 'close', 1, and 0.
+        String inputs are not case-sensitive.
 
         Parameters
         ----------
@@ -100,15 +106,6 @@ class ValveBase(Device, PositionerBase):
 
         wait : bool, optional
             Wait for the status object to complete the move before returning.
-
-        moved_cb : callable, optional
-            Call this callback when movement has finished. This callback must
-            accept one keyword argument: 'obj' which will be set to this
-            positioner instance.
-
-        timeout : float, optional
-            Maximum time to wait for the motion. If None, the default timeout
-            for this positioner is used.
 
         Returns
         -------
@@ -228,14 +225,19 @@ class ValveBase(Device, PositionerBase):
     def interlocked(self):
         """
         Whether the interlock on the valve is active, preventing the valve from
-        opening
+        opening.
+
+        Returns
+        -------
+        interlock : bool
+        	Whether the valve is currently interlocked
         """
         return bool(self.interlock.value)
 
 
 class PositionValve(ValveBase):
     """
-    Valve that has the position PV.
+    Base valve that has the position PV.
     
     Components
     ----------
@@ -263,7 +265,7 @@ class PositionValve(ValveBase):
 
 class BypassValve(ValveBase):
     """
-    Valve that has the bypass PV.
+    Base valve that has a bypass PV.
 
     Components
     ----------
@@ -316,7 +318,7 @@ class BypassValve(ValveBase):
 
 class OverrideValve(ValveBase):
     """
-    Valve that has the override PV.
+    Base class that has the override PV.
 
     Components
     ----------
@@ -373,14 +375,14 @@ class OverrideValve(ValveBase):
 
 class N2CutoffValve(OverrideValve):
     """
-    Nitrogen Cutoff Valve
+    Valve used to separate the nitrogen supply from the rest of the system.
     """
     pass
 
 
 class ApertureValve(PositionValve, BypassValve):
     """
-    Aperture Valve
+    Aperture valves that have both a position PV and a bypass PV.
     """
     def __init__(self, prefix, *, read_attrs=None, **kwargs):
 
@@ -392,7 +394,7 @@ class ApertureValve(PositionValve, BypassValve):
 
 class ReadbackValve(PositionValve, OverrideValve):
     """
-    Valve on the roots pumps.
+    Valves that have the position PV and the override PV.
     """
     def __init__(self, prefix, *, read_attrs=None, **kwargs):
 
