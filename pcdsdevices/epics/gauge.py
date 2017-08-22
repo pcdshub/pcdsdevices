@@ -27,7 +27,15 @@ logger = getLogger(__name__)
 
 class GaugeBase(Device):
     """
-    
+    Base gauge class that implements a pressure and state readback.
+
+    Components
+    ----------
+    pressure : EpicsSignalRO, ":P"
+    	Pressure readback for the gauge.
+
+    status : EpicsSignalRO, ":STATE"
+    	Status readback for the gauge.
     """
     pressure = Component(EpicsSignalRO, ":P", auto_monitor=True)
     status = Component(EpicsSignalRO, ":STATE")
@@ -59,7 +67,13 @@ class Pirani(GaugeBase):
 
 class ColdCathode(GaugeBase):
     """
-    Basic cold cathode gauge with pressure and status readbacks.
+    Basic cold cathode gauge with pressure and status readbacks, along with a
+    paired pirani gauge.
+
+    Component
+    ---------
+    pirani : Pirani
+    	The pirani this cold cathode is paried with.
     """
     pirani = FormattedComponent(Pirani, "self._prefix_pirani")
     
