@@ -400,7 +400,7 @@ class ApertureValve(PositionValve, BypassValve):
         super().__init__(prefix, read_attrs=read_attrs, **kwargs)
 
 
-class RightAngleValve(PositionValve, OverrideValve):
+class ReadbackValve(PositionValve, OverrideValve):
     """
     Valve on the roots pumps.
     """
