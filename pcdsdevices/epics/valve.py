@@ -56,7 +56,7 @@ class InterlockError(Exception):
     pass
 
 
-class ValveBase(Device, PositionerBase):
+class ValveBase(Device):
     """
     Base Vacuum Valve Class
 
@@ -114,9 +114,6 @@ class ValveBase(Device, PositionerBase):
 
         Raises
         ------
-        TimeoutError
-            When motion takes longer than `timeout`.
-
         ValueError
             On invalid positions.
 

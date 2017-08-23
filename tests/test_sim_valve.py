@@ -7,7 +7,7 @@ from collections import OrderedDict
 ###############
 # Third Party #
 ###############
-import numpy as np
+import pytest
 
 ##########
 # Module #
