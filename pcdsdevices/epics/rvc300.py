@@ -402,12 +402,3 @@ class RVC300(Device):
         
         self.derivative_time.put(val)
         
-        
-class FeeRVC300(RVC300):
-    """
-    Subclass of the RVC300 that includes the FEE changes.
-    """
-    pressure_setpoint = Component(EpicsSignal, ":GetPressSetpointRaw",
-                                  write_pv=":SetPressSetpointRaw")
-    
-    
