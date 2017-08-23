@@ -19,12 +19,13 @@ from ophyd.utils.epics_pvs import raise_if_disconnected
 # Module #
 ##########
 from .device import Device
+from .component import Component
 from .signal import (EpicsSignal, EpicsSignalRO)
 
 logger = logging.getLogger(__name__)
 
 
-class RVC300(device):
+class RVC300(Device):
     """
     Base RVC300 Class
     """
@@ -62,14 +63,14 @@ class RVC300(device):
     reset_time = Component(EpicsSignal, ":GetResetTime")
     derivative_time = Component(EpicsSignal, ":GetDerivativeTime")
 
-    def __init__(prefix, *, read_attrs=None, configuration_attrs=None,
+    def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, valid_modes=None, **kwargs):
         if read_attrs is None:
-            read_attrs = ["pressure", "mode", "pressure_setpoint",
+            read_attrs = ["pressure", "operating_mode", "pressure_setpoint",
                           "flow_setpoint"]
         if configuration_attrs is None:
-            configuration_attrs = ["pressure", "mode", "pressure_setpoint",
-                                   "flow_setpoint"]
+            configuration_attrs = ["pressure", "operating_mode",
+                                   "pressure_setpoint", "flow_setpoint"]
 
         if valid_modes is None:
             self.valid_modes = ["WAIT", "PRESS", "FLOW"]
@@ -169,6 +170,17 @@ class RVC300(device):
     @property
     def position(self, mode=None, **kwargs):
         """
+        Returns the current pressure in the chamber.
+
+        Returns
+        -------
+        pressure : float
+        	Current pressure in the chamber.
+        """
+        return self.pressure.value
+
+    def setpoint(self, mode=None, **kwargs):
+        """
         Returns the setpoint of the current mode.
 
         If mode is not none, then it the setpoint for that mode is returned. If
@@ -206,9 +218,9 @@ class RVC300(device):
         ValueError
         	If the inputted mode is not a valid mode.
         """
-        if not isinstance(val, str) or val.upper() not in self.valid_modes:
+        if not isinstance(mode, str) or mode.upper() not in self.valid_modes:
             err = "Invlid mode '{0}' inputted. Must be in of '{1}'.".format(
-                val, self.valid_modes)
+                mode, self.valid_modes)
             logger.error(err)
             raise ValueError(err)
 
@@ -222,9 +234,18 @@ class RVC300(device):
         ValueError
         	If the inputted value is invalid or the mode is not a valid mode.
         """
-        if not isinstance(val, (int, float)) or np.isnan(val) or np.isinf(val):
+        # Handle non-numbers, nan, inf and bools
+        if not isinstance(val, (int, float)) or np.isnan(val) or np.isinf(val) \
+           or val is True or val is False:
             err = "Invlid setpoint inputted '{0}'. Must be a number.".format(
                 val)
+            logger.error(err)
+            raise ValueError(err)
+
+        # Handle numbers less than 0
+        elif val < 0:
+            err = "Invlid setpoint inputted '{0}'. Value must be positive." \
+                  "".format(val)
             logger.error(err)
             raise ValueError(err)
         
@@ -298,7 +319,7 @@ class RVC300(device):
         """
         return self.p_gain.value
 
-    @mode.setter
+    @kp.setter
     @raise_if_disconnected
     def kp(self, val):
         """
@@ -330,7 +351,7 @@ class RVC300(device):
         """
         return self.reset_time.value
 
-    @mode.setter
+    @tn.setter
     @raise_if_disconnected
     def tn(self, val):
         """
@@ -362,7 +383,7 @@ class RVC300(device):
         """
         return self.derivative_time.value
 
-    @mode.setter
+    @tv.setter
     @raise_if_disconnected
     def tv(self, val):
         """
@@ -382,3 +403,11 @@ class RVC300(device):
         self.derivative_time.put(val)
         
         
+class FeeRVC300(RVC300):
+    """
+    Subclass of the RVC300 that includes the FEE changes.
+    """
+    pressure_setpoint = Component(EpicsSignal, ":GetPressSetpointRaw",
+                                  write_pv=":SetPressSetpointRaw")
+    
+    
