@@ -1021,3 +1021,7 @@ class OffsetMirror(Device, PositionerBase):
         if pos is not None:
             pos = float(pos)
         self.pitch.nominal_position = pos
+
+    @property
+    def egu(self):
+        return 'um'
