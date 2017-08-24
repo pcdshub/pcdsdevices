@@ -52,7 +52,6 @@ def test_RVC300_raises_ValueError_on_invalid_moves(pos):
         status = rvc.move(pos)
 
 @pytest.mark.timeout(tmo)
-@pytest.mark.parametrize("pos", [10, 20, 30])
 def test_RVC300_pid_properties_work_correctly():
     rvc = rvc300.RVC300("TEST")
     assert(rvc.kp != 10)
