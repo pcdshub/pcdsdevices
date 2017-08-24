@@ -19,7 +19,7 @@ from ophyd.utils.epics_pvs import raise_if_disconnected
 # Module #
 ##########
 from .device import Device
-from .component import Component
+from .component import (Component, FormattedComponent)
 from .signal import (EpicsSignal, EpicsSignalRO)
 
 logger = logging.getLogger(__name__)
@@ -96,7 +96,7 @@ class RVC300(Device):
             Value to change the set point to.
 
         mode : str or None, optional
-        	If not None, move() changes the setpoint for the mode inputted.
+            If not None, move() changes the setpoint for the mode inputted.
 
         wait : bool, optional
             Wait for the status object to complete the move before returning.
@@ -175,11 +175,12 @@ class RVC300(Device):
         Returns
         -------
         pressure : float
-        	Current pressure in the chamber.
+            Current pressure in the chamber.
         """
         return self.pressure.value
 
-    def setpoint(self, mode=None, **kwargs):
+    @property
+    def setpoint(self):
         """
         Returns the setpoint of the current mode.
 
@@ -189,25 +190,29 @@ class RVC300(Device):
         Returns
         -------
         setpoint : float
-        	The setpoint of the current mode.
+            The setpoint of the current mode.
 
         Raises
         ------
         ValueError
-        	If the inputted mode is invalid.
+            If the inputted mode is invalid.
         """
-        pos_mode = mode or self.mode
-        check_mode(pos_mode)
-
-        if pos_mode.upper() == "PRESS":
+        if self.mode.upper() == "PRESS":
             return self.pressure_setpoint.value
-        elif pos_mode.upper() == "FLOW":
+        elif self.mode.upper() == "FLOW":
             return self.flow_setpoint.value
         else:
             msg = "Mode is 'WAIT'. To get a position input a mode, to " \
                   "position, or change the operating mode."
             logger.warning(msg)
             return
+
+    @setpoint.setter
+    def setpoint(self, val):
+        """
+        Sets the setpoint for the current mode to be the inputted value.
+        """
+        self.move(val, mode=None, wait=True)
 
     def check_mode(self, mode):
         """
@@ -216,13 +221,20 @@ class RVC300(Device):
         Raises
         ------
         ValueError
-        	If the inputted mode is not a valid mode.
+            If the inputted mode is not a valid mode.
         """
-        if not isinstance(mode, str) or mode.upper() not in self.valid_modes:
-            err = "Invlid mode '{0}' inputted. Must be in of '{1}'.".format(
-                mode, self.valid_modes)
-            logger.error(err)
-            raise ValueError(err)
+        try:
+            m = int(mode)
+            if isinstance(mode, (int, float)) and mode in [0, 1, 2]:
+                return
+        except ValueError:
+            if isinstance(mode, str) and mode.upper() in self.valid_modes:
+                return
+
+        err = "Invlid mode '{0}' inputted. Must be in of '{1}'.".format(
+            mode, self.valid_modes)
+        logger.error(err)
+        raise ValueError(err)
 
     def check_values(self, val, mode=None):
         """
@@ -232,7 +244,7 @@ class RVC300(Device):
         Raises
         ------
         ValueError
-        	If the inputted value is invalid or the mode is not a valid mode.
+            If the inputted value is invalid or the mode is not a valid mode.
         """
         # Handle non-numbers, nan, inf and bools
         if not isinstance(val, (int, float)) or np.isnan(val) or np.isinf(val) \
@@ -274,7 +286,7 @@ class RVC300(Device):
         Returns
         -------
         pressure : float
-        	Current sensed pressure in the chamber.
+            Current sensed pressure in the chamber.
         """
         return self.pressure.value        
 
@@ -287,9 +299,13 @@ class RVC300(Device):
         Returns
         -------
         mode : str
-        	Current operating mode of the controller.
+            Current operating mode of the controller.
         """
-        return self.operating_mode.value
+        try:
+            m = int(self.operating_mode.value)
+            return self.valid_modes[m]
+        except ValueError:
+            return self.operating_mode.value
 
     @mode.setter
     @raise_if_disconnected
@@ -300,7 +316,7 @@ class RVC300(Device):
         Raises
         ------
         ValueError
-        	When the requested operating mode is not a valid mode.
+            When the requested operating mode is not a valid mode.
         """
         # Handle bad inputs
         self.check_mode(val)
@@ -315,7 +331,7 @@ class RVC300(Device):
         Returns
         -------
         kp : float
-        	The current gain setting.
+            The current gain setting.
         """
         return self.p_gain.value
 
@@ -328,7 +344,7 @@ class RVC300(Device):
         Raises
         ------
         ValueError
-        	When the inputted gain is invalid.
+            When the inputted gain is invalid.
         """
         # Handle bad inputs
         if not isinstance(val, (int, float)) or np.isnan(val) or np.isinf(val):
@@ -347,7 +363,7 @@ class RVC300(Device):
         Returns
         -------
         tn : float
-        	The current reset time.
+            The current reset time.
         """
         return self.reset_time.value
 
@@ -360,7 +376,7 @@ class RVC300(Device):
         Raises
         ------
         ValueError
-        	When the inputted reset time is invalid.
+            When the inputted reset time is invalid.
         """
         # Handle bad inputs
         if not isinstance(val, (int, float)) or np.isnan(val) or np.isinf(val):
@@ -379,7 +395,7 @@ class RVC300(Device):
         Returns
         -------
         tv : float
-        	The current derivative time.
+            The current derivative time.
         """
         return self.derivative_time.value
 
@@ -392,7 +408,7 @@ class RVC300(Device):
         Raises
         ------
         ValueError
-        	When the inputted derivative time is invalid.
+            When the inputted derivative time is invalid.
         """
         # Handle bad inputs
         if not isinstance(val, (int, float)) or np.isnan(val) or np.isinf(val):
@@ -402,3 +418,13 @@ class RVC300(Device):
         
         self.derivative_time.put(val)
         
+class FeeRVC300(RVC300):
+    """
+    FEE RVC300
+    """
+    pressure_setpoint = FormattedComponent(EpicsSignal, 
+                                           "{self.prefix_gatt}:P_DES")
+    
+    def __init__(self, prefix, prefix_gatt, **kwargs):
+        self.prefix_gatt = prefix_gatt
+        super().__init__(prefix, **kwargs)
