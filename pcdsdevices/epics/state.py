@@ -5,12 +5,14 @@ Module to define records that act as state getter/setters for more complicated
 devices.
 """
 import logging
+import threading
 from threading import RLock
 from keyword import iskeyword
 import time
 
 from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait
+from ophyd.status import StatusBase
 
 from .signal import EpicsSignal, EpicsSignalRO
 from .component import Component
@@ -79,17 +81,38 @@ class PVState(State):
 
     @property
     def states(self):
+        """
+        A list of possible states
+        """
         return list(self._states.keys())
 
     @property
     def value(self):
+        """
+        Current state of the object
+        """
+        state_value = None
         for state, info in self._states.items():
+            #Gather signal
             state_signal = getattr(self, state)
+            #Get raw EPICS readback
             pv_value = state_signal.get(use_monitor=True)
-            state_value = info.get(pv_value, "unknown")
-            if state_value != "defer":
-                return state_value
-        return "unknown"
+            try:
+                #Associate readback with device state
+                signal_state = info[pv_value]
+                if signal_state != 'defer':
+                    if state_value:
+                        assert signal_state == state_value
+                    #Update state
+                    state_value = signal_state
+
+            #Handle unaccounted readbacks 
+            except (KeyError, AssertionError):
+                state_value = 'unknown'
+                break
+
+        #If all states deferred, report as unknown
+        return state_value or 'unknown'
 
     @value.setter
     def value(self, value):
@@ -269,6 +292,83 @@ InOutCCMStates = statesrecord_class("InOutCCMStates", ":IN", ":OUT", ":CCM",
 InOutCCMStatesIoc = statesrecord_class("InOutCCMStatesIoc", ":IN", ":OUT",
                                        ":CCM", doc=inoutccmdoc, has_ioc=True)
 
-
 class StateError(Exception):
     pass
+
+
+class StateStatus(StatusBase):
+    """
+    Status produced by state request
+
+    Parameters
+    ----------
+    device : obj
+        Device with `value` attribute that returns a state string
+
+    desired_state : str
+        Requested state
+
+    timeout : float, optional
+        The default timeout to wait to mark the request as a failure
+
+    settle_time : float, optional
+        Time to wait after completion until running callbacks
+
+    poll_rate : float, optional
+        Rate to keep requesting state from device
+    """
+    def __init__(self, device, desired_state,
+                 timeout=None, settle_time=None, poll_rate=0.1):
+        #Store device attributes
+        self.device = device
+        self.current_state = device.value
+        self.desired_state = desired_state
+        #Immediate success?
+        done = self.current_state == self.desired_state
+        #Start timeout thread
+        super().__init__(timeout=timeout, settle_time=settle_time,
+                         done=done,success=done)
+        #Start state thread
+        thread = threading.Thread(target=self._wait_for_state,
+                                  daemon=True, kwargs={'timeout'  : timeout,
+                                                       'poll_rate': poll_rate})
+        self._state_thread = thread
+        self._state_thread.start()
+
+
+    def _wait_for_state(self,*args,  timeout=None, poll_rate=0.1, **kwargs):
+        """
+        Wait for the state to reach the requested value
+        """
+        try:
+            #Starting time and value
+            current_value   = self.device.value
+            expiration_time = time.time() + timeout if timeout else None
+            #Repeatedly check value
+            while not current_value == self.desired_state:
+                logger.info("Waiting for %s to be at at state %s",
+                            self.device.name, self.desired_state)
+                #Wait for update
+                time.sleep(poll_rate)
+                #Increase time as not to spam EPICS
+                if poll_rate < 0.1:
+                    poll_rate *= 2 #Logarithmic back-off
+                #Check for new value
+                current_value = self.device.value
+                #Timeout exit condition
+                if expiration_time is not None and time.time() > expiration_time:
+                    raise TimeoutError("Device {} failed to reach state {} after {} "
+                                       "seconds. Current value is {}"
+                                       "".format(self.device.name,
+                                                 self.desired_state,
+                                                 current_value))
+            #Report success
+            self._finished(success=True)
+
+        #Catch exceptions and log
+        except Exception as exc:
+            logger.error(exc)
+
+        #Make sure thread gets garbage collected
+        finally:
+            self._state_thread = None
