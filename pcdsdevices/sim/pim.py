@@ -24,6 +24,7 @@ from ..epics import pim
 
 class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):
     image1 = Component(ImagePlugin, ":IMAGE1:", read_attrs=['array_data'])
+    image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
     stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
                                                             'mean_value'])
 
