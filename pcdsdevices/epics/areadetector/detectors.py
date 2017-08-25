@@ -38,7 +38,8 @@ __all__ = ['DetectorBase',
            'PvcamDetector',
            'RoperDetector',
            'SimDetector',
-           'URLDetector',
+           'URLDetector'
+           'GigeDetector',
 ]
 
 
@@ -63,6 +64,12 @@ class FeeOpalDetector(DetectorBase):
     """
     cam = ADComponent(cam.FeeOpalCam, ":")
 
+class GigeDetector(DetectorBase):
+    """
+    Gige Cam detector class.
+    """
+    cam = ADComponent(cam.GigeCam, ":")
+    
 
 class SimDetector(detectors.SimDetector, DetectorBase):
     pass
