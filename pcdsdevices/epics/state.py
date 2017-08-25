@@ -5,7 +5,6 @@ Module to define records that act as state getter/setters for more complicated
 devices.
 """
 import logging
-import threading
 from threading import RLock
 from keyword import iskeyword
 import time
@@ -300,6 +299,13 @@ class StateStatus(StatusBase):
     """
     Status produced by state request
 
+    The status relies on two methods of the device, first the attribute
+    `.value` should reflect the current state. Second, the status will call the
+    built-in method `subscribe` with the `event_type` explicitly set to
+    "device.SUB_STATE". This will cause the StateStatus to process whenever the
+    device changes state to avoid unnecessary polling of the associated EPICS
+    variables
+
     Parameters
     ----------
     device : obj
@@ -321,54 +327,29 @@ class StateStatus(StatusBase):
                  timeout=None, settle_time=None, poll_rate=0.1):
         #Store device attributes
         self.device = device
-        self.current_state = device.value
         self.desired_state = desired_state
         #Immediate success?
-        done = self.current_state == self.desired_state
+        done = device.value == self.desired_state
         #Start timeout thread
         super().__init__(timeout=timeout, settle_time=settle_time,
                          done=done,success=done)
-        #Start state thread
-        thread = threading.Thread(target=self._wait_for_state,
-                                  daemon=True, kwargs={'timeout'  : timeout,
-                                                       'poll_rate': poll_rate})
-        self._state_thread = thread
-        self._state_thread.start()
+        #Subscribe state checking
+        device.subscribe(self.check_state,
+                         event_type=device.SUB_STATE,
+                         run=True)
 
-
-    def _wait_for_state(self,*args,  timeout=None, poll_rate=0.1, **kwargs):
+    def check_state(self, *args, **kwargs):
         """
-        Wait for the state to reach the requested value
+        Check whether the device is in the proper state
         """
-        try:
-            #Starting time and value
-            current_value   = self.device.value
-            expiration_time = time.time() + timeout if timeout else None
-            #Repeatedly check value
-            while not current_value == self.desired_state:
-                logger.info("Waiting for %s to be at at state %s",
-                            self.device.name, self.desired_state)
-                #Wait for update
-                time.sleep(poll_rate)
-                #Increase time as not to spam EPICS
-                if poll_rate < 0.1:
-                    poll_rate *= 2 #Logarithmic back-off
-                #Check for new value
-                current_value = self.device.value
-                #Timeout exit condition
-                if expiration_time is not None and time.time() > expiration_time:
-                    raise TimeoutError("Device {} failed to reach state {} after {} "
-                                       "seconds. Current value is {}"
-                                       "".format(self.device.name,
-                                                 self.desired_state,
-                                                 current_value))
-            #Report success
+        if self.desired_state == self.device.value:
             self._finished(success=True)
 
-        #Catch exceptions and log
-        except Exception as exc:
-            logger.error(exc)
-
-        #Make sure thread gets garbage collected
-        finally:
-            self._state_thread = None
+    def _finished(self, *args, **kwargs):
+        """
+        Reimplemented to clear the callback upon timeout or success
+        """
+        #Clear callback
+        self.device.clear_sub(self.check_state)
+        #Run completion
+        super()._finished(*args, **kwargs)
