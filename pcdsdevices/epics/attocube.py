@@ -21,12 +21,7 @@ from .component import Component
 from .epicsmotor import Epicsmotor
 from .signal import (EpicsSignal, EpicsSignalRO)
 
-
-class EccMotor(EpicsMotor):
-    """
-    ECC Motor Class
-    """
-    pass
+logger = logging.getLogger(__name__)
 
 
 class EccController(Device):
@@ -52,3 +47,36 @@ class EccController(Device):
         Saves the current configuration of the controller.
         """
         return self._flash.set(1)
+
+
+class EccMotor(EpicsMotor):
+    """
+    ECC Motor Class
+    """
+    pass
+
+
+class TranslationEcc(EccMotor):
+    """
+    Class for the translation ecc motor
+    """
+    pass
+
+
+class GoniometerEcc(EccMotor):
+    """
+    Class for the goniometer ecc motor
+    """
+    pass
+
+
+class DiodeEcc(EccMotor):
+    """
+    Class for the diode insertion ecc motor
+    """
+    pass
+
+
+
+
+
