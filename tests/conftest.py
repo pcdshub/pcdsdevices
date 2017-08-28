@@ -52,7 +52,7 @@ class FakeEpicsPV(object):
         self._connection_callback = connection_callback
         self._form = form
         self._auto_monitor = auto_monitor
-        self._value = None
+        self._value = 0
         self._connected = True
         self._running = True
         self.enum_strs = enum_strs
@@ -261,3 +261,15 @@ def using_fake_epics_pv(fcn):
             epics.PV = pv_backup
 
     return wrapped
+
+def get_subclasses_in_module(module, cls):
+    subclasses = []
+    for dir_str in dir(module):
+        dir_cls = getattr(module, dir_str)
+        try:
+            if issubclass(dir_cls, cls):
+                subclasses.append(dir_cls)
+        except TypeError:
+            pass
+    return subclasses
+    
