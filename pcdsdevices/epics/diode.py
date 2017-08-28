@@ -16,7 +16,7 @@ import logging
 # Module #
 ##########
 from .micronix import VT50
-from .device import device
+from .device import Device
 from .component import Component
 from .areadetector.detectors import GigeDetector
 

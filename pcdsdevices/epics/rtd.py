@@ -15,7 +15,7 @@ import logging
 ##########
 # Module #
 ##########
-from .device import device
+from .device import Device
 
 logger = logging.getLogger(__name__)
 

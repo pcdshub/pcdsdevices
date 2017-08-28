@@ -15,7 +15,7 @@ import logging
 ##########
 # Module #
 ##########
-from .epicsmotor import Epicsmotor
+from .epicsmotor import EpicsMotor
 
 logger = logging.getLogger(__name__)
 
