@@ -208,7 +208,7 @@ class Slits(IocDevice):
 
     def open(self):
         """
-        Open the slits to have a 50mm aperature on each side
+        Open the slits to have a large aperature on each side
         """
         self.open_cmd.put(1)
 
