@@ -35,9 +35,15 @@ class Slits(IocDevice):
     """
     Beam slits with combined motion for center and width.
 
-    Attributes
+    Parameters
     ----------
-    nominal_aperature : float
+    prefix : str
+        The EPICS base of the motor
+
+    name : str, optional
+        The name of the offset mirror
+
+    nominal_aperature : float, optional
         Nominal slit size that will encompass the beam without blocking
 
     Notes
@@ -66,17 +72,18 @@ class Slits(IocDevice):
     close_cmd = Component(EpicsSignal, ":CLOSE")
     block_cmd = Component(EpicsSignal, ":BLOCK")
 
-    #Nominal
-    nominal_aperature = 5.0
-
     #Subscription information
     SUB_AP_CH = 'aperature_changed'
     _default_sub = SUB_AP_CH
 
-    def __init__(self, prefix, *, ioc="", read_attrs=None, name=None,
-                 **kwargs):
+    def __init__(self, prefix, *, ioc="", read_attrs=None,
+                 name=None, nominal_aperature=5.0, **kwargs):
+        #Nominal
+        self.nominal_aperature = nominal_aperature
+        #Ophyd initialization
         if read_attrs is None:
             read_attrs = ['xcenter', 'xwidth', 'ycenter', 'ywidth']
+
         super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
                          **kwargs)
 
