@@ -11,6 +11,7 @@ import time
 
 from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait
+from ophyd.status import StatusBase
 
 from .signal import EpicsSignal, EpicsSignalRO
 from .component import Component
@@ -79,17 +80,38 @@ class PVState(State):
 
     @property
     def states(self):
+        """
+        A list of possible states
+        """
         return list(self._states.keys())
 
     @property
     def value(self):
+        """
+        Current state of the object
+        """
+        state_value = None
         for state, info in self._states.items():
+            #Gather signal
             state_signal = getattr(self, state)
+            #Get raw EPICS readback
             pv_value = state_signal.get(use_monitor=True)
-            state_value = info.get(pv_value, "unknown")
-            if state_value != "defer":
-                return state_value
-        return "unknown"
+            try:
+                #Associate readback with device state
+                signal_state = info[pv_value]
+                if signal_state != 'defer':
+                    if state_value:
+                        assert signal_state == state_value
+                    #Update state
+                    state_value = signal_state
+
+            #Handle unaccounted readbacks 
+            except (KeyError, AssertionError):
+                state_value = 'unknown'
+                break
+
+        #If all states deferred, report as unknown
+        return state_value or 'unknown'
 
     @value.setter
     def value(self, value):
@@ -269,6 +291,107 @@ InOutCCMStates = statesrecord_class("InOutCCMStates", ":IN", ":OUT", ":CCM",
 InOutCCMStatesIoc = statesrecord_class("InOutCCMStatesIoc", ":IN", ":OUT",
                                        ":CCM", doc=inoutccmdoc, has_ioc=True)
 
-
 class StateError(Exception):
     pass
+
+class SubscriptionStatus(StatusBase):
+    """
+    Status to monitor a class attribute
+
+    Instead of creating additional threads to monitor signal values, SubStatus
+    uses  ophyd's built-in subscription systems to check the status of a state
+    whenever a device updates
+
+    Parameters
+    ----------
+    device : obj
+
+    callback : callable
+        Callback that takes arbitrary arguments and keywords and returns a
+        boolean.
+
+    event_type : str, optional
+        Name of event type to check whether the device has finished succesfully
+
+    timeout : float, optional
+        Maximum timeout to wait to mark the request as a failure
+    
+    settle_time : float, optional
+        Time to wait after completion until running callbacks
+    """
+    def __init__(self, device, callback, event_type=None,
+                 timeout=None, settle_time=None):
+        #Store device and attribute information
+        self.device    = device
+        self.callback  = callback
+
+        #Start timeout thread in the background
+        super().__init__(timeout=timeout, settle_time=settle_time)
+
+        #Subscribe callback and run initial check
+        self.device.subscribe(self.check_value,
+                              event_type=event_type,
+                              run=True)
+
+
+    def check_value(self, *args, **kwargs):
+        """
+        Update the status object
+        """
+        #Get attribute from device
+        try:
+            success = self.callback(*args, **kwargs)
+        #Do not fail silently
+        except Exception as e:
+            logger.error(e)
+            raise
+
+        #If succesfull indicate finished
+        if success:
+            self._finished(success=True)
+
+
+    def _finished(self, *args, **kwargs):
+        """
+        Reimplemented finished command to cleanup callback subscription
+        """
+        #Clear callback
+        self.device.clear_sub(self.check_value)
+        #Run completion
+        super()._finished(**kwargs)
+
+
+class StateStatus(SubscriptionStatus):
+    """
+    Status produced by state request
+
+    The status relies on two methods of the device, first the attribute
+    `.value` should reflect the current state. Second, the status will call the
+    built-in method `subscribe` with the `event_type` explicitly set to
+    "device.SUB_STATE". This will cause the StateStatus to process whenever the
+    device changes state to avoid unnecessary polling of the associated EPICS
+    variables
+
+    Parameters
+    ----------
+    device : obj
+        Device with `value` attribute that returns a state string
+
+    desired_state : str
+        Requested state
+
+    timeout : float, optional
+        The default timeout to wait to mark the request as a failure
+
+    settle_time : float, optional
+        Time to wait after completion until running callbacks
+    """
+    def __init__(self, device, desired_state,
+                 timeout=None, settle_time=None):
+        #Make a quick check_state callable
+        def check_state(*args, **kwargs):
+            print(device.value, desired_state)
+            return device.value == desired_state
+        #Start timeout and subscriptions
+        super().__init__(device, check_state, event_type=device.SUB_STATE,
+                         timeout=timeout, settle_time=settle_time)
