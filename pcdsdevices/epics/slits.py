@@ -34,6 +34,34 @@ class SlitPositioner(PVPositioner, Device):
 class Slits(IocDevice):
     """
     Beam slits with combined motion for center and width.
+
+    Parameters
+    ----------
+    prefix : str
+        The EPICS base of the motor
+
+    name : str, optional
+        The name of the offset mirror
+
+    nominal_aperature : float, optional
+        Nominal slit size that will encompass the beam without blocking
+
+    Notes
+    -----
+    The slits represent a unique device when forming the lightpath as whether
+    the beam is being blocked or not depends on the pointing. In order to
+    create an estimate that will warn operators of narrowly closed slits while
+    still allowing slits to be closed along the beampath.
+
+    The simplest solution was to use a :attr:`.nominal_aperature` that stores
+    the slit width and height that the slits should use for general operation.
+    Using this the :attr:`.transmission` is calculated based on how the current
+    aperature compares to the nominal, always using the minimum of the width or
+    height. This means that if you have a nominal aperature of 2 mm, but your
+    slits are set to 0.5 mm, the total estimated transmission will be 25%.
+    Obviously this is greatly oversimplified, but it allows the lightpath to
+    make a rough back of the hand calculation without being over aggressive
+    about changing slit widths during alignment
     """
     xcenter = Component(SlitPositioner, slit_type="XCENTER", egu="mm")
     xwidth = Component(SlitPositioner, slit_type="XWIDTH", egu="mm")
@@ -44,12 +72,26 @@ class Slits(IocDevice):
     close_cmd = Component(EpicsSignal, ":CLOSE")
     block_cmd = Component(EpicsSignal, ":BLOCK")
 
-    def __init__(self, prefix, *, ioc="", read_attrs=None, name=None,
-                 **kwargs):
+    #Subscription information
+    SUB_AP_CH = 'aperature_changed'
+    _default_sub = SUB_AP_CH
+
+    def __init__(self, prefix, *, ioc="", read_attrs=None,
+                 name=None, nominal_aperature=5.0, **kwargs):
+        #Nominal
+        self.nominal_aperature = nominal_aperature
+        #Ophyd initialization
         if read_attrs is None:
-            read_attrs = ['xcenter', 'xwidth', 'ycenter', 'ywidth', 'blocked']
+            read_attrs = ['xcenter', 'xwidth', 'ycenter', 'ywidth']
+
         super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
                          **kwargs)
+
+        #Subscribe to changes in aperature
+        self.xwidth.readback.subscribe(self._aperature_changed,
+                                       run=False)
+        self.ywidth.readback.subscribe(self._aperature_changed,
+                                       run=False)
 
     def move(self,width,wait=True,**kwargs):
         """
@@ -67,14 +109,80 @@ class Slits(IocDevice):
 
         Returns
         -------
-        status : MoveStauts
+        status : MoveStatus
             status object of the move
 
         """
         self.xwidth.move(width,wait=False,**kwargs)
         return self.ywidth.move(width,wait=wait,**kwargs)
 
+    @property
+    def inserted(self):
+        """
+        Whether the slits are inserted into the beampath
+        """
+        return (min(self.xwidth.position, self.ywidth.position)
+                <= self.nominal_aperature)
 
+    @property
+    def removed(self):
+        """
+        Whether the slits are entirely removed from the beampath
+        """
+        return not self.inserted
+
+    @property
+    def transmission(self):
+        """
+        Estimated transmission of the slits based on :attr:`.nominal_aperature
+        """
+        #Find most restrictive side of slit aperature
+        min_side = min(self.xwidth.position, self.ywidth.position)
+        #Don't allow transmissions over 1.0
+        return min(min_side / self.nominal_aperature, 1.0)
+
+    def remove(self, width=None, wait=False, timeout=None, **kwargs):
+        """
+        Open the slits to unblock the beam
+
+        Parameters
+        ----------
+        width : float, optional
+            Open the slits to a specific width otherwise
+            `:attr:`.nominal_aperature is used
+
+        wait : bool, optional
+            Wait for the status object to complete the move before returning
+
+        timeout : float, optional
+            Maximum time to wait for the motion. If None, the default timeout
+            for this positioner is used
+
+        Returns
+        -------
+        MoveStatus:
+            Status object based on move completion
+
+        Raises
+        ------
+        ValueError:
+            If the width is not greater than or equal to the
+            :attr:`nominal_aperature`
+
+        See Also
+        --------
+        :meth:`Slits.move`
+        """
+        #Use nominal_aperature by default
+        width = width or self.nominal_aperature
+
+        if width < self.nominal_aperature:
+            raise ValueError("Requesed width of {} mm will still block the "
+                             "beampath according to the nominal aperature "
+                             "size of {} mm".format(width,
+                                                    self.nominal_aperature))
+
+        return self.move(width, wait=wait, timeout=timeout)
 
     def set(self,width,wait=True,**kwargs):
         """
@@ -106,10 +214,28 @@ class Slits(IocDevice):
         return super().unstage()
 
     def open(self):
+        """
+        Open the slits to have a large aperature on each side
+        """
         self.open_cmd.put(1)
 
     def close(self):
+        """
+        Close the slits to have an aperature of 0mm on each side
+        """
         self.close_cmd.put(1)
 
     def block(self):
+        """
+        Overlap the slits to block the beam
+        """
         self.block_cmd.put(1)
+
+    def _aperature_changed(self, *args, **kwargs):
+        """
+        Callback run when slit size is adjusted
+        """
+        #Avoid duplicate keywords
+        kwargs.pop('sub_type', None)
+        #Run subscriptions
+        self._run_subs(sub_type=self.SUB_AP_CH, **kwargs)
