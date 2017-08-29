@@ -254,6 +254,10 @@ class PIMMotor(Device, PositionerBase):
         """
         return self.move("OUT", wait=wait, **kwargs)
 
+    #Conform to lightpath interface
+    remove = move_out
+
+
     def move_diode(self, wait=True, **kwargs):
         """
         Move the PIM to the DIODE position. Alias for move("DIODE").
@@ -368,6 +372,15 @@ class PIMMotor(Device, PositionerBase):
         inserted : bool
         """
         return self.blocking
+
+
+    @property
+    def removed(self):
+        """
+        Whether the YAG is inserted
+        """
+        return self.states.value == 'YAG'
+
 
     def stage(self):
         self.move_in(wait=True)
