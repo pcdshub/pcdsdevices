@@ -7,6 +7,7 @@ import random
 import logging
 import threading
 from functools import wraps
+import inspect
 
 import epics
 import numpy as np
@@ -262,14 +263,19 @@ def using_fake_epics_pv(fcn):
 
     return wrapped
 
-def get_subclasses_in_module(module, cls):
-    subclasses = []
-    for dir_str in dir(module):
-        dir_cls = getattr(module, dir_str)
+def get_classes_in_module(module, subcls=None):
+    classes = []
+    all_classes = inspect.getmembers(module)
+    for _, cls in all_classes:
         try:
-            if issubclass(dir_cls, cls):
-                subclasses.append(dir_cls)
-        except TypeError:
-            pass
-    return subclasses
-    
+            if cls.__module__ == module.__name__:
+                if subcls is not None:
+                    try:
+                        if not issubclass(cls, subcls):
+                            continue
+                    except TypeError:
+                        continue
+                classes.append(cls)
+        except AttributeError:
+            pass    
+    return classes
