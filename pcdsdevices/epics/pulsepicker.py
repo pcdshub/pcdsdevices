@@ -1,11 +1,71 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from copy import deepcopy
-from .signal import EpicsSignalRO
+from .signal import EpicsSignal, EpicsSignalRO
 from .component import Component, FormattedComponent
 from .iocdevice import IocDevice
+from .device import Device
 from .iocadmin import IocAdminOld
 from .state import InOutStatesIoc, InOutCCMStatesIoc, statesrecord_class
+from .state import SubscriptionStatus
+
+
+class PickerBlade(Device):
+    """
+    Represent the pulse picker blade as separte device
+    """
+    simple_state = Component(EpicsSignalRO, "DF")
+    force_close  = Component(EpicsSignal,   "S_CLOSE")
+    #Subscription information
+    SUB_ST_CH = 'sub_state_changed'
+    _default_sub = SUB_ST_CH
+
+    def __init__(self, prefix, *, name=None, read_attrs=None, **kwargs):
+        #Instantiate ophyd level
+        if read_attrs is None:
+            read_attrs = ['simple_state']
+        super().__init__(prefix, name=name, read_attrs=read_attrs, **kwargs)
+
+        #Subscribe to state changes
+        self.simple_state.subscribe(self._blade_moved, run=False)
+
+    @property
+    def inserted(self):
+        """
+        Whether the blade is open
+        """
+        return self.simple_state.value == 1
+
+    @property
+    def removed(self):
+        """
+        Whether the blade is closed
+        """
+        return self.simple_state.value == 0
+
+    def remove(self, wait=False, timeout=None):
+        """
+        Remove the PulsePicker
+        """
+        #Order move
+        self.force_close.put(1)
+        #Create status
+        status = SubscriptionStatus(self,
+                                    lambda *args, **kwargs: self.removed,
+                                    event_type = self.SUB_ST_CH,
+                                    timeout=timeout)
+        #Optionally wait for status
+        if wait:
+            status_wait(status)
+
+        return status
+
+    def _blade_moved(self, **kwargs):
+        """
+        Blade has moved
+        """
+        kwargs.pop('sub_type', None)
+        self._run_subs(sub_type=self.SUB_ST_CH, **kwargs)
 
 
 class PulsePicker(IocDevice):
@@ -14,10 +74,11 @@ class PulsePicker(IocDevice):
     """
     in_out = FormattedComponent(InOutStatesIoc, "{self._states}",
                                 ioc="{self._states_ioc}")
-    blade = Component(EpicsSignalRO, ":READ_DF", string=True)
     mode = Component(EpicsSignalRO, ":SE", string=True)
     ioc = deepcopy(IocDevice.ioc)
     ioc.cls = IocAdminOld
+    #Blade subdevice
+    blade = FormattedComponent(PickerBlade, "{self.prefix}")
 
     def __init__(self, prefix, *, states="", ioc="", states_ioc="",
                  read_attrs=None, name=None, **kwargs):
