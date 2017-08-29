@@ -387,6 +387,12 @@ class PIMMotor(Device, PositionerBase):
             tmo = float(tmo)
         self.states.timeout = tmo
 
+    def subscribe(self, *args, **kwargs):
+        self.states.subscribe(*args, **kwargs)
+
+    def clear_sub(self, *args, **kwargs):
+        self.states.clear_sub(*args, **kwargs)
+
 
 class PIM(PIMMotor):
     """
