@@ -1,11 +1,25 @@
-*.swp
 __pycache__
-build
 *.pyc
+*$py.class
 
 #Coverage Reports
 htmlcov
 .coverage
 .cache
 
+# Distribution / packaging
+build
 *.egg-info
+.installed.cfg
+*.egg
+
+# Any of the tilda files
+*~
+
+# Random other symbols
+*#
+.#*
+#*
+
+# vim swap files
+*.swp
