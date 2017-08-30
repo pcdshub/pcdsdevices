@@ -18,15 +18,10 @@ import numpy as np
 ##########
 from .device import Device
 from .component import Component
-from .epicsmotor import Epicsmotor
+from .epicsmotor import EpicsMotor
 from .signal import (EpicsSignal, EpicsSignalRO)
 
-
-class EccMotor(EpicsMotor):
-    """
-    ECC Motor Class
-    """
-    pass
+logger = logging.getLogger(__name__)
 
 
 class EccController(Device):
@@ -43,8 +38,8 @@ class EccController(Device):
         """
         Returns the firmware in the same date format as the EDM screen.
         """
-        return "{0}/{1}/{2}".format(self._firm_day.value, self._firm_month.value
-                                    self._firm_year.value)
+        return "{0}/{1}/{2}".format(
+            self._firm_day.value, self._firm_month.value, self._firm_year.value)
     
     @property
     def flash(self):
@@ -52,3 +47,36 @@ class EccController(Device):
         Saves the current configuration of the controller.
         """
         return self._flash.set(1)
+
+
+class EccMotor(EpicsMotor):
+    """
+    ECC Motor Class
+    """
+    pass
+
+
+class TranslationEcc(EccMotor):
+    """
+    Class for the translation ecc motor
+    """
+    pass
+
+
+class GoniometerEcc(EccMotor):
+    """
+    Class for the goniometer ecc motor
+    """
+    pass
+
+
+class DiodeEcc(EccMotor):
+    """
+    Class for the diode insertion ecc motor
+    """
+    pass
+
+
+
+
+

@@ -7,6 +7,7 @@ import random
 import logging
 import threading
 from functools import wraps
+import inspect
 
 import epics
 import numpy as np
@@ -52,7 +53,7 @@ class FakeEpicsPV(object):
         self._connection_callback = connection_callback
         self._form = form
         self._auto_monitor = auto_monitor
-        self._value = None
+        self._value = 0
         self._connected = True
         self._running = True
         self.enum_strs = enum_strs
@@ -261,3 +262,20 @@ def using_fake_epics_pv(fcn):
             epics.PV = pv_backup
 
     return wrapped
+
+def get_classes_in_module(module, subcls=None):
+    classes = []
+    all_classes = inspect.getmembers(module)
+    for _, cls in all_classes:
+        try:
+            if cls.__module__ == module.__name__:
+                if subcls is not None:
+                    try:
+                        if not issubclass(cls, subcls):
+                            continue
+                    except TypeError:
+                        continue
+                classes.append(cls)
+        except AttributeError:
+            pass    
+    return classes
