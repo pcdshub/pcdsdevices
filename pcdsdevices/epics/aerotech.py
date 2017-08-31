@@ -211,7 +211,7 @@ class DiodeAero(AeroBase):
 
 # Exceptions
 
-class AerotechExceptions(Exception):
+class AerotechException(Exception):
     """
     Base aerotech motor exceptions.
     """
