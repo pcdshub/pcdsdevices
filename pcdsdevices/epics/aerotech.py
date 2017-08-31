@@ -107,6 +107,43 @@ class AeroBase(EpicsMotor):
             raise MotorDisabled(err)
         return super().move(position, *args, **kwargs)
 
+    def moverel(rel_position, *args, **kwargs):
+        """
+        Move relative to the current position, optionally waiting for motion to
+        complete.
+
+        Parameters
+        ----------
+        rel_position
+            Relative position to move to
+
+        moved_cb : callable
+            Call this callback when movement has finished. This callback must
+            accept one keyword argument: 'obj' which will be set to this
+            positioner instance.
+
+        timeout : float, optional
+            Maximum time to wait for the motion. If None, the default timeout
+            for this positioner is used.
+
+        Returns
+        -------
+        status : MoveStatus        
+        	Status object for the move.
+        
+        Raises
+        ------
+        TimeoutError
+            When motion takes longer than `timeout`
+        
+        ValueError
+            On invalid positions
+        
+        RuntimeError
+            If motion fails other than timing out        
+        """
+        return self.move(rel_position + self.position, *args, **kwargs)
+
     def enable(self):
         """
         Enables the motor power.

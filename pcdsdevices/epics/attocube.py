@@ -49,28 +49,63 @@ class EccController(Device):
         return self._flash.set(1)
 
 
-class EccMotor(EpicsMotor):
+class EccBase(EpicsMotor):
     """
     ECC Motor Class
-    """
-    pass
+    """    
+    def moverel(rel_position, *args, **kwargs):
+        """
+        Move relative to the current position, optionally waiting for motion to
+        complete.
+
+        Parameters
+        ----------
+        rel_position
+            Relative position to move to
+
+        moved_cb : callable
+            Call this callback when movement has finished. This callback must
+            accept one keyword argument: 'obj' which will be set to this
+            positioner instance.
+
+        timeout : float, optional
+            Maximum time to wait for the motion. If None, the default timeout
+            for this positioner is used.
+
+        Returns
+        -------
+        status : MoveStatus        
+        	Status object for the move.
+        
+        Raises
+        ------
+        TimeoutError
+            When motion takes longer than `timeout`
+        
+        ValueError
+            On invalid positions
+        
+        RuntimeError
+            If motion fails other than timing out        
+        """
+        return self.move(rel_position + self.position, *args, **kwargs)
 
 
-class TranslationEcc(EccMotor):
+class TranslationEcc(EccBase):
     """
     Class for the translation ecc motor
     """
     pass
 
 
-class GoniometerEcc(EccMotor):
+class GoniometerEcc(EccBase):
     """
     Class for the goniometer ecc motor
     """
     pass
 
 
-class DiodeEcc(EccMotor):
+class DiodeEcc(EccBase):
     """
     Class for the diode insertion ecc motor
     """
