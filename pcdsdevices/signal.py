@@ -1,15 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Overrides for Epics Signals
+"""
+############
+# Standard #
+############
+import math
 import logging
 from threading import Event, RLock
 from contextlib import contextmanager
 
-import ophyd.signal
+###############
+# Third Party #
+###############
+from ophyd import signal
+
+##########
+# Module #
+##########
 
 logger = logging.getLogger(__name__)
 
 
-class Signal(ophyd.signal.Signal):
+class Signal(signal.Signal):
     """
     Signal subclass with pcds overrides. This currently defines some methods
     for waiting for signals to change to specific values on their default
@@ -23,7 +37,7 @@ class Signal(ophyd.signal.Signal):
                          parent=parent, tolerance=tolerance,
                          rtolerance=rtolerance)
 
-    # @doc_annotation_forwarder(ophyd.signal.Signal)
+    # @doc_annotation_forwarder(signal.Signal)
     def put(self, value, *, timestamp=None, force=False, **kwargs):
         #logger.debug("Changing stored value of %s from %s to %s at time=%s",
         #             self.name or self, self.get(), value, timestamp)
@@ -131,3 +145,38 @@ class Signal(ophyd.signal.Signal):
                 self.wait_for_value(value, old_value=old_value,
                                     timeout=timeout, prep=False)
         logger.debug("Released context rlock in %s", self.name or self)
+
+
+class EpicsSignalBase(signal.EpicsSignalBase, Signal):
+    pass
+
+
+class EpicsSignal(signal.EpicsSignal, EpicsSignalBase):
+    def put(self, value, force=False, connection_timeout=1.0,
+            use_complete=None, **kwargs):
+        logger.debug("Putting PV value of %s from %s to %s",
+                     self.name or self, self.get(), value)
+
+        if not isinstance(value, str) and math.isnan(value):
+            raise RuntimeError("Recieved a NaN value in EPICS put")
+        else:
+            super().put(value, force=force,
+                        connection_timeout=connection_timeout,
+                        use_complete=use_complete, **kwargs)
+
+
+class EpicsSignalRO(signal.EpicsSignalRO, EpicsSignalBase):
+    pass
+
+
+class FakeSignal(Signal):
+    """
+    Fake signal to appease ophyd.
+    """
+    def __init__(self, *args, **kwargs):
+        self.stored_val = 0
+        super().__init__(*args, **kwargs)
+
+    def get(self):
+        return self.stored_val
+        
