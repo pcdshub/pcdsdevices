@@ -39,3 +39,10 @@ class LinearAero(AeroBase):
     Class for the aerotech linear stage.
     """
     pass
+
+    
+class DiodeAero(MicronixBase):
+    """
+    VT50 Micronix Motor of the diodes
+    """
+    pass
