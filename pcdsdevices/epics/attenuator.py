@@ -7,11 +7,13 @@ import logging
 import time
 from enum import Enum
 from threading import RLock
+from ophyd.status import wait as status_wait
 
 from .device import Device
 from .iocdevice import IocDevice
 from .component import Component, FormattedComponent
 from .signal import EpicsSignal, EpicsSignalRO
+from .state import SubscriptionStatus
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
@@ -55,6 +57,20 @@ class BasicFilter(Device):
         Moves the blade to the "OUT" position.
         """
         self.state_sig.put(self.filter_sets.OUT.value)
+
+    @property
+    def inserted(self):
+        """
+        Whether the blade is in the beam path
+        """
+        return self.state_sig.value == self.filter_states.IN.value
+
+    @property
+    def removed(self):
+        """
+        Whether the blade is removed from the beam path
+        """
+        return self.state_sig.value == self.filter_states.OUT.value
 
 
 class Filter(BasicFilter):
@@ -109,6 +125,9 @@ class Filter(BasicFilter):
 
     @property
     def thickness(self):
+        """
+        Thickness of the attenuator blade
+        """
         return self.thickness_sig.get()
 
 
@@ -122,13 +141,17 @@ class BasicAttenuatorBase(IocDevice):
     user_energy = Component(EpicsSignal, ":EDES")
     energy = Component(EpicsSignalRO, ":ETOA.E")
     desired_transmission = Component(EpicsSignal, ":RDES")
-    transmission = Component(EpicsSignalRO, ":RACT")
+    transmission_sig = Component(EpicsSignalRO, ":RACT")
     transmission_ceiling = Component(EpicsSignalRO, ":R_CEIL")
     transmission_floor = Component(EpicsSignalRO, ":R_FLOOR")
 
     # Define eget mode and move
     eget_cmd = Component(EpicsSignal, ":EACT.SCAN")
     go_cmd = Component(EpicsSignal, ":GO")
+
+    #Subscription Information
+    SUB_BLADE_CH = 'sub_blade_changed'
+    _default_sub = SUB_BLADE_CH
 
     def __init__(self, prefix, *, name=None, read_attrs=None, ioc="",
                  stage_setting=0, **kwargs):
@@ -138,6 +161,10 @@ class BasicAttenuatorBase(IocDevice):
             read_attrs = ["transmission"]
         super().__init__(prefix, name=name, read_attrs=read_attrs,
                          ioc=ioc, **kwargs)
+
+        #Subscribe to all child filter objects
+        for filt in self.filters:
+            filt.state_sig.subscribe(self._blade_moved, run=False)
 
     def __call__(self, transmission=None, **kwargs):
         """
@@ -163,19 +190,63 @@ class BasicAttenuatorBase(IocDevice):
         else:
             return self.set_transmission(transmission, **kwargs)
 
+
+    @property
+    def filters(self):
+        """
+        List of filter components
+        """
+        #Search for filters starting at index i
+        i = 1
+        filters = []
+
+        for i in range(1, MAX_FILTERS + 1):
+            #Check for filters
+            try:
+                filters.append(getattr(self, "filter{}".format(i)))
+            except AttributeError:
+                pass
+
+        return filters
+
+
     def all_in(self):
         """
         Move all filters to the "IN" position.
         """
         logger.debug("For %s, moving all filters IN!", self.name or self)
+        #Command motion
         self.go_cmd.put(1)
+        #Create status that will mark done when all are moved
+        status = SubscriptionStatus(self,
+                                    lambda *args, **kwargs: self.inserted,
+                                    event_type = self.SUB_BLADE_CH,
+                                    timeout=timeout)
+        #Optionally wait for status
+        if wait:
+            status_wait(status)
 
-    def all_out(self):
+        return status
+
+
+    def all_out(self, wait=False, timeout=None):
         """
         Move all filters to the "OUT" position.
         """
         logger.debug("For %s, moving all filters OUT!", self.name or self)
+        #Command motion
         self.go_cmd.put(0)
+        #Create status that will mark done when all are moved
+        status = SubscriptionStatus(self,
+                                    lambda *args, **kwargs: self.removed,
+                                    event_type = self.SUB_BLADE_CH,
+                                    timeout=timeout)
+        #Optionally wait for status
+        if wait:
+            status_wait(status)
+
+        return status
+
 
     def set_energy(self, energy=None, use3rd=False):
         """
@@ -314,6 +385,56 @@ class BasicAttenuatorBase(IocDevice):
                 ceiling = self.transmission_ceiling.get()
             return (floor, ceiling)
 
+
+
+    @property
+    def inserted(self):
+        """
+        If any of the blades are inserted
+        """
+        return any([filt.inserted for filt in self.filters])
+
+
+    @property
+    def removed(self):
+        """
+        If all of the blades are removed
+        """
+        return all([filt.removed for filt in self.filters])
+
+
+    @property
+    def transmission(self):
+        """
+        Current transmission of the attenuator
+        """
+        return self.transmission_sig.value
+
+
+    def remove(self, wait=False, timeout=None):
+        """
+        Remove all of the attenuator blades
+
+        Parameters
+        ----------
+        wait : bool, optional
+            Wait for the status object to complete the move before returning
+
+        timeout : float, optional
+            Maximum time to wait for the motion. If None, the default timeout
+            for this positioner is used
+        """
+        return self.all_out(wait=wait, timeout=timeout)
+
+
+    def _blade_moved(self, **kwargs):
+        """
+        Blade has moved
+        """
+        kwargs.pop('sub_type', None)
+        self._run_subs(sub_type=self.SUB_BLADE_CH, **kwargs)
+
+
     def stage(self):
         self.all_in()
         # self._cached_trans = self.get_transmission()
@@ -338,10 +459,14 @@ class AttenuatorBase(BasicAttenuatorBase):
     calculations. This is the IOC running everywhere except the FEE. This base
     class does not include any filters.
     """
+    #Filter changed subscriptions
+    SUB_FILT_CH  = 'sub_filter_changed'
+    _default_sub = SUB_FILT_CH
+
     # Redefine some PV names
     energy = Component(EpicsSignalRO, ":T_CALC.VALE")
     desired_transmission = Component(EpicsSignal, ":R_DES")
-    transmission = Component(EpicsSignalRO, ":R_CUR")
+    transmission_sig = Component(EpicsSignalRO, ":R_CUR")
 
     # Add third harmonic
     user_energy_3rd = Component(EpicsSignal, ":E3DES")
@@ -365,6 +490,15 @@ class AttenuatorBase(BasicAttenuatorBase):
             read_attrs = ["transmission", "transmission_3rd"]
         super().__init__(prefix, name=name, read_attrs=read_attrs,
                          ioc=ioc, stage_setting=stage_setting, **kwargs)
+    
+    @property
+    def filters(self):
+        """
+        List of filter components
+        """
+        return [getattr(self, "filter{}".format(i))
+                for i in range(1, self.num_att.value)]
+
 
     def thickest_filter_in(self):
         """
@@ -407,7 +541,6 @@ class AttenuatorBase(BasicAttenuatorBase):
             self._thickest_filter_cache = best
             return best
 
-
 def make_att_classes(max_filters):
     att_classes = {}
     for i in range(1, max_filters + 1):
@@ -447,7 +580,7 @@ class FeeAtt(BasicAttenuatorBase):
     filter7 = FormattedComponent(BasicFilter, "{self._filter_prefix}7")
     filter8 = FormattedComponent(BasicFilter, "{self._filter_prefix}8")
     filter9 = FormattedComponent(BasicFilter, "{self._filter_prefix}9")
-
+    num_att = 9
     def __init__(self, prefix="SATT:FEE1:320", *, name=None, read_attrs=None,
                  ioc="", **kwargs):
         self._filter_prefix = prefix[:-1]

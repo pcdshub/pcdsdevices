@@ -294,8 +294,74 @@ InOutCCMStatesIoc = statesrecord_class("InOutCCMStatesIoc", ":IN", ":OUT",
 class StateError(Exception):
     pass
 
+class SubscriptionStatus(StatusBase):
+    """
+    Status to monitor a class attribute
 
-class StateStatus(StatusBase):
+    Instead of creating additional threads to monitor signal values, SubStatus
+    uses  ophyd's built-in subscription systems to check the status of a state
+    whenever a device updates
+
+    Parameters
+    ----------
+    device : obj
+
+    callback : callable
+        Callback that takes arbitrary arguments and keywords and returns a
+        boolean.
+
+    event_type : str, optional
+        Name of event type to check whether the device has finished succesfully
+
+    timeout : float, optional
+        Maximum timeout to wait to mark the request as a failure
+    
+    settle_time : float, optional
+        Time to wait after completion until running callbacks
+    """
+    def __init__(self, device, callback, event_type=None,
+                 timeout=None, settle_time=None):
+        #Store device and attribute information
+        self.device    = device
+        self.callback  = callback
+
+        #Start timeout thread in the background
+        super().__init__(timeout=timeout, settle_time=settle_time)
+
+        #Subscribe callback and run initial check
+        self.device.subscribe(self.check_value,
+                              event_type=event_type,
+                              run=True)
+
+
+    def check_value(self, *args, **kwargs):
+        """
+        Update the status object
+        """
+        #Get attribute from device
+        try:
+            success = self.callback(*args, **kwargs)
+        #Do not fail silently
+        except Exception as e:
+            logger.error(e)
+            raise
+
+        #If succesfull indicate finished
+        if success:
+            self._finished(success=True)
+
+
+    def _finished(self, *args, **kwargs):
+        """
+        Reimplemented finished command to cleanup callback subscription
+        """
+        #Clear callback
+        self.device.clear_sub(self.check_value)
+        #Run completion
+        super()._finished(**kwargs)
+
+
+class StateStatus(SubscriptionStatus):
     """
     Status produced by state request
 
@@ -319,37 +385,13 @@ class StateStatus(StatusBase):
 
     settle_time : float, optional
         Time to wait after completion until running callbacks
-
-    poll_rate : float, optional
-        Rate to keep requesting state from device
     """
     def __init__(self, device, desired_state,
-                 timeout=None, settle_time=None, poll_rate=0.1):
-        #Store device attributes
-        self.device = device
-        self.desired_state = desired_state
-        #Immediate success?
-        done = device.value == self.desired_state
-        #Start timeout thread
-        super().__init__(timeout=timeout, settle_time=settle_time,
-                         done=done,success=done)
-        #Subscribe state checking
-        device.subscribe(self.check_state,
-                         event_type=device.SUB_STATE,
-                         run=True)
-
-    def check_state(self, *args, **kwargs):
-        """
-        Check whether the device is in the proper state
-        """
-        if self.desired_state == self.device.value:
-            self._finished(success=True)
-
-    def _finished(self, *args, **kwargs):
-        """
-        Reimplemented to clear the callback upon timeout or success
-        """
-        #Clear callback
-        self.device.clear_sub(self.check_state)
-        #Run completion
-        super()._finished(*args, **kwargs)
+                 timeout=None, settle_time=None):
+        #Make a quick check_state callable
+        def check_state(*args, **kwargs):
+            print(device.value, desired_state)
+            return device.value == desired_state
+        #Start timeout and subscriptions
+        super().__init__(device, check_state, event_type=device.SUB_STATE,
+                         timeout=timeout, settle_time=settle_time)

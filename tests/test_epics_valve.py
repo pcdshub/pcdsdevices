@@ -13,7 +13,7 @@ from unittest.mock import Mock
 # Module #
 ##########
 from .conftest import using_fake_epics_pv
-from pcdsdevices.epics import PPSStopper, Stopper
+from pcdsdevices.epics import GateValve, PPSStopper, Stopper, InterlockError
 
 logger = logging.getLogger(__name__)
 
@@ -23,12 +23,15 @@ logger = logging.getLogger(__name__)
 def pps():
     return PPSStopper("PPS:H0:SUM")
 
-
 @using_fake_epics_pv
 @pytest.fixture(scope='function')
 def stopper():
     return Stopper("STP:TST:")
 
+@using_fake_epics_pv
+@pytest.fixture(scope='function')
+def valve():
+    return GateValve("VGC:TST:")
 
 @using_fake_epics_pv
 def test_pps_states(pps):
@@ -77,7 +80,7 @@ def test_stopper_motion(stopper):
     #Remove
     status = stopper.remove(wait=False)
     #Check write PV
-    assert stopper.command.value == stopper.commands.open_stopper.value
+    assert stopper.command.value == stopper.commands.open_valve.value
     #Force state to check status object
     stopper.limits.open_limit._read_pv.put(1)
     stopper.limits.closed_limit._read_pv.put(0)
@@ -87,7 +90,7 @@ def test_stopper_motion(stopper):
     #Close
     status = stopper.close(wait=False)
     #Check write PV
-    assert stopper.command.value == stopper.commands.close_stopper.value
+    assert stopper.command.value == stopper.commands.close_valve.value
     #Force state to check status object
     stopper.limits.open_limit._read_pv.put(0)
     stopper.limits.closed_limit._read_pv.put(1)
@@ -105,3 +108,20 @@ def test_stopper_subscriptions(stopper):
     stopper.limits.open_limit._read_pv.put(0)
     stopper.limits.closed_limit._read_pv.put(1)
     assert cb.called
+
+@using_fake_epics_pv
+def test_valve_motion(valve):
+    #Remove
+    status = valve.remove(wait=False)
+    #Check write PV
+    assert valve.command.value == valve.commands.open_valve.value
+    #Force state to check status object
+    valve.limits.open_limit._read_pv.put(1)
+    valve.limits.closed_limit._read_pv.put(0)
+    assert status.done and status.success
+    #Raises interlock
+    valve.interlock._read_pv.put(1)
+    assert valve.interlocked
+    with pytest.raises(InterlockError):
+        valve.open()
+

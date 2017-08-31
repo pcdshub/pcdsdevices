@@ -84,7 +84,7 @@ def test_state_status(lim_info):
     lim_obj.highlim.put(1)
     assert status.done and status.success
     #Check our callback was cleared
-    assert status.check_state not in lim_obj._subs[lim_obj.SUB_STATE]
+    assert status.check_value not in lim_obj._subs[lim_obj.SUB_STATE]
 
     #Create a status for 'out'
     status = StateStatus(lim_obj, 'out', timeout=0.01)
@@ -92,7 +92,7 @@ def test_state_status(lim_info):
     ttime.sleep(1.0) #Set extra long to avoid race condition in tests
     assert status.done and not status.success
     #Check our callback was cleared
-    assert status.check_state not in lim_obj._subs[lim_obj.SUB_STATE]
+    assert status.check_value not in lim_obj._subs[lim_obj.SUB_STATE]
 
 
 def test_statesrecord_class():
