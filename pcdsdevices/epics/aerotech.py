@@ -29,28 +29,28 @@ class AeroBase(EpicsMotor):
     Components
     ----------
     power : EpicsSignal, ".CNEN"
-    	Enables or disables power to the axis.
+        Enables or disables power to the axis.
 
     retries : EpicsSignalRO, ".RCNT"
-    	Number of retries attempted.
+        Number of retries attempted.
 
     retries_max : EpicsSignal, ".RTRY"
-    	Maximum number of retries.
+        Maximum number of retries.
 
     retries_deadband : EpicsSignal, ".RDBD"
-    	Tolerance of each retry.
+        Tolerance of each retry.
 
     axis_fault : EpicsSignalRO, ":AXIS_FAULT"
-    	Fault readback for the motor.
+        Fault readback for the motor.
 
     axis_status : EpicsSignalRO, ":AXIS_STATUS"
-    	Status readback for the motor.
+        Status readback for the motor.
 
     clear_error : EpicsSignal, ":CLEAR"
-    	Clear error signal.
+        Clear error signal.
 
     config : EpicsSignal, ":CONFIG"
-    	Signal to reconfig the motor.
+        Signal to reconfig the motor.
     """
     power = Component(EpicsSignal, ".CNEN")
     retries = Component(EpicsSignalRO, ".RCNT")
@@ -87,7 +87,7 @@ class AeroBase(EpicsMotor):
         Returns
         -------
         status : MoveStatus        
-        	Status object for the move.
+            Status object for the move.
         
         Raises
         ------
@@ -107,7 +107,7 @@ class AeroBase(EpicsMotor):
             raise MotorDisabled(err)
         return super().move(position, *args, **kwargs)
 
-    def moverel(rel_position, *args, **kwargs):
+    def move_rel(self, rel_position, *args, **kwargs):
         """
         Move relative to the current position, optionally waiting for motion to
         complete.
@@ -129,7 +129,7 @@ class AeroBase(EpicsMotor):
         Returns
         -------
         status : MoveStatus        
-        	Status object for the move.
+            Status object for the move.
         
         Raises
         ------
@@ -144,6 +144,41 @@ class AeroBase(EpicsMotor):
         """
         return self.move(rel_position + self.position, *args, **kwargs)
 
+    def mv(self, position, *args, **kwargs):
+        """
+        Move to a specified position, optionally waiting for motion to
+        complete. Alias for move().
+
+        Returns
+        -------
+        status : MoveStatus        
+            Status object for the move.
+        """
+        return self.move(position, *args, **kwargs)
+
+    def mvr(self, rel_position, *args, **kwargs):
+        """
+        Move relative to the current position, optionally waiting for motion to
+        complete. Alias for move_rel().
+
+        Returns
+        -------
+        status : MoveStatus        
+            Status object for the move.
+        """
+        return self.move_rel(rel_position, *args, **kwargs)
+
+    def wm(self):
+        """
+        Returns the current position of the motor.
+
+        Returns
+        -------
+        position : float
+            Current readback position of the motor.
+        """
+        return self.position
+
     def enable(self):
         """
         Enables the motor power.
@@ -151,7 +186,7 @@ class AeroBase(EpicsMotor):
         Returns
         -------
         Status
-        	The status object for setting the power signal.
+            The status object for setting the power signal.
         """
         return self.power.set(1)
 
@@ -162,7 +197,7 @@ class AeroBase(EpicsMotor):
         Returns
         -------
         Status
-        	The status object for setting the power signal.
+            The status object for setting the power signal.
         """
         return self.power.set(0)
 
@@ -174,7 +209,7 @@ class AeroBase(EpicsMotor):
         Returns
         -------
         enabled : bool
-        	True if the motor is powered, False if not.
+            True if the motor is powered, False if not.
         """
         return bool(self.power.value)
 
@@ -185,7 +220,7 @@ class AeroBase(EpicsMotor):
         Returns
         -------
         Status
-        	The status object for setting the clear_error signal.
+            The status object for setting the clear_error signal.
         """
         return self.clear_error.set(1)
 
@@ -196,9 +231,9 @@ class AeroBase(EpicsMotor):
         Returns
         -------
         Status
-        	The status object for setting the config signal.
+            The status object for setting the config signal.
         """
-        return self.reconfig.set(1)
+        return self.config.set(1)
 
     @property
     def fault(self):
@@ -208,9 +243,9 @@ class AeroBase(EpicsMotor):
         Returns
         -------
         fault
-        	Fault enumeration.
+            Fault enumeration.
         """
-        return self.axis_fault.value
+        return bool(self.axis_fault.value)
 
     @property
     def status(self):
@@ -220,7 +255,7 @@ class AeroBase(EpicsMotor):
         Returns
         -------
         status
-        	Status enumeration.
+            Status enumeration.
         """
         return self.axis_status.value
     
