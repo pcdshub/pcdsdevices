@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Attocube devices
+Aerotech devices
 """
 ############
 # Standard #
@@ -17,7 +17,7 @@ import logging
 ##########
 from .epicsmotor import EpicsMotor
 from .component import Component
-from .signal import (EpicsSignal, EpicsSignalRO)
+from .signal import (EpicsSignal, EpicsSignalRO, FakeSignal)
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +52,10 @@ class AeroBase(EpicsMotor):
     config : EpicsSignal, ":CONFIG"
         Signal to reconfig the motor.
     """
+    # Remove when these have been figured out
+    low_limit_switch = Component(FakeSignal)
+    high_limit_switch = Component(FakeSignal)
+
     power = Component(EpicsSignal, ".CNEN")
     retries = Component(EpicsSignalRO, ".RCNT")
     retries_max = Component(EpicsSignal, ".RTRY")
@@ -170,22 +174,10 @@ class AeroBase(EpicsMotor):
         
         Returns
         -------
-        fault
+        faulted
             Fault enumeration.
         """
         return bool(self.axis_fault.value)
-
-    @property
-    def status(self):
-        """
-        Returns the current status of the motor.
-        
-        Returns
-        -------
-        status
-            Status enumeration.
-        """
-        return self.axis_status.value
     
     
 class RotationAero(AeroBase):
