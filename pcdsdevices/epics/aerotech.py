@@ -64,6 +64,7 @@ class AeroBase(EpicsMotor):
     axis_status = Component(EpicsSignalRO, ":AXIS_STATUS")
     clear_error = Component(EpicsSignal, ":CLEAR")
     config = Component(EpicsSignal, ":CONFIG")
+    zero_all_proc = Component(EpicsSignal, ".ZERO_P.PROC")
 
     def __init__(self, prefix, *args, **kwargs):
         super().__init__(prefix, *args, **kwargs)
@@ -179,6 +180,17 @@ class AeroBase(EpicsMotor):
         """
         return bool(self.axis_fault.value)
     
+    def zero_all(self):
+        """
+        Sets the current position to be the zero position of the motor.
+
+        Returns
+        -------
+        status : StatusObject        
+            Status object for the set.
+        """
+        self.zero_all_proc.set(1)
+
     
 class RotationAero(AeroBase):
     """

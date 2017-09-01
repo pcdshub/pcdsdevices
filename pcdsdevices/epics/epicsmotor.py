@@ -35,7 +35,6 @@ class EpicsMotor(EpicsMotor, Device):
     hlm = Component(EpicsSignal, ".HLM")
     offset_val = Component(EpicsSignal, ".OFF")
     direction_enum = Component(EpicsSignal, ".DIR")
-    zero_all_proc = Component(EpicsSignal, ".ZERO_P.PROC")
 
     @EpicsMotor.low_limit.setter
     def low_limit(self, value):
@@ -178,14 +177,3 @@ class EpicsMotor(EpicsMotor, Device):
             Current readback position of the motor.
         """
         return self.position
-
-    def zero_all(self):
-        """
-        Sets the current position to be the zero position of the motor.
-
-        Returns
-        -------
-        status : StatusObject        
-            Status object for the set.
-        """
-        self.zero_all_proc.set(1)
