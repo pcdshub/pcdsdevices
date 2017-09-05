@@ -49,9 +49,9 @@ class EpicsMotor(EpicsMotor, Device):
         return self.llm.set(value)
 
     @EpicsMotor.high_limit.setter
-    def low_limit(self, value):
+    def high_limit(self, value):
         """
-        Sets the low limit for the motor.
+        Sets the high limit for the motor.
 
         Returns
         -------
@@ -59,6 +59,33 @@ class EpicsMotor(EpicsMotor, Device):
             Status object of the set.
         """
         return self.hlm.set(value)
+
+    @EpicsMotor.limits.setter
+    def limits(self, limits):
+        """
+        Sets the limits for the motor.
+        
+        Parameters
+        ----------
+        limits : tuple
+            Desired low and high limits.
+        """
+        self.llm.set(limits[0])
+        self.hlm.set(limits[1])
+
+    def set_limits(self, llm, hlm):
+        """
+        Sets the limits of the motor. Alias for limits = (llm, hlm).
+        
+        Parameters
+        ----------
+        llm : float
+            Desired low limit.
+            
+        hlm : float
+            Desired low limit.
+        """        
+        self.limits = (llm, hlm)
 
     @property
     def direction(self):
@@ -177,3 +204,5 @@ class EpicsMotor(EpicsMotor, Device):
             Current readback position of the motor.
         """
         return self.position
+
+ 
