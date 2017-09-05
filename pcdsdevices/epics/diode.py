@@ -15,7 +15,7 @@ import logging
 ##########
 # Module #
 ##########
-from .micronix import VT50
+from .aerotech import DiodeAero
 from .device import Device
 from .component import Component
 from .areadetector.detectors import GigeDetector
@@ -42,13 +42,13 @@ class HamamatsuXMotionDiode(Device):
     Class for the Hamamatsu diode but with an X motor
     """
     diode = Component(HamamatsuDiode, ":DIODE")
-    x = Component(VT50, ":X")
+    x = Component(DiodeAero, ":X")
 
 
 class HamamatsuXYMotionCamDiode(HamamatsuXMotionDiode):
     """
     Class for the Hamamatsu diode but with X and Y motors
     """
-    y = Component(VT50, ":Y")
+    y = Component(DiodeAero, ":Y")
     cam = Component(GigeDetector, ":CAM")
     
