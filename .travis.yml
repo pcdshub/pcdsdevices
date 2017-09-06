@@ -17,10 +17,11 @@ install:
   # Useful for debugging any issues with conda
   - conda info -a
   #Grab all dependencies
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION coverage pip wheel ophyd==0.6.1 pytest -c conda-forge -c lightsource2-tag
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION coverage pip wheel happi ophyd==0.6.1 pytest -c conda-forge -c lightsource2-tag -c skywalker-dev
   #Launch Conda environment
   - source activate test-environment
-  #Install pedl
+  #Install mongomock
+  - pip install mongomock
   - pip install codecov
   - pip install -r requirements.txt
   #Install
