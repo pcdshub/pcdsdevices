@@ -39,7 +39,7 @@ def read_happi(client=None):
     return client.all_devices
 
 
-def construct_device(happi_object, device_class=None):
+def construct_device(happi_object, device_class=None, **kwargs):
     """
     Create a functional device from the information stored in a happi device.
 
@@ -51,6 +51,8 @@ def construct_device(happi_object, device_class=None):
         Class to instantiate with given happi information. If no class is given
         one will be selected using the :func:`.pick_class` function
 
+    kwargs : 
+        Additional keywords are passed into the device constructor
     Returns
     -------
     device : ophyd.Device
@@ -68,7 +70,7 @@ def construct_device(happi_object, device_class=None):
         device_type = happi_object.__class__.__name__
         device_class = pick_class(device_type, info)
     #Instantiate device with information
-    return device_class(db_info=info, **info)
+    return device_class(db_info=info, **info, **kwargs)
 
 
 def pick_class(base, info):
