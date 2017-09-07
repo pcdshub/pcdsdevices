@@ -39,7 +39,7 @@ def read_happi(client=None):
     return client.all_devices
 
 
-def construct_device(happi_object):
+def construct_device(happi_object, device_class=None, info_map=None, **kwargs):
     """
     Create a functional device from the information stored in a happi device.
 
@@ -47,20 +47,43 @@ def construct_device(happi_object):
     ----------
     happi_object : happi.Device
 
+    device_class : class, optional
+        Class to instantiate with given happi information. If no class is given
+        one will be selected using the :func:`.pick_class` function
+
+    info_map : dict, optional
+        Rename happi information to match Device keywords. Conversion from info
+        name to keyword should be entered as happi info name -> device kwarg
+        name pairs
+
+    kwargs :
+        Additional keywords are passed into the device constructor
     Returns
     -------
     device : ophyd.Device
     """
     info = {}
+    info_map = info_map or {}
+
+    #Gather information from device
     for entry in happi_object.info_names:
         try:
             info[entry] = getattr(happi_object, entry)
         except AttributeError:
             pass
     logger.debug("Extracted info dictionary from happi: %s", info)
-    device_type = happi_object.__class__.__name__
-    cls = pick_class(device_type, info)
-    return cls(db_info=info, **info)
+
+    #Convert keyword information
+    for key, value in info_map.items():
+        info[value] = info.pop(key)
+
+    #Class selection
+    if not device_class:
+        device_type = happi_object.__class__.__name__
+        device_class = pick_class(device_type, info)
+
+    #Instantiate device with information
+    return device_class(db_info=entry.post(), **info, **kwargs)
 
 
 def pick_class(base, info):
