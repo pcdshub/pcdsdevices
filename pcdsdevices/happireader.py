@@ -83,7 +83,7 @@ def construct_device(happi_object, device_class=None, info_map=None, **kwargs):
         device_class = pick_class(device_type, info)
 
     #Instantiate device with information
-    return device_class(db_info=entry.post(), **info, **kwargs)
+    return device_class(db_info=happi_object.post(), **info, **kwargs)
 
 
 def pick_class(base, info):
