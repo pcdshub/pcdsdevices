@@ -28,11 +28,6 @@ def test_OMMotor_runs_ophyd_functions():
     assert(isinstance(ommotor.describe_configuration(), OrderedDict))
     assert(isinstance(ommotor.read_configuration(), OrderedDict))
 
-def test_OMMotor_stages():
-    ommotor = OMMotor("TEST", nominal_position=42.0)
-    ommotor.stage()
-    assert ommotor.position == 42.0
-
 def test_OMMotor_moves_properly():
     ommotor = OMMotor("TEST")
     status = ommotor.move(10)
