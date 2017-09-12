@@ -422,16 +422,6 @@ class OMMotor(Device, PositionerBase):
         """
         return (self.low_limit, self.high_limit)
 
-    def stage(self):
-        """
-        Stage the OMS motor to nominal position
-        """
-        if self.nominal_position is not None:
-            logger.debug("Moving {} to nominal aligned position"
-                         "".format(self.name))
-            self.move(self.nominal_position, wait=True)
-        super().stage()
-
     @limits.setter
     def limits(self, value):
         """

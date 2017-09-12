@@ -381,15 +381,6 @@ class PIMMotor(Device, PositionerBase):
         """
         return self.states.value == 'YAG'
 
-
-    def stage(self):
-        self.move_in(wait=True)
-        return super().stage()
-
-    def unstage(self):
-        self.move_out(wait=False)
-        return super().unstage()
-
     @property
     def timeout(self):
         return self.states.timeout
