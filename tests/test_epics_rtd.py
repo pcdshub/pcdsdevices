@@ -21,7 +21,8 @@ from ophyd.device import Device
 ##########
 # Module #
 ##########
-from .conftest import (using_fake_epics_pv, get_classes_in_module)
+from .conftest import get_classes_in_module
+from pcdsdevices.sim.pv import  using_fake_epics_pv
 from pcdsdevices.epics import rtd
 
 logger = logging.getLogger(__name__)
