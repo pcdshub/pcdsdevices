@@ -93,7 +93,7 @@ class Slits(IocDevice):
         self.ywidth.readback.subscribe(self._aperature_changed,
                                        run=False)
 
-    def move(self,width,wait=True,**kwargs):
+    def move(self,width,wait=False,**kwargs):
         """
         Set the dimensions of the width/height of the gap to width paramater.
         It's OK to only return one of the statuses because they share the same
@@ -184,7 +184,7 @@ class Slits(IocDevice):
 
         return self.move(width, wait=wait, timeout=timeout)
 
-    def set(self,width,wait=True,**kwargs):
+    def set(self,width,wait=False,**kwargs):
         """
         alias for move method 
         """
@@ -210,7 +210,7 @@ class Slits(IocDevice):
         self.xwidth.move(self.stage_cache_xwidth,wait=False)
         self.ywidth.move(self.stage_cache_ywidth,wait=False)
         self.xcenter.move(self.stage_cache_xcenter,wait=False)
-        self.ycenter.move(self.stage_cache_ycenter,wait=True)
+        self.ycenter.move(self.stage_cache_ycenter,wait=False)
         return super().unstage()
 
     def open(self):
