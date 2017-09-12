@@ -192,7 +192,7 @@ class OMMotor(Device, PositionerBase):
         return bool(self.motor_is_moving.get(use_monitor=False))
 
     @raise_if_disconnected
-    def move(self, position, wait=True, **kwargs):
+    def move(self, position, wait=False, **kwargs):
         """
         Move to a specified position, optionally waiting for motion to
         complete.
@@ -288,7 +288,7 @@ class OMMotor(Device, PositionerBase):
             raise LimitError(err_str)
 
     @raise_if_disconnected
-    def mv(self, position, wait=True, **kwargs):
+    def mv(self, position, wait=False, **kwargs):
         """
         Alias for the move() method.
 
@@ -540,7 +540,7 @@ class Piezo(Device, PositionerBase):
         return (self.low_limit.value, self.high_limit.value)
 
     @raise_if_disconnected
-    def move(self, position, wait=True, **kwargs):
+    def move(self, position, wait=False, **kwargs):
         """
         Move to a specified position, optionally waiting for motion to
         complete.
@@ -592,7 +592,7 @@ class Piezo(Device, PositionerBase):
         return status
 
     @raise_if_disconnected
-    def mv(self, position, wait=True, **kwargs):
+    def mv(self, position, wait=False, **kwargs):
         """
         Alias for the move() method.
 
@@ -770,7 +770,7 @@ class OffsetMirror(Device, PositionerBase):
         self.timeout = timeout
         self.nominal_position = nominal_position
 
-    def move(self, position, wait=True, **kwargs):
+    def move(self, position, wait=False, **kwargs):
         """
         Move the pitch motor to the inputted position, optionally waiting for
         the move to complete.

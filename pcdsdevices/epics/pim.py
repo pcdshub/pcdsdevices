@@ -232,7 +232,7 @@ class PIMMotor(Device, PositionerBase):
                          parent=parent, timeout=timeout, **kwargs)
         self.timeout = timeout
 
-    def move_in(self, wait=True, **kwargs):
+    def move_in(self, wait=False, **kwargs):
         """
         Move the PIM to the YAG position. Alias for move("YAG").
 
@@ -243,7 +243,7 @@ class PIMMotor(Device, PositionerBase):
         """
         return self.move("YAG", wait=wait, **kwargs)
 
-    def move_out(self, wait=True, **kwargs):
+    def move_out(self, wait=False, **kwargs):
         """
         Move the PIM to the OUT position. Alias for move("OUTx").
 
@@ -258,7 +258,7 @@ class PIMMotor(Device, PositionerBase):
     remove = move_out
 
 
-    def move_diode(self, wait=True, **kwargs):
+    def move_diode(self, wait=False, **kwargs):
         """
         Move the PIM to the DIODE position. Alias for move("DIODE").
 
@@ -269,7 +269,7 @@ class PIMMotor(Device, PositionerBase):
         """
         return self.move("DIODE", wait=wait, **kwargs)
 
-    def move(self, position, wait=True, **kwargs):
+    def move(self, position, wait=False, **kwargs):
         """
         Move the PIM to the inputted position, optionally waiting for the move
         to complete. String inputs are not case sensitive and must be one of
@@ -564,7 +564,7 @@ class PIMFee(Device):
         if not self.inserted:
             raise NotInsertedError
 
-    def move_in(self, wait=True, **kwargs):
+    def move_in(self, wait=False, **kwargs):
         """
         Move the PIM to the IN position. Alias for move("IN").
 
@@ -575,7 +575,7 @@ class PIMFee(Device):
         """
         return self.move("IN", wait=wait, **kwargs)
 
-    def move_out(self, wait=True, **kwargs):
+    def move_out(self, wait=False, **kwargs):
         """
         Move the PIM to the OUT position. Alias for move("OUT").
 
@@ -586,7 +586,7 @@ class PIMFee(Device):
         """
         return self.move("OUT", wait=wait, **kwargs)
 
-    def move(self, position, wait=True, **kwargs):
+    def move(self, position, wait=False, **kwargs):
         """
         Move the yag motor to the inputted state, optionally waiting for the
         move to complete. String inputs are not case sensitive and must be one
