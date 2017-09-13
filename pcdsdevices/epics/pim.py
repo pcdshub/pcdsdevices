@@ -231,6 +231,7 @@ class PIMMotor(Device, PositionerBase):
                          configuration_attrs=configuration_attrs, name=name,
                          parent=parent, timeout=timeout, **kwargs)
         self.timeout = timeout
+        self.stage_cache_position = None
 
     def move_in(self, wait=False, **kwargs):
         """
@@ -381,15 +382,6 @@ class PIMMotor(Device, PositionerBase):
         """
         return self.states.value == 'YAG'
 
-
-    def stage(self):
-        self.move_in(wait=True)
-        return super().stage()
-
-    def unstage(self):
-        self.move_out(wait=False)
-        return super().unstage()
-
     @property
     def timeout(self):
         return self.states.timeout
@@ -405,6 +397,15 @@ class PIMMotor(Device, PositionerBase):
 
     def clear_sub(self, *args, **kwargs):
         self.states.clear_sub(*args, **kwargs)
+
+    def stage(self):
+        self.stage_cache_position = self.position
+        return super().stage()
+
+    def unstage(self):
+        if self.stage_cache_position is not None:
+            self.move(self.stage_cache_position, wait=False)
+        return super().unstage()
 
 
 class PIM(PIMMotor):

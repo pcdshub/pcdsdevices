@@ -180,6 +180,8 @@ def test_PIMMotor_stage():
     pim = PIMMotor("TEST", pos_in=5)
     pim.move_out(wait=True)
     pim.stage()
+    assert(pim.position == "OUT")
+    pim.move_in(wait=True)
     assert(pim.position == "IN")
     pim.unstage()
     time.sleep(0.2)
