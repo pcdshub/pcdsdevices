@@ -67,6 +67,8 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
     def stage(self):
         # Ensure the plugin is enabled. We do not disable it on unstage
         if self.enable not in self.stage_sigs:
+            if not self.enable.connected:
+                self.enable.get()
             set_and_wait(self.enable, 1)
         ADBase.stage(self)
 
