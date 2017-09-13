@@ -43,7 +43,6 @@ __all__ = ['CamBase',
            'RoperDetectorCam',
            'SimDetectorCam',
            'URLDetectorCam',
-           'GigeCam',
 ]
 
 
@@ -74,10 +73,6 @@ class AreaDetectorCam(cam.AreaDetectorCam, CamBase):
 
 
 class PulnixCam(CamBase):
-    pass
-
-
-class GigeCam(CamBase):
     pass
 
 
