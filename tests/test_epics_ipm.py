@@ -11,7 +11,7 @@ from unittest.mock import Mock
 ##########
 # Module #
 ##########
-from .conftest import using_fake_epics_pv
+from pcdsdevices.sim.pv import  using_fake_epics_pv
 from pcdsdevices.epics import IPM
 
 logger = logging.getLogger(__name__)
