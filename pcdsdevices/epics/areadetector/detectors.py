@@ -39,7 +39,6 @@ __all__ = ['DetectorBase',
            'RoperDetector',
            'SimDetector',
            'URLDetector'
-           'GigeDetector',
 ]
 
 
@@ -63,12 +62,6 @@ class FeeOpalDetector(DetectorBase):
     Opal detector that in the FEE running using Dehong's IOC.
     """
     cam = ADComponent(cam.FeeOpalCam, ":")
-
-class GigeDetector(DetectorBase):
-    """
-    Gige Cam detector class.
-    """
-    cam = ADComponent(cam.GigeCam, ":")
     
 
 class SimDetector(detectors.SimDetector, DetectorBase):
