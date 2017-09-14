@@ -61,14 +61,6 @@ class PIMPulnixDetector(PulnixDetector):
     """
     Pulnix detector that is used in the PIM. Plugins should be added on an as
     needed basis here.
-
-    Components
-    ----------
-    image1 : ImagePlugin, ":IMAGE1:"
-        Plugin component corresponding to image1 plugin in AD
-
-    stats2 : StatsPlugin, ":Stats2:"
-        Plugin component corresponding to stats2 plugin in AD
     """
     image1 = Component(ImagePlugin, ":IMAGE1:", read_attrs=['array_data'])
     image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
@@ -201,11 +193,6 @@ class PIMMotor(Device, PositionerBase):
     """
     Standard position monitor motor that can move the stage to insert the yag
     or diode, or retract it from the beam path.
-
-    Components
-    ----------
-    states : PIMStates
-        States component that handles all the motor states.
 
     Parameters
     ----------
@@ -413,11 +400,6 @@ class PIM(PIMMotor):
     Full profile intensity monitor including the motor to move the yag, and the
     detector to view it.
 
-    Components
-    ----------
-    detector : PIMPulnixDetector
-        Pulnix detector used in the PIMs
-
     Parameters
     ----------
     prefix : str
@@ -475,26 +457,6 @@ class PIM(PIMMotor):
 class PIMFee(Device):
     """
     PIM class for the PIMs in the FEE that run using Dehong's custom ioc.
-
-    Components
-    ----------
-    detector : FeeOpalDetector
-        Detector used in the PIM
-
-    yag : ImsMotor
-        Motor that controls the position of the yag
-
-    zoom : ImsMotor
-        Motor that controls the zoom
-
-    focus : ImsMotor
-        Motor that controls the focus
-
-    go : EpicsSignal
-        Signal to move the yag in and out
-
-    pos : EpicsSignalRO
-        Readback for the position as a state
 
     Parameters
     ----------

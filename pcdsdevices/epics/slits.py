@@ -99,7 +99,7 @@ class Slits(IocDevice):
         It's OK to only return one of the statuses because they share the same
         completion flag (I think).
 
-        Paramters
+        Parameters
         ---------
         width : float
             target width for slits in both x and y axis. EGU: mm
