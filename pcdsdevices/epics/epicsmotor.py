@@ -10,6 +10,7 @@ from enum import Enum
 # Third Party #
 ###############
 from ophyd import EpicsMotor
+from ophyd.utils import LimitError
 
 ##########
 # Module #
@@ -36,7 +37,19 @@ class EpicsMotor(EpicsMotor, Device):
     offset_val = Component(EpicsSignal, ".OFF")
     direction_enum = Component(EpicsSignal, ".DIR")
 
-    @EpicsMotor.low_limit.setter
+    @property
+    def low_limit(self):
+        """
+        Returns the lower soft limit for the motor.
+
+        Returns
+        -------
+        low_limit : float
+            The lower soft limit of the motor.
+        """
+        return self.llm.value 
+    
+    @low_limit.setter
     def low_limit(self, value):
         """
         Sets the low limit for the motor.
@@ -48,7 +61,19 @@ class EpicsMotor(EpicsMotor, Device):
         """
         return self.llm.set(value)
 
-    @EpicsMotor.high_limit.setter
+    @property
+    def high_limit(self):
+        """
+        Returns the higher soft limit for the motor.
+
+        Returns
+        -------
+        high_limit : float
+            The higher soft limit of the motor.
+        """
+        return self.hlm.value     
+
+    @high_limit.setter
     def high_limit(self, value):
         """
         Sets the high limit for the motor.
@@ -60,7 +85,19 @@ class EpicsMotor(EpicsMotor, Device):
         """
         return self.hlm.set(value)
 
-    @EpicsMotor.limits.setter
+    @property
+    def limits(self):
+        """
+        Returns the soft limits of the motor.
+
+        Returns
+        -------
+        limits : tuple
+            Soft limits of the motor.
+        """
+        return (self.low_limit, self.high_limit)
+    
+    @limits.setter
     def limits(self, limits):
         """
         Sets the limits for the motor.
@@ -70,8 +107,8 @@ class EpicsMotor(EpicsMotor, Device):
         limits : tuple
             Desired low and high limits.
         """
-        self.llm.set(limits[0])
-        self.hlm.set(limits[1])
+        self.low_limit = limits[0]
+        self.high_limit = limits[1]
 
     def set_limits(self, llm, hlm):
         """
@@ -86,6 +123,26 @@ class EpicsMotor(EpicsMotor, Device):
             Desired low limit.
         """        
         self.limits = (llm, hlm)
+
+    def check_value(self, value):
+        """
+        Check if the value is within the soft limits of the motor.
+
+        Raises
+        ------
+        ValueError
+        """
+        # Check for control limits on the user_setpoint pv
+        super().check_value(value)
+
+        if value is None:
+            raise ValueError('Cannot write None to epics PVs')
+
+        low_limit, high_limit = self.limits
+        
+        if not (low_limit <= value <= high_limit):
+            raise LimitError("Value {} outside of range: [{}, {}]"
+                             .format(value, low_limit, high_limit))
 
     @property
     def direction(self):
