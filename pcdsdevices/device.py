@@ -59,8 +59,11 @@ class Device(ophyd.Device, metaclass=LightInterface):
 
 class HappiData:
     """
-    Class to hold data from happi in a tab-accessible format and in a
-    dictionary-accessible format.
+    Class to hold arbitrary happi data
+
+    The information is stored as attribute with the name corresponding to the
+    key given in the input dictionary. Dictionary-like access is still possible
+    by using :attr:`.db_info`
     """
     def __init__(self, db_info):
         """

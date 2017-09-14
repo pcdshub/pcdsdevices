@@ -2,8 +2,25 @@
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: Common Components
+   :hidden:
+   
+   valves.rst
+   slits.rst
+   pim.rst
+   ipimb.rst
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Beam Steering 
    :hidden:
 
+   homs.rst
+   lodcm.rst   
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Developer Documentation
+   :hidden:
 
+   device.rst

@@ -55,40 +55,6 @@ class OMMotor(Device, PositionerBase):
     """
     Base class for each motor in the LCLS offset mirror system.
 
-    Components
-    ----------
-    user_readback : EpicsSignalRO, ":RBV"
-        Readback for current motor position
-
-    user_setpoint : EpicsSignal, ":VAL"
-        Setpoint signal for motor position
-
-    velocity : EpicsSignal, ":VELO"
-        Velocity signal for the motor
-
-    motor_is_moving : EpicsSignalRO, ":MOVN"
-        Readback for bit that indicates if the motor is currenly moving
-
-    motor_done_move : EpicsSignalRO, ":DMOV"
-        Readback for bit that indicates the motor has completed the desired
-        motion
-
-    high_limit_switch : EpicsSignalRO, ":HLS"
-        Readback for high limit switch bit
-
-    low_limit_switch : EpicsSignalRO, ":LLS"
-        Readback for low limit switch bit
-
-    interlock : EpicsSignalRO, ":INTERLOCK"
-        Readback indicating if safe torque off (STO) is enabled
-
-    enabled : EpicsSignalRO, ":ENABLED"
-        Readback for stepper motor enabled bit
-
-    motor_stop : Signal
-        Not implemented in the PLC/EPICS but included as an empty signal to
-        appease the Bluesky interface
-
     Parameters
     ----------
     prefix : str
@@ -438,27 +404,6 @@ class Piezo(Device, PositionerBase):
     Note: If the motor is set to 'PID' mode then none of the PVs will be
     controllable.
 
-    Components
-    ----------
-    user_readback : EpicsSignalRO, ":VRBV"
-        Readback for current motor position
-
-    user_setpoint : EpicsSignal, ":VSET"
-        Setpoint signal for motor position
-
-    high_limit : EpicsSignalRO, ":VMAX"
-        High limit of piezo voltage
-
-    low_limit : EpicsSignalRO, ":VMIN"
-        Low limit of piezo voltage
-
-    enable : EpicsSignalRO, ":Enable"
-        Readback for if the piezo is enabled
-
-    motor_stop : Signal
-        Not implemented in the PLC/EPICS but included as an empty signal to
-        appease the Bluesky interface
-
     Parameters
     ----------
     prefix : str
@@ -673,24 +618,6 @@ class OffsetMirror(Device, PositionerBase):
 
     Note: Interfaces to the coupling motor and both secondary gantry motors are
     not provided.
-
-    Components
-    ----------
-    pitch : OMMotor
-        Stepper motor of the pitch mechanism
-
-    piezo : Piezo
-        Piezo motor of the pitch mechanism
-
-    gan_x_p : OMMotor
-        Primary X gantry motor
-
-    gan_y_p : OMMotor
-        Primary Y gantry motor
-
-    motor_stop : Signal
-        Not implemented in the PLC/EPICS but included as an empty signal to
-        appease the Bluesky interface
 
     Parameters
     ----------
