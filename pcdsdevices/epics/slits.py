@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import logging
+
 from ophyd.pv_positioner import PVPositioner
 
 from .signal import EpicsSignal, EpicsSignalRO
 from .component import Component, FormattedComponent
 from .device import Device
 from .iocdevice import IocDevice
+
+logger = logging.getLogger(__name__)
 
 
 class SlitPositioner(PVPositioner, Device):
@@ -29,6 +33,10 @@ class SlitPositioner(PVPositioner, Device):
         super().__init__(prefix, limits=limits, name=name,
                          read_attrs=read_attrs, parent=parent, egu=egu,
                          **kwargs)
+
+    def _setup_move(self, position):
+        logger.debug('%s.setpoint = %s', self.name, position)
+        self.setpoint.put(position, wait=False)
 
 
 class Slits(IocDevice):
@@ -92,6 +100,7 @@ class Slits(IocDevice):
                                        run=False)
         self.ywidth.readback.subscribe(self._aperature_changed,
                                        run=False)
+
 
     def move(self,width,wait=False,**kwargs):
         """
@@ -197,8 +206,6 @@ class Slits(IocDevice):
         """
         self.stage_cache_xwidth = self.xwidth.position
         self.stage_cache_ywidth = self.ywidth.position
-        self.stage_cache_xcenter = self.xcenter.position
-        self.stage_cache_ycenter = self.ycenter.position
         return super().stage()
 
     def unstage(self):
@@ -209,8 +216,6 @@ class Slits(IocDevice):
         """
         self.xwidth.move(self.stage_cache_xwidth,wait=False)
         self.ywidth.move(self.stage_cache_ywidth,wait=False)
-        self.xcenter.move(self.stage_cache_xcenter,wait=False)
-        self.ycenter.move(self.stage_cache_ycenter,wait=False)
         return super().unstage()
 
     def open(self):
