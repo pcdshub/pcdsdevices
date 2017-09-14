@@ -32,8 +32,8 @@ class EpicsMotor(EpicsMotor, Device):
     """
     Epics motor for PCDS.
     """
-    llm = Component(EpicsSignal, ".LLM")
-    hlm = Component(EpicsSignal, ".HLM")
+    low_soft_limit = Component(EpicsSignal, ".LLM")
+    high_soft_limit = Component(EpicsSignal, ".HLM")
     offset_val = Component(EpicsSignal, ".OFF")
     direction_enum = Component(EpicsSignal, ".DIR")
 
@@ -47,7 +47,7 @@ class EpicsMotor(EpicsMotor, Device):
         low_limit : float
             The lower soft limit of the motor.
         """
-        return self.llm.value 
+        return self.low_soft_limit.value 
     
     @low_limit.setter
     def low_limit(self, value):
@@ -59,7 +59,7 @@ class EpicsMotor(EpicsMotor, Device):
         status : StatusObject
             Status object of the set.
         """
-        return self.llm.set(value)
+        return self.low_soft_limit.set(value)
 
     @property
     def high_limit(self):
@@ -71,7 +71,7 @@ class EpicsMotor(EpicsMotor, Device):
         high_limit : float
             The higher soft limit of the motor.
         """
-        return self.hlm.value     
+        return self.high_soft_limit.value     
 
     @high_limit.setter
     def high_limit(self, value):
@@ -83,7 +83,7 @@ class EpicsMotor(EpicsMotor, Device):
         status : StatusObject
             Status object of the set.
         """
-        return self.hlm.set(value)
+        return self.high_soft_limit.set(value)
 
     @property
     def limits(self):
