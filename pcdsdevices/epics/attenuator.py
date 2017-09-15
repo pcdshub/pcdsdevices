@@ -210,7 +210,7 @@ class BasicAttenuatorBase(IocDevice):
         return filters
 
 
-    def all_in(self):
+    def all_in(self, wait=False, timeout=30):
         """
         Move all filters to the "IN" position.
         """
