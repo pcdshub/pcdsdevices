@@ -6,7 +6,7 @@ PCDS Ophyd Device overrides.
 from collections import OrderedDict
 
 import ophyd
-from lightpath import LightInterface
+from .interface import LightInterface
 
 from .component import Component
 VALID_OPHYD_KWARGS = ("name", "parent", "prefix", "read_attrs",
