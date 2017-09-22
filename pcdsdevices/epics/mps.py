@@ -11,7 +11,7 @@ import logging
 ###############
 # Third Party #
 ###############
-from lightpath import MPSInterface
+from ..interface import MPSInterface
 
 ##########
 # Module #
