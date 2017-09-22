@@ -1,5 +1,4 @@
 git+https://github.com/slaclab/pedl.git#egg=pedl
 git+https://github.com/slaclab/happi.git#egg=happi
-git+https://github.com/slaclab/lightpath.git#egg=lightpath
 ophyd==0.6.1
 prettytable

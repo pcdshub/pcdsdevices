@@ -24,3 +24,4 @@
    :hidden:
 
    device.rst
+   interface.rst
