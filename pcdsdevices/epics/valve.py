@@ -7,12 +7,14 @@ import logging
 from enum import Enum
 from copy import deepcopy
 
+from .mps import MPS
 from .state import pvstate_class, StateStatus
 from .iocdevice import IocDevice
 from .device import Device
 from .signal import EpicsSignalRO
 from .signal import EpicsSignal
 from .component import Component as C
+from .component import FormattedComponent as FC
 from .iocadmin import IocAdminOld
 
 
@@ -74,6 +76,9 @@ class Stopper(Device):
     command = C(EpicsSignal, ':CMD')
     commands = Commands
 
+    #MPS Information
+    mps = FC(MPS, '{self._mps_prefix}', veto=True)
+
     #Subscription information
     SUB_LIMIT_CH = 'sub_limit_changed'
     _default_sub = SUB_LIMIT_CH
@@ -81,6 +86,8 @@ class Stopper(Device):
     def __init__(self, prefix, *, name=None,
                  read_attrs=None,
                  mps=None, **kwargs):
+        #Store MPS information
+        self._mps_prefix = mps
 
         if read_attrs is None:
             read_attrs = ['limits']
@@ -217,10 +224,16 @@ class GateValve(Stopper):
     #Commands and Interlock information
     command   = C(EpicsSignal,   ':OPN_SW')
     interlock = C(EpicsSignalRO, ':OPN_OK')
+    
+    #MPS Information
+    mps = FC(MPS, '{self._mps_prefix}', veto=False)
 
     def __init__(self, prefix, *, name=None,
                  read_attrs=None, ioc=None,
                  mps=None, **kwargs):
+        
+        #Store MPS information
+        self._mps_prefix = mps
 
         # Configure read attributes
         if read_attrs is None:
@@ -294,10 +307,16 @@ class PPSStopper(Device):
     """
     summary = C(PPS, '')
     _default_sub = PPS._default_sub
+    
+    #MPS Information
+    mps = FC(MPS, '{self._mps_prefix}', veto=True)
 
     def __init__(self, prefix, *, name=None,
                  read_attrs=None,
                  mps=None, **kwargs):
+        
+        #Store MPS information
+        self._mps_prefix = mps
 
         if not read_attrs:
             read_attrs = ['summary']

@@ -47,6 +47,7 @@ from ophyd.signal import Signal
 from .device import Device
 from .signal import (EpicsSignal, EpicsSignalRO)
 from .component import (FormattedComponent, Component)
+from .mps import MPS
 
 logger = logging.getLogger(__name__)
 
@@ -661,11 +662,17 @@ class OffsetMirror(Device, PositionerBase):
 
     # This is not implemented in the PLC. Included to appease bluesky
     motor_stop = Component(Signal, value=0)
+    
+    #MPS Information
+    mps = FormattedComponent(MPS, '{self._mps_prefix}', veto=True)
 
     def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None,
                  parent=None, configuration_attrs=None, settle_time=0,
                  tolerance=0.5, timeout=None, nominal_position=None,
-                 **kwargs):
+                 mps=None, **kwargs):
+        
+        #Store MPS information
+        self._mps_prefix = mps
 
         self._prefix_xy = prefix_xy
         self._area = prefix.split(":")[1]
