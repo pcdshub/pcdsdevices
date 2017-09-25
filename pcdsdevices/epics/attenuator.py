@@ -5,6 +5,7 @@ Define operation of the lcls attenuator IOCs
 """
 import logging
 import time
+from functools import partial
 from enum import Enum
 from threading import RLock
 from ophyd.status import wait as status_wait
@@ -210,7 +211,7 @@ class BasicAttenuatorBase(IocDevice):
         return filters
 
 
-    def all_in(self, wait=False, timeout=30):
+    def all_in(self, wait=False, timeout=10):
         """
         Move all filters to the "IN" position.
         """
@@ -229,7 +230,7 @@ class BasicAttenuatorBase(IocDevice):
         return status
 
 
-    def all_out(self, wait=False, timeout=None):
+    def all_out(self, wait=False, timeout=10):
         """
         Move all filters to the "OUT" position.
         """
@@ -442,9 +443,15 @@ class BasicAttenuatorBase(IocDevice):
         return super().stage()
 
     def unstage(self):
-        self.all_out()
+        status = self.all_out()
+        status.finished_cb = partial(self.alert_failed, status,
+                                     'move attenuator out')
         # self.set_transmission(self._cached_trans)
         return super().unstage()
+
+    def alert_failed(self, status, context_str):
+        if status.success == False:
+            logger.warning('Failed to %s!', context_str)
 
 
 class FeeAttImplError(NotImplementedError):
