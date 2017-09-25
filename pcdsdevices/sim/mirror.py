@@ -230,6 +230,7 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
 
     # Placeholder signals for non-implemented components
     piezo = Component(FakeSignal)
+    mps = Component(FakeSignal)
 
     # Simulation component
     sim_alpha = Component(FakeSignal)
