@@ -211,7 +211,7 @@ class BasicAttenuatorBase(IocDevice):
         return filters
 
 
-    def all_in(self, wait=False, timeout=30):
+    def all_in(self, wait=False, timeout=10):
         """
         Move all filters to the "IN" position.
         """
@@ -230,7 +230,7 @@ class BasicAttenuatorBase(IocDevice):
         return status
 
 
-    def all_out(self, wait=False, timeout=None):
+    def all_out(self, wait=False, timeout=10):
         """
         Move all filters to the "OUT" position.
         """
