@@ -54,4 +54,5 @@ def test_read_happi(mockclient):
 def test_construct_device(mockclient):
     all_devices = happireader.read_happi(mockclient)
     for dev in all_devices:
-        happireader.construct_device(dev)
+        new = happireader.construct_device(dev)
+        assert hasattr(new, 'db')
