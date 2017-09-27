@@ -15,8 +15,17 @@ objects, quite a few devices are specific to LCLS. This repository holds all of
 these unique devices as well as additional tools to create simulations as well
 as loading items with our metadata store `happi <http://pswww.slac.stanford.edu/swdoc/releases/skywalker/happi>`_
 
-## Conda
+Conda
+++++++
 
-Install the most recent tagged build: `conda install pcds-devices -c skywalker-tag -c lightsource2-tag -c conda-forge`
+Install the most recent tagged build:
 
-Install the most recent development build: `conda install pcds-devices -c skywalker-dev -c lightsource2-tag -c conda-forge`
+.. code::
+  
+  conda install pcds-devices -c skywalker-tag -c lightsource2-tag -c conda-forge
+
+Install the most recent development build: 
+
+.. code::
+
+  conda install pcds-devices -c skywalker-dev -c lightsource2-tag -c conda-forge
