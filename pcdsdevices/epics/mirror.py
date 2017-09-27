@@ -48,6 +48,8 @@ from .device import Device
 from .signal import (EpicsSignal, EpicsSignalRO)
 from .component import (FormattedComponent, Component)
 from .mps import MPS
+from .state import InOutStates
+from ..interface import BranchingInterface
 
 logger = logging.getLogger(__name__)
 
@@ -605,7 +607,7 @@ class Piezo(Device, PositionerBase):
         return rep
 
 
-class OffsetMirror(Device, PositionerBase):
+class OffsetMirror(Device, PositionerBase, metaclass=BranchingInterface):
     """
     X-Ray offset mirror class for each individual mirror system used in the FEE
     and XRT. Controls for the pitch, and primary gantry x and y motors are
@@ -649,6 +651,19 @@ class OffsetMirror(Device, PositionerBase):
     tolerance : float, optional
         Tolerance used to judge if the pitch motor has reached its final
         position
+
+    mps : str, optional
+        Base prefix for the MPS bit of the mirror
+
+    state_prefix : str, optional
+        Base prefix for the state record that has the In/Out state of the
+        mirror
+
+    in_lines : list, optional
+        List of beamlines that are delivered beam when the mirror is in
+
+    out_lines : list, optional
+        List of beamlines thate are delivered beam when the mirror is out
     """
     # Pitch Motor
     pitch = FormattedComponent(OMMotor, "{self.prefix}")
@@ -662,17 +677,23 @@ class OffsetMirror(Device, PositionerBase):
 
     # This is not implemented in the PLC. Included to appease bluesky
     motor_stop = Component(Signal, value=0)
-    
+
     #MPS Information
     mps = FormattedComponent(MPS, '{self._mps_prefix}', veto=True)
+    #State Information
+    state = FormattedComponent(InOutStates, '{self._state_prefix}')
 
     def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None,
                  parent=None, configuration_attrs=None, settle_time=0,
                  tolerance=0.5, timeout=None, nominal_position=None,
-                 mps=None, **kwargs):
-        
+                 mps=None, state_prefix=None, out_lines=None, in_lines=None,
+                 **kwargs):
         #Store MPS information
-        self._mps_prefix = mps
+        self._mps_prefix = mps or ''
+        #Store State information
+        self._state_prefix = state_prefix or ''
+        self.in_lines = in_lines
+        self.out_lines = out_lines
 
         self._prefix_xy = prefix_xy
         self._area = prefix.split(":")[1]
@@ -949,3 +970,41 @@ class OffsetMirror(Device, PositionerBase):
     @property
     def egu(self):
         return 'um'
+
+    @property
+    def destination(self):
+        """
+        Current destination of the beamlines, return an empty list if the state
+        is unknown. If :attr:`.branches` only returns a single possible
+        beamline, that is returned. Otherwise, the `state` PV is used
+        """
+        #A single possible destination
+        if len(self.branches) == 1:
+            return self.branches
+
+        #Gather state summary
+        _in  = self.state.in_state.at_state.get(as_string=False)
+        _out = self.state.out_state.at_state.get(as_string=False)
+        #Inserted
+        if _in and not _out:
+            return self.in_lines
+        #Removed
+        elif _out and not _in:
+            return self.out_lines
+        #Unknown
+        else:
+            return []
+
+    @property
+    def branches(self):
+        """
+        Return all possible beamlines for mirror destinations
+
+        If the `in_lines` and `out_lines` are not set, it is assumed that this
+        steering mirror does not redirect beam to another beamline and the
+        beamline of the mirror is used
+        """
+        if self.in_lines and self.out_lines:
+            return self.in_lines + self.out_lines
+        else:
+            return [self.db.beamline]
