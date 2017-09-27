@@ -3,6 +3,7 @@ sudo: false
 
 env:
    global:
+      - OFFICIAL_REPO="slaclab/pcds-devices"
       - secure: "TeBUfSM64ArwX43ZX/QD50GEJ8cWIAwrJ98nrKZbwIin5OP8+ngJ9S4wuUbvMQXJ0EhQ0Zw3pO4+YIVjfPCwV+X4BcT+ZCAW0vEwKf2kiEdG4DOVgT/Ex2ivKlQji5M0nAfrnuToZWhePD5H85pyrHhfvhu+zQjUmBV5uTr4P3BgdGFXvlDBeDdtHrqP8jGM56Ke2L+OGu3A9N+pnb4flz44bTukUGi4EZjGMaK0qfa3zO8KCDnO8ybgv8xcgMmWUU+izyUMuRsB0O3IEGmVUA0G+UrwA1lHqbTXPg9egzA3pZE1UsUK5icj6OAcN9ytaUowpTkmrrzmt0P6H0JhwxAjwVFkIiQxWwlQVnc+qqmXPIXbNfAO2TdjG/5esFGwgBy3efJSO5q7JD0eCUUoe08zTTXz89Ca4QpclWIE0ihiX+geQfKJ7yUmkjYFZCQ7rcaTTsYJ6/3127Nuwx3ntKjIc8LnFjpn4tZW/UTJMr7JEe50S2p42AuvaVPDHt0cuTgVg22aBNb3HjapCSHe9qayoNbgbm7aOEeW2ILdcEfMCCLL8WPAM4Zlr/7Pyy53RazgKNy03bladYG5ViXueLcyS5JCINg4errn4LR/dws8IjY23B2OG8yq59ofTAiEp99kMNV0N04Jk6DGemJ8yL23QkseBG1RyOk0pU+abIE="
 
 matrix:
@@ -20,7 +21,8 @@ install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
+  - conda install conda-build anaconda-client
+  - conda update -q conda conda-build
   # Useful for debugging any issues with conda
   - conda info -a
   #Grab all dependencies
@@ -55,3 +57,12 @@ script:
 
 after_success:
   - codecov
+  - |
+    if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' && $CONDA_UPLOAD_TOKEN_TAG != '' ]]; then
+      conda build . -c defaults -c conda-forge -c skywalker-dev -c lightsource2-tag --token $CONDA_UPLOAD_TOKEN_TAG --python $TRAVIS_PYTHON_VERSION
+    fi
+  - |
+    if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == 'master' && $TRAVIS_TAG == '' && $CONDA_UPLOAD_TOKEN_DEV != '' ]]; then
+      conda build . -c defaults -c conda-forge -c skywalker-dev -c lightsource2-tag --token $CONDA_UPLOAD_TOKEN_DEV --python $TRAVIS_PYTHON_VERSION
+    fi
+    

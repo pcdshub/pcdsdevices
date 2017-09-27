@@ -13,10 +13,12 @@ build:
 requirements:
   build:
     - python {{PY_VER}}*,>=3
+    - setuptools
 
   run:
     - python {{PY_VER}}*,>=3
-    - ophyd
+    - ophyd ==0.6.1
+    - happi
 
 test:
   imports:
