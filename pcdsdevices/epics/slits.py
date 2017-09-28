@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
+from ophyd.device import Staged
 from ophyd.pv_positioner import PVPositioner
 
 from .signal import EpicsSignal, EpicsSignalRO
@@ -214,8 +215,9 @@ class Slits(IocDevice):
         @stage_wrapper to make plans involving the slits to return to their
         starting positions.
         """
-        self.xwidth.move(self.stage_cache_xwidth,wait=False)
-        self.ywidth.move(self.stage_cache_ywidth,wait=False)
+        if self._staged == Staged.yes:
+            self.xwidth.move(self.stage_cache_xwidth,wait=False)
+            self.ywidth.move(self.stage_cache_ywidth,wait=False)
         return super().unstage()
 
     def open(self):
