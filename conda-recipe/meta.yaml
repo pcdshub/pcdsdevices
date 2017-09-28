@@ -26,5 +26,5 @@ test:
 
 about:
   home: https://github.com/slaclab/pcds-devices
-  licence: SLAC Open Licence
+  license: SLAC Open Licence
   summary: IOC definitions for LCLS Beamline Devices
