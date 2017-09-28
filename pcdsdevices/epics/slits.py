@@ -215,7 +215,7 @@ class Slits(IocDevice):
         @stage_wrapper to make plans involving the slits to return to their
         starting positions.
         """
-        if self._staged = Staged.yes:
+        if self._staged == Staged.yes:
             self.xwidth.move(self.stage_cache_xwidth,wait=False)
             self.ywidth.move(self.stage_cache_ywidth,wait=False)
         return super().unstage()
