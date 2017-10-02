@@ -210,7 +210,7 @@ class DeviceStatesRecord(State, PositionerBase):
 
         if wait:
             status_wait(status)
-
+        
         return status
 
     def check_value(self, value):
@@ -390,8 +390,8 @@ class StateStatus(SubscriptionStatus):
                  timeout=None, settle_time=None):
         #Make a quick check_state callable
         def check_state(*args, **kwargs):
-            print(device.value, desired_state)
             return device.value == desired_state
+        
         #Start timeout and subscriptions
         super().__init__(device, check_state, event_type=device.SUB_STATE,
                          timeout=timeout, settle_time=settle_time)
