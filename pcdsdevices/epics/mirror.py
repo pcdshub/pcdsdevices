@@ -607,7 +607,7 @@ class Piezo(Device, PositionerBase):
         return rep
 
 
-class OffsetMirror(Device, PositionerBase, metaclass=BranchingInterface):
+class OffsetMirror(Device, PositionerBase):
     """
     X-Ray offset mirror class for each individual mirror system used in the FEE
     and XRT. Controls for the pitch, and primary gantry x and y motors are
@@ -651,50 +651,22 @@ class OffsetMirror(Device, PositionerBase, metaclass=BranchingInterface):
     tolerance : float, optional
         Tolerance used to judge if the pitch motor has reached its final
         position
-
-    mps : str, optional
-        Base prefix for the MPS bit of the mirror
-
-    state_prefix : str, optional
-        Base prefix for the state record that has the In/Out state of the
-        mirror
-
-    in_lines : list, optional
-        List of beamlines that are delivered beam when the mirror is in
-
-    out_lines : list, optional
-        List of beamlines thate are delivered beam when the mirror is out
     """
     # Pitch Motor
     pitch = FormattedComponent(OMMotor, "{self.prefix}")
-
     # Piezo Motor
     piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")
-
     # Gantry motors
     gan_x_p = FormattedComponent(OMMotor, "{self._prefix_xy}:X:P")
     gan_y_p = FormattedComponent(OMMotor, "{self._prefix_xy}:Y:P")
-
     # This is not implemented in the PLC. Included to appease bluesky
     motor_stop = Component(Signal, value=0)
-
-    #MPS Information
-    mps = FormattedComponent(MPS, '{self._mps_prefix}', veto=True)
-    #State Information
-    state = FormattedComponent(InOutStates, '{self._state_prefix}')
-
+    #Transmission for Lightpath Interface
+    transmission= 1.0
     def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None,
                  parent=None, configuration_attrs=None, settle_time=0,
                  tolerance=0.5, timeout=None, nominal_position=None,
-                 mps=None, state_prefix=None, out_lines=None, in_lines=None,
                  **kwargs):
-        #Store MPS information
-        self._mps_prefix = mps or ''
-        #Store State information
-        self._state_prefix = state_prefix or ''
-        self.in_lines = in_lines
-        self.out_lines = out_lines
-
         self._prefix_xy = prefix_xy
         self._area = prefix.split(":")[1]
         self._mirror = prefix.split(":")[2]
@@ -972,6 +944,78 @@ class OffsetMirror(Device, PositionerBase, metaclass=BranchingInterface):
         return 'um'
 
     @property
+    def inserted(self):
+        """
+        Treat OffsetMirror as always inserted
+        """
+        return True
+
+    @property
+    def removed(self):
+        """
+        Treat OffsetMirror as always inserted
+        """
+        return False
+
+
+class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
+    """
+    mps : str, optional
+        Base prefix for the MPS bit of the mirror
+
+    state_prefix : str, optional
+        Base prefix for the state record that has the In/Out state of the
+        mirror
+
+    in_lines : list, optional
+        List of beamlines that are delivered beam when the mirror is in
+
+    out_lines : list, optional
+        List of beamlines thate are delivered beam when the mirror is out
+    """
+    #MPS Information
+    mps = FormattedComponent(MPS, '{self._mps_prefix}', veto=True)
+    #State Information
+    state = FormattedComponent(InOutStates, '{self._state_prefix}')
+    
+    def __init__(self, *args, mps=None, state_prefix=None, out_lines=None,
+                 in_lines=None, **kwargs):
+        #Store MPS information
+        self._mps_prefix = mps
+        #Store State information
+        self._state_prefix = state_prefix 
+        #Branching pattern
+        self.in_lines = in_lines
+        self.out_lines = out_lines
+        super().__init__(*args, **kwargs)
+
+    @property
+    def inserted(self):
+        """
+        Whether PointingMirror is inserted
+        """
+        return bool(self.state.in_state.at_state.get(as_string=False))
+
+    @property
+    def removed(self):
+        """
+        Whether PointingMirror is removed
+        """
+        return bool(self.state.out_state.at_state.get(as_string=False))
+
+    def remove(self, wait=False, timeout=None): 
+        """
+        Remove the PointingMirror from the beamline
+        """
+        return self.state.move("OUT", wait=wait, timeout=timeout)
+
+    def insert(self, wait=False, timeout=None):
+        """
+        Insert the pointing mirror into the beamline
+        """
+        return self.state.move("IN", wait=wait, timeout=timeout)
+ 
+    @property
     def destination(self):
         """
         Current destination of the beamlines, return an empty list if the state
@@ -981,15 +1025,11 @@ class OffsetMirror(Device, PositionerBase, metaclass=BranchingInterface):
         #A single possible destination
         if len(self.branches) == 1:
             return self.branches
-
-        #Gather state summary
-        _in  = self.state.in_state.at_state.get(as_string=False)
-        _out = self.state.out_state.at_state.get(as_string=False)
         #Inserted
-        if _in and not _out:
+        if self.inserted and not self.removed:
             return self.in_lines
         #Removed
-        elif _out and not _in:
+        elif self.removed and not self.inserted:
             return self.out_lines
         #Unknown
         else:
@@ -1008,3 +1048,4 @@ class OffsetMirror(Device, PositionerBase, metaclass=BranchingInterface):
             return self.in_lines + self.out_lines
         else:
             return [self.db.beamline]
+
