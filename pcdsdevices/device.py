@@ -22,12 +22,13 @@ class Device(ophyd.Device, metaclass=LightInterface):
     transmission = 0.0
     def __init__(self, prefix, **kwargs):
         db_info = kwargs.pop("db_info", None)
+        #Create mandatory lightpath attributes from Happi Information
+        #Placing None as default
+        for key in LIGHTPATH_KWARGS:
+            setattr(self, key, kwargs.pop(key, None))
+        #Store happi information if provided 
         if db_info:
             self.db = HappiData(db_info)
-            #Create mandatory lightpath attributes from Happi Information
-            #Placing None as default
-            for key in LIGHTPATH_KWARGS:
-                setattr(self, key, kwargs.get(key, None))
             for key in list(kwargs.keys()):
                 # Remove keys in kwargs if they were from the happi import but
                 # they cannot be passed to ophyd.Device
