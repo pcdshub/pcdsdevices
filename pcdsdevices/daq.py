@@ -9,9 +9,13 @@ import logging
 
 from ophyd.status import Status
 from ophyd.flyers import FlyerInterface
-import pydaq
 
 logger = logging.getLogger(__name__)
+
+try:
+    import pydaq
+except:
+    logger.warning('pydaq not in environment. Will not be able to use DAQ!')
 
 
 class Daq(FlyerInterface):
