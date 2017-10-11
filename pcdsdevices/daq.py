@@ -25,13 +25,13 @@ class Daq(FlyerInterface):
     Unlike a normal bluesky flyer, this has no data to report to the RunEngine
     on the collect call. No data will pass into the python layer from the daq.
     """
-    state_enum = enum.Enum("pydaq state",
-                           "Disconnected Connected Configured Open Running",
+    state_enum = enum.Enum('pydaq state',
+                           'Disconnected Connected Configured Open Running',
                            start=0)
 
-    def __init__(self, name, platform=0, parent=None):
+    def __init__(self, name=None, platform=0, parent=None):
         super().__init__()
-        self.name = name
+        self.name = name or 'daq'
         self.parent = parent
         self.control = None
         self.config = None
@@ -49,16 +49,18 @@ class Daq(FlyerInterface):
 
     @property
     def state(self):
+        logger.debug('accessing Daq.state')
         if self.connected:
             num = self.control.state()
             return self.state_enum(num).name
         else:
-            return "Disconnected"
+            return 'Disconnected'
 
     # Wrapper to make sure we're connected
     def check_connect(f):
         @functools.wraps(f)
         def wrapper(self, *args, **kwargs):
+            logger.debug('Checking for daq connection')
             if not self.connected:
                 msg = 'DAQ is not connected. Attempting to connect...'
                 logger.info(msg)
@@ -73,6 +75,7 @@ class Daq(FlyerInterface):
     def check_config(f):
         @functools.wraps(f)
         def wrapper(self, *args, **kwargs):
+            logger.debug('Checking for daq config')
             if self.configured:
                 return f(self, *args, **kwargs)
             else:
@@ -84,6 +87,7 @@ class Daq(FlyerInterface):
         """
         Connect to the DAQ instance, giving full control to the Python process.
         """
+        logger.debug('Daq.connect()')
         if self.control is None:
             try:
                 self.control = pydaq.Control(self._host, platform=self._plat)
@@ -102,6 +106,7 @@ class Daq(FlyerInterface):
         """
         Disconnect from the DAQ instance, giving control back to the GUI
         """
+        logger.debug('Daq.disconnect()')
         if self.control is not None:
             self.control.disconnect()
         del self.control
@@ -114,6 +119,7 @@ class Daq(FlyerInterface):
         """
         Pause the thread until the DAQ is done aquiring.
         """
+        logger.debug('Daq.wait()')
         status = self.complete()
         status.wait()
 
@@ -135,6 +141,8 @@ class Daq(FlyerInterface):
         wait: bool, optional
             If switched to True, wait for the daq to finish aquiring data.
         """
+        logger.debug('Daq.begin(events=%s, duration=%s, wait=%s',
+                     events, duration, wait)
         begin_status = self.kickoff()
         begin_status.wait()
         if wait:
@@ -145,6 +153,7 @@ class Daq(FlyerInterface):
         """
         Stop the current acquisition, ending it early.
         """
+        logger.debug('Daq.stop()')
         self.control.stop()
 
     @check_connect
@@ -152,6 +161,7 @@ class Daq(FlyerInterface):
         """
         Stop the daq if it's running, then mark the run as finished.
         """
+        logger.debug('Daq.end_run()')
         self.stop()
         self.control.endrun()
 
@@ -167,9 +177,12 @@ class Daq(FlyerInterface):
             Status that will be marked as 'done' when the daq has begun to
             record data.
         """
+        logger.debug('Daq.kickoff()')
+
         def start_thread(control, status):
             control.begin()
             status._finished(success=True)
+            logger.debug('Marked kickoff as complete')
         begin_status = DaqStatus(obj=self)
         watcher = threading.Thread(target=start_thread,
                                    args=(self.control, begin_status))
@@ -185,9 +198,12 @@ class Daq(FlyerInterface):
         -------
         end_status: DaqStatus
         """
+        logger.debug('Daq.complete()')
+
         def finish_thread(control, status):
             control.end()
             status._finished(success=True)
+            logger.debug('Marked acquisition as complete')
         end_status = DaqStatus(obj=self)
         watcher = threading.Thread(target=finish_thread,
                                    args=(self.control, end_status))
@@ -200,6 +216,7 @@ class Daq(FlyerInterface):
         output partial event documents. However, since we don't have any events
         to report to python, this will be a generator that immediately ends.
         """
+        logger.debug('Daq.collect()')
         raise GeneratorExit
 
     def describe_collect(self):
@@ -207,6 +224,7 @@ class Daq(FlyerInterface):
         As per the bluesky interface, this is how you interpret the null data
         from collect. There isn't anything here, as nothing will be collected.
         """
+        logger.debug('Daq.describe_configuration()')
         return {}
 
     @check_connect
@@ -242,6 +260,9 @@ class Daq(FlyerInterface):
         -------
         old, new: tuple of dict
         """
+        logger.debug(('Daq.configure(events=%s, duration=%s, use_l3t=%s, '
+                      'record=%s, controls=%s'),
+                     events, duration, use_l3t, record, controls)
         if self.config is None:
             old = {}
         else:
@@ -266,6 +287,8 @@ class Daq(FlyerInterface):
             self.config = dict(events=events, duration=duration,
                                use_l3t=use_l3t, record=record,
                                controls=controls)
+            msg = 'Daq configured'
+            logger.info(msg)
         except:
             self.config = None
             msg = 'Failed to configure!'
@@ -281,6 +304,7 @@ class Daq(FlyerInterface):
         config: dict
             Mapping of config key to current configured value.
         """
+        logger.debug('Daq.read_configuration()')
         return copy.deepcopy(self.config)
 
     def describe_configuration(self):
@@ -290,6 +314,7 @@ class Daq(FlyerInterface):
         config_desc: dict
             Mapping of config key to field metadata.
         """
+        logger.debug('Daq.describe_configuration()')
         try:
             config = self.read_configuration()
             controls_shape = [len(config['control']), 2]
@@ -320,6 +345,7 @@ class Daq(FlyerInterface):
         unstaged: list
             list of devices unstaged
         """
+        logger.debug('Daq.unstage()')
         self.end_run()
         return super().unstage()
 
@@ -327,6 +353,7 @@ class Daq(FlyerInterface):
         """
         Stop acquiring data, but don't end the run.
         """
+        logger.debug('Daq.pause()')
         if self.state == 'Running':
             self.stop()
 
@@ -334,6 +361,7 @@ class Daq(FlyerInterface):
         """
         Continue acquiring data in a previously paused run.
         """
+        logger.debug('Daq.resume()')
         if self.state == 'Open':
             self.begin()
 
