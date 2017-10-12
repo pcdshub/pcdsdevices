@@ -60,17 +60,25 @@ class SimControl:
             raise RuntimeError(err.format(transition, self._state))
 
     def state(self):
+        logger.debug('SimControl.state()')
         return self._all_states.index(self._state)
 
     def connect(self):
+        logger.debug('SimControl.connect()')
         self._do_transition('connect')
 
     def disconnect(self):
+        logger.debug('SimControl.disconnect()')
         self._do_transition('disconnect')
 
     def configure(self, *, record=False, key=0, events=None, l1t_events=None,
                   l3t_events=None, duration=0, controls=None, monitors=None,
                   partition=None):
+        logger.debug(('SimControl.configure(record=%s, key=%s, events=%s, '
+                      'l1t_events=%s, l3t_events=%s, duration=%s, '
+                      'controls=%s, monitors=%s, partition=%s)'),
+                     record, key, events, l1t_events, l3t_events, duration,
+                     controls, monitors, partition)
         if self._do_transition('configure'):
             dur = self._pick_duration(events, l1t_events, l3t_events, duration)
             if dur is None:
@@ -80,15 +88,23 @@ class SimControl:
 
     def begin(self, *, events=None, l1t_events=None, l3t_events=None,
               duration=None, controls=None, monitors=None):
+        logger.debug(('SimControl.begin(events=%s, l1t_events=%s, '
+                      'l3t_events=%s, duration=%s, controls=%s, '
+                      'monitors=%s)'),
+                     events, l1t_events, l3t_events, duration, controls,
+                     monitors)
         if self._do_transition('begin'):
             dur = self._pick_duration(events, l1t_events, l3t_events, duration)
             if dur is None:
                 dur = self._duration
             self._time_remaining = dur
+            self._done_flag.clear()
             thr = threading.Thread(target=self._begin_thread, args=())
             thr.start()
 
     def _pick_duration(self, events, l1t_events, l3t_events, duration):
+        logger.debug('SimControl._pick_duration(%s, %s, %s, %s)', events,
+                     l1t_events, l3t_events, duration)
         for ev in (events, l1t_events, l3t_events):
             if ev is not None:
                 return ev / 120
@@ -97,24 +113,35 @@ class SimControl:
             return None
 
     def stop(self):
+        logger.debug('SimControl.stop()')
         self._do_transition('stop')
         self._time_remaining = 0
         self._done_flag.set()
 
     def endrun(self):
+        logger.debug('SimControl.endrun()')
         self._do_transition('endrun')
         self._time_remaining = 0
         self._done_flag.set()
 
     def _begin_thread(self):
-        self._done_flag.clear()
-        while self._time_remaining > 0:
+        logger.debug('SimControl._begin_thread() in thread %s',
+                     threading.current_thread().name)
+        logger.debug('%ss remaining', self._time_remaining)
+        start = time.time()
+        while self._time_remaining > 0 and not self._done_flag.is_set():
             self._time_remaining -= 0.1
-            time.sleep(0.1)
-        try:
-            self.stop()
-        except:
-            pass
+            if self._done_flag.wait(0.1):
+                break
+        if not self._done_flag.is_set():
+            try:
+                self.stop()
+            except:
+                pass
+        end = time.time()
+        logger.debug('%ss elapased in SimControl._begin_thread() in thread %s',
+                     end-start, threading.current_thread().name)
 
     def end(self):
+        logger.debug('SimControl.end()')
         self._done_flag.wait()
