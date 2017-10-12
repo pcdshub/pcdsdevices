@@ -84,6 +84,7 @@ def test_configure(daq):
         daq.configure()
 
 
+@pytest.mark.timeout(20)
 def test_run_flow(daq):
     """
     We expect a begin without a configure to throw an error.
@@ -134,6 +135,7 @@ def test_run_flow(daq):
     assert daq.state == 'Configured'
 
 
+@pytest.mark.timeout(10)
 def test_scan(daq):
     """
     We expect that the daq object is usable in a bluesky plan.
