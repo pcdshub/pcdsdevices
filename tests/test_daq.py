@@ -73,7 +73,7 @@ def test_configure(daq):
         dict(events=1000, use_l3t=True, record=True),
         dict(duration=10, controls=[]),
     ]
-    prev_config = dict(duration=60)
+    prev_config = daq.read_configuration()
     for config in configs:
         old, new = daq.configure(**config)
         assert old == prev_config
@@ -102,13 +102,13 @@ def test_run_flow(daq):
     assert daq.state == 'Configured'
     daq.begin()
     assert daq.state == 'Running'
-    time.sleep(1.1)
+    time.sleep(1.3)
     assert daq.state == 'Open'
     daq.begin(duration=2)
     assert daq.state == 'Running'
-    time.sleep(1.1)
+    time.sleep(1.3)
     assert daq.state == 'Running'
-    time.sleep(1.1)
+    time.sleep(1.3)
     assert daq.state == 'Open'
     daq.end_run()
     assert daq.state == 'Configured'

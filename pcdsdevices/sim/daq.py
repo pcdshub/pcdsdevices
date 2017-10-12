@@ -57,7 +57,7 @@ class SimControl:
             return True
         else:
             err = 'Invalid SimControl transition {} from state {}'
-            raise RuntimeError(err.format(self._state, transition))
+            raise RuntimeError(err.format(transition, self._state))
 
     def state(self):
         return self._all_states.index(self._state)
@@ -109,8 +109,8 @@ class SimControl:
     def _begin_thread(self):
         self._done_flag.clear()
         while self._time_remaining > 0:
-            self._time_remaining -= 1
-            time.sleep(1)
+            self._time_remaining -= 0.1
+            time.sleep(0.1)
         try:
             self.stop()
         except:
