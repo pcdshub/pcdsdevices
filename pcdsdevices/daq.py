@@ -291,6 +291,7 @@ class Daq(FlyerInterface):
             self.config = None
             msg = 'Failed to configure!'
             logger.exception(msg)
+            return old, {}
         new = self.read_configuration()
         return old, new
 
