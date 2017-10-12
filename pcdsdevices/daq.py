@@ -194,7 +194,7 @@ class Daq(FlyerInterface):
         begin_status = DaqStatus(obj=self)
         watcher = threading.Thread(target=start_thread,
                                    args=(self.control, begin_status, events,
-                                         duration))
+                                         duration, use_l3t))
         watcher.start()
         return begin_status
 
