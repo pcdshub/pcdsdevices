@@ -184,7 +184,7 @@ class Daq(FlyerInterface):
         logger.debug('Daq.kickoff()')
 
         def start_thread(control, status, events, duration, use_l3t):
-            if any(map(lambda x: x is not None, events, duration)):
+            if any(map(lambda x: x is not None, (events, duration))):
                 kwargs = self._parse_config_args(events, duration, use_l3t)
                 control.begin(**kwargs)
             else:
