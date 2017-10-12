@@ -130,7 +130,7 @@ class Daq(FlyerInterface):
         Pause the thread until the DAQ is done aquiring.
         """
         logger.debug('Daq.wait()')
-        status = self.complete()
+        status = self._get_end_status()
         status.wait()
 
     @check_config
@@ -151,7 +151,7 @@ class Daq(FlyerInterface):
         wait: bool, optional
             If switched to True, wait for the daq to finish aquiring data.
         """
-        logger.debug('Daq.begin(events=%s, duration=%s, wait=%s',
+        logger.debug('Daq.begin(events=%s, duration=%s, wait=%s)',
                      events, duration, wait)
         begin_status = self.kickoff(events=events, duration=duration)
         begin_status.wait()
@@ -206,6 +206,8 @@ class Daq(FlyerInterface):
 
     def complete(self):
         """
+        End the current run.
+
         Return a status object that will be marked as 'done' when the DAQ has
         finished acquiring.
 
@@ -214,7 +216,20 @@ class Daq(FlyerInterface):
         end_status: DaqStatus
         """
         logger.debug('Daq.complete()')
+        end_status = self._get_end_status()
+        self.end_run()
+        return end_status
 
+    def _get_end_status(self):
+        """
+        Return a status object that will be marked as 'done' when the DAQ has
+        finished acquiring.
+
+        Returns
+        -------
+        end_status: DaqStatus
+        """
+        logger.debug('Daq._get_end_status()')
         def finish_thread(control, status):
             control.end()
             status._finished(success=True)
@@ -232,7 +247,8 @@ class Daq(FlyerInterface):
         to report to python, this will be a generator that immediately ends.
         """
         logger.debug('Daq.collect()')
-        raise GeneratorExit
+        return
+        yield
 
     def describe_collect(self):
         """
@@ -276,7 +292,7 @@ class Daq(FlyerInterface):
         old, new: tuple of dict
         """
         logger.debug(('Daq.configure(events=%s, duration=%s, use_l3t=%s, '
-                      'record=%s, controls=%s'),
+                      'record=%s, controls=%s)'),
                      events, duration, use_l3t, record, controls)
         if self.config is None:
             old = {}
@@ -361,9 +377,24 @@ class Daq(FlyerInterface):
                                   dtype='array',
                                   shape=controls_shape))
 
+
+    def stage(self):
+        """
+        Nothing to be done here, but we overwrite the default stage because it
+        is expecting sub devices.
+
+        Returns
+        -------
+        staged: list
+            list of devices staged
+        """
+        logger.debug('Daq.stage()')
+        return [self]
+
     def unstage(self):
         """
-        If the daq is running and the run has not ended, end it.
+        Nothing to be done here, but we overwrite the default stage because it
+        is expecting sub devices.
 
         Returns
         -------
@@ -371,15 +402,14 @@ class Daq(FlyerInterface):
             list of devices unstaged
         """
         logger.debug('Daq.unstage()')
-        self.end_run()
-        return super().unstage()
+        return [self]
 
     def pause(self):
         """
         Stop acquiring data, but don't end the run.
         """
         logger.debug('Daq.pause()')
-        if self.state() == 'Running':
+        if self.state == 'Running':
             self.stop()
 
     def resume(self):
@@ -387,7 +417,7 @@ class Daq(FlyerInterface):
         Continue acquiring data in a previously paused run.
         """
         logger.debug('Daq.resume()')
-        if self.state() == 'Open':
+        if self.state == 'Open':
             self.begin()
 
     def __del__(self):
