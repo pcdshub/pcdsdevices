@@ -19,9 +19,9 @@ class SimDaq(Daq):
 
 
 class SimControl:
-    _state = all_states[0]
     _all_states = ['Disconnected', 'Connected', 'Configured', 'Open',
                    'Running']
+    _state = _all_states[0]
     _transitions = dict(
         connect=dict(ignore=_all_states[1:],
                      begin=[_all_states[0]],
@@ -42,6 +42,7 @@ class SimControl:
                     begin=_all_states[3:5],
                     end=_all_states[2])
     )
+
     def __init__(self, *args, **kwargs):
         self._duration = None
         self._time_remaining = 0
@@ -49,17 +50,17 @@ class SimControl:
 
     def _do_transition(self, transition):
         info = self._transitions[transition]
-        if self.state() in info['ignore']:
+        if self._state in info['ignore']:
             return False
-        elif self.state() in info['begin']:
+        elif self._state in info['begin']:
             self._state = info['end']
             return True
         else:
             err = 'Invalid SimControl transition {} from state {}'
-            raise RuntimeError(err.format(self.state(), transition))
+            raise RuntimeError(err.format(self._state, transition))
 
     def state(self):
-        return self._state
+        return self._all_states.index(self._state)
 
     def connect(self):
         self._do_transition('connect')
@@ -90,7 +91,7 @@ class SimControl:
     def _pick_duration(events, l1t_events, l3t_events, duration):
         for ev in (events, l1t_events, l3t_events):
             if ev is not None:
-                return 120 * ev
+                return ev / 120
             if duration is not None:
                 return duration
             return None

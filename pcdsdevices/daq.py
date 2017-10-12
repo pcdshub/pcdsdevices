@@ -147,7 +147,7 @@ class Daq(FlyerInterface):
         """
         logger.debug('Daq.begin(events=%s, duration=%s, wait=%s',
                      events, duration, wait)
-        begin_status = self.kickoff()
+        begin_status = self.kickoff(events=events, duration=duration)
         begin_status.wait()
         if wait:
             self.wait()
@@ -171,7 +171,7 @@ class Daq(FlyerInterface):
 
     # Flyer interface
     @check_config
-    def kickoff(self):
+    def kickoff(self, events=None, duration=None, use_l3t=None):
         """
         Begin acquisition. This method is non-blocking.
 
@@ -183,13 +183,18 @@ class Daq(FlyerInterface):
         """
         logger.debug('Daq.kickoff()')
 
-        def start_thread(control, status):
-            control.begin()
+        def start_thread(control, status, events, duration, use_l3t):
+            if any(map(lambda x: x is not None, events, duration)):
+                kwargs = self._parse_config_args(events, duration, use_l3t)
+                control.begin(**kwargs)
+            else:
+                control.begin()
             status._finished(success=True)
             logger.debug('Marked kickoff as complete')
         begin_status = DaqStatus(obj=self)
         watcher = threading.Thread(target=start_thread,
-                                   args=(self.control, begin_status))
+                                   args=(self.control, begin_status, events,
+                                         duration))
         watcher.start()
         return begin_status
 
@@ -271,19 +276,8 @@ class Daq(FlyerInterface):
             old = {}
         else:
             old = self.read_configuration()
-        config_args = {}
-        if events is not None:
-            if use_l3t:
-                config_args['l3t_events'] = events
-            else:
-                config_args['events'] = events
-        elif duration is not None:
-            config_args['duration'] = duration
-        else:
-            raise RuntimeError('Either events or duration must be provided.')
-        config_args['record'] = record
-        if controls is not None:
-            config_args['controls'] = controls
+        config_args = self._parse_config_args(events, duration, use_l3t,
+                                              record, controls)
         try:
             # self.config should reflect exactly the arguments to configure,
             # this is different than the arguments that pydaq.Control expects
@@ -299,6 +293,26 @@ class Daq(FlyerInterface):
             logger.exception(msg)
         new = self.read_configuration()
         return old, new
+
+    def _parse_config_args(self, events, duration, use_l3t=None, record=None,
+                           controls=None):
+        config_args = {}
+        if events is not None:
+            if use_l3t is None and self.config is not None:
+                use_l3t = self.config['use_l3t']
+            if use_l3t:
+                config_args['l3t_events'] = events
+            else:
+                config_args['events'] = events
+        elif duration is not None:
+            config_args['duration'] = duration
+        else:
+            raise RuntimeError('Either events or duration must be provided.')
+        if record is not None:
+            config_args['record'] = record
+        if controls is not None:
+            config_args['controls'] = controls
+        return config_args
 
     @check_config
     def read_configuration(self):
@@ -358,7 +372,7 @@ class Daq(FlyerInterface):
         Stop acquiring data, but don't end the run.
         """
         logger.debug('Daq.pause()')
-        if self.state == 'Running':
+        if self.state() == 'Running':
             self.stop()
 
     def resume(self):
@@ -366,8 +380,11 @@ class Daq(FlyerInterface):
         Continue acquiring data in a previously paused run.
         """
         logger.debug('Daq.resume()')
-        if self.state == 'Open':
+        if self.state() == 'Open':
             self.begin()
+
+    def __del__(self):
+        self.disconnect()
 
 
 class DaqStatus(Status):
