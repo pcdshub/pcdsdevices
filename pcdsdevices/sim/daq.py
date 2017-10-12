@@ -6,7 +6,7 @@ import logging
 
 from pcdsdevices.daq import Daq
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 class SimDaq(Daq):

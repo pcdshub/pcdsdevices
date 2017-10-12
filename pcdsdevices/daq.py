@@ -70,9 +70,12 @@ class Daq(FlyerInterface):
                 logger.info(msg)
                 self.connect()
             if self.connected:
+                logger.debug('Daq is connected')
                 return f(self, *args, **kwargs)
             else:
-                raise RuntimeError('Could not connect to DAQ.')
+                err = 'Could not connect to DAQ'
+                logger.error(err)
+                raise RuntimeError(err)
         return wrapper
 
     # Wrapper to make sure we've configured
@@ -81,9 +84,12 @@ class Daq(FlyerInterface):
         def wrapper(self, *args, **kwargs):
             logger.debug('Checking for daq config')
             if self.configured:
+                logger.debug('Daq is configured')
                 return f(self, *args, **kwargs)
             else:
-                raise RuntimeError('DAQ is not configured.')
+                err = 'DAQ is not configured'
+                logger.error(err)
+                raise RuntimeError(err)
         return wrapper
 
     # Interactive methods

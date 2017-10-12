@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import time
+import logging
 import pytest
 
 from bluesky import RunEngine
@@ -10,6 +11,8 @@ from bluesky.plans import (fly_during_decorator, stage_decorator,
 
 from pcdsdevices.daq import Daq
 from pcdsdevices.sim.daq import SimDaq
+
+logger = logging.getLogger(__name__)
 
 
 def test_instantiation():
@@ -27,6 +30,7 @@ def test_connect(daq):
     We expect connect to bring the daq from a disconnected state to a connected
     state.
     """
+    logger.debug('test_connect')
     assert not daq.connected
     daq.connect()
     assert daq.connected
@@ -37,6 +41,7 @@ def test_disconnect(daq):
     We expect disconnect to bring the daq from a connected state to a
     disconnected state.
     """
+    logger.debug('test_disconnect')
     assert not daq.connected
     daq.connect()
     assert daq.connected
@@ -55,6 +60,7 @@ def test_configure(daq):
     default args.
     We expect neglecting to provide both events and duration to raise an error.
     """
+    logger.debug('test_configure')
     assert not daq.connected
     assert not daq.configured
     daq.configure(events=1000)
@@ -101,6 +107,7 @@ def test_run_flow(daq):
     We expect that wait will block the thread until the daq is no longer
     running
     """
+    logger.debug('test_run_flow')
     with pytest.raises(RuntimeError):
         daq.begin()
     assert daq.state == 'Disconnected'
@@ -148,6 +155,7 @@ def test_scan(daq):
     """
     We expect that the daq object is usable in a bluesky plan.
     """
+    logger.debug('test_scan')
     RE = RunEngine({})
     daq.connect()
     daq.configure(duration=60, record=False)
