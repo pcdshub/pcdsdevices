@@ -58,6 +58,8 @@ def test_configure(daq):
     assert not daq.connected
     assert not daq.configured
     daq.configure(events=1000)
+    assert daq.read_configuration()['events'] == 1000
+    assert daq.read_configuration()['duration'] == None
     assert daq.connected
     assert daq.configured
     daq.disconnect()
@@ -67,6 +69,8 @@ def test_configure(daq):
     assert daq.connected
     assert not daq.configured
     daq.configure(duration=60)
+    assert daq.read_configuration()['events'] == None
+    assert daq.read_configuration()['duration'] == 60
     assert daq.connected
     assert daq.configured
     configs = [
