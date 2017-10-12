@@ -2,7 +2,7 @@
 import sys
 import os
 import logging
-from logging.handlers import TimedRotatingFileHandler
+from logging.handlers import RotatingFileHandler
 import pytest
 
 if __name__ == '__main__':
@@ -27,8 +27,13 @@ if __name__ == '__main__':
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.DEBUG)
     log_filename = os.path.join(os.path.dirname(__file__), 'debug.log')
-    handler = TimedRotatingFileHandler(log_filename, when='d', interval=1,
-                                       backupCount=7)
+    if os.path.isfile(log_filename):
+        do_rollover = True
+    else:
+        do_rollover = False
+    handler = RotatingFileHandler(log_filename, backupCount=9)
+    if do_rollover:
+        handler.doRollover()
     formatter = logging.Formatter(fmt=('%(asctime)s '
                                        '%(name)-20s '
                                        '%(levelname)-8s '
