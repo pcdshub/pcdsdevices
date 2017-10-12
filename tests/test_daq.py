@@ -96,42 +96,42 @@ def test_run_flow(daq):
     """
     with pytest.raises(RuntimeError):
         daq.begin()
-    assert daq.state() == 'Disconnected'
+    assert daq.state == 'Disconnected'
     daq.configure(duration=1)
-    assert daq.state() == 'Configured'
+    assert daq.state == 'Configured'
     daq.begin()
-    assert daq.state() == 'Running'
+    assert daq.state == 'Running'
     time.sleep(1.1)
-    assert daq.state() == 'Open'
+    assert daq.state == 'Open'
     daq.begin(duration=2)
-    assert daq.state() == 'Running'
+    assert daq.state == 'Running'
     time.sleep(1.1)
-    assert daq.state() == 'Running'
+    assert daq.state == 'Running'
     time.sleep(1.1)
-    assert daq.state() == 'Open'
+    assert daq.state == 'Open'
     daq.end_run()
-    assert daq.state() == 'Configured'
+    assert daq.state == 'Configured'
     daq.configure(duration=60)
     t0 = time.time()
     daq.begin()
-    assert daq.state() == 'Running'
+    assert daq.state == 'Running'
     daq.stop()
-    assert daq.state() == 'Open'
+    assert daq.state == 'Open'
     assert time.time() - t0 < 5
     t1 = time.time()
     daq.begin(duration=2)
-    assert daq.state() == 'Running'
+    assert daq.state == 'Running'
     daq.wait()
-    assert daq.state() == 'Open'
+    assert daq.state == 'Open'
     assert time.time() - t1 > 2
     daq.begin(duration=60)
-    assert daq.state() == 'Running'
+    assert daq.state == 'Running'
     daq.pause()
-    assert daq.state() == 'Open'
+    assert daq.state == 'Open'
     daq.resume()
-    assert daq.state() == 'Running'
+    assert daq.state == 'Running'
     daq.end_run()
-    assert daq.state() == 'Configured'
+    assert daq.state == 'Configured'
 
 
 def test_scan(daq):
@@ -141,17 +141,17 @@ def test_scan(daq):
     RE = RunEngine({})
     daq.connect()
     daq.configure(duration=60, record=False)
-    assert daq.status() == 'Configured'
+    assert daq.state == 'Configured'
 
     @fly_during_decorator([daq])
     @stage_decorator([daq])
     @run_decorator()
     def plan(reader):
         for i in range(10):
-            assert daq.status() == 'Running'
+            assert daq.state == 'Running'
             yield from trigger_and_read([reader])
-        assert daq.status() == 'Running'
+        assert daq.state == 'Running'
 
     RE(plan(Reader('test', {'zero': lambda: 0})))
 
-    assert daq.status() == 'Configured'
+    assert daq.state == 'Configured'
