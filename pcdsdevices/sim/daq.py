@@ -88,7 +88,7 @@ class SimControl:
             thr = threading.Thread(target=self._begin_thread, args=())
             thr.start()
 
-    def _pick_duration(events, l1t_events, l3t_events, duration):
+    def _pick_duration(self, events, l1t_events, l3t_events, duration):
         for ev in (events, l1t_events, l3t_events):
             if ev is not None:
                 return ev / 120
