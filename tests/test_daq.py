@@ -124,13 +124,15 @@ def test_run_flow(daq):
     assert daq.state == 'Running'
     daq.stop()
     assert daq.state == 'Open'
-    assert time.time() - t0 < 5
+    short_time = time.time() - t0
+    assert short_time < 5
     t1 = time.time()
     daq.begin(duration=2)
     assert daq.state == 'Running'
     daq.wait()
     assert daq.state == 'Open'
-    assert time.time() - t1 > 2
+    at_least_2_secs = time.time() - t1
+    assert at_least_2_secs > 2
     daq.begin(duration=60)
     assert daq.state == 'Running'
     daq.pause()
