@@ -85,7 +85,7 @@ def test_configure(daq):
         assert daq.read_configuration() == new
         for key, value in config.items():
             assert new[key] == value
-        prev_config = config
+        prev_config = daq.read_configuration()
     with pytest.raises(RuntimeError):
         daq.configure()
 
