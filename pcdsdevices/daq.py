@@ -390,7 +390,7 @@ class Daq(FlyerInterface):
 
 class DaqStatus(Status):
     def wait(self, timeout=None):
-        self._wait_done = threading.RLock()
+        self._wait_done = threading.Event()
 
         def cb(*args, **kwargs):
             self._wait_done.set()
