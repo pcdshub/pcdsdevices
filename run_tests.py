@@ -34,11 +34,11 @@ if __name__ == '__main__':
     handler = RotatingFileHandler(log_filename, backupCount=9)
     if do_rollover:
         handler.doRollover()
-    formatter = logging.Formatter(fmt=('%(asctime)s '
+    formatter = logging.Formatter(fmt=('%(asctime)s.%(msecs)03d '
                                        '%(name)-20s '
                                        '%(levelname)-8s '
                                        '%(message)s'),
-                                  datefmt='%m-%d %H:%M:%S')
+                                  datefmt='%H:%M:%S')
     handler.setFormatter(formatter)
     root_logger.addHandler(handler)
 
