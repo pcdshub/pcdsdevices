@@ -4,10 +4,14 @@ import time
 import logging
 import pytest
 
-from bluesky import RunEngine
-from bluesky.examples import Reader
-from bluesky.plans import (fly_during_decorator, stage_decorator,
-                           run_decorator, trigger_and_read)
+try:
+    from bluesky import RunEngine
+    from bluesky.examples import Reader
+    from bluesky.plans import (fly_during_decorator, stage_decorator,
+                               run_decorator, trigger_and_read)
+    has_bluesky = True
+except:
+    has_bluesky = False
 
 from pcdsdevices.daq import Daq
 from pcdsdevices.sim.daq import SimDaq
@@ -65,7 +69,7 @@ def test_configure(daq):
     assert not daq.configured
     daq.configure(events=1000)
     assert daq.read_configuration()['events'] == 1000
-    assert daq.read_configuration()['duration'] == None
+    assert daq.read_configuration()['duration'] is None
     assert daq.connected
     assert daq.configured
     daq.disconnect()
@@ -75,7 +79,7 @@ def test_configure(daq):
     assert daq.connected
     assert not daq.configured
     daq.configure(duration=60)
-    assert daq.read_configuration()['events'] == None
+    assert daq.read_configuration()['events'] is None
     assert daq.read_configuration()['duration'] == 60
     assert daq.connected
     assert daq.configured
@@ -150,6 +154,7 @@ def test_run_flow(daq):
     assert daq.state == 'Configured'
 
 
+@pytest.mark.skipif(not has_bluesky, reason='Requires Bluesky')
 @pytest.mark.timeout(10)
 def test_scan(daq):
     """
