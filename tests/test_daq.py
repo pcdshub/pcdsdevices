@@ -51,7 +51,8 @@ def test_configure(daq):
     We expect to be able to disconnect after a configure.
     We expect a connected daq to be able to configure.
     We expect configure to return both the old and new configurations.
-    We expect read_configure to give us the inputted configure arguments.
+    We expect read_configure to give us the current configuration, including
+    default args.
     We expect neglecting to provide both events and duration to raise an error.
     """
     assert not daq.connected
@@ -77,8 +78,9 @@ def test_configure(daq):
     for config in configs:
         old, new = daq.configure(**config)
         assert old == prev_config
-        assert new == config
-        assert daq.read_configuration() == config
+        assert daq.read_configuration() == new
+        for key, value in config.items():
+            assert new[key] == value
         prev_config = config
     with pytest.raises(RuntimeError):
         daq.configure()
