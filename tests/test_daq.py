@@ -178,8 +178,9 @@ def test_pause_resume(daq):
     daq.resume()
     assert daq.state == 'Running'
     daq.stop()
-    assert daq.state == 'Configure'
+    assert daq.state == 'Open'
     daq.end_run()
+    assert daq.state == 'Configured'
 
 
 @pytest.mark.skipif(not has_bluesky, reason='Requires Bluesky')
