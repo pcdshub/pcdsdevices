@@ -17,6 +17,15 @@ try:
 except:
     logger.warning('pydaq not in environment. Will not be able to use DAQ!')
 
+try:
+    from bluesky import RunEngine
+    from bluesky.plans import run_wrapper, fly_during_wrapper
+    has_bluesky = True
+except ImportError:
+    has_bluesky = False
+    logger.warning(('bluesky not in environment. Will not have '
+                    'make_daq_run_engine.'))
+
 
 # Wrapper to make sure we're connected
 def check_connect(f):
@@ -467,6 +476,9 @@ class Daq(FlyerInterface):
 
 
 class DaqStatus(Status):
+    """
+    Extend status to add a convenient wait function.
+    """
     def wait(self, timeout=None):
         self._wait_done = threading.Event()
 
@@ -474,3 +486,14 @@ class DaqStatus(Status):
             self._wait_done.set()
         self.finished_cb = cb
         self._wait_done.wait(timeout=timeout)
+
+
+if has_bluesky:
+    def make_daq_run_engine(daq):
+        """
+        Given a daq object, create a RunEngine that will open a run and start
+        the daq for each plan.
+        """
+        daq_wrapper = functools.partial(fly_during_wrapper, flyers=[daq])
+        RE = RunEngine(preprocessors=[run_wrapper, daq_wrapper])
+        return RE

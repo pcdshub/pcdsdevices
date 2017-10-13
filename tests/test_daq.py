@@ -5,15 +5,13 @@ import logging
 import pytest
 
 try:
-    from bluesky import RunEngine
     from bluesky.examples import Reader
-    from bluesky.plans import (fly_during_decorator, stage_decorator,
-                               run_decorator, trigger_and_read)
+    from bluesky.plans import trigger_and_read
     has_bluesky = True
 except:
     has_bluesky = False
 
-from pcdsdevices.daq import Daq
+from pcdsdevices.daq import Daq, make_daq_run_engine
 from pcdsdevices.sim.daq import SimDaq
 
 logger = logging.getLogger(__name__)
@@ -136,14 +134,6 @@ def test_run_flow(daq):
     assert daq.state == 'Open'
     at_least_2_secs = time.time() - t1
     assert at_least_2_secs > 2
-    daq.begin(duration=60)
-    assert daq.state == 'Running'
-    daq.pause()
-    assert daq.state == 'Open'
-    daq.resume()
-    assert daq.state == 'Running'
-    daq.end_run()
-    assert daq.state == 'Configured'
     t2 = time.time()
     daq.wait()
     short_time = time.time() - t2
@@ -156,7 +146,14 @@ def test_run_flow(daq):
     daq.wait()
     at_least_2_secs = time.time() - t3
     assert at_least_2_secs > 2
+    daq.begin(duration=60)
+    assert daq.state == 'Running'
+    daq.pause()
+    assert daq.state == 'Open'
+    daq.resume()
+    assert daq.state == 'Running'
     daq.end_run()
+    assert daq.state == 'Configured'
 
 
 @pytest.mark.skipif(not has_bluesky, reason='Requires Bluesky')
@@ -166,14 +163,8 @@ def test_scan(daq):
     We expect that the daq object is usable in a bluesky plan.
     """
     logger.debug('test_scan')
-    RE = RunEngine({})
-    daq.connect()
-    daq.configure(record=False)
-    assert daq.state == 'Configured'
+    RE = make_daq_run_engine(daq)
 
-    @fly_during_decorator([daq])
-    @stage_decorator([daq])
-    @run_decorator()
     def plan(reader):
         for i in range(10):
             assert daq.state == 'Running'
