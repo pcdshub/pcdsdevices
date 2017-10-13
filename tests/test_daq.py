@@ -90,34 +90,30 @@ def test_configure(daq):
         prev_config = daq.read_configuration()
 
 
-@pytest.mark.timeout(20)
-def test_run_flow(daq):
+@pytest.mark.timeout(3)
+def test_basic_run(daq):
     """
     We expect a begin without a configure to automatically configure
     We expect the daq to run for the time passed into begin
-    We expect the daq to run indefinitely if no time is passed to begin
-    We expect that the running stops early if we call stop
     We expect that we close the run upon calling end_run
-    We expect that wait will block the thread until the daq is no longer
-    running
-    We expect that a wait when nothing is happening will do nothing
-    We expect begin() to run for the configured time, should a time be
-    configured
     """
-    logger.debug('test_run_flow')
+    logger.debug('test_basic_run')
     assert daq.state == 'Disconnected'
     daq.begin(duration=1)
     assert daq.state == 'Running'
     time.sleep(1.3)
     assert daq.state == 'Open'
-    daq.begin(duration=2)
-    assert daq.state == 'Running'
-    time.sleep(1.3)
-    assert daq.state == 'Running'
-    time.sleep(1.3)
-    assert daq.state == 'Open'
     daq.end_run()
     assert daq.state == 'Configured'
+
+
+@pytest.mark.timeout(3)
+def test_stop_run(daq):
+    """
+    We expect the daq to run indefinitely if no time is passed to begin
+    We expect that the running stops early if we call stop
+    """
+    logger.debug('test_stop_run')
     t0 = time.time()
     daq.begin()
     assert daq.state == 'Running'
@@ -127,33 +123,63 @@ def test_run_flow(daq):
     assert daq.state == 'Open'
     less_than_2 = time.time() - t0
     assert less_than_2 < 2
-    t1 = time.time()
-    daq.begin(duration=2)
-    assert daq.state == 'Running'
+
+
+@pytest.mark.timeout(3)
+def test_wait_run(daq):
+    """
+    We expect that wait will block the thread until the daq is no longer
+    running
+    We expect that a wait when nothing is happening will do nothing
+    """
+    logger.debug('test_wait_run')
+    t0 = time.time()
     daq.wait()
-    assert daq.state == 'Open'
-    at_least_2_secs = time.time() - t1
-    assert at_least_2_secs > 2
-    t2 = time.time()
-    daq.wait()
-    short_time = time.time() - t2
+    short_time = time.time() - t0
     assert short_time < 1
-    daq.configure(duration=2)
-    daq.begin(use_l3t=True)
-    daq.stop()
-    t3 = time.time()
-    daq.begin(controls=[('val', 5)])
+    t1 = time.time()
+    daq.begin(duration=1)
     daq.wait()
-    at_least_2_secs = time.time() - t3
-    assert at_least_2_secs > 2
-    daq.begin(duration=60)
+    just_over_1 = time.time() - t1
+    assert 1 < just_over_1 < 1.2
+    t3 = time.time()
+    daq.wait()
+    short_time = time.time() - t3
+    assert short_time < 1
+    daq.end_run()
+
+
+@pytest.mark.timeout(3)
+def test_configured_run(daq):
+    """
+    We expect begin() to run for the configured time, should a time be
+    configured
+    """
+    logger.debug('test_configured_run')
+    daq.configure(duration=1)
+    t0 = time.time()
+    daq.begin()
+    daq.wait()
+    just_over_1 = time.time() - t0
+    assert 1 < just_over_1 < 1.2
+    daq.end_run()
+
+
+@pytest.mark.timeout(3)
+def test_pause_resume(daq):
+    """
+    We expect pause and resume to work.
+    """
+    logger.debug('test_pause_resume')
+    daq.begin(duration=5)
     assert daq.state == 'Running'
     daq.pause()
     assert daq.state == 'Open'
     daq.resume()
     assert daq.state == 'Running'
+    daq.stop()
+    assert daq.state == 'Configure'
     daq.end_run()
-    assert daq.state == 'Configured'
 
 
 @pytest.mark.skipif(not has_bluesky, reason='Requires Bluesky')
