@@ -49,6 +49,8 @@ class SimControl:
         self._done_flag = threading.Event()
 
     def _do_transition(self, transition):
+        logger.debug('Doing transition %s from state %s',
+                     transition, self._state)
         info = self._transitions[transition]
         if self._state in info['ignore']:
             return False
@@ -99,7 +101,7 @@ class SimControl:
                 err = 'SimControl stops here because pydaq segfaults here'
                 raise RuntimeError(err)
             self._done_flag.clear()
-            thr = threading.Thread(target=self._begin_thread, args=(dur))
+            thr = threading.Thread(target=self._begin_thread, args=(dur,))
             thr.start()
 
     def _pick_duration(self, events, l1t_events, l3t_events, duration):
