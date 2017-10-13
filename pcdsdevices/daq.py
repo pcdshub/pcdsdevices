@@ -472,6 +472,8 @@ class Daq(FlyerInterface):
             self.begin()
 
     def __del__(self):
+        if self.state in ('Open', 'Running'):
+            self.end_run()
         self.disconnect()
 
 
