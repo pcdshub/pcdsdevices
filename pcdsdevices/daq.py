@@ -77,7 +77,6 @@ class Daq(FlyerInterface):
 
     @property
     def state(self):
-        logger.debug('accessing Daq.state')
         if self.connected:
             num = self.control.state()
             return self.state_enum(num).name
@@ -300,9 +299,11 @@ class Daq(FlyerInterface):
         old = self.read_configuration()
         config_args = self._config_args(record, use_l3t, controls)
         try:
+            logger.debug('Calling Control.configure with kwargs %s',
+                         config_args)
+            self.control.configure(**config_args)
             # self.config should reflect exactly the arguments to configure,
             # this is different than the arguments that pydaq.Control expects
-            self.control.configure(**config_args)
             self.config = dict(events=events, duration=duration,
                                record=record, use_l3t=use_l3t,
                                controls=controls)
@@ -328,7 +329,7 @@ class Daq(FlyerInterface):
                      record, use_l3t, controls)
         config_args = {}
         for key, val in zip(('record', 'controls'),
-                            (record, use_l3t, controls)):
+                            (record, controls)):
             if val is None:
                 if self.config is None:
                     config_args[key] = self.default_config[key]
@@ -340,6 +341,9 @@ class Daq(FlyerInterface):
             config_args['l3t_events'] = 0
         else:
             config_args['events'] = 0
+            for key, value in list(config_args.items()):
+                if value is None:
+                    del config_args[key]
         return config_args
 
     def _begin_args(self, events, duration, use_l3t, controls):
