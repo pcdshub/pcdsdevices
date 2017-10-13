@@ -98,9 +98,8 @@ class SimControl:
             if dur is None:
                 err = 'SimControl stops here because pydaq segfaults here'
                 raise RuntimeError(err)
-            self._time_remaining = dur
             self._done_flag.clear()
-            thr = threading.Thread(target=self._begin_thread, args=())
+            thr = threading.Thread(target=self._begin_thread, args=(dur))
             thr.start()
 
     def _pick_duration(self, events, l1t_events, l3t_events, duration):
@@ -128,13 +127,12 @@ class SimControl:
         self._time_remaining = 0
         self._done_flag.set()
 
-    def _begin_thread(self):
-        logger.debug('SimControl._begin_thread()')
-        logger.debug('%ss remaining', self._time_remaining)
+    def _begin_thread(self, duration):
+        logger.debug('SimControl._begin_thread(%s)', duration)
         start = time.time()
         interrupted = False
-        while self._time_remaining > 0:
-            self._time_remaining -= 0.1
+        while duration > 0:
+            duration -= 0.1
             if self._done_flag.wait(0.1):
                 interrupted = True
                 break
@@ -144,8 +142,8 @@ class SimControl:
             except:
                 pass
         end = time.time()
-        logger.debug('%ss elapased in SimControl._begin_thread()',
-                     end-start)
+        logger.debug('%ss elapased in SimControl._begin_thread(%s)',
+                     end-start, duration)
 
     def end(self):
         logger.debug('SimControl.end()')
