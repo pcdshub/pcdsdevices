@@ -35,8 +35,9 @@ if __name__ == '__main__':
     if do_rollover:
         handler.doRollover()
     formatter = logging.Formatter(fmt=('%(asctime)s.%(msecs)03d '
-                                       '%(name)-20s '
+                                       '%(module)-10s '
                                        '%(levelname)-8s '
+                                       '%(threadName)-10s '
                                        '%(message)s'),
                                   datefmt='%H:%M:%S')
     handler.setFormatter(formatter)

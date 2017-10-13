@@ -18,6 +18,25 @@ except:
     logger.warning('pydaq not in environment. Will not be able to use DAQ!')
 
 
+# Wrapper to make sure we're connected
+def check_connect(f):
+    @functools.wraps(f)
+    def wrapper(self, *args, **kwargs):
+        logger.debug('Checking for daq connection')
+        if not self.connected:
+            msg = 'DAQ is not connected. Attempting to connect...'
+            logger.info(msg)
+            self.connect()
+        if self.connected:
+            logger.debug('Daq is connected')
+            return f(self, *args, **kwargs)
+        else:
+            err = 'Could not connect to DAQ'
+            logger.error(err)
+            raise RuntimeError(err)
+    return wrapper
+
+
 class Daq(FlyerInterface):
     """
     The LCLS1 DAQ as a flyer object. This uses the pydaq module to connect with
@@ -32,6 +51,11 @@ class Daq(FlyerInterface):
     state_enum = enum.Enum('pydaq state',
                            'Disconnected Connected Configured Open Running',
                            start=0)
+    default_config = dict(events=None,
+                          duration=None,
+                          use_l3t=False,
+                          record=False,
+                          controls=None)
 
     def __init__(self, name=None, platform=0, parent=None):
         super().__init__()
@@ -59,38 +83,6 @@ class Daq(FlyerInterface):
             return self.state_enum(num).name
         else:
             return 'Disconnected'
-
-    # Wrapper to make sure we're connected
-    def check_connect(f):
-        @functools.wraps(f)
-        def wrapper(self, *args, **kwargs):
-            logger.debug('Checking for daq connection')
-            if not self.connected:
-                msg = 'DAQ is not connected. Attempting to connect...'
-                logger.info(msg)
-                self.connect()
-            if self.connected:
-                logger.debug('Daq is connected')
-                return f(self, *args, **kwargs)
-            else:
-                err = 'Could not connect to DAQ'
-                logger.error(err)
-                raise RuntimeError(err)
-        return wrapper
-
-    # Wrapper to make sure we've configured
-    def check_config(f):
-        @functools.wraps(f)
-        def wrapper(self, *args, **kwargs):
-            logger.debug('Checking for daq config')
-            if self.configured:
-                logger.debug('Daq is configured')
-                return f(self, *args, **kwargs)
-            else:
-                err = 'DAQ is not configured'
-                logger.error(err)
-                raise RuntimeError(err)
-        return wrapper
 
     # Interactive methods
     def connect(self):
@@ -125,16 +117,22 @@ class Daq(FlyerInterface):
         logger.info('DAQ is disconnected.')
 
     @check_connect
-    def wait(self):
+    def wait(self, timeout=None):
         """
         Pause the thread until the DAQ is done aquiring.
+
+        Parameters
+        ----------
+        timeout: float
+            Maximum time to wait in seconds.
         """
         logger.debug('Daq.wait()')
-        status = self._get_end_status()
-        status.wait()
+        if self.state == 'Running':
+            status = self._get_end_status()
+            status.wait(timeout=timeout)
 
-    @check_config
-    def begin(self, events=None, duration=None, wait=False):
+    def begin(self, events=None, duration=None, use_l3t=None, controls=None,
+              wait=False):
         """
         Start the daq with the current configuration. Block until
         the daq has begun acquiring data. Optionally block until the daq has
@@ -153,7 +151,8 @@ class Daq(FlyerInterface):
         """
         logger.debug('Daq.begin(events=%s, duration=%s, wait=%s)',
                      events, duration, wait)
-        begin_status = self.kickoff(events=events, duration=duration)
+        begin_status = self.kickoff(events=events, duration=duration,
+                                    use_l3t=use_l3t, controls=controls)
         begin_status.wait()
         if wait:
             self.wait()
@@ -176,8 +175,8 @@ class Daq(FlyerInterface):
         self.control.endrun()
 
     # Flyer interface
-    @check_config
-    def kickoff(self, events=None, duration=None, use_l3t=None):
+    @check_connect
+    def kickoff(self, events=None, duration=None, use_l3t=None, controls=None):
         """
         Begin acquisition. This method is non-blocking.
 
@@ -189,18 +188,19 @@ class Daq(FlyerInterface):
         """
         logger.debug('Daq.kickoff()')
 
-        def start_thread(control, status, events, duration, use_l3t):
-            if any(map(lambda x: x is not None, (events, duration))):
-                kwargs = self._parse_config_args(events, duration, use_l3t)
-                control.begin(**kwargs)
-            else:
-                control.begin()
+        if not self.configured:
+            self.configure()
+
+        def start_thread(control, status, events, duration, use_l3t, controls):
+            begin_args = self._begin_args(events, duration, use_l3t, controls)
+            control.begin(**begin_args)
             status._finished(success=True)
             logger.debug('Marked kickoff as complete')
+
         begin_status = DaqStatus(obj=self)
         watcher = threading.Thread(target=start_thread,
                                    args=(self.control, begin_status, events,
-                                         duration, use_l3t))
+                                         duration, use_l3t, controls))
         watcher.start()
         return begin_status
 
@@ -230,6 +230,7 @@ class Daq(FlyerInterface):
         end_status: DaqStatus
         """
         logger.debug('Daq._get_end_status()')
+
         def finish_thread(control, status):
             control.end()
             status._finished(success=True)
@@ -259,25 +260,27 @@ class Daq(FlyerInterface):
         return {}
 
     @check_connect
-    def configure(self, events=None, duration=None, use_l3t=False,
-                  record=False, controls=None):
+    def configure(self, events=None, duration=None, record=False,
+                  use_l3t=False, controls=None):
         """
         Changes the daq's configuration for the next run.
 
         Parameters
         ----------
         events: int, optional
-            If provided, the daq will run for this many events before stopping.
+            If provided, the daq will run for this many events before
+            stopping, unless we override in begin.
             If not provided, we'll use the duration argument instead.
 
         duration: int, optional
             If provided, the daq will run for this many seconds before
-            stopping. If not provided, and events was also not provided, an
-            error will be raised.
+            stopping, unless we override in begin.
+            If not provided, and events was also not provided, an empty call to
+            begin() will run indefinitely.
 
         use_l3t: bool, optional
-            If True, the events argument will be reinterpreted to only count
-            events that pass the level 3 trigger.
+            If True, an events argument to begin will be reinterpreted to only
+            count events that pass the level 3 trigger.
 
         record: bool, optional
             If True, we'll record the data. Otherwise, we'll run without
@@ -291,21 +294,17 @@ class Daq(FlyerInterface):
         -------
         old, new: tuple of dict
         """
-        logger.debug(('Daq.configure(events=%s, duration=%s, use_l3t=%s, '
-                      'record=%s, controls=%s)'),
-                     events, duration, use_l3t, record, controls)
-        if self.config is None:
-            old = {}
-        else:
-            old = self.read_configuration()
-        config_args = self._parse_config_args(events, duration, use_l3t,
-                                              record, controls)
+        logger.debug(('Daq.configure(events=%s, duration=%s, record=%s, '
+                      'use_l3t=%s, controls=%s)'),
+                     events, duration, record, use_l3t, controls)
+        old = self.read_configuration()
+        config_args = self._config_args(record, use_l3t, controls)
         try:
             # self.config should reflect exactly the arguments to configure,
             # this is different than the arguments that pydaq.Control expects
             self.control.configure(**config_args)
             self.config = dict(events=events, duration=duration,
-                               use_l3t=use_l3t, record=record,
+                               record=record, use_l3t=use_l3t,
                                controls=controls)
             msg = 'Daq configured'
             logger.info(msg)
@@ -313,31 +312,67 @@ class Daq(FlyerInterface):
             self.config = None
             msg = 'Failed to configure!'
             logger.exception(msg)
-            return old, {}
         new = self.read_configuration()
         return old, new
 
-    def _parse_config_args(self, events, duration, use_l3t=None, record=None,
-                           controls=None):
+    def _config_args(self, record, use_l3t, controls):
+        """
+        For a given set of arguments to configure, return the arguments that
+        should be sent to control.configure.
+
+        Returns
+        -------
+        config_args: dict
+        """
+        logger.debug('Daq._config_args(%s, %s, %s)',
+                     record, use_l3t, controls)
         config_args = {}
+        for key, val in zip(('record', 'controls'),
+                            (record, use_l3t, controls)):
+            if val is None:
+                if self.config is None:
+                    config_args[key] = self.default_config[key]
+                else:
+                    config_args[key] = self.config[key]
+            else:
+                config_args[key] = val
+        if use_l3t:
+            config_args['l3t_events'] = 0
+        else:
+            config_args['events'] = 0
+        return config_args
+
+    def _begin_args(self, events, duration, use_l3t, controls):
+        """
+        For a given set of arguments to begin, return the arguments that should
+        be sent to control.begin
+
+        Returns
+        -------
+        begin_args: dict
+        """
+        logger.debug('Daq._begin_args(%s, %s, %s, %s)',
+                     events, duration, use_l3t, controls)
+        begin_args = {}
+        if events is None and duration is None:
+            config = self.read_configuration()
+            events = config['events']
+            duration = config['duration']
         if events is not None:
             if use_l3t is None and self.config is not None:
                 use_l3t = self.config['use_l3t']
             if use_l3t:
-                config_args['l3t_events'] = events
+                begin_args['l3t_events'] = events
             else:
-                config_args['events'] = events
+                begin_args['events'] = events
         elif duration is not None:
-            config_args['duration'] = duration
+            begin_args['duration'] = duration
         else:
-            raise RuntimeError('Either events or duration must be provided.')
-        if record is not None:
-            config_args['record'] = record
+            begin_args['events'] = 0  # Run until manual stop
         if controls is not None:
-            config_args['controls'] = controls
-        return config_args
+            begin_args['controls'] = controls
+        return begin_args
 
-    @check_config
     def read_configuration(self):
         """
         Returns
@@ -346,7 +381,11 @@ class Daq(FlyerInterface):
             Mapping of config key to current configured value.
         """
         logger.debug('Daq.read_configuration()')
-        return copy.deepcopy(self.config)
+        if self.config is None:
+            config = self.default_config
+        else:
+            config = self.config
+        return copy.deepcopy(config)
 
     def describe_configuration(self):
         """
@@ -376,7 +415,6 @@ class Daq(FlyerInterface):
                     controls=dict(source='daq_control_vars',
                                   dtype='array',
                                   shape=controls_shape))
-
 
     def stage(self):
         """

@@ -96,7 +96,8 @@ class SimControl:
         if self._do_transition('begin'):
             dur = self._pick_duration(events, l1t_events, l3t_events, duration)
             if dur is None:
-                dur = self._duration
+                err = 'SimControl stops here because pydaq segfaults here'
+                raise RuntimeError(err)
             self._time_remaining = dur
             self._done_flag.clear()
             thr = threading.Thread(target=self._begin_thread, args=())
@@ -107,7 +108,10 @@ class SimControl:
                      l1t_events, l3t_events, duration)
         for ev in (events, l1t_events, l3t_events):
             if ev is not None:
-                return ev / 120
+                if ev == 0:
+                    return float('inf')
+                else:
+                    return ev / 120
             if duration is not None:
                 return duration
             return None
@@ -125,23 +129,26 @@ class SimControl:
         self._done_flag.set()
 
     def _begin_thread(self):
-        logger.debug('SimControl._begin_thread() in thread %s',
-                     threading.current_thread().name)
+        logger.debug('SimControl._begin_thread()')
         logger.debug('%ss remaining', self._time_remaining)
         start = time.time()
-        while self._time_remaining > 0 and not self._done_flag.is_set():
+        interrupted = False
+        while self._time_remaining > 0:
             self._time_remaining -= 0.1
             if self._done_flag.wait(0.1):
+                interrupted = True
                 break
-        if not self._done_flag.is_set():
+        if not interrupted:
             try:
                 self.stop()
             except:
                 pass
         end = time.time()
-        logger.debug('%ss elapased in SimControl._begin_thread() in thread %s',
-                     end-start, threading.current_thread().name)
+        logger.debug('%ss elapased in SimControl._begin_thread()',
+                     end-start)
 
     def end(self):
         logger.debug('SimControl.end()')
+        if self._state != 'Running':
+            raise RuntimeError('Not running!')
         self._done_flag.wait()

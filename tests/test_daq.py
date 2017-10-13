@@ -57,19 +57,18 @@ def test_configure(daq):
     """
     We expect the configured attribute to be correct.
     We expect a disconnected daq to connect and then configure.
+    We expect a configure with no args to pick the defaults.
     We expect to be able to disconnect after a configure.
     We expect a connected daq to be able to configure.
     We expect configure to return both the old and new configurations.
     We expect read_configure to give us the current configuration, including
     default args.
-    We expect neglecting to provide both events and duration to raise an error.
     """
     logger.debug('test_configure')
     assert not daq.connected
     assert not daq.configured
-    daq.configure(events=1000)
-    assert daq.read_configuration()['events'] == 1000
-    assert daq.read_configuration()['duration'] is None
+    daq.configure()
+    assert daq.read_configuration() == daq.default_config
     assert daq.connected
     assert daq.configured
     daq.disconnect()
@@ -78,11 +77,6 @@ def test_configure(daq):
     daq.connect()
     assert daq.connected
     assert not daq.configured
-    daq.configure(duration=60)
-    assert daq.read_configuration()['events'] is None
-    assert daq.read_configuration()['duration'] == 60
-    assert daq.connected
-    assert daq.configured
     configs = [
         dict(events=1000, use_l3t=True),
         dict(events=1000, use_l3t=True, record=True),
@@ -96,28 +90,25 @@ def test_configure(daq):
         for key, value in config.items():
             assert new[key] == value
         prev_config = daq.read_configuration()
-    with pytest.raises(RuntimeError):
-        daq.configure()
 
 
 @pytest.mark.timeout(20)
 def test_run_flow(daq):
     """
-    We expect a begin without a configure to throw an error.
-    Otherwise, we expect the daq to run for the configured time, or the time
-    passed into begin.
-    We expect that the running stops early if we call stop.
+    We expect a begin without a configure to automatically configure
+    We expect the daq to run for the time passed into begin
+    We expect the daq to run indefinitely if no time is passed to begin
+    We expect that the running stops early if we call stop
     We expect that we close the run upon calling end_run
     We expect that wait will block the thread until the daq is no longer
     running
+    We expect that a wait when nothing is happening will do nothing
+    We expect begin() to run for the configured time, should a time be
+    configured
     """
     logger.debug('test_run_flow')
-    with pytest.raises(RuntimeError):
-        daq.begin()
     assert daq.state == 'Disconnected'
-    daq.configure(duration=1)
-    assert daq.state == 'Configured'
-    daq.begin()
+    daq.begin(duration=1)
     assert daq.state == 'Running'
     time.sleep(1.3)
     assert daq.state == 'Open'
@@ -129,14 +120,15 @@ def test_run_flow(daq):
     assert daq.state == 'Open'
     daq.end_run()
     assert daq.state == 'Configured'
-    daq.configure(duration=60)
     t0 = time.time()
     daq.begin()
     assert daq.state == 'Running'
+    time.sleep(1.3)
+    assert daq.state == 'Running'
     daq.stop()
     assert daq.state == 'Open'
-    short_time = time.time() - t0
-    assert short_time < 5
+    less_than_2 = time.time() - t0
+    assert less_than_2 < 2
     t1 = time.time()
     daq.begin(duration=2)
     assert daq.state == 'Running'
@@ -152,6 +144,19 @@ def test_run_flow(daq):
     assert daq.state == 'Running'
     daq.end_run()
     assert daq.state == 'Configured'
+    t2 = time.time()
+    daq.wait()
+    short_time = time.time() - t2
+    assert short_time < 1
+    daq.configure(duration=2)
+    daq.begin(use_l3t=True)
+    daq.stop()
+    t3 = time.time()
+    daq.begin(controls=[('val', 5)])
+    daq.wait()
+    at_least_2_secs = time.time() - t3
+    assert at_least_2_secs > 2
+    daq.end_run()
 
 
 @pytest.mark.skipif(not has_bluesky, reason='Requires Bluesky')
@@ -163,7 +168,7 @@ def test_scan(daq):
     logger.debug('test_scan')
     RE = RunEngine({})
     daq.connect()
-    daq.configure(duration=60, record=False)
+    daq.configure(record=False)
     assert daq.state == 'Configured'
 
     @fly_during_decorator([daq])
