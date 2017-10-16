@@ -9,6 +9,7 @@
    slits.rst
    pim.rst
    ipimb.rst
+   daq.rst
 
 .. toctree::
    :maxdepth: 1
