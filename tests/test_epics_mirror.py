@@ -17,7 +17,7 @@ from pcdsdevices.sim.pv       import using_fake_epics_pv
 @pytest.fixture(scope='function')
 def branching_mirror():
     m = PointingMirror("MIRR:TST:M1H", "GANTRY:TST:M1H",
-                     mps="MIRR:M1H:MPS", state_prefix="TST:M1H",
+                     mps_prefix="MIRR:M1H:MPS", state_prefix="TST:M1H",
                      in_lines=['MFX', 'MEC'], out_lines= ['CXI'])
     m.state.state._read_pv.enum_strs = ['IN', 'OUT']
     return m

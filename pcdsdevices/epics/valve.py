@@ -6,8 +6,9 @@ Standard classes for LCLS Gate Valves
 import logging
 from enum import Enum
 from copy import deepcopy
+from functools import partial
 
-from .mps import MPS
+from .mps import MPS, mps_factory
 from .state import pvstate_class, StateStatus
 from .iocdevice import IocDevice
 from .device import Device
@@ -19,6 +20,7 @@ from .iocadmin import IocAdminOld
 
 
 logger = logging.getLogger(__name__)
+
 class Commands(Enum):
     """
     Command aliases for opening and closing valves
@@ -76,18 +78,12 @@ class Stopper(Device):
     command = C(EpicsSignal, ':CMD')
     commands = Commands
 
-    #MPS Information
-    mps = FC(MPS, '{self._mps_prefix}', veto=True)
-
     #Subscription information
     SUB_LIMIT_CH = 'sub_limit_changed'
     _default_sub = SUB_LIMIT_CH
 
     def __init__(self, prefix, *, name=None,
-                 read_attrs=None,
-                 mps=None, **kwargs):
-        #Store MPS information
-        self._mps_prefix = mps
+                 read_attrs=None, **kwargs):
 
         if read_attrs is None:
             read_attrs = ['limits']
@@ -225,15 +221,9 @@ class GateValve(Stopper):
     command   = C(EpicsSignal,   ':OPN_SW')
     interlock = C(EpicsSignalRO, ':OPN_OK')
     
-    #MPS Information
-    mps = FC(MPS, '{self._mps_prefix}', veto=False)
-
     def __init__(self, prefix, *, name=None,
                  read_attrs=None, ioc=None,
-                 mps=None, **kwargs):
-        
-        #Store MPS information
-        self._mps_prefix = mps
+                 **kwargs):
 
         # Configure read attributes
         if read_attrs is None:
@@ -279,6 +269,9 @@ class GateValve(Stopper):
         return super().open(wait=wait, timeout=timeout, **kwargs)
 
 
+MPSGateValve = partial(mps_factory, 'MPSGateValve', GateValve)
+MPSStopper   = partial(mps_factory, 'MPSStopper', Stopper)
+
 PPS = pvstate_class('PPS',
                     {'signal': {'pvname': '',
                                  0: 'out',
@@ -307,16 +300,16 @@ class PPSStopper(Device):
     """
     summary = C(PPS, '')
     _default_sub = PPS._default_sub
-    
+
     #MPS Information
     mps = FC(MPS, '{self._mps_prefix}', veto=True)
 
     def __init__(self, prefix, *, name=None,
                  read_attrs=None,
-                 mps=None, **kwargs):
-        
+                 mps_prefix=None, **kwargs):
+
         #Store MPS information
-        self._mps_prefix = mps
+        self._mps_prefix = mps_prefix
 
         if not read_attrs:
             read_attrs = ['summary']
