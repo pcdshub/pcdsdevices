@@ -103,7 +103,7 @@ class MPS(Device, metaclass=MPSInterface):
         self._run_subs(sub_type=self.SUB_FAULT_CH, **kwargs)
 
 
-def mps_factory(clsname, cls,  *args, mps_prefix=None, veto=False,  **kwargs):
+def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
     """
     Create a new object of arbitrary class capable of storing MPS information
 
