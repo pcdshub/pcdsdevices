@@ -18,7 +18,7 @@ from ..interface import MPSInterface
 ##########
 from ophyd      import Device
 from .signal    import EpicsSignal, EpicsSignalRO
-from .component import Component as C
+from .component import Component as C, FormattedComponent as FC
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 class MPS(Device, metaclass=MPSInterface):
     """
     Class to interpret MPS information
-  
+
     The intention of this class is to be used as a sub-component of a device.
     There are three major attributes of each MPS bit that are relevant to
     operations; :attr:`.faulted` , :attr:`.bypassed` and :attr:`.veto_capable`.
@@ -101,3 +101,36 @@ class MPS(Device, metaclass=MPSInterface):
         """
         kwargs.pop('sub_type', None)
         self._run_subs(sub_type=self.SUB_FAULT_CH, **kwargs)
+
+
+def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
+    """
+    Create a new object of arbitrary class capable of storing MPS information
+
+    A new class identical to the provided one is created, but with additional
+    attribute `mps` that relies upon the provided `mps_prefix`. All other
+    information is passed through to the class constructor as args and kwargs
+
+    Parameters
+    ----------
+    clsname : str
+        Name of new class to create
+
+    cls :
+        Device class to add `mps`
+
+    mps_prefix : str
+        Prefix for MPS subcomponent
+
+    veto : bool, optional
+        Whether the MPS bit is capable of veto
+
+    args :
+        Passed to device constructor
+
+    kwargs:
+        Passed to device constructor
+    """
+    comp = FC(MPS, mps_prefix, veto=veto)
+    cls  = type(clsname, (cls,), {'mps' : comp})
+    return cls(*args, **kwargs)

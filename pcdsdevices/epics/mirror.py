@@ -960,7 +960,7 @@ class OffsetMirror(Device, PositionerBase):
 
 class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
     """
-    mps : str, optional
+    mps_prefix : str, optional
         Base prefix for the MPS bit of the mirror
 
     state_prefix : str, optional
@@ -978,10 +978,10 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
     #State Information
     state = FormattedComponent(InOutStates, '{self._state_prefix}')
     
-    def __init__(self, *args, mps=None, state_prefix=None, out_lines=None,
+    def __init__(self, *args, mps_prefix=None, state_prefix=None, out_lines=None,
                  in_lines=None, **kwargs):
         #Store MPS information
-        self._mps_prefix = mps
+        self._mps_prefix = mps_prefix
         #Store State information
         self._state_prefix = state_prefix 
         #Branching pattern
