@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from ..interface import LightInterface
 from .device import Device
 from .component import Component as Cmp
 from .state import InOutStates, statesrecord_class
