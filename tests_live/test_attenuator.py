@@ -23,7 +23,7 @@ def test_filter_reads():
 @pytest.mark.timeout(3)
 def test_att_reads():
     n = 10
-    att = attenuator.Attenuator("XCS:ATT", n_filters=n, ioc="IOC:XCS:ATT")
+    att = attenuator.Attenuator("XCS:ATT", n_filters=n)
     assert(isinstance(att(), float))
     assert(isinstance(att.get_transmission(), float))
     assert(isinstance(att.get_transmission(use3rd=True), float))

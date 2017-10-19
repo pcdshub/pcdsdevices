@@ -10,13 +10,11 @@ from functools import partial
 
 from .mps import MPS, mps_factory
 from .state import pvstate_class, StateStatus
-from .iocdevice import IocDevice
 from .device import Device
 from .signal import EpicsSignalRO
 from .signal import EpicsSignal
 from .component import Component as C
 from .component import FormattedComponent as FC
-from .iocadmin import IocAdminOld
 
 
 logger = logging.getLogger(__name__)
@@ -222,7 +220,7 @@ class GateValve(Stopper):
     interlock = C(EpicsSignalRO, ':OPN_OK')
     
     def __init__(self, prefix, *, name=None,
-                 read_attrs=None, ioc=None,
+                 read_attrs=None,
                  **kwargs):
 
         # Configure read attributes

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from enum import Enum
 
-from .iocdevice import IocDevice
+from .device import Device
 from .state import statesrecord_class
 from .component import Component
 
@@ -10,7 +10,7 @@ from .component import Component
 LodcmStates = statesrecord_class("LodcmStates", ":OUT", ":C", ":Si")
 
 
-class LODCM(IocDevice):
+class LODCM(Device):
     h1n_state = Component(LodcmStates, ":H1N")
     h2n_state = Component(LodcmStates, ":H2N")
 

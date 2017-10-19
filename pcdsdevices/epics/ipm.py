@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .iocdevice import IocDevice
+from .device import Device
 from .state import statesrecord_class, InOutStates
 from .component import Component, FormattedComponent
 from .signal import EpicsSignalRO
@@ -11,7 +11,7 @@ TargetStates = statesrecord_class("TargetStates", ":OUT", ":TARGET1",
                                   ":TARGET2", ":TARGET3", ":TARGET4")
 
 
-class IPM(IocDevice):
+class IPM(Device):
     """
     Standard intensity position monitor. Consists of two stages, one for the
     diode and one for the target. This creates a scalar readback that is also
@@ -26,14 +26,14 @@ class IPM(IocDevice):
     _default_sub = SUB_ST_CHG
     transmission = 0.8 #Completely making up this number :)
 
-    def __init__(self, prefix, *, data="", ioc="", name=None, parent=None,
+    def __init__(self, prefix, *, data="", name=None, parent=None,
                  read_attrs=None, **kwargs):
         #Default read attributes
         self._data = data
         if read_attrs is None:
             read_attrs = ["data"]
 
-        super().__init__(prefix, ioc=ioc, name=name, parent=parent,
+        super().__init__(prefix, name=name, parent=parent,
                          read_attrs=read_attrs, **kwargs)
         #Subscribe to state changes
         self.target.subscribe(self._target_moved,

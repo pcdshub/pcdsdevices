@@ -3,10 +3,8 @@
 from copy import deepcopy
 from .signal import EpicsSignal, EpicsSignalRO
 from .component import Component, FormattedComponent
-from .iocdevice import IocDevice
 from .device import Device
-from .iocadmin import IocAdminOld
-from .state import InOutStatesIoc, InOutCCMStatesIoc, statesrecord_class
+from .state import InOutStates, InOutCCMStates, statesrecord_class
 from .state import SubscriptionStatus
 
 
@@ -68,25 +66,21 @@ class PickerBlade(Device):
         self._run_subs(sub_type=self.SUB_ST_CH, **kwargs)
 
 
-class PulsePicker(IocDevice):
+class PulsePicker(Device):
     """
     Device that lets us pick which beam pulses reach the sample.
     """
-    in_out = FormattedComponent(InOutStatesIoc, "{self._states}",
-                                ioc="{self._states_ioc}")
+    in_out = FormattedComponent(InOutStates, "{self._states}")
     mode = Component(EpicsSignalRO, ":SE", string=True)
-    ioc = deepcopy(IocDevice.ioc)
-    ioc.cls = IocAdminOld
     #Blade subdevice
     blade = FormattedComponent(PickerBlade, "{self.prefix}")
 
-    def __init__(self, prefix, *, states="", ioc="", states_ioc="",
+    def __init__(self, prefix, *, states="",
                  read_attrs=None, name=None, **kwargs):
         self._states = states
-        self._states_ioc = states_ioc
         if read_attrs is None:
             read_attrs = ["mode", "blade", "in_out"]
-        super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
+        super().__init__(prefix, read_attrs=read_attrs, name=name,
                          **kwargs)
 
     def move_out(self):
@@ -109,7 +103,7 @@ class PulsePickerCCM(PulsePicker):
     and that's the CCM state: IN but at the CCM offset.
     """
     in_out = deepcopy(PulsePicker.in_out)
-    in_out.cls = InOutCCMStatesIoc
+    in_out.cls = InOutCCMStates
 
     def move_ccm(self):
         """
@@ -118,8 +112,7 @@ class PulsePickerCCM(PulsePicker):
         self.in_out.value = "CCM"
 
 
-TempStates = statesrecord_class("TempStates", ":PINK", ":CCM", ":OUT",
-                                has_ioc=True)
+TempStates = statesrecord_class("TempStates", ":PINK", ":CCM", ":OUT")
 
 
 class PulsePickerPink(PulsePickerCCM):

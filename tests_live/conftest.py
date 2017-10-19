@@ -70,23 +70,21 @@ class Params:
                     params.append(param_obj)
         return params
 
-Params("xcs_ims_usr32", ImsMotor, "XCS:USR:MMS:32", ioc="IOC:XCS:USR:DUMB:IMS")
-Params("xcs_lam_valve1", GateValve, "XCS:LAM:VGC:01", ioc="XCS:R51:IOC:39")
-Params("xcs_slits6", Slits, "XCS:SB2:DS:JAWS", ioc="IOC:XCS:SB2:SLITS:IMS")
-Params("pp_pink", PulsePickerPink, "XCS:SB2:MMS:09", states="XCS:SB2:PP:Y",
-       ioc="XCS:IOC:PULSEPICKER:IMS", states_ioc="IOC:XCS:DEVICE:STATES")
-Params("xcs_att", Attenuator, "XCS:ATT", n_filters=10, ioc="IOC:XCS:ATT")
+Params("xcs_ims_usr32", ImsMotor, "XCS:USR:MMS:32")
+Params("xcs_lam_valve1", GateValve, "XCS:LAM:VGC:01")
+Params("xcs_slits6", Slits, "XCS:SB2:DS:JAWS")
+Params("pp_pink", PulsePickerPink, "XCS:SB2:MMS:09", states="XCS:SB2:PP:Y")
+Params("xcs_att", Attenuator, "XCS:ATT", n_filters=10)
 Params("dg2_stopper", Stopper, "HFX:DG2:STP:01")
 Params("s5_pps_stopper", PPSStopper, "PPS:FEH1:4:S4STPRSUM")
-Params("xcs_ipm", IPM, "XCS:SB2:IPM6", ioc="IOC:XCS:SB2:IPM06:IMS",
+Params("xcs_ipm", IPM, "XCS:SB2:IPM6",
        data="XCS:SB2:IMB:01:SUM")
 Params("xcs_pim", PIM, "XCS:SB2:PIM6")
-Params("xcs_lodcm", LODCM, "XCS:LODCM", ioc="IOC:XCS:LODCM")
+Params("xcs_lodcm", LODCM, "XCS:LODCM")
 Params("fee_homs", OffsetMirror, "MIRR:FEE1:M1H", 'STEP:M1H')
 Params("det_p3h", FeeOpalDetector, "CAMR:FEE1:913")
 Params("det_dg3", PIMPulnixDetector, "HFX:DG3:CVV:01")
-Params("fee_yag", PIMFee, "CAMR:FEE1:913", prefix_pos="FEE1:P3H", 
-       ioc="IOC:FEE1:PROFILEMON")
+Params("fee_yag", PIMFee, "CAMR:FEE1:913", prefix_pos="FEE1:P3H") 
 Params("dg3_motor", PIMMotor, "HFX:DG3:PIM")
 Params("dg3_pim", PIM, "HFX:DG3:PIM")
 
@@ -112,8 +110,7 @@ def get_m1h():
 
 @pytest.fixture(scope="module")
 def get_p3h_pim():
-    return PIMFee("CAMR:FEE1:913", prefix_pos="FEE1:P3H", 
-                  ioc="IOC:FEE1:PROFILEMON")
+    return PIMFee("CAMR:FEE1:913", prefix_pos="FEE1:P3H") 
 
 @pytest.fixture(scope="module")
 def get_p3h_det():

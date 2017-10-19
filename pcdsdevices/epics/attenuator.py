@@ -11,7 +11,6 @@ from threading import RLock
 from ophyd.status import wait as status_wait
 
 from .device import Device
-from .iocdevice import IocDevice
 from .component import Component, FormattedComponent
 from .signal import EpicsSignal, EpicsSignalRO
 from .state import SubscriptionStatus
@@ -132,7 +131,7 @@ class Filter(BasicFilter):
         return self.thickness_sig.get()
 
 
-class BasicAttenuatorBase(IocDevice):
+class BasicAttenuatorBase(Device):
     """
     Interface to the old, basic attenuator IOC, which handles all the
     calculations. This is the IOC currently running as the FEE solid
@@ -154,14 +153,14 @@ class BasicAttenuatorBase(IocDevice):
     SUB_BLADE_CH = 'sub_blade_changed'
     _default_sub = SUB_BLADE_CH
 
-    def __init__(self, prefix, *, name=None, read_attrs=None, ioc="",
+    def __init__(self, prefix, *, name=None, read_attrs=None,
                  stage_setting=0, **kwargs):
         self._set_lock = RLock()
         self._stage_setting = stage_setting
         if read_attrs is None:
             read_attrs = ["transmission"]
         super().__init__(prefix, name=name, read_attrs=read_attrs,
-                         ioc=ioc, **kwargs)
+                         **kwargs)
 
         #Subscribe to all child filter objects
         for filt in self.filters:
@@ -489,14 +488,14 @@ class AttenuatorBase(BasicAttenuatorBase):
     calcpend = Component(EpicsSignalRO, ":CALCP")
     mode_cmd = Component(EpicsSignal, ":MODE")
 
-    def __init__(self, prefix, *, name=None, read_attrs=None, ioc="",
+    def __init__(self, prefix, *, name=None, read_attrs=None,
                  stage_setting=0, **kwargs):
         prefix = prefix + ":ATT:COM"
         self._filter_prefix = prefix + ":ATT"
         if read_attrs is None:
             read_attrs = ["transmission", "transmission_3rd"]
         super().__init__(prefix, name=name, read_attrs=read_attrs,
-                         ioc=ioc, stage_setting=stage_setting, **kwargs)
+                         stage_setting=stage_setting, **kwargs)
     
     @property
     def filters(self):
@@ -567,14 +566,13 @@ def make_att_classes(max_filters):
 att_classes = make_att_classes(MAX_FILTERS)
 
 
-def Attenuator(prefix, n_filters, *, name=None, read_attrs=None, ioc="",
-               **kwargs):
+def Attenuator(prefix, n_filters, *, name=None, read_attrs=None, **kwargs):
     """
     Factory function for instantiating an attenuator with the correct filter
     components given the number required.
     """
     return att_classes[n_filters](prefix, name=name, read_attrs=read_attrs,
-                                  ioc=ioc, **kwargs)
+                                  **kwargs)
 
 
 class FeeAtt(BasicAttenuatorBase):
@@ -589,7 +587,6 @@ class FeeAtt(BasicAttenuatorBase):
     filter9 = FormattedComponent(BasicFilter, "{self._filter_prefix}9")
     num_att = 9
     def __init__(self, prefix="SATT:FEE1:320", *, name=None, read_attrs=None,
-                 ioc="", **kwargs):
+                 **kwargs):
         self._filter_prefix = prefix[:-1]
-        super().__init__(prefix, name=name, read_attrs=read_attrs, ioc=ioc,
-                         **kwargs)
+        super().__init__(prefix, name=name, read_attrs=read_attrs, **kwargs)
