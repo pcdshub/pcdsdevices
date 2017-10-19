@@ -10,7 +10,6 @@ from functools import partial
 
 from .mps import MPS, mps_factory
 from .state import pvstate_class, StateStatus
-from .iocdevice import IocDevice
 from .device import Device
 from .signal import EpicsSignalRO
 from .signal import EpicsSignal

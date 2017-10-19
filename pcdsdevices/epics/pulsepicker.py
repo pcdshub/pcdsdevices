@@ -3,7 +3,6 @@
 from copy import deepcopy
 from .signal import EpicsSignal, EpicsSignalRO
 from .component import Component, FormattedComponent
-from .iocdevice import IocDevice
 from .device import Device
 from .iocadmin import IocAdminOld
 from .state import InOutStatesIoc, InOutCCMStatesIoc, statesrecord_class
@@ -68,15 +67,13 @@ class PickerBlade(Device):
         self._run_subs(sub_type=self.SUB_ST_CH, **kwargs)
 
 
-class PulsePicker(IocDevice):
+class PulsePicker(Device):
     """
     Device that lets us pick which beam pulses reach the sample.
     """
     in_out = FormattedComponent(InOutStatesIoc, "{self._states}",
                                 ioc="{self._states_ioc}")
     mode = Component(EpicsSignalRO, ":SE", string=True)
-    ioc = deepcopy(IocDevice.ioc)
-    ioc.cls = IocAdminOld
     #Blade subdevice
     blade = FormattedComponent(PickerBlade, "{self.prefix}")
 

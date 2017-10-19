@@ -8,7 +8,6 @@ from ophyd.pv_positioner import PVPositioner
 from .signal import EpicsSignal, EpicsSignalRO
 from .component import Component, FormattedComponent
 from .device import Device
-from .iocdevice import IocDevice
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +39,7 @@ class SlitPositioner(PVPositioner, Device):
         self.setpoint.put(position, wait=False)
 
 
-class Slits(IocDevice):
+class Slits(Device):
     """
     Beam slits with combined motion for center and width.
 

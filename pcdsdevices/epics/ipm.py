@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .iocdevice import IocDevice
+from .device import Device
 from .state import statesrecord_class, InOutStates
 from .component import Component, FormattedComponent
 from .signal import EpicsSignalRO
@@ -11,7 +11,7 @@ TargetStates = statesrecord_class("TargetStates", ":OUT", ":TARGET1",
                                   ":TARGET2", ":TARGET3", ":TARGET4")
 
 
-class IPM(IocDevice):
+class IPM(Device):
     """
     Standard intensity position monitor. Consists of two stages, one for the
     diode and one for the target. This creates a scalar readback that is also

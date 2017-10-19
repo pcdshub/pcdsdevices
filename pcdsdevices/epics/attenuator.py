@@ -11,7 +11,6 @@ from threading import RLock
 from ophyd.status import wait as status_wait
 
 from .device import Device
-from .iocdevice import IocDevice
 from .component import Component, FormattedComponent
 from .signal import EpicsSignal, EpicsSignalRO
 from .state import SubscriptionStatus
@@ -132,7 +131,7 @@ class Filter(BasicFilter):
         return self.thickness_sig.get()
 
 
-class BasicAttenuatorBase(IocDevice):
+class BasicAttenuatorBase(Device):
     """
     Interface to the old, basic attenuator IOC, which handles all the
     calculations. This is the IOC currently running as the FEE solid

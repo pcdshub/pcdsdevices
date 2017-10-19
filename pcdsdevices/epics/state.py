@@ -16,7 +16,6 @@ from ophyd.status import StatusBase
 from .signal import EpicsSignal, EpicsSignalRO
 from .component import Component
 from .device import Device
-from .iocdevice import IocDevice
 
 logger = logging.getLogger(__name__)
 
@@ -120,7 +119,7 @@ class PVState(State):
         self._setter(value)
 
 
-def pvstate_class(classname, states, doc="", setter=None, has_ioc=False,
+def pvstate_class(classname, states, doc="", setter=None,
                   signal_class=EpicsSignalRO):
     """
     Create a subclass of PVState for a particular device.
@@ -148,9 +147,6 @@ def pvstate_class(classname, states, doc="", setter=None, has_ioc=False,
     setter : function, optional
         Function that defines how to change the state of the physical device.
         Takes two arguments: self, and the new state value.
-    has_ioc: bool, optional
-        If True, this class will expect an ioc argument for the iocadmin pvname
-        prefix. Defaults to False.
     signal_class: class, optional
         Hook to use a different signal class than EpicsSignalRO for testing.
 
@@ -164,10 +160,7 @@ def pvstate_class(classname, states, doc="", setter=None, has_ioc=False,
             raise ValueError("State name '{}' is invalid".format(state_name) +
                              "because this is a reserved python keyword.")
         components[state_name] = Component(signal_class, info["pvname"])
-    if has_ioc:
-        bases = (PVState, IocDevice)
-    else:
-        bases = (PVState,)
+    bases = (PVState,)
     return type(classname, bases, components)
 
 
@@ -266,7 +259,7 @@ class DeviceStatesPart(Device):
     delta = Component(EpicsSignal, "_DELTA")
 
 
-def statesrecord_class(classname, *states, doc="", has_ioc=False):
+def statesrecord_class(classname, *states, doc=""):
     """
     Create a DeviceStatesRecord class for a particular device.
     """
@@ -274,22 +267,15 @@ def statesrecord_class(classname, *states, doc="", has_ioc=False):
     for state_name in states:
         name = state_name.lower().replace(":", "") + "_state"
         components[name] = Component(DeviceStatesPart, state_name)
-    if has_ioc:
-        bases = (DeviceStatesRecord, IocDevice)
-    else:
-        bases = (DeviceStatesRecord,)
+    bases = (DeviceStatesRecord,)
     return type(classname, bases, components)
 
 
 inoutdoc = "Standard PCDS states record with an IN state and an OUT state."
 InOutStates = statesrecord_class("InOutStates", ":IN", ":OUT", doc=inoutdoc)
-InOutStatesIoc = statesrecord_class("InOutStatesIoc", ":IN", ":OUT",
-                                    doc=inoutdoc, has_ioc=True)
 inoutccmdoc = "Standard PCDS states record with IN, OUT, and CCM states."
 InOutCCMStates = statesrecord_class("InOutCCMStates", ":IN", ":OUT", ":CCM",
                                     doc=inoutccmdoc)
-InOutCCMStatesIoc = statesrecord_class("InOutCCMStatesIoc", ":IN", ":OUT",
-                                       ":CCM", doc=inoutccmdoc, has_ioc=True)
 
 class StateError(Exception):
     pass
