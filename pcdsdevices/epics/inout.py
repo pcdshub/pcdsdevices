@@ -6,6 +6,9 @@ from .state import InOutStates, statesrecord_class
 
 
 class InOutDevice(Device):
+    """
+    Device that has two states, IN and OUT, that blocks the beam while IN.
+    """
     state = Cmp(InOutStates, '')
 
     @property
@@ -25,10 +28,17 @@ class InOutDevice(Device):
 
 
 class Reflaser(InOutDevice):
+    """
+    Mirror that is inserted into the beam to point a reference laser along the
+    beam path.
+    """
     pass
 
 
 class TTReflaser(Reflaser):
+    """
+    Motor stack that includes both a timetool and a reflaser.
+    """
     TTStates = statesrecord_class('TTStates', ':TT', ':REFL', ':OUT')
     state = Cmp(TTStates, '')
 
