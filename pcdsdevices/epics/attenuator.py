@@ -490,7 +490,9 @@ class AttenuatorBase(BasicAttenuatorBase):
 
     def __init__(self, prefix, *, name=None, read_attrs=None,
                  stage_setting=0, **kwargs):
-        self._filter_prefix = prefix.rstrip(':COM')
+        #Modify prefixes
+        self._filter_prefix = prefix
+        prefix += ':COM'
         if read_attrs is None:
             read_attrs = ["transmission", "transmission_3rd"]
         super().__init__(prefix, name=name, read_attrs=read_attrs,
