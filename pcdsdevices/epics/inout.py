@@ -4,7 +4,8 @@ from .device import Device
 from .component import Component as Cmp
 from .state import InOutStates, statesrecord_class
 
-class Reflaser(Device):
+
+class InOutDevice(Device):
     state = Cmp(InOutStates, '')
 
     @property
@@ -23,9 +24,12 @@ class Reflaser(Device):
         self.state.subscribe(cb, event_type=event_type, run=run, **kwargs)
 
 
-TTStates = statesrecord_class('TTStates', ':TT', ':REFL', ':OUT')
+class Reflaser(InOutDevice):
+    pass
+
 
 class TTReflaser(Reflaser):
+    TTStates = statesrecord_class('TTStates', ':TT', ':REFL', ':OUT')
     state = Cmp(TTStates, '')
 
     @property
