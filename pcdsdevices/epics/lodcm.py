@@ -5,21 +5,35 @@ from enum import Enum
 from ..interface import BranchingInterface
 from .device import Device
 from .state import statesrecord_class
+from .state import statesrecord_class, InOutStates
 from .component import Component
 
 
+YagLomStates = statesrecord_class("YagLomStates", ":OUT", ":YAG", ":SLIT1",
+                                  ":SLIT2", ":SLIT3")
 LodcmStates = statesrecord_class("LodcmStates", ":OUT", ":C", ":Si")
+DectrisStates = statesrecord_class("DectrisStates", ":OUT", ":DECTRIS",
+                                   ":SLIT1", ":SLIT2", ":SLIT3", ":OUTLOW")
+FoilStates = statesrecord_class("FoilStates", ":OUT", ":Mo", ":Zr", ":Zn",
+                                ":Cu", ":Ni", ":Fe", "Ti")
 
 
 class LODCM(Device metaclass=BranchingInterface):
     h1n_state = Component(LodcmStates, ":H1N")
     h2n_state = Component(LodcmStates, ":H2N")
+    yag_state = Component(YagLomStates, ":DV")
+    dectris_state = Component(DectrisStates, ":DH")
+    diode_state = Component(InOutStates, ":DIODE")
+    foil_state = Component(FoilStates, ":FOIL")
 
     light_states = Enum("LightStates", "BLOCKED MAIN MONO BOTH UNKNOWN",
                         start=0)
 
-    def __init__(self, prefix):
-        pass
+    def __init__(self, prefix, *, name, main_name='MAIN', mono_name='MONO',
+                 **kwargs):
+        self.main_name = main_name
+        self.mono_name = mono_name
+        super().__init__(prefix, name=name, **kwargs)
 
     def destination(self, line=None):
         """
