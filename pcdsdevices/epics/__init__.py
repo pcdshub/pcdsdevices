@@ -11,3 +11,4 @@ from .mirror import PointingMirror, OffsetMirror
 from .mps import MPS
 from .lodcm import LODCM
 from .movablestand import MovableStand
+from .inout import Reflaser
