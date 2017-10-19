@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from enum import Enum
 
+from ..interface import BranchingInterface
 from .device import Device
 from .state import statesrecord_class
 from .component import Component
@@ -10,12 +11,15 @@ from .component import Component
 LodcmStates = statesrecord_class("LodcmStates", ":OUT", ":C", ":Si")
 
 
-class LODCM(Device):
+class LODCM(Device metaclass=BranchingInterface):
     h1n_state = Component(LodcmStates, ":H1N")
     h2n_state = Component(LodcmStates, ":H2N")
 
     light_states = Enum("LightStates", "BLOCKED MAIN MONO BOTH UNKNOWN",
                         start=0)
+
+    def __init__(self, prefix):
+        pass
 
     def destination(self, line=None):
         """
