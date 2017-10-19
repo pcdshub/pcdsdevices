@@ -114,8 +114,7 @@ class PulsePickerCCM(PulsePicker):
         self.in_out.value = "CCM"
 
 
-TempStates = statesrecord_class("TempStates", ":PINK", ":CCM", ":OUT",
-                                has_ioc=True)
+TempStates = statesrecord_class("TempStates", ":PINK", ":CCM", ":OUT")
 
 
 class PulsePickerPink(PulsePickerCCM):
