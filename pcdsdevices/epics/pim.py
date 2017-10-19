@@ -483,22 +483,21 @@ class PIMFee(Device):
 
     # Yag Motors
     yag = FormattedComponent(ImsMotor, "{self._prefix}:MOTR",
-                             ioc="{self._ioc}", name="Yag Motor")
+                             name="Yag Motor")
     zoom = FormattedComponent(ImsMotor, "{self._prefix}:CLZ:01",
-                              ioc="{self._ioc}", name="Zoom Motor")
+                              name="Zoom Motor")
     focus = FormattedComponent(ImsMotor, "{self._prefix}:CLF:01",
-                               ioc="{self._ioc}", name="Focus Motor")
+                               name="Focus Motor")
 
     # Position PV
     go = FormattedComponent(EpicsSignal, "{self._prefix_pos}:YAG:GO")
     pos = FormattedComponent(EpicsSignalRO, "{self._prefix_pos}:POSITION")
 
-    def __init__(self, prefix, *, prefix_pos="", ioc="", in_pos=0, out_pos=43,
+    def __init__(self, prefix, *, prefix_pos="", in_pos=0, out_pos=43,
                  read_attrs=None, name=None, parent=None,
                  configuration_attrs=None, **kwargs):
         self._prefix = prefix
         self._prefix_pos = prefix_pos
-        self._ioc = ioc
         self.in_pos = in_pos
         self.out_pos = out_pos
 

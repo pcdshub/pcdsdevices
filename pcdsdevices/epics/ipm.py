@@ -26,14 +26,14 @@ class IPM(Device):
     _default_sub = SUB_ST_CHG
     transmission = 0.8 #Completely making up this number :)
 
-    def __init__(self, prefix, *, data="", ioc="", name=None, parent=None,
+    def __init__(self, prefix, *, data="", name=None, parent=None,
                  read_attrs=None, **kwargs):
         #Default read attributes
         self._data = data
         if read_attrs is None:
             read_attrs = ["data"]
 
-        super().__init__(prefix, ioc=ioc, name=name, parent=parent,
+        super().__init__(prefix, name=name, parent=parent,
                          read_attrs=read_attrs, **kwargs)
         #Subscribe to state changes
         self.target.subscribe(self._target_moved,

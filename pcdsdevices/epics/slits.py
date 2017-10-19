@@ -84,7 +84,7 @@ class Slits(Device):
     SUB_AP_CH = 'aperature_changed'
     _default_sub = SUB_AP_CH
 
-    def __init__(self, prefix, *, ioc="", read_attrs=None,
+    def __init__(self, prefix, *, read_attrs=None,
                  name=None, nominal_aperature=5.0, **kwargs):
         #Nominal
         self.nominal_aperature = nominal_aperature
@@ -92,7 +92,7 @@ class Slits(Device):
         if read_attrs is None:
             read_attrs = ['xcenter', 'xwidth', 'ycenter', 'ywidth']
 
-        super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
+        super().__init__(prefix, read_attrs=read_attrs, name=name,
                          **kwargs)
 
         #Subscribe to changes in aperature

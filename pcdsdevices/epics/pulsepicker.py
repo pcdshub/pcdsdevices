@@ -70,19 +70,17 @@ class PulsePicker(Device):
     """
     Device that lets us pick which beam pulses reach the sample.
     """
-    in_out = FormattedComponent(InOutStates, "{self._states}",
-                                ioc="{self._states_ioc}")
+    in_out = FormattedComponent(InOutStates, "{self._states}")
     mode = Component(EpicsSignalRO, ":SE", string=True)
     #Blade subdevice
     blade = FormattedComponent(PickerBlade, "{self.prefix}")
 
-    def __init__(self, prefix, *, states="", ioc="", states_ioc="",
+    def __init__(self, prefix, *, states="",
                  read_attrs=None, name=None, **kwargs):
         self._states = states
-        self._states_ioc = states_ioc
         if read_attrs is None:
             read_attrs = ["mode", "blade", "in_out"]
-        super().__init__(prefix, ioc=ioc, read_attrs=read_attrs, name=name,
+        super().__init__(prefix, read_attrs=read_attrs, name=name,
                          **kwargs)
 
     def move_out(self):

@@ -23,7 +23,7 @@ class FormattedComponent(Component, ophyd.FormattedComponent):
     def __init__(self, cls, suffix=None, *, lazy=True, trigger_value=None,
                  add_prefix=None, doc=None, **kwargs):
         if add_prefix is None:
-            add_prefix = ('suffix', 'write_pv', 'ioc')
+            add_prefix = ('suffix', 'write_pv')
         super().__init__(cls, suffix=suffix, lazy=lazy,
                          trigger_value=trigger_value, add_prefix=add_prefix,
                          doc=doc, **kwargs)

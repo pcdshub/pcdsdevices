@@ -6,16 +6,6 @@ Tests for EPICS-spefic base devices
 from pcdsdevices.epics import component, device, signal
 from pcdsdevices.epics.areadetector import base, plugins, cam, detectors
 
-def test_component():
-    """
-    Only change here is putting "ioc" as a default add_prefix for
-    FormattedComponent.
-    """
-    class Test:
-        pass
-    comp = component.FormattedComponent(Test)
-    assert("ioc" in comp.add_prefix)
-
 def test_device():
     """
     No changes for now, just make sure we can import something named "Device"
