@@ -7,7 +7,7 @@ import logging
 from enum import Enum
 from copy import deepcopy
 from functools import partial
-
+from ophyd.status import wait as status_wait
 from .mps import MPS, mps_factory
 from .state import pvstate_class, StateStatus
 from .device import Device
