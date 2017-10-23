@@ -12,8 +12,8 @@ class PickerBlade(Device):
     """
     Represent the pulse picker blade as separte device
     """
-    simple_state = Component(EpicsSignalRO, "DF")
-    force_close  = Component(EpicsSignal,   "S_CLOSE")
+    simple_state = Component(EpicsSignalRO, ":DF")
+    force_close  = Component(EpicsSignal,   ":S_CLOSE")
     #Subscription information
     SUB_ST_CH = 'sub_state_changed'
     _default_sub = SUB_ST_CH

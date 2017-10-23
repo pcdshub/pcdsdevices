@@ -5,7 +5,7 @@ from .pulsepicker import PickerBlade, PulsePicker, PulsePickerCCM, PulsePickerPi
 from .slits import Slits
 from .valve import PPSStopper, Stopper, GateValve, InterlockError
 from .attenuator import FeeAtt, Attenuator
-from .ipm import IPM
+from .ipm import IPM, IPMMotors
 from .pim import PIM, PIMMotor, PIMPulnixDetector, PIMFee
 from .mirror import PointingMirror, OffsetMirror
 from .mps import MPS

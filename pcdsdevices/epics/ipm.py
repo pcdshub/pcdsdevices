@@ -10,28 +10,22 @@ from ophyd.status import wait as status_wait
 TargetStates = statesrecord_class("TargetStates", ":OUT", ":TARGET1",
                                   ":TARGET2", ":TARGET3", ":TARGET4")
 
-
-class IPM(Device):
+class IPMMotors(Device):
     """
-    Standard intensity position monitor. Consists of two stages, one for the
-    diode and one for the target. This creates a scalar readback that is also
-    available over EPICS.
+    Standard intensity position monitor motion.
     """
     diode = Component(InOutStates,   ":DIODE")
     target = Component(TargetStates, ":TARGET")
-    data = FormattedComponent(EpicsSignalRO, "{self._data}")
 
     #Default subscriptions
     SUB_ST_CHG   = 'target_state_changed'
     _default_sub = SUB_ST_CHG
     transmission = 0.8 #Completely making up this number :)
 
-    def __init__(self, prefix, *, data="", name=None, parent=None,
+    def __init__(self, prefix, *, name=None, parent=None,
                  read_attrs=None, **kwargs):
-        #Default read attributes
-        self._data = data
         if read_attrs is None:
-            read_attrs = ["data"]
+            read_attrs = ["diode", "target"]
 
         super().__init__(prefix, name=name, parent=parent,
                          read_attrs=read_attrs, **kwargs)
@@ -129,3 +123,20 @@ class IPM(Device):
         kwargs.pop('sub_type', None)
         #Run subscriptions
         self._run_subs(sub_type=self.SUB_ST_CHG, **kwargs)
+
+
+class IPM(Device):
+    """
+    Class for standard Intensity Monitors
+    """
+    motors = Component(IPMMotors, '')
+    data   = Component(EpicsSignalRO, '{self._data}')
+
+    def __init__(self, prefix, data,  *, name=None, parent=None,
+                 read_attrs=None, **kwargs):
+        self._data = data
+        #Default read attributes
+        if not read_attrs:
+            read_attrs = ['data']
+        super().__init__(prefix, name=name, parent=parent,
+                         read_attrs=read_attrs, **kwargs)

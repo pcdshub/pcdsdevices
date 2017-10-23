@@ -12,14 +12,14 @@ from unittest.mock import Mock
 # Module #
 ##########
 from pcdsdevices.sim.pv import  using_fake_epics_pv
-from pcdsdevices.epics import IPM
+from pcdsdevices.epics import IPMMotors
 
 logger = logging.getLogger(__name__)
 
 @using_fake_epics_pv
 @pytest.fixture(scope='function')
 def ipm():
-    return IPM("Test:My:IPM")
+    return IPMMotors("Test:My:IPM")
 
 
 @using_fake_epics_pv
