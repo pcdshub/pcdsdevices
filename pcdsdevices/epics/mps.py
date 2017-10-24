@@ -61,7 +61,7 @@ class MPS(Device, metaclass=MPSInterface):
         self._veto = veto
         #Default read attributes
         if read_attrs is None:
-            read_attrs = ['faulted', 'tripped']
+            read_attrs = ['fault', 'bypass']
         #Device initialization
         super().__init__(prefix, name=name, read_attrs=read_attrs, **kwargs)
         #Subscribe state change callback
