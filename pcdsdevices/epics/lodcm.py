@@ -27,10 +27,10 @@ class LODCM(Device, metaclass=BranchingInterface):
     diode_state = Component(InOutStates, ":DIODE")
     foil_state = Component(FoilStates, ":FOIL")
 
-    def __init__(self, prefix, *, name, main_name='MAIN', mono_name='MONO',
+    def __init__(self, prefix, *, name, main_line=None, mono_line='MONO',
                  **kwargs):
-        self.main_name = main_name
-        self.mono_name = mono_name
+        self.main_line = main_line or self.db.beamline
+        self.mono_line = mono_line
         super().__init__(prefix, name=name, **kwargs)
 
     @property
@@ -42,8 +42,8 @@ class LODCM(Device, metaclass=BranchingInterface):
         Returns
         -------
         destination: list of str
-            self.main_name if the light continues on the main line.
-            self.mono_name if the light continues on the mono line.
+            self.main_line if the light continues on the main line.
+            self.mono_line if the light continues on the mono line.
         """
         # H2N:     OUT      C       Si
         table = [["MAIN", "MAIN", "MAIN"],  # H1N at OUT
@@ -53,22 +53,22 @@ class LODCM(Device, metaclass=BranchingInterface):
         n2 = ("OUT", "C", "Si").index(self.h2n_state.value)
         state = table[n1][n2]
         if state == "MAIN":
-            return [self.main_name]
+            return [self.main_line]
         elif state == "BLOCKED":
             return []
         else:
             if state == "MONO" and self.diag_clear:
-                return [self.mono_name]
+                return [self.mono_line]
             if state == "BOTH":
                 if self.diag_clear:
-                    return [self.main_name, self.mono_name]
+                    return [self.main_line, self.mono_line]
                 else:
-                    return [self.main_name]
+                    return [self.main_line]
         return []
 
     @property
     def branches(self):
-        return [self.main_name, self.mono_name]
+        return [self.main_line, self.mono_line]
 
     @property
     def diag_clear(self):
@@ -84,11 +84,15 @@ class LODCM(Device, metaclass=BranchingInterface):
 
     @property
     def removed(self):
-        return self.diag_clear or self.destination == self.main
+        return self.diag_clear or self.main_line in self.destination
 
     def remove(self, wait=False, timeout=None, finished_cb=None, **kwargs):
-        status = self.lodcm_move(yag='OUT', dectris='OUT', diode='OUT',
-                                 foil='OUT', timeout=timeout)
+        if self.dectris_state.value == 'OUTLOW':
+            dset = 'OUTLOW'
+        else:
+            dset = 'OUT'
+        status = self.lodcm_move(yag='OUT', dectris=dset, diode='OUT',
+                                 foil='OUT', timeout=timeout, **kwargs)
         if finished_cb is not None:
             status.finished_cb = finished_cb
 
