@@ -8,7 +8,8 @@ from pcdsdevices.epics.lodcm import LODCM
 
 @pytest.fixture(scope='function')
 def lodcm():
-    return LODCM('FAKE:LOM', name='fake_lom')
+    return LODCM('FAKE:LOM', name='fake_lom', main_line='MAIN',
+                 mono_line='MONO')
 
 
 # TBH we'll just call all light interface items and hope for the best
