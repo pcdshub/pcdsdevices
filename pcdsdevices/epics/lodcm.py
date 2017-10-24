@@ -10,9 +10,9 @@ from .state import statesrecord_class, InOutStates
 from .component import Component
 
 
+LodcmStates = statesrecord_class("LodcmStates", ":OUT", ":C", ":Si")
 YagLomStates = statesrecord_class("YagLomStates", ":OUT", ":YAG", ":SLIT1",
                                   ":SLIT2", ":SLIT3")
-LodcmStates = statesrecord_class("LodcmStates", ":OUT", ":C", ":Si")
 DectrisStates = statesrecord_class("DectrisStates", ":OUT", ":DECTRIS",
                                    ":SLIT1", ":SLIT2", ":SLIT3", ":OUTLOW")
 FoilStates = statesrecord_class("FoilStates", ":OUT", ":Mo", ":Zr", ":Zn",
@@ -20,6 +20,14 @@ FoilStates = statesrecord_class("FoilStates", ":OUT", ":Mo", ":Zr", ":Zn",
 
 
 class LODCM(Device, metaclass=BranchingInterface):
+    """
+    Large Offset Dual Crystal Monochromator
+
+    This is the device that allows XPP and XCS to multiplex with downstream
+    hutches. It contains two crystals that steer/split the beam and a number of
+    diagnostic devices between them. Beam can continue onto the main line, onto
+    the mono line, onto both, or onto neither.
+    """
     h1n_state = Component(LodcmStates, ":H1N")
     h2n_state = Component(LodcmStates, ":H2N")
     yag_state = Component(YagLomStates, ":DV")
@@ -68,10 +76,22 @@ class LODCM(Device, metaclass=BranchingInterface):
 
     @property
     def branches(self):
+        """
+        Returns
+        -------
+        branches: list of str
+            A list of possible destinations.
+        """
         return [self.main_line, self.mono_line]
 
     @property
     def diag_clear(self):
+        """
+        Returns
+        -------
+        diag_clear: bool
+            False if the diagnostics will prevent beam.
+        """
         yag_clear = self.yag_state.value == 'OUT'
         dectris_clear = self.dectris_state.value in ('OUT', 'OUTLOW')
         diode_clear = self.diode_state.value in ('IN', 'OUT')
@@ -80,13 +100,46 @@ class LODCM(Device, metaclass=BranchingInterface):
 
     @property
     def inserted(self):
+        """
+        Returns
+        -------
+        inserted: bool
+            False if the diagnostics are in or if we have no destinations.
+        """
         return not (self.destination and self.diag_clear)
 
     @property
     def removed(self):
+        """
+        Returns
+        -------
+        removed: bool
+            True if diagnostics are clear or if the main line is a destination.
+        """
         return self.diag_clear or self.main_line in self.destination
 
     def remove(self, wait=False, timeout=None, finished_cb=None, **kwargs):
+        """
+        Moves the diagnostics out of the beam.
+
+        Parameters
+        ----------
+        wait: bool, optional
+            If True, wait for motion to complete.
+
+        timeout: float, optional
+            If provided, mark the status as failed if the movement does not
+            complete within this many seconds.
+
+        finished_cb: func, optional
+            Callback function to be run once the motion has completed.
+
+        Returns
+        -------
+        status: ophyd.status.MoveStatus
+            Status object that will be marked finished when all diagnostics are
+            done moving and will time out after the given timeout.
+        """
         if self.dectris_state.value == 'OUTLOW':
             dset = 'OUTLOW'
         else:
@@ -103,6 +156,38 @@ class LODCM(Device, metaclass=BranchingInterface):
 
     def lodcm_move(self, h1n=None, h2n=None, yag=None, dectris=None,
                    diode=None, foil=None, timeout=None):
+        """
+        Move each component of the LODCM to the given state.
+
+        Parameters
+        ----------
+        h1n: string, optional
+            OUT, C, or Si
+
+        h2n: string, optional
+            OUT, C, or Si
+
+        yag: string, optional
+            OUT, YAG, SLIT1, SLIT2, or SLIT3
+
+        dectris: string, optional
+            OUT, DECTRIS, SLIT1, SLIT2, SLIT3, OUTLOW
+
+        diode: string, optional
+            OUT or IN
+
+        foil: string, optional
+            OUT, Mo, Zr, Zn, Cu, Ni, Fe, or Ti
+
+        timeout: float, optional
+            Mark status as failed after this many seconds.
+
+        Returns
+        -------
+        status: MoveStatus
+            Status object that will be marked as finished once all components
+            are done moving.
+        """
         states = (h1n, h2n, yag, dectris, diode, foil)
         obj = (self.h1n_state, self.h2n_state, self.yag_state,
                self.dectris_state, self.diode_state, self.foil_state)
@@ -129,11 +214,17 @@ class LODCM(Device, metaclass=BranchingInterface):
         return lodcm_status
 
     def _make_mark_event(self, event):
+        """
+        Create callback for combining statuses
+        """
         def mark_event(*args, **kwargs):
             event.set()
         return mark_event
 
     def _status_finisher(self, events, status, timeout=None):
+        """
+        Mark status as finished or short-circuit on timeout
+        """
         for ev in events:
             ok = ev.wait(timeout=timeout)
             if not ok:
