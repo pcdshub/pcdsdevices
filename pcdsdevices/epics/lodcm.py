@@ -96,7 +96,7 @@ class LODCM(Device, metaclass=BranchingInterface):
         dectris_clear = self.dectris_state.value in ('OUT', 'OUTLOW')
         diode_clear = self.diode_state.value in ('IN', 'OUT')
         foil_clear = self.foil_state.value == 'OUT'
-        return all(yag_clear, dectris_clear, diode_clear, foil_clear)
+        return all((yag_clear, dectris_clear, diode_clear, foil_clear))
 
     @property
     def inserted(self):
