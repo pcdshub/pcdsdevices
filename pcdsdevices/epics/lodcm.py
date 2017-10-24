@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from threading import Event, Thread
+
+from ophyd.status import MoveStatus, wait as status_wait
+
 from ..interface import BranchingInterface
 from .device import Device
 from .state import statesrecord_class, InOutStates
@@ -83,7 +87,51 @@ class LODCM(Device, metaclass=BranchingInterface):
         return self.diag_clear or self.destination == self.main
 
     def remove(self, wait=False, timeout=None, finished_cb=None, **kwargs):
-        yag_status = self.yag_state.move('OUT')
-        dectris_status = self.dectris_state.move('OUT')
-        diode_status = self.diode_state.move('OUT')
-        foil_status = self.foil_state.move('OUT')
+        status = self.lodcm_move(yag='OUT', dectris='OUT', diode='OUT',
+                                 foil='OUT', timeout=timeout)
+        if finished_cb is not None:
+            status.finished_cb = finished_cb
+
+        if wait:
+            status_wait(status)
+
+        return status
+
+    def lodcm_move(self, h1n=None, h2n=None, yag=None, dectris=None,
+                   diode=None, foil=None, timeout=None):
+        states = (h1n, h2n, yag, dectris, diode, foil)
+        obj = (self.h1n_state, self.h2n_state, self.yag_state,
+               self.dectris_state, self.diode_state, self.foil_state)
+        done_statuses = []
+        for state, obj in zip(states, obj):
+            if state is not None:
+                status = obj.move(state)
+                done_statuses.append(status)
+
+        lodcm_status = MoveStatus(self, timeout=timeout)
+        if not done_statuses:
+            lodcm_status._finished(success=True)
+            return lodcm_status
+
+        events = []
+        for i, status in enumerate(done_statuses):
+            event = Event()
+            events.append(event)
+            status.finished_cb = self._make_mark_event(event)
+
+        finisher = Thread(target=self._status_finisher,
+                          args=(events, lodcm_status))
+        finisher.start()
+        return lodcm_status
+
+    def _make_mark_event(self, event):
+        def mark_event(*args, **kwargs):
+            event.set()
+        return mark_event
+
+    def _status_finisher(self, events, status, timeout=None):
+        for ev in events:
+            ok = ev.wait(timeout=timeout)
+            if not ok:
+                return
+        status._finished(success=True)
