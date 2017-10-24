@@ -7,6 +7,7 @@ from pcdsdevices.epics.lodcm import LODCM
 
 
 @pytest.fixture(scope='function')
+@using_fake_epics_pv
 def lodcm():
     lom = LODCM('FAKE:LOM', name='fake_lom', main_line='MAIN')
     lom.h1n_state.value = 'OUT'
@@ -15,6 +16,7 @@ def lodcm():
     lom.dectris_state.value = 'OUT'
     lom.diode_state.value = 'OUT'
     lom.foil_state.value = 'OUT'
+    return lom
 
 
 # Call all light interface items and hope for the best
