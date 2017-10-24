@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from threading import Event, Thread
 
-from ophyd.status import MoveStatus, wait as status_wait
+from ophyd.status import DeviceStatus, wait as status_wait
 
 from ..interface import BranchingInterface
 from .device import Device
@@ -136,7 +136,7 @@ class LODCM(Device, metaclass=BranchingInterface):
 
         Returns
         -------
-        status: ophyd.status.MoveStatus
+        status: ophyd.status.DeviceStatus
             Status object that will be marked finished when all diagnostics are
             done moving and will time out after the given timeout.
         """
@@ -184,7 +184,7 @@ class LODCM(Device, metaclass=BranchingInterface):
 
         Returns
         -------
-        status: MoveStatus
+        status: DeviceStatus
             Status object that will be marked as finished once all components
             are done moving.
         """
@@ -197,7 +197,7 @@ class LODCM(Device, metaclass=BranchingInterface):
                 status = obj.move(state)
                 done_statuses.append(status)
 
-        lodcm_status = MoveStatus(self, timeout=timeout)
+        lodcm_status = DeviceStatus(self, timeout=timeout)
         if not done_statuses:
             lodcm_status._finished(success=True)
             return lodcm_status
