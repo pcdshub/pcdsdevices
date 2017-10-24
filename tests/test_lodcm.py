@@ -10,12 +10,21 @@ from pcdsdevices.epics.lodcm import LODCM
 @using_fake_epics_pv
 def lodcm():
     lom = LODCM('FAKE:LOM', name='fake_lom', main_line='MAIN')
-    lom.h1n_state.value = 'OUT'
-    lom.h2n_state.value = 'OUT'
-    lom.yag_state.value = 'OUT'
-    lom.dectris_state.value = 'OUT'
-    lom.diode_state.value = 'OUT'
-    lom.foil_state.value = 'OUT'
+    lom.h1n_state.state._read_pv.put('OUT')
+    lom.h1n_state.state._read_pv.enum_strs = ['OUT', 'C', 'Si']
+    lom.h2n_state.state._read_pv.put('OUT')
+    lom.h2n_state.state._read_pv.enum_strs = ['OUT', 'C', 'Si']
+    lom.yag_state.state._read_pv.put('OUT')
+    lom.yag_state.state._read_pv.enum_strs = ['OUT', 'YAG', 'SLIT1', 'SLIT2',
+                                              'SLIT3']
+    lom.dectris_state.state._read_pv.put('OUT')
+    lom.dectris_state.state._read_pv.enum_strs = ['OUT', 'DECTRIS', 'SLIT1',
+                                                  'SLIT2', 'SLIT3', 'OUTLOW']
+    lom.diode_state.state._read_pv.put('OUT')
+    lom.diode_state.state._read_pv.enum_strs = ['OUT', 'IN']
+    lom.foil_state.state._read_pv.put('OUT')
+    lom.foil_state.state._read_pv.enum_strs = ['OUT', 'Mo', 'Zr', 'Zn', 'Cu',
+                                               'Ni', 'Fe', 'Ti']
     return lom
 
 
