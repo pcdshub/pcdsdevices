@@ -267,6 +267,7 @@ def statesrecord_class(classname, *states, doc=""):
     for state_name in states:
         name = state_name.lower().replace(":", "") + "_state"
         components[name] = Component(DeviceStatesPart, state_name)
+    components['raw'] = Component(EpicsSignalRO, states[0] + "_CALC.A")
     bases = (DeviceStatesRecord,)
     return type(classname, bases, components)
 
