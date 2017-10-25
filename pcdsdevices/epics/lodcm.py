@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from threading import Event, Thread
+from threading import Event, Thread, RLock
 
 from ophyd.status import DeviceStatus, wait as status_wait
 
@@ -35,11 +35,17 @@ class LODCM(Device, metaclass=BranchingInterface):
     diode_state = Component(InOutStates, ":DIODE")
     foil_state = Component(FoilStates, ":FOIL")
 
+    SUB_DST_CH = 'sub_destination_changed'
+    _default_sub = SUB_DST_CH
+
     def __init__(self, prefix, *, name, main_line=None, mono_line='MONO',
                  **kwargs):
+        super().__init__(prefix, name=name, **kwargs)
         self.main_line = main_line or self.db.beamline
         self.mono_line = mono_line
-        super().__init__(prefix, name=name, **kwargs)
+        self._update_dest_lock = RLock()
+        self._has_subscribed = False
+        self._last_dest = None
 
     @property
     def destination(self):
@@ -73,6 +79,42 @@ class LODCM(Device, metaclass=BranchingInterface):
                 else:
                     return [self.main_line]
         return []
+
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Subscribe to changes in the LODCM destination
+
+        Parameters
+        ----------
+        cb : callable
+            Callback to be run
+
+        event_type : str, optional
+            Type of event to run callback on
+
+        run : bool, optional
+            Run the callback immediatelly
+        """
+        if not self._has_subscribed:
+            self.h1n_state.subscribe(self._subs_update_destination)
+            self.h2n_state.subscribe(self._subs_update_destination)
+            self.yag_state.subscribe(self._subs_update_destination)
+            self.dectris_state.subscribe(self._subs_update_destination)
+            self.diode_state.subscribe(self._subs_update_destination)
+            self.foil_state.subscribe(self._subs_update_destination)
+            self._has_subscribed = True
+        super().subscribe(cb, event_type=event_type, run=run)
+
+    def _subs_update_destination(self, *args, **kwargs):
+        """
+        To be run whenever any of the component states changes.
+        If the destination has changed, run all SUB_DST_CH subs.
+        """
+        new_dest = self.destination
+        with self._update_dest_lock:
+            if new_dest != self._last_dest:
+                self._last_dest = new_dest
+                self._run_subs(sub_type=self.SUB_DST_CH)
 
     @property
     def branches(self):

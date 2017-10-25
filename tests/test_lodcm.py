@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from unittest.mock import Mock
 import pytest
 
 from pcdsdevices.sim.pv import using_fake_epics_pv
@@ -60,3 +61,13 @@ def test_removed(lodcm):
 @using_fake_epics_pv
 def test_remove(lodcm):
     lodcm.remove()
+
+
+@using_fake_epics_pv
+def test_subscribe(lodcm):
+    cb = Mock()
+    lodcm.subscribe(cb, run=False)
+    assert not cb.called
+    # Change destination from main to mono
+    lodcm.h1n_state.state._read_pv.put('C')
+    assert cb.called
