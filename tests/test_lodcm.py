@@ -11,20 +11,20 @@ from pcdsdevices.epics.lodcm import LODCM
 @using_fake_epics_pv
 def lodcm():
     lom = LODCM('FAKE:LOM', name='fake_lom', main_line='MAIN')
-    lom.h1n_state.state._read_pv.put('OUT')
-    lom.h1n_state.state._read_pv.enum_strs = ['OUT', 'C', 'Si']
-    lom.h2n_state.state._read_pv.put('OUT')
-    lom.h2n_state.state._read_pv.enum_strs = ['OUT', 'C', 'Si']
-    lom.yag_state.state._read_pv.put('OUT')
-    lom.yag_state.state._read_pv.enum_strs = ['OUT', 'YAG', 'SLIT1', 'SLIT2',
+    lom.h1n.state._read_pv.put('OUT')
+    lom.h1n.state._read_pv.enum_strs = ['OUT', 'C', 'Si']
+    lom.h2n.state._read_pv.put('OUT')
+    lom.h2n.state._read_pv.enum_strs = ['OUT', 'C', 'Si']
+    lom.yag.state._read_pv.put('OUT')
+    lom.yag.state._read_pv.enum_strs = ['OUT', 'YAG', 'SLIT1', 'SLIT2',
                                               'SLIT3']
-    lom.dectris_state.state._read_pv.put('OUT')
-    lom.dectris_state.state._read_pv.enum_strs = ['OUT', 'DECTRIS', 'SLIT1',
+    lom.dectris.state._read_pv.put('OUT')
+    lom.dectris.state._read_pv.enum_strs = ['OUT', 'DECTRIS', 'SLIT1',
                                                   'SLIT2', 'SLIT3', 'OUTLOW']
-    lom.diode_state.state._read_pv.put('OUT')
-    lom.diode_state.state._read_pv.enum_strs = ['OUT', 'IN']
-    lom.foil_state.state._read_pv.put('OUT')
-    lom.foil_state.state._read_pv.enum_strs = ['OUT', 'Mo', 'Zr', 'Zn', 'Cu',
+    lom.diode.state._read_pv.put('OUT')
+    lom.diode.state._read_pv.enum_strs = ['OUT', 'IN']
+    lom.foil.state._read_pv.put('OUT')
+    lom.foil.state._read_pv.enum_strs = ['OUT', 'Mo', 'Zr', 'Zn', 'Cu',
                                                'Ni', 'Fe', 'Ti']
     return lom
 
@@ -69,5 +69,5 @@ def test_subscribe(lodcm):
     lodcm.subscribe(cb, run=False)
     assert not cb.called
     # Change destination from main to mono
-    lodcm.h1n_state.state._read_pv.put('C')
+    lodcm.h1n.state._read_pv.put('C')
     assert cb.called

@@ -28,12 +28,12 @@ class LODCM(Device, metaclass=BranchingInterface):
     diagnostic devices between them. Beam can continue onto the main line, onto
     the mono line, onto both, or onto neither.
     """
-    h1n_state = Component(LodcmStates, ":H1N")
-    h2n_state = Component(LodcmStates, ":H2N")
-    yag_state = Component(YagLomStates, ":DV")
-    dectris_state = Component(DectrisStates, ":DH")
-    diode_state = Component(InOutStates, ":DIODE")
-    foil_state = Component(FoilStates, ":FOIL")
+    h1n = Component(LodcmStates, ":H1N")
+    h2n = Component(LodcmStates, ":H2N")
+    yag = Component(YagLomStates, ":DV")
+    dectris = Component(DectrisStates, ":DH")
+    diode = Component(InOutStates, ":DIODE")
+    foil = Component(FoilStates, ":FOIL")
 
     SUB_DST_CH = 'sub_destination_changed'
     _default_sub = SUB_DST_CH
@@ -41,7 +41,12 @@ class LODCM(Device, metaclass=BranchingInterface):
     def __init__(self, prefix, *, name, main_line=None, mono_line='MONO',
                  **kwargs):
         super().__init__(prefix, name=name, **kwargs)
-        self.main_line = main_line or self.db.beamline
+        if main_line is None:
+            try:
+                main_line = self.db.beamline
+            except AttributeError:
+                main_line = 'MAIN'
+        self.main_line = main_line
         self.mono_line = mono_line
         self._update_dest_lock = RLock()
         self._has_subscribed = False
@@ -51,7 +56,7 @@ class LODCM(Device, metaclass=BranchingInterface):
     def destination(self):
         """
         Return where the light is going at the current LODCM
-        state.
+        state. Indeterminate states will show as blocked.
 
         Returns
         -------
@@ -59,12 +64,14 @@ class LODCM(Device, metaclass=BranchingInterface):
             self.main_line if the light continues on the main line.
             self.mono_line if the light continues on the mono line.
         """
-        # H2N:     OUT      C       Si
-        table = [["MAIN", "MAIN", "MAIN"],  # H1N at OUT
-                 ["MAIN", "BOTH", "MAIN"],  # H1N at C
-                 ["BLOCKED", "BLOCKED", "MONO"]]  # H1N at Si
-        n1 = ("OUT", "C", "Si").index(self.h1n_state.value)
-        n2 = ("OUT", "C", "Si").index(self.h2n_state.value)
+        # H2N:     OUT      C       Si    Unknown
+        table = [["MAIN", "MAIN", "MAIN", "MAIN"],              # H1N at OUT
+                 ["MAIN", "BOTH", "MAIN", "BLOCKED"],           # H1N at C
+                 ["BLOCKED", "BLOCKED", "MONO", "BLOCKED"],     # H1N at Si
+                 ["BLOCKED", "BLOCKED", "BLOCKED", "BLOCKED"]]  # H1N Unknown
+        states = ("OUT", "C", "Si", "Unknown")
+        n1 = states.index(self.h1n.value)
+        n2 = states.index(self.h2n.value)
         state = table[n1][n2]
         if state == "MAIN":
             return [self.main_line]
@@ -96,13 +103,12 @@ class LODCM(Device, metaclass=BranchingInterface):
             Run the callback immediatelly
         """
         if not self._has_subscribed:
-            self.h1n_state.subscribe(self._subs_update_destination, run=False)
-            self.h2n_state.subscribe(self._subs_update_destination, run=False)
-            self.yag_state.subscribe(self._subs_update_destination, run=False)
-            self.dectris_state.subscribe(self._subs_update_destination,
-                                         run=False)
-            self.diode_state.subscribe(self._subs_update_destination, run=False)
-            self.foil_state.subscribe(self._subs_update_destination, run=False)
+            self.h1n.subscribe(self._subs_update_destination, run=False)
+            self.h2n.subscribe(self._subs_update_destination, run=False)
+            self.yag.subscribe(self._subs_update_destination, run=False)
+            self.dectris.subscribe(self._subs_update_destination, run=False)
+            self.diode.subscribe(self._subs_update_destination, run=False)
+            self.foil.subscribe(self._subs_update_destination, run=False)
             self._has_subscribed = True
         super().subscribe(cb, event_type=event_type, run=run)
 
@@ -135,10 +141,10 @@ class LODCM(Device, metaclass=BranchingInterface):
         diag_clear: bool
             False if the diagnostics will prevent beam.
         """
-        yag_clear = self.yag_state.value == 'OUT'
-        dectris_clear = self.dectris_state.value in ('OUT', 'OUTLOW')
-        diode_clear = self.diode_state.value in ('IN', 'OUT')
-        foil_clear = self.foil_state.value == 'OUT'
+        yag_clear = self.yag.value == 'OUT'
+        dectris_clear = self.dectris.value in ('OUT', 'OUTLOW')
+        diode_clear = self.diode.value in ('IN', 'OUT')
+        foil_clear = self.foil.value == 'OUT'
         return all((yag_clear, dectris_clear, diode_clear, foil_clear))
 
     @property
@@ -183,7 +189,7 @@ class LODCM(Device, metaclass=BranchingInterface):
             Status object that will be marked finished when all diagnostics are
             done moving and will time out after the given timeout.
         """
-        if self.dectris_state.value == 'OUTLOW':
+        if self.dectris.value == 'OUTLOW':
             dset = 'OUTLOW'
         else:
             dset = 'OUT'
@@ -232,8 +238,8 @@ class LODCM(Device, metaclass=BranchingInterface):
             are done moving.
         """
         states = (h1n, h2n, yag, dectris, diode, foil)
-        obj = (self.h1n_state, self.h2n_state, self.yag_state,
-               self.dectris_state, self.diode_state, self.foil_state)
+        obj = (self.h1n, self.h2n, self.yag,
+               self.dectris, self.diode, self.foil)
         done_statuses = []
         for state, obj in zip(states, obj):
             if state is not None:
