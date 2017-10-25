@@ -96,12 +96,13 @@ class LODCM(Device, metaclass=BranchingInterface):
             Run the callback immediatelly
         """
         if not self._has_subscribed:
-            self.h1n_state.subscribe(self._subs_update_destination)
-            self.h2n_state.subscribe(self._subs_update_destination)
-            self.yag_state.subscribe(self._subs_update_destination)
-            self.dectris_state.subscribe(self._subs_update_destination)
-            self.diode_state.subscribe(self._subs_update_destination)
-            self.foil_state.subscribe(self._subs_update_destination)
+            self.h1n_state.subscribe(self._subs_update_destination, run=False)
+            self.h2n_state.subscribe(self._subs_update_destination, run=False)
+            self.yag_state.subscribe(self._subs_update_destination, run=False)
+            self.dectris_state.subscribe(self._subs_update_destination,
+                                         run=False)
+            self.diode_state.subscribe(self._subs_update_destination, run=False)
+            self.foil_state.subscribe(self._subs_update_destination, run=False)
             self._has_subscribed = True
         super().subscribe(cb, event_type=event_type, run=run)
 
