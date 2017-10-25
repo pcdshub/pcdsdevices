@@ -13,19 +13,19 @@ def lodcm():
     lom = LODCM('FAKE:LOM', name='fake_lom', main_line='MAIN')
     lom.h1n.state._read_pv.put('OUT')
     lom.h1n.state._read_pv.enum_strs = ['OUT', 'C', 'Si']
-    lom.h2n.state._read_pv.put('OUT')
-    lom.h2n.state._read_pv.enum_strs = ['OUT', 'C', 'Si']
+    lom.h2n.state._read_pv.put('C')
+    lom.h2n.state._read_pv.enum_strs = ['C', 'Si']
     lom.yag.state._read_pv.put('OUT')
     lom.yag.state._read_pv.enum_strs = ['OUT', 'YAG', 'SLIT1', 'SLIT2',
-                                              'SLIT3']
+                                        'SLIT3']
     lom.dectris.state._read_pv.put('OUT')
     lom.dectris.state._read_pv.enum_strs = ['OUT', 'DECTRIS', 'SLIT1',
-                                                  'SLIT2', 'SLIT3', 'OUTLOW']
+                                            'SLIT2', 'SLIT3', 'OUTLOW']
     lom.diode.state._read_pv.put('OUT')
     lom.diode.state._read_pv.enum_strs = ['OUT', 'IN']
     lom.foil.state._read_pv.put('OUT')
     lom.foil.state._read_pv.enum_strs = ['OUT', 'Mo', 'Zr', 'Zn', 'Cu',
-                                               'Ni', 'Fe', 'Ti']
+                                         'Ni', 'Fe', 'Ti']
     return lom
 
 

@@ -10,7 +10,8 @@ from .state import statesrecord_class, InOutStates
 from .component import Component
 
 
-LodcmStates = statesrecord_class("LodcmStates", ":OUT", ":C", ":Si")
+H1NStates = statesrecord_class("LodcmStates", ":OUT", ":C", ":Si")
+H2NStates = statesrecord_class("LodcmStates", ":C", ":Si")
 YagLomStates = statesrecord_class("YagLomStates", ":OUT", ":YAG", ":SLIT1",
                                   ":SLIT2", ":SLIT3")
 DectrisStates = statesrecord_class("DectrisStates", ":OUT", ":DECTRIS",
@@ -28,8 +29,8 @@ class LODCM(Device, metaclass=BranchingInterface):
     diagnostic devices between them. Beam can continue onto the main line, onto
     the mono line, onto both, or onto neither.
     """
-    h1n = Component(LodcmStates, ":H1N")
-    h2n = Component(LodcmStates, ":H2N")
+    h1n = Component(H1NStates, ":H1N")
+    h2n = Component(H2NStates, ":H2N")
     yag = Component(YagLomStates, ":DV")
     dectris = Component(DectrisStates, ":DH")
     diode = Component(InOutStates, ":DIODE")
@@ -64,14 +65,15 @@ class LODCM(Device, metaclass=BranchingInterface):
             self.main_line if the light continues on the main line.
             self.mono_line if the light continues on the mono line.
         """
-        # H2N:     OUT      C       Si    Unknown
-        table = [["MAIN", "MAIN", "MAIN", "MAIN"],              # H1N at OUT
-                 ["MAIN", "BOTH", "MAIN", "BLOCKED"],           # H1N at C
-                 ["BLOCKED", "BLOCKED", "MONO", "BLOCKED"],     # H1N at Si
-                 ["BLOCKED", "BLOCKED", "BLOCKED", "BLOCKED"]]  # H1N Unknown
-        states = ("OUT", "C", "Si", "Unknown")
-        n1 = states.index(self.h1n.value)
-        n2 = states.index(self.h2n.value)
+        # H2N:      C       Si    Unknown
+        table = [["MAIN", "MAIN", "MAIN"],           # H1N at OUT
+                 ["BOTH", "MAIN", "BLOCKED"],        # H1N at C
+                 ["BLOCKED", "MONO", "BLOCKED"],     # H1N at Si
+                 ["BLOCKED", "BLOCKED", "BLOCKED"]]  # H1N Unknown
+        h1n_states = ("OUT", "C", "Si", "Unknown")
+        h2n_states = ("C", "Si", "Unknown")
+        n1 = h1n_states.index(self.h1n.value)
+        n2 = h2n_states.index(self.h2n.value)
         state = table[n1][n2]
         if state == "MAIN":
             return [self.main_line]
