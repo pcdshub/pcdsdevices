@@ -24,8 +24,7 @@ def lodcm():
     lom.diode.state._read_pv.put('OUT')
     lom.diode.state._read_pv.enum_strs = ['OUT', 'IN']
     lom.foil.state._read_pv.put('OUT')
-    lom.foil.state._read_pv.enum_strs = ['OUT', 'Mo', 'Zr', 'Zn', 'Cu',
-                                         'Ni', 'Fe', 'Ti']
+    lom.foil.state._read_pv.enum_strs = ['OUT']
     return lom
 
 

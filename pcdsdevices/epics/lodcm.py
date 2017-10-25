@@ -16,8 +16,7 @@ YagLomStates = statesrecord_class("YagLomStates", ":OUT", ":YAG", ":SLIT1",
                                   ":SLIT2", ":SLIT3")
 DectrisStates = statesrecord_class("DectrisStates", ":OUT", ":DECTRIS",
                                    ":SLIT1", ":SLIT2", ":SLIT3", ":OUTLOW")
-FoilStates = statesrecord_class("FoilStates", ":OUT", ":Mo", ":Zr", ":Zn",
-                                ":Cu", ":Ni", ":Fe", "Ti")
+FoilStates = statesrecord_class("FoilStates", ":OUT")
 
 
 class LODCM(Device, metaclass=BranchingInterface):
