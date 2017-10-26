@@ -11,7 +11,6 @@ from .component import Component
 
 
 H1NStates = statesrecord_class("LodcmStates", ":OUT", ":C", ":Si")
-H2NStates = statesrecord_class("LodcmStates", ":C", ":Si")
 YagLomStates = statesrecord_class("YagLomStates", ":OUT", ":YAG", ":SLIT1",
                                   ":SLIT2", ":SLIT3")
 DectrisStates = statesrecord_class("DectrisStates", ":OUT", ":DECTRIS",
@@ -29,7 +28,6 @@ class LODCM(Device, metaclass=BranchingInterface):
     the mono line, onto both, or onto neither.
     """
     h1n = Component(H1NStates, ":H1N")
-    h2n = Component(H2NStates, ":H2N")
     yag = Component(YagLomStates, ":DV")
     dectris = Component(DectrisStates, ":DH")
     diode = Component(InOutStates, ":DIODE")
@@ -64,23 +62,20 @@ class LODCM(Device, metaclass=BranchingInterface):
             self.main_line if the light continues on the main line.
             self.mono_line if the light continues on the mono line.
         """
-        # H2N:      C       Si    Unknown
-        table = [["MAIN", "MAIN", "MAIN"],           # H1N at OUT
-                 ["BOTH", "MAIN", "BLOCKED"],        # H1N at C
-                 ["BLOCKED", "MONO", "BLOCKED"],     # H1N at Si
-                 ["BLOCKED", "BLOCKED", "BLOCKED"]]  # H1N Unknown
-        h1n_states = ("OUT", "C", "Si", "Unknown")
-        h2n_states = ("C", "Si", "Unknown")
-        n1 = h1n_states.index(self.h1n.value)
-        n2 = h2n_states.index(self.h2n.value)
-        state = table[n1][n2]
+        table = ["MAIN", "BOTH", "MONO", "BLOCKED"]
+        states = ("OUT", "C", "Si", "Unknown")
+        n1 = states.index(self.h1n.value)
+        state = table[n1]
         if state == "MAIN":
             return [self.main_line]
         elif state == "BLOCKED":
             return []
         else:
-            if state == "MONO" and self.diag_clear:
-                return [self.mono_line]
+            if state == "MONO":
+                if self.diag_clear:
+                    return [self.mono_line]
+                else:
+                    return []
             if state == "BOTH":
                 if self.diag_clear:
                     return [self.main_line, self.mono_line]
@@ -105,7 +100,6 @@ class LODCM(Device, metaclass=BranchingInterface):
         """
         if not self._has_subscribed:
             self.h1n.subscribe(self._subs_update_destination, run=False)
-            self.h2n.subscribe(self._subs_update_destination, run=False)
             self.yag.subscribe(self._subs_update_destination, run=False)
             self.dectris.subscribe(self._subs_update_destination, run=False)
             self.diode.subscribe(self._subs_update_destination, run=False)
@@ -204,7 +198,7 @@ class LODCM(Device, metaclass=BranchingInterface):
 
         return status
 
-    def lodcm_move(self, h1n=None, h2n=None, yag=None, dectris=None,
+    def lodcm_move(self, h1n=None, yag=None, dectris=None,
                    diode=None, foil=None, timeout=None):
         """
         Move each component of the LODCM to the given state.
@@ -212,9 +206,6 @@ class LODCM(Device, metaclass=BranchingInterface):
         Parameters
         ----------
         h1n: string, optional
-            OUT, C, or Si
-
-        h2n: string, optional
             OUT, C, or Si
 
         yag: string, optional
@@ -238,9 +229,8 @@ class LODCM(Device, metaclass=BranchingInterface):
             Status object that will be marked as finished once all components
             are done moving.
         """
-        states = (h1n, h2n, yag, dectris, diode, foil)
-        obj = (self.h1n, self.h2n, self.yag,
-               self.dectris, self.diode, self.foil)
+        states = (h1n, yag, dectris, diode, foil)
+        obj = (self.h1n, self.yag, self.dectris, self.diode, self.foil)
         done_statuses = []
         for state, obj in zip(states, obj):
             if state is not None:

@@ -13,8 +13,6 @@ def lodcm():
     lom = LODCM('FAKE:LOM', name='fake_lom', main_line='MAIN')
     lom.h1n.state._read_pv.put('OUT')
     lom.h1n.state._read_pv.enum_strs = ['OUT', 'C', 'Si']
-    lom.h2n.state._read_pv.put('C')
-    lom.h2n.state._read_pv.enum_strs = ['C', 'Si']
     lom.yag.state._read_pv.put('OUT')
     lom.yag.state._read_pv.enum_strs = ['OUT', 'YAG', 'SLIT1', 'SLIT2',
                                         'SLIT3']
@@ -67,6 +65,6 @@ def test_subscribe(lodcm):
     cb = Mock()
     lodcm.subscribe(cb, run=False)
     assert not cb.called
-    # Change destination from main to mono
+    # Change destination from main to mono and main
     lodcm.h1n.state._read_pv.put('C')
     assert cb.called
