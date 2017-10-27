@@ -74,7 +74,7 @@ class SimControl:
         self._do_transition('disconnect')
 
     def configure(self, *, record=False, key=0, events=None, l1t_events=None,
-                  l3t_events=None, duration=0, controls=None, monitors=None,
+                  l3t_events=None, duration=None, controls=None, monitors=None,
                   partition=None):
         logger.debug(('SimControl.configure(record=%s, key=%s, events=%s, '
                       'l1t_events=%s, l3t_events=%s, duration=%s, '
@@ -109,16 +109,24 @@ class SimControl:
                      l1t_events, l3t_events, duration)
         for ev in (events, l1t_events, l3t_events):
             if ev is not None:
-                if ev == 0:
+                if ev < 0:
+                    raise RuntimeError('This is bad in real daq')
+                elif not isinstance(ev, int):
+                    raise RuntimeError('This is bad in real daq')
+                elif ev == 0:
                     return float('inf')
                 else:
                     return ev / 120
-            if duration is not None:
-                if isinstance(duration, list):
-                    return duration[0] + duration[1]*10e-9
-                else:
-                    return duration
-            return None
+        if duration is not None:
+            if isinstance(duration, list):
+                raise RuntimeError('This freezes the real daq')
+            elif duration <= 0:
+                raise RuntimeError('This freezes the real daq')
+            elif not isinstance(duration, int):
+                raise RuntimeError('This raises an error in the daq')
+            else:
+                return duration
+        return None
 
     def stop(self):
         logger.debug('SimControl.stop()')
@@ -136,9 +144,10 @@ class SimControl:
         logger.debug('SimControl._begin_thread(%s)', duration)
         start = time.time()
         interrupted = False
+        dt = 0.1
         while duration > 0:
-            duration -= 0.1
-            if self._done_flag.wait(0.1):
+            duration -= dt
+            if self._done_flag.wait(dt):
                 interrupted = True
                 break
         if not interrupted:
