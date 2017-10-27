@@ -15,8 +15,8 @@ class PickerBlade(Device):
     simple_state = Component(EpicsSignalRO, ":DF")
     force_close  = Component(EpicsSignal,   ":S_CLOSE")
     #Subscription information
-    SUB_ST_CH = 'sub_state_changed'
-    _default_sub = SUB_ST_CH
+    SUB_STATE = 'sub_state_changed'
+    _default_sub = SUB_STATE
 
     def __init__(self, prefix, *, name=None, read_attrs=None, **kwargs):
         #Instantiate ophyd level
@@ -50,7 +50,7 @@ class PickerBlade(Device):
         #Create status
         status = SubscriptionStatus(self,
                                     lambda *args, **kwargs: self.removed,
-                                    event_type = self.SUB_ST_CH,
+                                    event_type = self.SUB_STATE,
                                     timeout=timeout)
         #Optionally wait for status
         if wait:
@@ -63,7 +63,7 @@ class PickerBlade(Device):
         Blade has moved
         """
         kwargs.pop('sub_type', None)
-        self._run_subs(sub_type=self.SUB_ST_CH, **kwargs)
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
 
 
 class PulsePicker(Device):

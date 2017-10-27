@@ -977,7 +977,9 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
     mps = FormattedComponent(MPS, '{self._mps_prefix}', veto=True)
     #State Information
     state = FormattedComponent(InOutStates, '{self._state_prefix}')
-    
+
+    SUB_STATE = 'sub_state_changed'
+
     def __init__(self, *args, mps_prefix=None, state_prefix=None, out_lines=None,
                  in_lines=None, **kwargs):
         #Store MPS information
@@ -988,6 +990,8 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
         self.in_lines = in_lines
         self.out_lines = out_lines
         super().__init__(*args, **kwargs)
+        #Subscribe to changes in state
+        self.state.subscribe(self._on_state_change, run=False)
 
     @property
     def inserted(self):
@@ -1049,3 +1053,9 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
         else:
             return [self.db.beamline]
 
+    def _on_state_change(self, **kwargs):
+        """
+        Callback run on state change
+        """
+        kwargs.pop('sub_type', None)
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)

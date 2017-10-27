@@ -77,8 +77,8 @@ class Stopper(Device):
     commands = Commands
 
     #Subscription information
-    SUB_LIMIT_CH = 'sub_limit_changed'
-    _default_sub = SUB_LIMIT_CH
+    SUB_STATE = 'sub_state_changed'
+    _default_sub = SUB_STATE
 
     def __init__(self, prefix, *, name=None,
                  read_attrs=None, **kwargs):
@@ -199,7 +199,7 @@ class Stopper(Device):
         Callback when the limit state of the stopper changes
         """
         kwargs.pop('sub_type', None)
-        self._run_subs(sub_type=self.SUB_LIMIT_CH, **kwargs)
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
 
 
 
@@ -297,7 +297,8 @@ class PPSStopper(Device):
         Alias for the stopper
     """
     summary = C(PPS, '')
-    _default_sub = PPS._default_sub
+    SUB_STATE = 'sub_state_changed'
+    _default_sub = SUB_STATE
 
     #MPS Information
     mps = FC(MPS, '{self._mps_prefix}', veto=True)
@@ -315,7 +316,8 @@ class PPSStopper(Device):
         super().__init__(prefix,
                          read_attrs=read_attrs,
                          name=name, **kwargs)
-
+        #Subscribe to state changes
+        self.summary.subscribe(self._on_state_change, run=False)
 
     @property
     def inserted(self):
@@ -348,22 +350,9 @@ class PPSStopper(Device):
         raise PermissionError("PPS Stopper {} can not be commanded via EPICS"
                               "".format(self.name))
 
-
-    def subscribe(self, cb, event_type=None, run=False):
+    def _on_state_change(self, **kwargs):
         """
-        Subscribe to Stopper state changes
-
-        This simply maps to the :attr:`.summary` component
-
-        Parameters
-        ----------
-        cb : callable
-            Callback to be run
-
-        event_type : str, optional
-            Type of event to run callback on
-
-        run : bool, optional
-            Run the callback immediatelly
+        Callback run on state change
         """
-        return self.summary.subscribe(cb, event_type=event_type, run=run)
+        kwargs.pop('sub_type', None)
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)

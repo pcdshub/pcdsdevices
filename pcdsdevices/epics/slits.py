@@ -81,8 +81,8 @@ class Slits(Device):
     block_cmd = Component(EpicsSignal, ":BLOCK")
 
     #Subscription information
-    SUB_AP_CH = 'aperature_changed'
-    _default_sub = SUB_AP_CH
+    SUB_STATE = 'sub_state_changed'
+    _default_sub = SUB_STATE
 
     def __init__(self, prefix, *, read_attrs=None,
                  name=None, nominal_aperature=5.0, **kwargs):
@@ -244,4 +244,4 @@ class Slits(Device):
         #Avoid duplicate keywords
         kwargs.pop('sub_type', None)
         #Run subscriptions
-        self._run_subs(sub_type=self.SUB_AP_CH, **kwargs)
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)

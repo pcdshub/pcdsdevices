@@ -18,8 +18,8 @@ class IPMMotors(Device):
     target = Component(TargetStates, ":TARGET")
 
     #Default subscriptions
-    SUB_ST_CHG   = 'target_state_changed'
-    _default_sub = SUB_ST_CHG
+    SUB_STATE   = 'target_state_changed'
+    _default_sub = SUB_STATE
     transmission = 0.8 #Completely making up this number :)
 
     def __init__(self, prefix, *, name=None, parent=None,
@@ -122,7 +122,7 @@ class IPMMotors(Device):
         #Avoid duplicate keywords
         kwargs.pop('sub_type', None)
         #Run subscriptions
-        self._run_subs(sub_type=self.SUB_ST_CHG, **kwargs)
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
 
 
 class IPM(Device):
