@@ -1,6 +1,7 @@
 ############
 # Standard #
 ############
+from unittest.mock import Mock
 
 ###############
 # Third Party #
@@ -47,3 +48,12 @@ def test_branching_mirror_moves(branching_mirror):
     #Insert 
     branching_mirror.insert()
     assert branching_mirror.state.state._write_pv.value == 'IN'
+
+@using_fake_epics_pv
+def test_epics_mirror_subscription(branching_mirror):
+    #Subscribe a pseudo callback
+    cb = Mock()
+    branching_mirror.subscribe(cb, event_type=branching_mirror.SUB_STATE, run=False)
+    #Change the target state
+    branching_mirror.state.state._read_pv.put('IN')
+    assert cb.called

@@ -52,7 +52,7 @@ def test_ipm_motion(ipm):
 def test_ipm_subscriptions(ipm):
     #Subscribe a pseudo callback
     cb = Mock()
-    ipm.subscribe(cb, event_type=ipm.SUB_ST_CHG, run=False)
+    ipm.subscribe(cb, event_type=ipm.SUB_STATE, run=False)
     #Change the target state
     ipm.target.state._read_pv.put('OUT')
     assert cb.called

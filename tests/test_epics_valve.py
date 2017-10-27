@@ -52,7 +52,7 @@ def test_pps_states(pps):
 def test_pps_subscriptions(pps):
     #Subscribe a pseudo callback
     cb = Mock()
-    pps.subscribe(cb, run=False)
+    pps.subscribe(cb, event_type=pps.SUB_STATE, run=False)
     #Change readback state
     pps.summary.signal._read_pv.put(4)
     assert cb.called
@@ -103,7 +103,7 @@ def test_stopper_motion(stopper):
 def test_stopper_subscriptions(stopper):
     #Subscribe a pseudo callback
     cb = Mock()
-    stopper.subscribe(cb, run=False)
+    stopper.subscribe(cb, event_type=stopper.SUB_STATE, run=False)
     #Change readback state
     stopper.limits.open_limit._read_pv.put(0)
     stopper.limits.closed_limit._read_pv.put(1)

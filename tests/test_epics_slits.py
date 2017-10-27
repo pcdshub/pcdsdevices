@@ -77,7 +77,7 @@ def test_slit_transmission(slits):
 def test_slit_subscriptions(slits):
     #Subscribe a pseudo callback
     cb = Mock()
-    slits.subscribe(cb, run=False)
+    slits.subscribe(cb, event_type=slits.SUB_STATE, run=False)
     #Change the aperature size
     slits.xwidth.readback._read_pv.put(40.0)
     assert cb.called
