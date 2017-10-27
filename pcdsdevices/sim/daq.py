@@ -114,7 +114,10 @@ class SimControl:
                 else:
                     return ev / 120
             if duration is not None:
-                return duration
+                if isinstance(duration, list):
+                    return duration[0] + duration[1]*10e-9
+                else:
+                    return duration
             return None
 
     def stop(self):

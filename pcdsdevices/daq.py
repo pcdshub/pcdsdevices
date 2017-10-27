@@ -19,7 +19,7 @@ except:
 
 try:
     from bluesky import RunEngine
-    from bluesky.plans import run_wrapper, fly_during_wrapper
+    from bluesky.plans import fly_during_wrapper
     has_bluesky = True
 except ImportError:
     has_bluesky = False
@@ -64,7 +64,8 @@ class Daq(FlyerInterface):
                           duration=None,
                           use_l3t=False,
                           record=False,
-                          controls=None)
+                          controls=None,
+                          always_on=False)
 
     def __init__(self, name=None, platform=0, parent=None):
         super().__init__()
@@ -74,6 +75,7 @@ class Daq(FlyerInterface):
         self.config = None
         self._host = os.uname()[1]
         self._plat = platform
+        self._is_bluesky = False
 
     # Convenience properties
     @property
@@ -87,6 +89,7 @@ class Daq(FlyerInterface):
     @property
     def state(self):
         if self.connected:
+            logger.debug('calling Daq.control.state()')
             num = self.control.state()
             return self.state_enum(num).name
         else:
@@ -100,10 +103,14 @@ class Daq(FlyerInterface):
         logger.debug('Daq.connect()')
         if self.control is None:
             try:
+                logger.debug('instantiate Daq.control = pydaq.Control(%s, %s)',
+                             self._host, self._plat)
                 self.control = pydaq.Control(self._host, platform=self._plat)
+                logger.debug('Daq.control.connect()')
                 self.control.connect()
                 msg = 'Connected to DAQ'
             except:
+                logger.debug('del Daq.control')
                 del self.control
                 self.control = None
                 msg = ('Failed to connect to DAQ - check that it is up and '
@@ -201,6 +208,7 @@ class Daq(FlyerInterface):
 
         def start_thread(control, status, events, duration, use_l3t, controls):
             begin_args = self._begin_args(events, duration, use_l3t, controls)
+            logger.debug('daq.control.begin(%s)', begin_args)
             control.begin(**begin_args)
             status._finished(success=True)
             logger.debug('Marked kickoff as complete')
@@ -240,7 +248,11 @@ class Daq(FlyerInterface):
         logger.debug('Daq._get_end_status()')
 
         def finish_thread(control, status):
-            control.end()
+            try:
+                logger.debug('Daq.control.end()')
+                control.end()
+            except RuntimeError:
+                pass  # This means we aren't running, so no need to wait
             status._finished(success=True)
             logger.debug('Marked acquisition as complete')
         end_status = DaqStatus(obj=self)
@@ -256,6 +268,7 @@ class Daq(FlyerInterface):
         to report to python, this will be a generator that immediately ends.
         """
         logger.debug('Daq.collect()')
+        self.end_run()
         return
         yield
 
@@ -269,7 +282,7 @@ class Daq(FlyerInterface):
 
     @check_connect
     def configure(self, events=None, duration=None, record=False,
-                  use_l3t=False, controls=None):
+                  use_l3t=False, controls=None, always_on=False):
         """
         Changes the daq's configuration for the next run.
 
@@ -294,28 +307,42 @@ class Daq(FlyerInterface):
             If True, we'll record the data. Otherwise, we'll run without
             recording.
 
-        controls: list of tuple(str, value), optional
-            If provided, these will make it into the data stream as control
-            variables.
+        controls: dict{str: device}, optional
+            If provided, values from these will make it into the DAQ data
+            stream as variables. We will check device.position and device.value
+            for quantities to use and we will update these values each time
+            begin is called.
+
+        always_on: bool, optional
+            This determines our run control during a Bluesky scan with a
+            RunEngine attached to a Daq object.
+            If this is False, we will start taking events at create messages
+            and stop taking events at save messages. If we are configured for a
+            number of events or a duration, we'll make sure to run for exactly
+            that long between the create and save messages, waiting in the scan
+            if necessary.
+            If this is True, we won't provide any run control. The daq will
+            start recording at the beginning of the run and will stop recording
+            at the end of the run.
 
         Returns
         -------
         old, new: tuple of dict
         """
         logger.debug(('Daq.configure(events=%s, duration=%s, record=%s, '
-                      'use_l3t=%s, controls=%s)'),
-                     events, duration, record, use_l3t, controls)
+                      'use_l3t=%s, controls=%s, always_on=%s)'),
+                     events, duration, record, use_l3t, controls, always_on)
         old = self.read_configuration()
         config_args = self._config_args(record, use_l3t, controls)
         try:
-            logger.debug('Calling Control.configure with kwargs %s',
+            logger.debug('Daq.control.configure(%s)',
                          config_args)
             self.control.configure(**config_args)
             # self.config should reflect exactly the arguments to configure,
             # this is different than the arguments that pydaq.Control expects
             self.config = dict(events=events, duration=duration,
                                record=record, use_l3t=use_l3t,
-                               controls=controls)
+                               controls=controls, always_on=always_on)
             msg = 'Daq configured'
             logger.info(msg)
         except:
@@ -337,23 +364,34 @@ class Daq(FlyerInterface):
         logger.debug('Daq._config_args(%s, %s, %s)',
                      record, use_l3t, controls)
         config_args = {}
-        for key, val in zip(('record', 'controls'),
-                            (record, controls)):
-            if val is None:
-                if self.config is None:
-                    config_args[key] = self.default_config[key]
-                else:
-                    config_args[key] = self.config[key]
-            else:
-                config_args[key] = val
+        config = self.read_configuration()
+        if record is None:
+            config_args['record'] = config['record']
+        else:
+            config_args['record'] = record
         if use_l3t:
             config_args['l3t_events'] = 0
         else:
             config_args['events'] = 0
-            for key, value in list(config_args.items()):
-                if value is None:
-                    del config_args[key]
+        if controls is not None:
+            config_args['controls'] = self._ctrl_arg(controls)
+        for key, value in list(config_args.items()):
+            if value is None:
+                del config_args[key]
         return config_args
+
+    def _ctrl_arg(self, ctrl_dict):
+        """
+        Assemble the list of (str, val) pairs from a {str: device} dictionary.
+        """
+        ctrl_arg = []
+        for key, device in ctrl_dict.items():
+            try:
+                val = device.position
+            except AttributeError:
+                val = device.value
+            ctrl_arg.append((key, val))
+        return ctrl_arg
 
     def _begin_args(self, events, duration, use_l3t, controls):
         """
@@ -367,13 +405,19 @@ class Daq(FlyerInterface):
         logger.debug('Daq._begin_args(%s, %s, %s, %s)',
                      events, duration, use_l3t, controls)
         begin_args = {}
+        config = self.read_configuration()
+        if all((self._is_bluesky, not config['always_on'],
+                not self.state == 'Open')):
+            # Open a run without taking events
+            events = 1
+            duration = None
+            use_l3t = False
         if events is None and duration is None:
-            config = self.read_configuration()
             events = config['events']
             duration = config['duration']
         if events is not None:
-            if use_l3t is None and self.config is not None:
-                use_l3t = self.config['use_l3t']
+            if use_l3t is None and self.configured:
+                use_l3t = config['use_l3t']
             if use_l3t:
                 begin_args['l3t_events'] = events
             else:
@@ -382,8 +426,12 @@ class Daq(FlyerInterface):
             begin_args['duration'] = duration
         else:
             begin_args['events'] = 0  # Run until manual stop
-        if controls is not None:
-            begin_args['controls'] = controls
+        if controls is None:
+            ctrl_dict = config['controls']
+            if ctrl_dict is not None:
+                begin_args['controls'] = self._ctrl_arg(ctrl_dict)
+        else:
+            begin_args['controls'] = self._ctrl_arg(controls)
         return begin_args
 
     def read_configuration(self):
@@ -398,7 +446,7 @@ class Daq(FlyerInterface):
             config = self.default_config
         else:
             config = self.config
-        return copy.deepcopy(config)
+        return copy.copy(config)
 
     def describe_configuration(self):
         """
@@ -427,7 +475,10 @@ class Daq(FlyerInterface):
                                 shape=None),
                     controls=dict(source='daq_control_vars',
                                   dtype='array',
-                                  shape=controls_shape))
+                                  shape=controls_shape),
+                    always_on=dict(source='daq_always_on',
+                                   dtype='number',
+                                   shape=None))
 
     def stage(self):
         """
@@ -471,6 +522,38 @@ class Daq(FlyerInterface):
         if self.state == 'Open':
             self.begin()
 
+    def _interpret_message(self, msg):
+        """
+        msg_hook for the daq to decide when to run and when not to run,
+        provided we've been configured for always_on=False.
+        Also looks for 'open_run' and 'close_run' docs to keep track of when
+        we're in a Bluesky plan and when we're not.
+        """
+        logger.debug('Daq._interpret_message(%s)', msg)
+        cmds = ('open_run', 'close_run', 'create', 'save')
+        if msg.command not in cmds:
+            return
+        config = self.read_configuration()
+        if msg.command == 'open_run':
+            self._is_bluesky = True
+        elif msg.command == 'close_run':
+            self._is_bluesky = False
+        if not config['always_on']:
+            if msg.command == 'create':
+                self.resume()
+            elif msg.command == 'save':
+                do_wait = False
+                events = config['events']
+                duration = config['duration']
+                for tm in (events, duration):
+                    if tm is not None and tm > 0:
+                        do_wait = True
+                        break
+                if do_wait:
+                    self.wait()
+                else:
+                    self.pause()
+
     def __del__(self):
         if self.state in ('Open', 'Running'):
             self.end_run()
@@ -497,5 +580,6 @@ if has_bluesky:
         the daq for each plan.
         """
         daq_wrapper = functools.partial(fly_during_wrapper, flyers=[daq])
-        RE = RunEngine(preprocessors=[run_wrapper, daq_wrapper])
+        RE = RunEngine(preprocessors=[daq_wrapper])
+        RE.msg_hook = daq._interpret_message
         return RE
