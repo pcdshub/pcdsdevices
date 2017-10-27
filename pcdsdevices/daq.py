@@ -89,6 +89,7 @@ class Daq(FlyerInterface):
     @property
     def state(self):
         if self.connected:
+            logger.debug('calling Daq.control.state()')
             num = self.control.state()
             return self.state_enum(num).name
         else:
@@ -102,10 +103,14 @@ class Daq(FlyerInterface):
         logger.debug('Daq.connect()')
         if self.control is None:
             try:
+                logger.debug('instantiate Daq.control = pydaq.Control(%s, %s)',
+                             self._host, self._plat)
                 self.control = pydaq.Control(self._host, platform=self._plat)
+                logger.debug('Daq.control.connect()')
                 self.control.connect()
                 msg = 'Connected to DAQ'
             except:
+                logger.debug('del Daq.control')
                 del self.control
                 self.control = None
                 msg = ('Failed to connect to DAQ - check that it is up and '
@@ -203,6 +208,7 @@ class Daq(FlyerInterface):
 
         def start_thread(control, status, events, duration, use_l3t, controls):
             begin_args = self._begin_args(events, duration, use_l3t, controls)
+            logger.debug('daq.control.begin(%s)', begin_args)
             control.begin(**begin_args)
             status._finished(success=True)
             logger.debug('Marked kickoff as complete')
@@ -243,6 +249,7 @@ class Daq(FlyerInterface):
 
         def finish_thread(control, status):
             try:
+                logger.debug('Daq.control.end()')
                 control.end()
             except RuntimeError:
                 pass  # This means we aren't running, so no need to wait
@@ -261,6 +268,7 @@ class Daq(FlyerInterface):
         to report to python, this will be a generator that immediately ends.
         """
         logger.debug('Daq.collect()')
+        self.end_run()
         return
         yield
 
@@ -327,7 +335,7 @@ class Daq(FlyerInterface):
         old = self.read_configuration()
         config_args = self._config_args(record, use_l3t, controls)
         try:
-            logger.debug('Calling Control.configure with kwargs %s',
+            logger.debug('Daq.control.configure(%s)',
                          config_args)
             self.control.configure(**config_args)
             # self.config should reflect exactly the arguments to configure,
@@ -401,9 +409,9 @@ class Daq(FlyerInterface):
         if all((self._is_bluesky, not config['always_on'],
                 not self.state == 'Open')):
             # Open a run without taking events
-            events = None
-            duration = 0
-            # duration = [0, 1]  # One nanosecond.
+            events = 1
+            duration = None
+            use_l3t = False
         if events is None and duration is None:
             events = config['events']
             duration = config['duration']
