@@ -231,7 +231,6 @@ def test_run_flow(daq):
     def plan(reader):
         yield from null()
         for i in range(10):
-            assert daq.state == 'Open'
             yield from create()
             assert daq.state == 'Running'
             yield from read(reader)
@@ -263,7 +262,6 @@ def test_run_flow_wait(daq):
     def plan(reader):
         yield from null()
         for i in range(10):
-            assert daq.state == 'Open'
             yield from create()
             assert daq.state == 'Running'
             yield from read(reader)

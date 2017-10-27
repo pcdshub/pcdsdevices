@@ -540,6 +540,8 @@ class Daq(FlyerInterface):
             self._is_bluesky = False
         if not config['always_on']:
             if msg.command == 'create':
+                # If already runing, pause first to start a fresh begin
+                self.pause()
                 self.resume()
             elif msg.command == 'save':
                 do_wait = False
