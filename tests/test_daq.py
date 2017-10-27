@@ -6,7 +6,8 @@ import pytest
 
 try:
     from bluesky.examples import Reader
-    from bluesky.plans import trigger_and_read
+    from bluesky.plans import (trigger_and_read, run_decorator,
+                               create, read, save, null)
     has_bluesky = True
 except:
     has_bluesky = False
@@ -51,6 +52,10 @@ def test_disconnect(daq):
     assert not daq.connected
 
 
+class Dummy:
+    position = 4
+
+
 def test_configure(daq):
     """
     We expect the configured attribute to be correct.
@@ -78,7 +83,7 @@ def test_configure(daq):
     configs = [
         dict(events=1000, use_l3t=True),
         dict(events=1000, use_l3t=True, record=True),
-        dict(duration=10, controls=[]),
+        dict(duration=10, controls=dict(test=Dummy())),
     ]
     prev_config = daq.read_configuration()
     for config in configs:
@@ -191,13 +196,81 @@ def test_scan(daq):
     """
     logger.debug('test_scan')
     RE = make_daq_run_engine(daq)
+    RE.verbose = True
 
+    daq.configure(always_on=True)
+
+    @run_decorator()
     def plan(reader):
+        yield from null()
         for i in range(10):
             assert daq.state == 'Running'
             yield from trigger_and_read([reader])
         assert daq.state == 'Running'
+        yield from null()
 
     RE(plan(Reader('test', {'zero': lambda: 0})))
-
     assert daq.state == 'Configured'
+    daq.end_run()
+
+
+@pytest.mark.skipif(not has_bluesky, reason='Requires Bluesky')
+@pytest.mark.timeout(10)
+def test_run_flow(daq):
+    """
+    With always_on=False, we expect that the daq will only run between create
+    and save documents.
+    """
+    logger.debug('test_run_flow')
+    RE = make_daq_run_engine(daq)
+    RE.verbose = True
+
+    daq.configure(always_on=False)
+
+    @run_decorator()
+    def plan(reader):
+        yield from null()
+        for i in range(10):
+            assert daq.state == 'Open'
+            yield from create()
+            assert daq.state == 'Running'
+            yield from read(reader)
+            yield from save()
+            assert daq.state == 'Open'
+        yield from null()
+
+    RE(plan(Reader('test', {'zero': lambda: 0})))
+    assert daq.state == 'Configured'
+    daq.end_run()
+
+
+@pytest.mark.skipif(not has_bluesky, reason='Requires Bluesky')
+@pytest.mark.timeout(10)
+def test_run_flow_wait(daq):
+    """
+    With always_on=False, we expect that the daq will only run between create
+    and save documents.
+    With events=5, we expect that the daq will go down the wait branch of the
+    interpret message tree
+    """
+    logger.debug('test_run_flow_wait')
+    RE = make_daq_run_engine(daq)
+    RE.verbose = True
+
+    daq.configure(events=5, always_on=False)
+
+    @run_decorator()
+    def plan(reader):
+        yield from null()
+        for i in range(10):
+            assert daq.state == 'Open'
+            yield from create()
+            assert daq.state == 'Running'
+            yield from read(reader)
+            yield from save()
+            assert daq.state == 'Open'
+        yield from null()
+
+    RE(plan(Reader('test', {'zero': lambda: 0})))
+    assert daq.state == 'Configured'
+    daq.end_run()
