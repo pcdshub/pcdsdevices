@@ -220,7 +220,7 @@ class PIMMotor(Device, PositionerBase):
                          parent=parent, timeout=timeout, **kwargs)
         self.timeout = timeout
         self.stage_cache_position = None
-        self.states.subscribe(self._on_state_change, run=False)
+        self._has_subscribed = False
 
     def move_in(self, wait=False, **kwargs):
         """
@@ -390,12 +390,32 @@ class PIMMotor(Device, PositionerBase):
             self.move(self.stage_cache_position, wait=False)
         return super().unstage()
 
-    def _on_state_change(self,  **kwargs):
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Subscribe to changes of the PIMMotor
+
+        Parameters
+        ----------
+        cb : callable
+            Callback to be run
+
+        event_type : str, optional
+            Type of event to run callback on
+
+        run : bool, optional
+            Run the callback immediatelly
+        """
+        if not self._has_subscribed:
+            self.states.subscribe(self._on_state_change, run=False)
+            self._has_subscribed = True
+        super().subscribe(cb, event_type=event_type, run=run)
+
+    def _on_state_change(self, **kwargs):
         """
         Callback run on state change
         """
         kwargs.pop('sub_type', None)
-        self._run_subs(*args, sub_type=self.SUB_STATE, **kwargs)
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
 
 
 class PIM(PIMMotor):
