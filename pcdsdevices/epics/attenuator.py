@@ -150,21 +150,20 @@ class BasicAttenuatorBase(Device):
     go_cmd = Component(EpicsSignal, ":GO")
 
     #Subscription Information
-    SUB_BLADE_CH = 'sub_blade_changed'
-    _default_sub = SUB_BLADE_CH
+    SUB_STATE = 'sub_state_changed'
+    _default_sub = SUB_STATE
 
     def __init__(self, prefix, *, name=None, read_attrs=None,
                  stage_setting=0, **kwargs):
         self._set_lock = RLock()
         self._stage_setting = stage_setting
+        self._has_subscribed = False
+
         if read_attrs is None:
             read_attrs = ["transmission"]
         super().__init__(prefix, name=name, read_attrs=read_attrs,
                          **kwargs)
 
-        #Subscribe to all child filter objects
-        for filt in self.filters:
-            filt.state_sig.subscribe(self._blade_moved, run=False)
 
     def __call__(self, transmission=None, **kwargs):
         """
@@ -220,7 +219,7 @@ class BasicAttenuatorBase(Device):
         #Create status that will mark done when all are moved
         status = SubscriptionStatus(self,
                                     lambda *args, **kwargs: self.inserted,
-                                    event_type = self.SUB_BLADE_CH,
+                                    event_type = self.SUB_STATE,
                                     timeout=timeout)
         #Optionally wait for status
         if wait:
@@ -239,7 +238,7 @@ class BasicAttenuatorBase(Device):
         #Create status that will mark done when all are moved
         status = SubscriptionStatus(self,
                                     lambda *args, **kwargs: self.removed,
-                                    event_type = self.SUB_BLADE_CH,
+                                    event_type = self.SUB_STATE,
                                     timeout=timeout)
         #Optionally wait for status
         if wait:
@@ -427,13 +426,35 @@ class BasicAttenuatorBase(Device):
         return self.all_out(wait=wait, timeout=timeout)
 
 
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Subscribe to changes of the attenuator
+
+        Parameters
+        ----------
+        cb : callable
+            Callback to be run
+
+        event_type : str, optional
+            Type of event to run callback on
+
+        run : bool, optional
+            Run the callback immediatelly
+        """
+        if not self._has_subscribed:
+            #Subscribe to all child filter objects
+            for filt in self.filters:
+                filt.state_sig.subscribe(self._blade_moved, run=False)
+            self._has_subscribed = True
+        super().subscribe(cb, event_type=event_type, run=run)
+
+
     def _blade_moved(self, **kwargs):
         """
         Blade has moved
         """
         kwargs.pop('sub_type', None)
-        self._run_subs(sub_type=self.SUB_BLADE_CH, **kwargs)
-
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
 
     def stage(self):
         self.all_in()
@@ -465,10 +486,6 @@ class AttenuatorBase(BasicAttenuatorBase):
     calculations. This is the IOC running everywhere except the FEE. This base
     class does not include any filters.
     """
-    #Filter changed subscriptions
-    SUB_FILT_CH  = 'sub_filter_changed'
-    _default_sub = SUB_FILT_CH
-
     # Redefine some PV names
     energy = Component(EpicsSignalRO, ":T_CALC.VALE")
     desired_transmission = Component(EpicsSignal, ":R_DES")
@@ -497,15 +514,18 @@ class AttenuatorBase(BasicAttenuatorBase):
             read_attrs = ["transmission", "transmission_3rd"]
         super().__init__(prefix, name=name, read_attrs=read_attrs,
                          stage_setting=stage_setting, **kwargs)
-    
+
+        #If we did not receive a filter number from factory
+        if not hasattr(self, 'number_of_filters'):
+            self.number_of_filters = 0
+
     @property
     def filters(self):
         """
         List of filter components
         """
         return [getattr(self, "filter{}".format(i))
-                for i in range(1, self.num_att.value)]
-
+                for i in range(1, self.number_of_filters + 1)]
 
     def thickest_filter_in(self):
         """
@@ -559,6 +579,8 @@ def make_att_classes(max_filters):
 
         name = "Attenuator{}".format(i)
         cls = type(name, (AttenuatorBase,), att_filters)
+        #Store the number of filters
+        cls.number_of_filters = i
         globals()[name] = cls
         att_classes[i] = cls
     return att_classes

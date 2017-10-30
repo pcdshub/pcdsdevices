@@ -63,7 +63,7 @@ def test_remove(lodcm):
 @using_fake_epics_pv
 def test_subscribe(lodcm):
     cb = Mock()
-    lodcm.subscribe(cb, run=False)
+    lodcm.subscribe(cb, event_type=lodcm.SUB_STATE, run=False)
     assert not cb.called
     # Change destination from main to mono and main
     lodcm.h1n.state._read_pv.put('C')

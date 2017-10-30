@@ -54,7 +54,7 @@ def test_attenuator_motion(attenuator):
 def test_attenuator_subscriptions(attenuator):
     #Subscribe a pseudo callback
     cb = Mock()
-    attenuator.subscribe(cb, run=False)
+    attenuator.subscribe(cb, event_type=attenuator.SUB_STATE,  run=False)
     #Change the target state
     attenuator.filter1.state_sig._read_pv.put(1)
     assert cb.called

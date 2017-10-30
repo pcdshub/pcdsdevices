@@ -27,9 +27,17 @@ class XFLS(Device):
     providing the ability to check each individual state
     """
     state = C(EpicsSignal,'', write_pv=':GO')
-    SUB_ST_CH = 'sub_state_changed'
-    _default_sub = SUB_ST_CH
+    SUB_STATE = 'sub_state_changed'
+    _default_sub = SUB_STATE
 
+    def __init__(self, prefix, *, name=None, parent=None,
+                 read_attrs=None, **kwargs):
+        self._has_subscribed = False
+        if read_attrs is None:
+            read_attrs = ["state"]
+
+        super().__init__(prefix, name=name, parent=parent,
+                         read_attrs=read_attrs, **kwargs)
     @property
     def inserted(self):
         """
@@ -70,11 +78,9 @@ class XFLS(Device):
             status_wait(status)
         return status
 
-    def subscribe(self, cb, event_type=None, run=False):
+    def subscribe(self, cb, event_type=None, run=True):
         """
-        Subscribe to changes in the XFLS state
-
-        This simply maps to the :attr:`.state` component
+        Subscribe to changes of the lenses
 
         Parameters
         ----------
@@ -87,4 +93,17 @@ class XFLS(Device):
         run : bool, optional
             Run the callback immediatelly
         """
-        return self.state.subscribe(cb, event_type=event_type, run=run)
+        if not self._has_subscribed:
+            #Subscribe to state changes
+            self.state.subscribe(self._on_state_change, run=False)
+            self._has_subscribed = True
+        super().subscribe(cb, event_type=event_type, run=run)
+
+    def _on_state_change(self,  **kwargs):
+        """
+        Performed on a state change
+        """
+        #Avoid duplicate keywords
+        kwargs.pop('sub_type', None)
+        #Run subscriptions
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)

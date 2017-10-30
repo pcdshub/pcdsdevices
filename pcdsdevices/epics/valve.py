@@ -77,8 +77,8 @@ class Stopper(Device):
     commands = Commands
 
     #Subscription information
-    SUB_LIMIT_CH = 'sub_limit_changed'
-    _default_sub = SUB_LIMIT_CH
+    SUB_STATE = 'sub_state_changed'
+    _default_sub = SUB_STATE
 
     def __init__(self, prefix, *, name=None,
                  read_attrs=None, **kwargs):
@@ -89,15 +89,14 @@ class Stopper(Device):
         super().__init__(prefix,
                          read_attrs=read_attrs,
                          name=name, **kwargs)
-        #Subscribe callback to limits
-        self.limits.subscribe(self._limits_changed,
-                              run=False)
+        #Track if subscribed callback to limits 
+        self._has_subscribed = False
 
 
     def open(self, wait=False, timeout=None):
         """
         Open the stopper
-        
+
         Parameters
         ----------
         wait : bool, optional
@@ -194,12 +193,33 @@ class Stopper(Device):
         return self.limits.value == 'out'
 
 
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Subscribe to changes of the valve
+
+        Parameters
+        ----------
+        cb : callable
+            Callback to be run
+
+        event_type : str, optional
+            Type of event to run callback on
+
+        run : bool, optional
+            Run the callback immediatelly
+        """
+        if not self._has_subscribed:
+            self.limits.subscribe(self._limits_changed, run=False)
+            self._has_subscribed = True
+        super().subscribe(cb, event_type=event_type, run=run)
+
+
     def _limits_changed(self, *args, **kwargs):
         """
         Callback when the limit state of the stopper changes
         """
         kwargs.pop('sub_type', None)
-        self._run_subs(sub_type=self.SUB_LIMIT_CH, **kwargs)
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
 
 
 
@@ -270,16 +290,6 @@ class GateValve(Stopper):
 MPSGateValve = partial(mps_factory, 'MPSGateValve', GateValve)
 MPSStopper   = partial(mps_factory, 'MPSStopper', Stopper)
 
-PPS = pvstate_class('PPS',
-                    {'signal': {'pvname': '',
-                                 0: 'out',
-                                 1: 'unknown',
-                                 2: 'unknown',
-                                 3: 'unknown',
-                                 4: 'in'}},
-                    doc='MPS Summary of Stopper state')
-
-
 class PPSStopper(Device):
     """
     PPS Stopper
@@ -295,17 +305,26 @@ class PPSStopper(Device):
 
     name : str, optional
         Alias for the stopper
+
+    in_state : str, optional
+        String associatted with in enum value
+
+    out_state :str, optional
+        String associatted with out enum value
     """
-    summary = C(PPS, '')
-    _default_sub = PPS._default_sub
+    summary = C(EpicsSignalRO, '')
+    SUB_STATE = 'sub_state_changed'
+    _default_sub = SUB_STATE
 
     #MPS Information
     mps = FC(MPS, '{self._mps_prefix}', veto=True)
 
     def __init__(self, prefix, *, name=None,
-                 read_attrs=None,
-                 mps_prefix=None, **kwargs):
-
+                 read_attrs=None, in_state='IN',
+                 out_state='OUT', mps_prefix=None, **kwargs):
+        #Store state information
+        self.in_state, self.out_state = in_state, out_state 
+        self._has_subscribed = False
         #Store MPS information
         self._mps_prefix = mps_prefix
 
@@ -316,13 +335,12 @@ class PPSStopper(Device):
                          read_attrs=read_attrs,
                          name=name, **kwargs)
 
-
     @property
     def inserted(self):
         """
         Inserted limit of PPS stopper
         """
-        return self.summary.value == 'in'
+        return self.summary.get(as_string=True) == self.in_state
 
 
     @property
@@ -330,7 +348,7 @@ class PPSStopper(Device):
         """
         Removed limit of the PPS Stopper
         """
-        return self.summary.value == 'out'
+        return self.summary.get(as_string=True) == self.out_state
 
 
     def remove(self, **kwargs):
@@ -349,11 +367,9 @@ class PPSStopper(Device):
                               "".format(self.name))
 
 
-    def subscribe(self, cb, event_type=None, run=False):
+    def subscribe(self, cb, event_type=None, run=True):
         """
-        Subscribe to Stopper state changes
-
-        This simply maps to the :attr:`.summary` component
+        Subscribe to changes of the PPSStopper
 
         Parameters
         ----------
@@ -366,4 +382,14 @@ class PPSStopper(Device):
         run : bool, optional
             Run the callback immediatelly
         """
-        return self.summary.subscribe(cb, event_type=event_type, run=run)
+        if not self._has_subscribed:
+            self.summary.subscribe(self._on_state_change, run=False)
+            self._has_subscribed = True
+        super().subscribe(cb, event_type=event_type, run=run)
+
+    def _on_state_change(self, **kwargs):
+        """
+        Callback run on state change
+        """
+        kwargs.pop('sub_type', None)
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)

@@ -211,6 +211,7 @@ class PIMMotor(Device, PositionerBase):
         The name of the offset mirror
     """
     states = FormattedComponent(PIMStates, "{self.prefix}")
+    SUB_STATE = 'sub_state_changed'
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, timeout=None, **kwargs):
@@ -219,6 +220,7 @@ class PIMMotor(Device, PositionerBase):
                          parent=parent, timeout=timeout, **kwargs)
         self.timeout = timeout
         self.stage_cache_position = None
+        self._has_subscribed = False
 
     def move_in(self, wait=False, **kwargs):
         """
@@ -379,12 +381,6 @@ class PIMMotor(Device, PositionerBase):
             tmo = float(tmo)
         self.states.timeout = tmo
 
-    def subscribe(self, *args, **kwargs):
-        self.states.subscribe(*args, **kwargs)
-
-    def clear_sub(self, *args, **kwargs):
-        self.states.clear_sub(*args, **kwargs)
-
     def stage(self):
         self.stage_cache_position = self.position
         return super().stage()
@@ -393,6 +389,33 @@ class PIMMotor(Device, PositionerBase):
         if self.stage_cache_position is not None:
             self.move(self.stage_cache_position, wait=False)
         return super().unstage()
+
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Subscribe to changes of the PIMMotor
+
+        Parameters
+        ----------
+        cb : callable
+            Callback to be run
+
+        event_type : str, optional
+            Type of event to run callback on
+
+        run : bool, optional
+            Run the callback immediatelly
+        """
+        if not self._has_subscribed:
+            self.states.subscribe(self._on_state_change, run=False)
+            self._has_subscribed = True
+        super().subscribe(cb, event_type=event_type, run=run)
+
+    def _on_state_change(self, **kwargs):
+        """
+        Callback run on state change
+        """
+        kwargs.pop('sub_type', None)
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
 
 
 class PIM(PIMMotor):

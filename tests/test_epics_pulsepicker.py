@@ -51,7 +51,7 @@ def test_pickerblade_motion(pickerblade):
 def test_pickerblade_subscriptions(pickerblade):
     #Subscribe a pseudo callback
     cb = Mock()
-    pickerblade.subscribe(cb, run=False)
+    pickerblade.subscribe(cb, event_type=pickerblade.SUB_STATE, run=False)
     #Change the target state
     pickerblade.simple_state._read_pv.put(1)
     assert cb.called

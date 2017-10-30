@@ -3,11 +3,12 @@
 ############
 import logging
 import time as ttime
+from unittest.mock import Mock
+
 ###############
 # Third Party #
 ###############
 import pytest
-from unittest.mock import Mock
 
 ##########
 # Module #
@@ -21,7 +22,9 @@ logger = logging.getLogger(__name__)
 @using_fake_epics_pv
 @pytest.fixture(scope='function')
 def pps():
-    return PPSStopper("PPS:H0:SUM")
+    pps = PPSStopper("PPS:H0:SUM")
+    pps.summary._read_pv.put("INCONSISTENT")
+    return pps
 
 @using_fake_epics_pv
 @pytest.fixture(scope='function')
@@ -36,11 +39,11 @@ def valve():
 @using_fake_epics_pv
 def test_pps_states(pps):
     #Removed
-    pps.summary.signal._read_pv.put(0)
+    pps.summary._read_pv.put("OUT")
     assert pps.removed
     assert not pps.inserted
     #Inserted
-    pps.summary.signal._read_pv.put(4)
+    pps.summary._read_pv.put("IN")
     assert pps.inserted
     assert not pps.removed
 
@@ -52,9 +55,9 @@ def test_pps_states(pps):
 def test_pps_subscriptions(pps):
     #Subscribe a pseudo callback
     cb = Mock()
-    pps.subscribe(cb, run=False)
+    pps.subscribe(cb, event_type=pps.SUB_STATE, run=False)
     #Change readback state
-    pps.summary.signal._read_pv.put(4)
+    pps.summary._read_pv.put(4)
     assert cb.called
 
 
@@ -103,7 +106,7 @@ def test_stopper_motion(stopper):
 def test_stopper_subscriptions(stopper):
     #Subscribe a pseudo callback
     cb = Mock()
-    stopper.subscribe(cb, run=False)
+    stopper.subscribe(cb, event_type=stopper.SUB_STATE, run=False)
     #Change readback state
     stopper.limits.open_limit._read_pv.put(0)
     stopper.limits.closed_limit._read_pv.put(1)

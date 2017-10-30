@@ -81,11 +81,12 @@ class Slits(Device):
     block_cmd = Component(EpicsSignal, ":BLOCK")
 
     #Subscription information
-    SUB_AP_CH = 'aperature_changed'
-    _default_sub = SUB_AP_CH
+    SUB_STATE = 'sub_state_changed'
+    _default_sub = SUB_STATE
 
     def __init__(self, prefix, *, read_attrs=None,
                  name=None, nominal_aperature=5.0, **kwargs):
+        self._has_subscribed = False
         #Nominal
         self.nominal_aperature = nominal_aperature
         #Ophyd initialization
@@ -94,12 +95,6 @@ class Slits(Device):
 
         super().__init__(prefix, read_attrs=read_attrs, name=name,
                          **kwargs)
-
-        #Subscribe to changes in aperature
-        self.xwidth.readback.subscribe(self._aperature_changed,
-                                       run=False)
-        self.ywidth.readback.subscribe(self._aperature_changed,
-                                       run=False)
 
 
     def move(self,width,wait=False,**kwargs):
@@ -237,6 +232,30 @@ class Slits(Device):
         """
         self.block_cmd.put(1)
 
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Subscribe to changes of the slits
+
+        Parameters
+        ----------
+        cb : callable
+            Callback to be run
+
+        event_type : str, optional
+            Type of event to run callback on
+
+        run : bool, optional
+            Run the callback immediatelly
+        """
+        if not self._has_subscribed:
+            #Subscribe to changes in aperature
+            self.xwidth.readback.subscribe(self._aperature_changed,
+                                           run=False)
+            self.ywidth.readback.subscribe(self._aperature_changed,
+                                           run=False)
+            self._has_subscribed = True
+        super().subscribe(cb, event_type=event_type, run=run)
+
     def _aperature_changed(self, *args, **kwargs):
         """
         Callback run when slit size is adjusted
@@ -244,4 +263,4 @@ class Slits(Device):
         #Avoid duplicate keywords
         kwargs.pop('sub_type', None)
         #Run subscriptions
-        self._run_subs(sub_type=self.SUB_AP_CH, **kwargs)
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)

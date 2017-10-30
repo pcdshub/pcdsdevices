@@ -45,7 +45,7 @@ def test_xfls_motion(xfls):
 def test_xfls_subscriptions(xfls):
     #Subscribe a pseudo callback
     cb = Mock()
-    xfls.subscribe(cb, run=False)
+    xfls.subscribe(cb, event_type=xfls.SUB_STATE, run=False)
     #Change readback state
     xfls.state._read_pv.put(4)
     assert cb.called

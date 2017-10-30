@@ -33,8 +33,8 @@ class LODCM(Device, metaclass=BranchingInterface):
     diode = Component(InOutStates, ":DIODE")
     foil = Component(FoilStates, ":FOIL")
 
-    SUB_DST_CH = 'sub_destination_changed'
-    _default_sub = SUB_DST_CH
+    SUB_STATE = 'sub_state_changed'
+    _default_sub = SUB_STATE
 
     def __init__(self, prefix, *, name, main_line=None, mono_line='MONO',
                  **kwargs):
@@ -110,13 +110,13 @@ class LODCM(Device, metaclass=BranchingInterface):
     def _subs_update_destination(self, *args, **kwargs):
         """
         To be run whenever any of the component states changes.
-        If the destination has changed, run all SUB_DST_CH subs.
+        If the destination has changed, run all SUB_STATE subs.
         """
         new_dest = self.destination
         with self._update_dest_lock:
             if new_dest != self._last_dest:
                 self._last_dest = new_dest
-                self._run_subs(sub_type=self.SUB_DST_CH)
+                self._run_subs(sub_type=self.SUB_STATE)
 
     @property
     def branches(self):
