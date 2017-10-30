@@ -445,6 +445,7 @@ class BasicAttenuatorBase(Device):
             #Subscribe to all child filter objects
             for filt in self.filters:
                 filt.state_sig.subscribe(self._blade_moved, run=False)
+            self._has_subscribed = True
         super().subscribe(cb, event_type=event_type, run=run)
 
 
