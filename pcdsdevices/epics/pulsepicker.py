@@ -19,13 +19,11 @@ class PickerBlade(Device):
     _default_sub = SUB_STATE
 
     def __init__(self, prefix, *, name=None, read_attrs=None, **kwargs):
+        self._has_subscribed = False
         #Instantiate ophyd level
         if read_attrs is None:
             read_attrs = ['simple_state']
         super().__init__(prefix, name=name, read_attrs=read_attrs, **kwargs)
-
-        #Subscribe to state changes
-        self.simple_state.subscribe(self._blade_moved, run=False)
 
     @property
     def inserted(self):
@@ -57,6 +55,27 @@ class PickerBlade(Device):
             status_wait(status)
 
         return status
+    
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Subscribe to changes of the valve
+
+        Parameters
+        ----------
+        cb : callable
+            Callback to be run
+
+        event_type : str, optional
+            Type of event to run callback on
+
+        run : bool, optional
+            Run the callback immediatelly
+        """
+        if not self._has_subscribed:
+            #Subscribe to state changes
+            self.simple_state.subscribe(self._blade_moved, run=False)
+            self._has_subscribed = True
+        super().subscribe(cb, event_type=event_type, run=run)
 
     def _blade_moved(self, **kwargs):
         """

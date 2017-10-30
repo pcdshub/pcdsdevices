@@ -157,14 +157,12 @@ class BasicAttenuatorBase(Device):
                  stage_setting=0, **kwargs):
         self._set_lock = RLock()
         self._stage_setting = stage_setting
+        self._has_subscribed = False
+
         if read_attrs is None:
             read_attrs = ["transmission"]
         super().__init__(prefix, name=name, read_attrs=read_attrs,
                          **kwargs)
-
-        #Subscribe to all child filter objects
-        for filt in self.filters:
-            filt.state_sig.subscribe(self._blade_moved, run=False)
 
 
     def __call__(self, transmission=None, **kwargs):
@@ -426,6 +424,28 @@ class BasicAttenuatorBase(Device):
             for this positioner is used
         """
         return self.all_out(wait=wait, timeout=timeout)
+
+
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Subscribe to changes of the attenuator
+
+        Parameters
+        ----------
+        cb : callable
+            Callback to be run
+
+        event_type : str, optional
+            Type of event to run callback on
+
+        run : bool, optional
+            Run the callback immediatelly
+        """
+        if not self._has_subscribed:
+            #Subscribe to all child filter objects
+            for filt in self.filters:
+                filt.state_sig.subscribe(self._blade_moved, run=False)
+        super().subscribe(cb, event_type=event_type, run=run)
 
 
     def _blade_moved(self, **kwargs):

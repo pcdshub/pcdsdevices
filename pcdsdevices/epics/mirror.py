@@ -982,6 +982,7 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
 
     def __init__(self, *args, mps_prefix=None, state_prefix=None, out_lines=None,
                  in_lines=None, **kwargs):
+        self._has_subscribed = False
         #Store MPS information
         self._mps_prefix = mps_prefix
         #Store State information
@@ -990,8 +991,6 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
         self.in_lines = in_lines
         self.out_lines = out_lines
         super().__init__(*args, **kwargs)
-        #Subscribe to changes in state
-        self.state.subscribe(self._on_state_change, run=False)
 
     @property
     def inserted(self):
@@ -1052,6 +1051,27 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
             return self.in_lines + self.out_lines
         else:
             return [self.db.beamline]
+
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Subscribe to changes of the mirror
+
+        Parameters
+        ----------
+        cb : callable
+            Callback to be run
+
+        event_type : str, optional
+            Type of event to run callback on
+
+        run : bool, optional
+            Run the callback immediatelly
+        """
+        if not self._has_subscribed:
+            #Subscribe to changes in state
+            self.state.subscribe(self._on_state_change, run=False)
+            self._has_subscribed = True
+        super().subscribe(cb, event_type=event_type, run=run)
 
     def _on_state_change(self, **kwargs):
         """

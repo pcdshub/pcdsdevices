@@ -24,15 +24,12 @@ class IPMMotors(Device):
 
     def __init__(self, prefix, *, name=None, parent=None,
                  read_attrs=None, **kwargs):
+        self._has_subscribed = False
         if read_attrs is None:
             read_attrs = ["diode", "target"]
 
         super().__init__(prefix, name=name, parent=parent,
                          read_attrs=read_attrs, **kwargs)
-        #Subscribe to state changes
-        self.target.subscribe(self._target_moved,
-                              event_type=self.target.SUB_RBK_CHG,
-                              run=False)
 
 
     def target_in(self, target):
@@ -114,6 +111,29 @@ class IPMMotors(Device):
         """
         self.diode.value = "OUT"
 
+
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Subscribe to changes of the ipm
+
+        Parameters
+        ----------
+        cb : callable
+            Callback to be run
+
+        event_type : str, optional
+            Type of event to run callback on
+
+        run : bool, optional
+            Run the callback immediatelly
+        """
+        if not self._has_subscribed:
+            #Subscribe to state changes
+            self.target.subscribe(self._target_moved,
+                                  event_type=self.target.SUB_RBK_CHG,
+                                  run=False)
+            self._has_subscribed = True
+        super().subscribe(cb, event_type=event_type, run=run)
 
     def _target_moved(self, **kwargs):
         """
