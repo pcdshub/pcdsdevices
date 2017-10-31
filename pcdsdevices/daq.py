@@ -26,6 +26,9 @@ except ImportError:
     logger.warning(('bluesky not in environment. Will not have '
                     'make_daq_run_engine.'))
 
+# Wait up to this many seconds for daq to be ready for a begin call
+BEGIN_TIMEOUT = 2
+
 
 # Wrapper to make sure we're connected
 def check_connect(f):
@@ -168,7 +171,7 @@ class Daq(FlyerInterface):
                      events, duration, wait)
         begin_status = self.kickoff(events=events, duration=duration,
                                     use_l3t=use_l3t, controls=controls)
-        begin_status.wait()
+        begin_status.wait(timeout=BEGIN_TIMEOUT)
         if wait:
             self.wait()
 
@@ -203,15 +206,28 @@ class Daq(FlyerInterface):
         """
         logger.debug('Daq.kickoff()')
 
+        self._check_duration(duration)
         if not self.configured:
             self.configure()
 
         def start_thread(control, status, events, duration, use_l3t, controls):
             begin_args = self._begin_args(events, duration, use_l3t, controls)
             logger.debug('daq.control.begin(%s)', begin_args)
-            control.begin(**begin_args)
-            status._finished(success=True)
-            logger.debug('Marked kickoff as complete')
+            tmo = BEGIN_TIMEOUT
+            dt = 0.1
+            # It can take up to 0.4s after a previous begin to be ready
+            while tmo > 0:
+                if self.state in ('Configured', 'Open'):
+                    break
+                else:
+                    tmo -= dt
+            if self.state in ('Configured', 'Open'):
+                control.begin(**begin_args)
+                logger.debug('Marking kickoff as complete')
+                status._finished(success=True)
+            else:
+                logger.debug('Marking kickoff as failed')
+                status._finished(success=False)
 
         begin_status = DaqStatus(obj=self)
         watcher = threading.Thread(target=start_thread,
@@ -332,6 +348,12 @@ class Daq(FlyerInterface):
         logger.debug(('Daq.configure(events=%s, duration=%s, record=%s, '
                       'use_l3t=%s, controls=%s, always_on=%s)'),
                      events, duration, record, use_l3t, controls, always_on)
+        state = self.state
+        if state not in ('Connected', 'Configured'):
+            raise RuntimeError('Cannot configure from state {}!'.format(state))
+
+        self._check_duration(duration)
+
         old = self.read_configuration()
         config_args = self._config_args(record, use_l3t, controls)
         try:
@@ -435,6 +457,13 @@ class Daq(FlyerInterface):
         else:
             begin_args['controls'] = self._ctrl_arg(controls)
         return begin_args
+
+    def _check_duration(self, duration):
+        if duration is not None and duration < 1:
+            msg = ('Duration argument less than 1 is unreliable. Please '
+                   'use the events argument to specify the length of '
+                   'very short runs.')
+            raise RuntimeError(msg)
 
     def read_configuration(self):
         """
@@ -574,7 +603,12 @@ class DaqStatus(Status):
         def cb(*args, **kwargs):
             self._wait_done.set()
         self.finished_cb = cb
-        self._wait_done.wait(timeout=timeout)
+        finished = self._wait_done.wait(timeout=timeout)
+        if not self.success:
+            if finished:
+                raise RuntimeError('Operation failed!')
+            else:
+                raise RuntimeError('Operation timed out!')
 
 
 if has_bluesky:
