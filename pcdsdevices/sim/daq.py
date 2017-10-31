@@ -118,14 +118,21 @@ class SimControl:
                 else:
                     return ev / 120
         if duration is not None:
-            if isinstance(duration, list):
+            if not isinstance(duration, list):
                 raise RuntimeError('This freezes the real daq')
-            elif duration <= 0:
+            elif not len(duration) == 2:
                 raise RuntimeError('This freezes the real daq')
-            elif not isinstance(duration, int):
-                raise RuntimeError('This raises an error in the daq')
+            secs = duration[0]
+            nsec = duration[1]
+            if not isinstance(secs, int):
+                raise RuntimeError('This is bad in real daq')
+            if not isinstance(nsec, int):
+                raise RuntimeError('This is bad in real daq')
+            total_time = secs + nsec * 1e-9
+            if total_time <= 0:
+                raise RuntimeError('This freezes the real daq')
             else:
-                return duration
+                return total_time
         return None
 
     def stop(self):

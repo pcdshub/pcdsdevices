@@ -423,7 +423,9 @@ class Daq(FlyerInterface):
             else:
                 begin_args['events'] = events
         elif duration is not None:
-            begin_args['duration'] = duration
+            secs = int(duration)
+            nsec = int((duration - secs) * 1e9)
+            begin_args['duration'] = [secs, nsec]
         else:
             begin_args['events'] = 0  # Run until manual stop
         if controls is None:
