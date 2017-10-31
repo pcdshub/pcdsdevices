@@ -663,6 +663,8 @@ class OffsetMirror(Device, PositionerBase):
     motor_stop = Component(Signal, value=0)
     #Transmission for Lightpath Interface
     transmission= 1.0
+    SUB_STATE = 'sub_state_changed'
+
     def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None,
                  parent=None, configuration_attrs=None, settle_time=0,
                  tolerance=0.5, timeout=None, nominal_position=None,
@@ -977,8 +979,6 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
     mps = FormattedComponent(MPS, '{self._mps_prefix}', veto=True)
     #State Information
     state = FormattedComponent(InOutStates, '{self._state_prefix}')
-
-    SUB_STATE = 'sub_state_changed'
 
     def __init__(self, *args, mps_prefix=None, state_prefix=None, out_lines=None,
                  in_lines=None, **kwargs):
