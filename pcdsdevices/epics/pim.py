@@ -415,7 +415,8 @@ class PIMMotor(Device, PositionerBase):
         Callback run on state change
         """
         kwargs.pop('sub_type', None)
-        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
+        kwargs.pop('obj', None)
+        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
 
 class PIM(PIMMotor):

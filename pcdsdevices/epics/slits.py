@@ -262,5 +262,6 @@ class Slits(Device):
         """
         #Avoid duplicate keywords
         kwargs.pop('sub_type', None)
+        kwargs.pop('obj',      None)
         #Run subscriptions
-        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
+        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)

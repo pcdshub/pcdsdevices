@@ -454,7 +454,8 @@ class BasicAttenuatorBase(Device):
         Blade has moved
         """
         kwargs.pop('sub_type', None)
-        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
+        kwargs.pop('obj', None)
+        self._run_subs(sub_type=self.SUB_STATE, obj=self,  **kwargs)
 
     def stage(self):
         self.all_in()

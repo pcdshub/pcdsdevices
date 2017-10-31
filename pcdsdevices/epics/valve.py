@@ -219,7 +219,8 @@ class Stopper(Device):
         Callback when the limit state of the stopper changes
         """
         kwargs.pop('sub_type', None)
-        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
+        kwargs.pop('obj', None)
+        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
 
 
@@ -392,4 +393,5 @@ class PPSStopper(Device):
         Callback run on state change
         """
         kwargs.pop('sub_type', None)
-        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
+        kwargs.pop('obj', None)
+        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
