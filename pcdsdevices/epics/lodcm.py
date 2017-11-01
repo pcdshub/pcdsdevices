@@ -191,7 +191,7 @@ class LODCM(Device, metaclass=BranchingInterface):
         status = self.lodcm_move(yag='OUT', dectris=dset, diode='OUT',
                                  foil='OUT', timeout=timeout, **kwargs)
         if finished_cb is not None:
-            status.finished_cb = finished_cb
+            status.add_callback(finished_cb)
 
         if wait:
             status_wait(status)

@@ -602,7 +602,7 @@ class DaqStatus(Status):
 
         def cb(*args, **kwargs):
             self._wait_done.set()
-        self.finished_cb = cb
+        self.add_callback(cb)
         finished = self._wait_done.wait(timeout=timeout)
         if not self.success:
             if finished:
