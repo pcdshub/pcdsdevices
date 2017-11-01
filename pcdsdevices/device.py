@@ -20,7 +20,7 @@ class Device(ophyd.Device, metaclass=LightInterface):
     happi device database.
     """
     transmission = 0.0
-    def __init__(self, prefix, **kwargs):
+    def __init__(self, prefix, *, name, **kwargs):
         db_info = kwargs.pop("db_info", None)
         #Create mandatory lightpath attributes from Happi Information
         #Placing None as default
@@ -34,7 +34,7 @@ class Device(ophyd.Device, metaclass=LightInterface):
                 # they cannot be passed to ophyd.Device
                 if key in db_info and key not in VALID_OPHYD_KWARGS:
                     kwargs.pop(key)
-        super().__init__(prefix, **kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
     @property
     def removed(self):

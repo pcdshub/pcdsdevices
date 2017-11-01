@@ -30,7 +30,7 @@ def test_base_device():
     can get one of the metadata components back, both through attribute access
     and dictionary access.
     """
-    dev = device.Device(prefix="fake_prefix", z=243, cows=True,
+    dev = device.Device(prefix="fake_prefix", name='test', z=243, cows=True,
                         db_info=dict(prefix="fake_prefix", z=243, cows=True))
     assert(dev.db.z == 243)
     assert(dev.db.info["z"] == 243)
