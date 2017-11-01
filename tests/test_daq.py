@@ -4,8 +4,8 @@ import time
 import logging
 import pytest
 
+from ophyd.sim import SynSignal
 try:
-    from bluesky.examples import Reader
     from bluesky.plans import (trigger_and_read, run_decorator,
                                create, read, save, null)
     has_bluesky = True
@@ -209,7 +209,7 @@ def test_scan(daq):
         assert daq.state == 'Running'
         yield from null()
 
-    RE(plan(Reader('test', {'zero': lambda: 0})))
+    RE(plan(SynSignal(name='test')))
     assert daq.state == 'Configured'
     daq.end_run()
 
@@ -238,7 +238,7 @@ def test_run_flow(daq):
             assert daq.state == 'Open'
         yield from null()
 
-    RE(plan(Reader('test', {'zero': lambda: 0})))
+    RE(plan(SynSignal(name='test')))
     assert daq.state == 'Configured'
     daq.end_run()
 
@@ -269,6 +269,6 @@ def test_run_flow_wait(daq):
             assert daq.state == 'Open'
         yield from null()
 
-    RE(plan(Reader('test', {'zero': lambda: 0})))
+    RE(plan(SynSignal(name='test')))
     assert daq.state == 'Configured'
     daq.end_run()
