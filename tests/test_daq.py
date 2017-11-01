@@ -6,10 +6,11 @@ import pytest
 
 from ophyd.sim import SynSignal
 try:
-    from bluesky.plans import (trigger_and_read, run_decorator,
-                               create, read, save, null)
+    from bluesky.plan_stubs import (trigger_and_read,
+                                    create, read, save, null)
+    from bluesky.preprocessors import run_decorator
     has_bluesky = True
-except:
+except ImportError:
     has_bluesky = False
 
 from pcdsdevices.daq import Daq, make_daq_run_engine
