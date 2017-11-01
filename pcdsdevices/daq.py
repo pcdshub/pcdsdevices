@@ -19,7 +19,7 @@ except:
 
 try:
     from bluesky import RunEngine
-    from bluesky.plans import fly_during_wrapper
+    from bluesky.preprocessors import fly_during_wrapper
     has_bluesky = True
 except ImportError:
     has_bluesky = False
