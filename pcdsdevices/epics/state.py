@@ -73,7 +73,7 @@ class PVState(State):
         super().__init__(prefix, read_attrs=read_attrs, name=name, **kwargs)
         # TODO: Don't subscribe to child signals unless someone is subscribed
         # to us
-        for sig_name in self.signal_names:
+        for sig_name in self.component_names:
             obj = getattr(self, sig_name)
             obj.subscribe(self._update, event_type=obj.SUB_VALUE)
 
