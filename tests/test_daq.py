@@ -29,6 +29,13 @@ def daq():
     return SimDaq()
 
 
+@pytest.fixture(scope='function')
+def sig():
+    sig = SynSignal(name='test')
+    sig.put(0)
+    return sig
+
+
 def test_connect(daq):
     """
     We expect connect to bring the daq from a disconnected state to a connected
@@ -191,7 +198,7 @@ def test_pause_resume(daq):
 
 @pytest.mark.skipif(not has_bluesky, reason='Requires Bluesky')
 @pytest.mark.timeout(10)
-def test_scan(daq):
+def test_scan(daq, sig):
     """
     We expect that the daq object is usable in a bluesky plan.
     """
@@ -210,14 +217,14 @@ def test_scan(daq):
         assert daq.state == 'Running'
         yield from null()
 
-    RE(plan(SynSignal(name='test')))
+    RE(plan(sig))
     assert daq.state == 'Configured'
     daq.end_run()
 
 
 @pytest.mark.skipif(not has_bluesky, reason='Requires Bluesky')
 @pytest.mark.timeout(10)
-def test_run_flow(daq):
+def test_run_flow(daq, sig):
     """
     With always_on=False, we expect that the daq will only run between create
     and save documents.
@@ -239,14 +246,14 @@ def test_run_flow(daq):
             assert daq.state == 'Open'
         yield from null()
 
-    RE(plan(SynSignal(name='test')))
+    RE(plan(sig))
     assert daq.state == 'Configured'
     daq.end_run()
 
 
 @pytest.mark.skipif(not has_bluesky, reason='Requires Bluesky')
 @pytest.mark.timeout(10)
-def test_run_flow_wait(daq):
+def test_run_flow_wait(daq, sig):
     """
     With always_on=False, we expect that the daq will only run between create
     and save documents.
@@ -270,6 +277,6 @@ def test_run_flow_wait(daq):
             assert daq.state == 'Open'
         yield from null()
 
-    RE(plan(SynSignal(name='test')))
+    RE(plan(sig))
     assert daq.state == 'Configured'
     daq.end_run()
