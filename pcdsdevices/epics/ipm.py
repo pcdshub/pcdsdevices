@@ -91,7 +91,7 @@ class IPMMotors(Device):
         Instantiated for `lightpath` compatability
         """
         #Set to out
-        status = self.target.state.set("OUT", **kwargs)
+        status = self.target.set("OUT", **kwargs)
         #Wait on status
         if wait:
             status_wait(status)
