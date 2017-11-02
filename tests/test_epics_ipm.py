@@ -19,7 +19,13 @@ logger = logging.getLogger(__name__)
 @using_fake_epics_pv
 @pytest.fixture(scope='function')
 def ipm():
-    return IPMMotors("Test:My:IPM")
+    ipm = IPMMotors("Test:My:IPM")
+    ipm.diode.state._read_pv.enum_strs = ['Unknown', 'OUT', 'IN']
+    ipm.diode.state._read_pv.put('Unknown')
+    ipm.target.state._read_pv.enum_strs = ['Unknown', 'OUT', 'TARGET1',
+                                           'TARGET2', 'TARGET3', 'TARGET4']
+    ipm.target.state._read_pv.put('Unknown')
+    return ipm
 
 
 @using_fake_epics_pv
