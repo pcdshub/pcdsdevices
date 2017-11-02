@@ -1,17 +1,8 @@
-############
-# Standard #
-############
 import logging
 
-###############
-# Third Party #
-###############
 import pytest
 from unittest.mock import Mock
 
-##########
-# Module #
-##########
 from pcdsdevices.sim.pv import  using_fake_epics_pv
 from pcdsdevices.epics import FeeAtt
 
