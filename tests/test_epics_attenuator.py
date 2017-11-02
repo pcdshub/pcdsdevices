@@ -42,7 +42,7 @@ def test_attenuator_motion(attenuator):
     #Remove Attenuator Filters
     status = attenuator.remove(wait=False)
     #Check we wrote to the correct position
-    attenuator.go_cmd.get() == 1
+    assert attenuator.go_cmd.get() == 0
     #Remove filters
     for filt in attenuator.filters:
         filt.state_sig._read_pv.put(filt.filter_states.OUT.value)
