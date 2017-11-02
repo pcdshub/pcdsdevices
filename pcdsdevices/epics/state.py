@@ -42,6 +42,8 @@ class State(Device):
     SUB_STATE = "state_changed"
     _default_sub = SUB_STATE
 
+    egu = 'state'
+
     def __init__(self, prefix, **kwargs):
         super().__init__(prefix, **kwargs)
         self._prev_value = None
