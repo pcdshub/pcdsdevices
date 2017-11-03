@@ -53,6 +53,9 @@ class OMMotor(mirror.OMMotor):
     enabled : FakeSignal
         Readback for stepper motor enabled bit
 
+    motor_egu : FakeSignal
+        Readback for units
+
     motor_stop : FakeSignal
         Not implemented in the PLC/EPICS but included as an empty signal to
         appease the Bluesky interface
@@ -104,6 +107,9 @@ class OMMotor(mirror.OMMotor):
     # status
     interlock = Component(FakeSignal)
     enabled = Component(FakeSignal)
+
+    # misc
+    motor_egu = Component(FakeSignal, value='urad')
 
     # appease bluesky since there is no stop pv for these motors
     motor_stop = Component(FakeSignal)
