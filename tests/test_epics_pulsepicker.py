@@ -8,6 +8,7 @@ import logging
 ###############
 import pytest
 from unittest.mock import Mock
+from ophyd.status import wait as status_wait
 
 ##########
 # Module #
@@ -50,6 +51,7 @@ def test_pickerblade_motion():
     #Adjust readback
     pickerblade.simple_state._read_pv.put(0)
     #Check status has been marked as completed
+    status_wait(status, timeout=1)
     assert status.done and status.success
 
 
