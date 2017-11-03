@@ -84,7 +84,7 @@ def test_state_status(lim_info):
     lim_obj.highlim.put(1)
     assert status.done and status.success
     #Check our callback was cleared
-    assert status.check_value not in lim_obj._subs[lim_obj.SUB_STATE]
+    assert status.check_value not in lim_obj._callbacks[lim_obj.SUB_STATE]
 
 
 def test_statesrecord_class():
