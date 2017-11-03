@@ -1,12 +1,12 @@
 import logging
-import time
 
-import pytest
 from unittest.mock import Mock
 from ophyd.status import wait as status_wait
 
 from pcdsdevices.sim.pv import using_fake_epics_pv
 from pcdsdevices.epics import FeeAtt
+
+from .conftest import attr_wait_true
 
 logger = logging.getLogger(__name__)
 
@@ -59,8 +59,5 @@ def test_attenuator_subscriptions():
     # Change the target state
     attenuator.filter1.state_sig._read_pv.put(1)
     # Not guaranteed that callback comes in right away
-    tmo = 1
-    while not cb.called and tmo > 0:
-        tmo -= 0.1
-        time.sleep(0.1)
+    attr_wait_true(cb, 'called')
     assert cb.called

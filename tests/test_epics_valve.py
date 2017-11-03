@@ -16,6 +16,8 @@ import pytest
 from pcdsdevices.sim.pv import  using_fake_epics_pv
 from pcdsdevices.epics import GateValve, PPSStopper, Stopper, InterlockError
 
+from .conftest import attr_wait_true
+
 logger = logging.getLogger(__name__)
 
 
@@ -54,6 +56,7 @@ def test_pps_subscriptions():
     pps.subscribe(cb, event_type=pps.SUB_STATE, run=False)
     #Change readback state
     pps.summary._read_pv.put(4)
+    attr_wait_true(cb, 'called')
     assert cb.called
 
 
@@ -109,6 +112,7 @@ def test_stopper_subscriptions():
     #Change readback state
     stopper.limits.open_limit._read_pv.put(0)
     stopper.limits.closed_limit._read_pv.put(1)
+    attr_wait_true(cb, 'called')
     assert cb.called
 
 @using_fake_epics_pv

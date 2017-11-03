@@ -14,6 +14,9 @@ import pytest
 from pcdsdevices.epics.mirror import PointingMirror
 from pcdsdevices.sim.pv       import using_fake_epics_pv
 
+from .conftest import attr_wait_true
+
+
 def fake_branching_mirror():
     """
     using_fake_epics_pv does cleanup routines after the fixture and before the
@@ -62,4 +65,5 @@ def test_epics_mirror_subscription():
     branching_mirror.subscribe(cb, event_type=branching_mirror.SUB_STATE, run=False)
     #Change the target state
     branching_mirror.state.state._read_pv.put('IN')
+    attr_wait_true(cb, 'called')
     assert cb.called

@@ -14,6 +14,9 @@ import pytest
 from pcdsdevices.epics import PIMMotor
 from pcdsdevices.sim.pv import  using_fake_epics_pv
 
+from .conftest import attr_wait_true
+
+
 def fake_pim():
     """
     using_fake_epics_pv does cleanup routines after the fixture and before the
@@ -28,4 +31,5 @@ def test_pim_subscription():
     cb = Mock()
     pim.subscribe(cb, event_type=pim.SUB_STATE, run=False)
     pim.states.state._read_pv.put(4)
+    attr_wait_true(cb, 'called')
     assert cb.called

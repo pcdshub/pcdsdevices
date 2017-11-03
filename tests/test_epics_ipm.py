@@ -2,7 +2,6 @@
 # Standard #
 ############
 import logging
-import time
 ###############
 # Third Party #
 ###############
@@ -14,7 +13,7 @@ from unittest.mock import Mock
 from pcdsdevices.sim.pv import  using_fake_epics_pv
 from pcdsdevices.epics import IPMMotors
 
-from .conftest import connect_rw_pvs
+from .conftest import connect_rw_pvs, attr_wait_true
 
 logger = logging.getLogger(__name__)
 
@@ -78,9 +77,6 @@ def test_ipm_subscriptions():
     ipm.subscribe(cb, event_type=ipm.SUB_STATE, run=False)
     #Change the target state
     ipm.target.state._read_pv.put('OUT')
-    tmo = 1
-    while not cb.called and tmo > 0:
-        tmo -= 0.1
-        time.sleep(0.1)
+    attr_wait_true(cb, 'called')
     assert cb.called
 

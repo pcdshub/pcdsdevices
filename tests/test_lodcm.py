@@ -6,6 +6,8 @@ import pytest
 from pcdsdevices.sim.pv import using_fake_epics_pv
 from pcdsdevices.epics.lodcm import LODCM
 
+from .conftest import attr_wait_true
+
 
 def fake_lodcm():
     """
@@ -75,4 +77,5 @@ def test_subscribe():
     assert not cb.called
     # Change destination from main to mono and main
     lodcm.h1n.state._read_pv.put('C')
+    attr_wait_true(cb, 'called')
     assert cb.called

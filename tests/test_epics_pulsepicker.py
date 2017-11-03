@@ -15,6 +15,8 @@ from unittest.mock import Mock
 from pcdsdevices.sim.pv import  using_fake_epics_pv
 from pcdsdevices.epics import PickerBlade
 
+from .conftest import attr_wait_true
+
 logger = logging.getLogger(__name__)
 
 def fake_pickerblade():
@@ -59,4 +61,5 @@ def test_pickerblade_subscriptions():
     pickerblade.subscribe(cb, event_type=pickerblade.SUB_STATE, run=False)
     #Change the target state
     pickerblade.simple_state._read_pv.put(1)
+    attr_wait_true(cb, 'called')
     assert cb.called

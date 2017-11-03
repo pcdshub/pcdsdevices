@@ -18,6 +18,8 @@ from unittest.mock import Mock
 from pcdsdevices.sim.pv import using_fake_epics_pv
 from pcdsdevices.epics.mps import MPS, mps_factory
 
+from .conftest import attr_wait_true
+
 def fake_mps():
     """
     using_fake_epics_pv does cleanup routines after the fixture and before the
@@ -46,6 +48,7 @@ def test_mps_subscriptions():
     mps.subscribe(cb, run=False)
     #Cause a fault
     mps.fault._read_pv.put(1)
+    attr_wait_true(cb, 'called')
     assert cb.called
 
 @using_fake_epics_pv

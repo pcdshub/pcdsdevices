@@ -14,6 +14,8 @@ import pytest
 from pcdsdevices.sim.pv import using_fake_epics_pv
 from pcdsdevices.epics  import XFLS
 
+from .conftest import attr_wait_true
+
 
 def fake_xfls():
     """
@@ -53,4 +55,5 @@ def test_xfls_subscriptions():
     xfls.subscribe(cb, event_type=xfls.SUB_STATE, run=False)
     #Change readback state
     xfls.state._read_pv.put(4)
+    attr_wait_true(cb, 'called')
     assert cb.called

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import time
 import inspect
+
 
 def get_classes_in_module(module, subcls=None):
     classes = []
@@ -16,7 +18,7 @@ def get_classes_in_module(module, subcls=None):
                         continue
                 classes.append(cls)
         except AttributeError:
-            pass    
+            pass
     return classes
 
 
@@ -33,3 +35,22 @@ def connect_rw_pvs(epics_signal):
     write_pv = epics_signal._write_pv
     read_pv = epics_signal._read_pv
     write_pv.put = make_put(write_pv.put, read_pv)
+
+
+def func_wait_true(func, timeout=1, step=0.1):
+    """
+    For things that don't happen immediately but don't have a good way to wait
+    for them. Does a simple timeout loop, returning after timeout or when
+    func() is True.
+    """
+    while not func() and timeout > 0:
+        timeout -= step
+        time.sleep(step)
+
+
+def attr_wait_true(obj, attr, timeout=1, step=0.1):
+    func_wait_true(lambda: getattr(obj, attr), timeout=timeout, step=step)
+
+
+def attr_wait_false(obj, attr, timeout=1, step=0.1):
+    func_wait_true(lambda: not getattr(obj, attr), timeout=timeout, step=step)

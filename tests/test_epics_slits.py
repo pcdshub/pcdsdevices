@@ -14,6 +14,8 @@ from unittest.mock import Mock
 from pcdsdevices.sim.pv import  using_fake_epics_pv
 from pcdsdevices.epics import Slits
 
+from .conftest import attr_wait_true
+
 def fake_slits():
     """
     using_fake_epics_pv does cleanup routines after the fixture and before the
@@ -86,4 +88,5 @@ def test_slit_subscriptions():
     slits.subscribe(cb, event_type=slits.SUB_STATE, run=False)
     #Change the aperature size
     slits.xwidth.readback._read_pv.put(40.0)
+    attr_wait_true(cb, 'called')
     assert cb.called
