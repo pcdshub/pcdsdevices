@@ -14,7 +14,7 @@ import pytest
 from pcdsdevices.epics.mirror import PointingMirror
 from pcdsdevices.sim.pv       import using_fake_epics_pv
 
-from .conftest import attr_wait_true
+from .conftest import attr_wait_true, connect_rw_pvs
 
 
 def fake_branching_mirror():
@@ -25,7 +25,9 @@ def fake_branching_mirror():
     m = PointingMirror("MIRR:TST:M1H", "GANTRY:TST:M1H",
                      mps_prefix="MIRR:M1H:MPS", state_prefix="TST:M1H",
                      in_lines=['MFX', 'MEC'], out_lines= ['CXI'])
-    m.state.state._read_pv.enum_strs = ['IN', 'OUT']
+    m.state.state._read_pv.enum_strs = ['Unknown', 'IN', 'OUT']
+    connect_rw_pvs(m.state.state)
+    m.state.state._write_pv.put('Unknown')
     return m
 
 @using_fake_epics_pv
@@ -37,6 +39,7 @@ def test_branching_mirror():
     #Inserted
     branching_mirror.state.out_state.at_state._read_pv.put(0)
     branching_mirror.state.in_state.at_state._read_pv.put(1)
+    branching_mirror.state.out_state.at_state._read_pv.put(0)
     assert branching_mirror.inserted
     assert branching_mirror.destination == ['MFX', 'MEC']
     #Removed
