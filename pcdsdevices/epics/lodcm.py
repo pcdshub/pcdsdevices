@@ -246,7 +246,7 @@ class LODCM(Device, metaclass=BranchingInterface):
         for i, status in enumerate(done_statuses):
             event = Event()
             events.append(event)
-            status.finished_cb = self._make_mark_event(event)
+            status.add_callback(self._make_mark_event(event))
 
         finisher = Thread(target=self._status_finisher,
                           args=(events, lodcm_status))
