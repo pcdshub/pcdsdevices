@@ -78,5 +78,9 @@ def test_ipm_subscriptions():
     ipm.subscribe(cb, event_type=ipm.SUB_STATE, run=False)
     #Change the target state
     ipm.target.state._read_pv.put('OUT')
+    tmo = 1
+    while not cb.called and tmo > 0:
+        tmo -= 0.1
+        time.sleep(0.1)
     assert cb.called
 
