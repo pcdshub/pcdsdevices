@@ -148,7 +148,7 @@ class MPS(Device, metaclass=MPSInterface):
 
 
 def test_basic_interface():
-    device = BasicDevice("base")
+    device = BasicDevice("base", name="base")
     #Check that our class is a LightInterface type 
     assert type(BasicDevice) == LightInterface
     #Check that the device is a pcdsdevice
@@ -156,7 +156,7 @@ def test_basic_interface():
 
 
 def test_branching_interface():
-    device = BasicBranching("base")
+    device = BasicBranching("base", name="base")
     #Check that our class is a LightInterface type 
     assert type(BasicBranching) == BranchingInterface
     #Check that the device is a pcdsdevice
@@ -164,7 +164,7 @@ def test_branching_interface():
 
 
 def test_mps_interface():
-    device = MPS("base")
+    device = MPS("base", name="base")
     #Check that our class is a LightInterface type 
     assert type(MPS) == MPSInterface
     #Check that the device is an ophyd device
@@ -172,7 +172,7 @@ def test_mps_interface():
     assert isinstance(device, Device)
 
 def test_device_metadata():
-    d = pcdsdevices.device.Device('Tst:Device', beamline='TST', z=10.0)
+    d = pcdsdevices.device.Device('Tst:Device', name='test', beamline='TST', z=10.0)
     assert d.beamline == 'TST'
     assert d.z == 10.0
 
