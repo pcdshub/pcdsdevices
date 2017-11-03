@@ -352,22 +352,6 @@ class PPSStopper(Device):
         return self.summary.get(as_string=True) == self.out_state
 
 
-    def remove(self, **kwargs):
-        """
-        Stopper can not be controlled via EPICS
-
-        Raises
-        ------
-        PermissionError
-
-        Notes
-        -----
-        Exists to satisfy `lightpath` API
-        """
-        raise PermissionError("PPS Stopper {} can not be commanded via EPICS"
-                              "".format(self.name))
-
-
     def subscribe(self, cb, event_type=None, run=True):
         """
         Subscribe to changes of the PPSStopper
