@@ -54,3 +54,8 @@ def attr_wait_true(obj, attr, timeout=1, step=0.1):
 
 def attr_wait_false(obj, attr, timeout=1, step=0.1):
     func_wait_true(lambda: not getattr(obj, attr), timeout=timeout, step=step)
+
+
+def attr_wait_value(obj, attr, value, delta=0.01, timeout=1, step=0.1):
+    func_wait_true(lambda: abs(getattr(obj, attr) - value) < delta,
+                   timeout=timeout, step=step)
