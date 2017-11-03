@@ -14,9 +14,11 @@ import pytest
 from pcdsdevices.epics.mirror import PointingMirror
 from pcdsdevices.sim.pv       import using_fake_epics_pv
 
-@using_fake_epics_pv
-@pytest.fixture(scope='function')
-def branching_mirror():
+def fake_branching_mirror():
+    """
+    using_fake_epics_pv does cleanup routines after the fixture and before the
+    test, so we can't make this a fixture without destabilizing our tests.
+    """
     m = PointingMirror("MIRR:TST:M1H", "GANTRY:TST:M1H",
                      mps_prefix="MIRR:M1H:MPS", state_prefix="TST:M1H",
                      in_lines=['MFX', 'MEC'], out_lines= ['CXI'])
@@ -24,7 +26,8 @@ def branching_mirror():
     return m
 
 @using_fake_epics_pv
-def test_branching_mirror(branching_mirror):
+def test_branching_mirror():
+    branching_mirror = fake_branching_mirror()
     assert branching_mirror.branches == ['MFX', 'MEC', 'CXI']
     #Unknown
     assert branching_mirror.destination == []
@@ -40,7 +43,8 @@ def test_branching_mirror(branching_mirror):
     assert branching_mirror.destination == ['CXI']
 
 @using_fake_epics_pv
-def test_branching_mirror_moves(branching_mirror):
+def test_branching_mirror_moves():
+    branching_mirror = fake_branching_mirror()
     #Test removal
     branching_mirror.remove()
     assert branching_mirror.state.state._write_pv.value == 'OUT'
@@ -51,7 +55,8 @@ def test_branching_mirror_moves(branching_mirror):
     assert branching_mirror.state.state._write_pv.value == 'IN'
 
 @using_fake_epics_pv
-def test_epics_mirror_subscription(branching_mirror):
+def test_epics_mirror_subscription():
+    branching_mirror = fake_branching_mirror()
     #Subscribe a pseudo callback
     cb = Mock()
     branching_mirror.subscribe(cb, event_type=branching_mirror.SUB_STATE, run=False)

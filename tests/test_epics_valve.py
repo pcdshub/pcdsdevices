@@ -19,25 +19,24 @@ from pcdsdevices.epics import GateValve, PPSStopper, Stopper, InterlockError
 logger = logging.getLogger(__name__)
 
 
-@using_fake_epics_pv
-@pytest.fixture(scope='function')
-def pps():
+def fake_pps():
+    """
+    using_fake_epics_pv does cleanup routines after the fixture and before the
+    test, so we can't make this a fixture without destabilizing our tests.
+    """
     pps = PPSStopper("PPS:H0:SUM")
     pps.summary._read_pv.put("INCONSISTENT")
     return pps
 
-@using_fake_epics_pv
-@pytest.fixture(scope='function')
-def stopper():
+def fake_stopper():
     return Stopper("STP:TST:")
 
-@using_fake_epics_pv
-@pytest.fixture(scope='function')
-def valve():
+def fake_valve():
     return GateValve("VGC:TST:")
 
 @using_fake_epics_pv
-def test_pps_states(pps):
+def test_pps_states():
+    pps = fake_pps()
     #Removed
     pps.summary._read_pv.put("OUT")
     assert pps.removed
@@ -48,7 +47,8 @@ def test_pps_states(pps):
     assert not pps.removed
 
 @using_fake_epics_pv
-def test_pps_subscriptions(pps):
+def test_pps_subscriptions():
+    pps = fake_pps()
     #Subscribe a pseudo callback
     cb = Mock()
     pps.subscribe(cb, event_type=pps.SUB_STATE, run=False)
@@ -58,7 +58,8 @@ def test_pps_subscriptions(pps):
 
 
 @using_fake_epics_pv
-def test_stopper_states(stopper):
+def test_stopper_states():
+    stopper = fake_stopper()
     #Removed
     stopper.limits.open_limit._read_pv.put(1)
     stopper.limits.closed_limit._read_pv.put(0)
@@ -75,7 +76,8 @@ def test_stopper_states(stopper):
 
 
 @using_fake_epics_pv
-def test_stopper_motion(stopper):
+def test_stopper_motion():
+    stopper = fake_stopper()
     #Remove
     status = stopper.remove(wait=False)
     #Check write PV
@@ -99,7 +101,8 @@ def test_stopper_motion(stopper):
 
 
 @using_fake_epics_pv
-def test_stopper_subscriptions(stopper):
+def test_stopper_subscriptions():
+    stopper = fake_stopper()
     #Subscribe a pseudo callback
     cb = Mock()
     stopper.subscribe(cb, event_type=stopper.SUB_STATE, run=False)
@@ -109,7 +112,8 @@ def test_stopper_subscriptions(stopper):
     assert cb.called
 
 @using_fake_epics_pv
-def test_valve_motion(valve):
+def test_valve_motion():
+    valve = fake_valve()
     #Remove
     status = valve.remove(wait=False)
     #Check write PV

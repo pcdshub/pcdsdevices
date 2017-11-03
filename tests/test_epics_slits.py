@@ -14,14 +14,17 @@ from unittest.mock import Mock
 from pcdsdevices.sim.pv import  using_fake_epics_pv
 from pcdsdevices.epics import Slits
 
-@using_fake_epics_pv
-@pytest.fixture(scope='function')
-def slits():
+def fake_slits():
+    """
+    using_fake_epics_pv does cleanup routines after the fixture and before the
+    test, so we can't make this a fixture without destabilizing our tests.
+    """
     return Slits("TST:JAWS:")
 
 
 @using_fake_epics_pv
-def test_slit_states(slits):
+def test_slit_states():
+    slits = fake_slits()
     #Wide open
     slits.xwidth.readback._read_pv.put(20.0)
     slits.ywidth.readback._read_pv.put(20.0)
@@ -36,7 +39,8 @@ def test_slit_states(slits):
 
 
 @using_fake_epics_pv
-def test_slit_motion(slits):
+def test_slit_motion():
+    slits = fake_slits()
     #Set limits
     slits.xwidth._limits = (-100.0, 100.0)
     slits.ywidth._limits = (-100.0, 100.0)
@@ -58,7 +62,8 @@ def test_slit_motion(slits):
         slits.remove(width=-5.0)
 
 @using_fake_epics_pv
-def test_slit_transmission(slits):
+def test_slit_transmission():
+    slits = fake_slits()
     #Half-closed
     slits.nominal_aperature = 5.0
     slits.xwidth.readback._read_pv.put(2.5)
@@ -74,7 +79,8 @@ def test_slit_transmission(slits):
 
 
 @using_fake_epics_pv
-def test_slit_subscriptions(slits):
+def test_slit_subscriptions():
+    slits = fake_slits()
     #Subscribe a pseudo callback
     cb = Mock()
     slits.subscribe(cb, event_type=slits.SUB_STATE, run=False)

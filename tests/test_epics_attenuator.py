@@ -10,14 +10,17 @@ from pcdsdevices.epics import FeeAtt
 logger = logging.getLogger(__name__)
 
 
-@using_fake_epics_pv
-@pytest.fixture(scope='function')
-def attenuator():
+def fake_att():
+    """
+    using_fake_epics_pv does cleanup routines after the fixture and before the
+    test, so we can't make this a fixture without destabilizing our tests.
+    """
     return FeeAtt("Tst:ATT:")
 
 
 @using_fake_epics_pv
-def test_attenuator_states(attenuator):
+def test_attenuator_states():
+    attenuator = fake_att()
     # Remove filters
     for filt in attenuator.filters:
         filt.state_sig._read_pv.put(filt.filter_states.OUT.value)
@@ -31,7 +34,8 @@ def test_attenuator_states(attenuator):
 
 
 @using_fake_epics_pv
-def test_attenuator_motion(attenuator):
+def test_attenuator_motion():
+    attenuator = fake_att()
     # Call remove method
     status = attenuator.remove(wait=False)
     # Check we wrote to the correct position
@@ -46,7 +50,8 @@ def test_attenuator_motion(attenuator):
 
 
 @using_fake_epics_pv
-def test_attenuator_subscriptions(attenuator):
+def test_attenuator_subscriptions():
+    attenuator = fake_att()
     # Subscribe a pseudo callback
     cb = Mock()
     attenuator.subscribe(cb, event_type=attenuator.SUB_STATE,  run=False)

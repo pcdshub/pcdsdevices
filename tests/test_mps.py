@@ -18,14 +18,17 @@ from unittest.mock import Mock
 from pcdsdevices.sim.pv import using_fake_epics_pv
 from pcdsdevices.epics.mps import MPS, mps_factory
 
-@using_fake_epics_pv
-@pytest.fixture(scope='function')
-def mps():
+def fake_mps():
+    """
+    using_fake_epics_pv does cleanup routines after the fixture and before the
+    test, so we can't make this a fixture without destabilizing our tests.
+    """
     return MPS("TST:MPS")
 
 
 @using_fake_epics_pv
-def test_mps_faults(mps):
+def test_mps_faults():
+    mps = fake_mps()
     #Faulted
     mps.fault._read_pv.put(1)
     mps.bypass._read_pv.put(0)
@@ -36,7 +39,8 @@ def test_mps_faults(mps):
     assert not mps.faulted
 
 @using_fake_epics_pv
-def test_mps_subscriptions(mps):
+def test_mps_subscriptions():
+    mps = fake_mps()
     #Subscribe a pseudo callback
     cb = Mock()
     mps.subscribe(cb, run=False)
@@ -46,6 +50,7 @@ def test_mps_subscriptions(mps):
 
 @using_fake_epics_pv
 def test_mps_factory():
+    mps = fake_mps()
     #Create a custom device
     class MyDevice(Device):
         pass
