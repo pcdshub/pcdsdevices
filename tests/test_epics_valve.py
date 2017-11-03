@@ -47,10 +47,6 @@ def test_pps_states(pps):
     assert pps.inserted
     assert not pps.removed
 
-    #Can not remove the PPS Stopper
-    with pytest.raises(PermissionError):
-        pps.remove()
-
 @using_fake_epics_pv
 def test_pps_subscriptions(pps):
     #Subscribe a pseudo callback
