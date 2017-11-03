@@ -9,6 +9,7 @@ from unittest.mock import Mock
 # Third Party #
 ###############
 import pytest
+from ophyd.status import wait as status_wait
 
 ##########
 # Module #
@@ -16,7 +17,7 @@ import pytest
 from pcdsdevices.sim.pv import  using_fake_epics_pv
 from pcdsdevices.epics import GateValve, PPSStopper, Stopper, InterlockError
 
-from .conftest import attr_wait_true
+from .conftest import attr_wait_true, attr_wait_false
 
 logger = logging.getLogger(__name__)
 
@@ -31,20 +32,25 @@ def fake_pps():
     return pps
 
 def fake_stopper():
-    return Stopper("STP:TST:")
+    stp = Stopper("STP:TST:")
+    return stp
 
 def fake_valve():
-    return GateValve("VGC:TST:")
+    vlv = GateValve("VGC:TST:")
+    vlv.interlock._read_pv.put(0)
+    return vlv
 
 @using_fake_epics_pv
 def test_pps_states():
     pps = fake_pps()
     #Removed
     pps.summary._read_pv.put("OUT")
+    attr_wait_true(pps, 'removed')
     assert pps.removed
     assert not pps.inserted
     #Inserted
     pps.summary._read_pv.put("IN")
+    attr_wait_true(pps, 'inserted')
     assert pps.inserted
     assert not pps.removed
 
@@ -66,6 +72,7 @@ def test_stopper_states():
     #Removed
     stopper.limits.open_limit._read_pv.put(1)
     stopper.limits.closed_limit._read_pv.put(0)
+    attr_wait_true(stopper, 'removed')
     assert stopper.removed
     assert not stopper.inserted
     #Inserted
@@ -74,6 +81,7 @@ def test_stopper_states():
     #Moving
     stopper.limits.open_limit._read_pv.put(0)
     stopper.limits.closed_limit._read_pv.put(0)
+    attr_wait_false(stopper, 'inserted')
     assert not stopper.inserted
     assert not stopper.removed
 
@@ -89,7 +97,7 @@ def test_stopper_motion():
     stopper.limits.open_limit._read_pv.put(1)
     stopper.limits.closed_limit._read_pv.put(0)
     #Let state thread catch-up
-    ttime.sleep(0.1)
+    status_wait(status, timeout=1)
     assert status.done and status.success
     #Close
     status = stopper.close(wait=False)
@@ -100,6 +108,7 @@ def test_stopper_motion():
     stopper.limits.closed_limit._read_pv.put(1)
     #Let state thread catch-up
     ttime.sleep(0.1)
+    status_wait(status, timeout=1)
     assert status.done and status.success
 
 
@@ -125,6 +134,7 @@ def test_valve_motion():
     #Force state to check status object
     valve.limits.open_limit._read_pv.put(1)
     valve.limits.closed_limit._read_pv.put(0)
+    status_wait(status, timeout=1)
     assert status.done and status.success
     #Raises interlock
     valve.interlock._read_pv.put(1)
