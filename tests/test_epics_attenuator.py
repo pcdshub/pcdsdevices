@@ -1,4 +1,5 @@
 import logging
+import time
 
 import pytest
 from unittest.mock import Mock
@@ -61,4 +62,5 @@ def test_attenuator_subscriptions():
     tmo = 1
     while not cb.called and tmo > 0:
         tmo -= 0.1
+        time.sleep(0.1)
     assert cb.called
