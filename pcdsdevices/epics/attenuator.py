@@ -490,7 +490,7 @@ class AttenuatorBase(BasicAttenuatorBase):
     # Redefine some PV names
     energy = Component(EpicsSignalRO, ":T_CALC.VALE")
     desired_transmission = Component(EpicsSignal, ":R_DES")
-    transmission_sig = Component(EpicsSignalRO, ":R_CUR")
+    transmission_sig = Component(EpicsSignalRO, ":R_CUR", auto_monitor=True)
 
     # Add third harmonic
     user_energy_3rd = Component(EpicsSignal, ":E3DES")
