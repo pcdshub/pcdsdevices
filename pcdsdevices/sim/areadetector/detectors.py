@@ -5,12 +5,13 @@
 ##########
 from .cam import (CamBase, PulnixCam)
 from .plugins import (StatsPlugin, ImagePlugin)
+from ..signal import FakeSignal
 from ..component import Component
 from ...epics.areadetector import detectors
 
 
 class DetectorBase(detectors.DetectorBase):
-    pass
+    cam = Component(FakeSignal, ":")
 
 
 class PulnixDetector(detectors.PulnixDetector, DetectorBase):
