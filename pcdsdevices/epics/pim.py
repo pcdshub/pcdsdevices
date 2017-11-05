@@ -246,7 +246,7 @@ class PIMMotor(Device, PositionerBase):
 
     #Conform to lightpath interface
     remove = move_out
-
+    insert = move_in
 
     def move_diode(self, wait=False, **kwargs):
         """

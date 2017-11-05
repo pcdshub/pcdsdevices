@@ -148,34 +148,9 @@ class Stopper(Device):
 
         return status
 
-
-    def remove(self, wait=False, timeout=None):
-        """
-        Remove the stopper from the beam
-        
-        Parameters
-        ----------
-        wait : bool, optional
-            Wait for the command to finish
-
-        timeout : float, optional
-            Default timeout to wait mark the request as a failure
-
-        Returns
-        -------
-        StateStatus:
-            Future that reports the completion of the request
-    
-        Notes
-        -----
-        Satisfies lightpath API
-
-        See Also
-        --------
-        :meth:`.Stopper.remove`
-        """
-        return self.open(wait=wait, timeout=timeout)
-
+    #Lightpath Interface
+    insert = close
+    remove = open
 
     @property
     def inserted(self):
