@@ -997,14 +997,14 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
         """
         Whether PointingMirror is inserted
         """
-        return bool(self.state.in_state.at_state.value)
+        return bool(int(self.state.in_state.at_state.value))
 
     @property
     def removed(self):
         """
         Whether PointingMirror is removed
         """
-        return bool(self.state.out_state.at_state.value)
+        return bool(int(self.state.out_state.at_state.value))
 
     def remove(self, wait=False, timeout=None): 
         """
