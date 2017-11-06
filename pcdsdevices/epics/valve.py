@@ -124,7 +124,7 @@ class Stopper(Device):
     def close(self, wait=False, timeout=None):
         """
         Close the stopper
-        
+ 
         Parameters
         ----------
         wait : bool, optional
@@ -148,33 +148,18 @@ class Stopper(Device):
 
         return status
 
-
-    def remove(self, wait=False, timeout=None):
+    #Lightpath Interface
+    def insert(self, *args, **kwargs):
         """
-        Remove the stopper from the beam
-        
-        Parameters
-        ----------
-        wait : bool, optional
-            Wait for the command to finish
-
-        timeout : float, optional
-            Default timeout to wait mark the request as a failure
-
-        Returns
-        -------
-        StateStatus:
-            Future that reports the completion of the request
-    
-        Notes
-        -----
-        Satisfies lightpath API
-
-        See Also
-        --------
-        :meth:`.Stopper.remove`
+        Alias for :meth:`.close` for lightpath interface
         """
-        return self.open(wait=wait, timeout=timeout)
+        return self.close(*args, **kwargs)
+
+    def remove(self, *args, **kwargs):
+        """
+        Alias for :meth:`.open` for lightpath interface
+        """
+        return self.open(*args, **kwargs)
 
 
     @property
@@ -219,7 +204,8 @@ class Stopper(Device):
         Callback when the limit state of the stopper changes
         """
         kwargs.pop('sub_type', None)
-        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
+        kwargs.pop('obj', None)
+        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
 
 
@@ -351,22 +337,6 @@ class PPSStopper(Device):
         return self.summary.get(as_string=True) == self.out_state
 
 
-    def remove(self, **kwargs):
-        """
-        Stopper can not be controlled via EPICS
-
-        Raises
-        ------
-        PermissionError
-
-        Notes
-        -----
-        Exists to satisfy `lightpath` API
-        """
-        raise PermissionError("PPS Stopper {} can not be commanded via EPICS"
-                              "".format(self.name))
-
-
     def subscribe(self, cb, event_type=None, run=True):
         """
         Subscribe to changes of the PPSStopper
@@ -392,4 +362,5 @@ class PPSStopper(Device):
         Callback run on state change
         """
         kwargs.pop('sub_type', None)
-        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
+        kwargs.pop('obj', None)
+        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)

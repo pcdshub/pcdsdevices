@@ -29,6 +29,7 @@ def test_branching_mirror(branching_mirror):
     #Unknown
     assert branching_mirror.destination == []
     #Inserted
+    branching_mirror.state.out_state.at_state._read_pv.put(0)
     branching_mirror.state.in_state.at_state._read_pv.put(1)
     assert branching_mirror.inserted
     assert branching_mirror.destination == ['MFX', 'MEC']

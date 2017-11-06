@@ -663,6 +663,8 @@ class OffsetMirror(Device, PositionerBase):
     motor_stop = Component(Signal, value=0)
     #Transmission for Lightpath Interface
     transmission= 1.0
+    SUB_STATE = 'sub_state_changed'
+
     def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None,
                  parent=None, configuration_attrs=None, settle_time=0,
                  tolerance=0.5, timeout=None, nominal_position=None,
@@ -978,8 +980,6 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
     #State Information
     state = FormattedComponent(InOutStates, '{self._state_prefix}')
 
-    SUB_STATE = 'sub_state_changed'
-
     def __init__(self, *args, mps_prefix=None, state_prefix=None, out_lines=None,
                  in_lines=None, **kwargs):
         self._has_subscribed = False
@@ -997,14 +997,14 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
         """
         Whether PointingMirror is inserted
         """
-        return bool(self.state.in_state.at_state.get(as_string=False))
+        return bool(int(self.state.in_state.at_state.value))
 
     @property
     def removed(self):
         """
         Whether PointingMirror is removed
         """
-        return bool(self.state.out_state.at_state.get(as_string=False))
+        return bool(int(self.state.out_state.at_state.value))
 
     def remove(self, wait=False, timeout=None): 
         """
@@ -1078,4 +1078,5 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
         Callback run on state change
         """
         kwargs.pop('sub_type', None)
-        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
+        kwargs.pop('obj', None)
+        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)

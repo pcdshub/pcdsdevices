@@ -51,13 +51,6 @@ class Device(ophyd.Device, metaclass=LightInterface):
         raise NotImplementedError
 
 
-    def remove(self, *args, **kwargs):
-        """
-        Remove the device from the beamline
-        """
-        raise NotImplementedError
-
-
 class HappiData:
     """
     Class to hold arbitrary happi data

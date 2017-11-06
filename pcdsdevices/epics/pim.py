@@ -245,8 +245,17 @@ class PIMMotor(Device, PositionerBase):
         return self.move("OUT", wait=wait, **kwargs)
 
     #Conform to lightpath interface
-    remove = move_out
+    def insert(self, *args, **kwargs):
+        """
+        Alias for :meth:`.move_in` for lightpath interface
+        """
+        return self.move_in(*args, kwargs)
 
+    def remove(self, *args, **kwargs):
+        """
+        Alias for :meth:`.move_out` for lightpath interface
+        """
+        return self.move_out(*args, kwargs)
 
     def move_diode(self, wait=False, **kwargs):
         """
@@ -415,7 +424,8 @@ class PIMMotor(Device, PositionerBase):
         Callback run on state change
         """
         kwargs.pop('sub_type', None)
-        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
+        kwargs.pop('obj', None)
+        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
 
 class PIM(PIMMotor):

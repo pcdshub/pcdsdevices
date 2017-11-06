@@ -81,33 +81,6 @@ class LightInterface(ComponentMeta, abc.ABCMeta):
 
 
     @abc.abstractmethod
-    def remove(self, wait=False, timeout=None, finished_cb=None, **kwargs):
-        """
-        Remove the device from the beampath
-
-        This should remove the device completely from the beamline with no
-        potential for interaction with incoming photons.
-
-        Parameters
-        ----------
-        wait : bool, optional
-            Wait for the move to complete
-
-        timeout : float, optional
-            Maximum time to wait for move to complete
-
-        finished_cb : callable, optional
-            Callable to run when the move is complete
-
-        Returns
-        -------
-        status : ophyd.Status
-            Status object linked with completion of move
-        """
-        raise NotImplementedError
-
-
-    @abc.abstractmethod
     def subscribe(cb, event_type=None, run=False, **kwargs):
         """
         Subscribe a callback function to run when the device changes state
