@@ -245,8 +245,17 @@ class PIMMotor(Device, PositionerBase):
         return self.move("OUT", wait=wait, **kwargs)
 
     #Conform to lightpath interface
-    remove = move_out
-    insert = move_in
+    def insert(self, *args, **kwargs):
+        """
+        Alias for :meth:`.move_in` for lightpath interface
+        """
+        return self.move_in(*args, kwargs)
+
+    def remove(self, *args, **kwargs):
+        """
+        Alias for :meth:`.move_out` for lightpath interface
+        """
+        return self.move_out(*args, kwargs)
 
     def move_diode(self, wait=False, **kwargs):
         """

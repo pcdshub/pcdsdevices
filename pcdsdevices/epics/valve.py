@@ -124,7 +124,7 @@ class Stopper(Device):
     def close(self, wait=False, timeout=None):
         """
         Close the stopper
-        
+ 
         Parameters
         ----------
         wait : bool, optional
@@ -149,8 +149,18 @@ class Stopper(Device):
         return status
 
     #Lightpath Interface
-    insert = close
-    remove = open
+    def insert(self, *args, **kwargs):
+        """
+        Alias for :meth:`.close` for lightpath interface
+        """
+        return self.close(*args, **kwargs)
+
+    def remove(self, *args, **kwargs):
+        """
+        Alias for :meth:`.open` for lightpath interface
+        """
+        return self.open(*args, **kwargs)
+
 
     @property
     def inserted(self):
