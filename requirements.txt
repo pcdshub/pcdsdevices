@@ -1,3 +1,3 @@
 git+https://github.com/slaclab/happi.git#egg=happi
-ophyd==0.6.1
+ophyd==0.8.0
 prettytable

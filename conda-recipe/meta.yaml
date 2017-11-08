@@ -17,7 +17,7 @@ requirements:
 
   run:
     - python {{PY_VER}}*,>=3
-    - ophyd ==0.6.1
+    - ophyd ==0.8.0
     - happi
 
 test:
