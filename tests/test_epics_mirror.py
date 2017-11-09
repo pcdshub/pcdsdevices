@@ -28,6 +28,8 @@ def fake_branching_mirror():
     m.state.state._read_pv.enum_strs = ['Unknown', 'IN', 'OUT']
     connect_rw_pvs(m.state.state)
     m.state.state._write_pv.put('Unknown')
+    m.state.out_state.at_state._read_pv.put(2)
+    m.state.in_state.at_state._read_pv.put(2)
     return m
 
 @using_fake_epics_pv
