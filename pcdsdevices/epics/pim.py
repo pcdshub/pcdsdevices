@@ -378,7 +378,7 @@ class PIMMotor(Device, PositionerBase):
         """
         Whether the YAG is inserted
         """
-        return self.states.value == 'YAG'
+        return self.states.value == 'OUT'
 
     @property
     def timeout(self):
