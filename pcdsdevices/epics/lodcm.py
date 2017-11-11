@@ -148,9 +148,9 @@ class LODCM(Device, metaclass=BranchingInterface):
         Returns
         -------
         inserted: bool
-            False if the diagnostics are in or if we have no destinations.
+            True if h1n is in
         """
-        return not (self.destination and self.diag_clear)
+        return not self.removed
 
     @property
     def removed(self):
@@ -158,9 +158,9 @@ class LODCM(Device, metaclass=BranchingInterface):
         Returns
         -------
         removed: bool
-            True if diagnostics are clear or if the main line is a destination.
+            True if h1n is out
         """
-        return self.diag_clear or self.main_line in self.destination
+        return self.h1n.value == "OUT"
 
     def remove(self, wait=False, timeout=None, finished_cb=None, **kwargs):
         """
