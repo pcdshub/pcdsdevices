@@ -14,15 +14,20 @@ import pytest
 from pcdsdevices.sim.pv import using_fake_epics_pv
 from pcdsdevices.epics  import XFLS
 
+from .conftest import attr_wait_true
 
-@using_fake_epics_pv
-@pytest.fixture(scope='function')
-def xfls():
+
+def fake_xfls():
+    """
+    using_fake_epics_pv does cleanup routines after the fixture and before the
+    test, so we can't make this a fixture without destabilizing our tests.
+    """
     return XFLS("TST:XFLS")
 
 
 @using_fake_epics_pv
-def test_xfls_states(xfls):
+def test_xfls_states():
+    xfls = fake_xfls()
     #Remove
     xfls.state._read_pv.put(4)
     assert xfls.removed
@@ -37,15 +42,18 @@ def test_xfls_states(xfls):
     assert not xfls.inserted
 
 @using_fake_epics_pv
-def test_xfls_motion(xfls):
+def test_xfls_motion():
+    xfls = fake_xfls()
     xfls.remove()
     assert xfls.state._write_pv.get() == 4
 
 @using_fake_epics_pv
-def test_xfls_subscriptions(xfls):
+def test_xfls_subscriptions():
+    xfls = fake_xfls()
     #Subscribe a pseudo callback
     cb = Mock()
     xfls.subscribe(cb, event_type=xfls.SUB_STATE, run=False)
     #Change readback state
     xfls.state._read_pv.put(4)
+    attr_wait_true(cb, 'called')
     assert cb.called

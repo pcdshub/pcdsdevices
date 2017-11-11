@@ -191,7 +191,7 @@ class LODCM(Device, metaclass=BranchingInterface):
         status = self.lodcm_move(yag='OUT', dectris=dset, diode='OUT',
                                  foil='OUT', timeout=timeout, **kwargs)
         if finished_cb is not None:
-            status.finished_cb = finished_cb
+            status.add_callback(finished_cb)
 
         if wait:
             status_wait(status)
@@ -246,7 +246,7 @@ class LODCM(Device, metaclass=BranchingInterface):
         for i, status in enumerate(done_statuses):
             event = Event()
             events.append(event)
-            status.finished_cb = self._make_mark_event(event)
+            status.add_callback(self._make_mark_event(event))
 
         finisher = Thread(target=self._status_finisher,
                           args=(events, lodcm_status))

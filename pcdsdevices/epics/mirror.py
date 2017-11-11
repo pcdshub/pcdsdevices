@@ -109,6 +109,9 @@ class OMMotor(Device, PositionerBase):
     interlock = Component(EpicsSignalRO, ':INTERLOCK')
     enabled = Component(EpicsSignalRO, ':ENABLED')
 
+    # misc
+    motor_egu = Component(EpicsSignalRO, ':RBV.EGU')
+
     # appease bluesky since there is no stop pv for these motors
     motor_stop = Component(Signal, value=0)
 
@@ -147,6 +150,18 @@ class OMMotor(Device, PositionerBase):
         precision : int
         """
         return self.user_readback.precision
+
+    @property
+    @raise_if_disconnected
+    def egu(self):
+        """
+        Engineering units of the readback PV, as reported by EPICS.
+
+        Returns
+        -------
+        egu: str
+        """
+        return self.motor_egu.get()
 
     @property
     @raise_if_disconnected

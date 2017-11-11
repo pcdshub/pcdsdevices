@@ -19,7 +19,7 @@ except:
 
 try:
     from bluesky import RunEngine
-    from bluesky.plans import fly_during_wrapper
+    from bluesky.preprocessors import fly_during_wrapper
     has_bluesky = True
 except ImportError:
     has_bluesky = False
@@ -602,7 +602,7 @@ class DaqStatus(Status):
 
         def cb(*args, **kwargs):
             self._wait_done.set()
-        self.finished_cb = cb
+        self.add_callback(cb)
         finished = self._wait_done.wait(timeout=timeout)
         if not self.success:
             if finished:

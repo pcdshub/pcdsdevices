@@ -465,8 +465,8 @@ class BasicAttenuatorBase(Device):
 
     def unstage(self):
         status = self.all_out()
-        status.finished_cb = partial(self.alert_failed, status,
-                                     'move attenuator out')
+        status.add_callback(partial(self.alert_failed, status,
+                                    'move attenuator out'))
         # self.set_transmission(self._cached_trans)
         return super().unstage()
 

@@ -28,7 +28,7 @@ def test_pvstate_class(lim_info):
     """
     # Define the class
     LimCls = state.pvstate_class("LimCls", lim_info, signal_class=PrefixSignal)
-    lim_obj = LimCls("BASE")
+    lim_obj = LimCls("BASE", name="test")
 
     # Check the state machine
     #Limits are defered
@@ -64,7 +64,7 @@ def test_pvstate_class(lim_info):
 
     LimCls2 = state.pvstate_class("LimCls2", lim_info, setter=limsetter,
                                   signal_class=PrefixSignal, doc="testnocrash")
-    lim_obj2 = LimCls2("BASE")
+    lim_obj2 = LimCls2("BASE", name="test")
     lim_obj2.value = "asdfe"
     assert(lim_obj2.value == "unknown")
     lim_obj2.value = "out"
@@ -76,7 +76,7 @@ def test_pvstate_class(lim_info):
 def test_state_status(lim_info):
     # Define the class
     LimCls = state.pvstate_class("LimCls", lim_info, signal_class=PrefixSignal)
-    lim_obj = LimCls("BASE")
+    lim_obj = LimCls("BASE", name="test")
     #Create a status for 'in'
     status = StateStatus(lim_obj, 'in')
     #Put readback to 'in'
@@ -84,7 +84,7 @@ def test_state_status(lim_info):
     lim_obj.highlim.put(1)
     assert status.done and status.success
     #Check our callback was cleared
-    assert status.check_value not in lim_obj._subs[lim_obj.SUB_STATE]
+    assert status.check_value not in lim_obj._callbacks[lim_obj.SUB_STATE]
 
 
 def test_statesrecord_class():
