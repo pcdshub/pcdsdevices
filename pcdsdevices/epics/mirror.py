@@ -1027,6 +1027,9 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
     def remove(self, wait=False, timeout=None): 
         """
         Remove the PointingMirror from the beamline
+
+        If the horizontal gantry is not coupled, the request will raise a
+        `RuntimeError`
         """
         if self.coupled:
             return self.state.move("OUT", wait=wait, timeout=timeout)
@@ -1036,6 +1039,9 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
     def insert(self, wait=False, timeout=None):
         """
         Insert the pointing mirror into the beamline
+
+        If the horizontal gantry is not coupled, the request will raise a
+        `RuntimeError`
         """
         if self.coupled:
             return self.state.move("IN", wait=wait, timeout=timeout)
