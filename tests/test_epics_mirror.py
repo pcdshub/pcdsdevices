@@ -37,22 +37,28 @@ def test_branching_mirror():
     branching_mirror = fake_branching_mirror()
     assert branching_mirror.branches == ['MFX', 'MEC', 'CXI']
     #Unknown
+    branching_mirror.state.state._read_pv.put(0)
     assert branching_mirror.destination == []
     #Inserted
-    branching_mirror.state.out_state.at_state._read_pv.put(0)
-    branching_mirror.state.in_state.at_state._read_pv.put(1)
-    branching_mirror.state.out_state.at_state._read_pv.put(0)
+    branching_mirror.state.state._read_pv.put(1)
     assert branching_mirror.inserted
     assert branching_mirror.destination == ['MFX', 'MEC']
     #Removed
-    branching_mirror.state.out_state.at_state._read_pv.put(1)
-    branching_mirror.state.in_state.at_state._read_pv.put(0)
+    branching_mirror.state.state._read_pv.put(2)
     assert branching_mirror.removed
     assert branching_mirror.destination == ['CXI']
 
 @using_fake_epics_pv
 def test_branching_mirror_moves():
     branching_mirror = fake_branching_mirror()
+    #With gantry decoupled, should raise RuntimeError
+    branching_mirror.x_gantry_decoupled._read_pv.put(1)
+    with pytest.raises(RuntimeError):
+        branching_mirror.remove()
+    with pytest.raises(RuntimeError):
+        branching_mirror.insert()
+    #Recouple gantry
+    branching_mirror.x_gantry_decoupled._read_pv.put(0)
     #Test removal
     branching_mirror.remove()
     assert branching_mirror.state.state._write_pv.value == 'OUT'
