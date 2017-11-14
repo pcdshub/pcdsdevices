@@ -994,6 +994,9 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
     mps = FormattedComponent(MPS, '{self._mps_prefix}', veto=True)
     #State Information
     state = FormattedComponent(InOutStates, '{self._state_prefix}')
+    #Coupling for horizontal gantry
+    x_gantry_decoupled = FormattedComponent(EpicsSignalRO,
+                                            "GANTRY:{self._prefix_xy}:X:DECOUPLE")
 
     def __init__(self, *args, mps_prefix=None, state_prefix=None, out_lines=None,
                  in_lines=None, **kwargs):
@@ -1001,7 +1004,7 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
         #Store MPS information
         self._mps_prefix = mps_prefix
         #Store State information
-        self._state_prefix = state_prefix 
+        self._state_prefix = state_prefix
         #Branching pattern
         self.in_lines = in_lines
         self.out_lines = out_lines
@@ -1012,26 +1015,32 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
         """
         Whether PointingMirror is inserted
         """
-        return bool(int(self.state.in_state.at_state.value))
+        return self.state.value == 'IN'
 
     @property
     def removed(self):
         """
         Whether PointingMirror is removed
         """
-        return bool(int(self.state.out_state.at_state.value))
+        return self.state.value == 'OUT'
 
     def remove(self, wait=False, timeout=None): 
         """
         Remove the PointingMirror from the beamline
         """
-        return self.state.move("OUT", wait=wait, timeout=timeout)
+        if self.coupled:
+            return self.state.move("OUT", wait=wait, timeout=timeout)
+        else:
+            raise RuntimeError("Gantry is not coupled, can not move")
 
     def insert(self, wait=False, timeout=None):
         """
         Insert the pointing mirror into the beamline
         """
-        return self.state.move("IN", wait=wait, timeout=timeout)
+        if self.coupled:
+            return self.state.move("IN", wait=wait, timeout=timeout)
+        else:
+            raise RuntimeError("Gantry is not coupled, can not move")
  
     @property
     def destination(self):
@@ -1066,6 +1075,13 @@ class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
             return self.in_lines + self.out_lines
         else:
             return [self.db.beamline]
+
+    @property
+    def coupled(self):
+        """
+        Whether the horizontal gantry is coupled
+        """
+        return not bool(self.x_gantry_decoupled.get())
 
     def subscribe(self, cb, event_type=None, run=True):
         """
