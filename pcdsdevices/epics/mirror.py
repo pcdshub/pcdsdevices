@@ -669,8 +669,6 @@ class OffsetMirror(Device, PositionerBase):
     """
     # Pitch Motor
     pitch = FormattedComponent(OMMotor, "{self.prefix}")
-    # Piezo Motor
-    piezo = FormattedComponent(Piezo, "PIEZO:{self._area}:{self._mirror}")
     # Gantry motors
     gan_x_p = FormattedComponent(OMMotor, "{self._prefix_xy}:X:P")
     gan_y_p = FormattedComponent(OMMotor, "{self._prefix_xy}:Y:P")
@@ -942,7 +940,6 @@ class OffsetMirror(Device, PositionerBase):
         if tmo is not None:
             tmo = float(tmo)
         self.pitch.timeout = tmo
-        self.piezo.timeout = tmo
         self.gan_x_p.timeout = tmo
         self.gan_y_p.timeout = tmo
 
