@@ -212,6 +212,7 @@ class PIMMotor(Device, PositionerBase):
     """
     states = FormattedComponent(PIMStates, "{self.prefix}")
     SUB_STATE = 'sub_state_changed'
+    _default_sub = SUB_STATE
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, timeout=None, **kwargs):
