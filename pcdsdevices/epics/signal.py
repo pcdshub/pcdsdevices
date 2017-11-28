@@ -13,10 +13,17 @@ logger = logging.getLogger(__name__)
 
 
 class EpicsSignalBase(ophyd.signal.EpicsSignalBase, Signal):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._read_pv.get_ctrlvars()
 
 
 class EpicsSignal(ophyd.signal.EpicsSignal, EpicsSignalBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self._write_pv != self._read_pv:
+            self._write_pv.get_ctrlvars()
+
     def put(self, value, force=False, connection_timeout=1.0,
             use_complete=None, **kwargs):
         logger.debug("Putting PV value of %s from %s to %s",
