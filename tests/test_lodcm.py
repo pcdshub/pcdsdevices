@@ -27,6 +27,7 @@ def fake_lodcm():
     lom.diode.state._read_pv.enum_strs = ['OUT', 'IN']
     lom.foil.state._read_pv.put('OUT')
     lom.foil.state._read_pv.enum_strs = ['OUT']
+    lom.wait_for_connection()
     return lom
 
 

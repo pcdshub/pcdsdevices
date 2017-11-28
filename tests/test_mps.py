@@ -25,7 +25,9 @@ def fake_mps():
     using_fake_epics_pv does cleanup routines after the fixture and before the
     test, so we can't make this a fixture without destabilizing our tests.
     """
-    return MPS("TST:MPS")
+    mps = MPS("TST:MPS")
+    mps.wait_for_connection()
+    return mps
 
 
 @using_fake_epics_pv

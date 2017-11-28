@@ -25,7 +25,9 @@ def fake_pickerblade():
     using_fake_epics_pv does cleanup routines after the fixture and before the
     test, so we can't make this a fixture without destabilizing our tests.
     """
-    return PickerBlade("Tst:ATT:")
+    picker = PickerBlade("Tst:ATT:")
+    picker.wait_for_connection()
+    return picker
 
 
 @using_fake_epics_pv

@@ -20,6 +20,7 @@ def fake_ref():
     ref = Reflaser("Test:Ref", name="test")
     ref.state.state._read_pv.enum_strs = ['Unknown', 'IN', 'OUT']
     ref.state.state._read_pv.put('Unknown')
+    ref.wait_for_connection()
     return ref
 
 @using_fake_epics_pv

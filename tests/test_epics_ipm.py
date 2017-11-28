@@ -35,6 +35,7 @@ def fake_ipm():
     connect_rw_pvs(ipm.target.state)
     ipm.diode.state._write_pv.put('Unknown')
     ipm.target.state._write_pv.put('Unknown')
+    ipm.wait_for_connection()
     return ipm
 
 
