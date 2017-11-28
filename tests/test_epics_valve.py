@@ -29,6 +29,7 @@ def fake_pps():
     """
     pps = PPSStopper("PPS:H0:SUM")
     pps.summary._read_pv.put("INCONSISTENT")
+    pps.wait_for_connection()
     return pps
 
 def fake_stopper():

@@ -22,7 +22,9 @@ def fake_xfls():
     using_fake_epics_pv does cleanup routines after the fixture and before the
     test, so we can't make this a fixture without destabilizing our tests.
     """
-    return XFLS("TST:XFLS")
+    xfls = XFLS("TST:XFLS")
+    xfls.wait_for_connection()
+    return xfls
 
 
 @using_fake_epics_pv

@@ -16,7 +16,9 @@ def fake_att():
     using_fake_epics_pv does cleanup routines after the fixture and before the
     test, so we can't make this a fixture without destabilizing our tests.
     """
-    return FeeAtt("Tst:ATT:")
+    att = FeeAtt("Tst:ATT:")
+    att.wait_for_connection()
+    return att
 
 
 @using_fake_epics_pv
