@@ -9,17 +9,6 @@ from threading import Thread
 from pcdsdevices import component, device, signal
 
 
-def test_base_component():
-    """
-    In pcdsdevices.component.Component, the only change is that lazy is set to
-    True. Let's be thorough and make sure the flag is set.
-    """
-    class Test:
-        pass
-    comp = component.Component(Test)
-    assert(comp.lazy is True)
-
-
 def test_base_device():
     """
     pcdsdevices.device.Device is expecting to be passed a db_info kwarg with
