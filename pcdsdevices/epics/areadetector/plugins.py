@@ -70,7 +70,7 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
         if self.enable not in self.stage_sigs:
             if not self.enable.connected:
                 self.enable.get()
-            set_and_wait(self.enable, 1)
+            set_and_wait(self.enable, 1, atol=0)
         ADBase.stage(self)
 
     @property
