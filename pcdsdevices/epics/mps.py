@@ -134,3 +134,52 @@ def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
     comp = FC(MPS, mps_prefix, veto=veto)
     cls  = type(clsname, (cls,), {'mps' : comp})
     return cls(*args, **kwargs)
+
+
+def mustBeOpenLogic(mps_A, mps_B):
+
+    if mps_A.fault.value == 1 and mps_B.fault.value == 1:
+        return False
+
+    if mps_A.fault.value == 0 and mps_B.fault.value == 0:
+        return False
+
+    if mps_A.fault.value == 1 and mps_B.fault.value == 0:
+        return False
+
+    if mps_A.fault.value == 0 and mps_B.fault.value == 1:
+        return True
+
+
+def mustKnowPositionLogic(mps_A, mps_B):
+
+    if mps_A.fault.value == 1 and mps_B.fault.value == 1:
+        return False
+
+    if mps_A.fault.value == 0 and mps_B.fault.value == 0:
+        return False
+
+    if mps_A.fault.value == 1 and mps_B.fault.value == 0:
+        return True
+
+    if mps_A.fault.value == 0 and mps_B.fault.value == 1:
+        return True
+
+
+class MPSLimits(Device):
+
+    mps_A = FC(MPS, '{self.MPSA}')
+    mps_B = FC(MPS, '{self.MPSB}')
+
+    def __init__(self, mps_A, mps_B, name=None, logic=None):
+
+        self.MPSA = mps_A
+        self.MPSB = mps_B
+        self.name = name
+        self.logic = logic
+        super().__init__('', name=name)
+
+    @property
+    def faulted(self):
+
+        return self.logic(self.mps_A, self.mps_B)   
