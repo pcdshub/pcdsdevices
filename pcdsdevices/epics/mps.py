@@ -248,14 +248,8 @@ class MPSLimits(Device):
 
         """
         
-        if self.mps_A.faulted == False and self.mps_B.faulted == True:
-            self.logic = must_be_open_logic
-            return self.logic(self.mps_A, self.mps_B)
+        if not callable(self.logic):
+            raise TypeError("Invalid Logic")
 
-        
-        elif self.mps_A.faulted == True and self.mps_B.faulted == False:
-            self.logic = must_know_position_logic
-            return self.logic(self.mps_A, self.mps_B)
+        return self.logic(self.mps_A, self.mps_B)
 
-        else:
-            return False

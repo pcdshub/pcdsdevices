@@ -29,7 +29,7 @@ def fake_mps():
 
 @using_fake_epics_pv
 
-def test_mpsLimits_fault_test1():
+def test_mpsLimits_fault_test1_openLogic():
     mpsLimits = fake_mps()
     #Both mps_A and mps_B faulted, asserting MPSLimits should return False
     mpsLimits.mps_A.fault._read_pv.put(1)
@@ -39,13 +39,29 @@ def test_mpsLimits_fault_test1():
     mpsLimits.mps_B.fault._read_pv.put(1)
     mpsLimits.mps_B.bypass._read_pv.put(0)
     assert mpsLimits.mps_B.faulted
-
+    
+    mpsLimits.logic = must_be_open_logic
     assert mpsLimits.faulted == False
-
 
 @using_fake_epics_pv
 
-def test_mpsLimits_fault_test2():
+def test_mpsLimits_fault_test1_positionLogic():
+    mpsLimits = fake_mps()
+    #Both mps_A and mps_B faulted, asserting MPSLimits should return False
+    mpsLimits.mps_A.fault._read_pv.put(1)
+    mpsLimits.mps_A.bypass._read_pv.put(0)
+    assert mpsLimits.mps_A.faulted
+
+    mpsLimits.mps_B.fault._read_pv.put(1)
+    mpsLimits.mps_B.bypass._read_pv.put(0)
+    assert mpsLimits.mps_B.faulted
+
+    mpsLimits.logic = must_know_position_logic
+    assert mpsLimits.faulted == False
+
+@using_fake_epics_pv
+
+def test_mpsLimits_fault_test2_openLogic():
     mpsLimits = fake_mps()
     #mps_A is faulted, mps_B is not so must_know_position_logic used
     mpsLimits.mps_A.fault._read_pv.put(1)
@@ -56,11 +72,30 @@ def test_mpsLimits_fault_test2():
     mpsLimits.mps_B.bypass._read_pv.put(0)
     assert not mpsLimits.mps_B.faulted
 
-    assert mpsLimits.faulted
+    mpsLimits.logic = must_be_open_logic
+    assert mpsLimits.faulted == False
 
 @using_fake_epics_pv
 
-def test_mpsLimits_fault_test3():
+def test_mpsLimits_fault_test2_positionLogic():
+    mpsLimits = fake_mps()
+    #mps_A is faulted, mps_B is not so must_know_position_logic used
+    mpsLimits.mps_A.fault._read_pv.put(1)
+    mpsLimits.mps_A.bypass._read_pv.put(0)
+    assert mpsLimits.mps_A.faulted
+
+    mpsLimits.mps_B.fault._read_pv.put(0)
+    mpsLimits.mps_B.bypass._read_pv.put(0)
+    assert not mpsLimits.mps_B.faulted
+
+    mpsLimits.logic = must_know_position_logic
+    assert mpsLimits.faulted
+
+
+
+@using_fake_epics_pv
+
+def test_mpsLimits_fault_test3_openLogic():
     mpsLimits = fake_mps()
     #Both mps_A and mps_B are not faulted, asserting MPSlimits should return false
     mpsLimits.mps_A.fault._read_pv.put(0)
@@ -71,12 +106,30 @@ def test_mpsLimits_fault_test3():
     mpsLimits.mps_B.bypass._read_pv.put(0)
     assert not mpsLimits.mps_B.faulted
 
+    mpsLimits.logic = must_be_open_logic
     assert mpsLimits.faulted == False 
 
 
 @using_fake_epics_pv
 
-def test_mpsLimits_fault_test4():
+def test_mpsLimits_fault_test3_positionLogic():
+    mpsLimits = fake_mps()
+    #Both mps_A and mps_B are not faulted, asserting MPSlimits should return false
+    mpsLimits.mps_A.fault._read_pv.put(0)
+    mpsLimits.mps_A.bypass._read_pv.put(0)
+    assert not mpsLimits.mps_A.faulted
+
+    mpsLimits.mps_B.fault._read_pv.put(0)
+    mpsLimits.mps_B.bypass._read_pv.put(0)
+    assert not mpsLimits.mps_B.faulted
+
+    mpsLimits.logic = must_know_position_logic
+    assert mpsLimits.faulted == False
+
+
+@using_fake_epics_pv
+
+def test_mpsLimits_fault_test4_openLogic():
 
     mpsLimits = fake_mps()
     #mps_A is not faulted and mps_B is, asserting MPSlimits should call must_know_positions_logic
@@ -88,6 +141,25 @@ def test_mpsLimits_fault_test4():
     mpsLimits.mps_B.bypass._read_pv.put(0)
     assert mpsLimits.mps_B.faulted
 
+    mpsLimits.logic = must_be_open_logic
+    assert mpsLimits.faulted
+
+
+@using_fake_epics_pv
+
+def test_mpsLimits_fault_test4_positionLogic():
+
+    mpsLimits = fake_mps()
+    #mps_A is not faulted and mps_B is, asserting MPSlimits should call must_know_positions_logic
+    mpsLimits.mps_A.fault._read_pv.put(0)
+    mpsLimits.mps_A.bypass._read_pv.put(0)
+    assert not mpsLimits.mps_A.faulted
+
+    mpsLimits.mps_B.fault._read_pv.put(1)
+    mpsLimits.mps_B.bypass._read_pv.put(0)
+    assert mpsLimits.mps_B.faulted
+
+    mpsLimits.logic = must_know_position_logic
     assert mpsLimits.faulted
 
 
