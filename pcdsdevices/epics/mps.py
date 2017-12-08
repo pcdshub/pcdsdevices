@@ -136,7 +136,7 @@ def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
     return cls(*args, **kwargs)
 
 
-def mustBeOpenLogic(mps_A, mps_B):
+def must_be_open_logic(mps_A, mps_B):
     """
 
     This logic should analyze the two MPS classes of a device. This logic will only allow
@@ -170,7 +170,7 @@ def mustBeOpenLogic(mps_A, mps_B):
         return True
 
 
-def mustKnowPositionLogic(mps_A, mps_B):
+def must_know_position_logic(mps_A, mps_B):
     """
 
     This logic should analyze the two MPS classes of a device. This logic will only allow
@@ -206,7 +206,9 @@ class MPSLimits(Device):
 
     The MPSLimits class is to determine what action is to be taken based on the MPS values
     of a devicepertaining to a single device. If a device has two MPS values, there is 
-    certain logic that needs to be followed to determine whether or not the beam is allowed    through.
+    certain logic that needs to be followed to determine whether or not the beam is allowed
+    through.
+
 
     Parameters
     ----------
@@ -238,5 +240,22 @@ class MPSLimits(Device):
 
     @property
     def faulted(self):
+    
+        """
 
-        return self.logic(self.mps_A, self.mps_B)   
+        This property determines whether the two MPS values are faulted and applies a logic 
+        function depending on the states of mps_A and mps_B.
+
+        """
+        
+        if self.mps_A.faulted == False and self.mps_B.faulted == True:
+            self.logic = must_be_open_logic
+            return self.logic(self.mps_A, self.mps_B)
+
+        
+        elif self.mps_A.faulted == True and self.mps_B.faulted == False:
+            self.logic = must_know_position_logic
+            return self.logic(self.mps_A, self.mps_B)
+
+        else:
+            return False
