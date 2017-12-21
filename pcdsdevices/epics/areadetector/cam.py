@@ -10,73 +10,18 @@ import logging
 import ophyd
 from ophyd import cam
 from ophyd.utils import enum
-
-from .base import (ADBase, ADComponent, EpicsSignalWithRBV)
-from ..device import DynamicDeviceComponent
-from ..component import (Component, FormattedComponent)
-from ..signal import (EpicsSignal, EpicsSignalRO, FakeSignal)
+from ophyd import (Component, FormattedComponent, DynamicDeviceComponent,
+                   EpicsSignal, EpicsSignalRO)
+from ophyd.areadetector.base import ADBase, ADComponent, EpicsSignalWithRBV
+from ophyd.sim import SynSignal
 
 logger = logging.getLogger(__name__)
 
-__all__ = ['CamBase',
-           'PulnixCam',
-           'FeeOpalCam',
-           'AdscDetectorCam',
-           'Andor3DetectorCam',
-           'AndorDetectorCam',
-           'BrukerDetectorCam',
-           'FirewireLinDetectorCam',
-           'FirewireWinDetectorCam',
-           'LightFieldDetectorCam',
-           'Mar345DetectorCam',
-           'MarCCDDetectorCam',
-           'PSLDetectorCam',
-           'PcoDetectorCam',
-           'PcoDetectorIO',
-           'PcoDetectorSimIO',
-           'PerkinElmerDetectorCam',
-           'PilatusDetectorCam',
-           'PixiradDetectorCam',
-           'PointGreyDetectorCam',
-           'ProsilicaDetectorCam',
-           'PvcamDetectorCam',
-           'RoperDetectorCam',
-           'SimDetectorCam',
-           'URLDetectorCam',
-]
+__all__ = ['FeeOpalCam']
 
 
-class CamBase(cam.CamBase, ADBase):
-    """
-    Overrides for CamBase. Primarily so we are using our version of
-    DynamicDeviceComponent.
-    """
-    array_size = DynamicDeviceComponent(ophyd.base.ad_group(EpicsSignalRO,
-                              (('array_size_x', 'ArraySizeX_RBV'),
-                               ('array_size_y', 'ArraySizeY_RBV'),
-                               ('array_size_z', 'ArraySizeZ_RBV'))),
-                     doc='Size of the array in the XYZ dimensions')
-    max_size = DynamicDeviceComponent(ophyd.base.ad_group(EpicsSignalRO,
-                            (('max_size_x', 'MaxSizeX_RBV'),
-                             ('max_size_y', 'MaxSizeY_RBV'))),
-                   doc='Maximum sensor size in the XY directions')
-    reverse = DynamicDeviceComponent(ophyd.base.ad_group(EpicsSignalWithRBV,
-                           (('reverse_x', 'ReverseX'),
-                            ('reverse_y', 'ReverseY'))))
-    size = DynamicDeviceComponent(ophyd.base.ad_group(EpicsSignalWithRBV,
-                        (('size_x', 'SizeX'),
-                         ('size_y', 'SizeY'))))
 
-    
-class AreaDetectorCam(cam.AreaDetectorCam, CamBase):
-    pass
-
-
-class PulnixCam(CamBase):
-    pass
-
-
-class FeeOpalCam(CamBase):
+class FeeOpalCam(cam.CamBase):
     """
     Opal camera used in the FEE for the PIMs.
     """
@@ -161,111 +106,21 @@ class FeeOpalCam(CamBase):
     acquire = Component(EpicsSignal, 'Acquire')
 
     # Attrs that arent in the fee opal
-    array_counter = Component(FakeSignal) # C(SignalWithRBV, 'ArrayCounter')
-    nd_attributes_file = Component(FakeSignal) # C(EpicsSignal, 'NDAttributesFile', string=True)
-    pool_alloc_buffers = Component(FakeSignal) # C(EpicsSignalRO, 'PoolAllocBuffers')
-    pool_free_buffers = Component(FakeSignal) # C(EpicsSignalRO, 'PoolFreeBuffers')
-    pool_max_buffers = Component(FakeSignal) # C(EpicsSignalRO, 'PoolMaxBuffers')
-    pool_max_mem = Component(FakeSignal) # C(EpicsSignalRO, 'PoolMaxMem')
-    pool_used_buffers = Component(FakeSignal) # C(EpicsSignalRO, 'PoolUsedBuffers')
-    pool_used_mem = Component(FakeSignal) # C(EpicsSignalRO, 'PoolUsedMem')
-    port_name = Component(FakeSignal) # C(EpicsSignalRO, 'PortName_RBV', string=True)
-    array_callbacks = Component(FakeSignal) # C(SignalWithRBV, 'ArrayCallbacks')
-    array_size = Component(FakeSignal) # DDC(ad_group(EpicsSignalRO,
+    array_counter = Component(SynSignal) # C(SignalWithRBV, 'ArrayCounter')
+    nd_attributes_file = Component(SynSignal) # C(EpicsSignal, 'NDAttributesFile', string=True)
+    pool_alloc_buffers = Component(SynSignal) # C(EpicsSignalRO, 'PoolAllocBuffers')
+    pool_free_buffers = Component(SynSignal) # C(EpicsSignalRO, 'PoolFreeBuffers')
+    pool_max_buffers = Component(SynSignal) # C(EpicsSignalRO, 'PoolMaxBuffers')
+    pool_max_mem = Component(SynSignal) # C(EpicsSignalRO, 'PoolMaxMem')
+    pool_used_buffers = Component(SynSignal) # C(EpicsSignalRO, 'PoolUsedBuffers')
+    pool_used_mem = Component(SynSignal) # C(EpicsSignalRO, 'PoolUsedMem')
+    port_name = Component(SynSignal) # C(EpicsSignalRO, 'PortName_RBV', string=True)
+    array_callbacks = Component(SynSignal) # C(SignalWithRBV, 'ArrayCallbacks')
+    array_size = Component(SynSignal) # DDC(ad_group(EpicsSignalRO,
                  #              (('array_size_x', 'ArraySizeX_RBV'),
                  #               ('array_size_y', 'ArraySizeY_RBV'),
                  #               ('array_size_z', 'ArraySizeZ_RBV'))),
                  #     doc='Size of the array in the XYZ dimensions')
-    color_mode = Component(FakeSignal) # C(SignalWithRBV, 'ColorMode')
-    data_type = Component(FakeSignal) # C(SignalWithRBV, 'DataType')
-    array_size_bytes = Component(FakeSignal) # C(EpicsSignalRO, 'ArraySize_RBV')
-    
-
-class SimDetectorCam(cam.SimDetectorCam, CamBase):
-    pass
-
-
-class AdscDetectorCam(cam.AdscDetectorCam, CamBase):
-    pass
-
-
-class AndorDetectorCam(cam.AndorDetectorCam, CamBase):
-    pass
-
-
-class Andor3DetectorCam(cam.Andor3DetectorCam, CamBase):
-    pass
-
-
-class BrukerDetectorCam(cam.BrukerDetectorCam, CamBase):
-    pass
-
-
-class FirewireLinDetectorCam(cam.FirewireLinDetectorCam, CamBase):
-    pass
-
-
-class FirewireWinDetectorCam(cam.FirewireWinDetectorCam, CamBase):
-    pass
-
-
-class LightFieldDetectorCam(cam.LightFieldDetectorCam, CamBase):
-    pass
-
-
-class Mar345DetectorCam(cam.Mar345DetectorCam, CamBase):
-    pass
-
-
-class MarCCDDetectorCam(cam.MarCCDDetectorCam, CamBase):
-    pass
-
-
-class PcoDetectorCam(cam.PcoDetectorCam, CamBase):
-    pass
-
-
-class PcoDetectorIO(cam.PcoDetectorIO, ADBase):
-    pass
-
-
-class PcoDetectorSimIO(cam.PcoDetectorSimIO, ADBase):
-    pass
-
-
-class PerkinElmerDetectorCam(cam.PerkinElmerDetectorCam, CamBase):
-    pass
-
-
-class PSLDetectorCam(cam.PSLDetectorCam, CamBase):
-    pass
-
-
-class PilatusDetectorCam(cam.PilatusDetectorCam, CamBase):
-    pass
-
-
-class PixiradDetectorCam(cam.PixiradDetectorCam, CamBase):
-    pass
-
-
-class PointGreyDetectorCam(cam.PointGreyDetectorCam, CamBase):
-    pass
-
-
-class ProsilicaDetectorCam(cam.ProsilicaDetectorCam, CamBase):
-    pass
-
-
-class PvcamDetectorCam(cam.PvcamDetectorCam, CamBase):
-    pass
-
-
-class RoperDetectorCam(cam.RoperDetectorCam, CamBase):
-    pass
-
-
-class URLDetectorCam(cam.URLDetectorCam, CamBase):
-    pass
-
-
+    color_mode = Component(SynSignal) # C(SignalWithRBV, 'ColorMode')
+    data_type = Component(SynSignal) # C(SignalWithRBV, 'DataType')
+    array_size_bytes = Component(SynSignal) # C(EpicsSignalRO, 'ArraySize_RBV')
