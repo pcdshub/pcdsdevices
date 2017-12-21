@@ -16,10 +16,10 @@ import numpy as np
 from pcdsdevices.sim.signal import FakeSignal
 
 def test_FakeSignal_instantiates():
-    assert(FakeSignal())
+    assert(FakeSignal(name='Fake'))
 
 def test_FakeSignal_runs_ophyd_functions():
-    sig = FakeSignal()
+    sig = FakeSignal(name='Fake')
     assert(isinstance(sig.read(), dict))
     assert(isinstance(sig.describe(), dict))
     assert(isinstance(sig.describe_configuration(), dict))
