@@ -1,7 +1,7 @@
 {% set data = load_setup_py_data() %}
 
 package:
-  name: pcds-devices
+  name: pcdsdevices
   version : {{ data.get('version') }}
 
 source:
@@ -25,6 +25,6 @@ test:
     - pcdsdevices
 
 about:
-  home: https://github.com/slaclab/pcds-devices
+  home: https://github.com/pcdshub/pcdsdevices
   license: SLAC Open License
   summary: IOC definitions for LCLS Beamline Devices
