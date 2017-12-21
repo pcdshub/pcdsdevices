@@ -3,8 +3,8 @@ PCDS Devices
 .. image:: https://travis-ci.org/pcdshub/pcdsdevices.svg?branch=master
   :target: https://travis-ci.org/pcdshub/pcdsdevices
 
-.. image:: https://codecov.io/gh/slaclab/pcdsdevices/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/slaclab/pcdsdevices
+.. image:: https://codecov.io/gh/pcdshub/pcdsdevices/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/pcdshub/pcdsdevices
 
 Collection of Ophyd Device subclasses for IOCs unique to LCLS PCDS.
 
