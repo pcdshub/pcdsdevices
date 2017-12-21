@@ -1,21 +1,9 @@
 """
 Basic Beryllium Lens XFLS
 """
-############
-# Standard #
-############
-
-###############
-# Third Party #
-###############
-from ophyd import Component as C
+from ophyd import Device, EpicsSignal, Component as C
 from ophyd.status import wait as status_wait
 
-##########
-# Module #
-##########
-from .device import Device
-from .signal import EpicsSignal
 from .state  import SubscriptionStatus
 
 class XFLS(Device):

@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import logging
-from .signal import EpicsSignal, EpicsSignalRO
-from .component import Component
-from .device import Device
+
+from ophyd import Device, EpicsSignal, EpicsSignalRO, Component
 
 logger = logging.getLogger(__name__)
 

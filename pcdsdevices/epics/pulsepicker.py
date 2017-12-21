@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from copy import deepcopy
-from .signal import EpicsSignal, EpicsSignalRO
-from .component import Component, FormattedComponent
-from .device import Device
+
+from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
+                   FormattedComponent)
+
 from .state import InOutStates, InOutCCMStates, statesrecord_class
 from .state import SubscriptionStatus
-
 
 class PickerBlade(Device):
     """

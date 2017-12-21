@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .device import Device
 from .state import statesrecord_class, InOutStates
-from .component import Component, FormattedComponent
-from .signal import EpicsSignalRO
 from ophyd.status import wait as status_wait
+from ophyd import (Device, EpicsSignalRO, Component,
+                   FormattedComponent)
 
 
 TargetStates = statesrecord_class("TargetStates", ":OUT", ":TARGET1",

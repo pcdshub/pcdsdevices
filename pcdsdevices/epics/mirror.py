@@ -25,31 +25,19 @@ OffsetMirror
     y motors. This is the class that should be used to control the offset
     mirrors.
 """
-
-############
-# Standard #
-############
 import logging
 
-###############
-# Third Party #
-###############
 import numpy as np
 from ophyd import PositionerBase
 from ophyd.utils import (DisconnectedError, LimitError)
 from ophyd.utils.epics_pvs import raise_if_disconnected
 from ophyd.status import wait as status_wait
 from ophyd.signal import Signal
+from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
+                   FormattedComponent)
 
-##########
-# Module #
-##########
-from .device import Device
-from .signal import (EpicsSignal, EpicsSignalRO)
-from .component import (FormattedComponent, Component)
 from .mps import MPS
 from .state import InOutStates
-from ..interface import BranchingInterface
 
 logger = logging.getLogger(__name__)
 
@@ -972,7 +960,7 @@ class OffsetMirror(Device, PositionerBase):
         return False
 
 
-class PointingMirror(OffsetMirror, metaclass=BranchingInterface):
+class PointingMirror(OffsetMirror):
     """
     mps_prefix : str, optional
         Base prefix for the MPS bit of the mirror

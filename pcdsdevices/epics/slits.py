@@ -4,10 +4,8 @@ import logging
 
 from ophyd.device import Staged
 from ophyd.pv_positioner import PVPositioner
-
-from .signal import EpicsSignal, EpicsSignalRO
-from .component import Component, FormattedComponent
-from .device import Device
+from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
+                   FormattedComponent)
 
 logger = logging.getLogger(__name__)
 

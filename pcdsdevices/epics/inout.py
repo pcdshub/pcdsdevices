@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .device import Device
-from .component import Component as Cmp
+from ophyd import Device, Component as C
+
 from .state import InOutStates, statesrecord_class
 
 
@@ -9,7 +9,7 @@ class InOutDevice(Device):
     """
     Device that has two states, IN and OUT, that blocks the beam while IN.
     """
-    state = Cmp(InOutStates, '')
+    state = C(InOutStates, '')
     #Subscription types
     SUB_STATE = 'sub_state_changed'
     _default_sub = SUB_STATE
@@ -71,7 +71,7 @@ class TTReflaser(Reflaser):
     Motor stack that includes both a timetool and a reflaser.
     """
     TTStates = statesrecord_class('TTStates', ':TT', ':REFL', ':OUT')
-    state = Cmp(TTStates, '')
+    state = C(TTStates, '')
 
     @property
     def inserted(self):

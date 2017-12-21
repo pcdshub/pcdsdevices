@@ -1,7 +1,8 @@
+from ophyd import Device, Component
+from ophyd.sim import SynSignal
+
 from .epicsmotor import EpicsMotor
-from .component import Component
-from .device import Device
-from .signal import (Signal, FakeSignal)
+
 
 class ImsMotor(EpicsMotor, Device):
     """
@@ -10,7 +11,7 @@ class ImsMotor(EpicsMotor, Device):
     band-aid.
     """
     # Disable missing field that our IMS module lacks
-    direction_of_travel = Component(FakeSignal)
+    direction_of_travel = Component(SynSignal)
 
     def _pos_changed(self, timestamp=None, value=None, **kwargs):
         if None not in (value, self.position):
