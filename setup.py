@@ -1,7 +1,7 @@
 import versioneer
 from setuptools import setup, find_packages
 
-setup(name='pcds-devices',
+setup(name='pcdsdevices',
       version=versioneer.get_version(),
       cmdclass=versioneer.get_cmdclass(),
       license='BSD',

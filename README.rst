@@ -1,10 +1,10 @@
 PCDS Devices
 ============
-.. image:: https://travis-ci.org/slaclab/pcds-devices.svg?branch=master
-  :target: https://travis-ci.org/slaclab/pcds-devices
+.. image:: https://travis-ci.org/pcdshub/pcdsdevices.svg?branch=master
+  :target: https://travis-ci.org/pcdshub/pcdsdevices
 
-.. image:: https://codecov.io/gh/slaclab/pcds-devices/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/slaclab/pcds-devices
+.. image:: https://codecov.io/gh/pcdshub/pcdsdevices/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/pcdshub/pcdsdevices
 
 Collection of Ophyd Device subclasses for IOCs unique to LCLS PCDS.
 
@@ -22,10 +22,10 @@ Install the most recent tagged build:
 
 .. code::
   
-  conda install pcds-devices -c skywalker-tag -c lightsource2-tag -c conda-forge
+  conda install pcdsdevices -c skywalker-tag -c lightsource2-tag -c conda-forge
 
 Install the most recent development build: 
 
 .. code::
 
-  conda install pcds-devices -c skywalker-dev -c lightsource2-tag -c conda-forge
+  conda install pcdsdevices -c skywalker-dev -c lightsource2-tag -c conda-forge
