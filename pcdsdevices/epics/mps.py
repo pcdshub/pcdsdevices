@@ -134,3 +134,122 @@ def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
     comp = FC(MPS, mps_prefix, veto=veto)
     cls  = type(clsname, (cls,), {'mps' : comp})
     return cls(*args, **kwargs)
+
+
+def must_be_open_logic(mps_A, mps_B):
+    """
+
+    This logic should analyze the two MPS classes of a device. This logic will only allow
+    beam through if the device is in the open-state.
+
+    Parameters
+    ----------
+    
+    mps_A.fault.value: Int
+    mps_B.fault.value: Int
+
+    Returns
+    -------
+    
+    bool
+        True if successful, False otherwise
+
+
+    """
+
+    if mps_A.fault.value == 1 and mps_B.fault.value == 1:
+        return False
+
+    if mps_A.fault.value == 0 and mps_B.fault.value == 0:
+        return False
+
+    if mps_A.fault.value == 1 and mps_B.fault.value == 0:
+        return False
+
+    if mps_A.fault.value == 0 and mps_B.fault.value == 1:
+        return True
+
+
+def must_know_position_logic(mps_A, mps_B):
+    """
+
+    This logic should analyze the two MPS classes of a device. This logic will only allow
+    beam through if both the positions of the MPS classes is known
+
+    Parameters
+    ----------
+    
+    mps_A.fault.value: Int
+    mps_B.fault.value: Int
+
+    Returns
+    -------
+    
+    bool
+        True if successful, False otherwise
+    """
+    if mps_A.fault.value == 1 and mps_B.fault.value == 1:
+        return False
+
+    if mps_A.fault.value == 0 and mps_B.fault.value == 0:
+        return False
+
+    if mps_A.fault.value == 1 and mps_B.fault.value == 0:
+        return True
+
+    if mps_A.fault.value == 0 and mps_B.fault.value == 1:
+        return True
+
+
+class MPSLimits(Device):
+    """
+
+    The MPSLimits class is to determine what action is to be taken based on the MPS values
+    of a devicepertaining to a single device. If a device has two MPS values, there is 
+    certain logic that needs to be followed to determine whether or not the beam is allowed
+    through.
+
+
+    Parameters
+    ----------
+
+    Device: defined in MPS class above
+
+    Attributes
+    ----------
+
+    mps_A: the first MPS value of a Device
+
+    mps_B: the second MPS value of a Device
+   
+    name: str
+
+    logic: function
+        calls one of the previously defined functions based on the Device in question
+    """
+    mps_A = FC(MPS, '{self.MPSA}')
+    mps_B = FC(MPS, '{self.MPSB}')
+
+    def __init__(self, mps_A, mps_B, name=None, logic=None):
+
+        self.MPSA = mps_A
+        self.MPSB = mps_B
+        self.name = name
+        self.logic = logic
+        super().__init__('', name=name)
+
+    @property
+    def faulted(self):
+    
+        """
+
+        This property determines whether the two MPS values are faulted and applies a logic 
+        function depending on the states of mps_A and mps_B.
+
+        """
+        
+        if not callable(self.logic):
+            raise TypeError("Invalid Logic")
+
+        return self.logic(self.mps_A, self.mps_B)
+
