@@ -26,28 +26,17 @@ PIMFee
     three IMS motors to control zoom, focus and the position of the yag in
     addition to a FeeOpalDetector as the detector.
 """
-
-############
-# Standard #
-############
 import logging
 
-###############
-# Third Party #
-###############
 import numpy as np
 from ophyd.positioner import PositionerBase
 from ophyd.utils.epics_pvs import raise_if_disconnected
+from ophyd.status import wait as status_wait
+from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
+                   FormattedComponent)
 
-##########
-# Module #
-##########
-from .device import Device
 from .imsmotor import ImsMotor
 from .state import statesrecord_class
-from ophyd.status import wait as status_wait
-from .signal import (EpicsSignal, EpicsSignalRO)
-from .component import (Component, FormattedComponent)
 from .areadetector.detectors import (PulnixDetector, FeeOpalDetector)
 from .areadetector.plugins import (ImagePlugin, StatsPlugin)
 from ..utils.pyutils import isnumber

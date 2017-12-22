@@ -9,15 +9,9 @@ from enum import Enum
 ###############
 # Third Party #
 ###############
-import ophyd
 from ophyd.utils import LimitError
+from ophyd import EpicsMotor, Component, EpicsSignal
 
-##########
-# Module #
-##########
-from .device import Device
-from .component import Component
-from .signal import EpicsSignal
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +22,7 @@ class DirectionEnum(Enum):
     negative = 1
     neg = 1
 
-class EpicsMotor(ophyd.EpicsMotor, Device):
+class EpicsMotor(EpicsMotor):
     """
     Epics motor for PCDS.
     """

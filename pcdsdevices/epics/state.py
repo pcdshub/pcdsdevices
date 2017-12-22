@@ -4,18 +4,15 @@
 Module to define records that act as state getter/setters for more complicated
 devices.
 """
+import time
 import logging
 from threading import RLock
 from keyword import iskeyword
-import time
 
 from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait
 from ophyd.status import StatusBase
-
-from .signal import EpicsSignal, EpicsSignalRO
-from .component import Component
-from .device import Device
+from ophyd import Device, Component, EpicsSignal, EpicsSignalRO
 
 logger = logging.getLogger(__name__)
 

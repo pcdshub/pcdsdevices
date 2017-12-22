@@ -14,12 +14,12 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         args.extend(sys.argv[1:])
 
-    # Ignore live tests unless given the live keyword
-    if '--live' in args:
-        args.remove('--live')
-        args.append('tests_live')
+    # Ignore sim tests unless given the sim keyword
+    if '--sim' in args:
+        args.remove('--sim')
+        args.append('tests_sim')
     else:
-        args.append('--ignore=tests_live')
+        args.append('--ignore=tests_sim')
 
     txt = 'pytest arguments: {}'.format(args)
     print(txt)

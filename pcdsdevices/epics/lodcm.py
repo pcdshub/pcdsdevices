@@ -2,12 +2,10 @@
 # -*- coding: utf-8 -*-
 from threading import Event, Thread, RLock
 
+from ophyd import Device, Component
 from ophyd.status import DeviceStatus, wait as status_wait
 
-from ..interface import BranchingInterface
-from .device import Device
 from .state import statesrecord_class, InOutStates
-from .component import Component
 
 
 H1NStates = statesrecord_class("LodcmStates", ":OUT", ":C", ":Si")
@@ -18,7 +16,7 @@ DectrisStates = statesrecord_class("DectrisStates", ":OUT", ":DECTRIS",
 FoilStates = statesrecord_class("FoilStates", ":OUT")
 
 
-class LODCM(Device, metaclass=BranchingInterface):
+class LODCM(Device):
     """
     Large Offset Dual Crystal Monochromator
 

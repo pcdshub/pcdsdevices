@@ -7,15 +7,13 @@ import logging
 from enum import Enum
 from copy import deepcopy
 from functools import partial
+
 from ophyd.status import wait as status_wait
+from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
+                   FormattedComponent as FC)
+
 from .mps import MPS, mps_factory
 from .state import pvstate_class, StateStatus
-from .device import Device
-from .signal import EpicsSignalRO
-from .signal import EpicsSignal
-from .component import Component as C
-from .component import FormattedComponent as FC
-
 
 logger = logging.getLogger(__name__)
 

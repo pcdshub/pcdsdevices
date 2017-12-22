@@ -1,29 +1,17 @@
 """
 Devices that are integrated with the MPS system communicate with ACR via a
 single bit summary. The results of these are published over EPICS and
-interpreted by :class:`.MPS`. 
+interpreted by :class:`.MPS`.
 """
-############
-# Standard #
-############
 import logging
 
-###############
-# Third Party #
-###############
-from ..interface import MPSInterface
-
-##########
-# Module #
-##########
-from ophyd      import Device
-from .signal    import EpicsSignal, EpicsSignalRO
-from .component import Component as C, FormattedComponent as FC
+from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
+                   FormattedComponent as FC)
 
 logger = logging.getLogger(__name__)
 
 
-class MPS(Device, metaclass=MPSInterface):
+class MPS(Device):
     """
     Class to interpret MPS information
 

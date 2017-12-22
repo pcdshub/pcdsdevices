@@ -3,16 +3,16 @@
 """
 Define operation of the lcls attenuator IOCs
 """
-import logging
 import time
+import logging
 from functools import partial
 from enum import Enum
 from threading import RLock
-from ophyd.status import wait as status_wait
 
-from .device import Device
-from .component import Component, FormattedComponent
-from .signal import EpicsSignal, EpicsSignalRO
+from ophyd.status import wait as status_wait
+from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
+                   FormattedComponent)
+
 from .state import SubscriptionStatus
 
 logger = logging.getLogger(__name__)
