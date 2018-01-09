@@ -9,11 +9,9 @@ from functools import partial
 from enum import Enum
 from threading import RLock
 
-from ophyd.status import wait as status_wait
+from ophyd.status import wait as status_wait, SubscriptionStatus
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
                    FormattedComponent)
-
-from ..state import SubscriptionStatus
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
