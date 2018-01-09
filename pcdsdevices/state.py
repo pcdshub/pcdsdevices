@@ -87,25 +87,25 @@ class PVState(State):
         """
         state_value = None
         for state, info in self._states.items():
-            #Gather signal
+            # Gather signal
             state_signal = getattr(self, state)
-            #Get raw EPICS readback
+            # Get raw EPICS readback
             pv_value = state_signal.get(use_monitor=True)
             try:
-                #Associate readback with device state
+                # Associate readback with device state
                 signal_state = info[pv_value]
                 if signal_state != 'defer':
                     if state_value:
                         assert signal_state == state_value
-                    #Update state
+                    # Update state
                     state_value = signal_state
 
-            #Handle unaccounted readbacks 
+            # Handle unaccounted readbacks
             except (KeyError, AssertionError):
                 state_value = 'unknown'
                 break
 
-        #If all states deferred, report as unknown
+        # If all states deferred, report as unknown
         return state_value or 'unknown'
 
     @value.setter
@@ -199,7 +199,7 @@ class DeviceStatesRecord(State, PositionerBase):
 
         if wait:
             status_wait(status)
-        
+
         return status
 
     def check_value(self, value):
@@ -274,6 +274,7 @@ inoutccmdoc = "Standard PCDS states record with IN, OUT, and CCM states."
 InOutCCMStates = statesrecord_class("InOutCCMStates", ":IN", ":OUT", ":CCM",
                                     doc=inoutccmdoc)
 
+
 class StateError(Exception):
     pass
 
@@ -305,10 +306,10 @@ class StateStatus(SubscriptionStatus):
     """
     def __init__(self, device, desired_state,
                  timeout=None, settle_time=None):
-        #Make a quick check_state callable
+        # Make a quick check_state callable
         def check_state(*args, **kwargs):
             return device.value == desired_state
-        
-        #Start timeout and subscriptions
+
+        # Start timeout and subscriptions
         super().__init__(device, check_state, event_type=device.SUB_STATE,
                          timeout=timeout, settle_time=settle_time)
