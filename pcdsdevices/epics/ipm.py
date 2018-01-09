@@ -3,11 +3,11 @@ from enum import Enum
 from ophyd.status import wait as status_wait
 from ophyd import Component
 
-from ..state import StatesPositioner
+from ..state import StatePositioner
 from .inout import Diode
 
 
-class IPM(StatesPositioner):
+class IPM(StatePositioner):
     """
     Standard intensity position monitor motion.
     """

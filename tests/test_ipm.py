@@ -11,7 +11,7 @@ from unittest.mock import Mock
 # Module #
 ##########
 from pcdsdevices.sim.pv import  using_fake_epics_pv
-from pcdsdevices.epics import IPMMotors
+from pcdsdevices.epics import IPM
 
 from .conftest import connect_rw_pvs, attr_wait_true
 
@@ -23,7 +23,7 @@ def fake_ipm():
     using_fake_epics_pv does cleanup routines after the fixture and before the
     test, so we can't make this a fixture without destabilizing our tests.
     """
-    ipm = IPMMotors("Test:My:IPM")
+    ipm = IPM("Test:My:IPM")
     diode_states = ['Unknown', 'OUT', 'IN']
     ipm.diode.state._read_pv.enum_strs = diode_states
     ipm.diode.state._write_pv.enum_strs = diode_states
