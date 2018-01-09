@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Module to define records that act as state getter/setters for more complicated
 devices.
