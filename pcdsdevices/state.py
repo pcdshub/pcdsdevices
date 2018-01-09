@@ -10,8 +10,7 @@ from threading import RLock
 from keyword import iskeyword
 
 from ophyd.positioner import PositionerBase
-from ophyd.status import wait as status_wait
-from ophyd.status import StatusBase
+from ophyd.status import wait as status_wait, SubscriptionStatus
 from ophyd import Device, Component, EpicsSignal, EpicsSignalRO
 
 logger = logging.getLogger(__name__)
@@ -279,72 +278,6 @@ InOutCCMStates = statesrecord_class("InOutCCMStates", ":IN", ":OUT", ":CCM",
 
 class StateError(Exception):
     pass
-
-class SubscriptionStatus(StatusBase):
-    """
-    Status to monitor a class attribute
-
-    Instead of creating additional threads to monitor signal values, SubStatus
-    uses  ophyd's built-in subscription systems to check the status of a state
-    whenever a device updates
-
-    Parameters
-    ----------
-    device : obj
-
-    callback : callable
-        Callback that takes arbitrary arguments and keywords and returns a
-        boolean.
-
-    event_type : str, optional
-        Name of event type to check whether the device has finished succesfully
-
-    timeout : float, optional
-        Maximum timeout to wait to mark the request as a failure
-    
-    settle_time : float, optional
-        Time to wait after completion until running callbacks
-    """
-    def __init__(self, device, callback, event_type=None,
-                 timeout=None, settle_time=None):
-        #Store device and attribute information
-        self.device    = device
-        self.callback  = callback
-
-        #Start timeout thread in the background
-        super().__init__(timeout=timeout, settle_time=settle_time)
-
-        #Subscribe callback and run initial check
-        self.device.subscribe(self.check_value,
-                              event_type=event_type,
-                              run=True)
-
-
-    def check_value(self, *args, **kwargs):
-        """
-        Update the status object
-        """
-        #Get attribute from device
-        try:
-            success = self.callback(*args, **kwargs)
-        #Do not fail silently
-        except Exception as e:
-            logger.error(e)
-            raise
-
-        #If succesfull indicate finished
-        if success:
-            self._finished(success=True)
-
-
-    def _finished(self, *args, **kwargs):
-        """
-        Reimplemented finished command to cleanup callback subscription
-        """
-        #Clear callback
-        self.device.clear_sub(self.check_value)
-        #Run completion
-        super()._finished(**kwargs)
 
 
 class StateStatus(SubscriptionStatus):
