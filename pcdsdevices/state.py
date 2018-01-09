@@ -213,6 +213,8 @@ class StatePositioner(PositionerBase):
         super().__init__(prefix, name=name, **kwargs)
         some_state = next(a for a in self._states_enum).name
         self._readback = '{}:{}_CALC.A'.format(prefix, some_state)
+        self._inverse_alias = {value: key for key, value in
+                               self._states_alias.items()}
         self._has_subscribed_state = False
         self._has_subscribed_readback = False
 
@@ -249,7 +251,11 @@ class StatePositioner(PositionerBase):
 
     @property
     def position(self):
-        return self.state.get()
+        state = self.state.get()
+        try:
+            return self._inverse_alias[state]
+        except KeyError:
+            return state
 
     def check_value(self, value):
         self.state.check_value()
