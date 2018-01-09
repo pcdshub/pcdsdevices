@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 from .imsmotor import ImsMotor
 from .pulsepicker import PickerBlade, PulsePicker, PulsePickerCCM, PulsePickerPink
-from .slits import Slits
 from .valve import PPSStopper, Stopper, GateValve, InterlockError
 from .attenuator import FeeAtt, Attenuator
 from .ipm import IPM, IPMMotors
