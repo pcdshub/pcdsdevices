@@ -1,19 +1,30 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from threading import Event, Thread, RLock
+from enum import Enum
 
 from ophyd import Device, Component
 from ophyd.status import DeviceStatus, wait as status_wait
 
-from ..state import statesrecord_class, InOutStates
+from ..state import StatePositioner
+from .inout import Diode
 
 
-H1NStates = statesrecord_class("LodcmStates", ":OUT", ":C", ":Si")
-YagLomStates = statesrecord_class("YagLomStates", ":OUT", ":YAG", ":SLIT1",
-                                  ":SLIT2", ":SLIT3")
-DectrisStates = statesrecord_class("DectrisStates", ":OUT", ":DECTRIS",
-                                   ":SLIT1", ":SLIT2", ":SLIT3", ":OUTLOW")
-FoilStates = statesrecord_class("FoilStates", ":OUT")
+class H1NStates(StatePositioner):
+    _states_enum = Enum('CrystalStates', 'OUT C Si')
+
+
+class YagLomStates(StatePositioner):
+    _states_enum = Enum('YagLomStates', 'OUT YAG SLIT1 SLIT2 SLIT3')
+
+
+class DectrisStates(StatePositioner):
+    _states_enum = Enum('DectrisStates',
+                        'OUT DECTRIS SLIT1 SLIT2 SLIT3 OUTLOW')
+
+
+class FoilStates(StatePositioner):
+    _states_enum = Enum('FoilStates', 'OUT')
+    # This class needs rethinking because the foils are different between the
+    # two lodcm instances
 
 
 class LODCM(Device):
@@ -28,7 +39,7 @@ class LODCM(Device):
     h1n = Component(H1NStates, ":H1N")
     yag = Component(YagLomStates, ":DV")
     dectris = Component(DectrisStates, ":DH")
-    diode = Component(InOutStates, ":DIODE")
+    diode = Component(Diode, ":DIODE")
     foil = Component(FoilStates, ":FOIL")
 
     SUB_STATE = 'sub_state_changed'
