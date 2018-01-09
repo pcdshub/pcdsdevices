@@ -2,15 +2,16 @@
 Module to define records that act as state getter/setters for more complicated
 devices.
 """
-import time
 import logging
+import functools
 from threading import RLock
 from keyword import iskeyword
 from enum import Enum
 
 from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait, SubscriptionStatus
-from ophyd import Device, Component, EpicsSignal, EpicsSignalRO
+from ophyd import (Device, EpicsSignal, EpicsSignalRO,
+                   Component, FormattedComponent)
 
 logger = logging.getLogger(__name__)
 
@@ -161,170 +162,105 @@ def pvstate_class(classname, states, doc="", setter=None,
     return type(classname, bases, components)
 
 
-class DeviceStatesRecord(State, PositionerBase):
-    """
-    States that come from the standardized lcls device states record
-    """
-    state = Component(EpicsSignal, "", write_pv=":GO", string=True,
-                      auto_monitor=True, limits=False, put_complete=True)
-    SUB_RBK_CHG = 'state_readback_changed'
-    SUB_SET_CHG = 'state_setpoint_changed'
-    _default_sub = SUB_RBK_CHG
+class StateSignal(EpicsSignal):
+    unk = 'Unknown'
 
-    def __init__(self, prefix, *, read_attrs=None, name=None, timeout=None,
-                 **kwargs):
-        self._move_requested = False
-        # Initialize device
-        if read_attrs is None:
-            read_attrs = ["state"]
-        super().__init__(prefix, read_attrs=read_attrs, name=name,
-                         timeout=timeout, **kwargs)
-        # Add subscriptions
-        self.state.subscribe(self._setpoint_changed,
-                             event_type=self.state.SUB_SETPOINT,
-                             run=False)
-        self.state.subscribe(self._read_changed,
-                             event_type=self.state.SUB_VALUE,
-                             run=False)
+    def __init__(self, read_pv, enum):
+        if not(issubclass(enum, Enum)):
+            err = ('Expected a subclass of enum.Enum, but recieved type {}')
+            raise TypeError(err.format(type(self._states_enum)))
 
-    def move(self, position, moved_cb=None, timeout=None, wait=False,
-             **kwargs):
-        status = super().move(position, moved_cb=moved_cb, timeout=timeout,
-                              **kwargs)
-        self._move_requested = True
+        super().__init__(read_pv, write_pv=read_pv+":GO", string=True)
+        enum_strs = [state.name for state in enum]
+        self._read_pv._args['enum_strs'] = [self.unk] + enum_strs
+        self._write_pv._args['enum_strs'] = [self.unk] + enum_strs
 
-        if self.position != position:
-            self.state.put(position, wait=False)
-        else:
-            status._finished(success=True)
-
-        if wait:
-            status_wait(status)
-
-        return status
+        self.enum = enum
+        self.enum_vals = [state.value for state in enum]
+        self.good_vals = self.enum_strs + self.enum_vals
 
     def check_value(self, value):
-        enums = self.state.enum_strs
-        if value in enums or value in range(len(enums)):
-            return
-        else:
-            raise StateError("Value {} invalid. Enums are {}".format(value,
-                                                                     enums))
-
-    @property
-    def position(self):
-        return self.value
-
-    @property
-    def value(self):
-        return self.state.get(use_monitor=True)
-
-    @value.setter
-    def value(self, value):
-        self.state.put(value)
-
-    def _setpoint_changed(self, **kwargs):
-        # Avoid duplicate keywords
-        kwargs.pop('sub_type', None)
-        # Run subscriptions
-        self._run_subs(sub_type=self.SUB_SET_CHG, **kwargs)
-
-    def _read_changed(self, **kwargs):
-        # Avoid duplicate keywords
-        kwargs.pop('sub_type', None)
-        # Run subscriptions
-        self._run_subs(sub_type=self.SUB_RBK_CHG, **kwargs)
-
-        # Handle move status
-        if self._move_requested:
-            readback = self.value
-            if readback != "Unknown":
-                self._move_requested = False
-                setpoint = self.state.get_setpoint(as_string=True)
-                success = setpoint == readback
-                timestamp = kwargs.pop("timestamp", time.time())
-                self._done_moving(success=success, timestamp=timestamp,
-                                  value=readback)
-
-
-class DeviceStatesPart(Device):
-    """
-    Device to manipulate a specific set position.
-    """
-    at_state = Component(EpicsSignalRO, "", string=True)
-    setpos = Component(EpicsSignal, "_SET")
-    delta = Component(EpicsSignal, "_DELTA")
-
-
-def statesrecord_class(classname, *states, doc=""):
-    """
-    Create a DeviceStatesRecord class for a particular device.
-    """
-    components = dict(states=states, __doc__=doc)
-    for state_name in states:
-        name = state_name.lower().replace(":", "") + "_state"
-        components[name] = Component(DeviceStatesPart, state_name)
-    components['raw'] = Component(EpicsSignalRO, states[0] + "_CALC.A")
-    bases = (DeviceStatesRecord,)
-    return type(classname, bases, components)
-
-
-inoutdoc = "Standard PCDS states record with an IN state and an OUT state."
-InOutStates = statesrecord_class("InOutStates", ":IN", ":OUT", doc=inoutdoc)
-inoutccmdoc = "Standard PCDS states record with IN, OUT, and CCM states."
-InOutCCMStates = statesrecord_class("InOutCCMStates", ":IN", ":OUT", ":CCM",
-                                    doc=inoutccmdoc)
+        if not isinstance(value, (str, int)):
+            raise TypeError('Valid states must be of type str or int')
+        elif value in ('Unknown', 0):
+            raise ValueError('Cannot move to the Unknown state (0)')
+        elif value not in self.good_vals:
+            err = ('{0} is not a valid state for {1}. Valid state names are: '
+                   '{2}, and their corresponding values are {3}.')
+            raise ValueError(err.format(value, self.name,
+                                        self.enum_strs, self.enum_vals))
 
 
 class StatePositioner(PositionerBase):
-    state = Component(EpicsSignal, '', write_pv=':GO', string=True)
+    state = FormattedComponent(StateSignal,
+                               suffix='{self.prefix}',
+                               enum='{self._states_enum}',
+                               add_prefix=('suffix', 'enum'))
+    readback = FormattedComponent(EpicsSignalRO, '{self._readback}')
 
     _states_enum = None
+    _states_alias = {}
 
-    SUB_RBK_CHG = 'state_readback_changed'
-    SUB_SET_CHG = 'state_setpoint_changed'
-    _default_sub = SUB_RBK_CHG
+    SUB_STATE = 'state'
+    _default_sub = SUB_STATE
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
-        self.stage_cache_position = None
-        self._has_subscribed = False
+        some_state = next(a for a in self._states_enum).name
+        self._readback = '{}:{}_CALC.A'.format(prefix, some_state)
+        self._has_subscribed_state = False
+        self._has_subscribed_readback = False
 
-        if not(issubclass(self._states_enum, Enum)):
-            err = ('Bad class definition. _states_enum must be a subclass of '
-                   'enum.Enum, but is of type {}')
-            raise StateError(err.format(type(self._states_enum)))
+    def move(self, position, moved_cb=None, timeout=None, wait=False):
+        status = self.set(position, moved_cb=moved_cb, timeout=timeout)
+        if wait:
+            status_wait(status)
+
+    def set(self, position, moved_cb=None, timeout=None):
+        try:
+            position = self._states_alias[position]
+        except KeyError:
+            pass
+        self.check_value(position)
+
+        if timeout is None:
+            timeout = self._timeout
+
+        self._run_subs(sub_type=self._SUB_REQ_DONE, success=False)
+        self._reset_sub(self._SUB_REQ_DONE)
+
+        status = StateStatus(self, position, timeout=timeout,
+                             settle_time=self._settle_time)
+
+        if moved_cb is not None:
+            status.add_callback(functools.partial(moved_cb, obj=self))
+
+        self.subscribe(status._finished, event_type=self._SUB_REQ_DONE,
+                       run=False)
+
+        self.state.put(position)
+        self._run_subs(sub_type=self.SUB_START)
+        return status
 
     @property
     def position(self):
         return self.state.get()
 
     def check_value(self, value):
-        good_value = True
-        if isinstance(value, str):
-            try:
-                self._states_enum[value]
-            except KeyError:
-                good_value = False
-        elif isinstance(value, int):
-            try:
-                self._states_enum(value)
-            except ValueError:
-                good_value = False
-        else:
-            raise TypeError('Valid states must be of type str or int')
-        if not good_value:
-            err = ('{0} is not a valid state for {1}. Valid state names are: '
-                   '{2}, and their corresponding values are {3}.')
-            valid_names = list(self._states_enum.__members__.keys())
-            valid_values = [state.value for state in
-                            self._states_enum.__members__values()]
-            raise ValueError(err.format(value, self.name,
-                                        valid_names, valid_values))
+        self.state.check_value()
 
-
-class StateError(Exception):
-    pass
+    def subscribe(self, cb, event_type=None, run=True):
+        cid = super().subscribe(cb, event_type=event_type, run=run)
+        if event_type == self.SUB_STATE and not self._has_subscribed_state:
+            cb = functools.partial(self._run_subs, sub_type=event_type)
+            self.state.subscribe(cb, run=False)
+            self._has_subscribed_state = True
+        elif (event_type == self.SUB_READBACK
+              and not self._has_subscribed_readback):
+            cb = functools.partial(self._run_subs, sub_type=event_type)
+            self.readback.subscribe(cb, run=False)
+            self._has_subscribed_readback = True
+        return cid
 
 
 class StateStatus(SubscriptionStatus):
@@ -332,8 +268,8 @@ class StateStatus(SubscriptionStatus):
     Status produced by state request
 
     The status relies on two methods of the device, first the attribute
-    `.value` should reflect the current state. Second, the status will call the
-    built-in method `subscribe` with the `event_type` explicitly set to
+    `.position` should reflect the current state. Second, the status will call
+    the built-in method `subscribe` with the `event_type` explicitly set to
     "device.SUB_STATE". This will cause the StateStatus to process whenever the
     device changes state to avoid unnecessary polling of the associated EPICS
     variables
@@ -356,8 +292,15 @@ class StateStatus(SubscriptionStatus):
                  timeout=None, settle_time=None):
         # Make a quick check_state callable
         def check_state(*args, **kwargs):
-            return device.value == desired_state
+            return device.position == desired_state
 
         # Start timeout and subscriptions
         super().__init__(device, check_state, event_type=device.SUB_STATE,
                          timeout=timeout, settle_time=settle_time)
+
+    def _finished(self, success=True, **kwargs):
+        self.device._done_moving(success=success)
+
+
+class InOutPositioner(StatePositioner):
+    _states_enum = Enum('InOutState', 'IN OUT')
