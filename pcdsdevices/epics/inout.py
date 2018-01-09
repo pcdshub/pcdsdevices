@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from ophyd import Device, Component as C
 
-from .state import InOutStates, statesrecord_class
+from ..state import InOutStates, statesrecord_class
 
 
 class InOutDevice(Device):

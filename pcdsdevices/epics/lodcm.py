@@ -5,7 +5,7 @@ from threading import Event, Thread, RLock
 from ophyd import Device, Component
 from ophyd.status import DeviceStatus, wait as status_wait
 
-from .state import statesrecord_class, InOutStates
+from ..state import statesrecord_class, InOutStates
 
 
 H1NStates = statesrecord_class("LodcmStates", ":OUT", ":C", ":Si")

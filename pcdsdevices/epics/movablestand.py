@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .state import pvstate_class
+from ..state import pvstate_class
 
 MovableStand = pvstate_class("MovableStand",
                              {"in_limit": {"pvname": ":IN_DI",

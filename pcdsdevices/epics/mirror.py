@@ -37,7 +37,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
                    FormattedComponent)
 
 from .mps import MPS
-from .state import InOutStates
+from ..state import InOutStates
 
 logger = logging.getLogger(__name__)
 

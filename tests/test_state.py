@@ -4,8 +4,8 @@ import pytest
 import time as ttime
 from ophyd.signal import Signal
 
-from pcdsdevices.epics import state
-from pcdsdevices.epics.state import StateStatus
+from pcdsdevices import state
+from pcdsdevices.state import StateStatus
 
 
 class PrefixSignal(Signal):

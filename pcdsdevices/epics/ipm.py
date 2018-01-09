@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .state import statesrecord_class, InOutStates
+from ..state import statesrecord_class, InOutStates
 from ophyd.status import wait as status_wait
 from ophyd import (Device, EpicsSignalRO, Component,
                    FormattedComponent)

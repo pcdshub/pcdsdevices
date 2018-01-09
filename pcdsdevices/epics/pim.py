@@ -36,7 +36,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
                    FormattedComponent)
 
 from .imsmotor import ImsMotor
-from .state import statesrecord_class
+from ..state import statesrecord_class
 from .areadetector.detectors import (PulnixDetector, FeeOpalDetector)
 from .areadetector.plugins import (ImagePlugin, StatsPlugin)
 from ..utils.pyutils import isnumber

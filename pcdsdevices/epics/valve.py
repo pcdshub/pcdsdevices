@@ -13,7 +13,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
                    FormattedComponent as FC)
 
 from .mps import MPS, mps_factory
-from .state import pvstate_class, StateStatus
+from ..state import pvstate_class, StateStatus
 
 logger = logging.getLogger(__name__)
 
