@@ -83,10 +83,6 @@ def test_slit_transmission():
     slits = fake_slits()
     # Set our nominal aperature
     slits.nominal_aperature = (5.0, 10.0)
-    assert slits._left_side_opening.get() == 2.5
-    assert slits._right_side_opening.get() == -2.5
-    assert slits._top_side_opening.get() == 5.0
-    assert slits._bottom_side_opening.get() == -5.0
     # Half-closed
     slits.xwidth.readback._read_pv.put(2.5)
     slits.ywidth.readback._read_pv.put(5.0)
@@ -121,11 +117,14 @@ def test_slit_staging():
     slits = fake_slits()
     # Check the starting location
     slits.xwidth.readback._read_pv.put(2.5)
-    slits.xwidth.setpoint._read_pv.put(2.5)
+    slits.ywidth.readback._read_pv.put(2.5)
     time.sleep(1)
     # Stage the slits to record the values
-    slits.xwidth.stage()
+    slits.stage()
     # Check that unstage places everything back
     slits.xwidth.setpoint._read_pv.put(1.5)
-    slits.xwidth.unstage()
+    slits.ywidth.setpoint._read_pv.put(1.5)
+    slits.unstage()
+    time.sleep(1)
     assert slits.xwidth.setpoint._write_pv.get() == 2.5
+    assert slits.ywidth.setpoint._write_pv.get() == 2.5

@@ -31,13 +31,6 @@ class SlitPositioner(PVPositioner, Device):
                          read_attrs=read_attrs, parent=parent, egu=egu,
                          **kwargs)
 
-    def stage(self):
-        """
-        Stage the positioner by storing the position
-        """
-        self.stage_sigs[self.setpoint] = self.readback.value
-        super().stage()
-
     def _setup_move(self, position):
         logger.debug('%s.setpoint = %s', self.name, position)
         self.setpoint.put(position, wait=False)
@@ -84,22 +77,17 @@ class Slits(Device):
     close_cmd = C(EpicsSignal, ":CLOSE")
     block_cmd = C(EpicsSignal, ":BLOCK")
 
-    # Private signals used by other methods
-    _right_side_opening = C(EpicsSignal, ":OPEN.DOL1")
-    _left_side_opening = C(EpicsSignal, ":OPEN.DOL2")
-    _bottom_side_opening = C(EpicsSignal, ":OPEN.DOL3")
-    _top_side_opening = C(EpicsSignal, ":OPEN.DOL4")
-
     # Subscription information
     SUB_STATE = 'sub_state_changed'
     _default_sub = SUB_STATE
 
     # Default Attributes
     _default_read_attrs = ['xwidth', 'ywidth']
-    _default_configurations_attrs = ['xcenter', 'ycenter']
+    _default_configuration_attrs = ['xcenter', 'ycenter']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, nominal_aperature=(5.0, 5.0), **kwargs):
         self._has_subscribed = False
+        self.nominal_aperature = nominal_aperature
         super().__init__(*args, **kwargs)
 
     def move(self, size, wait=False, moved_cb=None, timeout=None):
@@ -191,23 +179,6 @@ class Slits(Device):
         """
         return (self.xwidth.position, self.ywidth.position)
 
-    @property
-    def nominal_aperature(self):
-        """
-        Default aperature size (xwidth, ywidth) described in the OPEN record
-        """
-        return (self._left_side_opening.get() - self._right_side_opening.get(),
-                self._top_side_opening.get() - self._bottom_side_opening.get())
-
-    @nominal_aperature.setter
-    def nominal_aperature(self, dimensions):
-        # Grab the center of each direction
-        xcenter, ycenter = self.xcenter.position, self.ycenter.position
-        self._left_side_opening.put(xcenter + dimensions[0]/2.)
-        self._right_side_opening.put(xcenter - dimensions[0]/2.)
-        self._top_side_opening.put(ycenter + dimensions[1]/2.)
-        self._bottom_side_opening.put(ycenter - dimensions[1]/2.)
-
     def remove(self, size=None, wait=False, timeout=None, **kwargs):
         """
         Open the slits to unblock the beam
@@ -261,6 +232,14 @@ class Slits(Device):
         Overlap the slits to block the beam
         """
         self.block_cmd.put(1)
+
+    def stage(self):
+        """
+        Store the initial values of the aperature position before scanning
+        """
+        self._original_vals[self.xwidth.setpoint] = self.xwidth.readback.value
+        self._original_vals[self.ywidth.setpoint] = self.ywidth.readback.value
+        return super().stage()
 
     def subscribe(self, cb, event_type=None, run=True):
         """
