@@ -210,7 +210,9 @@ class StatePositioner(PositionerBase):
     _default_sub = SUB_STATE
 
     def __init__(self, prefix, *, name, **kwargs):
-        super().__init__(prefix, name=name, **kwargs)
+        super().__init__(name=name, **kwargs)
+        self.prefix = prefix
+
         some_state = next(a for a in self._states_enum).name
         self._readback = '{}:{}_CALC.A'.format(prefix, some_state)
         self._inverse_alias = {value: key for key, value in
