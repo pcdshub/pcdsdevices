@@ -6,6 +6,7 @@ import time
 import logging
 from threading import RLock
 from keyword import iskeyword
+from enum import Enum
 
 from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait, SubscriptionStatus
@@ -273,6 +274,53 @@ InOutStates = statesrecord_class("InOutStates", ":IN", ":OUT", doc=inoutdoc)
 inoutccmdoc = "Standard PCDS states record with IN, OUT, and CCM states."
 InOutCCMStates = statesrecord_class("InOutCCMStates", ":IN", ":OUT", ":CCM",
                                     doc=inoutccmdoc)
+
+
+class StatePositioner(PositionerBase):
+    state = Component(EpicsSignal, '', write_pv=':GO', string=True)
+
+    _states_enum = None
+
+    SUB_RBK_CHG = 'state_readback_changed'
+    SUB_SET_CHG = 'state_setpoint_changed'
+    _default_sub = SUB_RBK_CHG
+
+    def __init__(self, prefix, *, name, **kwargs):
+        super().__init__(prefix, name=name, **kwargs)
+        self.stage_cache_position = None
+        self._has_subscribed = False
+
+        if not(issubclass(self._states_enum, Enum)):
+            err = ('Bad class definition. _states_enum must be a subclass of '
+                   'enum.Enum, but is of type {}')
+            raise StateError(err.format(type(self._states_enum)))
+
+    @property
+    def position(self):
+        return self.state.get()
+
+    def check_value(self, value):
+        good_value = True
+        if isinstance(value, str):
+            try:
+                self._states_enum[value]
+            except KeyError:
+                good_value = False
+        elif isinstance(value, int):
+            try:
+                self._states_enum(value)
+            except ValueError:
+                good_value = False
+        else:
+            raise TypeError('Valid states must be of type str or int')
+        if not good_value:
+            err = ('{0} is not a valid state for {1}. Valid state names are: '
+                   '{2}, and their corresponding values are {3}.')
+            valid_names = list(self._states_enum.__members__.keys())
+            valid_values = [state.value for state in
+                            self._states_enum.__members__values()]
+            raise ValueError(err.format(value, self.name,
+                                        valid_names, valid_values))
 
 
 class StateError(Exception):
