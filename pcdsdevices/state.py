@@ -33,6 +33,7 @@ class State(Device):
         Subscriptions to SUB_STATE will be called if the value attribute
         changes.
     """
+    position = None
     value = None
     states = None
     SUB_STATE = "state_changed"
@@ -81,6 +82,10 @@ class PVState(State):
         A list of possible states
         """
         return list(self._states.keys())
+
+    @property
+    def position(self):
+        return self.value
 
     @property
     def value(self):
