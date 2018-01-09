@@ -19,6 +19,10 @@ class InOutPositioner(StatePositioner):
                                wait=wait, **kwargs)
 
 
+class Diode(InOutPositioner):
+    pass
+
+
 class Reflaser(InOutPositioner):
     """
     Mirror that is inserted into the beam to point a reference laser along the
