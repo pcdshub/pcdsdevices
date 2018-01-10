@@ -15,8 +15,8 @@ class InOutPositioner(StatePositioner):
         return self.position == 'OUT'
 
     def remove(self, wait=False, timeout=None, finished_cb=None, **kwargs):
-        return self.state.move('OUT', moved_cb=finished_cb, timeout=timeout,
-                               wait=wait, **kwargs)
+        return self.move('OUT', moved_cb=finished_cb, timeout=timeout,
+                         wait=wait, **kwargs)
 
 
 class Diode(InOutPositioner):

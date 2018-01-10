@@ -170,19 +170,24 @@ def pvstate_class(classname, states, doc="", setter=None,
 class StateSignal(EpicsSignal):
     unk = 'Unknown'
 
-    def __init__(self, read_pv, enum):
+    def __init__(self, read_pv, enum, *, name, parent=None, **kwargs):
+        if isinstance(enum, str):
+            enum = getattr(parent, enum)
         if not(issubclass(enum, Enum)):
             err = ('Expected a subclass of enum.Enum, but recieved type {}')
             raise TypeError(err.format(type(self._states_enum)))
 
-        super().__init__(read_pv, write_pv=read_pv+":GO", string=True)
-        enum_strs = [state.name for state in enum]
-        self._read_pv._args['enum_strs'] = [self.unk] + enum_strs
-        self._write_pv._args['enum_strs'] = [self.unk] + enum_strs
+        super().__init__(read_pv, write_pv=read_pv+":GO", string=True,
+                         name=name, parent=parent, **kwargs)
 
         self.enum = enum
+        self._enum_strs = [state.name for state in enum]
         self.enum_vals = [state.value for state in enum]
-        self.good_vals = self.enum_strs + self.enum_vals
+        self.good_vals = self._enum_strs + self.enum_vals
+
+    @property
+    def enum_strs(self):
+        return self._enum_strs
 
     def check_value(self, value):
         if not isinstance(value, (str, int)):
@@ -193,14 +198,11 @@ class StateSignal(EpicsSignal):
             err = ('{0} is not a valid state for {1}. Valid state names are: '
                    '{2}, and their corresponding values are {3}.')
             raise ValueError(err.format(value, self.name,
-                                        self.enum_strs, self.enum_vals))
+                                        self._enum_strs, self.enum_vals))
 
 
-class StatePositioner(PositionerBase):
-    state = FormattedComponent(StateSignal,
-                               suffix='{self.prefix}',
-                               enum='{self._states_enum}',
-                               add_prefix=('suffix', 'enum'))
+class StatePositioner(Device, PositionerBase):
+    state = Component(StateSignal, '', enum='_states_enum')
     readback = FormattedComponent(EpicsSignalRO, '{self._readback}')
 
     _states_enum = None
@@ -210,11 +212,12 @@ class StatePositioner(PositionerBase):
     _default_sub = SUB_STATE
 
     def __init__(self, prefix, *, name, **kwargs):
-        super().__init__(name=name, **kwargs)
-        self.prefix = prefix
-
         some_state = next(a for a in self._states_enum).name
         self._readback = '{}:{}_CALC.A'.format(prefix, some_state)
+        super().__init__(name=name, **kwargs)
+
+        self.prefix = prefix
+
         self._inverse_alias = {value: key for key, value in
                                self._states_alias.items()}
         self._has_subscribed_state = False
@@ -260,20 +263,26 @@ class StatePositioner(PositionerBase):
             return state
 
     def check_value(self, value):
-        self.state.check_value()
+        self.state.check_value(value)
 
     def subscribe(self, cb, event_type=None, run=True):
         cid = super().subscribe(cb, event_type=event_type, run=run)
         if event_type == self.SUB_STATE and not self._has_subscribed_state:
-            cb = functools.partial(self._run_subs, sub_type=event_type)
-            self.state.subscribe(cb, run=False)
+            self.state.subscribe(self._run_sub_state, run=False)
             self._has_subscribed_state = True
         elif (event_type == self.SUB_READBACK
               and not self._has_subscribed_readback):
-            cb = functools.partial(self._run_subs, sub_type=event_type)
-            self.readback.subscribe(cb, run=False)
+            self.readback.subscribe(self._run_sub_readback, run=False)
             self._has_subscribed_readback = True
         return cid
+
+    def _run_sub_state(self, *args, **kwargs):
+        kwargs.pop('sub_type')
+        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
+
+    def _run_sub_readback(self, *args, **kwargs):
+        kwargs.pop('sub_type')
+        self._run_subs(sub_type=self.SUB_READBACK, **kwargs)
 
 
 class StateStatus(SubscriptionStatus):
@@ -313,7 +322,3 @@ class StateStatus(SubscriptionStatus):
 
     def _finished(self, success=True, **kwargs):
         self.device._done_moving(success=success)
-
-
-class InOutPositioner(StatePositioner):
-    _states_enum = Enum('InOutState', 'IN OUT')
