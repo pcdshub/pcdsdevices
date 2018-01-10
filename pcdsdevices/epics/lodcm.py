@@ -1,4 +1,4 @@
-from threading import Event, Thread, RLock
+from threading import RLock
 from enum import Enum
 
 from ophyd import Device, Component
@@ -251,31 +251,11 @@ class LODCM(Device):
             lodcm_status._finished(success=True)
             return lodcm_status
 
-        events = []
-        for i, status in enumerate(done_statuses):
-            event = Event()
-            events.append(event)
-            status.add_callback(self._make_mark_event(event))
+        first_status = done_statuses[0]
+        rest_status = done_statuses[1:]
 
-        finisher = Thread(target=self._status_finisher,
-                          args=(events, lodcm_status))
-        finisher.start()
-        return lodcm_status
+        and_status = first_status
+        for stat in rest_status:
+            and_status = and_status & stat
 
-    def _make_mark_event(self, event):
-        """
-        Create callback for combining statuses
-        """
-        def mark_event(*args, **kwargs):
-            event.set()
-        return mark_event
-
-    def _status_finisher(self, events, status, timeout=None):
-        """
-        Mark status as finished or short-circuit on timeout
-        """
-        for ev in events:
-            ok = ev.wait(timeout=timeout)
-            if not ok:
-                return
-        status._finished(success=True)
+        return and_status
