@@ -229,6 +229,7 @@ class StatePositioner(Device, PositionerBase):
             status_wait(status)
 
     def set(self, position, moved_cb=None, timeout=None):
+        logger.debug('set %s to position %s', self.name, position)
         try:
             position = self._states_alias[position]
         except KeyError:
@@ -322,3 +323,4 @@ class StateStatus(SubscriptionStatus):
 
     def _finished(self, success=True, **kwargs):
         self.device._done_moving(success=success)
+        super()._finished(success=success, **kwargs)

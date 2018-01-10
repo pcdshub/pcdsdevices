@@ -15,7 +15,7 @@ def fake_ipm():
     using_fake_epics_pv does cleanup routines after the fixture and before the
     test, so we can't make this a fixture without destabilizing our tests.
     """
-    ipm = IPM("Test:My:IPM")
+    ipm = IPM("Test:My:IPM", name='test_ipm')
     connect_rw_pvs(ipm.diode.state)
     connect_rw_pvs(ipm.state)
     ipm.diode.state._write_pv.put('Unknown')
@@ -65,4 +65,3 @@ def test_ipm_subscriptions():
     ipm.state._read_pv.put('OUT')
     attr_wait_true(cb, 'called')
     assert cb.called
-
