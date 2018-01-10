@@ -308,7 +308,7 @@ class Slits(Device):
             self.ywidth.readback.subscribe(self._aperture_changed,
                                            run=False)
             self._has_subscribed = True
-        super().subscribe(cb, event_type=event_type, run=run)
+        return super().subscribe(cb, event_type=event_type, run=run)
 
     def _aperture_changed(self, *args, **kwargs):
         """
