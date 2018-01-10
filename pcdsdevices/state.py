@@ -262,6 +262,8 @@ class StatePositioner(Device, PositionerBase):
 
     def subscribe(self, cb, event_type=None, run=True):
         cid = super().subscribe(cb, event_type=event_type, run=run)
+        if event_type is None:
+            event_type = self._default_sub
         if event_type == self.SUB_STATE and not self._has_subscribed_state:
             self.state.subscribe(self._run_sub_state, run=False)
             self._has_subscribed_state = True
