@@ -1,11 +1,12 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import pytest
 import time as ttime
+from enum import Enum
+
 from ophyd.signal import Signal
 
 from pcdsdevices import state
-from pcdsdevices.state import StateStatus
+from pcdsdevices.state import StateStatus, StatePositioner
+from pcdsdevices.sim.pv import using_fake_epics_pv
 
 
 class PrefixSignal(Signal):
@@ -87,11 +88,13 @@ def test_state_status(lim_info):
     assert status.check_value not in lim_obj._callbacks[lim_obj.SUB_STATE]
 
 
+@using_fake_epics_pv
 def test_statesrecord_class():
     """
     Nothing special can be done without live hosts, just make sure we can
     create a class.
     """
-    state.statesrecord_class("Classname", "state0", "state1", "state2")
+    class MyStates(StatePositioner):
+        _states_enum = Enum('MyStatesStates', 'YES NO MAYBE SO')
 
-
+    MyStates('A:PV', name='test')
