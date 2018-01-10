@@ -1,5 +1,14 @@
 Slits
-*****
+#####
+.. automodule:: pcdsdevices.slits
 
-.. autoclass:: pcdsdevices.epics.Slits
+Base Class
+==========
+.. autoclass:: pcdsdevices.slits.Slits
    :members:
+
+SlitPositioner
+==============
+.. autoclass:: pcdsdevices.slits.SlitPositioner
+   :members:
+   :inherited-members:
