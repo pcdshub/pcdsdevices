@@ -81,8 +81,8 @@ def test_slit_motion():
 @using_fake_epics_pv
 def test_slit_transmission():
     slits = fake_slits()
-    # Set our nominal aperature
-    slits.nominal_aperature = (5.0, 10.0)
+    # Set our nominal aperture
+    slits.nominal_aperture = (5.0, 10.0)
     # Half-closed
     slits.xwidth.readback._read_pv.put(2.5)
     slits.ywidth.readback._read_pv.put(5.0)
@@ -106,7 +106,7 @@ def test_slit_subscriptions():
     # Subscribe a pseudo callback
     cb = Mock()
     slits.subscribe(cb, event_type=slits.SUB_STATE, run=False)
-    # Change the aperature size
+    # Change the aperture size
     slits.xwidth.readback._read_pv.put(40.0)
     attr_wait_true(cb, 'called')
     assert cb.called

@@ -1,12 +1,12 @@
 """
 The SLAC EPICS motor record contains an extra set of records to abstract four
 axes into a Slits object. This allows an operator to manipulate the center and
-width in two dimensions of a small aperature. The classes below allow both
-individual parameters of the aperature and the Slit as a whole to be controlled
+width in two dimensions of a small aperture. The classes below allow both
+individual parameters of the aperture and the Slit as a whole to be controlled
 and scanned. The :class:`.Slits` instantiates four sub-devices `xwidth`,
 `xcenter`, `ycenter`, `ywidth`. These are each represented by
 :class:`.SlitPositioner`. The main :class:`.Slits` class assumes that most of
-the manipulation will be done on the size of the aperature not the position,
+the manipulation will be done on the size of the aperture not the position,
 however, if control of the center is desired the `center` sub-devices can be
 used.
 """
@@ -27,7 +27,7 @@ class SlitPositioner(PVPositioner, Device):
 
     Each adjustable parameter of the slit (center, width) can be modeled as a
     motor in itself, even though each controls two different actual motors in
-    reality, this gives a convienent interface for adjusting the aperature size
+    reality, this gives a convienent interface for adjusting the aperture size
     and location with out backwards calculating motor positions
 
     Parameters
@@ -90,7 +90,7 @@ class Slits(Device):
     name : str, optional
         The name of the offset mirror
 
-    nominal_aperature : float, optional
+    nominal_aperture : float, optional
         Nominal slit size that will encompass the beam without blocking
 
     Notes
@@ -100,11 +100,11 @@ class Slits(Device):
     create an estimate that will warn operators of narrowly closed slits while
     still allowing slits to be closed along the beampath.
 
-    The simplest solution was to use a :attr:`.nominal_aperature` that stores
+    The simplest solution was to use a :attr:`.nominal_aperture` that stores
     the slit width and height that the slits should use for general operation.
     Using this the :attr:`.transmission` is calculated based on how the current
-    aperature compares to the nominal, always using the minimum of the width or
-    height. This means that if you have a nominal aperature of 2 mm, but your
+    aperture compares to the nominal, always using the minimum of the width or
+    height. This means that if you have a nominal aperture of 2 mm, but your
     slits are set to 0.5 mm, the total estimated transmission will be 25%.
     Obviously this is greatly oversimplified, but it allows the lightpath to
     make a rough back of the hand calculation without being over aggressive
@@ -127,9 +127,9 @@ class Slits(Device):
     _default_read_attrs = ['xwidth', 'ywidth']
     _default_configuration_attrs = ['xcenter.readback', 'ycenter.readback']
 
-    def __init__(self, *args, nominal_aperature=(5.0, 5.0), **kwargs):
+    def __init__(self, *args, nominal_aperture=(5.0, 5.0), **kwargs):
         self._has_subscribed = False
-        self.nominal_aperature = nominal_aperature
+        self.nominal_aperture = nominal_aperture
         super().__init__(*args, **kwargs)
 
     def move(self, size, wait=False, moved_cb=None, timeout=None):
@@ -140,7 +140,7 @@ class Slits(Device):
         ---------
         size : float, tuple
             Target size for slits in both x and y axis. Either specify as a
-            tuple for a rectangular aperature (width, height) or set both with
+            tuple for a rectangular aperture (width, height) or set both with
             single floating point value to use set a square width
 
         wait : bool
@@ -188,7 +188,7 @@ class Slits(Device):
         """
         Whether the slits are inserted into the beampath
         """
-        return all([self.nominal_aperature[idx] > self.current_aperature[idx]
+        return all([self.nominal_aperture[idx] > self.current_aperture[idx]
                     for idx in range(0, 2)])
 
     @property
@@ -201,19 +201,19 @@ class Slits(Device):
     @property
     def transmission(self):
         """
-        Estimated transmission of the slits based on :attr:`.nominal_aperature`
+        Estimated transmission of the slits based on :attr:`.nominal_aperture`
         """
-        # Find most restrictive side of slit aperature
-        min_dim = np.argmin(self.current_aperature)
+        # Find most restrictive side of slit aperture
+        min_dim = np.argmin(self.current_aperture)
         # Don't allow transmissions over 1.0
-        return min([self.current_aperature[min_dim]
-                    / self.nominal_aperature[min_dim],
+        return min([self.current_aperture[min_dim]
+                    / self.nominal_aperture[min_dim],
                     1.0])
 
     @property
-    def current_aperature(self):
+    def current_aperture(self):
         """
-        Current size of the aperature (width, height)
+        Current size of the aperture (width, height)
         """
         return (self.xwidth.position, self.ywidth.position)
 
@@ -225,7 +225,7 @@ class Slits(Device):
         ----------
         size : float, optional
             Open the slits to a specific size otherwise
-            `:attr:`.nominal_aperature is used
+            `:attr:`.nominal_aperture is used
 
         wait : bool, optional
             Wait for the status object to complete the move before returning
@@ -243,8 +243,8 @@ class Slits(Device):
         --------
         :meth:`Slits.move`
         """
-        # Use nominal_aperature by default
-        size = size or self.nominal_aperature
+        # Use nominal_aperture by default
+        size = size or self.nominal_aperture
         return self.move(size, wait=wait, timeout=timeout, **kwargs)
 
     def set(self, size):
@@ -261,13 +261,13 @@ class Slits(Device):
 
     def open(self):
         """
-        Uses the built-in `OPEN` record to move open the aperature
+        Uses the built-in `OPEN` record to move open the aperture
         """
         self.open_cmd.put(1)
 
     def close(self):
         """
-        Close the slits to have an aperature of 0mm on each side
+        Close the slits to have an aperture of 0mm on each side
         """
         self.close_cmd.put(1)
 
@@ -279,7 +279,7 @@ class Slits(Device):
 
     def stage(self):
         """
-        Store the initial values of the aperature position before scanning
+        Store the initial values of the aperture position before scanning
         """
         self._original_vals[self.xwidth.setpoint] = self.xwidth.readback.value
         self._original_vals[self.ywidth.setpoint] = self.ywidth.readback.value
@@ -302,15 +302,15 @@ class Slits(Device):
         """
         # Avoid making child subscriptions unless a client cares
         if not self._has_subscribed:
-            # Subscribe to changes in aperature
-            self.xwidth.readback.subscribe(self._aperature_changed,
+            # Subscribe to changes in aperture
+            self.xwidth.readback.subscribe(self._aperture_changed,
                                            run=False)
-            self.ywidth.readback.subscribe(self._aperature_changed,
+            self.ywidth.readback.subscribe(self._aperture_changed,
                                            run=False)
             self._has_subscribed = True
         super().subscribe(cb, event_type=event_type, run=run)
 
-    def _aperature_changed(self, *args, **kwargs):
+    def _aperture_changed(self, *args, **kwargs):
         """
         Callback run when slit size is adjusted
         """
