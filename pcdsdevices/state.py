@@ -214,6 +214,9 @@ class StatePositioner(Device, PositionerBase):
     SUB_STATE = 'state'
     _default_sub = SUB_STATE
 
+    _default_read_attrs = ['state', 'readback']
+    _default_configuration_attrs = []
+
     def __init__(self, prefix, *, name, **kwargs):
         some_state = next(a for a in self._states_enum).name
         self._readback = '{}:{}_CALC.A'.format(prefix, some_state)
