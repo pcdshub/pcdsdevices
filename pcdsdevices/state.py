@@ -331,6 +331,10 @@ class StatePositioner(Device, PositionerBase):
         kwargs.pop('sub_type')
         self._run_subs(sub_type=self.SUB_READBACK, **kwargs)
 
+    @property
+    def hints(self):
+        return {'fields': [self.state.name]}
+
 
 class StateStatus(SubscriptionStatus):
     """
