@@ -18,11 +18,3 @@
 
    homs.rst
    lodcm.rst   
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Developer Documentation
-   :hidden:
-
-   device.rst
-   interface.rst
