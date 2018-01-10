@@ -56,7 +56,7 @@ class State(Device):
             if self.value != self._prev_value:
                 logger.debug("State of %s has changed from %s to %s",
                              self.name or self, self._prev_value, self.value)
-                self._run_subs(sub_type=self.SUB_STATE)
+                self._run_subs(sub_type=self.SUB_STATE, value=self.value)
                 self._prev_value = self.value
 
     def _done_moving(*args, **kwargs):
@@ -316,8 +316,8 @@ class StateStatus(SubscriptionStatus):
     def __init__(self, device, desired_state,
                  timeout=None, settle_time=None):
         # Make a quick check_state callable
-        def check_state(*args, **kwargs):
-            return device.position == desired_state
+        def check_state(*, value, **kwargs):
+            return value == desired_state
 
         # Start timeout and subscriptions
         super().__init__(device, check_state, event_type=device.SUB_STATE,
