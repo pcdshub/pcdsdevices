@@ -32,6 +32,6 @@ def test_pim_subscription():
     pim = fake_pim()
     cb = Mock()
     pim.subscribe(cb, event_type=pim.SUB_STATE, run=False)
-    pim.states.state._read_pv.put(4)
+    pim.state._read_pv.put(4)
     attr_wait_true(cb, 'called')
     assert cb.called
