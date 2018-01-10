@@ -171,6 +171,10 @@ def pvstate_class(classname, states, doc="", setter=None,
 
 
 class StateSignal(EpicsSignal):
+    """
+    Represents the get/set portion of a states record. This class exists to
+    handle enum checking and to avoid bloat in the main StatePositioner class.
+    """
     unk = 'Unknown'
 
     def __init__(self, read_pv, enum, *, name, parent=None, **kwargs):
@@ -184,9 +188,9 @@ class StateSignal(EpicsSignal):
                          name=name, parent=parent, **kwargs)
 
         self.enum = enum
-        self._enum_strs = [state.name for state in enum]
-        self.enum_vals = [state.value for state in enum]
-        self.good_vals = self._enum_strs + self.enum_vals
+        self._enum_strs = [self.unk] + [state.name for state in enum]
+        self.enum_vals = [0] + [state.value for state in enum]
+        self.good_vals = self._enum_strs[1:] + self.enum_vals[1:]
 
     @property
     def enum_strs(self):
@@ -205,11 +209,15 @@ class StateSignal(EpicsSignal):
 
 
 class StatePositioner(Device, PositionerBase):
+    """
+    Base class for positioners with a discrete set of named positions
+    facilitated by the lcls states record.
+    """
     state = Component(StateSignal, '', enum='_states_enum')
     readback = FormattedComponent(EpicsSignalRO, '{self._readback}')
 
-    _states_enum = None
-    _states_alias = {}
+    _states_enum = None  # Override with an Enum to define your states
+    _states_alias = {}   # Override with {'ALIAS': 'STATE'}
 
     SUB_STATE = 'state'
     _default_sub = SUB_STATE
@@ -230,11 +238,47 @@ class StatePositioner(Device, PositionerBase):
         self._has_subscribed_readback = False
 
     def move(self, position, moved_cb=None, timeout=None, wait=False):
+        """
+        Move to the desired state.
+
+        Parameters
+        ----------
+        position: int or str
+            The enumerate state or the corresponding integer
+
+        moved_cb: function, optional
+            moved_cb(obj=self) will be called at the end of motion
+
+        timeout: int or float, optional
+            Move timeout in seconds
+
+        wait: bool, optional
+            If True, do not return until the motion has completed.
+        """
         status = self.set(position, moved_cb=moved_cb, timeout=timeout)
         if wait:
             status_wait(status)
 
     def set(self, position, moved_cb=None, timeout=None):
+        """
+        Move to the desired state and satisfy the bluesky interface.
+
+        Parameters
+        ----------
+        position: int or str
+            The enumerate state or the corresponding integer
+
+        moved_cb: function, optional
+            moved_cb(obj=self) will be called at the end of motion
+
+        timeout: int or float, optional
+            Move timeout in seconds
+
+        Returns
+        -------
+        status: StateStatus
+            Status object that represents the move's progress.
+        """
         logger.debug('set %s to position %s', self.name, position)
         try:
             position = self._states_alias[position]
