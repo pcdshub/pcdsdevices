@@ -59,6 +59,9 @@ class State(Device):
                 self._run_subs(sub_type=self.SUB_STATE)
                 self._prev_value = self.value
 
+    def _done_moving(*args, **kwargs):
+        pass
+
 
 class PVState(State):
     """
