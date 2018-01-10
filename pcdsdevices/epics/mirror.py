@@ -998,14 +998,14 @@ class PointingMirror(OffsetMirror):
         """
         Whether PointingMirror is inserted
         """
-        return self.state.value == 'IN'
+        return self.state.position == 'IN'
 
     @property
     def removed(self):
         """
         Whether PointingMirror is removed
         """
-        return self.state.value == 'OUT'
+        return self.state.position == 'OUT'
 
     def remove(self, wait=False, timeout=None): 
         """
