@@ -239,17 +239,11 @@ class StatePositioner(Device, PositionerBase):
         if timeout is None:
             timeout = self._timeout
 
-        self._run_subs(sub_type=self._SUB_REQ_DONE, success=False)
-        self._reset_sub(self._SUB_REQ_DONE)
-
         status = StateStatus(self, position, timeout=timeout,
                              settle_time=self._settle_time)
 
         if moved_cb is not None:
             status.add_callback(functools.partial(moved_cb, obj=self))
-
-        self.subscribe(status._finished, event_type=self._SUB_REQ_DONE,
-                       run=False)
 
         self.state.put(position)
         self._run_subs(sub_type=self.SUB_START)
