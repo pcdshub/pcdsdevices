@@ -73,7 +73,7 @@ class LODCM(Device):
         """
         table = ["MAIN", "BOTH", "MONO", "BLOCKED"]
         states = ("OUT", "C", "Si", "Unknown")
-        n1 = states.index(self.h1n.value)
+        n1 = states.index(self.h1n.position)
         state = table[n1]
         if state == "MAIN":
             return [self.main_line]
@@ -145,10 +145,10 @@ class LODCM(Device):
         diag_clear: bool
             False if the diagnostics will prevent beam.
         """
-        yag_clear = self.yag.value == 'OUT'
-        dectris_clear = self.dectris.value in ('OUT', 'OUTLOW')
-        diode_clear = self.diode.value in ('IN', 'OUT')
-        foil_clear = self.foil.value == 'OUT'
+        yag_clear = self.yag.position == 'OUT'
+        dectris_clear = self.dectris.position in ('OUT', 'OUTLOW')
+        diode_clear = self.diode.position in ('IN', 'OUT')
+        foil_clear = self.foil.position == 'OUT'
         return all((yag_clear, dectris_clear, diode_clear, foil_clear))
 
     @property
@@ -169,7 +169,7 @@ class LODCM(Device):
         removed: bool
             True if h1n is out
         """
-        return self.h1n.value == "OUT"
+        return self.h1n.position == "OUT"
 
     def remove(self, wait=False, timeout=None, finished_cb=None, **kwargs):
         """
@@ -193,7 +193,7 @@ class LODCM(Device):
             Status object that will be marked finished when all diagnostics are
             done moving and will time out after the given timeout.
         """
-        if self.dectris.value == 'OUTLOW':
+        if self.dectris.position == 'OUTLOW':
             dset = 'OUTLOW'
         else:
             dset = 'OUT'
@@ -243,7 +243,7 @@ class LODCM(Device):
         done_statuses = []
         for state, obj in zip(states, obj):
             if state is not None:
-                status = obj.move(state)
+                status = obj.set(state)
                 done_statuses.append(status)
 
         lodcm_status = DeviceStatus(self, timeout=timeout)
