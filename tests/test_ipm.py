@@ -1,16 +1,8 @@
-############
-# Standard #
-############
 import logging
-###############
-# Third Party #
-###############
-import pytest
+
 from unittest.mock import Mock
-##########
-# Module #
-##########
-from pcdsdevices.sim.pv import  using_fake_epics_pv
+
+from pcdsdevices.sim.pv import using_fake_epics_pv
 from pcdsdevices.epics import IPM
 
 from .conftest import connect_rw_pvs, attr_wait_true
@@ -24,17 +16,10 @@ def fake_ipm():
     test, so we can't make this a fixture without destabilizing our tests.
     """
     ipm = IPM("Test:My:IPM")
-    diode_states = ['Unknown', 'OUT', 'IN']
-    ipm.diode.state._read_pv.enum_strs = diode_states
-    ipm.diode.state._write_pv.enum_strs = diode_states
-    target_states = ['Unknown', 'OUT', 'TARGET1', 'TARGET2', 'TARGET3',
-                     'TARGET4']
-    ipm.target.state._read_pv.enum_strs = target_states
-    ipm.target.state._write_pv.enum_strs = target_states
     connect_rw_pvs(ipm.diode.state)
-    connect_rw_pvs(ipm.target.state)
+    connect_rw_pvs(ipm.state)
     ipm.diode.state._write_pv.put('Unknown')
-    ipm.target.state._write_pv.put('Unknown')
+    ipm.state._write_pv.put('Unknown')
     ipm.wait_for_connection()
     return ipm
 
@@ -43,10 +28,10 @@ def fake_ipm():
 def test_ipm_states():
     logger.debug('test_ipm_states')
     ipm = fake_ipm()
-    ipm.target.state._read_pv.put('OUT')
+    ipm.state._read_pv.put('OUT')
     assert ipm.removed
     assert not ipm.inserted
-    ipm.target.state._read_pv.put('TARGET1')
+    ipm.state._read_pv.put('TARGET1')
     assert not ipm.removed
     assert ipm.inserted
 
@@ -55,17 +40,17 @@ def test_ipm_states():
 def test_ipm_motion():
     logger.debug('test_ipm_motion')
     ipm = fake_ipm()
-    #Remove IPM Targets
+    # Remove IPM Targets
     ipm.remove(wait=True, timeout=1.0)
-    assert ipm.target.state._write_pv.get() == 'OUT'
-    #Insert IPM Targets
+    assert ipm.state._write_pv.get() == 'OUT'
+    # Insert IPM Targets
     ipm.target_in(1)
-    assert ipm.target.state._write_pv.get() == 'TARGET1'
-    #Move diodes in 
+    assert ipm.state._write_pv.get() == 'TARGET1'
+    # Move diodes in
     ipm.diode_in()
     assert ipm.diode.state._write_pv.get() == 'IN'
     ipm.diode_out()
-    #Move diodes out
+    # Move diodes out
     assert ipm.diode.state._write_pv.get() == 'OUT'
 
 
@@ -73,11 +58,11 @@ def test_ipm_motion():
 def test_ipm_subscriptions():
     logger.debug('test_ipm_subscriptions')
     ipm = fake_ipm()
-    #Subscribe a pseudo callback
+    # Subscribe a pseudo callback
     cb = Mock()
     ipm.subscribe(cb, event_type=ipm.SUB_STATE, run=False)
-    #Change the target state
-    ipm.target.state._read_pv.put('OUT')
+    # Change the target state
+    ipm.state._read_pv.put('OUT')
     attr_wait_true(cb, 'called')
     assert cb.called
 

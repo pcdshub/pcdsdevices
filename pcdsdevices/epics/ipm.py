@@ -41,14 +41,14 @@ class IPM(StatePositioner):
         """
         Report if the IPIMB is not OUT"
         """
-        return self.target.position != "OUT"
+        return self.position != "OUT"
 
     @property
     def removed(self):
         """
         Report if the IPM is inserted
         """
-        return self.target.position == "OUT"
+        return self.position == "OUT"
 
     def remove(self, *args, wait=False, **kwargs):
         """
