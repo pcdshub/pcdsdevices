@@ -1,5 +1,15 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""
+The SLAC EPICS motor record contains an extra set of records to abstract four
+axes into a Slits object. This allows an operator to manipulate the center and
+width in two dimensions of a small aperature. The classes below allow both
+individual parameters of the aperature and the Slit as a whole to be controlled
+and scanned. The :class:`.Slits` instantiates four sub-devices `xwidth`,
+`xcenter`, `ycenter`, `ywidth`. These are each represented by
+:class:`.SlitPositioner`. The main :class:`.Slits` class assumes that most of
+the manipulation will be done on the size of the aperature not the position,
+however, if control of the center is desired the `center` sub-devices can be
+used.
+"""
 import logging
 
 import numpy as np
@@ -13,25 +23,57 @@ logger = logging.getLogger(__name__)
 
 class SlitPositioner(PVPositioner, Device):
     """
-    PVPositioner subclass for the slit center and width pseudomotors.
+    Abstraction of Slit Axis
+
+    Each adjustable parameter of the slit (center, width) can be modeled as a
+    motor in itself, even though each controls two different actual motors in
+    reality, this gives a convienent interface for adjusting the aperature size
+    and location with out backwards calculating motor positions
+
+    Parameters
+    ----------
+    prefix : str
+        The prefix location of the slits, i.e MFX:DG2
+
+    slit_type : XWIDTH, YWIDTH, XCENTER, YCENTER
+        The aspect of the slit position you would like to control with this
+        specific motor
+
+    name : str
+        Alias for the axis
+
+    limits : tuple, optional
+        Limits on the motion of the positioner. By default, the limits on the
+        setpoint PV are used if None is given.
+
+    See Also
+    --------
+    ophyd.PVPositioner
+        SlitPositioner inherits directly from PVPositioner.
     """
     setpoint = FC(EpicsSignal, "{self.prefix}:{self._dirshort}_REQ")
     readback = FC(EpicsSignalRO, "{self.prefix}:ACTUAL_{self._dirlong}")
     done = C(EpicsSignalRO, ":DMOV")
 
-    def __init__(self, prefix="", *, slit_type="", limits=None, name=None,
-                 read_attrs=None, parent=None, egu="", **kwargs):
-        if parent is not None:
-            prefix = parent.prefix + prefix
+    _default_read_attrs = ['readback']
+
+    def __init__(self, prefix, *, slit_type="", name=None,
+                 limits=None, **kwargs):
+        # Private PV names to deal with complex naming schema
         self._dirlong = slit_type
         self._dirshort = slit_type[:4]
-        if read_attrs is None:
-            read_attrs = ["readback"]
-        super().__init__(prefix, limits=limits, name=name,
-                         read_attrs=read_attrs, parent=parent, egu=egu,
-                         **kwargs)
+        # Initalize PVPositioner
+        super().__init__(prefix, limits=limits, name=name, **kwargs)
+
+    @property
+    def egu(self):
+        """Engineering units"""
+        return self._egu or self.readback._read_pv.units
 
     def _setup_move(self, position):
+        # This is subclassed because we need `wait` to be set to False unlike
+        # the default PVPositioner method. `wait` set to True will not return
+        # until the move has completed
         logger.debug('%s.setpoint = %s', self.name, position)
         self.setpoint.put(position, wait=False)
 
@@ -68,10 +110,10 @@ class Slits(Device):
     make a rough back of the hand calculation without being over aggressive
     about changing slit widths during alignment
     """
-    xcenter = C(SlitPositioner, slit_type="XCENTER", egu="mm")
-    xwidth = C(SlitPositioner, slit_type="XWIDTH", egu="mm")
-    ycenter = C(SlitPositioner, slit_type="YCENTER", egu="mm")
-    ywidth = C(SlitPositioner, slit_type="YWIDTH", egu="mm")
+    xcenter = C(SlitPositioner, '', slit_type="XCENTER")
+    xwidth = C(SlitPositioner, '', slit_type="XWIDTH")
+    ycenter = C(SlitPositioner, '', slit_type="YCENTER")
+    ywidth = C(SlitPositioner, '', slit_type="YWIDTH")
     blocked = C(EpicsSignalRO, ":BLOCKED")
     open_cmd = C(EpicsSignal, ":OPEN")
     close_cmd = C(EpicsSignal, ":CLOSE")
@@ -83,7 +125,7 @@ class Slits(Device):
 
     # Default Attributes
     _default_read_attrs = ['xwidth', 'ywidth']
-    _default_configuration_attrs = ['xcenter', 'ycenter']
+    _default_configuration_attrs = ['xcenter.readback', 'ycenter.readback']
 
     def __init__(self, *args, nominal_aperature=(5.0, 5.0), **kwargs):
         self._has_subscribed = False
@@ -99,7 +141,7 @@ class Slits(Device):
         size : float, tuple
             Target size for slits in both x and y axis. Either specify as a
             tuple for a rectangular aperature (width, height) or set both with
-            single floating point value
+            single floating point value to use set a square width
 
         wait : bool
             If true, block until move is completed
@@ -124,16 +166,13 @@ class Slits(Device):
             (width, height) = size
         else:
             width, height = size, size
-
         # Instruct both width and height then combine the output status
         x_stat = self.xwidth.move(width, wait=False, timeout=timeout)
         y_stat = self.ywidth.move(height, wait=False, timeout=timeout)
         status = x_stat & y_stat
-
         # Add our callback if one was given
         if moved_cb is not None:
             status.add_callback(moved_cb)
-
         # Wait if instructed to do so. Stop the motors if interrupted
         if wait:
             try:
@@ -142,7 +181,6 @@ class Slits(Device):
                 self.xwidth.stop()
                 self.ywidth.stop()
                 raise
-
         return status
 
     @property
@@ -217,7 +255,7 @@ class Slits(Device):
 
     def open(self):
         """
-        Open the slits to :attr:`.nominal_aperature` on each side
+        Uses the built-in `OPEN` record to move open the aperature
         """
         self.open_cmd.put(1)
 
