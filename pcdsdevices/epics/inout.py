@@ -1,10 +1,8 @@
-from enum import Enum
-
-from ..state import StatePositioner
+from ..state import StateRecordPositioner
 
 
-class InOutPositioner(StatePositioner):
-    _states_enum = Enum('InOutState', 'IN OUT')
+class InOutPositioner(StateRecordPositioner):
+    states_list = ['IN', 'OUT']
 
     @property
     def inserted(self):
@@ -35,7 +33,7 @@ class TTReflaser(Reflaser):
     """
     Motor stack that includes both a timetool and a reflaser.
     """
-    _states_enum = Enum('TTStates', 'TT REFL OUT')
+    states_list = ['TT', 'REFL', 'OUT']
 
     @property
     def inserted(self):

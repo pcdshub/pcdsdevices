@@ -1,28 +1,26 @@
 from threading import RLock
-from enum import Enum
 
 from ophyd import Device, Component
 from ophyd.status import DeviceStatus, wait as status_wait
 
-from ..state import StatePositioner
+from ..state import StateRecordPositioner
 from .inout import Diode
 
 
-class H1NStates(StatePositioner):
-    _states_enum = Enum('CrystalStates', 'OUT C Si')
+class H1NStates(StateRecordPositioner):
+    states_list = ['OUT', 'C', 'Si']
 
 
-class YagLomStates(StatePositioner):
-    _states_enum = Enum('YagLomStates', 'OUT YAG SLIT1 SLIT2 SLIT3')
+class YagLomStates(StateRecordPositioner):
+    states_list = ['OUT', 'YAG', 'SLIT1', 'SLIT2', 'SLIT3']
 
 
-class DectrisStates(StatePositioner):
-    _states_enum = Enum('DectrisStates',
-                        'OUT DECTRIS SLIT1 SLIT2 SLIT3 OUTLOW')
+class DectrisStates(StateRecordPositioner):
+    states_list = ['OUT', 'DECTRIS', 'SLIT1', 'SLIT2', 'SLIT3', 'OUTLOW']
 
 
-class FoilStates(StatePositioner):
-    _states_enum = Enum('FoilStates', 'OUT')
+class FoilStates(StateRecordPositioner):
+    states_list = ['OUT']
     # This class needs rethinking because the foils are different between the
     # two lodcm instances
 

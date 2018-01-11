@@ -1,11 +1,9 @@
 import pytest
-import time as ttime
-from enum import Enum
 
 from ophyd.signal import Signal
 
 from pcdsdevices import state
-from pcdsdevices.state import StateStatus, StatePositioner
+from pcdsdevices.state import StateStatus, StateRecordPositioner
 from pcdsdevices.sim.pv import using_fake_epics_pv
 
 
@@ -13,14 +11,16 @@ class PrefixSignal(Signal):
     def __init__(self, prefix, **kwargs):
         super().__init__(**kwargs)
 
+
 @pytest.fixture(scope='function')
 def lim_info():
     return dict(lowlim={"pvname": "LOW",
-                         0: "in",
-                         1: "defer"},
+                        0: "in",
+                        1: "defer"},
                 highlim={"pvname": "HIGH",
                          0: "out",
                          1: "defer"})
+
 
 def test_pvstate_class(lim_info):
     """
@@ -32,18 +32,18 @@ def test_pvstate_class(lim_info):
     lim_obj = LimCls("BASE", name="test")
 
     # Check the state machine
-    #Limits are defered
+    # Limits are defered
     lim_obj.lowlim.put(1)
     lim_obj.highlim.put(1)
     assert(lim_obj.value == "unknown")
-    #Limits are out
+    # Limits are out
     lim_obj.highlim.put(0)
     assert(lim_obj.value == "out")
-    #Limits are in
+    # Limits are in
     lim_obj.lowlim.put(0)
     lim_obj.highlim.put(1)
     assert(lim_obj.value == "in")
-    #Limits are in conflicting state
+    # Limits are in conflicting state
     lim_obj.lowlim.put(0)
     lim_obj.highlim.put(0)
     assert(lim_obj.value == "unknown")
@@ -78,13 +78,13 @@ def test_state_status(lim_info):
     # Define the class
     LimCls = state.pvstate_class("LimCls", lim_info, signal_class=PrefixSignal)
     lim_obj = LimCls("BASE", name="test")
-    #Create a status for 'in'
+    # Create a status for 'in'
     status = StateStatus(lim_obj, 'in')
-    #Put readback to 'in'
+    # Put readback to 'in'
     lim_obj.lowlim.put(0)
     lim_obj.highlim.put(1)
     assert status.done and status.success
-    #Check our callback was cleared
+    # Check our callback was cleared
     assert status.check_value not in lim_obj._callbacks[lim_obj.SUB_STATE]
 
 
@@ -94,7 +94,7 @@ def test_statesrecord_class():
     Nothing special can be done without live hosts, just make sure we can
     create a class.
     """
-    class MyStates(StatePositioner):
-        _states_enum = Enum('MyStatesStates', 'YES NO MAYBE SO')
+    class MyStates(StateRecordPositioner):
+        states_list = ['YES', 'NO', 'MAYBE', 'SO']
 
     MyStates('A:PV', name='test')

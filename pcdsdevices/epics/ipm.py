@@ -1,28 +1,18 @@
-from enum import Enum
-
 from ophyd.status import wait as status_wait
 from ophyd import Component
 
-from ..state import StatePositioner
+from ..state import StateRecordPositioner
 from .inout import Diode
 
 
-class IPM(StatePositioner):
+class IPM(StateRecordPositioner):
     """
     Standard intensity position monitor motion.
     """
-    _states_enum = Enum('TargetStates', 'T1 T2 T3 T4 OUT')
-    diode = Component(Diode,   ":DIODE")
+    states_list = ['T1', 'T2', 'T3', 'T4', 'OUT']
+    diode = Component(Diode, ":DIODE")
 
     transmission = 0.8  # Completely making up this number :)
-
-    def __init__(self, prefix, *, name=None, parent=None,
-                 read_attrs=None, **kwargs):
-        if read_attrs is None:
-            read_attrs = ["diode", "target"]
-
-        super().__init__(prefix, name=name, parent=parent,
-                         read_attrs=read_attrs, **kwargs)
 
     def target_in(self, target):
         """

@@ -25,7 +25,6 @@ PIMFee
     addition to a FeeOpalDetector as the detector.
 """
 import logging
-from enum import Enum
 
 import numpy as np
 from ophyd.utils.epics_pvs import raise_if_disconnected
@@ -34,7 +33,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
                    FormattedComponent)
 
 from .imsmotor import ImsMotor
-from ..state import StatePositioner
+from ..state import StateRecordPositioner
 from .areadetector.detectors import (PulnixDetector, FeeOpalDetector)
 from .areadetector.plugins import (ImagePlugin, StatsPlugin)
 from ..utils.pyutils import isnumber
@@ -174,7 +173,7 @@ class PIMPulnixDetector(PulnixDetector):
         return (self.centroid_x, self.centroid_y)
 
 
-class PIMMotor(StatePositioner):
+class PIMMotor(StateRecordPositioner):
     """
     Standard position monitor motor that can move the stage to insert the yag
     or diode, or retract it from the beam path.
@@ -195,8 +194,8 @@ class PIMMotor(StatePositioner):
     name : str, optional
         The name of the offset mirror
     """
-    _states_enum = Enum('PIMStates', 'DIODE YAG OUT')
-    _states_alias = {'IN': 'YAG'}
+    states_list = ['DIODE', 'YAG', 'OUT']
+    _states_alias = {'YAG': 'IN'}
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, timeout=None, **kwargs):

@@ -16,7 +16,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO,
 logger = logging.getLogger(__name__)
 
 
-class StatePositionerBase(PositionerBase):
+class StatePositioner(Device, PositionerBase):
     """
     Base class for a Positioner that moves between discrete states rather than
     along a continuout axis.
@@ -47,13 +47,12 @@ class StatePositionerBase(PositionerBase):
     _default_read_attrs = ['state']
 
     def __init__(self, *, name, **kwargs):
-        super.__init__(name=name, **kwargs)
-
+        super().__init__(name=name, **kwargs)
         self._valid_states = [state for state in self.states_list
                               if state not in self._invalid_states]
-
         if not hasattr(self, 'states_enum'):
             self.states_enum = self._create_states_enum()
+        self._has_subscribed_state = False
 
     def move(self, position, moved_cb=None, timeout=None, wait=False):
         """
@@ -114,6 +113,20 @@ class StatePositionerBase(PositionerBase):
         self._run_subs(sub_type=self.SUB_START)
         return status
 
+    def subscribe(self, cb, event_type=None, run=True):
+        cid = super().subscribe(cb, event_type=event_type, run=run)
+        if event_type is None:
+            event_type = self._default_sub
+        if event_type == self.SUB_STATE and not self._has_subscribed_state:
+            self.state.subscribe(self._run_sub_state, run=False)
+            self._has_subscribed_state = True
+        return cid
+
+    def _run_sub_state(self, *args, **kwargs):
+        kwargs.pop('sub_type')
+        kwargs.pop('obj')
+        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
+
     @property
     def position(self):
         """
@@ -121,6 +134,8 @@ class StatePositionerBase(PositionerBase):
         first alias will be used instead of the base name.
         """
         state = self.state.get()
+        if isinstance(state, int):
+            state = self.states_enum(state).name
         try:
             alias = self._states_alias[state]
             if isinstance(alias, list):
@@ -195,8 +210,41 @@ class StatePositionerBase(PositionerBase):
             else:
                 for alias in aliases:
                     state_def[alias] = i
-        enum_name = self.__class__.name + 'States'
-        return type(enum_name, (Enum,), state_def)
+        enum_name = self.__class__.__name__ + 'States'
+        return Enum(enum_name, state_def, start=0)
+
+
+class PVStatePositioner(StatePositioner):
+    pass
+
+
+class StateRecordPositioner(StatePositioner):
+    state = Component(EpicsSignal, '', write_pv=':GO')
+    readback = FormattedComponent(EpicsSignalRO, '{self._readback}')
+
+    _default_read_attrs = ['state', 'readback']
+
+    def __init__(self, prefix, *, name, **kwargs):
+        some_state = self.states_list[0]
+        self._readback = '{}:{}_CALC.A'.format(prefix, some_state)
+        self.states_list = ['Unknown'] + self.states_list
+        self._invalid_states = ['Unknown'] + self._invalid_states
+        super().__init__(name=name, **kwargs)
+        self.prefix = prefix
+        self._has_subscribed_readback = False
+
+    def subscribe(self, cb, event_type=None, run=True):
+        cid = super().subscribe(cb, event_type=event_type, run=run)
+        if (event_type == self.SUB_READBACK and not
+                self._has_subscribed_readback):
+            self.readback.subscribe(self._run_sub_readback, run=False)
+            self._has_subscribed_readback = True
+        return cid
+
+    def _run_sub_readback(self, *args, **kwargs):
+        kwargs.pop('sub_type')
+        kwargs.pop('obj')
+        self._run_subs(sub_type=self.SUB_READBACK, obj=self, **kwargs)
 
 
 class State(Device):
@@ -351,172 +399,6 @@ def pvstate_class(classname, states, doc="", setter=None,
         components[state_name] = Component(signal_class, info["pvname"])
     bases = (PVState,)
     return type(classname, bases, components)
-
-
-class StateSignal(EpicsSignal):
-    """
-    Represents the get/set portion of a states record. This class exists to
-    handle enum checking and to avoid bloat in the main StatePositioner class.
-    """
-    unk = 'Unknown'
-
-    def __init__(self, read_pv, enum, *, name, parent=None, **kwargs):
-        if isinstance(enum, str):
-            enum = getattr(parent, enum)
-        if not(issubclass(enum, Enum)):
-            err = ('Expected a subclass of enum.Enum, but recieved type {}')
-            raise TypeError(err.format(type(self._states_enum)))
-
-        super().__init__(read_pv, write_pv=read_pv+":GO", string=True,
-                         name=name, parent=parent, **kwargs)
-
-        self.enum = enum
-        self._enum_strs = [self.unk] + [state.name for state in enum]
-        self.enum_vals = [0] + [state.value for state in enum]
-        self.good_vals = self._enum_strs[1:] + self.enum_vals[1:]
-
-    @property
-    def enum_strs(self):
-        return self._enum_strs
-
-    def check_value(self, value):
-        if not isinstance(value, (str, int)):
-            raise TypeError('Valid states must be of type str or int')
-        elif value in ('Unknown', 0):
-            raise ValueError('Cannot move to the Unknown state (0)')
-        elif value not in self.good_vals:
-            err = ('{0} is not a valid state for {1}. Valid state names are: '
-                   '{2}, and their corresponding values are {3}.')
-            raise ValueError(err.format(value, self.name,
-                                        self._enum_strs, self.enum_vals))
-
-
-class StatePositioner(Device, PositionerBase):
-    """
-    Base class for positioners with a discrete set of named positions
-    facilitated by the lcls states record.
-    """
-    state = Component(StateSignal, '', enum='_states_enum')
-    readback = FormattedComponent(EpicsSignalRO, '{self._readback}')
-
-    _states_enum = None  # Override with an Enum to define your states
-    _states_alias = {}   # Override with {'ALIAS': 'STATE'}
-
-    SUB_STATE = 'state'
-    _default_sub = SUB_STATE
-
-    _default_read_attrs = ['state', 'readback']
-    _default_configuration_attrs = []
-
-    def __init__(self, prefix, *, name, **kwargs):
-        some_state = next(a for a in self._states_enum).name
-        self._readback = '{}:{}_CALC.A'.format(prefix, some_state)
-        super().__init__(name=name, **kwargs)
-
-        self.prefix = prefix
-
-        self._inverse_alias = {value: key for key, value in
-                               self._states_alias.items()}
-        self._has_subscribed_state = False
-        self._has_subscribed_readback = False
-
-    def move(self, position, moved_cb=None, timeout=None, wait=False):
-        """
-        Move to the desired state.
-
-        Parameters
-        ----------
-        position: int or str
-            The enumerate state or the corresponding integer
-
-        moved_cb: function, optional
-            moved_cb(obj=self) will be called at the end of motion
-
-        timeout: int or float, optional
-            Move timeout in seconds
-
-        wait: bool, optional
-            If True, do not return until the motion has completed.
-        """
-        status = self.set(position, moved_cb=moved_cb, timeout=timeout)
-        if wait:
-            status_wait(status)
-
-    def set(self, position, moved_cb=None, timeout=None):
-        """
-        Move to the desired state and satisfy the bluesky interface.
-
-        Parameters
-        ----------
-        position: int or str
-            The enumerate state or the corresponding integer
-
-        moved_cb: function, optional
-            moved_cb(obj=self) will be called at the end of motion
-
-        timeout: int or float, optional
-            Move timeout in seconds
-
-        Returns
-        -------
-        status: StateStatus
-            Status object that represents the move's progress.
-        """
-        logger.debug('set %s to position %s', self.name, position)
-        try:
-            position = self._states_alias[position]
-        except KeyError:
-            pass
-        self.check_value(position)
-
-        if timeout is None:
-            timeout = self._timeout
-
-        status = StateStatus(self, position, timeout=timeout,
-                             settle_time=self._settle_time)
-
-        if moved_cb is not None:
-            status.add_callback(functools.partial(moved_cb, obj=self))
-
-        self.state.put(position)
-        self._run_subs(sub_type=self.SUB_START)
-        return status
-
-    @property
-    def position(self):
-        state = self.state.get()
-        try:
-            return self._inverse_alias[state]
-        except KeyError:
-            return state
-
-    def check_value(self, value):
-        self.state.check_value(value)
-
-    def subscribe(self, cb, event_type=None, run=True):
-        cid = super().subscribe(cb, event_type=event_type, run=run)
-        if event_type is None:
-            event_type = self._default_sub
-        if event_type == self.SUB_STATE and not self._has_subscribed_state:
-            self.state.subscribe(self._run_sub_state, run=False)
-            self._has_subscribed_state = True
-        elif (event_type == self.SUB_READBACK
-              and not self._has_subscribed_readback):
-            self.readback.subscribe(self._run_sub_readback, run=False)
-            self._has_subscribed_readback = True
-        return cid
-
-    def _run_sub_state(self, *args, **kwargs):
-        kwargs.pop('sub_type')
-        self._run_subs(sub_type=self.SUB_STATE, **kwargs)
-
-    def _run_sub_readback(self, *args, **kwargs):
-        kwargs.pop('sub_type')
-        self._run_subs(sub_type=self.SUB_READBACK, **kwargs)
-
-    @property
-    def hints(self):
-        return {'fields': [self.state.name]}
 
 
 class StateStatus(SubscriptionStatus):
