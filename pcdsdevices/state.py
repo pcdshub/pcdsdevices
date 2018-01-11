@@ -16,6 +16,189 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO,
 logger = logging.getLogger(__name__)
 
 
+class StatePositionerBase(PositionerBase):
+    """
+    Base class for a Positioner that moves between discrete states rather than
+    along a continuout axis.
+
+    Attributes
+    ----------
+    state: Signal
+        This signal is the final authority on what state the object is in.
+
+    states_list: list of str
+        An exhaustive list of all possible states. This should be overridden in
+        a base class.
+
+    states_enum: Enum
+        An enum that represents all possible states. This will be constructed
+        for the user based on the contents of `states_list` and
+        `_states_alias`, but it can also be overriden in the base class.
+    """
+    state = None  # Override with Signal that represents state readback
+
+    states_list = []  # Override with an exhaustive list of states
+    _invalid_states = []  # Override with states that cannot be set
+    _states_alias = {}  # Override with a mapping {'STATE': ['ALIAS', ...]}
+
+    SUB_STATE = 'state'
+    _default_sub = SUB_STATE
+
+    _default_read_attrs = ['state']
+
+    def __init__(self, *, name, **kwargs):
+        super.__init__(name=name, **kwargs)
+
+        self._valid_states = [state for state in self.states_list
+                              if state not in self._invalid_states]
+
+        if not hasattr(self, 'states_enum'):
+            self.states_enum = self._create_states_enum()
+
+    def move(self, position, moved_cb=None, timeout=None, wait=False):
+        """
+        Move to the desired state. This is intended to be the interactive move
+        for command-line sessions.
+
+        Parameters
+        ----------
+        position: int or str
+            The enumerate state or the corresponding integer
+
+        moved_cb: function, optional
+            moved_cb(obj=self) will be called at the end of motion
+
+        timeout: int or float, optional
+            Move timeout in seconds
+
+        wait: bool, optional
+            If True, do not return until the motion has completed.
+        """
+        status = self.set(position, moved_cb=moved_cb, timeout=timeout)
+        if wait:
+            status_wait(status)
+
+    def set(self, position, moved_cb=None, timeout=None):
+        """
+        Move to the desired state and return completion information.
+
+        Parameters
+        ----------
+        position: int or str
+            The enumerate state or the corresponding integer
+
+        moved_cb: function, optional
+            moved_cb(obj=self) will be called at the end of motion
+
+        timeout: int or float, optional
+            Move timeout in seconds
+
+        Returns
+        -------
+        status: StateStatus
+            Status object that represents the move's progress.
+        """
+        logger.debug('set %s to position %s', self.name, position)
+        state = self.check_value(position)
+
+        if timeout is None:
+            timeout = self._timeout
+
+        status = StateStatus(self, position, timeout=timeout,
+                             settle_time=self._settle_time)
+
+        if moved_cb is not None:
+            status.add_callback(functools.partial(moved_cb, obj=self))
+
+        self._do_move(state)
+        self._run_subs(sub_type=self.SUB_START)
+        return status
+
+    @property
+    def position(self):
+        """
+        Name of the positioner's current state. If aliases were provided, the
+        first alias will be used instead of the base name.
+        """
+        state = self.state.get()
+        try:
+            alias = self._states_alias[state]
+            if isinstance(alias, list):
+                alias = alias[0]
+            return alias
+        except KeyError:
+            return state
+
+    @property
+    def hints(self):
+        return {'fields': [self.state.name]}
+
+    def check_value(self, value):
+        """
+        Verify that a value is a valid set state, or raise an exception.
+
+        Returns
+        -------
+        state: Enum entry
+            The corresponding Enum entry for this value. It has two meaningful
+            fields, `name` and `value`.
+        """
+        bad_value = False
+        if isinstance(value, int):
+            try:
+                state = self.states_enum(value)
+            except ValueError:
+                bad_value = True
+        elif isinstance(value, str):
+            try:
+                state = self.states_enum[value]
+            except KeyError:
+                bad_value = True
+        else:
+            raise TypeError('Valid states must be of type str or int')
+        if bad_value:
+            err = ('{0} is not a valid move state for {1}. Valid state names '
+                   'are: {2}, and their corresponding values are {3}.')
+            enum_values = [self.states_enum[state].value
+                           for state in self._valid_states]
+            raise ValueError(err.format(value, self.name, self._valid_states,
+                                        enum_values))
+        return state
+
+    def _do_move(self, state):
+        """
+        Execute the move command. Override this if your move isn't a simple put
+        to the state signal using the state name.
+
+        Parameters
+        ----------
+        state: Enum entry
+            Object whose `name` attribute is the string enum name and whose
+            `value` attribute is the integer enum value.
+        """
+        self.state.put(state.name)
+
+    def _create_states_enum(self):
+        """
+        Create an enum that can be used to keep track of aliases, state names,
+        and integer enum values.
+        """
+        state_def = {}
+        for i, state in enumerate(self.states_list):
+            state_def[state] = i
+            try:
+                aliases = self._states_alias[state]
+            except KeyError:
+                continue
+            if isinstance(aliases, str):
+                state_def[aliases] = i
+            else:
+                for alias in aliases:
+                    state_def[alias] = i
+        enum_name = self.__class__.name + 'States'
+        return type(enum_name, (Enum,), state_def)
+
+
 class State(Device):
     """
     Base class for any state device.
