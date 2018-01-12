@@ -9,6 +9,8 @@ from pcdsdevices.state import (StatePositioner, PVStatePositioner,
                                StateRecordPositioner, StateStatus)
 from pcdsdevices.sim.pv import using_fake_epics_pv
 
+from .conftest import attr_wait_true
+
 logger = logging.getLogger(__name__)
 
 
@@ -100,6 +102,7 @@ def test_pvstate_positioner_sets():
         lim_obj2.move('asdfe')
     cb = Mock()
     lim_obj2.move('OUT', moved_cb=cb)
+    attr_wait_true(cb, 'called')
     assert(cb.called)
     assert(lim_obj2.position == 'OUT')
     lim_obj2.move('IN', wait=True)
@@ -141,6 +144,7 @@ def test_staterecord_positioner():
     cb = Mock()
     state.subscribe(cb, event_type=state.SUB_READBACK, run=False)
     state.readback._read_pv.put(1.23)
+    attr_wait_true(cb, 'called')
     assert cb.called
 
 
