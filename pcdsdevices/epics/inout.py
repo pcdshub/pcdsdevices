@@ -17,19 +17,7 @@ class InOutPositioner(StateRecordPositioner):
                          wait=wait, **kwargs)
 
 
-class Diode(InOutPositioner):
-    pass
-
-
-class Reflaser(InOutPositioner):
-    """
-    Mirror that is inserted into the beam to point a reference laser along the
-    beam path.
-    """
-    pass
-
-
-class TTReflaser(Reflaser):
+class TTReflaser(InOutPositioner):
     """
     Motor stack that includes both a timetool and a reflaser.
     """

@@ -2,7 +2,7 @@ from ophyd.status import wait as status_wait
 from ophyd import Component
 
 from ..state import StateRecordPositioner
-from .inout import Diode
+from .inout import InOutPositioner
 
 
 class IPM(StateRecordPositioner):
@@ -10,7 +10,7 @@ class IPM(StateRecordPositioner):
     Standard intensity position monitor motion.
     """
     states_list = ['T1', 'T2', 'T3', 'T4', 'OUT']
-    diode = Component(Diode, ":DIODE")
+    diode = Component(InOutPositioner, ":DIODE")
 
     transmission = 0.8  # Completely making up this number :)
 

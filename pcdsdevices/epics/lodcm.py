@@ -4,7 +4,7 @@ from ophyd import Device, Component
 from ophyd.status import DeviceStatus, wait as status_wait
 
 from ..state import StateRecordPositioner
-from .inout import Diode
+from .inout import InOutPositioner
 
 
 class H1NStates(StateRecordPositioner):
@@ -37,7 +37,7 @@ class LODCM(Device):
     h1n = Component(H1NStates, ":H1N")
     yag = Component(YagLomStates, ":DV")
     dectris = Component(DectrisStates, ":DH")
-    diode = Component(Diode, ":DIODE")
+    diode = Component(InOutPositioner, ":DIODE")
     foil = Component(FoilStates, ":FOIL")
 
     SUB_STATE = 'sub_state_changed'
