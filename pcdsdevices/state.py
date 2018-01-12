@@ -362,7 +362,7 @@ class PVStatePositioner(StatePositioner):
             self.states_list = list(states_set)
         super().__init__(prefix, name=name, **kwargs)
 
-    def _do_move(self):
+    def _do_move(self, state):
         raise NotImplementedError(('Class must implement a _do_move method or '
                                    'override the move and set methods'))
 
