@@ -171,27 +171,35 @@ class StatePositioner(Device, PositionerBase):
             The corresponding Enum entry for this value. It has two meaningful
             fields, `name` and `value`.
         """
-        bad_value = False
-        if isinstance(value, int):
-            try:
-                state = self.states_enum(value)
-            except ValueError:
-                bad_value = True
-        elif isinstance(value, str):
-            try:
-                state = self.states_enum[value]
-            except KeyError:
-                bad_value = True
-        else:
+        if not isinstance(value, (int, str)):
             raise TypeError('Valid states must be of type str or int')
-        if bad_value:
-            err = ('{0} is not a valid move state for {1}. Valid state names '
-                   'are: {2}, and their corresponding values are {3}.')
-            enum_values = [self.states_enum[state].value
-                           for state in self._valid_states]
-            raise ValueError(err.format(value, self.name, self._valid_states,
-                                        enum_values))
+        state = self.get_state(value)
+        if state.name == self._unknown:
+            raise ValueError('Cannot set the Unknown state')
         return state
+
+    def get_state(self, value):
+        """
+        Given an integer or string value, return the proper state entry.
+
+        Returns
+        -------
+        state: Enum entry
+            The corresponding Enum entry for this value. It has two meaningful
+            fields, `name` and `value`.
+        """
+        try:
+            return self.states_enum[value]
+        except KeyError:
+            try:
+                return self.states_enum(value)
+            except ValueError:
+                err = ('{0} is not a valid state for {1}. Valid state names '
+                       'are: {2}, and their corresponding values are {3}.')
+                enum_names = [state.name for state in self.states_enum]
+                enum_values = [state.value for state in self.states_enum]
+                raise ValueError(err.format(value, self.name, enum_names,
+                                            enum_values))
 
     def _do_move(self, state):
         """
@@ -426,7 +434,9 @@ class StateStatus(SubscriptionStatus):
                  timeout=None, settle_time=None):
         # Make a quick check_state callable
         def check_state(*, value, **kwargs):
-            return value == desired_state
+            value = device.get_state(value)
+            desired = device.get_state(desired_state)
+            return value == desired
 
         # Start timeout and subscriptions
         super().__init__(device, check_state, event_type=device.SUB_STATE,

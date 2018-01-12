@@ -119,7 +119,10 @@ def test_basic_subscribe():
     logger.debug('test_basic_subscribe')
     lim_obj = LimCls('BASE', name='test')
     cb = Mock()
-    lim_obj.subscribe(cb)
+    lim_obj.subscribe(cb, run=False)
+    lim_obj.lowlim.put(1)
+    lim_obj.highlim.put(1)
+    lim_obj.highlim.put(0)
     assert cb.called
 
 
