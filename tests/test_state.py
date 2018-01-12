@@ -24,10 +24,10 @@ class LimCls(PVStatePositioner):
     lowlim = Cmp(PrefixSignal, 'lowlim')
     highlim = Cmp(PrefixSignal, 'highlim')
 
-    _state_logic = dict(lowlim={0: 'in',
-                                1: 'defer'},
-                        highlim={0: 'out',
-                                 1: 'defer'})
+    _state_logic = {'lowlim': {0: 'in',
+                               1: 'defer'},
+                    'highlim': {0: 'out',
+                                1: 'defer'}}
 
     _states_alias = {'in': 'IN', 'out': 'OUT'}
 

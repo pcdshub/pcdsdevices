@@ -362,12 +362,12 @@ class PVStatePositioner(StatePositioner):
 
     def __init__(self, prefix, *, name, **kwargs):
         if self._state_logic and not self.states_list:
-            states_set = set()
+            self.states_list = []
             for state_mapping in self._state_logic.values():
                 for state_name in state_mapping.values():
                     if state_name not in (self._unknown, 'defer'):
-                        states_set.add(state_name)
-            self.states_list = list(states_set)
+                        if state_name not in self.states_list:
+                            self.states_list.append(state_name)
         super().__init__(prefix, name=name, **kwargs)
 
     def _do_move(self, state):
