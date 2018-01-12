@@ -13,9 +13,8 @@ OMMotor
     mirror system. The pitch stepper and all the gantry motors are interfaced
     with using this class.
 
-Piezo
-    Motor class to represent the piezo stepper motor. Unless the motor is set
-    to be in 'manual' mode this class should never be usable.
+Pitch
+    Class to handle the control of the pitch mechanism
 
 OffsetMirror
     High level device that includes all the relevant components of the offset
@@ -120,6 +119,24 @@ class OMMotor(PVPositioner):
             Status object of the move
         """
         return self.move(position, wait=wait, **kwargs)
+
+
+class Pitch(OMMotor):
+    """
+    HOMS Pitch Mechanism
+
+    Similar to OMMotor, but with a larger feature set as it is the most
+    requested axis of motion. The axis is actually a piezo actuator and a
+    stepper motor in series, and this is reflected in the PV naming
+    """
+    piezo_volts = FormattedComponent(EpicsSignalRO, "{self._piezo}:VRBV")
+    stop_signal = FormattedComponent(EpicsSignal, "{self._piezo}:STOP")
+    # TODO: Limits will be added soon, but not present yet
+
+    def __init__(self, prefix, **kwargs):
+        # Predict the prefix of all piezo pvs
+        self._piezo = prefix.replace('MIRR', 'PIEZO')
+        super().__init__(prefix, **kwargs)
 
 
 class OffsetMirror(Device, PositionerBase):
