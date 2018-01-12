@@ -57,8 +57,7 @@ class StatePositioner(Device, PositionerBase):
 
     def move(self, position, moved_cb=None, timeout=None, wait=False):
         """
-        Move to the desired state. This is intended to be the interactive move
-        for command-line sessions.
+        Move to the desired state and return completion information.
 
         Parameters
         ----------
@@ -73,14 +72,24 @@ class StatePositioner(Device, PositionerBase):
 
         wait: bool, optional
             If True, do not return until the motion has completed.
+
+        Returns
+        -------
+        status: StateStatus
+            Status object that represents the move's progress.
         """
         status = self.set(position, moved_cb=moved_cb, timeout=timeout)
         if wait:
             status_wait(status)
+        return status
 
     def set(self, position, moved_cb=None, timeout=None):
         """
         Move to the desired state and return completion information.
+        This is the bare-bones implementation of the move with only motion,
+        callbacks, and timeouts defined. Additional functional options are
+        relegated to the `move` command and bells and whistles are relegated to
+        a different interface.
 
         Parameters
         ----------
