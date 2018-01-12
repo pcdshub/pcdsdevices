@@ -264,20 +264,20 @@ class PVStateSignal(Signal):
                     signal_state = info[value]
                 # Handle unaccounted readbacks
                 except KeyError:
-                    state_value = self._unknown
+                    state_value = self.parent._unknown
                     break
                 # Associate readback with device state
                 if signal_state != 'defer':
                     if state_value:
                         # Handle inconsistent readbacks
                         if signal_state != state_value:
-                            state_value = self._unknown
+                            state_value = self.parent._unknown
                             break
                     else:
                         # Set state to first non-deferred value
                         state_value = signal_state
             # If all states deferred, report as unknown
-            self._readback = state_value or self._unknown
+            self._readback = state_value or self.parent._unknown
 
     def get(self, **kwargs):
         """
