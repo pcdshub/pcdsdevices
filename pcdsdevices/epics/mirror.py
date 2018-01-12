@@ -27,8 +27,8 @@ import logging
 import numpy as np
 from ophyd.signal import Signal
 from ophyd.utils.epics_pvs import raise_if_disconnected
-from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
-                   PVPositioner, PositionerBase, FormattedComponent)
+from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
+                   PVPositioner, PositionerBase, FormattedComponent as FC)
 
 from .mps import MPS
 from ..inout import InOutRecordPositioner
@@ -57,12 +57,12 @@ class OMMotor(PVPositioner):
         All keyword arguments are passed onto PVPositioner
     """
     # position
-    readback = Component(EpicsSignalRO, ':RBV', auto_monitor=True)
-    setpoint = Component(EpicsSignal, ':VAL', limits=True)
-    done = Component(EpicsSignalRO, ':DMOV', auto_monitor=True)
+    readback = C(EpicsSignalRO, ':RBV', auto_monitor=True)
+    setpoint = C(EpicsSignal, ':VAL', limits=True)
+    done = C(EpicsSignalRO, ':DMOV', auto_monitor=True)
     # status
-    interlock = Component(EpicsSignalRO, ':INTERLOCK')
-    enabled = Component(EpicsSignalRO, ':ENABLED')
+    interlock = C(EpicsSignalRO, ':INTERLOCK')
+    enabled = C(EpicsSignalRO, ':ENABLED')
 
     def __init__(self, prefix, *, nominal_position=None, **kwargs):
         self.nominal_position = nominal_position
@@ -129,8 +129,8 @@ class Pitch(OMMotor):
     requested axis of motion. The axis is actually a piezo actuator and a
     stepper motor in series, and this is reflected in the PV naming
     """
-    piezo_volts = FormattedComponent(EpicsSignalRO, "{self._piezo}:VRBV")
-    stop_signal = FormattedComponent(EpicsSignal, "{self._piezo}:STOP")
+    piezo_volts = FC(EpicsSignalRO, "{self._piezo}:VRBV")
+    stop_signal = FC(EpicsSignal, "{self._piezo}:STOP")
     # TODO: Limits will be added soon, but not present yet
 
     def __init__(self, prefix, **kwargs):
@@ -185,12 +185,12 @@ class OffsetMirror(Device, PositionerBase):
         position
     """
     # Pitch Motor
-    pitch = FormattedComponent(OMMotor, "{self.prefix}")
+    pitch = FC(OMMotor, "{self.prefix}")
     # Gantry motors
-    gan_x_p = FormattedComponent(OMMotor, "{self._prefix_xy}:X:P")
-    gan_y_p = FormattedComponent(OMMotor, "{self._prefix_xy}:Y:P")
+    gan_x_p = FC(OMMotor, "{self._prefix_xy}:X:P")
+    gan_y_p = FC(OMMotor, "{self._prefix_xy}:Y:P")
     # This is not implemented in the PLC. Included to appease bluesky
-    motor_stop = Component(Signal, value=0)
+    motor_stop = C(Signal, value=0)
     #Transmission for Lightpath Interface
     transmission= 1.0
     SUB_STATE = 'sub_state_changed'
@@ -505,11 +505,11 @@ class PointingMirror(OffsetMirror):
         List of beamlines thate are delivered beam when the mirror is out
     """
     #MPS Information
-    mps = FormattedComponent(MPS, '{self._mps_prefix}', veto=True)
+    mps = FC(MPS, '{self._mps_prefix}', veto=True)
     #State Information
-    state = FormattedComponent(InOutRecordPositioner, '{self._state_prefix}')
+    state = FC(InOutRecordPositioner, '{self._state_prefix}')
     #Coupling for horizontal gantry
-    x_gantry_decoupled = FormattedComponent(EpicsSignalRO,
+    x_gantry_decoupled = FC(EpicsSignalRO,
                                             "GANTRY:{self._prefix_xy}:X:DECOUPLE")
 
     def __init__(self, *args, mps_prefix=None, state_prefix=None, out_lines=None,
