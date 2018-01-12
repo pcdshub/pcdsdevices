@@ -4,12 +4,11 @@ devices.
 """
 import logging
 import functools
-from threading import RLock
-from keyword import iskeyword
 from enum import Enum
 
 from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait, SubscriptionStatus
+from ophyd.signal import AttributeSignal
 from ophyd import (Device, EpicsSignal, EpicsSignalRO,
                    Component, FormattedComponent)
 
@@ -28,7 +27,8 @@ class StatePositioner(Device, PositionerBase):
 
     states_list: list of str
         An exhaustive list of all possible states. This should be overridden in
-        a base class.
+        a base class. Unknown must be omitted in the class definition and will
+        be added dynamically in position 0 when the object is created.
 
     states_enum: Enum
         An enum that represents all possible states. This will be constructed
@@ -46,10 +46,12 @@ class StatePositioner(Device, PositionerBase):
 
     _default_read_attrs = ['state']
 
-    def __init__(self, *, name, **kwargs):
-        super().__init__(name=name, **kwargs)
+    def __init__(self, prefix, *, name, **kwargs):
+        super().__init__(prefix, name=name, **kwargs)
         self._valid_states = [state for state in self.states_list
                               if state not in self._invalid_states]
+        self.states_list = ['Unknown'] + self.states_list
+        self._invalid_states = ['Unknown'] + self._invalid_states
         if not hasattr(self, 'states_enum'):
             self.states_enum = self._create_states_enum()
         self._has_subscribed_state = False
@@ -215,119 +217,44 @@ class StatePositioner(Device, PositionerBase):
 
 
 class PVStatePositioner(StatePositioner):
-    pass
-
-
-class StateRecordPositioner(StatePositioner):
-    state = Component(EpicsSignal, '', write_pv=':GO')
-    readback = FormattedComponent(EpicsSignalRO, '{self._readback}')
-
-    _default_read_attrs = ['state', 'readback']
-
-    def __init__(self, prefix, *, name, **kwargs):
-        some_state = self.states_list[0]
-        self._readback = '{}:{}_CALC.A'.format(prefix, some_state)
-        self.states_list = ['Unknown'] + self.states_list
-        self._invalid_states = ['Unknown'] + self._invalid_states
-        super().__init__(name=name, **kwargs)
-        self.prefix = prefix
-        self._has_subscribed_readback = False
-
-    def subscribe(self, cb, event_type=None, run=True):
-        cid = super().subscribe(cb, event_type=event_type, run=run)
-        if (event_type == self.SUB_READBACK and not
-                self._has_subscribed_readback):
-            self.readback.subscribe(self._run_sub_readback, run=False)
-            self._has_subscribed_readback = True
-        return cid
-
-    def _run_sub_readback(self, *args, **kwargs):
-        kwargs.pop('sub_type')
-        kwargs.pop('obj')
-        self._run_subs(sub_type=self.SUB_READBACK, obj=self, **kwargs)
-
-
-class State(Device):
     """
-    Base class for any state device.
+    A StatePositioner that combines some number of arbitrary state PVs into a
+    single device state. The user can provide state logic and a move method if
+    desired.
 
     Attributes
     ----------
-    value : string
-        The current state.
+    _state_logic: dict
+        Information dictionaries for each state of the following form:
+        {
+          "signal_name": {
+                           0: "OUT",
+                           1: "IN",
+                           2: "Unknown",
+                           3: "defer"
+                         }
+        }
+        The dictionary defines the relevant signal names and how to interpret
+        each of the states. These states will be evaluated in the dict's order.
+        If the order matters, you should pass in an OrderedDict.
 
-    states : list of string
-        A list of the available states. Does not include invalid and unknown
-        states.
-
-    SUB_STATE : string
-        Subscriptions to SUB_STATE will be called if the value attribute
-        changes.
+        This is for cases where the logic is simple. If there are more complex
+        requirements, override `_get_state` instead and provide a
+        complete `states_list`.
     """
-    position = None
-    value = None
-    states = None
-    SUB_STATE = "state_changed"
-    _default_sub = SUB_STATE
+    state = Component(AttributeSignal, '._get_state')
 
-    egu = 'state'
+    _state_logic = {}
 
-    def __init__(self, prefix, **kwargs):
-        super().__init__(prefix, **kwargs)
-        self._prev_value = None
-        self._lock = RLock()
-
-    def _update(self, *args, **kwargs):
-        """
-        Callback that is run each time any component that contributes to the
-        state's value changes. Determines if the state has changed since the
-        last call to _update, and if so, runs all subscriptions to SUB_STATE.
-        """
-        with self._lock:
-            if self.value != self._prev_value:
-                logger.debug("State of %s has changed from %s to %s",
-                             self.name or self, self._prev_value, self.value)
-                self._run_subs(sub_type=self.SUB_STATE, value=self.value)
-                self._prev_value = self.value
-
-    def _done_moving(*args, **kwargs):
-        pass
-
-
-class PVState(State):
-    """
-    State that comes from some arbitrary set of pvs
-    """
-    _states = {}
-
-    def __init__(self, prefix, *, read_attrs=None, name=None, **kwargs):
-        if read_attrs is None:
-            read_attrs = self.states
-        super().__init__(prefix, read_attrs=read_attrs, name=name, **kwargs)
-        # TODO: Don't subscribe to child signals unless someone is subscribed
-        # to us
-        for sig_name in self.component_names:
-            obj = getattr(self, sig_name)
-            obj.subscribe(self._update, event_type=obj.SUB_VALUE)
+    def __init__(self, prefix, *, name, **kwargs):
+        if self._state_logic and not self.states_list:
+            self.states_list = list(self._state_logic.keys())
+        super().__init__(prefix, name=name, **kwargs)
 
     @property
-    def states(self):
-        """
-        A list of possible states
-        """
-        return list(self._states.keys())
-
-    @property
-    def position(self):
-        return self.value
-
-    @property
-    def value(self):
-        """
-        Current state of the object
-        """
+    def _get_state(self):
         state_value = None
-        for state, info in self._states.items():
+        for state, info in self._state_logic.items():
             # Gather signal
             state_signal = getattr(self, state)
             # Get raw EPICS readback
@@ -343,62 +270,45 @@ class PVState(State):
 
             # Handle unaccounted readbacks
             except (KeyError, AssertionError):
-                state_value = 'unknown'
+                state_value = 'Unknown'
                 break
 
         # If all states deferred, report as unknown
-        return state_value or 'unknown'
+        return state_value or 'Unknown'
 
-    @value.setter
-    def value(self, value):
-        logger.debug("Changing state of %s from %s to %s",
-                     self, self.value, value)
-        self._setter(value)
+    def _do_move(self):
+        raise NotImplementedError(('Class must implement a _do_move method or'
+                                   'override the move and set methods'))
 
 
-def pvstate_class(classname, states, doc="", setter=None,
-                  signal_class=EpicsSignalRO):
+class StateRecordPositioner(StatePositioner):
     """
-    Create a subclass of PVState for a particular device.
-
-    Parameters
-    ----------
-    classname : string
-        The name of the new subclass
-    states : dict
-        Information dictionaries for each state of the following form:
-        {
-          alias : {
-                     pvname : ":PVNAME",
-                     0 : "out",
-                     1 : "in",
-                     2 : "unknown",
-                     3 : "defer"
-                  }
-        }
-        The dictionary defines the pv names and how to interpret each of the
-        states. These states will be evaluated in the dict's order. If the
-        order matters, you should pass in an OrderedDict.
-    doc : string, optional
-        Docstring of the new subclass
-    setter : function, optional
-        Function that defines how to change the state of the physical device.
-        Takes two arguments: self, and the new state value.
-    signal_class: class, optional
-        Hook to use a different signal class than EpicsSignalRO for testing.
-
-    Returns
-    -------
-    cls: class
+    A StatePositioner that relies on an EPICS States record to process the
+    device state. The `states_list` must match the order of the EPICS enum.
     """
-    components = dict(_states=states, __doc__=doc, _setter=setter)
-    for state_name, info in states.items():
-        if iskeyword(state_name):
-            raise ValueError("State name '{}' is invalid".format(state_name) +
-                             "because this is a reserved python keyword.")
-        components[state_name] = Component(signal_class, info["pvname"])
-    bases = (PVState,)
-    return type(classname, bases, components)
+    state = Component(EpicsSignal, '', write_pv=':GO')
+    readback = FormattedComponent(EpicsSignalRO, '{self._readback}')
+
+    _default_read_attrs = ['state', 'readback']
+
+    def __init__(self, prefix, *, name, **kwargs):
+        some_state = self.states_list[0]
+        self._readback = '{}:{}_CALC.A'.format(prefix, some_state)
+        super().__init__(prefix, name=name, **kwargs)
+        self._has_subscribed_readback = False
+
+    def subscribe(self, cb, event_type=None, run=True):
+        cid = super().subscribe(cb, event_type=event_type, run=run)
+        if (event_type == self.SUB_READBACK and not
+                self._has_subscribed_readback):
+            self.readback.subscribe(self._run_sub_readback, run=False)
+            self._has_subscribed_readback = True
+        return cid
+
+    def _run_sub_readback(self, *args, **kwargs):
+        kwargs.pop('sub_type')
+        kwargs.pop('obj')
+        self._run_subs(sub_type=self.SUB_READBACK, obj=self, **kwargs)
 
 
 class StateStatus(SubscriptionStatus):
