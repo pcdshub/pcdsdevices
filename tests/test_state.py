@@ -100,6 +100,8 @@ def test_pvstate_positioner_sets():
     lim_obj2 = LimCls2('BASE', name='test')
     with pytest.raises(ValueError):
         lim_obj2.move('asdfe')
+    with pytest.raises(ValueError):
+        lim_obj2.move('Unknown')
     cb = Mock()
     lim_obj2.move('OUT', moved_cb=cb)
     attr_wait_true(cb, 'called')
