@@ -63,6 +63,9 @@ class OMMotor(PVPositioner):
     # status
     interlock = C(EpicsSignalRO, ':INTERLOCK')
     enabled = C(EpicsSignalRO, ':ENABLED')
+    # limit switches
+    low_limit_switch = C(EpicsSignalRO, ":LLS")
+    high_limit_switch = C(EpicsSignalRO, ":HLS")
 
     def __init__(self, prefix, *, nominal_position=None, **kwargs):
         self.nominal_position = nominal_position
