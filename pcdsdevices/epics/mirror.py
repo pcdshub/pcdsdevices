@@ -26,13 +26,10 @@ OffsetMirror
 import logging
 
 import numpy as np
-from ophyd import PositionerBase
-from ophyd.utils import (DisconnectedError, LimitError)
-from ophyd.utils.epics_pvs import raise_if_disconnected
-from ophyd.status import wait as status_wait
 from ophyd.signal import Signal
+from ophyd.utils.epics_pvs import raise_if_disconnected
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
-                   FormattedComponent)
+                   PVPositioner, PositionerBase, FormattedComponent)
 
 from .mps import MPS
 from ..inout import InOutRecordPositioner
@@ -40,7 +37,7 @@ from ..inout import InOutRecordPositioner
 logger = logging.getLogger(__name__)
 
 
-class OMMotor(Device, PositionerBase):
+class OMMotor(PVPositioner):
     """
     Base class for each motor in the LCLS offset mirror system.
 
@@ -48,14 +45,6 @@ class OMMotor(Device, PositionerBase):
     ----------
     prefix : str
         The EPICS base pv to use
-
-    read_attrs : sequence of attribute names, optional
-        The signals to be read during data acquisition (i.e., in read() and
-        describe() calls)
-
-    configuration_attrs : sequence of attribute names, optional
-        The signals to be returned when asked for the motor configuration (i.e.
-        in read_configuration(), and describe_configuration() calls)
 
     name : str, optional
         The name of the motor
@@ -65,77 +54,23 @@ class OMMotor(Device, PositionerBase):
         previously aligned position, or the position given by the alignment
         team
 
-    parent : instance or None, optional
-        The instance of the parent device, if applicable
-
-    settle_time : float, optional
-        The amount of time to wait after moves to report status completion
-
-    tolerance : float, optional
-        Tolerance used to judge if the motor has reached its final position
+    kwargs:
+        All keyword arguments are passed onto PVPositioner
     """
     # position
-    user_readback = Component(EpicsSignalRO, ':RBV', auto_monitor=True)
-    user_setpoint = Component(EpicsSignal, ':VAL', limits=True)
-
-    # limits
-    upper_ctrl_limit = Component(EpicsSignal, ':VAL.DRVH')
-    lower_ctrl_limit = Component(EpicsSignal, ':VAL.DRVL')
-
-    # configuration
-    velocity = Component(EpicsSignal, ':VELO')
-
-    # motor status
-    motor_is_moving = Component(EpicsSignalRO, ':MOVN')
-    motor_done_move = Component(EpicsSignalRO, ':DMOV', auto_monitor=True)
-    high_limit_switch = Component(EpicsSignal, ':HLS')
-    low_limit_switch = Component(EpicsSignal, ':LLS')
-
+    readback = Component(EpicsSignalRO, ':RBV', auto_monitor=True)
+    setpoint = Component(EpicsSignal, ':VAL', limits=True)
+    done = Component(EpicsSignalRO, ':DMOV', auto_monitor=True)
     # status
     interlock = Component(EpicsSignalRO, ':INTERLOCK')
     enabled = Component(EpicsSignalRO, ':ENABLED')
 
-    # misc
-    motor_egu = Component(EpicsSignalRO, ':RBV.EGU')
-
-    # appease bluesky since there is no stop pv for these motors
-    motor_stop = Component(Signal, value=0)
-
-    def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
-                 name=None, parent=None, settle_time=0, tolerance=0.01,
-                 use_limits=True, nominal_position=None, **kwargs):
-
+    def __init__(self, prefix, *, nominal_position=None, **kwargs):
         self.nominal_position = nominal_position
-        if read_attrs is None:
-            read_attrs = ['user_readback']
-        if configuration_attrs is None:
-            configuration_attrs = ['velocity', 'interlock', 'enabled']
-
-        super().__init__(prefix, read_attrs=read_attrs,
-                         configuration_attrs=configuration_attrs, name=name,
-                         parent=parent, settle_time=settle_time, **kwargs)
-
+        super().__init__(prefix, **kwargs)
         # Make the default alias for the user_readback the name of the
         # motor itself.
-        self.user_readback.name = self.name
-        self.tolerance = tolerance
-        self.use_limits = use_limits
-
-        # Set up subscriptions
-        self.motor_done_move.subscribe(self._move_changed)
-        self.user_readback.subscribe(self._pos_changed)
-
-    @property
-    @raise_if_disconnected
-    def precision(self):
-        """
-        The precision of the readback PV, as reported by EPICS.
-
-        Returns
-        -------
-        precision : int
-        """
-        return self.user_readback.precision
+        self.readback.name = self.name
 
     @property
     @raise_if_disconnected
@@ -149,80 +84,7 @@ class OMMotor(Device, PositionerBase):
         """
         return self.motor_egu.get()
 
-    @property
-    @raise_if_disconnected
-    def moving(self):
-        """
-        Whether or not the motor is moving.
-
-        Returns
-        -------
-        moving : bool
-        """
-        return bool(self.motor_is_moving.get(use_monitor=False))
-
-    @raise_if_disconnected
-    def move(self, position, wait=False, **kwargs):
-        """
-        Move to a specified position, optionally waiting for motion to
-        complete.
-
-        Parameters
-        ----------
-        position : float
-            Position to move to
-
-        wait : bool, optional
-            Wait for the status object to complete the move before returning
-
-        moved_cb : callable, optional
-            Call this callback when movement has finished. This callback must
-            accept one keyword argument: 'obj' which will be set to this
-            positioner instance
-
-        timeout : float, optional
-            Maximum time to wait for the motion. If None, the default timeout
-            for this positioner is used
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object of the move
-
-        Raises
-        ------
-        TimeoutError
-            When motion takes longer than `timeout`
-
-        ValueError
-            On invalid positions
-
-        RuntimeError
-            If motion fails other than timing out
-        """
-        logger.debug("Moving {} to {}".format(self.name, position))
-        # Check if the move is valid
-        self._check_value(position)
-
-        # Begin the move process
-        self._started_moving = False
-        # Begin the move process
-        status = super().move(position, **kwargs)
-        self.user_setpoint.put(position, wait=False)
-
-        # If we are within the tolerance we have completed the move
-        if abs(self.position - position) < self.tolerance:
-            status._finished(success=True)
-
-        # Wait for the status object to register the move as complete
-        if wait:
-            logger.info("Waiting for {} to finish move ..."
-                        "".format(self.name))
-            status_wait(status)
-
-        return status
-
-    def _check_value(self, position):
+    def check_value(self, position):
         """
         Checks to make sure the inputted value is both valid and within the
         soft limits of the motor.
@@ -240,22 +102,12 @@ class OMMotor(Device, PositionerBase):
         LimitError
             If the position is outside the soft limits
         """
-        # Check for invalid positions
+        # Check that we do not have a NaN or an Inf as those will
+        # will make the PLC very unhappy ...
         if position is None or np.isnan(position) or np.isinf(position):
             raise ValueError("Invalid value inputted: '{0}'".format(position))
-        if not self.use_limits:
-            return
-
-        # Make sure limits are logical
-        if self.low_limit >= self.high_limit:
-            return
-
-        # Check if it is within the soft limits
-        if not (self.low_limit <= position <= self.high_limit):
-            err_str = "Requested value {0} outside of range: [{1}, {2}]"
-            logger.warn(err_str.format(position, self.low_limit,
-                                       self.high_limit))
-            raise LimitError(err_str)
+        # Use the built-in PVPositioner check_value
+        super().check_value(position)
 
     @raise_if_disconnected
     def mv(self, position, wait=False, **kwargs):
@@ -268,137 +120,6 @@ class OMMotor(Device, PositionerBase):
             Status object of the move
         """
         return self.move(position, wait=wait, **kwargs)
-
-    @property
-    @raise_if_disconnected
-    def position(self):
-        """
-        The current position of the motor in its engineering units.
-
-        Returns
-        -------
-        position : float
-        """
-        return self.user_readback.value
-
-    @raise_if_disconnected
-    def set_current_position(self, pos):
-        """
-        Configure the motor user position to the given value.
-
-        Parameters
-        ----------
-        pos : float
-        """
-        self.user_setpoint.put(pos, wait=False)
-
-    def check_value(self, pos):
-        """
-        Check that the position is within the soft limits.
-
-        Raises
-        ------
-        ValueError
-            On invalid positions, or outside the limits
-        """
-        self.user_setpoint.check_value(pos)
-
-    def _pos_changed(self, timestamp=None, value=None, **kwargs):
-        """
-        Callback from EPICS, indicating a change in position.
-        """
-        self._set_position(value)
-
-    def _move_changed(self, timestamp=None, value=None, sub_type=None,
-                      **kwargs):
-        """
-        Callback from EPICS, indicating that movement status has changed.
-        """
-        was_moving = self._moving
-        self._moving = (value != 1)
-        started = False
-        if not self._started_moving:
-            started = self._started_moving = (not was_moving and self._moving)
-
-        if started:
-            self._run_subs(sub_type=self.SUB_START, timestamp=timestamp,
-                           value=value, **kwargs)
-
-        if was_moving and not self._moving:
-            success = True
-            self._done_moving(success=success, timestamp=timestamp,
-                              value=value)
-
-    @property
-    def report(self):
-        """
-        Returns a dictionary containing current report values of the motor.
-
-        Returns
-        -------
-        rep : dict
-        """
-        try:
-            rep = super().report
-        except DisconnectedError:
-            rep = {'position': 'disconnected'}
-        rep['pv'] = self.user_readback.pvname
-        return rep
-
-    @property
-    def high_limit(self):
-        """
-        Returns the upper limit fot the user setpoint.
-
-        Returns
-        -------
-        high_limit : float
-        """
-        return self.upper_ctrl_limit.value
-
-    @high_limit.setter
-    def high_limit(self, value):
-        """
-        Sets the high limit for user setpoint.
-        """
-        self.upper_ctrl_limit.put(value)
-
-    @property
-    def low_limit(self):
-        """
-        Returns the lower limit fot the user setpoint.
-
-        Returns
-        -------
-        low_limit : float
-        """
-        return self.lower_ctrl_limit.value
-
-    @low_limit.setter
-    def low_limit(self, value):
-        """
-        Sets the high limit for user setpoint.
-        """
-        self.lower_ctrl_limit.put(value)
-
-    @property
-    def limits(self):
-        """
-        Returns the limits of the motor.
-
-        Returns
-        -------
-        limits : tuple
-        """
-        return (self.low_limit, self.high_limit)
-
-    @limits.setter
-    def limits(self, value):
-        """
-        Sets the limits for user setpoint.
-        """
-        self.low_limit = value[0]
-        self.high_limit = value[1]
 
 
 class OffsetMirror(Device, PositionerBase):
