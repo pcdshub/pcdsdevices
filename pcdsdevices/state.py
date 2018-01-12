@@ -55,6 +55,7 @@ class StatePositioner(Device, PositionerBase):
             self._invalid_states = [self._unknown] + self._invalid_states
         if not hasattr(self, 'states_enum'):
             self.states_enum = self._create_states_enum()
+        self.states_list = [s for s in self.states_list if s is not None]
         self._has_subscribed_state = False
 
     def move(self, position, moved_cb=None, timeout=None, wait=False):
