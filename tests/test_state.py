@@ -36,10 +36,10 @@ class LimCls(PVStatePositioner):
 class LimCls2(LimCls):
     def _do_move(self, value):
         state = value.name
-        if state == 'IN':
+        if state == 'in':
             self.highlim.put(1)
             self.lowlim.put(0)
-        elif state == 'OUT':
+        elif state == 'out':
             self.highlim.put(0)
             self.lowlim.put(1)
 
