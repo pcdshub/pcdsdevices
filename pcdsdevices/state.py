@@ -1,6 +1,5 @@
 """
-Module to define records that act as state getter/setters for more complicated
-devices.
+Module to define positioners that move between discrete named states.
 """
 import logging
 import functools
@@ -9,9 +8,8 @@ from threading import RLock
 
 from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait, SubscriptionStatus
-from ophyd.signal import Signal
-from ophyd import (Device, EpicsSignal, EpicsSignalRO,
-                   Component, FormattedComponent)
+from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
+from ophyd.device import Device, Component, FormattedComponent
 
 logger = logging.getLogger(__name__)
 
@@ -219,7 +217,9 @@ class StatePositioner(Device, PositionerBase):
 
 class PVStateSignal(Signal):
     """
-    Signal that implements the PVStatePositioner state and subscription logic
+    Signal that implements the PVStatePositioner state and subscription logic.
+    This may seem overly complicated, but it's necessary to avoid calling EPICS
+    routines inside of callbacks.
     """
     def __init__(self, *, name, **kwargs):
         super().__init__(name=name, **kwargs)
@@ -284,6 +284,7 @@ class PVStateSignal(Signal):
     def subscribe(self, cb, event_type=None, run=True):
         cid = super().subscribe(cb, event_type=event_type, run=run)
         if event_type in (None, self.SUB_VALUE) and not self._has_subscribed:
+            # We need to subscribe to ALL relevant signals!
             for signal_name in self.parent._state_logic.keys():
                 signal = getattr(self.parent, signal_name)
                 signal.subscribe(self._run_sub_value, run=False)
@@ -300,6 +301,8 @@ class PVStateSignal(Signal):
             signal_name = sig.name
             if signal_name.startswith(self.parent.name):
                 signal_name = signal_name[len(self.parent.name)+1:]
+            # Update just one value and assume the rest are cached
+            # This allows us to run subs without EPICS gets
             value = self._insert_value(signal_name, value)
             self._run_subs(sub_type=self.SUB_VALUE, obj=self, value=value,
                            old_value=old_value)
