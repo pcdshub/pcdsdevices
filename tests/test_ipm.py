@@ -3,7 +3,7 @@ import logging
 from unittest.mock import Mock
 
 from pcdsdevices.sim.pv import using_fake_epics_pv
-from pcdsdevices.epics import IPM
+from pcdsdevices.epics.ipm import IPM
 
 from .conftest import connect_rw_pvs, attr_wait_true
 

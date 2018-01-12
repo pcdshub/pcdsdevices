@@ -1,13 +1,13 @@
 from unittest.mock import Mock
 
 from pcdsdevices.sim.pv import using_fake_epics_pv
-from pcdsdevices.epics import Reflaser
+from pcdsdevices.epics.inout import InOutPositioner
 
 from .conftest import attr_wait_true
 
 
 def fake_ref():
-    ref = Reflaser("Test:Ref", name="test")
+    ref = InOutPositioner("Test:Ref", name="test")
     ref.state._read_pv.put('Unknown')
     ref.wait_for_connection()
     return ref
