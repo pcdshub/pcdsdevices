@@ -6,6 +6,7 @@ from unittest.mock import Mock
 ###############
 # Third Party #
 ###############
+import math
 import pytest
 
 ##########
@@ -30,6 +31,12 @@ def fake_branching_mirror():
     m.state.state._write_pv.put('Unknown')
     m.wait_for_connection()
     return m
+
+@using_fake_epics_pv
+def test_nan_protection():
+    branching_mirror = fake_branching_mirror()
+    with pytest.raises(ValueError):
+        branching_mirror.pitch.put(math.nan)
 
 @using_fake_epics_pv
 def test_branching_mirror():
