@@ -39,6 +39,7 @@ class StatePositioner(Device, PositionerBase):
     states_list = []  # Override with an exhaustive list of states
     _invalid_states = []  # Override with states that cannot be set
     _states_alias = {}  # Override with a mapping {'STATE': ['ALIAS', ...]}
+    _unknown = 'Unknown'  # Set False if no Unknown state, can also change str
 
     SUB_STATE = 'state'
     _default_sub = SUB_STATE
@@ -49,8 +50,9 @@ class StatePositioner(Device, PositionerBase):
         super().__init__(prefix, name=name, **kwargs)
         self._valid_states = [state for state in self.states_list
                               if state not in self._invalid_states]
-        self.states_list = ['Unknown'] + self.states_list
-        self._invalid_states = ['Unknown'] + self._invalid_states
+        if self._unknown:
+            self.states_list = [self._unknown] + self.states_list
+            self._invalid_states = [self._unknown] + self._invalid_states
         if not hasattr(self, 'states_enum'):
             self.states_enum = self._create_states_enum()
         self._has_subscribed_state = False
@@ -210,6 +212,9 @@ class StatePositioner(Device, PositionerBase):
         """
         state_def = {}
         for i, state in enumerate(self.states_list):
+            # Skipped None states indicate a missing enum integer
+            if state is None:
+                continue
             state_def[state] = i
             try:
                 aliases = self._states_alias[state]
@@ -258,20 +263,20 @@ class PVStateSignal(Signal):
                     signal_state = info[value]
                 # Handle unaccounted readbacks
                 except KeyError:
-                    state_value = 'Unknown'
+                    state_value = self._unknown
                     break
                 # Associate readback with device state
                 if signal_state != 'defer':
                     if state_value:
                         # Handle inconsistent readbacks
                         if signal_state != state_value:
-                            state_value = 'Unknown'
+                            state_value = self._unknown
                             break
                     else:
                         # Set state to first non-deferred value
                         state_value = signal_state
             # If all states deferred, report as unknown
-            self._readback = state_value or 'Unknown'
+            self._readback = state_value or self._unknown
 
     def get(self, **kwargs):
         """
@@ -351,7 +356,7 @@ class PVStatePositioner(StatePositioner):
             states_set = set()
             for state_mapping in self._state_logic.values():
                 for state_name in state_mapping.values():
-                    if state_name not in ('Unknown', 'defer'):
+                    if state_name not in (self._unknown, 'defer'):
                         states_set.add(state_name)
             self.states_list = list(states_set)
         super().__init__(prefix, name=name, **kwargs)
