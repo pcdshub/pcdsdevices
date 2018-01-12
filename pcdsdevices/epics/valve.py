@@ -1,21 +1,18 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Standard classes for LCLS Gate Valves
 """
 import logging
 from enum import Enum
-from copy import deepcopy
 from functools import partial
 
-from ophyd.status import wait as status_wait
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
                    FormattedComponent as FC)
 
 from .mps import MPS, mps_factory
-from ..state import pvstate_class, StateStatus
+from ..state import PVStatePositioner
 
 logger = logging.getLogger(__name__)
+
 
 class Commands(Enum):
     """
@@ -32,26 +29,7 @@ class InterlockError(PermissionError):
     pass
 
 
-ValveLimits = pvstate_class('ValveLimits',
-                            {'open_limit': {'pvname': ':OPN_DI',
-                                            0: 'defer',
-                                            1: 'out'},
-                             'closed_limit': {'pvname': ':CLS_DI',
-                                              0: 'defer',
-                                              1: 'in'}},
-                            doc='State description of valve limits')
-
-StopperLimits = pvstate_class('Limits',
-                              {'open_limit': {'pvname': ':OPEN',
-                                              0: 'defer',
-                                              1: 'out'},
-                               'closed_limit': {'pvname': ':CLOSE',
-                                                0: 'defer',
-                                                1: 'in'}},
-                              doc='State description of Stopper limits')
-
-
-class Stopper(Device):
+class Stopper(PVStatePositioner):
     """
     Controls Stopper
 
@@ -67,29 +45,24 @@ class Stopper(Device):
     name : str, optional
         Alias for the stopper
     """
-    #Limit based states
-    limits = C(StopperLimits, '')
+    # Limit-based states
+    open_limit = C(EpicsSignalRO, ':OPEN')
+    closed_limit = C(EpicsSignalRO, ':CLOSE')
 
-    #Information on device control
+    # Information on device control
     command = C(EpicsSignal, ':CMD')
     commands = Commands
 
-    #Subscription information
-    SUB_STATE = 'sub_state_changed'
-    _default_sub = SUB_STATE
+    _state_logic = {'open_limit': {0: 'defer',
+                                   1: 'OUT'},
+                    'closed_limit': {0: 'defer',
+                                     1: 'IN'}}
 
-    def __init__(self, prefix, *, name=None,
-                 read_attrs=None, **kwargs):
-
-        if read_attrs is None:
-            read_attrs = ['limits']
-
-        super().__init__(prefix,
-                         read_attrs=read_attrs,
-                         name=name, **kwargs)
-        #Track if subscribed callback to limits 
-        self._has_subscribed = False
-
+    def _do_move(self, state):
+        if state.name == 'IN':
+            self.command.put(self.commands.close_valve.value)
+        elif state.name == 'OUT':
+            self.command.put(self.commands.open_valve.value)
 
     def open(self, wait=False, timeout=None):
         """
@@ -102,27 +75,13 @@ class Stopper(Device):
 
         timeout : float, optional
             Default timeout to wait mark the request as a failure
-
-        Returns
-        -------
-        StateStatus:
-            Future that reports the completion of the request
         """
-        #Command the stopper
-        self.command.put(self.commands.open_valve.value)
-        #Create StateStatus
-        status = StateStatus(self.limits, 'out', timeout=timeout)
-        #Optional wait
-        if wait:
-            status_wait(status)
-
-        return status
-
+        self.move('OUT', wait=wait, timeout=timeout)
 
     def close(self, wait=False, timeout=None):
         """
         Close the stopper
- 
+
         Parameters
         ----------
         wait : bool, optional
@@ -130,23 +89,10 @@ class Stopper(Device):
 
         timeout : float, optional
             Default timeout to wait mark the request as a failure
-
-        Returns
-        -------
-        StateStatus:
-            Future that reports the completion of the request
         """
-        #Command the stopper
-        self.command.put(self.commands.close_valve.value)
-        #Create StateStatus
-        status = StateStatus(self.limits, 'in', timeout=timeout)
-        #Optional wait
-        if wait:
-            status_wait(status)
+        self.move('IN', wait=wait, timeout=timeout)
 
-        return status
-
-    #Lightpath Interface
+    # Lightpath Interface
     def insert(self, *args, **kwargs):
         """
         Alias for :meth:`.close` for lightpath interface
@@ -159,52 +105,19 @@ class Stopper(Device):
         """
         return self.open(*args, **kwargs)
 
-
     @property
     def inserted(self):
         """
         Whether the stopper is in the beamline
         """
-        return self.limits.value == 'in'
-
+        return self.position == 'IN'
 
     @property
     def removed(self):
         """
         Whether the stopper is removed from the beamline
         """
-        return self.limits.value == 'out'
-
-
-    def subscribe(self, cb, event_type=None, run=True):
-        """
-        Subscribe to changes of the valve
-
-        Parameters
-        ----------
-        cb : callable
-            Callback to be run
-
-        event_type : str, optional
-            Type of event to run callback on
-
-        run : bool, optional
-            Run the callback immediatelly
-        """
-        if not self._has_subscribed:
-            self.limits.subscribe(self._limits_changed, run=False)
-            self._has_subscribed = True
-        super().subscribe(cb, event_type=event_type, run=run)
-
-
-    def _limits_changed(self, *args, **kwargs):
-        """
-        Callback when the limit state of the stopper changes
-        """
-        kwargs.pop('sub_type', None)
-        kwargs.pop('obj', None)
-        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
-
+        return self.position == 'OUT'
 
 
 class GateValve(Stopper):
@@ -216,23 +129,15 @@ class GateValve(Stopper):
     commands : Enum
         Command aliases for valve
     """
-    #Limit based states
-    limits    = C(ValveLimits, "")
-    
-    #Commands and Interlock information
-    command   = C(EpicsSignal,   ':OPN_SW')
+    # Limit based states
+    open_limit = C(EpicsSignalRO, ':OPN_DI')
+    closed_limit = C(EpicsSignalRO, ':CLS_DI')
+
+    # Commands and Interlock information
+    command = C(EpicsSignal,   ':OPN_SW')
     interlock = C(EpicsSignalRO, ':OPN_OK')
-    
-    def __init__(self, prefix, *, name=None,
-                 read_attrs=None,
-                 **kwargs):
 
-        # Configure read attributes
-        if read_attrs is None:
-            read_attrs = ['interlock', 'limits']
-
-        super().__init__(prefix,read_attrs=read_attrs,
-                         name=name, **kwargs)
+    _default_read_attrs = ['state', 'interlock']
 
     @property
     def interlocked(self):
@@ -241,7 +146,6 @@ class GateValve(Stopper):
         opening
         """
         return bool(self.interlock.get())
-
 
     def open(self, wait=False, timeout=None, **kwargs):
         """
@@ -272,7 +176,8 @@ class GateValve(Stopper):
 
 
 MPSGateValve = partial(mps_factory, 'MPSGateValve', GateValve)
-MPSStopper   = partial(mps_factory, 'MPSStopper', Stopper)
+MPSStopper = partial(mps_factory, 'MPSStopper', Stopper)
+
 
 class PPSStopper(Device):
     """
@@ -300,16 +205,16 @@ class PPSStopper(Device):
     SUB_STATE = 'sub_state_changed'
     _default_sub = SUB_STATE
 
-    #MPS Information
+    # MPS Information
     mps = FC(MPS, '{self._mps_prefix}', veto=True)
 
     def __init__(self, prefix, *, name=None,
                  read_attrs=None, in_state='IN',
                  out_state='OUT', mps_prefix=None, **kwargs):
-        #Store state information
-        self.in_state, self.out_state = in_state, out_state 
+        # Store state information
+        self.in_state, self.out_state = in_state, out_state
         self._has_subscribed = False
-        #Store MPS information
+        # Store MPS information
         self._mps_prefix = mps_prefix
 
         if not read_attrs:
@@ -326,14 +231,12 @@ class PPSStopper(Device):
         """
         return self.summary.get(as_string=True) == self.in_state
 
-
     @property
     def removed(self):
         """
         Removed limit of the PPS Stopper
         """
         return self.summary.get(as_string=True) == self.out_state
-
 
     def subscribe(self, cb, event_type=None, run=True):
         """

@@ -1,10 +1,14 @@
 import pytest
+import logging
 
+from ophyd.device import Component as Cmp
 from ophyd.signal import Signal
 
-from pcdsdevices import state
-from pcdsdevices.state import StateStatus, StateRecordPositioner
+from pcdsdevices.state import (StateStatus, PVStatePositioner,
+                               StateRecordPositioner)
 from pcdsdevices.sim.pv import using_fake_epics_pv
+
+logger = logging.getLogger(__name__)
 
 
 class PrefixSignal(Signal):
@@ -12,74 +16,76 @@ class PrefixSignal(Signal):
         super().__init__(**kwargs)
 
 
-@pytest.fixture(scope='function')
-def lim_info():
-    return dict(lowlim={"pvname": "LOW",
-                        0: "in",
-                        1: "defer"},
-                highlim={"pvname": "HIGH",
-                         0: "out",
-                         1: "defer"})
+lim_info = dict(lowlim={0: 'IN',
+                        1: 'defer'},
+                highlim={0: 'OUT',
+                         1: 'defer'})
 
 
-def test_pvstate_class(lim_info):
+# Define the class
+class LimCls(PVStatePositioner):
+    lowlim = Cmp(PrefixSignal, 'lowlim')
+    highlim = Cmp(PrefixSignal, 'highlim')
+
+    _state_logic = lim_info
+
+
+# Override the setter
+class LimCls2(LimCls):
+    def _do_move(self, value):
+        state = value.name
+        if state == 'IN':
+            self.highlim.put(1)
+            self.lowlim.put(0)
+        elif state == 'OUT':
+            self.highlim.put(0)
+            self.lowlim.put(1)
+
+
+def test_pvstate_class():
     """
     Make sure all the internal logic works as expected. Use fake signals
     instead of EPICS signals with live hosts.
     """
-    # Define the class
-    LimCls = state.pvstate_class("LimCls", lim_info, signal_class=PrefixSignal)
-    lim_obj = LimCls("BASE", name="test")
+    logger.debug('test_pvstate_class')
+    lim_obj = LimCls('BASE', name='test')
 
     # Check the state machine
     # Limits are defered
     lim_obj.lowlim.put(1)
     lim_obj.highlim.put(1)
-    assert(lim_obj.value == "unknown")
+    assert(lim_obj.position == 'Unknown')
     # Limits are out
     lim_obj.highlim.put(0)
-    assert(lim_obj.value == "out")
+    assert(lim_obj.position == 'OUT')
     # Limits are in
     lim_obj.lowlim.put(0)
     lim_obj.highlim.put(1)
-    assert(lim_obj.value == "in")
+    assert(lim_obj.position == 'IN')
     # Limits are in conflicting state
     lim_obj.lowlim.put(0)
     lim_obj.highlim.put(0)
-    assert(lim_obj.value == "unknown")
+    assert(lim_obj.position == 'Unknown')
 
-    assert("lowlim" in lim_obj.states)
-    assert("highlim" in lim_obj.states)
+    assert('IN' in lim_obj.states_list)
+    assert('OUT' in lim_obj.states_list)
+    assert('Unknown' in lim_obj.states_list)
+    assert('defer' not in lim_obj.states_list)
 
-    # Now let's check the setter and doc kwargs
-    def limsetter(self, value):
-        if value == "in":
-            self.highlim.put(1)
-            self.lowlim.put(0)
-        elif value == "out":
-            self.highlim.put(0)
-            self.lowlim.put(1)
-        else:
-            self.highlim.put(1)
-            self.lowlim.put(1)
-
-    LimCls2 = state.pvstate_class("LimCls2", lim_info, setter=limsetter,
-                                  signal_class=PrefixSignal, doc="testnocrash")
-    lim_obj2 = LimCls2("BASE", name="test")
-    lim_obj2.value = "asdfe"
-    assert(lim_obj2.value == "unknown")
-    lim_obj2.value = "out"
-    assert(lim_obj2.value == "out")
-    lim_obj2.value = "in"
-    assert(lim_obj2.value == "in")
+    lim_obj2 = LimCls2('BASE', name='test')
+    with pytest.raises(ValueError):
+        lim_obj2.move('asdfe')
+    lim_obj2.move('OUT')
+    assert(lim_obj2.position == 'OUT')
+    lim_obj2.move('IN')
+    assert(lim_obj2.position == 'IN')
 
 
-def test_state_status(lim_info):
-    # Define the class
-    LimCls = state.pvstate_class("LimCls", lim_info, signal_class=PrefixSignal)
-    lim_obj = LimCls("BASE", name="test")
+def test_state_status():
+    logger.debug('test_state_status')
+    lim_obj = LimCls('BASE', name='test')
     # Create a status for 'in'
-    status = StateStatus(lim_obj, 'in')
+    status = StateStatus(lim_obj, 'IN')
     # Put readback to 'in'
     lim_obj.lowlim.put(0)
     lim_obj.highlim.put(1)
@@ -94,6 +100,8 @@ def test_statesrecord_class():
     Nothing special can be done without live hosts, just make sure we can
     create a class.
     """
+    logger.debug('test_statesrecord_class')
+
     class MyStates(StateRecordPositioner):
         states_list = ['YES', 'NO', 'MAYBE', 'SO']
 

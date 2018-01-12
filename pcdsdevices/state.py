@@ -5,10 +5,11 @@ devices.
 import logging
 import functools
 from enum import Enum
+from threading import RLock
 
 from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait, SubscriptionStatus
-from ophyd.signal import AttributeSignal
+from ophyd.signal import Signal
 from ophyd import (Device, EpicsSignal, EpicsSignalRO,
                    Component, FormattedComponent)
 
@@ -216,6 +217,94 @@ class StatePositioner(Device, PositionerBase):
         return Enum(enum_name, state_def, start=0)
 
 
+class PVStateSignal(Signal):
+    """
+    Signal that implements the PVStatePositioner state and subscription logic
+    """
+    def __init__(self, *, name, **kwargs):
+        super().__init__(name=name, **kwargs)
+        self._cache = {}
+        self._has_subscribed = False
+        self._lock = RLock()
+
+    def _insert_value(self, signal_name, value):
+        """
+        Update the cache with one value and recalculate
+        """
+        with self._lock:
+            self._cache[signal_name] = value
+            self._update_state()
+            return self._readback
+
+    def _update_state(self):
+        """
+        Calculate the current state
+        """
+        with self._lock:
+            state_value = None
+            for signal_name, info in self.parent._state_logic.items():
+                # Get last cached value
+                value = self._cache[signal_name]
+                try:
+                    signal_state = info[value]
+                # Handle unaccounted readbacks
+                except KeyError:
+                    state_value = 'Unknown'
+                    break
+                # Associate readback with device state
+                if signal_state != 'defer':
+                    if state_value:
+                        # Handle inconsistent readbacks
+                        if signal_state != state_value:
+                            state_value = 'Unknown'
+                            break
+                    else:
+                        # Set state to first non-deferred value
+                        state_value = signal_state
+            # If all states deferred, report as unknown
+            self._readback = state_value or 'Unknown'
+
+    def get(self, **kwargs):
+        """
+        Update all values and recalculate
+        """
+        with self._lock:
+            for signal_name in self.parent._state_logic.keys():
+                signal = getattr(self.parent, signal_name)
+                self._cache[signal_name] = signal.get(**kwargs)
+            self._update_state()
+            return self._readback
+
+    def put(self, value, **kwargs):
+        """
+        Move the PVStatePositioner
+        """
+        self.parent.move(value, **kwargs)
+
+    def subscribe(self, cb, event_type=None, run=True):
+        cid = super().subscribe(cb, event_type=event_type, run=run)
+        if event_type in (None, self.SUB_VALUE) and not self._has_subscribed:
+            for signal_name in self.parent._state_logic.keys():
+                signal = getattr(self.parent, signal_name)
+                signal.subscribe(self._run_sub_value, run=False)
+            self.get()  # Ensure we have a full cache
+        return cid
+
+    def _run_sub_value(self, *args, **kwargs):
+        kwargs.pop('sub_type')
+        sig = kwargs.pop('obj')
+        kwargs.pop('old_value')
+        value = kwargs['value']
+        with self._lock:
+            old_value = self._readback
+            signal_name = sig.name
+            if signal_name.startswith(self.parent.name):
+                signal_name = signal_name[len(self.parent.name)+1:]
+            value = self._insert_value(signal_name, value)
+            self._run_subs(sub_type=self.SUB_VALUE, obj=self, value=value,
+                           old_value=old_value)
+
+
 class PVStatePositioner(StatePositioner):
     """
     A StatePositioner that combines some number of arbitrary state PVs into a
@@ -239,45 +328,24 @@ class PVStatePositioner(StatePositioner):
         If the order matters, you should pass in an OrderedDict.
 
         This is for cases where the logic is simple. If there are more complex
-        requirements, override `_get_state` instead and provide a
-        complete `states_list`.
+        requirements, replace the `state` component.
     """
-    state = Component(AttributeSignal, '._get_state')
+    state = Component(PVStateSignal)
 
     _state_logic = {}
 
     def __init__(self, prefix, *, name, **kwargs):
         if self._state_logic and not self.states_list:
-            self.states_list = list(self._state_logic.keys())
+            states_set = set()
+            for state_mapping in self._state_logic.values():
+                for state_name in state_mapping.values():
+                    if state_name not in ('Unknown', 'defer'):
+                        states_set.add(state_name)
+            self.states_list = list(states_set)
         super().__init__(prefix, name=name, **kwargs)
 
-    @property
-    def _get_state(self):
-        state_value = None
-        for state, info in self._state_logic.items():
-            # Gather signal
-            state_signal = getattr(self, state)
-            # Get raw EPICS readback
-            pv_value = state_signal.get(use_monitor=True)
-            try:
-                # Associate readback with device state
-                signal_state = info[pv_value]
-                if signal_state != 'defer':
-                    if state_value:
-                        assert signal_state == state_value
-                    # Update state
-                    state_value = signal_state
-
-            # Handle unaccounted readbacks
-            except (KeyError, AssertionError):
-                state_value = 'Unknown'
-                break
-
-        # If all states deferred, report as unknown
-        return state_value or 'Unknown'
-
     def _do_move(self):
-        raise NotImplementedError(('Class must implement a _do_move method or'
+        raise NotImplementedError(('Class must implement a _do_move method or '
                                    'override the move and set methods'))
 
 
