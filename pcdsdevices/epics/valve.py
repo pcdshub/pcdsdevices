@@ -75,8 +75,13 @@ class Stopper(PVStatePositioner):
 
         timeout : float, optional
             Default timeout to wait mark the request as a failure
+
+        Returns
+        -------
+        StateStatus:
+            Future that reports the completion of the request
         """
-        self.move('OUT', wait=wait, timeout=timeout)
+        return self.move('OUT', wait=wait, timeout=timeout)
 
     def close(self, wait=False, timeout=None):
         """
@@ -89,8 +94,13 @@ class Stopper(PVStatePositioner):
 
         timeout : float, optional
             Default timeout to wait mark the request as a failure
+
+        Returns
+        -------
+        StateStatus:
+            Future that reports the completion of the request
         """
-        self.move('IN', wait=wait, timeout=timeout)
+        return self.move('IN', wait=wait, timeout=timeout)
 
     # Lightpath Interface
     def insert(self, *args, **kwargs):
