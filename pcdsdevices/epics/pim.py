@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Profile Intensity Monitor Classes
 
@@ -29,21 +27,18 @@ PIMFee
 import logging
 
 import numpy as np
-from ophyd.positioner import PositionerBase
 from ophyd.utils.epics_pvs import raise_if_disconnected
 from ophyd.status import wait as status_wait
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
                    FormattedComponent)
 
 from .imsmotor import ImsMotor
-from .state import statesrecord_class
+from ..state import StateRecordPositioner
 from .areadetector.detectors import (PulnixDetector, FeeOpalDetector)
 from .areadetector.plugins import (ImagePlugin, StatsPlugin)
 from ..utils.pyutils import isnumber
 
 logger = logging.getLogger(__name__)
-
-PIMStates = statesrecord_class("PIMStates", ":OUT", ":YAG", ":DIODE")
 
 
 class PIMPulnixDetector(PulnixDetector):
@@ -178,7 +173,7 @@ class PIMPulnixDetector(PulnixDetector):
         return (self.centroid_x, self.centroid_y)
 
 
-class PIMMotor(Device, PositionerBase):
+class PIMMotor(StateRecordPositioner):
     """
     Standard position monitor motor that can move the stage to insert the yag
     or diode, or retract it from the beam path.
@@ -199,9 +194,8 @@ class PIMMotor(Device, PositionerBase):
     name : str, optional
         The name of the offset mirror
     """
-    states = FormattedComponent(PIMStates, "{self.prefix}")
-    SUB_STATE = 'sub_state_changed'
-    _default_sub = SUB_STATE
+    states_list = ['DIODE', 'YAG', 'OUT']
+    _states_alias = {'YAG': 'IN'}
 
     def __init__(self, prefix, *, read_attrs=None, configuration_attrs=None,
                  name=None, parent=None, timeout=None, **kwargs):
@@ -234,7 +228,7 @@ class PIMMotor(Device, PositionerBase):
         """
         return self.move("OUT", wait=wait, **kwargs)
 
-    #Conform to lightpath interface
+    # Conform to lightpath interface
     def insert(self, *args, **kwargs):
         """
         Alias for :meth:`.move_in` for lightpath interface
@@ -258,84 +252,8 @@ class PIMMotor(Device, PositionerBase):
         """
         return self.move("DIODE", wait=wait, **kwargs)
 
-    def move(self, position, wait=False, **kwargs):
-        """
-        Move the PIM to the inputted position, optionally waiting for the move
-        to complete. String inputs are not case sensitive and must be one of
-        the following:
-
-            "DIODE", "OUT", "IN", "YAG"
-
-        Enumerated positions can also be inputted where:
-
-            1 : "DIODE", 2 : "OUT", 3 : "IN", 3 : "YAG"
-
-        Parameters
-        ----------
-        position : str or number
-            String or enumerated position to move to.
-
-        wait : bool, optional
-            Wait for the status object to complete the move before returning
-
-        timeout : float, optional
-            Maximum time to wait for the motion. If None, the default timeout
-            for this positioner is used
-
-        settle_time: float, optional
-            Delay after the set() has completed to indicate completion to the
-            caller
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object of the move
-
-        Raises
-        ------
-        ValueError
-            If the inputted position to move to is not a valid position
-        """
-        # If position is a number, check it is a valid enumeration state
-        if isnumber(position) and position in (1, 2, 3):
-            status = self.states.move(position, **kwargs)
-
-        # If string check it is a valid state for the motor
-        elif isinstance(position, str) and position.upper() in ("DIODE", "OUT",
-                                                                "IN", "YAG"):
-            if position.upper() == "IN":
-                status = self.states.move("YAG", **kwargs)
-            else:
-                status = self.states.move(position.upper(), **kwargs)
-        else:
-            # Invalid position inputted
-            raise ValueError("Position must be a PIM valid state.")
-
-        # Wait for the status object to register the move as complete
-        if wait:
-            status_wait(status)
-
-        return status
-
-    mv = move
-
-    @property
-    @raise_if_disconnected
-    def position(self):
-        """
-        Return the current position of the yag.
-
-        Returns
-        -------
-        position : str
-        """
-        # Changing readback for "YAG" to "IN" for bluesky
-        pos = self.states.position
-        if pos == "YAG":
-            return "IN"
-        return pos
-
-    state = position
+    def mv(self, position, wait=False, **kwargs):
+        return self.move(position, wait=wait, **kwargs)
 
     @property
     def blocking(self):
@@ -347,7 +265,7 @@ class PIMMotor(Device, PositionerBase):
         blocking : bool
         """
         # Out and diode do not interfere with beam propagation
-        if self.states.value in ("OUT", "DIODE"):
+        if self.position in ("OUT", "DIODE"):
             return False
         return True
 
@@ -362,23 +280,12 @@ class PIMMotor(Device, PositionerBase):
         """
         return self.blocking
 
-
     @property
     def removed(self):
         """
         Whether the YAG is inserted
         """
-        return self.states.value == 'OUT'
-
-    @property
-    def timeout(self):
-        return self.states.timeout
-
-    @timeout.setter
-    def timeout(self, tmo):
-        if tmo is not None:
-            tmo = float(tmo)
-        self.states.timeout = tmo
+        return self.position == 'OUT'
 
     def stage(self):
         self.stage_cache_position = self.position
@@ -388,34 +295,6 @@ class PIMMotor(Device, PositionerBase):
         if self.stage_cache_position is not None:
             self.move(self.stage_cache_position, wait=False)
         return super().unstage()
-
-    def subscribe(self, cb, event_type=None, run=True):
-        """
-        Subscribe to changes of the PIMMotor
-
-        Parameters
-        ----------
-        cb : callable
-            Callback to be run
-
-        event_type : str, optional
-            Type of event to run callback on
-
-        run : bool, optional
-            Run the callback immediatelly
-        """
-        if not self._has_subscribed:
-            self.states.subscribe(self._on_state_change, run=False)
-            self._has_subscribed = True
-        super().subscribe(cb, event_type=event_type, run=run)
-
-    def _on_state_change(self, **kwargs):
-        """
-        Callback run on state change
-        """
-        kwargs.pop('sub_type', None)
-        kwargs.pop('obj', None)
-        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
 
 class PIM(PIMMotor):

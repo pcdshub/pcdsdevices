@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from ophyd.status import wait as status_wait
 
 from pcdsdevices.sim.pv import using_fake_epics_pv
-from pcdsdevices.epics import FeeAtt
+from pcdsdevices.epics.attenuator import FeeAtt
 
 from .conftest import attr_wait_true
 

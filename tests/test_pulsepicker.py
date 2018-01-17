@@ -1,20 +1,11 @@
-############
-# Standard #
-############
 import logging
 
-###############
-# Third Party #
-###############
 import pytest
 from unittest.mock import Mock
 from ophyd.status import wait as status_wait
 
-##########
-# Module #
-##########
 from pcdsdevices.sim.pv import  using_fake_epics_pv
-from pcdsdevices.epics import PickerBlade
+from pcdsdevices.epics.pulsepicker import PickerBlade
 
 from .conftest import attr_wait_true
 

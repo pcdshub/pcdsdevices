@@ -2,9 +2,8 @@
 Basic Beryllium Lens XFLS
 """
 from ophyd import Device, EpicsSignal, Component as C
-from ophyd.status import wait as status_wait
+from ophyd.status import wait as status_wait, SubscriptionStatus
 
-from .state  import SubscriptionStatus
 
 class XFLS(Device):
     """

@@ -9,4 +9,4 @@ htmlcov
 .cache
 
 *.egg-info
-debug.log*
+logs

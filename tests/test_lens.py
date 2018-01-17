@@ -1,18 +1,9 @@
-############
-# Standard #
-############
 from unittest.mock import Mock
 
-###############
-# Third Party #
-###############
 import pytest
 
-##########
-# Module #
-##########
 from pcdsdevices.sim.pv import using_fake_epics_pv
-from pcdsdevices.epics  import XFLS
+from pcdsdevices.epics.lens import XFLS
 
 from .conftest import attr_wait_true
 

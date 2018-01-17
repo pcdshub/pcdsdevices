@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Offset Mirror Classes
 
@@ -37,7 +35,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
                    FormattedComponent)
 
 from .mps import MPS
-from .state import InOutStates
+from .inout import InOutPositioner
 
 logger = logging.getLogger(__name__)
 
@@ -978,7 +976,7 @@ class PointingMirror(OffsetMirror):
     #MPS Information
     mps = FormattedComponent(MPS, '{self._mps_prefix}', veto=True)
     #State Information
-    state = FormattedComponent(InOutStates, '{self._state_prefix}')
+    state = FormattedComponent(InOutPositioner, '{self._state_prefix}')
     #Coupling for horizontal gantry
     x_gantry_decoupled = FormattedComponent(EpicsSignalRO,
                                             "GANTRY:{self._prefix_xy}:X:DECOUPLE")
@@ -1000,14 +998,14 @@ class PointingMirror(OffsetMirror):
         """
         Whether PointingMirror is inserted
         """
-        return self.state.value == 'IN'
+        return self.state.position == 'IN'
 
     @property
     def removed(self):
         """
         Whether PointingMirror is removed
         """
-        return self.state.value == 'OUT'
+        return self.state.position == 'OUT'
 
     def remove(self, wait=False, timeout=None): 
         """

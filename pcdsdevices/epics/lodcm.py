@@ -1,19 +1,28 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-from threading import Event, Thread, RLock
+from threading import RLock
 
 from ophyd import Device, Component
 from ophyd.status import DeviceStatus, wait as status_wait
 
-from .state import statesrecord_class, InOutStates
+from ..state import StateRecordPositioner
+from .inout import InOutPositioner
 
 
-H1NStates = statesrecord_class("LodcmStates", ":OUT", ":C", ":Si")
-YagLomStates = statesrecord_class("YagLomStates", ":OUT", ":YAG", ":SLIT1",
-                                  ":SLIT2", ":SLIT3")
-DectrisStates = statesrecord_class("DectrisStates", ":OUT", ":DECTRIS",
-                                   ":SLIT1", ":SLIT2", ":SLIT3", ":OUTLOW")
-FoilStates = statesrecord_class("FoilStates", ":OUT")
+class H1NStates(StateRecordPositioner):
+    states_list = ['OUT', 'C', 'Si']
+
+
+class YagLomStates(StateRecordPositioner):
+    states_list = ['OUT', 'YAG', 'SLIT1', 'SLIT2', 'SLIT3']
+
+
+class DectrisStates(StateRecordPositioner):
+    states_list = ['OUT', 'DECTRIS', 'SLIT1', 'SLIT2', 'SLIT3', 'OUTLOW']
+
+
+class FoilStates(StateRecordPositioner):
+    states_list = ['OUT']
+    # This class needs rethinking because the foils are different between the
+    # two lodcm instances
 
 
 class LODCM(Device):
@@ -28,7 +37,7 @@ class LODCM(Device):
     h1n = Component(H1NStates, ":H1N")
     yag = Component(YagLomStates, ":DV")
     dectris = Component(DectrisStates, ":DH")
-    diode = Component(InOutStates, ":DIODE")
+    diode = Component(InOutPositioner, ":DIODE")
     foil = Component(FoilStates, ":FOIL")
 
     SUB_STATE = 'sub_state_changed'
@@ -62,7 +71,7 @@ class LODCM(Device):
         """
         table = ["MAIN", "BOTH", "MONO", "BLOCKED"]
         states = ("OUT", "C", "Si", "Unknown")
-        n1 = states.index(self.h1n.value)
+        n1 = states.index(self.h1n.position)
         state = table[n1]
         if state == "MAIN":
             return [self.main_line]
@@ -134,10 +143,10 @@ class LODCM(Device):
         diag_clear: bool
             False if the diagnostics will prevent beam.
         """
-        yag_clear = self.yag.value == 'OUT'
-        dectris_clear = self.dectris.value in ('OUT', 'OUTLOW')
-        diode_clear = self.diode.value in ('IN', 'OUT')
-        foil_clear = self.foil.value == 'OUT'
+        yag_clear = self.yag.position == 'OUT'
+        dectris_clear = self.dectris.position in ('OUT', 'OUTLOW')
+        diode_clear = self.diode.position in ('IN', 'OUT')
+        foil_clear = self.foil.position == 'OUT'
         return all((yag_clear, dectris_clear, diode_clear, foil_clear))
 
     @property
@@ -158,7 +167,7 @@ class LODCM(Device):
         removed: bool
             True if h1n is out
         """
-        return self.h1n.value == "OUT"
+        return self.h1n.position == "OUT"
 
     def remove(self, wait=False, timeout=None, finished_cb=None, **kwargs):
         """
@@ -182,7 +191,7 @@ class LODCM(Device):
             Status object that will be marked finished when all diagnostics are
             done moving and will time out after the given timeout.
         """
-        if self.dectris.value == 'OUTLOW':
+        if self.dectris.position == 'OUTLOW':
             dset = 'OUTLOW'
         else:
             dset = 'OUT'
@@ -232,7 +241,7 @@ class LODCM(Device):
         done_statuses = []
         for state, obj in zip(states, obj):
             if state is not None:
-                status = obj.move(state)
+                status = obj.set(state)
                 done_statuses.append(status)
 
         lodcm_status = DeviceStatus(self, timeout=timeout)
@@ -240,31 +249,11 @@ class LODCM(Device):
             lodcm_status._finished(success=True)
             return lodcm_status
 
-        events = []
-        for i, status in enumerate(done_statuses):
-            event = Event()
-            events.append(event)
-            status.add_callback(self._make_mark_event(event))
+        first_status = done_statuses[0]
+        rest_status = done_statuses[1:]
 
-        finisher = Thread(target=self._status_finisher,
-                          args=(events, lodcm_status))
-        finisher.start()
-        return lodcm_status
+        and_status = first_status
+        for stat in rest_status:
+            and_status = and_status & stat
 
-    def _make_mark_event(self, event):
-        """
-        Create callback for combining statuses
-        """
-        def mark_event(*args, **kwargs):
-            event.set()
-        return mark_event
-
-    def _status_finisher(self, events, status, timeout=None):
-        """
-        Mark status as finished or short-circuit on timeout
-        """
-        for ev in events:
-            ok = ev.wait(timeout=timeout)
-            if not ok:
-                return
-        status._finished(success=True)
+        return and_status
