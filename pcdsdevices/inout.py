@@ -69,11 +69,8 @@ class InOutPositioner(StatePositioner):
     def _pos_in_list(self, state_list):
         current_state = self.get_state(self.position)
         for state in state_list:
-            try:
-                if current_state == self.get_state(state):
-                    return True
-            except ValueError:
-                pass
+            if current_state == self.get_state(state):
+                return True
         return False
 
 
