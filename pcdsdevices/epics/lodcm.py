@@ -24,6 +24,7 @@ class DectrisStates(InOutRecordPositioner):
 
 class FoilStates(InOutRecordPositioner):
     states_list = ['OUT']
+    in_states = []
     # This class needs rethinking because the foils are different between the
     # two lodcm instances
 
