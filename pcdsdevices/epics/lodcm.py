@@ -3,23 +3,26 @@ from threading import RLock
 from ophyd import Device, Component
 from ophyd.status import DeviceStatus, wait as status_wait
 
-from ..state import StateRecordPositioner
-from .inout import InOutPositioner
+from ..inout import InOutRecordPositioner
 
 
-class H1NStates(StateRecordPositioner):
+class H1NStates(InOutRecordPositioner):
     states_list = ['OUT', 'C', 'Si']
+    in_states = ['C', 'Si']
 
 
-class YagLomStates(StateRecordPositioner):
+class YagLomStates(InOutRecordPositioner):
     states_list = ['OUT', 'YAG', 'SLIT1', 'SLIT2', 'SLIT3']
+    in_states = ['YAG', 'SLIT1', 'SLIT2', 'SLIT3']
 
 
-class DectrisStates(StateRecordPositioner):
+class DectrisStates(InOutRecordPositioner):
     states_list = ['OUT', 'DECTRIS', 'SLIT1', 'SLIT2', 'SLIT3', 'OUTLOW']
+    in_states = ['DECTRIS', 'SLIT1', 'SLIT2', 'SLIT3']
+    out_states = ['OUT', 'OUTLOW']
 
 
-class FoilStates(StateRecordPositioner):
+class FoilStates(InOutRecordPositioner):
     states_list = ['OUT']
     # This class needs rethinking because the foils are different between the
     # two lodcm instances
@@ -37,7 +40,7 @@ class LODCM(Device):
     h1n = Component(H1NStates, ":H1N")
     yag = Component(YagLomStates, ":DV")
     dectris = Component(DectrisStates, ":DH")
-    diode = Component(InOutPositioner, ":DIODE")
+    diode = Component(InOutRecordPositioner, ":DIODE")
     foil = Component(FoilStates, ":FOIL")
 
     SUB_STATE = 'sub_state_changed'
