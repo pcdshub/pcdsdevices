@@ -10,6 +10,10 @@ class IPM(InOutRecordPositioner):
     states_list = ['T1', 'T2', 'T3', 'T4', 'OUT']
     diode = Component(InOutRecordPositioner, ":DIODE")
 
+    _states_alias = {'T1': ['T1', 'TARGET1', 't1'],
+                     'T2': ['T2', 'TARGET2', 't2'],
+                     'T3': ['T3', 'TARGET3', 't3'],
+                     'T4': ['T4', 'TARGET4', 't4']}
     in_states = ['T1', 'T2', 'T3', 'T4']
     _transmission = {'T' + str(n): 0.8 for n in range(1, 5)}
 
