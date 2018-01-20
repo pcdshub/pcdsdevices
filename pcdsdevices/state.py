@@ -4,12 +4,13 @@ Module to define positioners that move between discrete named states.
 import logging
 import functools
 from enum import Enum
-from threading import RLock
 
 from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait, SubscriptionStatus
-from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
+from ophyd.signal import EpicsSignal, EpicsSignalRO
 from ophyd.device import Device, Component, FormattedComponent
+
+from .signal import AggregateSignal
 
 logger = logging.getLogger(__name__)
 
@@ -239,97 +240,47 @@ class StatePositioner(Device, PositionerBase):
         return Enum(enum_name, state_def, start=0)
 
 
-class PVStateSignal(Signal):
+class PVStateSignal(AggregateSignal):
     """
-    Signal that implements the PVStatePositioner state and subscription logic.
-    This may seem overly complicated, but it's necessary to avoid calling EPICS
-    routines inside of callbacks.
+    Signal that implements the PVStatePositioner state logic.
     """
     def __init__(self, *, name, **kwargs):
         super().__init__(name=name, **kwargs)
-        self._cache = {}
-        self._has_subscribed = False
-        self._lock = RLock()
+        self._sub_map = {}
+        for signal_name in self.parent._state_logic.keys():
+            sig = getattr(self.parent, signal_name)
+            self._sub_signals.append(sig)
+            self._sub_map[signal_name] = sig
 
-    def _insert_value(self, signal_name, value):
-        """
-        Update the cache with one value and recalculate
-        """
-        with self._lock:
-            self._cache[signal_name] = value
-            self._update_state()
-            return self._readback
-
-    def _update_state(self):
-        """
-        Calculate the current state
-        """
-        with self._lock:
-            state_value = None
-            for signal_name, info in self.parent._state_logic.items():
-                # Get last cached value
-                value = self._cache[signal_name]
-                try:
-                    signal_state = info[value]
-                # Handle unaccounted readbacks
-                except KeyError:
-                    state_value = self.parent._unknown
-                    break
-                # Associate readback with device state
-                if signal_state != 'defer':
-                    if state_value:
-                        # Handle inconsistent readbacks
-                        if signal_state != state_value:
-                            state_value = self.parent._unknown
-                            break
-                    else:
-                        # Set state to first non-deferred value
-                        state_value = signal_state
-            # If all states deferred, report as unknown
-            self._readback = state_value or self.parent._unknown
-
-    def get(self, **kwargs):
-        """
-        Update all values and recalculate
-        """
-        with self._lock:
-            for signal_name in self.parent._state_logic.keys():
-                signal = getattr(self.parent, signal_name)
-                self._cache[signal_name] = signal.get(**kwargs)
-            self._update_state()
-            return self._readback
+    def _calc_readback(self):
+        state_value = None
+        for signal_name, info in self.parent._state_logic.items():
+            # Get last cached value
+            value = self._cache[self._sub_map[signal_name]]
+            try:
+                signal_state = info[value]
+            # Handle unaccounted readbacks
+            except KeyError:
+                state_value = self.parent._unknown
+                break
+            # Associate readback with device state
+            if signal_state != 'defer':
+                if state_value:
+                    # Handle inconsistent readbacks
+                    if signal_state != state_value:
+                        state_value = self.parent._unknown
+                        break
+                else:
+                    # Set state to first non-deferred value
+                    state_value = signal_state
+        # If all states deferred, report as unknown
+        return state_value or self.parent._unknown
 
     def put(self, value, **kwargs):
         """
         Move the PVStatePositioner
         """
         self.parent.move(value, **kwargs)
-
-    def subscribe(self, cb, event_type=None, run=True):
-        cid = super().subscribe(cb, event_type=event_type, run=run)
-        if event_type in (None, self.SUB_VALUE) and not self._has_subscribed:
-            # We need to subscribe to ALL relevant signals!
-            for signal_name in self.parent._state_logic.keys():
-                signal = getattr(self.parent, signal_name)
-                signal.subscribe(self._run_sub_value, run=False)
-            self.get()  # Ensure we have a full cache
-        return cid
-
-    def _run_sub_value(self, *args, **kwargs):
-        kwargs.pop('sub_type')
-        sig = kwargs.pop('obj')
-        kwargs.pop('old_value')
-        value = kwargs['value']
-        with self._lock:
-            old_value = self._readback
-            signal_name = sig.name
-            if signal_name.startswith(self.parent.name):
-                signal_name = signal_name[len(self.parent.name)+1:]
-            # Update just one value and assume the rest are cached
-            # This allows us to run subs without EPICS gets
-            value = self._insert_value(signal_name, value)
-            self._run_subs(sub_type=self.SUB_VALUE, obj=self, value=value,
-                           old_value=old_value)
 
 
 class PVStatePositioner(StatePositioner):
