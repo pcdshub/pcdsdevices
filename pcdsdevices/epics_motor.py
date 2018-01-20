@@ -119,20 +119,6 @@ class EpicsMotor(EpicsMotor):
         self.low_limit = limits[0]
         self.high_limit = limits[1]
 
-    def set_limits(self, llm, hlm):
-        """
-        Sets the limits of the motor. Alias for limits = (llm, hlm).
-
-        Parameters
-        ----------
-        llm : float
-            Desired low limit.
-
-        hlm : float
-            Desired low limit.
-        """
-        self.limits = (llm, hlm)
-
     def check_value(self, value):
         """
         Check if the value is within the soft limits of the motor.
