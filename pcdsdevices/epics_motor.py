@@ -11,6 +11,10 @@ class EpicsMotor(EpicsMotor):
     """
     Epics motor for PCDS.
     """
+    # Reimplemented because pyepics does not recognize when the limits have
+    # been changed without a re-connection of the PV. Instead we trust the soft
+    # limits records
+    user_setpoint = Component(EpicsSignal, ".VAL", limits=False)
     # Additional soft limit configurations
     low_soft_limit = Component(EpicsSignal, ".LLM")
     high_soft_limit = Component(EpicsSignal, ".HLM")
@@ -113,12 +117,11 @@ class EpicsMotor(EpicsMotor):
         ------
         ValueError
         """
-        # Check for control limits on the user_setpoint pv
+        # First check that the user has returned a valid EPICS value. It will
+        # not consult the limits of the PV itself because limits=False
         super().check_value(value)
-
-        if value is None:
-            raise ValueError('Cannot write None to epics PVs')
-
+        # Find the soft limit values from EPICS records and check that this
+        # command will be accepted by the motor
         low_limit, high_limit = self.limits
 
         if not (low_limit <= value <= high_limit):
