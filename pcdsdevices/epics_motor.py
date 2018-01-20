@@ -1,5 +1,4 @@
 import logging
-from enum import Enum
 
 from ophyd.utils import LimitError
 from ophyd import EpicsMotor, Component, EpicsSignal, Signal
@@ -8,21 +7,13 @@ from ophyd import EpicsMotor, Component, EpicsSignal, Signal
 logger = logging.getLogger(__name__)
 
 
-class DirectionEnum(Enum):
-    positive = 0
-    pos = 0
-    negative = 1
-    neg = 1
-
-
 class EpicsMotor(EpicsMotor):
     """
     Epics motor for PCDS.
     """
+    # Additional soft limit configurations
     low_soft_limit = Component(EpicsSignal, ".LLM")
     high_soft_limit = Component(EpicsSignal, ".HLM")
-    offset_val = Component(EpicsSignal, ".OFF")
-    direction_enum = Component(EpicsSignal, ".DIR")
     # Disable missing field that our EPICS motor record lacks
     # This attribute is tracked by the _pos_changed callback
     direction_of_travel = Component(Signal)
@@ -134,51 +125,6 @@ class EpicsMotor(EpicsMotor):
             raise LimitError("Value {} outside of range: [{}, {}]"
                              .format(value, low_limit, high_limit))
 
-    @property
-    def direction(self):
-        """
-        Returns the current direction of the motor.
-        """
-        return DirectionEnum(self.direction_enum.value).name
-
-    @direction.setter
-    def direction(self, val):
-        """
-        Sets the direction of the motor
-
-        Parameters
-        ----------
-        val : int, str
-            The desired direction as an enum or string.
-        """
-        if isinstance(val, int):
-            self.direction_enum.put(DirectionEnum(val).value)
-        else:
-            self.direction_enum.put(DirectionEnum[val.lower()].value)
-
-    @property
-    def offset(self):
-        """
-        Returns the current offset of the motor.
-        
-        Returns
-        -------
-        offset : float
-            Current user off set of the motor.
-        """
-        return self.offset_val.value
-
-    @offset.setter
-    def offset(self, val):
-        """
-        Sets the offset of the motor.
-
-        Parameters
-        ----------
-        val : float
-            The desired offset.
-        """
-        self.offset_val.put(val)
     def _pos_changed(self, timestamp=None, value=None, **kwargs):
         # Store the internal travelling direction of the motor to account for
         # the fact that our EPICS motor does not have DIR field
