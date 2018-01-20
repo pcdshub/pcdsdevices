@@ -9,7 +9,31 @@ logger = logging.getLogger(__name__)
 
 class EpicsMotor(EpicsMotor):
     """
-    Epics motor for PCDS.
+    EpicsMotor for PCDS
+
+    This incapsulates all motor record implementations standard for PCDS,
+    including but not exclusive to Pico, Piezo, IMS and Newport motors. While
+    these types of motors may have additional records and configuration
+    requirements, this class is meant to handle the shared records between
+    them.
+
+    Notes
+    -----
+    The purpose of this class is to account for the differences between the
+    community Motor Record and the PCDS Motor Record. The points that matter
+    for this class are:
+
+        1. The ``TDIR`` field does not exist on the PCDS implementation. This
+        indicates what direction the motor has travelled last. To account for
+        this difference, we use the `_pos_changed` callback to keep track of
+        which direction we believe the motor to be travelling and store this in
+        a simple ``ophyd.Signal``
+        2. Instead of using the limit fields on the setpoint PV, the EPICS
+        motor class has the ``LLM`` and ``HLM`` soft limit fields for
+        convenient usage. Unfortunately, pyepics does not update its internal
+        cache of the limits after the first get attempt. We therefore disregard
+        the internal limits of the PV and use the soft limit records
+        exclusively.
     """
     # Reimplemented because pyepics does not recognize when the limits have
     # been changed without a re-connection of the PV. Instead we trust the soft
