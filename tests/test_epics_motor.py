@@ -20,6 +20,8 @@ def test_epics_motor_soft_limits():
     # Check that we can not move past the soft limits
     with pytest.raises(ValueError):
         m.move(-150)
+    with pytest.raises(ValueError):
+        m.move(None)
 
 @using_fake_epics_pv
 def test_epics_motor_tdir():
