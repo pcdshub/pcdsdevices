@@ -2,7 +2,7 @@ import logging
 from enum import Enum
 
 from ophyd.utils import LimitError
-from ophyd import EpicsMotor, Component, Signal
+from ophyd import EpicsMotor, Component, EpicsSignal, Signal
 
 
 logger = logging.getLogger(__name__)
@@ -23,6 +23,9 @@ class EpicsMotor(EpicsMotor):
     high_soft_limit = Component(EpicsSignal, ".HLM")
     offset_val = Component(EpicsSignal, ".OFF")
     direction_enum = Component(EpicsSignal, ".DIR")
+    # Disable missing field that our EPICS motor record lacks
+    # This attribute is tracked by the _pos_changed callback
+    direction_of_travel = Component(Signal)
 
     @property
     def low_limit(self):
@@ -176,6 +179,13 @@ class EpicsMotor(EpicsMotor):
             The desired offset.
         """
         self.offset_val.put(val)
+    def _pos_changed(self, timestamp=None, value=None, **kwargs):
+        # Store the internal travelling direction of the motor to account for
+        # the fact that our EPICS motor does not have DIR field
+        if None not in (value, self.position):
+            self.direction_of_travel.put(int(value > self.position))
+        # Pass information to PositionerBase
+        super()._pos_changed(timestamp=timestamp, value=value, **kwargs)
 
     def move_rel(self, rel_position, *args, **kwargs):
         """
