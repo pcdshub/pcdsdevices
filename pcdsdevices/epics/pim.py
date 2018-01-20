@@ -32,7 +32,7 @@ from ophyd.status import wait as status_wait
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
                    FormattedComponent)
 
-from .imsmotor import ImsMotor
+from ..epics_motor import EpicsMotor
 from ..state import StateRecordPositioner
 from .areadetector.detectors import (PulnixDetector, FeeOpalDetector)
 from .areadetector.plugins import (ImagePlugin, StatsPlugin)
@@ -384,11 +384,11 @@ class PIMFee(Device):
                                   name="Opal Camera")
 
     # Yag Motors
-    yag = FormattedComponent(ImsMotor, "{self._prefix}:MOTR",
+    yag = FormattedComponent(EpicsMotor, "{self._prefix}:MOTR",
                              name="Yag Motor")
-    zoom = FormattedComponent(ImsMotor, "{self._prefix}:CLZ:01",
+    zoom = FormattedComponent(EpicsMotor, "{self._prefix}:CLZ:01",
                               name="Zoom Motor")
-    focus = FormattedComponent(ImsMotor, "{self._prefix}:CLF:01",
+    focus = FormattedComponent(EpicsMotor, "{self._prefix}:CLF:01",
                                name="Focus Motor")
 
     # Position PV
