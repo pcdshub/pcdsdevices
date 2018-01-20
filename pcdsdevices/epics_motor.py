@@ -1,26 +1,19 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-############
-# Standard #
-############
 import logging
 from enum import Enum
 
-###############
-# Third Party #
-###############
 from ophyd.utils import LimitError
-from ophyd import EpicsMotor, Component, EpicsSignal
+from ophyd import EpicsMotor, Component, Signal
 
 
 logger = logging.getLogger(__name__)
 
 
-class DirectionEnum(Enum): 
+class DirectionEnum(Enum):
     positive = 0
     pos = 0
     negative = 1
     neg = 1
+
 
 class EpicsMotor(EpicsMotor):
     """
@@ -41,8 +34,8 @@ class EpicsMotor(EpicsMotor):
         low_limit : float
             The lower soft limit of the motor.
         """
-        return self.low_soft_limit.value 
-    
+        return self.low_soft_limit.value
+
     @low_limit.setter
     def low_limit(self, value):
         """
@@ -65,7 +58,7 @@ class EpicsMotor(EpicsMotor):
         high_limit : float
             The higher soft limit of the motor.
         """
-        return self.high_soft_limit.value     
+        return self.high_soft_limit.value
 
     @high_limit.setter
     def high_limit(self, value):
@@ -90,12 +83,12 @@ class EpicsMotor(EpicsMotor):
             Soft limits of the motor.
         """
         return (self.low_limit, self.high_limit)
-    
+
     @limits.setter
     def limits(self, limits):
         """
         Sets the limits for the motor.
-        
+
         Parameters
         ----------
         limits : tuple
@@ -107,15 +100,15 @@ class EpicsMotor(EpicsMotor):
     def set_limits(self, llm, hlm):
         """
         Sets the limits of the motor. Alias for limits = (llm, hlm).
-        
+
         Parameters
         ----------
         llm : float
             Desired low limit.
-            
+
         hlm : float
             Desired low limit.
-        """        
+        """
         self.limits = (llm, hlm)
 
     def check_value(self, value):
@@ -133,7 +126,7 @@ class EpicsMotor(EpicsMotor):
             raise ValueError('Cannot write None to epics PVs')
 
         low_limit, high_limit = self.limits
-        
+
         if not (low_limit <= value <= high_limit):
             raise LimitError("Value {} outside of range: [{}, {}]"
                              .format(value, low_limit, high_limit))
@@ -205,19 +198,19 @@ class EpicsMotor(EpicsMotor):
 
         Returns
         -------
-        status : MoveStatus        
+        status : MoveStatus
             Status object for the move.
-        
+
         Raises
         ------
         TimeoutError
             When motion takes longer than `timeout`
-        
+
         ValueError
             On invalid positions
-        
+
         RuntimeError
-            If motion fails other than timing out        
+            If motion fails other than timing out
         """
         return self.move(rel_position + self.position, *args, **kwargs)
 
@@ -228,7 +221,7 @@ class EpicsMotor(EpicsMotor):
 
         Returns
         -------
-        status : MoveStatus        
+        status : MoveStatus
             Status object for the move.
         """
         return self.move(position, *args, **kwargs)
@@ -240,7 +233,7 @@ class EpicsMotor(EpicsMotor):
 
         Returns
         -------
-        status : MoveStatus        
+        status : MoveStatus
             Status object for the move.
         """
         return self.move_rel(rel_position, *args, **kwargs)
@@ -255,5 +248,3 @@ class EpicsMotor(EpicsMotor):
             Current readback position of the motor.
         """
         return self.position
-
- 
