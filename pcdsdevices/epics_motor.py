@@ -138,13 +138,15 @@ class EpicsMotor(EpicsMotor):
             raise LimitError("Value {} outside of range: [{}, {}]"
                              .format(value, low_limit, high_limit))
 
-    def _pos_changed(self, timestamp=None, value=None, **kwargs):
+    def _pos_changed(self, timestamp=None, old_value=None,
+                     value=None, **kwargs):
         # Store the internal travelling direction of the motor to account for
         # the fact that our EPICS motor does not have DIR field
-        if None not in (value, self.position):
-            self.direction_of_travel.put(int(value > self.position))
+        if None not in (value, old_value):
+            self.direction_of_travel.put(int(value > old_value))
         # Pass information to PositionerBase
-        super()._pos_changed(timestamp=timestamp, value=value, **kwargs)
+        super()._pos_changed(timestamp=timestamp, old_value=old_value,
+                             value=value, **kwargs)
 
     def move_rel(self, rel_position, *args, **kwargs):
         """
