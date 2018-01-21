@@ -68,7 +68,7 @@ class EpicsMotor(EpicsMotor):
         status : StatusObject
             Status object of the set.
         """
-        return self.low_soft_limit.set(value)
+        return self.low_soft_limit.put(value)
 
     @property
     def high_limit(self):
@@ -92,7 +92,7 @@ class EpicsMotor(EpicsMotor):
         status : StatusObject
             Status object of the set.
         """
-        return self.high_soft_limit.set(value)
+        return self.high_soft_limit.put(value)
 
     @property
     def limits(self):
