@@ -1,4 +1,5 @@
 import logging
+import time
 
 from ophyd.device import Component as Cmp, FormattedComponent as FCmp
 from ophyd.pv_positioner import PVPositioner
@@ -164,7 +165,16 @@ class LusiAttBase(AttBase):
     status = Cmp(EpicsSignalRO, ':STATUS')
     calcpend = Cmp(EpicsSignalRO, ':CALCP')
 
-    # TODO: Use calcpend to ensure calc is done before moving
+    @property
+    def actuate_value(self):
+        # We have a calc pend, wait for calc to not be pending
+        timeout = 1
+        start = time.time()
+        while self.calcpend.get() != 0:
+            if time.time() - start > timeout:
+                break
+            time.sleep(0.01)
+        return super().actuate_value
 
 
 class FeeAtt(AttBase):
