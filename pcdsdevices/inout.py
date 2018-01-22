@@ -94,8 +94,8 @@ class TTReflaser(InOutRecordPositioner):
 class InOutPVStatePositioner(PVStatePositioner, InOutPositioner):
     """
     Positioner for a set of PVs that result in aggregate IN and OUT states for
-    a single device. This can be subclassed for other collections of PVs that
-    need more granularity than IN and OUT, but still need the inserted/removed
-    interface for lightpath.
+    a single device. This must be subclassed and provided a _state_logic
+    attribute to be used. Consult the PVStatePositioner documentation for more
+    information.
     """
     pass
