@@ -28,7 +28,7 @@ import numpy as np
 from ophyd.signal import Signal
 from ophyd.utils.epics_pvs import raise_if_disconnected
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
-                   PVPositioner, PositionerBase, FormattedComponent as FC)
+                   PVPositioner, FormattedComponent as FC)
 
 from .mps import MPS
 from ..inout import InOutRecordPositioner
@@ -238,14 +238,6 @@ class OffsetMirror(Device):
 
     parent : instance or None, optional
         The instance of the parent device, if applicable
-
-    settle_time : float, optional
-        The amount of time to wait after the pitch motor moves to report status
-        completion
-
-    tolerance : float, optional
-        Tolerance used to judge if the pitch motor has reached its final
-        position
     """
     # Pitch Motor
     pitch = FC(OMMotor, "{self.prefix}")
@@ -258,10 +250,7 @@ class OffsetMirror(Device):
     transmission= 1.0
     SUB_STATE = 'sub_state_changed'
 
-    def __init__(self, prefix, prefix_xy, *, name=None, read_attrs=None,
-                 parent=None, configuration_attrs=None, settle_time=0,
-                 tolerance=0.5, timeout=None, nominal_position=None,
-                 **kwargs):
+    def __init__(self, prefix, prefix_xy, *, nominal_position=None, **kwargs):
         self._prefix_xy = prefix_xy
         self._area = prefix.split(":")[1]
         self._mirror = prefix.split(":")[2]
@@ -272,256 +261,8 @@ class OffsetMirror(Device):
         if configuration_attrs is None:
             configuration_attrs = []
 
-        super().__init__(prefix, read_attrs=read_attrs,
-                         configuration_attrs=configuration_attrs,
-                         name=name, parent=parent, timeout=timeout,
-                         settle_time=settle_time,
-                         **kwargs)
-        self.settle_time = settle_time
-        self.tolerance = tolerance
-        self.timeout = timeout
-        self.nominal_position = nominal_position
-
-    def move(self, position, wait=False, **kwargs):
-        """
-        Move the pitch motor to the inputted position, optionally waiting for
-        the move to complete.
-
-        Parameters
-        ----------
-        position : float
-            Position to move to
-
-        wait : bool, optional
-            Wait for the status object to complete the move before returning
-
-        moved_cb : callable, optional
-            Call this callback when movement has finished. This callback must
-            accept one keyword argument: 'obj' which will be set to this
-            positioner instance
-
-        timeout : float, optional
-            Maximum time to wait for the motion. If None, the default timeout
-            for this positioner is used
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object of the move
-
-        Raises
-        ------
-        TimeoutError
-            When motion takes longer than `timeout`
-
-        ValueError
-            On invalid positions
-
-        RuntimeError
-            If motion fails other than timing out
-        """
-        return self.pitch.move(position, wait=wait, **kwargs)
-
-    mv = move
-
-    @property
-    @raise_if_disconnected
-    def position(self):
-        """
-        Readback the current pitch position. Alias for the pitch.position
-        property.
-
-        Returns
-        -------
-        position : float
-        """
-        return self.pitch.position
-
-    @property
-    @raise_if_disconnected
-    def alpha(self):
-        """
-        Pitch motor readback position. Alias for the position property.
-
-        Returns
-        -------
-        alpha : float
-        """
-        return self.position
-
-    @alpha.setter
-    def alpha(self, position, wait=True, **kwargs):
-        """
-        Setter for alpha. Alias for the move() method.
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object of the move
-        """
-        return self.move(position, wait=wait, **kwargs)
-
-    @property
-    @raise_if_disconnected
-    def x(self):
-        """
-        Primary gantry X readback position. Alias for the gan_x_p.position
-        property.
-
-        Returns
-        -------
-        position : float
-        """
-        return self.gan_x_p.position
-
-    @x.setter
-    def x(self, position, **kwargs):
-        """
-        Setter for the primary gantry X motor. Alias for the gan_x_p.move()
-        method.
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object of the move
-        """
-        return self.gan_x_p.move(position, **kwargs)
-
-    @property
-    @raise_if_disconnected
-    def y(self):
-        """
-        Primary gantry Y readback position. Alias for the gan_y_p.position
-        property.
-
-        Returns
-        -------
-        position : float
-        """
-        return self.gan_y_p.position
-
-    @y.setter
-    def y(self, position, **kwargs):
-        """
-        Setter for the primary gantry Y motor. Alias for the gan_y_p.move()
-        method.
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object of the move
-        """
-        return self.gan_y_p.move(position, **kwargs)
-
-    @property
-    def settle_time(self):
-        """
-        Returns the settle time of the pitch motor.
-
-        Returns
-        -------
-        settle_time : float
-        """
-        return self.pitch.settle_time
-
-    @settle_time.setter
-    def settle_time(self, settle_time):
-        """
-        Setter for the pitch settle time.
-        """
-        self.pitch.settle_time = settle_time
-
-    @property
-    def tolerance(self):
-        """
-        Returns the tolerance of the pitch motor.
-
-        Returns
-        -------
-        settle_time : float
-        """
-        return self.pitch.tolerance
-
-    @tolerance.setter
-    def tolerance(self, tolerance):
-        """
-        Setter for the tolerance of the pitch motor
-        """
-        self.pitch.tolerance = tolerance
-
-    @property
-    def high_limit(self):
-        """
-        Returns the upper limit fot the pitch motor.
-
-        Returns
-        -------
-        high_limit : float
-        """
-        return self.pitch.high_limit
-
-    @high_limit.setter
-    def high_limit(self, value):
-        """
-        Sets the high limit for pitch motor.
-
-        Returns
-        -------
-        status : StatusObject
-        """
-        self.pitch.high_limit = value
-
-    @property
-    def low_limit(self):
-        """
-        Returns the lower limit fot the pitch motor.
-
-        Returns
-        -------
-        low_limit : float
-        """
-        return self.pitch.low_limit
-
-    @low_limit.setter
-    def low_limit(self, value):
-        """
-        Sets the high limit for pitch motor.
-
-        Returns
-        -------
-        status : StatusObject
-        """
-        self.pitch.low_limit = value
-
-    @property
-    def limits(self):
-        """
-        Returns the EPICS limits of the user_setpoint pv.
-
-        Returns
-        -------
-        limits : tuple
-        """
-        return self.pitch.limits
-
-    @limits.setter
-    def limits(self, value):
-        """
-        Sets the limits of the user_setpoint pv
-        """
-        self.pitch.limits = value
-
-    @property
-    def timeout(self):
-        return self.pitch.timeout
-
-    @timeout.setter
-    def timeout(self, tmo):
-        if tmo is not None:
-            tmo = float(tmo)
-        self.pitch.timeout = tmo
-        self.gan_x_p.timeout = tmo
-        self.gan_y_p.timeout = tmo
+        super().__init__(prefix, **kwargs)
+        self.pitch.nominal_position = nominal_position
 
     @property
     def nominal_position(self):
@@ -532,10 +273,6 @@ class OffsetMirror(Device):
         if pos is not None:
             pos = float(pos)
         self.pitch.nominal_position = pos
-
-    @property
-    def egu(self):
-        return 'um'
 
     @property
     def inserted(self):
