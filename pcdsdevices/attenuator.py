@@ -34,6 +34,9 @@ class FeeFilter(InOutPositioner):
 
 
 class AttDoneSignal(AggregateSignal):
+    """
+    Signal that is 1 when all filters are done moving and 0 otherwise
+    """
     def __init__(self, *, name, **kwargs):
         super.__init__(name=name, **kwargs)
         self._sub_signals = [f.state for f in self.parent.filters]
@@ -49,6 +52,10 @@ class AttDoneSignal(AggregateSignal):
 
 
 class AttBase(PVPositioner):
+    """
+    Base class for the attenuators. Defines the entire interface assuming the
+    latest IOC.
+    """
     # Positioner Signals
     setpoint = Cmp(EpicsSignal, ':R_DES')
     readback = Cmp(EpicsSignalRO, ':R_CUR')
@@ -162,6 +169,9 @@ class AttBase(PVPositioner):
 
 
 class LusiAttBase(AttBase):
+    """
+    Attenuator with extended feature set.
+    """
     status = Cmp(EpicsSignalRO, ':STATUS')
     calcpend = Cmp(EpicsSignalRO, ':CALCP')
 
@@ -178,6 +188,9 @@ class LusiAttBase(AttBase):
 
 
 class FeeAtt(AttBase):
+    """
+    Old attenuator IOC in the FEE.
+    """
     setpoint = Cmp(EpicsSignal, ':RDES')
     readback = Cmp(EpicsSignal, ':RACT')
     energy = Cmp(EpicsSignalRO, 'ETOA.E')
