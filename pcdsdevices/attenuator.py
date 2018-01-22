@@ -3,9 +3,8 @@ import time
 
 from ophyd.device import Component as Cmp, FormattedComponent as FCmp
 from ophyd.pv_positioner import PVPositioner
-from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
+from ophyd.signal import DerivedSignal, EpicsSignal, EpicsSignalRO
 
-from .signal import AggregateSignal
 from .inout import InOutPositioner
 
 logger = logging.getLogger(__name__)
@@ -22,33 +21,12 @@ class Filter(InOutPositioner):
     stuck = Cmp(EpicsSignal, ':STUCK')
 
 
-class FeeFilter(InOutPositioner):
+class AttDoneSignal(DerivedSignal):
     """
-    A single attenuation blade, as implemented in the FEE
+    Signal that is 1 when all filters are done moving and 0 otherwise. This is
+    derived from the STATUS PV, which can be OK, MOVING, FAULTED (0, 1, 2)
     """
-    state = Cmp(EpicsSignal, ':STATE', write_pv=':CMD')
-
-    states_list = ['IN', 'OUT', 'FAIL']
-    _invalid_states = ['FAIL']
-    _unknown = 'XSTN'
-
-
-class AttDoneSignal(AggregateSignal):
-    """
-    Signal that is 1 when all filters are done moving and 0 otherwise
-    """
-    def __init__(self, *, name, **kwargs):
-        super().__init__(name=name, **kwargs)
-        self._sub_signals = [f.state for f in self.parent.filters]
-
-    def _calc_readback(self):
-        for sig, state in self._cache.items():
-            if state == sig._unknown:
-                return 0
-        return 1
-
-    def put(self, *args, **kwargs):
-        pass
+    pass
 
 
 class AttBase(PVPositioner):
@@ -77,14 +55,21 @@ class AttBase(PVPositioner):
     _default_read_attrs = ['readback']
 
     def __init__(self, prefix, *, name, **kwargs):
-        super().__init__(prefix, name=name, **kwargs)
+        self._filters = []
+        super().__init__(prefix, name=name, limits=(0, 1), **kwargs)
 
-        self.filters = []
-        for i in range(1, MAX_FILTERS + 1):
-            try:
-                self.filters.append(getattr(self, 'filter{}'.format(i)))
-            except AttributeError:
-                break
+    @property
+    def filters(self):
+        """
+        List of filters that are part of this att.
+        """
+        if not self._filters:
+            for i in range(1, MAX_FILTERS + 1):
+                try:
+                    self._filters.append(getattr(self, 'filter{}'.format(i)))
+                except AttributeError:
+                    break
+        return self._filters
 
     @property
     def actuate_value(self):
@@ -179,34 +164,6 @@ class AttBase(PVPositioner):
             else:
                 self._original_vals[filt.state] = filt.state.value
         return super().stage()
-
-
-class FeeAtt(AttBase):
-    """
-    Old attenuator IOC in the FEE.
-    """
-    setpoint = Cmp(EpicsSignal, ':RDES')
-    readback = Cmp(EpicsSignal, ':RACT')
-    energy = Cmp(EpicsSignalRO, 'ETOA.E')
-
-    status = None
-    calcpend = Cmp(Signal, value=0)
-
-    # Hardcode filters for FEE, because there is only one.
-    filter1 = FCmp(FeeFilter, '{self._filter_prefix}1')
-    filter2 = FCmp(FeeFilter, '{self._filter_prefix}2')
-    filter3 = FCmp(FeeFilter, '{self._filter_prefix}3')
-    filter4 = FCmp(FeeFilter, '{self._filter_prefix}4')
-    filter5 = FCmp(FeeFilter, '{self._filter_prefix}5')
-    filter6 = FCmp(FeeFilter, '{self._filter_prefix}6')
-    filter7 = FCmp(FeeFilter, '{self._filter_prefix}7')
-    filter8 = FCmp(FeeFilter, '{self._filter_prefix}8')
-    filter9 = FCmp(FeeFilter, '{self._filter_prefix}9')
-    num_att = 9
-
-    def __init__(self, prefix='SATT:FEE1:320', *, name='FeeAtt', **kwargs):
-        self._filter_prefix = prefix[:-1]
-        super().__init__(prefix, name=name, **kwargs)
 
 
 def _make_att_classes(max_filters):
