@@ -61,7 +61,7 @@ class AttBase(PVPositioner):
     user_energy = Cmp(EpicsSignal, ':EDES')
     eget_cmd = Cmp(EpicsSignal, ':EACT.SCAN')
 
-    egu = ''
+    egu = ''  # Transmission is a unitless ratio
     _default_read_attrs = ['readback']
 
     def __init__(self, prefix, *, name, **kwargs):
