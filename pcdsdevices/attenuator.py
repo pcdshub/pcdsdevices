@@ -26,7 +26,17 @@ class AttDoneSignal(DerivedSignal):
     Signal that is 1 when all filters are done moving and 0 otherwise. This is
     derived from the STATUS PV, which can be OK, MOVING, FAULTED (0, 1, 2)
     """
-    pass
+    def __init__(self, attr, *, name, parent, **kwargs):
+        super().__init__(getattr(parent, attr), name=name, parent=parent,
+                         **kwargs)
+
+    def inverse(self, value):
+        if value in (1, 'MOVING'):
+            return 0
+        return 1
+
+    def put(self, *args, **kwargs):
+        pass
 
 
 class AttBase(PVPositioner):
@@ -38,7 +48,7 @@ class AttBase(PVPositioner):
     setpoint = Cmp(EpicsSignal, ':R_DES')
     readback = Cmp(EpicsSignalRO, ':R_CUR')
     actuate = Cmp(EpicsSignal, ':GO')
-    done = Cmp(AttDoneSignal)
+    done = Cmp(AttDoneSignal, 'status')
 
     # Attenuator Signals
     energy = Cmp(EpicsSignalRO, ':T_CALC.VALE')
