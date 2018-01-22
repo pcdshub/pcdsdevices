@@ -142,7 +142,67 @@ class Pitch(OMMotor):
         super().__init__(prefix, **kwargs)
 
 
-class OffsetMirror(Device, PositionerBase):
+class Gantry(OMMotor):
+    """
+    Gantry Axis
+
+    The horizontal and vertical motion of the OffsetMirror are controlled by
+    two coupled stepper motors. Instructions are sent to both by simply
+    requesting a move on the primary so they are represented here as a single
+    motor with additional diagnostics and interlock
+
+    Parameters
+    ----------
+    prefix : str
+        Base prefix for both stepper motors i.e XRT:M1H. Do not include the "P"
+        or "S" to indicate primary or secondary steppers
+
+    gantry_prefix : str, optional
+        Prefix for the shared gantry diagnostics if it is different than the
+        stepper motor prefix
+
+    kwargs:
+        All passed to OMMotor
+    """
+    # Readbacks for gantry information
+    gantry_difference = FC(EpicsSignalRO, "GANTRY:{self.gantry_prefix}:GDIF")
+    decoupled = FC(EpicsSignalRO, "GANTRY:{self.gantry_prefix}:DECOUPLE")
+    # Readbacks for the secondary motor
+    follower_readback = FC(EpicsSignalRO, "{self.follower_prefix}:RBV")
+    follower_low_limit_switch = FC(EpicsSignalRO, "{self.follow_prefix}:LLS")
+    follower_high_limit_switch = FC(EpicsSignalRO, "{self.follow_prefix}:HLS")
+
+    _default_read_attrs = ['readback', 'setpoint', 'gantry_difference']
+
+    def __init__(self, prefix, *, gantry_prefix=None, **kwargs):
+        self.gantry_prefix = gantry_prefix or prefix
+        self.follow_prefix = prefix + ':S'
+        super().__init__(prefix + ':P', **kwargs)
+
+    def move(self, position, **kwargs):
+        """
+        Move the gantry to a specific position
+
+        Calls OMMotor.move but first checks that the gantry is coupled before
+        proceeding. This is not a safety measure, but instead just here largely
+        for bookkeeping and to give the operator further feedback on why the
+        requested move is not completed.
+
+        Parameters
+        ----------
+        position: float
+            Requested position
+
+        kwargs:
+            Passed to OMMotor.move
+        """
+        # Check that the gantry is not decoupled
+        if not self.decoupled.get():
+            raise PermissionError("The gantry is not currently coupled")
+        return super().move(position, **kwargs)
+
+
+class OffsetMirror(Device):
     """
     X-Ray offset mirror class for each individual mirror system used in the FEE
     and XRT. Controls for the pitch, and primary gantry x and y motors are
