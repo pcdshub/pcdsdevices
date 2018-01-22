@@ -38,7 +38,7 @@ class AttDoneSignal(AggregateSignal):
     Signal that is 1 when all filters are done moving and 0 otherwise
     """
     def __init__(self, *, name, **kwargs):
-        super.__init__(name=name, **kwargs)
+        super().__init__(name=name, **kwargs)
         self._sub_signals = [f.state for f in self.parent.filters]
 
     def _calc_readback(self):
