@@ -165,17 +165,17 @@ class Gantry(OMMotor):
         All passed to OMMotor
     """
     # Readbacks for gantry information
-    gantry_difference = FC(EpicsSignalRO, "GANTRY:{self.gantry_prefix}:GDIF")
-    decoupled = FC(EpicsSignalRO, "GANTRY:{self.gantry_prefix}:DECOUPLE")
+    gantry_difference = FC(EpicsSignalRO, "{self.gantry_prefix}:GDIF")
+    decoupled = FC(EpicsSignalRO, "{self.gantry_prefix}:DECOUPLE")
     # Readbacks for the secondary motor
-    follower_readback = FC(EpicsSignalRO, "{self.follower_prefix}:RBV")
+    follower_readback = FC(EpicsSignalRO, "{self.follow_prefix}:RBV")
     follower_low_limit_switch = FC(EpicsSignalRO, "{self.follow_prefix}:LLS")
     follower_high_limit_switch = FC(EpicsSignalRO, "{self.follow_prefix}:HLS")
 
     _default_read_attrs = ['readback', 'setpoint', 'gantry_difference']
 
     def __init__(self, prefix, *, gantry_prefix=None, **kwargs):
-        self.gantry_prefix = gantry_prefix or prefix
+        self.gantry_prefix = gantry_prefix or 'GANTRY:' + prefix
         self.follow_prefix = prefix + ':S'
         super().__init__(prefix + ':P', **kwargs)
 
@@ -246,8 +246,8 @@ class OffsetMirror(Device):
     gan_y_p = FC(OMMotor, "{self._prefix_xy}:Y:P")
     # This is not implemented in the PLC. Included to appease bluesky
     motor_stop = C(Signal, value=0)
-    #Transmission for Lightpath Interface
-    transmission= 1.0
+    # Transmission for Lightpath Interface
+    transmission = 1.0
     SUB_STATE = 'sub_state_changed'
 
     def __init__(self, prefix, prefix_xy, *, nominal_position=None, **kwargs):
@@ -304,22 +304,22 @@ class PointingMirror(OffsetMirror):
     out_lines : list, optional
         List of beamlines thate are delivered beam when the mirror is out
     """
-    #MPS Information
+    # MPS Information
     mps = FC(MPS, '{self._mps_prefix}', veto=True)
-    #State Information
+    # State Information
     state = FC(InOutRecordPositioner, '{self._state_prefix}')
-    #Coupling for horizontal gantry
+    # Coupling for horizontal gantry
     x_gantry_decoupled = FC(EpicsSignalRO,
                                             "GANTRY:{self._prefix_xy}:X:DECOUPLE")
 
-    def __init__(self, *args, mps_prefix=None, state_prefix=None, out_lines=None,
-                 in_lines=None, **kwargs):
+    def __init__(self, *args, mps_prefix=None, state_prefix=None,
+                 out_lines=None, in_lines=None, **kwargs):
         self._has_subscribed = False
-        #Store MPS information
+        # Store MPS information
         self._mps_prefix = mps_prefix
-        #Store State information
+        # Store State information
         self._state_prefix = state_prefix
-        #Branching pattern
+        # Branching pattern
         self.in_lines = in_lines
         self.out_lines = out_lines
         super().__init__(*args, **kwargs)
@@ -338,7 +338,7 @@ class PointingMirror(OffsetMirror):
         """
         return self.state.position == 'OUT'
 
-    def remove(self, wait=False, timeout=None): 
+    def remove(self, wait=False, timeout=None):
         """
         Remove the PointingMirror from the beamline
 
@@ -361,7 +361,7 @@ class PointingMirror(OffsetMirror):
             return self.state.move("IN", wait=wait, timeout=timeout)
         else:
             raise RuntimeError("Gantry is not coupled, can not move")
- 
+
     @property
     def destination(self):
         """
@@ -369,16 +369,16 @@ class PointingMirror(OffsetMirror):
         is unknown. If :attr:`.branches` only returns a single possible
         beamline, that is returned. Otherwise, the `state` PV is used
         """
-        #A single possible destination
+        # A single possible destination
         if len(self.branches) == 1:
             return self.branches
-        #Inserted
+        # Inserted
         if self.inserted and not self.removed:
             return self.in_lines
-        #Removed
+        # Removed
         elif self.removed and not self.inserted:
             return self.out_lines
-        #Unknown
+        # Unknown
         else:
             return []
 
@@ -419,7 +419,7 @@ class PointingMirror(OffsetMirror):
             Run the callback immediatelly
         """
         if not self._has_subscribed:
-            #Subscribe to changes in state
+            # Subscribe to changes in state
             self.state.subscribe(self._on_state_change, run=False)
             self._has_subscribed = True
         super().subscribe(cb, event_type=event_type, run=run)
