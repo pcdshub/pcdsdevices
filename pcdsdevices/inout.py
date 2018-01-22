@@ -75,6 +75,11 @@ class InOutPositioner(StatePositioner):
 
 
 class InOutRecordPositioner(StateRecordPositioner, InOutPositioner):
+    """
+    Positioner for a motor that moves to states IN and OUT using a standard
+    states record. This can be subclassed for other states records that involve
+    inserting and removing something into the beam.
+    """
     pass
 
 
@@ -87,4 +92,10 @@ class TTReflaser(InOutRecordPositioner):
 
 
 class InOutPVStatePositioner(PVStatePositioner, InOutPositioner):
+    """
+    Positioner for a set of PVs that result in aggregate IN and OUT states for
+    a single device. This can be subclassed for other collections of PVs that
+    need more granularity than IN and OUT, but still need the inserted/removed
+    interface for lightpath.
+    """
     pass
