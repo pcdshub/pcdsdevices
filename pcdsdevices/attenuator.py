@@ -43,7 +43,7 @@ class AttDoneSignal(AggregateSignal):
                 return 0
         return 1
 
-    def put(self, **kwargs):
+    def put(self, *args, **kwargs):
         pass
 
 
