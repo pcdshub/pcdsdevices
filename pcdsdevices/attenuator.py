@@ -3,7 +3,7 @@ import time
 
 from ophyd.device import Component as Cmp, FormattedComponent as FCmp
 from ophyd.pv_positioner import PVPositioner
-from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
 
 from .signal import AggregateSignal
 from .inout import InOutPositioner
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
 
 
-class LusiFilter(InOutPositioner):
+class Filter(InOutPositioner):
     """
     A single attenuation blade, as implemented in the hard xray hutches.
     """
@@ -53,8 +53,8 @@ class AttDoneSignal(AggregateSignal):
 
 class AttBase(PVPositioner):
     """
-    Base class for the attenuators. Defines the entire interface assuming the
-    latest IOC.
+    Base class for the attenuators. Does not include filters, because the
+    number of filters can vary.
     """
     # Positioner Signals
     setpoint = Cmp(EpicsSignal, ':R_DES')
@@ -68,6 +68,10 @@ class AttBase(PVPositioner):
     trans_floor = Cmp(EpicsSignalRO, ':R_FLOOR')
     user_energy = Cmp(EpicsSignal, ':EDES')
     eget_cmd = Cmp(EpicsSignal, ':EACT.SCAN')
+
+    # Aux Signals
+    status = Cmp(EpicsSignalRO, ':STATUS')
+    calcpend = Cmp(EpicsSignalRO, ':CALCP')
 
     egu = ''  # Transmission is a unitless ratio
     _default_read_attrs = ['readback']
@@ -88,7 +92,16 @@ class AttBase(PVPositioner):
         Sets the value we use in the GO command. This command will return 2 if
         the setpoint is closer to the ceiling than the floor, or 3 otherwise.
         In the unlikely event of a tie, we choose the floor.
+
+        This will wait until a pending calculation completes before returning.
         """
+        timeout = 1
+        start = time.time()
+        while self.calcpend.get() != 0:
+            if time.time() - start > timeout:
+                break
+            time.sleep(0.01)
+
         goal = self.setpoint.get()
         ceil = self.trans_ceil.get()
         floor = self.trans_floor.get()
@@ -168,25 +181,6 @@ class AttBase(PVPositioner):
         return super().stage()
 
 
-class LusiAttBase(AttBase):
-    """
-    Attenuator with extended feature set.
-    """
-    status = Cmp(EpicsSignalRO, ':STATUS')
-    calcpend = Cmp(EpicsSignalRO, ':CALCP')
-
-    @property
-    def actuate_value(self):
-        # We have a calc pend, wait for calc to not be pending
-        timeout = 1
-        start = time.time()
-        while self.calcpend.get() != 0:
-            if time.time() - start > timeout:
-                break
-            time.sleep(0.01)
-        return super().actuate_value
-
-
 class FeeAtt(AttBase):
     """
     Old attenuator IOC in the FEE.
@@ -194,6 +188,9 @@ class FeeAtt(AttBase):
     setpoint = Cmp(EpicsSignal, ':RDES')
     readback = Cmp(EpicsSignal, ':RACT')
     energy = Cmp(EpicsSignalRO, 'ETOA.E')
+
+    status = None
+    calcpend = Cmp(Signal, value=0)
 
     # Hardcode filters for FEE, because there is only one.
     filter1 = FCmp(FeeFilter, '{self._filter_prefix}1')
@@ -212,30 +209,29 @@ class FeeAtt(AttBase):
         super().__init__(prefix, name=name, **kwargs)
 
 
-def _make_lusiatt_classes(max_filters):
+def _make_att_classes(max_filters):
     att_classes = {}
     for i in range(1, max_filters + 1):
         att_filters = {}
         for n in range(1, i + 1):
             num = ":{:02}".format(n)
-            comp = FCmp(LusiFilter, "{self._filter_prefix}" + num)
+            comp = FCmp(Filter, "{self._filter_prefix}" + num)
             att_filters["filter{}".format(n)] = comp
 
         name = "Attenuator{}".format(i)
-        cls = type(name, (LusiAttBase,), att_filters)
+        cls = type(name, (AttBase,), att_filters)
         # Store the number of filters
         cls.num_att = i
         att_classes[i] = cls
     return att_classes
 
 
-_att_classes = _make_lusiatt_classes(MAX_FILTERS)
+_att_classes = _make_att_classes(MAX_FILTERS)
 
 
-def Attenuator(prefix, n_filters, *, name=None, read_attrs=None, **kwargs):
+def Attenuator(prefix, n_filters, *, name, **kwargs):
     """
     Factory function for instantiating an attenuator with the correct filter
     components given the number required.
     """
-    return _att_classes[n_filters](prefix, name=name, read_attrs=read_attrs,
-                                   **kwargs)
+    return _att_classes[n_filters](prefix, name=name, **kwargs)
