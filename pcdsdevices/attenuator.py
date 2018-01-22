@@ -26,7 +26,7 @@ class FeeFilter(InOutPositioner):
     """
     A single attenuation blade, as implemented in the FEE
     """
-    state = Cmp(EpicsSignal, ":STATE", write_pv=":CMD")
+    state = Cmp(EpicsSignal, ':STATE', write_pv=':CMD')
 
     states_list = ['IN', 'OUT', 'FAIL']
     _invalid_states = ['FAIL']
@@ -82,7 +82,7 @@ class AttBase(PVPositioner):
         self.filters = []
         for i in range(1, MAX_FILTERS + 1):
             try:
-                self.filters.append(getattr(self, "filter{}".format(i)))
+                self.filters.append(getattr(self, 'filter{}'.format(i)))
             except AttributeError:
                 break
 
@@ -214,11 +214,11 @@ def _make_att_classes(max_filters):
     for i in range(1, max_filters + 1):
         att_filters = {}
         for n in range(1, i + 1):
-            num = ":{:02}".format(n)
-            comp = FCmp(Filter, "{self._filter_prefix}" + num)
-            att_filters["filter{}".format(n)] = comp
+            num = ':{:02}'.format(n)
+            comp = FCmp(Filter, '{self._filter_prefix}' + num)
+            att_filters['filter{}'.format(n)] = comp
 
-        name = "Attenuator{}".format(i)
+        name = 'Attenuator{}'.format(i)
         cls = type(name, (AttBase,), att_filters)
         # Store the number of filters
         cls.num_att = i
