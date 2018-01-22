@@ -173,15 +173,15 @@ class FeeAtt(AttBase):
     energy = Cmp(EpicsSignalRO, 'ETOA.E')
 
     # Hardcode filters for FEE, because there is only one.
-    filter1 = Cmp(FeeFilter, '{self._filter_prefix}1')
-    filter2 = Cmp(FeeFilter, '{self._filter_prefix}2')
-    filter3 = Cmp(FeeFilter, '{self._filter_prefix}3')
-    filter4 = Cmp(FeeFilter, '{self._filter_prefix}4')
-    filter5 = Cmp(FeeFilter, '{self._filter_prefix}5')
-    filter6 = Cmp(FeeFilter, '{self._filter_prefix}6')
-    filter7 = Cmp(FeeFilter, '{self._filter_prefix}7')
-    filter8 = Cmp(FeeFilter, '{self._filter_prefix}8')
-    filter9 = Cmp(FeeFilter, '{self._filter_prefix}9')
+    filter1 = FCmp(FeeFilter, '{self._filter_prefix}1')
+    filter2 = FCmp(FeeFilter, '{self._filter_prefix}2')
+    filter3 = FCmp(FeeFilter, '{self._filter_prefix}3')
+    filter4 = FCmp(FeeFilter, '{self._filter_prefix}4')
+    filter5 = FCmp(FeeFilter, '{self._filter_prefix}5')
+    filter6 = FCmp(FeeFilter, '{self._filter_prefix}6')
+    filter7 = FCmp(FeeFilter, '{self._filter_prefix}7')
+    filter8 = FCmp(FeeFilter, '{self._filter_prefix}8')
+    filter9 = FCmp(FeeFilter, '{self._filter_prefix}9')
     num_att = 9
 
     def __init__(self, prefix='SATT:FEE1:320', *, name='FeeAtt', **kwargs):
