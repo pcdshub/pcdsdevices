@@ -1,35 +1,50 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-############
-# Standard #
-############
 import logging
-from enum import Enum
 
-###############
-# Third Party #
-###############
 from ophyd.utils import LimitError
-from ophyd import EpicsMotor, Component, EpicsSignal
+from ophyd import EpicsMotor, Component, EpicsSignal, Signal
 
 
 logger = logging.getLogger(__name__)
 
 
-class DirectionEnum(Enum): 
-    positive = 0
-    pos = 0
-    negative = 1
-    neg = 1
-
 class EpicsMotor(EpicsMotor):
     """
-    Epics motor for PCDS.
+    EpicsMotor for PCDS
+
+    This incapsulates all motor record implementations standard for PCDS,
+    including but not exclusive to Pico, Piezo, IMS and Newport motors. While
+    these types of motors may have additional records and configuration
+    requirements, this class is meant to handle the shared records between
+    them.
+
+    Notes
+    -----
+    The purpose of this class is to account for the differences between the
+    community Motor Record and the PCDS Motor Record. The points that matter
+    for this class are:
+
+        1. The ``TDIR`` field does not exist on the PCDS implementation. This
+        indicates what direction the motor has travelled last. To account for
+        this difference, we use the `_pos_changed` callback to keep track of
+        which direction we believe the motor to be travelling and store this in
+        a simple ``ophyd.Signal``
+        2. Instead of using the limit fields on the setpoint PV, the EPICS
+        motor class has the ``LLM`` and ``HLM`` soft limit fields for
+        convenient usage. Unfortunately, pyepics does not update its internal
+        cache of the limits after the first get attempt. We therefore disregard
+        the internal limits of the PV and use the soft limit records
+        exclusively.
     """
+    # Reimplemented because pyepics does not recognize when the limits have
+    # been changed without a re-connection of the PV. Instead we trust the soft
+    # limits records
+    user_setpoint = Component(EpicsSignal, ".VAL", limits=False)
+    # Additional soft limit configurations
     low_soft_limit = Component(EpicsSignal, ".LLM")
     high_soft_limit = Component(EpicsSignal, ".HLM")
-    offset_val = Component(EpicsSignal, ".OFF")
-    direction_enum = Component(EpicsSignal, ".DIR")
+    # Disable missing field that our EPICS motor record lacks
+    # This attribute is tracked by the _pos_changed callback
+    direction_of_travel = Component(Signal)
 
     @property
     def low_limit(self):
@@ -41,8 +56,8 @@ class EpicsMotor(EpicsMotor):
         low_limit : float
             The lower soft limit of the motor.
         """
-        return self.low_soft_limit.value 
-    
+        return self.low_soft_limit.value
+
     @low_limit.setter
     def low_limit(self, value):
         """
@@ -53,7 +68,7 @@ class EpicsMotor(EpicsMotor):
         status : StatusObject
             Status object of the set.
         """
-        return self.low_soft_limit.set(value)
+        return self.low_soft_limit.put(value)
 
     @property
     def high_limit(self):
@@ -65,7 +80,7 @@ class EpicsMotor(EpicsMotor):
         high_limit : float
             The higher soft limit of the motor.
         """
-        return self.high_soft_limit.value     
+        return self.high_soft_limit.value
 
     @high_limit.setter
     def high_limit(self, value):
@@ -77,7 +92,7 @@ class EpicsMotor(EpicsMotor):
         status : StatusObject
             Status object of the set.
         """
-        return self.high_soft_limit.set(value)
+        return self.high_soft_limit.put(value)
 
     @property
     def limits(self):
@@ -90,12 +105,12 @@ class EpicsMotor(EpicsMotor):
             Soft limits of the motor.
         """
         return (self.low_limit, self.high_limit)
-    
+
     @limits.setter
     def limits(self, limits):
         """
         Sets the limits for the motor.
-        
+
         Parameters
         ----------
         limits : tuple
@@ -103,20 +118,6 @@ class EpicsMotor(EpicsMotor):
         """
         self.low_limit = limits[0]
         self.high_limit = limits[1]
-
-    def set_limits(self, llm, hlm):
-        """
-        Sets the limits of the motor. Alias for limits = (llm, hlm).
-        
-        Parameters
-        ----------
-        llm : float
-            Desired low limit.
-            
-        hlm : float
-            Desired low limit.
-        """        
-        self.limits = (llm, hlm)
 
     def check_value(self, value):
         """
@@ -126,63 +127,26 @@ class EpicsMotor(EpicsMotor):
         ------
         ValueError
         """
-        # Check for control limits on the user_setpoint pv
+        # First check that the user has returned a valid EPICS value. It will
+        # not consult the limits of the PV itself because limits=False
         super().check_value(value)
-
-        if value is None:
-            raise ValueError('Cannot write None to epics PVs')
-
+        # Find the soft limit values from EPICS records and check that this
+        # command will be accepted by the motor
         low_limit, high_limit = self.limits
-        
+
         if not (low_limit <= value <= high_limit):
             raise LimitError("Value {} outside of range: [{}, {}]"
                              .format(value, low_limit, high_limit))
 
-    @property
-    def direction(self):
-        """
-        Returns the current direction of the motor.
-        """
-        return DirectionEnum(self.direction_enum.value).name
-
-    @direction.setter
-    def direction(self, val):
-        """
-        Sets the direction of the motor
-
-        Parameters
-        ----------
-        val : int, str
-            The desired direction as an enum or string.
-        """
-        if isinstance(val, int):
-            self.direction_enum.put(DirectionEnum(val).value)
-        else:
-            self.direction_enum.put(DirectionEnum[val.lower()].value)
-
-    @property
-    def offset(self):
-        """
-        Returns the current offset of the motor.
-        
-        Returns
-        -------
-        offset : float
-            Current user off set of the motor.
-        """
-        return self.offset_val.value
-
-    @offset.setter
-    def offset(self, val):
-        """
-        Sets the offset of the motor.
-
-        Parameters
-        ----------
-        val : float
-            The desired offset.
-        """
-        self.offset_val.put(val)
+    def _pos_changed(self, timestamp=None, old_value=None,
+                     value=None, **kwargs):
+        # Store the internal travelling direction of the motor to account for
+        # the fact that our EPICS motor does not have DIR field
+        if None not in (value, old_value):
+            self.direction_of_travel.put(int(value > old_value))
+        # Pass information to PositionerBase
+        super()._pos_changed(timestamp=timestamp, old_value=old_value,
+                             value=value, **kwargs)
 
     def move_rel(self, rel_position, *args, **kwargs):
         """
@@ -205,19 +169,19 @@ class EpicsMotor(EpicsMotor):
 
         Returns
         -------
-        status : MoveStatus        
+        status : MoveStatus
             Status object for the move.
-        
+
         Raises
         ------
         TimeoutError
             When motion takes longer than `timeout`
-        
+
         ValueError
             On invalid positions
-        
+
         RuntimeError
-            If motion fails other than timing out        
+            If motion fails other than timing out
         """
         return self.move(rel_position + self.position, *args, **kwargs)
 
@@ -228,7 +192,7 @@ class EpicsMotor(EpicsMotor):
 
         Returns
         -------
-        status : MoveStatus        
+        status : MoveStatus
             Status object for the move.
         """
         return self.move(position, *args, **kwargs)
@@ -240,7 +204,7 @@ class EpicsMotor(EpicsMotor):
 
         Returns
         -------
-        status : MoveStatus        
+        status : MoveStatus
             Status object for the move.
         """
         return self.move_rel(rel_position, *args, **kwargs)
@@ -255,5 +219,3 @@ class EpicsMotor(EpicsMotor):
             Current readback position of the motor.
         """
         return self.position
-
- 
