@@ -111,32 +111,60 @@ class AttBase(PVPositioner):
 
     @property
     def transmission(self):
+        """
+        Ratio of pass-through beam to incoming beam. This is a value between
+        1 (full beam) and 0 (no beam).
+        """
         return self.position
 
     @property
     def inserted(self):
-        pass  # TODO
+        """
+        True if any blade is inserted
+        """
+        return self.position < 1
 
     @property
     def removed(self):
-        pass  # TODO
+        """
+        True if all blades are removed
+        """
+        return self.position == 1
 
     def insert(self):
-        pass  # TODO
+        """
+        Block the beam
+        """
+        return self.move(0)
 
     def remove(self):
-        pass  # TODO
+        """
+        Bring the attenuator fully out of the beam
+        """
+        return self.move(1)
 
     def stage(self):
-        pass  # TODO
-
-    def unstage(self):
-        pass  # TODO
+        """
+        Store the original positions of all filter blades
+        This is better then storing and restoring the transmission because the
+        mechanical state associated with a particular transmission changes with
+        the beam energy.
+        """
+        for filt in self.filters:
+            # If state is invalid, try to remove at end
+            if filt.position in filt._invalid_states:
+                self._original_vals[filt.state] = filt.out_states[0]
+            # Otherwise, remember so we can restore
+            else:
+                self._original_vals[filt.state] = filt.state.value
+        return super().stage()
 
 
 class LusiAttBase(AttBase):
     status = Cmp(EpicsSignalRO, ':STATUS')
     calcpend = Cmp(EpicsSignalRO, ':CALCP')
+
+    # TODO: Use calcpend to ensure calc is done before moving
 
 
 class FeeAtt(AttBase):
