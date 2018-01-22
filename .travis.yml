@@ -13,8 +13,6 @@ matrix:
 
 install:
   - sudo apt-get update
-  # We do this conditionally because it saves us some downloading if the
-  # version is the same.
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
@@ -22,18 +20,17 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda install conda-build anaconda-client
   - conda update -q conda conda-build
+  - conda config --append channels conda-forge
+  - conda config --append channels lightsource2-tag
   # Useful for debugging any issues with conda
   - conda info -a
+  # Test conda build
+  - conda build -q conda-recipe --output-folder bld-dir
+  - conda config --add channels "file://`pwd`/bld-dir"
   #Grab all dependencies
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION coverage pip wheel happi=0.5.0 ophyd=1.0.0 bluesky=1.0.0 event-model=1.3.0 pytest pytest-timeout hypothesis=3.11.6 -c conda-forge -c lightsource2-tag -c skywalker-tag
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pcdsdevices --file dev-requirements.txt
   #Launch Conda environment
   - source activate test-environment
-  #Install mongomock
-  - pip install mongomock
-  - pip install codecov
-  - pip install -r requirements.txt
-  #Install
-  - python setup.py install
 
 script:
   - coverage run run_tests.py
@@ -42,7 +39,7 @@ script:
   #Build docs
   - |
     if [[ -n "$DOCTR_DEPLOY_ENCRYPTION_KEY" && $BUILD_DOCS ]]; then
-      pip install -r docs-requirements.txt
+      conda install --file docs-requirements.txt
       # Install doctr from a custom branch until
       # https://github.com/drdoctr/doctr/pull/190 is merged.
       pip uninstall -y doctr
