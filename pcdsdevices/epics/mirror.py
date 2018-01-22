@@ -35,7 +35,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
                    FormattedComponent)
 
 from .mps import MPS
-from .inout import InOutPositioner
+from ..inout import InOutRecordPositioner
 
 logger = logging.getLogger(__name__)
 
@@ -976,7 +976,7 @@ class PointingMirror(OffsetMirror):
     #MPS Information
     mps = FormattedComponent(MPS, '{self._mps_prefix}', veto=True)
     #State Information
-    state = FormattedComponent(InOutPositioner, '{self._state_prefix}')
+    state = FormattedComponent(InOutRecordPositioner, '{self._state_prefix}')
     #Coupling for horizontal gantry
     x_gantry_decoupled = FormattedComponent(EpicsSignalRO,
                                             "GANTRY:{self._prefix_xy}:X:DECOUPLE")

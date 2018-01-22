@@ -2,7 +2,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
                    FormattedComponent)
 from ophyd.status import wait as status_wait, SubscriptionStatus
 
-from .inout import InOutPositioner
+from ..inout import InOutRecordPositioner
 
 
 class PickerBlade(Device):
@@ -87,7 +87,7 @@ class PulsePicker(Device):
     """
     Device that lets us pick which beam pulses reach the sample.
     """
-    in_out = FormattedComponent(InOutPositioner, "{self._states}")
+    in_out = FormattedComponent(InOutRecordPositioner, "{self._states}")
     mode = Component(EpicsSignalRO, ":SE", string=True)
     # Blade subdevice
     blade = FormattedComponent(PickerBlade, "{self.prefix}")

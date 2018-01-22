@@ -46,6 +46,8 @@ class StatePositioner(Device, PositionerBase):
 
     _default_read_attrs = ['state']
 
+    egu = 'state'
+
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
         self._valid_states = [state for state in self.states_list
@@ -147,8 +149,7 @@ class StatePositioner(Device, PositionerBase):
         first alias will be used instead of the base name.
         """
         state = self.state.get()
-        if isinstance(state, int):
-            state = self.states_enum(state).name
+        state = self.get_state(state).name
         try:
             alias = self._states_alias[state]
             if isinstance(alias, list):
