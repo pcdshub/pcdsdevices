@@ -17,8 +17,8 @@ class InOutPositioner(StatePositioner):
     out_states: list of strings
         State values that should be considered 'out'.
 
-    _tranmsission: dict{str: number}
-        Mapping from each state to the transition coefficient. This should be a
+    _transmission: dict{str: number}
+        Mapping from each state to the transmission ratio. This should be a
         number from 0 to 1. Default values will be 1 (full transmission) for
         out_states, 0 (full block) for in_states, and nan (no idea!) for
         unaccounted states.
