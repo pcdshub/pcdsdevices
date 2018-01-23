@@ -40,15 +40,11 @@ script:
   - |
     if [[ -n "$DOCTR_DEPLOY_ENCRYPTION_KEY" && $BUILD_DOCS ]]; then
       conda install --file docs-requirements.txt
-      # Install doctr from a custom branch until
-      # https://github.com/drdoctr/doctr/pull/190 is merged.
-      pip uninstall -y doctr
-      pip install git+https://github.com/danielballan/doctr@other-master
       pushd docs
       make html
       popd
       #Publish docs.
-      doctr deploy --deploy-repo lcls-pcds/skywalker-docs --deploy-branch-name master pcdsdevices
+      doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages
     fi
 
 after_success:
