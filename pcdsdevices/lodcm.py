@@ -3,7 +3,7 @@ from threading import RLock
 from ophyd import Device, Component
 from ophyd.status import DeviceStatus, wait as status_wait
 
-from ..inout import InOutRecordPositioner
+from .inout import InOutRecordPositioner
 
 
 class H1NStates(InOutRecordPositioner):

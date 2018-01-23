@@ -4,7 +4,7 @@ from unittest.mock import Mock
 import pytest
 
 from pcdsdevices.sim.pv import using_fake_epics_pv
-from pcdsdevices.epics.lodcm import LODCM
+from pcdsdevices.lodcm import LODCM
 
 from .conftest import attr_wait_true
 
