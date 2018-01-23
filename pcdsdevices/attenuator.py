@@ -13,7 +13,7 @@ MAX_FILTERS = 12
 
 class Filter(InOutPositioner):
     """
-    A single attenuation blade, as implemented in the hard xray hutches.
+    A single attenuation blade.
     """
     state = Cmp(EpicsSignal, ':STATE', write_pv=':GO')
     thickness = Cmp(EpicsSignal, ':THICK')
@@ -135,7 +135,7 @@ class AttBase(PVPositioner):
 
     def stage(self):
         """
-        Store the original positions of all filter blades
+        Store the original positions of all filter blades.
         This is better then storing and restoring the transmission because the
         mechanical state associated with a particular transmission changes with
         the beam energy.
