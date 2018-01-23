@@ -128,3 +128,21 @@ def test_attenuator_calcpend():
     # Waits for calcpend to be 0
     att.actuate_value
     assert 0.1 < time.time() - start < 1
+    att.calcpend._read_pv.put(1)
+    # Gives up after one second
+    start = time.time()
+    att.actuate_value
+    assert time.time() - start >= 1
+
+
+@pytest.mark.timeout(5)
+@using_fake_epics_pv
+def test_attenuator_set_energy():
+    logger.debug('test_attenuator_set_energy')
+    att = fake_att()
+    att.set_energy()
+    assert att.eget_cmd._write_pv.get() == 6
+    energy = 1000
+    att.set_energy(energy)
+    assert att.eget_cmd._write_pv.get() == 0
+    assert att.user_energy.get() == energy
