@@ -13,7 +13,7 @@ def fake_pim():
     using_fake_epics_pv does cleanup routines after the fixture and before the
     test, so we can't make this a fixture without destabilizing our tests.
     """
-    pim = PIMMotor('Test:Yag')
+    pim = PIMMotor('Test:Yag', name='test')
     pim.wait_for_connection()
     return pim
 
