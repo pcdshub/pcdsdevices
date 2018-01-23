@@ -48,7 +48,7 @@ class AttBase(PVPositioner):
     setpoint = Cmp(EpicsSignal, ':R_DES')
     readback = Cmp(EpicsSignalRO, ':R_CUR')
     actuate = Cmp(EpicsSignal, ':GO')
-    done = Cmp(AttDoneSignal, 'status')
+    done = Cmp(AttDoneSignal, 'status', add_prefix=())
 
     # Attenuator Signals
     energy = Cmp(EpicsSignalRO, ':T_CALC.VALE')
