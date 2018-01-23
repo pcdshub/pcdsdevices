@@ -17,7 +17,7 @@ def fake_att():
     using_fake_epics_pv does cleanup routines after the fixture and before the
     test, so we can't make this a fixture without destabilizing our tests.
     """
-    att = Attenuator("TST:ATT", MAX_FILTERS, name='test_att')
+    att = Attenuator("TST:ATT", MAX_FILTERS-1, name='test_att')
     att.wait_for_connection()
     att.readback._read_pv.put(1)
     att.done._read_pv.put(0)
