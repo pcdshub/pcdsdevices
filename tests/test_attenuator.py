@@ -30,25 +30,24 @@ def fake_att():
 def test_attenuator_states():
     logger.debug('test_attenuator_states')
     att = fake_att()
-    # Insert filters
-    for filt in att.filters:
-        filt.insert(wait=True)
+    # Set no transmission
+    att.readback._read_pv.put(0)
     assert not att.removed
     assert att.inserted
-    # Remove filter
-    for filt in att.filters:
-        filt.remove(wait=True)
+    # Set full transmission
+    att.readback._read_pv.put(1)
     assert att.removed
     assert not att.inserted
 
 
-def fake_move_transition(att, status):
+def fake_move_transition(att, status, goal):
     """
     Set to the PVs sort of like it would happen in the real world and check the
     status
     """
     assert not status.done
     att.status._read_pv.put(1)
+    att.readback._read_pv.put(goal)
     att.status._read_pv.put(0)
     status_wait(status)
     assert status.done
@@ -64,21 +63,21 @@ def test_attenuator_motion():
     att.trans_floor._read_pv.put(0.5001)
     # Move to ceil
     status = att.move(0.8)
-    fake_move_transition(att, status)
+    fake_move_transition(att, status, 0.8001)
     assert att.setpoint.value == 0.8
     assert att.actuate_value == 2
     # Move to floor
     status = att.move(0.5)
-    fake_move_transition(att, status)
+    fake_move_transition(att, status, 0.5001)
     assert att.setpoint.value == 0.5
     assert att.actuate_value == 3
     # Call remove method
     status = att.remove()
-    fake_move_transition(att, status)
+    fake_move_transition(att, status, 1)
     assert att.setpoint.value == 1
     # Call insert method
     status = att.insert()
-    fake_move_transition(att, status)
+    fake_move_transition(att, status, 0)
     assert att.setpoint.value == 0
 
 
