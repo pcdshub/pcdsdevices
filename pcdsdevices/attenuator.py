@@ -1,7 +1,7 @@
 import logging
 import time
 
-from ophyd.device import Component as Cmp, FormattedComponent as FCmp
+from ophyd.device import Component as Cmp
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import DerivedSignal, EpicsSignal, EpicsSignalRO
 
@@ -45,21 +45,21 @@ class AttBase(PVPositioner):
     number of filters can vary.
     """
     # Positioner Signals
-    setpoint = Cmp(EpicsSignal, ':R_DES')
-    readback = Cmp(EpicsSignalRO, ':R_CUR')
-    actuate = Cmp(EpicsSignal, ':GO')
+    setpoint = Cmp(EpicsSignal, ':COM:R_DES')
+    readback = Cmp(EpicsSignalRO, ':COM:R_CUR')
+    actuate = Cmp(EpicsSignal, ':COM:GO')
     done = Cmp(AttDoneSignal, 'status', add_prefix=())
 
     # Attenuator Signals
-    energy = Cmp(EpicsSignalRO, ':T_CALC.VALE')
-    trans_ceil = Cmp(EpicsSignalRO, ':R_CEIL')
-    trans_floor = Cmp(EpicsSignalRO, ':R_FLOOR')
-    user_energy = Cmp(EpicsSignal, ':EDES')
-    eget_cmd = Cmp(EpicsSignal, ':EACT.SCAN')
+    energy = Cmp(EpicsSignalRO, ':COM:T_CALC.VALE')
+    trans_ceil = Cmp(EpicsSignalRO, ':COM:R_CEIL')
+    trans_floor = Cmp(EpicsSignalRO, ':COM:R_FLOOR')
+    user_energy = Cmp(EpicsSignal, ':COM:EDES')
+    eget_cmd = Cmp(EpicsSignal, ':COM:EACT.SCAN')
 
     # Aux Signals
-    status = Cmp(EpicsSignalRO, ':STATUS')
-    calcpend = Cmp(EpicsSignalRO, ':CALCP')
+    status = Cmp(EpicsSignalRO, ':COM:STATUS')
+    calcpend = Cmp(EpicsSignalRO, ':COM:CALCP')
 
     egu = ''  # Transmission is a unitless ratio
     _default_read_attrs = ['readback']
@@ -173,8 +173,7 @@ def _make_att_classes(max_filters):
     for i in range(1, max_filters + 1):
         att_filters = {}
         for n in range(1, i + 1):
-            num = ':{:02}'.format(n)
-            comp = FCmp(Filter, '{self._filter_prefix}' + num)
+            comp = Cmp(Filter, ':{:02}'.format(n))
             att_filters['filter{}'.format(n)] = comp
 
         name = 'Attenuator{}'.format(i)
