@@ -51,6 +51,10 @@ def test_lodcm_destination():
     lodcm.yag.state.put('OUT')
     assert len(lodcm.destination) == 1
 
+    # Unknown state
+    lodcm.state._read_pv.put('Unknown')
+    assert len(lodcm.destination) == 0
+
 
 @using_fake_epics_pv
 def test_lodcm_branches():
