@@ -6,7 +6,7 @@ from ophyd.status import wait as status_wait
 from pcdsdevices.sim.pv import using_fake_epics_pv
 from pcdsdevices.attenuator import Attenuator, MAX_FILTERS
 
-from .conftest import attr_wait_true, connect_rw_pvs
+from .conftest import attr_wait_true, attr_wait_value, connect_rw_pvs
 
 logger = logging.getLogger(__name__)
 
@@ -32,10 +32,12 @@ def test_attenuator_states():
     att = fake_att()
     # Set no transmission
     att.readback._read_pv.put(0)
+    attr_wait_value(att, 'position', 0)
     assert not att.removed
     assert att.inserted
     # Set full transmission
     att.readback._read_pv.put(1)
+    attr_wait_value(att, 'position', 1)
     assert att.removed
     assert not att.inserted
 
@@ -47,8 +49,11 @@ def fake_move_transition(att, status, goal):
     """
     assert not status.done
     att.status._read_pv.put(1)
+    attr_wait_value(att.status, 'value', 1)
     att.readback._read_pv.put(goal)
+    attr_wait_value(att, 'position', goal)
     att.status._read_pv.put(0)
+    attr_wait_value(att.status, 'value', 0)
     status_wait(status)
     assert status.done
     assert status.success
