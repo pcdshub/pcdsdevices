@@ -5,7 +5,7 @@ from unittest.mock import Mock
 from pcdsdevices.sim.pv import using_fake_epics_pv
 from pcdsdevices.lodcm import LODCM
 
-from .conftest import attr_wait_true
+from .conftest import attr_wait_true, connect_rw_pvs
 
 logger = logging.getLogger(__name__)
 
@@ -15,28 +15,46 @@ def fake_lodcm():
     using_fake_epics_pv does cleanup routines after the fixture and before the
     test, so we can't make this a fixture without destabilizing our tests.
     """
-    lom = LODCM('FAKE:LOM', name='fake_lom')
-    lom.state._read_pv.put('OUT')
-    lom.yag.state._read_pv.put('OUT')
-    lom.dectris.state._read_pv.put('OUT')
-    lom.diode.state._read_pv.put('OUT')
-    lom.foil.state._read_pv.put('OUT')
-    lom.wait_for_connection()
-    return lom
+    lodcm = LODCM('FAKE:LOM', name='fake_lom')
+    connect_rw_pvs(lodcm.state)
+    connect_rw_pvs(lodcm.yag.state)
+    connect_rw_pvs(lodcm.dectris.state)
+    connect_rw_pvs(lodcm.diode.state)
+    connect_rw_pvs(lodcm.foil.state)
+    lodcm.state.put('OUT')
+    lodcm.yag.state.put('OUT')
+    lodcm.dectris.state.put('OUT')
+    lodcm.diode.state.put('OUT')
+    lodcm.foil.state.put('OUT')
+    lodcm.wait_for_connection()
+    return lodcm
 
 
-# Call all light interface items and hope for the best
 @using_fake_epics_pv
-def test_destination():
+def test_lodcm_destination():
+    logger.debug('test_lodcm_destination')
     lodcm = fake_lodcm()
     dest = lodcm.destination
     assert isinstance(dest, list)
     for d in dest:
         assert isinstance(d, str)
 
+    lodcm.state.put('OUT')
+    assert len(lodcm.destination) == 1
+    lodcm.state.put('C')
+    assert len(lodcm.destination) == 2
+    # Block the mono line
+    lodcm.yag.state.put('IN')
+    assert len(lodcm.destination) == 1
+    lodcm.state.put('Si')
+    assert len(lodcm.destination) == 0
+    lodcm.yag.state.put('OUT')
+    assert len(lodcm.destination) == 1
+
 
 @using_fake_epics_pv
-def test_branches():
+def test_lodcm_branches():
+    logger.debug('test_lodcm_branches')
     lodcm = fake_lodcm()
     branches = lodcm.branches
     assert isinstance(branches, list)
@@ -45,32 +63,12 @@ def test_branches():
 
 
 @using_fake_epics_pv
-def test_inserted():
+def test_lodcm_remove_dia():
+    logger.debug('test_lodcm_remove_dia')
     lodcm = fake_lodcm()
-    inserted = lodcm.inserted
-    assert isinstance(inserted, bool)
-
-
-@using_fake_epics_pv
-def test_removed():
-    lodcm = fake_lodcm()
-    removed = lodcm.removed
-    assert isinstance(removed, bool)
-
-
-@using_fake_epics_pv
-def test_remove():
-    lodcm = fake_lodcm()
-    lodcm.remove()
-
-
-@using_fake_epics_pv
-def test_subscribe():
-    lodcm = fake_lodcm()
+    lodcm.yag.insert(wait=True)
     cb = Mock()
-    lodcm.subscribe(cb, event_type=lodcm.SUB_STATE, run=False)
-    assert not cb.called
-    # Change destination from main to mono and main
-    lodcm.state._read_pv.put('C')
+    lodcm.remove_dia(moved_cb=cb, wait=True)
     attr_wait_true(cb, 'called')
     assert cb.called
+    assert lodcm.yag.position == 'OUT'
