@@ -1,4 +1,6 @@
 import logging
+import time
+import threading
 import pytest
 
 from unittest.mock import Mock
@@ -17,6 +19,7 @@ def fake_att():
     using_fake_epics_pv does cleanup routines after the fixture and before the
     test, so we can't make this a fixture without destabilizing our tests.
     """
+    logger.debug('start making fake_att')
     att = Attenuator("TST:ATT", MAX_FILTERS-1, name='test_att')
     att.wait_for_connection()
     att.readback._read_pv.put(1)
@@ -25,6 +28,10 @@ def fake_att():
     for filt in att.filters:
         connect_rw_pvs(filt.state)
         filt.state.put('OUT')
+    attr_wait_value(att.readback, 'value', 1)
+    attr_wait_value(att.done, 'value', 0)
+    attr_wait_value(att.calcpend, 'value', 0)
+    logger.debug('done making fake_att')
     return att
 
 
@@ -54,13 +61,11 @@ def fake_move_transition(att, status, goal):
     assert not status.done
     # Set status to "MOVING"
     att.done._read_pv.put(1)
-    attr_wait_value(att.done, 'value', 1)
+    attr_wait_true(att, '_moving')  # This transition is important
     # Set transmission to the goal
     att.readback._read_pv.put(goal)
-    attr_wait_value(att, 'position', goal)
-    # Set status to "DONE"
+    # Set status to "OK"
     att.done._read_pv.put(0)
-    attr_wait_value(att.done, 'value', 0)
     # Check that the object responded properly
     status_wait(status, timeout=1)
     assert status.done
@@ -105,3 +110,21 @@ def test_attenuator_subscriptions():
     att.readback._read_pv.put(0.5)
     attr_wait_true(cb, 'called')
     assert cb.called
+
+
+@pytest.mark.timeout(5)
+@using_fake_epics_pv
+def test_attenuator_calcpend():
+    logger.debug('test_attenuator_calcpend')
+    att = fake_att()
+    att.calcpend._read_pv.put(1)
+
+    def wait_put(sig, val, delay):
+        time.sleep(delay)
+        sig._read_pv.put(val)
+    t = threading.Thread(target=wait_put, args=(att.calcpend, 0, 0.4))
+    t.start()
+    start = time.time()
+    # Waits for calcpend to be 0
+    att.actuate_value
+    assert 0.1 < time.time() - start < 1
