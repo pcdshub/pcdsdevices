@@ -14,33 +14,33 @@ from ophyd.status import DeviceStatus, wait as status_wait
 from .inout import InOutRecordPositioner
 
 
-class H1NStates(InOutRecordPositioner):
+class H1N(InOutRecordPositioner):
     states_list = ['OUT', 'C', 'Si']
     in_states = ['C', 'Si']
 
 
-class YagLomStates(InOutRecordPositioner):
+class YagLom(InOutRecordPositioner):
     states_list = ['OUT', 'YAG', 'SLIT1', 'SLIT2', 'SLIT3']
     in_states = ['YAG', 'SLIT1', 'SLIT2', 'SLIT3']
 
 
-class DectrisStates(InOutRecordPositioner):
+class Dectris(InOutRecordPositioner):
     states_list = ['OUT', 'DECTRIS', 'SLIT1', 'SLIT2', 'SLIT3', 'OUTLOW']
     in_states = ['DECTRIS', 'SLIT1', 'SLIT2', 'SLIT3']
     out_states = ['OUT', 'OUTLOW']
 
 
-class FoilStates(InOutRecordPositioner):
+class Foil(InOutRecordPositioner):
     states_list = ['OUT']
     in_states = []
 
 
-class XPPFoil(FoilStates):
+class FoilXPP(Foil):
     states_list = ['OUT', 'Zr', 'Zn', 'Cu', 'Ni', 'Fe', 'Ti']
     in_states = ['Mo', 'Zr', 'Zn', 'Cu', 'Ni', 'Fe', 'Ti']
 
 
-class XCSFoil(FoilStates):
+class FoilXCS(Foil):
     states_list = ['OUT', 'Mo', 'Zr', 'Ge', 'Cu', 'Ni', 'Fe', 'Ti']
     in_states = ['Mo', 'Zr', 'Ge', 'Cu', 'Ni', 'Fe', 'Ti']
 
@@ -54,11 +54,11 @@ class LODCM(Device):
     diagnostic devices between them. Beam can continue onto the main line, onto
     the mono line, onto both, or onto neither.
     """
-    h1n = Component(H1NStates, ":H1N")
-    yag = Component(YagLomStates, ":DV")
-    dectris = Component(DectrisStates, ":DH")
+    h1n = Component(H1N, ":H1N")
+    yag = Component(YagLom, ":DV")
+    dectris = Component(Dectris, ":DH")
     diode = Component(InOutRecordPositioner, ":DIODE")
-    foil = Component(FoilStates, ":FOIL")
+    foil = Component(Foil, ":FOIL")
 
     SUB_STATE = 'sub_state_changed'
     _default_sub = SUB_STATE
@@ -277,3 +277,11 @@ class LODCM(Device):
             and_status = and_status & stat
 
         return and_status
+
+
+class LODCMXPP(LODCM):
+    foil = Component(FoilXPP, ":FOIL")
+
+
+class LODCMXCS(LODCM):
+    foil = Component(FoilXCS, ":FOIL")
