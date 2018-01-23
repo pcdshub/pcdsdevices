@@ -1,3 +1,11 @@
+"""
+LODCM: Large offset dual-crystal monochrometer.
+
+The scope of this module is to identify where the beam is intended to go after
+passing through the monochrometer, and to manipulate the diagnostics.
+
+This will not assist in the alignment procedure.
+"""
 from threading import RLock
 
 from ophyd import Device, Component
@@ -25,8 +33,16 @@ class DectrisStates(InOutRecordPositioner):
 class FoilStates(InOutRecordPositioner):
     states_list = ['OUT']
     in_states = []
-    # This class needs rethinking because the foils are different between the
-    # two lodcm instances
+
+
+class XPPFoil(FoilStates):
+    states_list = ['OUT', 'Zr', 'Zn', 'Cu', 'Ni', 'Fe', 'Ti']
+    in_states = ['Mo', 'Zr', 'Zn', 'Cu', 'Ni', 'Fe', 'Ti']
+
+
+class XCSFoil(FoilStates):
+    states_list = ['OUT', 'Mo', 'Zr', 'Ge', 'Cu', 'Ni', 'Fe', 'Ti']
+    in_states = ['Mo', 'Zr', 'Ge', 'Cu', 'Ni', 'Fe', 'Ti']
 
 
 class LODCM(Device):
