@@ -2,21 +2,19 @@
 LODCM: Large offset dual-crystal monochrometer.
 
 The scope of this module is to identify where the beam is intended to go after
-passing through the monochrometer, and to manipulate the diagnostics.
+passing through H1N, to manipulate the diagnostics, and to remove H1N for the
+downstream hutches.
 
-This will not assist in the alignment procedure.
+It will not be possible to align the device with the class, and there will be
+no readback into the device's alignment. This is intended for a future update.
 """
-from threading import RLock
+import functools
 
-from ophyd import Device, Component
-from ophyd.status import DeviceStatus, wait as status_wait
+from ophyd import Component as Cmp
+from ophyd.signal import EpicsSignal
+from ophyd.status import NullStatus, wait as status_wait
 
 from .inout import InOutRecordPositioner
-
-
-class H1N(InOutRecordPositioner):
-    states_list = ['OUT', 'C', 'Si']
-    in_states = ['C', 'Si']
 
 
 class YagLom(InOutRecordPositioner):
@@ -45,7 +43,7 @@ class FoilXCS(Foil):
     in_states = ['Mo', 'Zr', 'Ge', 'Cu', 'Ni', 'Fe', 'Ti']
 
 
-class LODCM(Device):
+class LODCM(InOutRecordPositioner):
     """
     Large Offset Dual Crystal Monochromator
 
@@ -53,29 +51,39 @@ class LODCM(Device):
     hutches. It contains two crystals that steer/split the beam and a number of
     diagnostic devices between them. Beam can continue onto the main line, onto
     the mono line, onto both, or onto neither.
+
+    This positioner only considers the h1n and diagnostic motors.
     """
-    h1n = Component(H1N, ":H1N")
-    yag = Component(YagLom, ":DV")
-    dectris = Component(Dectris, ":DH")
-    diode = Component(InOutRecordPositioner, ":DIODE")
-    foil = Component(Foil, ":FOIL")
+    state = Cmp(EpicsSignal, ':H1N', write_pv=':H1N:GO')
 
-    SUB_STATE = 'sub_state_changed'
-    _default_sub = SUB_STATE
+    yag = Cmp(YagLom, ":DV")
+    dectris = Cmp(Dectris, ":DH")
+    diode = Cmp(InOutRecordPositioner, ":DIODE")
+    foil = Cmp(Foil, ":FOIL")
 
-    def __init__(self, prefix, *, name, main_line=None, mono_line='MONO',
+    states_list = ['OUT', 'C', 'Si']
+    in_states = ['C', 'Si']
+
+    # TBH these are guessed. Please replace if you know better. These don't
+    # need to be 100% accurate, but they should reflect a reasonable reduction
+    # in transmission.
+    _transmission = {'C': 0.8, 'Si': 0.7}
+
+    def __init__(self, prefix, *, name, main_line='MAIN', mono_line='MONO',
                  **kwargs):
         super().__init__(prefix, name=name, **kwargs)
-        if main_line is None:
-            try:
-                main_line = self.db.beamline
-            except AttributeError:
-                main_line = 'MAIN'
         self.main_line = main_line
         self.mono_line = mono_line
-        self._update_dest_lock = RLock()
-        self._has_subscribed = False
-        self._last_dest = None
+
+    @property
+    def branches(self):
+        """
+        Returns
+        -------
+        branches: list of str
+            A list of possible destinations.
+        """
+        return [self.main_line, self.mono_line]
 
     @property
     def destination(self):
@@ -89,199 +97,55 @@ class LODCM(Device):
             self.main_line if the light continues on the main line.
             self.mono_line if the light continues on the mono line.
         """
-        table = ["MAIN", "BOTH", "MONO", "BLOCKED"]
-        states = ("OUT", "C", "Si", "Unknown")
-        n1 = states.index(self.h1n.position)
-        state = table[n1]
-        if state == "MAIN":
-            return [self.main_line]
-        elif state == "BLOCKED":
-            return []
+        if self.position == 'OUT':
+            dest = [self.main_line]
+        elif self.position == 'Si':
+            dest = [self.mono_line]
+        elif self.position == 'C':
+            dest = [self.main_line, self.mono_line]
         else:
-            if state == "MONO":
-                if self.diag_clear:
-                    return [self.mono_line]
-                else:
-                    return []
-            if state == "BOTH":
-                if self.diag_clear:
-                    return [self.main_line, self.mono_line]
-                else:
-                    return [self.main_line]
-        return []
+            dest = []
 
-    def subscribe(self, cb, event_type=None, run=True):
-        """
-        Subscribe to changes in the LODCM destination
+        if not self._dia_clear and self.mono_line in dest:
+            dest.remove(self.mono_line)
 
-        Parameters
-        ----------
-        cb : callable
-            Callback to be run
-
-        event_type : str, optional
-            Type of event to run callback on
-
-        run : bool, optional
-            Run the callback immediatelly
-        """
-        if not self._has_subscribed:
-            self.h1n.subscribe(self._subs_update_destination, run=False)
-            self.yag.subscribe(self._subs_update_destination, run=False)
-            self.dectris.subscribe(self._subs_update_destination, run=False)
-            self.diode.subscribe(self._subs_update_destination, run=False)
-            self.foil.subscribe(self._subs_update_destination, run=False)
-            self._has_subscribed = True
-        super().subscribe(cb, event_type=event_type, run=run)
-
-    def _subs_update_destination(self, *args, **kwargs):
-        """
-        To be run whenever any of the component states changes.
-        If the destination has changed, run all SUB_STATE subs.
-        """
-        new_dest = self.destination
-        with self._update_dest_lock:
-            if new_dest != self._last_dest:
-                self._last_dest = new_dest
-                self._run_subs(sub_type=self.SUB_STATE)
+        return dest
 
     @property
-    def branches(self):
+    def _dia_clear(self):
         """
-        Returns
-        -------
-        branches: list of str
-            A list of possible destinations.
-        """
-        return [self.main_line, self.mono_line]
+        Check if the diagnostics are clear. All but the diode may prevent beam.
 
-    @property
-    def diag_clear(self):
-        """
         Returns
         -------
         diag_clear: bool
             False if the diagnostics will prevent beam.
         """
-        yag_clear = self.yag.position == 'OUT'
-        dectris_clear = self.dectris.position in ('OUT', 'OUTLOW')
-        diode_clear = self.diode.position in ('IN', 'OUT')
-        foil_clear = self.foil.position == 'OUT'
-        return all((yag_clear, dectris_clear, diode_clear, foil_clear))
+        yag_clear = self.yag.removed
+        dectris_clear = self.dectris.removed
+        foil_clear = self.foil.removed
+        return all((yag_clear, dectris_clear, foil_clear))
 
-    @property
-    def inserted(self):
+    def remove_dia(self, moved_cb=None, timeout=None, wait=False):
         """
-        Returns
-        -------
-        inserted: bool
-            True if h1n is in
+        Remove all diagnostic components.
         """
-        return not self.removed
+        status = NullStatus()
+        for dia in (self.yag, self.dectris, self.diode, self.foil):
+            status = status & dia.remove(timeout=timeout, wait=False)
 
-    @property
-    def removed(self):
-        """
-        Returns
-        -------
-        removed: bool
-            True if h1n is out
-        """
-        return self.h1n.position == "OUT"
-
-    def remove(self, wait=False, timeout=None, finished_cb=None, **kwargs):
-        """
-        Moves the diagnostics out of the beam.
-
-        Parameters
-        ----------
-        wait: bool, optional
-            If True, wait for motion to complete.
-
-        timeout: float, optional
-            If provided, mark the status as failed if the movement does not
-            complete within this many seconds.
-
-        finished_cb: func, optional
-            Callback function to be run once the motion has completed.
-
-        Returns
-        -------
-        status: ophyd.status.DeviceStatus
-            Status object that will be marked finished when all diagnostics are
-            done moving and will time out after the given timeout.
-        """
-        if self.dectris.position == 'OUTLOW':
-            dset = 'OUTLOW'
-        else:
-            dset = 'OUT'
-        status = self.lodcm_move(yag='OUT', dectris=dset, diode='OUT',
-                                 foil='OUT', timeout=timeout, **kwargs)
-        if finished_cb is not None:
-            status.add_callback(finished_cb)
+        if moved_cb is not None:
+            status.add_callback(functools.partial(moved_cb, obj=self))
 
         if wait:
             status_wait(status)
 
         return status
 
-    def lodcm_move(self, h1n=None, yag=None, dectris=None,
-                   diode=None, foil=None, timeout=None):
-        """
-        Move each component of the LODCM to the given state.
-
-        Parameters
-        ----------
-        h1n: string, optional
-            OUT, C, or Si
-
-        yag: string, optional
-            OUT, YAG, SLIT1, SLIT2, or SLIT3
-
-        dectris: string, optional
-            OUT, DECTRIS, SLIT1, SLIT2, SLIT3, OUTLOW
-
-        diode: string, optional
-            OUT or IN
-
-        foil: string, optional
-            OUT, Mo, Zr, Zn, Cu, Ni, Fe, or Ti
-
-        timeout: float, optional
-            Mark status as failed after this many seconds.
-
-        Returns
-        -------
-        status: DeviceStatus
-            Status object that will be marked as finished once all components
-            are done moving.
-        """
-        states = (h1n, yag, dectris, diode, foil)
-        obj = (self.h1n, self.yag, self.dectris, self.diode, self.foil)
-        done_statuses = []
-        for state, obj in zip(states, obj):
-            if state is not None:
-                status = obj.set(state)
-                done_statuses.append(status)
-
-        lodcm_status = DeviceStatus(self, timeout=timeout)
-        if not done_statuses:
-            lodcm_status._finished(success=True)
-            return lodcm_status
-
-        first_status = done_statuses[0]
-        rest_status = done_statuses[1:]
-
-        and_status = first_status
-        for stat in rest_status:
-            and_status = and_status & stat
-
-        return and_status
-
 
 class LODCMXPP(LODCM):
-    foil = Component(FoilXPP, ":FOIL")
+    foil = Cmp(FoilXPP, ":FOIL")
 
 
 class LODCMXCS(LODCM):
-    foil = Component(FoilXCS, ":FOIL")
+    foil = Cmp(FoilXCS, ":FOIL")
