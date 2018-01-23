@@ -1,4 +1,5 @@
 import logging
+import pytest
 
 from unittest.mock import Mock
 from ophyd.status import wait as status_wait
@@ -26,6 +27,7 @@ def fake_att():
     return att
 
 
+@pytest.mark.timeout(5)
 @using_fake_epics_pv
 def test_attenuator_states():
     logger.debug('test_attenuator_states')
@@ -59,6 +61,7 @@ def fake_move_transition(att, status, goal):
     assert status.success
 
 
+@pytest.mark.timeout(5)
 @using_fake_epics_pv
 def test_attenuator_motion():
     logger.debug('test_attenuator_motion')
@@ -86,6 +89,7 @@ def test_attenuator_motion():
     assert att.setpoint.value == 0
 
 
+@pytest.mark.timeout(5)
 @using_fake_epics_pv
 def test_attenuator_subscriptions():
     logger.debug('test_attenuator_subscriptions')
