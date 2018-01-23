@@ -21,6 +21,7 @@ def fake_att():
     att.wait_for_connection()
     att.readback._read_pv.put(1)
     att.status._read_pv.put(0)
+    att.calcpend._read_pv.put(0)
     for filt in att.filters:
         connect_rw_pvs(filt.state)
         filt.state.put('OUT')
