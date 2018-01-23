@@ -1,6 +1,6 @@
 import math
 
-from ophyd.status import NullStatus
+from ophyd.sim import NullStatus
 
 from .state import StatePositioner, StateRecordPositioner, PVStatePositioner
 

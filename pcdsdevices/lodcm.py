@@ -12,7 +12,8 @@ import functools
 
 from ophyd import Component as Cmp
 from ophyd.signal import EpicsSignal
-from ophyd.status import NullStatus, wait as status_wait
+from ophyd.sim import NullStatus
+from ophyd.status import wait as status_wait
 
 from .inout import InOutRecordPositioner
 
