@@ -37,7 +37,7 @@ def test_xfls_states():
 def test_xfls_motion():
     xfls = fake_xfls()
     xfls.remove()
-    assert xfls.state._write_pv.get() == 4
+    assert xfls.state._write_pv.get() == 'OUT'
 
 
 @using_fake_epics_pv
