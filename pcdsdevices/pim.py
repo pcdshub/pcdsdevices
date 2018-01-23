@@ -32,11 +32,11 @@ from ophyd.status import wait as status_wait
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
                    FormattedComponent)
 
-from ..epics_motor import EpicsMotor
-from ..state import StateRecordPositioner
+from .epics_motor import EpicsMotor
+from .state import StateRecordPositioner
 from .areadetector.detectors import (PulnixDetector, FeeOpalDetector)
 from .areadetector.plugins import (ImagePlugin, StatsPlugin)
-from ..utils.pyutils import isnumber
+from .utils.pyutils import isnumber
 
 logger = logging.getLogger(__name__)
 

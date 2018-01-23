@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from pcdsdevices.epics.pim import PIMMotor
+from pcdsdevices.pim import PIMMotor
 from pcdsdevices.sim.pv import  using_fake_epics_pv
 
 from .conftest import attr_wait_true
