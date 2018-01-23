@@ -62,7 +62,7 @@ def fake_move_transition(att, status, goal):
     assert status.success
 
 
-@pytest.mark.timeout(5)
+@pytest.mark.timeout(10)
 @using_fake_epics_pv
 def test_attenuator_motion():
     logger.debug('test_attenuator_motion')
