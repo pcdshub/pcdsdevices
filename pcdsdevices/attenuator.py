@@ -150,7 +150,23 @@ class AttBase(PVPositioner):
         return super().stage()
 
 
-def _make_att_classes(max_filters):
+class AttBase3rd(AttBase):
+    """
+    Attenuator class to use the 3rd harmonic values instead of the fundamental
+    values.
+    """
+    # Positioner Signals
+    setpoint = Cmp(EpicsSignal, ':COM:R3_DES')
+    readback = Cmp(EpicsSignalRO, ':COM:R3_CUR')
+
+    # Attenuator Signals
+    energy = Cmp(EpicsSignalRO, ':COM:T_CALC.VALH')
+    trans_ceil = Cmp(EpicsSignalRO, ':COM:R3_CEIL')
+    trans_floor = Cmp(EpicsSignalRO, ':COM:R3_FLOOR')
+    user_energy = Cmp(EpicsSignal, ':COM:E3DES')
+
+
+def _make_att_classes(max_filters, base, name):
     att_classes = {}
     for i in range(1, max_filters + 1):
         att_filters = {}
@@ -158,20 +174,25 @@ def _make_att_classes(max_filters):
             comp = Cmp(Filter, ':{:02}'.format(n))
             att_filters['filter{}'.format(n)] = comp
 
-        name = 'Attenuator{}'.format(i)
-        cls = type(name, (AttBase,), att_filters)
+        name = '{}{}'.format(name, i)
+        cls = type(name, (base,), att_filters)
         # Store the number of filters
         cls.num_att = i
         att_classes[i] = cls
     return att_classes
 
 
-_att_classes = _make_att_classes(MAX_FILTERS)
+_att_classes = _make_att_classes(MAX_FILTERS, AttBase, 'Attenuator')
+_att3_classes = _make_att_classes(MAX_FILTERS, AttBase3rd, 'Attenuator3rd')
 
 
-def Attenuator(prefix, n_filters, *, name, **kwargs):
+def Attenuator(prefix, n_filters, *, name, use_3rd=False, **kwargs):
     """
     Factory function for instantiating an attenuator with the correct filter
     components given the number required.
     """
-    return _att_classes[n_filters](prefix, name=name, **kwargs)
+    if use_3rd:
+        cls = _att3_classes[n_filters]
+    else:
+        cls = _att_classes[n_filters]
+    return cls(prefix, name=name, **kwargs)

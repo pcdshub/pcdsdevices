@@ -166,3 +166,10 @@ def test_attenuator_staging():
     att.unstage()
     for filt in att.filters:
         assert filt.removed
+
+
+@using_fake_epics_pv
+def test_attenuator_third_harmonic():
+    logger.debug('test_attenuator_third_harmonic')
+    att = Attenuator('TRD:ATT', MAX_FILTERS-1, name='third', use_3rd=True)
+    att.wait_for_connection()
