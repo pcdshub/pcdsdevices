@@ -1,7 +1,7 @@
 from ophyd import Component as Cmp
 from ophyd.signal import EpicsSignal
 
-from ..inout import InOutRecordPositioner
+from .inout import InOutRecordPositioner
 
 
 class IPM(InOutRecordPositioner):
