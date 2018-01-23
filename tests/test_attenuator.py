@@ -19,7 +19,6 @@ def fake_att():
     using_fake_epics_pv does cleanup routines after the fixture and before the
     test, so we can't make this a fixture without destabilizing our tests.
     """
-    logger.debug('start making fake_att')
     att = Attenuator("TST:ATT", MAX_FILTERS-1, name='test_att')
     att.wait_for_connection()
     att.readback._read_pv.put(1)
@@ -31,7 +30,6 @@ def fake_att():
     attr_wait_value(att.readback, 'value', 1)
     attr_wait_value(att.done, 'value', 0)
     attr_wait_value(att.calcpend, 'value', 0)
-    logger.debug('done making fake_att')
     return att
 
 
@@ -146,3 +144,25 @@ def test_attenuator_set_energy():
     att.set_energy(energy)
     assert att.eget_cmd._write_pv.get() == 0
     assert att.user_energy.get() == energy
+
+
+@using_fake_epics_pv
+def test_attenuator_transmission():
+    logger.debug('test_attenuator_transmission')
+    att = fake_att()
+    assert att.transmission == att.position
+
+
+@pytest.mark.timeout(5)
+@using_fake_epics_pv
+def test_attenuator_staging():
+    logger.debug('test_attenuator_staging')
+    att = fake_att()
+    # Set up at least one invalid state
+    att.filter1.state._read_pv.put(att.filter1._unknown)
+    att.stage()
+    for filt in att.filters:
+        filt.insert(wait=True)
+    att.unstage()
+    for filt in att.filters:
+        assert filt.removed
