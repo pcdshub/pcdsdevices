@@ -44,12 +44,12 @@ def test_ipm_motion():
     ipm.remove(wait=True, timeout=1.0)
     assert ipm.state._write_pv.get() == 'OUT'
     # Insert IPM Targets
-    ipm.target_in(1)
+    ipm.set(1)
     assert ipm.state._write_pv.get() == 'T1'
     # Move diodes in
-    ipm.diode_in()
+    ipm.diode.insert()
     assert ipm.diode.state._write_pv.get() == 'IN'
-    ipm.diode_out()
+    ipm.diode.remove()
     # Move diodes out
     assert ipm.diode.state._write_pv.get() == 'OUT'
 
