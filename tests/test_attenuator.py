@@ -20,7 +20,7 @@ def fake_att():
     att = Attenuator("TST:ATT", MAX_FILTERS, name='test_att')
     att.wait_for_connection()
     att.readback._read_pv.put(1)
-    att.status._read_pv.put(0)
+    att.done._read_pv.put(0)
     att.calcpend._read_pv.put(0)
     for filt in att.filters:
         connect_rw_pvs(filt.state)
@@ -50,19 +50,24 @@ def fake_move_transition(att, status, goal):
     Set to the PVs sort of like it would happen in the real world and check the
     status
     """
+    # Sanity check
     assert not status.done
-    att.status._read_pv.put(1)
-    attr_wait_value(att.status, 'value', 1)
+    # Set status to "MOVING"
+    att.done._read_pv.put(1)
+    attr_wait_value(att.done, 'value', 1)
+    # Set transmission to the goal
     att.readback._read_pv.put(goal)
     attr_wait_value(att, 'position', goal)
-    att.status._read_pv.put(0)
-    attr_wait_value(att.status, 'value', 0)
-    status_wait(status)
+    # Set status to "DONE"
+    att.done._read_pv.put(0)
+    attr_wait_value(att.done, 'value', 0)
+    # Check that the object responded properly
+    status_wait(status, timeout=1)
     assert status.done
     assert status.success
 
 
-@pytest.mark.timeout(10)
+@pytest.mark.timeout(5)
 @using_fake_epics_pv
 def test_attenuator_motion():
     logger.debug('test_attenuator_motion')

@@ -3,7 +3,7 @@ import time
 
 from ophyd.device import Component as Cmp
 from ophyd.pv_positioner import PVPositioner
-from ophyd.signal import DerivedSignal, EpicsSignal, EpicsSignalRO
+from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from .inout import InOutPositioner
 
@@ -21,24 +21,6 @@ class Filter(InOutPositioner):
     stuck = Cmp(EpicsSignal, ':STUCK')
 
 
-class AttDoneSignal(DerivedSignal):
-    """
-    Signal that is 1 when all filters are done moving and 0 otherwise. This is
-    derived from the STATUS PV, which can be OK, MOVING, FAULTED (0, 1, 2)
-    """
-    def __init__(self, attr, *, name, parent, **kwargs):
-        super().__init__(getattr(parent, attr), name=name, parent=parent,
-                         **kwargs)
-
-    def inverse(self, value):
-        if value in (1, 'MOVING'):
-            return 0
-        return 1
-
-    def put(self, *args, **kwargs):
-        pass
-
-
 class AttBase(PVPositioner):
     """
     Base class for the attenuators. Does not include filters, because the
@@ -48,7 +30,7 @@ class AttBase(PVPositioner):
     setpoint = Cmp(EpicsSignal, ':COM:R_DES')
     readback = Cmp(EpicsSignalRO, ':COM:R_CUR')
     actuate = Cmp(EpicsSignal, ':COM:GO')
-    done = Cmp(AttDoneSignal, 'status', add_prefix=())
+    done = Cmp(EpicsSignalRO, ':COM:STATUS')
 
     # Attenuator Signals
     energy = Cmp(EpicsSignalRO, ':COM:T_CALC.VALE')
@@ -58,10 +40,10 @@ class AttBase(PVPositioner):
     eget_cmd = Cmp(EpicsSignal, ':COM:EACT.SCAN')
 
     # Aux Signals
-    status = Cmp(EpicsSignalRO, ':COM:STATUS')
     calcpend = Cmp(EpicsSignalRO, ':COM:CALCP')
 
     egu = ''  # Transmission is a unitless ratio
+    done_value = 0
     _default_read_attrs = ['readback']
 
     def __init__(self, prefix, *, name, **kwargs):
