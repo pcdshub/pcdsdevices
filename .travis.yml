@@ -4,9 +4,8 @@ sudo: false
 env:
    global:
       - OFFICIAL_REPO="pcdshub/pcdsdevices"
-      - secure: "TeBUfSM64ArwX43ZX/QD50GEJ8cWIAwrJ98nrKZbwIin5OP8+ngJ9S4wuUbvMQXJ0EhQ0Zw3pO4+YIVjfPCwV+X4BcT+ZCAW0vEwKf2kiEdG4DOVgT/Ex2ivKlQji5M0nAfrnuToZWhePD5H85pyrHhfvhu+zQjUmBV5uTr4P3BgdGFXvlDBeDdtHrqP8jGM56Ke2L+OGu3A9N+pnb4flz44bTukUGi4EZjGMaK0qfa3zO8KCDnO8ybgv8xcgMmWUU+izyUMuRsB0O3IEGmVUA0G+UrwA1lHqbTXPg9egzA3pZE1UsUK5icj6OAcN9ytaUowpTkmrrzmt0P6H0JhwxAjwVFkIiQxWwlQVnc+qqmXPIXbNfAO2TdjG/5esFGwgBy3efJSO5q7JD0eCUUoe08zTTXz89Ca4QpclWIE0ihiX+geQfKJ7yUmkjYFZCQ7rcaTTsYJ6/3127Nuwx3ntKjIc8LnFjpn4tZW/UTJMr7JEe50S2p42AuvaVPDHt0cuTgVg22aBNb3HjapCSHe9qayoNbgbm7aOEeW2ILdcEfMCCLL8WPAM4Zlr/7Pyy53RazgKNy03bladYG5ViXueLcyS5JCINg4errn4LR/dws8IjY23B2OG8yq59ofTAiEp99kMNV0N04Jk6DGemJ8yL23QkseBG1RyOk0pU+abIE="
-
-matrix:
+      - secure: "r193Awf/D5CEelI4xRDPsgcJQbbrgrhZNLUtPaHeK1H17yZIRkCPjDUfU7JZuA72JRbFNVaDSIVCJiTfKMbD4QwclVaHsBunWyJ+S6L9BrKzL7Fo2RvUsJ675gpSnY071ibVmY7Q4iI5vt1Hn3WKracgH6VaMZzWC7GbPJd0E/hYygR1zXXzGtowOv1W4n9U1Tj2AuL6qdF6/l4qgVfaMe0Lr6JvdmFdqv8bWD4Cm3y78yi3cadHy5YAf2IkHqAEghgvrf3qJYFx4ZJcKMTjMqvyPSqWQ2J9xntoj4aHKWFvg/uLHU7GLttAOtoabjf/2mYnjnMpN8WI2h2Nsi4Q16ELKlKUY5zdz7/v4JvO9lKn2dP3LtOoI/j0gqMtZqXQ85tVndvvln40x7QwXo14T5sZU5y0IwI8OZXBVEk+cimbVQggtsm7MJoIWwopjdmbq0R5n39+Q6Xfgt5GJJf8EDvAI0uYK7PNIgDTEEqxMChj+R8/ArEyfcDPrgODVAuLpwvkFft3wKFAH8O3Ms2Dc5jeunqYmf2kEYkyr/pSuukVLKVe0HIi75CfMEguuCPHoCN+p/nESRrach2ItCHBqHIjggCYPzmAYueIF11ecbkok8k2sweC6DKDm9yP/wfq01fHpvhTTsBMMexXVqLpj1HYybonxGGw448EHTZKT2k="
+matrix: 
   include:
      - python: 3.6
        env: BUILD_DOCS=1
@@ -40,15 +39,11 @@ script:
   - |
     if [[ -n "$DOCTR_DEPLOY_ENCRYPTION_KEY" && $BUILD_DOCS ]]; then
       conda install --file docs-requirements.txt
-      # Install doctr from a custom branch until
-      # https://github.com/drdoctr/doctr/pull/190 is merged.
-      pip uninstall -y doctr
-      pip install git+https://github.com/danielballan/doctr@other-master
       pushd docs
       make html
       popd
       #Publish docs.
-      doctr deploy --deploy-repo lcls-pcds/skywalker-docs --deploy-branch-name master pcdsdevices
+      doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages
     fi
 
 after_success:
