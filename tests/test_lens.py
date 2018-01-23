@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pytest
 
 from pcdsdevices.sim.pv import using_fake_epics_pv
-from pcdsdevices.epics.lens import XFLS
+from pcdsdevices.lens import XFLS
 
 from .conftest import attr_wait_true
 
