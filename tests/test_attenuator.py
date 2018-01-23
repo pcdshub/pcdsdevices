@@ -70,21 +70,21 @@ def test_attenuator_motion():
     att.trans_ceil._read_pv.put(0.8001)
     att.trans_floor._read_pv.put(0.5001)
     # Move to ceil
-    status = att.move(0.8)
+    status = att.move(0.8, wait=False)
     fake_move_transition(att, status, 0.8001)
     assert att.setpoint.value == 0.8
     assert att.actuate_value == 2
     # Move to floor
-    status = att.move(0.5)
+    status = att.move(0.5, wait=False)
     fake_move_transition(att, status, 0.5001)
     assert att.setpoint.value == 0.5
     assert att.actuate_value == 3
     # Call remove method
-    status = att.remove()
+    status = att.remove(wait=False)
     fake_move_transition(att, status, 1)
     assert att.setpoint.value == 1
     # Call insert method
-    status = att.insert()
+    status = att.insert(wait=False)
     fake_move_transition(att, status, 0)
     assert att.setpoint.value == 0
 

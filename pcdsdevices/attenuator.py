@@ -139,17 +139,17 @@ class AttBase(PVPositioner):
         """
         return self.position == 1
 
-    def insert(self):
+    def insert(self, wait=False, timeout=None, moved_cb=None):
         """
         Block the beam
         """
-        return self.move(0)
+        return self.move(0, wait=wait, timeout=timeout, moved_cb=moved_cb)
 
-    def remove(self):
+    def remove(self, wait=False, timeout=None, moved_cb=None):
         """
         Bring the attenuator fully out of the beam
         """
-        return self.move(1)
+        return self.move(1, wait=wait, timeout=timeout, moved_cb=moved_cb)
 
     def stage(self):
         """
