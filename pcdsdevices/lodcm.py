@@ -8,6 +8,7 @@ downstream hutches.
 It will not be possible to align the device with the class, and there will be
 no readback into the device's alignment. This is intended for a future update.
 """
+import logging
 import functools
 
 from ophyd import Component as Cmp
@@ -17,16 +18,20 @@ from ophyd.status import wait as status_wait
 
 from .inout import InOutRecordPositioner
 
+logger = logging.getLogger(__name__)
+
 
 class YagLom(InOutRecordPositioner):
     states_list = ['OUT', 'YAG', 'SLIT1', 'SLIT2', 'SLIT3']
     in_states = ['YAG', 'SLIT1', 'SLIT2', 'SLIT3']
+    _states_alias = {'YAG': 'IN'}
 
 
 class Dectris(InOutRecordPositioner):
     states_list = ['OUT', 'DECTRIS', 'SLIT1', 'SLIT2', 'SLIT3', 'OUTLOW']
     in_states = ['DECTRIS', 'SLIT1', 'SLIT2', 'SLIT3']
     out_states = ['OUT', 'OUTLOW']
+    _states_alias = {'DECTRIS': 'IN'}
 
 
 class Foil(InOutRecordPositioner):
@@ -131,6 +136,7 @@ class LODCM(InOutRecordPositioner):
         """
         Remove all diagnostic components.
         """
+        logger.debug('Removing %s diagnostics', self.name)
         status = NullStatus()
         for dia in (self.yag, self.dectris, self.diode, self.foil):
             status = status & dia.remove(timeout=timeout, wait=False)
