@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from ophyd.status import wait as status_wait
 
 from pcdsdevices.sim.pv import using_fake_epics_pv
-from pcdsdevices.attenuator import Attenuator, FeeAtt, MAX_FILTERS
+from pcdsdevices.attenuator import Attenuator, MAX_FILTERS
 
 from .conftest import attr_wait_true, connect_rw_pvs
 
@@ -19,16 +19,11 @@ def fake_att():
     att = Attenuator("TST:ATT", MAX_FILTERS, name='test_att')
     att.wait_for_connection()
     att.readback._read_pv.put(1)
+    att.status._read_pv.put(0)
     for filt in att.filters:
         connect_rw_pvs(filt.state)
         filt.state.put('OUT')
     return att
-
-
-@using_fake_epics_pv
-def test_make_feeatt():
-    logger.debug('test_make_feeatt')
-    FeeAtt()
 
 
 @using_fake_epics_pv
@@ -37,27 +32,24 @@ def test_attenuator_states():
     att = fake_att()
     # Insert filters
     for filt in att.filters:
-        filt.state.put('IN')
+        filt.insert(wait=True)
     assert not att.removed
     assert att.inserted
     # Remove filter
     for filt in att.filters:
-        filt.state.put('OUT')
+        filt.remove(wait=True)
     assert att.removed
     assert not att.inserted
 
 
-def fake_move_transition(att, status, dest, unk_trans=True):
+def fake_move_transition(att, status):
     """
     Set to the PVs sort of like it would happen in the real world and check the
     status
     """
     assert not status.done
-    if unk_trans:
-        for filt in att.filters:
-            filt.state._read_pv.put(filt._unknown)
-    for filt in att.filters:
-        filt.state.put(dest)
+    att.status._read_pv.put(1)
+    att.status._read_pv.put(0)
     status_wait(status)
     assert status.done
     assert status.success
@@ -72,25 +64,22 @@ def test_attenuator_motion():
     att.trans_floor._read_pv.put(0.5001)
     # Move to ceil
     status = att.move(0.8)
-    fake_move_transition(att, status, 'IN')
+    fake_move_transition(att, status)
     assert att.setpoint.value == 0.8
     assert att.actuate_value == 2
     # Move to floor
     status = att.move(0.5)
-    fake_move_transition(att, status, 'IN')
+    fake_move_transition(att, status)
     assert att.setpoint.value == 0.5
     assert att.actuate_value == 3
     # Call remove method
     status = att.remove()
-    fake_move_transition(att, status, 'OUT')
+    fake_move_transition(att, status)
     assert att.setpoint.value == 1
     # Call insert method
     status = att.insert()
-    fake_move_transition(att, status, 'IN')
+    fake_move_transition(att, status)
     assert att.setpoint.value == 0
-    # Call insert again, but don't set anything to unknown
-    status = att.insert()
-    fake_move_transition(att, status, 'IN', unk_trans=False)
 
 
 @using_fake_epics_pv

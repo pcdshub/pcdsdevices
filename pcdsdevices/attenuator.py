@@ -65,21 +65,13 @@ class AttBase(PVPositioner):
     _default_read_attrs = ['readback']
 
     def __init__(self, prefix, *, name, **kwargs):
-        self._filters = []
         super().__init__(prefix, name=name, limits=(0, 1), **kwargs)
-
-    @property
-    def filters(self):
-        """
-        List of filters that are part of this att.
-        """
-        if not self._filters:
-            for i in range(1, MAX_FILTERS + 1):
-                try:
-                    self._filters.append(getattr(self, 'filter{}'.format(i)))
-                except AttributeError:
-                    break
-        return self._filters
+        self.filters = []
+        for i in range(1, MAX_FILTERS + 1):
+            try:
+                self.filters.append(getattr(self, 'filter{}'.format(i)))
+            except AttributeError:
+                break
 
     @property
     def actuate_value(self):
