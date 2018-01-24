@@ -358,3 +358,13 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
             return self.in_lines + self.out_lines
         else:
             return [self.db.beamline]
+
+    def set(self, *args, **kwargs):
+        """
+        Check that our gantry is coupled before state moves
+        """
+        # Check the X gantry
+        if self.xgantry.decoupled.get():
+            raise PermissionError("Can not move the gantry is uncoupled")
+        # Follow through with the super().set
+        super().set(*args, **kwargs)
