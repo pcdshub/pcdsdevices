@@ -5,7 +5,7 @@ from unittest.mock import Mock
 from ophyd.device import Component as Cmp
 from ophyd.signal import Signal
 
-from pcdsdevices.pim import PIM, PIMPulnixDetector
+from pcdsdevices.pim import PIM, PIMMotor, PIMPulnixDetector
 from pcdsdevices.sim.pv import using_fake_epics_pv
 
 from .conftest import attr_wait_true, connect_rw_pvs
@@ -26,7 +26,7 @@ def fake_pim():
     using_fake_epics_pv does cleanup routines after the fixture and before the
     test, so we can't make this a fixture without destabilizing our tests.
     """
-    pim = PIM('Test:Yag', name='test')
+    pim = PIMMotor('Test:Yag', name='test')
     connect_rw_pvs(pim.state)
     pim.wait_for_connection()
     pim.state.put('OUT', wait=True)
@@ -57,9 +57,11 @@ def test_pim_stage():
 
 @pytest.mark.timeout(5)
 @using_fake_epics_pv
-def test_pim_prefix_det():
-    logger.debug('test_pim_prefix_det')
+def test_pim_det():
+    logger.debug('test_pim_det')
     pim = PIM('Test:Yag', name='test', prefix_det='potato')
+    pim.wait_for_connection()
+    pim = PIM('Test:Yag', name='test')
     pim.wait_for_connection()
 
 
