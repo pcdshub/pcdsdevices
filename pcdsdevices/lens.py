@@ -15,4 +15,10 @@ class XFLS(InOutRecordPositioner):
     """
     states_list = ['LENS1', 'LENS2', 'LENS3', 'OUT']
     in_states = ['LENS1', 'LENS2', 'LENS3']
-    # TODO: Choose a transmission for a generic lens
+    _lens_transmission = 0.8
+
+    def __init__(self, prefix, *, name, **kwargs):
+        # Set a default transmission, but allow easy subclass overrides
+        for state in self.in_states:
+            self._transmission[state] = self._lens_transmission
+        super().__init__(prefix, name=name, **kwargs)
