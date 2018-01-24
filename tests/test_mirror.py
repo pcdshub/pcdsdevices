@@ -31,6 +31,8 @@ def fake_branching_mirror():
     connect_rw_pvs(m.state)
     m.state._write_pv.put('Unknown')
     m.wait_for_connection()
+    # Couple the gantry
+    m.xgantry.decoupled._read_pv.put(0)
     return m
 
 @using_fake_epics_pv
@@ -79,11 +81,11 @@ def test_branching_mirror_destination():
 def test_branching_mirror_moves():
     branching_mirror = fake_branching_mirror()
     print(branching_mirror.read())
-    #With gantry decoupled, should raise RuntimeError
+    #With gantry decoupled, should raise PermissionError
     branching_mirror.xgantry.decoupled._read_pv.put(1)
-    with pytest.raises(RuntimeError):
+    with pytest.raises(PermissionError):
         branching_mirror.remove()
-    with pytest.raises(RuntimeError):
+    with pytest.raises(PermissionError):
         branching_mirror.insert()
     #Recouple gantry
     branching_mirror.xgantry.decoupled._read_pv.put(0)
