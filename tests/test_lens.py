@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from pcdsdevices.sim.pv import using_fake_epics_pv
 from pcdsdevices.lens import XFLS
 
-from .conftest import attr_wait_true
+from .conftest import attr_wait_true, connect_rw_pvs
 
 
 def fake_xfls():
@@ -12,6 +12,8 @@ def fake_xfls():
     test, so we can't make this a fixture without destabilizing our tests.
     """
     xfls = XFLS('TST:XFLS', name='lens')
+    connect_rw_pvs(xfls.state)
+    xfls.state.put('OUT')
     xfls.wait_for_connection()
     return xfls
 
