@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 PCDS detectors and overrides for ophyd detectors.
 
