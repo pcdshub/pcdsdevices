@@ -20,11 +20,11 @@ PIM
 """
 import logging
 
-from ophyd import Component, FormattedComponent
+from ophyd import Component as Cmp, FormattedComponent as FCmp
 
-from .state import StateRecordPositioner
 from .areadetector.detectors import PulnixDetector
 from .areadetector.plugins import ImagePlugin, StatsPlugin
+from .inout import InOutRecordPositioner
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +34,10 @@ class PIMPulnixDetector(PulnixDetector):
     Pulnix detector that is used in the PIM. Plugins should be added on an as
     needed basis here.
     """
-    image1 = Component(ImagePlugin, ":IMAGE1:", read_attrs=['array_data'])
-    image2 = Component(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
-    stats2 = Component(StatsPlugin, ":Stats2:", read_attrs=['centroid',
-                                                            'mean_value'])
+    image1 = Cmp(ImagePlugin, ":IMAGE1:", read_attrs=['array_data'])
+    image2 = Cmp(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
+    stats2 = Cmp(StatsPlugin, ":Stats2:", read_attrs=['centroid',
+                                                      'mean_value'])
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -54,7 +54,7 @@ class PIMPulnixDetector(PulnixDetector):
         self.stats2.stage_sigs[self.stats2.enable] = 1
 
 
-class PIMMotor(StateRecordPositioner):
+class PIMMotor(InOutRecordPositioner):
     """
     Standard position monitor motor that can move the stage to insert the yag
     or diode, or retract it from the beam path.
@@ -84,8 +84,8 @@ class PIM(PIMMotor):
         The EPICS base PV of the detector. If None, it will be inferred from
         the motor prefix
     """
-    detector = FormattedComponent(PIMPulnixDetector, "{self._prefix_det}",
-                                  read_attrs=['stats2'])
+    detector = FCmp(PIMPulnixDetector, "{self._prefix_det}",
+                    read_attrs=['stats2'])
 
     _default_read_attrs = ['state', 'readback', 'detector']
 
