@@ -1,113 +1,62 @@
-from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
-                   FormattedComponent)
-from ophyd.status import wait as status_wait, SubscriptionStatus
+import logging
 
-from .inout import InOutRecordPositioner
+from ophyd.device import Component as Cmp, FormattedComponent as FCmp
+from ophyd.signal import EpicsSignal, EpicsSignalRO
 
+from .inout import InOutPositioner, InOutStatePositioner
+from .signal import AggregateSignal
 
-class PickerBlade(Device):
-    """
-    Represent the pulse picker blade as separte device
-    """
-    simple_state = Component(EpicsSignalRO, ":DF")
-    force_close = Component(EpicsSignal, ":S_CLOSE")
-    # Subscription information
-    SUB_STATE = 'sub_state_changed'
-    _default_sub = SUB_STATE
-
-    def __init__(self, prefix, *, name=None, read_attrs=None, **kwargs):
-        self._has_subscribed = False
-        # Instantiate ophyd level
-        if read_attrs is None:
-            read_attrs = ['simple_state']
-        super().__init__(prefix, name=name, read_attrs=read_attrs, **kwargs)
-
-    @property
-    def inserted(self):
-        """
-        Whether the blade is open
-        """
-        return self.simple_state.value == 1
-
-    @property
-    def removed(self):
-        """
-        Whether the blade is closed
-        """
-        return self.simple_state.value == 0
-
-    def remove(self, wait=False, timeout=None):
-        """
-        Remove the PulsePicker
-        """
-        # Order move
-        self.force_close.put(1)
-        # Create status
-        status = SubscriptionStatus(self,
-                                    lambda *args, **kwargs: self.removed,
-                                    event_type=self.SUB_STATE,
-                                    timeout=timeout)
-        # Optionally wait for status
-        if wait:
-            status_wait(status)
-
-        return status
-
-    def subscribe(self, cb, event_type=None, run=True):
-        """
-        Subscribe to changes of the valve
-
-        Parameters
-        ----------
-        cb : callable
-            Callback to be run
-
-        event_type : str, optional
-            Type of event to run callback on
-
-        run : bool, optional
-            Run the callback immediatelly
-        """
-        if not self._has_subscribed:
-            # Subscribe to state changes
-            self.simple_state.subscribe(self._blade_moved, run=False)
-            self._has_subscribed = True
-        super().subscribe(cb, event_type=event_type, run=run)
-
-    def _blade_moved(self, **kwargs):
-        """
-        Blade has moved
-        """
-        kwargs.pop('sub_type', None)
-        kwargs.pop('obj', None)
-        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
+logger = logging.getLogger(__name__)
 
 
-class PulsePicker(Device):
-    """
-    Device that lets us pick which beam pulses reach the sample.
-    """
-    in_out = FormattedComponent(InOutRecordPositioner, "{self._states}")
-    mode = Component(EpicsSignalRO, ":SE", string=True)
-    # Blade subdevice
-    blade = FormattedComponent(PickerBlade, "{self.prefix}")
+class PickerState(AggregateSignal):
+    def __init__(self, *, name, **kwargs):
+        super().__init__(name=name, **kwargs)
+        self._inout = self.parent.inout
+        self._blade = self.parent.blade
+        self._sub_signals = [self._inout.state, self._blade]
 
-    def __init__(self, prefix, *, states="",
-                 read_attrs=None, name=None, **kwargs):
-        self._states = states
-        if read_attrs is None:
-            read_attrs = ["mode", "blade", "in_out"]
-        super().__init__(prefix, read_attrs=read_attrs, name=name,
-                         **kwargs)
+    def _calc_readback(self):
+        inout = self._cache[self._inout.state]
+        inout = self._inout.get_state(inout).name
+        if inout == 'OUT':
+            return 'OUT'
+        else:
+            blade = self._cache[self._blade]
+            if blade in (0, 'Open'):
+                return 'OPEN'
+            elif blade in (1, 2, '+ Closed', '- Closed'):
+                return 'Closed'
+            else:
+                return self.parent._unknown
 
-    def move_out(self):
-        """
-        Move the pulsepicker to the "out" position in y.
-        """
-        self.in_out.put("OUT")
+    def put(self, value, **kwargs):
+        self.parent.move(value, **kwargs)
 
-    def move_in(self):
-        """
-        Move the pulsepicker to the "in" position in y.
-        """
-        self.in_out.put("IN")
+
+class PulsePicker(InOutPositioner):
+    state = Cmp(PickerState)
+    blade = Cmp(EpicsSignalRO, ':READ_DF')
+    mode = Cmp(EpicsSignal, ':SD_SIMPLE', ':SE')
+    inout = FCmp(InOutStatePositioner, '{self._inout}')
+
+    states_list = ['OUT', 'OPEN', 'CLOSED']
+    in_states = ['CLOSED']
+    out_states = ['OUT', 'OPEN']
+    _states_alias = {'CLOSED': ['CLOSED', 'IN']}
+
+    _default_config_attrs = ['mode']
+
+    def __init__(self, prefix, inout, *, name, **kwargs):
+        self._inout = inout
+        super().__init__(prefix, name=name, **kwargs)
+
+    def _do_move(self, state):
+        if state.name == 'OUT':
+            self.in_out.remove()
+        elif state.name == 'OPEN':
+            self.in_out.insert()
+            self.mode.put(4)
+        elif state.name == 'CLOSED':
+            self.in_out.insert()
+            self.mode.put(5)
