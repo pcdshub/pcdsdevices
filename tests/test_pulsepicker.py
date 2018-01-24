@@ -5,7 +5,7 @@ from unittest.mock import Mock
 from ophyd.status import wait as status_wait
 
 from pcdsdevices.sim.pv import  using_fake_epics_pv
-from pcdsdevices.epics.pulsepicker import PickerBlade
+from pcdsdevices.pulsepicker import PickerBlade
 
 from .conftest import attr_wait_true
 

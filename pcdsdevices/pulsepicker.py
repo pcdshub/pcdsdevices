@@ -2,7 +2,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component,
                    FormattedComponent)
 from ophyd.status import wait as status_wait, SubscriptionStatus
 
-from ..inout import InOutRecordPositioner
+from .inout import InOutRecordPositioner
 
 
 class PickerBlade(Device):
