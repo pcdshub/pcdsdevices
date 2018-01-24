@@ -225,6 +225,9 @@ class OffsetMirror(Device):
     prefix_xy : str
         The EPICS base PV of the gantry x and y gantry motors
 
+    xgantry_prefix : str
+        The name of the horizontal gantry if not identical to the prefix
+
     read_attrs : sequence of attribute names, optional
         The signals to be read during data acquisition (i.e., in read() and
         describe() calls)
@@ -240,32 +243,34 @@ class OffsetMirror(Device):
         The instance of the parent device, if applicable
     """
     # Pitch Motor
-    pitch = FC(OMMotor, "{self.prefix}")
+    pitch = FC(Pitch, "MIRR:{self.prefix}")
     # Gantry motors
-    gan_x_p = FC(OMMotor, "{self._prefix_xy}:X:P")
-    gan_y_p = FC(OMMotor, "{self._prefix_xy}:Y:P")
-    # This is not implemented in the PLC. Included to appease bluesky
-    motor_stop = C(Signal, value=0)
+    xgantry = FC(Gantry, "{self._prefix_xy}:X",
+                 gantry_prefix="{self._xgantry}",
+                 add_prefix=['suffix', 'gantry_prefix'])
+    ygantry = FC(Gantry, "{self._prefix_xy}:Y")
     # Transmission for Lightpath Interface
     transmission = 1.0
     SUB_STATE = 'sub_state_changed'
 
-    def __init__(self, prefix, prefix_xy, *, nominal_position=None, **kwargs):
-        self._prefix_xy = prefix_xy
-        self._area = prefix.split(":")[1]
-        self._mirror = prefix.split(":")[2]
+    _default_read_attrs = ['pitch', 'xgantry.readback',
+                           'xgantry.gantry_difference']
 
-        if read_attrs is None:
-            read_attrs = ['pitch', 'gan_x_p', 'gan_y_p']
+    _default_configuration_attrs = ['ygantry.setpoint']
 
-        if configuration_attrs is None:
-            configuration_attrs = []
-
+    def __init__(self, prefix, *, prefix_xy=None, xgantry_prefix=None,
+                 nominal_position=None, **kwargs):
+        # Handle prefix mangling
+        self._prefix_xy = prefix_xy or prefix
+        self._xgantry = xgantry_prefix or 'GANTRY:' + prefix + ':X'
         super().__init__(prefix, **kwargs)
         self.pitch.nominal_position = nominal_position
 
     @property
     def nominal_position(self):
+        """
+        The nominal angle that the OffsetMirror is considered aligned
+        """
         return self.pitch.nominal_position
 
     @nominal_position.setter
