@@ -39,16 +39,6 @@ class Foil(InOutRecordPositioner):
     in_states = []
 
 
-class FoilXPP(Foil):
-    states_list = ['OUT', 'Zr', 'Zn', 'Cu', 'Ni', 'Fe', 'Ti']
-    in_states = ['Mo', 'Zr', 'Zn', 'Cu', 'Ni', 'Fe', 'Ti']
-
-
-class FoilXCS(Foil):
-    states_list = ['OUT', 'Mo', 'Zr', 'Ge', 'Cu', 'Ni', 'Fe', 'Ti']
-    in_states = ['Mo', 'Zr', 'Ge', 'Cu', 'Ni', 'Fe', 'Ti']
-
-
 class LODCM(InOutRecordPositioner):
     """
     Large Offset Dual Crystal Monochromator
@@ -148,11 +138,3 @@ class LODCM(InOutRecordPositioner):
             status_wait(status)
 
         return status
-
-
-class LODCMXPP(LODCM):
-    foil = Cmp(FoilXPP, ":FOIL")
-
-
-class LODCMXCS(LODCM):
-    foil = Cmp(FoilXCS, ":FOIL")
