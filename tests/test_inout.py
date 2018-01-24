@@ -45,6 +45,9 @@ def test_inout_motion():
     inout = fake_inout()
     inout.remove()
     assert inout.position == 'OUT'
+    # Remove twice for branch coverage
+    inout.remove()
+    assert inout.position == 'OUT'
     inout.insert()
     assert inout.position == 'IN'
 

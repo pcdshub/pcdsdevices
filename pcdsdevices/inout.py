@@ -1,5 +1,7 @@
 import math
 
+from ophyd.sim import NullStatus
+
 from .state import StatePositioner, StateRecordPositioner, PVStatePositioner
 
 
@@ -52,7 +54,10 @@ class InOutPositioner(StatePositioner):
     def remove(self, moved_cb=None, timeout=None, wait=False):
         """
         Macro to move this device to the first state on the out_states list.
+        If we're already at some other out state, do nothing instead.
         """
+        if self.removed:
+            return NullStatus()
         return self.move(self.out_states[0], moved_cb=moved_cb,
                          timeout=timeout, wait=wait)
 
