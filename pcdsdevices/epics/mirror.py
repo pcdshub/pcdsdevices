@@ -294,14 +294,12 @@ class OffsetMirror(Device):
         return False
 
 
-class PointingMirror(OffsetMirror):
+class PointingMirror(InOutRecordPositioner, OffsetMirror):
     """
+    Parameters
+    ----------
     mps_prefix : str, optional
         Base prefix for the MPS bit of the mirror
-
-    state_prefix : str, optional
-        Base prefix for the state record that has the In/Out state of the
-        mirror
 
     in_lines : list, optional
         List of beamlines that are delivered beam when the mirror is in
@@ -310,62 +308,22 @@ class PointingMirror(OffsetMirror):
         List of beamlines thate are delivered beam when the mirror is out
     """
     # MPS Information
-    mps = FC(MPS, '{self._mps_prefix}', veto=True)
-    # State Information
-    state = FC(InOutRecordPositioner, '{self._state_prefix}')
-    # Coupling for horizontal gantry
-    x_gantry_decoupled = FC(EpicsSignalRO,
-                                            "GANTRY:{self._prefix_xy}:X:DECOUPLE")
+    mps = FC(MPS, '{self._mps_prefix}', veto=False)
+    # Define default read and configuration attributes
+    _default_read_attrs = ['pitch', 'xgantry.readback',
+                           'xgantry.gantry_difference']
+    _default_configuration_attrs = ['ygantry.setpoint', 'state']
 
-    def __init__(self, *args, mps_prefix=None, state_prefix=None,
-                 out_lines=None, in_lines=None, **kwargs):
+    def __init__(self, *args, mps_prefix=None,
+                 out_lines=None, in_lines=None,
+                 **kwargs):
         self._has_subscribed = False
         # Store MPS information
         self._mps_prefix = mps_prefix
-        # Store State information
-        self._state_prefix = state_prefix
         # Branching pattern
         self.in_lines = in_lines
         self.out_lines = out_lines
         super().__init__(*args, **kwargs)
-
-    @property
-    def inserted(self):
-        """
-        Whether PointingMirror is inserted
-        """
-        return self.state.position == 'IN'
-
-    @property
-    def removed(self):
-        """
-        Whether PointingMirror is removed
-        """
-        return self.state.position == 'OUT'
-
-    def remove(self, wait=False, timeout=None):
-        """
-        Remove the PointingMirror from the beamline
-
-        If the horizontal gantry is not coupled, the request will raise a
-        `RuntimeError`
-        """
-        if self.coupled:
-            return self.state.move("OUT", wait=wait, timeout=timeout)
-        else:
-            raise RuntimeError("Gantry is not coupled, can not move")
-
-    def insert(self, wait=False, timeout=None):
-        """
-        Insert the pointing mirror into the beamline
-
-        If the horizontal gantry is not coupled, the request will raise a
-        `RuntimeError`
-        """
-        if self.coupled:
-            return self.state.move("IN", wait=wait, timeout=timeout)
-        else:
-            raise RuntimeError("Gantry is not coupled, can not move")
 
     @property
     def destination(self):
@@ -400,39 +358,3 @@ class PointingMirror(OffsetMirror):
             return self.in_lines + self.out_lines
         else:
             return [self.db.beamline]
-
-    @property
-    def coupled(self):
-        """
-        Whether the horizontal gantry is coupled
-        """
-        return not bool(self.x_gantry_decoupled.get())
-
-    def subscribe(self, cb, event_type=None, run=True):
-        """
-        Subscribe to changes of the mirror
-
-        Parameters
-        ----------
-        cb : callable
-            Callback to be run
-
-        event_type : str, optional
-            Type of event to run callback on
-
-        run : bool, optional
-            Run the callback immediatelly
-        """
-        if not self._has_subscribed:
-            # Subscribe to changes in state
-            self.state.subscribe(self._on_state_change, run=False)
-            self._has_subscribed = True
-        super().subscribe(cb, event_type=event_type, run=run)
-
-    def _on_state_change(self, **kwargs):
-        """
-        Callback run on state change
-        """
-        kwargs.pop('sub_type', None)
-        kwargs.pop('obj', None)
-        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
