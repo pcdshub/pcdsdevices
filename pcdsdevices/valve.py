@@ -152,4 +152,4 @@ class PPSStopper(InOutPositioner):
         """
         PPSStopper can not be commanded via EPICS
         """
-        raise NotImplementedError("PPSStopper can not be commanded via EPICS")
+        raise PermissionError("PPSStopper can not be commanded via EPICS")
