@@ -242,7 +242,7 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
                            'xgantry.gantry_difference']
     _default_configuration_attrs = ['ygantry.setpoint', 'state']
 
-    def __init__(self, *args, mps_prefix=None,
+    def __init__(self, prefix, *, mps_prefix=None,
                  out_lines=None, in_lines=None,
                  **kwargs):
         # Store MPS information
@@ -250,7 +250,7 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         # Branching pattern
         self.in_lines = in_lines or list()
         self.out_lines = out_lines or list()
-        super().__init__(*args, **kwargs)
+        super().__init__(prefix, **kwargs)
 
     @property
     def destination(self):
