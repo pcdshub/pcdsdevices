@@ -8,7 +8,7 @@ from functools import partial
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
                    FormattedComponent as FC)
 
-from .state import PVStatePositioner
+from .inout import InOutPositioner, InOutPVStatePositioner
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ class InterlockError(PermissionError):
     pass
 
 
-class Stopper(PVStatePositioner):
+class Stopper(InOutPVStatePositioner):
     """
     Controls Stopper
 
@@ -66,70 +66,17 @@ class Stopper(PVStatePositioner):
         elif state.name == 'OUT':
             self.command.put(self.commands.open_valve.value)
 
-    def open(self, wait=False, timeout=None):
+    def open(self, **kwargs):
         """
         Open the stopper
-
-        Parameters
-        ----------
-        wait : bool, optional
-            Wait for the command to finish
-
-        timeout : float, optional
-            Default timeout to wait mark the request as a failure
-
-        Returns
-        -------
-        StateStatus:
-            Future that reports the completion of the request
         """
-        return self.move('OUT', wait=wait, timeout=timeout)
+        return self.remove(**kwargs)
 
-    def close(self, wait=False, timeout=None):
+    def close(self, **kwargs):
         """
         Close the stopper
-
-        Parameters
-        ----------
-        wait : bool, optional
-            Wait for the command to finish
-
-        timeout : float, optional
-            Default timeout to wait mark the request as a failure
-
-        Returns
-        -------
-        StateStatus:
-            Future that reports the completion of the request
         """
-        return self.move('IN', wait=wait, timeout=timeout)
-
-    # Lightpath Interface
-    def insert(self, *args, **kwargs):
-        """
-        Alias for :meth:`.close` for lightpath interface
-        """
-        return self.close(*args, **kwargs)
-
-    def remove(self, *args, **kwargs):
-        """
-        Alias for :meth:`.open` for lightpath interface
-        """
-        return self.open(*args, **kwargs)
-
-    @property
-    def inserted(self):
-        """
-        Whether the stopper is in the beamline
-        """
-        return self.position == 'IN'
-
-    @property
-    def removed(self):
-        """
-        Whether the stopper is removed from the beamline
-        """
-        return self.position == 'OUT'
+        return self.insert(**kwargs)
 
 
 class GateValve(Stopper):
@@ -157,35 +104,17 @@ class GateValve(Stopper):
         """
         return bool(self.interlock.get())
 
-    def open(self, wait=False, timeout=None, **kwargs):
+    def open(self, **kwargs):
         """
         Open the valve
-
-        Parameters
-        ----------
-        wait : bool, optional
-            Wait for the command to finish
-
-        timeout : float, optional
-            Default timeout to wait mark the request as a failure
-
-        Raises
-        ------
-        InterlockError:
-            When the gate valve can not be opened due to a vacuum interlock
-
-        Returns
-        -------
-        StateStatus:
-            Future that reports the completion of the request
         """
         if self.interlocked:
             raise InterlockError('Valve is currently forced closed')
 
-        return super().open(wait=wait, timeout=timeout, **kwargs)
+        return super().open(**kwargs)
 
 
-class PPSStopper(Device):
+class PPSStopper(InOutPositioner):
     """
     PPS Stopper
 
@@ -207,57 +136,20 @@ class PPSStopper(Device):
     out_state :str, optional
         String associatted with out enum value
     """
-    summary = C(EpicsSignalRO, '')
-    SUB_STATE = 'sub_state_changed'
-    _default_sub = SUB_STATE
-
+    state = C(EpicsSignalRO, '', string=True)
     # Default attributes
     _default_read_attrs = ['summary']
 
     def __init__(self, prefix, *, in_state='IN', out_state='OUT', **kwargs):
         # Store state information
-        self.in_state, self.out_state = in_state, out_state
-        self._has_subscribed = False
+        self.in_states = [in_state]
+        self.out_states = [out_state]
+        self.state_list = self.in_states + self.out_states
+        # Load InOutPositioner
         super().__init__(prefix, **kwargs)
 
-    @property
-    def inserted(self):
+    def _do_move(self, state):
         """
-        Inserted limit of PPS stopper
+        PPSStopper can not be commanded via EPICS
         """
-        return self.summary.get(as_string=True) == self.in_state
-
-    @property
-    def removed(self):
-        """
-        Removed limit of the PPS Stopper
-        """
-        return self.summary.get(as_string=True) == self.out_state
-
-    def subscribe(self, cb, event_type=None, run=True):
-        """
-        Subscribe to changes of the PPSStopper
-
-        Parameters
-        ----------
-        cb : callable
-            Callback to be run
-
-        event_type : str, optional
-            Type of event to run callback on
-
-        run : bool, optional
-            Run the callback immediatelly
-        """
-        if not self._has_subscribed:
-            self.summary.subscribe(self._on_state_change, run=False)
-            self._has_subscribed = True
-        super().subscribe(cb, event_type=event_type, run=run)
-
-    def _on_state_change(self, **kwargs):
-        """
-        Callback run on state change
-        """
-        kwargs.pop('sub_type', None)
-        kwargs.pop('obj', None)
-        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
+        raise NotImplementedError("PPSStopper can not be commanded via EPICS")
