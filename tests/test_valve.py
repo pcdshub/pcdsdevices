@@ -18,7 +18,8 @@ def fake_pps():
     test, so we can't make this a fixture without destabilizing our tests.
     """
     pps = PPSStopper("PPS:H0:SUM", name="test_pps")
-    pps.state._read_pv.put("INCONSISTENT")
+    pps.state._read_pv.put("OUT")
+    attr_wait_true(pps, 'removed')
     pps.wait_for_connection()
     return pps
 
@@ -47,6 +48,16 @@ def test_pps_states():
     attr_wait_true(pps, 'inserted')
     assert pps.inserted
     assert not pps.removed
+
+
+@using_fake_epics_pv
+def test_pps_motion():
+     pps = fake_pps()
+     with pytest.raises(PermissionError):
+         pps.insert()
+     pps.state._read_pv.put("IN")
+     with pytest.raises(PermissionError):
+         pps.remove()
 
 
 @using_fake_epics_pv
@@ -107,7 +118,6 @@ def test_stopper_subscriptions():
     stopper.closed_limit._read_pv.put(1)
     attr_wait_true(cb, 'called')
     assert cb.called
-
 
 @using_fake_epics_pv
 def test_valve_motion():
