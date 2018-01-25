@@ -10,6 +10,10 @@ logger = logging.getLogger(__name__)
 
 
 class PulsePicker(InOutPVStatePositioner):
+    """
+    Device that can open/close in response to event codes to let certain pulses
+    through and block others.
+    """
     blade = Cmp(EpicsSignalRO, ':READ_DF')
     mode = Cmp(EpicsSignalRO, ':SD_SIMPLE')
 
@@ -30,41 +34,93 @@ class PulsePicker(InOutPVStatePositioner):
     _default_config_attrs = ['mode']
 
     def _do_move(self, state):
+        """
+        Handle move requests for basic open/close commands. This allows us to
+        make calls like pulsepicker.move('OPEN')
+        """
         if state.name == 'OPEN':
             self.open()
         if state.name == 'CLOSED':
             self.close()
 
-    def reset(self, wait=True):
+    def _wait(self, sig, *goals):
+        """
+        Helper function to wait for a signal to reach a value. This is used
+        here because most commands are only valid when mode is IDLE.
+        """
+        def cb(value, *args, **kwargs):
+            return value in goals
+        status = SubscriptionStatus(sig, cb)
+        status_wait(status)
+
+    def _log_request(self, mode):
+        logger.debug('Request %s %s', self.name, mode)
+
+    def reset(self, wait=False):
+        """
+        Cancel the current mode.
+        """
+        self._log_request('RESET')
         self.cmd_reset.put(1)
         if wait:
-            def cb(value, *args, **kwargs):
-                return value in (0, 'IDLE')
-            status = SubscriptionStatus(self.mode, cb)
-            status_wait(status)
+            self._wait(self.mode, 0, 'IDLE')
 
-    def open(self):
-        self.reset()
+    def open(self, wait=False):
+        """
+        Cancel the current mode and leave the PulsePicker OPEN.
+        """
+        self.reset(wait=True)
+        self._log_request('OPEN')
         self.cmd_open.put(1)
+        if wait:
+            self._wait(self.state, 'OPEN')
 
-    def close(self):
-        self.reset()
+    def close(self, wait=False):
+        """
+        Cancel the current mode and leave the PulsePicker CLOSED.
+        """
+        self.reset(wait=True)
+        self._log_request('CLOSED')
         self.cmd_close.put(1)
+        if wait:
+            self._wait(self.state, 'CLOSED')
 
-    def flipflop(self):
-        self.reset()
+    def flipflop(self, wait=False):
+        """
+        Change the current mode to FLIP-FLOP.
+        """
+        self.reset(wait=True)
+        self._log_request('FLIP-FLOP')
         self.cmd_flipflop.put(1)
+        if wait:
+            self._wait(self.mode, 2, 'FLIP-FLOP')
 
-    def burst(self):
-        self.reset()
+    def burst(self, wait=False):
+        """
+        Change the current mode to BURST.
+        """
+        self.reset(wait=True)
+        self._log_request('BURST')
         self.cmd_burst.put(1)
+        if wait:
+            self._wait(self.mode, 3, 'BURST')
 
-    def follower(self):
-        self.reset()
+    def follower(self, wait=False):
+        """
+        Change the current mode to FOLLOWER.
+        """
+        self.reset(wait=True)
+        self._log_request('FOLLOWER')
         self.cmd_follower.put(1)
+        if wait:
+            self._wait(self.mode, 6, 'FOLLOWER')
 
 
 class PulsePickerInOut(PulsePicker):
+    """
+    PulsePicker paired with a states record to control the Y position. This
+    allows us to insert and remove the entire device from the beam.
+    """
     inout = FCmp(InOutRecordPositioner, '{self._inout}')
 
     out_states = ['OUT', 'OPEN']
@@ -82,17 +138,30 @@ class PulsePickerInOut(PulsePicker):
         super().__init__(prefix, name=name, **kwargs)
 
     def _do_move(self, state):
+        """
+        Handle moving the state motor OUT when commands like
+        pulsepicker.move('OUT') are called, and inserting on other move
+        commands.
+        """
         if state.name == 'OUT':
-            self.in_out.remove()
+            self.inout.remove()
         else:
-            self.in_out.insert()
+            self.inout.insert()
         super()._do_move(state)
 
 
 class CCMRecordPositioner(InOutRecordPositioner):
+    """
+    Version of InOut device that has distinct states for CCM and PINK
+    """
     states_list = ['OUT', 'CCM', 'PINK']
     in_states = ['PINK', 'CCM']
+    _states_alias = {'PINK': 'IN'}
 
 
 class PulsePickerCCM(PulsePickerInOut):
+    """
+    PulsePicker paired with a states record to control the Y position and
+    manage the differing elevations for running in CCM or PINK mode.
+    """
     inout = FCmp(CCMRecordPositioner, '{self._inout}')
