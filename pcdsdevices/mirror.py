@@ -257,8 +257,8 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         # Store MPS information
         self._mps_prefix = mps_prefix
         # Branching pattern
-        self.in_lines = in_lines
-        self.out_lines = out_lines
+        self.in_lines = in_lines or list()
+        self.out_lines = out_lines or list()
         super().__init__(*args, **kwargs)
 
     @property
@@ -281,8 +281,7 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         """
         Return all possible beamlines for mirror destinations
         """
-        if self.in_lines and self.out_lines:
-            return self.in_lines + self.out_lines
+        return self.in_lines + self.out_lines
 
     def set(self, *args, **kwargs):
         """
