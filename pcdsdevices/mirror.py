@@ -45,7 +45,6 @@ class OMMotor(PVPositioner):
     high_limit_switch = C(EpicsSignalRO, ":HLS")
 
     @property
-    @raise_if_disconnected
     def egu(self):
         """
         Engineering units of the readback PV, as reported by EPICS.
