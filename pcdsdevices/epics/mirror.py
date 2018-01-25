@@ -174,7 +174,7 @@ class Gantry(OMMotor):
             Passed to OMMotor.move
         """
         # Check that the gantry is not decoupled
-        if not self.decoupled.get():
+        if self.decoupled.get():
             raise PermissionError("The gantry is not currently coupled")
         return super().move(position, **kwargs)
 
