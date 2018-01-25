@@ -5,13 +5,66 @@ interpreted by :class:`.MPS`.
 """
 import logging
 
+from ophyd.ophydobj import OphydObject
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
                    FormattedComponent as FC)
 
 logger = logging.getLogger(__name__)
 
 
-class MPS(Device):
+class MPSBase(OphydObject):
+    """
+    Base MPS class
+
+    Used for shared methods between the individual :class;`.MPS` bit class and
+    the :class:`.MPSLimits` class. The class handles much of the bookkeeping
+    for both of these classes, but each subclass must reimplement: faulted,
+    bypassed and _sub_to_children
+    """
+    # Subscription information
+    SUB_FAULT_CH = 'sub_mps_faulted'
+    _default_sub = SUB_FAULT_CH
+
+    def __init__(self, *args, veto=False, **kwargs):
+        self.veto_capable = veto
+        self._has_subscribed_fault = False
+        super().__init__(*args, **kwargs)
+
+    @property
+    def tripped(self):
+        """
+        Whether this will trip the MPS system
+
+        This is based off of both the faulted state as well as any temporary
+        bypasses on the MPS bit
+        """
+        return self.faulted and not self.bypassed
+
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Subscribe to changes in the MPS
+
+        If this is the first subscription to the `SUB_FAULT_CH`, subscribe to
+        any changes in the bypass or fault signals
+        """
+        cid = super().subscribe(cb, event_type=event_type, run=run)
+        # Subscribe child signals
+        if event_type is None:
+            event_type = self._default_sub
+        if event_type == self.SUB_FAULT_CH and not self._has_subscribed_fault:
+            self._sub_to_children()
+            self._has_subscribed_fault = True
+        return cid
+
+    def _fault_change(self, *args, **kwargs):
+        """
+        Callback when the state of the MPS bit has changed
+        """
+        kwargs.pop('sub_type', None)
+        self._run_subs(sub_type=self.SUB_FAULT_CH, **kwargs)
+
+
+class MPS(MPSBase, Device):
     """
     Class to interpret a single bit of MPS information
 
@@ -42,40 +95,16 @@ class MPS(Device):
     fault = C(EpicsSignalRO, '_MPSC')
     bypass = C(EpicsSignal,   '_BYPS')
 
-    # Subscription information
-    SUB_FAULT_CH = 'sub_mps_faulted'
-    _default_sub = SUB_FAULT_CH
-
     # Default read and configuration attributes
     _default_read_attrs = ['read']
     _default_configuration_attrs = ['bypass']
-
-    def __init__(self, prefix, *, veto=False, **kwargs):
-        # Device initialization
-        super().__init__(prefix, **kwargs)
-        # Object information
-        self._veto = veto
-        self._has_subscribed_fault = False
 
     @property
     def faulted(self):
         """
         Whether the MPS bit is faulted or not
-
-        This interprets both the fault and bypass bit to determine if the fault
-        will actually affect the beam
         """
-        # Fault doesn't matter if the bit is bypassed
-        if self.bypassed:
-            return False
         return bool(self.fault.value)
-
-    @property
-    def veto_capable(self):
-        """
-        Whether the device causes downstream faults to be ignored
-        """
-        return self._veto
 
     @property
     def bypassed(self):
@@ -84,29 +113,12 @@ class MPS(Device):
         """
         return bool(self.bypass.value)
 
-    def subscribe(self, cb, event_type=None, run=True):
+    def _sub_to_children(self):
         """
-        Subscribe to changes in the MPS bit
-
-        If this is the first subscription to the `SUB_FAULT_CH`, subscribe to
-        any changes in the bypass or fault signals
+        Subscribe to child signals
         """
-        cid = super().subscribe(cb, event_type=event_type, run=run)
-        # Subscribe child signals
-        if event_type is None:
-            event_type = self._default_sub
-        if event_type == self.SUB_FAULT_CH and not self._has_subscribed_fault:
-            self.fault.subscribe(self._fault_change, run=False)
-            self.bypass.subscribe(self._fault_change, run=False)
-            self._has_subscribed_fault = True
-        return cid
-
-    def _fault_change(self, *args, **kwargs):
-        """
-        Callback when the state of the MPS bit has changed
-        """
-        kwargs.pop('sub_type', None)
-        self._run_subs(sub_type=self.SUB_FAULT_CH, **kwargs)
+        self.fault.subscribe(self._fault_change, run=False)
+        self.bypass.subscribe(self._fault_change, run=False)
 
 
 def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
@@ -188,7 +200,7 @@ def must_be_known(in_limit, out_limit):
     return in_limit != out_limit
 
 
-class MPSLimits(Device):
+class MPSLimits(MPSBase, Device):
     """
     Logical combination of two MPS bits
 
@@ -230,3 +242,16 @@ class MPSLimits(Device):
         applies a logic function depending on the states of mps_A and mps_B.
         """
         return self.logic(self.in_limit.faulted, self.out_limit.faulted)
+
+    @property
+    def bypassed(self):
+        """
+        Whether either limit is bypassed
+        """
+        return self.in_limit.bypassed or self.out_limit.bypassed
+
+    def _sub_to_children(self):
+        self.in_limit.subscribe(self._fault_change,
+                                event_type=self.in_limit.SUB_FAULT_CH)
+        self.in_limit.subscribe(self._fault_change,
+                                event_type=self.out_limit.SUB_FAULT_CH)
