@@ -3,10 +3,8 @@ Standard classes for LCLS Gate Valves
 """
 import logging
 from enum import Enum
-from functools import partial
 
-from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
-                   FormattedComponent as FC)
+from ophyd import EpicsSignal, EpicsSignalRO, Component as C
 
 from .inout import InOutPositioner, InOutPVStatePositioner
 

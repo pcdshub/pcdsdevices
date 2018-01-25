@@ -52,12 +52,12 @@ def test_pps_states():
 
 @using_fake_epics_pv
 def test_pps_motion():
-     pps = fake_pps()
-     with pytest.raises(PermissionError):
-         pps.insert()
-     pps.state._read_pv.put("IN")
-     with pytest.raises(PermissionError):
-         pps.remove()
+    pps = fake_pps()
+    with pytest.raises(PermissionError):
+        pps.insert()
+    pps.state._read_pv.put("IN")
+    with pytest.raises(PermissionError):
+        pps.remove()
 
 
 @using_fake_epics_pv
@@ -118,6 +118,7 @@ def test_stopper_subscriptions():
     stopper.closed_limit._read_pv.put(1)
     attr_wait_true(cb, 'called')
     assert cb.called
+
 
 @using_fake_epics_pv
 def test_valve_motion():
