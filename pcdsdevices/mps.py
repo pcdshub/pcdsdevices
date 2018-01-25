@@ -34,25 +34,25 @@ class MPS(Device):
     name : str, optional
 
     veto : bool, optional
-        Whether or not the  
+        Whether or not the
 
     read_attrs : list, optional
     """
-    fault  = C(EpicsSignalRO, '_MPSC')
+    fault = C(EpicsSignalRO, '_MPSC')
     bypass = C(EpicsSignal,   '_BYPS')
 
-    SUB_FAULT_CH  = 'sub_mps_faulted'
-    _default_sub  = SUB_FAULT_CH
+    SUB_FAULT_CH = 'sub_mps_faulted'
+    _default_sub = SUB_FAULT_CH
 
     def __init__(self, prefix, *, name=None, veto=False,
                  read_attrs=None, **kwargs):
         self._veto = veto
-        #Default read attributes
+        # Default read attributes
         if read_attrs is None:
             read_attrs = ['fault', 'bypass']
-        #Device initialization
+        # Device initialization
         super().__init__(prefix, name=name, read_attrs=read_attrs, **kwargs)
-        #Subscribe state change callback
+        # Subscribe state change callback
         self.fault.subscribe(self._fault_change, run=False)
         self.bypass.subscribe(self._fault_change, run=False)
 
@@ -120,25 +120,22 @@ def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
         Passed to device constructor
     """
     comp = FC(MPS, mps_prefix, veto=veto)
-    cls  = type(clsname, (cls,), {'mps' : comp})
+    cls = type(clsname, (cls,), {'mps': comp})
     return cls(*args, **kwargs)
 
 
 def must_be_open_logic(mps_A, mps_B):
     """
-
-    This logic should analyze the two MPS classes of a device. This logic will only allow
-    beam through if the device is in the open-state.
+    This logic should analyze the two MPS classes of a device. This logic will
+    only allow beam through if the device is in the open-state.
 
     Parameters
     ----------
-    
     mps_A.fault.value: Int
     mps_B.fault.value: Int
 
     Returns
     -------
-    
     bool
         True if successful, False otherwise
 
@@ -160,19 +157,16 @@ def must_be_open_logic(mps_A, mps_B):
 
 def must_know_position_logic(mps_A, mps_B):
     """
-
-    This logic should analyze the two MPS classes of a device. This logic will only allow
-    beam through if both the positions of the MPS classes is known
+    This logic should analyze the two MPS classes of a device. This logic will
+    only allow beam through if both the positions of the MPS classes is known
 
     Parameters
     ----------
-    
     mps_A.fault.value: Int
     mps_B.fault.value: Int
 
     Returns
     -------
-    
     bool
         True if successful, False otherwise
     """
@@ -191,11 +185,10 @@ def must_know_position_logic(mps_A, mps_B):
 
 class MPSLimits(Device):
     """
-
-    The MPSLimits class is to determine what action is to be taken based on the MPS values
-    of a devicepertaining to a single device. If a device has two MPS values, there is 
-    certain logic that needs to be followed to determine whether or not the beam is allowed
-    through.
+    The MPSLimits class is to determine what action is to be taken based on the
+    MPS values of a devicepertaining to a single device. If a device has two
+    MPS values, there is certain logic that needs to be followed to determine
+    whether or not the beam is allowed through.
 
 
     Parameters
@@ -209,11 +202,12 @@ class MPSLimits(Device):
     mps_A: the first MPS value of a Device
 
     mps_B: the second MPS value of a Device
-   
+
     name: str
 
     logic: function
-        calls one of the previously defined functions based on the Device in question
+        calls one of the previously defined functions based on the Device in
+        question
     """
     mps_A = FC(MPS, '{self.MPSA}')
     mps_B = FC(MPS, '{self.MPSB}')
@@ -228,16 +222,11 @@ class MPSLimits(Device):
 
     @property
     def faulted(self):
-    
         """
-
-        This property determines whether the two MPS values are faulted and applies a logic 
-        function depending on the states of mps_A and mps_B.
-
+        This property determines whether the two MPS values are faulted and
+        applies a logic function depending on the states of mps_A and mps_B.
         """
-        
         if not callable(self.logic):
             raise TypeError("Invalid Logic")
 
         return self.logic(self.mps_A, self.mps_B)
-
