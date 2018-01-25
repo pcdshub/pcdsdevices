@@ -8,8 +8,7 @@ from functools import partial
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
                    FormattedComponent as FC)
 
-from .mps import MPS, mps_factory
-from ..state import PVStatePositioner
+from .state import PVStatePositioner
 
 logger = logging.getLogger(__name__)
 
@@ -185,10 +184,6 @@ class GateValve(Stopper):
         return super().open(wait=wait, timeout=timeout, **kwargs)
 
 
-MPSGateValve = partial(mps_factory, 'MPSGateValve', GateValve)
-MPSStopper = partial(mps_factory, 'MPSStopper', Stopper)
-
-
 class PPSStopper(Device):
     """
     PPS Stopper
@@ -215,17 +210,12 @@ class PPSStopper(Device):
     SUB_STATE = 'sub_state_changed'
     _default_sub = SUB_STATE
 
-    # MPS Information
-    mps = FC(MPS, '{self._mps_prefix}', veto=True)
-
     def __init__(self, prefix, *, name=None,
                  read_attrs=None, in_state='IN',
-                 out_state='OUT', mps_prefix=None, **kwargs):
+                 out_state='OUT', **kwargs):
         # Store state information
         self.in_state, self.out_state = in_state, out_state
         self._has_subscribed = False
-        # Store MPS information
-        self._mps_prefix = mps_prefix
 
         if not read_attrs:
             read_attrs = ['summary']
