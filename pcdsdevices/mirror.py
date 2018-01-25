@@ -13,7 +13,6 @@ from ophyd.utils.epics_pvs import raise_if_disconnected
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
                    PVPositioner, FormattedComponent as FC)
 
-from .epics.mps import MPS
 from .inout import InOutRecordPositioner
 
 logger = logging.getLogger(__name__)
@@ -220,33 +219,20 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
     :class:`.OffsetMirror` with the addition of the records that control the
     overall state.
 
-    For the lightpath, these mirrors have an MPS component, and you can also
-    supply which beamlines require which OffsetMirror state i.e the MFX
-    beamline must have XRT M2H inserted.
-
     Parameters
     ----------
-    mps_prefix : str, optional
-        Base prefix for the MPS bit of the mirror
-
     in_lines : list, optional
         List of beamlines that are delivered beam when the mirror is in
 
     out_lines : list, optional
         List of beamlines thate are delivered beam when the mirror is out
     """
-    # MPS Information
-    mps = FC(MPS, '{self._mps_prefix}', veto=False)
     # Define default read and configuration attributes
     _default_read_attrs = ['pitch', 'xgantry.readback',
                            'xgantry.gantry_difference']
     _default_configuration_attrs = ['ygantry.setpoint', 'state']
 
-    def __init__(self, prefix, *, mps_prefix=None,
-                 out_lines=None, in_lines=None,
-                 **kwargs):
-        # Store MPS information
-        self._mps_prefix = mps_prefix
+    def __init__(self, prefix, *, out_lines=None, in_lines=None, **kwargs):
         # Branching pattern
         self.in_lines = in_lines or list()
         self.out_lines = out_lines or list()
