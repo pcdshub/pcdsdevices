@@ -5,8 +5,7 @@ import pytest
 from ophyd.status import wait as status_wait
 
 from pcdsdevices.sim.pv import using_fake_epics_pv
-from pcdsdevices.epics.valve import (GateValve, PPSStopper, Stopper,
-                                     InterlockError)
+from pcdsdevices.valve import GateValve, PPSStopper, Stopper, InterlockError
 
 from .conftest import attr_wait_true, attr_wait_false
 
