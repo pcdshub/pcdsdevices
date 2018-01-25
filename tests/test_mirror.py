@@ -12,7 +12,7 @@ import pytest
 ##########
 # Module #
 ##########
-from pcdsdevices.epics.mirror import OffsetMirror, PointingMirror
+from pcdsdevices.mirror import OffsetMirror, PointingMirror
 from pcdsdevices.sim.pv       import using_fake_epics_pv
 
 from .conftest import attr_wait_true, connect_rw_pvs

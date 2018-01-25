@@ -29,8 +29,8 @@ from ophyd.utils.epics_pvs import raise_if_disconnected
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
                    PVPositioner, FormattedComponent as FC)
 
-from .mps import MPS
-from ..inout import InOutRecordPositioner
+from .epics.mps import MPS
+from .inout import InOutRecordPositioner
 
 logger = logging.getLogger(__name__)
 
