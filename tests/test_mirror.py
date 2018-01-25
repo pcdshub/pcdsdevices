@@ -33,13 +33,20 @@ def fake_branching_mirror():
     m.wait_for_connection()
     # Couple the gantry
     m.xgantry.decoupled._read_pv.put(0)
+    # Make the pitch look reasonable
+    m.pitch.motor_egu._read_pv.put('urad')
     return m
 
 @using_fake_epics_pv
 def test_nan_protection():
     branching_mirror = fake_branching_mirror()
     with pytest.raises(ValueError):
-        branching_mirror.pitch.put(math.nan)
+        branching_mirror.pitch.check_value(math.nan)
+
+@using_fake_epics_pv
+def test_ommotor_positioner_egu():
+    branching_mirror = fake_branching_mirror()
+    assert branching_mirror.pitch.egu == 'urad'
 
 @using_fake_epics_pv
 def test_mirror_init():
@@ -55,6 +62,12 @@ def test_mirror_init():
     assert m.xgantry.gantry_prefix == 'GANTRY:TST:M1H:X'
     assert m.ygantry.prefix == 'TST:M1H:Y:P'
     assert m.ygantry.gantry_prefix == 'GANTRY:TST:M1H:Y'
+
+@using_fake_epics_pv
+def test_offsetmirror_lighpath():
+    m = OffsetMirror('XRT:M2H', name='XRT M2H')
+    assert m.inserted
+    assert not m.removed
 
 @using_fake_epics_pv
 def test_branching_mirror_destination():
@@ -80,15 +93,19 @@ def test_branching_mirror_destination():
 @using_fake_epics_pv
 def test_branching_mirror_moves():
     branching_mirror = fake_branching_mirror()
-    print(branching_mirror.read())
     #With gantry decoupled, should raise PermissionError
     branching_mirror.xgantry.decoupled._read_pv.put(1)
+    with pytest.raises(PermissionError):
+        branching_mirror.xgantry.move(0.1, wait=False)
     with pytest.raises(PermissionError):
         branching_mirror.remove()
     with pytest.raises(PermissionError):
         branching_mirror.insert()
     #Recouple gantry
     branching_mirror.xgantry.decoupled._read_pv.put(0)
+    # Test small move
+    branching_mirror.xgantry.move(0.2, wait=False)
+    assert branching_mirror.xgantry.setpoint._write_pv.get() == 0.2
     #Test removal
     branching_mirror.remove()
     assert branching_mirror.state._write_pv.value == 'OUT'
