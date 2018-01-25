@@ -16,7 +16,7 @@ from unittest.mock import Mock
 # Module #
 ##########
 from pcdsdevices.sim.pv import using_fake_epics_pv
-from pcdsdevices.epics.mps import MPS, mps_factory
+from pcdsdevices.mps import MPS, mps_factory
 
 from .conftest import attr_wait_true
 
@@ -25,7 +25,7 @@ def fake_mps():
     using_fake_epics_pv does cleanup routines after the fixture and before the
     test, so we can't make this a fixture without destabilizing our tests.
     """
-    mps = MPS("TST:MPS")
+    mps = MPS("TST:MPS", name='MPS Bit')
     mps.wait_for_connection()
     return mps
 
