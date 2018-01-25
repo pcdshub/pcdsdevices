@@ -39,7 +39,7 @@ class Stopper(InOutPVStatePositioner):
     prefix : str
         Full PPS Stopper PV
 
-    name : str, optional
+    name : str
         Alias for the stopper
 
     Attributes
@@ -132,13 +132,13 @@ class PPSStopper(InOutPositioner):
     prefix : str
         Full PPS Stopper PV
 
-    name : str, optional
+    name : str
         Alias for the stopper
 
     in_state : str, optional
         String associatted with in enum value
 
-    out_state :str, optional
+    out_state : str, optional
         String associatted with out enum value
     """
     state = C(EpicsSignalRO, '', string=True)
