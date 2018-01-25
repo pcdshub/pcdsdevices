@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 class MPS(Device):
     """
-    Class to interpret MPS information
+    Class to interpret a single bit of MPS information
 
     The intention of this class is to be used as a sub-component of a device.
     There are three major attributes of each MPS bit that are relevant to
@@ -30,31 +30,32 @@ class MPS(Device):
     Parameters
     ----------
     prefix : str
+        PV prefix of MPS information
 
-    name : str, optional
+    name : str
+        Name of MPS bit
 
     veto : bool, optional
-        Whether or not the
-
-    read_attrs : list, optional
+        Whether or not the the device is capable of vetoing downstream faults
     """
+    # Signals
     fault = C(EpicsSignalRO, '_MPSC')
     bypass = C(EpicsSignal,   '_BYPS')
 
+    # Subscription information
     SUB_FAULT_CH = 'sub_mps_faulted'
     _default_sub = SUB_FAULT_CH
 
-    def __init__(self, prefix, *, name=None, veto=False,
-                 read_attrs=None, **kwargs):
-        self._veto = veto
-        # Default read attributes
-        if read_attrs is None:
-            read_attrs = ['fault', 'bypass']
+    # Default read and configuration attributes
+    _default_read_attrs = ['read']
+    _default_configuration_attrs = ['bypass']
+
+    def __init__(self, prefix, *, veto=False, **kwargs):
         # Device initialization
-        super().__init__(prefix, name=name, read_attrs=read_attrs, **kwargs)
-        # Subscribe state change callback
-        self.fault.subscribe(self._fault_change, run=False)
-        self.bypass.subscribe(self._fault_change, run=False)
+        super().__init__(prefix, **kwargs)
+        # Object information
+        self._veto = veto
+        self._has_subscribed_fault = False
 
     @property
     def faulted(self):
@@ -64,9 +65,9 @@ class MPS(Device):
         This interprets both the fault and bypass bit to determine if the fault
         will actually affect the beam
         """
+        # Fault doesn't matter if the bit is bypassed
         if self.bypassed:
             return False
-
         return bool(self.fault.value)
 
     @property
@@ -82,6 +83,23 @@ class MPS(Device):
         Bypass state of the MPS bit
         """
         return bool(self.bypass.value)
+
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Subscribe to changes in the MPS bit
+
+        If this is the first subscription to the `SUB_FAULT_CH`, subscribe to
+        any changes in the bypass or fault signals
+        """
+        cid = super().subscribe(cb, event_type=event_type, run=run)
+        # Subscribe child signals
+        if event_type is None:
+            event_type = self._default_sub
+        if event_type == self.SUB_FAULT_CH and not self._has_subscribed_fault:
+            self.fault.subscribe(self._fault_change, run=False)
+            self.bypass.subscribe(self._fault_change, run=False)
+            self._has_subscribed_fault = True
+        return cid
 
     def _fault_change(self, *args, **kwargs):
         """
