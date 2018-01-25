@@ -48,11 +48,6 @@ class OMMotor(PVPositioner):
     name : str, optional
         The name of the motor
 
-    nominal_position : float, optional
-        The position believed to be aligned to the beam. This can either be the
-        previously aligned position, or the position given by the alignment
-        team
-
     kwargs:
         All keyword arguments are passed onto PVPositioner
     """
@@ -66,13 +61,6 @@ class OMMotor(PVPositioner):
     # limit switches
     low_limit_switch = C(EpicsSignalRO, ":LLS")
     high_limit_switch = C(EpicsSignalRO, ":HLS")
-
-    def __init__(self, prefix, *, nominal_position=None, **kwargs):
-        self.nominal_position = nominal_position
-        super().__init__(prefix, **kwargs)
-        # Make the default alias for the user_readback the name of the
-        # motor itself.
-        self.readback.name = self.name
 
     @property
     @raise_if_disconnected
@@ -110,18 +98,6 @@ class OMMotor(PVPositioner):
             raise ValueError("Invalid value inputted: '{0}'".format(position))
         # Use the built-in PVPositioner check_value
         super().check_value(position)
-
-    @raise_if_disconnected
-    def mv(self, position, wait=False, **kwargs):
-        """
-        Alias for the move() method.
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object of the move
-        """
-        return self.move(position, wait=wait, **kwargs)
 
 
 class Pitch(OMMotor):
@@ -258,26 +234,12 @@ class OffsetMirror(Device):
 
     _default_configuration_attrs = ['ygantry.setpoint']
 
-    def __init__(self, prefix, *, prefix_xy=None, xgantry_prefix=None,
-                 nominal_position=None, **kwargs):
+    def __init__(self, prefix, *, prefix_xy=None,
+                 xgantry_prefix=None, **kwargs):
         # Handle prefix mangling
         self._prefix_xy = prefix_xy or prefix
         self._xgantry = xgantry_prefix or 'GANTRY:' + prefix + ':X'
         super().__init__(prefix, **kwargs)
-        self.pitch.nominal_position = nominal_position
-
-    @property
-    def nominal_position(self):
-        """
-        The nominal angle that the OffsetMirror is considered aligned
-        """
-        return self.pitch.nominal_position
-
-    @nominal_position.setter
-    def nominal_position(self, pos):
-        if pos is not None:
-            pos = float(pos)
-        self.pitch.nominal_position = pos
 
     @property
     def inserted(self):
