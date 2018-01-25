@@ -24,6 +24,7 @@ class PulsePicker(InOutPVStatePositioner):
     cmd_burst = Cmp(EpicsSignal, ':RUN_BURSTMODE')
     cmd_follower = Cmp(EpicsSignal, ':RUN_FOLLOWERMODE')
 
+    states_list = ['OPEN', 'CLOSED']
     in_states = ['CLOSED']
     out_states = ['OPEN']
     _states_alias = {'CLOSED': ['CLOSED', 'IN']}
@@ -39,9 +40,9 @@ class PulsePicker(InOutPVStatePositioner):
         make calls like pulsepicker.move('OPEN')
         """
         if state.name == 'OPEN':
-            self.open()
+            self.open(wait=False)
         if state.name == 'CLOSED':
-            self.close()
+            self.close(wait=False)
 
     def _wait(self, sig, *goals):
         """
@@ -49,6 +50,7 @@ class PulsePicker(InOutPVStatePositioner):
         here because most commands are only valid when mode is IDLE.
         """
         def cb(value, *args, **kwargs):
+            logger.debug((value, goals))
             return value in goals
         status = SubscriptionStatus(sig, cb)
         status_wait(status)
@@ -73,7 +75,7 @@ class PulsePicker(InOutPVStatePositioner):
         self._log_request('OPEN')
         self.cmd_open.put(1)
         if wait:
-            self._wait(self.state, 'OPEN')
+            self._wait(self.blade, 0, 'OPEN')
 
     def close(self, wait=False):
         """
@@ -83,7 +85,7 @@ class PulsePicker(InOutPVStatePositioner):
         self._log_request('CLOSED')
         self.cmd_close.put(1)
         if wait:
-            self._wait(self.state, 'CLOSED')
+            self._wait(self.blade, 1, 2, 'CLOSED -', 'CLOSED +')
 
     def flipflop(self, wait=False):
         """
@@ -123,19 +125,22 @@ class PulsePickerInOut(PulsePicker):
     """
     inout = FCmp(InOutRecordPositioner, '{self._inout}')
 
+    states_list = ['OUT', 'OPEN', 'CLOSED']
     out_states = ['OUT', 'OPEN']
     _state_logic = {'inout.state': {1: 'OUT',
                                     2: 'defer',
-                                    3: 'defer'},
+                                    'OUT': 'OUT',
+                                    'IN': 'defer'},
                     'blade': {0: 'OPEN',
                               1: 'CLOSED',
                               2: 'CLOSED'}}
+    _state_logic_mode = 'FIRST'
 
-    def __init__(self, prefix, *, name, **kwargs):
+    def __init__(self, prefix, **kwargs):
         # inout follows naming convention
         parts = prefix.split(':')
         self._inout = ':'.join(parts[:1] + ['PP', 'Y'])
-        super().__init__(prefix, name=name, **kwargs)
+        super().__init__(prefix, **kwargs)
 
     def _do_move(self, state):
         """
@@ -148,20 +153,3 @@ class PulsePickerInOut(PulsePicker):
         else:
             self.inout.insert()
         super()._do_move(state)
-
-
-class CCMRecordPositioner(InOutRecordPositioner):
-    """
-    Version of InOut device that has distinct states for CCM and PINK
-    """
-    states_list = ['OUT', 'CCM', 'PINK']
-    in_states = ['PINK', 'CCM']
-    _states_alias = {'PINK': 'IN'}
-
-
-class PulsePickerCCM(PulsePickerInOut):
-    """
-    PulsePicker paired with a states record to control the Y position and
-    manage the differing elevations for running in CCM or PINK mode.
-    """
-    inout = FCmp(CCMRecordPositioner, '{self._inout}')

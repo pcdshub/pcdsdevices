@@ -275,6 +275,10 @@ class PVStateSignal(AggregateSignal):
                 else:
                     # Set state to first non-deferred value
                     state_value = signal_state
+                    if self.parent._state_logic_mode == 'ALL':
+                        continue
+                    elif self.parent._state_logic_mode == 'FIRST':
+                        break
         # If all states deferred, report as unknown
         return state_value or self.parent._unknown
 
@@ -304,15 +308,22 @@ class PVStatePositioner(StatePositioner):
                          }
         }
         The dictionary defines the relevant signal names and how to interpret
-        each of the states. These states will be evaluated in the dict's order.
-        If the order matters, you should pass in an OrderedDict.
+        each of the states. These states will be evaluated in the dict's order,
+        which may matter if _state_logic_mode == 'FIRST'.
 
         This is for cases where the logic is simple. If there are more complex
         requirements, replace the `state` component.
-    """
+
+    _state_logic_mode: string
+        This should be 'ALL' (default) if the pvs need to agree for a valid
+        state. You can set this to 'FIRST' to instead use the first state
+        found while traversing the state_logic tree. This means an earlier
+        state definition can mask a later state definition.
+        """
     state = Component(PVStateSignal)
 
     _state_logic = {}
+    _state_logic_mode = 'ALL'
 
     def __init__(self, prefix, *, name, **kwargs):
         if self._state_logic and not self.states_list:
