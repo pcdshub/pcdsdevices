@@ -180,7 +180,7 @@ class OffsetMirror(Device):
     # Transmission for Lightpath Interface
     transmission = 1.0
 
-    _default_read_attrs = ['pitch', 'xgantry.readback',
+    _default_read_attrs = ['pitch.readback', 'xgantry.readback',
                            'xgantry.gantry_difference']
 
     _default_configuration_attrs = ['ygantry.setpoint']
@@ -226,7 +226,7 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         List of beamlines thate are delivered beam when the mirror is out
     """
     # Define default read and configuration attributes
-    _default_read_attrs = ['pitch', 'xgantry.readback',
+    _default_read_attrs = ['pitch.readback', 'xgantry.readback',
                            'xgantry.gantry_difference']
     _default_configuration_attrs = ['ygantry.setpoint', 'state']
 
