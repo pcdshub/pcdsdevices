@@ -26,8 +26,7 @@ def fake_branching_mirror():
     m = PointingMirror("TST:M1H", prefix_xy="STEP:TST:M1H",
                        xgantry_prefix="GANTRY:M1H:X", name='Test Mirror',
                        mps_prefix="MIRR:M1H:MPS", in_lines=['MFX', 'MEC'],
-                       out_lines= ['CXI'])
-    m.state._read_pv.enum_strs = ['Unknown', 'IN', 'OUT']
+                       out_lines=['CXI'])
     connect_rw_pvs(m.state)
     m.state._write_pv.put('Unknown')
     m.wait_for_connection()
