@@ -25,7 +25,6 @@ OffsetMirror
 import logging
 
 import numpy as np
-from ophyd.signal import Signal
 from ophyd.utils.epics_pvs import raise_if_disconnected
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
                    PVPositioner, FormattedComponent as FC)
