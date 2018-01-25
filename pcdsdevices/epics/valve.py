@@ -8,7 +8,7 @@ from functools import partial
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
                    FormattedComponent as FC)
 
-from ..mps import MPS, mps_factory
+from .mps import MPS, mps_factory
 from ..state import PVStatePositioner
 
 logger = logging.getLogger(__name__)
