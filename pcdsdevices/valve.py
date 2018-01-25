@@ -106,14 +106,14 @@ class GateValve(Stopper):
         """
         return bool(self.interlock.get())
 
-    def open(self, **kwargs):
+    def remove(self, **kwargs):
         """
-        Open the valve
+        Remove the valve from the beam
         """
         if self.interlocked:
             raise InterlockError('Valve is currently forced closed')
 
-        return super().open(**kwargs)
+        return super().remove(**kwargs)
 
 
 class PPSStopper(InOutPositioner):
