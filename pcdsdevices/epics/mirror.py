@@ -258,6 +258,18 @@ class OffsetMirror(Device):
 
 class PointingMirror(InOutRecordPositioner, OffsetMirror):
     """
+    Retractable OffsetMirror
+
+    Both XRT M1H and XRT M2H can be completely removed from the beam depending
+    on the beam destination. In this case, the X gantry can be controlled via
+    the standard PCDS states record. This class has all the functionality of
+    :class:`.OffsetMirror` with the addition of the records that control the
+    overall state.
+
+    For the lightpath, these mirrors also have an MPS device, and you can also
+    supply which beamlines require which OffsetMirror state i.e the MFX
+    beamline must have XRT M2H inserted.
+
     Parameters
     ----------
     mps_prefix : str, optional
