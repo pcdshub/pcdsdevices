@@ -18,7 +18,7 @@ def fake_pps():
     test, so we can't make this a fixture without destabilizing our tests.
     """
     pps = PPSStopper("PPS:H0:SUM", name="test_pps")
-    pps.summary._read_pv.put("INCONSISTENT")
+    pps.state._read_pv.put("INCONSISTENT")
     pps.wait_for_connection()
     return pps
 
@@ -38,12 +38,12 @@ def fake_valve():
 def test_pps_states():
     pps = fake_pps()
     # Removed
-    pps.summary._read_pv.put("OUT")
+    pps.state._read_pv.put("OUT")
     attr_wait_true(pps, 'removed')
     assert pps.removed
     assert not pps.inserted
     # Inserted
-    pps.summary._read_pv.put("IN")
+    pps.state._read_pv.put("IN")
     attr_wait_true(pps, 'inserted')
     assert pps.inserted
     assert not pps.removed
@@ -56,7 +56,7 @@ def test_pps_subscriptions():
     cb = Mock()
     pps.subscribe(cb, event_type=pps.SUB_STATE, run=False)
     # Change readback state
-    pps.summary._read_pv.put(4)
+    pps.state._read_pv.put(4)
     attr_wait_true(cb, 'called')
     assert cb.called
 
@@ -85,19 +85,15 @@ def test_stopper_states():
 def test_stopper_motion():
     stopper = fake_stopper()
     # Check the status object
-    status = stopper.set('IN')
+    status = stopper.close(wait=False)
     stopper.open_limit._read_pv.put(0)
     stopper.closed_limit._read_pv.put(1)
     status_wait(status, timeout=1)
     assert status.done and status.success
     # Remove
-    stopper.remove(wait=False)
+    stopper.open(wait=False)
     # Check write PV
     assert stopper.command.value == stopper.commands.open_valve.value
-    # Close
-    stopper.close(wait=False)
-    # Check write PV
-    assert stopper.command.value == stopper.commands.close_valve.value
 
 
 @using_fake_epics_pv
@@ -117,7 +113,7 @@ def test_stopper_subscriptions():
 def test_valve_motion():
     valve = fake_valve()
     # Remove
-    valve.remove(wait=False)
+    valve.open(wait=False)
     # Check write PV
     assert valve.command.value == valve.commands.open_valve.value
     # Raises interlock
