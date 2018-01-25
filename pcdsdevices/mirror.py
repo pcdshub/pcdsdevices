@@ -182,7 +182,6 @@ class OffsetMirror(Device):
     ygantry = FC(Gantry, "{self._prefix_xy}:Y")
     # Transmission for Lightpath Interface
     transmission = 1.0
-    SUB_STATE = 'sub_state_changed'
 
     _default_read_attrs = ['pitch', 'xgantry.readback',
                            'xgantry.gantry_difference']
