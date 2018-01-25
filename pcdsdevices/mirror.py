@@ -3,8 +3,8 @@ Offset Mirror Classes
 
 This script contains all the classes relating to the offset mirrors used in the
 FEE and XRT. Each offset mirror contains a stepper motor and piezo motor to
-control the pitch, two pairs of motors to control the gantry and then a
-coupling motor control the coupling between the gantry motor pairs.
+control the pitch, two pairs of motors to control the horizontal and vertical
+gantries
 
 Classes implemented here are as follows:
 
@@ -16,11 +16,17 @@ OMMotor
 Pitch
     Class to handle the control of the pitch mechanism
 
+Gantry
+    Class to control the X and Y gantries
+
 OffsetMirror
     High level device that includes all the relevant components of the offset
-    mirror. This includes a pitch, piezo, primary gantry x, and primary gantry
-    y motors. This is the class that should be used to control the offset
-    mirrors.
+    mirror. This includes a pitch, and both gantries. This is the class that
+    should be used to control the offset mirrors.
+
+PointingMirror
+    Mix of an OffsetMirror and an InOutRecordPositioner for mirrors that are
+    inserted and retracted based on beam destination
 """
 import logging
 
@@ -188,11 +194,7 @@ class OffsetMirror(Device):
     When controlling the pitch motor, if the piezo is set to 'PID' mode, then
     the pitch mechanism is setup to first move the stepper as close to the
     desired position, then the piezo will kick in to constantly try and correct
-    any positional changes. When in this mode the piezo cannot be controlled
-    via EPICS, and must first be switched to 'manual' mode.
-
-    Note: Interfaces to the coupling motor and both secondary gantry motors are
-    not provided.
+    any positional changes.
 
     Parameters
     ----------
@@ -267,7 +269,7 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
     :class:`.OffsetMirror` with the addition of the records that control the
     overall state.
 
-    For the lightpath, these mirrors also have an MPS device, and you can also
+    For the lightpath, these mirrors have an MPS component, and you can also
     supply which beamlines require which OffsetMirror state i.e the MFX
     beamline must have XRT M2H inserted.
 
@@ -303,9 +305,7 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
     @property
     def destination(self):
         """
-        Current destination of the beamlines, return an empty list if the state
-        is unknown. If :attr:`.branches` only returns a single possible
-        beamline, that is returned. Otherwise, the `state` PV is used
+        Current list of destinations the mirror currently supports
         """
         # Inserted
         if self.inserted and not self.removed:
@@ -321,10 +321,6 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
     def branches(self):
         """
         Return all possible beamlines for mirror destinations
-
-        If the `in_lines` and `out_lines` are not set, it is assumed that this
-        steering mirror does not redirect beam to another beamline and the
-        beamline of the mirror is used
         """
         if self.in_lines and self.out_lines:
             return self.in_lines + self.out_lines
