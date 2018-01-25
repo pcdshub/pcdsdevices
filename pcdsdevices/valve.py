@@ -44,6 +44,9 @@ class Stopper(PVStatePositioner):
     name : str, optional
         Alias for the stopper
     """
+    # Default attributes
+    _default_read_attrs = ['open_limit', 'closed_limit']
+
     # Limit-based states
     open_limit = C(EpicsSignalRO, ':OPEN')
     closed_limit = C(EpicsSignalRO, ':CLOSE')
@@ -146,8 +149,6 @@ class GateValve(Stopper):
     command = C(EpicsSignal,   ':OPN_SW')
     interlock = C(EpicsSignalRO, ':OPN_OK')
 
-    _default_read_attrs = ['state', 'interlock']
-
     @property
     def interlocked(self):
         """
@@ -210,19 +211,14 @@ class PPSStopper(Device):
     SUB_STATE = 'sub_state_changed'
     _default_sub = SUB_STATE
 
-    def __init__(self, prefix, *, name=None,
-                 read_attrs=None, in_state='IN',
-                 out_state='OUT', **kwargs):
+    # Default attributes
+    _default_read_attrs = ['summary']
+
+    def __init__(self, prefix, *, in_state='IN', out_state='OUT', **kwargs):
         # Store state information
         self.in_state, self.out_state = in_state, out_state
         self._has_subscribed = False
-
-        if not read_attrs:
-            read_attrs = ['summary']
-
-        super().__init__(prefix,
-                         read_attrs=read_attrs,
-                         name=name, **kwargs)
+        super().__init__(prefix, **kwargs)
 
     @property
     def inserted(self):
