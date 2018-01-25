@@ -190,40 +190,38 @@ def must_be_known(in_limit, out_limit):
 
 class MPSLimits(Device):
     """
+    Logical combination of two MPS bits
+
+    For devices that are inserted and removed from the beam, the MPS system
+
     The MPSLimits class is to determine what action is to be taken based on the
     MPS values of a devicepertaining to a single device. If a device has two
     MPS values, there is certain logic that needs to be followed to determine
     whether or not the beam is allowed through.
 
-
     Parameters
     ----------
+    prefix :
+        Base of the MPS PVs
 
-    Device: defined in MPS class above
+    name : str
+        Name of the MPS combination
 
-    Attributes
-    ----------
+    logic: callable
+        Determine whether the MPS is faulted based on the state of each limit.
+        The function signature should look like:
 
-    mps_A: the first MPS value of a Device
+        .. code::
 
-    mps_B: the second MPS value of a Device
-
-    name: str
-
-    logic: function
-        calls one of the previously defined functions based on the Device in
-        question
+            def logic(in_limit: bool, out_limit: bool) -> bool
     """
-    mps_A = FC(MPS, '{self.MPSA}')
-    mps_B = FC(MPS, '{self.MPSB}')
+    # Individual limits
+    in_limit = C(MPS, '_IN')
+    out_limit = C(MPS, '_OUT')
 
-    def __init__(self, mps_A, mps_B, name=None, logic=None):
-
-        self.MPSA = mps_A
-        self.MPSB = mps_B
-        self.name = name
+    def __init__(self, prefix, logic, **kwargs):
         self.logic = logic
-        super().__init__('', name=name)
+        super().__init__(prefix, **kwargs)
 
     @property
     def faulted(self):
@@ -231,7 +229,4 @@ class MPSLimits(Device):
         This property determines whether the two MPS values are faulted and
         applies a logic function depending on the states of mps_A and mps_B.
         """
-        if not callable(self.logic):
-            raise TypeError("Invalid Logic")
-
-        return self.logic(self.mps_A, self.mps_B)
+        return self.logic(self.in_limit.faulted, self.out_limit.faulted)
