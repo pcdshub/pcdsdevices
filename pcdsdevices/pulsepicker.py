@@ -122,6 +122,14 @@ class PulsePickerInOut(PulsePicker):
     """
     PulsePicker paired with a states record to control the Y position. This
     allows us to insert and remove the entire device from the beam.
+
+    The inout states record lives in a separate IOC from the main pulsepicker
+    due to versioning issues. The parent IOC is called 'device_states'. We're
+    expecting the resulting states record to have states 'Unknown', 'OUT',
+    and 'IN', in that order. The naming convention for the states is to take
+    the first two segments of the pulsepicker prefix and add 'PP:Y' to the end.
+    So therefore, if the picker is 'TST:DG1:MMS:03', the inout states should be
+    'TST:DG1:PP:Y'.
     """
     inout = FCmp(InOutRecordPositioner, '{self._inout}')
 
