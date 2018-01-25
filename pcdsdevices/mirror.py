@@ -1,32 +1,10 @@
 """
 Offset Mirror Classes
 
-This script contains all the classes relating to the offset mirrors used in the
+This module contains all the classes relating to the offset mirrors used in the
 FEE and XRT. Each offset mirror contains a stepper motor and piezo motor to
-control the pitch, two pairs of motors to control the horizontal and vertical
-gantries
-
-Classes implemented here are as follows:
-
-OMMotor
-    Motor class that will represent all the individual motors on the offset
-    mirror system. The pitch stepper and all the gantry motors are interfaced
-    with using this class.
-
-Pitch
-    Class to handle the control of the pitch mechanism
-
-Gantry
-    Class to control the X and Y gantries
-
-OffsetMirror
-    High level device that includes all the relevant components of the offset
-    mirror. This includes a pitch, and both gantries. This is the class that
-    should be used to control the offset mirrors.
-
-PointingMirror
-    Mix of an OffsetMirror and an InOutRecordPositioner for mirrors that are
-    inserted and retracted based on beam destination
+control the pitch, and two pairs of motors to control the horizontal and vertical
+gantries.
 """
 import logging
 
@@ -50,11 +28,8 @@ class OMMotor(PVPositioner):
     prefix : str
         The EPICS base pv to use
 
-    name : str, optional
+    name : str
         The name of the motor
-
-    kwargs:
-        All keyword arguments are passed onto PVPositioner
     """
     # position
     readback = C(EpicsSignalRO, ':RBV', auto_monitor=True)
@@ -111,9 +86,8 @@ class Pitch(OMMotor):
     """
     HOMS Pitch Mechanism
 
-    Similar to OMMotor, but with a larger feature set as it is the most
-    requested axis of motion. The axis is actually a piezo actuator and a
-    stepper motor in series, and this is reflected in the PV naming
+    The axis is actually a piezo actuator and a stepper motor in series, and
+    this is reflected in the PV naming
     """
     piezo_volts = FC(EpicsSignalRO, "{self._piezo}:VRBV")
     stop_signal = FC(EpicsSignal, "{self._piezo}:STOP")
@@ -143,9 +117,6 @@ class Gantry(OMMotor):
     gantry_prefix : str, optional
         Prefix for the shared gantry diagnostics if it is different than the
         stepper motor prefix
-
-    kwargs:
-        All passed to OMMotor
     """
     # Readbacks for gantry information
     gantry_difference = FC(EpicsSignalRO, "{self.gantry_prefix}:GDIF")
@@ -207,19 +178,8 @@ class OffsetMirror(Device):
     xgantry_prefix : str
         The name of the horizontal gantry if not identical to the prefix
 
-    read_attrs : sequence of attribute names, optional
-        The signals to be read during data acquisition (i.e., in read() and
-        describe() calls)
-
-    configuration_attrs : sequence of attribute names, optional
-        The signals to be returned when asked for the motor configuration (i.e.
-        in read_configuration(), and describe_configuration() calls)
-
-    name : str, optional
+    name : str
         The name of the offset mirror
-
-    parent : instance or None, optional
-        The instance of the parent device, if applicable
     """
     # Pitch Motor
     pitch = FC(Pitch, "MIRR:{self.prefix}")
@@ -294,7 +254,6 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
     def __init__(self, *args, mps_prefix=None,
                  out_lines=None, in_lines=None,
                  **kwargs):
-        self._has_subscribed = False
         # Store MPS information
         self._mps_prefix = mps_prefix
         # Branching pattern
@@ -331,6 +290,7 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         """
         # Check the X gantry
         if self.xgantry.decoupled.get():
-            raise PermissionError("Can not move the gantry is uncoupled")
+            raise PermissionError("Can not move the horizontal gantry is
+                                   uncoupled")
         # Follow through with the super().set
         super().set(*args, **kwargs)
