@@ -294,9 +294,6 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         is unknown. If :attr:`.branches` only returns a single possible
         beamline, that is returned. Otherwise, the `state` PV is used
         """
-        # A single possible destination
-        if len(self.branches) == 1:
-            return self.branches
         # Inserted
         if self.inserted and not self.removed:
             return self.in_lines
@@ -318,8 +315,6 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         """
         if self.in_lines and self.out_lines:
             return self.in_lines + self.out_lines
-        else:
-            return [self.db.beamline]
 
     def set(self, *args, **kwargs):
         """
