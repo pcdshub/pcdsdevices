@@ -40,7 +40,8 @@ def test_mps_faults():
     #Faulted but bypassed
     mps.bypass._read_pv.put(1)
     assert mps.bypassed
-    assert not mps.faulted
+    assert mps.faulted
+    assert not mps.tripped
 
 @using_fake_epics_pv
 def test_mps_subscriptions():
