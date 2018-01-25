@@ -3,13 +3,12 @@ Offset Mirror Classes
 
 This module contains all the classes relating to the offset mirrors used in the
 FEE and XRT. Each offset mirror contains a stepper motor and piezo motor to
-control the pitch, and two pairs of motors to control the horizontal and vertical
-gantries.
+control the pitch, and two pairs of motors to control the horizontal and
+vertical gantries.
 """
 import logging
 
 import numpy as np
-from ophyd.utils.epics_pvs import raise_if_disconnected
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
                    PVPositioner, FormattedComponent as FC)
 
@@ -130,7 +129,6 @@ class Gantry(OMMotor):
         self.gantry_prefix = gantry_prefix or 'GANTRY:' + prefix
         self.follow_prefix = prefix + ':S'
         super().__init__(prefix + ':P', **kwargs)
-
 
     def check_value(self, pos):
         """
