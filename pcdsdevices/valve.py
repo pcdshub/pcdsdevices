@@ -142,8 +142,6 @@ class PPSStopper(InOutPositioner):
         String associatted with out enum value
     """
     state = C(EpicsSignalRO, '', string=True)
-    # Default attributes
-    _default_read_attrs = ['summary']
 
     def __init__(self, prefix, *, in_state='IN', out_state='OUT', **kwargs):
         # Store state information
