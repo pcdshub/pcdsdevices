@@ -68,17 +68,17 @@ class MPS(MPSBase, Device):
     """
     Class to interpret a single bit of MPS information
 
-    The intention of this class is to be used as a sub-component of a device.
     There are three major attributes of each MPS bit that are relevant to
     operations; :attr:`.faulted` , :attr:`.bypassed` and :attr:`.veto_capable`.
     The first is the most obvious, when the device is faulted it reports as
     such to the MPS system. However, how this is actually interpreted by the
     MPS is determined by whether the bit is bypassed, and if there is a
     ``veto`` device upstream such that the fault can be safely ignored. The
-    bypassed state is reported through EPICS as well but unfortunately whether
-    a device is considered capable of  "veto-ing" or is vetoed by another
-    device is not broadcast by EPICS so this is held within this device and the
-    ``lighpath`` module
+    summary of both the `bypass` and `fault` signals is contained within
+    :attr:`.tripped`.  The bypassed state is reported through EPICS as well but
+    unfortunately whether a device is considered capable of  "veto-ing" or is
+    vetoed by another device is not broadcast by EPICS so this is held within
+    this device and the ``lighpath`` module
 
     Parameters
     ----------
