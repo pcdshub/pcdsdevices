@@ -32,9 +32,9 @@ class Stopper(InOutPVStatePositioner):
     """
     Controls Stopper
 
-    Similar to the :class:`.GateValve`, the Stopper class provides basic
-    support for Controls stoppers i.e stoppers that can be commanded from
-    outside the PPS system
+    A base class for a device with two limits switches controlled via an
+    external command PV. This full encompasses the controls Stopper
+    installations as well as un-interlocked GateValves
 
     Parameters
     ----------
@@ -43,6 +43,11 @@ class Stopper(InOutPVStatePositioner):
 
     name : str, optional
         Alias for the stopper
+
+    Attributes
+    ----------
+    commands : Enum
+        An enum with integer values for open_valve, close_valve values
     """
     # Default attributes
     _default_read_attrs = ['open_limit', 'closed_limit']
@@ -83,10 +88,9 @@ class GateValve(Stopper):
     """
     Basic Vacuum Valve
 
-    Attributes
-    ----------
-    commands : Enum
-        Command aliases for valve
+    This inherits directly from :class:`.Stopper` but adds additional logic to
+    check the state of the interlock before requesting motion. This is not a
+    safety feature, just a notice to the operator.
     """
     # Limit based states
     open_limit = C(EpicsSignalRO, ':OPN_DI')
@@ -120,7 +124,10 @@ class PPSStopper(InOutPositioner):
 
     Control of this device only available to PPS systems. This class merely
     interprets the summary of limit switches to let the controls system know
-    the current position
+    the current position.
+
+    Because naming conventions for the states are non-uniform this class allows
+    you to enter the values at initialization.
 
     Parameters
     ----------
