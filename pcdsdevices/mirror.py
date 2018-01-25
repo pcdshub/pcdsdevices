@@ -133,27 +133,20 @@ class Gantry(OMMotor):
         self.follow_prefix = prefix + ':S'
         super().__init__(prefix + ':P', **kwargs)
 
-    def move(self, position, **kwargs):
-        """
-        Move the gantry to a specific position
 
-        Calls OMMotor.move but first checks that the gantry is coupled before
-        proceeding. This is not a safety measure, but instead just here largely
+    def check_value(self, pos):
+        """
+        Add additional check for the gantry coupling
+
+        This is not a safety measure, but instead just here largely
         for bookkeeping and to give the operator further feedback on why the
         requested move is not completed.
-
-        Parameters
-        ----------
-        position: float
-            Requested position
-
-        kwargs:
-            Passed to OMMotor.move
         """
         # Check that the gantry is not decoupled
         if self.decoupled.get():
             raise PermissionError("The gantry is not currently coupled")
-        return super().move(position, **kwargs)
+        # Allow OMMotor to check the value
+        super().check_value(pos)
 
 
 class OffsetMirror(Device):
@@ -283,13 +276,13 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         """
         return self.in_lines + self.out_lines
 
-    def set(self, *args, **kwargs):
+    def check_value(self, pos):
         """
         Check that our gantry is coupled before state moves
         """
         # Check the X gantry
         if self.xgantry.decoupled.get():
-            raise PermissionError("Can not move the horizontal gantry is
-                                   uncoupled")
-        # Follow through with the super().set
-        super().set(*args, **kwargs)
+            raise PermissionError("Can not move the horizontal gantry is "
+                                  "uncoupled")
+        # Allow StatePositioner to check the state
+        return super().check_value(pos)
