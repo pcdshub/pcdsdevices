@@ -54,6 +54,8 @@ class OMMotor(PVPositioner):
     readback = C(EpicsSignalRO, ':RBV', auto_monitor=True)
     setpoint = C(EpicsSignal, ':VAL', limits=True)
     done = C(EpicsSignalRO, ':DMOV', auto_monitor=True)
+    motor_egu = C(EpicsSignal, ':RBV.EGU')
+
     # status
     interlock = C(EpicsSignalRO, ':INTERLOCK')
     enabled = C(EpicsSignalRO, ':ENABLED')
