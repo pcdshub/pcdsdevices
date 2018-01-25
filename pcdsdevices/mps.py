@@ -142,63 +142,50 @@ def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
     return cls(*args, **kwargs)
 
 
-def must_be_open_logic(mps_A, mps_B):
+def must_be_out(in_limit, out_limit):
     """
-    This logic should analyze the two MPS classes of a device. This logic will
-    only allow beam through if the device is in the open-state.
+    Logical combination of limits enforcing an out state
 
     Parameters
     ----------
-    mps_A.fault.value: Int
-    mps_B.fault.value: Int
+    in_limit : bool
+        Whether the in limit is active
+
+    out_limit: bool
+        Whether the out limit is active
 
     Returns
     -------
-    bool
-        True if successful, False otherwise
-
-
+    is_out
+        Whether the logical combination of the limit switch ensures that the
+        device is removed
     """
-
-    if mps_A.fault.value == 1 and mps_B.fault.value == 1:
-        return False
-
-    if mps_A.fault.value == 0 and mps_B.fault.value == 0:
-        return False
-
-    if mps_A.fault.value == 1 and mps_B.fault.value == 0:
-        return False
-
-    if mps_A.fault.value == 0 and mps_B.fault.value == 1:
-        return True
+    return not in_limit and out_limit
 
 
-def must_know_position_logic(mps_A, mps_B):
+def must_be_known(in_limit, out_limit):
     """
-    This logic should analyze the two MPS classes of a device. This logic will
-    only allow beam through if both the positions of the MPS classes is known
+    Logical combinatino of limits enforcing a known state
+
+    The logic determines that we know that the device is fully inserted or
+    removed, alerting the MPS if the device is stuck in an unknown state or
+    broken
 
     Parameters
     ----------
-    mps_A.fault.value: Int
-    mps_B.fault.value: Int
+    in_limit : bool
+        Whether the in limit is active
+
+    out_limit: bool
+        Whether the out limit is active
 
     Returns
     -------
-    bool
-        True if successful, False otherwise
+    is_known
+        Whether the logical combination of the limit switch ensure that the
+        device position is known
     """
-    if mps_A.fault.value == 1 and mps_B.fault.value == 1:
-        return False
-
-    if mps_A.fault.value == 0 and mps_B.fault.value == 0:
-        return False
-
-    if mps_A.fault.value == 1 and mps_B.fault.value == 0:
-        return True
-
-    if mps_A.fault.value == 0 and mps_B.fault.value == 1:
-        return True
+    return in_limit != out_limit
 
 
 class MPSLimits(Device):
