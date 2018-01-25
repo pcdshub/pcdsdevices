@@ -248,7 +248,9 @@ class PVStateSignal(AggregateSignal):
         super().__init__(name=name, **kwargs)
         self._sub_map = {}
         for signal_name in self.parent._state_logic.keys():
-            sig = getattr(self.parent, signal_name)
+            sig = self.parent
+            for part in signal_name.split('.'):
+                sig = getattr(sig, part)
             self._sub_signals.append(sig)
             self._sub_map[signal_name] = sig
 
