@@ -18,10 +18,12 @@ from ophyd.pv_positioner import PVPositioner
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
                    FormattedComponent as FC)
 
+from .mv_interface import MvInterface, FltMvInterface
+
 logger = logging.getLogger(__name__)
 
 
-class SlitPositioner(PVPositioner, Device):
+class SlitPositioner(PVPositioner, Device, FltMvInterface):
     """
     Abstraction of Slit Axis
 
@@ -78,7 +80,7 @@ class SlitPositioner(PVPositioner, Device):
         self.setpoint.put(position, wait=False)
 
 
-class Slits(Device):
+class Slits(Device, MvInterface):
     """
     Beam slits with combined motion for center and width.
 

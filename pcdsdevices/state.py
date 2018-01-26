@@ -10,12 +10,13 @@ from ophyd.status import wait as status_wait, SubscriptionStatus
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 from ophyd.device import Device, Component, FormattedComponent
 
+from .mv_interface import MvInterface
 from .signal import AggregateSignal
 
 logger = logging.getLogger(__name__)
 
 
-class StatePositioner(Device, PositionerBase):
+class StatePositioner(Device, PositionerBase, MvInterface):
     """
     Base class for a Positioner that moves between discrete states rather than
     along a continuout axis.

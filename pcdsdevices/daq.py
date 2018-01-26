@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import os
 import functools
 import threading
@@ -9,22 +7,15 @@ import logging
 
 from ophyd.status import Status
 from ophyd.flyers import FlyerInterface
+from bluesky import RunEngine
+from bluesky.preprocessors import fly_during_wrapper
 
 logger = logging.getLogger(__name__)
 
 try:
     import pydaq
-except:
-    logger.warning('pydaq not in environment. Will not be able to use DAQ!')
-
-try:
-    from bluesky import RunEngine
-    from bluesky.preprocessors import fly_during_wrapper
-    has_bluesky = True
 except ImportError:
-    has_bluesky = False
-    logger.warning(('bluesky not in environment. Will not have '
-                    'make_daq_run_engine.'))
+    logger.warning('pydaq not in environment. Will not be able to use DAQ!')
 
 # Wait up to this many seconds for daq to be ready for a begin call
 BEGIN_TIMEOUT = 2
@@ -611,13 +602,12 @@ class DaqStatus(Status):
                 raise RuntimeError('Operation timed out!')
 
 
-if has_bluesky:
-    def make_daq_run_engine(daq):
-        """
-        Given a daq object, create a RunEngine that will open a run and start
-        the daq for each plan.
-        """
-        daq_wrapper = functools.partial(fly_during_wrapper, flyers=[daq])
-        RE = RunEngine(preprocessors=[daq_wrapper])
-        RE.msg_hook = daq._interpret_message
-        return RE
+def make_daq_run_engine(daq):
+    """
+    Given a daq object, create a RunEngine that will open a run and start
+    the daq for each plan.
+    """
+    daq_wrapper = functools.partial(fly_during_wrapper, flyers=[daq])
+    RE = RunEngine(preprocessors=[daq_wrapper])
+    RE.msg_hook = daq._interpret_message
+    return RE

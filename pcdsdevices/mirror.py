@@ -13,11 +13,12 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
                    PVPositioner, FormattedComponent as FC)
 
 from .inout import InOutRecordPositioner
+from .mv_interface import FltMvInterface
 
 logger = logging.getLogger(__name__)
 
 
-class OMMotor(PVPositioner):
+class OMMotor(PVPositioner, FltMvInterface):
     """
     Base class for each motor in the LCLS offset mirror system.
 

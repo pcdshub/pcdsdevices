@@ -3,11 +3,13 @@ import logging
 from ophyd.utils import LimitError
 from ophyd import EpicsMotor, Component, EpicsSignal, Signal
 
+from .mv_interface import FltMvInterface
+
 
 logger = logging.getLogger(__name__)
 
 
-class EpicsMotor(EpicsMotor):
+class EpicsMotor(EpicsMotor, FltMvInterface):
     """
     EpicsMotor for PCDS
 

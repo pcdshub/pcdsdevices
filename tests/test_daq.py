@@ -1,17 +1,11 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import time
 import logging
 import pytest
 
 from ophyd.sim import SynSignal
-try:
-    from bluesky.plan_stubs import (trigger_and_read,
-                                    create, read, save, null)
-    from bluesky.preprocessors import run_decorator
-    has_bluesky = True
-except ImportError:
-    has_bluesky = False
+from bluesky.plan_stubs import (trigger_and_read,
+                                create, read, save, null)
+from bluesky.preprocessors import run_decorator
 
 from pcdsdevices.daq import Daq, make_daq_run_engine
 from pcdsdevices.sim.daq import SimDaq
@@ -196,7 +190,6 @@ def test_pause_resume(daq):
     assert daq.state == 'Configured'
 
 
-@pytest.mark.skipif(not has_bluesky, reason='Requires Bluesky')
 @pytest.mark.timeout(10)
 def test_scan(daq, sig):
     """
@@ -222,7 +215,6 @@ def test_scan(daq, sig):
     daq.end_run()
 
 
-@pytest.mark.skipif(not has_bluesky, reason='Requires Bluesky')
 @pytest.mark.timeout(10)
 def test_run_flow(daq, sig):
     """
@@ -251,7 +243,6 @@ def test_run_flow(daq, sig):
     daq.end_run()
 
 
-@pytest.mark.skipif(not has_bluesky, reason='Requires Bluesky')
 @pytest.mark.timeout(10)
 def test_run_flow_wait(daq, sig):
     """
