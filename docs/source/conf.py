@@ -36,6 +36,7 @@ sys.path.insert(0,module_path)
 # ones.
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.todo',
+              'sphinx.ext.autosummary',
               'sphinx.ext.napoleon',
               'IPython.sphinxext.ipython_directive',
               'IPython.sphinxext.ipython_console_highlighting',
