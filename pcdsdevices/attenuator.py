@@ -6,6 +6,7 @@ from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from .inout import InOutPositioner
+from .mv_interface import FltMvInterface
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
@@ -21,7 +22,7 @@ class Filter(InOutPositioner):
     stuck = Cmp(EpicsSignal, ':STUCK')
 
 
-class AttBase(PVPositioner):
+class AttBase(PVPositioner, FltMvInterface):
     """
     Base class for the attenuators. Does not include filters, because the
     number of filters can vary.
