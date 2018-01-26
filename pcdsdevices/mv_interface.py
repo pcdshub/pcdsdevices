@@ -91,16 +91,11 @@ class FltMvInterface(MvInterface):
             will be use.
         """
         status = self.move(position, timeout=timeout, wait=False)
-        progress_bar = ProgressBar([status])
+        ProgressBar([status])
         try:
-            while not status.done:
-                progress_bar.update()
-                try:
-                    status_wait(status, timeout=0.2)
-                except (TimeoutError, RuntimeError):
-                    pass
+            status_wait(status)
         except KeyboardInterrupt:
-            pass
+            self.stop()
 
     def umvr(self, delta, timeout=None):
         """
