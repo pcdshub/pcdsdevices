@@ -85,6 +85,9 @@ class FltMvInterface(MvInterface):
 
         Parameters
         ----------
+        position: float
+            Desired end position
+
         timeout: number, optional
             If provided, the mover will throw an error if motion takes longer
             than timeout to complete. If omitted, the mover's default timeout
