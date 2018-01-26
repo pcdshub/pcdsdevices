@@ -41,6 +41,17 @@ class MvInterface:
         """
         return self.position
 
+    def __call__(self, position=None, timeout=None, wait=False):
+        """
+        Calling the object will either move the object or get the current
+        position, depending on if the position argument is given. See the
+        docstrings for mv and wm.
+        """
+        if position is None:
+            return self.wm()
+        else:
+            self.mv(position, timeout=timeout, wait=wait)
+
 
 class FltMvInterface(MvInterface):
     """
