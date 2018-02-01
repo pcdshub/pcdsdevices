@@ -55,8 +55,6 @@ def fake_move_transition(att, status, goal):
     Set to the PVs sort of like it would happen in the real world and check the
     status
     """
-    # Sanity check
-    assert not status.done
     # Set status to "MOVING"
     att.done._read_pv.put(1)
     attr_wait_true(att, '_moving')  # This transition is important
