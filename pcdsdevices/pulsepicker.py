@@ -63,9 +63,10 @@ class PulsePicker(InOutPVStatePositioner):
         Cancel the current mode.
         """
         self._log_request('RESET')
-        self.cmd_reset.put(1)
-        if wait:
-            self._wait(self.mode, 0, 'IDLE')
+        if self.mode not in (0, 'IDLE'):
+            self.cmd_reset.put(1)
+            if wait:
+                self._wait(self.mode, 0, 'IDLE')
 
     def open(self, wait=False):
         """
