@@ -82,12 +82,12 @@ def test_attenuator_motion():
     status = att.move(0.8, wait=False)
     fake_move_transition(att, status, 0.8001)
     assert att.setpoint.value == 0.8
-    assert att.actuate_value == 2
+    assert att.actuate_value == 3
     # Move to floor
     status = att.move(0.5, wait=False)
     fake_move_transition(att, status, 0.5001)
     assert att.setpoint.value == 0.5
-    assert att.actuate_value == 3
+    assert att.actuate_value == 2
     # Call remove method
     status = att.remove(wait=False)
     fake_move_transition(att, status, 1)
