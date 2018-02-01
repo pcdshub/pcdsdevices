@@ -57,7 +57,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'PCDS Devices'
-copyright = '2017, SLAC National Accelerator Laboratory'
+copyright = '2018, SLAC National Accelerator Laboratory'
 author = 'SLAC National Accelerator Laboratory'
 
 # The version info for the project you're documenting, acts as replacement for
