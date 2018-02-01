@@ -1,6 +1,7 @@
 import logging
 import time
 
+import numpy as np
 from ophyd.device import Component as Cmp
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import EpicsSignal, EpicsSignalRO
@@ -149,6 +150,18 @@ class AttBase(PVPositioner, FltMvInterface):
             else:
                 self._original_vals[filt.state] = filt.state.value
         return super().stage()
+
+    def _setup_move(self, position):
+        """
+        If we're at a destination, short-circuit the done.
+        """
+        super()._setup_move(position)
+        ceil = self.trans_ceil.get()
+        floor = self.trans_floor.get()
+        if any(np.isclose((position, position), (ceil, floor))):
+            moving_val = 1 - self.done_value
+            self._move_changed(value=moving_val)
+            self._move_changed(value=self.done_value)
 
 
 class AttBase3rd(AttBase):
