@@ -59,8 +59,8 @@ class AttBase(PVPositioner, FltMvInterface):
     @property
     def actuate_value(self):
         """
-        Sets the value we use in the GO command. This command will return 2 if
-        the setpoint is closer to the ceiling than the floor, or 3 otherwise.
+        Sets the value we use in the GO command. This command will return 3 if
+        the setpoint is closer to the ceiling than the floor, or 2 otherwise.
         In the unlikely event of a tie, we choose the floor.
 
         This will wait until a pending calculation completes before returning.
