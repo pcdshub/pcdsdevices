@@ -155,10 +155,11 @@ class AttBase(PVPositioner, FltMvInterface):
         """
         If we're at a destination, short-circuit the done.
         """
+        old_position = self.position
         super()._setup_move(position)
         ceil = self.trans_ceil.get()
         floor = self.trans_floor.get()
-        if any(np.isclose((position, position), (ceil, floor))):
+        if any(np.isclose((old_position, old_position), (ceil, floor))):
             moving_val = 1 - self.done_value
             self._move_changed(value=moving_val)
             self._move_changed(value=self.done_value)
