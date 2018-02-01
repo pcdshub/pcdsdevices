@@ -20,6 +20,7 @@
 import os
 import sys
 import sphinx_rtd_theme
+import datetime
 
 module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../')
 sys.path.insert(0,module_path)
@@ -57,7 +58,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'PCDS Devices'
-copyright = '2018, SLAC National Accelerator Laboratory'
+year = datetime.datetime.now().year
+copyright = '{}, SLAC National Accelerator Laboratory'.format(year)
 author = 'SLAC National Accelerator Laboratory'
 
 # The version info for the project you're documenting, acts as replacement for
