@@ -219,6 +219,10 @@ class Slits(Device, MvInterface):
         """
         return (self.xwidth.position, self.ywidth.position)
 
+    @property
+    def position(self):
+        return self.current_aperture
+
     def remove(self, size=None, wait=False, timeout=None, **kwargs):
         """
         Open the slits to unblock the beam
