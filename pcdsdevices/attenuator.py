@@ -75,7 +75,7 @@ class AttBase(PVPositioner, FltMvInterface):
         goal = self.setpoint.get()
         ceil = self.trans_ceil.get()
         floor = self.trans_floor.get()
-        if abs(goal - ceil) < abs(goal - floor):
+        if abs(goal - ceil) > abs(goal - floor):
             return 2
         else:
             return 3
