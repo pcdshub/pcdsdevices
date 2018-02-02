@@ -1,6 +1,7 @@
 import logging
 import time
 
+import numpy as np
 from ophyd.device import Component as Cmp
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import EpicsSignal, EpicsSignalRO
@@ -59,8 +60,8 @@ class AttBase(PVPositioner, FltMvInterface):
     @property
     def actuate_value(self):
         """
-        Sets the value we use in the GO command. This command will return 2 if
-        the setpoint is closer to the ceiling than the floor, or 3 otherwise.
+        Sets the value we use in the GO command. This command will return 3 if
+        the setpoint is closer to the ceiling than the floor, or 2 otherwise.
         In the unlikely event of a tie, we choose the floor.
 
         This will wait until a pending calculation completes before returning.
@@ -75,7 +76,7 @@ class AttBase(PVPositioner, FltMvInterface):
         goal = self.setpoint.get()
         ceil = self.trans_ceil.get()
         floor = self.trans_floor.get()
-        if abs(goal - ceil) < abs(goal - floor):
+        if abs(goal - ceil) > abs(goal - floor):
             return 2
         else:
             return 3
@@ -149,6 +150,19 @@ class AttBase(PVPositioner, FltMvInterface):
             else:
                 self._original_vals[filt.state] = filt.state.value
         return super().stage()
+
+    def _setup_move(self, position):
+        """
+        If we're at a destination, short-circuit the done.
+        """
+        old_position = self.position
+        super()._setup_move(position)
+        ceil = self.trans_ceil.get()
+        floor = self.trans_floor.get()
+        if any(np.isclose((old_position, old_position), (ceil, floor))):
+            moving_val = 1 - self.done_value
+            self._move_changed(value=moving_val)
+            self._move_changed(value=self.done_value)
 
 
 class AttBase3rd(AttBase):

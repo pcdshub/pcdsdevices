@@ -92,11 +92,21 @@ def test_picker_motion():
     assert picker.position == 'OUT'
 
 
+def put_soon(sig, val):
+    def inner():
+        time.sleep(0.2)
+        sig._read_pv.put(val)
+    t = threading.Thread(target=inner, args=())
+    t.start()
+
+
 @pytest.mark.timeout(5)
 @using_fake_epics_pv
 def test_picker_mode():
     logger.debug('test_picker_mode')
     picker = fake_picker()
+    picker.mode._read_pv.put(1)
+    put_soon(picker.mode, 0)
     picker.reset(wait=True)
     assert picker.cmd_reset.get() == 1
     picker.open(wait=False)
@@ -116,13 +126,6 @@ def test_picker_mode():
 def test_picker_mode_wait():
     logger.debug('test_picker_mode_waits')
     picker = fake_picker()
-
-    def put_soon(sig, val):
-        def inner():
-            time.sleep(0.2)
-            sig._read_pv.put(val)
-        t = threading.Thread(target=inner, args=())
-        t.start()
 
     put_soon(picker.blade, 0)
     picker.open(wait=True)

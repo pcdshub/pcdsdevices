@@ -55,8 +55,6 @@ def fake_move_transition(att, status, goal):
     Set to the PVs sort of like it would happen in the real world and check the
     status
     """
-    # Sanity check
-    assert not status.done
     # Set status to "MOVING"
     att.done._read_pv.put(1)
     attr_wait_true(att, '_moving')  # This transition is important
@@ -82,12 +80,12 @@ def test_attenuator_motion():
     status = att.move(0.8, wait=False)
     fake_move_transition(att, status, 0.8001)
     assert att.setpoint.value == 0.8
-    assert att.actuate_value == 2
+    assert att.actuate_value == 3
     # Move to floor
     status = att.move(0.5, wait=False)
     fake_move_transition(att, status, 0.5001)
     assert att.setpoint.value == 0.5
-    assert att.actuate_value == 3
+    assert att.actuate_value == 2
     # Call remove method
     status = att.remove(wait=False)
     fake_move_transition(att, status, 1)
