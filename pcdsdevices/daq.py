@@ -584,12 +584,38 @@ class Daq(FlyerInterface):
         self.disconnect()
 
 
+class DaqWrapper:
+    def __init__(self, daq):
+        self.daq = daq
+
+    def __call__(self, plan):
+        yield from functools.partial(fly_during_wrapper, flyers=[self.daq])
+
+
+def install_daq(RE, daq):
+    """
+    Attach a daq to a RunEngine
+    """
+    daq_wrapper = DaqWrapper(daq)
+    RE.preprocessors.append(daq_wrapper)
+    RE.msg_hook = daq._interpret_message
+
+
+def uninstall_daq(RE):
+    """
+    Remove a daq from a RunEngine
+    """
+    for pre in copy.copy(RE.preprocessors):
+        if isinstance(pre, DaqWrapper):
+            RE.preprocessors.remove(pre)
+    RE.msg_hook = None
+
+
 def make_daq_run_engine(daq):
     """
     Given a daq object, create a RunEngine that will open a run and start
     the daq for each plan.
     """
-    daq_wrapper = functools.partial(fly_during_wrapper, flyers=[daq])
-    RE = RunEngine(preprocessors=[daq_wrapper])
-    RE.msg_hook = daq._interpret_message
+    RE = RunEngine({})
+    install_daq(RE, daq)
     return RE
