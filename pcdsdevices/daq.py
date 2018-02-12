@@ -5,7 +5,7 @@ import copy
 import enum
 import logging
 
-from ophyd.status import Status
+from ophyd.status import Status, wait as status_wait
 from ophyd.flyers import FlyerInterface
 from bluesky import RunEngine
 from bluesky.preprocessors import fly_during_wrapper
@@ -103,7 +103,7 @@ class Daq(FlyerInterface):
                 logger.debug('Daq.control.connect()')
                 self.control.connect()
                 msg = 'Connected to DAQ'
-            except:
+            except Exception:
                 logger.debug('del Daq.control')
                 del self.control
                 self.control = None
@@ -138,7 +138,7 @@ class Daq(FlyerInterface):
         logger.debug('Daq.wait()')
         if self.state == 'Running':
             status = self._get_end_status()
-            status.wait(timeout=timeout)
+            status_wait(status, timeout=timeout)
 
     def begin(self, events=None, duration=None, use_l3t=None, controls=None,
               wait=False):
@@ -162,7 +162,7 @@ class Daq(FlyerInterface):
                      events, duration, wait)
         begin_status = self.kickoff(events=events, duration=duration,
                                     use_l3t=use_l3t, controls=controls)
-        begin_status.wait(timeout=BEGIN_TIMEOUT)
+        status_wait(begin_status, timeout=BEGIN_TIMEOUT)
         if wait:
             self.wait()
 
@@ -220,7 +220,7 @@ class Daq(FlyerInterface):
                 logger.debug('Marking kickoff as failed')
                 status._finished(success=False)
 
-        begin_status = DaqStatus(obj=self)
+        begin_status = Status(obj=self)
         watcher = threading.Thread(target=start_thread,
                                    args=(self.control, begin_status, events,
                                          duration, use_l3t, controls))
@@ -262,7 +262,7 @@ class Daq(FlyerInterface):
                 pass  # This means we aren't running, so no need to wait
             status._finished(success=True)
             logger.debug('Marked acquisition as complete')
-        end_status = DaqStatus(obj=self)
+        end_status = Status(obj=self)
         watcher = threading.Thread(target=finish_thread,
                                    args=(self.control, end_status))
         watcher.start()
@@ -358,7 +358,7 @@ class Daq(FlyerInterface):
                                controls=controls, always_on=always_on)
             msg = 'Daq configured'
             logger.info(msg)
-        except:
+        except Exception:
             self.config = None
             msg = 'Failed to configure!'
             logger.exception(msg)
@@ -582,24 +582,6 @@ class Daq(FlyerInterface):
         if self.state in ('Open', 'Running'):
             self.end_run()
         self.disconnect()
-
-
-class DaqStatus(Status):
-    """
-    Extend status to add a convenient wait function.
-    """
-    def wait(self, timeout=None):
-        self._wait_done = threading.Event()
-
-        def cb(*args, **kwargs):
-            self._wait_done.set()
-        self.add_callback(cb)
-        finished = self._wait_done.wait(timeout=timeout)
-        if not self.success:
-            if finished:
-                raise RuntimeError('Operation failed!')
-            else:
-                raise RuntimeError('Operation timed out!')
 
 
 def make_daq_run_engine(daq):
