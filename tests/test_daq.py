@@ -7,7 +7,7 @@ from bluesky.plan_stubs import (trigger_and_read,
                                 create, read, save, null)
 from bluesky.preprocessors import run_decorator
 
-from pcdsdevices.daq import Daq, make_daq_run_engine
+from pcdsdevices.daq import Daq, make_daq_run_engine, uninstall_daq
 from pcdsdevices.sim.daq import SimDaq
 
 logger = logging.getLogger(__name__)
@@ -271,3 +271,30 @@ def test_run_flow_wait(daq, sig):
     RE(plan(sig))
     assert daq.state == 'Configured'
     daq.end_run()
+
+
+@pytest.mark.timeout(10)
+def test_uninstall_daq(daq, sig):
+    """
+    We expect that we can call uninstall daq and then use the RE without
+    running the daq
+    """
+    logger.debug('test_uninstall_daq')
+    RE = make_daq_run_engine(daq)
+    RE.verbose = True
+
+    uninstall_daq(RE)
+
+    @run_decorator()
+    def plan(reader):
+        yield from null()
+        for i in range(10):
+            yield from create()
+            assert daq.state == 'Idle'
+            yield from read(reader)
+            yield from save()
+            assert daq.state == 'Idle'
+        yield from null()
+
+    RE(plan(sig))
+    assert daq.state == 'Idle'
