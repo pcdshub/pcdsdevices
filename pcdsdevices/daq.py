@@ -54,12 +54,13 @@ class Daq(FlyerInterface):
     state_enum = enum.Enum('pydaq state',
                            'Disconnected Connected Configured Open Running',
                            start=0)
+    mode_enum = enum.Enum('pydaq mode', 'on manual auto', start=0)
     default_config = dict(events=None,
                           duration=None,
                           use_l3t=False,
                           record=False,
                           controls=None,
-                          always_on=False)
+                          mode=mode_enum.on)
 
     def __init__(self, name=None, platform=0, parent=None):
         super().__init__()
@@ -289,7 +290,7 @@ class Daq(FlyerInterface):
 
     @check_connect
     def configure(self, events=None, duration=None, record=False,
-                  use_l3t=False, controls=None, always_on=False):
+                  use_l3t=False, controls=None, mode=None):
         """
         Changes the daq's configuration for the next run.
 
@@ -320,25 +321,22 @@ class Daq(FlyerInterface):
             for quantities to use and we will update these values each time
             begin is called.
 
-        always_on: bool, optional
+        mode: str or int, optional
             This determines our run control during a Bluesky scan with a
-            RunEngine attached to a Daq object.
-            If this is False, we will start taking events at create messages
-            and stop taking events at save messages. If we are configured for a
-            number of events or a duration, we'll make sure to run for exactly
-            that long between the create and save messages, waiting in the scan
-            if necessary.
-            If this is True, we won't provide any run control. The daq will
-            start recording at the beginning of the run and will stop recording
-            at the end of the run.
+            RunEngine attached to a Daq object. There are three modes, with the
+            `on` mode as the default:
+
+            `on`     (0): Start taking events at open_run, stop at close_run
+            `manual` (1): Only take events after a call to trigger
+            `auto`   (2): Start taking events at create, stop at save
 
         Returns
         -------
         old, new: tuple of dict
         """
         logger.debug(('Daq.configure(events=%s, duration=%s, record=%s, '
-                      'use_l3t=%s, controls=%s, always_on=%s)'),
-                     events, duration, record, use_l3t, controls, always_on)
+                      'use_l3t=%s, controls=%s, mode=%s)'),
+                     events, duration, record, use_l3t, controls, mode)
         state = self.state
         if state not in ('Connected', 'Configured'):
             raise RuntimeError('Cannot configure from state {}!'.format(state))
@@ -346,6 +344,17 @@ class Daq(FlyerInterface):
         self._check_duration(duration)
 
         old = self.read_configuration()
+
+        if mode is None:
+            mode = old['mode']
+        try:
+            mode = getattr(self.mode_enum, mode)
+        except AttributeError:
+            try:
+                mode = self.mode_enum(mode)
+            except ValueError:
+                raise ValueError('{} is not a valid scan mode!'.format(mode))
+
         config_args = self._config_args(record, use_l3t, controls)
         try:
             logger.debug('Daq.control.configure(%s)',
@@ -355,7 +364,7 @@ class Daq(FlyerInterface):
             # this is different than the arguments that pydaq.Control expects
             self.config = dict(events=events, duration=duration,
                                record=record, use_l3t=use_l3t,
-                               controls=controls, always_on=always_on)
+                               controls=controls, mode=mode)
             msg = 'Daq configured'
             logger.info(msg)
         except Exception:
@@ -517,8 +526,8 @@ class Daq(FlyerInterface):
 
     def unstage(self):
         """
-        Nothing to be done here, but we overwrite the default stage because it
-        is expecting sub devices.
+        Nothing to be done here, but we overwrite the default unstage because
+        it is expecting sub devices.
 
         Returns
         -------
@@ -527,6 +536,51 @@ class Daq(FlyerInterface):
         """
         logger.debug('Daq.unstage()')
         return [self]
+
+    def trigger(self):
+        """
+        Start the daq with the current configuration. This method is included
+        so we can do `yield from trigger_and_read(daq)` in manual mode.
+
+        This will raise an exception if the daq is configured to run forever,
+        since you don't want to do this inside a scan.
+        """
+        config = self.read_configuration()
+        # If events and duration are both 0 or None, we might run forever
+        if any((config['events'], config['duration'])):
+            self.begin()
+            return self._get_end_status()
+        else:
+            raise RuntimeError(('Bad python daq config! You must have nonzero'
+                                'events or duration configured to avoid'
+                                'running forever here.'))
+
+    def read(self):
+        """
+        Wait for the daq to stop running, then return an empty dict.
+
+        The intention is for this to eventually return information
+        about the run, in a later version of the module.
+        This method is included so we can do
+        `yield from trigger_and_read(daq)` in manual mode.
+
+        Returns
+        -------
+        read_info: dict
+        """
+        self.wait()
+        return {}
+
+    def describe(self):
+        """
+        Bluesky uses this method to label the output of read. This is currently
+        an empty dictionary.
+
+        Returns
+        -------
+        desc_info: dict
+        """
+        return {}
 
     def pause(self):
         """
