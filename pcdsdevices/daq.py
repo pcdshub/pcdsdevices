@@ -98,6 +98,14 @@ class Daq(FlyerInterface):
 
     @property
     def state(self):
+        """
+        State as reported by the daq. Can be any of the following:
+            Disconnected: No active session in python
+            Connected:    Active session in python
+            Configured:   Connected, and the daq has been configured
+            Open:         We are in the middle of a run
+            Running:      We are collecting data in a run
+        """
         if self.connected:
             logger.debug('calling Daq.control.state()')
             num = self._control.state()
@@ -171,6 +179,18 @@ class Daq(FlyerInterface):
         duration: int, optional
             Time to run the daq in seconds.
 
+        use_l3t: bool, optional
+            If True, we'll run with the level 3 trigger. This means that, if we
+            specified a number of events, we will wait for that many "good"
+            events as determined by the daq.
+
+        controls: dict{name: device} or list[device...], optional
+            If provided, values from these will make it into the DAQ data
+            stream as variables. We will check device.position and device.value
+            for quantities to use and we will update these values each time
+            begin is called. To provide a list, all devices must have a `name`
+            attribute.
+
         wait: bool, optional
             If switched to True, wait for the daq to finish aquiring data.
         """
@@ -207,7 +227,7 @@ class Daq(FlyerInterface):
 
         Returns
         -------
-        ready_status: DaqStatus
+        ready_status: Status
             Status that will be marked as 'done' when the daq has begun to
             record data.
         """
@@ -253,7 +273,7 @@ class Daq(FlyerInterface):
 
         Returns
         -------
-        end_status: DaqStatus
+        end_status: Status
         """
         logger.debug('Daq.complete()')
         end_status = self._get_end_status()
@@ -270,7 +290,7 @@ class Daq(FlyerInterface):
 
         Returns
         -------
-        end_status: DaqStatus
+        end_status: Status
         """
         logger.debug('Daq._get_end_status()')
 
@@ -424,6 +444,10 @@ class Daq(FlyerInterface):
         """
         Assemble the list of (str, val) pairs from a {str: device} dictionary
         or a device list
+
+        Returns
+        -------
+        ctrl_arg: list[(str, val), ...]
         """
         ctrl_arg = []
         if isinstance(controls, list):
