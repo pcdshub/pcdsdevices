@@ -8,20 +8,25 @@ from bluesky.plan_stubs import (trigger_and_read, sleep,
                                 create, read, save, null)
 from bluesky.preprocessors import run_decorator
 
+from pcdsdevices import daq as daq_module
 from pcdsdevices.daq import Daq, daq_wrapper, daq_decorator, calib_cycle
-from pcdsdevices.sim.daq import SimDaq
+from pcdsdevices.sim import daq as sim_pydaq
+from pcdsdevices.sim.daq import SimNoDaq
 
 logger = logging.getLogger(__name__)
 
-
-def test_instantiation():
-    realdaq = Daq() # NOQA
-    fakedaq = SimDaq() # NOQA
+# Let's hack the daq module to use the simdaq
+daq_module.pydaq = sim_pydaq
 
 
 @pytest.fixture(scope='function')
 def daq(RE):
-    return SimDaq(RE=RE)
+    return Daq(RE=RE)
+
+
+@pytest.fixture(scope='function')
+def nodaq(RE):
+    return SimNoDaq(RE=RE)
 
 
 @pytest.fixture(scope='function')
@@ -47,6 +52,7 @@ def test_connect(daq):
     assert not daq.connected
     daq.connect()
     assert daq.connected
+    daq.connect()  # Coverage
 
 
 def test_disconnect(daq):
@@ -295,3 +301,12 @@ def test_post_daq_RE(daq, RE, sig):
     RE(daq_wrapper(plan(sig, 'Running')))
     RE(plan(sig, 'Configured'))
     assert daq.state == 'Configured'
+
+
+def test_check_connect(nodaq):
+    """
+    If the daq can't connect for any reason, we should get an error on any
+    miscellaneous method that has the check_connect wrapper.
+    """
+    with pytest.raises(RuntimeError):
+        nodaq.wait()

@@ -9,16 +9,12 @@ from pcdsdevices.daq import Daq
 logger = logging.getLogger(__name__)
 
 
-class SimDaq(Daq):
+class SimNoDaq(Daq):
     def connect(self):
-        logger.debug('SimDaq.connect()')
-        self._control = SimControl()
-        self._control.connect()
-        msg = 'Connected to sim DAQ'
-        logger.info(msg)
+        logger.debug('SimNoDaq.connect()')
 
 
-class SimControl:
+class Control:
     _all_states = ['Disconnected', 'Connected', 'Configured', 'Open',
                    'Running']
     _state = _all_states[0]
