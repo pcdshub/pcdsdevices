@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 class SimDaq(Daq):
     def connect(self):
         logger.debug('SimDaq.connect()')
-        self.control = SimControl()
-        self.control.connect()
+        self._control = SimControl()
+        self._control.connect()
         msg = 'Connected to sim DAQ'
         logger.info(msg)
 
