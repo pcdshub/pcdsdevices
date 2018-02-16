@@ -607,7 +607,7 @@ class Daq(FlyerInterface):
         self.disconnect()
 
 
-_daq_instance
+_daq_instance = None
 
 
 def register_daq(daq):
