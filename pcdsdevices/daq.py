@@ -592,7 +592,7 @@ class Daq(FlyerInterface):
             self._is_bluesky = True
         elif msg.command == 'close_run':
             self._is_bluesky = False
-        if config['mode'] == self._mode_enum.on:
+        if config['mode'] == self._mode_enum.auto:
             if msg.command == 'create':
                 # If already runing, pause first to start a fresh begin
                 self.pause()
