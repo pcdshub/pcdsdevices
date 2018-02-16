@@ -4,7 +4,7 @@ import pytest
 
 from ophyd.sim import SynSignal
 from bluesky import RunEngine
-from bluesky.plan_stubs import (trigger_and_read,
+from bluesky.plan_stubs import (trigger_and_read, sleep,
                                 create, read, save, null)
 from bluesky.preprocessors import run_decorator
 
@@ -241,7 +241,7 @@ def test_scan_manual(daq, RE, sig):
     @daq_decorator()
     @run_decorator()
     def plan(reader):
-        yield from null()
+        yield from sleep(0.1)
         for i in range(10):
             assert daq.state == 'Open'
             yield from calib_cycle()
