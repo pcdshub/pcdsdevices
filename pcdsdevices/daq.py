@@ -66,11 +66,19 @@ class Daq(FlyerInterface):
                           record=False,
                           controls=None,
                           mode=_mode_enum.on)
+    name = 'daq'
 
-    def __init__(self, name=None, platform=0, parent=None, RE=None):
+    def __init__(self, platform=0, RE=None):
+        """
+        Parameters
+        ----------
+        platform: int, optional
+            Set platform to match the definition in the daq cnf file
+
+        RE: RunEngine, optional
+            Set RE to the session's main RE for RunEngine support
+        """
         super().__init__()
-        self.name = name or 'daq'
-        self.parent = parent
         self._control = None
         self._config = None
         self._host = os.uname()[1]
