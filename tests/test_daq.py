@@ -88,7 +88,6 @@ def test_configure(daq, sig):
     We expect configure to return both the old and new configurations.
     We expect read_configure to give us the current configuration, including
     default args.
-    We expect arguments omitted from configure to remain unchanged.
     """
     logger.debug('test_configure')
     assert not daq.connected
@@ -116,16 +115,6 @@ def test_configure(daq, sig):
         for key, value in config.items():
             assert daq.config[key] == value
         prev_config = daq.read_configuration()
-    daq.configure(events=100, duration=50, record=True, use_l3t=True,
-                  controls=[sig], mode='manual')
-    daq.configure()
-    # We should still have the config from the previous call!
-    assert daq.config['events'] == 100
-    assert daq.config['duration'] == 50
-    assert daq.config['record']
-    assert daq.config['use_l3t']
-    assert daq.config['controls'] == [sig]
-    assert daq.config['mode'] == daq._mode_enum.manual
 
 
 @pytest.mark.timeout(10)
@@ -288,7 +277,7 @@ def test_scan_auto(daq, RE, sig):
     """
     logger.debug('test_scan_auto')
 
-    @daq_decorator(mode='auto')
+    @daq_decorator()
     @run_decorator()
     def plan(reader):
         logger.debug(daq.config)
@@ -301,8 +290,9 @@ def test_scan_auto(daq, RE, sig):
             assert daq.state == 'Open'
         yield from null()
 
+    daq.configure(mode='auto')
     RE(plan(sig))
-    daq.configure(events=1)
+    daq.configure(mode='auto', events=1)
     RE(plan(sig))
     assert daq.state == 'Configured'
 
