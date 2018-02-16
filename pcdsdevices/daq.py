@@ -629,7 +629,7 @@ def daq_wrapper(plan):
     try:
         daq = _daq_instance
         daq._RE.msg_hook = daq._interpret_message
-        yield from functools.partial(fly_during_wrapper, flyers=[daq])
+        yield from fly_during_wrapper(plan, flyers=[daq])
         daq._RE.msg_hook = None
     except Exception:
         daq._RE.msg_hook = None
