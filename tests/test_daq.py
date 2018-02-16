@@ -3,11 +3,12 @@ import logging
 import pytest
 
 from ophyd.sim import SynSignal
+from bluesky import RunEngine
 from bluesky.plan_stubs import (trigger_and_read,
                                 create, read, save, null)
 from bluesky.preprocessors import run_decorator
 
-from pcdsdevices.daq import Daq, make_daq_run_engine, uninstall_daq
+from pcdsdevices.daq import Daq, daq_wrapper, daq_decorator, calib_cycle
 from pcdsdevices.sim.daq import SimDaq
 
 logger = logging.getLogger(__name__)
@@ -19,8 +20,13 @@ def test_instantiation():
 
 
 @pytest.fixture(scope='function')
-def daq():
-    return SimDaq()
+def daq(RE):
+    return SimDaq(RE=RE)
+
+
+@pytest.fixture(scope='function')
+def RE():
+    return RunEngine({})
 
 
 @pytest.fixture(scope='function')
@@ -190,17 +196,25 @@ def test_pause_resume(daq):
     assert daq.state == 'Configured'
 
 
+def test_daq_fixtures(daq, RE):
+    """
+    Verify that the test setup looks correct
+    """
+    logger.debug('test_daq_fixtures')
+    assert daq._RE == RE
+
+
 @pytest.mark.timeout(10)
-def test_scan(daq, sig):
+def test_scan_on(daq, RE, sig):
     """
-    We expect that the daq object is usable in a bluesky plan.
+    We expect that the daq object is usable in a bluesky plan in the 'on' mode.
     """
-    logger.debug('test_scan')
-    RE = make_daq_run_engine(daq)
+    logger.debug('test_scan_on')
     RE.verbose = True
 
-    daq.configure(always_on=True)
+    daq.configure(mode='on')
 
+    @daq_decorator()
     @run_decorator()
     def plan(reader):
         yield from null()
@@ -212,21 +226,44 @@ def test_scan(daq, sig):
 
     RE(plan(sig))
     assert daq.state == 'Configured'
-    daq.end_run()
 
 
 @pytest.mark.timeout(10)
-def test_run_flow(daq, sig):
+def test_scan_manual(daq, RE, sig):
     """
-    With always_on=False, we expect that the daq will only run between create
-    and save documents.
+    We expect that we can manually request calib cycles at specific times
     """
-    logger.debug('test_run_flow')
-    RE = make_daq_run_engine(daq)
+    logger.debug('test_scan_manual')
     RE.verbose = True
 
-    daq.configure(always_on=False)
+    daq.configure(mode='manual')
 
+    @daq_decorator()
+    @run_decorator()
+    def plan(reader):
+        yield from null()
+        for i in range(10):
+            assert daq.state == 'Open'
+            yield from calib_cycle()
+        assert daq.state == 'Open'
+        yield from null()
+
+    RE(plan(sig))
+    assert daq.state == 'Configured'
+
+
+@pytest.mark.timeout(10)
+def test_scan_auto(daq, RE, sig):
+    """
+    We expect that we can automatically get daq runs between create and save
+    messages
+    """
+    logger.debug('test_scan_auto')
+    RE.verbose = True
+
+    daq.configure(mode='auto')
+
+    @daq_decorator()
     @run_decorator()
     def plan(reader):
         yield from null()
@@ -240,61 +277,26 @@ def test_run_flow(daq, sig):
 
     RE(plan(sig))
     assert daq.state == 'Configured'
-    daq.end_run()
 
 
 @pytest.mark.timeout(10)
-def test_run_flow_wait(daq, sig):
+def test_post_daq_RE(daq, RE, sig):
     """
-    With always_on=False, we expect that the daq will only run between create
-    and save documents.
-    With events=5, we expect that the daq will go down the wait branch of the
-    interpret message tree
+    We expect that the RE will be clean after running with the daq
     """
-    logger.debug('test_run_flow_wait')
-    RE = make_daq_run_engine(daq)
+    logger.debug('test_post_daq_RE')
     RE.verbose = True
 
-    daq.configure(events=5, always_on=False)
-
     @run_decorator()
-    def plan(reader):
+    def plan(reader, expected):
         yield from null()
         for i in range(10):
             yield from create()
-            assert daq.state == 'Running'
+            assert daq.state == expected
             yield from read(reader)
             yield from save()
-            assert daq.state == 'Open'
         yield from null()
 
-    RE(plan(sig))
-    assert daq.state == 'Configured'
-    daq.end_run()
-
-
-@pytest.mark.timeout(10)
-def test_uninstall_daq(daq, sig):
-    """
-    We expect that we can call uninstall daq and then use the RE without
-    running the daq
-    """
-    logger.debug('test_uninstall_daq')
-    RE = make_daq_run_engine(daq)
-    RE.verbose = True
-
-    uninstall_daq(RE)
-
-    @run_decorator()
-    def plan(reader):
-        yield from null()
-        for i in range(10):
-            yield from create()
-            assert daq.state == 'Idle'
-            yield from read(reader)
-            yield from save()
-            assert daq.state == 'Idle'
-        yield from null()
-
-    RE(plan(sig))
+    RE(daq_wrapper(plan(sig, 'Running')))
+    RE(plan(sig, 'Idle'))
     assert daq.state == 'Idle'
