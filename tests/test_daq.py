@@ -126,7 +126,7 @@ def test_basic_run(daq, sig):
     """
     logger.debug('test_basic_run')
     assert daq.state == 'Disconnected'
-    daq.begin(duration=1, controls=dict(sig=sig))
+    daq.begin(duration=1, controls=[sig])
     assert daq.state == 'Running'
     time.sleep(1.3)
     assert daq.state == 'Open'

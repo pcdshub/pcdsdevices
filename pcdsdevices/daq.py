@@ -336,11 +336,12 @@ class Daq(FlyerInterface):
             If True, we'll record the data. Otherwise, we'll run without
             recording.
 
-        controls: dict{str: device}, optional
+        controls: dict{name: device} or list[device...], optional
             If provided, values from these will make it into the DAQ data
             stream as variables. We will check device.position and device.value
             for quantities to use and we will update these values each time
-            begin is called.
+            begin is called. To provide a list, all devices must have a `name`
+            attribute.
 
         mode: str or int, optional
             This determines our run control during a Bluesky scan with a
@@ -419,17 +420,24 @@ class Daq(FlyerInterface):
             config_args['controls'] = self._ctrl_arg(controls)
         return config_args
 
-    def _ctrl_arg(self, ctrl_dict):
+    def _ctrl_arg(self, controls):
         """
-        Assemble the list of (str, val) pairs from a {str: device} dictionary.
+        Assemble the list of (str, val) pairs from a {str: device} dictionary
+        or a device list
         """
         ctrl_arg = []
-        for key, device in ctrl_dict.items():
+        if isinstance(controls, list):
+            names = [dev.name for dev in controls]
+            devices = controls
+        elif isinstance(controls, dict):
+            names = controls.keys()
+            devices = controls.values()
+        for name, device in zip(names, devices):
             try:
                 val = device.position
             except AttributeError:
                 val = device.value
-            ctrl_arg.append((key, val))
+            ctrl_arg.append((name, val))
         return ctrl_arg
 
     def _begin_args(self, events, duration, use_l3t, controls):
