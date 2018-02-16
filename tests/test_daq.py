@@ -26,7 +26,9 @@ def daq(RE):
 
 @pytest.fixture(scope='function')
 def RE():
-    return RunEngine({})
+    RE = RunEngine({})
+    RE.verbose = True
+    return RE
 
 
 @pytest.fixture(scope='function')
@@ -210,8 +212,6 @@ def test_scan_on(daq, RE, sig):
     We expect that the daq object is usable in a bluesky plan in the 'on' mode.
     """
     logger.debug('test_scan_on')
-    RE.verbose = True
-
     daq.configure(mode='on')
 
     @daq_decorator()
@@ -234,9 +234,7 @@ def test_scan_manual(daq, RE, sig):
     We expect that we can manually request calib cycles at specific times
     """
     logger.debug('test_scan_manual')
-    RE.verbose = True
-
-    daq.configure(mode='manual')
+    daq.configure(mode='manual', events=1)
 
     @daq_decorator()
     @run_decorator()
@@ -259,8 +257,6 @@ def test_scan_auto(daq, RE, sig):
     messages
     """
     logger.debug('test_scan_auto')
-    RE.verbose = True
-
     daq.configure(mode='auto')
 
     @daq_decorator()
@@ -285,7 +281,6 @@ def test_post_daq_RE(daq, RE, sig):
     We expect that the RE will be clean after running with the daq
     """
     logger.debug('test_post_daq_RE')
-    RE.verbose = True
 
     @run_decorator()
     def plan(reader, expected):
@@ -298,5 +293,5 @@ def test_post_daq_RE(daq, RE, sig):
         yield from null()
 
     RE(daq_wrapper(plan(sig, 'Running')))
-    RE(plan(sig, 'Idle'))
-    assert daq.state == 'Idle'
+    RE(plan(sig, 'Configured'))
+    assert daq.state == 'Configured'
