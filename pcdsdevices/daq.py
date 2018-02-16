@@ -359,11 +359,11 @@ class Daq(FlyerInterface):
 
         use_l3t: bool, optional
             If True, an events argument to begin will be reinterpreted to only
-            count events that pass the level 3 trigger.
+            count events that pass the level 3 trigger. Defaults to False.
 
         record: bool, optional
             If True, we'll record the data. Otherwise, we'll run without
-            recording.
+            recording. Defaults to False.
 
         controls: dict{name: device} or list[device...], optional
             If provided, values from these will make it into the DAQ data
@@ -380,6 +380,9 @@ class Daq(FlyerInterface):
             `on`     (0): Start taking events at open_run, stop at close_run
             `manual` (1): Only take events after a call to trigger
             `auto`   (2): Start taking events at create, stop at save
+
+            If mode is omitted, we'll use the previous value for mode. The
+            default value is `on`.
 
         Returns
         -------
