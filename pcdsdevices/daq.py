@@ -368,13 +368,15 @@ class Daq(FlyerInterface):
 
         if mode is None:
             mode = old['mode']
-        try:
-            mode = getattr(self._mode_enum, mode)
-        except AttributeError:
+        if not isinstance(mode, self._mode_enum):
             try:
-                mode = self._mode_enum(mode)
-            except ValueError:
-                raise ValueError('{} is not a valid scan mode!'.format(mode))
+                mode = getattr(self._mode_enum, mode)
+            except AttributeError:
+                try:
+                    mode = self._mode_enum(mode)
+                except ValueError:
+                    err = '{} is not a valid scan mode!'
+                    raise ValueError(err.format(mode))
 
         config_args = self._config_args(record, use_l3t, controls)
         try:
