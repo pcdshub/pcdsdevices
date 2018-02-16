@@ -7,8 +7,9 @@ import logging
 
 from ophyd.status import Status, wait as status_wait
 from ophyd.flyers import FlyerInterface
-from bluesky import RunEngine
+from bluesky.plan_stubs import kickoff, complete
 from bluesky.preprocessors import fly_during_wrapper
+from bluesky.utils import make_decorator
 
 logger = logging.getLogger(__name__)
 
@@ -46,47 +47,53 @@ class Daq(FlyerInterface):
     a running daq instance, controlling it via socket commands. It can be used
     as a flyer in a bluesky plan to have the daq start at the beginning of the
     run and end at the end of the run. It has additional knobs for pausing
-    and resuming acquisition if desired.
+    and resuming acquisition. This can be done using three modes:
+
+    on:      Always take events during the run
+    manual:  Take events when `yield from calibcycle()` is used
+    auto:    Take events between `create` and `save` messages
 
     Unlike a normal bluesky flyer, this has no data to report to the RunEngine
     on the collect call. No data will pass into the python layer from the daq.
     """
-    state_enum = enum.Enum('pydaq state',
-                           'Disconnected Connected Configured Open Running',
-                           start=0)
-    mode_enum = enum.Enum('pydaq mode', 'on manual auto', start=0)
+    _state_enum = enum.Enum('PydaqState',
+                            'Disconnected Connected Configured Open Running',
+                            start=0)
+    _mode_enum = enum.Enum('ScanMode', 'on manual auto', start=0)
     default_config = dict(events=None,
                           duration=None,
                           use_l3t=False,
                           record=False,
                           controls=None,
-                          mode=mode_enum.on)
+                          mode=_mode_enum.on)
 
-    def __init__(self, name=None, platform=0, parent=None):
+    def __init__(self, name=None, platform=0, parent=None, RE=None):
         super().__init__()
         self.name = name or 'daq'
         self.parent = parent
-        self.control = None
-        self.config = None
+        self._control = None
+        self._config = None
         self._host = os.uname()[1]
         self._plat = platform
         self._is_bluesky = False
+        self._RE = RE
+        register_daq(self)
 
     # Convenience properties
     @property
     def connected(self):
-        return self.control is not None
+        return self._control is not None
 
     @property
     def configured(self):
-        return self.config is not None
+        return self._config is not None
 
     @property
     def state(self):
         if self.connected:
             logger.debug('calling Daq.control.state()')
-            num = self.control.state()
-            return self.state_enum(num).name
+            num = self._control.state()
+            return self._state_enum(num).name
         else:
             return 'Disconnected'
 
@@ -96,18 +103,18 @@ class Daq(FlyerInterface):
         Connect to the DAQ instance, giving full control to the Python process.
         """
         logger.debug('Daq.connect()')
-        if self.control is None:
+        if self._control is None:
             try:
                 logger.debug('instantiate Daq.control = pydaq.Control(%s, %s)',
                              self._host, self._plat)
-                self.control = pydaq.Control(self._host, platform=self._plat)
+                self._control = pydaq.Control(self._host, platform=self._plat)
                 logger.debug('Daq.control.connect()')
-                self.control.connect()
+                self._control.connect()
                 msg = 'Connected to DAQ'
             except Exception:
                 logger.debug('del Daq.control')
-                del self.control
-                self.control = None
+                del self._control
+                self._control = None
                 msg = ('Failed to connect to DAQ - check that it is up and '
                        'allocated.')
         else:
@@ -119,11 +126,11 @@ class Daq(FlyerInterface):
         Disconnect from the DAQ instance, giving control back to the GUI
         """
         logger.debug('Daq.disconnect()')
-        if self.control is not None:
-            self.control.disconnect()
-        del self.control
-        self.control = None
-        self.config = None
+        if self._control is not None:
+            self._control.disconnect()
+        del self._control
+        self._control = None
+        self._config = None
         logger.info('DAQ is disconnected.')
 
     @check_connect
@@ -173,7 +180,7 @@ class Daq(FlyerInterface):
         Stop the current acquisition, ending it early.
         """
         logger.debug('Daq.stop()')
-        self.control.stop()
+        self._control.stop()
 
     @check_connect
     def end_run(self):
@@ -182,7 +189,7 @@ class Daq(FlyerInterface):
         """
         logger.debug('Daq.end_run()')
         self.stop()
-        self.control.endrun()
+        self._control.endrun()
 
     # Flyer interface
     @check_connect
@@ -223,14 +230,15 @@ class Daq(FlyerInterface):
 
         begin_status = Status(obj=self)
         watcher = threading.Thread(target=start_thread,
-                                   args=(self.control, begin_status, events,
+                                   args=(self._control, begin_status, events,
                                          duration, use_l3t, controls))
         watcher.start()
         return begin_status
 
     def complete(self):
         """
-        End the current run.
+        If the daq is freely running, this will stop the daq.
+        Otherwise, we'll let the daq finish up the fixed-length acquisition.
 
         Return a status object that will be marked as 'done' when the DAQ has
         finished acquiring.
@@ -241,7 +249,10 @@ class Daq(FlyerInterface):
         """
         logger.debug('Daq.complete()')
         end_status = self._get_end_status()
-        self.end_run()
+        config = self.read_configuration()
+        if not any(config['events'], config['duration']):
+            # Configured to run forever
+            self.stop()
         return end_status
 
     def _get_end_status(self):
@@ -265,12 +276,14 @@ class Daq(FlyerInterface):
             logger.debug('Marked acquisition as complete')
         end_status = Status(obj=self)
         watcher = threading.Thread(target=finish_thread,
-                                   args=(self.control, end_status))
+                                   args=(self._control, end_status))
         watcher.start()
         return end_status
 
     def collect(self):
         """
+        End the run.
+
         As per the bluesky interface, this is a generator that is expected to
         output partial event documents. However, since we don't have any events
         to report to python, this will be a generator that immediately ends.
@@ -348,10 +361,10 @@ class Daq(FlyerInterface):
         if mode is None:
             mode = old['mode']
         try:
-            mode = getattr(self.mode_enum, mode)
+            mode = getattr(self._mode_enum, mode)
         except AttributeError:
             try:
-                mode = self.mode_enum(mode)
+                mode = self._mode_enum(mode)
             except ValueError:
                 raise ValueError('{} is not a valid scan mode!'.format(mode))
 
@@ -359,16 +372,16 @@ class Daq(FlyerInterface):
         try:
             logger.debug('Daq.control.configure(%s)',
                          config_args)
-            self.control.configure(**config_args)
-            # self.config should reflect exactly the arguments to configure,
+            self._control.configure(**config_args)
+            # self._config should reflect exactly the arguments to configure,
             # this is different than the arguments that pydaq.Control expects
-            self.config = dict(events=events, duration=duration,
-                               record=record, use_l3t=use_l3t,
-                               controls=controls, mode=mode)
+            self._config = dict(events=events, duration=duration,
+                                record=record, use_l3t=use_l3t,
+                                controls=controls, mode=mode)
             msg = 'Daq configured'
             logger.info(msg)
         except Exception:
-            self.config = None
+            self._config = None
             msg = 'Failed to configure!'
             logger.exception(msg)
         new = self.read_configuration()
@@ -428,7 +441,7 @@ class Daq(FlyerInterface):
                      events, duration, use_l3t, controls)
         begin_args = {}
         config = self.read_configuration()
-        if all((self._is_bluesky, not config['always_on'],
+        if all((self._is_bluesky, not config['mode'] == self._mode_enum.on,
                 not self.state == 'Open')):
             # Open a run without taking events
             events = 1
@@ -473,10 +486,10 @@ class Daq(FlyerInterface):
             Mapping of config key to current configured value.
         """
         logger.debug('Daq.read_configuration()')
-        if self.config is None:
+        if self._config is None:
             config = self.default_config
         else:
-            config = self.config
+            config = self._config
         return copy.copy(config)
 
     def describe_configuration(self):
@@ -537,51 +550,6 @@ class Daq(FlyerInterface):
         logger.debug('Daq.unstage()')
         return [self]
 
-    def trigger(self):
-        """
-        Start the daq with the current configuration. This method is included
-        so we can do `yield from trigger_and_read(daq)` in manual mode.
-
-        This will raise an exception if the daq is configured to run forever,
-        since you don't want to do this inside a scan.
-        """
-        config = self.read_configuration()
-        # If events and duration are both 0 or None, we might run forever
-        if any((config['events'], config['duration'])):
-            self.begin()
-            return self._get_end_status()
-        else:
-            raise RuntimeError(('Bad python daq config! You must have nonzero'
-                                'events or duration configured to avoid'
-                                'running forever here.'))
-
-    def read(self):
-        """
-        Wait for the daq to stop running, then return an empty dict.
-
-        The intention is for this to eventually return information
-        about the run, in a later version of the module.
-        This method is included so we can do
-        `yield from trigger_and_read(daq)` in manual mode.
-
-        Returns
-        -------
-        read_info: dict
-        """
-        self.wait()
-        return {}
-
-    def describe(self):
-        """
-        Bluesky uses this method to label the output of read. This is currently
-        an empty dictionary.
-
-        Returns
-        -------
-        desc_info: dict
-        """
-        return {}
-
     def pause(self):
         """
         Stop acquiring data, but don't end the run.
@@ -614,20 +582,13 @@ class Daq(FlyerInterface):
             self._is_bluesky = True
         elif msg.command == 'close_run':
             self._is_bluesky = False
-        if not config['always_on']:
+        if config['mode'] == self._mode_enum.on:
             if msg.command == 'create':
                 # If already runing, pause first to start a fresh begin
                 self.pause()
                 self.resume()
             elif msg.command == 'save':
-                do_wait = False
-                events = config['events']
-                duration = config['duration']
-                for tm in (events, duration):
-                    if tm is not None and tm > 0:
-                        do_wait = True
-                        break
-                if do_wait:
+                if any(config['events'], config['duration']):
                     self.wait()
                 else:
                     self.pause()
@@ -638,38 +599,52 @@ class Daq(FlyerInterface):
         self.disconnect()
 
 
-class DaqWrapper:
-    def __init__(self, daq):
-        self.daq = daq
-
-    def __call__(self, plan):
-        yield from functools.partial(fly_during_wrapper, flyers=[self.daq])
+_daq_instance
 
 
-def install_daq(RE, daq):
+def register_daq(daq):
     """
-    Attach a daq to a RunEngine
+    Called by Daq at the end of __init__ to save our one daq instance as the
+    True Daq. There will always only be one Daq.
     """
-    daq_wrapper = DaqWrapper(daq)
-    RE.preprocessors.append(daq_wrapper)
-    RE.msg_hook = daq._interpret_message
+    global _daq_instance
+    _daq_instance = daq
 
 
-def uninstall_daq(RE):
+def daq_wrapper(plan):
     """
-    Remove a daq from a RunEngine
+    Run the plan with the daq. This must be applied outside the run_wrapper.
+    All configuration must be done before entering the daq_wrapper.
     """
-    for pre in copy.copy(RE.preprocessors):
-        if isinstance(pre, DaqWrapper):
-            RE.preprocessors.remove(pre)
-    RE.msg_hook = None
+    try:
+        daq = _daq_instance
+        daq._RE.msg_hook = daq._interpret_message
+        yield from functools.partial(fly_during_wrapper, flyers=[daq])
+        daq._RE.msg_hook = None
+    except Exception:
+        daq._RE.msg_hook = None
+        raise
 
 
-def make_daq_run_engine(daq):
+daq_decorator = make_decorator(daq_wrapper)
+
+
+def calib_cycle():
     """
-    Given a daq object, create a RunEngine that will open a run and start
-    the daq for each plan.
+    Plan to put the daq through a single calib cycle. This will start the daq
+    with the configured parameters and wait until completion. This will raise
+    an exception if the daq is configured to run forever or if we aren't using
+    the daq_wrapper.
     """
-    RE = RunEngine({})
-    install_daq(RE, daq)
-    return RE
+    daq = _daq_instance
+    if not daq._is_bluesky:
+        raise RuntimeError('Daq is not attached to the RunEngine! We need to '
+                           'use a daq_wrapper on our plan to run with the '
+                           'daq!')
+    config = daq.read_configuration()
+    if not any(config['events'], config['duration']):
+        raise RuntimeError('Daq is configured to run forever, cannot calib '
+                           'cycle. Please call daq.configure with a nonzero '
+                           'events or duration argument.')
+    yield from kickoff(daq, wait=True)
+    yield from complete(daq, wait=True)
