@@ -53,13 +53,15 @@ class SimControl:
                      transition, self._state)
         info = self._transitions[transition]
         if self._state in info['ignore']:
-            return False
+            ok = False
         elif self._state in info['begin']:
             self._state = info['end']
-            return True
+            ok = True
         else:
             err = 'Invalid SimControl transition {} from state {}'
             raise RuntimeError(err.format(transition, self._state))
+        logger.debug('Ended in state %s, success: %s', self._state, ok)
+        return ok
 
     def state(self):
         logger.debug('SimControl.state()')
@@ -160,7 +162,7 @@ class SimControl:
         if not interrupted:
             try:
                 self.stop()
-            except:
+            except Exception:
                 pass
         end = time.time()
         logger.debug('%ss elapased in SimControl._begin_thread(%s)',
