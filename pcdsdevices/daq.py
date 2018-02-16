@@ -1,4 +1,5 @@
 import os
+import time
 import functools
 import threading
 import copy
@@ -7,7 +8,7 @@ import logging
 
 from ophyd.status import Status, wait as status_wait
 from ophyd.flyers import FlyerInterface
-from bluesky.plan_stubs import kickoff, complete
+from bluesky.plan_stubs import configure, kickoff, complete
 from bluesky.preprocessors import fly_during_wrapper
 from bluesky.utils import make_decorator
 
@@ -85,6 +86,8 @@ class Daq(FlyerInterface):
         self._plat = platform
         self._is_bluesky = False
         self._RE = RE
+        self._config_ts = {}
+        self._update_config_ts()
         register_daq(self)
 
     # Convenience properties
@@ -95,6 +98,13 @@ class Daq(FlyerInterface):
     @property
     def configured(self):
         return self._config is not None
+
+    @property
+    def config(self):
+        if self.configured:
+            return self._config
+        else:
+            return self.default_config
 
     @property
     def state(self):
@@ -277,8 +287,7 @@ class Daq(FlyerInterface):
         """
         logger.debug('Daq.complete()')
         end_status = self._get_end_status()
-        config = self.read_configuration()
-        if not any((config['events'], config['duration'])):
+        if not any((self.config['events'], self.config['duration'])):
             # Configured to run forever
             self.stop()
         return end_status
@@ -326,7 +335,7 @@ class Daq(FlyerInterface):
         As per the bluesky interface, this is how you interpret the null data
         from collect. There isn't anything here, as nothing will be collected.
         """
-        logger.debug('Daq.describe_configuration()')
+        logger.debug('Daq.describe_collect()')
         return {}
 
     @check_connect
@@ -388,7 +397,7 @@ class Daq(FlyerInterface):
         old = self.read_configuration()
 
         if mode is None:
-            mode = old['mode']
+            mode = self.config['mode']
         if not isinstance(mode, self._mode_enum):
             try:
                 mode = getattr(self._mode_enum, mode)
@@ -409,6 +418,7 @@ class Daq(FlyerInterface):
             self._config = dict(events=events, duration=duration,
                                 record=record, use_l3t=use_l3t,
                                 controls=controls, mode=mode)
+            self._update_config_ts()
             msg = 'Daq configured'
             logger.info(msg)
         except Exception as exc:
@@ -418,6 +428,17 @@ class Daq(FlyerInterface):
             raise RuntimeError(msg) from exc
         new = self.read_configuration()
         return old, new
+
+    def _update_config_ts(self):
+        """
+        Create timestamps and update the bluesky readback for
+        read_configuration
+        """
+        for k, v in self.config.items():
+            old_value = self._config_ts.get(k, {}).get('value')
+            if old_value is None or v != old_value:
+                self._config_ts[k] = dict(value=v,
+                                          timestamp=time.time())
 
     def _config_args(self, record, use_l3t, controls):
         """
@@ -476,19 +497,19 @@ class Daq(FlyerInterface):
         logger.debug('Daq._begin_args(%s, %s, %s, %s)',
                      events, duration, use_l3t, controls)
         begin_args = {}
-        config = self.read_configuration()
-        if all((self._is_bluesky, not config['mode'] == self._mode_enum.on,
+        if all((self._is_bluesky,
+                not self.config['mode'] == self._mode_enum.on,
                 not self.state == 'Open')):
             # Open a run without taking events
             events = 1
             duration = None
             use_l3t = False
         if events is None and duration is None:
-            events = config['events']
-            duration = config['duration']
+            events = self.config['events']
+            duration = self.config['duration']
         if events is not None:
             if use_l3t is None and self.configured:
-                use_l3t = config['use_l3t']
+                use_l3t = self.config['use_l3t']
             if use_l3t:
                 begin_args['l3t_events'] = events
             else:
@@ -500,7 +521,7 @@ class Daq(FlyerInterface):
         else:
             begin_args['events'] = 0  # Run until manual stop
         if controls is None:
-            ctrl_dict = config['controls']
+            ctrl_dict = self.config['controls']
             if ctrl_dict is not None:
                 begin_args['controls'] = self._ctrl_arg(ctrl_dict)
         else:
@@ -522,11 +543,7 @@ class Daq(FlyerInterface):
             Mapping of config key to current configured value.
         """
         logger.debug('Daq.read_configuration()')
-        if self._config is None:
-            config = self.default_config
-        else:
-            config = self._config
-        return copy.copy(config)
+        return copy.copy(self._config_ts)
 
     def describe_configuration(self):
         """
@@ -537,8 +554,7 @@ class Daq(FlyerInterface):
         """
         logger.debug('Daq.describe_configuration()')
         try:
-            config = self.read_configuration()
-            controls_shape = [len(config['controls']), 2]
+            controls_shape = [len(self.config['controls']), 2]
         except (TypeError, RuntimeError, AttributeError):
             controls_shape = None
         return dict(events=dict(source='daq_events_in_run',
@@ -556,7 +572,7 @@ class Daq(FlyerInterface):
                     controls=dict(source='daq_control_vars',
                                   dtype='array',
                                   shape=controls_shape),
-                    always_on=dict(source='daq_always_on',
+                    always_on=dict(source='daq_mode',
                                    dtype='number',
                                    shape=None))
 
@@ -613,18 +629,17 @@ class Daq(FlyerInterface):
         cmds = ('open_run', 'close_run', 'create', 'save')
         if msg.command not in cmds:
             return
-        config = self.read_configuration()
         if msg.command == 'open_run':
             self._is_bluesky = True
         elif msg.command == 'close_run':
             self._is_bluesky = False
-        if config['mode'] == self._mode_enum.auto:
+        if self.config['mode'] == self._mode_enum.auto:
             if msg.command == 'create':
                 # If already runing, pause first to start a fresh begin
                 self.pause()
                 self.resume()
             elif msg.command == 'save':
-                if any((config['events'], config['duration'])):
+                if any((self.config['events'], self.config['duration'])):
                     self.wait()
                 else:
                     self.pause()
@@ -647,13 +662,25 @@ def register_daq(daq):
     _daq_instance = daq
 
 
-def daq_wrapper(plan):
+def daq_wrapper(plan, **config):
     """
     Run the plan with the daq. This must be applied outside the run_wrapper.
-    All configuration must be done before entering the daq_wrapper.
+    All configuration must be done either by supplying config kwargs to this
+    wrapper or by calling daq.configure before entering the daq_wrapper.
+
+    Parameters
+    ----------
+    plan: plan
+        The plan to use the daq in
+
+    config: kwargs
+        See `daq.configure`. These keyword arguments will be passed directly to
+        the daq.
     """
     try:
         daq = _daq_instance
+        if config:
+            yield from configure(daq, **config)
         daq._RE.msg_hook = daq._interpret_message
         yield from fly_during_wrapper(plan, flyers=[daq])
         daq._RE.msg_hook = None
@@ -677,8 +704,7 @@ def calib_cycle():
         raise RuntimeError('Daq is not attached to the RunEngine! We need to '
                            'use a daq_wrapper on our plan to run with the '
                            'daq!')
-    config = daq.read_configuration()
-    if not any((config['events'], config['duration'])):
+    if not any((daq.config['events'], daq.config['duration'])):
         raise RuntimeError('Daq is configured to run forever, cannot calib '
                            'cycle. Please call daq.configure with a nonzero '
                            'events or duration argument.')

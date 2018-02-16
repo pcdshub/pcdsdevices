@@ -78,7 +78,7 @@ class Dummy:
     position = 4
 
 
-def test_configure(daq):
+def test_configure(daq, sig):
     """
     We expect the configured attribute to be correct.
     We expect a disconnected daq to connect and then configure.
@@ -88,12 +88,13 @@ def test_configure(daq):
     We expect configure to return both the old and new configurations.
     We expect read_configure to give us the current configuration, including
     default args.
+    We expect arguments omitted from configure to remain unchanged.
     """
     logger.debug('test_configure')
     assert not daq.connected
     assert not daq.configured
     daq.configure()
-    assert daq.read_configuration() == daq.default_config
+    assert daq.config == daq.default_config
     assert daq.connected
     assert daq.configured
     daq.disconnect()
@@ -113,8 +114,18 @@ def test_configure(daq):
         assert old == prev_config
         assert daq.read_configuration() == new
         for key, value in config.items():
-            assert new[key] == value
+            assert daq.config[key] == value
         prev_config = daq.read_configuration()
+    daq.configure(events=100, duration=50, record=True, use_l3t=True,
+                  controls=[sig], mode='manual')
+    daq.configure()
+    # We should still have the config from the previous call!
+    assert daq.config['events'] == 100
+    assert daq.config['duration'] == 50
+    assert daq.config['record']
+    assert daq.config['use_l3t']
+    assert daq.config['controls'] == [sig]
+    assert daq.config['mode'] == daq._mode_enum.manual
 
 
 @pytest.mark.timeout(10)
@@ -234,7 +245,7 @@ def test_scan_on(daq, RE, sig):
     """
     logger.debug('test_scan_on')
 
-    @daq_decorator()
+    @daq_decorator(mode='on')
     @run_decorator()
     def plan(reader):
         yield from null()
@@ -244,7 +255,6 @@ def test_scan_on(daq, RE, sig):
         assert daq.state == 'Running'
         yield from null()
 
-    daq.configure(mode='on')
     RE(plan(sig))
     assert daq.state == 'Configured'
 
@@ -256,7 +266,7 @@ def test_scan_manual(daq, RE, sig):
     """
     logger.debug('test_scan_manual')
 
-    @daq_decorator()
+    @daq_decorator(mode=1, events=1)
     @run_decorator()
     def plan(reader):
         yield from sleep(0.1)
@@ -266,7 +276,6 @@ def test_scan_manual(daq, RE, sig):
         assert daq.state == 'Open'
         yield from null()
 
-    daq.configure(mode=1, events=1)
     RE(plan(sig))
     assert daq.state == 'Configured'
 
@@ -279,9 +288,10 @@ def test_scan_auto(daq, RE, sig):
     """
     logger.debug('test_scan_auto')
 
-    @daq_decorator()
+    @daq_decorator(mode='auto')
     @run_decorator()
     def plan(reader):
+        logger.debug(daq.config)
         yield from null()
         for i in range(10):
             yield from create()
@@ -291,7 +301,6 @@ def test_scan_auto(daq, RE, sig):
             assert daq.state == 'Open'
         yield from null()
 
-    daq.configure(mode='auto')
     RE(plan(sig))
     daq.configure(events=1)
     RE(plan(sig))
@@ -328,17 +337,6 @@ def test_check_connect(nodaq):
     logger.debug('test_check_connect')
     with pytest.raises(RuntimeError):
         nodaq.wait()
-
-
-def test_call_everything_else(daq, sig):
-    """
-    These are things that bluesky uses. Let's check them.
-    """
-    logger.debug('test_call_everything_else')
-    daq.describe_configuration()
-    daq.configure(controls=dict(sig=sig))
-    daq.stage()
-    daq.unstage()
 
 
 def test_bad_stuff(daq, RE):
@@ -384,4 +382,15 @@ def test_bad_stuff(daq, RE):
     daq.begin(duration=1)
     with pytest.raises(RuntimeError):
         daq.configure()
-    daq.end_run()  # Prevent thread stalling at the end of daq tests
+    daq.end_run()  # Prevent thread stalling
+
+
+def test_call_everything_else(daq, sig):
+    """
+    These are things that bluesky uses. Let's check them.
+    """
+    logger.debug('test_call_everything_else')
+    daq.describe_configuration()
+    daq.configure(controls=dict(sig=sig))
+    daq.stage()
+    daq.unstage()
