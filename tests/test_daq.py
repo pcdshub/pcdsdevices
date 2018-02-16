@@ -3,24 +3,25 @@ import logging
 import pytest
 
 from ophyd.sim import SynSignal
+from ophyd.status import wait as status_wait
 from bluesky import RunEngine
 from bluesky.plan_stubs import (trigger_and_read, sleep,
                                 create, read, save, null)
-from bluesky.preprocessors import run_decorator
+from bluesky.preprocessors import run_decorator, run_wrapper
 
 from pcdsdevices import daq as daq_module
-from pcdsdevices.daq import Daq, daq_wrapper, daq_decorator, calib_cycle
+from pcdsdevices.daq import (Daq, daq_wrapper, daq_decorator, calib_cycle,
+                             BEGIN_TIMEOUT)
 from pcdsdevices.sim import daq as sim_pydaq
 from pcdsdevices.sim.daq import SimNoDaq
 
 logger = logging.getLogger(__name__)
 
-# Let's hack the daq module to use the simdaq
-daq_module.pydaq = sim_pydaq
-
 
 @pytest.fixture(scope='function')
 def daq(RE):
+    # Let's hack the daq module to use the simdaq
+    daq_module.pydaq = sim_pydaq
     return Daq(RE=RE)
 
 
@@ -53,6 +54,11 @@ def test_connect(daq):
     daq.connect()
     assert daq.connected
     daq.connect()  # Coverage
+    # If something goes wrong...
+    daq._control = None
+    daq_module.pydaq = None
+    daq.connect()
+    assert daq._control is None
 
 
 def test_disconnect(daq):
@@ -111,8 +117,8 @@ def test_configure(daq):
         prev_config = daq.read_configuration()
 
 
-@pytest.mark.timeout(3)
-def test_basic_run(daq):
+@pytest.mark.timeout(10)
+def test_basic_run(daq, sig):
     """
     We expect a begin without a configure to automatically configure
     We expect the daq to run for the time passed into begin
@@ -120,12 +126,21 @@ def test_basic_run(daq):
     """
     logger.debug('test_basic_run')
     assert daq.state == 'Disconnected'
-    daq.begin(duration=1)
+    daq.begin(duration=1, controls=dict(sig=sig))
     assert daq.state == 'Running'
     time.sleep(1.3)
     assert daq.state == 'Open'
     daq.end_run()
     assert daq.state == 'Configured'
+    daq.begin(events=1, wait=True, use_l3t=True)
+    # now we force the kickoff to time out
+    daq._control._state = 'Disconnected'
+    start = time.time()
+    status = daq.kickoff(duration=BEGIN_TIMEOUT+3)
+    with pytest.raises(RuntimeError):
+        status_wait(status, timeout=BEGIN_TIMEOUT+1)
+    dt = time.time() - start
+    assert dt < BEGIN_TIMEOUT + 1
 
 
 @pytest.mark.timeout(3)
@@ -171,13 +186,13 @@ def test_wait_run(daq):
 
 
 @pytest.mark.timeout(3)
-def test_configured_run(daq):
+def test_configured_run(daq, sig):
     """
     We expect begin() to run for the configured time, should a time be
     configured
     """
     logger.debug('test_configured_run')
-    daq.configure(duration=1)
+    daq.configure(duration=1, controls=dict(sig=sig))
     t0 = time.time()
     daq.begin()
     daq.wait()
@@ -218,7 +233,6 @@ def test_scan_on(daq, RE, sig):
     We expect that the daq object is usable in a bluesky plan in the 'on' mode.
     """
     logger.debug('test_scan_on')
-    daq.configure(mode='on')
 
     @daq_decorator()
     @run_decorator()
@@ -230,6 +244,7 @@ def test_scan_on(daq, RE, sig):
         assert daq.state == 'Running'
         yield from null()
 
+    daq.configure(mode='on')
     RE(plan(sig))
     assert daq.state == 'Configured'
 
@@ -240,7 +255,6 @@ def test_scan_manual(daq, RE, sig):
     We expect that we can manually request calib cycles at specific times
     """
     logger.debug('test_scan_manual')
-    daq.configure(mode='manual', events=1)
 
     @daq_decorator()
     @run_decorator()
@@ -252,6 +266,7 @@ def test_scan_manual(daq, RE, sig):
         assert daq.state == 'Open'
         yield from null()
 
+    daq.configure(mode=1, events=1)
     RE(plan(sig))
     assert daq.state == 'Configured'
 
@@ -263,7 +278,6 @@ def test_scan_auto(daq, RE, sig):
     messages
     """
     logger.debug('test_scan_auto')
-    daq.configure(mode='auto')
 
     @daq_decorator()
     @run_decorator()
@@ -277,6 +291,9 @@ def test_scan_auto(daq, RE, sig):
             assert daq.state == 'Open'
         yield from null()
 
+    daq.configure(mode='auto')
+    RE(plan(sig))
+    daq.configure(events=1)
     RE(plan(sig))
     assert daq.state == 'Configured'
 
@@ -308,5 +325,63 @@ def test_check_connect(nodaq):
     If the daq can't connect for any reason, we should get an error on any
     miscellaneous method that has the check_connect wrapper.
     """
+    logger.debug('test_check_connect')
     with pytest.raises(RuntimeError):
         nodaq.wait()
+
+
+def test_call_everything_else(daq, sig):
+    """
+    These are things that bluesky uses. Let's check them.
+    """
+    logger.debug('test_call_everything_else')
+    daq.describe_configuration()
+    daq.configure(controls=dict(sig=sig))
+    daq.stage()
+    daq.unstage()
+
+
+def test_bad_stuff(daq, RE):
+    """
+    Miscellaneous exception raises
+    """
+    logger.debug('test_bad_stuff')
+
+    # Bad mode name
+    with pytest.raises(ValueError):
+        daq.configure(mode='cashews')
+
+    # Daq internal error
+    configure = daq._control.configure
+    daq._control.configure = None
+    with pytest.raises(RuntimeError):
+        daq.configure()
+    daq._control.configure = configure
+
+    # Run is too short
+    with pytest.raises(RuntimeError):
+        daq._check_duration(0.1)
+
+    # daq wrapper cleanup with a bad plan
+    def plan():
+        yield from null()
+        raise RuntimeError
+    with pytest.raises(Exception):
+        list(daq_wrapper(run_wrapper(plan)))
+    assert daq._RE.msg_hook is None
+
+    # calib_cycle at the wrong time
+    with pytest.raises(RuntimeError):
+        list(calib_cycle())
+
+    # calib_cycle with a bad config
+    def plan():
+        yield from calib_cycle()
+    with pytest.raises(RuntimeError):
+        RE(daq_wrapper(run_wrapper(plan())))
+
+    # Configure during a run
+    daq.begin(duration=1)
+    with pytest.raises(RuntimeError):
+        daq.configure()
+    daq.end_run()  # Prevent thread stalling at the end of daq tests

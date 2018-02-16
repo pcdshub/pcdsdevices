@@ -371,7 +371,7 @@ class Daq(FlyerInterface):
         if not isinstance(mode, self._mode_enum):
             try:
                 mode = getattr(self._mode_enum, mode)
-            except AttributeError:
+            except (TypeError, AttributeError):
                 try:
                     mode = self._mode_enum(mode)
                 except ValueError:
@@ -390,10 +390,11 @@ class Daq(FlyerInterface):
                                 controls=controls, mode=mode)
             msg = 'Daq configured'
             logger.info(msg)
-        except Exception:
+        except Exception as exc:
             self._config = None
             msg = 'Failed to configure!'
-            logger.exception(msg)
+            logger.debug(msg, exc_info=True)
+            raise RuntimeError(msg) from exc
         new = self.read_configuration()
         return old, new
 
@@ -409,20 +410,13 @@ class Daq(FlyerInterface):
         logger.debug('Daq._config_args(%s, %s, %s)',
                      record, use_l3t, controls)
         config_args = {}
-        config = self.read_configuration()
-        if record is None:
-            config_args['record'] = config['record']
-        else:
-            config_args['record'] = record
+        config_args['record'] = record
         if use_l3t:
             config_args['l3t_events'] = 0
         else:
             config_args['events'] = 0
         if controls is not None:
             config_args['controls'] = self._ctrl_arg(controls)
-        for key, value in list(config_args.items()):
-            if value is None:
-                del config_args[key]
         return config_args
 
     def _ctrl_arg(self, ctrl_dict):
@@ -512,8 +506,8 @@ class Daq(FlyerInterface):
         logger.debug('Daq.describe_configuration()')
         try:
             config = self.read_configuration()
-            controls_shape = [len(config['control']), 2]
-        except (RuntimeError, AttributeError):
+            controls_shape = [len(config['controls']), 2]
+        except (TypeError, RuntimeError, AttributeError):
             controls_shape = None
         return dict(events=dict(source='daq_events_in_run',
                                 dtype='number',
