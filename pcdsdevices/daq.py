@@ -258,7 +258,7 @@ class Daq(FlyerInterface):
         logger.debug('Daq.complete()')
         end_status = self._get_end_status()
         config = self.read_configuration()
-        if not any(config['events'], config['duration']):
+        if not any((config['events'], config['duration'])):
             # Configured to run forever
             self.stop()
         return end_status
@@ -598,7 +598,7 @@ class Daq(FlyerInterface):
                 self.pause()
                 self.resume()
             elif msg.command == 'save':
-                if any(config['events'], config['duration']):
+                if any((config['events'], config['duration'])):
                     self.wait()
                 else:
                     self.pause()
@@ -652,7 +652,7 @@ def calib_cycle():
                            'use a daq_wrapper on our plan to run with the '
                            'daq!')
     config = daq.read_configuration()
-    if not any(config['events'], config['duration']):
+    if not any((config['events'], config['duration'])):
         raise RuntimeError('Daq is configured to run forever, cannot calib '
                            'cycle. Please call daq.configure with a nonzero '
                            'events or duration argument.')
