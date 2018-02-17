@@ -1,12 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Overrides for AreaDetector base and pcdsdevices base to be used in simulated 
 devices.
 """
-############
-# Standard #
-############
 from collections import OrderedDict
 
 def ad_group(cls, attr_suffix, **kwargs):

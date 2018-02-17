@@ -1,19 +1,10 @@
-############
-# Standard #
-############
 import time
 from collections import OrderedDict
 
-###############
-# Third Party #
-###############
 import pytest
 import numpy as np
 from ophyd.utils import LimitError
 
-##########
-# Module #
-##########
 from pcdsdevices.sim.mirror import (OMMotor, OffsetMirror)
 
 # OMMotor Tests

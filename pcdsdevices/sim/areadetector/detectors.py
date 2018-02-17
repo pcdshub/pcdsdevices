@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from ophyd.areadetector import detectors
 
 from .cam import (CamBase, PulnixCam)

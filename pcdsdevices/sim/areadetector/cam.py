@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from ophyd.areadetector import cam
 
 from .base import ad_group
