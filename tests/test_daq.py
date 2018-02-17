@@ -12,8 +12,8 @@ from bluesky.preprocessors import run_decorator, run_wrapper
 from pcdsdevices import daq as daq_module
 from pcdsdevices.daq import (Daq, daq_wrapper, daq_decorator, calib_cycle,
                              BEGIN_TIMEOUT)
-from pcdsdevices.sim import daq as sim_pydaq
-from pcdsdevices.sim.daq import SimNoDaq
+from pcdsdevices.sim import pydaq as sim_pydaq
+from pcdsdevices.sim.pydaq import SimNoDaq
 
 logger = logging.getLogger(__name__)
 
