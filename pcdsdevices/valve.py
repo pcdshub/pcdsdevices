@@ -147,7 +147,7 @@ class PPSStopper(InOutPositioner):
         # Store state information
         self.in_states = [in_state]
         self.out_states = [out_state]
-        self.state_list = self.in_states + self.out_states
+        self.states_list = self.in_states + self.out_states
         # Load InOutPositioner
         super().__init__(prefix, **kwargs)
 
