@@ -734,16 +734,17 @@ def calib_cycle(events=None, duration=None, use_l3t=None, controls=None):
     """
     def inner_calib_cycle():
         daq = _daq_instance
-        if not daq._is_bluesky:
-            raise RuntimeError('Daq is not attached to the RunEngine! '
-                               'We need to use a daq_wrapper on our '
-                               'plan to run with the daq!')
-        if not any((events, duration, daq.config['events'],
-                    daq.config['duration'])):
-            raise RuntimeError('Daq is configured to run forever, cannot '
-                               'calib cycle. Please call daq.configure or '
-                               'calib cycle with a nonzero events or '
-                               'duration argument.')
+        if daq._RE.state == 'running':
+            if not daq._is_bluesky:
+                raise RuntimeError('Daq is not attached to the RunEngine! '
+                                   'We need to use a daq_wrapper on our '
+                                   'plan to run with the daq!')
+            if not any((events, duration, daq.config['events'],
+                        daq.config['duration'])):
+                raise RuntimeError('Daq is configured to run forever, cannot '
+                                   'calib cycle. Please call daq.configure or '
+                                   'calib cycle with a nonzero events or '
+                                   'duration argument.')
         yield from kickoff(daq, wait=True, events=events, duration=duration,
                            use_l3t=use_l3t, controls=controls)
         yield from complete(daq, wait=True)
