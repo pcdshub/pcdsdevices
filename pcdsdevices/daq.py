@@ -82,6 +82,7 @@ class Daq(FlyerInterface):
         super().__init__()
         self._control = None
         self._config = None
+        self._reset_begin()
         self._host = os.uname()[1]
         self._plat = platform
         self._is_bluesky = False
@@ -222,6 +223,7 @@ class Daq(FlyerInterface):
         """
         logger.debug('Daq.stop()')
         self._control.stop()
+        self._reset_begin()
 
     @check_connect
     def end_run(self):
@@ -268,6 +270,9 @@ class Daq(FlyerInterface):
                                               controls)
                 logger.debug('daq.control.begin(%s)', begin_args)
                 control.begin(**begin_args)
+                # Cache these so we know what the most recent begin was told
+                self._begin = dict(events=events, duration=duration,
+                                   use_l3t=use_l3t, controls=controls)
                 logger.debug('Marking kickoff as complete')
                 status._finished(success=True)
             else:
@@ -295,7 +300,7 @@ class Daq(FlyerInterface):
         """
         logger.debug('Daq.complete()')
         end_status = self._get_end_status()
-        if not any((self.config['events'], self.config['duration'])):
+        if not (self._events or self._duration):
             # Configured to run forever
             self.stop()
         return end_status
@@ -317,6 +322,7 @@ class Daq(FlyerInterface):
                 control.end()
             except RuntimeError:
                 pass  # This means we aren't running, so no need to wait
+            self._reset_begin()
             status._finished(success=True)
             logger.debug('Marked acquisition as complete')
         end_status = Status(obj=self)
@@ -650,15 +656,39 @@ class Daq(FlyerInterface):
                 self.pause()
                 self.resume()
             elif msg.command == 'save':
-                if any((self.config['events'], self.config['duration'])):
+                if self._events or self._duration:
                     self.wait()
                 else:
                     self.pause()
 
+    @property
+    def _events(self):
+        """
+        For the current begin cycle, how many events we told the daq to run for
+        """
+        return self._begin['events'] or self.config['events']
+
+    @property
+    def _duration(self):
+        """
+        For the current begin cycle, how long we told the daq to run for
+        """
+        return self._begin['duration'] or self.config['duration']
+
+    def _reset_begin(self):
+        """
+        Reset _begin to starting values for when we aren't running
+        """
+        self._begin = dict(events=None, duration=None, use_l3t=None,
+                           controls=None)
+
     def __del__(self):
-        if self.state in ('Open', 'Running'):
-            self.end_run()
-        self.disconnect()
+        try:
+            if self.state in ('Open', 'Running'):
+                self.end_run()
+            self.disconnect()
+        except Exception:
+            pass
 
 
 _daq_instance = None

@@ -319,7 +319,6 @@ def test_scan_at_step(daq, RE, sig, mot):
     duration = end - start
     assert daq_dur < duration < daq_dur + 1
     assert mot.position == pos_end
-    assert sig in daq.config['controls']
 
 
 @pytest.mark.timeout(10)
