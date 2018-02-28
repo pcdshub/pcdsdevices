@@ -255,13 +255,13 @@ def test_scan_manual(daq, RE, sig):
     """
     logger.debug('test_scan_manual')
 
-    @daq_decorator(mode=1, events=1)
+    @daq_decorator(mode=1)
     @run_decorator()
     def plan(reader):
         yield from sleep(0.1)
         for i in range(10):
             assert daq.state == 'Open'
-            yield from calib_cycle()
+            yield from calib_cycle(events=1)
         assert daq.state == 'Open'
         yield from null()
 

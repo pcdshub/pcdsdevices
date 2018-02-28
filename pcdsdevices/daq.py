@@ -181,13 +181,16 @@ class Daq(FlyerInterface):
         the daq has begun acquiring data. Optionally block until the daq has
         finished aquiring data.
 
+        If omitted, any argument that is shared with configure will fall back
+        to the configured value.
+
         Parameters
         ----------
         events: int, optional
-            Number events to stop acquisition at.
+            Number events to take in the daq.
 
         duration: int, optional
-            Time to run the daq in seconds.
+            Time to run the daq in seconds, if events was not provided.
 
         use_l3t: bool, optional
             If True, we'll run with the level 3 trigger. This means that, if we
@@ -695,21 +698,49 @@ def daq_wrapper(plan, **config):
 daq_decorator = make_decorator(daq_wrapper)
 
 
-def calib_cycle():
+def calib_cycle(events=None, duration=None, use_l3t=None, controls=None):
     """
     Plan to put the daq through a single calib cycle. This will start the daq
     with the configured parameters and wait until completion. This will raise
     an exception if the daq is configured to run forever or if we aren't using
     the daq_wrapper.
+
+    All omitted arguments will fall back to the configured value.
+
+    Parameters
+    ----------
+    events: int, optional
+        Number events to take in the daq.
+
+    duration: int, optional
+        Time to run the daq in seconds, if events was not provided.
+
+    use_l3t: bool, optional
+        If True, we'll run with the level 3 trigger. This means that, if we
+        specified a number of events, we will wait for that many "good"
+        events as determined by the daq.
+
+    controls: dict{name: device} or list[device...], optional
+        If provided, values from these will make it into the DAQ data
+        stream as variables. We will check device.position and device.value
+        for quantities to use and we will update these values each time
+        begin is called. To provide a list, all devices must have a `name`
+        attribute.
     """
-    daq = _daq_instance
-    if not daq._is_bluesky:
-        raise RuntimeError('Daq is not attached to the RunEngine! We need to '
-                           'use a daq_wrapper on our plan to run with the '
-                           'daq!')
-    if not any((daq.config['events'], daq.config['duration'])):
-        raise RuntimeError('Daq is configured to run forever, cannot calib '
-                           'cycle. Please call daq.configure with a nonzero '
-                           'events or duration argument.')
-    yield from kickoff(daq, wait=True)
-    yield from complete(daq, wait=True)
+    def inner_calib_cycle():
+        daq = _daq_instance
+        if not daq._is_bluesky:
+            raise RuntimeError('Daq is not attached to the RunEngine! '
+                               'We need to use a daq_wrapper on our '
+                               'plan to run with the daq!')
+        if not any((events, duration, daq.config['events'],
+                    daq.config['duration'])):
+            raise RuntimeError('Daq is configured to run forever, cannot '
+                               'calib cycle. Please call daq.configure or '
+                               'calib cycle with a nonzero events or '
+                               'duration argument.')
+        yield from kickoff(daq, wait=True, events=events, duration=duration,
+                           use_l3t=use_l3t, controls=controls)
+        yield from complete(daq, wait=True)
+
+    return (yield from inner_calib_cycle())
