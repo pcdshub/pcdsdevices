@@ -1,12 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-############
-# Standard #
-############
 from collections import OrderedDict
-##########
-# Module #
-##########
+
 from pcdsdevices.sim.areadetector.cam import (CamBase, PulnixCam)
 
 # CamBase Tests

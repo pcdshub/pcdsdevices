@@ -1,18 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-############
-# Standard #
-############
 from collections import OrderedDict
 
-###############
-# Third Party #
-###############
 import numpy as np
 
-##########
-# Module #
-##########
 from pcdsdevices.sim.areadetector.plugins import (PluginBase, StatsPlugin,
                                                   ImagePlugin)
 

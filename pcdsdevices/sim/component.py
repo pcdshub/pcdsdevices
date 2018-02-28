@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import ophyd.device as device
 
 from ophyd import Component, FormattedComponent
