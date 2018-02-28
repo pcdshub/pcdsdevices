@@ -8,7 +8,7 @@ import logging
 
 from ophyd.status import Status, wait as status_wait
 from ophyd.flyers import FlyerInterface
-from bluesky.plan_stubs import configure, kickoff, complete
+from bluesky.plan_stubs import configure, kickoff, complete, one_nd_step
 from bluesky.preprocessors import fly_during_wrapper
 from bluesky.utils import make_decorator
 
@@ -750,3 +750,50 @@ def calib_cycle(events=None, duration=None, use_l3t=None, controls=None):
         yield from complete(daq, wait=True)
 
     return (yield from inner_calib_cycle())
+
+
+def calib_at_step(events=None, duration=None, use_l3t=None, controls=None):
+    """
+    Create a per_step hook suitable for plans such as bluesky.plans.scan that
+    moves the motors, reads the detectors, and puts the daq through one calib
+    cycle at each step. Arguments passed to this function will be passed
+    through to calib_cycle at each step.
+
+    All omitted arguments will fall back to the configured value, except for
+    controls which will default to the detectors and motors in the plan, as
+    this information is available to the per_step hooks.
+
+    Parameters
+    ----------
+    events: int, optional
+        Number events to take in the daq.
+
+    duration: int, optional
+        Time to run the daq in seconds, if events was not provided.
+
+    use_l3t: bool, optional
+        If True, we'll run with the level 3 trigger. This means that, if we
+        specified a number of events, we will wait for that many "good"
+        events as determined by the daq.
+
+    controls: dict{name: device} or list[device...], optional
+        If provided, values from these will make it into the DAQ data
+        stream as variables. We will check device.position and device.value
+        for quantities to use and we will update these values each time
+        begin is called. To provide a list, all devices must have a `name`
+        attribute.
+
+    Returns
+    -------
+    inner_calib_at_step: plan
+        Plan suitable for use as a per_step hook
+    """
+    def inner_calib_at_step(detectors, step, pos_cache):
+        if controls is None:
+            controls_arg = detectors + list(step.keys())
+        else:
+            controls_arg = controls
+        yield from one_nd_step(detectors, step, pos_cache)
+        yield from calib_cycle(events=events, duration=duration,
+                               use_l3t=use_l3t, controls=controls_arg)
+    return inner_calib_at_step
