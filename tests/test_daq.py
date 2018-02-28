@@ -5,7 +5,7 @@ import pytest
 from ophyd.sim import SynSignal
 from ophyd.status import wait as status_wait
 from bluesky import RunEngine
-from bluesky.plan_stubs import (trigger_and_read, sleep,
+from bluesky.plan_stubs import (trigger_and_read,
                                 create, read, save, null)
 from bluesky.preprocessors import run_decorator, run_wrapper
 
@@ -258,12 +258,10 @@ def test_scan_manual(daq, RE, sig):
     @daq_decorator(mode=1)
     @run_decorator()
     def plan(reader):
-        yield from sleep(0.1)
         for i in range(10):
-            assert daq.state == 'Open'
             yield from calib_cycle(events=1)
+            assert daq.state == 'Open'
         assert daq.state == 'Open'
-        yield from null()
 
     RE(plan(sig))
     assert daq.state == 'Configured'
@@ -281,14 +279,12 @@ def test_scan_auto(daq, RE, sig):
     @run_decorator()
     def plan(reader):
         logger.debug(daq.config)
-        yield from null()
         for i in range(10):
             yield from create()
             assert daq.state == 'Running'
             yield from read(reader)
             yield from save()
             assert daq.state == 'Open'
-        yield from null()
 
     daq.configure(mode='auto')
     RE(plan(sig))
@@ -306,13 +302,11 @@ def test_post_daq_RE(daq, RE, sig):
 
     @run_decorator()
     def plan(reader, expected):
-        yield from null()
         for i in range(10):
             yield from create()
             assert daq.state == expected
             yield from read(reader)
             yield from save()
-        yield from null()
 
     RE(daq_wrapper(plan(sig, 'Running')))
     RE(plan(sig, 'Configured'))
