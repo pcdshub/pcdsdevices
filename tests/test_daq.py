@@ -353,8 +353,10 @@ def test_bad_stuff(daq, RE):
     assert daq._RE.msg_hook is None
 
     # calib_cycle at the wrong time
+    def plan():
+        yield from calib_cycle()
     with pytest.raises(RuntimeError):
-        list(calib_cycle())
+        RE(plan())
 
     # calib_cycle with a bad config
     def plan():
@@ -378,3 +380,5 @@ def test_call_everything_else(daq, sig):
     daq.configure(controls=dict(sig=sig))
     daq.stage()
     daq.unstage()
+    # Should be able to inspect this at all times
+    list(calib_cycle())
