@@ -29,6 +29,7 @@ class Turbo(Device):
 
     turboStart = C(EpicsSignal, ':START_SW')
     turboRun = C(EpicsSignal, ':RUN_SW')
+    turboSPI = C(EpicsSignal, ':SPI_DI')
 
     def selectMode(self, *argv):
        
