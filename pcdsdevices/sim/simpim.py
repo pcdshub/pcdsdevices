@@ -1,19 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-############
-# Standard #
-############
 import time
 
-###############
-# Third Party #
-###############
 import numpy as np
 from ophyd.signal import ArrayAttributeSignal
 
-##########
-# Module #
-##########
 from .sim import SimDevice
 from .signal import FakeSignal
 from .component import (FormattedComponent, Component)

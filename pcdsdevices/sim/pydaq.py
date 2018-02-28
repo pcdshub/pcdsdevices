@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import time
 import threading
 import logging
@@ -9,16 +7,12 @@ from pcdsdevices.daq import Daq
 logger = logging.getLogger(__name__)
 
 
-class SimDaq(Daq):
+class SimNoDaq(Daq):
     def connect(self):
-        logger.debug('SimDaq.connect()')
-        self.control = SimControl()
-        self.control.connect()
-        msg = 'Connected to sim DAQ'
-        logger.info(msg)
+        logger.debug('SimNoDaq.connect()')
 
 
-class SimControl:
+class Control:
     _all_states = ['Disconnected', 'Connected', 'Configured', 'Open',
                    'Running']
     _state = _all_states[0]
@@ -53,13 +47,15 @@ class SimControl:
                      transition, self._state)
         info = self._transitions[transition]
         if self._state in info['ignore']:
-            return False
+            ok = False
         elif self._state in info['begin']:
             self._state = info['end']
-            return True
+            ok = True
         else:
             err = 'Invalid SimControl transition {} from state {}'
             raise RuntimeError(err.format(transition, self._state))
+        logger.debug('Ended in state %s, success: %s', self._state, ok)
+        return ok
 
     def state(self):
         logger.debug('SimControl.state()')
@@ -160,7 +156,7 @@ class SimControl:
         if not interrupted:
             try:
                 self.stop()
-            except:
+            except Exception:
                 pass
         end = time.time()
         logger.debug('%ss elapased in SimControl._begin_thread(%s)',

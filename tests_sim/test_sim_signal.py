@@ -1,18 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-############
-# Standard #
-############
 import time
 
-###############
-# Third Party #
-###############
 import numpy as np
 
-##########
-# Module #
-##########
 from pcdsdevices.sim.signal import FakeSignal
 
 def test_FakeSignal_instantiates():

@@ -1,18 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-############
-# Standard #
-############
 import time
 
-###############
-# Third Party #
-###############
 import numpy as np
 
-##########
-# Module #
-##########
 from .sim import SimDevice
 from .signal import (Signal, FakeSignal)
 from .component import (FormattedComponent, Component, DynamicDeviceComponent)

@@ -1,20 +1,9 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-############
-# Standard #
-############
 import time
 from collections import OrderedDict
 import pytest
 
-###############
-# Third Party #
-###############
 import numpy as np
 
-##########
-# Module #
-##########
 from pcdsdevices.sim.pim import (PIMPulnixDetector, PIMMotor, PIM)
 
 # PIMPulnixDetector Tests
