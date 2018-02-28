@@ -251,7 +251,6 @@ class Daq(FlyerInterface):
             self.configure()
 
         def start_thread(control, status, events, duration, use_l3t, controls):
-            begin_args = self._begin_args(events, duration, use_l3t, controls)
             tmo = BEGIN_TIMEOUT
             dt = 0.1
             logger.debug('Make sure daq is ready to begin')
@@ -265,6 +264,8 @@ class Daq(FlyerInterface):
                 else:
                     tmo -= dt
             if self.state in ('Configured', 'Open'):
+                begin_args = self._begin_args(events, duration, use_l3t,
+                                              controls)
                 logger.debug('daq.control.begin(%s)', begin_args)
                 control.begin(**begin_args)
                 logger.debug('Marking kickoff as complete')
