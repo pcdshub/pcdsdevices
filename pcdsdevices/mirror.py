@@ -177,7 +177,9 @@ class OffsetMirror(Device):
     xgantry = FC(Gantry, "{self._prefix_xy}:X",
                  gantry_prefix="{self._xgantry}",
                  add_prefix=['suffix', 'gantry_prefix'])
-    ygantry = FC(Gantry, "{self._prefix_xy}:Y")
+    ygantry = FC(Gantry, "{self._prefix_xy}:Y",
+                 gantry_prefix='GANTRY:{self.prefix}:Y',
+                 add_prefix=['suffix', 'gantry_prefix'])
     # Transmission for Lightpath Interface
     transmission = 1.0
 
