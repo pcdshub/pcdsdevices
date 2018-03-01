@@ -2,16 +2,17 @@ import time
 import logging
 import pytest
 
-from ophyd.sim import SynSignal
+from ophyd.sim import SynSignal, motor1
 from ophyd.status import wait as status_wait
 from bluesky import RunEngine
+from bluesky.plans import scan
 from bluesky.plan_stubs import (trigger_and_read,
                                 create, read, save, null)
 from bluesky.preprocessors import run_decorator, run_wrapper
 
 from pcdsdevices import daq as daq_module
 from pcdsdevices.daq import (Daq, daq_wrapper, daq_decorator, calib_cycle,
-                             BEGIN_TIMEOUT)
+                             calib_at_step, BEGIN_TIMEOUT)
 from pcdsdevices.sim import pydaq as sim_pydaq
 from pcdsdevices.sim.pydaq import SimNoDaq
 
@@ -42,6 +43,12 @@ def sig():
     sig = SynSignal(name='test')
     sig.put(0)
     return sig
+
+
+@pytest.fixture(scope='function')
+def mot():
+    motor1.set(0)
+    return motor1
 
 
 def test_connect(daq):
@@ -291,6 +298,27 @@ def test_scan_auto(daq, RE, sig):
     daq.configure(mode='auto', events=1)
     RE(plan(sig))
     assert daq.state == 'Configured'
+
+
+@pytest.mark.timeout(10)
+def test_scan_at_step(daq, RE, sig, mot):
+    """
+    We expect that calib_at_step works for the basic scan in manual mode
+    """
+    logger.debug(test_scan_at_step)
+
+    dt = 1
+    steps = 3
+    daq_dur = steps * dt
+    pos_end = 10
+    start = time.time()
+    RE(daq_wrapper(scan([sig], mot, 0, pos_end, steps,
+                        per_step=calib_at_step(duration=dt)),
+                   mode='manual'))
+    end = time.time()
+    duration = end - start
+    assert daq_dur < duration < daq_dur + 1
+    assert mot.position == pos_end
 
 
 @pytest.mark.timeout(10)
