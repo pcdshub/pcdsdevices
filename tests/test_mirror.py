@@ -47,7 +47,7 @@ def test_mirror_init():
     assert bm.xgantry.prefix == 'STEP:TST:M1H:X:P'
     assert bm.xgantry.gantry_prefix == 'GANTRY:M1H:X'
     assert bm.ygantry.prefix == 'STEP:TST:M1H:Y:P'
-    assert bm.ygantry.gantry_prefix == 'GANTRY:STEP:TST:M1H:Y'
+    assert bm.ygantry.gantry_prefix == 'GANTRY:TST:M1H:Y'
     m = OffsetMirror('TST:M1H', name="Test Mirror")
     assert m.pitch.prefix == 'MIRR:TST:M1H'
     assert m.xgantry.prefix == 'TST:M1H:X:P'
