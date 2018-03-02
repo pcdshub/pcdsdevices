@@ -221,3 +221,33 @@ class PCDSMotorBase(EpicsMotor, FltMvInterface):
             Current readback position of the motor.
         """
         return self.position
+
+
+# This is a place holder until we have IMS specific records and methods
+IMS = PCDSMotorBase
+
+
+class Newport(PCDSMotorBase):
+    """
+    PCDS implementation of the Motor Record for Newport motors
+    """
+    offset_freeze_switch = Component(Signal)
+    home_forward = Component(Signal)
+    home_reverse = Component(Signal)
+
+    def home(self, *args, **kwargs):
+        # This function should eventually be used. There is a way to home
+        # Newport motors to a reference mark
+        raise NotImplementedError("Homing is not yet implemented for Newport "
+                                  "motors")
+
+
+class PMC100(PCDSMotorBase):
+    """
+    PCDS implementation of the Motor Record PMC100 motors
+    """
+    home_forward = Component(Signal)
+    home_reverse = Component(Signal)
+
+    def home(self, *args, **kwargs):
+        raise NotImplementedError("PMC100 motors have no homing procedure")
