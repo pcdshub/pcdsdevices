@@ -1,7 +1,7 @@
 import logging
 
 from ophyd.utils import LimitError
-from ophyd import EpicsMotor, Component, EpicsSignal, EpicsSignalRO, Signal
+from ophyd import EpicsMotor, Component, EpicsSignal, Signal
 
 from .mv_interface import FltMvInterface
 
