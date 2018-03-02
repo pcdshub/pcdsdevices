@@ -1,11 +1,11 @@
 import pytest
 
-from pcdsdevices.epics_motor import EpicsMotor
+from pcdsdevices.epics_motor import PCDSMotorBase
 from pcdsdevices.sim.pv import using_fake_epics_pv
 from .conftest import attr_wait_value
 
 def fake_motor():
-    m = EpicsMotor("Tst:MMS:02", name='Test Motor')
+    m = PCDSMotorBase("Tst:MMS:02", name='Test Motor')
     m.limits = (-100, 100)
     # Wait for threads to finish
     attr_wait_value(m, 'low_limit', -100)

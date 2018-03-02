@@ -1,7 +1,7 @@
 import logging
 
 from ophyd.utils import LimitError
-from ophyd import EpicsMotor, Component, EpicsSignal, EpicsSignalRO, Signal
+from ophyd import EpicsMotor, Component, EpicsSignal, Signal
 
 from .mv_interface import FltMvInterface
 
@@ -9,7 +9,7 @@ from .mv_interface import FltMvInterface
 logger = logging.getLogger(__name__)
 
 
-class EpicsMotor(EpicsMotor, FltMvInterface):
+class PCDSMotorBase(EpicsMotor, FltMvInterface):
     """
     EpicsMotor for PCDS
 
@@ -44,11 +44,6 @@ class EpicsMotor(EpicsMotor, FltMvInterface):
     # Additional soft limit configurations
     low_soft_limit = Component(EpicsSignal, ".LLM")
     high_soft_limit = Component(EpicsSignal, ".HLM")
-
-    # In our control system, these need to be monitored to avoid warnings
-    low_limit_switch = Component(EpicsSignalRO, ".LLS", auto_monitor=True)
-    high_limit_switch = Component(EpicsSignalRO, ".HLS",
-                                  auto_monitor=True)
     # Disable missing field that our EPICS motor record lacks
     # This attribute is tracked by the _pos_changed callback
     direction_of_travel = Component(Signal)
@@ -155,74 +150,32 @@ class EpicsMotor(EpicsMotor, FltMvInterface):
         super()._pos_changed(timestamp=timestamp, old_value=old_value,
                              value=value, **kwargs)
 
-    def move_rel(self, rel_position, *args, **kwargs):
-        """
-        Move relative to the current position, optionally waiting for motion to
-        complete.
 
-        Parameters
-        ----------
-        rel_position
-            Relative position to move to
+# This is a place holder until we have IMS specific records and methods
+IMS = PCDSMotorBase
 
-        moved_cb : callable
-            Call this callback when movement has finished. This callback must
-            accept one keyword argument: 'obj' which will be set to this
-            positioner instance.
 
-        timeout : float, optional
-            Maximum time to wait for the motion. If None, the default timeout
-            for this positioner is used.
+class Newport(PCDSMotorBase):
+    """
+    PCDS implementation of the Motor Record for Newport motors
+    """
+    offset_freeze_switch = Component(Signal)
+    home_forward = Component(Signal)
+    home_reverse = Component(Signal)
 
-        Returns
-        -------
-        status : MoveStatus
-            Status object for the move.
+    def home(self, *args, **kwargs):
+        # This function should eventually be used. There is a way to home
+        # Newport motors to a reference mark
+        raise NotImplementedError("Homing is not yet implemented for Newport "
+                                  "motors")
 
-        Raises
-        ------
-        TimeoutError
-            When motion takes longer than `timeout`
 
-        ValueError
-            On invalid positions
+class PMC100(PCDSMotorBase):
+    """
+    PCDS implementation of the Motor Record PMC100 motors
+    """
+    home_forward = Component(Signal)
+    home_reverse = Component(Signal)
 
-        RuntimeError
-            If motion fails other than timing out
-        """
-        return self.move(rel_position + self.position, *args, **kwargs)
-
-    def mv(self, position, *args, **kwargs):
-        """
-        Move to a specified position, optionally waiting for motion to
-        complete. Alias for move().
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object for the move.
-        """
-        return self.move(position, *args, **kwargs)
-
-    def mvr(self, rel_position, *args, **kwargs):
-        """
-        Move relative to the current position, optionally waiting for motion to
-        complete. Alias for move_rel().
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object for the move.
-        """
-        return self.move_rel(rel_position, *args, **kwargs)
-
-    def wm(self):
-        """
-        Returns the current position of the motor.
-
-        Returns
-        -------
-        position : float
-            Current readback position of the motor.
-        """
-        return self.position
+    def home(self, *args, **kwargs):
+        raise NotImplementedError("PMC100 motors have no homing procedure")
