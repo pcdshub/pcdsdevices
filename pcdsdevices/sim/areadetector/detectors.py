@@ -4,7 +4,7 @@ from .cam import (CamBase, PulnixCam)
 from .plugins import (StatsPlugin, ImagePlugin)
 from ..signal import FakeSignal
 from ..component import Component
-from ...epics.areadetector.detectors import PulnixDetector
+from ...areadetector.detectors import PulnixDetector
 
 
 class DetectorBase(detectors.DetectorBase):

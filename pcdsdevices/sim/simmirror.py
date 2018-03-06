@@ -5,7 +5,7 @@ import numpy as np
 from .sim import SimDevice
 from .signal import (Signal, FakeSignal)
 from .component import (FormattedComponent, Component, DynamicDeviceComponent)
-from ..epics import mirror
+from .. import mirror
 
 
 class OMMotor(mirror.OMMotor):
@@ -240,9 +240,9 @@ class OffsetMirror(mirror.OffsetMirror, SimDevice):
                  noise_kwargs={}, timeout=None, **kwargs):
         if len(prefix.split(":")) < 3:
             prefix = "MIRR:TST:{0}".format(prefix)
-        super().__init__(prefix, prefix_xy, read_attrs=read_attrs,
+        super().__init__(prefix, prefix_xy=prefix_xy, read_attrs=read_attrs,
                          configuration_attrs=configuration_attrs,
-                         name=name, parent=parent, timeout=timeout,
+                         name=name, parent=parent,
                          **kwargs)
         self.log_pref = "{0} (OffsetMirror) - ".format(self.name)
 
