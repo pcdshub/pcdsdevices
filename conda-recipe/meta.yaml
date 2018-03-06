@@ -18,7 +18,6 @@ requirements:
   run:
     - python {{PY_VER}}*,>=3
     - ophyd >=1.1.0
-    - bluesky >=1.2.0
 
 test:
   imports:

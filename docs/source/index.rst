@@ -13,7 +13,6 @@ custom devices for specific applications.
    :caption: Device Types
 
    epics_types.rst
-   daq.rst
 
 .. toctree::
    :maxdepth: 1
