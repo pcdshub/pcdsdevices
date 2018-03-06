@@ -8,7 +8,7 @@ from .signal import FakeSignal
 from .component import (FormattedComponent, Component)
 from .areadetector.plugins import (StatsPlugin, ImagePlugin)
 from .areadetector.detectors import PulnixDetector
-from ..epics import pim
+from .. import pim
 
 
 class PIMPulnixDetector(pim.PIMPulnixDetector, PulnixDetector):

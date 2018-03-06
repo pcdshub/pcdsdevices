@@ -6,7 +6,7 @@ import numpy as np
 from .base import ad_group
 from ..signal import FakeSignal
 from ..component import (Component, DynamicDeviceComponent)
-from ...epics.areadetector import plugins
+from ...areadetector import plugins
 
 class PluginBase(plugins.PluginBase):
     """
