@@ -1,2 +1,2 @@
-ophyd==1.0.0
-bluesky==1.0.0
+ophyd==1.1.0
+bluesky==1.2.0
