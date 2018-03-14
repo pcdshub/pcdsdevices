@@ -16,6 +16,7 @@ Common EPICS Devices
     PIM
     PMC100
     OffsetMirror
+    PulsePicker
     PointingMirror
     Slits
     Stopper
