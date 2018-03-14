@@ -19,5 +19,4 @@ custom devices for specific applications.
    :caption: Developer Documentation 
    :hidden:
     
-   state.rst
-   inout.rst
+   api.rst

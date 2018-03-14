@@ -7,6 +7,7 @@
    .. rubric:: Functions
 
    .. autosummary::
+      :toctree: generated
    {% for item in functions %}
       {{ item }}
    {%- endfor %}
@@ -18,6 +19,7 @@
    .. rubric:: Classes
 
    .. autosummary::
+      :toctree: generated
    {% for item in classes %}
       {{ item }}
    {%- endfor %}
@@ -29,6 +31,7 @@
    .. rubric:: Exceptions
 
    .. autosummary::
+      :toctree: generated
    {% for item in exceptions %}
       {{ item }}
    {%- endfor %}
