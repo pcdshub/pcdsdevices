@@ -1,5 +1,5 @@
 from .attenuator import Attenuator
-from .epics_motor import EpicsMotor
+from .epics_motor import IMS, Newport, PMC100
 from .ipm import IPM
 from .lens import XFLS
 from .lodcm import LODCM
