@@ -31,21 +31,21 @@ class Stopper(InOutPVStatePositioner):
     Controls Stopper
 
     A base class for a device with two limits switches controlled via an
-    external command PV. This full encompasses the controls Stopper
-    installations as well as un-interlocked GateValves
+    external command PV. This fully encompasses the controls `Stopper`
+    installations as well as un-interlocked `GateValves`
 
     Parameters
     ----------
-    prefix : str
+    prefix : ``str``
         Full PPS Stopper PV
 
-    name : str
+    name : ``str``
         Alias for the stopper
 
     Attributes
     ----------
-    commands : Enum
-        An enum with integer values for open_valve, close_valve values
+    commands : ``Enum``
+        An enum with integer values for ``open_valve``, ``close_valve`` values
     """
     # Default attributes
     _default_read_attrs = ['open_limit', 'closed_limit']
@@ -129,16 +129,16 @@ class PPSStopper(InOutPositioner):
 
     Parameters
     ----------
-    prefix : str
+    prefix : ``str``
         Full PPS Stopper PV
 
-    name : str
+    name : ``str``
         Alias for the stopper
 
-    in_state : str, optional
+    in_state : ``str``, optional
         String associatted with in enum value
 
-    out_state : str, optional
+    out_state : ``str``, optional
         String associatted with out enum value
     """
     state = C(EpicsSignalRO, '', string=True)

@@ -12,6 +12,7 @@ import numpy as np
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
                    PVPositioner, FormattedComponent as FC)
 
+from .doc_stubs import basic_positioner_init
 from .inout import InOutRecordPositioner
 from .mv_interface import FltMvInterface
 
@@ -21,15 +22,9 @@ logger = logging.getLogger(__name__)
 class OMMotor(PVPositioner, FltMvInterface):
     """
     Base class for each motor in the LCLS offset mirror system.
-
-    Parameters
-    ----------
-    prefix : str
-        The EPICS base pv to use
-
-    name : str
-        The name of the motor
     """
+    __doc__ += basic_positioner_init
+
     # position
     readback = C(EpicsSignalRO, ':RBV', auto_monitor=True)
     setpoint = C(EpicsSignal, ':VAL', limits=True)
@@ -50,7 +45,7 @@ class OMMotor(PVPositioner, FltMvInterface):
 
         Returns
         -------
-        egu: str
+        egu: ``str``
         """
         return self.motor_egu.get()
 
@@ -61,15 +56,15 @@ class OMMotor(PVPositioner, FltMvInterface):
 
         Parameters
         ----------
-        position : float
+        position: ``float``
             Position to check for validity
 
         Raises
         ------
-        ValueError
-            If position is None, NaN or Inf
+        ``ValueError``
+            If position is ``None``, ``NaN`` or ``Inf``
 
-        LimitError
+        ``LimitError``
             If the position is outside the soft limits
         """
         # Check that we do not have a NaN or an Inf as those will
@@ -87,6 +82,8 @@ class Pitch(OMMotor):
     The axis is actually a piezo actuator and a stepper motor in series, and
     this is reflected in the PV naming
     """
+    __doc__ += basic_positioner_init
+
     piezo_volts = FC(EpicsSignalRO, "{self._piezo}:VRBV")
     stop_signal = FC(EpicsSignal, "{self._piezo}:STOP")
     # TODO: Limits will be added soon, but not present yet
@@ -148,7 +145,9 @@ class Gantry(OMMotor):
 
 class OffsetMirror(Device):
     """
-    X-Ray offset mirror class for each individual mirror system used in the FEE
+    X-Ray offset mirror class.
+
+    This is for each individual mirror system used in the FEE
     and XRT. Controls for the pitch, and primary gantry x and y motors are
     included.
 
@@ -212,20 +211,20 @@ class OffsetMirror(Device):
 
 class PointingMirror(InOutRecordPositioner, OffsetMirror):
     """
-    Retractable OffsetMirror
+    Retractable `OffsetMirror`
 
     Both XRT M1H and XRT M2H can be completely removed from the beam depending
     on the beam destination. In this case, the X gantry can be controlled via
     the standard PCDS states record. This class has all the functionality of
-    :class:`.OffsetMirror` with the addition of the records that control the
+    `OffsetMirror` with the addition of the records that control the
     overall state.
 
     Parameters
     ----------
-    in_lines : list, optional
+    in_lines: ``list``, optional
         List of beamlines that are delivered beam when the mirror is in
 
-    out_lines : list, optional
+    out_lines: ``list``, optional
         List of beamlines thate are delivered beam when the mirror is out
     """
     # Define default read and configuration attributes

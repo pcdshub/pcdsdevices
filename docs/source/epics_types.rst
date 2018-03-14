@@ -7,14 +7,16 @@ Common EPICS Devices
     :toctree: generated
     
     Attenuator
-    IMS
-    Newport
-    PMC100
+    EpicsMotor
+    LODCM
     GateValve
+    IMS
     IPM
-    OffsetMirror
+    Newport
     PIM
-    PulsePicker
+    PMC100
+    OffsetMirror
+    PointingMirror
     Slits
     Stopper
     XFLS

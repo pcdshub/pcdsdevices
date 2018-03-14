@@ -16,6 +16,7 @@ from ophyd.signal import EpicsSignal
 from ophyd.sim import NullStatus
 from ophyd.status import wait as status_wait
 
+from .doc_stubs import basic_positioner_init, insert_remove
 from .inout import InOutRecordPositioner
 
 logger = logging.getLogger(__name__)
@@ -49,7 +50,15 @@ class LODCM(InOutRecordPositioner):
     the mono line, onto both, or onto neither.
 
     This positioner only considers the h1n and diagnostic motors.
+{}
+    main_line: ``str``, optional
+        Name of the main, no-bounce beamline.
+
+    mono_line: ``str``, optional
+        Name of the mono, double-bounce beamline.
     """
+    __doc__.format(basic_positioner_init)
+
     state = Cmp(EpicsSignal, ':H1N', write_pv=':H1N:GO')
 
     yag = Cmp(YagLom, ":DV")
@@ -76,7 +85,7 @@ class LODCM(InOutRecordPositioner):
         """
         Returns
         -------
-        branches: list of str
+        branches: ``list`` of ``str``
             A list of possible destinations.
         """
         return [self.main_line, self.mono_line]
@@ -84,14 +93,15 @@ class LODCM(InOutRecordPositioner):
     @property
     def destination(self):
         """
-        Return where the light is going at the current LODCM
-        state. Indeterminate states will show as blocked.
+        Which beamline the light is reaching.
+
+        Indeterminate states will show as blocked.
 
         Returns
         -------
-        destination: list of str
-            self.main_line if the light continues on the main line.
-            self.mono_line if the light continues on the mono line.
+        destination: ``list`` of ``str``
+            ``self.main_line`` if the light continues on the main line.
+            ``self.mono_line`` if the light continues on the mono line.
         """
         if self.position == 'OUT':
             dest = [self.main_line]
@@ -114,8 +124,8 @@ class LODCM(InOutRecordPositioner):
 
         Returns
         -------
-        diag_clear: bool
-            False if the diagnostics will prevent beam.
+        diag_clear: ``bool``
+            ``False`` if the diagnostics will prevent beam.
         """
         yag_clear = self.yag.removed
         dectris_clear = self.dectris.removed
@@ -138,3 +148,5 @@ class LODCM(InOutRecordPositioner):
             status_wait(status)
 
         return status
+
+    remove_dia.__doc__ += insert_remove

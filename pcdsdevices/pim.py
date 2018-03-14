@@ -31,8 +31,9 @@ logger = logging.getLogger(__name__)
 
 class PIMPulnixDetector(PulnixDetector):
     """
-    Pulnix detector that is used in the PIM. Plugins should be added on an as
-    needed basis here.
+    Pulnix detector that is used in the PIM.
+
+    Plugins should be added on an as needed basis here.
     """
     image1 = Cmp(ImagePlugin, ":IMAGE1:", read_attrs=['array_data'])
     image2 = Cmp(ImagePlugin, ":IMAGE2:", read_attrs=['array_data'])
@@ -56,21 +57,25 @@ class PIMPulnixDetector(PulnixDetector):
 
 class PIMMotor(InOutRecordPositioner):
     """
-    Standard position monitor motor that can move the stage to insert the yag
-    or diode, or retract it from the beam path.
+    Standard position monitor motor.
+
+    This can move the stage to insert the yag
+    or diode, or retract from the beam path.
     """
     states_list = ['DIODE', 'YAG', 'OUT']
     _states_alias = {'YAG': 'IN'}
 
     def stage(self):
+        """
+        Save the original position to be restored on `unstage`.
+        """
         self._original_vals[self.state] = self.state.value
         return super().stage()
 
 
 class PIM(PIMMotor):
     """
-    Full profile intensity monitor including the motor to move the yag, and the
-    detector to view it.
+    Profile intensity monitor, fully motorized and with a detector.
 
     Parameters
     ----------

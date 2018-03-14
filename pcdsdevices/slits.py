@@ -34,24 +34,24 @@ class SlitPositioner(PVPositioner, Device, FltMvInterface):
 
     Parameters
     ----------
-    prefix : str
+    prefix : ``str``
         The prefix location of the slits, i.e MFX:DG2
 
-    slit_type : XWIDTH, YWIDTH, XCENTER, YCENTER
+    slit_type : ``'XWIDTH'``, ``'YWIDTH'``, ``'XCENTER'``, ``'YCENTER'``
         The aspect of the slit position you would like to control with this
         specific motor
 
-    name : str
+    name : ``str``
         Alias for the axis
 
-    limits : tuple, optional
+    limits : ``tuple``, optional
         Limits on the motion of the positioner. By default, the limits on the
         setpoint PV are used if None is given.
 
     See Also
     --------
-    ophyd.PVPositioner
-        SlitPositioner inherits directly from PVPositioner.
+    ``ophyd.PVPositioner``
+        ``SlitPositioner`` inherits directly from ``PVPositioner``.
     """
     setpoint = FC(EpicsSignal, "{self.prefix}:{self._dirshort}_REQ")
     readback = FC(EpicsSignalRO, "{self.prefix}:ACTUAL_{self._dirlong}")
@@ -86,13 +86,13 @@ class Slits(Device, MvInterface):
 
     Parameters
     ----------
-    prefix : str
+    prefix : ``str``
         The EPICS base of the motor
 
-    name : str, optional
+    name : ``str``, optional
         The name of the offset mirror
 
-    nominal_aperture : float, optional
+    nominal_aperture : ``float``, optional
         Nominal slit size that will encompass the beam without blocking
 
     Notes
@@ -140,26 +140,26 @@ class Slits(Device, MvInterface):
 
         Parameters
         ---------
-        size : float, tuple
+        size : ``float``, tuple
             Target size for slits in both x and y axis. Either specify as a
             tuple for a rectangular aperture (width, height) or set both with
             single floating point value to use set a square width
 
-        wait : bool
+        wait : ``bool``
             If true, block until move is completed
 
 
-        timeout: float, optional
+        timeout: ``float``, optional
             Maximum time for the motion. If None is given, the default value of
             `xwidth` and `ywidth` positioners is used.
 
-        moved_cb: callable, optional
+        moved_cb: ``callable``, optional
             Function to be run when the operation finishes. This callback
             should not expect any arguments or keywords
 
         Returns
         -------
-        status : AndStatus
+        status : ``AndStatus``
             Logical combination of the request to both horizontal and vertical
             motors
         """
@@ -229,21 +229,21 @@ class Slits(Device, MvInterface):
 
         Parameters
         ----------
-        size : float, optional
+        size : ``float``, optional
             Open the slits to a specific size otherwise
             `:attr:`.nominal_aperture is used
 
-        wait : bool, optional
+        wait : ``bool``, optional
             Wait for the status object to complete the move before returning
 
-        timeout : float, optional
+        timeout : ``float``, optional
             Maximum time to wait for the motion. If None, the default timeout
             for this positioner is used
 
         Returns
         -------
         MoveStatus:
-            Status object based on move completion
+            ``Status`` object based on move completion
 
         See Also
         --------
@@ -267,7 +267,7 @@ class Slits(Device, MvInterface):
 
     def open(self):
         """
-        Uses the built-in `OPEN` record to move open the aperture
+        Uses the built-in ``OPEN`` record to move open the aperture
         """
         self.open_cmd.put(1)
 
@@ -297,13 +297,13 @@ class Slits(Device, MvInterface):
 
         Parameters
         ----------
-        cb : callable
+        cb : ``callable``
             Callback to be run
 
-        event_type : str, optional
+        event_type : ``str``, optional
             Type of event to run callback on
 
-        run : bool, optional
+        run : ``bool``, optional
             Run the callback immediatelly
         """
         # Avoid making child subscriptions unless a client cares

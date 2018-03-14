@@ -4,6 +4,7 @@ from ophyd.device import Component as Cmp, FormattedComponent as FCmp
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 from ophyd.status import SubscriptionStatus, wait as status_wait
 
+from .doc_stubs import basic_positioner_init
 from .inout import InOutRecordPositioner, InOutPVStatePositioner
 
 logger = logging.getLogger(__name__)
@@ -11,9 +12,13 @@ logger = logging.getLogger(__name__)
 
 class PulsePicker(InOutPVStatePositioner):
     """
-    Device that can open/close in response to event codes to let certain pulses
+    Device that picks which pulses to let through.
+
+    This device opens/closes in response to event codes to let certain pulses
     through and block others.
     """
+    __doc__ += basic_positioner_init
+
     blade = Cmp(EpicsSignalRO, ':READ_DF')
     mode = Cmp(EpicsSignalRO, ':SD_SIMPLE')
 
@@ -61,6 +66,11 @@ class PulsePicker(InOutPVStatePositioner):
     def reset(self, wait=False):
         """
         Cancel the current mode.
+
+        Parameters
+        ----------
+        wait: ``bool``, optional
+            If ``True``, block until procedure is done.
         """
         self._log_request('RESET')
         if self.mode.get() not in (0, 'IDLE'):
@@ -71,6 +81,11 @@ class PulsePicker(InOutPVStatePositioner):
     def open(self, wait=False):
         """
         Cancel the current mode and leave the PulsePicker OPEN.
+
+        Parameters
+        ----------
+        wait: ``bool``, optional
+            If ``True``, block until procedure is done.
         """
         self.reset(wait=True)
         self._log_request('OPEN')
@@ -81,6 +96,11 @@ class PulsePicker(InOutPVStatePositioner):
     def close(self, wait=False):
         """
         Cancel the current mode and leave the PulsePicker CLOSED.
+
+        Parameters
+        ----------
+        wait: ``bool``, optional
+            If ``True``, block until procedure is done.
         """
         self.reset(wait=True)
         self._log_request('CLOSED')
@@ -91,6 +111,11 @@ class PulsePicker(InOutPVStatePositioner):
     def flipflop(self, wait=False):
         """
         Change the current mode to FLIP-FLOP.
+
+        Parameters
+        ----------
+        wait: ``bool``, optional
+            If ``True``, block until procedure is done.
         """
         self.reset(wait=True)
         self._log_request('FLIP-FLOP')
@@ -101,6 +126,11 @@ class PulsePicker(InOutPVStatePositioner):
     def burst(self, wait=False):
         """
         Change the current mode to BURST.
+
+        Parameters
+        ----------
+        wait: ``bool``, optional
+            If ``True``, block until procedure is done.
         """
         self.reset(wait=True)
         self._log_request('BURST')
@@ -111,6 +141,11 @@ class PulsePicker(InOutPVStatePositioner):
     def follower(self, wait=False):
         """
         Change the current mode to FOLLOWER.
+
+        Parameters
+        ----------
+        wait: ``bool``, optional
+            If ``True``, block until procedure is done.
         """
         self.reset(wait=True)
         self._log_request('FOLLOWER')
@@ -121,8 +156,9 @@ class PulsePicker(InOutPVStatePositioner):
 
 class PulsePickerInOut(PulsePicker):
     """
-    PulsePicker paired with a states record to control the Y position. This
-    allows us to insert and remove the entire device from the beam.
+    `PulsePicker` paired with a states record to control the Y position.
+
+    This allows us to insert and remove the entire device from the beam.
 
     The inout states record lives in a separate IOC from the main pulsepicker
     due to versioning issues. The parent IOC is called 'device_states'. We're
@@ -132,6 +168,8 @@ class PulsePickerInOut(PulsePicker):
     So therefore, if the picker is 'TST:DG1:MMS:03', the inout states should be
     'TST:DG1:PP:Y'.
     """
+    __doc__ += basic_positioner_init
+
     inout = FCmp(InOutRecordPositioner, '{self._inout}')
 
     states_list = ['OUT', 'OPEN', 'CLOSED']

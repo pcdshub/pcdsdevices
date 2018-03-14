@@ -4,6 +4,15 @@ from .inout import InOutPVStatePositioner
 
 
 class MovableStand(InOutPVStatePositioner):
+    """
+    Stand that can be moved.
+
+    Parameters
+    ----------
+    prefix: ``str``
+
+    name: ``str``, required keyword
+    """
     in_limit = Cmp(EpicsSignalRO, ':IN_DI')
     out_limit = Cmp(EpicsSignalRO, ':OUT_DO')
 

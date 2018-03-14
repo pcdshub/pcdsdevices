@@ -3,6 +3,7 @@ import logging
 from ophyd.utils import LimitError
 from ophyd import EpicsMotor, Component, EpicsSignal, Signal
 
+from .doc_stubs import basic_positioner_init
 from .mv_interface import FltMvInterface
 
 
@@ -151,32 +152,13 @@ class PCDSMotorBase(EpicsMotor, FltMvInterface):
                              value=value, **kwargs)
 
 
-basic_motor_doc = """
-
-    Parameters
-    ----------
-    prefix: ``str``
-        The EPICS PV prefix for this motor.
-
-    name: ``str``, required keyword
-        An identifying name for this motor.
-
-    settle_time: ``float``, optional
-        The amount of extra time to wait before interpreting a move as done
-
-    timeout ``float``, optional
-        The amount of time to wait before automatically marking a long
-        in-progress move as failed.
-"""
-
-
 class IMS(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record for IMS motors.
 
     This is a subclass of `PCDSMotorBase`
     """
-    __doc__ += basic_motor_doc
+    __doc__ += basic_positioner_init
 
 
 class Newport(PCDSMotorBase):
@@ -187,7 +169,7 @@ class Newport(PCDSMotorBase):
     disables the ``home`` method, because it will not work the same way for
     Newport motors.
     """
-    __doc__ += basic_motor_doc
+    __doc__ += basic_positioner_init
 
     offset_freeze_switch = Component(Signal)
     home_forward = Component(Signal)
@@ -208,7 +190,7 @@ class PMC100(PCDSMotorBase):
     disables the ``home`` method, because it will not work the same way for
     Newport motors.
     """
-    __doc__ += basic_motor_doc
+    __doc__ += basic_positioner_init
 
     home_forward = Component(Signal)
     home_reverse = Component(Signal)

@@ -2,29 +2,32 @@ import math
 
 from ophyd.sim import NullStatus
 
+from .doc_stubs import basic_positioner_init, insert_remove
 from .state import StatePositioner, StateRecordPositioner, PVStatePositioner
 
 
 class InOutPositioner(StatePositioner):
     """
-    Basic InOut StatePositioner. It can be inserted and removed and queried for
-    insertion and removal. It can also define transmission values for the
+    Basic in/out `StatePositioner`. It can be inserted, removed and queried for
+    insertion and removal state. It can also define transmission values for the
     various states.
-
+%s
     Attributes
     ----------
-    in_states: list of strings
-        State values that should be considered 'in'.
+    in_states: ``list` of ``str``
+        State values that should be considered ``IN``.
 
-    out_states: list of strings
-        State values that should be considered 'out'.
+    out_states: ``list`` of ``str``
+        State values that should be considered ``OUT``.
 
-    _transmission: dict{str: number}
+    _transmission: ``dict{str: float}``
         Mapping from each state to the transmission ratio. This should be a
         number from 0 to 1. Default values will be 1 (full transmission) for
-        out_states, 0 (full block) for in_states, and nan (no idea!) for
-        unaccounted states.
+        ``out_states``, 0 (full block) for ``in_states``, and nan (no idea!)
+        for unaccounted states.
     """
+    __doc__ = __doc__ % basic_positioner_init
+
     states_list = ['IN', 'OUT']
     in_states = ['IN']
     out_states = ['OUT']
@@ -38,15 +41,23 @@ class InOutPositioner(StatePositioner):
 
     @property
     def inserted(self):
+        """
+        True if the device is inserted
+        """
         return self._pos_in_list(self.in_states)
 
     @property
     def removed(self):
+        """
+        True if the device is removed
+        """
         return self._pos_in_list(self.out_states)
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
         """
-        Macro to move this device to the first state on the in_states list.
+        Insert this device.
+
+        Moves this device to the first state on the `in_states` list.
         """
         return self.move(self.in_states[0], moved_cb=moved_cb,
                          timeout=timeout, wait=wait)
@@ -60,6 +71,9 @@ class InOutPositioner(StatePositioner):
             return NullStatus()
         return self.move(self.out_states[0], moved_cb=moved_cb,
                          timeout=timeout, wait=wait)
+
+    insert.__doc__ += insert_remove
+    remove.__doc__ += insert_remove
 
     @property
     def transmission(self):
@@ -81,26 +95,32 @@ class InOutPositioner(StatePositioner):
 
 class InOutRecordPositioner(StateRecordPositioner, InOutPositioner):
     """
-    Positioner for a motor that moves to states IN and OUT using a standard
-    states record. This can be subclassed for other states records that involve
-    inserting and removing something into the beam.
+    `InOutPositioner` for a standard states record.
+
+    Positioner for a motor that moves to states ``IN`` and ``OUT`` using a
+    standard states record. This can be subclassed for other states records
+    that involve inserting and removing something into the beam.
     """
-    pass
+    __doc__ += basic_positioner_init
 
 
 class TTReflaser(InOutRecordPositioner):
     """
     Motor stack that includes both a timetool and a reflaser.
     """
+    __doc__ += basic_positioner_init
+
     states_list = ['TT', 'REFL', 'OUT']
     in_states = ['TT', 'REFL']
 
 
 class InOutPVStatePositioner(PVStatePositioner, InOutPositioner):
     """
+    `InOutPositioner` on top of a `PVStatePositioner`
+
     Positioner for a set of PVs that result in aggregate IN and OUT states for
     a single device. This must be subclassed and provided a _state_logic
-    attribute to be used. Consult the PVStatePositioner documentation for more
-    information.
+    attribute to be used. Consult the `PVStatePositioner` documentation for
+    more information.
     """
-    pass
+    __doc__ += basic_positioner_init
