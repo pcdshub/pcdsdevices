@@ -34,6 +34,7 @@ install:
 script:
   - coverage run run_tests.py
   - coverage report -m
+  - flake8 pcdsdevices/*.py
   - set -e
   #Build docs
   - |
