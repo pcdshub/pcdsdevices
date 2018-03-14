@@ -50,14 +50,14 @@ class LODCM(InOutRecordPositioner):
     the mono line, onto both, or onto neither.
 
     This positioner only considers the h1n and diagnostic motors.
-{}
+%s
     main_line: ``str``, optional
         Name of the main, no-bounce beamline.
 
     mono_line: ``str``, optional
         Name of the mono, double-bounce beamline.
     """
-    __doc__.format(basic_positioner_init)
+    __doc__ = __doc__ % basic_positioner_init
 
     state = Cmp(EpicsSignal, ':H1N', write_pv=':H1N:GO')
 

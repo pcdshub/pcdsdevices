@@ -21,7 +21,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
     """
     Base class for a ``Positioner`` that moves between discrete states rather
     than along a continuout axis.
-{}
+%s
     Attributes
     ----------
     state: ``Signal``
@@ -50,7 +50,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
         Mapping of state names to lists of acceptable aliases. This can
         optionally be overriden in a child class.
     """
-    __doc__.format(basic_positioner_init)
+    __doc__ = __doc__ % basic_positioner_init
 
     state = None  # Override with Signal that represents state readback
 
