@@ -1,8 +1,12 @@
+"""
+Module for LCLS's special motor records.
+"""
 import logging
 
 from ophyd.utils import LimitError
 from ophyd import EpicsMotor, Component, EpicsSignal, Signal
 
+from .doc_stubs import basic_positioner_init
 from .mv_interface import FltMvInterface
 
 
@@ -151,14 +155,25 @@ class PCDSMotorBase(EpicsMotor, FltMvInterface):
                              value=value, **kwargs)
 
 
-# This is a place holder until we have IMS specific records and methods
-IMS = PCDSMotorBase
+class IMS(PCDSMotorBase):
+    """
+    PCDS implementation of the Motor Record for IMS motors.
+
+    This is a subclass of `PCDSMotorBase`
+    """
+    __doc__ += basic_positioner_init
 
 
 class Newport(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record for Newport motors
+
+    This is a subclass of `PCDSMotorBase` that overwrites missings signals and
+    disables the ``home`` method, because it will not work the same way for
+    Newport motors.
     """
+    __doc__ += basic_positioner_init
+
     offset_freeze_switch = Component(Signal)
     home_forward = Component(Signal)
     home_reverse = Component(Signal)
@@ -173,7 +188,13 @@ class Newport(PCDSMotorBase):
 class PMC100(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record PMC100 motors
+
+    This is a subclass of `PCDSMotorBase` that overwrites missing signals and
+    disables the ``home`` method, because it will not work the same way for
+    Newport motors.
     """
+    __doc__ += basic_positioner_init
+
     home_forward = Component(Signal)
     home_reverse = Component(Signal)
 

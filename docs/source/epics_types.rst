@@ -8,11 +8,16 @@ Common EPICS Devices
     
     Attenuator
     EpicsMotor
+    LODCM
     GateValve
+    IMS
     IPM
-    OffsetMirror
+    Newport
     PIM
+    PMC100
+    OffsetMirror
     PulsePicker
+    PointingMirror
     Slits
     Stopper
     XFLS

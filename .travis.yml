@@ -34,13 +34,13 @@ install:
 script:
   - coverage run run_tests.py
   - coverage report -m
+  - flake8 pcdsdevices/*.py
   - set -e
   #Build docs
   - |
     if [[ -n "$DOCTR_DEPLOY_ENCRYPTION_KEY_PCDSHUB_PCDSDEVICES" && $BUILD_DOCS ]]; then
       conda install --file docs-requirements.txt
       pushd docs
-      sphinx-autogen -o source/generated source/*.rst
       make html
       popd
       #Publish docs.

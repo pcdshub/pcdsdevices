@@ -1,9 +1,21 @@
+"""
+Module for stands that can be moved
+"""
 from ophyd import Component as Cmp, EpicsSignalRO
 
 from .inout import InOutPVStatePositioner
 
 
 class MovableStand(InOutPVStatePositioner):
+    """
+    Stand that can be moved.
+
+    Parameters
+    ----------
+    prefix: ``str``
+
+    name: ``str``, required keyword
+    """
     in_limit = Cmp(EpicsSignalRO, ':IN_DI')
     out_limit = Cmp(EpicsSignalRO, ':OUT_DO')
 

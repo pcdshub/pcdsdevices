@@ -1,6 +1,8 @@
 """
-Devices that are integrated with the MPS system communicate with ACR via a
-single bit summary. The results of these are published over EPICS and
+Module for devices that are integrated with the MPS system.
+
+These communicate with ACR via a single bit summary.
+The results of these are published over EPICS and
 interpreted by :class:`.MPS`.
 """
 import logging
@@ -16,10 +18,15 @@ class MPSBase(OphydObject):
     """
     Base MPS class
 
-    Used for shared methods between the individual :class;`.MPS` bit class and
-    the :class:`.MPSLimits` class. The class handles much of the bookkeeping
-    for both of these classes, but each subclass must reimplement: faulted,
-    bypassed and _sub_to_children
+    Used for shared methods between the individual `MPS` bit class and
+    the `MPSLimits` class. The class handles much of the bookkeeping
+    for both of these classes.
+
+    Each subclass must reimplement:
+
+    - ``faulted``
+    - ``bypassed``
+    - ``sub_to_children``
     """
     # Subscription information
     SUB_FAULT_CH = 'sub_mps_faulted'
@@ -82,13 +89,13 @@ class MPS(MPSBase, Device):
 
     Parameters
     ----------
-    prefix : str
+    prefix : ``str``
         PV prefix of MPS information
 
-    name : str
+    name : ``str``, required keyword
         Name of MPS bit
 
-    veto : bool, optional
+    veto : ``bool``, optional
         Whether or not the the device is capable of vetoing downstream faults
     """
     # Signals
@@ -126,21 +133,21 @@ def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
     Create a new object of arbitrary class capable of storing MPS information
 
     A new class identical to the provided one is created, but with additional
-    attribute `mps` that relies upon the provided `mps_prefix`. All other
+    attribute ``mps`` that relies upon the provided ``mps_prefix``. All other
     information is passed through to the class constructor as args and kwargs
 
     Parameters
     ----------
-    clsname : str
+    clsname : ``str``
         Name of new class to create
 
-    cls :
-        Device class to add `mps`
+    cls : ``type``
+        Device class to add ``mps``
 
-    mps_prefix : str
+    mps_prefix : ``str``
         Prefix for MPS subcomponent
 
-    veto : bool, optional
+    veto : ``bool``, optional
         Whether the MPS bit is capable of veto
 
     args :
@@ -160,10 +167,10 @@ def must_be_out(in_limit, out_limit):
 
     Parameters
     ----------
-    in_limit : bool
+    in_limit : ``bool``
         Whether the in limit is active
 
-    out_limit: bool
+    out_limit: ``bool``
         Whether the out limit is active
 
     Returns
@@ -185,10 +192,10 @@ def must_be_known(in_limit, out_limit):
 
     Parameters
     ----------
-    in_limit : bool
+    in_limit : ``bool``
         Whether the in limit is active
 
-    out_limit: bool
+    out_limit: ``bool``
         Whether the out limit is active
 
     Returns
@@ -207,19 +214,19 @@ class MPSLimits(MPSBase, Device):
     For devices that are inserted and removed from the beam, the MPS system
 
     The MPSLimits class is to determine what action is to be taken based on the
-    MPS values of a devicepertaining to a single device. If a device has two
+    MPS values of a device pertaining to a single device. If a device has two
     MPS values, there is certain logic that needs to be followed to determine
     whether or not the beam is allowed through.
 
     Parameters
     ----------
-    prefix :
+    prefix : ``str``
         Base of the MPS PVs
 
-    name : str
+    name : ``str``
         Name of the MPS combination
 
-    logic: callable
+    logic: ``callable``
         Determine whether the MPS is faulted based on the state of each limit.
         The function signature should look like:
 

@@ -10,9 +10,10 @@ logger = logging.getLogger(__name__)
 
 class AggregateSignal(Signal):
     """
-    Signal that is composed of a number of other signals. This class exists to
-    handle the group subscriptions without repeatedly getting the values of all
-    the subsignals at all times.
+    Signal that is composed of a number of other signals.
+
+    This class exists to handle the group subscriptions without repeatedly
+    getting the values of all the subsignals at all times.
 
     Attributes
     ----------
@@ -73,6 +74,11 @@ class AggregateSignal(Signal):
         raise NotImplementedError('put should be overriden in the subclass')
 
     def subscribe(self, cb, event_type=None, run=True):
+        """
+        Set up a callback function to run at specific times.
+
+        See the ``ophyd`` documentation for details.
+        """
         cid = super().subscribe(cb, event_type=event_type, run=run)
         if event_type in (None, self.SUB_VALUE) and not self._has_subscribed:
             # We need to subscribe to ALL relevant signals!
