@@ -1,3 +1,6 @@
+"""
+Module for the LCLS1 `PulsePicker`
+"""
 import logging
 
 from ophyd.device import Component as Cmp, FormattedComponent as FCmp

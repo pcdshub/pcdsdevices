@@ -1,3 +1,10 @@
+"""
+Module to centralize code related to devices that can be ``IN`` or ``OUT``.
+
+The classes that are defined here can be used to create other devices that need
+methods such as ``insert`` or ``remove`` and the ability to mark discrete
+states as in the beam or out of the beam.
+"""
 import math
 
 from ophyd.sim import NullStatus

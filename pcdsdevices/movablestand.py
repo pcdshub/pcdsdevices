@@ -1,3 +1,6 @@
+"""
+Module for stands that can be moved
+"""
 from ophyd import Component as Cmp, EpicsSignalRO
 
 from .inout import InOutPVStatePositioner

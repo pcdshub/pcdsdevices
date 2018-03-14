@@ -1,3 +1,6 @@
+"""
+Module for LCLS's special motor records.
+"""
 import logging
 
 from ophyd.utils import LimitError

@@ -1,3 +1,6 @@
+"""
+Module for defining bell-and-whistles movement features
+"""
 from bluesky.utils import ProgressBar
 from ophyd.status import wait as status_wait
 

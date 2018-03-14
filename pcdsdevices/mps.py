@@ -1,6 +1,8 @@
 """
-Devices that are integrated with the MPS system communicate with ACR via a
-single bit summary. The results of these are published over EPICS and
+Module for devices that are integrated with the MPS system.
+
+These communicate with ACR via a single bit summary.
+The results of these are published over EPICS and
 interpreted by :class:`.MPS`.
 """
 import logging

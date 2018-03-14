@@ -1,13 +1,15 @@
 """
+Module to define `Slits` classes.
+
 The SLAC EPICS motor record contains an extra set of records to abstract four
 axes into a Slits object. This allows an operator to manipulate the center and
 width in two dimensions of a small aperture. The classes below allow both
 individual parameters of the aperture and the Slit as a whole to be controlled
-and scanned. The :class:`.Slits` instantiates four sub-devices `xwidth`,
-`xcenter`, `ycenter`, `ywidth`. These are each represented by
-:class:`.SlitPositioner`. The main :class:`.Slits` class assumes that most of
+and scanned. The :class:`.Slits` instantiates four sub-devices ``xwidth``,
+``xcenter``, ``ycenter``, ``ywidth``. These are each represented by
+`SlitPositioner`. The main `Slits` class assumes that most of
 the manipulation will be done on the size of the aperture not the position,
-however, if control of the center is desired the `center` sub-devices can be
+however, if control of the center is desired the ``center`` sub-devices can be
 used.
 """
 import logging

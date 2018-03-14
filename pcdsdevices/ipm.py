@@ -1,3 +1,6 @@
+"""
+Module for the `IPM` intensity position monitor class
+"""
 from ophyd import Component as Cmp
 from ophyd.signal import EpicsSignal
 

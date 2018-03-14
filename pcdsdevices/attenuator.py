@@ -1,3 +1,6 @@
+"""
+Module for `Attenuator` and related classes.
+"""
 import logging
 import time
 
@@ -23,7 +26,7 @@ class Filter(InOutPositioner):
     can work around mechanical problems.
 
     This is not intended to be instantiated by a user, but instead included as
-    a ``Component`` in a subclass of ``AttBase``. You can instantiate these
+    a ``Component`` in a subclass of `AttBase`. You can instantiate these
     classes via the `Attenuator` factory function.
     """
     state = Cmp(EpicsSignal, ':STATE', write_pv=':GO')
