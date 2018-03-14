@@ -151,14 +151,44 @@ class PCDSMotorBase(EpicsMotor, FltMvInterface):
                              value=value, **kwargs)
 
 
-# This is a place holder until we have IMS specific records and methods
-IMS = PCDSMotorBase
+basic_motor_doc = """
+
+    Parameters
+    ----------
+    prefix: ``str``
+        The EPICS PV prefix for this motor.
+
+    name: ``str``, required keyword
+        An identifying name for this motor.
+
+    settle_time: ``float``, optional
+        The amount of extra time to wait before interpreting a move as done
+
+    timeout ``float``, optional
+        The amount of time to wait before automatically marking a long
+        in-progress move as failed.
+"""
+
+
+class IMS(PCDSMotorBase):
+    """
+    PCDS implementation of the Motor Record for IMS motors.
+
+    This is a subclass of `PCDSMotorBase`
+    """
+    __doc__ += basic_motor_doc
 
 
 class Newport(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record for Newport motors
+
+    This is a subclass of `PCDSMotorBase` that overwrites missings signals and
+    disables the ``home`` method, because it will not work the same way for
+    Newport motors.
     """
+    __doc__ += basic_motor_doc
+
     offset_freeze_switch = Component(Signal)
     home_forward = Component(Signal)
     home_reverse = Component(Signal)
@@ -173,7 +203,13 @@ class Newport(PCDSMotorBase):
 class PMC100(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record PMC100 motors
+
+    This is a subclass of `PCDSMotorBase` that overwrites missing signals and
+    disables the ``home`` method, because it will not work the same way for
+    Newport motors.
     """
+    __doc__ += basic_motor_doc
+
     home_forward = Component(Signal)
     home_reverse = Component(Signal)
 

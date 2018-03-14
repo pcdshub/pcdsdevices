@@ -7,7 +7,9 @@ Common EPICS Devices
     :toctree: generated
     
     Attenuator
-    EpicsMotor
+    IMS
+    Newport
+    PMC100
     GateValve
     IPM
     OffsetMirror
