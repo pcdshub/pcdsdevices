@@ -16,6 +16,15 @@ MAX_FILTERS = 12
 class Filter(InOutPositioner):
     """
     A single attenuation blade.
+
+    Each of these has it's own in/out state, thickness, and material that are
+    used in the attenuator IOC's calculations. It also has the capability to
+    mark itself as ``STUCK IN`` or ``STUCK OUT`` so the transmission calculator
+    can work around mechanical problems.
+
+    This is not intended to be instantiated by a user, but instead included as
+    a ``Component`` in a subclass of ``AttBase``. You can instantiate these
+    classes via the `Attenuator` factory function.
     """
     state = Cmp(EpicsSignal, ':STATE', write_pv=':GO')
     thickness = Cmp(EpicsSignal, ':THICK')
@@ -25,8 +34,14 @@ class Filter(InOutPositioner):
 
 class AttBase(PVPositioner, FltMvInterface):
     """
-    Base class for the attenuators. Does not include filters, because the
-    number of filters can vary.
+    Base class for the attenuators.
+
+    This is a device that puts an array of filters in or out to achieve a
+    desired transmission ratio.
+
+    This class does not include filters, because the number of filters can
+    vary. You should not instantiate this class directly, but instead use the
+    `Attenuator` factory function.
     """
     # Positioner Signals
     setpoint = Cmp(EpicsSignal, ':COM:R_DES')
@@ -87,7 +102,7 @@ class AttBase(PVPositioner, FltMvInterface):
 
         Parameters
         ----------
-        energy: number, optional
+        energy: ``number``, optional
             If provided, this is the energy we'll use for the transmission
             calcluations. If omitted, we'll clear any set energy and use the
             current beam energy instead.
@@ -112,20 +127,20 @@ class AttBase(PVPositioner, FltMvInterface):
     @property
     def inserted(self):
         """
-        True if any blade is inserted
+        ``True`` if any blade is inserted
         """
         return self.position < 1
 
     @property
     def removed(self):
         """
-        True if all blades are removed
+        ``True`` if all blades are removed
         """
         return self.position == 1
 
     def insert(self, wait=False, timeout=None, moved_cb=None):
         """
-        Block the beam
+        Block the beam by setting transmission to zero
         """
         return self.move(0, wait=wait, timeout=timeout, moved_cb=moved_cb)
 
@@ -138,6 +153,11 @@ class AttBase(PVPositioner, FltMvInterface):
     def stage(self):
         """
         Store the original positions of all filter blades.
+
+        This is a ``bluesky`` method called to set up the device for a scan.
+        At the end of the scan, ``unstage`` should be called to restore the
+        original positions of the filter blades.
+
         This is better then storing and restoring the transmission because the
         mechanical state associated with a particular transmission changes with
         the beam energy.
@@ -154,6 +174,10 @@ class AttBase(PVPositioner, FltMvInterface):
     def _setup_move(self, position):
         """
         If we're at a destination, short-circuit the done.
+
+        This was needed because the status pv in the attenuator IOC does not
+        react if we request a move to a transmission we've already reached.
+        Therefore, this prevents a pointless timeout.
         """
         old_position = self.position
         super()._setup_move(position)
@@ -167,8 +191,11 @@ class AttBase(PVPositioner, FltMvInterface):
 
 class AttBase3rd(AttBase):
     """
-    Attenuator class to use the 3rd harmonic values instead of the fundamental
-    values.
+    `Attenuator` class to use the 3rd harmonic values.
+
+    This is exactly the same as the normal `AttBase`, but with the alternative
+    transmission PVs. It can be instantiated using the ``use_3rd`` argument in
+    the `Attenuator` factory function.
     """
     # Positioner Signals
     setpoint = Cmp(EpicsSignal, ':COM:R3_DES')
@@ -182,6 +209,9 @@ class AttBase3rd(AttBase):
 
 
 def _make_att_classes(max_filters, base, name):
+    """
+    Generate all possible subclasses.
+    """
     att_classes = {}
     for i in range(1, max_filters + 1):
         att_filters = {}
@@ -203,8 +233,28 @@ _att3_classes = _make_att_classes(MAX_FILTERS, AttBase3rd, 'Attenuator3rd')
 
 def Attenuator(prefix, n_filters, *, name, use_3rd=False, **kwargs):
     """
-    Factory function for instantiating an attenuator with the correct filter
-    components given the number required.
+    A series of filters that attenuates the beam.
+
+    This is a factory function for instantiating a subclass of `AttBase` or
+    `AttBase3rd` with the correct number of `Filter` components.
+
+    The `Filter` components will be named ``filter1``, ``filter2``, ...
+    ``filter10``, ...
+
+    Parameters
+    ----------
+    prefix: ``str``
+        The EPICS prefix that identifies the attenuator, e.g. ``XPP:ATT``
+
+    n_filters: ``int``
+        The number of filters in the attenuator.
+
+    name: ``str``
+        An identifying name for the attenuator.
+
+    use_3rd: ``bool``, optional
+        If ``True``, we'll use the third harmonic transmissions instead of the
+        fundamntal frequency.
     """
     if use_3rd:
         cls = _att3_classes[n_filters]
