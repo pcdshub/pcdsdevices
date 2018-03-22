@@ -242,7 +242,12 @@ class IMS(PCDSMotorBase):
         self.reinit_command.put(1)
         # Generate a status
         st = SubscriptionStatus(self.error_severity,
-                                lambda x: x != 3)
+                                lambda x: x != 3,
+                                settle_time=0.5)
+        # Wait on status if requested
+        if wait:
+            status_wait(st)
+        return st
 
     def clear_all_flags(self, wait=False):
         """
