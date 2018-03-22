@@ -211,13 +211,19 @@ class IMS(PCDSMotorBase):
     bit_status = Component(EpicsSignalRO, '.MSTA')
     seq_seln = Component(EpicsSignal, ':SEQ_SELN')
     error_severity = Component(EpicsSignal, '.SEVR')
+    part_number = Component(EpicsSignalRO, '.PN')
 
     def stage(self):
         """
         State the IMS motor
 
-        This clears all present flags on the motor
+        This clears all present flags on the motor and reinitializes the motor
+        if we don't register a valid part number
         """
+        # Check the part number to avoid crashing the IOC
+        if not self.part_number.get():
+            self.reinitialize(wait=True)
+        # Clear any pre-existing flags
         self.clear_all_flags(wait=True)
         self.stage()
 
