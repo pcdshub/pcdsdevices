@@ -212,6 +212,15 @@ class IMS(PCDSMotorBase):
     seq_seln = Component(EpicsSignal, ':SEQ_SELN')
     error_severity = Component(EpicsSignal, '.SEVR')
 
+    def stage(self):
+        """
+        State the IMS motor
+
+        This clears all present flags on the motor
+        """
+        self.clear_all_flags(wait=True)
+        self.stage()
+
     def auto_setup(self):
         """
         Automated setup of the IMS motor
