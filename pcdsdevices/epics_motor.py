@@ -199,7 +199,7 @@ class IMS(PCDSMotorBase):
     """
     __doc__ += basic_positioner_init
     # Bit masks to clear errors and flags
-    bit_flags = {'powerup': {'clear': 36,
+    _bit_flags = {'powerup': {'clear': 36,
                              'readback':  24},
                  'stall': {'clear': 40,
                            'readback': 24},
@@ -279,9 +279,9 @@ class IMS(PCDSMotorBase):
         return self._clear_flag('error', wait=wait)
 
     def _clear_flag(self, flag, wait=False):
-        """Clear flag whose information is in ``.bit_flags``"""
+        """Clear flag whose information is in ``._bit_flags``"""
         # Gather our flag information
-        flag_info = self.bit_flags[flag]
+        flag_info = self._bit_flags[flag]
         bit = flag_info['readback']
         mask = flag_info.get('mask', 1)
 
