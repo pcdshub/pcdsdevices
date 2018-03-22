@@ -223,11 +223,8 @@ class IMS(PCDSMotorBase):
         # Reinitialize if necessary
         if self.error_severity.get() == 3:
             self.reinitalize(wait=True)
-        # Issue flag commands and collect statuses
-        st = [func() for func in (self.clear_powerup,
-                                  self.clear_stall,
-                                  self.clear_error)]
-        status_wait(st[0] & st[1] & st[2])
+        # Clear all flags
+        self.clear_all_flags(wait=True)
 
     def reinitalize(self, wait=False):
         """Reinitialize the IMS motor"""
@@ -237,6 +234,25 @@ class IMS(PCDSMotorBase):
         # Generate a status
         st = SubscriptionStatus(self.error_severity,
                                 lambda x: x != 3)
+
+    def clear_all_flags(self, wait=False):
+        """
+        Clear all the flags from the IMS motor
+
+        Parameters
+        ----------
+        wait: bool
+
+        Returns
+        -------
+        AndStatus:
+            Combined status of clearing all flags
+        """
+        # Issue flag commands and collect statuses
+        st = [func() for func in (self.clear_powerup,
+                                  self.clear_stall,
+                                  self.clear_error)]
+        status_wait(st[0] & st[1] & st[2])
         if wait:
             status_wait(st)
         return st
