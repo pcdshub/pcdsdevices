@@ -200,12 +200,12 @@ class IMS(PCDSMotorBase):
     __doc__ += basic_positioner_init
     # Bit masks to clear errors and flags
     _bit_flags = {'powerup': {'clear': 36,
-                             'readback':  24},
-                 'stall': {'clear': 40,
-                           'readback': 24},
-                 'error': {'clear': 48,
-                           'readback': 22,
-                           'mask': 0x7f}}
+                              'readback':  24},
+                  'stall': {'clear': 40,
+                            'readback': 24},
+                  'error': {'clear': 48,
+                            'readback': 22,
+                            'mask': 0x7f}}
     # Custom IMS bit fields
     reinit_command = Component(EpicsSignal, '.RINI')
     bit_status = Component(EpicsSignalRO, '.MSTA')
