@@ -5,7 +5,7 @@ import logging
 
 from ophyd.utils import LimitError
 from ophyd import EpicsMotor, Component, EpicsSignalRO, EpicsSignal, Signal
-from ophyd.status import SubscriptionStatus, wait as status_wait
+from ophyd.status import DeviceStatus, SubscriptionStatus, wait as status_wait
 
 from .doc_stubs import basic_positioner_init
 from .mv_interface import FltMvInterface
@@ -267,7 +267,8 @@ class IMS(PCDSMotorBase):
         # Check that we need to actually set the flag
         if not flag_is_present(self.status.get()):
             logger.debug("%s flag is not currently active", flag)
-            return
+            return DeviceStatus(self, done=True, success=True)
+
         # Issue our command
         logger.info('Clearing %s flag ...', flag)
         self.seq_seln.put(flag_info['clear'])
