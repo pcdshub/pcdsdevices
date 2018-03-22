@@ -208,7 +208,7 @@ class IMS(PCDSMotorBase):
                            'mask': 0x7f}}
     # Custom IMS bit fields
     reinit_command = Component(EpicsSignal, '.RINI')
-    status = Component(EpicsSignalRO, '.MSTA')
+    bit_status = Component(EpicsSignalRO, '.MSTA')
     seq_seln = Component(EpicsSignal, ':SEQ_SELN')
     error_severity = Component(EpicsSignal, '.SEVR')
 
@@ -290,7 +290,7 @@ class IMS(PCDSMotorBase):
             return (int(msta) >> bit) & mask
 
         # Check that we need to actually set the flag
-        if not flag_is_present(self.status.get()):
+        if not flag_is_present(self.bit_status.get()):
             logger.debug("%s flag is not currently active", flag)
             return DeviceStatus(self, done=True, success=True)
 
