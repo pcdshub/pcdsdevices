@@ -1,6 +1,8 @@
 """
 Module for defining bell-and-whistles movement features
 """
+from pathlib import Path
+
 from bluesky.utils import ProgressBar
 from ophyd.status import wait as status_wait
 
@@ -120,3 +122,39 @@ class FltMvInterface(MvInterface):
             will be use.
         """
         self.umv(delta + self.wm(), timeout=timeout)
+
+
+class Presets:
+    """
+    Manager for device preset positions.
+
+    Parameters
+    ----------
+    device: ``Device``
+        The device to manage saved preset positions for
+
+    paths: ``dict{str: str}``
+        A mapping from type of preset to destination path.
+    """
+    def __init__(self, device, paths):
+        self._device = device
+        self._paths = {}
+        for k, v in paths.items():
+            self._paths[k] = Path(v)
+        self._methods = []
+        self._load_all()
+
+    def _save(self, path, name, position):
+        pass
+
+    def _save_here(self, path, name):
+        pass
+
+    def _load(self, path):
+        pass
+
+    def _load_all(self):
+        pass
+
+    def _delete(self, path, name):
+        pass
