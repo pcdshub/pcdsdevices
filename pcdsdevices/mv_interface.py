@@ -156,5 +156,11 @@ class Presets:
     def _load_all(self):
         pass
 
+    def _clear_load(self, path):
+        pass
+
+    def _clear_load_all(self):
+        pass
+
     def _delete(self, path, name):
         pass
