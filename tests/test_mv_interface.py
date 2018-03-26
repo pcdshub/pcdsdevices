@@ -1,16 +1,20 @@
 import time
 import threading
+import os
+import shutil
 import logging
 
 import pytest
 from ophyd.positioner import SoftPositioner
 
-from pcdsdevices.mv_interface import FltMvInterface
+from pcdsdevices.mv_interface import FltMvInterface, setup_preset_paths
 
 logger = logging.getLogger(__name__)
 
 
 class Motor(SoftPositioner, FltMvInterface):
+    _name = 'test'
+
     def __init__(self):
         super().__init__(name='test')
         self._set_position(0)
@@ -45,6 +49,19 @@ def motor():
     return Motor()
 
 
+@pytest.fixture(scope='function')
+def presets_motor():
+    folder = 'test_presets'
+    bl = folder + '/beamline'
+    user = folder + '/user'
+    os.makedirs(bl)
+    os.makedirs(user)
+    setup_preset_paths(beamline=bl, user=user)
+    yield Motor()
+    setup_preset_paths()
+    shutil.rmtree(folder)
+
+
 @pytest.mark.timeout(5)
 def test_mv(motor):
     logger.debug('test_mv')
@@ -60,3 +77,38 @@ def test_umv(motor):
     motor._set_position(5)
     motor.umvr(2)
     assert motor.position == 7
+
+
+def test_presets(presets_motor):
+    presets_motor.mv(3, wait=True)
+    presets_motor.add_beamline('zero', 0, comment='center')
+    presets_motor.add_here_user('sample')
+    assert presets_motor.wm_zero() == -3
+    assert presets_motor.wm_sample() == 0
+
+    presets_motor.mv_zero(1, wait=True)
+    assert presets_motor.wm_zero() == 1
+    assert presets_motor.wm() == 1
+    assert presets_motor.presets.positions.zero.comment == 'center'
+
+    presets_motor.presets.positions.zero.update_pos()
+    assert presets_motor.wm_zero() == 0
+    assert presets_motor.presets.positions.zero.pos == 1
+
+    presets_motor.presets.positions.zero.update_comment('uno')
+    assert presets_motor.presets.positions.zero.comment == 'uno'
+    assert presets_motor.presets.positions.sample.comment is None
+    assert len(presets_motor.presets.positions.zero.history) == 1
+    assert len(presets_motor.presets.positions.sample.history) == 0
+
+    repr(presets_motor.presets.positions.zero)
+    presets_motor.presets.positions.zero.deactivate()
+
+    with pytest.raises(AttributeError):
+        presets_motor.wm_zero()
+
+    with pytest.raises(AttributeError):
+        presets_motor.presets.positions.zero
+
+    presets_motor.mv_sample(wait=True)
+    assert presets_motor.wm() == 3
