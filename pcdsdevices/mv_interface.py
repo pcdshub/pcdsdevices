@@ -2,6 +2,7 @@
 Module for defining bell-and-whistles movement features
 """
 from pathlib import Path
+from types import SimpleNamespace
 
 from bluesky.utils import ProgressBar
 from ophyd.status import wait as status_wait
@@ -126,23 +127,36 @@ class FltMvInterface(MvInterface):
 
 class Presets:
     """
-    Manager for device preset positions.
+    Manager for device preset positions. This provides methods for adding new
+    presets, checking which presets are active, and related utilities.
 
     Parameters
     ----------
     device: ``Device``
-        The device to manage saved preset positions for
+        The device to manage saved preset positions for. It must implement the
+        `FltMvInterface`.
 
     paths: ``dict{str: str}``
-        A mapping from type of preset to destination path.
+        A mapping from type of preset to destination path. These will be
+        directories that contain the yaml files that define the preset
+        positions.
     """
+    _MAX_HISTORY_LENGTH = 5
+
     def __init__(self, device, paths):
         self._device = device
         self._paths = {}
         for k, v in paths.items():
             self._paths[k] = Path(v)
         self._methods = []
-        self._load_all()
+        self.positions = SimpleNamespace()
+        self.sync()
+
+    def sync(self):
+        """
+        Read from the database and create methods and objects appropriately.
+        """
+        pass
 
     def _save(self, path, name, position):
         pass
@@ -153,14 +167,71 @@ class Presets:
     def _load(self, path):
         pass
 
-    def _load_all(self):
-        pass
-
-    def _clear_load(self, path):
+    def _clear_load(self, name):
         pass
 
     def _clear_load_all(self):
         pass
 
-    def _delete(self, path, name):
+    def _delete(self, path, name, deactivate=True):
+        """
+        Remove an entry from the database.
+
+        Parameters
+        ----------
+        path: ``Path``
+            Directory to use
+
+        name: ``str``
+            Name of the device, which informs the file name to find
+
+        deactivate: ``bool``, optional
+            If ``True``, we'll simply mark the preset as inactive. If
+            ``False``, we'll permenantly remove it.
+        """
         pass
+
+
+class PresetPosition:
+    """
+    Manager for a single preset position.
+
+    Parameters
+    ----------
+    presets: `Presets`
+        The main `Presets` object that manages this position.
+
+    name: ``str``
+        The name of this preset position.
+    """
+    def __init__(self, presets, name):
+        self._presets = presets
+        self._name = name
+
+    def update(self, pos=None):
+        """
+        Change this preset position and save it.
+
+        Parameters
+        ----------
+        pos: ``float``, optional
+            The position to use for this preset. If omitted, we'll use the
+            current position.
+        """
+        if pos is None:
+            self._presets._add_here(self._name)
+        else:
+            self._presets._add(self._name, pos)
+
+    def delete(self, deactivate=True):
+        """
+        Remove this preset from the device. By default, this will only
+        deactivate the name, not permenantly delete it.
+
+        Parameters
+        ----------
+        deactivate: ``bool``, optional
+            This can be changed to ``False`` to permenantly delete a preset
+            instead of just deactivating it.
+        """
+        self._presets.delete(self._name, deactivate=deactivate)
