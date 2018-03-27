@@ -208,7 +208,9 @@ class Presets:
         try:
             data = self._read(preset_type)
         except FileNotFoundError:
-            data = {name: {}}
+            data = {}
+        if name not in data:
+            data[name] = {}
         if value is not None:
             try:
                 old_value = data[name]['value']
@@ -253,9 +255,10 @@ class Presets:
             self._register_method(self, 'add_here_' + preset_type, add_here)
         for preset_type, data in self._cache.items():
             for name in data.keys():
-                mv = self._make_mv_pre(preset_type, name)
+                mv, umv = self._make_mv_pre(preset_type, name)
                 wm = self._make_wm_pre(preset_type, name)
                 self._register_method(self._device, 'mv_' + name, mv)
+                self._register_method(self._device, 'umv_' + name, umv)
                 self._register_method(self._device, 'wm_' + name, wm)
                 setattr(self.positions, name,
                         PresetPosition(self, preset_type, name))
@@ -288,9 +291,9 @@ class Presets:
             comment: ``str``, optional
                 A comment to associate with the preset position.
             """.format(preset_type)
-            self.presets._update(preset_type, name, value=value,
-                                 comment=comment)
-            self.presets.sync()
+            self._update(preset_type, name, value=value,
+                         comment=comment)
+            self.sync()
 
         def add_here(self, name, comment=None):
             """
@@ -304,13 +307,13 @@ class Presets:
             comment: ``str``, optional
                 A comment to associate with the preset position.
             """.format(preset_type)
-            add(name, self.wm(), comment=comment)
+            add(self, name, self._device.wm(), comment=comment)
         return add, add_here
 
     def _make_mv_pre(self, preset_type, name):
         """
-        Create a suitable version of ``mv`` for a particular preset type and
-        name e.g. ``mv_sample``.
+        Create a suitable versions of ``mv`` and ``umv`` for a particular
+        preset type and name e.g. ``mv_sample``.
         """
         def mv_pre(self, offset=0, timeout=None, wait=False):
             """
@@ -333,7 +336,26 @@ class Presets:
             """.format(name)
             pos = self.presets._cache[preset_type][name]['value']
             self.mv(pos+offset, timeout=timeout, wait=wait)
-        return mv_pre
+
+        def umv_pre(self, offset=0, timeout=None):
+            """
+            Update move to the {} preset position, or to a fixed offset from
+            it.
+
+            Parameters
+            ----------
+            offset: ``float``, optional
+                Offset from the preset position. If omitted, we'll move
+                as close to the preset position as possible.
+
+            timeout: ``float``, optional
+                If provided, the mover will throw an error if motion takes
+                longer than timeout to complete. If omitted, the mover's
+                default timeout will be use.
+            """
+            pos = self.presets._cache[preset_type][name]['value']
+            self.umv(pos+offset, timeout=timeout)
+        return mv_pre, umv_pre
 
     def _make_wm_pre(self, preset_type, name):
         """
@@ -420,25 +442,32 @@ class PresetPosition:
         self._presets.sync()
 
     @property
+    def info(self):
+        """
+        All information associated with this preset.
+        """
+        return self._presets._cache[self._preset_type][self._name]
+
+    @property
     def pos(self):
         """
         The set position of this preset.
         """
-        return self._presets._cache[self._preset_type][self._name]['value']
+        return self.info['value']
 
     @property
     def comment(self):
         """
         The comment associated with this preset.
         """
-        return self._presets._cache[self._preset_type][self._name]['comment']
+        return self.info.get('comment')
 
     @property
     def history(self):
         """
         This position history associated with this preset.
         """
-        return self._presets._cache[self._preset_type][self._name]['history']
+        return self.info.get('history')
 
     def __repr__(self):
         return self.pos

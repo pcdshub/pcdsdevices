@@ -99,7 +99,7 @@ def test_presets(presets_motor):
     assert presets_motor.presets.positions.zero.comment == 'uno'
     assert presets_motor.presets.positions.sample.comment is None
     assert len(presets_motor.presets.positions.zero.history) == 1
-    assert len(presets_motor.presets.positions.sample.history) == 0
+    assert presets_motor.presets.positions.sample.history is None
 
     repr(presets_motor.presets.positions.zero)
     presets_motor.presets.positions.zero.deactivate()
@@ -110,5 +110,5 @@ def test_presets(presets_motor):
     with pytest.raises(AttributeError):
         presets_motor.presets.positions.zero
 
-    presets_motor.mv_sample(wait=True)
+    presets_motor.umv_sample()
     assert presets_motor.wm() == 3
