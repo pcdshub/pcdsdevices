@@ -2,6 +2,7 @@
 Module for defining bell-and-whistles movement features
 """
 import time
+import logging
 from pathlib import Path
 from types import SimpleNamespace, MethodType
 
@@ -9,6 +10,8 @@ import yaml
 
 from bluesky.utils import ProgressBar
 from ophyd.status import wait as status_wait
+
+logger = logging.getLogger(__name__)
 
 
 class MvInterface:
@@ -175,6 +178,7 @@ class Presets:
     def __init__(self, device):
         self._device = device
         self._methods = []
+        self.name = device.name + '_presets'
         self.sync()
 
     def _path(self, preset_type):
@@ -182,12 +186,15 @@ class Presets:
         Utility function go get the proper ``Path`` object that points to the
         presets file.
         """
-        return self._paths[preset_type] / (self._device.name + '.yml')
+        path = self._paths[preset_type] / (self._device.name + '.yml')
+        logger.debug('select presets path %s', path)
+        return path
 
     def _read(self, preset_type):
         """
         Utility function to get a particular preset's datum dictionary.
         """
+        logger.debug('read presets for %s', self._device.name)
         with self._path(preset_type).open('r') as f:
             return yaml.load(f)
 
@@ -195,6 +202,7 @@ class Presets:
         """
         Utility function to overwrite a particular preset's datum dictionary.
         """
+        logger.debug('write presets for %s', self._device.name)
         with self._path(preset_type).open('w') as f:
             yaml.dump(data, f, default_flow_style=False)
 
@@ -205,6 +213,9 @@ class Presets:
         the comment, and the active state, and then write the datum back to the
         file, updating the last updated time and history accordingly.
         """
+        logger.debug(('call %s presets._update(%s, %s, value=%s, comment=%s, '
+                      'active=%s'), self._device.name, preset_type, name,
+                     value, comment, active)
         try:
             data = self._read(preset_type)
         except FileNotFoundError:
@@ -212,15 +223,12 @@ class Presets:
         if name not in data:
             data[name] = {}
         if value is not None:
-            try:
-                old_value = data[name]['value']
-                old_ts = data[name]['last_updated']
-                history = data[name].get('history', [])
-                data[name]['history'] = history.append((old_value, old_ts))
-            except KeyError:
-                pass
+            ts = time.strftime('%d %b %Y %H:%M:%S')
             data[name]['value'] = value
-            data[name]['last_updated'] = time.strftime('%d %b %Y %H:%M:%S')
+            data[name]['last_updated'] = ts
+            history = data[name].get('history', {})
+            history[ts] = value
+            data[name]['history'] = history
         if comment is not None:
             data[name]['comment'] = comment
         if active:
@@ -233,6 +241,7 @@ class Presets:
         """
         Synchronize the presets with the database.
         """
+        logger.debug('call %s presets.sync()', self._device.name)
         self._remove_methods()
         self._cache = {}
         for preset_type in self._paths.keys():
@@ -249,25 +258,28 @@ class Presets:
         add `PresetPosition` instances to ``self.positions`` for each preset
         name.
         """
+        logger.debug('call %s presets._create_methods()', self._device.name)
         for preset_type in self._paths.keys():
             add, add_here = self._make_add(preset_type)
             self._register_method(self, 'add_' + preset_type, add)
             self._register_method(self, 'add_here_' + preset_type, add_here)
         for preset_type, data in self._cache.items():
-            for name in data.keys():
-                mv, umv = self._make_mv_pre(preset_type, name)
-                wm = self._make_wm_pre(preset_type, name)
-                self._register_method(self._device, 'mv_' + name, mv)
-                self._register_method(self._device, 'umv_' + name, umv)
-                self._register_method(self._device, 'wm_' + name, wm)
-                setattr(self.positions, name,
-                        PresetPosition(self, preset_type, name))
+            for name, info in data.items():
+                if info['active']:
+                    mv, umv = self._make_mv_pre(preset_type, name)
+                    wm = self._make_wm_pre(preset_type, name)
+                    self._register_method(self._device, 'mv_' + name, mv)
+                    self._register_method(self._device, 'umv_' + name, umv)
+                    self._register_method(self._device, 'wm_' + name, wm)
+                    setattr(self.positions, name,
+                            PresetPosition(self, preset_type, name))
 
     def _register_method(self, obj, method_name, method):
         """
         Utility function to add a method to the ``_methods`` list and to bind
         the method to an object.
         """
+        logger.debug('register method %s to %s', method_name, obj.name)
         self._methods.append((obj, method_name))
         setattr(obj, method_name, MethodType(method, obj))
 
@@ -315,16 +327,12 @@ class Presets:
         Create a suitable versions of ``mv`` and ``umv`` for a particular
         preset type and name e.g. ``mv_sample``.
         """
-        def mv_pre(self, offset=0, timeout=None, wait=False):
+        def mv_pre(self, timeout=None, wait=False):
             """
-            Move to the {} preset position, or to a fixed offset from it.
+            Move to the {} preset position.
 
             Parameters
             ----------
-            offset: ``float``, optional
-                Offset from the preset position. If omitted, we'll move
-                as close to the preset position as possible.
-
             timeout: ``float``, optional
                 If provided, the mover will throw an error if motion takes
                 longer than timeout to complete. If omitted, the mover's
@@ -335,26 +343,21 @@ class Presets:
                 Defaults to ``False``.
             """.format(name)
             pos = self.presets._cache[preset_type][name]['value']
-            self.mv(pos+offset, timeout=timeout, wait=wait)
+            self.mv(pos, timeout=timeout, wait=wait)
 
-        def umv_pre(self, offset=0, timeout=None):
+        def umv_pre(self, timeout=None):
             """
-            Update move to the {} preset position, or to a fixed offset from
-            it.
+            Update move to the {} preset position.
 
             Parameters
             ----------
-            offset: ``float``, optional
-                Offset from the preset position. If omitted, we'll move
-                as close to the preset position as possible.
-
             timeout: ``float``, optional
                 If provided, the mover will throw an error if motion takes
                 longer than timeout to complete. If omitted, the mover's
                 default timeout will be use.
             """
             pos = self.presets._cache[preset_type][name]['value']
-            self.umv(pos+offset, timeout=timeout)
+            self.umv(pos, timeout=timeout)
         return mv_pre, umv_pre
 
     def _make_wm_pre(self, preset_type, name):
@@ -370,16 +373,18 @@ class Presets:
             -------
             offset: ``float``
                 How far we are from the preset position. If this is near zero,
-                we are at the position.
+                we are at the position. If this positive, the preset position
+                is in the positive direction from us.
             """.format(preset_type)
             pos = self.presets._cache[preset_type][name]['value']
-            return self.wm() - pos
+            return pos - self.wm()
         return wm_pre
 
     def _remove_methods(self):
         """
         Remove all methods created in the last call to _create_methods.
         """
+        logger.debug('call %s presets._remove_methods()', self._device.name)
         for obj, method_name in self._methods:
             try:
                 delattr(obj, method_name)
@@ -430,7 +435,7 @@ class PresetPosition:
         comment: ``str``
             The comment to save for this preset.
         """
-        self._presets.update(self._preset_type, self._name, comment=comment)
+        self._presets._update(self._preset_type, self._name, comment=comment)
         self._presets.sync()
 
     def deactivate(self):
@@ -470,4 +475,4 @@ class PresetPosition:
         return self.info.get('history')
 
     def __repr__(self):
-        return self.pos
+        return str(self.pos)

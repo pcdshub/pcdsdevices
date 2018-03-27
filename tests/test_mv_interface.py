@@ -81,13 +81,14 @@ def test_umv(motor):
 
 def test_presets(presets_motor):
     presets_motor.mv(3, wait=True)
-    presets_motor.add_beamline('zero', 0, comment='center')
-    presets_motor.add_here_user('sample')
+    presets_motor.presets.add_beamline('zero', 0, comment='center')
+    presets_motor.presets.add_here_user('sample')
     assert presets_motor.wm_zero() == -3
     assert presets_motor.wm_sample() == 0
 
-    presets_motor.mv_zero(1, wait=True)
-    assert presets_motor.wm_zero() == 1
+    presets_motor.mv_zero(wait=True)
+    presets_motor.mvr(1, wait=True)
+    assert presets_motor.wm_zero() == -1
     assert presets_motor.wm() == 1
     assert presets_motor.presets.positions.zero.comment == 'center'
 
