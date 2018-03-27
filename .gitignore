@@ -13,3 +13,6 @@ logs
 
 # Sphinx
 docs/source/generated/*
+
+#pytest
+.pytest_cache
