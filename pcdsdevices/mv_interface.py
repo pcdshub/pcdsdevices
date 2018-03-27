@@ -301,7 +301,7 @@ class Presets:
 
             comment: ``str``, optional
                 A comment to associate with the preset position.
-            """.format(preset_type)
+            """
             self._update(preset_type, name, value=value,
                          comment=comment)
             self.sync()
@@ -317,8 +317,11 @@ class Presets:
 
             comment: ``str``, optional
                 A comment to associate with the preset position.
-            """.format(preset_type)
+            """
             add(self, name, self._device.wm(), comment=comment)
+
+        add.__doc__ = add.__doc__.format(preset_type)
+        add_here.__doc__ = add_here.__doc__.format(preset_type)
         return add, add_here
 
     def _make_mv_pre(self, preset_type, name):
@@ -340,7 +343,7 @@ class Presets:
             wait: ``bool``, optional
                 If ``True``, wait for motion completion before returning.
                 Defaults to ``False``.
-            """.format(name)
+            """
             pos = self.presets._cache[preset_type][name]['value']
             self.mv(pos, timeout=timeout, wait=wait)
 
@@ -357,6 +360,9 @@ class Presets:
             """
             pos = self.presets._cache[preset_type][name]['value']
             self.umv(pos, timeout=timeout)
+
+        mv_pre.__doc__ = mv_pre.__doc__.format(name)
+        umv_pre.__doc__ = umv_pre.__doc__.format(name)
         return mv_pre, umv_pre
 
     def _make_wm_pre(self, preset_type, name):
@@ -374,9 +380,11 @@ class Presets:
                 How far we are from the preset position. If this is near zero,
                 we are at the position. If this positive, the preset position
                 is in the positive direction from us.
-            """.format(preset_type)
+            """
             pos = self.presets._cache[preset_type][name]['value']
             return pos - self.wm()
+
+        wm_pre.__doc__ = wm_pre.__doc__.format(name)
         return wm_pre
 
     def _remove_methods(self):
