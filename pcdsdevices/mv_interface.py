@@ -225,7 +225,6 @@ class Presets:
         if value is not None:
             ts = time.strftime('%d %b %Y %H:%M:%S')
             data[name]['value'] = value
-            data[name]['last_updated'] = ts
             history = data[name].get('history', {})
             history[ts] = value
             data[name]['history'] = history
@@ -472,7 +471,7 @@ class PresetPosition:
         """
         This position history associated with this preset.
         """
-        return self.info.get('history')
+        return self.info['history']
 
     def __repr__(self):
         return str(self.pos)

@@ -99,8 +99,8 @@ def test_presets(presets_motor):
     presets_motor.presets.positions.zero.update_comment('uno')
     assert presets_motor.presets.positions.zero.comment == 'uno'
     assert presets_motor.presets.positions.sample.comment is None
-    assert len(presets_motor.presets.positions.zero.history) == 1
-    assert presets_motor.presets.positions.sample.history is None
+    assert len(presets_motor.presets.positions.zero.history) == 2
+    assert len(presets_motor.presets.positions.sample.history) == 1
 
     repr(presets_motor.presets.positions.zero)
     presets_motor.presets.positions.zero.deactivate()
