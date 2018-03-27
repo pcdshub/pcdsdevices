@@ -76,8 +76,7 @@ class FltMvInterface(MvInterface):
     This lets us do more with the interface, such as relative moves.
     """
     def __init__(self, *args, **kwargs):
-        if Presets._paths:
-            self.presets = Presets(self)
+        self.presets = Presets(self)
         super().__init__(*args, **kwargs)
 
     def mvr(self, delta, timeout=None, wait=False):
@@ -154,6 +153,8 @@ def setup_preset_paths(**paths):
     Presets._paths = {}
     for k, v in paths.items():
         Presets._paths[k] = Path(v)
+    for preset in Presets._registry.values():
+        preset.sync()
 
 
 class Presets:
@@ -178,11 +179,13 @@ class Presets:
         A namespace that contains all of the active presets as `PresetPosition`
         objects.
     """
+    _registry = {}
     _paths = {}
 
     def __init__(self, device):
         self._device = device
         self._methods = []
+        self._registry[device.name] = self
         self.name = device.name + '_presets'
         self.sync()
 

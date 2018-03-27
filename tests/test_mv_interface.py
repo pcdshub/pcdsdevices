@@ -87,6 +87,14 @@ def test_presets(presets_motor):
     assert presets_motor.wm_zero() == -3
     assert presets_motor.wm_sample() == 0
 
+    # Clear paths, refresh, should still exist
+    old_paths = presets_motor.presets._paths
+    setup_preset_paths()
+    assert not hasattr(presets_motor, 'wm_zero')
+    setup_preset_paths(**old_paths)
+    assert presets_motor.wm_zero() == -3
+    assert presets_motor.wm_sample() == 0
+
     presets_motor.mv_zero(wait=True)
     presets_motor.mvr(1, wait=True)
     assert presets_motor.wm_zero() == -1
