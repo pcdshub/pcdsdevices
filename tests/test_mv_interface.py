@@ -3,6 +3,7 @@ import threading
 import os
 import shutil
 import logging
+from pathlib import Path
 
 import pytest
 from ophyd.positioner import SoftPositioner
@@ -51,7 +52,7 @@ def motor():
 
 @pytest.fixture(scope='function')
 def presets_motor():
-    folder = 'test_presets'
+    folder = str(Path(__file__).parent / 'test_presets')
     bl = folder + '/beamline'
     user = folder + '/user'
     os.makedirs(bl)
@@ -92,6 +93,8 @@ def test_presets(presets_motor):
     assert presets_motor.wm() == 1
     assert presets_motor.presets.positions.zero.comment == 'center'
 
+    # Sleep for one so we don't override old history
+    time.sleep(1)
     presets_motor.presets.positions.zero.update_pos()
     assert presets_motor.wm_zero() == 0
     assert presets_motor.presets.positions.zero.pos == 1

@@ -214,7 +214,7 @@ class Presets:
         file, updating the last updated time and history accordingly.
         """
         logger.debug(('call %s presets._update(%s, %s, value=%s, comment=%s, '
-                      'active=%s'), self._device.name, preset_type, name,
+                      'active=%s)'), self._device.name, preset_type, name,
                      value, comment, active)
         try:
             data = self._read(preset_type)
