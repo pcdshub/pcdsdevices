@@ -57,6 +57,8 @@ class MvInterface:
 
     def __call__(self, position=None, timeout=None, wait=False):
         """
+        Dispatches to `mv` or `wm` based on the arguments.
+
         Calling the object will either move the object or get the current
         position, depending on if the position argument is given. See the
         docstrings for `mv` and `wm`.
@@ -69,7 +71,7 @@ class MvInterface:
 
 class FltMvInterface(MvInterface):
     """
-    Extension of MvInterface for when the position is a float.
+    Extension of `MvInterface` for when the position is a ``float``.
 
     This lets us do more with the interface, such as relative moves.
     """
@@ -84,17 +86,17 @@ class FltMvInterface(MvInterface):
 
         Parameters
         ----------
-        delta: float
+        delta: ``float``
             Desired change in position
 
-        timeout: number, optional
+        timeout: ``float``, optional
             If provided, the mover will throw an error if motion takes longer
             than timeout to complete. If omitted, the mover's default timeout
             will be use.
 
-        wait: bool, optional
-            If True, wait for motion completion before returning. Defaults to
-            False.
+        wait: ``bool``, optional
+            If ``True``, wait for motion completion before returning. Defaults
+            to ``False``.
         """
         self.mv(delta + self.wm(), timeout=timeout, wait=wait)
 
@@ -104,10 +106,10 @@ class FltMvInterface(MvInterface):
 
         Parameters
         ----------
-        position: float
+        position: ``float``
             Desired end position
 
-        timeout: number, optional
+        timeout: ``float``, optional
             If provided, the mover will throw an error if motion takes longer
             than timeout to complete. If omitted, the mover's default timeout
             will be use.
@@ -125,10 +127,10 @@ class FltMvInterface(MvInterface):
 
         Parameters
         ----------
-        delta: float
+        delta: ``float``
             Desired change in position
 
-        timeout: number, optional
+        timeout: ``float``, optional
             If provided, the mover will throw an error if motion takes longer
             than timeout to complete. If omitted, the mover's default timeout
             will be use.
@@ -138,8 +140,9 @@ class FltMvInterface(MvInterface):
 
 def setup_preset_paths(**paths):
     """
-    Prepare the `Presets` class with the correct paths for saving and loading
-    presets.
+    Prepare the `Presets` class.
+
+    Sets the paths for saving and loading presets.
 
     Parameters
     ----------
@@ -155,8 +158,10 @@ def setup_preset_paths(**paths):
 
 class Presets:
     """
-    Manager for device preset positions. This provides methods for adding new
-    presets, checking which presets are active, and related utilities.
+    Manager for device preset positions.
+
+    This provides methods for adding new presets, checking which presets are
+    active, and related utilities.
 
     It will install the ``mv_presetname`` and ``wm_presetname`` methods onto
     the associated device.
@@ -183,8 +188,7 @@ class Presets:
 
     def _path(self, preset_type):
         """
-        Utility function go get the proper ``Path`` object that points to the
-        presets file.
+        Utility function to get the preset file ``Path``.
         """
         path = self._paths[preset_type] / (self._device.name + '.yml')
         logger.debug('select presets path %s', path)
@@ -209,9 +213,11 @@ class Presets:
     def _update(self, preset_type, name, value=None, comment=None,
                 active=True):
         """
-        Utility function to read the existing preset's datum, update the value
-        the comment, and the active state, and then write the datum back to the
-        file, updating the last updated time and history accordingly.
+        Utility function to update a preset position.
+
+        Reads the existing preset's datum, updates the value the comment, and
+        the active state, and then writes the datum back to the file, updating
+        the history accordingly.
         """
         logger.debug(('call %s presets._update(%s, %s, value=%s, comment=%s, '
                       'active=%s)'), self._device.name, preset_type, name,
@@ -252,6 +258,8 @@ class Presets:
 
     def _create_methods(self):
         """
+        Create the dynamic methods based on the configured paths.
+
         Add methods to this object for adding presets of each type, add
         methods to the associated device to move and check each preset, and
         add `PresetPosition` instances to ``self.positions`` for each preset
@@ -275,8 +283,10 @@ class Presets:
 
     def _register_method(self, obj, method_name, method):
         """
-        Utility function to add a method to the ``_methods`` list and to bind
-        the method to an object.
+        Utility function for managing dynamic methods.
+
+        Adds a method to the ``_methods`` list and binds the method to an
+        object.
         """
         logger.debug('register method %s to %s', method_name, obj.name)
         self._methods.append((obj, method_name))
@@ -284,7 +294,9 @@ class Presets:
 
     def _make_add(self, preset_type):
         """
-        Create suitable versions of ``add`` and ``add_here`` for a particular
+        Create the functions that add preset positions.
+
+        Creates suitable versions of ``add`` and ``add_here`` for a particular
         preset type, e.g. ``add_preset_type`` and ``add_here_preset_type``.
         """
         def add(self, name, value, comment=None):
@@ -326,7 +338,9 @@ class Presets:
 
     def _make_mv_pre(self, preset_type, name):
         """
-        Create a suitable versions of ``mv`` and ``umv`` for a particular
+        Create the functions that move to preset positions.
+
+        Creates a suitable versions of ``mv`` and ``umv`` for a particular
         preset type and name e.g. ``mv_sample``.
         """
         def mv_pre(self, timeout=None, wait=False):
@@ -367,7 +381,9 @@ class Presets:
 
     def _make_wm_pre(self, preset_type, name):
         """
-        Create a suitable version of ``wm`` for a particular preset type and
+        Create a method to get the offset from a preset position.
+
+        Creates a suitable version of ``wm`` for a particular preset type and
         name e.g. ``wm_sample``.
         """
         def wm_pre(self):
@@ -447,8 +463,9 @@ class PresetPosition:
 
     def deactivate(self):
         """
-        Deactivate a preset from a device. This can be undone unless you edit
-        the underlying file.
+        Deactivate a preset from a device.
+
+        This can always be undone unless you edit the underlying file.
         """
         self._presets._update(self._preset_type, self._name, active=False)
         self._presets.sync()
