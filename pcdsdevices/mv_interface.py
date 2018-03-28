@@ -234,7 +234,7 @@ class Presets:
 
         Raises
         ------
-        OSError:
+        BlockingIOError:
             If we cannot acquire the file lock.
         """
         if self._fd is None:
@@ -266,22 +266,22 @@ class Presets:
         try:
             with self._file_open_rlock(preset_type):
                 data = self._read(preset_type) or {}
-                if name not in data:
-                    data[name] = {}
+                if value is None and comment is not None:
+                    value = data[name]['value']
                 if value is not None:
+                    if name not in data:
+                        data[name] = {}
                     ts = time.strftime('%d %b %Y %H:%M:%S')
                     data[name]['value'] = value
                     history = data[name].get('history', {})
-                    history[ts] = value
+                    history[ts] = '{:8.4f} {}'.format(value, comment or '')
                     data[name]['history'] = history
-                if comment is not None:
-                    data[name]['comment'] = comment
                 if active:
                     data[name]['active'] = True
                 else:
                     data[name]['active'] = False
                 self._write(preset_type, data)
-        except OSError:
+        except BlockingIOError:
             self._log_flock_error()
 
     def sync(self):
@@ -297,7 +297,7 @@ class Presets:
             if path.exists():
                 try:
                     self._cache[preset_type] = self._read(preset_type)
-                except OSError:
+                except BlockingIOError:
                     self._log_flock_error()
             else:
                 logger.debug('No %s preset file for %s',
@@ -306,7 +306,7 @@ class Presets:
 
     def _log_flock_error(self):
         logger.error(('Unable to acquire file lock for %s. '
-                      'File may be being edited by another user'), self.name)
+                      'File may be being edited by another user.'), self.name)
         logger.debug('', exc_info=True)
 
     def _create_methods(self):
@@ -487,7 +487,7 @@ class PresetPosition:
         self._preset_type = preset_type
         self._name = name
 
-    def update_pos(self, pos=None):
+    def update_pos(self, pos=None, comment=None):
         """
         Change this preset position and save it.
 
@@ -496,20 +496,24 @@ class PresetPosition:
         pos: ``float``, optional
             The position to use for this preset. If omitted, we'll use the
             current position.
+
+        comment: ``str``, optional
+            A comment to associate with the preset position.
         """
         if pos is None:
             pos = self._presets._device.wm()
-        self._presets._update(self._preset_type, self._name, value=pos)
+        self._presets._update(self._preset_type, self._name, value=pos,
+                              comment=comment)
         self._presets.sync()
 
     def update_comment(self, comment):
         """
-        Change the comment and save it.
+        Revise the most recent comment in the preset history.
 
         Parameters
         ----------
         comment: ``str``
-            The comment to save for this preset.
+            A comment to associate with the preset position.
         """
         self._presets._update(self._preset_type, self._name, comment=comment)
         self._presets.sync()
@@ -527,6 +531,10 @@ class PresetPosition:
     def info(self):
         """
         All information associated with this preset.
+
+        Returns
+        -------
+        info: ``dict``
         """
         return self._presets._cache[self._preset_type][self._name]
 
@@ -534,22 +542,34 @@ class PresetPosition:
     def pos(self):
         """
         The set position of this preset.
+
+        Returns
+        -------
+        pos: ``float``
         """
         return self.info['value']
-
-    @property
-    def comment(self):
-        """
-        The comment associated with this preset.
-        """
-        return self.info.get('comment')
 
     @property
     def history(self):
         """
         This position history associated with this preset.
+
+        Returns
+        -------
+        history: ``dict``
         """
         return self.info['history']
+
+    @property
+    def path(self):
+        """
+        The filepath that defines this preset.
+
+        Returns
+        -------
+        path: ``str``
+        """
+        return str(self._presets._path(self._preset_type))
 
     def __repr__(self):
         return str(self.pos)

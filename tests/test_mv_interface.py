@@ -1,8 +1,10 @@
+import fcntl
+import logging
+import multiprocessing as mp
 import time
 import threading
 import os
 import shutil
-import logging
 from pathlib import Path
 
 import pytest
@@ -114,17 +116,13 @@ def test_presets(presets, motor):
     motor.mvr(1, wait=True)
     assert motor.wm_zero() == -1
     assert motor.wm() == 1
-    assert motor.presets.positions.zero.comment == 'center'
 
     # Sleep for one so we don't override old history
     time.sleep(1)
-    motor.presets.positions.zero.update_pos()
+    motor.presets.positions.zero.update_pos(comment='hats')
     assert motor.wm_zero() == 0
     assert motor.presets.positions.zero.pos == 1
 
-    motor.presets.positions.zero.update_comment('uno')
-    assert motor.presets.positions.zero.comment == 'uno'
-    assert motor.presets.positions.sample.comment is None
     assert len(motor.presets.positions.zero.history) == 2
     assert len(motor.presets.positions.sample.history) == 1
 
@@ -139,3 +137,30 @@ def test_presets(presets, motor):
 
     motor.umv_sample()
     assert motor.wm() == 3
+
+    motor.presets.positions.sample.update_comment('hello there')
+    assert len(motor.presets.positions.sample.history) == 2
+
+    def block_file(path, lock):
+        with open(path, 'r') as f:
+            fcntl.flock(f, fcntl.LOCK_EX)
+            lock.acquire()
+            fcntl.flock(f, fcntl.LOCK_UN)
+
+    path = motor.presets.positions.sample.path
+    lock = mp.Lock()
+    with lock:
+        proc = mp.Process(target=block_file, args=(path, lock))
+        proc.start()
+        time.sleep(0.2)
+
+        assert motor.presets.positions.sample.pos == 3
+        motor.presets.positions.sample.update_pos(2)
+        assert not hasattr(motor, 'wm_sample')
+        motor.presets.sync()
+        assert not hasattr(motor, 'mv_sample')
+
+    proc.join()
+
+    motor.presets.sync()
+    assert hasattr(motor, 'mv_sample')
