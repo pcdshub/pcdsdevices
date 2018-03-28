@@ -2,7 +2,9 @@
 Module for defining bell-and-whistles movement features
 """
 import time
+import fcntl
 import logging
+from contextlib import contextmanager
 from pathlib import Path
 from types import SimpleNamespace, MethodType
 
@@ -185,6 +187,7 @@ class Presets:
     def __init__(self, device):
         self._device = device
         self._methods = []
+        self._fd = None
         self._registry[device.name] = self
         self.name = device.name + '_presets'
         self.sync()
@@ -202,7 +205,8 @@ class Presets:
         Utility function to get a particular preset's datum dictionary.
         """
         logger.debug('read presets for %s', self._device.name)
-        with self._path(preset_type).open('r') as f:
+        with self._file_open_rlock(preset_type) as f:
+            f.seek(0)
             return yaml.load(f)
 
     def _write(self, preset_type, data):
@@ -210,8 +214,39 @@ class Presets:
         Utility function to overwrite a particular preset's datum dictionary.
         """
         logger.debug('write presets for %s', self._device.name)
-        with self._path(preset_type).open('w') as f:
+        with self._file_open_rlock(preset_type) as f:
+            f.seek(0)
             yaml.dump(data, f, default_flow_style=False)
+            f.truncate()
+
+    @contextmanager
+    def _file_open_rlock(self, preset_type):
+        """
+        File locking context manager for this object.
+
+        Works like threading.Rlock in that you can acquire it multiple times
+        safely.
+
+        Raises an OSError if we cannot acquire the file lock.
+
+        Parameters
+        ----------
+        fd: ``file``
+            The file descriptor to lock on.
+        """
+        if self._fd is None:
+            path = self._path(preset_type)
+            with open(path, 'a+') as fd:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                logger.debug('acquired lock for %s', path)
+                self._fd = fd
+                yield fd
+                fcntl.flock(fd, fcntl.LOCK_UN)
+                logger.debug('released lock for %s', path)
+            self._fd = None
+        else:
+            logger.debug('using already open file descriptor')
+            yield self._fd
 
     def _update(self, preset_type, name, value=None, comment=None,
                 active=True):
@@ -226,24 +261,25 @@ class Presets:
                       'active=%s)'), self._device.name, preset_type, name,
                      value, comment, active)
         try:
-            data = self._read(preset_type)
-        except FileNotFoundError:
-            data = {}
-        if name not in data:
-            data[name] = {}
-        if value is not None:
-            ts = time.strftime('%d %b %Y %H:%M:%S')
-            data[name]['value'] = value
-            history = data[name].get('history', {})
-            history[ts] = value
-            data[name]['history'] = history
-        if comment is not None:
-            data[name]['comment'] = comment
-        if active:
-            data[name]['active'] = True
-        else:
-            data[name]['active'] = False
-        self._write(preset_type, data)
+            with self._file_open_rlock(preset_type):
+                data = self._read(preset_type) or {}
+                if name not in data:
+                    data[name] = {}
+                if value is not None:
+                    ts = time.strftime('%d %b %Y %H:%M:%S')
+                    data[name]['value'] = value
+                    history = data[name].get('history', {})
+                    history[ts] = value
+                    data[name]['history'] = history
+                if comment is not None:
+                    data[name]['comment'] = comment
+                if active:
+                    data[name]['active'] = True
+                else:
+                    data[name]['active'] = False
+                self._write(preset_type, data)
+        except OSError:
+            self._log_flock_error()
 
     def sync(self):
         """
@@ -252,13 +288,22 @@ class Presets:
         logger.debug('call %s presets.sync()', self._device.name)
         self._remove_methods()
         self._cache = {}
+        logger.debug('filling %s cache', self.name)
         for preset_type in self._paths.keys():
-            try:
-                self._cache[preset_type] = self._read(preset_type)
-            except FileNotFoundError:
+            path = self._path(preset_type)
+            if path.exists():
+                try:
+                    self._cache[preset_type] = self._read(preset_type)
+                except OSError:
+                    self._log_flock_error()
+            else:
                 logger.debug('No %s preset file for %s',
                              preset_type, self._device.name)
         self._create_methods()
+
+    def _log_flock_error(self):
+        logger.error('Cannot acquire file lock for %s', self.name)
+        logger.debug('', exc_info=True)
 
     def _create_methods(self):
         """
