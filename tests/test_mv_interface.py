@@ -57,7 +57,10 @@ def motor():
 
 @pytest.fixture(scope='function')
 def presets():
-    folder = str(Path(__file__).parent / 'test_presets')
+    folder_obj = Path(__file__).parent / 'test_presets'
+    folder = str(folder_obj)
+    if folder_obj.exists():
+        shutil.rmtree(folder)
     bl = folder + '/beamline'
     user = folder + '/user'
     os.makedirs(bl)
@@ -87,10 +90,12 @@ def test_umv(motor):
 
 def test_presets_device(presets):
     # Make sure init works with devices, not just toy positioners
+    logger.debug('test_presets_device')
     DeviceTest(name='test')
 
 
 def test_presets(presets, motor):
+    logger.debug('test_presets')
     motor.mv(3, wait=True)
     motor.presets.add_beamline('zero', 0, comment='center')
     motor.presets.add_here_user('sample')
