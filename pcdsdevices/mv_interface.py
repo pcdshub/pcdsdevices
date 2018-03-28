@@ -227,12 +227,15 @@ class Presets:
         Works like threading.Rlock in that you can acquire it multiple times
         safely.
 
-        Raises an OSError if we cannot acquire the file lock.
-
         Parameters
         ----------
         fd: ``file``
             The file descriptor to lock on.
+
+        Raises
+        ------
+        OSError:
+            If we cannot acquire the file lock.
         """
         if self._fd is None:
             path = self._path(preset_type)
