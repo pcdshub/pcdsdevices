@@ -6,6 +6,7 @@ import logging
 from pathlib import Path
 
 import pytest
+from ophyd.device import Device
 from ophyd.positioner import SoftPositioner
 
 from pcdsdevices.mv_interface import FltMvInterface, setup_preset_paths
@@ -45,20 +46,24 @@ class Motor(SoftPositioner, FltMvInterface):
         self._stop = True
 
 
+class TestDevice(Device, FltMvInterface):
+    pass
+
+
 @pytest.fixture(scope='function')
 def motor():
     return Motor()
 
 
 @pytest.fixture(scope='function')
-def presets_motor():
+def presets():
     folder = str(Path(__file__).parent / 'test_presets')
     bl = folder + '/beamline'
     user = folder + '/user'
     os.makedirs(bl)
     os.makedirs(user)
     setup_preset_paths(beamline=bl, user=user)
-    yield Motor()
+    yield
     setup_preset_paths()
     shutil.rmtree(folder)
 
@@ -80,47 +85,52 @@ def test_umv(motor):
     assert motor.position == 7
 
 
-def test_presets(presets_motor):
-    presets_motor.mv(3, wait=True)
-    presets_motor.presets.add_beamline('zero', 0, comment='center')
-    presets_motor.presets.add_here_user('sample')
-    assert presets_motor.wm_zero() == -3
-    assert presets_motor.wm_sample() == 0
+def test_presets_device(presets):
+    # Make sure init works with devices, not just toy positioners
+    TestDevice(name='test')
+
+
+def test_presets(presets, motor):
+    motor.mv(3, wait=True)
+    motor.presets.add_beamline('zero', 0, comment='center')
+    motor.presets.add_here_user('sample')
+    assert motor.wm_zero() == -3
+    assert motor.wm_sample() == 0
 
     # Clear paths, refresh, should still exist
-    old_paths = presets_motor.presets._paths
+    old_paths = motor.presets._paths
     setup_preset_paths()
-    assert not hasattr(presets_motor, 'wm_zero')
+    assert not hasattr(motor, 'wm_zero')
     setup_preset_paths(**old_paths)
-    assert presets_motor.wm_zero() == -3
-    assert presets_motor.wm_sample() == 0
+    assert motor.wm_zero() == -3
+    assert motor.wm_sample() == 0
 
-    presets_motor.mv_zero(wait=True)
-    presets_motor.mvr(1, wait=True)
-    assert presets_motor.wm_zero() == -1
-    assert presets_motor.wm() == 1
-    assert presets_motor.presets.positions.zero.comment == 'center'
+    motor.mv_zero(wait=True)
+    motor.mvr(1, wait=True)
+    assert motor.wm_zero() == -1
+    assert motor.wm() == 1
+    assert motor.presets.positions.zero.comment == 'center'
 
     # Sleep for one so we don't override old history
     time.sleep(1)
-    presets_motor.presets.positions.zero.update_pos()
-    assert presets_motor.wm_zero() == 0
-    assert presets_motor.presets.positions.zero.pos == 1
+    motor.presets.positions.zero.update_pos()
+    assert motor.wm_zero() == 0
+    assert motor.presets.positions.zero.pos == 1
 
-    presets_motor.presets.positions.zero.update_comment('uno')
-    assert presets_motor.presets.positions.zero.comment == 'uno'
-    assert presets_motor.presets.positions.sample.comment is None
-    assert len(presets_motor.presets.positions.zero.history) == 2
-    assert len(presets_motor.presets.positions.sample.history) == 1
+    motor.presets.positions.zero.update_comment('uno')
+    assert motor.presets.positions.zero.comment == 'uno'
+    assert motor.presets.positions.sample.comment is None
+    assert len(motor.presets.positions.zero.history) == 2
+    assert len(motor.presets.positions.sample.history) == 1
 
-    repr(presets_motor.presets.positions.zero)
-    presets_motor.presets.positions.zero.deactivate()
-
-    with pytest.raises(AttributeError):
-        presets_motor.wm_zero()
+    repr(motor.presets.positions.zero)
+    motor.presets.positions.zero.deactivate()
 
     with pytest.raises(AttributeError):
-        presets_motor.presets.positions.zero
+        motor.wm_zero()
 
-    presets_motor.umv_sample()
-    assert presets_motor.wm() == 3
+    with pytest.raises(AttributeError):
+        motor.presets.positions.zero
+
+    motor.umv_sample()
+    assert motor.wm() == 3
