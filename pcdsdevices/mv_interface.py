@@ -76,8 +76,8 @@ class FltMvInterface(MvInterface):
     This lets us do more with the interface, such as relative moves.
     """
     def __init__(self, *args, **kwargs):
-        self.presets = Presets(self)
         super().__init__(*args, **kwargs)
+        self.presets = Presets(self)
 
     def mvr(self, delta, timeout=None, wait=False):
         """
