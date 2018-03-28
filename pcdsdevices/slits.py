@@ -25,7 +25,7 @@ from .mv_interface import MvInterface, FltMvInterface
 logger = logging.getLogger(__name__)
 
 
-class SlitPositioner(PVPositioner, Device, FltMvInterface):
+class SlitPositioner(FltMvInterface, PVPositioner, Device):
     """
     Abstraction of Slit Axis
 

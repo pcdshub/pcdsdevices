@@ -13,7 +13,7 @@ from .mv_interface import FltMvInterface
 logger = logging.getLogger(__name__)
 
 
-class PCDSMotorBase(EpicsMotor, FltMvInterface):
+class PCDSMotorBase(FltMvInterface, EpicsMotor):
     """
     EpicsMotor for PCDS
 

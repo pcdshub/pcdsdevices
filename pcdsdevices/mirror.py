@@ -19,7 +19,7 @@ from .mv_interface import FltMvInterface
 logger = logging.getLogger(__name__)
 
 
-class OMMotor(PVPositioner, FltMvInterface):
+class OMMotor(FltMvInterface, PVPositioner):
     """
     Base class for each motor in the LCLS offset mirror system.
     """

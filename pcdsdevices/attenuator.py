@@ -35,7 +35,7 @@ class Filter(InOutPositioner):
     stuck = Cmp(EpicsSignal, ':STUCK')
 
 
-class AttBase(PVPositioner, FltMvInterface):
+class AttBase(FltMvInterface, PVPositioner):
     """
     Base class for the attenuators.
 
