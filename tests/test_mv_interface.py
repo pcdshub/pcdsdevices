@@ -46,7 +46,7 @@ class Motor(SoftPositioner, FltMvInterface):
         self._stop = True
 
 
-class TestDevice(Device, FltMvInterface):
+class DeviceTest(FltMvInterface, Device):
     pass
 
 
@@ -87,7 +87,7 @@ def test_umv(motor):
 
 def test_presets_device(presets):
     # Make sure init works with devices, not just toy positioners
-    TestDevice(name='test')
+    DeviceTest(name='test')
 
 
 def test_presets(presets, motor):
