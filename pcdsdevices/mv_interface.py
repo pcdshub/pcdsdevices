@@ -274,7 +274,11 @@ class Presets:
                     ts = time.strftime('%d %b %Y %H:%M:%S')
                     data[name]['value'] = value
                     history = data[name].get('history', {})
-                    history[ts] = '{:8.4f} {}'.format(value, comment or '')
+                    if comment:
+                        comment = ' ' + comment
+                    else:
+                        comment = ''
+                    history[ts] = '{:10.4f}{}'.format(value, comment)
                     data[name]['history'] = history
                 if active:
                     data[name]['active'] = True
