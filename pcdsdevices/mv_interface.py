@@ -256,7 +256,8 @@ class Presets:
             try:
                 self._cache[preset_type] = self._read(preset_type)
             except FileNotFoundError:
-                pass
+                logger.debug('No %s preset file for %s',
+                             preset_type, self._device.name)
         self._create_methods()
 
     def _create_methods(self):
