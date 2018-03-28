@@ -305,7 +305,8 @@ class Presets:
         self._create_methods()
 
     def _log_flock_error(self):
-        logger.error('Cannot acquire file lock for %s', self.name)
+        logger.error(('Unable to acquire file lock for %s. '
+                      'File may be being edited by another user'), self.name)
         logger.debug('', exc_info=True)
 
     def _create_methods(self):
