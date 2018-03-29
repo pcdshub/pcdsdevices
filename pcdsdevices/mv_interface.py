@@ -4,6 +4,7 @@ Module for defining bell-and-whistles movement features
 import time
 import fcntl
 import logging
+import signal
 from contextlib import contextmanager
 from pathlib import Path
 from types import SimpleNamespace, MethodType
@@ -220,7 +221,7 @@ class Presets:
             f.truncate()
 
     @contextmanager
-    def _file_open_rlock(self, preset_type):
+    def _file_open_rlock(self, preset_type, timeout=1.0):
         """
         File locking context manager for this object.
 
@@ -240,6 +241,24 @@ class Presets:
         if self._fd is None:
             path = self._path(preset_type)
             with open(path, 'r+') as fd:
+                # Set up file lock timeout with a raising handler
+                # We will need this handler due to PEP 475
+                def interrupt(signum, frame):
+                    raise InterruptedError()
+
+                old_handler = signal.signal(signal.SIGALRM, interrupt)
+                try:
+                    signal.setitimer(signal.ITIMER_REAL, timeout)
+                    fcntl.flock(fd, fcntl.LOCK_EX)
+                except InterruptedError:
+                    # Ignore interrupted and proceed to cleanup
+                    pass
+                finally:
+                    # Clean up file lock timeout
+                    signal.setitimer(signal.ITIMER_REAL, 0)
+                    signal.signal(signal.SIGALRM, old_handler)
+                # Error now if we still can't get the lock.
+                # Getting lock twice is safe.
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 logger.debug('acquired lock for %s', path)
                 self._fd = fd
