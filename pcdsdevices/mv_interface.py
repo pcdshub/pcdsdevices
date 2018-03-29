@@ -207,7 +207,7 @@ class Presets:
         logger.debug('read presets for %s', self._device.name)
         with self._file_open_rlock(preset_type) as f:
             f.seek(0)
-            return yaml.load(f)
+            return yaml.load(f) or {}
 
     def _write(self, preset_type, data):
         """
@@ -239,7 +239,7 @@ class Presets:
         """
         if self._fd is None:
             path = self._path(preset_type)
-            with open(path, 'a+') as fd:
+            with open(path, 'r+') as fd:
                 fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 logger.debug('acquired lock for %s', path)
                 self._fd = fd
@@ -264,8 +264,11 @@ class Presets:
                       'active=%s)'), self._device.name, preset_type, name,
                      value, comment, active)
         try:
+            path = self._path(preset_type)
+            if not path.exists():
+                path.touch()
             with self._file_open_rlock(preset_type):
-                data = self._read(preset_type) or {}
+                data = self._read(preset_type)
                 if value is None and comment is not None:
                     value = data[name]['value']
                 if value is not None:
