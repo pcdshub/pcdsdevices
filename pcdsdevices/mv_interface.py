@@ -77,6 +77,11 @@ class FltMvInterface(MvInterface):
     Extension of `MvInterface` for when the position is a ``float``.
 
     This lets us do more with the interface, such as relative moves.
+
+    Attributes
+    ----------
+    presets: `Presets`
+        Manager for preset positions.
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
