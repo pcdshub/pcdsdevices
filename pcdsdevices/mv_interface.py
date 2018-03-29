@@ -267,6 +267,7 @@ class Presets:
             path = self._path(preset_type)
             if not path.exists():
                 path.touch()
+                path.chmod(0o666)
             with self._file_open_rlock(preset_type):
                 data = self._read(preset_type)
                 if value is None and comment is not None:
