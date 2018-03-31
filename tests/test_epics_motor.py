@@ -10,6 +10,7 @@ def fake_motor():
     # Wait for threads to finish
     attr_wait_value(m, 'low_limit', -100)
     attr_wait_value(m, 'high_limit', 100)
+    m.wait_for_connection()
     return m
 
 @using_fake_epics_pv
