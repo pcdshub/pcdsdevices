@@ -232,6 +232,7 @@ class IMS(PCDSMotorBase):
         Automated setup of the IMS motor
 
         If necessarry this command will:
+
             * Reinitialize the motor
             * Clear powerup, stall and error flags
         """
@@ -242,7 +243,19 @@ class IMS(PCDSMotorBase):
         self.clear_all_flags(wait=True)
 
     def reinitalize(self, wait=False):
-        """Reinitialize the IMS motor"""
+        """
+        Reinitialize the IMS motor
+
+        Parameters
+        ----------
+        wait : bool
+            Wait for the motor to be fully intialized
+
+        Returns
+        -------
+        SubscriptionStatus:
+            Status object reporting the initialization state of the motor
+        """
         logger.info('Reinitalizing motor')
         # Issue command
         self.reinit_command.put(1)
