@@ -51,6 +51,8 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
     # Disable missing field that our EPICS motor record lacks
     # This attribute is tracked by the _pos_changed callback
     direction_of_travel = Component(Signal)
+    motor_status = Component(EpicsSignal, ".DISP")
+
 
     @property
     def low_limit(self):
@@ -124,6 +126,19 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         """
         self.low_limit = limits[0]
         self.high_limit = limits[1]
+
+    @property
+    def motorEnabled(self):
+        """
+        Returns if motor is enabled.
+
+        Returns
+        -------
+        status: StatusObject
+            Status object of motor state.
+        0 is Enabled. 1 is Disabled
+        """
+
 
     def check_value(self, value):
         """
