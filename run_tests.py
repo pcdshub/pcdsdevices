@@ -2,6 +2,7 @@
 import sys
 import os
 import logging
+from pathlib import Path
 from logging.handlers import RotatingFileHandler
 import pytest
 
@@ -14,24 +15,30 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         args.extend(sys.argv[1:])
 
-    # Ignore live tests unless given the live keyword
-    if '--live' in args:
-        args.remove('--live')
-        args.append('tests_live')
+    # Ignore sim tests unless given the sim keyword
+    if '--sim' in args:
+        args.remove('--sim')
+        args.append('tests_sim')
     else:
-        args.append('--ignore=tests_live')
+        args.append('--ignore=tests_sim')
 
     txt = 'pytest arguments: {}'.format(args)
     print(txt)
 
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.DEBUG)
-    log_filename = os.path.join(os.path.dirname(__file__), 'debug.log')
-    if os.path.isfile(log_filename):
+    log_dir = Path(os.path.dirname(__file__)) / 'logs'
+    log_file = log_dir / 'run_tests_log.txt'
+
+    if not log_dir.exists():
+        log_dir.mkdir(parents=True)
+    if log_file.exists():
         do_rollover = True
     else:
         do_rollover = False
-    handler = RotatingFileHandler(log_filename, backupCount=9)
+
+    handler = RotatingFileHandler(str(log_file), backupCount=5,
+                                  encoding=None, delay=0)
     if do_rollover:
         handler.doRollover()
     formatter = logging.Formatter(fmt=('%(asctime)s.%(msecs)03d '

@@ -1,13 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-##########
-# Module #
-##########
+from ophyd.areadetector import cam
+
 from .base import ad_group
 from ..signal import FakeSignal
 from ..component import (Component, DynamicDeviceComponent)
-from ...epics.areadetector import cam
-
 
 class CamBase(cam.CamBase):
     # Shared among all cams and plugins
@@ -96,7 +91,7 @@ class CamBase(cam.CamBase):
                                                   ('resolution_y')), value=0))
 
 
-class PulnixCam(cam.PulnixCam, CamBase):
+class PulnixCam(CamBase):
     def __init__(self, prefix, **kwargs):
         super().__init__(prefix, **kwargs)
         # Set some default values that are the same as the actual camera

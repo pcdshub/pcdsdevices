@@ -3,19 +3,15 @@ sudo: false
 
 env:
    global:
-      - OFFICIAL_REPO="slaclab/pcds-devices"
-      - secure: "TeBUfSM64ArwX43ZX/QD50GEJ8cWIAwrJ98nrKZbwIin5OP8+ngJ9S4wuUbvMQXJ0EhQ0Zw3pO4+YIVjfPCwV+X4BcT+ZCAW0vEwKf2kiEdG4DOVgT/Ex2ivKlQji5M0nAfrnuToZWhePD5H85pyrHhfvhu+zQjUmBV5uTr4P3BgdGFXvlDBeDdtHrqP8jGM56Ke2L+OGu3A9N+pnb4flz44bTukUGi4EZjGMaK0qfa3zO8KCDnO8ybgv8xcgMmWUU+izyUMuRsB0O3IEGmVUA0G+UrwA1lHqbTXPg9egzA3pZE1UsUK5icj6OAcN9ytaUowpTkmrrzmt0P6H0JhwxAjwVFkIiQxWwlQVnc+qqmXPIXbNfAO2TdjG/5esFGwgBy3efJSO5q7JD0eCUUoe08zTTXz89Ca4QpclWIE0ihiX+geQfKJ7yUmkjYFZCQ7rcaTTsYJ6/3127Nuwx3ntKjIc8LnFjpn4tZW/UTJMr7JEe50S2p42AuvaVPDHt0cuTgVg22aBNb3HjapCSHe9qayoNbgbm7aOEeW2ILdcEfMCCLL8WPAM4Zlr/7Pyy53RazgKNy03bladYG5ViXueLcyS5JCINg4errn4LR/dws8IjY23B2OG8yq59ofTAiEp99kMNV0N04Jk6DGemJ8yL23QkseBG1RyOk0pU+abIE="
-
-matrix:
+      - OFFICIAL_REPO="pcdshub/pcdsdevices"
+      - secure: "r193Awf/D5CEelI4xRDPsgcJQbbrgrhZNLUtPaHeK1H17yZIRkCPjDUfU7JZuA72JRbFNVaDSIVCJiTfKMbD4QwclVaHsBunWyJ+S6L9BrKzL7Fo2RvUsJ675gpSnY071ibVmY7Q4iI5vt1Hn3WKracgH6VaMZzWC7GbPJd0E/hYygR1zXXzGtowOv1W4n9U1Tj2AuL6qdF6/l4qgVfaMe0Lr6JvdmFdqv8bWD4Cm3y78yi3cadHy5YAf2IkHqAEghgvrf3qJYFx4ZJcKMTjMqvyPSqWQ2J9xntoj4aHKWFvg/uLHU7GLttAOtoabjf/2mYnjnMpN8WI2h2Nsi4Q16ELKlKUY5zdz7/v4JvO9lKn2dP3LtOoI/j0gqMtZqXQ85tVndvvln40x7QwXo14T5sZU5y0IwI8OZXBVEk+cimbVQggtsm7MJoIWwopjdmbq0R5n39+Q6Xfgt5GJJf8EDvAI0uYK7PNIgDTEEqxMChj+R8/ArEyfcDPrgODVAuLpwvkFft3wKFAH8O3Ms2Dc5jeunqYmf2kEYkyr/pSuukVLKVe0HIi75CfMEguuCPHoCN+p/nESRrach2ItCHBqHIjggCYPzmAYueIF11ecbkok8k2sweC6DKDm9yP/wfq01fHpvhTTsBMMexXVqLpj1HYybonxGGw448EHTZKT2k="
+matrix: 
   include:
-     - python: 3.5
      - python: 3.6
        env: BUILD_DOCS=1
 
 install:
   - sudo apt-get update
-  # We do this conditionally because it saves us some downloading if the
-  # version is the same.
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
@@ -23,46 +19,44 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda install conda-build anaconda-client
   - conda update -q conda conda-build
+  - conda config --append channels conda-forge
+  - conda config --append channels lightsource2-tag
   # Useful for debugging any issues with conda
   - conda info -a
+  # Test conda build
+  - conda build -q conda-recipe --output-folder bld-dir
+  - conda config --add channels "file://`pwd`/bld-dir"
   #Grab all dependencies
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION coverage pip wheel happi=0.5.0 ophyd=1.0.0 bluesky=1.0.0 event-model=1.3.0 pytest pytest-timeout hypothesis=3.11.6 -c conda-forge -c lightsource2-tag -c skywalker-tag
+  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pcdsdevices --file dev-requirements.txt
   #Launch Conda environment
   - source activate test-environment
-  #Install mongomock
-  - pip install mongomock
-  - pip install codecov
-  - pip install -r requirements.txt
-  #Install
-  - python setup.py install
 
 script:
   - coverage run run_tests.py
   - coverage report -m
+  - flake8 pcdsdevices/*.py
   - set -e
   #Build docs
   - |
-    if [[ -n "$DOCTR_DEPLOY_ENCRYPTION_KEY" && $BUILD_DOCS ]]; then
-      pip install -r docs-requirements.txt
-      # Install doctr from a custom branch until
-      # https://github.com/drdoctr/doctr/pull/190 is merged.
-      pip uninstall -y doctr
-      pip install git+https://github.com/danielballan/doctr@other-master
+    if [[ -n "$DOCTR_DEPLOY_ENCRYPTION_KEY_PCDSHUB_PCDSDEVICES" && $BUILD_DOCS ]]; then
+      conda install --file docs-requirements.txt
       pushd docs
       make html
       popd
       #Publish docs.
-      doctr deploy --deploy-repo lcls-pcds/skywalker-docs --deploy-branch-name master pcds-devices
+      doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages
     fi
 
 after_success:
   - codecov
   - |
     if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' && $CONDA_UPLOAD_TOKEN_TAG != '' ]]; then
-      conda build . -c defaults -c conda-forge -c skywalker-dev -c lightsource2-tag --token $CONDA_UPLOAD_TOKEN_TAG --python $TRAVIS_PYTHON_VERSION
+      export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
+      anaconda upload bld-dir/linux-64/*.tar.bz2
     fi
   - |
     if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == 'master' && $TRAVIS_TAG == '' && $CONDA_UPLOAD_TOKEN_DEV != '' ]]; then
-      conda build . -c defaults -c conda-forge -c skywalker-dev -c lightsource2-tag --token $CONDA_UPLOAD_TOKEN_DEV --python $TRAVIS_PYTHON_VERSION
+      export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_DEV
+      anaconda upload bld-dir/linux-64/*.tar.bz2
     fi
     

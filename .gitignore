@@ -9,4 +9,10 @@ htmlcov
 .cache
 
 *.egg-info
-debug.log*
+logs
+
+# Sphinx
+docs/source/generated/*
+
+#pytest
+.pytest_cache

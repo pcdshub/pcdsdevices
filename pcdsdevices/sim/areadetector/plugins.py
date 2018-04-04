@@ -1,20 +1,12 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Overrides for ophyd and pcdsdevices plugins to be used in simulated detectors.
 """
-###############
-# Third Party #
-###############
 import numpy as np
 
-##########
-# Module #
-##########
 from .base import ad_group
 from ..signal import FakeSignal
 from ..component import (Component, DynamicDeviceComponent)
-from ...epics.areadetector import plugins
+from ...areadetector import plugins
 
 class PluginBase(plugins.PluginBase):
     """

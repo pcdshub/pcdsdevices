@@ -1,12 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 Simulated device classes
 """
-##########
-# Module #
-##########
-from .device import Device
+from ophyd import Device
+
 from .signal import FakeSignal
 from .component import Component
 

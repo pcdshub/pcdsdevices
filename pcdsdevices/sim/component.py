@@ -1,14 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-###############
-# Third Party #
-###############
 import ophyd.device as device
 
-##########
-# Module #
-##########
-from ..component import (Component, FormattedComponent)
+from ophyd import Component, FormattedComponent
 
 class DynamicDeviceComponent(device.DynamicDeviceComponent):
     """

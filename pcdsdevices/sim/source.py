@@ -1,26 +1,13 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-############
-# Standard #
-############
 import logging
 
-###############
-# Third Party #
-###############
 import numpy as np
 
-##########
-# Module #
-##########
 from .sim import SimDevice
 from .signal import FakeSignal
 from .component import Component
-from ..epics import source
 
 
-class Undulator(source.Undulator, SimDevice):
+class Undulator(SimDevice):
     """
     Simulated undulator ophyd object.
     """

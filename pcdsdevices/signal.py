@@ -1,133 +1,102 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""
+Module to define ophyd Signal subclass utilities.
+"""
 import logging
-from threading import Event, RLock
-from contextlib import contextmanager
-
-import ophyd.signal
+from threading import RLock
+from ophyd.signal import Signal
 
 logger = logging.getLogger(__name__)
 
 
-class Signal(ophyd.signal.Signal):
+class AggregateSignal(Signal):
     """
-    Signal subclass with pcds overrides. This currently defines some methods
-    for waiting for signals to change to specific values on their default
-    callbacks.
+    Signal that is composed of a number of other signals.
+
+    This class exists to handle the group subscriptions without repeatedly
+    getting the values of all the subsignals at all times.
+
+    Attributes
+    ----------
+    _cache: dict
+        Mapping from signal to last known value
+
+    _sub_signals: list
+        Signals that contribute to this signal.
     """
-    def __init__(self, *, value=None, timestamp=None, name=None, parent=None,
-                 tolerance=None, rtolerance=None):
-        self._wfv_event = Event()
-        self._wfv_lock = RLock()
-        super().__init__(value=value, timestamp=timestamp, name=name,
-                         parent=parent, tolerance=tolerance,
-                         rtolerance=rtolerance)
+    _update_only_on_change = True
 
-    # @doc_annotation_forwarder(ophyd.signal.Signal)
-    def put(self, value, *, timestamp=None, force=False, **kwargs):
-        #logger.debug("Changing stored value of %s from %s to %s at time=%s",
-        #             self.name or self, self.get(), value, timestamp)
-        super().put(value, timestamp=timestamp, force=force, **kwargs)
+    def __init__(self, *, name, **kwargs):
+        super().__init__(name=name, **kwargs)
+        self._cache = {}
+        self._has_subscribed = False
+        self._lock = RLock()
+        self._sub_signals = []
 
-    def wait_for_value(self, value, old_value=None, timeout=None, prep=True):
+    def _calc_readback(self):
         """
-        Pause the thread until the signal's value changes to value after the
-        default sub callback.
-
-        Parameters
-        ----------
-        value: object
-            The desired signal value. There is no type restriction.
-        old_value: object, optional
-            If provided, we'll wait to change from old_value to value instead
-            of just waiting on value. This may be useful to wait for specific
-            transitions.
-        timeout: number, optional
-            Stop waiting after this many seconds. This can be any object that
-            will accept being cast to float with a float(timeout) call.
-        prep: bool, optional
-            If False, skip the step where we prepare the event flag. True by
-            default. Do not set this parameter if you don't know what you're
-            doing.
-        """
-        logger.debug("Attempting to acquire wait for value rlock in %s",
-                     self.name or self)
-        with self._wfv_lock:
-            logger.debug("Acquired wait for value rlock in %s",
-                         self.name or self)
-            if prep:
-                self._wait_for_value_prep(value, old_value)
-            if timeout is not None:
-                timeout = float(timeout)
-            logger.debug("Waiting for value callback in %s for value=%s, " +
-                         "old_value=%s, timeout=%s",
-                         self.name or self, value, old_value, timeout)
-            ok = self._wfv_event.wait(timeout)
-            logger.debug("Done waiting in %s, timedout=%s",
-                         self.name or self, not ok)
-            self.clear_sub(self._wfv_cb)
-        logger.debug("Released wait for value rlock in %s", self.name or self)
-        return ok
-
-    def _wait_for_value_prep(self, value, old_value=None):
-        """
-        Clear the event flags and set the subscription.
-        """
-        logger.debug("Attempting to acquire prep rlock in %s",
-                     self.name or self)
-        with self._wfv_lock:
-            logger.debug("Acquired prep rlock in %s", self.name or self)
-            self._wfv_event.clear()
-            self.subscribe(self._wait_for_value_cb(value, old_value))
-        logger.debug("Released prep rlock in %s", self.name or self)
-
-    def _wait_for_value_cb(self, value, old_value=None):
-        """
-        Create a callback function that sets the internal flag when we see the
-        desired transition.
+        Override this with a calculation to find the current state given the
+        cached values.
 
         Returns
         -------
-        cb: function
+        readback:
+            The result of the calculation.
         """
-        def cb(*args, obj, sub_type, **kwargs):
-            logger.debug("Calling wfv callback in %s", self.name or self)
-            ok = True
-            if old_value is not None:
-                old = kwargs["old_value"]
-                ok = ok and (old == old_value)
-                logger.debug("wfv callback in %s got old_value=%s",
-                             self.name or self, old_value)
-            new = kwargs["value"]
-            ok = ok and (new == value)
-            logger.debug("wfv callback in %s got value=%s",
-                         self.name or self, value)
-            if ok:
-                logger.debug("Wait finished in %s", self.name or self)
-                self._wfv_event.set()
-            else:
-                logger.debug("Wait not done in %s", self.name or self)
-        self._wfv_cb = cb
-        return cb
+        raise NotImplementedError('Subclasses must implement _calc_readback')
 
-    @contextmanager
-    def wait_for_value_context(self, value, old_value=None, timeout=None):
+    def _insert_value(self, signal, value):
         """
-        Context manager for waiting for value. Clears the flag, sets up
-        subscription callback, calls user code, and then waits until the flag
-        has been set.
+        Update the cache with one value and recalculate
+        """
+        with self._lock:
+            self._cache[signal] = value
+            self._update_state()
+            return self._readback
 
-        Use this when you need to watch for a transition that can occur while
-        your main thread needs to be doing something else.
+    def _update_state(self):
         """
-        logger.debug("Attempting to acquire context rlock in %s",
-                     self.name or self)
-        with self._wfv_lock:
-            logger.debug("Acquired context rlock in %s", self.name or self)
-            self._wait_for_value_prep(value, old_value)
-            try:
-                yield
-            finally:
-                self.wait_for_value(value, old_value=old_value,
-                                    timeout=timeout, prep=False)
-        logger.debug("Released context rlock in %s", self.name or self)
+        Recalculate the state.
+        """
+        with self._lock:
+            self._readback = self._calc_readback()
+
+    def get(self, **kwargs):
+        """
+        Update all values and recalculate
+        """
+        with self._lock:
+            for signal in self._sub_signals:
+                self._cache[signal] = signal.get(**kwargs)
+            self._update_state()
+            return self._readback
+
+    def put(self, value, **kwargs):
+        raise NotImplementedError('put should be overriden in the subclass')
+
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Set up a callback function to run at specific times.
+
+        See the ``ophyd`` documentation for details.
+        """
+        cid = super().subscribe(cb, event_type=event_type, run=run)
+        if event_type in (None, self.SUB_VALUE) and not self._has_subscribed:
+            # We need to subscribe to ALL relevant signals!
+            for signal in self._sub_signals:
+                signal.subscribe(self._run_sub_value, run=False)
+            self.get()  # Ensure we have a full cache
+        return cid
+
+    def _run_sub_value(self, *args, **kwargs):
+        kwargs.pop('sub_type')
+        sig = kwargs.pop('obj')
+        kwargs.pop('old_value')
+        value = kwargs['value']
+        with self._lock:
+            old_value = self._readback
+            # Update just one value and assume the rest are cached
+            # This allows us to run subs without EPICS gets
+            value = self._insert_value(sig, value)
+            if value != old_value or not self._update_only_on_change:
+                self._run_subs(sub_type=self.SUB_VALUE, obj=self, value=value,
+                               old_value=old_value)

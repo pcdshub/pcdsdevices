@@ -1,3 +1,2 @@
-git+https://github.com/slaclab/happi.git@v0.5.0
-ophyd==1.0.0
-prettytable
+ophyd==1.1.0
+bluesky==1.2.0

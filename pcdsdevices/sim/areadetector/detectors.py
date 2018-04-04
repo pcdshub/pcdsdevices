@@ -1,20 +1,17 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-##########
-# Module #
-##########
+from ophyd.areadetector import detectors
+
 from .cam import (CamBase, PulnixCam)
 from .plugins import (StatsPlugin, ImagePlugin)
 from ..signal import FakeSignal
 from ..component import Component
-from ...epics.areadetector import detectors
+from ...areadetector.detectors import PulnixDetector
 
 
 class DetectorBase(detectors.DetectorBase):
     cam = Component(FakeSignal, ":")
 
 
-class PulnixDetector(detectors.PulnixDetector, DetectorBase):
+class PulnixDetector(PulnixDetector, DetectorBase):
     cam = Component(PulnixCam, ":")
 
 class SimDetector(detectors.DetectorBase):
