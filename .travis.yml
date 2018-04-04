@@ -19,7 +19,7 @@ install:
   - conda config --set always_yes yes --set changeps1 no
   - conda install conda-build anaconda-client
   - conda update -q conda conda-build
-  - conda config --add channels pcds-dev
+  - conda config --add channels pcds-tag
   - conda config --append channels conda-forge
   # Useful for debugging any issues with conda
   - conda info -a
