@@ -145,16 +145,15 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
     def check_value(self, value):
         """
         Check if the motor is disabled
-
-        Raises
-        ------
-        Exception
-
         Check if the value is within the soft limits of the motor.
 
         Raises
         ------
+        Exception
+            If the motor is passed any motion command when disabled
         ValueError
+            When the provided value is outside the range of the low
+            and high limits
         """
         # First check that the user has returned a valid EPICS value. It will
         # not consult the limits of the PV itself because limits=False
