@@ -51,6 +51,7 @@ def test_kickoff():
 @using_fake_epics_pv
 def test_complete_run_forever():
     seq = sequence()
+    seq._acquiring = True
     # Run Forever mode should tell this to stop
     st = seq.complete()
     assert seq.play_control.value == 0
@@ -61,6 +62,7 @@ def test_complete_run_forever():
 @using_fake_epics_pv
 def test_complete_run_once():
     seq = sequence()
+    seq._acquiring = True
     # Start the sequencer in run once mode
     seq.play_mode.put(0)
     seq.play_status._read_pv.put(2)
