@@ -1,6 +1,4 @@
-import time
 import logging
-from functools import partial
 
 from ophyd import Device, EpicsSignal, EpicsSignalRO, Component as Cpt
 from ophyd.status import DeviceStatus, SubscriptionStatus
@@ -58,8 +56,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     _default_read_attrs = ['play_status']
     _default_configuration_attrs = ['play_mode', 'sequence_length']
 
-    def __init__(self, prefix, *, name=None,
-                  monitor_attrs=None, **kwargs):
+    def __init__(self, prefix, *, name=None, monitor_attrs=None, **kwargs):
         monitor_attrs = monitor_attrs or ['current_step', 'play_count']
         # Device initialization
         super().__init__(prefix, name=name,
