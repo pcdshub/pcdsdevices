@@ -35,8 +35,8 @@ class EventSequencer(Device):
 
         fly_during_wrapper(scan([det], motor, ...), [sequencer])
 
-    Run the EventSequencer at each step in my scan, after the completing the
-    motor move.
+    Run the EventSequencer at each step in my scan after completing the
+    motor move and detector reading:
 
     .. code::
 
