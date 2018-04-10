@@ -304,12 +304,12 @@ class IMS(PCDSMotorBase):
         bit = flag_info['readback']
         mask = flag_info.get('mask', 1)
 
-        # Create a function to check the flag
-        def flag_is_present(msta):
-            return (int(msta) >> bit) & mask
+        # Create a callback function to check for bit 
+        def flag_is_cleared(value=None, **kwargs):
+            return not bool((int(value) >> bit) & mask)
 
         # Check that we need to actually set the flag
-        if not flag_is_present(self.bit_status.get()):
+        if flag_is_cleared(value=self.bit_status.get()):
             logger.debug("%s flag is not currently active", flag)
             return DeviceStatus(self, done=True, success=True)
 
@@ -317,9 +317,9 @@ class IMS(PCDSMotorBase):
         logger.info('Clearing %s flag ...', flag)
         self.seq_seln.put(flag_info['clear'])
         # Generate a status
-        st = SubscriptionStatus(self.msta, flag_is_present)
+        st = SubscriptionStatus(self.bit_status, flag_is_cleared)
         if wait:
-            status_wait(st)
+            status_wait(st, timeout=timeout)
         return st
 
 
