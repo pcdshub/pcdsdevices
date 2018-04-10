@@ -202,9 +202,9 @@ class IMS(PCDSMotorBase):
     _bit_flags = {'powerup': {'clear': 36,
                               'readback':  24},
                   'stall': {'clear': 40,
-                            'readback': 24},
+                            'readback': 22},
                   'error': {'clear': 48,
-                            'readback': 22,
+                            'readback': 15,
                             'mask': 0x7f}}
     # Custom IMS bit fields
     reinit_command = Component(EpicsSignal, '.RINI')
