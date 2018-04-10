@@ -147,4 +147,5 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
 
     def stop(self):
         """Stop the EventSequencer"""
+        logger.debug("Stopping the EventSequencer")
         self.play_control.put(0)
