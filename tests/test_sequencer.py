@@ -1,7 +1,7 @@
-from ophyd.sim import NullStatus
 from bluesky import RunEngine
 from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from bluesky.plan_stubs import sleep
+from ophyd.sim import NullStatus
 
 from pcdsdevices.sequencer import EventSequencer
 from pcdsdevices.sim.pv import using_fake_epics_pv
