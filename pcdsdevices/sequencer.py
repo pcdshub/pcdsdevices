@@ -5,12 +5,12 @@ from functools import partial
 from ophyd import Device, EpicsSignal, EpicsSignalRO, Component as Cpt
 from ophyd.status import DeviceStatus, SubscriptionStatus
 from ophyd.utils.epics_pvs import raise_if_disconnected
-
+from ophyd.flyers import FlyerInterface, MonitorFlyerMixin
 
 logger = logging.getLogger(__name__)
 
 
-class EventSequencer(Device):
+class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     """
     Event Sequencer
 
@@ -58,12 +58,12 @@ class EventSequencer(Device):
     _default_read_attrs = ['play_status']
     _default_configuration_attrs = ['play_mode', 'sequence_length']
 
-    def __init__(self, prefix, *, name=None,  **kwargs):
+    def __init__(self, prefix, *, name=None,
+                  monitor_attrs=None, **kwargs):
+        monitor_attrs = monitor_attrs or ['current_step', 'play_count']
         # Device initialization
-        super().__init__(prefix, name=name, **kwargs)
-        # Data caches
-        self._steps = list()
-        self._iterations = list()
+        super().__init__(prefix, name=name,
+                         monitor_attrs=monitor_attrs, **kwargs)
 
     @raise_if_disconnected
     def kickoff(self):
@@ -75,23 +75,16 @@ class EventSequencer(Device):
         status : SubscriptionStatus
             Status indicating whether or not the EventSequencer has started
         """
-        # Clear cached data from prior runs
-        self._steps.clear()
-        self._iterations.clear()
         # Start the sequencer
         logger.debug("Starting EventSequencer ...")
         self.play_control.set(1)
-
-        # Subscribe to changes in the play step and iteration
-        def add_event(cache, timestamp=None, value=None, **kwargs):
-            cache.append((timestamp, value))
-
-        self.current_step.subscribe(partial(add_event, self._steps))
-        self.play_count.subscribe(partial(add_event, self._iterations))
+        # Start monitor signals
+        super().kickoff()
 
         # Create our status
         def done(*args, value=None, old_value=None, **kwargs):
             return value == 2 and old_value == 0
+
         # Create our status object
         return SubscriptionStatus(self.play_status, done, run=True)
 
@@ -118,17 +111,13 @@ class EventSequencer(Device):
         configuration use the :meth:`.stop` command.
 
         """
-        # Clear subscriptions
-        def clear_subs(**kwargs):
-            self.current_step.unsubscribe_all()
-            self.play_count.unsubscribe_all()
-
+        # Clear the monitor subscriptions
+        super().complete()
         # If we are running forever we can stop whenever
         if self.play_mode.get() == 2:
             logger.debug("EventSequencer is set to run forever, "
                          "stopping immediately")
             self.stop()
-            clear_subs()
             return DeviceStatus(self, done=True, success=True)
 
         # Otherwise we should wait for the sequencer to end
@@ -139,36 +128,7 @@ class EventSequencer(Device):
         logger.debug("EventSequencer has a determined stopping point, "
                      " waiting for sequence to complete")
         st = SubscriptionStatus(self.play_status, done, run=True)
-        st.add_callback(clear_subs)
         return st
-
-    def collect(self):
-        """
-        Gather information about the state of the Sequencer
-
-        During :meth:`.kickoff`, a monitor is started on the ``current_step``
-        and ``play_count`` signals. The timestamps and values of these signals
-        are stored internally and can be added back into the data stream
-        asynchronously by calling this method.
-        """
-        # Create partial event document
-        logger.debug("Interpreting stored EventSequencer information")
-        event = {'time': time.time(), 'timestamps': dict(), 'data': dict()}
-        for sig, cache in zip((self.current_step, self.play_count),
-                              (self._steps, self._iterations)):
-            event['timestamps'][sig.name] = [evt[0] for evt in cache]
-            event['data'][sig.name] = [evt[1] for evt in cache]
-        # Clear caches
-        self._steps.clear()
-        self._iterations.clear()
-        yield event
-
-    def describe_collect(self):
-        """Describe the collection information"""
-        dd = dict()
-        dd.update(self.play_count.describe())
-        dd.update(self.current_step.describe())
-        return {'sequence': dd}
 
     def stop(self):
         """Stop the EventSequencer"""
