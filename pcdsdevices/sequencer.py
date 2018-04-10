@@ -79,6 +79,7 @@ class EventSequencer(Device):
         self._steps.clear()
         self._iterations.clear()
         # Start the sequencer
+        logger.debug("Starting EventSequencer ...")
         self.play_control.set(1)
 
         # Subscribe to changes in the play step and iteration
@@ -124,6 +125,8 @@ class EventSequencer(Device):
 
         # If we are running forever we can stop whenever
         if self.play_mode.get() == 2:
+            logger.debug("EventSequencer is set to run forever, "
+                         "stopping immediately")
             self.stop()
             clear_subs()
             return DeviceStatus(self, done=True, success=True)
@@ -133,6 +136,8 @@ class EventSequencer(Device):
             return value == 0 and old_value == 2
 
         # Create a SubscriptionStatus
+        logger.debug("EventSequencer has a determined stopping point, "
+                     " waiting for sequence to complete")
         st = SubscriptionStatus(self.play_status, done, run=True)
         st.add_callback(clear_subs)
         return st
@@ -147,6 +152,7 @@ class EventSequencer(Device):
         asynchronously by calling this method.
         """
         # Create partial event document
+        logger.debug("Interpreting stored EventSequencer information")
         event = {'time': time.time(), 'timestamps': dict(), 'data': dict()}
         for sig, cache in zip((self.current_step, self.play_count),
                               (self._steps, self._iterations)):
