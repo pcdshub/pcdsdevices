@@ -10,3 +10,4 @@ from .pim import PIM
 from .pulsepicker import PulsePicker
 from .slits import Slits
 from .valve import Stopper, GateValve
+from .sequencer import EventSequencer
