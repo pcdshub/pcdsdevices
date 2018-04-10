@@ -268,13 +268,9 @@ class IMS(PCDSMotorBase):
             status_wait(st)
         return st
 
-    def clear_all_flags(self, wait=False):
+    def clear_all_flags(self):
         """
         Clear all the flags from the IMS motor
-
-        Parameters
-        ----------
-        wait: bool
 
         Returns
         -------
@@ -282,15 +278,14 @@ class IMS(PCDSMotorBase):
             Combined status of clearing all flags
         """
         # Issue flag commands and collect statuses
-        st = [func() for func in (self.clear_powerup,
-                                  self.clear_stall,
-                                  self.clear_error)]
-        status_wait(st[0] & st[1] & st[2])
-        if wait:
-            status_wait(st)
-        return st
+        st = [func(wait=True) for func in (self.clear_powerup,
+                                           self.clear_stall,
+                                           self.clear_error)]
+        # Combine statuses and wait for result
+        and_st = st[0] & st[1] & st[2]
+        return and_st
 
-    def clear_powerup(self, wait=False):
+    def clear_powerup(self, wait=False, timeout=10):
         """Clear powerup flag"""
         return self._clear_flag('powerup', wait=wait, timeout=timeout)
 
