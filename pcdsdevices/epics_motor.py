@@ -292,17 +292,17 @@ class IMS(PCDSMotorBase):
 
     def clear_powerup(self, wait=False):
         """Clear powerup flag"""
-        return self._clear_flag('powerup', wait=wait)
+        return self._clear_flag('powerup', wait=wait, timeout=timeout)
 
-    def clear_stall(self, wait=False):
+    def clear_stall(self, wait=False, timeout=5):
         """Clear stall flag"""
-        return self._clear_flag('stall', wait=wait)
+        return self._clear_flag('stall', wait=wait, timeout=timeout)
 
-    def clear_error(self, wait=False):
+    def clear_error(self, wait=False, timeout=10):
         """Clear error flag"""
-        return self._clear_flag('error', wait=wait)
+        return self._clear_flag('error', wait=wait, timeout=timeout)
 
-    def _clear_flag(self, flag, wait=False):
+    def _clear_flag(self, flag, wait=False, timeout=10):
         """Clear flag whose information is in ``._bit_flags``"""
         # Gather our flag information
         flag_info = self._bit_flags[flag]
