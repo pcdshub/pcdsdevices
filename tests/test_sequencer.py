@@ -77,6 +77,20 @@ def test_complete_run_once():
 
 
 @using_fake_epics_pv
+def test_pause_and_resume():
+    seq = sequence()
+    # Start the sequence
+    seq._acquiring = True
+    seq.play_control.put(1)
+    # Assert we stopped our sequencer
+    seq.pause()
+    assert seq.play_control.get() == 0
+    seq.resume()
+    # Assert we restarted our sequencer
+    assert seq.play_control.get() == 1
+
+
+@using_fake_epics_pv
 def test_fly_scan_smoke():
     seq = SimSequencer('ECS:TST', name='seq')
     RE = RunEngine()
