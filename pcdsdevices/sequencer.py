@@ -72,18 +72,36 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
         status : SubscriptionStatus
             Status indicating whether or not the EventSequencer has started
         """
-        # Start the sequencer
-        logger.debug("Starting EventSequencer ...")
-        self.play_control.set(1)
+        self.start()
         # Start monitor signals
         super().kickoff()
-
         # Create our status
         def done(*args, value=None, old_value=None, **kwargs):
             return value == 2 and old_value == 0
 
         # Create our status object
         return SubscriptionStatus(self.play_status, done, run=True)
+
+    @raise_if_disconnected
+    def start(self):
+        """
+        Start the EventSequencer
+        """
+        # Start the sequencer
+        logger.debug("Starting EventSequencer ...")
+        self.play_control.set(1)
+
+    def pause(self):
+        """Stop the event sequencer and stop monitoring events"""
+        # Order a stop
+        self.stop()
+        # Pause monitoring
+        super().pause
+
+    def resume(self):
+        """Resume the EventSequencer procedure"""
+        super().resume()
+        self.start()
 
     def complete(self):
         """
