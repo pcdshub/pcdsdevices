@@ -51,6 +51,8 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
     # Disable missing field that our EPICS motor record lacks
     # This attribute is tracked by the _pos_changed callback
     direction_of_travel = Component(Signal)
+    # This attribute will show if the motor is disabled or not
+    disabled = Component(EpicsSignal, ".DISP")
 
     @property
     def low_limit(self):
@@ -125,17 +127,50 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         self.low_limit = limits[0]
         self.high_limit = limits[1]
 
+    def enable(self):
+        """
+        Sets the motor to enabled.
+
+        Returns
+        -------
+        status: Status Object
+            Status object of the set
+        """
+        return self.disabled.set(value=0)
+
+    def disable(self):
+        """
+        Sets the motor to disabled.
+
+        Returns
+        -------
+        status: Status Object
+            Status object of the set
+        """
+        return self.disabled.set(value=1)
+
     def check_value(self, value):
         """
+        Check if the motor is disabled
         Check if the value is within the soft limits of the motor.
 
         Raises
         ------
+        Exception
+            If the motor is passed any motion command when disabled
         ValueError
+            When the provided value is outside the range of the low
+            and high limits
         """
         # First check that the user has returned a valid EPICS value. It will
         # not consult the limits of the PV itself because limits=False
         super().check_value(value)
+
+        # Find the value for the disabled attribute
+        if self.disabled.value == 1:
+            raise Exception("Motor is not enabled. Motion requests "
+                            "ignored")
+
         # Find the soft limit values from EPICS records and check that this
         # command will be accepted by the motor
         low_limit, high_limit = self.limits
