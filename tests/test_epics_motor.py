@@ -2,6 +2,9 @@ import time
 
 import pytest
 
+from bluesky import RunEngine
+from bluesky.plan_stubs import stage, unstage, open_run, close_run
+
 from pcdsdevices.epics_motor import PCDSMotorBase, IMS
 from pcdsdevices.sim.pv import using_fake_epics_pv
 from .conftest import attr_wait_value
@@ -85,7 +88,18 @@ def test_ims_reinitialize():
     assert st.success
 
 @using_fake_epics_pv
-def test_ims_stage_smoke():
+def test_ims_stage_in_plan():
+    # Create RunEngine
+    RE = RunEngine()
+
+    # Create IMS
     m = IMS('Tst:Mtr:1', name='motor')
     m.wait_for_connection()
-    m.stage()
+
+    def plan():
+        yield from open_run()
+        yield from stage(m)
+        yield from unstage(m)
+        yield from close_run()
+
+    RE(plan())
