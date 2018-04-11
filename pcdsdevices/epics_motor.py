@@ -238,11 +238,11 @@ class IMS(PCDSMotorBase):
         """
         # Reinitialize if necessary
         if self.error_severity.get() == 3:
-            self.reinitalize(wait=True)
+            self.reinitialize(wait=True)
         # Clear all flags
         self.clear_all_flags(wait=True)
 
-    def reinitalize(self, wait=False):
+    def reinitialize(self, wait=False):
         """
         Reinitialize the IMS motor
 
@@ -256,7 +256,7 @@ class IMS(PCDSMotorBase):
         SubscriptionStatus:
             Status object reporting the initialization state of the motor
         """
-        logger.info('Reinitalizing motor')
+        logger.info('Reinitializing motor')
         # Issue command
         self.reinit_command.put(1)
         # Generate a status
