@@ -259,9 +259,14 @@ class IMS(PCDSMotorBase):
         logger.info('Reinitializing motor')
         # Issue command
         self.reinit_command.put(1)
+
+        # Check error
+        def initialize_complete(value=None, **kwargs):
+            return value != 3
+
         # Generate a status
         st = SubscriptionStatus(self.error_severity,
-                                lambda x: x != 3,
+                                initialize_complete,
                                 settle_time=0.5)
         # Wait on status if requested
         if wait:
