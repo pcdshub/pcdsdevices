@@ -11,7 +11,7 @@ class BeamStats(Device):
     _default_read_attrs = ['mj', 'ev', 'rate']
 
     def __init__(self, prefix='', name='beam_stats', **kwargs):
-        super.__init__(prefix=prefix, name=name, **kwargs)
+        super().__init__(prefix=prefix, name=name, **kwargs)
 
     @property
     def hints(self):
