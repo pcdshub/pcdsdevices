@@ -1,3 +1,5 @@
+import time
+
 from bluesky import RunEngine
 from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from bluesky.plan_stubs import sleep
@@ -12,6 +14,7 @@ def sequence():
     seq.wait_for_connection()
     # Running forever
     seq.play_mode.put(2)
+    seq.play_control.put(0)
     return seq
 
 
@@ -35,6 +38,8 @@ def test_kickoff():
     # Not currently playing
     seq.play_status._read_pv.put(0)
     seq.play_status._read_pv.run_callbacks()
+    # Wait for set threads
+    time.sleep(0.5)
     # Check we gave the command to start the sequencer
     assert seq.play_control.value == 1
     # Check that our monitors have started
@@ -84,8 +89,12 @@ def test_pause_and_resume():
     seq.play_control.put(1)
     # Assert we stopped our sequencer
     seq.pause()
+    # Wait for set threads
+    time.sleep(0.5)
     assert seq.play_control.get() == 0
     seq.resume()
+    # Wait for set threads
+    time.sleep(0.5)
     # Assert we restarted our sequencer
     assert seq.play_control.get() == 1
 
