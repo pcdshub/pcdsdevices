@@ -60,9 +60,13 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     play_count = Cpt(EpicsSignal, ':PLYCNT')
     play_status = Cpt(EpicsSignalRO, ':PLSTAT', auto_monitor=True)
     play_mode = Cpt(EpicsSignal, ':PLYMOD')
+    sync_marker = Cpt(EpicsSignal, ':SYNCMARKER')
+    next_sync = Cpt(EpicsSignal, ':SYNCNEXTTICK')
+    pulse_req = Cpt(EpicsSignal, ':BEAMPULSEREQ')
 
     _default_read_attrs = ['play_status']
-    _default_configuration_attrs = ['play_mode', 'sequence_length']
+    _default_configuration_attrs = ['play_mode', 'sequence_length',
+                                    'sync_marker']
 
     def __init__(self, prefix, *, name=None, monitor_attrs=None, **kwargs):
         monitor_attrs = monitor_attrs or ['current_step', 'play_count']
