@@ -7,3 +7,5 @@ class BeamStats(Device):
     mj = Cpt(EpicsSignalRO, 'GDET:FEE1:241:ENRC')
     rate = Cpt(EpicsSignalRO, 'EVNT:SYS0:1:LCLSBEAMRATE')
     owner = Cpt(EpicsSignalRO, 'ECS:SYS0:0:BEAM_OWNER_ID')
+
+    _default_read_attrs = ['ev', 'mj', 'rate']
