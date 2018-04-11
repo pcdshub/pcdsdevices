@@ -102,6 +102,7 @@ def test_pause_and_resume():
 @using_fake_epics_pv
 def test_fly_scan_smoke():
     seq = SimSequencer('ECS:TST', name='seq')
+    seq.wait_for_connection()
     RE = RunEngine()
 
     # Create a plan where we fly for a second
