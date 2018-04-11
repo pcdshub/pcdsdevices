@@ -6,6 +6,7 @@ from pcdsdevices.epics_motor import PCDSMotorBase, IMS
 from pcdsdevices.sim.pv import using_fake_epics_pv
 from .conftest import attr_wait_value
 
+
 def fake_motor():
     m = PCDSMotorBase("Tst:MMS:02", name='Test Motor')
     m.limits = (-100, 100)
@@ -14,6 +15,7 @@ def fake_motor():
     attr_wait_value(m, 'high_limit', 100)
     m.wait_for_connection()
     return m
+
 
 @using_fake_epics_pv
 def test_epics_motor_soft_limits():
@@ -25,6 +27,7 @@ def test_epics_motor_soft_limits():
         m.move(-150)
     with pytest.raises(ValueError):
         m.move(None)
+
 
 @using_fake_epics_pv
 def test_epics_motor_tdir():
@@ -45,7 +48,7 @@ def test_ims_clear_flag():
     m.bit_status._read_pv.put(0)
     m.clear_all_flags()
     # Clear a specific flag
-    m.bit_status._read_pv.put(4194304) # 2*22
+    m.bit_status._read_pv.put(4194304)  # 2*22
     time.sleep(0.5)
     st = m.clear_stall(wait=False)
     assert m.seq_seln.get() == 40
@@ -67,7 +70,7 @@ def test_ims_reinitialize():
     m.error_severity._read_pv.put(0)
     m.auto_setup()
     assert m.reinit_command.get() == 0
-    # Check that we reinitialize 
+    # Check that we reinitialize
     m.error_severity._read_pv.put(3)
     st = m.reinitialize(wait=False)
     assert m.reinit_command.get() == 1
