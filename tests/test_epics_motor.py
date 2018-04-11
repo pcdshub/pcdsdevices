@@ -83,3 +83,9 @@ def test_ims_reinitialize():
     time.sleep(1.0)
     assert st.done
     assert st.success
+
+@using_fake_epics_pv
+def test_ims_stage_smoke():
+    m = IMS('Tst:Mtr:1', name='motor')
+    m.wait_for_connection()
+    m.stage()
