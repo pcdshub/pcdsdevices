@@ -75,6 +75,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
         self.start()
         # Start monitor signals
         super().kickoff()
+
         # Create our status
         def done(*args, value=None, old_value=None, **kwargs):
             return value == 2 and old_value == 0
