@@ -8,6 +8,7 @@ Common EPICS Devices
     
     Attenuator
     EpicsMotor
+    EventSequencer
     LODCM
     GateValve
     IMS

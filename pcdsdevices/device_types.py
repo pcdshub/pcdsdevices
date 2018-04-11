@@ -8,5 +8,6 @@ from .mirror import OffsetMirror, PointingMirror
 from .movablestand import MovableStand
 from .pim import PIM
 from .pulsepicker import PulsePicker
+from .sequencer import EventSequencer
 from .slits import Slits
 from .valve import Stopper, GateValve
