@@ -63,6 +63,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     sync_marker = Cpt(EpicsSignal, ':SYNCMARKER')
     next_sync = Cpt(EpicsSignal, ':SYNCNEXTTICK')
     pulse_req = Cpt(EpicsSignal, ':BEAMPULSEREQ')
+    sequence_owner = Cpt(EpicsSignalRO, ':HUTCH_NAME')
 
     _default_read_attrs = ['play_status']
     _default_configuration_attrs = ['play_mode', 'sequence_length',
