@@ -225,7 +225,7 @@ class IMS(PCDSMotorBase):
             self.reinitialize(wait=True)
         # Clear any pre-existing flags
         self.clear_all_flags()
-        super().stage()
+        return super().stage()
 
     def auto_setup(self):
         """
