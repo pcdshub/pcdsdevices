@@ -224,7 +224,7 @@ class IMS(PCDSMotorBase):
         if not self.part_number.get() or self.error_severity.get() == 3:
             self.reinitialize(wait=True)
         # Clear any pre-existing flags
-        self.clear_all_flags(wait=True)
+        self.clear_all_flags()
         self.stage()
 
     def auto_setup(self):
