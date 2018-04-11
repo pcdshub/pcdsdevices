@@ -309,7 +309,7 @@ class IMS(PCDSMotorBase):
         bit = flag_info['readback']
         mask = flag_info.get('mask', 1)
 
-        # Create a callback function to check for bit 
+        # Create a callback function to check for bit
         def flag_is_cleared(value=None, **kwargs):
             return not bool((int(value) >> bit) & mask)
 
