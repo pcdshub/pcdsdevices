@@ -221,7 +221,7 @@ class IMS(PCDSMotorBase):
         if we don't register a valid part number
         """
         # Check the part number to avoid crashing the IOC
-        if not self.part_number.get():
+        if not self.part_number.get() or self.error_severity.get() == 3:
             self.reinitialize(wait=True)
         # Clear any pre-existing flags
         self.clear_all_flags(wait=True)
@@ -237,7 +237,7 @@ class IMS(PCDSMotorBase):
             * Clear powerup, stall and error flags
         """
         # Reinitialize if necessary
-        if self.error_severity.get() == 3:
+        if not self.part_number.get() or self.error_severity.get() == 3:
             self.reinitialize(wait=True)
         # Clear all flags
         self.clear_all_flags()
