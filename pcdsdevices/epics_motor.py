@@ -240,7 +240,7 @@ class IMS(PCDSMotorBase):
         if self.error_severity.get() == 3:
             self.reinitialize(wait=True)
         # Clear all flags
-        self.clear_all_flags(wait=True)
+        self.clear_all_flags()
 
     def reinitialize(self, wait=False):
         """
