@@ -45,6 +45,14 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
                                             # not in "Run Forever" mode
 
         scan([det], motor, ..., per_step=step_then_sequence)
+
+    Note
+    ----
+    It is ambiguous what the correct behavior for the EventSequencer is when we
+    pause and resume during a scan. The current implementation will stop the
+    EventSequencer and restart the sequence from the beginning. This may impact
+    applications which depend on a long single looped sequence running through
+    out the scan
     """
     play_control = Cpt(EpicsSignal, ':PLYCTL')
     sequence_length = Cpt(EpicsSignal, ':LEN')
@@ -97,7 +105,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
         # Order a stop
         self.stop()
         # Pause monitoring
-        super().pause
+        super().pause()
 
     def resume(self):
         """Resume the EventSequencer procedure"""
