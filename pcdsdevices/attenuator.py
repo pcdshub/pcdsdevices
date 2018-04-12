@@ -32,7 +32,7 @@ class Filter(InOutPositioner):
     state = Cmp(EpicsSignal, ':STATE', write_pv=':GO')
     thickness = Cmp(EpicsSignal, ':THICK')
     material = Cmp(EpicsSignal, ':MATERIAL')
-    stuck = Cmp(EpicsSignal, ':STUCK')
+    stuck = Cmp(EpicsSignal, ':IS_STUCK')
 
 
 class AttBase(FltMvInterface, PVPositioner):
