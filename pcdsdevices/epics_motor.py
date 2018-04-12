@@ -4,7 +4,8 @@ Module for LCLS's special motor records.
 import logging
 
 from ophyd.utils import LimitError
-from ophyd import EpicsMotor, Component, EpicsSignal, Signal
+from ophyd import EpicsMotor, Component, EpicsSignalRO, EpicsSignal, Signal
+from ophyd.status import DeviceStatus, SubscriptionStatus, wait as status_wait
 
 from .doc_stubs import basic_positioner_init
 from .mv_interface import FltMvInterface
@@ -197,6 +198,123 @@ class IMS(PCDSMotorBase):
     This is a subclass of `PCDSMotorBase`
     """
     __doc__ += basic_positioner_init
+    # Bit masks to clear errors and flags
+    _bit_flags = {'powerup': {'clear': 36,
+                              'readback':  24},
+                  'stall': {'clear': 40,
+                            'readback': 22},
+                  'error': {'clear': 48,
+                            'readback': 15,
+                            'mask': 0x7f}}
+    # Custom IMS bit fields
+    reinit_command = Component(EpicsSignal, '.RINI')
+    bit_status = Component(EpicsSignalRO, '.MSTA')
+    seq_seln = Component(EpicsSignal, ':SEQ_SELN')
+    error_severity = Component(EpicsSignal, '.SEVR')
+    part_number = Component(EpicsSignalRO, '.PN')
+
+    def stage(self):
+        """
+        State the IMS motor
+
+        This clears all present flags on the motor and reinitializes the motor
+        if we don't register a valid part number
+        """
+        # Check the part number to avoid crashing the IOC
+        if not self.part_number.get() or self.error_severity.get() == 3:
+            self.reinitialize(wait=True)
+        # Clear any pre-existing flags
+        self.clear_all_flags()
+        return super().stage()
+
+    def auto_setup(self):
+        """
+        Automated setup of the IMS motor
+
+        If necessarry this command will:
+
+            * Reinitialize the motor
+            * Clear powerup, stall and error flags
+        """
+        # Reinitialize if necessary
+        if not self.part_number.get() or self.error_severity.get() == 3:
+            self.reinitialize(wait=True)
+        # Clear all flags
+        self.clear_all_flags()
+
+    def reinitialize(self, wait=False):
+        """
+        Reinitialize the IMS motor
+
+        Parameters
+        ----------
+        wait : bool
+            Wait for the motor to be fully intialized
+
+        Returns
+        -------
+        SubscriptionStatus:
+            Status object reporting the initialization state of the motor
+        """
+        logger.info('Reinitializing motor')
+        # Issue command
+        self.reinit_command.put(1)
+
+        # Check error
+        def initialize_complete(value=None, **kwargs):
+            return value != 3
+
+        # Generate a status
+        st = SubscriptionStatus(self.error_severity,
+                                initialize_complete,
+                                settle_time=0.5)
+        # Wait on status if requested
+        if wait:
+            status_wait(st)
+        return st
+
+    def clear_all_flags(self):
+        """Clear all the flags from the IMS motor"""
+        # Clear all flags
+        for func in (self.clear_powerup, self.clear_stall, self.clear_error):
+            func(wait=True)
+
+    def clear_powerup(self, wait=False, timeout=10):
+        """Clear powerup flag"""
+        return self._clear_flag('powerup', wait=wait, timeout=timeout)
+
+    def clear_stall(self, wait=False, timeout=5):
+        """Clear stall flag"""
+        return self._clear_flag('stall', wait=wait, timeout=timeout)
+
+    def clear_error(self, wait=False, timeout=10):
+        """Clear error flag"""
+        return self._clear_flag('error', wait=wait, timeout=timeout)
+
+    def _clear_flag(self, flag, wait=False, timeout=10):
+        """Clear flag whose information is in ``._bit_flags``"""
+        # Gather our flag information
+        flag_info = self._bit_flags[flag]
+        bit = flag_info['readback']
+        mask = flag_info.get('mask', 1)
+
+        # Create a callback function to check for bit
+        def flag_is_cleared(value=None, **kwargs):
+            return not bool((int(value) >> bit) & mask)
+
+        # Check that we need to actually set the flag
+        if flag_is_cleared(value=self.bit_status.get()):
+            logger.debug("%s flag is not currently active", flag)
+            return DeviceStatus(self, done=True, success=True)
+
+        # Issue our command
+        logger.info('Clearing %s flag ...', flag)
+        self.seq_seln.put(flag_info['clear'])
+        # Generate a status
+        st = SubscriptionStatus(self.bit_status, flag_is_cleared)
+        if wait:
+            status_wait(st, timeout=timeout)
+        return st
 
 
 class Newport(PCDSMotorBase):
