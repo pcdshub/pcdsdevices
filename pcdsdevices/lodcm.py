@@ -23,21 +23,24 @@ logger = logging.getLogger(__name__)
 
 
 class YagLom(InOutRecordPositioner):
-    states_list = ['OUT', 'YAG', 'SLIT1', 'SLIT2', 'SLIT3']
+    _states_list = ['OUT', 'YAG', 'SLIT1', 'SLIT2', 'SLIT3']
     in_states = ['YAG', 'SLIT1', 'SLIT2', 'SLIT3']
     _states_alias = {'YAG': 'IN'}
+    _dynamic_states = False
 
 
 class Dectris(InOutRecordPositioner):
-    states_list = ['OUT', 'DECTRIS', 'SLIT1', 'SLIT2', 'SLIT3', 'OUTLOW']
+    _states_list = ['OUT', 'DECTRIS', 'SLIT1', 'SLIT2', 'SLIT3', 'OUTLOW']
     in_states = ['DECTRIS', 'SLIT1', 'SLIT2', 'SLIT3']
     out_states = ['OUT', 'OUTLOW']
     _states_alias = {'DECTRIS': 'IN'}
+    _dynamic_states = False
 
 
 class Foil(InOutRecordPositioner):
-    states_list = ['OUT']
+    _states_list = ['OUT']
     in_states = []
+    _dynamic_states = False
 
 
 class LODCM(InOutRecordPositioner):
@@ -66,8 +69,9 @@ class LODCM(InOutRecordPositioner):
     diode = Cmp(InOutRecordPositioner, ":DIODE")
     foil = Cmp(Foil, ":FOIL")
 
-    states_list = ['OUT', 'C', 'Si']
+    _states_list = ['OUT', 'C', 'Si']
     in_states = ['C', 'Si']
+    _dynamic_states = False
 
     # TBH these are guessed. Please replace if you know better. These don't
     # need to be 100% accurate, but they should reflect a reasonable reduction

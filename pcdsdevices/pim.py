@@ -49,8 +49,9 @@ class PIMMotor(InOutRecordPositioner):
     This can move the stage to insert the yag
     or diode, or retract from the beam path.
     """
-    states_list = ['DIODE', 'YAG', 'OUT']
+    _states_list = ['DIODE', 'YAG', 'OUT']
     _states_alias = {'YAG': 'IN'}
+    _dynamic_states = False
 
     def stage(self):
         """
