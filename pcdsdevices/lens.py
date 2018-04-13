@@ -16,8 +16,9 @@ class XFLS(InOutRecordPositioner):
     """
     __doc__ += basic_positioner_init
 
-    states_list = ['LENS1', 'LENS2', 'LENS3', 'OUT']
-    in_states = ['LENS1', 'LENS2', 'LENS3']
+    _default_settings = ['LENS1', 'LENS2', 'LENS3', 'OUT']
+    in_states = [1, 2, 3]
+
     _lens_transmission = 0.8
 
     def __init__(self, prefix, *, name, **kwargs):

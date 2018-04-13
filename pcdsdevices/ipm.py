@@ -25,13 +25,8 @@ class IPM(InOutRecordPositioner):
     state = Cmp(EpicsSignal, ':TARGET', write_pv=':TARGET:GO')
     diode = Cmp(InOutRecordPositioner, ":DIODE")
 
-    states_list = ['T1', 'T2', 'T3', 'T4', 'OUT']
-    _states_alias = {'T1': ['T1', 'TARGET1', 't1', 'target1'],
-                     'T2': ['T2', 'TARGET2', 't2', 'target2'],
-                     'T3': ['T3', 'TARGET3', 't3', 'target3'],
-                     'T4': ['T4', 'TARGET4', 't4', 'target4']}
-
-    in_states = ['T1', 'T2', 'T3', 'T4']
+    _default_settings = ['TARGET1', 'TARGET2', 'TARGET3', 'TARGET4', 'OUT']
+    in_states = [1, 2, 3, 4]
 
     # Assume that having any target in gives transmission 0.8
-    _transmission = {'T' + str(n): 0.8 for n in range(1, 5)}
+    _transmission = {n: 0.8 for n in in_states}

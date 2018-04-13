@@ -27,20 +27,31 @@ class StatePositioner(Device, PositionerBase, MvInterface):
     state: ``Signal``
         This signal is the final authority on what state the object is in.
 
-    states_list: ``list of str``
+    _states_list: ``list of str``
         An exhaustive list of all possible states. This should be overridden in
         a base class. Unknown must be omitted in the class definition and will
         be added dynamically in position 0 when the object is created.
+        If provided with type ``int``
 
-    states_enum: ``Enum``
+    _dynamic_states: ``bool``
+        An alternative to _states_list when the names of the states are
+        variable, and the names can be grabbed from the `state` signal later.
+        This list must be called ``state.enum_strs``.
+        There is an assumption made that objects from a class with dynamic
+        states has consistent behavior with the position index, even if
+        the string names of the states vary.
+
+    _states_enum: ``Enum``
         An enum that represents all possible states. This will be constructed
-        for the user based on the contents of `states_list` and
-        `_states_alias`, but it can also be overriden in a child class.
+        for the user based on the contents of `_states_list`, _dynamic_states,
+        and `_states_alias`, but it can also be overriden in a child class.
 
-    _invalid_states: ``list of str``
+    _invalid_states: ``list of str`` or ``list of int``
         States that cannot be moved to. This can be optionally overriden to be
         extended in a base class. The `_unknown` state will be included
-        automatically.
+        automatically, unless `_dynamic_states` is ``True``, in which case the
+        string held in the zero position of ``state.enum_strs`` is assumed to
+        be the unknown state.
 
     _unknown: ``str``
         The name of the unknown state, defaulting to 'Unknown'. This can be set
@@ -48,13 +59,15 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
     _states_alias: ``dict``
         Mapping of state names to lists of acceptable aliases. This can
-        optionally be overriden in a child class.
+        optionally be overriden in a child class. If `_dynamic_states` is
+        ``True``, this can be a mapping of index to aliases.
     """
     __doc__ = __doc__ % basic_positioner_init
 
     state = None  # Override with Signal that represents state readback
 
-    states_list = []  # Override with an exhaustive list of states
+    _states_list = []  # Override with an exhaustive list of states
+    _dynamic_states = False  # Alternative to _states_list
     _invalid_states = []  # Override with states that cannot be set
     _states_alias = {}  # Override with a mapping {'STATE': ['ALIAS', ...]}
     _unknown = 'Unknown'  # Set False if no Unknown state, can also change str
@@ -68,15 +81,38 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
-        self._valid_states = [state for state in self.states_list
-                              if state not in self._invalid_states]
-        if self._unknown:
-            self.states_list = [self._unknown] + self.states_list
-            self._invalid_states = [self._unknown] + self._invalid_states
-        if not hasattr(self, 'states_enum'):
-            self.states_enum = self._create_states_enum()
-        self.states_list = [s for s in self.states_list if s is not None]
+        self._needs_state_init = True
+        if not self._dynamic_states:
+            self._init_states()
         self._has_subscribed_state = False
+
+    @property
+    def states_list(self):
+        if self._needs_state_init:
+            self._init_states()
+        return self._states_list
+
+    @property
+    def states_enum(self):
+        if self._needs_state_init:
+            self._init_states()
+        return self._states_enum
+
+    def _init_states(self):
+        if self._dynamic_states:
+            self._states_list = list(self.state.enum_strs)
+            self._invalid_states = self._states_list[0] + self._invalid_states
+        elif self._unknown:
+            self._states_list = [self._unknown] + self._states_list
+            self._invalid_states = [self._unknown] + self._invalid_states
+        self._valid_states = []
+        for i, state in enumerate(self._states_list):
+            if all(x not in self._invalid_states for x in (i, state)):
+                self._valid_states.append(state)
+        if not hasattr(self, '_states_enum'):
+            self._states_enum = self._create_states_enum()
+        self._states_list = [s for s in self._states_list if s is not None]
+        self._needs_state_init = False
 
     def move(self, position, moved_cb=None, timeout=None, wait=False):
         """
@@ -253,7 +289,10 @@ class StatePositioner(Device, PositionerBase, MvInterface):
             try:
                 aliases = self._states_alias[state]
             except KeyError:
-                continue
+                try:
+                    aliases = self._states_alias[i]
+                except KeyError:
+                    continue
             if isinstance(aliases, str):
                 state_def[aliases] = i
             else:
@@ -375,16 +414,35 @@ class StateRecordPositioner(StatePositioner):
     """
     A `StatePositioner` for an EPICS states record.
 
-    The `states_list` must match the order of the EPICS enum.
+    Dynamically allocates the enums based on what EPICS says. An additional
+    ``settings`` ``list``  must be provided to get a readback, and in the
+    future this parameter will be used to configure the set positions.
+
+    Parameters
+    ----------
+    settings: ``list of str``, optional if `_default_settings` defined.
+        A list of strings that match the IOC's configuration PVs. This can vary
+        from IOC to IOC, even controlling the same device.
+
+    Attributes
+    ----------
+    _default_settings: ``list of str``
+        Set this to the default settings argument for a particular subclass.
     """
     state = Component(EpicsSignal, '', write_pv=':GO')
     readback = FormattedComponent(EpicsSignalRO, '{self._readback}')
 
+    _dynamic_states = True
+    _default_settings = None
+
     _default_read_attrs = ['state', 'readback']
 
-    def __init__(self, prefix, *, name, **kwargs):
-        some_state = self.states_list[0]
-        self._readback = '{}:{}_CALC.A'.format(prefix, some_state)
+    def __init__(self, prefix, *, name, settings=None, **kwargs):
+        if settings is None:
+            settings = self._default_settings
+        if settings is None:
+            raise TypeError('Missing settings and _default_settings')
+        self._readback = '{}:{}_CALC.A'.format(prefix, settings[0])
         super().__init__(prefix, name=name, **kwargs)
         self._has_subscribed_readback = False
 

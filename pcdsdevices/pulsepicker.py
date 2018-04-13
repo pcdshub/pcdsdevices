@@ -175,7 +175,7 @@ class PulsePickerInOut(PulsePicker):
 
     inout = FCmp(InOutRecordPositioner, '{self._inout}')
 
-    states_list = ['OUT', 'OPEN', 'CLOSED']
+    _states_list = ['OUT', 'OPEN', 'CLOSED']
     out_states = ['OUT', 'OPEN']
     _state_logic = {'inout.state': {1: 'OUT',
                                     2: 'defer',

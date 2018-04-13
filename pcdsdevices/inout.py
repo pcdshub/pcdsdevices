@@ -21,13 +21,13 @@ class InOutPositioner(StatePositioner):
 %s
     Attributes
     ----------
-    in_states: ``list` of ``str``
+    in_states: ``list of str`` or ``list of int``
         State values that should be considered ``IN``.
 
-    out_states: ``list`` of ``str``
+    out_states: ``list of str`` or ``list of int``
         State values that should be considered ``OUT``.
 
-    _transmission: ``dict{str: float}``
+    _transmission: ``dict{str: float}`` or ``dict{int: float}``
         Mapping from each state to the transmission ratio. This should be a
         number from 0 to 1. Default values will be 1 (full transmission) for
         ``out_states``, 0 (full block) for ``in_states``, and nan (no idea!)
@@ -35,7 +35,7 @@ class InOutPositioner(StatePositioner):
     """
     __doc__ = __doc__ % basic_positioner_init
 
-    states_list = ['IN', 'OUT']
+    _states_list = ['IN', 'OUT']
     in_states = ['IN']
     out_states = ['OUT']
     _transmission = {}
@@ -43,8 +43,10 @@ class InOutPositioner(StatePositioner):
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
         self._trans_enum = {}
-        self._extend_trans_enum(self.in_states, 0)
-        self._extend_trans_enum(self.out_states, 1)
+        if self._dynamic_states:
+            self._needs_trans_init = True
+        else:
+            self._init_trans()
 
     @property
     def inserted(self):
@@ -84,8 +86,15 @@ class InOutPositioner(StatePositioner):
 
     @property
     def transmission(self):
+        if self._needs_trans_init:
+            self._init_trans()
         state = self.get_state(self.position)
         return self._trans_enum.get(state, math.nan)
+
+    def _init_trans(self):
+        self._extend_trans_enum(self.in_states, 0)
+        self._extend_trans_enum(self.out_states, 1)
+        self._needs_trans_init = False
 
     def _extend_trans_enum(self, state_list, default):
         for state in state_list:
