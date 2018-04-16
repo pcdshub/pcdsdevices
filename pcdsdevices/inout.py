@@ -84,13 +84,19 @@ class InOutPositioner(StatePositioner):
 
     @property
     def transmission(self):
-        state = self.get_state(self.position)
-        return self._trans_enum.get(state, math.nan)
+        """
+        The proportion of incoming beam that makes it through the device.
+
+        This will be a float between 0 and 1, where 0 is no beam and 1 is full
+        transmission.
+        """
+        state_index = self.get_state(self.position).value
+        return self._trans_enum.get(state_index, math.nan)
 
     def _extend_trans_enum(self, state_list, default):
         for state in state_list:
-            enumst = self.get_state(state)
-            self._trans_enum[enumst] = self._transmission.get(state, default)
+            index = self.states_list.index(state)
+            self._trans_enum[index] = self._transmission.get(state, default)
 
     def _pos_in_list(self, state_list):
         current_state = self.get_state(self.position)
