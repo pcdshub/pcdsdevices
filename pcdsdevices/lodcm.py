@@ -35,6 +35,10 @@ class Dectris(InOutRecordPositioner):
     _states_alias = {'DECTRIS': 'IN'}
 
 
+class Diode(InOutRecordPositioner):
+    states_list = ['OUT', 'IN']
+
+
 class Foil(InOutRecordPositioner):
     states_list = ['OUT']
     in_states = []
@@ -63,7 +67,7 @@ class LODCM(InOutRecordPositioner):
 
     yag = Cmp(YagLom, ":DV")
     dectris = Cmp(Dectris, ":DH")
-    diode = Cmp(InOutRecordPositioner, ":DIODE")
+    diode = Cmp(Diode, ":DIODE")
     foil = Cmp(Foil, ":FOIL")
 
     states_list = ['OUT', 'C', 'Si']
