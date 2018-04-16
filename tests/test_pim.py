@@ -29,7 +29,8 @@ def fake_pim():
     pim = PIMMotor('Test:Yag', name='test')
     connect_rw_pvs(pim.state)
     pim.wait_for_connection()
-    pim.state.put('OUT', wait=True)
+    pim.state.put(0, wait=True)
+    pim.state._read_pv.enum_strs = ['Unknown'] + PIMMotor.states_list
     return pim
 
 

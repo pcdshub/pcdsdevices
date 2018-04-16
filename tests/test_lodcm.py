@@ -2,8 +2,8 @@ import logging
 
 from unittest.mock import Mock
 
+from pcdsdevices.lodcm import LODCM, YagLom, Dectris, Diode, Foil
 from pcdsdevices.sim.pv import using_fake_epics_pv
-from pcdsdevices.lodcm import LODCM
 
 from .conftest import attr_wait_true, connect_rw_pvs
 
@@ -21,11 +21,16 @@ def fake_lodcm():
     connect_rw_pvs(lodcm.dectris.state)
     connect_rw_pvs(lodcm.diode.state)
     connect_rw_pvs(lodcm.foil.state)
-    lodcm.state.put('OUT')
-    lodcm.yag.state.put('OUT')
-    lodcm.dectris.state.put('OUT')
-    lodcm.diode.state.put('OUT')
-    lodcm.foil.state.put('OUT')
+    lodcm.state.put(1)
+    lodcm.state._read_pv.enum_strs = ['Unknown'] + LODCM.states_list
+    lodcm.yag.state.put(1)
+    lodcm.yag.state._read_pv.enum_strs = ['Unknown'] + YagLom.states_list
+    lodcm.dectris.state.put(1)
+    lodcm.dectris.state._read_pv.enum_strs = ['Unknown'] + Dectris.states_list
+    lodcm.diode.state.put(1)
+    lodcm.diode.state._read_pv.enum_strs = ['Unknown'] + Diode.states_list
+    lodcm.foil.state.put(1)
+    lodcm.foil.state._read_pv.enum_strs = ['Unknown'] + Foil.states_list
     lodcm.wait_for_connection()
     return lodcm
 

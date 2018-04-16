@@ -6,8 +6,9 @@ import pytest
 from unittest.mock import Mock
 from ophyd.status import wait as status_wait
 
-from pcdsdevices.sim.pv import using_fake_epics_pv
+from pcdsdevices.inout import InOutRecordPositioner
 from pcdsdevices.pulsepicker import PulsePickerInOut
+from pcdsdevices.sim.pv import using_fake_epics_pv
 
 from .conftest import attr_wait_true, connect_rw_pvs
 
@@ -20,7 +21,9 @@ def fake_picker():
     """
     picker = PulsePickerInOut('TST:SB1:MMS:35', name='picker')
     connect_rw_pvs(picker.inout.state)
-    picker.inout.state.put('IN')
+    picker.inout.state.put(0)
+    picker.inout.state._read_pv.enum_strs = (['Unknown'] +
+                                             InOutRecordPositioner.states_list)
     picker.blade._read_pv.put(0)
     picker.mode._read_pv.put(0)
     picker.wait_for_connection()
@@ -32,7 +35,9 @@ def fake_picker():
 def test_picker_states():
     logger.debug('test_picker_states')
     picker = fake_picker()
-    # Starts OPEN
+    # Insert and OPEN
+    picker.inout.state.put('IN')
+    picker.blade._read_pv.put(0)
     assert not picker.inserted
     assert picker.removed
     assert picker.position == 'OPEN'

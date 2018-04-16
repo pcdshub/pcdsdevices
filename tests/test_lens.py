@@ -13,7 +13,9 @@ def fake_xfls():
     """
     xfls = XFLS('TST:XFLS', name='lens')
     connect_rw_pvs(xfls.state)
-    xfls.state.put('OUT')
+    xfls.state.put(4)
+    xfls.state._read_pv.enum_strs = ('Unknown', 'LENS1', 'LENS2', 'LENS3',
+                                     'OUT')
     xfls.wait_for_connection()
     return xfls
 
@@ -39,7 +41,7 @@ def test_xfls_states():
 def test_xfls_motion():
     xfls = fake_xfls()
     xfls.remove()
-    assert xfls.state._write_pv.get() == 'OUT'
+    assert xfls.state._write_pv.get() == 4
 
 
 @using_fake_epics_pv
