@@ -157,6 +157,6 @@ def test_picker_subs():
     cb = Mock()
     picker.subscribe(cb, event_type=picker.SUB_STATE, run=False)
     # Change the target state
-    picker.blade._read_pv.put(1)
+    picker.insert()
     attr_wait_true(cb, 'called')
     assert cb.called
