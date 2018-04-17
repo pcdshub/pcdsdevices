@@ -142,7 +142,7 @@ def test_presets(presets, motor):
     assert len(motor.presets.positions.sample.history) == 2
 
     def block_file(path, lock):
-        with open(path, 'r') as f:
+        with open(path, 'r+') as f:
             fcntl.flock(f, fcntl.LOCK_EX)
             lock.acquire()
             fcntl.flock(f, fcntl.LOCK_UN)
