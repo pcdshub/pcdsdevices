@@ -3,7 +3,7 @@ Module for the LCLS1 `PulsePicker`
 """
 import logging
 
-from ophyd.device import Component as Cmp, FormattedComponent as FCmp
+from ophyd.device import Component as Cpt, FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 from ophyd.status import SubscriptionStatus, wait as status_wait
 
@@ -22,15 +22,15 @@ class PulsePicker(InOutPVStatePositioner):
     """
     __doc__ += basic_positioner_init
 
-    blade = Cmp(EpicsSignalRO, ':READ_DF')
-    mode = Cmp(EpicsSignalRO, ':SD_SIMPLE')
+    blade = Cpt(EpicsSignalRO, ':READ_DF')
+    mode = Cpt(EpicsSignalRO, ':SD_SIMPLE')
 
-    cmd_reset = Cmp(EpicsSignal, ':RESET_PG')
-    cmd_open = Cmp(EpicsSignal, ':S_OPEN')
-    cmd_close = Cmp(EpicsSignal, ':S_CLOSE')
-    cmd_flipflop = Cmp(EpicsSignal, ':RUN_FLIPFLOP')
-    cmd_burst = Cmp(EpicsSignal, ':RUN_BURSTMODE')
-    cmd_follower = Cmp(EpicsSignal, ':RUN_FOLLOWERMODE')
+    cmd_reset = Cpt(EpicsSignal, ':RESET_PG')
+    cmd_open = Cpt(EpicsSignal, ':S_OPEN')
+    cmd_close = Cpt(EpicsSignal, ':S_CLOSE')
+    cmd_flipflop = Cpt(EpicsSignal, ':RUN_FLIPFLOP')
+    cmd_burst = Cpt(EpicsSignal, ':RUN_BURSTMODE')
+    cmd_follower = Cpt(EpicsSignal, ':RUN_FOLLOWERMODE')
 
     states_list = ['OPEN', 'CLOSED']
     in_states = ['CLOSED']
@@ -173,14 +173,14 @@ class PulsePickerInOut(PulsePicker):
     """
     __doc__ += basic_positioner_init
 
-    inout = FCmp(InOutRecordPositioner, '{self._inout}')
+    inout = FCpt(InOutRecordPositioner, '{self._inout}')
 
     states_list = ['OUT', 'OPEN', 'CLOSED']
     out_states = ['OUT', 'OPEN']
-    _state_logic = {'inout.state': {1: 'OUT',
-                                    2: 'defer',
-                                    'OUT': 'OUT',
-                                    'IN': 'defer'},
+    _state_logic = {'inout.state': {1: 'defer',
+                                    2: 'OUT',
+                                    'IN': 'defer',
+                                    'OUT': 'OUT'},
                     'blade': {0: 'OPEN',
                               1: 'CLOSED',
                               2: 'CLOSED'}}

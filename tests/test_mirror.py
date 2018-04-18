@@ -19,6 +19,7 @@ def fake_branching_mirror():
                        in_lines=['MFX', 'MEC'], out_lines=['CXI'])
     connect_rw_pvs(m.state)
     m.state._write_pv.put('Unknown')
+    m.state._read_pv.enum_strs = ['Unknown'] + PointingMirror.states_list
     m.wait_for_connection()
     # Couple the gantry
     m.xgantry.decoupled._read_pv.put(0)
@@ -103,12 +104,12 @@ def test_branching_mirror_moves():
     assert branching_mirror.xgantry.setpoint._write_pv.get() == 0.2
     # Test removal
     branching_mirror.remove()
-    assert branching_mirror.state._write_pv.value == 'OUT'
+    assert branching_mirror.state._write_pv.value == 2
     # Finish simulated move manually
-    branching_mirror.state._read_pv.put('OUT')
+    branching_mirror.state._read_pv.put(2)
     # Insert
     branching_mirror.insert()
-    assert branching_mirror.state._write_pv.value == 'IN'
+    assert branching_mirror.state._write_pv.value == 1
 
 
 @using_fake_epics_pv

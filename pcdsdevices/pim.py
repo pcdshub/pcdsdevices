@@ -50,6 +50,8 @@ class PIMMotor(InOutRecordPositioner):
     or diode, or retract from the beam path.
     """
     states_list = ['DIODE', 'YAG', 'OUT']
+    in_states = ['YAG', 'DIODE']
+
     _states_alias = {'YAG': 'IN'}
 
     def stage(self):

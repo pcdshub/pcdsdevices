@@ -13,6 +13,7 @@ def fake_inout():
     inout = InOutRecordPositioner('Test:Ref', name='test')
     connect_rw_pvs(inout.state)
     inout.state._write_pv.put('Unknown')
+    inout.state._read_pv.enum_strs = ('Unknown', 'IN', 'OUT')
     inout.wait_for_connection()
     return inout
 

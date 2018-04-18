@@ -8,7 +8,7 @@ from enum import Enum
 from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait, SubscriptionStatus
 from ophyd.signal import EpicsSignal, EpicsSignalRO
-from ophyd.device import Device, Component, FormattedComponent
+from ophyd.device import Device, Component as Cpt, FormattedComponent as FCpt
 
 from .doc_stubs import basic_positioner_init
 from .mv_interface import MvInterface
@@ -148,11 +148,6 @@ class StatePositioner(Device, PositionerBase, MvInterface):
         return status
 
     def subscribe(self, cb, event_type=None, run=True):
-        """
-        Subcribe a callback to be run on specific events.
-
-        See the ``opyhd`` documentation for more information.
-        """
         cid = super().subscribe(cb, event_type=event_type, run=run)
         if event_type is None:
             event_type = self._default_sub
@@ -229,7 +224,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
     def _do_move(self, state):
         """
         Execute the move command. Override this if your move isn't a simple put
-        to the state signal using the state name.
+        to the state signal using the state value.
 
         Parameters
         ----------
@@ -237,7 +232,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
             Object whose ``name`` attribute is the string enum name and whose
             ``value`` attribute is the integer enum value.
         """
-        self.state.put(state.name)
+        self.state.put(state.value)
 
     def _create_states_enum(self):
         """
@@ -308,9 +303,6 @@ class PVStateSignal(AggregateSignal):
         return state_value or self.parent._unknown
 
     def put(self, value, **kwargs):
-        """
-        Move the PVStatePositioner
-        """
         self.parent.move(value, **kwargs)
 
 
@@ -351,7 +343,7 @@ class PVStatePositioner(StatePositioner):
     """
     __doc__ = __doc__ % basic_positioner_init
 
-    state = Component(PVStateSignal)
+    state = Cpt(PVStateSignal)
 
     _state_logic = {}
     _state_logic_mode = 'ALL'
@@ -375,25 +367,22 @@ class StateRecordPositioner(StatePositioner):
     """
     A `StatePositioner` for an EPICS states record.
 
-    The `states_list` must match the order of the EPICS enum.
+    The `states_list` must match the EPICS PVs for adjusting the states
+    settings, in the same order as the state enum. Unknown must be omitted.
     """
-    state = Component(EpicsSignal, '', write_pv=':GO')
-    readback = FormattedComponent(EpicsSignalRO, '{self._readback}')
+    state = Cpt(EpicsSignal, '', write_pv=':GO')
+    readback = FCpt(EpicsSignalRO, '{self.prefix}:{self._readback}')
 
     _default_read_attrs = ['state', 'readback']
 
     def __init__(self, prefix, *, name, **kwargs):
         some_state = self.states_list[0]
-        self._readback = '{}:{}_CALC.A'.format(prefix, some_state)
+        self._readback = '{}_CALC.A'.format(some_state)
         super().__init__(prefix, name=name, **kwargs)
         self._has_subscribed_readback = False
+        self._has_checked_state_enum = False
 
     def subscribe(self, cb, event_type=None, run=True):
-        """
-        Subcribe a callback to be run on specific events.
-
-        See the ``opyhd`` documentation for more information.
-        """
         cid = super().subscribe(cb, event_type=event_type, run=run)
         if (event_type == self.SUB_READBACK and not
                 self._has_subscribed_readback):
@@ -405,6 +394,18 @@ class StateRecordPositioner(StatePositioner):
         kwargs.pop('sub_type')
         kwargs.pop('obj')
         self._run_subs(sub_type=self.SUB_READBACK, obj=self, **kwargs)
+
+    def get_state(self, value):
+        if not self._has_checked_state_enum:
+            # Add the real enum as the first alias
+            for enum_val, state in zip(self.state.enum_strs, self.states_list):
+                aliases = self._states_alias.get(state, [])
+                if isinstance(aliases, str):
+                    aliases = [aliases]
+                self._states_alias[state] = [enum_val] + aliases
+            self.states_enum = self._create_states_enum()
+            self._has_checked_state_enum = True
+        return super().get_state(value)
 
 
 class StateStatus(SubscriptionStatus):
