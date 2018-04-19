@@ -215,6 +215,8 @@ class IMS(PCDSMotorBase):
 
     # IMS velocity has limits
     velocity = Component(EpicsSignal, '.VELO', limits=True)
+    velocity_base = Component(EpicsSignal, '.VBAS')
+    velocity_max = Component(EpicsSignal, '.VMAX')
 
     def stage(self):
         """
