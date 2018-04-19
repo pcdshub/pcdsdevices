@@ -3,9 +3,11 @@ Module for LCLS's special motor records.
 """
 import logging
 
-from ophyd.utils import LimitError
-from ophyd import EpicsMotor, Component, EpicsSignalRO, EpicsSignal, Signal
+from ophyd.device import Component as Cpt
+from ophyd.epics_motor import EpicsMotor
+from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
 from ophyd.status import DeviceStatus, SubscriptionStatus, wait as status_wait
+from ophyd.utils import LimitError
 
 from .doc_stubs import basic_positioner_init
 from .mv_interface import FltMvInterface
@@ -45,15 +47,15 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
     # Reimplemented because pyepics does not recognize when the limits have
     # been changed without a re-connection of the PV. Instead we trust the soft
     # limits records
-    user_setpoint = Component(EpicsSignal, ".VAL", limits=False)
+    user_setpoint = Cpt(EpicsSignal, ".VAL", limits=False)
     # Additional soft limit configurations
-    low_soft_limit = Component(EpicsSignal, ".LLM")
-    high_soft_limit = Component(EpicsSignal, ".HLM")
+    low_soft_limit = Cpt(EpicsSignal, ".LLM")
+    high_soft_limit = Cpt(EpicsSignal, ".HLM")
     # Disable missing field that our EPICS motor record lacks
     # This attribute is tracked by the _pos_changed callback
-    direction_of_travel = Component(Signal)
+    direction_of_travel = Cpt(Signal)
     # This attribute will show if the motor is disabled or not
-    disabled = Component(EpicsSignal, ".DISP")
+    disabled = Cpt(EpicsSignal, ".DISP")
 
     @property
     def low_limit(self):
@@ -207,16 +209,16 @@ class IMS(PCDSMotorBase):
                             'readback': 15,
                             'mask': 0x7f}}
     # Custom IMS bit fields
-    reinit_command = Component(EpicsSignal, '.RINI')
-    bit_status = Component(EpicsSignalRO, '.MSTA')
-    seq_seln = Component(EpicsSignal, ':SEQ_SELN')
-    error_severity = Component(EpicsSignal, '.SEVR')
-    part_number = Component(EpicsSignalRO, '.PN')
+    reinit_command = Cpt(EpicsSignal, '.RINI')
+    bit_status = Cpt(EpicsSignalRO, '.MSTA')
+    seq_seln = Cpt(EpicsSignal, ':SEQ_SELN')
+    error_severity = Cpt(EpicsSignal, '.SEVR')
+    part_number = Cpt(EpicsSignalRO, '.PN')
 
     # IMS velocity has limits
-    velocity = Component(EpicsSignal, '.VELO', limits=True)
-    velocity_base = Component(EpicsSignal, '.VBAS')
-    velocity_max = Component(EpicsSignal, '.VMAX')
+    velocity = Cpt(EpicsSignal, '.VELO', limits=True)
+    velocity_base = Cpt(EpicsSignal, '.VBAS')
+    velocity_max = Cpt(EpicsSignal, '.VMAX')
 
     def stage(self):
         """
@@ -332,9 +334,9 @@ class Newport(PCDSMotorBase):
     """
     __doc__ += basic_positioner_init
 
-    offset_freeze_switch = Component(Signal)
-    home_forward = Component(Signal)
-    home_reverse = Component(Signal)
+    offset_freeze_switch = Cpt(Signal)
+    home_forward = Cpt(Signal)
+    home_reverse = Cpt(Signal)
 
     def home(self, *args, **kwargs):
         # This function should eventually be used. There is a way to home
@@ -353,8 +355,8 @@ class PMC100(PCDSMotorBase):
     """
     __doc__ += basic_positioner_init
 
-    home_forward = Component(Signal)
-    home_reverse = Component(Signal)
+    home_forward = Cpt(Signal)
+    home_reverse = Cpt(Signal)
 
     def home(self, *args, **kwargs):
         raise NotImplementedError("PMC100 motors have no homing procedure")
