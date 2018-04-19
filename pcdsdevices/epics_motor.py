@@ -213,6 +213,9 @@ class IMS(PCDSMotorBase):
     error_severity = Component(EpicsSignal, '.SEVR')
     part_number = Component(EpicsSignalRO, '.PN')
 
+    # IMS velocity has limits
+    velocity = Component(EpicsSignal, '.VELO', limits=True)
+
     def stage(self):
         """
         State the IMS motor
