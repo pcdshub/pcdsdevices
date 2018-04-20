@@ -173,7 +173,8 @@ class Presets:
     active, and related utilities.
 
     It will install the ``mv_presetname`` and ``wm_presetname`` methods onto
-    the associated device.
+    the associated device, and the ``add_preset`` and ``add_preset_here``
+    methods onto itself.
 
     Parameters
     ----------
