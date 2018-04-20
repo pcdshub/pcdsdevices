@@ -40,6 +40,7 @@ script:
   - |
     if [[ -n "$DOCTR_DEPLOY_ENCRYPTION_KEY_PCDSHUB_PCDSDEVICES" && $BUILD_DOCS ]]; then
       conda install --file docs-requirements.txt
+      pip install m2r
       pushd docs
       make html
       popd
