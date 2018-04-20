@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="#motivation">Motivation</a> •
-  <a href="#installation">Installation</a> •
+  <a href="#installation">Installation</a>
 </p>
 
 <div align="center">
