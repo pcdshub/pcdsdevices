@@ -69,13 +69,13 @@ class StatePositioner(Device, PositionerBase, MvInterface):
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
         self._valid_states = [state for state in self.states_list
-                              if state not in self._invalid_states]
+                              if state not in self._invalid_states
+                              and state is not None]
         if self._unknown:
             self.states_list = [self._unknown] + self.states_list
             self._invalid_states = [self._unknown] + self._invalid_states
         if not hasattr(self, 'states_enum'):
             self.states_enum = self._create_states_enum()
-        self.states_list = [s for s in self.states_list if s is not None]
         self._has_subscribed_state = False
 
     def move(self, position, moved_cb=None, timeout=None, wait=False):
@@ -240,10 +240,12 @@ class StatePositioner(Device, PositionerBase, MvInterface):
         and integer enum values.
         """
         state_def = {}
+        state_count = 0
         for i, state in enumerate(self.states_list):
             # Skipped None states indicate a missing enum integer
             if state is None:
                 continue
+            state_count += 1
             state_def[state] = i
             try:
                 aliases = self._states_alias[state]
@@ -255,7 +257,12 @@ class StatePositioner(Device, PositionerBase, MvInterface):
                 for alias in aliases:
                     state_def[alias] = i
         enum_name = self.__class__.__name__ + 'States'
-        return Enum(enum_name, state_def, start=0)
+        enum = Enum(enum_name, state_def, start=0)
+        if len(enum) != state_count:
+            raise ValueError(('Bad states definition! Inconsistency in '
+                              'states_list {} or _states_alias {}'
+                              ''.format(self.states_list, self._states_alias)))
+        return enum
 
 
 class PVStateSignal(AggregateSignal):
