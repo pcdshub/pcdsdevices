@@ -13,8 +13,8 @@ Creating a Preset
 A device that can save and load presets will have a ``presets`` attribute.
 This is the interface that is used to create new presets. The module is
 configurable to have differing presets catagories, and these are typically
-used to have "permanent" and "temporary" presets, and are normally laid out
-as such:
+used to have "permanent" and "temporary" presets, and in ``hutch-python``
+are laid out as such:
 
 ================================= ==================================================
           Method                                   Description
@@ -47,3 +47,12 @@ In `IPython`, this will show you all the current presets. You can also use
 this ``presets.positions`` object to manage the set positions. Each attribute
 is an instance of `PresetPosition` that can be managed. See `PresetPosition`
 for the full API.
+
+
+Configuring Presets
+-------------------
+Presets are configured in ``hutch-python`` to use ``add_hutch`` and ``add_exp``
+as the preset-adding methods, with the ``add_hutch`` method saving to a hutch
+directory and ``add_exp`` saving to an experiment directory. This can be
+changed for other applications using the `setup_preset_paths` method.
+This method must be called for the presets to be saved and loaded.
