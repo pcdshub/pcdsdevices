@@ -161,3 +161,13 @@ def test_state_status():
     assert status.done and status.success
     # Check our callback was cleared
     assert status.check_value not in lim_obj._callbacks[lim_obj.SUB_STATE]
+
+
+class InconsistentState(StatePositioner):
+    states_list = ['Unknown', 'IN', 'OUT']
+    _states_alias = {'IN': 'OUT', 'OUT': 'IN'}
+
+
+def test_state_error():
+    with pytest.raises(ValueError):
+        InconsistentState('prefix', name='bad')
