@@ -75,12 +75,12 @@ def test_branching_mirror_destination():
     assert not branching_mirror.inserted
     assert branching_mirror.destination == []
     # Inserted
-    branching_mirror.state._read_pv.put(1)
+    branching_mirror.state._read_pv.put(2)
     assert branching_mirror.inserted
     assert not branching_mirror.removed
     assert branching_mirror.destination == ['MFX', 'MEC']
     # Removed
-    branching_mirror.state._read_pv.put(2)
+    branching_mirror.state._read_pv.put(1)
     assert branching_mirror.removed
     assert not branching_mirror.inserted
     assert branching_mirror.destination == ['CXI']
@@ -104,12 +104,12 @@ def test_branching_mirror_moves():
     assert branching_mirror.xgantry.setpoint._write_pv.get() == 0.2
     # Test removal
     branching_mirror.remove()
-    assert branching_mirror.state._write_pv.value == 2
+    assert branching_mirror.state._write_pv.value == 1
     # Finish simulated move manually
     branching_mirror.state._read_pv.put(2)
     # Insert
     branching_mirror.insert()
-    assert branching_mirror.state._write_pv.value == 1
+    assert branching_mirror.state._write_pv.value == 2
 
 
 @using_fake_epics_pv
