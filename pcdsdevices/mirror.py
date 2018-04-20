@@ -227,6 +227,9 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
     out_lines: ``list``, optional
         List of beamlines thate are delivered beam when the mirror is out
     """
+    # Reverse state order as PointingMirror is non-standard
+    states_list = ['OUT', 'IN']
+
     # Define default read and configuration attributes
     _default_read_attrs = ['pitch.readback', 'xgantry.readback',
                            'xgantry.gantry_difference']
