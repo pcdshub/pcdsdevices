@@ -4,6 +4,7 @@ Module for defining bell-and-whistles movement features
 import time
 import fcntl
 import logging
+import numbers
 import signal
 from contextlib import contextmanager
 from pathlib import Path
@@ -287,6 +288,12 @@ class Presets:
         logger.debug(('call %s presets._update(%s, %s, value=%s, comment=%s, '
                       'active=%s)'), self._device.name, preset_type, name,
                      value, comment, active)
+        if not isinstance(name, str):
+            raise TypeError(('name must be of type <str>, not type'
+                             '{}'.format(type(name))))
+        if value is not None and not isinstance(value, numbers.Real):
+            raise TypeError(('value must be a real numeric type, not type'
+                             '{}'.format(type(value))))
         try:
             path = self._path(preset_type)
             if not path.exists():
