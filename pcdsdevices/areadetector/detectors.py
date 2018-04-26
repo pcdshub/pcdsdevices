@@ -33,18 +33,18 @@ class DefaultAreaDetector(AreaDetector):
 
     Geared towards analyzing a beam spot.
 
-    image2: reduced rate image
-    stats2: reduced rate stats
+    IMAGE2: reduced rate image
+    Stats2: reduced rate stats
     """
-    image2 = Cpt(ImagePlugin, ':IMAGE1:', read_attrs=['array_data'])
-    stats2 = Cpt(StatsPlugin, ':Stats2:', read_attrs=['centroid',
-                                                      'mean_value',
-                                                      'sigma_x',
-                                                      'sigma_y'])
+    image = Cpt(ImagePlugin, ':IMAGE1:', read_attrs=['array_data'])
+    stats = Cpt(StatsPlugin, ':Stats2:', read_attrs=['centroid',
+                                                     'mean_value',
+                                                     'sigma_x',
+                                                     'sigma_y'])
 
     def __init__(self, *args, **kwargs):
-        super.__init__(*args, **kwargs)
-        self.image1.stage_sigs[self.image1.enable] = 1
-        self.stats2.stage_sigs[self.stats2.enable] = 1
-        self.stats2.stage_sigs[self.stats2.compute_statistics] = 'Yes'
-        self.stats2.stage_sigs[self.stats2.compute_centroid] = 'Yes'
+        super().__init__(*args, **kwargs)
+        self.image.stage_sigs[self.image.enable] = 1
+        self.stats.stage_sigs[self.stats.enable] = 1
+        self.stats.stage_sigs[self.stats.compute_statistics] = 'Yes'
+        self.stats.stage_sigs[self.stats.compute_centroid] = 'Yes'
