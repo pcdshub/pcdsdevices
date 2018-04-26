@@ -5,7 +5,8 @@ from unittest.mock import Mock
 from ophyd.device import Component as Cmp
 from ophyd.signal import Signal
 
-from pcdsdevices.pim import PIM, PIMMotor, PIMPulnixDetector
+from pcdsdevices.areadetector.detectors import DefaultAreaDetector
+from pcdsdevices.pim import PIM, PIMMotor
 from pcdsdevices.sim.pv import using_fake_epics_pv
 
 from .conftest import attr_wait_true, connect_rw_pvs
@@ -15,8 +16,7 @@ logger = logging.getLogger(__name__)
 
 # OK, we have to screw with the class def here. I'm sorry. It's ophyd's fault
 # for checking an epics signal value in the __init__ statement.
-for comp in (PIMPulnixDetector.image1, PIMPulnixDetector.image2,
-             PIMPulnixDetector.stats2):
+for comp in (DefaultAreaDetector.image, DefaultAreaDetector.stats):
     plugin_class = comp.cls
     plugin_class.plugin_type = Cmp(Signal, value=plugin_class._plugin_type)
 
