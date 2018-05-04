@@ -16,18 +16,18 @@ from .plugins import ImagePlugin, StatsPlugin
 logger = logging.getLogger(__name__)
 
 
-__all__ = ['AreaDetector',
-           'DefaultAreaDetector']
+__all__ = ['PCDSDetectorBase',
+           'PCDSDetector']
 
 
-class AreaDetector(DetectorBase):
+class PCDSDetectorBase(DetectorBase):
     """
     Standard area detector with no plugins.
     """
     cam = ADComponent(cam.CamBase, ":")
 
 
-class DefaultAreaDetector(AreaDetector):
+class PCDSDetector(PCDSDetectorBase):
     """
     Standard area detector with standard plugins.
 

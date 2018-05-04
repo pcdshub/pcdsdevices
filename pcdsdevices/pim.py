@@ -9,7 +9,7 @@ import logging
 
 from ophyd import FormattedComponent as FCpt
 
-from .areadetector.detectors import DefaultAreaDetector
+from .areadetector.detectors import PCDSDetector
 from .inout import InOutRecordPositioner
 
 logger = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ class PIM(PIMMotor):
         The EPICS base PV of the detector. If None, it will be inferred from
         the motor prefix
     """
-    detector = FCpt(DefaultAreaDetector, "{self._prefix_det}")
+    detector = FCpt(PCDSDetector, "{self._prefix_det}")
 
     _default_read_attrs = ['state', 'readback', 'detector']
 
