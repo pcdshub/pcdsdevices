@@ -9,25 +9,42 @@ import logging
 from ophyd.areadetector import cam
 from ophyd.areadetector.base import ADComponent
 from ophyd.areadetector.detectors import DetectorBase
+from ophyd.device import Component as Cpt
 
-from .cam import FeeOpalCam
+from .plugins import ImagePlugin, StatsPlugin
 
 logger = logging.getLogger(__name__)
 
 
-__all__ = ['PulnixDetector',
-           'FeeOpalDetector']
+__all__ = ['PCDSDetectorBase',
+           'PCDSDetector']
 
 
-class PulnixDetector(DetectorBase):
+class PCDSDetectorBase(DetectorBase):
     """
-    Standard pulnix detector.
+    Standard area detector with no plugins.
     """
     cam = ADComponent(cam.CamBase, ":")
 
 
-class FeeOpalDetector(DetectorBase):
+class PCDSDetector(PCDSDetectorBase):
     """
-    Opal detector that in the FEE running using Dehong's IOC.
+    Standard area detector with standard plugins.
+
+    Geared towards analyzing a beam spot.
+
+    IMAGE2: reduced rate image
+    Stats2: reduced rate stats
     """
-    cam = ADComponent(FeeOpalCam, ":")
+    image = Cpt(ImagePlugin, ':IMAGE1:', read_attrs=['array_data'])
+    stats = Cpt(StatsPlugin, ':Stats2:', read_attrs=['centroid',
+                                                     'mean_value',
+                                                     'sigma_x',
+                                                     'sigma_y'])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.image.stage_sigs[self.image.enable] = 1
+        self.stats.stage_sigs[self.stats.enable] = 1
+        self.stats.stage_sigs[self.stats.compute_statistics] = 'Yes'
+        self.stats.stage_sigs[self.stats.compute_centroid] = 'Yes'
