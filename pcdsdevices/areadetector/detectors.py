@@ -7,7 +7,6 @@ functions needed by all instances of a detector are added here.
 import logging
 
 from ophyd.areadetector import cam
-from ophyd.areadetector.base import ADComponent
 from ophyd.areadetector.detectors import DetectorBase
 from ophyd.device import Component as Cpt
 
@@ -24,7 +23,7 @@ class PCDSDetectorBase(DetectorBase):
     """
     Standard area detector with no plugins.
     """
-    cam = ADComponent(cam.CamBase, ":")
+    cam = Cpt(cam.CamBase, ":")
 
 
 class PCDSDetector(PCDSDetectorBase):
@@ -36,7 +35,7 @@ class PCDSDetector(PCDSDetectorBase):
     IMAGE2: reduced rate image
     Stats2: reduced rate stats
     """
-    image = Cpt(ImagePlugin, ':IMAGE1:', read_attrs=['array_data'])
+    image = Cpt(ImagePlugin, ':IMAGE2:', read_attrs=['array_data'])
     stats = Cpt(StatsPlugin, ':Stats2:', read_attrs=['centroid',
                                                      'mean_value',
                                                      'sigma_x',
@@ -44,7 +43,5 @@ class PCDSDetector(PCDSDetectorBase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.image.stage_sigs[self.image.enable] = 1
-        self.stats.stage_sigs[self.stats.enable] = 1
-        self.stats.stage_sigs[self.stats.compute_statistics] = 'Yes'
-        self.stats.stage_sigs[self.stats.compute_centroid] = 'Yes'
+        self.stage_sigs['stats.compute_statistics'] = 'Yes'
+        self.stage_sigs['stats.compute_centroid'] = 'Yes'
