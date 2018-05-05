@@ -21,6 +21,14 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
     """
     enable = C(EpicsSignal, 'EnableCallbacks_RBV.RVAL', write_pv="EnableCallbacks", string=False)
 
+    def __init__(self, *args, **kwargs):
+        # Avoid ophyd PluginBase's init
+        ADBase.__init__(self, *args, **kwargs)
+        self.enable_on_stage()
+        self.ensure_blocking()
+        if self.parent is not None and 'cam' in self.parent.component_names:
+            self.stage_sigs.update([('parent.cam.array_callbacks', 1)])
+
     @property
     def source_plugin(self):
         # The PluginBase object that is the asyn source for this plugin.
