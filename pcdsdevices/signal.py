@@ -108,6 +108,15 @@ class AvgSignal(Signal):
     """
     Signal that acts as a rolling average of another signal.
 
+    This will subscribe to a signal, and fill an internal buffer with values
+    from SUB_VALUE. It will update its own value to be the mean of the last n
+    accumulated values, up to the buffer size. If we haven't filled this
+    buffer, this will still report a mean value composed of all the values
+    we've receieved so far.
+
+    Warning: this means that if we only have recieved ONE value, the mean will
+    just be the mean of a single value!
+
     Parameters
     ----------
     signal: ``Signal``
