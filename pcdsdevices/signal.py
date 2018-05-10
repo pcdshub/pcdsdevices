@@ -106,7 +106,17 @@ class AggregateSignal(Signal):
 
 class AvgSignal(Signal):
     """
-    Signal that acts as a rolling average of another signal
+    Signal that acts as a rolling average of another signal.
+
+    Parameters
+    ----------
+    signal: ``Signal``
+        Any subclass of ``ophyd.signal.Signal`` that returns a numeric value.
+        This signal will be subscribed to be `AvgSignal` to calculate the mean.
+
+    averages: ``int``
+        The number of SUB_VALUE updates to include in the average. New values
+        after this number is reached will begin overriding old values.
     """
     def __init__(self, signal, averages, *, name, parent=None, **kwargs):
         super().__init__(name=name, parent=parent, **kwargs)
@@ -130,20 +140,32 @@ class AvgSignal(Signal):
 
     @property
     def averages(self):
+        """
+        The size of the internal buffer of values to average over.
+        """
         return self._avg
 
     @averages.setter
     def averages(self, avg):
+        """
+        Reinitialize an empty internal buffer of size ``avg``.
+        """
         with self._lock:
             self._avg = avg
             self.index = 0
+            # Allocate uninitalized array
             self.values = np.empty(avg)
+            # Fill with nan
             self.values.fill(np.nan)
 
     def _update_avg(self, *args, value, **kwargs):
+        """
+        Add new value to the buffer, overriding old values if needed.
+        """
         with self._lock:
             self.values[self.index] = value
             self.index += 1
             if self.index == len(self.values):
                 self.index = 0
+            # This takes a mean, skipping nan values.
             self.put(np.nanmean(self.values))
