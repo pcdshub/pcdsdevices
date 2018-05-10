@@ -3,7 +3,9 @@ Module to define ophyd Signal subclass utilities.
 """
 import logging
 from threading import RLock
+
 from ophyd.signal import Signal
+from ophyd.utils.errors import ReadOnlyError
 
 logger = logging.getLogger(__name__)
 
@@ -100,3 +102,52 @@ class AggregateSignal(Signal):
             if value != old_value or not self._update_only_on_change:
                 self._run_subs(sub_type=self.SUB_VALUE, obj=self, value=value,
                                old_value=old_value)
+
+
+class AvgSignal(Signal):
+    """
+    Signal that acts as a rolling average of another signal
+    """
+    def __init__(self, signal, averages, *, name, parent=None, **kwargs):
+        super().__init__(name=name, parent=parent, **kwargs)
+        if isinstance(signal, str):
+            signal = getattr(parent, signal)
+        self.sig = signal
+        self.lock = threading.RLock()
+        self._subscribed = False
+        self._avg = averages
+
+    def _ensure_sub(self):
+        if not self._subscribed:
+            self.averages = self._avg
+            self.sig.subscribe(self._update_avg)
+
+    def get(self, *args, **kwargs):
+        self._ensure_sub()
+        super().get(*args, **kwargs)
+
+    def put(self, *args, **kwargs):
+        raise ReadOnlyError()
+
+    def subscribe(self, *args, **kwargs):
+        self._ensure_sub()
+        super().subsribe(*args, **kwargs)
+
+    @property
+    def averages(self):
+        return self._avg
+
+    @averages.setter
+    def averages(self, avg):
+        with self.lock:
+            self._avg
+            self.index = 0
+            self.values = np.ones(averages) * self.sig.get()
+
+    def _update_avg(self, *args, value, **kwargs):
+        with self.lock:
+            self.values[self.index] = value
+            self.index += 1
+            if self.index == len(self.values):
+                self.index = 0
+            self.put(np.mean(self.values))
