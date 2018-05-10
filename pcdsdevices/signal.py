@@ -2,7 +2,7 @@
 Module to define ophyd Signal subclass utilities.
 """
 import logging
-from threading import RLock
+from threading import RLock, Thread
 
 import numpy as np
 from ophyd.signal import Signal
@@ -114,22 +114,19 @@ class AvgSignal(Signal):
             signal = getattr(parent, signal)
         self.sig = signal
         self.lock = RLock()
-        self._subscribed = False
-        self._avg = averages
+        self.averages = averages
+        self._con = False
+        t = Thread(target=self._init_subs, args=())
+        t.start()
 
-    def _ensure_sub(self):
-        if not self._subscribed:
-            self.averages = self._avg
-            self.sig.subscribe(self._update_avg)
-            self._subscribed = True
+    def _init_subs(self):
+        self.sig.wait_for_connection()
+        self.sig.subscribe(self._update_avg)
+        self._con = True
 
-    def get(self, *args, **kwargs):
-        self._ensure_sub()
-        return super().get(*args, **kwargs)
-
-    def subscribe(self, *args, **kwargs):
-        self._ensure_sub()
-        return super().subscribe(*args, **kwargs)
+    @property
+    def connected(self):
+        return self._con
 
     @property
     def averages(self):
