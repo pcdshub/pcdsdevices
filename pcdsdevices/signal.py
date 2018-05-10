@@ -112,16 +112,16 @@ class AvgSignal(Signal):
         super().__init__(name=name, parent=parent, **kwargs)
         if isinstance(signal, str):
             signal = getattr(parent, signal)
-        self.sig = signal
-        self.lock = RLock()
+        self.raw_sig = signal
+        self._lock = RLock()
         self.averages = averages
         self._con = False
         t = Thread(target=self._init_subs, args=())
         t.start()
 
     def _init_subs(self):
-        self.sig.wait_for_connection()
-        self.sig.subscribe(self._update_avg)
+        self.raw_sig.wait_for_connection()
+        self.raw_sig.subscribe(self._update_avg)
         self._con = True
 
     @property
@@ -134,14 +134,14 @@ class AvgSignal(Signal):
 
     @averages.setter
     def averages(self, avg):
-        with self.lock:
+        with self._lock:
             self._avg = avg
             self.index = 0
             self.values = np.empty(avg)
             self.values.fill(np.nan)
 
     def _update_avg(self, *args, value, **kwargs):
-        with self.lock:
+        with self._lock:
             self.values[self.index] = value
             self.index += 1
             if self.index == len(self.values):
