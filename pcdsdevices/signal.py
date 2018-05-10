@@ -6,7 +6,6 @@ from threading import RLock
 
 import numpy as np
 from ophyd.signal import Signal
-from ophyd.utils.errors import ReadOnlyError
 
 logger = logging.getLogger(__name__)
 
@@ -122,17 +121,15 @@ class AvgSignal(Signal):
         if not self._subscribed:
             self.averages = self._avg
             self.sig.subscribe(self._update_avg)
+            self._subscribed = True
 
     def get(self, *args, **kwargs):
         self._ensure_sub()
         return super().get(*args, **kwargs)
 
-    def put(self, *args, **kwargs):
-        raise ReadOnlyError()
-
     def subscribe(self, *args, **kwargs):
         self._ensure_sub()
-        return super().subsribe(*args, **kwargs)
+        return super().subscribe(*args, **kwargs)
 
     @property
     def averages(self):
@@ -141,9 +138,10 @@ class AvgSignal(Signal):
     @averages.setter
     def averages(self, avg):
         with self.lock:
-            self._avg
+            self._avg = avg
             self.index = 0
-            self.values = np.ones(avg) * self.sig.get()
+            self.values = np.empty(avg)
+            self.values.fill(np.nan)
 
     def _update_avg(self, *args, value, **kwargs):
         with self.lock:
@@ -151,4 +149,4 @@ class AvgSignal(Signal):
             self.index += 1
             if self.index == len(self.values):
                 self.index = 0
-            self.put(np.mean(self.values))
+            self.put(np.nanmean(self.values))
