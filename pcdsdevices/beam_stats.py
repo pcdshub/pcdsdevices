@@ -14,7 +14,7 @@ class BeamStats(Device):
     mj_buffersize = Cpt(AttributeSignal, 'mj_avg.averages')
 
     _default_read_attrs = ['mj', 'mj_avg', 'ev', 'rate']
-    _default_config_attrs = ['mj_buffersize']
+    _default_configuration_attrs = ['mj_buffersize']
 
     def __init__(self, prefix='', name='beam_stats', **kwargs):
         super().__init__(prefix=prefix, name=name, **kwargs)
