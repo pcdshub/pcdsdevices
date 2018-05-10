@@ -125,14 +125,14 @@ class AvgSignal(Signal):
 
     def get(self, *args, **kwargs):
         self._ensure_sub()
-        super().get(*args, **kwargs)
+        return super().get(*args, **kwargs)
 
     def put(self, *args, **kwargs):
         raise ReadOnlyError()
 
     def subscribe(self, *args, **kwargs):
         self._ensure_sub()
-        super().subsribe(*args, **kwargs)
+        return super().subsribe(*args, **kwargs)
 
     @property
     def averages(self):
