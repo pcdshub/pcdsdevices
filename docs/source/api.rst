@@ -5,6 +5,7 @@ API
    :toctree: generated
 
    ~pcdsdevices.attenuator
+   ~pcdsdevices.beam_stats
    ~pcdsdevices.epics_motor
    ~pcdsdevices.inout
    ~pcdsdevices.ipm
