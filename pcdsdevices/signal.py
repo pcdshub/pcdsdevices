@@ -4,6 +4,7 @@ Module to define ophyd Signal subclass utilities.
 import logging
 from threading import RLock
 
+import numpy as np
 from ophyd.signal import Signal
 from ophyd.utils.errors import ReadOnlyError
 
@@ -113,7 +114,7 @@ class AvgSignal(Signal):
         if isinstance(signal, str):
             signal = getattr(parent, signal)
         self.sig = signal
-        self.lock = threading.RLock()
+        self.lock = RLock()
         self._subscribed = False
         self._avg = averages
 
@@ -142,7 +143,7 @@ class AvgSignal(Signal):
         with self.lock:
             self._avg
             self.index = 0
-            self.values = np.ones(averages) * self.sig.get()
+            self.values = np.ones(avg) * self.sig.get()
 
     def _update_avg(self, *args, value, **kwargs):
         with self.lock:
