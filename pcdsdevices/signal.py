@@ -2,7 +2,9 @@
 Module to define ophyd Signal subclass utilities.
 """
 import logging
-from threading import RLock
+from threading import RLock, Thread
+
+import numpy as np
 from ophyd.signal import Signal
 
 logger = logging.getLogger(__name__)
@@ -100,3 +102,79 @@ class AggregateSignal(Signal):
             if value != old_value or not self._update_only_on_change:
                 self._run_subs(sub_type=self.SUB_VALUE, obj=self, value=value,
                                old_value=old_value)
+
+
+class AvgSignal(Signal):
+    """
+    Signal that acts as a rolling average of another signal.
+
+    This will subscribe to a signal, and fill an internal buffer with values
+    from SUB_VALUE. It will update its own value to be the mean of the last n
+    accumulated values, up to the buffer size. If we haven't filled this
+    buffer, this will still report a mean value composed of all the values
+    we've receieved so far.
+
+    Warning: this means that if we only have recieved ONE value, the mean will
+    just be the mean of a single value!
+
+    Parameters
+    ----------
+    signal: ``Signal``
+        Any subclass of ``ophyd.signal.Signal`` that returns a numeric value.
+        This signal will be subscribed to be `AvgSignal` to calculate the mean.
+
+    averages: ``int``
+        The number of SUB_VALUE updates to include in the average. New values
+        after this number is reached will begin overriding old values.
+    """
+    def __init__(self, signal, averages, *, name, parent=None, **kwargs):
+        super().__init__(name=name, parent=parent, **kwargs)
+        if isinstance(signal, str):
+            signal = getattr(parent, signal)
+        self.raw_sig = signal
+        self._lock = RLock()
+        self.averages = averages
+        self._con = False
+        t = Thread(target=self._init_subs, args=())
+        t.start()
+
+    def _init_subs(self):
+        self.raw_sig.wait_for_connection()
+        self.raw_sig.subscribe(self._update_avg)
+        self._con = True
+
+    @property
+    def connected(self):
+        return self._con
+
+    @property
+    def averages(self):
+        """
+        The size of the internal buffer of values to average over.
+        """
+        return self._avg
+
+    @averages.setter
+    def averages(self, avg):
+        """
+        Reinitialize an empty internal buffer of size ``avg``.
+        """
+        with self._lock:
+            self._avg = avg
+            self.index = 0
+            # Allocate uninitalized array
+            self.values = np.empty(avg)
+            # Fill with nan
+            self.values.fill(np.nan)
+
+    def _update_avg(self, *args, value, **kwargs):
+        """
+        Add new value to the buffer, overriding old values if needed.
+        """
+        with self._lock:
+            self.values[self.index] = value
+            self.index += 1
+            if self.index == len(self.values):
+                self.index = 0
+            # This takes a mean, skipping nan values.
+            self.put(np.nanmean(self.values))
