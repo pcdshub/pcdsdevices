@@ -3,7 +3,7 @@ import pytest
 
 import numpy as np
 from ophyd.device import Component as Cpt
-from ophyd.position import SoftPositioner
+from ophyd.positioner import SoftPositioner
 
 from pcdsdevices.pseudopos import SyncAxes
 

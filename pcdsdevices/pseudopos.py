@@ -1,5 +1,5 @@
 import numpy as np
-from ophyd.component import Component as Cpt
+from ophyd.device import Component as Cpt
 from ophyd.pseudopos import PseudoPositioner, PseudoSingle
 
 
