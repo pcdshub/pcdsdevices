@@ -17,7 +17,7 @@ AXES = ('one', 'two', 'three', 'four', 'five')
 def five_axes():
     kwargs = dict(name='sync', egu='five')
     for ax in AXES:
-        kwargs[ax] = Cpt(SoftPositioner)
+        kwargs[ax] = Cpt(SoftPositioner, init_pos=0)
     return SyncAxes(**kwargs)
 
 
