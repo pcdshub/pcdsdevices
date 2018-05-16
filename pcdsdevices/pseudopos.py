@@ -30,8 +30,7 @@ class SyncAxesBase(PseudoPositioner):
         Combined axis readback is the mean of the composite axes
         """
         real_pos = self.RealPosition(*real_pos)
-        mean_pos = np.mean(getattr(real_pos, axis) for axis in self.axes)
-        return self.PseudoPosition(pseudo=mean_pos)
+        return self.PseudoPosition(pseudo=np.mean(real_pos))
 
     @property
     def position(self):
