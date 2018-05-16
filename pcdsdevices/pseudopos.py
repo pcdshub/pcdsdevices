@@ -49,7 +49,7 @@ def SyncAxes(*args, **kwargs):
     cpt = {}
     kwd = {}
 
-    for key, value in kwd.items():
+    for key, value in kwargs.items():
         if isinstance(value, Cpt):
             cpt[key] = value
         else:
