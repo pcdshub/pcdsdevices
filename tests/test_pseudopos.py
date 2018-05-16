@@ -42,3 +42,9 @@ def test_sync_mean(five_axes):
         axis = getattr(five_axes, ax)
         axis.move(i)
     assert five_axes.position == np.mean(range(len(AXES)))
+
+
+def test_bad_sync_kwarg():
+    logger.debug('test_bad_sync_kwarg')
+    with pytest.raises(ValueError):
+        SyncAxes(axes=Cpt(SoftPositioner, init_pos=0))
