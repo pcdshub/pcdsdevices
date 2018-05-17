@@ -1,6 +1,6 @@
 import numpy as np
 from ophyd.device import Component as Cpt, FormattedComponent as FCpt
-from ophyd.pseudopos import PsuedoPositioner, PseudoSingle
+from ophyd.pseudopos import PseudoPositioner, PseudoSingle
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import EpicsSignal, EpicsSignalRO, AttributeSignal
 
@@ -71,7 +71,7 @@ class CCMMotor(PVPositioner):
     readback = Cpt(EpicsSignalRO, ":POSITIONGET")
 
 
-class CCMCalc(PsuedoPositioner):
+class CCMCalc(PseudoPositioner):
     energy = Cpt(PseudoSingle, egu='keV')
     wavelength = Cpt(PseudoSingle, egu='A')
     theta = Cpt(PseudoSingle, egu='deg')
