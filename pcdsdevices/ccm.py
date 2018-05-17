@@ -1,7 +1,7 @@
 import numpy as np
 from ophyd.device import Component as Cpt, FormattedComponent as FCpt
 from ophyd.pseudopos import PseudoPositioner, PseudoSingle
-from ophyd.pv_positioner import PVPositioner
+from ophyd.pv_positioner import PVPositionerPC
 from ophyd.signal import EpicsSignal, EpicsSignalRO, AttributeSignal
 
 from .epics_motor import IMS
@@ -10,12 +10,12 @@ from .pseudopos import SyncAxes
 
 
 # Default constants copied verbatim from old python
-gTheta0 = 14.9792
+gTheta0 = 14.9792 * np.pi/180
 gSi111dspacing = 3.1356011499587773
 gSi511dspacing = 1.0452003833195924
 gdspacing = gSi111dspacing
 gR = 3.175
-gD = 321.303
+gD = 231.303
 
 
 # Calculations between alio position and energy, with all intermediates.
@@ -63,9 +63,12 @@ def wavelength_to_energy(wavelength):
 
 
 # Auxilliary classes
-class CCMMotor(PVPositioner):
+class CCMMotor(PVPositionerPC):
     """
     Goofy records used in the CCM.
+
+    TODO: switch to PVPositioner subclass and override code that prevents
+    loading, and make the wait for done just compare the values.
     """
     setpoint = Cpt(EpicsSignal, ":POSITIONSET")
     readback = Cpt(EpicsSignalRO, ":POSITIONGET")
