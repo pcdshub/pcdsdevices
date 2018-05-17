@@ -1,6 +1,6 @@
 import numpy as np
 from ophyd.device import Component as Cpt, FormattedComponent as FCpt
-from ophyd.psuedopos import PsuedoPositioner, PseudoSingle
+from ophyd.pseudopos import PsuedoPositioner, PseudoSingle
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import EpicsSignal, EpicsSignalRO, AttributeSignal
 
@@ -9,13 +9,57 @@ from .inout import InOutPositioner
 from .pseudopos import SyncAxes
 
 
-# Defaults copied verbatim from old python
+# Default constants copied verbatim from old python
 gTheta0 = 14.9792
 gSi111dspacing = 3.1356011499587773
 gSi511dspacing = 1.0452003833195924
 gdspacing = gSi111dspacing
 gR = 3.175
 gD = 321.303
+
+
+# Calculations between alio position and energy, with all intermediates.
+def theta_to_alio(theta, gTheta0, gR, gD):
+    """
+    Converts theta angle (rad) to alio position (mm)
+    """
+    return gR * (1/np.cos(theta)-1) + gD * np.tan(theta - gTheta0)
+
+
+def alio_to_theta(alio, gTheta0, gR, gD):
+    """
+    Converts alio position (mm) to theta angle (rad)
+    """
+    theta = 2*np.arctan((np.sqrt(alio**2+gD**2+2*gR*alio)-gD)/(2*gR+alio))
+    return gTheta0 + theta
+
+
+def wavelength_to_theta(wavelength, gdspacing):
+    """
+    Converts wavelength (A) to theta angle (rad)
+    """
+    return np.arcsin(wavelength/2/gdspacing)
+
+
+def theta_to_wavelength(theta, gdspacing):
+    """
+    Converts theta angle (rad) to wavelength (A)
+    """
+    return 2*gdspacing*np.sin(theta)
+
+
+def energy_to_wavelength(energy):
+    """
+    Converts photon energy (keV) to wavelength (A)
+    """
+    return 12.39842/energy
+
+
+def wavelength_to_energy(wavelength):
+    """
+    Converts wavelength (A) to photon energy (keV)
+    """
+    return 12.39842/wavelength
 
 
 # Auxilliary classes
@@ -75,50 +119,6 @@ class CCMCalc(PsuedoPositioner):
         return self.PseudoPosition(energy=energy,
                                    wavelength=wavelength,
                                    theta=theta*180/np.pi)
-
-
-# Calculations between alio position and energy, with all intermediates.
-def theta_to_alio(theta, gTheta0, gR, gD):
-    """
-    Converts theta angle (rad) to alio position (mm)
-    """
-    return gR * (1/np.cos(theta)-1) + gD * np.tan(theta - gTheta0)
-
-
-def alio_to_theta(alio, gTheta0, gR, gD):
-    """
-    Converts alio position (mm) to theta angle (rad)
-    """
-    theta = 2*np.arctan((np.sqrt(alio**2+gD**2+2*gR*alio)-gD)/(2*gR+alio))
-    return gTheta0 + theta
-
-
-def wavelength_to_theta(wavelength, gdspacing):
-    """
-    Converts wavelength (A) to theta angle (rad)
-    """
-    return np.arcsin(wavelength/2/gdspacing)
-
-
-def theta_to_wavelength(theta, gdspacing):
-    """
-    Converts theta angle (rad) to wavelength (A)
-    """
-    return 2*gdspacing*np.sin(theta)
-
-
-def wavelength_to_energy(wavelength):
-    """
-    Converts wavelength (A) to photon energy (keV)
-    """
-    return 12.39842/wavelength
-
-
-def energy_to_wavelength(energy):
-    """
-    Converts photon energy (keV) to wavelength (A)
-    """
-    return 12.39842/energy
 
 
 # Main Class
