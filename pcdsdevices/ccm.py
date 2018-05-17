@@ -125,7 +125,7 @@ class CCMCalc(PseudoPositioner):
             alio = theta_to_alio(theta, self.gTheta0, self.gR, self.gD)
         return self.RealPosition(alio=alio)
 
-    def reverse(self, real_pos):
+    def inverse(self, real_pos):
         """
         Take alio and map to energy, wavelength, and theta
         """
