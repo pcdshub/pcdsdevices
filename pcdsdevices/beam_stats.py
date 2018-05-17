@@ -9,6 +9,8 @@ class BeamStats(Device):
     ev = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO541')
     rate = Cpt(EpicsSignalRO, 'EVNT:SYS0:1:LCLSBEAMRATE')
     owner = Cpt(EpicsSignalRO, 'ECS:SYS0:0:BEAM_OWNER_ID')
+    accel_ev = Cpt(EpicsSignalRO, 'BLD:SYS0:500:PHOTONENERGY')
+    sxr_gmd = Cpt(EpicsSignalRO, 'SXR:GMD:BLD:milliJoulesPerPulse')
 
     mj_avg = Cpt(AvgSignal, 'mj', averages=120)
     mj_buffersize = Cpt(AttributeSignal, 'mj_avg.averages')
