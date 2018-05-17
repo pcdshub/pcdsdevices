@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 from ophyd.device import Component as Cpt, FormattedComponent as FCpt
 from ophyd.pseudopos import PseudoPositioner, PseudoSingle
@@ -30,8 +32,20 @@ def alio_to_theta(alio, gTheta0, gR, gD):
     """
     Converts alio position (mm) to theta angle (rad)
     """
-    theta = 2*np.arctan((np.sqrt(alio**2+gD**2+2*gR*alio)-gD)/(2*gR+alio))
-    return gTheta0 + theta
+    low = -1.0
+    high = 1.0
+    timeout = 1.0
+    start = time.time()
+    while time.time() - start < timeout:
+        theta_guess = (low+high)/2
+        alio_calc = theta_to_alio(theta_guess, gTheta0, gR, gD)
+        if np.isclose(alio, alio_calc):
+            break
+        elif alio_calc > alio:
+            high = theta_guess
+        else:
+            low = theta_guess
+    return theta_guess
 
 
 def wavelength_to_theta(wavelength, gdspacing):

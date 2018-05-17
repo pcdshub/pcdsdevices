@@ -1,5 +1,7 @@
 import logging
 
+import numpy as np
+
 import pcdsdevices.ccm as ccm
 from pcdsdevices.sim.pv import using_fake_epics_pv
 
@@ -16,7 +18,8 @@ def test_theta_alio_inversion():
     logger.debug('test_theta_alio_inversion')
     theta = ccm.alio_to_theta(SAMPLE_ALIO, ccm.gTheta0, ccm.gR, ccm.gD)
     alio_calc = ccm.theta_to_alio(theta, ccm.gTheta0, ccm.gR, ccm.gD)
-    assert alio_calc == SAMPLE_ALIO
+    # Unlike the other inversions, this is just an approximation
+    assert np.isclose(alio_calc, SAMPLE_ALIO)
 
 
 def test_wavelength_theta_inversion():
