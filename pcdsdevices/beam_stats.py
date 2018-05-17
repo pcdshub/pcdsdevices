@@ -9,6 +9,7 @@ class BeamStats(Device):
     ev = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO541')
     rate = Cpt(EpicsSignalRO, 'EVNT:SYS0:1:LCLSBEAMRATE')
     owner = Cpt(EpicsSignalRO, 'ECS:SYS0:0:BEAM_OWNER_ID')
+    # This one is much faster than ev
     accel_ev = Cpt(EpicsSignalRO, 'BLD:SYS0:500:PHOTONENERGY')
     sxr_gmd = Cpt(EpicsSignalRO, 'SXR:GMD:BLD:milliJoulesPerPulse')
 
