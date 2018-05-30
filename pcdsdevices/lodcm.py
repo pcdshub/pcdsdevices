@@ -64,6 +64,7 @@ class LODCM(InOutRecordPositioner):
     __doc__ = __doc__ % basic_positioner_init
 
     state = Cmp(EpicsSignal, ':H1N', write_pv=':H1N:GO')
+    readback = FCpt(EpicsSignalRO, '{self.prefix}:H1N:{self._readback}')
 
     yag = Cmp(YagLom, ":DV")
     dectris = Cmp(Dectris, ":DH")
