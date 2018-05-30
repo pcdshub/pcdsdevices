@@ -17,7 +17,8 @@
 
 .. toctree::
    :maxdepth: 1
-   :caption: Developer Documentation 
+   :caption: Developer Notes
    :hidden:
     
+   releases.rst
    api.rst
