@@ -10,10 +10,6 @@ class BeamStats(Device):
     rate = Cpt(EpicsSignalRO, 'EVNT:SYS0:1:LCLSBEAMRATE')
     owner = Cpt(EpicsSignalRO, 'ECS:SYS0:0:BEAM_OWNER_ID')
     
-    #########
-    xpp_ipm2 = Cpt(EpicsSignalRO, 'XPP:SB2:IPM:01:SUM')
-    xpp_ipm3 = Cpt(EpicsSignalRO, 'XPP:SB3:IPM:01:SUM')
-    #########
     mj_avg = Cpt(AvgSignal, 'mj', averages=120)
     mj_buffersize = Cpt(AttributeSignal, 'mj_avg.averages')
 
