@@ -11,8 +11,8 @@ no readback into the device's alignment. This is intended for a future update.
 import logging
 import functools
 
-from ophyd import Component as Cmp
-from ophyd.signal import EpicsSignal
+from ophyd import Component as Cpt, FormattedComponent as FCpt
+from ophyd.signal import EpicsSignal, EpicsSignalRO
 from ophyd.sim import NullStatus
 from ophyd.status import wait as status_wait
 
@@ -63,13 +63,13 @@ class LODCM(InOutRecordPositioner):
     """
     __doc__ = __doc__ % basic_positioner_init
 
-    state = Cmp(EpicsSignal, ':H1N', write_pv=':H1N:GO')
+    state = Cpt(EpicsSignal, ':H1N', write_pv=':H1N:GO')
     readback = FCpt(EpicsSignalRO, '{self.prefix}:H1N:{self._readback}')
 
-    yag = Cmp(YagLom, ":DV")
-    dectris = Cmp(Dectris, ":DH")
-    diode = Cmp(Diode, ":DIODE")
-    foil = Cmp(Foil, ":FOIL")
+    yag = Cpt(YagLom, ":DV")
+    dectris = Cpt(Dectris, ":DH")
+    diode = Cpt(Diode, ":DIODE")
+    foil = Cpt(Foil, ":FOIL")
 
     states_list = ['OUT', 'C', 'Si']
     in_states = ['C', 'Si']
