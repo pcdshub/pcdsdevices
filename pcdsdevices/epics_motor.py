@@ -56,6 +56,8 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
     direction_of_travel = Cpt(Signal)
     # This attribute will show if the motor is disabled or not
     disabled = Cpt(EpicsSignal, ".DISP")
+    # This attribute changes if the motor is stopped and unable to move 'Stop', paused and ready to resume on Go 'Paused', and able to move 'Go' or resume a move.
+    motor_spg = Cpt(EpicsSignal, ".SPG")
 
     @property
     def low_limit(self):
@@ -152,6 +154,50 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         """
         return self.disabled.set(value=1)
 
+    def stop(self):
+        """
+        Stops the motor.
+
+        Returns
+        -------
+        status: Status Object
+            Status object of the set
+        """
+        return self.motor_spg.put(value='Stop')
+
+    def pause(self):
+        """
+        Pauses a move.
+
+        Returns
+        -------
+        status: Status Object
+            Status object of the set
+        """
+        return self.motor_spg.put(value='Pause')
+
+    def resume(self):
+        """
+        Sets motor ready to move or resumes a paused move (same as <motor>.go())
+
+        Returns
+        -------
+        status: Status Object
+            Status object of the set
+        """
+        return self.motor_spg.put(value='Go')
+
+    def go(self):
+        """
+        Sets motor ready to move or resumes a paused move.
+
+        Returns
+        -------
+        status: Status Object
+            Status object of the set
+        """
+        return self.motor_spg.put(value='Go')
+
     def check_value(self, value):
         """
         Check if the motor is disabled
@@ -173,6 +219,14 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         if self.disabled.value == 1:
             raise Exception("Motor is not enabled. Motion requests "
                             "ignored")
+
+        if self.motor_spg.value == 0:
+            raise Exception("Motor is stopped.  Motion requests "
+                            "ignored until motor is set to 'Go')")
+
+        if self.motor_spg.value == 1:
+            raise Exception("Motor is paused.  Motion requests "
+                            "ignored until motor is set to 'Go')")
 
         # Find the soft limit values from EPICS records and check that this
         # command will be accepted by the motor
