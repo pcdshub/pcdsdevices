@@ -220,13 +220,13 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
             raise Exception("Motor is not enabled. Motion requests "
                             "ignored")
 
-        if self.motor_spg.value == 0:
+        if self.motor_spg.value in [0, 'Stop']:
             raise Exception("Motor is stopped.  Motion requests "
-                            "ignored until motor is set to 'Go')")
+                            "ignored until motor is set to 'Go'")
 
-        if self.motor_spg.value == 1:
+        if self.motor_spg.value in [1, 'Pause']:
             raise Exception("Motor is paused.  Motion requests "
-                            "ignored until motor is set to 'Go')")
+                            "ignored until motor is set to 'Go'")
 
         # Find the soft limit values from EPICS records and check that this
         # command will be accepted by the motor
