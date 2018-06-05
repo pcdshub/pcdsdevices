@@ -43,10 +43,10 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         cache of the limits after the first get attempt. We therefore disregard
         the internal limits of the PV and use the soft limit records
         exclusively.
-        3. The ``SPG`` field implements the three states used in the LCLS 
-        motor record.  This is a reduced version of the standard EPICS 
+        3. The ``SPG`` field implements the three states used in the LCLS
+        motor record.  This is a reduced version of the standard EPICS
         ``SPMG`` field.  Setting to ``STOP``, ``PAUSE`` and ``GO``  will
-        respectively stop motor movement, pause a move in progress, or resume 
+        respectively stop motor movement, pause a move in progress, or resume
         a paused move.
     """
     # Reimplemented because pyepics does not recognize when the limits have
@@ -61,7 +61,7 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
     direction_of_travel = Cpt(Signal)
     # This attribute will show if the motor is disabled or not
     disabled = Cpt(EpicsSignal, ".DISP")
-    # This attribute changes if the motor is stopped and unable to move 'Stop', 
+    # This attribute changes if the motor is stopped and unable to move 'Stop',
     # paused and ready to resume on Go 'Paused', and to resume a move 'Go'.
     motor_spg = Cpt(EpicsSignal, ".SPG")
 
@@ -180,7 +180,7 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
 
     def resume(self):
         """
-        Sets motor ready to move or resumes a paused move 
+        Sets motor ready to move or resumes a paused move
         (same as <motor>.go()).
         """
         return self.motor_spg.put(value='Go')
@@ -238,7 +238,8 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         # Pass information to PositionerBase
         super()._pos_changed(timestamp=timestamp, old_value=old_value,
                              value=value, **kwargs)
-        
+
+
 class IMS(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record for IMS motors.
