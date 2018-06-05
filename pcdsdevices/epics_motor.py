@@ -218,8 +218,8 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
                             "ignored until motor is set to 'Go'")
 
         if self.motor_spg.value in [1, 'Pause']:
-            raise Exception("Motor is paused.  Motion requests "
-                            "ignored until motor is set to 'Go'")
+            raise Exception("Motor is paused.  If a move is set, motion
+            will resume when motor is set to 'Go'")
 
         # Find the soft limit values from EPICS records and check that this
         # command will be accepted by the motor
@@ -238,8 +238,7 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         # Pass information to PositionerBase
         super()._pos_changed(timestamp=timestamp, old_value=old_value,
                              value=value, **kwargs)
-
-
+        
 class IMS(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record for IMS motors.
@@ -269,7 +268,7 @@ class IMS(PCDSMotorBase):
 
     def stage(self):
         """
-        State the IMS motor
+        Stage the IMS motor
 
         This clears all present flags on the motor and reinitializes the motor
         if we don't register a valid part number
