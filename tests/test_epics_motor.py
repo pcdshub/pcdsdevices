@@ -109,20 +109,20 @@ def test_ims_stage_in_plan():
 def test_resume_pause_stop():
     m = fake_motor()
     m.stop()
-    assert m.motor_spg.get(as_string = True) == 'Stop'
+    assert m.motor_spg.get(as_string=True) == 'Stop'
     with pytest.raises(Exception):
         m.check_value(10)
     with pytest.raises(Exception):
         m.move(10, wait=False)
     m.pause()
-    assert m.motor_spg.get(as_string = True) == 'Pause'
+    assert m.motor_spg.get(as_string=True) == 'Pause'
     with pytest.raises(Exception):
         m.move(10, wait=False)
     m.go()
-    assert m.motor_spg.get(as_string = True) == 'Go'
+    assert m.motor_spg.get(as_string=True) == 'Go'
     m.check_value(10)
     m.resume()
-    assert m.motor_spg.get(as_string = True) == 'Go'
+    assert m.motor_spg.get(as_string=True) == 'Go'
     m.check_value(10)
     
     

@@ -43,6 +43,11 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         cache of the limits after the first get attempt. We therefore disregard
         the internal limits of the PV and use the soft limit records
         exclusively.
+        3. The ``SPG`` field implements the three states used in the LCLS 
+        motor record.  This is a reduced version of the standard EPICS 
+        ``SPMG`` field.  Setting to ``STOP``, ``PAUSE`` and ``GO``  will
+        respectively stop motor movement, pause a move in progress, or resume 
+        a paused move.
     """
     # Reimplemented because pyepics does not recognize when the limits have
     # been changed without a re-connection of the PV. Instead we trust the soft
@@ -56,7 +61,8 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
     direction_of_travel = Cpt(Signal)
     # This attribute will show if the motor is disabled or not
     disabled = Cpt(EpicsSignal, ".DISP")
-    # This attribute changes if the motor is stopped and unable to move 'Stop', paused and ready to resume on Go 'Paused', and able to move 'Go' or resume a move.
+    # This attribute changes if the motor is stopped and unable to move 'Stop', 
+    # paused and ready to resume on Go 'Paused', and to resume a move 'Go'.
     motor_spg = Cpt(EpicsSignal, ".SPG")
 
     @property
@@ -167,34 +173,21 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
 
     def pause(self):
         """
-        Pauses a move.
-
-        Returns
-        -------
-        status: Status Object
-            Status object of the set
+        Pauses a move.  Move will resume if <motor>.resume()
+        or <motor>.go() are called.
         """
         return self.motor_spg.put(value='Pause')
 
     def resume(self):
         """
-        Sets motor ready to move or resumes a paused move (same as <motor>.go())
-
-        Returns
-        -------
-        status: Status Object
-            Status object of the set
+        Sets motor ready to move or resumes a paused move 
+        (same as <motor>.go()).
         """
         return self.motor_spg.put(value='Go')
 
     def go(self):
         """
         Sets motor ready to move or resumes a paused move.
-
-        Returns
-        -------
-        status: Status Object
-            Status object of the set
         """
         return self.motor_spg.put(value='Go')
 
