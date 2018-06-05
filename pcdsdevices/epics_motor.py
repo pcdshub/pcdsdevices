@@ -218,8 +218,8 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
                             "ignored until motor is set to 'Go'")
 
         if self.motor_spg.value in [1, 'Pause']:
-            raise Exception("Motor is paused.  If a move is set, motion
-            will resume when motor is set to 'Go'")
+            raise Exception("Motor is paused.  If a move is set, motion "
+                            "will resume when motor is set to 'Go'")
 
         # Find the soft limit values from EPICS records and check that this
         # command will be accepted by the motor
