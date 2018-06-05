@@ -9,6 +9,7 @@ Features
 - Added `AvgSignal` class. This can be used when you want to
   run a callback on a rolling average of a ``Signal``. (#227)
 - Added an average of the gas detector energy to the `BeamStats` class (#227)
+- Implemented motor `.SPG` field from LCLS motor record into PCDSMotorBase (#236)
 
 Bugfixes
 --------
