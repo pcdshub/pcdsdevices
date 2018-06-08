@@ -21,6 +21,7 @@ for name, cls in _att3_classes.items():
     _att3_classes[name] = make_fake_device(cls)
 
 
+@pytest.fixture(scope='function')
 def fake_att():
     att = Attenuator('TST:ATT', MAX_FILTERS-1, name='test_att')
     att.readback.sim_put(1)
@@ -32,9 +33,9 @@ def fake_att():
 
 
 @pytest.mark.timeout(5)
-def test_attenuator_states():
+def test_attenuator_states(fake_att):
     logger.debug('test_attenuator_states')
-    att = fake_att()
+    att = fake_att
     # Set no transmission
     att.readback.sim_put(0)
     assert not att.removed
@@ -63,9 +64,9 @@ def fake_move_transition(att, status, goal):
 
 
 @pytest.mark.timeout(5)
-def test_attenuator_motion():
+def test_attenuator_motion(fake_att):
     logger.debug('test_attenuator_motion')
-    att = fake_att()
+    att = fake_att
     # Set up the ceil and floor
     att.trans_ceil.sim_put(0.8001)
     att.trans_floor.sim_put(0.5001)
@@ -90,9 +91,9 @@ def test_attenuator_motion():
 
 
 @pytest.mark.timeout(5)
-def test_attenuator_subscriptions():
+def test_attenuator_subscriptions(fake_att):
     logger.debug('test_attenuator_subscriptions')
-    att = fake_att()
+    att = fake_att
     cb = Mock()
     att.subscribe(cb, run=False)
     att.readback.sim_put(0.5)
@@ -100,9 +101,9 @@ def test_attenuator_subscriptions():
 
 
 @pytest.mark.timeout(5)
-def test_attenuator_calcpend():
+def test_attenuator_calcpend(fake_att):
     logger.debug('test_attenuator_calcpend')
-    att = fake_att()
+    att = fake_att
     att.calcpend.sim_put(1)
     # Initialize to any value
     att.setpoint.sim_put(1)
@@ -126,9 +127,9 @@ def test_attenuator_calcpend():
 
 
 @pytest.mark.timeout(5)
-def test_attenuator_set_energy():
+def test_attenuator_set_energy(fake_att):
     logger.debug('test_attenuator_set_energy')
-    att = fake_att()
+    att = fake_att
     att.set_energy()
     assert att.eget_cmd.get() == 6
     energy = 1000
@@ -137,16 +138,16 @@ def test_attenuator_set_energy():
     assert att.user_energy.get() == energy
 
 
-def test_attenuator_transmission():
+def test_attenuator_transmission(fake_att):
     logger.debug('test_attenuator_transmission')
-    att = fake_att()
+    att = fake_att
     assert att.transmission == att.position
 
 
 @pytest.mark.timeout(5)
-def test_attenuator_staging():
+def test_attenuator_staging(fake_att):
     logger.debug('test_attenuator_staging')
-    att = fake_att()
+    att = fake_att
     # Set up at least one invalid state
     att.filter1.state.sim_put(att.filter1._unknown)
     att.stage()
