@@ -1,41 +1,43 @@
-import time
-
 import pytest
 
 from bluesky import RunEngine
 from bluesky.plan_stubs import stage, unstage, open_run, close_run
+from ophyd.sim import make_fake_device
+from ophyd.status import wait as status_wait
 
 from pcdsdevices.epics_motor import PCDSMotorBase, IMS
-from pcdsdevices.sim.pv import using_fake_epics_pv
-from .conftest import attr_wait_value
 
 
+@pytest.fixture(scope='function')
 def fake_motor():
-    m = PCDSMotorBase("Tst:MMS:02", name='Test Motor')
+    FakeMotor = make_fake_device(PCDSMotorBase)
+    m = FakeMotor("Tst:MMS:02", name='Test Motor')
     m.limits = (-100, 100)
-    # Wait for threads to finish
-    attr_wait_value(m, 'low_limit', -100)
-    attr_wait_value(m, 'high_limit', 100)
-    m.motor_spg._read_pv.enum_strs = ['Stop','Pause','Go']
-    m.wait_for_connection()
     return m
 
 
-@using_fake_epics_pv
-def test_epics_motor_soft_limits():
-    m = fake_motor()
+@pytest.fixture(scope='function')
+def fake_ims():
+    FakeIMS = make_fake_device(IMS)
+    m = FakeIMS('Tst:Mtr:1', name='motor')
+    m.bit_status.sim_put(0)
+    m.part_number.sim_put('PN123')
+    m.error_severity.sim_put(0)
+    m.reinit_command.sim_put(0)
+    return m
+
+
+def test_epics_motor_soft_limits(fake_motor):
+    m = fake_motor
     # Check that our limits were set correctly
     assert m.limits == (-100, 100)
     # Check that we can not move past the soft limits
     with pytest.raises(ValueError):
         m.move(-150)
-    with pytest.raises(ValueError):
-        m.move(None)
 
 
-@using_fake_epics_pv
-def test_epics_motor_tdir():
-    m = fake_motor()
+def test_epics_motor_tdir(fake_motor):
+    m = fake_motor
     # Simulate a moving motor
     m._pos_changed(value=-1.0, old_value=0.0)
     assert m.direction_of_travel.get() == 0
@@ -43,59 +45,44 @@ def test_epics_motor_tdir():
     assert m.direction_of_travel.get() == 1
 
 
-@using_fake_epics_pv
-def test_ims_clear_flag():
-    # Instantiate motor
-    m = IMS('Tst:Mtr:1', name='motor')
-    m.wait_for_connection()
+def test_ims_clear_flag(fake_ims):
+    m = fake_ims
     # Already cleared
-    m.bit_status._read_pv.put(0)
     m.clear_all_flags()
     # Clear a specific flag
-    m.bit_status._read_pv.put(4194304)  # 2*22
-    time.sleep(0.5)
+    m.bit_status.sim_put(4194304)  # 2*22
     st = m.clear_stall(wait=False)
     assert m.seq_seln.get() == 40
     # Status should not be done until error goes away
     assert not st.done
     assert not st.success
-    m.bit_status._read_pv.put(0)
-    m.bit_status._read_pv.run_callbacks()
+    m.bit_status.sim_put(0)
     assert st.done
     assert st.success
 
 
-@using_fake_epics_pv
-def test_ims_reinitialize():
-    m = IMS('Tst:Mtr:1', name='motor')
-    m.wait_for_connection()
-    m.reinit_command.put(0)
+def test_ims_reinitialize(fake_ims):
+    m = fake_ims
     # Do not reinitialize on auto-setup
-    m.error_severity._read_pv.put(0)
     m.auto_setup()
     assert m.reinit_command.get() == 0
     # Check that we reinitialize
-    m.error_severity._read_pv.put(3)
+    m.error_severity.sim_put(3)
     st = m.reinitialize(wait=False)
     assert m.reinit_command.get() == 1
     # Status should not be complete until reinitialize is done
     assert not st.done
     assert not st.success
-    # When error severity returns to 3 we are reinitialized
-    m.error_severity._read_pv.put(0)
-    m.error_severity._read_pv.run_callbacks()
-    time.sleep(1.0)
+    # When error severity is no longer 3 we are reinitialized
+    m.error_severity.sim_put(0)
+    status_wait(st)
     assert st.done
     assert st.success
 
-@using_fake_epics_pv
-def test_ims_stage_in_plan():
-    # Create RunEngine
-    RE = RunEngine()
 
-    # Create IMS
-    m = IMS('Tst:Mtr:1', name='motor')
-    m.wait_for_connection()
+def test_ims_stage_in_plan(fake_ims):
+    RE = RunEngine()
+    m = fake_ims
 
     def plan():
         yield from open_run()
@@ -124,5 +111,3 @@ def test_resume_pause_stop():
     m.resume()
     assert m.motor_spg.get(as_string=True) == 'Go'
     m.check_value(10)
-    
-    
