@@ -12,6 +12,7 @@ class HotfixFakeEpicsSignal(FakeEpicsSignal):
         self.as_string = string
         super().__init__(read_pv, write_pv=write_pv, string=string, **kwargs)
         self._enum_strs = None
+        self._limits = None
 
     def get(self, *, as_string=None, connection_timeout=1.0, **kwargs):
         """
