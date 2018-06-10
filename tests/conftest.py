@@ -1,7 +1,8 @@
 import time
 import inspect
 
-from ophyd.sim import FakeEpicsSignal
+from ophyd.areadetector.base import EpicsSignalWithRBV
+from ophyd.sim import FakeEpicsSignal, fake_device_cache
 
 
 class HotfixFakeEpicsSignal(FakeEpicsSignal):
@@ -10,8 +11,8 @@ class HotfixFakeEpicsSignal(FakeEpicsSignal):
     """
     def __init__(self, read_pv, write_pv=None, *, string=False, **kwargs):
         self.as_string = string
-        super().__init__(read_pv, write_pv=write_pv, string=string, **kwargs)
         self._enum_strs = None
+        super().__init__(read_pv, write_pv=write_pv, string=string, **kwargs)
         self._limits = None
 
     def get(self, *, as_string=None, connection_timeout=1.0, **kwargs):
@@ -66,6 +67,9 @@ class HotfixFakeEpicsSignal(FakeEpicsSignal):
         super().check_value(value)
         if value is None:
             raise ValueError('Cannot write None to epics PVs')
+
+
+fake_device_cache[EpicsSignalWithRBV] = HotfixFakeEpicsSignal
 
 
 def get_classes_in_module(module, subcls=None):
