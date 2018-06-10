@@ -9,8 +9,6 @@ from ophyd.sim import make_fake_device
 from pcdsdevices.state import (StatePositioner, PVStatePositioner,
                                StateRecordPositioner, StateStatus)
 
-from .conftest import attr_wait_true
-
 logger = logging.getLogger(__name__)
 
 
@@ -104,7 +102,6 @@ def test_pvstate_positioner_sets():
         lim_obj2.move('Unknown')
     cb = Mock()
     lim_obj2.move('OUT', moved_cb=cb)
-    attr_wait_true(cb, 'called')
     assert(cb.called)
     assert(lim_obj2.position == 'OUT')
     lim_obj2.move('IN', wait=True)
