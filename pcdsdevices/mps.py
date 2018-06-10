@@ -103,7 +103,7 @@ class MPS(MPSBase, Device):
     bypass = C(EpicsSignal,   '_BYPS')
 
     # Default read and configuration attributes
-    _default_read_attrs = ['read']
+    _default_read_attrs = ['fault']
     _default_configuration_attrs = ['bypass']
 
     @property
@@ -260,5 +260,5 @@ class MPSLimits(MPSBase, Device):
     def _sub_to_children(self):
         self.in_limit.subscribe(self._fault_change,
                                 event_type=self.in_limit.SUB_FAULT_CH)
-        self.in_limit.subscribe(self._fault_change,
-                                event_type=self.out_limit.SUB_FAULT_CH)
+        self.out_limit.subscribe(self._fault_change,
+                                 event_type=self.out_limit.SUB_FAULT_CH)
