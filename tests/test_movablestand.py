@@ -1,22 +1,21 @@
 import logging
 
 import pytest
+from ophyd.sim import make_fake_device
 
 from pcdsdevices.movablestand import MovableStand
-from pcdsdevices.sim.pv import using_fake_epics_pv
 
 logger = logging.getLogger(__name__)
 
 
+@pytest.fixture(scope='function')
 def fake_stand():
-    stand = MovableStand('STAND:NAME', name='stand')
-    stand.wait_for_connection()
+    FakeStand = make_fake_device(MovableStand)
+    stand = FakeStand('STAND:NAME', name='stand')
     return stand
 
 
-@using_fake_epics_pv
-def test_movablestand_sanity():
+def test_movablestand_sanity(fake_stand):
     logger.debug('test_movablestand_sanity')
-    stand = fake_stand()
     with pytest.raises(NotImplementedError):
-        stand.move('OUT')
+        fake_stand.move('OUT')
