@@ -2,104 +2,94 @@ import logging
 from unittest.mock import Mock
 
 import pytest
-from ophyd.status import wait as status_wait
+from ophyd.sim import make_fake_device
 
-from pcdsdevices.sim.pv import using_fake_epics_pv
 from pcdsdevices.valve import GateValve, PPSStopper, Stopper, InterlockError
 
-from .conftest import attr_wait_true, attr_wait_false
+from .conftest import HotfixFakeEpicsSignal
 
 logger = logging.getLogger(__name__)
 
 
+@pytest.fixture(scope='function')
 def fake_pps():
-    """
-    using_fake_epics_pv does cleanup routines after the fixture and before the
-    test, so we can't make this a fixture without destabilizing our tests.
-    """
-    pps = PPSStopper("PPS:H0:SUM", name="test_pps")
-    pps.state._read_pv.put("OUT")
-    attr_wait_true(pps, 'removed')
-    pps.wait_for_connection()
+    FakePPS = make_fake_device(PPSStopper)
+    FakePPS.state.cls = HotfixFakeEpicsSignal
+    pps = FakePPS("PPS:H0:SUM", name="test_pps")
+    pps.state.sim_enum_strs(['Unknown', 'IN', 'OUT'])
+    pps.state.put('OUT')
     return pps
 
 
+@pytest.fixture(scope='function')
 def fake_stopper():
-    stp = Stopper("STP:TST:", name="test_stopper")
+    FakeStopper = make_fake_device(Stopper)
+    stp = FakeStopper("STP:TST:", name="test_stopper")
     return stp
 
 
+@pytest.fixture(scope='function')
 def fake_valve():
-    vlv = GateValve("VGC:TST:", name="test_valve")
-    vlv.interlock._read_pv.put(0)
+    FakeValve = make_fake_device(GateValve)
+    vlv = FakeValve("VGC:TST:", name="test_valve")
+    vlv.interlock.sim_put(0)
     return vlv
 
 
-@using_fake_epics_pv
-def test_pps_states():
-    pps = fake_pps()
+def test_pps_states(fake_pps):
+    pps = fake_pps
     # Removed
-    pps.state._read_pv.put("OUT")
-    attr_wait_true(pps, 'removed')
+    pps.state.put("OUT")
     assert pps.removed
     assert not pps.inserted
     # Inserted
-    pps.state._read_pv.put("IN")
-    attr_wait_true(pps, 'inserted')
+    pps.state.put("IN")
     assert pps.inserted
     assert not pps.removed
 
 
-@using_fake_epics_pv
-def test_pps_motion():
-    pps = fake_pps()
+def test_pps_motion(fake_pps):
+    pps = fake_pps
     with pytest.raises(PermissionError):
         pps.insert()
-    pps.state._read_pv.put("IN")
+    pps.state.put("IN")
     with pytest.raises(PermissionError):
         pps.remove()
 
 
-@using_fake_epics_pv
-def test_pps_subscriptions():
-    pps = fake_pps()
+def test_pps_subscriptions(fake_pps):
+    pps = fake_pps
     # Subscribe a pseudo callback
     cb = Mock()
     pps.subscribe(cb, event_type=pps.SUB_STATE, run=False)
     # Change readback state
-    pps.state._read_pv.put(4)
-    attr_wait_true(cb, 'called')
+    pps.state.put(4)
     assert cb.called
 
 
-@using_fake_epics_pv
-def test_stopper_states():
-    stopper = fake_stopper()
+def test_stopper_states(fake_stopper):
+    stopper = fake_stopper
     # Removed
-    stopper.open_limit._read_pv.put(1)
-    stopper.closed_limit._read_pv.put(0)
-    attr_wait_true(stopper, 'removed')
+    stopper.open_limit.sim_put(1)
+    stopper.closed_limit.sim_put(0)
     assert stopper.removed
     assert not stopper.inserted
     # Inserted
-    stopper.open_limit._read_pv.put(0)
-    stopper.closed_limit._read_pv.put(1)
+    stopper.open_limit.sim_put(0)
+    stopper.closed_limit.sim_put(1)
     # Moving
-    stopper.open_limit._read_pv.put(0)
-    stopper.closed_limit._read_pv.put(0)
-    attr_wait_false(stopper, 'inserted')
+    stopper.open_limit.sim_put(0)
+    stopper.closed_limit.sim_put(0)
     assert not stopper.inserted
     assert not stopper.removed
 
 
-@using_fake_epics_pv
-def test_stopper_motion():
-    stopper = fake_stopper()
+def test_stopper_motion(fake_stopper):
+    stopper = fake_stopper
     # Check the status object
     status = stopper.close(wait=False)
-    stopper.open_limit._read_pv.put(0)
-    stopper.closed_limit._read_pv.put(1)
-    status_wait(status, timeout=1)
+    stopper.open_limit.sim_put(0)
+    stopper.closed_limit.sim_put(1)
     assert status.done and status.success
     # Remove
     stopper.open(wait=False)
@@ -107,28 +97,25 @@ def test_stopper_motion():
     assert stopper.command.value == stopper.commands.open_valve.value
 
 
-@using_fake_epics_pv
-def test_stopper_subscriptions():
-    stopper = fake_stopper()
+def test_stopper_subscriptions(fake_stopper):
+    stopper = fake_stopper
     # Subscribe a pseudo callback
     cb = Mock()
     stopper.subscribe(cb, event_type=stopper.SUB_STATE, run=False)
     # Change readback state
-    stopper.open_limit._read_pv.put(0)
-    stopper.closed_limit._read_pv.put(1)
-    attr_wait_true(cb, 'called')
+    stopper.open_limit.sim_put(0)
+    stopper.closed_limit.sim_put(1)
     assert cb.called
 
 
-@using_fake_epics_pv
-def test_valve_motion():
-    valve = fake_valve()
+def test_valve_motion(fake_valve):
+    valve = fake_valve
     # Remove
     valve.open(wait=False)
     # Check write PV
     assert valve.command.value == valve.commands.open_valve.value
     # Raises interlock
-    valve.interlock._read_pv.put(1)
+    valve.interlock.sim_put(1)
     assert valve.interlocked
     with pytest.raises(InterlockError):
         valve.open()
