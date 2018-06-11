@@ -162,12 +162,9 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
 
     def stop(self):
         """
-        Stops the motor.
-
-        Returns
-        -------
-        status: Status Object
-            Status object of the set
+        Stops the motor.  After which the motor 
+        must be set back to 'go' via <motor>.go()
+        in order to move again.
         """
         return self.motor_spg.put(value='Stop')
 
