@@ -19,10 +19,10 @@ def fake_ipm():
     FakeIPM.diode.cls.state.cls = HotfixFakeEpicsSignal
     ipm = FakeIPM("Test:My:IPM", name='test_ipm')
     ipm.diode.state.sim_put(0)
-    ipm.diode.state.sim_enum_strs(['Unknown'] +
-                                  InOutRecordPositioner.states_list)
+    ipm.diode.state.sim_set_enum_strs(['Unknown'] +
+                                      InOutRecordPositioner.states_list)
     ipm.state.sim_put(0)
-    ipm.state.sim_enum_strs(['Unknown'] + IPM.states_list)
+    ipm.state.sim_set_enum_strs(['Unknown'] + IPM.states_list)
     return ipm
 
 

@@ -17,7 +17,7 @@ def fake_xfls():
     FakeXFLS.state.cls = HotfixFakeEpicsSignal
     xfls = FakeXFLS('TST:XFLS', name='lens')
     xfls.state.sim_put(4)
-    xfls.state.sim_enum_strs(('Unknown', 'LENS1', 'LENS2', 'LENS3', 'OUT'))
+    xfls.state.sim_set_enum_strs(('Unknown', 'LENS1', 'LENS2', 'LENS3', 'OUT'))
     return xfls
 
 

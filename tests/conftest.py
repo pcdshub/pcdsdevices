@@ -41,11 +41,11 @@ class HotfixFakeEpicsSignal(FakeEpicsSignal):
         """
         Simulated enum strings.
 
-        Use sim_enum_strs during setup to set the enum strs.
+        Use sim_set_enum_strs during setup to set the enum strs.
         """
         return self._enum_strs
 
-    def sim_enum_strs(self, enums):
+    def sim_set_enum_strs(self, enums):
         """
         Set the enum_strs for a fake devices
 

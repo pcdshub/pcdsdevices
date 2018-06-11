@@ -27,7 +27,7 @@ def fake_pim():
     FakePIM.state.cls = HotfixFakeEpicsSignal
     pim = FakePIM('Test:Yag', name='test')
     pim.state.sim_put(0)
-    pim.state.sim_enum_strs(['Unknown'] + PIMMotor.states_list)
+    pim.state.sim_set_enum_strs(['Unknown'] + PIMMotor.states_list)
     return pim
 
 

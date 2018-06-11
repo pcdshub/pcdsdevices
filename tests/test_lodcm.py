@@ -21,15 +21,15 @@ def fake_lodcm():
     FakeLODCM.foil.cls.state.cls = HotfixFakeEpicsSignal
     lodcm = FakeLODCM('FAKE:LOM', name='fake_lom')
     lodcm.state.sim_put(1)
-    lodcm.state.sim_enum_strs(['Unknown'] + LODCM.states_list)
+    lodcm.state.sim_set_enum_strs(['Unknown'] + LODCM.states_list)
     lodcm.yag.state.sim_put(1)
-    lodcm.yag.state.sim_enum_strs(['Unknown'] + YagLom.states_list)
+    lodcm.yag.state.sim_set_enum_strs(['Unknown'] + YagLom.states_list)
     lodcm.dectris.state.sim_put(1)
-    lodcm.dectris.state.sim_enum_strs(['Unknown'] + Dectris.states_list)
+    lodcm.dectris.state.sim_set_enum_strs(['Unknown'] + Dectris.states_list)
     lodcm.diode.state.sim_put(1)
-    lodcm.diode.state.sim_enum_strs(['Unknown'] + Diode.states_list)
+    lodcm.diode.state.sim_set_enum_strs(['Unknown'] + Diode.states_list)
     lodcm.foil.state.sim_put(1)
-    lodcm.foil.state.sim_enum_strs(['Unknown'] + Foil.states_list)
+    lodcm.foil.state.sim_set_enum_strs(['Unknown'] + Foil.states_list)
     return lodcm
 
 

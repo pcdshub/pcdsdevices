@@ -17,7 +17,7 @@ def fake_inout():
     Fake.state.cls = HotfixFakeEpicsSignal
     inout = Fake('Test:Ref', name='test')
     inout.state.sim_put(0)
-    inout.state.sim_enum_strs(('Unknown', 'IN', 'OUT'))
+    inout.state.sim_set_enum_strs(('Unknown', 'IN', 'OUT'))
     return inout
 
 

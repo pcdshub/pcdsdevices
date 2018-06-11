@@ -165,6 +165,7 @@ def test_presets(presets, motor):
     motor.presets.sync()
     assert hasattr(motor, 'mv_sample')
 
+
 def test_presets_type(presets, motor):
     logger.debug('test_presets_type')
     # Mess up the input types, fail before opening the file

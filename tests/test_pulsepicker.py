@@ -24,8 +24,8 @@ def fake_picker():
     FakePicker.inout.cls.state.cls = HotfixFakeEpicsSignal
     picker = FakePicker('TST:SB1:MMS:35', name='picker')
     picker.inout.state.sim_put(0)
-    picker.inout.state.sim_enum_strs(['Unknown'] +
-                                     InOutRecordPositioner.states_list)
+    picker.inout.state.sim_set_enum_strs(['Unknown'] +
+                                         InOutRecordPositioner.states_list)
     picker.blade.sim_put(0)
     picker.mode.sim_put(0)
     return picker

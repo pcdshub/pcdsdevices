@@ -16,7 +16,7 @@ def fake_pps():
     FakePPS = make_fake_device(PPSStopper)
     FakePPS.state.cls = HotfixFakeEpicsSignal
     pps = FakePPS("PPS:H0:SUM", name="test_pps")
-    pps.state.sim_enum_strs(['Unknown', 'IN', 'OUT'])
+    pps.state.sim_set_enum_strs(['Unknown', 'IN', 'OUT'])
     pps.state.put('OUT')
     return pps
 

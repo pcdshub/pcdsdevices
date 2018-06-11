@@ -18,7 +18,7 @@ def fake_branching_mirror():
                    xgantry_prefix="GANTRY:M1H:X", name='Test Mirror',
                    in_lines=['MFX', 'MEC'], out_lines=['CXI'])
     m.state.sim_put(0)
-    m.state.sim_enum_strs(['Unknown'] + PointingMirror.states_list)
+    m.state.sim_set_enum_strs(['Unknown'] + PointingMirror.states_list)
     # Couple the gantry
     m.xgantry.decoupled.sim_put(0)
     # Make the pitch look reasonable
