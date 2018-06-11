@@ -1,5 +1,6 @@
 import logging
 
+import pytest
 from ophyd.sim import make_fake_device
 
 from pcdsdevices.beam_stats import BeamStats
@@ -7,17 +8,24 @@ from pcdsdevices.beam_stats import BeamStats
 logger = logging.getLogger(__name__)
 
 
-def test_beam_stats():
+@pytest.fixture(scope='function')
+def fake_beam_stats():
+    FakeStats = make_fake_device(BeamStats)
+    stats = FakeStats()
+    stats.mj.sim_put(-1)
+    return stats
+
+
+def test_beam_stats(fake_beam_stats):
     logger.debug('test_beam_stats')
-    stats = make_fake_device(BeamStats)()
+    stats = fake_beam_stats
     stats.read()
     stats.hints
 
 
-def test_beam_stats_avg():
+def test_beam_stats_avg(fake_beam_stats):
     logger.debug('test_beam_stats_avg')
-    stats = make_fake_device(BeamStats)()
-    stats.mj.sim_put(-1)
+    stats = fake_beam_stats
 
     assert stats.mj_buffersize.value == 120
 
