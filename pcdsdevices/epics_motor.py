@@ -186,7 +186,7 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         Sets motor ready to move or resumes a paused move
         (same as <motor>.go()).
         """
-        return self.go():
+        return self.go()
 
     def go(self):
         """
