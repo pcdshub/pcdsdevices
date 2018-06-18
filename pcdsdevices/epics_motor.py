@@ -162,7 +162,9 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
 
     def stop(self):
         """
-        Stops the motor.  After which the motor 
+        Stops the motor.  
+        
+        After which the motor 
         must be set back to 'go' via <motor>.go()
         in order to move again.
         """
@@ -170,21 +172,28 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
 
     def pause(self):
         """
-        Pauses a move.  Move will resume if <motor>.resume()
+        Pauses a move.  
+        
+        Move will resume if <motor>.resume()
         or <motor>.go() are called.
         """
         return self.motor_spg.put(value='Pause')
 
     def resume(self):
         """
+        Resumes paused movement.
+
         Sets motor ready to move or resumes a paused move
         (same as <motor>.go()).
         """
-        return self.motor_spg.put(value='Go')
+        return self.go():
 
     def go(self):
         """
-        Sets motor ready to move or resumes a paused move.
+        Resumes paused movement.
+
+        Sets motor ready to move or resumes a paused move
+        (same as <motor>.resume()).
         """
         return self.motor_spg.put(value='Go')
 
