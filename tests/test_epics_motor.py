@@ -7,23 +7,31 @@ from ophyd.status import wait as status_wait
 
 from pcdsdevices.epics_motor import PCDSMotorBase, IMS
 
+from .conftest import HotfixFakeEpicsSignal
+
 
 @pytest.fixture(scope='function')
 def fake_motor():
     FakeMotor = make_fake_device(PCDSMotorBase)
+    FakeMotor.motor_spg.cls = HotfixFakeEpicsSignal
     m = FakeMotor("Tst:MMS:02", name='Test Motor')
     m.limits = (-100, 100)
+    m.motor_spg.sim_put(2)
+    m.motor_spg.sim_set_enum_strs(['Stop', 'Pause', 'Go'])
     return m
 
 
 @pytest.fixture(scope='function')
 def fake_ims():
     FakeIMS = make_fake_device(IMS)
+    FakeIMS.motor_spg.cls = HotfixFakeEpicsSignal
     m = FakeIMS('Tst:Mtr:1', name='motor')
     m.bit_status.sim_put(0)
     m.part_number.sim_put('PN123')
     m.error_severity.sim_put(0)
     m.reinit_command.sim_put(0)
+    m.motor_spg.sim_put(2)
+    m.motor_spg.sim_set_enum_strs(['Stop', 'Pause', 'Go'])
     return m
 
 
@@ -92,9 +100,9 @@ def test_ims_stage_in_plan(fake_ims):
 
     RE(plan())
 
-@using_fake_epics_pv
-def test_resume_pause_stop():
-    m = fake_motor()
+
+def test_resume_pause_stop(fake_motor):
+    m = fake_motor
     m.stop()
     assert m.motor_spg.get(as_string=True) == 'Stop'
     with pytest.raises(Exception):
