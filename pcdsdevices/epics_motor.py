@@ -43,6 +43,11 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         cache of the limits after the first get attempt. We therefore disregard
         the internal limits of the PV and use the soft limit records
         exclusively.
+        3. The ``SPG`` field implements the three states used in the LCLS
+        motor record.  This is a reduced version of the standard EPICS
+        ``SPMG`` field.  Setting to ``STOP``, ``PAUSE`` and ``GO``  will
+        respectively stop motor movement, pause a move in progress, or resume
+        a paused move.
     """
     # Reimplemented because pyepics does not recognize when the limits have
     # been changed without a re-connection of the PV. Instead we trust the soft
@@ -56,6 +61,9 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
     direction_of_travel = Cpt(Signal)
     # This attribute will show if the motor is disabled or not
     disabled = Cpt(EpicsSignal, ".DISP")
+    # This attribute changes if the motor is stopped and unable to move 'Stop',
+    # paused and ready to resume on Go 'Paused', and to resume a move 'Go'.
+    motor_spg = Cpt(EpicsSignal, ".SPG")
 
     @property
     def low_limit(self):
@@ -152,6 +160,43 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         """
         return self.disabled.set(value=1)
 
+    def stop(self):
+        """
+        Stops the motor.  
+        
+        After which the motor 
+        must be set back to 'go' via <motor>.go()
+        in order to move again.
+        """
+        return self.motor_spg.put(value='Stop')
+
+    def pause(self):
+        """
+        Pauses a move.  
+        
+        Move will resume if <motor>.resume()
+        or <motor>.go() are called.
+        """
+        return self.motor_spg.put(value='Pause')
+
+    def resume(self):
+        """
+        Resumes paused movement.
+
+        Sets motor ready to move or resumes a paused move
+        (same as <motor>.go()).
+        """
+        return self.go()
+
+    def go(self):
+        """
+        Resumes paused movement.
+
+        Sets motor ready to move or resumes a paused move
+        (same as <motor>.resume()).
+        """
+        return self.motor_spg.put(value='Go')
+
     def check_value(self, value):
         """
         Check if the motor is disabled
@@ -173,6 +218,14 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         if self.disabled.value == 1:
             raise Exception("Motor is not enabled. Motion requests "
                             "ignored")
+
+        if self.motor_spg.value in [0, 'Stop']:
+            raise Exception("Motor is stopped.  Motion requests "
+                            "ignored until motor is set to 'Go'")
+
+        if self.motor_spg.value in [1, 'Pause']:
+            raise Exception("Motor is paused.  If a move is set, motion "
+                            "will resume when motor is set to 'Go'")
 
         # Find the soft limit values from EPICS records and check that this
         # command will be accepted by the motor
@@ -222,7 +275,7 @@ class IMS(PCDSMotorBase):
 
     def stage(self):
         """
-        State the IMS motor
+        Stage the IMS motor
 
         This clears all present flags on the motor and reinitializes the motor
         if we don't register a valid part number
