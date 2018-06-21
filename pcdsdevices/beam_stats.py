@@ -27,7 +27,7 @@ class BeamStats(Device):
 class SxrGmd(Device):
     mj = Cpt(EpicsSignalRO, 'SXR:GMD:BLD:milliJoulesPerPulse')
 
-    def __init__(self, prefix='', name='SxrGmd', **kwargs):
+    def __init__(self, prefix='', name='sxr_gmd', **kwargs):
         super().__init__(prefix=prefix, name=name, **kwargs)
 
     @property
