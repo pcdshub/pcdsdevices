@@ -6,7 +6,7 @@ from .signal import AvgSignal
 
 class BeamStats(Device):
     mj = Cpt(EpicsSignalRO, 'GDET:FEE1:241:ENRC')
-    ev = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO541')
+    ev = Cpt(EpicsSignalRO, 'BLD:SYS0:500:PHOTONENERGY')
     rate = Cpt(EpicsSignalRO, 'EVNT:SYS0:1:LCLSBEAMRATE')
     owner = Cpt(EpicsSignalRO, 'ECS:SYS0:0:BEAM_OWNER_ID')
 
@@ -17,6 +17,17 @@ class BeamStats(Device):
     _default_configuration_attrs = ['mj_buffersize']
 
     def __init__(self, prefix='', name='beam_stats', **kwargs):
+        super().__init__(prefix=prefix, name=name, **kwargs)
+
+    @property
+    def hints(self):
+        return {'fields': [self.mj.name]}
+
+
+class SxrGmd(Device):
+    mj = Cpt(EpicsSignalRO, 'SXR:GMD:BLD:milliJoulesPerPulse')
+
+    def __init__(self, prefix='', name='SxrGmd', **kwargs):
         super().__init__(prefix=prefix, name=name, **kwargs)
 
     @property
