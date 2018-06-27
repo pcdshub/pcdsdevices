@@ -1,7 +1,7 @@
 Release History
 ###############
 
-Next Release
+v0.8.0 (2018-05-27)
 ============
 
 Features
@@ -14,6 +14,7 @@ Features
 Bugfixes
 --------
 - Fix a bug where the `LODCM` class had a ``readback`` signal with an invalid PV. (#232)
+- Fix a bug where the tests would never pass, ever (#238)
 
 v0.7.0 (2018-05-08)
 ===================
