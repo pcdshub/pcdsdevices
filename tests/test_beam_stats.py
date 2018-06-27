@@ -1,37 +1,40 @@
 import logging
 
+import pytest
+from ophyd.sim import make_fake_device
+
 from pcdsdevices.beam_stats import BeamStats
-from pcdsdevices.sim.pv import using_fake_epics_pv
 
 logger = logging.getLogger(__name__)
 
 
-@using_fake_epics_pv
-def test_beam_stats():
+@pytest.fixture(scope='function')
+def fake_beam_stats():
+    FakeStats = make_fake_device(BeamStats)
+    stats = FakeStats()
+    stats.mj.sim_put(-1)
+    return stats
+
+
+def test_beam_stats(fake_beam_stats):
     logger.debug('test_beam_stats')
-    stats = BeamStats()
-    stats.wait_for_connection()
+    stats = fake_beam_stats
     stats.read()
     stats.hints
 
 
-@using_fake_epics_pv
-def test_beam_stats_avg():
+def test_beam_stats_avg(fake_beam_stats):
     logger.debug('test_beam_stats_avg')
-    stats = BeamStats()
-    stats.mj._read_pv.put(-1)
-    stats.wait_for_connection()
+    stats = fake_beam_stats
 
     assert stats.mj_buffersize.value == 120
 
     stats.mj_buffersize.put(10)
 
-    with stats.mj._read_pv._lock:
-        for i in range(10):
-            stats.mj._read_pv._value = i
-            stats.mj._read_pv.run_callbacks()
+    for i in range(10):
+        stats.mj.sim_put(i)
 
-        assert stats.mj_avg.value == sum(range(10))/10
+    assert stats.mj_avg.value == sum(range(10))/10
 
     stats.configure(dict(mj_buffersize=20))
     cfg = stats.read_configuration()

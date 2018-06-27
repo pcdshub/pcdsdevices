@@ -4,12 +4,10 @@ from unittest.mock import Mock
 import pytest
 from ophyd.device import Component as Cmp
 from ophyd.signal import Signal
+from ophyd.sim import make_fake_device
 
 from pcdsdevices.state import (StatePositioner, PVStatePositioner,
                                StateRecordPositioner, StateStatus)
-from pcdsdevices.sim.pv import using_fake_epics_pv
-
-from .conftest import attr_wait_true
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +102,6 @@ def test_pvstate_positioner_sets():
         lim_obj2.move('Unknown')
     cb = Mock()
     lim_obj2.move('OUT', moved_cb=cb)
-    attr_wait_true(cb, 'called')
     assert(cb.called)
     assert(lim_obj2.position == 'OUT')
     lim_obj2.move('IN', wait=True)
@@ -131,7 +128,6 @@ def test_basic_subscribe():
     assert cb.called
 
 
-@using_fake_epics_pv
 def test_staterecord_positioner():
     """
     Nothing special can be done without live hosts, just make sure we can
@@ -139,14 +135,15 @@ def test_staterecord_positioner():
     """
     logger.debug('test_staterecord_positioner')
 
-    class MyStates(StateRecordPositioner):
+    FakeState = make_fake_device(StateRecordPositioner)
+
+    class MyStates(FakeState):
         states_list = ['YES', 'NO', 'MAYBE', 'SO']
 
     state = MyStates('A:PV', name='test')
     cb = Mock()
     state.subscribe(cb, event_type=state.SUB_READBACK, run=False)
-    state.readback._read_pv.put(1.23)
-    attr_wait_true(cb, 'called')
+    state.readback.sim_put(1.23)
     assert cb.called
 
 

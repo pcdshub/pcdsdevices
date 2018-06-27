@@ -1,56 +1,55 @@
+import logging
 from unittest.mock import Mock
 
-from pcdsdevices.sim.pv import using_fake_epics_pv
+import pytest
+from ophyd.sim import make_fake_device
+
 from pcdsdevices.lens import XFLS
 
-from .conftest import attr_wait_true, connect_rw_pvs
+from .conftest import HotfixFakeEpicsSignal
+
+logger = logging.getLogger(__name__)
 
 
+@pytest.fixture(scope='function')
 def fake_xfls():
-    """
-    using_fake_epics_pv does cleanup routines after the fixture and before the
-    test, so we can't make this a fixture without destabilizing our tests.
-    """
-    xfls = XFLS('TST:XFLS', name='lens')
-    connect_rw_pvs(xfls.state)
-    xfls.state.put(4)
-    xfls.state._read_pv.enum_strs = ('Unknown', 'LENS1', 'LENS2', 'LENS3',
-                                     'OUT')
-    xfls.wait_for_connection()
+    FakeXFLS = make_fake_device(XFLS)
+    FakeXFLS.state.cls = HotfixFakeEpicsSignal
+    xfls = FakeXFLS('TST:XFLS', name='lens')
+    xfls.state.sim_put(4)
+    xfls.state.sim_set_enum_strs(('Unknown', 'LENS1', 'LENS2', 'LENS3', 'OUT'))
     return xfls
 
 
-@using_fake_epics_pv
-def test_xfls_states():
-    xfls = fake_xfls()
+def test_xfls_states(fake_xfls):
+    logger.debug('test_xfls_states')
+    xfls = fake_xfls
     # Remove
-    xfls.state._read_pv.put(4)
+    xfls.state.put(4)
     assert xfls.removed
     assert not xfls.inserted
     # Insert
-    xfls.state._read_pv.put(3)
+    xfls.state.put(3)
     assert not xfls.removed
     assert xfls.inserted
     # Unknown
-    xfls.state._read_pv.put(0)
+    xfls.state.put(0)
     assert not xfls.removed
     assert not xfls.inserted
 
 
-@using_fake_epics_pv
-def test_xfls_motion():
-    xfls = fake_xfls()
+def test_xfls_motion(fake_xfls):
+    logger.debug('test_xfls_motion')
+    xfls = fake_xfls
     xfls.remove()
-    assert xfls.state._write_pv.get() == 4
+    assert xfls.state.get() == 4
 
 
-@using_fake_epics_pv
-def test_xfls_subscriptions():
-    xfls = fake_xfls()
+def test_xfls_subscriptions(fake_xfls):
+    xfls = fake_xfls
     # Subscribe a pseudo callback
     cb = Mock()
     xfls.subscribe(cb, event_type=xfls.SUB_STATE, run=False)
     # Change readback state
-    xfls.state._read_pv.put(4)
-    attr_wait_true(cb, 'called')
+    xfls.state.put(4)
     assert cb.called
