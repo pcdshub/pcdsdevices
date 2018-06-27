@@ -376,24 +376,24 @@ class IMS(PCDSMotorBase):
             status_wait(st, timeout=timeout)
         return st
     def cb(self,moving,timeout):
-    """Display motor position second by second"""
         import time
         if timeout<=0:
            timeout=float("inf")
         start=time.time()
-        try:
-           if moving==True:
-              now=time.time()
-              if now-start>timeout:
-                 moving=True
-              print("Position: ")
-              print("\r {0}".format(self.user_setpoint.value))
-        except KeyboardInterrupt:
-           moving=False
-           pass
+        if moving==True:
+           now=time.time()
+           if now-start>timeout:
+              moving=True
+           print("\r {}".format(self.user_setpoint.value),end=" ")
+
     def camonitor(self):
-        display=self.cb(1,0)
-        return display
+        import time 
+        self.cb(1,0)
+        try:
+           while True:
+             time.sleep(0.1)
+        except KeyboardInterrupt:
+           pass
 
 
 class Newport(PCDSMotorBase):
