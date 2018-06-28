@@ -375,12 +375,14 @@ class IMS(PCDSMotorBase):
         if wait:
             status_wait(st, timeout=timeout)
         return st
-    def camonitor(self): 
+
+    def camonitor(self):
         try:
-           while True:
-             print("\r {0:4f}".format(self.user_readback.value),end=" ")
+            while True:
+                print("\r {0:4f}".format(self.user_readback.value), end=" ")
         except KeyboardInterrupt:
-           pass
+            pass
+
 
 class Newport(PCDSMotorBase):
     """
