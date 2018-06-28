@@ -1,17 +1,20 @@
-import time
+import logging
 
+import pytest
 from bluesky import RunEngine
 from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from bluesky.plan_stubs import sleep
-from ophyd.sim import NullStatus
+from ophyd.sim import NullStatus, make_fake_device
 
 from pcdsdevices.sequencer import EventSequencer
-from pcdsdevices.sim.pv import using_fake_epics_pv
+
+logger = logging.getLogger(__name__)
+FakeSequencer = make_fake_device(EventSequencer)
 
 
+@pytest.fixture(scope='function')
 def sequence():
-    seq = EventSequencer('ECS:TST', name='seq')
-    seq.wait_for_connection()
+    seq = FakeSequencer('ECS:TST', name='seq')
     # Running forever
     seq.play_mode.put(2)
     seq.play_control.put(0)
@@ -19,7 +22,7 @@ def sequence():
 
 
 # Simulated Sequencer for use in scans
-class SimSequencer(EventSequencer):
+class SimSequencer(FakeSequencer):
     """Simulated Sequencer usable in bluesky plans"""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -31,31 +34,27 @@ class SimSequencer(EventSequencer):
         return NullStatus()
 
 
-@using_fake_epics_pv
-def test_kickoff():
-    seq = sequence()
+def test_kickoff(sequence):
+    logger.debug('test_kickoff')
+    seq = sequence
     st = seq.kickoff()
     # Not currently playing
-    seq.play_status._read_pv.put(0)
-    seq.play_status._read_pv.run_callbacks()
-    # Wait for set threads
-    time.sleep(0.5)
+    seq.play_status.sim_put(0)
     # Check we gave the command to start the sequencer
-    assert seq.play_control.value == 1
+    assert seq.play_control.get() == 1
     # Check that our monitors have started
     assert len(seq.current_step._callbacks['value']) == 1
     assert len(seq.play_count._callbacks['value']) == 1
     # Our status should not be done until the sequencer starts
     assert not st.done
-    seq.play_status._read_pv.put(2)
-    seq.play_status._read_pv.run_callbacks()
+    seq.play_status.sim_put(2)
     assert st.done
     assert st.success
 
 
-@using_fake_epics_pv
-def test_complete_run_forever():
-    seq = sequence()
+def test_complete_run_forever(sequence):
+    logger.debug('test_complete_run_forever')
+    seq = sequence
     seq._acquiring = True
     # Run Forever mode should tell this to stop
     st = seq.complete()
@@ -64,45 +63,36 @@ def test_complete_run_forever():
     assert st.success
 
 
-@using_fake_epics_pv
-def test_complete_run_once():
-    seq = sequence()
+def test_complete_run_once(sequence):
+    logger.debug('test_complete_run_once')
+    seq = sequence
     seq._acquiring = True
     # Start the sequencer in run once mode
     seq.play_mode.put(0)
-    seq.play_status._read_pv.put(2)
-    seq.play_status._read_pv.run_callbacks()
+    seq.play_status.sim_put(2)
     st = seq.complete()
     # Our status should not be done until the sequence stops naturally
     assert not st.done
-    seq.play_status._read_pv.put(0)
-    seq.play_status._read_pv.run_callbacks()
+    seq.play_status.sim_put(0)
     assert st.done
     assert st.success
 
 
-@using_fake_epics_pv
-def test_pause_and_resume():
-    seq = sequence()
+def test_pause_and_resume(sequence):
+    seq = sequence
     # Start the sequence
     seq._acquiring = True
-    seq.play_control.put(1)
+    seq.play_control.sim_put(1)
     # Assert we stopped our sequencer
     seq.pause()
-    # Wait for set threads
-    time.sleep(0.5)
     assert seq.play_control.get() == 0
     seq.resume()
-    # Wait for set threads
-    time.sleep(0.5)
     # Assert we restarted our sequencer
     assert seq.play_control.get() == 1
 
 
-@using_fake_epics_pv
 def test_fly_scan_smoke():
     seq = SimSequencer('ECS:TST', name='seq')
-    seq.wait_for_connection()
     RE = RunEngine()
 
     # Create a plan where we fly for a second
