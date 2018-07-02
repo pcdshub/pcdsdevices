@@ -2,7 +2,7 @@
 Module for LCLS's special motor records.
 """
 import logging
-
+import time
 from ophyd.device import Component as Cpt
 from ophyd.epics_motor import EpicsMotor
 from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
@@ -245,7 +245,6 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         super()._pos_changed(timestamp=timestamp, old_value=old_value,
                              value=value, **kwargs)
 
-
 class IMS(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record for IMS motors.
@@ -379,6 +378,7 @@ class IMS(PCDSMotorBase):
     def camonitor(self):
         try:
             while True:
+                time.sleep(0.1)
                 print("\r {0:4f}".format(self.user_readback.value), end=" ")
         except KeyboardInterrupt:
             pass
