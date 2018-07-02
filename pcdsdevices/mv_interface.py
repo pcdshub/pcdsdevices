@@ -75,7 +75,7 @@ class MvInterface:
         try:
             while True:
                 time.sleep(0.1)
-                print("\r {0:4f}".format(self.user_readback.value), end=" ")
+                print("\r {0:4f}".format(self.position), end=" ")
         except KeyboardInterrupt:
             pass
 
