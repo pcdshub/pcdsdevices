@@ -1,5 +1,8 @@
 import pytest
-
+import os
+import signal
+import time
+from threading import Thread
 from bluesky import RunEngine
 from bluesky.plan_stubs import stage, unstage, open_run, close_run
 from ophyd.sim import make_fake_device
@@ -18,6 +21,7 @@ def fake_motor():
     m.limits = (-100, 100)
     m.motor_spg.sim_put(2)
     m.motor_spg.sim_set_enum_strs(['Stop', 'Pause', 'Go'])
+    m.user_readback.sim_put(0)
     return m
 
 
@@ -119,3 +123,11 @@ def test_resume_pause_stop(fake_motor):
     m.resume()
     assert m.motor_spg.get(as_string=True) == 'Go'
     m.check_value(10)
+def test_camonitor(fake_motor):
+    motor=fake_motor
+    pid=os.getpid()
+    def interrupt():
+        time.sleep(0.1)
+        os.kill(pid, signal.SIGINT)
+    Thread(target=interrupt,args=()).start()
+    motor.camonitor() 
