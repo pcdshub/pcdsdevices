@@ -1,22 +1,22 @@
-import sys
 import select
-import tty
+import sys
 import termios
 import time
+import tty
 
-arrow_up   = '\x1b[A'
+arrow_up = '\x1b[A'
 arrow_down = '\x1b[B'
 arrow_right = '\x1b[C'
 arrow_left = '\x1b[D'
-shift_arrow_up   = '\x1b[1;2A'
+shift_arrow_up = '\x1b[1;2A'
 shift_arrow_down = '\x1b[1;2B'
 shift_arrow_right = '\x1b[1;2C'
 shift_arrow_left = '\x1b[1;2D'
-alt_arrow_up   = '\x1b[1;3A'
+alt_arrow_up = '\x1b[1;3A'
 alt_arrow_down = '\x1b[1;3B'
 alt_arrow_right = '\x1b[1;3C'
 alt_arrow_left = '\x1b[1;3D'
-ctrl_arrow_up   = '\x1b[1;5A'
+ctrl_arrow_up = '\x1b[1;5A'
 ctrl_arrow_down = '\x1b[1;5B'
 ctrl_arrow_right = '\x1b[1;5C'
 ctrl_arrow_left = '\x1b[1;5D'
@@ -46,9 +46,12 @@ def get_input():
     -------
     input: ``str``
     """
+    # Save old terminal settings
     old_settings = termios.tcgetattr(sys.stdin)
+    # Stash a None here in case we get interrupted
     inp = None
     try:
+        # Swap to cbreak mode to get raw inputs
         tty.setcbreak(sys.stdin.fileno())
         # Poll for input. This is interruptable with ctrl+c
         while (not is_input()):
@@ -60,8 +63,9 @@ def get_input():
             extra_inp = sys.stdin.read(2)
             inp += extra_inp
             # Read even more if we had a shift/alt/ctrl modifier
-            if extra_inp =='[1':
-                inp +=  sys.stdin.read(3)
+            if extra_inp == '[1':
+                inp += sys.stdin.read(3)
     finally:
+        # Restore the terminal to normal input mode
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
         return inp
