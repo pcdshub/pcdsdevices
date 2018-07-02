@@ -71,6 +71,7 @@ class MvInterface:
             return self.wm()
         else:
             self.mv(position, timeout=timeout, wait=wait)
+
     def camonitor(self):
         try:
             while True:
@@ -78,6 +79,7 @@ class MvInterface:
                 print("\r {0:4f}".format(self.position), end=" ")
         except KeyboardInterrupt:
             pass
+
 
 class FltMvInterface(MvInterface):
     """
