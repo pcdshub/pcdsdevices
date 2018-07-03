@@ -73,6 +73,9 @@ class MvInterface:
             self.mv(position, timeout=timeout, wait=wait)
 
     def camonitor(self):
+        """
+        Updates current position of the motor.
+        """
         try:
             while True:
                 time.sleep(0.1)
