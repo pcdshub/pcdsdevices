@@ -2,7 +2,6 @@
 Module for LCLS's special motor records.
 """
 import logging
-
 from ophyd.device import Component as Cpt
 from ophyd.epics_motor import EpicsMotor
 from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
