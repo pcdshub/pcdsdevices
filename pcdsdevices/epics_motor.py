@@ -25,13 +25,15 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     -----
     The full list of preferences implemented here are:
 
-        1. Instead of using the limit fields on the setpoint PV, the EPICS
+        1. Use the FltMvInterface mixin class for some name aliases and
+        bells-and-whistles level functions
+        2. Instead of using the limit fields on the setpoint PV, the EPICS
         motor class has the ``LLM`` and ``HLM`` soft limit fields for
         convenient usage. Unfortunately, pyepics does not update its internal
         cache of the limits after the first get attempt. We therefore disregard
         the internal limits of the PV and use the soft limit records
         exclusively.
-        2. The disable puts field ``.DISP`` is added, along with ``enable`` and
+        3. The disable puts field ``.DISP`` is added, along with ``enable`` and
         ``disable`` convenience methods. When ``.DISP`` is 1, puts to the motor
         record will be ignored, effectively disabling the interface.
     """
@@ -411,6 +413,8 @@ class Beckhoff(EpicsMotorInterface):
     This class simply adds a convenience `clear_error` method, and makes
     sure to call it on stage.
     """
+    __doc__ += basic_positioner_init
+
     cmd_err_reset = Cpt(EpicsSignal, '-ErrRst')
 
     def clear_error(self):
