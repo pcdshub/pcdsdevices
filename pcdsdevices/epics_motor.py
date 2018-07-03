@@ -15,7 +15,118 @@ from .mv_interface import FltMvInterface
 logger = logging.getLogger(__name__)
 
 
-class PCDSMotorBase(FltMvInterface, EpicsMotor):
+class EpicsMotorInterface(FltMvInterface, EpicsMotor):
+    """
+    The standard EpicsMotor class, but with our interface attached.
+
+    This includes some pcds preferences, but not any IOC differences.
+
+    Notes
+    -----
+    The full list of preferences implemented here are:
+
+        1. Instead of using the limit fields on the setpoint PV, the EPICS
+        motor class has the ``LLM`` and ``HLM`` soft limit fields for
+        convenient usage. Unfortunately, pyepics does not update its internal
+        cache of the limits after the first get attempt. We therefore disregard
+        the internal limits of the PV and use the soft limit records
+        exclusively.
+        2. The disable puts field ``.DISP`` is added, along with ``enable`` and
+        ``disable`` convenience methods. When ``.DISP`` is 1, puts to the motor
+        record will be ignored, effectively disabling the interface.
+    """
+    # Reimplemented because pyepics does not recognize when the limits have
+    # been changed without a re-connection of the PV. Instead we trust the soft
+    # limits records
+    user_setpoint = Cpt(EpicsSignal, ".VAL", limits=False)
+    # Additional soft limit configurations
+    low_soft_limit = Cpt(EpicsSignal, ".LLM")
+    high_soft_limit = Cpt(EpicsSignal, ".HLM")
+    # Enable/Disable puts
+    disabled = Cpt(EpicsSignal, ".DISP")
+
+    @property
+    def low_limit(self):
+        """
+        The lower soft limit for the motor.
+        """
+        return self.low_soft_limit.value
+
+    @low_limit.setter
+    def low_limit(self, value):
+        self.low_soft_limit.put(value)
+
+    @property
+    def high_limit(self):
+        """
+        The higher soft limit for the motor.
+        """
+        return self.high_soft_limit.value
+
+    @high_limit.setter
+    def high_limit(self, value):
+        self.high_soft_limit.put(value)
+
+    @property
+    def limits(self):
+        """
+        The soft limits of the motor.
+        """
+        return (self.low_limit, self.high_limit)
+
+    @limits.setter
+    def limits(self, limits):
+        self.low_limit = limits[0]
+        self.high_limit = limits[1]
+
+    def enable(self):
+        """
+        Enables the motor.
+
+        When disabled, all EPICS puts to the base record will be dropped.
+        """
+        return self.disabled.put(value=0)
+
+    def disable(self):
+        """
+        Disables the motor.
+
+        When disabled, all EPICS puts to the base record will be dropped.
+        """
+        return self.disabled.put(value=1)
+
+    def check_value(self, value):
+        """
+        Check if the motor is disabled
+        Check if the value is within the soft limits of the motor.
+
+        Raises
+        ------
+        MotorDisabledError
+            If the motor is passed any motion command when disabled
+        LimitError(ValueError)
+            When the provided value is outside the range of the low
+            and high limits
+        """
+        # First check that the user has returned a valid EPICS value. It will
+        # not consult the limits of the PV itself because limits=False
+        super().check_value(value)
+
+        # Find the soft limit values from EPICS records and check that this
+        # command will be accepted by the motor
+        if any(self.limits):
+            if not (self.low_limit <= value <= self.high_limit):
+                raise LimitError("Value {} outside of range: [{}, {}]"
+                                 .format(value, self.low_limit,
+                                         self.high_limit))
+
+        # Find the value for the disabled attribute
+        if self.disabled.value == 1:
+            raise MotorDisabledError("Motor is not enabled. Motion requests "
+                                     "ignored")
+
+
+class PCDSMotorBase(EpicsMotorInterface):
     """
     EpicsMotor for PCDS
 
@@ -36,128 +147,18 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         this difference, we use the `_pos_changed` callback to keep track of
         which direction we believe the motor to be travelling and store this in
         a simple ``ophyd.Signal``
-        2. Instead of using the limit fields on the setpoint PV, the EPICS
-        motor class has the ``LLM`` and ``HLM`` soft limit fields for
-        convenient usage. Unfortunately, pyepics does not update its internal
-        cache of the limits after the first get attempt. We therefore disregard
-        the internal limits of the PV and use the soft limit records
-        exclusively.
-        3. The ``SPG`` field implements the three states used in the LCLS
+        2. The ``SPG`` field implements the three states used in the LCLS
         motor record.  This is a reduced version of the standard EPICS
         ``SPMG`` field.  Setting to ``STOP``, ``PAUSE`` and ``GO``  will
         respectively stop motor movement, pause a move in progress, or resume
         a paused move.
     """
-    # Reimplemented because pyepics does not recognize when the limits have
-    # been changed without a re-connection of the PV. Instead we trust the soft
-    # limits records
-    user_setpoint = Cpt(EpicsSignal, ".VAL", limits=False)
-    # Additional soft limit configurations
-    low_soft_limit = Cpt(EpicsSignal, ".LLM")
-    high_soft_limit = Cpt(EpicsSignal, ".HLM")
     # Disable missing field that our EPICS motor record lacks
     # This attribute is tracked by the _pos_changed callback
     direction_of_travel = Cpt(Signal)
-    # This attribute will show if the motor is disabled or not
-    disabled = Cpt(EpicsSignal, ".DISP")
     # This attribute changes if the motor is stopped and unable to move 'Stop',
     # paused and ready to resume on Go 'Paused', and to resume a move 'Go'.
     motor_spg = Cpt(EpicsSignal, ".SPG")
-
-    @property
-    def low_limit(self):
-        """
-        Returns the lower soft limit for the motor.
-
-        Returns
-        -------
-        low_limit : float
-            The lower soft limit of the motor.
-        """
-        return self.low_soft_limit.value
-
-    @low_limit.setter
-    def low_limit(self, value):
-        """
-        Sets the low limit for the motor.
-
-        Returns
-        -------
-        status : StatusObject
-            Status object of the set.
-        """
-        return self.low_soft_limit.put(value)
-
-    @property
-    def high_limit(self):
-        """
-        Returns the higher soft limit for the motor.
-
-        Returns
-        -------
-        high_limit : float
-            The higher soft limit of the motor.
-        """
-        return self.high_soft_limit.value
-
-    @high_limit.setter
-    def high_limit(self, value):
-        """
-        Sets the high limit for the motor.
-
-        Returns
-        -------
-        status : StatusObject
-            Status object of the set.
-        """
-        return self.high_soft_limit.put(value)
-
-    @property
-    def limits(self):
-        """
-        Returns the soft limits of the motor.
-
-        Returns
-        -------
-        limits : tuple
-            Soft limits of the motor.
-        """
-        return (self.low_limit, self.high_limit)
-
-    @limits.setter
-    def limits(self, limits):
-        """
-        Sets the limits for the motor.
-
-        Parameters
-        ----------
-        limits : tuple
-            Desired low and high limits.
-        """
-        self.low_limit = limits[0]
-        self.high_limit = limits[1]
-
-    def enable(self):
-        """
-        Sets the motor to enabled.
-
-        Returns
-        -------
-        status: Status Object
-            Status object of the set
-        """
-        return self.disabled.set(value=0)
-
-    def disable(self):
-        """
-        Sets the motor to disabled.
-
-        Returns
-        -------
-        status: Status Object
-            Status object of the set
-        """
-        return self.disabled.set(value=1)
 
     def stop(self):
         """
@@ -200,39 +201,28 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         """
         Check if the motor is disabled
         Check if the value is within the soft limits of the motor.
+        Check if the spg field is on "pause" or "stop"
 
         Raises
         ------
-        Exception
+        MotorDisabledError(MoveForbiddenError)
             If the motor is passed any motion command when disabled
-        ValueError
+        LimitError(ValueError)
             When the provided value is outside the range of the low
             and high limits
+        MotorSPGError(MoveForbiddenError)
+            If the motor is stopped (MotorStopError) or paused
+            (MotorPauseError)
         """
-        # First check that the user has returned a valid EPICS value. It will
-        # not consult the limits of the PV itself because limits=False
         super().check_value(value)
 
-        # Find the value for the disabled attribute
-        if self.disabled.value == 1:
-            raise Exception("Motor is not enabled. Motion requests "
-                            "ignored")
-
         if self.motor_spg.value in [0, 'Stop']:
-            raise Exception("Motor is stopped.  Motion requests "
-                            "ignored until motor is set to 'Go'")
+            raise MotorStopError("Motor is stopped.  Motion requests "
+                                 "ignored until motor is set to 'Go'")
 
         if self.motor_spg.value in [1, 'Pause']:
-            raise Exception("Motor is paused.  If a move is set, motion "
-                            "will resume when motor is set to 'Go'")
-
-        # Find the soft limit values from EPICS records and check that this
-        # command will be accepted by the motor
-        low_limit, high_limit = self.limits
-
-        if not (low_limit <= value <= high_limit):
-            raise LimitError("Value {} outside of range: [{}, {}]"
-                             .format(value, low_limit, high_limit))
+            raise MotorPauseError("Motor is paused.  If a move is set, motion "
+                                  "will resume when motor is set to 'Go'")
 
     def _pos_changed(self, timestamp=None, old_value=None,
                      value=None, **kwargs):
@@ -412,3 +402,64 @@ class PMC100(PCDSMotorBase):
 
     def home(self, *args, **kwargs):
         raise NotImplementedError("PMC100 motors have no homing procedure")
+
+
+class Beckhoff(EpicsMotorInterface):
+    """
+    Beckhoff Axis motor record as implemented by ESS.
+
+    This class simply adds a convenience `clear_error` method, and makes
+    sure to call it on stage.
+    """
+    cmd_err_reset = Cpt(EpicsSignal, '-ErrRst')
+
+    def clear_error(self):
+        """
+        Clear any active motion errors on this axis.
+        """
+        self.cmd_err_reset.put(1)
+
+    def stage(self):
+        """
+        Stage the Beckhoff axis.
+
+        This simply clears any errors. Stage is called at the start of most
+        ``bluesky`` plans.
+        """
+        self.clear_error()
+        return super().stage()
+
+
+class MoveForbiddenError(Exception):
+    """
+    Error that indicates that we are not allowed to move.
+    """
+    pass
+
+
+class MotorDisabledError(MoveForbiddenError):
+    """
+    Error that indicates that we can't move because the DISP field is set to 1.
+    """
+    pass
+
+
+class MotorSPGError(MoveForbiddenError):
+    """
+    Error that indicates that we can't move because the SPG field is not "Go".
+    """
+    pass
+
+
+class MotorStopError(MotorSPGError):
+    """
+    Error that indicates that we can't move because SPG is "Stop".
+    """
+    pass
+
+
+class MotorPauseError(MotorSPGError):
+    """
+    Error that indicates that we can't move because SPG is "Pause"
+    """
+    pass
