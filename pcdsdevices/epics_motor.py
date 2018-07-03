@@ -2,7 +2,6 @@
 Module for LCLS's special motor records.
 """
 import logging
-import time
 from ophyd.device import Component as Cpt
 from ophyd.epics_motor import EpicsMotor
 from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
@@ -244,6 +243,7 @@ class PCDSMotorBase(FltMvInterface, EpicsMotor):
         # Pass information to PositionerBase
         super()._pos_changed(timestamp=timestamp, old_value=old_value,
                              value=value, **kwargs)
+
 
 class IMS(PCDSMotorBase):
     """
