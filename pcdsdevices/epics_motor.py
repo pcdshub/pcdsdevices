@@ -19,7 +19,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     """
     The standard EpicsMotor class, but with our interface attached.
 
-    This includes some pcds preferences, but not any IOC differences.
+    This includes some PCDS preferences, but not any IOC differences.
 
     Notes
     -----
