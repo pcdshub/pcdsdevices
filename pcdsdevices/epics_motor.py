@@ -413,7 +413,7 @@ class PMC100(PCDSMotorBase):
         raise NotImplementedError("PMC100 motors have no homing procedure")
 
 
-class Beckhoff(EpicsMotorInterface):
+class BeckhoffAxis(EpicsMotorInterface):
     """
     Beckhoff Axis motor record as implemented by ESS.
 

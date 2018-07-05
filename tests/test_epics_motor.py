@@ -7,9 +7,8 @@ from ophyd.status import wait as status_wait
 import pytest
 
 from pcdsdevices.epics_motor import (EpicsMotorInterface, PCDSMotorBase, IMS,
-                                     Newport, PMC100, Beckhoff,
-                                     MotorDisabledError, MotorStopError,
-                                     MotorPauseError)
+                                     Newport, PMC100, BeckhoffAxis,
+                                     MotorDisabledError)
 
 from .conftest import HotfixFakeEpicsSignal
 
@@ -60,7 +59,7 @@ def fake_motor(cls):
 
 @pytest.fixture(scope='function',
                 params=[EpicsMotorInterface, PCDSMotorBase, IMS, Newport,
-                        PMC100, Beckhoff])
+                        PMC100, BeckhoffAxis])
 def fake_epics_motor(request):
     """
     Test EpicsMotorInterface and subclasses
@@ -90,7 +89,7 @@ def fake_beckhoff():
     """
     Test Beckhoff-specific overrides
     """
-    return fake_motor(Beckhoff)
+    return fake_motor(BeckhoffAxis)
 
 
 def test_epics_motor_soft_limits(fake_epics_motor):
@@ -169,13 +168,13 @@ def test_resume_pause_stop(fake_pcds_motor):
     m = fake_pcds_motor
     m.stop()
     assert m.motor_spg.get(as_string=True) == 'Stop'
-    with pytest.raises(MotorStopError):
+    with pytest.raises(MotorDisabledError):
         m.check_value(10)
-    with pytest.raises(MotorStopError):
+    with pytest.raises(MotorDisabledError):
         m.move(10, wait=False)
     m.pause()
     assert m.motor_spg.get(as_string=True) == 'Pause'
-    with pytest.raises(MotorPauseError):
+    with pytest.raises(MotorDisabledError):
         m.move(10, wait=False)
     m.go()
     assert m.motor_spg.get(as_string=True) == 'Go'
