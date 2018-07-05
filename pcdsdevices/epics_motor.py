@@ -99,14 +99,18 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     def check_value(self, value):
         """
-        Check if the motor is disabled
-        Check if the value is within the soft limits of the motor.
+        Raise an exception if the motor cannot move to value.
+
+        The full list of checks done in this method:
+
+            - Check if the value is within the soft limits of the motor.
+            - Check if the motor is disabled (``.DISP`` field)
 
         Raises
         ------
-        MotorDisabledError
+        `MotorDisabledError`
             If the motor is passed any motion command when disabled
-        LimitError(ValueError)
+        ``LimitError(ValueError)``
             When the provided value is outside the range of the low
             and high limits
         """
@@ -201,30 +205,33 @@ class PCDSMotorBase(EpicsMotorInterface):
 
     def check_value(self, value):
         """
-        Check if the motor is disabled
-        Check if the value is within the soft limits of the motor.
-        Check if the spg field is on "pause" or "stop"
+        Raise an exception if the motor cannot move to value.
+
+        The full list of checks done in this method:
+
+            - Check if the value is within the soft limits of the motor.
+            - Check if the motor is disabled (``.DISP`` field)`
+            - Check if the spg field is on "pause" or "stop"
 
         Raises
         ------
-        MotorDisabledError(MoveForbiddenError)
-            If the motor is passed any motion command when disabled
-        LimitError(ValueError)
+        `MotorDisabledError`
+            If the motor is passed any motion command when disabled, or if
+            the ``.SPG`` field is not set to ``Go``.
+        ``LimitError(ValueError)``
             When the provided value is outside the range of the low
             and high limits
-        MotorSPGError(MoveForbiddenError)
-            If the motor is stopped (MotorStopError) or paused
-            (MotorPauseError)
         """
         super().check_value(value)
 
         if self.motor_spg.value in [0, 'Stop']:
-            raise MotorStopError("Motor is stopped.  Motion requests "
-                                 "ignored until motor is set to 'Go'")
+            raise MotorDisabledError("Motor is stopped.  Motion requests "
+                                     "ignored until motor is set to 'Go'")
 
         if self.motor_spg.value in [1, 'Pause']:
-            raise MotorPauseError("Motor is paused.  If a move is set, motion "
-                                  "will resume when motor is set to 'Go'")
+            raise MotorDisabledError("Motor is paused.  If a move is set, "
+                                     "motion will resume when motor is set "
+                                     "to 'Go'")
 
     def _pos_changed(self, timestamp=None, old_value=None,
                      value=None, **kwargs):
@@ -434,36 +441,8 @@ class Beckhoff(EpicsMotorInterface):
         return super().stage()
 
 
-class MoveForbiddenError(Exception):
+class MotorDisabledError(Exception):
     """
     Error that indicates that we are not allowed to move.
-    """
-    pass
-
-
-class MotorDisabledError(MoveForbiddenError):
-    """
-    Error that indicates that we can't move because the DISP field is set to 1.
-    """
-    pass
-
-
-class MotorSPGError(MoveForbiddenError):
-    """
-    Error that indicates that we can't move because the SPG field is not "Go".
-    """
-    pass
-
-
-class MotorStopError(MotorSPGError):
-    """
-    Error that indicates that we can't move because SPG is "Stop".
-    """
-    pass
-
-
-class MotorPauseError(MotorSPGError):
-    """
-    Error that indicates that we can't move because SPG is "Pause"
     """
     pass
