@@ -7,6 +7,7 @@ Common EPICS Devices
     :toctree: generated
     
     Attenuator
+    BeckhoffAxis
     EpicsMotor
     EventSequencer
     LODCM

@@ -78,8 +78,8 @@ class MvInterface:
         """
         try:
             while True:
-                time.sleep(0.1)
                 print("\r {0:4f}".format(self.position), end=" ")
+                time.sleep(0.1)
         except KeyboardInterrupt:
             pass
 

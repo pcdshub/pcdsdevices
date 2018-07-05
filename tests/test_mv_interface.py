@@ -1,9 +1,10 @@
 import fcntl
 import logging
 import multiprocessing as mp
-import time
 import threading
+import time
 import os
+import signal
 import shutil
 from pathlib import Path
 
@@ -88,6 +89,18 @@ def test_umv(motor):
     motor._set_position(5)
     motor.umvr(2)
     assert motor.position == 7
+
+
+def test_camonitor(motor):
+    logger.debug('test_camonitor')
+    pid = os.getpid()
+
+    def interrupt():
+        time.sleep(0.1)
+        os.kill(pid, signal.SIGINT)
+
+    threading.Thread(target=interrupt, args=()).start()
+    motor.camonitor()
 
 
 def test_presets_device(presets):
