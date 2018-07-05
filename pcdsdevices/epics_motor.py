@@ -236,7 +236,7 @@ class PCDSMotorBase(EpicsMotorInterface):
     def _pos_changed(self, timestamp=None, old_value=None,
                      value=None, **kwargs):
         # Store the internal travelling direction of the motor to account for
-        # the fact that our EPICS motor does not have DIR field
+        # the fact that our EPICS motor does not have TDIR field
         if None not in (value, old_value):
             self.direction_of_travel.put(int(value > old_value))
         # Pass information to PositionerBase
