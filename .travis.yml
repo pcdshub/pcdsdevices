@@ -35,6 +35,7 @@ script:
   - coverage run run_tests.py
   - coverage report -m
   - flake8 pcdsdevices/*.py
+  - flake8 tests/*.py
   - set -e
   #Build docs
   - |

@@ -74,6 +74,17 @@ class MvInterface:
         else:
             self.mv(position, timeout=timeout, wait=wait)
 
+    def camonitor(self):
+        """
+        Updates current position of the motor.
+        """
+        try:
+            while True:
+                print("\r {0:4f}".format(self.position), end=" ")
+                time.sleep(0.1)
+        except KeyboardInterrupt:
+            pass
+
 
 class FltMvInterface(MvInterface):
     """
