@@ -6,11 +6,10 @@ import fcntl
 import logging
 import numbers
 import signal
-import pylab
-from pylab import plot, ginput, show, axis
 from contextlib import contextmanager
 from pathlib import Path
 from types import SimpleNamespace, MethodType
+from pylab import ginput
 
 import yaml
 
@@ -147,24 +146,25 @@ class FltMvInterface(MvInterface):
         """
         self.umv(delta + self.wm(), timeout=timeout)
 
-    def mv_ginput(self, timeout=None):
+    def mv_ginput(self, timeout=None, wait=True):
         """
         Moves to a location the user clicks on.
         """
         print("Select new motor x-position in current plot by mouseclick")
         if not pylab.get_fignums():
-            upperLimit = 0
-            lowerLimit = self.limits[0]
+            upper_limit = 0
+            lower_limit = self.limits[0]
             if self.limits[1] == 0:
-                 upperLimit = 100
+                upper_limit = 100
             else:
-                 uppderLimit = self.limits[1]
-            limitPlotter = []
-            for x in range(lowerLimit,upperLimit):
-                limitPlotter.append(x)
-            pylab.plot(limitPlotter)
-        pos = ginput(1)[0][0]
-        self.move(pos, timeout=timeout, wait=True)
+                upper_limit = self.limits[1]
+            limit_plot = []
+            for x in range(lower_limit, upper_limit):
+                limit_plot.append(x)
+            pylab.plot(limit_plot)
+        pos = pylab.ginput(1)[0][0]
+        self.move(pos, timeout=timeout, wait=wait)
+
 
 def setup_preset_paths(**paths):
     """
@@ -633,3 +633,4 @@ class PresetPosition:
 
     def __repr__(self):
         return str(self.pos)
+
