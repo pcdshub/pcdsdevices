@@ -57,8 +57,8 @@ class TwoMotor(Device):
     x = Cpt(Motor)
     y = Cpt(Motor)
 
-    def tweak(self):
-        return tweak_2d(self.x, self.y)
+    # def tweak(self):
+    #     return tweak_2d(self.x, self.y)
 
 
 class DeviceTest(FltMvInterface, Device):
