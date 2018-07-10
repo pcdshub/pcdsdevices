@@ -22,4 +22,5 @@ Common EPICS Devices
     PointingMirror
     Slits
     Stopper
+    Trigger
     XFLS
