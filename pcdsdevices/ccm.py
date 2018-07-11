@@ -1,3 +1,4 @@
+import logging
 import time
 
 import numpy as np
@@ -10,6 +11,7 @@ from .epics_motor import IMS
 from .inout import InOutPositioner
 from .pseudopos import SyncAxesBase
 
+logger = logging.getLogger(__name__)
 
 # Constants
 si_111_dspacing = 3.1356011499587773
@@ -114,7 +116,7 @@ class CCMCalc(PseudoPositioner):
 
     def __init__(self, *args, theta0=default_theta0, dspacing=default_dspacing,
                  gr=default_gr, gd=default_gd, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, auto_target=False, **kwargs)
         self.theta0 = theta0
         self.dspacing = dspacing
         self.gr = gr
@@ -135,6 +137,7 @@ class CCMCalc(PseudoPositioner):
             theta = pseudo_pos.theta*np.pi/180
         else:
             alio = self.alio.position
+        logger.debug((energy, wavelength, theta))
         if energy is not None:
             wavelength = energy_to_wavelength(energy)
         if wavelength is not None:
