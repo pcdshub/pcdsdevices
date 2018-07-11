@@ -66,6 +66,7 @@ def test_ccm_calc(fake_ccm):
     logger.debug('test_ccm_calc')
     calc = fake_ccm.calc
 
+    assert calc.alio.position == SAMPLE_ALIO
     theta = calc.theta.position
     theta_func = ccm.alio_to_theta(SAMPLE_ALIO, calc.theta0, calc.gr, calc.gd)
     assert theta == theta_func
@@ -80,7 +81,7 @@ def test_ccm_calc(fake_ccm):
 
     calc.alio.readback.sim_put(0)
     calc.alio.setpoint.sim_put(0)
-    calc.move(energy, wait=True)
+    calc.move(energy, wait=False)
 
     assert calc.alio.setpoint.get() == SAMPLE_ALIO
 
