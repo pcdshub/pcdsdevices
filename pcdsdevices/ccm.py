@@ -224,6 +224,6 @@ class CCM(InOutPositioner):
     @_state.setter
     def _state(self, value):
         if value == 1:
-            self.x.move(self._inpos)
+            self.x.move(self._inpos, wait=False)
         elif value == 2:
-            self.x.move(self._outpos)
+            self.x.move(self._outpos, wait=False)

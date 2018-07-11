@@ -48,13 +48,16 @@ def fake_ccm():
                        name='fake_ccm')
     fake_ccm.calc.alio.readback.sim_put(SAMPLE_ALIO)
     fake_ccm.calc.alio.setpoint.sim_put(SAMPLE_ALIO)
-    fake_ccm.x.down.user_readback.sim_put(0)
-    fake_ccm.x.up.user_readback.sim_put(0)
-    fake_ccm.x.down.user_setpoint.sim_put(0)
-    fake_ccm.x.up.user_setpoint.sim_put(0)
-    fake_ccm.y.down.user_setpoint.sim_put(0)
-    fake_ccm.y.up_north.user_setpoint.sim_put(0)
-    fake_ccm.y.up_south.user_setpoint.sim_put(0)
+
+    def init_pos(mot, pos=0):
+        mot.user_readback.sim_put(0)
+        mot.user_setpoint.sim_put(0)
+
+    init_pos(fake_ccm.x.down)
+    init_pos(fake_ccm.x.up)
+    init_pos(fake_ccm.y.down)
+    init_pos(fake_ccm.y.up_north)
+    init_pos(fake_ccm.y.up_south)
     return fake_ccm
 
 
@@ -83,8 +86,9 @@ def test_ccm_calc(fake_ccm):
 
 
 # Make sure sync'd axes work and that unk/in/out states work
+@pytest.mark.timeout(5)
 def test_ccm_main(fake_ccm):
-    fake_ccm.y.move(5)
+    fake_ccm.y.move(5, wait=False)
     assert fake_ccm.y.down.user_setpoint.get() == 5
     assert fake_ccm.y.up_north.user_setpoint.get() == 5
     assert fake_ccm.y.up_south.user_setpoint.get() == 5
@@ -105,10 +109,10 @@ def test_ccm_main(fake_ccm):
     assert not fake_ccm.removed
     assert not fake_ccm.inserted
 
-    fake_ccm.insert()
+    fake_ccm.insert(wait=False)
     assert fake_ccm.x.down.user_setpoint.get() == 8
     assert fake_ccm.x.up.user_setpoint.get() == 8
 
-    fake_ccm.remove()
+    fake_ccm.remove(wait=False)
     assert fake_ccm.x.down.user_setpoint.get() == 0
     assert fake_ccm.x.up.user_setpoint.get() == 0
