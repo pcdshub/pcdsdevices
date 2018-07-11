@@ -172,8 +172,8 @@ class CCMY(SyncAxesBase):
     Combined motion of the CCM Y motors
     """
     down = FCpt(IMS, '{self._down}')
-    up_north = FCpt(IMS, '{self._up_north')
-    up_south = FCpt(IMS, '{self._up_south')
+    up_north = FCpt(IMS, '{self._up_north}')
+    up_south = FCpt(IMS, '{self._up_south}')
 
     def __init__(self, *args, parent, **kwargs):
         self._down = parent._y_down_prefix
