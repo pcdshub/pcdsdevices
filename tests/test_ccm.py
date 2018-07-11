@@ -72,7 +72,7 @@ def test_ccm_calc(fake_ccm):
 
     theta = calc.theta.position
     theta_func = ccm.alio_to_theta(SAMPLE_ALIO, calc.theta0, calc.gr, calc.gd)
-    assert theta == theta_func
+    assert theta == theta_func * 180 / np.pi
 
     wavelength = calc.wavelength.position
     wavelength_func = ccm.theta_to_wavelength(theta, calc.dspacing)
