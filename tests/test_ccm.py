@@ -17,16 +17,18 @@ SAMPLE_WAVELENGTH = 10  # xray
 # Make sure the calcs are properly inverted
 def test_theta_alio_inversion():
     logger.debug('test_theta_alio_inversion')
-    theta = ccm.alio_to_theta(SAMPLE_ALIO, ccm.theta0, ccm.gr, ccm.gd)
-    alio_calc = ccm.theta_to_alio(theta, ccm.theta0, ccm.gr, ccm.gd)
+    theta = ccm.alio_to_theta(SAMPLE_ALIO, ccm.default_theta0, ccm.default_gr,
+                              ccm.default_gd)
+    alio_calc = ccm.theta_to_alio(theta, ccm.default_theta0, ccm.default_gr,
+                                  ccm.default_gd)
     # Unlike the other inversions, this is just an approximation
     assert np.isclose(alio_calc, SAMPLE_ALIO)
 
 
 def test_wavelength_theta_inversion():
     logger.debug('test_wavelength_theta_inversion')
-    wavelength = ccm.wavelength_to_theta(SAMPLE_THETA, ccm.dspacing)
-    theta_calc = ccm.theta_to_wavelength(wavelength, ccm.dspacing)
+    wavelength = ccm.wavelength_to_theta(SAMPLE_THETA, ccm.default_dspacing)
+    theta_calc = ccm.theta_to_wavelength(wavelength, ccm.default_dspacing)
     assert theta_calc == SAMPLE_THETA
 
 
