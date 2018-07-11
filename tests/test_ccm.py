@@ -55,6 +55,7 @@ def fake_ccm():
     fake_ccm.y.down.user_setpoint.sim_put(0)
     fake_ccm.y.up_north.user_setpoint.sim_put(0)
     fake_ccm.y.up_south.user_setpoint.sim_put(0)
+    return fake_ccm
 
 
 # Make sure we set up the forward/inverse to use the right methods
