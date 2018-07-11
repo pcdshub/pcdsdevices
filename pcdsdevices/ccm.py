@@ -11,24 +11,26 @@ from .inout import InOutPositioner
 from .pseudopos import SyncAxesBase
 
 
-# Default constants copied verbatim from old python
-gTheta0 = 14.9792 * np.pi/180
-gSi111dspacing = 3.1356011499587773
-gSi511dspacing = 1.0452003833195924
-gdspacing = gSi111dspacing
-gR = 3.175
-gD = 231.303
+# Constants
+si_111_dspacing = 3.1356011499587773
+si_511_dspacing = 1.0452003833195924
+
+# Defaults
+default_theta0 = 14.9792 * np.pi/180
+default_dspacing = si_111_dspacing
+default_gr = 3.175
+default_gd = 231.303
 
 
 # Calculations between alio position and energy, with all intermediates.
-def theta_to_alio(theta, gTheta0, gR, gD):
+def theta_to_alio(theta, theta0, gr, gd):
     """
     Converts theta angle (rad) to alio position (mm)
     """
-    return gR * (1/np.cos(theta)-1) + gD * np.tan(theta - gTheta0)
+    return gr * (1/np.cos(theta)-1) + gd * np.tan(theta - theta0)
 
 
-def alio_to_theta(alio, gTheta0, gR, gD):
+def alio_to_theta(alio, theta0, gr, gd):
     """
     Converts alio position (mm) to theta angle (rad)
     """
@@ -38,7 +40,7 @@ def alio_to_theta(alio, gTheta0, gR, gD):
     start = time.time()
     while time.time() - start < timeout:
         theta_guess = (low+high)/2
-        alio_calc = theta_to_alio(theta_guess, gTheta0, gR, gD)
+        alio_calc = theta_to_alio(theta_guess, theta0, gr, gd)
         if np.isclose(alio, alio_calc):
             break
         elif alio_calc > alio:
@@ -48,18 +50,18 @@ def alio_to_theta(alio, gTheta0, gR, gD):
     return theta_guess
 
 
-def wavelength_to_theta(wavelength, gdspacing):
+def wavelength_to_theta(wavelength, dspacing):
     """
     Converts wavelength (A) to theta angle (rad)
     """
-    return np.arcsin(wavelength/2/gdspacing)
+    return np.arcsin(wavelength/2/dspacing)
 
 
-def theta_to_wavelength(theta, gdspacing):
+def theta_to_wavelength(theta, dspacing):
     """
     Converts theta angle (rad) to wavelength (A)
     """
-    return 2*gdspacing*np.sin(theta)
+    return 2*dspacing*np.sin(theta)
 
 
 def energy_to_wavelength(energy):
@@ -97,13 +99,13 @@ class CCMCalc(PseudoPositioner):
     theta = Cpt(PseudoSingle, egu='deg')
     alio = Cpt(CCMMotor)
 
-    def __init__(self, *args, gTheta0=gTheta0, gdspacing=gdspacing,
-                 gR=gR, gD=gD, **kwargs):
+    def __init__(self, *args, theta0=default_theta0, dspacing=default_dspacing,
+                 gr=default_gr, gd=default_gd, **kwargs):
         super().__init__(*args, **kwargs)
-        self.gTheta0 = gTheta0
-        self.gdspacing = gdspacing
-        self.gR = gR
-        self.gD = gD
+        self.theta0 = theta0
+        self.dspacing = dspacing
+        self.gr = gr
+        self.gd = gd
 
     def forward(self, pseudo_pos):
         """
@@ -123,9 +125,9 @@ class CCMCalc(PseudoPositioner):
         if energy is not None:
             wavelength = energy_to_wavelength(energy)
         if wavelength is not None:
-            theta = wavelength_to_theta(wavelength, self.gdspacing)
+            theta = wavelength_to_theta(wavelength, self.dspacing)
         if theta is not None:
-            alio = theta_to_alio(theta, self.gTheta0, self.gR, self.gD)
+            alio = theta_to_alio(theta, self.theta0, self.gr, self.gd)
         return self.RealPosition(alio=alio)
 
     def inverse(self, real_pos):
@@ -133,8 +135,8 @@ class CCMCalc(PseudoPositioner):
         Take alio and map to energy, wavelength, and theta
         """
         real_pos = self.RealPosition(*real_pos)
-        theta = alio_to_theta(real_pos.alio, self.gTheta0, self.gR, self.gD)
-        wavelength = theta_to_wavelength(theta, self.gdspacing)
+        theta = alio_to_theta(real_pos.alio, self.theta0, self.gr, self.gd)
+        wavelength = theta_to_wavelength(theta, self.dspacing)
         energy = wavelength_to_energy(wavelength)
         return self.PseudoPosition(energy=energy,
                                    wavelength=wavelength,
