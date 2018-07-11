@@ -127,7 +127,7 @@ class CCMCalc(PseudoPositioner):
         energy, wavelength, theta = None, None, None
         if pseudo_pos.energy != self.energy.position:
             energy = pseudo_pos.energy
-        elif pseudo_pos.wavelenth != self.wavelength.position:
+        elif pseudo_pos.wavelength != self.wavelength.position:
             wavelength = pseudo_pos.wavelength
         elif pseudo_pos.theta*np.pi/180 != self.theta.position:
             theta = pseudo_pos.theta*np.pi/180
