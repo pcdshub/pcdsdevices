@@ -96,6 +96,8 @@ class CCMMotor(PVPositionerPC):
     setpoint = Cpt(EpicsSignal, ":POSITIONSET")
     readback = Cpt(EpicsSignalRO, ":POSITIONGET")
 
+    limits = None
+
 
 class CCMCalc(PseudoPositioner):
     """
