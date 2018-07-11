@@ -33,6 +33,13 @@ def theta_to_alio(theta, theta0, gr, gd):
 def alio_to_theta(alio, theta0, gr, gd):
     """
     Converts alio position (mm) to theta angle (rad)
+
+    This is an empirical inversion via binary search. If you decide to spend
+    time trying to find the analytic solution here, please update this
+    docstring, either to indicate your success or to increment the hours
+    counter below.
+
+    total hours spent here: 2
     """
     low = -1.0
     high = 1.0
@@ -93,6 +100,10 @@ class CCMMotor(PVPositionerPC):
 class CCMCalc(PseudoPositioner):
     """
     CCM calculation motors to move in terms of physics quantities
+
+    All new parameters are scientific constants, and the current docstring
+    writer is not familiar with all of them, so I will omit the full
+    description instead of giving a partial and possibly incorrect summary.
     """
     energy = Cpt(PseudoSingle, egu='keV', kind='hinted')
     wavelength = Cpt(PseudoSingle, egu='A')
@@ -173,6 +184,12 @@ class CCMY(SyncAxesBase):
 
 # Main Class
 class CCM(InOutPositioner):
+    """
+    The full CCM assembly.
+
+    This requires a huge number of motor pv prefixes to be passed in, and they
+    are all labelled accordingly.
+    """
     calc = FCpt(CCMCalc, "{self._alio_prefix}", kind='hinted')
     theta2fine = FCpt(CCMMotor, "{self._th2f_prefix}")
     x = Cpt(CCMX)
