@@ -102,13 +102,16 @@ def test_ccm_calc(fake_ccm):
     calc.move(theta=theta, wait=False)
     assert np.isclose(calc.alio.setpoint.get(), SAMPLE_ALIO)
 
-    calc.move(energy=energy, wavelength=wavelength, theta=theta, wait=False)
+    calc.alio.readback.sim_put(calc.alio.setpoint.get())
+    calc.move(energy=calc.energy.position, wavelength=calc.wavelength.position,
+              theta=calc.theta.position, wait=False)
     assert np.isclose(calc.alio.setpoint.get(), SAMPLE_ALIO)
 
 
 # Make sure sync'd axes work and that unk/in/out states work
 @pytest.mark.timeout(5)
 def test_ccm_main(fake_ccm):
+    logger.debug('test_ccm_main')
     fake_ccm.y.move(5, wait=False)
     assert fake_ccm.y.down.user_setpoint.get() == 5
     assert fake_ccm.y.up_north.user_setpoint.get() == 5

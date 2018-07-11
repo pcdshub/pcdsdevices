@@ -129,21 +129,22 @@ class CCMCalc(PseudoPositioner):
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         # Figure out which one changed.
         energy, wavelength, theta = None, None, None
-        if pseudo_pos.energy != self.energy.position:
+        if not np.isclose(pseudo_pos.energy, self.energy.position):
             energy = pseudo_pos.energy
-        elif pseudo_pos.wavelength != self.wavelength.position:
+        elif not np.isclose(pseudo_pos.wavelength, self.wavelength.position):
             wavelength = pseudo_pos.wavelength
-        elif pseudo_pos.theta*np.pi/180 != self.theta.position:
-            theta = pseudo_pos.theta*np.pi/180
+        elif not np.isclose(pseudo_pos.theta, self.theta.position):
+            theta = pseudo_pos.theta
         else:
             alio = self.alio.position
         logger.debug((energy, wavelength, theta))
         if energy is not None:
             wavelength = energy_to_wavelength(energy)
         if wavelength is not None:
-            theta = wavelength_to_theta(wavelength, self.dspacing)
+            theta = wavelength_to_theta(wavelength, self.dspacing) * 180/np.pi
         if theta is not None:
-            alio = theta_to_alio(theta, self.theta0, self.gr, self.gd)
+            alio = theta_to_alio(theta * np.pi/180, self.theta0,
+                                 self.gr, self.gd)
         return self.RealPosition(alio=alio)
 
     def inverse(self, real_pos):
