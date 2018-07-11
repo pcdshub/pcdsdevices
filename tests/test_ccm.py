@@ -90,7 +90,19 @@ def test_ccm_calc(fake_ccm):
     calc.alio.readback.sim_put(0)
     calc.alio.setpoint.sim_put(0)
     calc.move(energy, wait=False)
+    assert np.isclose(calc.alio.setpoint.get(), SAMPLE_ALIO)
 
+    calc.alio.readback.sim_put(0)
+    calc.alio.setpoint.sim_put(0)
+    calc.move(wavelength=wavelength, wait=False)
+    assert np.isclose(calc.alio.setpoint.get(), SAMPLE_ALIO)
+
+    calc.alio.readback.sim_put(0)
+    calc.alio.setpoint.sim_put(0)
+    calc.move(theta=theta, wait=False)
+    assert np.isclose(calc.alio.setpoint.get(), SAMPLE_ALIO)
+
+    calc.move(energy=energy, wavelength=wavelength, theta=theta, wait=False)
     assert np.isclose(calc.alio.setpoint.get(), SAMPLE_ALIO)
 
 
