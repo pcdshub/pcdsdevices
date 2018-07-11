@@ -8,7 +8,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, AttributeSignal
 
 from .epics_motor import IMS
 from .inout import InOutPositioner
-from .pseudopos import SyncAxes
+from .pseudopos import SyncAxesBase
 
 
 # Default constants copied verbatim from old python
@@ -89,7 +89,10 @@ class CCMMotor(PVPositionerPC):
 
 
 class CCMCalc(PseudoPositioner):
-    energy = Cpt(PseudoSingle, egu='keV')
+    """
+    CCM calculation motors to move in terms of physics quantities
+    """
+    energy = Cpt(PseudoSingle, egu='keV', kind='hinted')
     wavelength = Cpt(PseudoSingle, egu='A')
     theta = Cpt(PseudoSingle, egu='deg')
     alio = Cpt(CCMMotor)
@@ -138,19 +141,41 @@ class CCMCalc(PseudoPositioner):
                                    theta=theta*180/np.pi)
 
 
+class CCMX(SyncAxesBase):
+    """
+    Combined motion of the CCM X motors
+    """
+    down = FCpt(IMS, '{self._down}')
+    up = FCpt(IMS, '{self._up}')
+
+    def __init__(self, *args, parent, **kwargs):
+        self._down = parent._x_down_prefix
+        self._up = parent._x_up_prefix
+        super().__init__(*args, parent=parent, **kwargs)
+
+
+class CCMY(SyncAxesBase):
+    """
+    Combined motion of the CCM Y motors
+    """
+    down = FCpt(IMS, '{self._down}')
+    up_north = FCpt(IMS, '{self._up_north')
+    up_south = FCpt(IMS, '{self._up_south')
+
+    def __init__(self, *args, parent, **kwargs):
+        self._down = parent._y_down_prefix
+        self._up_north = parent._y_up_north_prefix
+        self._up_south = parent._y_up_south_prefix
+        super().__init__(*args, parent=parent, **kwargs)
+
+
 # Main Class
 class CCM(InOutPositioner):
-    x = Cpt(SyncAxes,
-            down=FCpt(IMS, '{self.parent._x_down_prefix}'),
-            up=FCpt(IMS, '{self.parent._x_up_prefix}'))
-    y = Cpt(SyncAxes,
-            down=FCpt(IMS, '{self.parent._y_down_prefix}'),
-            up_north=FCpt(IMS, '{self.parent._y_up_north_prefix}'),
-            up_south=FCpt(IMS, '{self.parent._y_up_south_prefix}'))
-    calc = FCpt(CCMCalc, "{self._alio_prefix}")
+    calc = FCpt(CCMCalc, "{self._alio_prefix}", kind='hinted')
     theta2fine = FCpt(CCMMotor, "{self._th2f_prefix}")
-
-    state = Cpt(AttributeSignal, '_state')
+    x = Cpt(CCMX)
+    y = Cpt(CCMY)
+    state = Cpt(AttributeSignal, '_state', kind='hinted')
 
     # Placeholder value. This represents "not full transmission".
     _transmission = {'IN': 0.9}
