@@ -66,7 +66,10 @@ def test_ccm_calc(fake_ccm):
     logger.debug('test_ccm_calc')
     calc = fake_ccm.calc
 
-    assert calc.alio.position == SAMPLE_ALIO
+    logger.debug('physics pos is %s', calc.position)
+    logger.debug('real pos is %s', calc.real_position)
+    logger.debug('sample alio is %s', SAMPLE_ALIO)
+
     theta = calc.theta.position
     theta_func = ccm.alio_to_theta(SAMPLE_ALIO, calc.theta0, calc.gr, calc.gd)
     assert theta == theta_func
