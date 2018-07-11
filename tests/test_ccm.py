@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 SAMPLE_ALIO = 4.575  # Current value as of writing this file
 SAMPLE_THETA = 1.2  # Modest angle
-SAMPLE_WAVELENGTH = 10  # xray
+SAMPLE_WAVELENGTH = 1.5  # hard xray
 
 
 # Make sure the calcs are properly inverted
@@ -27,9 +27,14 @@ def test_theta_alio_inversion():
 
 def test_wavelength_theta_inversion():
     logger.debug('test_wavelength_theta_inversion')
-    wavelength = ccm.wavelength_to_theta(SAMPLE_THETA, ccm.default_dspacing)
-    theta_calc = ccm.theta_to_wavelength(wavelength, ccm.default_dspacing)
-    assert theta_calc == SAMPLE_THETA
+    wavelength = ccm.theta_to_wavelength(SAMPLE_THETA, ccm.default_dspacing)
+    theta = ccm.wavelength_to_theta(wavelength, ccm.default_dspacing)
+    logger.debug('%s, %s', wavelength, theta)
+    assert np.isclose(theta, SAMPLE_THETA)
+    theta = ccm.wavelength_to_theta(SAMPLE_WAVELENGTH, ccm.default_dspacing)
+    wavelength = ccm.theta_to_wavelength(theta, ccm.default_dspacing)
+    logger.debug('%s, %s', wavelength, theta)
+    assert np.isclose(wavelength, SAMPLE_WAVELENGTH)
 
 
 def test_energy_wavelength_inversion():
@@ -72,21 +77,21 @@ def test_ccm_calc(fake_ccm):
 
     theta = calc.theta.position
     theta_func = ccm.alio_to_theta(SAMPLE_ALIO, calc.theta0, calc.gr, calc.gd)
-    assert theta == theta_func * 180 / np.pi
+    assert theta == theta_func * 180/np.pi
 
     wavelength = calc.wavelength.position
-    wavelength_func = ccm.theta_to_wavelength(theta, calc.dspacing)
+    wavelength_func = ccm.theta_to_wavelength(theta * np.pi/180, calc.dspacing)
     assert wavelength == wavelength_func
 
     energy = calc.energy.position
-    energy_func = ccm.wavelength_to_energy(energy)
+    energy_func = ccm.wavelength_to_energy(wavelength)
     assert energy == energy_func
 
     calc.alio.readback.sim_put(0)
     calc.alio.setpoint.sim_put(0)
     calc.move(energy, wait=False)
 
-    assert calc.alio.setpoint.get() == SAMPLE_ALIO
+    assert np.isclose(calc.alio.setpoint.get(), SAMPLE_ALIO)
 
 
 # Make sure sync'd axes work and that unk/in/out states work
