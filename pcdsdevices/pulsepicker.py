@@ -22,15 +22,15 @@ class PulsePicker(InOutPVStatePositioner):
     """
     __doc__ += basic_positioner_init
 
-    blade = Cpt(EpicsSignalRO, ':READ_DF')
-    mode = Cpt(EpicsSignalRO, ':SD_SIMPLE')
+    blade = Cpt(EpicsSignalRO, ':READ_DF', kind='normal')
+    mode = Cpt(EpicsSignalRO, ':SD_SIMPLE', kind='config')
 
-    cmd_reset = Cpt(EpicsSignal, ':RESET_PG')
-    cmd_open = Cpt(EpicsSignal, ':S_OPEN')
-    cmd_close = Cpt(EpicsSignal, ':S_CLOSE')
-    cmd_flipflop = Cpt(EpicsSignal, ':RUN_FLIPFLOP')
-    cmd_burst = Cpt(EpicsSignal, ':RUN_BURSTMODE')
-    cmd_follower = Cpt(EpicsSignal, ':RUN_FOLLOWERMODE')
+    cmd_reset = Cpt(EpicsSignal, ':RESET_PG', kind='omitted')
+    cmd_open = Cpt(EpicsSignal, ':S_OPEN', kind='omitted')
+    cmd_close = Cpt(EpicsSignal, ':S_CLOSE', kind='omitted')
+    cmd_flipflop = Cpt(EpicsSignal, ':RUN_FLIPFLOP', kind='omitted')
+    cmd_burst = Cpt(EpicsSignal, ':RUN_BURSTMODE', kind='omitted')
+    cmd_follower = Cpt(EpicsSignal, ':RUN_FOLLOWERMODE', kind='omitted')
 
     states_list = ['OPEN', 'CLOSED']
     in_states = ['CLOSED']
@@ -39,8 +39,6 @@ class PulsePicker(InOutPVStatePositioner):
     _state_logic = {'blade': {0: 'OPEN',
                               1: 'CLOSED',
                               2: 'CLOSED'}}
-
-    _default_config_attrs = ['mode']
 
     def _do_move(self, state):
         """
@@ -173,7 +171,7 @@ class PulsePickerInOut(PulsePicker):
     """
     __doc__ += basic_positioner_init
 
-    inout = FCpt(InOutRecordPositioner, '{self._inout}')
+    inout = FCpt(InOutRecordPositioner, '{self._inout}', kind='normal')
 
     states_list = ['OUT', 'OPEN', 'CLOSED']
     out_states = ['OUT', 'OPEN']
