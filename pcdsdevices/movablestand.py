@@ -16,8 +16,8 @@ class MovableStand(InOutPVStatePositioner):
 
     name: ``str``, required keyword
     """
-    in_limit = Cmp(EpicsSignalRO, ':IN_DI')
-    out_limit = Cmp(EpicsSignalRO, ':OUT_DO')
+    in_limit = Cmp(EpicsSignalRO, ':IN_DI', kind='normal')
+    out_limit = Cmp(EpicsSignalRO, ':OUT_DO', kind='normal')
 
     _state_logic = {"in_limit": {0: "defer",
                                  1: "IN"},

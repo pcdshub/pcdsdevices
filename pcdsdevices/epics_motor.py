@@ -40,12 +40,12 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     # Reimplemented because pyepics does not recognize when the limits have
     # been changed without a re-connection of the PV. Instead we trust the soft
     # limits records
-    user_setpoint = Cpt(EpicsSignal, ".VAL", limits=False)
+    user_setpoint = Cpt(EpicsSignal, ".VAL", limits=False, kind='normal')
     # Additional soft limit configurations
-    low_soft_limit = Cpt(EpicsSignal, ".LLM")
-    high_soft_limit = Cpt(EpicsSignal, ".HLM")
+    low_soft_limit = Cpt(EpicsSignal, ".LLM", kind='omitted')
+    high_soft_limit = Cpt(EpicsSignal, ".HLM", kind='omitted')
     # Enable/Disable puts
-    disabled = Cpt(EpicsSignal, ".DISP")
+    disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
 
     @property
     def low_limit(self):
@@ -161,10 +161,10 @@ class PCDSMotorBase(EpicsMotorInterface):
     """
     # Disable missing field that our EPICS motor record lacks
     # This attribute is tracked by the _pos_changed callback
-    direction_of_travel = Cpt(Signal)
+    direction_of_travel = Cpt(Signal, kind='omitted')
     # This attribute changes if the motor is stopped and unable to move 'Stop',
     # paused and ready to resume on Go 'Paused', and to resume a move 'Go'.
-    motor_spg = Cpt(EpicsSignal, ".SPG")
+    motor_spg = Cpt(EpicsSignal, ".SPG", kind='omitted')
 
     def stop(self):
         """
@@ -260,16 +260,16 @@ class IMS(PCDSMotorBase):
                             'readback': 15,
                             'mask': 0x7f}}
     # Custom IMS bit fields
-    reinit_command = Cpt(EpicsSignal, '.RINI')
-    bit_status = Cpt(EpicsSignalRO, '.MSTA')
-    seq_seln = Cpt(EpicsSignal, ':SEQ_SELN')
-    error_severity = Cpt(EpicsSignal, '.SEVR')
-    part_number = Cpt(EpicsSignalRO, '.PN')
+    reinit_command = Cpt(EpicsSignal, '.RINI', kind='omitted')
+    bit_status = Cpt(EpicsSignalRO, '.MSTA', kind='omitted')
+    seq_seln = Cpt(EpicsSignal, ':SEQ_SELN', kind='omitted')
+    error_severity = Cpt(EpicsSignal, '.SEVR', kind='omitted')
+    part_number = Cpt(EpicsSignalRO, '.PN', kind='omitted')
 
     # IMS velocity has limits
-    velocity = Cpt(EpicsSignal, '.VELO', limits=True)
-    velocity_base = Cpt(EpicsSignal, '.VBAS')
-    velocity_max = Cpt(EpicsSignal, '.VMAX')
+    velocity = Cpt(EpicsSignal, '.VELO', limits=True, kind='config')
+    velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
+    velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
 
     def stage(self):
         """
@@ -385,9 +385,9 @@ class Newport(PCDSMotorBase):
     """
     __doc__ += basic_positioner_init
 
-    offset_freeze_switch = Cpt(Signal)
-    home_forward = Cpt(Signal)
-    home_reverse = Cpt(Signal)
+    offset_freeze_switch = Cpt(Signal, kind='omitted')
+    home_forward = Cpt(Signal, kind='omitted')
+    home_reverse = Cpt(Signal, kind='omitted')
 
     def home(self, *args, **kwargs):
         # This function should eventually be used. There is a way to home
@@ -406,8 +406,8 @@ class PMC100(PCDSMotorBase):
     """
     __doc__ += basic_positioner_init
 
-    home_forward = Cpt(Signal)
-    home_reverse = Cpt(Signal)
+    home_forward = Cpt(Signal, kind='omitted')
+    home_reverse = Cpt(Signal, kind='omitted')
 
     def home(self, *args, **kwargs):
         raise NotImplementedError("PMC100 motors have no homing procedure")
@@ -422,7 +422,7 @@ class BeckhoffAxis(EpicsMotorInterface):
     """
     __doc__ += basic_positioner_init
 
-    cmd_err_reset = Cpt(EpicsSignal, '-ErrRst')
+    cmd_err_reset = Cpt(EpicsSignal, '-ErrRst', kind='omitted')
 
     def clear_error(self):
         """

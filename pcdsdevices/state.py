@@ -62,8 +62,6 @@ class StatePositioner(Device, PositionerBase, MvInterface):
     SUB_STATE = 'state'
     _default_sub = SUB_STATE
 
-    _default_read_attrs = ['state']
-
     egu = 'state'
 
     def __init__(self, prefix, *, name, **kwargs):
@@ -176,10 +174,6 @@ class StatePositioner(Device, PositionerBase, MvInterface):
             return alias
         except KeyError:
             return state
-
-    @property
-    def hints(self):
-        return {'fields': [self.state.name]}
 
     def check_value(self, value):
         """
@@ -350,7 +344,7 @@ class PVStatePositioner(StatePositioner):
     """
     __doc__ = __doc__ % basic_positioner_init
 
-    state = Cpt(PVStateSignal)
+    state = Cpt(PVStateSignal, kind='hinted')
 
     _state_logic = {}
     _state_logic_mode = 'ALL'
@@ -377,10 +371,9 @@ class StateRecordPositioner(StatePositioner):
     The `states_list` must match the EPICS PVs for adjusting the states
     settings, in the same order as the state enum. Unknown must be omitted.
     """
-    state = Cpt(EpicsSignal, '', write_pv=':GO')
-    readback = FCpt(EpicsSignalRO, '{self.prefix}:{self._readback}')
-
-    _default_read_attrs = ['state', 'readback']
+    state = Cpt(EpicsSignal, '', write_pv=':GO', kind='hinted')
+    readback = FCpt(EpicsSignalRO, '{self.prefix}:{self._readback}',
+                    kind='normal')
 
     def __init__(self, prefix, *, name, **kwargs):
         some_state = self.states_list[0]

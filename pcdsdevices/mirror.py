@@ -26,17 +26,17 @@ class OMMotor(FltMvInterface, PVPositioner):
     __doc__ += basic_positioner_init
 
     # position
-    readback = C(EpicsSignalRO, ':RBV', auto_monitor=True)
-    setpoint = C(EpicsSignal, ':VAL', limits=True)
-    done = C(EpicsSignalRO, ':DMOV', auto_monitor=True)
-    motor_egu = C(EpicsSignal, ':RBV.EGU')
+    readback = C(EpicsSignalRO, ':RBV', auto_monitor=True, kind='hinted')
+    setpoint = C(EpicsSignal, ':VAL', limits=True, kind='normal')
+    done = C(EpicsSignalRO, ':DMOV', auto_monitor=True, kind='omitted')
+    motor_egu = C(EpicsSignal, ':RBV.EGU', kind='omitted')
 
     # status
-    interlock = C(EpicsSignalRO, ':INTERLOCK')
-    enabled = C(EpicsSignalRO, ':ENABLED')
+    interlock = C(EpicsSignalRO, ':INTERLOCK', kind='omitted')
+    enabled = C(EpicsSignalRO, ':ENABLED', kind='omitted')
     # limit switches
-    low_limit_switch = C(EpicsSignalRO, ":LLS")
-    high_limit_switch = C(EpicsSignalRO, ":HLS")
+    low_limit_switch = C(EpicsSignalRO, ":LLS", kind='omitted')
+    high_limit_switch = C(EpicsSignalRO, ":HLS", kind='omitted')
 
     @property
     def egu(self):
@@ -84,8 +84,8 @@ class Pitch(OMMotor):
     """
     __doc__ += basic_positioner_init
 
-    piezo_volts = FC(EpicsSignalRO, "{self._piezo}:VRBV")
-    stop_signal = FC(EpicsSignal, "{self._piezo}:STOP")
+    piezo_volts = FC(EpicsSignalRO, "{self._piezo}:VRBV", kind='normal')
+    stop_signal = FC(EpicsSignal, "{self._piezo}:STOP", kind='omitted')
     # TODO: Limits will be added soon, but not present yet
 
     def __init__(self, prefix, **kwargs):
@@ -114,14 +114,17 @@ class Gantry(OMMotor):
         stepper motor prefix
     """
     # Readbacks for gantry information
-    gantry_difference = FC(EpicsSignalRO, "{self.gantry_prefix}:GDIF")
-    decoupled = FC(EpicsSignalRO, "{self.gantry_prefix}:DECOUPLE")
+    gantry_difference = FC(EpicsSignalRO, "{self.gantry_prefix}:GDIF",
+                           kind='normal')
+    decoupled = FC(EpicsSignalRO, "{self.gantry_prefix}:DECOUPLE",
+                   kind='config')
     # Readbacks for the secondary motor
-    follower_readback = FC(EpicsSignalRO, "{self.follow_prefix}:RBV")
-    follower_low_limit_switch = FC(EpicsSignalRO, "{self.follow_prefix}:LLS")
-    follower_high_limit_switch = FC(EpicsSignalRO, "{self.follow_prefix}:HLS")
-
-    _default_read_attrs = ['readback', 'setpoint', 'gantry_difference']
+    follower_readback = FC(EpicsSignalRO, "{self.follow_prefix}:RBV",
+                           kind='normal')
+    follower_low_limit_switch = FC(EpicsSignalRO, "{self.follow_prefix}:LLS",
+                                   kind='omitted')
+    follower_high_limit_switch = FC(EpicsSignalRO, "{self.follow_prefix}:HLS",
+                                    kind='omitted')
 
     def __init__(self, prefix, *, gantry_prefix=None, **kwargs):
         self.gantry_prefix = gantry_prefix or 'GANTRY:' + prefix
@@ -171,21 +174,18 @@ class OffsetMirror(Device):
         The name of the offset mirror
     """
     # Pitch Motor
-    pitch = FC(Pitch, "MIRR:{self.prefix}")
+    pitch = FC(Pitch, "MIRR:{self.prefix}", kind='hinted')
     # Gantry motors
     xgantry = FC(Gantry, "{self._prefix_xy}:X",
                  gantry_prefix="{self._xgantry}",
-                 add_prefix=['suffix', 'gantry_prefix'])
+                 add_prefix=['suffix', 'gantry_prefix'],
+                 kind='normal')
     ygantry = FC(Gantry, "{self._prefix_xy}:Y",
                  gantry_prefix='GANTRY:{self.prefix}:Y',
-                 add_prefix=['suffix', 'gantry_prefix'])
+                 add_prefix=['suffix', 'gantry_prefix'],
+                 kind='config')
     # Transmission for Lightpath Interface
     transmission = 1.0
-
-    _default_read_attrs = ['pitch.readback', 'xgantry.readback',
-                           'xgantry.gantry_difference']
-
-    _default_configuration_attrs = ['ygantry.setpoint']
 
     def __init__(self, prefix, *, prefix_xy=None,
                  xgantry_prefix=None, **kwargs):
@@ -229,11 +229,6 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
     """
     # Reverse state order as PointingMirror is non-standard
     states_list = ['OUT', 'IN']
-
-    # Define default read and configuration attributes
-    _default_read_attrs = ['pitch.readback', 'xgantry.readback',
-                           'xgantry.gantry_difference']
-    _default_configuration_attrs = ['ygantry.setpoint', 'state']
 
     def __init__(self, prefix, *, out_lines=None, in_lines=None, **kwargs):
         # Branching pattern
