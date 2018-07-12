@@ -32,7 +32,7 @@ class CCMMotor(PVPositionerPC):
     loading, and make the wait for done just compare the values.
     """
     setpoint = Cpt(EpicsSignal, ":POSITIONSET")
-    readback = Cpt(EpicsSignalRO, ":POSITIONGET")
+    readback = Cpt(EpicsSignalRO, ":POSITIONGET", kind='hinted')
 
     limits = None
 
@@ -137,13 +137,15 @@ class CCM(InOutPositioner):
     x = FCpt(CCMX,
              down_prefix='{self.x_down_prefix}',
              up_prefix='{self.x_up_prefix}',
-             add_prefix=('down_prefix', 'up_prefix'))
+             add_prefix=('down_prefix', 'up_prefix'),
+             kind='omitted')
     y = FCpt(CCMY,
              down_prefix='{self.y_down_prefix}',
              up_north_prefix='{self.y_up_north_prefix}',
              up_south_prefix='{self.y_up_south_prefix}',
-             add_prefix=('down_prefix', 'up_north_prefix', 'up_south_prefix'))
-    state = Cpt(AttributeSignal, '_state', kind='hinted', add_prefix=())
+             add_prefix=('down_prefix', 'up_north_prefix', 'up_south_prefix'),
+             kind='omitted')
+    state = Cpt(AttributeSignal, attr='_state', kind='omitted')
 
     # Placeholder value. This represents "not full transmission".
     _transmission = {'IN': 0.9}
