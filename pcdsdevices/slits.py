@@ -257,12 +257,6 @@ class Slits(Device, MvInterface):
         """
         return self.move(size, wait=False)
 
-    @property
-    def hints(self):
-        """Device hints"""
-        return {'fields': [self.xwidth.readback.name,
-                           self.ywidth.readback.name]}
-
     def open(self):
         """
         Uses the built-in ``OPEN`` record to move open the aperture
