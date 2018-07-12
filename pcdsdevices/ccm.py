@@ -24,70 +24,6 @@ default_gr = 3.175
 default_gd = 231.303
 
 
-# Calculations between alio position and energy, with all intermediates.
-def theta_to_alio(theta, theta0, gr, gd):
-    """
-    Converts theta angle (rad) to alio position (mm)
-    """
-    return gr * (1/np.cos(theta)-1) + gd * np.tan(theta - theta0)
-
-
-def alio_to_theta(alio, theta0, gr, gd):
-    """
-    Converts alio position (mm) to theta angle (rad)
-
-    This is an empirical inversion via binary search. If you decide to spend
-    time trying to find the analytic solution here, please update this
-    docstring, either to indicate your success or to increment the hours
-    counter below.
-
-    total hours spent here: 2
-    """
-    low = -1.0
-    high = 1.0
-    timeout = 1.0
-    start = time.time()
-    while time.time() - start < timeout:
-        theta_guess = (low+high)/2
-        alio_calc = theta_to_alio(theta_guess, theta0, gr, gd)
-        if np.isclose(alio, alio_calc):
-            break
-        elif alio_calc > alio:
-            high = theta_guess
-        else:
-            low = theta_guess
-    return theta_guess
-
-
-def wavelength_to_theta(wavelength, dspacing):
-    """
-    Converts wavelength (A) to theta angle (rad)
-    """
-    return np.arcsin(wavelength/2/dspacing)
-
-
-def theta_to_wavelength(theta, dspacing):
-    """
-    Converts theta angle (rad) to wavelength (A)
-    """
-    return 2*dspacing*np.sin(theta)
-
-
-def energy_to_wavelength(energy):
-    """
-    Converts photon energy (keV) to wavelength (A)
-    """
-    return 12.39842/energy
-
-
-def wavelength_to_energy(wavelength):
-    """
-    Converts wavelength (A) to photon energy (keV)
-    """
-    return 12.39842/wavelength
-
-
-# Auxilliary classes
 class CCMMotor(PVPositionerPC):
     """
     Goofy records used in the CCM.
@@ -189,7 +125,6 @@ class CCMY(SyncAxesBase):
         super().__init__(down_prefix, *args, **kwargs)
 
 
-# Main Class
 class CCM(InOutPositioner):
     """
     The full CCM assembly.
@@ -242,3 +177,66 @@ class CCM(InOutPositioner):
             self.x.move(self._in_pos, wait=False)
         elif value == 2:
             self.x.move(self._out_pos, wait=False)
+
+
+# Calculations between alio position and energy, with all intermediates.
+def theta_to_alio(theta, theta0, gr, gd):
+    """
+    Converts theta angle (rad) to alio position (mm)
+    """
+    return gr * (1/np.cos(theta)-1) + gd * np.tan(theta - theta0)
+
+
+def alio_to_theta(alio, theta0, gr, gd):
+    """
+    Converts alio position (mm) to theta angle (rad)
+
+    This is an empirical inversion via binary search. If you decide to spend
+    time trying to find the analytic solution here, please update this
+    docstring, either to indicate your success or to increment the hours
+    counter below.
+
+    total hours spent here: 2
+    """
+    low = -1.0
+    high = 1.0
+    timeout = 1.0
+    start = time.time()
+    while time.time() - start < timeout:
+        theta_guess = (low+high)/2
+        alio_calc = theta_to_alio(theta_guess, theta0, gr, gd)
+        if np.isclose(alio, alio_calc):
+            break
+        elif alio_calc > alio:
+            high = theta_guess
+        else:
+            low = theta_guess
+    return theta_guess
+
+
+def wavelength_to_theta(wavelength, dspacing):
+    """
+    Converts wavelength (A) to theta angle (rad)
+    """
+    return np.arcsin(wavelength/2/dspacing)
+
+
+def theta_to_wavelength(theta, dspacing):
+    """
+    Converts theta angle (rad) to wavelength (A)
+    """
+    return 2*dspacing*np.sin(theta)
+
+
+def energy_to_wavelength(energy):
+    """
+    Converts photon energy (keV) to wavelength (A)
+    """
+    return 12.39842/energy
+
+
+def wavelength_to_energy(wavelength):
+    """
+    Converts wavelength (A) to photon energy (keV)
+    """
+    return 12.39842/wavelength
