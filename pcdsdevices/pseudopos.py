@@ -81,12 +81,3 @@ class SyncAxesBase(PseudoPositioner):
         """
         real_pos = self.RealPosition(*real_pos)
         return self.PseudoPosition(pseudo=self._mode(real_pos))
-
-    @property
-    def position(self):
-        """
-        Override the position to just show the number.
-
-        This would otherwise be a named tuple with one element, pseudo.
-        """
-        return super().position.pseudo
