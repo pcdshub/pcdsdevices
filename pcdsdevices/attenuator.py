@@ -31,7 +31,7 @@ class Filter(InOutPositioner):
     """
     state = Cmp(EpicsSignal, ':STATE', write_pv=':GO', kind='hinted')
     thickness = Cmp(EpicsSignal, ':THICK', kind='config')
-    material = Cmp(EpicsSignal, ':MATERIAL', kind='omitted')
+    material = Cmp(EpicsSignal, ':MATERIAL', kind='config')
     stuck = Cmp(EpicsSignal, ':IS_STUCK', kind='omitted')
 
 
