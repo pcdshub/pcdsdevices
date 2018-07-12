@@ -36,7 +36,7 @@ class PCDSDetector(PCDSDetectorBase):
     IMAGE2: reduced rate image
     Stats2: reduced rate stats
     """
-    image = Cpt(ImagePlugin, ':IMAGE1:', read_attrs=['array_data'])
+    image = Cpt(ImagePlugin, ':IMAGE2:', read_attrs=['array_data'])
     stats = Cpt(StatsPlugin, ':Stats2:', read_attrs=['centroid',
                                                      'mean_value',
                                                      'sigma_x',
