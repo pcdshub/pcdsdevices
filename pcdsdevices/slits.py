@@ -115,9 +115,9 @@ class Slits(Device, MvInterface):
     about changing slit widths during alignment
     """
     xcenter = C(SlitPositioner, '', slit_type="XCENTER", kind='hinted')
-    xwidth = C(SlitPositioner, '', slit_type="XWIDTH", kind='config')
+    xwidth = C(SlitPositioner, '', slit_type="XWIDTH", kind='normal')
     ycenter = C(SlitPositioner, '', slit_type="YCENTER", kind='hinted')
-    ywidth = C(SlitPositioner, '', slit_type="YWIDTH", kind='config')
+    ywidth = C(SlitPositioner, '', slit_type="YWIDTH", kind='normal')
     blocked = C(EpicsSignalRO, ":BLOCKED", kind='omitted')
     open_cmd = C(EpicsSignal, ":OPEN", kind='omitted')
     close_cmd = C(EpicsSignal, ":CLOSE", kind='omitted')
