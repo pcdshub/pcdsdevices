@@ -47,9 +47,10 @@ def test_energy_wavelength_inversion():
 @pytest.fixture(scope='function')
 def fake_ccm():
     FakeCCM = make_fake_device(ccm.CCM)
-    fake_ccm = FakeCCM(x_down='X:DOWN', x_up='X:UP', y_down='Y:DOWN',
-                       y_up_north='Y:UP:NORTH', y_up_south='Y:UP:SOUTH',
-                       alio='ALIO', theta2fine='THETA', inpos=8, outpos=0,
+    fake_ccm = FakeCCM(alio_prefix='ALIO', theta2fine_prefix='THETA',
+                       x_down_prefix='X:DOWN', x_up_prefix='X:UP',
+                       y_down_prefix='Y:DOWN', y_up_north_prefix='Y:UP:NORTH',
+                       y_up_south_prefix='Y:UP:SOUTH', in_pos=8, out_pos=0,
                        name='fake_ccm')
     fake_ccm.calc.alio.readback.sim_put(SAMPLE_ALIO)
     fake_ccm.calc.alio.setpoint.sim_put(SAMPLE_ALIO)
@@ -64,6 +65,11 @@ def fake_ccm():
     init_pos(fake_ccm.y.up_north)
     init_pos(fake_ccm.y.up_south)
     return fake_ccm
+
+
+def test_fake_ccm(fake_ccm):
+    logger.debug('test_fake_ccm')
+    fake_ccm.get()
 
 
 # Make sure we set up the forward/inverse to use the right methods

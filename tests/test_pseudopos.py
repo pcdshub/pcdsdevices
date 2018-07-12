@@ -33,7 +33,7 @@ def test_sync_basic(five_axes):
     five_axes.move(5)
     for pos in five_axes.real_position:
         assert pos == 5
-    assert five_axes.position == 5
+    assert five_axes.pseudo.position == 5
 
 
 def test_sync_offset(five_axes):
@@ -44,7 +44,7 @@ def test_sync_offset(five_axes):
     five_axes.four.move(4)
     five_axes.five.move(5)
     five_axes.save_offsets()
-    assert five_axes.position == 1
+    assert five_axes.pseudo.position == 1
     five_axes.move(10)
     assert five_axes.one.position == 10
     assert five_axes.two.position == 11
@@ -58,4 +58,4 @@ def test_sync_offset(five_axes):
     assert five_axes.three.position == 13
     five_axes._mode = max
     five_axes.save_offsets()
-    assert five_axes.position == 21
+    assert five_axes.pseudo.position == 21
