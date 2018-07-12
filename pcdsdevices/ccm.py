@@ -164,28 +164,29 @@ class CCMX(SyncAxesBase):
     """
     Combined motion of the CCM X motors
     """
-    down = FCpt(IMS, '{self._down}')
-    up = FCpt(IMS, '{self._up}')
+    down = FCpt(IMS, '{self.down_prefix}')
+    up = FCpt(IMS, '{self.up_prefix}')
 
-    def __init__(self, *args, parent, **kwargs):
-        self._down = parent._x_down_prefix
-        self._up = parent._x_up_prefix
-        super().__init__(*args, parent=parent, **kwargs)
+    def __init__(self, down_prefix, up_prefix, *args, **kwargs):
+        self.down_prefix = down_prefix
+        self.up_prefix = up_prefix
+        super().__init__(down_prefix, *args, **kwargs)
 
 
 class CCMY(SyncAxesBase):
     """
     Combined motion of the CCM Y motors
     """
-    down = FCpt(IMS, '{self._down}')
-    up_north = FCpt(IMS, '{self._up_north}')
-    up_south = FCpt(IMS, '{self._up_south}')
+    down = FCpt(IMS, '{self.down_prefix}')
+    up_north = FCpt(IMS, '{self.up_north_prefix}')
+    up_south = FCpt(IMS, '{self.up_south_prefix}')
 
-    def __init__(self, *args, parent, **kwargs):
-        self._down = parent._y_down_prefix
-        self._up_north = parent._y_up_north_prefix
-        self._up_south = parent._y_up_south_prefix
-        super().__init__(*args, parent=parent, **kwargs)
+    def __init__(self, down_prefix, up_north_prefix, up_south_prefix,
+                 *args, **kwargs):
+        self.down_prefix = down_prefix
+        self.up_north_prefix = up_north_prefix
+        self.up_south_prefix = up_south_prefix
+        super().__init__(down_prefix, *args, **kwargs)
 
 
 # Main Class
@@ -196,33 +197,41 @@ class CCM(InOutPositioner):
     This requires a huge number of motor pv prefixes to be passed in, and they
     are all labelled accordingly.
     """
-    calc = FCpt(CCMCalc, "{self._alio_prefix}", kind='hinted')
-    theta2fine = FCpt(CCMMotor, "{self._th2f_prefix}")
-    x = Cpt(CCMX)
-    y = Cpt(CCMY)
-    state = Cpt(AttributeSignal, '_state', kind='hinted')
+    calc = FCpt(CCMCalc, '{self.alio_prefix}', kind='hinted')
+    theta2fine = FCpt(CCMMotor, '{self.theta2fine_prefix}')
+    x = FCpt(CCMX,
+             down_prefix='{self.x_down_prefix}',
+             up_prefix='{self.x_up_prefix}',
+             add_prefix=('down_prefix', 'up_prefix'))
+    y = FCpt(CCMY,
+             down_prefix='{self.y_down_prefix}',
+             up_north_prefix='{self.y_up_north_prefix}',
+             up_south_prefix='{self.y_up_south_prefix}',
+             add_prefix=('down_prefix', 'up_north_prefix', 'up_south_prefix'))
+    state = Cpt(AttributeSignal, '_state', kind='hinted', add_prefix=())
 
     # Placeholder value. This represents "not full transmission".
     _transmission = {'IN': 0.9}
 
-    def __init__(self, x_down, x_up, y_down, y_up_north, y_up_south, alio,
-                 theta2fine, inpos, outpos, **kwargs):
-        self._x_down_prefix = x_down
-        self._x_up_prefix = x_up
-        self._y_down_prefix = y_down
-        self._y_up_north_prefix = y_up_north
-        self._y_up_south_prefix = y_up_south
-        self._alio_prefix = alio
-        self._th2f_prefix = theta2fine
-        self._inpos = inpos
-        self._outpos = outpos
-        super().__init__(prefix='', **kwargs)
+    def __init__(self, alio_prefix, theta2fine_prefix, x_down_prefix,
+                 x_up_prefix, y_down_prefix, y_up_north_prefix,
+                 y_up_south_prefix, in_pos, out_pos, *args, **kwargs):
+        self.alio_prefix = alio_prefix
+        self.theta2fine_prefix = theta2fine_prefix
+        self.x_down_prefix = x_down_prefix
+        self.x_up_prefix = x_up_prefix
+        self.y_down_prefix = y_down_prefix
+        self.y_up_north_prefix = y_up_north_prefix
+        self.y_up_south_prefix = y_up_south_prefix
+        self._in_pos = in_pos
+        self._out_pos = out_pos
+        super().__init__(alio_prefix, *args, **kwargs)
 
     @property
     def _state(self):
-        if np.isclose(self.x.position, self._inpos):
+        if np.isclose(self.x.position, self._in_pos):
             return 1
-        elif np.isclose(self.x.position, self._outpos):
+        elif np.isclose(self.x.position, self._out_pos):
             return 2
         else:
             return 0
@@ -230,6 +239,6 @@ class CCM(InOutPositioner):
     @_state.setter
     def _state(self, value):
         if value == 1:
-            self.x.move(self._inpos, wait=False)
+            self.x.move(self._in_pos, wait=False)
         elif value == 2:
-            self.x.move(self._outpos, wait=False)
+            self.x.move(self._out_pos, wait=False)
