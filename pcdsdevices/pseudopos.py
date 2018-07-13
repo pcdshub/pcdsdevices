@@ -35,29 +35,16 @@ class SyncAxesBase(PseudoPositioner):
         self._mode = position_mode or self._default_mode
         self._offsets = {}
 
-    def save_offsets(self, **offsets):
+    def save_offsets(self):
         """
         Save the current offsets for the synchronized assembly.
 
         If not done earlier, this will be automatically run before it is first
         needed (generally, right before the first move).
-
-        Note that this method does not protect you from getting your offsets
-        into an inconsistent state! Pass arguments into the `offsets` param at
-        your own risk.
-
-        Parameters
-        ----------
-        **offsets: ``int`` or ``float``, optional
-            Mapping of axis name to offset. If omitted, we'll use the current
-            positions. If a partial dictionary is provided, the omitted values
-            are assumed to be either 0 (if no value is available) or unchanged
-            (if previous saved values are available).
         """
-        if not offsets:
-            pos = self.real_position
-            combo = self._mode(pos)
-            offsets = {fld: getattr(pos, fld) - combo for fld in pos._fields}
+        pos = self.real_position
+        combo = self._mode(pos)
+        offsets = {fld: getattr(pos, fld) - combo for fld in pos._fields}
         for fld in self.RealPosition._fields:
             if fld not in offsets:
                 offsets[fld] = self._offsets.get(fld, 0)
