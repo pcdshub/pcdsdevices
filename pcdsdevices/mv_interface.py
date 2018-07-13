@@ -6,7 +6,7 @@ import fcntl
 import logging
 import threading
 from threading import Thread
-from .utils import *
+from .utils import get_input
 import numbers
 import signal
 from contextlib import contextmanager
@@ -33,7 +33,7 @@ class MvInterface:
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._mov_ev=threading.Event()
+        self._mov_ev = threading.Event()
 
     def mv(self, position, timeout=None, wait=False):
         """
@@ -91,7 +91,8 @@ class MvInterface:
         except KeyboardInterrupt:
             pass
         finally:
-            self._mov_ev.clear()     
+            self._mov_ev.clear()
+
     def _stop_monitor(self):
         self._mov_ev.set()
 
@@ -99,65 +100,69 @@ class MvInterface:
         """
         Base function to tweak motors
         """
-        up='\x1b[A'
-        down='\x1b[B'
-        left='\x1b[D'
-        right='\x1b[C'
-        shift_up='\x1b[1;2A'
-        shift_down='\x1b[1;2B'
-        scale=0.1
+        up = '\x1b[A'
+        down = '\x1b[B'
+        left = '\x1b[D'
+        right = '\x1b[C'
+        shift_up = '\x1b[1;2A'
+        shift_down = '\x1b[1;2B'
+        scale = 0.1
         """
         Function call camonitor to display motor position.
         """
         def thread_event():
-            thrd=Thread(target=args[0].camonitor,)
+            thrd = Thread(target=args[0].camonitor,)
             thrd.start()
             args[0]._mov_ev.set()
         """
         Function used to change the scale.
         """
-        def Scale(scale,direction):
-            if direction==up or direction==shift_up:
-                scale=scale*2
-                print("\r {0:4f}".format(scale),end=" ")
-            elif direction==down or direction==shift_down:
-                scale=scale/2
-                print("\r {0:4f}".format(scale),end=" ")
+        def Scale(scale, direction):
+            if direction == up or direction == shift_up:
+                scale = scale*2
+                print("\r {0:4f}".format(scale), end=" ")
+            elif direction == down or direction == shift_down:
+                scale = scale/2
+                print("\r {0:4f}".format(scale), end=" ")
             return scale
         """
         Function used to know when and the direction to move the motor.
         """
         def movement(scale,direction):
-            if direction==left:
+            if direction == left:
                 args[0].umvr(-scale)
                 thread_event()
-            elif direction==right:
+            elif direction == right:
                 args[0].umvr(scale)
                 thread_event()
-            elif direction==up and len(args)>1:
+            elif direction == up and len(args) > 1:
                 args[1].umvr(scale)
-                print("\r {0:4f}".format(args[1].position),end=" ")
+                print("\r {0:4f}".format(args[1].position), end=" ")
         """
         Loop takes in user key input and stops when 'q' is pressed
         """
-        is_input=True
+        is_input = True
         while is_input is True:
-            inp=get_input()
-            if inp=='q':
-                is_input=False
+            inp = get_input()
+            if inp == 'q':
+                is_input = False
             else:
-                if len(args)>1 and inp==down:
-                    movement(-scale,up)
-                elif len(args)>1 and inp==up:
-                    movement(scale,inp)
-                elif inp!=up and inp!=down and inp!=left and inp!=right and inp!=shift_down and inp!=shift_up:
-                    print("\nUp=scale*2, Downw=scale/2, Left=Reverse, Right=Forward\n"
-                          "If more than one motor exits: Up=move y motor up, Down=move y motor down.\n"
-                          "Left=move x motor backwards, Right=move x motor forwards, Shift_Up=scale*2, Shift_down=scale/2\n"
+                if len(args) > 1 and inp == down:
+                    movement(-scale, up)
+                elif len(args) > 1 and inp == up:
+                    movement(scale, inp)
+                elif inp != up and inp != down and inp != left and inp != right
+                     and inp != shift_down and inp != shift_up:
+                    print("\nUp=scale*2, Downw=scale/2,
+                          Left=Reverse, Right=Forward\n"
+                          "If more than one motor exits:
+                           Up=move y motor up, Down=move y motor down.\n"
+                          "Left=move x motor backwards, Right=move x motor forwards,
+                           Shift_Up=scale*2, Shift_down=scale/2\n"
                           "Press q to quit. Press any other key to display this message.")
                 else:
-                    movement(scale,inp)
-                    scale=Scale(scale,inp)
+                    movement(scale, inp)
+                    scale = Scale(scale, inp)
 
 
 class FltMvInterface(MvInterface):
@@ -233,7 +238,7 @@ class FltMvInterface(MvInterface):
         self.umv(delta + self.wm(), timeout=timeout)
 
     def Tweak(*args):
-        if len(args)>1:
+        if len(args) > 1:
             return args[0].Tweak_base(args[1])
         else:
             return args[0].Tweak_base()
