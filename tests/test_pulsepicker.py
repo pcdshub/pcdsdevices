@@ -10,7 +10,7 @@ from ophyd.sim import make_fake_device
 from pcdsdevices.inout import InOutRecordPositioner
 from pcdsdevices.pulsepicker import PulsePickerInOut
 
-from .conftest import HotfixFakeEpicsSignal
+from conftest import HotfixFakeEpicsSignal
 
 logger = logging.getLogger(__name__)
 

@@ -6,7 +6,7 @@ import pytest
 from ophyd.sim import make_fake_device
 from pcdsdevices.mirror import OffsetMirror, PointingMirror
 
-from .conftest import HotfixFakeEpicsSignal
+from conftest import HotfixFakeEpicsSignal
 
 
 @pytest.fixture(scope='function')
