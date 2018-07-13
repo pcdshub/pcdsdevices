@@ -151,14 +151,16 @@ class MvInterface:
                     movement(-scale, up)
                 elif len(args) > 1 and inp == up:
                     movement(scale, inp)
-                elif inp != up and inp != down and inp != left and inp != right and inp != shift_down and inp != shift_up:
-                    print("\nUp=scale*2, Downw=scale/2,
-                          Left=Reverse, Right=Forward\n"
-                          "If more than one motor exits:
-                          Up=move y motor up, Down=move y motor down.\n"
-                          "Left=move x motor backwards, Right=move x motor forwards,
-                          Shift_Up=scale*2, Shift_down=scale/2\n"
-                          "Press q to quit. Press any other key to display this message.")
+                elif inp not in(up, down, left, right, shift_down, shift_up):
+                    print("\nUp=scale*2, Downw=scale/2,"
+                          "Left=Reverse, Right=Forward\n"
+                          "If more than one motor exits:"
+                          "Up=move y motor up, Down=move y motor down.\n"
+                          " Left=move x motor backwards,"
+                          " Right=move x motor forwards,"
+                          " Shift_Up=scale*2, Shift_down=scale/2\n"
+                          " Press q to quit."
+                          " Press any other key to display this message.")
                 else:
                     movement(scale, inp)
                     scale = Scale(scale, inp)
