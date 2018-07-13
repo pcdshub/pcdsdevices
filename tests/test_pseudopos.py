@@ -51,11 +51,6 @@ def test_sync_offset(five_axes):
     assert five_axes.three.position == 12
     assert five_axes.four.position == 13
     assert five_axes.five.position == 14
-    five_axes.save_offsets(two=10)
-    five_axes.move(11)
-    assert five_axes.one.position == 11
-    assert five_axes.two.position == 21
-    assert five_axes.three.position == 13
     five_axes._mode = max
     five_axes.save_offsets()
-    assert five_axes.pseudo.position == 21
+    assert five_axes.pseudo.position == 14
