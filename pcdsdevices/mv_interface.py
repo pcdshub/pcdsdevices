@@ -86,7 +86,7 @@ class MvInterface:
             self._mov_ev.clear()
             while not self._mon_ev.is_set():
                 print("\r {0:4f}".format(self.position), end=" ")
-                self._mon_ev.wait(0.1)
+                self._mov_ev.wait(0.1)
         except KeyboardInterrupt:
             pass
         finally:
