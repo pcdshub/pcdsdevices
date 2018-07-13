@@ -4,7 +4,7 @@ Standard classes for LCLS Gate Valves
 import logging
 from enum import Enum
 
-from ophyd import EpicsSignal, EpicsSignalRO, Component as C
+from ophyd import EpicsSignal, EpicsSignalRO, Component as Cpt
 
 from .inout import InOutPositioner, InOutPVStatePositioner
 
@@ -48,11 +48,11 @@ class Stopper(InOutPVStatePositioner):
         An enum with integer values for ``open_valve``, ``close_valve`` values
     """
     # Limit-based states
-    open_limit = C(EpicsSignalRO, ':OPEN', kind='normal')
-    closed_limit = C(EpicsSignalRO, ':CLOSE', kind='normal')
+    open_limit = Cpt(EpicsSignalRO, ':OPEN', kind='normal')
+    closed_limit = Cpt(EpicsSignalRO, ':CLOSE', kind='normal')
 
     # Information on device control
-    command = C(EpicsSignal, ':CMD', kind='omitted')
+    command = Cpt(EpicsSignal, ':CMD', kind='omitted')
     commands = Commands
 
     _state_logic = {'open_limit': {0: 'defer',
@@ -88,12 +88,12 @@ class GateValve(Stopper):
     safety feature, just a notice to the operator.
     """
     # Limit based states
-    open_limit = C(EpicsSignalRO, ':OPN_DI', kind='normal')
-    closed_limit = C(EpicsSignalRO, ':CLS_DI', kind='normal')
+    open_limit = Cpt(EpicsSignalRO, ':OPN_DI', kind='normal')
+    closed_limit = Cpt(EpicsSignalRO, ':CLS_DI', kind='normal')
 
     # Commands and Interlock information
-    command = C(EpicsSignal,   ':OPN_SW', kind='omitted')
-    interlock = C(EpicsSignalRO, ':OPN_OK', kind='normal')
+    command = Cpt(EpicsSignal,   ':OPN_SW', kind='omitted')
+    interlock = Cpt(EpicsSignalRO, ':OPN_OK', kind='normal')
 
     @property
     def interlocked(self):
@@ -138,7 +138,7 @@ class PPSStopper(InOutPositioner):
     out_state : ``str``, optional
         String associatted with out enum value
     """
-    state = C(EpicsSignalRO, '', string=True, kind='hinted')
+    state = Cpt(EpicsSignalRO, '', string=True, kind='hinted')
 
     def __init__(self, prefix, *, in_state='IN', out_state='OUT', **kwargs):
         # Store state information

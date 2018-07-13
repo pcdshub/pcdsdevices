@@ -9,8 +9,8 @@ vertical gantries.
 import logging
 
 import numpy as np
-from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
-                   PVPositioner, FormattedComponent as FC)
+from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
+                   PVPositioner, FormattedComponent as FCpt)
 
 from .doc_stubs import basic_positioner_init
 from .inout import InOutRecordPositioner
@@ -26,17 +26,17 @@ class OMMotor(FltMvInterface, PVPositioner):
     __doc__ += basic_positioner_init
 
     # position
-    readback = C(EpicsSignalRO, ':RBV', auto_monitor=True, kind='hinted')
-    setpoint = C(EpicsSignal, ':VAL', limits=True, kind='normal')
-    done = C(EpicsSignalRO, ':DMOV', auto_monitor=True, kind='omitted')
-    motor_egu = C(EpicsSignal, ':RBV.EGU', kind='omitted')
+    readback = Cpt(EpicsSignalRO, ':RBV', auto_monitor=True, kind='hinted')
+    setpoint = Cpt(EpicsSignal, ':VAL', limits=True, kind='normal')
+    done = Cpt(EpicsSignalRO, ':DMOV', auto_monitor=True, kind='omitted')
+    motor_egu = Cpt(EpicsSignal, ':RBV.EGU', kind='omitted')
 
     # status
-    interlock = C(EpicsSignalRO, ':INTERLOCK', kind='omitted')
-    enabled = C(EpicsSignalRO, ':ENABLED', kind='omitted')
+    interlock = Cpt(EpicsSignalRO, ':INTERLOCK', kind='omitted')
+    enabled = Cpt(EpicsSignalRO, ':ENABLED', kind='omitted')
     # limit switches
-    low_limit_switch = C(EpicsSignalRO, ":LLS", kind='omitted')
-    high_limit_switch = C(EpicsSignalRO, ":HLS", kind='omitted')
+    low_limit_switch = Cpt(EpicsSignalRO, ":LLS", kind='omitted')
+    high_limit_switch = Cpt(EpicsSignalRO, ":HLS", kind='omitted')
 
     @property
     def egu(self):
@@ -84,8 +84,8 @@ class Pitch(OMMotor):
     """
     __doc__ += basic_positioner_init
 
-    piezo_volts = FC(EpicsSignalRO, "{self._piezo}:VRBV", kind='normal')
-    stop_signal = FC(EpicsSignal, "{self._piezo}:STOP", kind='omitted')
+    piezo_volts = FCpt(EpicsSignalRO, "{self._piezo}:VRBV", kind='normal')
+    stop_signal = FCpt(EpicsSignal, "{self._piezo}:STOP", kind='omitted')
     # TODO: Limits will be added soon, but not present yet
 
     def __init__(self, prefix, **kwargs):
@@ -114,17 +114,18 @@ class Gantry(OMMotor):
         stepper motor prefix
     """
     # Readbacks for gantry information
-    gantry_difference = FC(EpicsSignalRO, "{self.gantry_prefix}:GDIF",
-                           kind='normal')
-    decoupled = FC(EpicsSignalRO, "{self.gantry_prefix}:DECOUPLE",
-                   kind='config')
+    gantry_difference = FCpt(EpicsSignalRO, "{self.gantry_prefix}:GDIF",
+                             kind='normal')
+    decoupled = FCpt(EpicsSignalRO, "{self.gantry_prefix}:DECOUPLE",
+                     kind='config')
     # Readbacks for the secondary motor
-    follower_readback = FC(EpicsSignalRO, "{self.follow_prefix}:RBV",
-                           kind='normal')
-    follower_low_limit_switch = FC(EpicsSignalRO, "{self.follow_prefix}:LLS",
-                                   kind='omitted')
-    follower_high_limit_switch = FC(EpicsSignalRO, "{self.follow_prefix}:HLS",
-                                    kind='omitted')
+    follower_readback = FCpt(EpicsSignalRO, "{self.follow_prefix}:RBV",
+                             kind='normal')
+    follower_low_limit_switch = FCpt(EpicsSignalRO, "{self.follow_prefix}:LLS",
+                                     kind='omitted')
+    follower_high_limit_switch = FCpt(EpicsSignalRO,
+                                      "{self.follow_prefix}:HLS",
+                                      kind='omitted')
 
     def __init__(self, prefix, *, gantry_prefix=None, **kwargs):
         self.gantry_prefix = gantry_prefix or 'GANTRY:' + prefix
@@ -174,16 +175,16 @@ class OffsetMirror(Device):
         The name of the offset mirror
     """
     # Pitch Motor
-    pitch = FC(Pitch, "MIRR:{self.prefix}", kind='hinted')
+    pitch = FCpt(Pitch, "MIRR:{self.prefix}", kind='hinted')
     # Gantry motors
-    xgantry = FC(Gantry, "{self._prefix_xy}:X",
-                 gantry_prefix="{self._xgantry}",
-                 add_prefix=['suffix', 'gantry_prefix'],
-                 kind='normal')
-    ygantry = FC(Gantry, "{self._prefix_xy}:Y",
-                 gantry_prefix='GANTRY:{self.prefix}:Y',
-                 add_prefix=['suffix', 'gantry_prefix'],
-                 kind='config')
+    xgantry = FCpt(Gantry, "{self._prefix_xy}:X",
+                   gantry_prefix="{self._xgantry}",
+                   add_prefix=['suffix', 'gantry_prefix'],
+                   kind='normal')
+    ygantry = FCpt(Gantry, "{self._prefix_xy}:Y",
+                   gantry_prefix='GANTRY:{self.prefix}:Y',
+                   add_prefix=['suffix', 'gantry_prefix'],
+                   kind='config')
     # Transmission for Lightpath Interface
     transmission = 1.0
 
