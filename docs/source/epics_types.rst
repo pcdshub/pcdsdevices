@@ -7,6 +7,7 @@ Common EPICS Devices
     :toctree: generated
     
     Attenuator
+    BeckhoffAxis
     EpicsMotor
     EventSequencer
     LODCM
@@ -21,4 +22,5 @@ Common EPICS Devices
     PointingMirror
     Slits
     Stopper
+    Trigger
     XFLS

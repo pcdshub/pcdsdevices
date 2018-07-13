@@ -54,20 +54,17 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     applications which depend on a long single looped sequence running through
     out the scan
     """
-    play_control = Cpt(EpicsSignal, ':PLYCTL')
-    sequence_length = Cpt(EpicsSignal, ':LEN')
-    current_step = Cpt(EpicsSignal, ':CURSTP')
-    play_count = Cpt(EpicsSignal, ':PLYCNT')
-    play_status = Cpt(EpicsSignalRO, ':PLSTAT', auto_monitor=True)
-    play_mode = Cpt(EpicsSignal, ':PLYMOD')
-    sync_marker = Cpt(EpicsSignal, ':SYNCMARKER')
-    next_sync = Cpt(EpicsSignal, ':SYNCNEXTTICK')
-    pulse_req = Cpt(EpicsSignal, ':BEAMPULSEREQ')
-    sequence_owner = Cpt(EpicsSignalRO, ':HUTCH_NAME')
-
-    _default_read_attrs = ['play_status']
-    _default_configuration_attrs = ['play_mode', 'sequence_length',
-                                    'sync_marker']
+    play_control = Cpt(EpicsSignal, ':PLYCTL', kind='omitted')
+    sequence_length = Cpt(EpicsSignal, ':LEN', kind='config')
+    current_step = Cpt(EpicsSignal, ':CURSTP', kind='normal')
+    play_count = Cpt(EpicsSignal, ':PLYCNT', kind='normal')
+    play_status = Cpt(EpicsSignalRO, ':PLSTAT', auto_monitor=True,
+                      kind='normal')
+    play_mode = Cpt(EpicsSignal, ':PLYMOD', kind='config')
+    sync_marker = Cpt(EpicsSignal, ':SYNCMARKER', kind='config')
+    next_sync = Cpt(EpicsSignal, ':SYNCNEXTTICK', kind='config')
+    pulse_req = Cpt(EpicsSignal, ':BEAMPULSEREQ', kind='config')
+    sequence_owner = Cpt(EpicsSignalRO, ':HUTCH_NAME', kind='omitted')
 
     def __init__(self, prefix, *, name=None, monitor_attrs=None, **kwargs):
         monitor_attrs = monitor_attrs or ['current_step', 'play_count']

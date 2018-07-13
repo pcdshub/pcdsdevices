@@ -91,6 +91,7 @@ class MvInterface:
             pass
         finally:
             self._mov_ev.clear()
+            
     def _stop_monitor(self):
         self._mov_ev.set()
 

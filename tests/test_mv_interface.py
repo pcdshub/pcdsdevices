@@ -1,26 +1,28 @@
 import fcntl
 import logging
 import multiprocessing as mp
-import time
 import threading
+import time
 import os
+import signal
 import shutil
 from pathlib import Path
 
 import pytest
-from ophyd.device import Device
+from ophyd.device import Device, Component as Cpt
 from ophyd.positioner import SoftPositioner
+from ophyd.signal import AttributeSignal
 
 from pcdsdevices.mv_interface import FltMvInterface, setup_preset_paths
 
 logger = logging.getLogger(__name__)
 
 
-class Motor(SoftPositioner, FltMvInterface):
-    _name = 'test'
+class Motor(FltMvInterface, SoftPositioner, Device):
+    user_readback = Cpt(AttributeSignal, 'position')
 
-    def __init__(self):
-        super().__init__(name='test')
+    def __init__(self, *, name='test', **kwargs):
+        super().__init__(name=name, **kwargs)
         self._set_position(0)
 
     def _setup_move(self, position, status):
@@ -46,6 +48,17 @@ class Motor(SoftPositioner, FltMvInterface):
 
     def stop(self):
         self._stop = True
+
+
+class TwoMotor(Device):
+    """
+    Test assembly with two motors
+    """
+    x = Cpt(Motor)
+    y = Cpt(Motor)
+
+    # def tweak(self):
+    #     return tweak_2d(self.x, self.y)
 
 
 class DeviceTest(FltMvInterface, Device):
@@ -88,6 +101,18 @@ def test_umv(motor):
     motor._set_position(5)
     motor.umvr(2)
     assert motor.position == 7
+
+
+def test_camonitor(motor):
+    logger.debug('test_camonitor')
+    pid = os.getpid()
+
+    def interrupt():
+        time.sleep(0.1)
+        os.kill(pid, signal.SIGINT)
+
+    threading.Thread(target=interrupt, args=()).start()
+    motor.camonitor()
 
 
 def test_presets_device(presets):
