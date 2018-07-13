@@ -52,9 +52,6 @@ class SyncAxesBase(PseudoPositioner):
         pos = self.real_position
         combo = self._mode(pos)
         offsets = {fld: getattr(pos, fld) - combo for fld in pos._fields}
-        for fld in self.RealPosition._fields:
-            if fld not in offsets:
-                offsets[fld] = self._offsets.get(fld, 0)
         self._offsets = offsets
 
     def forward(self, pseudo_pos):
