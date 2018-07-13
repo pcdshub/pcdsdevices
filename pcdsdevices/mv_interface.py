@@ -4,6 +4,7 @@ Module for defining bell-and-whistles movement features
 import time
 import fcntl
 import logging
+import threading
 from threading import Thread
 from .utils import *
 import numbers
@@ -30,8 +31,8 @@ class MvInterface:
     would otherwise be disruptive to running scans and writing higher-level
     applications.
     """
-    def _init_(self, *args, **kwargs):
-        super()._init_(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self._mov_ev=threading.Event()
 
     def mv(self, position, timeout=None, wait=False):
