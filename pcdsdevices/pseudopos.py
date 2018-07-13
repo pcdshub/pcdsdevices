@@ -14,17 +14,24 @@ class SyncAxesBase(PseudoPositioner):
     You should subclass this by adding real motors as components. The class
     will pick them up and include them correctly into the coordinated move.
 
+    An example:
+
+    .. code-block:: python
+
+       class Parallel(SyncAxesBase):
+           left = Cpt(EpicsMotor, ':01')
+           right = Cpt(EpicsMotor, ':02')
+
+    Like all ``PseudoPositioner`` classes, any subclass of ``PositionerBase``
+    will be included in the synchronized move.
+
+
     Parameters
     ----------
     position_mode: ``func``, optional
         The function to apply to the list of current positions to determine
         the combined position. By default, this is the minimum of all axis
         positions.
-
-    Attributes
-    ----------
-    axes: ``list of str``
-        Names of the components that correspond to the real axes.
     """
     pseudo = Cpt(PseudoSingle)
 
