@@ -51,9 +51,7 @@ class PIM(PIMMotor):
         The EPICS base PV of the detector. If None, it will be inferred from
         the motor prefix
     """
-    detector = FCpt(PCDSDetector, "{self._prefix_det}")
-
-    _default_read_attrs = ['state', 'readback', 'detector']
+    detector = FCpt(PCDSDetector, "{self._prefix_det}", kind='normal')
 
     def __init__(self, prefix, *, name, prefix_det=None, **kwargs):
         # Infer the detector PV from the motor PV

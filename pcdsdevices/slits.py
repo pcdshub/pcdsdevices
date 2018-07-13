@@ -17,8 +17,8 @@ import logging
 import numpy as np
 from ophyd.status import wait as status_wait
 from ophyd.pv_positioner import PVPositioner
-from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
-                   FormattedComponent as FC)
+from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
+                   FormattedComponent as FCpt)
 
 from .mv_interface import MvInterface, FltMvInterface
 
@@ -55,11 +55,11 @@ class SlitPositioner(FltMvInterface, PVPositioner, Device):
     ``ophyd.PVPositioner``
         ``SlitPositioner`` inherits directly from ``PVPositioner``.
     """
-    setpoint = FC(EpicsSignal, "{self.prefix}:{self._dirshort}_REQ")
-    readback = FC(EpicsSignalRO, "{self.prefix}:ACTUAL_{self._dirlong}")
-    done = C(EpicsSignalRO, ":DMOV")
-
-    _default_read_attrs = ['readback']
+    setpoint = FCpt(EpicsSignal, "{self.prefix}:{self._dirshort}_REQ",
+                    kind='normal')
+    readback = FCpt(EpicsSignalRO, "{self.prefix}:ACTUAL_{self._dirlong}",
+                    kind='hinted')
+    done = Cpt(EpicsSignalRO, ":DMOV", kind='omitted')
 
     def __init__(self, prefix, *, slit_type="", name=None,
                  limits=None, **kwargs):
@@ -114,22 +114,18 @@ class Slits(Device, MvInterface):
     make a rough back of the hand calculation without being over aggressive
     about changing slit widths during alignment
     """
-    xcenter = C(SlitPositioner, '', slit_type="XCENTER")
-    xwidth = C(SlitPositioner, '', slit_type="XWIDTH")
-    ycenter = C(SlitPositioner, '', slit_type="YCENTER")
-    ywidth = C(SlitPositioner, '', slit_type="YWIDTH")
-    blocked = C(EpicsSignalRO, ":BLOCKED")
-    open_cmd = C(EpicsSignal, ":OPEN")
-    close_cmd = C(EpicsSignal, ":CLOSE")
-    block_cmd = C(EpicsSignal, ":BLOCK")
+    xcenter = Cpt(SlitPositioner, '', slit_type="XCENTER", kind='hinted')
+    xwidth = Cpt(SlitPositioner, '', slit_type="XWIDTH", kind='normal')
+    ycenter = Cpt(SlitPositioner, '', slit_type="YCENTER", kind='hinted')
+    ywidth = Cpt(SlitPositioner, '', slit_type="YWIDTH", kind='normal')
+    blocked = Cpt(EpicsSignalRO, ":BLOCKED", kind='omitted')
+    open_cmd = Cpt(EpicsSignal, ":OPEN", kind='omitted')
+    close_cmd = Cpt(EpicsSignal, ":CLOSE", kind='omitted')
+    block_cmd = Cpt(EpicsSignal, ":BLOCK", kind='omitted')
 
     # Subscription information
     SUB_STATE = 'sub_state_changed'
     _default_sub = SUB_STATE
-
-    # Default Attributes
-    _default_read_attrs = ['xwidth', 'ywidth']
-    _default_configuration_attrs = ['xcenter.readback', 'ycenter.readback']
 
     def __init__(self, *args, nominal_aperture=(5.0, 5.0), **kwargs):
         self._has_subscribed = False
@@ -260,12 +256,6 @@ class Slits(Device, MvInterface):
         Alias for the move method, here for bluesky compatibilty
         """
         return self.move(size, wait=False)
-
-    @property
-    def hints(self):
-        """Device hints"""
-        return {'fields': [self.xwidth.readback.name,
-                           self.ywidth.readback.name]}
 
     def open(self):
         """

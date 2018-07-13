@@ -8,8 +8,8 @@ interpreted by :class:`.MPS`.
 import logging
 
 from ophyd.ophydobj import OphydObject
-from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as C,
-                   FormattedComponent as FC)
+from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
+                   FormattedComponent as FCpt)
 
 logger = logging.getLogger(__name__)
 
@@ -99,12 +99,8 @@ class MPS(MPSBase, Device):
         Whether or not the the device is capable of vetoing downstream faults
     """
     # Signals
-    fault = C(EpicsSignalRO, '_MPSC')
-    bypass = C(EpicsSignal,   '_BYPS')
-
-    # Default read and configuration attributes
-    _default_read_attrs = ['fault']
-    _default_configuration_attrs = ['bypass']
+    fault = Cpt(EpicsSignalRO, '_MPSC', kind='hinted')
+    bypass = Cpt(EpicsSignal,   '_BYPS', kind='config')
 
     @property
     def faulted(self):
@@ -156,7 +152,7 @@ def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
     kwargs:
         Passed to device constructor
     """
-    comp = FC(MPS, mps_prefix, veto=veto)
+    comp = FCpt(MPS, mps_prefix, veto=veto)
     cls = type(clsname, (cls,), {'mps': comp})
     return cls(*args, **kwargs)
 
@@ -235,8 +231,8 @@ class MPSLimits(MPSBase, Device):
             def logic(in_limit: bool, out_limit: bool) -> bool
     """
     # Individual limits
-    in_limit = C(MPS, '_IN')
-    out_limit = C(MPS, '_OUT')
+    in_limit = Cpt(MPS, '_IN', kind='normal')
+    out_limit = Cpt(MPS, '_OUT', kind='normal')
 
     def __init__(self, prefix, logic, **kwargs):
         self.logic = logic

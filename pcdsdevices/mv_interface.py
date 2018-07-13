@@ -91,6 +91,7 @@ class MvInterface:
             pass
         finally:
             self._mov_ev.clear()
+
     def _stop_monitor(self):
         self._mov_ev.set()
 
@@ -117,25 +118,25 @@ class MvInterface:
         """
         def Scale(scale,direction):
             if direction==up or direction==shift_up:
-               scale=scale*2
-               print("\r {0:4f}".format(scale),end=" ")
+                scale=scale*2
+                print("\r {0:4f}".format(scale),end=" ")
             elif direction==down or direction==shift_down:
-               scale=scale/2
-               print("\r {0:4f}".format(scale),end=" ")
+                scale=scale/2
+                print("\r {0:4f}".format(scale),end=" ")
             return scale
         """
         Function used to know when and the direction to move the motor.
         """
         def movement(scale,direction):
             if direction==left:
-               args[0].umvr(-scale)
-               thread_event()
+                args[0].umvr(-scale)
+                thread_event()
             elif direction==right:
-               args[0].umvr(scale)
-               thread_event()
+                args[0].umvr(scale)
+                thread_event()
             elif direction==up and len(args)>1:
-               args[1].umvr(scale)
-               print("\r {0:4f}".format(args[1].position),end=" ")
+                args[1].umvr(scale)
+                print("\r {0:4f}".format(args[1].position),end=" ")
         """
         Loop takes in user key input and stops when 'q' is pressed
         """
@@ -143,20 +144,20 @@ class MvInterface:
         while is_input is True:
             inp=get_input()
             if inp=='q':
-               is_input=False
+                is_input=False
             else:
                 if len(args)>1 and inp==down:
-                   movement(-scale,up)
-                 elif len(args)>1 and inp==up:
-                   movement(scale,inp)
+                    movement(-scale,up)
+                elif len(args)>1 and inp==up:
+                    movement(scale,inp)
                 elif inp!=up and inp!=down and inp!=left and inp!=right and inp!=shift_down and inp!=shift_up:
-                   print("\nUp=scale*2, Downw=scale/2, Left=Reverse, Right=Forward\n"
-                         "If more than one motor exits: Up=move y motor up, Down=move y motor down.\n"
-                         "Left=move x motor backwards, Right=move x motor forwards, Shift_Up=scale*2, Shift_down=scale/2\n"
-                         "Press q to quit. Press any other key to display this message.")
+                    print("\nUp=scale*2, Downw=scale/2, Left=Reverse, Right=Forward\n"
+                          "If more than one motor exits: Up=move y motor up, Down=move y motor down.\n"
+                          "Left=move x motor backwards, Right=move x motor forwards, Shift_Up=scale*2, Shift_down=scale/2\n"
+                          "Press q to quit. Press any other key to display this message.")
                 else:
-                   movement(scale,inp)
-                   scale=Scale(scale,inp)
+                    movement(scale,inp)
+                    scale=Scale(scale,inp)
 
 
 class FltMvInterface(MvInterface):
@@ -230,13 +231,13 @@ class FltMvInterface(MvInterface):
             will be use.
         """
         self.umv(delta + self.wm(), timeout=timeout)
-    
+
     def Tweak(*args):
         if len(args)>1:
-           return args[0].Tweak_base(args[1])
+            return args[0].Tweak_base(args[1])
         else:
-           return args[0].Tweak_base()
- 
+            return args[0].Tweak_base()
+
 
 def setup_preset_paths(**paths):
     """

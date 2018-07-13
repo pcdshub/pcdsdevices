@@ -63,13 +63,14 @@ class LODCM(InOutRecordPositioner):
     """
     __doc__ = __doc__ % basic_positioner_init
 
-    state = Cpt(EpicsSignal, ':H1N', write_pv=':H1N:GO')
-    readback = FCpt(EpicsSignalRO, '{self.prefix}:H1N:{self._readback}')
+    state = Cpt(EpicsSignal, ':H1N', write_pv=':H1N:GO', kind='hinted')
+    readback = FCpt(EpicsSignalRO, '{self.prefix}:H1N:{self._readback}',
+                    kind='normal')
 
-    yag = Cpt(YagLom, ":DV")
-    dectris = Cpt(Dectris, ":DH")
-    diode = Cpt(Diode, ":DIODE")
-    foil = Cpt(Foil, ":FOIL")
+    yag = Cpt(YagLom, ":DV", kind='omitted')
+    dectris = Cpt(Dectris, ":DH", kind='omitted')
+    diode = Cpt(Diode, ":DIODE", kind='omitted')
+    foil = Cpt(Foil, ":FOIL", kind='omitted')
 
     states_list = ['OUT', 'C', 'Si']
     in_states = ['C', 'Si']

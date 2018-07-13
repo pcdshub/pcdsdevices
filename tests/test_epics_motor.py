@@ -1,46 +1,100 @@
-import pytest
-import os
-import signal
-import time
-from threading import Thread
+import logging
+
 from bluesky import RunEngine
 from bluesky.plan_stubs import stage, unstage, open_run, close_run
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
+import pytest
 
-from pcdsdevices.epics_motor import PCDSMotorBase, IMS
+from pcdsdevices.epics_motor import (EpicsMotorInterface, PCDSMotorBase, IMS,
+                                     Newport, PMC100, BeckhoffAxis,
+                                     MotorDisabledError)
 
 from .conftest import HotfixFakeEpicsSignal
 
+logger = logging.getLogger(__name__)
 
-@pytest.fixture(scope='function')
-def fake_motor():
-    FakeMotor = make_fake_device(PCDSMotorBase)
-    FakeMotor.motor_spg.cls = HotfixFakeEpicsSignal
-    m = FakeMotor("Tst:MMS:02", name='Test Motor')
-    m.limits = (-100, 100)
-    m.motor_spg.sim_put(2)
-    m.motor_spg.sim_set_enum_strs(['Stop', 'Pause', 'Go'])
-    m.user_readback.sim_put(0)
-    return m
+
+def fake_class_setup(cls):
+    """
+    Make the fake class and modify if needed
+    """
+    FakeClass = make_fake_device(cls)
+    if issubclass(FakeClass, PCDSMotorBase):
+        FakeClass.motor_spg.cls = HotfixFakeEpicsSignal
+    return FakeClass
+
+
+def motor_setup(motor):
+    """
+    Set up the motor based on the class
+    """
+    if isinstance(motor, EpicsMotorInterface):
+        motor.user_readback.sim_put(0)
+        motor.limits = (-100, 100)
+
+    if isinstance(motor, PCDSMotorBase):
+        motor.motor_spg.sim_put(2)
+        motor.motor_spg.sim_set_enum_strs(['Stop', 'Pause', 'Go'])
+
+    if isinstance(motor, IMS):
+        motor.bit_status.sim_put(0)
+        motor.part_number.sim_put('PN123')
+        motor.error_severity.sim_put(0)
+        motor.reinit_command.sim_put(0)
+
+
+def fake_motor(cls):
+    """
+    Given a real class, lets get a fake motor
+    """
+    FakeCls = fake_class_setup(cls)
+    motor = FakeCls('TST:MTR', name='test_motor')
+    motor_setup(motor)
+    return motor
+
+
+# Here I set up fixtures that test each level's overrides
+# Test in subclasses too to make sure we didn't break it!
+
+@pytest.fixture(scope='function',
+                params=[EpicsMotorInterface, PCDSMotorBase, IMS, Newport,
+                        PMC100, BeckhoffAxis])
+def fake_epics_motor(request):
+    """
+    Test EpicsMotorInterface and subclasses
+    """
+    return fake_motor(request.param)
+
+
+@pytest.fixture(scope='function',
+                params=[PCDSMotorBase, IMS, Newport, PMC100])
+def fake_pcds_motor(request):
+    """
+    Test PCDSMotorBase and subclasses
+    """
+    return fake_motor(request.param)
 
 
 @pytest.fixture(scope='function')
 def fake_ims():
-    FakeIMS = make_fake_device(IMS)
-    FakeIMS.motor_spg.cls = HotfixFakeEpicsSignal
-    m = FakeIMS('Tst:Mtr:1', name='motor')
-    m.bit_status.sim_put(0)
-    m.part_number.sim_put('PN123')
-    m.error_severity.sim_put(0)
-    m.reinit_command.sim_put(0)
-    m.motor_spg.sim_put(2)
-    m.motor_spg.sim_set_enum_strs(['Stop', 'Pause', 'Go'])
-    return m
+    """
+    Test IMS-specific overrides
+    """
+    return fake_motor(IMS)
 
 
-def test_epics_motor_soft_limits(fake_motor):
-    m = fake_motor
+@pytest.fixture(scope='function')
+def fake_beckhoff():
+    """
+    Test Beckhoff-specific overrides
+    """
+    return fake_motor(BeckhoffAxis)
+
+
+def test_epics_motor_soft_limits(fake_epics_motor):
+    logger.debug('test_epics_motor_soft_limits')
+    m = fake_epics_motor
     # Check that our limits were set correctly
     assert m.limits == (-100, 100)
     # Check that we can not move past the soft limits
@@ -48,8 +102,9 @@ def test_epics_motor_soft_limits(fake_motor):
         m.move(-150)
 
 
-def test_epics_motor_tdir(fake_motor):
-    m = fake_motor
+def test_epics_motor_tdir(fake_pcds_motor):
+    logger.debug('test_epics_motor_tdir')
+    m = fake_pcds_motor
     # Simulate a moving motor
     m._pos_changed(value=-1.0, old_value=0.0)
     assert m.direction_of_travel.get() == 0
@@ -58,6 +113,7 @@ def test_epics_motor_tdir(fake_motor):
 
 
 def test_ims_clear_flag(fake_ims):
+    logger.debug('test_ims_clear_flag')
     m = fake_ims
     # Already cleared
     m.clear_all_flags()
@@ -74,6 +130,7 @@ def test_ims_clear_flag(fake_ims):
 
 
 def test_ims_reinitialize(fake_ims):
+    logger.debug('test_ims_reinitialize')
     m = fake_ims
     # Do not reinitialize on auto-setup
     m.auto_setup()
@@ -93,6 +150,7 @@ def test_ims_reinitialize(fake_ims):
 
 
 def test_ims_stage_in_plan(fake_ims):
+    logger.debug('test_ims_stage_in_plan')
     RE = RunEngine()
     m = fake_ims
 
@@ -105,17 +163,18 @@ def test_ims_stage_in_plan(fake_ims):
     RE(plan())
 
 
-def test_resume_pause_stop(fake_motor):
-    m = fake_motor
+def test_resume_pause_stop(fake_pcds_motor):
+    logger.debug('test_resume_pause_stop')
+    m = fake_pcds_motor
     m.stop()
     assert m.motor_spg.get(as_string=True) == 'Stop'
-    with pytest.raises(Exception):
+    with pytest.raises(MotorDisabledError):
         m.check_value(10)
-    with pytest.raises(Exception):
+    with pytest.raises(MotorDisabledError):
         m.move(10, wait=False)
     m.pause()
     assert m.motor_spg.get(as_string=True) == 'Pause'
-    with pytest.raises(Exception):
+    with pytest.raises(MotorDisabledError):
         m.move(10, wait=False)
     m.go()
     assert m.motor_spg.get(as_string=True) == 'Go'
@@ -123,11 +182,23 @@ def test_resume_pause_stop(fake_motor):
     m.resume()
     assert m.motor_spg.get(as_string=True) == 'Go'
     m.check_value(10)
-def test_camonitor(fake_motor):
-    motor=fake_motor
-    pid=os.getpid()
-    def interrupt():
-        time.sleep(0.1)
-        os.kill(pid, signal.SIGINT)
-    Thread(target=interrupt,args=()).start()
-    motor.camonitor() 
+
+
+def test_disable(fake_pcds_motor):
+    logger.debug('test_disable')
+    m = fake_pcds_motor
+    m.disable()
+    with pytest.raises(MotorDisabledError):
+        m.check_value(1)
+    with pytest.raises(MotorDisabledError):
+        m.move(1, wait=False)
+    m.enable()
+    m.move(1, wait=False)
+
+
+def test_beckhoff_error_clear(fake_beckhoff):
+    m = fake_beckhoff
+    m.clear_error()
+    assert m.cmd_err_reset.get() == 1
+    m.stage()
+    m.unstage()
