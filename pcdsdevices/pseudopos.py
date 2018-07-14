@@ -1,5 +1,10 @@
+import logging
+
 from ophyd.device import Component as Cpt
-from ophyd.pseudopos import PseudoPositioner, PseudoSingle
+from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
+                             real_position_argument, pseudo_position_argument)
+
+logger = logging.getLogger(__name__)
 
 
 class SyncAxesBase(PseudoPositioner):
@@ -24,23 +29,30 @@ class SyncAxesBase(PseudoPositioner):
 
     Like all ``PseudoPositioner`` classes, any subclass of ``PositionerBase``
     will be included in the synchronized move.
-
-
-    Parameters
-    ----------
-    position_mode: ``func``, optional
-        The function to apply to the list of current positions to determine
-        the combined position. By default, this is the minimum of all axis
-        positions.
     """
     pseudo = Cpt(PseudoSingle)
 
-    _default_mode = min
-
-    def __init__(self, *args, position_mode=None, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._mode = position_mode or self._default_mode
         self._offsets = {}
+
+    def calc_combined(self, real_position):
+        """
+        Calculate the combined pseudo position.
+
+        By default, this is just the position of our first axis.
+
+        Parameters
+        ----------
+        real_position: `namedtuple`
+            The positions of each of the real motors, accessible by name
+
+        Returns
+        -------
+        pseudo_position: ``float``
+            The combined position of the axes.
+        """
+        return real_position[0]
 
     def save_offsets(self):
         """
@@ -50,10 +62,12 @@ class SyncAxesBase(PseudoPositioner):
         needed (generally, right before the first move).
         """
         pos = self.real_position
-        combo = self._mode(pos)
+        combo = self.calc_combined(pos)
         offsets = {fld: getattr(pos, fld) - combo for fld in pos._fields}
         self._offsets = offsets
+        logger.debug('Offsets %s cached', offsets)
 
+    @pseudo_position_argument
     def forward(self, pseudo_pos):
         """
         Composite axes move to the combined axis position plus an offset
@@ -66,9 +80,10 @@ class SyncAxesBase(PseudoPositioner):
             real_pos[axis] = pseudo_pos.pseudo + offset
         return self.RealPosition(**real_pos)
 
+    @real_position_argument
     def inverse(self, real_pos):
         """
         Combined axis readback is the mean of the composite axes
         """
         real_pos = self.RealPosition(*real_pos)
-        return self.PseudoPosition(pseudo=self._mode(real_pos))
+        return self.PseudoPosition(pseudo=self.calc_combined(real_pos))

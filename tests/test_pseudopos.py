@@ -17,9 +17,22 @@ class FiveSyncSoftPositioner(SyncAxesBase):
     five = Cpt(SoftPositioner, init_pos=0)
 
 
+class MaxTwoSyncSoftPositioner(SyncAxesBase):
+    one = Cpt(SoftPositioner, init_pos=1)
+    two = Cpt(SoftPositioner, init_pos=5)
+
+    def calc_combined(self, real_position):
+        return max(real_position)
+
+
 @pytest.fixture(scope='function')
 def five_axes():
     return FiveSyncSoftPositioner(name='sync', egu='five')
+
+
+@pytest.fixture(scope='function')
+def two_axes():
+    return MaxTwoSyncSoftPositioner(name='sync', egu='two')
 
 
 def test_sync_passthrough(five_axes):
@@ -31,19 +44,18 @@ def test_sync_passthrough(five_axes):
 def test_sync_basic(five_axes):
     logger.debug('test_sync_basic')
     five_axes.move(5)
-    for pos in five_axes.real_position:
+    for i, pos in enumerate(five_axes.real_position):
         assert pos == 5
     assert five_axes.pseudo.position == 5
 
 
-def test_sync_offset(five_axes):
+def test_sync_offset(five_axes, two_axes):
     logger.debug('test_sync_offset')
     five_axes.one.move(1)
     five_axes.two.move(2)
     five_axes.three.move(3)
     five_axes.four.move(4)
     five_axes.five.move(5)
-    five_axes.save_offsets()
     assert five_axes.pseudo.position == 1
     five_axes.move(10)
     assert five_axes.one.position == 10
@@ -51,6 +63,5 @@ def test_sync_offset(five_axes):
     assert five_axes.three.position == 12
     assert five_axes.four.position == 13
     assert five_axes.five.position == 14
-    five_axes._mode = max
-    five_axes.save_offsets()
-    assert five_axes.pseudo.position == 14
+
+    assert two_axes.pseudo.position == 5
