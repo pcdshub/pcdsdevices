@@ -9,7 +9,7 @@ from ophyd.sim import SynAxis
 from pcdsdevices.mv_interface import FltMvInterface
 
 
-class SynAxisInterface(FltMvInterface, SynAxis):
+class SynMotor(FltMvInterface, SynAxis):
     """
     SynAxis that has our special interface on it.
 
@@ -20,7 +20,7 @@ class SynAxisInterface(FltMvInterface, SynAxis):
         return super().set(position)
 
 
-class SimMotor(FltMvInterface, SoftPositioner, Device):
+class SlowMotor(FltMvInterface, SoftPositioner, Device):
     """
     Simulated motor with our interface attached.
 
@@ -62,8 +62,8 @@ class SimTwoAxis(Device):
     """
     Test assembly with two motors
     """
-    x = Cpt(SimMotor)
-    y = Cpt(SimMotor)
+    x = Cpt(SlowMotor)
+    y = Cpt(SlowMotor)
 
     # def tweak(self):
     #     return tweak_2d(self.x, self.y)

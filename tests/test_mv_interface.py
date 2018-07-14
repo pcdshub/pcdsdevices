@@ -11,19 +11,19 @@ from pathlib import Path
 import pytest
 
 from pcdsdevices.mv_interface import setup_preset_paths
-from pcdsdevices.sim.motor import SynAxisInterface, SimMotor
+from pcdsdevices.sim import SynMotor, SlowMotor
 
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
-def sim_motor():
-    return SimMotor(name='sim')
+def slow_motor():
+    return SlowMotor(name='sim')
 
 
 @pytest.fixture(scope='function')
-def syn_axis():
-    return SynAxisInterface(name='syn')
+def syn_motor():
+    return SynMotor(name='syn')
 
 
 @pytest.fixture(scope='function')
@@ -43,23 +43,23 @@ def presets():
 
 
 @pytest.mark.timeout(5)
-def test_mv(syn_axis):
+def test_mv(syn_motor):
     logger.debug('test_mv')
-    syn_axis(3, wait=True)
-    assert syn_axis.wm() == 3
-    syn_axis.mvr(1, wait=True)
-    assert syn_axis() == 4
+    syn_motor(3, wait=True)
+    assert syn_motor.wm() == 3
+    syn_motor.mvr(1, wait=True)
+    assert syn_motor() == 4
 
 
 @pytest.mark.timeout(5)
-def test_umv(sim_motor):
+def test_umv(slow_motor):
     logger.debug('test_umv')
-    sim_motor._set_position(5)
-    sim_motor.umvr(2)
-    assert sim_motor.position == 7
+    slow_motor._set_position(5)
+    slow_motor.umvr(2)
+    assert slow_motor.position == 7
 
 
-def test_camonitor(syn_axis):
+def test_camonitor(syn_motor):
     logger.debug('test_camonitor')
     pid = os.getpid()
 
@@ -68,53 +68,53 @@ def test_camonitor(syn_axis):
         os.kill(pid, signal.SIGINT)
 
     threading.Thread(target=interrupt, args=()).start()
-    syn_axis.camonitor()
+    syn_motor.camonitor()
 
 
-def test_presets(presets, syn_axis):
+def test_presets(presets, syn_motor):
     logger.debug('test_presets')
-    syn_axis.mv(3, wait=True)
-    syn_axis.presets.add_beamline('zero', 0, comment='center')
-    syn_axis.presets.add_here_user('sample')
-    assert syn_axis.wm_zero() == -3
-    assert syn_axis.wm_sample() == 0
+    syn_motor.mv(3, wait=True)
+    syn_motor.presets.add_beamline('zero', 0, comment='center')
+    syn_motor.presets.add_here_user('sample')
+    assert syn_motor.wm_zero() == -3
+    assert syn_motor.wm_sample() == 0
 
     # Clear paths, refresh, should still exist
-    old_paths = syn_axis.presets._paths
+    old_paths = syn_motor.presets._paths
     setup_preset_paths()
-    assert not hasattr(syn_axis, 'wm_zero')
+    assert not hasattr(syn_motor, 'wm_zero')
     setup_preset_paths(**old_paths)
-    assert syn_axis.wm_zero() == -3
-    assert syn_axis.wm_sample() == 0
+    assert syn_motor.wm_zero() == -3
+    assert syn_motor.wm_sample() == 0
 
-    syn_axis.mv_zero(wait=True)
-    syn_axis.mvr(1, wait=True)
-    assert syn_axis.wm_zero() == -1
-    assert syn_axis.wm() == 1
+    syn_motor.mv_zero(wait=True)
+    syn_motor.mvr(1, wait=True)
+    assert syn_motor.wm_zero() == -1
+    assert syn_motor.wm() == 1
 
     # Sleep for one so we don't override old history
     time.sleep(1)
-    syn_axis.presets.positions.zero.update_pos(comment='hats')
-    assert syn_axis.wm_zero() == 0
-    assert syn_axis.presets.positions.zero.pos == 1
+    syn_motor.presets.positions.zero.update_pos(comment='hats')
+    assert syn_motor.wm_zero() == 0
+    assert syn_motor.presets.positions.zero.pos == 1
 
-    assert len(syn_axis.presets.positions.zero.history) == 2
-    assert len(syn_axis.presets.positions.sample.history) == 1
+    assert len(syn_motor.presets.positions.zero.history) == 2
+    assert len(syn_motor.presets.positions.sample.history) == 1
 
-    repr(syn_axis.presets.positions.zero)
-    syn_axis.presets.positions.zero.deactivate()
-
-    with pytest.raises(AttributeError):
-        syn_axis.wm_zero()
+    repr(syn_motor.presets.positions.zero)
+    syn_motor.presets.positions.zero.deactivate()
 
     with pytest.raises(AttributeError):
-        syn_axis.presets.positions.zero
+        syn_motor.wm_zero()
 
-    syn_axis.umv_sample()
-    assert syn_axis.wm() == 3
+    with pytest.raises(AttributeError):
+        syn_motor.presets.positions.zero
 
-    syn_axis.presets.positions.sample.update_comment('hello there')
-    assert len(syn_axis.presets.positions.sample.history) == 2
+    syn_motor.umv_sample()
+    assert syn_motor.wm() == 3
+
+    syn_motor.presets.positions.sample.update_comment('hello there')
+    assert len(syn_motor.presets.positions.sample.history) == 2
 
     def block_file(path, lock):
         with open(path, 'r+') as f:
@@ -122,30 +122,30 @@ def test_presets(presets, syn_axis):
             lock.acquire()
             fcntl.flock(f, fcntl.LOCK_UN)
 
-    path = syn_axis.presets.positions.sample.path
+    path = syn_motor.presets.positions.sample.path
     lock = mp.Lock()
     with lock:
         proc = mp.Process(target=block_file, args=(path, lock))
         proc.start()
         time.sleep(0.2)
 
-        assert syn_axis.presets.positions.sample.pos == 3
-        syn_axis.presets.positions.sample.update_pos(2)
-        assert not hasattr(syn_axis, 'wm_sample')
-        syn_axis.presets.sync()
-        assert not hasattr(syn_axis, 'mv_sample')
+        assert syn_motor.presets.positions.sample.pos == 3
+        syn_motor.presets.positions.sample.update_pos(2)
+        assert not hasattr(syn_motor, 'wm_sample')
+        syn_motor.presets.sync()
+        assert not hasattr(syn_motor, 'mv_sample')
 
     proc.join()
 
-    syn_axis.presets.sync()
-    assert hasattr(syn_axis, 'mv_sample')
+    syn_motor.presets.sync()
+    assert hasattr(syn_motor, 'mv_sample')
 
 
-def test_presets_type(presets, syn_axis):
+def test_presets_type(presets, syn_motor):
     logger.debug('test_presets_type')
     # Mess up the input types, fail before opening the file
 
     with pytest.raises(TypeError):
-        syn_axis.presets.add_here_user(123)
+        syn_motor.presets.add_here_user(123)
     with pytest.raises(TypeError):
-        syn_axis.presets.add_user(234234, 'cats')
+        syn_motor.presets.add_user(234234, 'cats')
