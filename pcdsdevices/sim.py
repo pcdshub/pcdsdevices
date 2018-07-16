@@ -11,7 +11,7 @@ from pcdsdevices.mv_interface import FltMvInterface
 
 class SynMotor(FltMvInterface, SynAxis):
     """
-    SynAxis that has our special interface on it.
+    SynAxis with the FltMvInterface additions.
 
     This can be used to test when you need the readback_func feature or if you
     just want your test motor to finish immediately.
@@ -22,7 +22,7 @@ class SynMotor(FltMvInterface, SynAxis):
 
 class SlowMotor(FltMvInterface, SoftPositioner, Device):
     """
-    Simulated motor with our interface attached.
+    Simulated slow-moving motor.
 
     Unlike the SynAxis built into ophyd, this takes some time to reach the
     destination. Use this when you need some sort of delay.
