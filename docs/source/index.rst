@@ -14,6 +14,7 @@
    :caption: Device Types
 
    epics_types.rst
+   sim_types.rst
 
 .. toctree::
    :maxdepth: 1
