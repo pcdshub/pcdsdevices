@@ -275,6 +275,16 @@ class PVStateSignal(AggregateSignal):
             self._sub_signals.append(sig)
             self._sub_map[signal_name] = sig
 
+    def describe(self):
+        # Base description information
+        sub_sigs = [sig.name for sig in self._sub_signals]
+        desc = {'source': 'SUM:{}'.format(','.join(sub_sigs)),
+                'dtype': 'string',
+                'shape': [],
+                'enum_strs': tuple(state.name
+                                   for state in self.parent.states_enum)}
+        return {self.name: desc}
+
     def _calc_readback(self):
         state_value = None
         for signal_name, info in self.parent._state_logic.items():
