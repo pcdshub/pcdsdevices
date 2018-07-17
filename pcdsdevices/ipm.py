@@ -23,9 +23,10 @@ class IPM(InOutRecordPositioner):
     """
     __doc__ += basic_positioner_init
 
-    state = Cpt(EpicsSignal, ':TARGET', write_pv=':TARGET:GO')
-    diode = Cpt(InOutRecordPositioner, ':DIODE')
-    readback = FCpt(EpicsSignalRO, '{self.prefix}:TARGET:{self._readback}')
+    state = Cpt(EpicsSignal, ':TARGET', write_pv=':TARGET:GO', kind='hinted')
+    diode = Cpt(InOutRecordPositioner, ':DIODE', kind='omitted')
+    readback = FCpt(EpicsSignalRO, '{self.prefix}:TARGET:{self._readback}',
+                    kind='normal')
 
     in_states = ['TARGET1', 'TARGET2', 'TARGET3', 'TARGET4']
     states_list = in_states + ['OUT']

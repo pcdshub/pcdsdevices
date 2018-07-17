@@ -5,7 +5,7 @@ import logging
 import time
 
 import numpy as np
-from ophyd.device import Component as Cmp
+from ophyd.device import Component as Cpt
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
@@ -29,10 +29,10 @@ class Filter(InOutPositioner):
     a ``Component`` in a subclass of `AttBase`. You can instantiate these
     classes via the `Attenuator` factory function.
     """
-    state = Cmp(EpicsSignal, ':STATE', write_pv=':GO')
-    thickness = Cmp(EpicsSignal, ':THICK')
-    material = Cmp(EpicsSignal, ':MATERIAL')
-    stuck = Cmp(EpicsSignal, ':IS_STUCK')
+    state = Cpt(EpicsSignal, ':STATE', write_pv=':GO', kind='hinted')
+    thickness = Cpt(EpicsSignal, ':THICK', kind='config')
+    material = Cpt(EpicsSignal, ':MATERIAL', kind='config')
+    stuck = Cpt(EpicsSignal, ':IS_STUCK', kind='omitted')
 
 
 class AttBase(FltMvInterface, PVPositioner):
@@ -47,24 +47,23 @@ class AttBase(FltMvInterface, PVPositioner):
     `Attenuator` factory function.
     """
     # Positioner Signals
-    setpoint = Cmp(EpicsSignal, ':COM:R_DES')
-    readback = Cmp(EpicsSignalRO, ':COM:R_CUR')
-    actuate = Cmp(EpicsSignal, ':COM:GO')
-    done = Cmp(EpicsSignalRO, ':COM:STATUS')
+    setpoint = Cpt(EpicsSignal, ':COM:R_DES', kind='normal')
+    readback = Cpt(EpicsSignalRO, ':COM:R_CUR', kind='hinted')
+    actuate = Cpt(EpicsSignal, ':COM:GO', kind='omitted')
+    done = Cpt(EpicsSignalRO, ':COM:STATUS', kind='omitted')
 
     # Attenuator Signals
-    energy = Cmp(EpicsSignalRO, ':COM:T_CALC.VALE')
-    trans_ceil = Cmp(EpicsSignalRO, ':COM:R_CEIL')
-    trans_floor = Cmp(EpicsSignalRO, ':COM:R_FLOOR')
-    user_energy = Cmp(EpicsSignal, ':COM:EDES')
-    eget_cmd = Cmp(EpicsSignal, ':COM:EACT.SCAN')
+    energy = Cpt(EpicsSignalRO, ':COM:T_CALC.VALE', kind='normal')
+    trans_ceil = Cpt(EpicsSignalRO, ':COM:R_CEIL', kind='omitted')
+    trans_floor = Cpt(EpicsSignalRO, ':COM:R_FLOOR', kind='omitted')
+    user_energy = Cpt(EpicsSignal, ':COM:EDES', kind='omitted')
+    eget_cmd = Cpt(EpicsSignal, ':COM:EACT.SCAN', kind='omitted')
 
     # Aux Signals
-    calcpend = Cmp(EpicsSignalRO, ':COM:CALCP')
+    calcpend = Cpt(EpicsSignalRO, ':COM:CALCP', kind='omitted')
 
     egu = ''  # Transmission is a unitless ratio
     done_value = 0
-    _default_read_attrs = ['readback']
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, limits=(0, 1), **kwargs)
@@ -201,14 +200,14 @@ class AttBase3rd(AttBase):
     the `Attenuator` factory function.
     """
     # Positioner Signals
-    setpoint = Cmp(EpicsSignal, ':COM:R3_DES')
-    readback = Cmp(EpicsSignalRO, ':COM:R3_CUR')
+    setpoint = Cpt(EpicsSignal, ':COM:R3_DES', kind='normal')
+    readback = Cpt(EpicsSignalRO, ':COM:R3_CUR', kind='hinted')
 
     # Attenuator Signals
-    energy = Cmp(EpicsSignalRO, ':COM:T_CALC.VALH')
-    trans_ceil = Cmp(EpicsSignalRO, ':COM:R3_CEIL')
-    trans_floor = Cmp(EpicsSignalRO, ':COM:R3_FLOOR')
-    user_energy = Cmp(EpicsSignal, ':COM:E3DES')
+    energy = Cpt(EpicsSignalRO, ':COM:T_CALC.VALH', kind='normal')
+    trans_ceil = Cpt(EpicsSignalRO, ':COM:R3_CEIL', kind='omitted')
+    trans_floor = Cpt(EpicsSignalRO, ':COM:R3_FLOOR', kind='omitted')
+    user_energy = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
 
 
 def _make_att_classes(max_filters, base, name):
@@ -219,7 +218,7 @@ def _make_att_classes(max_filters, base, name):
     for i in range(1, max_filters + 1):
         att_filters = {}
         for n in range(1, i + 1):
-            comp = Cmp(Filter, ':{:02}'.format(n))
+            comp = Cpt(Filter, ':{:02}'.format(n))
             att_filters['filter{}'.format(n)] = comp
 
         name = '{}{}'.format(name, i)
