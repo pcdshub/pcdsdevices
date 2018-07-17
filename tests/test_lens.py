@@ -6,7 +6,7 @@ from ophyd.sim import make_fake_device
 
 from pcdsdevices.lens import XFLS
 
-from .conftest import HotfixFakeEpicsSignal
+from conftest import HotfixFakeEpicsSignal
 
 logger = logging.getLogger(__name__)
 

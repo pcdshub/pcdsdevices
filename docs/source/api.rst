@@ -21,6 +21,7 @@ Full API
    ~pcdsdevices.pseudopos
    ~pcdsdevices.pulsepicker
    ~pcdsdevices.signal
+   ~pcdsdevices.sim
    ~pcdsdevices.slits
    ~pcdsdevices.state
    ~pcdsdevices.valve
