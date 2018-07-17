@@ -93,6 +93,15 @@ def test_pvstate_positioner_logic():
         lim_obj.states_enum['defer']
 
 
+def test_pvstate_positioner_describe():
+    logger.debug('test_pvstate_positioner_describe')
+    lim_obj = LimCls('BASE', name='test')
+    # No smoke please
+    desc = lim_obj.state.describe()[lim_obj.state.name]
+    assert len(desc['enum_strs']) == 3  # In, Out, Unknown
+    assert desc['dtype'] == 'string'
+
+
 def test_pvstate_positioner_sets():
     logger.debug('test_pvstate_positioner_sets')
     lim_obj2 = LimCls2('BASE', name='test')

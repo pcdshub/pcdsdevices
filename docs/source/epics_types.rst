@@ -8,6 +8,7 @@ Common EPICS Devices
     
     Attenuator
     BeckhoffAxis
+    CCM
     EpicsMotor
     EventSequencer
     LODCM
