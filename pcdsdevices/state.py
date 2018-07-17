@@ -281,7 +281,8 @@ class PVStateSignal(AggregateSignal):
         desc = {'source': 'SUM:{}'.format(','.join(sub_sigs)),
                 'dtype': 'string',
                 'shape': [],
-                'enum_strs': [state.name for state in self.parent.states_enum]}
+                'enum_strs': tuple(state.name
+                                   for state in self.parent.states_enum)}
         return {self.name: desc}
 
     def _calc_readback(self):
