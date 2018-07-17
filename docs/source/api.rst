@@ -6,7 +6,9 @@ Full API
 
    ~pcdsdevices.attenuator
    ~pcdsdevices.beam_stats
+   ~pcdsdevices.ccm
    ~pcdsdevices.epics_motor
+   ~pcdsdevices.evr
    ~pcdsdevices.inout
    ~pcdsdevices.ipm
    ~pcdsdevices.lens
@@ -16,6 +18,7 @@ Full API
    ~pcdsdevices.mps
    ~pcdsdevices.mv_interface
    ~pcdsdevices.pim
+   ~pcdsdevices.pseudopos
    ~pcdsdevices.pulsepicker
    ~pcdsdevices.signal
    ~pcdsdevices.slits
