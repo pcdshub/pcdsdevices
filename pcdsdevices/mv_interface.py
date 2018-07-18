@@ -4,18 +4,19 @@ Module for defining bell-and-whistles movement features
 import time
 import fcntl
 import logging
-from threading import Thread, Event
-from .utils import get_input
 import numbers
 import signal
 from contextlib import contextmanager
 from pathlib import Path
+from threading import Thread, Event
 from types import SimpleNamespace, MethodType
 
+import pylab
 import yaml
-
 from bluesky.utils import ProgressBar
 from ophyd.status import wait as status_wait
+
+from .utils import get_input
 
 logger = logging.getLogger(__name__)
 
@@ -167,6 +168,25 @@ class FltMvInterface(MvInterface):
             will be use.
         """
         self.umv(delta + self.wm(), timeout=timeout)
+
+    def mv_ginput(self, timeout=None, wait=True):
+        """
+        Moves to a location the user clicks on.
+        """
+        print("Select new motor x-position in current plot by mouseclick")
+        if not pylab.get_fignums():
+            upper_limit = 0
+            lower_limit = self.limits[0]
+            if self.limits[1] == 0:
+                upper_limit = 100
+            else:
+                upper_limit = self.limits[1]
+            limit_plot = []
+            for x in range(lower_limit, upper_limit):
+                limit_plot.append(x)
+            pylab.plot(limit_plot)
+        pos = pylab.ginput(1)[0][0]
+        self.move(pos, timeout=timeout, wait=wait)
 
     def tweak(*args):
         if len(args) > 1:
