@@ -15,13 +15,6 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         args.extend(sys.argv[1:])
 
-    # Ignore sim tests unless given the sim keyword
-    if '--sim' in args:
-        args.remove('--sim')
-        args.append('tests_sim')
-    else:
-        args.append('--ignore=tests_sim')
-
     txt = 'pytest arguments: {}'.format(args)
     print(txt)
 

@@ -6,7 +6,7 @@ from ophyd.sim import make_fake_device
 
 from pcdsdevices.valve import GateValve, PPSStopper, Stopper, InterlockError
 
-from .conftest import HotfixFakeEpicsSignal
+from conftest import HotfixFakeEpicsSignal
 
 logger = logging.getLogger(__name__)
 

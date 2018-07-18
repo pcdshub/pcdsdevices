@@ -9,7 +9,7 @@ from ophyd.sim import make_fake_device
 from pcdsdevices.areadetector.detectors import PCDSDetector
 from pcdsdevices.pim import PIM, PIMMotor
 
-from .conftest import HotfixFakeEpicsSignal
+from conftest import HotfixFakeEpicsSignal
 
 logger = logging.getLogger(__name__)
 

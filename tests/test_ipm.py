@@ -7,7 +7,7 @@ from unittest.mock import Mock
 from pcdsdevices.inout import InOutRecordPositioner
 from pcdsdevices.ipm import IPM
 
-from .conftest import HotfixFakeEpicsSignal
+from conftest import HotfixFakeEpicsSignal
 
 logger = logging.getLogger(__name__)
 

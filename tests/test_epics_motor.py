@@ -10,7 +10,7 @@ from pcdsdevices.epics_motor import (EpicsMotorInterface, PCDSMotorBase, IMS,
                                      Newport, PMC100, BeckhoffAxis,
                                      MotorDisabledError)
 
-from .conftest import HotfixFakeEpicsSignal
+from conftest import HotfixFakeEpicsSignal
 
 logger = logging.getLogger(__name__)
 

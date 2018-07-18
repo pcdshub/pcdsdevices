@@ -6,7 +6,7 @@ from unittest.mock import Mock
 
 from pcdsdevices.lodcm import LODCM, YagLom, Dectris, Diode, Foil
 
-from .conftest import HotfixFakeEpicsSignal
+from conftest import HotfixFakeEpicsSignal
 
 logger = logging.getLogger(__name__)
 

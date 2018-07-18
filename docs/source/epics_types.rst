@@ -8,6 +8,7 @@ Common EPICS Devices
     
     Attenuator
     BeckhoffAxis
+    CCM
     EpicsMotor
     EventSequencer
     LODCM
@@ -22,4 +23,5 @@ Common EPICS Devices
     PointingMirror
     Slits
     Stopper
+    Trigger
     XFLS

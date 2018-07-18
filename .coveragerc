@@ -9,5 +9,3 @@ omit =
     #versioning
     .*version.*
     *_version.py
-    #sim
-    pcdsdevices/sim/*
