@@ -1,6 +1,7 @@
 """
 Basic Beryllium Lens XFLS
 """
+# flake8: noqa
 from ophyd.device import Component as Cpt, FormattedComponent as FCpt, Device
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
                              pseudo_position_argument, real_position_argument)
