@@ -148,7 +148,8 @@ class PPSStopper(InOutPositioner):
         # Load InOutPositioner
         super().__init__(prefix, **kwargs)
 
-    def _do_move(self, state):
+
+    def check_value(self, state):
         """
         PPSStopper can not be commanded via EPICS
         """
