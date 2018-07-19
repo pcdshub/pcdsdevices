@@ -152,3 +152,4 @@ class InOutPVStatePositioner(PVStatePositioner, InOutPositioner):
             raise TypeError(('InOutPVStatePositioner must be subclassed, '
                              'adding signals and filling in the '
                              '_state_logic dict.'))
+        super().__init__(*args, **kwargs)
