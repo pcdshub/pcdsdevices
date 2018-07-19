@@ -4,20 +4,22 @@ Module for defining bell-and-whistles movement features
 import time
 import fcntl
 import logging
-from threading import Thread, Event
-from .utils import get_input
 import numbers
 import signal
 import pylab
 from pylab import plot, ginput, show, axis
 from contextlib import contextmanager
 from pathlib import Path
+from threading import Thread, Event
 from types import SimpleNamespace, MethodType
+from weakref import WeakSet
 
+import pylab
 import yaml
-
 from bluesky.utils import ProgressBar
 from ophyd.status import wait as status_wait
+
+from .utils import get_input
 
 logger = logging.getLogger(__name__)
 
@@ -148,7 +150,7 @@ class FltMvInterface(MvInterface):
             will be use.
         """
         status = self.move(position, timeout=timeout, wait=False)
-        ProgressBar([status])
+        AbsProgressBar([status])
         try:
             status_wait(status)
         except KeyboardInterrupt:
@@ -170,33 +172,31 @@ class FltMvInterface(MvInterface):
         """
         self.umv(delta + self.wm(), timeout=timeout)
 
-<<<<<<< HEAD
     def mv_ginput(self, timeout=None):
+
         """
         Moves to a location the user clicks on.
         """
         print("Select new motor x-position in current plot by mouseclick")
         if not pylab.get_fignums():
-            upperLimit = 0
-            lowerLimit = self.limits[0]
+            upper_limit = 0
+            lower_limit = self.limits[0]
             if self.limits[1] == 0:
-                 upperLimit = 100
+                upper_limit = 100
             else:
-                 uppderLimit = self.limits[1]
-            limitPlotter = []
-            for x in range(lowerLimit,upperLimit):
-                limitPlotter.append(x)
-            pylab.plot(limitPlotter)
-        pos = ginput(1)[0][0]
-        self.move(pos, timeout=timeout, wait=True)
-=======
+                upper_limit = self.limits[1]
+            limit_plot = []
+            for x in range(lower_limit, upper_limit):
+                limit_plot.append(x)
+            pylab.plot(limit_plot)
+        pos = pylab.ginput(1)[0][0]
+        self.move(pos, timeout=timeout, wait=wait)
+
     def tweak(*args):
         if len(args) > 1:
             return tweak_base(args[0], args[1])
         else:
             return tweak_base(args[0])
-
->>>>>>> upstream/master
 
 def setup_preset_paths(**paths):
     """
@@ -214,7 +214,7 @@ def setup_preset_paths(**paths):
     Presets._paths = {}
     for k, v in paths.items():
         Presets._paths[k] = Path(v)
-    for preset in Presets._registry.values():
+    for preset in Presets._registry:
         preset.sync()
 
 
@@ -241,14 +241,14 @@ class Presets:
         A namespace that contains all of the active presets as `PresetPosition`
         objects.
     """
-    _registry = {}
+    _registry = WeakSet()
     _paths = {}
 
     def __init__(self, device):
         self._device = device
         self._methods = []
         self._fd = None
-        self._registry[device.name] = self
+        self._registry.add(self)
         self.name = device.name + '_presets'
         self.sync()
 
@@ -735,3 +735,15 @@ def tweak_base(*args):
             else:
                 movement(scale, inp)
                 scale = _scale(scale, inp)
+
+
+class AbsProgressBar(ProgressBar):
+    """
+    Progress bar that displays the absolute position as well
+    """
+    def update(self, *args, name=None, current=None, **kwargs):
+        if None not in (name, current):
+            super().update(*args, name='{} ({:.3f})'.format(name, current),
+                           current=current, **kwargs)
+        else:
+            super().update(*args, name=name, current=current, **kwargs)
