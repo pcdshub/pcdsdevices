@@ -65,6 +65,9 @@ class StatePositioner(Device, PositionerBase, MvInterface):
     egu = 'state'
 
     def __init__(self, prefix, *, name, **kwargs):
+        if self.__class__ is StatePositioner:
+            raise TypeError(('StatePositioner must be subclassed with at '
+                             'least a state signal'))
         super().__init__(prefix, name=name, **kwargs)
         self._valid_states = [state for state in self.states_list
                               if state not in self._invalid_states
@@ -360,6 +363,10 @@ class PVStatePositioner(StatePositioner):
     _state_logic_mode = 'ALL'
 
     def __init__(self, prefix, *, name, **kwargs):
+        if self.__class__ is PVStatePositioner:
+            raise TypeError(('PVStatePositioner must be subclassed, '
+                             'adding signals and filling in the '
+                             '_state_logic dict.'))
         if self._state_logic and not self.states_list:
             self.states_list = []
             for state_mapping in self._state_logic.values():

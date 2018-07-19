@@ -65,3 +65,9 @@ def test_sync_offset(five_axes, two_axes):
     assert five_axes.five.position == 14
 
     assert two_axes.pseudo.position == 5
+
+
+def test_subcls_warning():
+    logger.debug('test_subcls_warning')
+    with pytest.raises(TypeError):
+        SyncAxesBase('prefix', name='name')

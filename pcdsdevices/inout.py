@@ -15,8 +15,14 @@ from .state import StatePositioner, StateRecordPositioner, PVStatePositioner
 
 class InOutPositioner(StatePositioner):
     """
-    Basic in/out `StatePositioner`. It can be inserted, removed and queried for
-    insertion and removal state. It can also define transmission values for the
+    Base class for a device that can be inserted and removed from the beam.
+
+    This must be subclassed and given a ``state`` signal to work properly. You
+    should also update the ``states_list``, ``in_states``, and ``out_states``
+    lists appropriately.
+
+    These devices can be inserted, removed and queried for insertion and
+    removal state. They can also define transmission values for the
     various states.
 %s
     Attributes
@@ -41,6 +47,9 @@ class InOutPositioner(StatePositioner):
     _transmission = {}
 
     def __init__(self, prefix, *, name, **kwargs):
+        if self.__class__ is InOutPositioner:
+            raise TypeError(('InOutPositioner must be subclassed with at '
+                             'least a state signal'))
         super().__init__(prefix, name=name, **kwargs)
         self._trans_enum = {}
         self._extend_trans_enum(self.in_states, 0)
@@ -137,3 +146,10 @@ class InOutPVStatePositioner(PVStatePositioner, InOutPositioner):
     more information.
     """
     __doc__ += basic_positioner_init
+
+    def __init__(self, *args, **kwargs):
+        if self.__class__ is InOutPVStatePositioner:
+            raise TypeError(('InOutPVStatePositioner must be subclassed, '
+                             'adding signals and filling in the '
+                             '_state_logic dict.'))
+        super().__init__(*args, **kwargs)
