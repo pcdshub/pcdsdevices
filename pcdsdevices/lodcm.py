@@ -43,6 +43,14 @@ class Foil(InOutRecordPositioner):
     states_list = ['OUT']
     in_states = []
 
+    def __init__(self, prefix, *args, **kwargs):
+        if 'XPP' in prefix:
+            self.in_states = ['Mo', 'Zr', 'Zn', 'Cu', 'Ni', 'Fe', 'Ti']
+        elif 'XCS' in prefix:
+            self.in_states = ['Mo', 'Zr', 'Ge', 'Cu', 'Ni', 'Fe', 'Ti']
+        self.states_list = ['OUT'] + self.in_states
+        super().__init__(prefix, *args, **kwargs)
+
 
 class LODCM(InOutRecordPositioner):
     """
