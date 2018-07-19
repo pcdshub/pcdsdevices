@@ -175,5 +175,14 @@ class InconsistentState(StatePositioner):
 
 
 def test_state_error():
+    logger.debug('test_state_error')
     with pytest.raises(ValueError):
         InconsistentState('prefix', name='bad')
+
+
+def test_subcls_warning():
+    logger.debug('test_subcls_warning')
+    with pytest.raises(TypeError):
+        StatePositioner('prefix', name='name')
+    with pytest.raises(TypeError):
+        PVStatePositioner('prefix', name='name')

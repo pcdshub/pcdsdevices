@@ -4,7 +4,9 @@ from unittest.mock import Mock
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.inout import InOutRecordPositioner
+from pcdsdevices.inout import (InOutPositioner,
+                               InOutRecordPositioner,
+                               InOutPVStatePositioner)
 
 from conftest import HotfixFakeEpicsSignal
 
@@ -62,3 +64,11 @@ def test_inout_subscriptions(fake_inout):
     # Change the target state
     inout.state.put('OUT')
     assert cb.called
+
+
+def test_subcls_warning():
+    logger.debug('test_subcls_warning')
+    with pytest.raises(TypeError):
+        InOutPositioner('prefix', name='name')
+    with pytest.raises(TypeError):
+        InOutPVStatePositioner('prefix', name='name')
