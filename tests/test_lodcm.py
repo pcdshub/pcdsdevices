@@ -75,3 +75,9 @@ def test_lodcm_remove_dia(fake_lodcm):
     lodcm.remove_dia(moved_cb=cb, wait=True)
     assert cb.called
     assert lodcm.yag.position == 'OUT'
+
+
+def test_hutch_foils():
+    FakeFoil = make_fake_device(Foil)
+    assert 'Zn' in FakeFoil('XPP', name='foil').in_states
+    assert 'Ge' in FakeFoil('XCS', name='foil').in_states
