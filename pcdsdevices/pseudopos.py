@@ -33,6 +33,10 @@ class SyncAxesBase(PseudoPositioner):
     pseudo = Cpt(PseudoSingle)
 
     def __init__(self, *args, **kwargs):
+        if self.__class__ is SyncAxesBase:
+            raise TypeError(('SyncAxesBase must be subclassed with '
+                             'the axes to synchronize included as '
+                             'components'))
         super().__init__(*args, **kwargs)
         self._offsets = {}
 
