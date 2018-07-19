@@ -4,7 +4,11 @@ Basic Beryllium Lens XFLS
 The scope of this module is picking a lens, not focusing or aligning the
 lenses. This will be expanded in the future.
 """
+from ophyd.device import Component as Cpt, FormattedComponent as FCpt
+from ophyd.pseudopos import PseudoPositioner, PsuedoSingle
+
 from .doc_stubs import basic_positioner_init
+from .epics_motor import IMS
 from .inout import InOutRecordPositioner
 
 
@@ -25,3 +29,15 @@ class XFLS(InOutRecordPositioner):
         for state in self.in_states:
             self._transmission[state] = self._lens_transmission
         super().__init__(prefix, name=name, **kwargs)
+
+
+class LensStack(PseudoPositioner):
+    x = FCpt(IMS, '{self.x_prefix}')
+    y = FCpt(IMS, '{self.y_prefix}')
+    z = FCpt(IMS, '{self.z_prefix}')
+
+    def __init__(self, x_prefix, y_prefix, z_prefix, *args, **kwargs):
+        self.x_prefix = x_prefix
+        self.y_prefix = y_prefix
+        self.z_prefix = z_prefix
+        super().__init__(x_prefix, *args, **kwargs)
