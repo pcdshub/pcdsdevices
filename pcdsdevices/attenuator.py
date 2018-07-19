@@ -221,8 +221,8 @@ def _make_att_classes(max_filters, base, name):
             comp = Cpt(Filter, ':{:02}'.format(n))
             att_filters['filter{}'.format(n)] = comp
 
-        name = '{}{}'.format(name, i)
-        cls = type(name, (base,), att_filters)
+        cls_name = '{}{}'.format(name, i)
+        cls = type(cls_name, (base,), att_filters)
         # Store the number of filters
         cls.num_att = i
         att_classes[i] = cls
