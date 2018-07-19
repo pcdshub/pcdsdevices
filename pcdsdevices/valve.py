@@ -95,6 +95,14 @@ class GateValve(Stopper):
     command = Cpt(EpicsSignal,   ':OPN_SW', kind='omitted')
     interlock = Cpt(EpicsSignalRO, ':OPN_OK', kind='normal')
 
+
+    def check_value(self, value):
+        """Check when removing GateValve interlock is off"""
+        value = super().check_value(value)
+        if value == self.states_enum.OUT and self.interlocked:
+            raise InterlockError('Valve is currently forced closed')
+        return value
+
     @property
     def interlocked(self):
         """
@@ -102,15 +110,6 @@ class GateValve(Stopper):
         opening
         """
         return bool(self.interlock.get())
-
-    def remove(self, **kwargs):
-        """
-        Remove the valve from the beam
-        """
-        if self.interlocked:
-            raise InterlockError('Valve is currently forced closed')
-
-        return super().remove(**kwargs)
 
 
 class PPSStopper(InOutPositioner):
