@@ -10,6 +10,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from threading import Thread, Event
 from types import SimpleNamespace, MethodType
+from weakref import WeakSet
 
 import pylab
 import yaml
@@ -211,7 +212,7 @@ def setup_preset_paths(**paths):
     Presets._paths = {}
     for k, v in paths.items():
         Presets._paths[k] = Path(v)
-    for preset in Presets._registry.values():
+    for preset in Presets._registry:
         preset.sync()
 
 
@@ -238,14 +239,14 @@ class Presets:
         A namespace that contains all of the active presets as `PresetPosition`
         objects.
     """
-    _registry = {}
+    _registry = WeakSet()
     _paths = {}
 
     def __init__(self, device):
         self._device = device
         self._methods = []
         self._fd = None
-        self._registry[device.name] = self
+        self._registry.add(self)
         self.name = device.name + '_presets'
         self.sync()
 
