@@ -147,7 +147,7 @@ class FltMvInterface(MvInterface):
             will be use.
         """
         status = self.move(position, timeout=timeout, wait=False)
-        ProgressBar([status])
+        AbsProgressBar([status])
         try:
             status_wait(status)
         except KeyboardInterrupt:
@@ -732,3 +732,15 @@ def tweak_base(*args):
             else:
                 movement(scale, inp)
                 scale = _scale(scale, inp)
+
+
+class AbsProgressBar(ProgressBar):
+    """
+    Progress bar that displays the absolute position as well
+    """
+    def update(self, *args, name=None, current=None, **kwargs):
+        if None not in (name, current):
+            super().update(*args, name='{} ({:.3f})'.format(name, current),
+                           current=current, **kwargs)
+        else:
+            super().update(*args, name=name, current=current, **kwargs)
