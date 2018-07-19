@@ -95,7 +95,6 @@ class GateValve(Stopper):
     command = Cpt(EpicsSignal,   ':OPN_SW', kind='omitted')
     interlock = Cpt(EpicsSignalRO, ':OPN_OK', kind='normal')
 
-
     def check_value(self, value):
         """Check when removing GateValve interlock is off"""
         value = super().check_value(value)
@@ -146,7 +145,6 @@ class PPSStopper(InOutPositioner):
         self.states_list = self.in_states + self.out_states
         # Load InOutPositioner
         super().__init__(prefix, **kwargs)
-
 
     def check_value(self, state):
         """
