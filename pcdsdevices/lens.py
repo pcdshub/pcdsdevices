@@ -9,7 +9,7 @@ from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
-
+from .mv_interface import setup_preset_paths
 
 class XFLS(InOutRecordPositioner):
     """
@@ -41,3 +41,48 @@ class LensStack(Device):
         self.y_prefix = y_prefix
         self.z_prefix = z_prefix
         super().__init__(x_prefix, *args, **kwargs)
+
+    def allign_move(self,z_pos=None):
+        setup_preset_paths(hutch='presets',exp='presets')
+        pos = [self.x.presets.positions.entry.pos,
+               self.y.presets.positions.entry.pos,
+               self.z.presets.positions.entry.pos,
+               self.x.presets.positions.exit.pos,
+               self.y.presets.positions.exit.pos,
+               self.z.presets.positions.exit.pos]
+        self.x.move(((pos[0]-pos[3])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[0])
+        self.y.move(((pos[1]-pos[4])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[1])
+        self.z.move(z_pos)
+
+    def allign(self,z_position=None):
+        """
+        Generates equations for the beam based on user input.
+    
+        This program uses two points, one made on the entrance
+        and the other made on the exit, adjusted by the user
+        to put the beam into alignment, and uses those two points
+        to make two equations to determine a y- and x-position
+        for any z-value the user wants that will keep the beam focused.
+        The beam line will be saved, and can be reused with allign_move()
+        """
+        def get_positions(self):
+            self.z.move(self.z.limits[0])
+            self.x.tweak(self.y)
+            pos = [self.x.position,self.y.position,self.z.position]
+            self.z.move(self.z.limits[1])
+            print()
+            self.x.tweak(self.y)
+            pos.extend([self.x.position,self.y.position,self.z.position])
+            return pos
+
+        setup_preset_paths(hutch='presets',exp='presets')
+        pos = get_positions()
+        self.x.presets.add_hutch(value=pos[0],name="entry")
+        self.x.presets.add_hutch(value=pos[3],name="exit")
+        self.y.presets.add_hutch(value=pos[1],name="entry")
+        self.y.presets.add_hutch(value=pos[4],name="exit")
+        self.z.presets.add_hutch(value=pos[2],name="entry")
+        self.z.presets.add_hutch(value=pos[5],name="exit")
+        allign_move(z_position)
+        print(self.z.position,self.y.position,self.x.position)
+
