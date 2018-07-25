@@ -6,6 +6,7 @@ import time
 
 import numpy as np
 from ophyd.device import Component as Cpt
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
@@ -33,6 +34,17 @@ class Filter(InOutPositioner):
     thickness = Cpt(EpicsSignal, ':THICK', kind='config')
     material = Cpt(EpicsSignal, ':MATERIAL', kind='config')
     stuck = Cpt(EpicsSignal, ':IS_STUCK', kind='omitted')
+
+
+class FeeFilter(InOutPositioner):
+    """
+    A single attenuation blade, as implemented in the FEE
+    """
+    state = Cpt(EpicsSignal, ':STATE', write_pv=':CMD')
+
+    states_list = ['IN', 'OUT', 'FAIL']
+    _invalid_states = ['FAIL']
+    _unknown = 'XSTN'
 
 
 class AttBase(FltMvInterface, PVPositioner):
@@ -75,7 +87,7 @@ class AttBase(FltMvInterface, PVPositioner):
                 break
 
     @property
-    def actuate_value(self):
+    def actuate_value(self, force_ceil=False, force_floor=False):
         """
         Sets the value we use in the GO command. This command will return 3 if
         the setpoint is closer to the ceiling than the floor, or 2 otherwise.
@@ -93,6 +105,13 @@ class AttBase(FltMvInterface, PVPositioner):
         goal = self.setpoint.get()
         ceil = self.trans_ceil.get()
         floor = self.trans_floor.get()
+
+        if force_ceil:
+            return 3
+
+        if force_floor:
+            return 2
+
         if abs(goal - ceil) > abs(goal - floor):
             return 2
         else:
@@ -210,6 +229,34 @@ class AttBase3rd(AttBase):
     user_energy = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
 
 
+class FeeAtt(AttBase):
+    """
+    Old attenuator IOC in the FEE.
+    """
+    setpoint = Cpt(EpicsSignal, ':RDES')
+    readback = Cpt(EpicsSignal, ':RACT')
+    energy = Cpt(EpicsSignalRO, 'ETOA.E')
+
+    status = None
+    calcpend = Cpt(EpicsSignal, value=0)
+
+    # Hardcode filters for FEE, because there is only one.
+    filter1 = FCpt(FeeFilter, '{self._filter_prefix}1')
+    filter2 = FCpt(FeeFilter, '{self._filter_prefix}2')
+    filter3 = FCpt(FeeFilter, '{self._filter_prefix}3')
+    filter4 = FCpt(FeeFilter, '{self._filter_prefix}4')
+    filter5 = FCpt(FeeFilter, '{self._filter_prefix}5')
+    filter6 = FCpt(FeeFilter, '{self._filter_prefix}6')
+    filter7 = FCpt(FeeFilter, '{self._filter_prefix}7')
+    filter8 = FCpt(FeeFilter, '{self._filter_prefix}8')
+    filter9 = FCpt(FeeFilter, '{self._filter_prefix}9')
+    num_att = 9
+
+    def __init__(self, prefix='SATT:FEE1:320', *, name='FeeAtt', **kwargs):
+        self._filter_prefix = prefix[:-1]
+        super().__init__(prefix, name=name, **kwargs)
+
+
 def _make_att_classes(max_filters, base, name):
     """
     Generate all possible subclasses.
@@ -263,3 +310,10 @@ def Attenuator(prefix, n_filters, *, name, use_3rd=False, **kwargs):
     else:
         cls = _att_classes[n_filters]
     return cls(prefix, name=name, **kwargs)
+
+def set_combined_attenuation(attenuation, *attenuators):
+    for i in range(len(attenuators)):
+        if i < len(attenuators)-1:
+            attenuators[i].actuate_value(force_ceil=True)
+        else:
+            attenuators[i].actuate_value()
