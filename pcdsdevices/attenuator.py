@@ -233,11 +233,20 @@ class FeeAtt(AttBase):
     """
     Old attenuator IOC in the FEE.
     """
-    setpoint = Cpt(EpicsSignal, ':RDES')
-    readback = Cpt(EpicsSignal, ':RACT')
-    energy = Cpt(EpicsSignalRO, 'ETOA.E')
+    # Positioner Signals
+    setpoint = Cpt(EpicsSignal, ':RDES', kind='normal')
+    readback = Cpt(EpicsSignal, ':RACT', kind='hinted')
+    actuate = Cpt(EpicsSignal, ':GO', kind='omitted')
+    done = None
+    
+    # Attenuator Signals
+    energy = Cpt(EpicsSignalRO, ':ETOA.E', kind='normal')
+    trans_ceil = Cpt(EpicsSignalRO, ':R_CEIL', kind='omitted')
+    trans_floor = Cpt(EpicsSignalRO, ':R_FLOOR', kind='omitted')
+    user_energy = Cpt(EpicsSignal, ':EDES', kind='omitted')
+    eget_cmd = Cpt(EpicsSignal, ':EACT.SCAN', kind='omitted')
 
-    status = None
+#   status = None
     calcpend = Cpt(Signal, value=0)
 
     # Hardcode filters for FEE, because there is only one.
@@ -311,9 +320,12 @@ def Attenuator(prefix, n_filters, *, name, use_3rd=False, **kwargs):
         cls = _att_classes[n_filters]
     return cls(prefix, name=name, **kwargs)
 
+'''
+# WIP
 def set_combined_attenuation(attenuation, *attenuators):
     for i in range(len(attenuators)):
         if i < len(attenuators)-1:
             attenuators[i].actuate_value(force_ceil=True)
         else:
             attenuators[i].actuate_value()
+'''
