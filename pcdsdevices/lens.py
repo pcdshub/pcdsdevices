@@ -43,6 +43,12 @@ class LensStack(Device):
         super().__init__(x_prefix, *args, **kwargs)
 
     def allign_move(self,z_pos=None):
+        """
+        Uses the positions from allign function to move the LensStack
+        to an alligned position at the given z_pos.
+        This is automatically called at the end of allign,
+        but can also be called independantly to bypass the allignment itself.
+        """
         setup_preset_paths(hutch='presets',exp='presets')
         pos = [self.x.presets.positions.entry.pos,
                self.y.presets.positions.entry.pos,
@@ -56,27 +62,24 @@ class LensStack(Device):
 
     def allign(self,z_position=None):
         """
-        Generates equations for the beam based on user input.
-    
-        This program uses two points, one made on the entrance
-        and the other made on the exit, adjusted by the user
+        Generates equations for alligning the beam based on user input.
+
+        This program uses two points, one made on the lower limit
+        and the other made on the upper limit, after the user uses tweak function 
         to put the beam into alignment, and uses those two points
         to make two equations to determine a y- and x-position
         for any z-value the user wants that will keep the beam focused.
-        The beam line will be saved, and can be reused with allign_move()
+        The beam line will be saved in a file in the presets folder,
+        and can be reused with allign_move
         """
-        def get_positions(self):
-            self.z.move(self.z.limits[0])
-            self.x.tweak(self.y)
-            pos = [self.x.position,self.y.position,self.z.position]
-            self.z.move(self.z.limits[1])
-            print()
-            self.x.tweak(self.y)
-            pos.extend([self.x.position,self.y.position,self.z.position])
-            return pos
-
         setup_preset_paths(hutch='presets',exp='presets')
-        pos = get_positions()
+        self.z.move(self.z.limits[0])
+        self.x.tweak(self.y)
+        pos = [self.x.position,self.y.position,self.z.position]
+        self.z.move(self.z.limits[1])
+        print()
+        self.x.tweak(self.y)
+        pos.extend([self.x.position,self.y.position,self.z.position])
         self.x.presets.add_hutch(value=pos[0],name="entry")
         self.x.presets.add_hutch(value=pos[3],name="exit")
         self.y.presets.add_hutch(value=pos[1],name="entry")
@@ -84,5 +87,3 @@ class LensStack(Device):
         self.z.presets.add_hutch(value=pos[2],name="entry")
         self.z.presets.add_hutch(value=pos[5],name="exit")
         allign_move(z_position)
-        print(self.z.position,self.y.position,self.x.position)
-
