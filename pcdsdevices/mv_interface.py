@@ -6,8 +6,6 @@ import fcntl
 import logging
 import numbers
 import signal
-import pylab
-from pylab import plot, ginput, show, axis
 from contextlib import contextmanager
 from pathlib import Path
 from threading import Thread, Event
@@ -173,7 +171,6 @@ class FltMvInterface(MvInterface):
         self.umv(delta + self.wm(), timeout=timeout)
 
     def mv_ginput(self, timeout=None):
-
         """
         Moves to a location the user clicks on.
         """
