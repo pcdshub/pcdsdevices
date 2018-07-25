@@ -8,7 +8,7 @@ import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositioner
-from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
 
 from .inout import InOutPositioner
 from .mv_interface import FltMvInterface
@@ -238,7 +238,7 @@ class FeeAtt(AttBase):
     energy = Cpt(EpicsSignalRO, 'ETOA.E')
 
     status = None
-    calcpend = Cpt(EpicsSignal, value=0)
+    calcpend = Cpt(Signal, value=0)
 
     # Hardcode filters for FEE, because there is only one.
     filter1 = FCpt(FeeFilter, '{self._filter_prefix}1')
