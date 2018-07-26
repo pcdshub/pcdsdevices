@@ -9,7 +9,7 @@ from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
-from .mv_interface import setup_preset_paths
+from .mv_interface import setup_preset_paths,tweak_base
 
 class XFLS(InOutRecordPositioner):
     """
@@ -29,12 +29,12 @@ class XFLS(InOutRecordPositioner):
             self._transmission[state] = self._lens_transmission
         super().__init__(prefix, name=name, **kwargs)
 
-
-# Change into PseudoPositioner when it's time to add the calculations
-class LensStack(Device):
+class LensStack(PseudoPositioner):
     x = FCpt(IMS, '{self.x_prefix}')
     y = FCpt(IMS, '{self.y_prefix}')
     z = FCpt(IMS, '{self.z_prefix}')
+    
+    calib_z = Cpt(PseudoSingle)
 
     def __init__(self, x_prefix, y_prefix, z_prefix, *args, **kwargs):
         self.x_prefix = x_prefix
@@ -42,13 +42,16 @@ class LensStack(Device):
         self.z_prefix = z_prefix
         super().__init__(x_prefix, *args, **kwargs)
 
-    def allign_move(self,z_pos=None):
+    def tweak(self):
         """
-        Uses the positions from allign function to move the LensStack
-        to an alligned position at the given z_pos.
-        This is automatically called at the end of allign,
-        but can also be called independantly to bypass the allignment itself.
+        Calls the tweak function from mv_interface
+        with the x and y motors.
         """
+        tweak_base(self.x,self.y)
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        z_pos = pseudo_pos.calib_z
         setup_preset_paths(hutch='presets',exp='presets')
         pos = [self.x.presets.positions.entry.pos,
                self.y.presets.positions.entry.pos,
@@ -56,9 +59,13 @@ class LensStack(Device):
                self.x.presets.positions.exit.pos,
                self.y.presets.positions.exit.pos,
                self.z.presets.positions.exit.pos]
-        self.x.move(((pos[0]-pos[3])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[0])
-        self.y.move(((pos[1]-pos[4])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[1])
-        self.z.move(z_pos)
+        x_pos = ((pos[0]-pos[3])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[0]
+        y_pos = ((pos[1]-pos[4])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[1]
+        return self.RealPosition(x = x_pos, y = y_pos, z = z_pos)
+
+    @real_position_argument
+    def inverse(self, real_pos):
+        return self.PseudoPosition(calib_z = self.z.position)
 
     def allign(self,z_position=None):
         """
@@ -74,11 +81,11 @@ class LensStack(Device):
         """
         setup_preset_paths(hutch='presets',exp='presets')
         self.z.move(self.z.limits[0])
-        self.x.tweak(self.y)
+        self.tweak()
         pos = [self.x.position,self.y.position,self.z.position]
         self.z.move(self.z.limits[1])
         print()
-        self.x.tweak(self.y)
+        self.tweak()
         pos.extend([self.x.position,self.y.position,self.z.position])
         self.x.presets.add_hutch(value=pos[0],name="entry")
         self.x.presets.add_hutch(value=pos[3],name="exit")
@@ -86,4 +93,4 @@ class LensStack(Device):
         self.y.presets.add_hutch(value=pos[4],name="exit")
         self.z.presets.add_hutch(value=pos[2],name="entry")
         self.z.presets.add_hutch(value=pos[5],name="exit")
-        allign_move(z_position)
+        self.calib_z.move(z_position)
