@@ -191,8 +191,8 @@ class StatePositioner(Device, PositionerBase, MvInterface):
         if not isinstance(value, (int, str)):
             raise TypeError('Valid states must be of type str or int')
         state = self.get_state(value)
-        if state.name == self._unknown:
-            raise ValueError('Cannot set the Unknown state')
+        if state.name in self._invalid_states:
+            raise ValueError('Cannot set the %s state', state.name)
         return state
 
     def get_state(self, value):
