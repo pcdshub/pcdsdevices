@@ -67,9 +67,9 @@ class LensStack(PseudoPositioner):
     def inverse(self, real_pos):
         return self.PseudoPosition(calib_z = self.z.position)
 
-    def allign(self,z_position=None):
+    def align(self,z_position=None):
         """
-        Generates equations for alligning the beam based on user input.
+        Generates equations for aligning the beam based on user input.
 
         This program uses two points, one made on the lower limit
         and the other made on the upper limit, after the user uses tweak function 
@@ -77,7 +77,7 @@ class LensStack(PseudoPositioner):
         to make two equations to determine a y- and x-position
         for any z-value the user wants that will keep the beam focused.
         The beam line will be saved in a file in the presets folder,
-        and can be reused with allign_move
+        and can be used with the pseudo positioner on the z axis.
         """
         setup_preset_paths(hutch='presets',exp='presets')
         self.z.move(self.z.limits[0])
