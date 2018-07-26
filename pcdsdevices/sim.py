@@ -78,7 +78,7 @@ class SimTwoAxis(Device):
         return tweak_base(self.x, self.y)
 
 
-class SynLensStack(LensStack):
+class SimLensStack(LensStack):
     """
     Test version of the lens stack for testing the Be lens class.
     """
