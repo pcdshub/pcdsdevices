@@ -6,7 +6,8 @@ from ophyd.positioner import SoftPositioner
 from ophyd.signal import AttributeSignal
 from ophyd.sim import SynAxis
 
-from pcdsdevices.mv_interface import FltMvInterface
+from pcdsdevices.lens import LensStack
+from pcdsdevices.mv_interface import FltMvInterface, tweak_base
 
 
 class SynMotor(FltMvInterface, SynAxis):
@@ -14,25 +15,33 @@ class SynMotor(FltMvInterface, SynAxis):
     SynAxis with the FltMvInterface additions.
 
     This can be used to test when you need the readback_func feature or if you
-    just want your test motor to finish immediately.
+    just want your test motor to finish immediately. See the SynAxis
+    documentation in ophyd.
     """
     def move(self, position, *args, **kwargs):
         return super().set(position)
 
 
-class SlowMotor(FltMvInterface, SoftPositioner, Device):
+class FastMotor(FltMvInterface, SoftPositioner, Device):
     """
-    Simulated slow-moving motor.
+    Instant motor with FltMvInterface.
 
-    Unlike the SynAxis built into ophyd, this takes some time to reach the
-    destination. Use this when you need some sort of delay.
+    This is suitable to replace real motors in the PseudoPositioner
+    subclasses. It does not have all of the SynAxis functionality.
     """
     user_readback = Cpt(AttributeSignal, 'position')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._set_position(0)
+    def __init__(self, *args, init_pos=0, **kwargs):
+        super().__init__(*args, init_pos=init_pos, **kwargs)
 
+
+class SlowMotor(FastMotor):
+    """
+    Simulated slow-moving motor.
+
+    Unlike the FastMotor, this takes some time to reach the
+    destination. Use this when you need some sort of delay.
+    """
     def _setup_move(self, position, status):
         def update_thread(positioner, goal):
             positioner._moving = True
@@ -60,10 +69,19 @@ class SlowMotor(FltMvInterface, SoftPositioner, Device):
 
 class SimTwoAxis(Device):
     """
-    Test assembly with two motors
+    Test assembly with two slow motors. Used to test 2d tweak.
     """
     x = Cpt(SlowMotor)
     y = Cpt(SlowMotor)
 
-    # def tweak(self):
-    #     return tweak_2d(self.x, self.y)
+    def tweak(self):
+        return tweak_base(self.x, self.y)
+
+
+class SynLensStack(LensStack):
+    """
+    Test version of the lens stack for testing the Be lens class.
+    """
+    x = Cpt(FastMotor, limits=(-10, 10))
+    y = Cpt(FastMotor, limits=(-10, 10))
+    z = Cpt(FastMotor, limits=(-100, 100))
