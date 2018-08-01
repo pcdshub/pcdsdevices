@@ -9,7 +9,7 @@ from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
-from .mv_interface import setup_preset_paths,tweak_base
+from .mv_interface import tweak_base
 
 class XFLS(InOutRecordPositioner):
     """
@@ -44,30 +44,35 @@ class LensStack(PseudoPositioner):
 
     def tweak(self):
         """
-        Calls the tweak function from mv_interface
-        with the x and y motors.
+        Calls the tweak function from mv_interface.
+        Use left and right arrow keys for the x motor
+        and up and down for the y motor.
+        Shift and left or right changes the step size.
+        Press q to quit.
         """
-        tweak_base(self.x,self.y)
+        tweak_base(self.x, self.y)
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
         z_pos = pseudo_pos.calib_z
-        setup_preset_paths(hutch='presets',exp='presets')
-        pos = [self.x.presets.positions.entry.pos,
-               self.y.presets.positions.entry.pos,
-               self.z.presets.positions.entry.pos,
-               self.x.presets.positions.exit.pos,
-               self.y.presets.positions.exit.pos,
-               self.z.presets.positions.exit.pos]
+        try:
+            pos = [self.x.presets.positions.align_position_one.pos, 
+                   self.y.presets.positions.align_position_one.pos, 
+                   self.z.presets.positions.align_position_one.pos, 
+                   self.x.presets.positions.align_position_two.pos, 
+                   self.y.presets.positions.align_position_two.pos, 
+                   self.z.presets.positions.align_position_two.pos]
+        except AttributeError:
+            print("Error: Please setup the pseudo motor for use by using the align() method.  If you have already done that, check if the preset pathways have been setup.")
         x_pos = ((pos[0]-pos[3])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[0]
         y_pos = ((pos[1]-pos[4])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[1]
-        return self.RealPosition(x = x_pos, y = y_pos, z = z_pos)
+        return self.RealPosition(x=x_pos, y=y_pos, z=z_pos)
 
     @real_position_argument
     def inverse(self, real_pos):
-        return self.PseudoPosition(calib_z = self.z.position)
+        return self.PseudoPosition(calib_z=self.z.position)
 
-    def align(self,z_position=None):
+    def align(self, z_position=None):
         """
         Generates equations for aligning the beam based on user input.
 
@@ -78,19 +83,24 @@ class LensStack(PseudoPositioner):
         for any z-value the user wants that will keep the beam focused.
         The beam line will be saved in a file in the presets folder,
         and can be used with the pseudo positioner on the z axis.
+        If called with an integer, automatically moves the z motor.
         """
-        setup_preset_paths(hutch='presets',exp='presets')
         self.z.move(self.z.limits[0])
         self.tweak()
-        pos = [self.x.position,self.y.position,self.z.position]
+        pos = [self.x.position, self.y.position, self.z.position]
         self.z.move(self.z.limits[1])
         print()
         self.tweak()
-        pos.extend([self.x.position,self.y.position,self.z.position])
-        self.x.presets.add_hutch(value=pos[0],name="entry")
-        self.x.presets.add_hutch(value=pos[3],name="exit")
-        self.y.presets.add_hutch(value=pos[1],name="entry")
-        self.y.presets.add_hutch(value=pos[4],name="exit")
-        self.z.presets.add_hutch(value=pos[2],name="entry")
-        self.z.presets.add_hutch(value=pos[5],name="exit")
-        self.calib_z.move(z_position)
+        pos.extend([self.x.position, self.y.position, self.z.position])
+        try:
+            self.x.presets.add_hutch(value=pos[0], name="align_position_one")
+            self.x.presets.add_hutch(value=pos[3], name="align_position_two")
+            self.y.presets.add_hutch(value=pos[1], name="align_position_one")
+            self.y.presets.add_hutch(value=pos[4], name="align_position_two")
+            self.z.presets.add_hutch(value=pos[2], name="align_position_one")
+            self.z.presets.add_hutch(value=pos[5], name="align_position_two")
+        except AttributeError:
+            print()
+            print("Error: No folder setup for motor presets.  Please add a location to save the positions to using setup_preset_paths from mv_interface to keep the position files")
+        if z_position != None:
+            self.calib_z.move(z_position)
