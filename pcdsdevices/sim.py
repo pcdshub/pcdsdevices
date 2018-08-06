@@ -43,6 +43,9 @@ class SlowMotor(FastMotor):
     destination. Use this when you need some sort of delay.
     """
     def _setup_move(self, position, status):
+        if self.position is None:
+            return self._set_position(position)
+
         def update_thread(positioner, goal):
             positioner._moving = True
             while positioner.position != goal and not self._stop:
