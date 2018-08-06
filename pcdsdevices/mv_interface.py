@@ -686,7 +686,13 @@ class PresetPosition:
 
 def tweak_base(*args):
     """
-    Base function to tweak motors
+    Base function to control motors with the arrow keys.
+
+    With one motor, this will use the left and right arrows for the axis and up
+    and down arrows for scaling the step size. With two motors, this will use
+    left and right for the first axis and up and down for the second axis, with
+    shift+arrow used for scaling the step size. The Q key quits, as does
+    ctrl+c.
     """
     up = '\x1b[A'
     down = '\x1b[B'
@@ -695,17 +701,19 @@ def tweak_base(*args):
     shift_up = '\x1b[1;2A'
     shift_down = '\x1b[1;2B'
     scale = 0.1
-    """
-    Function call camonitor to display motor position.
-    """
+
     def thread_event():
+        """
+        Function call camonitor to display motor position.
+        """
         thrd = Thread(target=args[0].camonitor,)
         thrd.start()
         args[0]._mov_ev.set()
-    """
-    Function used to change the scale.
-    """
+
     def _scale(scale, direction):
+        """
+        Function used to change the scale.
+        """
         if direction == up or direction == shift_up:
             scale = scale*2
             print("\r {0:4f}".format(scale), end=" ")
@@ -713,10 +721,11 @@ def tweak_base(*args):
             scale = scale/2
             print("\r {0:4f}".format(scale), end=" ")
         return scale
-    """
-    Function used to know when and the direction to move the motor.
-    """
+
     def movement(scale, direction):
+        """
+        Function used to know when and the direction to move the motor.
+        """
         if direction == left:
             args[0].umvr(-scale)
             thread_event()
@@ -726,9 +735,8 @@ def tweak_base(*args):
         elif direction == up and len(args) > 1:
             args[1].umvr(scale)
             print("\r {0:4f}".format(args[1].position), end=" ")
-    """
-    Loop takes in user key input and stops when 'q' is pressed
-    """
+
+    # Loop takes in user key input and stops when 'q' is pressed
     is_input = True
     while is_input is True:
         inp = get_input()
