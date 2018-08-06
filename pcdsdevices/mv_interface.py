@@ -204,11 +204,15 @@ class FltMvInterface(MvInterface):
         pos = pylab.ginput(1)[0][0]
         self.move(pos, timeout=timeout, wait=wait)
 
-    def tweak(*args):
-        if len(args) > 1:
-            return tweak_base(args[0], args[1])
-        else:
-            return tweak_base(args[0])
+    def tweak(self):
+        """
+        Control this motor using the arrow keys.
+
+        Use left arrow to step negative and right arrow to step positive.
+        Use up arrow to increase step size and down arrow to decrease step
+        size. Press q or ctrl+c to quit.
+        """
+        return tweak_base(self)
 
 
 def setup_preset_paths(**paths):
