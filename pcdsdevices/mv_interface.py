@@ -183,8 +183,13 @@ class FltMvInterface(MvInterface):
     def mv_ginput(self, timeout=None, wait=True):
         """
         Moves to a location the user clicks on.
+
+        If there are existing plots, this will be the position on the most
+        recently active plot. If there are no existing plots, an empty plot
+        will be created with the motor's limits as the range.
         """
-        print("Select new motor x-position in current plot by mouseclick")
+        logger.info(("Select new motor x-position in current plot "
+                     "by mouseclick"))
         if not pylab.get_fignums():
             upper_limit = 0
             lower_limit = self.limits[0]
