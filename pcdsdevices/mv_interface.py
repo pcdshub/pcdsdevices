@@ -740,7 +740,7 @@ def tweak_base(*args):
     is_input = True
     while is_input is True:
         inp = util.get_input()
-        if inp == 'q':
+        if inp in ('q', None):
             is_input = False
         else:
             if len(args) > 1 and inp == down:
