@@ -17,7 +17,7 @@ import yaml
 from bluesky.utils import ProgressBar
 from ophyd.status import wait as status_wait
 
-from .utils import get_input
+import .utils as util
 
 logger = logging.getLogger(__name__)
 
@@ -691,15 +691,15 @@ def tweak_base(*args):
     With one motor, this will use the left and right arrows for the axis and up
     and down arrows for scaling the step size. With two motors, this will use
     left and right for the first axis and up and down for the second axis, with
-    shift+arrow used for scaling the step size. The Q key quits, as does
+    shift+arrow used for scaling the step size. The q key quits, as does
     ctrl+c.
     """
-    up = '\x1b[A'
-    down = '\x1b[B'
-    left = '\x1b[D'
-    right = '\x1b[C'
-    shift_up = '\x1b[1;2A'
-    shift_down = '\x1b[1;2B'
+    up = util.arrow_up
+    down = util.arrow_down
+    left = util.arrow_left
+    right = util.arrow_right
+    shift_up = util.shift_arrow_up
+    shift_down = util.shift_arrow_down
     scale = 0.1
 
     def thread_event():
@@ -739,7 +739,7 @@ def tweak_base(*args):
     # Loop takes in user key input and stops when 'q' is pressed
     is_input = True
     while is_input is True:
-        inp = get_input()
+        inp = util.get_input()
         if inp == 'q':
             is_input = False
         else:
