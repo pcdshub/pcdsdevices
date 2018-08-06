@@ -86,7 +86,8 @@ class MvInterface:
 
         This will be the value that is returned by the ``position`` attribute.
         This method ends cleanly at a ctrl+c or after a call to
-        ``_stop_monitor``.
+        `end_monitor_thread`, which may be useful when this is called in a
+        background thread.
         """
         try:
             self._mov_ev.clear()
@@ -104,7 +105,10 @@ class MvInterface:
 
     wm_update.__doc__ = camonitor.__doc__
 
-    def _stop_monitor(self):
+    def end_monitor_thread(self):
+        """
+        Stop a `camonitor` or `wm_update` that is running in another thread.
+        """
         self._mov_ev.set()
 
 
@@ -748,7 +752,7 @@ def tweak_base(*args):
             elif len(args) > 1 and inp == up:
                 movement(scale, inp)
             elif inp not in(up, down, left, right, shift_down, shift_up):
-                print() # Newline
+                print()  # Newline
                 if len(args) == 1:
                     print(" Left: move x motor backward")
                     print(" Right: move x motor forward")
@@ -763,7 +767,7 @@ def tweak_base(*args):
                     print(" Shift_Down: scale/2")
                 print(" Press q to quit."
                       " Press any other key to display this message.")
-                print() # Newline
+                print()  # Newline
             else:
                 movement(scale, inp)
                 scale = _scale(scale, inp)
