@@ -17,7 +17,7 @@ import yaml
 from bluesky.utils import ProgressBar
 from ophyd.status import wait as status_wait
 
-import .utils as util
+from . import utils as util
 
 logger = logging.getLogger(__name__)
 
@@ -748,14 +748,15 @@ def tweak_base(*args):
             elif len(args) > 1 and inp == up:
                 movement(scale, inp)
             elif inp not in(up, down, left, right, shift_down, shift_up):
-                print("\nUp=scale*2, Downw=scale/2,"
-                      "Left=Reverse, Right=Forward\n"
-                      "If more than one motor exits:"
-                      "Up=move y motor up, Down=move y motor down.\n"
-                      " Left=move x motor backwards,"
-                      " Right=move x motor forwards,"
-                      " Shift_Up=scale*2, Shift_down=scale/2\n"
-                      " Press q to quit."
+                if len(args) == 1:
+                    print("\nUp=scale*2, Down=scale/2,"
+                          "Left=Reverse, Right=Forward.")
+                else:
+                    print("\nUp=move y motor up, Down=move y motor down.\n"
+                          " Left=move x motor backwards,"
+                          " Right=move x motor forwards,"
+                          " Shift_Up=scale*2, Shift_down=scale/2")
+                print(" Press q to quit."
                       " Press any other key to display this message.")
             else:
                 movement(scale, inp)
