@@ -82,7 +82,11 @@ class MvInterface:
 
     def camonitor(self):
         """
-        Updates current position of the motor.
+        Shows a live-updating motor position in the terminal.
+
+        This will be the value that is returned by the ``position`` attribute.
+        This method ends cleanly at a ctrl+c or after a call to
+        ``_stop_monitor``.
         """
         try:
             self._mov_ev.clear()
@@ -93,6 +97,12 @@ class MvInterface:
             pass
         finally:
             self._mov_ev.clear()
+
+    # Legacy alias
+    def wm_update(self):
+        return self.camonitor()
+
+    wm_update.__doc__ = camonitor.__doc__
 
     def _stop_monitor(self):
         self._mov_ev.set()
