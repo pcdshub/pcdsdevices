@@ -135,6 +135,9 @@ class DelayBase(PseudoPositioner):
     motor = None
 
     def __init__(self, *args, egu='s', n_bounces=2, **kwargs):
+        if self.__class__ is DelayBase:
+            raise TypeError(('DelayBase must be subclassed with '
+                             'a "motor" component, the real motor to move.'))
         self.n_bounces = n_bounces
         super().__init__(*args, egu=egu, **kwargs)
 
