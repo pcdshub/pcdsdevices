@@ -6,6 +6,8 @@ from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
                              real_position_argument, pseudo_position_argument)
 from scipy.constants import speed_of_light
 
+from .sim import FastMotor
+
 logger = logging.getLogger(__name__)
 
 
@@ -164,3 +166,7 @@ class DelayBase(PseudoPositioner):
         time_unit = Unit('second')
         value = time_unit.convert(sec, self.delay.egu)
         return self.PseudoPosition(delay=value)
+
+
+class SimDelayStage(DelayBase):
+    motor = Cpt(FastMotor, init_pos=0, egu='mm')
