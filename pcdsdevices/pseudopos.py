@@ -131,17 +131,12 @@ class DelayBase(PseudoPositioner):
         number of mirrors that this stage moves. The default is 2, a delay
         branch that bounces the laser back along the axis it enters.
     """
-    delay = FCpt(PseudoSingle, egu='{self._egu}', add_prefix=['egu'])
+    delay = FCpt(PseudoSingle, egu='{self.egu}', add_prefix=['egu'])
     motor = None
 
     def __init__(self, *args, egu='s', n_bounces=2, **kwargs):
-        self._egu = egu
         self.n_bounces = n_bounces
-        super().__init__(*args, **kwargs)
-
-    @property
-    def egu(self):
-        return self._egu
+        super().__init__(*args, egu=egu, **kwargs)
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
