@@ -78,7 +78,6 @@ class SyncAxesBase(PseudoPositioner):
         """
         if not self._offsets:
             self.save_offsets()
-        pseudo_pos = self.PseudoPosition(*pseudo_pos)
         real_pos = {}
         for axis, offset in self._offsets.items():
             real_pos[axis] = pseudo_pos.pseudo + offset
@@ -89,5 +88,4 @@ class SyncAxesBase(PseudoPositioner):
         """
         Combined axis readback is the mean of the composite axes
         """
-        real_pos = self.RealPosition(*real_pos)
         return self.PseudoPosition(pseudo=self.calc_combined(real_pos))
