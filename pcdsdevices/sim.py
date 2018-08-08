@@ -6,7 +6,6 @@ from ophyd.positioner import SoftPositioner
 from ophyd.signal import AttributeSignal
 from ophyd.sim import SynAxis
 
-from pcdsdevices.lens import LensStack
 from pcdsdevices.mv_interface import FltMvInterface, tweak_base
 
 
@@ -79,12 +78,3 @@ class SimTwoAxis(Device):
 
     def tweak(self):
         return tweak_base(self.x, self.y)
-
-
-class SimLensStack(LensStack):
-    """
-    Test version of the lens stack for testing the Be lens class.
-    """
-    x = Cpt(FastMotor, limits=(-10, 10))
-    y = Cpt(FastMotor, limits=(-10, 10))
-    z = Cpt(FastMotor, limits=(-100, 100))
