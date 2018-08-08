@@ -9,6 +9,7 @@ from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
+from .sim import FastMotor
 
 
 class XFLS(InOutRecordPositioner):
@@ -41,3 +42,12 @@ class LensStack(Device):
         self.y_prefix = y_prefix
         self.z_prefix = z_prefix
         super().__init__(x_prefix, *args, **kwargs)
+
+
+class SimLensStack(LensStack):
+    """
+    Test version of the lens stack for testing the Be lens class.
+    """
+    x = Cpt(FastMotor, limits=(-10, 10))
+    y = Cpt(FastMotor, limits=(-10, 10))
+    z = Cpt(FastMotor, limits=(-100, 100))
