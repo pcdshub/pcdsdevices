@@ -1,8 +1,10 @@
 import logging
 
-from ophyd.device import Component as Cpt
+from cf_units import Unit
+from ophyd.device import Component as Cpt, FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
                              real_position_argument, pseudo_position_argument)
+from scipy.constants import speed_of_light
 
 logger = logging.getLogger(__name__)
 
@@ -89,3 +91,76 @@ class SyncAxesBase(PseudoPositioner):
         Combined axis readback is the mean of the composite axes
         """
         return self.PseudoPosition(pseudo=self.calc_combined(real_pos))
+
+
+class DelayBase(PseudoPositioner):
+    """
+    Laser delay stage to rescale a physical axis to a time axis.
+
+    The optical laser travels along the motor's axis and bounces off a number
+    of mirrors, then continues to the destination. In this way, the path length
+    of the laser changes, which introduces a variable delay. This delay is a
+    simple multiplier based on the speed of light.
+
+    Attributes
+    ----------
+    delay: ``PseudoSingle``
+        The fake axis. It has configurable units and number of bounces.
+
+    motor: ``PositionerBase``
+        The real axis. This can be a number of things based on the inheriting
+        class, but it must have a valid ``egu`` so we know how to convert to
+        the time axis.
+
+    Parameters
+    ----------
+    prefix: ``str``
+        The EPICS prefix of the real motor
+
+    name: ``str``, required keyword
+        A name to assign to this delay stage.
+
+    egu: ``str``, optional
+        The units to use for the delay axis. The default is seconds. Any
+        time unit is acceptable.
+
+    n_bounces: ``int``, optional
+        The number of times the laser bounces on the delay stage, e.g. the
+        number of mirrors that this stage moves. The default is 2, a delay
+        branch that bounces the laser back along the axis it enters.
+    """
+    delay = FCpt(PseudoSingle, egu='{self._egu}', add_prefix=['egu'])
+    motor = None
+
+    def __init__(self, *args, egu='s', n_bounces=2, **kwargs):
+        self._egu = egu
+        self.n_bounces = n_bounces
+        super().__init__(*args, **kwargs)
+
+    @property
+    def egu(self):
+        return self._egu
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        """
+        Convert delay unit to motor unit
+        """
+        time_unit = Unit(self.delay.egu)
+        sec = time_unit.convert(pseudo_pos.delay, 'second')
+        meters = sec * speed_of_light / self.n_bounces
+        space_unit = Unit('meter')
+        value = space_unit.convert(meters, self.motor.egu)
+        return self.RealPosition(motor=value)
+
+    @real_position_argument
+    def inverse(self, real_pos):
+        """
+        Convert motor unit to delay unit
+        """
+        space_unit = Unit(self.motor.egu)
+        meters = space_unit.convert(real_pos.motor, 'meter')
+        sec = meters / speed_of_light * self.n_bounces
+        time_unit = Unit('second')
+        value = time_unit.convert(sec, self.delay.egu)
+        return self.PseudoPosition(delay=value)
