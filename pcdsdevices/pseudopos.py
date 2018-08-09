@@ -1,12 +1,12 @@
 import logging
 
-from cf_units import Unit
 from ophyd.device import Component as Cpt, FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
                              real_position_argument, pseudo_position_argument)
 from scipy.constants import speed_of_light
 
 from .sim import FastMotor
+from .utils import convert_unit
 
 logger = logging.getLogger(__name__)
 
@@ -146,24 +146,20 @@ class DelayBase(PseudoPositioner):
         """
         Convert delay unit to motor unit
         """
-        time_unit = Unit(self.delay.egu)
-        sec = time_unit.convert(pseudo_pos.delay, 'second')
-        meters = sec * speed_of_light / self.n_bounces
-        space_unit = Unit('meter')
-        value = space_unit.convert(meters, self.motor.egu)
-        return self.RealPosition(motor=value)
+        seconds = convert_unit(pseudo_pos.delay, self.delay.egu, 'seconds')
+        meters = seconds * speed_of_light / self.n_bounces
+        motor_value = convert_unit(meters, 'meters', self.motor.egu)
+        return self.RealPosition(motor=motor_value)
 
     @real_position_argument
     def inverse(self, real_pos):
         """
         Convert motor unit to delay unit
         """
-        space_unit = Unit(self.motor.egu)
-        meters = space_unit.convert(real_pos.motor, 'meter')
-        sec = meters / speed_of_light * self.n_bounces
-        time_unit = Unit('second')
-        value = time_unit.convert(sec, self.delay.egu)
-        return self.PseudoPosition(delay=value)
+        meters = convert_unit(real_pos.motor, self.motor.egu, 'meters')
+        seconds = meters / speed_of_light * self.n_bounces
+        delay_value = convert_unit(seconds, 'seconds', self.delay.egu)
+        return self.PseudoPosition(delay=delay_value)
 
 
 class SimDelayStage(DelayBase):

@@ -4,6 +4,8 @@ import termios
 import time
 import tty
 
+from cf_units import Unit
+
 arrow_up = '\x1b[A'
 arrow_down = '\x1b[B'
 arrow_right = '\x1b[C'
@@ -69,3 +71,27 @@ def get_input():
         # Restore the terminal to normal input mode
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
         return inp
+
+
+def convert_unit(value, unit, new_unit):
+    """
+    One-line unit conversion
+
+    Parameters
+    ----------
+    value: ``float``
+        The starting value for the conversion.
+
+    unit: ``str``
+        The starting unit for the conversion.
+
+    new_unit: ``str``
+        The desired unit for the conversion
+
+    Returns
+    -------
+    new_value: ``float``
+        The starting value, but converted to the new unit.
+    """
+    start_unit = Unit(unit)
+    return start_unit.convert(value, new_unit)
