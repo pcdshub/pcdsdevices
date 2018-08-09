@@ -21,7 +21,7 @@ requirements:
     - bluesky >=1.2.0
     - pyepics
     - pyyaml
-    - cf_units
+    - cf_units >=2.0.1
     - scipy
 
 test:
