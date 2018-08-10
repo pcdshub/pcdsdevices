@@ -732,6 +732,7 @@ def tweak_base(*args):
             else:
                 movement(scale, inp)
                 scale = _scale(scale, inp)
+    print()
 
 
 class AbsProgressBar(ProgressBar):

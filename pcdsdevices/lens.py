@@ -1,8 +1,7 @@
 """
 Basic Beryllium Lens XFLS
 """
-# flake8: noqa
-from ophyd.device import Component as Cpt, FormattedComponent as FCpt, Device
+from ophyd.device import Component as Cpt, FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
                              pseudo_position_argument, real_position_argument)
 
@@ -10,6 +9,7 @@ from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
 from .mv_interface import tweak_base
+
 
 class XFLS(InOutRecordPositioner):
     """
@@ -29,11 +29,12 @@ class XFLS(InOutRecordPositioner):
             self._transmission[state] = self._lens_transmission
         super().__init__(prefix, name=name, **kwargs)
 
+
 class LensStack(PseudoPositioner):
     x = FCpt(IMS, '{self.x_prefix}')
     y = FCpt(IMS, '{self.y_prefix}')
     z = FCpt(IMS, '{self.z_prefix}')
-    
+
     calib_z = Cpt(PseudoSingle)
 
     def __init__(self, x_prefix, y_prefix, z_prefix, *args, **kwargs):
@@ -56,17 +57,18 @@ class LensStack(PseudoPositioner):
     def forward(self, pseudo_pos):
         z_pos = pseudo_pos.calib_z
         try:
-            pos = [self.x.presets.positions.align_position_one.pos, 
-                   self.y.presets.positions.align_position_one.pos, 
-                   self.z.presets.positions.align_position_one.pos, 
-                   self.x.presets.positions.align_position_two.pos, 
-                   self.y.presets.positions.align_position_two.pos, 
+            pos = [self.x.presets.positions.align_position_one.pos,
+                   self.y.presets.positions.align_position_one.pos,
+                   self.z.presets.positions.align_position_one.pos,
+                   self.x.presets.positions.align_position_two.pos,
+                   self.y.presets.positions.align_position_two.pos,
                    self.z.presets.positions.align_position_two.pos]
+            x_pos = ((pos[0]-pos[3])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[0]
+            y_pos = ((pos[1]-pos[4])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[1]
+            return self.RealPosition(x=x_pos, y=y_pos, z=z_pos)
         except AttributeError:
-            print("Error: Please setup the pseudo motor for use by using the align() method.  If you have already done that, check if the preset pathways have been setup.")
-        x_pos = ((pos[0]-pos[3])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[0]
-        y_pos = ((pos[1]-pos[4])/(pos[2]-pos[5]))*(z_pos-pos[2])+pos[1]
-        return self.RealPosition(x=x_pos, y=y_pos, z=z_pos)
+            self.log.debug('', exc_info=True)
+            self.log.error("Please setup the pseudo motor for use by using the align() method.  If you have already done that, check if the preset pathways have been setup.")
 
     @real_position_argument
     def inverse(self, real_pos):
@@ -77,8 +79,8 @@ class LensStack(PseudoPositioner):
         Generates equations for aligning the beam based on user input.
 
         This program uses two points, one made on the lower limit
-        and the other made on the upper limit, after the user uses tweak function 
-        to put the beam into alignment, and uses those two points
+        and the other made on the upper limit, after the user uses the tweak
+        function to put the beam into alignment, and uses those two points
         to make two equations to determine a y- and x-position
         for any z-value the user wants that will keep the beam focused.
         The beam line will be saved in a file in the presets folder,
@@ -100,7 +102,8 @@ class LensStack(PseudoPositioner):
             self.z.presets.add_hutch(value=pos[2], name="align_position_one")
             self.z.presets.add_hutch(value=pos[5], name="align_position_two")
         except AttributeError:
-            print()
-            print("Error: No folder setup for motor presets.  Please add a location to save the positions to using setup_preset_paths from mv_interface to keep the position files")
-        if z_position != None:
+            self.log.debug('', exc_info=True)
+            self.log.error("No folder setup for motor presets.  Please add a location to save the positions to using setup_preset_paths from mv_interface to keep the position files")
+            return
+        if z_position is not None:
             self.calib_z.move(z_position)

@@ -4,7 +4,8 @@ from unittest.mock import Mock
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.lens import XFLS
+from pcdsdevices.lens import XFLS, LensStack
+from pcdsdevices.sim import SynLensStack
 
 from conftest import HotfixFakeEpicsSignal
 
@@ -53,3 +54,20 @@ def test_xfls_subscriptions(fake_xfls):
     # Change readback state
     xfls.state.put(4)
     assert cb.called
+
+
+def test_LensStack_align(presets, monkeypatch):
+    logger.debug('test_LensStack_align')
+
+    def mocktweak(self):
+        lens.x.move(lens.x.position+1)
+        lens.y.move(lens.y.position+1)
+    lens = SynLensStack(name='test',
+                        x_prefix='x_motor',
+                        y_prefix='y_motor',
+                        z_prefix='z_motor')
+    monkeypatch.setattr(LensStack, 'tweak', mocktweak)
+    lens.align(0)
+    assert lens.z.position == 0
+    assert lens.x.position == 1.5
+    assert lens.y.position == 1.5

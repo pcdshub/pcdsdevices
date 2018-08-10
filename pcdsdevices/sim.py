@@ -36,6 +36,7 @@ class FastMotor(FltMvInterface, SoftPositioner, Device):
 class SlowMotor(FastMotor):
     """
     Simulated slow-moving motor.
+
     Unlike the FastMotor, this takes some time to reach the
     destination. Use this when you need some sort of delay.
     """

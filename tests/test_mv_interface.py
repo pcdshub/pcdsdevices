@@ -5,8 +5,6 @@ import threading
 import time
 import os
 import signal
-import shutil
-from pathlib import Path
 
 import pytest
 
@@ -24,22 +22,6 @@ def slow_motor():
 @pytest.fixture(scope='function')
 def syn_motor():
     return SynMotor(name='syn')
-
-
-@pytest.fixture(scope='function')
-def presets():
-    folder_obj = Path(__file__).parent / 'test_presets'
-    folder = str(folder_obj)
-    if folder_obj.exists():
-        shutil.rmtree(folder)
-    bl = folder + '/beamline'
-    user = folder + '/user'
-    os.makedirs(bl)
-    os.makedirs(user)
-    setup_preset_paths(beamline=bl, user=user)
-    yield
-    setup_preset_paths()
-    shutil.rmtree(folder)
 
 
 @pytest.mark.timeout(5)
@@ -74,7 +56,7 @@ def test_camonitor(syn_motor):
 def test_presets(presets, syn_motor):
     logger.debug('test_presets')
     syn_motor.mv(3, wait=True)
-    syn_motor.presets.add_beamline('zero', 0, comment='center')
+    syn_motor.presets.add_hutch('zero', 0, comment='center')
     syn_motor.presets.add_here_user('sample')
     assert syn_motor.wm_zero() == -3
     assert syn_motor.wm_sample() == 0
