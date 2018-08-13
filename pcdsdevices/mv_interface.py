@@ -184,7 +184,7 @@ class FltMvInterface(MvInterface):
         """
         self.umv(delta + self.wm(), timeout=timeout)
 
-    def mv_ginput(self, timeout=None, wait=True):
+    def mv_ginput(self, timeout=None):
         """
         Moves to a location the user clicks on.
 
@@ -197,8 +197,8 @@ class FltMvInterface(MvInterface):
         if not pylab.get_fignums():
             upper_limit = 0
             lower_limit = self.limits[0]
-            if self.limits[1] == 0:
-                upper_limit = 100
+            if self.limits[0] == self.limits[1]:
+                upper_limit = self.limits[0]+100
             else:
                 upper_limit = self.limits[1]
             limit_plot = []
@@ -206,7 +206,7 @@ class FltMvInterface(MvInterface):
                 limit_plot.append(x)
             pylab.plot(limit_plot)
         pos = pylab.ginput(1)[0][0]
-        self.move(pos, timeout=timeout, wait=wait)
+        self.move(pos, timeout=timeout)
 
     def tweak(self):
         """
@@ -771,6 +771,7 @@ def tweak_base(*args):
             else:
                 movement(scale, inp)
                 scale = _scale(scale, inp)
+    print()
 
 
 class AbsProgressBar(ProgressBar):

@@ -1,5 +1,11 @@
 from ophyd.areadetector.base import EpicsSignalWithRBV
 from ophyd.sim import FakeEpicsSignal, fake_device_cache
+from pathlib import Path
+from pcdsdevices.mv_interface import setup_preset_paths
+
+import os
+import pytest
+import shutil
 
 
 class HotfixFakeEpicsSignal(FakeEpicsSignal):
@@ -67,3 +73,19 @@ class HotfixFakeEpicsSignal(FakeEpicsSignal):
 
 
 fake_device_cache[EpicsSignalWithRBV] = HotfixFakeEpicsSignal
+
+
+@pytest.fixture(scope='function')
+def presets():
+    folder_obj = Path(__file__).parent / 'test_presets'
+    folder = str(folder_obj)
+    if folder_obj.exists():
+        shutil.rmtree(folder)
+    hutch = folder + '/hutch'
+    user = folder + '/user'
+    os.makedirs(hutch)
+    os.makedirs(user)
+    setup_preset_paths(hutch=hutch, user=user)
+    yield
+    setup_preset_paths()
+    shutil.rmtree(folder)

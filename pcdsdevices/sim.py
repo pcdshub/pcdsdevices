@@ -12,7 +12,6 @@ from pcdsdevices.mv_interface import FltMvInterface, tweak_base
 class SynMotor(FltMvInterface, SynAxis):
     """
     SynAxis with the FltMvInterface additions.
-
     This can be used to test when you need the readback_func feature or if you
     just want your test motor to finish immediately. See the SynAxis
     documentation in ophyd.
@@ -24,7 +23,6 @@ class SynMotor(FltMvInterface, SynAxis):
 class FastMotor(FltMvInterface, SoftPositioner, Device):
     """
     Instant motor with FltMvInterface.
-
     This is suitable to replace real motors in the PseudoPositioner
     subclasses. It does not have all of the SynAxis functionality.
     """

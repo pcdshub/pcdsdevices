@@ -5,8 +5,6 @@ import threading
 import time
 import os
 import signal
-import shutil
-from pathlib import Path
 
 import pylab
 import pytest
@@ -25,22 +23,6 @@ def slow_motor():
 @pytest.fixture(scope='function')
 def fast_motor():
     return FastMotor(name='sim_fast')
-
-
-@pytest.fixture(scope='function')
-def presets():
-    folder_obj = Path(__file__).parent / 'test_presets'
-    folder = str(folder_obj)
-    if folder_obj.exists():
-        shutil.rmtree(folder)
-    bl = folder + '/beamline'
-    user = folder + '/user'
-    os.makedirs(bl)
-    os.makedirs(user)
-    setup_preset_paths(beamline=bl, user=user)
-    yield
-    setup_preset_paths()
-    shutil.rmtree(folder)
 
 
 @pytest.mark.timeout(5)
@@ -106,8 +88,9 @@ def test_mv_ginput(monkeypatch, fast_motor):
 
 def test_presets(presets, fast_motor):
     logger.debug('test_presets')
+
     fast_motor.mv(3, wait=True)
-    fast_motor.presets.add_beamline('zero', 0, comment='center')
+    fast_motor.presets.add_hutch('zero', 0, comment='center')
     fast_motor.presets.add_here_user('sample')
     assert fast_motor.wm_zero() == -3
     assert fast_motor.wm_sample() == 0
