@@ -4,8 +4,7 @@ from unittest.mock import Mock
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.lens import XFLS, LensStack
-from pcdsdevices.sim import SynLensStack
+from pcdsdevices.lens import XFLS, LensStack, SimLensStack
 
 from conftest import HotfixFakeEpicsSignal
 
@@ -62,7 +61,7 @@ def test_LensStack_align(presets, monkeypatch):
     def mocktweak(self):
         lens.x.move(lens.x.position+1)
         lens.y.move(lens.y.position+1)
-    lens = SynLensStack(name='test',
+    lens = SimLensStack(name='test',
                         x_prefix='x_motor',
                         y_prefix='y_motor',
                         z_prefix='z_motor')
