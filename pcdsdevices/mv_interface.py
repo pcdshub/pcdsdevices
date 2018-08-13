@@ -206,7 +206,7 @@ class FltMvInterface(MvInterface):
                 limit_plot.append(x)
             pylab.plot(limit_plot)
         pos = pylab.ginput(1)[0][0]
-        self.move(pos, timeout=timeout, wait=wait)
+        self.move(pos, timeout=timeout)
 
     def tweak(self):
         """
@@ -217,6 +217,7 @@ class FltMvInterface(MvInterface):
         size. Press q or ctrl+c to quit.
         """
         return tweak_base(self)
+
 
 def setup_preset_paths(**paths):
     """

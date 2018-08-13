@@ -69,7 +69,10 @@ class LensStack(PseudoPositioner):
             return self.RealPosition(x=x_pos, y=y_pos, z=z_pos)
         except AttributeError:
             self.log.debug('', exc_info=True)
-            self.log.error("Please setup the pseudo motor for use by using the align() method.  If you have already done that, check if the preset pathways have been setup.")
+            self.log.error("Please setup the pseudo motor for use by using "
+                           "the align() method.  If you have already done "
+                           "that, check if the preset pathways have been "
+                           "setup.")
 
     @real_position_argument
     def inverse(self, real_pos):
@@ -104,7 +107,10 @@ class LensStack(PseudoPositioner):
             self.z.presets.add_hutch(value=pos[5], name="align_position_two")
         except AttributeError:
             self.log.debug('', exc_info=True)
-            self.log.error("No folder setup for motor presets.  Please add a location to save the positions to using setup_preset_paths from mv_interface to keep the position files")
+            self.log.error("No folder setup for motor presets. "
+                           "Please add a location to save the positions to "
+                           "using setup_preset_paths from mv_interface to "
+                           "keep the position files.")
             return
         if z_position is not None:
             self.calib_z.move(z_position)
