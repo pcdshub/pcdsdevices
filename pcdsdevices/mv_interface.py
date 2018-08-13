@@ -197,8 +197,8 @@ class FltMvInterface(MvInterface):
         if not pylab.get_fignums():
             upper_limit = 0
             lower_limit = self.limits[0]
-            if self.limits[1] == 0:
-                upper_limit = 100
+            if self.limits[0] == self.limits[1]:
+                upper_limit = self.limits[0]+100
             else:
                 upper_limit = self.limits[1]
             limit_plot = []
