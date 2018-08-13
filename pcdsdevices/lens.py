@@ -9,6 +9,7 @@ from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
 from .mv_interface import tweak_base
+from .sim import FastMotor
 
 
 class XFLS(InOutRecordPositioner):
@@ -107,3 +108,12 @@ class LensStack(PseudoPositioner):
             return
         if z_position is not None:
             self.calib_z.move(z_position)
+
+
+class SimLensStack(LensStack):
+    """
+    Test version of the lens stack for testing the Be lens class.
+    """
+    x = Cpt(FastMotor, limits=(-10, 10))
+    y = Cpt(FastMotor, limits=(-10, 10))
+    z = Cpt(FastMotor, limits=(-100, 100))

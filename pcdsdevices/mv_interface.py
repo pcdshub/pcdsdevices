@@ -17,7 +17,7 @@ import yaml
 from bluesky.utils import ProgressBar
 from ophyd.status import wait as status_wait
 
-from .utils import get_input
+from . import utils as util
 
 logger = logging.getLogger(__name__)
 
@@ -82,7 +82,12 @@ class MvInterface:
 
     def camonitor(self):
         """
-        Updates current position of the motor.
+        Shows a live-updating motor position in the terminal.
+
+        This will be the value that is returned by the ``position`` attribute.
+        This method ends cleanly at a ctrl+c or after a call to
+        `end_monitor_thread`, which may be useful when this is called in a
+        background thread.
         """
         try:
             self._mov_ev.clear()
@@ -94,7 +99,16 @@ class MvInterface:
         finally:
             self._mov_ev.clear()
 
-    def _stop_monitor(self):
+    # Legacy alias
+    def wm_update(self):
+        return self.camonitor()
+
+    wm_update.__doc__ = camonitor.__doc__
+
+    def end_monitor_thread(self):
+        """
+        Stop a `camonitor` or `wm_update` that is running in another thread.
+        """
         self._mov_ev.set()
 
 
@@ -173,8 +187,13 @@ class FltMvInterface(MvInterface):
     def mv_ginput(self, timeout=None):
         """
         Moves to a location the user clicks on.
+
+        If there are existing plots, this will be the position on the most
+        recently active plot. If there are no existing plots, an empty plot
+        will be created with the motor's limits as the range.
         """
-        print("Select new motor x-position in current plot by mouseclick")
+        logger.info(("Select new motor x-position in current plot "
+                     "by mouseclick"))
         if not pylab.get_fignums():
             upper_limit = 0
             lower_limit = self.limits[0]
@@ -189,11 +208,15 @@ class FltMvInterface(MvInterface):
         pos = pylab.ginput(1)[0][0]
         self.move(pos, timeout=timeout, wait=wait)
 
-    def tweak(*args):
-        if len(args) > 1:
-            return tweak_base(args[0], args[1])
-        else:
-            return tweak_base(args[0])
+    def tweak(self):
+        """
+        Control this motor using the arrow keys.
+
+        Use left arrow to step negative and right arrow to step positive.
+        Use up arrow to increase step size and down arrow to decrease step
+        size. Press q or ctrl+c to quit.
+        """
+        return tweak_base(self)
 
 def setup_preset_paths(**paths):
     """
@@ -666,26 +689,34 @@ class PresetPosition:
 
 def tweak_base(*args):
     """
-    Base function to tweak motors
+    Base function to control motors with the arrow keys.
+
+    With one motor, this will use the left and right arrows for the axis and up
+    and down arrows for scaling the step size. With two motors, this will use
+    left and right for the first axis and up and down for the second axis, with
+    shift+arrow used for scaling the step size. The q key quits, as does
+    ctrl+c.
     """
-    up = '\x1b[A'
-    down = '\x1b[B'
-    left = '\x1b[D'
-    right = '\x1b[C'
-    shift_up = '\x1b[1;2A'
-    shift_down = '\x1b[1;2B'
+    up = util.arrow_up
+    down = util.arrow_down
+    left = util.arrow_left
+    right = util.arrow_right
+    shift_up = util.shift_arrow_up
+    shift_down = util.shift_arrow_down
     scale = 0.1
-    """
-    Function call camonitor to display motor position.
-    """
+
     def thread_event():
+        """
+        Function call camonitor to display motor position.
+        """
         thrd = Thread(target=args[0].camonitor,)
         thrd.start()
         args[0]._mov_ev.set()
-    """
-    Function used to change the scale.
-    """
+
     def _scale(scale, direction):
+        """
+        Function used to change the scale.
+        """
         if direction == up or direction == shift_up:
             scale = scale*2
             print("\r {0:4f}".format(scale), end=" ")
@@ -693,10 +724,11 @@ def tweak_base(*args):
             scale = scale/2
             print("\r {0:4f}".format(scale), end=" ")
         return scale
-    """
-    Function used to know when and the direction to move the motor.
-    """
+
     def movement(scale, direction):
+        """
+        Function used to know when and the direction to move the motor.
+        """
         if direction == left:
             args[0].umvr(-scale)
             thread_event()
@@ -706,13 +738,12 @@ def tweak_base(*args):
         elif direction == up and len(args) > 1:
             args[1].umvr(scale)
             print("\r {0:4f}".format(args[1].position), end=" ")
-    """
-    Loop takes in user key input and stops when 'q' is pressed
-    """
+
+    # Loop takes in user key input and stops when 'q' is pressed
     is_input = True
     while is_input is True:
-        inp = get_input()
-        if inp == 'q':
+        inp = util.get_input()
+        if inp in ('q', None):
             is_input = False
         else:
             if len(args) > 1 and inp == down:
@@ -720,15 +751,22 @@ def tweak_base(*args):
             elif len(args) > 1 and inp == up:
                 movement(scale, inp)
             elif inp not in(up, down, left, right, shift_down, shift_up):
-                print("\nUp=scale*2, Downw=scale/2,"
-                      "Left=Reverse, Right=Forward\n"
-                      "If more than one motor exits:"
-                      "Up=move y motor up, Down=move y motor down.\n"
-                      " Left=move x motor backwards,"
-                      " Right=move x motor forwards,"
-                      " Shift_Up=scale*2, Shift_down=scale/2\n"
-                      " Press q to quit."
+                print()  # Newline
+                if len(args) == 1:
+                    print(" Left: move x motor backward")
+                    print(" Right: move x motor forward")
+                    print(" Up: scale*2")
+                    print(" Down: scale/2")
+                else:
+                    print(" Left: move x motor left")
+                    print(" Right: move x motor right")
+                    print(" Down: move y motor down")
+                    print(" Up: move y motor up")
+                    print(" Shift_Up: scale*2")
+                    print(" Shift_Down: scale/2")
+                print(" Press q to quit."
                       " Press any other key to display this message.")
+                print()  # Newline
             else:
                 movement(scale, inp)
                 scale = _scale(scale, inp)
