@@ -4,19 +4,15 @@ Basic Beryllium Lens XFLS
 import time
 import numpy as np
 import yaml
-import os.path
 import shutil
 
-from shutil import copyfile
 from datetime import date
-
 from ophyd.device import Component as Cpt, FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
                              pseudo_position_argument, real_position_argument)
 
 from periodictable import xsf
 
-from .attenuator import Attenuator
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
@@ -54,6 +50,7 @@ class LensStackBase(PseudoPositioner):
     z = FCpt(IMS, '{self.z_prefix}')
 
     calib_z = Cpt(PseudoSingle)
+    beam_size = Cpt(PseudoSingle)
 
     def __init__(self, x_prefix, y_prefix, z_prefix, lensset=None,
                  _zoffset=None, zdir=None, E=None, attObj=None, lclsObj=None,
@@ -73,6 +70,20 @@ class LensStackBase(PseudoPositioner):
 
         super().__init__(x_prefix, *args, **kwargs)
 
+    def calcDistanceForSize(self, sizeFWHM, lensset, E=None,
+                            fwhm_unfocused=None):
+        size = sizeFWHM*2./2.35
+        f = self.calcFocalLength(E, lensset, 'Be', None)
+        lam = 12.398/E*1e-10
+        # the w parameter used in the usual formula is 2*sigma
+        w_unfocused = fwhm_unfocused*2/2.35
+        # assuming gaussian beam divergence = w_unfocused/f we can obtain
+        waist = lam/np.pi*f/w_unfocused
+        rayleigh_range = np.pi*waist**2/lam
+        distance = ((np.sqrt((size/waist)**2-1)*np.asarray([-1., 1.])
+                     * rayleigh_range) + f)
+        return distance
+
     def tweak(self):
         """
         Calls the tweak function from mv_interface.
@@ -85,7 +96,13 @@ class LensStackBase(PseudoPositioner):
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
-        z_pos = pseudo_pos.calib_z
+        if not np.isclose(pseudo_pos.beam_size, self.beam_size.position):
+            beam_size = pseudo_pos.beam_size
+            dist = self.calcDistanceForSize(beam_size, self.lensset,
+                                       self._E, self.beamsizeUnfocused)
+            z_pos = (dist - self._zoffset) * self._zdir * 1000
+        else:
+            z_pos = pseudo_pos.calib_z
         try:
             pos = [self.x.presets.positions.align_position_one.pos,
                    self.y.presets.positions.align_position_one.pos,
@@ -105,7 +122,11 @@ class LensStackBase(PseudoPositioner):
 
     @real_position_argument
     def inverse(self, real_pos):
-        return self.PseudoPosition(calib_z=self.z.position)
+        dist_m = real_pos.z / 1000 * self._zdir + self._zoffset
+        beamsize = self.calcBeamFWHM(self._E, self.lensset, distance=dist_m,
+                                     material="Be", density=None,
+                                     fwhm_unfocused=self.beamsizeUnfocused)
+        return self.PseudoPosition(calib_z=real_pos.z, beam_size=beamsize)
 
     def align(self, z_position=None):
         """
@@ -144,52 +165,31 @@ class LensStackBase(PseudoPositioner):
         if z_position is not None:
             self.calib_z.move(z_position)
 
-    def getDelta(self,E, material="Be", density=None):
+    @pseudo_position_argument
+    def move(self, position, wait=True, timeout=None, moved_cb=None):
+        if self._makeSafe() is True:
+            return super().move(position, wait=wait, timeout=timeout,
+                                moved_cb=moved_cb)
+
+    def getDelta(self, E, material="Be", density=None):
         delta = 1-np.real(xsf.index_of_refraction(material, density=density,
                           energy=E))
         return delta
-
-    def set_E(self, energy):
-        self._E = energy
-
-    def _moveBeamsize(self, size, safe=True, lensset=None):
-        """
-        Change the beamsize at the sample location.
-        """
-        if None in (self._zoffset, self._zdir, self.beamsizeUnfocused):
-            print("Cannot move beamsize. At least one of",
-                  "zoffset, zdir, beamsizeUnfocused not defined at init.")
-        else:
-            dist = self.calcDistanceForSize(size, lensset,
-                        self._E, fwhm_unfocused=self.beamsizeUnfocused)[0]
-            self._moveZ((dist - self._zoffset) * self._zdir * 1000,
-                            safe=safe)
-
-    def _whereBeamsize(self, lensset):
-        """
-        Return the beamsize at the sample location.
-        """
-        if None in (self._zoffset, self._zdir, self.beamsizeUnfocused):
-            print("Cannot check beamsize. At least one of", \
-                  "zoffset, zdir, beamsizeUnfocused was not defined at init.")
-        else:
-            dist_m = self.z.wm() /1000 * self._zdir + self._zoffset
-            return self.calcBeamFWHM(self._E, lensset, distance=dist_m, material="Be",
-                                density=None, fwhm_unfocused=self.beamsizeUnfocused)
-
 
     def calcFocalLength(self, E, lensset, material="Be", density=None):
         # lens_set = (n1,radius1,n2,radius2,...)
         num = []
         rad = []
-        ftot_inverse = 0 
+        ftot_inverse = 0
         for i in range(len(lensset)//2):
             num = lensset[2*i]
             rad = lensset[2*i+1]
             if rad is not None:
                 rad = float(rad)
                 num = float(num)
-                ftot_inverse += num/self.calcFocalLengthForSingleLens(E, rad, material, density)
+                ftot_inverse += num/self.calcFocalLengthForSingleLens(E, rad,
+                                                                      material,
+                                                                      density)
         return 1./ftot_inverse
 
     def calcFocalLengthForSingleLens(self, E, radius,
@@ -198,41 +198,8 @@ class LensStackBase(PseudoPositioner):
         f = (radius/2)/delta
         return f
 
-    def calcDistanceForSize(self, sizeFWHM, lensset, E=None,
-                            fwhm_unfocused=None):
-        size = sizeFWHM*2./2.35
-        f = self.calcFocalLength(E, lensset, 'Be', None)
-        lam = 12.398/E*1e-10
-        # the w parameter used in the usual formula is 2*sigma
-        w_unfocused = fwhm_unfocused*2/2.35
-        # assuming gaussian beam divergence = w_unfocused/f we can obtain
-        waist = lam/np.pi*f/w_unfocused
-        rayleigh_range = np.pi*waist**2/lam
-        distance = ((np.sqrt((size/waist)**2-1)*np.asarray([-1., 1.])
-                        * rayleigh_range) + f)
-        return distance
-
-    def _moveZ(self, pos, safe=True):
-        """
-        Moves z to pos and x and y to their calibrated offset positions.
-        If safe is True, we call ._makeSafe().
-        """
-        if safe:
-            is_safe = self._makeSafe()
-            if not safe or is_safe:
-                if calib_z is None:
-                    self.z.move(pos)
-                else:
-                    calib_z = self.align()
-                    dz = pos - calib_z["z_ref"]
-                    self.z.move(pos)
-                    self.x.move(calib_z["x_ref"] + calib_z["dx"] * dz)
-                    self.y.move(calib_z["y_ref"] + calib_z["dy"] * dz)
-        else:
-            print("crl moveZ ABORTED!")
-
-    def calcBeamFWHM(self, E, lensset, distance=None, material="Be", density=None,
-                     fwhm_unfocused=None,printsummary=True):
+    def calcBeamFWHM(self, E, lensset, distance=None, material="Be",
+                     density=None, fwhm_unfocused=None, printsummary=True):
         f = self.calcFocalLength(E, lensset, material, density)
         lam = 1.2398/E*1e-9
         # the w parameter used in the usual formula is 2*sigma
@@ -250,7 +217,6 @@ class LensStackBase(PseudoPositioner):
             print("size           : %.3e" % (size))
             print("size FWHM      : %.3e" % (size*2.35/2.))
         return size*2.35/2
-
 
     def _makeSafe(self):
         """
@@ -270,7 +236,6 @@ class LensStackBase(PseudoPositioner):
         if not filt.inserted:
             filt.insert()
             time.sleep(0.01)
-           # filt.wait
         if filt.inserted:
             print("REMINDER: Beam stop attenuator moved in!")
             safe = True
@@ -281,7 +246,7 @@ class LensStackBase(PseudoPositioner):
 
 
 class LensStack(LensStackBase):
-    def __init__(self, *args, *, path, **kwargs):
+    def __init__(self, *args, path, **kwargs):
         self.path = path + '.yaml'
         lensset = self.ReadLens()
         super().__init__(*args, lensset=lensset, **kwargs)
@@ -289,13 +254,11 @@ class LensStack(LensStackBase):
     def ReadLens(self):
         with open(self.path, 'r') as f:
             read_data = yaml.load(f)
-            # [float(i) for i in read_data]
         return read_data
 
     def CreateLens(self, lensset):
-        # [float(i) for i in lensset]
         shutil.copyfile(self.path, self.path + str(date.today()))
-        with open(name, "w") as f:
+        with open(self.path + str(date.today()), "w") as f:
             yaml.dump(self.path, f)
 
 
