@@ -67,9 +67,9 @@ def test_LensStackBeamsize(monkeypatch):
         lensstack.y.move(lensstack.y.position+1)
     monkeypatch.setattr(LensStackBase, 'tweak', mocktweak)
     lensstack.align(0)
-    assert lensstack.beam_size.position == 0.0004894541353076458 
-    lensstack.beam_size.set(0)
-    assert lensstack.beam_size.position == 100e-6
+    assert lensstack.beam_size.position == 0.0004894541353076458
+    lensstack.beam_size.set(.01)
+    assert lensstack.beam_size.position == .01
 
 
 def test_LensStack_align(presets, monkeypatch):

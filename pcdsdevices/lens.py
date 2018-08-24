@@ -99,7 +99,7 @@ class LensStackBase(PseudoPositioner):
         if not np.isclose(pseudo_pos.beam_size, self.beam_size.position):
             beam_size = pseudo_pos.beam_size
             dist = self.calcDistanceForSize(beam_size, self.lensset,
-                                       self._E, self.beamsizeUnfocused)
+                                       self._E, self.beamsizeUnfocused)[0]
             z_pos = (dist - self._zoffset) * self._zdir * 1000
         else:
             z_pos = pseudo_pos.calib_z
@@ -119,10 +119,12 @@ class LensStackBase(PseudoPositioner):
                            "the align() method.  If you have already done "
                            "that, check if the preset pathways have been "
                            "setup.")
+            return self.RealPosition(x=self.x.position, y=self.y.position, z=z_pos)
 
     @real_position_argument
     def inverse(self, real_pos):
         dist_m = real_pos.z / 1000 * self._zdir + self._zoffset
+        print('dist_m', dist_m)
         beamsize = self.calcBeamFWHM(self._E, self.lensset, distance=dist_m,
                                      material="Be", density=None,
                                      fwhm_unfocused=self.beamsizeUnfocused)
