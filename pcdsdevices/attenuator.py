@@ -87,7 +87,7 @@ class AttBase(FltMvInterface, PVPositioner):
                 break
 
     @property
-    def actuate_value(self, force_ceil=False, force_floor=False):
+    def actuate_value(self):
         """
         Sets the value we use in the GO command. This command will return 3 if
         the setpoint is closer to the ceiling than the floor, or 2 otherwise.
@@ -105,12 +105,6 @@ class AttBase(FltMvInterface, PVPositioner):
         goal = self.setpoint.get()
         ceil = self.trans_ceil.get()
         floor = self.trans_floor.get()
-
-        if force_ceil:
-            return 3
-
-        if force_floor:
-            return 2
 
         if abs(goal - ceil) > abs(goal - floor):
             return 2
