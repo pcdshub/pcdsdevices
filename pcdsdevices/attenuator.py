@@ -314,6 +314,7 @@ def Attenuator(prefix, n_filters, *, name, use_3rd=False, **kwargs):
         cls = _att_classes[n_filters]
     return cls(prefix, name=name, **kwargs)
 
+
 '''
 # WIP
 def set_combined_attenuation(attenuation, *attenuators):
