@@ -232,7 +232,7 @@ class FeeAtt(AttBase):
     readback = Cpt(EpicsSignal, ':RACT', kind='hinted')
     actuate = Cpt(EpicsSignal, ':GO', kind='omitted')
     done = None
-    
+
     # Attenuator Signals
     energy = Cpt(EpicsSignalRO, ':ETOA.E', kind='normal')
     trans_ceil = Cpt(EpicsSignalRO, ':R_CEIL', kind='omitted')
