@@ -28,6 +28,17 @@ class SimSequencer(FakeSequencer):
         super().__init__(*args, **kwargs)
         # Forces an immediate stop on complete
         self.play_mode.put(2)
+        # Initialize all signals to *something* to appease bluesky
+        # Otherwise, these are all None which is invalid
+        self.play_control.sim_put(0)
+        self.sequence_length.sim_put(0)
+        self.current_step.sim_put(0)
+        self.play_count.sim_put(0)
+        self.play_status.sim_put(0)
+        self.sync_marker.sim_put(0)
+        self.next_sync.sim_put(0)
+        self.pulse_req.sim_put(0)
+        self.sequence_owner.sim_put(0)
 
     def kickoff(self):
         super().kickoff()
