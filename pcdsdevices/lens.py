@@ -24,6 +24,9 @@ class XFLS(InOutRecordPositioner):
     in_states = ['LENS1', 'LENS2', 'LENS3']
     _lens_transmission = 0.8
 
+    # QIcon for UX
+    _icon = 'fa.ellipsis-v'
+
     def __init__(self, prefix, *, name, **kwargs):
         # Set a default transmission, but allow easy subclass overrides
         for state in self.in_states:

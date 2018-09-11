@@ -87,6 +87,8 @@ class LODCM(InOutRecordPositioner):
     # need to be 100% accurate, but they should reflect a reasonable reduction
     # in transmission.
     _transmission = {'C': 0.8, 'Si': 0.7}
+    # QIcon for UX
+    _icon = 'fa.code-fork'
 
     def __init__(self, prefix, *, name, main_line='MAIN', mono_line='MONO',
                  **kwargs):

@@ -77,6 +77,9 @@ class AttBase(FltMvInterface, PVPositioner):
     egu = ''  # Transmission is a unitless ratio
     done_value = 0
 
+    # QIcon for UX
+    _icon = 'ei.lines'
+
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, limits=(0, 1), **kwargs)
         self.filters = []
