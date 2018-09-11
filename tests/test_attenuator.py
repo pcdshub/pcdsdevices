@@ -102,7 +102,8 @@ def test_attenuator_subscriptions(fake_att):
     att.subscribe(state_cb, event_type=att.SUB_STATE, run=False)
     att.readback.sim_put(0.6)
     assert not state_cb.called
-    att.filters[0].state.put('IN')
+    att.done.sim_put(1)
+    att.done.sim_put(0)
     assert state_cb.called
 
 
