@@ -21,7 +21,9 @@ Common EPICS Devices
     PMC100
     PointingMirror
     PulsePicker
+    Reflaser
     Slits
     Stopper
     Trigger
+    TTReflaser
     XFLS
