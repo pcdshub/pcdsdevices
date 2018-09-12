@@ -126,6 +126,8 @@ class Slits(Device, MvInterface):
     # Subscription information
     SUB_STATE = 'sub_state_changed'
     _default_sub = SUB_STATE
+    # QIcon for UX
+    _icon = 'fa.th-large'
 
     def __init__(self, *args, nominal_aperture=(5.0, 5.0), **kwargs):
         self._has_subscribed = False

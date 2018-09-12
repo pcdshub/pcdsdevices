@@ -59,6 +59,8 @@ class Stopper(InOutPVStatePositioner):
                                    1: 'OUT'},
                     'closed_limit': {0: 'defer',
                                      1: 'IN'}}
+    # QIcon for UX
+    _icon = 'fa.times-circle'
 
     def _do_move(self, state):
         if state.name == 'IN':
@@ -94,6 +96,9 @@ class GateValve(Stopper):
     # Commands and Interlock information
     command = Cpt(EpicsSignal,   ':OPN_SW', kind='omitted')
     interlock = Cpt(EpicsSignalRO, ':OPN_OK', kind='normal')
+
+    # QIcon for UX
+    _icon = 'fa.hourglass'
 
     def check_value(self, value):
         """Check when removing GateValve interlock is off"""
@@ -137,6 +142,8 @@ class PPSStopper(InOutPositioner):
         String associatted with out enum value
     """
     state = Cpt(EpicsSignalRO, '', string=True, kind='hinted')
+    # QIcon for UX
+    _icon = 'fa.times-circle'
 
     def __init__(self, prefix, *, in_state='IN', out_state='OUT', **kwargs):
         # Store state information
