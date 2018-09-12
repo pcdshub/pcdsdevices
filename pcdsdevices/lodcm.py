@@ -88,7 +88,7 @@ class LODCM(InOutRecordPositioner):
     # in transmission.
     _transmission = {'C': 0.8, 'Si': 0.7}
     # QIcon for UX
-    _icon = 'fa.code-fork'
+    _icon = 'fa.share-alt-square'
 
     def __init__(self, prefix, *, name, main_line='MAIN', mono_line='MONO',
                  **kwargs):

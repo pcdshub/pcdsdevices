@@ -78,7 +78,7 @@ class AttBase(FltMvInterface, PVPositioner):
     done_value = 0
 
     # QIcon for UX
-    _icon = 'ei.lines'
+    _icon = 'fa.barcode'
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, limits=(0, 1), **kwargs)
