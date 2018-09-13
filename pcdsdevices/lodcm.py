@@ -8,6 +8,7 @@ downstream hutches.
 It will not be possible to align the device with the class, and there will be
 no readback into the device's alignment. This is intended for a future update.
 """
+import itertools
 import logging
 import functools
 
@@ -63,11 +64,11 @@ class LODCM(InOutRecordPositioner):
 
     This positioner only considers the h1n and diagnostic motors.
 %s
-    main_line: ``str``, optional
-        Name of the main, no-bounce beamline.
+    main_line: ``list`` of ``str``, optional
+        Name of no-bounce beamlines.
 
-    mono_line: ``str``, optional
-        Name of the mono, double-bounce beamline.
+    mono_line: ``list`` of ``str``, optional
+        Names of the mono, double-bounce beamlines.
     """
     __doc__ = __doc__ % basic_positioner_init
 
@@ -90,7 +91,7 @@ class LODCM(InOutRecordPositioner):
     # QIcon for UX
     _icon = 'fa.share-alt-square'
 
-    def __init__(self, prefix, *, name, main_line='MAIN', mono_line='MONO',
+    def __init__(self, prefix, *, name, main_line=['MAIN'], mono_line=['MONO'],
                  **kwargs):
         super().__init__(prefix, name=name, **kwargs)
         self.main_line = main_line
@@ -104,7 +105,7 @@ class LODCM(InOutRecordPositioner):
         branches: ``list`` of ``str``
             A list of possible destinations.
         """
-        return [self.main_line, self.mono_line]
+        return self.main_line + self.mono_line
 
     @property
     def destination(self):
@@ -120,17 +121,16 @@ class LODCM(InOutRecordPositioner):
             ``self.mono_line`` if the light continues on the mono line.
         """
         if self.position == 'OUT':
-            dest = [self.main_line]
-        elif self.position == 'Si':
-            dest = [self.mono_line]
+            dest = self.main_line
+        elif self.position == 'Si' and self._dia_clear:
+            dest = self.mono_line
         elif self.position == 'C':
-            dest = [self.main_line, self.mono_line]
+            if self._dia_clear:
+                dest = list(itertools.chain((self.mono_line, self.main_line)))
+            else:
+                dest = self.main_line
         else:
             dest = []
-
-        if not self._dia_clear and self.mono_line in dest:
-            dest.remove(self.mono_line)
-
         return dest
 
     @property
