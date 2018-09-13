@@ -64,11 +64,11 @@ class LODCM(InOutRecordPositioner):
 
     This positioner only considers the h1n and diagnostic motors.
 %s
-    main_line: ``str``, optional
-        Name of the main, no-bounce beamline.
+    main_line: ``list`` of ``str``, optional
+        Name of no-bounce beamlines.
 
-    mono_line: ``str``, optional
-        Name of the mono, double-bounce beamline.
+    mono_line: ``list`` of ``str``, optional
+        Names of the mono, double-bounce beamlines.
     """
     __doc__ = __doc__ % basic_positioner_init
 
