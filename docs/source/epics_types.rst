@@ -11,17 +11,19 @@ Common EPICS Devices
     CCM
     EpicsMotor
     EventSequencer
-    LODCM
     GateValve
     IMS
     IPM
+    LODCM
     Newport
+    OffsetMirror
     PIM
     PMC100
-    OffsetMirror
-    PulsePicker
     PointingMirror
+    PulsePicker
+    Reflaser
     Slits
     Stopper
     Trigger
+    TTReflaser
     XFLS
