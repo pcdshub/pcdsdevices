@@ -138,6 +138,7 @@ class TTReflaser(Reflaser):
     """
     states_list = ['TT', 'REFL', 'OUT']
     in_states = ['TT', 'REFL']
+    __doc__ += basic_positioner_init
 
 
 class InOutPVStatePositioner(PVStatePositioner, InOutPositioner):
