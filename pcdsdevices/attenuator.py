@@ -79,10 +79,13 @@ class AttBase(FltMvInterface, PVPositioner):
 
     # QIcon for UX
     _icon = 'fa.barcode'
+    # Subscription Types
+    SUB_STATE = 'state'
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, limits=(0, 1), **kwargs)
         self.filters = []
+        self._has_subscribed_state = False
         for i in range(1, MAX_FILTERS + 1):
             try:
                 self.filters.append(getattr(self, 'filter{}'.format(i)))
@@ -205,6 +208,20 @@ class AttBase(FltMvInterface, PVPositioner):
             moving_val = 1 - self.done_value
             self._move_changed(value=moving_val)
             self._move_changed(value=self.done_value)
+
+    def subscribe(self, cb, event_type=None, run=True):
+        cid = super().subscribe(cb, event_type=event_type, run=run)
+        if event_type is None:
+            event_type = self._default_sub
+        if event_type == self.SUB_STATE and not self._has_subscribed_state:
+            self.done.subscribe(self._run_filt_state, run=False)
+            self._has_subscribed_state = True
+        return cid
+
+    def _run_filt_state(self, *args, **kwargs):
+        kwargs.pop('sub_type')
+        kwargs.pop('obj')
+        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
 
 class AttBase3rd(AttBase):
