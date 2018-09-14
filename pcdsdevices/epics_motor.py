@@ -36,6 +36,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         3. The disable puts field ``.DISP`` is added, along with ``enable`` and
         ``disable`` convenience methods. When ``.DISP`` is 1, puts to the motor
         record will be ignored, effectively disabling the interface.
+        4. The description field keeps track of the motors scientific use along
+           the beamline.
     """
     # Reimplemented because pyepics does not recognize when the limits have
     # been changed without a re-connection of the PV. Instead we trust the soft
@@ -46,6 +48,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     high_soft_limit = Cpt(EpicsSignal, ".HLM", kind='omitted')
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
+    # Description is valuable
+    description = Cpt(EpicsSignal, '.DESC', kind='normal')
 
     @property
     def low_limit(self):
