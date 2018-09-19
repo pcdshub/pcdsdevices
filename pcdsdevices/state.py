@@ -205,6 +205,9 @@ class StatePositioner(Device, PositionerBase, MvInterface):
             The corresponding ``Enum`` entry for this value. It has two
             meaningful fields, ``name`` and ``value``.
         """
+        # Check for a malformed string digit
+        if isinstance(value, str) and value.isdigit():
+            value = int(value)
         try:
             return self.states_enum[value]
         except KeyError:
