@@ -100,20 +100,13 @@ class Slits(Device, MvInterface):
 
     Notes
     -----
-    The slits represent a unique device when forming the lightpath as whether
-    the beam is being blocked or not depends on the pointing. In order to
-    create an estimate that will warn operators of narrowly closed slits while
-    still allowing slits to be closed along the beampath.
-
-    The simplest solution was to use a :attr:`.nominal_aperture` that stores
-    the slit width and height that the slits should use for general operation.
-    Using this the :attr:`.transmission` is calculated based on how the current
-    aperture compares to the nominal, always using the minimum of the width or
-    height. This means that if you have a nominal aperture of 2 mm, but your
-    slits are set to 0.5 mm, the total estimated transmission will be 25%.
-    Obviously this is greatly oversimplified, but it allows the lightpath to
-    make a rough back of the hand calculation without being over aggressive
-    about changing slit widths during alignment
+    The slits represent a unique device when forming the lightpath because
+    whether the beam is being blocked or not depends on the pointing. In order
+    to create an estimate that will warn operators of "closed" slits, we set a
+    ``nominal_aperture`` for each unique device along the beamline. This is
+    value is considered the smallest the slit aperture can become without
+    blocking the beamline. Both the ``width`` and the ``height`` need to exceed
+    this ``nominal_aperture`` for the ``Slits`` to be considered removed.
     """
     xwidth = Cpt(SlitPositioner, '', slit_type="XWIDTH", kind='hinted')
     ywidth = Cpt(SlitPositioner, '', slit_type="YWIDTH", kind='hinted')
