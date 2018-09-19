@@ -13,12 +13,14 @@ however, if control of the center is desired the ``center`` sub-devices can be
 used.
 """
 import logging
+import time
 
 import numpy as np
 from ophyd.status import wait as status_wait
 from ophyd.pv_positioner import PVPositioner
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
-                   FormattedComponent as FCpt)
+                   FormattedComponent as FCpt, Kind)
+from ophyd.signal import AttributeSignal
 
 from .mv_interface import MvInterface, FltMvInterface
 
@@ -118,20 +120,20 @@ class Slits(Device, MvInterface):
     xwidth = Cpt(SlitPositioner, '', slit_type="XWIDTH", kind='normal')
     ycenter = Cpt(SlitPositioner, '', slit_type="YCENTER", kind='hinted')
     ywidth = Cpt(SlitPositioner, '', slit_type="YWIDTH", kind='normal')
+    nominal_aperture = Cpt(AttributeSignal, attr='_nominal', kind='normal')
     blocked = Cpt(EpicsSignalRO, ":BLOCKED", kind='omitted')
     open_cmd = Cpt(EpicsSignal, ":OPEN", kind='omitted')
     close_cmd = Cpt(EpicsSignal, ":CLOSE", kind='omitted')
     block_cmd = Cpt(EpicsSignal, ":BLOCK", kind='omitted')
-
     # Subscription information
     SUB_STATE = 'sub_state_changed'
     _default_sub = SUB_STATE
     # QIcon for UX
     _icon = 'fa.th-large'
 
-    def __init__(self, *args, nominal_aperture=(5.0, 5.0), **kwargs):
+    def __init__(self, *args, nominal_aperture=5.0, **kwargs):
         self._has_subscribed = False
-        self.nominal_aperture = nominal_aperture
+        self._nom = nominal_aperture
         super().__init__(*args, **kwargs)
 
     def move(self, size, wait=False, moved_cb=None, timeout=None):
@@ -190,8 +192,7 @@ class Slits(Device, MvInterface):
         """
         Whether the slits are inserted into the beampath
         """
-        return all([self.nominal_aperture[idx] > self.current_aperture[idx]
-                    for idx in range(0, 2)])
+        return min(self.current_aperture) < self.nominal_aperture.get()
 
     @property
     def removed(self):
@@ -307,3 +308,23 @@ class Slits(Device, MvInterface):
         kwargs.pop('obj',      None)
         # Run subscriptions
         self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
+
+    @property
+    def _nominal(self):
+        """Pointed to by nominal_aperture AttributeSignal"""
+        return self._nom
+
+    @_nominal.setter
+    def _nominal(self, value):
+        # Set the value
+        old_value = self._nom
+        self._nom = float(value)
+        # This will not be necessary after ophyd/#610 but until then we
+        # manually poke the nominal_aperture to update
+        self.nominal_aperture._run_subs(
+                sub_type=self.nominal_aperture.SUB_VALUE,
+                old_value=old_value,value=self._nom,
+                timestamp=time.time())
+        # Fire the state change callback as we have a new definition of
+        # inserted and removed
+        self._run_subs(sub_type=self.SUB_STATE, obj=self)
