@@ -18,7 +18,7 @@ import time
 from ophyd.status import wait as status_wait
 from ophyd.pv_positioner import PVPositioner
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
-                   FormattedComponent as FCpt, Kind)
+                   FormattedComponent as FCpt)
 from ophyd.signal import AttributeSignal
 
 from .mv_interface import MvInterface, FltMvInterface
@@ -128,8 +128,8 @@ class Slits(Device, MvInterface):
         self._nom = nominal_aperture
         super().__init__(*args, **kwargs)
         # Modify Kind of center readbacks
-        self.xcenter.readback.kind = Kind.normal
-        self.ycenter.readback.kind = Kind.normal
+        self.xcenter.readback.kind = 'normal'
+        self.ycenter.readback.kind = 'normal'
 
     def move(self, size, wait=False, moved_cb=None, timeout=None):
         """
