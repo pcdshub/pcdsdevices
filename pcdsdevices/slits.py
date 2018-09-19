@@ -15,7 +15,6 @@ used.
 import logging
 import time
 
-import numpy as np
 from ophyd.status import wait as status_wait
 from ophyd.pv_positioner import PVPositioner
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
@@ -326,7 +325,7 @@ class Slits(Device, MvInterface):
         # manually poke the nominal_aperture to update
         self.nominal_aperture._run_subs(
                 sub_type=self.nominal_aperture.SUB_VALUE,
-                old_value=old_value,value=self._nom,
+                old_value=old_value, value=self._nom,
                 timestamp=time.time())
         # Fire the state change callback as we have a new definition of
         # inserted and removed
