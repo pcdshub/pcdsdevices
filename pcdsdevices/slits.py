@@ -201,18 +201,6 @@ class Slits(Device, MvInterface):
         return not self.inserted
 
     @property
-    def transmission(self):
-        """
-        Estimated transmission of the slits based on :attr:`.nominal_aperture`
-        """
-        # Find most restrictive side of slit aperture
-        min_dim = np.argmin(self.current_aperture)
-        # Don't allow transmissions over 1.0
-        return min([self.current_aperture[min_dim]
-                    / self.nominal_aperture[min_dim],
-                    1.0])
-
-    @property
     def current_aperture(self):
         """
         Current size of the aperture (width, height)
