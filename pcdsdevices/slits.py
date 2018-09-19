@@ -57,10 +57,10 @@ class SlitPositioner(FltMvInterface, PVPositioner, Device):
     ``ophyd.PVPositioner``
         ``SlitPositioner`` inherits directly from ``PVPositioner``.
     """
-    setpoint = FCpt(EpicsSignal, "{self.prefix}:{self._dirshort}_REQ",
-                    kind='normal')
     readback = FCpt(EpicsSignalRO, "{self.prefix}:ACTUAL_{self._dirlong}",
                     kind='hinted')
+    setpoint = FCpt(EpicsSignal, "{self.prefix}:{self._dirshort}_REQ",
+                    kind='normal')
     done = Cpt(EpicsSignalRO, ":DMOV", kind='omitted')
 
     def __init__(self, prefix, *, slit_type="", name=None,
@@ -116,11 +116,11 @@ class Slits(Device, MvInterface):
     make a rough back of the hand calculation without being over aggressive
     about changing slit widths during alignment
     """
-    xcenter = Cpt(SlitPositioner, '', slit_type="XCENTER", kind='hinted')
-    xwidth = Cpt(SlitPositioner, '', slit_type="XWIDTH", kind='normal')
-    ycenter = Cpt(SlitPositioner, '', slit_type="YCENTER", kind='hinted')
-    ywidth = Cpt(SlitPositioner, '', slit_type="YWIDTH", kind='normal')
+    xwidth = Cpt(SlitPositioner, '', slit_type="XWIDTH", kind='hinted')
+    ywidth = Cpt(SlitPositioner, '', slit_type="YWIDTH", kind='hinted')
     nominal_aperture = Cpt(AttributeSignal, attr='_nominal', kind='normal')
+    xcenter = Cpt(SlitPositioner, '', slit_type="XCENTER", kind='normal')
+    ycenter = Cpt(SlitPositioner, '', slit_type="YCENTER", kind='normal')
     blocked = Cpt(EpicsSignalRO, ":BLOCKED", kind='omitted')
     open_cmd = Cpt(EpicsSignal, ":OPEN", kind='omitted')
     close_cmd = Cpt(EpicsSignal, ":CLOSE", kind='omitted')
@@ -135,6 +135,9 @@ class Slits(Device, MvInterface):
         self._has_subscribed = False
         self._nom = nominal_aperture
         super().__init__(*args, **kwargs)
+        # Modify Kind of center readbacks
+        self.xcenter.readback.kind = Kind.normal
+        self.ycenter.readback.kind = Kind.normal
 
     def move(self, size, wait=False, moved_cb=None, timeout=None):
         """
