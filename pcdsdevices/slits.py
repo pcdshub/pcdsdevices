@@ -13,13 +13,12 @@ however, if control of the center is desired the ``center`` sub-devices can be
 used.
 """
 import logging
-import time
 
 from ophyd.status import wait as status_wait
 from ophyd.pv_positioner import PVPositioner
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
                    FormattedComponent as FCpt)
-from ophyd.signal import AttributeSignal
+from ophyd.sim import SignalRO
 
 from .mv_interface import MvInterface, FltMvInterface
 
@@ -110,7 +109,7 @@ class Slits(Device, MvInterface):
     """
     xwidth = Cpt(SlitPositioner, '', slit_type="XWIDTH", kind='hinted')
     ywidth = Cpt(SlitPositioner, '', slit_type="YWIDTH", kind='hinted')
-    nominal_aperture = Cpt(AttributeSignal, attr='_nominal', kind='normal')
+    nominal_aperture = Cpt(SignalRO, kind='normal')
     xcenter = Cpt(SlitPositioner, '', slit_type="XCENTER", kind='normal')
     ycenter = Cpt(SlitPositioner, '', slit_type="YCENTER", kind='normal')
     blocked = Cpt(EpicsSignalRO, ":BLOCKED", kind='omitted')
@@ -127,6 +126,8 @@ class Slits(Device, MvInterface):
         self._has_subscribed = False
         self._nom = nominal_aperture
         super().__init__(*args, **kwargs)
+        # Initialize nominal_aperture behind the scenes
+        self.nominal_aperture._readback = nominal_aperture
         # Modify Kind of center readbacks
         self.xcenter.readback.kind = 'normal'
         self.ycenter.readback.kind = 'normal'
@@ -303,23 +304,3 @@ class Slits(Device, MvInterface):
         kwargs.pop('obj',      None)
         # Run subscriptions
         self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
-
-    @property
-    def _nominal(self):
-        """Pointed to by nominal_aperture AttributeSignal"""
-        return self._nom
-
-    @_nominal.setter
-    def _nominal(self, value):
-        # Set the value
-        old_value = self._nom
-        self._nom = float(value)
-        # This will not be necessary after ophyd/#610 but until then we
-        # manually poke the nominal_aperture to update
-        self.nominal_aperture._run_subs(
-                sub_type=self.nominal_aperture.SUB_VALUE,
-                old_value=old_value, value=self._nom,
-                timestamp=time.time())
-        # Fire the state change callback as we have a new definition of
-        # inserted and removed
-        self._run_subs(sub_type=self.SUB_STATE, obj=self)
