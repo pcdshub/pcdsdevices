@@ -82,6 +82,12 @@ def test_slit_subscriptions(fake_slits):
     # Change the aperture size
     slits.xwidth.readback.sim_put(40.0)
     assert cb.called
+    # Subscribe a new pseudo callback
+    cb = Mock()
+    slits.subscribe(cb, event_type=slits.SUB_STATE, run=False)
+    # Change the nominal aperture
+    slits.nominal_aperture.put(12.0)
+    assert cb.called
 
 
 def test_slit_staging(fake_slits):
