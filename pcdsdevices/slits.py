@@ -124,7 +124,6 @@ class Slits(Device, MvInterface):
 
     def __init__(self, *args, nominal_aperture=5.0, **kwargs):
         self._has_subscribed = False
-        self._nom = nominal_aperture
         super().__init__(*args, **kwargs)
         # Initialize nominal_aperture behind the scenes
         self.nominal_aperture._readback = nominal_aperture
