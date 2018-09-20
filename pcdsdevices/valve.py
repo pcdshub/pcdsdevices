@@ -113,7 +113,7 @@ class GateValve(Stopper):
         Whether the interlock on the valve is active, preventing the valve from
         opening
         """
-        return bool(self.interlock.get())
+        return not bool(self.interlock.get())
 
 
 class PPSStopper(InOutPositioner):
