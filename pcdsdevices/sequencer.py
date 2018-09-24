@@ -102,6 +102,24 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
         logger.debug("Starting EventSequencer ...")
         self.play_control.put(1)
 
+
+    def trigger(self):
+        """Trigger the EventSequencer"""
+        # Fire the EventSequencer
+        self.start()
+        # If we are running forever, count this is as triggered
+        if self.play_mode.get() == 2:
+            logger.debug("EventSequencer is set to run forever, "
+                         "trigger is complete")
+            return DeviceStatus(self, done=True, success=True)
+
+        # Create our status
+        def done(*args, value=None, old_value=None, **kwargs):
+            return value == 2 and old_value == 0
+
+        # Create our status object
+        return SubscriptionStatus(self.play_status, done, run=True)
+
     def pause(self):
         """Stop the event sequencer and stop monitoring events"""
         # Order a stop
