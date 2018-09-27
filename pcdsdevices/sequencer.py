@@ -39,13 +39,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
 
     .. code::
 
-        def step_then_sequence(detectors, step, pos_cache)
-            yield from one_nd_step(detectors, step, pos_cache)
-            yield from kickoff(sequencer)
-            yield from complete(sequencer)  # Waits for sequence to complete if
-                                            # not in "Run Forever" mode
-
-        scan([det], motor, ..., per_step=step_then_sequence)
+        scan([sequencer], motor, ....)
 
     Note
     ----
@@ -111,7 +105,21 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
         self.play_control.put(1)
 
     def trigger(self):
-        """Trigger the EventSequencer"""
+        """
+        Trigger the EventSequencer
+
+        This method reconfigures the EventSequencer to take a new reading. This
+        means:
+
+            * Stopping the EventSequencer if it is already running
+            * Restarting the EventSequencer
+
+        The returned status object will indicate different behavior based on
+        the configuration of the EventSequencer itself. If set to "Run
+        Forever", the status object merely indicates that we have succesfully
+        started our sequence. Otherwise, the status object will be completed
+        when the sequence we have set it to play is complete.
+        """
         # Stop the Sequencer if it is already running
         self.stop()
         if self.DEFAULT_SLEEP:
