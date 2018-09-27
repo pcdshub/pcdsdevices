@@ -71,7 +71,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
 
     # Used to put an artificial sleep in before triggering the EventSequener.
     # This gives us some room for the DAQ to arm its triggers before the
-    # sequence starts 
+    # sequence starts
     DEFAULT_SLEEP = 0
 
     def __init__(self, prefix, *, name=None, monitor_attrs=None, **kwargs):
@@ -109,7 +109,6 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
         # Start the sequencer
         logger.debug("Starting EventSequencer ...")
         self.play_control.put(1)
-
 
     def trigger(self):
         """Trigger the EventSequencer"""
