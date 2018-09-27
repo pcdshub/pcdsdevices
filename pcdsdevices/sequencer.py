@@ -63,11 +63,6 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     rep_count = Cpt(EpicsSignal, ":REPCNT", kind='config')
     sequence_owner = Cpt(EpicsSignalRO, ':HUTCH_NAME', kind='omitted')
 
-    # Used to put an artificial sleep in before triggering the EventSequener.
-    # This gives us some room for the DAQ to arm its triggers before the
-    # sequence starts
-    DEFAULT_SLEEP = 0
-
     def __init__(self, prefix, *, name=None, monitor_attrs=None, **kwargs):
         monitor_attrs = monitor_attrs or ['current_step', 'play_count']
         # Device initialization
@@ -122,10 +117,6 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
         """
         # Stop the Sequencer if it is already running
         self.stop()
-        if self.DEFAULT_SLEEP:
-            logger.debug("EventSequencer sleeping %s s ...",
-                         self.DEFAULT_SLEEP)
-            time.sleep(self.DEFAULT_SLEEP)
         # Fire the EventSequencer
         self.start()
         # If we are running forever, count this is as triggered
