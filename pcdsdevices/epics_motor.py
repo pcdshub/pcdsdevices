@@ -174,36 +174,22 @@ class PCDSMotorBase(EpicsMotorInterface):
         """
         Stops the motor.
 
-        After which the motor
-        must be set back to 'go' via <motor>.go()
-        in order to move again.
+        After which the motor must be set back to 'go' via <motor>.spg_go() in
+        order to move again.
         """
         return self.motor_spg.put(value='Stop')
 
-    def pause(self):
+    def spg_pause(self):
         """
         Pauses a move.
 
-        Move will resume if <motor>.resume()
-        or <motor>.go() are called.
+        Move will resume if <motor>.go() is called.
         """
         return self.motor_spg.put(value='Pause')
 
-    def resume(self):
+    def spg_go(self):
         """
         Resumes paused movement.
-
-        Sets motor ready to move or resumes a paused move
-        (same as <motor>.go()).
-        """
-        return self.go()
-
-    def go(self):
-        """
-        Resumes paused movement.
-
-        Sets motor ready to move or resumes a paused move
-        (same as <motor>.resume()).
         """
         return self.motor_spg.put(value='Go')
 
