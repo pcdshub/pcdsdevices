@@ -1,5 +1,4 @@
 import logging
-import time
 
 from ophyd import Device, EpicsSignal, EpicsSignalRO, Component as Cpt
 from ophyd.status import DeviceStatus, SubscriptionStatus
