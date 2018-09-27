@@ -112,6 +112,8 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
 
     def trigger(self):
         """Trigger the EventSequencer"""
+        # Stop the Sequencer if it is already running
+        self.stop()
         if self.DEFAULT_SLEEP:
             logger.debug("EventSequencer sleeping %s s ...",
                          self.DEFAULT_SLEEP)
