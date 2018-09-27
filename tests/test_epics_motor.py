@@ -178,6 +178,13 @@ def test_resume_pause_stop(fake_pcds_motor):
         m.move(10, wait=False)
     m.spg_go()
     assert m.motor_spg.get(as_string=True) == 'Go'
+    # Test staging
+    m.motor_spg.put(0)
+    m.stage()
+    assert m.motor_spg.get() == 2
+    # Test unstaging
+    m.unstage()
+    assert m.motor_spg.get() == 0
 
 
 def test_disable(fake_pcds_motor):
