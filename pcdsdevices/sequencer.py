@@ -59,6 +59,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     sequence_length = Cpt(EpicsSignal, ':LEN', kind='config')
     current_step = Cpt(EpicsSignal, ':CURSTP', kind='normal')
     play_count = Cpt(EpicsSignal, ':PLYCNT', kind='normal')
+    total_play_count = Cpt(EpicsSignalRO, ':TPLCNT', kind='normal')
     play_status = Cpt(EpicsSignalRO, ':PLSTAT', auto_monitor=True,
                       kind='normal')
     play_mode = Cpt(EpicsSignal, ':PLYMOD', kind='config')
