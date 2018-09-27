@@ -172,16 +172,12 @@ def test_resume_pause_stop(fake_pcds_motor):
         m.check_value(10)
     with pytest.raises(MotorDisabledError):
         m.move(10, wait=False)
-    m.pause()
+    m.spg_pause()
     assert m.motor_spg.get(as_string=True) == 'Pause'
     with pytest.raises(MotorDisabledError):
         m.move(10, wait=False)
-    m.go()
+    m.spg_go()
     assert m.motor_spg.get(as_string=True) == 'Go'
-    m.check_value(10)
-    m.resume()
-    assert m.motor_spg.get(as_string=True) == 'Go'
-    m.check_value(10)
 
 
 def test_disable(fake_pcds_motor):
