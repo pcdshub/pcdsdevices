@@ -10,7 +10,7 @@ from conftest import HotfixFakeEpicsSignal, fake_att
 
 logger = logging.getLogger(__name__)
 
-sample_lensset = (2, 200e-6, 4, 500e-6)
+sample_lens_set = (2, 200e-6, 4, 500e-6)
 sample_E = 8
 
 
@@ -107,10 +107,10 @@ def test_readLensFile(tmpdir):
 def test_CreateLensFile(tmpdir, monkeypatch):
     logger.debug('test_CreateLensFile')
     lensstack = fake_lensstack()
-    lensstack.CreateLens(lensstack.lensset)
+    lensstack.CreateLens(lensstack.lens_set)
     p = tmpdir.mkdir("sub").join("lensfile.yaml")
     monkeypatch.setattr('builtins.input', lambda x: "[2,200e-6,4,500e-6]")
-    i = input("lensset : ")
+    i = input("lens_set : ")
     p.write(i)
     assert p.read() == "[2,200e-6,4,500e-6]"
 
@@ -138,7 +138,7 @@ def test_getDelta():
 def test_calcBeamFWHM():
     logger.debug('test_calcBeamFWH')
     lens = fake_lensstack()
-    h = lens.calcBeamFWHM(8, sample_lensset, distance=4, fwhm_unfocused=500e-6)
+    h = lens.calcBeamFWHM(8, sample_lens_set, distance=4, fwhm_unfocused=500e-6)
     assert h == 0.00011649743222659306
 
 
@@ -154,13 +154,13 @@ def test_makeSafe():
 def test_calcDistanceForSize(monkeypatch):
     logger.debug('test_calcDistanceForSize')
     lens = fake_lensstack()
-    lens.calcDistanceForSize(.1, sample_lensset, E=8, fwhm_unfocused=500e-6)
+    lens.calcDistanceForSize(.1, sample_lens_set, E=8, fwhm_unfocused=500e-6)
 
 
 def fake_lensstack():
     fake_lensstack = SimLensStack(name='test', x_prefix='x_motor',
                                   y_prefix='y_motor', z_prefix='z_motor',
-                                  path=os.path.dirname(__file__) + '/test_lensset',
+                                  path=os.path.dirname(__file__) + '/test_lens_set',
                                   E=sample_E,
                                   _zoffset=.01, zdir=1, attObj=None,
                                   lclsObj=.01, monoObj=.01,

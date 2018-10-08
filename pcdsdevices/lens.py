@@ -52,7 +52,7 @@ class LensStackBase(PseudoPositioner):
     calib_z = Cpt(PseudoSingle)
     beam_size = Cpt(PseudoSingle)
 
-    def __init__(self, x_prefix, y_prefix, z_prefix, lensset=None,
+    def __init__(self, x_prefix, y_prefix, z_prefix, lens_set=None,
                  _zoffset=None, zdir=None, E=None, attObj=None, lclsObj=None,
                  monoObj=None, beamsizeUnfocused=500e-6, *args, **kwargs):
         self.x_prefix = x_prefix
@@ -66,14 +66,14 @@ class LensStackBase(PseudoPositioner):
         self._attObj = attObj
         self._lclsObj = lclsObj
         self._monoObj = monoObj
-        self.lensset = lensset
+        self.lens_set = lens_set
 
         super().__init__(x_prefix, *args, **kwargs)
 
-    def calcDistanceForSize(self, sizeFWHM, lensset, E=None,
+    def calcDistanceForSize(self, sizeFWHM, lens_set, E=None,
                             fwhm_unfocused=None):
         size = sizeFWHM*2./2.35
-        f = self.calcFocalLength(E, lensset, 'Be', None)
+        f = self.calcFocalLength(E, lens_set, 'Be', None)
         lam = 12.398/E*1e-10
         # the w parameter used in the usual formula is 2*sigma
         w_unfocused = fwhm_unfocused*2/2.35
@@ -98,8 +98,9 @@ class LensStackBase(PseudoPositioner):
     def forward(self, pseudo_pos):
         if not np.isclose(pseudo_pos.beam_size, self.beam_size.position):
             beam_size = pseudo_pos.beam_size
-            dist = self.calcDistanceForSize(beam_size, self.lensset,
-                                       self._E, self.beamsizeUnfocused)[0]
+            dist = self.calcDistanceForSize(beam_size, self.lens_set,
+                                            self._E,
+                                            self.beamsizeUnfocused)[0]
             z_pos = (dist - self._zoffset) * self._zdir * 1000
         else:
             z_pos = pseudo_pos.calib_z
@@ -119,13 +120,14 @@ class LensStackBase(PseudoPositioner):
                            "the align() method.  If you have already done "
                            "that, check if the preset pathways have been "
                            "setup.")
-            return self.RealPosition(x=self.x.position, y=self.y.position, z=z_pos)
+            return self.RealPosition(x=self.x.position, y=self.y.position,
+                                     z=z_pos)
 
     @real_position_argument
     def inverse(self, real_pos):
         dist_m = real_pos.z / 1000 * self._zdir + self._zoffset
         print('dist_m', dist_m)
-        beamsize = self.calcBeamFWHM(self._E, self.lensset, distance=dist_m,
+        beamsize = self.calcBeamFWHM(self._E, self.lens_set, distance=dist_m,
                                      material="Be", density=None,
                                      fwhm_unfocused=self.beamsizeUnfocused)
         return self.PseudoPosition(calib_z=real_pos.z, beam_size=beamsize)
@@ -178,14 +180,14 @@ class LensStackBase(PseudoPositioner):
                           energy=E))
         return delta
 
-    def calcFocalLength(self, E, lensset, material="Be", density=None):
+    def calcFocalLength(self, E, lens_set, material="Be", density=None):
         # lens_set = (n1,radius1,n2,radius2,...)
         num = []
         rad = []
         ftot_inverse = 0
-        for i in range(len(lensset)//2):
-            num = lensset[2*i]
-            rad = lensset[2*i+1]
+        for i in range(len(lens_set)//2):
+            num = lens_set[2*i]
+            rad = lens_set[2*i+1]
             if rad is not None:
                 rad = float(rad)
                 num = float(num)
@@ -200,9 +202,9 @@ class LensStackBase(PseudoPositioner):
         f = (radius/2)/delta
         return f
 
-    def calcBeamFWHM(self, E, lensset, distance=None, material="Be",
+    def calcBeamFWHM(self, E, lens_set, distance=None, material="Be",
                      density=None, fwhm_unfocused=None, printsummary=True):
-        f = self.calcFocalLength(E, lensset, material, density)
+        f = self.calcFocalLength(E, lens_set, material, density)
         lam = 1.2398/E*1e-9
         # the w parameter used in the usual formula is 2*sigma
         w_unfocused = fwhm_unfocused*2/2.35
@@ -250,15 +252,15 @@ class LensStackBase(PseudoPositioner):
 class LensStack(LensStackBase):
     def __init__(self, *args, path, **kwargs):
         self.path = path + '.yaml'
-        lensset = self.ReadLens()
-        super().__init__(*args, lensset=lensset, **kwargs)
+        lens_set = self.ReadLens()
+        super().__init__(*args, lens_set=lens_set, **kwargs)
 
     def ReadLens(self):
         with open(self.path, 'r') as f:
             read_data = yaml.load(f)
         return read_data
 
-    def CreateLens(self, lensset):
+    def CreateLens(self, lens_set):
         shutil.copyfile(self.path, self.path + str(date.today()))
         with open(self.path + str(date.today()), "w") as f:
             yaml.dump(self.path, f)
