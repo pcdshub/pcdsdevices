@@ -9,6 +9,7 @@ Common EPICS Devices
     Attenuator
     BeckhoffAxis
     CCM
+    DelayNewport
     EpicsMotor
     EventSequencer
     GateValve

@@ -1,7 +1,8 @@
 # flake8: NOQA
 from .attenuator import Attenuator
 from .ccm import CCM
-from .epics_motor import IMS, Newport, PMC100, BeckhoffAxis, EpicsMotor
+from .epics_motor import (IMS, Newport, DelayNewport, PMC100, BeckhoffAxis,
+                          EpicsMotor)
 from .evr import Trigger
 from .inout import Reflaser, TTReflaser
 from .ipm import IPM

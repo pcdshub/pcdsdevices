@@ -10,6 +10,7 @@ from ophyd.utils import LimitError
 
 from .doc_stubs import basic_positioner_init
 from .mv_interface import FltMvInterface
+from .pseudopos import DelayBase
 
 
 logger = logging.getLogger(__name__)
@@ -398,6 +399,11 @@ class Newport(PCDSMotorBase):
         # Newport motors to a reference mark
         raise NotImplementedError("Homing is not yet implemented for Newport "
                                   "motors")
+
+
+class DelayNewport(DelayBase):
+    __doc__ = DelayBase.__doc__
+    motor = Cpt(Newport, '')
 
 
 class PMC100(PCDSMotorBase):
