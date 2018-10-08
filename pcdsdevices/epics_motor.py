@@ -398,6 +398,7 @@ class Newport(PCDSMotorBase):
 
 
 class DelayNewport(DelayBase):
+    __doc__ = DelayBase.__doc__
     motor = Cpt(Newport, '')
 
 
