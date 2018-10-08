@@ -21,6 +21,7 @@ requirements:
     - bluesky >=1.2.0
     - pyepics
     - pyyaml
+    - periodictable
 
 test:
   imports:
