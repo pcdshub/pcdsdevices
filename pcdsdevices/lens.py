@@ -53,13 +53,13 @@ class LensStackBase(PseudoPositioner):
     beam_size = Cpt(PseudoSingle)
 
     def __init__(self, x_prefix, y_prefix, z_prefix, lens_set=None,
-                 _zoffset=None, zdir=None, E=None, attObj=None, lclsObj=None,
+                 z_offset=None, zdir=None, E=None, attObj=None, lclsObj=None,
                  monoObj=None, beamsizeUnfocused=500e-6, *args, **kwargs):
         self.x_prefix = x_prefix
         self.y_prefix = y_prefix
         self.z_prefix = z_prefix
         self._zdir = zdir
-        self._zoffset = _zoffset
+        self.z_offset = z_offset
         self.beamsizeUnfocused = beamsizeUnfocused
 
         self._E = E
@@ -101,7 +101,7 @@ class LensStackBase(PseudoPositioner):
             dist = self.calcDistanceForSize(beam_size, self.lens_set,
                                             self._E,
                                             self.beamsizeUnfocused)[0]
-            z_pos = (dist - self._zoffset) * self._zdir * 1000
+            z_pos = (dist - self.z_offset) * self._zdir * 1000
         else:
             z_pos = pseudo_pos.calib_z
         try:
@@ -125,7 +125,7 @@ class LensStackBase(PseudoPositioner):
 
     @real_position_argument
     def inverse(self, real_pos):
-        dist_m = real_pos.z / 1000 * self._zdir + self._zoffset
+        dist_m = real_pos.z / 1000 * self._zdir + self.z_offset
         print('dist_m', dist_m)
         beamsize = self.calcBeamFWHM(self._E, self.lens_set, distance=dist_m,
                                      material="Be", density=None,

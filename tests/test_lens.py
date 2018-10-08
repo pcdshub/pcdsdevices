@@ -162,7 +162,7 @@ def fake_lensstack():
                                   y_prefix='y_motor', z_prefix='z_motor',
                                   path=os.path.dirname(__file__) + '/test_lens_set',
                                   E=sample_E,
-                                  _zoffset=.01, zdir=1, attObj=None,
+                                  z_offset=.01, zdir=1, attObj=None,
                                   lclsObj=.01, monoObj=.01,
                                   beamsizeUnfocused=500e-6)
     return fake_lensstack
