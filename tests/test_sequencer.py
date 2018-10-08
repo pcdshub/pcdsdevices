@@ -63,6 +63,32 @@ def test_kickoff(sequence):
     assert st.success
 
 
+def test_trigger(sequence):
+    # Not currently playing
+    sequence.play_status.sim_put(0)
+    # Set to run forever
+    sequence.play_mode.put(2)
+    trig_status = sequence.trigger()
+    # Sequencer has started
+    assert sequence.play_control.get() == 1
+    # Trigger is automatically complete
+    assert trig_status.done
+    assert trig_status.success
+    # Stop sequencer
+    # Not currently playing
+    sequence.play_status.sim_put(0)
+    sequence.play_control.put(0)
+    # Set to run once
+    sequence.play_mode.put(0)
+    trig_status = sequence.trigger()
+    # Not done until sequencer is done
+    assert sequence.play_control.get() == 1
+    assert not trig_status.done
+    sequence.play_status.sim_put(2)
+    assert trig_status.done
+    assert trig_status.success
+
+
 def test_complete_run_forever(sequence):
     logger.debug('test_complete_run_forever')
     seq = sequence
