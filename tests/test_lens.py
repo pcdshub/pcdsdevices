@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 from ophyd.sim import make_fake_device
 import pytest
-import os 
+import os
 from pcdsdevices.lens import XFLS, SimLensStack, LensStackBase
 
 from conftest import HotfixFakeEpicsSignal, fake_att
@@ -57,11 +57,13 @@ def test_xfls_subscriptions(fake_xfls):
     xfls.state.put(4)
     assert cb.called
 
+
 def test_LensStackBeamsize(monkeypatch):
     logger.debug('test_LensStackBeamsize')
     lensstack = fake_lensstack()
     lensstack.beam_size.move(100e-6)
     lensstack._attObj = fake_att()
+
     def mocktweak(self):
         lensstack.x.move(lensstack.x.position+1)
         lensstack.y.move(lensstack.y.position+1)
@@ -138,7 +140,8 @@ def test_getDelta():
 def test_calcBeamFWHM():
     logger.debug('test_calcBeamFWH')
     lens = fake_lensstack()
-    h = lens.calcBeamFWHM(8, sample_lens_set, distance=4, fwhm_unfocused=500e-6)
+    h = lens.calcBeamFWHM(8, sample_lens_set, distance=4,
+                          fwhm_unfocused=500e-6)
     assert h == 0.00011649743222659306
 
 
@@ -160,7 +163,8 @@ def test_calcDistanceForSize(monkeypatch):
 def fake_lensstack():
     fake_lensstack = SimLensStack(name='test', x_prefix='x_motor',
                                   y_prefix='y_motor', z_prefix='z_motor',
-                                  path=os.path.dirname(__file__) + '/test_lens_set',
+                                  path=(os.path.dirname(__file__)
+                                        + '/test_lens_set'),
                                   E=sample_E,
                                   z_offset=.01, z_dir=1, attObj=None,
                                   lclsObj=.01, monoObj=.01,
