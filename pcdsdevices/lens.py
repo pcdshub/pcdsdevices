@@ -19,6 +19,8 @@ from .inout import InOutRecordPositioner
 from .mv_interface import tweak_base
 from .sim import FastMotor
 
+LENS_RADII = [50e-6, 100e-6, 200e-6, 300e-6, 500e-6, 1000e-6, 1500e-6]
+
 
 class XFLS(InOutRecordPositioner):
     """
@@ -43,8 +45,6 @@ class LensStackBase(PseudoPositioner):
     """
     Class for Be lens macros and safe operations.
     """
-    lensRadii2D = [50e-6, 100e-6, 200e-6, 300e-6, 500e-6, 1000e-6, 1500e-6]
-
     x = FCpt(IMS, '{self.x_prefix}')
     y = FCpt(IMS, '{self.y_prefix}')
     z = FCpt(IMS, '{self.z_prefix}')
