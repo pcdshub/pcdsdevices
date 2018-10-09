@@ -1,6 +1,7 @@
 import logging
 
 from ophyd import Device, EpicsSignal, EpicsSignalRO, Component as Cpt
+from ophyd import FormattedComponent as FCpt
 from ophyd.status import DeviceStatus, SubscriptionStatus
 from ophyd.utils.epics_pvs import raise_if_disconnected
 from ophyd.flyers import FlyerInterface, MonitorFlyerMixin
@@ -53,7 +54,9 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     EventSequencer and restart the sequence from the beginning. This may impact
     applications which depend on a long single looped sequence running through
     out the scan
+
     """
+    
     play_control = Cpt(EpicsSignal, ':PLYCTL', kind='omitted')
     sequence_length = Cpt(EpicsSignal, ':LEN', kind='config')
     current_step = Cpt(EpicsSignal, ':CURSTP', kind='normal')
@@ -68,6 +71,13 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
 
     def __init__(self, prefix, *, name=None, monitor_attrs=None, **kwargs):
         monitor_attrs = monitor_attrs or ['current_step', 'play_count']
+
+        # Setup Event Sequence
+        hutch_map = {1:'AMO', 2:'SXR', 3:'XPP', 4:'XCS', 5:'CXI', 6:'MEC', 7:'MFX'}
+        hutch = hutch_map[int(prefix[-1])]
+    
+        self.sequence = EventSequence('{}:ECS:IOC:01'.format(hutch), hutch_num=prefix[-1], name='{}_sequence'.format(hutch))
+
         # Device initialization
         super().__init__(prefix, name=name,
                          monitor_attrs=monitor_attrs, **kwargs)
@@ -160,3 +170,131 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
         """Stop the EventSequencer"""
         logger.debug("Stopping the EventSequencer")
         self.play_control.put(0)
+
+
+class SequenceLine(Device):
+    """Sub-class for event sequencer line."""
+
+    ec = FCpt(EpicsSignal, '{self.prefix}:EC_{self._ID}:{self._line}')
+    bd = FCpt(EpicsSignal, '{self.prefix}:BD_{self._ID}:{self._line}')
+    fd = FCpt(EpicsSignal, '{self.prefix}:FD_{self._ID}:{self._line}')
+    bc = FCpt(EpicsSignal, '{self.prefix}:BC_{self._ID}:{self._line}')
+
+    def __init__(self, prefix, hutch_id=None, line=None, **kwargs):
+
+        self._ID = hutch_id
+        self._line = line
+
+        super().__init__(prefix, **kwargs)
+
+    def read(self):
+        """Read this line of the event sequence. 
+
+        Parameters
+        ----------
+        None.
+
+        Examples
+        --------
+        SequenceLine.read()
+
+        """
+        event_code = self.ec.get()
+        beam_delta = self.bd.get()
+        fiducial_delta = self.fd.get()
+        burst_count = self.bc.get()
+        
+        line = [event_code, beam_delta, fiducial_delta, burst_count]
+
+        return line
+
+    def write(self, line):
+        """Write to this line of the event sequence. 
+
+        Parameters
+        ----------
+        line: list
+            Four item list containing the desired values for event code,
+            beam delta, fiducial delta, and burst count, respectively, e.g.
+            [<event code>, <beam delta>, <fiducial delta>, <burst count>].
+
+        Examples
+        --------
+        SequenceLine.write([140, 12, 0, 0])
+
+        """
+
+        if len(line) != 4:
+            raise ValueError("The sequence line must be a 4 item list!")
+        else:
+            self.ec.put(line[0])        
+            self.bd.put(line[1])        
+            self.fd.put(line[2])        
+            self.bc.put(line[3])        
+
+class EventSequence(Device):
+    """Class for the event sequence of the event sequencer."""
+
+    def __init__(self, prefix, hutch_num, **kwargs):
+        
+        self._hutch_num = hutch_num
+      
+        self._lines = [] 
+        for i in range(0,20,1):
+            line_num = str(i)
+            # Pad 1 digit numbers with 0
+            if len(line_num) == 1:
+                line_num = '0' + line_num
+            line = SequenceLine(prefix, hutch_id=self._hutch_num, line=line_num, name='line{}'.format(line_num))
+            self._lines.append(line)
+        
+        super().__init__(self._hutch_num, **kwargs)
+
+    def read(self):
+        """Read the current event sequence.
+
+        Parameters
+        ----------
+        None.
+
+        Examples
+        --------
+
+        EventSequence.read()
+        
+        """
+        sequence = []
+        for line in self._lines:
+            seq_line = line.read()
+            sequence.append(seq_line)
+
+        return sequence
+
+    def write(self, sequence):
+        """Write a sequence to the event sequencer. Takes a list of lists,
+        with each sub-list representing one line of the event sequence. 
+
+        Parameters
+        ----------
+        sequence: list
+            List of lists describing the event sequence. The list cannot be
+            longer than 20 entries.
+
+        Examples
+        --------
+        seq = [[167, 19, 0, 0],
+               [168,  4, 0, 0],
+               [182,  1, 0, 0],
+               [176,  0, 0, 0],
+               [169,  0, 0, 0]]
+
+        EventSequence.write(seq)
+        
+        """
+
+        if len(sequence) > 20:
+            raise ValueError("The sequence length cannot be longer than 20!")
+        else:
+            for n, line in enumerate(sequence):
+                seq_line = self._lines[n]
+                seq_line.write(line)
