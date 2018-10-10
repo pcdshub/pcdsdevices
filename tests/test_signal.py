@@ -13,8 +13,6 @@ def test_avg_signal():
     sig = Signal(name='raw')
     avg = AvgSignal(sig, 2, name='avg')
 
-    assert sig.value is None
-    assert avg.value is None
     assert avg.averages == 2
 
     sig.put(1)

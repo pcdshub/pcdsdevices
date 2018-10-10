@@ -10,6 +10,7 @@ from ophyd.utils import LimitError
 
 from .doc_stubs import basic_positioner_init
 from .mv_interface import FltMvInterface
+from .pseudopos import DelayBase
 
 
 logger = logging.getLogger(__name__)
@@ -36,6 +37,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         3. The disable puts field ``.DISP`` is added, along with ``enable`` and
         ``disable`` convenience methods. When ``.DISP`` is 1, puts to the motor
         record will be ignored, effectively disabling the interface.
+        4. The description field keeps track of the motors scientific use along
+           the beamline.
     """
     # Reimplemented because pyepics does not recognize when the limits have
     # been changed without a re-connection of the PV. Instead we trust the soft
@@ -46,6 +49,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     high_soft_limit = Cpt(EpicsSignal, ".HLM", kind='omitted')
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
+    # Description is valuable
+    description = Cpt(EpicsSignal, '.DESC', kind='normal')
 
     @property
     def low_limit(self):
@@ -394,6 +399,11 @@ class Newport(PCDSMotorBase):
         # Newport motors to a reference mark
         raise NotImplementedError("Homing is not yet implemented for Newport "
                                   "motors")
+
+
+class DelayNewport(DelayBase):
+    __doc__ = DelayBase.__doc__
+    motor = Cpt(Newport, '')
 
 
 class PMC100(PCDSMotorBase):
