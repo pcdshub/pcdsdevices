@@ -39,13 +39,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
 
     .. code::
 
-        def step_then_sequence(detectors, step, pos_cache)
-            yield from one_nd_step(detectors, step, pos_cache)
-            yield from kickoff(sequencer)
-            yield from complete(sequencer)  # Waits for sequence to complete if
-                                            # not in "Run Forever" mode
-
-        scan([det], motor, ..., per_step=step_then_sequence)
+        scan([sequencer], motor, ....)
 
     Note
     ----
@@ -61,12 +55,14 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     sequence_length = Cpt(EpicsSignal, ':LEN', kind='config')
     current_step = Cpt(EpicsSignal, ':CURSTP', kind='normal')
     play_count = Cpt(EpicsSignal, ':PLYCNT', kind='normal')
+    total_play_count = Cpt(EpicsSignalRO, ':TPLCNT', kind='normal')
     play_status = Cpt(EpicsSignalRO, ':PLSTAT', auto_monitor=True,
                       kind='normal')
     play_mode = Cpt(EpicsSignal, ':PLYMOD', kind='config')
     sync_marker = Cpt(EpicsSignal, ':SYNCMARKER', kind='config')
     next_sync = Cpt(EpicsSignal, ':SYNCNEXTTICK', kind='config')
     pulse_req = Cpt(EpicsSignal, ':BEAMPULSEREQ', kind='config')
+    rep_count = Cpt(EpicsSignal, ":REPCNT", kind='config')
     sequence_owner = Cpt(EpicsSignalRO, ':HUTCH_NAME', kind='omitted')
 
     def __init__(self, prefix, *, name=None, monitor_attrs=None, **kwargs):
@@ -111,6 +107,39 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
         # Start the sequencer
         logger.debug("Starting EventSequencer ...")
         self.play_control.put(1)
+
+    def trigger(self):
+        """
+        Trigger the EventSequencer
+
+        This method reconfigures the EventSequencer to take a new reading. This
+        means:
+
+            * Stopping the EventSequencer if it is already running
+            * Restarting the EventSequencer
+
+        The returned status object will indicate different behavior based on
+        the configuration of the EventSequencer itself. If set to "Run
+        Forever", the status object merely indicates that we have succesfully
+        started our sequence. Otherwise, the status object will be completed
+        when the sequence we have set it to play is complete.
+        """
+        # Stop the Sequencer if it is already running
+        self.stop()
+        # Fire the EventSequencer
+        self.start()
+        # If we are running forever, count this is as triggered
+        if self.play_mode.get() == 2:
+            logger.debug("EventSequencer is set to run forever, "
+                         "trigger is complete")
+            return DeviceStatus(self, done=True, success=True)
+
+        # Create our status
+        def done(*args, value=None, old_value=None, **kwargs):
+            return value == 2 and old_value == 0
+
+        # Create our status object
+        return SubscriptionStatus(self.play_status, done, run=True)
 
     def pause(self):
         """Stop the event sequencer and stop monitoring events"""

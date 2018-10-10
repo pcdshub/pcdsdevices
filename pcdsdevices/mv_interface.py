@@ -730,17 +730,25 @@ def tweak_base(*args):
         """
         Function used to know when and the direction to move the motor.
         """
-        if direction == left:
-            args[0].umvr(-scale)
-            thread_event()
-        elif direction == right:
-            args[0].umvr(scale)
-            thread_event()
-        elif direction == up and len(args) > 1:
-            args[1].umvr(scale)
-            print("\r {0:4f}".format(args[1].position), end=" ")
+        try:
+            if direction == left:
+                args[0].umvr(-scale)
+                thread_event()
+            elif direction == right:
+                args[0].umvr(scale)
+                thread_event()
+            elif direction == up and len(args) > 1:
+                args[1].umvr(scale)
+                print("\r {0:4f}".format(args[1].position), end=" ")
+        except Exception as exc:
+            logger.error('Error in tweak move: %s', exc)
+            logger.debug('', exc_info=True)
 
     # Loop takes in user key input and stops when 'q' is pressed
+    if len(args) == 1:
+        logger.info('Started tweak of %s', args[0])
+    else:
+        logger.info('Started tweak of %s', [mot.name for mot in args])
     is_input = True
     while is_input is True:
         inp = util.get_input()
