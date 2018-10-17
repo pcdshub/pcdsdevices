@@ -69,7 +69,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
         monitor_attrs = monitor_attrs or ['current_step', 'play_count']
 
         # Setup Event Sequence
-        hutch_map = {1:'AMO', 2:'SXR', 3:'XPP', 4:'XCS', 5:'CXI', 6:'MEC', 7:'MFX', 8:'XPP', 9:'MFX', 10:'SXR', 11:'XPP', 12:'XCS', 13:None, 14:None, 15:None, 16:'CXI'}
+        hutch_map = {1:'AMO', 2:'SXR', 3:'XPP', 4:'XCS', 5:'CXI', 6:'MEC', 7:'MFX', 8:'XPP', 9:'MFX', 10:'SXR', 11:'XPP', 12:'XCS', 13:None, 14:None, 15:None, 16:'CXI', 100:'TST'}
         hutch = hutch_map[int(prefix.split(':')[-1])]
     
         self.sequence = EventSequence('{}:ECS:IOC:01'.format(hutch), hutch_num=prefix[-1], name='{}_sequence'.format(hutch))

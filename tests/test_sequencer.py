@@ -14,7 +14,7 @@ FakeSequencer = make_fake_device(EventSequencer)
 
 @pytest.fixture(scope='function')
 def sequence():
-    seq = FakeSequencer('ECS:TST', name='seq')
+    seq = FakeSequencer('ECS:TST:100', name='seq')
     # Running forever
     seq.play_mode.put(2)
     seq.play_control.put(0)
@@ -129,7 +129,7 @@ def test_pause_and_resume(sequence):
 
 
 def test_fly_scan_smoke():
-    seq = SimSequencer('ECS:TST', name='seq')
+    seq = SimSequencer(Fake_Prefix, name='seq')
     RE = RunEngine()
 
     # Create a plan where we fly for a second
@@ -138,3 +138,35 @@ def test_fly_scan_smoke():
 
     # Run the plan
     RE(plan())
+
+
+def test_sequence_get_put():
+    seq = SimSequencer('ECS:TST:100', name='seq')
+
+    dummy_sequence = [[0, 0, 0, 0, 'Dummy0'],
+                      [1, 0, 0, 0, 'Dummy1'],
+                      [2, 0, 0, 0, 'Dummy2'], 
+                      [3, 0, 0, 0, 'Dummy3'],
+                      [4, 0, 0, 0, 'Dummy4'],
+                      [5, 0, 0, 0, 'Dummy5'],
+                      [6, 0, 0, 0, 'Dummy6'],
+                      [7, 0, 0, 0, 'Dummy7'],
+                      [8, 0, 0, 0, 'Dummy8'],
+                      [9, 0, 0, 0, 'Dummy9'],
+                      [10, 0, 0, 0, 'Dummy10'],
+                      [11, 0, 0, 0, 'Dummy11'],
+                      [12, 0, 0, 0, 'Dummy12'],
+                      [13, 0, 0, 0, 'Dummy13'],
+                      [14, 0, 0, 0, 'Dummy14'],
+                      [15, 0, 0, 0, 'Dummy15'],
+                      [16, 0, 0, 0, 'Dummy16'],
+                      [17, 0, 0, 0, 'Dummy17'],
+                      [18, 0, 0, 0, 'Dummy18'],
+                      [19, 0, 0, 0, 'Dummy19']]
+
+    # Write the dummy sequence
+    seq.sequence.put(dummy_sequence)
+
+    # Read back the sequence, and compare to dummy sequence
+    curr_seq = seq.sequence.get()
+    assert dummy_seq == curr_seq
