@@ -1,2 +1,6 @@
 ophyd>=1.2.0
 bluesky>=1.2.0
+pyepics
+pyyaml
+cf_units>=2.0.1
+scipy
