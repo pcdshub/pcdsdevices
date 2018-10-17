@@ -32,7 +32,7 @@ def fake_stopper():
 def fake_valve():
     FakeValve = make_fake_device(GateValve)
     vlv = FakeValve("VGC:TST:", name="test_valve")
-    vlv.interlock.sim_put(0)
+    vlv.interlock.sim_put(1)
     return vlv
 
 
@@ -115,7 +115,7 @@ def test_valve_motion(fake_valve):
     # Check write PV
     assert valve.command.value == valve.commands.open_valve.value
     # Raises interlock
-    valve.interlock.sim_put(1)
+    valve.interlock.sim_put(0)
     assert valve.interlocked
     with pytest.raises(InterlockError):
         valve.open()

@@ -28,6 +28,17 @@ class SimSequencer(FakeSequencer):
         super().__init__(*args, **kwargs)
         # Forces an immediate stop on complete
         self.play_mode.put(2)
+        # Initialize all signals to *something* to appease bluesky
+        # Otherwise, these are all None which is invalid
+        self.play_control.sim_put(0)
+        self.sequence_length.sim_put(0)
+        self.current_step.sim_put(0)
+        self.play_count.sim_put(0)
+        self.play_status.sim_put(0)
+        self.sync_marker.sim_put(0)
+        self.next_sync.sim_put(0)
+        self.pulse_req.sim_put(0)
+        self.sequence_owner.sim_put(0)
 
     def kickoff(self):
         super().kickoff()
@@ -50,6 +61,32 @@ def test_kickoff(sequence):
     seq.play_status.sim_put(2)
     assert st.done
     assert st.success
+
+
+def test_trigger(sequence):
+    # Not currently playing
+    sequence.play_status.sim_put(0)
+    # Set to run forever
+    sequence.play_mode.put(2)
+    trig_status = sequence.trigger()
+    # Sequencer has started
+    assert sequence.play_control.get() == 1
+    # Trigger is automatically complete
+    assert trig_status.done
+    assert trig_status.success
+    # Stop sequencer
+    # Not currently playing
+    sequence.play_status.sim_put(0)
+    sequence.play_control.put(0)
+    # Set to run once
+    sequence.play_mode.put(0)
+    trig_status = sequence.trigger()
+    # Not done until sequencer is done
+    assert sequence.play_control.get() == 1
+    assert not trig_status.done
+    sequence.play_status.sim_put(2)
+    assert trig_status.done
+    assert trig_status.success
 
 
 def test_complete_run_forever(sequence):

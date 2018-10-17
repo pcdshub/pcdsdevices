@@ -187,6 +187,10 @@ class OffsetMirror(Device):
                    kind='config')
     # Transmission for Lightpath Interface
     transmission = 1.0
+    # QIcon for UX
+    _icon = 'fa.minus-square'
+    # Subscription types
+    SUB_STATE = 'state'
 
     def __init__(self, prefix, *, prefix_xy=None,
                  xgantry_prefix=None, **kwargs):

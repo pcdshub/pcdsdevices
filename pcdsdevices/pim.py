@@ -26,6 +26,8 @@ class PIMMotor(InOutRecordPositioner):
     in_states = ['YAG', 'DIODE']
 
     _states_alias = {'YAG': 'IN'}
+    # QIcon for UX
+    _icon = 'fa.camera-retro'
 
     def stage(self):
         """

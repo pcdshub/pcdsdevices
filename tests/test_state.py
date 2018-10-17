@@ -56,6 +56,8 @@ def test_state_positioner_basic():
     states.hints
     states.move(3)
     assert states.position == 'OUT'
+    states.move('2')
+    assert states.position == 'IN'
 
 
 def test_pvstate_positioner_logic():
