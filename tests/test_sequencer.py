@@ -40,6 +40,30 @@ class SimSequencer(FakeSequencer):
         self.pulse_req.sim_put(0)
         self.sequence_owner.sim_put(0)
 
+        # Initialize sequence
+        initial_sequence = [[0, 0, 0, 0, 'Initial0'],
+                            [1, 0, 0, 0, 'Initial1'],
+                            [2, 0, 0, 0, 'Initial2'], 
+                            [3, 0, 0, 0, 'Initial3'],
+                            [4, 0, 0, 0, 'Initial4'],
+                            [5, 0, 0, 0, 'Initial5'],
+                            [6, 0, 0, 0, 'Initial6'],
+                            [7, 0, 0, 0, 'Initial7'],
+                            [8, 0, 0, 0, 'Initial8'],
+                            [9, 0, 0, 0, 'Initial9'],
+                            [10, 0, 0, 0, 'Initial10'],
+                            [11, 0, 0, 0, 'Initial11'],
+                            [12, 0, 0, 0, 'Initial12'],
+                            [13, 0, 0, 0, 'Initial13'],
+                            [14, 0, 0, 0, 'Initial14'],
+                            [15, 0, 0, 0, 'Initial15'],
+                            [16, 0, 0, 0, 'Initial16'],
+                            [17, 0, 0, 0, 'Initial17'],
+                            [18, 0, 0, 0, 'Initial18'],
+                            [19, 0, 0, 0, 'Initial19']]
+
+        self.sequence.put(initial_sequence)
+
     def kickoff(self):
         super().kickoff()
         return NullStatus()
@@ -129,7 +153,7 @@ def test_pause_and_resume(sequence):
 
 
 def test_fly_scan_smoke():
-    seq = SimSequencer(Fake_Prefix, name='seq')
+    seq = SimSequencer('ECS:TST:100', name='seq')
     RE = RunEngine()
 
     # Create a plan where we fly for a second
