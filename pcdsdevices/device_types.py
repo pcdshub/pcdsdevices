@@ -2,7 +2,7 @@
 from .attenuator import Attenuator
 from .ccm import CCM
 from .epics_motor import (IMS, Newport, DelayNewport, PMC100, BeckhoffAxis,
-                          EpicsMotor)
+                          EpicsMotor, Motor)
 from .evr import Trigger
 from .inout import Reflaser, TTReflaser
 from .ipm import IPM
