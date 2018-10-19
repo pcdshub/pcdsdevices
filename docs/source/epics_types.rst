@@ -16,6 +16,7 @@ Common EPICS Devices
     IMS
     IPM
     LODCM
+    Motor
     Newport
     OffsetMirror
     PIM

@@ -8,7 +8,7 @@ import pytest
 
 from pcdsdevices.epics_motor import (EpicsMotorInterface, PCDSMotorBase, IMS,
                                      Newport, PMC100, BeckhoffAxis,
-                                     MotorDisabledError)
+                                     MotorDisabledError, Motor, EpicsMotor)
 
 from conftest import HotfixFakeEpicsSignal
 
@@ -202,3 +202,10 @@ def test_beckhoff_error_clear(fake_beckhoff):
     assert m.cmd_err_reset.get() == 1
     m.stage()
     m.unstage()
+
+
+def test_motor_factory():
+    m = Motor('TST:MY:MMS:01', name='test_motor')
+    assert isinstance(m, IMS)
+    m = Motor('TST:RANDOM:MTR:01', name='test_motor')
+    assert isinstance(m, EpicsMotor)
