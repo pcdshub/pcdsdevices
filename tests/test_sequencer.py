@@ -6,11 +6,12 @@ from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from bluesky.plan_stubs import sleep
 from ophyd.sim import NullStatus, make_fake_device
 
-from pcdsdevices.sequencer import EventSequencer
+from pcdsdevices.sequencer import EventSequencer, EventSequence
 
 logger = logging.getLogger(__name__)
-FakeSequencer = make_fake_device(EventSequencer)
 
+FakeSequencer = make_fake_device(EventSequencer)
+FakeSequencer.sequence = make_fake_device(EventSequence)
 
 @pytest.fixture(scope='function')
 def sequence():
