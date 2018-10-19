@@ -463,21 +463,21 @@ def Motor(prefix, **kwargs):
     Load a PCDSMotor with the correct class based on prefix
 
     The prefix is searched for one of the component keys in the table below. If
-    none of these are found, by default a ``ophyd.EpicsMotor`` will be used.
+    none of these are found, by default an ``ophyd.EpicsMotor`` will be used.
 
-    +---------------+------------------------+
-    | Component Key + Python Class           |
-    +===============+========================+
-    | MMS           | :class:`.IMS`          |
-    +---------------+------------------------+
-    | MMN           | :class:`.Newport`      |
-    +---------------+------------------------+
-    | MZM           | :class:`.PMC100`       |
-    +---------------+------------------------+
-    | MMB           | :class:`.BeckhoffAxis  |
-    +---------------+------------------------+
-    | PIC           | :class:`.PCDSMotorBase |
-    +---------------+------------------------+
+    +---------------+-------------------------+
+    | Component Key + Python Class            |
+    +===============+=========================+
+    | MMS           | :class:`.IMS`           |
+    +---------------+-------------------------+
+    | MMN           | :class:`.Newport`       |
+    +---------------+-------------------------+
+    | MZM           | :class:`.PMC100`        |
+    +---------------+-------------------------+
+    | MMB           | :class:`.BeckhoffAxis`  |
+    +---------------+-------------------------+
+    | PIC           | :class:`.PCDSMotorBase` |
+    +---------------+-------------------------+
 
     Parameters
     ----------
@@ -501,5 +501,5 @@ def Motor(prefix, **kwargs):
             return _type(prefix, **kwargs)
     # Default to ophyd.EpicsMotor
     logger.warning("Unable to find type of motor based on component. "
-                   "Using 'ophyd.EpicsMotor")
+                   "Using 'ophyd.EpicsMotor'")
     return EpicsMotor(prefix, **kwargs)
