@@ -74,7 +74,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
                      11: 'XPP', 12: 'XCS', 13: None, 14: None, 15: None,
                      16: 'CXI', 100: 'TST'}
         hutch = hutch_map[int(prefix.split(':')[-1])]
- 
+
         self.sequence = EventSequence('{}:ECS:IOC:01'.format(hutch),
                                       hutch_num=prefix[-1],
                                       name='{}_sequence'.format(hutch))
@@ -277,7 +277,7 @@ class EventSequence():
     def __init__(self, prefix, hutch_num, **kwargs):
 
         self._hutch_num = hutch_num
- 
+
         self._lines = []
         for i in range(0, 20, 1):
             line_num = str(i)
@@ -300,7 +300,7 @@ class EventSequence():
         --------
 
         EventSequence.get()
- 
+
         """
         sequence = []
         for line in self._lines:
@@ -327,7 +327,7 @@ class EventSequence():
                [169,  0, 0, 0, 'Description5']]
 
         EventSequence.write(seq)
- 
+
         """
 
         if len(sequence) > 20:
