@@ -20,7 +20,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
 
     Parameters
     ----------
-    prefix: str
+    prefix : str
         Base prefix of the EventSequencer
 
     name : str
@@ -50,7 +50,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     out the scan
 
     """
-    
+
     play_control = Cpt(EpicsSignal, ':PLYCTL', kind='omitted')
     sequence_length = Cpt(EpicsSignal, ':LEN', kind='config')
     current_step = Cpt(EpicsSignal, ':CURSTP', kind='normal')
@@ -69,10 +69,15 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
         monitor_attrs = monitor_attrs or ['current_step', 'play_count']
 
         # Setup Event Sequence
-        hutch_map = {1:'AMO', 2:'SXR', 3:'XPP', 4:'XCS', 5:'CXI', 6:'MEC', 7:'MFX', 8:'XPP', 9:'MFX', 10:'SXR', 11:'XPP', 12:'XCS', 13:None, 14:None, 15:None, 16:'CXI', 100:'TST'}
+        hutch_map = {1: 'AMO', 2: 'SXR', 3: 'XPP', 4: 'XCS', 5: 'CXI',
+                     6: 'MEC', 7: 'MFX', 8: 'XPP', 9: 'MFX', 10: 'SXR',
+                     11: 'XPP', 12: 'XCS', 13: None, 14: None, 15: None,
+                     16: 'CXI', 100: 'TST'}
         hutch = hutch_map[int(prefix.split(':')[-1])]
-    
-        self.sequence = EventSequence('{}:ECS:IOC:01'.format(hutch), hutch_num=prefix[-1], name='{}_sequence'.format(hutch))
+ 
+        self.sequence = EventSequence('{}:ECS:IOC:01'.format(hutch),
+                                      hutch_num=prefix[-1],
+                                      name='{}_sequence'.format(hutch))
 
         # Device initialization
         super().__init__(prefix, name=name,
@@ -218,7 +223,7 @@ class SequenceLine(Device):
         super().__init__(prefix, **kwargs)
 
     def get(self):
-        """Read this line of the event sequence. 
+        """Read this line of the event sequence.
 
         Parameters
         ----------
@@ -234,13 +239,14 @@ class SequenceLine(Device):
         fiducial_delta = self.fd.get()
         burst_count = self.bc.get()
         description = self.ds.get()
-        
-        line = [event_code, beam_delta, fiducial_delta, burst_count, description]
+
+        line = [event_code, beam_delta, fiducial_delta, burst_count,
+                description]
 
         return line
 
     def put(self, line):
-        """Write to this line of the event sequence. 
+        """Write to this line of the event sequence.
 
         Parameters
         ----------
@@ -258,26 +264,29 @@ class SequenceLine(Device):
         if len(line) != 5:
             raise ValueError("The sequence line must be a 5 item list!")
         else:
-            self.ec.put(line[0])        
-            self.bd.put(line[1])        
-            self.fd.put(line[2])        
-            self.bc.put(line[3])        
-            self.ds.put(str(line[4]))        
+            self.ec.put(line[0])
+            self.bd.put(line[1])
+            self.fd.put(line[2])
+            self.bc.put(line[3])
+            self.ds.put(str(line[4]))
+
 
 class EventSequence():
     """Class for the event sequence of the event sequencer."""
 
     def __init__(self, prefix, hutch_num, **kwargs):
-        
+
         self._hutch_num = hutch_num
-      
-        self._lines = [] 
-        for i in range(0,20,1):
+ 
+        self._lines = []
+        for i in range(0, 20, 1):
             line_num = str(i)
             # Pad 1 digit numbers with 0
             if len(line_num) == 1:
                 line_num = '0' + line_num
-            line = SequenceLine(prefix, hutch_id=self._hutch_num, line=line_num, name='line{}'.format(line_num))
+            line = SequenceLine(prefix, hutch_id=self._hutch_num,
+                                line=line_num,
+                                name='line{}'.format(line_num))
             self._lines.append(line)
 
     def get(self):
@@ -291,7 +300,7 @@ class EventSequence():
         --------
 
         EventSequence.get()
-        
+ 
         """
         sequence = []
         for line in self._lines:
@@ -302,12 +311,12 @@ class EventSequence():
 
     def put(self, sequence):
         """Write a sequence to the event sequencer. Takes a list of lists,
-        with each sub-list representing one line of the event sequence. 
+        with each sub-list representing one line of the event sequence.
 
         Parameters
         ----------
         sequence: list
-            List of lists describing the event sequence. 
+            List of lists describing the event sequence.
 
         Examples
         --------
@@ -318,7 +327,7 @@ class EventSequence():
                [169,  0, 0, 0, 'Description5']]
 
         EventSequence.write(seq)
-        
+ 
         """
 
         if len(sequence) > 20:

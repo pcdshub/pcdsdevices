@@ -6,13 +6,15 @@ from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from bluesky.plan_stubs import sleep
 from ophyd.sim import NullStatus, make_fake_device
 
-from pcdsdevices.sequencer import EventSequencer, SequencerLine
+from pcdsdevices.sequencer import EventSequencer, SequenceLine
+import pcdsdevices.sequencer
 
 logger = logging.getLogger(__name__)
 
 
 FakeSequencer = make_fake_device(EventSequencer)
-SequenceLine = make_fake_device(SequenceLine)
+pcdsdevices.sequencer.SequenceLine = make_fake_device(SequenceLine)
+
 
 @pytest.fixture(scope='function')
 def sequence():
@@ -45,7 +47,7 @@ class SimSequencer(FakeSequencer):
         # Initialize sequence
         initial_sequence = [[0, 0, 0, 0, 'Initial0'],
                             [1, 0, 0, 0, 'Initial1'],
-                            [2, 0, 0, 0, 'Initial2'], 
+                            [2, 0, 0, 0, 'Initial2'],
                             [3, 0, 0, 0, 'Initial3'],
                             [4, 0, 0, 0, 'Initial4'],
                             [5, 0, 0, 0, 'Initial5'],
@@ -171,7 +173,7 @@ def test_sequence_get_put():
 
     dummy_sequence = [[0, 0, 0, 0, 'Dummy0'],
                       [1, 0, 0, 0, 'Dummy1'],
-                      [2, 0, 0, 0, 'Dummy2'], 
+                      [2, 0, 0, 0, 'Dummy2'],
                       [3, 0, 0, 0, 'Dummy3'],
                       [4, 0, 0, 0, 'Dummy4'],
                       [5, 0, 0, 0, 'Dummy5'],
@@ -195,4 +197,4 @@ def test_sequence_get_put():
 
     # Read back the sequence, and compare to dummy sequence
     curr_seq = seq.sequence.get()
-    assert dummy_seq == curr_seq
+    assert dummy_sequence == curr_seq
