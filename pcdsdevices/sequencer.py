@@ -1,12 +1,144 @@
 import logging
 
 from ophyd import Device, EpicsSignal, EpicsSignalRO, Component as Cpt
-from ophyd import FormattedComponent as FCpt
 from ophyd.status import DeviceStatus, SubscriptionStatus
 from ophyd.utils.epics_pvs import raise_if_disconnected
 from ophyd.flyers import FlyerInterface, MonitorFlyerMixin
 
 logger = logging.getLogger(__name__)
+
+
+class EventSequence(Device):
+    """Class for the event sequence of the event sequencer."""
+
+    ec_array = Cpt(EpicsSignal, ':SEQ.A')
+    bd_array = Cpt(EpicsSignal, ':SEQ.B')
+    fd_array = Cpt(EpicsSignal, ':SEQ.C')
+    bc_array = Cpt(EpicsSignal, ':SEQ.D')
+
+    def get_seq(self, current_length=True):
+        """Retrieve the current event sequence. Returns a list of 4 lists, with
+        the form [[Event Code], [Beam Delta], [Fiducial Delta], [Burst Count]].
+        Returns the current sequence up to the current play length, the
+        {prefix}:LEN PV, unless the current_length option is set to False. If
+        set to false, the whole sequence will be returned.
+
+        Parameters
+        ----------
+        current_length : bool
+            Option to retrieve the sequence up to the current length. Defaults
+            to True.
+
+        Examples
+        --------
+
+        EventSequence.get_seq()
+
+        EventSequence.get_seq(current_length=False) # Get whole sequence
+
+        """
+
+        if self.parent and current_length is True:
+            seq_length = self.parent.sequence_length.get()
+        else:
+            seq_length = 2048  # Whole thing
+
+        sequence = [[], [], [], []]
+        sequence[0] = self.ec_array.get()[0:seq_length]
+        sequence[1] = self.bd_array.get()[0:seq_length]
+        sequence[2] = self.fd_array.get()[0:seq_length]
+        sequence[3] = self.bc_array.get()[0:seq_length]
+
+        return sequence
+
+    def put_seq(self, sequence, update_length=True):
+        """Write a sequence to the event sequencer. Takes a list of lists,
+        with each sub-list representing one part of the event sequence (event
+        codes, beam deltas, etc). The written sequence will overwrite the
+        current sequence in order, up to the specified length. The play length
+        of the sequencer will automatically be updated, unless the
+        update_length flag is set to False.
+
+        Parameters
+        ----------
+        sequence: list
+            List of lists describing the event sequence. The list takes the
+            form [[Event Code], [Beam Delta], [Fiducial Delta], [Burst Count]].
+
+        update_length: bool
+            Option to automatically update the play length, the
+            {prefix}:LEN PV, to the length of the written sequence. Defaults
+            to True.
+
+        Examples
+        --------
+        seq = [[167, 168, 182, 176, ... ], # Event Codes
+               [ 19,   4,   0,   0, ... ], # Beam Deltas
+               [  0,   0,   0,   0, ... ], # Fiducial Deltas
+               [  0,   0,   0,   0, ... ]] # Burst Counts
+
+        EventSequence.put_seq(seq)
+
+        EventSequence.put_seq(seq, update_length=False) # Don't update length
+
+        """
+
+        curr_seq = self.get_seq(current_length=False)
+        new_seq = curr_seq.copy()
+
+        # Modify just the requested lines of the current sequence
+        for i in range(len(curr_seq)):
+            for j in range(len(sequence[i])):
+                new_seq[i][j] = sequence[i][j]
+
+        # Update the length of the sequence if update_length == True and
+        # the event sequence is a child of the EventSequencer
+        if self.parent and update_length is True:
+            # Sequence length from number of event codes
+            new_len = len(sequence[0])
+            self.parent.sequence_length.put(new_len)
+
+        self.ec_array.put(new_seq[0])
+        self.bd_array.put(new_seq[1])
+        self.fd_array.put(new_seq[2])
+        self.bc_array.put(new_seq[3])
+
+    def show(self, num_lines=None):
+        """Print a human readable copy of the current event sequence. Shows
+        the current sequence up to the length of the sequencer play length,
+        unless otherwise specified by the num_lines parameter.
+
+        Parameters
+        ----------
+        num_lines : int
+            Number of event sequence lines to print. Defaults to current
+            sequence length.
+
+        Examples
+        --------
+        seq.show()     # Print current sequence (default)
+        seq.show(10)   # Print the first 10 lines
+
+        """
+
+        curr_seq = self.get_seq()
+        zip_seq = zip(curr_seq[0], curr_seq[1], curr_seq[2], curr_seq[3])
+        seq_list = list(zip_seq)
+
+        if self.parent and num_lines is None:
+            seq_length = self.parent.sequence_length.get()
+        elif num_lines is not None:
+            seq_length = num_lines
+        else:
+            # Included for the edge case where someone instantiates the event
+            # sequence by itself, rather than as part of an event sequencer.
+            msg = "No sequence length was specified, and the event sequence\n"
+            msg += "is not a child of an event sequencer!\n"
+            msg += "Please specify a number of lines to show.\n"
+            raise ValueError(msg)
+
+        for line in seq_list[0:seq_length]:
+            print(line)
 
 
 class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
@@ -65,19 +197,10 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     rep_count = Cpt(EpicsSignal, ":REPCNT", kind='config')
     sequence_owner = Cpt(EpicsSignalRO, ':HUTCH_NAME', kind='omitted')
 
+    sequence = Cpt(EventSequence, '', kind='config')
+
     def __init__(self, prefix, *, name=None, monitor_attrs=None, **kwargs):
         monitor_attrs = monitor_attrs or ['current_step', 'play_count']
-
-        # Setup Event Sequence
-        hutch_map = {1: 'AMO', 2: 'SXR', 3: 'XPP', 4: 'XCS', 5: 'CXI',
-                     6: 'MEC', 7: 'MFX', 8: 'XPP', 9: 'MFX', 10: 'SXR',
-                     11: 'XPP', 12: 'XCS', 13: None, 14: None, 15: None,
-                     16: 'CXI', 100: 'TST'}
-        hutch = hutch_map[int(prefix.split(':')[-1])]
-
-        self.sequence = EventSequence('{}:ECS:IOC:01'.format(hutch),
-                                      hutch_num=prefix[-1],
-                                      name='{}_sequence'.format(hutch))
 
         # Device initialization
         super().__init__(prefix, name=name,
@@ -204,135 +327,3 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
         """Stop the EventSequencer"""
         logger.debug("Stopping the EventSequencer")
         self.play_control.put(0)
-
-
-class SequenceLine(Device):
-    """Sub-class for event sequencer line."""
-
-    ec = FCpt(EpicsSignal, '{self.prefix}:EC_{self._ID}:{self._line}')
-    bd = FCpt(EpicsSignal, '{self.prefix}:BD_{self._ID}:{self._line}')
-    fd = FCpt(EpicsSignal, '{self.prefix}:FD_{self._ID}:{self._line}')
-    bc = FCpt(EpicsSignal, '{self.prefix}:BC_{self._ID}:{self._line}')
-    ds = FCpt(EpicsSignal, '{self.prefix}:EC_{self._ID}:{self._line}.DESC')
-
-    def __init__(self, prefix, hutch_id=None, line=None, **kwargs):
-
-        self._ID = hutch_id
-        self._line = line
-
-        super().__init__(prefix, **kwargs)
-
-    def get(self):
-        """Read this line of the event sequence.
-
-        Parameters
-        ----------
-        None.
-
-        Examples
-        --------
-        SequenceLine.read()
-
-        """
-        event_code = self.ec.get()
-        beam_delta = self.bd.get()
-        fiducial_delta = self.fd.get()
-        burst_count = self.bc.get()
-        description = self.ds.get()
-
-        line = [event_code, beam_delta, fiducial_delta, burst_count,
-                description]
-
-        return line
-
-    def put(self, line):
-        """Write to this line of the event sequence.
-
-        Parameters
-        ----------
-        line: list
-            Four item list containing the desired values for event code,
-            beam delta, fiducial delta, and burst count, respectively, e.g.
-            [<event code>, <beam delta>, <fiducial delta>, <burst count>].
-
-        Examples
-        --------
-        SequenceLine.write([140, 12, 0, 0, 'description'])
-
-        """
-
-        if len(line) != 5:
-            raise ValueError("The sequence line must be a 5 item list!")
-        else:
-            self.ec.put(line[0])
-            self.bd.put(line[1])
-            self.fd.put(line[2])
-            self.bc.put(line[3])
-            self.ds.put(str(line[4]))
-
-
-class EventSequence():
-    """Class for the event sequence of the event sequencer."""
-
-    def __init__(self, prefix, hutch_num, **kwargs):
-
-        self._hutch_num = hutch_num
-
-        self._lines = []
-        for i in range(0, 20, 1):
-            line_num = str(i)
-            # Pad 1 digit numbers with 0
-            if len(line_num) == 1:
-                line_num = '0' + line_num
-            line = SequenceLine(prefix, hutch_id=self._hutch_num,
-                                line=line_num,
-                                name='line{}'.format(line_num))
-            self._lines.append(line)
-
-    def get(self):
-        """Retrieve the current event sequence.
-
-        Parameters
-        ----------
-        None.
-
-        Examples
-        --------
-
-        EventSequence.get()
-
-        """
-        sequence = []
-        for line in self._lines:
-            seq_line = line.get()
-            sequence.append(seq_line)
-
-        return sequence
-
-    def put(self, sequence):
-        """Write a sequence to the event sequencer. Takes a list of lists,
-        with each sub-list representing one line of the event sequence.
-
-        Parameters
-        ----------
-        sequence: list
-            List of lists describing the event sequence.
-
-        Examples
-        --------
-        seq = [[167, 19, 0, 0, 'Description1'],
-               [168,  4, 0, 0, 'Description2'],
-               [182,  1, 0, 0, 'Description3'],
-               [176,  0, 0, 0, 'Description4'],
-               [169,  0, 0, 0, 'Description5']]
-
-        EventSequence.write(seq)
-
-        """
-
-        if len(sequence) > 20:
-            raise ValueError("The sequence length cannot be longer than 20!")
-        else:
-            for n, line in enumerate(sequence):
-                seq_line = self._lines[n]
-                seq_line.put(line)

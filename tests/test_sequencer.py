@@ -6,14 +6,13 @@ from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from bluesky.plan_stubs import sleep
 from ophyd.sim import NullStatus, make_fake_device
 
-from pcdsdevices.sequencer import EventSequencer, SequenceLine
+from pcdsdevices.sequencer import EventSequencer, EventSequence
 import pcdsdevices.sequencer
 
 logger = logging.getLogger(__name__)
 
-
 FakeSequencer = make_fake_device(EventSequencer)
-pcdsdevices.sequencer.SequenceLine = make_fake_device(SequenceLine)
+pcdsdevices.sequencer.EventSequence = make_fake_device(EventSequence)
 
 
 @pytest.fixture(scope='function')
@@ -43,30 +42,17 @@ class SimSequencer(FakeSequencer):
         self.next_sync.sim_put(0)
         self.pulse_req.sim_put(0)
         self.sequence_owner.sim_put(0)
+        self.sequence.ec_array.sim_put([0] * 2048)
+        self.sequence.bd_array.sim_put([0] * 2048)
+        self.sequence.fd_array.sim_put([0] * 2048)
+        self.sequence.bc_array.sim_put([0] * 2048)
 
         # Initialize sequence
-        initial_sequence = [[0, 0, 0, 0, 'Initial0'],
-                            [1, 0, 0, 0, 'Initial1'],
-                            [2, 0, 0, 0, 'Initial2'],
-                            [3, 0, 0, 0, 'Initial3'],
-                            [4, 0, 0, 0, 'Initial4'],
-                            [5, 0, 0, 0, 'Initial5'],
-                            [6, 0, 0, 0, 'Initial6'],
-                            [7, 0, 0, 0, 'Initial7'],
-                            [8, 0, 0, 0, 'Initial8'],
-                            [9, 0, 0, 0, 'Initial9'],
-                            [10, 0, 0, 0, 'Initial10'],
-                            [11, 0, 0, 0, 'Initial11'],
-                            [12, 0, 0, 0, 'Initial12'],
-                            [13, 0, 0, 0, 'Initial13'],
-                            [14, 0, 0, 0, 'Initial14'],
-                            [15, 0, 0, 0, 'Initial15'],
-                            [16, 0, 0, 0, 'Initial16'],
-                            [17, 0, 0, 0, 'Initial17'],
-                            [18, 0, 0, 0, 'Initial18'],
-                            [19, 0, 0, 0, 'Initial19']]
-
-        self.sequence.put(initial_sequence)
+        initial_sequence = [[0] * 20,
+                            [0] * 20,
+                            [0] * 20,
+                            [0] * 20]
+        self.sequence.put_seq(initial_sequence)
 
     def kickoff(self):
         super().kickoff()
@@ -171,30 +157,16 @@ def test_fly_scan_smoke():
 def test_sequence_get_put():
     seq = SimSequencer('ECS:TST:100', name='seq')
 
-    dummy_sequence = [[0, 0, 0, 0, 'Dummy0'],
-                      [1, 0, 0, 0, 'Dummy1'],
-                      [2, 0, 0, 0, 'Dummy2'],
-                      [3, 0, 0, 0, 'Dummy3'],
-                      [4, 0, 0, 0, 'Dummy4'],
-                      [5, 0, 0, 0, 'Dummy5'],
-                      [6, 0, 0, 0, 'Dummy6'],
-                      [7, 0, 0, 0, 'Dummy7'],
-                      [8, 0, 0, 0, 'Dummy8'],
-                      [9, 0, 0, 0, 'Dummy9'],
-                      [10, 0, 0, 0, 'Dummy10'],
-                      [11, 0, 0, 0, 'Dummy11'],
-                      [12, 0, 0, 0, 'Dummy12'],
-                      [13, 0, 0, 0, 'Dummy13'],
-                      [14, 0, 0, 0, 'Dummy14'],
-                      [15, 0, 0, 0, 'Dummy15'],
-                      [16, 0, 0, 0, 'Dummy16'],
-                      [17, 0, 0, 0, 'Dummy17'],
-                      [18, 0, 0, 0, 'Dummy18'],
-                      [19, 0, 0, 0, 'Dummy19']]
+    dummy_sequence = [[i for i in range(0, 20)],
+                      [i for i in range(20, 40)],
+                      [i for i in range(40, 60)],
+                      [i for i in range(60, 80)]]
 
     # Write the dummy sequence
-    seq.sequence.put(dummy_sequence)
+    seq.sequence.put_seq(dummy_sequence)
 
     # Read back the sequence, and compare to dummy sequence
-    curr_seq = seq.sequence.get()
-    assert dummy_sequence == curr_seq
+    curr_seq = seq.sequence.get_seq()
+
+    for i, array_sub in enumerate(dummy_sequence):
+        assert array_sub == curr_seq[i][0:20]
