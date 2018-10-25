@@ -23,6 +23,8 @@ requirements:
     - pyyaml
     - cf_units >=2.0.1
     - scipy
+    - matplotlib >=3
+    - pyqt >=5
 
 test:
   imports:
