@@ -163,10 +163,10 @@ def test_ims_stage_in_plan(fake_ims):
     RE(plan())
 
 
-def test_resume_pause_stop(fake_pcds_motor):
+def test_spg_resume_pause_stop(fake_pcds_motor):
     logger.debug('test_resume_pause_stop')
     m = fake_pcds_motor
-    m.stop()
+    m.spg_stop()
     assert m.motor_spg.get(as_string=True) == 'Stop'
     with pytest.raises(MotorDisabledError):
         m.check_value(10)
