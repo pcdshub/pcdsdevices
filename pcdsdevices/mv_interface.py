@@ -12,7 +12,6 @@ from threading import Thread, Event
 from types import SimpleNamespace, MethodType
 from weakref import WeakSet
 
-import pylab
 import yaml
 from bluesky.utils import ProgressBar
 from ophyd.status import wait as status_wait
@@ -192,9 +191,11 @@ class FltMvInterface(MvInterface):
         recently active plot. If there are no existing plots, an empty plot
         will be created with the motor's limits as the range.
         """
+        # Importing forces backend selection, so do inside method
+        import matplotlib.pyplot as plt  # NOQA
         logger.info(("Select new motor x-position in current plot "
                      "by mouseclick"))
-        if not pylab.get_fignums():
+        if not plt.get_fignums():
             upper_limit = 0
             lower_limit = self.limits[0]
             if self.limits[0] == self.limits[1]:
@@ -204,8 +205,8 @@ class FltMvInterface(MvInterface):
             limit_plot = []
             for x in range(lower_limit, upper_limit):
                 limit_plot.append(x)
-            pylab.plot(limit_plot)
-        pos = pylab.ginput(1)[0][0]
+            plt.plot(limit_plot)
+        pos = plt.ginput(1)[0][0]
         self.move(pos, timeout=timeout)
 
     def tweak(self):
