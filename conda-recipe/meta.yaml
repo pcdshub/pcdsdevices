@@ -23,7 +23,7 @@ requirements:
     - pyyaml
     - cf_units >=2.0.1
     - scipy
-    - matplotlib
+    - matplotlib <3
 
 test:
   imports:
