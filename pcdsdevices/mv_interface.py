@@ -191,8 +191,7 @@ class FltMvInterface(MvInterface):
         recently active plot. If there are no existing plots, an empty plot
         will be created with the motor's limits as the range.
         """
-        # This is usually bad, but importing this at module level forces
-        # matplotlib to select a backend on import, breaking some things
+        # Importing forces backend selection, so do inside method
         import matplotlib.pyplot as plt  # NOQA
         logger.info(("Select new motor x-position in current plot "
                      "by mouseclick"))

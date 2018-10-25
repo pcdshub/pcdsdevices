@@ -55,8 +55,8 @@ def test_camonitor(fast_motor):
 
 def test_mv_ginput(monkeypatch, fast_motor):
     logger.debug('test_mv_ginput')
+    # Importing forces backend selection, so do inside method
     from matplotlib import pyplot as plt  # NOQA
-    # Importing forces backend selection
 
     def fake_plot(*args, **kwargs):
         return
