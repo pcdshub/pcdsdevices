@@ -174,7 +174,7 @@ class PCDSMotorBase(EpicsMotorInterface):
         super().__init__(*args, **kwargs)
         self.stage_sigs[self.motor_spg] = 2
 
-    def stop(self):
+    def spg_stop(self):
         """
         Stops the motor.
 
