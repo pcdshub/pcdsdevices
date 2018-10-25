@@ -6,7 +6,6 @@ import time
 import os
 import signal
 
-import pylab
 import pytest
 
 from pcdsdevices.mv_interface import setup_preset_paths
@@ -56,6 +55,8 @@ def test_camonitor(fast_motor):
 
 def test_mv_ginput(monkeypatch, fast_motor):
     logger.debug('test_mv_ginput')
+    from matplotlib import pyplot as plt  # NOQA
+    # Importing forces backend selection
 
     def fake_plot(*args, **kwargs):
         return
@@ -66,9 +67,9 @@ def test_mv_ginput(monkeypatch, fast_motor):
     def fake_get_fignums(*args, **kwargs):
         return local_get_fignums
 
-    monkeypatch.setattr(pylab, 'plot', fake_plot)
-    monkeypatch.setattr(pylab, 'ginput', fake_ginput)
-    monkeypatch.setattr(pylab, 'get_fignums', fake_get_fignums)
+    monkeypatch.setattr(plt, 'plot', fake_plot)
+    monkeypatch.setattr(plt, 'ginput', fake_ginput)
+    monkeypatch.setattr(plt, 'get_fignums', fake_get_fignums)
 
     def inner_test():
         fast_motor.mv_ginput()
