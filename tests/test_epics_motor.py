@@ -163,25 +163,28 @@ def test_ims_stage_in_plan(fake_ims):
     RE(plan())
 
 
-def test_resume_pause_stop(fake_pcds_motor):
+def test_spg_resume_pause_stop(fake_pcds_motor):
     logger.debug('test_resume_pause_stop')
     m = fake_pcds_motor
-    m.stop()
+    m.spg_stop()
     assert m.motor_spg.get(as_string=True) == 'Stop'
     with pytest.raises(MotorDisabledError):
         m.check_value(10)
     with pytest.raises(MotorDisabledError):
         m.move(10, wait=False)
-    m.pause()
+    m.spg_pause()
     assert m.motor_spg.get(as_string=True) == 'Pause'
     with pytest.raises(MotorDisabledError):
         m.move(10, wait=False)
-    m.go()
+    m.spg_go()
     assert m.motor_spg.get(as_string=True) == 'Go'
-    m.check_value(10)
-    m.resume()
-    assert m.motor_spg.get(as_string=True) == 'Go'
-    m.check_value(10)
+    # Test staging
+    m.motor_spg.put(0)
+    m.stage()
+    assert m.motor_spg.get() == 2
+    # Test unstaging
+    m.unstage()
+    assert m.motor_spg.get() == 0
 
 
 def test_disable(fake_pcds_motor):
