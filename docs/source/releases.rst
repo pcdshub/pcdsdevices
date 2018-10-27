@@ -1,6 +1,26 @@
 Release History
 ###############
 
+v1.1.0 (2018-10-26)
+===================
+
+Features
+--------
+- Support for reading and writing sequences to and from the ``EventSequencer``
+- Add ``Motor`` factory function for choosing which motor class to use based
+  on the text in the ``prefix``.
+
+Bugfixes
+--------
+- ``IMS`` class will no longer get its ``.SPG`` field stuck on ``paused`` or
+  ``stopped`` when a scan is interrupted. Scans will start even if these
+  fields are blocked.
+- Update out-of-date ``requirements.txt`` file for ``pip``
+- Pin ``matplotlib`` to ``<3`` to avoid import incompatibility pitfalls, and
+  confine the ``matplotlib`` imports to function scope instead of module scope
+  to avoid having a backend be set on import.
+
+
 v1.0.0 (2018-10-12)
 ===================
 
