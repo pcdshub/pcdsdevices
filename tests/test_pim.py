@@ -16,9 +16,10 @@ logger = logging.getLogger(__name__)
 
 # OK, we have to screw with the class def here. I'm sorry. It's ophyd's fault
 # for checking an epics signal value in the __init__ statement.
-for comp in (PCDSDetector.image, PCDSDetector.stats):
-    plugin_class = comp.cls
-    plugin_class.plugin_type = Cpt(Signal, value=plugin_class._plugin_type)
+for attr in PCDSDetector._sub_devices:
+    plugin_class = getattr(PCDSDetector, attr).cls
+    if hasattr(plugin_class, 'plugin_type'):
+        plugin_class.plugin_type = Cpt(Signal, value=plugin_class._plugin_type)
 
 
 @pytest.fixture(scope='function')
