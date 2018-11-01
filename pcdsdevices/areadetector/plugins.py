@@ -152,7 +152,9 @@ class JPEGPlugin(ophyd.plugins.JPEGPlugin, FilePlugin):
 
 
 class NexusPlugin(ophyd.plugins.NexusPlugin, FilePlugin):
-    pass
+    # Skip plugin_type checks on this plugin, as old versions of AD did not
+    # reflect this correctly
+    _plugin_type = None
 
 
 class HDF5Plugin(ophyd.plugins.HDF5Plugin, FilePlugin):
