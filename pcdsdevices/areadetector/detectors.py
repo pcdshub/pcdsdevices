@@ -42,7 +42,37 @@ class PCDSDetector(PCDSDetectorBase):
 
     Default port chains
     -------------------
+    The default configuration of ports is as follows::
 
+        CAM -> CC1
+        CAM -> CC2
+        CAM -> HDF51
+        CAM -> IMAGE1:CC
+        CAM -> IMAGE1:Proc
+        CAM -> IMAGE1:ROI
+        CAM -> IMAGE2:CC
+        CAM -> IMAGE2:Over
+        CAM -> IMAGE2:Proc
+        CAM -> IMAGE2:ROI -> IMAGE2
+        CAM -> JPEG1
+        CAM -> NetCDF1
+        CAM -> Over1
+        CAM -> Proc1
+        CAM -> ROI1 -> IMAGE1
+        CAM -> ROI1 -> Stats1
+        CAM -> ROI2
+        CAM -> ROI3
+        CAM -> ROI4
+        CAM -> Stats2
+        CAM -> Stats3
+        CAM -> Stats4
+        CAM -> Stats5
+        CAM -> THUMBNAIL:CC
+        CAM -> THUMBNAIL:Over
+        CAM -> THUMBNAIL:Proc
+        CAM -> THUMBNAIL:ROI -> THUMBNAIL
+        CAM -> TIFF1
+        CAM -> Trans1
 
     Note
     ----
@@ -97,3 +127,25 @@ class PCDSDetector(PCDSDetectorBase):
         self.stats2.stage_sigs['enable'] = 1
         self.stats2.stage_sigs['compute_statistics'] = 'Yes'
         self.stats2.stage_sigs['compute_centroid'] = 'Yes'
+
+    def get_plugin_graph_edges(self, *, use_names=True, include_cam=False):
+        '''Get a list of (source, destination) ports for all plugin chains
+
+        Parameters
+        ----------
+        use_names : bool, optional
+            By default, the ophyd names for each plugin are used. Set this to
+            False to instead get the AreaDetector port names.
+        include_cam : bool, optional
+            Include plugins with 'CAM' as the source.  As it is easy to assume
+            that a camera without an explicit source is CAM, by default this
+            method does not include it in the list.
+        '''
+        cam_port = self.cam.port_name.get()
+        graph, port_map = self.get_asyn_digraph()
+        port_edges = [(src, dest) for src, dest in graph.edges
+                      if src != cam_port or include_cam]
+        if use_names:
+            port_edges = [(port_map[src].name, port_map[dest].name)
+                          for src, dest in port_edges]
+        return port_edges
