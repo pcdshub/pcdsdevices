@@ -5,6 +5,7 @@ All components at the detector level such as plugins or image processing
 functions needed by all instances of a detector are added here.
 """
 import logging
+import warnings
 
 from ophyd.areadetector import cam
 from ophyd.areadetector.base import ADComponent
@@ -149,3 +150,17 @@ class PCDSDetector(PCDSDetectorBase):
             port_edges = [(port_map[src].name, port_map[dest].name)
                           for src, dest in port_edges]
         return port_edges
+
+    @property
+    def image(self):
+        'Deprecated - alias for `image2`'
+        warnings.warn('PCDSDetector.image is deprecated; use {}.image2 '
+                      'instead'.format(self.name))
+        return self.image2
+
+    @property
+    def stats(self):
+        'Deprecated - alias for `stats2`'
+        warnings.warn('PCDSDetector.image is deprecated; use {}.stats2 '
+                      'instead'.format(self.name))
+        return self.stats2
