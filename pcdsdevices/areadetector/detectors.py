@@ -44,7 +44,7 @@ class PCDSDetector(PCDSDetectorBase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.image.stage_sigs[self.image.enable] = 1
-        self.stats.stage_sigs[self.stats.enable] = 1
-        self.stats.stage_sigs[self.stats.compute_statistics] = 'Yes'
-        self.stats.stage_sigs[self.stats.compute_centroid] = 'Yes'
+        self.image.stage_sigs['enable'] = 1
+        self.stats.stage_sigs['enable'] = 1
+        self.stats.stage_sigs['compute_statistics'] = 'Yes'
+        self.stats.stage_sigs['compute_centroid'] = 'Yes'

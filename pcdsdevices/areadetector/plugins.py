@@ -35,7 +35,7 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
     def _asyn_pipeline_configuration_names(self):
         # This broke any instantiated plugin b/c _asyn_pipeline is a list that
         # can have None.
-        return [_.configuration_names.name for _ in self._asyn_pipeline if 
+        return [_.configuration_names.name for _ in self._asyn_pipeline if
                 hasattr(_, 'configuration_names')]
 
     @property
@@ -64,7 +64,7 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
 
     def stage(self):
         # Ensure the plugin is enabled. We do not disable it on unstage
-        if self.enable not in self.stage_sigs:
+        if self.enable not in self.stage_sigs and 'enable' not in self.stage_sigs:
             if not self.enable.connected:
                 self.enable.get()
             set_and_wait(self.enable, 1, atol=0)
@@ -77,7 +77,7 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
         """
         array_size = list(self.array_size.get())
         dimensions = int(self.ndimensions.get())
-        
+
         if dimensions == 0:
             return 0
 
@@ -86,9 +86,9 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
             if dim:
                 pixels *= dim
 
-        return int(pixels)    
+        return int(pixels)
 
-    
+
 class ImagePlugin(ophyd.plugins.ImagePlugin, PluginBase):
     @property
     def image(self):
@@ -104,9 +104,9 @@ class ImagePlugin(ophyd.plugins.ImagePlugin, PluginBase):
 
         pixel_count = self.array_pixels
         image = self.array_data.get(count=pixel_count)
-        return np.array(image).reshape(array_size)    
+        return np.array(image).reshape(array_size)
 
-    
+
 class StatsPlugin(ophyd.plugins.StatsPlugin, PluginBase):
     pass
 
