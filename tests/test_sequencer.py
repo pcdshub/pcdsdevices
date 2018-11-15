@@ -157,9 +157,9 @@ def test_fly_scan_smoke():
 def test_sequence_get_put():
     seq = SimSequencer('ECS:TST:100', name='seq')
 
-    dummy_sequence = [[ 1,  2,  3,  4],
-                      [ 5,  6,  7,  8],
-                      [ 9, 10, 11, 12],
+    dummy_sequence = [[1,  2,  3,  4],
+                      [5,  6,  7,  8],
+                      [9, 10, 11, 12],
                       [13, 14, 15, 16]]
 
     # Write the dummy sequence
