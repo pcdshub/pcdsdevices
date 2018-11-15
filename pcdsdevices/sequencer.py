@@ -17,11 +17,11 @@ class EventSequence(Device):
     bc_array = Cpt(EpicsSignal, ':SEQ.D')
 
     def get_seq(self, current_length=True):
-        """Retrieve the current event sequence. Returns a list of 4 lists, with
-        the form [[Event Code], [Beam Delta], [Fiducial Delta], [Burst Count]].
-        Returns the current sequence up to the current play length, the
-        {prefix}:LEN PV, unless the current_length option is set to False. If
-        set to false, the whole sequence will be returned.
+        """Retrieve the current event sequence. Returns a list of lists, with
+        each sub list containing a four item list describing a single line of
+        the sequence. Returns the current sequence up to the current play
+        length, the {prefix}:LEN PV, unless the current_length option is set
+        to False. If set to false, the whole sequence will be returned.
 
         Parameters
         ----------
@@ -49,21 +49,26 @@ class EventSequence(Device):
         sequence[2] = self.fd_array.get()[0:seq_length]
         sequence[3] = self.bc_array.get()[0:seq_length]
 
-        return sequence
+        zip_seq = zip(sequence[0], sequence[1], sequence[2], sequence[3])
+        seq_list = list(zip_seq)
+        # Convert list of tuples (from zip) to list of lists
+        seq = [list(line) for line in seq_list]
+
+        return seq
 
     def put_seq(self, sequence, update_length=True):
         """Write a sequence to the event sequencer. Takes a list of lists,
-        with each sub-list representing one part of the event sequence (event
-        codes, beam deltas, etc). The written sequence will overwrite the
-        current sequence in order, up to the specified length. The play length
-        of the sequencer will automatically be updated, unless the
-        update_length flag is set to False.
+        with each sub-list representing one line of the event sequence, e.g.
+        [beam_code, delta_beam, delta_fiducial, burst_count]. The written
+        sequence will overwrite the current sequence in order, up to the
+        specified length. The play length of the sequencer will automatically
+        be updated, unless the update_length flag is set to False.
 
         Parameters
         ----------
         sequence: list
             List of lists describing the event sequence. The list takes the
-            form [[Event Code], [Beam Delta], [Fiducial Delta], [Burst Count]].
+            form [[beam_code, delta_beam, delta_fiducial, burst_count], ...].
 
         update_length: bool
             Option to automatically update the play length, the
@@ -72,10 +77,10 @@ class EventSequence(Device):
 
         Examples
         --------
-        seq = [[167, 168, 182, 176, ... ], # Event Codes
-               [ 19,   4,   0,   0, ... ], # Beam Deltas
-               [  0,   0,   0,   0, ... ], # Fiducial Deltas
-               [  0,   0,   0,   0, ... ]] # Burst Counts
+        seq = [[182,  12,   0,   0], # Line 1
+               [170,   2,   0,   0], # Line 2
+               [169,   1,   0,   0], # Line 3
+               [169,   1,   0,   0]] # Line 4
 
         EventSequence.put_seq(seq)
 
@@ -86,22 +91,20 @@ class EventSequence(Device):
         curr_seq = self.get_seq(current_length=False)
         new_seq = curr_seq.copy()
 
-        # Modify just the requested lines of the current sequence
-        for i in range(len(curr_seq)):
-            for j in range(len(sequence[i])):
-                new_seq[i][j] = sequence[i][j]
+        for i in range(len(sequence)):
+            new_seq[i] = sequence[i]
 
         # Update the length of the sequence if update_length == True and
         # the event sequence is a child of the EventSequencer
         if self.parent and update_length is True:
-            # Sequence length from number of event codes
-            new_len = len(sequence[0])
+            new_len = len(sequence)
             self.parent.sequence_length.put(new_len)
 
-        self.ec_array.put(new_seq[0])
-        self.bd_array.put(new_seq[1])
-        self.fd_array.put(new_seq[2])
-        self.bc_array.put(new_seq[3])
+        seq = [arr for arr in zip(*new_seq)]
+        self.ec_array.put(seq[0])
+        self.bd_array.put(seq[1])
+        self.fd_array.put(seq[2])
+        self.bc_array.put(seq[3])
 
     def show(self, num_lines=None):
         """Print a human readable copy of the current event sequence. Shows
@@ -120,24 +123,11 @@ class EventSequence(Device):
         seq.show(10)   # Print the first 10 lines
 
         """
-
         curr_seq = self.get_seq()
-        zip_seq = zip(curr_seq[0], curr_seq[1], curr_seq[2], curr_seq[3])
-        seq_list = list(zip_seq)
 
-        if self.parent and num_lines is None:
-            seq_length = self.parent.sequence_length.get()
-        elif num_lines is not None:
-            seq_length = num_lines
-        else:
-            # Included for the edge case where someone instantiates the event
-            # sequence by itself, rather than as part of an event sequencer.
-            msg = "No sequence length was specified, and the event sequence\n"
-            msg += "is not a child of an event sequencer!\n"
-            msg += "Please specify a number of lines to show.\n"
-            raise ValueError(msg)
-
-        for line in seq_list[0:seq_length]:
+        for nline, line in enumerate(curr_seq):
+            if nline == num_lines:
+                break
             print(line)
 
 

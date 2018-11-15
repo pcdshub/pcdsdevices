@@ -157,10 +157,10 @@ def test_fly_scan_smoke():
 def test_sequence_get_put():
     seq = SimSequencer('ECS:TST:100', name='seq')
 
-    dummy_sequence = [[i for i in range(0, 20)],
-                      [i for i in range(20, 40)],
-                      [i for i in range(40, 60)],
-                      [i for i in range(60, 80)]]
+    dummy_sequence = [[ 1,  2,  3,  4],
+                      [ 5,  6,  7,  8],
+                      [ 9, 10, 11, 12],
+                      [13, 14, 15, 16]]
 
     # Write the dummy sequence
     seq.sequence.put_seq(dummy_sequence)
@@ -168,5 +168,4 @@ def test_sequence_get_put():
     # Read back the sequence, and compare to dummy sequence
     curr_seq = seq.sequence.get_seq()
 
-    for i, array_sub in enumerate(dummy_sequence):
-        assert array_sub == curr_seq[i][0:20]
+    assert curr_seq == dummy_sequence
