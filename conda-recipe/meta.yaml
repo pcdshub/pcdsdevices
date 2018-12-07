@@ -17,17 +17,16 @@ requirements:
 
   run:
     - python {{PY_VER}}*,>=3
+    # Inspect requirements.txt for the reqs
     {% for spec in data['install_requires'] %}
-      {% if '<' in spec %}
-        {% set newspec = spec.replace('<', ' <') %}
-      {% elif '>' in spec %}
-        {% set newspec = spec.replace('>', ' >') %}
-      {% elif '=' in spec %}
-        {% set newpsec = spec.replace('=', ' =') %}
-      {% else %}
-        {% set newspec = spec %}
-      {% endif %}
-    - {{ newspec }}
+      {% set ns = namespace(spec=spec) %}
+      # Need to add a space before the first symbol. List order matters.
+      {% for sep in ['=', '<', '>'] %}
+        {% if sep in spec %}
+          {% set ns.spec = spec.replace(sep, ' ' + sep) %}
+        {% endif %}
+      {% endfor %}
+    - {{ ns.spec }}
     {% endfor %}
 
 test:
