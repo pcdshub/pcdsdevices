@@ -2,7 +2,7 @@
 
 package:
   name: pcdsdevices
-  version : {{ data.get('version') }}
+  version: {{ data['version'] }}
 
 source:
   path: ..
@@ -17,13 +17,18 @@ requirements:
 
   run:
     - python {{PY_VER}}*,>=3
-    - ophyd >=1.2.0
-    - bluesky >=1.2.0
-    - pyepics
-    - pyyaml
-    - cf_units >=2.0.1
-    - scipy
-    - matplotlib <3
+    {% for spec in data['install_requires'] %}
+      {% if '<' in spec %}
+        {% set newspec = spec.replace('<', ' <') %}
+      {% elif '>' in spec %}
+        {% set newspec = spec.replace('>', ' >') %}
+      {% elif '=' in spec %}
+        {% set newpsec = spec.replace('=', ' =') %}
+      {% else %}
+        {% set newspec = spec %}
+      {% endif %}
+    - {{ newspec }}
+    {% endfor %}
 
 test:
   imports:
