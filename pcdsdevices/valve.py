@@ -182,7 +182,8 @@ class VCC_NO(Device):
     close_command = Cpt(EpicsSignal, ':CLS_SW', kind='normal',
                         doc='Epics command to close valve')
     close_override = Cpt(EpicsSignal, ':FORCE_CLS', kind='omitted',
-                         doc='Epics command to close the vale in override mode')
+                         doc='Epics command to close the vale in '
+                             'override mode')
     override_on = Cpt(EpicsSignal, ':OVRD_ON', kind='omitted',
                       doc='Epics command to set/reset override mode')
     close_ok = Cpt(EpicsSignalRO, ':CLS_OK', kind='normal',
@@ -272,8 +273,8 @@ class PIP(Device):
     high_voltage_do = Cpt(EpicsSignalRO, ':HV_DO', kind='normal',
                           doc='High voltage digital output')
     high_voltage_switch = Cpt(EpicsSignal, ':HV_SW', kind='omitted',
-                              doc='Epics command to switch on the high '
-                                   'voltage')
+                              doc='Epics command to switch on the '
+                                  'high voltage')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK', kind='normal',
                        doc='Interlock is ok when true')
     at_vac_sp = Cpt(EpicsSignal, ':AT_VAC_SP', kind='omitted',
