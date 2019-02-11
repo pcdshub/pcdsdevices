@@ -4,7 +4,7 @@ Standard classes for LCLS Gate Valves
 import logging
 from enum import Enum
 
-from ophyd import EpicsSignal, EpicsSignalRO, Component as Cpt
+from ophyd import EpicsSignal, EpicsSignalRO, Component as Cpt, Device
 
 from .inout import InOutPositioner, InOutPVStatePositioner
 
@@ -162,3 +162,137 @@ class PPSStopper(InOutPositioner):
         PPSStopper can not be commanded via EPICS
         """
         raise PermissionError("PPSStopper can not be commanded via EPICS")
+
+
+class VCN(Device):
+    position_readback = Cpt(EpicsSignalRO, ':POS_RDBK', kind='hinted',
+                            doc='Valve position readback')
+    position_control = Cpt(EpicsSignal, ':POS_CTRL', kind='normal',
+                           doc='Requested position to control the valve')
+    interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK', kind='normal',
+                       doc='Interlock ok status')
+    open_command = Cpt(EpicsSignal, ':OPN_SW', kind='normal',
+                       doc='Epics command to open valve')
+    position_output = Cpt(EpicsSignalRO, ':POS_DES', kind='omitted',
+                          doc='requested position set to output channel')
+    state = Cpt(EpicsSignalRO, ':STATE', kind='hinted', doc='Valve state')
+
+
+class VCC_NO(Device):
+    close_command = Cpt(EpicsSignal, ':CLS_SW', kind='normal',
+                        doc='Epics command to close valve')
+    close_override = Cpt(EpicsSignal, ':FORCE_CLS', kind='omitted',
+                         doc='Epics command to close the vale in override mode')
+    override_on = Cpt(EpicsSignal, ':OVRD_ON', kind='omitted',
+                      doc='Epics command to set/reset override mode')
+    close_ok = Cpt(EpicsSignalRO, ':CLS_OK', kind='normal',
+                   doc='Used for normally open valves')
+    close_do = Cpt(EpicsSignalRO, ':CLS_DO', kind='normal',
+                   doc='PLC output to close valve')
+
+
+class VVC(Device):
+    open_command = Cpt(EpicsSignal, ':OPN_SW', kind='normal',
+                       doc='Epics command to open valve')
+    open_ok = Cpt(EpicsSignalRO, ':OPN_OK', kind='normal',
+                  doc='Valve is OK to open interlock')
+    override_on = Cpt(EpicsSignal, ':OVRD_ON', kind='omitted',
+                      doc='Epics command to set/reset override mode')
+    open_override = Cpt(EpicsSignal, ':FORCE_OPN', kind='omitted',
+                        doc='Epics command to open the valve in override mode')
+    open_do = Cpt(EpicsSignalRO, ':OPN_DO', kind='normal',
+                  doc='PLC output to open valve')
+
+
+class VRC(VVC):
+    open_di = Cpt(EpicsSignalRO, ':OPN_DI', kind='hinted',
+                  doc='Open limit switch digital input')
+    cls_di = Cpt(EpicsSignalRO, ':CLS_DI', kind='hinted',
+                 doc='Closed limit switch digital input')
+    state = Cpt(EpicsSignalRO, ':STATE', kind='normal', doc='Valve state')
+
+
+class VGC(VRC):
+    diff_press_ok = Cpt(EpicsSignalRO, ':DP_OK', kind='normal',
+                        doc='Differential pressure interlock ok')
+    ext_ilk_ok = Cpt(EpicsSignalRO, ':Ext_ILK_OK', kind='normal',
+                     doc='External interlock ok')
+    at_vac_sp = Cpt(EpicsSignal, ':AT_VAC_SP', kind='config',
+                    doc='AT VAC set point value')
+    at_vac_hysterisis = Cpt(EpicsSignal, ':AT_VAC_HYS', kind='config',
+                            doc='AT VAC hysterisis')
+    at_vac = Cpt(EpicsSignalRO, ':AT_VAC', kind='normal',
+                 doc='At vacuum set point is reached')
+    error = Cpt(EpicsSignalRO, ':Error', kind='normal',
+                doc='Error present')
+
+
+class Gauge(Device):
+    pressure = Cpt(EpicsSignalRO, ':PRESS', kind='hinted',
+                   doc='Gauge pressure reading')
+    gauge_at_vac = Cpt(EpicsSignalRO, ':AT_VAC', kind='normal',
+                       doc='Gauge is at VAC')
+    pressure_ok = Cpt(EpicsSignalRO, ':PRESS_OK', kind='normal',
+                      doc='Pressure reading ok')
+    at_vac_setpoint = Cpt(EpicsSignal, ':VAC_SP', kind='config',
+                          doc='At vacuum setpoint for all gauges')
+    state = Cpt(EpicsSignalRO, ':STATE', kind='hinted',
+                doc='state of the gauge')
+
+
+class GCC(Gauge):
+    high_voltage_on = Cpt(EpicsSignal, ':HV_SW', kind='normal',
+                          doc='Command to switch the high voltage on')
+    high_voltage_disable = Cpt(EpicsSignalRO, ':HV_DIS', kind='normal',
+                               doc='Enables the high voltage on the cold '
+                                   'cathode gauge')
+    protection_setpoint = Cpt(EpicsSignalRO, ':PRO_SP', kind='normal',
+                              doc='Protection setpoint for ion gauges at '
+                                  'which the gauge turns off')
+    setpoint_hysterisis = Cpt(EpicsSignal, ':SP_HYS', kind='config',
+                              doc='Protection setpoint hysterisis')
+    interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK', kind='normal',
+                       doc='Interlock is OK')
+
+
+class GCC500(GCC):
+    high_voltage_is_on = Cpt(EpicsSignalRO, ':HV_ON', kind='normal',
+                             doc='State of the HV')
+    disc_active = Cpt(EpicsSignalRO, ':DISC_ACTIVE', kind='normal',
+                      doc='Discharge current active')
+
+
+class GPI(GCC500):
+    pass
+
+
+class PIP(Device):
+    pressure = Cpt(EpicsSignalRO, ':PRESS', kind='hinted',
+                   doc='Pressure reading')
+    high_voltage_do = Cpt(EpicsSignalRO, ':HV_DO', kind='normal',
+                          doc='High voltage digital output')
+    high_voltage_switch = Cpt(EpicsSignal, ':HV_SW', kind='omitted',
+                              doc='Epics command to switch on the high '
+                                   'voltage')
+    interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK', kind='normal',
+                       doc='Interlock is ok when true')
+    at_vac_sp = Cpt(EpicsSignal, ':AT_VAC_SP', kind='omitted',
+                    doc='At vacuum setpoint')
+    set_point_relay = Cpt(EpicsSignalRO, ':SP_DI', kind='normal',
+                          doc='Set point digital input relay')
+
+
+class PTM(Device):
+    run_sw = Cpt(EpicsSignalRO, ':RUN_SW', kind='omitted')
+    rst_sw = Cpt(EpicsSignalRO, ':RST_SW', kind='normal')
+    run_do = Cpt(EpicsSignalRO, ':RUN_DO', kind='normal')
+    run_ok = Cpt(EpicsSignalRO, ':RUN_OK', kind='omitted')
+    at_spd = Cpt(EpicsSignalRO, ':AT_SPD', kind='omitted')
+    accel = Cpt(EpicsSignalRO, ':ACCEL', kind='normal')
+    speed = Cpt(EpicsSignalRO, ':SPEED', kind='normal')
+    fault = Cpt(EpicsSignalRO, ':FAULT', kind='normal')
+    warn = Cpt(EpicsSignalRO, ':WARN', kind='normal')
+    alarm = Cpt(EpicsSignalRO, ':ALARM', kind='normal')
+    backing_pressure_sp = Cpt(EpicsSignalRO, ':BackingPressureSP',
+                              kind='omitted')
+    inlet_pressure_sp = Cpt(EpicsSignalRO, ':InletPressureSP', kind='omitted')
