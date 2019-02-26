@@ -8,6 +8,129 @@ from ophyd.flyers import FlyerInterface, MonitorFlyerMixin
 logger = logging.getLogger(__name__)
 
 
+class EventSequence(Device):
+    """Class for the event sequence of the event sequencer."""
+
+    ec_array = Cpt(EpicsSignal, ':SEQ.A')
+    bd_array = Cpt(EpicsSignal, ':SEQ.B')
+    fd_array = Cpt(EpicsSignal, ':SEQ.C')
+    bc_array = Cpt(EpicsSignal, ':SEQ.D')
+
+    def get_seq(self, current_length=True):
+        """Retrieve the current event sequence. Returns a list of lists, with
+        each sub list containing a four item list describing a single line of
+        the sequence. Returns the current sequence up to the current play
+        length, the {prefix}:LEN PV, unless the current_length option is set
+        to False. If set to false, the whole sequence will be returned.
+
+        Parameters
+        ----------
+        current_length : bool
+            Option to retrieve the sequence up to the current length. Defaults
+            to True.
+
+        Examples
+        --------
+
+        EventSequence.get_seq()
+
+        EventSequence.get_seq(current_length=False) # Get whole sequence
+
+        """
+
+        if self.parent and current_length is True:
+            seq_length = self.parent.sequence_length.get()
+        else:
+            seq_length = 2048  # Whole thing
+
+        sequence = [[], [], [], []]
+        sequence[0] = self.ec_array.get()[0:seq_length]
+        sequence[1] = self.bd_array.get()[0:seq_length]
+        sequence[2] = self.fd_array.get()[0:seq_length]
+        sequence[3] = self.bc_array.get()[0:seq_length]
+
+        zip_seq = zip(sequence[0], sequence[1], sequence[2], sequence[3])
+        seq_list = list(zip_seq)
+        # Convert list of tuples (from zip) to list of lists
+        seq = [list(line) for line in seq_list]
+
+        return seq
+
+    def put_seq(self, sequence, update_length=True):
+        """Write a sequence to the event sequencer. Takes a list of lists,
+        with each sub-list representing one line of the event sequence, e.g.
+        [beam_code, delta_beam, delta_fiducial, burst_count]. The written
+        sequence will overwrite the current sequence in order, up to the
+        specified length. The play length of the sequencer will automatically
+        be updated, unless the update_length flag is set to False.
+
+        Parameters
+        ----------
+        sequence: list
+            List of lists describing the event sequence. The list takes the
+            form [[beam_code, delta_beam, delta_fiducial, burst_count], ...].
+
+        update_length: bool
+            Option to automatically update the play length, the
+            {prefix}:LEN PV, to the length of the written sequence. Defaults
+            to True.
+
+        Examples
+        --------
+        seq = [[182,  12,   0,   0], # Line 1
+               [170,   2,   0,   0], # Line 2
+               [169,   1,   0,   0], # Line 3
+               [169,   1,   0,   0]] # Line 4
+
+        EventSequence.put_seq(seq)
+
+        EventSequence.put_seq(seq, update_length=False) # Don't update length
+
+        """
+
+        curr_seq = self.get_seq(current_length=False)
+        new_seq = curr_seq.copy()
+
+        for i in range(len(sequence)):
+            new_seq[i] = sequence[i]
+
+        # Update the length of the sequence if update_length == True and
+        # the event sequence is a child of the EventSequencer
+        if self.parent and update_length is True:
+            new_len = len(sequence)
+            self.parent.sequence_length.put(new_len)
+
+        seq = [arr for arr in zip(*new_seq)]
+        self.ec_array.put(seq[0])
+        self.bd_array.put(seq[1])
+        self.fd_array.put(seq[2])
+        self.bc_array.put(seq[3])
+
+    def show(self, num_lines=None):
+        """Print a human readable copy of the current event sequence. Shows
+        the current sequence up to the length of the sequencer play length,
+        unless otherwise specified by the num_lines parameter.
+
+        Parameters
+        ----------
+        num_lines : int
+            Number of event sequence lines to print. Defaults to current
+            sequence length.
+
+        Examples
+        --------
+        seq.show()     # Print current sequence (default)
+        seq.show(10)   # Print the first 10 lines
+
+        """
+        curr_seq = self.get_seq()
+
+        for nline, line in enumerate(curr_seq):
+            if nline == num_lines:
+                break
+            print(line)
+
+
 class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     """
     Event Sequencer
@@ -19,7 +142,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
 
     Parameters
     ----------
-    prefix: str
+    prefix : str
         Base prefix of the EventSequencer
 
     name : str
@@ -47,7 +170,9 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     EventSequencer and restart the sequence from the beginning. This may impact
     applications which depend on a long single looped sequence running through
     out the scan
+
     """
+
     play_control = Cpt(EpicsSignal, ':PLYCTL', kind='omitted')
     sequence_length = Cpt(EpicsSignal, ':LEN', kind='config')
     current_step = Cpt(EpicsSignal, ':CURSTP', kind='normal')
@@ -62,8 +187,11 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     rep_count = Cpt(EpicsSignal, ":REPCNT", kind='config')
     sequence_owner = Cpt(EpicsSignalRO, ':HUTCH_NAME', kind='omitted')
 
+    sequence = Cpt(EventSequence, '', kind='config')
+
     def __init__(self, prefix, *, name=None, monitor_attrs=None, **kwargs):
         monitor_attrs = monitor_attrs or ['current_step', 'play_count']
+
         # Device initialization
         super().__init__(prefix, name=name,
                          monitor_attrs=monitor_attrs, **kwargs)

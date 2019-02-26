@@ -6,15 +6,18 @@ from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from bluesky.plan_stubs import sleep
 from ophyd.sim import NullStatus, make_fake_device
 
-from pcdsdevices.sequencer import EventSequencer
+from pcdsdevices.sequencer import EventSequencer, EventSequence
+import pcdsdevices.sequencer
 
 logger = logging.getLogger(__name__)
+
 FakeSequencer = make_fake_device(EventSequencer)
+pcdsdevices.sequencer.EventSequence = make_fake_device(EventSequence)
 
 
 @pytest.fixture(scope='function')
 def sequence():
-    seq = FakeSequencer('ECS:TST', name='seq')
+    seq = FakeSequencer('ECS:TST:100', name='seq')
     # Running forever
     seq.play_mode.put(2)
     seq.play_control.put(0)
@@ -39,6 +42,17 @@ class SimSequencer(FakeSequencer):
         self.next_sync.sim_put(0)
         self.pulse_req.sim_put(0)
         self.sequence_owner.sim_put(0)
+        self.sequence.ec_array.sim_put([0] * 2048)
+        self.sequence.bd_array.sim_put([0] * 2048)
+        self.sequence.fd_array.sim_put([0] * 2048)
+        self.sequence.bc_array.sim_put([0] * 2048)
+
+        # Initialize sequence
+        initial_sequence = [[0] * 20,
+                            [0] * 20,
+                            [0] * 20,
+                            [0] * 20]
+        self.sequence.put_seq(initial_sequence)
 
     def kickoff(self):
         super().kickoff()
@@ -129,7 +143,7 @@ def test_pause_and_resume(sequence):
 
 
 def test_fly_scan_smoke():
-    seq = SimSequencer('ECS:TST', name='seq')
+    seq = SimSequencer('ECS:TST:100', name='seq')
     RE = RunEngine()
 
     # Create a plan where we fly for a second
@@ -138,3 +152,20 @@ def test_fly_scan_smoke():
 
     # Run the plan
     RE(plan())
+
+
+def test_sequence_get_put():
+    seq = SimSequencer('ECS:TST:100', name='seq')
+
+    dummy_sequence = [[1,  2,  3,  4],
+                      [5,  6,  7,  8],
+                      [9, 10, 11, 12],
+                      [13, 14, 15, 16]]
+
+    # Write the dummy sequence
+    seq.sequence.put_seq(dummy_sequence)
+
+    # Read back the sequence, and compare to dummy sequence
+    curr_seq = seq.sequence.get_seq()
+
+    assert curr_seq == dummy_sequence
