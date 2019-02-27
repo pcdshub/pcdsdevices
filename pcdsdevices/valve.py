@@ -242,6 +242,12 @@ class Gauge(Device):
 
 
 class GCC(Gauge):
+    """
+    Cold Cathode Gauge
+
+    Class to facilitate cold cathod gauge controls and readback on our Beckhoff
+    PLCs. Controlled using the ADS driver using records from pytmc.
+    """
     high_voltage_on = Cpt(EpicsSignal, ':HV_SW', kind='normal',
                           doc='Command to switch the high voltage on')
     high_voltage_disable = Cpt(EpicsSignalRO, ':HV_DIS', kind='normal',
