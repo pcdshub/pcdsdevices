@@ -41,16 +41,16 @@ def test_lodcm_destination(fake_lodcm):
     for d in dest:
         assert isinstance(d, str)
 
-    lodcm.state.put('OUT')
+    lodcm.move('OUT')
     assert len(lodcm.destination) == 1
-    lodcm.state.put('C')
+    lodcm.move('C')
     assert len(lodcm.destination) == 2
     # Block the mono line
-    lodcm.yag.state.put('IN')
+    lodcm.yag.move('IN')
     assert len(lodcm.destination) == 1
-    lodcm.state.put('Si')
+    lodcm.move('Si')
     assert len(lodcm.destination) == 0
-    lodcm.yag.state.put('OUT')
+    lodcm.yag.move('OUT')
     assert len(lodcm.destination) == 1
 
     # Unknown state
