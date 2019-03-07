@@ -6,15 +6,12 @@ from ophyd.sim import make_fake_device
 
 from pcdsdevices.valve import GateValve, PPSStopper, Stopper, InterlockError
 
-from conftest import HotfixFakeEpicsSignal
-
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def fake_pps():
     FakePPS = make_fake_device(PPSStopper)
-    FakePPS.state.cls = HotfixFakeEpicsSignal
     pps = FakePPS("PPS:H0:SUM", name="test_pps")
     pps.state.sim_set_enum_strs(['Unknown', 'IN', 'OUT'])
     pps.state.put('OUT')
