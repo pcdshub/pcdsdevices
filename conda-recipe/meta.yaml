@@ -17,7 +17,7 @@ requirements:
 
   run:
     - python {{PY_VER}}*,>=3
-    - ophyd >=1.2.0
+    - ophyd >=1.3.1
     - bluesky >=1.2.0
     - pyepics
     - pyyaml
