@@ -6,19 +6,12 @@ from unittest.mock import Mock
 
 from pcdsdevices.lodcm import LODCM, YagLom, Dectris, Diode, Foil
 
-from conftest import HotfixFakeEpicsSignal
-
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def fake_lodcm():
     FakeLODCM = make_fake_device(LODCM)
-    FakeLODCM.state.cls = HotfixFakeEpicsSignal
-    FakeLODCM.yag.cls.state.cls = HotfixFakeEpicsSignal
-    FakeLODCM.dectris.cls.state.cls = HotfixFakeEpicsSignal
-    FakeLODCM.diode.cls.state.cls = HotfixFakeEpicsSignal
-    FakeLODCM.foil.cls.state.cls = HotfixFakeEpicsSignal
     lodcm = FakeLODCM('FAKE:LOM', name='fake_lom')
     lodcm.state.sim_put(1)
     lodcm.state.sim_set_enum_strs(['Unknown'] + LODCM.states_list)

@@ -10,8 +10,6 @@ from pcdsdevices.epics_motor import (EpicsMotorInterface, PCDSMotorBase, IMS,
                                      Newport, PMC100, BeckhoffAxis,
                                      MotorDisabledError, Motor, EpicsMotor)
 
-from conftest import HotfixFakeEpicsSignal
-
 logger = logging.getLogger(__name__)
 
 
@@ -20,8 +18,6 @@ def fake_class_setup(cls):
     Make the fake class and modify if needed
     """
     FakeClass = make_fake_device(cls)
-    if issubclass(FakeClass, PCDSMotorBase):
-        FakeClass.motor_spg.cls = HotfixFakeEpicsSignal
     return FakeClass
 
 

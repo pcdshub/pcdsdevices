@@ -8,15 +8,12 @@ from pcdsdevices.inout import (InOutPositioner,
                                InOutRecordPositioner,
                                InOutPVStatePositioner)
 
-from conftest import HotfixFakeEpicsSignal
-
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def fake_inout():
     Fake = make_fake_device(InOutRecordPositioner)
-    Fake.state.cls = HotfixFakeEpicsSignal
     inout = Fake('Test:Ref', name='test')
     inout.state.sim_put(0)
     inout.state.sim_set_enum_strs(('Unknown', 'IN', 'OUT'))

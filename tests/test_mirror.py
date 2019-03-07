@@ -6,14 +6,10 @@ import pytest
 from ophyd.sim import make_fake_device
 from pcdsdevices.mirror import OffsetMirror, PointingMirror
 
-from conftest import HotfixFakeEpicsSignal
-
 
 @pytest.fixture(scope='function')
 def fake_branching_mirror():
     FakeMirror = make_fake_device(PointingMirror)
-    FakeMirror.state.cls = HotfixFakeEpicsSignal
-    FakeMirror.xgantry.cls.setpoint.cls = HotfixFakeEpicsSignal
     m = FakeMirror("TST:M1H", prefix_xy="STEP:TST:M1H",
                    xgantry_prefix="GANTRY:M1H:X", name='Test Mirror',
                    in_lines=['MFX', 'MEC'], out_lines=['CXI'])

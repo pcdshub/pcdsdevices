@@ -6,15 +6,12 @@ from ophyd.sim import make_fake_device
 
 from pcdsdevices.lens import XFLS, LensStack, SimLensStack
 
-from conftest import HotfixFakeEpicsSignal
-
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def fake_xfls():
     FakeXFLS = make_fake_device(XFLS)
-    FakeXFLS.state.cls = HotfixFakeEpicsSignal
     xfls = FakeXFLS('TST:XFLS', name='lens')
     xfls.state.sim_put(4)
     xfls.state.sim_set_enum_strs(('Unknown', 'LENS1', 'LENS2', 'LENS3', 'OUT'))

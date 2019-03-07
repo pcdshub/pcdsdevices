@@ -9,8 +9,6 @@ from ophyd.sim import make_fake_device
 from pcdsdevices.areadetector.detectors import PCDSDetector
 from pcdsdevices.pim import PIM, PIMMotor
 
-from conftest import HotfixFakeEpicsSignal
-
 logger = logging.getLogger(__name__)
 
 
@@ -25,7 +23,6 @@ for attr in PCDSDetector._sub_devices:
 @pytest.fixture(scope='function')
 def fake_pim():
     FakePIM = make_fake_device(PIMMotor)
-    FakePIM.state.cls = HotfixFakeEpicsSignal
     pim = FakePIM('Test:Yag', name='test')
     pim.state.sim_put(0)
     pim.state.sim_set_enum_strs(['Unknown'] + PIMMotor.states_list)
