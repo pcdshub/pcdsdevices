@@ -1,6 +1,25 @@
 Release History
 ###############
 
+v1.2.0 (2019-03-08)
+===================
+
+Features
+--------
+- Add all common plugins to ``PCDSDetector``
+- ``EventSequencer`` now accepts human-readable sequences
+
+Fixes
+-----
+- Fix debug PV names in ``BeckhoffAxis``
+
+Misc
+----
+- Add a py37 build to the CI
+- Remove outdated hotfix for ``FakeEpicsSignal`` in tests
+- Fix misc testing errors
+
+
 v1.1.0 (2018-10-26)
 ===================
 
