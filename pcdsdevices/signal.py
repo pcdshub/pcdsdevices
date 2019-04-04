@@ -173,8 +173,6 @@ class AvgSignal(Signal):
         """
         with self._lock:
             self.values[self.index] = value
-            self.index += 1
-            if self.index == len(self.values):
-                self.index = 0
+            self.index = (self.index + 1) % len(self.values)
             # This takes a mean, skipping nan values.
             self.put(np.nanmean(self.values))
