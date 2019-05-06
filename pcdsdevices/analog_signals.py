@@ -71,8 +71,8 @@ class Acromag(Device):
         self.rb_pv = getattr(self, 'ai1_%s' % rb_ch).pvname
         self.sp_pv = getattr(self, 'ao1_%s' % sp_ch).pvname
         self.mesh_raw = EpicsSignal(name='mesh_raw',
-                                    read_pv=rb_pv,
-                                    write_pv=sp_pv)
+                                    read_pv=self.rb_pv,
+                                    write_pv=self.sp_pv)
 
     def get_raw_mesh_voltage(self):
         """
