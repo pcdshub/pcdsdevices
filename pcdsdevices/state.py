@@ -1,5 +1,5 @@
 """
-Module to define positioners that move between discrete named states.
+Module to deoine positioners that move between discrete named states.
 """
 import logging
 import functools
@@ -11,6 +11,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO
 from ophyd.device import Device, Component as Cpt, FormattedComponent as FCpt
 
 from .doc_stubs import basic_positioner_init
+from .epics_motor import IMS
 from .mv_interface import MvInterface
 from .signal import AggregateSignal
 
@@ -392,12 +393,9 @@ class StateRecordPositioner(StatePositioner):
     settings, in the same order as the state enum. Unknown must be omitted.
     """
     state = Cpt(EpicsSignal, '', write_pv=':GO', kind='hinted')
-    readback = FCpt(EpicsSignalRO, '{self.prefix}:{self._readback}',
-                    kind='normal')
+    motor = Cpt(IMS, ':MOTOR', kind='normal')
 
     def __init__(self, prefix, *, name, **kwargs):
-        some_state = self.states_list[0]
-        self._readback = '{}_CALC.A'.format(some_state)
         super().__init__(prefix, name=name, **kwargs)
         self._has_subscribed_readback = False
         self._has_checked_state_enum = False
@@ -406,7 +404,8 @@ class StateRecordPositioner(StatePositioner):
         cid = super().subscribe(cb, event_type=event_type, run=run)
         if (event_type == self.SUB_READBACK and not
                 self._has_subscribed_readback):
-            self.readback.subscribe(self._run_sub_readback, run=False)
+            self.motor.user_readback.subscribe(self._run_sub_readback,
+                                               run=False)
             self._has_subscribed_readback = True
         return cid
 
