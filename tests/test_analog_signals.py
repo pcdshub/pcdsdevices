@@ -53,7 +53,7 @@ def fake_mesh():
     # Using SP channel = 1, RB channel = 2, scale = 1000
     mesh = FakeMesh('Test:Mesh', 1, 2)
     mesh.write_cpt.sim_put(1.0)
-    mesh.read_cpt.sim_put(1.05) # rb will be slightly off from sp
+    mesh.read_cpt.sim_put(1.05)  # rb will be slightly off from sp
     return mesh
 
 
