@@ -70,15 +70,35 @@ class StatePositioner(Device, PositionerBase, MvInterface):
             raise TypeError(('StatePositioner must be subclassed with at '
                              'least a state signal'))
         super().__init__(prefix, name=name, **kwargs)
-        self._valid_states = [state for state in self.states_list
-                              if state not in self._invalid_states
-                              and state is not None]
-        if self._unknown:
-            self.states_list = [self._unknown] + self.states_list
-            self._invalid_states = [self._unknown] + self._invalid_states
-        if not hasattr(self, 'states_enum'):
-            self.states_enum = self._create_states_enum()
-        self._has_subscribed_state = False
+        self._state_initialized = False
+        self._state_init_cbid = False
+        if states_list:
+            self._state_init()
+        else:
+            self.state.subscribe(self._late_state_init,
+                                 event_type=EpicsSignal.SUB_META,
+                                 run=False)
+
+    @required_for_connection
+    def _state_init(self):
+        if not self._state_initialized:
+            self._valid_states = [state for state in self.states_list
+                                  if state not in self._invalid_states
+                                  and state is not None]
+            if self._unknown:
+                self.states_list = [self._unknown] + self.states_list
+                self._invalid_states = [self._unknown] + self._invalid_states
+            if not hasattr(self, 'states_enum'):
+                self.states_enum = self._create_states_enum()
+            self._has_subscribed_state = False
+            self._state_initialized = True
+        if self._state_init_cbid:
+            self.unsubscribe(self._state_init_cbid)
+            self._state_init_cbid = False
+
+    def _late_state_init(self, *args, enum_strs, **kwargs):
+        self.states_list = list(enum_strs)
+        self._state_init()
 
     def move(self, position, moved_cb=None, timeout=None, wait=False):
         """
