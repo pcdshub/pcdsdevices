@@ -1,6 +1,7 @@
 import time
 import pcdsdevices.utils as key_press
-from ophyd import Device, Component as Cpt, EpicsSignal, EpicsSignalRO
+from ophyd import (Device, Component as Cpt, EpicsSignal, EpicsSignalRO,
+                   FormattedComponent as FCpt)
 
 
 class Acromag(Device):
@@ -50,45 +51,53 @@ class Acromag(Device):
     ai1_14 = Cpt(EpicsSignalRO, ":ai1:14", kind='normal')
     ai1_15 = Cpt(EpicsSignalRO, ":ai1:15", kind='normal')
 
-    def initialize_mesh(self, sp_ch, rb_ch, scale=1000.0):
-        """
-        Setup the Acromag for mesh power supply usage
 
-        Parameters
-        ----------
-        sp_ch : int
-            Setpoint Acromag channel to which high voltage supply setpoint
-            is connected. Range is 0 to 15
+class Mesh(Device):
+    """
+    Class for Mesh High Voltage Supply that is connected to
+    Acromag inputs and outputs
 
-        rb_ch : int
-            Read back Acromag channel to which high voltage readback is
-            connected. Range is 0 to 15
+    Parameters
+    ----------
+    prefix : str
+        Prefix of Acromag to be used
 
-        scale : float, optional
-            Gain for high voltage supply to be controlled by the Acromag
-        """
+    sp_ch : int
+        Setpoint Acromag channel to which high voltage supply setpoint
+        is connected. Range is 0 to 15
+
+    rb_ch : int
+        Read back Acromag channel to which high voltage readback is
+        connected. Range is 0 to 15
+
+    scale : float, optional
+        Gain for high voltage supply to be controlled by the Acromag
+
+    """
+
+    write_cpt = FCpt(EpicsSignal, '{self.prefix}' + ':ao1:' + '{self.sp_ch}')
+    read_cpt = FCpt(EpicsSignalRO, '{self.prefix}' + ':ai1:' + '{self.rb_ch}')
+
+    def __init__(self, prefix, sp_ch, rb_ch, scale=1000.0):
         self.scale = scale
-        self.rb_pv = getattr(self, 'ai1_%s' % rb_ch).pvname
-        self.sp_pv = getattr(self, 'ao1_%s' % sp_ch).pvname
-        self.mesh_raw = EpicsSignal(name='mesh_raw',
-                                    read_pv=self.rb_pv,
-                                    write_pv=self.sp_pv)
+        self.prefix = prefix
+        self.sp_ch = sp_ch
+        self.rb_ch = rb_ch
+        super().__init__(prefix, name='mesh_raw')
 
     def get_raw_mesh_voltage(self):
         """
         Get the current acromag voltage that outputs to the HV supply, i.e
         the voltage seen by the HV supply
         """
-        # NOTE: For this to work, must use self.initialize_mesh first, may
-        # want to make a check for this, otherwise will get error
-        return self.mesh_raw.get()
+        return self.read_cpt.get()
 
     def get_mesh_voltage(self):
         """
         Get the current mesh voltage setpoint, i.e the setpoint that the HV
         supply attempts to output
         """
-        return self.mesh_raw.get() * self.scale
+        return self.read_cpt.get() * self.scale
 
     def set_mesh_voltage(self, hv_sp, wait=True, do_print=True):
         """
@@ -112,10 +121,10 @@ class Acromag(Device):
         if do_print:
             print('Setting mesh voltage...')
         hv_sp_raw = hv_sp / self.scale
-        self.mesh_raw.put(hv_sp_raw)
+        self.write_cpt.put(hv_sp_raw)
         if wait:
             time.sleep(1.0)
-        hv_rb_raw = self.mesh_raw.get()
+        hv_rb_raw = self.read_cpt.get()
         hv_rb = hv_rb_raw * self.scale
         if do_print:
             print('Power supply setpoint: %s V' % hv_sp)
@@ -132,12 +141,12 @@ class Acromag(Device):
             from its current value. Use positive to increase and negative
             to decrease
         """
-        curr_hv_sp_raw = self.mesh_raw.get_setpoint()
+        curr_hv_sp_raw = self.write_cpt.get()
         curr_hv_sp = curr_hv_sp_raw * self.scale
         if do_print:
             print('Setting voltage...')
             print('Previous power supply setpoint: %s V' % curr_hv_sp)
-        new_hv_sp = curr_hv_sp * self.scale
+        new_hv_sp = curr_hv_sp + delta_hv_sp
         self.set_mesh_voltage(new_hv_sp, wait=wait, do_print=do_print)
 
     def tweak_mesh_voltage(self, delta_hv_sp):
