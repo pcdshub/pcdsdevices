@@ -52,8 +52,8 @@ def fake_mesh():
     FakeMesh = make_fake_device(Mesh)
     # Using SP channel = 1, RB channel = 2, scale = 1000
     mesh = FakeMesh('Test:Mesh', 1, 2)
-    mesh.write_cpt.sim_put(1.0)
-    mesh.read_cpt.sim_put(1.05)  # rb will be slightly off from sp
+    mesh.write_sig.sim_put(1.0)
+    mesh.read_sig.sim_put(1.05)  # rb will be slightly off from sp
     return mesh
 
 
@@ -72,11 +72,11 @@ def test_get_mesh_voltage(fake_mesh):
 
 def test_set_mesh_voltage(fake_mesh):
     fake_mesh.set_mesh_voltage(1500.0)
-    assert fake_mesh.write_cpt.get() == 1.5
+    assert fake_mesh.write_sig.get() == 1.5
 
 
 def test_set_rel_mesh_voltage(fake_mesh):
     fake_mesh.set_rel_mesh_voltage(500.0)
-    assert fake_mesh.write_cpt.get() == 1.5
+    assert fake_mesh.write_sig.get() == 1.5
     fake_mesh.set_rel_mesh_voltage(-500.0)
-    assert fake_mesh.write_cpt.get() == 1.0
+    assert fake_mesh.write_sig.get() == 1.0

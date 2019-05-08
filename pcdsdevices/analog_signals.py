@@ -75,8 +75,8 @@ class Mesh(Device):
 
     """
 
-    write_cpt = FCpt(EpicsSignal, '{self.prefix}' + ':ao1:' + '{self.sp_ch}')
-    read_cpt = FCpt(EpicsSignalRO, '{self.prefix}' + ':ai1:' + '{self.rb_ch}')
+    write_sig = FCpt(EpicsSignal, '{self.prefix}' + ':ao1:' + '{self.sp_ch}')
+    read_sig = FCpt(EpicsSignalRO, '{self.prefix}' + ':ai1:' + '{self.rb_ch}')
 
     def __init__(self, prefix, sp_ch, rb_ch, scale=1000.0):
         self.scale = scale
@@ -90,14 +90,14 @@ class Mesh(Device):
         Get the current acromag voltage that outputs to the HV supply, i.e
         the voltage seen by the HV supply
         """
-        return self.read_cpt.get()
+        return self.read_sig.get()
 
     def get_mesh_voltage(self):
         """
         Get the current mesh voltage setpoint, i.e the setpoint that the HV
         supply attempts to output
         """
-        return self.read_cpt.get() * self.scale
+        return self.read_sig.get() * self.scale
 
     def set_mesh_voltage(self, hv_sp, wait=True, do_print=True):
         """
@@ -121,10 +121,10 @@ class Mesh(Device):
         if do_print:
             print('Setting mesh voltage...')
         hv_sp_raw = hv_sp / self.scale
-        self.write_cpt.put(hv_sp_raw)
+        self.write_sig.put(hv_sp_raw)
         if wait:
             time.sleep(1.0)
-        hv_rb_raw = self.read_cpt.get()
+        hv_rb_raw = self.read_sig.get()
         hv_rb = hv_rb_raw * self.scale
         if do_print:
             print('Power supply setpoint: %s V' % hv_sp)
@@ -141,7 +141,7 @@ class Mesh(Device):
             from its current value. Use positive to increase and negative
             to decrease
         """
-        curr_hv_sp_raw = self.write_cpt.get()
+        curr_hv_sp_raw = self.write_sig.get()
         curr_hv_sp = curr_hv_sp_raw * self.scale
         if do_print:
             print('Setting voltage...')
