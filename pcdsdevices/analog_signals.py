@@ -149,7 +149,7 @@ class Mesh(Device):
         new_hv_sp = curr_hv_sp + delta_hv_sp
         self.set_mesh_voltage(new_hv_sp, wait=wait, do_print=do_print)
 
-    def tweak_mesh_voltage(self, delta_hv_sp):
+    def tweak_mesh_voltage(self, delta_hv_sp, test_flag=False):
         """
         Increase/decrease power supply setpoint by specified amount using
         the arrow keys
@@ -160,8 +160,13 @@ class Mesh(Device):
             Amount to change voltage from its current value at each step.
             After calling with specified step size, use arrow keys to keep
             changing. Use absolute value of increment size.
+
         ^C :
             exits tweak mode
+
+        test_flag : bool, opt
+            flag used in testing functions to only run `while True` loop
+            once - i.e single tweak mode
         """
         print('Use arrow keys (left, right) to step voltage (-, +)')
         while True:
@@ -174,3 +179,5 @@ class Mesh(Device):
             elif key == key_press.arrow_left:
                 self.set_rel_mesh_voltage(-delta_hv_sp, wait=False,
                                           do_print=False)
+            if test_flag:
+                return

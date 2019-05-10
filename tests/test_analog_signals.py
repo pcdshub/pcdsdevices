@@ -1,5 +1,6 @@
 import logging
 import pytest
+import pcdsdevices.utils as key_press
 
 from ophyd.sim import make_fake_device
 from pcdsdevices.analog_signals import Acromag, Mesh
@@ -79,4 +80,20 @@ def test_set_rel_mesh_voltage(fake_mesh):
     fake_mesh.set_rel_mesh_voltage(500.0)
     assert fake_mesh.write_sig.get() == 1.5
     fake_mesh.set_rel_mesh_voltage(-500.0)
+    assert fake_mesh.write_sig.get() == 1.0
+
+
+def test_tweak_mesh_voltage(fake_mesh, monkeypatch):
+    # Create mock user inputs for tweak up/down
+    def mock_tweak_up():
+        return '\x1b[C'  # arrow right
+
+    def mock_tweak_down():
+        return '\x1b[D'  # arrow left
+
+    monkeypatch.setattr(key_press, 'get_input', mock_tweak_up)
+    fake_mesh.tweak_mesh_voltage(500.0, test_flag=True)
+    assert fake_mesh.write_sig.get() == 1.5
+    monkeypatch.setattr(key_press, 'get_input', mock_tweak_down)
+    fake_mesh.tweak_mesh_voltage(500.0, test_flag=True)
     assert fake_mesh.write_sig.get() == 1.0
