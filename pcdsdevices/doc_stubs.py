@@ -38,3 +38,48 @@ insert_remove = """
             ``Status`` that will be marked as done when the motion is complete.
 
 """
+
+PIM_base = """
+    Profile intensity monitor
+
+    Parameters
+    ----------
+    prefix : str
+        The EPICS base of the motor
+
+    name : str
+        A name to refer to the device
+
+    prefix_det : str
+        The EPICS base PV of the detector
+
+    prefix_zoom : str
+        The EPICS base PV of the zoom motor
+    """
+
+IonPump_base = """
+    Ion Pump
+
+    Parameters
+    ----------
+    prefix : ``str``
+        Ion Pump PV
+
+    name : ``str``
+        Alias for the ion pump
+    """
+
+GaugeSet_base = """
+    Class for a Gauge Set 
+
+    Parameters
+    ----------
+    prefix : ``str``
+        Gauge base PV (up to GCC/GPI)
+
+    name : ``str``
+        Alias for the gauge set
+
+    index : ``str`` or ``int``
+        Index for gauge (e.g. '02' or 3)
+    """
