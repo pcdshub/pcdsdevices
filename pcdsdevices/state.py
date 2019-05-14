@@ -75,9 +75,10 @@ class StatePositioner(Device, PositionerBase, MvInterface):
         if states_list:
             self._state_init()
         else:
-            self.state.subscribe(self._late_state_init,
-                                 event_type=EpicsSignal.SUB_META,
-                                 run=False)
+            cbid = self.state.subscribe(self._late_state_init,
+                                        event_type=EpicsSignal.SUB_META,
+                                        run=False)
+            self._state_init_cbid = cbid
 
     @required_for_connection
     def _state_init(self):
