@@ -20,7 +20,6 @@ def fake_gauge_set():
     gs.gpi.pressure.sim_put(98)
     return gs
 
-@pytest.mark.timeout(5)
 def test_gauge_pressure(fake_gauge_set):
     logger.debug('test_gauge_pressure')
     gs = fake_gauge_set

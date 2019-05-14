@@ -70,7 +70,7 @@ IonPump_base = """
     """
 
 GaugeSet_base = """
-    Class for a Gauge Set 
+    Class for a Gauge Set
 
     Parameters
     ----------

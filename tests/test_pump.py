@@ -17,7 +17,6 @@ def fake_ionpump():
     pump._pressure.sim_put(99.)
     return pump
 
-@pytest.mark.timeout(5)
 def test_pump_pressure(fake_ionpump):
     logger.debug('test_ionpump')
     pump = fake_ionpump
