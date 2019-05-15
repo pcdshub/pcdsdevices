@@ -138,6 +138,20 @@ class IonPumpWithController(IonPumpBase):
 
 # factory function for IonPumps
 def IonPump(prefix, *, name, **kwargs):
+    """
+    Ion Pump
+
+    Parameters
+    ----------
+    prefix : ``str``
+        Ion Pump PV
+
+    name : ``str``
+        Alias for the ion pump
+
+    (optional) prefix_controller : ``str``
+        Ion Pump Controller base PV
+    """
 
     if 'prefix_controller' not in kwargs:
         return IonPumpBase(prefix, name=name, **kwargs)

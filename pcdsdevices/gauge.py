@@ -72,18 +72,18 @@ class GaugeColdCathode(BaseGauge):
     Class for Cold Cathode Gauge
     """
     enable = Cpt(EpicsSignal, ':ENBL_SW', kind='normal')
-    relaySetpoint = Cpt(EpicsSignal, ':PSTATSPRBCK',
-                        write_pv=':PSTATSPDES', kind='normal')
-    relayEnable = Cpt(EpicsSignal, ':PSTATENRBCK',
-                      write_pv=':PSTATEN', kind='normal')
-    controlSetpoint = Cpt(EpicsSignal, ':PCTRLSPRBCK',
-                          write_pv=':PCTRLSPDES', kind='normal')
-    controlEnable = Cpt(EpicsSignal, ':PCTRLENRBCK',
-                        write_pv=':PCTRLEN', kind='normal')
-    protectionSetpoint = Cpt(EpicsSignal, ':PPROTSPRBCK',
-                             write_pv=':PPROTSPDES', kind='normal')
-    protectionEnable = Cpt(EpicsSignal, ':PPROTENRBCK',
-                           write_pv=':PPROTEN', kind='normal')
+    relay_setpoint = Cpt(EpicsSignal, ':PSTATSPRBCK',
+                         write_pv=':PSTATSPDES', kind='normal')
+    relay_enable = Cpt(EpicsSignal, ':PSTATENRBCK',
+                       write_pv=':PSTATEN', kind='normal')
+    control_setpoint = Cpt(EpicsSignal, ':PCTRLSPRBCK',
+                           write_pv=':PCTRLSPDES', kind='normal')
+    control_enable = Cpt(EpicsSignal, ':PCTRLENRBCK',
+                         write_pv=':PCTRLEN', kind='normal')
+    protection_setpoint = Cpt(EpicsSignal, ':PPROTSPRBCK',
+                              write_pv=':PPROTSPDES', kind='normal')
+    protection_enable = Cpt(EpicsSignal, ':PPROTENRBCK',
+                            write_pv=':PPROTEN', kind='normal')
 
 
 class GaugeSetBase(Device):
@@ -164,6 +164,26 @@ class GaugeSetPiraniMks(GaugeSetPirani):
 
 # factory function for IonPumps
 def GaugeSet(prefix, *, name, index, **kwargs):
+    """
+    Factory function for Gauge Set
+
+    Parameters
+    ----------
+    prefix : ``str``
+        Gauge base PV (up to GCC/GPI)
+
+    name : ``str``
+        Alias for the gauge set
+
+    index : ``str`` or ``int``
+        Index for gauge (e.g. '02' or 3)
+
+    (optional) prefix_controller : ``str``
+        Base PV for the controller
+
+    (optional) onlyGCC:
+        if defined and not false, set has no Pirani
+    """
 
     onlyGCC = kwargs.pop('onlyGCC', None)
     if onlyGCC:
