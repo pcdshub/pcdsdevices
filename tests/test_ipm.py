@@ -5,7 +5,7 @@ from ophyd.sim import make_fake_device
 from unittest.mock import Mock
 
 from pcdsdevices.inout import InOutRecordPositioner
-from pcdsdevices.ipm import IPMTarget
+from pcdsdevices.ipm import IPM, IPMTarget
 
 logger = logging.getLogger(__name__)
 
