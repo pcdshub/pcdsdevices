@@ -9,6 +9,7 @@ Full API
    ~pcdsdevices.ccm
    ~pcdsdevices.epics_motor
    ~pcdsdevices.evr
+   ~pcdsdevices.gauge
    ~pcdsdevices.inout
    ~pcdsdevices.ipm
    ~pcdsdevices.lens
@@ -20,6 +21,7 @@ Full API
    ~pcdsdevices.pim
    ~pcdsdevices.pseudopos
    ~pcdsdevices.pulsepicker
+   ~pcdsdevices.pump
    ~pcdsdevices.signal
    ~pcdsdevices.sim
    ~pcdsdevices.slits
