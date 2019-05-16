@@ -55,7 +55,7 @@ def test_ipm_subscriptions(fake_ipm):
     ipm = fake_ipm
     # Subscribe a pseudo callback
     cb = Mock()
-    ipm.subscribe(cb, event_type=ipm.SUB_STATE, run=False)
+    ipm.target.subscribe(cb, event_type=ipm.target.SUB_STATE, run=False)
     # Change the target state
     ipm.target.state.put(2)
     assert cb.called
