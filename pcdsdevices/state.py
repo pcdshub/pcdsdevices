@@ -80,7 +80,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
                                         run=False)
             self._state_init_cbid = cbid
 
-    @required_for_connection
+    # @required_for_connection # This never made it into ophyd...
     def _state_init(self):
         if not self._state_initialized:
             self._valid_states = [state for state in self.states_list
