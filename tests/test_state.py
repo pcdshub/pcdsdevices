@@ -154,7 +154,7 @@ def test_staterecord_positioner():
     state = MyStates('A:PV', name='test')
     cb = Mock()
     state.subscribe(cb, event_type=state.SUB_READBACK, run=False)
-    state.readback.sim_put(1.23)
+    state.motor.user_readback.sim_put(1.23)
     assert cb.called
 
 
