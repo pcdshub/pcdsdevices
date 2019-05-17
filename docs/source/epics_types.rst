@@ -13,8 +13,10 @@ Common EPICS Devices
     EpicsMotor
     EventSequencer
     GateValve
+    GaugeSet
     IMS
     IPM
+    IonPump
     LODCM
     Motor
     Newport

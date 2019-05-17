@@ -479,6 +479,8 @@ def Motor(prefix, **kwargs):
     """
     # Available motor types
     motor_types = (('MMS', IMS),
+                   ('CLZ', IMS),
+                   ('CLF', IMS),
                    ('MMN', Newport),
                    ('MZM', PMC100),
                    ('MMB', BeckhoffAxis),
