@@ -2,7 +2,9 @@ import time
 import pcdsdevices.utils as key_press
 from ophyd import (Device, Component as Cpt, EpicsSignal, EpicsSignalRO,
                    FormattedComponent as FCpt)
-
+import logging
+import coloredlogs
+logger = logging.getLogger(__name__)
 
 class Acromag(Device):
     """
@@ -78,11 +80,21 @@ class Mesh(Device):
     write_sig = FCpt(EpicsSignal, '{self.prefix}' + ':ao1:' + '{self.sp_ch}')
     read_sig = FCpt(EpicsSignalRO, '{self.prefix}' + ':ai1:' + '{self.rb_ch}')
 
-    def __init__(self, prefix, sp_ch, rb_ch, scale=1000.0):
+    def __init__(self, prefix, sp_ch, rb_ch, scale=1000.0, verbose=False):
         self.scale = scale
         self.prefix = prefix
         self.sp_ch = sp_ch
         self.rb_ch = rb_ch
+        if verbose:
+            level = "INFO"
+            shown_logger = logging.getLogger(__name__)
+        else:
+            level = "WARNING"
+            shown_logger = logging.getLogger()
+        coloredlogs.install(level=level, logger=shown_logger,
+                        fmt = '[%(asctime)s] - %(levelname)s - %(message)s')
+        logger.info("Set logging level of %r to %r", shown_logger.name,
+                     level)
         super().__init__(prefix, name='mesh_raw')
 
     def get_raw_mesh_voltage(self):
@@ -99,7 +111,7 @@ class Mesh(Device):
         """
         return self.read_sig.get() * self.scale
 
-    def set_mesh_voltage(self, hv_sp, wait=True, do_print=True):
+    def set_mesh_voltage(self, hv_sp, wait=True):
         """
         Set mesh voltage to an absolute value in V
 
@@ -118,19 +130,17 @@ class Mesh(Device):
             Indicates whether or not the program should print it's
             setpoint and readback values
         """
-        if do_print:
-            print('Setting mesh voltage...')
+        logger.info('Setting mesh voltage...')
         hv_sp_raw = hv_sp / self.scale
         self.write_sig.put(hv_sp_raw)
         if wait:
             time.sleep(1.0)
         hv_rb_raw = self.read_sig.get()
         hv_rb = hv_rb_raw * self.scale
-        if do_print:
-            print('Power supply setpoint: %s V' % hv_sp)
-            print('Power supply readback: %s V' % hv_rb)
+        logger.info('Power supply setpoint: %s V' % hv_sp)
+        logger.info('Power supply readback: %s V' % hv_rb)
 
-    def set_rel_mesh_voltage(self, delta_hv_sp, wait=True, do_print=True):
+    def set_rel_mesh_voltage(self, delta_hv_sp, wait=True):
         """
         Increase/decrease the power supply setpoint by a specified amount
 
@@ -143,11 +153,9 @@ class Mesh(Device):
         """
         curr_hv_sp_raw = self.write_sig.get()
         curr_hv_sp = curr_hv_sp_raw * self.scale
-        if do_print:
-            print('Setting voltage...')
-            print('Previous power supply setpoint: %s V' % curr_hv_sp)
+        logger.info('Previous power supply setpoint: %s V' % curr_hv_sp)
         new_hv_sp = curr_hv_sp + delta_hv_sp
-        self.set_mesh_voltage(new_hv_sp, wait=wait, do_print=do_print)
+        self.set_mesh_voltage(new_hv_sp, wait=wait)
 
     def tweak_mesh_voltage(self, delta_hv_sp, test_flag=False):
         """
@@ -174,10 +182,8 @@ class Mesh(Device):
             if key in ('q', None):
                 return
             elif key == key_press.arrow_right:
-                self.set_rel_mesh_voltage(delta_hv_sp, wait=False,
-                                          do_print=False)
+                self.set_rel_mesh_voltage(delta_hv_sp, wait=False)
             elif key == key_press.arrow_left:
-                self.set_rel_mesh_voltage(-delta_hv_sp, wait=False,
-                                          do_print=False)
+                self.set_rel_mesh_voltage(-delta_hv_sp, wait=False)
             if test_flag:
                 return
