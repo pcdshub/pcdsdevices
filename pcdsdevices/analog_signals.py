@@ -2,14 +2,11 @@ import time
 import pcdsdevices.utils as key_press
 from ophyd import (Device, Component as Cpt, EpicsSignal, EpicsSignalRO,
                    FormattedComponent as FCpt)
-import logging
-import coloredlogs
-logger = logging.getLogger(__name__)
 
 
-class AO(Device):
+class Acromag(Device):
     """
-    Class for Acromag analog ouput signals
+    Class for Acromag analog input/ouput signals
 
     Parameters:
     -----------
@@ -20,6 +17,7 @@ class AO(Device):
         A name to prefer to the device
     """
     # Components for each channel
+    # Output channels
     ao1_0 = Cpt(EpicsSignal, ":ao1:0", kind='normal')
     ao1_1 = Cpt(EpicsSignal, ":ao1:1", kind='normal')
     ao1_2 = Cpt(EpicsSignal, ":ao1:2", kind='normal')
@@ -37,20 +35,7 @@ class AO(Device):
     ao1_14 = Cpt(EpicsSignal, ":ao1:14", kind='normal')
     ao1_15 = Cpt(EpicsSignal, ":ao1:15", kind='normal')
 
-
-class AI(Device):
-    """
-    Class for Acromag analog input signals
-
-    Parameters:
-    -----------
-    prefix : str
-        The Epics base of the acromag
-
-    name : str
-        A name to prefer to the device
-    """
-    # Components for each channel
+    # Input channels
     ai1_0 = Cpt(EpicsSignalRO, ":ai1:0", kind='normal')
     ai1_1 = Cpt(EpicsSignalRO, ":ai1:1", kind='normal')
     ai1_2 = Cpt(EpicsSignalRO, ":ai1:2", kind='normal')
@@ -95,22 +80,11 @@ class Mesh(Device):
     write_sig = FCpt(EpicsSignal, '{self.prefix}' + ':ao1:' + '{self.sp_ch}')
     read_sig = FCpt(EpicsSignalRO, '{self.prefix}' + ':ai1:' + '{self.rb_ch}')
 
-    def __init__(self, prefix, sp_ch, rb_ch, scale=1000.0, verbose=False):
+    def __init__(self, prefix, sp_ch, rb_ch, scale=1000.0):
         self.scale = scale
         self.prefix = prefix
         self.sp_ch = sp_ch
         self.rb_ch = rb_ch
-        if verbose:
-            level = "INFO"
-            shown_logger = logging.getLogger(__name__)
-        else:
-            level = "WARNING"
-            shown_logger = logging.getLogger()
-        coloredlogs.install(level=level, logger=shown_logger,
-                            fmt='[%(asctime)s] - %(levelname)s - '
-                                '%(message)s')
-        logger.info("Set logging level of %r to %r", shown_logger.name,
-                    level)
         super().__init__(prefix, name='mesh_raw')
 
     def get_raw_mesh_voltage(self):
@@ -146,15 +120,15 @@ class Mesh(Device):
             Indicates whether or not the program should print it's
             setpoint and readback values
         """
-        logger.info('Setting mesh voltage...')
+        self.log.info('Setting mesh voltage...')
         hv_sp_raw = hv_sp / self.scale
         self.write_sig.put(hv_sp_raw)
         if wait:
             time.sleep(1.0)
         hv_rb_raw = self.read_sig.get()
         hv_rb = hv_rb_raw * self.scale
-        logger.info('Power supply setpoint: %s V' % hv_sp)
-        logger.info('Power supply readback: %s V' % hv_rb)
+        self.log.info('Power supply setpoint: %s V' % hv_sp)
+        self.log.info('Power supply readback: %s V' % hv_rb)
 
     def set_rel_mesh_voltage(self, delta_hv_sp, wait=True):
         """
@@ -169,7 +143,7 @@ class Mesh(Device):
         """
         curr_hv_sp_raw = self.write_sig.get()
         curr_hv_sp = curr_hv_sp_raw * self.scale
-        logger.info('Previous power supply setpoint: %s V' % curr_hv_sp)
+        self.log.info('Previous power supply setpoint: %s V' % curr_hv_sp)
         new_hv_sp = curr_hv_sp + delta_hv_sp
         self.set_mesh_voltage(new_hv_sp, wait=wait)
 

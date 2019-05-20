@@ -1,6 +1,6 @@
 # flake8: NOQA
 from .attenuator import Attenuator
-from .analog_signals import AO, AI
+from .analog_signals import Acromag
 from .ccm import CCM
 from .areadetector.detectors import PCDSDetector
 from .epics_motor import (IMS, Newport, DelayNewport, PMC100, BeckhoffAxis,
