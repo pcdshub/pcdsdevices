@@ -6,9 +6,10 @@ import logging
 import coloredlogs
 logger = logging.getLogger(__name__)
 
-class Acromag(Device):
+
+class AO(Device):
     """
-    Class for Acromag analog input/ouput signals
+    Class for Acromag analog ouput signals
 
     Parameters:
     -----------
@@ -36,6 +37,20 @@ class Acromag(Device):
     ao1_14 = Cpt(EpicsSignal, ":ao1:14", kind='normal')
     ao1_15 = Cpt(EpicsSignal, ":ao1:15", kind='normal')
 
+
+class AI(Device):
+    """
+    Class for Acromag analog input signals
+
+    Parameters:
+    -----------
+    prefix : str
+        The Epics base of the acromag
+
+    name : str
+        A name to prefer to the device
+    """
+    # Components for each channel
     ai1_0 = Cpt(EpicsSignalRO, ":ai1:0", kind='normal')
     ai1_1 = Cpt(EpicsSignalRO, ":ai1:1", kind='normal')
     ai1_2 = Cpt(EpicsSignalRO, ":ai1:2", kind='normal')
@@ -92,9 +107,10 @@ class Mesh(Device):
             level = "WARNING"
             shown_logger = logging.getLogger()
         coloredlogs.install(level=level, logger=shown_logger,
-                        fmt = '[%(asctime)s] - %(levelname)s - %(message)s')
+                            fmt='[%(asctime)s] - %(levelname)s - '
+                                '%(message)s')
         logger.info("Set logging level of %r to %r", shown_logger.name,
-                     level)
+                    level)
         super().__init__(prefix, name='mesh_raw')
 
     def get_raw_mesh_voltage(self):

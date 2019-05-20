@@ -3,64 +3,73 @@ import pytest
 import pcdsdevices.utils as key_press
 
 from ophyd.sim import make_fake_device
-from pcdsdevices.analog_signals import Acromag, Mesh
+from pcdsdevices.analog_signals import AO, AI, Mesh
 
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
-def fake_acromag():
-    FakeAcromag = make_fake_device(Acromag)
-    acromag = FakeAcromag('Test:Acromag', name='test_acromag')
-    acromag.ao1_0.sim_put(1.0)
-    acromag.ao1_1.sim_put(1.0)
-    acromag.ao1_2.sim_put(1.0)
-    acromag.ao1_3.sim_put(1.0)
-    acromag.ao1_4.sim_put(1.0)
-    acromag.ao1_5.sim_put(1.0)
-    acromag.ao1_6.sim_put(1.0)
-    acromag.ao1_7.sim_put(1.0)
-    acromag.ao1_8.sim_put(1.0)
-    acromag.ao1_9.sim_put(1.0)
-    acromag.ao1_10.sim_put(1.0)
-    acromag.ao1_11.sim_put(1.0)
-    acromag.ao1_12.sim_put(1.0)
-    acromag.ao1_13.sim_put(1.0)
-    acromag.ao1_14.sim_put(1.0)
-    acromag.ao1_15.sim_put(1.0)
+def fake_ao():
+    FakeAO = make_fake_device(AO)
+    ao = FakeAO('Test:AO', name='test_ao')
+    ao.ao1_0.sim_put(1.0)
+    ao.ao1_1.sim_put(1.0)
+    ao.ao1_2.sim_put(1.0)
+    ao.ao1_3.sim_put(1.0)
+    ao.ao1_4.sim_put(1.0)
+    ao.ao1_5.sim_put(1.0)
+    ao.ao1_6.sim_put(1.0)
+    ao.ao1_7.sim_put(1.0)
+    ao.ao1_8.sim_put(1.0)
+    ao.ao1_9.sim_put(1.0)
+    ao.ao1_10.sim_put(1.0)
+    ao.ao1_11.sim_put(1.0)
+    ao.ao1_12.sim_put(1.0)
+    ao.ao1_13.sim_put(1.0)
+    ao.ao1_14.sim_put(1.0)
+    ao.ao1_15.sim_put(1.0)
+    return ao
 
-    acromag.ai1_0.sim_put(1.0)
-    acromag.ai1_1.sim_put(1.0)
-    acromag.ai1_2.sim_put(1.0)
-    acromag.ai1_3.sim_put(1.0)
-    acromag.ai1_4.sim_put(1.0)
-    acromag.ai1_5.sim_put(1.0)
-    acromag.ai1_6.sim_put(1.0)
-    acromag.ai1_7.sim_put(1.0)
-    acromag.ai1_8.sim_put(1.0)
-    acromag.ai1_9.sim_put(1.0)
-    acromag.ai1_10.sim_put(1.0)
-    acromag.ai1_11.sim_put(1.0)
-    acromag.ai1_12.sim_put(1.0)
-    acromag.ai1_13.sim_put(1.0)
-    acromag.ai1_14.sim_put(1.0)
-    acromag.ai1_15.sim_put(1.0)
-    return acromag
+
+@pytest.fixture(scope='function')
+def fake_ai():
+    FakeAI = make_fake_device(AI)
+    ai = FakeAI('Test:AI', name='test_ai')
+    ai.ai1_0.sim_put(1.0)
+    ai.ai1_1.sim_put(1.0)
+    ai.ai1_2.sim_put(1.0)
+    ai.ai1_3.sim_put(1.0)
+    ai.ai1_4.sim_put(1.0)
+    ai.ai1_5.sim_put(1.0)
+    ai.ai1_6.sim_put(1.0)
+    ai.ai1_7.sim_put(1.0)
+    ai.ai1_8.sim_put(1.0)
+    ai.ai1_9.sim_put(1.0)
+    ai.ai1_10.sim_put(1.0)
+    ai.ai1_11.sim_put(1.0)
+    ai.ai1_12.sim_put(1.0)
+    ai.ai1_13.sim_put(1.0)
+    ai.ai1_14.sim_put(1.0)
+    ai.ai1_15.sim_put(1.0)
+    return ai
 
 
 @pytest.fixture(scope='function')
 def fake_mesh():
     FakeMesh = make_fake_device(Mesh)
     # Using SP channel = 1, RB channel = 2, scale = 1000
-    mesh = FakeMesh('Test:Mesh', 1, 2)
+    mesh = FakeMesh('Test:Mesh', 1, 2, verbose=True)
     mesh.write_sig.sim_put(1.0)
     mesh.read_sig.sim_put(1.05)  # rb will be slightly off from sp
     return mesh
 
 
-def test_acromag_readback(fake_acromag):
-    assert fake_acromag.ao1_0.get() == 1.0
-    assert fake_acromag.ai1_13.get() == 1.0
+def test_ao_readback(fake_ao):
+    assert fake_ao.ao1_0.get() == 1.0
+
+
+def test_ai_readback(fake_ai):
+    assert fake_ai.ai1_13.get() == 1.0
 
 
 def test_get_raw_mesh_voltage(fake_mesh):
