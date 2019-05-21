@@ -2,6 +2,8 @@
 Module for LCLS's special motor records.
 """
 import logging
+import shutil
+import os
 from ophyd.device import Component as Cpt
 from ophyd.epics_motor import EpicsMotor
 from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
@@ -237,6 +239,17 @@ class PCDSMotorBase(EpicsMotorInterface):
         # Pass information to PositionerBase
         super()._pos_changed(timestamp=timestamp, old_value=old_value,
                              value=value, **kwargs)
+
+    def screen(self):
+        """
+        Opens Epics motor expert screen for resetting motor after e.g. stalling
+        """
+        executable = 'motor-expert-screen'
+        if shutil.which(executable) is None:
+            print('%s is not on path, we cannot start the screen' % executable)
+            return
+        arg = self.prefix
+        os.system(executable + ' ' + arg)
 
 
 class IMS(PCDSMotorBase):
@@ -479,6 +492,8 @@ def Motor(prefix, **kwargs):
     """
     # Available motor types
     motor_types = (('MMS', IMS),
+                   ('CLZ', IMS),
+                   ('CLF', IMS),
                    ('MMN', Newport),
                    ('MZM', PMC100),
                    ('MMB', BeckhoffAxis),
