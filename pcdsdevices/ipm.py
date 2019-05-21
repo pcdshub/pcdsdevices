@@ -49,7 +49,9 @@ class IPM(Device):
 
     def remove(self, moved_cb=None, timeout=None, wait=False):
         """Moves the target out of the beam. Diode never blocks."""
-        return self.target.remove(moved_cb=moved_cb, timeout=timeout, wait=wait)
+        return self.target.remove(moved_cb=moved_cb,
+                                  timeout=timeout,
+                                  wait=wait)
 
     remove.__doc__ += insert_remove
 
