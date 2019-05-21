@@ -62,6 +62,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
     SUB_STATE = 'state'
     _default_sub = SUB_STATE
+    _state_meta_sub = EpicsSignal.SUB_VALUE
 
     egu = 'state'
 
@@ -76,7 +77,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
             self._state_init()
         else:
             cbid = self.state.subscribe(self._late_state_init,
-                                        event_type=EpicsSignal.SUB_VALUE,
+                                        event_type=self._state_meta_sub,
                                         run=False)
             self._state_init_cbid = cbid
 
