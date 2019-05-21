@@ -97,8 +97,8 @@ class StatePositioner(Device, PositionerBase, MvInterface):
             self.unsubscribe(self._state_init_cbid)
             self._state_init_cbid = False
 
-    def _late_state_init(self, *args, enum_strs, **kwargs):
-        self.states_list = list(enum_strs)
+    def _late_state_init(self, *args, obj, **kwargs):
+        self.states_list = list(obj.enum_strs)
         self._state_init()
 
     def move(self, position, moved_cb=None, timeout=None, wait=False):
