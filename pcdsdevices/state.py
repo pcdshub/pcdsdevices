@@ -72,7 +72,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
         super().__init__(prefix, name=name, **kwargs)
         self._state_initialized = False
         self._state_init_cbid = False
-        if states_list:
+        if self.states_list:
             self._state_init()
         else:
             cbid = self.state.subscribe(self._late_state_init,
