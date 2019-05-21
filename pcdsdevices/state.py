@@ -99,6 +99,10 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
     def _late_state_init(self, *args, obj, **kwargs):
         self.states_list = list(obj.enum_strs)
+        # Unknown state is reserved for slot zero, automatically added later
+        # Removing and auto re-adding *feels* silly, but it was easy to do
+        if self._unknown:
+            self.states_list.pop(0)
         self._state_init()
 
     def move(self, position, moved_cb=None, timeout=None, wait=False):
