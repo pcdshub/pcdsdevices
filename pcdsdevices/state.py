@@ -1,5 +1,5 @@
 """
-Module to deoine positioners that move between discrete named states.
+Module to define positioners that move between discrete named states.
 """
 import logging
 import functools
