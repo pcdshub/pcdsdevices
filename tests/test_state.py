@@ -188,3 +188,18 @@ def test_subcls_warning():
         StatePositioner('prefix', name='name')
     with pytest.raises(TypeError):
         PVStatePositioner('prefix', name='name')
+
+
+class InOutSignal(Signal):
+    enum_strs = ('Unknown', 'IN', 'OUT')
+
+
+class NoStatesList(StatePositioner):
+    state = Cpt(InOutSignal)
+
+
+def test_auto_states():
+    logger.debug('test_auto_states')
+    states = NoStatesList(prefix='NOSTATE', name='no_state')
+    states.state.put(1)  # Force callback to run
+    assert states.states_list == ['Unknown', 'IN', 'OUT']
