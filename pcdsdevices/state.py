@@ -76,7 +76,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
             self._state_init()
         else:
             cbid = self.state.subscribe(self._late_state_init,
-                                        event_type=EpicsSignal.SUB_META,
+                                        event_type=EpicsSignal.SUB_VALUE,
                                         run=False)
             self._state_init_cbid = cbid
 
