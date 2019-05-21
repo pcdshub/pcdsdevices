@@ -12,11 +12,10 @@ import logging
 import functools
 
 from ophyd.device import Device, Component as Cpt
-from ophyd.signal import EpicsSignal, EpicsSignalRO
 from ophyd.sim import NullStatus
 from ophyd.status import wait as status_wait
 
-from .doc_stubs import basic_positioner_init, insert_remove
+from .doc_stubs import insert_remove
 from .inout import InOutRecordPositioner
 
 logger = logging.getLogger(__name__)

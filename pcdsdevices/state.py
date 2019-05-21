@@ -7,8 +7,8 @@ from enum import Enum
 
 from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait, SubscriptionStatus
-from ophyd.signal import EpicsSignal, EpicsSignalRO
-from ophyd.device import Device, Component as Cpt, FormattedComponent as FCpt
+from ophyd.signal import EpicsSignal
+from ophyd.device import Device, Component as Cpt
 
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
