@@ -10,6 +10,7 @@ from ophyd.utils import LimitError
 
 from .doc_stubs import basic_positioner_init
 from .mv_interface import FltMvInterface
+from .pseudopos import DelayBase
 
 
 logger = logging.getLogger(__name__)
@@ -36,6 +37,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         3. The disable puts field ``.DISP`` is added, along with ``enable`` and
         ``disable`` convenience methods. When ``.DISP`` is 1, puts to the motor
         record will be ignored, effectively disabling the interface.
+        4. The description field keeps track of the motors scientific use along
+           the beamline.
     """
     # Reimplemented because pyepics does not recognize when the limits have
     # been changed without a re-connection of the PV. Instead we trust the soft
@@ -46,6 +49,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     high_soft_limit = Cpt(EpicsSignal, ".HLM", kind='omitted')
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
+    # Description is valuable
+    description = Cpt(EpicsSignal, '.DESC', kind='normal')
 
     @property
     def low_limit(self):
@@ -166,40 +171,30 @@ class PCDSMotorBase(EpicsMotorInterface):
     # paused and ready to resume on Go 'Paused', and to resume a move 'Go'.
     motor_spg = Cpt(EpicsSignal, ".SPG", kind='omitted')
 
-    def stop(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.stage_sigs[self.motor_spg] = 2
+
+    def spg_stop(self):
         """
         Stops the motor.
 
-        After which the motor
-        must be set back to 'go' via <motor>.go()
-        in order to move again.
+        After which the motor must be set back to 'go' via <motor>.spg_go() in
+        order to move again.
         """
         return self.motor_spg.put(value='Stop')
 
-    def pause(self):
+    def spg_pause(self):
         """
         Pauses a move.
 
-        Move will resume if <motor>.resume()
-        or <motor>.go() are called.
+        Move will resume if <motor>.go() is called.
         """
         return self.motor_spg.put(value='Pause')
 
-    def resume(self):
+    def spg_go(self):
         """
         Resumes paused movement.
-
-        Sets motor ready to move or resumes a paused move
-        (same as <motor>.go()).
-        """
-        return self.go()
-
-    def go(self):
-        """
-        Resumes paused movement.
-
-        Sets motor ready to move or resumes a paused move
-        (same as <motor>.resume()).
         """
         return self.motor_spg.put(value='Go')
 
@@ -396,6 +391,11 @@ class Newport(PCDSMotorBase):
                                   "motors")
 
 
+class DelayNewport(DelayBase):
+    __doc__ = DelayBase.__doc__
+    motor = Cpt(Newport, '')
+
+
 class PMC100(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record PMC100 motors
@@ -422,7 +422,7 @@ class BeckhoffAxis(EpicsMotorInterface):
     """
     __doc__ += basic_positioner_init
 
-    cmd_err_reset = Cpt(EpicsSignal, '-ErrRst', kind='omitted')
+    cmd_err_reset = Cpt(EpicsSignal, ':ErrRst', kind='omitted')
 
     def clear_error(self):
         """
@@ -446,3 +446,52 @@ class MotorDisabledError(Exception):
     Error that indicates that we are not allowed to move.
     """
     pass
+
+
+def Motor(prefix, **kwargs):
+    """
+    Load a PCDSMotor with the correct class based on prefix
+
+    The prefix is searched for one of the component keys in the table below. If
+    none of these are found, by default an ``ophyd.EpicsMotor`` will be used.
+
+    +---------------+-------------------------+
+    | Component Key + Python Class            |
+    +===============+=========================+
+    | MMS           | :class:`.IMS`           |
+    +---------------+-------------------------+
+    | MMN           | :class:`.Newport`       |
+    +---------------+-------------------------+
+    | MZM           | :class:`.PMC100`        |
+    +---------------+-------------------------+
+    | MMB           | :class:`.BeckhoffAxis`  |
+    +---------------+-------------------------+
+    | PIC           | :class:`.PCDSMotorBase` |
+    +---------------+-------------------------+
+
+    Parameters
+    ----------
+    prefix: str
+        Prefix of motor
+
+    kwargs:
+        Passed to class constructor
+    """
+    # Available motor types
+    motor_types = (('MMS', IMS),
+                   ('CLZ', IMS),
+                   ('CLF', IMS),
+                   ('MMN', Newport),
+                   ('MZM', PMC100),
+                   ('MMB', BeckhoffAxis),
+                   ('PIC', PCDSMotorBase))
+    # Search for component type in prefix
+    for cpt_abbrev, _type in motor_types:
+        if f':{cpt_abbrev}:' in prefix:
+            logger.debug("Found %r in prefix %r, loading %r",
+                         cpt_abbrev, prefix, _type)
+            return _type(prefix, **kwargs)
+    # Default to ophyd.EpicsMotor
+    logger.warning("Unable to find type of motor based on component. "
+                   "Using 'ophyd.EpicsMotor'")
+    return EpicsMotor(prefix, **kwargs)

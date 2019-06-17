@@ -6,19 +6,12 @@ from unittest.mock import Mock
 
 from pcdsdevices.lodcm import LODCM, YagLom, Dectris, Diode, Foil
 
-from conftest import HotfixFakeEpicsSignal
-
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def fake_lodcm():
     FakeLODCM = make_fake_device(LODCM)
-    FakeLODCM.state.cls = HotfixFakeEpicsSignal
-    FakeLODCM.yag.cls.state.cls = HotfixFakeEpicsSignal
-    FakeLODCM.dectris.cls.state.cls = HotfixFakeEpicsSignal
-    FakeLODCM.diode.cls.state.cls = HotfixFakeEpicsSignal
-    FakeLODCM.foil.cls.state.cls = HotfixFakeEpicsSignal
     lodcm = FakeLODCM('FAKE:LOM', name='fake_lom')
     lodcm.state.sim_put(1)
     lodcm.state.sim_set_enum_strs(['Unknown'] + LODCM.states_list)
@@ -41,16 +34,16 @@ def test_lodcm_destination(fake_lodcm):
     for d in dest:
         assert isinstance(d, str)
 
-    lodcm.state.put('OUT')
+    lodcm.move('OUT')
     assert len(lodcm.destination) == 1
-    lodcm.state.put('C')
+    lodcm.move('C')
     assert len(lodcm.destination) == 2
     # Block the mono line
-    lodcm.yag.state.put('IN')
+    lodcm.yag.move('IN')
     assert len(lodcm.destination) == 1
-    lodcm.state.put('Si')
+    lodcm.move('Si')
     assert len(lodcm.destination) == 0
-    lodcm.yag.state.put('OUT')
+    lodcm.yag.move('OUT')
     assert len(lodcm.destination) == 1
 
     # Unknown state

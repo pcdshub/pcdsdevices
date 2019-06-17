@@ -24,6 +24,9 @@ class XFLS(InOutRecordPositioner):
     in_states = ['LENS1', 'LENS2', 'LENS3']
     _lens_transmission = 0.8
 
+    # QIcon for UX
+    _icon = 'fa.ellipsis-v'
+
     def __init__(self, prefix, *, name, **kwargs):
         # Set a default transmission, but allow easy subclass overrides
         for state in self.in_states:
@@ -78,7 +81,7 @@ class LensStack(PseudoPositioner):
     def inverse(self, real_pos):
         return self.PseudoPosition(calib_z=self.z.position)
 
-    def align(self, z_position=None):
+    def align(self, z_position=None, edge_offset=20):
         """
         Generates equations for aligning the beam based on user input.
 
@@ -91,10 +94,10 @@ class LensStack(PseudoPositioner):
         and can be used with the pseudo positioner on the z axis.
         If called with an integer, automatically moves the z motor.
         """
-        self.z.move(self.z.limits[0])
+        self.z.move(self.z.limits[0] + edge_offset)
         self.tweak()
         pos = [self.x.position, self.y.position, self.z.position]
-        self.z.move(self.z.limits[1])
+        self.z.move(self.z.limits[1] - edge_offset)
         print()
         self.tweak()
         pos.extend([self.x.position, self.y.position, self.z.position])

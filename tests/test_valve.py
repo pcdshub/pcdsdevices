@@ -6,18 +6,15 @@ from ophyd.sim import make_fake_device
 
 from pcdsdevices.valve import GateValve, PPSStopper, Stopper, InterlockError
 
-from conftest import HotfixFakeEpicsSignal
-
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def fake_pps():
     FakePPS = make_fake_device(PPSStopper)
-    FakePPS.state.cls = HotfixFakeEpicsSignal
     pps = FakePPS("PPS:H0:SUM", name="test_pps")
     pps.state.sim_set_enum_strs(['Unknown', 'IN', 'OUT'])
-    pps.state.put('OUT')
+    pps.state.sim_put('OUT')
     return pps
 
 
@@ -32,18 +29,18 @@ def fake_stopper():
 def fake_valve():
     FakeValve = make_fake_device(GateValve)
     vlv = FakeValve("VGC:TST:", name="test_valve")
-    vlv.interlock.sim_put(0)
+    vlv.interlock.sim_put(1)
     return vlv
 
 
 def test_pps_states(fake_pps):
     pps = fake_pps
     # Removed
-    pps.state.put("OUT")
+    pps.state.sim_put("OUT")
     assert pps.removed
     assert not pps.inserted
     # Inserted
-    pps.state.put("IN")
+    pps.state.sim_put("IN")
     assert pps.inserted
     assert not pps.removed
 
@@ -52,7 +49,7 @@ def test_pps_motion(fake_pps):
     pps = fake_pps
     with pytest.raises(PermissionError):
         pps.insert()
-    pps.state.put("IN")
+    pps.state.sim_put("IN")
     with pytest.raises(PermissionError):
         pps.remove()
 
@@ -63,7 +60,7 @@ def test_pps_subscriptions(fake_pps):
     cb = Mock()
     pps.subscribe(cb, event_type=pps.SUB_STATE, run=False)
     # Change readback state
-    pps.state.put(4)
+    pps.state.sim_put(4)
     assert cb.called
 
 
@@ -115,7 +112,7 @@ def test_valve_motion(fake_valve):
     # Check write PV
     assert valve.command.value == valve.commands.open_valve.value
     # Raises interlock
-    valve.interlock.sim_put(1)
+    valve.interlock.sim_put(0)
     assert valve.interlocked
     with pytest.raises(InterlockError):
         valve.open()

@@ -33,3 +33,5 @@ class IPM(InOutRecordPositioner):
 
     # Assume that having any target in gives transmission 0.8
     _transmission = {st: 0.8 for st in in_states}
+    # QIcon for UX
+    _icon = 'ei.screenshot'

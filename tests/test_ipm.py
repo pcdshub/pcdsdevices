@@ -7,16 +7,12 @@ from unittest.mock import Mock
 from pcdsdevices.inout import InOutRecordPositioner
 from pcdsdevices.ipm import IPM
 
-from conftest import HotfixFakeEpicsSignal
-
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def fake_ipm():
     FakeIPM = make_fake_device(IPM)
-    FakeIPM.state.cls = HotfixFakeEpicsSignal
-    FakeIPM.diode.cls.state.cls = HotfixFakeEpicsSignal
     ipm = FakeIPM("Test:My:IPM", name='test_ipm')
     ipm.diode.state.sim_put(0)
     ipm.diode.state.sim_set_enum_strs(['Unknown'] +
