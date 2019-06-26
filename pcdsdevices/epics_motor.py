@@ -422,7 +422,8 @@ class BeckhoffAxis(EpicsMotorInterface):
     """
     __doc__ += basic_positioner_init
 
-    cmd_err_reset = Cpt(EpicsSignal, ':ErrRst', kind='omitted')
+    status = Cpt(EpicsSignalRO, '-MsgTxt', kind='normal', string=True)
+    cmd_err_reset = Cpt(EpicsSignal, '-ErrRst', kind='omitted')
 
     def clear_error(self):
         """
