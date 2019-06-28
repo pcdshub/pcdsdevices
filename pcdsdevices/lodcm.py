@@ -11,15 +11,21 @@ no readback into the device's alignment. This is intended for a future update.
 import logging
 import functools
 
-from ophyd import Component as Cpt, FormattedComponent as FCpt
-from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.device import Device, Component as Cpt
 from ophyd.sim import NullStatus
 from ophyd.status import wait as status_wait
 
-from .doc_stubs import basic_positioner_init, insert_remove
+from .doc_stubs import insert_remove
 from .inout import InOutRecordPositioner
 
 logger = logging.getLogger(__name__)
+
+
+class H1N(InOutRecordPositioner):
+    states_list = ['OUT', 'C', 'Si']
+    in_states = ['C', 'Si']
+    _states_alias = {'C': 'IN'}
+    _transmission = {'C': 0.8, 'Si': 0.7}
 
 
 class YagLom(InOutRecordPositioner):
@@ -52,7 +58,7 @@ class Foil(InOutRecordPositioner):
         super().__init__(prefix, *args, **kwargs)
 
 
-class LODCM(InOutRecordPositioner):
+class LODCM(Device):
     """
     Large Offset Dual Crystal Monochromator
 
@@ -62,31 +68,27 @@ class LODCM(InOutRecordPositioner):
     the mono line, onto both, or onto neither.
 
     This positioner only considers the h1n and diagnostic motors.
-%s
+
+    Parameters
+    ----------
+    prefix: ``str``
+        The PV prefix
+
+    name: ``str``, required keyword
+        The name of this device
+
     main_line: ``str``, optional
         Name of the main, no-bounce beamline.
 
     mono_line: ``str``, optional
         Name of the mono, double-bounce beamline.
     """
-    __doc__ = __doc__ % basic_positioner_init
-
-    state = Cpt(EpicsSignal, ':H1N', write_pv=':H1N:GO', kind='hinted')
-    readback = FCpt(EpicsSignalRO, '{self.prefix}:H1N:{self._readback}',
-                    kind='normal')
-
+    h1n = Cpt(H1N, ':H1N', kind='hinted')
     yag = Cpt(YagLom, ":DV", kind='omitted')
     dectris = Cpt(Dectris, ":DH", kind='omitted')
     diode = Cpt(Diode, ":DIODE", kind='omitted')
     foil = Cpt(Foil, ":FOIL", kind='omitted')
 
-    states_list = ['OUT', 'C', 'Si']
-    in_states = ['C', 'Si']
-
-    # TBH these are guessed. Please replace if you know better. These don't
-    # need to be 100% accurate, but they should reflect a reasonable reduction
-    # in transmission.
-    _transmission = {'C': 0.8, 'Si': 0.7}
     # QIcon for UX
     _icon = 'fa.share-alt-square'
 
@@ -95,6 +97,25 @@ class LODCM(InOutRecordPositioner):
         super().__init__(prefix, name=name, **kwargs)
         self.main_line = main_line
         self.mono_line = mono_line
+
+    @property
+    def inserted(self):
+        """Returns ``True`` if either h1n crystal is in."""
+        return self.h1n.inserted
+
+    @property
+    def removed(self):
+        """Returns ``True`` if neither h1n crystal is in."""
+        return self.h1n.removed
+
+    def remove(self, moved_cb=None, timeout=None, wait=False):
+        """Moves the h1n crystal out of the beam."""
+        return self.h1n.remove(moved_cb=moved_cb, timeout=timeout, wait=wait)
+
+    @property
+    def transmission(self):
+        """Returns h1n's transmission value"""
+        return self.h1n.transmission
 
     @property
     def branches(self):
@@ -119,11 +140,11 @@ class LODCM(InOutRecordPositioner):
             ``self.main_line`` if the light continues on the main line.
             ``self.mono_line`` if the light continues on the mono line.
         """
-        if self.position == 'OUT':
+        if self.h1n.position == 'OUT':
             dest = [self.main_line]
-        elif self.position == 'Si':
+        elif self.h1n.position == 'Si':
             dest = [self.mono_line]
-        elif self.position == 'C':
+        elif self.h1n.position == 'C':
             dest = [self.main_line, self.mono_line]
         else:
             dest = []

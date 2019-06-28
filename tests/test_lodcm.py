@@ -4,7 +4,7 @@ import pytest
 from ophyd.sim import make_fake_device
 from unittest.mock import Mock
 
-from pcdsdevices.lodcm import LODCM, YagLom, Dectris, Diode, Foil
+from pcdsdevices.lodcm import LODCM, H1N, YagLom, Dectris, Diode, Foil
 
 logger = logging.getLogger(__name__)
 
@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 def fake_lodcm():
     FakeLODCM = make_fake_device(LODCM)
     lodcm = FakeLODCM('FAKE:LOM', name='fake_lom')
-    lodcm.state.sim_put(1)
-    lodcm.state.sim_set_enum_strs(['Unknown'] + LODCM.states_list)
+    lodcm.h1n.state.sim_put(1)
+    lodcm.h1n.state.sim_set_enum_strs(['Unknown'] + H1N.states_list)
     lodcm.yag.state.sim_put(1)
     lodcm.yag.state.sim_set_enum_strs(['Unknown'] + YagLom.states_list)
     lodcm.dectris.state.sim_put(1)
@@ -34,20 +34,20 @@ def test_lodcm_destination(fake_lodcm):
     for d in dest:
         assert isinstance(d, str)
 
-    lodcm.move('OUT')
+    lodcm.h1n.move('OUT')
     assert len(lodcm.destination) == 1
-    lodcm.move('C')
+    lodcm.h1n.move('C')
     assert len(lodcm.destination) == 2
     # Block the mono line
     lodcm.yag.move('IN')
     assert len(lodcm.destination) == 1
-    lodcm.move('Si')
+    lodcm.h1n.move('Si')
     assert len(lodcm.destination) == 0
     lodcm.yag.move('OUT')
     assert len(lodcm.destination) == 1
 
     # Unknown state
-    lodcm.state.sim_put('Unknown')
+    lodcm.h1n.state.sim_put('Unknown')
     assert len(lodcm.destination) == 0
 
 

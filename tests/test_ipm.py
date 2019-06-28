@@ -5,7 +5,7 @@ from ophyd.sim import make_fake_device
 from unittest.mock import Mock
 
 from pcdsdevices.inout import InOutRecordPositioner
-from pcdsdevices.ipm import IPM
+from pcdsdevices.ipm import IPM, IPMTarget
 
 logger = logging.getLogger(__name__)
 
@@ -17,18 +17,18 @@ def fake_ipm():
     ipm.diode.state.sim_put(0)
     ipm.diode.state.sim_set_enum_strs(['Unknown'] +
                                       InOutRecordPositioner.states_list)
-    ipm.state.sim_put(0)
-    ipm.state.sim_set_enum_strs(['Unknown'] + IPM.states_list)
+    ipm.target.state.sim_put(0)
+    ipm.target.state.sim_set_enum_strs(['Unknown'] + IPMTarget.states_list)
     return ipm
 
 
 def test_ipm_states(fake_ipm):
     logger.debug('test_ipm_states')
     ipm = fake_ipm
-    ipm.state.put(5)
+    ipm.target.state.put(5)
     assert ipm.removed
     assert not ipm.inserted
-    ipm.state.put(1)
+    ipm.target.state.put(1)
     assert not ipm.removed
     assert ipm.inserted
 
@@ -38,10 +38,10 @@ def test_ipm_motion(fake_ipm):
     ipm = fake_ipm
     # Remove IPM Targets
     ipm.remove(wait=True, timeout=1.0)
-    assert ipm.state.get() == 5
+    assert ipm.target.state.get() == 5
     # Insert IPM Targets
-    ipm.set(1)
-    assert ipm.state.get() == 1
+    ipm.target.set(1)
+    assert ipm.target.state.get() == 1
     # Move diodes in
     ipm.diode.insert()
     assert ipm.diode.state.get() == 1
@@ -55,7 +55,7 @@ def test_ipm_subscriptions(fake_ipm):
     ipm = fake_ipm
     # Subscribe a pseudo callback
     cb = Mock()
-    ipm.subscribe(cb, event_type=ipm.SUB_STATE, run=False)
+    ipm.target.subscribe(cb, event_type=ipm.target.SUB_STATE, run=False)
     # Change the target state
-    ipm.state.put(2)
+    ipm.target.state.put(2)
     assert cb.called
