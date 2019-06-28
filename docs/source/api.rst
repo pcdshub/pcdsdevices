@@ -4,6 +4,7 @@ Full API
 .. autosummary::
    :toctree: generated
 
+   ~pcdsdevices.analog_signals
    ~pcdsdevices.attenuator
    ~pcdsdevices.beam_stats
    ~pcdsdevices.ccm
@@ -22,8 +23,10 @@ Full API
    ~pcdsdevices.pseudopos
    ~pcdsdevices.pulsepicker
    ~pcdsdevices.pump
+   ~pcdsdevices.sequencer
    ~pcdsdevices.signal
    ~pcdsdevices.sim
    ~pcdsdevices.slits
    ~pcdsdevices.state
+   ~pcdsdevices.utils
    ~pcdsdevices.valve

@@ -39,15 +39,15 @@ script:
   - flake8 pcdsdevices/*.py
   - flake8 tests/*.py
   - set -e
-  #Build docs
+  # Build docs
+  - conda install --file docs-requirements.txt
+  - pip install m2r
+  - pushd docs
+  - make html
+  - popd
+  # Upload docs
   - |
     if [[ -n "$DOCTR_DEPLOY_ENCRYPTION_KEY_PCDSHUB_PCDSDEVICES" && $BUILD_DOCS ]]; then
-      conda install --file docs-requirements.txt
-      pip install m2r
-      pushd docs
-      make html
-      popd
-      #Publish docs.
       doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages
     fi
 

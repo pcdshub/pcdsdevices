@@ -2,7 +2,7 @@
 from .attenuator import Attenuator
 from .analog_signals import Acromag
 from .ccm import CCM
-from .areadetector.detectors import PCDSDetector
+from .areadetector.detectors import PCDSAreaDetector
 from .epics_motor import (IMS, Newport, DelayNewport, PMC100, BeckhoffAxis,
                           EpicsMotor, Motor)
 from .evr import Trigger
