@@ -11,7 +11,7 @@ from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
 
 from .inout import InOutPositioner
-from .mv_interface import FltMvInterface
+from .interface import FltMvInterface
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12

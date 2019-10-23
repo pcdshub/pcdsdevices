@@ -9,7 +9,7 @@ from ophyd.status import DeviceStatus, SubscriptionStatus, wait as status_wait
 from ophyd.utils import LimitError
 
 from .doc_stubs import basic_positioner_init
-from .mv_interface import FltMvInterface
+from .interface import FltMvInterface
 from .pseudopos import DelayBase
 
 

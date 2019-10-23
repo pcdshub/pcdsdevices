@@ -14,7 +14,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
 
 from .doc_stubs import basic_positioner_init
 from .inout import InOutRecordPositioner
-from .mv_interface import FltMvInterface
+from .interface import FltMvInterface
 
 logger = logging.getLogger(__name__)
 

@@ -8,7 +8,7 @@ import signal
 
 import pytest
 
-from pcdsdevices.mv_interface import setup_preset_paths
+from pcdsdevices.interface import setup_preset_paths
 from pcdsdevices.sim import FastMotor, SlowMotor
 
 logger = logging.getLogger(__name__)

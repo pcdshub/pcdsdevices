@@ -1,7 +1,7 @@
 =========
 Shortcuts
 =========
-.. currentmodule:: pcdsdevices.mv_interface
+.. currentmodule:: pcdsdevices.interface
 
 A number of spec-like shortcuts are included in most ``pcdsdevices`` classes.
 These shortcuts are geared for the ``ipython`` command-line experience, and

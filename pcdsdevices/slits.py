@@ -20,7 +20,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
                    FormattedComponent as FCpt)
 from ophyd.sim import SignalRO
 
-from .mv_interface import MvInterface, FltMvInterface
+from .interface import MvInterface, FltMvInterface
 
 logger = logging.getLogger(__name__)
 
