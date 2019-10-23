@@ -50,15 +50,11 @@ class BaseInterface:
     _filtered_dir_cache = None
 
     def __init_subclass__(self):
-        self._tab_blacklist = []
-        self._tab_whitelist = []
+        string_whitelist = []
         for cls in self.mro():
-            if hasattr(cls, 'tab_blacklist'):
-                self._tab_blacklist.extend(re.compile(rx)
-                                           for rx in cls.tab_blacklist)
-            if hasattr(cls, 'tab_whitelist'):
-                self._tab_whitelist.extend(re.compile(rx)
-                                           for rx in cls.tab_whitelist)
+            if hasattr(cls, "tab_whitelist"):
+                string_whitelist.extend(cls.tab_whitelist)
+        self._tab_regex = re.compile("|".join(string_whitelist))
 
     def __dir__(self):
         if get_engineering_mode():
@@ -74,18 +70,7 @@ class BaseInterface:
         filtered = []
         normal_dir = super().__dir__()
         for elem in normal_dir:
-            blacklisted = False
-            whitelisted = False
-            for whitelist_regex in self._tab_whitelist:
-                if whitelist_regex.match(elem):
-                    whitelisted = True
-                    break
-            if not whitelisted:
-                for blacklist_regex in self._tab_blacklist:
-                    if blacklist_regex.match(elem):
-                        blacklisted = True
-                        break
-            if not blacklisted:
+            if self._tab_regex.fullmatch(elem):
                 filtered.append(elem)
         return filtered
 
@@ -118,6 +103,8 @@ class MvInterface(BaseInterface):
     would otherwise be disruptive to running scans and writing higher-level
     applications.
     """
+    tab_whitelist = ["mv", "wm", "camonitor", "wm_update"]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._mov_ev = Event()
@@ -209,6 +196,8 @@ class FltMvInterface(MvInterface):
     presets: `Presets`
         Manager for preset positions.
     """
+    tab_whitelist = ["mvr", "umv", "umvr", "mv_ginput", "tweak", "presets"]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.presets = Presets(self)
