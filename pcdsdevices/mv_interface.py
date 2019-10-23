@@ -35,31 +35,33 @@ class BaseInterface:
     tab_whitelist: list of string regex to include even if blacklisted by a
                    parent class
     """
-    tab_blacklist = ["OphydAttrList", "SUB_*", "_*", "actuate",
+    tab_blacklist = ["OphydAttrList", "SUB_.*", "actuate",
                      "actuate_value", "clear_sub", "done", "done_value",
                      "event_types", "get_device_tuple",
                      "get_instantiated_signals", "hints", "kind", "root",
                      "set", "setpoint", "stop_signal", "stop_value",
                      "subscribe", "subscriptions", "trigger",
                      "trigger_signals", "unsubscribe", "unsubscribe_all"]
-    tab_whitelist = ["__*__"]
+    tab_whitelist = []
     _filtered_dir_cache = None
 
     def __init_subclass__(self):
         self._tab_blacklist = []
         self._tab_whitelist = []
         for cls in self.mro():
-            self._tab_blacklist.extend(re.compile(rx)
-                                       for rx in cls.tab_blacklist)
-            self._tab_whitelist.extend(re.compile(rx)
-                                       for rx in cls.tab_whitelist)
+            if hasattr(cls, 'tab_blacklist'):
+                self._tab_blacklist.extend(re.compile(rx)
+                                           for rx in cls.tab_blacklist)
+            if hasattr(cls, 'tab_whitelist'):
+                self._tab_whitelist.extend(re.compile(rx)
+                                           for rx in cls.tab_whitelist)
 
     def __dir__(self):
         if get_engineering_mode():
             return super().__dir__()
-        else if self._filtered_dir_cache is None:
+        elif self._filtered_dir_cache is None:
             self._init_filtered_dir_cache()
-        return self._dir_cache
+        return self._filtered_dir_cache
 
     def _init_filtered_dir_cache(self):
         self._filtered_dir_cache = self._get_filtered_tab_dir()
@@ -76,7 +78,7 @@ class BaseInterface:
                     break
             if not whitelisted:
                 for blacklist_regex in self._tab_blacklist:
-                    if blacklist_regex.match(elem)
+                    if blacklist_regex.match(elem):
                         blacklisted = True
                         break
             if not blacklisted:
