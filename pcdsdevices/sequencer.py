@@ -254,7 +254,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
 
         # Create our status
         def done(*args, value=None, old_value=None, **kwargs):
-            return value == 2 and old_value == 0
+            return value == 0 and old_value == 2
 
         # Create our status object
         return SubscriptionStatus(self.play_status, done, run=True)
