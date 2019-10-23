@@ -22,27 +22,31 @@ from . import utils as util
 logger = logging.getLogger(__name__)
 engineering_mode = True
 
+OphydObject_whitelist = ["name", "connected", "check_value", "log"]
+BlueskyInterface_whitelist = ["trigger", "read", "describe", "stage", "unstage"]
+Device_whitelist = ["read_attrs", "configuration_attrs", "summary",
+                    "wait_for_connection", "stop", "get", "configure"]
+Signal_whitelist = ["value", "put"]
+Positioner_whitelist = ["settle_time", "timeout", "egu", "limits", "move",
+                        "position", "moving"]
+
 
 class BaseInterface:
     """
     Interface layer to attach to any Device for SLAC features.
 
-    This class defines an API and some defaults for blacklisting tab-completion
+    This class defines an API and some defaults for filtering tab-completion
     results for new users to avoid confusion. The API involves setting the
-    following class variables on any subclasses:
+    tab_whitelist attribute on any subclass of BaseInterface. When in
+    non-engineering mode, only elements on the whitelists will be displayed to
+    the user.
 
-    tab_blacklist: list of string regex to omit from tab complete
-    tab_whitelist: list of string regex to include even if blacklisted by a
-                   parent class
+    tab_whitelist: list of string regex to show in autocomplete for
+                   non-engineering mode
     """
-    tab_blacklist = ["OphydAttrList", "SUB_.*", "actuate",
-                     "actuate_value", "clear_sub", "done", "done_value",
-                     "event_types", "get_device_tuple",
-                     "get_instantiated_signals", "hints", "kind", "root",
-                     "set", "setpoint", "stop_signal", "stop_value",
-                     "subscribe", "subscriptions", "trigger",
-                     "trigger_signals", "unsubscribe", "unsubscribe_all"]
-    tab_whitelist = []
+    tab_whitelist = (OphydObject_whitelist + BlueskyInterface_whitelist +
+                     Device_whitelist + Signal_whitelist +
+                     Positioner_whitelist)
     _filtered_dir_cache = None
 
     def __init_subclass__(self):
