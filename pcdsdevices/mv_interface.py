@@ -23,7 +23,8 @@ logger = logging.getLogger(__name__)
 engineering_mode = True
 
 OphydObject_whitelist = ["name", "connected", "check_value", "log"]
-BlueskyInterface_whitelist = ["trigger", "read", "describe", "stage", "unstage"]
+BlueskyInterface_whitelist = ["trigger", "read", "describe", "stage",
+                              "unstage"]
 Device_whitelist = ["read_attrs", "configuration_attrs", "summary",
                     "wait_for_connection", "stop", "get", "configure"]
 Signal_whitelist = ["value", "put"]
