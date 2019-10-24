@@ -202,7 +202,8 @@ class FltMvInterface(MvInterface):
     presets: `Presets`
         Manager for preset positions.
     """
-    tab_whitelist = ["mvr", "umv", "umvr", "mv_ginput", "tweak", "presets"]
+    tab_whitelist = ["mvr", "umv", "umvr", "mv_ginput", "tweak",
+                     "presets", "mv_.*", "wm_.*", "umv_.*"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
