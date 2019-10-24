@@ -85,10 +85,16 @@ class BaseInterface:
 
 def set_engineering_mode(expert):
     """
-    Switches between expert mode and user mode for BaseInterface features.
+    Switches between expert mode and user mode for `BaseInterface` features.
 
-    Current features are:
+    Current features:
        - Autocomplete filtering
+
+    Parameters
+    ----------
+    expert: bool
+        Set to ``True`` to enable expert mode, or ``False`` to disable it.
+        ``True`` is the starting value.
     """
     global engineering_mode
     engineering_mode = bool(expert)
@@ -96,7 +102,12 @@ def set_engineering_mode(expert):
 
 def get_engineering_mode():
     """
-    Returns current engineering mode. See `set_engineering_mode`.
+    Get the last value set by `set_engineering_mode`.
+
+    Returns
+    -------
+    expert: bool
+        The current engineering mode. See `set_engineering_mode`.
     """
     return engineering_mode
 
