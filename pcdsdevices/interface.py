@@ -205,9 +205,11 @@ class FltMvInterface(MvInterface):
     tab_whitelist = ["mvr", "umv", "umvr", "mv_ginput", "tweak",
                      "presets", "mv_.*", "wm_.*", "umv_.*"]
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.presets = Presets(self)
+    @property
+    def presets(self):
+        if not hasattr(self, "_presets"):
+            self._presets = Presets(self)
+        return self._presets
 
     def mvr(self, delta, timeout=None, wait=False):
         """
