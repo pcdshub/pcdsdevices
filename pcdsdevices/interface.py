@@ -15,6 +15,7 @@ from weakref import WeakSet
 
 import yaml
 from bluesky.utils import ProgressBar
+from ophyd.device import Kind
 from ophyd.status import wait as status_wait
 
 from . import utils as util
@@ -55,6 +56,10 @@ class BaseInterface:
         for cls in self.mro():
             if hasattr(cls, "tab_whitelist"):
                 string_whitelist.extend(cls.tab_whitelist)
+            if getattr(cls, "tab_component_names", False):
+                for cpt_name in cls.component_names:
+                    if getattr(cls, cpt_name).kind != Kind.omitted:
+                        string_whitelist.append(cpt_name)
         self._tab_regex = re.compile("|".join(string_whitelist))
 
     def __dir__(self):
