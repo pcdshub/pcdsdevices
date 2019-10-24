@@ -75,12 +75,9 @@ class BaseInterface:
         self._filtered_dir_cache = self._get_filtered_tab_dir()
 
     def _get_filtered_tab_dir(self):
-        filtered = []
-        normal_dir = super().__dir__()
-        for elem in normal_dir:
-            if self._tab_regex.fullmatch(elem):
-                filtered.append(elem)
-        return filtered
+        return [elem
+                for elem in super().__dir__()
+                if self._tab_regex.fullmatch(elem)]
 
 
 def set_engineering_mode(expert):
