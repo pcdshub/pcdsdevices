@@ -7,11 +7,12 @@ from scipy.constants import speed_of_light
 
 from .sim import FastMotor
 from .utils import convert_unit
+from .interface import FltMvInterface
 
 logger = logging.getLogger(__name__)
 
 
-class SyncAxesBase(PseudoPositioner):
+class SyncAxesBase(PseudoPositioner, FltMvInterface):
     """
     Synchronized Axes.
 
@@ -95,7 +96,7 @@ class SyncAxesBase(PseudoPositioner):
         return self.PseudoPosition(pseudo=self.calc_combined(real_pos))
 
 
-class DelayBase(PseudoPositioner):
+class DelayBase(PseudoPositioner, FltMvInterface):
     """
     Laser delay stage to rescale a physical axis to a time axis.
 
@@ -164,3 +165,10 @@ class DelayBase(PseudoPositioner):
 
 class SimDelayStage(DelayBase):
     motor = Cpt(FastMotor, init_pos=0, egu='mm')
+
+
+class PseudoSingleInterface(PseudoSingle, FltMvInterface):
+    """
+    PseudoSingle with FltMvInterface mixed in
+    """
+    pass

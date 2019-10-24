@@ -42,6 +42,8 @@ class PulsePicker(InOutPVStatePositioner):
     # QIcon for UX
     _icon = 'fa.compass'
 
+    tab_whitelist = ['reset', 'open', 'close', 'flipflop', 'burst', 'follower']
+
     def _do_move(self, state):
         """
         Handle move requests for basic open/close commands. This allows us to

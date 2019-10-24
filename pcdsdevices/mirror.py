@@ -14,7 +14,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
 
 from .doc_stubs import basic_positioner_init
 from .inout import InOutRecordPositioner
-from .interface import FltMvInterface
+from .interface import FltMvInterface, BaseInterface
 
 logger = logging.getLogger(__name__)
 
@@ -147,7 +147,7 @@ class Gantry(OMMotor):
         super().check_value(pos)
 
 
-class OffsetMirror(Device):
+class OffsetMirror(Device, BaseInterface):
     """
     X-Ray offset mirror class.
 
@@ -191,6 +191,8 @@ class OffsetMirror(Device):
     _icon = 'fa.minus-square'
     # Subscription types
     SUB_STATE = 'state'
+
+    tab_whitelist = ['pitch', 'xgantry', 'ygantry']
 
     def __init__(self, prefix, *, prefix_xy=None,
                  xgantry_prefix=None, **kwargs):

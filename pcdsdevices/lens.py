@@ -41,6 +41,8 @@ class LensStack(PseudoPositioner):
 
     calib_z = Cpt(PseudoSingle)
 
+    tab_whitelist = ['x', 'y', 'z', 'calib_z', 'tweak', 'align']
+
     def __init__(self, x_prefix, y_prefix, z_prefix, *args, **kwargs):
         self.x_prefix = x_prefix
         self.y_prefix = y_prefix

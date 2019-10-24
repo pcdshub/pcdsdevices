@@ -121,6 +121,7 @@ class Slits(Device, MvInterface):
     _default_sub = SUB_STATE
     # QIcon for UX
     _icon = 'fa.th-large'
+    tab_whitelist = ['open', 'close', 'block']
 
     def __init__(self, *args, nominal_aperture=5.0, **kwargs):
         self._has_subscribed = False

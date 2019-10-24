@@ -35,6 +35,8 @@ class Filter(InOutPositioner):
     material = Cpt(EpicsSignal, ':MATERIAL', kind='config')
     stuck = Cpt(EpicsSignal, ':IS_STUCK', kind='omitted')
 
+    tab_component_names = True
+
 
 class FeeFilter(InOutPositioner):
     """
@@ -81,6 +83,8 @@ class AttBase(FltMvInterface, PVPositioner):
     _icon = 'fa.barcode'
     # Subscription Types
     SUB_STATE = 'state'
+    # Tab complete whitelist
+    tab_whitelist = ['set_energy']
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, limits=(0, 1), **kwargs)

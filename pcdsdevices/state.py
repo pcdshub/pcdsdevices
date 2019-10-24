@@ -395,6 +395,8 @@ class StateRecordPositioner(StatePositioner):
     state = Cpt(EpicsSignal, '', write_pv=':GO', kind='hinted')
     motor = Cpt(IMS, ':MOTOR', kind='normal')
 
+    tab_whitelist = ['motor']
+
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
         self._has_subscribed_readback = False

@@ -1,5 +1,7 @@
 from ophyd import Device, Component as Cpt, EpicsSignal, EpicsSignalRO
 
+from .interface import BaseInterface
+
 
 class Trigger(Device):
     """
@@ -12,6 +14,9 @@ class Trigger(Device):
     polarity = Cpt(EpicsSignal, ':TPOL', kind="config")
     width = Cpt(EpicsSignal, ':BW_TWIDCALC', write_pv=':TWID', kind="normal")
     enable_cmd = Cpt(EpicsSignal, ':TCTL', kind="omitted")
+
+    tab_whitelist = ['enable', 'disable']
+    tab_component_names = True
 
     def enable(self):
         """Enable the trigger"""

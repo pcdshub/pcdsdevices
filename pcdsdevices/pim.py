@@ -54,6 +54,7 @@ class PIM(PIMMotor):
         the motor prefix
     """
     detector = FCpt(PCDSAreaDetector, "{self._prefix_det}", kind='normal')
+    tab_whitelist = ["detector"]
 
     def __init__(self, prefix, *, name, prefix_det=None, **kwargs):
         # Infer the detector PV from the motor PV
