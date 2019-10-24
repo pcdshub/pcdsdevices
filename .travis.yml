@@ -41,7 +41,6 @@ script:
   - set -e
   # Build docs
   - conda install --file docs-requirements.txt
-  - pip install m2r
   - pushd docs
   - make html
   - popd
