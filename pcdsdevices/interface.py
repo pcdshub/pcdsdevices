@@ -43,8 +43,10 @@ class BaseInterface:
     non-engineering mode, only elements on the whitelists will be displayed to
     the user.
 
-    tab_whitelist: list of string regex to show in autocomplete for
-                   non-engineering mode
+    Attributes
+    ----------
+    tab_whitelist: list
+        list of string regex to show in autocomplete for non-engineering mode
     """
     tab_whitelist = (OphydObject_whitelist + BlueskyInterface_whitelist +
                      Device_whitelist + Signal_whitelist +
