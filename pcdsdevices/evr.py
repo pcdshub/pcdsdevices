@@ -3,7 +3,7 @@ from ophyd import Device, Component as Cpt, EpicsSignal, EpicsSignalRO
 from .interface import BaseInterface
 
 
-class Trigger(Device):
+class Trigger(Device, BaseInterface):
     """
     Class for an individual Trigger
     """
