@@ -8,7 +8,8 @@ import signal
 
 import pytest
 
-from pcdsdevices.mv_interface import setup_preset_paths
+from pcdsdevices.interface import (setup_preset_paths, set_engineering_mode,
+                                   get_engineering_mode)
 from pcdsdevices.sim import FastMotor, SlowMotor
 
 logger = logging.getLogger(__name__)
@@ -166,3 +167,20 @@ def test_presets_type(presets, fast_motor):
         fast_motor.presets.add_here_user(123)
     with pytest.raises(TypeError):
         fast_motor.presets.add_user(234234, 'cats')
+
+
+def test_engineering_mode():
+    logger.debug('test_engineering_mode')
+    set_engineering_mode(False)
+    assert not get_engineering_mode()
+    set_engineering_mode(True)
+    assert get_engineering_mode()
+
+
+def test_dir_whitelist_basic(fast_motor):
+    logger.debug('test_dir_whitelist_basic')
+    set_engineering_mode(False)
+    user_dir = dir(fast_motor)
+    set_engineering_mode(True)
+    eng_dir = dir(fast_motor)
+    assert len(eng_dir) > len(user_dir)

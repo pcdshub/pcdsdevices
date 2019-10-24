@@ -9,7 +9,7 @@ from ophyd.status import DeviceStatus, SubscriptionStatus, wait as status_wait
 from ophyd.utils import LimitError
 
 from .doc_stubs import basic_positioner_init
-from .mv_interface import FltMvInterface
+from .interface import FltMvInterface
 from .pseudopos import DelayBase
 
 
@@ -51,6 +51,9 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
     # Description is valuable
     description = Cpt(EpicsSignal, '.DESC', kind='normal')
+
+    tab_whitelist = ["set_current_position", "home", "velocity",
+                     "enable", "disable"]
 
     @property
     def low_limit(self):
@@ -171,6 +174,8 @@ class PCDSMotorBase(EpicsMotorInterface):
     # paused and ready to resume on Go 'Paused', and to resume a move 'Go'.
     motor_spg = Cpt(EpicsSignal, ".SPG", kind='omitted')
 
+    tab_whitelist = ["spg_stop", "spg_pause", "spg_go"]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.stage_sigs[self.motor_spg] = 2
@@ -265,6 +270,8 @@ class IMS(PCDSMotorBase):
     velocity = Cpt(EpicsSignal, '.VELO', limits=True, kind='config')
     velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
     velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
+
+    tab_whitelist = ['auto_setup', 'reinitialize', 'clear_.*']
 
     def stage(self):
         """
@@ -424,6 +431,8 @@ class BeckhoffAxis(EpicsMotorInterface):
 
     status = Cpt(EpicsSignalRO, '-MsgTxt', kind='normal', string=True)
     cmd_err_reset = Cpt(EpicsSignal, '-ErrRst', kind='omitted')
+
+    tab_whitelist = ['clear_error']
 
     def clear_error(self):
         """

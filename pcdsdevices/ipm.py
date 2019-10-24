@@ -37,6 +37,8 @@ class IPM(Device):
     # QIcon for UX
     _icon = 'ei.screenshot'
 
+    tab_whitelist = ['target', 'diode']
+
     @property
     def inserted(self):
         """Returns ``True`` if target is inserted. Diode never blocks."""

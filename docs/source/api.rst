@@ -12,13 +12,13 @@ Full API
    ~pcdsdevices.evr
    ~pcdsdevices.gauge
    ~pcdsdevices.inout
+   ~pcdsdevices.interface
    ~pcdsdevices.ipm
    ~pcdsdevices.lens
    ~pcdsdevices.lodcm
    ~pcdsdevices.mirror
    ~pcdsdevices.movablestand
    ~pcdsdevices.mps
-   ~pcdsdevices.mv_interface
    ~pcdsdevices.pim
    ~pcdsdevices.pseudopos
    ~pcdsdevices.pulsepicker

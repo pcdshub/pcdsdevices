@@ -1,10 +1,13 @@
 import time
-import pcdsdevices.utils as key_press
+
 from ophyd import (Device, Component as Cpt, EpicsSignal, EpicsSignalRO,
                    FormattedComponent as FCpt)
 
+from . import utils as key_press
+from .interface import BaseInterface
 
-class Acromag(Device):
+
+class Acromag(Device, BaseInterface):
     """
     Class for Acromag analog input/ouput signals
 
@@ -53,8 +56,10 @@ class Acromag(Device):
     ai1_14 = Cpt(EpicsSignalRO, ":ai1:14", kind='normal')
     ai1_15 = Cpt(EpicsSignalRO, ":ai1:15", kind='normal')
 
+    tab_component_names = True
 
-class Mesh(Device):
+
+class Mesh(Device, BaseInterface):
     """
     Class for Mesh High Voltage Supply that is connected to
     Acromag inputs and outputs
@@ -76,6 +81,8 @@ class Mesh(Device):
         Gain for high voltage supply to be controlled by the Acromag
 
     """
+    tab_whitelist = ['get_mesh_voltage', 'set_mesh_voltage',
+                     'tweak_mesh_voltage']
 
     write_sig = FCpt(EpicsSignal, '{self.prefix}' + ':ao1:' + '{self.sp_ch}')
     read_sig = FCpt(EpicsSignalRO, '{self.prefix}' + ':ai1:' + '{self.rb_ch}')

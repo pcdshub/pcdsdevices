@@ -5,17 +5,20 @@ import logging
 from ophyd import EpicsSignal, EpicsSignalRO, Device
 from ophyd import Component as Cpt, FormattedComponent as FCpt
 from .doc_stubs import IonPump_base
+from .interface import BaseInterface
 
 logger = logging.getLogger(__name__)
 
 
-class TurboPump(Device):
+class TurboPump(Device, BaseInterface):
     """
     Vacuum Pump
     """
     atspeed = Cpt(EpicsSignal, ':ATSPEED_DI', kind='normal')
     start = Cpt(EpicsSignal, ':START_SW', kind='normal')
 
+    tab_whitelist = ['run', 'stop', 'atspeed']
+
     def run(self):
         """Start the Turbo Pump"""
         self.start.put(1)
@@ -25,12 +28,14 @@ class TurboPump(Device):
         self.start.put(0)
 
 
-class EbaraPump(Device):
+class EbaraPump(Device, BaseInterface):
     """
     Ebara Turbo Pump
     """
     start = Cpt(EpicsSignal, ':MPSTART_SW', kind='normal')
 
+    tab_whitelist = ['run', 'stop']
+
     def run(self):
         """Start the Turbo Pump"""
         self.start.put(1)
@@ -40,7 +45,7 @@ class EbaraPump(Device):
         self.start.put(0)
 
 
-class GammaController(Device):
+class GammaController(Device, BaseInterface):
     """
     Ion Pump Gamma controller
     """
@@ -59,8 +64,10 @@ class GammaController(Device):
 
     unit = Cpt(EpicsSignal, ':PEGUDES', kind='normal')
 
+    tab_component_names = True
 
-class IonPumpBase(Device):
+
+class IonPumpBase(Device, BaseInterface):
     """
 %s
     """
@@ -87,6 +94,9 @@ class IonPumpBase(Device):
     aomode = Cpt(EpicsSignal, ':AOMODEDES', write_pv=':AOMODE', kind='config')
     calfactor = Cpt(EpicsSignal, ':CALFACTORDES', write_pv=':CALFACTOR',
                     kind='config')
+
+    tab_whitelist = ['on', 'off', 'info', 'pressure']
+    tab_component_names = True
 
     def on(self):
         self.state.put(1)
@@ -125,6 +135,8 @@ class IonPumpWithController(IonPumpBase):
     __doc__ = (__doc__ % IonPump_base).replace('Pump', 'Pump w/ controller')
 
     controller = FCpt(GammaController, '{self.prefix_controller}')
+
+    tab_component_names = True
 
     def __init__(self, prefix, *, prefix_controller, **kwargs):
         # base PV for ion pump controller

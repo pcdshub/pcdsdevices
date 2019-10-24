@@ -17,6 +17,7 @@ from ophyd.status import wait as status_wait
 
 from .doc_stubs import insert_remove
 from .inout import InOutRecordPositioner
+from .interface import BaseInterface
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +59,7 @@ class Foil(InOutRecordPositioner):
         super().__init__(prefix, *args, **kwargs)
 
 
-class LODCM(Device):
+class LODCM(Device, BaseInterface):
     """
     Large Offset Dual Crystal Monochromator
 
@@ -91,6 +92,8 @@ class LODCM(Device):
 
     # QIcon for UX
     _icon = 'fa.share-alt-square'
+
+    tab_whitelist = ['h1n', 'yag', 'dectris', 'diode', 'foil', 'remove_dia']
 
     def __init__(self, prefix, *, name, main_line='MAIN', mono_line='MONO',
                  **kwargs):

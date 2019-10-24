@@ -12,7 +12,7 @@ from ophyd.device import Device, Component as Cpt
 
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
-from .mv_interface import MvInterface
+from .interface import MvInterface
 from .signal import AggregateSignal
 
 logger = logging.getLogger(__name__)
@@ -394,6 +394,8 @@ class StateRecordPositioner(StatePositioner):
     """
     state = Cpt(EpicsSignal, '', write_pv=':GO', kind='hinted')
     motor = Cpt(IMS, ':MOTOR', kind='normal')
+
+    tab_whitelist = ['motor']
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)

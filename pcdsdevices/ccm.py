@@ -3,13 +3,14 @@ import time
 
 import numpy as np
 from ophyd.device import Component as Cpt, FormattedComponent as FCpt
-from ophyd.pseudopos import PseudoPositioner, PseudoSingle
+from ophyd.pseudopos import PseudoPositioner
 from ophyd.pv_positioner import PVPositionerPC
 from ophyd.signal import EpicsSignal, EpicsSignalRO, AttributeSignal
 
 from .epics_motor import IMS
 from .inout import InOutPositioner
-from .pseudopos import SyncAxesBase
+from .interface import FltMvInterface
+from .pseudopos import SyncAxesBase, PseudoSingleInterface
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ default_gr = 3.175
 default_gd = 231.303
 
 
-class CCMMotor(PVPositionerPC):
+class CCMMotor(PVPositionerPC, FltMvInterface):
     """
     Goofy records used in the CCM.
 
@@ -37,7 +38,7 @@ class CCMMotor(PVPositionerPC):
     limits = None
 
 
-class CCMCalc(PseudoPositioner):
+class CCMCalc(PseudoPositioner, FltMvInterface):
     """
     CCM calculation motors to move in terms of physics quantities
 
@@ -45,10 +46,12 @@ class CCMCalc(PseudoPositioner):
     writer is not familiar with all of them, so I will omit the full
     description instead of giving a partial and possibly incorrect summary.
     """
-    energy = Cpt(PseudoSingle, egu='keV', kind='hinted')
-    wavelength = Cpt(PseudoSingle, egu='A')
-    theta = Cpt(PseudoSingle, egu='deg')
+    energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
+    wavelength = Cpt(PseudoSingleInterface, egu='A')
+    theta = Cpt(PseudoSingleInterface, egu='deg')
     alio = Cpt(CCMMotor)
+
+    tab_component_names = True
 
     def __init__(self, *args, theta0=default_theta0, dspacing=default_dspacing,
                  gr=default_gr, gd=default_gd, **kwargs):
@@ -103,6 +106,8 @@ class CCMX(SyncAxesBase):
     down = FCpt(IMS, '{self.down_prefix}')
     up = FCpt(IMS, '{self.up_prefix}')
 
+    tab_component_names = True
+
     def __init__(self, down_prefix, up_prefix, *args, **kwargs):
         self.down_prefix = down_prefix
         self.up_prefix = up_prefix
@@ -116,6 +121,8 @@ class CCMY(SyncAxesBase):
     down = FCpt(IMS, '{self.down_prefix}')
     up_north = FCpt(IMS, '{self.up_north_prefix}')
     up_south = FCpt(IMS, '{self.up_south_prefix}')
+
+    tab_component_names = True
 
     def __init__(self, down_prefix, up_north_prefix, up_south_prefix,
                  *args, **kwargs):
@@ -149,6 +156,8 @@ class CCM(InOutPositioner):
 
     # Placeholder value. This represents "not full transmission".
     _transmission = {'IN': 0.9}
+
+    tab_component_names = True
 
     def __init__(self, alio_prefix, theta2fine_prefix, x_down_prefix,
                  x_up_prefix, y_down_prefix, y_up_north_prefix,
