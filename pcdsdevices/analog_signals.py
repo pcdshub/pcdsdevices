@@ -6,6 +6,7 @@ from ophyd import (Device, Component as Cpt, EpicsSignal, EpicsSignalRO,
 from . import utils as key_press
 from .interface import BaseInterface
 
+
 class Acromag(Device, BaseInterface):
     """
     Class for Acromag analog input/ouput signals
