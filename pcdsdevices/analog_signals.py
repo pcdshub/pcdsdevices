@@ -3,8 +3,8 @@ import time
 from ophyd import (Device, Component as Cpt, EpicsSignal, EpicsSignalRO,
                    FormattedComponent as FCpt)
 
+from . import utils as key_press
 from .interface import BaseInterface
-import .utils as key_press
 
 class Acromag(Device, BaseInterface):
     """
