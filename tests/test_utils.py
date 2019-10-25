@@ -58,5 +58,5 @@ def test_get_input_shift_arrow(sim_input):
 def test_cbreak(sim_input):
     logger.debug('test_cbreak')
     # send the ctrl+c character
-    input_later(sim_input, '\x03')
-    assert util.get_input() is None
+    input_later(sim_input, '\x03\n')
+    assert util.get_input() == '\n'
