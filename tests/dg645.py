@@ -2,7 +2,7 @@
 Module for DG645 delay generator timing channel.
 """
 from ophyd.device import Device, Component as Cpt, FormattedComponent as FCpt
-from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.signal import EpicsSignal
 from ophyd.utils import LimitError
 
 
@@ -13,7 +13,7 @@ class DelayChannel(Device):
     Parameters
     ---------
     prefix : ``str``
-        The PV base of the relevant DG, i.e 'MEC:LAS:DDG:01:a'
+        The PV base of the relevant DG channel, i.e 'MEC:LAS:DDG:01:a'
 
     name : ``str``
         Alias for the delay generator
@@ -22,13 +22,12 @@ class DelayChannel(Device):
         Limits on the allowed delay in seconds. By default, the
         limits are set to (0.0, 1.0).
     """
-    delay_AO = Cpt(EpicsSignal, 'DelayAO')
-    delay_SI = Cpt(EpicsSignalRO, 'DelaySI')
-    delay_tweak = Cpt(EpicsSignal, 'DelayTweakAO')
-    delay_inc = Cpt(EpicsSignal, 'DelayTweakIncCO.PROC')
-    delay_dec = Cpt(EpicsSignal, 'DelayTweakDecCO.PROC')
-    ref_MI = Cpt(EpicsSignal, 'ReferenceMI', string=True)
-    ref_MO = Cpt(EpicsSignal, 'ReferenceMO', string=True)
+    delay_pv = Cpt(EpicsSignal, 'DelaySI', write_pv='DelayAO', kind='hinted')
+    delay_tweak = Cpt(EpicsSignal, 'DelayTweakAO', kind='config')
+    delay_inc = Cpt(EpicsSignal, 'DelayTweakIncCO.PROC', kind='normal')
+    delay_dec = Cpt(EpicsSignal, 'DelayTweakDecCO.PROC', kind='normal')
+    ref_pv = Cpt(EpicsSignal, 'ReferenceMI', write_pv='ReferenceMO',
+                 string=True, kind='normal')
 
     def __init__(self, prefix, delay_limits=(0.0, 1.0), name='DelayChannel',
                  **kwargs):
@@ -50,8 +49,7 @@ class DelayChannel(Device):
         else:
             self.delay = delay
 
-    @property
-    def delay(self):
+    def delay(self, value=None):
         """
         All values are in seconds. The returned values are those
         directly read off the DG645.
@@ -61,12 +59,11 @@ class DelayChannel(Device):
         The delay value on the DG645 channel is changed to that
         value.
         """
-        return float(self.delay_SI.get()[4:])
-
-    @delay.setter
-    def delay(self, value):
-        check_DG_value(value, self.low_lim, self.high_lim)
-        self.delay_AO.put(value)
+        if value is None:
+            return float(self.delay_pv.get()[4:])
+        else:
+            check_DG_value(value, self.low_lim, self.high_lim)
+            return self.delay_pv.put(value)
 
     def tweak_delay(self, value=None, inc=False, dec=False):
         """
@@ -89,27 +86,19 @@ class DelayChannel(Device):
         print(f'tweak val = {self.delay_tweak.get()}')
         print(f'new delay = {self.delay}')
 
-    @property
-    def MO(self):
+    def reference(self, channel=None):
         """
-        10 MHz output to synchronize external instrumentation to DG645
+        channel: ``str``
+        Delay reference channel
+        If channel is None:
+        Returns current delay reference on selected channel
+        If channel is not None:
+        Sets channel as delay reference
         """
-        return self.ref_MO.get()
-
-    @MO.setter
-    def MO(self, channel):
-        self.ref_MO.put(channel)
-
-    @property
-    def MI(self):
-        """
-        10 MHz input to synchronize DG645 internal clock to external reference
-        """
-        return self.ref_MI.get()
-
-    @MI.setter
-    def MI(self, channel):
-        self.ref_MI.put(channel)
+        if channel is None:
+            return self.ref_pv.get()
+        else:
+            return self.ref_pv.put(channel)
 
     def mvr_delay(self, delta):
         """
@@ -138,20 +127,20 @@ class PulseChannel(Device):
         Limits on the allowed offset in seconds. By default, the
         limits are set to (0.0, 1.0).
     """
-    amp_AO = Cpt(EpicsSignal, 'OutputAmpAO')
-    amp_AI = Cpt(EpicsSignalRO, 'OutputAmpAI')
-    amp_tweak = Cpt(EpicsSignal, 'OutputAmpTweakAO')
-    amp_inc = Cpt(EpicsSignal, 'OutputAmpTweakIncCO.PROC')
-    amp_dec = Cpt(EpicsSignal, 'OutputAmpTweakDecCO.PROC')
-    pol_BI = Cpt(EpicsSignalRO, 'OutputPolarityBI', string=True)
-    pol_BO = Cpt(EpicsSignal, 'OutputPolarityBO', string=True)
-    off_AO = Cpt(EpicsSignal, 'OutputOffsetAO')
-    off_AI = Cpt(EpicsSignalRO, 'OutputOffsetAI')
-    off_tweak = Cpt(EpicsSignal, 'OutputOffsetTweakAO')
-    off_inc = Cpt(EpicsSignal, 'OutputOffsetTweakIncCO.PROC')
-    off_dec = Cpt(EpicsSignal, 'OutputOffsetTweakDecCO.PROC')
-    ttl_mode = Cpt(EpicsSignal, 'OutputModeTtlSS.PROC')
-    nim_mode = Cpt(EpicsSignal, 'OutputModeNimSS.PROC')
+    amplitude_pv = Cpt(EpicsSignal, 'OutputAmpAI', write_pv='OutputAmpAO',
+                       kind='hinted')
+    amplitude_tweak = Cpt(EpicsSignal, 'OutputAmpTweakAO', kind='config')
+    amplitude_inc = Cpt(EpicsSignal, 'OutputAmpTweakIncCO.PROC', kind='normal')
+    amplitude_dec = Cpt(EpicsSignal, 'OutputAmpTweakDecCO.PROC', kind='normal')
+    pol_pv = Cpt(EpicsSignal, 'OutputPolarityBI', write_pv='OutputPolarityBO',
+                 string=True, kind='config')
+    offset_pv = Cpt(EpicsSignal, 'OutputOffsetAI', write_pv='OutputOffsetAO',
+                    kind='hinted')
+    offset_tweak = Cpt(EpicsSignal, 'OutputOffsetTweakAO', kind='config')
+    offset_inc = Cpt(EpicsSignal, 'OutputOffsetTweakIncCO.PROC', kind='normal')
+    offset_dec = Cpt(EpicsSignal, 'OutputOffsetTweakDecCO.PROC', kind='normal')
+    ttl_mode = Cpt(EpicsSignal, 'OutputModeTtlSS.PROC', kind='config')
+    nim_mode = Cpt(EpicsSignal, 'OutputModeNimSS.PROC', kind='config')
 
     def __init__(self, prefix, amp_limits=(0.0, 5.0), off_limits=(0.0, 1.0),
                  name='PulseChannel', **kwargs):
@@ -161,23 +150,20 @@ class PulseChannel(Device):
         self.off_high_lim = off_limits[1]
         super().__init__(prefix, name=name, **kwargs)
 
-    @property
-    def polarity(self):
+    def polarity(self, value=None):
         """
+        value : ``str`` "POS" or "NEG"
         If value is None:
         Returns pulse channel polarity
         If value is not None:
         Sets pulse channel polarity
-        "POS" or "NEG"
         """
-        return self.pol_BI.get()
+        if value is None:
+            return self.pol_pv.get()
+        else:
+            return self.pol_pv.put(value)
 
-    @polarity.setter
-    def polarity(self, value):
-        self.pol_BO.put(value)
-
-    @property
-    def offset(self):
+    def offset(self, value=None):
         """
         If value is None:
         Returns the current offset value on the DG645 channel
@@ -185,12 +171,11 @@ class PulseChannel(Device):
         The offset value on the DG645 channel is changed to that
         value.
         """
-        return self.off_AI.get()
-
-    @offset.setter
-    def offset(self, value):
-        check_DG_value(value, self.off_low_lim, self.off_high_lim)
-        self.off_AO.put(value)
+        if value is None:
+            return self.offset_pv.get()
+        else:
+            check_DG_value(value, self.off_low_lim, self.off_high_lim)
+            return self.offset_pv.put(value)
 
     def tweak_offset(self, value=None, inc=False, dec=False):
         """
@@ -203,12 +188,12 @@ class PulseChannel(Device):
         """
         if value is not None:
             check_DG_value(value, self.off_low_lim, self.off_high_lim)
-            self.off_tweak.put(value)
+            self.offset_tweak.put(value)
 
         if inc:
-            self.off_inc.put(1)
+            self.offset_inc.put(1)
         if dec:
-            self.off_dec.put(1)
+            self.offset_dec.put(1)
 
         print(f'tweak val = {self.off_tweak.get()}')
         print(f'new offset = {self.offset}')
@@ -219,8 +204,7 @@ class PulseChannel(Device):
         """
         self.offset = delta + self.offset
 
-    @property
-    def amplitude(self):
+    def amplitude(self, value=None):
         """
         If value is None:
         Returns the current offset value on the DG645 channel
@@ -228,12 +212,11 @@ class PulseChannel(Device):
         The offset value on the DG645 channel is changed to that
         value.
         """
-        return self.amp_AI.get()
-
-    @amplitude.setter
-    def amplitude(self, value):
-        check_DG_value(value, self.amp_low_lim, self.amp_high_lim)
-        self.amp_AO.put(value)
+        if value is None:
+            return self.amplitude_pv.get()
+        else:
+            check_DG_value(value, self.amp_low_lim, self.amp_high_lim)
+            return self.amplitude_pv.put(value)
 
     def tweak_amplitude(self, value=None, inc=False, dec=False):
         """
@@ -246,12 +229,12 @@ class PulseChannel(Device):
         """
         if value is not None:
             check_DG_value(value, self.amp_low_lim, self.amp_high_lim)
-            self.amp_tweak.put(value)
+            self.amplitude_tweak.put(value)
 
         if inc:
-            self.amp_inc.put(1)
+            self.amplitude_inc.put(1)
         if dec:
-            self.amp_dec.put(1)
+            self.amplitude_dec.put(1)
 
         print(f'tweak val = {self.amp_tweak.get()}')
         print(f'new amplitude = {self.amplitude}')
@@ -290,40 +273,37 @@ class Trigger(Device):
     name : ``str``
         Alias for the delay generator triggers
     """
-    trig_sourceMO = Cpt(EpicsSignal, ':triggerSourceMO', string=True)
-    trig_sourceMI = Cpt(EpicsSignalRO, ':triggerSourceMI', string=True)
-    trig_inhibitMO = Cpt(EpicsSignal, ':triggerInhibitMO', string=True)
-    trig_inhibitMI = Cpt(EpicsSignalRO, ':triggerInhibitMI', string=True)
+    source = Cpt(EpicsSignal, ':triggerSourceMI', write_pv=':triggerSourceMO',
+                 string=True, kind='normal')
+    inhib = Cpt(EpicsSignal, ':triggerInhibitMI', write_pv=':triggerInhibitMO',
+                string=True, kind='normal')
 
     def __init__(self, prefix, name='triggers', **kwargs):
         super().__init__(prefix, name=name, **kwargs)
 
-    @property
-    def trig_source(self):
+    def trig_source(self, value):
         """
-        If source is None, returns current trigger source,
-        If source is not None, sets trigger source to user input
-        source={'Ext ^edge','Ext ~edge', 'SS ext ^edge', 'SS ext ~edge',
-                'Single Shot', 'Line'}
+        If value is None, returns current trigger source,
+        If value is not None, sets trigger source to user input
+        value: ``str`` {'Ext ^edge','Ext ~edge', 'SS ext ^edge',
+                         'SS ext ~edge', 'Single Shot', 'Line'}
         """
-        return self.trig_sourceMI.get()
+        if value is None:
+            return self.source.get()
+        else:
+            return self.source.put(value)
 
-    @trig_source.setter
-    def trig_source(self, source):
-        self.trig_sourceMO.put(source)
-
-    @property
-    def trig_inhibit(self):
+    def trig_inhibit(self, value):
         """
         If value is None, returns trigger inhibit setting
         If value is not None, sets inhibit to value
-        value={'Off', 'Triggers', 'AB', 'AB,CD', 'AB,CD,EF', 'AB,CD,EF,GH'}
+        value : ``str`` {'Off', 'Triggers', 'AB', 'AB,CD',
+                           'AB,CD,EF', 'AB,CD,EF,GH'}
         """
-        return self.trig_inhibitMI.get()
-
-    @trig_inhibit.setter
-    def trig_inhibit(self, value):
-        self.trig_inhibitMO.put(value)
+        if value is None:
+            return self.inhib.get()
+        else:
+            return self.inhib.put(value)
 
 
 class DG645Channel(Device):
@@ -367,37 +347,37 @@ class DG645Channel(Device):
         self._trig_prefix = f'{prefix}'
         super().__init__(prefix, name=name, **kwargs)
 
-        self.delay_channel.MO = refA
+        self.delay_channel.reference(refA)
         if refB is None:
-            self.width_channel.MO = channel[0].upper()
+            self.width_channel.reference(channel[0].upper())
         else:
-            self.width_channel.MO = refB
+            self.width_channel.reference(refB)
 
     def delay(self, val=None):
         if val is None:
-            return self.delay_channel.delay
+            return self.delay_channel.delay()
         else:
-            self.delay_channel.delay = val
+            self.delay_channel.delay(val)
 
     def width(self, val=None):
         if val is None:
-            return self.width_channel.delay
+            return self.width_channel.delay()
         else:
-            self.width_channel.delay = val
+            self.width_channel.delay(val)
 
     def amplitude(self, val=None):
         if val is None:
-            return self.amp_channel.amplitude
+            return self.amp_channel.amplitude()
         else:
-            self.amp_channel.amplitude = val
+            self.amp_channel.amplitude(val)
 
     def polarity(self, val=None):
         if val is None:
-            return self.amp_channel.polarity
+            return self.amp_channel.polarity()
         else:
-            self.amp_channel.polarity = val
+            self.amp_channel.polarity(val)
 
-    def power(self, val):
+    def status(self, val):
         # ON/OFF
         if val == 'ON':
             self.amplitude(4.0)
@@ -406,15 +386,15 @@ class DG645Channel(Device):
 
     def trig_source(self, val=None):
         if val is None:
-            return self.trig_channel.trig_source
+            return self.trig_channel.trig_source()
         else:
-            self.trig_channel.trig_source = val
+            self.trig_channel.trig_source(val)
 
     def trig_inhib(self, val=None):
         if val is None:
-            return self.trig_channel.trig_inhibit
+            return self.trig_channel.trig_inhibit()
         else:
-            self.trig_channel.trig_inhibit = val
+            self.trig_channel.trig_inhibit(val)
 
 
 class DG645(Device):

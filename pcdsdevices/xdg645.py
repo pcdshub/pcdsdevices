@@ -22,13 +22,12 @@ class DelayChannel(Device):
         Limits on the allowed delay in seconds. By default, the
         limits are set to (0.0, 1.0).
     """
-    delay_AO = Cpt(EpicsSignal, 'DelayAO')
-    delay_SI = Cpt(EpicsSignalRO, 'DelaySI')
-    delay_tweak = Cpt(EpicsSignal, 'DelayTweakAO')
-    delay_inc = Cpt(EpicsSignal, 'DelayTweakIncCO.PROC')
-    delay_dec = Cpt(EpicsSignal, 'DelayTweakDecCO.PROC')
-    ref_MI = Cpt(EpicsSignal, 'ReferenceMI', string=True)
-    ref_MO = Cpt(EpicsSignal, 'ReferenceMO', string=True)
+    delay = Cpt(EpicsSignal, 'DelayAO', write_pv='DelaySI', kind='hinted')
+    delay_tweak = Cpt(EpicsSignal, 'DelayTweakAO', kind='config')
+    delay_inc = Cpt(EpicsSignal, 'DelayTweakIncCO.PROC', kind='normal')
+    delay_dec = Cpt(EpicsSignal, 'DelayTweakDecCO.PROC', kind='normal')
+    reference = Cpt(EpicsSignal, 'ReferenceMO', write_pv='ReferenceMI', 
+                    string=True, kind='normal')
 
     def __init__(self, prefix, delay_limits=(0.0, 1.0), name='DelayChannel',
                  **kwargs):
@@ -51,7 +50,7 @@ class DelayChannel(Device):
             self.delay = delay
 
     @property
-    def delay(self):
+    def delay(self, value=None):
         """
         All values are in seconds. The returned values are those
         directly read off the DG645.
@@ -61,12 +60,11 @@ class DelayChannel(Device):
         The delay value on the DG645 channel is changed to that
         value.
         """
-        return float(self.delay_SI.get()[4:])
-
-    @delay.setter
-    def delay(self, value):
-        check_DG_value(value, self.low_lim, self.high_lim)
-        self.delay_AO.put(value)
+        if value is None:
+            return float(self.delay.get()[4:])
+        else:
+            check_DG_value(value, self.low_lim, self.high_lim)
+            return self.delay.put(value)
 
     def tweak_delay(self, value=None, inc=False, dec=False):
         """

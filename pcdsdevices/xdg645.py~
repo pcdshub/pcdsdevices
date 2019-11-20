@@ -22,13 +22,12 @@ class DelayChannel(Device):
         Limits on the allowed delay in seconds. By default, the
         limits are set to (0.0, 1.0).
     """
-    delay_AO = Cpt(EpicsSignal, 'DelayAO')
-    delay_SI = Cpt(EpicsSignalRO, 'DelaySI')
-    delay_tweak = Cpt(EpicsSignal, 'DelayTweakAO')
+    delay = Cpt(EpicsSignal, 'DelayAO', write_pv='DelaySI', kind='hinted')
+    delay_tweak = Cpt(EpicsSignal, 'DelayTweakAO', kind='config')
     delay_inc = Cpt(EpicsSignal, 'DelayTweakIncCO.PROC')
     delay_dec = Cpt(EpicsSignal, 'DelayTweakDecCO.PROC')
     ref_MI = Cpt(EpicsSignal, 'ReferenceMI', string=True)
-    ref_MO = Cpt(EpicsSignal, 'ReferenceMO', string=True)
+    reference = Cpt(EpicsSignal, 'ReferenceMO', write_pv='ReferenceMI', string=True)
 
     def __init__(self, prefix, delay_limits=(0.0, 1.0), name='DelayChannel',
                  **kwargs):
