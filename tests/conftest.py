@@ -1,5 +1,5 @@
 from pathlib import Path
-from pcdsdevices.mv_interface import setup_preset_paths
+from pcdsdevices.interface import setup_preset_paths
 
 import os
 import pytest

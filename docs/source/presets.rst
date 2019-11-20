@@ -1,7 +1,7 @@
 ================
 Preset Positions
 ================
-.. currentmodule:: pcdsdevices.mv_interface
+.. currentmodule:: pcdsdevices.interface
 
 All ``pcdsdevices`` objects that involve moving positioners across a
 continuum of positions can save preset positions. See `Presets` for a

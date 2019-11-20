@@ -5,16 +5,20 @@ from ophyd.status import DeviceStatus, SubscriptionStatus
 from ophyd.utils.epics_pvs import raise_if_disconnected
 from ophyd.flyers import FlyerInterface, MonitorFlyerMixin
 
+from .interface import BaseInterface
+
 logger = logging.getLogger(__name__)
 
 
-class EventSequence(Device):
+class EventSequence(Device, BaseInterface):
     """Class for the event sequence of the event sequencer."""
 
     ec_array = Cpt(EpicsSignal, ':SEQ.A')
     bd_array = Cpt(EpicsSignal, ':SEQ.B')
     fd_array = Cpt(EpicsSignal, ':SEQ.C')
     bc_array = Cpt(EpicsSignal, ':SEQ.D')
+
+    tab_whitelist = ['get_seq', 'put_seq', 'show']
 
     def get_seq(self, current_length=True):
         """Retrieve the current event sequence. Returns a list of lists, with
@@ -131,7 +135,7 @@ class EventSequence(Device):
             print(line)
 
 
-class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
+class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface, BaseInterface):
     """
     Event Sequencer
 
@@ -188,6 +192,9 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     sequence_owner = Cpt(EpicsSignalRO, ':HUTCH_NAME', kind='omitted')
 
     sequence = Cpt(EventSequence, '', kind='config')
+
+    tab_whitelist = ["start"]
+    tab_component_names = True
 
     def __init__(self, prefix, *, name=None, monitor_attrs=None, **kwargs):
         monitor_attrs = monitor_attrs or ['current_step', 'play_count']
@@ -254,7 +261,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
 
         # Create our status
         def done(*args, value=None, old_value=None, **kwargs):
-            return value == 2 and old_value == 0
+            return value == 0 and old_value == 2
 
         # Create our status object
         return SubscriptionStatus(self.play_status, done, run=True)

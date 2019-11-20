@@ -46,6 +46,8 @@ class InOutPositioner(StatePositioner):
     out_states = ['OUT']
     _transmission = {}
 
+    tab_whitelist = ['inserted', 'removed', 'insert', 'remove', 'transmission']
+
     def __init__(self, prefix, *, name, **kwargs):
         if self.__class__ is InOutPositioner:
             raise TypeError(('InOutPositioner must be subclassed with at '

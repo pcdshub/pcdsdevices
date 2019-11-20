@@ -18,18 +18,18 @@ from .plugins import (ColorConvPlugin, HDF5Plugin, ImagePlugin, JPEGPlugin,
 logger = logging.getLogger(__name__)
 
 
-__all__ = ['PCDSDetectorBase',
-           'PCDSDetector']
+__all__ = ['PCDSAreaDetectorBase',
+           'PCDSAreaDetector']
 
 
-class PCDSDetectorBase(DetectorBase):
+class PCDSAreaDetectorBase(DetectorBase):
     """
     Standard area detector with no plugins.
     """
     cam = ADComponent(cam.CamBase, '')
 
 
-class PCDSDetector(PCDSDetectorBase):
+class PCDSAreaDetector(PCDSAreaDetectorBase):
     """
     Standard area detector including all (*) standard PCDS plugins.
     Notable plugins:
@@ -154,13 +154,13 @@ class PCDSDetector(PCDSDetectorBase):
     @property
     def image(self):
         'Deprecated - alias for `image2`'
-        warnings.warn('PCDSDetector.image is deprecated; use {}.image2 '
+        warnings.warn('PCDSAreaDetector.image is deprecated; use {}.image2 '
                       'instead'.format(self.name))
         return self.image2
 
     @property
     def stats(self):
         'Deprecated - alias for `stats2`'
-        warnings.warn('PCDSDetector.image is deprecated; use {}.stats2 '
+        warnings.warn('PCDSAreaDetector.image is deprecated; use {}.stats2 '
                       'instead'.format(self.name))
         return self.stats2

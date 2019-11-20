@@ -95,10 +95,13 @@ def test_trigger(sequence):
     # Set to run once
     sequence.play_mode.put(0)
     trig_status = sequence.trigger()
+    # Simulate the sequence starting
+    sequence.play_status.sim_put(2)
     # Not done until sequencer is done
     assert sequence.play_control.get() == 1
     assert not trig_status.done
-    sequence.play_status.sim_put(2)
+    # Simulate the sequence ending
+    sequence.play_status.sim_put(0)
     assert trig_status.done
     assert trig_status.success
 

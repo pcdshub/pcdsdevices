@@ -1,6 +1,32 @@
 Release History
 ###############
 
+v2.0.0 (2019-06-28)
+=================
+
+Features
+--------
+- Add ``gauge`` and ``pump`` modules
+- Add ``Acromag`` and ``Mesh`` classes
+- Add ``motor`` subdevice to state record devices
+- Add ``status`` string to ``BeckhoffAxis``
+
+API Breaks
+----------
+- State devices no longer have the ``readback`` signal, as it is redundant
+  with the new ``motor`` subdevice
+- ``PCDSDetector`` has been renamed to ``PCDSAreaDetector`` for clarity.
+  ``PCDSDetectorBase`` is also renamed to ``PCDSAreaDetectorBase``.
+
+Bugfixes
+--------
+- Fix PVs in ``BeckhoffAxis``
+
+Misc
+----
+- Officially build for ``python=3.7``
+
+
 v1.2.0 (2019-03-08)
 ===================
 

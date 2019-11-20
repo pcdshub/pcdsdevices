@@ -4,12 +4,14 @@ Standard classes for LCLS Gauges
 import logging
 from ophyd import EpicsSignal, EpicsSignalRO, Device
 from ophyd import Component as Cpt, FormattedComponent as FCpt
+
 from .doc_stubs import GaugeSet_base
+from .interface import BaseInterface
 
 logger = logging.getLogger(__name__)
 
 
-class MKS937a(Device):
+class MKS937a(Device, BaseInterface):
     """
     Vacuum gauge controller MKS637a)
 
@@ -35,8 +37,10 @@ class MKS937a(Device):
 
     command = Cpt(EpicsSignal, ':COM', write_pv=':COM_DES', kind='config')
 
+    tab_component_names = True
 
-class BaseGauge(Device):
+
+class BaseGauge(Device, BaseInterface):
     """
     Vacuum gauge
 
@@ -59,12 +63,14 @@ class BaseGauge(Device):
     pressure_status = Cpt(EpicsSignalRO, ':PSTATMON', kind='normal')
     pressure_status_enable = Cpt(EpicsSignal, ':PSTATMSP', kind='normal')
 
+    tab_component_names = True
+
 
 class GaugePirani(BaseGauge):
     """
     Class for Pirani gauge
     """
-    pass
+    tab_component_names = True
 
 
 class GaugeColdCathode(BaseGauge):
@@ -85,13 +91,16 @@ class GaugeColdCathode(BaseGauge):
     protection_enable = Cpt(EpicsSignal, ':PPROTENRBCK',
                             write_pv=':PPROTEN', kind='normal')
 
+    tab_component_names = True
 
-class GaugeSetBase(Device):
+
+class GaugeSetBase(Device, BaseInterface):
     """
 %s
     """
     __doc__ = __doc__ % GaugeSet_base
     gcc = FCpt(GaugeColdCathode, '{self.prefix}:GCC:{self.index}')
+    tab_component_names = True
 
     def __init__(self, prefix, *, name, index, **kwargs):
         if isinstance(index, int):
@@ -120,6 +129,7 @@ class GaugeSetMks(GaugeSetBase):
     __doc__ = (__doc__ % GaugeSet_base).replace(
         'Set', 'Set w/o Pirani, but with controller')
     controller = FCpt(MKS937a, '{self.prefix_controller}')
+    tab_component_names = True
 
     def __init__(self, prefix, *, name, index, prefix_controller,  **kwargs):
         self.prefix_controller = prefix_controller
@@ -135,6 +145,7 @@ class GaugeSetPirani(GaugeSetBase):
     """
     __doc__ = __doc__ % GaugeSet_base
     gpi = FCpt(GaugePirani, '{self.prefix}:GPI:{self.index}')
+    tab_component_names = True
 
     def pressure(self):
         if self.gcc.state.get() == 0:
@@ -153,6 +164,7 @@ class GaugeSetPiraniMks(GaugeSetPirani):
     __doc__ = (__doc__ % GaugeSet_base).replace(
         'Set', 'Set including the controller')
     controller = FCpt(MKS937a, '{self.prefix_controller}')
+    tab_component_names = True
 
     def __init__(self, prefix, *, name, index, prefix_controller,  **kwargs):
         self.prefix_controller = prefix_controller

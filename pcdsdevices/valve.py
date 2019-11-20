@@ -62,6 +62,8 @@ class Stopper(InOutPVStatePositioner):
     # QIcon for UX
     _icon = 'fa.times-circle'
 
+    tab_whitelist = ['open', 'close']
+
     def _do_move(self, state):
         if state.name == 'IN':
             self.command.put(self.commands.close_valve.value)
@@ -99,6 +101,8 @@ class GateValve(Stopper):
 
     # QIcon for UX
     _icon = 'fa.hourglass'
+
+    tab_whitelist = ['interlocked']
 
     def check_value(self, value):
         """Check when removing GateValve interlock is off"""

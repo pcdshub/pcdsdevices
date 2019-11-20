@@ -6,7 +6,7 @@ from ophyd.device import Component as Cpt
 from ophyd.signal import Signal
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.areadetector.detectors import PCDSDetector
+from pcdsdevices.areadetector.detectors import PCDSAreaDetector
 from pcdsdevices.pim import PIM, PIMMotor
 
 logger = logging.getLogger(__name__)
@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 # OK, we have to screw with the class def here. I'm sorry. It's ophyd's fault
 # for checking an epics signal value in the __init__ statement.
-for attr in PCDSDetector._sub_devices:
-    plugin_class = getattr(PCDSDetector, attr).cls
+for attr in PCDSAreaDetector._sub_devices:
+    plugin_class = getattr(PCDSAreaDetector, attr).cls
     if hasattr(plugin_class, 'plugin_type'):
         plugin_class.plugin_type = Cpt(Signal, value=plugin_class._plugin_type)
 
@@ -26,6 +26,9 @@ def fake_pim():
     pim = FakePIM('Test:Yag', name='test')
     pim.state.sim_put(0)
     pim.state.sim_set_enum_strs(['Unknown'] + PIMMotor.states_list)
+    pim.motor.error_severity.sim_put(0)
+    pim.motor.bit_status.sim_put(0)
+    pim.motor.motor_spg.sim_put(2)
     return pim
 
 

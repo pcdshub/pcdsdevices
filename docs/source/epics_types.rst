@@ -7,6 +7,7 @@ Common EPICS Devices
     :toctree: generated
     
     Attenuator
+    Acromag
     BeckhoffAxis
     CCM
     DelayNewport
@@ -19,8 +20,10 @@ Common EPICS Devices
     IonPump
     LODCM
     Motor
+    MovableStand
     Newport
     OffsetMirror
+    PCDSAreaDetector
     PIM
     PMC100
     PointingMirror

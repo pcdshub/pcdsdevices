@@ -8,7 +8,7 @@ from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
-from .mv_interface import tweak_base
+from .interface import tweak_base
 from .sim import FastMotor
 
 
@@ -40,6 +40,9 @@ class LensStack(PseudoPositioner):
     z = FCpt(IMS, '{self.z_prefix}')
 
     calib_z = Cpt(PseudoSingle)
+
+    tab_whitelist = ['tweak', 'align']
+    tab_component_names = True
 
     def __init__(self, x_prefix, y_prefix, z_prefix, *args, **kwargs):
         self.x_prefix = x_prefix

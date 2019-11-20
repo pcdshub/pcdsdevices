@@ -8,5 +8,6 @@ Simulated Devices
     :toctree: generated
 
     SynMotor
+    FastMotor
     SlowMotor 
     SimTwoAxis
