@@ -4,7 +4,8 @@ Standard classes for LCLS Gate Valves
 import logging
 from enum import Enum
 
-from ophyd import EpicsSignal, EpicsSignalRO, Component as Cpt
+from ophyd import EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
+from ophyd import Component as Cpt, Device
 
 from .inout import InOutPositioner, InOutPVStatePositioner
 
@@ -90,6 +91,9 @@ class GateValve(Stopper):
     This inherits directly from :class:`.Stopper` but adds additional logic to
     check the state of the interlock before requesting motion. This is not a
     safety feature, just a notice to the operator.
+
+    This class has been replaced by VGC_legacy but has not been removed as some
+    elements still need to be carried over.
     """
     # Limit based states
     open_limit = Cpt(EpicsSignalRO, ':OPN_DI', kind='normal')
@@ -162,3 +166,78 @@ class PPSStopper(InOutPositioner):
         PPSStopper can not be commanded via EPICS
         """
         raise PermissionError("PPSStopper can not be commanded via EPICS")
+
+
+
+class Valve_base(Device):
+    """
+    Base class for valves
+
+    Newer class. This and below are still missing some functionality.
+    Still need to work out replacement of old classes.
+    """
+    open_command = Cpt(EpicsSignalWithRBV, ':OPN_SW' , kind='normal', doc='Epics command to Open valve')
+    interlock_ok = Cpt(EpicsSignalRO, ':OPN_OK' , kind='normal', doc='Valve is OK to Open interlock ')
+    open_do = Cpt(EpicsSignalRO, ':OPN_DO' , kind='normal', doc='PLC Output to Open valve, 1 means 24V on command cable')
+
+class VVC(Valve_base):
+    """
+    Vent Valve Controlled
+
+    """
+    override_on = Cpt(EpicsSignalWithRBV, ':OVRD_ON' , kind='ommitted', doc='Epics Command to set/reset Override mode')
+    open_override = Cpt(EpicsSignalWithRBV, ':FORCE_OPN' , kind='ommitted', doc='Epics Command for open the valve in override mode')
+
+class VGC_legacy(Valve_base):
+    """
+    Class for Basic Vacuum Valve
+
+    Replaces the GateValve class
+    """
+    open_limit = Cpt(EpicsSignalRO, ':OPN_DI' , kind='hinted', doc='Open limit switch digital input')
+    closed_limit = Cpt(EpicsSignalRO, ':CLS_DI' , kind='hinted', doc='Closed limit switch digital input')
+
+class VRC(VVC):
+    """
+    Class for Gate Valves with Control and readback
+
+    """
+    state = Cpt(EpicsSignalRO, ':STATE' , kind='normal', doc='Valve state')
+    open_limit = Cpt(EpicsSignalRO, ':OPN_DI' , kind='hinted', doc='Open limit switch digital input')
+    closed_limit = Cpt(EpicsSignalRO, ':CLS_DI' , kind='hinted', doc='Closed limit switch digital input')
+
+class VGC(VRC):
+    """
+    Class for Controlled Gate Valves
+
+    """
+    diff_press_ok = Cpt(EpicsSignalRO, ':DP_OK_RBV' , kind='normal', doc='Differential pressure interlock ok')
+    ext_ilk_ok = Cpt(EpicsSignalRO, ':Ext_ILK_OK' , kind='normal', doc='External interlock ok')
+    at_vac_sp = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP' , kind='config', doc='AT VAC Set point value')
+    at_vac_hysterisis = Cpt(EpicsSignalWithRBV, ':AT_VAC_HYS' , kind='config', doc='AT VAC Hysterisis')
+    at_vac = Cpt(EpicsSignalRO, ':AT_VAC' , kind='normal', doc='at vacuum sp is reached')
+    error = Cpt(EpicsSignalRO, ':Error' , kind='normal', doc='Error Present')
+
+class VVC_NO(Device):
+    """
+    Vent Valve Controlled, Normally Open
+
+    """
+    close_command = Cpt(EpicsSignalWithRBV, ':CLS_SW' , kind='normal', doc='Epics command to close valve')
+    close_override = Cpt(EpicsSignalWithRBV, ':FORCE_CLS' , kind='ommitted', doc='Epics Command for open the valve in override mode')
+    override_on = Cpt(EpicsSignalWithRBV, ':OVRD_ON' , kind='ommitted', doc='Epics Command to set/reset Override mode')
+    close_ok = Cpt(EpicsSignalRO, ':CLS_OK' , kind='normal', doc='used for normally open valves')
+    close_do = Cpt(EpicsSignalRO, ':CLS_DO' , kind='normal', doc='PLC Output to close valve')
+
+class VCN(Device):
+    """
+    Class for Variable Controlled Needle Valves
+
+    """
+    position_readback = Cpt(EpicsSignalRO, ':POS_RDBK' , kind='hinted', doc='valve position readback')
+    position_control = Cpt(EpicsSignalWithRBV, ':POS_REQ' , kind='normal', doc='requested positition to control the valve 0-100%')
+    interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK' , kind='normal', doc='interlock ok status')
+    open_command = Cpt(EpicsSignalWithRBV, ':OPN_SW' , kind='normal', doc='Epics command to Open valve')
+    position_output = Cpt(EpicsSignalRO, ':POS_DES' , kind='ommitted', doc='requested position set to output channel')
+    state = Cpt(EpicsSignalRO, ':STATE' , kind='hinted', doc='Valve state')
+    pos_ao = Cpt(EpicsSignalRO, ':POS_AO' , kind='hinted', doc='')
