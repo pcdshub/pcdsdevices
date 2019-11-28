@@ -185,8 +185,8 @@ class VVC(Valve_base):
     Vent Valve Controlled
 
     """
-    override_on = Cpt(EpicsSignalWithRBV, ':OVRD_ON' , kind='ommitted', doc='Epics Command to set/reset Override mode')
-    open_override = Cpt(EpicsSignalWithRBV, ':FORCE_OPN' , kind='ommitted', doc='Epics Command for open the valve in override mode')
+    override_on = Cpt(EpicsSignalWithRBV, ':OVRD_ON' , kind='omitted', doc='Epics Command to set/reset Override mode')
+    open_override = Cpt(EpicsSignalWithRBV, ':FORCE_OPN' , kind='omitted', doc='Epics Command for open the valve in override mode')
 
 class VGC_legacy(Valve_base):
     """
@@ -224,8 +224,8 @@ class VVC_NO(Device):
 
     """
     close_command = Cpt(EpicsSignalWithRBV, ':CLS_SW' , kind='normal', doc='Epics command to close valve')
-    close_override = Cpt(EpicsSignalWithRBV, ':FORCE_CLS' , kind='ommitted', doc='Epics Command for open the valve in override mode')
-    override_on = Cpt(EpicsSignalWithRBV, ':OVRD_ON' , kind='ommitted', doc='Epics Command to set/reset Override mode')
+    close_override = Cpt(EpicsSignalWithRBV, ':FORCE_CLS' , kind='omitted', doc='Epics Command for open the valve in override mode')
+    override_on = Cpt(EpicsSignalWithRBV, ':OVRD_ON' , kind='omitted', doc='Epics Command to set/reset Override mode')
     close_ok = Cpt(EpicsSignalRO, ':CLS_OK' , kind='normal', doc='used for normally open valves')
     close_do = Cpt(EpicsSignalRO, ':CLS_DO' , kind='normal', doc='PLC Output to close valve')
 
@@ -238,6 +238,6 @@ class VCN(Device):
     position_control = Cpt(EpicsSignalWithRBV, ':POS_REQ' , kind='normal', doc='requested positition to control the valve 0-100%')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK' , kind='normal', doc='interlock ok status')
     open_command = Cpt(EpicsSignalWithRBV, ':OPN_SW' , kind='normal', doc='Epics command to Open valve')
-    position_output = Cpt(EpicsSignalRO, ':POS_DES' , kind='ommitted', doc='requested position set to output channel')
+    position_output = Cpt(EpicsSignalRO, ':POS_DES' , kind='omitted', doc='requested position set to output channel')
     state = Cpt(EpicsSignalRO, ':STATE' , kind='hinted', doc='Valve state')
     pos_ao = Cpt(EpicsSignalRO, ':POS_AO' , kind='hinted', doc='')

@@ -298,7 +298,7 @@ class Gauge_Serial_GPI(Gauge_Serial):
     autozerodes = Cpt(EpicsSignal, ':AUTOZERODES' , kind='omitted', doc='')
     zeropr = Cpt(EpicsSignal, ':ZEROPR' , kind='omitted', doc='')
 
-class Gauge_Serial_GCC(Gauge_serial):
+class Gauge_Serial_GCC(Gauge_Serial):
     """
     Class for Cold Cathode Gauge controlled via serial
 
