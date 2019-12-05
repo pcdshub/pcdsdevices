@@ -158,17 +158,17 @@ class PIPPLC(Device):
     Still need to work out replacement of old classes.
     """
     pressure = Cpt(EpicsSignalRO, ':PRESS_RBV', kind='hinted',
-        doc='pressure reading')
+                   doc='pressure reading')
     high_voltage_do = Cpt(EpicsSignalRO, ':HV_DO_RBV', kind='normal',
-        doc='high voltage digital output')
+                          doc='high voltage digital output')
     high_voltage_switch = Cpt(EpicsSignalWithRBV, ':HV_SW', kind='omitted',
-        doc='epics command to witch on the high voltage')
+                              doc='epics command to witch on the high voltage')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
-        doc='interlock  is ok when true')
+                       doc='interlock  is ok when true')
     at_vac_sp = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='omitted',
-        doc='at vacuum set point')
+                    doc='at vacuum set point')
     set_point_relay = Cpt(EpicsSignalRO, ':SP_DI_RBV', kind='normal',
-        doc='set point digital input relay')
+                          doc='set point digital input relay')
 
 
 class PTMPLC(Device):
@@ -177,24 +177,24 @@ class PTMPLC(Device):
 
     """
     switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='omitted',
-        doc='')
+                         doc='')
     reset_fault = Cpt(EpicsSignalWithRBV, ':RST_SW', kind='normal', doc='')
     run_do = Cpt(EpicsSignalRO, ':RUN_DO_RBV', kind='normal', doc='')
     run_ok = Cpt(EpicsSignalRO, ':RUN_OK_RBV', kind='omitted', doc='')
     pump_at_speed = Cpt(EpicsSignalRO, ':AT_SPD_RBV', kind='omitted',
-        doc='')
+                        doc='')
     pump_accelerating = Cpt(EpicsSignalRO, ':ACCEL_RBV', kind='normal',
-        doc='')
+                            doc='')
     pump_speed = Cpt(EpicsSignalRO, ':SPEED_RBV', kind='normal', doc='')
     fault = Cpt(EpicsSignalRO, ':FAULT_RBV', kind='normal', doc='')
     warn = Cpt(EpicsSignalRO, ':WARN_RBV', kind='normal', doc='')
     alarm = Cpt(EpicsSignalWithRBV, ':ALARM', kind='normal', doc='')
     backing_pressure_sp = Cpt(EpicsSignalWithRBV, ':BackingPressureSP',
-        kind='omitted', doc='')
+                              kind='omitted', doc='')
     inlet_pressure_sp = Cpt(EpicsSignalWithRBV, ':InletPressureSP',
-        kind='omitted', doc='')
+                            kind='omitted', doc='')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
-        doc='interlock  is ok when true')
+                       doc='interlock  is ok when true')
 
 
 class PROPLC(Device):
@@ -203,9 +203,9 @@ class PROPLC(Device):
 
     """
     switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='omitted',
-        doc='')
+                         doc='')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
-        doc='interlock is ok when true')
+                       doc='interlock is ok when true')
     run_do = Cpt(EpicsSignalRO, ':RUN_DO_RBV', kind='normal', doc='')
     error = Cpt(EpicsSignalRO, ':ERROR_RBV', kind='normal', doc='')
     warn = Cpt(EpicsSignalRO, ':WARN_RBV', kind='normal', doc='')
@@ -232,23 +232,24 @@ class AgilentSerial(Device):
     sp_hys = Cpt(EpicsSignal, ':SP_HYS', kind='omitted', doc='')
     water_cooling = Cpt(EpicsSignal, ':WATER_COOLING', kind='normal', doc='')
     active_stop = Cpt(EpicsSignal, ':ACTIVE_STOP', kind='normal', doc='')
-    interlock_type = Cpt(EpicsSignal, ':INTERLOCK_TYPE', kind='omitted', doc='')
+    interlock_type = Cpt(EpicsSignal, ':INTERLOCK_TYPE', kind='omitted',
+                         doc='')
     ao_type = Cpt(EpicsSignal, ':AO_TYPE', kind='omitted', doc='')
     rot_freq = Cpt(EpicsSignal, ':ROT_FREQ', kind='normal', doc='')
     vent_valve = Cpt(EpicsSignal, ':VENT_VALVE', kind='omitted', doc='')
     vent_valve_operation = Cpt(EpicsSignal, ':VENT_VALVE_OPERATION',
-        kind='omitted', doc='')
+                               kind='omitted', doc='')
     vent_valve_delay = Cpt(EpicsSignal, ':VENT_VALVE_DELAY', kind='omitted',
-        doc='')
+                           doc='')
     vent_valve_raw = Cpt(EpicsSignal, ':VENT_VALVE_RAW', kind='omitted',
-        doc='')
+                         doc='')
     pump_current = Cpt(EpicsSignalRO, ':PUMP_CURRENT', kind='omitted',
-        doc='')
+                       doc='')
     pump_voltage = Cpt(EpicsSignalRO, ':PUMP_VOLTAGE', kind='normal',
-        doc='')
+                       doc='')
     pump_power = Cpt(EpicsSignalRO, ':PUMP_POWER', kind='normal', doc='')
     pump_drive_freq = Cpt(EpicsSignalRO, ':PUMP_DRIVE_FREQ', kind='normal',
-        doc='')
+                          doc='')
     pump_temp = Cpt(EpicsSignalRO, ':PUMP_TEMP', kind='normal', doc='')
     pump_status = Cpt(EpicsSignalRO, ':PUMP_STATUS', kind='normal', doc='')
     pump_error = Cpt(EpicsSignalRO, ':PUMP_ERROR', kind='normal', doc='')
@@ -261,30 +262,30 @@ class Navigator(AgilentSerial):
     """
     low_speed = Cpt(EpicsSignalRO, ':LOW_SPEED', kind='omitted', doc='')
     low_speed_freq = Cpt(EpicsSignalRO, ':LOW_SPEED_FREQ', kind='omitted',
-        doc='')
+                         doc='')
     sp_power = Cpt(EpicsSignalRO, ':SP_POWER', kind='omitted', doc='')
     sp_time = Cpt(EpicsSignalRO, ':SP_TIME', kind='omitted', doc='')
     sp_normal = Cpt(EpicsSignalRO, ':SP_NORMAL', kind='omitted', doc='')
     sp_pressure = Cpt(EpicsSignalRO, ':SP_PRESSURE', kind='omitted', doc='')
     vent_open_time = Cpt(EpicsSignalRO, ':VENT_OPEN_TIME', kind='omitted',
-        doc='')
+                         doc='')
     vent_open_time_raw = Cpt(EpicsSignalRO, ':VENT_OPEN_TIME_RAW',
-        kind='omitted', doc='')
+                             kind='omitted', doc='')
     power_limit = Cpt(EpicsSignalRO, ':POWER_LIMIT', kind='omitted', doc='')
     gas_load_type = Cpt(EpicsSignalRO, ':GAS_LOAD_TYPE', kind='omitted',
-        doc='')
+                        doc='')
     press_read_corr = Cpt(EpicsSignalRO, ':PRESS_READ_CORR', kind='omitted',
-        doc='')
+                          doc='')
     sp_press_unit = Cpt(EpicsSignalRO, ':SP_PRESS_UNIT', kind='omitted',
-        doc='')
+                        doc='')
     sp_write_press_unit = Cpt(EpicsSignalRO, ':SP_WRITE_PRESS_UNIT',
-        kind='omitted', doc='')
+                              kind='omitted', doc='')
     stop_speed_reading = Cpt(EpicsSignalRO, ':STOP_SPEED_READING',
-        kind='omitted', doc='')
+                             kind='omitted', doc='')
     ctrl_heatsink_temp = Cpt(EpicsSignalRO, ':CTRL_HEATSINK_TEMP',
-        kind='omitted', doc='')
+                             kind='omitted', doc='')
     ctrl_air_temp = Cpt(EpicsSignalRO, ':CTRL_AIR_TEMP', kind='omitted',
-        doc='')
+                        doc='')
 
 
 class GammaPCT(Device):

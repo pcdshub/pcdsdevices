@@ -183,15 +183,15 @@ class GaugePLC(Device):
     Still need to work out replacement of old classes.
     """
     pressure = Cpt(EpicsSignalRO, ':PRESS_RBV', kind='hinted',
-        doc='gauge pressure reading')
+                   doc='gauge pressure reading')
     gauge_at_vac = Cpt(EpicsSignalRO, ':AT_VAC_RBV', kind='normal',
-        doc='gauge is at VAC')
+                       doc='gauge is at VAC')
     pressure_ok = Cpt(EpicsSignalRO, ':PRESS_OK_RBV', kind='normal',
-        doc='pressure reading ok')
+                      doc='pressure reading ok')
     at_vac_setpoint = Cpt(EpicsSignalWithRBV, ':VAC_SP', kind='config',
-        doc='At vacuum setpoint for all gauges')
+                          doc='At vacuum setpoint for all gauges')
     state = Cpt(EpicsSignalRO, ':State_RBV', kind='hinted',
-        doc='state of the gauge')
+                doc='state of the gauge')
 
 
 class GCCPLC(GaugePLC):
@@ -200,15 +200,17 @@ class GCCPLC(GaugePLC):
 
     """
     high_voltage_on = Cpt(EpicsSignalWithRBV, ':HV_SW', kind='normal',
-        doc='command to switch the hight voltage on')
+                          doc='command to switch the hight voltage on')
     high_voltage_disable = Cpt(EpicsSignalRO, ':HV_DIS_RBV', kind='normal',
-        doc='enables the high voltage on the cold cathode gauge')
+                               doc=('enables the high voltage on the cold '
+                                    'cathode gauge'))
     protection_setpoint = Cpt(EpicsSignalRO, ':PRO_SP_RBV', kind='normal',
-        doc='Protection setpoint for ion gauges at which the gauge turns off')
+                              doc=('Protection setpoint for ion gauges at '
+                                   'which the gauge turns off'))
     setpoint_hysterisis = Cpt(EpicsSignalWithRBV, ':SP_HYS', kind='config',
-        doc='Protection setpoint hysteresis')
+                              doc='Protection setpoint hysteresis')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
-        doc='Interlock is ok')
+                       doc='Interlock is ok')
 
 
 class GCC500PLC(GCCPLC):
@@ -217,9 +219,9 @@ class GCC500PLC(GCCPLC):
 
     """
     high_voltage_is_on = Cpt(EpicsSignalRO, ':HV_ON_RBV', kind='normal',
-        doc='state of the HV')
+                             doc='state of the HV')
     disc_active = Cpt(EpicsSignalRO, ':DISC_ACTIVE_RBV', kind='normal',
-        doc='discharge current active')
+                      doc='discharge current active')
 
 
 class GCT(Device):
@@ -295,21 +297,21 @@ class GaugeSerial(Device):
     pstatspdir_1 = Cpt(EpicsSignal, ':PSTATSPDIR_1', kind='omitted', doc='')
     pstatspdir_2 = Cpt(EpicsSignal, ':PSTATSPDIR_2', kind='omitted', doc='')
     pstatsprbck_1 = Cpt(EpicsSignalRO, ':PSTATSPRBCK_1', kind='omitted',
-        doc='')
+                        doc='')
     pstatsprbck_2 = Cpt(EpicsSignalRO, ':PSTATSPRBCK_2', kind='omitted',
-        doc='')
+                        doc='')
     state = Cpt(EpicsSignal, ':STATE', kind='omitted', doc='')
     statedes = Cpt(EpicsSignal, ':STATEDES', kind='omitted', doc='')
     staterbck = Cpt(EpicsSignalRO, ':STATERBCK', kind='omitted', doc='')
     status_rs = Cpt(EpicsSignal, ':STATUS_RS', kind='omitted', doc='')
     status_rs_calc1 = Cpt(EpicsSignal, ':STATUS_RS_CALC1', kind='omitted',
-        doc='')
+                          doc='')
     status_rs_calc2 = Cpt(EpicsSignal, ':STATUS_RS_CALC2', kind='omitted',
-        doc='')
+                          doc='')
     status_rscalc = Cpt(EpicsSignal, ':STATUS_RSCALC', kind='omitted',
-        doc='')
+                        doc='')
     status_rscalc2 = Cpt(EpicsSignal, ':STATUS_RSCALC2', kind='omitted',
-        doc='')
+                         doc='')
     status_rsmon = Cpt(EpicsSignal, ':STATUS_RSMON', kind='omitted', doc='')
     status_rsout = Cpt(EpicsSignal, ':STATUS_RSOUT', kind='omitted', doc='')
 
@@ -333,7 +335,7 @@ class GaugeSerialGCC(GaugeSerial):
     """
     pctrl_ch_des = Cpt(EpicsSignal, ':PCTRL_CH_DES', kind='omitted', doc='')
     pctrl_ch_rbck = Cpt(EpicsSignalRO, ':PCTRL_CH_RBCK', kind='omitted',
-        doc='')
+                        doc='')
     pctrldes = Cpt(EpicsSignal, ':PCTRLDES', kind='omitted', doc='')
     pctrlen = Cpt(EpicsSignal, ':PCTRLEN', kind='omitted', doc='')
     pctrlencalc = Cpt(EpicsSignal, ':PCTRLENCALC', kind='omitted', doc='')
@@ -361,7 +363,8 @@ class GaugeSerialGCC(GaugeSerial):
     pstatsprbck_3 = Cpt(EpicsSignal, ':PSTATSPRBCK_3', kind='omitted', doc='')
     pstatsprbck_4 = Cpt(EpicsSignal, ':PSTATSPRBCK_4', kind='omitted', doc='')
     pstatsprbck_fs = Cpt(EpicsSignal, ':PSTATSPRBCK_FS', kind='omitted',
-        doc='')
+                         doc='')
+
 
 # factory function for IonPumps
 def GaugeSet(prefix, *, name, index, **kwargs):
