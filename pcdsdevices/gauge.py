@@ -2,6 +2,7 @@
 Standard classes for LCLS Gauges
 """
 import logging
+
 from ophyd import EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV, Device
 from ophyd import Component as Cpt, FormattedComponent as FCpt
 
@@ -131,7 +132,7 @@ class GaugeSetMks(GaugeSetBase):
     controller = FCpt(MKS937a, '{self.prefix_controller}')
     tab_component_names = True
 
-    def __init__(self, prefix, *, name, index, prefix_controller,  **kwargs):
+    def __init__(self, prefix, *, name, index, prefix_controller, **kwargs):
         self.prefix_controller = prefix_controller
         super().__init__(prefix, name=name, index=index, **kwargs)
 
@@ -166,172 +167,201 @@ class GaugeSetPiraniMks(GaugeSetPirani):
     controller = FCpt(MKS937a, '{self.prefix_controller}')
     tab_component_names = True
 
-    def __init__(self, prefix, *, name, index, prefix_controller,  **kwargs):
+    def __init__(self, prefix, *, name, index, prefix_controller, **kwargs):
         self.prefix_controller = prefix_controller
         super().__init__(prefix, name=name, index=index, **kwargs)
 
     def egu(self):
         return self.controller.unit.get()
 
-class Gauge_PLC(Device):
+
+class GaugePLC(Device):
     """
     Base class for gauges controlled by PLC
 
     Newer class. This and below are still missing some functionality.
     Still need to work out replacement of old classes.
     """
-    pressure = Cpt(EpicsSignalRO, ':PRESS_RBV' , kind='hinted', doc='gauge pressure reading')
-    gauge_at_vac = Cpt(EpicsSignalRO, ':AT_VAC_RBV' , kind='normal', doc='gauge is at VAC')
-    pressure_ok = Cpt(EpicsSignalRO, ':PRESS_OK_RBV' , kind='normal', doc='pressure reading ok')
-    at_vac_setpoint = Cpt(EpicsSignalWithRBV, ':VAC_SP' , kind='config', doc='At vacuum setpoint for all gauges')
-    state = Cpt(EpicsSignalRO, ':State_RBV' , kind='hinted', doc='state of the gague')
+    pressure = Cpt(EpicsSignalRO, ':PRESS_RBV', kind='hinted',
+        doc='gauge pressure reading')
+    gauge_at_vac = Cpt(EpicsSignalRO, ':AT_VAC_RBV', kind='normal',
+        doc='gauge is at VAC')
+    pressure_ok = Cpt(EpicsSignalRO, ':PRESS_OK_RBV', kind='normal',
+        doc='pressure reading ok')
+    at_vac_setpoint = Cpt(EpicsSignalWithRBV, ':VAC_SP', kind='config',
+        doc='At vacuum setpoint for all gauges')
+    state = Cpt(EpicsSignalRO, ':State_RBV', kind='hinted',
+        doc='state of the gauge')
 
-class GCC_PLC(Gauge_PLC):
+
+class GCCPLC(GaugePLC):
     """
     Class for Cold Cathode Gauge controlled by PLC
 
     """
-    high_voltage_on = Cpt(EpicsSignalWithRBV, ':HV_SW' , kind='normal', doc='command to switch the hight voltage on')
-    high_voltage_disable = Cpt(EpicsSignalRO, ':HV_DIS_RBV' , kind='normal', doc='enables the high voltage on the cold cathode gauge')
-    protection_setpoint = Cpt(EpicsSignalRO, ':PRO_SP_RBV' , kind='normal', doc='Protection setpoint for ion gauges at which the gauge turns off')
-    setpoint_hysterisis = Cpt(EpicsSignalWithRBV, ':SP_HYS' , kind='config', doc='Protection setpoint hysteresis')
-    interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV' , kind='normal', doc='Interlock is ok')
+    high_voltage_on = Cpt(EpicsSignalWithRBV, ':HV_SW', kind='normal',
+        doc='command to switch the hight voltage on')
+    high_voltage_disable = Cpt(EpicsSignalRO, ':HV_DIS_RBV', kind='normal',
+        doc='enables the high voltage on the cold cathode gauge')
+    protection_setpoint = Cpt(EpicsSignalRO, ':PRO_SP_RBV', kind='normal',
+        doc='Protection setpoint for ion gauges at which the gauge turns off')
+    setpoint_hysterisis = Cpt(EpicsSignalWithRBV, ':SP_HYS', kind='config',
+        doc='Protection setpoint hysteresis')
+    interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
+        doc='Interlock is ok')
 
-class GCC500_PLC(GCC_PLC):
+
+class GCC500PLC(GCCPLC):
     """
     Class for GCC500 controlled by PLC
 
     """
-    high_voltage_is_on = Cpt(EpicsSignalRO, ':HV_ON_RBV' , kind='normal', doc='state of the HV')
-    disc_active = Cpt(EpicsSignalRO, ':DISC_ACTIVE_RBV' , kind='normal', doc='discharge current active')
+    high_voltage_is_on = Cpt(EpicsSignalRO, ':HV_ON_RBV', kind='normal',
+        doc='state of the HV')
+    disc_active = Cpt(EpicsSignalRO, ':DISC_ACTIVE_RBV', kind='normal',
+        doc='discharge current active')
+
 
 class GCT(Device):
     """
     Base class for Gauge Controllers accessed via serial
 
     """
-    unit = Cpt(EpicsSignal, ':UNIT' , kind='omitted', doc='')
-    cal = Cpt(EpicsSignal, ':CAL' , kind='omitted', doc='')
-    version = Cpt(EpicsSignalRO, ':VERSION' , kind='omitted', doc='')
+    unit = Cpt(EpicsSignal, ':UNIT', kind='omitted', doc='')
+    cal = Cpt(EpicsSignal, ':CAL', kind='omitted', doc='')
+    version = Cpt(EpicsSignalRO, ':VERSION', kind='omitted', doc='')
 
-class MKS937B_controller(GCT):
+
+class MKS937BController(GCT):
     """
     Class for MKS937B accessed via serial
 
     """
-    addr = Cpt(EpicsSignal, ':ADDR' , kind='omitted', doc='')
-    modtype_a = Cpt(EpicsSignalRO, ':MODTYPE_A' , kind='omitted', doc='')
-    modtype_b = Cpt(EpicsSignalRO, ':MODTYPE_B' , kind='omitted', doc='')
-    modtype_c = Cpt(EpicsSignalRO, ':MODTYPE_C' , kind='omitted', doc='')
-    pstatall = Cpt(EpicsSignalRO, ':PSTATALL' , kind='omitted', doc='')
-    pstatenall = Cpt(EpicsSignalRO, ':PSTATENALL' , kind='omitted', doc='')
-    slota = Cpt(EpicsSignal, ':SLOTA' , kind='omitted', doc='')
-    slotb = Cpt(EpicsSignal, ':SLOTB' , kind='omitted', doc='')
-    slotc = Cpt(EpicsSignal, ':SLOTC' , kind='omitted', doc='')
+    addr = Cpt(EpicsSignal, ':ADDR', kind='omitted', doc='')
+    modtype_a = Cpt(EpicsSignalRO, ':MODTYPE_A', kind='omitted', doc='')
+    modtype_b = Cpt(EpicsSignalRO, ':MODTYPE_B', kind='omitted', doc='')
+    modtype_c = Cpt(EpicsSignalRO, ':MODTYPE_C', kind='omitted', doc='')
+    pstatall = Cpt(EpicsSignalRO, ':PSTATALL', kind='omitted', doc='')
+    pstatenall = Cpt(EpicsSignalRO, ':PSTATENALL', kind='omitted', doc='')
+    slota = Cpt(EpicsSignal, ':SLOTA', kind='omitted', doc='')
+    slotb = Cpt(EpicsSignal, ':SLOTB', kind='omitted', doc='')
+    slotc = Cpt(EpicsSignal, ':SLOTC', kind='omitted', doc='')
 
-class MKS937A_controller(GCT):
+
+class MKS937AController(GCT):
     """
     Class for MKS937A accessed via serial
 
     """
-    pstatenout = Cpt(EpicsSignal, ':PSTATENOUT' , kind='omitted', doc='')
-    pstatspout = Cpt(EpicsSignal, ':PSTATSPOUT' , kind='omitted', doc='')
-    freq = Cpt(EpicsSignal, ':FREQ' , kind='omitted', doc='')
-    gauges = Cpt(EpicsSignalRO, ':GAUGES' , kind='omitted', doc='')
-    modcc = Cpt(EpicsSignalRO, ':MODCC' , kind='omitted', doc='')
-    moda = Cpt(EpicsSignalRO, ':MODA' , kind='omitted', doc='')
-    modb = Cpt(EpicsSignalRO, ':MODB' , kind='omitted', doc='')
-    com_des = Cpt(EpicsSignal, ':COM_DES' , kind='omitted', doc='')
-    com = Cpt(EpicsSignal, ':COM' , kind='omitted', doc='')
-    delay = Cpt(EpicsSignal, ':DELAY' , kind='omitted', doc='')
-    front = Cpt(EpicsSignal, ':FRONT' , kind='omitted', doc='')
+    pstatenout = Cpt(EpicsSignal, ':PSTATENOUT', kind='omitted', doc='')
+    pstatspout = Cpt(EpicsSignal, ':PSTATSPOUT', kind='omitted', doc='')
+    freq = Cpt(EpicsSignal, ':FREQ', kind='omitted', doc='')
+    gauges = Cpt(EpicsSignalRO, ':GAUGES', kind='omitted', doc='')
+    modcc = Cpt(EpicsSignalRO, ':MODCC', kind='omitted', doc='')
+    moda = Cpt(EpicsSignalRO, ':MODA', kind='omitted', doc='')
+    modb = Cpt(EpicsSignalRO, ':MODB', kind='omitted', doc='')
+    com_des = Cpt(EpicsSignal, ':COM_DES', kind='omitted', doc='')
+    com = Cpt(EpicsSignal, ':COM', kind='omitted', doc='')
+    delay = Cpt(EpicsSignal, ':DELAY', kind='omitted', doc='')
+    front = Cpt(EpicsSignal, ':FRONT', kind='omitted', doc='')
 
-class Gauge_Serial(Device):
+
+class GaugeSerial(Device):
     """
     Base class for Vacuum Gauge controlled via serial
 
     """
-    gastype = Cpt(EpicsSignal, ':GASTYPE' , kind='omitted', doc='')
-    gastypedes = Cpt(EpicsSignal, ':GASTYPEDES' , kind='omitted', doc='')
-    hystsprbck_1 = Cpt(EpicsSignalRO, ':HYSTSPRBCK_1' , kind='omitted', doc='')
-    hystsprbck_2 = Cpt(EpicsSignalRO, ':HYSTSPRBCK_2' , kind='omitted', doc='')
-    p = Cpt(EpicsSignal, ':P' , kind='omitted', doc='')
-    padel = Cpt(EpicsSignal, ':PADEL' , kind='omitted', doc='')
-    plog = Cpt(EpicsSignal, ':PLOG' , kind='omitted', doc='')
-    pmon = Cpt(EpicsSignal, ':PMON' , kind='omitted', doc='')
-    pmonraw = Cpt(EpicsSignal, ':PMONRAW' , kind='omitted', doc='')
-    pstat_1 = Cpt(EpicsSignal, ':PSTAT_1' , kind='omitted', doc='')
-    pstat_2 = Cpt(EpicsSignal, ':PSTAT_2' , kind='omitted', doc='')
-    pstat_calc = Cpt(EpicsSignal, ':PSTAT_CALC' , kind='omitted', doc='')
-    pstat_sum = Cpt(EpicsSignal, ':PSTAT_SUM' , kind='omitted', doc='')
-    pstatdirdes_1 = Cpt(EpicsSignal, ':PSTATDIRDES_1' , kind='omitted', doc='')
-    pstatdirdes_2 = Cpt(EpicsSignal, ':PSTATDIRDES_2' , kind='omitted', doc='')
-    pstatenable_1 = Cpt(EpicsSignal, ':PSTATENABLE_1' , kind='omitted', doc='')
-    pstatenable_2 = Cpt(EpicsSignal, ':PSTATENABLE_2' , kind='omitted', doc='')
-    pstatenades_1 = Cpt(EpicsSignal, ':PSTATENADES_1' , kind='omitted', doc='')
-    pstatenades_2 = Cpt(EpicsSignal, ':PSTATENADES_2' , kind='omitted', doc='')
-    pstatspdes_1 = Cpt(EpicsSignal, ':PSTATSPDES_1' , kind='omitted', doc='')
-    pstatspdes_2 = Cpt(EpicsSignal, ':PSTATSPDES_2' , kind='omitted', doc='')
-    pstatspdir_1 = Cpt(EpicsSignal, ':PSTATSPDIR_1' , kind='omitted', doc='')
-    pstatspdir_2 = Cpt(EpicsSignal, ':PSTATSPDIR_2' , kind='omitted', doc='')
-    pstatsprbck_1 = Cpt(EpicsSignalRO, ':PSTATSPRBCK_1' , kind='omitted', doc='')
-    pstatsprbck_2 = Cpt(EpicsSignalRO, ':PSTATSPRBCK_2' , kind='omitted', doc='')
-    state = Cpt(EpicsSignal, ':STATE' , kind='omitted', doc='')
-    statedes = Cpt(EpicsSignal, ':STATEDES' , kind='omitted', doc='')
-    staterbck = Cpt(EpicsSignalRO, ':STATERBCK' , kind='omitted', doc='')
-    status_rs = Cpt(EpicsSignal, ':STATUS_RS' , kind='omitted', doc='')
-    status_rs_calc1 = Cpt(EpicsSignal, ':STATUS_RS_CALC1' , kind='omitted', doc='')
-    status_rs_calc2 = Cpt(EpicsSignal, ':STATUS_RS_CALC2' , kind='omitted', doc='')
-    status_rscalc = Cpt(EpicsSignal, ':STATUS_RSCALC' , kind='omitted', doc='')
-    status_rscalc2 = Cpt(EpicsSignal, ':STATUS_RSCALC2' , kind='omitted', doc='')
-    status_rsmon = Cpt(EpicsSignal, ':STATUS_RSMON' , kind='omitted', doc='')
-    status_rsout = Cpt(EpicsSignal, ':STATUS_RSOUT' , kind='omitted', doc='')
+    gastype = Cpt(EpicsSignal, ':GASTYPE', kind='omitted', doc='')
+    gastypedes = Cpt(EpicsSignal, ':GASTYPEDES', kind='omitted', doc='')
+    hystsprbck_1 = Cpt(EpicsSignalRO, ':HYSTSPRBCK_1', kind='omitted', doc='')
+    hystsprbck_2 = Cpt(EpicsSignalRO, ':HYSTSPRBCK_2', kind='omitted', doc='')
+    p = Cpt(EpicsSignal, ':P', kind='omitted', doc='')
+    padel = Cpt(EpicsSignal, ':PADEL', kind='omitted', doc='')
+    plog = Cpt(EpicsSignal, ':PLOG', kind='omitted', doc='')
+    pmon = Cpt(EpicsSignal, ':PMON', kind='omitted', doc='')
+    pmonraw = Cpt(EpicsSignal, ':PMONRAW', kind='omitted', doc='')
+    pstat_1 = Cpt(EpicsSignal, ':PSTAT_1', kind='omitted', doc='')
+    pstat_2 = Cpt(EpicsSignal, ':PSTAT_2', kind='omitted', doc='')
+    pstat_calc = Cpt(EpicsSignal, ':PSTAT_CALC', kind='omitted', doc='')
+    pstat_sum = Cpt(EpicsSignal, ':PSTAT_SUM', kind='omitted', doc='')
+    pstatdirdes_1 = Cpt(EpicsSignal, ':PSTATDIRDES_1', kind='omitted', doc='')
+    pstatdirdes_2 = Cpt(EpicsSignal, ':PSTATDIRDES_2', kind='omitted', doc='')
+    pstatenable_1 = Cpt(EpicsSignal, ':PSTATENABLE_1', kind='omitted', doc='')
+    pstatenable_2 = Cpt(EpicsSignal, ':PSTATENABLE_2', kind='omitted', doc='')
+    pstatenades_1 = Cpt(EpicsSignal, ':PSTATENADES_1', kind='omitted', doc='')
+    pstatenades_2 = Cpt(EpicsSignal, ':PSTATENADES_2', kind='omitted', doc='')
+    pstatspdes_1 = Cpt(EpicsSignal, ':PSTATSPDES_1', kind='omitted', doc='')
+    pstatspdes_2 = Cpt(EpicsSignal, ':PSTATSPDES_2', kind='omitted', doc='')
+    pstatspdir_1 = Cpt(EpicsSignal, ':PSTATSPDIR_1', kind='omitted', doc='')
+    pstatspdir_2 = Cpt(EpicsSignal, ':PSTATSPDIR_2', kind='omitted', doc='')
+    pstatsprbck_1 = Cpt(EpicsSignalRO, ':PSTATSPRBCK_1', kind='omitted',
+        doc='')
+    pstatsprbck_2 = Cpt(EpicsSignalRO, ':PSTATSPRBCK_2', kind='omitted',
+        doc='')
+    state = Cpt(EpicsSignal, ':STATE', kind='omitted', doc='')
+    statedes = Cpt(EpicsSignal, ':STATEDES', kind='omitted', doc='')
+    staterbck = Cpt(EpicsSignalRO, ':STATERBCK', kind='omitted', doc='')
+    status_rs = Cpt(EpicsSignal, ':STATUS_RS', kind='omitted', doc='')
+    status_rs_calc1 = Cpt(EpicsSignal, ':STATUS_RS_CALC1', kind='omitted',
+        doc='')
+    status_rs_calc2 = Cpt(EpicsSignal, ':STATUS_RS_CALC2', kind='omitted',
+        doc='')
+    status_rscalc = Cpt(EpicsSignal, ':STATUS_RSCALC', kind='omitted',
+        doc='')
+    status_rscalc2 = Cpt(EpicsSignal, ':STATUS_RSCALC2', kind='omitted',
+        doc='')
+    status_rsmon = Cpt(EpicsSignal, ':STATUS_RSMON', kind='omitted', doc='')
+    status_rsout = Cpt(EpicsSignal, ':STATUS_RSOUT', kind='omitted', doc='')
 
-class Gauge_Serial_GPI(Gauge_Serial):
+
+class GaugeSerialGPI(GaugeSerial):
     """
     Class for Pirani Vacuum Gauge controlled via serial
 
     """
-    atmcalib = Cpt(EpicsSignal, ':ATMCALIB' , kind='omitted', doc='')
-    atmcalibdes = Cpt(EpicsSignal, ':ATMCALIBDES' , kind='omitted', doc='')
-    autozero = Cpt(EpicsSignal, ':AUTOZERO' , kind='omitted', doc='')
-    autozerodes = Cpt(EpicsSignal, ':AUTOZERODES' , kind='omitted', doc='')
-    zeropr = Cpt(EpicsSignal, ':ZEROPR' , kind='omitted', doc='')
+    atmcalib = Cpt(EpicsSignal, ':ATMCALIB', kind='omitted', doc='')
+    atmcalibdes = Cpt(EpicsSignal, ':ATMCALIBDES', kind='omitted', doc='')
+    autozero = Cpt(EpicsSignal, ':AUTOZERO', kind='omitted', doc='')
+    autozerodes = Cpt(EpicsSignal, ':AUTOZERODES', kind='omitted', doc='')
+    zeropr = Cpt(EpicsSignal, ':ZEROPR', kind='omitted', doc='')
 
-class Gauge_Serial_GCC(Gauge_Serial):
+
+class GaugeSerialGCC(GaugeSerial):
     """
     Class for Cold Cathode Gauge controlled via serial
 
     """
-    pctrl_ch_des = Cpt(EpicsSignal, ':PCTRL_CH_DES' , kind='omitted', doc='')
-    pctrl_ch_rbck = Cpt(EpicsSignalRO, ':PCTRL_CH_RBCK' , kind='omitted', doc='')
-    pctrldes = Cpt(EpicsSignal, ':PCTRLDES' , kind='omitted', doc='')
-    pctrlen = Cpt(EpicsSignal, ':PCTRLEN' , kind='omitted', doc='')
-    pctrlencalc = Cpt(EpicsSignal, ':PCTRLENCALC' , kind='omitted', doc='')
-    pctrlenrbck = Cpt(EpicsSignalRO, ':PCTRLENRBCK' , kind='omitted', doc='')
-    pctrlrbck = Cpt(EpicsSignalRO, ':PCTRLRBCK' , kind='omitted', doc='')
-    pctrlspdes = Cpt(EpicsSignal, ':PCTRLSPDES' , kind='omitted', doc='')
-    pctrlsprbck = Cpt(EpicsSignalRO, ':PCTRLSPRBCK' , kind='omitted', doc='')
-    pprotencalc = Cpt(EpicsSignal, ':PPROTENCALC' , kind='omitted', doc='')
-    pprotenrbck = Cpt(EpicsSignalRO, ':PPROTENRBCK' , kind='omitted', doc='')
-    pprotspdes = Cpt(EpicsSignal, ':PPROTSPDES' , kind='omitted', doc='')
-    pprotsprbck = Cpt(EpicsSignalRO, ':PPROTSPRBCK' , kind='omitted', doc='')
-    pstat_3 = Cpt(EpicsSignal, ':PSTAT_3' , kind='omitted', doc='')
-    pstat_4 = Cpt(EpicsSignal, ':PSTAT_4' , kind='omitted', doc='')
-    pstatdirdes_3 = Cpt(EpicsSignal, ':PSTATDIRDES_3' , kind='omitted', doc='')
-    pstatdirdes_4 = Cpt(EpicsSignal, ':PSTATDIRDES_4' , kind='omitted', doc='')
-    pstatenable_3 = Cpt(EpicsSignal, ':PSTATENABLE_3' , kind='omitted', doc='')
-    pstatenable_4 = Cpt(EpicsSignal, ':PSTATENABLE_4' , kind='omitted', doc='')
-    pstatenades_3 = Cpt(EpicsSignal, ':PSTATENADES_3' , kind='omitted', doc='')
-    pstatenades_4 = Cpt(EpicsSignal, ':PSTATENADES_4' , kind='omitted', doc='')
-    pstatspdes_3 = Cpt(EpicsSignal, ':PSTATSPDES_3' , kind='omitted', doc='')
-    pstatspdes_4 = Cpt(EpicsSignal, ':PSTATSPDES_4' , kind='omitted', doc='')
-    pstatspdes_fs = Cpt(EpicsSignal, ':PSTATSPDES_FS' , kind='omitted', doc='')
-    pstatspdir_3 = Cpt(EpicsSignal, ':PSTATSPDIR_3' , kind='omitted', doc='')
-    pstatspdir_4 = Cpt(EpicsSignal, ':PSTATSPDIR_4' , kind='omitted', doc='')
-    pstatsprbck_3 = Cpt(EpicsSignal, ':PSTATSPRBCK_3' , kind='omitted', doc='')
-    pstatsprbck_4 = Cpt(EpicsSignal, ':PSTATSPRBCK_4' , kind='omitted', doc='')
-    pstatsprbck_fs = Cpt(EpicsSignal, ':PSTATSPRBCK_FS' , kind='omitted', doc='')
+    pctrl_ch_des = Cpt(EpicsSignal, ':PCTRL_CH_DES', kind='omitted', doc='')
+    pctrl_ch_rbck = Cpt(EpicsSignalRO, ':PCTRL_CH_RBCK', kind='omitted',
+        doc='')
+    pctrldes = Cpt(EpicsSignal, ':PCTRLDES', kind='omitted', doc='')
+    pctrlen = Cpt(EpicsSignal, ':PCTRLEN', kind='omitted', doc='')
+    pctrlencalc = Cpt(EpicsSignal, ':PCTRLENCALC', kind='omitted', doc='')
+    pctrlenrbck = Cpt(EpicsSignalRO, ':PCTRLENRBCK', kind='omitted', doc='')
+    pctrlrbck = Cpt(EpicsSignalRO, ':PCTRLRBCK', kind='omitted', doc='')
+    pctrlspdes = Cpt(EpicsSignal, ':PCTRLSPDES', kind='omitted', doc='')
+    pctrlsprbck = Cpt(EpicsSignalRO, ':PCTRLSPRBCK', kind='omitted', doc='')
+    pprotencalc = Cpt(EpicsSignal, ':PPROTENCALC', kind='omitted', doc='')
+    pprotenrbck = Cpt(EpicsSignalRO, ':PPROTENRBCK', kind='omitted', doc='')
+    pprotspdes = Cpt(EpicsSignal, ':PPROTSPDES', kind='omitted', doc='')
+    pprotsprbck = Cpt(EpicsSignalRO, ':PPROTSPRBCK', kind='omitted', doc='')
+    pstat_3 = Cpt(EpicsSignal, ':PSTAT_3', kind='omitted', doc='')
+    pstat_4 = Cpt(EpicsSignal, ':PSTAT_4', kind='omitted', doc='')
+    pstatdirdes_3 = Cpt(EpicsSignal, ':PSTATDIRDES_3', kind='omitted', doc='')
+    pstatdirdes_4 = Cpt(EpicsSignal, ':PSTATDIRDES_4', kind='omitted', doc='')
+    pstatenable_3 = Cpt(EpicsSignal, ':PSTATENABLE_3', kind='omitted', doc='')
+    pstatenable_4 = Cpt(EpicsSignal, ':PSTATENABLE_4', kind='omitted', doc='')
+    pstatenades_3 = Cpt(EpicsSignal, ':PSTATENADES_3', kind='omitted', doc='')
+    pstatenades_4 = Cpt(EpicsSignal, ':PSTATENADES_4', kind='omitted', doc='')
+    pstatspdes_3 = Cpt(EpicsSignal, ':PSTATSPDES_3', kind='omitted', doc='')
+    pstatspdes_4 = Cpt(EpicsSignal, ':PSTATSPDES_4', kind='omitted', doc='')
+    pstatspdes_fs = Cpt(EpicsSignal, ':PSTATSPDES_FS', kind='omitted', doc='')
+    pstatspdir_3 = Cpt(EpicsSignal, ':PSTATSPDIR_3', kind='omitted', doc='')
+    pstatspdir_4 = Cpt(EpicsSignal, ':PSTATSPDIR_4', kind='omitted', doc='')
+    pstatsprbck_3 = Cpt(EpicsSignal, ':PSTATSPRBCK_3', kind='omitted', doc='')
+    pstatsprbck_4 = Cpt(EpicsSignal, ':PSTATSPRBCK_4', kind='omitted', doc='')
+    pstatsprbck_fs = Cpt(EpicsSignal, ':PSTATSPRBCK_FS', kind='omitted',
+        doc='')
 
 # factory function for IonPumps
 def GaugeSet(prefix, *, name, index, **kwargs):
