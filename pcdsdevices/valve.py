@@ -272,4 +272,4 @@ class VCN(Device):
     position_output = Cpt(EpicsSignalRO, ':POS_DES_RBV', kind='omitted',
                           doc='requested position set to output channel')
     state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='hinted', doc='Valve state')
-    pos_ao = Cpt(EpicsSignalRO, ':POS_AO_RBV', kind='hinted', doc='')
+    pos_ao = Cpt(EpicsSignalRO, ':POS_AO_RBV', kind='hinted')

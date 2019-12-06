@@ -176,21 +176,18 @@ class PTMPLC(Device):
     Class for PLC-controlled Turbo Pump
 
     """
-    switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='omitted',
-                         doc='')
-    reset_fault = Cpt(EpicsSignalWithRBV, ':RST_SW', kind='normal', doc='')
-    run_do = Cpt(EpicsSignalRO, ':RUN_DO_RBV', kind='normal', doc='')
-    run_ok = Cpt(EpicsSignalRO, ':RUN_OK_RBV', kind='omitted', doc='')
-    pump_at_speed = Cpt(EpicsSignalRO, ':AT_SPD_RBV', kind='omitted',
-                        doc='')
-    pump_accelerating = Cpt(EpicsSignalRO, ':ACCEL_RBV', kind='normal',
-                            doc='')
-    pump_speed = Cpt(EpicsSignalRO, ':SPEED_RBV', kind='normal', doc='')
-    fault = Cpt(EpicsSignalRO, ':FAULT_RBV', kind='normal', doc='')
-    warn = Cpt(EpicsSignalRO, ':WARN_RBV', kind='normal', doc='')
-    alarm = Cpt(EpicsSignalWithRBV, ':ALARM', kind='normal', doc='')
-    bp_sp = Cpt(EpicsSignalWithRBV, ':BP_SP', kind='omitted', doc='')
-    ip_sp = Cpt(EpicsSignalWithRBV, ':IP_SP', kind='omitted', doc='')
+    switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='omitted')
+    reset_fault = Cpt(EpicsSignalWithRBV, ':RST_SW', kind='normal')
+    run_do = Cpt(EpicsSignalRO, ':RUN_DO_RBV', kind='normal')
+    run_ok = Cpt(EpicsSignalRO, ':RUN_OK_RBV', kind='omitted')
+    pump_at_speed = Cpt(EpicsSignalRO, ':AT_SPD_RBV', kind='omitted')
+    pump_accelerating = Cpt(EpicsSignalRO, ':ACCEL_RBV', kind='normal')
+    pump_speed = Cpt(EpicsSignalRO, ':SPEED_RBV', kind='normal')
+    fault = Cpt(EpicsSignalRO, ':FAULT_RBV', kind='normal')
+    warn = Cpt(EpicsSignalRO, ':WARN_RBV', kind='normal')
+    alarm = Cpt(EpicsSignalWithRBV, ':ALARM', kind='normal')
+    bp_sp = Cpt(EpicsSignalWithRBV, ':BP_SP', kind='omitted')
+    ip_sp = Cpt(EpicsSignalWithRBV, ':IP_SP', kind='omitted')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
                        doc='interlock  is ok when true')
 
@@ -200,14 +197,13 @@ class PROPLC(Device):
     Class for PLC-controlled Roughing Pump
 
     """
-    switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='omitted',
-                         doc='')
+    switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='omitted')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
                        doc='interlock is ok when true')
-    run_do = Cpt(EpicsSignalRO, ':RUN_DO_RBV', kind='normal', doc='')
-    error = Cpt(EpicsSignalRO, ':ERROR_RBV', kind='normal', doc='')
-    warn = Cpt(EpicsSignalRO, ':WARN_RBV', kind='normal', doc='')
-    pump_at_speed = Cpt(EpicsSignalRO, ':AT_SPD_RBV', kind='normal', doc='')
+    run_do = Cpt(EpicsSignalRO, ':RUN_DO_RBV', kind='normal')
+    error = Cpt(EpicsSignalRO, ':ERROR_RBV', kind='normal')
+    warn = Cpt(EpicsSignalRO, ':WARN_RBV', kind='normal')
+    pump_at_speed = Cpt(EpicsSignalRO, ':AT_SPD_RBV', kind='normal')
 
 
 class AgilentSerial(Device):
@@ -215,42 +211,36 @@ class AgilentSerial(Device):
     Class for Agilent Turbo Pump controlled via serial
 
     """
-    run = Cpt(EpicsSignal, ':RUN', kind='omitted', doc='')
-    config = Cpt(EpicsSignal, ':CONFIG', kind='omitted', doc='')
-    softstart = Cpt(EpicsSignal, ':SOFTSTART', kind='omitted', doc='')
-    sp_type = Cpt(EpicsSignal, ':SP_TYPE', kind='omitted', doc='')
-    sp_calcdis = Cpt(EpicsSignal, ':SP_CALCDIS', kind='omitted', doc='')
-    sp_dis = Cpt(EpicsSignal, ':SP_DIS', kind='omitted', doc='')
-    sp_writeval = Cpt(EpicsSignal, ':SP_WRITEVAL', kind='omitted', doc='')
-    sp_freq = Cpt(EpicsSignal, ':SP_FREQ', kind='omitted', doc='')
-    sp_current = Cpt(EpicsSignal, ':SP_CURRENT', kind='omitted', doc='')
-    sp_time = Cpt(EpicsSignal, ':SP_TIME', kind='omitted', doc='')
-    sp_delay = Cpt(EpicsSignal, ':SP_DELAY', kind='omitted', doc='')
-    sp_polarity = Cpt(EpicsSignal, ':SP_POLARITY', kind='omitted', doc='')
-    sp_hys = Cpt(EpicsSignal, ':SP_HYS', kind='omitted', doc='')
-    water_cooling = Cpt(EpicsSignal, ':WATER_COOLING', kind='normal', doc='')
-    active_stop = Cpt(EpicsSignal, ':ACTIVE_STOP', kind='normal', doc='')
-    interlock_type = Cpt(EpicsSignal, ':INTERLOCK_TYPE', kind='omitted',
-                         doc='')
-    ao_type = Cpt(EpicsSignal, ':AO_TYPE', kind='omitted', doc='')
-    rot_freq = Cpt(EpicsSignal, ':ROT_FREQ', kind='normal', doc='')
-    vent_valve = Cpt(EpicsSignal, ':VENT_VALVE', kind='omitted', doc='')
+    run = Cpt(EpicsSignal, ':RUN', kind='omitted')
+    config = Cpt(EpicsSignal, ':CONFIG', kind='omitted')
+    softstart = Cpt(EpicsSignal, ':SOFTSTART', kind='omitted')
+    sp_type = Cpt(EpicsSignal, ':SP_TYPE', kind='omitted')
+    sp_calcdis = Cpt(EpicsSignal, ':SP_CALCDIS', kind='omitted')
+    sp_dis = Cpt(EpicsSignal, ':SP_DIS', kind='omitted')
+    sp_writeval = Cpt(EpicsSignal, ':SP_WRITEVAL', kind='omitted')
+    sp_freq = Cpt(EpicsSignal, ':SP_FREQ', kind='omitted')
+    sp_current = Cpt(EpicsSignal, ':SP_CURRENT', kind='omitted')
+    sp_time = Cpt(EpicsSignal, ':SP_TIME', kind='omitted')
+    sp_delay = Cpt(EpicsSignal, ':SP_DELAY', kind='omitted')
+    sp_polarity = Cpt(EpicsSignal, ':SP_POLARITY', kind='omitted')
+    sp_hys = Cpt(EpicsSignal, ':SP_HYS', kind='omitted')
+    water_cooling = Cpt(EpicsSignal, ':WATER_COOLING', kind='normal')
+    active_stop = Cpt(EpicsSignal, ':ACTIVE_STOP', kind='normal')
+    interlock_type = Cpt(EpicsSignal, ':INTERLOCK_TYPE', kind='omitted')
+    ao_type = Cpt(EpicsSignal, ':AO_TYPE', kind='omitted')
+    rot_freq = Cpt(EpicsSignal, ':ROT_FREQ', kind='normal')
+    vent_valve = Cpt(EpicsSignal, ':VENT_VALVE', kind='omitted')
     vent_valve_operation = Cpt(EpicsSignal, ':VENT_VALVE_OPERATION',
-                               kind='omitted', doc='')
-    vent_valve_delay = Cpt(EpicsSignal, ':VENT_VALVE_DELAY', kind='omitted',
-                           doc='')
-    vent_valve_raw = Cpt(EpicsSignal, ':VENT_VALVE_RAW', kind='omitted',
-                         doc='')
-    pump_current = Cpt(EpicsSignalRO, ':PUMP_CURRENT_RBV', kind='omitted',
-                       doc='')
-    pump_voltage = Cpt(EpicsSignalRO, ':PUMP_VOLTAGE_RBV', kind='normal',
-                       doc='')
-    pump_power = Cpt(EpicsSignalRO, ':PUMP_POWER_RBV', kind='normal', doc='')
-    pump_drive_freq = Cpt(EpicsSignalRO, ':PUMP_DRIVE_FREQ_RBV', kind='normal',
-                          doc='')
-    pump_temp = Cpt(EpicsSignalRO, ':PUMP_TEMP_RBV', kind='normal', doc='')
-    pump_status = Cpt(EpicsSignalRO, ':PUMP_STATUS_RBV', kind='normal', doc='')
-    pump_error = Cpt(EpicsSignalRO, ':PUMP_ERROR_RBV', kind='normal', doc='')
+                               kind='omitted')
+    vent_valve_delay = Cpt(EpicsSignal, ':VENT_VALVE_DELAY', kind='omitted')
+    vent_valve_raw = Cpt(EpicsSignal, ':VENT_VALVE_RAW', kind='omitted')
+    pump_current = Cpt(EpicsSignalRO, ':PUMP_CURRENT_RBV', kind='omitted')
+    pump_voltage = Cpt(EpicsSignalRO, ':PUMP_VOLTAGE_RBV', kind='normal')
+    pump_power = Cpt(EpicsSignalRO, ':PUMP_POWER_RBV', kind='normal')
+    pump_drive_freq = Cpt(EpicsSignalRO, ':PUMP_DRIVE_FREQ_RBV', kind='normal')
+    pump_temp = Cpt(EpicsSignalRO, ':PUMP_TEMP_RBV', kind='normal')
+    pump_status = Cpt(EpicsSignalRO, ':PUMP_STATUS_RBV', kind='normal')
+    pump_error = Cpt(EpicsSignalRO, ':PUMP_ERROR_RBV', kind='normal')
 
 
 class Navigator(AgilentSerial):
@@ -258,32 +248,27 @@ class Navigator(AgilentSerial):
     Class for Navigator Pump controlled via serial
 
     """
-    low_speed = Cpt(EpicsSignalRO, ':LOW_SPEED_RBV', kind='omitted', doc='')
-    low_speed_freq = Cpt(EpicsSignalRO, ':LOW_SPEED_FREQ_RBV', kind='omitted',
-                         doc='')
-    sp_power = Cpt(EpicsSignalRO, ':SP_POWER_RBV', kind='omitted', doc='')
-    sp_time = Cpt(EpicsSignalRO, ':SP_TIME_RBV', kind='omitted', doc='')
-    sp_normal = Cpt(EpicsSignalRO, ':SP_NORMAL_RBV', kind='omitted', doc='')
-    sp_pressure = Cpt(EpicsSignalRO, ':SP_PRESSURE_RBV', kind='omitted', doc='')
-    vent_open_time = Cpt(EpicsSignalRO, ':VENT_OPEN_TIME_RBV', kind='omitted',
-                         doc='')
+    low_speed = Cpt(EpicsSignalRO, ':LOW_SPEED_RBV', kind='omitted')
+    low_speed_freq = Cpt(EpicsSignalRO, ':LOW_SPEED_FREQ_RBV', kind='omitted')
+    sp_power = Cpt(EpicsSignalRO, ':SP_POWER_RBV', kind='omitted')
+    sp_time = Cpt(EpicsSignalRO, ':SP_TIME_RBV', kind='omitted')
+    sp_normal = Cpt(EpicsSignalRO, ':SP_NORMAL_RBV', kind='omitted')
+    sp_pressure = Cpt(EpicsSignalRO, ':SP_PRESSURE_RBV', kind='omitted')
+    vent_open_time = Cpt(EpicsSignalRO, ':VENT_OPEN_TIME_RBV', kind='omitted')
     vent_open_time_raw = Cpt(EpicsSignalRO, ':VENT_OPEN_TIME_RAW_RBV',
-                             kind='omitted', doc='')
-    power_limit = Cpt(EpicsSignalRO, ':POWER_LIMIT_RBV', kind='omitted', doc='')
-    gas_load_type = Cpt(EpicsSignalRO, ':GAS_LOAD_TYPE_RBV', kind='omitted',
-                        doc='')
-    press_read_corr = Cpt(EpicsSignalRO, ':PRESS_READ_CORR_RBV', kind='omitted',
-                          doc='')
-    sp_press_unit = Cpt(EpicsSignalRO, ':SP_PRESS_UNIT_RBV', kind='omitted',
-                        doc='')
+                             kind='omitted')
+    power_limit = Cpt(EpicsSignalRO, ':POWER_LIMIT_RBV', kind='omitted')
+    gas_load_type = Cpt(EpicsSignalRO, ':GAS_LOAD_TYPE_RBV', kind='omitted')
+    press_read_corr = Cpt(EpicsSignalRO, ':PRESS_READ_CORR_RBV',
+                          kind='omitted')
+    sp_press_unit = Cpt(EpicsSignalRO, ':SP_PRESS_UNIT_RBV', kind='omitted')
     sp_write_press_unit = Cpt(EpicsSignalRO, ':SP_WRITE_PRESS_UNIT_RBV',
-                              kind='omitted', doc='')
+                              kind='omitted')
     stop_speed_reading = Cpt(EpicsSignalRO, ':STOP_SPEED_READING_RBV',
-                             kind='omitted', doc='')
+                             kind='omitted')
     ctrl_heatsink_temp = Cpt(EpicsSignalRO, ':CTRL_HEATSINK_TEMP_RBV',
-                             kind='omitted', doc='')
-    ctrl_air_temp = Cpt(EpicsSignalRO, ':CTRL_AIR_TEMP_RBV', kind='omitted',
-                        doc='')
+                             kind='omitted')
+    ctrl_air_temp = Cpt(EpicsSignalRO, ':CTRL_AIR_TEMP_RBV', kind='omitted')
 
 
 class GammaPCT(Device):
@@ -291,14 +276,14 @@ class GammaPCT(Device):
     Class for Gamma Pump Controller accessed via serial
 
     """
-    model = Cpt(EpicsSignalRO, ':MODEL_RBV', kind='normal', doc='')
-    fwversion = Cpt(EpicsSignalRO, ':FWVERSION_RBV', kind='normal', doc='')
-    ashvedes = Cpt(EpicsSignal, ':ASHVEDES', kind='omitted', doc='')
-    ashve = Cpt(EpicsSignalRO, ':ASHVE_RBV', kind='normal', doc='')
-    aspowerdes = Cpt(EpicsSignal, ':ASPOWERDES', kind='omitted', doc='')
-    aspower = Cpt(EpicsSignalRO, ':ASPOWER_RBV', kind='normal', doc='')
-    pegudes = Cpt(EpicsSignal, ':PEGUDES', kind='omitted', doc='')
-    masterreset = Cpt(EpicsSignal, ':MASTERRESET', kind='omitted', doc='')
+    model = Cpt(EpicsSignalRO, ':MODEL_RBV', kind='normal')
+    fwversion = Cpt(EpicsSignalRO, ':FWVERSION_RBV', kind='normal')
+    ashvedes = Cpt(EpicsSignal, ':ASHVEDES', kind='omitted')
+    ashve = Cpt(EpicsSignalRO, ':ASHVE_RBV', kind='normal')
+    aspowerdes = Cpt(EpicsSignal, ':ASPOWERDES', kind='omitted')
+    aspower = Cpt(EpicsSignalRO, ':ASPOWER_RBV', kind='normal')
+    pegudes = Cpt(EpicsSignal, ':PEGUDES', kind='omitted')
+    masterreset = Cpt(EpicsSignal, ':MASTERRESET', kind='omitted')
 
 
 class QPCPCT(GammaPCT):
@@ -306,7 +291,7 @@ class QPCPCT(GammaPCT):
     Class for Quad Pump Controller accessed via serial
 
     """
-    do_reset = Cpt(EpicsSignal, ':DO_RESET', kind='omitted', doc='')
+    do_reset = Cpt(EpicsSignal, ':DO_RESET', kind='omitted')
 
 
 class PIPSerial(Device):
@@ -314,27 +299,27 @@ class PIPSerial(Device):
     Class for Positive Ion Pump controlled via serial
 
     """
-    imon = Cpt(EpicsSignalRO, ':IMON_RBV', kind='hinted', doc='')
-    pmon = Cpt(EpicsSignalRO, ':PMON_RBV', kind='hinted', doc='')
-    pmonlog = Cpt(EpicsSignalRO, ':PMONLOG_RBV', kind='normal', doc='')
-    vmon = Cpt(EpicsSignalRO, ':VMON_RBV', kind='normal', doc='')
-    statusraw = Cpt(EpicsSignalRO, ':STATUSRAW_RBV', kind='omitted', doc='')
-    statuscalc = Cpt(EpicsSignalRO, ':STATUSCALC_RBV', kind='omitted', doc='')
-    status = Cpt(EpicsSignalRO, ':STATUS_RBV', kind='normal', doc='')
-    statuscodecl = Cpt(EpicsSignalRO, ':STATUSCODECL_RBV', kind='omitted', doc='')
-    statuscode = Cpt(EpicsSignalRO, ':STATUSCODE_RBV', kind='omitted', doc='')
-    pumpsizedes = Cpt(EpicsSignal, ':PUMPSIZEDES', kind='omitted', doc='')
-    pumpsize = Cpt(EpicsSignal, ':PUMPSIZE', kind='omitted', doc='')
-    calfactordes = Cpt(EpicsSignal, ':CALFACTORDES', kind='omitted', doc='')
-    calfactor = Cpt(EpicsSignal, ':CALFACTOR', kind='omitted', doc='')
-    aomodedes = Cpt(EpicsSignal, ':AOMODEDES', kind='omitted', doc='')
-    aomode = Cpt(EpicsSignal, ':AOMODE', kind='omitted', doc='')
-    statedes = Cpt(EpicsSignal, ':STATEDES', kind='omitted', doc='')
-    statemon = Cpt(EpicsSignalRO, ':STATEMON_RBV', kind='normal', doc='')
-    dispdes = Cpt(EpicsSignal, ':DISPDES', kind='omitted', doc='')
-    pname = Cpt(EpicsSignalRO, ':PNAME_RBV', kind='normal', doc='')
-    pnamedes = Cpt(EpicsSignal, ':PNAMEDES', kind='omitted', doc='')
-    vpcname = Cpt(EpicsSignal, ':VPCNAME', kind='omitted', doc='')
+    imon = Cpt(EpicsSignalRO, ':IMON_RBV', kind='hinted')
+    pmon = Cpt(EpicsSignalRO, ':PMON_RBV', kind='hinted')
+    pmonlog = Cpt(EpicsSignalRO, ':PMONLOG_RBV', kind='normal')
+    vmon = Cpt(EpicsSignalRO, ':VMON_RBV', kind='normal')
+    statusraw = Cpt(EpicsSignalRO, ':STATUSRAW_RBV', kind='omitted')
+    statuscalc = Cpt(EpicsSignalRO, ':STATUSCALC_RBV', kind='omitted')
+    status = Cpt(EpicsSignalRO, ':STATUS_RBV', kind='normal')
+    statuscodecl = Cpt(EpicsSignalRO, ':STATUSCODECL_RBV', kind='omitted')
+    statuscode = Cpt(EpicsSignalRO, ':STATUSCODE_RBV', kind='omitted')
+    pumpsizedes = Cpt(EpicsSignal, ':PUMPSIZEDES', kind='omitted')
+    pumpsize = Cpt(EpicsSignal, ':PUMPSIZE', kind='omitted')
+    calfactordes = Cpt(EpicsSignal, ':CALFACTORDES', kind='omitted')
+    calfactor = Cpt(EpicsSignal, ':CALFACTOR', kind='omitted')
+    aomodedes = Cpt(EpicsSignal, ':AOMODEDES', kind='omitted')
+    aomode = Cpt(EpicsSignal, ':AOMODE', kind='omitted')
+    statedes = Cpt(EpicsSignal, ':STATEDES', kind='omitted')
+    statemon = Cpt(EpicsSignalRO, ':STATEMON_RBV', kind='normal')
+    dispdes = Cpt(EpicsSignal, ':DISPDES', kind='omitted')
+    pname = Cpt(EpicsSignalRO, ':PNAME_RBV', kind='normal')
+    pnamedes = Cpt(EpicsSignal, ':PNAMEDES', kind='omitted')
+    vpcname = Cpt(EpicsSignal, ':VPCNAME', kind='omitted')
 
 
 # factory function for IonPumps
