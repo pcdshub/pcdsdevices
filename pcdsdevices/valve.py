@@ -234,7 +234,8 @@ class VGC(VRC):
                             doc='AT VAC Hysterisis')
     at_vac = Cpt(EpicsSignalRO, ':AT_VAC_RBV', kind='normal',
                  doc='at vacuum sp is reached')
-    error = Cpt(EpicsSignalRO, ':ERROR_RBV', kind='normal', doc='Error Present')
+    error = Cpt(EpicsSignalRO, ':ERROR_RBV', kind='normal',
+                doc='Error Present')
 
 
 class VVCNO(Device):
