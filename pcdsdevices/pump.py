@@ -179,16 +179,15 @@ class PTMPLC(Device):
     switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='omitted')
     reset_fault = Cpt(EpicsSignalWithRBV, ':RST_SW', kind='normal')
     run_do = Cpt(EpicsSignalRO, ':RUN_DO_RBV', kind='normal')
-    run_ok = Cpt(EpicsSignalRO, ':RUN_OK_RBV', kind='omitted')
     pump_at_speed = Cpt(EpicsSignalRO, ':AT_SPD_RBV', kind='omitted')
     pump_accelerating = Cpt(EpicsSignalRO, ':ACCEL_RBV', kind='normal')
     pump_speed = Cpt(EpicsSignalRO, ':SPEED_RBV', kind='normal')
     fault = Cpt(EpicsSignalRO, ':FAULT_RBV', kind='normal')
     warn = Cpt(EpicsSignalRO, ':WARN_RBV', kind='normal')
-    alarm = Cpt(EpicsSignalWithRBV, ':ALARM', kind='normal')
+    alarm = Cpt(EpicsSignalRO, ':ALARM_RBV', kind='normal')
     bp_sp = Cpt(EpicsSignalWithRBV, ':BP_SP', kind='omitted')
     ip_sp = Cpt(EpicsSignalWithRBV, ':IP_SP', kind='omitted')
-    interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
+    interlock_status = Cpt(EpicsSignalRO, ':ILK_STATUS_RBV', kind='normal',
                        doc='interlock  is ok when true')
 
 

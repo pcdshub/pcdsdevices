@@ -201,7 +201,7 @@ class GCCPLC(GaugePLC):
     """
     high_voltage_on = Cpt(EpicsSignalWithRBV, ':HV_SW', kind='normal',
                           doc='command to switch the hight voltage on')
-    high_voltage_disable = Cpt(EpicsSignalRO, ':HV_DIS_RBV', kind='normal',
+    high_voltage_disable = Cpt(EpicsSignalRO, ':HV_DIS_DO_RBV', kind='normal',
                                doc=('enables the high voltage on the cold '
                                     'cathode gauge'))
     protection_setpoint = Cpt(EpicsSignalRO, ':PRO_SP_RBV', kind='normal',
