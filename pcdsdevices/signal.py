@@ -1,6 +1,14 @@
 """
 Module to define ophyd Signal subclass utilities.
 """
+# Catch semi-frequent issue with scripts accidentally run from inside module
+if __name__ != 'pcdsdevices.signal':
+    raise RuntimeError(('A script tried to import pcdsdevices.signal '
+                        'instead of the signal built-in module. This '
+                        'usually happens when a script is run from '
+                        'inside the pcdsdevices directory and can cause '
+                        'extremely confusing bugs. Please run your script '
+                        'elsewhere for better results.'))
 import logging
 from threading import RLock, Thread
 
