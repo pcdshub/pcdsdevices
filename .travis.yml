@@ -10,7 +10,9 @@ matrix:
   include:
     - name: "Python 3.6 Unit Tests"
       python: 3.6
-      env: UNIT_TEST=1
+      env:
+        - UNIT_TEST=1
+        - ANACONDA_UPLOAD=1
     - name: "Python 3.7 Unit Tests"
       python: 3.7
       env: UNIT_TEST=1
@@ -45,8 +47,7 @@ install:
   - |
     if [[ $UNIT_TEST || $BUILD_DOCS ]]; then
       echo "Building full environment"
-      # Drop early if the dependencies are not satisfiable
-      timeout 5m conda build -q conda-recipe --python $TRAVIS_PYTHON_VERSION --output-folder bld-dir
+      conda build -q conda-recipe --python $TRAVIS_PYTHON_VERSION --output-folder bld-dir
       conda config --add channels "file://`pwd`/bld-dir"
       conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pcdsdevices --file dev-requirements.txt
     elif [[ $STYLE ]]; then
@@ -101,13 +102,13 @@ after_success:
       codecov
     fi
   - |
-    if [[ $UNIT_TEST && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' && $CONDA_UPLOAD_TOKEN_TAG != '' ]]; then
+    if [[ $ANACONDA_UPLOAD && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' && $CONDA_UPLOAD_TOKEN_TAG != '' ]]; then
       echo "Uploading to pcds_tag channel"
       export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
       anaconda upload bld-dir/noarch/*.tar.bz2
     fi
   - |
-    if [[ $UNIT_TEST && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == 'master' && $TRAVIS_TAG == '' && $CONDA_UPLOAD_TOKEN_DEV != '' ]]; then
+    if [[ $ANACONDA_UPLOAD && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == 'master' && $TRAVIS_TAG == '' && $CONDA_UPLOAD_TOKEN_DEV != '' ]]; then
       echo "Uploading to pcds_dev channel"
       export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_DEV
       anaconda upload bld-dir/noarch/*.tar.bz2
