@@ -6,6 +6,7 @@ env:
     - OFFICIAL_REPO="pcdshub/pcdsdevices"
     - secure: "r193Awf/D5CEelI4xRDPsgcJQbbrgrhZNLUtPaHeK1H17yZIRkCPjDUfU7JZuA72JRbFNVaDSIVCJiTfKMbD4QwclVaHsBunWyJ+S6L9BrKzL7Fo2RvUsJ675gpSnY071ibVmY7Q4iI5vt1Hn3WKracgH6VaMZzWC7GbPJd0E/hYygR1zXXzGtowOv1W4n9U1Tj2AuL6qdF6/l4qgVfaMe0Lr6JvdmFdqv8bWD4Cm3y78yi3cadHy5YAf2IkHqAEghgvrf3qJYFx4ZJcKMTjMqvyPSqWQ2J9xntoj4aHKWFvg/uLHU7GLttAOtoabjf/2mYnjnMpN8WI2h2Nsi4Q16ELKlKUY5zdz7/v4JvO9lKn2dP3LtOoI/j0gqMtZqXQ85tVndvvln40x7QwXo14T5sZU5y0IwI8OZXBVEk+cimbVQggtsm7MJoIWwopjdmbq0R5n39+Q6Xfgt5GJJf8EDvAI0uYK7PNIgDTEEqxMChj+R8/ArEyfcDPrgODVAuLpwvkFft3wKFAH8O3Ms2Dc5jeunqYmf2kEYkyr/pSuukVLKVe0HIi75CfMEguuCPHoCN+p/nESRrach2ItCHBqHIjggCYPzmAYueIF11ecbkok8k2sweC6DKDm9yP/wfq01fHpvhTTsBMMexXVqLpj1HYybonxGGw448EHTZKT2k="
 matrix: 
+  fast_finish: true
   include:
     - name: "Python 3.6 Unit Tests"
       python: 3.6
@@ -22,6 +23,10 @@ matrix:
     - name: "Style Check"
       python: 3.6
       env: STYLE=1
+  allow_failures:
+    - name: "Python 3.8 Unit Tests"
+      python: 3.8
+      env: UNIT_TEST=1
 
 install:
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
@@ -40,7 +45,8 @@ install:
   - |
     if [[ $UNIT_TEST || $BUILD_DOCS ]]; then
       echo "Building full environment"
-      conda build -q conda-recipe --python $TRAVIS_PYTHON_VERSION --output-folder bld-dir
+      # Drop early if the dependencies are not satisfiable
+      timeout 5m conda build -q conda-recipe --python $TRAVIS_PYTHON_VERSION --output-folder bld-dir
       conda config --add channels "file://`pwd`/bld-dir"
       conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pcdsdevices --file dev-requirements.txt
     elif [[ $STYLE ]]; then
