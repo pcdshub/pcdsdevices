@@ -12,7 +12,7 @@ matrix:
       python: 3.6
       env:
         - UNIT_TEST=1
-        - ANACONDA_UPLOAD=1
+        - UPLOAD=1
     - name: "Python 3.7 Unit Tests"
       python: 3.7
       env: UNIT_TEST=1
@@ -97,18 +97,18 @@ script:
 
 after_success:
   - |
-    if [[ $UNIT_TEST ]]; then
+    if [[ $UPLOAD ]]; then
       echo "Uploading to codecov"
       codecov
     fi
   - |
-    if [[ $ANACONDA_UPLOAD && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' && $CONDA_UPLOAD_TOKEN_TAG != '' ]]; then
+    if [[ $UPLOAD && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' && $CONDA_UPLOAD_TOKEN_TAG != '' ]]; then
       echo "Uploading to pcds_tag channel"
       export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
       anaconda upload bld-dir/noarch/*.tar.bz2
     fi
   - |
-    if [[ $ANACONDA_UPLOAD && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == 'master' && $TRAVIS_TAG == '' && $CONDA_UPLOAD_TOKEN_DEV != '' ]]; then
+    if [[ $UPLOAD && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == 'master' && $TRAVIS_TAG == '' && $CONDA_UPLOAD_TOKEN_DEV != '' ]]; then
       echo "Uploading to pcds_dev channel"
       export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_DEV
       anaconda upload bld-dir/noarch/*.tar.bz2
