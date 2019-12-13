@@ -39,10 +39,12 @@ install:
   # Test conda build and create test environment
   - |
     if [[ $UNIT_TEST || $BUILD_DOCS ]]; then
+      echo "Building full environment"
       conda build -q conda-recipe --python $TRAVIS_PYTHON_VERSION --output-folder bld-dir
       conda config --add channels "file://`pwd`/bld-dir"
       conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pcdsdevices --file dev-requirements.txt
     elif [[ $STYLE ]]; then
+      echo "Building minimal flake8 environment"
       conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION flake8
     fi
   # Launch Conda environment
@@ -50,6 +52,7 @@ install:
   # Add the docs packages
   - |
     if [[ $BUILD_DOCS ]]; then
+      echo "Adding docs requirements"
       conda install --file docs-requirements.txt
     fi
 
@@ -57,18 +60,21 @@ script:
   # Run tests
   - |
     if [[ $UNIT_TEST ]]; then
+      echo "Running tests"
       coverage run run_tests.py
       coverage report -m
     fi
   # Check style
   - |
     if [[ $STYLE ]]; then
+      echo "Checking style"
       flake8 pcdsdevices/*.py
       flake8 tests/*.py
     fi
   # Build docs
   - |
     if [[ $BUILD_DOCS ]]; then
+      echo "Building docs"
       set -e
       conda install --file docs-requirements.txt
       pushd docs
@@ -78,18 +84,25 @@ script:
   # Upload docs
   - |
     if [[ -n "$DOCTR_DEPLOY_ENCRYPTION_KEY_PCDSHUB_PCDSDEVICES" && $BUILD_DOCS ]]; then
+      echo "Deploying docs"
       doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages
     fi
 
 after_success:
-  - codecov
+  - |
+    if [[ $UNIT_TEST ]]; then
+      echo "Uploading to codecov"
+      codecov
+    fi
   - |
     if [[ $UNIT_TEST && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' && $CONDA_UPLOAD_TOKEN_TAG != '' ]]; then
+      echo "Uploading to pcds_tag channel"
       export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
       anaconda upload bld-dir/noarch/*.tar.bz2
     fi
   - |
     if [[ $UNIT_TEST && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == 'master' && $TRAVIS_TAG == '' && $CONDA_UPLOAD_TOKEN_DEV != '' ]]; then
+      echo "Uploading to pcds_dev channel"
       export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_DEV
       anaconda upload bld-dir/noarch/*.tar.bz2
     fi
