@@ -188,7 +188,7 @@ class PTMPLC(Device):
     bp_sp = Cpt(EpicsSignalWithRBV, ':BP_SP', kind='omitted')
     ip_sp = Cpt(EpicsSignalWithRBV, ':IP_SP', kind='omitted')
     interlock_status = Cpt(EpicsSignalRO, ':ILK_STATUS_RBV', kind='normal',
-                       doc='interlock  is ok when true')
+                           doc='interlock  is ok when true')
 
 
 class PROPLC(Device):
@@ -287,7 +287,7 @@ class GammaPCT(Device):
 
 class QPCPCT(GammaPCT):
     """
-    Class for Quad Pump Controller accessed via serial
+    Class for Quad Pump Controller accessed via ethernet
 
     """
     do_reset = Cpt(EpicsSignal, ':DO_RESET', kind='omitted')
