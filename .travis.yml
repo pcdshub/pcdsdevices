@@ -69,6 +69,9 @@ script:
     if [[ $UNIT_TEST ]]; then
       echo "Running tests"
       coverage run run_tests.py
+    fi
+  - |
+    if [[ $UNIT_TEST ]]; then
       coverage report -m
     fi
   # Check style
