@@ -6,17 +6,35 @@ env:
     - OFFICIAL_REPO="pcdshub/pcdsdevices"
     - secure: "r193Awf/D5CEelI4xRDPsgcJQbbrgrhZNLUtPaHeK1H17yZIRkCPjDUfU7JZuA72JRbFNVaDSIVCJiTfKMbD4QwclVaHsBunWyJ+S6L9BrKzL7Fo2RvUsJ675gpSnY071ibVmY7Q4iI5vt1Hn3WKracgH6VaMZzWC7GbPJd0E/hYygR1zXXzGtowOv1W4n9U1Tj2AuL6qdF6/l4qgVfaMe0Lr6JvdmFdqv8bWD4Cm3y78yi3cadHy5YAf2IkHqAEghgvrf3qJYFx4ZJcKMTjMqvyPSqWQ2J9xntoj4aHKWFvg/uLHU7GLttAOtoabjf/2mYnjnMpN8WI2h2Nsi4Q16ELKlKUY5zdz7/v4JvO9lKn2dP3LtOoI/j0gqMtZqXQ85tVndvvln40x7QwXo14T5sZU5y0IwI8OZXBVEk+cimbVQggtsm7MJoIWwopjdmbq0R5n39+Q6Xfgt5GJJf8EDvAI0uYK7PNIgDTEEqxMChj+R8/ArEyfcDPrgODVAuLpwvkFft3wKFAH8O3Ms2Dc5jeunqYmf2kEYkyr/pSuukVLKVe0HIi75CfMEguuCPHoCN+p/nESRrach2ItCHBqHIjggCYPzmAYueIF11ecbkok8k2sweC6DKDm9yP/wfq01fHpvhTTsBMMexXVqLpj1HYybonxGGw448EHTZKT2k="
 matrix: 
+  fast_finish: true
   include:
-    - python: 3.6
+    - name: "Python 3.6 Unit Tests"
+      python: 3.6
+      env:
+        - UNIT_TEST=1
+        - UPLOAD=1
+    - name: "Python 3.7 Unit Tests"
+      python: 3.7
+      env: UNIT_TEST=1
+    - name: "Python 3.8 Unit Tests"
+      python: 3.8
+      env: UNIT_TEST=1
+    - name: "Build Docs"
+      python: 3.6
       env: BUILD_DOCS=1
-    - python: 3.7
-      dist: xenial
-      sudo: true
+    - name: "Style Check"
+      python: 3.6
+      env: STYLE=1
+  allow_failures:
+    - name: "Python 3.8 Unit Tests"
+      python: 3.8
+      env: UNIT_TEST=1
 
 install:
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
   - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
+  - source $HOME/miniconda/etc/profile.d/conda.sh
+  - conda activate base
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda install conda-build anaconda-client
@@ -25,41 +43,74 @@ install:
   - conda config --append channels conda-forge
   # Useful for debugging any issues with conda
   - conda info -a
-  # Test conda build
-  - conda build -q conda-recipe --python $TRAVIS_PYTHON_VERSION --output-folder bld-dir
-  - conda config --add channels "file://`pwd`/bld-dir"
-  #Grab all dependencies
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pcdsdevices --file dev-requirements.txt
-  #Launch Conda environment
-  - source activate test-environment
+  # Test conda build and create test environment
+  - |
+    if [[ $UNIT_TEST || $BUILD_DOCS ]]; then
+      echo "Building full environment"
+      conda build -q conda-recipe --python $TRAVIS_PYTHON_VERSION --output-folder bld-dir
+      conda config --add channels "file://`pwd`/bld-dir"
+      conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pcdsdevices --file dev-requirements.txt
+    elif [[ $STYLE ]]; then
+      echo "Building minimal flake8 environment"
+      conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION flake8
+    fi
+  # Launch Conda environment
+  - conda activate test-environment
+  # Add the docs packages
+  - |
+    if [[ $BUILD_DOCS ]]; then
+      echo "Adding docs requirements"
+      conda install --file docs-requirements.txt
+    fi
 
 script:
-  - coverage run run_tests.py
-  - coverage report -m
-  - flake8 pcdsdevices/*.py
-  - flake8 tests/*.py
-  - set -e
+  # Run tests
+  - |
+    if [[ $UNIT_TEST ]]; then
+      echo "Running tests"
+      coverage run run_tests.py
+      coverage report -m
+    fi
+  # Check style
+  - |
+    if [[ $STYLE ]]; then
+      echo "Checking style"
+      flake8 pcdsdevices/*.py
+      flake8 tests/*.py
+    fi
   # Build docs
-  - conda install --file docs-requirements.txt
-  - pushd docs
-  - make html
-  - popd
+  - |
+    if [[ $BUILD_DOCS ]]; then
+      echo "Building docs"
+      set -e
+      conda install --file docs-requirements.txt
+      pushd docs
+      make html
+      popd
+    fi
   # Upload docs
   - |
     if [[ -n "$DOCTR_DEPLOY_ENCRYPTION_KEY_PCDSHUB_PCDSDEVICES" && $BUILD_DOCS ]]; then
+      echo "Deploying docs"
       doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages
     fi
 
 after_success:
-  - codecov
   - |
-    if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' && $CONDA_UPLOAD_TOKEN_TAG != '' ]]; then
-      export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
-      anaconda upload bld-dir/linux-64/*.tar.bz2
+    if [[ $UPLOAD ]]; then
+      echo "Uploading to codecov"
+      codecov
     fi
   - |
-    if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == 'master' && $TRAVIS_TAG == '' && $CONDA_UPLOAD_TOKEN_DEV != '' ]]; then
+    if [[ $UPLOAD && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' && $CONDA_UPLOAD_TOKEN_TAG != '' ]]; then
+      echo "Uploading to pcds_tag channel"
+      export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
+      anaconda upload bld-dir/noarch/*.tar.bz2
+    fi
+  - |
+    if [[ $UPLOAD && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == 'master' && $TRAVIS_TAG == '' && $CONDA_UPLOAD_TOKEN_DEV != '' ]]; then
+      echo "Uploading to pcds_dev channel"
       export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_DEV
-      anaconda upload bld-dir/linux-64/*.tar.bz2
+      anaconda upload bld-dir/noarch/*.tar.bz2
     fi
     
