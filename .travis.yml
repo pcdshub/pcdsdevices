@@ -69,14 +69,16 @@ script:
     if [[ $UNIT_TEST ]]; then
       echo "Running tests"
       coverage run run_tests.py
+    fi
+  - |
+    if [[ $UNIT_TEST ]]; then
       coverage report -m
     fi
   # Check style
   - |
     if [[ $STYLE ]]; then
       echo "Checking style"
-      flake8 pcdsdevices/*.py
-      flake8 tests/*.py
+      flake8
     fi
   # Build docs
   - |
