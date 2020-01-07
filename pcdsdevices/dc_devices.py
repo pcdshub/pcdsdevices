@@ -1,5 +1,5 @@
 """
-Standard classes for LCLS DC power devices.
+Standard classes for L2SI DC power devices.
 """
 import logging
 from ophyd import EpicsSignal, EpicsSignalRO, Device
@@ -26,14 +26,14 @@ class ICTChannel(Device):
     ---------
     ICTChannel('TST:PWR:ICT:01', '2B' )
     """
-    Ch_Current = FCpt(EpicsSignalRO, '{self.prefix}:Output{self._ch}:Current',
+    ch_current = FCpt(EpicsSignalRO, '{self.prefix}:Output{self._ch}:Current',
                       kind='hinted')
-    Ch_Status = FCpt(EpicsSignal, '{self.prefix}:Output{self._ch}:GetState',
+    ch_status = FCpt(EpicsSignal, '{self.prefix}:Output{self._ch}:GetState',
                      write_pv='{self.prefix}:Output{self._ch}:SetState',
                      kind='hinted', string=True)
-    Ch_Name = FCpt(EpicsSignal, '{self.prefix}:Output{self._ch}.DESC',
+    ch_name = FCpt(EpicsSignal, '{self.prefix}:Output{self._ch}.DESC',
                    kind='hinted')
-    Breaker_Status = FCpt(EpicsSignalRO,
+    breaker_status = FCpt(EpicsSignalRO,
                           '{self.prefix}:Output{self._ch}:BreakerStatus',
                           kind='hinted', string=True)
 
@@ -67,11 +67,11 @@ class ICTBus(Device):
     ---------
     ICTBus('TST:PWR:ICT:01', 'B' )
     """
-    Bus_Current = FCpt(EpicsSignalRO, '{self.prefix}:Bus{self._bus}:Current',
+    bus_current = FCpt(EpicsSignalRO, '{self.prefix}:Bus{self._bus}:Current',
                        kind='hinted')
-    Bus_Voltage = FCpt(EpicsSignalRO, '{self.prefix}:Bus{self._bus}:Voltage',
+    bus_voltage = FCpt(EpicsSignalRO, '{self.prefix}:Bus{self._bus}:Voltage',
                        kind='hinted')
-    Bus_Name = FCpt(EpicsSignal, '{self.prefix}:Bus{self._bus}.DESC',
+    bus_name = FCpt(EpicsSignal, '{self.prefix}:Bus{self._bus}.DESC',
                     kind='hinted')
 
     def __init__(self, prefix, bus, name='ICT_bus', **kwargs):
@@ -90,20 +90,20 @@ class ICT(Device, BaseInterface):
     Class to create complete ICT device with access to
     all buses and channels.
     """
-    Bus_A = FCpt(ICTBus, '{self.prefix}', bus='A')
-    Bus_B = FCpt(ICTBus, '{self.prefix}', bus='B')
-    Ch_1A = FCpt(ICTChannel, '{self.prefix}', channel='1A')
-    Ch_2A = FCpt(ICTChannel, '{self.prefix}', channel='2A')
-    Ch_3A = FCpt(ICTChannel, '{self.prefix}', channel='3A')
-    Ch_4A = FCpt(ICTChannel, '{self.prefix}', channel='4A')
-    Ch_5A = FCpt(ICTChannel, '{self.prefix}', channel='5A')
-    Ch_6A = FCpt(ICTChannel, '{self.prefix}', channel='6A')
-    Ch_1B = FCpt(ICTChannel, '{self.prefix}', channel='1B')
-    Ch_2B = FCpt(ICTChannel, '{self.prefix}', channel='2B')
-    Ch_3B = FCpt(ICTChannel, '{self.prefix}', channel='3B')
-    Ch_4B = FCpt(ICTChannel, '{self.prefix}', channel='4B')
-    Ch_5B = FCpt(ICTChannel, '{self.prefix}', channel='5B')
-    Ch_6B = FCpt(ICTChannel, '{self.prefix}', channel='6B')
+    bus_A = FCpt(ICTBus, '{self.prefix}', bus='A')
+    bus_B = FCpt(ICTBus, '{self.prefix}', bus='B')
+    ch_1A = FCpt(ICTChannel, '{self.prefix}', channel='1A')
+    ch_2A = FCpt(ICTChannel, '{self.prefix}', channel='2A')
+    ch_3A = FCpt(ICTChannel, '{self.prefix}', channel='3A')
+    ch_4A = FCpt(ICTChannel, '{self.prefix}', channel='4A')
+    ch_5A = FCpt(ICTChannel, '{self.prefix}', channel='5A')
+    ch_6A = FCpt(ICTChannel, '{self.prefix}', channel='6A')
+    ch_1B = FCpt(ICTChannel, '{self.prefix}', channel='1B')
+    ch_2B = FCpt(ICTChannel, '{self.prefix}', channel='2B')
+    ch_3B = FCpt(ICTChannel, '{self.prefix}', channel='3B')
+    ch_4B = FCpt(ICTChannel, '{self.prefix}', channel='4B')
+    ch_5B = FCpt(ICTChannel, '{self.prefix}', channel='5B')
+    ch_6B = FCpt(ICTChannel, '{self.prefix}', channel='6B')
 
     tab_component_names = True
 
