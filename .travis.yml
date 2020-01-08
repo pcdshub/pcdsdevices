@@ -47,9 +47,11 @@ install:
   - |
     if [[ $UNIT_TEST || $BUILD_DOCS ]]; then
       echo "Building full environment"
+      set -e
       conda build -q conda-recipe --python $TRAVIS_PYTHON_VERSION --output-folder bld-dir
       conda config --add channels "file://`pwd`/bld-dir"
       conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pcdsdevices --file dev-requirements.txt
+      set +e
     elif [[ $STYLE ]]; then
       echo "Building minimal flake8 environment"
       conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION flake8
