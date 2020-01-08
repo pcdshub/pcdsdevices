@@ -43,13 +43,17 @@ install:
   - conda config --append channels conda-forge
   # Useful for debugging any issues with conda
   - conda info -a
+  # Paranoid check of what version we're using
+  - echo $TRAVIS_PYTHON_VERSION
   # Test conda build and create test environment
   - |
     if [[ $UNIT_TEST || $BUILD_DOCS ]]; then
       echo "Building full environment"
+      set -e
       conda build -q conda-recipe --python $TRAVIS_PYTHON_VERSION --output-folder bld-dir
       conda config --add channels "file://`pwd`/bld-dir"
       conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pcdsdevices --file dev-requirements.txt
+      set +e
     elif [[ $STYLE ]]; then
       echo "Building minimal flake8 environment"
       conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION flake8
