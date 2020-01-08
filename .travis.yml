@@ -43,6 +43,8 @@ install:
   - conda config --append channels conda-forge
   # Useful for debugging any issues with conda
   - conda info -a
+  # Paranoid check of what version we're using
+  - echo $TRAVIS_PYTHON_VERSION
   # Test conda build and create test environment
   - |
     if [[ $UNIT_TEST || $BUILD_DOCS ]]; then
