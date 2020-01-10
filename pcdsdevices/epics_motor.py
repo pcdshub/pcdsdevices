@@ -251,7 +251,8 @@ class PCDSMotorBase(EpicsMotorInterface):
         """
         executable = 'motor-expert-screen'
         if shutil.which(executable) is None:
-            logger.error('%s is not on path, we cannot start the screen', executable)
+            logger.error('%s is not on path, we cannot start the screen',
+                         executable)
             return
         arg = self.prefix
         os.system(executable + ' ' + arg)
