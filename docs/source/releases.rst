@@ -1,6 +1,29 @@
 Release History
 ###############
 
+v2.1.0 (2020-01-10)
+===================
+
+Features
+--------
+- Add ``screen`` method to ``PCDSMotorBase`` to open the motor expert screen
+- Add tab completion filtering via whitelists as the first feature of the
+  ``engineering_mode`` switch. This was implemented because the tab
+  completion on ophyd devices is extremely overwhelming.
+  Use ``set_engineering_mode(bool)`` to turn ``engineering_mode`` on or off.
+  The default is "on", which means "everything is normal".
+  Turning ``engineering_mode`` off enables the whitelist filtering,
+  and in the future may also have other effects on the user interface.
+- Add ``dc_devices`` module for components from the new DC power system.
+  This currently contains the ``ICT`` and related classes.
+
+Misc
+----
+- Fixed a race condition in the tests
+- Clean up the Travis CI configuration
+- Pin pyepics to >=3.4.1 due to a breaking change from python 3.7.6
+
+
 v2.0.0 (2019-06-28)
 =================
 
