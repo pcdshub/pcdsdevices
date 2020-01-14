@@ -37,7 +37,7 @@ install:
   - conda activate base
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
-  - conda install conda-build anaconda-client
+  - conda install conda-build
   - conda update -q conda conda-build
   - conda config --add channels pcds-tag
   - conda config --append channels conda-forge
@@ -109,14 +109,19 @@ after_success:
     fi
   - |
     if [[ $UPLOAD && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' && $CONDA_UPLOAD_TOKEN_TAG != '' ]]; then
-      echo "Uploading to pcds_tag channel"
+      echo "Installing anaconda-client"
+      conda activate base
+      conda install anaconda-client
+      echo "Uploading to pcds-tag channel"
       export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
       anaconda upload bld-dir/noarch/*.tar.bz2
     fi
   - |
     if [[ $UPLOAD && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == 'master' && $TRAVIS_TAG == '' && $CONDA_UPLOAD_TOKEN_DEV != '' ]]; then
-      echo "Uploading to pcds_dev channel"
+      echo "Installing anaconda-client"
+      conda activate base
+      conda install anaconda-client
+      echo "Uploading to pcds-dev channel"
       export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_DEV
       anaconda upload bld-dir/noarch/*.tar.bz2
     fi
-    
