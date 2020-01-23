@@ -1,6 +1,18 @@
 Release History
 ###############
 
+v2.2.0 (2020-01-22)
+===================
+
+Features
+--------
+- Add a bunch vacuum-related classes for L2SI
+
+Misc
+----
+- Fix an issue with the doctr deploy key
+
+
 v2.1.0 (2020-01-10)
 ===================
 
