@@ -29,7 +29,9 @@ class StatePositioner(Device, PositionerBase, MvInterface):
         This signal is the final authority on what state the object is in.
 
     states_list: ``list of str``
-        An exhaustive list of all possible states. This should be overridden in
+        This no longer has to be provided if the state signal contains enum
+        information, like an EPICS mbbi. If it is provided, it must be
+        an exhaustive list of all possible states. This should be overridden in
         a base class. Unknown must be omitted in the class definition and will
         be added dynamically in position 0 when the object is created.
 
@@ -55,7 +57,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
     state = None  # Override with Signal that represents state readback
 
-    states_list = []  # Override with an exhaustive list of states
+    states_list = []  # Optional: override with an exhaustive list of states
     _invalid_states = []  # Override with states that cannot be set
     _states_alias = {}  # Override with a mapping {'STATE': ['ALIAS', ...]}
     _unknown = 'Unknown'  # Set False if no Unknown state, can also change str
@@ -415,8 +417,7 @@ class StateRecordPositioner(StatePositioner):
     """
     A `StatePositioner` for an EPICS states record.
 
-    The `states_list` must match the EPICS PVs for adjusting the states
-    settings, in the same order as the state enum. Unknown must be omitted.
+    `states_list` does not have to be provided
     """
     state = Cpt(EpicsSignal, '', write_pv=':GO', kind='hinted')
     motor = Cpt(IMS, ':MOTOR', kind='normal')
