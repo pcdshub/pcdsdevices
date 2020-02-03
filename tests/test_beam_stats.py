@@ -27,7 +27,7 @@ def test_beam_stats_avg(fake_beam_stats):
     logger.debug('test_beam_stats_avg')
     stats = fake_beam_stats
 
-    assert stats.mj_buffersize.value == 120
+    assert stats.mj_buffersize.get() == 120
 
     stats.mj_buffersize.put(10)
 
