@@ -43,5 +43,5 @@ def test_gauge_factory():
 @pytest.mark.parametrize('cls', [GaugeSetPirani, GaugeSetBase, GaugeSetMks,
                                  GaugeSetPiraniMks])
 @pytest.mark.timeout(5)
-def test_gauge_disconnected(cls):
-    gauge = cls('TST', name='gauge')
+def test_gauge_set_disconnected(cls):
+    gauge = cls('TST', name='gauge', index=1)
