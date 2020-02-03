@@ -1,6 +1,7 @@
 import logging
-import pytest
+import inspect
 
+import pytest
 from ophyd.sim import make_fake_device
 from pcdsdevices.gauge import GaugeSet, GaugeSetPirani, GaugeSetBase
 from pcdsdevices.gauge import GaugeSetMks, GaugeSetPiraniMks
@@ -40,8 +41,16 @@ def test_gauge_factory():
     assert isinstance(m, GaugeSetMks)
 
 
+kw_defaults = {'name': 'gauge',
+               'index': 1,
+               'prefix_controller': 'CONTROLLER'}
 @pytest.mark.parametrize('cls', [GaugeSetPirani, GaugeSetBase, GaugeSetMks,
                                  GaugeSetPiraniMks])
 @pytest.mark.timeout(5)
-def test_gauge_set_disconnected(cls):
-    gauge = cls('TST', name='gauge', index=1)
+def test_gauge_disconnected(cls):
+    kwargs = {}
+    sig = inspect.signature(cls.__init__)
+    for key, value in kw_defaults.items():
+        if key in sig.parameters:
+            kwargs[key] = value
+    gauge = cls('TST', **kwargs)
