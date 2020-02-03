@@ -38,3 +38,10 @@ def test_gauge_factory():
     m = GaugeSet('TST:MY', name='test_gauge', index='99',
                  prefix_controller='TST:R99:GCT:99:A', onlyGCC=True)
     assert isinstance(m, GaugeSetMks)
+
+
+@pytest.mark.parametrize('cls', [GaugeSetPirani, GaugeSetBase, GaugeSetMks,
+                                 GaugeSetPiraniMks])
+@pytest.mark.timeout(5)
+def test_gauge_disconnected(cls):
+    gauge = cls('TST', name='gauge')

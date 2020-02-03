@@ -59,3 +59,8 @@ def test_ipm_subscriptions(fake_ipm):
     # Change the target state
     ipm.target.state.put(2)
     assert cb.called
+
+
+@pytest.mark.timeout(5)
+def test_ipm_disconnected():
+    ipm = IPM('IPM', name='ipm')

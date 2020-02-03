@@ -67,3 +67,16 @@ def test_LensStack_align(presets, monkeypatch):
     assert lens.z.position == 0
     assert lens.x.position == 1.5
     assert lens.y.position == 1.5
+
+
+@pytest.mark.timeout(5)
+def test_xfls_disconnected():
+    xfls = XFLS('TST', name='tst')
+
+
+@pytest.mark.timeout(5)
+def test_lens_stack_disconnected():
+    lens = SimLensStack(name='test',
+                        x_prefix='x_motor',
+                        y_prefix='y_motor',
+                        z_prefix='z_motor')

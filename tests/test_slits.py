@@ -98,3 +98,8 @@ def test_slit_staging(fake_slits):
     slits.unstage()
     assert slits.xwidth.setpoint.get() == 2.5
     assert slits.ywidth.setpoint.get() == 2.5
+
+
+@pytest.mark.timeout(5)
+def test_slits_disconnected():
+    slits = Slits("TST:JAWS:", name='Test Slits')

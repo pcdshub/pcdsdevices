@@ -115,3 +115,10 @@ def test_epics_mirror_subscription(fake_branching_mirror):
     # Change the target state
     branching_mirror.state.put('IN')
     assert cb.called
+
+
+@pytest.mark.timeout(5)
+def test_mirror_disconnected():
+    m = PointingMirror("TST:M1H", prefix_xy="STEP:TST:M1H",
+                       xgantry_prefix="GANTRY:M1H:X", name='Test Mirror',
+                       in_lines=['MFX', 'MEC'], out_lines=['CXI'])

@@ -116,3 +116,9 @@ def test_valve_motion(fake_valve):
     assert valve.interlocked
     with pytest.raises(InterlockError):
         valve.open()
+
+
+@pytest.mark.parametrize('cls', [GateValve, PPSStopper, Stopper])
+@pytest.mark.timeout(5)
+def test_valve_disconnected(cls):
+    valve = cls('TST', name='tst')

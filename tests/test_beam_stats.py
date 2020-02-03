@@ -40,3 +40,8 @@ def test_beam_stats_avg(fake_beam_stats):
     cfg = stats.read_configuration()
 
     assert cfg['beam_stats_mj_buffersize']['value'] == 20
+
+
+@pytest.mark.timeout(5)
+def test_beam_stats_disconnected():
+    stats = BeamStats()

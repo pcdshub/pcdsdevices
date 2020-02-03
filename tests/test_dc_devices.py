@@ -23,3 +23,8 @@ def test_PDU_status(fake_ICT):
     assert PDU.ch_1A.ch_status.get() == 'DISABLED'
     PDU.ch_1A.on()
     assert PDU.ch_1A.ch_status.get() == 'ENABLED'
+
+
+@pytest.mark.timeout(5)
+def test_disconnected_ict():
+    pdu = ICT('TST:PDU:ICT', name='test')

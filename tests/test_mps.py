@@ -108,3 +108,13 @@ def test_mpslimit_subscriptions(fake_mps_limits):
     # Cause a fault
     mps.out_limit.fault.sim_put(1)
     assert cb.called
+
+
+@pytest.mark.timeout(5)
+def test_mps_disconnected():
+    mps = MPS("TST:MPS", name='MPS Bit')
+
+
+@pytest.mark.timeout(5)
+def test_mps_limit_disconnected():
+    mps = MPSLimits("Tst:Mps:Lim", logic=lambda x, y: x, name='MPS Limits')

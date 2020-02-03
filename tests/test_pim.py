@@ -69,3 +69,8 @@ def test_pim_subscription(fake_pim):
     pim.subscribe(cb, event_type=pim.SUB_STATE, run=False)
     pim.state.sim_put(2)
     assert cb.called
+
+
+@pytest.mark.timeout(5)
+def test_pim_disconnected():
+    pim = PIM('TST:YAG', name='tst', prefix_Det='tstst')
