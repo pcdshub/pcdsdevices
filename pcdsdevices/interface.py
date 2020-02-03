@@ -385,7 +385,7 @@ class Presets:
         logger.debug('read presets for %s', self._device.name)
         with self._file_open_rlock(preset_type) as f:
             f.seek(0)
-            return yaml.load(f) or {}
+            return yaml.full_load(f) or {}
 
     def _write(self, preset_type, data):
         """
