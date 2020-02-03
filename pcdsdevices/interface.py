@@ -54,7 +54,7 @@ class BaseInterface:
     _filtered_dir_cache = None
 
     def __init_subclass__(cls, **kwargs):
-        super.__init_subclass__(**kwargs)
+        super().__init_subclass__(**kwargs)
         string_whitelist = []
         for parent in cls.mro():
             if hasattr(parent, "tab_whitelist"):
