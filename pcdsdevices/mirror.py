@@ -27,7 +27,8 @@ class OMMotor(FltMvInterface, PVPositioner):
 
     # position
     readback = Cpt(EpicsSignalRO, ':RBV', auto_monitor=True, kind='hinted')
-    setpoint = Cpt(EpicsSignal, ':VAL', limits=True, kind='normal')
+    setpoint = Cpt(EpicsSignal, ':VAL', auto_monitor=True, limits=True,
+                   kind='normal')
     done = Cpt(EpicsSignalRO, ':DMOV', auto_monitor=True, kind='omitted')
     motor_egu = Cpt(EpicsSignal, ':RBV.EGU', kind='omitted')
 
