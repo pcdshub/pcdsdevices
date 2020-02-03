@@ -61,8 +61,10 @@ class AttBase(FltMvInterface, PVPositioner):
     `Attenuator` factory function.
     """
     # Positioner Signals
-    setpoint = Cpt(EpicsSignal, ':COM:R_DES', kind='normal')
-    readback = Cpt(EpicsSignalRO, ':COM:R_CUR', kind='hinted')
+    setpoint = Cpt(EpicsSignal, ':COM:R_DES', auto_monitor=True,
+                   kind='normal')
+    readback = Cpt(EpicsSignalRO, ':COM:R_CUR', auto_monitor=True,
+                   kind='hinted')
     actuate = Cpt(EpicsSignal, ':COM:GO', kind='omitted')
     done = Cpt(EpicsSignalRO, ':COM:STATUS', kind='omitted')
 

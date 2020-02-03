@@ -56,9 +56,9 @@ class SlitPositioner(FltMvInterface, PVPositioner, Device):
         ``SlitPositioner`` inherits directly from ``PVPositioner``.
     """
     readback = FCpt(EpicsSignalRO, "{self.prefix}:ACTUAL_{self._dirlong}",
-                    kind='hinted')
+                    auto_monitor=True, kind='hinted')
     setpoint = FCpt(EpicsSignal, "{self.prefix}:{self._dirshort}_REQ",
-                    kind='normal')
+                    auto_monitor=True, kind='normal')
     done = Cpt(EpicsSignalRO, ":DMOV", kind='omitted')
 
     def __init__(self, prefix, *, slit_type="", name=None,
