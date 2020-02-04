@@ -59,29 +59,30 @@ class LensStackBase(PseudoPositioner):
     tab_component_names = True
 
     def __init__(self, x_prefix, y_prefix, z_prefix, lens_set=None,
-                 z_offset=None, z_dir=None, E=None, attObj=None, lclsObj=None,
-                 monoObj=None, beamsizeUnfocused=500e-6, *args, **kwargs):
+                 z_offset=None, z_dir=None, E=None, att_obj=None,
+                 lcls_obj=None, mono_obj=None, beamsize_unfocused=500e-6,
+                 *args, **kwargs):
         self.x_prefix = x_prefix
         self.y_prefix = y_prefix
         self.z_prefix = z_prefix
         self.z_dir = z_dir
         self.z_offset = z_offset
-        self.beamsizeUnfocused = beamsizeUnfocused
+        self.beamsize_unfocused = beamsize_unfocused
 
         self._E = E
-        self._attObj = attObj
-        self._lclsObj = lclsObj
-        self._monoObj = monoObj
+        self._att_obj = att_obj
+        self._lcls_obj = lcls_obj
+        self._mono_obj = mono_obj
         if lens_set is not None:
             lens_set = list(lens_set)
         self.lens_set = lens_set
 
         super().__init__(x_prefix, *args, **kwargs)
 
-    def calcDistanceForSize(self, sizeFWHM, lens_set, E=None,
-                            fwhm_unfocused=None):
+    def calc_distance_for_size(self, sizeFWHM, lens_set, E=None,
+                               fwhm_unfocused=None):
         size = sizeFWHM*2./2.35
-        f = self.calcFocalLength(E, lens_set, 'Be', None)
+        f = self.calc_focal_length(E, lens_set, 'Be', None)
         lam = 12.398/E*1e-10
         # the w parameter used in the usual formula is 2*sigma
         w_unfocused = fwhm_unfocused*2/2.35
@@ -106,9 +107,9 @@ class LensStackBase(PseudoPositioner):
     def forward(self, pseudo_pos):
         if not np.isclose(pseudo_pos.beam_size, self.beam_size.position):
             beam_size = pseudo_pos.beam_size
-            dist = self.calcDistanceForSize(beam_size, self.lens_set,
-                                            self._E,
-                                            self.beamsizeUnfocused)[0]
+            dist = self.calc_distance_for_size(beam_size, self.lens_set,
+                                               self._E,
+                                               self.beamsize_unfocused)[0]
             z_pos = (dist - self.z_offset) * self.z_dir * 1000
         else:
             z_pos = pseudo_pos.calib_z
@@ -135,9 +136,9 @@ class LensStackBase(PseudoPositioner):
     def inverse(self, real_pos):
         dist_m = real_pos.z / 1000 * self.z_dir + self.z_offset
         print('dist_m', dist_m)
-        beamsize = self.calcBeamFWHM(self._E, self.lens_set, distance=dist_m,
-                                     material="Be", density=None,
-                                     fwhm_unfocused=self.beamsizeUnfocused)
+        beamsize = self.calc_beam_fwhm(self._E, self.lens_set, distance=dist_m,
+                                       material="Be", density=None,
+                                       fwhm_unfocused=self.beamsize_unfocused)
         return self.PseudoPosition(calib_z=real_pos.z, beam_size=beamsize)
 
     def align(self, z_position=None, edge_offset=20):
@@ -179,16 +180,16 @@ class LensStackBase(PseudoPositioner):
 
     @pseudo_position_argument
     def move(self, position, wait=True, timeout=None, moved_cb=None):
-        if self._makeSafe() is True:
+        if self._make_safe() is True:
             return super().move(position, wait=wait, timeout=timeout,
                                 moved_cb=moved_cb)
 
-    def getDelta(self, E, material="Be", density=None):
+    def get_delta(self, E, material="Be", density=None):
         delta = 1-np.real(xsf.index_of_refraction(material, density=density,
                           energy=E))
         return delta
 
-    def calcFocalLength(self, E, lens_set, material="Be", density=None):
+    def calc_focal_length(self, E, lens_set, material="Be", density=None):
         # lens_set = (n1,radius1,n2,radius2,...)
         num = []
         rad = []
@@ -199,20 +200,21 @@ class LensStackBase(PseudoPositioner):
             if rad is not None:
                 rad = float(rad)
                 num = float(num)
-                ftot_inverse += num/self.calcFocalLengthForSingleLens(E, rad,
-                                                                      material,
-                                                                      density)
+                fln = self.calc_focal_length_for_single_lens(E, rad,
+                                                             material,
+                                                             density)
+                ftot_inverse += num/fln
         return 1./ftot_inverse
 
-    def calcFocalLengthForSingleLens(self, E, radius,
-                                     material="Be", density=None):
-        delta = self.getDelta(E, material, density)
+    def calc_focal_length_for_single_lens(self, E, radius,
+                                          material="Be", density=None):
+        delta = self.get_delta(E, material, density)
         f = (radius/2)/delta
         return f
 
-    def calcBeamFWHM(self, E, lens_set, distance=None, material="Be",
-                     density=None, fwhm_unfocused=None, printsummary=True):
-        f = self.calcFocalLength(E, lens_set, material, density)
+    def calc_beam_fwhm(self, E, lens_set, distance=None, material="Be",
+                       density=None, fwhm_unfocused=None, printsummary=True):
+        f = self.calc_focal_length(E, lens_set, material, density)
         lam = 1.2398/E*1e-9
         # the w parameter used in the usual formula is 2*sigma
         w_unfocused = fwhm_unfocused*2/2.35
@@ -230,18 +232,18 @@ class LensStackBase(PseudoPositioner):
             print("size FWHM      : %.3e" % (size*2.35/2.))
         return size*2.35/2
 
-    def _makeSafe(self):
+    def _make_safe(self):
         """
         Move the thickest attenuator in to prevent damage
         due to wayward focused x-rays.
         Return True if the attenuator was moved in.
         """
-        if self._attObj is None:
+        if self._att_obj is None:
             print("WARNING: Cannot do safe crl moveZ,\
                        no attenuator object provided.")
             return False
-        filt, thk = self._attObj.filters[0], 0
-        for f in self._attObj.filters:
+        filt, thk = self._att_obj.filters[0], 0
+        for f in self._att_obj.filters:
             t = f.thickness.get()
             if t > thk:
                 filt, thk = f, t
@@ -260,15 +262,15 @@ class LensStackBase(PseudoPositioner):
 class LensStack(LensStackBase):
     def __init__(self, *args, path, **kwargs):
         self.path = path
-        lens_set = self.ReadLens()
+        lens_set = self.read_lens()
         super().__init__(*args, lens_set=lens_set, **kwargs)
 
-    def ReadLens(self):
+    def read_lens(self):
         with open(self.path, 'r') as f:
             read_data = yaml.safe_load(f)
         return read_data
 
-    def CreateLens(self, lens_set, make_backup=True):
+    def create_lens(self, lens_set, make_backup=True):
         # Make a backup with today's date
         if make_backup:
             shutil.copyfile(self.path, self.backup_path)
