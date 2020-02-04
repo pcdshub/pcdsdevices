@@ -25,6 +25,7 @@ requirements:
     - cf_units >=2.0.1
     - scipy
     - matplotlib <3
+    - periodictable
 
 test:
   imports:

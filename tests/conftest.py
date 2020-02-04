@@ -1,10 +1,14 @@
-from pathlib import Path
-from pcdsdevices.interface import setup_preset_paths
-
 import os
-import pytest
 import shutil
 import warnings
+
+import pytest
+
+from pcdsdevices.attenuator import (Attenuator, MAX_FILTERS,
+                                    _att_classes, _att3_classes)
+from ophyd.sim import make_fake_device
+from pathlib import Path
+from pcdsdevices.mv_interface import setup_preset_paths
 
 
 # Signal.put warning is a testing artifact.
@@ -12,6 +16,25 @@ import warnings
 # Needs to not pass tons of kwargs up to Signal.put
 warnings.filterwarnings('ignore',
                         message='Signal.put no longer takes keyword arguments')
+
+for name, cls in _att_classes.items():
+    _att_classes[name] = make_fake_device(cls)
+
+for name, cls in _att3_classes.items():
+    _att3_classes[name] = make_fake_device(cls)
+
+
+# Used in multiple test files
+@pytest.fixture(scope='function')
+def fake_att():
+    att = Attenuator('TST:ATT', MAX_FILTERS-1, name='test_att')
+    att.readback.sim_put(1)
+    att.done.sim_put(0)
+    att.calcpend.sim_put(0)
+    for i, filt in enumerate(att.filters):
+        filt.state.put('OUT')
+        filt.thickness.put(2*i)
+    return att
 
 
 @pytest.fixture(scope='function')
