@@ -72,6 +72,8 @@ class LensStackBase(PseudoPositioner):
         self._attObj = attObj
         self._lclsObj = lclsObj
         self._monoObj = monoObj
+        if lens_set is not None:
+            lens_set = list(lens_set)
         self.lens_set = lens_set
 
         super().__init__(x_prefix, *args, **kwargs)
@@ -257,7 +259,7 @@ class LensStackBase(PseudoPositioner):
 
 class LensStack(LensStackBase):
     def __init__(self, *args, path, **kwargs):
-        self.path = path + '.yaml'
+        self.path = path
         lens_set = self.ReadLens()
         super().__init__(*args, lens_set=lens_set, **kwargs)
 
@@ -269,9 +271,13 @@ class LensStack(LensStackBase):
     def CreateLens(self, lens_set, make_backup=True):
         # Make a backup with today's date
         if make_backup:
-            shutil.copyfile(self.path, self.path + str(date.today()) + '.bak')
+            shutil.copyfile(self.path, self.backup_path)
         with open(self.path, "w") as f:
             yaml.dump(self.lens_set, f)
+
+    @property
+    def backup_path(self):
+        return self.path + str(date.today()) + '.bak'
 
 
 class SimLensStackBase(LensStackBase):

@@ -1,16 +1,18 @@
 import logging
 import os
+import os.path
 
 from unittest.mock import Mock
 from ophyd.sim import make_fake_device
 import pytest
+import numpy as np
 
 from pcdsdevices.lens import XFLS, LensStack, SimLensStack, LensStackBase
-from conftest import fake_att
 
 logger = logging.getLogger(__name__)
 
-sample_lens_set = (2, 200e-6, 4, 500e-6)
+sample_lens_file = os.path.dirname(__file__) + '/test_lens_sets/test.yaml',
+sample_lens_set = [2, 200e-6, 4, 500e-6]
 sample_E = 8
 
 
@@ -57,9 +59,21 @@ def test_xfls_subscriptions(fake_xfls):
     assert cb.called
 
 
-def test_LensStackBeamsize(monkeypatch):
+@pytest.fixture(scope='function')
+def fake_lensstack():
+    fake_lensstack = SimLensStack(name='test', x_prefix='x_motor',
+                                  y_prefix='y_motor', z_prefix='z_motor',
+                                  path=sample_lens_file,
+                                  E=sample_E,
+                                  z_offset=.01, z_dir=1, attObj=None,
+                                  lclsObj=.01, monoObj=.01,
+                                  beamsizeUnfocused=500e-6)
+    return fake_lensstack
+
+
+def test_LensStackBeamsize(monkeypatch, fake_lensstack):
     logger.debug('test_LensStackBeamsize')
-    lensstack = fake_lensstack()
+    lensstack = fake_lensstack
     lensstack.beam_size.move(100e-6)
     lensstack._attObj = fake_att()
 
@@ -68,18 +82,18 @@ def test_LensStackBeamsize(monkeypatch):
         lensstack.y.move(lensstack.y.position+1)
     monkeypatch.setattr(LensStackBase, 'tweak', mocktweak)
     lensstack.align(0)
-    assert lensstack.beam_size.position == 0.0004894541353076458
+    assert np.isclose(lensstack.beam_size.position, 0.0004894541353076458)
     lensstack.beam_size.set(.01)
     assert lensstack.beam_size.position == .01
 
 
-def test_LensStack_align(presets, monkeypatch):
+def test_LensStack_align(presets, monkeypatch, fake_lensstack):
     logger.debug('test_LensStack_align')
 
     def mocktweak(self):
         lens.x.move(lens.x.position+1)
         lens.y.move(lens.y.position+1)
-    lens = fake_lensstack()
+    lens = fake_lensstack
     lens._attObj = fake_att()
     monkeypatch.setattr(LensStackBase, 'tweak', mocktweak)
     lens.align(0)
@@ -88,9 +102,9 @@ def test_LensStack_align(presets, monkeypatch):
     assert lens.z.position == 0
 
 
-def test_move():
+def test_move(fake_lensstack):
     logger.debug('test_move')
-    lensstack = fake_lensstack()
+    lensstack = fake_lensstack
     if test_makeSafe() is True:
         lensstack.z.move(lensstack.z.position+3)
         assert lensstack.z.position == 3
@@ -98,77 +112,69 @@ def test_move():
         assert lensstack.z.position == lensstack.z.position
 
 
-def test_readLensFile(tmpdir):
+def test_readLensFile(fake_lensstack):
     logger.debug('test_readLensFile')
-    p = tmpdir.mkdir("sub").join("lensfile.yaml")
-    p.write("[2,200e-6,4,500e-6]")
-    assert p.read() == "[2,200e-6,4,500e-6]"
+    lensstack = fake_lensstack
+    assert lensstack.lens_set == sample_lens_set
 
 
-def test_CreateLensFile(tmpdir, monkeypatch):
+def test_CreateLensFile(fake_lensstack):
     logger.debug('test_CreateLensFile')
-    lensstack = fake_lensstack()
+    lensstack = fake_lensstack
     lensstack.CreateLens(lensstack.lens_set)
-    p = tmpdir.mkdir("sub").join("lensfile.yaml")
-    monkeypatch.setattr('builtins.input', lambda x: "[2,200e-6,4,500e-6]")
-    i = input("lens_set : ")
-    p.write(i)
-    assert p.read() == "[2,200e-6,4,500e-6]"
+    # Check that a backup was made
+    assert os.path.exists(lensstack.backup_path)
+    # Clean up the backup
+    os.remove(lensstack.backup_path)
+    # Check that the file we wrote is correct
+    assert lensstack.ReadLens() == sample_lens_set
 
 
-def test_calcFocalLength(tmpdir):
+def test_calcFocalLength(fake_lensstack):
     logger.debug('test_calcFocalLength')
-    lens = fake_lensstack()
+    lens = fake_lensstack
     number = lens.calcFocalLength(lens._E, (2, 200e-6, 4, 500e-6))
-    assert number == 5.2150594897480556
+    assert np.isclose(number, 5.2150594897480556)
 
 
-def test_calcFocalLengthForSingleLens():
+def test_calcFocalLengthForSingleLens(fake_lensstack):
     logger.debug('test_calcFocalLengthForSingleLens')
-    lens = fake_lensstack()
+    lens = fake_lensstack
     f = lens.calcFocalLengthForSingleLens(lens._E, .0001)
-    assert f == 9.387107081546501
+    assert np.isclose(f, 9.387107081546501)
 
 
-def test_getDelta():
+def test_getDelta(fake_lensstack):
     logger.debug('test_getDelta')
-    lens = fake_lensstack()
-    assert lens.getDelta(E=sample_E) == 5.326454632470501e-06
+    lens = fake_lensstack
+    assert np.isclose(lens.getDelta(E=sample_E), 5.326454632470501e-06)
 
 
-def test_calcBeamFWHM():
+def test_calcBeamFWHM(fake_lensstack):
     logger.debug('test_calcBeamFWH')
-    lens = fake_lensstack()
+    lens = fake_lensstack
     h = lens.calcBeamFWHM(8, sample_lens_set, distance=4,
                           fwhm_unfocused=500e-6)
-    assert h == 0.00011649743222659306
+    assert np.is_close(h, 0.00011649743222659306)
 
 
-def test_makeSafe():
+def test_makeSafe(fake_lensstack, fake_att):
     logger.debug('test_makeSafe')
-    lens = fake_lensstack()
-    lens._attObj = fake_att()
-    assert lens._makeSafe() is True
+    lens = fake_lensstack
+    lens._attObj = fake_att
+    assert lens._makeSafe()
     lens._attObj = None
-    assert lens._makeSafe() is False
+    assert not lens._makeSafe()
 
 
-def test_calcDistanceForSize(monkeypatch):
+def test_calcDistanceForSize(fake_lensstack):
     logger.debug('test_calcDistanceForSize')
-    lens = fake_lensstack()
-    lens.calcDistanceForSize(.1, sample_lens_set, E=8, fwhm_unfocused=500e-6)
+    lens = fake_lensstack
+    dist = lens.calcDistanceForSize(.1, sample_lens_set, E=8,
+                                    fwhm_unfocused=500e-6)
+    print(dist)
+    assert False
 
-
-def fake_lensstack():
-    fake_lensstack = SimLensStack(name='test', x_prefix='x_motor',
-                                  y_prefix='y_motor', z_prefix='z_motor',
-                                  path=(os.path.dirname(__file__)
-                                        + '/test_lens_set'),
-                                  E=sample_E,
-                                  z_offset=.01, z_dir=1, attObj=None,
-                                  lclsObj=.01, monoObj=.01,
-                                  beamsizeUnfocused=500e-6)
-    return fake_lensstack
 
 
 @pytest.mark.timeout(5)
@@ -178,7 +184,8 @@ def test_xfls_disconnected():
 
 @pytest.mark.timeout(5)
 def test_lens_stack_disconnected():
-    SimLensStack(name='test',
-                 x_prefix='x_motor',
-                 y_prefix='y_motor',
-                 z_prefix='z_motor')
+    LensStack(name='test',
+              x_prefix='x_motor',
+              y_prefix='y_motor',
+              z_prefix='z_motor',
+              path=sample_lens_file)

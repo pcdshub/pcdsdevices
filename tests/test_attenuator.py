@@ -22,17 +22,6 @@ for name, cls in _att3_classes.items():
     _att3_classes[name] = make_fake_device(cls)
 
 
-@pytest.fixture(scope='function')
-def fake_att():
-    att = Attenuator('TST:ATT', MAX_FILTERS-1, name='test_att')
-    att.readback.sim_put(1)
-    att.done.sim_put(0)
-    att.calcpend.sim_put(0)
-    for filt in att.filters:
-        filt.state.put('OUT')
-    return att
-
-
 @pytest.mark.timeout(5)
 def test_attenuator_states(fake_att):
     logger.debug('test_attenuator_states')

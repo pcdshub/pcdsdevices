@@ -26,6 +26,7 @@ for name, cls in _att3_classes.items():
     _att3_classes[name] = make_fake_device(cls)
 
 
+# Used in multiple test files
 @pytest.fixture(scope='function')
 def fake_att():
     att = Attenuator('TST:ATT', MAX_FILTERS-1, name='test_att')
