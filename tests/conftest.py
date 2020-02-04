@@ -1,14 +1,12 @@
 import os
-import pytest
 import shutil
 import warnings
 
 import pytest
 
-from ophyd.areadetector.base import EpicsSignalWithRBV
 from pcdsdevices.attenuator import (Attenuator, MAX_FILTERS,
                                     _att_classes, _att3_classes)
-from ophyd.sim import FakeEpicsSignal, fake_device_cache, make_fake_device
+from ophyd.sim import make_fake_device
 from pathlib import Path
 from pcdsdevices.mv_interface import setup_preset_paths
 
