@@ -266,8 +266,10 @@ class LensStack(LensStackBase):
             read_data = yaml.safe_load(f)
         return read_data
 
-    def CreateLens(self, lens_set):
-        shutil.copyfile(self.path, self.path + str(date.today()))
+    def CreateLens(self, lens_set, make_backup=True):
+        # Make a backup with today's date
+        if make_backup:
+            shutil.copyfile(self.path, self.path + str(date.today()) + '.bak')
         with open(self.path, "w") as f:
             yaml.dump(self.lens_set, f)
 
