@@ -74,16 +74,14 @@ def fake_lensstack(fake_att):
 def test_LensStackBeamsize(monkeypatch, fake_lensstack):
     logger.debug('test_LensStackBeamsize')
     lensstack = fake_lensstack
-    lensstack.beam_size.move(100e-6)
+    lensstack.beam_size.move(500e-6)
 
     def mocktweak(self):
         lensstack.x.move(lensstack.x.position+1)
         lensstack.y.move(lensstack.y.position+1)
     monkeypatch.setattr(LensStackBase, 'tweak', mocktweak)
     lensstack.align(0)
-    assert np.isclose(lensstack.beam_size.position, 0.0004894541353076458)
-    lensstack.beam_size.set(.01)
-    assert lensstack.beam_size.position == .01
+    assert np.isclose(lensstack.beam_size.position, 500e-6, rtol=0.1, atol=0)
 
 
 def test_LensStack_align(presets, monkeypatch, fake_lensstack):
@@ -166,9 +164,7 @@ def test_calcDistanceForSize(fake_lensstack):
     lens = fake_lensstack
     dist = lens.calcDistanceForSize(.1, sample_lens_set, E=8,
                                     fwhm_unfocused=500e-6)
-    print(dist)
-    assert False
-
+    assert all(np.isclose(dist, [-1037.79683843, 1048.22695741]))
 
 
 @pytest.mark.timeout(5)
