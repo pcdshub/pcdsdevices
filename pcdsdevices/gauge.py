@@ -105,7 +105,7 @@ class GaugeSetBase(Device, BaseInterface):
 
     def __init__(self, prefix, *, name, index, **kwargs):
         if isinstance(index, int):
-            self.index = '%02d' % self.index
+            self.index = '%02d' % index
         else:
             self.index = index
         super().__init__(prefix, name=name, **kwargs)

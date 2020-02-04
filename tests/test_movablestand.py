@@ -19,3 +19,8 @@ def test_movablestand_sanity(fake_stand):
     logger.debug('test_movablestand_sanity')
     with pytest.raises(NotImplementedError):
         fake_stand.move('OUT')
+
+
+@pytest.mark.timeout(5)
+def test_movablestand_disconnected():
+    MovableStand('TST', name='tst')

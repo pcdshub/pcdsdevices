@@ -1,23 +1,13 @@
 import logging
+
 import pytest
 from unittest.mock import Mock
 
-from ophyd.device import Component as Cpt
-from ophyd.signal import Signal
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.areadetector.detectors import PCDSAreaDetector
 from pcdsdevices.pim import PIM, PIMMotor
 
 logger = logging.getLogger(__name__)
-
-
-# OK, we have to screw with the class def here. I'm sorry. It's ophyd's fault
-# for checking an epics signal value in the __init__ statement.
-for attr in PCDSAreaDetector._sub_devices:
-    plugin_class = getattr(PCDSAreaDetector, attr).cls
-    if hasattr(plugin_class, 'plugin_type'):
-        plugin_class.plugin_type = Cpt(Signal, value=plugin_class._plugin_type)
 
 
 @pytest.fixture(scope='function')
@@ -69,3 +59,8 @@ def test_pim_subscription(fake_pim):
     pim.subscribe(cb, event_type=pim.SUB_STATE, run=False)
     pim.state.sim_put(2)
     assert cb.called
+
+
+@pytest.mark.timeout(5)
+def test_pim_disconnected():
+    PIM('TST:YAG', name='tst', prefix_det='tstst')

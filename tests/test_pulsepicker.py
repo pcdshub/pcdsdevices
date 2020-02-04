@@ -152,3 +152,8 @@ def test_picker_subs(fake_picker):
     # Change the target state
     picker.insert()
     assert cb.called
+
+
+@pytest.mark.timeout(5)
+def test_picker_disconnected():
+    PulsePickerInOut('TST:SB1:MMS:35', name='picker')

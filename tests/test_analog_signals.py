@@ -97,3 +97,13 @@ def test_tweak_mesh_voltage(fake_mesh, monkeypatch):
     monkeypatch.setattr(key_press, 'get_input', mock_tweak_down)
     fake_mesh.tweak_mesh_voltage(500.0, test_flag=True)
     assert fake_mesh.write_sig.get() == 1.0
+
+
+@pytest.mark.timeout(5)
+def test_acromag_disconnected():
+    Acromag('Test:Acromag', name='test_acromag')
+
+
+@pytest.mark.timeout(5)
+def test_mesh_disconnected():
+    Mesh('Test:Mesh', 1, 2)

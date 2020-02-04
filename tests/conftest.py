@@ -4,6 +4,14 @@ from pcdsdevices.interface import setup_preset_paths
 import os
 import pytest
 import shutil
+import warnings
+
+
+# Signal.put warning is a testing artifact.
+# FakeEpicsSignal needs an update, but I don't have time today
+# Needs to not pass tons of kwargs up to Signal.put
+warnings.filterwarnings('ignore',
+                        message='Signal.put no longer takes keyword arguments')
 
 
 @pytest.fixture(scope='function')

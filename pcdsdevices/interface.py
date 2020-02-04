@@ -53,16 +53,17 @@ class BaseInterface:
                      Positioner_whitelist)
     _filtered_dir_cache = None
 
-    def __init_subclass__(self):
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
         string_whitelist = []
-        for cls in self.mro():
-            if hasattr(cls, "tab_whitelist"):
-                string_whitelist.extend(cls.tab_whitelist)
-            if getattr(cls, "tab_component_names", False):
-                for cpt_name in cls.component_names:
-                    if getattr(cls, cpt_name).kind != Kind.omitted:
+        for parent in cls.mro():
+            if hasattr(parent, "tab_whitelist"):
+                string_whitelist.extend(parent.tab_whitelist)
+            if getattr(parent, "tab_component_names", False):
+                for cpt_name in parent.component_names:
+                    if getattr(parent, cpt_name).kind != Kind.omitted:
                         string_whitelist.append(cpt_name)
-        self._tab_regex = re.compile("|".join(string_whitelist))
+        cls._tab_regex = re.compile("|".join(string_whitelist))
 
     def __dir__(self):
         if get_engineering_mode():
@@ -384,7 +385,7 @@ class Presets:
         logger.debug('read presets for %s', self._device.name)
         with self._file_open_rlock(preset_type) as f:
             f.seek(0)
-            return yaml.load(f) or {}
+            return yaml.full_load(f) or {}
 
     def _write(self, preset_type, data):
         """

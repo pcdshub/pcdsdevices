@@ -172,3 +172,8 @@ def test_sequence_get_put():
     curr_seq = seq.sequence.get_seq()
 
     assert curr_seq == dummy_sequence
+
+
+@pytest.mark.timeout(5)
+def test_seq_disconnected():
+    EventSequencer('ECS:TST:100', name='seq')

@@ -74,3 +74,8 @@ def test_hutch_foils():
     FakeFoil = make_fake_device(Foil)
     assert 'Zn' in FakeFoil('XPP', name='foil').in_states
     assert 'Ge' in FakeFoil('XCS', name='foil').in_states
+
+
+@pytest.mark.timeout(5)
+def test_lodcm_disconnected():
+    LODCM('TST:LOM', name='test_lom')

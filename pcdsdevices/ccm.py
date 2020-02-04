@@ -32,8 +32,9 @@ class CCMMotor(PVPositionerPC, FltMvInterface):
     TODO: switch to PVPositioner subclass and override code that prevents
     loading, and make the wait for done just compare the values.
     """
-    setpoint = Cpt(EpicsSignal, ":POSITIONSET")
-    readback = Cpt(EpicsSignalRO, ":POSITIONGET", kind='hinted')
+    setpoint = Cpt(EpicsSignal, ":POSITIONSET", auto_monitor=True)
+    readback = Cpt(EpicsSignalRO, ":POSITIONGET", auto_monitor=True,
+                   kind='hinted')
 
     limits = None
 
