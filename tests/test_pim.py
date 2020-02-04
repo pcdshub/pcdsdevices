@@ -73,4 +73,4 @@ def test_pim_subscription(fake_pim):
 
 @pytest.mark.timeout(5)
 def test_pim_disconnected():
-    pim = PIM('TST:YAG', name='tst', prefix_Det='tstst')
+    pim = PIM('TST:YAG', name='tst', prefix_det='tstst')

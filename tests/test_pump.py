@@ -37,4 +37,4 @@ def test_ionpump_factory():
 
 @pytest.mark.timeout(5)
 def test_ionpump_disconnected():
-    pump = IonPumpWithController('tst', name='tst')
+    pump = IonPumpWithController('tst', name='tst', prefix_controller='gamma')
