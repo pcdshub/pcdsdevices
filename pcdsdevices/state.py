@@ -8,7 +8,7 @@ from enum import Enum
 from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait, SubscriptionStatus
 from ophyd.signal import EpicsSignal
-from ophyd.device import Device, Component as Cpt
+from ophyd.device import Device, Component as Cpt, required_for_connection
 
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
@@ -83,7 +83,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
                                         run=False)
             self._state_init_cbid = cbid
 
-    # @required_for_connection # This never made it into ophyd...
+    @required_for_connection
     def _state_init(self):
         if not self._state_initialized:
             self._valid_states = [state for state in self.states_list
