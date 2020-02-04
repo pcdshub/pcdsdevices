@@ -263,13 +263,13 @@ class LensStack(LensStackBase):
 
     def ReadLens(self):
         with open(self.path, 'r') as f:
-            read_data = yaml.load(f)
+            read_data = yaml.safe_load(f)
         return read_data
 
     def CreateLens(self, lens_set):
         shutil.copyfile(self.path, self.path + str(date.today()))
-        with open(self.path + str(date.today()), "w") as f:
-            yaml.dump(self.path, f)
+        with open(self.path, "w") as f:
+            yaml.dump(self.lens_set, f)
 
 
 class SimLensStackBase(LensStackBase):
