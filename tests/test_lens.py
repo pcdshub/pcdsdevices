@@ -11,7 +11,7 @@ from pcdsdevices.lens import XFLS, LensStack, SimLensStack, LensStackBase
 
 logger = logging.getLogger(__name__)
 
-sample_lens_file = os.path.dirname(__file__) + '/test_lens_sets/test.yaml',
+sample_lens_file = os.path.dirname(__file__) + '/test_lens_sets/test.yaml'
 sample_lens_set = [2, 200e-6, 4, 500e-6]
 sample_E = 8
 
@@ -60,12 +60,12 @@ def test_xfls_subscriptions(fake_xfls):
 
 
 @pytest.fixture(scope='function')
-def fake_lensstack():
+def fake_lensstack(fake_att):
     fake_lensstack = SimLensStack(name='test', x_prefix='x_motor',
                                   y_prefix='y_motor', z_prefix='z_motor',
                                   path=sample_lens_file,
                                   E=sample_E,
-                                  z_offset=.01, z_dir=1, attObj=None,
+                                  z_offset=.01, z_dir=1, attObj=fake_att,
                                   lclsObj=.01, monoObj=.01,
                                   beamsizeUnfocused=500e-6)
     return fake_lensstack
@@ -75,7 +75,6 @@ def test_LensStackBeamsize(monkeypatch, fake_lensstack):
     logger.debug('test_LensStackBeamsize')
     lensstack = fake_lensstack
     lensstack.beam_size.move(100e-6)
-    lensstack._attObj = fake_att()
 
     def mocktweak(self):
         lensstack.x.move(lensstack.x.position+1)
@@ -94,7 +93,6 @@ def test_LensStack_align(presets, monkeypatch, fake_lensstack):
         lens.x.move(lens.x.position+1)
         lens.y.move(lens.y.position+1)
     lens = fake_lensstack
-    lens._attObj = fake_att()
     monkeypatch.setattr(LensStackBase, 'tweak', mocktweak)
     lens.align(0)
     assert lens.x.position == 1.5
@@ -105,11 +103,8 @@ def test_LensStack_align(presets, monkeypatch, fake_lensstack):
 def test_move(fake_lensstack):
     logger.debug('test_move')
     lensstack = fake_lensstack
-    if test_makeSafe() is True:
-        lensstack.z.move(lensstack.z.position+3)
-        assert lensstack.z.position == 3
-    else:
-        assert lensstack.z.position == lensstack.z.position
+    lensstack.z.move(3)
+    assert lensstack.z.position == 3
 
 
 def test_readLensFile(fake_lensstack):
@@ -155,13 +150,12 @@ def test_calcBeamFWHM(fake_lensstack):
     lens = fake_lensstack
     h = lens.calcBeamFWHM(8, sample_lens_set, distance=4,
                           fwhm_unfocused=500e-6)
-    assert np.is_close(h, 0.00011649743222659306)
+    assert np.isclose(h, 0.00011649743222659306)
 
 
-def test_makeSafe(fake_lensstack, fake_att):
+def test_makeSafe(fake_lensstack):
     logger.debug('test_makeSafe')
     lens = fake_lensstack
-    lens._attObj = fake_att
     assert lens._makeSafe()
     lens._attObj = None
     assert not lens._makeSafe()
