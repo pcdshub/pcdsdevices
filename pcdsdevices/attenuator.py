@@ -6,11 +6,12 @@ import time
 
 import numpy as np
 from ophyd.device import Component as Cpt
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositioner
-from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
 
 from .inout import InOutPositioner
-from .mv_interface import FltMvInterface
+from .interface import FltMvInterface
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
@@ -34,6 +35,19 @@ class Filter(InOutPositioner):
     material = Cpt(EpicsSignal, ':MATERIAL', kind='config')
     stuck = Cpt(EpicsSignal, ':IS_STUCK', kind='omitted')
 
+    tab_component_names = True
+
+
+class FeeFilter(InOutPositioner):
+    """
+    A single attenuation blade, as implemented in the FEE
+    """
+    state = Cpt(EpicsSignal, ':STATE', write_pv=':CMD')
+
+    states_list = ['IN', 'OUT', 'FAIL']
+    _invalid_states = ['FAIL']
+    _unknown = 'XSTN'
+
 
 class AttBase(FltMvInterface, PVPositioner):
     """
@@ -47,10 +61,13 @@ class AttBase(FltMvInterface, PVPositioner):
     `Attenuator` factory function.
     """
     # Positioner Signals
-    setpoint = Cpt(EpicsSignal, ':COM:R_DES', kind='normal')
-    readback = Cpt(EpicsSignalRO, ':COM:R_CUR', kind='hinted')
+    setpoint = Cpt(EpicsSignal, ':COM:R_DES', auto_monitor=True,
+                   kind='normal')
+    readback = Cpt(EpicsSignalRO, ':COM:R_CUR', auto_monitor=True,
+                   kind='hinted')
     actuate = Cpt(EpicsSignal, ':COM:GO', kind='omitted')
-    done = Cpt(EpicsSignalRO, ':COM:STATUS', kind='omitted')
+    done = Cpt(EpicsSignalRO, ':COM:STATUS', auto_monitor=True,
+               kind='omitted')
 
     # Attenuator Signals
     energy = Cpt(EpicsSignalRO, ':COM:T_CALC.VALE', kind='normal')
@@ -65,9 +82,17 @@ class AttBase(FltMvInterface, PVPositioner):
     egu = ''  # Transmission is a unitless ratio
     done_value = 0
 
+    # QIcon for UX
+    _icon = 'fa.barcode'
+    # Subscription Types
+    SUB_STATE = 'state'
+    # Tab complete whitelist
+    tab_whitelist = ['set_energy']
+
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, limits=(0, 1), **kwargs)
         self.filters = []
+        self._has_subscribed_state = False
         for i in range(1, MAX_FILTERS + 1):
             try:
                 self.filters.append(getattr(self, 'filter{}'.format(i)))
@@ -93,6 +118,7 @@ class AttBase(FltMvInterface, PVPositioner):
         goal = self.setpoint.get()
         ceil = self.trans_ceil.get()
         floor = self.trans_floor.get()
+
         if abs(goal - ceil) > abs(goal - floor):
             return 2
         else:
@@ -190,6 +216,20 @@ class AttBase(FltMvInterface, PVPositioner):
             self._move_changed(value=moving_val)
             self._move_changed(value=self.done_value)
 
+    def subscribe(self, cb, event_type=None, run=True):
+        cid = super().subscribe(cb, event_type=event_type, run=run)
+        if event_type is None:
+            event_type = self._default_sub
+        if event_type == self.SUB_STATE and not self._has_subscribed_state:
+            self.done.subscribe(self._run_filt_state, run=False)
+            self._has_subscribed_state = True
+        return cid
+
+    def _run_filt_state(self, *args, **kwargs):
+        kwargs.pop('sub_type')
+        kwargs.pop('obj')
+        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
+
 
 class AttBase3rd(AttBase):
     """
@@ -208,6 +248,43 @@ class AttBase3rd(AttBase):
     trans_ceil = Cpt(EpicsSignalRO, ':COM:R3_CEIL', kind='omitted')
     trans_floor = Cpt(EpicsSignalRO, ':COM:R3_FLOOR', kind='omitted')
     user_energy = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
+
+
+class FeeAtt(AttBase):
+    """
+    Old attenuator IOC in the FEE.
+    """
+    # Positioner Signals
+    setpoint = Cpt(EpicsSignal, ':RDES', kind='normal')
+    readback = Cpt(EpicsSignal, ':RACT', kind='hinted')
+    actuate = Cpt(EpicsSignal, ':GO', kind='omitted')
+    done = None
+
+    # Attenuator Signals
+    energy = Cpt(EpicsSignalRO, ':ETOA.E', kind='normal')
+    trans_ceil = Cpt(EpicsSignalRO, ':R_CEIL', kind='omitted')
+    trans_floor = Cpt(EpicsSignalRO, ':R_FLOOR', kind='omitted')
+    user_energy = Cpt(EpicsSignal, ':EDES', kind='omitted')
+    eget_cmd = Cpt(EpicsSignal, ':EACT.SCAN', kind='omitted')
+
+#   status = None
+    calcpend = Cpt(Signal, value=0)
+
+    # Hardcode filters for FEE, because there is only one.
+    filter1 = FCpt(FeeFilter, '{self._filter_prefix}1')
+    filter2 = FCpt(FeeFilter, '{self._filter_prefix}2')
+    filter3 = FCpt(FeeFilter, '{self._filter_prefix}3')
+    filter4 = FCpt(FeeFilter, '{self._filter_prefix}4')
+    filter5 = FCpt(FeeFilter, '{self._filter_prefix}5')
+    filter6 = FCpt(FeeFilter, '{self._filter_prefix}6')
+    filter7 = FCpt(FeeFilter, '{self._filter_prefix}7')
+    filter8 = FCpt(FeeFilter, '{self._filter_prefix}8')
+    filter9 = FCpt(FeeFilter, '{self._filter_prefix}9')
+    num_att = 9
+
+    def __init__(self, prefix='SATT:FEE1:320', *, name='FeeAtt', **kwargs):
+        self._filter_prefix = prefix[:-1]
+        super().__init__(prefix, name=name, **kwargs)
 
 
 def _make_att_classes(max_filters, base, name):
@@ -263,3 +340,14 @@ def Attenuator(prefix, n_filters, *, name, use_3rd=False, **kwargs):
     else:
         cls = _att_classes[n_filters]
     return cls(prefix, name=name, **kwargs)
+
+
+'''
+# WIP
+def set_combined_attenuation(attenuation, *attenuators):
+    for i in range(len(attenuators)):
+        if i < len(attenuators)-1:
+            attenuators[i].actuate_value(force_ceil=True)
+        else:
+            attenuators[i].actuate_value()
+'''

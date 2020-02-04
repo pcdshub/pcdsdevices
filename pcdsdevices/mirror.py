@@ -14,7 +14,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
 
 from .doc_stubs import basic_positioner_init
 from .inout import InOutRecordPositioner
-from .mv_interface import FltMvInterface
+from .interface import FltMvInterface, BaseInterface
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,8 @@ class OMMotor(FltMvInterface, PVPositioner):
 
     # position
     readback = Cpt(EpicsSignalRO, ':RBV', auto_monitor=True, kind='hinted')
-    setpoint = Cpt(EpicsSignal, ':VAL', limits=True, kind='normal')
+    setpoint = Cpt(EpicsSignal, ':VAL', auto_monitor=True, limits=True,
+                   kind='normal')
     done = Cpt(EpicsSignalRO, ':DMOV', auto_monitor=True, kind='omitted')
     motor_egu = Cpt(EpicsSignal, ':RBV.EGU', kind='omitted')
 
@@ -147,7 +148,7 @@ class Gantry(OMMotor):
         super().check_value(pos)
 
 
-class OffsetMirror(Device):
+class OffsetMirror(Device, BaseInterface):
     """
     X-Ray offset mirror class.
 
@@ -187,6 +188,12 @@ class OffsetMirror(Device):
                    kind='config')
     # Transmission for Lightpath Interface
     transmission = 1.0
+    # QIcon for UX
+    _icon = 'fa.minus-square'
+    # Subscription types
+    SUB_STATE = 'state'
+
+    tab_whitelist = ['pitch', 'xgantry', 'ygantry']
 
     def __init__(self, prefix, *, prefix_xy=None,
                  xgantry_prefix=None, **kwargs):

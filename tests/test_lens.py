@@ -1,12 +1,12 @@
 import logging
-from unittest.mock import Mock
+import os
 
+from unittest.mock import Mock
 from ophyd.sim import make_fake_device
 import pytest
-import os
-from pcdsdevices.lens import XFLS, SimLensStack, LensStackBase
 
-from conftest import HotfixFakeEpicsSignal, fake_att
+from pcdsdevices.lens import XFLS, LensStack, SimLensStack, LensStackBase
+from conftest import fake_att
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,6 @@ sample_E = 8
 @pytest.fixture(scope='function')
 def fake_xfls():
     FakeXFLS = make_fake_device(XFLS)
-    FakeXFLS.state.cls = HotfixFakeEpicsSignal
     xfls = FakeXFLS('TST:XFLS', name='lens')
     xfls.state.sim_put(4)
     xfls.state.sim_set_enum_strs(('Unknown', 'LENS1', 'LENS2', 'LENS3', 'OUT'))
@@ -170,3 +169,16 @@ def fake_lensstack():
                                   lclsObj=.01, monoObj=.01,
                                   beamsizeUnfocused=500e-6)
     return fake_lensstack
+
+
+@pytest.mark.timeout(5)
+def test_xfls_disconnected():
+    XFLS('TST', name='tst')
+
+
+@pytest.mark.timeout(5)
+def test_lens_stack_disconnected():
+    SimLensStack(name='test',
+                 x_prefix='x_motor',
+                 y_prefix='y_motor',
+                 z_prefix='z_motor')

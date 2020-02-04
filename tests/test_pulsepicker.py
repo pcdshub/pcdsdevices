@@ -10,8 +10,6 @@ from ophyd.sim import make_fake_device
 from pcdsdevices.inout import InOutRecordPositioner
 from pcdsdevices.pulsepicker import PulsePickerInOut
 
-from conftest import HotfixFakeEpicsSignal
-
 logger = logging.getLogger(__name__)
 
 
@@ -21,7 +19,6 @@ def fake_picker():
     Picker starts IN and OPEN
     """
     FakePicker = make_fake_device(PulsePickerInOut)
-    FakePicker.inout.cls.state.cls = HotfixFakeEpicsSignal
     picker = FakePicker('TST:SB1:MMS:35', name='picker')
     picker.inout.state.sim_put(0)
     picker.inout.state.sim_set_enum_strs(['Unknown'] +
@@ -155,3 +152,8 @@ def test_picker_subs(fake_picker):
     # Change the target state
     picker.insert()
     assert cb.called
+
+
+@pytest.mark.timeout(5)
+def test_picker_disconnected():
+    PulsePickerInOut('TST:SB1:MMS:35', name='picker')

@@ -7,21 +7,30 @@ Common EPICS Devices
     :toctree: generated
     
     Attenuator
+    Acromag
     BeckhoffAxis
     CCM
+    DelayNewport
     EpicsMotor
     EventSequencer
-    LODCM
     GateValve
+    GaugeSet
     IMS
     IPM
+    IonPump
+    LODCM
+    Motor
+    MovableStand
     Newport
+    OffsetMirror
+    PCDSAreaDetector
     PIM
     PMC100
-    OffsetMirror
-    PulsePicker
     PointingMirror
+    PulsePicker
+    Reflaser
     Slits
     Stopper
     Trigger
+    TTReflaser
     XFLS

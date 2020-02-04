@@ -14,13 +14,13 @@ used.
 """
 import logging
 
-import numpy as np
 from ophyd.status import wait as status_wait
 from ophyd.pv_positioner import PVPositioner
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
                    FormattedComponent as FCpt)
+from ophyd.sim import SignalRO
 
-from .mv_interface import MvInterface, FltMvInterface
+from .interface import MvInterface, FltMvInterface
 
 logger = logging.getLogger(__name__)
 
@@ -55,11 +55,11 @@ class SlitPositioner(FltMvInterface, PVPositioner, Device):
     ``ophyd.PVPositioner``
         ``SlitPositioner`` inherits directly from ``PVPositioner``.
     """
-    setpoint = FCpt(EpicsSignal, "{self.prefix}:{self._dirshort}_REQ",
-                    kind='normal')
     readback = FCpt(EpicsSignalRO, "{self.prefix}:ACTUAL_{self._dirlong}",
-                    kind='hinted')
-    done = Cpt(EpicsSignalRO, ":DMOV", kind='omitted')
+                    auto_monitor=True, kind='hinted')
+    setpoint = FCpt(EpicsSignal, "{self.prefix}:{self._dirshort}_REQ",
+                    auto_monitor=True, kind='normal')
+    done = Cpt(EpicsSignalRO, ":DMOV", auto_monitor=True, kind='omitted')
 
     def __init__(self, prefix, *, slit_type="", name=None,
                  limits=None, **kwargs):
@@ -99,38 +99,38 @@ class Slits(Device, MvInterface):
 
     Notes
     -----
-    The slits represent a unique device when forming the lightpath as whether
-    the beam is being blocked or not depends on the pointing. In order to
-    create an estimate that will warn operators of narrowly closed slits while
-    still allowing slits to be closed along the beampath.
-
-    The simplest solution was to use a :attr:`.nominal_aperture` that stores
-    the slit width and height that the slits should use for general operation.
-    Using this the :attr:`.transmission` is calculated based on how the current
-    aperture compares to the nominal, always using the minimum of the width or
-    height. This means that if you have a nominal aperture of 2 mm, but your
-    slits are set to 0.5 mm, the total estimated transmission will be 25%.
-    Obviously this is greatly oversimplified, but it allows the lightpath to
-    make a rough back of the hand calculation without being over aggressive
-    about changing slit widths during alignment
+    The slits represent a unique device when forming the lightpath because
+    whether the beam is being blocked or not depends on the pointing. In order
+    to create an estimate that will warn operators of "closed" slits, we set a
+    ``nominal_aperture`` for each unique device along the beamline. This is
+    value is considered the smallest the slit aperture can become without
+    blocking the beamline. Both the ``width`` and the ``height`` need to exceed
+    this ``nominal_aperture`` for the ``Slits`` to be considered removed.
     """
-    xcenter = Cpt(SlitPositioner, '', slit_type="XCENTER", kind='hinted')
-    xwidth = Cpt(SlitPositioner, '', slit_type="XWIDTH", kind='normal')
-    ycenter = Cpt(SlitPositioner, '', slit_type="YCENTER", kind='hinted')
-    ywidth = Cpt(SlitPositioner, '', slit_type="YWIDTH", kind='normal')
+    xwidth = Cpt(SlitPositioner, '', slit_type="XWIDTH", kind='hinted')
+    ywidth = Cpt(SlitPositioner, '', slit_type="YWIDTH", kind='hinted')
+    nominal_aperture = Cpt(SignalRO, kind='normal')
+    xcenter = Cpt(SlitPositioner, '', slit_type="XCENTER", kind='normal')
+    ycenter = Cpt(SlitPositioner, '', slit_type="YCENTER", kind='normal')
     blocked = Cpt(EpicsSignalRO, ":BLOCKED", kind='omitted')
     open_cmd = Cpt(EpicsSignal, ":OPEN", kind='omitted')
     close_cmd = Cpt(EpicsSignal, ":CLOSE", kind='omitted')
     block_cmd = Cpt(EpicsSignal, ":BLOCK", kind='omitted')
-
     # Subscription information
     SUB_STATE = 'sub_state_changed'
     _default_sub = SUB_STATE
+    # QIcon for UX
+    _icon = 'fa.th-large'
+    tab_whitelist = ['open', 'close', 'block']
 
-    def __init__(self, *args, nominal_aperture=(5.0, 5.0), **kwargs):
+    def __init__(self, *args, nominal_aperture=5.0, **kwargs):
         self._has_subscribed = False
-        self.nominal_aperture = nominal_aperture
         super().__init__(*args, **kwargs)
+        # Initialize nominal_aperture behind the scenes
+        self.nominal_aperture._readback = nominal_aperture
+        # Modify Kind of center readbacks
+        self.xcenter.readback.kind = 'normal'
+        self.ycenter.readback.kind = 'normal'
 
     def move(self, size, wait=False, moved_cb=None, timeout=None):
         """
@@ -188,8 +188,7 @@ class Slits(Device, MvInterface):
         """
         Whether the slits are inserted into the beampath
         """
-        return all([self.nominal_aperture[idx] > self.current_aperture[idx]
-                    for idx in range(0, 2)])
+        return min(self.current_aperture) < self.nominal_aperture.get()
 
     @property
     def removed(self):
@@ -197,18 +196,6 @@ class Slits(Device, MvInterface):
         Whether the slits are entirely removed from the beampath
         """
         return not self.inserted
-
-    @property
-    def transmission(self):
-        """
-        Estimated transmission of the slits based on :attr:`.nominal_aperture`
-        """
-        # Find most restrictive side of slit aperture
-        min_dim = np.argmin(self.current_aperture)
-        # Don't allow transmissions over 1.0
-        return min([self.current_aperture[min_dim]
-                    / self.nominal_aperture[min_dim],
-                    1.0])
 
     @property
     def current_aperture(self):

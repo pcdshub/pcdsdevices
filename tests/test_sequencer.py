@@ -6,15 +6,18 @@ from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from bluesky.plan_stubs import sleep
 from ophyd.sim import NullStatus, make_fake_device
 
-from pcdsdevices.sequencer import EventSequencer
+from pcdsdevices.sequencer import EventSequencer, EventSequence
+import pcdsdevices.sequencer
 
 logger = logging.getLogger(__name__)
+
 FakeSequencer = make_fake_device(EventSequencer)
+pcdsdevices.sequencer.EventSequence = make_fake_device(EventSequence)
 
 
 @pytest.fixture(scope='function')
 def sequence():
-    seq = FakeSequencer('ECS:TST', name='seq')
+    seq = FakeSequencer('ECS:TST:100', name='seq')
     # Running forever
     seq.play_mode.put(2)
     seq.play_control.put(0)
@@ -28,6 +31,28 @@ class SimSequencer(FakeSequencer):
         super().__init__(*args, **kwargs)
         # Forces an immediate stop on complete
         self.play_mode.put(2)
+        # Initialize all signals to *something* to appease bluesky
+        # Otherwise, these are all None which is invalid
+        self.play_control.sim_put(0)
+        self.sequence_length.sim_put(0)
+        self.current_step.sim_put(0)
+        self.play_count.sim_put(0)
+        self.play_status.sim_put(0)
+        self.sync_marker.sim_put(0)
+        self.next_sync.sim_put(0)
+        self.pulse_req.sim_put(0)
+        self.sequence_owner.sim_put(0)
+        self.sequence.ec_array.sim_put([0] * 2048)
+        self.sequence.bd_array.sim_put([0] * 2048)
+        self.sequence.fd_array.sim_put([0] * 2048)
+        self.sequence.bc_array.sim_put([0] * 2048)
+
+        # Initialize sequence
+        initial_sequence = [[0] * 20,
+                            [0] * 20,
+                            [0] * 20,
+                            [0] * 20]
+        self.sequence.put_seq(initial_sequence)
 
     def kickoff(self):
         super().kickoff()
@@ -50,6 +75,35 @@ def test_kickoff(sequence):
     seq.play_status.sim_put(2)
     assert st.done
     assert st.success
+
+
+def test_trigger(sequence):
+    # Not currently playing
+    sequence.play_status.sim_put(0)
+    # Set to run forever
+    sequence.play_mode.put(2)
+    trig_status = sequence.trigger()
+    # Sequencer has started
+    assert sequence.play_control.get() == 1
+    # Trigger is automatically complete
+    assert trig_status.done
+    assert trig_status.success
+    # Stop sequencer
+    # Not currently playing
+    sequence.play_status.sim_put(0)
+    sequence.play_control.put(0)
+    # Set to run once
+    sequence.play_mode.put(0)
+    trig_status = sequence.trigger()
+    # Simulate the sequence starting
+    sequence.play_status.sim_put(2)
+    # Not done until sequencer is done
+    assert sequence.play_control.get() == 1
+    assert not trig_status.done
+    # Simulate the sequence ending
+    sequence.play_status.sim_put(0)
+    assert trig_status.done
+    assert trig_status.success
 
 
 def test_complete_run_forever(sequence):
@@ -92,7 +146,7 @@ def test_pause_and_resume(sequence):
 
 
 def test_fly_scan_smoke():
-    seq = SimSequencer('ECS:TST', name='seq')
+    seq = SimSequencer('ECS:TST:100', name='seq')
     RE = RunEngine()
 
     # Create a plan where we fly for a second
@@ -101,3 +155,25 @@ def test_fly_scan_smoke():
 
     # Run the plan
     RE(plan())
+
+
+def test_sequence_get_put():
+    seq = SimSequencer('ECS:TST:100', name='seq')
+
+    dummy_sequence = [[1,  2,  3,  4],
+                      [5,  6,  7,  8],
+                      [9, 10, 11, 12],
+                      [13, 14, 15, 16]]
+
+    # Write the dummy sequence
+    seq.sequence.put_seq(dummy_sequence)
+
+    # Read back the sequence, and compare to dummy sequence
+    curr_seq = seq.sequence.get_seq()
+
+    assert curr_seq == dummy_sequence
+
+
+@pytest.mark.timeout(5)
+def test_seq_disconnected():
+    EventSequencer('ECS:TST:100', name='seq')

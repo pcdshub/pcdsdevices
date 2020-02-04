@@ -6,10 +6,10 @@ import time
 import os
 import signal
 
-import pylab
 import pytest
 
-from pcdsdevices.mv_interface import setup_preset_paths
+from pcdsdevices.interface import (setup_preset_paths, set_engineering_mode,
+                                   get_engineering_mode)
 from pcdsdevices.sim import FastMotor, SlowMotor
 
 logger = logging.getLogger(__name__)
@@ -56,6 +56,8 @@ def test_camonitor(fast_motor):
 
 def test_mv_ginput(monkeypatch, fast_motor):
     logger.debug('test_mv_ginput')
+    # Importing forces backend selection, so do inside method
+    from matplotlib import pyplot as plt  # NOQA
 
     def fake_plot(*args, **kwargs):
         return
@@ -66,9 +68,9 @@ def test_mv_ginput(monkeypatch, fast_motor):
     def fake_get_fignums(*args, **kwargs):
         return local_get_fignums
 
-    monkeypatch.setattr(pylab, 'plot', fake_plot)
-    monkeypatch.setattr(pylab, 'ginput', fake_ginput)
-    monkeypatch.setattr(pylab, 'get_fignums', fake_get_fignums)
+    monkeypatch.setattr(plt, 'plot', fake_plot)
+    monkeypatch.setattr(plt, 'ginput', fake_ginput)
+    monkeypatch.setattr(plt, 'get_fignums', fake_get_fignums)
 
     def inner_test():
         fast_motor.mv_ginput()
@@ -165,3 +167,20 @@ def test_presets_type(presets, fast_motor):
         fast_motor.presets.add_here_user(123)
     with pytest.raises(TypeError):
         fast_motor.presets.add_user(234234, 'cats')
+
+
+def test_engineering_mode():
+    logger.debug('test_engineering_mode')
+    set_engineering_mode(False)
+    assert not get_engineering_mode()
+    set_engineering_mode(True)
+    assert get_engineering_mode()
+
+
+def test_dir_whitelist_basic(fast_motor):
+    logger.debug('test_dir_whitelist_basic')
+    set_engineering_mode(False)
+    user_dir = dir(fast_motor)
+    set_engineering_mode(True)
+    eng_dir = dir(fast_motor)
+    assert len(eng_dir) > len(user_dir)

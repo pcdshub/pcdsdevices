@@ -73,25 +73,6 @@ def test_slit_motion(fake_slits):
     assert status.done and status.success
 
 
-def test_slit_transmission(fake_slits):
-    logger.debug('test_slit_transmission')
-    slits = fake_slits
-    # Set our nominal aperture
-    slits.nominal_aperture = (5.0, 10.0)
-    # Half-closed
-    slits.xwidth.readback.sim_put(2.5)
-    slits.ywidth.readback.sim_put(5.0)
-    assert slits.transmission == 0.5
-    # Quarter-closed making sure we are using min
-    slits.ywidth.readback.sim_put(2.5)
-    slits.xwidth.readback.sim_put(5.0)
-    assert slits.transmission == 0.25
-    # Nothing greater than 100%
-    slits.xwidth.readback.sim_put(40.0)
-    slits.ywidth.readback.sim_put(40.0)
-    assert slits.transmission == 1.0
-
-
 def test_slit_subscriptions(fake_slits):
     logger.debug('test_slit_subscriptions')
     slits = fake_slits
@@ -117,3 +98,8 @@ def test_slit_staging(fake_slits):
     slits.unstage()
     assert slits.xwidth.setpoint.get() == 2.5
     assert slits.ywidth.setpoint.get() == 2.5
+
+
+@pytest.mark.timeout(5)
+def test_slits_disconnected():
+    Slits("TST:JAWS:", name='Test Slits')

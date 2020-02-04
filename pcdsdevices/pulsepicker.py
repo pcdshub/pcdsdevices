@@ -39,6 +39,10 @@ class PulsePicker(InOutPVStatePositioner):
     _state_logic = {'blade': {0: 'OPEN',
                               1: 'CLOSED',
                               2: 'CLOSED'}}
+    # QIcon for UX
+    _icon = 'fa.compass'
+
+    tab_whitelist = ['reset', 'open', 'close', 'flipflop', 'burst', 'follower']
 
     def _do_move(self, state):
         """

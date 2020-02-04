@@ -46,6 +46,8 @@ class InOutPositioner(StatePositioner):
     out_states = ['OUT']
     _transmission = {}
 
+    tab_whitelist = ['inserted', 'removed', 'insert', 'remove', 'transmission']
+
     def __init__(self, prefix, *, name, **kwargs):
         if self.__class__ is InOutPositioner:
             raise TypeError(('InOutPositioner must be subclassed with at '
@@ -126,14 +128,19 @@ class InOutRecordPositioner(StateRecordPositioner, InOutPositioner):
     __doc__ += basic_positioner_init
 
 
-class TTReflaser(InOutRecordPositioner):
+class Reflaser(InOutRecordPositioner):
+    """Simple ReferenceLaser with In/Out States"""
+    _icon = 'fa.empire'
+    __doc__ += basic_positioner_init
+
+
+class TTReflaser(Reflaser):
     """
     Motor stack that includes both a timetool and a reflaser.
     """
-    __doc__ += basic_positioner_init
-
     states_list = ['TT', 'REFL', 'OUT']
     in_states = ['TT', 'REFL']
+    __doc__ += basic_positioner_init
 
 
 class InOutPVStatePositioner(PVStatePositioner, InOutPositioner):

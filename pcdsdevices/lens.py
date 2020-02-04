@@ -16,7 +16,7 @@ from periodictable import xsf
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
-from .mv_interface import tweak_base
+from .interface import tweak_base
 from .sim import FastMotor
 
 LENS_RADII = [50e-6, 100e-6, 200e-6, 300e-6, 500e-6, 1000e-6, 1500e-6]
@@ -33,6 +33,9 @@ class XFLS(InOutRecordPositioner):
     states_list = ['LENS1', 'LENS2', 'LENS3', 'OUT']
     in_states = ['LENS1', 'LENS2', 'LENS3']
     _lens_transmission = 0.8
+
+    # QIcon for UX
+    _icon = 'fa.ellipsis-v'
 
     def __init__(self, prefix, *, name, **kwargs):
         # Set a default transmission, but allow easy subclass overrides
@@ -51,6 +54,9 @@ class LensStackBase(PseudoPositioner):
 
     calib_z = Cpt(PseudoSingle)
     beam_size = Cpt(PseudoSingle)
+
+    tab_whitelist = ['tweak', 'align']
+    tab_component_names = True
 
     def __init__(self, x_prefix, y_prefix, z_prefix, lens_set=None,
                  z_offset=None, z_dir=None, E=None, attObj=None, lclsObj=None,
@@ -132,7 +138,7 @@ class LensStackBase(PseudoPositioner):
                                      fwhm_unfocused=self.beamsizeUnfocused)
         return self.PseudoPosition(calib_z=real_pos.z, beam_size=beamsize)
 
-    def align(self, z_position=None):
+    def align(self, z_position=None, edge_offset=20):
         """
         Generates equations for aligning the beam based on user input.
 
@@ -145,10 +151,10 @@ class LensStackBase(PseudoPositioner):
         and can be used with the pseudo positioner on the z axis.
         If called with an integer, automatically moves the z motor.
         """
-        self.z.move(self.z.limits[0])
+        self.z.move(self.z.limits[0] + edge_offset)
         self.tweak()
         pos = [self.x.position, self.y.position, self.z.position]
-        self.z.move(self.z.limits[1])
+        self.z.move(self.z.limits[1] - edge_offset)
         print()
         self.tweak()
         pos.extend([self.x.position, self.y.position, self.z.position])

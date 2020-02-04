@@ -11,10 +11,12 @@ from ophyd.ophydobj import OphydObject
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
                    FormattedComponent as FCpt)
 
+from .interface import BaseInterface
+
 logger = logging.getLogger(__name__)
 
 
-class MPSBase(OphydObject):
+class MPSBase(OphydObject, BaseInterface):
     """
     Base MPS class
 
@@ -31,6 +33,7 @@ class MPSBase(OphydObject):
     # Subscription information
     SUB_FAULT_CH = 'sub_mps_faulted'
     _default_sub = SUB_FAULT_CH
+    tab_whitelist = ['tripped']
 
     def __init__(self, *args, veto=False, **kwargs):
         self.veto_capable = veto
@@ -101,6 +104,8 @@ class MPS(MPSBase, Device):
     # Signals
     fault = Cpt(EpicsSignalRO, '_MPSC', kind='hinted')
     bypass = Cpt(EpicsSignal,   '_BYPS', kind='config')
+
+    tab_whitelist = ['faulted', 'bypassed']
 
     @property
     def faulted(self):

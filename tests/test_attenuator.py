@@ -8,7 +8,8 @@ from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
 
 from pcdsdevices.attenuator import (Attenuator, MAX_FILTERS,
-                                    _att_classes, _att3_classes)
+                                    _att_classes, _att3_classes,
+                                    AttBase)
 
 logger = logging.getLogger(__name__)
 
@@ -98,6 +99,13 @@ def test_attenuator_subscriptions(fake_att):
     att.subscribe(cb, run=False)
     att.readback.sim_put(0.5)
     assert cb.called
+    state_cb = Mock()
+    att.subscribe(state_cb, event_type=att.SUB_STATE, run=False)
+    att.readback.sim_put(0.6)
+    assert not state_cb.called
+    att.done.sim_put(1)
+    att.done.sim_put(0)
+    assert state_cb.called
 
 
 @pytest.mark.timeout(5)
@@ -162,3 +170,8 @@ def test_attenuator_third_harmonic():
     logger.debug('test_attenuator_third_harmonic')
     att = Attenuator('TRD:ATT', MAX_FILTERS-1, name='third', use_3rd=True)
     att.wait_for_connection()
+
+
+@pytest.mark.timeout(5)
+def test_attenuator_disconnected():
+    AttBase('TST:ATT', name='test_att')

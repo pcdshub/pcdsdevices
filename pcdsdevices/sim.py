@@ -6,7 +6,7 @@ from ophyd.positioner import SoftPositioner
 from ophyd.signal import AttributeSignal
 from ophyd.sim import SynAxis
 
-from pcdsdevices.mv_interface import FltMvInterface, tweak_base
+from pcdsdevices.interface import FltMvInterface, tweak_base
 
 
 class SynMotor(FltMvInterface, SynAxis):

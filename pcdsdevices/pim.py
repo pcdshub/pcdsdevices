@@ -9,7 +9,7 @@ import logging
 
 from ophyd import FormattedComponent as FCpt
 
-from .areadetector.detectors import PCDSDetector
+from .areadetector.detectors import PCDSAreaDetector
 from .inout import InOutRecordPositioner
 
 logger = logging.getLogger(__name__)
@@ -26,6 +26,8 @@ class PIMMotor(InOutRecordPositioner):
     in_states = ['YAG', 'DIODE']
 
     _states_alias = {'YAG': 'IN'}
+    # QIcon for UX
+    _icon = 'fa.camera-retro'
 
     def stage(self):
         """
@@ -51,7 +53,8 @@ class PIM(PIMMotor):
         The EPICS base PV of the detector. If None, it will be inferred from
         the motor prefix
     """
-    detector = FCpt(PCDSDetector, "{self._prefix_det}", kind='normal')
+    detector = FCpt(PCDSAreaDetector, "{self._prefix_det}", kind='normal')
+    tab_whitelist = ["detector"]
 
     def __init__(self, prefix, *, name, prefix_det=None, **kwargs):
         # Infer the detector PV from the motor PV

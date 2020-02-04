@@ -7,6 +7,7 @@
 
    mv.rst
    presets.rst
+   tab.rst
 
 .. toctree::
    :maxdepth: 1
