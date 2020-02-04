@@ -210,9 +210,8 @@ def test_motor_factory():
     assert isinstance(m, EpicsMotor)
 
 
-
 @pytest.mark.parametrize("cls", [PCDSMotorBase, IMS, Newport, PMC100,
                                  BeckhoffAxis, EpicsMotor])
 @pytest.mark.timeout(5)
 def test_disconnected_motors(cls):
-    mot = cls('MOTOR', name='motor')
+    cls('MOTOR', name='motor')

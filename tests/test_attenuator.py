@@ -174,4 +174,4 @@ def test_attenuator_third_harmonic():
 
 @pytest.mark.timeout(5)
 def test_attenuator_disconnected():
-    att = AttBase('TST:ATT', name='test_att')
+    AttBase('TST:ATT', name='test_att')

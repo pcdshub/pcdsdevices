@@ -53,4 +53,4 @@ def test_gauge_disconnected(cls):
     for key, value in kw_defaults.items():
         if key in sig.parameters:
             kwargs[key] = value
-    gauge = cls('TST', **kwargs)
+    cls('TST', **kwargs)

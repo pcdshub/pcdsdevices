@@ -102,4 +102,4 @@ def test_slit_staging(fake_slits):
 
 @pytest.mark.timeout(5)
 def test_slits_disconnected():
-    slits = Slits("TST:JAWS:", name='Test Slits')
+    Slits("TST:JAWS:", name='Test Slits')

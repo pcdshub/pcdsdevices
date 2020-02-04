@@ -23,4 +23,4 @@ def test_movablestand_sanity(fake_stand):
 
 @pytest.mark.timeout(5)
 def test_movablestand_disconnected():
-    stand = MovableStand('TST', name='tst')
+    MovableStand('TST', name='tst')

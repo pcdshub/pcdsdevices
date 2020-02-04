@@ -19,4 +19,4 @@ def test_enable(fake_trigger):
 
 @pytest.mark.timeout(5)
 def test_disconnected_trigger():
-    trig = Trigger('TST', name='test')
+    Trigger('TST', name='test')

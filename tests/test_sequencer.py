@@ -176,4 +176,4 @@ def test_sequence_get_put():
 
 @pytest.mark.timeout(5)
 def test_seq_disconnected():
-    seq = EventSequencer('ECS:TST:100', name='seq')
+    EventSequencer('ECS:TST:100', name='seq')

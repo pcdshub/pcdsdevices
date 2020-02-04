@@ -156,4 +156,4 @@ def test_picker_subs(fake_picker):
 
 @pytest.mark.timeout(5)
 def test_picker_disconnected():
-    picker = PulsePickerInOut('TST:SB1:MMS:35', name='picker')
+    PulsePickerInOut('TST:SB1:MMS:35', name='picker')

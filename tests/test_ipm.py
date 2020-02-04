@@ -63,4 +63,4 @@ def test_ipm_subscriptions(fake_ipm):
 
 @pytest.mark.timeout(5)
 def test_ipm_disconnected():
-    ipm = IPM('IPM', name='ipm')
+    IPM('IPM', name='ipm')

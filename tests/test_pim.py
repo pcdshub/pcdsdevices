@@ -1,12 +1,10 @@
 import logging
+
 import pytest
 from unittest.mock import Mock
 
-from ophyd.device import Component as Cpt
-from ophyd.signal import Signal
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.areadetector.detectors import PCDSAreaDetector
 from pcdsdevices.pim import PIM, PIMMotor
 
 logger = logging.getLogger(__name__)
@@ -65,4 +63,4 @@ def test_pim_subscription(fake_pim):
 
 @pytest.mark.timeout(5)
 def test_pim_disconnected():
-    pim = PIM('TST:YAG', name='tst', prefix_det='tstst')
+    PIM('TST:YAG', name='tst', prefix_det='tstst')

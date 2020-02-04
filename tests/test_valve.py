@@ -121,4 +121,4 @@ def test_valve_motion(fake_valve):
 @pytest.mark.parametrize('cls', [GateValve, PPSStopper, Stopper])
 @pytest.mark.timeout(5)
 def test_valve_disconnected(cls):
-    valve = cls('TST', name='tst')
+    cls('TST', name='tst')

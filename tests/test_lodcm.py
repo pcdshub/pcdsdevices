@@ -78,4 +78,4 @@ def test_hutch_foils():
 
 @pytest.mark.timeout(5)
 def test_lodcm_disconnected():
-    lodcm = LODCM('TST:LOM', name='test_lom')
+    LODCM('TST:LOM', name='test_lom')

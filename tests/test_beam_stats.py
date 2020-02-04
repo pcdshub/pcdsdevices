@@ -44,4 +44,4 @@ def test_beam_stats_avg(fake_beam_stats):
 
 @pytest.mark.timeout(5)
 def test_beam_stats_disconnected():
-    stats = BeamStats()
+    BeamStats()

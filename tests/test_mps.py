@@ -112,9 +112,9 @@ def test_mpslimit_subscriptions(fake_mps_limits):
 
 @pytest.mark.timeout(5)
 def test_mps_disconnected():
-    mps = MPS("TST:MPS", name='MPS Bit')
+    MPS("TST:MPS", name='MPS Bit')
 
 
 @pytest.mark.timeout(5)
 def test_mps_limit_disconnected():
-    mps = MPSLimits("Tst:Mps:Lim", logic=lambda x, y: x, name='MPS Limits')
+    MPSLimits("Tst:Mps:Lim", logic=lambda x, y: x, name='MPS Limits')

@@ -13,6 +13,7 @@ import warnings
 warnings.filterwarnings('ignore',
                         message='Signal.put no longer takes keyword arguments')
 
+
 @pytest.fixture(scope='function')
 def presets():
     folder_obj = Path(__file__).parent / 'test_presets'

@@ -27,4 +27,4 @@ def test_PDU_status(fake_ICT):
 
 @pytest.mark.timeout(5)
 def test_disconnected_ict():
-    pdu = ICT('TST:PDU:ICT', name='test')
+    ICT('TST:PDU:ICT', name='test')

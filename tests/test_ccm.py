@@ -150,8 +150,8 @@ def test_ccm_main(fake_ccm):
 
 @pytest.mark.timeout(5)
 def test_disconnected_ccm():
-    dc_ccm = ccm.CCM(alio_prefix='ALIO', theta2fine_prefix='THETA',
-                     x_down_prefix='X:DOWN', x_up_prefix='X:UP',
-                     y_down_prefix='Y:DOWN', y_up_north_prefix='Y:UP:NORTH',
-                     y_up_south_prefix='Y:UP:SOUTH', in_pos=8, out_pos=0,
-                     name='ccm')
+    ccm.CCM(alio_prefix='ALIO', theta2fine_prefix='THETA',
+            x_down_prefix='X:DOWN', x_up_prefix='X:UP',
+            y_down_prefix='Y:DOWN', y_up_north_prefix='Y:UP:NORTH',
+            y_up_south_prefix='Y:UP:SOUTH', in_pos=8, out_pos=0,
+            name='ccm')

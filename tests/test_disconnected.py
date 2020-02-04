@@ -29,4 +29,4 @@ class Disconnected(Device):
 @pytest.mark.timeout(5)
 def test_instantiate_disconnected():
     """Check if environment handles disconnected devices gracefully"""
-    disc = Disconnected('NO:CONN:', name='no_conn')
+    Disconnected('NO:CONN:', name='no_conn')
