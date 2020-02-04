@@ -2,7 +2,7 @@ import logging
 from unittest.mock import Mock
 
 import pytest
-from ophyd.device import Component as Cmp
+from ophyd.device import Component as Cpt
 from ophyd.signal import Signal
 from ophyd.sim import make_fake_device
 
@@ -19,8 +19,8 @@ class PrefixSignal(Signal):
 
 # Define the class
 class LimCls(PVStatePositioner):
-    lowlim = Cmp(PrefixSignal, 'lowlim')
-    highlim = Cmp(PrefixSignal, 'highlim')
+    lowlim = Cpt(PrefixSignal, 'lowlim')
+    highlim = Cpt(PrefixSignal, 'highlim')
 
     _state_logic = {'lowlim': {0: 'in',
                                1: 'defer'},
@@ -44,7 +44,7 @@ class LimCls2(LimCls):
 
 # For additional tests
 class IntState(StatePositioner):
-    state = Cmp(PrefixSignal, 'int', value=2)
+    state = Cpt(PrefixSignal, 'int', value=2)
     states_list = [None, 'UNO', 'OUT']
     _states_alias = {'UNO': ['IN', 'in']}
 
@@ -188,3 +188,18 @@ def test_subcls_warning():
         StatePositioner('prefix', name='name')
     with pytest.raises(TypeError):
         PVStatePositioner('prefix', name='name')
+
+
+class InOutSignal(Signal):
+    enum_strs = ('Unknown', 'IN', 'OUT')
+
+
+class NoStatesList(StatePositioner):
+    state = Cpt(InOutSignal)
+
+
+def test_auto_states():
+    logger.debug('test_auto_states')
+    states = NoStatesList(prefix='NOSTATE', name='no_state')
+    states.state.put(1)  # Force callback to run
+    assert states.states_list == ['Unknown', 'IN', 'OUT']

@@ -8,7 +8,7 @@ from enum import Enum
 from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait, SubscriptionStatus
 from ophyd.signal import EpicsSignal
-from ophyd.device import Device, Component as Cpt
+from ophyd.device import Device, Component as Cpt, required_for_connection
 
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
@@ -29,7 +29,9 @@ class StatePositioner(Device, PositionerBase, MvInterface):
         This signal is the final authority on what state the object is in.
 
     states_list: ``list of str``
-        An exhaustive list of all possible states. This should be overridden in
+        This no longer has to be provided if the state signal contains enum
+        information, like an EPICS mbbi. If it is provided, it must be
+        an exhaustive list of all possible states. This should be overridden in
         a base class. Unknown must be omitted in the class definition and will
         be added dynamically in position 0 when the object is created.
 
@@ -55,13 +57,14 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
     state = None  # Override with Signal that represents state readback
 
-    states_list = []  # Override with an exhaustive list of states
+    states_list = []  # Optional: override with an exhaustive list of states
     _invalid_states = []  # Override with states that cannot be set
     _states_alias = {}  # Override with a mapping {'STATE': ['ALIAS', ...]}
     _unknown = 'Unknown'  # Set False if no Unknown state, can also change str
 
     SUB_STATE = 'state'
     _default_sub = SUB_STATE
+    _state_meta_sub = EpicsSignal.SUB_VALUE
 
     egu = 'state'
 
@@ -70,15 +73,40 @@ class StatePositioner(Device, PositionerBase, MvInterface):
             raise TypeError(('StatePositioner must be subclassed with at '
                              'least a state signal'))
         super().__init__(prefix, name=name, **kwargs)
-        self._valid_states = [state for state in self.states_list
-                              if state not in self._invalid_states
-                              and state is not None]
+        self._state_initialized = False
+        self._state_init_cbid = False
+        if self.states_list:
+            self._state_init()
+        else:
+            cbid = self.state.subscribe(self._late_state_init,
+                                        event_type=self._state_meta_sub,
+                                        run=False)
+            self._state_init_cbid = cbid
+
+    @required_for_connection
+    def _state_init(self):
+        if not self._state_initialized:
+            self._valid_states = [state for state in self.states_list
+                                  if state not in self._invalid_states
+                                  and state is not None]
+            if self._unknown:
+                self.states_list = [self._unknown] + self.states_list
+                self._invalid_states = [self._unknown] + self._invalid_states
+            if not hasattr(self, 'states_enum'):
+                self.states_enum = self._create_states_enum()
+            self._has_subscribed_state = False
+            self._state_initialized = True
+        if self._state_init_cbid:
+            self.unsubscribe(self._state_init_cbid)
+            self._state_init_cbid = False
+
+    def _late_state_init(self, *args, obj, **kwargs):
+        self.states_list = list(obj.enum_strs)
+        # Unknown state is reserved for slot zero, automatically added later
+        # Removing and auto re-adding *feels* silly, but it was easy to do
         if self._unknown:
-            self.states_list = [self._unknown] + self.states_list
-            self._invalid_states = [self._unknown] + self._invalid_states
-        if not hasattr(self, 'states_enum'):
-            self.states_enum = self._create_states_enum()
-        self._has_subscribed_state = False
+            self.states_list.pop(0)
+        self._state_init()
 
     def move(self, position, moved_cb=None, timeout=None, wait=False):
         """
@@ -389,8 +417,7 @@ class StateRecordPositioner(StatePositioner):
     """
     A `StatePositioner` for an EPICS states record.
 
-    The `states_list` must match the EPICS PVs for adjusting the states
-    settings, in the same order as the state enum. Unknown must be omitted.
+    `states_list` does not have to be provided
     """
     state = Cpt(EpicsSignal, '', write_pv=':GO', kind='hinted')
     motor = Cpt(IMS, ':MOTOR', kind='normal')
