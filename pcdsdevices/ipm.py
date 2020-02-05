@@ -5,10 +5,10 @@ import shutil
 import os
 from ophyd.device import Device, Component as Cpt, FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
-from .doc_stubs import basic_positioner_init, insert_remove
+from .doc_stubs import basic_positioner_init, insert_remove, IPM_base
 from .inout import InOutRecordPositioner
 from .epics_motor import IMS
-
+from .evr import Trigger
 
 class IPMTarget(InOutRecordPositioner):
     """
@@ -41,8 +41,8 @@ class IPMDiode(Device):
     x = FCpt(IMS, '{self.x_prefix}', kind='normal')
     state = Cpt(InOutRecordPositioner, '', kind='normal')
 
-    def __init__(self, prefix, x_prefix, *, name,  **kwargs):
-        self.x_prefix = x_prefix
+    def __init__(self, prefix, *, name,  **kwargs):
+        self.x_prefix = 'XMOTOR'
         super().__init__(prefix, name=name, **kwargs)
         self.y = self.state.motor
 
@@ -53,7 +53,7 @@ class IPMMotion(Device):
 
     This contains two state devices, a target and a diode.
     """
-    target = Cpt(IPMTarget, ':TARGET', kind='hinted')
+    target = Cpt(IPMTarget, ':TARGET', kind='normal')
     diode = Cpt(IPMDiode, ':DIODE', kind='omitted')
 
     # QIcon for UX
