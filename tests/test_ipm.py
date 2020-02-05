@@ -5,7 +5,7 @@ from ophyd.sim import make_fake_device
 from unittest.mock import Mock
 
 from pcdsdevices.inout import InOutRecordPositioner
-from pcdsdevices.ipm import IPM_IPIMB, IPM_Wave8, IPMMotion, IPMTarget
+from pcdsdevices.ipm import IPMMotion, IPMTarget
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ def fake_ipm():
     ipm = FakeIPM("Test:My:IPM", name='test_ipm')
     ipm.diode.state.state.sim_put(0)
     ipm.diode.state.state.sim_set_enum_strs(['Unknown'] +
-                                      InOutRecordPositioner.states_list)
+                                            InOutRecordPositioner.states_list)
     ipm.target.state.sim_put(0)
     ipm.target.state.sim_set_enum_strs(['Unknown'] + IPMTarget.states_list)
     return ipm

@@ -10,6 +10,7 @@ from .inout import InOutRecordPositioner
 from .epics_motor import IMS
 from .evr import Trigger
 
+
 class IPMTarget(InOutRecordPositioner):
     """
     Target of a standard intensity position monitor.

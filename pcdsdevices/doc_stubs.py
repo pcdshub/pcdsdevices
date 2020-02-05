@@ -86,7 +86,7 @@ GaugeSet_base = """
 
 IPM_base = """
     Standard intensity position monitor.
-    
+
     This is an `InOutRecordPositioner` that moves
     the target position to any of the four set positions, or out. Valid states
     are (1, 2, 3, 4, 5) or the equivalent
