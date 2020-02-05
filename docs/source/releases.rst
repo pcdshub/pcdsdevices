@@ -1,6 +1,14 @@
 Release History
 ###############
 
+v2.3.0 (2020-02-05)
+===================
+
+Features
+--------
+- Make everything compatible with the upcoming ``ophyd`` ``v1.4.0``
+- Add be lens calculations port from old python system
+
 v2.2.0 (2020-01-22)
 ===================
 
