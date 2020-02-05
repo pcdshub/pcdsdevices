@@ -14,18 +14,21 @@ used.
 """
 import logging
 
+from collections import OrderedDict
+
 from ophyd.status import wait as status_wait
 from ophyd.pv_positioner import PVPositioner
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
-                   FormattedComponent as FCpt)
+                   FormattedComponent as FCpt, DynamicDeviceComponent as DDCpt)
+from ophyd.epics_motor import EpicsMotor
 from ophyd.sim import SignalRO
 
-from .interface import MvInterface, FltMvInterface
+from .interface import MvInterface, FltMvInterface, BaseInterface
 
 logger = logging.getLogger(__name__)
 
 
-class SlitPositioner(FltMvInterface, PVPositioner, Device):
+class SlitPositioner(PVPositioner, FltMvInterface):
     """
     Abstraction of Slit Axis
 
@@ -304,3 +307,26 @@ class Slits(Device, MvInterface):
         kwargs.pop('obj',      None)
         # Run subscriptions
         self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
+
+
+def _rtd_fields(cls, attr_base, range_, **kwargs):
+    padding = max(range_)//10 + 2
+    defn = OrderedDict()
+    for i in range_:
+        attr = '{attr}{i}'.format(attr=attr_base, i=i)
+        suffix = ':RTD:{i}'.format(i=str(i).zfill(padding))
+        defn[attr] = (cls, suffix, kwargs)
+    return defn
+
+
+class RTD(Device, BaseInterface):
+    not_implemented = Cpt(SignalRO, name="Not Implemented", value="Not Implemented", kind='normal')
+
+
+class FEESlits(Device, BaseInterface):
+    top = FCpt(EpicsMotor, "{self.prefix}:MMS:TOP", kind='normal')
+    bottom = FCpt(EpicsMotor, "{self.prefix}:MMS:BOTTOM")
+    north = FCpt(EpicsMotor, "{self.prefix}:MMS:NORTH")
+    south = FCpt(EpicsMotor, "{self.prefix}:MMS:SOUTH")
+    # rtds = DDCpt(_rtd_fields(RTD, 'rtd', range(1, 9)))
+    fsw = Cpt(EpicsSignalRO, ":FSW", kind='normal')

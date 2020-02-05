@@ -5,13 +5,14 @@ import logging
 import time
 
 import numpy as np
+from ophyd.device import Device
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositioner
-from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
+from ophyd.signal import Signal, SignalRO, EpicsSignal, EpicsSignalRO
 
 from .inout import InOutPositioner
-from .interface import FltMvInterface
+from .interface import FltMvInterface, BaseInterface
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
@@ -351,3 +352,40 @@ def set_combined_attenuation(attenuation, *attenuators):
         else:
             attenuators[i].actuate_value()
 '''
+
+
+class FEESolidFilter(Device, BaseInterface):
+    """
+    Solid Attenuator
+
+    A base class for a Solid Attenuator
+
+    Parameters
+    ----------
+    prefix : ``str``
+        Full Solid Attenuator base PV
+
+    name : ``str``
+        Alias for the Solid Attenuator
+    """
+    not_implemented = Cpt(SignalRO, name="Not Implemented",
+                          value="Not Implemented", kind='normal')
+
+
+class FEEGasAttenuator(Device, BaseInterface):
+    """
+    Solid Attenuator
+
+    A base class for a Gas Attenuator
+
+    Parameters
+    ----------
+    prefix : ``str``
+        Full Gas Attenuator base PV
+
+    name : ``str``
+        Alias for the Gas Attenuator
+    """
+    not_implemented = Cpt(SignalRO, name="Not Implemented",
+                          value="Not Implemented", kind='normal')
+
