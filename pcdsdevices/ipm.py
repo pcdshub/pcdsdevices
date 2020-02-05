@@ -1,10 +1,13 @@
 """
 Module for the `IPM` intensity position monitor class
 """
-from ophyd.device import Device, Component as Cpt
-
+import shutil
+import os
+from ophyd.device import Device, Component as Cpt, FormattedComponent as FCpt
+from ophyd.signal import EpicsSignal
 from .doc_stubs import basic_positioner_init, insert_remove
 from .inout import InOutRecordPositioner
+from .epics_motor import IMS
 
 
 class IPMTarget(InOutRecordPositioner):
@@ -25,6 +28,25 @@ class IPMTarget(InOutRecordPositioner):
     _transmission = {st: 0.8 for st in in_states}
 
 
+class IPMDiode(Device):
+    """
+    Diode of a standard intensity position monitor.
+
+    This device has members for x and y motors, where x-motion is set up as an
+    IMS motor and y-motion is an InOutRecordPositioner that moves the diode
+    position to any of the four set positions, or out. There is also a member,
+    y, which points to the motor of the y-motion.
+    """
+
+    x = FCpt(IMS, '{self.x_prefix}', kind='normal')
+    state = Cpt(InOutRecordPositioner, '', kind='normal')
+
+    def __init__(self, prefix, x_prefix, *, name,  **kwargs):
+        self.x_prefix = x_prefix
+        super().__init__(prefix, name=name, **kwargs)
+        self.y = self.state.motor
+
+
 class IPMMotion(Device):
     """
     Standard intensity position monitor.
@@ -32,7 +54,7 @@ class IPMMotion(Device):
     This contains two state devices, a target and a diode.
     """
     target = Cpt(IPMTarget, ':TARGET', kind='hinted')
-    diode = Cpt(InOutRecordPositioner, ':DIODE', kind='omitted')
+    diode = Cpt(IPMDiode, ':DIODE', kind='omitted')
 
     # QIcon for UX
     _icon = 'ei.screenshot'
