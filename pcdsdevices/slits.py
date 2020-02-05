@@ -328,5 +328,5 @@ class FEESlits(Device, BaseInterface):
     bottom = FCpt(EpicsMotor, "{self.prefix}:MMS:BOTTOM")
     north = FCpt(EpicsMotor, "{self.prefix}:MMS:NORTH")
     south = FCpt(EpicsMotor, "{self.prefix}:MMS:SOUTH")
-    # rtds = DDCpt(_rtd_fields(RTD, 'rtd', range(1, 9)))
+    rtds = DDCpt(_rtd_fields(RTD, 'rtd', range(1, 9)))
     fsw = Cpt(EpicsSignalRO, ":FSW", kind='normal')
