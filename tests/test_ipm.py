@@ -5,17 +5,17 @@ from ophyd.sim import make_fake_device
 from unittest.mock import Mock
 
 from pcdsdevices.inout import InOutRecordPositioner
-from pcdsdevices.ipm import IPM, IPMTarget
+from pcdsdevices.ipm import IPM_IPIMB, IPM_Wave8, IPMMotion, IPMTarget
 
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def fake_ipm():
-    FakeIPM = make_fake_device(IPM)
+    FakeIPM = make_fake_device(IPMMotion)
     ipm = FakeIPM("Test:My:IPM", name='test_ipm')
-    ipm.diode.state.sim_put(0)
-    ipm.diode.state.sim_set_enum_strs(['Unknown'] +
+    ipm.diode.state.state.sim_put(0)
+    ipm.diode.state.state.sim_set_enum_strs(['Unknown'] +
                                       InOutRecordPositioner.states_list)
     ipm.target.state.sim_put(0)
     ipm.target.state.sim_set_enum_strs(['Unknown'] + IPMTarget.states_list)
@@ -43,11 +43,13 @@ def test_ipm_motion(fake_ipm):
     ipm.target.set(1)
     assert ipm.target.state.get() == 1
     # Move diodes in
-    ipm.diode.insert()
-    assert ipm.diode.state.get() == 1
-    ipm.diode.remove()
+    logger.debug('DIODE STATE = %s', ipm.diode.state.state.get())
+    ipm.diode.state.insert()
+    logger.debug('DIODE STATE = %s', ipm.diode.state.state.get())
+    assert ipm.diode.state.state.get() == 1
     # Move diodes out
-    assert ipm.diode.state.get() == 2
+    ipm.diode.state.remove()
+    assert ipm.diode.state.state.get() == 2
 
 
 def test_ipm_subscriptions(fake_ipm):
@@ -63,4 +65,4 @@ def test_ipm_subscriptions(fake_ipm):
 
 @pytest.mark.timeout(5)
 def test_ipm_disconnected():
-    IPM('IPM', name='ipm')
+    IPMMotion('IPM', name='ipm')
