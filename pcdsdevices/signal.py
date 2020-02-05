@@ -13,9 +13,49 @@ import logging
 from threading import RLock, Thread
 
 import numpy as np
-from ophyd.signal import Signal
+from ophyd.signal import Signal, EpicsSignalBase, EpicsSignal, EpicsSignalRO
 
 logger = logging.getLogger(__name__)
+
+
+class PytmcEpicsSignal(EpicsSignalBase):
+    """
+    Class for a connection to a pytmc-generated EPICS record.
+
+    This uses the same args as the pragma, so you can refer to the pytmc
+    pragmas to select args for your components. This will automatically append
+    the _RBV suffix and wrap the read/write PVs into the same signal object as
+    appropriate, and pick between a read-only signal and a writable one.
+
+    Under the hood this actually gives you the RW or RO version of the signal
+    depending on your io argument.
+    """
+    def __new__(cls, prefix, *, io, **kwargs):
+        # Same exact check done in pytmc
+        if 'o' in io:
+            return super().__new__(PytmcEpicsSignalRW)
+        else:
+            return super().__new__(PytmcEpicsSignalRO)
+
+    def __init__(self, prefix, *, io, **kwargs):
+        self.pytmc_pv = prefix
+        self.pytmc_io = io
+        super().__init__(prefix + '_RBV', **kwargs)
+
+
+class PytmcEpicsSignalRW(PytmcEpicsSignal, EpicsSignal):
+    """
+    Read-write connection to a pytmc-generated EPICS record
+    """
+    def __init__(self, prefix, **kwargs):
+        super().__init__(prefix, write_pv=prefix, **kwargs)
+
+
+class PytmcEpicsSignalRO(PytmcEpicsSignal, EpicsSignalRO):
+    """
+    Read-only connection to a pytmc-generated EPICS record
+    """
+    pass
 
 
 class AggregateSignal(Signal):
