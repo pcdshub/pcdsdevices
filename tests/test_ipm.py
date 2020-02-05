@@ -66,5 +66,3 @@ def test_ipm_subscriptions(fake_ipm):
 @pytest.mark.timeout(5)
 def test_ipm_disconnected():
     IPMMotion('IPM', name='ipm')
-    IPM_IPIMB('IPM2', name='ipm2')
-    IPM_Wave8('IPM3', name='ipm3')
