@@ -5,7 +5,7 @@ from ophyd.sim import make_fake_device
 from unittest.mock import Mock
 
 from pcdsdevices.inout import InOutRecordPositioner
-from pcdsdevices.ipm import IPMMotion, IPMTarget
+from pcdsdevices.ipm import IPMMotion, IPM_IPIMB, IPM_Wave8, IPMTarget
 
 logger = logging.getLogger(__name__)
 
@@ -43,9 +43,7 @@ def test_ipm_motion(fake_ipm):
     ipm.target.set(1)
     assert ipm.target.state.get() == 1
     # Move diodes in
-    logger.debug('DIODE STATE = %s', ipm.diode.state.state.get())
     ipm.diode.state.insert()
-    logger.debug('DIODE STATE = %s', ipm.diode.state.state.get())
     assert ipm.diode.state.state.get() == 1
     # Move diodes out
     ipm.diode.state.remove()
@@ -66,3 +64,5 @@ def test_ipm_subscriptions(fake_ipm):
 @pytest.mark.timeout(5)
 def test_ipm_disconnected():
     IPMMotion('IPM', name='ipm')
+    IPM_IPIMB('IPM2', name='ipm2', prefix_ipimb='ipimb', prefix_ioc='ioc')
+    IPM_Wave8('IPM3', name='ipm3', prefix_wave8='wave8')
