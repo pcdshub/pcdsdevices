@@ -47,6 +47,32 @@ class IPMDiode(Device):
         super().__init__(prefix, name=name, **kwargs)
         self.y = self.state.motor
 
+    @property
+    def inserted(self):
+        """Returns ``True`` if diode is inserted."""
+        return self.state.inserted
+
+    @property
+    def removed(self):
+        """Returns ``True`` if diode is removed."""
+        return self.stae.removed
+
+    def insert(self, moved_cb=None, timeout=None, wait=False):
+        """Moves the diode into the beam."""
+        return self.state.insert(moved_cb=moved_cb,
+                                  timeout=timeout,
+                                  wait=wait)
+
+    def remove(self, moved_cb=None, timeout=None, wait=False):
+        """Moves the diode out of the beam."""
+        return self.state.remove(moved_cb=moved_cb,
+                                  timeout=timeout,
+                                  wait=wait)
+
+    remove.__doc__ += insert_remove
+
+    tab_whitelist = ['target', 'diode']
+
 
 class IPMMotion(Device):
     """
@@ -71,14 +97,6 @@ class IPMMotion(Device):
     def removed(self):
         """Returns ``True`` if target is removed. Diode never blocks."""
         return self.target.removed
-
-    def remove(self, moved_cb=None, timeout=None, wait=False):
-        """Moves the target out of the beam. Diode never blocks."""
-        return self.target.remove(moved_cb=moved_cb,
-                                  timeout=timeout,
-                                  wait=wait)
-
-    remove.__doc__ += insert_remove
 
     @property
     def transmission(self):

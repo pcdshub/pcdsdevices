@@ -37,16 +37,16 @@ def test_ipm_motion(fake_ipm):
     logger.debug('test_ipm_motion')
     ipm = fake_ipm
     # Remove IPM Targets
-    ipm.remove(wait=True, timeout=1.0)
+    ipm.target.remove(wait=True, timeout=1.0)
     assert ipm.target.state.get() == 5
     # Insert IPM Targets
     ipm.target.set(1)
     assert ipm.target.state.get() == 1
     # Move diodes in
-    ipm.diode.state.insert()
+    ipm.diode.insert()
     assert ipm.diode.state.state.get() == 1
     # Move diodes out
-    ipm.diode.state.remove()
+    ipm.diode.remove()
     assert ipm.diode.state.state.get() == 2
 
 
