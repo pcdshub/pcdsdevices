@@ -59,15 +59,13 @@ class IPMDiode(Device):
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
         """Moves the diode into the beam."""
-        return self.state.insert(moved_cb=moved_cb,
-                                  timeout=timeout,
-                                  wait=wait)
+        return self.state.insert(moved_cb=moved_cb, timeout=timeout,
+                                 wait=wait)
 
     def remove(self, moved_cb=None, timeout=None, wait=False):
         """Moves the diode out of the beam."""
-        return self.state.remove(moved_cb=moved_cb,
-                                  timeout=timeout,
-                                  wait=wait)
+        return self.state.remove(moved_cb=moved_cb, timeout=timeout,
+                                 wait=wait)
 
     remove.__doc__ += insert_remove
 
