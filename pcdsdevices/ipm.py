@@ -55,7 +55,7 @@ class IPMDiode(Device):
     @property
     def removed(self):
         """Returns ``True`` if diode is removed."""
-        return self.stae.removed
+        return self.state.removed
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
         """Moves the diode into the beam."""
