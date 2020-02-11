@@ -171,7 +171,7 @@ class IPIMB(Device):
     # again before device can be used again.
     # wait functionality?
 
-    def __init__(self, prefix, *, name, prefix_ioc, **kwargs):
+    def __init__(self, prefix, *, name, prefix_ioc=None, **kwargs):
         if not prefix_ioc:
             self._prefix_ioc = 'IOC:%s' % prefix
         else:
@@ -305,10 +305,11 @@ class IPM_IPIMB(IPMMotion):
     def channel(self, i=0):
         # thrown an exception for an invalid channel?
         # if ( i >= 4 ): return None
-        return getattr(self.ipimb, 'ch%i').amplitude.get()
+        return getattr(self.ipimb, 'ch%d' % i).amplitude.get()
 
     def channels(self):
-        return [getattr(self.ipimb, 'ch%i').amplitude.get() for i in range(4)]
+        return [getattr(self.ipimb, 'ch%d' % i).amplitude.get()
+                for i in range(4)]
 
 
 class IPM_Wave8(IPMMotion):
@@ -335,10 +336,11 @@ class IPM_Wave8(IPMMotion):
         return self.wave8.ypos.get()
 
     def channel(self, i=0):
-        return getattr(self.wave8, 'ch%i').amplitude.get()
+        return getattr(self.wave8, 'ch%d' % i).amplitude.get()
 
     def channels(self):
-        return [getattr(self.wave8, 'ch%i').amplitude.get() for i in range(16)]
+        return [getattr(self.wave8, 'ch%d' % i).amplitude.get()
+                for i in range(16)]
 
 
 def IPM(prefix, *, name, **kwargs):
