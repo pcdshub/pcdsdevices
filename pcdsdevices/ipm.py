@@ -39,6 +39,8 @@ class IPMDiode(Device):
     y, which points to the motor of the y-motion.
     """
 
+    tab_whitelist = ['x', 'y', 'insert', 'remove']
+
     x = FCpt(IMS, '{self.x_prefix}', kind='normal')
     state = Cpt(InOutRecordPositioner, '', kind='normal')
 
@@ -68,8 +70,6 @@ class IPMDiode(Device):
                                  wait=wait)
 
     remove.__doc__ += insert_remove
-
-    tab_whitelist = ['target', 'diode']
 
 
 class IPMMotion(Device):
@@ -166,10 +166,6 @@ class IPIMB(Device):
     ch1 = FCpt(IPIMBChannel, '{self.prefix}', channel_index=1, kind='normal')
     ch2 = FCpt(IPIMBChannel, '{self.prefix}', channel_index=2, kind='normal')
     ch3 = FCpt(IPIMBChannel, '{self.prefix}', channel_index=3, kind='normal')
-
-    # also be careful that you have to wait until trigger is enabled
-    # again before device can be used again.
-    # wait functionality?
 
     def __init__(self, prefix, *, name, prefix_ioc=None, **kwargs):
         if not prefix_ioc:
