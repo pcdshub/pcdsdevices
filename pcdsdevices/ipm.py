@@ -28,6 +28,10 @@ class IPMTarget(InOutRecordPositioner):
     # Assume that having any target in gives transmission 0.8
     _transmission = {st: 0.8 for st in in_states}
 
+    def __init__(self, prefix, *, name, **kwargs):
+        super().__init__(prefix, name=name, **kwargs)
+        self.y_motor = self.motor
+
 
 class IPMDiode(Device):
     """
@@ -39,15 +43,15 @@ class IPMDiode(Device):
     y, which points to the motor of the y-motion.
     """
 
-    tab_whitelist = ['x', 'y', 'insert', 'remove']
+    tab_whitelist = ['x_motor', 'y_motor', 'insert', 'remove']
 
-    x = FCpt(IMS, '{self.x_prefix}', kind='normal')
+    x_motor = FCpt(IMS, '{self.x_prefix}', kind='normal')
     state = Cpt(InOutRecordPositioner, '', kind='normal')
 
     def __init__(self, prefix, *, name,  **kwargs):
         self.x_prefix = 'XMOTOR'
         super().__init__(prefix, name=name, **kwargs)
-        self.y = self.state.motor
+        self.y_motor = self.state.motor
 
     @property
     def inserted(self):
@@ -274,7 +278,32 @@ class Wave8(Device):
                    self.prefix+':TRIG'))
 
 
-class IPM_IPIMB(IPMMotion):
+class IPM_Det():
+    """
+    Base class for IPM_IPIMB and IPM_Wave8. Not meant to be instantiated.
+    """
+
+    def isum(self):
+        return self.det.isum.get()
+
+    def xpos(self):
+        return self.det.xpos.get()
+
+    def ypos(self):
+        return self.det.ypos.get()
+
+    def channel(self, i=0):
+        if (i >= self._num_channels or i < 0):
+            raise ValueError("Invalid channel number!")
+        else:
+            return getattr(self.det, 'ch%d' % i).amplitude.get()
+
+    def channels(self):
+        return [getattr(self.det, 'ch%d' % i).amplitude.get()
+                for i in range(self._num_channels)]
+
+
+class IPM_IPIMB(IPMMotion, IPM_Det):
     """
 %s
 
@@ -284,31 +313,17 @@ class IPM_IPIMB(IPMMotion):
 
     ipimb = FCpt(IPIMB, '{self.prefix_ipimb}', prefix_ioc='{self.prefix_ioc}')
 
+    # IPIMB's have four channels
+    _num_channels = 4
+
     def __init__(self, prefix, *, name, **kwargs):
         self.prefix_ipimb = kwargs.pop('prefix_ipimb')
         self.prefix_ioc = kwargs.pop('prefix_ioc', None)
         super().__init__(prefix, name=name, **kwargs)
-
-    def isum(self):
-        return self.ipimb.isum.get()
-
-    def xpos(self):
-        return self.ipimb.xpos.get()
-
-    def ypos(self):
-        return self.ipimb.ypos.get()
-
-    def channel(self, i=0):
-        # thrown an exception for an invalid channel?
-        # if ( i >= 4 ): return None
-        return getattr(self.ipimb, 'ch%d' % i).amplitude.get()
-
-    def channels(self):
-        return [getattr(self.ipimb, 'ch%d' % i).amplitude.get()
-                for i in range(4)]
+        self.det = self.ipimb
 
 
-class IPM_Wave8(IPMMotion):
+class IPM_Wave8(IPMMotion, IPM_Det):
     """
 %s
 
@@ -316,27 +331,16 @@ class IPM_Wave8(IPMMotion):
     """
     __doc__ = __doc__ % (IPM_base) + basic_positioner_init
 
-    wave8 = FCpt(Wave8, '{self.prefix_wave8}')
+    wave8 = FCpt(Wave8, '{self.prefix_wave8}', prefix_ioc='{self.prefix_ioc}')
+
+    # Wave8's have sixteen channels
+    _num_channels = 16
 
     def __init__(self, prefix, *, name, **kwargs):
         self.prefix_wave8 = kwargs.pop('prefix_wave8')
+        self.prefix_ioc = kwargs.pop('prefix_ioc', None)
         super().__init__(prefix, name=name, **kwargs)
-
-    def isum(self):
-        return self.wave8.isum.get()
-
-    def xpos(self):
-        return self.wave8.xpos.get()
-
-    def ypos(self):
-        return self.wave8.ypos.get()
-
-    def channel(self, i=0):
-        return getattr(self.wave8, 'ch%d' % i).amplitude.get()
-
-    def channels(self):
-        return [getattr(self.wave8, 'ch%d' % i).amplitude.get()
-                for i in range(16)]
+        self.det = self.wave8
 
 
 def IPM(prefix, *, name, **kwargs):
