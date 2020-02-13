@@ -1,14 +1,13 @@
 """
 Module for the `IPM` intensity position monitor class
 """
-import shutil
-import os
 from ophyd.device import Device, Component as Cpt, FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
 from .doc_stubs import basic_positioner_init, insert_remove, IPM_base
 from .inout import InOutRecordPositioner
 from .epics_motor import IMS
 from .evr import Trigger
+from .utils import ipm_screen
 
 
 class IPMTarget(InOutRecordPositioner):
@@ -182,14 +181,7 @@ class IPIMB(Device):
         """
         Function to call the (pyQT) screen for an IPIMB box
         """
-        executable = '/reg/g/pcds/controls/pycaqt/ipimb/ipimb.py'
-        if shutil.which(executable) is None:
-            print('%s is not on path, we cannot start the screen' % executable)
-            return
-        executable += ' --dir /reg/g/pcds/controls/pycaqt/ipimb'
-        os.system('%s --base %s --ioc %s --evr %s &' %
-                  (executable, self.prefix, self._prefix_ioc,
-                   self.prefix+':TRIG'))
+        return ipm_screen('IPIMB', self._prefix, self._prefix_ioc)
 
 
 class Wave8Channel(Device):
@@ -267,15 +259,9 @@ class Wave8(Device):
 
     def screen(self):
         """
-        Function to call the (pyQT) screen for a wave8 box
+        Function to call the (pyQT) screen for a Wave8 box
         """
-        executable = '/reg/g/pcds/pyps/apps/wave8/latest/wave8'
-        if shutil.which(executable) is None:
-            print('%s is not on path, we cannot start the screen' % executable)
-            return
-        os.system('%s --base %s --ioc %s --evr %s &' %
-                  (executable, self.prefix, self._prefix_ioc,
-                   self.prefix+':TRIG'))
+        return ipm_screen('Wave8', self._prefix, self._prefix_ioc)
 
 
 class IPM_Det():
