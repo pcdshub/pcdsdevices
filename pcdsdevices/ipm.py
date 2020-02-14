@@ -272,7 +272,7 @@ class Wave8(Device):
         return ipm_screen('Wave8', self._prefix, self._prefix_ioc)
 
 
-class IPM_Det():
+class IPM_Det(Device):
     """
     Base class for IPM_IPIMB and IPM_Wave8. Not meant to be instantiated.
     """
@@ -303,6 +303,7 @@ class IPM_Det():
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
+        self.det = getattr(self, self._det)
         self._channels = {i: getattr(self.det, 'ch%d' % i)
                           for i in range(self._num_channels)}
 
@@ -319,12 +320,12 @@ class IPM_IPIMB(IPMMotion, IPM_Det):
 
     # IPIMB's have four channels
     _num_channels = 4
+    _det = 'ipimb'
 
     def __init__(self, prefix, *, name, **kwargs):
         self.prefix_ipimb = kwargs.pop('prefix_ipimb')
         self.prefix_ioc = kwargs.pop('prefix_ioc', None)
         super().__init__(prefix, name=name, **kwargs)
-        self.det = self.ipimb
 
 
 class IPM_Wave8(IPMMotion, IPM_Det):
@@ -339,6 +340,7 @@ class IPM_Wave8(IPMMotion, IPM_Det):
 
     # Wave8's have sixteen channels
     _num_channels = 16
+    _det = 'wave8'
 
     def __init__(self, prefix, *, name, **kwargs):
         self.prefix_wave8 = kwargs.pop('prefix_wave8')
