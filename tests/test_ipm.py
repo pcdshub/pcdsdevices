@@ -53,21 +53,54 @@ def test_ipm_states(fake_ipm):
     logger.debug('test_ipm_states')
     ipm = fake_ipm
     # Remove IPM Targets
+    # Target: out, Diode: unknown
     ipm.target.state.put(5)
+    assert ipm.target.removed
+    assert not ipm.target.inserted
+    assert not ipm.removed
+    assert not ipm.inserted
+    # Insert IPM Targets
+    # Target: in, Diode: unknown
+    ipm.target.state.put(1)
+    assert not ipm.target.removed
+    assert ipm.target.inserted
+    assert not ipm.removed
+    assert not ipm.inserted
+    # Remove both Diode and Targets with ipm.remove()
+    # Target: out, Diode: out
+    ipm.remove()
+    assert ipm.target.removed
+    assert not ipm.target.inserted
+    assert ipm.diode.removed
+    assert not ipm.diode.inserted
     assert ipm.removed
     assert not ipm.inserted
     # Insert IPM Targets
+    # Target: in, Diode: out
     ipm.target.state.put(1)
     assert not ipm.removed
-    assert ipm.inserted
-    # Remove IPM Diode
-    ipm.diode.remove()
-    assert not ipm.diode.inserted
-    assert ipm.diode.removed
+    assert not ipm.inserted
     # Insert IPM Diode
-    ipm.diode.insert()
-    assert ipm.diode.inserted
+    # Target: in, Diode: in
+    ipm.diode.state.state.put(1)
     assert not ipm.diode.removed
+    assert ipm.diode.inserted
+    assert not ipm.removed
+    assert ipm.inserted
+    # # Remove IPM Targets with ipm.remove()
+    # Target: out, Diode: in
+    ipm.remove()
+    assert ipm.target.removed
+    assert not ipm.target.inserted
+    assert not ipm.diode.removed
+    assert ipm.diode.inserted
+    assert ipm.removed
+    assert not ipm.inserted
+    # Remove IPM Diode
+    # Target: out, Diode: out
+    ipm.diode.state.state.put(2)
+    assert ipm.diode.removed
+    assert not ipm.diode.inserted
 
 
 def test_ipm_motion(fake_ipm):
@@ -77,7 +110,7 @@ def test_ipm_motion(fake_ipm):
     ipm.target.remove(wait=True, timeout=1.0)
     assert ipm.target.state.get() == 5
     # Insert IPM Targets
-    ipm.target.set(1)
+    ipm.target.insert(wait=True, timeout=1.0)
     assert ipm.target.state.get() == 1
     # Insert IPM Diode
     ipm.diode.insert()
