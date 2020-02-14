@@ -91,13 +91,25 @@ class IPMMotion(Device):
     @property
     def inserted(self):
         """Returns ``True`` if target is inserted."""
-        return self.target.inserted
+        return self.target.inserted and self.diode.inserted
 
     @property
     def removed(self):
-        return self.target.removed
-        """Returns ``True`` if target is removed. Diode does not block
-           when inserted or removed"""
+        """Returns ``True`` if target is removed and diode is not blocking.
+           Diode does not block when inserted or removed"""
+        return (self.target.removed and
+                (self.diode.removed or self.diode.inserted))
+
+    def remove(self, moved_cb=None, timeout=None, wait=False):
+        """Moves the target out of the beam and removes the diode if it is in
+           an unknown state"""
+        rmstatus = self.target.remove(moved_cb=moved_cb, timeout=timeout,
+                                      wait=wait)
+        if (self.diode.removed or self.diode.inserted):
+            return rmstatus
+        else:
+            return (rmstatus & self.diode.remove(moved_cb=moved_cb,
+                                                 timeout=timeout, wait=wait))
 
     @property
     def transmission(self):
