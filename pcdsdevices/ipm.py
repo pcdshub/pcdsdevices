@@ -91,17 +91,18 @@ class IPMMotion(Device):
 
     @property
     def inserted(self):
-        """Returns ``True`` if target is inserted. Diode never blocks."""
+        """Returns ``True`` if target is inserted."""
         return self.target.inserted
 
     @property
     def removed(self):
-        """Returns ``True`` if target is removed. Diode never blocks."""
         return self.target.removed
+        """Returns ``True`` if target is removed. Diode does not block
+           when inserted or removed"""
 
     @property
     def transmission(self):
-        """Returns the target's transmission value. Diode never blocks."""
+        """Returns the target's transmission value."""
         return self.target.transmission
 
 
@@ -178,9 +179,7 @@ class IPIMB(Device):
         super().__init__(prefix, name=name, **kwargs)
 
     def screen(self):
-        """
-        Function to call the (pyQT) screen for an IPIMB box
-        """
+        """Function to call the (pyQT) screen for an IPIMB box"""
         return ipm_screen('IPIMB', self._prefix, self._prefix_ioc)
 
 
@@ -258,9 +257,7 @@ class Wave8(Device):
         super().__init__(prefix, name=name, **kwargs)
 
     def screen(self):
-        """
-        Function to call the (pyQT) screen for a Wave8 box
-        """
+        """Function to call the (pyQT) screen for a Wave8 box"""
         return ipm_screen('Wave8', self._prefix, self._prefix_ioc)
 
 
@@ -270,21 +267,26 @@ class IPM_Det():
     """
 
     def isum(self):
+        """Returns the detector's isum value."""
         return self.det.isum.get()
 
     def xpos(self):
+        """Returns the detector's xpos value."""
         return self.det.xpos.get()
 
     def ypos(self):
+        """Returns the detector's ypos value."""
         return self.det.ypos.get()
 
     def channel(self, i=0):
+        """Returns the detector's specified channel"""
         if (i >= self._num_channels or i < 0):
             raise ValueError("Invalid channel number!")
         else:
             return getattr(self.det, 'ch%d' % i).amplitude.get()
 
     def channels(self):
+        """Returns a dictionary of all of the detector's channels"""
         return [getattr(self.det, 'ch%d' % i).amplitude.get()
                 for i in range(self._num_channels)]
 
