@@ -3,6 +3,8 @@ import sys
 import termios
 import time
 import tty
+import shutil
+import os
 
 from cf_units import Unit
 
@@ -95,3 +97,32 @@ def convert_unit(value, unit, new_unit):
     """
     start_unit = Unit(unit)
     return start_unit.convert(value, new_unit)
+
+
+def ipm_screen(dettype, prefix, prefix_ioc):
+    """
+    Function to call the (pyQT) screen for an IPM box
+
+    Parameters
+    ----------
+    dettype: ``str``
+        The type of detector being accessed, `IPIMB` or `Wave8`.
+
+    prefix: ``str``
+        The PV prefix associated with the device being accessed.
+
+    prefix_ioc: ``str``
+        The PV prefix associated with the IOC running the device.
+    """
+
+    if (dettype == 'IPIMB'):
+        executable = '/reg/g/pcds/controls/pycaqt/ipimb/ipimb'
+    elif (dettype == 'Wave8'):
+        executable = '/reg/g/pcds/pyps/apps/wave8/latest/wave8'
+    else:
+        raise ValueError('Unknown detector type')
+    if shutil.which(executable) is None:
+        raise EnvironmentError('%s is not on path, we cannot start the screen'
+                               % executable)
+    os.system('%s --base %s --ioc %s --evr %s &' %
+              (executable, prefix, prefix_ioc, prefix+':TRIG'))

@@ -83,3 +83,15 @@ GaugeSet_base = """
     index : ``str`` or ``int``
         Index for gauge (e.g. '02' or 3)
     """
+
+IPM_base = """
+    Standard intensity position monitor.
+
+    This is an `InOutRecordPositioner` that moves
+    the target position to any of the four set positions, or out. Valid states
+    are (1, 2, 3, 4, 5) or the equivalent
+    (TARGET1, TARGET2, TARGET3, TARGET4, OUT).
+    IPMs each also have a diode, which is implemented as the diode attribute of
+    this class. This can easily be controlled using ``ipm.diode.insert()`` or
+    ``ipm.diode.remove()``.
+    """
