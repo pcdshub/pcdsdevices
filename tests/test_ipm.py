@@ -29,10 +29,8 @@ def fake_ipm():
 @pytest.fixture(scope='function', params=[IPM_IPIMB, IPM_Wave8])
 def fake_ipm_with_box(request):
     """
-    Test IPM_Wave8 and IPM_IPIMB
-    """
-    """
     Setup a fake ipm, given a real class
+    For IPM_Wave8 and IPM_IPIMB
     """
     FakeIPM = make_fake_device(request.param)
     if request.param is IPM_IPIMB:
@@ -138,7 +136,7 @@ def test_ipm_box_readback(fake_ipm_with_box):
     ipm.xpos()
     ipm.ypos()
     ipm.channel().amplitude.get()
-    ipm.channels()
+    ipm.channels[0]
     ipm.transmission
     # Negative channel numbers are not allowed
     with pytest.raises(ValueError):
