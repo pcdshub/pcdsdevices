@@ -44,11 +44,10 @@ class IPMDiode(Device):
 
     tab_whitelist = ['x_motor', 'y_motor', 'insert', 'remove']
 
-    x_motor = FCpt(IMS, '{self.x_prefix}', kind='normal')
+    x_motor = Cpt(IMS, 'X_MOTOR', kind='normal')
     state = Cpt(InOutRecordPositioner, '', kind='normal')
 
     def __init__(self, prefix, *, name,  **kwargs):
-        self.x_prefix = 'XMOTOR'
         super().__init__(prefix, name=name, **kwargs)
         self.y_motor = self.state.motor
 
