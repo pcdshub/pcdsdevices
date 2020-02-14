@@ -104,9 +104,15 @@ def test_ipm_box_readback(fake_ipm_with_box):
     ipm.isum()
     ipm.xpos()
     ipm.ypos()
-    ipm.channel()
+    ipm.channel().amplitude.get()
     ipm.channels()
     ipm.transmission
+    # Negative channel numbers are not allowed
+    with pytest.raises(ValueError):
+        ipm.channel(-1)
+    # Assuming no IPM detector will have over 256 channels
+    with pytest.raises(ValueError):
+        ipm.channel(256)
 
 
 def test_ipm_factory():

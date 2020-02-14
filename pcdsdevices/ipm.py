@@ -282,12 +282,17 @@ class IPM_Det():
         if (i >= self._num_channels or i < 0):
             raise ValueError("Invalid channel number!")
         else:
-            return getattr(self.det, 'ch%d' % i).amplitude.get()
+            return self.channels[i]
 
+    @property
     def channels(self):
         """Returns a dictionary of all of the detector's channels"""
-        return [getattr(self.det, 'ch%d' % i).amplitude.get()
-                for i in range(self._num_channels)]
+        return dict(self._channels)
+
+    def __init__(self, prefix, *, name, **kwargs):
+        super().__init__(prefix, name=name, **kwargs)
+        self._channels = {i: getattr(self.det, 'ch%d' % i)
+                          for i in range(self._num_channels)}
 
 
 class IPM_IPIMB(IPMMotion, IPM_Det):
