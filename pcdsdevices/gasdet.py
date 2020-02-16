@@ -5,7 +5,7 @@ import logging
 from ophyd import EpicsSignal, EpicsSignalRO, Device
 from ophyd import Component as Cpt
 from ophyd import FormattedComponent as FCpt
-from pcdsdevices.interface import BaseInterface
+from .interface import BaseInterface
 
 logger = logging.getLogger(__name__)
 
@@ -87,13 +87,13 @@ class acqiris(Device, BaseInterface):
         """
         Start the acqiris DAQ
         """
-        self.run_state.put(1)
+        self.run_state.put(0)
 
     def stop(self):
         """
         Stop the acqiris DAQ
         """
-        self.run_state.put(0)
+        self.run_state.put(1)
 
 class gasdet(Device):
     """

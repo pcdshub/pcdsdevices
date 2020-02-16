@@ -8,12 +8,16 @@ logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope='function')
 def fake_acq():
+    logger.debug('test_acqiris')
     FakeAcq = make_fake_device(acqiris)
     acq = FakeAcq('TEST:ACQ', '000')
+    acq.run_state.sim_set_enum_strs(['RUNNING','STOPPED'])
+    acq.run_state.sim_put('RUNNING')
+    assert acq.run_state.get() == 'RUNNING'
     acq.stop()
-    assert acq.run_state == 1
+    assert acq.run_state.get() == 'STOPPED'
     acq.start()
-    assert acq.run_state == 0
+    assert acq.run_state.get() == 'RUNNING'
     return acq
 
 @pytest.mark.timout(5)
@@ -29,14 +33,9 @@ def test_gasdet():
     FakeGasDet('TEST:GASDET', name='gasdet')
 
 @pytest.mark.timeout(5)
-def test_acq_subscription(fake_acq):
-    logger.debug('test_acqiris_subscriptions')
-    acq = fake_acq
-    cb = Mock()
-    acq.subscribe(cb, event_type=acq.SUB_STATE, run=False)
-    acq.run_state.sim_put(0)
-    assert cb.called
-
+def test_gasdet_disconnected():
+    gasdet('TRO:LOL:LOL', name='tst')
+    
 @pytest.mark.timeout(5)
 def test_acq_disconnected():
-    acqiris('ECS:RLZ', '666', name='tst')
+    acqiris('ECS:RULEZ', '666', name='tst')
