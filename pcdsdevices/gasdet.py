@@ -1,82 +1,86 @@
 """
-Ophyd devices for the Hard X-ray Gas Energy Monitor
+Ophyd devices for the acqiris digitizer systems
 """
 import logging
 from ophyd import EpicsSignal, EpicsSignalRO, Device
 from ophyd import Component as Cpt
 from ophyd import FormattedComponent as FCpt
-
 from pcdsdevices.interface import BaseInterface
 
 logger = logging.getLogger(__name__)
 
 class acqiris_channel(Device):
     """
-    Class to define a single acqiris channel and its data.
+    Class to define a single acqiris channel.
 
-    Parameters
-    ----------
-    prefix : ``str``
-        The PV base of the digitizer.
-    channel : ``str``
-        The channel number, e.g. '1',..,'4'
-    board : ``str``
-        3-digit ID of the board the channel belongs to, e.g. '241'
     """
     waveform = Cpt(EpicsSignalRO, ':Data', kind='hinted')
-    
+    v_max = Cpt(EpicsSignal, ':CMaxVert', kind='normal')
+    v_cent = Cpt(EpicsSignal, ':CCenter', kind='normal')
+    v_in = Cpt(EpicsSignal, ':CMinVert', kind='normal')
+    v_scale = Cpt(EpicsSignal, ':CVPerDiv', kind='normal')
+    bandwidth = Cpt(EpicsSignal, ':CBandwidth', kind='config', string=True)
+    full_scale = Cpt(EpicsSignal, ':CFullScale', kind='config')
+    coupling = Cpt(EpicsSignal, ':CCoupling', kind='config', string=True)
+    offset = Cpt(EpicsSignal, ':COffset', kind='config')
+    trig_coupling = Cpt(EpicsSignal, 'CTrigCoupling', kind='config', string=True)
+    trig_slope = Cpt(EpicsSignal, 'CTrigSlope', kind='config', string=True)
+    trig_level = Cpt(EpicsSignal, ':CTrigLevel1', kind='config')
 
-class acqiris_board(Device):
+class acqiris(Device, BaseInterface):
     """
-    Class to define an acqiris digitizer board in the HXR gas detector.
+    Class to define an acqiris digitizer board as constructed by the 'GasDetDAQ' EPICS IOC. 
+    This device is used to access specific acqiris channels as subcomponents.
     
     Parameters
     ----------
     prefix : ``str``
         The PV base of the digitizer.
-    board : ``str``
+    platform : ``str``
+        This a legacy PV segment found in the GasDetDAQ IOC. The default '202' applies to
+        the HXR gas detector system.
+    module : ``str``
         3-digit number representing the digitizer board, e.g. '240', '360'.
 
     """
-
-    ch1 = FCpt(acqiris_channel, '{self.prefix}:{self._board_pref}1',kind='hinted')
-    ch2 = FCpt(acqiris_channel, '{self.prefix}:{self._board_pref}2',kind='hinted')
-    ch3 = FCpt(acqiris_channel, '{self.prefix}:{self._board_pref}3',kind='hinted')
-    ch4 = FCpt(acqiris_channel, '{self.prefix}:{self._board_pref}4',kind='hinted')
-
-
+    ch1 = FCpt(acqiris_channel, '{self.prefix}:{self._mod_pref}1',kind='hinted')
+    ch2 = FCpt(acqiris_channel, '{self.prefix}:{self._mod_pref}2',kind='hinted')
+    ch3 = FCpt(acqiris_channel, '{self.prefix}:{self._mod_pref}3',kind='hinted')
+    ch4 = FCpt(acqiris_channel, '{self.prefix}:{self._mod_pref}4',kind='hinted')
+    
     tab_component_names = True
+    tab_whitelist = ["ch1", "ch2", "ch3", "ch4"]
 
-    run_state = FCpt(EpicsSignal, '{self.prefix}:{self.board}:MDAQStatus',kind='config', string=True)
-    sample_interval = FCpt(EpicsSignal, '{self.prefix}:{self.board}:MSampInterval',kind='config')
-    delay_time = FCpt(EpicsSignal, '{self.prefix}:{self.board}:MDelayTime',kind='config')
-    num_samples = FCpt(EpicsSignal, '{self.prefix}:{self.board}:MNbrSamples',kind='config')
-    trig_source = FCpt(EpicsSignal, '{self.prefix}:{self.board}:MTriggerSource',kind='config', string=True)
-    trig_class = FCpt(EpicsSignal, '{self.prefix}:{self.board}:MTrigClass',kind='config', string=True)
-    samples_freq = FCpt(EpicsSignalRO, '{self.prefix}:{self.board}:MSampFrequency',kind='config')
-    rate =  FCpt(EpicsSignalRO, '{self.prefix}:{self.board}:MEventRate',kind='config')
-    num_events =  FCpt(EpicsSignalRO, '{self.prefix}:{self.board}:MEventCount',kind='config')
-    num_trig_timeouts = FCpt(EpicsSignalRO, '{self.prefix}:{self.board}:MTriggerTimeouts',kind='config')
-    num_truncated = FCpt(EpicsSignalRO, '{self.prefix}:{self.board}:MTruncated',kind='config')
+    run_state = FCpt(EpicsSignal, '{self.prefix}:{self.module}:MDAQStatus',kind='config', string=True)
+    sample_interval = FCpt(EpicsSignal, '{self.prefix}:{self.module}:MSampInterval',kind='config')
+    delay_time = FCpt(EpicsSignal, '{self.prefix}:{self.module}:MDelayTime',kind='config')
+    num_samples = FCpt(EpicsSignal, '{self.prefix}:{self.module}:MNbrSamples',kind='config')
+    trig_source = FCpt(EpicsSignal, '{self.prefix}:{self.module}:MTriggerSource',kind='config', string=True)
+    trig_class = FCpt(EpicsSignal, '{self.prefix}:{self.module}:MTrigClass',kind='config', string=True)
+    samples_freq = FCpt(EpicsSignalRO, '{self.prefix}:{self.module}:MSampFrequency',kind='config')
+    rate =  FCpt(EpicsSignalRO, '{self.prefix}:{self.module}:MEventRate',kind='config')
+    num_events =  FCpt(EpicsSignalRO, '{self.prefix}:{self.module}:MEventCount',kind='config')
+    num_trig_timeouts = FCpt(EpicsSignalRO, '{self.prefix}:{self.module}:MTriggerTimeouts',kind='config')
+    num_truncated = FCpt(EpicsSignalRO, '{self.prefix}:{self.module}:MTruncated',kind='config')
 
     # "Extras"
-    acq_type = FCpt(EpicsSignal, '{self.prefix}:{self.board}:MType',kind='config', string=True)
-    acq_mode = FCpt(EpicsSignal, '{self.prefix}:{self.board}:MMode',kind='config', string=True)
-    acq_mode_flags = FCpt(EpicsSignal, '{self.prefix}:{self.board}:MModeFlags',kind='config', string=True)
-    clock_type = FCpt(EpicsSignalRO, '{self.prefix}:{self.board}:MClockType',kind='config', string=True)
-    crate_number =  FCpt(EpicsSignalRO, '{self.prefix}:{self.board}:MCrateNb',kind='config')
-    nADC_bits =  FCpt(EpicsSignalRO, '{self.prefix}:{self.board}:MNbrADCBits',kind='config')
-    crate_slot = FCpt(EpicsSignalRO, '{self.prefix}:{self.board}:MPosInCrate',kind='config')
-    temp = FCpt(EpicsSignalRO, '{self.prefix}:{self.board}:MTemperature_m',kind='config')
-    input_freq = FCpt(EpicsSignalRO, '{self.prefix}:{self.board}:MInputFrequency',kind='config')
+    acq_type = FCpt(EpicsSignal, '{self.prefix}:{self.module}:MType',kind='config', string=True)
+    acq_mode = FCpt(EpicsSignal, '{self.prefix}:{self.module}:MMode',kind='config', string=True)
+    acq_mode_flags = FCpt(EpicsSignal, '{self.prefix}:{self.module}:MModeFlags',kind='config', string=True)
+    clock_type = FCpt(EpicsSignalRO, '{self.prefix}:{self.module}:MClockType',kind='config', string=True)
+    crate_number =  FCpt(EpicsSignalRO, '{self.prefix}:{self.module}:MCrateNb',kind='config')
+    nADC_bits =  FCpt(EpicsSignalRO, '{self.prefix}:{self.module}:MNbrADCBits',kind='config')
+    crate_slot = FCpt(EpicsSignalRO, '{self.prefix}:{self.module}:MPosInCrate',kind='config')
+    temp = FCpt(EpicsSignalRO, '{self.prefix}:{self.module}:MTemperature_m',kind='config')
+    input_freq = FCpt(EpicsSignalRO, '{self.prefix}:{self.module}:MInputFrequency',kind='config')
     
-    def __init__(self, prefix, *, platform, board, name='acqiris_board', **kwargs):
-        self.board = board
+    def __init__(self, prefix, module, platform=None, name='acqiris_module', **kwargs):
+        self.module = module
         self.prefix = prefix
         self.platform = platform
-        if len(self.board) != 3:
-            raise ValueError("acqiris 'board' expects a 3-digit board identifier, e.g. '240'")
-        self._board_pref = self.board[:2]
+        if len(self.module) != 3:
+            raise ValueError("acqiris 'module' expects a 3-digit module identifier, e.g. '240'")
+        self._mod_pref = self.module[:2]
         super().__init__(prefix, name=name, **kwargs)
 
     def start(self):
@@ -91,36 +95,41 @@ class acqiris_board(Device):
         """
         self.run_state.put(0)
 
-# class gasdet(Device, BaseInterface):
-#     """
-#     Class to create complete gas detector with all acqiris boards.
+class gasdet(Device):
+    """
+    Class to read out pulse energy from a PMT/diode as digitized by an acqiris in the GasDetDAQ EPICS IOC.
 
-#     Parameters
-#     ----------
-#     prefix : ``str``
-#         The PV base of the digitizer.
-#     platform : ``str``
-#         This a legacy PV segment found in the GasDetDAQ IOC. The default '202' applies to
-#         the HXR gas detector system.
-#     board1 : ``str``
-#         3-digit number representing the first digitizer board, e.g. '240', '360'.
-#     board2 : ``str``
-#         3-digit number representing the second digitizer board, e.g. '240', '360'.
+    Parameters
+    ----------
+    prefix : ``str``
+        The PV base of the digitizer.
+    platform : ``str``
+        This a legacy PV segment found in the GasDetDAQ IOC. For example, '202' applies to
+        the HXR gas detector system... for some reason.
+    module : ``str``
+        3-digit number representing the digitizer board, e.g. '240', '360'.
+    channel : ``str``
+        The digitizer channel.
 
-#     """
-#     ###
-#     # At the moment I cannot get the self.board and self.platfrom arguments to be interpreted by component 
-#     # (they just pass the literal string "{self.board}" etc.
-#     ##
-#     acq1 = FCpt(acqiris_board, '{self.prefix}:DIAG:{self.platform}', platform='{self.platform}',board='{self.board1}', kind='hinted')
-#     acq2 = FCpt(acqiris_board, '{self.prefix}:DIAG:{self.platform}', platform='{self.platform}',board='{self.board2}.', kind='hinted')
+    """
+    mJ = Cpt(EpicsSignalRO, ':ENRC', kind='hinted')
+    time = Cpt(EpicsSignalRO, ':TIME', kind='hinted')
+    cal = Cpt(EpicsSignalRO, ':CALI', kind='hinted')
+    offset = Cpt(EpicsSignalRO, ':OFFS', kind='hinted')
+    BG_start_index = Cpt(EpicsSignalRO, ':BSTR', kind='hinted')
+    BG_stop_index = Cpt(EpicsSignalRO, ':BSTP', kind='hinted')
+    BG_sum = Cpt(EpicsSignalRO, ':BSUM', kind='hinted')
+    pulse_start_index = Cpt(EpicsSignalRO, ':STRT', kind='hinted')
+    pulse_stop_index = Cpt(EpicsSignalRO, ':STOP', kind='hinted')
+    pulse_sum = Cpt(EpicsSignalRO, ':PSUM', kind='hinted')
 
-#     tab_component_names = True
-#     tab_whitelist = ['acq1', 'acq2']
-
-#     def __init__(self, prefix, *, platform, board1, board2, name='gasdet', **kwargs):
-#         self.platform = platform
-#         self.board1 = board1
-#         self.board2 = board2
-#         super().__init__(prefix, name=name, **kwargs)
-
+    def __init__(self, prefix, *, platform=None, module=None, channel=None, name='gasdet', **kwargs):
+        self.module = module
+        self.prefix = prefix
+        self.platform = platform
+        if self.module and len(self.module) != 3:
+            raise ValueError("acqiris 'module' expects a 3-digit module identifier, e.g. '240'")
+        else:
+            if self.module:
+                self._mod_pref = self.module[:2]
+        super().__init__(prefix, name=name, **kwargs)
