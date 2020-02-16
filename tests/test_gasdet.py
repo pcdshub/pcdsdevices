@@ -6,7 +6,6 @@ from pcdsdevices.gasdet import acqiris, acqiris_channel, gasdet
 
 logger = logging.getLogger(__name__)
 
-
 @pytest.fixture(scope='function')
 def fake_acq():
     FakeAcq = make_fake_device(acqiris)
@@ -40,4 +39,4 @@ def test_acq_subscription(fake_acq):
 
 @pytest.mark.timeout(5)
 def test_acq_disconnected():
-    acqiris('ECS:RLZ', name='tst', '666')
+    acqiris('ECS:RLZ', '666', name='tst')
