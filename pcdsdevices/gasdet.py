@@ -163,7 +163,8 @@ class acqiris(Device, BaseInterface):
     num_events = FCpt(
         EpicsSignalRO,
         '{self.prefix}:{self.module}:MEventCount',
-        kind='config')
+        kind='config'
+    )
     num_trig_timeouts = FCpt(
         EpicsSignalRO,
         '{self.prefix}:{self.module}:MTriggerTimeouts',
@@ -235,8 +236,8 @@ class acqiris(Device, BaseInterface):
         self.platform = platform
         if len(self.module) != 3:
             raise ValueError("acqiris 'module'"
-                             + "expects a 3-digit module identifier, "
-                             + "e.g. '240'")
+                             + " expects a 3-digit module identifier,"
+                             + " e.g. '240'")
         self._mod_pref = self.module[:2]
         super().__init__(prefix, name=name, **kwargs)
 
@@ -336,8 +337,8 @@ class gasdet(Device):
         self.platform = platform
         if self.module and len(self.module) != 3:
             raise ValueError("acqiris 'module'"
-                             + "expects a 3-digit module identifier,"
-                             + "e.g. '240'")
+                             + " expects a 3-digit module identifier,"
+                             + " e.g. '240'")
         else:
             if self.module:
                 self._mod_pref = self.module[:2]
