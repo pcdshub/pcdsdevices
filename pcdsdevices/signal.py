@@ -14,6 +14,7 @@ from threading import RLock, Thread
 
 import numpy as np
 from ophyd.signal import Signal, EpicsSignalBase, EpicsSignal, EpicsSignalRO
+from pytmc.pragmas import normalize_io
 
 logger = logging.getLogger(__name__)
 
@@ -31,11 +32,14 @@ class PytmcEpicsSignal(EpicsSignalBase):
     depending on your io argument.
     """
     def __new__(cls, prefix, *, io, **kwargs):
-        # Same exact check done in pytmc
-        if 'o' in io:
+        norm = normalize_io(io)
+        if norm == 'output':
             return super().__new__(PytmcEpicsSignalRW)
-        else:
+        elif norm == 'input':
             return super().__new__(PytmcEpicsSignalRO)
+        else:
+            # Should never get here unless pytmc's API changes
+            raise ValueError(f'Invalid io specifier {io}')
 
     def __init__(self, prefix, *, io, **kwargs):
         self.pytmc_pv = prefix
