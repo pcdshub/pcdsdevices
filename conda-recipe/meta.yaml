@@ -21,6 +21,7 @@ requirements:
     - ophyd 1.4.0rc4|>=1.4.0
     - bluesky >=1.2.0
     - pyepics >=3.4.1
+    - pytmc >=2.4.0
     - pyyaml
     - cf_units >=2.0.1
     - scipy
