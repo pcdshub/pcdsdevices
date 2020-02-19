@@ -1,11 +1,22 @@
 import logging
 from unittest.mock import Mock
 
-from ophyd.signal import Signal
+from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
 
-from pcdsdevices.signal import AvgSignal
+from pcdsdevices.signal import PytmcSignal, AvgSignal
 
 logger = logging.getLogger(__name__)
+
+
+def test_pytmc_signal():
+    logger.debug('test_pytmc_signal')
+    # Just make sure the normal use cases aren't super broken
+    rwsig = PytmcSignal('PREFIX', io='io')
+    rosig = PytmcSignal('PREFIX', io='i')
+    assert isinstance(rwsig, EpicsSignal)
+    assert isinstance(rwsig, PytmcSignal)
+    assert isinstance(rosig, EpicsSignalRO)
+    assert isinstance(rosig, PytmcSignal)
 
 
 def test_avg_signal():
