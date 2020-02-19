@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 def test_pytmc_signal():
     logger.debug('test_pytmc_signal')
     # Just make sure the normal use cases aren't super broken
-    rwsig = PytmcEpicsSignal('PREFIX', io='io')
-    rosig = PytmcEpicsSignal('PREFIX', io='i')
+    rwsig = PytmcSignal('PREFIX', io='io')
+    rosig = PytmcSignal('PREFIX', io='i')
     assert isinstance(rwsig, EpicsSignal)
     assert isinstance(rwsig, PytmcSignal)
     assert isinstance(rosig, EpicsSignalRO)

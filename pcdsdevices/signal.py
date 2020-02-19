@@ -19,7 +19,7 @@ from pytmc.pragmas import normalize_io
 logger = logging.getLogger(__name__)
 
 
-class PytmcEpicsSignal(EpicsSignalBase):
+class PytmcSignal(EpicsSignalBase):
     """
     Class for a connection to a pytmc-generated EPICS record.
 
@@ -34,9 +34,9 @@ class PytmcEpicsSignal(EpicsSignalBase):
     def __new__(cls, prefix, *, io, **kwargs):
         norm = normalize_io(io)
         if norm == 'output':
-            return super().__new__(PytmcEpicsSignalRW)
+            return super().__new__(PytmcSignalRW)
         elif norm == 'input':
-            return super().__new__(PytmcEpicsSignalRO)
+            return super().__new__(PytmcSignalRO)
         else:
             # Should never get here unless pytmc's API changes
             raise ValueError(f'Invalid io specifier {io}')
@@ -47,7 +47,7 @@ class PytmcEpicsSignal(EpicsSignalBase):
         super().__init__(prefix + '_RBV', **kwargs)
 
 
-class PytmcEpicsSignalRW(PytmcEpicsSignal, EpicsSignal):
+class PytmcSignalRW(PytmcSignal, EpicsSignal):
     """
     Read-write connection to a pytmc-generated EPICS record
     """
@@ -55,7 +55,7 @@ class PytmcEpicsSignalRW(PytmcEpicsSignal, EpicsSignal):
         super().__init__(prefix, write_pv=prefix, **kwargs)
 
 
-class PytmcEpicsSignalRO(PytmcEpicsSignal, EpicsSignalRO):
+class PytmcSignalRO(PytmcSignal, EpicsSignalRO):
     """
     Read-only connection to a pytmc-generated EPICS record
     """
