@@ -155,7 +155,7 @@ class XPIMFilterWheel(StatePositioner):
     """
     tab_component_names = True
 
-    state = Cpt(EpicsSignal, ':GET_RBV', write_pv='SET', kind='normal')
+    state = Cpt(EpicsSignal, ':GET_RBV', write_pv=':SET', kind='normal')
 
     reset_cmd = Cpt(PytmcSignal, ':ERR:RESET', io='i', kind='omitted')
     error_message = Cpt(PytmcSignal, ':ERR:MSG', io='i', kind='omitted')
