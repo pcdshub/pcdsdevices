@@ -16,6 +16,6 @@ class TwinCATThermoCouple(Device, BaseInterface):
     Assumes we're using the FB_ThermoCouple function block from
     lcls-twincat-general
     """
-    temperature = Cpt(PytmcSignal, 'STC:TEMP', io='i', kind='normal')
-    sensor_connected = Cpt(PytmcSignal, 'STC:CONN', io='i', kind='normal')
-    error = Cpt(PytmcSignal, 'STC:ERR', io='i', kind='normal')
+    temperature = Cpt(PytmcSignal, ':STC:TEMP', io='i', kind='normal')
+    sensor_connected = Cpt(PytmcSignal, ':STC:CONN', io='i', kind='normal')
+    error = Cpt(PytmcSignal, ':STC:ERR', io='i', kind='normal')
