@@ -10,7 +10,7 @@ Full API
    ~pcdsdevices.ccm
    ~pcdsdevices.dc_devices
    ~pcdsdevices.device_types
-   ~pcdsdeviecs.doc_stubs
+   ~pcdsdevices.doc_stubs
    ~pcdsdevices.epics_motor
    ~pcdsdevices.evr
    ~pcdsdevices.gauge
