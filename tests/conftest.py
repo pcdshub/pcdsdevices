@@ -20,6 +20,7 @@ from pcdsdevices.signal import PytmcSignal
 warnings.filterwarnings('ignore',
                         message='Signal.put no longer takes keyword arguments')
 
+
 # Make sure an acceptable fake class is set for PytmcSignal
 def FakePytmcSignal(prefix, *, io, **kwargs):
     norm = normalize_io(io)
@@ -30,6 +31,7 @@ def FakePytmcSignal(prefix, *, io, **kwargs):
     else:
         # Give us the normal error message
         return PytmcSignal(prefix, io=io, **kwargs)
+
 
 fake_device_cache[PytmcSignal] = FakePytmcSignal
 

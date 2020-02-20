@@ -99,7 +99,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
     def _late_state_init(self, *args, enum_strs=None, **kwargs):
         if enum_strs is not None and not self.states_list:
             self.states_list = list(enum_strs)
-            # Unknown state is reserved for slot zero, automatically added later
+            # Unknown state reserved for slot zero, automatically added later
             # Removing and auto re-adding *feels* silly, but it was easy to do
             if self._unknown:
                 self.states_list.pop(0)

@@ -65,9 +65,11 @@ def test_pim_subscription(fake_pim):
 def test_pim_disconnected():
     PIM('TST:YAG', name='tst', prefix_det='tstst')
 
+
 @pytest.mark.timeout(5)
 def test_ppm_disconnected():
     PPM('IM7S7:PPM', name='im7s7')
+
 
 @pytest.mark.timeout(5)
 def test_xpim_disconnected():
