@@ -7,10 +7,16 @@ yag position and a camera to view the yag.
 """
 import logging
 
-from ophyd import FormattedComponent as FCpt
+from ophyd.device import Device, Component as Cpt, FormattedComponent as FCpt
+from ophyd.signal import EpicsSignal
 
 from .areadetector.detectors import PCDSAreaDetector
-from .inout import InOutRecordPositioner
+from .epics_motor import BeckhoffAxis
+from .inout import InOutRecordPositioner, TwinCATInOutPositioner
+from .interface import BaseInterface
+from .sensors import TwinCATThermoCouple
+from .signal import PytmcSignal
+from .state import StatePositioner
 
 logger = logging.getLogger(__name__)
 
@@ -66,3 +72,56 @@ class PIM(PIMMotor):
         else:
             self._prefix_det = prefix_det
         super().__init__(prefix, name=name, **kwargs)
+
+
+class LCLS2ImagerBase(Device, BaseInterface):
+    tab_component_names = True
+
+    y_states = Cpt(TwinCATInOutPositioner, ':STATE', kind='hinted')
+    y_motor = Cpt(BeckhoffAxis, ':MMS', kind='normal')
+    detector = Cpt(PCDSAreaDetector, ':CAM:', kind='normal')
+    cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config')
+
+
+class PPMPowerMeter(Device, BaseInterface):
+    tab_component_names = True
+
+    raw_voltage = Cpt(PytmcSignal, 'VOLT', io='i', kind='normal')
+    dimensionless = Cpt(PytmcSignal, 'CALIB', io='i', kind='normal')
+    calibrated_mj = Cpt(PytmcSignal, 'MJ', io='i', kind='normal')
+    thermocouple = Cpt(TwinCATThermoCouple, '', kind='normal')
+
+    calib_offset = Cpt(PytmcSignal, 'CALIB:OFFSET', io='io', kind='config')
+    calib_ratio = Cpt(PytmcSignal, 'CALIB:RATIO', io='io', kind='config')
+    calib_mj_ratio = Cpt(PytmcSignal, 'CALIB:MJ_RATIO', io='io', kind='config')
+
+    raw_voltage_buffer = Cpt(PytmcSignal, 'VOLT_BUFFER', io='i',
+                             kind='omitted')
+    dimensionless_buffer = Cpt(PytmcSignal, 'CALIB_BUFFER', io='i',
+                               kind='omitted')
+    calibrated_mj_buffer = Cpt(PytmcSignal, 'MJ_BUFFER', io='i',
+                               kind='omitted')
+
+
+class PPM(LCLS2ImagerBase):
+    power_meter = Cpt(PPMPowerMeter, ':SPM:', kind='normal')
+    yag_thermocouple = Cpt(TwinCATThermoCouple, ':YAG:', kind='normal')
+
+    led = Cpt(PytmcSignal, ':CAM:CIL:PCT', io='io', kind='config')
+
+
+class XPIMFilterWheel(StatePositioner):
+    tab_component_names = True
+
+    state = Cpt(EpicsSignal, 'GET_RBV', write_pv='SET', kind='normal')
+
+    reset_cmd = Cpt(PytmcSignal, 'ERR:RESET', io='i', kind='omitted')
+    error_message = Cpt(PytmcSignal, 'ERR:MSG', io='i', kind='omitted')
+
+
+class XPIM(LCLS2ImagerBase):
+    zoom_motor = Cpt(BeckhoffAxis, ':CLZ', kind='normal')
+    focus_motor = Cpt(BeckhoffAxis, ':CLF', kind='normal')
+
+    led = Cpt(PytmcSignal, ':CAM:CIL:PWR', io='io', kind='config')
+    filter_wheel = Cpt(XPIMFilterWheel, ':MFW:', kind='config')
