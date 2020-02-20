@@ -5,17 +5,18 @@ from unittest.mock import Mock
 
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.pim import PIM, PIMMotor
+from pcdsdevices.pim import (PIM, PIM_Y, PIM_withLED, PIM_withFocus,
+                             PIM_withBoth)
 
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def fake_pim():
-    FakePIM = make_fake_device(PIMMotor)
+    FakePIM = make_fake_device(PIM)
     pim = FakePIM('Test:Yag', name='test')
     pim.state.sim_put(0)
-    pim.state.sim_set_enum_strs(['Unknown'] + PIMMotor.states_list)
+    pim.state.sim_set_enum_strs(['Unknown'] + PIM_Y.states_list)
     pim.motor.error_severity.sim_put(0)
     pim.motor.bit_status.sim_put(0)
     pim.motor.motor_spg.sim_put(2)
@@ -44,10 +45,49 @@ def test_pim_stage(fake_pim):
 
 
 @pytest.mark.timeout(5)
-def test_pim_det():
+def test_pim_init():
     logger.debug('test_pim_det')
     FakePIM = make_fake_device(PIM)
+    FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_zoom='woosh')
     FakePIM('Test:Yag', name='test', prefix_det='potato')
+    FakePIM('Test:Yag', name='test', prefix_zoom='potato')
+    FakePIM('Test:Yag', name='test')
+    FakePIM = make_fake_device(PIM_withLED)
+    FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_zoom='woosh',
+            prefix_led='shiny')
+    FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_led='shiny')
+    FakePIM('Test:Yag', name='test', prefix_zoom='potato', prefix_led='shiny')
+    FakePIM('Test:Yag', name='test', prefix_led='shiny')
+    FakePIM('Test:Yag', name='test', prefix_det='potato')
+    FakePIM('Test:Yag', name='test', prefix_zoom='potato')
+    FakePIM('Test:Yag', name='test')
+    FakePIM = make_fake_device(PIM_withFocus)
+    FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_zoom='woosh',
+            prefix_focus='blur')
+    FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_focus='blur')
+    FakePIM('Test:Yag', name='test', prefix_zoom='potato', prefix_focus='blur')
+    FakePIM('Test:Yag', name='test', prefix_focus='blurry')
+    FakePIM('Test:Yag', name='test', prefix_det='potato')
+    FakePIM('Test:Yag', name='test', prefix_zoom='potato')
+    FakePIM('Test:Yag', name='test')
+    FakePIM = make_fake_device(PIM_withBoth)
+    FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_zoom='woosh',
+            prefix_focus='blur', prefix_led='shiny')
+    FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_focus='blur',
+            prefix_led='shiny')
+    FakePIM('Test:Yag', name='test', prefix_zoom='potato', prefix_focus='blur',
+            prefix_led='shiny')
+    FakePIM('Test:Yag', name='test', prefix_focus='blurry', prefix_led='shiny')
+    FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_led='shiny')
+    FakePIM('Test:Yag', name='test', prefix_zoom='potato', prefix_led='shiny')
+    FakePIM('Test:Yag', name='test', prefix_led='shiny')
+    FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_zoom='woosh',
+            prefix_focus='blur')
+    FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_focus='blur')
+    FakePIM('Test:Yag', name='test', prefix_zoom='potato', prefix_focus='blur')
+    FakePIM('Test:Yag', name='test', prefix_focus='blurry')
+    FakePIM('Test:Yag', name='test', prefix_det='potato')
+    FakePIM('Test:Yag', name='test', prefix_zoom='potato')
     FakePIM('Test:Yag', name='test')
 
 
