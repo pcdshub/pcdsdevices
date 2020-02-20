@@ -27,6 +27,7 @@ Common EPICS Devices
     PIM
     PMC100
     PointingMirror
+    PPM
     PulsePicker
     Reflaser
     Slits
@@ -34,3 +35,4 @@ Common EPICS Devices
     Trigger
     TTReflaser
     XFLS
+    XPIM
