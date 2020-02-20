@@ -209,5 +209,7 @@ class TwinCATInOutPositioner(TwinCATStatePositioner, InOutPositioner):
     """
     # Clear the default in/out state list
     states_list = []
+    # Override the default out name
+    out_states = ['Out']
     # In should be everything except state 0 (Unknown) and state 1 (Out)
     _in_if_not_out = True

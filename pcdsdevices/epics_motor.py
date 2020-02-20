@@ -13,6 +13,7 @@ from ophyd.utils import LimitError
 from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
 from .pseudopos import DelayBase
+from .signal import PytmcSignal
 
 
 logger = logging.getLogger(__name__)
@@ -438,9 +439,10 @@ class BeckhoffAxisPLC(Device):
     """
     Debug PVs from the Beckhoff Axis PLC code
     """
-    status = Cpt(EpicsSignalRO, 'sErrorMessage', kind='normal', string=True)
-    err_code = Cpt(EpicsSignalRO, 'sErrorId', kind='normal')
-    cmd_err_reset = Cpt(EpicsSignal, 'bReset', kind='omitted')
+    status = Cpt(PytmcSignal, 'sErrorMessage', io='i', kind='normal',
+                 string=True)
+    err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal')
+    cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='o', kind='omitted')
 
 
 class BeckhoffAxis(EpicsMotorInterface):

@@ -528,7 +528,7 @@ class TwinCATStatePositioner(StatePositioner):
         The amount of time to wait before automatically marking a long
         in-progress move as failed.
     """
-    state = Cpt(EpicsSignal, ':GET_RBV', write_pv='SET', kind='hinted')
+    state = Cpt(EpicsSignal, ':GET_RBV', write_pv=':SET', kind='hinted')
 
     error = Cpt(PytmcSignal, ':ERR', io='i', kind='normal')
     error_id = Cpt(PytmcSignal, ':ERRID', io='i', kind='normal')

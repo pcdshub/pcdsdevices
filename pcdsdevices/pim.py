@@ -83,7 +83,7 @@ class LCLS2ImagerBase(Device, BaseInterface):
     """
     tab_component_names = True
 
-    y_states = Cpt(TwinCATInOutPositioner, ':STATE', kind='hinted')
+    y_states = Cpt(TwinCATInOutPositioner, ':MMS:STATE', kind='hinted')
     y_motor = Cpt(BeckhoffAxis, ':MMS', kind='normal')
     detector = Cpt(PCDSAreaDetector, ':CAM:', kind='normal')
     cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config')
