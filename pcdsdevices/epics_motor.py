@@ -4,7 +4,7 @@ Module for LCLS's special motor records.
 import logging
 import shutil
 import os
-from ophyd.device import Component as Cpt
+from ophyd.device import Device, Component as Cpt
 from ophyd.epics_motor import EpicsMotor
 from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
 from ophyd.status import DeviceStatus, SubscriptionStatus, wait as status_wait
@@ -434,25 +434,34 @@ class PMC100(PCDSMotorBase):
         raise NotImplementedError("PMC100 motors have no homing procedure")
 
 
+class BeckhoffAxisPLC(Device):
+    """
+    Debug PVs from the Beckhoff Axis PLC code
+    """
+    status = Cpt(EpicsSignalRO, 'sErrorMessage', kind='normal', string=True)
+    err_code = Cpt(EpicsSignalRO, 'sErrorId', kind='normal')
+    cmd_err_reset = Cpt(EpicsSignal, 'bReset', kind='omitted')
+
+
 class BeckhoffAxis(EpicsMotorInterface):
     """
     Beckhoff Axis motor record as implemented by ESS.
 
-    This class simply adds a convenience `clear_error` method, and makes
+    This class adds a convenience `clear_error` method, and makes
     sure to call it on stage.
+
+    It also exposes the PLC debug PVs.
     """
     __doc__ += basic_positioner_init
-
-    status = Cpt(EpicsSignalRO, '-MsgTxt', kind='normal', string=True)
-    cmd_err_reset = Cpt(EpicsSignal, '-ErrRst', kind='omitted')
-
     tab_whitelist = ['clear_error']
+
+    plc = Cpt(BeckhoffAxisPLC, ':PLC:', kind='normal')
 
     def clear_error(self):
         """
         Clear any active motion errors on this axis.
         """
-        self.cmd_err_reset.put(1)
+        self.plc.cmd_err_reset.put(1)
 
     def stage(self):
         """
