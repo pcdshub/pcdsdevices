@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class PIM_Y(InOutRecordPositioner):
     """
-    Standard position monitor Y motor.
+    Standard profile monitor Y motor.
 
     This can move the stage to insert the yag
     or diode, or retract from the beam path.
@@ -38,8 +38,6 @@ class PIM_Y(InOutRecordPositioner):
 class PIM(Device):
     """
     Profile intensity monitor with y-motion motor, zoom motor, and a detector.
-    A PIM will usually have at least a motor to control yag position and a
-    camera to view the YAG.
 
     Parameters
     ----------
@@ -92,6 +90,30 @@ class PIM(Device):
 
 
 class PIM_withFocus(PIM):
+    """
+    Profile intensity monitor with y-motion motor, zoom motor, focus motor, and
+    a detector.
+
+    Parameters
+    ----------
+    prefix : str
+        The EPICS base of the PIM
+
+    name : str
+        A name to refer to the device
+
+    prefix_det : str, optional
+        The EPICS base PV of the detector. If None, it will be attemptted to be
+        inferred from `prefix`
+
+    prefix_zoom : str, optional
+        The EPICS base PV of the zoom motor. If None, it will be attempted to
+        be inferred from `prefix`
+
+    prefix_focus : str, optional
+        The EPICS base PV of the focus motor. If None, it will be attempted to
+        be inferred from `prefix`
+    """
     focus_motor = FCpt(IMS, '{self._prefix_focus}')
 
     def __init__(self, prefix, *, name, prefix_det=None, prefix_zoom=None,
@@ -109,6 +131,30 @@ class PIM_withFocus(PIM):
 
 
 class PIM_withLED(PIM):
+    """
+    Profile intensity monitor with y-motion motor, zoom motor, LED, and a
+    detector.
+
+    Parameters
+    ----------
+    prefix : str
+        The EPICS base of the PIM
+
+    name : str
+        A name to refer to the device
+
+    prefix_det : str, optional
+        The EPICS base PV of the detector. If None, it will be attemptted to be
+        inferred from `prefix`
+
+    prefix_zoom : str, optional
+        The EPICS base PV of the zoom motor. If None, it will be attempted to
+        be inferred from `prefix`
+
+    prefix_led : str, optional
+        The EPICS base PV of the LED. If None, it will be attempted to be
+        inferred from `prefix`
+    """
     led = FCpt(EpicsSignal, '{self._prefix_led}')
 
     def __init__(self, prefix, *, name, prefix_det=None, prefix_zoom=None,
@@ -126,4 +172,32 @@ class PIM_withLED(PIM):
 
 
 class PIM_withBoth(PIM_withLED, PIM_withFocus):
+    """
+    Profile intensity monitor with y-motion motor, zoom motor, focus motor,
+    LED, and a detector.
+
+    Parameters
+    ----------
+    prefix : str
+        The EPICS base of the PIM
+
+    name : str
+        A name to refer to the device
+
+    prefix_det : str, optional
+        The EPICS base PV of the detector. If None, it will be attemptted to be
+        inferred from `prefix`
+
+    prefix_zoom : str, optional
+        The EPICS base PV of the zoom motor. If None, it will be attempted to
+        be inferred from `prefix`
+
+    prefix_focus : str, optional
+        The EPICS base PV of the focus motor. If None, it will be attempted to
+        be inferred from `prefix`
+
+    prefix_led : str, optional
+        The EPICS base PV of the LED. If None, it will be attempted to be
+        inferred from `prefix`
+    """
     pass
