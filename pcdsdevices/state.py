@@ -72,16 +72,15 @@ class StatePositioner(Device, PositionerBase, MvInterface):
         if self.__class__ is StatePositioner:
             raise TypeError(('StatePositioner must be subclassed with at '
                              'least a state signal'))
-        super().__init__(prefix, name=name, **kwargs)
         self._state_initialized = False
-        self._state_init_cbid = False
+        super().__init__(prefix, name=name, **kwargs)
         if self.states_list:
             self._state_init()
-        else:
-            cbid = self.state.subscribe(self._late_state_init,
-                                        event_type=self._state_meta_sub,
-                                        run=False)
-            self._state_init_cbid = cbid
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if cls.state is not None and not cls.states_list:
+            cls.state.sub_meta(cls._late_state_init)
 
     @required_for_connection
     def _state_init(self):
@@ -96,17 +95,15 @@ class StatePositioner(Device, PositionerBase, MvInterface):
                 self.states_enum = self._create_states_enum()
             self._has_subscribed_state = False
             self._state_initialized = True
-        if self._state_init_cbid:
-            self.unsubscribe(self._state_init_cbid)
-            self._state_init_cbid = False
 
-    def _late_state_init(self, *args, obj, **kwargs):
-        self.states_list = list(obj.enum_strs)
-        # Unknown state is reserved for slot zero, automatically added later
-        # Removing and auto re-adding *feels* silly, but it was easy to do
-        if self._unknown:
-            self.states_list.pop(0)
-        self._state_init()
+    def _late_state_init(self, *args, enum_strs=None, **kwargs):
+        if enum_strs is not None and not self.states_list:
+            self.states_list = list(enum_strs)
+            # Unknown state is reserved for slot zero, automatically added later
+            # Removing and auto re-adding *feels* silly, but it was easy to do
+            if self._unknown:
+                self.states_list.pop(0)
+            self._state_init()
 
     def move(self, position, moved_cb=None, timeout=None, wait=False):
         """
