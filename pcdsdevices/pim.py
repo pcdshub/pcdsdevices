@@ -1,23 +1,21 @@
 """
-Profile Intensity Monitor Classes
-
-This module contains all the classes relating to the profile intensity monitor
-classes at the user level. A PIM will usually have at least a motor to control
-yag position and a camera to view the yag.
+Module for the `PIM` profile intensity monitor classes
 """
 import logging
 
-from ophyd import FormattedComponent as FCpt
+from ophyd.device import Device, Component as Cpt, FormattedComponent as FCpt
+from ophyd.signal import EpicsSignal
 
+from .epics_motor import IMS
 from .areadetector.detectors import PCDSAreaDetector
 from .inout import InOutRecordPositioner
 
 logger = logging.getLogger(__name__)
 
 
-class PIMMotor(InOutRecordPositioner):
+class PIM_Y(InOutRecordPositioner):
     """
-    Standard position monitor motor.
+    Standard position monitor Y motor.
 
     This can move the stage to insert the yag
     or diode, or retract from the beam path.
@@ -37,32 +35,95 @@ class PIMMotor(InOutRecordPositioner):
         return super().stage()
 
 
-class PIM(PIMMotor):
+class PIM(Device):
     """
-    Profile intensity monitor, fully motorized and with a detector.
+    Profile intensity monitor with y-motion motor, zoom motor, and a detector.
+    A PIM will usually have at least a motor to control yag position and a
+    camera to view the YAG.
 
     Parameters
     ----------
     prefix : str
-        The EPICS base of the motor
+        The EPICS base of the PIM
 
     name : str
         A name to refer to the device
 
     prefix_det : str, optional
-        The EPICS base PV of the detector. If None, it will be inferred from
-        the motor prefix
-    """
-    detector = FCpt(PCDSAreaDetector, "{self._prefix_det}", kind='normal')
-    tab_whitelist = ["detector"]
+        The EPICS base PV of the detector. If None, it will be attemptted to be
+        inferred from `prefix`
 
-    def __init__(self, prefix, *, name, prefix_det=None, **kwargs):
-        # Infer the detector PV from the motor PV
-        if not prefix_det:
-            self._section = prefix.split(":")[0]
-            self._imager = prefix.split(":")[1]
-            self._prefix_det = "{0}:{1}:CVV:01".format(
-                self._section, self._imager)
-        else:
+    prefix_zoom : str, optional
+        The EPICS base PV of the zoom motor. If None, it will be attempted to
+        be inferred from `prefix`
+    """
+    y_motor = Cpt(PIM_Y, '', kind='normal')
+    zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
+    detector = FCpt(PCDSAreaDetector, '{self._prefix_det}', kind='normal')
+
+    tab_whitelist = ['y_motor', 'zoom_motor', 'detector']
+
+    def infer_prefix(self, prefix):
+        if not self._area:
+            self._area = prefix.split(':')[0]
+            self._section = prefix.split(':')[1]
+
+    @property
+    def prefix_start(self):
+        return '{0}:{1}:'.format(self._area, self._section)
+
+    def __init__(self, prefix, *, name, prefix_det=None, prefix_zoom=None,
+                 **kwargs):
+        self.infer_prefix(prefix)
+
+        # Infer the detector PV from the base prefix
+        if prefix_det:
             self._prefix_det = prefix_det
+        else:
+            self._prefix_det = self.prefix_start+'CVV:01'
+
+        # Infer the zoom motor PV from the base prefix
+        if prefix_zoom:
+            self._prefix_zoom = prefix_zoom
+        else:
+            self._prefix_zoom = self.prefix_start+'CLZ:01'
+
         super().__init__(prefix, name=name, **kwargs)
+
+
+class PIM_withFocus(PIM):
+    focus_motor = FCpt(IMS, '{self._prefix_focus}')
+
+    def __init__(self, prefix, *, name, prefix_det=None, prefix_zoom=None,
+                 prefix_focus=None, **kwargs):
+        self.infer_prefix(prefix)
+
+        # Infer the focus motor PV from the base prefix
+        if prefix_focus:
+            self._prefix_focus = prefix_focus
+        else:
+            self._prefix_focus = self.prefix_start+'CLF:01'
+
+        self.__init__(prefix, name=name, prefix_det=prefix_det,
+                      prefix_zoom=prefix_zoom, **kwargs)
+
+
+class PIM_withLED(PIM):
+    led = FCpt(EpicsSignal, '{self._prefix_led}')
+
+    def __init__(self, prefix, *, name, prefix_det=None, prefix_zoom=None,
+                 prefix_led=None, **kwargs):
+        self.infer_prefix(prefix)
+
+        # Infer the illuminator PV from the base prefix
+        if prefix_led:
+            self._prefix_led = prefix_led
+        else:
+            self._prefix_led = self.prefix_start+'CIL:01'
+
+        self.__init__(prefix, name=name, prefix_det=prefix_det,
+                      prefix_zoom=prefix_zoom, **kwargs)
+
+
+class PIM_withBoth(PIM_withLED, PIM_withFocus):
+    pass
