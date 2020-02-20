@@ -31,7 +31,13 @@ class PytmcSignal(EpicsSignalBase):
     Under the hood this actually gives you the RW or RO version of the signal
     depending on your io argument.
     """
-    def __new__(cls, prefix, *, io, **kwargs):
+    def __new__(cls, prefix, io=None, **kwargs):
+        if io is None:
+            # Provide a better error here than "__new__ missing an arg"
+            raise ValueError('Must provide an "io" argument to PytmcSignal. '
+                             f'This is missing for signal with pv {prefix}. '
+                             'Feel free to copy the io field from the '
+                             'pytmc pragma.')
         norm = normalize_io(io)
         if norm == 'output':
             return super().__new__(PytmcSignalRW)
