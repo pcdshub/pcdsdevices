@@ -40,6 +40,10 @@ class InOutPositioner(StatePositioner):
         number from 0 to 1. Default values will be 1 (full transmission) for
         ``out_states``, 0 (full block) for ``in_states``, and nan (no idea!)
         for unaccounted states.
+
+    _in_if_not_out: ``bool``
+        If True, shorthand for saying "all the states not in out_states or
+        unknown belong in the in_states list"
     """
     __doc__ = __doc__ % basic_positioner_init
 
@@ -182,8 +186,28 @@ class TwinCATInOutPositioner(TwinCATStatePositioner, InOutPositioner):
     any function block that follows the pattern set up by
     FB_EpicsInOut.
 
-    `states_list` does not have to be provided
+    Use `TwinCATStatePositioner` instead if the device does not have clear
+    inserted and removed states.
+
+    Does not need to be subclassed to be used
+    ``states_list`` does not have to be provided in a subclass
+
+    Parameters
+    ----------
+    prefix: ``str``
+        The EPICS PV prefix for this motor.
+
+    name: ``str``, required keyword
+        An identifying name for this motor.
+
+    settle_time: ``float``, optional
+        The amount of extra time to wait before interpreting a move as done
+
+    timeout ``float``, optional
+        The amount of time to wait before automatically marking a long
+        in-progress move as failed.
     """
-    __doc__ += basic_positioner_init
+    # Clear the default in/out state list
     states_list = []
+    # In should be everything except state 0 (Unknown) and state 1 (Out)
     _in_if_not_out = True

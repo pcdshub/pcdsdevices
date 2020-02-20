@@ -445,7 +445,7 @@ class BeckhoffAxisPLC(Device):
 
 class BeckhoffAxis(EpicsMotorInterface):
     """
-    Beckhoff Axis motor record as implemented by ESS.
+    Beckhoff Axis motor record as implemented by ESS and extended by us
 
     This class adds a convenience `clear_error` method, and makes
     sure to call it on stage.

@@ -507,7 +507,26 @@ class TwinCATStatePositioner(StatePositioner):
     any function block that follows the pattern set up by
     FB_EpicsInOut.
 
-    `states_list` does not have to be provided
+    Use `TwinCATInOutPositioner` instead if the device has clear inserted and
+    removed states.
+
+    Does not need to be subclassed to be used
+    ``states_list`` does not have to be provided in a subclass
+
+    Parameters
+    ----------
+    prefix: ``str``
+        The EPICS PV prefix for this motor.
+
+    name: ``str``, required keyword
+        An identifying name for this motor.
+
+    settle_time: ``float``, optional
+        The amount of extra time to wait before interpreting a move as done
+
+    timeout ``float``, optional
+        The amount of time to wait before automatically marking a long
+        in-progress move as failed.
     """
     state = Cpt(EpicsSignal, ':GET_RBV', write_pv='SET', kind='hinted')
 
