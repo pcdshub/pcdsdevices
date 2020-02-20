@@ -293,19 +293,6 @@ class StatePositioner(Device, PositionerBase, MvInterface):
                               ''.format(self.states_list, self._states_alias)))
         return enum
 
-    @property
-    def unknown(self):
-        """
-        True if we're in an unknown state, False otherwise
-        """
-        if self._unknown:
-            if self.position.name == self._unknown:
-                return True
-            else:
-                return False
-        else:
-            return False
-
 
 class PVStateSignal(AggregateSignal):
     """
