@@ -191,7 +191,7 @@ def test_subcls_warning():
 
 
 class InOutSignal(Signal):
-    enum_strs = ('Unknown', 'IN', 'OUT')
+    _metadata_keys = (Signal._core_metadata_keys + ('enum_strs',))
 
 
 class NoStatesList(StatePositioner):
@@ -201,5 +201,6 @@ class NoStatesList(StatePositioner):
 def test_auto_states():
     logger.debug('test_auto_states')
     states = NoStatesList(prefix='NOSTATE', name='no_state')
-    states.state.put(1)  # Force callback to run
-    assert states.states_list == ['Unknown', 'IN', 'OUT']
+    enum_strs = ('Unknown', 'IN', 'OUT')
+    states.state._run_subs(sub_type=states.state.SUB_META, enum_strs=enum_strs)
+    assert states.states_list == list(enum_strs)
