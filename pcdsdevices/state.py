@@ -13,7 +13,7 @@ from ophyd.device import Device, Component as Cpt, required_for_connection
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
-from .signal import AggregateSignal
+from .signal import AggregateSignal, PytmcSignal
 
 logger = logging.getLogger(__name__)
 
@@ -293,6 +293,19 @@ class StatePositioner(Device, PositionerBase, MvInterface):
                               ''.format(self.states_list, self._states_alias)))
         return enum
 
+    @property
+    def unknown(self):
+        """
+        True if we're in an unknown state, False otherwise
+        """
+        if self._unknown:
+            if self.position.name == self._unknown:
+                return True
+            else:
+                return False
+        else:
+            return False
+
 
 class PVStateSignal(AggregateSignal):
     """
@@ -454,6 +467,72 @@ class StateRecordPositioner(StatePositioner):
             self.states_enum = self._create_states_enum()
             self._has_checked_state_enum = True
         return super().get_state(value)
+
+
+class TwinCATStateConfigOne(Device):
+    """
+    Configuration of a single state position in TwinCAT
+
+    Designed to be used with the records from lcls-twincat-motion.
+    Corresponds with DUT_PositionState
+    """
+    state_name = Cpt(PytmcSignal, 'NAME', io='i', kind='config')
+    setpoint = Cpt(PytmcSignal, 'SETPOINT', io='io', kind='config')
+    delta = Cpt(PytmcSignal, 'DELTA', io='io', kind='config')
+    velo = Cpt(PytmcSignal, 'VELO', io='io', kind='config')
+    accl = Cpt(PytmcSignal, 'ACCL', io='io', kind='config')
+    dccl = Cpt(PytmcSignal, 'DCCL', io='io', kind='config')
+    move_ok = Cpt(PytmcSignal, 'MOVE_OK', io='i', kind='config')
+    locked = Cpt(PytmcSignal, 'LOCKED', io='i', kind='config')
+    valid = Cpt(PytmcSignal, 'VALID', io='i', kind='config')
+
+
+class TwinCATStateConfigAll(Device):
+    """
+    Configuration of all possible state positions in TwinCAT
+
+    Designed to be used with the array of DUT_PositionState from
+    FB_PositionStateManager
+    """
+    state01 = Cpt(TwinCATStateConfigOne, ':01:', kind='config')
+    state02 = Cpt(TwinCATStateConfigOne, ':02:', kind='config')
+    state03 = Cpt(TwinCATStateConfigOne, ':03:', kind='config')
+    state04 = Cpt(TwinCATStateConfigOne, ':04:', kind='config')
+    state05 = Cpt(TwinCATStateConfigOne, ':05:', kind='config')
+    state06 = Cpt(TwinCATStateConfigOne, ':06:', kind='config')
+    state07 = Cpt(TwinCATStateConfigOne, ':07:', kind='config')
+    state08 = Cpt(TwinCATStateConfigOne, ':08:', kind='config')
+    state09 = Cpt(TwinCATStateConfigOne, ':09:', kind='config')
+    state10 = Cpt(TwinCATStateConfigOne, ':10:', kind='config')
+    state11 = Cpt(TwinCATStateConfigOne, ':11:', kind='config')
+    state12 = Cpt(TwinCATStateConfigOne, ':12:', kind='config')
+    state13 = Cpt(TwinCATStateConfigOne, ':13:', kind='config')
+    state14 = Cpt(TwinCATStateConfigOne, ':14:', kind='config')
+    state15 = Cpt(TwinCATStateConfigOne, ':15:', kind='config')
+
+
+class TwinCATStatePositioner(StatePositioner):
+    """
+    A `StatePositioner` from Beckhoff land
+
+    This comes from the state record PVs included in the
+    lcls-twincat-motion TwinCAT library. It can be used for
+    any function block that follows the pattern set up by
+    FB_EpicsInOut.
+
+    `states_list` does not have to be provided
+    """
+    state = Cpt(EpicsSignal, ':GET_RBV', write_pv='SET', kind='hinted')
+
+    error = Cpt(PytmcSignal, ':ERR', io='i', kind='normal')
+    error_id = Cpt(PytmcSignal, ':ERRID', io='i', kind='normal')
+    error_message = Cpt(PytmcSignal, ':ERRMSG', io='i', kind='normal')
+    busy = Cpt(PytmcSignal, ':BUSY', io='i', kind='normal')
+    done = Cpt(PytmcSignal, ':DONE', io='i', kind='normal')
+
+    config = Cpt(TwinCATStateConfigAll, '', kind='config')
+
+    reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='omitted')
 
 
 class StateStatus(SubscriptionStatus):

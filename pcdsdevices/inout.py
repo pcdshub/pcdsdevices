@@ -7,10 +7,12 @@ states as in the beam or out of the beam.
 """
 import math
 
+from ophyd.device import required_for_connection
 from ophyd.sim import NullStatus
 
 from .doc_stubs import basic_positioner_init, insert_remove
-from .state import StatePositioner, StateRecordPositioner, PVStatePositioner
+from .state import (StatePositioner, StateRecordPositioner, PVStatePositioner,
+                    TwinCATStatePositioner)
 
 
 class InOutPositioner(StatePositioner):
@@ -45,6 +47,7 @@ class InOutPositioner(StatePositioner):
     in_states = ['IN']
     out_states = ['OUT']
     _transmission = {}
+    _in_if_not_out = False
 
     tab_whitelist = ['inserted', 'removed', 'insert', 'remove', 'transmission']
 
@@ -53,6 +56,14 @@ class InOutPositioner(StatePositioner):
             raise TypeError(('InOutPositioner must be subclassed with at '
                              'least a state signal'))
         super().__init__(prefix, name=name, **kwargs)
+
+    @required_for_connection
+    def _state_init(self):
+        super()._state_init()
+        if self._in_if_not_out:
+            self.in_states = [state for state in self.states_list
+                              if state not in self.out_states
+                              and state != self._unknown]
         self._trans_enum = {}
         self._extend_trans_enum(self.in_states, 0)
         self._extend_trans_enum(self.out_states, 1)
@@ -160,3 +171,19 @@ class InOutPVStatePositioner(PVStatePositioner, InOutPositioner):
                              'adding signals and filling in the '
                              '_state_logic dict.'))
         super().__init__(*args, **kwargs)
+
+
+class TwinCATInOutPositioner(TwinCATStatePositioner, InOutPositioner):
+    """
+    `InOutPositioner` on top of a `TwinCATStatePositioner`
+
+    This comes from the state record PVs included in the
+    lcls-twincat-motion TwinCAT library. It can be used for
+    any function block that follows the pattern set up by
+    FB_EpicsInOut.
+
+    `states_list` does not have to be provided
+    """
+    __doc__ += basic_positioner_init
+    states_list = []
+    _in_if_not_out = True
