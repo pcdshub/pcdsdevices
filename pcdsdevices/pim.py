@@ -112,7 +112,8 @@ class PPMPowerMeter(Device, BaseInterface):
 
     calib_offset = Cpt(PytmcSignal, ':CALIB:OFFSET', io='io', kind='config')
     calib_ratio = Cpt(PytmcSignal, ':CALIB:RATIO', io='io', kind='config')
-    calib_mj_ratio = Cpt(PytmcSignal, ':CALIB:MJ_RATIO', io='io', kind='config')
+    calib_mj_ratio = Cpt(PytmcSignal, ':CALIB:MJ_RATIO', io='io',
+                         kind='config')
 
     raw_voltage_buffer = Cpt(PytmcSignal, ':VOLT_BUFFER', io='i',
                              kind='omitted')
