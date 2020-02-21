@@ -320,7 +320,8 @@ def _rtd_fields(cls, attr_base, range_, **kwargs):
 
 
 class RTD(Device, BaseInterface):
-    not_implemented = Cpt(SignalRO, name="Not Implemented", value="Not Implemented", kind='normal')
+    not_implemented = Cpt(SignalRO, name="Not Implemented",
+                          value="Not Implemented", kind='normal')
 
 
 class FEESlits(Device, BaseInterface):

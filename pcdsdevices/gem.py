@@ -26,5 +26,5 @@ class GEM(Device, BaseInterface):
     name : ``str``
         Alias for the GEM
     """
-    not_implemented = Cpt(SignalRO, name="Not Implemented", value="Not Implemented", kind='normal')
-
+    not_implemented = Cpt(SignalRO, name="Not Implemented",
+                          value="Not Implemented", kind='normal')
