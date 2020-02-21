@@ -55,10 +55,10 @@ class PIM(Device):
         The EPICS base PV of the zoom motor. If None, it will be attempted to
         be inferred from `prefix`
     """
-    y_motor = Cpt(PIM_Y, '', kind='normal')
 
     _area = ''
 
+    state = Cpt(PIM_Y, '', kind='normal')
     zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
     detector = FCpt(PCDSAreaDetector, '{self._prefix_det}', kind='normal')
 
@@ -72,6 +72,24 @@ class PIM(Device):
     @property
     def prefix_start(self):
         return '{0}:{1}:'.format(self._area, self._section)
+
+    @property
+    def removed(self):
+        return self.state.removed
+
+    @property
+    def inserted(self):
+        return self.state.inserted
+
+    def insert(self, moved_cb=None, timeout=None, wait=False):
+        """Moves the diode into the beam."""
+        return self.state.insert(moved_cb=moved_cb, timeout=timeout,
+                                 wait=wait)
+
+    def remove(self, moved_cb=None, timeout=None, wait=False):
+        """Moves the diode out of the beam."""
+        return self.state.remove(moved_cb=moved_cb, timeout=timeout,
+                                 wait=wait)
 
     def __init__(self, prefix, *, name, prefix_det=None, prefix_zoom=None,
                  **kwargs):
@@ -90,6 +108,7 @@ class PIM(Device):
             self._prefix_zoom = self.prefix_start+'CLZ:01'
 
         super().__init__(prefix, name=name, **kwargs)
+        self.y_motor = self.state.motor
 
 
 class PIM_withFocus(PIM):

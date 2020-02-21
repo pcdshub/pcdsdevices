@@ -15,11 +15,11 @@ logger = logging.getLogger(__name__)
 def fake_pim():
     FakePIM = make_fake_device(PIM)
     pim = FakePIM('Test:Yag', name='test')
-    pim.state.sim_put(0)
-    pim.state.sim_set_enum_strs(['Unknown'] + PIM_Y.states_list)
-    pim.motor.error_severity.sim_put(0)
-    pim.motor.bit_status.sim_put(0)
-    pim.motor.motor_spg.sim_put(2)
+    pim.state.state.sim_put(0)
+    pim.state.state.sim_set_enum_strs(['Unknown'] + PIM_Y.states_list)
+    pim.y_motor.error_severity.sim_put(0)
+    pim.y_motor.bit_status.sim_put(0)
+    pim.y_motor.motor_spg.sim_put(2)
     return pim
 
 
@@ -28,19 +28,19 @@ def test_pim_stage(fake_pim):
     logger.debug('test_pim_stage')
     pim = fake_pim
     # Should return to original position on unstage
-    pim.move('OUT', wait=True)
+    pim.state.move('OUT', wait=True)
     assert pim.removed
-    pim.stage()
-    pim.move('IN', wait=True)
+    pim.state.stage()
+    pim.state.move('IN', wait=True)
     assert pim.inserted
-    pim.unstage()
+    pim.state.unstage()
     assert pim.removed
-    pim.move('IN', wait=True)
+    pim.state.move('IN', wait=True)
     assert pim.inserted
-    pim.stage()
-    pim.move('OUT', wait=True)
+    pim.state.stage()
+    pim.state.move('OUT', wait=True)
     assert pim.removed
-    pim.unstage()
+    pim.state.unstage()
     assert pim.inserted
 
 
@@ -96,8 +96,8 @@ def test_pim_subscription(fake_pim):
     logger.debug('test_pim_subscription')
     pim = fake_pim
     cb = Mock()
-    pim.subscribe(cb, event_type=pim.SUB_STATE, run=False)
-    pim.state.sim_put(2)
+    pim.state.subscribe(cb, event_type=pim.state.SUB_STATE, run=False)
+    pim.state.state.sim_put(2)
     assert cb.called
 
 
