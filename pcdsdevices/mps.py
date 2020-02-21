@@ -7,7 +7,6 @@ interpreted by :class:`.MPS`.
 """
 import logging
 
-from ophyd.ophydobj import OphydObject
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
                    FormattedComponent as FCpt)
 
@@ -16,7 +15,7 @@ from .interface import BaseInterface
 logger = logging.getLogger(__name__)
 
 
-class MPSBase(OphydObject, BaseInterface):
+class MPSBase(BaseInterface):
     """
     Base MPS class
 
