@@ -28,9 +28,7 @@ class PIM_Y(InOutRecordPositioner):
     _icon = 'fa.camera-retro'
 
     def stage(self):
-        """
-        Save the original position to be restored on `unstage`.
-        """
+        """Save the original position to be restored on `unstage`."""
         self._original_vals[self.state] = self.state.value
         return super().stage()
 
@@ -65,20 +63,25 @@ class PIM(Device):
     tab_whitelist = ['y_motor', 'zoom_motor', 'detector']
 
     def infer_prefix(self, prefix):
+        """Pulls out the first two segments of the prefix PV, if not already
+           done"""
         if not self._prefix_start:
             self._prefix_start = '{0}:{1}:'.format(prefix.split(':')[0],
                                                    prefix.split(':')[1])
 
     @property
     def prefix_start(self):
+        """Returns the first two segments of the prefix PV."""
         return str(self._prefix_start)
 
     @property
     def removed(self):
+        """Returns ``True`` if the yag and diode are removed from the beam."""
         return self.state.removed
 
     @property
     def inserted(self):
+        """Returns ``True`` if yag or diode are inserted."""
         return self.state.inserted
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
