@@ -537,6 +537,18 @@ class TwinCATStatePositioner(StatePositioner):
 
     reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='omitted')
 
+    @required_for_connection
+    def _state_init(self):
+        super()._state_init()
+        # Clean up the kind on the config objects based on states list
+        state_count = len(self.states_list)
+        if self._unknown:
+            state_count -= 1
+        for i in range(1, 16):
+            if i > state_count:
+                state_config = getattr(self.config, f'state{i:02}')
+                state_config.kind = 'omitted'
+
 
 class StateStatus(SubscriptionStatus):
     """
