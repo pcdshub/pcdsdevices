@@ -56,7 +56,7 @@ class PIM(Device):
         be inferred from `prefix`
     """
 
-    _area = ''
+    _prefix_start = ''
 
     state = Cpt(PIM_Y, '', kind='normal')
     zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
@@ -65,13 +65,13 @@ class PIM(Device):
     tab_whitelist = ['y_motor', 'zoom_motor', 'detector']
 
     def infer_prefix(self, prefix):
-        if not self._area:
-            self._area = prefix.split(':')[0]
-            self._section = prefix.split(':')[1]
+        if not self._prefix_start:
+            self._prefix_start = '{0}:{1}:'.format(prefix.split(':')[0],
+                                                   prefix.split(':')[1])
 
     @property
     def prefix_start(self):
-        return '{0}:{1}:'.format(self._area, self._section)
+        return str(self._prefix_start)
 
     @property
     def removed(self):
