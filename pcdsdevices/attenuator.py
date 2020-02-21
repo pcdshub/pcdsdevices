@@ -388,4 +388,3 @@ class FEEGasAttenuator(Device, BaseInterface):
     """
     not_implemented = Cpt(SignalRO, name="Not Implemented",
                           value="Not Implemented", kind='normal')
-
