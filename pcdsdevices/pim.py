@@ -56,6 +56,9 @@ class PIM(Device):
         be inferred from `prefix`
     """
     y_motor = Cpt(PIM_Y, '', kind='normal')
+
+    _area = ''
+
     zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
     detector = FCpt(PCDSAreaDetector, '{self._prefix_det}', kind='normal')
 
@@ -116,8 +119,7 @@ class PIM_withFocus(PIM):
     """
     focus_motor = FCpt(IMS, '{self._prefix_focus}')
 
-    def __init__(self, prefix, *, name, prefix_det=None, prefix_zoom=None,
-                 prefix_focus=None, **kwargs):
+    def __init__(self, prefix, *, name, prefix_focus=None, **kwargs):
         self.infer_prefix(prefix)
 
         # Infer the focus motor PV from the base prefix
@@ -126,8 +128,7 @@ class PIM_withFocus(PIM):
         else:
             self._prefix_focus = self.prefix_start+'CLF:01'
 
-        self.__init__(prefix, name=name, prefix_det=prefix_det,
-                      prefix_zoom=prefix_zoom, **kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
 
 class PIM_withLED(PIM):
@@ -157,8 +158,7 @@ class PIM_withLED(PIM):
     """
     led = FCpt(EpicsSignal, '{self._prefix_led}')
 
-    def __init__(self, prefix, *, name, prefix_det=None, prefix_zoom=None,
-                 prefix_led=None, **kwargs):
+    def __init__(self, prefix, *, name, prefix_led=None, **kwargs):
         self.infer_prefix(prefix)
 
         # Infer the illuminator PV from the base prefix
@@ -167,8 +167,7 @@ class PIM_withLED(PIM):
         else:
             self._prefix_led = self.prefix_start+'CIL:01'
 
-        self.__init__(prefix, name=name, prefix_det=prefix_det,
-                      prefix_zoom=prefix_zoom, **kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
 
 class PIM_withBoth(PIM_withLED, PIM_withFocus):
