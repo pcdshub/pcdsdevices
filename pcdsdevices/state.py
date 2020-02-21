@@ -13,7 +13,7 @@ from ophyd.device import Device, Component as Cpt, required_for_connection
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
-from .signal import AggregateSignal
+from .signal import AggregateSignal, PytmcSignal
 
 logger = logging.getLogger(__name__)
 
@@ -72,16 +72,15 @@ class StatePositioner(Device, PositionerBase, MvInterface):
         if self.__class__ is StatePositioner:
             raise TypeError(('StatePositioner must be subclassed with at '
                              'least a state signal'))
-        super().__init__(prefix, name=name, **kwargs)
         self._state_initialized = False
-        self._state_init_cbid = False
+        super().__init__(prefix, name=name, **kwargs)
         if self.states_list:
             self._state_init()
-        else:
-            cbid = self.state.subscribe(self._late_state_init,
-                                        event_type=self._state_meta_sub,
-                                        run=False)
-            self._state_init_cbid = cbid
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if cls.state is not None and not cls.states_list:
+            cls.state.sub_meta(cls._late_state_init)
 
     @required_for_connection
     def _state_init(self):
@@ -96,17 +95,15 @@ class StatePositioner(Device, PositionerBase, MvInterface):
                 self.states_enum = self._create_states_enum()
             self._has_subscribed_state = False
             self._state_initialized = True
-        if self._state_init_cbid:
-            self.unsubscribe(self._state_init_cbid)
-            self._state_init_cbid = False
 
-    def _late_state_init(self, *args, obj, **kwargs):
-        self.states_list = list(obj.enum_strs)
-        # Unknown state is reserved for slot zero, automatically added later
-        # Removing and auto re-adding *feels* silly, but it was easy to do
-        if self._unknown:
-            self.states_list.pop(0)
-        self._state_init()
+    def _late_state_init(self, *args, enum_strs=None, **kwargs):
+        if enum_strs is not None and not self.states_list:
+            self.states_list = list(enum_strs)
+            # Unknown state reserved for slot zero, automatically added later
+            # Removing and auto re-adding *feels* silly, but it was easy to do
+            if self._unknown:
+                self.states_list.pop(0)
+            self._state_init()
 
     def move(self, position, moved_cb=None, timeout=None, wait=False):
         """
@@ -454,6 +451,103 @@ class StateRecordPositioner(StatePositioner):
             self.states_enum = self._create_states_enum()
             self._has_checked_state_enum = True
         return super().get_state(value)
+
+
+class TwinCATStateConfigOne(Device):
+    """
+    Configuration of a single state position in TwinCAT
+
+    Designed to be used with the records from lcls-twincat-motion.
+    Corresponds with DUT_PositionState
+    """
+    state_name = Cpt(PytmcSignal, ':NAME', io='i', kind='config')
+    setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='config')
+    delta = Cpt(PytmcSignal, ':DELTA', io='io', kind='config')
+    velo = Cpt(PytmcSignal, ':VELO', io='io', kind='config')
+    accl = Cpt(PytmcSignal, ':ACCL', io='io', kind='config')
+    dccl = Cpt(PytmcSignal, ':DCCL', io='io', kind='config')
+    move_ok = Cpt(PytmcSignal, ':MOVE_OK', io='i', kind='config')
+    locked = Cpt(PytmcSignal, ':LOCKED', io='i', kind='config')
+    valid = Cpt(PytmcSignal, ':VALID', io='i', kind='config')
+
+
+class TwinCATStateConfigAll(Device):
+    """
+    Configuration of all possible state positions in TwinCAT
+
+    Designed to be used with the array of DUT_PositionState from
+    FB_PositionStateManager
+    """
+    state01 = Cpt(TwinCATStateConfigOne, ':01', kind='config')
+    state02 = Cpt(TwinCATStateConfigOne, ':02', kind='config')
+    state03 = Cpt(TwinCATStateConfigOne, ':03', kind='config')
+    state04 = Cpt(TwinCATStateConfigOne, ':04', kind='config')
+    state05 = Cpt(TwinCATStateConfigOne, ':05', kind='config')
+    state06 = Cpt(TwinCATStateConfigOne, ':06', kind='config')
+    state07 = Cpt(TwinCATStateConfigOne, ':07', kind='config')
+    state08 = Cpt(TwinCATStateConfigOne, ':08', kind='config')
+    state09 = Cpt(TwinCATStateConfigOne, ':09', kind='config')
+    state10 = Cpt(TwinCATStateConfigOne, ':10', kind='config')
+    state11 = Cpt(TwinCATStateConfigOne, ':11', kind='config')
+    state12 = Cpt(TwinCATStateConfigOne, ':12', kind='config')
+    state13 = Cpt(TwinCATStateConfigOne, ':13', kind='config')
+    state14 = Cpt(TwinCATStateConfigOne, ':14', kind='config')
+    state15 = Cpt(TwinCATStateConfigOne, ':15', kind='config')
+
+
+class TwinCATStatePositioner(StatePositioner):
+    """
+    A `StatePositioner` from Beckhoff land
+
+    This comes from the state record PVs included in the
+    lcls-twincat-motion TwinCAT library. It can be used for
+    any function block that follows the pattern set up by
+    FB_EpicsInOut.
+
+    Use `TwinCATInOutPositioner` instead if the device has clear inserted and
+    removed states.
+
+    Does not need to be subclassed to be used
+    ``states_list`` does not have to be provided in a subclass
+
+    Parameters
+    ----------
+    prefix: ``str``
+        The EPICS PV prefix for this motor.
+
+    name: ``str``, required keyword
+        An identifying name for this motor.
+
+    settle_time: ``float``, optional
+        The amount of extra time to wait before interpreting a move as done
+
+    timeout ``float``, optional
+        The amount of time to wait before automatically marking a long
+        in-progress move as failed.
+    """
+    state = Cpt(EpicsSignal, ':GET_RBV', write_pv=':SET', kind='hinted')
+
+    error = Cpt(PytmcSignal, ':ERR', io='i', kind='normal')
+    error_id = Cpt(PytmcSignal, ':ERRID', io='i', kind='normal')
+    error_message = Cpt(PytmcSignal, ':ERRMSG', io='i', kind='normal')
+    busy = Cpt(PytmcSignal, ':BUSY', io='i', kind='normal')
+    done = Cpt(PytmcSignal, ':DONE', io='i', kind='normal')
+
+    config = Cpt(TwinCATStateConfigAll, '', kind='config')
+
+    reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='omitted')
+
+    @required_for_connection
+    def _state_init(self):
+        super()._state_init()
+        # Clean up the kind on the config objects based on states list
+        state_count = len(self.states_list)
+        if self._unknown:
+            state_count -= 1
+        for i in range(1, 16):
+            if i > state_count:
+                state_config = getattr(self.config, f'state{i:02}')
+                state_config.kind = 'omitted'
 
 
 class StateStatus(SubscriptionStatus):

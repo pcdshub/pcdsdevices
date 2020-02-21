@@ -7,10 +7,12 @@ states as in the beam or out of the beam.
 """
 import math
 
+from ophyd.device import required_for_connection
 from ophyd.sim import NullStatus
 
 from .doc_stubs import basic_positioner_init, insert_remove
-from .state import StatePositioner, StateRecordPositioner, PVStatePositioner
+from .state import (StatePositioner, StateRecordPositioner, PVStatePositioner,
+                    TwinCATStatePositioner)
 
 
 class InOutPositioner(StatePositioner):
@@ -38,6 +40,10 @@ class InOutPositioner(StatePositioner):
         number from 0 to 1. Default values will be 1 (full transmission) for
         ``out_states``, 0 (full block) for ``in_states``, and nan (no idea!)
         for unaccounted states.
+
+    _in_if_not_out: ``bool``
+        If True, shorthand for saying "all the states not in out_states or
+        unknown belong in the in_states list"
     """
     __doc__ = __doc__ % basic_positioner_init
 
@@ -45,6 +51,7 @@ class InOutPositioner(StatePositioner):
     in_states = ['IN']
     out_states = ['OUT']
     _transmission = {}
+    _in_if_not_out = False
 
     tab_whitelist = ['inserted', 'removed', 'insert', 'remove', 'transmission']
 
@@ -53,6 +60,14 @@ class InOutPositioner(StatePositioner):
             raise TypeError(('InOutPositioner must be subclassed with at '
                              'least a state signal'))
         super().__init__(prefix, name=name, **kwargs)
+
+    @required_for_connection
+    def _state_init(self):
+        super()._state_init()
+        if self._in_if_not_out:
+            self.in_states = [state for state in self.states_list
+                              if state not in self.out_states
+                              and state != self._unknown]
         self._trans_enum = {}
         self._extend_trans_enum(self.in_states, 0)
         self._extend_trans_enum(self.out_states, 1)
@@ -160,3 +175,41 @@ class InOutPVStatePositioner(PVStatePositioner, InOutPositioner):
                              'adding signals and filling in the '
                              '_state_logic dict.'))
         super().__init__(*args, **kwargs)
+
+
+class TwinCATInOutPositioner(TwinCATStatePositioner, InOutPositioner):
+    """
+    `InOutPositioner` on top of a `TwinCATStatePositioner`
+
+    This comes from the state record PVs included in the
+    lcls-twincat-motion TwinCAT library. It can be used for
+    any function block that follows the pattern set up by
+    FB_EpicsInOut.
+
+    Use `TwinCATStatePositioner` instead if the device does not have clear
+    inserted and removed states.
+
+    Does not need to be subclassed to be used
+    ``states_list`` does not have to be provided in a subclass
+
+    Parameters
+    ----------
+    prefix: ``str``
+        The EPICS PV prefix for this motor.
+
+    name: ``str``, required keyword
+        An identifying name for this motor.
+
+    settle_time: ``float``, optional
+        The amount of extra time to wait before interpreting a move as done
+
+    timeout ``float``, optional
+        The amount of time to wait before automatically marking a long
+        in-progress move as failed.
+    """
+    # Clear the default in/out state list
+    states_list = []
+    # Override the default out name
+    out_states = ['Out']
+    # In should be everything except state 0 (Unknown) and state 1 (Out)
+    _in_if_not_out = True

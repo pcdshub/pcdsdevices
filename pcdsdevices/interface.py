@@ -16,6 +16,7 @@ from weakref import WeakSet
 import yaml
 from bluesky.utils import ProgressBar
 from ophyd.device import Kind
+from ophyd.ophydobj import OphydObject
 from ophyd.status import wait as status_wait
 
 from . import utils as util
@@ -33,7 +34,7 @@ Positioner_whitelist = ["settle_time", "timeout", "egu", "limits", "move",
                         "position", "moving"]
 
 
-class BaseInterface:
+class BaseInterface(OphydObject):
     """
     Interface layer to attach to any Device for SLAC features.
 
@@ -79,6 +80,14 @@ class BaseInterface:
         return [elem
                 for elem in super().__dir__()
                 if self._tab_regex.fullmatch(elem)]
+
+    def __repr__(self):
+        """
+        Simplify the ophydobject repr to avoid crazy long represenations
+        """
+        prefix = getattr(self, 'prefix', None)
+        name = getattr(self, 'name', None)
+        return f"{self.__class__.__name__}({prefix}, name={name})"
 
 
 def set_engineering_mode(expert):
