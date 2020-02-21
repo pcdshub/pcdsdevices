@@ -28,17 +28,17 @@ def test_pim_stage(fake_pim):
     logger.debug('test_pim_stage')
     pim = fake_pim
     # Should return to original position on unstage
-    pim.state.move('OUT', wait=True)
+    pim.remove()
     assert pim.removed
     pim.state.stage()
-    pim.state.move('IN', wait=True)
+    pim.insert()
     assert pim.inserted
     pim.state.unstage()
     assert pim.removed
-    pim.state.move('IN', wait=True)
+    pim.insert()
     assert pim.inserted
     pim.state.stage()
-    pim.state.move('OUT', wait=True)
+    pim.remove()
     assert pim.removed
     pim.state.unstage()
     assert pim.inserted
