@@ -8,6 +8,7 @@ vertical gantries.
 """
 import logging
 
+from ophyd.signal import SignalRO
 import numpy as np
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
                    PVPositioner, FormattedComponent as FCpt)
@@ -276,3 +277,42 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
                                   "uncoupled")
         # Allow StatePositioner to check the state
         return super().check_value(pos)
+
+
+class HardOffsetMirror(Device, BaseInterface):
+    """
+    Hard X-Ray Offset Mirror
+
+    1st gen Axilon design with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : ``str``
+        Base PV
+
+    name : ``str``
+        Alias for the device
+    """
+    not_implemented = Cpt(SignalRO, name="Not Implemented",
+                          value="Not Implemented", kind='normal')
+
+
+class XOffsetMirror(Device, BaseInterface):
+    """
+    X-Ray Offset Mirror from the L2SI Project
+
+    2nd gen Axilon design with LCLS-II Beckhoff motion architecture.
+
+    Mirror is decoupled from vacuum chamber, so it should be
+     very stable.
+
+    Parameters
+    ----------
+    prefix : ``str``
+        Base PV
+
+    name : ``str``
+        Alias for the device
+    """
+    not_implemented = Cpt(SignalRO, name="Not Implemented",
+                          value="Not Implemented", kind='normal')

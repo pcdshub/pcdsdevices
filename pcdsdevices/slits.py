@@ -25,6 +25,8 @@ from ophyd.sim import SignalRO
 
 from .interface import MvInterface, FltMvInterface, BaseInterface
 
+from .sensors import RTD
+
 logger = logging.getLogger(__name__)
 
 
@@ -319,12 +321,20 @@ def _rtd_fields(cls, attr_base, range_, **kwargs):
     return defn
 
 
-class RTD(Device, BaseInterface):
-    not_implemented = Cpt(SignalRO, name="Not Implemented",
-                          value="Not Implemented", kind='normal')
+class PowerSlits(Device, BaseInterface):
+    """
+    SL*:POWER
 
+    Power slits variant of slits. The XTES design.
 
-class FEESlits(Device, BaseInterface):
+    Parameters
+    ----------
+    prefix : ``str``
+        The PV base of the device.
+
+    Notes
+    -----
+    """
     top = FCpt(EpicsMotor, "{self.prefix}:MMS:TOP", kind='normal')
     bottom = FCpt(EpicsMotor, "{self.prefix}:MMS:BOTTOM")
     north = FCpt(EpicsMotor, "{self.prefix}:MMS:NORTH")

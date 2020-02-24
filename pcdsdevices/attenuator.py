@@ -354,11 +354,9 @@ def set_combined_attenuation(attenuation, *attenuators):
 '''
 
 
-class FEESolidFilter(Device, BaseInterface):
+class FEESolidAttenuator(Device, BaseInterface):
     """
     Solid Attenuator
-
-    A base class for a Solid Attenuator
 
     Parameters
     ----------
@@ -367,16 +365,21 @@ class FEESolidFilter(Device, BaseInterface):
 
     name : ``str``
         Alias for the Solid Attenuator
+
+    Notes
+    ----------
+    Solid attenuator variant from the LCLS-II XTES project.
+     Motorized, 16 blades.
     """
     not_implemented = Cpt(SignalRO, name="Not Implemented",
                           value="Not Implemented", kind='normal')
 
 
-class FEEGasAttenuator(Device, BaseInterface):
+class GasAttenuator(Device, BaseInterface):
     """
-    Solid Attenuator
+    AT*:GAS
 
-    A base class for a Gas Attenuator
+    A base class for an LCLS-II XTES gas attenuator.
 
     Parameters
     ----------
@@ -385,6 +388,11 @@ class FEEGasAttenuator(Device, BaseInterface):
 
     name : ``str``
         Alias for the Gas Attenuator
+
+    Notes
+    ---------
+    The HXR gas attenuator was not recommissioned so this class alone
+     represents the gas attenuators present at this time.
     """
     not_implemented = Cpt(SignalRO, name="Not Implemented",
                           value="Not Implemented", kind='normal')
