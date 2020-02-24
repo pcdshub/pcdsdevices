@@ -5,13 +5,14 @@ import logging
 import time
 
 import numpy as np
+from ophyd.device import Device
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositioner
-from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
+from ophyd.signal import Signal, SignalRO, EpicsSignal, EpicsSignalRO
 
 from .inout import InOutPositioner
-from .interface import FltMvInterface
+from .interface import FltMvInterface, BaseInterface
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
@@ -351,3 +352,47 @@ def set_combined_attenuation(attenuation, *attenuators):
         else:
             attenuators[i].actuate_value()
 '''
+
+
+class FEESolidAttenuator(Device, BaseInterface):
+    """
+    Solid Attenuator
+
+    Parameters
+    ----------
+    prefix : ``str``
+        Full Solid Attenuator base PV
+
+    name : ``str``
+        Alias for the Solid Attenuator
+
+    Notes
+    ----------
+    Solid attenuator variant from the LCLS-II XTES project.
+     Motorized, 16 blades.
+    """
+    not_implemented = Cpt(SignalRO, name="Not Implemented",
+                          value="Not Implemented", kind='normal')
+
+
+class GasAttenuator(Device, BaseInterface):
+    """
+    AT*:GAS
+
+    A base class for an LCLS-II XTES gas attenuator.
+
+    Parameters
+    ----------
+    prefix : ``str``
+        Full Gas Attenuator base PV
+
+    name : ``str``
+        Alias for the Gas Attenuator
+
+    Notes
+    ---------
+    The HXR gas attenuator was not recommissioned so this class alone
+     represents the gas attenuators present at this time.
+    """
+    not_implemented = Cpt(SignalRO, name="Not Implemented",
+                          value="Not Implemented", kind='normal')

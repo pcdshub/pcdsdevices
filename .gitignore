@@ -16,3 +16,4 @@ docs/source/generated/*
 
 #pytest
 .pytest_cache
+.vscode

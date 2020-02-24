@@ -14,7 +14,7 @@ from .areadetector.detectors import PCDSAreaDetector
 from .epics_motor import BeckhoffAxis
 from .inout import InOutRecordPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface
-from .sensors import TwinCATThermoCouple
+from .sensors import TwinCATThermocouple
 from .signal import PytmcSignal
 from .state import StatePositioner
 
@@ -108,7 +108,7 @@ class PPMPowerMeter(Device, BaseInterface):
     raw_voltage = Cpt(PytmcSignal, ':VOLT', io='i', kind='normal')
     dimensionless = Cpt(PytmcSignal, ':CALIB', io='i', kind='normal')
     calibrated_mj = Cpt(PytmcSignal, ':MJ', io='i', kind='normal')
-    thermocouple = Cpt(TwinCATThermoCouple, '', kind='normal')
+    thermocouple = Cpt(TwinCATThermocouple, '', kind='normal')
 
     calib_offset = Cpt(PytmcSignal, ':CALIB:OFFSET', io='io', kind='config')
     calib_ratio = Cpt(PytmcSignal, ':CALIB:RATIO', io='io', kind='config')
@@ -140,7 +140,7 @@ class PPM(LCLS2ImagerBase):
         An identifying name for this motor, e.g. ``im3l0``
     """
     power_meter = Cpt(PPMPowerMeter, ':SPM', kind='normal')
-    yag_thermocouple = Cpt(TwinCATThermoCouple, ':YAG', kind='normal')
+    yag_thermocouple = Cpt(TwinCATThermocouple, ':YAG', kind='normal')
 
     led = Cpt(PytmcSignal, ':CAM:CIL:PCT', io='io', kind='config')
 
