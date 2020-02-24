@@ -1,5 +1,11 @@
 """
 Module for the `PIM` profile intensity monitor classes
+
+This module contains all the classes relating to the profile intensity monitor
+classes at the user level. A PIM always has a motor to control yag/diode 
+position, a zoom motor, and a camera to view the yag. Some PIMs have LEDs for
+illumination and/or a focus motor. Each of these configurations is set up as
+its own class.
 """
 import logging
 
@@ -13,7 +19,7 @@ from .inout import InOutRecordPositioner
 logger = logging.getLogger(__name__)
 
 
-class PIM_Y(InOutRecordPositioner):
+class PIMY(InOutRecordPositioner):
     """
     Standard profile monitor Y motor.
 
@@ -206,7 +212,7 @@ class PIM_withBoth(PIM_withLED, PIM_withFocus):
         A name to refer to the device
 
     prefix_det : str, optional
-        The EPICS base PV of the detector. If None, it will be attemptted to be
+        The EPICS base PV of the detector. If None, it will be attempted to be
         inferred from `prefix`
 
     prefix_zoom : str, optional
