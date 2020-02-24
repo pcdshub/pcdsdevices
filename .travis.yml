@@ -30,6 +30,9 @@ matrix:
     - name: "Python 3.8 Unit Tests"
       python: 3.8
       env: UNIT_TEST=1
+    - name: "Build Docs"
+      python: 3.6
+      env: BUILD_DOCS=1
 
 install:
   - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
