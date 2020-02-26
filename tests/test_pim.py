@@ -5,8 +5,8 @@ from unittest.mock import Mock
 
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.pim import (PIM, PIMY, PIM_withLED, PIM_withFocus,
-                             PIM_withBoth)
+from pcdsdevices.pim import (PIM, PIMY, PIMWithLED, PIMWithFocus,
+                             PIMWithBoth)
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +52,7 @@ def test_pim_init():
     FakePIM('Test:Yag', name='test', prefix_det='potato')
     FakePIM('Test:Yag', name='test', prefix_zoom='potato')
     FakePIM('Test:Yag', name='test')
-    FakePIM = make_fake_device(PIM_withLED)
+    FakePIM = make_fake_device(PIMWithLED)
     FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_zoom='woosh',
             prefix_led='shiny')
     FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_led='shiny')
@@ -61,7 +61,7 @@ def test_pim_init():
     FakePIM('Test:Yag', name='test', prefix_det='potato')
     FakePIM('Test:Yag', name='test', prefix_zoom='potato')
     FakePIM('Test:Yag', name='test')
-    FakePIM = make_fake_device(PIM_withFocus)
+    FakePIM = make_fake_device(PIMWithFocus)
     FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_zoom='woosh',
             prefix_focus='blur')
     FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_focus='blur')
@@ -70,7 +70,7 @@ def test_pim_init():
     FakePIM('Test:Yag', name='test', prefix_det='potato')
     FakePIM('Test:Yag', name='test', prefix_zoom='potato')
     FakePIM('Test:Yag', name='test')
-    FakePIM = make_fake_device(PIM_withBoth)
+    FakePIM = make_fake_device(PIMWithBoth)
     FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_zoom='woosh',
             prefix_focus='blur', prefix_led='shiny')
     FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_focus='blur',

@@ -120,7 +120,7 @@ class PIM(Device):
         self.y_motor = self.state.motor
 
 
-class PIM_withFocus(PIM):
+class PIMWithFocus(PIM):
     """
     Profile intensity monitor with y-motion motor, zoom motor, focus motor, and
     a detector.
@@ -159,7 +159,7 @@ class PIM_withFocus(PIM):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class PIM_withLED(PIM):
+class PIMWithLED(PIM):
     """
     Profile intensity monitor with y-motion motor, zoom motor, LED, and a
     detector.
@@ -198,7 +198,7 @@ class PIM_withLED(PIM):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class PIM_withBoth(PIM_withLED, PIM_withFocus):
+class PIMWithBoth(PIMWithFocus, PIMWithLED):
     """
     Profile intensity monitor with y-motion motor, zoom motor, focus motor,
     LED, and a detector.
