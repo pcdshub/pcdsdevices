@@ -293,8 +293,42 @@ class HardOffsetMirror(Device, BaseInterface):
     name : ``str``
         Alias for the device
     """
-    not_implemented = Cpt(SignalRO, name="Not Implemented",
-                          value="Not Implemented", kind='normal')
+    # Motor components: can read/write positions
+    y_up = Cpt(EpicsSignal, ':MMS:YUP', name='y_up', kind='normal')
+    y_dwn = Cpt(EpicsSignal, ':MMS:YDWN', name='y_dwn', kind='config')
+    x_up = Cpt(EpicsSignal, ':MMS:XUP', name='x_up', kind='normal')
+    x_dwn = Cpt(EpicsSignal, ':MMS:XDWN', name='x_dwn', kind='config')
+    pitch = Cpt(EpicsSignal, ':MMS:PITCH', name='pitch', kind='normal')
+    bender = Cpt(EpicsSignal, ':MMS:BENDER', name='bender', kind='normal')
+
+    # Gantry components
+    gantry_x = Cpt(EpicsSignalRO, ':GANTRY_X_RBV', name='gantry_x',
+                   kind='normal')
+    gantry_y = Cpt(EpicsSignalRO, ':GANTRY_Y_RBV', name='gantry_y',
+                   kind='normal')
+    couple_y = Cpt(EpicsSignal, ':COUPLE_Y', name='couple_y', kind='config')
+    couple_x = Cpt(EpicsSignal, ':COUPLE_X', name='couple_x', kind='config')
+    decouple_y = Cpt(EpicsSignal, ':DECOUPLE_Y', name='decouple_y',
+                     kind='config')
+    decouple_x = Cpt(EpicsSignal, ':DECOUPLE_X', name='decouple_x',
+                     kind='config')
+    couple_status_y = Cpt(EpicsSignalRO, ':ALREADY_COUPLED_Y_RBV',
+                          name='already_coupled_y', kind='normal')
+    couple_status_x = Cpt(EpicsSignalRO, ':ALREADY_COUPLED_X_RBV',
+                          name='already_coupled_x', kind='normal')
+
+    # RMS Cpts:
+    y_enc_rms = Cpt(EpicsSignalRO, ':Y_ENC:RMS_RBV', name='y_enc_rms',
+                    kind='normal')
+    x_enc_rms = Cpt(EpicsSignalRO, ':X_ENC:RMS_RBV', name='x_enc_rms',
+                    kind='normal')
+    pitch_enc_rms = Cpt(EpicsSignalRO, ':PITCH_ENC:RMS_RBV',
+                        name='pitch_enc_rms', kind='normal')
+    bender_enc_rms = Cpt(EpicsSignalRO, ':BENDER_ENC:RMS_RBV',
+                         name='bender_enc_rms', kind='normal')
+
+    def __init__(self, prefix, **kwargs):
+        super().__init__(prefix, **kwargs)
 
 
 class XOffsetMirror(Device, BaseInterface):
