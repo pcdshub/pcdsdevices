@@ -2,7 +2,7 @@
 Module for the `PIM` profile intensity monitor classes
 
 This module contains all the classes relating to the profile intensity monitor
-classes at the user level. A PIM always has a motor to control yag/diode 
+classes at the user level. A PIM always has a motor to control yag/diode
 position, a zoom motor, and a camera to view the yag. Some PIMs have LEDs for
 illumination and/or a focus motor. Each of these configurations is set up as
 its own class.
@@ -62,7 +62,7 @@ class PIM(Device):
 
     _prefix_start = ''
 
-    state = Cpt(PIM_Y, '', kind='normal')
+    state = Cpt(PIMY, '', kind='normal')
     zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
     detector = FCpt(PCDSAreaDetector, '{self._prefix_det}', kind='normal')
 
@@ -91,12 +91,12 @@ class PIM(Device):
         return self.state.inserted
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
-        """Moves the diode into the beam."""
+        """Moves the YAG into the beam."""
         return self.state.insert(moved_cb=moved_cb, timeout=timeout,
                                  wait=wait)
 
     def remove(self, moved_cb=None, timeout=None, wait=False):
-        """Moves the diode out of the beam."""
+        """Moves the YAG and diode out of the beam."""
         return self.state.remove(moved_cb=moved_cb, timeout=timeout,
                                  wait=wait)
 

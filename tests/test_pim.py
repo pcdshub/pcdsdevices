@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.pim import (PIM, PIM_Y, PIM_withLED, PIM_withFocus,
+from pcdsdevices.pim import (PIM, PIMY, PIM_withLED, PIM_withFocus,
                              PIM_withBoth)
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ def fake_pim():
     FakePIM = make_fake_device(PIM)
     pim = FakePIM('Test:Yag', name='test')
     pim.state.state.sim_put(0)
-    pim.state.state.sim_set_enum_strs(['Unknown'] + PIM_Y.states_list)
+    pim.state.state.sim_set_enum_strs(['Unknown'] + PIMY.states_list)
     pim.y_motor.error_severity.sim_put(0)
     pim.y_motor.bit_status.sim_put(0)
     pim.y_motor.motor_spg.sim_put(2)
