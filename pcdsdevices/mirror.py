@@ -8,7 +8,6 @@ vertical gantries.
 """
 import logging
 
-from ophyd.signal import SignalRO
 import numpy as np
 from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
                    PVPositioner, FormattedComponent as FCpt)
@@ -16,6 +15,7 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
 from .doc_stubs import basic_positioner_init
 from .inout import InOutRecordPositioner
 from .interface import FltMvInterface, BaseInterface
+from .signal import PytmcSignal
 
 logger = logging.getLogger(__name__)
 
@@ -279,11 +279,11 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         return super().check_value(pos)
 
 
-class HardOffsetMirror(Device, BaseInterface):
+class XOffsetMirror(Device, BaseInterface):
     """
-    Hard X-Ray Offset Mirror
+    X-Ray Offset Mirror
 
-    1st gen Axilon design with LCLS-II Beckhoff motion architecture.
+    1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
 
     Parameters
     ----------
@@ -294,59 +294,28 @@ class HardOffsetMirror(Device, BaseInterface):
         Alias for the device
     """
     # Motor components: can read/write positions
-    y_up = Cpt(EpicsSignal, ':MMS:YUP', name='y_up', kind='normal')
-    y_dwn = Cpt(EpicsSignal, ':MMS:YDWN', name='y_dwn', kind='config')
-    x_up = Cpt(EpicsSignal, ':MMS:XUP', name='x_up', kind='normal')
-    x_dwn = Cpt(EpicsSignal, ':MMS:XDWN', name='x_dwn', kind='config')
-    pitch = Cpt(EpicsSignal, ':MMS:PITCH', name='pitch', kind='normal')
-    bender = Cpt(EpicsSignal, ':MMS:BENDER', name='bender', kind='normal')
+    y_up = Cpt(EpicsSignal, ':MMS:YUP', kind='normal')
+    y_dwn = Cpt(EpicsSignal, ':MMS:YDWN', kind='config')
+    x_up = Cpt(EpicsSignal, ':MMS:XUP', kind='normal')
+    x_dwn = Cpt(EpicsSignal, ':MMS:XDWN', kind='config')
+    pitch = Cpt(EpicsSignal, ':MMS:PITCH', kind='normal')
+    bender = Cpt(EpicsSignal, ':MMS:BENDER', kind='normal')
 
     # Gantry components
-    gantry_x = Cpt(EpicsSignalRO, ':GANTRY_X_RBV', name='gantry_x',
-                   kind='normal')
-    gantry_y = Cpt(EpicsSignalRO, ':GANTRY_Y_RBV', name='gantry_y',
-                   kind='normal')
-    couple_y = Cpt(EpicsSignal, ':COUPLE_Y', name='couple_y', kind='config')
-    couple_x = Cpt(EpicsSignal, ':COUPLE_X', name='couple_x', kind='config')
-    decouple_y = Cpt(EpicsSignal, ':DECOUPLE_Y', name='decouple_y',
-                     kind='config')
-    decouple_x = Cpt(EpicsSignal, ':DECOUPLE_X', name='decouple_x',
-                     kind='config')
-    couple_status_y = Cpt(EpicsSignalRO, ':ALREADY_COUPLED_Y_RBV',
-                          name='already_coupled_y', kind='normal')
-    couple_status_x = Cpt(EpicsSignalRO, ':ALREADY_COUPLED_X_RBV',
-                          name='already_coupled_x', kind='normal')
+    gantry_x = Cpt(PytmcSignal, ':GANTRY_X', io='i', kind='normal')
+    gantry_y = Cpt(PytmcSignal, ':GANTRY_Y', io='i', kind='normal')
+    couple_y = Cpt(PytmcSignal, ':COUPLE_Y', io='o', kind='config')
+    couple_x = Cpt(PytmcSignal, ':COUPLE_X', io='o', kind='config')
+    decouple_y = Cpt(PytmcSignal, ':DECOUPLE_Y', io='o', kind='config')
+    decouple_x = Cpt(PytmcSignal, ':DECOUPLE_X', io='o', kind='config')
+    couple_status_y = Cpt(PytmcSignal, ':ALREADY_COUPLED_Y', io='i',
+                          kind='normal')
+    couple_status_x = Cpt(PytmcSignal, ':ALREADY_COUPLED_X', io='i',
+                          kind='normal')
 
     # RMS Cpts:
-    y_enc_rms = Cpt(EpicsSignalRO, ':Y_ENC:RMS_RBV', name='y_enc_rms',
-                    kind='normal')
-    x_enc_rms = Cpt(EpicsSignalRO, ':X_ENC:RMS_RBV', name='x_enc_rms',
-                    kind='normal')
-    pitch_enc_rms = Cpt(EpicsSignalRO, ':PITCH_ENC:RMS_RBV',
-                        name='pitch_enc_rms', kind='normal')
-    bender_enc_rms = Cpt(EpicsSignalRO, ':BENDER_ENC:RMS_RBV',
-                         name='bender_enc_rms', kind='normal')
-
-    def __init__(self, prefix, **kwargs):
-        super().__init__(prefix, **kwargs)
-
-
-class XOffsetMirror(Device, BaseInterface):
-    """
-    X-Ray Offset Mirror from the L2SI Project
-
-    2nd gen Axilon design with LCLS-II Beckhoff motion architecture.
-
-    Mirror is decoupled from vacuum chamber, so it should be
-     very stable.
-
-    Parameters
-    ----------
-    prefix : ``str``
-        Base PV
-
-    name : ``str``
-        Alias for the device
-    """
-    not_implemented = Cpt(SignalRO, name="Not Implemented",
-                          value="Not Implemented", kind='normal')
+    y_enc_rms = Cpt(PytmcSignal, ':Y_ENC:RMS', io='i', kind='normal')
+    x_enc_rms = Cpt(PytmcSignal, ':X_ENC:RMS', io='i', kind='normal')
+    pitch_enc_rms = Cpt(PytmcSignal, ':PITCH_ENC:RMS', io='i', kind='normal')
+    bender_enc_rms = Cpt(PytmcSignal, ':BENDER_ENC:RMS', io='i',
+                         kind='normal')
