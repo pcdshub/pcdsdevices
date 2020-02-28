@@ -168,7 +168,7 @@ class PIPPLC(Device):
     at_vac_sp = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='omitted',
                     doc='at vacuum set point')
     pump_on = Cpt(EpicsSignalRO, ':HV_DI_RBV', kind='normal',
-                          doc='ion pump output state')
+                  doc='ion pump output state')
     pump_state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='hinted')
 
 
