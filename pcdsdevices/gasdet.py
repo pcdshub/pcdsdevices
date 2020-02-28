@@ -237,19 +237,3 @@ class GasDet(Device):
     pulse_start_index = Cpt(EpicsSignalRO, ":STRT", kind="hinted")
     pulse_stop_index = Cpt(EpicsSignalRO, ":STOP", kind="hinted")
     pulse_sum = Cpt(EpicsSignalRO, ":PSUM", kind="hinted")
-
-    def __init__(self, prefix, *, platform=None,
-                 module=None, channel=None, name="GasDet", **kwargs):
-        self.module = module
-        self.prefix = prefix
-        self.platform = platform
-        if self.module and len(self.module) != 3:
-            raise ValueError(
-                "acqiris 'module'"
-                + " expects a 3-digit module identifier,"
-                + " e.g. '240'"
-            )
-        else:
-            if self.module:
-                self._mod_pref = self.module[:2]
-        super().__init__(prefix, name=name, **kwargs)
