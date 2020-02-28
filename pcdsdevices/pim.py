@@ -15,11 +15,12 @@ from ophyd.signal import EpicsSignal
 from .epics_motor import IMS
 from .areadetector.detectors import PCDSAreaDetector
 from .inout import InOutRecordPositioner
+from .interface import BaseInterface
 
 logger = logging.getLogger(__name__)
 
 
-class PIMY(InOutRecordPositioner):
+class PIMY(InOutRecordPositioner, BaseInterface):
     """
     Standard profile monitor Y motor.
 
@@ -33,13 +34,15 @@ class PIMY(InOutRecordPositioner):
     # QIcon for UX
     _icon = 'fa.camera-retro'
 
+    tab_whitelist = ['stage']
+
     def stage(self):
         """Save the original position to be restored on `unstage`."""
         self._original_vals[self.state] = self.state.value
         return super().stage()
 
 
-class PIM(Device):
+class PIM(Device, BaseInterface):
     """
     Profile intensity monitor with y-motion motor, zoom motor, and a detector.
 
@@ -66,7 +69,8 @@ class PIM(Device):
     zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
     detector = FCpt(PCDSAreaDetector, '{self._prefix_det}', kind='normal')
 
-    tab_whitelist = ['y_motor', 'zoom_motor', 'detector']
+    tab_whitelist = ['y_motor', 'remove', 'insert', 'removed', 'inserted']
+    tab_component_names = True
 
     def infer_prefix(self, prefix):
         """Pulls out the first two segments of the prefix PV, if not already
