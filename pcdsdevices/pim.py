@@ -66,7 +66,8 @@ class PIM(Device):
     zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
     detector = FCpt(PCDSAreaDetector, '{self._prefix_det}', kind='normal')
 
-    tab_whitelist = ['y_motor', 'zoom_motor', 'detector']
+    tab_whitelist = ['y_motor', 'remove', 'insert', 'removed', 'inserted']
+    tab_component_names = True
 
     def infer_prefix(self, prefix):
         """Pulls out the first two segments of the prefix PV, if not already
