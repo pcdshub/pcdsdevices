@@ -58,6 +58,10 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     tab_whitelist = ["set_current_position", "home", "velocity",
                      "enable", "disable"]
 
+    typhos_detailed = 'detailed_positioner.ui'
+    typhos_screen = 'positioner.ui'
+    typhos_embedded = 'embedded_positioner.ui'
+
     @property
     def low_limit(self):
         """
@@ -456,6 +460,10 @@ class BeckhoffAxis(EpicsMotorInterface):
     """
     __doc__ += basic_positioner_init
     tab_whitelist = ['clear_error']
+
+    typhos_detailed = 'detailed_beckhoff_positioner.ui'
+    typhos_screen = 'beckhoff_positioner.ui'
+    typhos_embedded = 'embedded_beckhoff_positioner.ui'
 
     plc = Cpt(BeckhoffAxisPLC, ':PLC:', kind='normal')
 
