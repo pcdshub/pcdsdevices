@@ -396,9 +396,6 @@ class FEESolidAttenuator(Device, BaseInterface):
     blade_18 = Cpt(BeckhoffAxis, ':MMS:18', kind='hinted')
     blade_19 = Cpt(BeckhoffAxis, ':MMS:19', kind='hinted')
 
-    def __init__(self, prefix, name='AT2L0', **kwargs):
-        super().__init__(prefix, name=name, **kwargs)
-
 
 class GasAttenuator(Device, BaseInterface):
     """
