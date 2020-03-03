@@ -204,7 +204,7 @@ class GCCPLC(GaugePLC):
     high_voltage_disable = Cpt(EpicsSignalRO, ':HV_DIS_DO_RBV', kind='normal',
                                doc=('enables the high voltage on the cold '
                                     'cathode gauge'))
-    protection_setpoint = Cpt(EpicsSignalRO, ':PRO_SP_RBV', kind='normal',
+    protection_setpoint = Cpt(EpicsSignalWithRBV, ':PRO_SP', kind='normal',
                               doc=('Protection setpoint for ion gauges at '
                                    'which the gauge turns off'))
     setpoint_hysterisis = Cpt(EpicsSignalWithRBV, ':SP_HYS', kind='config',
