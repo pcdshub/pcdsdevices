@@ -236,7 +236,7 @@ class VGC(VRC):
                  doc='at vacuum sp is reached')
     error = Cpt(EpicsSignalRO, ':ERROR_RBV', kind='normal',
                 doc='Error Present')
-    mps_state = Cpt(EpicsSignalRO, ':MPS_FAULT_OK', kind='omitted',
+    mps_state = Cpt(EpicsSignalRO, ':MPS_FAULT_OK_RBV', kind='omitted',
                     doc=('individual valve MPS state for debugging'))
 
 
