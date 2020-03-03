@@ -229,15 +229,15 @@ class VGC(VRC):
     ext_ilk_ok = Cpt(EpicsSignalRO, ':EXT_ILK_OK_RBV', kind='normal',
                      doc='External interlock ok')
     at_vac_setpoint = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='config',
-                    doc='AT VAC Set point value')
+                          doc='AT VAC Set point value')
     setpoint_hysterisis = Cpt(EpicsSignalWithRBV, ':AT_VAC_HYS', kind='config',
-                            doc='AT VAC Hysterisis')
+                              doc='AT VAC Hysterisis')
     at_vac = Cpt(EpicsSignalRO, ':AT_VAC_RBV', kind='normal',
                  doc='at vacuum sp is reached')
     error = Cpt(EpicsSignalRO, ':ERROR_RBV', kind='normal',
                 doc='Error Present')
     mps_state = Cpt(EpicsSignalRO, ':MPS_FAULT_OK', kind='omitted',
-                     doc=('individual valve MPS state for debugging')) 
+                    doc=('individual valve MPS state for debugging'))
 
 
 class VVCNO(Device):
