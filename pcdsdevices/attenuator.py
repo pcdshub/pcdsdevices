@@ -13,6 +13,7 @@ from ophyd.signal import Signal, SignalRO, EpicsSignal, EpicsSignalRO
 
 from .inout import InOutPositioner
 from .interface import FltMvInterface, BaseInterface
+from .epics_motor import BeckhoffAxis
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
@@ -369,10 +370,31 @@ class FEESolidAttenuator(Device, BaseInterface):
     Notes
     ----------
     Solid attenuator variant from the LCLS-II XTES project.
-     Motorized, 16 blades.
+     Motorized, 18 filters + 1 inspection mirror.
+
+    This is a quick-and-dirty Ophyd device for
+    controlling AT2L0 motion and generating
+    a PyDM control screen.
     """
-    not_implemented = Cpt(SignalRO, name="Not Implemented",
-                          value="Not Implemented", kind='normal')
+    blade_01 = Cpt(BeckhoffAxis, ':MMS:01', kind='hinted')
+    blade_02 = Cpt(BeckhoffAxis, ':MMS:02', kind='hinted')
+    blade_03 = Cpt(BeckhoffAxis, ':MMS:03', kind='hinted')
+    blade_04 = Cpt(BeckhoffAxis, ':MMS:04', kind='hinted')
+    blade_05 = Cpt(BeckhoffAxis, ':MMS:05', kind='hinted')
+    blade_06 = Cpt(BeckhoffAxis, ':MMS:06', kind='hinted')
+    blade_07 = Cpt(BeckhoffAxis, ':MMS:07', kind='hinted')
+    blade_08 = Cpt(BeckhoffAxis, ':MMS:08', kind='hinted')
+    blade_09 = Cpt(BeckhoffAxis, ':MMS:09', kind='hinted')
+    blade_10 = Cpt(BeckhoffAxis, ':MMS:10', kind='hinted')
+    blade_11 = Cpt(BeckhoffAxis, ':MMS:11', kind='hinted')
+    blade_12 = Cpt(BeckhoffAxis, ':MMS:12', kind='hinted')
+    blade_13 = Cpt(BeckhoffAxis, ':MMS:13', kind='hinted')
+    blade_14 = Cpt(BeckhoffAxis, ':MMS:14', kind='hinted')
+    blade_15 = Cpt(BeckhoffAxis, ':MMS:15', kind='hinted')
+    blade_16 = Cpt(BeckhoffAxis, ':MMS:16', kind='hinted')
+    blade_17 = Cpt(BeckhoffAxis, ':MMS:17', kind='hinted')
+    blade_18 = Cpt(BeckhoffAxis, ':MMS:18', kind='hinted')
+    blade_19 = Cpt(BeckhoffAxis, ':MMS:19', kind='hinted')
 
 
 class GasAttenuator(Device, BaseInterface):
