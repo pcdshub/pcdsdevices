@@ -442,7 +442,7 @@ class BeckhoffAxisPLC(Device):
     status = Cpt(PytmcSignal, 'sErrorMessage', io='i', kind='normal',
                  string=True)
     err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal')
-    cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='o', kind='omitted')
+    cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='o', kind='config')
 
 
 class BeckhoffAxis(EpicsMotorInterface):
