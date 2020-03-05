@@ -161,14 +161,16 @@ class PIPPLC(Device):
                    doc='pressure reading')
     high_voltage_do = Cpt(EpicsSignalRO, ':HV_DO_RBV', kind='normal',
                           doc='high voltage digital output')
-    high_voltage_switch = Cpt(EpicsSignalWithRBV, ':HV_SW', kind='omitted',
-                              doc='epics command to witch on the high voltage')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
                        doc='interlock  is ok when true')
-    at_vac_sp = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='omitted',
-                    doc='at vacuum set point')
-    set_point_relay = Cpt(EpicsSignalRO, ':SP_DI_RBV', kind='normal',
-                          doc='set point digital input relay')
+    pump_on_status = Cpt(EpicsSignalRO, ':HV_DI_RBV', kind='normal',
+                         doc='ion pump output state')
+    pump_state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='hinted')
+    at_vac_setpoint = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='config',
+                          doc='at vacuum set point')
+    high_voltage_switch = Cpt(EpicsSignalWithRBV, ':HV_SW', kind='config',
+                              doc='epics command to switch on the '
+                              'high voltage')
 
 
 class PTMPLC(Device):

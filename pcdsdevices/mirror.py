@@ -13,8 +13,10 @@ from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
                    PVPositioner, FormattedComponent as FCpt)
 
 from .doc_stubs import basic_positioner_init
+from .epics_motor import BeckhoffAxis
 from .inout import InOutRecordPositioner
 from .interface import FltMvInterface, BaseInterface
+from .signal import PytmcSignal
 
 logger = logging.getLogger(__name__)
 
@@ -276,3 +278,45 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
                                   "uncoupled")
         # Allow StatePositioner to check the state
         return super().check_value(pos)
+
+
+class XOffsetMirror(Device, BaseInterface):
+    """
+    X-Ray Offset Mirror
+
+    1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : ``str``
+        Base PV
+
+    name : ``str``
+        Alias for the device
+    """
+    # Motor components: can read/write positions
+    y_up = Cpt(BeckhoffAxis, ':MMS:YUP', kind='normal')
+    y_dwn = Cpt(BeckhoffAxis, ':MMS:YDWN', kind='config')
+    x_up = Cpt(BeckhoffAxis, ':MMS:XUP', kind='normal')
+    x_dwn = Cpt(BeckhoffAxis, ':MMS:XDWN', kind='config')
+    pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='normal')
+    bender = Cpt(BeckhoffAxis, ':MMS:BENDER', kind='normal')
+
+    # Gantry components
+    gantry_x = Cpt(PytmcSignal, ':GANTRY_X', io='i', kind='normal')
+    gantry_y = Cpt(PytmcSignal, ':GANTRY_Y', io='i', kind='normal')
+    couple_y = Cpt(PytmcSignal, ':COUPLE_Y', io='o', kind='config')
+    couple_x = Cpt(PytmcSignal, ':COUPLE_X', io='o', kind='config')
+    decouple_y = Cpt(PytmcSignal, ':DECOUPLE_Y', io='o', kind='config')
+    decouple_x = Cpt(PytmcSignal, ':DECOUPLE_X', io='o', kind='config')
+    couple_status_y = Cpt(PytmcSignal, ':ALREADY_COUPLED_Y', io='i',
+                          kind='normal')
+    couple_status_x = Cpt(PytmcSignal, ':ALREADY_COUPLED_X', io='i',
+                          kind='normal')
+
+    # RMS Cpts:
+    y_enc_rms = Cpt(PytmcSignal, ':Y_ENC:RMS', io='i', kind='normal')
+    x_enc_rms = Cpt(PytmcSignal, ':X_ENC:RMS', io='i', kind='normal')
+    pitch_enc_rms = Cpt(PytmcSignal, ':PITCH_ENC:RMS', io='i', kind='normal')
+    bender_enc_rms = Cpt(PytmcSignal, ':BENDER_ENC:RMS', io='i',
+                         kind='normal')

@@ -198,7 +198,7 @@ def test_disable(fake_pcds_motor):
 def test_beckhoff_error_clear(fake_beckhoff):
     m = fake_beckhoff
     m.clear_error()
-    assert m.cmd_err_reset.get() == 1
+    assert m.plc.cmd_err_reset.get() == 1
     m.stage()
     m.unstage()
 
