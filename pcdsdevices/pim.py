@@ -55,7 +55,7 @@ class PIM(Device, BaseInterface):
         A name to refer to the device
 
     prefix_det : str, optional
-        The EPICS base PV of the detector. If None, it will be attemptted to be
+        The EPICS base PV of the detector. If None, it will be attempted to be
         inferred from `prefix`
 
     prefix_zoom : str, optional
@@ -65,7 +65,7 @@ class PIM(Device, BaseInterface):
 
     _prefix_start = ''
 
-    state = Cpt(PIMY, '', kind='normal')
+    state = Cpt(PIMY, '', kind='omitted')
     zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
     detector = FCpt(PCDSAreaDetector, '{self._prefix_det}', kind='normal')
 
@@ -138,7 +138,7 @@ class PIMWithFocus(PIM):
         A name to refer to the device
 
     prefix_det : str, optional
-        The EPICS base PV of the detector. If None, it will be attemptted to be
+        The EPICS base PV of the detector. If None, it will be attempted to be
         inferred from `prefix`
 
     prefix_zoom : str, optional
@@ -149,7 +149,7 @@ class PIMWithFocus(PIM):
         The EPICS base PV of the focus motor. If None, it will be attempted to
         be inferred from `prefix`
     """
-    focus_motor = FCpt(IMS, '{self._prefix_focus}')
+    focus_motor = FCpt(IMS, '{self._prefix_focus}', kind='normal')
 
     def __init__(self, prefix, *, name, prefix_focus=None, **kwargs):
         self.infer_prefix(prefix)
@@ -177,7 +177,7 @@ class PIMWithLED(PIM):
         A name to refer to the device
 
     prefix_det : str, optional
-        The EPICS base PV of the detector. If None, it will be attemptted to be
+        The EPICS base PV of the detector. If None, it will be attempted to be
         inferred from `prefix`
 
     prefix_zoom : str, optional
@@ -188,7 +188,7 @@ class PIMWithLED(PIM):
         The EPICS base PV of the LED. If None, it will be attempted to be
         inferred from `prefix`
     """
-    led = FCpt(EpicsSignal, '{self._prefix_led}')
+    led = FCpt(EpicsSignal, '{self._prefix_led}', kind='normal')
 
     def __init__(self, prefix, *, name, prefix_led=None, **kwargs):
         self.infer_prefix(prefix)
