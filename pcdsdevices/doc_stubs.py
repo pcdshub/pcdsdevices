@@ -39,24 +39,6 @@ insert_remove = """
 
 """
 
-PIM_base = """
-    Profile intensity monitor
-
-    Parameters
-    ----------
-    prefix : str
-        The EPICS base of the motor
-
-    name : str
-        A name to refer to the device
-
-    prefix_det : str
-        The EPICS base PV of the detector
-
-    prefix_zoom : str
-        The EPICS base PV of the zoom motor
-    """
-
 IonPump_base = """
     Ion Pump
 
