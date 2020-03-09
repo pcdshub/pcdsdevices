@@ -315,8 +315,8 @@ class XOffsetMirror(Device, BaseInterface):
                           kind='normal')
 
     # RMS Cpts:
-    y_enc_rms = Cpt(PytmcSignal, ':Y_ENC:RMS', io='i', kind='normal')
-    x_enc_rms = Cpt(PytmcSignal, ':X_ENC:RMS', io='i', kind='normal')
-    pitch_enc_rms = Cpt(PytmcSignal, ':PITCH_ENC:RMS', io='i', kind='normal')
-    bender_enc_rms = Cpt(PytmcSignal, ':BENDER_ENC:RMS', io='i',
+    y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
+    x_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
+    pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
+    bender_enc_rms = Cpt(PytmcSignal, ':ENC:BENDER:RMS', io='i',
                          kind='normal')
