@@ -1,6 +1,35 @@
 Release History
 ###############
 
+v2.4.0 (2020-03-11)
+===================
+
+Features
+--------
+- Add ``PytmcSignal``
+- Add ``PPM``, ``XPIM``, ``XOffsetMirror``, and ``Kmono`` classes
+- Update ``IPM`` and ``PIM`` modules to better match physical devices
+- Add various helper classes for TwinCAT devices
+- Stubs created for attenuators, ``RTD``, and ``PowerSlit``
+- Make ``cmd_err_reset`` in ``BeckhoffAxisPLC`` accessible in Typhos
+
+API Changes
+-----------
+- Changed ``set_point_relay`` to ``pump_on_status``, ``at_vac_sp`` to
+  ``at_vac_setpoint`` and added ``pump_state`` to ``PIPPLC`` 
+  
+- Changed ``at_vac_sp`` to ``at_vac_setpoint``, ``at_vac_hysterisis``
+  to ``setpoint_hysterisis``, and added mps_state to ``VGC`` 
+
+Bugfixes
+--------
+- Make ``protection_setpoint`` writeable in ``GCCPLC``
+
+Misc
+----
+- Allow build docs failure to speed up overall CI
+
+
 v2.3.0 (2020-02-05)
 ===================
 
@@ -8,6 +37,7 @@ Features
 --------
 - Make everything compatible with the upcoming ``ophyd`` ``v1.4.0``
 - Add be lens calculations port from old python system
+
 
 v2.2.0 (2020-01-22)
 ===================
