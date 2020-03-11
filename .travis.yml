@@ -47,6 +47,7 @@ install:
   - conda config --append channels conda-forge
   - conda config --remove channels defaults
   - conda config --set channel_priority strict
+  - conda config --set update_dependencies false
   # Useful for debugging any issues with conda
   - conda info -a
   # Paranoid check of what version we're using
