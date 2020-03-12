@@ -272,5 +272,5 @@ class VCN(Device):
                        doc='interlock ok status')
     open_command = Cpt(EpicsSignalWithRBV, ':OPN_SW', kind='normal',
                        doc='Epics command to Open valve')
-    state = Cpt(EpicsSignalWithRBV, ':STATE_RBV', kind='hinted', doc='Valve state')
+    state = Cpt(EpicsSignalWithRBV, ':STATE', kind='hinted', doc='Valve state')
     pos_ao = Cpt(EpicsSignalRO, ':POS_AO_RBV', kind='hinted')
