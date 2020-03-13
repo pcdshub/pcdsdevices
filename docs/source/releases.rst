@@ -1,7 +1,7 @@
 Release History
 ###############
 
-v2.4.0 (2020-03-11)
+v2.4.0 (2020-03-12)
 ===================
 
 Features
@@ -24,10 +24,13 @@ API Changes
 Bugfixes
 --------
 - Make ``protection_setpoint`` writeable in ``GCCPLC``
+- Make ``state`` writeable in ``VCN``
 
 Misc
 ----
 - Allow build docs failure to speed up overall CI
+- Specify old working conda version as temporary solution for
+  build failures
 
 
 v2.3.0 (2020-02-05)
