@@ -41,8 +41,9 @@ install:
   - conda activate base
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
-  - conda install conda-build
-  - conda update -q conda conda-build
+  - conda install python=$TRAVIS_PYTHON_VERSION conda-build=3.12.0
+  #- conda install conda-build
+  #- conda update -q conda conda-build
   - conda config --add channels pcds-tag
   - conda config --append channels conda-forge
   - conda config --remove channels defaults
