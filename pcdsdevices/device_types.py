@@ -13,7 +13,7 @@ from .lens import XFLS
 from .lodcm import LODCM
 from .mirror import OffsetMirror, PointingMirror
 from .movablestand import MovableStand
-from .pim import PIM, PPM, XPIM
+from .pim import PIM, PIMWithLED, PIMWithFocus, PIMWithBoth, PPM, XPIM
 from .pulsepicker import PulsePicker
 from .pump import IonPump
 from .sequencer import EventSequencer

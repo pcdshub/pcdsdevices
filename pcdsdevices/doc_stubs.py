@@ -11,7 +11,7 @@ basic_positioner_init = """
     settle_time: ``float``, optional
         The amount of extra time to wait before interpreting a move as done
 
-    timeout ``float``, optional
+    timeout: ``float``, optional
         The amount of time to wait before automatically marking a long
         in-progress move as failed.
 
