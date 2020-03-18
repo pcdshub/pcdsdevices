@@ -1,8 +1,9 @@
 """
-Module for the `KMONO` motion class
+Module for the various spectrometers.
 """
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
+from ophyd.device import FormattedComponent as FCpt
 
 from .epics_motor import BeckhoffAxis
 
@@ -35,3 +36,41 @@ class Kmono(Device):
     ret_vert = Cpt(BeckhoffAxis, ':RET_VERT', kind='normal')
     diode_horiz = Cpt(BeckhoffAxis, ':DIODE_HORIZ', kind='normal')
     diode_vert = Cpt(BeckhoffAxis, ':DIODE_VERT', kind='normal')
+
+
+class VonHamosCrystal(Device):
+    """Pitch, yaw, and translation motors for control of a single crystal"""
+
+    tab_component_names = True
+
+    pitch = Cpt(BeckhoffAxis, ':Pitch', kind='normal')
+    yaw = Cpt(BeckhoffAxis, ':Yaw', kind='normal')
+    trans = Cpt(BeckhoffAxis, ':Translation', kind='normal')
+
+
+class VonHamosCommon(Device):
+    """Common motion for the motors controlling focus, energy, and rotation
+       for a von Hamos spectrometer"""
+
+    tab_component_names = True
+
+    # Update PVs in IOC and change here to reflect
+    f = FCpt(BeckhoffAxis, '{self._prefix_focus}', kind='normal')
+    e = FCpt(BeckhoffAxis, '{self._prefix_energy}', kind='normal')
+    rot = FCpt(BeckhoffAxis, '{self._prefix_rot}', kind='normal')
+
+    def __init__(self, prefix, *, name, prefix_focus, prefix_energy,
+                 prefix_rot, **kwargs):
+        self._prefix_focus = prefix_focus
+        self._prefix_energy = prefix_energy
+        self._prefix_rot = prefix_rot
+        super().__init__()
+
+
+class VonHamos4Crystal(VonHamosCommon):
+    """von Hamos spectrometer with common motors and four crystals"""
+
+    c1 = Cpt(VonHamosCrystal, ':1', kind='normal')
+    c2 = Cpt(VonHamosCrystal, ':2', kind='normal')
+    c3 = Cpt(VonHamosCrystal, ':3', kind='normal')
+    c4 = Cpt(VonHamosCrystal, ':4', kind='normal')
