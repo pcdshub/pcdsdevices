@@ -5,7 +5,7 @@ Common EPICS Devices
 .. autosummary::
     :nosignatures:
     :toctree: generated
-    
+
     Attenuator
     Acromag
     BeckhoffAxis

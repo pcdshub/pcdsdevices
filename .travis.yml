@@ -6,7 +6,7 @@ env:
     - OFFICIAL_REPO="pcdshub/pcdsdevices"
     - secure: "XtUZPwPRT/XSynlIxdnFUpSPTuA82YGltQOKYdIUGSGOBA6czzJj0/lk9teemfDk4+6Nai99GFIPMaCKZY3uxPt9+wJqt+BX3YijBduq35xf9Ld+Z875xWZkFm/C3eodJJsaZQ2B1F3eRUVOoC8sbyNaPI5FgX59uwlr+1HBD/249Zj6eTo78TYNy6fx/yXlpuifOozYr1siJ00eunHpT061zwvscXKHEDg7Fjkezyi6oA2KO9eUjDH8sFYFx8RB4H8jkJsShHBIYB/pWLbuznPvGhs9opM0Q1+1vdoHD3F3dYAyNMXg0tgacnU59153oct5la6JUEfe7RSD5DQctrELNUGAoS1o/X1M6xgEmwNRM2VUv6fZFziJGVd2viZ+2VnDS4mfMxgBeh3oq0LRLSYTLMCcitdjI1mBuRymaWP2MbIs2XEqMFRJrAufWOUJ2gey922+emKm2a57lPohfUpfbVKaVsmDy6tPY7t2Xuq7frrOpLrL9H6TV1EqZTp+zBSg+dM38OsVDQ1J1GZa53ESc4YvG941jSjbAgo0Ji1xIcx9eAOGrYiymYUlr3Z2HOoOqGn0dSAJaGqfrSLP/F/kPlj5FzFm8IcsN+UyvQEf0quT2BjJK7/75zNj6goN2UbpZ4BynTBIXr5yIFnyq6hKfUBs+XZoGVxkvO0VL2o="
 
-matrix: 
+matrix:
   fast_finish: true
   include:
     - name: "Python 3.6 Unit Tests"

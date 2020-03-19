@@ -22,6 +22,6 @@
    :maxdepth: 1
    :caption: Developer Notes
    :hidden:
-    
+
    releases.rst
    api.rst

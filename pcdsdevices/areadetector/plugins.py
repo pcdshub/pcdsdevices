@@ -163,5 +163,3 @@ class HDF5Plugin(ophyd.plugins.HDF5Plugin, FilePlugin):
 
 class MagickPlugin(ophyd.plugins.MagickPlugin, FilePlugin):
     pass
-
-

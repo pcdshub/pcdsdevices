@@ -171,6 +171,3 @@ texinfo_documents = [
      author, 'PCDSDevices', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
