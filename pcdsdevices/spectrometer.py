@@ -6,6 +6,7 @@ from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 
 from .epics_motor import BeckhoffAxis
+from .interface import BaseInterface
 
 
 class Kmono(Device):
@@ -38,7 +39,7 @@ class Kmono(Device):
     diode_vert = Cpt(BeckhoffAxis, ':DIODE_VERT', kind='normal')
 
 
-class VonHamosCrystal(Device):
+class VonHamosCrystal(Device, BaseInterface):
     """Pitch, yaw, and translation motors for control of a single crystal"""
 
     tab_component_names = True
@@ -48,7 +49,7 @@ class VonHamosCrystal(Device):
     trans = Cpt(BeckhoffAxis, ':Translation', kind='normal')
 
 
-class VonHamosCommon(Device):
+class VonHamosCommon(Device, BaseInterface):
     """Common motion for the motors controlling focus, energy, and rotation
        for a von Hamos spectrometer"""
 

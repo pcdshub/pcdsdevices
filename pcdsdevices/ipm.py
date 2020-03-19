@@ -11,6 +11,7 @@ from .epics_motor import IMS
 from .evr import Trigger
 from .inout import InOutRecordPositioner
 from .utils import ipm_screen
+from .interface import BaseInterface
 
 
 class IPMTarget(InOutRecordPositioner):
@@ -35,7 +36,7 @@ class IPMTarget(InOutRecordPositioner):
         self.y_motor = self.motor
 
 
-class IPMDiode(Device):
+class IPMDiode(Device, BaseInterface):
     """
     Diode of a standard intensity position monitor.
 
@@ -77,7 +78,7 @@ class IPMDiode(Device):
     remove.__doc__ += insert_remove
 
 
-class IPMMotion(Device):
+class IPMMotion(Device, BaseInterface):
     """
     Standard intensity position monitor.
 
@@ -89,7 +90,8 @@ class IPMMotion(Device):
     # QIcon for UX
     _icon = 'ei.screenshot'
 
-    tab_whitelist = ['target', 'diode']
+    tab_whitelist = ['target', 'diode', 'insert', 'remove', 'inserted',
+                     'removed']
 
     @property
     def inserted(self):
@@ -120,7 +122,7 @@ class IPMMotion(Device):
         return self.target.transmission
 
 
-class IPIMBChannel(Device):
+class IPIMBChannel(Device, BaseInterface):
     """
     Class for a single channel read out by an ipimb box
 
@@ -135,6 +137,9 @@ class IPIMBChannel(Device):
     channnel_index : ``int``
         Index for gauge (0-3)
     """
+
+    tab_component_names = True
+
     amplitude = FCpt(EpicsSignal, '{self.prefix}:CH{self.channel_index}',
                      kind='hinted')
     gain = FCpt(EpicsSignal,
@@ -151,7 +156,7 @@ class IPIMBChannel(Device):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class IPIMB(Device):
+class IPIMB(Device, BaseInterface):
     """
     Class for an ipimb box.
 
@@ -174,6 +179,9 @@ class IPIMB(Device):
     delay: delay of trigger relative to input EVR
     trigger:
     """
+
+    tab_whitelist = ['isum', 'xpos', 'ypos']
+
     isum = Cpt(EpicsSignal, ':SUM', kind='hinted')
     xpos = Cpt(EpicsSignal, ':XPOS', kind='normal')
     ypos = Cpt(EpicsSignal, ':YPOS', kind='normal')
@@ -197,7 +205,7 @@ class IPIMB(Device):
         return ipm_screen('IPIMB', self._prefix, self._prefix_ioc)
 
 
-class Wave8Channel(Device):
+class Wave8Channel(Device, BaseInterface):
     """
     Class for a single channel read out by a wave8
 
@@ -212,6 +220,8 @@ class Wave8Channel(Device):
     channnel_index : ``int``
         Index for gauge (0-15)
     """
+
+    tab_component_names = True
 
     amplitude = FCpt(EpicsSignal, '{self.prefix}:AMPL_{self.channel_index}',
                      kind='hinted')
@@ -230,7 +240,7 @@ class Wave8Channel(Device):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class Wave8(Device):
+class Wave8(Device, BaseInterface):
     """
     Class for a wave8
 
@@ -242,6 +252,9 @@ class Wave8(Device):
     name : ``str``
         Alias for the wave8
     """
+
+    tab_whitelist = ['isum', 'xpos', 'ypos']
+
     isum = Cpt(EpicsSignal, ':SUM', kind='normal')
     xpos = Cpt(EpicsSignal, ':XPOS', kind='normal')
     ypos = Cpt(EpicsSignal, ':YPOS', kind='normal')
@@ -275,10 +288,12 @@ class Wave8(Device):
         return ipm_screen('Wave8', self._prefix, self._prefix_ioc)
 
 
-class IPM_Det(Device):
+class IPM_Det(Device, BaseInterface):
     """
     Base class for IPM_IPIMB and IPM_Wave8. Not meant to be instantiated.
     """
+
+    tab_component_names = True
 
     def isum(self):
         """Returns the detector's isum value."""
