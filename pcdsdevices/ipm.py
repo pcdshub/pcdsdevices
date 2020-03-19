@@ -75,6 +75,14 @@ class IPMDiode(Device, BaseInterface):
         return self.state.remove(moved_cb=moved_cb, timeout=timeout,
                                  wait=wait)
 
+    @property
+    def transmission(self):
+        """Returns 0.2 if in an unknown state. Returns 1 otherwise."""
+        if self.inserted or self.removed:
+            return 1
+        else:
+            return 0.2
+
     remove.__doc__ += insert_remove
 
 
@@ -105,6 +113,13 @@ class IPMMotion(Device, BaseInterface):
         return (self.target.removed and
                 (self.diode.removed or self.diode.inserted))
 
+    def insert(self, moved_cb=None, timeout=None, wait=False):
+        """Move both the target and diode in"""
+        return (self.target.insert(moved_cb=moved_cb, timeout=timeout,
+                                   wait=wait)
+                & self.diode.insert(moved_cb=moved_cb, timeout=timeout,
+                                    wait=wait))
+
     def remove(self, moved_cb=None, timeout=None, wait=False):
         """Moves the target out of the beam and removes the diode if it is in
            an unknown state"""
@@ -118,8 +133,8 @@ class IPMMotion(Device, BaseInterface):
 
     @property
     def transmission(self):
-        """Returns the target's transmission value."""
-        return self.target.transmission
+        """Returns the combined transmission value of the target and diode"""
+        return self.target.transmission * self.diode.transmission
 
 
 class IPIMBChannel(Device, BaseInterface):
