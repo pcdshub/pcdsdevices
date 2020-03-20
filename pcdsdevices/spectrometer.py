@@ -49,26 +49,34 @@ class VonHamosCrystal(Device, BaseInterface):
     trans = Cpt(BeckhoffAxis, ':Translation', kind='normal')
 
 
-class VonHamosCommon(Device, BaseInterface):
-    """Common motion for the motors controlling focus, energy, and rotation
-       for a von Hamos spectrometer"""
+class VonHamosFE(Device, BaseInterface):
+    """Common motion for the motors controlling focus and energy for a
+       von Hamos spectrometer"""
 
     tab_component_names = True
 
     # Update PVs in IOC and change here to reflect
     f = FCpt(BeckhoffAxis, '{self._prefix_focus}', kind='normal')
     e = FCpt(BeckhoffAxis, '{self._prefix_energy}', kind='normal')
-    rot = FCpt(BeckhoffAxis, '{self._prefix_rot}', kind='normal')
 
-    def __init__(self, prefix, *, name, prefix_focus, prefix_energy,
-                 prefix_rot, **kwargs):
+    def __init__(self, prefix, *, name, prefix_focus, prefix_energy, **kwargs):
         self._prefix_focus = prefix_focus
         self._prefix_energy = prefix_energy
+        super().__init__()
+
+
+class VonHamosFER(Device, BaseInterface):
+    """Common motion for the motors controlling focus, energy, and rotation
+       for a von Hamos spectrometer"""
+
+    rot = FCpt(BeckhoffAxis, '{self._prefix_rot}', kind='normal')
+
+    def __init__(self, prefix, *, name, prefix_rot, **kwargs):
         self._prefix_rot = prefix_rot
         super().__init__()
 
 
-class VonHamos4Crystal(VonHamosCommon):
+class VonHamos4Crystal(VonHamosFE):
     """von Hamos spectrometer with common motors and four crystals"""
 
     c1 = Cpt(VonHamosCrystal, ':1', kind='normal')
