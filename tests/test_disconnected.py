@@ -1,4 +1,5 @@
 import pytest
+
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.signal import EpicsSignal

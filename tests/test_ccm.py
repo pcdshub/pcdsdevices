@@ -1,8 +1,9 @@
 import logging
 
 import numpy as np
-import pcdsdevices.ccm as ccm
 import pytest
+
+import pcdsdevices.ccm as ccm
 from ophyd.sim import make_fake_device
 
 logger = logging.getLogger(__name__)

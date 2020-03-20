@@ -13,8 +13,9 @@ import logging
 from threading import RLock, Thread
 
 import numpy as np
-from ophyd.signal import EpicsSignal, EpicsSignalBase, EpicsSignalRO, Signal
 from pytmc.pragmas import normalize_io
+
+from ophyd.signal import EpicsSignal, EpicsSignalBase, EpicsSignalRO, Signal
 
 logger = logging.getLogger(__name__)
 

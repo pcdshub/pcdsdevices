@@ -4,13 +4,14 @@ import warnings
 from pathlib import Path
 
 import pytest
+from pytmc.pragmas import normalize_io
+
 from ophyd.sim import (FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache,
                        make_fake_device)
 from pcdsdevices.attenuator import (MAX_FILTERS, Attenuator, _att3_classes,
                                     _att_classes)
 from pcdsdevices.mv_interface import setup_preset_paths
 from pcdsdevices.signal import PytmcSignal
-from pytmc.pragmas import normalize_io
 
 # Signal.put warning is a testing artifact.
 # FakeEpicsSignal needs an update, but I don't have time today

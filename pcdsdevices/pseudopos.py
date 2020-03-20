@@ -1,10 +1,11 @@
 import logging
 
+from scipy.constants import speed_of_light
+
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
                              pseudo_position_argument, real_position_argument)
-from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
 from .sim import FastMotor

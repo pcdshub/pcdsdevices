@@ -5,6 +5,7 @@ import logging
 import time
 
 import numpy as np
+
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt

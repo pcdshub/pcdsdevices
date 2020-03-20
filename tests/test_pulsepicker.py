@@ -4,6 +4,7 @@ import time
 from unittest.mock import Mock
 
 import pytest
+
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
 from pcdsdevices.inout import InOutRecordPositioner

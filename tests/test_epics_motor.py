@@ -1,6 +1,7 @@
 import logging
 
 import pytest
+
 from bluesky import RunEngine
 from bluesky.plan_stubs import close_run, open_run, stage, unstage
 from ophyd.sim import make_fake_device
