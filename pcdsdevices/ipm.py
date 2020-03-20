@@ -10,7 +10,6 @@ from .doc_stubs import IPM_base, basic_positioner_init, insert_remove
 from .epics_motor import IMS
 from .evr import Trigger
 from .inout import InOutRecordPositioner
-from .interface import BaseInterface
 from .utils import ipm_screen
 
 
