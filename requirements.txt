@@ -1,3 +1,4 @@
+happi
 ophyd>=1.2.0
 bluesky>=1.2.0
 pyepics

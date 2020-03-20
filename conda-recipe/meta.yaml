@@ -27,6 +27,7 @@ requirements:
     - scipy
     - matplotlib <3
     - periodictable
+    - happi
 
 test:
   imports:

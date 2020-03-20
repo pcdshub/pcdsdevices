@@ -9,4 +9,7 @@ setup(name='pcdsdevices',
       author='SLAC National Accelerator Laboratory',
       packages=find_packages(),
       description='IOC definitions for LCLS Beamline Devices',
-      )
+      entry_points={
+            'happi.containers': ['lcls = pcdsdevices.happi.containers'],
+      }
+)
