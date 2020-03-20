@@ -16,10 +16,10 @@ Features
 API Changes
 -----------
 - Changed ``set_point_relay`` to ``pump_on_status``, ``at_vac_sp`` to
-  ``at_vac_setpoint`` and added ``pump_state`` to ``PIPPLC`` 
-  
+  ``at_vac_setpoint`` and added ``pump_state`` to ``PIPPLC``
+
 - Changed ``at_vac_sp`` to ``at_vac_setpoint``, ``at_vac_hysterisis``
-  to ``setpoint_hysterisis``, and added mps_state to ``VGC`` 
+  to ``setpoint_hysterisis``, and added mps_state to ``VGC``
 
 Bugfixes
 --------

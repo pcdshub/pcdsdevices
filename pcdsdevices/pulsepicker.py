@@ -3,12 +3,14 @@ Module for the LCLS1 `PulsePicker`
 """
 import logging
 
-from ophyd.device import Component as Cpt, FormattedComponent as FCpt
+from ophyd.device import Component as Cpt
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
-from ophyd.status import SubscriptionStatus, wait as status_wait
+from ophyd.status import SubscriptionStatus
+from ophyd.status import wait as status_wait
 
 from .doc_stubs import basic_positioner_init
-from .inout import InOutRecordPositioner, InOutPVStatePositioner
+from .inout import InOutPVStatePositioner, InOutRecordPositioner
 
 logger = logging.getLogger(__name__)
 

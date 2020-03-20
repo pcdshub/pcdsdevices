@@ -1,10 +1,10 @@
+import os
 import select
+import shutil
 import sys
 import termios
 import time
 import tty
-import shutil
-import os
 
 from cf_units import Unit
 

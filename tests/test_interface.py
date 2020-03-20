@@ -1,15 +1,14 @@
 import fcntl
 import logging
 import multiprocessing as mp
-import threading
-import time
 import os
 import signal
+import threading
+import time
 
 import pytest
-
-from pcdsdevices.interface import (setup_preset_paths, set_engineering_mode,
-                                   get_engineering_mode)
+from pcdsdevices.interface import (get_engineering_mode, set_engineering_mode,
+                                   setup_preset_paths)
 from pcdsdevices.sim import FastMotor, SlowMotor
 
 logger = logging.getLogger(__name__)

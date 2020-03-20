@@ -4,8 +4,8 @@ Standard classes for LCLS Gate Valves
 import logging
 from enum import Enum
 
-from ophyd import EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
-from ophyd import Component as Cpt, Device
+from ophyd import Component as Cpt
+from ophyd import Device, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
 
 from .inout import InOutPositioner, InOutPVStatePositioner
 

@@ -1,12 +1,13 @@
-import time
 import threading
+import time
 
-from ophyd.device import Device, Component as Cpt
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
 from ophyd.positioner import SoftPositioner
 from ophyd.signal import AttributeSignal
 from ophyd.sim import SynAxis
 
-from pcdsdevices.interface import FltMvInterface, tweak_base
+from .interface import FltMvInterface, tweak_base
 
 
 class SynMotor(FltMvInterface, SynAxis):

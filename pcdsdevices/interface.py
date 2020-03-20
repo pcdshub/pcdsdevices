@@ -1,16 +1,16 @@
 """
 Module for defining bell-and-whistles movement features
 """
-import time
 import fcntl
 import logging
 import numbers
-import signal
 import re
+import signal
+import time
 from contextlib import contextmanager
 from pathlib import Path
-from threading import Thread, Event
-from types import SimpleNamespace, MethodType
+from threading import Event, Thread
+from types import MethodType, SimpleNamespace
 from weakref import WeakSet
 
 import yaml

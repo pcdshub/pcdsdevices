@@ -1,7 +1,8 @@
 """
 Module for stands that can be moved
 """
-from ophyd import Component as Cpt, EpicsSignalRO
+from ophyd import Component as Cpt
+from ophyd import EpicsSignalRO
 
 from .inout import InOutPVStatePositioner
 

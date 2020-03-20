@@ -13,18 +13,19 @@ however, if control of the center is desired the ``center`` sub-devices can be
 used.
 """
 import logging
-
 from collections import OrderedDict
 
-from ophyd.status import wait as status_wait
-from ophyd.pv_positioner import PVPositioner
-from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
-                   FormattedComponent as FCpt, DynamicDeviceComponent as DDCpt)
+from ophyd import Component as Cpt
+from ophyd import Device
+from ophyd import DynamicDeviceComponent as DDCpt
+from ophyd import EpicsSignal, EpicsSignalRO
+from ophyd import FormattedComponent as FCpt
 from ophyd.epics_motor import EpicsMotor
+from ophyd.pv_positioner import PVPositioner
 from ophyd.sim import SignalRO
+from ophyd.status import wait as status_wait
 
-from .interface import MvInterface, FltMvInterface, BaseInterface
-
+from .interface import BaseInterface, FltMvInterface, MvInterface
 from .sensors import RTD
 
 logger = logging.getLogger(__name__)

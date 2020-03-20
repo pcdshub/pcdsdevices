@@ -1,14 +1,16 @@
 """
 Module to define positioners that move between discrete named states.
 """
-import logging
 import functools
+import logging
 from enum import Enum
 
+from ophyd.device import Component as Cpt
+from ophyd.device import Device, required_for_connection
 from ophyd.positioner import PositionerBase
-from ophyd.status import wait as status_wait, SubscriptionStatus
 from ophyd.signal import EpicsSignal
-from ophyd.device import Device, Component as Cpt, required_for_connection
+from ophyd.status import SubscriptionStatus
+from ophyd.status import wait as status_wait
 
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS

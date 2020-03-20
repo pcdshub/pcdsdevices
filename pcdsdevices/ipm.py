@@ -1,12 +1,15 @@
 """
 Module for the `IPM` intensity position monitor class
 """
-from ophyd.device import Device, Component as Cpt, FormattedComponent as FCpt
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
-from .doc_stubs import basic_positioner_init, insert_remove, IPM_base
-from .inout import InOutRecordPositioner
+
+from .doc_stubs import IPM_base, basic_positioner_init, insert_remove
 from .epics_motor import IMS
 from .evr import Trigger
+from .inout import InOutRecordPositioner
 from .utils import ipm_screen
 
 

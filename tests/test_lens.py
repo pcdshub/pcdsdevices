@@ -1,13 +1,12 @@
 import logging
 import os
 import os.path
-
 from unittest.mock import Mock
-from ophyd.sim import make_fake_device
-import pytest
-import numpy as np
 
-from pcdsdevices.lens import XFLS, LensStack, SimLensStack, LensStackBase
+import numpy as np
+import pytest
+from ophyd.sim import make_fake_device
+from pcdsdevices.lens import XFLS, LensStack, LensStackBase, SimLensStack
 
 logger = logging.getLogger(__name__)
 

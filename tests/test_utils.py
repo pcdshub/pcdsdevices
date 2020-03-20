@@ -1,12 +1,11 @@
 import logging
 import pty
 import sys
-import time
 import threading
-
-import pytest
+import time
 
 import pcdsdevices.utils as util
+import pytest
 
 logger = logging.getLogger(__name__)
 

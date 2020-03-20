@@ -2,19 +2,21 @@
 Module for LCLS's special motor records.
 """
 import logging
-import shutil
 import os
-from ophyd.device import Device, Component as Cpt
+import shutil
+
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
 from ophyd.epics_motor import EpicsMotor
-from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
-from ophyd.status import DeviceStatus, SubscriptionStatus, wait as status_wait
+from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
+from ophyd.status import DeviceStatus, SubscriptionStatus
+from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
 
 from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
 from .pseudopos import DelayBase
 from .signal import PytmcSignal
-
 
 logger = logging.getLogger(__name__)
 

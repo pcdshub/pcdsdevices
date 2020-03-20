@@ -6,9 +6,9 @@ EM
 """
 import logging
 
+from ophyd import Component as Cpt
 from ophyd import Device
 from ophyd.signal import SignalRO
-from ophyd import Component as Cpt
 
 from .interface import BaseInterface
 

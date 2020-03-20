@@ -1,13 +1,12 @@
 import logging
 
+import pcdsdevices.sequencer
 import pytest
 from bluesky import RunEngine
-from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from bluesky.plan_stubs import sleep
+from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from ophyd.sim import NullStatus, make_fake_device
-
-from pcdsdevices.sequencer import EventSequencer, EventSequence
-import pcdsdevices.sequencer
+from pcdsdevices.sequencer import EventSequence, EventSequencer
 
 logger = logging.getLogger(__name__)
 

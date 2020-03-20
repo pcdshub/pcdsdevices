@@ -1,9 +1,10 @@
 import logging
 
-from ophyd import Device, EpicsSignal, EpicsSignalRO, Component as Cpt
+from ophyd import Component as Cpt
+from ophyd import Device, EpicsSignal, EpicsSignalRO
+from ophyd.flyers import FlyerInterface, MonitorFlyerMixin
 from ophyd.status import DeviceStatus, SubscriptionStatus
 from ophyd.utils.epics_pvs import raise_if_disconnected
-from ophyd.flyers import FlyerInterface, MonitorFlyerMixin
 
 from .interface import BaseInterface
 

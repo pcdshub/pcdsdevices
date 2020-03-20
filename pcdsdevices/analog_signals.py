@@ -1,7 +1,8 @@
 import time
 
-from ophyd import (Device, Component as Cpt, EpicsSignal, EpicsSignalRO,
-                   FormattedComponent as FCpt)
+from ophyd import Component as Cpt
+from ophyd import Device, EpicsSignal, EpicsSignalRO
+from ophyd import FormattedComponent as FCpt
 
 from . import utils as key_press
 from .interface import BaseInterface

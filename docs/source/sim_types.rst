@@ -9,5 +9,5 @@ Simulated Devices
 
     SynMotor
     FastMotor
-    SlowMotor 
+    SlowMotor
     SimTwoAxis
