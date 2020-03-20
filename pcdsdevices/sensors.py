@@ -3,7 +3,8 @@ Sensor classes
 
 Classes for the various thermocouples, rtds, flow meters, O2 sensors, etc.
 """
-from ophyd import Device, Component as Cpt
+from ophyd import Component as Cpt
+from ophyd import Device
 from ophyd.signal import SignalRO
 
 from .interface import BaseInterface

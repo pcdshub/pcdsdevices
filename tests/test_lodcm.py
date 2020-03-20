@@ -1,10 +1,9 @@
 import logging
+from unittest.mock import Mock
 
 import pytest
 from ophyd.sim import make_fake_device
-from unittest.mock import Mock
-
-from pcdsdevices.lodcm import LODCM, H1N, YagLom, Dectris, Diode, Foil
+from pcdsdevices.lodcm import H1N, LODCM, Dectris, Diode, Foil, YagLom
 
 logger = logging.getLogger(__name__)
 

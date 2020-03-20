@@ -9,13 +9,15 @@ vertical gantries.
 import logging
 
 import numpy as np
-from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
-                   PVPositioner, FormattedComponent as FCpt)
+from ophyd import Component as Cpt
+from ophyd import Device, EpicsSignal, EpicsSignalRO
+from ophyd import FormattedComponent as FCpt
+from ophyd import PVPositioner
 
 from .doc_stubs import basic_positioner_init
 from .epics_motor import BeckhoffAxis
 from .inout import InOutRecordPositioner
-from .interface import FltMvInterface, BaseInterface
+from .interface import BaseInterface, FltMvInterface
 from .signal import PytmcSignal
 
 logger = logging.getLogger(__name__)

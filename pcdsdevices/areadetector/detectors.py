@@ -11,9 +11,10 @@ from ophyd.areadetector import cam
 from ophyd.areadetector.base import ADComponent
 from ophyd.areadetector.detectors import DetectorBase
 from ophyd.device import Component as Cpt
+
 from .plugins import (ColorConvPlugin, HDF5Plugin, ImagePlugin, JPEGPlugin,
-                      NetCDFPlugin, OverlayPlugin, ProcessPlugin, ROIPlugin,
-                      StatsPlugin, TIFFPlugin, TransformPlugin, NexusPlugin)
+                      NetCDFPlugin, NexusPlugin, OverlayPlugin, ProcessPlugin,
+                      ROIPlugin, StatsPlugin, TIFFPlugin, TransformPlugin)
 
 logger = logging.getLogger(__name__)
 

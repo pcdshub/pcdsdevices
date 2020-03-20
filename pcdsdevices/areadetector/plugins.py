@@ -4,12 +4,13 @@ PCDS plugins and Overrides for AreaDetector Plugins.
 
 import logging
 
-import ophyd
 import numpy as np
-from ophyd import EpicsSignal, Component as C
+import ophyd
+from ophyd import Component as C
+from ophyd import EpicsSignal
+from ophyd.areadetector.base import ADBase
 from ophyd.device import GenerateDatumInterface
 from ophyd.utils import set_and_wait
-from ophyd.areadetector.base import ADBase
 
 logger = logging.getLogger(__name__)
 

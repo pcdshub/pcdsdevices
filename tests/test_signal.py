@@ -1,9 +1,8 @@
 import logging
 from unittest.mock import Mock
 
-from ophyd.signal import Signal, EpicsSignal, EpicsSignalRO
-
-from pcdsdevices.signal import PytmcSignal, AvgSignal
+from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
+from pcdsdevices.signal import AvgSignal, PytmcSignal
 
 logger = logging.getLogger(__name__)
 

@@ -3,8 +3,9 @@ Standard classes for LCLS Gauges
 """
 import logging
 
-from ophyd import EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV, Device
-from ophyd import Component as Cpt, FormattedComponent as FCpt
+from ophyd import Component as Cpt
+from ophyd import Device, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
+from ophyd import FormattedComponent as FCpt
 
 from .doc_stubs import GaugeSet_base
 from .interface import BaseInterface

@@ -9,12 +9,13 @@ its own class.
 """
 import logging
 
-from ophyd.device import Device, Component as Cpt, FormattedComponent as FCpt
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
 
-from .epics_motor import IMS
 from .areadetector.detectors import PCDSAreaDetector
-from .epics_motor import BeckhoffAxis
+from .epics_motor import IMS, BeckhoffAxis
 from .inout import InOutRecordPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface
 from .sensors import TwinCATThermocouple

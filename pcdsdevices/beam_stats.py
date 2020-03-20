@@ -1,8 +1,9 @@
-from ophyd.device import Device, Component as Cpt
-from ophyd.signal import EpicsSignalRO, AttributeSignal
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
+from ophyd.signal import AttributeSignal, EpicsSignalRO
 
-from .signal import AvgSignal
 from .interface import BaseInterface
+from .signal import AvgSignal
 
 
 class BeamStats(Device, BaseInterface):

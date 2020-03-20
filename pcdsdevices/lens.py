@@ -1,16 +1,16 @@
 """
 Basic Beryllium Lens XFLS
 """
+import shutil
 import time
+from datetime import date
+
 import numpy as np
 import yaml
-import shutil
-
-from datetime import date
-from ophyd.device import Component as Cpt, FormattedComponent as FCpt
+from ophyd.device import Component as Cpt
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
                              pseudo_position_argument, real_position_argument)
-
 from periodictable import xsf
 
 from .doc_stubs import basic_positioner_init

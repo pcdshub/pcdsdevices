@@ -1,13 +1,14 @@
 import logging
 
-from ophyd.device import Component as Cpt, FormattedComponent as FCpt
+from ophyd.device import Component as Cpt
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
-                             real_position_argument, pseudo_position_argument)
+                             pseudo_position_argument, real_position_argument)
 from scipy.constants import speed_of_light
 
+from .interface import FltMvInterface
 from .sim import FastMotor
 from .utils import convert_unit
-from .interface import FltMvInterface
 
 logger = logging.getLogger(__name__)
 

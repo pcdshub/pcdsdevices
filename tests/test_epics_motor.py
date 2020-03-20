@@ -1,14 +1,14 @@
 import logging
 
+import pytest
 from bluesky import RunEngine
-from bluesky.plan_stubs import stage, unstage, open_run, close_run
+from bluesky.plan_stubs import close_run, open_run, stage, unstage
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
-import pytest
-
-from pcdsdevices.epics_motor import (EpicsMotorInterface, PCDSMotorBase, IMS,
-                                     Newport, PMC100, BeckhoffAxis,
-                                     MotorDisabledError, Motor, EpicsMotor)
+from pcdsdevices.epics_motor import (IMS, PMC100, BeckhoffAxis, EpicsMotor,
+                                     EpicsMotorInterface, Motor,
+                                     MotorDisabledError, Newport,
+                                     PCDSMotorBase)
 
 logger = logging.getLogger(__name__)
 

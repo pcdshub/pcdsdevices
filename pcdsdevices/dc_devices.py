@@ -2,7 +2,8 @@
 Standard classes for L2SI DC power devices.
 """
 import logging
-from ophyd import EpicsSignal, EpicsSignalRO, Device
+
+from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 
 from .interface import BaseInterface

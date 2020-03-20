@@ -1,7 +1,10 @@
 """
 Module for the `KMONO` motion class
 """
-from ophyd.device import Device, Component as Cpt
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
+from ophyd.device import FormattedComponent as FCpt
+
 from .epics_motor import BeckhoffAxis
 
 

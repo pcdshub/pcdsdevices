@@ -2,15 +2,16 @@ import logging
 import time
 
 import numpy as np
-from ophyd.device import Component as Cpt, FormattedComponent as FCpt
+from ophyd.device import Component as Cpt
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import PseudoPositioner
 from ophyd.pv_positioner import PVPositionerPC
-from ophyd.signal import EpicsSignal, EpicsSignalRO, AttributeSignal
+from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
 
 from .epics_motor import IMS
 from .inout import InOutPositioner
 from .interface import FltMvInterface
-from .pseudopos import SyncAxesBase, PseudoSingleInterface
+from .pseudopos import PseudoSingleInterface, SyncAxesBase
 
 logger = logging.getLogger(__name__)
 

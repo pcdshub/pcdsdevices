@@ -8,10 +8,11 @@ downstream hutches.
 It will not be possible to align the device with the class, and there will be
 no readback into the device's alignment. This is intended for a future update.
 """
-import logging
 import functools
+import logging
 
-from ophyd.device import Device, Component as Cpt
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
 from ophyd.sim import NullStatus
 from ophyd.status import wait as status_wait
 

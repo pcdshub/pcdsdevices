@@ -1,9 +1,8 @@
 import logging
+from unittest.mock import Mock
 
 import pytest
 from ophyd.sim import make_fake_device
-from unittest.mock import Mock
-
 from pcdsdevices.slits import Slits
 
 logger = logging.getLogger(__name__)

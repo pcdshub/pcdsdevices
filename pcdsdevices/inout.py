@@ -11,7 +11,7 @@ from ophyd.device import required_for_connection
 from ophyd.sim import NullStatus
 
 from .doc_stubs import basic_positioner_init, insert_remove
-from .state import (StatePositioner, StateRecordPositioner, PVStatePositioner,
+from .state import (PVStatePositioner, StatePositioner, StateRecordPositioner,
                     TwinCATStatePositioner)
 
 

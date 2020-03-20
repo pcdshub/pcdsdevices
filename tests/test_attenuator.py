@@ -1,15 +1,13 @@
 import logging
-import time
 import threading
-import pytest
-
+import time
 from unittest.mock import Mock
+
+import pytest
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
-
-from pcdsdevices.attenuator import (Attenuator, MAX_FILTERS,
-                                    _att_classes, _att3_classes,
-                                    AttBase)
+from pcdsdevices.attenuator import (MAX_FILTERS, AttBase, Attenuator,
+                                    _att3_classes, _att_classes)
 
 logger = logging.getLogger(__name__)
 

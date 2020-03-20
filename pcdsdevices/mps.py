@@ -7,8 +7,9 @@ interpreted by :class:`.MPS`.
 """
 import logging
 
-from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
-                   FormattedComponent as FCpt)
+from ophyd import Component as Cpt
+from ophyd import Device, EpicsSignal, EpicsSignalRO
+from ophyd import FormattedComponent as FCpt
 
 from .interface import BaseInterface
 

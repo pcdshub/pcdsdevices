@@ -5,15 +5,15 @@ import logging
 import time
 
 import numpy as np
-from ophyd.device import Device
 from ophyd.device import Component as Cpt
+from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositioner
-from ophyd.signal import Signal, SignalRO, EpicsSignal, EpicsSignalRO
+from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
-from .inout import InOutPositioner
-from .interface import FltMvInterface, BaseInterface
 from .epics_motor import BeckhoffAxis
+from .inout import InOutPositioner
+from .interface import BaseInterface, FltMvInterface
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
