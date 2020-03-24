@@ -77,7 +77,7 @@ def fake_tcinout():
 
 
 def test_in_if_not_out(fake_tcinout):
-    enums = ('Unknown', 'Out', 'Fish')
+    enums = ('Unknown', 'OUT', 'Fish')
     fake_tcinout.state._run_subs(sub_type=fake_tcinout.state.SUB_META,
                                  enum_strs=enums)
     fake_tcinout.state.sim_put(0)
