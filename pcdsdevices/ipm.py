@@ -93,7 +93,7 @@ class IPMMotion(Device, BaseInterface):
     This contains two state devices, a target and a diode.
     """
     target = Cpt(IPMTarget, ':TARGET', kind='normal')
-    diode = Cpt(IPMDiode, ':DIODE', kind='omitted')
+    diode = Cpt(IPMDiode, ':DIODE', kind='normal')
 
     # QIcon for UX
     _icon = 'ei.screenshot'
