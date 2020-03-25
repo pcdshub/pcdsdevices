@@ -30,7 +30,7 @@ class EventSequence(Device, BaseInterface):
 
         Parameters
         ----------
-        current_length : bool
+        current_length : ``bool``
             Option to retrieve the sequence up to the current length. Defaults
             to True.
 
@@ -71,11 +71,11 @@ class EventSequence(Device, BaseInterface):
 
         Parameters
         ----------
-        sequence: list
+        sequence: ``list``
             List of lists describing the event sequence. The list takes the
             form [[beam_code, delta_beam, delta_fiducial, burst_count], ...].
 
-        update_length: bool
+        update_length: ``bool``
             Option to automatically update the play length, the
             {prefix}:LEN PV, to the length of the written sequence. Defaults
             to True.
@@ -118,7 +118,7 @@ class EventSequence(Device, BaseInterface):
 
         Parameters
         ----------
-        num_lines : int
+        num_lines : ``int``
             Number of event sequence lines to print. Defaults to current
             sequence length.
 
@@ -147,10 +147,10 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface, BaseInterface):
 
     Parameters
     ----------
-    prefix : str
+    prefix : ``str``
         Base prefix of the EventSequencer
 
-    name : str
+    name : ``str``
         Name of Event Sequencer object
 
     Examples
@@ -211,7 +211,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface, BaseInterface):
 
         Returns
         -------
-        status : SubscriptionStatus
+        status : ``SubscriptionStatus``
             Status indicating whether or not the EventSequencer has started
         """
         self.start()

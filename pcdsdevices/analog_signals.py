@@ -14,10 +14,10 @@ class Acromag(Device, BaseInterface):
 
     Parameters:
     -----------
-    prefix : str
+    prefix : ``str``
         The Epics base of the acromag
 
-    name : str
+    name : ``str``
         A name to prefer to the device
     """
     # Components for each channel
@@ -67,18 +67,18 @@ class Mesh(Device, BaseInterface):
 
     Parameters
     ----------
-    prefix : str
+    prefix : ``str``
         Prefix of Acromag to be used
 
-    sp_ch : int
+    sp_ch : ``int``
         Setpoint Acromag channel to which high voltage supply setpoint
         is connected. Range is 0 to 15
 
-    rb_ch : int
+    rb_ch : ``int``
         Read back Acromag channel to which high voltage readback is
         connected. Range is 0 to 15
 
-    scale : float, optional
+    scale : ``float``, optional
         Gain for high voltage supply to be controlled by the Acromag
 
     """
@@ -115,16 +115,16 @@ class Mesh(Device, BaseInterface):
 
         Parameters
         ----------
-        hv_sp : float
+        hv_sp : ``float``
             Desired power supply setpoint in V. Acromag will output
             necessary voltage such that the HV supply achieves the value
             passed to hv_sp
 
-        wait : bool, optional
+        wait : ``bool``, optional
             Indicates whether or not the program should pause when writing
             to a PV
 
-        do_print : bool, optional
+        do_print : ``bool``, optional
             Indicates whether or not the program should print it's
             setpoint and readback values
         """
@@ -144,7 +144,7 @@ class Mesh(Device, BaseInterface):
 
         Parameters
         ----------
-        delta_hv_sp : float
+        delta_hv_sp : ``float``
             Amount to increase/decrease the power supply setpoint (in V)
             from its current value. Use positive to increase and negative
             to decrease
@@ -162,7 +162,7 @@ class Mesh(Device, BaseInterface):
 
         Parameters
         ----------
-        delta_hv_sp : float (V)
+        delta_hv_sp : ``float`` (V)
             Amount to change voltage from its current value at each step.
             After calling with specified step size, use arrow keys to keep
             changing. Use absolute value of increment size.
@@ -170,7 +170,7 @@ class Mesh(Device, BaseInterface):
         ^C :
             exits tweak mode
 
-        test_flag : bool, opt
+        test_flag : ``bool``, opt
             flag used in testing functions to only run `while True` loop
             once - i.e single tweak mode
         """
