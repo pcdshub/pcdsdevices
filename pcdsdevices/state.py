@@ -412,30 +412,18 @@ class PVStatePositioner(StatePositioner):
                                    'override the move and set methods'))
 
 
-class StateRecordPositioner(StatePositioner):
+class StateRecordPositionerBase(StatePositioner):
     """
     A `StatePositioner` for an EPICS states record.
 
     `states_list` does not have to be provided
     """
     state = Cpt(EpicsSignal, '', write_pv=':GO', kind='hinted')
-    motor = Cpt(IMS, ':MOTOR', kind='normal')
-
-    tab_whitelist = ['motor']
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
         self._has_subscribed_readback = False
         self._has_checked_state_enum = False
-
-    def subscribe(self, cb, event_type=None, run=True):
-        cid = super().subscribe(cb, event_type=event_type, run=run)
-        if (event_type == self.SUB_READBACK and not
-                self._has_subscribed_readback):
-            self.motor.user_readback.subscribe(self._run_sub_readback,
-                                               run=False)
-            self._has_subscribed_readback = True
-        return cid
 
     def _run_sub_readback(self, *args, **kwargs):
         kwargs.pop('sub_type')
@@ -453,6 +441,56 @@ class StateRecordPositioner(StatePositioner):
             self.states_enum = self._create_states_enum()
             self._has_checked_state_enum = True
         return super().get_state(value)
+
+
+class StateRecordPositioner(StateRecordPositionerBase):
+    """
+    A `StatePositioner` for an EPICS states record.
+    Includes a `motor` attribute for motor level access
+    on single axis positioners.
+
+    `states_list` does not have to be provided
+    """
+
+    motor = Cpt(IMS, ':MOTOR', kind='normal')
+
+    tab_whitelist = ['motor']
+
+    def subscribe(self, cb, event_type=None, run=True):
+        cid = super().subscribe(cb, event_type=event_type, run=run)
+        if (event_type == self.SUB_READBACK and not
+                self._has_subscribed_readback):
+            self.motor.user_readback.subscribe(self._run_sub_readback,
+                                               run=False)
+            self._has_subscribed_readback = True
+        return cid
+
+
+class CombinedStateRecordPositioner(StateRecordPositionerBase):
+    """
+    A `StatePositioner` for an EPICS states record associated with an
+    X/Y combined state positioner.
+    Includes `x_motor` and `y_motor` attributes for motor level access
+    on two-axis positioners.
+
+    `states_list` does not have to be provided
+    """
+
+    x_motor = Cpt(IMS, ':X_MOTOR', kind='normal')
+    y_motor = Cpt(IMS, ':Y_MOTOR', kind='normal')
+
+    tab_whitelist = ['x_motor', 'y_motor']
+
+    def subscribe(self, cb, event_type=None, run=True):
+        cid = super().subscribe(cb, event_type=event_type, run=run)
+        if (event_type == self.SUB_READBACK and not
+                self._has_subscribed_readback):
+            self.x_motor.user_readback.subscribe(self._run_sub_readback,
+                                                 run=False)
+            self.y_motor.user_readback.subscribe(self._run_sub_readback,
+                                                 run=False)
+            self._has_subscribed_readback = True
+        return cid
 
 
 class TwinCATStateConfigOne(Device):

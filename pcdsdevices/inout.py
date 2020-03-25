@@ -11,7 +11,8 @@ from ophyd.device import required_for_connection
 from ophyd.sim import NullStatus
 
 from .doc_stubs import basic_positioner_init, insert_remove
-from .state import (PVStatePositioner, StatePositioner, StateRecordPositioner,
+from .state import (CombinedStateRecordPositioner, PVStatePositioner,
+                    StatePositioner, StateRecordPositioner,
                     TwinCATStatePositioner)
 
 
@@ -139,6 +140,18 @@ class InOutRecordPositioner(StateRecordPositioner, InOutPositioner):
     Positioner for a motor that moves to states ``IN`` and ``OUT`` using a
     standard states record. This can be subclassed for other states records
     that involve inserting and removing something into the beam.
+    """
+    __doc__ += basic_positioner_init
+
+
+class CombinedInOutRecordPositioner(CombinedStateRecordPositioner,
+                                    InOutPositioner):
+    """
+    `InOutPositioner` for a standard combined states record.
+
+    Positioner for two motors that moves to states ``IN`` and ``OUT`` using a
+    standard states record. This can be subclassed for other states records
+    that involve two motors inserting and removing something into the beam.
     """
     __doc__ += basic_positioner_init
 
