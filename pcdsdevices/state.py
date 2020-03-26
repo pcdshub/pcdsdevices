@@ -476,8 +476,8 @@ class CombinedStateRecordPositioner(StateRecordPositionerBase):
     `states_list` does not have to be provided
     """
 
-    x_motor = Cpt(IMS, ':X_MOTOR', kind='normal')
-    y_motor = Cpt(IMS, ':Y_MOTOR', kind='normal')
+    x_motor = Cpt(IMS, ':X:MOTOR', kind='normal')
+    y_motor = Cpt(IMS, ':Y:MOTOR', kind='normal')
 
     tab_whitelist = ['x_motor', 'y_motor']
 

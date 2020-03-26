@@ -1,6 +1,7 @@
 """
 Module for Timetool classes
 """
+from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
 from .areadetector.detectors import PCDSAreaDetector
@@ -53,18 +54,7 @@ class TimeToolWithNav(TimeTool):
 
     prefix_det : ``str``
         The EPICS base PV of the detector.
-
-    prefix_zoom : ``str``
-        The EPICS base PV of the zoom motor.
-
-    prefix_focus : ``str``
-        The EPICS base PV of the focus motor
     """
-    zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
-    focus_motor = FCpt(IMS, '{self._prefix_focus}', kind='normal')
 
-    def __init__(self, prefix, *, name, prefix_zoom, prefix_focus,
-                 **kwargs):
-        self._prefix_zoom = prefix_zoom
-        self._prefix_focus = prefix_focus
-        super().__init__(prefix, name=name, **kwargs)
+    zoom_motor = Cpt(IMS, ':ZOOM_MOTOR', kind='normal')
+    focus_motor = Cpt(IMS, ':FOCUS_MOTOR', kind='normal')
