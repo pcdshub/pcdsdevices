@@ -8,7 +8,7 @@ from .epics_motor import IMS
 from .interface import BaseInterface
 
 
-class Goniometer(Device, BaseInterface):
+class BaseGon(Device, BaseInterface):
     """Goniometer as present in XPP"""
 
     hor = FCpt(IMS, '{self._prefix_hor}', kind='normal')
@@ -35,7 +35,7 @@ class Goniometer(Device, BaseInterface):
         super().__init__('', name=name, **kwargs)
 
 
-class GonWithDetArm(Goniometer):
+class GonWithDetArm(BaseGon):
     """Goniometer with a detector arm, as present in XCS"""
 
     rot_2theta = FCpt(IMS, '{self._prefix_2theta}', kind='normal')
@@ -48,6 +48,60 @@ class GonWithDetArm(Goniometer):
         self._prefix_dettilt = prefix_dettilt
         self._prefix_detver = prefix_detver
         super().__init__(name=name, **kwargs)
+
+
+def Goniometer(**kwargs):
+    """
+    Factory function for Goniometers
+
+    This requires either eight or eleven motor PV prefixes, depending on the
+    type of goniometer being used, to be passed in as keyword arguments, and
+    they are all labelled accordingly.
+
+    Parameters
+    ----------
+    name : ``str``
+        A name to refer to the device
+
+    prefix_hor : ``str``
+        The EPICS base PV of the common-horizontal motor.
+
+    prefix_ver : ``str``
+        The EPICS base PV of the common-vertical motor.
+
+    prefix_rot : ``str``
+        The EPICS base PV of the common-rotation motor.
+
+    prefix_tip : ``str``
+        The EPICS base PV of the sample-stage's tip motor.
+
+    prefix_tilt : ``str``
+        The EPICS base PV of the sample-stage's tilt motor.
+
+    prefix_x : ``str``
+        The EPICS base PV of the sample-stage's x motor.
+
+    prefix_y : ``str``
+        The EPICS base PV of the sample-stage's y motor.
+
+    prefix_z : ``str``
+        The EPICS base PV of the sample-stage's z motor.
+
+    prefix_2theta : ``str``, optional
+        The EPICS base PV of the detector arm's 2theta rotation motor.
+
+    prefix_dettilt : ``str``, optional
+        The EPICS base PV of the detector stage's tilt motor.
+
+    prefix_detver : ``str``, optional
+        The EPICS base PV of the detector stage's vertical motor.
+    """
+
+    if all(x in kwargs for x in ['prefix_2theta', 'prefix_dettilt',
+                                 'prefix_detver']):
+        return GonWithDetArm(**kwargs)
+    else:
+        return BaseGon(**kwargs)
 
 
 class SamPhi(Device, BaseInterface):
