@@ -59,21 +59,27 @@ class VonHamosFE(Device, BaseInterface):
     f = FCpt(BeckhoffAxis, '{self._prefix_focus}', kind='normal')
     e = FCpt(BeckhoffAxis, '{self._prefix_energy}', kind='normal')
 
-    def __init__(self, prefix, *, name, prefix_focus, prefix_energy, **kwargs):
+    def __init__(self, *args, name, prefix_focus, prefix_energy, **kwargs):
         self._prefix_focus = prefix_focus
         self._prefix_energy = prefix_energy
-        super().__init__()
+        if args:
+            super().__init__(args[0], name=name, **kwargs)
+        else:
+            super().__init__('', name=name, **kwargs)
 
 
-class VonHamosFER(Device, BaseInterface):
+class VonHamosFER(VonHamosFE):
     """Common motion for the motors controlling focus, energy, and rotation
        for a von Hamos spectrometer"""
 
     rot = FCpt(BeckhoffAxis, '{self._prefix_rot}', kind='normal')
 
-    def __init__(self, prefix, *, name, prefix_rot, **kwargs):
+    def __init__(self, *args, name, prefix_rot, **kwargs):
         self._prefix_rot = prefix_rot
-        super().__init__()
+        if args:
+            super().__init__(args[0], name=name, **kwargs)
+        else:
+            super().__init__('', name=name, **kwargs)
 
 
 class VonHamos4Crystal(VonHamosFE):
@@ -83,3 +89,6 @@ class VonHamos4Crystal(VonHamosFE):
     c2 = Cpt(VonHamosCrystal, ':2', kind='normal')
     c3 = Cpt(VonHamosCrystal, ':3', kind='normal')
     c4 = Cpt(VonHamosCrystal, ':4', kind='normal')
+
+    def __init__(self, prefix, *, name, **kwargs):
+        super().__init__(prefix, name=name, **kwargs)
