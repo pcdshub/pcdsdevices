@@ -156,6 +156,7 @@ def test_ipm_factory():
 
 @pytest.mark.timeout(5)
 def test_ipm_disconnected():
+    logger.debug('test_ipm_disconnected')
     IPMMotion('IPM', name='ipm')
     IPM_IPIMB('IPM2', name='ipm2', prefix_ipimb='ipimb', prefix_ioc='ioc')
     IPM_Wave8('IPM3', name='ipm3', prefix_wave8='wave8')
