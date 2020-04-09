@@ -5,7 +5,7 @@ from ophyd.sim import FakeEpicsSignal
 from pcdsdevices.component import UnrelatedComponent as UCpt
 
 
-class TestClassBasic(Device):
+class Basic(Device):
     apple = UCpt(FakeEpicsSignal)
     sauce = UCpt(FakeEpicsSignal)
     full = UCpt(FakeEpicsSignal, 'FULL:HOUSE')
@@ -16,9 +16,9 @@ class TestClassBasic(Device):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class TestClassComplex(Device):
-    one = UCpt(TestClassBasic)
-    two = UCpt(TestClassBasic)
+class Complex(Device):
+    one = UCpt(Basic)
+    two = UCpt(Basic)
     pineapple = UCpt(FakeEpicsSignal, 'JUICE')
     tomayto = Cpt(FakeEpicsSignal, 'TOMAHTO')
 
@@ -28,8 +28,8 @@ class TestClassComplex(Device):
 
 
 def test_basic_class_good():
-    obj = TestClassBasic('GLASS', name='jar', apple_prefix='APPLE',
-                         sauce_prefix='SAUCE')
+    obj = Basic('GLASS', name='jar', apple_prefix='APPLE',
+                sauce_prefix='SAUCE')
     assert obj.prefix == 'GLASS'
     assert obj.apple.prefix == 'APPLE'
     assert obj.sauce.prefix == 'SAUCE'
@@ -39,17 +39,17 @@ def test_basic_class_good():
 
 def test_basic_class_bad():
     with pytest.raises(ValueError):
-        TestClassBasic('GLASS', name='jar', apple_prefix='APPLE')
+        Basic('GLASS', name='jar', apple_prefix='APPLE')
 
 
 def test_complex_class():
-    obj = TestClassComplex('APPT', name='apt',
-                           one_prefix='UNO',
-                           one_apple_prefix='APPLE:01',
-                           one_sauce_prefix='SAUCE:01',
-                           two_prefix='DOS',
-                           two_apple_prefix='APPLE:02',
-                           two_sauce_prefix='SAUCE:02')
+    obj = Complex('APPT', name='apt',
+                  one_prefix='UNO',
+                  one_apple_prefix='APPLE:01',
+                  one_sauce_prefix='SAUCE:01',
+                  two_prefix='DOS',
+                  two_apple_prefix='APPLE:02',
+                  two_sauce_prefix='SAUCE:02')
 
     assert obj.prefix == 'APPT'
     assert obj.one.prefix == 'UNO'
