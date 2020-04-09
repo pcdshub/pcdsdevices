@@ -30,7 +30,7 @@ class UnrelatedComponent(Component):
             The **kwargs dictionary with extra prefixes defined
         """
         device.unrelated_prefixes = {}
-        for key, value in kwargs.items():
+        for key, value in list(kwargs.items()):
             if key.endswith('_prefix'):
                 device.unrelated_prefixes[key] = value
                 kwargs.pop(key)
