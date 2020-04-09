@@ -32,7 +32,7 @@ class UnrelatedComponent(Component):
         device.unrelated_prefixes = {}
         for key, value in kwargs.items():
             if key.endswith('_prefix'):
-                device.unrealated_prefixes[key] = value
+                device.unrelated_prefixes[key] = value
                 kwargs.pop(key)
 
     def __init__(self, *args, **kwargs):
