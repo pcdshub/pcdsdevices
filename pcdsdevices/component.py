@@ -66,7 +66,7 @@ class UnrelatedComponent(Component):
             expected_kwarg = self.attr + '_prefix'
         # Subdevice UnrelatedComponent
         else:
-            expected_kwarg = self.attr + '_' + kw + '_prefix'
+            expected_kwarg = self.attr + '_' + kw
         try:
             return instance.unrelated_prefixes[expected_kwarg]
         except KeyError:
