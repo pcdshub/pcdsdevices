@@ -40,7 +40,7 @@ class UnrelatedComponent(Component):
         # Needs to be non-None or it gets ignored
         if self.suffix is None:
             self.suffix = ''
-        add_prefix = kwargs.get('add_prefix', ['suffix'])
+        add_prefix = list(kwargs.get('add_prefix', ['suffix']))
 
         # Include subdevice UnrelatedComponent
         try:
