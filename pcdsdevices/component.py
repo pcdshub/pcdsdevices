@@ -14,7 +14,7 @@ class UnrelatedComponent(Component):
     components.
     """
     @classmethod
-    def collect_prefixes(device, kwargs):
+    def collect_prefixes(cls, device, kwargs):
         """
         Gather all the special prefixes from a device's **kwargs
 
