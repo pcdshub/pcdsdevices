@@ -22,7 +22,7 @@ from ophyd import EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 from ophyd.epics_motor import EpicsMotor
 from ophyd.pv_positioner import PVPositioner
-from ophyd.sim import SignalRO
+from ophyd.signal import SignalRO
 from ophyd.status import wait as status_wait
 
 from .interface import BaseInterface, FltMvInterface, MvInterface
