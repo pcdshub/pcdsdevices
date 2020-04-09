@@ -1,5 +1,5 @@
 """
-Module for goniometers
+Module for goniometers and sample stages used with them
 """
 from ophyd import Device
 from ophyd import FormattedComponent as FCpt
@@ -9,7 +9,41 @@ from .interface import BaseInterface
 
 
 class BaseGon(Device, BaseInterface):
-    """Goniometer as present in XPP"""
+    """
+    Basic goniometer, as present in XPP
+
+    This requires eight motor PV prefixes to be passed in as keyword
+    arguments, and they are all labelled accordingly.
+
+    Parameters
+    ----------
+    name : ``str``
+        A name to refer to the device
+
+    prefix_hor : ``str``
+        The EPICS base PV of the common-horizontal motor.
+
+    prefix_ver : ``str``
+        The EPICS base PV of the common-vertical motor.
+
+    prefix_rot : ``str``
+        The EPICS base PV of the common-rotation motor.
+
+    prefix_tip : ``str``
+        The EPICS base PV of the sample-stage's tip motor.
+
+    prefix_tilt : ``str``
+        The EPICS base PV of the sample-stage's tilt motor.
+
+    prefix_x : ``str``
+        The EPICS base PV of the sample-stage's x motor.
+
+    prefix_y : ``str``
+        The EPICS base PV of the sample-stage's y motor.
+
+    prefix_z : ``str``
+        The EPICS base PV of the sample-stage's z motor.
+    """
 
     hor = FCpt(IMS, '{self._prefix_hor}', kind='normal')
     ver = FCpt(IMS, '{self._prefix_ver}', kind='normal')
@@ -36,7 +70,50 @@ class BaseGon(Device, BaseInterface):
 
 
 class GonWithDetArm(BaseGon):
-    """Goniometer with a detector arm, as present in XCS"""
+    """
+    Goniometer with a detector arm, as present in XCS
+
+    This requires eleven motor PV prefixes to be passed in as keyword
+    arguments, and they are all labelled accordingly.
+
+    Parameters
+    ----------
+    name : ``str``
+        A name to refer to the device
+
+    prefix_hor : ``str``
+        The EPICS base PV of the common-horizontal motor.
+
+    prefix_ver : ``str``
+        The EPICS base PV of the common-vertical motor.
+
+    prefix_rot : ``str``
+        The EPICS base PV of the common-rotation motor.
+
+    prefix_tip : ``str``
+        The EPICS base PV of the sample-stage's tip motor.
+
+    prefix_tilt : ``str``
+        The EPICS base PV of the sample-stage's tilt motor.
+
+    prefix_x : ``str``
+        The EPICS base PV of the sample-stage's x motor.
+
+    prefix_y : ``str``
+        The EPICS base PV of the sample-stage's y motor.
+
+    prefix_z : ``str``
+        The EPICS base PV of the sample-stage's z motor.
+
+    prefix_2theta : ``str``
+        The EPICS base PV of the detector arm's 2theta rotation motor.
+
+    prefix_dettilt : ``str``
+        The EPICS base PV of the detector stage's tilt motor.
+
+    prefix_detver : ``str``
+        The EPICS base PV of the detector stage's vertical motor.
+    """
 
     rot_2theta = FCpt(IMS, '{self._prefix_2theta}', kind='normal')
     det_tilt = FCpt(IMS, '{self._prefix_dettilt}', kind='normal')
@@ -105,7 +182,20 @@ def Goniometer(**kwargs):
 
 
 class SamPhi(Device, BaseInterface):
-    """Sample Phi stage"""
+    """
+    Sample Phi stage
+
+    Parameters
+    ----------
+    name : ``str``
+        A name to refer to the device
+
+    prefix_samz : ``str``
+        The PV corresponding to the Sample Phi stage's z motor
+
+    prefix_phi : ``str``
+        The PV corresponding to the Sample Phi stage's phi motor
+    """
 
     sam_z = FCpt(IMS, '{self._prefix_samz}', kind='normal')
     sam_phi = FCpt(IMS, '{self._prefix_samphi}', kind='normal')
@@ -119,7 +209,32 @@ class SamPhi(Device, BaseInterface):
 
 
 class Kappa(Device, BaseInterface):
-    """Kappa stage"""
+    """
+    Kappa stage
+
+    Parameters
+    ----------
+    name : ``str``
+        A name to refer to the device
+
+    prefix_x : ``str``
+        The PV corresponding to the Kappa stage's x motor
+
+    prefix_y : ``str``
+        The PV corresponding to the Kappa stage's y motor
+
+    prefix_z : ``str``
+        The PV corresponding to the Kappa stage's z motor
+
+    prefix_eta : ``str``
+        The PV corresponding to the Kappa stage's eta motor
+
+    prefix_kappa : ``str``
+        The PV corresponding to the Kappa stage's kappa motor
+
+    prefix_phi : ``str``
+        The PV corresponding to the Kappa stage's phi motor
+    """
 
     x = FCpt(IMS, '{self._prefix_x}', kind='normal')
     y = FCpt(IMS, '{self._prefix_y}', kind='normal')

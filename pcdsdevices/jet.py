@@ -30,7 +30,21 @@ class BeckhoffJetSlits(Device, BaseInterface):
 
 
 class BeckhoffJet(Device, BaseInterface):
-    """Full liquid jet setup controlled by a Beckhoff PLC"""
+    """
+    Full liquid jet setup controlled by a Beckhoff PLC
+
+    This includes three axes for the jet manipulator, two axes for each of two
+    slits, and a single axis for the detector. Each of their PVs will be
+    inferred from the base prefix.
+
+    Parameters
+    ----------
+    prefix : ``str``, optional
+        Liquid jet base PV
+
+    name : ``str``
+        A name to refer to the device
+    """
 
     tab_component_names = True
 
