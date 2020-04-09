@@ -3,6 +3,7 @@ Module for Beryllium Lens positioners
 """
 import shutil
 import time
+from collections import defaultdict
 from datetime import date
 
 import numpy as np
@@ -65,6 +66,16 @@ class Prefocus(CombinedInOutRecordPositioner):
     states_list = []
     # In should be everything except state 0 (Unknown) and state 1 (Out)
     _in_if_not_out = True
+
+    def __init__(self, prefix, *, name, **kwargs):
+        # Set default transmission
+        # Done this way because states are still unknown at this point
+        # Assume that having any target in gives transmission 0.8
+        self._transmission = defaultdict(lambda state: 0.8
+                                         if state in self.in_states
+                                         else (1 if state in self.out_states
+                                               else 0))
+        super().__init__(prefix, name=name, **kwargs)
 
 
 class LensStackBase(PseudoPositioner):

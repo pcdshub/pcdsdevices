@@ -1,6 +1,8 @@
 """
 Module for Timetool classes
 """
+from collections import defaultdict
+
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
@@ -35,9 +37,14 @@ class TimeTool(CombinedInOutRecordPositioner):
 
     def __init__(self, prefix, *, name, prefix_det, **kwargs):
         self._prefix_det = prefix_det
-        super().__init__(prefix, name=name, **kwargs)
+        # Set default transmission
+        # Done this way because states are still unknown at this point
         # Assume that having any target in gives transmission 0.8
-        self._transmission = {st: 0.8 for st in self.in_states}
+        self._transmission = defaultdict(lambda state: 0.8
+                                         if state in self.in_states
+                                         else (1 if state in self.out_states
+                                               else 0))
+        super().__init__(prefix, name=name, **kwargs)
 
 
 class TimeToolWithNav(TimeTool):
