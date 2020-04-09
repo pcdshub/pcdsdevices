@@ -37,6 +37,9 @@ class UnrelatedComponent(Component):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Needs to be non-None or it gets ignored
+        if self.suffix is None:
+            self.suffix = ''
         add_prefix = kwargs.get('add_prefix', ['suffix'])
 
         # Include subdevice UnrelatedComponent
@@ -55,7 +58,7 @@ class UnrelatedComponent(Component):
         self.add_prefix = tuple(add_prefix)
 
     def maybe_add_prefix(self, instance, kw, suffix):
-        if kw not in self.add_prefix or suffix is not None:
+        if suffix or kw not in self.add_prefix:
             return suffix
 
         # Primary prefix for UnrelatedComponent
