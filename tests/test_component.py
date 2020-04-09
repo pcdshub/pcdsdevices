@@ -1,15 +1,14 @@
 import pytest
 from ophyd.device import Device, Component as Cpt
-from ophyd.sim import FakeEpicsSignal
 
 from pcdsdevices.component import UnrelatedComponent as UCpt
 
 
 class Basic(Device):
-    apple = UCpt(FakeEpicsSignal)
-    sauce = UCpt(FakeEpicsSignal)
-    full = UCpt(FakeEpicsSignal, 'FULL:HOUSE')
-    empty = Cpt(FakeEpicsSignal, ':EMPTY')
+    apple = UCpt(Device)
+    sauce = UCpt(Device)
+    full = UCpt(Device, 'FULL:HOUSE')
+    empty = Cpt(Device, ':EMPTY')
 
     def __init__(self, prefix, *, name, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
@@ -19,8 +18,8 @@ class Basic(Device):
 class Complex(Device):
     one = UCpt(Basic)
     two = UCpt(Basic)
-    pineapple = UCpt(FakeEpicsSignal, 'JUICE')
-    tomayto = Cpt(FakeEpicsSignal, 'TOMAHTO')
+    pineapple = UCpt(Device, 'JUICE')
+    tomayto = Cpt(Device, 'TOMAHTO')
 
     def __init_(self, prefix, *, name, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
