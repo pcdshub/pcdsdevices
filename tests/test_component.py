@@ -21,7 +21,7 @@ class Complex(Device):
     pineapple = UCpt(Device, 'JUICE')
     tomayto = Cpt(Device, 'TOMAHTO')
 
-    def __init_(self, prefix, *, name, **kwargs):
+    def __init__(self, prefix, *, name, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         super().__init__(prefix, name=name, **kwargs)
 
