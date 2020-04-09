@@ -40,7 +40,13 @@ class UnrelatedComponent(Component):
         add_prefix = kwargs.get('add_prefix', ['suffix'])
 
         # Include subdevice UnrelatedComponent
-        for cpt_walk in self.cls.walk_components():
+        try:
+            walk_iterator = self.cls.walk_components()
+        except AttributeError:
+            # No subdevices
+            walk_iterator = ()
+
+        for cpt_walk in walk_iterator:
             if isinstance(cpt_walk.item, UnrelatedComponent):
                 name = cpt_walk.dotted_name.replace('.', '_') + '_prefix'
                 add_prefix.append(name)
