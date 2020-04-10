@@ -1,4 +1,4 @@
 doctr
-m2r
-sphinx
+recommonmark
+sphinx>=1.4
 sphinx_rtd_theme
