@@ -36,8 +36,8 @@ def test_gon_init():
     FakeGon = make_fake_device(SamPhi)
     FakeGon(name='test', prefix_samz='samz', prefix_samphi='samphi')
     FakeGon = make_fake_device(Kappa)
-    FakeGon(name='test', prefix_eta='eta', prefix_kappa='kappa',
-            prefix_phi='phi')
+    FakeGon(name='test', prefix_x='x', prefix_y='y', prefix_z='z',
+            prefix_eta='eta', prefix_kappa='kappa', prefix_phi='phi')
 
 
 @pytest.mark.timeout(5)
@@ -52,5 +52,5 @@ def test_gon_disconnected():
                   prefix_detver='detver', prefix_dettilt='dettilt',
                   prefix_2theta='2theta')
     SamPhi(name='test3', prefix_samz='samz', prefix_samphi='samphi')
-    Kappa(name='test4', prefix_eta='eta', prefix_kappa='kappa',
-          prefix_phi='phi')
+    Kappa(name='test4', prefix_x='x', prefix_y='y', prefix_z='z',
+          prefix_eta='eta', prefix_kappa='kappa', prefix_phi='phi')
