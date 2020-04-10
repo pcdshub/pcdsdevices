@@ -136,6 +136,10 @@ def test_ipm_box_readback(fake_ipm_with_box):
     ipm.ypos()
     ipm.channel().amplitude.get()
     ipm.channels[0]
+    # Check transmission in unknown state
+    ipm.transmission
+    # Check transmission in inserted state
+    ipm.insert()
     ipm.transmission
     # Negative channel numbers are not allowed
     with pytest.raises(ValueError):
