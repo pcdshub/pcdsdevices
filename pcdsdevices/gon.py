@@ -119,7 +119,7 @@ class GonWithDetArm(BaseGon):
     det_tilt = FCpt(IMS, '{self._prefix_dettilt}', kind='normal')
     det_ver = FCpt(IMS, '{self._prefix_detver}', kind='normal')
 
-    def __init__(self, * name, prefix_2theta, prefix_dettilt, prefix_detver,
+    def __init__(self, *, name, prefix_2theta, prefix_dettilt, prefix_detver,
                  **kwargs):
         self._prefix_2theta = prefix_2theta
         self._prefix_dettilt = prefix_dettilt
