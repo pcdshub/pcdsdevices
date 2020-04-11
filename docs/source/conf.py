@@ -18,7 +18,9 @@ import os
 import sys
 
 import pcdsdevices
+import recommonmark
 import sphinx_rtd_theme
+from recommonmark.transform import AutoStructify
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -172,3 +174,12 @@ texinfo_documents = [
      author, 'PCDSDevices', 'One line description of project.',
      'Miscellaneous'),
 ]
+
+
+# app setup hook for recommonmark's AutoStructify
+def setup(app):
+    app.add_config_value('recommonmark_config', {
+            'url_resolver': lambda url: github_doc_root + url,
+            'auto_toc_tree_section': 'Contents',
+            }, True)
+    app.add_transform(AutoStructify)
