@@ -4,7 +4,7 @@ Module for the `IPM` intensity position monitor class
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.signal import EpicsSignal
+from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from .doc_stubs import IPM_base, basic_positioner_init, insert_remove
 from .epics_motor import IMS
@@ -155,7 +155,7 @@ class IPIMBChannel(Device, BaseInterface):
 
     tab_component_names = True
 
-    amplitude = FCpt(EpicsSignal, '{self.prefix}:CH{self.channel_index}',
+    amplitude = FCpt(EpicsSignalRO, '{self.prefix}:CH{self.channel_index}',
                      kind='hinted')
     gain = FCpt(EpicsSignal,
                 '{self.prefix}:ChargeAmpRangeCH{self.channel_index}',
@@ -197,9 +197,9 @@ class IPIMB(Device, BaseInterface):
 
     tab_whitelist = ['isum', 'xpos', 'ypos']
 
-    isum = Cpt(EpicsSignal, ':SUM', kind='hinted')
-    xpos = Cpt(EpicsSignal, ':XPOS', kind='normal')
-    ypos = Cpt(EpicsSignal, ':YPOS', kind='normal')
+    isum = Cpt(EpicsSignalRO, ':SUM', kind='hinted')
+    xpos = Cpt(EpicsSignalRO, ':XPOS', kind='normal')
+    ypos = Cpt(EpicsSignalRO, ':YPOS', kind='normal')
     evr_channel = Cpt(Trigger, ':TRIG:TRIG0', kind='normal')
     delay = Cpt(EpicsSignal, ':TrigDelay', kind='config')
     bias = Cpt(EpicsSignal, ':DiodeBias', kind='config')
@@ -238,17 +238,17 @@ class Wave8Channel(Device, BaseInterface):
 
     tab_component_names = True
 
-    amplitude = FCpt(EpicsSignal, '{self.prefix}:AMPL_{self.channel_index}',
+    amplitude = FCpt(EpicsSignalRO, '{self.prefix}:AMPL_{self.channel_index}',
                      kind='hinted')
-    tpos = FCpt(EpicsSignal, '{self.prefix}:TPOS_{self.channel_index}',
+    tpos = FCpt(EpicsSignalRO, '{self.prefix}:TPOS_{self.channel_index}',
                 kind='normal')
     number_of_samples = FCpt(
         EpicsSignal, '{self.prefix}:NumberOfSamples{self.channel_index}_RBV',
         write_pv='{self.prefix}:NumberOfSamples{self.channel_index}',
         kind='config')
     delay = FCpt(
-        EpicsSignal, '{self.prefix}:Delay{self.channel_index}', kind='config',
-        write_pv='{self.prefix}:Delay{self.channel_index}_RBV')
+        EpicsSignal, '{self.prefix}:Delay{self.channel_index}_RBV',
+        write_pv='{self.prefix}:Delay{self.channel_index}', kind='config')
 
     def __init__(self, prefix, *, name, channel_index,  **kwargs):
         self.channel_index = channel_index
@@ -270,9 +270,9 @@ class Wave8(Device, BaseInterface):
 
     tab_whitelist = ['isum', 'xpos', 'ypos']
 
-    isum = Cpt(EpicsSignal, ':SUM', kind='normal')
-    xpos = Cpt(EpicsSignal, ':XPOS', kind='normal')
-    ypos = Cpt(EpicsSignal, ':YPOS', kind='normal')
+    isum = Cpt(EpicsSignalRO, ':SUM', kind='normal')
+    xpos = Cpt(EpicsSignalRO, ':XPOS', kind='normal')
+    ypos = Cpt(EpicsSignalRO, ':YPOS', kind='normal')
     evr_channel = Cpt(Trigger, ':TRIG:TRIG0', kind='normal')
     ch0 = Cpt(Wave8Channel, '', channel_index=0, kind='normal')
     ch1 = Cpt(Wave8Channel, '', channel_index=1, kind='normal')
