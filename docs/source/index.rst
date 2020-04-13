@@ -1,8 +1,7 @@
-.. mdinclude:: ../../README.md
+.. include:: README.rst
 
 .. toctree::
    :maxdepth: 1
-   :hidden:
    :caption: Features
 
    mv.rst
@@ -11,7 +10,6 @@
 
 .. toctree::
    :maxdepth: 1
-   :hidden:
    :caption: Device Types
 
    epics_types.rst
@@ -21,7 +19,6 @@
 .. toctree::
    :maxdepth: 1
    :caption: Developer Notes
-   :hidden:
 
    releases.rst
    api.rst
