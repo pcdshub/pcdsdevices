@@ -26,5 +26,5 @@ from .sensors import RTD, TwinCATThermocouple
 from .sequencer import EventSequencer
 from .slits import Slits
 from .spectrometer import Kmono, VonHamos4Crystal
-from .tt import TimeTool, TimeToolWithNav
+from .timetool import TimeTool, TimeToolWithNav
 from .valve import GateValve, Stopper

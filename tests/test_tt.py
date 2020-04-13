@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 from ophyd.sim import make_fake_device
-from pcdsdevices.tt import TimeTool, TimeToolWithNav
+from pcdsdevices.timetool import TimeTool, TimeToolWithNav
 
 logger = logging.getLogger(__name__)
 
