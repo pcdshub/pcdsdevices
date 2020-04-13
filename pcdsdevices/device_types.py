@@ -9,7 +9,7 @@ from .epics_motor import (IMS, PMC100, BeckhoffAxis, DelayNewport, EpicsMotor,
                           Motor, Newport)
 from .evr import Trigger
 from .gauge import GaugeSet
-from .gon import BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi
+from .gon import BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi, XYZStage
 from .inout import Reflaser, TTReflaser
 from .ipm import IPM, IPM_IPIMB, IPM_Wave8
 from .jet import BeckhoffJet

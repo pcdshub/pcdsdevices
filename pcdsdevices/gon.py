@@ -34,15 +34,6 @@ class BaseGon(Device, BaseInterface):
 
     prefix_tilt : ``str``
         The EPICS base PV of the sample-stage's tilt motor.
-
-    prefix_x : ``str``
-        The EPICS base PV of the sample-stage's x motor.
-
-    prefix_y : ``str``
-        The EPICS base PV of the sample-stage's y motor.
-
-    prefix_z : ``str``
-        The EPICS base PV of the sample-stage's z motor.
     """
 
     hor = FCpt(IMS, '{self._prefix_hor}', kind='normal')
@@ -50,22 +41,16 @@ class BaseGon(Device, BaseInterface):
     rot = FCpt(IMS, '{self._prefix_rot}', kind='normal')
     tip = FCpt(IMS, '{self._prefix_tip}', kind='normal')
     tilt = FCpt(IMS, '{self._prefix_tilt}', kind='normal')
-    x = FCpt(IMS, '{self._prefix_x}', kind='normal')
-    y = FCpt(IMS, '{self._prefix_y}', kind='normal')
-    z = FCpt(IMS, '{self._prefix_z}', kind='normal')
 
     tab_component_names = True
 
     def __init__(self, *, name, prefix_hor, prefix_ver, prefix_rot, prefix_tip,
-                 prefix_tilt, prefix_x, prefix_y, prefix_z, **kwargs):
+                 prefix_tilt, **kwargs):
         self._prefix_hor = prefix_hor
         self._prefix_ver = prefix_ver
         self._prefix_rot = prefix_rot
         self._prefix_tip = prefix_tip
         self._prefix_tilt = prefix_tilt
-        self._prefix_x = prefix_x
-        self._prefix_y = prefix_y
-        self._prefix_z = prefix_z
         super().__init__('', name=name, **kwargs)
 
 
@@ -95,15 +80,6 @@ class GonWithDetArm(BaseGon):
 
     prefix_tilt : ``str``
         The EPICS base PV of the sample-stage's tilt motor.
-
-    prefix_x : ``str``
-        The EPICS base PV of the sample-stage's x motor.
-
-    prefix_y : ``str``
-        The EPICS base PV of the sample-stage's y motor.
-
-    prefix_z : ``str``
-        The EPICS base PV of the sample-stage's z motor.
 
     prefix_2theta : ``str``
         The EPICS base PV of the detector arm's 2theta rotation motor.
@@ -155,15 +131,6 @@ def Goniometer(**kwargs):
     prefix_tilt : ``str``
         The EPICS base PV of the sample-stage's tilt motor.
 
-    prefix_x : ``str``
-        The EPICS base PV of the sample-stage's x motor.
-
-    prefix_y : ``str``
-        The EPICS base PV of the sample-stage's y motor.
-
-    prefix_z : ``str``
-        The EPICS base PV of the sample-stage's z motor.
-
     prefix_2theta : ``str``, optional
         The EPICS base PV of the detector arm's 2theta rotation motor.
 
@@ -179,6 +146,38 @@ def Goniometer(**kwargs):
         return GonWithDetArm(**kwargs)
     else:
         return BaseGon(**kwargs)
+
+
+class XYZStage(Device, BaseInterface):
+    """
+    Sample XYZ stage.
+
+    Parameters
+    ----------
+    name : str
+        A name to refer to the device
+
+    prefix_x : str
+        The EPICS base PV of the sample-stage's x motor.
+
+    prefix_y : str
+        The EPICS base PV of the sample-stage's y motor.
+
+    prefix_z : str
+        The EPICS base PV of the sample-stage's z motor.
+    """
+
+    x = FCpt(IMS, '{self._prefix_x}', kind='normal')
+    y = FCpt(IMS, '{self._prefix_y}', kind='normal')
+    z = FCpt(IMS, '{self._prefix_z}', kind='normal')
+
+    tab_component_names = True
+
+    def __init__(self, *, name, prefix_x, prefix_y, prefix_z, **kwargs):
+        self._prefix_x = prefix_x
+        self._prefix_y = prefix_y
+        self._prefix_z = prefix_z
+        super().__init__('', name=name, **kwargs)
 
 
 class SamPhi(Device, BaseInterface):
