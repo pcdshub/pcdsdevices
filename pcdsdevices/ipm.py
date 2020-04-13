@@ -274,6 +274,7 @@ class Wave8(Device, BaseInterface):
     xpos = Cpt(EpicsSignalRO, ':XPOS', kind='normal')
     ypos = Cpt(EpicsSignalRO, ':YPOS', kind='normal')
     evr_channel = Cpt(Trigger, ':TRIG:TRIG0', kind='normal')
+    do_config = Cpt(EpicsSignal, ':DO_CONFIG.PROC', kind='config')
     ch0 = Cpt(Wave8Channel, '', channel_index=0, kind='normal')
     ch1 = Cpt(Wave8Channel, '', channel_index=1, kind='normal')
     ch2 = Cpt(Wave8Channel, '', channel_index=2, kind='normal')
@@ -301,6 +302,13 @@ class Wave8(Device, BaseInterface):
     def screen(self):
         """Function to call the (pyQT) screen for a Wave8 box"""
         return ipm_screen('Wave8', self._prefix, self._prefix_ioc)
+
+    def apply_configuration(self):
+        """Put to the 'DO_CONFIG' PV, causing config PVs to be applied."""
+        self.do_config.put(1)
+
+    def configure(self):
+        raise NotImplementedError
 
 
 class IPM_Det(Device, BaseInterface):
@@ -380,6 +388,9 @@ class IPM_Wave8(IPMMotion, IPM_Det):
         self.prefix_ioc = kwargs.pop('prefix_ioc', None)
         super().__init__(prefix, name=name, **kwargs)
         self.det = self.wave8
+
+    def configure(self):
+        raise NotImplementedError
 
 
 def IPM(prefix, *, name, **kwargs):
