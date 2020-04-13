@@ -89,16 +89,17 @@ class InOutPositioner(StatePositioner):
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
         """
-        Insert this device.
-
         Moves this device to the first state on the `in_states` list.
+        If we're already at some other in state, do nothing instead.
         """
+        if self.inserted:
+            return NullStatus()
         return self.move(self.in_states[0], moved_cb=moved_cb,
                          timeout=timeout, wait=wait)
 
     def remove(self, moved_cb=None, timeout=None, wait=False):
         """
-        Macro to move this device to the first state on the out_states list.
+        Macro to move this device to the first state on the `out_states` list.
         If we're already at some other out state, do nothing instead.
         """
         if self.removed:
