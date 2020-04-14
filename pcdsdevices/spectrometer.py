@@ -1,10 +1,12 @@
 """
-Module for the `KMONO` motion class
+Module for the various spectrometers.
 """
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
+from ophyd.device import FormattedComponent as FCpt
 
 from .epics_motor import BeckhoffAxis
+from .interface import BaseInterface
 
 
 class Kmono(Device):
@@ -35,3 +37,126 @@ class Kmono(Device):
     ret_vert = Cpt(BeckhoffAxis, ':RET_VERT', kind='normal')
     diode_horiz = Cpt(BeckhoffAxis, ':DIODE_HORIZ', kind='normal')
     diode_vert = Cpt(BeckhoffAxis, ':DIODE_VERT', kind='normal')
+
+
+class VonHamosCrystal(Device, BaseInterface):
+    """Pitch, yaw, and translation motors for control of a single crystal"""
+
+    tab_component_names = True
+
+    pitch = Cpt(BeckhoffAxis, ':Pitch', kind='normal')
+    yaw = Cpt(BeckhoffAxis, ':Yaw', kind='normal')
+    trans = Cpt(BeckhoffAxis, ':Translation', kind='normal')
+
+
+class VonHamosFE(Device, BaseInterface):
+    """
+    Common motion controlling focus and energy motors for a von Hamos
+    spectrometer
+
+    These motors should be run as user stages and have their PVs passed into
+    this object as keyword arguments, as labeled.
+
+    If used alone, providing the base prefix is optional.
+    If used with crystals, the prefix is required.
+
+    Parameters
+    ----------
+    prefix : ``str``, optional
+        von Hamos base PV
+
+    name : ``str``
+        A name to refer to the device
+
+    prefix_focus : ``str``
+        The EPICS base PV of the motor controlling the spectrometer's focus
+
+    prefix_energy : ``str``
+        The EPICS base PV of the motor controlling the spectrometer energy
+    """
+
+    tab_component_names = True
+
+    # Update PVs in IOC and change here to reflect
+    f = FCpt(BeckhoffAxis, '{self._prefix_focus}', kind='normal')
+    e = FCpt(BeckhoffAxis, '{self._prefix_energy}', kind='normal')
+
+    def __init__(self, *args, name, prefix_focus, prefix_energy, **kwargs):
+        self._prefix_focus = prefix_focus
+        self._prefix_energy = prefix_energy
+        if args:
+            super().__init__(args[0], name=name, **kwargs)
+        else:
+            super().__init__('', name=name, **kwargs)
+
+
+class VonHamosFER(VonHamosFE):
+    """
+    Common motion controlling focus, energy, and rotation motors for a
+    von Hamos spectrometer
+
+    These motors should be run as user stages and have their PVs passed into
+    this object as keyword arguments, as labeled.
+
+    If used alone, providing the base prefix is optional.
+    If used with crystals, the prefix is required.
+
+    Parameters
+    ----------
+    prefix : ``str``, optional
+        von Hamos base PV
+
+    name : ``str``
+        A name to refer to the device
+
+    prefix_focus : ``str``
+        The EPICS base PV of the motor controlling the spectrometer's focus
+
+    prefix_energy : ``str``
+        The EPICS base PV of the motor controlling the spectrometer energy
+
+    prefix_rot : ``str``
+        The EPICS base PV of the common rotation motor
+    """
+
+    rot = FCpt(BeckhoffAxis, '{self._prefix_rot}', kind='normal')
+
+    def __init__(self, *args, name, prefix_rot, **kwargs):
+        self._prefix_rot = prefix_rot
+        if args:
+            super().__init__(args[0], name=name, **kwargs)
+        else:
+            super().__init__('', name=name, **kwargs)
+
+
+class VonHamos4Crystal(VonHamosFE):
+    """
+    von Hamos spectrometer with four crystals and two common motors,
+    controlling focus and energy
+
+    The common motors should be run as user stages and have their PVs passed
+    into this object as keyword arguments. The crystal motors should be run
+    from a Beckhoff IOC and their PVs will be inferred from the base prefix.
+
+    Parameters
+    ----------
+    prefix : ``str``
+        von Hamos base PV
+
+    name : ``str``
+        A name to refer to the device
+
+    prefix_focus : ``str``
+        The EPICS base PV of the motor controlling the spectrometer's focus
+
+    prefix_energy : ``str``
+        The EPICS base PV of the motor controlling the spectrometer energy
+    """
+
+    c1 = Cpt(VonHamosCrystal, ':1', kind='normal')
+    c2 = Cpt(VonHamosCrystal, ':2', kind='normal')
+    c3 = Cpt(VonHamosCrystal, ':3', kind='normal')
+    c4 = Cpt(VonHamosCrystal, ':4', kind='normal')
+
+    def __init__(self, prefix, *, name, **kwargs):
+        super().__init__(prefix, name=name, **kwargs)

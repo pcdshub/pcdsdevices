@@ -53,17 +53,17 @@ class PIM(Device, BaseInterface):
 
     Parameters
     ----------
-    prefix : str
+    prefix : ``str``
         The EPICS base of the PIM
 
-    name : str
+    name : ``str``
         A name to refer to the device
 
-    prefix_det : str, optional
+    prefix_det : ``str``, optional
         The EPICS base PV of the detector. If None, it will be attempted to be
         inferred from `prefix`
 
-    prefix_zoom : str, optional
+    prefix_zoom : ``str``, optional
         The EPICS base PV of the zoom motor. If None, it will be attempted to
         be inferred from `prefix`
     """
@@ -136,21 +136,21 @@ class PIMWithFocus(PIM):
 
     Parameters
     ----------
-    prefix : str
+    prefix : ``str``
         The EPICS base of the PIM
 
-    name : str
+    name : ``str``
         A name to refer to the device
 
-    prefix_det : str, optional
+    prefix_det : ``str``, optional
         The EPICS base PV of the detector. If None, it will be attempted to be
         inferred from `prefix`
 
-    prefix_zoom : str, optional
+    prefix_zoom : ``str``, optional
         The EPICS base PV of the zoom motor. If None, it will be attempted to
         be inferred from `prefix`
 
-    prefix_focus : str, optional
+    prefix_focus : ``str``, optional
         The EPICS base PV of the focus motor. If None, it will be attempted to
         be inferred from `prefix`
     """
@@ -175,21 +175,21 @@ class PIMWithLED(PIM):
 
     Parameters
     ----------
-    prefix : str
+    prefix : ``str``
         The EPICS base of the PIM
 
-    name : str
+    name : ``str``
         A name to refer to the device
 
-    prefix_det : str, optional
+    prefix_det : ``str``, optional
         The EPICS base PV of the detector. If None, it will be attempted to be
         inferred from `prefix`
 
-    prefix_zoom : str, optional
+    prefix_zoom : ``str``, optional
         The EPICS base PV of the zoom motor. If None, it will be attempted to
         be inferred from `prefix`
 
-    prefix_led : str, optional
+    prefix_led : ``str``, optional
         The EPICS base PV of the LED. If None, it will be attempted to be
         inferred from `prefix`
     """
@@ -214,25 +214,25 @@ class PIMWithBoth(PIMWithFocus, PIMWithLED):
 
     Parameters
     ----------
-    prefix : str
+    prefix : ``str``
         The EPICS base of the PIM
 
-    name : str
+    name : ``str``
         A name to refer to the device
 
-    prefix_det : str, optional
+    prefix_det : ``str``, optional
         The EPICS base PV of the detector. If None, it will be attempted to be
         inferred from `prefix`
 
-    prefix_zoom : str, optional
+    prefix_zoom : ``str``, optional
         The EPICS base PV of the zoom motor. If None, it will be attempted to
         be inferred from `prefix`
 
-    prefix_focus : str, optional
+    prefix_focus : ``str``, optional
         The EPICS base PV of the focus motor. If None, it will be attempted to
         be inferred from `prefix`
 
-    prefix_led : str, optional
+    prefix_led : ``str``, optional
         The EPICS base PV of the LED. If None, it will be attempted to be
         inferred from `prefix`
     """

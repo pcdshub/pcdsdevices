@@ -1,8 +1,9 @@
 """
-Basic Beryllium Lens XFLS
+Module for Beryllium Lens positioners
 """
 import shutil
 import time
+from collections import defaultdict
 from datetime import date
 
 import numpy as np
@@ -15,7 +16,7 @@ from periodictable import xsf
 
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
-from .inout import InOutRecordPositioner
+from .inout import CombinedInOutRecordPositioner, InOutRecordPositioner
 from .interface import tweak_base
 from .sim import FastMotor
 
@@ -41,6 +42,39 @@ class XFLS(InOutRecordPositioner):
         # Set a default transmission, but allow easy subclass overrides
         for state in self.in_states:
             self._transmission[state] = self._lens_transmission
+        super().__init__(prefix, name=name, **kwargs)
+
+
+class Prefocus(CombinedInOutRecordPositioner):
+    """
+    Prefocussing Lens Stack (PFLS)
+
+    Positions stack to one of three states or 'OUT' using a combined state
+    record controlling an X and a Y motor.
+
+    Parameters
+    ----------
+    prefix : ``str``
+        The EPICS base of the TimeTool
+
+    name : ``str``
+        A name to refer to the device
+    """
+
+    # Clear the default in/out state list. List will be populated during
+    # init to grab appropriate state names for each target.
+    states_list = []
+    # In should be everything except state 0 (Unknown) and state 1 (Out)
+    _in_if_not_out = True
+
+    def __init__(self, prefix, *, name, **kwargs):
+        # Set default transmission
+        # Done this way because states are still unknown at this point
+        # Assume that having any target in gives transmission 0.8
+        self._transmission = defaultdict(lambda state: 0.8
+                                         if state in self.in_states
+                                         else (1 if state in self.out_states
+                                               else 0))
         super().__init__(prefix, name=name, **kwargs)
 
 

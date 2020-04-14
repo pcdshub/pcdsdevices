@@ -11,7 +11,8 @@ from ophyd.device import required_for_connection
 from ophyd.sim import NullStatus
 
 from .doc_stubs import basic_positioner_init, insert_remove
-from .state import (PVStatePositioner, StatePositioner, StateRecordPositioner,
+from .state import (CombinedStateRecordPositioner, PVStatePositioner,
+                    StatePositioner, StateRecordPositioner,
                     TwinCATStatePositioner)
 
 
@@ -88,16 +89,17 @@ class InOutPositioner(StatePositioner):
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
         """
-        Insert this device.
-
         Moves this device to the first state on the `in_states` list.
+        If we're already at some other in state, do nothing instead.
         """
+        if self.inserted:
+            return NullStatus()
         return self.move(self.in_states[0], moved_cb=moved_cb,
                          timeout=timeout, wait=wait)
 
     def remove(self, moved_cb=None, timeout=None, wait=False):
         """
-        Macro to move this device to the first state on the out_states list.
+        Macro to move this device to the first state on the `out_states` list.
         If we're already at some other out state, do nothing instead.
         """
         if self.removed:
@@ -139,6 +141,18 @@ class InOutRecordPositioner(StateRecordPositioner, InOutPositioner):
     Positioner for a motor that moves to states ``IN`` and ``OUT`` using a
     standard states record. This can be subclassed for other states records
     that involve inserting and removing something into the beam.
+    """
+    __doc__ += basic_positioner_init
+
+
+class CombinedInOutRecordPositioner(CombinedStateRecordPositioner,
+                                    InOutPositioner):
+    """
+    `InOutPositioner` for a standard combined states record.
+
+    Positioner for two motors that moves to states ``IN`` and ``OUT`` using a
+    standard states record. This can be subclassed for other states records
+    that involve two motors inserting and removing something into the beam.
     """
     __doc__ += basic_positioner_init
 

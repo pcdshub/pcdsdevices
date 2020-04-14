@@ -44,7 +44,7 @@ def test_pim_stage(fake_pim):
 
 @pytest.mark.timeout(5)
 def test_pim_init():
-    logger.debug('test_pim_det')
+    logger.debug('test_pim_init')
     FakePIM = make_fake_device(PIM)
     FakePIM('Test:Yag', name='test', prefix_det='potato', prefix_zoom='woosh')
     FakePIM('Test:Yag', name='test', prefix_det='potato')

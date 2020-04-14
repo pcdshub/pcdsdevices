@@ -110,11 +110,11 @@ class Gantry(OMMotor):
 
     Parameters
     ----------
-    prefix : str
+    prefix : ``str``
         Base prefix for both stepper motors i.e XRT:M1H. Do not include the "P"
         or "S" to indicate primary or secondary steppers
 
-    gantry_prefix : str, optional
+    gantry_prefix : ``str``, optional
         Prefix for the shared gantry diagnostics if it is different than the
         stepper motor prefix
     """
@@ -167,16 +167,16 @@ class OffsetMirror(Device, BaseInterface):
 
     Parameters
     ----------
-    prefix : str
+    prefix : ``str``
         The EPICS base PV of the pitch motor
 
-    prefix_xy : str
+    prefix_xy : ``str``
         The EPICS base PV of the gantry x and y gantry motors
 
-    xgantry_prefix : str
+    xgantry_prefix : ``str``
         The name of the horizontal gantry if not identical to the prefix
 
-    name : str
+    name : ``str``
         The name of the offset mirror
     """
     # Pitch Motor

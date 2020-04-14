@@ -14,9 +14,11 @@ Full API
    ~pcdsdevices.epics_motor
    ~pcdsdevices.evr
    ~pcdsdevices.gauge
+   ~pcdsdevices.gon
    ~pcdsdevices.inout
    ~pcdsdevices.interface
    ~pcdsdevices.ipm
+   ~pcdsdevices.jet
    ~pcdsdevices.lens
    ~pcdsdevices.lodcm
    ~pcdsdevices.mirror
@@ -33,5 +35,6 @@ Full API
    ~pcdsdevices.sim
    ~pcdsdevices.slits
    ~pcdsdevices.state
+   ~pcdsdevices.timetool
    ~pcdsdevices.utils
    ~pcdsdevices.valve
