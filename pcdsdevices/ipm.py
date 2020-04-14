@@ -77,11 +77,11 @@ class IPMDiode(Device, BaseInterface):
 
     @property
     def transmission(self):
-        """Returns 0.2 if in an unknown state. Returns 1 otherwise."""
+        """Returns 0 if in an unknown state. Returns 1 otherwise."""
         if self.inserted or self.removed:
             return 1
         else:
-            return 0.2
+            return 0
 
     remove.__doc__ += insert_remove
 
