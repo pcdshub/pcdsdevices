@@ -1,8 +1,9 @@
 import logging
 
-import pcdsdevices.utils as key_press
 import pytest
 from ophyd.sim import make_fake_device
+
+import pcdsdevices.utils as key_press
 from pcdsdevices.analog_signals import Acromag, Mesh
 
 logger = logging.getLogger(__name__)

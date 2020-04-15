@@ -2,6 +2,7 @@ import logging
 
 import pytest
 from ophyd.sim import make_fake_device
+
 from pcdsdevices.jet import BeckhoffJet
 
 logger = logging.getLogger(__name__)
