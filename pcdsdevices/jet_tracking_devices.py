@@ -5,6 +5,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
+
 from pcdsdevices.areadetector.detectors import PCDSAreaDetector
 from pcdsdevices.epics_motor import IMS
 
@@ -54,29 +55,38 @@ class _TableMixin:
 
 
 class Injector(Device, _TableMixin):
-    '''An Injector which consists of 3 coarse control motors and 3 fine control motors
+    """
+    Injector Positioner.
 
-       Parameters
-       ----------
-       pvs : str dict
-           A dictionary containing the name of the device and
-           the PVs of all the injector components
+    Consists of 3 coarse control motors and 3 fine control motors.
 
-       Attributes
-       ----------
-       coarseX : EpicsSignal
-           The coarse control motor in the X direction
-       coarseY : EpicsSignal
-           The coarse control motor in the Y direction
-       coarseZ : EpicsSignal
-           The coarse control motor in the Z direction
-       fineX : EpicsSignal
-           The fine control motor in the X direction
-       fineY : EpicsSignal
-           The fine control motor in the Y direction
-       fineZ : EpicsSignal
-           The fine control motor in the Z direction
-    '''
+    Parameters
+    ----------
+    pvs : str dict
+       A dictionary containing the name of the device and
+       the PVs of all the injector components.
+
+    Attributes
+    ----------
+    coarseX : EpicsSignal
+        The coarse control motor in the X direction.
+
+    coarseY : EpicsSignal
+        The coarse control motor in the Y direction.
+
+    coarseZ : EpicsSignal
+        The coarse control motor in the Z direction.
+
+    fineX : EpicsSignal
+        The fine control motor in the X direction.
+
+    fineY : EpicsSignal
+        The fine control motor in the Y direction.
+
+    fineZ : EpicsSignal
+        The fine control motor in the Z direction.
+    """
+
     coarseX = FCpt(IMS, '{self._coarseX}')
     coarseY = FCpt(IMS, '{self._coarseY}')
     coarseZ = FCpt(IMS, '{self._coarseZ}')
@@ -101,49 +111,58 @@ class Injector(Device, _TableMixin):
 
 
 class Selector(Device, _TableMixin):
-    '''A Selector for the sample delivery system
+    """
+    A Selector for the sample delivery system.
 
-       Parameters
-       ----------
-       pvs : str dict
-           A dictionary containing the name of the device and
-           the PVs of all the selector components
+    Parameters
+    ----------
+    pvs : str dict
+        A dictionary containing the name of the device and
+        the PVs of all the selector components.
 
-       Attributes
-       ----------
-       remote_control : EpicsSignal
-           Remote control enabled
-       status : EpicsSignal
-           Connection status for selector
-       flow : EpicsSignal
-           Flow
-       flowstate : EpicsSignal
-           State of the flow
-       flowtype : EpicsSignal
-           Type of the flow
-       FM_rb : EpicsSignal
+    Attributes
+    ----------
+    remote_control : EpicsSignal
+        Remote control enabled.
 
-       FM_reset : EpicsSignal
+    status : EpicsSignal
+        Connection status for selector.
 
-       FM : EpicsSignal
+    flow : EpicsSignal
+        Flow.
 
-       names_button : EpicsSignal
+    flowstate : EpicsSignal
+        State of the flow.
 
-       couple_button : EpicsSignal
+    flowtype : EpicsSignal
+        Type of the flow.
 
-       names1 : EpicsSignal
+    FM_rb : EpicsSignal
 
-       names2 : EpicsSignal
+    FM_reset : EpicsSignal
 
-       shaker1 : EpicsSignal
-           Shaker 1
-       shaker2 : EpicsSignal
-           Shaker 2
-       shaker3 : EpicsSignal
-           Shaker 3
-       shaker4 : EpicsSignal
-           Shaker 4
-       '''
+    FM : EpicsSignal
+
+    names_button : EpicsSignal
+
+    couple_button : EpicsSignal
+
+    names1 : EpicsSignal
+
+    names2 : EpicsSignal
+
+    shaker1 : EpicsSignal
+        Shaker 1.
+
+    shaker2 : EpicsSignal
+        Shaker 2.
+
+    shaker3 : EpicsSignal
+        Shaker 3.
+
+    shaker4 : EpicsSignal
+        Shaker 4.
+    """
 
     # also appears on pressure controller screen?
     remote_control = FCpt(EpicsSignal, '{self._remote_control}')
@@ -199,36 +218,45 @@ class Selector(Device, _TableMixin):
 
 
 class CoolerShaker(Device, _TableMixin):
-    '''A Cooler/Shaker for the sample delivery system
+    """
+    A Cooler/Shaker for the sample delivery system.
 
-       Parameters
-       ----------
-       pvs : str dict
-           A dictionary containing the PVs of all the cooler/shaker components
-       name : str
-           The device name
+    Parameters
+    ----------
+    pvs : str dict
+        A dictionary containing the PVs of all the cooler/shaker components.
+    name : str
+        The device name.
 
-       Attributes
-       ----------
-       temperature1 : EpicsSignal
-           Temperature of 1
-       SP1 : EpicsSignal
-           Set point of 1
-       set_SP1 : EpicsSignal
-           Set the set point for 1
-       current1 : EpicsSignal
-           Current for 1
-       temperature2 : EpicsSignal
-           Temperature of 2
-       SP2 : EpicsSignal
-           Set point of 2
-       set_SP2 : EpicsSignal
-           Set the set point of 2
-       current2 : EpicsSignal
-           Current of 2
-       reboot : EpicsSignal
-           Reboot the cooler/shaker
-       '''
+    Attributes
+    ----------
+    temperature1 : EpicsSignal
+        Temperature of 1.
+
+    SP1 : EpicsSignal
+        Set point of 1.
+
+    set_SP1 : EpicsSignal
+        Set the set point for 1.
+
+    current1 : EpicsSignal
+        Current for 1.
+
+    temperature2 : EpicsSignal
+        Temperature of 2.
+
+    SP2 : EpicsSignal
+        Set point of 2.
+
+    set_SP2 : EpicsSignal
+        Set the set point of 2.
+
+    current2 : EpicsSignal
+        Current of 2.
+
+    reboot : EpicsSignal
+        Reboot the cooler/shaker.
+    """
 
     temperature1 = FCpt(EpicsSignal, '{self._temperature1}')
     SP1 = FCpt(EpicsSignal, '{self._SP1}')
@@ -263,38 +291,49 @@ class CoolerShaker(Device, _TableMixin):
 
 
 class HPLC(Device, _TableMixin):
-    '''An HPLC for the sample delivery system
+    """
+    An HPLC for the sample delivery system.
 
-       Parameters
-       ----------
-       pvs : str dict
-           A dictionary containing the PVs of all the HPLC components
-       name : str
-           The device name
+    Parameters
+    ----------
+    pvs : str dict
+        A dictionary containing the PVs of all the HPLC components.
 
-       Attributes
-       ----------
-       status : EpicsSignal
-           Status of the HPLC
-       run : EpicsSignal
-           Run the HPLC
-       flowrate : EpicsSignal
-           Flow rate of the HPLC
-       set_flowrate : EpicsSignal
-           Set the flow rate of the HPLC
-       flowrate_SP : EpicsSignal
-           Set point for the flow rate
-       pressure : EpicsSignal
-           Pressure in the HPLC
-       pressure_units : EpicsSignal
-           Units for the pressure
-       set_max_pressure : EpicsSignal
-           Set the maximum pressure
-       max_pressure : EpicsSignal
-           Maximum pressure
-       clear_error : EpicsSignal
-           Clear errors
-       '''
+    name : str
+        The device name.
+
+    Attributes
+    ----------
+    status : EpicsSignal
+        Status of the HPLC.
+
+    run : EpicsSignal
+        Run the HPLC.
+
+    flowrate : EpicsSignal
+        Flow rate of the HPLC.
+
+    set_flowrate : EpicsSignal
+        Set the flow rate of the HPLC.
+
+    flowrate_SP : EpicsSignal
+        Set point for the flow rate.
+
+    pressure : EpicsSignal
+        Pressure in the HPLC.
+
+    pressure_units : EpicsSignal
+        Units for the pressure.
+
+    set_max_pressure : EpicsSignal
+        Set the maximum pressure.
+
+    max_pressure : EpicsSignal
+        Maximum pressure.
+
+    clear_error : EpicsSignal
+        Clear errors.
+    """
 
     status = FCpt(EpicsSignal, '{self._status}')
     run = FCpt(EpicsSignal, '{self._run}')
@@ -334,36 +373,47 @@ class HPLC(Device, _TableMixin):
 
 
 class PressureController(Device, _TableMixin):
-    '''An Pressure Controller for the sample delivery system
+    """
+    An Pressure Controller for the sample delivery system.
 
-       Parameters
-       ----------
-       pvs : str dict
-           A dictionary containing the PVs of all the pressure controller components
-       name : str
-           The device name
+    Parameters
+    ----------
+    pvs : str dict
+        A dictionary containing the PVs of all the pressure
+        controller components.
 
-       Attributes
-       ----------
-       status : EpicsSignal
-           Connection status of pressure controller
-       pressure1 : EpicsSignal
-           Pressure of 1
-       enabled1 : EpicsSignal
-           Is 1 enabled
-       limit1 : EpicsSignal
-           High pressure limit of 1
-       SP1 : EpicsSignal
-           Pressure set point of 1
-       pressure2 : EpicsSignal
-           Pressure of 2
-       enabled2 : EpicsSignal
-           Is 2 enabled
-       limit2 : EpicsSignal
-           High pressure limit of 2
-       SP2 : EpicsSignal
-           Pressure set point of 2
-       '''
+    name : str
+        The device name.
+
+    Attributes
+    ----------
+    status : EpicsSignal
+        Connection status of pressure controller.
+
+    pressure1 : EpicsSignal
+        Pressure of 1.
+
+    enabled1 : EpicsSignal
+        Is 1 enabled.
+
+    limit1 : EpicsSignal
+        High pressure limit of 1.
+
+    SP1 : EpicsSignal
+        Pressure set point of 1.
+
+    pressure2 : EpicsSignal
+        Pressure of 2.
+
+    enabled2 : EpicsSignal
+        Is 2 enabled.
+
+    limit2 : EpicsSignal
+        High pressure limit of 2.
+
+    SP2 : EpicsSignal
+        Pressure set point of 2.
+    """
 
     status = FCpt(EpicsSignal, '{self._status}')
 
@@ -398,84 +448,118 @@ class PressureController(Device, _TableMixin):
 
 
 class FlowIntegrator(Device, _TableMixin):
-    '''An FlowIntegrator for the sample delivery system
+    """
+    An Flow Integrator for the sample delivery system.
 
-       Parameters
-       ----------
-       pvs : str dict
-           A dictionary containing the PVs of all the flow integrator components
-       name : str
-           The device name
+    Parameters
+    ----------
+    pvs : str dict
+        A dictionary containing the PVs of all the flow integrator components.
 
-       Attributes
-       ----------
-       integrator_source: EpicsSignal
+    name : str
+        The device name.
 
-       flow_source : EpicsSignal
 
-       names : EpicsSignal
-           Names of
-       start1 : EpicsSignal
-           Starting volume of 1
-       used1 : EpicsSignal
-           Flow of 1
-       time1 : EpicsSignal
-           Estimated depletion time of 1
-       start2 : EpicsSignal
-           Starting volume of 2
-       used2 : EpicsSignal
-           Flow of 2
-       time2 : EpicsSignal
-           Estimated depletion time of 2
-       start3 : EpicsSignal
-           Starting volume of 3
-       used3 : EpicsSignal
-           Flow of 3
-       time3 : EpicsSignal
-           Estimated depletion time of 3
-       start4 : EpicsSignal
-           Starting volume of 4
-       used4 : EpicsSignal
-           Flow of 4
-       time4 : EpicsSignal
-           Estimated depletion time of 4
-       start5 : EpicsSignal
-           Starting volume of 5
-       used5 : EpicsSignal
-           Flow of 5
-       time5 : EpicsSignal
-           Estimated depletion time of 5
-       start6 : EpicsSignal
-           Starting volume of 6
-       used6 : EpicsSignal
-           Flow of 6
-       time6 : EpicsSignal
-           Estimated depletion time of 6
-       start7 : EpicsSignal
-           Starting volume of 7
-       used7 : EpicsSignal
-           Flow of 7
-       time7 : EpicsSignal
-           Estimated depletion time of 7
-       start8 : EpicsSignal
-           Starting volume of 8
-       used8 : EpicsSignal
-           Flow of 8
-       time8 : EpicsSignal
-           Estimated depletion time of 8
-       start9 : EpicsSignal
-           Starting volume of 9
-       used9 : EpicsSignal
-           Flow of 9
-       time9 : EpicsSignal
-           Estimated depletion time of 9
-       start10 : EpicsSignal
-           Starting volume of 10
-       used10 : EpicsSignal
-           Flow of 10
-       time10 : EpicsSignal
-           Estimated depletion time of 10
-       '''
+    Attributes
+    ----------
+    integrator_source: EpicsSignal
+
+    flow_source : EpicsSignal
+
+    names : EpicsSignal
+        Names of.
+
+    start1 : EpicsSignal
+        Starting volume of 1.
+
+    used1 : EpicsSignal
+        Flow of 1.
+
+    time1 : EpicsSignal
+        Estimated depletion time of 1.
+
+    start2 : EpicsSignal
+        Starting volume of 2.
+
+    used2 : EpicsSignal
+        Flow of 2.
+
+    time2 : EpicsSignal
+        Estimated depletion time of 2.
+
+    start3 : EpicsSignal
+        Starting volume of 3.
+
+    used3 : EpicsSignal
+        Flow of 3.
+
+    time3 : EpicsSignal
+        Estimated depletion time of 3.
+
+    start4 : EpicsSignal
+        Starting volume of 4.
+
+    used4 : EpicsSignal
+        Flow of 4.
+
+    time4 : EpicsSignal
+        Estimated depletion time of 4.
+
+    start5 : EpicsSignal
+        Starting volume of 5.
+
+    used5 : EpicsSignal
+        Flow of 5.
+
+    time5 : EpicsSignal
+        Estimated depletion time of 5.
+
+    start6 : EpicsSignal
+        Starting volume of 6.
+
+    used6 : EpicsSignal
+        Flow of 6.
+
+    time6 : EpicsSignal
+        Estimated depletion time of 6.
+
+    start7 : EpicsSignal
+        Starting volume of 7.
+
+    used7 : EpicsSignal
+        Flow of 7.
+
+    time7 : EpicsSignal
+        Estimated depletion time of 7.
+
+    start8 : EpicsSignal
+        Starting volume of 8.
+
+    used8 : EpicsSignal
+        Flow of 8.
+
+    time8 : EpicsSignal
+        Estimated depletion time of 8.
+
+    start9 : EpicsSignal
+        Starting volume of 9.
+
+    used9 : EpicsSignal
+        Flow of 9.
+
+    time9 : EpicsSignal
+        Estimated depletion time of 9.
+
+    start10 : EpicsSignal
+        Starting volume of 10.
+
+    used10 : EpicsSignal
+        Flow of 10.
+
+    time10 : EpicsSignal
+        Estimated depletion time of 10.
+
+    """
 
     integrator_source = FCpt(EpicsSignal, '{self._integrator_source}')
     flow_source = FCpt(EpicsSignal, '{self._flow_source}')
@@ -582,8 +666,8 @@ class FlowIntegrator(Device, _TableMixin):
 
 
 class SDS:
-    '''
-    Sample delivery system
+    """
+    Sample delivery system.
 
     Parameters
     ----------
@@ -599,8 +683,8 @@ class SDS:
     Attributes
     ----------
     SDS_devices : list
-        List containing all the devices that are in the sample delivery system
-   '''
+        List containing all the devices that are in the sample delivery system.
+    """
 
     device_types = {
         'selector': Selector,
@@ -624,24 +708,28 @@ class SDS:
 
 
 class Offaxis(PCDSAreaDetector):
-    '''Area detector for Offaxis camera in CXI
+    """
+    Area detector for Offaxis camera in CXI.
 
     Parameters
     ----------
     port_names : str dict
-        A dictionary containing the access port names for the plugins
+        A dictionary containing the access port names for the plugins.
+
     prefix : str
-        Prefix for the PV name of the camera
+        Prefix for the PV name of the camera.
+
     name : str
-        Name of the camera
+        Name of the camera.
 
     Attributes
     ----------
     ROI : ROIPlugin
-        ROI on original rate image
+        ROI on original rate image.
+
     ROI_stats : StatsPlugin
-        Stats on ROI of original rate image
-    '''
+        Stats on ROI of original rate image.
+    """
 
     ROI = FCpt(ROIPlugin, '{self.prefix}:{self._ROI_port}:')
     ROI_stats = FCpt(StatsPlugin, '{self.prefix}:{self._ROI_stats_port}:')
@@ -665,25 +753,28 @@ class Offaxis(PCDSAreaDetector):
 
 
 class Questar(PCDSAreaDetector):
-    '''
-    Area detector for Inline Questar Camera in CXI
+    """
+    Area detector for Inline Questar Camera in CXI.
 
     Parameters
     ----------
     port_names : str dict
-        A dictionary containing the access port names for the plugins
+        A dictionary containing the access port names for the plugins.
+
     prefix : str
-        Prefix for the PV name of the camera
+        Prefix for the PV name of the camera.
+
     name : str
-        Name of the camera
+        Name of the camera.
 
     Attributes
     ----------
     ROI : ROIPlugin
-        ROI on original rate image
+        ROI on original rate image.
+
     ROI_stats : StatsPlugin
-        Stats on ROI of original rate image
-    '''
+        Stats on ROI of original rate image.
+    """
 
     ROI = FCpt(ROIPlugin, '{self.prefix}:{self._ROI_port}:')
     ROI_stats = FCpt(StatsPlugin, '{self.prefix}:{self._ROI_stats_port}:')
@@ -707,9 +798,7 @@ class Questar(PCDSAreaDetector):
 
 
 class Parameters(Device, _TableMixin):
-    '''
-    Contains EPICS PVs used for jet tracking
-    '''
+    """Contains EPICS PVs used for jet tracking."""
     cam_x = Cpt(EpicsSignal, ':CAM_X',
                 doc='x-coordinate of camera position in mm')
     cam_y = Cpt(EpicsSignal, ':CAM_Y',
@@ -771,9 +860,7 @@ class Parameters(Device, _TableMixin):
 
 
 class OffaxisParams(Device, _TableMixin):
-    '''
-    Contains EPICS PVs used with Offaxis camera for jet tracking
-    '''
+    """Contains EPICS PVs used with Offaxis camera for jet tracking."""
     cam_z = Cpt(EpicsSignal, ':CAM_Z',
                 doc='z-coordinate of camera position in mm')
     cam_y = Cpt(EpicsSignal, ':CAM_Y',
@@ -835,10 +922,7 @@ class OffaxisParams(Device, _TableMixin):
 
 
 class Control(Device, _TableMixin):
-    '''
-    Contains EPICS PVs used for jet tracking control
-    '''
-
+    """Contains EPICS PVs used for jet tracking control."""
     re_state = Cpt(EpicsSignal, ':RE:STATE')
     beam_state = Cpt(EpicsSignal, ':BEAM:STATE')
     injector_state = Cpt(EpicsSignal, ':INJECTOR:STATE')
@@ -854,10 +938,10 @@ class Control(Device, _TableMixin):
 
 
 class Diffract(Device, _TableMixin):
-    '''
+    """
     Contains EPICS PVs used for shared memory X-ray Diffraction detector
     used in jet tracking.
-    '''
+    """
     total_counter = Cpt(EpicsSignal, ':TOTAL_Counter',
                         doc='Total counter')
     total_reprate = Cpt(EpicsSignal, ':TOTAL_RepRate',
@@ -893,7 +977,8 @@ class Diffract(Device, _TableMixin):
     psd_frequency = Cpt(EpicsSignal, ':PSD_FREQUENCY',
                         doc='Diffraction periodogram fundamental frequency')
     psd_amplitude = Cpt(EpicsSignal, ':PSD_AMPLITUDE',
-                        doc='Diffraction periodogram Frequency analysis amplitude')
+                        doc='Diffraction periodogram Frequency analysis'
+                            'amplitude')
     psd_rate = Cpt(EpicsSignal, ':PSD_RATE',
                    doc='Event frequency for periodogram')
     psd_events = Cpt(EpicsSignal, ':PSD_EVENTS',
@@ -903,11 +988,13 @@ class Diffract(Device, _TableMixin):
     psd_freq_min = Cpt(EpicsSignal, ':PSD_FREQ_MIN',
                        doc='Minimum frequency for periodogram calcs')
     psd_amp_wf = Cpt(EpicsSignal, ':PSD_AMP_WF',
-                     doc='Diffraction periodogram Frequency analysis waveform array')
+                     doc='Diffraction periodogram Frequency analysis waveform'
+                         'array')
     psd_freq_wf = Cpt(EpicsSignal, ':PSD_FREQ_WF',
                       doc='Diffraction periodogram frequency waveform')
     psd_amp_array = Cpt(EpicsSignal, ':PSD_AMP_ARRAY',
-                        doc='Diffraction periodogram Frequency analysis amplitude array')
+                        doc='Diffraction periodogram Frequency analysis'
+                            'amplitude array')
     state = Cpt(EpicsSignal, ':STATE',
                 doc='State of diffraction analysis')
 
