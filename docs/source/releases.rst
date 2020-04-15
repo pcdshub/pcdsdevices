@@ -1,6 +1,27 @@
 Release History
 ###############
 
+v2.5.0 (2020-04-15)
+===================
+
+Features
+--------
+- Add classes for Goniometers, Von Hamos spectrometers, Beckhoff liquid jets, TimeTools, and PFLSs
+- Add ``UnrelatedComponent`` as a helper for writing devices with many prefixes
+
+Bugfixes
+--------
+- Fix TwinCAT states enum states
+- Add missing packages to requirements file
+- Compatibility with newest ``ophyd``
+
+Misc
+----
+- Add pre-commit hooks to help with development flow
+- Add license file to manifest
+- Eliminate ``m2r`` docs dependency
+
+
 v2.4.0 (2020-03-12)
 ===================
 
