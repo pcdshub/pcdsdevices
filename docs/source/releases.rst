@@ -18,7 +18,7 @@ Bugfixes
 Misc
 ----
 - Add pre-commit hooks to help with development flow
-- Add license file to manifast
+- Add license file to manifest
 - Eliminate ``m2r`` docs dependency
 
 
