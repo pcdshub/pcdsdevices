@@ -1,8 +1,7 @@
 import logging
 
-import pytest
-
 import pcdsdevices.sequencer
+import pytest
 from bluesky import RunEngine
 from bluesky.plan_stubs import sleep
 from bluesky.preprocessors import fly_during_wrapper, run_wrapper

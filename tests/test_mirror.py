@@ -2,7 +2,6 @@ import math
 from unittest.mock import Mock
 
 import pytest
-
 from ophyd.sim import make_fake_device
 from pcdsdevices.mirror import OffsetMirror, PointingMirror
 

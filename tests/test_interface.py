@@ -7,7 +7,6 @@ import threading
 import time
 
 import pytest
-
 from pcdsdevices.interface import (get_engineering_mode, set_engineering_mode,
                                    setup_preset_paths)
 from pcdsdevices.sim import FastMotor, SlowMotor

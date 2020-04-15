@@ -2,7 +2,6 @@ import logging
 from unittest.mock import Mock
 
 import pytest
-
 from ophyd.device import Component as Cpt
 from ophyd.signal import Signal
 from ophyd.sim import make_fake_device

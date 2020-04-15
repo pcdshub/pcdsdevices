@@ -1,7 +1,6 @@
 import logging
 
 import pytest
-
 from ophyd.sim import make_fake_device
 from pcdsdevices.movablestand import MovableStand
 

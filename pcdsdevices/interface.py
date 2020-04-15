@@ -14,7 +14,6 @@ from types import MethodType, SimpleNamespace
 from weakref import WeakSet
 
 import yaml
-
 from bluesky.utils import ProgressBar
 from ophyd.device import Kind
 from ophyd.ophydobj import OphydObject

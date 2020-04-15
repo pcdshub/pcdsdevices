@@ -9,7 +9,6 @@ vertical gantries.
 import logging
 
 import numpy as np
-
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt

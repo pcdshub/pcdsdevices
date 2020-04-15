@@ -2,7 +2,6 @@ import logging
 from unittest.mock import Mock
 
 import pytest
-
 from ophyd.sim import make_fake_device
 from pcdsdevices.slits import Slits
 

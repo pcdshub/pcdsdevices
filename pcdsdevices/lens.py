@@ -7,12 +7,11 @@ from datetime import date
 
 import numpy as np
 import yaml
-from periodictable import xsf
-
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
                              pseudo_position_argument, real_position_argument)
+from periodictable import xsf
 
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS

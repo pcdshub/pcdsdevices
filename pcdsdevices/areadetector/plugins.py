@@ -5,7 +5,6 @@ PCDS plugins and Overrides for AreaDetector Plugins.
 import logging
 
 import numpy as np
-
 import ophyd
 from ophyd import Component as C
 from ophyd import EpicsSignal
