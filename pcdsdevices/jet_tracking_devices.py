@@ -1,60 +1,14 @@
-import epics
-import pandas as pd
 from ophyd.areadetector.plugins import ImagePlugin, ROIPlugin, StatsPlugin
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
 
-from pcdsdevices.areadetector.detectors import PCDSAreaDetector
-from pcdsdevices.epics_motor import IMS
+from .areadetector.detectors import PCDSAreaDetector
+from .epics_motor import IMS
 
 
-class _TableMixin:
-    _table_attrs = ('value', 'units', 'desc')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._descriptions = None
-
-    def _update_descriptions(self):
-        adesc = {}
-        for name, signal in self._signals.items():
-            pvname = getattr(signal, 'pvname', None)
-            adesc[name] = (epics.caget(pvname + '.DESC')
-                           if pvname else '')
-        self._descriptions = adesc
-
-    @property
-    def table(self):
-        """
-        Return table of Device settings
-        """
-        if self._descriptions is None:
-            self._update_descriptions()
-
-        atable = {}
-        for name, signal in sorted(self._signals.items()):
-            try:
-                value = signal.read()[signal.name]['value']
-            except Exception:
-                value = None
-
-            try:
-                units = signal.describe()[signal.name].get('units', '')
-            except Exception:
-                units = None
-
-            atable[name] = {
-                'value': value,
-                'units': units,
-                'desc': self._descriptions.get(name),
-            }
-
-        return pd.DataFrame(atable).T.loc[:, self._table_attrs]
-
-
-class Injector(Device, _TableMixin):
+class Injector(Device):
     """
     Injector Positioner.
 
@@ -110,7 +64,7 @@ class Injector(Device, _TableMixin):
         super().__init__(name=name, **kwargs)
 
 
-class Selector(Device, _TableMixin):
+class Selector(Device):
     """
     A Selector for the sample delivery system.
 
@@ -217,7 +171,7 @@ class Selector(Device, _TableMixin):
         super().__init__(name=name, **kwargs)
 
 
-class CoolerShaker(Device, _TableMixin):
+class CoolerShaker(Device):
     """
     A Cooler/Shaker for the sample delivery system.
 
@@ -290,7 +244,7 @@ class CoolerShaker(Device, _TableMixin):
         super().__init__(name=name, **kwargs)
 
 
-class HPLC(Device, _TableMixin):
+class HPLC(Device):
     """
     An HPLC for the sample delivery system.
 
@@ -372,7 +326,7 @@ class HPLC(Device, _TableMixin):
         super().__init__(name=name, **kwargs)
 
 
-class PressureController(Device, _TableMixin):
+class PressureController(Device):
     """
     An Pressure Controller for the sample delivery system.
 
@@ -447,7 +401,7 @@ class PressureController(Device, _TableMixin):
         super().__init__(name=name, **kwargs)
 
 
-class FlowIntegrator(Device, _TableMixin):
+class FlowIntegrator(Device):
     """
     An Flow Integrator for the sample delivery system.
 
@@ -797,7 +751,7 @@ class Questar(PCDSAreaDetector):
         self.ROI_image.enable.put('Enabled')
 
 
-class Parameters(Device, _TableMixin):
+class Parameters(Device):
     """Contains EPICS PVs used for jet tracking."""
     cam_x = Cpt(EpicsSignal, ':CAM_X',
                 doc='x-coordinate of camera position in mm')
@@ -859,7 +813,7 @@ class Parameters(Device, _TableMixin):
                        doc='number of frames for integration for cspad')
 
 
-class OffaxisParams(Device, _TableMixin):
+class OffaxisParams(Device):
     """Contains EPICS PVs used with Offaxis camera for jet tracking."""
     cam_z = Cpt(EpicsSignal, ':CAM_Z',
                 doc='z-coordinate of camera position in mm')
@@ -921,7 +875,7 @@ class OffaxisParams(Device, _TableMixin):
                        doc='number of frames for integration for cspad')
 
 
-class Control(Device, _TableMixin):
+class Control(Device):
     """Contains EPICS PVs used for jet tracking control."""
     re_state = Cpt(EpicsSignal, ':RE:STATE')
     beam_state = Cpt(EpicsSignal, ':BEAM:STATE')
@@ -937,7 +891,7 @@ class Control(Device, _TableMixin):
     xmax = Cpt(EpicsSignal, ':INJECTOR:XMAX')
 
 
-class Diffract(Device, _TableMixin):
+class Diffract(Device):
     """
     Contains EPICS PVs used for shared memory X-ray Diffraction detector
     used in jet tracking.
