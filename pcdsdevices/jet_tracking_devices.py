@@ -1,10 +1,10 @@
 from ophyd.areadetector.plugins import ImagePlugin, ROIPlugin, StatsPlugin
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
-from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
 
 from .areadetector.detectors import PCDSAreaDetector
+from .component import UnrelatedComponent as UCpt
 from .epics_motor import IMS
 
 
@@ -41,27 +41,16 @@ class Injector(Device):
         The fine control motor in the Z direction.
     """
 
-    coarseX = FCpt(IMS, '{self._coarseX}')
-    coarseY = FCpt(IMS, '{self._coarseY}')
-    coarseZ = FCpt(IMS, '{self._coarseZ}')
+    coarseX = UCpt(IMS)
+    coarseY = UCpt(IMS)
+    coarseZ = UCpt(IMS)
+    fineX = UCpt(IMS)
+    fineY = UCpt(IMS)
+    fineZ = UCpt(IMS)
 
-    fineX = FCpt(IMS, '{self._fineX}')
-    fineY = FCpt(IMS, '{self._fineY}')
-    fineZ = FCpt(IMS, '{self._fineZ}')
-
-    def __init__(self, name,
-                 coarseX, coarseY, coarseZ,
-                 fineX, fineY, fineZ, **kwargs):
-
-        self._coarseX = coarseX
-        self._coarseY = coarseY
-        self._coarseZ = coarseZ
-
-        self._fineX = fineX
-        self._fineY = fineY
-        self._fineZ = fineZ
-
-        super().__init__(name=name, **kwargs)
+    def __init__(self, prefix, *, name, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
 
 class Selector(Device):
@@ -119,56 +108,30 @@ class Selector(Device):
     """
 
     # also appears on pressure controller screen?
-    remote_control = FCpt(EpicsSignal, '{self._remote_control}')
-    status = FCpt(EpicsSignal, '{self._status}')
+    remote_control = UCpt(EpicsSignal)
+    status = UCpt(EpicsSignal)
 
-    flow = FCpt(EpicsSignal, '{self._flow}')
-    flowstate = FCpt(EpicsSignal, '{self._flowstate}')
-    flowtype = FCpt(EpicsSignal, '{self._flowtype}')
+    flow = UCpt(EpicsSignal)
+    flowstate = UCpt(EpicsSignal)
+    flowtype = UCpt(EpicsSignal)
 
-    FM_rb = FCpt(EpicsSignal, '{self._FM_rb}')
-    FM_reset = FCpt(EpicsSignal, '{self._FM_reset}')
-    FM = FCpt(EpicsSignal, '{self._FM}')
+    FM_rb = UCpt(EpicsSignal)
+    FM_reset = UCpt(EpicsSignal)
+    FM = UCpt(EpicsSignal)
 
-    names_button = FCpt(EpicsSignal, '{self._names_button}')
-    couple_button = FCpt(EpicsSignal, '{self._couple_button}')
-    names1 = FCpt(EpicsSignal, '{self._names1}')
-    names2 = FCpt(EpicsSignal, '{self._names2}')
+    names_button = UCpt(EpicsSignal)
+    couple_button = UCpt(EpicsSignal)
+    names1 = UCpt(EpicsSignal)
+    names2 = UCpt(EpicsSignal)
 
-    shaker1 = FCpt(EpicsSignal, '{self._shaker1}')
-    shaker2 = FCpt(EpicsSignal, '{self._shaker2}')
-    shaker3 = FCpt(EpicsSignal, '{self._shaker3}')
-    shaker4 = FCpt(EpicsSignal, '{self._shaker4}')
+    shaker1 = UCpt(EpicsSignal)
+    shaker2 = UCpt(EpicsSignal)
+    shaker3 = UCpt(EpicsSignal)
+    shaker4 = UCpt(EpicsSignal)
 
-    def __init__(self, name,
-                 remote_control, status,
-                 flow, flowstate, flowtype,
-                 FM_rb, FM_reset, FM,
-                 names_button, couple_button, names1, names2,
-                 shaker1, shaker2, shaker3, shaker4, **kwargs):
-
-        self._status = status
-        self._remote_control = remote_control
-
-        self._flow = flow
-        self._flowstate = flowstate
-        self._flowtype = flowtype
-
-        self._FM_rb = FM_rb
-        self._FM_reset = FM_reset
-        self._FM = FM
-
-        self._names_button = names_button
-        self._couple_button = couple_button
-        self._names1 = names1
-        self._names2 = names2
-
-        self._shaker1 = shaker1
-        self._shaker2 = shaker2
-        self._shaker3 = shaker3
-        self._shaker4 = shaker4
-
-        super().__init__(name=name, **kwargs)
+    def __init__(self, prefix, *, name, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
 
 class CoolerShaker(Device):
@@ -212,36 +175,21 @@ class CoolerShaker(Device):
         Reboot the cooler/shaker.
     """
 
-    temperature1 = FCpt(EpicsSignal, '{self._temperature1}')
-    SP1 = FCpt(EpicsSignal, '{self._SP1}')
-    set_SP1 = FCpt(EpicsSignal, '{self._set_SP1}')
-    current1 = FCpt(EpicsSignal, '{self._current1}')
+    temperature1 = UCpt(EpicsSignal)
+    SP1 = UCpt(EpicsSignal)
+    set_SP1 = UCpt(EpicsSignal)
+    current1 = UCpt(EpicsSignal)
 
-    temperature2 = FCpt(EpicsSignal, '{self._temperature2}')
-    SP2 = FCpt(EpicsSignal, '{self._SP2}')
-    set_SP2 = FCpt(EpicsSignal, '{self._set_SP2}')
-    current2 = FCpt(EpicsSignal, '{self._current2}')
+    temperature2 = UCpt(EpicsSignal)
+    SP2 = UCpt(EpicsSignal)
+    set_SP2 = UCpt(EpicsSignal)
+    current2 = UCpt(EpicsSignal)
 
-    reboot = FCpt(EpicsSignal, '{self._reboot}')
+    reboot = UCpt(EpicsSignal)
 
-    def __init__(self, name,
-                 temperature1, SP1, set_SP1, current1,
-                 temperature2, SP2, set_SP2, current2,
-                 reboot, **kwargs):
-
-        self._temperature1 = temperature1
-        self._SP1 = SP1
-        self._set_SP1 = set_SP1
-        self._current1 = current1
-
-        self._temperature2 = temperature2
-        self._SP2 = SP2
-        self._set_SP2 = set_SP2
-        self._current2 = current2
-
-        self._reboot = reboot
-
-        super().__init__(name=name, **kwargs)
+    def __init__(self, prefix, *, name, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
 
 class HPLC(Device):
@@ -289,40 +237,22 @@ class HPLC(Device):
         Clear errors.
     """
 
-    status = FCpt(EpicsSignal, '{self._status}')
-    run = FCpt(EpicsSignal, '{self._run}')
+    status = UCpt(EpicsSignal)
+    run = UCpt(EpicsSignal)
 
-    flowrate = FCpt(EpicsSignal, '{self._flowrate}')
-    set_flowrate = FCpt(EpicsSignal, '{self._set_flowrate}')
-    flowrate_SP = FCpt(EpicsSignal, '{self._flowrate_SP}')
+    flowrate = UCpt(EpicsSignal)
+    set_flowrate = UCpt(EpicsSignal)
+    flowrate_SP = UCpt(EpicsSignal)
 
-    pressure = FCpt(EpicsSignal, '{self._pressure}')
-    pressure_units = FCpt(EpicsSignal, '{self._pressure_units}')
-    set_max_pressure = FCpt(EpicsSignal, '{self._set_max_pressure}')
-    max_pressure = FCpt(EpicsSignal, '{self._max_pressure}')
+    pressure = UCpt(EpicsSignal)
+    pressure_units = UCpt(EpicsSignal)
+    set_max_pressure = UCpt(EpicsSignal)
+    max_pressure = UCpt(EpicsSignal)
 
-    clear_error = FCpt(EpicsSignal, '{self._clear_error}')
+    clear_error = UCpt(EpicsSignal)
 
-    def __init__(self, name,
-                 status, run,
-                 flowrate, set_flowrate, flowrate_SP,
-                 pressure, pressure_units, set_max_pressure, max_pressure,
-                 clear_error, **kwargs):
-
-        self._status = status
-        self._run = run
-
-        self._flowrate = flowrate
-        self._set_flowrate = set_flowrate
-        self._flowrate_SP = flowrate_SP
-
-        self._pressure = pressure
-        self._pressure_units = pressure_units
-        self._set_max_pressure = set_max_pressure
-        self._max_pressure = max_pressure
-
-        self._clear_error = clear_error
-
+    def __init__(self, prefix, *, name, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
         super().__init__(name=name, **kwargs)
 
 
@@ -369,36 +299,21 @@ class PressureController(Device):
         Pressure set point of 2.
     """
 
-    status = FCpt(EpicsSignal, '{self._status}')
+    status = UCpt(EpicsSignal)
 
-    pressure1 = FCpt(EpicsSignal, '{self._pressure1}')
-    enabled1 = FCpt(EpicsSignal, '{self._enabled1}')
-    limit1 = FCpt(EpicsSignal, '{self._limit1}')
-    SP1 = FCpt(EpicsSignal, '{self._SP1}')
+    pressure1 = UCpt(EpicsSignal)
+    enabled1 = UCpt(EpicsSignal)
+    limit1 = UCpt(EpicsSignal)
+    SP1 = UCpt(EpicsSignal)
 
-    pressure2 = FCpt(EpicsSignal, '{self._pressure2}')
-    enabled2 = FCpt(EpicsSignal, '{self._enabled2}')
-    limit2 = FCpt(EpicsSignal, '{self._limit2}')
-    SP2 = FCpt(EpicsSignal, '{self._SP2}')
+    pressure2 = UCpt(EpicsSignal)
+    enabled2 = UCpt(EpicsSignal)
+    limit2 = UCpt(EpicsSignal)
+    SP2 = UCpt(EpicsSignal)
 
-    def __init__(self, name,
-                 status,
-                 pressure1, enabled1, limit1, SP1,
-                 pressure2, enabled2, limit2, SP2, **kwargs):
-
-        self._status = status
-
-        self._pressure1 = pressure1
-        self._enabled1 = enabled1
-        self._limit1 = limit1
-        self._SP1 = SP1
-
-        self._pressure2 = pressure2
-        self._enabled2 = enabled2
-        self._limit2 = limit2
-        self._SP2 = SP2
-
-        super().__init__(name=name, **kwargs)
+    def __init__(self, prefix, *, name, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
 
 class FlowIntegrator(Device):
@@ -515,111 +430,56 @@ class FlowIntegrator(Device):
 
     """
 
-    integrator_source = FCpt(EpicsSignal, '{self._integrator_source}')
-    flow_source = FCpt(EpicsSignal, '{self._flow_source}')
-    names = FCpt(EpicsSignal, '{self._names}')
+    integrator_source = UCpt(EpicsSignal)
+    flow_source = UCpt(EpicsSignal)
+    names = UCpt(EpicsSignal)
 
-    start1 = FCpt(EpicsSignal, '{self._start1}')
-    used1 = FCpt(EpicsSignal, '{self._used1}')
-    time1 = FCpt(EpicsSignal, '{self._time1}')
+    start1 = UCpt(EpicsSignal)
+    used1 = UCpt(EpicsSignal)
+    time1 = UCpt(EpicsSignal)
 
-    start2 = FCpt(EpicsSignal, '{self._start2}')
-    used2 = FCpt(EpicsSignal, '{self._used2}')
-    time2 = FCpt(EpicsSignal, '{self._time2}')
+    start2 = UCpt(EpicsSignal)
+    used2 = UCpt(EpicsSignal)
+    time2 = UCpt(EpicsSignal)
 
-    start3 = FCpt(EpicsSignal, '{self._start3}')
-    used3 = FCpt(EpicsSignal, '{self._used3}')
-    time3 = FCpt(EpicsSignal, '{self._time3}')
+    start3 = UCpt(EpicsSignal)
+    used3 = UCpt(EpicsSignal)
+    time3 = UCpt(EpicsSignal)
 
-    start4 = FCpt(EpicsSignal, '{self._start4}')
-    used4 = FCpt(EpicsSignal, '{self._used4}')
-    time4 = FCpt(EpicsSignal, '{self._time4}')
+    start4 = UCpt(EpicsSignal)
+    used4 = UCpt(EpicsSignal)
+    time4 = UCpt(EpicsSignal)
 
-    start5 = FCpt(EpicsSignal, '{self._start5}')
-    used5 = FCpt(EpicsSignal, '{self._used5}')
-    time5 = FCpt(EpicsSignal, '{self._time5}')
+    start5 = UCpt(EpicsSignal)
+    used5 = UCpt(EpicsSignal)
+    time5 = UCpt(EpicsSignal)
 
-    start6 = FCpt(EpicsSignal, '{self._start6}')
-    used6 = FCpt(EpicsSignal, '{self._used6}')
-    time6 = FCpt(EpicsSignal, '{self._time6}')
+    start6 = UCpt(EpicsSignal)
+    used6 = UCpt(EpicsSignal)
+    time6 = UCpt(EpicsSignal)
 
-    start7 = FCpt(EpicsSignal, '{self._start7}')
-    used7 = FCpt(EpicsSignal, '{self._used7}')
-    time7 = FCpt(EpicsSignal, '{self._time7}')
+    start7 = UCpt(EpicsSignal)
+    used7 = UCpt(EpicsSignal)
+    time7 = UCpt(EpicsSignal)
 
-    start8 = FCpt(EpicsSignal, '{self._start8}')
-    used8 = FCpt(EpicsSignal, '{self._used8}')
-    time8 = FCpt(EpicsSignal, '{self._time8}')
+    start8 = UCpt(EpicsSignal)
+    used8 = UCpt(EpicsSignal)
+    time8 = UCpt(EpicsSignal)
 
-    start9 = FCpt(EpicsSignal, '{self._start9}')
-    used9 = FCpt(EpicsSignal, '{self._used9}')
-    time9 = FCpt(EpicsSignal, '{self._time9}')
+    start9 = UCpt(EpicsSignal)
+    used9 = UCpt(EpicsSignal)
+    time9 = UCpt(EpicsSignal)
 
-    start10 = FCpt(EpicsSignal, '{self._start10}')
-    used10 = FCpt(EpicsSignal, '{self._used10}')
-    time10 = FCpt(EpicsSignal, '{self._time10}')
+    start10 = UCpt(EpicsSignal)
+    used10 = UCpt(EpicsSignal)
+    time10 = UCpt(EpicsSignal)
 
-    def __init__(self, name,
-                 integrator_source, flow_source, names,
-                 start1, used1, time1,
-                 start2, used2, time2,
-                 start3, used3, time3,
-                 start4, used4, time4,
-                 start5, used5, time5,
-                 start6, used6, time6,
-                 start7, used7, time7,
-                 start8, used8, time8,
-                 start9, used9, time9,
-                 start10, used10, time10, **kwargs):
-
-        self._integrator_source = integrator_source
-        self._flow_source = flow_source
-        self._names = names
-
-        self._start1 = start1
-        self._used1 = used1
-        self._time1 = time1
-
-        self._start2 = start2
-        self._used2 = used2
-        self._time2 = time2
-
-        self._start3 = start3
-        self._used3 = used3
-        self._time3 = time3
-
-        self._start4 = start4
-        self._used4 = used4
-        self._time4 = time4
-
-        self._start5 = start5
-        self._used5 = used5
-        self._time5 = time5
-
-        self._start6 = start6
-        self._used6 = used6
-        self._time6 = time6
-
-        self._start7 = start7
-        self._used7 = used7
-        self._time7 = time7
-
-        self._start8 = start8
-        self._used8 = used8
-        self._time8 = time8
-
-        self._start9 = start9
-        self._used9 = used9
-        self._time9 = time9
-
-        self._start10 = start10
-        self._used10 = used10
-        self._time10 = time10
-
-        super().__init__(name=name, **kwargs)
+    def __init__(self, prefix, *, name, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
 
-class SDS:
+class SDS(Device):
     """
     Sample delivery system.
 
@@ -640,25 +500,15 @@ class SDS:
         List containing all the devices that are in the sample delivery system.
     """
 
-    device_types = {
-        'selector': Selector,
-        'cooler_shaker': CoolerShaker,
-        'hplc': HPLC,
-        'pressure_controller': PressureController,
-        'flow_integrator': FlowIntegrator,
-    }
+    selector = UCpt(Selector)
+    cooler_shaker = UCpt(CoolerShaker)
+    hplc = UCpt(HPLC)
+    pressure_controller = UCpt(PressureController)
+    flow_integrator = UCpt(FlowIntegrator)
 
-    def __init__(self, devices):
-        self.SDS_devices = [
-            self.device_types[dev](**kwargs)
-            for dev, kwargs in devices.items()
-            if dev in self.device_types
-        ]
-
-        invalid_devices = [dev for dev in devices
-                           if dev not in self.device_types]
-        for device in invalid_devices:
-            print(f'WARNING: {device} is not a valid device type')
+    def __init__(self, prefix, *, name, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
 
 class Offaxis(PCDSAreaDetector):
@@ -685,19 +535,14 @@ class Offaxis(PCDSAreaDetector):
         Stats on ROI of original rate image.
     """
 
-    ROI = FCpt(ROIPlugin, '{self.prefix}:{self._ROI_port}:')
-    ROI_stats = FCpt(StatsPlugin, '{self.prefix}:{self._ROI_stats_port}:')
-    ROI_image = FCpt(ImagePlugin, '{self.prefix}:{self._ROI_image_port}:')
+    ROI = UCpt(ROIPlugin)
+    ROI_stats = UCpt(StatsPlugin)
+    ROI_image = UCpt(ImagePlugin)
 
-    def __init__(self, ROI_port,
-                 ROI_stats_port,
-                 ROI_image_port,
-                 prefix, *args, **kwargs):
-        self._ROI_port = ROI_port
-        self._ROI_stats_port = ROI_stats_port
-        self._ROI_image_port = ROI_image_port
-
-        super().__init__(prefix, *args, **kwargs)
+    # TODO: Figure out good default ROI_port
+    def __init__(self, prefix, *, name, ROI_port=0, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
         self.ROI_stats.nd_array_port.put(ROI_port)
         self.ROI_image.nd_array_port.put(ROI_port)
@@ -730,19 +575,13 @@ class Questar(PCDSAreaDetector):
         Stats on ROI of original rate image.
     """
 
-    ROI = FCpt(ROIPlugin, '{self.prefix}:{self._ROI_port}:')
-    ROI_stats = FCpt(StatsPlugin, '{self.prefix}:{self._ROI_stats_port}:')
-    ROI_image = FCpt(ImagePlugin, '{self.prefix}:{self._ROI_image_port}:')
+    ROI = UCpt(ROIPlugin)
+    ROI_stats = UCpt(StatsPlugin)
+    ROI_image = UCpt(ImagePlugin)
 
-    def __init__(self, ROI_port,
-                 ROI_stats_port,
-                 ROI_image_port,
-                 prefix, *args, **kwargs):
-        self._ROI_port = ROI_port
-        self._ROI_stats_port = ROI_stats_port
-        self._ROI_image_port = ROI_image_port
-
-        super().__init__(prefix, *args, **kwargs)
+    def __init__(self, prefix, *, name, ROI_port=0, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
         self.ROI_stats.nd_array_port.put(ROI_port)
         self.ROI_image.nd_array_port.put(ROI_port)
