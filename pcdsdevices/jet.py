@@ -3,9 +3,55 @@ Module for the liquid jet classes.
 """
 from ophyd import Component as Cpt
 from ophyd import Device
+from ophyd import UnrelatedComponent as UCpt
 
-from .epics_motor import BeckhoffAxis
+from .epics_motor import BeckhoffAxis, IMS
 from .interface import BaseInterface
+
+
+class Injector(Device):
+    """
+    Injector Positioner.
+
+    Consists of 3 coarse control motors and 3 fine control motors.
+
+    Parameters
+    ----------
+    pvs : str dict
+       A dictionary containing the name of the device and
+       the PVs of all the injector components.
+
+    Attributes
+    ----------
+    coarseX : EpicsSignal
+        The coarse control motor in the X direction.
+
+    coarseY : EpicsSignal
+        The coarse control motor in the Y direction.
+
+    coarseZ : EpicsSignal
+        The coarse control motor in the Z direction.
+
+    fineX : EpicsSignal
+        The fine control motor in the X direction.
+
+    fineY : EpicsSignal
+        The fine control motor in the Y direction.
+
+    fineZ : EpicsSignal
+        The fine control motor in the Z direction.
+    """
+
+    coarseX = UCpt(IMS)
+    coarseY = UCpt(IMS)
+    coarseZ = UCpt(IMS)
+    fineX = UCpt(IMS)
+    fineY = UCpt(IMS)
+    fineZ = UCpt(IMS)
+
+    def __init__(self, prefix, *, name, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
 
 class BeckhoffJetManipulator(Device, BaseInterface):
