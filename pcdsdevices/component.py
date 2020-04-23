@@ -16,18 +16,19 @@ class UnrelatedComponent(Component):
     @classmethod
     def collect_prefixes(cls, device, kwargs):
         """
-        Gather all the special prefixes from a device's **kwargs
+        Gather all the special prefixes from a device's **kwargs.
 
         This must be called once during the __init__ of a device with
         UnrelatedComponent instances.
 
         Parameters
         ----------
-        device: Device
-            The device to gather prefixes for. Typically this is just self.
+        device : `~ophyd.device.Device`
+            The device to gather prefixes for. Typically this is just
+            :keyword:`self`.
 
-        kwargs: dict
-            The **kwargs dictionary with extra prefixes defined
+        kwargs : dict
+            The **kwargs dictionary with extra prefixes defined.
         """
         device.unrelated_prefixes = {}
         for key, value in list(kwargs.items()):

@@ -17,11 +17,8 @@ logger = logging.getLogger(__name__)
 __all__ = ['FeeOpalCam']
 
 
-
 class FeeOpalCam(cam.CamBase):
-    """
-    Opal camera used in the FEE for the PIMs.
-    """
+    """Opal camera used in the FEE for the PIMs."""
     # enums?
     # trigger_modes = enum("Internal", "External", start=0)
     # exposure_modes = enum("Full Frame", "HW ROI", start=0)

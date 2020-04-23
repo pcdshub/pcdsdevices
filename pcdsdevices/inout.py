@@ -1,9 +1,10 @@
 """
-Module to centralize code related to devices that can be ``IN`` or ``OUT``.
+Module to centralize code related to devices that can be 'IN' or 'OUT'.
 
 The classes that are defined here can be used to create other devices that need
-methods such as ``insert`` or ``remove`` and the ability to mark discrete
-states as in the beam or out of the beam.
+methods such as :meth:`~InOutPositioner.insert` or
+:meth:`~InOutPositioner.remove` and the ability to mark discrete states as in
+the beam or out of the beam.
 """
 import math
 
@@ -20,9 +21,9 @@ class InOutPositioner(StatePositioner):
     """
     Base class for a device that can be inserted and removed from the beam.
 
-    This must be subclassed and given a ``state`` signal to work properly. You
-    should also update the ``states_list``, ``in_states``, and ``out_states``
-    lists appropriately.
+    This must be subclassed and given a :attr:`state` signal to work properly.
+    You should also update the :attr:`states_list`, :attr:`in_states`, and
+    :attr:`out_states` lists appropriately.
 
     These devices can be inserted, removed and queried for insertion and
     removal state. They can also define transmission values for the
@@ -30,22 +31,23 @@ class InOutPositioner(StatePositioner):
 %s
     Attributes
     ----------
-    in_states: ``list` of ``str``
-        State values that should be considered ``IN``.
+    in_states : list of str
+        State values that should be considered 'IN'.
 
-    out_states: ``list`` of ``str``
-        State values that should be considered ``OUT``.
+    out_states : list of str
+        State values that should be considered 'OUT'.
 
-    _transmission: ``dict{str: float}``
+    _transmission : dict{str: float}
         Mapping from each state to the transmission ratio. This should be a
         number from 0 to 1. Default values will be 1 (full transmission) for
-        ``out_states``, 0 (full block) for ``in_states``, and nan (no idea!)
-        for unaccounted states.
+        :attr:`out_states`, 0 (full block) for :attr:`in_states`,
+        and :const:`~math.nan` (no idea!) for unaccounted states.
 
-    _in_if_not_out: ``bool``
-        If True, shorthand for saying "all the states not in out_states or
-        unknown belong in the in_states list"
+    _in_if_not_out : bool
+        If :keyword:`True`, shorthand for saying "All states not unknown and
+        not in out_states belong in the in_states list."
     """
+
     __doc__ = __doc__ % basic_positioner_init
 
     states_list = ['IN', 'OUT']
@@ -75,16 +77,12 @@ class InOutPositioner(StatePositioner):
 
     @property
     def inserted(self):
-        """
-        True if the device is inserted
-        """
+        """:keyword:`True` if the device is inserted."""
         return self._pos_in_list(self.in_states)
 
     @property
     def removed(self):
-        """
-        True if the device is removed
-        """
+        """:keyword:`True` if the device is removed."""
         return self._pos_in_list(self.out_states)
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
@@ -118,6 +116,7 @@ class InOutPositioner(StatePositioner):
         This will be a float between 0 and 1, where 0 is no beam and 1 is full
         transmission.
         """
+
         state_index = self.get_state(self.position).value
         return self._trans_enum.get(state_index, math.nan)
 
@@ -136,37 +135,37 @@ class InOutPositioner(StatePositioner):
 
 class InOutRecordPositioner(StateRecordPositioner, InOutPositioner):
     """
-    `InOutPositioner` for a standard states record.
+    :class:`InOutPositioner` for a standard states record.
 
-    Positioner for a motor that moves to states ``IN`` and ``OUT`` using a
+    Positioner for a motor that moves to states 'IN' and 'OUT' using a
     standard states record. This can be subclassed for other states records
     that involve inserting and removing something into the beam.
     """
+
     __doc__ += basic_positioner_init
 
 
 class CombinedInOutRecordPositioner(CombinedStateRecordPositioner,
                                     InOutPositioner):
     """
-    `InOutPositioner` for a standard combined states record.
+    :class:`InOutPositioner` for a standard combined states record.
 
-    Positioner for two motors that moves to states ``IN`` and ``OUT`` using a
+    Positioner for two motors that moves to states 'IN' and 'OUT' using a
     standard states record. This can be subclassed for other states records
     that involve two motors inserting and removing something into the beam.
     """
+
     __doc__ += basic_positioner_init
 
 
 class Reflaser(InOutRecordPositioner):
-    """Simple ReferenceLaser with In/Out States"""
+    """Simple ReferenceLaser with In/Out States."""
     _icon = 'fa.empire'
     __doc__ += basic_positioner_init
 
 
 class TTReflaser(Reflaser):
-    """
-    Motor stack that includes both a timetool and a reflaser.
-    """
+    """Motor stack that includes both a timetool and a reflaser."""
     states_list = ['TT', 'REFL', 'OUT']
     in_states = ['TT', 'REFL']
     __doc__ += basic_positioner_init
@@ -174,13 +173,14 @@ class TTReflaser(Reflaser):
 
 class InOutPVStatePositioner(PVStatePositioner, InOutPositioner):
     """
-    `InOutPositioner` on top of a `PVStatePositioner`
+    :class:`InOutPositioner` on top of a :class:`~state.PVStatePositioner`.
 
-    Positioner for a set of PVs that result in aggregate IN and OUT states for
-    a single device. This must be subclassed and provided a _state_logic
-    attribute to be used. Consult the `PVStatePositioner` documentation for
-    more information.
+    Positioner for a set of PVs that result in aggregate 'IN' and 'OUT' states
+    for a single device. This must be subclassed and provided a
+    :attr:`_state_logic` attribute to be used. Consult the
+    :class:`PVStatePositioner` documentation for more information.
     """
+
     __doc__ += basic_positioner_init
 
     def __init__(self, *args, **kwargs):
@@ -193,34 +193,34 @@ class InOutPVStatePositioner(PVStatePositioner, InOutPositioner):
 
 class TwinCATInOutPositioner(TwinCATStatePositioner, InOutPositioner):
     """
-    `InOutPositioner` on top of a `TwinCATStatePositioner`
+    :class:`InOutPositioner` on top of a :class:`TwinCATStatePositioner`.
 
-    This comes from the state record PVs included in the
-    lcls-twincat-motion TwinCAT library. It can be used for
-    any function block that follows the pattern set up by
-    FB_EpicsInOut.
+    This comes from the state record PVs included in the lcls-twincat-motion
+    TwinCAT library. It can be used for any function block that follows the
+    pattern set up by FB_EpicsInOut.
 
-    Use `TwinCATStatePositioner` instead if the device does not have clear
-    inserted and removed states.
+    Use :class:`TwinCATStatePositioner` instead if the device does not have
+    clear inserted and removed states.
 
-    Does not need to be subclassed to be used
-    ``states_list`` does not have to be provided in a subclass
+    Does not need to be subclassed to be used.
+    :attr:`states_list` does not have to be provided in a subclass.
 
     Parameters
     ----------
-    prefix: ``str``
+    prefix : str
         The EPICS PV prefix for this motor.
 
-    name: ``str``, required keyword
+    name : str
         An identifying name for this motor.
 
-    settle_time: ``float``, optional
-        The amount of extra time to wait before interpreting a move as done
+    settle_time : float, optional
+        The amount of extra time to wait before interpreting a move as done.
 
-    timeout ``float``, optional
+    timeout : float, optional
         The amount of time to wait before automatically marking a long
         in-progress move as failed.
     """
+
     # Clear the default in/out state list
     states_list = []
     # In should be everything except state 0 (Unknown) and state 1 (Out)

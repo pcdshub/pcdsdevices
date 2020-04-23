@@ -8,7 +8,6 @@ from datetime import date
 
 import numpy as np
 import yaml
-
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
@@ -26,7 +25,7 @@ LENS_RADII = [50e-6, 100e-6, 200e-6, 300e-6, 500e-6, 1000e-6, 1500e-6]
 
 class XFLS(InOutRecordPositioner):
     """
-    XRay Focusing Lens (Be)
+    XRay Focusing Lens Stack (Be)
 
     This is the simple version where the lens positions are named by number.
     """
@@ -56,7 +55,7 @@ class Prefocus(CombinedInOutRecordPositioner):
     Parameters
     ----------
     prefix : ``str``
-        The EPICS base of the TimeTool
+        The EPICS base PV of the lens stack
 
     name : ``str``
         A name to refer to the device

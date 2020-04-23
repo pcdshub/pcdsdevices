@@ -15,16 +15,19 @@ class TimeTool(CombinedInOutRecordPositioner):
     """
     TimeTool motion with x- and y-motion motors
 
+    The PVs for each of the motors will be inferred from the base prefix but
+    the area detector's PV must be passed as a keyword argument, as labeled.
+
     Parameters
     ----------
     prefix : ``str``
-        The EPICS base of the TimeTool
+        The EPICS base PV of the TimeTool
 
     name : ``str``
         A name to refer to the device
 
     prefix_det : ``str``
-        The EPICS base PV of the detector.
+        The EPICS base PV of the detector
     """
 
     # Clear the default in/out state list. List will be populated during
@@ -51,16 +54,19 @@ class TimeToolWithNav(TimeTool):
     """
     TimeTool motion with zoom, focus, and x- & y-motion motors
 
+    The PVs for each of the motors will be inferred from the base prefix but
+    the area detector's PV must be passed as a keyword argument, as labeled.
+
     Parameters
     ----------
     prefix : ``str``
-        The EPICS base of the TimeTool
+        The EPICS base PV of the TimeTool
 
     name : ``str``
         A name to refer to the device
 
     prefix_det : ``str``
-        The EPICS base PV of the detector.
+        The EPICS base PV of the detector
     """
 
     zoom_motor = Cpt(IMS, ':ZOOM_MOTOR', kind='normal')
