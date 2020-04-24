@@ -13,51 +13,45 @@ class Selector(Device):
 
     Parameters
     ----------
-    pvs : str dict
-        A dictionary containing the name of the device and
-        the PVs of all the selector components.
-
-    Attributes
-    ----------
-    remote_control : EpicsSignal
+    remote_control_prefix : str
         Remote control enabled.
 
-    status : EpicsSignal
+    status_prefix : str
         Connection status for selector.
 
-    flow : EpicsSignal
+    flow_prefix : str
         Flow.
 
-    flowstate : EpicsSignal
+    flowstate_prefix : str
         State of the flow.
 
-    flowtype : EpicsSignal
+    flowtype_prefix : str
         Type of the flow.
 
-    FM_rb : EpicsSignal
+    FM_rb_prefix : str
 
-    FM_reset : EpicsSignal
+    FM_reset_prefix : str
 
-    FM : EpicsSignal
+    FM_prefix : str
 
-    names_button : EpicsSignal
+    names_button_prefix : str
 
-    couple_button : EpicsSignal
+    couple_button_prefix : str
 
-    names1 : EpicsSignal
+    names1_prefix : str
 
-    names2 : EpicsSignal
+    names2_prefix : str
 
-    shaker1 : EpicsSignal
+    shaker1_prefix : str
         Shaker 1.
 
-    shaker2 : EpicsSignal
+    shaker2_prefix : str
         Shaker 2.
 
-    shaker3 : EpicsSignal
+    shaker3_prefix : str
         Shaker 3.
 
-    shaker4 : EpicsSignal
+    shaker4_prefix : str
         Shaker 4.
     """
 
@@ -94,39 +88,35 @@ class CoolerShaker(Device):
 
     Parameters
     ----------
-    pvs : str dict
-        A dictionary containing the PVs of all the cooler/shaker components.
     name : str
         The device name.
 
-    Attributes
-    ----------
-    temperature1 : EpicsSignal
+    temperature1_prefix : str
         Temperature of 1.
 
-    SP1 : EpicsSignal
+    SP1_prefix : str
         Set point of 1.
 
-    set_SP1 : EpicsSignal
+    set_SP1_prefix : str
         Set the set point for 1.
 
-    current1 : EpicsSignal
+    current1_prefix : str
         Current for 1.
 
-    temperature2 : EpicsSignal
+    temperature2_prefix : str
         Temperature of 2.
 
-    SP2 : EpicsSignal
+    SP2_prefix : str
         Set point of 2.
 
-    set_SP2 : EpicsSignal
+    set_SP2_prefix : str
         Set the set point of 2.
 
-    current2 : EpicsSignal
+    current2_prefix : str
         Current of 2.
 
-    reboot : EpicsSignal
-        Reboot the cooler/shaker.
+    reboot_prefix : str
+        PV which reboots the cooler/shaker.
     """
 
     temperature1 = UCpt(EpicsSignal)
@@ -152,42 +142,37 @@ class HPLC(Device):
 
     Parameters
     ----------
-    pvs : str dict
-        A dictionary containing the PVs of all the HPLC components.
-
     name : str
         The device name.
 
-    Attributes
-    ----------
-    status : EpicsSignal
+    status_prefix : str
         Status of the HPLC.
 
-    run : EpicsSignal
+    run_prefix : str
         Run the HPLC.
 
-    flowrate : EpicsSignal
+    flowrate_prefix : str
         Flow rate of the HPLC.
 
-    set_flowrate : EpicsSignal
+    set_flowrate_prefix : str
         Set the flow rate of the HPLC.
 
-    flowrate_SP : EpicsSignal
+    flowrate_SP_prefix : str
         Set point for the flow rate.
 
-    pressure : EpicsSignal
+    pressure_prefix : str
         Pressure in the HPLC.
 
-    pressure_units : EpicsSignal
+    pressure_units_prefix : str
         Units for the pressure.
 
-    set_max_pressure : EpicsSignal
+    set_max_pressure_prefix : str
         Set the maximum pressure.
 
-    max_pressure : EpicsSignal
+    max_pressure_prefix : str
         Maximum pressure.
 
-    clear_error : EpicsSignal
+    clear_error_prefix : str
         Clear errors.
     """
 
@@ -212,44 +197,38 @@ class HPLC(Device):
 
 class PressureController(Device):
     """
-    An Pressure Controller for the sample delivery system.
+    A Pressure Controller for the sample delivery system.
 
     Parameters
     ----------
-    pvs : str dict
-        A dictionary containing the PVs of all the pressure
-        controller components.
-
     name : str
         The device name.
 
-    Attributes
-    ----------
-    status : EpicsSignal
+    status_prefix : str
         Connection status of pressure controller.
 
-    pressure1 : EpicsSignal
+    pressure1_prefix : str
         Pressure of 1.
 
-    enabled1 : EpicsSignal
+    enabled1_prefix : str
         Is 1 enabled.
 
-    limit1 : EpicsSignal
+    limit1_prefix : str
         High pressure limit of 1.
 
-    SP1 : EpicsSignal
+    SP1_prefix : str
         Pressure set point of 1.
 
-    pressure2 : EpicsSignal
+    pressure2_prefix : str
         Pressure of 2.
 
-    enabled2 : EpicsSignal
+    enabled2_prefix : str
         Is 2 enabled.
 
-    limit2 : EpicsSignal
+    limit2_prefix : str
         High pressure limit of 2.
 
-    SP2 : EpicsSignal
+    SP2_prefix : str
         Pressure set point of 2.
     """
 
@@ -276,112 +255,105 @@ class FlowIntegrator(Device):
 
     Parameters
     ----------
-    pvs : str dict
-        A dictionary containing the PVs of all the flow integrator components.
-
     name : str
         The device name.
 
+    integrator_source_prefix : str
 
-    Attributes
-    ----------
-    integrator_source: EpicsSignal
+    flow_source_prefix : str
 
-    flow_source : EpicsSignal
-
-    names : EpicsSignal
+    names_prefix : str
         Names of.
 
-    start1 : EpicsSignal
+    start1_prefix : str
         Starting volume of 1.
 
-    used1 : EpicsSignal
+    used1_prefix : str
         Flow of 1.
 
-    time1 : EpicsSignal
+    time1_prefix : str
         Estimated depletion time of 1.
 
-    start2 : EpicsSignal
+    start2_prefix : str
         Starting volume of 2.
 
-    used2 : EpicsSignal
+    used2_prefix : str
         Flow of 2.
 
-    time2 : EpicsSignal
+    time2_prefix : str
         Estimated depletion time of 2.
 
-    start3 : EpicsSignal
+    start3_prefix : str
         Starting volume of 3.
 
-    used3 : EpicsSignal
+    used3_prefix : str
         Flow of 3.
 
-    time3 : EpicsSignal
+    time3_prefix : str
         Estimated depletion time of 3.
 
-    start4 : EpicsSignal
+    start4_prefix : str
         Starting volume of 4.
 
-    used4 : EpicsSignal
+    used4_prefix : str
         Flow of 4.
 
-    time4 : EpicsSignal
+    time4_prefix : str
         Estimated depletion time of 4.
 
-    start5 : EpicsSignal
+    start5_prefix : str
         Starting volume of 5.
 
-    used5 : EpicsSignal
+    used5_prefix : str
         Flow of 5.
 
-    time5 : EpicsSignal
+    time5_prefix : str
         Estimated depletion time of 5.
 
-    start6 : EpicsSignal
+    start6_prefix : str
         Starting volume of 6.
 
-    used6 : EpicsSignal
+    used6_prefix : str
         Flow of 6.
 
-    time6 : EpicsSignal
+    time6_prefix : str
         Estimated depletion time of 6.
 
-    start7 : EpicsSignal
+    start7_prefix : str
         Starting volume of 7.
 
-    used7 : EpicsSignal
+    used7_prefix : str
         Flow of 7.
 
-    time7 : EpicsSignal
+    time7_prefix : str
         Estimated depletion time of 7.
 
-    start8 : EpicsSignal
+    start8_prefix : str
         Starting volume of 8.
 
-    used8 : EpicsSignal
+    used8_prefix : str
         Flow of 8.
 
-    time8 : EpicsSignal
+    time8_prefix : str
         Estimated depletion time of 8.
 
-    start9 : EpicsSignal
+    start9_prefix : str
         Starting volume of 9.
 
-    used9 : EpicsSignal
+    used9_prefix : str
         Flow of 9.
 
-    time9 : EpicsSignal
+    time9_prefix : str
         Estimated depletion time of 9.
 
-    start10 : EpicsSignal
+    start10_prefix : str
         Starting volume of 10.
 
-    used10 : EpicsSignal
+    used10_prefix : str
         Flow of 10.
 
-    time10 : EpicsSignal
+    time10_prefix : str
         Estimated depletion time of 10.
-
     """
 
     integrator_source = UCpt(EpicsSignal)
@@ -435,23 +407,13 @@ class FlowIntegrator(Device):
 
 class SDS(Device):
     """
-    Sample delivery system.
+    Sample Delivery System.
 
-    Parameters
-    ----------
-    devices : dict
-        A dictionary of dictionaries containing the devices to be made and
-        their PV names. The dictionary key is a string, one of the following:
-        {'selector', 'cooler_shaker', 'hplc', 'pressure_controller',
-        'flow_integrator'}
-        The values of the dictionary, are also dictionaries. These are passed
-        to the new device, allowing parameters such as PV names to be
-        specified.
-
-    Attributes
-    ----------
-    SDS_devices : list
-        List containing all the devices that are in the sample delivery system.
+    Contains each of the SDS devices as a `~ophyd.device.Component`.
+    This takes a LOT of prefix parameters. Prefixes should be passed in as
+    keyword arguments with the keyword names following `UnrelatedComponent`
+    naming standard where the devices are `selector`, `cooler_shaker`, `hplc`,
+    `pressure_controller`, and `flow_integrator`.
     """
 
     selector = UCpt(Selector)

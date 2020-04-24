@@ -5,7 +5,7 @@ from ophyd import Component as Cpt
 from ophyd import Device
 from ophyd import UnrelatedComponent as UCpt
 
-from .epics_motor import BeckhoffAxis, IMS
+from .epics_motor import IMS, BeckhoffAxis
 from .interface import BaseInterface
 
 
@@ -17,28 +17,22 @@ class Injector(Device):
 
     Parameters
     ----------
-    pvs : str dict
-       A dictionary containing the name of the device and
-       the PVs of all the injector components.
-
-    Attributes
-    ----------
-    coarseX : EpicsSignal
+    coarseX_prefix : str
         The coarse control motor in the X direction.
 
-    coarseY : EpicsSignal
+    coarseY_prefix : EpicsSignal
         The coarse control motor in the Y direction.
 
-    coarseZ : EpicsSignal
+    coarseZ_prefix : EpicsSignal
         The coarse control motor in the Z direction.
 
-    fineX : EpicsSignal
+    fineX_prefix : EpicsSignal
         The fine control motor in the X direction.
 
-    fineY : EpicsSignal
+    fineY_prefix : EpicsSignal
         The fine control motor in the Y direction.
 
-    fineZ : EpicsSignal
+    fineZ_prefix : EpicsSignal
         The fine control motor in the Z direction.
     """
 
