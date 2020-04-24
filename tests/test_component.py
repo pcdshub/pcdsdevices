@@ -1,5 +1,6 @@
 import pytest
-from ophyd.device import Device, Component as Cpt
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
 
 from pcdsdevices.component import UnrelatedComponent as UCpt
 
