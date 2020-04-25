@@ -11,29 +11,29 @@ from .interface import BaseInterface
 
 class Injector(Device):
     """
-    Injector Positioner.
+    Positioner for liquid jet Injector.
 
     Consists of 3 coarse control motors and 3 fine control motors.
 
     Parameters
     ----------
     coarseX_prefix : str
-        The coarse control motor in the X direction.
+        Prefix for the coarse control motor in the X direction.
 
-    coarseY_prefix : EpicsSignal
-        The coarse control motor in the Y direction.
+    coarseY_prefix : str
+        Prefix for the coarse control motor in the Y direction.
 
-    coarseZ_prefix : EpicsSignal
-        The coarse control motor in the Z direction.
+    coarseZ_prefix : str
+        Prefix for the coarse control motor in the Z direction.
 
-    fineX_prefix : EpicsSignal
-        The fine control motor in the X direction.
+    fineX_prefix : str
+        Prefix for the fine control motor in the X direction.
 
-    fineY_prefix : EpicsSignal
-        The fine control motor in the Y direction.
+    fineY_prefix : str
+        Prefix for the fine control motor in the Y direction.
 
-    fineZ_prefix : EpicsSignal
-        The fine control motor in the Z direction.
+    fineZ_prefix : str
+        Prefix for the fine control motor in the Z direction.
     """
 
     coarseX = UCpt(IMS)
