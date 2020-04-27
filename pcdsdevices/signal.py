@@ -51,6 +51,7 @@ class PytmcSignal(EpicsSignalBase):
 
 
 def pytmc_writable(io):
+    """Returns True if the pytmc io arg represents a writable PV"""
     norm = normalize_io(io)
     if norm == 'output':
         return True
@@ -62,22 +63,19 @@ def pytmc_writable(io):
 
 
 class PytmcSignalRW(PytmcSignal, EpicsSignal):
-    """
-    Read-write connection to a pytmc-generated EPICS record
-    """
+    """Read-write connection to a pytmc-generated EPICS record"""
     def __init__(self, prefix, **kwargs):
         super().__init__(prefix, write_pv=prefix, **kwargs)
 
 
 class PytmcSignalRO(PytmcSignal, EpicsSignalRO):
-    """
-    Read-only connection to a pytmc-generated EPICS record
-    """
+    """Read-only connection to a pytmc-generated EPICS record"""
     pass
 
 
 # Make sure an acceptable fake class is set for PytmcSignal
 def FakePytmcSignal(prefix, *, io, **kwargs):
+    """Returns a suitable fake class for a PytmcSignal"""
     if pytmc_writable(io):
         return FakeEpicsSignal(prefix, **kwargs)
     else:
