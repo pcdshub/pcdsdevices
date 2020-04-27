@@ -33,21 +33,29 @@ class PytmcSignal(EpicsSignalBase):
     depending on your io argument.
     """
     def __new__(cls, prefix, io=None, **kwargs):
-        if io is None:
-            # Provide a better error here than "__new__ missing an arg"
-            raise ValueError('Must provide an "io" argument to PytmcSignal. '
-                             f'This is missing for signal with pv {prefix}. '
-                             'Feel free to copy the io field from the '
-                             'pytmc pragma.')
-        if pytmc_writable(io):
-            return super().__new__(PytmcSignalRW)
-        else:
-            return super().__new__(PytmcSignalRO)
+        new_cls = select_pytmc_class(io=io, prefix=prefix,
+                                     write_cls=PytmcSignalRW,
+                                     read_only_cls=PytmcSignalRO)
+        return super().__new__(new_cls)
 
     def __init__(self, prefix, *, io, **kwargs):
         self.pytmc_pv = prefix
         self.pytmc_io = io
         super().__init__(prefix + '_RBV', **kwargs)
+
+
+def select_pytmc_class(io=None, *, prefix, write_cls, read_only_cls):
+    """Return the class to use for PytmcSignal's constructor"""
+    if io is None:
+        # Provide a better error here than "__new__ missing an arg"
+        raise ValueError('Must provide an "io" argument to PytmcSignal. '
+                         f'This is missing for signal with pv {prefix}. '
+                         'Feel free to copy the io field from the '
+                         'pytmc pragma.')
+    if pytmc_writable(io):
+        return write_cls
+    else:
+        return read_only_cls
 
 
 def pytmc_writable(io):
@@ -74,12 +82,13 @@ class PytmcSignalRO(PytmcSignal, EpicsSignalRO):
 
 
 # Make sure an acceptable fake class is set for PytmcSignal
-def FakePytmcSignal(prefix, *, io, **kwargs):
-    """Returns a suitable fake class for a PytmcSignal"""
-    if pytmc_writable(io):
-        return FakeEpicsSignal(prefix, **kwargs)
-    else:
-        return FakeEpicsSignalRO(prefix, **kwargs)
+class FakePytmcSignal(FakeEpicsSignal):
+    """A suitable fake class for PytmcSignal"""
+    def __new__(cls, prefix, io=None, **kwargs):
+        new_cls = select_pytmc_class(io=io, prefix=prefix,
+                                     write_cls=FakeEpicsSignal,
+                                     read_only_cls=FakeEpicsSignalRO)
+        return super().__new__(new_cls)
 
 
 fake_device_cache[PytmcSignal] = FakePytmcSignal
