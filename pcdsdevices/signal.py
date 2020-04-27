@@ -39,19 +39,26 @@ class PytmcSignal(EpicsSignalBase):
                              f'This is missing for signal with pv {prefix}. '
                              'Feel free to copy the io field from the '
                              'pytmc pragma.')
-        norm = normalize_io(io)
-        if norm == 'output':
+        if pytmc_writable(io):
             return super().__new__(PytmcSignalRW)
-        elif norm == 'input':
-            return super().__new__(PytmcSignalRO)
         else:
-            # Should never get here unless pytmc's API changes
-            raise ValueError(f'Invalid io specifier {io}')
+            return super().__new__(PytmcSignalRO)
 
     def __init__(self, prefix, *, io, **kwargs):
         self.pytmc_pv = prefix
         self.pytmc_io = io
         super().__init__(prefix + '_RBV', **kwargs)
+
+
+def pytmc_writable(io):
+    norm = normalize_io(io)
+    if norm == 'output':
+        return True
+    elif norm == 'input':
+        return False
+    else:
+        # Should never get here unless pytmc's API changes
+        raise ValueError(f'Invalid io specifier {io}')
 
 
 class PytmcSignalRW(PytmcSignal, EpicsSignal):
@@ -71,14 +78,10 @@ class PytmcSignalRO(PytmcSignal, EpicsSignalRO):
 
 # Make sure an acceptable fake class is set for PytmcSignal
 def FakePytmcSignal(prefix, *, io, **kwargs):
-    norm = normalize_io(io)
-    if norm == 'output':
+    if pytmc_writable(io):
         return FakeEpicsSignal(prefix, **kwargs)
-    elif norm == 'input':
-        return FakeEpicsSignalRO(prefix, **kwargs)
     else:
-        # Give us the normal error message
-        return PytmcSignal(prefix, io=io, **kwargs)
+        return FakeEpicsSignalRO(prefix, **kwargs)
 
 
 fake_device_cache[PytmcSignal] = FakePytmcSignal
