@@ -13,8 +13,8 @@ import logging
 from threading import RLock, Thread
 
 import numpy as np
-
 from ophyd.signal import EpicsSignal, EpicsSignalBase, EpicsSignalRO, Signal
+from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
 from pytmc.pragmas import normalize_io
 
 logger = logging.getLogger(__name__)
@@ -67,6 +67,21 @@ class PytmcSignalRO(PytmcSignal, EpicsSignalRO):
     Read-only connection to a pytmc-generated EPICS record
     """
     pass
+
+
+# Make sure an acceptable fake class is set for PytmcSignal
+def FakePytmcSignal(prefix, *, io, **kwargs):
+    norm = normalize_io(io)
+    if norm == 'output':
+        return FakeEpicsSignal(prefix, **kwargs)
+    elif norm == 'input':
+        return FakeEpicsSignalRO(prefix, **kwargs)
+    else:
+        # Give us the normal error message
+        return PytmcSignal(prefix, io=io, **kwargs)
+
+
+fake_device_cache[PytmcSignal] = FakePytmcSignal
 
 
 class AggregateSignal(Signal):

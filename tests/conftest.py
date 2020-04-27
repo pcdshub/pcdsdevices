@@ -4,13 +4,11 @@ import warnings
 from pathlib import Path
 
 import pytest
-from ophyd.sim import (FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache,
-                       make_fake_device)
+from ophyd.sim import make_fake_device
+
 from pcdsdevices.attenuator import (MAX_FILTERS, Attenuator, _att3_classes,
                                     _att_classes)
 from pcdsdevices.mv_interface import setup_preset_paths
-from pcdsdevices.signal import PytmcSignal
-from pytmc.pragmas import normalize_io
 
 # Signal.put warning is a testing artifact.
 # FakeEpicsSignal needs an update, but I don't have time today
@@ -18,20 +16,6 @@ from pytmc.pragmas import normalize_io
 warnings.filterwarnings('ignore',
                         message='Signal.put no longer takes keyword arguments')
 
-
-# Make sure an acceptable fake class is set for PytmcSignal
-def FakePytmcSignal(prefix, *, io, **kwargs):
-    norm = normalize_io(io)
-    if norm == 'output':
-        return FakeEpicsSignal(prefix, **kwargs)
-    elif norm == 'input':
-        return FakeEpicsSignalRO(prefix, **kwargs)
-    else:
-        # Give us the normal error message
-        return PytmcSignal(prefix, io=io, **kwargs)
-
-
-fake_device_cache[PytmcSignal] = FakePytmcSignal
 
 for name, cls in _att_classes.items():
     _att_classes[name] = make_fake_device(cls)
