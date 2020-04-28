@@ -13,8 +13,8 @@ import logging
 from threading import RLock, Thread
 
 import numpy as np
-
 from ophyd.signal import EpicsSignal, EpicsSignalBase, EpicsSignalRO, Signal
+from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
 from pytmc.pragmas import normalize_io
 
 logger = logging.getLogger(__name__)
@@ -33,20 +33,10 @@ class PytmcSignal(EpicsSignalBase):
     depending on your io argument.
     """
     def __new__(cls, prefix, io=None, **kwargs):
-        if io is None:
-            # Provide a better error here than "__new__ missing an arg"
-            raise ValueError('Must provide an "io" argument to PytmcSignal. '
-                             f'This is missing for signal with pv {prefix}. '
-                             'Feel free to copy the io field from the '
-                             'pytmc pragma.')
-        norm = normalize_io(io)
-        if norm == 'output':
-            return super().__new__(PytmcSignalRW)
-        elif norm == 'input':
-            return super().__new__(PytmcSignalRO)
-        else:
-            # Should never get here unless pytmc's API changes
-            raise ValueError(f'Invalid io specifier {io}')
+        new_cls = select_pytmc_class(io=io, prefix=prefix,
+                                     write_cls=PytmcSignalRW,
+                                     read_only_cls=PytmcSignalRO)
+        return super().__new__(new_cls)
 
     def __init__(self, prefix, *, io, **kwargs):
         self.pytmc_pv = prefix
@@ -54,19 +44,67 @@ class PytmcSignal(EpicsSignalBase):
         super().__init__(prefix + '_RBV', **kwargs)
 
 
+def select_pytmc_class(io=None, *, prefix, write_cls, read_only_cls):
+    """Return the class to use for PytmcSignal's constructor."""
+    if io is None:
+        # Provide a better error here than "__new__ missing an arg"
+        raise ValueError('Must provide an "io" argument to PytmcSignal. '
+                         f'This is missing for signal with pv {prefix}. '
+                         'Feel free to copy the io field from the '
+                         'pytmc pragma.')
+    if pytmc_writable(io):
+        return write_cls
+    else:
+        return read_only_cls
+
+
+def pytmc_writable(io):
+    """Returns True if the pytmc io arg represents a writable PV."""
+    norm = normalize_io(io)
+    if norm == 'output':
+        return True
+    elif norm == 'input':
+        return False
+    else:
+        # Should never get here unless pytmc's API changes
+        raise ValueError(f'Invalid io specifier {io}')
+
+
 class PytmcSignalRW(PytmcSignal, EpicsSignal):
-    """
-    Read-write connection to a pytmc-generated EPICS record
-    """
+    """Read-write connection to a pytmc-generated EPICS record."""
     def __init__(self, prefix, **kwargs):
         super().__init__(prefix, write_pv=prefix, **kwargs)
 
 
 class PytmcSignalRO(PytmcSignal, EpicsSignalRO):
-    """
-    Read-only connection to a pytmc-generated EPICS record
-    """
+    """Read-only connection to a pytmc-generated EPICS record."""
     pass
+
+
+# Make sure an acceptable fake class is set for PytmcSignal
+class FakePytmcSignal(FakeEpicsSignal):
+    """A suitable fake class for PytmcSignal."""
+    def __new__(cls, prefix, io=None, **kwargs):
+        new_cls = select_pytmc_class(io=io, prefix=prefix,
+                                     write_cls=FakePytmcSignalRW,
+                                     read_only_cls=FakePytmcSignalRO)
+        return super().__new__(new_cls)
+
+    def __init__(self, prefix, io=None, **kwargs):
+        super().__init__(prefix + '_RBV', **kwargs)
+
+
+class FakePytmcSignalRW(FakePytmcSignal, FakeEpicsSignal):
+    def __init__(self, prefix, **kwargs):
+        super().__init__(prefix, write_pv=prefix, **kwargs)
+
+
+class FakePytmcSignalRO(FakePytmcSignal, FakeEpicsSignalRO):
+    pass
+
+
+# NOTE: This is an *on-import* update of the ophyd "fake" device cache
+fake_device_cache[PytmcSignal] = FakePytmcSignal
 
 
 class AggregateSignal(Signal):
@@ -79,7 +117,7 @@ class AggregateSignal(Signal):
     Attributes
     ----------
     _cache: dict
-        Mapping from signal to last known value
+        Mapping from signal to last known value.
 
     _sub_signals: list
         Signals that contribute to this signal.
@@ -107,7 +145,7 @@ class AggregateSignal(Signal):
 
     def _insert_value(self, signal, value):
         """
-        Update the cache with one value and recalculate
+        Update the cache with one value and recalculate.
         """
         with self._lock:
             self._cache[signal] = value
@@ -123,7 +161,7 @@ class AggregateSignal(Signal):
 
     def get(self, **kwargs):
         """
-        Update all values and recalculate
+        Update all values and recalculate.
         """
         with self._lock:
             for signal in self._sub_signals:
