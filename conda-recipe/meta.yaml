@@ -18,7 +18,7 @@ requirements:
 
   run:
     - python >=3.6
-    - ophyd 1.4.0rc4|>=1.4.0
+    - ophyd >=1.4.1
     - bluesky >=1.2.0
     - pyepics >=3.4.1
     - pytmc >=2.4.0
