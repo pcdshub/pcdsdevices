@@ -49,9 +49,11 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     # been changed without a re-connection of the PV. Instead we trust the soft
     # limits records
     user_setpoint = Cpt(EpicsSignal, ".VAL", limits=False, kind='normal')
-    # Additional soft limit configurations
-    low_soft_limit = Cpt(EpicsSignal, ".LLM", kind='omitted')
-    high_soft_limit = Cpt(EpicsSignal, ".HLM", kind='omitted')
+    # Kluge override for auto_monitor=True to help disconnected instantiation
+    low_limit_travel = Cpt(EpicsSignal, ".LLM", kind='omitted',
+                           auto_monitor=True)
+    high_limit_travel = Cpt(EpicsSignal, ".HLM", kind='omitted',
+                            auto_monitor=True)
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
     # Description is valuable
@@ -65,22 +67,22 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         """
         The lower soft limit for the motor.
         """
-        return self.low_soft_limit.value
+        return self.low_limit_travel.value
 
     @low_limit.setter
     def low_limit(self, value):
-        self.low_soft_limit.put(value)
+        self.low_limit_travel.put(value)
 
     @property
     def high_limit(self):
         """
         The higher soft limit for the motor.
         """
-        return self.high_soft_limit.value
+        return self.high_limit_travel.value
 
     @high_limit.setter
     def high_limit(self, value):
-        self.high_soft_limit.put(value)
+        self.high_limit_travel.put(value)
 
     @property
     def limits(self):
