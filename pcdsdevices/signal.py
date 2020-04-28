@@ -86,9 +86,20 @@ class FakePytmcSignal(FakeEpicsSignal):
     """A suitable fake class for PytmcSignal"""
     def __new__(cls, prefix, io=None, **kwargs):
         new_cls = select_pytmc_class(io=io, prefix=prefix,
-                                     write_cls=FakeEpicsSignal,
-                                     read_only_cls=FakeEpicsSignalRO)
+                                     write_cls=FakePytmcSignalRW,
+                                     read_only_cls=FakePytmcSignalRO)
         return super().__new__(new_cls)
+
+    def __init__(self, prefix, io=None, **kwargs):
+        super().__init__(prefix, **kwargs)
+
+
+class FakePytmcSignalRW(FakePytmcSignal, FakeEpicsSignal):
+    pass
+
+
+class FakePytmcSignalRO(FakePytmcSignal, FakeEpicsSignalRO):
+    pass
 
 
 fake_device_cache[PytmcSignal] = FakePytmcSignal
