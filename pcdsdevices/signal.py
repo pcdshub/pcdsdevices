@@ -91,11 +91,12 @@ class FakePytmcSignal(FakeEpicsSignal):
         return super().__new__(new_cls)
 
     def __init__(self, prefix, io=None, **kwargs):
-        super().__init__(prefix, **kwargs)
+        super().__init__(prefix + '_RBV', **kwargs)
 
 
 class FakePytmcSignalRW(FakePytmcSignal, FakeEpicsSignal):
-    pass
+    def __init__(self, prefix, **kwargs):
+        super().__init__(prefix, write_pv=prefix, **kwargs)
 
 
 class FakePytmcSignalRO(FakePytmcSignal, FakeEpicsSignalRO):
