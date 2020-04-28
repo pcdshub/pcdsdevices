@@ -45,7 +45,7 @@ class PytmcSignal(EpicsSignalBase):
 
 
 def select_pytmc_class(io=None, *, prefix, write_cls, read_only_cls):
-    """Return the class to use for PytmcSignal's constructor"""
+    """Return the class to use for PytmcSignal's constructor."""
     if io is None:
         # Provide a better error here than "__new__ missing an arg"
         raise ValueError('Must provide an "io" argument to PytmcSignal. '
@@ -59,7 +59,7 @@ def select_pytmc_class(io=None, *, prefix, write_cls, read_only_cls):
 
 
 def pytmc_writable(io):
-    """Returns True if the pytmc io arg represents a writable PV"""
+    """Returns True if the pytmc io arg represents a writable PV."""
     norm = normalize_io(io)
     if norm == 'output':
         return True
@@ -71,19 +71,19 @@ def pytmc_writable(io):
 
 
 class PytmcSignalRW(PytmcSignal, EpicsSignal):
-    """Read-write connection to a pytmc-generated EPICS record"""
+    """Read-write connection to a pytmc-generated EPICS record."""
     def __init__(self, prefix, **kwargs):
         super().__init__(prefix, write_pv=prefix, **kwargs)
 
 
 class PytmcSignalRO(PytmcSignal, EpicsSignalRO):
-    """Read-only connection to a pytmc-generated EPICS record"""
+    """Read-only connection to a pytmc-generated EPICS record."""
     pass
 
 
 # Make sure an acceptable fake class is set for PytmcSignal
 class FakePytmcSignal(FakeEpicsSignal):
-    """A suitable fake class for PytmcSignal"""
+    """A suitable fake class for PytmcSignal."""
     def __new__(cls, prefix, io=None, **kwargs):
         new_cls = select_pytmc_class(io=io, prefix=prefix,
                                      write_cls=FakePytmcSignalRW,
@@ -116,7 +116,7 @@ class AggregateSignal(Signal):
     Attributes
     ----------
     _cache: dict
-        Mapping from signal to last known value
+        Mapping from signal to last known value.
 
     _sub_signals: list
         Signals that contribute to this signal.
@@ -144,7 +144,7 @@ class AggregateSignal(Signal):
 
     def _insert_value(self, signal, value):
         """
-        Update the cache with one value and recalculate
+        Update the cache with one value and recalculate.
         """
         with self._lock:
             self._cache[signal] = value
@@ -160,7 +160,7 @@ class AggregateSignal(Signal):
 
     def get(self, **kwargs):
         """
-        Update all values and recalculate
+        Update all values and recalculate.
         """
         with self._lock:
             for signal in self._sub_signals:
