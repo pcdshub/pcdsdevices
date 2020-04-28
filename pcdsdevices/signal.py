@@ -102,6 +102,7 @@ class FakePytmcSignalRO(FakePytmcSignal, FakeEpicsSignalRO):
     pass
 
 
+# NOTE: This is an *on-import* update of the ophyd "fake" device cache
 fake_device_cache[PytmcSignal] = FakePytmcSignal
 
 
