@@ -1,5 +1,5 @@
 """
-Standard classes for LCLS Pumps
+Standard classes for LCLS Pumps.
 """
 import logging
 
@@ -14,9 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class TurboPump(Device, BaseInterface):
-    """
-    Vacuum Pump
-    """
+    """Turbo Vacuum Pump."""
     atspeed = Cpt(EpicsSignal, ':ATSPEED_DI', kind='normal')
     start = Cpt(EpicsSignal, ':START_SW', kind='normal')
 
@@ -32,9 +30,7 @@ class TurboPump(Device, BaseInterface):
 
 
 class EbaraPump(Device, BaseInterface):
-    """
-    Ebara Turbo Pump
-    """
+    """Ebara Turbo Pump."""
     start = Cpt(EpicsSignal, ':MPSTART_SW', kind='normal')
 
     tab_whitelist = ['run', 'stop']
@@ -49,9 +45,7 @@ class EbaraPump(Device, BaseInterface):
 
 
 class GammaController(Device, BaseInterface):
-    """
-    Ion Pump Gamma controller
-    """
+    """Ion Pump Gamma controller."""
     channel1name = Cpt(EpicsSignal, ':CHAN1NAME', kind='config')
     channel2name = Cpt(EpicsSignal, ':CHAN2NAME', kind='config')
     model = Cpt(EpicsSignalRO, ':MODEL', kind='config')
@@ -74,6 +68,7 @@ class IonPumpBase(Device, BaseInterface):
     """
 %s
     """
+
     __doc__ = (__doc__ % IonPump_base).replace('Ion Pump',
                                                'Ion Pump Base Class')
 
@@ -131,10 +126,10 @@ class IonPumpWithController(IonPumpBase):
     """
 %s
 
-    prefix_controller : ``str``
-        Ion Pump Controller base PV
-
+    prefix_controller : str
+        Ion Pump Controller base PV.
     """
+
     __doc__ = (__doc__ % IonPump_base).replace('Pump', 'Pump w/ controller')
 
     controller = FCpt(GammaController, '{self.prefix_controller}')
@@ -153,11 +148,12 @@ class IonPumpWithController(IonPumpBase):
 
 class PIPPLC(Device):
     """
-    Class for PLC-controlled Ion Pumps
+    Class for PLC-controlled Ion Pumps.
 
     Newer class. This and below are still missing some functionality.
     Still need to work out replacement of old classes.
     """
+
     pressure = Cpt(EpicsSignalRO, ':PRESS_RBV', kind='hinted',
                    doc='pressure reading')
     high_voltage_do = Cpt(EpicsSignalRO, ':HV_DO_RBV', kind='normal',
@@ -175,10 +171,7 @@ class PIPPLC(Device):
 
 
 class PTMPLC(Device):
-    """
-    Class for PLC-controlled Turbo Pump
-
-    """
+    """Class for PLC-controlled Turbo Pump."""
     switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='omitted')
     reset_fault = Cpt(EpicsSignalWithRBV, ':RST_SW', kind='normal')
     run_do = Cpt(EpicsSignalRO, ':RUN_DO_RBV', kind='normal')
@@ -195,10 +188,7 @@ class PTMPLC(Device):
 
 
 class PROPLC(Device):
-    """
-    Class for PLC-controlled Roughing Pump
-
-    """
+    """Class for PLC-controlled Roughing Pump."""
     switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='omitted')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
                        doc='interlock is ok when true')
@@ -209,10 +199,7 @@ class PROPLC(Device):
 
 
 class AgilentSerial(Device):
-    """
-    Class for Agilent Turbo Pump controlled via serial
-
-    """
+    """Class for Agilent Turbo Pump controlled via serial."""
     run = Cpt(EpicsSignal, ':RUN', kind='omitted')
     config = Cpt(EpicsSignal, ':CONFIG', kind='omitted')
     softstart = Cpt(EpicsSignal, ':SOFTSTART', kind='omitted')
@@ -246,10 +233,7 @@ class AgilentSerial(Device):
 
 
 class Navigator(AgilentSerial):
-    """
-    Class for Navigator Pump controlled via serial
-
-    """
+    """Class for Navigator Pump controlled via serial."""
     low_speed = Cpt(EpicsSignalRO, ':LOW_SPEED_RBV', kind='omitted')
     low_speed_freq = Cpt(EpicsSignalRO, ':LOW_SPEED_FREQ_RBV', kind='omitted')
     sp_power = Cpt(EpicsSignalRO, ':SP_POWER_RBV', kind='omitted')
@@ -274,10 +258,7 @@ class Navigator(AgilentSerial):
 
 
 class GammaPCT(Device):
-    """
-    Class for Gamma Pump Controller accessed via serial
-
-    """
+    """Class for Gamma Pump Controller accessed via serial."""
     model = Cpt(EpicsSignalRO, ':MODEL_RBV', kind='normal')
     fwversion = Cpt(EpicsSignalRO, ':FWVERSION_RBV', kind='normal')
     ashvedes = Cpt(EpicsSignal, ':ASHVEDES', kind='omitted')
@@ -289,18 +270,12 @@ class GammaPCT(Device):
 
 
 class QPCPCT(GammaPCT):
-    """
-    Class for Quad Pump Controller accessed via ethernet
-
-    """
+    """Class for Quad Pump Controller accessed via ethernet."""
     do_reset = Cpt(EpicsSignal, ':DO_RESET', kind='omitted')
 
 
 class PIPSerial(Device):
-    """
-    Class for Positive Ion Pump controlled via serial
-
-    """
+    """Class for Positive Ion Pump controlled via serial."""
     imon = Cpt(EpicsSignalRO, ':IMON_RBV', kind='hinted')
     pmon = Cpt(EpicsSignalRO, ':PMON_RBV', kind='hinted')
     pmonlog = Cpt(EpicsSignalRO, ':PMONLOG_RBV', kind='normal')
@@ -331,14 +306,14 @@ def IonPump(prefix, *, name, **kwargs):
 
     Parameters
     ----------
-    prefix : ``str``
-        Ion Pump PV
+    prefix : str
+        Base PV for the Ion Pump.
 
-    name : ``str``
-        Alias for the ion pump
+    name : str
+        Alias for the Ion Pump.
 
-    (optional) prefix_controller : ``str``
-        Ion Pump Controller base PV
+    prefix_controller : str, optional
+        Ion Pump Controller base PV.
     """
 
     if 'prefix_controller' not in kwargs:

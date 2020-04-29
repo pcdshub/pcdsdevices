@@ -22,39 +22,42 @@ logger = logging.getLogger(__name__)
 
 class StatePositioner(Device, PositionerBase, MvInterface):
     """
-    Base class for a ``Positioner`` that moves between discrete states rather
-    than along a continuout axis.
+    Base class for state-based positioners.
+
+    ``Positioner`` that moves between discrete states rather than along a
+    continuous axis.
 %s
     Attributes
     ----------
-    state: ``Signal``
+    state : `Signal`
         This signal is the final authority on what state the object is in.
 
-    states_list: ``list of str``
+    states_list : list of str
         This no longer has to be provided if the state signal contains enum
         information, like an EPICS mbbi. If it is provided, it must be
         an exhaustive list of all possible states. This should be overridden in
-        a base class. Unknown must be omitted in the class definition and will
+        a subclass. 'Unknown' must be omitted in the class definition and will
         be added dynamically in position 0 when the object is created.
 
-    states_enum: ``Enum``
+    states_enum : `~enum.Enum`
         An enum that represents all possible states. This will be constructed
         for the user based on the contents of `states_list` and
         `_states_alias`, but it can also be overriden in a child class.
 
-    _invalid_states: ``list of str``
+    _invalid_states : list of str
         States that cannot be moved to. This can be optionally overriden to be
-        extended in a base class. The `_unknown` state will be included
+        extended in a subclass. The `_unknown` state will be included
         automatically.
 
-    _unknown: ``str``
+    _unknown : str
         The name of the unknown state, defaulting to 'Unknown'. This can be set
-        to ``False`` if there is no unknown state.
+        to :keyword:`False` if there is no unknown state.
 
-    _states_alias: ``dict``
+    _states_alias : dict
         Mapping of state names to lists of acceptable aliases. This can
         optionally be overriden in a child class.
     """
+
     __doc__ = __doc__ % basic_positioner_init
 
     state = None  # Override with Signal that represents state readback
@@ -113,23 +116,25 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
         Parameters
         ----------
-        position: ``int`` or ``str``
-            The enumerate state or the corresponding integer
+        position : int or str
+            The enumerate state or the corresponding integer.
 
-        moved_cb: ``function``, optional
-            moved_cb(obj=self) will be called at the end of motion
+        moved_cb : callable, optional
+            Function to call at the end of motion. i.e. ``moved_cb(obj=self)``
+            will be called when move is complete.
 
-        timeout: ``int`` or ``float``, optional
-            Move timeout in seconds
+        timeout : int or float, optional
+            Move timeout in seconds.
 
-        wait: ``bool``, optional
+        wait : bool, optional
             If True, do not return until the motion has completed.
 
         Returns
         -------
-        status: ``StateStatus``
-            ``Status`` object that represents the move's progress.
+        status : `StateStatus`
+            `Status` object that represents the move's progress.
         """
+
         status = self.set(position, moved_cb=moved_cb, timeout=timeout)
         if wait:
             status_wait(status)
@@ -146,20 +151,22 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
         Parameters
         ----------
-        position: ``int`` or ``str``
-            The enumerate state or the corresponding integer
+        position : int or str
+            The enumerate state or the corresponding integer.
 
-        moved_cb: ``function``, optional
-            moved_cb(obj=self) will be called at the end of motion
+        moved_cb : callable, optional
+            Function to call at the end of motion. i.e. ``moved_cb(obj=self)``
+            will be called when move is complete.
 
-        timeout: ``int`` or ``float``, optional
-            Move timeout in seconds
+        timeout : int or float, optional
+            Move timeout in seconds.
 
         Returns
         -------
-        status: ``StateStatus``
-            ``Status`` object that represents the move's progress.
+        status : `StateStatus`
+            `Status` object that represents the move's progress.
         """
+
         logger.debug('set %s to position %s', self.name, position)
         state = self.check_value(position)
 
@@ -212,10 +219,11 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
         Returns
         -------
-        state: ``Enum``
-            The corresponding ``Enum`` entry for this value. It has two
-            meaningful fields, ``name`` and ``value``.
+        state : `~enum.Enum`
+            The corresponding `Enum` entry for this value. It has two
+            meaningful fields, `name` and `value`.
         """
+
         if not isinstance(value, (int, str)):
             raise TypeError('Valid states must be of type str or int')
         state = self.get_state(value)
@@ -229,10 +237,11 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
         Returns
         -------
-        state: ``Enum``
-            The corresponding ``Enum`` entry for this value. It has two
-            meaningful fields, ``name`` and ``value``.
+        state : `~enum.Enum`
+            The corresponding `~enum.Enum` entry for this value. It has two
+            meaningful fields, `name` and `value`.
         """
+
         # Check for a malformed string digit
         if isinstance(value, str) and value.isdigit():
             value = int(value)
@@ -251,15 +260,18 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
     def _do_move(self, state):
         """
-        Execute the move command. Override this if your move isn't a simple put
-        to the state signal using the state value.
+        Execute the move command.
+
+        Override this if your move isn't a simple put to the state signal using
+        the state value.
 
         Parameters
         ----------
-        state: ``Enum``
-            Object whose ``name`` attribute is the string enum name and whose
-            ``value`` attribute is the integer enum value.
+        state : `~enum.Enum`
+            Object whose `.name` attribute is the string enum name and whose
+            `.value` attribute is the integer enum value.
         """
+
         self.state.put(state.value)
 
     def _create_states_enum(self):
@@ -299,6 +311,7 @@ class PVStateSignal(AggregateSignal):
 
     See `AggregateSignal` for more information.
     """
+
     def __init__(self, *, name, **kwargs):
         super().__init__(name=name, **kwargs)
         self._sub_map = {}
@@ -359,7 +372,7 @@ class PVStatePositioner(StatePositioner):
 %s
     Attributes
     ----------
-    _state_logic: ``dict``
+    _state_logic : dict
         Information dictionaries for each state of the following form:
 
         .. code::
@@ -380,12 +393,13 @@ class PVStatePositioner(StatePositioner):
         This is for cases where the logic is simple. If there are more complex
         requirements, replace the `state` component.
 
-    _state_logic_mode: ``str``, ``'ALL'`` or ``'FIRST'``
-        This should be ``ALL`` (default) if the pvs need to agree for a valid
-        state. You can set this to 'FIRST' to instead use the first state
-        found while traversing the state_logic tree. This means an earlier
+    _state_logic_mode : {'ALL', 'FIRST'}
+        This should be 'ALL' (default) if the pvs need to agree for a valid
+        state. You can set this to 'FIRST' instead to use the first state
+        found while traversing the `_state_logic` tree. This means an earlier
         state definition can mask a later state definition.
     """
+
     __doc__ = __doc__ % basic_positioner_init
 
     state = Cpt(PVStateSignal, kind='hinted')
@@ -416,8 +430,9 @@ class StateRecordPositionerBase(StatePositioner):
     """
     A `StatePositioner` for an EPICS states record.
 
-    `states_list` does not have to be provided
+    `states_list` does not have to be provided.
     """
+
     state = Cpt(EpicsSignal, '', write_pv=':GO', kind='hinted')
 
     def __init__(self, prefix, *, name, **kwargs):
@@ -446,10 +461,11 @@ class StateRecordPositionerBase(StatePositioner):
 class StateRecordPositioner(StateRecordPositionerBase):
     """
     A `StatePositioner` for an EPICS states record.
-    Includes a `motor` attribute for motor level access
-    on single axis positioners.
 
-    `states_list` does not have to be provided
+    Includes a `motor` attribute for motor level access on single axis
+    positioners.
+
+    `states_list` does not have to be provided.
     """
 
     motor = Cpt(IMS, ':MOTOR', kind='normal')
@@ -468,12 +484,12 @@ class StateRecordPositioner(StateRecordPositionerBase):
 
 class CombinedStateRecordPositioner(StateRecordPositionerBase):
     """
-    A `StatePositioner` for an EPICS states record associated with an
-    X/Y combined state positioner.
-    Includes `x_motor` and `y_motor` attributes for motor level access
-    on two-axis positioners.
+    A `StatePositioner` for an X/Y combined state positioner EPICS record.
 
-    `states_list` does not have to be provided
+    Includes `x_motor` and `y_motor` attributes for motor level access on
+    two-axis positioners.
+
+    `states_list` does not have to be provided.
     """
 
     x_motor = Cpt(IMS, ':X:MOTOR', kind='normal')
@@ -495,11 +511,12 @@ class CombinedStateRecordPositioner(StateRecordPositionerBase):
 
 class TwinCATStateConfigOne(Device):
     """
-    Configuration of a single state position in TwinCAT
+    Configuration of a single state position in TwinCAT.
 
-    Designed to be used with the records from lcls-twincat-motion.
-    Corresponds with DUT_PositionState
+    Designed to be used with the records from ``lcls-twincat-motion``.
+    Corresponds with ``DUT_PositionState``.
     """
+
     state_name = Cpt(PytmcSignal, ':NAME', io='i', kind='config')
     setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='config')
     delta = Cpt(PytmcSignal, ':DELTA', io='io', kind='config')
@@ -513,11 +530,12 @@ class TwinCATStateConfigOne(Device):
 
 class TwinCATStateConfigAll(Device):
     """
-    Configuration of all possible state positions in TwinCAT
+    Configuration of all possible state positions in TwinCAT.
 
-    Designed to be used with the array of DUT_PositionState from
-    FB_PositionStateManager
+    Designed to be used with the array of ``DUT_PositionState`` from
+    ``FB_PositionStateManager``.
     """
+
     state01 = Cpt(TwinCATStateConfigOne, ':01', kind='config')
     state02 = Cpt(TwinCATStateConfigOne, ':02', kind='config')
     state03 = Cpt(TwinCATStateConfigOne, ':03', kind='config')
@@ -537,34 +555,34 @@ class TwinCATStateConfigAll(Device):
 
 class TwinCATStatePositioner(StatePositioner):
     """
-    A `StatePositioner` from Beckhoff land
+    A `StatePositioner` from Beckhoff land.
 
     This comes from the state record PVs included in the
-    lcls-twincat-motion TwinCAT library. It can be used for
-    any function block that follows the pattern set up by
-    FB_EpicsInOut.
+    ``lcls-twincat-motion`` TwinCAT library. It can be used for any function
+    block that follows the pattern set up by ``FB_EpicsInOut``.
 
     Use `TwinCATInOutPositioner` instead if the device has clear inserted and
     removed states.
 
-    Does not need to be subclassed to be used
-    ``states_list`` does not have to be provided in a subclass
+    Does not need to be subclassed to be used.
+    `states_list` does not have to be provided in a subclass.
 
     Parameters
     ----------
-    prefix: ``str``
+    prefix : str
         The EPICS PV prefix for this motor.
 
-    name: ``str``, required keyword
+    name : str
         An identifying name for this motor.
 
-    settle_time: ``float``, optional
-        The amount of extra time to wait before interpreting a move as done
+    settle_time : float, optional
+        The amount of extra time to wait before interpreting a move as done.
 
-    timeout ``float``, optional
+    timeout : float, optional
         The amount of time to wait before automatically marking a long
         in-progress move as failed.
     """
+
     state = Cpt(EpicsSignal, ':GET_RBV', write_pv=':SET', kind='hinted')
 
     error = Cpt(PytmcSignal, ':ERR', io='i', kind='normal')
@@ -592,29 +610,30 @@ class TwinCATStatePositioner(StatePositioner):
 
 class StateStatus(SubscriptionStatus):
     """
-    ``Status`` produced by state request
+    `Status` produced by state request.
 
-    The status relies on two methods of the device, first the attribute
-    ``.position`` should reflect the current state. Second, the status will
-    call the built-in method ``subscribe`` with the ``event_type`` explicitly
-    set to ``device.SUB_STATE``. This will cause the ``StateStatus`` to
-    process whenever the device changes state to avoid unnecessary polling
-    of the associated EPICS variables
+    The status relies on two methods of the device: First, the attribute
+    `~StatePositioner.position` should reflect the current state.
+    Second, the status will call the built-in method `subscribe` with the
+    `event_type` explicitly set to ``device.SUB_STATE``. This will cause the
+    StateStatus to process whenever the device changes state to avoid
+    unnecessary polling of the associated EPICS variables.
 
     Parameters
     ----------
     device : `StatePositioner`
-        The relevant states device
+        The relevant states device.
 
-    desired_state : ``str``
-        Requested state
+    desired_state : str
+        Requested state.
 
-    timeout : ``float``, optional
-        The default timeout to wait to mark the request as a failure
+    timeout : float, optional
+        The default timeout to wait to mark the request as a failure.
 
-    settle_time : ``float``, optional
-        Time to wait after completion until running callbacks
+    settle_time : float, optional
+        Time to wait after completion until running callbacks.
     """
+
     def __init__(self, device, desired_state,
                  timeout=None, settle_time=None):
         # Make a quick check_state callable

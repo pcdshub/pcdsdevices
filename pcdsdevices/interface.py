@@ -543,7 +543,7 @@ class Presets:
 
         Add methods to this object for adding presets of each type, add
         methods to the associated device to move and check each preset, and
-        add :class:`PresetPosition` instances to :attr:`self.positions` for
+        add :class:`PresetPosition` instances to :attr:`.positions` for
         each preset name.
         """
 

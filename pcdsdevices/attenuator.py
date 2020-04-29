@@ -180,7 +180,7 @@ class AttBase(FltMvInterface, PVPositioner):
         """
         Store the original positions of all filter blades.
 
-        This is a :mod:`bluesky` method called to set up the device for a scan.
+        This is a `bluesky` method called to set up the device for a scan.
         At the end of the scan, :meth:`.unstage` should be called to restore
         the original positions of the filter blades.
 
@@ -236,8 +236,8 @@ class AttBase3rd(AttBase):
     :func:`Attenuator` class to use the 3rd harmonic values.
 
     This is exactly the same as the normal :class:`AttBase`, but with the
-    alternative transmission PVs. It can be instantiated using the ``use_3rd``
-    argument in the :func:`Attenuator` factory function.
+    alternative transmission PVs. It can be instantiated using the
+    `~Attenuator.use_3rd` argument in the :func:`Attenuator` factory function.
     """
 
     # Positioner Signals

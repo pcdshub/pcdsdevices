@@ -97,14 +97,14 @@ class Mesh(Device, BaseInterface):
 
     def get_raw_mesh_voltage(self):
         """
-        Get the current acromag voltage that outputs to the HV supply, i.e
+        Get the current acromag voltage that outputs to the HV supply, i.e.
         the voltage seen by the HV supply.
         """
         return self.read_sig.get()
 
     def get_mesh_voltage(self):
         """
-        Get the current mesh voltage setpoint, i.e the setpoint that the HV
+        Get the current mesh voltage setpoint, i.e. the setpoint that the HV
         supply attempts to output.
         """
         return self.read_sig.get() * self.scale
@@ -172,7 +172,7 @@ class Mesh(Device, BaseInterface):
 
         test_flag : bool, optional
             Flag used in testing functions to only run ``while True`` loop
-            once - i.e single tweak mode.
+            once - i.e. single tweak mode.
         """
 
         print('Use arrow keys (left, right) to step voltage (-, +)')

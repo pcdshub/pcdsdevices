@@ -488,8 +488,7 @@ def Motor(prefix, **kwargs):
     Load a PCDSMotor with the correct class based on prefix.
 
     The prefix is searched for one of the component keys in the table below. If
-    none of these are found, by default an :class:`ophyd.EpicsMotor` will be
-    used.
+    none of these are found, by default an `EpicsMotor` will be used.
 
     +---------------+-------------------------+
     | Component Key + Python Class            |

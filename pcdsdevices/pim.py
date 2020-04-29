@@ -1,5 +1,5 @@
 """
-Module for the `PIM` profile intensity monitor classes
+Module for the `PIM` Profile Intensity Monitor classes.
 
 This module contains all the classes relating to the profile intensity monitor
 classes at the user level. A PIM always has a motor to control yag/diode
@@ -27,11 +27,12 @@ logger = logging.getLogger(__name__)
 
 class PIMY(InOutRecordPositioner, BaseInterface):
     """
-    Standard profile monitor Y motor.
+    Standard Y-motor for a Profile Intensity Monitor.
 
-    This can move the stage to insert the yag
-    or diode, or retract from the beam path.
+    This can move the stage to insert the YAG or diode, or retract from the
+    beam path.
     """
+
     states_list = ['DIODE', 'YAG', 'OUT']
     in_states = ['YAG', 'DIODE']
 
@@ -49,23 +50,25 @@ class PIMY(InOutRecordPositioner, BaseInterface):
 
 class PIM(Device, BaseInterface):
     """
-    Profile intensity monitor with y-motion motor, zoom motor, and a detector.
+    Profile Intensity Monitor.
+
+    Consists of y-motion and zoom motors, and an area detector.
 
     Parameters
     ----------
-    prefix : ``str``
-        The EPICS base of the PIM
+    prefix : str
+        The EPICS base of the PIM.
 
-    name : ``str``
-        A name to refer to the device
+    name : str
+        A name to refer to the device.
 
-    prefix_det : ``str``, optional
+    prefix_det : str, optional
         The EPICS base PV of the detector. If None, it will be attempted to be
-        inferred from `prefix`
+        inferred from `prefix`.
 
-    prefix_zoom : ``str``, optional
+    prefix_zoom : str, optional
         The EPICS base PV of the zoom motor. If None, it will be attempted to
-        be inferred from `prefix`
+        be inferred from `prefix`.
     """
 
     _prefix_start = ''
@@ -131,29 +134,31 @@ class PIM(Device, BaseInterface):
 
 class PIMWithFocus(PIM):
     """
-    Profile intensity monitor with y-motion motor, zoom motor, focus motor, and
-    a detector.
+    Profile Intensity Monitor with Focus control.
+
+    Consists of y-motion, zoom, and focus motors, and an area detector.
 
     Parameters
     ----------
-    prefix : ``str``
-        The EPICS base of the PIM
+    prefix : str
+        The EPICS base of the PIM.
 
-    name : ``str``
-        A name to refer to the device
+    name : str
+        A name to refer to the device.
 
-    prefix_det : ``str``, optional
+    prefix_det : str, optional
         The EPICS base PV of the detector. If None, it will be attempted to be
-        inferred from `prefix`
+        inferred from `prefix`.
 
-    prefix_zoom : ``str``, optional
+    prefix_zoom : str, optional
         The EPICS base PV of the zoom motor. If None, it will be attempted to
-        be inferred from `prefix`
+        be inferred from `prefix`.
 
-    prefix_focus : ``str``, optional
+    prefix_focus : str, optional
         The EPICS base PV of the focus motor. If None, it will be attempted to
-        be inferred from `prefix`
+        be inferred from `prefix`.
     """
+
     focus_motor = FCpt(IMS, '{self._prefix_focus}', kind='normal')
 
     def __init__(self, prefix, *, name, prefix_focus=None, **kwargs):
@@ -170,28 +175,29 @@ class PIMWithFocus(PIM):
 
 class PIMWithLED(PIM):
     """
-    Profile intensity monitor with y-motion motor, zoom motor, LED, and a
-    detector.
+    Profile Intensity Monitor with LED.
+
+    Consists of a y-motion motor, zoom motor, LED, and an area detector.
 
     Parameters
     ----------
-    prefix : ``str``
-        The EPICS base of the PIM
+    prefix : str
+        The EPICS base of the PIM.
 
-    name : ``str``
-        A name to refer to the device
+    name : str
+        A name to refer to the device.
 
-    prefix_det : ``str``, optional
+    prefix_det : str, optional
         The EPICS base PV of the detector. If None, it will be attempted to be
-        inferred from `prefix`
+        inferred from `prefix`.
 
-    prefix_zoom : ``str``, optional
+    prefix_zoom : str, optional
         The EPICS base PV of the zoom motor. If None, it will be attempted to
-        be inferred from `prefix`
+        be inferred from `prefix`.
 
-    prefix_led : ``str``, optional
+    prefix_led : str, optional
         The EPICS base PV of the LED. If None, it will be attempted to be
-        inferred from `prefix`
+        inferred from `prefix`.
     """
     led = FCpt(EpicsSignal, '{self._prefix_led}', kind='normal')
 
@@ -209,43 +215,47 @@ class PIMWithLED(PIM):
 
 class PIMWithBoth(PIMWithFocus, PIMWithLED):
     """
-    Profile intensity monitor with y-motion motor, zoom motor, focus motor,
-    LED, and a detector.
+    Profile Intensity Monitor with LED and Focus control.
+
+    Consists of a y-motion motor, zoom motor, focus motor, LED, and an area
+    detector.
 
     Parameters
     ----------
-    prefix : ``str``
-        The EPICS base of the PIM
+    prefix : str
+        The EPICS base of the PIM.
 
-    name : ``str``
-        A name to refer to the device
+    name : str
+        A name to refer to the device.
 
-    prefix_det : ``str``, optional
+    prefix_det : str, optional
         The EPICS base PV of the detector. If None, it will be attempted to be
-        inferred from `prefix`
+        inferred from `prefix`.
 
-    prefix_zoom : ``str``, optional
+    prefix_zoom : str, optional
         The EPICS base PV of the zoom motor. If None, it will be attempted to
-        be inferred from `prefix`
+        be inferred from `prefix`.
 
-    prefix_focus : ``str``, optional
+    prefix_focus : str, optional
         The EPICS base PV of the focus motor. If None, it will be attempted to
-        be inferred from `prefix`
+        be inferred from `prefix`.
 
-    prefix_led : ``str``, optional
+    prefix_led : str, optional
         The EPICS base PV of the LED. If None, it will be attempted to be
-        inferred from `prefix`
+        inferred from `prefix`.
     """
+
     pass
 
 
 class LCLS2ImagerBase(Device, BaseInterface):
     """
-    Shared PVs and components from the LCLS2 imagers
+    Shared PVs and components from the LCLS2 imagers.
 
     All LCLS2 imagers are guaranteed to have the following components that
-    behave essentially the same
+    behave essentially the same.
     """
+
     tab_component_names = True
 
     y_states = Cpt(TwinCATInOutPositioner, ':MMS:STATE', kind='hinted')
@@ -258,16 +268,17 @@ class PPMPowerMeter(Device, BaseInterface):
     """
     Analog measurement tool for beam energy as part of the PPM assembly.
 
-    When inserted into the beam, the ``raw_voltage`` signal value should
+    When inserted into the beam, the `raw_voltage` signal value should
     increase proportional to the beam energy. The equivalent calibrated
-    readings are ``dimensionless``, which is a unitless number that
+    readings are `dimensionless`, which is a unitless number that
     represents the relative calibration of every power meter, and
-    ``calibrated_mj``, which is the real engineering unit of the beam
+    `calibrated_mj`, which is the real engineering unit of the beam
     power. These are calibrated using the other signals in the following way:
 
-    ``dimensionless`` = (``raw_voltage`` + ``calib_offset``) * ``calib_ratio``
-    ``calibrated_mj`` = ``dimensionless`` * ``calib_mj_ratio``
+    `dimensionless` = (`raw_voltage` + `calib_offset`) * `calib_ratio`
+    `calibrated_mj` = `dimensionless` * `calib_mj_ratio`
     """
+
     tab_component_names = True
 
     raw_voltage = Cpt(PytmcSignal, ':VOLT', io='i', kind='normal')
@@ -298,12 +309,13 @@ class PPM(LCLS2ImagerBase):
 
     Parameters
     ----------
-    prefix: ``str``
-        The EPICS PV prefix for this imager, e.g. ``IM3L0:PPM``.
+    prefix : str
+        The EPICS PV prefix for this imager, e.g. 'IM3L0:PPM'.
 
-    name: ``str``, required keyword
-        An identifying name for this motor, e.g. ``im3l0``
+    name : str
+        An identifying name for this motor, e.g. 'im3l0'.
     """
+
     power_meter = Cpt(PPMPowerMeter, ':SPM', kind='normal')
     yag_thermocouple = Cpt(TwinCATThermocouple, ':YAG', kind='normal')
 
@@ -318,6 +330,7 @@ class XPIMFilterWheel(StatePositioner):
     and one that is empty. The enum strings here are T100, T50, etc. which
     represent the transmission percentage of the associated filter.
     """
+
     tab_component_names = True
 
     state = Cpt(EpicsSignal, ':GET_RBV', write_pv=':SET', kind='normal')
@@ -336,12 +349,13 @@ class XPIM(LCLS2ImagerBase):
 
     Parameters
     ----------
-    prefix: ``str``
-        The EPICS PV prefix for this imager, e.g. ``IM3L0:PPM``.
+    prefix : str
+        The EPICS PV prefix for this imager, e.g. 'IM3L0:PPM'.
 
-    name: ``str``, required keyword
-        An identifying name for this motor, e.g. ``im3l0``
+    name : str
+        An identifying name for this motor, e.g. 'im3l0'.
     """
+
     zoom_motor = Cpt(BeckhoffAxis, ':CLZ', kind='normal')
     focus_motor = Cpt(BeckhoffAxis, ':CLF', kind='normal')
 

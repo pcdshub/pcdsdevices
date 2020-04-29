@@ -1,5 +1,5 @@
 """
-Module for Beryllium Lens positioners
+Module for Beryllium Lens positioners.
 """
 import shutil
 import time
@@ -25,10 +25,11 @@ LENS_RADII = [50e-6, 100e-6, 200e-6, 300e-6, 500e-6, 1000e-6, 1500e-6]
 
 class XFLS(InOutRecordPositioner):
     """
-    XRay Focusing Lens Stack (Be)
+    X-ray Focusing (Be) Lens Stack.
 
     This is the simple version where the lens positions are named by number.
     """
+
     __doc__ += basic_positioner_init
 
     states_list = ['LENS1', 'LENS2', 'LENS3', 'OUT']
@@ -47,18 +48,18 @@ class XFLS(InOutRecordPositioner):
 
 class Prefocus(CombinedInOutRecordPositioner):
     """
-    Prefocussing Lens Stack (PFLS)
+    PreFocussing Lens Stack (PFLS).
 
     Positions stack to one of three states or 'OUT' using a combined state
     record controlling an X and a Y motor.
 
     Parameters
     ----------
-    prefix : ``str``
-        The EPICS base PV of the lens stack
+    prefix : str
+        The EPICS base PV of the lens stack.
 
-    name : ``str``
-        A name to refer to the device
+    name : str
+        A name to refer to the device.
     """
 
     # Clear the default in/out state list. List will be populated during
@@ -79,9 +80,7 @@ class Prefocus(CombinedInOutRecordPositioner):
 
 
 class LensStackBase(PseudoPositioner):
-    """
-    Class for Be lens macros and safe operations.
-    """
+    """Class for Be lens macros and safe operations."""
     x = FCpt(IMS, '{self.x_prefix}')
     y = FCpt(IMS, '{self.y_prefix}')
     z = FCpt(IMS, '{self.z_prefix}')
@@ -130,11 +129,13 @@ class LensStackBase(PseudoPositioner):
     def tweak(self):
         """
         Calls the tweak function from mv_interface.
-        Use left and right arrow keys for the x motor
-        and up and down for the y motor.
+
+        Use left and right arrow keys for the x motor and up and down for
+        the y motor.
         Shift and left or right changes the step size.
         Press q to quit.
         """
+
         tweak_base(self.x, self.y)
 
     @pseudo_position_argument
@@ -185,9 +186,10 @@ class LensStackBase(PseudoPositioner):
         to make two equations to determine a y- and x-position
         for any z-value the user wants that will keep the beam focused.
         The beam line will be saved in a file in the presets folder,
-        and can be used with the pseudo positioner on the z axis.
-        If called with an integer, automatically moves the z motor.
+        and can be used with the pseudo positioner on the z-axis.
+        If called with an integer, automatically moves the z-motor.
         """
+
         self.z.move(self.z.limits[0] + edge_offset)
         self.tweak()
         pos = [self.x.position, self.y.position, self.z.position]
@@ -268,9 +270,8 @@ class LensStackBase(PseudoPositioner):
 
     def _make_safe(self):
         """
-        Move the thickest attenuator in to prevent damage
-        due to wayward focused x-rays.
-        Return True if the attenuator was moved in.
+        Move the thickest attenuator in to prevent damage due to wayward
+        focused x-rays. Return :keyword:`True` if the attenuator was moved in.
         """
         if self._att_obj is None:
             print("WARNING: Cannot do safe crl moveZ,\
@@ -317,9 +318,7 @@ class LensStack(LensStackBase):
 
 
 class SimLensStackBase(LensStackBase):
-    """
-    Test version of the lens stack for testing the Be lens class.
-    """
+    """Test version of the lens stack for testing the Be lens class."""
     x = Cpt(FastMotor, limits=(-10, 10))
     y = Cpt(FastMotor, limits=(-10, 10))
     z = Cpt(FastMotor, limits=(-100, 100))

@@ -1,7 +1,6 @@
 """
-Module for the liquid jet classes
+Module for the liquid jet classes.
 """
-
 from ophyd import Component as Cpt
 from ophyd import Device
 
@@ -10,7 +9,7 @@ from .interface import BaseInterface
 
 
 class BeckhoffJetManipulator(Device, BaseInterface):
-    """Jet Manipulator controlled by Beckhoff PLC"""
+    """Jet Manipulator controlled by Beckhoff PLC."""
 
     tab_component_names = True
 
@@ -20,7 +19,7 @@ class BeckhoffJetManipulator(Device, BaseInterface):
 
 
 class BeckhoffJetSlits(Device, BaseInterface):
-    """Pair of Beckhoff-controlled slits where each blade has X & Y motors"""
+    """Pair of Beckhoff-controlled slits where each blade has X & Y motors."""
     tab_component_names = True
 
     top_x = Cpt(BeckhoffAxis, ':TOP_X', kind='normal')
@@ -31,7 +30,7 @@ class BeckhoffJetSlits(Device, BaseInterface):
 
 class BeckhoffJet(Device, BaseInterface):
     """
-    Full liquid jet setup controlled by a Beckhoff PLC
+    Full liquid jet setup controlled by a Beckhoff PLC.
 
     This includes three axes for the jet manipulator, two axes for each of two
     slits, and a single axis for the detector. Each of their PVs will be
@@ -39,11 +38,11 @@ class BeckhoffJet(Device, BaseInterface):
 
     Parameters
     ----------
-    prefix : ``str``, optional
-        Liquid jet base PV
+    prefix : str, optional
+        Liquid jet base PV.
 
-    name : ``str``
-        A name to refer to the device
+    name : str
+        A name to refer to the device.
     """
 
     tab_component_names = True

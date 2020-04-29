@@ -78,7 +78,7 @@ class PCDSAreaDetector(PCDSAreaDetectorBase):
     Notes
     -----
     Subclasses should replace :attr:`cam` with that of the respective detector,
-    such as :class:`ophyd.areadetector.cam.PilatusDetectorCam` for the Pilatus
+    such as `PilatusDetectorCam` for the Pilatus
     detector.
     """
 

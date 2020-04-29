@@ -1,5 +1,5 @@
 """
-Module for stands that can be moved
+Module for stands that can be moved.
 """
 from ophyd import Component as Cpt
 from ophyd import EpicsSignalRO
@@ -13,10 +13,13 @@ class MovableStand(InOutPVStatePositioner):
 
     Parameters
     ----------
-    prefix: ``str``
+    prefix : str
+        Base PV for the stand.
 
-    name: ``str``, required keyword
+    name : str
+        Name to call the stand by.
     """
+
     in_limit = Cpt(EpicsSignalRO, ':IN_DI', kind='normal')
     out_limit = Cpt(EpicsSignalRO, ':OUT_DO', kind='normal')
 
