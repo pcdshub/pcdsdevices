@@ -2,9 +2,14 @@ import os
 import select
 import shutil
 import sys
-import termios
 import time
-import tty
+
+try:
+    import tty
+    import termios
+except ImportError:
+    tty = None
+    termios = None
 
 from cf_units import Unit
 
@@ -50,6 +55,9 @@ def get_input():
     -------
     input: ``str``
     """
+    if termios is None:
+        raise RuntimeError('Not supported on this platform')
+
     # Save old terminal settings
     old_settings = termios.tcgetattr(sys.stdin)
     # Stash a None here in case we get interrupted

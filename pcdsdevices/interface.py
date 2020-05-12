@@ -1,7 +1,6 @@
 """
 Module for defining bell-and-whistles movement features
 """
-import fcntl
 import logging
 import numbers
 import re
@@ -20,6 +19,11 @@ from ophyd.ophydobj import OphydObject
 from ophyd.status import wait as status_wait
 
 from . import utils as util
+
+try:
+    import fcntl
+except ImportError:
+    fcntl = None
 
 logger = logging.getLogger(__name__)
 engineering_mode = True
