@@ -40,6 +40,7 @@ sys.path.insert(0,module_path)
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.todo',
               'sphinx.ext.autosummary',
+              'sphinx.ext.intersphinx',
               'sphinx.ext.napoleon',
               'IPython.sphinxext.ipython_directive',
               'IPython.sphinxext.ipython_console_highlighting',
@@ -169,3 +170,9 @@ texinfo_documents = [
      author, 'PCDSDevices', 'One line description of project.',
      'Miscellaneous'),
 ]
+
+# -- Sources of external documentation to cross-referencing----------------
+
+#intersphinx_mapping = {'ophyd': ('https://blueskyproject.io/ophyd/', None),
+intersphinx_mapping = {'ophyd': ('/Users/pennebak/Documents/GitHub/ophyd/doc/build/html', None),
+                       'python': ('https://docs.python.org/3', None)}
