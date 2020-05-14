@@ -78,7 +78,7 @@ class SlitPositioner(PVPositioner, FltMvInterface):
 
     @property
     def egu(self):
-        """EnGineering Units."""
+        """Engineering Units."""
         return self._egu or self.readback._read_pv.units
 
     def _setup_move(self, position):

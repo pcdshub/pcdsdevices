@@ -44,7 +44,7 @@ class OMMotor(FltMvInterface, PVPositioner):
     @property
     def egu(self):
         """
-        Returns the EnGineering Units of the readback PV, as reported by EPICS.
+        Returns the Engineering Units of the readback PV, as reported by EPICS.
         """
         return self.motor_egu.get()
 
