@@ -41,7 +41,7 @@ class Stopper(InOutPVStatePositioner):
 
     Attributes
     ----------
-    commands : `~enum.Enum`
+    commands : ~enum.Enum
         An enum with integer values for `~Commands.open_valve` and
         `~Commands.close_valve` values.
     """

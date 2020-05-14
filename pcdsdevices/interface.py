@@ -430,7 +430,7 @@ class Presets:
 
         Raises
         ------
-        :exc:`BlockingIOError`
+        BlockingIOError
             If we cannot acquire the file lock.
         """
 

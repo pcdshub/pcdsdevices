@@ -143,10 +143,10 @@ def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
     cls : type
         Device class to add ``mps``.
 
-    mps_prefix : ``str``
+    mps_prefix : str
         Prefix for MPS subcomponent.
 
-    veto : ``bool``, optional
+    veto : bool, optional
         Whether the MPS bit is capable of veto.
 
     args :
@@ -195,7 +195,7 @@ def must_be_known(in_limit, out_limit):
     in_limit : bool
         Whether the in limit is active.
 
-    out_limit: bool
+    out_limit : bool
         Whether the out limit is active.
 
     Returns

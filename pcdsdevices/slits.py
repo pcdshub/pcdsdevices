@@ -82,8 +82,8 @@ class SlitPositioner(PVPositioner, FltMvInterface):
         return self._egu or self.readback._read_pv.units
 
     def _setup_move(self, position):
-        # This is subclassed because we need `wait` to be set to False unlike
-        # the default PVPositioner method. `wait` set to True will not return
+        # This is subclassed because we need `wait` to be set to `False` unlike
+        # the default PVPositioner method. `wait` set to `True` will not return
         # until the move has completed
         logger.debug('%s.setpoint = %s', self.name, position)
         self.setpoint.put(position, wait=False)
@@ -164,7 +164,7 @@ class Slits(Device, MvInterface):
 
         Returns
         -------
-        status : `AndStatus`
+        status : AndStatus
             Logical combination of the request to both horizontal and vertical
             motors.
         """

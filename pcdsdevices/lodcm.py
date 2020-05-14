@@ -105,12 +105,12 @@ class LODCM(Device, BaseInterface):
 
     @property
     def inserted(self):
-        """Returns ``True`` if either h1n crystal is in."""
+        """Returns `True` if either h1n crystal is in."""
         return self.h1n.inserted
 
     @property
     def removed(self):
-        """Returns ``True`` if neither h1n crystal is in."""
+        """Returns `True` if neither h1n crystal is in."""
         return self.h1n.removed
 
     def remove(self, moved_cb=None, timeout=None, wait=False):

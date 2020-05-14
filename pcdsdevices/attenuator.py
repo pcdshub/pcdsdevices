@@ -165,7 +165,7 @@ class AttBase(FltMvInterface, PVPositioner):
 
     @property
     def removed(self):
-        """True if all blades are removed."""
+        """`True` if all blades are removed."""
         return self.position == 1
 
     def insert(self, wait=False, timeout=None, moved_cb=None):

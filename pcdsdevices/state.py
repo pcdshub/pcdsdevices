@@ -29,7 +29,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 %s
     Attributes
     ----------
-    state : `Signal`
+    state : Signal
         This signal is the final authority on what state the object is in.
 
     states_list : list of str
@@ -39,7 +39,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
         a subclass. 'Unknown' must be omitted in the class definition and will
         be added dynamically in position 0 when the object is created.
 
-    states_enum : `~enum.Enum`
+    states_enum : ~enum.Enum
         An enum that represents all possible states. This will be constructed
         for the user based on the contents of `states_list` and
         `_states_alias`, but it can also be overriden in a child class.
@@ -127,11 +127,11 @@ class StatePositioner(Device, PositionerBase, MvInterface):
             Move timeout in seconds.
 
         wait : bool, optional
-            If True, do not return until the motion has completed.
+            If `True`, do not return until the motion has completed.
 
         Returns
         -------
-        status : `StateStatus`
+        status : StateStatus
             `Status` object that represents the move's progress.
         """
 
@@ -163,7 +163,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
         Returns
         -------
-        status : `StateStatus`
+        status : StateStatus
             `Status` object that represents the move's progress.
         """
 
@@ -219,9 +219,9 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
         Returns
         -------
-        state : `~enum.Enum`
-            The corresponding `Enum` entry for this value. It has two
-            meaningful fields, `name` and `value`.
+        state : ~enum.Enum
+            The corresponding Enum entry for this value. It has two
+            meaningful fields, ``name`` and ``value``.
         """
 
         if not isinstance(value, (int, str)):
@@ -237,9 +237,9 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
         Returns
         -------
-        state : `~enum.Enum`
-            The corresponding `~enum.Enum` entry for this value. It has two
-            meaningful fields, `name` and `value`.
+        state : ~enum.Enum
+            The corresponding Enum entry for this value. It has two
+            meaningful fields, ``name`` and ``value``.
         """
 
         # Check for a malformed string digit
@@ -267,9 +267,9 @@ class StatePositioner(Device, PositionerBase, MvInterface):
 
         Parameters
         ----------
-        state : `~enum.Enum`
-            Object whose `.name` attribute is the string enum name and whose
-            `.value` attribute is the integer enum value.
+        state : ~enum.Enum
+            Object whose ``.name`` attribute is the string Enum name and whose
+            ``.value`` attribute is the integer Enum value.
         """
 
         self.state.put(state.value)
@@ -621,7 +621,7 @@ class StateStatus(SubscriptionStatus):
 
     Parameters
     ----------
-    device : `StatePositioner`
+    device : StatePositioner
         The relevant states device.
 
     desired_state : str

@@ -94,12 +94,12 @@ class PIM(Device, BaseInterface):
 
     @property
     def removed(self):
-        """Returns ``True`` if the yag and diode are removed from the beam."""
+        """Returns `True` if the yag and diode are removed from the beam."""
         return self.state.removed
 
     @property
     def inserted(self):
-        """Returns ``True`` if yag or diode are inserted."""
+        """Returns `True` if yag or diode are inserted."""
         return self.state.inserted
 
     def insert(self, moved_cb=None, timeout=None, wait=False):

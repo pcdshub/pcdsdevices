@@ -56,7 +56,7 @@ class SyncAxesBase(PseudoPositioner, FltMvInterface):
 
         Parameters
         ----------
-        real_position : `~typing.NamedTuple`
+        real_position : ~typing.NamedTuple
             The positions of each of the real motors, accessible by name.
 
         Returns
@@ -108,10 +108,10 @@ class DelayBase(PseudoPositioner, FltMvInterface):
 
     Attributes
     ----------
-    delay : `~ophyd.pseudopos.PseudoSingle`
+    delay : ~ophyd.pseudopos.PseudoSingle
         The fake axis. It has configurable units and number of bounces.
 
-    motor : `~ophyd.positioner.PositionerBase`
+    motor : ~ophyd.positioner.PositionerBase
         The real axis. This can be a number of things based on the inheriting
         class, but it must have a valid ``egu`` so we know how to convert to
         the time axis.

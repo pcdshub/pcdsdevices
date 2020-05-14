@@ -109,8 +109,8 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
         self.reset(wait=True)
         self._log_request('CLOSED')
@@ -124,8 +124,8 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
         self.reset(wait=True)
         self._log_request('FLIP-FLOP')

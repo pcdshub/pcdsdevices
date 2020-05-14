@@ -82,8 +82,7 @@ class EventSequence(Device, BaseInterface):
 
         update_length : bool
             Option to automatically update the play length (the '{prefix}:LEN'
-            PV) to the length of the written sequence. Defaults to
-            `True`.
+            PV) to the length of the written sequence. Defaults to `True`.
 
         Examples
         --------
@@ -214,7 +213,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface, BaseInterface):
 
         Returns
         -------
-        status : `~ophyd.status.SubscriptionStatus`
+        status : ~ophyd.status.SubscriptionStatus
             Status indicating whether or not the EventSequencer has started.
         """
 
@@ -296,7 +295,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface, BaseInterface):
 
         Returns
         -------
-        status : `DeviceStatus` or `SubscriptionStatus`
+        status : DeviceStatus or SubscriptionStatus
             Status indicating completion of sequence.
 
         Notes

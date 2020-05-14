@@ -59,10 +59,10 @@ class OMMotor(FltMvInterface, PVPositioner):
 
         Raises
         ------
-        `ValueError`
-            If position is :keyword:`None`, `~numpy.NaN` or `~numpy.Inf`.
+        ValueError
+            If position is `None`, `~numpy.NaN` or `~numpy.Inf`.
 
-        `LimitError`
+        LimitError
             If the position is outside the soft limits.
         """
 

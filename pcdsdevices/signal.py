@@ -60,7 +60,7 @@ def select_pytmc_class(io=None, *, prefix, write_cls, read_only_cls):
 
 
 def pytmc_writable(io):
-    """Returns True if the pytmc io arg represents a writable PV."""
+    """Returns `True` if the pytmc io arg represents a writable PV."""
     norm = normalize_io(io)
     if norm == 'output':
         return True
@@ -214,7 +214,7 @@ class AvgSignal(Signal):
 
     Parameters
     ----------
-    signal : `Signal`
+    signal : Signal
         Any subclass of `ophyd.signal.Signal` that returns a numeric value.
         This signal will be subscribed to be `AvgSignal` to calculate the mean.
 

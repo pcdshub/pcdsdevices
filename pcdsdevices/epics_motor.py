@@ -116,9 +116,10 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
         Raises
         ------
-        :exc:`MotorDisabledError`
+        MotorDisabledError
             If the motor is passed any motion command when disabled.
-        :exc:`~ophyd.utils.LimitError`
+
+        ~ophyd.utils.errors.LimitError
             When the provided value is outside the range of the low
             and high limits.
         """
@@ -216,10 +217,11 @@ class PCDSMotorBase(EpicsMotorInterface):
 
         Raises
         ------
-        :exc:`.MotorDisabledError`
+        MotorDisabledError
             If the motor is passed any motion command when disabled, or if
             the '.SPG' field is not set to 'Go'.
-        :exc:`~ophyd.utils.LimitError`
+
+        ~ophyd.utils.errors.LimitError
             When the provided value is outside the range of the low
             and high limits.
         """
@@ -268,7 +270,7 @@ class IMS(PCDSMotorBase):
     __doc__ += basic_positioner_init
     # Bit masks to clear errors and flags
     _bit_flags = {'powerup': {'clear': 36,
-                              'readback':  24},
+                              'readback': 24},
                   'stall': {'clear': 40,
                             'readback': 22},
                   'error': {'clear': 48,
