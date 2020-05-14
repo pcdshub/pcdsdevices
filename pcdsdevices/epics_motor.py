@@ -384,7 +384,9 @@ class IMS(PCDSMotorBase):
         # Check that we need to actually set the flag
         if flag_is_cleared(value=self.bit_status.get()):
             logger.debug("%s flag is not currently active", flag)
-            return DeviceStatus(self, done=True, success=True)
+            st = DeviceStatus(self)
+            st.set_finished()
+            return st
 
         # Issue our command
         logger.info('Clearing %s flag ...', flag)
