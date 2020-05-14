@@ -181,6 +181,6 @@ texinfo_documents = [
 
 # -- Sources of external documentation to cross-referencing----------------
 
-#intersphinx_mapping = {'ophyd': ('https://blueskyproject.io/ophyd/', None),
-intersphinx_mapping = {'ophyd': ('/Users/pennebak/Documents/GitHub/ophyd/doc/build/html', None),
-                       'python': ('https://docs.python.org/3', None)}
+intersphinx_mapping = {'ophyd': ('https://blueskyproject.io/ophyd', None),
+                       'python': ('https://docs.python.org/3', None),
+                       'numpy': ('https://docs.scipy.org/doc/numpy', None)}
