@@ -271,7 +271,7 @@ class LensStackBase(PseudoPositioner):
     def _make_safe(self):
         """
         Move the thickest attenuator in to prevent damage due to wayward
-        focused x-rays. Return :keyword:`True` if the attenuator was moved in.
+        focused x-rays. Return `True` if the attenuator was moved in.
         """
         if self._att_obj is None:
             print("WARNING: Cannot do safe crl moveZ,\

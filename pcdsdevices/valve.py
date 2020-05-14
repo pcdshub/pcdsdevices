@@ -29,7 +29,7 @@ class Stopper(InOutPVStatePositioner):
 
     A base class for a device with two limits switches controlled via an
     external command PV. This fully encompasses the controls Stopper
-    installations as well as un-interlocked `GateValve`s.
+    installations as well as un-interlocked `GateValve` s.
 
     Parameters
     ----------

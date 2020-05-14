@@ -57,12 +57,12 @@ class IPMDiode(Device, BaseInterface):
 
     @property
     def inserted(self):
-        """Returns :keyword:`True` if diode is inserted."""
+        """Returns `True` if diode is inserted."""
         return self.state.inserted
 
     @property
     def removed(self):
-        """Returns :keyword:`True` if diode is removed."""
+        """Returns `True` if diode is removed."""
         return self.state.removed
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
@@ -104,13 +104,13 @@ class IPMMotion(Device, BaseInterface):
 
     @property
     def inserted(self):
-        """Returns :keyword:`True` if target is inserted."""
+        """Returns `True` if target is inserted."""
         return self.target.inserted and self.diode.inserted
 
     @property
     def removed(self):
         """
-        Returns :keyword:`True` if target is removed and diode is not blocking.
+        Returns `True` if target is removed and diode is not blocking.
         Diode does not block when inserted or removed.
         """
         return (self.target.removed and

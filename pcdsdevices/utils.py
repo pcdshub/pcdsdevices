@@ -38,7 +38,7 @@ def is_input():
     Returns
     -------
     is_input : bool
-        :keyword:`True` if there is data in `sys.stdin`.
+        `True` if there is data in `sys.stdin`.
     """
 
     return select.select([sys.stdin], [], [], 1) == ([sys.stdin], [], [])

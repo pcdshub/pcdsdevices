@@ -44,7 +44,7 @@ class InOutPositioner(StatePositioner):
         and :const:`~math.nan` (no idea!) for unaccounted states.
 
     _in_if_not_out : bool
-        If :keyword:`True`, shorthand for saying "All states not unknown and
+        If `True`, shorthand for saying "All states not unknown and
         not in out_states belong in the in_states list."
     """
 
@@ -77,12 +77,12 @@ class InOutPositioner(StatePositioner):
 
     @property
     def inserted(self):
-        """:keyword:`True` if the device is inserted."""
+        """`True` if the device is inserted."""
         return self._pos_in_list(self.in_states)
 
     @property
     def removed(self):
-        """:keyword:`True` if the device is removed."""
+        """`True` if the device is removed."""
         return self._pos_in_list(self.out_states)
 
     def insert(self, moved_cb=None, timeout=None, wait=False):

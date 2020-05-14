@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 class SlitPositioner(PVPositioner, FltMvInterface):
     """
-    Abstraction of Slit Axis.
+    Abstraction of a Slit axis.
 
     Each adjustable parameter of the slit (center, width) can be modeled as a
     motor in itself, even though each controls two different actual motors in
@@ -45,16 +45,16 @@ class SlitPositioner(PVPositioner, FltMvInterface):
     prefix : str
         The prefix location of the slits, e.g. 'MFX:DG2'.
 
+    name : str
+        Alias for the axis.
+
     slit_type : {'XWIDTH', 'YWIDTH', 'XCENTER', 'YCENTER'}
         The aspect of the slit position you would like to control with this
         specific motor.
 
-    name : str
-        Alias for the axis.
-
     limits : tuple, optional
         Limits on the motion of the positioner. By default, the limits on the
-        setpoint PV are used if None is given.
+        setpoint PV are used if `None` is given.
 
     See Also
     --------
@@ -62,11 +62,11 @@ class SlitPositioner(PVPositioner, FltMvInterface):
         SlitPositioner inherits directly from `~ophyd.PVPositioner`.
     """
 
-    readback = FCpt(EpicsSignalRO, "{self.prefix}:ACTUAL_{self._dirlong}",
+    readback = FCpt(EpicsSignalRO, '{self.prefix}:ACTUAL_{self._dirlong}',
                     auto_monitor=True, kind='hinted')
-    setpoint = FCpt(EpicsSignal, "{self.prefix}:{self._dirshort}_REQ",
+    setpoint = FCpt(EpicsSignal, '{self.prefix}:{self._dirshort}_REQ',
                     auto_monitor=True, kind='normal')
-    done = Cpt(EpicsSignalRO, ":DMOV", auto_monitor=True, kind='omitted')
+    done = Cpt(EpicsSignalRO, ':DMOV', auto_monitor=True, kind='omitted')
 
     def __init__(self, prefix, *, slit_type="", name=None,
                  limits=None, **kwargs):
@@ -115,15 +115,15 @@ class Slits(Device, MvInterface):
     exceed this `nominal_aperture` for the slits to be considered removed.
     """
 
-    xwidth = Cpt(SlitPositioner, '', slit_type="XWIDTH", kind='hinted')
-    ywidth = Cpt(SlitPositioner, '', slit_type="YWIDTH", kind='hinted')
+    xwidth = Cpt(SlitPositioner, '', slit_type='XWIDTH', kind='hinted')
+    ywidth = Cpt(SlitPositioner, '', slit_type='YWIDTH', kind='hinted')
     nominal_aperture = Cpt(SignalRO, kind='normal')
-    xcenter = Cpt(SlitPositioner, '', slit_type="XCENTER", kind='normal')
-    ycenter = Cpt(SlitPositioner, '', slit_type="YCENTER", kind='normal')
-    blocked = Cpt(EpicsSignalRO, ":BLOCKED", kind='omitted')
-    open_cmd = Cpt(EpicsSignal, ":OPEN", kind='omitted')
-    close_cmd = Cpt(EpicsSignal, ":CLOSE", kind='omitted')
-    block_cmd = Cpt(EpicsSignal, ":BLOCK", kind='omitted')
+    xcenter = Cpt(SlitPositioner, '', slit_type='XCENTER', kind='normal')
+    ycenter = Cpt(SlitPositioner, '', slit_type='YCENTER', kind='normal')
+    blocked = Cpt(EpicsSignalRO, ':BLOCKED', kind='omitted')
+    open_cmd = Cpt(EpicsSignal, ':OPEN', kind='omitted')
+    close_cmd = Cpt(EpicsSignal, ':CLOSE', kind='omitted')
+    block_cmd = Cpt(EpicsSignal, ':BLOCK', kind='omitted')
     # Subscription information
     SUB_STATE = 'sub_state_changed'
     _default_sub = SUB_STATE
@@ -148,16 +148,15 @@ class Slits(Device, MvInterface):
         ---------
         size : float or tuple of float
             Target size for slits in both x and y axis. Either specify as a
-            tuple for a rectangular aperture (width, height) or set both with
-            single floating point value to use set a square width.
+            tuple for a rectangular aperture, ``(width, height)``, or set both
+            with single floating point value to use a square opening.
 
         wait : bool
-            If :keyword:`True`, block until move is completed.
-
+            If `True`, block until move is completed.
 
         timeout : float, optional
-            Maximum time for the motion. If None is given, the default value of
-            `xwidth` and `ywidth` positioners is used.
+            Maximum time for the motion. If `None` is given, the default value
+            of `xwidth` and `ywidth` positioners is used.
 
         moved_cb : callable, optional
             Function to be run when the operation finishes. This callback
@@ -204,7 +203,10 @@ class Slits(Device, MvInterface):
 
     @property
     def current_aperture(self):
-        """Current size of the aperture (width, height)."""
+        """
+        Current size of the aperture. Returns a tuple in the form
+        ``(width, height)``.
+        """
         return (self.xwidth.position, self.ywidth.position)
 
     @property
@@ -218,14 +220,13 @@ class Slits(Device, MvInterface):
         Parameters
         ----------
         size : float, optional
-            Open the slits to a specific size. Defaults to
-            :attr:`.nominal_aperture`.
+            Open the slits to a specific size. Defaults to `.nominal_aperture`.
 
         wait : bool, optional
             Wait for the status object to complete the move before returning.
 
         timeout : float, optional
-            Maximum time to wait for the motion. If None, the default timeout
+            Maximum time to wait for the motion. If `None`, the default timeout
             for this positioner is used.
 
         Returns
@@ -243,11 +244,11 @@ class Slits(Device, MvInterface):
         return self.move(size, wait=wait, timeout=timeout, **kwargs)
 
     def set(self, size):
-        """Alias for the move method, here for bluesky compatibilty."""
+        """Alias for the move method, here for ``bluesky`` compatibilty."""
         return self.move(size, wait=False)
 
     def open(self):
-        """Uses the built-in ``OPEN`` record to move open the aperture."""
+        """Uses the built-in 'OPEN' record to move open the aperture."""
         self.open_cmd.put(1)
 
     def close(self):
@@ -323,9 +324,9 @@ class PowerSlits(Device, BaseInterface):
         The PV base of the device.
     """
 
-    top = FCpt(EpicsMotor, "{self.prefix}:MMS:TOP", kind='normal')
-    bottom = FCpt(EpicsMotor, "{self.prefix}:MMS:BOTTOM")
-    north = FCpt(EpicsMotor, "{self.prefix}:MMS:NORTH")
-    south = FCpt(EpicsMotor, "{self.prefix}:MMS:SOUTH")
+    top = FCpt(EpicsMotor, '{self.prefix}:MMS:TOP', kind='normal')
+    bottom = FCpt(EpicsMotor, '{self.prefix}:MMS:BOTTOM')
+    north = FCpt(EpicsMotor, '{self.prefix}:MMS:NORTH')
+    south = FCpt(EpicsMotor, '{self.prefix}:MMS:SOUTH')
     rtds = DDCpt(_rtd_fields(RTD, 'rtd', range(1, 9)))
-    fsw = Cpt(EpicsSignalRO, ":FSW", kind='normal')
+    fsw = Cpt(EpicsSignalRO, ':FSW', kind='normal')

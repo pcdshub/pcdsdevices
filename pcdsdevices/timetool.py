@@ -26,7 +26,7 @@ class Timetool(CombinedInOutRecordPositioner):
     name : str
         A name to refer to the device.
 
-    prefix_det : ``str``
+    prefix_det : str
         The EPICS base PV of the detector.
     """
 

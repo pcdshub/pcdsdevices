@@ -56,7 +56,7 @@ class SyncAxesBase(PseudoPositioner, FltMvInterface):
 
         Parameters
         ----------
-        real_position : `~collections.namedtuple`
+        real_position : `~typing.NamedTuple`
             The positions of each of the real motors, accessible by name.
 
         Returns

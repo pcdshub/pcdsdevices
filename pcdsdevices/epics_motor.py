@@ -32,16 +32,17 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     The full list of preferences implemented here are:
 
         1. Use the FltMvInterface mixin class for some name aliases and
-        bells-and-whistles level functions.
+           bells-and-whistles level functions.
         2. Instead of using the limit fields on the setpoint PV, the EPICS
-        motor class has the 'LLM' and 'HLM' soft limit fields for
-        convenient usage. Unfortunately, pyepics does not update its internal
-        cache of the limits after the first get attempt. We therefore disregard
-        the internal limits of the PV and use the soft limit records
-        exclusively.
+           motor class has the 'LLM' and 'HLM' soft limit fields for
+           convenient usage. Unfortunately, pyepics does not update its
+           internal cache of the limits after the first get attempt. We
+           therefore disregard the internal limits of the PV and use the soft
+           limit records exclusively.
         3. The disable puts field '.DISP' is added, along with :meth:`enable`
-        and :meth:`disable` convenience methods. When '.DISP' is 1, puts to the
-        motor record will be ignored, effectively disabling the interface.
+           and :meth:`disable` convenience methods. When '.DISP' is 1, puts to
+           the motor record will be ignored, effectively disabling the
+           interface.
         4. The description field keeps track of the motors scientific use along
            the beamline.
     """

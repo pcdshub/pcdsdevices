@@ -103,8 +103,8 @@ def set_engineering_mode(expert):
     Parameters
     ----------
     expert : bool
-        Set to :keyword:`True` to enable expert mode, or :keyword:`False` to
-        disable it. :keyword:`True` is the starting value.
+        Set to `True` to enable expert mode, or :keyword:`False` to
+        disable it. `True` is the starting value.
     """
 
     global engineering_mode
@@ -156,7 +156,7 @@ class MvInterface(BaseInterface):
             will be use.
 
         wait : bool, optional
-            If :keyword:`True`, wait for motion completion before returning.
+            If `True`, wait for motion completion before returning.
             Defaults to :keyword:`False`.
         """
 
@@ -252,7 +252,7 @@ class FltMvInterface(MvInterface):
             will be use.
 
         wait : bool, optional
-            If :keyword:`True`, wait for motion completion before returning.
+            If `True`, wait for motion completion before returning.
             Defaults to :keyword:`False`.
         """
 
@@ -644,7 +644,7 @@ class Presets:
                 default timeout will be use.
 
             wait : bool, optional
-                If :keyword:`True`, wait for motion completion before
+                If `True`, wait for motion completion before
                 returning. Defaults to :keyword:`False`.
             """
 

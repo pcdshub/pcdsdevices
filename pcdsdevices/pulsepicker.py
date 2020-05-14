@@ -78,7 +78,7 @@ class PulsePicker(InOutPVStatePositioner):
         Parameters
         ----------
         wait : bool, optional
-            If :keyword:`True`, block until procedure is done.
+            If `True`, block until procedure is done.
         """
 
         self._log_request('RESET')
@@ -94,7 +94,7 @@ class PulsePicker(InOutPVStatePositioner):
         Parameters
         ----------
         wait : bool, optional
-            If :keyword:`True`, block until procedure is done.
+            If `True`, block until procedure is done.
         """
 
         self.reset(wait=True)
@@ -140,7 +140,7 @@ class PulsePicker(InOutPVStatePositioner):
         Parameters
         ----------
         wait : bool, optional
-            If :keyword:`True`, block until procedure is done.
+            If `True`, block until procedure is done.
         """
 
         self.reset(wait=True)
@@ -156,7 +156,7 @@ class PulsePicker(InOutPVStatePositioner):
         Parameters
         ----------
         wait : bool, optional
-            If :keyword:`True`, block until procedure is done.
+            If `True`, block until procedure is done.
         """
 
         self.reset(wait=True)

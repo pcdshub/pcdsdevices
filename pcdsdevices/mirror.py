@@ -206,7 +206,7 @@ class OffsetMirror(Device, BaseInterface):
 
     @property
     def inserted(self):
-        """Returns :keyword:`True`. Treats OffsetMirror as always inserted."""
+        """Returns `True`. Treats OffsetMirror as always inserted."""
         return True
 
     @property

@@ -7,29 +7,30 @@ class UnrelatedComponent(Component):
 
     These components each need to have a full prefix specified rather than
     the normal ``suffix`` extension or formatting. This is specified in the
-    device's **kwargs, e.g. subdevice_prefix='SOME:PV'.
+    device's ``**kwargs``, e.g. ``subdevice_prefix='SOME:PV'``.
 
-    The collect_prefixes class method is used to gather these special prefixes
-    in a convenient one-liner rather than needing to sift through formatted
-    components.
+    The `collect_prefixes` class method is used to gather these special
+    prefixes in a convenient one-liner rather than needing to sift through
+    formatted components.
     """
+
     @classmethod
     def collect_prefixes(cls, device, kwargs):
         """
-        Gather all the special prefixes from a device's **kwargs.
+        Gather all the special prefixes from a device's ``**kwargs``.
 
-        This must be called once during the __init__ of a device with
+        This must be called once during the ``__init__`` of a device with
         UnrelatedComponent instances.
 
         Parameters
         ----------
-        device : `~ophyd.device.Device`
-            The device to gather prefixes for. Typically this is just
-            :keyword:`self`.
+        device : ~ophyd.device.Device
+            The device to gather prefixes for. Typically this is just ``self``.
 
         kwargs : dict
-            The **kwargs dictionary with extra prefixes defined.
+            The kwargs dictionary with extra prefixes defined.
         """
+
         device.unrelated_prefixes = {}
         for key, value in list(kwargs.items()):
             if key.endswith('_prefix'):

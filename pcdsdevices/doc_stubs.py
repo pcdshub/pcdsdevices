@@ -30,7 +30,7 @@ insert_remove = """
             Maximum time to wait for the motion.
 
         wait : bool, optional
-            If :keyword:`True`, do not continue until the move is complete.
+            If `True`, do not continue until the move is complete.
 
         Returns
         -------

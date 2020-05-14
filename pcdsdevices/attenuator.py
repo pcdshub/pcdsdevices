@@ -29,8 +29,8 @@ class Filter(InOutPositioner):
     can work around mechanical problems.
 
     This is not intended to be instantiated by a user, but instead included as
-    an :class:`ophyd.Component` in a subclass of :class:`AttBase`. You can
-    instantiate these classes via the :func:`Attenuator` factory function.
+    a :class:`~ophyd.device.Component` in a subclass of :class:`AttBase`. You
+    can instantiate these classes via the :func:`Attenuator` factory function.
     """
 
     state = Cpt(EpicsSignal, ':STATE', write_pv=':GO', kind='hinted')
@@ -160,12 +160,12 @@ class AttBase(FltMvInterface, PVPositioner):
 
     @property
     def inserted(self):
-        """:keyword:`True` if any blade is inserted."""
+        """`True` if any blade is inserted."""
         return self.position < 1
 
     @property
     def removed(self):
-        """:keyword:`True` if all blades are removed."""
+        """True if all blades are removed."""
         return self.position == 1
 
     def insert(self, wait=False, timeout=None, moved_cb=None):
@@ -180,7 +180,7 @@ class AttBase(FltMvInterface, PVPositioner):
         """
         Store the original positions of all filter blades.
 
-        This is a `bluesky` method called to set up the device for a scan.
+        This is a ``bluesky`` method called to set up the device for a scan.
         At the end of the scan, :meth:`.unstage` should be called to restore
         the original positions of the filter blades.
 
@@ -330,7 +330,7 @@ def Attenuator(prefix, n_filters, *, name, use_3rd=False, **kwargs):
         An identifying name for the attenuator.
 
     use_3rd : bool, optional
-        If :keyword:`True`, we'll use the third harmonic transmissions instead
+        If `True`, we'll use the third harmonic transmissions instead
         of the fundamental frequency.
     """
 

@@ -34,7 +34,7 @@ class EventSequence(Device, BaseInterface):
         ----------
         current_length : bool
             Option to retrieve the sequence up to the current length. Defaults
-            to :keyword:`True`.
+            to `True`.
 
         Examples
         --------
@@ -83,7 +83,7 @@ class EventSequence(Device, BaseInterface):
         update_length : bool
             Option to automatically update the play length (the '{prefix}:LEN'
             PV) to the length of the written sequence. Defaults to
-            :keyword:`True`.
+            `True`.
 
         Examples
         --------
