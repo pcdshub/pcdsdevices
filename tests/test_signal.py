@@ -2,6 +2,7 @@ import logging
 from unittest.mock import Mock
 
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
+
 from pcdsdevices.signal import AvgSignal, PytmcSignal
 
 logger = logging.getLogger(__name__)
@@ -26,20 +27,20 @@ def test_avg_signal():
     assert avg.averages == 2
 
     sig.put(1)
-    assert avg.value == 1
+    assert avg.get() == 1
     sig.put(3)
-    assert avg.value == 2
+    assert avg.get() == 2
     sig.put(2)
-    assert avg.value == 2.5
+    assert avg.get() == 2.5
 
     avg.averages = 3
 
     sig.put(1)
-    assert avg.value == 1
+    assert avg.get() == 1
     sig.put(3)
-    assert avg.value == 2
+    assert avg.get() == 2
     sig.put(2)
-    assert avg.value == 2
+    assert avg.get() == 2
 
     cb = Mock()
     avg.subscribe(cb)

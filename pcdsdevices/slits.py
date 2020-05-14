@@ -272,8 +272,8 @@ class Slits(Device, MvInterface):
         """
         Store the initial values of the aperture position before scanning
         """
-        self._original_vals[self.xwidth.setpoint] = self.xwidth.readback.value
-        self._original_vals[self.ywidth.setpoint] = self.ywidth.readback.value
+        self._original_vals[self.xwidth.setpoint] = self.xwidth.readback.get()
+        self._original_vals[self.ywidth.setpoint] = self.ywidth.readback.get()
         return super().stage()
 
     def subscribe(self, cb, event_type=None, run=True):

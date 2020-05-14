@@ -67,7 +67,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         """
         The lower soft limit for the motor.
         """
-        return self.low_limit_travel.value
+        return self.low_limit_travel.get()
 
     @low_limit.setter
     def low_limit(self, value):
@@ -78,7 +78,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         """
         The higher soft limit for the motor.
         """
-        return self.high_limit_travel.value
+        return self.high_limit_travel.get()
 
     @high_limit.setter
     def high_limit(self, value):
@@ -142,7 +142,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
                                          self.high_limit))
 
         # Find the value for the disabled attribute
-        if self.disabled.value == 1:
+        if self.disabled.get() == 1:
             raise MotorDisabledError("Motor is not enabled. Motion requests "
                                      "ignored")
 
@@ -231,11 +231,11 @@ class PCDSMotorBase(EpicsMotorInterface):
         """
         super().check_value(value)
 
-        if self.motor_spg.value in [0, 'Stop']:
+        if self.motor_spg.get() in [0, 'Stop']:
             raise MotorDisabledError("Motor is stopped.  Motion requests "
                                      "ignored until motor is set to 'Go'")
 
-        if self.motor_spg.value in [1, 'Pause']:
+        if self.motor_spg.get() in [1, 'Pause']:
             raise MotorDisabledError("Motor is paused.  If a move is set, "
                                      "motion will resume when motor is set "
                                      "to 'Go'")

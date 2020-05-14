@@ -112,14 +112,14 @@ class MPS(MPSBase, Device):
         """
         Whether the MPS bit is faulted or not
         """
-        return bool(self.fault.value)
+        return bool(self.fault.get())
 
     @property
     def bypassed(self):
         """
         Bypass state of the MPS bit
         """
-        return bool(self.bypass.value)
+        return bool(self.bypass.get())
 
     def _sub_to_children(self):
         """

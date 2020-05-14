@@ -3,6 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 from ophyd.sim import make_fake_device
+
 from pcdsdevices.valve import GateValve, InterlockError, PPSStopper, Stopper
 
 logger = logging.getLogger(__name__)
@@ -90,7 +91,7 @@ def test_stopper_motion(fake_stopper):
     # Remove
     stopper.open(wait=False)
     # Check write PV
-    assert stopper.command.value == stopper.commands.open_valve.value
+    assert stopper.command.get() == stopper.commands.open_valve.value
 
 
 def test_stopper_subscriptions(fake_stopper):
@@ -109,7 +110,7 @@ def test_valve_motion(fake_valve):
     # Remove
     valve.open(wait=False)
     # Check write PV
-    assert valve.command.value == valve.commands.open_valve.value
+    assert valve.command.get() == valve.commands.open_valve.value
     # Raises interlock
     valve.interlock.sim_put(0)
     assert valve.interlocked

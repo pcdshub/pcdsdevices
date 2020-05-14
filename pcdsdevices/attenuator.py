@@ -5,7 +5,6 @@ import logging
 import time
 
 import numpy as np
-
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
@@ -199,7 +198,7 @@ class AttBase(FltMvInterface, PVPositioner):
                 self._original_vals[filt.state] = filt.out_states[0]
             # Otherwise, remember so we can restore
             else:
-                self._original_vals[filt.state] = filt.state.value
+                self._original_vals[filt.state] = filt.state.get()
         return super().stage()
 
     def _setup_move(self, position):

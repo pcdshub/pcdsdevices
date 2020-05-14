@@ -1,11 +1,12 @@
 import logging
 
-import pcdsdevices.sequencer
 import pytest
 from bluesky import RunEngine
 from bluesky.plan_stubs import sleep
 from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from ophyd.sim import NullStatus, make_fake_device
+
+import pcdsdevices.sequencer
 from pcdsdevices.sequencer import EventSequence, EventSequencer
 
 logger = logging.getLogger(__name__)
@@ -111,7 +112,7 @@ def test_complete_run_forever(sequence):
     seq._acquiring = True
     # Run Forever mode should tell this to stop
     st = seq.complete()
-    assert seq.play_control.value == 0
+    assert seq.play_control.get() == 0
     assert st.done
     assert st.success
 

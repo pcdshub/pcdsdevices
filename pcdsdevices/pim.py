@@ -43,7 +43,7 @@ class PIMY(InOutRecordPositioner, BaseInterface):
 
     def stage(self):
         """Save the original position to be restored on `unstage`."""
-        self._original_vals[self.state] = self.state.value
+        self._original_vals[self.state] = self.state.get()
         return super().stage()
 
 
