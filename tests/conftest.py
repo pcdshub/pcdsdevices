@@ -5,6 +5,7 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+from epics import PV
 from ophyd.sim import FakeEpicsSignal, make_fake_device
 
 from pcdsdevices.attenuator import (MAX_FILTERS, Attenuator, _att3_classes,
@@ -20,6 +21,8 @@ warnings.filterwarnings('ignore',
 FakeEpicsSignal._metadata_changed = lambda *args, **kwargs: None
 FakeEpicsSignal.pvname = ''
 FakeEpicsSignal._read_pv = SimpleNamespace(get_ctrlvars=lambda: None)
+# Stupid patch that somehow makes the test cleanup bug go away
+PV.count = property(lambda self: 1)
 
 for name, cls in _att_classes.items():
     _att_classes[name] = make_fake_device(cls)
