@@ -627,6 +627,10 @@ class StateStatus(SubscriptionStatus):
         super().__init__(device, check_state, event_type=device.SUB_STATE,
                          timeout=timeout, settle_time=settle_time)
 
-    def _finished(self, success=True, **kwargs):
-        self.device._done_moving(success=success)
-        super()._finished(success=success, **kwargs)
+    def set_finished(self, **kwargs):
+        self.device._done_moving(success=True)
+        super().set_finished(**kwargs)
+
+    def set_exception(self, exc):
+        self.device._done_moving(success=False)
+        super().set_exception(exc)
