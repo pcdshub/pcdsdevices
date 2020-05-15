@@ -49,11 +49,6 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     # been changed without a re-connection of the PV. Instead we trust the soft
     # limits records
     user_setpoint = Cpt(EpicsSignal, ".VAL", limits=False, kind='normal')
-    # Kluge override for auto_monitor=True to help disconnected instantiation
-    low_limit_travel = Cpt(EpicsSignal, ".LLM", kind='omitted',
-                           auto_monitor=True)
-    high_limit_travel = Cpt(EpicsSignal, ".HLM", kind='omitted',
-                            auto_monitor=True)
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
     # Description is valuable
