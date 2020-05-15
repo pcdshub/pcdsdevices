@@ -73,6 +73,7 @@ def test_kickoff(sequence):
     # Our status should not be done until the sequencer starts
     assert not st.done
     seq.play_status.sim_put(2)
+    st.wait(timeout=1)
     assert st.done
     assert st.success
 
@@ -86,6 +87,7 @@ def test_trigger(sequence):
     # Sequencer has started
     assert sequence.play_control.get() == 1
     # Trigger is automatically complete
+    trig_status.wait(timeout=1)
     assert trig_status.done
     assert trig_status.success
     # Stop sequencer
@@ -102,6 +104,7 @@ def test_trigger(sequence):
     assert not trig_status.done
     # Simulate the sequence ending
     sequence.play_status.sim_put(0)
+    trig_status.wait(timeout=1)
     assert trig_status.done
     assert trig_status.success
 
@@ -113,6 +116,7 @@ def test_complete_run_forever(sequence):
     # Run Forever mode should tell this to stop
     st = seq.complete()
     assert seq.play_control.get() == 0
+    st.wait(timeout=1)
     assert st.done
     assert st.success
 
@@ -128,6 +132,7 @@ def test_complete_run_once(sequence):
     # Our status should not be done until the sequence stops naturally
     assert not st.done
     seq.play_status.sim_put(0)
+    st.wait(timeout=1)
     assert st.done
     assert st.success
 

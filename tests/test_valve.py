@@ -87,6 +87,7 @@ def test_stopper_motion(fake_stopper):
     status = stopper.close(wait=False)
     stopper.open_limit.sim_put(0)
     stopper.closed_limit.sim_put(1)
+    status.wait(timeout=1)
     assert status.done and status.success
     # Remove
     stopper.open(wait=False)
