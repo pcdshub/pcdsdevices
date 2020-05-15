@@ -2,9 +2,10 @@ import os
 import shutil
 import warnings
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
-from ophyd.sim import make_fake_device
+from ophyd.sim import FakeEpicsSignal, make_fake_device
 
 from pcdsdevices.attenuator import (MAX_FILTERS, Attenuator, _att3_classes,
                                     _att_classes)
@@ -15,7 +16,10 @@ from pcdsdevices.mv_interface import setup_preset_paths
 # Needs to not pass tons of kwargs up to Signal.put
 warnings.filterwarnings('ignore',
                         message='Signal.put no longer takes keyword arguments')
-
+# Other temporary patches to FakeEpicsSignal
+FakeEpicsSignal._metadata_changed = lambda *args, **kwargs: None
+FakeEpicsSignal.pvname = ''
+FakeEpicsSignal._read_pv = SimpleNamespace(get_ctrlvars=lambda: None)
 
 for name, cls in _att_classes.items():
     _att_classes[name] = make_fake_device(cls)
