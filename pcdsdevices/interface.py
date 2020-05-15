@@ -14,7 +14,6 @@ from types import MethodType, SimpleNamespace
 from weakref import WeakSet
 
 import yaml
-
 from bluesky.utils import ProgressBar
 from ophyd.device import Kind
 from ophyd.ophydobj import OphydObject
@@ -866,7 +865,7 @@ def tweak_base(*args):
                 movement(-scale, up)
             elif len(args) > 1 and inp == up:
                 movement(scale, inp)
-            elif inp not in(up, down, left, right, shift_down, shift_up):
+            elif inp not in (up, down, left, right, shift_down, shift_up):
                 print()  # Newline
                 if len(args) == 1:
                     print(" Left: move x motor backward")
