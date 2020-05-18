@@ -49,11 +49,6 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     # been changed without a re-connection of the PV. Instead we trust the soft
     # limits records
     user_setpoint = Cpt(EpicsSignal, ".VAL", limits=False, kind='normal')
-    # Kluge override for auto_monitor=True to help disconnected instantiation
-    low_limit_travel = Cpt(EpicsSignal, ".LLM", kind='omitted',
-                           auto_monitor=True)
-    high_limit_travel = Cpt(EpicsSignal, ".HLM", kind='omitted',
-                            auto_monitor=True)
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
     # Description is valuable
@@ -67,7 +62,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         """
         The lower soft limit for the motor.
         """
-        return self.low_limit_travel.value
+        return self.low_limit_travel.get()
 
     @low_limit.setter
     def low_limit(self, value):
@@ -78,7 +73,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         """
         The higher soft limit for the motor.
         """
-        return self.high_limit_travel.value
+        return self.high_limit_travel.get()
 
     @high_limit.setter
     def high_limit(self, value):
@@ -142,7 +137,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
                                          self.high_limit))
 
         # Find the value for the disabled attribute
-        if self.disabled.value == 1:
+        if self.disabled.get() == 1:
             raise MotorDisabledError("Motor is not enabled. Motion requests "
                                      "ignored")
 
@@ -231,11 +226,11 @@ class PCDSMotorBase(EpicsMotorInterface):
         """
         super().check_value(value)
 
-        if self.motor_spg.value in [0, 'Stop']:
+        if self.motor_spg.get() in [0, 'Stop']:
             raise MotorDisabledError("Motor is stopped.  Motion requests "
                                      "ignored until motor is set to 'Go'")
 
-        if self.motor_spg.value in [1, 'Pause']:
+        if self.motor_spg.get() in [1, 'Pause']:
             raise MotorDisabledError("Motor is paused.  If a move is set, "
                                      "motion will resume when motor is set "
                                      "to 'Go'")
@@ -384,7 +379,9 @@ class IMS(PCDSMotorBase):
         # Check that we need to actually set the flag
         if flag_is_cleared(value=self.bit_status.get()):
             logger.debug("%s flag is not currently active", flag)
-            return DeviceStatus(self, done=True, success=True)
+            st = DeviceStatus(self)
+            st.set_finished()
+            return st
 
         # Issue our command
         logger.info('Clearing %s flag ...', flag)

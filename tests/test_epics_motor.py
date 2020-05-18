@@ -5,6 +5,7 @@ from bluesky import RunEngine
 from bluesky.plan_stubs import close_run, open_run, stage, unstage
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
+
 from pcdsdevices.epics_motor import (IMS, PMC100, BeckhoffAxis, EpicsMotor,
                                      EpicsMotorInterface, Motor,
                                      MotorDisabledError, Newport,
@@ -121,6 +122,7 @@ def test_ims_clear_flag(fake_ims):
     assert not st.done
     assert not st.success
     m.bit_status.sim_put(0)
+    st.wait(timeout=1)
     assert st.done
     assert st.success
 

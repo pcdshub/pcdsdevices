@@ -2,6 +2,7 @@ import logging
 
 import pytest
 from ophyd.sim import make_fake_device
+
 from pcdsdevices.beam_stats import BeamStats
 
 logger = logging.getLogger(__name__)
@@ -33,7 +34,7 @@ def test_beam_stats_avg(fake_beam_stats):
     for i in range(10):
         stats.mj.sim_put(i)
 
-    assert stats.mj_avg.value == sum(range(10))/10
+    assert stats.mj_avg.get() == sum(range(10))/10
 
     stats.configure(dict(mj_buffersize=20))
     cfg = stats.read_configuration()

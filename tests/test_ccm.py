@@ -1,9 +1,10 @@
 import logging
 
 import numpy as np
-import pcdsdevices.ccm as ccm
 import pytest
 from ophyd.sim import make_fake_device
+
+import pcdsdevices.ccm as ccm
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +58,7 @@ def fake_ccm():
     def init_pos(mot, pos=0):
         mot.user_readback.sim_put(0)
         mot.user_setpoint.sim_put(0)
+        mot.motor_spg.sim_put(2)
 
     init_pos(fake_ccm.x.down)
     init_pos(fake_ccm.x.up)

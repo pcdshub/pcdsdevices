@@ -3,6 +3,7 @@ import logging
 
 import pytest
 from ophyd.sim import make_fake_device
+
 from pcdsdevices.gauge import (GaugeSet, GaugeSetBase, GaugeSetMks,
                                GaugeSetPirani, GaugeSetPiraniMks)
 
@@ -44,6 +45,8 @@ def test_gauge_factory():
 kw_defaults = {'name': 'gauge',
                'index': 1,
                'prefix_controller': 'CONTROLLER'}
+
+
 @pytest.mark.parametrize('cls', [GaugeSetPirani, GaugeSetBase, GaugeSetMks,
                                  GaugeSetPiraniMks])
 @pytest.mark.timeout(5)
