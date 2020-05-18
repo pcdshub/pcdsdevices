@@ -4,7 +4,6 @@ PCDS plugins and Overrides for AreaDetector Plugins.
 import logging
 
 import numpy as np
-
 import ophyd
 from ophyd import Component as C
 from ophyd import EpicsSignal
@@ -73,9 +72,7 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
 
     @property
     def array_pixels(self):
-        """
-        The total number of pixels, calculated from array_size
-        """
+        """The total number of pixels, calculated from array_size."""
         array_size = list(self.array_size.get())
         dimensions = int(self.ndimensions.get())
 
@@ -93,9 +90,7 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
 class ImagePlugin(ophyd.plugins.ImagePlugin, PluginBase):
     @property
     def image(self):
-        """
-        Overriden image method to add in some corrections
-        """
+        """Overriden image method to add in some corrections."""
         array_size = [int(val) for val in self.array_size.get()]
         if array_size == [0, 0, 0]:
             raise RuntimeError('Invalid image; ensure array_callbacks are on')

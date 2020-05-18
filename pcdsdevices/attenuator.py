@@ -25,13 +25,14 @@ class Filter(InOutPositioner):
 
     Each of these has it's own in/out state, thickness, and material that are
     used in the attenuator IOC's calculations. It also has the capability to
-    mark itself as ``STUCK IN`` or ``STUCK OUT`` so the transmission calculator
+    mark itself as 'STUCK IN' or 'STUCK OUT' so the transmission calculator
     can work around mechanical problems.
 
     This is not intended to be instantiated by a user, but instead included as
-    a ``Component`` in a subclass of `AttBase`. You can instantiate these
-    classes via the `Attenuator` factory function.
+    a :class:`~ophyd.device.Component` in a subclass of :class:`AttBase`. You
+    can instantiate these classes via the :func:`Attenuator` factory function.
     """
+
     state = Cpt(EpicsSignal, ':STATE', write_pv=':GO', kind='hinted')
     thickness = Cpt(EpicsSignal, ':THICK', kind='config')
     material = Cpt(EpicsSignal, ':MATERIAL', kind='config')
@@ -41,9 +42,7 @@ class Filter(InOutPositioner):
 
 
 class FeeFilter(InOutPositioner):
-    """
-    A single attenuation blade, as implemented in the FEE
-    """
+    """A single attenuation blade, as implemented in the FEE."""
     state = Cpt(EpicsSignal, ':STATE', write_pv=':CMD')
 
     states_list = ['IN', 'OUT', 'FAIL']
@@ -60,8 +59,9 @@ class AttBase(FltMvInterface, PVPositioner):
 
     This class does not include filters, because the number of filters can
     vary. You should not instantiate this class directly, but instead use the
-    `Attenuator` factory function.
+    :func:`Attenuator` factory function.
     """
+
     # Positioner Signals
     setpoint = Cpt(EpicsSignal, ':COM:R_DES', auto_monitor=True,
                    kind='normal')
@@ -104,12 +104,15 @@ class AttBase(FltMvInterface, PVPositioner):
     @property
     def actuate_value(self):
         """
-        Sets the value we use in the GO command. This command will return 3 if
-        the setpoint is closer to the ceiling than the floor, or 2 otherwise.
-        In the unlikely event of a tie, we choose the floor.
+        Sets the value we use in the 'GO' command.
+
+        This command will return 3 if the setpoint is closer to the ceiling
+        than the floor, or 2 otherwise. In the unlikely event of a tie, we
+        choose the floor.
 
         This will wait until a pending calculation completes before returning.
         """
+
         timeout = 1
         start = time.time()
         while self.calcpend.get() != 0:
@@ -132,11 +135,12 @@ class AttBase(FltMvInterface, PVPositioner):
 
         Parameters
         ----------
-        energy: ``number``, optional
+        energy : number, optional
             If provided, this is the energy we'll use for the transmission
             calcluations. If omitted, we'll clear any set energy and use the
             current beam energy instead.
         """
+
         if energy is None:
             logger.debug('Setting %s to use live energy', self.name or self)
             self.eget_cmd.put(6)
@@ -149,35 +153,27 @@ class AttBase(FltMvInterface, PVPositioner):
     @property
     def transmission(self):
         """
-        Ratio of pass-through beam to incoming beam. This is a value between
+        Ratio of pass-through beam to incoming beam as a value between
         1 (full beam) and 0 (no beam).
         """
         return self.position
 
     @property
     def inserted(self):
-        """
-        ``True`` if any blade is inserted
-        """
+        """`True` if any blade is inserted."""
         return self.position < 1
 
     @property
     def removed(self):
-        """
-        ``True`` if all blades are removed
-        """
+        """`True` if all blades are removed."""
         return self.position == 1
 
     def insert(self, wait=False, timeout=None, moved_cb=None):
-        """
-        Block the beam by setting transmission to zero
-        """
+        """Block the beam by setting transmission to zero."""
         return self.move(0, wait=wait, timeout=timeout, moved_cb=moved_cb)
 
     def remove(self, wait=False, timeout=None, moved_cb=None):
-        """
-        Bring the attenuator fully out of the beam
-        """
+        """Bring the attenuator fully out of the beam."""
         return self.move(1, wait=wait, timeout=timeout, moved_cb=moved_cb)
 
     def stage(self):
@@ -185,13 +181,14 @@ class AttBase(FltMvInterface, PVPositioner):
         Store the original positions of all filter blades.
 
         This is a ``bluesky`` method called to set up the device for a scan.
-        At the end of the scan, ``unstage`` should be called to restore the
-        original positions of the filter blades.
+        At the end of the scan, :meth:`.unstage` should be called to restore
+        the original positions of the filter blades.
 
         This is better then storing and restoring the transmission because the
         mechanical state associated with a particular transmission changes with
         the beam energy.
         """
+
         for filt in self.filters:
             # If state is invalid, try to remove at end
             if filt.position in filt._invalid_states:
@@ -205,10 +202,11 @@ class AttBase(FltMvInterface, PVPositioner):
         """
         If we're at a destination, short-circuit the done.
 
-        This was needed because the status pv in the attenuator IOC does not
+        This was needed because the status PV in the attenuator IOC does not
         react if we request a move to a transmission we've already reached.
         Therefore, this prevents a pointless timeout.
         """
+
         old_position = self.position
         super()._setup_move(position)
         ceil = self.trans_ceil.get()
@@ -235,12 +233,13 @@ class AttBase(FltMvInterface, PVPositioner):
 
 class AttBase3rd(AttBase):
     """
-    `Attenuator` class to use the 3rd harmonic values.
+    :func:`Attenuator` class to use the 3rd harmonic values.
 
-    This is exactly the same as the normal `AttBase`, but with the alternative
-    transmission PVs. It can be instantiated using the ``use_3rd`` argument in
-    the `Attenuator` factory function.
+    This is exactly the same as the normal :class:`AttBase`, but with the
+    alternative transmission PVs. It can be instantiated using the
+    `~Attenuator.use_3rd` argument in the :func:`Attenuator` factory function.
     """
+
     # Positioner Signals
     setpoint = Cpt(EpicsSignal, ':COM:R3_DES', kind='normal')
     readback = Cpt(EpicsSignalRO, ':COM:R3_CUR', kind='hinted')
@@ -253,9 +252,7 @@ class AttBase3rd(AttBase):
 
 
 class FeeAtt(AttBase):
-    """
-    Old attenuator IOC in the FEE.
-    """
+    """Old attenuator IOC in the FEE."""
     # Positioner Signals
     setpoint = Cpt(EpicsSignal, ':RDES', kind='normal')
     readback = Cpt(EpicsSignal, ':RACT', kind='hinted')
@@ -269,7 +266,7 @@ class FeeAtt(AttBase):
     user_energy = Cpt(EpicsSignal, ':EDES', kind='omitted')
     eget_cmd = Cpt(EpicsSignal, ':EACT.SCAN', kind='omitted')
 
-#   status = None
+    # status = None
     calcpend = Cpt(Signal, value=0)
 
     # Hardcode filters for FEE, because there is only one.
@@ -290,9 +287,7 @@ class FeeAtt(AttBase):
 
 
 def _make_att_classes(max_filters, base, name):
-    """
-    Generate all possible subclasses.
-    """
+    """Generate all possible subclasses."""
     att_classes = {}
     for i in range(1, max_filters + 1):
         att_filters = {}
@@ -316,27 +311,29 @@ def Attenuator(prefix, n_filters, *, name, use_3rd=False, **kwargs):
     """
     A series of filters that attenuates the beam.
 
-    This is a factory function for instantiating a subclass of `AttBase` or
-    `AttBase3rd` with the correct number of `Filter` components.
+    This is a factory function for instantiating a subclass of :class:`AttBase`
+    or :class:`AttBase3rd` with the correct number of :class:`Filter`
+    components.
 
-    The `Filter` components will be named ``filter1``, ``filter2``, ...
-    ``filter10``, ...
+    The :class:`Filter` components will be named 'filter1', 'filter2', ...
+    'filter10', ...
 
     Parameters
     ----------
-    prefix: ``str``
-        The EPICS prefix that identifies the attenuator, e.g. ``XPP:ATT``
+    prefix : str
+        The EPICS prefix that identifies the attenuator, e.g. 'XPP:ATT'
 
-    n_filters: ``int``
+    n_filters : int
         The number of filters in the attenuator.
 
-    name: ``str``
+    name : str
         An identifying name for the attenuator.
 
-    use_3rd: ``bool``, optional
-        If ``True``, we'll use the third harmonic transmissions instead of the
-        fundamntal frequency.
+    use_3rd : bool, optional
+        If `True`, we'll use the third harmonic transmissions instead
+        of the fundamental frequency.
     """
+
     if use_3rd:
         cls = _att3_classes[n_filters]
     else:
@@ -357,25 +354,22 @@ def set_combined_attenuation(attenuation, *attenuators):
 
 class FEESolidAttenuator(Device, BaseInterface):
     """
-    Solid Attenuator
+    Solid attenuator variant from the LCLS-II XTES project.
+
+    Motorized, 18 filters + 1 inspection mirror.
+
+    This is a quick-and-dirty Ophyd device for controlling AT2L0 motion and
+    generating a PyDM control screen.
 
     Parameters
     ----------
-    prefix : ``str``
-        Full Solid Attenuator base PV
+    prefix : str
+        Full Solid Attenuator base PV.
 
-    name : ``str``
-        Alias for the Solid Attenuator
-
-    Notes
-    ----------
-    Solid attenuator variant from the LCLS-II XTES project.
-     Motorized, 18 filters + 1 inspection mirror.
-
-    This is a quick-and-dirty Ophyd device for
-    controlling AT2L0 motion and generating
-    a PyDM control screen.
+    name : str
+        Alias for the Solid Attenuator.
     """
+
     blade_01 = Cpt(BeckhoffAxis, ':MMS:01', kind='hinted')
     blade_02 = Cpt(BeckhoffAxis, ':MMS:02', kind='hinted')
     blade_03 = Cpt(BeckhoffAxis, ':MMS:03', kind='hinted')
@@ -399,22 +393,21 @@ class FEESolidAttenuator(Device, BaseInterface):
 
 class GasAttenuator(Device, BaseInterface):
     """
-    AT*:GAS
-
-    A base class for an LCLS-II XTES gas attenuator.
+    AT*:GAS, Base class for an LCLS-II XTES gas attenuator.
 
     Parameters
     ----------
-    prefix : ``str``
-        Full Gas Attenuator base PV
+    prefix : str
+        Full Gas Attenuator base PV.
 
-    name : ``str``
-        Alias for the Gas Attenuator
+    name : str
+        Alias for the Gas Attenuator.
 
     Notes
-    ---------
+    -----
     The HXR gas attenuator was not recommissioned so this class alone
-     represents the gas attenuators present at this time.
+    represents the gas attenuators present at this time.
     """
+
     not_implemented = Cpt(SignalRO, name="Not Implemented",
                           value="Not Implemented", kind='normal')

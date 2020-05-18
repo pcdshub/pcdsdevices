@@ -12,21 +12,25 @@ from .interface import FltMvInterface, tweak_base
 
 class SynMotor(FltMvInterface, SynAxis):
     """
-    SynAxis with the FltMvInterface additions.
-    This can be used to test when you need the readback_func feature or if you
-    just want your test motor to finish immediately. See the SynAxis
+    `SynAxis` with the `FltMvInterface` additions.
+
+    This can be used to test when you need the `readback_func` feature or if
+    you just want your test motor to finish immediately. See the `SynAxis`
     documentation in ophyd.
     """
+
     def move(self, position, *args, **kwargs):
         return super().set(position)
 
 
 class FastMotor(FltMvInterface, SoftPositioner, Device):
     """
-    Instant motor with FltMvInterface.
-    This is suitable to replace real motors in the PseudoPositioner
-    subclasses. It does not have all of the SynAxis functionality.
+    Instant motor with `FltMvInterface`.
+
+    This is suitable to replace real motors in the `PseudoPositioner`
+    subclasses. It does not have all of the `SynAxis` functionality.
     """
+
     user_readback = Cpt(AttributeSignal, 'position')
 
     def __init__(self, *args, init_pos=0, **kwargs):
@@ -37,9 +41,10 @@ class SlowMotor(FastMotor):
     """
     Simulated slow-moving motor.
 
-    Unlike the FastMotor, this takes some time to reach the
+    Unlike the `FastMotor`, this takes some time to reach the
     destination. Use this when you need some sort of delay.
     """
+
     def _setup_move(self, position, status):
         if self.position is None:
             return self._set_position(position)
@@ -69,9 +74,7 @@ class SlowMotor(FastMotor):
 
 
 class SimTwoAxis(Device):
-    """
-    Test assembly with two slow motors. Used to test 2d tweak.
-    """
+    """Test assembly with two slow motors. Used to test 2D tweak."""
     x = Cpt(SlowMotor)
     y = Cpt(SlowMotor)
 

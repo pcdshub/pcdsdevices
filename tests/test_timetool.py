@@ -3,12 +3,12 @@ from unittest.mock import Mock
 
 import pytest
 from ophyd.sim import make_fake_device
-from pcdsdevices.timetool import TimeTool, TimeToolWithNav
+from pcdsdevices.timetool import Timetool, TimetoolWithNav
 
 logger = logging.getLogger(__name__)
 
 
-@pytest.fixture(scope='function', params=[TimeTool, TimeToolWithNav])
+@pytest.fixture(scope='function', params=[Timetool, TimetoolWithNav])
 def fake_timetool(request):
     FakeTT = make_fake_device(request.param)
     tt = FakeTT('TST:TT', name='test_tt', prefix_det='click')
@@ -57,5 +57,5 @@ def test_timetool_subscriptions(fake_timetool):
 @pytest.mark.timeout(5)
 def test_timetool_disconnected():
     logger.debug('test_timetool_disconnected')
-    TimeTool('TST', name='test', prefix_det='click')
-    TimeToolWithNav('TST2', name='test2', prefix_det='click')
+    Timetool('TST', name='test', prefix_det='click')
+    TimetoolWithNav('TST2', name='test2', prefix_det='click')

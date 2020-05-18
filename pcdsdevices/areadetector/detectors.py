@@ -24,15 +24,14 @@ __all__ = ['PCDSAreaDetectorBase',
 
 
 class PCDSAreaDetectorBase(DetectorBase):
-    """
-    Standard area detector with no plugins.
-    """
+    """Standard area detector with no plugins."""
     cam = ADComponent(cam.CamBase, '')
 
 
 class PCDSAreaDetector(PCDSAreaDetectorBase):
     """
     Standard area detector including all (*) standard PCDS plugins.
+
     Notable plugins:
         IMAGE2: reduced rate image, used for camera viewer
         Stats2: reduced rate stats
@@ -76,11 +75,13 @@ class PCDSAreaDetector(PCDSAreaDetectorBase):
         CAM -> TIFF1
         CAM -> Trans1
 
-    Note
-    ----
-    Subclasses should replace 'cam' with that of the respective detector, such
-    as `ophyd.areadetector.cam.PilatusDetectorCam` for the Pilatus detector.
+    Notes
+    -----
+    Subclasses should replace :attr:`cam` with that of the respective detector,
+    such as `PilatusDetectorCam` for the Pilatus
+    detector.
     """
+
     image1 = Cpt(ImagePlugin, 'IMAGE1:', read_attrs=['array_data'],
                  doc='Image plugin for general usage')
     image1_roi = Cpt(ROIPlugin, 'IMAGE1:ROI:')
@@ -131,7 +132,8 @@ class PCDSAreaDetector(PCDSAreaDetectorBase):
         self.stats2.stage_sigs['compute_centroid'] = 'Yes'
 
     def get_plugin_graph_edges(self, *, use_names=True, include_cam=False):
-        '''Get a list of (source, destination) ports for all plugin chains
+        """
+        Get a list of (source, destination) ports for all plugin chains.
 
         Parameters
         ----------
@@ -142,7 +144,8 @@ class PCDSAreaDetector(PCDSAreaDetectorBase):
             Include plugins with 'CAM' as the source.  As it is easy to assume
             that a camera without an explicit source is CAM, by default this
             method does not include it in the list.
-        '''
+        """
+
         cam_port = self.cam.port_name.get()
         graph, port_map = self.get_asyn_digraph()
         port_edges = [(src, dest) for src, dest in graph.edges
@@ -154,14 +157,14 @@ class PCDSAreaDetector(PCDSAreaDetectorBase):
 
     @property
     def image(self):
-        'Deprecated - alias for `image2`'
+        """Deprecated - alias for `image2`."""
         warnings.warn('PCDSAreaDetector.image is deprecated; use {}.image2 '
                       'instead'.format(self.name))
         return self.image2
 
     @property
     def stats(self):
-        'Deprecated - alias for `stats2`'
+        """Deprecated - alias for `stats2`."""
         warnings.warn('PCDSAreaDetector.image is deprecated; use {}.stats2 '
                       'instead'.format(self.name))
         return self.stats2

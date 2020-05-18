@@ -1,5 +1,5 @@
 """
-Module for defining bell-and-whistles movement features
+Module for defining bell-and-whistles movement features.
 """
 import logging
 import numbers
@@ -50,9 +50,10 @@ class BaseInterface(OphydObject):
 
     Attributes
     ----------
-    tab_whitelist: list
-        list of string regex to show in autocomplete for non-engineering mode
+    tab_whitelist : list
+        List of string regex to show in autocomplete for non-engineering mode.
     """
+
     tab_whitelist = (OphydObject_whitelist + BlueskyInterface_whitelist +
                      Device_whitelist + Signal_whitelist +
                      Positioner_whitelist)
@@ -86,9 +87,7 @@ class BaseInterface(OphydObject):
                 if self._tab_regex.fullmatch(elem)]
 
     def __repr__(self):
-        """
-        Simplify the ophydobject repr to avoid crazy long represenations
-        """
+        """Simplify the ophydobject repr to avoid crazy long represenations."""
         prefix = getattr(self, 'prefix', None)
         name = getattr(self, 'name', None)
         return f"{self.__class__.__name__}({prefix}, name={name})"
@@ -96,30 +95,32 @@ class BaseInterface(OphydObject):
 
 def set_engineering_mode(expert):
     """
-    Switches between expert mode and user mode for `BaseInterface` features.
+    Switches between expert and user modes for :class:`BaseInterface` features.
 
     Current features:
        - Autocomplete filtering
 
     Parameters
     ----------
-    expert: bool
-        Set to ``True`` to enable expert mode, or ``False`` to disable it.
-        ``True`` is the starting value.
+    expert : bool
+        Set to `True` to enable expert mode, or :keyword:`False` to
+        disable it. `True` is the starting value.
     """
+
     global engineering_mode
     engineering_mode = bool(expert)
 
 
 def get_engineering_mode():
     """
-    Get the last value set by `set_engineering_mode`.
+    Get the last value set by :meth:`set_engineering_mode`.
 
     Returns
     -------
-    expert: bool
-        The current engineering mode. See `set_engineering_mode`.
+    expert : bool
+        The current engineering mode. See :meth:`set_engineering_mode`.
     """
+
     return engineering_mode
 
 
@@ -133,6 +134,7 @@ class MvInterface(BaseInterface):
     would otherwise be disruptive to running scans and writing higher-level
     applications.
     """
+
     tab_whitelist = ["mv", "wm", "camonitor", "wm_update"]
 
     def __init__(self, *args, **kwargs):
@@ -146,38 +148,33 @@ class MvInterface(BaseInterface):
         Parameters
         ----------
         position
-            Desired end position
+            Desired end position.
 
-        timeout: ``float``, optional
+        timeout : float, optional
             If provided, the mover will throw an error if motion takes longer
             than timeout to complete. If omitted, the mover's default timeout
             will be use.
 
-        wait: ``bool``, optional
-            If ``True``, wait for motion completion before returning.
-            Defaults to ``False``.
+        wait : bool, optional
+            If `True`, wait for motion completion before returning.
+            Defaults to :keyword:`False`.
         """
+
         self.move(position, timeout=timeout, wait=wait)
 
     def wm(self):
-        """
-        Get the mover's positon (where motor)
-
-        Returns
-        -------
-        position
-            Current position
-        """
+        """Get the mover's current positon (where motor)."""
         return self.position
 
     def __call__(self, position=None, timeout=None, wait=False):
         """
-        Dispatches to `mv` or `wm` based on the arguments.
+        Dispatches to :meth:`mv` or :meth:`wm` based on the arguments.
 
         Calling the object will either move the object or get the current
         position, depending on if the position argument is given. See the
-        docstrings for `mv` and `wm`.
+        docstrings for :meth:`mv` and :meth:`wm`.
         """
+
         if position is None:
             return self.wm()
         else:
@@ -187,11 +184,14 @@ class MvInterface(BaseInterface):
         """
         Shows a live-updating motor position in the terminal.
 
-        This will be the value that is returned by the ``position`` attribute.
+        This will be the value that is returned by the :attr:`position`
+        attribute.
+
         This method ends cleanly at a ctrl+c or after a call to
-        `end_monitor_thread`, which may be useful when this is called in a
-        background thread.
+        :meth:`end_monitor_thread`, which may be useful when this is called in
+        a background thread.
         """
+
         try:
             self._mov_ev.clear()
             while not self._mov_ev.is_set():
@@ -210,22 +210,24 @@ class MvInterface(BaseInterface):
 
     def end_monitor_thread(self):
         """
-        Stop a `camonitor` or `wm_update` that is running in another thread.
+        Stop a :meth:`camonitor` or :meth:`wm_update` that is running in
+        another thread.
         """
         self._mov_ev.set()
 
 
 class FltMvInterface(MvInterface):
     """
-    Extension of `MvInterface` for when the position is a ``float``.
+    Extension of :class:`MvInterface` for when the position is a float.
 
     This lets us do more with the interface, such as relative moves.
 
     Attributes
     ----------
-    presets: `Presets`
+    presets : :class:`Presets`
         Manager for preset positions.
     """
+
     tab_whitelist = ["mvr", "umv", "umvr", "mv_ginput", "tweak",
                      "presets", "mv_.*", "wm_.*", "umv_.*"]
 
@@ -241,18 +243,19 @@ class FltMvInterface(MvInterface):
 
         Parameters
         ----------
-        delta: ``float``
-            Desired change in position
+        delta : float
+            Desired change in position.
 
-        timeout: ``float``, optional
+        timeout : float, optional
             If provided, the mover will throw an error if motion takes longer
             than timeout to complete. If omitted, the mover's default timeout
             will be use.
 
-        wait: ``bool``, optional
-            If ``True``, wait for motion completion before returning. Defaults
-            to ``False``.
+        wait : bool, optional
+            If `True`, wait for motion completion before returning.
+            Defaults to :keyword:`False`.
         """
+
         self.mv(delta + self.wm(), timeout=timeout, wait=wait)
 
     def umv(self, position, timeout=None):
@@ -261,14 +264,15 @@ class FltMvInterface(MvInterface):
 
         Parameters
         ----------
-        position: ``float``
-            Desired end position
+        position : float
+            Desired end position.
 
-        timeout: ``float``, optional
+        timeout : float, optional
             If provided, the mover will throw an error if motion takes longer
             than timeout to complete. If omitted, the mover's default timeout
             will be use.
         """
+
         status = self.move(position, timeout=timeout, wait=False)
         AbsProgressBar([status])
         try:
@@ -282,14 +286,15 @@ class FltMvInterface(MvInterface):
 
         Parameters
         ----------
-        delta: ``float``
-            Desired change in position
+        delta : float
+            Desired change in position.
 
-        timeout: ``float``, optional
+        timeout : float, optional
             If provided, the mover will throw an error if motion takes longer
             than timeout to complete. If omitted, the mover's default timeout
             will be use.
         """
+
         self.umv(delta + self.wm(), timeout=timeout)
 
     def mv_ginput(self, timeout=None):
@@ -300,6 +305,7 @@ class FltMvInterface(MvInterface):
         recently active plot. If there are no existing plots, an empty plot
         will be created with the motor's limits as the range.
         """
+
         # Importing forces backend selection, so do inside method
         import matplotlib.pyplot as plt  # NOQA
         logger.info(("Select new motor x-position in current plot "
@@ -326,22 +332,24 @@ class FltMvInterface(MvInterface):
         Use up arrow to increase step size and down arrow to decrease step
         size. Press q or ctrl+c to quit.
         """
+
         return tweak_base(self)
 
 
 def setup_preset_paths(**paths):
     """
-    Prepare the `Presets` class.
+    Prepare the :class:`Presets` class.
 
     Sets the paths for saving and loading presets.
 
     Parameters
     ----------
-    **paths: ``str`` keyword args
+    **paths : str keyword args
         A mapping from type of preset to destination path. These will be
         directories that contain the yaml files that define the preset
         positions.
     """
+
     Presets._paths = {}
     for k, v in paths.items():
         Presets._paths[k] = Path(v)
@@ -356,22 +364,23 @@ class Presets:
     This provides methods for adding new presets, checking which presets are
     active, and related utilities.
 
-    It will install the ``mv_presetname`` and ``wm_presetname`` methods onto
-    the associated device, and the ``add_preset`` and ``add_preset_here``
-    methods onto itself.
+    It will install the :meth:`mv_presetname` and :meth:`wm_presetname` methods
+    onto the associated device, and the :meth:`add_preset` and
+    :meth:`add_preset_here` methods onto itself.
 
     Parameters
     ----------
-    device: ``Device``
+    device : :class:`~ophyd.device.Device`
         The device to manage saved preset positions for. It must implement the
-        `FltMvInterface`.
+        :class:`FltMvInterface`.
 
     Attributes
     ----------
-    positions: ``SimpleNamespace``
-        A namespace that contains all of the active presets as `PresetPosition`
-        objects.
+    positions : :class:`~types.SimpleNamespace`
+        A namespace that contains all of the active presets as
+        :class:`PresetPosition` objects.
     """
+
     _registry = WeakSet()
     _paths = {}
 
@@ -384,17 +393,13 @@ class Presets:
         self.sync()
 
     def _path(self, preset_type):
-        """
-        Utility function to get the preset file ``Path``.
-        """
+        """Utility function to get the preset file :class:`~pathlib.Path`."""
         path = self._paths[preset_type] / (self._device.name + '.yml')
         logger.debug('select presets path %s', path)
         return path
 
     def _read(self, preset_type):
-        """
-        Utility function to get a particular preset's datum dictionary.
-        """
+        """Utility function to get a particular preset's datum dictionary."""
         logger.debug('read presets for %s', self._device.name)
         with self._file_open_rlock(preset_type) as f:
             f.seek(0)
@@ -420,14 +425,15 @@ class Presets:
 
         Parameters
         ----------
-        fd: ``file``
+        fd : file
             The file descriptor to lock on.
 
         Raises
         ------
-        BlockingIOError:
+        BlockingIOError
             If we cannot acquire the file lock.
         """
+
         if self._fd is None:
             path = self._path(preset_type)
             with open(path, 'r+') as fd:
@@ -469,6 +475,7 @@ class Presets:
         the active state, and then writes the datum back to the file, updating
         the history accordingly.
         """
+
         logger.debug(('call %s presets._update(%s, %s, value=%s, comment=%s, '
                       'active=%s)'), self._device.name, preset_type, name,
                      value, comment, active)
@@ -508,9 +515,7 @@ class Presets:
             self._log_flock_error()
 
     def sync(self):
-        """
-        Synchronize the presets with the database.
-        """
+        """Synchronize the presets with the database."""
         logger.debug('call %s presets.sync()', self._device.name)
         self._remove_methods()
         self._cache = {}
@@ -538,9 +543,10 @@ class Presets:
 
         Add methods to this object for adding presets of each type, add
         methods to the associated device to move and check each preset, and
-        add `PresetPosition` instances to ``self.positions`` for each preset
-        name.
+        add :class:`PresetPosition` instances to :attr:`.positions` for
+        each preset name.
         """
+
         logger.debug('call %s presets._create_methods()', self._device.name)
         for preset_type in self._paths.keys():
             add, add_here = self._make_add(preset_type)
@@ -561,9 +567,10 @@ class Presets:
         """
         Utility function for managing dynamic methods.
 
-        Adds a method to the ``_methods`` list and binds the method to an
+        Adds a method to the :attr:`._methods` list and binds the method to an
         object.
         """
+
         logger.debug('register method %s to %s', method_name, obj.name)
         self._methods.append((obj, method_name))
         setattr(obj, method_name, MethodType(method, obj))
@@ -572,24 +579,27 @@ class Presets:
         """
         Create the functions that add preset positions.
 
-        Creates suitable versions of ``add`` and ``add_here`` for a particular
-        preset type, e.g. ``add_preset_type`` and ``add_here_preset_type``.
+        Creates suitable versions of :meth:`.add` and :meth:`.add_here` for a
+        particular preset type, e.g. ``add_preset_type`` and
+        ``add_here_preset_type``.
         """
+
         def add(self, name, value, comment=None):
             """
             Add a preset position of type "{}".
 
             Parameters
             ----------
-            name: ``str``
+            name : str
                 The name of the new preset position.
 
-            value: ``float``
+            value : float
                 The value of the new preset_position.
 
-            comment: ``str``, optional
+            comment : str, optional
                 A comment to associate with the preset position.
             """
+
             self._update(preset_type, name, value=value,
                          comment=comment)
             self.sync()
@@ -600,12 +610,13 @@ class Presets:
 
             Parameters
             ----------
-            name: ``str``
+            name : str
                 The name of the new preset position.
 
-            comment: ``str``, optional
+            comment : str, optional
                 A comment to associate with the preset position.
             """
+
             add(self, name, self._device.wm(), comment=comment)
 
         add.__doc__ = add.__doc__.format(preset_type)
@@ -616,24 +627,27 @@ class Presets:
         """
         Create the functions that move to preset positions.
 
-        Creates a suitable versions of ``mv`` and ``umv`` for a particular
-        preset type and name e.g. ``mv_sample``.
+        Creates a suitable versions of :meth:`~MvInterface.mv` and
+        :meth:`~MvInterface.umv` for a particular preset type and name
+        e.g. ``mv_sample``.
         """
+
         def mv_pre(self, timeout=None, wait=False):
             """
             Move to the {} preset position.
 
             Parameters
             ----------
-            timeout: ``float``, optional
+            timeout : float, optional
                 If provided, the mover will throw an error if motion takes
                 longer than timeout to complete. If omitted, the mover's
                 default timeout will be use.
 
-            wait: ``bool``, optional
-                If ``True``, wait for motion completion before returning.
-                Defaults to ``False``.
+            wait : bool, optional
+                If `True`, wait for motion completion before
+                returning. Defaults to :keyword:`False`.
             """
+
             pos = self.presets._cache[preset_type][name]['value']
             self.mv(pos, timeout=timeout, wait=wait)
 
@@ -643,11 +657,12 @@ class Presets:
 
             Parameters
             ----------
-            timeout: ``float``, optional
+            timeout : float, optional
                 If provided, the mover will throw an error if motion takes
                 longer than timeout to complete. If omitted, the mover's
                 default timeout will be use.
             """
+
             pos = self.presets._cache[preset_type][name]['value']
             self.umv(pos, timeout=timeout)
 
@@ -659,20 +674,22 @@ class Presets:
         """
         Create a method to get the offset from a preset position.
 
-        Creates a suitable version of ``wm`` for a particular preset type and
-        name e.g. ``wm_sample``.
+        Creates a suitable version of :meth:`~MvInterface.wm` for a particular
+        preset type and name e.g. ``wm_sample``.
         """
+
         def wm_pre(self):
             """
             Check the offset from the {} preset position.
 
             Returns
             -------
-            offset: ``float``
+            offset : float
                 How far we are from the preset position. If this is near zero,
                 we are at the position. If this positive, the preset position
                 is in the positive direction from us.
             """
+
             pos = self.presets._cache[preset_type][name]['value']
             return pos - self.wm()
 
@@ -680,9 +697,7 @@ class Presets:
         return wm_pre
 
     def _remove_methods(self):
-        """
-        Remove all methods created in the last call to _create_methods.
-        """
+        """Remove all methods created in the last call to _create_methods."""
         logger.debug('call %s presets._remove_methods()', self._device.name)
         for obj, method_name in self._methods:
             try:
@@ -699,12 +714,13 @@ class PresetPosition:
 
     Parameters
     ----------
-    presets: `Presets`
-        The main `Presets` object that manages this position.
+    presets : :class:`Presets`
+        The main :class:`Presets` object that manages this position.
 
-    name: ``str``
+    name : str
         The name of this preset position.
     """
+
     def __init__(self, presets, preset_type, name):
         self._presets = presets
         self._preset_type = preset_type
@@ -716,13 +732,14 @@ class PresetPosition:
 
         Parameters
         ----------
-        pos: ``float``, optional
+        pos : float, optional
             The position to use for this preset. If omitted, we'll use the
             current position.
 
-        comment: ``str``, optional
+        comment : str, optional
             A comment to associate with the preset position.
         """
+
         if pos is None:
             pos = self._presets._device.wm()
         self._presets._update(self._preset_type, self._name, value=pos,
@@ -735,16 +752,16 @@ class PresetPosition:
 
         Parameters
         ----------
-        comment: ``str``
+        comment : str
             A comment to associate with the preset position.
         """
+
         self._presets._update(self._preset_type, self._name, comment=comment)
         self._presets.sync()
 
     def deactivate(self):
         """
         Deactivate a preset from a device.
-
         This can always be undone unless you edit the underlying file.
         """
         self._presets._update(self._preset_type, self._name, active=False)
@@ -752,46 +769,24 @@ class PresetPosition:
 
     @property
     def info(self):
-        """
-        All information associated with this preset.
-
-        Returns
-        -------
-        info: ``dict``
-        """
+        """All information associated with this preset, returned as a dict."""
         return self._presets._cache[self._preset_type][self._name]
 
     @property
     def pos(self):
-        """
-        The set position of this preset.
-
-        Returns
-        -------
-        pos: ``float``
-        """
+        """The set position of this preset, returned as a float."""
         return self.info['value']
 
     @property
     def history(self):
         """
-        This position history associated with this preset.
-
-        Returns
-        -------
-        history: ``dict``
+        This position history associated with this preset, returned as a dict.
         """
         return self.info['history']
 
     @property
     def path(self):
-        """
-        The filepath that defines this preset.
-
-        Returns
-        -------
-        path: ``str``
-        """
+        """The filepath that defines this preset, returned as a string."""
         return str(self._presets._path(self._preset_type))
 
     def __repr__(self):
@@ -808,6 +803,7 @@ def tweak_base(*args):
     shift+arrow used for scaling the step size. The q key quits, as does
     ctrl+c.
     """
+
     up = util.arrow_up
     down = util.arrow_down
     left = util.arrow_left
@@ -817,17 +813,13 @@ def tweak_base(*args):
     scale = 0.1
 
     def thread_event():
-        """
-        Function call camonitor to display motor position.
-        """
+        """Function call camonitor to display motor position."""
         thrd = Thread(target=args[0].camonitor,)
         thrd.start()
         args[0]._mov_ev.set()
 
     def _scale(scale, direction):
-        """
-        Function used to change the scale.
-        """
+        """Function used to change the scale."""
         if direction == up or direction == shift_up:
             scale = scale*2
             print("\r {0:4f}".format(scale), end=" ")
@@ -837,9 +829,7 @@ def tweak_base(*args):
         return scale
 
     def movement(scale, direction):
-        """
-        Function used to know when and the direction to move the motor.
-        """
+        """Function used to know when and the direction to move the motor."""
         try:
             if direction == left:
                 args[0].umvr(-scale)
@@ -893,9 +883,7 @@ def tweak_base(*args):
 
 
 class AbsProgressBar(ProgressBar):
-    """
-    Progress bar that displays the absolute position as well
-    """
+    """Progress bar that displays the absolute position as well."""
     def update(self, *args, name=None, current=None, **kwargs):
         if None not in (name, current):
             super().update(*args, name='{} ({:.3f})'.format(name, current),

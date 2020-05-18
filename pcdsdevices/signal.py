@@ -26,12 +26,13 @@ class PytmcSignal(EpicsSignalBase):
 
     This uses the same args as the pragma, so you can refer to the pytmc
     pragmas to select args for your components. This will automatically append
-    the _RBV suffix and wrap the read/write PVs into the same signal object as
-    appropriate, and pick between a read-only signal and a writable one.
+    the '_RBV' suffix and wrap the read/write PVs into the same signal object
+    as appropriate, and pick between a read-only signal and a writable one.
 
     Under the hood this actually gives you the RW or RO version of the signal
     depending on your io argument.
     """
+
     def __new__(cls, prefix, io=None, **kwargs):
         new_cls = select_pytmc_class(io=io, prefix=prefix,
                                      write_cls=PytmcSignalRW,
@@ -59,7 +60,7 @@ def select_pytmc_class(io=None, *, prefix, write_cls, read_only_cls):
 
 
 def pytmc_writable(io):
-    """Returns True if the pytmc io arg represents a writable PV."""
+    """Returns `True` if the pytmc io arg represents a writable PV."""
     norm = normalize_io(io)
     if norm == 'output':
         return True
@@ -116,12 +117,13 @@ class AggregateSignal(Signal):
 
     Attributes
     ----------
-    _cache: dict
+    _cache : dict
         Mapping from signal to last known value.
 
-    _sub_signals: list
+    _sub_signals : list
         Signals that contribute to this signal.
     """
+
     _update_only_on_change = True
 
     def __init__(self, *, name, **kwargs):
@@ -138,31 +140,26 @@ class AggregateSignal(Signal):
 
         Returns
         -------
-        readback:
+        readback
             The result of the calculation.
         """
+
         raise NotImplementedError('Subclasses must implement _calc_readback')
 
     def _insert_value(self, signal, value):
-        """
-        Update the cache with one value and recalculate.
-        """
+        """Update the cache with one value and recalculate."""
         with self._lock:
             self._cache[signal] = value
             self._update_state()
             return self._readback
 
     def _update_state(self):
-        """
-        Recalculate the state.
-        """
+        """Recalculate the state."""
         with self._lock:
             self._readback = self._calc_readback()
 
     def get(self, **kwargs):
-        """
-        Update all values and recalculate.
-        """
+        """Update all values and recalculate."""
         with self._lock:
             for signal in self._sub_signals:
                 self._cache[signal] = signal.get(**kwargs)
@@ -176,8 +173,9 @@ class AggregateSignal(Signal):
         """
         Set up a callback function to run at specific times.
 
-        See the ``ophyd`` documentation for details.
+        See the `ophyd` documentation for details.
         """
+
         cid = super().subscribe(cb, event_type=event_type, run=run)
         if event_type in (None, self.SUB_VALUE) and not self._has_subscribed:
             # We need to subscribe to ALL relevant signals!
@@ -206,7 +204,7 @@ class AvgSignal(Signal):
     Signal that acts as a rolling average of another signal.
 
     This will subscribe to a signal, and fill an internal buffer with values
-    from SUB_VALUE. It will update its own value to be the mean of the last n
+    from `SUB_VALUE`. It will update its own value to be the mean of the last n
     accumulated values, up to the buffer size. If we haven't filled this
     buffer, this will still report a mean value composed of all the values
     we've receieved so far.
@@ -216,14 +214,15 @@ class AvgSignal(Signal):
 
     Parameters
     ----------
-    signal: ``Signal``
-        Any subclass of ``ophyd.signal.Signal`` that returns a numeric value.
+    signal : Signal
+        Any subclass of `ophyd.signal.Signal` that returns a numeric value.
         This signal will be subscribed to be `AvgSignal` to calculate the mean.
 
-    averages: ``int``
-        The number of SUB_VALUE updates to include in the average. New values
+    averages : int
+        The number of `SUB_VALUE` updates to include in the average. New values
         after this number is reached will begin overriding old values.
     """
+
     def __init__(self, signal, averages, *, name, parent=None, **kwargs):
         super().__init__(name=name, parent=parent, **kwargs)
         if isinstance(signal, str):
@@ -246,16 +245,12 @@ class AvgSignal(Signal):
 
     @property
     def averages(self):
-        """
-        The size of the internal buffer of values to average over.
-        """
+        """The size of the internal buffer of values to average over."""
         return self._avg
 
     @averages.setter
     def averages(self, avg):
-        """
-        Reinitialize an empty internal buffer of size ``avg``.
-        """
+        """Reinitialize an empty internal buffer of size `avg`."""
         with self._lock:
             self._avg = avg
             self.index = 0
@@ -265,9 +260,7 @@ class AvgSignal(Signal):
             self.values.fill(np.nan)
 
     def _update_avg(self, *args, value, **kwargs):
-        """
-        Add new value to the buffer, overriding old values if needed.
-        """
+        """Add new value to the buffer, overriding old values if needed."""
         with self._lock:
             self.values[self.index] = value
             self.index = (self.index + 1) % len(self.values)

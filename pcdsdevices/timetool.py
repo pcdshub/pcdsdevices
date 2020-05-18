@@ -1,5 +1,5 @@
 """
-Module for Timetool classes
+Module for Timetool classes.
 """
 from collections import defaultdict
 
@@ -11,19 +11,22 @@ from .epics_motor import IMS
 from .inout import CombinedInOutRecordPositioner
 
 
-class TimeTool(CombinedInOutRecordPositioner):
+class Timetool(CombinedInOutRecordPositioner):
     """
-    TimeTool motion with x- and y-motion motors
+    Timetool motion with x- and y-motion motors.
+
+    The PVs for each of the motors will be inferred from the base prefix but
+    the area detector's PV must be passed as a keyword argument, as labeled.
 
     Parameters
     ----------
-    prefix : ``str``
-        The EPICS base of the TimeTool
+    prefix : str
+        The EPICS base PV of the Timetool.
 
-    name : ``str``
-        A name to refer to the device
+    name : str
+        A name to refer to the device.
 
-    prefix_det : ``str``
+    prefix_det : str
         The EPICS base PV of the detector.
     """
 
@@ -47,19 +50,22 @@ class TimeTool(CombinedInOutRecordPositioner):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class TimeToolWithNav(TimeTool):
+class TimetoolWithNav(Timetool):
     """
-    TimeTool motion with zoom, focus, and x- & y-motion motors
+    Timetool motion with zoom, focus, and x- & y-motion motors.
+
+    The PVs for each of the motors will be inferred from the base prefix but
+    the area detector's PV must be passed as a keyword argument, as labeled.
 
     Parameters
     ----------
-    prefix : ``str``
-        The EPICS base of the TimeTool
+    prefix : str
+        The EPICS base PV of the Timetool.
 
-    name : ``str``
-        A name to refer to the device
+    name : str
+        A name to refer to the device.
 
-    prefix_det : ``str``
+    prefix_det : str
         The EPICS base PV of the detector.
     """
 

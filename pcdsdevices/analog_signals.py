@@ -10,16 +10,17 @@ from .interface import BaseInterface
 
 class Acromag(Device, BaseInterface):
     """
-    Class for Acromag analog input/ouput signals
+    Class for Acromag analog input/ouput signals.
 
-    Parameters:
-    -----------
-    prefix : ``str``
-        The Epics base of the acromag
+    Parameters
+    ----------
+    prefix : str
+        The EPICS base PV of the Acromag.
 
-    name : ``str``
-        A name to prefer to the device
+    name : str
+        A name to refer to the Acromag.
     """
+
     # Components for each channel
     # Output channels
     ao1_0 = Cpt(EpicsSignal, ":ao1:0", kind='normal')
@@ -62,26 +63,25 @@ class Acromag(Device, BaseInterface):
 
 class Mesh(Device, BaseInterface):
     """
-    Class for Mesh High Voltage Supply that is connected to
-    Acromag inputs and outputs
+    Class for Mesh HV Supply that is connected to Acromag inputs and outputs.
 
     Parameters
     ----------
-    prefix : ``str``
-        Prefix of Acromag to be used
+    prefix : str
+        Prefix of Acromag to be used.
 
-    sp_ch : ``int``
-        Setpoint Acromag channel to which high voltage supply setpoint
-        is connected. Range is 0 to 15
+    sp_ch : int
+        Setpoint Acromag channel to which high voltage supply setpoint is
+        connected. Range is 0 to 15.
 
-    rb_ch : ``int``
-        Read back Acromag channel to which high voltage readback is
-        connected. Range is 0 to 15
+    rb_ch : int
+        Read back Acromag channel to which high voltage readback is connected.
+        Range is 0 to 15.
 
-    scale : ``float``, optional
-        Gain for high voltage supply to be controlled by the Acromag
-
+    scale : float, optional
+        Gain for high voltage supply to be controlled by the Acromag.
     """
+
     tab_whitelist = ['get_mesh_voltage', 'set_mesh_voltage',
                      'tweak_mesh_voltage']
 
@@ -97,37 +97,38 @@ class Mesh(Device, BaseInterface):
 
     def get_raw_mesh_voltage(self):
         """
-        Get the current acromag voltage that outputs to the HV supply, i.e
-        the voltage seen by the HV supply
+        Get the current acromag voltage that outputs to the HV supply, i.e.
+        the voltage seen by the HV supply.
         """
         return self.read_sig.get()
 
     def get_mesh_voltage(self):
         """
-        Get the current mesh voltage setpoint, i.e the setpoint that the HV
-        supply attempts to output
+        Get the current mesh voltage setpoint, i.e. the setpoint that the HV
+        supply attempts to output.
         """
         return self.read_sig.get() * self.scale
 
     def set_mesh_voltage(self, hv_sp, wait=True):
         """
-        Set mesh voltage to an absolute value in V
+        Set mesh voltage to an absolute value in V.
 
         Parameters
         ----------
-        hv_sp : ``float``
+        hv_sp : float
             Desired power supply setpoint in V. Acromag will output
             necessary voltage such that the HV supply achieves the value
-            passed to hv_sp
+            passed to hv_sp.
 
-        wait : ``bool``, optional
+        wait : bool, optional
             Indicates whether or not the program should pause when writing
-            to a PV
+            to a PV.
 
-        do_print : ``bool``, optional
+        do_print : bool, optional
             Indicates whether or not the program should print it's
-            setpoint and readback values
+            setpoint and readback values.
         """
+
         self.log.info('Setting mesh voltage...')
         hv_sp_raw = hv_sp / self.scale
         self.write_sig.put(hv_sp_raw)
@@ -140,15 +141,16 @@ class Mesh(Device, BaseInterface):
 
     def set_rel_mesh_voltage(self, delta_hv_sp, wait=True):
         """
-        Increase/decrease the power supply setpoint by a specified amount
+        Increase/decrease the power supply setpoint by a specified amount.
 
         Parameters
         ----------
-        delta_hv_sp : ``float``
+        delta_hv_sp : float
             Amount to increase/decrease the power supply setpoint (in V)
             from its current value. Use positive to increase and negative
-            to decrease
+            to decrease.
         """
+
         curr_hv_sp_raw = self.write_sig.get()
         curr_hv_sp = curr_hv_sp_raw * self.scale
         self.log.info('Previous power supply setpoint: %s V' % curr_hv_sp)
@@ -157,23 +159,22 @@ class Mesh(Device, BaseInterface):
 
     def tweak_mesh_voltage(self, delta_hv_sp, test_flag=False):
         """
-        Increase/decrease power supply setpoint by specified amount using
-        the arrow keys
+        Increase/decrease power supply setpoint using the arrow keys.
+
+        Use 'q' or ^C to exit tweak mode.
 
         Parameters
         ----------
-        delta_hv_sp : ``float`` (V)
-            Amount to change voltage from its current value at each step.
-            After calling with specified step size, use arrow keys to keep
-            changing. Use absolute value of increment size.
+        delta_hv_sp : float
+            Amount to change voltage from its current value at each step,
+            measured in volts. After calling with specified step size, use
+            arrow keys to keep changing. Use absolute value of increment size.
 
-        ^C :
-            exits tweak mode
-
-        test_flag : ``bool``, opt
-            flag used in testing functions to only run `while True` loop
-            once - i.e single tweak mode
+        test_flag : bool, optional
+            Flag used in testing functions to only run ``while True`` loop
+            once - i.e. single tweak mode.
         """
+
         print('Use arrow keys (left, right) to step voltage (-, +)')
         while True:
             key = key_press.get_input()

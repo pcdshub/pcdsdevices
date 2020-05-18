@@ -22,6 +22,7 @@ class PulsePicker(InOutPVStatePositioner):
     This device opens/closes in response to event codes to let certain pulses
     through and block others.
     """
+
     __doc__ += basic_positioner_init
 
     blade = Cpt(EpicsSignalRO, ':READ_DF', kind='normal')
@@ -76,9 +77,10 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
+
         self._log_request('RESET')
         if self.mode.get() not in (0, 'IDLE'):
             self.cmd_reset.put(1)
@@ -91,9 +93,10 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
+
         self.reset(wait=True)
         self._log_request('OPEN')
         self.cmd_open.put(1)
@@ -106,8 +109,8 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
         self.reset(wait=True)
         self._log_request('CLOSED')
@@ -121,8 +124,8 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
         self.reset(wait=True)
         self._log_request('FLIP-FLOP')
@@ -136,9 +139,10 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
+
         self.reset(wait=True)
         self._log_request('BURST')
         self.cmd_burst.put(1)
@@ -151,9 +155,10 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
+
         self.reset(wait=True)
         self._log_request('FOLLOWER')
         self.cmd_follower.put(1)
@@ -175,6 +180,7 @@ class PulsePickerInOut(PulsePicker):
     So therefore, if the picker is 'TST:DG1:MMS:03', the inout states should be
     'TST:DG1:PP:Y'.
     """
+
     __doc__ += basic_positioner_init
 
     inout = FCpt(InOutRecordPositioner, '{self._inout}', kind='normal')
@@ -198,10 +204,13 @@ class PulsePickerInOut(PulsePicker):
 
     def _do_move(self, state):
         """
-        Handle moving the state motor OUT when commands like
-        pulsepicker.move('OUT') are called, and inserting on other move
+        Handles movement to state 'OUT'.
+
+        Handles moving the state motor OUT when commands like
+        ``pulsepicker.move('OUT')`` are called, and inserting on other move
         commands.
         """
+
         if state.name == 'OUT':
             self.inout.remove()
         else:

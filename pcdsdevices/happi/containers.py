@@ -67,7 +67,7 @@ class GateValve(Vacuum):
         be used to check that "VGC" is found in the base PV.
 
     veto : bool
-        Set this to True if the gate valve is a veto device.
+        Set this to `True` if the gate valve is a veto device.
     """
     prefix = copy(Vacuum.prefix)
     prefix.enforce = re.compile(r'.*VGC.*')

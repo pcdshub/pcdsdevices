@@ -40,8 +40,7 @@ class Kmono(Device):
 
 
 class VonHamosCrystal(Device, BaseInterface):
-    """Pitch, yaw, and translation motors for control of a single crystal"""
-
+    """Pitch, yaw, and translation motors for control of a single crystal."""
     tab_component_names = True
 
     pitch = Cpt(BeckhoffAxis, ':Pitch', kind='normal')
@@ -51,28 +50,24 @@ class VonHamosCrystal(Device, BaseInterface):
 
 class VonHamosFE(Device, BaseInterface):
     """
-    Common motion controlling focus and energy motors for a von Hamos
-    spectrometer
+    von Hamos spectrometer with Focus and Energy motors.
 
     These motors should be run as user stages and have their PVs passed into
     this object as keyword arguments, as labeled.
 
-    If used alone, providing the base prefix is optional.
-    If used with crystals, the prefix is required.
-
     Parameters
     ----------
-    prefix : ``str``, optional
-        von Hamos base PV
+    prefix : str, optional
+        von Hamos base PV.
 
-    name : ``str``
-        A name to refer to the device
+    name : str
+        A name to refer to the device.
 
-    prefix_focus : ``str``
-        The EPICS base PV of the motor controlling the spectrometer's focus
+    prefix_focus : str
+        The EPICS base PV of the motor controlling the spectrometer's focus.
 
-    prefix_energy : ``str``
-        The EPICS base PV of the motor controlling the spectrometer energy
+    prefix_energy : str
+        The EPICS base PV of the motor controlling the spectrometer energy.
     """
 
     tab_component_names = True
@@ -92,31 +87,27 @@ class VonHamosFE(Device, BaseInterface):
 
 class VonHamosFER(VonHamosFE):
     """
-    Common motion controlling focus, energy, and rotation motors for a
-    von Hamos spectrometer
+    von Hamos spectrometer with Focus, Energy, and Rotation motors.
 
     These motors should be run as user stages and have their PVs passed into
     this object as keyword arguments, as labeled.
 
-    If used alone, providing the base prefix is optional.
-    If used with crystals, the prefix is required.
-
     Parameters
     ----------
-    prefix : ``str``, optional
-        von Hamos base PV
+    prefix : str, optional
+        von Hamos base PV.
 
-    name : ``str``
-        A name to refer to the device
+    name : str
+        A name to refer to the device.
 
-    prefix_focus : ``str``
-        The EPICS base PV of the motor controlling the spectrometer's focus
+    prefix_focus : str
+        The EPICS base PV of the motor controlling the spectrometer's focus.
 
-    prefix_energy : ``str``
-        The EPICS base PV of the motor controlling the spectrometer energy
+    prefix_energy : str
+        The EPICS base PV of the motor controlling the spectrometer energy.
 
-    prefix_rot : ``str``
-        The EPICS base PV of the common rotation motor
+    prefix_rot : str
+        The EPICS base PV of the common rotation motor.
     """
 
     rot = FCpt(BeckhoffAxis, '{self._prefix_rot}', kind='normal')
@@ -131,8 +122,7 @@ class VonHamosFER(VonHamosFE):
 
 class VonHamos4Crystal(VonHamosFE):
     """
-    von Hamos spectrometer with four crystals and two common motors,
-    controlling focus and energy
+    von Hamos spectrometer with four crystals and focus and energy motors.
 
     The common motors should be run as user stages and have their PVs passed
     into this object as keyword arguments. The crystal motors should be run
@@ -140,17 +130,17 @@ class VonHamos4Crystal(VonHamosFE):
 
     Parameters
     ----------
-    prefix : ``str``
-        von Hamos base PV
+    prefix : str
+        von Hamos base PV.
 
-    name : ``str``
-        A name to refer to the device
+    name : str
+        A name to refer to the device.
 
-    prefix_focus : ``str``
-        The EPICS base PV of the motor controlling the spectrometer's focus
+    prefix_focus : str
+        The EPICS base PV of the motor controlling the spectrometer's focus.
 
-    prefix_energy : ``str``
-        The EPICS base PV of the motor controlling the spectrometer energy
+    prefix_energy : str
+        The EPICS base PV of the motor controlling the spectrometer energy.
     """
 
     c1 = Cpt(VonHamosCrystal, ':1', kind='normal')

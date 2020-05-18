@@ -32,19 +32,21 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     The full list of preferences implemented here are:
 
         1. Use the FltMvInterface mixin class for some name aliases and
-        bells-and-whistles level functions
+           bells-and-whistles level functions.
         2. Instead of using the limit fields on the setpoint PV, the EPICS
-        motor class has the ``LLM`` and ``HLM`` soft limit fields for
-        convenient usage. Unfortunately, pyepics does not update its internal
-        cache of the limits after the first get attempt. We therefore disregard
-        the internal limits of the PV and use the soft limit records
-        exclusively.
-        3. The disable puts field ``.DISP`` is added, along with ``enable`` and
-        ``disable`` convenience methods. When ``.DISP`` is 1, puts to the motor
-        record will be ignored, effectively disabling the interface.
+           motor class has the 'LLM' and 'HLM' soft limit fields for
+           convenient usage. Unfortunately, pyepics does not update its
+           internal cache of the limits after the first get attempt. We
+           therefore disregard the internal limits of the PV and use the soft
+           limit records exclusively.
+        3. The disable puts field '.DISP' is added, along with :meth:`enable`
+           and :meth:`disable` convenience methods. When '.DISP' is 1, puts to
+           the motor record will be ignored, effectively disabling the
+           interface.
         4. The description field keeps track of the motors scientific use along
            the beamline.
     """
+
     # Reimplemented because pyepics does not recognize when the limits have
     # been changed without a re-connection of the PV. Instead we trust the soft
     # limits records
@@ -59,9 +61,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     @property
     def low_limit(self):
-        """
-        The lower soft limit for the motor.
-        """
+        """The lower soft limit for the motor."""
         return self.low_limit_travel.get()
 
     @low_limit.setter
@@ -70,9 +70,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     @property
     def high_limit(self):
-        """
-        The higher soft limit for the motor.
-        """
+        """The higher soft limit for the motor."""
         return self.high_limit_travel.get()
 
     @high_limit.setter
@@ -81,9 +79,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     @property
     def limits(self):
-        """
-        The soft limits of the motor.
-        """
+        """The soft limits of the motor."""
         return (self.low_limit, self.high_limit)
 
     @limits.setter
@@ -97,6 +93,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
         When disabled, all EPICS puts to the base record will be dropped.
         """
+
         return self.disabled.put(value=0)
 
     def disable(self):
@@ -105,6 +102,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
         When disabled, all EPICS puts to the base record will be dropped.
         """
+
         return self.disabled.put(value=1)
 
     def check_value(self, value):
@@ -114,16 +112,18 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         The full list of checks done in this method:
 
             - Check if the value is within the soft limits of the motor.
-            - Check if the motor is disabled (``.DISP`` field)
+            - Check if the motor is disabled ('.DISP' field).
 
         Raises
         ------
-        `MotorDisabledError`
-            If the motor is passed any motion command when disabled
-        ``LimitError(ValueError)``
+        MotorDisabledError
+            If the motor is passed any motion command when disabled.
+
+        ~ophyd.utils.errors.LimitError
             When the provided value is outside the range of the low
-            and high limits
+            and high limits.
         """
+
         # First check that the user has returned a valid EPICS value. It will
         # not consult the limits of the PV itself because limits=False
         super().check_value(value)
@@ -144,7 +144,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
 class PCDSMotorBase(EpicsMotorInterface):
     """
-    EpicsMotor for PCDS
+    EpicsMotor for PCDS.
 
     This incapsulates all motor record implementations standard for PCDS,
     including but not exclusive to Pico, Piezo, IMS and Newport motors. While
@@ -158,23 +158,23 @@ class PCDSMotorBase(EpicsMotorInterface):
     community Motor Record and the PCDS Motor Record. The points that matter
     for this class are:
 
-        1. The ``TDIR`` field does not exist on the PCDS implementation. This
+        1. The 'TDIR' field does not exist on the PCDS implementation. This
         indicates what direction the motor has travelled last. To account for
-        this difference, we use the `_pos_changed` callback to keep track of
-        which direction we believe the motor to be travelling and store this in
-        a simple ``ophyd.Signal``
-        2. The ``SPG`` field implements the three states used in the LCLS
+        this difference, we use the :meth:`._pos_changed` callback to keep
+        track of which direction we believe the motor to be travelling
+        and store this in a simple :class:`~ophyd.signal.Signal`.
+        2. The 'SPG' field implements the three states used in the LCLS
         motor record.  This is a reduced version of the standard EPICS
-        ``SPMG`` field.  Setting to ``STOP``, ``PAUSE`` and ``GO``  will
-        respectively stop motor movement, pause a move in progress, or resume
-        a paused move.
+        'SPMG' field.  Setting to 'STOP', 'PAUSE' and 'GO'  will respectively
+        stop motor movement, pause a move in progress, or resume a paused move.
     """
+
     # Disable missing field that our EPICS motor record lacks
     # This attribute is tracked by the _pos_changed callback
     direction_of_travel = Cpt(Signal, kind='omitted')
     # This attribute changes if the motor is stopped and unable to move 'Stop',
     # paused and ready to resume on Go 'Paused', and to resume a move 'Go'.
-    motor_spg = Cpt(EpicsSignal, ".SPG", kind='omitted')
+    motor_spg = Cpt(EpicsSignal, '.SPG', kind='omitted')
 
     tab_whitelist = ["spg_stop", "spg_pause", "spg_go"]
 
@@ -186,23 +186,23 @@ class PCDSMotorBase(EpicsMotorInterface):
         """
         Stops the motor.
 
-        After which the motor must be set back to 'go' via <motor>.spg_go() in
+        After which the motor must be set back to 'go' via :meth:`.spg_go` in
         order to move again.
         """
+
         return self.motor_spg.put(value='Stop')
 
     def spg_pause(self):
         """
         Pauses a move.
 
-        Move will resume if <motor>.go() is called.
+        Move will resume if :meth:`.go` is called.
         """
+
         return self.motor_spg.put(value='Pause')
 
     def spg_go(self):
-        """
-        Resumes paused movement.
-        """
+        """Resumes paused movement."""
         return self.motor_spg.put(value='Go')
 
     def check_value(self, value):
@@ -212,18 +212,20 @@ class PCDSMotorBase(EpicsMotorInterface):
         The full list of checks done in this method:
 
             - Check if the value is within the soft limits of the motor.
-            - Check if the motor is disabled (``.DISP`` field)`
-            - Check if the spg field is on "pause" or "stop"
+            - Check if the motor is disabled ('.DISP' field).
+            - Check if the spg field is on "pause" or "stop".
 
         Raises
         ------
-        `MotorDisabledError`
+        MotorDisabledError
             If the motor is passed any motion command when disabled, or if
-            the ``.SPG`` field is not set to ``Go``.
-        ``LimitError(ValueError)``
+            the '.SPG' field is not set to 'Go'.
+
+        ~ophyd.utils.errors.LimitError
             When the provided value is outside the range of the low
-            and high limits
+            and high limits.
         """
+
         super().check_value(value)
 
         if self.motor_spg.get() in [0, 'Stop']:
@@ -247,7 +249,7 @@ class PCDSMotorBase(EpicsMotorInterface):
 
     def screen(self):
         """
-        Opens Epics motor expert screen for resetting motor after e.g. stalling
+        Opens Epics motor expert screen e.g. for reseting motor after stalling.
         """
         executable = 'motor-expert-screen'
         if shutil.which(executable) is None:
@@ -262,12 +264,13 @@ class IMS(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record for IMS motors.
 
-    This is a subclass of `PCDSMotorBase`
+    This is a subclass of :class:`PCDSMotorBase`.
     """
+
     __doc__ += basic_positioner_init
     # Bit masks to clear errors and flags
     _bit_flags = {'powerup': {'clear': 36,
-                              'readback':  24},
+                              'readback': 24},
                   'stall': {'clear': 40,
                             'readback': 22},
                   'error': {'clear': 48,
@@ -289,11 +292,12 @@ class IMS(PCDSMotorBase):
 
     def stage(self):
         """
-        Stage the IMS motor
+        Stage the IMS motor.
 
         This clears all present flags on the motor and reinitializes the motor
-        if we don't register a valid part number
+        if we don't register a valid part number.
         """
+
         # Check the part number to avoid crashing the IOC
         if not self.part_number.get() or self.error_severity.get() == 3:
             self.reinitialize(wait=True)
@@ -303,13 +307,14 @@ class IMS(PCDSMotorBase):
 
     def auto_setup(self):
         """
-        Automated setup of the IMS motor
+        Automated setup of the IMS motor.
 
         If necessarry this command will:
 
-            * Reinitialize the motor
-            * Clear powerup, stall and error flags
+            * Reinitialize the motor.
+            * Clear powerup, stall and error flags.
         """
+
         # Reinitialize if necessary
         if not self.part_number.get() or self.error_severity.get() == 3:
             self.reinitialize(wait=True)
@@ -318,17 +323,17 @@ class IMS(PCDSMotorBase):
 
     def reinitialize(self, wait=False):
         """
-        Reinitialize the IMS motor
+        Reinitialize the IMS motor.
 
         Parameters
         ----------
         wait : bool
-            Wait for the motor to be fully intialized
+            Wait for the motor to be fully intialized.
 
         Returns
         -------
-        SubscriptionStatus:
-            Status object reporting the initialization state of the motor
+        :class:`~ophyd.status.SubscriptionStatus`
+            Status object reporting the initialization state of the motor.
         """
         logger.info('Reinitializing motor')
         # Issue command
@@ -348,25 +353,25 @@ class IMS(PCDSMotorBase):
         return st
 
     def clear_all_flags(self):
-        """Clear all the flags from the IMS motor"""
+        """Clear all the flags from the IMS motor."""
         # Clear all flags
         for func in (self.clear_powerup, self.clear_stall, self.clear_error):
             func(wait=True)
 
     def clear_powerup(self, wait=False, timeout=10):
-        """Clear powerup flag"""
+        """Clear powerup flag."""
         return self._clear_flag('powerup', wait=wait, timeout=timeout)
 
     def clear_stall(self, wait=False, timeout=5):
-        """Clear stall flag"""
+        """Clear stall flag."""
         return self._clear_flag('stall', wait=wait, timeout=timeout)
 
     def clear_error(self, wait=False, timeout=10):
-        """Clear error flag"""
+        """Clear error flag."""
         return self._clear_flag('error', wait=wait, timeout=timeout)
 
     def _clear_flag(self, flag, wait=False, timeout=10):
-        """Clear flag whose information is in ``._bit_flags``"""
+        """Clear flag whose information is in :attr:`._bit_flags`"""
         # Gather our flag information
         flag_info = self._bit_flags[flag]
         bit = flag_info['readback']
@@ -395,12 +400,13 @@ class IMS(PCDSMotorBase):
 
 class Newport(PCDSMotorBase):
     """
-    PCDS implementation of the Motor Record for Newport motors
+    PCDS implementation of the Motor Record for Newport motors.
 
-    This is a subclass of `PCDSMotorBase` that overwrites missings signals and
-    disables the ``home`` method, because it will not work the same way for
-    Newport motors.
+    This is a subclass of :class:`PCDSMotorBase` that overwrites missing
+    signals and disables the :meth:`home` method, because it will not work the
+    same way for Newport motors.
     """
+
     __doc__ += basic_positioner_init
 
     offset_freeze_switch = Cpt(Signal, kind='omitted')
@@ -415,18 +421,18 @@ class Newport(PCDSMotorBase):
 
 
 class DelayNewport(DelayBase):
-    __doc__ = DelayBase.__doc__
     motor = Cpt(Newport, '')
 
 
 class PMC100(PCDSMotorBase):
     """
-    PCDS implementation of the Motor Record PMC100 motors
+    PCDS implementation of the Motor Record PMC100 motors.
 
-    This is a subclass of `PCDSMotorBase` that overwrites missing signals and
-    disables the ``home`` method, because it will not work the same way for
-    Newport motors.
+    This is a subclass of :class:`PCDSMotorBase` that overwrites missing
+    signals and disables the :meth:`.home` method, because it will not work the
+    same way for Newport motors.
     """
+
     __doc__ += basic_positioner_init
 
     home_forward = Cpt(Signal, kind='omitted')
@@ -437,9 +443,7 @@ class PMC100(PCDSMotorBase):
 
 
 class BeckhoffAxisPLC(Device):
-    """
-    Debug PVs from the Beckhoff Axis PLC code
-    """
+    """Debug PVs from the Beckhoff Axis PLC code"""
     status = Cpt(PytmcSignal, 'sErrorMessage', io='i', kind='normal',
                  string=True)
     err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal')
@@ -448,22 +452,21 @@ class BeckhoffAxisPLC(Device):
 
 class BeckhoffAxis(EpicsMotorInterface):
     """
-    Beckhoff Axis motor record as implemented by ESS and extended by us
+    Beckhoff Axis motor record as implemented by ESS and extended by us.
 
-    This class adds a convenience `clear_error` method, and makes
+    This class adds a convenience :meth:`.clear_error` method, and makes
     sure to call it on stage.
 
     It also exposes the PLC debug PVs.
     """
+
     __doc__ += basic_positioner_init
     tab_whitelist = ['clear_error']
 
     plc = Cpt(BeckhoffAxisPLC, ':PLC:', kind='normal')
 
     def clear_error(self):
-        """
-        Clear any active motion errors on this axis.
-        """
+        """Clear any active motion errors on this axis."""
         self.plc.cmd_err_reset.put(1)
 
     def stage(self):
@@ -471,25 +474,24 @@ class BeckhoffAxis(EpicsMotorInterface):
         Stage the Beckhoff axis.
 
         This simply clears any errors. Stage is called at the start of most
-        ``bluesky`` plans.
+        :mod:`bluesky` plans.
         """
+
         self.clear_error()
         return super().stage()
 
 
 class MotorDisabledError(Exception):
-    """
-    Error that indicates that we are not allowed to move.
-    """
+    """Error that indicates that we are not allowed to move."""
     pass
 
 
 def Motor(prefix, **kwargs):
     """
-    Load a PCDSMotor with the correct class based on prefix
+    Load a PCDSMotor with the correct class based on prefix.
 
     The prefix is searched for one of the component keys in the table below. If
-    none of these are found, by default an ``ophyd.EpicsMotor`` will be used.
+    none of these are found, by default an `EpicsMotor` will be used.
 
     +---------------+-------------------------+
     | Component Key + Python Class            |
@@ -511,11 +513,11 @@ def Motor(prefix, **kwargs):
 
     Parameters
     ----------
-    prefix: str
-        Prefix of motor
+    prefix : str
+        Prefix of motor.
 
-    kwargs:
-        Passed to class constructor
+    kwargs
+        Passed to class constructor.
     """
     # Available motor types
     motor_types = (('MMS', IMS),
