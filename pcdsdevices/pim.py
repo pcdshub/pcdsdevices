@@ -14,7 +14,7 @@ from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
 
-from .areadetector.detectors import PCDSAreaDetector
+from .areadetector.detectors import PCDSAreaDetectorEmbedded
 from .epics_motor import IMS, BeckhoffAxis
 from .inout import InOutRecordPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface
@@ -75,7 +75,8 @@ class PIM(Device, BaseInterface):
 
     state = Cpt(PIMY, '', kind='omitted')
     zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
-    detector = FCpt(PCDSAreaDetector, '{self._prefix_det}', kind='normal')
+    detector = FCpt(PCDSAreaDetectorEmbedded, '{self._prefix_det}',
+                    kind='normal')
 
     tab_whitelist = ['y_motor', 'remove', 'insert', 'removed', 'inserted']
     tab_component_names = True
@@ -260,7 +261,7 @@ class LCLS2ImagerBase(Device, BaseInterface):
 
     y_states = Cpt(TwinCATInOutPositioner, ':MMS:STATE', kind='hinted')
     y_motor = Cpt(BeckhoffAxis, ':MMS', kind='normal')
-    detector = Cpt(PCDSAreaDetector, ':CAM:', kind='normal')
+    detector = Cpt(PCDSAreaDetectorEmbedded, ':CAM:', kind='normal')
     cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config')
 
 
