@@ -104,7 +104,10 @@ class ImagePlugin(ophyd.plugins.ImagePlugin, PluginBase):
 
 
 class StatsPlugin(ophyd.plugins.StatsPlugin, PluginBase):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.stage_sigs['compute_statistics'] = 'Yes'
+        self.stage_sigs['compute_centroid'] = 'Yes'
 
 
 class ColorConvPlugin(ophyd.plugins.ColorConvPlugin, PluginBase):
