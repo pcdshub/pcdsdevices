@@ -19,7 +19,7 @@ Bugfixes
   fixes issues with fake devices not working if they contain ``PytmcSignal``
   instances outside of the ``pcdsdevices`` testing suite.
 - Fix various issues related to moving to ``ophyd`` ``v1.5.0``.
-- This library is now portable to win32.
+- This library is now importable on win32.
 
 Docs
 ----
