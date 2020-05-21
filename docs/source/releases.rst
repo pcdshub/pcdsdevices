@@ -10,8 +10,8 @@ Features
 - ``happi`` entry points have been moved to this library for proper
   modularization.
 - Area detectors embedded inside of larger devices have been made
-  considerably smaller to speed up embedded applications, for
-  example in ``typhos``.
+  considerably smaller to improve performance in other applications,
+  for example in ``typhos``.
 
 Bugfixes
 --------
