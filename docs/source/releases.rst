@@ -1,6 +1,31 @@
 Release History
 ###############
 
+
+v2.6.0 (2020-05-21)
+===================
+
+Features
+--------
+- ``happi`` entry points have been moved to this library for proper
+  modularization.
+- Area detectors embedded inside of larger devices have been made
+  considerably smaller to improve performance in other applications,
+  for example in ``typhos``.
+
+Bugfixes
+--------
+- Provide ``FakePytmcSignal`` for testing in external libraries. This
+  fixes issues with fake devices not working if they contain ``PytmcSignal``
+  instances outside of the ``pcdsdevices`` testing suite.
+- Fix various issues related to moving to ``ophyd`` ``v1.5.0``.
+- This library is now importable on win32.
+
+Docs
+----
+- Docstrings now conform to the new pcds standards.
+
+
 v2.5.0 (2020-04-15)
 ===================
 
