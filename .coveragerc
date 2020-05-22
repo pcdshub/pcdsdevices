@@ -1,6 +1,6 @@
 [run]
 source =
-    pcdsdevices 
+    pcdsdevices
 [report]
 omit =
     #tests

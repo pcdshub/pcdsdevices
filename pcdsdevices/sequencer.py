@@ -1,41 +1,47 @@
 import logging
 
-from ophyd import Device, EpicsSignal, EpicsSignalRO, Component as Cpt
+from ophyd import Component as Cpt
+from ophyd import Device, EpicsSignal, EpicsSignalRO
+from ophyd.flyers import FlyerInterface, MonitorFlyerMixin
 from ophyd.status import DeviceStatus, SubscriptionStatus
 from ophyd.utils.epics_pvs import raise_if_disconnected
-from ophyd.flyers import FlyerInterface, MonitorFlyerMixin
+
+from .interface import BaseInterface
 
 logger = logging.getLogger(__name__)
 
 
-class EventSequence(Device):
+class EventSequence(Device, BaseInterface):
     """Class for the event sequence of the event sequencer."""
-
     ec_array = Cpt(EpicsSignal, ':SEQ.A')
     bd_array = Cpt(EpicsSignal, ':SEQ.B')
     fd_array = Cpt(EpicsSignal, ':SEQ.C')
     bc_array = Cpt(EpicsSignal, ':SEQ.D')
 
+    tab_whitelist = ['get_seq', 'put_seq', 'show']
+
     def get_seq(self, current_length=True):
-        """Retrieve the current event sequence. Returns a list of lists, with
-        each sub list containing a four item list describing a single line of
-        the sequence. Returns the current sequence up to the current play
-        length, the {prefix}:LEN PV, unless the current_length option is set
-        to False. If set to false, the whole sequence will be returned.
+        """
+        Retrieve the current event sequence.
+
+        Returns a list of lists, with each sub-list containing a four item list
+        describing a single line of the sequence. Returns the current sequence
+        up to the current play length (the '{prefix}:LEN' PV), unless the
+        `current_length` option is set to :keyword:`False`. If
+        :keyword:`False`, the whole sequence will be returned.
 
         Parameters
         ----------
         current_length : bool
             Option to retrieve the sequence up to the current length. Defaults
-            to True.
+            to `True`.
 
         Examples
         --------
+        >>> EventSequence.get_seq()
 
-        EventSequence.get_seq()
-
-        EventSequence.get_seq(current_length=False) # Get whole sequence
-
+        Get the whole sequence:
+        >>> EventSequence.get_seq(current_length=False)
         """
 
         if self.parent and current_length is True:
@@ -57,35 +63,38 @@ class EventSequence(Device):
         return seq
 
     def put_seq(self, sequence, update_length=True):
-        """Write a sequence to the event sequencer. Takes a list of lists,
-        with each sub-list representing one line of the event sequence, e.g.
-        [beam_code, delta_beam, delta_fiducial, burst_count]. The written
-        sequence will overwrite the current sequence in order, up to the
-        specified length. The play length of the sequencer will automatically
-        be updated, unless the update_length flag is set to False.
+        """
+        Write a sequence to the event sequencer.
+
+        Takes a list of lists, with each sub-list representing one line of the
+        event sequence, e.g. ``[beam_code, delta_beam, delta_fiducial,
+        burst_count]``. The written sequence will overwrite the current
+        sequence in order, up to the specified length. The play length of the
+        sequencer will automatically be updated, unless the `update_length`
+        flag is set to :keyword:`False`.
 
         Parameters
         ----------
-        sequence: list
+        sequence : list
             List of lists describing the event sequence. The list takes the
-            form [[beam_code, delta_beam, delta_fiducial, burst_count], ...].
+            form ``[[beam_code, delta_beam, delta_fiducial, burst_count],
+            ...]``.
 
-        update_length: bool
-            Option to automatically update the play length, the
-            {prefix}:LEN PV, to the length of the written sequence. Defaults
-            to True.
+        update_length : bool
+            Option to automatically update the play length (the '{prefix}:LEN'
+            PV) to the length of the written sequence. Defaults to `True`.
 
         Examples
         --------
-        seq = [[182,  12,   0,   0], # Line 1
-               [170,   2,   0,   0], # Line 2
-               [169,   1,   0,   0], # Line 3
-               [169,   1,   0,   0]] # Line 4
+        >>> seq = [[182,  12,   0,   0], # Line 1
+                   [170,   2,   0,   0], # Line 2
+                   [169,   1,   0,   0], # Line 3
+                   [169,   1,   0,   0]] # Line 4
 
-        EventSequence.put_seq(seq)
+        >>> EventSequence.put_seq(seq)
 
-        EventSequence.put_seq(seq, update_length=False) # Don't update length
-
+        Don't update length:
+        >>> EventSequence.put_seq(seq, update_length=False)
         """
 
         curr_seq = self.get_seq(current_length=False)
@@ -107,9 +116,11 @@ class EventSequence(Device):
         self.bc_array.put(seq[3])
 
     def show(self, num_lines=None):
-        """Print a human readable copy of the current event sequence. Shows
-        the current sequence up to the length of the sequencer play length,
-        unless otherwise specified by the num_lines parameter.
+        """
+        Print a human readable copy of the current event sequence.
+
+        Shows the current sequence up to the length of the sequencer play
+        length, unless otherwise specified by the `num_lines` parameter.
 
         Parameters
         ----------
@@ -119,10 +130,13 @@ class EventSequence(Device):
 
         Examples
         --------
-        seq.show()     # Print current sequence (default)
-        seq.show(10)   # Print the first 10 lines
+        Print current sequence (default):
+        >>> seq.show()
 
+        Print the first 10 lines:
+        >>> seq.show(10)
         """
+
         curr_seq = self.get_seq()
 
         for nline, line in enumerate(curr_seq):
@@ -131,11 +145,11 @@ class EventSequence(Device):
             print(line)
 
 
-class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
+class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface, BaseInterface):
     """
-    Event Sequencer
+    Event Sequencer.
 
-    The LCLS Event Sequencer implemented as an Flyer; i.e it has the methods
+    The LCLS Event Sequencer implemented as an Flyer; i.e. it has the methods
     :meth:`.kickoff`, :meth:`.complete` and :meth:`.collect`. This allows the
     EventSequencer to be used succinctly with the `fly_during_wrapper` and
     associated preprocessor.
@@ -143,25 +157,19 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     Parameters
     ----------
     prefix : str
-        Base prefix of the EventSequencer
+        Base prefix of the EventSequencer.
 
     name : str
-        Name of Event Sequencer object
+        Name of Event Sequencer object.
 
     Examples
     --------
-    Run the EventSequencer throughout my scan
-
-    .. code::
-
-        fly_during_wrapper(scan([det], motor, ...), [sequencer])
+    Run the EventSequencer throughout my scan:
+    >>> fly_during_wrapper(scan([det], motor, ...), [sequencer])
 
     Run the EventSequencer at each step in my scan after completing the
     motor move and detector reading:
-
-    .. code::
-
-        scan([sequencer], motor, ....)
+    >>> scan([sequencer], motor, ....)
 
     Note
     ----
@@ -169,8 +177,7 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     pause and resume during a scan. The current implementation will stop the
     EventSequencer and restart the sequence from the beginning. This may impact
     applications which depend on a long single looped sequence running through
-    out the scan
-
+    out the scan.
     """
 
     play_control = Cpt(EpicsSignal, ':PLYCTL', kind='omitted')
@@ -189,6 +196,9 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
 
     sequence = Cpt(EventSequence, '', kind='config')
 
+    tab_whitelist = ["start"]
+    tab_component_names = True
+
     def __init__(self, prefix, *, name=None, monitor_attrs=None, **kwargs):
         monitor_attrs = monitor_attrs or ['current_step', 'play_count']
 
@@ -199,13 +209,14 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
     @raise_if_disconnected
     def kickoff(self):
         """
-        Start the EventSequencer
+        Start the EventSequencer.
 
         Returns
         -------
-        status : SubscriptionStatus
-            Status indicating whether or not the EventSequencer has started
+        status : ~ophyd.status.SubscriptionStatus
+            Status indicating whether or not the EventSequencer has started.
         """
+
         self.start()
         # Start monitor signals
         super().kickoff()
@@ -219,16 +230,14 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
 
     @raise_if_disconnected
     def start(self):
-        """
-        Start the EventSequencer
-        """
+        """Start the EventSequencer."""
         # Start the sequencer
         logger.debug("Starting EventSequencer ...")
         self.play_control.put(1)
 
     def trigger(self):
         """
-        Trigger the EventSequencer
+        Trigger the EventSequencer.
 
         This method reconfigures the EventSequencer to take a new reading. This
         means:
@@ -237,11 +246,12 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
             * Restarting the EventSequencer
 
         The returned status object will indicate different behavior based on
-        the configuration of the EventSequencer itself. If set to "Run
-        Forever", the status object merely indicates that we have succesfully
+        the configuration of the EventSequencer itself. If set to 'Run
+        Forever', the status object merely indicates that we have succesfully
         started our sequence. Otherwise, the status object will be completed
         when the sequence we have set it to play is complete.
         """
+
         # Stop the Sequencer if it is already running
         self.stop()
         # Fire the EventSequencer
@@ -254,46 +264,46 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
 
         # Create our status
         def done(*args, value=None, old_value=None, **kwargs):
-            return value == 2 and old_value == 0
+            return value == 0 and old_value == 2
 
         # Create our status object
         return SubscriptionStatus(self.play_status, done, run=True)
 
     def pause(self):
-        """Stop the event sequencer and stop monitoring events"""
+        """Stop the event sequencer and stop monitoring events."""
         # Order a stop
         self.stop()
         # Pause monitoring
         super().pause()
 
     def resume(self):
-        """Resume the EventSequencer procedure"""
+        """Resume the EventSequencer procedure."""
         super().resume()
         self.start()
 
     def complete(self):
         """
-        Complete the EventSequencer's current sequence
+        Complete the EventSequencer's current sequence.
 
         The result of this method varies on the mode that the EventSequencer is
-        configured. If the EventSequencer is either set to "Run Once" or "Run N
-        Times" this method allows the current sequence to complete and returns
+        configured. If the EventSequencer is either set to 'Run Once' or 'Run N
+        Times' this method allows the current sequence to complete and returns
         a status object that indicates a successful completion. However, this
         mode of operation does not make sense if the EventSequencer is in
-        "Run Forever" mode. In this case, the EventSequencer is stopped
+        'Run Forever' mode. In this case, the EventSequencer is stopped
         immediately and a completed status object is returned.
 
         Returns
         -------
-        status: DeviceStatus or SubscriptionStatus
-            Status indicating completion of sequence
+        status : DeviceStatus or SubscriptionStatus
+            Status indicating completion of sequence.
 
-        Note
-        ----
+        Notes
+        -----
         If you want to stop the sequence from running regardless of
         configuration use the :meth:`.stop` command.
-
         """
+
         # Clear the monitor subscriptions
         super().complete()
         # If we are running forever we can stop whenever
@@ -314,6 +324,6 @@ class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface):
         return st
 
     def stop(self):
-        """Stop the EventSequencer"""
+        """Stop the EventSequencer."""
         logger.debug("Stopping the EventSequencer")
         self.play_control.put(0)

@@ -1,6 +1,173 @@
 Release History
 ###############
 
+
+v2.6.0 (2020-05-21)
+===================
+
+Features
+--------
+- ``happi`` entry points have been moved to this library for proper
+  modularization.
+- Area detectors embedded inside of larger devices have been made
+  considerably smaller to improve performance in other applications,
+  for example in ``typhos``.
+
+Bugfixes
+--------
+- Provide ``FakePytmcSignal`` for testing in external libraries. This
+  fixes issues with fake devices not working if they contain ``PytmcSignal``
+  instances outside of the ``pcdsdevices`` testing suite.
+- Fix various issues related to moving to ``ophyd`` ``v1.5.0``.
+- This library is now importable on win32.
+
+Docs
+----
+- Docstrings now conform to the new pcds standards.
+
+
+v2.5.0 (2020-04-15)
+===================
+
+Features
+--------
+- Add classes for Goniometers, Von Hamos spectrometers, Beckhoff liquid jets, TimeTools, and PFLSs
+- Add ``UnrelatedComponent`` as a helper for writing devices with many prefixes
+
+Bugfixes
+--------
+- Fix TwinCAT states enum states
+- Add missing packages to requirements file
+- Compatibility with newest ``ophyd``
+
+Misc
+----
+- Add pre-commit hooks to help with development flow
+- Add license file to manifest
+- Eliminate ``m2r`` docs dependency
+
+
+v2.4.0 (2020-03-12)
+===================
+
+Features
+--------
+- Add ``PytmcSignal``
+- Add ``PPM``, ``XPIM``, ``XOffsetMirror``, and ``Kmono`` classes
+- Update ``IPM`` and ``PIM`` modules to better match physical devices
+- Add various helper classes for TwinCAT devices
+- Stubs created for attenuators, ``RTD``, and ``PowerSlit``
+- Make ``cmd_err_reset`` in ``BeckhoffAxisPLC`` accessible in Typhos
+
+API Changes
+-----------
+- Changed ``set_point_relay`` to ``pump_on_status``, ``at_vac_sp`` to
+  ``at_vac_setpoint`` and added ``pump_state`` to ``PIPPLC``
+
+- Changed ``at_vac_sp`` to ``at_vac_setpoint``, ``at_vac_hysterisis``
+  to ``setpoint_hysterisis``, and added mps_state to ``VGC``
+
+Bugfixes
+--------
+- Make ``protection_setpoint`` writeable in ``GCCPLC``
+- Make ``state`` writeable in ``VCN``
+
+Misc
+----
+- Allow build docs failure to speed up overall CI
+- Specify old working conda version as temporary solution for
+  build failures
+
+
+v2.3.0 (2020-02-05)
+===================
+
+Features
+--------
+- Make everything compatible with the upcoming ``ophyd`` ``v1.4.0``
+- Add be lens calculations port from old python system
+
+
+v2.2.0 (2020-01-22)
+===================
+
+Features
+--------
+- Add a bunch vacuum-related classes for L2SI
+
+Misc
+----
+- Fix an issue with the doctr deploy key
+
+
+v2.1.0 (2020-01-10)
+===================
+
+Features
+--------
+- Add ``screen`` method to ``PCDSMotorBase`` to open the motor expert screen
+- Add tab completion filtering via whitelists as the first feature of the
+  ``engineering_mode`` switch. This was implemented because the tab
+  completion on ophyd devices is extremely overwhelming.
+  Use ``set_engineering_mode(bool)`` to turn ``engineering_mode`` on or off.
+  The default is "on", which means "everything is normal".
+  Turning ``engineering_mode`` off enables the whitelist filtering,
+  and in the future may also have other effects on the user interface.
+- Add ``dc_devices`` module for components from the new DC power system.
+  This currently contains the ``ICT`` and related classes.
+
+Misc
+----
+- Fixed a race condition in the tests
+- Clean up the Travis CI configuration
+- Pin pyepics to >=3.4.1 due to a breaking change from python 3.7.6
+
+
+v2.0.0 (2019-06-28)
+===================
+
+Features
+--------
+- Add ``gauge`` and ``pump`` modules
+- Add ``Acromag`` and ``Mesh`` classes
+- Add ``motor`` subdevice to state record devices
+- Add ``status`` string to ``BeckhoffAxis``
+
+API Breaks
+----------
+- State devices no longer have the ``readback`` signal, as it is redundant
+  with the new ``motor`` subdevice
+- ``PCDSDetector`` has been renamed to ``PCDSAreaDetector`` for clarity.
+  ``PCDSDetectorBase`` is also renamed to ``PCDSAreaDetectorBase``.
+
+Bugfixes
+--------
+- Fix PVs in ``BeckhoffAxis``
+
+Misc
+----
+- Officially build for ``python=3.7``
+
+
+v1.2.0 (2019-03-08)
+===================
+
+Features
+--------
+- Add all common plugins to ``PCDSDetector``
+- ``EventSequencer`` now accepts human-readable sequences
+
+Fixes
+-----
+- Fix debug PV names in ``BeckhoffAxis``
+
+Misc
+----
+- Add a py37 build to the CI
+- Remove outdated hotfix for ``FakeEpicsSignal`` in tests
+- Fix misc testing errors
+
+
 v1.1.0 (2018-10-26)
 ===================
 

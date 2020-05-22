@@ -4,9 +4,7 @@ from unittest.mock import Mock
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.valve import GateValve, PPSStopper, Stopper, InterlockError
-
-from conftest import HotfixFakeEpicsSignal
+from pcdsdevices.valve import GateValve, InterlockError, PPSStopper, Stopper
 
 logger = logging.getLogger(__name__)
 
@@ -14,10 +12,9 @@ logger = logging.getLogger(__name__)
 @pytest.fixture(scope='function')
 def fake_pps():
     FakePPS = make_fake_device(PPSStopper)
-    FakePPS.state.cls = HotfixFakeEpicsSignal
     pps = FakePPS("PPS:H0:SUM", name="test_pps")
     pps.state.sim_set_enum_strs(['Unknown', 'IN', 'OUT'])
-    pps.state.put('OUT')
+    pps.state.sim_put('OUT')
     return pps
 
 
@@ -39,11 +36,11 @@ def fake_valve():
 def test_pps_states(fake_pps):
     pps = fake_pps
     # Removed
-    pps.state.put("OUT")
+    pps.state.sim_put("OUT")
     assert pps.removed
     assert not pps.inserted
     # Inserted
-    pps.state.put("IN")
+    pps.state.sim_put("IN")
     assert pps.inserted
     assert not pps.removed
 
@@ -52,7 +49,7 @@ def test_pps_motion(fake_pps):
     pps = fake_pps
     with pytest.raises(PermissionError):
         pps.insert()
-    pps.state.put("IN")
+    pps.state.sim_put("IN")
     with pytest.raises(PermissionError):
         pps.remove()
 
@@ -63,7 +60,7 @@ def test_pps_subscriptions(fake_pps):
     cb = Mock()
     pps.subscribe(cb, event_type=pps.SUB_STATE, run=False)
     # Change readback state
-    pps.state.put(4)
+    pps.state.sim_put(4)
     assert cb.called
 
 
@@ -90,11 +87,12 @@ def test_stopper_motion(fake_stopper):
     status = stopper.close(wait=False)
     stopper.open_limit.sim_put(0)
     stopper.closed_limit.sim_put(1)
+    status.wait(timeout=1)
     assert status.done and status.success
     # Remove
     stopper.open(wait=False)
     # Check write PV
-    assert stopper.command.value == stopper.commands.open_valve.value
+    assert stopper.command.get() == stopper.commands.open_valve.value
 
 
 def test_stopper_subscriptions(fake_stopper):
@@ -113,9 +111,15 @@ def test_valve_motion(fake_valve):
     # Remove
     valve.open(wait=False)
     # Check write PV
-    assert valve.command.value == valve.commands.open_valve.value
+    assert valve.command.get() == valve.commands.open_valve.value
     # Raises interlock
     valve.interlock.sim_put(0)
     assert valve.interlocked
     with pytest.raises(InterlockError):
         valve.open()
+
+
+@pytest.mark.parametrize('cls', [GateValve, PPSStopper, Stopper])
+@pytest.mark.timeout(5)
+def test_valve_disconnected(cls):
+    cls('TST', name='tst')

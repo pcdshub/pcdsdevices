@@ -1,6 +1,5 @@
-from ophyd.sim import make_fake_device
 import pytest
-
+from ophyd.sim import make_fake_device
 from pcdsdevices.device_types import Trigger
 
 
@@ -15,3 +14,8 @@ def test_enable(fake_trigger):
     assert fake_trigger.enable_cmd.get() == 1
     fake_trigger.disable()
     assert fake_trigger.enable_cmd.get() == 0
+
+
+@pytest.mark.timeout(5)
+def test_disconnected_trigger():
+    Trigger('TST', name='test')

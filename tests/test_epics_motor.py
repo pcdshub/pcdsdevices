@@ -1,16 +1,15 @@
 import logging
 
+import pytest
 from bluesky import RunEngine
-from bluesky.plan_stubs import stage, unstage, open_run, close_run
+from bluesky.plan_stubs import close_run, open_run, stage, unstage
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
-import pytest
 
-from pcdsdevices.epics_motor import (EpicsMotorInterface, PCDSMotorBase, IMS,
-                                     Newport, PMC100, BeckhoffAxis,
-                                     MotorDisabledError, Motor, EpicsMotor)
-
-from conftest import HotfixFakeEpicsSignal
+from pcdsdevices.epics_motor import (IMS, PMC100, BeckhoffAxis, EpicsMotor,
+                                     EpicsMotorInterface, Motor,
+                                     MotorDisabledError, Newport,
+                                     PCDSMotorBase)
 
 logger = logging.getLogger(__name__)
 
@@ -20,8 +19,6 @@ def fake_class_setup(cls):
     Make the fake class and modify if needed
     """
     FakeClass = make_fake_device(cls)
-    if issubclass(FakeClass, PCDSMotorBase):
-        FakeClass.motor_spg.cls = HotfixFakeEpicsSignal
     return FakeClass
 
 
@@ -125,6 +122,7 @@ def test_ims_clear_flag(fake_ims):
     assert not st.done
     assert not st.success
     m.bit_status.sim_put(0)
+    st.wait(timeout=1)
     assert st.done
     assert st.success
 
@@ -202,7 +200,7 @@ def test_disable(fake_pcds_motor):
 def test_beckhoff_error_clear(fake_beckhoff):
     m = fake_beckhoff
     m.clear_error()
-    assert m.cmd_err_reset.get() == 1
+    assert m.plc.cmd_err_reset.get() == 1
     m.stage()
     m.unstage()
 
@@ -212,3 +210,10 @@ def test_motor_factory():
     assert isinstance(m, IMS)
     m = Motor('TST:RANDOM:MTR:01', name='test_motor')
     assert isinstance(m, EpicsMotor)
+
+
+@pytest.mark.parametrize("cls", [PCDSMotorBase, IMS, Newport, PMC100,
+                                 BeckhoffAxis, EpicsMotor])
+@pytest.mark.timeout(5)
+def test_disconnected_motors(cls):
+    cls('MOTOR', name='motor')

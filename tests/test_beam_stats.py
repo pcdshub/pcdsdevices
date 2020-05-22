@@ -27,16 +27,21 @@ def test_beam_stats_avg(fake_beam_stats):
     logger.debug('test_beam_stats_avg')
     stats = fake_beam_stats
 
-    assert stats.mj_buffersize.value == 120
+    assert stats.mj_buffersize.get() == 120
 
     stats.mj_buffersize.put(10)
 
     for i in range(10):
         stats.mj.sim_put(i)
 
-    assert stats.mj_avg.value == sum(range(10))/10
+    assert stats.mj_avg.get() == sum(range(10))/10
 
     stats.configure(dict(mj_buffersize=20))
     cfg = stats.read_configuration()
 
     assert cfg['beam_stats_mj_buffersize']['value'] == 20
+
+
+@pytest.mark.timeout(5)
+def test_beam_stats_disconnected():
+    BeamStats()

@@ -1,8 +1,8 @@
 import logging
+from unittest.mock import Mock
 
 import pytest
 from ophyd.sim import make_fake_device
-from unittest.mock import Mock
 
 from pcdsdevices.slits import Slits
 
@@ -54,6 +54,7 @@ def test_slit_motion(fake_slits):
     slits.xwidth.done.sim_put(1)
     slits.ywidth.readback.sim_put(10.0)
     slits.ywidth.done.sim_put(1)
+    status.wait(timeout=1)
     assert status.done and status.success
     # Reset DMOV flags
     slits.xwidth.done.sim_put(0)
@@ -70,6 +71,7 @@ def test_slit_motion(fake_slits):
     slits.xwidth.done.sim_put(1)
     slits.ywidth.readback.sim_put(40.0)
     slits.ywidth.done.sim_put(1)
+    status.wait(timeout=1)
     assert status.done and status.success
 
 
@@ -98,3 +100,8 @@ def test_slit_staging(fake_slits):
     slits.unstage()
     assert slits.xwidth.setpoint.get() == 2.5
     assert slits.ywidth.setpoint.get() == 2.5
+
+
+@pytest.mark.timeout(5)
+def test_slits_disconnected():
+    Slits("TST:JAWS:", name='Test Slits')

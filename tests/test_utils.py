@@ -1,12 +1,11 @@
 import logging
 import pty
 import sys
-import time
 import threading
-
-import pytest
+import time
 
 import pcdsdevices.utils as util
+import pytest
 
 logger = logging.getLogger(__name__)
 
@@ -58,5 +57,5 @@ def test_get_input_shift_arrow(sim_input):
 def test_cbreak(sim_input):
     logger.debug('test_cbreak')
     # send the ctrl+c character
-    input_later(sim_input, '\x03')
-    assert util.get_input() is None
+    input_later(sim_input, '\x03\n')
+    assert util.get_input() == '\n'

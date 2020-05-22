@@ -9,21 +9,25 @@ source:
 
 build:
   number: 1
+  noarch: python
 
 requirements:
   build:
-    - python {{PY_VER}}*,>=3
+    - python >=3.6
     - setuptools
 
   run:
-    - python {{PY_VER}}*,>=3
-    - ophyd >=1.2.0
+    - python >=3.6
+    - ophyd >=1.5.0
     - bluesky >=1.2.0
-    - pyepics
+    - pyepics >=3.4.1
+    - pytmc >=2.4.0
     - pyyaml
     - cf_units >=2.0.1
     - scipy
     - matplotlib <3
+    - periodictable
+    - happi
 
 test:
   imports:

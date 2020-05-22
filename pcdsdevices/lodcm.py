@@ -8,18 +8,26 @@ downstream hutches.
 It will not be possible to align the device with the class, and there will be
 no readback into the device's alignment. This is intended for a future update.
 """
-import logging
 import functools
+import logging
 
-from ophyd import Component as Cpt, FormattedComponent as FCpt
-from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
 from ophyd.sim import NullStatus
 from ophyd.status import wait as status_wait
 
-from .doc_stubs import basic_positioner_init, insert_remove
+from .doc_stubs import insert_remove
 from .inout import InOutRecordPositioner
+from .interface import BaseInterface
 
 logger = logging.getLogger(__name__)
+
+
+class H1N(InOutRecordPositioner):
+    states_list = ['OUT', 'C', 'Si']
+    in_states = ['C', 'Si']
+    _states_alias = {'C': 'IN'}
+    _transmission = {'C': 0.8, 'Si': 0.7}
 
 
 class YagLom(InOutRecordPositioner):
@@ -52,9 +60,9 @@ class Foil(InOutRecordPositioner):
         super().__init__(prefix, *args, **kwargs)
 
 
-class LODCM(InOutRecordPositioner):
+class LODCM(Device, BaseInterface):
     """
-    Large Offset Dual Crystal Monochromator
+    Large Offset Dual Crystal Monochromator.
 
     This is the device that allows XPP and XCS to multiplex with downstream
     hutches. It contains two crystals that steer/split the beam and a number of
@@ -62,33 +70,32 @@ class LODCM(InOutRecordPositioner):
     the mono line, onto both, or onto neither.
 
     This positioner only considers the h1n and diagnostic motors.
-%s
-    main_line: ``str``, optional
+
+    Parameters
+    ----------
+    prefix : str
+        The PV prefix.
+
+    name : str
+        The name of this device.
+
+    main_line : str, optional
         Name of the main, no-bounce beamline.
 
-    mono_line: ``str``, optional
+    mono_line : str, optional
         Name of the mono, double-bounce beamline.
     """
-    __doc__ = __doc__ % basic_positioner_init
 
-    state = Cpt(EpicsSignal, ':H1N', write_pv=':H1N:GO', kind='hinted')
-    readback = FCpt(EpicsSignalRO, '{self.prefix}:H1N:{self._readback}',
-                    kind='normal')
-
+    h1n = Cpt(H1N, ':H1N', kind='hinted')
     yag = Cpt(YagLom, ":DV", kind='omitted')
     dectris = Cpt(Dectris, ":DH", kind='omitted')
     diode = Cpt(Diode, ":DIODE", kind='omitted')
     foil = Cpt(Foil, ":FOIL", kind='omitted')
 
-    states_list = ['OUT', 'C', 'Si']
-    in_states = ['C', 'Si']
-
-    # TBH these are guessed. Please replace if you know better. These don't
-    # need to be 100% accurate, but they should reflect a reasonable reduction
-    # in transmission.
-    _transmission = {'C': 0.8, 'Si': 0.7}
     # QIcon for UX
     _icon = 'fa.share-alt-square'
+
+    tab_whitelist = ['h1n', 'yag', 'dectris', 'diode', 'foil', 'remove_dia']
 
     def __init__(self, prefix, *, name, main_line='MAIN', mono_line='MONO',
                  **kwargs):
@@ -97,13 +104,27 @@ class LODCM(InOutRecordPositioner):
         self.mono_line = mono_line
 
     @property
+    def inserted(self):
+        """Returns `True` if either h1n crystal is in."""
+        return self.h1n.inserted
+
+    @property
+    def removed(self):
+        """Returns `True` if neither h1n crystal is in."""
+        return self.h1n.removed
+
+    def remove(self, moved_cb=None, timeout=None, wait=False):
+        """Moves the h1n crystal out of the beam."""
+        return self.h1n.remove(moved_cb=moved_cb, timeout=timeout, wait=wait)
+
+    @property
+    def transmission(self):
+        """Returns h1n's transmission value."""
+        return self.h1n.transmission
+
+    @property
     def branches(self):
-        """
-        Returns
-        -------
-        branches: ``list`` of ``str``
-            A list of possible destinations.
-        """
+        """Returns possible destinations as a list of strings."""
         return [self.main_line, self.mono_line]
 
     @property
@@ -115,15 +136,16 @@ class LODCM(InOutRecordPositioner):
 
         Returns
         -------
-        destination: ``list`` of ``str``
-            ``self.main_line`` if the light continues on the main line.
-            ``self.mono_line`` if the light continues on the mono line.
+        destination : list of str
+            `.main_line` if the light continues on the main line.
+            `.mono_line` if the light continues on the mono line.
         """
-        if self.position == 'OUT':
+
+        if self.h1n.position == 'OUT':
             dest = [self.main_line]
-        elif self.position == 'Si':
+        elif self.h1n.position == 'Si':
             dest = [self.mono_line]
-        elif self.position == 'C':
+        elif self.h1n.position == 'C':
             dest = [self.main_line, self.mono_line]
         else:
             dest = []
@@ -140,18 +162,17 @@ class LODCM(InOutRecordPositioner):
 
         Returns
         -------
-        diag_clear: ``bool``
-            ``False`` if the diagnostics will prevent beam.
+        diag_clear : bool
+            :keyword:`False` if the diagnostics will prevent beam.
         """
+
         yag_clear = self.yag.removed
         dectris_clear = self.dectris.removed
         foil_clear = self.foil.removed
         return all((yag_clear, dectris_clear, foil_clear))
 
     def remove_dia(self, moved_cb=None, timeout=None, wait=False):
-        """
-        Remove all diagnostic components.
-        """
+        """Remove all diagnostic components."""
         logger.debug('Removing %s diagnostics', self.name)
         status = NullStatus()
         for dia in (self.yag, self.dectris, self.diode, self.foil):

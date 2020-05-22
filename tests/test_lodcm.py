@@ -1,12 +1,9 @@
 import logging
+from unittest.mock import Mock
 
 import pytest
 from ophyd.sim import make_fake_device
-from unittest.mock import Mock
-
-from pcdsdevices.lodcm import LODCM, YagLom, Dectris, Diode, Foil
-
-from conftest import HotfixFakeEpicsSignal
+from pcdsdevices.lodcm import H1N, LODCM, Dectris, Diode, Foil, YagLom
 
 logger = logging.getLogger(__name__)
 
@@ -14,14 +11,9 @@ logger = logging.getLogger(__name__)
 @pytest.fixture(scope='function')
 def fake_lodcm():
     FakeLODCM = make_fake_device(LODCM)
-    FakeLODCM.state.cls = HotfixFakeEpicsSignal
-    FakeLODCM.yag.cls.state.cls = HotfixFakeEpicsSignal
-    FakeLODCM.dectris.cls.state.cls = HotfixFakeEpicsSignal
-    FakeLODCM.diode.cls.state.cls = HotfixFakeEpicsSignal
-    FakeLODCM.foil.cls.state.cls = HotfixFakeEpicsSignal
     lodcm = FakeLODCM('FAKE:LOM', name='fake_lom')
-    lodcm.state.sim_put(1)
-    lodcm.state.sim_set_enum_strs(['Unknown'] + LODCM.states_list)
+    lodcm.h1n.state.sim_put(1)
+    lodcm.h1n.state.sim_set_enum_strs(['Unknown'] + H1N.states_list)
     lodcm.yag.state.sim_put(1)
     lodcm.yag.state.sim_set_enum_strs(['Unknown'] + YagLom.states_list)
     lodcm.dectris.state.sim_put(1)
@@ -41,20 +33,20 @@ def test_lodcm_destination(fake_lodcm):
     for d in dest:
         assert isinstance(d, str)
 
-    lodcm.state.put('OUT')
+    lodcm.h1n.move('OUT')
     assert len(lodcm.destination) == 1
-    lodcm.state.put('C')
+    lodcm.h1n.move('C')
     assert len(lodcm.destination) == 2
     # Block the mono line
-    lodcm.yag.state.put('IN')
+    lodcm.yag.move('IN')
     assert len(lodcm.destination) == 1
-    lodcm.state.put('Si')
+    lodcm.h1n.move('Si')
     assert len(lodcm.destination) == 0
-    lodcm.yag.state.put('OUT')
+    lodcm.yag.move('OUT')
     assert len(lodcm.destination) == 1
 
     # Unknown state
-    lodcm.state.sim_put('Unknown')
+    lodcm.h1n.state.sim_put('Unknown')
     assert len(lodcm.destination) == 0
 
 
@@ -81,3 +73,8 @@ def test_hutch_foils():
     FakeFoil = make_fake_device(Foil)
     assert 'Zn' in FakeFoil('XPP', name='foil').in_states
     assert 'Ge' in FakeFoil('XCS', name='foil').in_states
+
+
+@pytest.mark.timeout(5)
+def test_lodcm_disconnected():
+    LODCM('TST:LOM', name='test_lom')

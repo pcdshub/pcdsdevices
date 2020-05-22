@@ -1,7 +1,7 @@
-from ._version import get_versions
-
 # Hacky ophyd hotfix
 from ophyd.device import Device
+
+from ._version import get_versions
 
 
 def __contains__(self, value):

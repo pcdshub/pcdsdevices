@@ -1,14 +1,13 @@
 import logging
 from functools import partial
-
-import pytest
-from ophyd import Device
-from ophyd.sim import make_fake_device
 from unittest.mock import Mock
 
 import pcdsdevices.mps as mps_module
-from pcdsdevices.mps import (MPS, MPSLimits, mps_factory,
-                             must_be_out, must_be_known)
+import pytest
+from ophyd import Device
+from ophyd.sim import make_fake_device
+from pcdsdevices.mps import (MPS, MPSLimits, mps_factory, must_be_known,
+                             must_be_out)
 
 logger = logging.getLogger(__name__)
 
@@ -108,3 +107,13 @@ def test_mpslimit_subscriptions(fake_mps_limits):
     # Cause a fault
     mps.out_limit.fault.sim_put(1)
     assert cb.called
+
+
+@pytest.mark.timeout(5)
+def test_mps_disconnected():
+    MPS("TST:MPS", name='MPS Bit')
+
+
+@pytest.mark.timeout(5)
+def test_mps_limit_disconnected():
+    MPSLimits("Tst:Mps:Lim", logic=lambda x, y: x, name='MPS Limits')

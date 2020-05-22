@@ -1,10 +1,9 @@
 import logging
-import pytest
 
+import pytest
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
-
-from pcdsdevices.pseudopos import SyncAxesBase, DelayBase, SimDelayStage
+from pcdsdevices.pseudopos import DelayBase, SimDelayStage, SyncAxesBase
 
 logger = logging.getLogger(__name__)
 
