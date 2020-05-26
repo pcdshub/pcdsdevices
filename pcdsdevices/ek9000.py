@@ -6,19 +6,20 @@ from ophyd import Component as Cpt
 from ophyd import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
+
 class EL3174_AI_Ch(Device):
     """
-    EL3174 analog input card channel. 
+    EL3174 analog input card channel.
 
-    Can be used to digitize a variety of sensors. 
+    Can be used to digitize a variety of sensors.
 
     Parameters
     ----------
     prefix : str
-        The PV base of the card. 
+        The PV base of the card.
     """
     _Measured = Cpt(EpicsSignalRO, '.VAL', name='Converted Signal',
-                     kind='normal')
+                    kind='normal')
     _Raw_ADC = Cpt(EpicsSignalRO, '.RVAL', name='Raw Signal', kind='config')
     _EGU = Cpt(EpicsSignal, '.EGU', name='Signal Units', kind='config')
     _EGU_Max = Cpt(EpicsSignal, '.EGUF', name='EGU Max', kind='config')
