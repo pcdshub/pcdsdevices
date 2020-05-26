@@ -1,10 +1,9 @@
 import logging
 
 from ophyd import Device, EpicsSignal, EpicsSignalRO, Component as Cpt
-from ophyd.status import DeviceStatus, SubscriptionStatus
-from ophyd.utils.epics_pvs import raise_if_disconnected
 
 logger = logging.getLogger(__name__)
+
 
 class ZoomTelescope(Device):
     """
@@ -15,7 +14,7 @@ class ZoomTelescope(Device):
     Parameters
     ----------
     prefix : str
-        Base prefix of the zoom telescope 
+        Base prefix of the zoom telescope
 
     name : str
         Name of zoom telescope object
@@ -34,9 +33,9 @@ class ZoomTelescope(Device):
     zt.tweak_minus()     # tweak the zoom by +zt.tweak_val
     """
 
-    ### Calibration parameters
-    # Not sure about putting these calibration parameters in here, since they 
-    # should never really be required during normal operation, but will leave 
+    # Calibration parameters
+    # Not sure about putting these calibration parameters in here, since they
+    # should never really be required during normal operation, but will leave
     # them in for debugging during commissioning.
     _l2_p0 = Cpt(EpicsSignalRO, ':CAL:L2:P0', kind='omitted')
     _l2_p1 = Cpt(EpicsSignalRO, ':CAL:L2:P1', kind='omitted')
@@ -51,7 +50,7 @@ class ZoomTelescope(Device):
     _min_zoom = Cpt(EpicsSignalRO, ':CAL:MIN_ZOOM', kind='config')
     _max_zoom = Cpt(EpicsSignalRO, ':CAL:MAX_ZOOM', kind='config')
 
-    ### Control parameters
+    # Control parameters
     _req_zoom = Cpt(EpicsSignal, ':REQ_ZOOM', kind='normal')
 
     _tweak_plus = Cpt(EpicsSignal, ':TWEAK_ZOOM_PLUS.PROC', kind='normal')
@@ -61,7 +60,7 @@ class ZoomTelescope(Device):
     _permission = Cpt(EpicsSignalRO, ':PERMISSION_STATUS', kind='normal')
 
     @property
-    def tweak_val(self):  
+    def tweak_val(self):
         """The amount to tweak the magnification when calling tweak_plus or
         tweak_minus."""
         tweak = self._tweak_val.get()
