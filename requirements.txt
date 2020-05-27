@@ -5,5 +5,5 @@ periodictable
 pyepics
 pytmc
 pyyaml
-cf_units>=2.0.1
+cf-units
 scipy
