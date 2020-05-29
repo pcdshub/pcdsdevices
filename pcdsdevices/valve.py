@@ -242,7 +242,7 @@ class VFS(VRC):
                      doc='Fast Shutter Fast Fault Output OK')
     vfs_trigger = Cpt(EpicsSignalRO, ':TRIG_RBV', kind='normal',
                       doc='Fast Sensor Input Trigger')
-    vfs_close_command = Cpt(EpicsSignalWithRBV, ':CLS_SW', kind='normal'
+    vfs_close_command = Cpt(EpicsSignalWithRBV, ':CLS_SW', kind='normal',
                             doc='EPICS Command To Close Fast Shutter')
 
 
