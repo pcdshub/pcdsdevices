@@ -226,22 +226,25 @@ class VGC(VRC):
     mps_state = Cpt(EpicsSignalRO, ':MPS_FAULT_OK_RBV', kind='omitted',
                     doc=('individual valve MPS state for debugging'))
 
+
 class VFS(VRC):
     """Class for Fast Shutter Valve."""
-    vfs_closed = Cpt(EpicsSignalRO, ':CLS_RBV', kind='normal', 
+    vfs_closed = Cpt(EpicsSignalRO, ':CLS_RBV', kind='normal',
                      doc='Fast Shutter Closed Status')
     vfs_open = Cpt(EpicsSignalRO, ':OPEN_RBV', kind='normal',
                    doc='Fast Shutter Open Status')
     vfs_vac_fault_ok = Cpt(EpicsSignalRO, ':FAULT_OK_RBV', kind='normal',
                            doc='Fast Shutter Vacuum Fault OK')
-    vfs_vac_fault_reset = Cpt(EpicsSignalWithRBV, ':FAULT_RESET', kind='normal'
-                              , doc='Fast Shutter Vacuum Fault Reset'
+    vfs_vac_fault_reset = Cpt(EpicsSignalWithRBV, ':FAULT_RESET',
+                              kind='normal',
+                              doc='Fast Shutter Vacuum Fault Reset')
     vfs_mps_ok = Cpt(EpicsSignalRO, ':FFO_OK_RBV', kind='normal',
                      doc='Fast Shutter Fast Fault Output OK')
     vfs_trigger = Cpt(EpicsSignalRO, ':TRIG_RBV', kind='normal',
                       doc='Fast Sensor Input Trigger')
     vfs_close_command = Cpt(EpicsSignalWithRBV, ':CLS_SW', kind='normal'
                             doc='EPICS Command To Close Fast Shutter')
+
 
 class VVCNO(Device):
     """Vent Valve, Controlled, Normally Open."""
