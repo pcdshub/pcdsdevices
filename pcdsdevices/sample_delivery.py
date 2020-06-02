@@ -403,25 +403,3 @@ class FlowIntegrator(Device):
     def __init__(self, prefix, *, name, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         super().__init__(prefix, name=name, **kwargs)
-
-
-class SDS(Device):
-    """
-    Sample Delivery System.
-
-    Contains each of the SDS devices as a `~ophyd.device.Component`.
-    This takes a LOT of prefix parameters. Prefixes should be passed in as
-    keyword arguments with the keyword names following `UnrelatedComponent`
-    naming standard where the devices are `selector`, `cooler_shaker`, `hplc`,
-    `pressure_controller`, and `flow_integrator`.
-    """
-
-    selector = UCpt(Selector)
-    cooler_shaker = UCpt(CoolerShaker)
-    hplc = UCpt(HPLC)
-    pressure_controller = UCpt(PressureController)
-    flow_integrator = UCpt(FlowIntegrator)
-
-    def __init__(self, prefix, *, name, **kwargs):
-        UCpt.collect_prefixes(self, kwargs)
-        super().__init__(prefix, name=name, **kwargs)
