@@ -4,6 +4,8 @@ import shutil
 import sys
 import time
 
+from cf_units import Unit
+
 try:
     import tty
     import termios
@@ -11,7 +13,6 @@ except ImportError:
     tty = None
     termios = None
 
-from cf_units import Unit
 
 arrow_up = '\x1b[A'
 arrow_down = '\x1b[B'
