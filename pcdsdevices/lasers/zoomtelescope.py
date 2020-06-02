@@ -3,8 +3,6 @@ import logging
 from ophyd import Device, EpicsSignal, EpicsSignalRO, Component as Cpt
 
 logger = logging.getLogger(__name__)
-#logger = logging.getLogger('ophyd')
-#logger.setLevel('ERROR')
 
 
 class ZoomTelescope(Device):
