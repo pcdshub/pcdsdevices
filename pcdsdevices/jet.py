@@ -43,9 +43,9 @@ class Injector(Device):
     fineY = UCpt(IMS)
     fineZ = UCpt(IMS)
 
-    def __init__(self, prefix, *, name, **kwargs):
+    def __init__(self, *, name, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
-        super().__init__(prefix, name=name, **kwargs)
+        super().__init__('', name=name, **kwargs)
 
 
 class BeckhoffJetManipulator(Device, BaseInterface):
