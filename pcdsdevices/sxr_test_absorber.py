@@ -1,17 +1,13 @@
 """
-Module for the various absorbers.
+Module for the SXR Test Absorbers.
 """
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 
 from .epics_motor import BeckhoffAxis
 
-# from ophyd.device import FormattedComponent as FCpt
 
-# from .interface import BaseInterface
-
-
-class TestAbsorber(Device):
+class SxrTestAbsorber(Device):
     """
     SXR Test Absorber: Used for testing the sxr beamline at high pulse rates.
 
