@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 def test_jet_init():
     logger.debug('test_jet_init')
     FakeJet = make_fake_device(Injector)
-    FakeJet('TST', name='test', coarseX_prefix='X', coarseY_prefix='Y',
+    FakeJet(name='test', coarseX_prefix='X', coarseY_prefix='Y',
             coarseZ_prefix='Z', fineX_prefix='x', fineY_prefix='y',
             fineZ_prefix='z')
     FakeJet = make_fake_device(BeckhoffJet)
@@ -22,7 +22,7 @@ def test_jet_init():
 @pytest.mark.timeout(5)
 def test_jet_disconnected():
     logger.debug('test_jet_disconnected')
-    Injector('TST', name='test', coarseX_prefix='X', coarseY_prefix='Y',
+    Injector(name='test', coarseX_prefix='X', coarseY_prefix='Y',
              coarseZ_prefix='Z', fineX_prefix='x', fineY_prefix='y',
              fineZ_prefix='z')
     BeckhoffJet('TST', name='test')
