@@ -19,4 +19,4 @@ class SxrTestAbsorber(Device):
 
     tab_component_names = True
 
-    absorber_vert = Cpt(BeckhoffAxis, ':absorber_vert', kind='normal')
+    absorber_vert = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
