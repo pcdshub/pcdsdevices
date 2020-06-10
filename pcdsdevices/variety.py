@@ -1,14 +1,10 @@
-"""
-Additional component metadata, classifying each into a "variety".
+"""Additional component metadata, classifying each into a "variety"."""
 
-TODO, something like the following:
-
-    def get_component_metadata(cpt):
-       if not isinstance(cpt, Component):
-           return get_component_metadata(get_component_from_signal(cpt))
-        return cpt.additional_metadata
-"""
 import schema
+
+import ophyd
+
+from . import utils
 
 _schema_registry = {}
 varieties_by_category = {
@@ -127,7 +123,7 @@ def validate_metadata(md):
         necessary.
     """
     if not md:
-        return md
+        return {}
 
     try:
         variety = md['variety']
@@ -154,6 +150,56 @@ def _initialize_varieties():
         schema = schema_by_category[category]
         for variety in varieties:
             _schema_registry[variety] = schema
+
+
+def get_metadata(cpt):
+    """
+    Get "variety" metadata from a component or signal.
+
+    Parameters
+    ----------
+    cpt : ophyd.Component or ophyd.OphydItem
+        The component / ophyd item to get the metadata for.
+
+    Returns
+    -------
+    metadata : dict
+        The metadata, if set. Otherwise an empty dictionary.  This metadata is
+        guaranteed to be valid according to the known schemas.
+    """
+    if not isinstance(cpt, ophyd.Component):
+        cpt = utils.get_component(cpt)
+
+    return getattr(cpt, '_variety_metadata', {})
+
+
+def set_metadata(cpt, metadata):
+    """
+    Set "variety" metadata on a given component.
+
+    Validates the metadata against the known schema.
+
+    Parameters
+    ----------
+    cpt : ophyd.Component
+        The component for which to set the metadata.
+
+    metadata
+        The metadata to add.
+
+    Raises
+    ------
+    ValueError
+        If an invalid variety or no variety is specified, or ``cpt`` is not an
+        :class:`ophyd.Component`.
+
+    schema.SchemaError
+        If the metadata does not adhere to the variety schema as required.
+    """
+    if not isinstance(cpt, ophyd.Component):
+        raise ValueError(f'A component is required. Got: {type(cpt).__name__}')
+
+    cpt._variety_metadata = validate_metadata(metadata)
 
 
 _initialize_varieties()

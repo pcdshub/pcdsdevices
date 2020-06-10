@@ -3,7 +3,8 @@ import inspect
 import pytest
 import schema
 
-from pcdsdevices.variety import validate_metadata
+import ophyd
+from pcdsdevices.variety import get_metadata, set_metadata, validate_metadata
 
 # A sentinel indicating the validated metadata should match the provided
 # metadata exactly
@@ -219,3 +220,24 @@ def test_schemas(md, expected):
             validate_metadata(md)
     else:
         assert validate_metadata(md) == expected
+
+
+def test_component():
+    md = dict(variety='command', value=5)
+
+    class MyDevice(ophyd.Device):
+        cpt = ophyd.Component(ophyd.Signal)
+        set_metadata(cpt, md)
+
+    assert get_metadata(MyDevice.cpt) == md
+    assert get_metadata(MyDevice(name='dev').cpt) == md
+
+
+def test_component_empty_md():
+    class MyDevice(ophyd.Device):
+        cpt = ophyd.Component(ophyd.Signal)
+        set_metadata(cpt, None)
+        unset_cpt = ophyd.Component(ophyd.Signal)
+
+    assert get_metadata(MyDevice.cpt) == {}
+    assert get_metadata(MyDevice.unset_cpt) == {}
