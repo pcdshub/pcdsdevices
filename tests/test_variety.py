@@ -136,31 +136,35 @@ def test_no_variety():
 
         # ** scalar - numeric **
         pytest.param(
-            dict(variety='scalar',),
-            SAME,
+            dict(variety='scalar'),
+            dict(variety='scalar', display_format='default'),
             id='scalar'
         ),
 
         pytest.param(
-            dict(variety='scalar-range',),
+            dict(variety='scalar-range', display_format='default'),
             SAME,
             id='scalar-range'
         ),
 
         pytest.param(
-            dict(variety='scalar-range', range_source='use_limits'),
+            dict(variety='scalar-range', range_source='use_limits',
+                 display_format='exponential'),
             SAME,
             id='scalar-use_limits'
         ),
 
         pytest.param(
-            dict(variety='scalar-range', range_source='custom'),
+            dict(variety='scalar-range', range_source='custom',
+                 display_format='default'),
             SAME,
             id='scalar-custom'
         ),
 
         pytest.param(
-            dict(variety='scalar-range', range_source='custom', range=[0, 5]),
+            dict(variety='scalar-range', range_source='custom', range=[0, 5],
+                 display_format='default',
+                 ),
             SAME,
             id='scalar-custom-range'
         ),

@@ -116,6 +116,8 @@ schema_by_category = {
         'variety': schema.Or(*varieties_by_category['scalar']),
         schema.Optional('range'): _length_validate(2, 2, (float, int)),
         schema.Optional('range_source'): schema.Or('use_limits', 'custom'),
+        schema.Optional('display_format', default='default'): schema.Or(
+            'default', 'string', 'decimal', 'exponential', 'hex', 'binary'),
     }),
 
     'text': schema.Schema({
