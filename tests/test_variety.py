@@ -196,6 +196,23 @@ def test_no_variety():
             id='text-bad-keys'
         ),
 
+        # ** bitmask **
+        pytest.param(
+            dict(variety='bitmask'),
+            dict(variety='bitmask', bits=8, shape='rectangle',
+                 orientation='horizontal', first_bit='most-significant',
+                 on_color='green', off_color='gray'),
+            id='bitmask-defaults',
+        ),
+
+        pytest.param(
+            dict(variety='bitmask', bits=32, first_bit='least-significant'),
+            dict(variety='bitmask', bits=32, shape='rectangle',
+                 orientation='horizontal', first_bit='least-significant',
+                 on_color='green', off_color='gray'),
+            id='bitmask-custom',
+        ),
+
         # ** general enum **
         pytest.param(
             dict(variety='enum', enum_strings=['a', 'b', 'c']),

@@ -27,6 +27,9 @@ varieties_by_category = {
         'scalar',
         'scalar-range',
     },
+    'bitmask': {
+        'bitmask',
+    },
     'text': {
         'text',
         'text-multiline',
@@ -89,6 +92,24 @@ schema_by_category = {
         schema.Optional('dimension'): int,
         schema.Optional('embed'): bool,
         schema.Optional('colormap'): str,
+    }),
+
+    'bitmask': schema.Schema({
+        'variety': schema.Or(*varieties_by_category['bitmask']),
+        schema.Optional('orientation',
+                        default='horizontal'): schema.Or('horizontal',
+                                                         'vertical'),
+        schema.Optional('bits', default=8): int,
+        schema.Optional(
+            'first_bit',
+            default='most-significant'): schema.Or('most-significant',
+                                                   'least-significant'),
+
+        # Style:
+        schema.Optional('shape', default='rectangle'): schema.Or('circle',
+                                                                 'rectangle'),
+        schema.Optional('on_color', default='green'): str,
+        schema.Optional('off_color', default='gray'): str,
     }),
 
     'scalar': schema.Schema({
