@@ -64,29 +64,29 @@ def test_no_variety():
         pytest.param(
             dict(variety='tweakable'),
             schema.SchemaMissingKeyError,
-            id='tweakable-no-value',
+            id='tweakable-no-delta',
         ),
 
         pytest.param(
-            dict(variety='tweakable', value=3),
+            dict(variety='tweakable', delta=3),
             SAME,
-            id='tweakable-value',
+            id='tweakable-delta',
         ),
 
         pytest.param(
-            dict(variety='tweakable', value=3, value_range=[-1, 10]),
+            dict(variety='tweakable', delta=3, delta_range=[-1, 10]),
             SAME,
             id='tweakable-good-range',
         ),
 
         pytest.param(
-            dict(variety='tweakable', value=3, value_range=-1),
+            dict(variety='tweakable', delta=3, delta_range=-1),
             schema.SchemaError,
             id='tweakable-bad-range',
         ),
 
         pytest.param(
-            dict(variety='tweakable', value=3, value_range=[-1, 'q']),
+            dict(variety='tweakable', delta=3, delta_range=[-1, 'q']),
             schema.SchemaError,
             id='tweakable-bad-range-type',
         ),

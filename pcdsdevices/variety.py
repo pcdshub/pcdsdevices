@@ -76,8 +76,8 @@ schema_by_category = {
 
     'tweakable': schema.Schema({
         'variety': schema.Or(*varieties_by_category['tweakable']),
-        'value': schema.Or(float, int),
-        schema.Optional('value_range'): _length_validate(2, 2, (float, int)),
+        'delta': schema.Or(float, int),
+        schema.Optional('delta_range'): _length_validate(2, 2, (float, int)),
         schema.Optional('source_signal'): str,
         schema.Optional('source'): schema.Or('setpoint', 'readback',
                                              'other-signal'),
