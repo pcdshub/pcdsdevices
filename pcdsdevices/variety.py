@@ -87,6 +87,8 @@ schema_by_category = {
         'variety': schema.Or(*varieties_by_category['array']),
         schema.Optional('shape'): _length_validate(1, 10, int),
         schema.Optional('dimension'): int,
+        schema.Optional('embed'): bool,
+        schema.Optional('colormap'): str,
     }),
 
     'scalar': schema.Schema({
