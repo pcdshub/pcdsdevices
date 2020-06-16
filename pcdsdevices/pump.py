@@ -165,8 +165,10 @@ class PIPPLC(Device):
                               doc='epics command to witch on the high voltage')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
                        doc='interlock  is ok when true')
-    at_vac_sp = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='omitted',
-                    doc='at vacuum set point')
+    protection_setpoint = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='omitted',
+                              doc='Protection/At Vacuum Setpoint')
+    setpoint_hysterisis = Cpt(EpicsSignalWithRBV, ':SP_HYS', kind='omitted',
+                              doc='Protection Setpoint Hysterisis')
     pump_on = Cpt(EpicsSignalRO, ':HV_DI_RBV', kind='normal',
                   doc='ion pump output state')
     pump_state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='hinted')
