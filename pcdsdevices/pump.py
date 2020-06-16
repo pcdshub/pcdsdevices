@@ -162,7 +162,7 @@ class PIPPLC(Device):
                        doc='interlock  is ok when true')
     protection_setpoint = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='omitted',
                               doc='Protection/At Vacuum Setpoint')
-    setpoint_hysterisis = Cpt(EpicsSignalWithRBV, ':SP_HYS', kind='omitted',
+    setpoint_hysteresis = Cpt(EpicsSignalWithRBV, ':SP_HYS', kind='omitted',
                               doc='Protection Setpoint Hysterisis')
     pump_on_status = Cpt(EpicsSignalRO, ':HV_DI_RBV', kind='normal',
                          doc='ion pump output state')
