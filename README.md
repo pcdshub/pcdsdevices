@@ -34,11 +34,11 @@ custom devices for specific applications.
 ## Installation
 Install the most recent tagged build:
 
-``` 
+```
   conda install pcdsdevices -c pcds-tag -c lightsource2-tag -c conda-forge
 ```
 
-Install the most recent development build: 
+Install the most recent development build:
 
 ```
   conda install pcdsdevices -c pcds-dev -c lightsource2-tag -c conda-forge

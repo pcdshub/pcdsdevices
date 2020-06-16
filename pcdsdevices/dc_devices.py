@@ -2,7 +2,8 @@
 Standard classes for L2SI DC power devices.
 """
 import logging
-from ophyd import EpicsSignal, EpicsSignalRO, Device
+
+from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 
 from .interface import BaseInterface
@@ -12,20 +13,17 @@ logger = logging.getLogger(__name__)
 
 class ICTChannel(Device):
     """
-    Class to define a particular channel of the ICT
+    Class to define a particular channel of the ICT.
 
     Parameters
     ---------
-    prefix : ``str``
-        The PV base of the relevant ICT
+    prefix : str
+        The base PV of the relevant ICT.
 
-    channel : ``str``
-        The output channel on the ICT, e.g. '1A', '3B', etc
-
-    Usage
-    ---------
-    ICTChannel('TST:PWR:ICT:01', '2B' )
+    channel : str
+        The output channel on the ICT, e.g. '1A', '3B', etc.
     """
+
     ch_current = FCpt(EpicsSignalRO, '{self.prefix}:Output{self._ch}:Current',
                       kind='hinted')
     ch_status = FCpt(EpicsSignal, '{self.prefix}:Output{self._ch}:GetState',
@@ -53,20 +51,17 @@ class ICTChannel(Device):
 
 class ICTBus(Device):
     """
-    Class to define a current bus of the ICT
+    Class to define a current bus of the ICT.
 
     Parameters
     ---------
-    prefix : ``str``
-        The PV base of the relevant ICT
+    prefix : str
+        The base PV of the relevant ICT.
 
-    bus : ``str``
-        The output bus on the ICT, 'A' or 'B'
-
-    Usage
-    ---------
-    ICTBus('TST:PWR:ICT:01', 'B' )
+    bus : str
+        The output bus on the ICT, 'A' or 'B'.
     """
+
     bus_current = FCpt(EpicsSignalRO, '{self.prefix}:Bus{self._bus}:Current',
                        kind='hinted')
     bus_voltage = FCpt(EpicsSignalRO, '{self.prefix}:Bus{self._bus}:Voltage',
@@ -86,10 +81,7 @@ class ICTBus(Device):
 
 
 class ICT(Device, BaseInterface):
-    """
-    Class to create complete ICT device with access to
-    all buses and channels.
-    """
+    """Complete ICT device with access to all buses and channels."""
     bus_A = FCpt(ICTBus, '{self.prefix}', bus='A')
     bus_B = FCpt(ICTBus, '{self.prefix}', bus='B')
     ch_1A = FCpt(ICTChannel, '{self.prefix}', channel='1A')

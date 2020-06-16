@@ -6,7 +6,7 @@ from ophyd.device import Component as Cpt
 from ophyd.signal import Signal
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.state import (StatePositioner, PVStatePositioner,
+from pcdsdevices.state import (PVStatePositioner, StatePositioner,
                                StateRecordPositioner, StateStatus)
 
 logger = logging.getLogger(__name__)
@@ -112,7 +112,7 @@ def test_pvstate_positioner_sets():
     with pytest.raises(ValueError):
         lim_obj2.move('Unknown')
     cb = Mock()
-    lim_obj2.move('OUT', moved_cb=cb)
+    lim_obj2.move('OUT', moved_cb=cb).wait(timeout=1)
     assert(cb.called)
     assert(lim_obj2.position == 'OUT')
     lim_obj2.move('IN', wait=True)
@@ -166,6 +166,7 @@ def test_state_status():
     # Put readback to 'in'
     lim_obj.lowlim.put(0)
     lim_obj.highlim.put(1)
+    status.wait(timeout=1)
     assert status.done and status.success
     # Check our callback was cleared
     assert status.check_value not in lim_obj._callbacks[lim_obj.SUB_STATE]

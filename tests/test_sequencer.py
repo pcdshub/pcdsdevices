@@ -2,17 +2,15 @@ import logging
 
 import pytest
 from bluesky import RunEngine
-from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from bluesky.plan_stubs import sleep
+from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from ophyd.sim import NullStatus, make_fake_device
 
-from pcdsdevices.sequencer import EventSequencer, EventSequence
-import pcdsdevices.sequencer
+from pcdsdevices.sequencer import EventSequencer
 
 logger = logging.getLogger(__name__)
 
 FakeSequencer = make_fake_device(EventSequencer)
-pcdsdevices.sequencer.EventSequence = make_fake_device(EventSequence)
 
 
 @pytest.fixture(scope='function')
@@ -73,6 +71,7 @@ def test_kickoff(sequence):
     # Our status should not be done until the sequencer starts
     assert not st.done
     seq.play_status.sim_put(2)
+    st.wait(timeout=1)
     assert st.done
     assert st.success
 
@@ -86,6 +85,7 @@ def test_trigger(sequence):
     # Sequencer has started
     assert sequence.play_control.get() == 1
     # Trigger is automatically complete
+    trig_status.wait(timeout=1)
     assert trig_status.done
     assert trig_status.success
     # Stop sequencer
@@ -102,6 +102,7 @@ def test_trigger(sequence):
     assert not trig_status.done
     # Simulate the sequence ending
     sequence.play_status.sim_put(0)
+    trig_status.wait(timeout=1)
     assert trig_status.done
     assert trig_status.success
 
@@ -112,7 +113,8 @@ def test_complete_run_forever(sequence):
     seq._acquiring = True
     # Run Forever mode should tell this to stop
     st = seq.complete()
-    assert seq.play_control.value == 0
+    assert seq.play_control.get() == 0
+    st.wait(timeout=1)
     assert st.done
     assert st.success
 
@@ -128,6 +130,7 @@ def test_complete_run_once(sequence):
     # Our status should not be done until the sequence stops naturally
     assert not st.done
     seq.play_status.sim_put(0)
+    st.wait(timeout=1)
     assert st.done
     assert st.success
 

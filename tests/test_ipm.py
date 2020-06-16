@@ -1,12 +1,11 @@
 import logging
-import pytest
-
-from ophyd.sim import make_fake_device
 from unittest.mock import Mock
 
+import pytest
+from ophyd.sim import make_fake_device
 from pcdsdevices.inout import InOutRecordPositioner
-from pcdsdevices.ipm import (IPMMotion, IPM_IPIMB, IPM_Wave8, IPMTarget,
-                             IPM, Wave8, IPIMB)
+from pcdsdevices.ipm import (IPIMB, IPM, IPM_IPIMB, IPM_Wave8, IPMMotion,
+                             IPMTarget, Wave8)
 
 logger = logging.getLogger(__name__)
 
@@ -137,6 +136,10 @@ def test_ipm_box_readback(fake_ipm_with_box):
     ipm.ypos()
     ipm.channel().amplitude.get()
     ipm.channels[0]
+    # Check transmission in unknown state
+    ipm.transmission
+    # Check transmission in inserted state
+    ipm.insert()
     ipm.transmission
     # Negative channel numbers are not allowed
     with pytest.raises(ValueError):
@@ -157,6 +160,7 @@ def test_ipm_factory():
 
 @pytest.mark.timeout(5)
 def test_ipm_disconnected():
+    logger.debug('test_ipm_disconnected')
     IPMMotion('IPM', name='ipm')
     IPM_IPIMB('IPM2', name='ipm2', prefix_ipimb='ipimb', prefix_ioc='ioc')
     IPM_Wave8('IPM3', name='ipm3', prefix_wave8='wave8')

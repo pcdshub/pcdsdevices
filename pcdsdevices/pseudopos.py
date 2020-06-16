@@ -1,13 +1,14 @@
 import logging
 
-from ophyd.device import Component as Cpt, FormattedComponent as FCpt
+from ophyd.device import Component as Cpt
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
-                             real_position_argument, pseudo_position_argument)
+                             pseudo_position_argument, real_position_argument)
 from scipy.constants import speed_of_light
 
+from .interface import FltMvInterface
 from .sim import FastMotor
 from .utils import convert_unit
-from .interface import FltMvInterface
 
 logger = logging.getLogger(__name__)
 
@@ -32,9 +33,11 @@ class SyncAxesBase(PseudoPositioner, FltMvInterface):
            left = Cpt(EpicsMotor, ':01')
            right = Cpt(EpicsMotor, ':02')
 
-    Like all ``PseudoPositioner`` classes, any subclass of ``PositionerBase``
-    will be included in the synchronized move.
+    Like all `~ophyd.pseudopos.PseudoPositioner` classes, any subclass of
+    `~ophyd.positioner.PositionerBase` will be included in the synchronized
+    move.
     """
+
     pseudo = Cpt(PseudoSingle)
 
     def __init__(self, *args, **kwargs):
@@ -53,14 +56,15 @@ class SyncAxesBase(PseudoPositioner, FltMvInterface):
 
         Parameters
         ----------
-        real_position: `namedtuple`
-            The positions of each of the real motors, accessible by name
+        real_position : ~typing.NamedTuple
+            The positions of each of the real motors, accessible by name.
 
         Returns
         -------
-        pseudo_position: ``float``
+        pseudo_position : float
             The combined position of the axes.
         """
+
         return real_position[0]
 
     def save_offsets(self):
@@ -70,6 +74,7 @@ class SyncAxesBase(PseudoPositioner, FltMvInterface):
         If not done earlier, this will be automatically run before it is first
         needed (generally, right before the first move).
         """
+
         pos = self.real_position
         combo = self.calc_combined(pos)
         offsets = {fld: getattr(pos, fld) - combo for fld in pos._fields}
@@ -78,9 +83,7 @@ class SyncAxesBase(PseudoPositioner, FltMvInterface):
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
-        """
-        Composite axes move to the combined axis position plus an offset
-        """
+        """Composite axes move to the combined axis position plus an offset."""
         if not self._offsets:
             self.save_offsets()
         real_pos = {}
@@ -90,9 +93,7 @@ class SyncAxesBase(PseudoPositioner, FltMvInterface):
 
     @real_position_argument
     def inverse(self, real_pos):
-        """
-        Combined axis readback is the mean of the composite axes
-        """
+        """Combined axis readback is the mean of the composite axes."""
         return self.PseudoPosition(pseudo=self.calc_combined(real_pos))
 
 
@@ -107,31 +108,32 @@ class DelayBase(PseudoPositioner, FltMvInterface):
 
     Attributes
     ----------
-    delay: ``PseudoSingle``
+    delay : ~ophyd.pseudopos.PseudoSingle
         The fake axis. It has configurable units and number of bounces.
 
-    motor: ``PositionerBase``
+    motor : ~ophyd.positioner.PositionerBase
         The real axis. This can be a number of things based on the inheriting
         class, but it must have a valid ``egu`` so we know how to convert to
         the time axis.
 
     Parameters
     ----------
-    prefix: ``str``
-        The EPICS prefix of the real motor
+    prefix : str
+        The EPICS prefix of the real motor.
 
-    name: ``str``, required keyword
+    name : str
         A name to assign to this delay stage.
 
-    egu: ``str``, optional
+    egu : str, optional
         The units to use for the delay axis. The default is seconds. Any
         time unit is acceptable.
 
-    n_bounces: ``int``, optional
+    n_bounces : int, optional
         The number of times the laser bounces on the delay stage, e.g. the
         number of mirrors that this stage moves. The default is 2, a delay
         branch that bounces the laser back along the axis it enters.
     """
+
     delay = FCpt(PseudoSingle, egu='{self.egu}', add_prefix=['egu'])
     motor = None
 
@@ -144,9 +146,7 @@ class DelayBase(PseudoPositioner, FltMvInterface):
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
-        """
-        Convert delay unit to motor unit
-        """
+        """Convert delay unit to motor unit."""
         seconds = convert_unit(pseudo_pos.delay, self.delay.egu, 'seconds')
         meters = seconds * speed_of_light / self.n_bounces
         motor_value = convert_unit(meters, 'meters', self.motor.egu)
@@ -154,9 +154,7 @@ class DelayBase(PseudoPositioner, FltMvInterface):
 
     @real_position_argument
     def inverse(self, real_pos):
-        """
-        Convert motor unit to delay unit
-        """
+        """Convert motor unit to delay unit."""
         meters = convert_unit(real_pos.motor, self.motor.egu, 'meters')
         seconds = meters / speed_of_light * self.n_bounces
         delay_value = convert_unit(seconds, 'seconds', self.delay.egu)
@@ -168,7 +166,5 @@ class SimDelayStage(DelayBase):
 
 
 class PseudoSingleInterface(PseudoSingle, FltMvInterface):
-    """
-    PseudoSingle with FltMvInterface mixed in
-    """
+    """PseudoSingle with FltMvInterface mixed in."""
     pass

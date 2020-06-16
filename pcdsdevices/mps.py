@@ -7,8 +7,9 @@ interpreted by :class:`.MPS`.
 """
 import logging
 
-from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
-                   FormattedComponent as FCpt)
+from ophyd import Component as Cpt
+from ophyd import Device, EpicsSignal, EpicsSignalRO
+from ophyd import FormattedComponent as FCpt
 
 from .interface import BaseInterface
 
@@ -17,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class MPSBase(BaseInterface):
     """
-    Base MPS class
+    Base MPS class.
 
     Used for shared methods between the individual `MPS` bit class and
     the `MPSLimits` class. The class handles much of the bookkeeping
@@ -25,10 +26,11 @@ class MPSBase(BaseInterface):
 
     Each subclass must reimplement:
 
-    - ``faulted``
-    - ``bypassed``
-    - ``sub_to_children``
+    - :meth:`faulted`
+    - :meth:`bypassed`
+    - :meth:`_sub_to_children`
     """
+
     # Subscription information
     SUB_FAULT_CH = 'sub_mps_faulted'
     _default_sub = SUB_FAULT_CH
@@ -42,20 +44,22 @@ class MPSBase(BaseInterface):
     @property
     def tripped(self):
         """
-        Whether this will trip the MPS system
+        Whether this will trip the MPS system.
 
         This is based off of both the faulted state as well as any temporary
-        bypasses on the MPS bit
+        bypasses on the MPS bit.
         """
+
         return self.faulted and not self.bypassed
 
     def subscribe(self, cb, event_type=None, run=True):
         """
-        Subscribe to changes in the MPS
+        Subscribe to changes in the MPS.
 
         If this is the first subscription to the `SUB_FAULT_CH`, subscribe to
-        any changes in the bypass or fault signals
+        any changes in the bypass or fault signals.
         """
+
         cid = super().subscribe(cb, event_type=event_type, run=run)
         # Subscribe child signals
         if event_type is None:
@@ -66,20 +70,18 @@ class MPSBase(BaseInterface):
         return cid
 
     def _fault_change(self, *args, **kwargs):
-        """
-        Callback when the state of the MPS bit has changed
-        """
+        """Callback when the state of the MPS bit has changed."""
         kwargs.pop('sub_type', None)
         self._run_subs(sub_type=self.SUB_FAULT_CH, **kwargs)
 
 
 class MPS(MPSBase, Device):
     """
-    Class to interpret a single bit of MPS information
+    Class to interpret a single bit of MPS information.
 
     There are three major attributes of each MPS bit that are relevant to
     operations; :attr:`.faulted` , :attr:`.bypassed` and :attr:`.veto_capable`.
-    The first is the most obvious, when the device is faulted it reports as
+    The first is the most obvious: when the device is faulted, it reports as
     such to the MPS system. However, how this is actually interpreted by the
     MPS is determined by whether the bit is bypassed, and if there is a
     ``veto`` device upstream such that the fault can be safely ignored. The
@@ -87,19 +89,20 @@ class MPS(MPSBase, Device):
     :attr:`.tripped`.  The bypassed state is reported through EPICS as well but
     unfortunately whether a device is considered capable of  "veto-ing" or is
     vetoed by another device is not broadcast by EPICS so this is held within
-    this device and the ``lighpath`` module
+    this device and the ``lightpath`` module.
 
     Parameters
     ----------
-    prefix : ``str``
-        PV prefix of MPS information
+    prefix : str
+        PV prefix of MPS information.
 
-    name : ``str``, required keyword
-        Name of MPS bit
+    name : str
+        Name of MPS bit.
 
-    veto : ``bool``, optional
-        Whether or not the the device is capable of vetoing downstream faults
+    veto : bool, optional
+        Whether or not the the device is capable of vetoing downstream faults.
     """
+
     # Signals
     fault = Cpt(EpicsSignalRO, '_MPSC', kind='hinted')
     bypass = Cpt(EpicsSignal,   '_BYPS', kind='config')
@@ -108,17 +111,13 @@ class MPS(MPSBase, Device):
 
     @property
     def faulted(self):
-        """
-        Whether the MPS bit is faulted or not
-        """
-        return bool(self.fault.value)
+        """Whether the MPS bit is faulted or not."""
+        return bool(self.fault.get())
 
     @property
     def bypassed(self):
-        """
-        Bypass state of the MPS bit
-        """
-        return bool(self.bypass.value)
+        """Bypass state of the MPS bit."""
+        return bool(self.bypass.get())
 
     def _sub_to_children(self):
         """
@@ -130,31 +129,31 @@ class MPS(MPSBase, Device):
 
 def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
     """
-    Create a new object of arbitrary class capable of storing MPS information
+    Create a new object of arbitrary class capable of storing MPS information.
 
     A new class identical to the provided one is created, but with additional
-    attribute ``mps`` that relies upon the provided ``mps_prefix``. All other
+    attribute ``mps`` that relies upon the provided `.mps_prefix`. All other
     information is passed through to the class constructor as args and kwargs
 
     Parameters
     ----------
-    clsname : ``str``
-        Name of new class to create
+    clsname : str
+        Name of new class to create.
 
-    cls : ``type``
-        Device class to add ``mps``
+    cls : type
+        Device class to add ``mps``.
 
-    mps_prefix : ``str``
-        Prefix for MPS subcomponent
+    mps_prefix : str
+        Prefix for MPS subcomponent.
 
-    veto : ``bool``, optional
-        Whether the MPS bit is capable of veto
+    veto : bool, optional
+        Whether the MPS bit is capable of veto.
 
     args :
-        Passed to device constructor
+        Passed to device constructor.
 
     kwargs:
-        Passed to device constructor
+        Passed to device constructor.
     """
     comp = FCpt(MPS, mps_prefix, veto=veto)
     cls = type(clsname, (cls,), {'mps': comp})
@@ -163,55 +162,55 @@ def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
 
 def must_be_out(in_limit, out_limit):
     """
-    Logical combination of limits enforcing an out state
+    Logical combination of limits enforcing an out state.
 
     Parameters
     ----------
-    in_limit : ``bool``
-        Whether the in limit is active
+    in_limit : bool
+        Whether the in limit is active.
 
-    out_limit: ``bool``
-        Whether the out limit is active
+    out_limit : bool
+        Whether the out limit is active.
 
     Returns
     -------
-    is_out
+    is_out : bool
         Whether the logical combination of the limit switch ensures that the
-        device is removed
+        device is removed.
     """
+
     return not in_limit and out_limit
 
 
 def must_be_known(in_limit, out_limit):
     """
-    Logical combinatino of limits enforcing a known state
+    Logical combination of limits enforcing a known state.
 
     The logic determines that we know that the device is fully inserted or
     removed, alerting the MPS if the device is stuck in an unknown state or
-    broken
+    broken.
 
     Parameters
     ----------
-    in_limit : ``bool``
-        Whether the in limit is active
+    in_limit : bool
+        Whether the in limit is active.
 
-    out_limit: ``bool``
-        Whether the out limit is active
+    out_limit : bool
+        Whether the out limit is active.
 
     Returns
     -------
-    is_known
+    is_known : bool
         Whether the logical combination of the limit switch ensure that the
-        device position is known
+        device position is known.
     """
+
     return in_limit != out_limit
 
 
 class MPSLimits(MPSBase, Device):
     """
-    Logical combination of two MPS bits
-
-    For devices that are inserted and removed from the beam, the MPS system
+    Logical combination of two MPS bits.
 
     The MPSLimits class is to determine what action is to be taken based on the
     MPS values of a device pertaining to a single device. If a device has two
@@ -220,13 +219,13 @@ class MPSLimits(MPSBase, Device):
 
     Parameters
     ----------
-    prefix : ``str``
-        Base of the MPS PVs
+    prefix : str
+        Base of the MPS PVs.
 
-    name : ``str``
-        Name of the MPS combination
+    name : str
+        Name of the MPS combination.
 
-    logic: ``callable``
+    logic : callable
         Determine whether the MPS is faulted based on the state of each limit.
         The function signature should look like:
 
@@ -234,6 +233,7 @@ class MPSLimits(MPSBase, Device):
 
             def logic(in_limit: bool, out_limit: bool) -> bool
     """
+
     # Individual limits
     in_limit = Cpt(MPS, '_IN', kind='normal')
     out_limit = Cpt(MPS, '_OUT', kind='normal')
@@ -252,9 +252,7 @@ class MPSLimits(MPSBase, Device):
 
     @property
     def bypassed(self):
-        """
-        Whether either limit is bypassed
-        """
+        """Whether either limit is bypassed."""
         return self.in_limit.bypassed or self.out_limit.bypassed
 
     def _sub_to_children(self):

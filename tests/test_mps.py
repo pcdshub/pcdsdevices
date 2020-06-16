@@ -1,14 +1,13 @@
 import logging
 from functools import partial
-
-import pytest
-from ophyd import Device
-from ophyd.sim import make_fake_device
 from unittest.mock import Mock
 
 import pcdsdevices.mps as mps_module
-from pcdsdevices.mps import (MPS, MPSLimits, mps_factory,
-                             must_be_out, must_be_known)
+import pytest
+from ophyd import Device
+from ophyd.sim import make_fake_device
+from pcdsdevices.mps import (MPS, MPSLimits, mps_factory, must_be_known,
+                             must_be_out)
 
 logger = logging.getLogger(__name__)
 

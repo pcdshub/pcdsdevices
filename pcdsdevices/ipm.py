@@ -1,12 +1,16 @@
 """
-Module for the `IPM` intensity position monitor class
+Module for the `IPM` intensity position monitor classes.
 """
-from ophyd.device import Device, Component as Cpt, FormattedComponent as FCpt
-from ophyd.signal import EpicsSignal
-from .doc_stubs import basic_positioner_init, insert_remove, IPM_base
-from .inout import InOutRecordPositioner
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
+from ophyd.device import FormattedComponent as FCpt
+from ophyd.signal import EpicsSignal, EpicsSignalRO
+
+from .doc_stubs import IPM_base, basic_positioner_init, insert_remove
 from .epics_motor import IMS
 from .evr import Trigger
+from .inout import InOutRecordPositioner
+from .interface import BaseInterface
 from .utils import ipm_screen
 
 
@@ -14,11 +18,11 @@ class IPMTarget(InOutRecordPositioner):
     """
     Target of a standard intensity position monitor.
 
-    This is an `InOutRecordPositioner` that moves
-    the target position to any of the four set positions, or out. Valid states
-    are (1, 2, 3, 4, 5) or the equivalent
-    (TARGET1, TARGET2, TARGET3, TARGET4, OUT).
+    This is an `InOutRecordPositioner` that moves the target position to any
+    of the four set positions, or out. Valid states are (1, 2, 3, 4, 5) or the
+    equivalent (TARGET1, TARGET2, TARGET3, TARGET4, OUT).
     """
+
     __doc__ += basic_positioner_init
 
     in_states = ['TARGET1', 'TARGET2', 'TARGET3', 'TARGET4']
@@ -32,7 +36,7 @@ class IPMTarget(InOutRecordPositioner):
         self.y_motor = self.motor
 
 
-class IPMDiode(Device):
+class IPMDiode(Device, BaseInterface):
     """
     Diode of a standard intensity position monitor.
 
@@ -53,12 +57,12 @@ class IPMDiode(Device):
 
     @property
     def inserted(self):
-        """Returns ``True`` if diode is inserted."""
+        """Returns `True` if diode is inserted."""
         return self.state.inserted
 
     @property
     def removed(self):
-        """Returns ``True`` if diode is removed."""
+        """Returns `True` if diode is removed."""
         return self.state.removed
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
@@ -71,38 +75,59 @@ class IPMDiode(Device):
         return self.state.remove(moved_cb=moved_cb, timeout=timeout,
                                  wait=wait)
 
+    @property
+    def transmission(self):
+        """Returns 0 if in an unknown state. Returns 1 otherwise."""
+        if self.inserted or self.removed:
+            return 1
+        else:
+            return 0
+
     remove.__doc__ += insert_remove
 
 
-class IPMMotion(Device):
+class IPMMotion(Device, BaseInterface):
     """
     Standard intensity position monitor.
 
     This contains two state devices, a target and a diode.
     """
+
     target = Cpt(IPMTarget, ':TARGET', kind='normal')
-    diode = Cpt(IPMDiode, ':DIODE', kind='omitted')
+    diode = Cpt(IPMDiode, ':DIODE', kind='normal')
 
     # QIcon for UX
     _icon = 'ei.screenshot'
 
-    tab_whitelist = ['target', 'diode']
+    tab_whitelist = ['target', 'diode', 'insert', 'remove', 'inserted',
+                     'removed']
 
     @property
     def inserted(self):
-        """Returns ``True`` if target is inserted."""
+        """Returns `True` if target is inserted."""
         return self.target.inserted and self.diode.inserted
 
     @property
     def removed(self):
-        """Returns ``True`` if target is removed and diode is not blocking.
-           Diode does not block when inserted or removed"""
+        """
+        Returns `True` if target is removed and diode is not blocking.
+        Diode does not block when inserted or removed.
+        """
         return (self.target.removed and
                 (self.diode.removed or self.diode.inserted))
 
+    def insert(self, moved_cb=None, timeout=None, wait=False):
+        """Move both the target and diode in."""
+        return (self.target.insert(moved_cb=moved_cb, timeout=timeout,
+                                   wait=wait)
+                & self.diode.insert(moved_cb=moved_cb, timeout=timeout,
+                                    wait=wait))
+
     def remove(self, moved_cb=None, timeout=None, wait=False):
-        """Moves the target out of the beam and removes the diode if it is in
-           an unknown state"""
+        """
+        Moves the target out of the beam and removes the diode if it is in an
+        unknown state.
+        """
         rmstatus = self.target.remove(moved_cb=moved_cb, timeout=timeout,
                                       wait=wait)
         if (self.diode.removed or self.diode.inserted):
@@ -113,26 +138,29 @@ class IPMMotion(Device):
 
     @property
     def transmission(self):
-        """Returns the target's transmission value."""
-        return self.target.transmission
+        """Returns the combined transmission value of the target and diode."""
+        return self.target.transmission * self.diode.transmission
 
 
-class IPIMBChannel(Device):
+class IPIMBChannel(Device, BaseInterface):
     """
-    Class for a single channel read out by an ipimb box
+    Class for a single channel read out by an IPIMB box.
 
     Parameters
     ----------
-    prefix : ``str``
-        Ipimb base PV
+    prefix : str
+        IPIMB base PV.
 
-    name : ``str``
-        Alias for the ipimb box
+    name : str
+        Alias for the IPIMB box.
 
-    channnel_index : ``int``
-        Index for gauge (0-3)
+    channnel_index : int
+        Index for gauge (0-3).
     """
-    amplitude = FCpt(EpicsSignal, '{self.prefix}:CH{self.channel_index}',
+
+    tab_component_names = True
+
+    amplitude = FCpt(EpicsSignalRO, '{self.prefix}:CH{self.channel_index}',
                      kind='hinted')
     gain = FCpt(EpicsSignal,
                 '{self.prefix}:ChargeAmpRangeCH{self.channel_index}',
@@ -148,32 +176,44 @@ class IPIMBChannel(Device):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class IPIMB(Device):
+class IPIMB(Device, BaseInterface):
     """
-    Class for an ipimb box.
+    Class for an IPIMB box.
 
     Parameters
     ----------
-    prefix : ``str``
-        Ipimb base PV
+    prefix : str
+        IPIMB base PV.
 
-    name : ``str``
-        Alias for the ipimb
+    name : str
+        Alias for the IPIMB.
 
-    prefix_ioc : ``str``
-        Ipimb base PV for IOC PVs
+    prefix_ioc : str
+        IPIMB base PV for IOC PVs.
 
-    Components - readback:
-    total sum of all 4 channels (i0 if stadard IPM device)
-    x&y beam position position calculated from 4 channels
-    Components - configuration:
-    bias: voltage aplied to diodes in V
-    delay: delay of trigger relative to input EVR
-    trigger:
+    Attributes
+    ----------
+    isum
+        Total sum of all 4 channels (i0 if standard IPM device).
+
+    xpos, ypos
+        X&Y beam position position calculated from 4 channels.
+
+    bias
+        Voltage applied to diodes in V.
+
+    delay
+        Delay of trigger relative to input EVR.
+
+    evr_channel
+        Trigger component.
     """
-    isum = Cpt(EpicsSignal, ':SUM', kind='hinted')
-    xpos = Cpt(EpicsSignal, ':XPOS', kind='normal')
-    ypos = Cpt(EpicsSignal, ':YPOS', kind='normal')
+
+    tab_whitelist = ['isum', 'xpos', 'ypos']
+
+    isum = Cpt(EpicsSignalRO, ':SUM', kind='hinted')
+    xpos = Cpt(EpicsSignalRO, ':XPOS', kind='normal')
+    ypos = Cpt(EpicsSignalRO, ':YPOS', kind='normal')
     evr_channel = Cpt(Trigger, ':TRIG:TRIG0', kind='normal')
     delay = Cpt(EpicsSignal, ':TrigDelay', kind='config')
     bias = Cpt(EpicsSignal, ':DiodeBias', kind='config')
@@ -190,59 +230,65 @@ class IPIMB(Device):
         super().__init__(prefix, name=name, **kwargs)
 
     def screen(self):
-        """Function to call the (pyQT) screen for an IPIMB box"""
+        """Function to call the (pyQT) screen for an IPIMB box."""
         return ipm_screen('IPIMB', self._prefix, self._prefix_ioc)
 
 
-class Wave8Channel(Device):
+class Wave8Channel(Device, BaseInterface):
     """
-    Class for a single channel read out by a wave8
+    Class for a single channel read out by a wave8.
 
     Parameters
     ----------
-    prefix : ``str``
-        Wave8 base PV
+    prefix : str
+        Wave8 base PV.
 
-    name : ``str``
-        Alias for the wave8
+    name : str
+        Alias for the wave8.
 
-    channnel_index : ``int``
-        Index for gauge (0-15)
+    channnel_index : int
+        Index for gauge (0-15).
     """
 
-    amplitude = FCpt(EpicsSignal, '{self.prefix}:AMPL_{self.channel_index}',
+    tab_component_names = True
+
+    amplitude = FCpt(EpicsSignalRO, '{self.prefix}:AMPL_{self.channel_index}',
                      kind='hinted')
-    tpos = FCpt(EpicsSignal, '{self.prefix}:TPOS_{self.channel_index}',
+    tpos = FCpt(EpicsSignalRO, '{self.prefix}:TPOS_{self.channel_index}',
                 kind='normal')
     number_of_samples = FCpt(
         EpicsSignal, '{self.prefix}:NumberOfSamples{self.channel_index}_RBV',
         write_pv='{self.prefix}:NumberOfSamples{self.channel_index}',
         kind='config')
     delay = FCpt(
-        EpicsSignal, '{self.prefix}:Delay{self.channel_index}', kind='config',
-        write_pv='{self.prefix}:Delay{self.channel_index}_RBV')
+        EpicsSignal, '{self.prefix}:Delay{self.channel_index}_RBV',
+        write_pv='{self.prefix}:Delay{self.channel_index}', kind='config')
 
     def __init__(self, prefix, *, name, channel_index,  **kwargs):
         self.channel_index = channel_index
         super().__init__(prefix, name=name, **kwargs)
 
 
-class Wave8(Device):
+class Wave8(Device, BaseInterface):
     """
-    Class for a wave8
+    Class for a wave8.
 
     Parameters
     ----------
-    prefix : ``str``
-        Wave8 base PV
+    prefix : str
+        Wave8 base PV.
 
-    name : ``str``
-        Alias for the wave8
+    name : str
+        Alias for the wave8.
     """
-    isum = Cpt(EpicsSignal, ':SUM', kind='normal')
-    xpos = Cpt(EpicsSignal, ':XPOS', kind='normal')
-    ypos = Cpt(EpicsSignal, ':YPOS', kind='normal')
+
+    tab_whitelist = ['isum', 'xpos', 'ypos']
+
+    isum = Cpt(EpicsSignalRO, ':SUM', kind='normal')
+    xpos = Cpt(EpicsSignalRO, ':XPOS', kind='normal')
+    ypos = Cpt(EpicsSignalRO, ':YPOS', kind='normal')
     evr_channel = Cpt(Trigger, ':TRIG:TRIG0', kind='normal')
+    do_config = Cpt(EpicsSignal, ':DO_CONFIG.PROC', kind='config')
     ch0 = Cpt(Wave8Channel, '', channel_index=0, kind='normal')
     ch1 = Cpt(Wave8Channel, '', channel_index=1, kind='normal')
     ch2 = Cpt(Wave8Channel, '', channel_index=2, kind='normal')
@@ -268,14 +314,20 @@ class Wave8(Device):
         super().__init__(prefix, name=name, **kwargs)
 
     def screen(self):
-        """Function to call the (pyQT) screen for a Wave8 box"""
+        """Function to call the (pyQT) screen for a Wave8 box."""
         return ipm_screen('Wave8', self._prefix, self._prefix_ioc)
 
+    def apply_configuration(self):
+        """Put to the 'DO_CONFIG' PV, causing config PVs to be applied."""
+        self.do_config.put(1)
 
-class IPM_Det(Device):
-    """
-    Base class for IPM_IPIMB and IPM_Wave8. Not meant to be instantiated.
-    """
+    def configure(self):
+        raise NotImplementedError
+
+
+class IPM_Det(Device, BaseInterface):
+    """Base class for IPM_IPIMB and IPM_Wave8. Not meant to be instantiated."""
+    tab_component_names = True
 
     def isum(self):
         """Returns the detector's isum value."""
@@ -290,7 +342,7 @@ class IPM_Det(Device):
         return self.det.ypos.get()
 
     def channel(self, i=0):
-        """Returns the detector's specified channel"""
+        """Returns the detector's specified channel."""
         if (i >= self._num_channels or i < 0):
             raise ValueError("Invalid channel number!")
         else:
@@ -298,7 +350,7 @@ class IPM_Det(Device):
 
     @property
     def channels(self):
-        """Returns a dictionary of all of the detector's channels"""
+        """Returns a dictionary of all of the detector's channels."""
         return dict(self._channels)
 
     def __init__(self, prefix, *, name, **kwargs):
@@ -312,8 +364,9 @@ class IPM_IPIMB(IPMMotion, IPM_Det):
     """
 %s
 
-    has a member ipimb which represents the ipimb box used for readout
+    has a `ipimb` component which represents the IPIMB box used for readout.
     """
+
     __doc__ = __doc__ % (IPM_base) + basic_positioner_init
 
     ipimb = FCpt(IPIMB, '{self.prefix_ipimb}', prefix_ioc='{self.prefix_ioc}')
@@ -332,8 +385,9 @@ class IPM_Wave8(IPMMotion, IPM_Det):
     """
 %s
 
-    has a member wave8 which represents the wave8 used for readout
+    has a `wave8` component which represents the Wave8 used for readout.
     """
+
     __doc__ = __doc__ % (IPM_base) + basic_positioner_init
 
     wave8 = FCpt(Wave8, '{self.prefix_wave8}', prefix_ioc='{self.prefix_ioc}')
@@ -348,25 +402,29 @@ class IPM_Wave8(IPMMotion, IPM_Det):
         super().__init__(prefix, name=name, **kwargs)
         self.det = self.wave8
 
+    def configure(self):
+        raise NotImplementedError
+
 
 def IPM(prefix, *, name, **kwargs):
     """
-    Factory function for an IPM
-    optional: IPIMB box or Wave8 for readout
+    Factory function for an IPM.
+
+    optional: IPIMB box or Wave8 for readout.
 
     Parameters
     ----------
-    prefix : ``str``
-        Gauge base PV (up to GCC/GPI)
+    prefix : str
+        Base PV for the IPM.
 
-    name : ``str``
-        Alias for the gauge set
+    name : str
+        Alias for the IPM.
 
-    (optional) prefix_ipimb:
-        Base PV for IPIMB box
+    prefix_ipimb : str, optional
+        Base PV for IPIMB box.
 
-    (optional) prefix_wave8:
-        BasePV for wave8
+    prefix_wave8 : str, optional
+        BasePV for Wave8.
     """
 
     if 'prefix_ipimb' in kwargs:

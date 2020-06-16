@@ -13,15 +13,17 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import datetime
+import os
+import sys
+
+import pcdsdevices
+import sphinx_rtd_theme
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
-import sphinx_rtd_theme
-import datetime
-
 module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../')
 sys.path.insert(0,module_path)
 
@@ -38,11 +40,11 @@ sys.path.insert(0,module_path)
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.todo',
               'sphinx.ext.autosummary',
+              'sphinx.ext.intersphinx',
               'sphinx.ext.napoleon',
               'IPython.sphinxext.ipython_directive',
               'IPython.sphinxext.ipython_console_highlighting',
-              'sphinx.ext.autosectionlabel',
-              'm2r'
+              'sphinx.ext.autosectionlabel'
              ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -52,9 +54,7 @@ autosummary_generate = True
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-#
-# source_suffix = '.rst'
-source_suffix = ['.rst', '.md']
+source_suffix = '.rst'
 
 # The master toctree document.
 master_doc = 'index'
@@ -70,7 +70,6 @@ author = 'SLAC National Accelerator Laboratory'
 # built documents.
 #
 # The short X.Y version.
-import pcdsdevices
 version = pcdsdevices.__version__
 # The full version, including alpha/beta/rc tags.
 release = pcdsdevices.__version__
@@ -96,6 +95,8 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+# If true, return types are displayed on a separate line.
+napoleon_use_rtype = False
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -113,7 +114,13 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
+html_static_path = []
+
+
+suppress_warnings = [
+    'autosectionlabel.releases',
+]
 
 
 # -- Options for HTMLHelp output ------------------------------------------
@@ -172,5 +179,8 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
+# -- Sources of external documentation to cross-referencing----------------
 
-
+intersphinx_mapping = {'ophyd': ('https://blueskyproject.io/ophyd', None),
+                       'python': ('https://docs.python.org/3', None),
+                       'numpy': ('https://docs.scipy.org/doc/numpy', None)}

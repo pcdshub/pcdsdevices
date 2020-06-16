@@ -1,9 +1,9 @@
+import math
 from unittest.mock import Mock
 
-import math
 import pytest
-
 from ophyd.sim import make_fake_device
+
 from pcdsdevices.mirror import OffsetMirror, PointingMirror
 
 
@@ -98,12 +98,12 @@ def test_branching_mirror_moves(fake_branching_mirror):
     assert branching_mirror.xgantry.setpoint.get() == 0.2
     # Test removal
     branching_mirror.remove()
-    assert branching_mirror.state.value == 1
+    assert branching_mirror.state.get() == 1
     # Finish simulated move manually
     branching_mirror.state.sim_put(2)
     # Insert
     branching_mirror.insert()
-    assert branching_mirror.state.value == 2
+    assert branching_mirror.state.get() == 2
 
 
 def test_epics_mirror_subscription(fake_branching_mirror):

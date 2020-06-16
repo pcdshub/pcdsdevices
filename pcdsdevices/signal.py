@@ -13,7 +13,8 @@ import logging
 from threading import RLock, Thread
 
 import numpy as np
-from ophyd.signal import Signal, EpicsSignalBase, EpicsSignal, EpicsSignalRO
+from ophyd.signal import EpicsSignal, EpicsSignalBase, EpicsSignalRO, Signal
+from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
 from pytmc.pragmas import normalize_io
 
 logger = logging.getLogger(__name__)
@@ -25,27 +26,18 @@ class PytmcSignal(EpicsSignalBase):
 
     This uses the same args as the pragma, so you can refer to the pytmc
     pragmas to select args for your components. This will automatically append
-    the _RBV suffix and wrap the read/write PVs into the same signal object as
-    appropriate, and pick between a read-only signal and a writable one.
+    the '_RBV' suffix and wrap the read/write PVs into the same signal object
+    as appropriate, and pick between a read-only signal and a writable one.
 
     Under the hood this actually gives you the RW or RO version of the signal
     depending on your io argument.
     """
+
     def __new__(cls, prefix, io=None, **kwargs):
-        if io is None:
-            # Provide a better error here than "__new__ missing an arg"
-            raise ValueError('Must provide an "io" argument to PytmcSignal. '
-                             f'This is missing for signal with pv {prefix}. '
-                             'Feel free to copy the io field from the '
-                             'pytmc pragma.')
-        norm = normalize_io(io)
-        if norm == 'output':
-            return super().__new__(PytmcSignalRW)
-        elif norm == 'input':
-            return super().__new__(PytmcSignalRO)
-        else:
-            # Should never get here unless pytmc's API changes
-            raise ValueError(f'Invalid io specifier {io}')
+        new_cls = select_pytmc_class(io=io, prefix=prefix,
+                                     write_cls=PytmcSignalRW,
+                                     read_only_cls=PytmcSignalRO)
+        return super().__new__(new_cls)
 
     def __init__(self, prefix, *, io, **kwargs):
         self.pytmc_pv = prefix
@@ -53,19 +45,67 @@ class PytmcSignal(EpicsSignalBase):
         super().__init__(prefix + '_RBV', **kwargs)
 
 
+def select_pytmc_class(io=None, *, prefix, write_cls, read_only_cls):
+    """Return the class to use for PytmcSignal's constructor."""
+    if io is None:
+        # Provide a better error here than "__new__ missing an arg"
+        raise ValueError('Must provide an "io" argument to PytmcSignal. '
+                         f'This is missing for signal with pv {prefix}. '
+                         'Feel free to copy the io field from the '
+                         'pytmc pragma.')
+    if pytmc_writable(io):
+        return write_cls
+    else:
+        return read_only_cls
+
+
+def pytmc_writable(io):
+    """Returns `True` if the pytmc io arg represents a writable PV."""
+    norm = normalize_io(io)
+    if norm == 'output':
+        return True
+    elif norm == 'input':
+        return False
+    else:
+        # Should never get here unless pytmc's API changes
+        raise ValueError(f'Invalid io specifier {io}')
+
+
 class PytmcSignalRW(PytmcSignal, EpicsSignal):
-    """
-    Read-write connection to a pytmc-generated EPICS record
-    """
+    """Read-write connection to a pytmc-generated EPICS record."""
     def __init__(self, prefix, **kwargs):
         super().__init__(prefix, write_pv=prefix, **kwargs)
 
 
 class PytmcSignalRO(PytmcSignal, EpicsSignalRO):
-    """
-    Read-only connection to a pytmc-generated EPICS record
-    """
+    """Read-only connection to a pytmc-generated EPICS record."""
     pass
+
+
+# Make sure an acceptable fake class is set for PytmcSignal
+class FakePytmcSignal(FakeEpicsSignal):
+    """A suitable fake class for PytmcSignal."""
+    def __new__(cls, prefix, io=None, **kwargs):
+        new_cls = select_pytmc_class(io=io, prefix=prefix,
+                                     write_cls=FakePytmcSignalRW,
+                                     read_only_cls=FakePytmcSignalRO)
+        return super().__new__(new_cls)
+
+    def __init__(self, prefix, io=None, **kwargs):
+        super().__init__(prefix + '_RBV', **kwargs)
+
+
+class FakePytmcSignalRW(FakePytmcSignal, FakeEpicsSignal):
+    def __init__(self, prefix, **kwargs):
+        super().__init__(prefix, write_pv=prefix, **kwargs)
+
+
+class FakePytmcSignalRO(FakePytmcSignal, FakeEpicsSignalRO):
+    pass
+
+
+# NOTE: This is an *on-import* update of the ophyd "fake" device cache
+fake_device_cache[PytmcSignal] = FakePytmcSignal
 
 
 class AggregateSignal(Signal):
@@ -77,12 +117,13 @@ class AggregateSignal(Signal):
 
     Attributes
     ----------
-    _cache: dict
-        Mapping from signal to last known value
+    _cache : dict
+        Mapping from signal to last known value.
 
-    _sub_signals: list
+    _sub_signals : list
         Signals that contribute to this signal.
     """
+
     _update_only_on_change = True
 
     def __init__(self, *, name, **kwargs):
@@ -99,31 +140,26 @@ class AggregateSignal(Signal):
 
         Returns
         -------
-        readback:
+        readback
             The result of the calculation.
         """
+
         raise NotImplementedError('Subclasses must implement _calc_readback')
 
     def _insert_value(self, signal, value):
-        """
-        Update the cache with one value and recalculate
-        """
+        """Update the cache with one value and recalculate."""
         with self._lock:
             self._cache[signal] = value
             self._update_state()
             return self._readback
 
     def _update_state(self):
-        """
-        Recalculate the state.
-        """
+        """Recalculate the state."""
         with self._lock:
             self._readback = self._calc_readback()
 
     def get(self, **kwargs):
-        """
-        Update all values and recalculate
-        """
+        """Update all values and recalculate."""
         with self._lock:
             for signal in self._sub_signals:
                 self._cache[signal] = signal.get(**kwargs)
@@ -137,8 +173,9 @@ class AggregateSignal(Signal):
         """
         Set up a callback function to run at specific times.
 
-        See the ``ophyd`` documentation for details.
+        See the `ophyd` documentation for details.
         """
+
         cid = super().subscribe(cb, event_type=event_type, run=run)
         if event_type in (None, self.SUB_VALUE) and not self._has_subscribed:
             # We need to subscribe to ALL relevant signals!
@@ -167,7 +204,7 @@ class AvgSignal(Signal):
     Signal that acts as a rolling average of another signal.
 
     This will subscribe to a signal, and fill an internal buffer with values
-    from SUB_VALUE. It will update its own value to be the mean of the last n
+    from `SUB_VALUE`. It will update its own value to be the mean of the last n
     accumulated values, up to the buffer size. If we haven't filled this
     buffer, this will still report a mean value composed of all the values
     we've receieved so far.
@@ -177,14 +214,15 @@ class AvgSignal(Signal):
 
     Parameters
     ----------
-    signal: ``Signal``
-        Any subclass of ``ophyd.signal.Signal`` that returns a numeric value.
+    signal : Signal
+        Any subclass of `ophyd.signal.Signal` that returns a numeric value.
         This signal will be subscribed to be `AvgSignal` to calculate the mean.
 
-    averages: ``int``
-        The number of SUB_VALUE updates to include in the average. New values
+    averages : int
+        The number of `SUB_VALUE` updates to include in the average. New values
         after this number is reached will begin overriding old values.
     """
+
     def __init__(self, signal, averages, *, name, parent=None, **kwargs):
         super().__init__(name=name, parent=parent, **kwargs)
         if isinstance(signal, str):
@@ -207,16 +245,12 @@ class AvgSignal(Signal):
 
     @property
     def averages(self):
-        """
-        The size of the internal buffer of values to average over.
-        """
+        """The size of the internal buffer of values to average over."""
         return self._avg
 
     @averages.setter
     def averages(self, avg):
-        """
-        Reinitialize an empty internal buffer of size ``avg``.
-        """
+        """Reinitialize an empty internal buffer of size `avg`."""
         with self._lock:
             self._avg = avg
             self.index = 0
@@ -226,9 +260,7 @@ class AvgSignal(Signal):
             self.values.fill(np.nan)
 
     def _update_avg(self, *args, value, **kwargs):
-        """
-        Add new value to the buffer, overriding old values if needed.
-        """
+        """Add new value to the buffer, overriding old values if needed."""
         with self._lock:
             self.values[self.index] = value
             self.index = (self.index + 1) % len(self.values)

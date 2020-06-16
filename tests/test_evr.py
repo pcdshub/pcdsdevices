@@ -1,6 +1,5 @@
-from ophyd.sim import make_fake_device
 import pytest
-
+from ophyd.sim import make_fake_device
 from pcdsdevices.device_types import Trigger
 
 

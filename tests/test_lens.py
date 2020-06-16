@@ -1,13 +1,13 @@
 import logging
 import os
 import os.path
-
 from unittest.mock import Mock
-from ophyd.sim import make_fake_device
-import pytest
-import numpy as np
 
-from pcdsdevices.lens import XFLS, LensStack, SimLensStack, LensStackBase
+import numpy as np
+import pytest
+from ophyd.sim import make_fake_device
+from pcdsdevices.lens import (XFLS, LensStack, LensStackBase, Prefocus,
+                              SimLensStack)
 
 logger = logging.getLogger(__name__)
 
@@ -50,12 +50,60 @@ def test_xfls_motion(fake_xfls):
 
 
 def test_xfls_subscriptions(fake_xfls):
+    logger.debug('test_xfls_subscriptions')
     xfls = fake_xfls
     # Subscribe a pseudo callback
     cb = Mock()
     xfls.subscribe(cb, event_type=xfls.SUB_STATE, run=False)
     # Change readback state
     xfls.state.put(4)
+    assert cb.called
+
+
+@pytest.fixture(scope='function')
+def fake_prefocus():
+    FakePrefocus = make_fake_device(Prefocus)
+    prefocus = FakePrefocus('TST:PFLS', name='prefocus')
+    prefocus.state.sim_set_enum_strs(('Unknown', 'OUT', 'LENS1', 'LENS2',
+                                      'LENS3'))
+    prefocus.state.sim_put(1)
+    return prefocus
+
+
+def test_prefocus_states(fake_prefocus):
+    logger.debug('test_prefocus_states')
+    prefocus = fake_prefocus
+    # Remove
+    prefocus.state.put(1)
+    assert prefocus.removed
+    assert not prefocus.inserted
+    # Insert
+    prefocus.state.put(2)
+    assert not prefocus.removed
+    assert prefocus.inserted
+    # Unknown
+    prefocus.state.put(0)
+    assert not prefocus.removed
+    assert not prefocus.inserted
+
+
+def test_prefocus_motion(fake_prefocus):
+    logger.debug('test_prefocus_motion')
+    prefocus = fake_prefocus
+    prefocus.insert()
+    assert prefocus.state.get() == 2
+    prefocus.remove()
+    assert prefocus.state.get() == 1
+
+
+def test_prefocus_subscriptions(fake_prefocus):
+    logger.debug('test_prefocus_subscriptions')
+    prefocus = fake_prefocus
+    # Subscribe a pseudo callback
+    cb = Mock()
+    prefocus.subscribe(cb, event_type=prefocus.SUB_STATE, run=False)
+    # Change readback state
+    prefocus.state.put(1)
     assert cb.called
 
 
@@ -169,13 +217,18 @@ def test_calc_distance_for_size(fake_lensstack):
 
 @pytest.mark.timeout(5)
 def test_xfls_disconnected():
+    logger.debug('test_xfls_disconnected')
     XFLS('TST', name='tst')
 
 
 @pytest.mark.timeout(5)
+def test_prefocus_disconnected():
+    logger.debug('test_prefocus_disconnected')
+    Prefocus('TST', name='test')
+
+
+@pytest.mark.timeout(5)
 def test_lens_stack_disconnected():
-    LensStack(name='test',
-              x_prefix='x_motor',
-              y_prefix='y_motor',
-              z_prefix='z_motor',
-              path=sample_lens_file)
+    logger.debug('test_xfls_disconnected')
+    LensStack(name='test', x_prefix='x_motor', y_prefix='y_motor',
+              z_prefix='z_motor', path=sample_lens_file)

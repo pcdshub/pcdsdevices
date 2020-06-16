@@ -1,10 +1,11 @@
 """
-Standard classes for LCLS Gauges
+Standard classes for LCLS Gauges.
 """
 import logging
 
-from ophyd import EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV, Device
-from ophyd import Component as Cpt, FormattedComponent as FCpt
+from ophyd import Component as Cpt
+from ophyd import Device, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
+from ophyd import FormattedComponent as FCpt
 
 from .doc_stubs import GaugeSet_base
 from .interface import BaseInterface
@@ -14,17 +15,15 @@ logger = logging.getLogger(__name__)
 
 class MKS937a(Device, BaseInterface):
     """
-    Vacuum gauge controller MKS637a)
-
-    A base class for an MKS637a controller
+    A base class for an MKS637a vacuum gauge controller.
 
     Parameters
     ----------
-    prefix : ``str``
-        Full Gauge controller base PV
+    prefix : str
+        Full Gauge controller base PV.
 
-    name : ``str``
-        Alias for the gauge controller
+    name : str
+        A name to refer to the gauge controller.
     """
 
     frequence = Cpt(EpicsSignal, ':FREQ', kind='normal')
@@ -43,20 +42,21 @@ class MKS937a(Device, BaseInterface):
 
 class BaseGauge(Device, BaseInterface):
     """
-    Vacuum gauge
+    Base class for vacuum gauges.
 
     A base class for a device with two limits switches controlled via an
-    external command PV. This fully encompasses the controls `Stopper`
-    installations as well as un-interlocked `GateValves`
+    external command PV. This fully encompasses the controls :class:`Stopper`
+    installations as well as un-interlocked :class:`GateValves`.
 
     Parameters
     ----------
-    prefix : ``str``
-        Full Gauge base PV
+    prefix : str
+        Full gauge base PV.
 
-    name : ``str``
-        Alias for the gauge
+    name : str
+        A name to refer to the gauge.
     """
+
     pressure = Cpt(EpicsSignalRO, ':PMON', kind='hinted')
     egu = Cpt(EpicsSignalRO, ':PMON.EGU', kind='normal')
     state = Cpt(EpicsSignalRO, ':STATE', kind='normal')
@@ -68,16 +68,12 @@ class BaseGauge(Device, BaseInterface):
 
 
 class GaugePirani(BaseGauge):
-    """
-    Class for Pirani gauge
-    """
+    """Class for Pirani gauges."""
     tab_component_names = True
 
 
 class GaugeColdCathode(BaseGauge):
-    """
-    Class for Cold Cathode Gauge
-    """
+    """Class for Cold Cathode Gauges."""
     enable = Cpt(EpicsSignal, ':ENBL_SW', kind='normal')
     relay_setpoint = Cpt(EpicsSignal, ':PSTATSPRBCK',
                          write_pv=':PSTATSPDES', kind='normal')
@@ -100,6 +96,7 @@ class GaugeSetBase(Device, BaseInterface):
 %s
     """
     __doc__ = __doc__ % GaugeSet_base
+
     gcc = FCpt(GaugeColdCathode, '{self.prefix}:GCC:{self.index}')
     tab_component_names = True
 
@@ -124,11 +121,12 @@ class GaugeSetMks(GaugeSetBase):
     """
 %s
 
-    prefix_controller : ``str``
-        Base PV for the controller
+    prefix_controller : str
+        Base PV for the controller.
     """
     __doc__ = (__doc__ % GaugeSet_base).replace(
         'Set', 'Set w/o Pirani, but with controller')
+
     controller = FCpt(MKS937a, '{self.prefix_controller}')
     tab_component_names = True
 
@@ -145,6 +143,7 @@ class GaugeSetPirani(GaugeSetBase):
 %s
     """
     __doc__ = __doc__ % GaugeSet_base
+
     gpi = FCpt(GaugePirani, '{self.prefix}:GPI:{self.index}')
     tab_component_names = True
 
@@ -159,11 +158,12 @@ class GaugeSetPiraniMks(GaugeSetPirani):
     """
 %s
 
-    prefix_controller : ``str``
-        Base PV for the controller
+    prefix_controller : str
+        Base PV for the controller.
     """
     __doc__ = (__doc__ % GaugeSet_base).replace(
         'Set', 'Set including the controller')
+
     controller = FCpt(MKS937a, '{self.prefix_controller}')
     tab_component_names = True
 
@@ -177,11 +177,12 @@ class GaugeSetPiraniMks(GaugeSetPirani):
 
 class GaugePLC(Device):
     """
-    Base class for gauges controlled by PLC
+    Base class for gauges controlled by PLC.
 
     Newer class. This and below are still missing some functionality.
     Still need to work out replacement of old classes.
     """
+
     pressure = Cpt(EpicsSignalRO, ':PRESS_RBV', kind='hinted',
                    doc='gauge pressure reading')
     gauge_at_vac = Cpt(EpicsSignalRO, ':AT_VAC_RBV', kind='normal',
@@ -195,16 +196,13 @@ class GaugePLC(Device):
 
 
 class GCCPLC(GaugePLC):
-    """
-    Class for Cold Cathode Gauge controlled by PLC
-
-    """
+    """Class for a Cold Cathode Gauge controlled by PLC."""
     high_voltage_on = Cpt(EpicsSignalWithRBV, ':HV_SW', kind='normal',
                           doc='command to switch the hight voltage on')
     high_voltage_disable = Cpt(EpicsSignalRO, ':HV_DIS_DO_RBV', kind='normal',
                                doc=('enables the high voltage on the cold '
                                     'cathode gauge'))
-    protection_setpoint = Cpt(EpicsSignalRO, ':PRO_SP_RBV', kind='normal',
+    protection_setpoint = Cpt(EpicsSignalWithRBV, ':PRO_SP', kind='normal',
                               doc=('Protection setpoint for ion gauges at '
                                    'which the gauge turns off'))
     setpoint_hysterisis = Cpt(EpicsSignalWithRBV, ':SP_HYS', kind='config',
@@ -214,10 +212,7 @@ class GCCPLC(GaugePLC):
 
 
 class GCC500PLC(GCCPLC):
-    """
-    Class for GCC500 controlled by PLC
-
-    """
+    """Class for a GCC500 controlled by PLC."""
     high_voltage_is_on = Cpt(EpicsSignalRO, ':HV_ON_RBV', kind='normal',
                              doc='state of the HV')
     disc_active = Cpt(EpicsSignalRO, ':DISC_ACTIVE_RBV', kind='normal',
@@ -225,20 +220,14 @@ class GCC500PLC(GCCPLC):
 
 
 class GCT(Device):
-    """
-    Base class for Gauge Controllers accessed via serial
-
-    """
+    """Base class for Gauge Controllers accessed via serial."""
     unit = Cpt(EpicsSignal, ':UNIT', kind='omitted')
     cal = Cpt(EpicsSignal, ':CAL', kind='omitted')
     version = Cpt(EpicsSignalRO, ':VERSION_RBV', kind='omitted')
 
 
 class MKS937BController(GCT):
-    """
-    Class for MKS937B accessed via serial
-
-    """
+    """Class for MKS937B gauge controllers accessed via serial."""
     addr = Cpt(EpicsSignal, ':ADDR', kind='omitted')
     modtype_a = Cpt(EpicsSignalRO, ':MODTYPE_A_RBV', kind='omitted')
     modtype_b = Cpt(EpicsSignalRO, ':MODTYPE_B_RBV', kind='omitted')
@@ -251,10 +240,7 @@ class MKS937BController(GCT):
 
 
 class MKS937AController(GCT):
-    """
-    Class for MKS937A accessed via serial
-
-    """
+    """Class for MKS937A gauge controllers accessed via serial."""
     pstatenout = Cpt(EpicsSignal, ':PSTATENOUT', kind='omitted')
     pstatspout = Cpt(EpicsSignal, ':PSTATSPOUT', kind='omitted')
     freq = Cpt(EpicsSignal, ':FREQ', kind='omitted')
@@ -269,10 +255,7 @@ class MKS937AController(GCT):
 
 
 class GaugeSerial(Device):
-    """
-    Base class for Vacuum Gauge controlled via serial
-
-    """
+    """Base class for Vacuum Gauges controlled via serial."""
     gastype = Cpt(EpicsSignal, ':GASTYPE', kind='omitted')
     gastypedes = Cpt(EpicsSignal, ':GASTYPEDES', kind='omitted')
     hystsprbck_1 = Cpt(EpicsSignalRO, ':HYSTSPRBCK_1_RBV', kind='omitted')
@@ -311,10 +294,7 @@ class GaugeSerial(Device):
 
 
 class GaugeSerialGPI(GaugeSerial):
-    """
-    Class for Pirani Vacuum Gauge controlled via serial
-
-    """
+    """Class for Pirani Vacuum Gauges controlled via serial."""
     atmcalib = Cpt(EpicsSignal, ':ATMCALIB', kind='omitted')
     atmcalibdes = Cpt(EpicsSignal, ':ATMCALIBDES', kind='omitted')
     autozero = Cpt(EpicsSignal, ':AUTOZERO_RBV', kind='omitted')
@@ -323,10 +303,7 @@ class GaugeSerialGPI(GaugeSerial):
 
 
 class GaugeSerialGCC(GaugeSerial):
-    """
-    Class for Cold Cathode Gauge controlled via serial
-
-    """
+    """Class for Cold Cathode Gauges controlled via serial."""
     pctrl_ch_des = Cpt(EpicsSignal, ':PCTRL_CH_DES', kind='omitted')
     pctrl_ch_rbck = Cpt(EpicsSignalRO, ':PCTRL_CH_RBCK_RBV', kind='omitted')
     pctrldes = Cpt(EpicsSignal, ':PCTRLDES', kind='omitted')
@@ -361,24 +338,24 @@ class GaugeSerialGCC(GaugeSerial):
 # factory function for IonPumps
 def GaugeSet(prefix, *, name, index, **kwargs):
     """
-    Factory function for Gauge Set
+    Factory function for Gauge Set.
 
     Parameters
     ----------
-    prefix : ``str``
-        Gauge base PV (up to GCC/GPI)
+    prefix : str
+        Gauge base PV (up to 'GCC'/'GPI').
 
-    name : ``str``
-        Alias for the gauge set
+    name : str
+        Name to refer to the gauge set.
 
-    index : ``str`` or ``int``
-        Index for gauge (e.g. '02' or 3)
+    index : str or int
+        Index for gauge (e.g. '02' or 3).
 
-    (optional) prefix_controller : ``str``
-        Base PV for the controller
+    prefix_controller : str, optional
+        Base PV for the controller.
 
-    (optional) onlyGCC:
-        if defined and not false, set has no Pirani
+    onlyGCC : optional
+        If defined and not :keyword:`False`, set has no Pirani.
     """
 
     onlyGCC = kwargs.pop('onlyGCC', None)

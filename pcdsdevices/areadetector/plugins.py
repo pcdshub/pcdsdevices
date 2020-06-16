@@ -1,15 +1,15 @@
 """
 PCDS plugins and Overrides for AreaDetector Plugins.
 """
-
 import logging
 
-import ophyd
 import numpy as np
-from ophyd import EpicsSignal, Component as C
+import ophyd
+from ophyd import Component as C
+from ophyd import EpicsSignal
+from ophyd.areadetector.base import ADBase
 from ophyd.device import GenerateDatumInterface
 from ophyd.utils import set_and_wait
-from ophyd.areadetector.base import ADBase
 
 logger = logging.getLogger(__name__)
 
@@ -72,9 +72,7 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
 
     @property
     def array_pixels(self):
-        """
-        The total number of pixels, calculated from array_size
-        """
+        """The total number of pixels, calculated from array_size."""
         array_size = list(self.array_size.get())
         dimensions = int(self.ndimensions.get())
 
@@ -92,9 +90,7 @@ class PluginBase(ophyd.plugins.PluginBase, ADBase):
 class ImagePlugin(ophyd.plugins.ImagePlugin, PluginBase):
     @property
     def image(self):
-        """
-        Overriden image method to add in some corrections
-        """
+        """Overriden image method to add in some corrections."""
         array_size = [int(val) for val in self.array_size.get()]
         if array_size == [0, 0, 0]:
             raise RuntimeError('Invalid image; ensure array_callbacks are on')
@@ -108,7 +104,10 @@ class ImagePlugin(ophyd.plugins.ImagePlugin, PluginBase):
 
 
 class StatsPlugin(ophyd.plugins.StatsPlugin, PluginBase):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.stage_sigs['compute_statistics'] = 'Yes'
+        self.stage_sigs['compute_centroid'] = 'Yes'
 
 
 class ColorConvPlugin(ophyd.plugins.ColorConvPlugin, PluginBase):
@@ -163,5 +162,3 @@ class HDF5Plugin(ophyd.plugins.HDF5Plugin, FilePlugin):
 
 class MagickPlugin(ophyd.plugins.MagickPlugin, FilePlugin):
     pass
-
-

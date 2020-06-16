@@ -1,6 +1,84 @@
 Release History
 ###############
 
+
+v2.6.0 (2020-05-21)
+===================
+
+Features
+--------
+- ``happi`` entry points have been moved to this library for proper
+  modularization.
+- Area detectors embedded inside of larger devices have been made
+  considerably smaller to improve performance in other applications,
+  for example in ``typhos``.
+
+Bugfixes
+--------
+- Provide ``FakePytmcSignal`` for testing in external libraries. This
+  fixes issues with fake devices not working if they contain ``PytmcSignal``
+  instances outside of the ``pcdsdevices`` testing suite.
+- Fix various issues related to moving to ``ophyd`` ``v1.5.0``.
+- This library is now importable on win32.
+
+Docs
+----
+- Docstrings now conform to the new pcds standards.
+
+
+v2.5.0 (2020-04-15)
+===================
+
+Features
+--------
+- Add classes for Goniometers, Von Hamos spectrometers, Beckhoff liquid jets, TimeTools, and PFLSs
+- Add ``UnrelatedComponent`` as a helper for writing devices with many prefixes
+
+Bugfixes
+--------
+- Fix TwinCAT states enum states
+- Add missing packages to requirements file
+- Compatibility with newest ``ophyd``
+
+Misc
+----
+- Add pre-commit hooks to help with development flow
+- Add license file to manifest
+- Eliminate ``m2r`` docs dependency
+
+
+v2.4.0 (2020-03-12)
+===================
+
+Features
+--------
+- Add ``PytmcSignal``
+- Add ``PPM``, ``XPIM``, ``XOffsetMirror``, and ``Kmono`` classes
+- Update ``IPM`` and ``PIM`` modules to better match physical devices
+- Add various helper classes for TwinCAT devices
+- Stubs created for attenuators, ``RTD``, and ``PowerSlit``
+- Make ``cmd_err_reset`` in ``BeckhoffAxisPLC`` accessible in Typhos
+
+API Changes
+-----------
+- Changed ``set_point_relay`` to ``pump_on_status``, ``at_vac_sp`` to
+  ``at_vac_setpoint`` and added ``pump_state`` to ``PIPPLC``
+
+- Changed ``at_vac_sp`` to ``at_vac_setpoint``, ``at_vac_hysterisis``
+  to ``setpoint_hysterisis``, and added mps_state to ``VGC``
+
+Bugfixes
+--------
+- Make ``protection_setpoint`` writeable in ``GCCPLC``
+- Make ``state`` writeable in ``VCN``
+
+Misc
+----
+- Allow build docs failure to speed up overall CI
+- Specify old working conda version as temporary solution for
+  build failures
+
+
 v2.3.0 (2020-02-05)
 ===================
 
@@ -8,6 +86,7 @@ Features
 --------
 - Make everything compatible with the upcoming ``ophyd`` ``v1.4.0``
 - Add be lens calculations port from old python system
+
 
 v2.2.0 (2020-01-22)
 ===================
@@ -45,7 +124,7 @@ Misc
 
 
 v2.0.0 (2019-06-28)
-=================
+===================
 
 Features
 --------

@@ -1,10 +1,15 @@
-import select
-import sys
-import termios
-import time
-import tty
-import shutil
 import os
+import select
+import shutil
+import sys
+import time
+
+try:
+    import tty
+    import termios
+except ImportError:
+    tty = None
+    termios = None
 
 from cf_units import Unit
 
@@ -32,9 +37,10 @@ def is_input():
 
     Returns
     -------
-    is_input: ``bool``
-        ``True`` if there is data in sys.stdin
+    is_input : bool
+        `True` if there is data in `sys.stdin`.
     """
+
     return select.select([sys.stdin], [], [], 1) == ([sys.stdin], [], [])
 
 
@@ -43,13 +49,15 @@ def get_input():
     Waits for a single character input and returns it.
 
     You can compare the input to the keys stored in this module e.g.
-
-    ``utils.arrow_up == get_input()``
+    ``utils.arrow_up == get_input()``.
 
     Returns
     -------
-    input: ``str``
+    input : str
     """
+    if termios is None:
+        raise RuntimeError('Not supported on this platform')
+
     # Save old terminal settings
     old_settings = termios.tcgetattr(sys.stdin)
     # Stash a None here in case we get interrupted
@@ -77,41 +85,42 @@ def get_input():
 
 def convert_unit(value, unit, new_unit):
     """
-    One-line unit conversion
+    One-line unit conversion.
 
     Parameters
     ----------
-    value: ``float``
+    value : float
         The starting value for the conversion.
 
-    unit: ``str``
+    unit : str
         The starting unit for the conversion.
 
-    new_unit: ``str``
-        The desired unit for the conversion
+    new_unit : str
+        The desired unit for the conversion.
 
     Returns
     -------
-    new_value: ``float``
+    new_value : float
         The starting value, but converted to the new unit.
     """
+
     start_unit = Unit(unit)
     return start_unit.convert(value, new_unit)
 
 
 def ipm_screen(dettype, prefix, prefix_ioc):
     """
-    Function to call the (pyQT) screen for an IPM box
+    Function to call the (pyQT) screen for an IPM box.
 
     Parameters
     ----------
-    dettype: ``str``
-        The type of detector being accessed, `IPIMB` or `Wave8`.
+    dettype : {'IPIMB', 'Wave8'}
+        The type of detector being accessed.
 
-    prefix: ``str``
+    prefix : str
         The PV prefix associated with the device being accessed.
 
-    prefix_ioc: ``str``
+    prefix_ioc : str
         The PV prefix associated with the IOC running the device.
     """
 

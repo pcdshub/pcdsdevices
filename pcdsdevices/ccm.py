@@ -2,15 +2,16 @@ import logging
 import time
 
 import numpy as np
-from ophyd.device import Component as Cpt, FormattedComponent as FCpt
+from ophyd.device import Component as Cpt
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import PseudoPositioner
 from ophyd.pv_positioner import PVPositionerPC
-from ophyd.signal import EpicsSignal, EpicsSignalRO, AttributeSignal
+from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
 
 from .epics_motor import IMS
 from .inout import InOutPositioner
 from .interface import FltMvInterface
-from .pseudopos import SyncAxesBase, PseudoSingleInterface
+from .pseudopos import PseudoSingleInterface, SyncAxesBase
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +33,7 @@ class CCMMotor(PVPositionerPC, FltMvInterface):
     TODO: switch to PVPositioner subclass and override code that prevents
     loading, and make the wait for done just compare the values.
     """
+
     setpoint = Cpt(EpicsSignal, ":POSITIONSET", auto_monitor=True)
     readback = Cpt(EpicsSignalRO, ":POSITIONGET", auto_monitor=True,
                    kind='hinted')
@@ -41,12 +43,13 @@ class CCMMotor(PVPositionerPC, FltMvInterface):
 
 class CCMCalc(PseudoPositioner, FltMvInterface):
     """
-    CCM calculation motors to move in terms of physics quantities
+    CCM calculation motors to move in terms of physics quantities.
 
     All new parameters are scientific constants, and the current docstring
     writer is not familiar with all of them, so I will omit the full
     description instead of giving a partial and possibly incorrect summary.
     """
+
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
     wavelength = Cpt(PseudoSingleInterface, egu='A')
     theta = Cpt(PseudoSingleInterface, egu='deg')
@@ -63,9 +66,7 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
         self.gd = gd
 
     def forward(self, pseudo_pos):
-        """
-        Take energy, wavelength, or theta and map to alio
-        """
+        """Take energy, wavelength, or theta and map to alio."""
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         # Figure out which one changed.
         energy, wavelength, theta = None, None, None
@@ -88,9 +89,7 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
         return self.RealPosition(alio=alio)
 
     def inverse(self, real_pos):
-        """
-        Take alio and map to energy, wavelength, and theta
-        """
+        """Take alio and map to energy, wavelength, and theta."""
         real_pos = self.RealPosition(*real_pos)
         theta = alio_to_theta(real_pos.alio, self.theta0, self.gr, self.gd)
         wavelength = theta_to_wavelength(theta, self.dspacing)
@@ -101,9 +100,7 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
 
 
 class CCMX(SyncAxesBase):
-    """
-    Combined motion of the CCM X motors
-    """
+    """Combined motion of the CCM X motors."""
     down = FCpt(IMS, '{self.down_prefix}')
     up = FCpt(IMS, '{self.up_prefix}')
 
@@ -116,9 +113,7 @@ class CCMX(SyncAxesBase):
 
 
 class CCMY(SyncAxesBase):
-    """
-    Combined motion of the CCM Y motors
-    """
+    """Combined motion of the CCM Y motors."""
     down = FCpt(IMS, '{self.down_prefix}')
     up_north = FCpt(IMS, '{self.up_north_prefix}')
     up_south = FCpt(IMS, '{self.up_south_prefix}')
@@ -140,6 +135,7 @@ class CCM(InOutPositioner):
     This requires a huge number of motor pv prefixes to be passed in, and they
     are all labelled accordingly.
     """
+
     calc = FCpt(CCMCalc, '{self.alio_prefix}', kind='hinted')
     theta2fine = FCpt(CCMMotor, '{self.theta2fine_prefix}')
     x = FCpt(CCMX,
@@ -193,15 +189,13 @@ class CCM(InOutPositioner):
 
 # Calculations between alio position and energy, with all intermediates.
 def theta_to_alio(theta, theta0, gr, gd):
-    """
-    Converts theta angle (rad) to alio position (mm)
-    """
+    """Converts theta angle (rad) to alio position (mm)."""
     return gr * (1/np.cos(theta)-1) + gd * np.tan(theta - theta0)
 
 
 def alio_to_theta(alio, theta0, gr, gd):
     """
-    Converts alio position (mm) to theta angle (rad)
+    Converts alio position (mm) to theta angle (rad).
 
     This is an empirical inversion via binary search. If you decide to spend
     time trying to find the analytic solution here, please update this
@@ -210,6 +204,7 @@ def alio_to_theta(alio, theta0, gr, gd):
 
     total hours spent here: 2
     """
+
     low = -1.0
     high = 1.0
     timeout = 1.0
@@ -227,28 +222,20 @@ def alio_to_theta(alio, theta0, gr, gd):
 
 
 def wavelength_to_theta(wavelength, dspacing):
-    """
-    Converts wavelength (A) to theta angle (rad)
-    """
+    """Converts wavelength (A) to theta angle (rad)."""
     return np.arcsin(wavelength/2/dspacing)
 
 
 def theta_to_wavelength(theta, dspacing):
-    """
-    Converts theta angle (rad) to wavelength (A)
-    """
+    """Converts theta angle (rad) to wavelength (A)."""
     return 2*dspacing*np.sin(theta)
 
 
 def energy_to_wavelength(energy):
-    """
-    Converts photon energy (keV) to wavelength (A)
-    """
+    """Converts photon energy (keV) to wavelength (A)."""
     return 12.39842/energy
 
 
 def wavelength_to_energy(wavelength):
-    """
-    Converts wavelength (A) to photon energy (keV)
-    """
+    """Converts wavelength (A) to photon energy (keV)."""
     return 12.39842/wavelength

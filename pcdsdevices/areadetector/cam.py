@@ -6,23 +6,19 @@ All components (EPICS PVs) associated with a specific camera are added here.
 import logging
 
 import ophyd
-from ophyd import cam
-from ophyd.utils import enum
-from ophyd import (Component, FormattedComponent, DynamicDeviceComponent,
-                   EpicsSignal, EpicsSignalRO)
+from ophyd import (Component, DynamicDeviceComponent, EpicsSignal,
+                   EpicsSignalRO, FormattedComponent, cam)
 from ophyd.areadetector.base import ADBase, ADComponent, EpicsSignalWithRBV
 from ophyd.sim import SynSignal
+from ophyd.utils import enum
 
 logger = logging.getLogger(__name__)
 
 __all__ = ['FeeOpalCam']
 
 
-
 class FeeOpalCam(cam.CamBase):
-    """
-    Opal camera used in the FEE for the PIMs.
-    """
+    """Opal camera used in the FEE for the PIMs."""
     # enums?
     # trigger_modes = enum("Internal", "External", start=0)
     # exposure_modes = enum("Full Frame", "HW ROI", start=0)
