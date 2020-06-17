@@ -160,14 +160,14 @@ class PIPPLC(Device):
                           doc='high voltage digital output')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
                        doc='interlock  is ok when true')
-    protection_setpoint = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='omitted',
+    protection_setpoint = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='config',
                               doc='Protection/At Vacuum Setpoint')
-    setpoint_hysteresis = Cpt(EpicsSignalWithRBV, ':SP_HYS', kind='omitted',
+    setpoint_hysteresis = Cpt(EpicsSignalWithRBV, ':SP_HYS', kind='config',
                               doc='Protection Setpoint Hysteresis')
     pump_on_status = Cpt(EpicsSignalRO, ':HV_DI_RBV', kind='normal',
                          doc='ion pump output state')
     pump_state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='hinted')
-    at_vac_setpoint = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='config',
+    at_vac_setpoint = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP', kind='omitted',
                           doc='at vacuum set point')
     high_voltage_switch = Cpt(EpicsSignalWithRBV, ':HV_SW', kind='config',
                               doc='epics command to switch on the '
