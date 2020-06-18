@@ -15,7 +15,6 @@ requirements:
   build:
     - python >=3.6
     - setuptools
-
   run:
     - python >=3.6
     - ophyd >=1.5.0
@@ -23,11 +22,12 @@ requirements:
     - pyepics >=3.4.1
     - pytmc >=2.4.0
     - pyyaml
-    - cf_units >=2.0.1
+    - cf-units
     - scipy
     - matplotlib <3
     - periodictable
     - happi
+    - schema
 
 test:
   imports:

@@ -180,11 +180,11 @@ class ValveBase(Device):
 
 class VVC(ValveBase):
     """Vent Valve, Controlled."""
-    override_on = Cpt(EpicsSignalWithRBV, ':OVRD_ON', kind='omitted',
-                      doc='Epics Command to set/reset Override mode')
-    open_override = Cpt(EpicsSignalWithRBV, ':FORCE_OPN', kind='omitted',
-                        doc=('Epics Command for open the valve in override '
-                             'mode'))
+    override_status = Cpt(EpicsSignalRO, ':OVRD_ON_RBV', kind='omitted',
+                          doc='Epics Readback on Override mode')
+    override_force_open = Cpt(EpicsSignalWithRBV, ':FORCE_OPN', kind='omitted',
+                              doc=('Epics Command to force open the valve in'
+                                   'override mode'))
 
 
 class VGCLegacy(ValveBase):

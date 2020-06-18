@@ -4,6 +4,8 @@ import shutil
 import sys
 import time
 
+from cf_units import Unit
+
 try:
     import tty
     import termios
@@ -11,7 +13,6 @@ except ImportError:
     tty = None
     termios = None
 
-from cf_units import Unit
 
 arrow_up = '\x1b[A'
 arrow_down = '\x1b[B'
@@ -135,3 +136,20 @@ def ipm_screen(dettype, prefix, prefix_ioc):
                                % executable)
     os.system('%s --base %s --ioc %s --evr %s &' %
               (executable, prefix, prefix_ioc, prefix+':TRIG'))
+
+
+def get_component(obj):
+    """
+    Get the component that made the given object.
+
+    Parameters
+    ----------
+    obj : ophyd.OphydItem
+        The ophyd item for which to get the component.
+
+    Returns
+    -------
+    component : ophyd.Component
+        The component, if available.
+    """
+    return getattr(type(obj.parent), obj.attr_name)
