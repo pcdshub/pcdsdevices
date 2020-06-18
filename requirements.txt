@@ -7,3 +7,4 @@ pytmc
 pyyaml
 cf-units
 scipy
+schema
