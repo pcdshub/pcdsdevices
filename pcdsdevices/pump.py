@@ -173,7 +173,7 @@ class PIPPLC(Device):
                               doc='epics command to switch on the '
                               'high voltage')
     plc_ai_offset = Cpt(EpicsSignalWithRBV, ':AI_Offset', kind='config',
-                        doc=('analog input offset must match ion pump '
+                        doc=('Analog input offset must match ion pump '
                              'analog ouput offset. Default: 13'))
     auto_on = Cpt(EpicsSignalWithRBV, ':Auto_On', kind='config',
                   doc=('Ion pump with automatically turn on when '
