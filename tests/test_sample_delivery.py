@@ -4,7 +4,8 @@ import pytest
 from ophyd.sim import make_fake_device
 
 from pcdsdevices.sample_delivery import (HPLC, CoolerShaker, FlowIntegrator,
-                                         PressureController, Selector)
+                                         GasManifold, PressureController,
+                                         Selector)
 
 logger = logging.getLogger(__name__)
 
@@ -32,11 +33,7 @@ def test_sds_init():
                        time9_prefix='test30', start10_prefix='test31',
                        used10_prefix='test32', time10_prefix='test33')
     FakePressureController = make_fake_device(PressureController)
-    FakePressureController('FAKE:PCM', name='test_pcm', status_prefix='test34',
-                           pressure1_prefix='test35', enabled1_prefix='test36',
-                           limit1_prefix='test37', SP1_prefix='test38',
-                           pressure2_prefix='test39', enabled2_prefix='test40',
-                           limit2_prefix='test41', SP2_prefix='test42')
+    FakePressureController('FAKE:PCM', name='test_pcm')
     FakeHPLC = make_fake_device(HPLC)
     FakeHPLC('FAKE:HPLC', name='test_hplc', status_prefix='test43',
              run_prefix='test44', flowrate_prefix='test45',
@@ -51,15 +48,9 @@ def test_sds_init():
                      SP2_prefix='test58', set_SP2_prefix='test59',
                      current2_prefix='test60', reboot_prefix='test61')
     FakeSelector = make_fake_device(Selector)
-    FakeSelector('FAKE:SEL', name='test_sel', remote_control_prefix='test62',
-                 status_prefix='test63', flow_prefix='test64',
-                 flowstate_prefix='test65', flowtype_prefix='test66',
-                 FM_rb_prefix='test67', FM_reset_prefix='test68',
-                 FM_prefix='test69', names_button_prefix='test70',
-                 couple_button_prefix='test71', names1_prefix='test72',
-                 names2_prefix='test73', shaker1_prefix='test74',
-                 shaker2_prefix='test75', shaker3_prefix='test76',
-                 shaker4_prefix='test77')
+    FakeSelector('FAKE:SEL', name='test_sel')
+    FakeGasManifold = make_fake_device(GasManifold)
+    FakeGasManifold('FAKE:MAN', name='test_man')
 
 
 @pytest.mark.timeout(5)
@@ -82,11 +73,7 @@ def test_sds_disconnected():
                    start9_prefix='test28', used9_prefix='test29',
                    time9_prefix='test30', start10_prefix='test31',
                    used10_prefix='test32', time10_prefix='test33')
-    PressureController('FAKE:PCM', name='test_pcm', status_prefix='test34',
-                       pressure1_prefix='test35', enabled1_prefix='test36',
-                       limit1_prefix='test37', SP1_prefix='test38',
-                       pressure2_prefix='test39', enabled2_prefix='test40',
-                       limit2_prefix='test41', SP2_prefix='test42')
+    PressureController('FAKE:PCM', name='test_pcm')
     HPLC('FAKE:HPLC', name='test_hplc', status_prefix='test43',
          run_prefix='test44', flowrate_prefix='test45',
          set_flowrate_prefix='test46', flowrate_SP_prefix='test47',
@@ -98,12 +85,5 @@ def test_sds_disconnected():
                  current1_prefix='test56', temperature2_prefix='test57',
                  SP2_prefix='test58', set_SP2_prefix='test59',
                  current2_prefix='test60', reboot_prefix='test61')
-    Selector('FAKE:SEL', name='test_sel', remote_control_prefix='test62',
-             status_prefix='test63', flow_prefix='test64',
-             flowstate_prefix='test65', flowtype_prefix='test66',
-             FM_rb_prefix='test67', FM_reset_prefix='test68',
-             FM_prefix='test69', names_button_prefix='test70',
-             couple_button_prefix='test71', names1_prefix='test72',
-             names2_prefix='test73', shaker1_prefix='test74',
-             shaker2_prefix='test75', shaker3_prefix='test76',
-             shaker4_prefix='test77')
+    Selector('FAKE:SEL', name='test_sel')
+    GasManifold('FAKE:MAN', name='test_man')
