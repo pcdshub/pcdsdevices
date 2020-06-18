@@ -20,22 +20,22 @@ class EllBase(Device):
     prefix : str
         The PV base of the stage.
     """
-    Target_Position = Cpt(EpicsSignal, ':MOVE', kind='normal')
-    _Target_Precision = Cpt(EpicsSignal, ':MOVE.PREC', kind='config')
-    _Target_EGU = Cpt(EpicsSignal, ':MOVE.EGU', kind='config')
+    target_position = Cpt(EpicsSignal, ':MOVE', kind='normal')
+    _target_precision = Cpt(EpicsSignal, ':MOVE.PREC', kind='config')
+    _target_egu = Cpt(EpicsSignal, ':MOVE.EGU', kind='config')
 
-    Current_Position = Cpt(EpicsSignalRO, ':CURPOS', kind='normal')
-    _Current_Precision = Cpt(EpicsSignal, ':CURPOS.PREC', kind='config')
-    _Current_EGU = Cpt(EpicsSignal, ':CURPOS.EGU', kind='config')
+    current_position = Cpt(EpicsSignalRO, ':CURPOS', kind='normal')
+    _current_precision = Cpt(EpicsSignal, ':CURPOS.PREC', kind='config')
+    _current_egu = Cpt(EpicsSignal, ':CURPOS.EGU', kind='config')
 
-    Status = Cpt(EpicsSignalRO, ':STATUS', kind='normal')
+    status = Cpt(EpicsSignalRO, ':STATUS', kind='normal')
 
-    _From_Addr = Cpt(EpicsSignal, ':FROM_ADR', kind='config')
-    _To_Addr = Cpt(EpicsSignal, ':TO_ADR', kind='config')
-    _Save_Addr = Cpt(EpicsSignal, ':SAVE', kind='config')
+    _from_addr = Cpt(EpicsSignal, ':FROM_ADR', kind='config')
+    _to_addr = Cpt(EpicsSignal, ':TO_ADR', kind='config')
+    _save_addr = Cpt(EpicsSignal, ':SAVE', kind='config')
 
-    _Command = Cpt(EpicsSignal, ':CMD', kind='config')
-    _Response = Cpt(EpicsSignalRO, ':RESPONSE', kind='config')
+    _command = Cpt(EpicsSignal, ':CMD', kind='config')
+    _response = Cpt(EpicsSignalRO, ':RESPONSE', kind='config')
 
 
 class Ell6(EllBase):
@@ -44,8 +44,8 @@ class Ell6(EllBase):
     """
 
     # Names for slider positions
-    Name0 = Cpt(EpicsSignal, ':NAME0', kind='config')
-    Name1 = Cpt(EpicsSignal, ':NAME1', kind='config')
+    name_0 = Cpt(EpicsSignal, ':NAME0', kind='config')
+    name_1 = Cpt(EpicsSignal, ':NAME1', kind='config')
 
 
 class Ell9(Ell6):
@@ -54,5 +54,5 @@ class Ell9(Ell6):
     """
 
     # Names for slider positions
-    Name2 = Cpt(EpicsSignal, ':NAME2', kind='config')
-    Name3 = Cpt(EpicsSignal, ':NAME3', kind='config')
+    name_2 = Cpt(EpicsSignal, ':NAME2', kind='config')
+    name_3 = Cpt(EpicsSignal, ':NAME3', kind='config')
