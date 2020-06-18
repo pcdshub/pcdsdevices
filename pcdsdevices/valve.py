@@ -183,7 +183,7 @@ class VVC(ValveBase):
     override_status = Cpt(EpicsSignalRO, ':OVRD_ON_RBV', kind='omitted',
                           doc='Epics Readback on Override mode')
     override_force_open = Cpt(EpicsSignalWithRBV, ':FORCE_OPN', kind='omitted',
-                              doc=('Epics Command for open the valve in '
+                              doc=('Epics Command to force open the valve in'
                                    'override mode'))
 
 
