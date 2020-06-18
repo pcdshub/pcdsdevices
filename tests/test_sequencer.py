@@ -148,6 +148,7 @@ def test_pause_and_resume(sequence):
     assert seq.play_control.get() == 1
 
 
+@pytest.mark.xfail()
 def test_fly_scan_smoke():
     seq = SimSequencer('ECS:TST:100', name='seq')
     RE = RunEngine()
