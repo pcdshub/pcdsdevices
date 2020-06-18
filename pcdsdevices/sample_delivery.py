@@ -1,10 +1,29 @@
 """
 Module for the Sample Delivery System and related devices.
 """
+from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.signal import EpicsSignal
 
 from .component import UnrelatedComponent as UCpt
+from .signal import PytmcSignal
+
+
+class ViciValve(Device):
+    """
+    A Vici Valve as used in the SDS Selector.
+
+    Parameters
+    ----------
+    prefix : str
+        The base PV for the Selector.
+
+    name : str
+        A name for the device.
+    """
+
+    req_pos = Cpt(PytmcSignal, ':ReqPos', io='io', kind='normal')
+    curr_pos = Cpt(PytmcSignal, ':CurrentPos', io='i', kind='normal')
 
 
 class Selector(Device):
@@ -13,26 +32,11 @@ class Selector(Device):
 
     Parameters
     ----------
-    remote_control_prefix : str
-        Remote control enabled.
+    prefix : str
+        The base PV for the Selector.
 
-    status_prefix : str
-        Connection status for selector.
-
-    flow_prefix : str
-        Flow.
-
-    flowstate_prefix : str
-        State of the flow.
-
-    flowtype_prefix : str
-        Type of the flow.
-
-    FM_rb_prefix : str
-
-    FM_reset_prefix : str
-
-    FM_prefix : str
+    name : str
+        A name for the device.
 
     names_button_prefix : str
 
@@ -41,45 +45,47 @@ class Selector(Device):
     names1_prefix : str
 
     names2_prefix : str
-
-    shaker1_prefix : str
-        Shaker 1.
-
-    shaker2_prefix : str
-        Shaker 2.
-
-    shaker3_prefix : str
-        Shaker 3.
-
-    shaker4_prefix : str
-        Shaker 4.
     """
 
-    # also appears on pressure controller screen?
-    remote_control = UCpt(EpicsSignal)
-    status = UCpt(EpicsSignal)
+    status = Cpt(PytmcSignal, ':IO:SyncUnitOK', io='i', kind='normal')
 
-    flow = UCpt(EpicsSignal)
-    flowstate = UCpt(EpicsSignal)
-    flowtype = UCpt(EpicsSignal)
+    sampleFM_flow = Cpt(PytmcSignal, ':SampleFM:Flow', io='i', kind='normal')
+    sampleFM_state = Cpt(PytmcSignal, ':SampleFM:State', io='i',
+                         kind='normal')
+    sampleFM_reset = Cpt(PytmcSignal, ':SampleFM:Reset', io='o', kind='normal')
+    sampleFM_mode = Cpt(PytmcSignal, ':SampleFM:Mode', io='o', kind='normal')
+    sampleFM_mode_rb = Cpt(PytmcSignal, ':SampleFM:ModeRb', io='i',
+                           kind='normal')
 
-    FM_rb = UCpt(EpicsSignal)
-    FM_reset = UCpt(EpicsSignal)
-    FM = UCpt(EpicsSignal)
+    sheathFM_flow = Cpt(PytmcSignal, ':SheathFM:Flow', io='i', kind='normal')
+    sheathFM_state = Cpt(PytmcSignal, ':SheathFM:State', io='i',
+                         kind='normal')
+    sheathFM_reset = Cpt(PytmcSignal, ':SheathFM:Reset', io='o', kind='normal')
+    sheathFM_mode = Cpt(PytmcSignal, ':SheathFM:Mode', io='o', kind='normal')
+    sheathFM_mode_rb = Cpt(PytmcSignal, ':SheathFM:ModeRb', io='i',
+                           kind='normal')
 
-    names_button = UCpt(EpicsSignal)
-    couple_button = UCpt(EpicsSignal)
-    names1 = UCpt(EpicsSignal)
-    names2 = UCpt(EpicsSignal)
+    massFM_unit = Cpt(PytmcSignal, ':MassFM:Unit', io='i', kind='normal')
+    massFM_flow = Cpt(PytmcSignal, ':MassFM:Flow', io='i', kind='normal')
 
-    shaker1 = UCpt(EpicsSignal)
-    shaker2 = UCpt(EpicsSignal)
-    shaker3 = UCpt(EpicsSignal)
-    shaker4 = UCpt(EpicsSignal)
+    # TODO: Add CXI:SDS:SEL1:SYNC_RES_REQ and other aux records
 
-    def __init__(self, prefix, *, name, **kwargs):
-        UCpt.collect_prefixes(self, kwargs)
-        super().__init__(prefix, name=name, **kwargs)
+    shaker1 = Cpt(PytmcSignal, ':Shaker1:Ctrl', io='o', kind='normal')
+    shaker2 = Cpt(PytmcSignal, ':Shaker1:Ctrl', io='o', kind='normal')
+    shaker3 = Cpt(PytmcSignal, ':Shaker1:Ctrl', io='o', kind='normal')
+    shaker4 = Cpt(PytmcSignal, ':Shaker1:Ctrl', io='o', kind='normal')
+
+    valve1 = Cpt(ViciValve, ':Valve:01', name='ViciValve1')
+    valve2 = Cpt(ViciValve, ':Valve:02', name='ViciValve2')
+
+    lock = Cpt(PytmcSignal, ':ValvesLockRequest', io='o', kind='normal')
+    unlock = Cpt(PytmcSignal, ':ValvesUnlockRequest', io='o', kind='normal')
+    locked = Cpt(PytmcSignal, ':ValvesLocked', io='io', kind='normal')
+    synced = Cpt(PytmcSignal, ':ValvesSynced', io='io', kind='normal')
+
+    sync_req_pos = Cpt(PytmcSignal, ':ValveSyncReqPos', io='o', kind='normal')
+    sync_curr_pos = Cpt(PytmcSignal, ':ValveSyncCurrentPos', io='i',
+                        kind='normal')
 
 
 class CoolerShaker(Device):
@@ -88,8 +94,11 @@ class CoolerShaker(Device):
 
     Parameters
     ----------
+    prefix : str
+        The base PV for the Pressure Controller.
+
     name : str
-        The device name.
+        A name for the device.
 
     temperature1_prefix : str
         Temperature of 1.
@@ -142,8 +151,11 @@ class HPLC(Device):
 
     Parameters
     ----------
+    prefix : str
+        The base PV for the Pressure Controller.
+
     name : str
-        The device name.
+        A name for the device.
 
     status_prefix : str
         Status of the HPLC.
@@ -201,62 +213,41 @@ class PressureController(Device):
 
     Parameters
     ----------
+    prefix : str
+        The base PV for the Pressure Controller.
+
     name : str
-        The device name.
-
-    status_prefix : str
-        Connection status of pressure controller.
-
-    pressure1_prefix : str
-        Pressure of 1.
-
-    enabled1_prefix : str
-        Is 1 enabled.
-
-    limit1_prefix : str
-        High pressure limit of 1.
-
-    SP1_prefix : str
-        Pressure set point of 1.
-
-    pressure2_prefix : str
-        Pressure of 2.
-
-    enabled2_prefix : str
-        Is 2 enabled.
-
-    limit2_prefix : str
-        High pressure limit of 2.
-
-    SP2_prefix : str
-        Pressure set point of 2.
+        A name for the device.
     """
 
-    status = UCpt(EpicsSignal)
+    status = Cpt(PytmcSignal, ':IO:SyncUnitOK', io='i', kind='normal')
 
-    pressure1 = UCpt(EpicsSignal)
-    enabled1 = UCpt(EpicsSignal)
-    limit1 = UCpt(EpicsSignal)
-    SP1 = UCpt(EpicsSignal)
+    pressure1 = Cpt(PytmcSignal, ':PropAir1:Pressure', io='i', kind='normal')
+    enabled1 = Cpt(PytmcSignal, ':PropAir1:Enable', io='io', kind='normal')
+    SP1 = Cpt(PytmcSignal, ':PropAir1:Setpoint', io='io', kind='normal')
+    low_limit1 = Cpt(PytmcSignal, ':PropAir1:LowLimit', io='io', kind='normal')
+    high_limit1 = Cpt(PytmcSignal, ':PropAir1:HighLimit', io='io',
+                      kind='normal')
 
-    pressure2 = UCpt(EpicsSignal)
-    enabled2 = UCpt(EpicsSignal)
-    limit2 = UCpt(EpicsSignal)
-    SP2 = UCpt(EpicsSignal)
-
-    def __init__(self, prefix, *, name, **kwargs):
-        UCpt.collect_prefixes(self, kwargs)
-        super().__init__(prefix, name=name, **kwargs)
+    pressure2 = Cpt(PytmcSignal, ':PropAir2:Pressure', io='i', kind='normal')
+    enabled2 = Cpt(PytmcSignal, ':PropAir2:Enable', io='io', kind='normal')
+    SP2 = Cpt(PytmcSignal, ':PropAir2:Setpoint', io='io', kind='normal')
+    low_limit2 = Cpt(PytmcSignal, ':PropAir2:LowLimit', io='io', kind='normal')
+    high_limit2 = Cpt(PytmcSignal, ':PropAir2:HighLimit', io='io',
+                      kind='normal')
 
 
 class FlowIntegrator(Device):
     """
-    An Flow Integrator for the sample delivery system.
+    A Flow Integrator for the sample delivery system.
 
     Parameters
     ----------
+    prefix : str
+        The base PV for the Flow Integrator.
+
     name : str
-        The device name.
+        A name for the device.
 
     integrator_source_prefix : str
 
@@ -403,3 +394,47 @@ class FlowIntegrator(Device):
     def __init__(self, prefix, *, name, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         super().__init__(prefix, name=name, **kwargs)
+
+
+class ManifoldValve(Device):
+    """
+    A single valve as present in the SDS Gas Manifold.
+
+    Parameters
+    ----------
+    prefix : str
+        The base PV for the Gas Manifold.
+
+    name : str
+        A name for the device.
+    """
+
+    open = Cpt(PytmcSignal, ':Open', io='o', kind='normal')
+    open_do = Cpt(PytmcSignal, ':OpenDO', io='i', kind='normal')
+    open_sw = Cpt(PytmcSignal, ':OpenSW', io='i', kind='normal')
+    interlocked = Cpt(PytmcSignal, ':Ilk', io='i', kind='normal')
+
+
+class GasManifold(Device):
+    """
+    A Gas Manifold as used in the sample delivery system.
+
+    Parameters
+    ----------
+    prefix : str
+        The base PV for the Gas Manifold.
+
+    name : str
+        A name for the device.
+    """
+
+    status = Cpt(PytmcSignal, ':IO:SyncUnitOK', io='i', kind='normal')
+
+    valve1 = Cpt(ManifoldValve, ':Valve:01', name='ManifoldValve1')
+    valve2 = Cpt(ManifoldValve, ':Valve:02', name='ManifoldValve1')
+    valve3 = Cpt(ManifoldValve, ':Valve:03', name='ManifoldValve1')
+    valve4 = Cpt(ManifoldValve, ':Valve:04', name='ManifoldValve1')
+    valve5 = Cpt(ManifoldValve, ':Valve:05', name='ManifoldValve1')
+    valve6 = Cpt(ManifoldValve, ':Valve:06', name='ManifoldValve1')
+    valve7 = Cpt(ManifoldValve, ':Valve:07', name='ManifoldValve1')
+    valve8 = Cpt(ManifoldValve, ':Valve:08', name='ManifoldValve1')
