@@ -176,7 +176,7 @@ class PIPPLC(Device):
                         doc=('Analog input offset must match ion pump '
                              'analog ouput offset. Default: 13'))
     auto_on = Cpt(EpicsSignalWithRBV, ':Auto_On', kind='config',
-                  doc=('Ion pump with automatically turn on when '
+                  doc=('Setting to automatically turn on the ion pump when the'
                        'reference gauge pressure is below protection '
                        'setpoint'))
     qpc_name = Cpt(EpicsSignalRO, ':VPCNAME', kind='config',
