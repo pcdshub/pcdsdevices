@@ -18,13 +18,13 @@ class El3174AiCh(Device):
     prefix : str
         The PV base of the card.
     """
-    Measured = Cpt(EpicsSignalRO, '.VAL', kind='normal')
-    _Raw_ADC = Cpt(EpicsSignalRO, '.RVAL', kind='config')
-    EGU = Cpt(EpicsSignal, '.EGU', kind='config')
-    _EGU_Max = Cpt(EpicsSignal, '.EGUF', kind='config')
-    _EGU_Min = Cpt(EpicsSignal, '.EGUL', kind='config')
-    _Conversion = Cpt(EpicsSignal, '.LINR', kind='config')
-    _Precision = Cpt(EpicsSignal, '.PREC', kind='config')
+    measured = Cpt(EpicsSignalRO, '.VAL', kind='normal')
+    _raw_adc = Cpt(EpicsSignalRO, '.RVAL', kind='config')
+    egu = Cpt(EpicsSignal, '.EGU', kind='config')
+    _egu_max = Cpt(EpicsSignal, '.EGUF', kind='config')
+    _egu_min = Cpt(EpicsSignal, '.EGUL', kind='config')
+    _conversion = Cpt(EpicsSignal, '.LINR', kind='config')
+    _precision = Cpt(EpicsSignal, '.PREC', kind='config')
 
 
 class EnvironmentalMonitor(Device):
@@ -33,6 +33,6 @@ class EnvironmentalMonitor(Device):
     consists of three measurements: P, T, and %RH.
     """
 
-    Pressure = Cpt(El3174AiCh, ':1')
-    Humidity = Cpt(El3174AiCh, ':2')
-    Temperature = Cpt(El3174AiCh, ':3')
+    pressure = Cpt(El3174AiCh, ':1')
+    humidity = Cpt(El3174AiCh, ':2')
+    temperature = Cpt(El3174AiCh, ':3')
