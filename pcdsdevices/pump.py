@@ -172,6 +172,17 @@ class PIPPLC(Device):
     high_voltage_switch = Cpt(EpicsSignalWithRBV, ':HV_SW', kind='config',
                               doc='epics command to switch on the '
                               'high voltage')
+    plc_ai_offset = Cpt(EpicsSignalWithRBV, ':AI_Offset', kind='config',
+                        doc=('Analog input offset must match ion pump '
+                             'analog ouput offset. Default: 13'))
+    auto_on = Cpt(EpicsSignalWithRBV, ':Auto_On', kind='config',
+                  doc=('Setting to automatically turn on the ion pump when the'
+                       'reference gauge pressure is below protection '
+                       'setpoint'))
+    qpc_name = Cpt(EpicsSignalRO, ':VPCNAME', kind='config',
+                   doc='Quad Ion Pump Controller Name')
+    qpc_pumpsize = Cpt(EpicsSignalRO, ':PUMPSIZE', kind='config',
+                       doc='Ion Pump Size (L/s)')
 
 
 class PTMPLC(Device):
