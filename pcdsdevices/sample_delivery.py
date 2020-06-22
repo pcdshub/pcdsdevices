@@ -71,9 +71,9 @@ class Selector(Device):
     # TODO: Add CXI:SDS:SEL1:SYNC_RES_REQ and other aux records
 
     shaker1 = Cpt(PytmcSignal, ':Shaker1:Ctrl', io='o', kind='normal')
-    shaker2 = Cpt(PytmcSignal, ':Shaker1:Ctrl', io='o', kind='normal')
-    shaker3 = Cpt(PytmcSignal, ':Shaker1:Ctrl', io='o', kind='normal')
-    shaker4 = Cpt(PytmcSignal, ':Shaker1:Ctrl', io='o', kind='normal')
+    shaker2 = Cpt(PytmcSignal, ':Shaker2:Ctrl', io='o', kind='normal')
+    shaker3 = Cpt(PytmcSignal, ':Shaker3:Ctrl', io='o', kind='normal')
+    shaker4 = Cpt(PytmcSignal, ':Shaker4:Ctrl', io='o', kind='normal')
 
     valve1 = Cpt(ViciValve, ':Valve:01', name='ViciValve1')
     valve2 = Cpt(ViciValve, ':Valve:02', name='ViciValve2')
