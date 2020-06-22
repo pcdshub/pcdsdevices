@@ -30,6 +30,9 @@ class Selector(Device):
     """
     A Selector for the sample delivery system.
 
+    This class uses the M3 variant of selector, including two Sensirion liquid
+    flowmeters, a Bronkhorst mass flow meter, and two 12-position Vici valves.
+
     Parameters
     ----------
     prefix : str
@@ -37,14 +40,6 @@ class Selector(Device):
 
     name : str
         A name for the device.
-
-    names_button_prefix : str
-
-    couple_button_prefix : str
-
-    names1_prefix : str
-
-    names2_prefix : str
     """
 
     status = Cpt(PytmcSignal, ':IO:SyncUnitOK', io='i', kind='normal')
