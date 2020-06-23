@@ -248,15 +248,37 @@ class PCM(M3BasePLCDevice):
     propair2 = Cpt(PropAir, ':PropAir:02', name='PropAir2')
 
 
+class IntegratedFlow(Device):
+    """
+    A single flow for the FlowIntegrator.
+
+    Parameters
+    ----------
+    start_prefix : str
+        Starting volume of the flow.
+
+    used_prefix : str
+        Flow rate of the flow.
+
+    flow1_time_prefix : str
+        Estimated depletion time of the flow.
+    """
+
+    start = UCpt(EpicsSignal)
+    used = UCpt(EpicsSignal)
+    time = UCpt(EpicsSignal)
+
+    def __init__(self, prefix, *, name, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        super().__init__(prefix, name=name, **kwargs)
+
+
 class FlowIntegrator(Device):
     """
     A Flow Integrator for the sample delivery system.
 
     Parameters
     ----------
-    prefix : str
-        The base PV for the Flow Integrator.
-
     name : str
         A name for the device.
 
@@ -265,146 +287,116 @@ class FlowIntegrator(Device):
     flow_source_prefix : str
 
     names_prefix : str
-        Names of.
 
-    start1_prefix : str
-        Starting volume of 1.
+    flow1_start_prefix : str
+        Starting volume of flow 1.
 
-    used1_prefix : str
-        Flow of 1.
+    flow1_used_prefix : str
+        Flow rate of flow 1.
 
-    time1_prefix : str
-        Estimated depletion time of 1.
+    flow1_time_prefix : str
+        Estimated depletion time of flow 1.
 
-    start2_prefix : str
-        Starting volume of 2.
+    flow2_start_prefix : str
+        Starting volume of flow 2.
 
-    used2_prefix : str
-        Flow of 2.
+    flow2_used_prefix : str
+        Flow rate of flow 2.
 
-    time2_prefix : str
-        Estimated depletion time of 2.
+    flow2_time_prefix : str
+        Estimated depletion time of flow 2.
 
-    start3_prefix : str
-        Starting volume of 3.
+    flow3_start_prefix : str
+        Starting volume of flow 3.
 
-    used3_prefix : str
-        Flow of 3.
+    flow3_used_prefix : str
+        Flow rate of flow 3.
 
-    time3_prefix : str
-        Estimated depletion time of 3.
+    flow3_time_prefix : str
+        Estimated depletion time of flow 3.
 
-    start4_prefix : str
-        Starting volume of 4.
+    flow4_start_prefix : str
+        Starting volume of flow 4.
 
-    used4_prefix : str
-        Flow of 4.
+    flow4_used_prefix : str
+        Flow rate of flow 4.
 
-    time4_prefix : str
-        Estimated depletion time of 4.
+    flow4_time_prefix : str
+        Estimated depletion time of flow 4.
 
-    start5_prefix : str
-        Starting volume of 5.
+    flow5_start_prefix : str
+        Starting volume of flow 5.
 
-    used5_prefix : str
-        Flow of 5.
+    flow5_used_prefix : str
+        Flow rate of flow 5.
 
-    time5_prefix : str
-        Estimated depletion time of 5.
+    flow5_time_prefix : str
+        Estimated depletion time of flow 5.
 
-    start6_prefix : str
-        Starting volume of 6.
+    flow6_start_prefix : str
+        Starting volume of flow 6.
 
-    used6_prefix : str
-        Flow of 6.
+    flow6_used_prefix : str
+        Flow rate of flow 6.
 
-    time6_prefix : str
-        Estimated depletion time of 6.
+    flow6_time_prefix : str
+        Estimated depletion time of flow 6.
 
-    start7_prefix : str
-        Starting volume of 7.
+    flow7_start_prefix : str
+        Starting volume of flow 7.
 
-    used7_prefix : str
-        Flow of 7.
+    flow7_used_prefix : str
+        Flow rate of flow 7.
 
-    time7_prefix : str
-        Estimated depletion time of 7.
+    flow7_time_prefix : str
+        Estimated depletion time of flow 7.
 
-    start8_prefix : str
-        Starting volume of 8.
+    flow8_start_prefix : str
+        Starting volume of flow 8.
 
-    used8_prefix : str
-        Flow of 8.
+    flow8_used_prefix : str
+        Flow rate of flow 8.
 
-    time8_prefix : str
-        Estimated depletion time of 8.
+    flow8_time_prefix : str
+        Estimated depletion time of flow 8.
 
-    start9_prefix : str
-        Starting volume of 9.
+    flow9_start_prefix : str
+        Starting volume of flow 9.
 
-    used9_prefix : str
-        Flow of 9.
+    flow9_used_prefix : str
+        Flow rate of flow 9.
 
-    time9_prefix : str
-        Estimated depletion time of 9.
+    flow9_time_prefix : str
+        Estimated depletion time of flow 9.
 
-    start10_prefix : str
-        Starting volume of 10.
+    flow10_start_prefix : str
+        Starting volume of flow 10.
 
-    used10_prefix : str
-        Flow of 10.
+    flow10_used_prefix : str
+        Flow rate of flow 10.
 
-    time10_prefix : str
-        Estimated depletion time of 10.
+    flow10_time_prefix : str
+        Estimated depletion time of flow 10.
     """
 
     integrator_source = UCpt(EpicsSignal)
     flow_source = UCpt(EpicsSignal)
     names = UCpt(EpicsSignal)
 
-    start1 = UCpt(EpicsSignal)
-    used1 = UCpt(EpicsSignal)
-    time1 = UCpt(EpicsSignal)
+    flow1 = UCpt(IntegratedFlow)
+    flow2 = UCpt(IntegratedFlow)
+    flow3 = UCpt(IntegratedFlow)
+    flow4 = UCpt(IntegratedFlow)
+    flow5 = UCpt(IntegratedFlow)
+    flow6 = UCpt(IntegratedFlow)
+    flow7 = UCpt(IntegratedFlow)
+    flow8 = UCpt(IntegratedFlow)
+    flow9 = UCpt(IntegratedFlow)
+    flow10 = UCpt(IntegratedFlow)
 
-    start2 = UCpt(EpicsSignal)
-    used2 = UCpt(EpicsSignal)
-    time2 = UCpt(EpicsSignal)
-
-    start3 = UCpt(EpicsSignal)
-    used3 = UCpt(EpicsSignal)
-    time3 = UCpt(EpicsSignal)
-
-    start4 = UCpt(EpicsSignal)
-    used4 = UCpt(EpicsSignal)
-    time4 = UCpt(EpicsSignal)
-
-    start5 = UCpt(EpicsSignal)
-    used5 = UCpt(EpicsSignal)
-    time5 = UCpt(EpicsSignal)
-
-    start6 = UCpt(EpicsSignal)
-    used6 = UCpt(EpicsSignal)
-    time6 = UCpt(EpicsSignal)
-
-    start7 = UCpt(EpicsSignal)
-    used7 = UCpt(EpicsSignal)
-    time7 = UCpt(EpicsSignal)
-
-    start8 = UCpt(EpicsSignal)
-    used8 = UCpt(EpicsSignal)
-    time8 = UCpt(EpicsSignal)
-
-    start9 = UCpt(EpicsSignal)
-    used9 = UCpt(EpicsSignal)
-    time9 = UCpt(EpicsSignal)
-
-    start10 = UCpt(EpicsSignal)
-    used10 = UCpt(EpicsSignal)
-    time10 = UCpt(EpicsSignal)
-
-    def __init__(self, prefix, *, name, **kwargs):
+    def __init__(self, *, name, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
-        super().__init__(prefix, name=name, **kwargs)
+        super().__init__('', name=name, **kwargs)
 
 
 class ManifoldValve(Device):
