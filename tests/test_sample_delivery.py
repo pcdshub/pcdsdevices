@@ -3,9 +3,8 @@ import logging
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.sample_delivery import (HPLC, CoolerShaker, FlowIntegrator,
-                                         GasManifold, PressureController,
-                                         Selector)
+from pcdsdevices.sample_delivery import (HPLC, PCM, CoolerShaker,
+                                         FlowIntegrator, GasManifold, Selector)
 
 logger = logging.getLogger(__name__)
 
@@ -32,8 +31,8 @@ def test_sds_init():
                        start9_prefix='test28', used9_prefix='test29',
                        time9_prefix='test30', start10_prefix='test31',
                        used10_prefix='test32', time10_prefix='test33')
-    FakePressureController = make_fake_device(PressureController)
-    FakePressureController('FAKE:PCM', name='test_pcm')
+    FakePCM = make_fake_device(PCM)
+    FakePCM('FAKE:PCM', name='test_pcm')
     FakeHPLC = make_fake_device(HPLC)
     FakeHPLC('FAKE:HPLC', name='test_hplc', status_prefix='test43',
              run_prefix='test44', flowrate_prefix='test45',
@@ -73,7 +72,7 @@ def test_sds_disconnected():
                    start9_prefix='test28', used9_prefix='test29',
                    time9_prefix='test30', start10_prefix='test31',
                    used10_prefix='test32', time10_prefix='test33')
-    PressureController('FAKE:PCM', name='test_pcm')
+    PCM('FAKE:PCM', name='test_pcm')
     HPLC('FAKE:HPLC', name='test_hplc', status_prefix='test43',
          run_prefix='test44', flowrate_prefix='test45',
          set_flowrate_prefix='test46', flowrate_SP_prefix='test47',

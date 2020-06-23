@@ -202,14 +202,34 @@ class HPLC(Device):
         super().__init__(name=name, **kwargs)
 
 
-class PressureController(Device):
+class PropAir(Device):
     """
-    A Pressure Controller for the sample delivery system.
+    A Proportionair pressure regulator used by the Pressure Control Module.
 
     Parameters
     ----------
     prefix : str
-        The base PV for the Pressure Controller.
+        The base PV for the Proportionair.
+
+    name : str
+        A name for the device.
+    """
+
+    pressure = Cpt(PytmcSignal, ':Pressure', io='i', kind='normal')
+    enabled = Cpt(PytmcSignal, ':Enable', io='io', kind='normal')
+    setpoint = Cpt(PytmcSignal, ':Setpoint', io='io', kind='normal')
+    low_limit = Cpt(PytmcSignal, ':LowLimit', io='io', kind='normal')
+    high_limit = Cpt(PytmcSignal, ':HighLimit', io='io', kind='normal')
+
+
+class PCM(Device):
+    """
+    A Pressure Control Module for the sample delivery system.
+
+    Parameters
+    ----------
+    prefix : str
+        The base PV for the Pressure Control Module.
 
     name : str
         A name for the device.
@@ -217,21 +237,8 @@ class PressureController(Device):
 
     status = Cpt(PytmcSignal, ':IO:SyncUnitOK', io='i', kind='normal')
 
-    pressure1 = Cpt(PytmcSignal, ':PropAir:01:Pressure', io='i', kind='normal')
-    enabled1 = Cpt(PytmcSignal, ':PropAir:01:Enable', io='io', kind='normal')
-    SP1 = Cpt(PytmcSignal, ':PropAir:01:Setpoint', io='io', kind='normal')
-    low_limit1 = Cpt(PytmcSignal, ':PropAir:01:LowLimit', io='io',
-                     kind='normal')
-    high_limit1 = Cpt(PytmcSignal, ':PropAir:01:HighLimit', io='io',
-                      kind='normal')
-
-    pressure2 = Cpt(PytmcSignal, ':PropAir:02:Pressure', io='i', kind='normal')
-    enabled2 = Cpt(PytmcSignal, ':PropAir:02:Enable', io='io', kind='normal')
-    SP2 = Cpt(PytmcSignal, ':PropAir:02:Setpoint', io='io', kind='normal')
-    low_limit2 = Cpt(PytmcSignal, ':PropAir:02:LowLimit', io='io',
-                     kind='normal')
-    high_limit2 = Cpt(PytmcSignal, ':PropAir:02:HighLimit', io='io',
-                      kind='normal')
+    propair1 = Cpt(PropAir, ':PropAir:01', name='PropAir1')
+    propair2 = Cpt(PropAir, ':PropAir:02', name='PropAir2')
 
 
 class FlowIntegrator(Device):
