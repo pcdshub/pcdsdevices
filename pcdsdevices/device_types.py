@@ -22,6 +22,8 @@ from .pim import PIM, PPM, XPIM, PIMWithBoth, PIMWithFocus, PIMWithLED
 from .pseudopos import DelayBase
 from .pulsepicker import PulsePicker
 from .pump import IonPump
+from .sample_delivery import (HPLC, PCM, CoolerShaker, FlowIntegrator,
+                              GasManifold, Selector)
 from .sensors import RTD, TwinCATThermocouple
 from .sequencer import EventSequencer
 from .slits import Slits
