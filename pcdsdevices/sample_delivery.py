@@ -6,10 +6,11 @@ from ophyd.device import Device
 from ophyd.signal import EpicsSignal
 
 from .component import UnrelatedComponent as UCpt
+from .interface import BaseInterface
 from .signal import PytmcSignal
 
 
-class M3BasePLCDevice(Device):
+class M3BasePLCDevice(Device, BaseInterface):
     """
     Base device for M3 SDS PLC devices.
 
@@ -20,7 +21,7 @@ class M3BasePLCDevice(Device):
     status = Cpt(PytmcSignal, ':IO:SyncUnitOK', io='i', kind='normal')
 
 
-class ViciValve(Device):
+class ViciValve(Device, BaseInterface):
     """
     A Vici Valve as used in the SDS Selector.
 
@@ -92,7 +93,7 @@ class Selector(M3BasePLCDevice):
                         kind='normal')
 
 
-class CoolerShaker(Device):
+class CoolerShaker(Device, BaseInterface):
     """
     A Cooler/Shaker for the sample delivery system.
 
@@ -149,7 +150,7 @@ class CoolerShaker(Device):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class HPLC(Device):
+class HPLC(Device, BaseInterface):
     """
     An HPLC for the sample delivery system.
 
@@ -211,7 +212,7 @@ class HPLC(Device):
         super().__init__(name=name, **kwargs)
 
 
-class PropAir(Device):
+class PropAir(Device, BaseInterface):
     """
     A Proportionair pressure regulator used by the Pressure Control Module.
 
@@ -248,7 +249,7 @@ class PCM(M3BasePLCDevice):
     propair2 = Cpt(PropAir, ':PropAir:02', name='PropAir2')
 
 
-class IntegratedFlow(Device):
+class IntegratedFlow(Device, BaseInterface):
     """
     A single flow for the FlowIntegrator.
 
@@ -273,7 +274,7 @@ class IntegratedFlow(Device):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class FlowIntegrator(Device):
+class FlowIntegrator(Device, BaseInterface):
     """
     A Flow Integrator for the sample delivery system.
 
@@ -399,7 +400,7 @@ class FlowIntegrator(Device):
         super().__init__('', name=name, **kwargs)
 
 
-class ManifoldValve(Device):
+class ManifoldValve(Device, BaseInterface):
     """
     A single valve as present in the SDS Gas Manifold.
 
@@ -418,7 +419,7 @@ class ManifoldValve(Device):
     interlocked = Cpt(PytmcSignal, ':Ilk', io='i', kind='normal')
 
 
-class GasManifold(M3BasePLCDevice):
+class GasManifold(M3BasePLCDevice, BaseInterface):
     """
     A Gas Manifold as used in the sample delivery system.
 

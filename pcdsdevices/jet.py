@@ -9,7 +9,7 @@ from .epics_motor import IMS, BeckhoffAxis
 from .interface import BaseInterface
 
 
-class Injector(Device):
+class Injector(Device, BaseInterface):
     """
     Positioner for liquid jet Injector.
 
