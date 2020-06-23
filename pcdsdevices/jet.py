@@ -13,39 +13,60 @@ class Injector(Device):
     """
     Positioner for liquid jet Injector.
 
-    Consists of 3 coarse control motors and 3 fine control motors.
+    Consists of 3 control motors, one for each of x, y, and z.
 
     Parameters
     ----------
-    coarseX_prefix : str
+    x_prefix : str
         Prefix for the coarse control motor in the X direction.
 
-    coarseY_prefix : str
+    y_prefix : str
         Prefix for the coarse control motor in the Y direction.
 
-    coarseZ_prefix : str
+    z_prefix : str
         Prefix for the coarse control motor in the Z direction.
-
-    fineX_prefix : str
-        Prefix for the fine control motor in the X direction.
-
-    fineY_prefix : str
-        Prefix for the fine control motor in the Y direction.
-
-    fineZ_prefix : str
-        Prefix for the fine control motor in the Z direction.
     """
 
-    coarseX = UCpt(IMS)
-    coarseY = UCpt(IMS)
-    coarseZ = UCpt(IMS)
-    fineX = UCpt(IMS)
-    fineY = UCpt(IMS)
-    fineZ = UCpt(IMS)
+    x = UCpt(IMS)
+    y = UCpt(IMS)
+    z = UCpt(IMS)
 
     def __init__(self, *, name, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         super().__init__('', name=name, **kwargs)
+
+
+class InjectorWithFine(Injector):
+    """
+    Positioner for liquid jet Injector, with fine control.
+
+    Consists of 6 control motors, two for each of x, y, and z.
+    Each dimension has both a coarse and a fine motor.
+
+    Parameters
+    ----------
+    x_prefix : str
+        Prefix for the coarse control motor in the X direction.
+
+    y_prefix : str
+        Prefix for the coarse control motor in the Y direction.
+
+    z_prefix : str
+        Prefix for the coarse control motor in the Z direction.
+
+    fine_x_prefix : str
+        Prefix for the fine control motor in the X direction.
+
+    fine_y_prefix : str
+        Prefix for the fine control motor in the Y direction.
+
+    fine_z_prefix : str
+        Prefix for the fine control motor in the Z direction.
+    """
+
+    fine_x = UCpt(IMS)
+    fine_y = UCpt(IMS)
+    fine_z = UCpt(IMS)
 
 
 class BeckhoffJetManipulator(Device, BaseInterface):
