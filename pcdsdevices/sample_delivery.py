@@ -209,7 +209,7 @@ class HPLC(Device, BaseInterface):
 
     def __init__(self, prefix, *, name, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
-        super().__init__(name=name, **kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
 
 class PropAir(Device, BaseInterface):
