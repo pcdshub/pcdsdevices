@@ -4,8 +4,8 @@ tag_to_explanation = {
 
 
 def get_valid_tags():
-    """Return a list of all valid variety tags."""
-    return list(tag_to_explanation)
+    """Return a set of all valid variety tags."""
+    return set(tag_to_explanation)
 
 
 def explain_tag(tag_name):
