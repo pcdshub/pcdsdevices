@@ -65,18 +65,18 @@ class Selector(Device):
 
     # TODO: Add CXI:SDS:SEL1:SYNC_RES_REQ and other aux records
 
-    shaker1 = Cpt(PytmcSignal, ':Shaker1:Ctrl', io='o', kind='normal')
-    shaker2 = Cpt(PytmcSignal, ':Shaker2:Ctrl', io='o', kind='normal')
-    shaker3 = Cpt(PytmcSignal, ':Shaker3:Ctrl', io='o', kind='normal')
-    shaker4 = Cpt(PytmcSignal, ':Shaker4:Ctrl', io='o', kind='normal')
+    shaker1 = Cpt(PytmcSignal, ':Shaker:01:Ctrl', io='o', kind='normal')
+    shaker2 = Cpt(PytmcSignal, ':Shaker:02:Ctrl', io='o', kind='normal')
+    shaker3 = Cpt(PytmcSignal, ':Shaker:03:Ctrl', io='o', kind='normal')
+    shaker4 = Cpt(PytmcSignal, ':Shaker:04:Ctrl', io='o', kind='normal')
 
     valve1 = Cpt(ViciValve, ':Valve:01', name='ViciValve1')
     valve2 = Cpt(ViciValve, ':Valve:02', name='ViciValve2')
 
     lock = Cpt(PytmcSignal, ':ValvesLockRequest', io='o', kind='normal')
     unlock = Cpt(PytmcSignal, ':ValvesUnlockRequest', io='o', kind='normal')
-    locked = Cpt(PytmcSignal, ':ValvesLocked', io='io', kind='normal')
-    synced = Cpt(PytmcSignal, ':ValvesSynced', io='io', kind='normal')
+    locked = Cpt(PytmcSignal, ':ValvesLocked', io='i', kind='normal')
+    synced = Cpt(PytmcSignal, ':ValvesSynced', io='i', kind='normal')
 
     sync_req_pos = Cpt(PytmcSignal, ':ValveSyncReqPos', io='o', kind='normal')
     sync_curr_pos = Cpt(PytmcSignal, ':ValveSyncCurrentPos', io='i',
@@ -217,18 +217,20 @@ class PressureController(Device):
 
     status = Cpt(PytmcSignal, ':IO:SyncUnitOK', io='i', kind='normal')
 
-    pressure1 = Cpt(PytmcSignal, ':PropAir1:Pressure', io='i', kind='normal')
-    enabled1 = Cpt(PytmcSignal, ':PropAir1:Enable', io='io', kind='normal')
-    SP1 = Cpt(PytmcSignal, ':PropAir1:Setpoint', io='io', kind='normal')
-    low_limit1 = Cpt(PytmcSignal, ':PropAir1:LowLimit', io='io', kind='normal')
-    high_limit1 = Cpt(PytmcSignal, ':PropAir1:HighLimit', io='io',
+    pressure1 = Cpt(PytmcSignal, ':PropAir:01:Pressure', io='i', kind='normal')
+    enabled1 = Cpt(PytmcSignal, ':PropAir:01:Enable', io='io', kind='normal')
+    SP1 = Cpt(PytmcSignal, ':PropAir:01:Setpoint', io='io', kind='normal')
+    low_limit1 = Cpt(PytmcSignal, ':PropAir:01:LowLimit', io='io',
+                     kind='normal')
+    high_limit1 = Cpt(PytmcSignal, ':PropAir:01:HighLimit', io='io',
                       kind='normal')
 
-    pressure2 = Cpt(PytmcSignal, ':PropAir2:Pressure', io='i', kind='normal')
-    enabled2 = Cpt(PytmcSignal, ':PropAir2:Enable', io='io', kind='normal')
-    SP2 = Cpt(PytmcSignal, ':PropAir2:Setpoint', io='io', kind='normal')
-    low_limit2 = Cpt(PytmcSignal, ':PropAir2:LowLimit', io='io', kind='normal')
-    high_limit2 = Cpt(PytmcSignal, ':PropAir2:HighLimit', io='io',
+    pressure2 = Cpt(PytmcSignal, ':PropAir:02:Pressure', io='i', kind='normal')
+    enabled2 = Cpt(PytmcSignal, ':PropAir:02:Enable', io='io', kind='normal')
+    SP2 = Cpt(PytmcSignal, ':PropAir:02:Setpoint', io='io', kind='normal')
+    low_limit2 = Cpt(PytmcSignal, ':PropAir:02:LowLimit', io='io',
+                     kind='normal')
+    high_limit2 = Cpt(PytmcSignal, ':PropAir:02:HighLimit', io='io',
                       kind='normal')
 
 
