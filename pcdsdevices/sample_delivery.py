@@ -9,6 +9,17 @@ from .component import UnrelatedComponent as UCpt
 from .signal import PytmcSignal
 
 
+class M3BasePLCDevice(Device):
+    """
+    Base device for M3 SDS PLC devices.
+
+    For ethercat diagnostics and other general purpose values.
+    Currently only holds the sync unit, to tell if the cluster is alive.
+    """
+
+    status = Cpt(PytmcSignal, ':IO:SyncUnitOK', io='i', kind='normal')
+
+
 class ViciValve(Device):
     """
     A Vici Valve as used in the SDS Selector.
@@ -26,7 +37,7 @@ class ViciValve(Device):
     curr_pos = Cpt(PytmcSignal, ':CurrentPos', io='i', kind='normal')
 
 
-class Selector(Device):
+class Selector(M3BasePLCDevice):
     """
     A Selector for the sample delivery system.
 
@@ -41,8 +52,6 @@ class Selector(Device):
     name : str
         A name for the device.
     """
-
-    status = Cpt(PytmcSignal, ':IO:SyncUnitOK', io='i', kind='normal')
 
     sampleFM_flow = Cpt(PytmcSignal, ':SampleFM:Flow', io='i', kind='normal')
     sampleFM_state = Cpt(PytmcSignal, ':SampleFM:State', io='i',
@@ -222,7 +231,7 @@ class PropAir(Device):
     high_limit = Cpt(PytmcSignal, ':HighLimit', io='io', kind='normal')
 
 
-class PCM(Device):
+class PCM(M3BasePLCDevice):
     """
     A Pressure Control Module for the sample delivery system.
 
@@ -234,8 +243,6 @@ class PCM(Device):
     name : str
         A name for the device.
     """
-
-    status = Cpt(PytmcSignal, ':IO:SyncUnitOK', io='i', kind='normal')
 
     propair1 = Cpt(PropAir, ':PropAir:01', name='PropAir1')
     propair2 = Cpt(PropAir, ':PropAir:02', name='PropAir2')
@@ -419,7 +426,7 @@ class ManifoldValve(Device):
     interlocked = Cpt(PytmcSignal, ':Ilk', io='i', kind='normal')
 
 
-class GasManifold(Device):
+class GasManifold(M3BasePLCDevice):
     """
     A Gas Manifold as used in the sample delivery system.
 
@@ -431,8 +438,6 @@ class GasManifold(Device):
     name : str
         A name for the device.
     """
-
-    status = Cpt(PytmcSignal, ':IO:SyncUnitOK', io='i', kind='normal')
 
     valve1 = Cpt(ManifoldValve, ':Valve:01', name='ManifoldValve1')
     valve2 = Cpt(ManifoldValve, ':Valve:02', name='ManifoldValve1')
