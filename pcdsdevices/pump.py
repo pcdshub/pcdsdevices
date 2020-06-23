@@ -213,6 +213,13 @@ class PROPLC(Device):
     pump_at_speed = Cpt(EpicsSignalRO, ':AT_SPD_RBV', kind='normal')
 
 
+class Ebara_EV_A03_1(PROPLC):
+    """Class for the Ebara EV-A03-1 model of roughing pump"""
+    remote = Cpt(EpicsSignalWithRBV, ':REMOTE', kind='omitted')
+    alarm = Cpt(EpicsSignalRO, ':ALARM_OK', kind='omitted')
+    run_di = Cpt(EpicsSignalWithRBV, ':RUN_DI', kind='omitted')
+
+
 class AgilentSerial(Device):
     """Class for Agilent Turbo Pump controlled via serial."""
     run = Cpt(EpicsSignal, ':RUN', kind='omitted')
