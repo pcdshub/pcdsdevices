@@ -4,6 +4,7 @@ import pytest
 import schema
 
 import ophyd
+from pcdsdevices import tags
 from pcdsdevices.variety import get_metadata, set_metadata, validate_metadata
 
 # A sentinel indicating the validated metadata should match the provided
@@ -225,9 +226,23 @@ def test_no_variety():
         ),
 
         pytest.param(
+            dict(variety='enum', enum_strings=['a', 'b', 'c'],
+                 tags={'protected'}),
+            SAME,
+            id='enum-basic-with-tags',
+        ),
+
+        pytest.param(
             dict(variety='enum', enum_strings='a'),
             schema.SchemaError,
             id='enum-not-a-list',
+        ),
+
+        pytest.param(
+            dict(variety='enum', enum_strings=['a', 'b', 'c'],
+                 tags={'this-is-an-unknown-tag'}),
+            schema.SchemaError,
+            id='enum-basic-with-bad-tag',
         ),
 
     ]
@@ -262,3 +277,11 @@ def test_component_empty_md():
 
     assert get_metadata(MyDevice.cpt) == {}
     assert get_metadata(MyDevice.unset_cpt) == {}
+
+
+def test_tag_explain():
+    for tag in tags.get_valid_tags():
+        print(tag, tags.explain_tag(tag))
+
+    with pytest.raises(KeyError):
+        tags.explain_tag('this-is-a-bad-tag')

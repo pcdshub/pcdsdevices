@@ -4,7 +4,7 @@ import schema
 
 import ophyd
 
-from . import utils
+from . import tags, utils
 
 _schema_registry = {}
 varieties_by_category = {
@@ -69,12 +69,18 @@ def _length_validate(min_count, max_count, type_):
     return validate
 
 
+common_schema = {
+    schema.Optional('tags'): {schema.Or(*tags.get_valid_tags())},
+}
+
+
 schema_by_category = {
     'command': schema.Schema({
         'variety': schema.Or(*varieties_by_category['command']),
         schema.Optional('value', default=1): schema.Or(float, int, str),
         schema.Optional('enum_strings'): [str],
         # schema.Optional('enum_dict'): dict,
+        **common_schema
     }),
 
     'tweakable': schema.Schema({
@@ -84,6 +90,7 @@ schema_by_category = {
         schema.Optional('source_signal'): str,
         schema.Optional('source'): schema.Or('setpoint', 'readback',
                                              'other-signal'),
+        **common_schema
     }),
 
     'array': schema.Schema({
@@ -92,6 +99,7 @@ schema_by_category = {
         schema.Optional('dimension'): int,
         schema.Optional('embed'): bool,
         schema.Optional('colormap'): str,
+        **common_schema
     }),
 
     'bitmask': schema.Schema({
@@ -110,6 +118,7 @@ schema_by_category = {
                                                                  'rectangle'),
         schema.Optional('on_color', default='green'): str,
         schema.Optional('off_color', default='gray'): str,
+        **common_schema
     }),
 
     'scalar': schema.Schema({
@@ -118,16 +127,19 @@ schema_by_category = {
         schema.Optional('range_source'): schema.Or('use_limits', 'custom'),
         schema.Optional('display_format', default='default'): schema.Or(
             'default', 'string', 'decimal', 'exponential', 'hex', 'binary'),
+        **common_schema
     }),
 
     'text': schema.Schema({
         'variety': schema.Or(*varieties_by_category['text']),
         schema.Optional('enum_strings'): [str],
+        **common_schema
     }),
 
     'enum': schema.Schema({
         'variety': schema.Or(*varieties_by_category['enum']),
         schema.Optional('enum_strings'): [str],
+        **common_schema
     }),
 }
 
