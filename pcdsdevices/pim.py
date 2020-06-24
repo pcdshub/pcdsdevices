@@ -433,7 +433,7 @@ class XPIM(LCLS2ImagerBase):
     zoom_lock = Cpt(PytmcSignal, ':CLZ:LOCK', io='io', kind='config',
                     doc='Lockout to prevent zoom motion.')
     focus_lock = Cpt(PytmcSignal, ':CLF:LOCK', io='io', kind='config',
-                     doc='Lockout to prevent focus motion.'))
+                     doc='Lockout to prevent focus motion.')
     led = Cpt(XPIMLED, ':CIL', kind='config',
               doc='LED for viewing the reticle.')
     filter_wheel = Cpt(XPIMFilterWheel, ':MFW', kind='config',
