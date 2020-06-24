@@ -343,10 +343,13 @@ class PPM(LCLS2ImagerBase):
         An identifying name for this motor, e.g. 'im3l0'.
     """
 
-    power_meter = Cpt(PPMPowerMeter, ':SPM', kind='normal')
-    yag_thermocouple = Cpt(TwinCATThermocouple, ':YAG', kind='normal')
+    power_meter = Cpt(PPMPowerMeter, ':SPM', kind='normal',
+                      doc='Device that measures power of incident beam.')
+    yag_thermocouple = Cpt(TwinCATThermocouple, ':YAG', kind='normal',
+                           doc='Thermocouple on the YAG holder.')
 
-    led = Cpt(PytmcSignal, ':CAM:CIL:PCT', io='io', kind='config')
+    led = Cpt(PytmcSignal, ':CAM:CIL:PCT', io='io', kind='config',
+              doc='Percent of light from the dimmable illuminatior.')
 
 
 class XPIMFilterWheel(StatePositioner):
@@ -360,10 +363,15 @@ class XPIMFilterWheel(StatePositioner):
 
     tab_component_names = True
 
-    state = Cpt(EpicsSignal, ':GET_RBV', write_pv=':SET', kind='normal')
+    state = Cpt(EpicsSignal, ':GET_RBV', write_pv=':SET', kind='normal',
+                doc='Control of the filter wheel state by preset '
+                    'transmission percentages.')
 
-    reset_cmd = Cpt(PytmcSignal, ':ERR:RESET', io='i', kind='omitted')
-    error_message = Cpt(PytmcSignal, ':ERR:MSG', io='i', kind='omitted')
+    reset_cmd = Cpt(PytmcSignal, ':ERR:RESET', io='i', kind='omitted',
+                    doc='Command to reset a filter wheel error.')
+    error_message = Cpt(PytmcSignal, ':ERR:MSG', io='i', kind='omitted',
+                        string=True,
+                        doc='Error text for a filter wheel error.')
 
 
 class XPIMLED(Device):
@@ -389,10 +397,15 @@ class XPIMLED(Device):
 
     tab_component_names = True
 
-    power = Cpt(PytmcSignal, ':PWR', io='io', kind='normal')
-    power_timeout = Cpt(PytmcSignal, ':CLK:TIMEOUT', io='io', kind='config')
-    time_remaining = Cpt(PytmcSignal, ':CLK:REMAINING', io='io', kind='config')
-    auto_mode = Cpt(PytmcSignal, ':AUTO', io='io', kind='config')
+    power = Cpt(PytmcSignal, ':PWR', io='io', kind='normal',
+                doc='LED power state, either on or off.')
+    power_timeout = Cpt(PytmcSignal, ':CLK:TIMEOUT', io='io', kind='config',
+                        doc='Configured auto-shutdown timeout for the led.')
+    time_remaining = Cpt(PytmcSignal, ':CLK:REMAINING', io='io', kind='config',
+                         doc='Remaining time before auto-shutoff.')
+    auto_mode = Cpt(PytmcSignal, ':AUTO', io='io', kind='config',
+                    doc='Configure auto mode vs manual mode for turning '
+                        'the LED on and off.')
 
 
 class XPIM(LCLS2ImagerBase):
@@ -412,10 +425,17 @@ class XPIM(LCLS2ImagerBase):
         An identifying name for this motor, e.g. 'im3l0'.
     """
 
-    zoom_motor = Cpt(BeckhoffAxis, ':CLZ', kind='normal')
-    focus_motor = Cpt(BeckhoffAxis, ':CLF', kind='normal')
+    zoom_motor = Cpt(BeckhoffAxis, ':CLZ', kind='normal',
+                     doc='Motorized zoom.')
+    focus_motor = Cpt(BeckhoffAxis, ':CLF', kind='normal',
+                      doc='Motorized focus.')
 
-    zoom_lock = Cpt(PytmcSignal, ':CLZ:LOCK', io='io', kind='config')
-    focus_lock = Cpt(PytmcSignal, ':CLF:LOCK', io='io', kind='config')
-    led = Cpt(XPIMLED, ':CIL', kind='config')
-    filter_wheel = Cpt(XPIMFilterWheel, ':MFW', kind='config')
+    zoom_lock = Cpt(PytmcSignal, ':CLZ:LOCK', io='io', kind='config',
+                    doc='Lockout to prevent zoom motion.')
+    focus_lock = Cpt(PytmcSignal, ':CLF:LOCK', io='io', kind='config',
+                     doc='Lockout to prevent focus motion.'))
+    led = Cpt(XPIMLED, ':CIL', kind='config',
+              doc='LED for viewing the reticle.')
+    filter_wheel = Cpt(XPIMFilterWheel, ':MFW', kind='config',
+                       doc='Optical filter wheel in front of the camera '
+                           'to prevent saturation.')
