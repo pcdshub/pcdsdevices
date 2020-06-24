@@ -340,6 +340,19 @@ class XPIMFilterWheel(StatePositioner):
     error_message = Cpt(PytmcSignal, ':ERR:MSG', io='i', kind='omitted')
 
 
+class XPIMLED(Device):
+    """
+    Controllable illumination with auto-on, auto-off, and shutdown timer.
+    """
+
+    tab_component_names = True
+
+    power = Cpt(PytmcSignal, ':PWR', io='io', kind='normal')
+    power_timeout = Cpt(PytmcSignal, ':CLK:TIMEOUT', io='io', kind='config')
+    time_remaining = Cpt(PytmcSignal, ':CLK:REMAINING', io='io', kind='config')
+    auto_mode = Cpt(PytmcSignal, ':AUTO', io='io', kind='config')
+
+
 class XPIM(LCLS2ImagerBase):
     """
     XTES's Imager design.
@@ -360,5 +373,7 @@ class XPIM(LCLS2ImagerBase):
     zoom_motor = Cpt(BeckhoffAxis, ':CLZ', kind='normal')
     focus_motor = Cpt(BeckhoffAxis, ':CLF', kind='normal')
 
-    led = Cpt(PytmcSignal, ':CAM:CIL:PWR', io='io', kind='config')
+    zoom_lock = Cpt(PytmcSignal, ':CLZ:LOCK', io='io', kind='config')
+    focus_lock = Cpt(PytmcSignal, ':CLF:LOCK', io='io', kind='config')
+    led = Cpt(XPIMLED, ':CIL', kind='config')
     filter_wheel = Cpt(XPIMFilterWheel, ':MFW', kind='config')
