@@ -230,9 +230,11 @@ class VGC(VRC):
 class VFS(Device):
     """Class for Fast Shutter Valve."""
     request_close = Cpt(EpicsSignalWithRBV, ':CLS_SW', kind='normal',
-                        doc='Request Fast Shutter to Close')
+                        doc=('Request Fast Shutter to Close. When both close'
+                            'and open are requested, VFS will close.'))
     request_open = Cpt(EpicsSignalWithRBV, ':OPEN_SW', kind='normal',
-                       doc='Request Fast Shutter to Open')
+                       doc=('Request Fast Shutter to Open. When both close and'
+                            'open are requested, VFS will close.'))
     reset_vacuum_fault = Cpt(EpicsSignalWithRBV, ':FAULT_RESET', kind='normal',
                              doc=('Reset Fast Shutter Vacuum Faults: fast'
                                   'sensor triggered, fast sensor turned off'))
