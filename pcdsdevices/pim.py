@@ -340,6 +340,35 @@ class XPIMFilterWheel(StatePositioner):
     error_message = Cpt(PytmcSignal, ':ERR:MSG', io='i', kind='omitted')
 
 
+class XPIMLED(Device):
+    """
+    Controllable illumination with auto-on, auto-off, and shutdown timer.
+
+    The power signal will read back the current LED power state, and can be
+    used to set the power state if we are not in auto_mode.
+
+    The power_timeout signal can be used to configure the LED shutdown in
+    units of minutes. If power_timeout is zero, there will not be a timeout
+    and the LED is permitted to stay on indefinitely.
+
+    The time_remaining signal is the number of minutes remaining until the
+    power timeout elapses. This can be put to if the user wants to stall the
+    timer without reconfiguring the timeout.
+
+    The auto_mode signal switches us between automatic and manual modes. In
+    automatic mode, we'll turn the LED on when in the reticle state and off
+    when leaving the reticle state. This is the only time when the LED is
+    useful. Disable this if the state configuration is wrong.
+    """
+
+    tab_component_names = True
+
+    power = Cpt(PytmcSignal, ':PWR', io='io', kind='normal')
+    power_timeout = Cpt(PytmcSignal, ':CLK:TIMEOUT', io='io', kind='config')
+    time_remaining = Cpt(PytmcSignal, ':CLK:REMAINING', io='io', kind='config')
+    auto_mode = Cpt(PytmcSignal, ':AUTO', io='io', kind='config')
+
+
 class XPIM(LCLS2ImagerBase):
     """
     XTES's Imager design.
@@ -360,5 +389,7 @@ class XPIM(LCLS2ImagerBase):
     zoom_motor = Cpt(BeckhoffAxis, ':CLZ', kind='normal')
     focus_motor = Cpt(BeckhoffAxis, ':CLF', kind='normal')
 
-    led = Cpt(PytmcSignal, ':CAM:CIL:PWR', io='io', kind='config')
+    zoom_lock = Cpt(PytmcSignal, ':CLZ:LOCK', io='io', kind='config')
+    focus_lock = Cpt(PytmcSignal, ':CLF:LOCK', io='io', kind='config')
+    led = Cpt(XPIMLED, ':CIL', kind='config')
     filter_wheel = Cpt(XPIMFilterWheel, ':MFW', kind='config')
