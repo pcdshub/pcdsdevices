@@ -250,7 +250,7 @@ class VFS(Device):
                          doc='Fast Shutter Closed Valve Position')
     position_open = Cpt(EpicsSignalRO, ':IS_OPEN_RBV', kind='normal',
                         doc='Fast Shutter Open Valve Position')
-    vac_fault_ok = Cpt(EpicsSignalRO, ':FAULT_OK_RBV', kind='normal',
+    vac_fault_ok = Cpt(EpicsSignalRO, ':VAC_FAULT_OK_RBV', kind='normal',
                        doc=('Fast Shutter Vacuum Fault OK. To open VFS, this'
                             'needs to be reset to TRUE after a vacuum event'))
     mps_ok = Cpt(EpicsSignalRO, ':FFO_OK_RBV', kind='normal',
