@@ -227,6 +227,36 @@ class VGC(VRC):
                     doc=('individual valve MPS state for debugging'))
 
 
+class VFS(Device):
+    """Class for Fast Shutter Valve."""
+    request_close = Cpt(EpicsSignalWithRBV, ':CLS_SW', kind='normal',
+                        doc=('Request Fast Shutter to Close. When both close'
+                             'and open are requested, VFS will close.'))
+    request_open = Cpt(EpicsSignalWithRBV, ':OPEN_SW', kind='normal',
+                       doc=('Request Fast Shutter to Open. When both close and'
+                            'open are requested, VFS will close.'))
+    reset_vacuum_fault = Cpt(EpicsSignalWithRBV, ':FAULT_RESET', kind='normal',
+                             doc=('Reset Fast Shutter Vacuum Faults: fast'
+                                  'sensor triggered, fast sensor turned off'))
+    override_mode = Cpt(EpicsSignalWithRBV, ':VFS_OVRD_ON', kind='normal',
+                        doc='Epics Command to set Override mode')
+    override_force_open = Cpt(EpicsSignalWithRBV, ':VFS_FORCE_OPN',
+                              kind='normal',
+                              doc=('Epics Command to force open the valve in'
+                                   'override mode'))
+    gfs_trigger = Cpt(EpicsSignalRO, ':TRIG_RBV', kind='normal',
+                      doc='Gauge Fast Sensor Input Trigger')
+    position_close = Cpt(EpicsSignalRO, ':IS_CLOSED_RBV', kind='normal',
+                         doc='Fast Shutter Closed Valve Position')
+    position_open = Cpt(EpicsSignalRO, ':IS_OPEN_RBV', kind='normal',
+                        doc='Fast Shutter Open Valve Position')
+    vac_fault_ok = Cpt(EpicsSignalRO, ':FAULT_OK_RBV', kind='normal',
+                       doc=('Fast Shutter Vacuum Fault OK. To open VFS, this'
+                            'needs to be reset to TRUE after a vacuum event'))
+    mps_ok = Cpt(EpicsSignalRO, ':FFO_OK_RBV', kind='normal',
+                 doc='Fast Shutter Fast Fault Output OK')
+
+
 class VVCNO(Device):
     """Vent Valve, Controlled, Normally Open."""
     close_command = Cpt(EpicsSignalWithRBV, ':CLS_SW', kind='normal',
