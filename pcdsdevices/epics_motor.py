@@ -452,6 +452,7 @@ class BeckhoffAxisPLC(Device):
     cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='o', kind='config',
                         doc='Command to reset an active error')
 
+    set_metadata(err_code, dict(variety='scalar', display_format='hex'))
     set_metadata(cmd_err_reset, dict(variety='command', value=1))
 
 

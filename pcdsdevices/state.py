@@ -613,6 +613,8 @@ class TwinCATStatePositioner(StatePositioner):
                  doc='Configuration of state positions, deltas, etc.')
     reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='omitted',
                     doc='Command to reset an error.')
+
+    set_metadata(error_id, dict(variety='scalar', display_format='hex'))
     set_metadata(reset_cmd, dict(variety='command', value=1))
 
 

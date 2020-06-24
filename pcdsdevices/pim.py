@@ -21,6 +21,7 @@ from .interface import BaseInterface
 from .sensors import TwinCATThermocouple
 from .signal import PytmcSignal
 from .state import StatePositioner
+from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
 
@@ -267,6 +268,7 @@ class LCLS2ImagerBase(Device, BaseInterface):
                    doc='Area detector settings and readbacks.')
     cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config',
                     doc='Camera power supply controls.')
+    set_metadata(cam_power, dict(variety='command-enum'))
 
 
 class PPMPowerMeter(Device, BaseInterface):
@@ -350,6 +352,7 @@ class PPM(LCLS2ImagerBase):
 
     led = Cpt(PytmcSignal, ':CAM:CIL:PCT', io='io', kind='config',
               doc='Percent of light from the dimmable illuminatior.')
+    set_metadata(led, dict(variety='scalar-range', range=(0, 100)))
 
 
 class XPIMFilterWheel(StatePositioner):
@@ -372,6 +375,8 @@ class XPIMFilterWheel(StatePositioner):
     error_message = Cpt(PytmcSignal, ':ERR:MSG', io='i', kind='omitted',
                         string=True,
                         doc='Error text for a filter wheel error.')
+
+    set_metadata(state, dict(variety='command-enum'))
 
 
 class XPIMLED(Device):
@@ -407,6 +412,9 @@ class XPIMLED(Device):
                     doc='Configure auto mode vs manual mode for turning '
                         'the LED on and off.')
 
+    set_metadata(power, dict(variety='command-enum'))
+    set_metadata(auto_mode, dict(variety='command-enum'))
+
 
 class XPIM(LCLS2ImagerBase):
     """
@@ -439,3 +447,6 @@ class XPIM(LCLS2ImagerBase):
     filter_wheel = Cpt(XPIMFilterWheel, ':MFW', kind='config',
                        doc='Optical filter wheel in front of the camera '
                            'to prevent saturation.')
+
+    set_metadata(zoom_lock, dict(variety='command-enum'))
+    set_metadata(focus_lock, dict(variety='command-enum'))
