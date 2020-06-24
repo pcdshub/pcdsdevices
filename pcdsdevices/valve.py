@@ -239,7 +239,7 @@ class VFS(Device):
                              doc=('Reset Fast Shutter Vacuum Faults: fast'
                                   'sensor triggered, fast sensor turned off'))
     override_mode = Cpt(EpicsSignalWithRBV, ':VFS_OVRD_ON', kind='normal',
-                          doc='Epics Command to set Override mode')
+                        doc='Epics Command to set Override mode')
     override_force_open = Cpt(EpicsSignalWithRBV, ':VFS_FORCE_OPN',
                               kind='normal',
                               doc=('Epics Command to force open the valve in'
