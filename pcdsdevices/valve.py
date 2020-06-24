@@ -243,7 +243,7 @@ class VFS(Device):
                               doc=('Epics Command to force open the valve in'
                                    'override mode'))
     gfs_trigger = Cpt(EpicsSignalRO, ':TRIG_RBV', kind='normal',
-                      doc='Guage Fast Sensor Input Trigger')
+                      doc='Gauge Fast Sensor Input Trigger')
 
     position_close = Cpt(EpicsSignalRO, ':IS_CLOSED_RBV', kind='normal',
                          doc='Fast Shutter Closed Valve Position')
