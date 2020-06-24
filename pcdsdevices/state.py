@@ -517,7 +517,7 @@ class TwinCATStateConfigOne(Device):
     Corresponds with ``DUT_PositionState``.
     """
 
-    state_name = Cpt(PytmcSignal, ':NAME', io='i', kind='omitted')
+    state_name = Cpt(PytmcSignal, ':NAME', io='i', kind='omitted', string=True)
     setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='omitted')
     delta = Cpt(PytmcSignal, ':DELTA', io='io', kind='omitted')
     velo = Cpt(PytmcSignal, ':VELO', io='io', kind='omitted')
@@ -587,7 +587,8 @@ class TwinCATStatePositioner(StatePositioner):
 
     error = Cpt(PytmcSignal, ':ERR', io='i', kind='normal')
     error_id = Cpt(PytmcSignal, ':ERRID', io='i', kind='normal')
-    error_message = Cpt(PytmcSignal, ':ERRMSG', io='i', kind='normal')
+    error_message = Cpt(PytmcSignal, ':ERRMSG', io='i', kind='normal',
+                        string=True)
     busy = Cpt(PytmcSignal, ':BUSY', io='i', kind='normal')
     done = Cpt(PytmcSignal, ':DONE', io='i', kind='normal')
 
