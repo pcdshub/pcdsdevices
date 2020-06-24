@@ -517,15 +517,15 @@ class TwinCATStateConfigOne(Device):
     Corresponds with ``DUT_PositionState``.
     """
 
-    state_name = Cpt(PytmcSignal, ':NAME', io='i', kind='config')
-    setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='config')
-    delta = Cpt(PytmcSignal, ':DELTA', io='io', kind='config')
-    velo = Cpt(PytmcSignal, ':VELO', io='io', kind='config')
-    accl = Cpt(PytmcSignal, ':ACCL', io='io', kind='config')
-    dccl = Cpt(PytmcSignal, ':DCCL', io='io', kind='config')
-    move_ok = Cpt(PytmcSignal, ':MOVE_OK', io='i', kind='config')
-    locked = Cpt(PytmcSignal, ':LOCKED', io='i', kind='config')
-    valid = Cpt(PytmcSignal, ':VALID', io='i', kind='config')
+    state_name = Cpt(PytmcSignal, ':NAME', io='i', kind='omitted')
+    setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='omitted')
+    delta = Cpt(PytmcSignal, ':DELTA', io='io', kind='omitted')
+    velo = Cpt(PytmcSignal, ':VELO', io='io', kind='omitted')
+    accl = Cpt(PytmcSignal, ':ACCL', io='io', kind='omitted')
+    dccl = Cpt(PytmcSignal, ':DCCL', io='io', kind='omitted')
+    move_ok = Cpt(PytmcSignal, ':MOVE_OK', io='i', kind='omitted')
+    locked = Cpt(PytmcSignal, ':LOCKED', io='i', kind='omitted')
+    valid = Cpt(PytmcSignal, ':VALID', io='i', kind='omitted')
 
 
 class TwinCATStateConfigAll(Device):
@@ -536,21 +536,21 @@ class TwinCATStateConfigAll(Device):
     ``FB_PositionStateManager``.
     """
 
-    state01 = Cpt(TwinCATStateConfigOne, ':01', kind='config')
-    state02 = Cpt(TwinCATStateConfigOne, ':02', kind='config')
-    state03 = Cpt(TwinCATStateConfigOne, ':03', kind='config')
-    state04 = Cpt(TwinCATStateConfigOne, ':04', kind='config')
-    state05 = Cpt(TwinCATStateConfigOne, ':05', kind='config')
-    state06 = Cpt(TwinCATStateConfigOne, ':06', kind='config')
-    state07 = Cpt(TwinCATStateConfigOne, ':07', kind='config')
-    state08 = Cpt(TwinCATStateConfigOne, ':08', kind='config')
-    state09 = Cpt(TwinCATStateConfigOne, ':09', kind='config')
-    state10 = Cpt(TwinCATStateConfigOne, ':10', kind='config')
-    state11 = Cpt(TwinCATStateConfigOne, ':11', kind='config')
-    state12 = Cpt(TwinCATStateConfigOne, ':12', kind='config')
-    state13 = Cpt(TwinCATStateConfigOne, ':13', kind='config')
-    state14 = Cpt(TwinCATStateConfigOne, ':14', kind='config')
-    state15 = Cpt(TwinCATStateConfigOne, ':15', kind='config')
+    state01 = Cpt(TwinCATStateConfigOne, ':01', kind='omitted')
+    state02 = Cpt(TwinCATStateConfigOne, ':02', kind='omitted')
+    state03 = Cpt(TwinCATStateConfigOne, ':03', kind='omitted')
+    state04 = Cpt(TwinCATStateConfigOne, ':04', kind='omitted')
+    state05 = Cpt(TwinCATStateConfigOne, ':05', kind='omitted')
+    state06 = Cpt(TwinCATStateConfigOne, ':06', kind='omitted')
+    state07 = Cpt(TwinCATStateConfigOne, ':07', kind='omitted')
+    state08 = Cpt(TwinCATStateConfigOne, ':08', kind='omitted')
+    state09 = Cpt(TwinCATStateConfigOne, ':09', kind='omitted')
+    state10 = Cpt(TwinCATStateConfigOne, ':10', kind='omitted')
+    state11 = Cpt(TwinCATStateConfigOne, ':11', kind='omitted')
+    state12 = Cpt(TwinCATStateConfigOne, ':12', kind='omitted')
+    state13 = Cpt(TwinCATStateConfigOne, ':13', kind='omitted')
+    state14 = Cpt(TwinCATStateConfigOne, ':14', kind='omitted')
+    state15 = Cpt(TwinCATStateConfigOne, ':15', kind='omitted')
 
 
 class TwinCATStatePositioner(StatePositioner):
@@ -591,21 +591,8 @@ class TwinCATStatePositioner(StatePositioner):
     busy = Cpt(PytmcSignal, ':BUSY', io='i', kind='normal')
     done = Cpt(PytmcSignal, ':DONE', io='i', kind='normal')
 
-    config = Cpt(TwinCATStateConfigAll, '', kind='config')
-
+    config = Cpt(TwinCATStateConfigAll, '', kind='omitted')
     reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='omitted')
-
-    @required_for_connection
-    def _state_init(self):
-        super()._state_init()
-        # Clean up the kind on the config objects based on states list
-        state_count = len(self.states_list)
-        if self._unknown:
-            state_count -= 1
-        for i in range(1, 16):
-            if i > state_count:
-                state_config = getattr(self.config, f'state{i:02}')
-                state_config.kind = 'omitted'
 
 
 class StateStatus(SubscriptionStatus):
