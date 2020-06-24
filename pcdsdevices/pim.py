@@ -259,10 +259,14 @@ class LCLS2ImagerBase(Device, BaseInterface):
 
     tab_component_names = True
 
-    y_states = Cpt(TwinCATInOutPositioner, ':MMS:STATE', kind='hinted')
-    y_motor = Cpt(BeckhoffAxis, ':MMS', kind='normal')
-    detector = Cpt(PCDSAreaDetectorEmbedded, ':CAM:', kind='normal')
-    cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config')
+    y_states = Cpt(TwinCATInOutPositioner, ':MMS:STATE', kind='hinted',
+                   doc='Control of the diagnostic stack via saved positions.')
+    y_motor = Cpt(BeckhoffAxis, ':MMS', kind='normal',
+                  doc='Direct control of the diagnostic stack motor.')
+    detector = Cpt(PCDSAreaDetectorEmbedded, ':CAM:', kind='normal',
+                   doc='Area detector settings and readbacks.')
+    cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config',
+                    doc='Camera power supply controls.')
 
 
 class PPMPowerMeter(Device, BaseInterface):
@@ -282,22 +286,44 @@ class PPMPowerMeter(Device, BaseInterface):
 
     tab_component_names = True
 
-    raw_voltage = Cpt(PytmcSignal, ':VOLT', io='i', kind='normal')
-    dimensionless = Cpt(PytmcSignal, ':CALIB', io='i', kind='normal')
-    calibrated_mj = Cpt(PytmcSignal, ':MJ', io='i', kind='normal')
-    thermocouple = Cpt(TwinCATThermocouple, '', kind='normal')
+    raw_voltage = Cpt(PytmcSignal, ':VOLT', io='i', kind='normal',
+                      doc='Raw readback from the power meter.')
+    dimensionless = Cpt(PytmcSignal, ':CALIB', io='i', kind='normal',
+                        doc='Calibrated dimensionless readback '
+                            'for cross-meter comparisons.')
+    calibrated_mj = Cpt(PytmcSignal, ':MJ', io='i', kind='normal',
+                        doc='Calibrated absolute measurement of beam '
+                            'power in physics units.')
+    thermocouple = Cpt(TwinCATThermocouple, '', kind='normal',
+                       doc='Thermocouple on the power meter holder.')
 
-    calib_offset = Cpt(PytmcSignal, ':CALIB:OFFSET', io='io', kind='config')
-    calib_ratio = Cpt(PytmcSignal, ':CALIB:RATIO', io='io', kind='config')
+    calib_offset = Cpt(PytmcSignal, ':CALIB:OFFSET', io='io', kind='config',
+                       doc='Calibration parameter to offset raw voltage to '
+                           'zero for the calibrated quantities. Unique per '
+                           'power meter.')
+    calib_ratio = Cpt(PytmcSignal, ':CALIB:RATIO', io='io', kind='config',
+                      doc='Calibration multiplier to convert to the '
+                          'dimensionless constant. Unique per power meter.')
     calib_mj_ratio = Cpt(PytmcSignal, ':CALIB:MJ_RATIO', io='io',
-                         kind='config')
+                         kind='config',
+                         doc='Calibration multiplier to convert from the '
+                             'dimensionless constant to calibrated scientific '
+                             'quantity. Same for every power meter.')
 
     raw_voltage_buffer = Cpt(PytmcSignal, ':VOLT_BUFFER', io='i',
-                             kind='omitted')
+                             kind='omitted',
+                             doc='Array of the last 1000 raw measurements. '
+                                 'Polls faster than the EPICS updates.')
     dimensionless_buffer = Cpt(PytmcSignal, ':CALIB_BUFFER', io='i',
-                               kind='omitted')
+                               kind='omitted',
+                               doc='Array of the last 1000 dimensionless '
+                                   'measurements. Polls faster than the '
+                                   'EPICS updates.')
     calibrated_mj_buffer = Cpt(PytmcSignal, ':MJ_BUFFER', io='i',
-                               kind='omitted')
+                               kind='omitted',
+                               doc='Array of the last 1000 fully calibrated '
+                                   'measurements. Polls faster than the '
+                                   'EPICS updates.')
 
 
 class PPM(LCLS2ImagerBase):
