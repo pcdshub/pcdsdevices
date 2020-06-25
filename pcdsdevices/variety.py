@@ -124,11 +124,11 @@ schema_by_category = {
         }),
 
         Optional('delta'): schema.Schema({
-            'value': schema.Or(float, int),
+            Optional('value'): schema.Or(float, int),
             Optional('range'): _length_validate(2, 2, (float, int)),
             Optional('source', default='value'): schema.Or(
                 'signal', 'value'),
-            Optional('signal'): str,
+            Optional('signal'): schema.Or(str, ophyd.Component),
 
             Optional('add_signal'): str,
             Optional('adds_to', default='setpoint'): schema.Or(
