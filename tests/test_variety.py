@@ -5,7 +5,8 @@ import schema
 
 import ophyd
 from pcdsdevices import tags
-from pcdsdevices.variety import get_metadata, set_metadata, validate_metadata
+from pcdsdevices.variety import (expand_dotted_dict, get_metadata,
+                                 set_metadata, validate_metadata)
 
 # A sentinel indicating the validated metadata should match the provided
 # metadata exactly
@@ -285,3 +286,98 @@ def test_tag_explain():
 
     with pytest.raises(KeyError):
         tags.explain_tag('this-is-a-bad-tag')
+
+
+@pytest.mark.parametrize(
+    'value, expected',
+    [pytest.param(
+        {},
+        {}
+     ),
+
+     pytest.param(
+         {'a..': {}},
+         ValueError,
+         id='empty_dot',
+     ),
+
+     pytest.param(
+         {'a': {'b': 3}, 'a.b': {}},
+         ValueError,
+         id='overwrite_dict',
+     ),
+
+     pytest.param(
+         {'a': {'b': {}}, 'a.b.c': 3},
+         {'a': {'b': {'c': 3}}},
+         id='nested_3',
+     ),
+
+     pytest.param(
+         {'a.b': {}},
+         {'a': {'b': {}}},
+         id='nested_ab',
+     ),
+
+     pytest.param(
+         {'a': {}, 'a.b': 4},
+         dict(a=dict(b=4))
+     ),
+
+     pytest.param(
+         {'a.b.c': 1, 'a.b': {'d': 4}},
+         dict(a=dict(b=dict(c=1, d=4)))
+     ),
+
+     pytest.param(
+         {'a.b.c': {}, 'a.b': {'d': 4}},
+         dict(a=dict(b=dict(c={}, d=4)))
+     ),
+
+     pytest.param(
+         {'a': {}, 'a.b': '3', 'a.c': '4'},
+         {'a': {'b': '3', 'c': '4'}},
+     ),
+
+     pytest.param(
+         {'a': {'b': '2'}, 'a.b': '3', 'a.c': '4'},
+         {'a': {'b': '3', 'c': '4'}},
+         id='update_value',
+     ),
+
+     pytest.param(
+        {'variety': 'scalar-tweakable',
+         'delta.value': 0.5,
+         'delta.range': [-1, 1],
+         'range.source': 'custom',
+         'range.value': [-1, 1],
+         },
+        {'variety': 'scalar-tweakable',
+         'delta': {'value': 0.5,
+                   'range': [-1, 1],
+                   },
+         'range': {'source': 'custom',
+                   'value': [-1, 1],
+                   },
+         },
+        id='real_world',
+     ),
+
+     pytest.param(
+        {'variety': 'scalar-tweakable',
+         'delta.value': 0.5,
+         'delta.range': [-1, 1],
+         'range': [-1, 1],  # <-- range specified as a value, not a dict
+         'range.source': 'custom',  # <-- range.source update fails
+         },
+        ValueError,
+        id='real_world_oops',
+     ),
+     ]
+)
+def test_dotted_dict(value, expected):
+    if isinstance(expected, dict):
+        assert expand_dotted_dict(value) == expected
+    else:
+        with pytest.raises(expected):
+            expand_dotted_dict(value)
