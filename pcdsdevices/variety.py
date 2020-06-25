@@ -140,7 +140,11 @@ schema_by_category = {
     'text': schema.Schema({
         'variety': schema.Or(*varieties_by_category['text']),
         Optional('enum_strings'): [str],
-        Optional('delimiter', default='\n'): [str],
+        Optional('delimiter', default='\n'): str,
+        Optional('encoding', default='utf-8'): schema.Or('utf-8', 'latin-1',
+                                                         'ascii'),
+        Optional('format', default='plain'): schema.Or('plain', 'markdown',
+                                                       'html'),
         **common_schema
     }),
 
