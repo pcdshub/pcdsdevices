@@ -16,6 +16,7 @@ from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
 from .signal import AggregateSignal, PytmcSignal
+from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
 
@@ -517,15 +518,25 @@ class TwinCATStateConfigOne(Device):
     Corresponds with ``DUT_PositionState``.
     """
 
-    state_name = Cpt(PytmcSignal, ':NAME', io='i', kind='omitted')
-    setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='omitted')
-    delta = Cpt(PytmcSignal, ':DELTA', io='io', kind='omitted')
-    velo = Cpt(PytmcSignal, ':VELO', io='io', kind='omitted')
-    accl = Cpt(PytmcSignal, ':ACCL', io='io', kind='omitted')
-    dccl = Cpt(PytmcSignal, ':DCCL', io='io', kind='omitted')
-    move_ok = Cpt(PytmcSignal, ':MOVE_OK', io='i', kind='omitted')
-    locked = Cpt(PytmcSignal, ':LOCKED', io='i', kind='omitted')
-    valid = Cpt(PytmcSignal, ':VALID', io='i', kind='omitted')
+    state_name = Cpt(PytmcSignal, ':NAME', io='i', kind='omitted', string=True,
+                     doc='The defined state name.')
+    setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='omitted',
+                   doc='The corresponding motor set position.')
+    delta = Cpt(PytmcSignal, ':DELTA', io='io', kind='omitted',
+                doc='The deviation from setpoint that still counts '
+                    'as at the position.')
+    velo = Cpt(PytmcSignal, ':VELO', io='io', kind='omitted',
+               doc='Velocity to move to the state at.')
+    accl = Cpt(PytmcSignal, ':ACCL', io='io', kind='omitted',
+               doc='Acceleration to move to the state with.')
+    dccl = Cpt(PytmcSignal, ':DCCL', io='io', kind='omitted',
+               doc='Deceleration to move to the state with.')
+    move_ok = Cpt(PytmcSignal, ':MOVE_OK', io='i', kind='omitted',
+                  doc='True if a move to this state is allowed.')
+    locked = Cpt(PytmcSignal, ':LOCKED', io='i', kind='omitted',
+                 doc='True if the PLC will not permit config edits here.')
+    valid = Cpt(PytmcSignal, ':VALID', io='i', kind='omitted',
+                doc='True if the state is defined (not empty).')
 
 
 class TwinCATStateConfigAll(Device):
@@ -583,16 +594,28 @@ class TwinCATStatePositioner(StatePositioner):
         in-progress move as failed.
     """
 
-    state = Cpt(EpicsSignal, ':GET_RBV', write_pv=':SET', kind='hinted')
+    state = Cpt(EpicsSignal, ':GET_RBV', write_pv=':SET', kind='hinted',
+                doc='Setpoint and readback for TwinCAT state position.')
+    set_metadata(state, dict(variety='command-enum'))
 
-    error = Cpt(PytmcSignal, ':ERR', io='i', kind='normal')
-    error_id = Cpt(PytmcSignal, ':ERRID', io='i', kind='normal')
-    error_message = Cpt(PytmcSignal, ':ERRMSG', io='i', kind='normal')
-    busy = Cpt(PytmcSignal, ':BUSY', io='i', kind='normal')
-    done = Cpt(PytmcSignal, ':DONE', io='i', kind='normal')
+    error = Cpt(PytmcSignal, ':ERR', io='i', kind='normal',
+                doc='True if we have an error.')
+    error_id = Cpt(PytmcSignal, ':ERRID', io='i', kind='normal',
+                   doc='Error code.')
+    error_message = Cpt(PytmcSignal, ':ERRMSG', io='i', kind='normal',
+                        string=True, doc='Error message')
+    busy = Cpt(PytmcSignal, ':BUSY', io='i', kind='normal',
+               doc='True if we have an ongoing move.')
+    done = Cpt(PytmcSignal, ':DONE', io='i', kind='normal',
+               doc='True if we completed the last move.')
 
-    config = Cpt(TwinCATStateConfigAll, '', kind='omitted')
-    reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='omitted')
+    config = Cpt(TwinCATStateConfigAll, '', kind='omitted',
+                 doc='Configuration of state positions, deltas, etc.')
+    reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='omitted',
+                    doc='Command to reset an error.')
+
+    set_metadata(error_id, dict(variety='scalar', display_format='hex'))
+    set_metadata(reset_cmd, dict(variety='command', value=1))
 
 
 class StateStatus(SubscriptionStatus):
