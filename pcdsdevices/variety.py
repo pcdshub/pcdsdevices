@@ -19,6 +19,7 @@ varieties_by_category = {
         'command-setpoint-tracks-readback',
     },
     'array': {
+        'array-tabular',
         'array-timeseries',
         'array-histogram',
         'array-image',
