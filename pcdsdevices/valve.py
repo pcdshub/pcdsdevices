@@ -225,6 +225,14 @@ class VGC(VRC):
                 doc='Error Present')
     mps_state = Cpt(EpicsSignalRO, ':MPS_FAULT_OK_RBV', kind='omitted',
                     doc=('individual valve MPS state for debugging'))
+    interlock_device_upstream = Cpt(EpicsSignalRO, ':ILK_DEVICE_US_RBV',
+                                    kind='config',
+                                    doc='Upstream vacuum device used for'
+                                    'interlocking this valve')
+    interlock_device_downstream = Cpt(EpicsSignalRO, ':ILK_DEVICE_DS_RBV',
+                                      kind='config',
+                                      doc='Downstream vacuum device used for'
+                                      'interlocking this valve')
 
 
 class VFS(Device):
