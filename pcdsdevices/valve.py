@@ -235,7 +235,6 @@ class VGC(VRC):
                                       'interlocking this valve')
 
 
-
 class VFS(Device):
     """Class for Fast Shutter Valve."""
     request_close = Cpt(EpicsSignalWithRBV, ':CLS_SW', kind='normal',
