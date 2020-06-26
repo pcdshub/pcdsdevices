@@ -76,6 +76,9 @@ common_schema = {
 }
 
 
+_default_bitmask_style = dict(shape='rectangle', on_color='green',
+                              off_color='gray')
+
 schema_by_category = {
     'command': schema.Schema({
         'variety': schema.Or(*varieties_by_category['command']),
@@ -103,12 +106,13 @@ schema_by_category = {
         Optional('first_bit', default='most-significant'): schema.Or(
             'most-significant', 'least-significant'),
 
-        # Style:
-        Optional('shape', default='rectangle'): schema.Or(
-            'circle', 'rectangle'),
+        Optional('style', default=_default_bitmask_style): schema.Schema({
+            Optional('shape', default='rectangle'): schema.Or(
+                'circle', 'rectangle'),
 
-        Optional('on_color', default='green'): str,
-        Optional('off_color', default='gray'): str,
+            Optional('on_color', default='green'): str,
+            Optional('off_color', default='gray'): str,
+        }),
         **common_schema
     }),
 
