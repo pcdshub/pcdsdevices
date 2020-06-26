@@ -84,7 +84,7 @@ schema_by_category = {
         'variety': schema.Or(*varieties_by_category['command']),
         Optional('value', default=1): schema.Or(float, int, str),
         Optional('enum_strings'): [str],
-        # Optional('enum_dict'): dict,
+        Optional('enum_dict'): dict,
         **common_schema
     }),
 
@@ -105,6 +105,7 @@ schema_by_category = {
         Optional('bits', default=8): int,
         Optional('first_bit', default='most-significant'): schema.Or(
             'most-significant', 'least-significant'),
+        Optional('meaning', default=None): [str],
 
         Optional('style', default=_default_bitmask_style): schema.Schema({
             Optional('shape', default='rectangle'): schema.Or(
