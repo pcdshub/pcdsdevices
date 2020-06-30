@@ -471,6 +471,8 @@ class BeckhoffAxis(EpicsMotorInterface):
 
     plc = Cpt(BeckhoffAxisPLC, ':PLC:', kind='normal',
               doc='PLC error handling.')
+    motor_spmg = Cpt(EpicsSignal, '.SPMG', kind='config',
+                     doc='Stop, Pause, Move, Go')
 
     def clear_error(self):
         """Clear any active motion errors on this axis."""
