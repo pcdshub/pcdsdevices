@@ -258,7 +258,7 @@ class VFS(Device):
                               kind='normal',
                               doc=('Epics Command to force open'
                                    'the valve in override mode'))
-    gfs_name = Cpt(EpicsSignalRO, ':GFS_RBV', kind='normal',
+    gfs_name = Cpt(EpicsSignalRO, ':GFS_RBV', kind='normal', string=True,
                    doc='Gauge Fast Sensor Name')
     gfs_trigger = Cpt(EpicsSignalRO, ':TRIG_RBV', kind='normal',
                       doc='Gauge Fast Sensor Input Trigger')
