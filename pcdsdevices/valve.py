@@ -237,6 +237,8 @@ class VGC(VRC):
 
 class VFS(Device):
     """Class for Fast Shutter Valve."""
+    valve_position = Cpt(EpicsSignalRO, ':POS_STATE', kind='normal',
+                         doc='Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F')
     vfs_state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal',
                     doc='Fast Shutter Current State')
     request_close = Cpt(EpicsSignalWithRBV, ':CLS_SW', kind='normal',
