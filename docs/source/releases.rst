@@ -32,7 +32,7 @@ New Devices
 
 Maintenance
 -----------
-- Remove monkeypath of ``EventSequence`` in tests, as it was no longer needed.
+- Remove monkeypatch of ``EventSequence`` in tests, as it was no longer needed.
 - Update dependency from ``cf_units`` to its renamed ``cf-units``.
 - xfail test that fails with ``bluesky=1.6.2``
 
