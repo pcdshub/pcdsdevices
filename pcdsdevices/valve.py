@@ -225,6 +225,51 @@ class VGC(VRC):
                 doc='Error Present')
     mps_state = Cpt(EpicsSignalRO, ':MPS_FAULT_OK_RBV', kind='omitted',
                     doc=('individual valve MPS state for debugging'))
+    interlock_device_upstream = Cpt(EpicsSignalRO, ':ILK_DEVICE_US_RBV',
+                                    kind='config',
+                                    doc='Upstream vacuum device used for'
+                                    'interlocking this valve')
+    interlock_device_downstream = Cpt(EpicsSignalRO, ':ILK_DEVICE_DS_RBV',
+                                      kind='config',
+                                      doc='Downstream vacuum device used for'
+                                      'interlocking this valve')
+
+
+class VFS(Device):
+    """Class for Fast Shutter Valve."""
+    valve_position = Cpt(EpicsSignalRO, ':POS_STATE_RBV', kind='normal',
+                         doc='Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F')
+    vfs_state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal',
+                    doc='Fast Shutter Current State')
+    request_close = Cpt(EpicsSignalWithRBV, ':CLS_SW', kind='normal',
+                        doc=('Request Fast Shutter to Close. When both close'
+                             'and open are requested, VFS will close.'))
+    request_open = Cpt(EpicsSignalWithRBV, ':OPN_SW', kind='normal',
+                       doc=('Request Fast Shutter to Open. When both close and'
+                            'open are requested, VFS will close.'))
+    reset_vacuum_fault = Cpt(EpicsSignalWithRBV, ':ALM_RST', kind='normal',
+                             doc=('Reset Fast Shutter Vacuum Faults: fast'
+                                  'sensor triggered, fast sensor turned off.'
+                                  'To open VFS, this needs to be reset to TRUE'
+                                  'after a vacuum event.'))
+    override_mode = Cpt(EpicsSignalWithRBV, ':OVRD_ON', kind='normal',
+                        doc='Epics Command to set Override mode')
+    override_force_open = Cpt(EpicsSignalWithRBV, ':FORCE_OPN',
+                              kind='normal',
+                              doc=('Epics Command to force open'
+                                   'the valve in override mode'))
+    gfs_name = Cpt(EpicsSignalRO, ':GFS_RBV', kind='normal', string=True,
+                   doc='Gauge Fast Sensor Name')
+    gfs_trigger = Cpt(EpicsSignalRO, ':TRIG_RBV', kind='normal',
+                      doc='Gauge Fast Sensor Input Trigger')
+    position_close = Cpt(EpicsSignalRO, ':CLS_DI_RBV', kind='normal',
+                         doc='Fast Shutter Closed Valve Position')
+    position_open = Cpt(EpicsSignalRO, ':OPN_DI_RBV', kind='normal',
+                        doc='Fast Shutter Open Valve Position')
+    vac_fault_ok = Cpt(EpicsSignalRO, ':VAC_FAULT_OK_RBV', kind='normal',
+                       doc=('Fast Shutter Vacuum Fault OK Readback'))
+    mps_ok = Cpt(EpicsSignalRO, ':MPS_FAULT_OK_RBV', kind='normal',
+                 doc='Fast Shutter Fast Fault Output OK')
 
 
 class VVCNO(Device):
