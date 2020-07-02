@@ -152,4 +152,7 @@ def get_component(obj):
     component : ophyd.Component
         The component, if available.
     """
-    return getattr(type(obj.parent), obj.attr_name)
+    if obj.parent is None:
+        return None
+
+    return getattr(type(obj.parent), obj.attr_name, None)
