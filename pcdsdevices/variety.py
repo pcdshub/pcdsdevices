@@ -7,9 +7,6 @@ import ophyd
 
 from . import tags, utils
 
-# Ideas: tabular-string? csv format table?
-# Ideas: array-tabular?  reshaped array put in a table?
-
 _schema_registry = {}
 varieties_by_category = {
     'command': {
