@@ -105,6 +105,12 @@ text_defaults = dict(delimiter='\n', encoding='utf-8', format='plain')
 
         # ** arrays / waveforms **
         pytest.param(
+            dict(variety='array-tabular'),
+            SAME,
+            id='array-tabular'
+        ),
+
+        pytest.param(
             dict(variety='array-timeseries'),
             SAME,
             id='array-timeseries'
