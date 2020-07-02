@@ -352,7 +352,10 @@ class PPM(LCLS2ImagerBase):
 
     led = Cpt(PytmcSignal, ':CAM:CIL:PCT', io='io', kind='config',
               doc='Percent of light from the dimmable illuminatior.')
-    set_metadata(led, dict(variety='scalar-range', range=(0, 100)))
+    set_metadata(led, dict(variety='scalar-range',
+                           range={'value': (0, 100),
+                                  'source': 'value'}
+                           ))
 
 
 class XPIMFilterWheel(StatePositioner):
