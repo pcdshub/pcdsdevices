@@ -22,6 +22,9 @@ def test_no_variety():
         validate_metadata({'test': 'a'})
 
 
+text_defaults = dict(delimiter='\n', encoding='utf-8', format='plain')
+
+
 @pytest.mark.parametrize(
     'md, expected',
     [
@@ -64,31 +67,38 @@ def test_no_variety():
 
         # ** tweakable **
         pytest.param(
-            dict(variety='tweakable'),
-            schema.SchemaMissingKeyError,
-            id='tweakable-no-delta',
-        ),
-
-        pytest.param(
-            dict(variety='tweakable', delta=3),
+            {'variety': 'scalar-tweakable',
+             'display_format': 'default',
+             'delta': {'value': 3,
+                       'adds_to': 'setpoint',
+                       'source': 'value',
+                       }},
             SAME,
             id='tweakable-delta',
         ),
 
         pytest.param(
-            dict(variety='tweakable', delta=3, delta_range=[-1, 10]),
+            {'variety': 'scalar-tweakable',
+             'display_format': 'default',
+             'delta': {'value': 3,
+                       'adds_to': 'setpoint',
+                       'source': 'value',
+                       'range': [-1, 10]}},
             SAME,
             id='tweakable-good-range',
         ),
 
         pytest.param(
-            dict(variety='tweakable', delta=3, delta_range=-1),
+            {'variety': 'scalar-tweakable',
+             'delta': {'value': 3,
+                       'range': -1}},
             schema.SchemaError,
             id='tweakable-bad-range',
         ),
 
         pytest.param(
-            dict(variety='tweakable', delta=3, delta_range=[-1, 'q']),
+            dict(variety='scalar-tweakable', delta={'value': 3,
+                                                    'range': [-1, 'q']}),
             schema.SchemaError,
             id='tweakable-bad-range-type',
         ),
@@ -150,48 +160,59 @@ def test_no_variety():
         ),
 
         pytest.param(
-            dict(variety='scalar-range', range_source='use_limits',
-                 display_format='exponential'),
+            {'variety': 'scalar-range',
+             'display_format': 'exponential',
+             'range': {'source': 'use_limits'},
+             },
             SAME,
             id='scalar-use_limits'
         ),
 
         pytest.param(
-            dict(variety='scalar-range', range_source='custom',
-                 display_format='default'),
+            {'variety': 'scalar-range',
+             'range': dict(source='value'),
+             'display_format': 'default'
+             },
             SAME,
             id='scalar-custom'
         ),
 
         pytest.param(
-            dict(variety='scalar-range', range_source='custom', range=[0, 5],
-                 display_format='default',
-                 ),
+            {'variety': 'scalar-range',
+             'range': dict(source='value',
+                           value=[0, 5]),
+             'display_format': 'default',
+             },
             SAME,
             id='scalar-custom-range'
         ),
 
         pytest.param(
-            dict(variety='scalar-range', range_source='custom', range=[0]),
+            {'variety': 'scalar-range',
+             'range': dict(source='value', value=[0]),
+             },
             schema.SchemaError,
             id='scalar-bad-range'
         ),
 
         # ** text **
         pytest.param(
-            dict(variety='text', enum_strings=['a', 'b', 'c']),
+            dict(variety='text', enum_strings=['a', 'b', 'c'],
+                 **text_defaults),
             SAME,
             id='text-enum_strings'
         ),
 
         pytest.param(
-            dict(variety='text-enum', enum_strings=['a', 'b', 'c']),
+            dict(variety='text-enum', enum_strings=['a', 'b', 'c'],
+                 **text_defaults),
             SAME,
             id='text-enum'
         ),
 
         pytest.param(
-            dict(variety='text-multiline', enum_strings=['a', 'b', 'c']),
+            dict(variety='text-multiline', enum_strings=['a', 'b', 'c'],
+                 **text_defaults),
             SAME,
             id='text-multiline'
         ),
@@ -205,17 +226,23 @@ def test_no_variety():
         # ** bitmask **
         pytest.param(
             dict(variety='bitmask'),
-            dict(variety='bitmask', bits=8, shape='rectangle',
-                 orientation='horizontal', first_bit='most-significant',
-                 on_color='green', off_color='gray'),
+            dict(variety='bitmask', bits=8, orientation='horizontal',
+                 first_bit='most-significant',
+                 meaning=None,
+                 style=dict(on_color='green', off_color='gray',
+                            shape='rectangle')
+                 ),
             id='bitmask-defaults',
         ),
 
         pytest.param(
             dict(variety='bitmask', bits=32, first_bit='least-significant'),
-            dict(variety='bitmask', bits=32, shape='rectangle',
+            dict(variety='bitmask', bits=32,
                  orientation='horizontal', first_bit='least-significant',
-                 on_color='green', off_color='gray'),
+                 meaning=None,
+                 style=dict(shape='rectangle', on_color='green',
+                            off_color='gray'),
+                 ),
             id='bitmask-custom',
         ),
 
