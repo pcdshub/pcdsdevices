@@ -1,5 +1,6 @@
 tag_to_explanation = {
     'protected': 'May require additional privileges to change.',
+    'confirm': 'User should confirm changes.',
 }
 
 
