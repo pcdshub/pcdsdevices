@@ -242,8 +242,13 @@ class PCDSMotorBase(EpicsMotorInterface):
                      value=None, **kwargs):
         # Store the internal travelling direction of the motor to account for
         # the fact that our EPICS motor does not have TDIR field
-        if None not in (value, old_value):
-            self.direction_of_travel.put(int(value > old_value))
+        try:
+            comparison = int(value > old_value)
+            self.direction_of_travel.put(comparison)
+        except TypeError:
+            # We have some sort of null/None/default value
+            logger.debug('Could not compare value=%s > old_value=%s',
+                         value, old_value)
         # Pass information to PositionerBase
         super()._pos_changed(timestamp=timestamp, old_value=old_value,
                              value=value, **kwargs)
