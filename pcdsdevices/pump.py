@@ -184,6 +184,7 @@ class PIPPLC(Device):
     qpc_pumpsize = Cpt(EpicsSignalRO, ':PUMPSIZE', kind='config',
                        doc='Ion Pump Size (L/s)')
     interlock_device = Cpt(EpicsSignalRO, ':ILK_DEVICE_RBV', kind='config',
+                           string=True,
                            doc='Vacuum device used for interlocking this pump')
 
 
