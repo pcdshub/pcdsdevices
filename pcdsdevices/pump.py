@@ -179,6 +179,8 @@ class PIPPLC(Device):
                   doc=('Setting to automatically turn on the ion pump when the'
                        'reference gauge pressure is below protection '
                        'setpoint'))
+    override_status = Cpt(EpicsSignalRO, ':OVRD_ON', kind='omitted',
+                          doc='Regional Override Status')
     override_force_on = Cpt(EpicsSignalWithRBV, ':FORCE_START', kind='omitted',
                             doc='Force Ion Pump to turn on')
     qpc_name = Cpt(EpicsSignalRO, ':VPCNAME', kind='config',
