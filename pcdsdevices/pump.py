@@ -180,7 +180,7 @@ class PIPPLC(Device):
                        'reference gauge pressure is below protection '
                        'setpoint'))
     override_force_on = Cpt(EpicsSignalWithRBV, ':FORCE_START', kind='omitted',
-                            doc='force ion pump to turn on')
+                            doc='Force Ion Pump to turn on')
     qpc_name = Cpt(EpicsSignalRO, ':VPCNAME', kind='config',
                    doc='Quad Ion Pump Controller Name')
     qpc_pumpsize = Cpt(EpicsSignalRO, ':PUMPSIZE', kind='config',
