@@ -176,6 +176,8 @@ class ValveBase(Device):
                        doc='Valve is OK to Open interlock ')
     open_do = Cpt(EpicsSignalRO, ':OPN_DO_RBV', kind='normal',
                   doc='PLC Output to Open valve, 1 means 24V on command cable')
+    error_reset = Cpt(EpicsSignalWithRBV, ':ALM_RST', kind='normal',
+                      doc='Reset Error state to valid by toggling this')
 
 
 class VVC(ValveBase):
