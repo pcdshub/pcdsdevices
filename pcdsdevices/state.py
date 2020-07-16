@@ -609,10 +609,11 @@ class TwinCATStatePositioner(StatePositioner):
     done = Cpt(PytmcSignal, ':DONE', io='i', kind='normal',
                doc='True if we completed the last move.')
 
+    reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='config',
+                    doc='Command to reset an error.')
+
     config = Cpt(TwinCATStateConfigAll, '', kind='omitted',
                  doc='Configuration of state positions, deltas, etc.')
-    reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='omitted',
-                    doc='Command to reset an error.')
 
     set_metadata(error_id, dict(variety='scalar', display_format='hex'))
     set_metadata(reset_cmd, dict(variety='command', value=1))
