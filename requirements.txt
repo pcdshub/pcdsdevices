@@ -5,6 +5,6 @@ periodictable
 pyepics
 pytmc
 pyyaml
-cf-units
+pint
 scipy
 schema

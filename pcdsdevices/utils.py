@@ -4,7 +4,7 @@ import shutil
 import sys
 import time
 
-from cf_units import Unit
+import pint
 
 try:
     import tty
@@ -105,8 +105,8 @@ def convert_unit(value, unit, new_unit):
         The starting value, but converted to the new unit.
     """
 
-    start_unit = Unit(unit)
-    return start_unit.convert(value, new_unit)
+    ureg = pint.UnitRegistry()
+    return (value * ureg[unit]).to(new_unit).magnitude
 
 
 def ipm_screen(dettype, prefix, prefix_ioc):
