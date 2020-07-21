@@ -260,6 +260,9 @@ class LCLS2ImagerBase(Device, BaseInterface, LightpathInOutMixin):
 
     tab_component_names = True
 
+    lightpath_cpts = ['y_states']
+    _icon = 'fa.video-camera'
+
     y_states = Cpt(TwinCATInOutPositioner, ':MMS:STATE', kind='hinted',
                    doc='Control of the diagnostic stack via saved positions.')
     y_motor = Cpt(BeckhoffAxis, ':MMS', kind='normal',
@@ -269,8 +272,6 @@ class LCLS2ImagerBase(Device, BaseInterface, LightpathInOutMixin):
     cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config',
                     doc='Camera power supply controls.')
     set_metadata(cam_power, dict(variety='command-enum'))
-
-    lightpath_cpts = ['y_states']
 
 
 class PPMPowerMeter(Device, BaseInterface):
