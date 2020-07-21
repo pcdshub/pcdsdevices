@@ -13,6 +13,7 @@ however, if control of the center is desired the ``center`` sub-devices can be
 used.
 """
 import logging
+import time
 from collections import OrderedDict
 
 from ophyd import Component as Cpt
@@ -20,125 +21,50 @@ from ophyd import Device
 from ophyd import DynamicDeviceComponent as DDCpt
 from ophyd import EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
-from ophyd.epics_motor import EpicsMotor
 from ophyd.pv_positioner import PVPositioner
-from ophyd.signal import SignalRO
-from ophyd.status import wait as status_wait
+from ophyd.signal import Signal
+from ophyd.status import wait as status_wait, Status
 
-from .interface import BaseInterface, FltMvInterface, MvInterface
+from .epics_motor import BeckhoffAxis
+from .interface import (BaseInterface, FltMvInterface, MvInterface,
+                        LightpathMixin)
+from .signal import PytmcSignal
 from .sensors import RTD
 
 logger = logging.getLogger(__name__)
 
 
-class SlitPositioner(PVPositioner, FltMvInterface):
+class SlitsBase(Device, MvInterface, LightpathMixin):
     """
-    Abstraction of a Slit axis.
-
-    Each adjustable parameter of the slit (center, width) can be modeled as a
-    motor in itself, even though each controls two different actual motors in
-    reality, this gives a convienent interface for adjusting the aperture size
-    and location with out backwards calculating motor positions.
-
-    Parameters
-    ----------
-    prefix : str
-        The prefix location of the slits, e.g. 'MFX:DG2'.
-
-    name : str
-        Alias for the axis.
-
-    slit_type : {'XWIDTH', 'YWIDTH', 'XCENTER', 'YCENTER'}
-        The aspect of the slit position you would like to control with this
-        specific motor.
-
-    limits : tuple, optional
-        Limits on the motion of the positioner. By default, the limits on the
-        setpoint PV are used if `None` is given.
-
-    See Also
-    --------
-    `ophyd.PVPositioner`
-        SlitPositioner inherits directly from `~ophyd.PVPositioner`.
+    Base class for slit motion interfacing.
     """
-
-    readback = FCpt(EpicsSignalRO, '{self.prefix}:ACTUAL_{self._dirlong}',
-                    auto_monitor=True, kind='hinted')
-    setpoint = FCpt(EpicsSignal, '{self.prefix}:{self._dirshort}_REQ',
-                    auto_monitor=True, kind='normal')
-    done = Cpt(EpicsSignalRO, ':DMOV', auto_monitor=True, kind='omitted')
-
-    def __init__(self, prefix, *, slit_type="", name=None,
-                 limits=None, **kwargs):
-        # Private PV names to deal with complex naming schema
-        self._dirlong = slit_type
-        self._dirshort = slit_type[:4]
-        # Initalize PVPositioner
-        super().__init__(prefix, limits=limits, name=name, **kwargs)
-
-    @property
-    def egu(self):
-        """Engineering Units."""
-        return self._egu or self.readback._read_pv.units
-
-    def _setup_move(self, position):
-        # This is subclassed because we need `wait` to be set to `False` unlike
-        # the default PVPositioner method. `wait` set to `True` will not return
-        # until the move has completed
-        logger.debug('%s.setpoint = %s', self.name, position)
-        self.setpoint.put(position, wait=False)
-
-
-class Slits(Device, MvInterface):
-    """
-    Beam slits with combined motion for center and width.
-
-    Parameters
-    ----------
-    prefix : str
-        The EPICS base PV of the motor.
-
-    name : str, optional
-        The name of the offset mirror.
-
-    nominal_aperture : float, optional
-        Nominal slit size that will encompass the beam without blocking.
-
-    Notes
-    -----
-    The slits represent a unique device when forming the lightpath because
-    whether the beam is being blocked or not depends on the pointing. In order
-    to create an estimate that will warn operators of 'closed' slits, we set a
-    `nominal_aperture` for each unique device along the beamline. This is
-    value is considered the smallest the slit aperture can become without
-    blocking the beamline. Both the `xwidth` and the `ywidth`(height) need to
-    exceed this `nominal_aperture` for the slits to be considered removed.
-    """
-
-    xwidth = Cpt(SlitPositioner, '', slit_type='XWIDTH', kind='hinted')
-    ywidth = Cpt(SlitPositioner, '', slit_type='YWIDTH', kind='hinted')
-    nominal_aperture = Cpt(SignalRO, kind='normal')
-    xcenter = Cpt(SlitPositioner, '', slit_type='XCENTER', kind='normal')
-    ycenter = Cpt(SlitPositioner, '', slit_type='YCENTER', kind='normal')
-    blocked = Cpt(EpicsSignalRO, ':BLOCKED', kind='omitted')
-    open_cmd = Cpt(EpicsSignal, ':OPEN', kind='omitted')
-    close_cmd = Cpt(EpicsSignal, ':CLOSE', kind='omitted')
-    block_cmd = Cpt(EpicsSignal, ':BLOCK', kind='omitted')
     # Subscription information
     SUB_STATE = 'sub_state_changed'
     _default_sub = SUB_STATE
+
     # QIcon for UX
     _icon = 'fa.th-large'
+
+    # Mark as parent class for lightpath interface
+    _lightpath_mixin = True
+    lightpath_cpts = ['xwidth', 'ywidth']
+
+    # Tab settings
     tab_whitelist = ['open', 'close', 'block']
 
+    # Just to hold a value
+    nominal_aperture = Cpt(Signal, kind='normal')
+
+    # Placeholders for each component to override
+    # These are expected to be positioners
+    xwidth = None
+    ywidth = None
+    xcenter = None
+    ycenter = None
+
     def __init__(self, *args, nominal_aperture=5.0, **kwargs):
-        self._has_subscribed = False
         super().__init__(*args, **kwargs)
-        # Initialize nominal_aperture behind the scenes
-        self.nominal_aperture._readback = nominal_aperture
-        # Modify Kind of center readbacks
-        self.xcenter.readback.kind = 'normal'
-        self.ycenter.readback.kind = 'normal'
+        self.nominal_aperture.put(nominal_aperture)
 
     def move(self, size, wait=False, moved_cb=None, timeout=None):
         """
@@ -192,16 +118,6 @@ class Slits(Device, MvInterface):
         return status
 
     @property
-    def inserted(self):
-        """Whether the slits are inserted into the beampath."""
-        return min(self.current_aperture) < self.nominal_aperture.get()
-
-    @property
-    def removed(self):
-        """Whether the slits are entirely removed from the beampath."""
-        return not self.inserted
-
-    @property
     def current_aperture(self):
         """
         Current size of the aperture. Returns a tuple in the form
@@ -231,7 +147,7 @@ class Slits(Device, MvInterface):
 
         Returns
         -------
-        MoveStatus
+        Status
             `~ophyd.Status` object based on move completion.
 
         See Also
@@ -241,11 +157,135 @@ class Slits(Device, MvInterface):
 
         # Use nominal_aperture by default
         size = size or self.nominal_aperture
-        return self.move(size, wait=wait, timeout=timeout, **kwargs)
+        if size > min(self.current_aperture):
+            return self.move(size, wait=wait, timeout=timeout, **kwargs)
+        else:
+            status = Status()
+            status.set_finished()
+            return status
 
     def set(self, size):
         """Alias for the move method, here for ``bluesky`` compatibilty."""
         return self.move(size, wait=False)
+
+    def stage(self):
+        """
+        Store the initial values of the aperture position before scanning.
+        """
+        self._original_vals[self.xwidth.setpoint] = self.xwidth.readback.get()
+        self._original_vals[self.ywidth.setpoint] = self.ywidth.readback.get()
+        return super().stage()
+
+    def _set_lightpath_states(self, *args, **kwargs):
+        self._inserted = (min(self.current_aperture)
+                          < self.nominal_aperture.get())
+        self._removed = not self._inserted
+
+
+class BadSlitPositionerBase(PVPositioner, FltMvInterface):
+    """Base class for slit positioner with awful PV names."""
+
+    readback = FCpt(EpicsSignalRO, '{self.prefix}:ACTUAL_{self._dirlong}',
+                    auto_monitor=True, kind='normal')
+    setpoint = FCpt(EpicsSignal, '{self.prefix}:{self._dirshort}_REQ',
+                    auto_monitor=True, kind='normal')
+
+    def __init__(self, prefix, *, slit_type="", limits=None, **kwargs):
+        # Private PV names to deal with complex naming schema
+        self._dirlong = slit_type
+        self._dirshort = slit_type[:4]
+        # Initalize PVPositioner
+        super().__init__(prefix, limits=limits, **kwargs)
+
+
+class LusiSlitPositioner(BadSlitPositionerBase):
+    """
+    Abstraction of a Slit axis from LCLS-I
+
+    Each adjustable parameter of the slit (center, width) can be modeled as a
+    motor in itself, even though each controls two different actual motors in
+    reality, this gives a convienent interface for adjusting the aperture size
+    and location with out backwards calculating motor positions.
+
+    Parameters
+    ----------
+    prefix : str
+        The prefix location of the slits, e.g. 'MFX:DG2'.
+
+    name : str
+        Alias for the axis.
+
+    slit_type : {'XWIDTH', 'YWIDTH', 'XCENTER', 'YCENTER'}
+        The aspect of the slit position you would like to control with this
+        specific motor.
+
+    limits : tuple, optional
+        Limits on the motion of the positioner. By default, the limits on the
+        setpoint PV are used if `None` is given.
+
+    See Also
+    --------
+    `ophyd.PVPositioner`
+        SlitPositioner inherits directly from `~ophyd.PVPositioner`.
+    """
+
+    done = Cpt(EpicsSignalRO, ':DMOV', auto_monitor=True, kind='omitted')
+
+    @property
+    def egu(self):
+        """Engineering Units."""
+        return self._egu or self.readback._read_pv.units
+
+    def _setup_move(self, position):
+        # This is subclassed because we need `wait` to be set to `False` unlike
+        # the default PVPositioner method. `wait` set to `True` will not return
+        # until the move has completed
+        logger.debug('%s.setpoint = %s', self.name, position)
+        self.setpoint.put(position, wait=False)
+
+
+class SlitPositioner(LusiSlitPositioner):
+    # Should probably deprecate this name
+    pass
+
+
+class LusiSlits(SlitsBase):
+    """
+    Beam slits with combined motion for center and width.
+
+    Parameters
+    ----------
+    prefix : str
+        The EPICS base PV of the motor.
+
+    name : str, optional
+        The name of the offset mirror.
+
+    nominal_aperture : float, optional
+        Nominal slit size that will encompass the beam without blocking.
+
+    Notes
+    -----
+    The slits represent a unique device when forming the lightpath because
+    whether the beam is being blocked or not depends on the pointing. In order
+    to create an estimate that will warn operators of 'closed' slits, we set a
+    `nominal_aperture` for each unique device along the beamline. This is
+    value is considered the smallest the slit aperture can become without
+    blocking the beamline. Both the `xwidth` and the `ywidth`(height) need to
+    exceed this `nominal_aperture` for the slits to be considered removed.
+    """
+
+    # Base class overrides
+    xwidth = Cpt(LusiSlitPositioner, '', slit_type='XWIDTH', kind='hinted')
+    ywidth = Cpt(LusiSlitPositioner, '', slit_type='YWIDTH', kind='hinted')
+    xcenter = Cpt(LusiSlitPositioner, '', slit_type='XCENTER', kind='normal')
+    ycenter = Cpt(LusiSlitPositioner, '', slit_type='YCENTER', kind='normal')
+
+    # Local PVs
+    blocked = Cpt(EpicsSignalRO, ':BLOCKED', kind='omitted')
+    open_cmd = Cpt(EpicsSignal, ':OPEN', kind='omitted')
+    close_cmd = Cpt(EpicsSignal, ':CLOSE', kind='omitted')
+    block_cmd = Cpt(EpicsSignal, ':BLOCK', kind='omitted')
 
     def open(self):
         """Uses the built-in 'OPEN' record to move open the aperture."""
@@ -259,47 +299,97 @@ class Slits(Device, MvInterface):
         """Overlap the slits to block the beam."""
         self.block_cmd.put(1)
 
-    def stage(self):
-        """
-        Store the initial values of the aperture position before scanning.
-        """
-        self._original_vals[self.xwidth.setpoint] = self.xwidth.readback.get()
-        self._original_vals[self.ywidth.setpoint] = self.ywidth.readback.get()
-        return super().stage()
 
-    def subscribe(self, cb, event_type=None, run=True):
-        """
-        Subscribe to changes of the slits.
+class Slits(LusiSlits):
+    # Should Probably Deprecate this name
+    pass
 
-        Parameters
-        ----------
-        cb : callable
-            Callback to be run.
 
-        event_type : str, optional
-            Type of event to run callback on.
+class BeckhoffSlitPositioner(BadSlitPositionerBase):
+    """
+    Abstraction of a Slit axis from LCLS-II.
 
-        run : bool, optional
-            Run the callback immediately.
-        """
+    This class needs a BeckhoffSlits parent to function properly.
+    """
 
-        # Avoid making child subscriptions unless a client cares
-        if not self._has_subscribed:
-            # Subscribe to changes in aperture
-            self.xwidth.readback.subscribe(self._aperture_changed,
-                                           run=False)
-            self.ywidth.readback.subscribe(self._aperture_changed,
-                                           run=False)
-            self._has_subscribed = True
-        return super().subscribe(cb, event_type=event_type, run=run)
+    readback = FCpt(PytmcSignal, BadSlitPositionerBase.readback.suffix,
+                    io='i', auto_monitor=True, kind='normal')
+    setpoint = FCpt(PytmcSignal, BadSlitPositionerBase.setpoint.suffix,
+                    io='io', auto_monitor=True, kind='normal')
+    done = Cpt(Signal, kind='omitted')
+    actuate = Cpt(Signal, kind='omitted')
 
-    def _aperture_changed(self, *args, **kwargs):
-        """Callback run when slit size is adjusted."""
-        # Avoid duplicate keywords
-        kwargs.pop('sub_type', None)
-        kwargs.pop('obj',      None)
-        # Run subscriptions
-        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
+    @actuate.sub_value
+    def _execute_move(self, *args, value, **kwargs):
+        if value == 1:
+            self.parent.exec_queue.put(1)
+
+    @done.sub_value
+    def _reset_actuate(self, *args, value, old_value, **kwargs):
+        if value == 1 and old_value == 0:
+            self.actuate.put(0)
+
+
+class BeckhoffSlits(SlitsBase):
+    # Base class overrides
+    xwidth = Cpt(BeckhoffSlitPositioner, '', slit_type='XWIDTH', kind='hinted')
+    ywidth = Cpt(BeckhoffSlitPositioner, '', slit_type='YWIDTH', kind='hinted')
+    xcenter = Cpt(BeckhoffSlitPositioner, '', slit_type= 'XCENTER',
+                  kind='normal')
+    ycenter = Cpt(BeckhoffSlitPositioner, '', slit_type= 'YCENTER',
+                  kind='normal')
+
+    # Slit state commands
+    exec_queue = Cpt(Signal, kind='omitted')
+    exec_move = Cpt(PytmcSignal, ':GO', io='io', kind='omitted')
+
+    # Slit calculated move dmov
+    done_all = Cpt(Signal, kind='omitted')
+    done_top = Cpt(PytmcSignal, ':TOP:DMOV', io='i', kind='omitted')
+    done_bottom = Cpt(PytmcSignal, ':BOTTOM:DMOV', io='i', kind='omitted')
+    done_north = Cpt(PytmcSignal, ':NORTH:DMOV', io='i', kind='omitted')
+    done_south = Cpt(PytmcSignal, ':SOUTH:DMOV', io='i', kind='omitted')
+
+    # Raw motors
+    top = Cpt(BeckhoffAxis, ':MMS:TOP', kind='normal')
+    bottom = Cpt(BeckhoffAxis, ':MMS:BOTTOM', kind='normal')
+    north = Cpt(BeckhoffAxis, ':MMS:NORTH', kind='normal')
+    south = Cpt(BeckhoffAxis, ':MMS:SOUTH', kind='normal')
+
+    @exec_queue.sub_value
+    def _exec_handler(self, *args, value, old_value, **kwargs):
+        """Wait just a moment to queue up move requests."""
+        if value == 1 and old_value == 0:
+            time.sleep(0.2)
+            self.exec_move.put(1)
+
+    @done_all.sub_value
+    def _reset_exec_move(self, *args, value, **kwargs):
+        """When we're done moving, reset the exec_move signal."""
+        if value == 1:
+            self.exec_queue.put(0)
+            self.exec_move.put(0)
+
+    @done_all.sub_value
+    def _dmov_fanout(self, *args, value, **kwargs):
+        """When we're done moving, tell our pv positioners."""
+        self.xwidth.done.put(value)
+        self.ywidth.done.put(value)
+        self.xcenter.done.put(value)
+        self.ycenter.done.put(value)
+
+    @done_top.sub_value
+    @done_bottom.sub_value
+    @done_north.sub_value
+    @done_south.sub_value
+    def _update_dmov(self, *args, **kwargs):
+        """When part of the dmov updates, update the done_all flag."""
+        done = all((self.done_top.get(),
+                    self.done_bottom.get(),
+                    self.done_north.get(),
+                    self.done_south.get()))
+        if done != self.done_all.get():
+            self.done_all.put(done)
 
 
 def _rtd_fields(cls, attr_base, range_, **kwargs):
@@ -312,7 +402,7 @@ def _rtd_fields(cls, attr_base, range_, **kwargs):
     return defn
 
 
-class PowerSlits(Device, BaseInterface):
+class PowerSlits(BeckhoffSlits):
     """
     'SL*:POWER'.
 
@@ -324,9 +414,5 @@ class PowerSlits(Device, BaseInterface):
         The PV base of the device.
     """
 
-    top = FCpt(EpicsMotor, '{self.prefix}:MMS:TOP', kind='normal')
-    bottom = FCpt(EpicsMotor, '{self.prefix}:MMS:BOTTOM')
-    north = FCpt(EpicsMotor, '{self.prefix}:MMS:NORTH')
-    south = FCpt(EpicsMotor, '{self.prefix}:MMS:SOUTH')
     rtds = DDCpt(_rtd_fields(RTD, 'rtd', range(1, 9)))
     fsw = Cpt(EpicsSignalRO, ':FSW', kind='normal')
