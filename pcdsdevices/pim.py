@@ -17,7 +17,7 @@ from ophyd.signal import EpicsSignal
 from .areadetector.detectors import PCDSAreaDetectorEmbedded
 from .epics_motor import IMS, BeckhoffAxis
 from .inout import InOutRecordPositioner, TwinCATInOutPositioner
-from .interface import BaseInterface, LightpathMixin
+from .interface import BaseInterface, LightpathInOutMixin
 from .sensors import TwinCATThermocouple
 from .signal import PytmcSignal
 from .state import StatePositioner
@@ -250,7 +250,7 @@ class PIMWithBoth(PIMWithFocus, PIMWithLED):
     pass
 
 
-class LCLS2ImagerBase(Device, BaseInterface, LightpathMixin):
+class LCLS2ImagerBase(Device, BaseInterface, LightpathInOutMixin):
     """
     Shared PVs and components from the LCLS2 imagers.
 

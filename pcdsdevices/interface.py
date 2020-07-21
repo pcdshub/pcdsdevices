@@ -905,25 +905,30 @@ class LightpathMixin(OphydObject):
     # Component names whose values are relevant for inserted/removed
     lightpath_cpts = []
 
+    # Flag to signify that subclass is another mixin, rather than a device
+    _lightpath_mixin = False
+
     def __init_subclass__(cls, **kwargs):
         # Magic to subscribe to the list of components
         super().__init_subclass__(**kwargs)
-        if not cls.lightpath_cpts:
-            raise NotImplementedError('Did not implement LightpathMixin')
-        for cpt_name in cls.lightpath_cpts:
-            cpt = getattr(cls, cpt_name)
-            cpt.sub_default(cls._update_lightpath)
+        if cls._lightpath_mixin:
+            # Child of cls will inherit this as False
+            cls._lightpath_mixin = False
+        else:
+            if not cls.lightpath_cpts:
+                raise NotImplementedError('Did not implement LightpathMixin')
+            for cpt_name in cls.lightpath_cpts:
+                cpt = getattr(cls, cpt_name)
+                cpt.sub_default(cls._update_lightpath)
+
+    @classmethod
+    def register_child_interface(self, cls):
+        self._child_interfaces.add(cls)
 
     def _set_lightpath_states(self, *args, **kwargs):
-        """Default check: assume the lightpath cpts are state devices."""
-        in_check = []
-        out_check = []
-        for cpt_name in self.lightpath_cpts:
-            device = getattr(self, cpt_name)
-            in_check.append(device.inserted)
-            out_check.append(device.removed)
-        self._inserted = all(in_check)
-        self._removed = all(out_check)
+        # Override based on the use case
+        # update self._inserted and self._removed
+        raise NotImplementedError('Did not implement LightpathMixin')
 
     def _update_lightpath(self, *args, **kwargs):
         self._set_lightpath_states(*args, **kwargs)
@@ -936,3 +941,21 @@ class LightpathMixin(OphydObject):
     @property
     def removed(self):
         return self._removed
+
+
+class LightpathInOutMixin(LightpathMixin):
+    """
+    LightpathMixin for parent device with InOut subdevices
+    """
+    _lightpath_mixin = True
+
+    def _set_lightpath_states(self, *args, **kwargs):
+        in_check = []
+        out_check = []
+        for cpt_name in self.lightpath_cpts:
+            device = getattr(self, cpt_name)
+            in_check.append(device.inserted)
+            out_check.append(device.removed)
+        self._inserted = all(in_check)
+        self._removed = all(out_check)
+
