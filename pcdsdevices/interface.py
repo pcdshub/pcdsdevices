@@ -927,7 +927,8 @@ class LightpathMixin(OphydObject):
 
     def _set_lightpath_states(self, *args, **kwargs):
         # Override based on the use case
-        # update self._inserted and self._removed
+        # update self._inserted, self._removed,
+        # and optionally self._transmission
         raise NotImplementedError('Did not implement LightpathMixin')
 
     def _update_lightpath(self, *args, **kwargs):
@@ -941,6 +942,16 @@ class LightpathMixin(OphydObject):
     @property
     def removed(self):
         return self._removed
+
+    @property
+    def transmission(self):
+        try:
+            return self._transmission
+        except AttributeError:
+            if self.inserted:
+                return 0
+            else:
+                return 1
 
 
 class LightpathInOutMixin(LightpathMixin):
