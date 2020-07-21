@@ -188,6 +188,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
         cid = super().subscribe(cb, event_type=event_type, run=run)
         if event_type is None:
             event_type = self._default_sub
+        self.wait_for_connection()
         if event_type == self.SUB_STATE and not self._has_subscribed_state:
             self.state.subscribe(self._run_sub_state, run=False)
             self._has_subscribed_state = True

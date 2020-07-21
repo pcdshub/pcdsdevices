@@ -890,3 +890,49 @@ class AbsProgressBar(ProgressBar):
                            current=current, **kwargs)
         else:
             super().update(*args, name=name, current=current, **kwargs)
+
+
+class LightpathMixin(OphydObject):
+    """
+    Mix-in class that makes it easier to establish a lightpath interface.
+
+    Use this on classes that are not state positioners but would still like to
+    be used as a top-level device in lightpath.
+    """
+    SUB_STATE = 'state'
+    _default_sub = SUB_STATE
+
+    # Component names whose values are relevant for inserted/removed
+    lightpath_cpts = []
+
+    def __init_subclass__(cls, **kwargs):
+        # Magic to subscribe to the list of components
+        super().__init_subclass__(**kwargs)
+        if not cls.lightpath_cpts:
+            raise NotImplementedError('Did not implement LightpathMixin')
+        for cpt_name in cls.lightpath_cpts:
+            cpt = getattr(cls, cpt_name)
+            cpt.sub_default(cls._update_lightpath)
+
+    def _set_lightpath_states(self, *args, **kwargs):
+        """Default check: assume the lightpath cpts are state devices."""
+        in_check = []
+        out_check = []
+        for cpt_name in self.lightpath_cpts:
+            device = getattr(self, cpt_name)
+            in_check.append(device.inserted)
+            out_check.append(device.removed)
+        self._inserted = all(in_check)
+        self._removed = all(out_check)
+
+    def _update_lightpath(self, *args, **kwargs):
+        self._set_lightpath_states(*args, **kwargs)
+        self._run_subs(sub_type=self.SUB_STATE)
+
+    @property
+    def inserted(self):
+        return self._inserted
+
+    @property
+    def removed(self):
+        return self._removed
