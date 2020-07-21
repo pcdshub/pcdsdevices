@@ -13,7 +13,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
 from .epics_motor import BeckhoffAxis
 from .inout import InOutPositioner
-from .interface import BaseInterface, FltMvInterface
+from .interface import BaseInterface, FltMvInterface, LightpathMixin
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
@@ -352,7 +352,7 @@ def set_combined_attenuation(attenuation, *attenuators):
 '''
 
 
-class FEESolidAttenuator(Device, BaseInterface):
+class FEESolidAttenuator(Device, BaseInterface, LightpathMixin):
     """
     Solid attenuator variant from the LCLS-II XTES project.
 
@@ -369,6 +369,12 @@ class FEESolidAttenuator(Device, BaseInterface):
     name : str
         Alias for the Solid Attenuator.
     """
+
+    # QIcon for UX
+    _icon = 'fa.barcode'
+
+    # Register that all blades are needed for lightpath calc
+    lightpath_cpts = ['blade_{:02}'.format(i+1) for i in range(19)]
 
     blade_01 = Cpt(BeckhoffAxis, ':MMS:01', kind='hinted')
     blade_02 = Cpt(BeckhoffAxis, ':MMS:02', kind='hinted')
@@ -389,6 +395,19 @@ class FEESolidAttenuator(Device, BaseInterface):
     blade_17 = Cpt(BeckhoffAxis, ':MMS:17', kind='hinted')
     blade_18 = Cpt(BeckhoffAxis, ':MMS:18', kind='hinted')
     blade_19 = Cpt(BeckhoffAxis, ':MMS:19', kind='hinted')
+
+    def __init__(self, prefix, *, name, **kwargs):
+        self._blade_positions = {}
+        super().__init__(prefix, name=name, **kwargs)
+
+    def _set_lightpath_states(self, *args, value, obj, **kwargs):
+        self._blade_positions[obj.name] = value
+        # In is at zero
+        self._inserted = any((value < 4 for value in
+                             self._blade_positions.values()))
+        self._removed = not self._inserted
+        # No calc yet
+        self._transmission = 1
 
 
 class GasAttenuator(Device, BaseInterface):
