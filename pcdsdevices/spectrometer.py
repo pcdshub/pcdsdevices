@@ -44,13 +44,12 @@ class Kmono(Device, BaseInterface, LightpathMixin):
     diode_horiz = Cpt(BeckhoffAxis, ':DIODE_HORIZ', kind='normal')
     diode_vert = Cpt(BeckhoffAxis, ':DIODE_VERT', kind='normal')
 
-    xtal_in = Cpt(Signal, kind='omitted')
-    xtal_out = Cpt(Signal, kind='omitted')
-    ret_in = Cpt(Signal, kind='omitted')
-    ret_out = Cpt(Signal, kind='omitted')
-    diode_in = Cpt(Signal, kind='omitted')
-    diode_out = Cpt(Signal, kind='omitted')
-
+    xtal_in = Cpt(Signal, value=None, kind='omitted')
+    xtal_out = Cpt(Signal, value=None, kind='omitted')
+    ret_in = Cpt(Signal, value=None, kind='omitted')
+    ret_out = Cpt(Signal, value=None, kind='omitted')
+    diode_in = Cpt(Signal, value=None, kind='omitted')
+    diode_out = Cpt(Signal, value=None, kind='omitted')
 
     def _update_if_changed(self, value, signal):
         if value != signal.get():

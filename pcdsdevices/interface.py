@@ -911,6 +911,7 @@ class LightpathMixin(OphydObject):
 
     def __init__(self, *args, **kwargs):
         self._lightpath_values = {}
+        self._lightpath_ready = False
         super().__init__(*args, **kwargs)
 
     def __init_subclass__(cls, **kwargs):
@@ -940,6 +941,7 @@ class LightpathMixin(OphydObject):
             if len(self._lightpath_values) >= len(self.lightpath_cpts):
                 # Pass user function the full set of values
                 self._set_lightpath_states(self._lightpath_values)
+                self._lightpath_ready = True
                 # Tell lightpath that we are ready
                 self._run_subs(sub_type=self.SUB_STATE)
         except Exception:
@@ -948,11 +950,17 @@ class LightpathMixin(OphydObject):
 
     @property
     def inserted(self):
-        return self._inserted
+        if self._lightpath_ready:
+            return self._inserted
+        else:
+            return False
 
     @property
     def removed(self):
-        return self._removed
+        if self._lightpath_ready:
+            return self._removed
+        else:
+            return False
 
     @property
     def transmission(self):
