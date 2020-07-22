@@ -921,10 +921,6 @@ class LightpathMixin(OphydObject):
                 cpt = getattr(cls, cpt_name)
                 cpt.sub_default(cls._update_lightpath)
 
-    @classmethod
-    def register_child_interface(self, cls):
-        self._child_interfaces.add(cls)
-
     def _set_lightpath_states(self, *args, **kwargs):
         # Override based on the use case
         # update self._inserted, self._removed,
@@ -932,8 +928,11 @@ class LightpathMixin(OphydObject):
         raise NotImplementedError('Did not implement LightpathMixin')
 
     def _update_lightpath(self, *args, **kwargs):
-        self._set_lightpath_states(*args, **kwargs)
-        self._run_subs(sub_type=self.SUB_STATE)
+        try:
+            self._set_lightpath_states(*args, **kwargs)
+            self._run_subs(sub_type=self.SUB_STATE)
+        except Exception:
+            logger.exception('Error in lightpath update callback.')
 
     @property
     def inserted(self):
