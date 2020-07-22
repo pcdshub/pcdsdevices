@@ -28,7 +28,7 @@ from ophyd.status import wait as status_wait, Status
 from .epics_motor import BeckhoffAxis
 from .interface import (BaseInterface, FltMvInterface, MvInterface,
                         LightpathMixin)
-from .signal import PytmcSignal
+from .signal import PytmcSignal, NotImplementedSignal
 from .sensors import RTD
 
 logger = logging.getLogger(__name__)
@@ -415,4 +415,4 @@ class PowerSlits(BeckhoffSlits):
     """
 
     rtds = DDCpt(_rtd_fields(RTD, 'rtd', range(1, 9)))
-    fsw = Cpt(EpicsSignalRO, ':FSW', kind='normal')
+    fsw = Cpt(NotImplementedSignal, ':FSW', kind='normal')
