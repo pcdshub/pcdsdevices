@@ -24,8 +24,6 @@ class QminiSpectrometer(Device):
 
     """
 
-    trig_modes = ["Free Run Start", "Free Run End", "HW Trigger"]
-
     # General control
     status = Cpt(EpicsSignalRO, ':STATUS', kind='normal')
     temperature = Cpt(EpicsSignalRO, ':TEMP', kind='config')
