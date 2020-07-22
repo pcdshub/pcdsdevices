@@ -8,7 +8,7 @@ import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.pv_positioner import PVPositioner
+from ophyd.pv_positioner import PVPositioner, PVPositionerPC
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
 from .epics_motor import BeckhoffAxis
@@ -252,7 +252,7 @@ class AttBase3rd(AttBase):
     user_energy = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
 
 
-class FeeAtt(AttBase):
+class FeeAtt(AttBase, PVPositionerPC):
     """Old attenuator IOC in the FEE."""
     # Positioner Signals
     setpoint = Cpt(EpicsSignal, ':RDES', kind='normal')
