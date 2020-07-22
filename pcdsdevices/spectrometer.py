@@ -4,12 +4,13 @@ Module for the various spectrometers.
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
+from ophyd.signal import Signal
 
 from .epics_motor import BeckhoffAxis
-from .interface import BaseInterface
+from .interface import BaseInterface, LightpathMixin
 
 
-class Kmono(Device):
+class Kmono(Device, BaseInterface, LightpathMixin):
     """
     K-edge Monochromator: Used for Undulator tuning and other experiments.
 
@@ -31,12 +32,70 @@ class Kmono(Device):
 
     tab_component_names = True
 
+    _icon = 'fa.diamond'
+    lightpath_cpts = ['xtal_in', 'xtal_out',
+                      'ret_in', 'ret_out',
+                      'diode_in', 'diode_out']
+
     xtal_angle = Cpt(BeckhoffAxis, ':XTAL_ANGLE', kind='normal')
     xtal_vert = Cpt(BeckhoffAxis, ':XTAL_VERT', kind='normal')
     ret_horiz = Cpt(BeckhoffAxis, ':RET_HORIZ', kind='normal')
     ret_vert = Cpt(BeckhoffAxis, ':RET_VERT', kind='normal')
     diode_horiz = Cpt(BeckhoffAxis, ':DIODE_HORIZ', kind='normal')
     diode_vert = Cpt(BeckhoffAxis, ':DIODE_VERT', kind='normal')
+
+    xtal_in = Cpt(Signal, kind='omitted')
+    xtal_out = Cpt(Signal, kind='omitted')
+    ret_in = Cpt(Signal, kind='omitted')
+    ret_out = Cpt(Signal, kind='omitted')
+    diode_in = Cpt(Signal, kind='omitted')
+    diode_out = Cpt(Signal, kind='omitted')
+
+
+    def _update_if_changed(self, value, signal):
+        if value != signal.get():
+            signal.put(value)
+
+    def _update_state(self, inserted, removed, state):
+        self._update_if_changed(inserted, getattr(self, state + '_in'))
+        self._update_if_changed(removed, getattr(self, state + '_out'))
+
+    @xtal_vert.sub_default
+    def _xtal_state(self, *args, value, **kwargs):
+        if value is not None:
+            inserted = value > 50
+            removed = value < 2
+            self._update_state(inserted, removed, 'xtal')
+
+    @ret_vert.sub_default
+    def _ret_state(self, *args, value, **kwargs):
+        if value is not None:
+            inserted = value < 0
+            removed = not inserted
+            self._update_state(inserted, removed, 'ret')
+
+    @diode_vert.sub_default
+    def _diode_state(self, *args, value, **kwargs):
+        if value is not None:
+            inserted = value < 2
+            removed = value > 96.5
+            self._update_state(inserted, removed, 'diode')
+
+    def _set_lightpath_states(self, *args, value, obj, **kwargs):
+        xtal_in = self.xtal_in.get()
+        xtal_out = self.xtal_out.get()
+        ret_in = self.ret_in.get()
+        ret_out = self.ret_out.get()
+        diode_in = self.diode_in.get()
+        diode_out = self.diode_out.get()
+
+        self._inserted = any((xtal_in, ret_in, diode_in))
+        self._removed = all((xtal_out, ret_out, diode_out))
+
+        if ret_in:
+            self._transmission = 0
+        else:
+            self._transmission = 1
 
 
 class VonHamosCrystal(Device, BaseInterface):
