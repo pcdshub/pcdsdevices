@@ -124,14 +124,22 @@ class InOutPositioner(StatePositioner):
         This will be a float between 0 and 1, where 0 is no beam and 1 is full
         transmission.
         """
+        return self.check_transmission()
 
-        state_index = self.get_state(self.position).value
+    def check_transmission(self, state=None):
+        """Query the transition at a particular state."""
+        if state is None:
+            state = self.position
+        state_index = self.get_state(state).value
         return self._trans_enum.get(state_index, math.nan)
 
     def _extend_trans_enum(self, state_list, default):
         for state in state_list:
-            index = self.states_list.index(state)
-            self._trans_enum[index] = self._transmission.get(state, default)
+            self._update_trans_enum(state, default)
+
+    def _update_trans_enum(self, state, default):
+        index = self.states_list.index(state)
+        self._trans_enum[index] = self._transmission.get(state, default)
 
     def _pos_in_list(self, state_list, check_state=None):
         if check_state is None:

@@ -1,6 +1,7 @@
 """
 Module for defining bell-and-whistles movement features.
 """
+import functools
 import logging
 import numbers
 import re
@@ -982,9 +983,12 @@ class LightpathInOutMixin(LightpathMixin):
     def _set_lightpath_states(self, lightpath_values):
         in_check = []
         out_check = []
+        trans_check = []
         for obj, kwarg_dct in lightpath_values.items():
             in_check.append(obj.check_inserted(kwarg_dct['value']))
             out_check.append(obj.check_removed(kwarg_dct['value']))
-        self._inserted = all(in_check)
+            trans_check.append(obj.check_transmission(kwarg_dct['value']))
+        self._inserted = any(in_check)
         self._removed = all(out_check)
+        self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
 
