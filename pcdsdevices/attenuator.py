@@ -400,11 +400,10 @@ class FEESolidAttenuator(Device, BaseInterface, LightpathMixin):
         self._blade_positions = {}
         super().__init__(prefix, name=name, **kwargs)
 
-    def _set_lightpath_states(self, *args, value, obj, **kwargs):
-        self._blade_positions[obj.name] = value
+    def _set_lightpath_states(self, lightpath_values):
+        values = [kw['value'] for kw in lightpath_values.values()]
         # In is at zero
-        self._inserted = any((value < 4 for value in
-                             self._blade_positions.values()))
+        self._inserted = any((value < 4 for value in values))
         self._removed = not self._inserted
         # No calc yet
         self._transmission = 1

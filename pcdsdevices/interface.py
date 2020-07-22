@@ -908,6 +908,11 @@ class LightpathMixin(OphydObject):
     # Flag to signify that subclass is another mixin, rather than a device
     _lightpath_mixin = False
 
+
+    def __init__(self, *args, **kwargs):
+        self._lightpath_values = {}
+        super().__init__(*args, **kwargs)
+
     def __init_subclass__(cls, **kwargs):
         # Magic to subscribe to the list of components
         super().__init_subclass__(**kwargs)
@@ -921,17 +926,24 @@ class LightpathMixin(OphydObject):
                 cpt = getattr(cls, cpt_name)
                 cpt.sub_default(cls._update_lightpath)
 
-    def _set_lightpath_states(self, *args, **kwargs):
+    def _set_lightpath_states(self, lightpath_values):
         # Override based on the use case
         # update self._inserted, self._removed,
         # and optionally self._transmission
         raise NotImplementedError('Did not implement LightpathMixin')
 
-    def _update_lightpath(self, *args, **kwargs):
+    def _update_lightpath(self, *args, obj, **kwargs):
         try:
-            self._set_lightpath_states(*args, **kwargs)
-            self._run_subs(sub_type=self.SUB_STATE)
+            # Universally cache values
+            self._lightpath_values[obj] = kwargs
+            # Only do the first lightpath state once all cpts have chimed in
+            if len(self._lightpath_values) >= len(self.lightpath_cpts):
+                # Pass user function the full set of values
+                self._set_lightpath_states(self._lightpath_values)
+                # Tell lightpath that we are ready
+                self._run_subs(sub_type=self.SUB_STATE)
         except Exception:
+            # Without this, callbacks fail silently
             logger.exception('Error in lightpath update callback.')
 
     @property
@@ -959,13 +971,12 @@ class LightpathInOutMixin(LightpathMixin):
     """
     _lightpath_mixin = True
 
-    def _set_lightpath_states(self, *args, **kwargs):
+    def _set_lightpath_states(self, lightpath_values):
         in_check = []
         out_check = []
-        for cpt_name in self.lightpath_cpts:
-            device = getattr(self, cpt_name)
-            in_check.append(device.inserted)
-            out_check.append(device.removed)
+        for obj, kwarg_dct in lightpath_values.items():
+            in_check.append(obj.check_inserted(kwarg_dct['value']))
+            out_check.append(obj.check_removed(kwarg_dct['value']))
         self._inserted = all(in_check)
         self._removed = all(out_check)
 

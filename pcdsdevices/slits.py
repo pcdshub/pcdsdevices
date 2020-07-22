@@ -176,9 +176,9 @@ class SlitsBase(Device, MvInterface, LightpathMixin):
         self._original_vals[self.ywidth.setpoint] = self.ywidth.readback.get()
         return super().stage()
 
-    def _set_lightpath_states(self, *args, **kwargs):
-        self._inserted = (min(self.current_aperture)
-                          < self.nominal_aperture.get())
+    def _set_lightpath_states(self, lightpath_values):
+        widths = [kw['value'] for kw in lightpath_values.values()]
+        self._inserted = (min(widths) < self.nominal_aperture.get())
         self._removed = not self._inserted
 
 

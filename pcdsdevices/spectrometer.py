@@ -81,13 +81,13 @@ class Kmono(Device, BaseInterface, LightpathMixin):
             removed = value > 96.5
             self._update_state(inserted, removed, 'diode')
 
-    def _set_lightpath_states(self, *args, value, obj, **kwargs):
-        xtal_in = self.xtal_in.get()
-        xtal_out = self.xtal_out.get()
-        ret_in = self.ret_in.get()
-        ret_out = self.ret_out.get()
-        diode_in = self.diode_in.get()
-        diode_out = self.diode_out.get()
+    def _set_lightpath_states(self, lightpath_values):
+        xtal_in = lightpath_values[self.xtal_in]['value']
+        xtal_out = lightpath_values[self.xtal_out]['value']
+        ret_in = lightpath_values[self.ret_in]['value']
+        ret_out = lightpath_values[self.ret_out]['value']
+        diode_in = lightpath_values[self.diode_in]['value']
+        diode_out = lightpath_values[self.diode_out]['value']
 
         self._inserted = any((xtal_in, ret_in, diode_in))
         self._removed = all((xtal_out, ret_out, diode_out))

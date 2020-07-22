@@ -78,12 +78,20 @@ class InOutPositioner(StatePositioner):
     @property
     def inserted(self):
         """`True` if the device is inserted."""
-        return self._pos_in_list(self.in_states)
+        return self.check_inserted()
+
+    def check_inserted(self, state=None):
+        """Query if a particular state counts as inserted."""
+        return self._pos_in_list(self.in_states, check_state=state)
 
     @property
     def removed(self):
         """`True` if the device is removed."""
-        return self._pos_in_list(self.out_states)
+        return self.check_removed()
+
+    def check_removed(self, state=None):
+        """Query if a particular state counts as removed."""
+        return self._pos_in_list(self.out_states, check_state=state)
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
         """
@@ -125,8 +133,11 @@ class InOutPositioner(StatePositioner):
             index = self.states_list.index(state)
             self._trans_enum[index] = self._transmission.get(state, default)
 
-    def _pos_in_list(self, state_list):
-        current_state = self.get_state(self.position)
+    def _pos_in_list(self, state_list, check_state=None):
+        if check_state is None:
+            current_state = self.get_state(self.position)
+        else:
+            current_state = self.get_state(check_state)
         for state in state_list:
             if current_state == self.get_state(state):
                 return True
