@@ -222,7 +222,11 @@ class AttBase(FltMvInterface, PVPositioner):
         if event_type is None:
             event_type = self._default_sub
         if event_type == self.SUB_STATE and not self._has_subscribed_state:
-            self.done.subscribe(self._run_filt_state, run=False)
+            if self.done is not None:
+                obj = self.done
+            else:
+                obj = self.readback
+            obj.subscribe(self._run_filt_state, run=False)
             self._has_subscribed_state = True
         return cid
 
