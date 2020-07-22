@@ -275,3 +275,21 @@ class NotImplementedSignal(SignalRO):
     def __init__(self, *args, **kwargs):
         kwargs.pop('value', None)
         super().__init__(value='Not implemented', **kwargs)
+
+
+class InternalSignal(SignalRO):
+    """
+    Class Signal that stores info but should only be updated by the class.
+
+    SignalRO can be updated with _readback, but this does not process
+    callbacks. For the signal to behave normally, we need to bypass the put
+    override.
+
+    To put to one of these signals, simply call put with force=True
+    """
+
+    def put(self, value, *, timestamp=None, force=False):
+        return Signal.put(self, value, timestamp=timestamp, force=force)
+
+    def set(self, value, *, timestamp=None, force=False):
+        return Signal.set(self, value, timestamp=timestamp, force=force)

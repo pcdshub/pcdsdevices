@@ -4,10 +4,10 @@ Module for the various spectrometers.
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.signal import Signal
 
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface, LightpathMixin
+from .signal import InternalSignal
 
 
 class Kmono(Device, BaseInterface, LightpathMixin):
@@ -44,16 +44,16 @@ class Kmono(Device, BaseInterface, LightpathMixin):
     diode_horiz = Cpt(BeckhoffAxis, ':DIODE_HORIZ', kind='normal')
     diode_vert = Cpt(BeckhoffAxis, ':DIODE_VERT', kind='normal')
 
-    xtal_in = Cpt(Signal, value=None, kind='omitted')
-    xtal_out = Cpt(Signal, value=None, kind='omitted')
-    ret_in = Cpt(Signal, value=None, kind='omitted')
-    ret_out = Cpt(Signal, value=None, kind='omitted')
-    diode_in = Cpt(Signal, value=None, kind='omitted')
-    diode_out = Cpt(Signal, value=None, kind='omitted')
+    xtal_in = Cpt(InternalSignal, value=None, kind='omitted')
+    xtal_out = Cpt(InternalSignal, value=None, kind='omitted')
+    ret_in = Cpt(InternalSignal, value=None, kind='omitted')
+    ret_out = Cpt(InternalSignal, value=None, kind='omitted')
+    diode_in = Cpt(InternalSignal, value=None, kind='omitted')
+    diode_out = Cpt(InternalSignal, value=None, kind='omitted')
 
     def _update_if_changed(self, value, signal):
         if value != signal.get():
-            signal.put(value)
+            signal.put(value, force=True)
 
     def _update_state(self, inserted, removed, state):
         self._update_if_changed(inserted, getattr(self, state + '_in'))

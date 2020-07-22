@@ -14,6 +14,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 from .epics_motor import BeckhoffAxis
 from .inout import InOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathMixin
+from .signal import InternalSignal
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
@@ -376,6 +377,10 @@ class FEESolidAttenuator(Device, BaseInterface, LightpathMixin):
     # Register that all blades are needed for lightpath calc
     lightpath_cpts = ['blade_{:02}'.format(i+1) for i in range(19)]
 
+    # Summary for lightpath view
+    num_in = Cpt(InternalSignal, kind='hinted')
+    num_out = Cpt(InternalSignal, kind='hinted')
+
     blade_01 = Cpt(BeckhoffAxis, ':MMS:01', kind='hinted')
     blade_02 = Cpt(BeckhoffAxis, ':MMS:02', kind='hinted')
     blade_03 = Cpt(BeckhoffAxis, ':MMS:03', kind='hinted')
@@ -403,8 +408,11 @@ class FEESolidAttenuator(Device, BaseInterface, LightpathMixin):
     def _set_lightpath_states(self, lightpath_values):
         values = [kw['value'] for kw in lightpath_values.values()]
         # In is at zero
-        self._inserted = any((value < 4 for value in values))
+        inserted_list = [value < 4 for value in values]
+        self._inserted = any(inserted_list)
         self._removed = not self._inserted
+        self.num_in.put(inserted_list.count(True), force=True)
+        self.num_out.put(inserted_list.count(False), force=True)
         # No calc yet
         self._transmission = 1
 
