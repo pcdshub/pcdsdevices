@@ -37,10 +37,6 @@ class SlitsBase(Device, MvInterface, LightpathMixin):
     """
     Base class for slit motion interfacing.
     """
-    # Subscription information
-    SUB_STATE = 'sub_state_changed'
-    _default_sub = SUB_STATE
-
     # QIcon for UX
     _icon = 'fa.th-large'
 
