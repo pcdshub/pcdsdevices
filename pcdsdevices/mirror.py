@@ -289,12 +289,12 @@ class XOffsetMirror(Device, BaseInterface):
     _icon = 'fa.minus-square'
 
     # Motor components: can read/write positions
-    y_up = Cpt(BeckhoffAxis, ':MMS:YUP', kind='normal')
-    y_dwn = Cpt(BeckhoffAxis, ':MMS:YDWN', kind='config')
-    x_up = Cpt(BeckhoffAxis, ':MMS:XUP', kind='normal')
-    x_dwn = Cpt(BeckhoffAxis, ':MMS:XDWN', kind='config')
-    pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='normal')
+    y_up = Cpt(BeckhoffAxis, ':MMS:YUP', kind='hinted')
+    x_up = Cpt(BeckhoffAxis, ':MMS:XUP', kind='hinted')
+    pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='hinted')
     bender = Cpt(BeckhoffAxis, ':MMS:BENDER', kind='normal')
+    y_dwn = Cpt(BeckhoffAxis, ':MMS:YDWN', kind='config')
+    x_dwn = Cpt(BeckhoffAxis, ':MMS:XDWN', kind='config')
 
     # Gantry components
     gantry_x = Cpt(PytmcSignal, ':GANTRY_X', io='i', kind='normal')
