@@ -1,8 +1,9 @@
-from ophyd import Device, Signal, EpicsSignal, Component as Cpt
+from ophyd import Device, Signal, Component as Cpt
 
 from .inout import InOutPositioner
 from .interface import BaseInterface, LightpathInOutMixin
 from .signal import PytmcSignal
+
 
 class PneumaticActuator(InOutPositioner):
     states_list = ['RETRACTED', 'INSERTED', 'MOVING', 'INVALID']
@@ -22,7 +23,6 @@ class PneumaticActuator(InOutPositioner):
     filter_type = Cpt(Signal, value='Unknown filter', kind='config')
 
     done = Cpt(PytmcSignal, ':MOT_DONE', io='i', kind='omitted')
-
 
     def __init__(self, prefix, *, name, transmission=1,
                  filter_type='Unknown filter', **kwargs):

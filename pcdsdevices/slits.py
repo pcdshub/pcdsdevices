@@ -26,8 +26,7 @@ from ophyd.signal import Signal
 from ophyd.status import wait as status_wait, Status
 
 from .epics_motor import BeckhoffAxis
-from .interface import (BaseInterface, FltMvInterface, MvInterface,
-                        LightpathMixin)
+from .interface import FltMvInterface, MvInterface, LightpathMixin
 from .signal import PytmcSignal, NotImplementedSignal
 from .sensors import RTD
 
@@ -334,9 +333,9 @@ class BeckhoffSlits(SlitsBase):
     # Base class overrides
     xwidth = Cpt(BeckhoffSlitPositioner, '', slit_type='XWIDTH', kind='hinted')
     ywidth = Cpt(BeckhoffSlitPositioner, '', slit_type='YWIDTH', kind='hinted')
-    xcenter = Cpt(BeckhoffSlitPositioner, '', slit_type= 'XCENTER',
+    xcenter = Cpt(BeckhoffSlitPositioner, '', slit_type='XCENTER',
                   kind='normal')
-    ycenter = Cpt(BeckhoffSlitPositioner, '', slit_type= 'YCENTER',
+    ycenter = Cpt(BeckhoffSlitPositioner, '', slit_type='YCENTER',
                   kind='normal')
 
     # Slit state commands

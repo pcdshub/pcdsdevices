@@ -909,7 +909,6 @@ class LightpathMixin(OphydObject):
     # Flag to signify that subclass is another mixin, rather than a device
     _lightpath_mixin = False
 
-
     def __init__(self, *args, **kwargs):
         self._lightpath_values = {}
         self._lightpath_ready = False
@@ -991,4 +990,3 @@ class LightpathInOutMixin(LightpathMixin):
         self._inserted = any(in_check)
         self._removed = all(out_check)
         self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
-
