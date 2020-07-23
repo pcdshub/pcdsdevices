@@ -172,6 +172,24 @@ class PIPPLC(Device):
     high_voltage_switch = Cpt(EpicsSignalWithRBV, ':HV_SW', kind='config',
                               doc='epics command to switch on the '
                               'high voltage')
+    plc_ai_offset = Cpt(EpicsSignalRO, ':AI_Offset_RBV', kind='config',
+                        doc=('Analog input offset must match ion pump '
+                             'analog ouput offset. Default: 13'))
+    auto_on = Cpt(EpicsSignalRO, ':Auto_On_RBV', kind='config',
+                  doc=('Setting to automatically turn on the ion pump when the'
+                       'reference gauge pressure is below protection '
+                       'setpoint'))
+    override_status = Cpt(EpicsSignalRO, ':OVRD_ON', kind='omitted',
+                          doc='Regional Override Status')
+    override_force_on = Cpt(EpicsSignalWithRBV, ':FORCE_START', kind='omitted',
+                            doc='Force Ion Pump to turn on')
+    qpc_name = Cpt(EpicsSignalRO, ':VPCNAME', kind='config',
+                   doc='Quad Ion Pump Controller Name')
+    qpc_pumpsize = Cpt(EpicsSignalRO, ':PUMPSIZE', kind='config',
+                       doc='Ion Pump Size (L/s)')
+    interlock_device = Cpt(EpicsSignalRO, ':ILK_DEVICE_RBV', kind='config',
+                           string=True,
+                           doc='Vacuum device used for interlocking this pump')
 
 
 class PTMPLC(Device):
@@ -200,6 +218,13 @@ class PROPLC(Device):
     error = Cpt(EpicsSignalRO, ':ERROR_RBV', kind='normal')
     warn = Cpt(EpicsSignalRO, ':WARN_RBV', kind='normal')
     pump_at_speed = Cpt(EpicsSignalRO, ':AT_SPD_RBV', kind='normal')
+
+
+class Ebara_EV_A03_1(PROPLC):
+    """Class for the Ebara EV-A03-1 model of roughing pump."""
+    remote = Cpt(EpicsSignalWithRBV, ':REMOTE', kind='omitted')
+    alarm = Cpt(EpicsSignalRO, ':ALARM_OK_RBV', kind='normal')
+    run_di = Cpt(EpicsSignalRO, ':RUN_DI_RBV', kind='omitted')
 
 
 class AgilentSerial(Device):

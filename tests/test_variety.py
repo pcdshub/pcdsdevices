@@ -4,7 +4,9 @@ import pytest
 import schema
 
 import ophyd
-from pcdsdevices.variety import get_metadata, set_metadata, validate_metadata
+from pcdsdevices import tags
+from pcdsdevices.variety import (expand_dotted_dict, get_metadata,
+                                 set_metadata, validate_metadata)
 
 # A sentinel indicating the validated metadata should match the provided
 # metadata exactly
@@ -18,6 +20,9 @@ def test_empty_md():
 def test_no_variety():
     with pytest.raises(ValueError):
         validate_metadata({'test': 'a'})
+
+
+text_defaults = dict(delimiter='\n', encoding='utf-8', format='plain')
 
 
 @pytest.mark.parametrize(
@@ -62,36 +67,49 @@ def test_no_variety():
 
         # ** tweakable **
         pytest.param(
-            dict(variety='tweakable'),
-            schema.SchemaMissingKeyError,
-            id='tweakable-no-delta',
-        ),
-
-        pytest.param(
-            dict(variety='tweakable', delta=3),
+            {'variety': 'scalar-tweakable',
+             'display_format': 'default',
+             'delta': {'value': 3,
+                       'adds_to': 'setpoint',
+                       'source': 'value',
+                       }},
             SAME,
             id='tweakable-delta',
         ),
 
         pytest.param(
-            dict(variety='tweakable', delta=3, delta_range=[-1, 10]),
+            {'variety': 'scalar-tweakable',
+             'display_format': 'default',
+             'delta': {'value': 3,
+                       'adds_to': 'setpoint',
+                       'source': 'value',
+                       'range': [-1, 10]}},
             SAME,
             id='tweakable-good-range',
         ),
 
         pytest.param(
-            dict(variety='tweakable', delta=3, delta_range=-1),
+            {'variety': 'scalar-tweakable',
+             'delta': {'value': 3,
+                       'range': -1}},
             schema.SchemaError,
             id='tweakable-bad-range',
         ),
 
         pytest.param(
-            dict(variety='tweakable', delta=3, delta_range=[-1, 'q']),
+            dict(variety='scalar-tweakable', delta={'value': 3,
+                                                    'range': [-1, 'q']}),
             schema.SchemaError,
             id='tweakable-bad-range-type',
         ),
 
         # ** arrays / waveforms **
+        pytest.param(
+            dict(variety='array-tabular'),
+            SAME,
+            id='array-tabular'
+        ),
+
         pytest.param(
             dict(variety='array-timeseries'),
             SAME,
@@ -148,48 +166,59 @@ def test_no_variety():
         ),
 
         pytest.param(
-            dict(variety='scalar-range', range_source='use_limits',
-                 display_format='exponential'),
+            {'variety': 'scalar-range',
+             'display_format': 'exponential',
+             'range': {'source': 'use_limits'},
+             },
             SAME,
             id='scalar-use_limits'
         ),
 
         pytest.param(
-            dict(variety='scalar-range', range_source='custom',
-                 display_format='default'),
+            {'variety': 'scalar-range',
+             'range': dict(source='value'),
+             'display_format': 'default'
+             },
             SAME,
             id='scalar-custom'
         ),
 
         pytest.param(
-            dict(variety='scalar-range', range_source='custom', range=[0, 5],
-                 display_format='default',
-                 ),
+            {'variety': 'scalar-range',
+             'range': dict(source='value',
+                           value=[0, 5]),
+             'display_format': 'default',
+             },
             SAME,
             id='scalar-custom-range'
         ),
 
         pytest.param(
-            dict(variety='scalar-range', range_source='custom', range=[0]),
+            {'variety': 'scalar-range',
+             'range': dict(source='value', value=[0]),
+             },
             schema.SchemaError,
             id='scalar-bad-range'
         ),
 
         # ** text **
         pytest.param(
-            dict(variety='text', enum_strings=['a', 'b', 'c']),
+            dict(variety='text', enum_strings=['a', 'b', 'c'],
+                 **text_defaults),
             SAME,
             id='text-enum_strings'
         ),
 
         pytest.param(
-            dict(variety='text-enum', enum_strings=['a', 'b', 'c']),
+            dict(variety='text-enum', enum_strings=['a', 'b', 'c'],
+                 **text_defaults),
             SAME,
             id='text-enum'
         ),
 
         pytest.param(
-            dict(variety='text-multiline', enum_strings=['a', 'b', 'c']),
+            dict(variety='text-multiline', enum_strings=['a', 'b', 'c'],
+                 **text_defaults),
             SAME,
             id='text-multiline'
         ),
@@ -203,17 +232,23 @@ def test_no_variety():
         # ** bitmask **
         pytest.param(
             dict(variety='bitmask'),
-            dict(variety='bitmask', bits=8, shape='rectangle',
-                 orientation='horizontal', first_bit='most-significant',
-                 on_color='green', off_color='gray'),
+            dict(variety='bitmask', bits=8, orientation='horizontal',
+                 first_bit='most-significant',
+                 meaning=None,
+                 style=dict(on_color='green', off_color='gray',
+                            shape='rectangle')
+                 ),
             id='bitmask-defaults',
         ),
 
         pytest.param(
             dict(variety='bitmask', bits=32, first_bit='least-significant'),
-            dict(variety='bitmask', bits=32, shape='rectangle',
+            dict(variety='bitmask', bits=32,
                  orientation='horizontal', first_bit='least-significant',
-                 on_color='green', off_color='gray'),
+                 meaning=None,
+                 style=dict(shape='rectangle', on_color='green',
+                            off_color='gray'),
+                 ),
             id='bitmask-custom',
         ),
 
@@ -225,9 +260,23 @@ def test_no_variety():
         ),
 
         pytest.param(
+            dict(variety='enum', enum_strings=['a', 'b', 'c'],
+                 tags={'protected'}),
+            SAME,
+            id='enum-basic-with-tags',
+        ),
+
+        pytest.param(
             dict(variety='enum', enum_strings='a'),
             schema.SchemaError,
             id='enum-not-a-list',
+        ),
+
+        pytest.param(
+            dict(variety='enum', enum_strings=['a', 'b', 'c'],
+                 tags={'this-is-an-unknown-tag'}),
+            schema.SchemaError,
+            id='enum-basic-with-bad-tag',
         ),
 
     ]
@@ -262,3 +311,106 @@ def test_component_empty_md():
 
     assert get_metadata(MyDevice.cpt) == {}
     assert get_metadata(MyDevice.unset_cpt) == {}
+
+
+def test_tag_explain():
+    for tag in tags.get_valid_tags():
+        print(tag, tags.explain_tag(tag))
+
+    with pytest.raises(KeyError):
+        tags.explain_tag('this-is-a-bad-tag')
+
+
+@pytest.mark.parametrize(
+    'value, expected',
+    [pytest.param(
+        {},
+        {}
+     ),
+
+     pytest.param(
+         {'a..': {}},
+         ValueError,
+         id='empty_dot',
+     ),
+
+     pytest.param(
+         {'a': {'b': 3}, 'a.b': {}},
+         ValueError,
+         id='overwrite_dict',
+     ),
+
+     pytest.param(
+         {'a': {'b': {}}, 'a.b.c': 3},
+         {'a': {'b': {'c': 3}}},
+         id='nested_3',
+     ),
+
+     pytest.param(
+         {'a.b': {}},
+         {'a': {'b': {}}},
+         id='nested_ab',
+     ),
+
+     pytest.param(
+         {'a': {}, 'a.b': 4},
+         dict(a=dict(b=4))
+     ),
+
+     pytest.param(
+         {'a.b.c': 1, 'a.b': {'d': 4}},
+         dict(a=dict(b=dict(c=1, d=4)))
+     ),
+
+     pytest.param(
+         {'a.b.c': {}, 'a.b': {'d': 4}},
+         dict(a=dict(b=dict(c={}, d=4)))
+     ),
+
+     pytest.param(
+         {'a': {}, 'a.b': '3', 'a.c': '4'},
+         {'a': {'b': '3', 'c': '4'}},
+     ),
+
+     pytest.param(
+         {'a': {'b': '2'}, 'a.b': '3', 'a.c': '4'},
+         {'a': {'b': '3', 'c': '4'}},
+         id='update_value',
+     ),
+
+     pytest.param(
+        {'variety': 'scalar-tweakable',
+         'delta.value': 0.5,
+         'delta.range': [-1, 1],
+         'range.source': 'custom',
+         'range.value': [-1, 1],
+         },
+        {'variety': 'scalar-tweakable',
+         'delta': {'value': 0.5,
+                   'range': [-1, 1],
+                   },
+         'range': {'source': 'custom',
+                   'value': [-1, 1],
+                   },
+         },
+        id='real_world',
+     ),
+
+     pytest.param(
+        {'variety': 'scalar-tweakable',
+         'delta.value': 0.5,
+         'delta.range': [-1, 1],
+         'range': [-1, 1],  # <-- range specified as a value, not a dict
+         'range.source': 'custom',  # <-- range.source update fails
+         },
+        ValueError,
+        id='real_world_oops',
+     ),
+     ]
+)
+def test_dotted_dict(value, expected):
+    if isinstance(expected, dict):
+        assert expand_dotted_dict(value) == expected
+    else:
+        with pytest.raises(expected):
+            expand_dotted_dict(value)

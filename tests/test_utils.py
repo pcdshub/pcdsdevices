@@ -4,8 +4,9 @@ import sys
 import threading
 import time
 
-import pcdsdevices.utils as util
 import pytest
+
+import pcdsdevices.utils as util
 
 logger = logging.getLogger(__name__)
 

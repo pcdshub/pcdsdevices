@@ -1,10 +1,11 @@
 """Additional component metadata, classifying each into a "variety"."""
 
 import schema
+from schema import Optional
 
 import ophyd
 
-from . import utils
+from . import tags, utils
 
 _schema_registry = {}
 varieties_by_category = {
@@ -14,10 +15,8 @@ varieties_by_category = {
         'command-enum',
         'command-setpoint-tracks-readback',
     },
-    'tweakable': {
-        'tweakable'
-    },
     'array': {
+        'array-tabular',
         'array-timeseries',
         'array-histogram',
         'array-image',
@@ -26,6 +25,7 @@ varieties_by_category = {
     'scalar': {
         'scalar',
         'scalar-range',
+        'scalar-tweakable',
     },
     'bitmask': {
         'bitmask',
@@ -69,72 +69,167 @@ def _length_validate(min_count, max_count, type_):
     return validate
 
 
+common_schema = {
+    Optional('tags'): {schema.Or(*tags.get_valid_tags())},
+}
+
+
+_default_bitmask_style = dict(shape='rectangle', on_color='green',
+                              off_color='gray')
+
 schema_by_category = {
     'command': schema.Schema({
         'variety': schema.Or(*varieties_by_category['command']),
-        schema.Optional('value', default=1): schema.Or(float, int, str),
-        schema.Optional('enum_strings'): [str],
-        # schema.Optional('enum_dict'): dict,
-    }),
-
-    'tweakable': schema.Schema({
-        'variety': schema.Or(*varieties_by_category['tweakable']),
-        'delta': schema.Or(float, int),
-        schema.Optional('delta_range'): _length_validate(2, 2, (float, int)),
-        schema.Optional('source_signal'): str,
-        schema.Optional('source'): schema.Or('setpoint', 'readback',
-                                             'other-signal'),
+        Optional('value', default=1): schema.Or(float, int, str),
+        Optional('enum_strings'): [str],
+        Optional('enum_dict'): dict,
+        **common_schema
     }),
 
     'array': schema.Schema({
         'variety': schema.Or(*varieties_by_category['array']),
-        schema.Optional('shape'): _length_validate(1, 10, int),
-        schema.Optional('dimension'): int,
-        schema.Optional('embed'): bool,
-        schema.Optional('colormap'): str,
+        Optional('shape'): _length_validate(1, 10, int),
+        Optional('shape_signal'): str,
+        Optional('dimension'): int,
+        Optional('embed'): bool,
+        Optional('colormap'): str,
+        **common_schema
     }),
 
     'bitmask': schema.Schema({
         'variety': schema.Or(*varieties_by_category['bitmask']),
-        schema.Optional('orientation',
-                        default='horizontal'): schema.Or('horizontal',
-                                                         'vertical'),
-        schema.Optional('bits', default=8): int,
-        schema.Optional(
-            'first_bit',
-            default='most-significant'): schema.Or('most-significant',
-                                                   'least-significant'),
+        Optional('orientation', default='horizontal'): schema.Or(
+            'horizontal', 'vertical'),
+        Optional('bits', default=8): int,
+        Optional('first_bit', default='most-significant'): schema.Or(
+            'most-significant', 'least-significant'),
+        Optional('meaning', default=None): [str],
 
-        # Style:
-        schema.Optional('shape', default='rectangle'): schema.Or('circle',
-                                                                 'rectangle'),
-        schema.Optional('on_color', default='green'): str,
-        schema.Optional('off_color', default='gray'): str,
+        Optional('style', default=_default_bitmask_style): schema.Schema({
+            Optional('shape', default='rectangle'): schema.Or(
+                'circle', 'rectangle'),
+
+            Optional('on_color', default='green'): str,
+            Optional('off_color', default='gray'): str,
+        }),
+        **common_schema
     }),
 
     'scalar': schema.Schema({
         'variety': schema.Or(*varieties_by_category['scalar']),
-        schema.Optional('range'): _length_validate(2, 2, (float, int)),
-        schema.Optional('range_source'): schema.Or('use_limits', 'custom'),
-        schema.Optional('display_format', default='default'): schema.Or(
+        Optional('display_format', default='default'): schema.Or(
             'default', 'string', 'decimal', 'exponential', 'hex', 'binary'),
+
+        Optional('range'): schema.Schema({
+            Optional('value'): _length_validate(2, 2, (float, int)),
+            Optional('source', default='use_limits'): schema.Or(
+                'use_limits', 'value'),
+        }),
+
+        Optional('delta'): schema.Schema({
+            Optional('value'): schema.Or(float, int),
+            Optional('range'): _length_validate(2, 2, (float, int)),
+            Optional('source', default='value'): schema.Or(
+                'signal', 'value'),
+            Optional('signal'): schema.Or(str, ophyd.Component),
+
+            Optional('add_signal'): str,
+            Optional('adds_to', default='setpoint'): schema.Or(
+                'setpoint', 'readback', 'custom-signal'),
+        }),
+        **common_schema
     }),
 
     'text': schema.Schema({
         'variety': schema.Or(*varieties_by_category['text']),
-        schema.Optional('enum_strings'): [str],
+        Optional('enum_strings'): [str],
+        Optional('delimiter', default='\n'): str,
+        Optional('encoding', default='utf-8'): schema.Or('utf-8', 'latin-1',
+                                                         'ascii'),
+        Optional('format', default='plain'): schema.Or('plain', 'markdown',
+                                                       'html'),
+        **common_schema
     }),
 
     'enum': schema.Schema({
         'variety': schema.Or(*varieties_by_category['enum']),
-        schema.Optional('enum_strings'): [str],
+        Optional('enum_strings'): [str],
+        **common_schema
     }),
 }
 
 
+def expand_dotted_dict(root):
+    """
+    Expand dotted dictionary keys.
+
+    Parameters
+    ----------
+    root : dict
+        The dictionary to expand.
+
+    Returns
+    -------
+    dct : dict
+        The expanded dictionary.
+    """
+    if not root:
+        return {}
+
+    if not isinstance(root, dict):
+        raise ValueError('A dictionary is required')
+
+    res = {}
+
+    def expand_key(dct, key, value):
+        if isinstance(value, dict):
+            # specifies a sub-dict; use full dotted name
+            parts = key.split('.')
+        else:
+            # specifies a value; last part refers to a value
+            parts = key.split('.')[:-1]
+
+        for part in parts:
+            if not part:
+                raise ValueError('Dotted key cannot contain empty part '
+                                 f'({key})')
+
+            if part not in dct:
+                dct[part] = {}
+            elif not isinstance(dct[part], dict):
+                raise ValueError('Dotted key does not refer to a dictionary '
+                                 f'({part} of {key})')
+
+            dct = dct[part]
+
+        return dct
+
+    def set_values(dct, value):
+        dotted_keys = set(key for key in value if '.' in key)
+        non_dotted = set(value) - dotted_keys
+
+        for key in non_dotted:
+            if key in dct:
+                raise KeyError(f'Key specified multiple times: {key}')
+            dct[key] = value[key]
+
+        for key in dotted_keys:
+            sub_value = value[key]
+            sub_dict = expand_key(dct, key, sub_value)
+            if isinstance(sub_value, dict):
+                set_values(sub_dict, sub_value)
+            else:
+                last_part = key.split('.')[-1]
+                sub_dict[last_part] = sub_value
+
+        return dct
+
+    return set_values(res, root)
+
+
 def validate_metadata(md):
     """
-    Validate a given metadata dictionary.
+    Validate a given metadata dictionary.  Expands dotted dictionary keys.
 
     Parameters
     ----------
@@ -157,6 +252,8 @@ def validate_metadata(md):
             'Unexpected metadata keys without variety specified: ' +
             ', '.join(md)
         ) from None
+
+    md = expand_dotted_dict(md)
 
     try:
         schema = _schema_registry[variety]
@@ -201,6 +298,8 @@ def get_metadata(cpt):
 def set_metadata(cpt, metadata):
     """
     Set "variety" metadata on a given component.
+
+    Expands dotted keys into sub-dictionaries.
 
     Validates the metadata against the known schema.
 

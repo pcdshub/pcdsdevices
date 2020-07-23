@@ -22,7 +22,7 @@ requirements:
     - pyepics >=3.4.1
     - pytmc >=2.4.0
     - pyyaml
-    - cf-units
+    - pint
     - scipy
     - matplotlib <3
     - periodictable

@@ -2,10 +2,11 @@ import logging
 from functools import partial
 from unittest.mock import Mock
 
-import pcdsdevices.mps as mps_module
 import pytest
 from ophyd import Device
 from ophyd.sim import make_fake_device
+
+import pcdsdevices.mps as mps_module
 from pcdsdevices.mps import (MPS, MPSLimits, mps_factory, must_be_known,
                              must_be_out)
 

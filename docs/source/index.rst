@@ -15,6 +15,7 @@
    epics_types.rst
    base_classes.rst
    sim_types.rst
+   sample_delivery.rst
 
 .. toctree::
    :maxdepth: 1

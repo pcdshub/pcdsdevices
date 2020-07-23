@@ -4,8 +4,69 @@ Module for the liquid jet classes.
 from ophyd import Component as Cpt
 from ophyd import Device
 
-from .epics_motor import BeckhoffAxis
+from .component import UnrelatedComponent as UCpt
+from .epics_motor import IMS, BeckhoffAxis
 from .interface import BaseInterface
+
+
+class Injector(Device, BaseInterface):
+    """
+    Positioner for liquid jet Injector.
+
+    Consists of 3 control motors, one for each of x, y, and z.
+
+    Parameters
+    ----------
+    x_prefix : str
+        Prefix for the coarse control motor in the X direction.
+
+    y_prefix : str
+        Prefix for the coarse control motor in the Y direction.
+
+    z_prefix : str
+        Prefix for the coarse control motor in the Z direction.
+    """
+
+    x = UCpt(IMS)
+    y = UCpt(IMS)
+    z = UCpt(IMS)
+
+    def __init__(self, *, name, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        super().__init__('', name=name, **kwargs)
+
+
+class InjectorWithFine(Injector):
+    """
+    Positioner for liquid jet Injector, with fine control.
+
+    Consists of 6 control motors, two for each of x, y, and z.
+    Each dimension has both a coarse and a fine motor.
+
+    Parameters
+    ----------
+    x_prefix : str
+        Prefix for the coarse control motor in the X direction.
+
+    y_prefix : str
+        Prefix for the coarse control motor in the Y direction.
+
+    z_prefix : str
+        Prefix for the coarse control motor in the Z direction.
+
+    fine_x_prefix : str
+        Prefix for the fine control motor in the X direction.
+
+    fine_y_prefix : str
+        Prefix for the fine control motor in the Y direction.
+
+    fine_z_prefix : str
+        Prefix for the fine control motor in the Z direction.
+    """
+
+    fine_x = UCpt(IMS)
+    fine_y = UCpt(IMS)
+    fine_z = UCpt(IMS)
 
 
 class BeckhoffJetManipulator(Device, BaseInterface):

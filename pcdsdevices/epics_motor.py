@@ -17,6 +17,7 @@ from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
 from .pseudopos import DelayBase
 from .signal import PytmcSignal
+from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
 
@@ -241,8 +242,13 @@ class PCDSMotorBase(EpicsMotorInterface):
                      value=None, **kwargs):
         # Store the internal travelling direction of the motor to account for
         # the fact that our EPICS motor does not have TDIR field
-        if None not in (value, old_value):
-            self.direction_of_travel.put(int(value > old_value))
+        try:
+            comparison = int(value > old_value)
+            self.direction_of_travel.put(comparison)
+        except TypeError:
+            # We have some sort of null/None/default value
+            logger.debug('Could not compare value=%s > old_value=%s',
+                         value, old_value)
         # Pass information to PositionerBase
         super()._pos_changed(timestamp=timestamp, old_value=old_value,
                              value=value, **kwargs)
@@ -443,11 +449,16 @@ class PMC100(PCDSMotorBase):
 
 
 class BeckhoffAxisPLC(Device):
-    """Debug PVs from the Beckhoff Axis PLC code"""
+    """Error handling for the Beckhoff Axis PLC code."""
     status = Cpt(PytmcSignal, 'sErrorMessage', io='i', kind='normal',
-                 string=True)
-    err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal')
-    cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='o', kind='config')
+                 string=True, doc='PLC error or warning')
+    err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal',
+                   doc='Current NC error code')
+    cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='o', kind='config',
+                        doc='Command to reset an active error')
+
+    set_metadata(err_code, dict(variety='scalar', display_format='hex'))
+    set_metadata(cmd_err_reset, dict(variety='command', value=1))
 
 
 class BeckhoffAxis(EpicsMotorInterface):
@@ -463,7 +474,10 @@ class BeckhoffAxis(EpicsMotorInterface):
     __doc__ += basic_positioner_init
     tab_whitelist = ['clear_error']
 
-    plc = Cpt(BeckhoffAxisPLC, ':PLC:', kind='normal')
+    plc = Cpt(BeckhoffAxisPLC, ':PLC:', kind='normal',
+              doc='PLC error handling.')
+    motor_spmg = Cpt(EpicsSignal, '.SPMG', kind='config',
+                     doc='Stop, Pause, Move, Go')
 
     def clear_error(self):
         """Clear any active motion errors on this axis."""

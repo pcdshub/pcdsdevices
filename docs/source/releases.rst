@@ -1,6 +1,41 @@
 Release History
 ###############
 
+v2.7.0 (2020-07-01)
+===================
+
+Features
+--------
+- Add component variety metadata and schema validation.
+
+Device Updates
+--------------
+- Add many components to ``PIPPLC`` class, adjust component
+  ``kinds`` to be more appropriate, and fix errant PV names.
+- Update component names on ``VVC`` for clarity, and pvnames for accuracy.
+- Update ``XPIM`` class to reflect additional IOC features.
+- Update docs and metadata on all LCLS 2 imager classes.
+- Update spammy TwinCAT state config parameters to omitted.
+- Add interlock device information to ``VGC``.
+- Add ``SPMG`` field to ``BeckhoffAxis``.
+
+New Devices
+-----------
+- Add ``SxrTestAbsorber`` class.
+- Add ``ZoomTelescope`` to support MODS zoom telescope.
+- Add ``El3174AiCh`` to support EK9000 module.
+- Add ``EnvironmentalMonitor`` to support MODS environmental monitors.
+- Add support for ThorLabs Elliptec motors for MODS.
+- Add ``Ebara_EV_A03_1`` class for specific roughing pump support.
+- Migrate SDS jet tracking classes into this repo.
+- Add ``VFS`` class to support fast shutters.
+
+Maintenance
+-----------
+- Remove monkeypatch of ``EventSequence`` in tests, as it was no longer needed.
+- Update dependency from ``cf_units`` to its renamed ``cf-units``.
+- xfail test that fails with ``bluesky=1.6.2``
+
 
 v2.6.0 (2020-05-21)
 ===================
