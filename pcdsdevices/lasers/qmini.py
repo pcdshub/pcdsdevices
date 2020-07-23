@@ -18,10 +18,6 @@ class QminiSpectrometer(Device):
 
     name : str
         Name of Qmini object
-
-    Examples
-    --------
-
     """
 
     # General control
