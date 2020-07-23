@@ -8,17 +8,15 @@ import logging
 import warnings
 
 from ophyd.areadetector import cam
-from ophyd.areadetector.base import ADComponent, DDC_EpicsSignalRO, NDDerivedSignal
+from ophyd.areadetector.base import ADComponent, NDDerivedSignal
 from ophyd.areadetector.detectors import DetectorBase
 from ophyd.device import Component as Cpt
 from ophyd import Device
-from ophyd.signal import EpicsSignal, EpicsSignalRO, AttributeSignal
+from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from .plugins import (ColorConvPlugin, HDF5Plugin, ImagePlugin, JPEGPlugin,
                       NetCDFPlugin, NexusPlugin, OverlayPlugin, ProcessPlugin,
                       ROIPlugin, StatsPlugin, TIFFPlugin, TransformPlugin)
-
-import numpy as np
 
 logger = logging.getLogger(__name__)
 
