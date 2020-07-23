@@ -8,9 +8,12 @@ import logging
 import warnings
 
 from ophyd.areadetector import cam
-from ophyd.areadetector.base import ADComponent
+from ophyd.areadetector.base import ADComponent, NDDerivedSignal
+from ophyd.areadetector.base import EpicsSignalWithRBV
 from ophyd.areadetector.detectors import DetectorBase
 from ophyd.device import Component as Cpt
+from ophyd import Device
+from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from .plugins import (ColorConvPlugin, HDF5Plugin, ImagePlugin, JPEGPlugin,
                       NetCDFPlugin, NexusPlugin, OverlayPlugin, ProcessPlugin,
@@ -161,3 +164,43 @@ class PCDSAreaDetector(PCDSAreaDetectorEmbedded):
     stats5 = Cpt(StatsPlugin, 'Stats5:')
     tiff1 = Cpt(TIFFPlugin, 'TIFF1:')
     trans1 = Cpt(TransformPlugin, 'Trans1:')
+
+class PCDSAreaDetectorTyphos(Device):
+    """
+    A 'bare' PCDS areadetector class specifically for Typhos screens.
+    Implements only the most commonly used PVs for areadetector IOCS.
+    Includes a simple image viewer. 
+    """
+
+    # Status and specifications
+    manufacturer = Cpt(EpicsSignalRO, 'Manufacturer_RBV', kind='config')
+    camera_model = Cpt(EpicsSignalRO, 'Model_RBV', kind='normal')
+    sensor_size_x = Cpt(EpicsSignalRO, 'MaxSizeX_RBV', kind='config')
+    sensor_size_y = Cpt(EpicsSignalRO, 'MaxSizeY_RBV', kind='config')
+    data_type = Cpt(EpicsSignalWithRBV, 'DataType', kind='config')
+
+    # Acquisition settings
+    exposure = Cpt(EpicsSignalWithRBV, 'AcquireTime', kind='config')
+    gain = Cpt(EpicsSignalWithRBV, 'Gain', kind='config')
+    num_images = Cpt(EpicsSignalWithRBV, 'NumImages', kind='config')
+    image_mode = Cpt(EpicsSignalWithRBV, 'ImageMode', kind='config')
+    trigger_mode = Cpt(EpicsSignalWithRBV, 'TriggerMode', kind='config')
+    acquisition_period = Cpt(EpicsSignalWithRBV, 'AcquirePeriod', kind='config')
+
+    # Image collection settings
+    acquire = Cpt(EpicsSignal, 'Acquire', kind='normal')
+    acquire_rbv = Cpt(EpicsSignalRO, 'DetectorState_RBV', kind='normal')
+    image_counter = Cpt(EpicsSignalRO, 'NumImagesCounter_RBV', kind='normal')
+
+    # Image data
+    ndimensions = Cpt(EpicsSignalRO, 'IMAGE2:NDimensions_RBV', kind='omitted') 
+    width = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize0_RBV', kind='omitted')
+    height = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize1_RBV', kind='omitted')
+    depth = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize2_RBV', kind='omitted')
+    array_data = Cpt(EpicsSignal, 'IMAGE2:ArrayData', kind='omitted')
+    cam_image = Cpt(NDDerivedSignal, derived_from='array_data',
+                    shape=('height',
+                           'width',
+                           'depth'),
+                    num_dimensions='ndimensions',
+                    kind='normal')
