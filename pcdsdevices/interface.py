@@ -962,17 +962,11 @@ class LightpathMixin(OphydObject):
 
     @property
     def inserted(self):
-        if self._lightpath_ready:
-            return bool(self._inserted)
-        else:
-            return False
+        return self._lightpath_ready and bool(self._inserted)
 
     @property
     def removed(self):
-        if self._lightpath_ready:
-            return bool(self._removed)
-        else:
-            return False
+        return self._lightpath_ready and bool(self._removed)
 
     @property
     def transmission(self):
