@@ -23,18 +23,18 @@ class QminiSpectrometer(Device):
     # General control
     status = Cpt(EpicsSignalRO, ':STATUS', kind='normal')
     temperature = Cpt(EpicsSignalRO, ':TEMP', kind='config')
-    exposure = Cpt(EpicsSignal, ':SET_EXPOSURE_TIME', kind='config')
-    exposure_RBV = Cpt(EpicsSignalRO, ':GET_EXPOSURE_TIME', kind='config')
-    trig_mode = Cpt(EpicsSignal, ':TRIG_MODE', kind='config')
-    trig_mode_RBV = Cpt(EpicsSignalRO, ':TRIG_MODE_RBV', kind='config')
-    trig_delay = Cpt(EpicsSignal, ':SET_TRIG_DELAY', kind='config')
-    trig_delay_RBV = Cpt(EpicsSignalRO, ':GET_TRIG_DELAY', kind='config')
-    trig_pin = Cpt(EpicsSignal, ':SET_TRIG_PIN', kind='config')
-    trig_pin_RBV = Cpt(EpicsSignalRO, ':TRIG_PIN_RBV', kind='config')
-    trig_edge = Cpt(EpicsSignal, ':SET_TRIG_EDGE', kind='config')
-    trig_edge_RBV = Cpt(EpicsSignalRO, ':TRIG_EDGE_RBV', kind='config')
-    trig_enable = Cpt(EpicsSignal, ':SET_TRIG_ENABLE', kind='config')
-    trig_enable_RBV = Cpt(EpicsSignalRO, ':GET_TRIG_ENABLE', kind='config')
+    exposure = Cpt(EpicsSignal, ':GET_EXPOSURE_TIME',
+                   write_pv=':SET_EXPOSURE_TIME', kind='config')
+    trig_mode = Cpt(EpicsSignal, ':TRIG_MODE_RBV', write_pv=':TRIG_MODE',
+                    kind='config')
+    trig_delay = Cpt(EpicsSignal, ':GET_TRIG_DELAY',
+                     write_pv=':SET_TRIG_DELAY', kind='config')
+    trig_pin = Cpt(EpicsSignal, ':TRIG_PIN_RBV', write_pv=':SET_TRIG_PIN',
+                   kind='config')
+    trig_edge = Cpt(EpicsSignal, ':TRIG_EDGE_RBV', write_pv=':SET_TRIG_EDGE',
+                    kind='config')
+    trig_enable = Cpt(EpicsSignal, ':GET_TRIG_ENABLE',
+                      write_pv=':SET_TRIG_ENABLE', kind='config')
     scan_rate = Cpt(EpicsSignal, ':START_EXPOSURE.SCAN', kind='config')
     reset = Cpt(EpicsSignal, ':CLEAR_SPECTROMETER', kind='config')
     spectrum = Cpt(EpicsSignalRO, ':SPECTRUM', kind='normal')
@@ -42,8 +42,6 @@ class QminiSpectrometer(Device):
 
     model = Cpt(EpicsSignalRO, ':MODEL_CODE', kind='config')
     serial_number = Cpt(EpicsSignalRO, ':SERIAL_NUMBER', kind='config')
-    io_config = Cpt(EpicsSignal, ':SET_TRIG_EDGE', kind='config')
-    io_config_RBV = Cpt(EpicsSignalRO, ':TRIG_EDGE_RBV', kind='config')
 
     # Processing Steps
     adjust_offset = Cpt(EpicsSignal, ':ADJUST_OFFSET', kind='omitted')
