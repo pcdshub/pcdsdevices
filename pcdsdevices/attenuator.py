@@ -411,8 +411,8 @@ class FEESolidAttenuator(Device, BaseInterface, LightpathMixin):
 
     def _set_lightpath_states(self, lightpath_values):
         values = [kw['value'] for kw in lightpath_values.values()]
-        # In is at zero
-        inserted_list = [value < 4 for value in values]
+        # In is at zero, 2mm deadband is standard
+        inserted_list = [value < 2 for value in values]
         self._inserted = any(inserted_list)
         self._removed = not self._inserted
         self.num_in.put(inserted_list.count(True), force=True)
