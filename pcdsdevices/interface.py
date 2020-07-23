@@ -7,6 +7,7 @@ import numbers
 import re
 import signal
 import time
+import threading
 from contextlib import contextmanager
 from pathlib import Path
 from threading import Event, Thread
@@ -912,6 +913,7 @@ class LightpathMixin(OphydObject):
     def __init__(self, *args, **kwargs):
         self._lightpath_values = {}
         self._lightpath_ready = False
+        self._retry_lightpath = False
         super().__init__(*args, **kwargs)
 
     def __init_subclass__(cls, **kwargs):
@@ -939,11 +941,21 @@ class LightpathMixin(OphydObject):
             self._lightpath_values[obj] = kwargs
             # Only do the first lightpath state once all cpts have chimed in
             if len(self._lightpath_values) >= len(self.lightpath_cpts):
+                self._retry_lightpath = False
                 # Pass user function the full set of values
                 self._set_lightpath_states(self._lightpath_values)
-                self._lightpath_ready = True
-                # Tell lightpath that we are ready
-                self._run_subs(sub_type=self.SUB_STATE)
+                self._lightpath_ready = not self._retry_lightpath
+                if self._lightpath_ready:
+                    # Tell lightpath to update
+                    self._run_subs(sub_type=self.SUB_STATE)
+                elif self._retry_lightpath and not self._destroyed:
+                    # Use this when the device wasn't ready to set states
+                    time.sleep(0.1)
+                    kw = dict(obj=obj)
+                    kw.update(kwargs)
+                    thread = threading.Thread(target=self._update_lightpath,
+                                              args=args, kwargs=kw)
+                    thread.start()
         except Exception:
             # Without this, callbacks fail silently
             logger.exception('Error in lightpath update callback.')
@@ -984,6 +996,10 @@ class LightpathInOutMixin(LightpathMixin):
         out_check = []
         trans_check = []
         for obj, kwarg_dct in lightpath_values.items():
+            if not obj._state_initialized:
+                # This would prevent make check_inserted, etc. fail
+                self._retry_lightpath = True
+                return
             in_check.append(obj.check_inserted(kwarg_dct['value']))
             out_check.append(obj.check_removed(kwarg_dct['value']))
             trans_check.append(obj.check_transmission(kwarg_dct['value']))
