@@ -212,9 +212,9 @@ class SlitsBase(Device, MvInterface, LightpathMixin):
 class BadSlitPositionerBase(PVPositioner, FltMvInterface):
     """Base class for slit positioner with awful PV names."""
 
-    readback = FCpt(EpicsSignalRO, '{self.prefix}:ACTUAL_{self._dirlong}',
+    readback = FCpt(EpicsSignalRO, '{prefix}:ACTUAL_{_dirlong}',
                     auto_monitor=True, kind='normal')
-    setpoint = FCpt(EpicsSignal, '{self.prefix}:{self._dirshort}_REQ',
+    setpoint = FCpt(EpicsSignal, '{prefix}:{_dirshort}_REQ',
                     auto_monitor=True, kind='normal')
 
     def __init__(self, prefix, *, slit_type="", limits=None, **kwargs):
