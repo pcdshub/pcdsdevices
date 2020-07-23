@@ -285,6 +285,8 @@ class XOffsetMirror(Device, BaseInterface):
     name : str
         Alias for the device.
     """
+    # UI representation
+    _icon = 'fa.minus-square'
 
     # Motor components: can read/write positions
     y_up = Cpt(BeckhoffAxis, ':MMS:YUP', kind='normal')
@@ -312,3 +314,11 @@ class XOffsetMirror(Device, BaseInterface):
     pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
     bender_enc_rms = Cpt(PytmcSignal, ':ENC:BENDER:RMS', io='i',
                          kind='normal')
+
+    # Lightpath config: implement inserted, removed, transmission, subscribe
+    # For now, keep it simple. Some mirrors need more than this, but it is
+    # sufficient for MR1L0 and MR2L0 for today.
+    inserted = True
+    removed = False
+    transmission = 1
+    SUB_STATE = 'state'
