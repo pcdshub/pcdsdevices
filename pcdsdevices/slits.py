@@ -58,6 +58,7 @@ class SlitsBase(Device, MvInterface, LightpathMixin):
     ycenter = None
 
     def __init__(self, *args, nominal_aperture=5.0, **kwargs):
+        self._has_subscribed = False
         super().__init__(*args, **kwargs)
         self.nominal_aperture.put(nominal_aperture)
 
@@ -170,6 +171,37 @@ class SlitsBase(Device, MvInterface, LightpathMixin):
         self._original_vals[self.xwidth.setpoint] = self.xwidth.readback.get()
         self._original_vals[self.ywidth.setpoint] = self.ywidth.readback.get()
         return super().stage()
+
+    def subscribe(self, cb, event_type=None, run=True):
+        """
+        Subscribe to changes of the slits.
+        Parameters
+        ----------
+        cb : callable
+            Callback to be run.
+        event_type : str, optional
+            Type of event to run callback on.
+        run : bool, optional
+            Run the callback immediately.
+        """
+
+        # Avoid making child subscriptions unless a client cares
+        if not self._has_subscribed:
+            # Subscribe to changes in aperture
+            self.xwidth.readback.subscribe(self._aperture_changed,
+                                           run=False)
+            self.ywidth.readback.subscribe(self._aperture_changed,
+                                           run=False)
+            self._has_subscribed = True
+        return super().subscribe(cb, event_type=event_type, run=run)
+
+    def _aperture_changed(self, *args, **kwargs):
+        """Callback run when slit size is adjusted."""
+        # Avoid duplicate keywords
+        kwargs.pop('sub_type', None)
+        kwargs.pop('obj',      None)
+        # Run subscriptions
+        self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
     def _set_lightpath_states(self, lightpath_values):
         widths = [kw['value'] for kw in lightpath_values.values()]
