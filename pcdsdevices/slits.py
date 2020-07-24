@@ -383,16 +383,22 @@ class BeckhoffSlits(SlitsBase):
     north = Cpt(BeckhoffAxis, ':MMS:NORTH', kind='normal')
     south = Cpt(BeckhoffAxis, ':MMS:SOUTH', kind='normal')
 
+    def __init__(self, prefix, *, name, **kwargs):
+        self._started_move = False
+        super().__init__(prefix, name=name, **kwargs)
+
     @exec_queue.sub_value
     def _exec_handler(self, *args, value, old_value, **kwargs):
         """Wait just a moment to queue up move requests."""
         if value == 1 and old_value == 0:
+            self._started_move = True
             schedule_task(self.exec_move.put, args=(1,), delay=0.2)
 
     @done_all.sub_value
     def _reset_exec_move(self, *args, value, old_value, **kwargs):
         """When we're done moving, reset the exec_move signal."""
-        if value == 1 and old_value == 0:
+        if self._started_move and value == 1 and old_value == 0:
+            self._started_move = False
             self.exec_queue.put(0)
             self.exec_move.put(0)
 
