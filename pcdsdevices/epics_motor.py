@@ -499,6 +499,43 @@ class MotorDisabledError(Exception):
     """Error that indicates that we are not allowed to move."""
     pass
 
+class SmarActOpenLoop(Device):
+    """
+    Class containing the open loop PVs used to control an un-encoded SmarAct
+    stage.
+
+    Can be used for sub-classing, or creating a simple  device without the
+    motor record PVs. 
+    """
+
+    # Voltage for sawtooth ramp
+    step_voltage = Cpt(EpicsSignal, ':STEP_VOLTAGE', kind='omitted')
+    # Frequency of steps
+    step_freq = Cpt(EpicsSignal, ':STEP_FREQ', kind='config')
+    # Number of steps per step forward, backward command
+    step_count = Cpt(EpicsSignal, ':STEP_COUNT', kind='normal')
+    # Jog forward 
+    step_fwd_cmd = Cpt(EpicsSignal, ':STEP_FORWARD', kind='normal')
+    # Jog backward 
+    step_rev_cmd = Cpt(EpicsSignal, ':STEP_REVERSE', kind='normal')
+    # Total number of steps counted
+    total_step_count = Cpt(EpicsSignal, ':TOTAL_STEP_COUNT', kind='normal')
+    # Reset steps ("home")
+    step_clear_cmd = Cpt(EpicsSignal, ':CLEAR_COUNT', kind='config')
+    # Scan move
+    scan_move_cmd = Cpt(EpicsSignal, ':SCAN_MOVE', kind='omitted')
+    # Scan pos 
+    scan_pos = Cpt(EpicsSignal, ':SCAN_POS', kind='omitted')
+
+class SmarAct(PCDSMotorBase):
+    """
+    Class for SmarAct motors controlled via the MCS2 controller. 
+    Includes both the motor record PVs, as well as the open loop PVs for 
+    controlling an un-encoded stage.
+    """
+    # These PVs will probably not be needed for most encoded motors, but can be
+    # useful
+    open_loop = Cpt(SmarActOpenLoop, '', kind='config')
 
 def Motor(prefix, **kwargs):
     """
