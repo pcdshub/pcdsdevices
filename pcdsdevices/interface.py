@@ -7,7 +7,6 @@ import numbers
 import re
 import signal
 import time
-import threading
 from contextlib import contextmanager
 from pathlib import Path
 from threading import Event, Thread
@@ -950,12 +949,10 @@ class LightpathMixin(OphydObject):
                     self._run_subs(sub_type=self.SUB_STATE)
                 elif self._retry_lightpath and not self._destroyed:
                     # Use this when the device wasn't ready to set states
-                    time.sleep(0.1)
                     kw = dict(obj=obj)
                     kw.update(kwargs)
-                    thread = threading.Thread(target=self._update_lightpath,
-                                              args=args, kwargs=kw)
-                    thread.start()
+                    util.schedule_task(self._update_lightpath,
+                                       args=args, kwargs=kw, delay=0.2)
         except Exception:
             # Without this, callbacks fail silently
             logger.exception('Error in lightpath update callback.')

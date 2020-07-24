@@ -13,11 +13,8 @@ however, if control of the center is desired the ``center`` sub-devices can be
 used.
 """
 import logging
-import time
-import threading
 from collections import OrderedDict
 
-import ophyd
 from ophyd import Component as Cpt
 from ophyd import Device
 from ophyd import DynamicDeviceComponent as DDCpt
@@ -31,6 +28,7 @@ from .epics_motor import BeckhoffAxis
 from .interface import FltMvInterface, MvInterface, LightpathMixin
 from .signal import PytmcSignal, NotImplementedSignal
 from .sensors import RTD
+from .utils import schedule_task
 
 logger = logging.getLogger(__name__)
 
@@ -389,17 +387,10 @@ class BeckhoffSlits(SlitsBase):
     def _exec_handler(self, *args, value, old_value, **kwargs):
         """Wait just a moment to queue up move requests."""
         if value == 1 and old_value == 0:
-            timer = threading.Timer(0.2, self._dispatch_move)
-
-    def _dispatch_move(self):
-        dispatcher = ophyd.cl.get_dispatcher()
-        dispatcher.schedule_utility_task(self._queued_exec)
-
-    def _queued_exec(self):
-        self.exec_move.put(1)
+            schedule_task(self.exec_move.put, args=(1,), delay=0.2)
 
     @done_all.sub_value
-    def _reset_exec_move(self, *args, value, **kwargs):
+    def _reset_exec_move(self, *args, value, old_value, **kwargs):
         """When we're done moving, reset the exec_move signal."""
         if value == 1 and old_value == 0:
             self.exec_queue.put(0)
