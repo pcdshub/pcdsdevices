@@ -1,6 +1,66 @@
 Release History
 ###############
 
+v2.8.0 (2020-07-24)
+===================
+
+Features
+--------
+- Expand variety schema support and add dotted dictionary access.
+
+Device Updates
+--------------
+- Update various vacuum char waveforms with ``string=True`` for proper
+  handling in ``typhos``.
+- Add various missing vacuum PVs to various vacuum devices.
+- Switch twincat state device error reset to ``kind=config`` so it shows up
+  by default in ``typhos``.
+- Update LCLS-II imagers to use the new ``AreaDetectorTyphos``.
+- The following devices now have ``lightpath`` support:
+  - ``FeeAtt``
+  - ``FEESolidAttenuator``
+  - ``XOffsetMirror``
+  - ``PPM``
+  - ``XPIM``
+  - ``PowerSlits``
+  - ``Kmono``
+  - ``VRC`` and all subclasses, such as ``VGC``
+  - ``VFS``
+- Update ``XOffsetMirror`` ``y_up``, ``x_up``, and ``pitch`` to
+  ``kind=hinted`` (previously ``normal``). These axes are usually the
+  most important.
+- Rename ``PPM.y_states`` and ``XPIM.y_states`` to ``target`` for reduced
+  redundancy in screens. The only name is aliased via a property.
+- ``PowerSlits`` now have a feature set on par with the old slits.
+- Update ``VFS`` ``valve_position`` and ``vfs_state`` to ``kind=hinted``
+  (previously ``normal``) for more focused statuses.
+
+New Devices
+-----------
+- Add support for Qmini Spectrometer.
+- Add ``AreaDetectorTyphos`` class for optimized screen view of most used
+  area detector signals.
+- Add ``RTDSL0`` and ``RTDSK0`` to support the rapid turnaround diagnostic
+  station configurations.
+
+Bugfixes
+--------
+- Fix issue with failing callback in ``IMS`` from upstream ``ophyd`` change.
+
+Maintenance
+-----------
+- Switch from using ``cf-units`` to ``pint`` for portability.
+- Add the following helpers:
+  - ``interface.LightpathMixin`` to help establish ``lightpath`` support.
+  - ``signal.NotImplementedSignal`` to help devices that will expand later.
+  - ``signal.InternalSignal`` to help implement read-only signals that can
+    be updated by the parent class.
+  - ``utils.schedule_task`` to help interface with the ``ophyd`` callback
+    queues.
+- The ``slits`` module has been refactored to accomodate both old and new
+  slits.
+
+
 v2.7.0 (2020-07-01)
 ===================
 
