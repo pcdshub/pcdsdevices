@@ -8,6 +8,7 @@ from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
 
 from .inout import InOutPositioner, InOutPVStatePositioner
+from .interface import LightpathMixin
 
 logger = logging.getLogger(__name__)
 
@@ -202,13 +203,24 @@ class VGCLegacy(ValveBase):
                        doc='Closed limit switch digital input')
 
 
-class VRC(VVC):
+class VRC(VVC, LightpathMixin):
     """Class for Gate Valves with Control and readback."""
+
+    # Configuration for lightpath
+    lightpath_cpts = ['open_limit', 'closed_limit']
+    _icon = 'fa.hourglass'
+
     state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal', doc='Valve state')
     open_limit = Cpt(EpicsSignalRO, ':OPN_DI_RBV', kind='hinted',
                      doc='Open limit switch digital input')
     closed_limit = Cpt(EpicsSignalRO, ':CLS_DI_RBV', kind='hinted',
                        doc='Closed limit switch digital input')
+
+    def _set_lightpath_states(self, lightpath_values):
+        """Callback for updating inserted/removed for lightpath."""
+
+        self._inserted = lightpath_values[self.closed_limit]['value']
+        self._removed = lightpath_values[self.open_limit]['value']
 
 
 class VGC(VRC):
@@ -237,11 +249,16 @@ class VGC(VRC):
                                       'interlocking this valve')
 
 
-class VFS(Device):
+class VFS(Device, LightpathMixin):
     """Class for Fast Shutter Valve."""
-    valve_position = Cpt(EpicsSignalRO, ':POS_STATE_RBV', kind='normal',
+
+    # Configuration for lightpath
+    lightpath_cpts = ['position_open', 'position_close']
+    _icon = 'fa.shield'
+
+    valve_position = Cpt(EpicsSignalRO, ':POS_STATE_RBV', kind='hinted',
                          doc='Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F')
-    vfs_state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal',
+    vfs_state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='hinted',
                     doc='Fast Shutter Current State')
     request_close = Cpt(EpicsSignalWithRBV, ':CLS_SW', kind='normal',
                         doc=('Request Fast Shutter to Close. When both close'
@@ -272,6 +289,10 @@ class VFS(Device):
                        doc=('Fast Shutter Vacuum Fault OK Readback'))
     mps_ok = Cpt(EpicsSignalRO, ':MPS_FAULT_OK_RBV', kind='normal',
                  doc='Fast Shutter Fast Fault Output OK')
+
+    def _set_lightpath_states(self, lightpath_values):
+        self._inserted = lightpath_values[self.position_close]['value']
+        self._removed = lightpath_values[self.position_open]['value']
 
 
 class VVCNO(Device):

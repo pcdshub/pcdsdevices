@@ -8,12 +8,13 @@ import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.pv_positioner import PVPositioner
+from ophyd.pv_positioner import PVPositioner, PVPositionerPC
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
 from .epics_motor import BeckhoffAxis
 from .inout import InOutPositioner
-from .interface import BaseInterface, FltMvInterface
+from .interface import BaseInterface, FltMvInterface, LightpathMixin
+from .signal import InternalSignal
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
@@ -221,7 +222,11 @@ class AttBase(FltMvInterface, PVPositioner):
         if event_type is None:
             event_type = self._default_sub
         if event_type == self.SUB_STATE and not self._has_subscribed_state:
-            self.done.subscribe(self._run_filt_state, run=False)
+            if self.done is not None:
+                obj = self.done
+            else:
+                obj = self.readback
+            obj.subscribe(self._run_filt_state, run=False)
             self._has_subscribed_state = True
         return cid
 
@@ -251,7 +256,7 @@ class AttBase3rd(AttBase):
     user_energy = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
 
 
-class FeeAtt(AttBase):
+class FeeAtt(AttBase, PVPositionerPC):
     """Old attenuator IOC in the FEE."""
     # Positioner Signals
     setpoint = Cpt(EpicsSignal, ':RDES', kind='normal')
@@ -352,7 +357,7 @@ def set_combined_attenuation(attenuation, *attenuators):
 '''
 
 
-class FEESolidAttenuator(Device, BaseInterface):
+class FEESolidAttenuator(Device, BaseInterface, LightpathMixin):
     """
     Solid attenuator variant from the LCLS-II XTES project.
 
@@ -369,6 +374,16 @@ class FEESolidAttenuator(Device, BaseInterface):
     name : str
         Alias for the Solid Attenuator.
     """
+
+    # QIcon for UX
+    _icon = 'fa.barcode'
+
+    # Register that all blades are needed for lightpath calc
+    lightpath_cpts = ['blade_{:02}'.format(i+1) for i in range(19)]
+
+    # Summary for lightpath view
+    num_in = Cpt(InternalSignal, kind='hinted')
+    num_out = Cpt(InternalSignal, kind='hinted')
 
     blade_01 = Cpt(BeckhoffAxis, ':MMS:01', kind='hinted')
     blade_02 = Cpt(BeckhoffAxis, ':MMS:02', kind='hinted')
@@ -389,6 +404,21 @@ class FEESolidAttenuator(Device, BaseInterface):
     blade_17 = Cpt(BeckhoffAxis, ':MMS:17', kind='hinted')
     blade_18 = Cpt(BeckhoffAxis, ':MMS:18', kind='hinted')
     blade_19 = Cpt(BeckhoffAxis, ':MMS:19', kind='hinted')
+
+    def __init__(self, prefix, *, name, **kwargs):
+        self._blade_positions = {}
+        super().__init__(prefix, name=name, **kwargs)
+
+    def _set_lightpath_states(self, lightpath_values):
+        values = [kw['value'] for kw in lightpath_values.values()]
+        # In is at zero, 2mm deadband is standard
+        inserted_list = [value < 2 for value in values]
+        self._inserted = any(inserted_list)
+        self._removed = not self._inserted
+        self.num_in.put(inserted_list.count(True), force=True)
+        self.num_out.put(inserted_list.count(False), force=True)
+        # No calc yet
+        self._transmission = 1
 
 
 class GasAttenuator(Device, BaseInterface):

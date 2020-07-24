@@ -78,12 +78,20 @@ class InOutPositioner(StatePositioner):
     @property
     def inserted(self):
         """`True` if the device is inserted."""
-        return self._pos_in_list(self.in_states)
+        return self.check_inserted()
+
+    def check_inserted(self, state=None):
+        """Query if a particular state counts as inserted."""
+        return self._pos_in_list(self.in_states, check_state=state)
 
     @property
     def removed(self):
         """`True` if the device is removed."""
-        return self._pos_in_list(self.out_states)
+        return self.check_removed()
+
+    def check_removed(self, state=None):
+        """Query if a particular state counts as removed."""
+        return self._pos_in_list(self.out_states, check_state=state)
 
     def insert(self, moved_cb=None, timeout=None, wait=False):
         """
@@ -116,17 +124,28 @@ class InOutPositioner(StatePositioner):
         This will be a float between 0 and 1, where 0 is no beam and 1 is full
         transmission.
         """
+        return self.check_transmission()
 
-        state_index = self.get_state(self.position).value
+    def check_transmission(self, state=None):
+        """Query the transition at a particular state."""
+        if state is None:
+            state = self.position
+        state_index = self.get_state(state).value
         return self._trans_enum.get(state_index, math.nan)
 
     def _extend_trans_enum(self, state_list, default):
         for state in state_list:
-            index = self.states_list.index(state)
-            self._trans_enum[index] = self._transmission.get(state, default)
+            self._update_trans_enum(state, default)
 
-    def _pos_in_list(self, state_list):
-        current_state = self.get_state(self.position)
+    def _update_trans_enum(self, state, default):
+        index = self.states_list.index(state)
+        self._trans_enum[index] = self._transmission.get(state, default)
+
+    def _pos_in_list(self, state_list, check_state=None):
+        if check_state is None:
+            current_state = self.get_state(self.position)
+        else:
+            current_state = self.get_state(check_state)
         for state in state_list:
             if current_state == self.get_state(state):
                 return True

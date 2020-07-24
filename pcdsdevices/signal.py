@@ -13,7 +13,8 @@ import logging
 from threading import RLock, Thread
 
 import numpy as np
-from ophyd.signal import EpicsSignal, EpicsSignalBase, EpicsSignalRO, Signal
+from ophyd.signal import (EpicsSignal, EpicsSignalBase, EpicsSignalRO,
+                          Signal, SignalRO)
 from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
 from pytmc.pragmas import normalize_io
 
@@ -266,3 +267,29 @@ class AvgSignal(Signal):
             self.index = (self.index + 1) % len(self.values)
             # This takes a mean, skipping nan values.
             self.put(np.nanmean(self.values))
+
+
+class NotImplementedSignal(SignalRO):
+    """Dummy signal for a not implemented feature."""
+
+    def __init__(self, *args, **kwargs):
+        kwargs.pop('value', None)
+        super().__init__(value='Not implemented', **kwargs)
+
+
+class InternalSignal(SignalRO):
+    """
+    Class Signal that stores info but should only be updated by the class.
+
+    SignalRO can be updated with _readback, but this does not process
+    callbacks. For the signal to behave normally, we need to bypass the put
+    override.
+
+    To put to one of these signals, simply call put with force=True
+    """
+
+    def put(self, value, *, timestamp=None, force=False):
+        return Signal.put(self, value, timestamp=timestamp, force=force)
+
+    def set(self, value, *, timestamp=None, force=False):
+        return Signal.set(self, value, timestamp=timestamp, force=force)

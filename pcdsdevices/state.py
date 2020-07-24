@@ -79,6 +79,7 @@ class StatePositioner(Device, PositionerBase, MvInterface):
             raise TypeError(('StatePositioner must be subclassed with at '
                              'least a state signal'))
         self._state_initialized = False
+        self._has_subscribed_state = False
         super().__init__(prefix, name=name, **kwargs)
         if self.states_list:
             self._state_init()
@@ -99,7 +100,6 @@ class StatePositioner(Device, PositionerBase, MvInterface):
                 self._invalid_states = [self._unknown] + self._invalid_states
             if not hasattr(self, 'states_enum'):
                 self.states_enum = self._create_states_enum()
-            self._has_subscribed_state = False
             self._state_initialized = True
 
     def _late_state_init(self, *args, enum_strs=None, **kwargs):

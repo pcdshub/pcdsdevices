@@ -285,14 +285,16 @@ class XOffsetMirror(Device, BaseInterface):
     name : str
         Alias for the device.
     """
+    # UI representation
+    _icon = 'fa.minus-square'
 
     # Motor components: can read/write positions
-    y_up = Cpt(BeckhoffAxis, ':MMS:YUP', kind='normal')
-    y_dwn = Cpt(BeckhoffAxis, ':MMS:YDWN', kind='config')
-    x_up = Cpt(BeckhoffAxis, ':MMS:XUP', kind='normal')
-    x_dwn = Cpt(BeckhoffAxis, ':MMS:XDWN', kind='config')
-    pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='normal')
+    y_up = Cpt(BeckhoffAxis, ':MMS:YUP', kind='hinted')
+    x_up = Cpt(BeckhoffAxis, ':MMS:XUP', kind='hinted')
+    pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='hinted')
     bender = Cpt(BeckhoffAxis, ':MMS:BENDER', kind='normal')
+    y_dwn = Cpt(BeckhoffAxis, ':MMS:YDWN', kind='config')
+    x_dwn = Cpt(BeckhoffAxis, ':MMS:XDWN', kind='config')
 
     # Gantry components
     gantry_x = Cpt(PytmcSignal, ':GANTRY_X', io='i', kind='normal')
@@ -312,3 +314,11 @@ class XOffsetMirror(Device, BaseInterface):
     pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
     bender_enc_rms = Cpt(PytmcSignal, ':ENC:BENDER:RMS', io='i',
                          kind='normal')
+
+    # Lightpath config: implement inserted, removed, transmission, subscribe
+    # For now, keep it simple. Some mirrors need more than this, but it is
+    # sufficient for MR1L0 and MR2L0 for today.
+    inserted = True
+    removed = False
+    transmission = 1
+    SUB_STATE = 'state'

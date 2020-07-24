@@ -18,7 +18,7 @@ from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
                                      PCDSAreaDetectorTyphos)
 from .epics_motor import IMS, BeckhoffAxis
 from .inout import InOutRecordPositioner, TwinCATInOutPositioner
-from .interface import BaseInterface
+from .interface import BaseInterface, LightpathInOutMixin
 from .sensors import TwinCATThermocouple
 from .signal import PytmcSignal
 from .state import StatePositioner
@@ -251,7 +251,7 @@ class PIMWithBoth(PIMWithFocus, PIMWithLED):
     pass
 
 
-class LCLS2ImagerBase(Device, BaseInterface):
+class LCLS2ImagerBase(Device, BaseInterface, LightpathInOutMixin):
     """
     Shared PVs and components from the LCLS2 imagers.
 
@@ -261,8 +261,11 @@ class LCLS2ImagerBase(Device, BaseInterface):
 
     tab_component_names = True
 
-    y_states = Cpt(TwinCATInOutPositioner, ':MMS:STATE', kind='hinted',
-                   doc='Control of the diagnostic stack via saved positions.')
+    lightpath_cpts = ['target']
+    _icon = 'fa.video-camera'
+
+    target = Cpt(TwinCATInOutPositioner, ':MMS:STATE', kind='hinted',
+                 doc='Control of the diagnostic stack via saved positions.')
     y_motor = Cpt(BeckhoffAxis, ':MMS', kind='normal',
                   doc='Direct control of the diagnostic stack motor.')
     detector = Cpt(PCDSAreaDetectorTyphos, ':CAM:', kind='normal',
@@ -270,6 +273,11 @@ class LCLS2ImagerBase(Device, BaseInterface):
     cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config',
                     doc='Camera power supply controls.')
     set_metadata(cam_power, dict(variety='command-enum'))
+
+    @property
+    def y_states(self):
+        """Alias old name. Will deprecate."""
+        return self.target
 
 
 class PPMPowerMeter(Device, BaseInterface):
