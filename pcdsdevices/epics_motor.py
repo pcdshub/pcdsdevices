@@ -513,13 +513,13 @@ class SmarActOpenLoop(Device):
     # Frequency of steps
     step_freq = Cpt(EpicsSignal, ':STEP_FREQ', kind='config')
     # Number of steps per step forward, backward command
-    step_count = Cpt(EpicsSignal, ':STEP_COUNT', kind='normal')
+    jog_step_size = Cpt(EpicsSignal, ':STEP_COUNT', kind='normal')
     # Jog forward 
-    step_fwd_cmd = Cpt(EpicsSignal, ':STEP_FORWARD', kind='normal')
+    jog_fwd = Cpt(EpicsSignal, ':STEP_FORWARD', kind='normal')
     # Jog backward 
-    step_rev_cmd = Cpt(EpicsSignal, ':STEP_REVERSE', kind='normal')
+    jog_rev = Cpt(EpicsSignal, ':STEP_REVERSE', kind='normal')
     # Total number of steps counted
-    total_step_count = Cpt(EpicsSignal, ':TOTAL_STEP_COUNT', kind='normal')
+    total_step_count = Cpt(EpicsSignalRO, ':TOTAL_STEP_COUNT', kind='normal')
     # Reset steps ("home")
     step_clear_cmd = Cpt(EpicsSignal, ':CLEAR_COUNT', kind='config')
     # Scan move
