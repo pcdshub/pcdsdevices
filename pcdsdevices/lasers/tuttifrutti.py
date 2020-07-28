@@ -90,7 +90,7 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
     dmisc = {'banana' : banana}
 
     ttf = TutttFruttiBase('LAS:TTF:01', nf=True, ff=True, spec=True, ell=True,
-                           misc=[dmisc])
+                           misc=dmisc)
     """
     cpts = {}
     if nf:
