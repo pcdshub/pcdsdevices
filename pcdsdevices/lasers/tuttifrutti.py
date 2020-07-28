@@ -63,14 +63,15 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
 
     misc : dict of ophyd.FormattedComponent <empty>
         Dictionary of FCpt for providing miscellaneous Ophyd Component objects
-        to the TuttiFrutti. Used for non-standard devices or when you need to 
+        to the TuttiFrutti. Used for non-standard devices or when you need to
         hack in a component that hasn't made it into a released TuttiFrutti
         object yet (can you say "Commissioning"?). The dictionary key is the
-        desired name of the component. 
+        desired name of the component.
 
         Note: you must use the full base PV in the FCpt when instantiating it
-        (see example), even if the base PV is the same as the TuttiFrutti. We 
-        are using FCpt here to get around possible PV naming incompatibilities          (I'm looking at you, EK9000...). 
+        (see example), even if the base PV is the same as the TuttiFrutti. We
+        are using FCpt here to get around possible PV naming incompatibilities
+        (I'm looking at you, EK9000...).
 
     Examples
     --------
