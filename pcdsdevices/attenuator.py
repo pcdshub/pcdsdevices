@@ -16,6 +16,7 @@ from .epics_motor import BeckhoffAxis
 from .inout import InOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathMixin
 from .signal import InternalSignal
+from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
@@ -481,10 +482,16 @@ class AttenuatorCalculatorBase(Device, BaseInterface):
                       kind='config')
     best_config = Cpt(EpicsSignalRO, ':SYS:BestConfiguration_RBV',
                       kind='normal')
+    set_metadata(best_config, dict(variety='array-nd'))
+    # TODO: array-tabular would be nice, but does not work in typhos yet
+
     active_config = Cpt(EpicsSignalRO, ':SYS:ActiveConfiguration_RBV',
                         kind='normal')
+    set_metadata(active_config, dict(variety='array-nd'))
+    # TODO: array-tabular would be nice, but does not work in typhos yet
 
-    run_calculation = Cpt(EpicsSignal, ':SYS:Run.PROC', kind='config')
+    run_calculation = Cpt(EpicsSignal, ':SYS:Run', kind='config')
+    set_metadata(run_calculation, dict(variety='command-proc', value=1))
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
