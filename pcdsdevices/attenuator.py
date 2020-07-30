@@ -507,6 +507,10 @@ class AttenuatorCalculatorBase(Device, BaseInterface):
         """
         Calculate a blade configuration given a desired transmission value.
 
+        If ``energy`` is not specified, this method defaults to using the
+        current L-line photon energy, as reported by the Photon Machine
+        Protection System: ``PMPS:LFE:PE:UND:CurrentPhotonEnergy_RBV``.
+
         Parameters
         ----------
         transmission : float
