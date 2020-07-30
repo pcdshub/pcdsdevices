@@ -7,6 +7,7 @@ import time
 import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
+from ophyd.device import DynamicDeviceComponent as DDC
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositioner, PVPositionerPC
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
@@ -441,3 +442,110 @@ class GasAttenuator(Device, BaseInterface):
 
     not_implemented = Cpt(SignalRO, name="Not Implemented",
                           value="Not Implemented", kind='normal')
+
+
+class AttenuatorCalculatorFilter(Device, BaseInterface):
+    material = Cpt(EpicsSignal, 'Material', kind='hinted')
+    thickness = Cpt(EpicsSignal, 'Thickness', kind='hinted')
+    is_stuck = Cpt(EpicsSignal, 'IsStuck', kind='hinted')
+    closest_energy = Cpt(EpicsSignalRO, 'ClosestEnergy_RBV', kind='config')
+    transmission = Cpt(EpicsSignal, 'Transmission_RBV', kind='normal')
+    transmission_3omega = Cpt(EpicsSignal, 'Transmission3Omega_RBV',
+                              kind='normal')
+
+    def __init__(self, *args, index, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.index = index
+
+
+class AttenuatorCalculatorBase(Device, BaseInterface):
+    """
+    Base class for attenuator calculator devices.
+    """
+
+    # QIcon for UX
+    _icon = 'fa.barcode'
+
+    calc_mode = Cpt(EpicsSignal, ':SYS:CalcMode', kind='config',
+                    string=True)
+
+    energy_source = Cpt(EpicsSignal, ':SYS:EnergySource', kind='config',
+                        string=True)
+    energy_custom = Cpt(EpicsSignal, ':SYS:CustomPhotonEnergy', kind='config')
+    energy_actual = Cpt(EpicsSignalRO, ':SYS:ActualPhotonEnergy_RBV',
+                        kind='config')
+
+    desired_transmission = Cpt(EpicsSignal, ':SYS:DesiredTransmission',
+                               kind='normal')
+    last_energy = Cpt(EpicsSignalRO, ':SYS:LastPhotonEnergy_RBV',
+                      kind='config')
+    best_config = Cpt(EpicsSignalRO, ':SYS:BestConfiguration_RBV',
+                      kind='normal')
+    active_config = Cpt(EpicsSignalRO, ':SYS:ActiveConfiguration_RBV',
+                        kind='normal')
+
+    run_calculation = Cpt(EpicsSignal, ':SYS:Run.PROC', kind='config')
+
+    def __init__(self, prefix, *, name, **kwargs):
+        super().__init__(prefix, name=name, **kwargs)
+        self.filters_by_index = {
+            index: getattr(self.filters, attr)
+            for index, attr in self._filter_index_to_attr.items()
+        }
+
+    def calculate(self, transmission, *, energy=None, use_floor=True):
+        """
+        Calculate a blade configuration given a desired transmission value.
+
+        Parameters
+        ----------
+        transmission : float
+            The desired transmission, in the range [0, 1].
+
+        energy : float, optional
+            The photon energy to use for the calculation.
+
+        use_floor : bool, optional
+            Select floor or ceiling transmission estimation.  Defaults to
+            floor.
+        """
+
+        if energy is not None:
+            self.energy_source.put('Custom')
+            self.energy_custom.put(float(energy))
+        else:
+            self.energy_source.put('Actual')
+
+        self.calc_mode.put('Floor' if use_floor else 'Ceiling')
+        self.desired_transmission.put(transmission)
+        self.run_calculation.put(1, wait=True)
+        return self.best_config.get(use_monitor=False)
+
+
+class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
+    """
+    Solid attenuator variant from the LCLS-II XTES project.
+
+    Parameters
+    ----------
+    prefix : str
+        Full Solid Attenuator base PV.
+
+    name : str
+        Alias for the Solid Attenuator.
+    """
+
+    num_filters = 18
+    _filter_index_to_attr = {
+        idx: f'filter_{idx:02d}' for idx in range(1, num_filters + 1)
+    }
+
+    # Creates filters from 1 to num_filters, with attributes filter_01 and so
+    # on.
+    filters = DDC(
+        {attr: (AttenuatorCalculatorFilter,
+                f':FILTER:{idx:02d}:',
+                {'index': idx})
+         for idx, attr in _filter_index_to_attr.items()
+         }
+    )
