@@ -485,6 +485,9 @@ class AttenuatorCalculatorBase(Device, BaseInterface):
     set_metadata(best_config, dict(variety='array-nd'))
     # TODO: array-tabular would be nice, but does not work in typhos yet
 
+    best_config_error = Cpt(EpicsSignalRO, ':SYS:BestConfigError_RBV',
+                            kind='normal')
+
     active_config = Cpt(EpicsSignalRO, ':SYS:ActiveConfiguration_RBV',
                         kind='normal')
     set_metadata(active_config, dict(variety='array-nd'))
