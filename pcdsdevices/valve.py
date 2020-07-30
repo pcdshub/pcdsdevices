@@ -264,7 +264,8 @@ class VFS(Device, LightpathMixin):
                         doc=('Request Fast Shutter to Close. When both close'
                              'and open are requested, VFS will close.'))
     request_open = Cpt(EpicsSignalWithRBV, ':OPN_SW', kind='normal',
-                       doc=('Request Fast Shutter to Open. When both close and'
+                       doc=('Request Fast Shutter to Open. Requires a rising'
+                            'EPICS signal to open. When both close and'
                             'open are requested, VFS will close.'))
     reset_vacuum_fault = Cpt(EpicsSignalWithRBV, ':ALM_RST', kind='normal',
                              doc=('Reset Fast Shutter Vacuum Faults: fast'
