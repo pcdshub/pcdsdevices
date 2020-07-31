@@ -496,6 +496,9 @@ class AttenuatorCalculatorBase(Device, BaseInterface):
     run_calculation = Cpt(EpicsSignal, ':SYS:Run', kind='config')
     set_metadata(run_calculation, dict(variety='command-proc', value=1))
 
+    apply_config = Cpt(EpicsSignal, ':SYS:ApplyConfiguration', kind='config')
+    set_metadata(apply_config, dict(variety='command-proc', value=1))
+
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
         self.filters_by_index = {
