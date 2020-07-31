@@ -94,16 +94,16 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
     """
     cpts = {}
     if nf:
-        cpt = Cpt(PCDSAreaDetectorTyphos, '_NF:', kind='normal')
+        cpt = Cpt(PCDSAreaDetectorTyphos, '_NF1:', kind='normal')
         cpts['nf_camera'] = cpt
     if nf:
-        cpt = Cpt(PCDSAreaDetectorTyphos, '_FF:', kind='normal')
+        cpt = Cpt(PCDSAreaDetectorTyphos, '_FF1:', kind='normal')
         cpts['ff_camera'] = cpt
     if spec:
-        cpt = Cpt(QminiSpectrometer, '_SP', kind='normal')
+        cpt = Cpt(QminiSpectrometer, '_SP1', kind='normal')
         cpts['spectrometer'] = cpt
     if pm:
-        cpt = Cpt(El3174AiCh, '_PM', kind='normal')
+        cpt = Cpt(El3174AiCh, '_PM1', kind='normal')
         cpts['power_meter'] = cpt
     if diode:
         raise(NotImplemented, "Diode is not yet implemented")
@@ -116,7 +116,7 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
     if wfs:
         raise(NotImplemented, "Wavefront sensor is not yet implemented")
     if ell:
-        cpt = Cpt(Ell6, '_SL', kind='normal')
+        cpt = Cpt(Ell6, '_SL1:ELL:M1', kind='normal')
         cpts['slider'] = cpt
     # This feels kind of hacky, but also kind of cool.
     if misc:
