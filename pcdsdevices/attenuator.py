@@ -446,13 +446,34 @@ class GasAttenuator(Device, BaseInterface):
 
 
 class AttenuatorCalculatorFilter(Device, BaseInterface):
-    material = Cpt(EpicsSignal, 'Material', kind='hinted')
-    thickness = Cpt(EpicsSignal, 'Thickness', kind='hinted')
-    is_stuck = Cpt(EpicsSignal, 'IsStuck', kind='hinted')
-    closest_energy = Cpt(EpicsSignalRO, 'ClosestEnergy_RBV', kind='config')
-    transmission = Cpt(EpicsSignal, 'Transmission_RBV', kind='normal')
-    transmission_3omega = Cpt(EpicsSignal, 'Transmission3Omega_RBV',
-                              kind='normal')
+    material = Cpt(
+        EpicsSignal, 'Material', kind='hinted', string=True,
+        doc='The material formula (e.g., Si, C)'
+    )
+    thickness = Cpt(
+        EpicsSignal, 'Thickness', kind='hinted',
+        doc='Thickness in micron',
+    )
+    is_stuck = Cpt(
+        EpicsSignal, 'IsStuck', kind='hinted',
+        doc='Is the filter stuck / unusable?',
+    )
+    closest_energy = Cpt(
+        EpicsSignalRO, 'ClosestEnergy_RBV', kind='config',
+        doc='Closest tabulated energy available to the requested one',
+    )
+    transmission = Cpt(EpicsSignal, 'Transmission_RBV', kind='normal',
+                       doc='Normalized transmission at the reported energy',
+                       )
+    set_metadata(transmission, dict(variety='scalar',
+                                    display_format='exponential'))
+
+    transmission_3omega = Cpt(
+        EpicsSignal, 'Transmission3Omega_RBV', kind='normal',
+        doc='Normalized transmission at 3 * the reported energy',
+                              )
+    set_metadata(transmission_3omega, dict(variety='scalar',
+                                           display_format='exponential'))
 
     def __init__(self, *args, index, **kwargs):
         super().__init__(*args, **kwargs)
@@ -467,39 +488,74 @@ class AttenuatorCalculatorBase(Device, BaseInterface):
     # QIcon for UX
     _icon = 'fa.barcode'
 
-    calc_mode = Cpt(EpicsSignal, ':SYS:CalcMode', kind='config',
-                    string=True)
+    calc_mode = Cpt(
+        EpicsSignal, ':SYS:CalcMode', kind='config', string=True,
+        doc='Floor or Ceiling calculation',
+    )
 
-    energy_source = Cpt(EpicsSignal, ':SYS:EnergySource', kind='config',
-                        string=True)
-    energy_custom = Cpt(EpicsSignal, ':SYS:CustomPhotonEnergy', kind='config')
-    energy_actual = Cpt(EpicsSignalRO, ':SYS:ActualPhotonEnergy_RBV',
-                        kind='config')
+    energy_source = Cpt(
+        EpicsSignal, ':SYS:EnergySource', kind='config', string=True,
+        doc='Use beamline photon energy or custom energy?',
+    )
 
-    desired_transmission = Cpt(EpicsSignal, ':SYS:DesiredTransmission',
-                               kind='normal')
-    last_energy = Cpt(EpicsSignalRO, ':SYS:LastPhotonEnergy_RBV',
-                      kind='config')
-    best_config = Cpt(EpicsSignalRO, ':SYS:BestConfiguration_RBV',
-                      kind='normal')
+    energy_custom = Cpt(
+        EpicsSignal, ':SYS:CustomPhotonEnergy', kind='config',
+        doc='Custom energy to use for calculations [eV]',
+    )
+
+    energy_actual = Cpt(
+        EpicsSignalRO, ':SYS:ActualPhotonEnergy_RBV', kind='config',
+        doc='The reported beamline photon energy [eV]',
+    )
+
+    desired_transmission = Cpt(
+        EpicsSignal, ':SYS:DesiredTransmission', kind='normal',
+        doc='Desired normalized transmission value',
+    )
+    set_metadata(desired_transmission, dict(variety='scalar',
+                                            display_format='exponential'))
+
+    last_energy = Cpt(
+        EpicsSignalRO, ':SYS:LastPhotonEnergy_RBV', kind='config',
+        doc=('The photon energy used for the previous calculation; i.e., '
+             'the one that goes along with `best_config`.'),
+    )
+
+    best_config = Cpt(
+        EpicsSignalRO, ':SYS:BestConfiguration_RBV', kind='normal',
+        doc='The best configuration of filters for the desired transmission.',
+    )
     set_metadata(best_config, dict(variety='array-nd'))
     # TODO: array-tabular would be nice, but does not work in typhos yet
 
-    best_config_error = Cpt(EpicsSignalRO, ':SYS:BestConfigError_RBV',
-                            kind='normal')
+    best_config_error = Cpt(
+        EpicsSignalRO, ':SYS:BestConfigError_RBV', kind='normal',
+        doc='Desired to calculated transmission error',
+    )
 
-    active_config = Cpt(EpicsSignalRO, ':SYS:ActiveConfiguration_RBV',
-                        kind='normal')
+    active_config = Cpt(
+        EpicsSignalRO, ':SYS:ActiveConfiguration_RBV', kind='normal',
+        doc='Where the filters are now',
+    )
     set_metadata(active_config, dict(variety='array-nd'))
     # TODO: array-tabular would be nice, but does not work in typhos yet
 
-    run_calculation = Cpt(EpicsSignal, ':SYS:Run', kind='config')
+    run_calculation = Cpt(
+        EpicsSignal, ':SYS:Run', kind='config',
+        doc='Start the calculation',
+    )
     set_metadata(run_calculation, dict(variety='command-proc', value=1))
 
-    apply_config = Cpt(EpicsSignal, ':SYS:ApplyConfiguration', kind='config')
+    apply_config = Cpt(
+        EpicsSignal, ':SYS:ApplyConfiguration', kind='config',
+        doc='Apply the best configuration (i.e., move the filters)',
+    )
     set_metadata(apply_config, dict(variety='command-proc', value=1))
 
-    moving = Cpt(EpicsSignal, ':SYS:Moving_RBV', kind='config')
+    moving = Cpt(
+        EpicsSignal, ':SYS:Moving_RBV', kind='config',
+        doc='Are filters being moved in/out?',
+    )
     set_metadata(moving, dict(variety='bitmask', bits=1))
 
     def __init__(self, prefix, *, name, **kwargs):
