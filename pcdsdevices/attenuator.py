@@ -499,6 +499,9 @@ class AttenuatorCalculatorBase(Device, BaseInterface):
     apply_config = Cpt(EpicsSignal, ':SYS:ApplyConfiguration', kind='config')
     set_metadata(apply_config, dict(variety='command-proc', value=1))
 
+    moving = Cpt(EpicsSignal, ':SYS:Moving_RBV', kind='config')
+    set_metadata(moving, dict(variety='bitmask', bits=1))
+
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
         self.filters_by_index = {
@@ -552,12 +555,14 @@ class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
         Alias for the Solid Attenuator.
     """
 
+    first_filter = 2
     num_filters = 18
     _filter_index_to_attr = {
-        idx: f'filter_{idx:02d}' for idx in range(1, num_filters + 1)
+        idx: f'filter_{idx:02d}' for idx in range(first_filter,
+                                                  num_filters + first_filter)
     }
 
-    # Creates filters from 1 to num_filters, with attributes filter_01 and so
+    # Creates filters from 1 to num_filters, with attributes filter_02 and so
     # on.
     filters = DDC(
         {attr: (AttenuatorCalculatorFilter,
