@@ -508,6 +508,20 @@ class AttenuatorCalculatorBase(Device, BaseInterface):
         doc='The reported beamline photon energy [eV]',
     )
 
+    actual_transmission = Cpt(
+        EpicsSignalRO, ':SYS:ActualTransmission_RBV', kind='normal',
+        doc='Actual normalized transmission value',
+    )
+    set_metadata(actual_transmission,
+                 dict(variety='scalar', display_format='exponential'))
+
+    actual_transmission_3omega = Cpt(
+        EpicsSignalRO, ':SYS:Actual3OmegaTransmission_RBV', kind='normal',
+        doc='Actual 3 omega normalized transmission value',
+    )
+    set_metadata(actual_transmission_3omega,
+                 dict(variety='scalar', display_format='exponential'))
+
     desired_transmission = Cpt(
         EpicsSignal, ':SYS:DesiredTransmission', kind='normal',
         doc='Desired normalized transmission value',
