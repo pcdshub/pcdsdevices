@@ -531,9 +531,7 @@ class SmarActOpenLoop(Device):
 
 class SmarAct(PCDSMotorBase):
     """
-    Class for SmarAct motors controlled via the MCS2 controller.
-    Includes both the motor record PVs, as well as the open loop PVs for
-    controlling an un-encoded stage.
+    Class for encoded SmarAct motors controlled via the MCS2 controller.
     """
     # These PVs will probably not be needed for most encoded motors, but can be
     # useful
