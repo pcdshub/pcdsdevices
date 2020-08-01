@@ -16,7 +16,7 @@ def TuttiFruttiCls(prefix, name, nf=False, ff=False, spec=False, pm=False,
                    diode=False, em=False, qc=False, pd=False, wfs=False,
                    ell=False, misc=[]):
     """
-    Instantiate a TuttiFrutti class. See TuttiFrutti function for more details.
+    Generate a TuttiFrutti class. See TuttiFrutti function for more details.
     """
     cpts = {}
     if nf:
