@@ -12,12 +12,54 @@ from pcdsdevices.lasers.ek9000 import El3174AiCh
 from pcdsdevices.lasers.elliptec import Ell6
 
 
+def TuttiFruttiCls(prefix, name, nf=False, ff=False, spec=False, pm=False,
+                   diode=False, em=False, qc=False, pd=False, wfs=False,
+                   ell=False, misc=[]):
+    """
+    Instantiate a TuttiFrutti class. See TuttiFrutti function for more details.
+    """
+    cpts = {}
+    if nf:
+        cpt = Cpt(PCDSAreaDetectorTyphos, '_NF1:', kind='normal')
+        cpts['nf_camera'] = cpt
+    if nf:
+        cpt = Cpt(PCDSAreaDetectorTyphos, '_FF1:', kind='normal')
+        cpts['ff_camera'] = cpt
+    if spec:
+        cpt = Cpt(QminiSpectrometer, '_SP1', kind='normal')
+        cpts['spectrometer'] = cpt
+    if pm:
+        cpt = Cpt(El3174AiCh, '_PM1', kind='normal')
+        cpts['power_meter'] = cpt
+    if diode:
+        raise(NotImplemented, "Diode is not yet implemented")
+    if em:
+        raise(NotImplemented, "Energy meter is not yet implemented")
+    if qc:
+        raise(NotImplemented, "Quad cell is not yet implemented")
+    if pd:
+        raise(NotImplemented, "Pulse duration is not yet implemented")
+    if wfs:
+        raise(NotImplemented, "Wavefront sensor is not yet implemented")
+    if ell:
+        cpt = Cpt(Ell6, '_SL1:ELL:M1', kind='normal')
+        cpts['slider'] = cpt
+    if misc:  # This feels kind of hacky, but also kind of cool.
+        for cptname, cpt in misc.items():
+            cpts[cptname] = cpt
+    cls_name = prefix.replace(':', '_') + '_TuttiFrutti'
+    cls = create_device_from_components(cls_name, base_class=Device,
+                                        class_kwargs=None, **cpts)
+
+    return cls
+
+
 def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
                 diode=False, em=False, qc=False, pd=False, wfs=False,
                 ell=False, misc=[]):
     """
-    Factory function for Tuttifrutti diagnostic stack device. Returns a class
-    based on the diagnostics installed.
+    Factory function for Tuttifrutti diagnostic stack device. Returns a device
+    based on the specified components.
 
     Sufficient for basic control and generation of Typhos screens.
 
@@ -61,17 +103,19 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
         Flag indicating if a 2-position filter slider is installed is
         installed.
 
-    misc : dict of ophyd.FormattedComponent <empty>
-        Dictionary of FCpt for providing miscellaneous Ophyd Component objects
-        to the TuttiFrutti. Used for non-standard devices or when you need to
-        hack in a component that hasn't made it into a released TuttiFrutti
-        object yet (can you say "Commissioning"?). The dictionary key is the
-        desired name of the component.
+    misc : dict of ophyd.Component or ophyd.FormattedComponent <empty>
+        Dictionary of Cpt and/or FCpt for providing miscellaneous Ophyd
+        Component objects to the TuttiFrutti. Used for non-standard devices or
+        when you need to hack in a component that hasn't made it into a
+        released version of TuttiFrutti object yet (can you say
+        "Commissioning"?). The dictionary key is the desired name of the
+        attribute name for the component.
 
         Note: you must use the full base PV in the FCpt when instantiating it
         (see example), even if the base PV is the same as the TuttiFrutti. We
-        are using FCpt here to get around possible PV naming incompatibilities
-        (I'm looking at you, EK9000...).
+        can use FCpt here to temporarily get around possible PV naming
+        incompatibilities with the L2SI laser PV naming convention (I'm looking
+        at you, EK9000...).
 
     Examples
     --------
@@ -82,50 +126,21 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
 
     # Create a TuttiFrutti as above, while including a non-standard component.
 
+    from ophyd import Component as Cpt
     from ophyd import FormattedComponent as FCpt
 
-    from fruit import Banana
-    banana = FCpt(Banana, 'IOC:LAS:BANANA', kind='normal') # Use full base PV
+    from fruit import Apple, Orange
+    apple = Cpt(Apple, ':APPLE', kind='normal') # Use TuttiFrutti base PV
+    orange = FCpt(Orange, 'IOC:LAS:ORANGE', kind='normal') # Use full base PV
 
-    dmisc = {'banana' : banana}
+    dmisc = {'apple': apple, 'banana' : banana}
 
     ttf = TutttFruttiBase('LAS:TTF:01', nf=True, ff=True, spec=True, ell=True,
                            misc=dmisc)
     """
-    cpts = {}
-    if nf:
-        cpt = Cpt(PCDSAreaDetectorTyphos, '_NF1:', kind='normal')
-        cpts['nf_camera'] = cpt
-    if nf:
-        cpt = Cpt(PCDSAreaDetectorTyphos, '_FF1:', kind='normal')
-        cpts['ff_camera'] = cpt
-    if spec:
-        cpt = Cpt(QminiSpectrometer, '_SP1', kind='normal')
-        cpts['spectrometer'] = cpt
-    if pm:
-        cpt = Cpt(El3174AiCh, '_PM1', kind='normal')
-        cpts['power_meter'] = cpt
-    if diode:
-        raise(NotImplemented, "Diode is not yet implemented")
-    if em:
-        raise(NotImplemented, "Energy meter is not yet implemented")
-    if qc:
-        raise(NotImplemented, "Quad cell is not yet implemented")
-    if pd:
-        raise(NotImplemented, "Pulse duration is not yet implemented")
-    if wfs:
-        raise(NotImplemented, "Wavefront sensor is not yet implemented")
-    if ell:
-        cpt = Cpt(Ell6, '_SL1:ELL:M1', kind='normal')
-        cpts['slider'] = cpt
-    # This feels kind of hacky, but also kind of cool.
-    if misc:
-        for cptname, cpt in misc.items():
-            cpts[cptname] = cpt
-    cls_name = prefix.replace(':', '_') + '_TuttiFrutti'
-    cls = create_device_from_components(cls_name, base_class=Device,
-                                        class_kwargs=None, **cpts)
-
+    cls = TuttiFruttiCls(prefix, name, nf=nf, ff=ff, spec=spec, pm=pm,
+                         diode=diode, em=em, qc=qc, pd=pd, wfs=wfs, ell=False,
+                         misc=misc)
     dev = cls(prefix, name=name)
 
     return dev
