@@ -14,7 +14,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 from .epics_motor import BeckhoffAxis
 from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import (BaseInterface, FltMvInterface,
-                        LightpathMixin, LightpathInOutMixin)
+                        LightpathInOutMixin)
 from .signal import InternalSignal
 
 logger = logging.getLogger(__name__)
@@ -356,6 +356,7 @@ def set_combined_attenuation(attenuation, *attenuators):
         else:
             attenuators[i].actuate_value()
 '''
+
 
 class FEESolidAttenuatorBlade(Device, BaseInterface, LightpathInOutMixin):
     lightpath_cpts = ['state']
