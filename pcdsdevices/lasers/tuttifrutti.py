@@ -122,7 +122,7 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
     # Create an object for a basic tuttifrutti containing NF/FF cameras,
     # a spectrometer, and a filter slider.
 
-    ttf = TutttFruttiBase('LAS:TTF:01', nf=True, ff=True, spec=True, ell=True)
+    ttf = TutttFrutti('LAS:TTF:01', nf=True, ff=True, spec=True, ell=True)
 
     # Create a TuttiFrutti as above, while including a non-standard component.
 
@@ -133,9 +133,9 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
     apple = Cpt(Apple, ':APPLE', kind='normal') # Use TuttiFrutti base PV
     orange = FCpt(Orange, 'IOC:LAS:ORANGE', kind='normal') # Use full base PV
 
-    dmisc = {'apple': apple, 'banana' : banana}
+    dmisc = {'apple': apple, 'orange' : orange}
 
-    ttf = TutttFruttiBase('LAS:TTF:01', nf=True, ff=True, spec=True, ell=True,
+    ttf = TutttFrutti('LAS:TTF:01', nf=True, ff=True, spec=True, ell=True,
                            misc=dmisc)
     """
     cls = TuttiFruttiCls(prefix, name, nf=nf, ff=ff, spec=spec, pm=pm,
