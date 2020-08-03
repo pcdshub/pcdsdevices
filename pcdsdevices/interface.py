@@ -932,6 +932,7 @@ class LightpathMixin(OphydObject):
         # Override based on the use case
         # update self._inserted, self._removed,
         # and optionally self._transmission
+        # Should return a dict or None
         raise NotImplementedError('Did not implement LightpathMixin')
 
     def _update_lightpath(self, *args, obj, **kwargs):
@@ -955,7 +956,8 @@ class LightpathMixin(OphydObject):
                                        args=args, kwargs=kw, delay=0.2)
         except Exception:
             # Without this, callbacks fail silently
-            logger.exception('Error in lightpath update callback.')
+            logger.exception('Error in lightpath update callback for %s.',
+                             self.name)
 
     @property
     def inserted(self):
@@ -978,7 +980,8 @@ class LightpathMixin(OphydObject):
 
 class LightpathInOutMixin(LightpathMixin):
     """
-    LightpathMixin for parent device with InOut subdevices
+    LightpathMixin for parent device with InOut subdevices.
+    Also works recursively on other LightpathInOutMixin subclasses.
     """
     _lightpath_mixin = True
 
@@ -987,13 +990,24 @@ class LightpathInOutMixin(LightpathMixin):
         out_check = []
         trans_check = []
         for obj, kwarg_dct in lightpath_values.items():
-            if not obj._state_initialized:
-                # This would prevent make check_inserted, etc. fail
-                self._retry_lightpath = True
-                return
-            in_check.append(obj.check_inserted(kwarg_dct['value']))
-            out_check.append(obj.check_removed(kwarg_dct['value']))
-            trans_check.append(obj.check_transmission(kwarg_dct['value']))
+            if isinstance(obj, LightpathInOutMixin):
+                # The inserted/removed are always just a getattr
+                # Therefore, they are safe to call in a callback
+                in_check.append(obj.inserted)
+                out_check.append(obj.removed)
+                trans_check.append(obj.transmission)
+            else:
+                if not obj._state_initialized:
+                    # This would prevent make check_inserted, etc. fail
+                    self._retry_lightpath = True
+                    return
+                # Inserted/removed are not getattr, they can check EPICS
+                # Instead, check status against the callback kwarg dict
+                in_check.append(obj.check_inserted(kwarg_dct['value']))
+                out_check.append(obj.check_removed(kwarg_dct['value']))
+                trans_check.append(obj.check_transmission(kwarg_dct['value']))
         self._inserted = any(in_check)
         self._removed = all(out_check)
         self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
+        return dict(in_check=in_check, out_check=out_check,
+                    trans_check=trans_check)
