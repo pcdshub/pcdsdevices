@@ -535,11 +535,19 @@ class AttenuatorCalculatorBase(Device, BaseInterface):
              'the one that goes along with `best_config`.'),
     )
 
-    best_config = Cpt(
-        EpicsSignalRO, ':SYS:BestConfiguration_RBV', kind='normal',
+    # NOTE: this variant exists as well but duplicates the bitmask information:
+    # best_config = Cpt(
+    #     EpicsSignalRO, ':SYS:BestConfiguration_RBV', kind='normal',
+    #     doc='The best configuration of filters for the desired transmission',
+    # )
+    # set_metadata(best_config, dict(variety='array-nd'))
+    # # TODO: array-tabular would be nice, but does not work in typhos yet
+
+    best_config_bitmask = Cpt(
+        EpicsSignalRO, ':SYS:BestConfigurationBitmask_RBV', kind='normal',
         doc='The best configuration of filters for the desired transmission.',
     )
-    set_metadata(best_config, dict(variety='array-nd'))
+    set_metadata(best_config_bitmask, dict(variety='bitmask', bits=18))
     # TODO: array-tabular would be nice, but does not work in typhos yet
 
     best_config_error = Cpt(
@@ -547,12 +555,32 @@ class AttenuatorCalculatorBase(Device, BaseInterface):
         doc='Desired to calculated transmission error',
     )
 
-    active_config = Cpt(
-        EpicsSignalRO, ':SYS:ActiveConfiguration_RBV', kind='normal',
-        doc='Where the filters are now',
-    )
-    set_metadata(active_config, dict(variety='array-nd'))
+    # NOTE: this variant exists as well but duplicates the bitmask information:
+    # active_config = Cpt(
+    #     EpicsSignalRO, ':SYS:ActiveConfiguration_RBV', kind='omitted',
+    #     doc='Where the filters are now',
+    # )
+    # set_metadata(active_config, dict(variety='array-nd'))
     # TODO: array-tabular would be nice, but does not work in typhos yet
+
+    active_config_bitmask = Cpt(
+        EpicsSignalRO, ':SYS:ActiveConfigurationBitmask_RBV', kind='normal',
+        doc='Where the filters are now (as an integer)',
+    )
+    set_metadata(active_config_bitmask, dict(variety='bitmask', bits=18))
+
+    # NOTE: this variant exists as well but duplicates the bitmask information:
+    # filters_moving = Cpt(
+    #     EpicsSignalRO, ':SYS:FiltersMoving_RBV', kind='normal',
+    #     doc='Filter-by-filter motion status (1 if moving)',
+    # )
+    # set_metadata(filters_moving, dict(variety='array-nd'))
+
+    filters_moving_bitmask = Cpt(
+        EpicsSignalRO, ':SYS:FiltersMovingBitmask_RBV', kind='normal',
+        doc='Filter-by-filter motion status as a bitmask',
+    )
+    set_metadata(filters_moving_bitmask, dict(variety='bitmask', bits=18))
 
     run_calculation = Cpt(
         EpicsSignal, ':SYS:Run', kind='config',
@@ -578,6 +606,23 @@ class AttenuatorCalculatorBase(Device, BaseInterface):
             index: getattr(self.filters, attr)
             for index, attr in self._filter_index_to_attr.items()
         }
+
+    def _bitmask_to_list(self, value):
+        """Bitmask value to list of bits (e.g., 23 to [..., 1, 0, 1, 1, 1])."""
+        bits = bin(value)[2:].zfill(self.num_filters)
+        return list(int(i) for i in bits)
+
+    def get_active_config(self, **kwargs):
+        """Get the active filter configuration."""
+        return self._bitmask_to_list(self.active_config_bitmask.get(**kwargs))
+
+    def get_best_config(self, **kwargs):
+        """Get the calculated (best) filter configuration."""
+        return self._bitmask_to_list(self.best_config_bitmask.get(**kwargs))
+
+    def get_moving_status(self, **kwargs):
+        """Get the filter motion status."""
+        return self._bitmask_to_list(self.filters_moving_bitmask.get(**kwargs))
 
     def calculate(self, transmission, *, energy=None, use_floor=True):
         """
@@ -609,7 +654,7 @@ class AttenuatorCalculatorBase(Device, BaseInterface):
         self.calc_mode.put('Floor' if use_floor else 'Ceiling')
         self.desired_transmission.put(transmission)
         self.run_calculation.put(1, wait=True)
-        return self.best_config.get(use_monitor=False)
+        return self.get_best_config(use_monitor=False)
 
 
 class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
