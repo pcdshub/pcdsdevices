@@ -481,9 +481,7 @@ class AttenuatorCalculatorFilter(Device, BaseInterface):
 
 
 class AttenuatorCalculatorBase(Device, BaseInterface):
-    """
-    Base class for attenuator calculator devices.
-    """
+    """Base class for new-style caproto IOC attenuator calculator devices."""
 
     # QIcon for UX
     _icon = 'fa.barcode'
