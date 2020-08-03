@@ -552,16 +552,6 @@ class TwinCATStateConfigAll(Device):
     state03 = Cpt(TwinCATStateConfigOne, ':03', kind='omitted')
     state04 = Cpt(TwinCATStateConfigOne, ':04', kind='omitted')
     state05 = Cpt(TwinCATStateConfigOne, ':05', kind='omitted')
-    state06 = Cpt(TwinCATStateConfigOne, ':06', kind='omitted')
-    state07 = Cpt(TwinCATStateConfigOne, ':07', kind='omitted')
-    state08 = Cpt(TwinCATStateConfigOne, ':08', kind='omitted')
-    state09 = Cpt(TwinCATStateConfigOne, ':09', kind='omitted')
-    state10 = Cpt(TwinCATStateConfigOne, ':10', kind='omitted')
-    state11 = Cpt(TwinCATStateConfigOne, ':11', kind='omitted')
-    state12 = Cpt(TwinCATStateConfigOne, ':12', kind='omitted')
-    state13 = Cpt(TwinCATStateConfigOne, ':13', kind='omitted')
-    state14 = Cpt(TwinCATStateConfigOne, ':14', kind='omitted')
-    state15 = Cpt(TwinCATStateConfigOne, ':15', kind='omitted')
 
 
 class TwinCATStatePositioner(StatePositioner):
