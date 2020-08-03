@@ -12,8 +12,9 @@ from ophyd.pv_positioner import PVPositioner, PVPositionerPC
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
 from .epics_motor import BeckhoffAxis
-from .inout import InOutPositioner
-from .interface import BaseInterface, FltMvInterface, LightpathMixin
+from .inout import InOutPositioner, TwinCATInOutPositioner
+from .interface import (BaseInterface, FltMvInterface,
+                        LightpathMixin, LightpathInOutMixin)
 from .signal import InternalSignal
 
 logger = logging.getLogger(__name__)
@@ -356,8 +357,14 @@ def set_combined_attenuation(attenuation, *attenuators):
             attenuators[i].actuate_value()
 '''
 
+class FEESolidAttenuatorBlade(Device, BaseInterface, LightpathInOutMixin):
+    lightpath_cpts = ['state']
 
-class FEESolidAttenuator(Device, BaseInterface, LightpathMixin):
+    state = Cpt(TwinCATInOutPositioner, ':STATE')
+    motor = Cpt(BeckhoffAxis, '')
+
+
+class FEESolidAttenuator(Device, BaseInterface, LightpathInOutMixin):
     """
     Solid attenuator variant from the LCLS-II XTES project.
 
@@ -385,40 +392,31 @@ class FEESolidAttenuator(Device, BaseInterface, LightpathMixin):
     num_in = Cpt(InternalSignal, kind='hinted')
     num_out = Cpt(InternalSignal, kind='hinted')
 
-    blade_01 = Cpt(BeckhoffAxis, ':MMS:01', kind='hinted')
-    blade_02 = Cpt(BeckhoffAxis, ':MMS:02', kind='hinted')
-    blade_03 = Cpt(BeckhoffAxis, ':MMS:03', kind='hinted')
-    blade_04 = Cpt(BeckhoffAxis, ':MMS:04', kind='hinted')
-    blade_05 = Cpt(BeckhoffAxis, ':MMS:05', kind='hinted')
-    blade_06 = Cpt(BeckhoffAxis, ':MMS:06', kind='hinted')
-    blade_07 = Cpt(BeckhoffAxis, ':MMS:07', kind='hinted')
-    blade_08 = Cpt(BeckhoffAxis, ':MMS:08', kind='hinted')
-    blade_09 = Cpt(BeckhoffAxis, ':MMS:09', kind='hinted')
-    blade_10 = Cpt(BeckhoffAxis, ':MMS:10', kind='hinted')
-    blade_11 = Cpt(BeckhoffAxis, ':MMS:11', kind='hinted')
-    blade_12 = Cpt(BeckhoffAxis, ':MMS:12', kind='hinted')
-    blade_13 = Cpt(BeckhoffAxis, ':MMS:13', kind='hinted')
-    blade_14 = Cpt(BeckhoffAxis, ':MMS:14', kind='hinted')
-    blade_15 = Cpt(BeckhoffAxis, ':MMS:15', kind='hinted')
-    blade_16 = Cpt(BeckhoffAxis, ':MMS:16', kind='hinted')
-    blade_17 = Cpt(BeckhoffAxis, ':MMS:17', kind='hinted')
-    blade_18 = Cpt(BeckhoffAxis, ':MMS:18', kind='hinted')
-    blade_19 = Cpt(BeckhoffAxis, ':MMS:19', kind='hinted')
-
-    def __init__(self, prefix, *, name, **kwargs):
-        self._blade_positions = {}
-        super().__init__(prefix, name=name, **kwargs)
+    blade_01 = Cpt(FEESolidAttenuatorBlade, ':MMS:01')
+    blade_02 = Cpt(FEESolidAttenuatorBlade, ':MMS:02')
+    blade_03 = Cpt(FEESolidAttenuatorBlade, ':MMS:03')
+    blade_04 = Cpt(FEESolidAttenuatorBlade, ':MMS:04')
+    blade_05 = Cpt(FEESolidAttenuatorBlade, ':MMS:05')
+    blade_06 = Cpt(FEESolidAttenuatorBlade, ':MMS:06')
+    blade_07 = Cpt(FEESolidAttenuatorBlade, ':MMS:07')
+    blade_08 = Cpt(FEESolidAttenuatorBlade, ':MMS:08')
+    blade_09 = Cpt(FEESolidAttenuatorBlade, ':MMS:09')
+    blade_10 = Cpt(FEESolidAttenuatorBlade, ':MMS:10')
+    blade_11 = Cpt(FEESolidAttenuatorBlade, ':MMS:11')
+    blade_12 = Cpt(FEESolidAttenuatorBlade, ':MMS:12')
+    blade_13 = Cpt(FEESolidAttenuatorBlade, ':MMS:13')
+    blade_14 = Cpt(FEESolidAttenuatorBlade, ':MMS:14')
+    blade_15 = Cpt(FEESolidAttenuatorBlade, ':MMS:15')
+    blade_16 = Cpt(FEESolidAttenuatorBlade, ':MMS:16')
+    blade_17 = Cpt(FEESolidAttenuatorBlade, ':MMS:17')
+    blade_18 = Cpt(FEESolidAttenuatorBlade, ':MMS:18')
+    blade_19 = Cpt(FEESolidAttenuatorBlade, ':MMS:19')
 
     def _set_lightpath_states(self, lightpath_values):
-        values = [kw['value'] for kw in lightpath_values.values()]
-        # In is at zero, 2mm deadband is standard
-        inserted_list = [value < 2 for value in values]
-        self._inserted = any(inserted_list)
-        self._removed = not self._inserted
-        self.num_in.put(inserted_list.count(True), force=True)
-        self.num_out.put(inserted_list.count(False), force=True)
-        # No calc yet
-        self._transmission = 1
+        info = super()._set_lightpath_states(lightpath_values)
+        if info is not None:
+            self.num_in.put(info['in_check'].count(True), force=True)
+            self.num_out.put(info['out_check'].count(True), force=True)
 
 
 class GasAttenuator(Device, BaseInterface):
