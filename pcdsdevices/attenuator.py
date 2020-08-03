@@ -462,14 +462,14 @@ class AttenuatorCalculatorFilter(Device, BaseInterface):
         EpicsSignalRO, 'ClosestEnergy_RBV', kind='config',
         doc='Closest tabulated energy available to the requested one',
     )
-    transmission = Cpt(EpicsSignal, 'Transmission_RBV', kind='normal',
+    transmission = Cpt(EpicsSignalRO, 'Transmission_RBV', kind='normal',
                        doc='Normalized transmission at the reported energy',
                        )
     set_metadata(transmission, dict(variety='scalar',
                                     display_format='exponential'))
 
     transmission_3omega = Cpt(
-        EpicsSignal, 'Transmission3Omega_RBV', kind='normal',
+        EpicsSignalRO, 'Transmission3Omega_RBV', kind='normal',
         doc='Normalized transmission at 3 * the reported energy',
                               )
     set_metadata(transmission_3omega, dict(variety='scalar',
@@ -593,7 +593,7 @@ class AttenuatorCalculatorBase(Device, BaseInterface):
     set_metadata(apply_config, dict(variety='command-proc', value=1))
 
     moving = Cpt(
-        EpicsSignal, ':SYS:Moving_RBV', kind='config',
+        EpicsSignalRO, ':SYS:Moving_RBV', kind='config',
         doc='Are filters being moved in/out?',
     )
     set_metadata(moving, dict(variety='bitmask', bits=1))
