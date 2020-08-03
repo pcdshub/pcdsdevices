@@ -32,15 +32,15 @@ def TuttiFruttiCls(prefix, name, nf=False, ff=False, spec=False, pm=False,
         cpt = Cpt(El3174AiCh, '_PM1', kind='normal')
         cpts['power_meter'] = cpt
     if diode:
-        raise(NotImplemented, "Diode is not yet implemented")
+        raise NotImplementedError("Diode is not yet implemented")
     if em:
-        raise(NotImplemented, "Energy meter is not yet implemented")
+        raise NotImplementedError("Energy meter is not yet implemented")
     if qc:
-        raise(NotImplemented, "Quad cell is not yet implemented")
+        raise NotImplementedError("Quad cell is not yet implemented")
     if pd:
-        raise(NotImplemented, "Pulse duration is not yet implemented")
+        raise NotImplementedError("Pulse duration is not yet implemented")
     if wfs:
-        raise(NotImplemented, "Wavefront sensor is not yet implemented")
+        raise NotImplementedError("Wavefront sensor is not yet implemented")
     if ell:
         cpt = Cpt(Ell6, '_SL1:ELL:M1', kind='normal')
         cpts['slider'] = cpt
@@ -122,7 +122,7 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
     # Create an object for a basic tuttifrutti containing NF/FF cameras,
     # a spectrometer, and a filter slider.
 
-    ttf = TutttFrutti('LAS:TTF:01', nf=True, ff=True, spec=True, ell=True)
+    ttf = TuttiFrutti('LAS:TTF:01', nf=True, ff=True, spec=True, ell=True)
 
     # Create a TuttiFrutti as above, while including a non-standard component.
 
@@ -135,7 +135,7 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
 
     dmisc = {'apple': apple, 'orange' : orange}
 
-    ttf = TutttFrutti('LAS:TTF:01', nf=True, ff=True, spec=True, ell=True,
+    ttf = TuttiFrutti('LAS:TTF:01', nf=True, ff=True, spec=True, ell=True,
                            misc=dmisc)
     """
     cls = TuttiFruttiCls(prefix, name, nf=nf, ff=ff, spec=spec, pm=pm,
