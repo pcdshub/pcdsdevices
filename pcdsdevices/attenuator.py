@@ -670,6 +670,7 @@ class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
         Alias for the Solid Attenuator.
     """
 
+    tab_component_names = True
     first_filter = 2
     num_filters = 18
     _filter_index_to_attr = {
@@ -677,7 +678,7 @@ class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
                                                   num_filters + first_filter)
     }
 
-    # Creates filters from 1 to num_filters, with attributes filter_02 and so
+    # Creates filters from 2 to num_filters, with attributes filter_02 and so
     # on.
     filters = DDC(
         {attr: (AttenuatorCalculatorFilter,
