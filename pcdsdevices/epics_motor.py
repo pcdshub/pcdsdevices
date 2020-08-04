@@ -500,6 +500,47 @@ class MotorDisabledError(Exception):
     pass
 
 
+class SmarActOpenLoop(Device):
+    """
+    Class containing the open loop PVs used to control an un-encoded SmarAct
+    stage.
+
+    Can be used for sub-classing, or creating a simple  device without the
+    motor record PVs.
+    """
+
+    # Voltage for sawtooth ramp
+    step_voltage = Cpt(EpicsSignal, ':STEP_VOLTAGE', kind='omitted')
+    # Frequency of steps
+    step_freq = Cpt(EpicsSignal, ':STEP_FREQ', kind='config')
+    # Number of steps per step forward, backward command
+    jog_step_size = Cpt(EpicsSignal, ':STEP_COUNT', kind='normal')
+    # Jog forward
+    jog_fwd = Cpt(EpicsSignal, ':STEP_FORWARD', kind='normal')
+    # Jog backward
+    jog_rev = Cpt(EpicsSignal, ':STEP_REVERSE', kind='normal')
+    # Total number of steps counted
+    total_step_count = Cpt(EpicsSignalRO, ':TOTAL_STEP_COUNT', kind='normal')
+    # Reset steps ("home")
+    step_clear_cmd = Cpt(EpicsSignal, ':CLEAR_COUNT', kind='config')
+    # Scan move
+    scan_move_cmd = Cpt(EpicsSignal, ':SCAN_MOVE', kind='omitted')
+    # Scan pos
+    scan_pos = Cpt(EpicsSignal, ':SCAN_POS', kind='omitted')
+
+
+class SmarAct(PCDSMotorBase):
+    """
+    Class for encoded SmarAct motors controlled via the MCS2 controller.
+    """
+    # These PVs will probably not be needed for most encoded motors, but can be
+    # useful
+
+    # Even when omitted, the open loop PVs still show up on the config screen.
+    # Leaving this off for now to keep screens clean.
+    # open_loop = Cpt(SmarActOpenLoop, '', kind='omitted')
+
+
 def Motor(prefix, **kwargs):
     """
     Load a PCDSMotor with the correct class based on prefix.
@@ -524,6 +565,8 @@ def Motor(prefix, **kwargs):
     +---------------+-------------------------+
     | PIC           | :class:`.PCDSMotorBase` |
     +---------------+-------------------------+
+    | MCS           | :class:`.SmarAct`       |
+    +---------------+-------------------------+
 
     Parameters
     ----------
@@ -540,7 +583,8 @@ def Motor(prefix, **kwargs):
                    ('MMN', Newport),
                    ('MZM', PMC100),
                    ('MMB', BeckhoffAxis),
-                   ('PIC', PCDSMotorBase))
+                   ('PIC', PCDSMotorBase),
+                   ('MCS', SmarAct))
     # Search for component type in prefix
     for cpt_abbrev, _type in motor_types:
         if f':{cpt_abbrev}:' in prefix:

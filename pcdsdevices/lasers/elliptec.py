@@ -3,7 +3,7 @@ Classes for ThorLabs Elliptec motors.
 """
 
 
-from ophyd import Component as Cpt
+from ophyd import FormattedComponent as FCpt
 from ophyd import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
@@ -11,48 +11,129 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO
 class EllBase(Device):
     """
     Base class for Elliptec stages.
-
-    Sufficient for control of ELL17/20 (28/60mm linear stages) and ELL14/18
-    (rotation) stages.
-
-    Parameters
-    ----------
-    prefix : str
-        The PV base of the stage.
     """
-    target_position = Cpt(EpicsSignal, ':MOVE', kind='normal')
-    _target_precision = Cpt(EpicsSignal, ':MOVE.PREC', kind='config')
-    _target_egu = Cpt(EpicsSignal, ':MOVE.EGU', kind='config')
 
-    current_position = Cpt(EpicsSignalRO, ':CURPOS', kind='normal')
-    _current_precision = Cpt(EpicsSignal, ':CURPOS.PREC', kind='config')
-    _current_egu = Cpt(EpicsSignal, ':CURPOS.EGU', kind='config')
+    set_position = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS',
+                        write_pv='{prefix}:M{self._channel}:MOVE',
+                        kind='normal')
+    status = FCpt(EpicsSignalRO, '{prefix}:M{self._channel}:STATUS',
+                  kind='normal')
+    _from_addr = FCpt(EpicsSignal, '{prefix}:PORT{self._port}:FROM_ADDR',
+                      kind='omitted')
+    _to_addr = FCpt(EpicsSignal, '{prefix}:PORT{self._port}:TO_ADDR',
+                    kind='omitted')
+    _save_addr = FCpt(EpicsSignal, '{prefix}:PORT{self._port}:SAVE',
+                      kind='omitted')
+    _command = FCpt(EpicsSignal, '{prefix}:PORT{self._port}:CMD',
+                    kind='omitted')
+    _response = FCpt(EpicsSignalRO, '{prefix}:PORT{self._port}:RESPONSE',
+                     kind='omitted')
 
-    status = Cpt(EpicsSignalRO, ':STATUS', kind='normal')
-
-    _from_addr = Cpt(EpicsSignal, ':FROM_ADR', kind='config')
-    _to_addr = Cpt(EpicsSignal, ':TO_ADR', kind='config')
-    _save_addr = Cpt(EpicsSignal, ':SAVE', kind='config')
-
-    _command = Cpt(EpicsSignal, ':CMD', kind='config')
-    _response = Cpt(EpicsSignalRO, ':RESPONSE', kind='config')
+    def __init__(self, prefix, port=0, channel=1, **kwargs):
+        self._port = port
+        self._channel = channel
+        super().__init__(prefix, **kwargs)
 
 
 class Ell6(EllBase):
     """
     Class for Thorlabs ELL6 2 position filter slider.
+
+    Parameters
+    ----------
+    prefix : str
+        The PV base of the stage.
+    channel : str
+        The motor channel on the controller (0-F)
+    port : str
+        The port of the Elliptec controller (typically 0)
+
+    Examples
+    --------
+    ell6 = Ell6('LM1K4:COM_DP1_TF1_SL1:ELL', port=0, channel=1, name='ell6')
     """
 
     # Names for slider positions
-    name_0 = Cpt(EpicsSignal, ':NAME0', kind='config')
-    name_1 = Cpt(EpicsSignal, ':NAME1', kind='config')
+    name_0 = FCpt(EpicsSignal, '{prefix}:M{self._channel}:NAME0',
+                  kind='config')
+    name_1 = FCpt(EpicsSignal, '{prefix}:M{self._channel}:NAME1',
+                  kind='config')
 
 
 class Ell9(Ell6):
     """
     Class for Thorlabs ELL9 4 position filter slider.
+
+    Parameters
+    ----------
+    prefix : str
+        The PV base of the stage.
+    channel : str
+        The motor channel on the controller (0-F)
+    port : str
+        The port of the Elliptec controller (typically 0)
+
+    Examples
+    --------
+    ell9 = Ell9('LM1K4:COM_DP1_TF1_SL1:ELL', port=0, channel=1, name='ell9')
     """
 
     # Names for slider positions
-    name_2 = Cpt(EpicsSignal, ':NAME2', kind='config')
-    name_3 = Cpt(EpicsSignal, ':NAME3', kind='config')
+    name_2 = FCpt(EpicsSignal, '{prefix}:M{self._channel}:NAME2',
+                  kind='config')
+    name_3 = FCpt(EpicsSignal, '{prefix}:M{self._channel}:NAME3',
+                  kind='config')
+
+
+class EllLinear(EllBase):
+    """
+    Class for Thorlabs ELL17/20 (28/60mm) linear stage.
+
+    Parameters
+    ----------
+    prefix : str
+        The PV base of the stage.
+    channel : str
+        The motor channel on the controller (0-F)
+    port : str
+        The port of the Elliptec controller (typically 0)
+
+    Examples
+    --------
+    ell17 = EllLinear('LM1K4:COM_DP1_TF1_LIN1:ELL', port=0, channel=1,
+                       name='ell17')
+    """
+
+    _current_precision = FCpt(EpicsSignal,
+                              '{prefix}:M{self._channel}:CURPOS.PREC',
+                              kind='omitted')
+    _current_egu = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS.EGU',
+                        kind='omitted')
+    _target_precision = FCpt(EpicsSignal,
+                             '{prefix}:M{self._channel}:MOVE.PREC',
+                             kind='omitted')
+    _target_egu = FCpt(EpicsSignal, '{prefix}:M{self._channel}:MOVE.EGU',
+                       kind='omitted')
+
+
+class EllRotation(EllLinear):
+    """
+    Class for Thorlabs ELL14/18 (rotation) stages.
+
+    Parameters
+    ----------
+    prefix : str
+        The PV base of the stage.
+    channel : str
+        The motor channel on the controller (0-F)
+    port : str
+        The port of the Elliptec controller (typically 0)
+
+    Examples
+    --------
+    ell14 = EllRotation('LM1K4:COM_DP1_TF1_ROT1:ELL', port=0, channel=1,
+                         name='ell14')
+    """
+    # Currently no difference between rotation implementation and linear
+    # implementation, but there may be eventually, and I couldn't come up with
+    # a good name to encapsulate them both.

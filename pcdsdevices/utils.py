@@ -2,8 +2,10 @@ import os
 import select
 import shutil
 import sys
+import threading
 import time
 
+import ophyd
 import pint
 
 try:
@@ -156,3 +158,45 @@ def get_component(obj):
         return None
 
     return getattr(type(obj.parent), obj.attr_name, None)
+
+
+def schedule_task(func, args=None, kwargs=None, delay=None):
+    """
+    Use ophyd's dispatcher to schedule a task for later.
+
+    This is basically the function I was hoping to find in ophyd.
+    Schedules a task for the utility thread if we're in some arbitrary thread,
+    schedules a task for the same thread if we're in one of ophyd's callback
+    queues already.
+    """
+    if args is None:
+        args = ()
+    if kwargs is None:
+        kwargs = {}
+
+    dispatcher = ophyd.cl.get_dispatcher()
+
+    # Check if we're already in an ophyd dispatcher thread
+    current_thread = threading.currentThread()
+    matched_thread = None
+    for name, thread in dispatcher.threads.items():
+        if thread == current_thread:
+            matched_thread = name
+            context = dispatcher.get_thread_context(matched_thread)
+            break
+
+    def schedule():
+        if matched_thread is None:
+            # Put into utility queue
+            dispatcher.schedule_utility_task(func, *args, **kwargs)
+        else:
+            # Put into same queue
+            context.event_thread.queue.put((func, args, kwargs))
+
+    if delay is None:
+        # Do it right away
+        schedule()
+    else:
+        # Do it later
+        timer = threading.Timer(delay, schedule)
+        timer.start()

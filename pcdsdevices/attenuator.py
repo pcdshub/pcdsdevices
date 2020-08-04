@@ -7,13 +7,17 @@ import time
 import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
+from ophyd.device import DynamicDeviceComponent as DDC
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.pv_positioner import PVPositioner
+from ophyd.pv_positioner import PVPositioner, PVPositionerPC
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
 from .epics_motor import BeckhoffAxis
-from .inout import InOutPositioner
-from .interface import BaseInterface, FltMvInterface
+from .inout import InOutPositioner, TwinCATInOutPositioner
+from .interface import (BaseInterface, FltMvInterface,
+                        LightpathInOutMixin)
+from .signal import InternalSignal
+from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
@@ -221,7 +225,11 @@ class AttBase(FltMvInterface, PVPositioner):
         if event_type is None:
             event_type = self._default_sub
         if event_type == self.SUB_STATE and not self._has_subscribed_state:
-            self.done.subscribe(self._run_filt_state, run=False)
+            if self.done is not None:
+                obj = self.done
+            else:
+                obj = self.readback
+            obj.subscribe(self._run_filt_state, run=False)
             self._has_subscribed_state = True
         return cid
 
@@ -251,7 +259,7 @@ class AttBase3rd(AttBase):
     user_energy = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
 
 
-class FeeAtt(AttBase):
+class FeeAtt(AttBase, PVPositionerPC):
     """Old attenuator IOC in the FEE."""
     # Positioner Signals
     setpoint = Cpt(EpicsSignal, ':RDES', kind='normal')
@@ -352,7 +360,14 @@ def set_combined_attenuation(attenuation, *attenuators):
 '''
 
 
-class FEESolidAttenuator(Device, BaseInterface):
+class FEESolidAttenuatorBlade(Device, BaseInterface, LightpathInOutMixin):
+    lightpath_cpts = ['state']
+
+    state = Cpt(TwinCATInOutPositioner, ':STATE')
+    motor = Cpt(BeckhoffAxis, '')
+
+
+class FEESolidAttenuator(Device, BaseInterface, LightpathInOutMixin):
     """
     Solid attenuator variant from the LCLS-II XTES project.
 
@@ -370,25 +385,41 @@ class FEESolidAttenuator(Device, BaseInterface):
         Alias for the Solid Attenuator.
     """
 
-    blade_01 = Cpt(BeckhoffAxis, ':MMS:01', kind='hinted')
-    blade_02 = Cpt(BeckhoffAxis, ':MMS:02', kind='hinted')
-    blade_03 = Cpt(BeckhoffAxis, ':MMS:03', kind='hinted')
-    blade_04 = Cpt(BeckhoffAxis, ':MMS:04', kind='hinted')
-    blade_05 = Cpt(BeckhoffAxis, ':MMS:05', kind='hinted')
-    blade_06 = Cpt(BeckhoffAxis, ':MMS:06', kind='hinted')
-    blade_07 = Cpt(BeckhoffAxis, ':MMS:07', kind='hinted')
-    blade_08 = Cpt(BeckhoffAxis, ':MMS:08', kind='hinted')
-    blade_09 = Cpt(BeckhoffAxis, ':MMS:09', kind='hinted')
-    blade_10 = Cpt(BeckhoffAxis, ':MMS:10', kind='hinted')
-    blade_11 = Cpt(BeckhoffAxis, ':MMS:11', kind='hinted')
-    blade_12 = Cpt(BeckhoffAxis, ':MMS:12', kind='hinted')
-    blade_13 = Cpt(BeckhoffAxis, ':MMS:13', kind='hinted')
-    blade_14 = Cpt(BeckhoffAxis, ':MMS:14', kind='hinted')
-    blade_15 = Cpt(BeckhoffAxis, ':MMS:15', kind='hinted')
-    blade_16 = Cpt(BeckhoffAxis, ':MMS:16', kind='hinted')
-    blade_17 = Cpt(BeckhoffAxis, ':MMS:17', kind='hinted')
-    blade_18 = Cpt(BeckhoffAxis, ':MMS:18', kind='hinted')
-    blade_19 = Cpt(BeckhoffAxis, ':MMS:19', kind='hinted')
+    # QIcon for UX
+    _icon = 'fa.barcode'
+
+    # Register that all blades are needed for lightpath calc
+    lightpath_cpts = ['blade_{:02}'.format(i+1) for i in range(19)]
+
+    # Summary for lightpath view
+    num_in = Cpt(InternalSignal, kind='hinted')
+    num_out = Cpt(InternalSignal, kind='hinted')
+
+    blade_01 = Cpt(FEESolidAttenuatorBlade, ':MMS:01')
+    blade_02 = Cpt(FEESolidAttenuatorBlade, ':MMS:02')
+    blade_03 = Cpt(FEESolidAttenuatorBlade, ':MMS:03')
+    blade_04 = Cpt(FEESolidAttenuatorBlade, ':MMS:04')
+    blade_05 = Cpt(FEESolidAttenuatorBlade, ':MMS:05')
+    blade_06 = Cpt(FEESolidAttenuatorBlade, ':MMS:06')
+    blade_07 = Cpt(FEESolidAttenuatorBlade, ':MMS:07')
+    blade_08 = Cpt(FEESolidAttenuatorBlade, ':MMS:08')
+    blade_09 = Cpt(FEESolidAttenuatorBlade, ':MMS:09')
+    blade_10 = Cpt(FEESolidAttenuatorBlade, ':MMS:10')
+    blade_11 = Cpt(FEESolidAttenuatorBlade, ':MMS:11')
+    blade_12 = Cpt(FEESolidAttenuatorBlade, ':MMS:12')
+    blade_13 = Cpt(FEESolidAttenuatorBlade, ':MMS:13')
+    blade_14 = Cpt(FEESolidAttenuatorBlade, ':MMS:14')
+    blade_15 = Cpt(FEESolidAttenuatorBlade, ':MMS:15')
+    blade_16 = Cpt(FEESolidAttenuatorBlade, ':MMS:16')
+    blade_17 = Cpt(FEESolidAttenuatorBlade, ':MMS:17')
+    blade_18 = Cpt(FEESolidAttenuatorBlade, ':MMS:18')
+    blade_19 = Cpt(FEESolidAttenuatorBlade, ':MMS:19')
+
+    def _set_lightpath_states(self, lightpath_values):
+        info = super()._set_lightpath_states(lightpath_values)
+        if info is not None:
+            self.num_in.put(info['in_check'].count(True), force=True)
+            self.num_out.put(info['out_check'].count(True), force=True)
 
 
 class GasAttenuator(Device, BaseInterface):
@@ -411,3 +442,245 @@ class GasAttenuator(Device, BaseInterface):
 
     not_implemented = Cpt(SignalRO, name="Not Implemented",
                           value="Not Implemented", kind='normal')
+
+
+class AttenuatorCalculatorFilter(Device, BaseInterface):
+    material = Cpt(
+        EpicsSignal, 'Material', kind='hinted', string=True,
+        doc='The material formula (e.g., Si, C)'
+    )
+    thickness = Cpt(
+        EpicsSignal, 'Thickness', kind='hinted',
+        doc='Thickness in micron',
+    )
+    is_stuck = Cpt(
+        EpicsSignal, 'IsStuck', kind='hinted',
+        doc='Is the filter stuck / unusable?',
+    )
+    closest_energy = Cpt(
+        EpicsSignalRO, 'ClosestEnergy_RBV', kind='config',
+        doc='Closest tabulated energy available to the requested one',
+    )
+    transmission = Cpt(EpicsSignalRO, 'Transmission_RBV', kind='normal',
+                       doc='Normalized transmission at the reported energy',
+                       )
+    set_metadata(transmission, dict(variety='scalar',
+                                    display_format='exponential'))
+
+    transmission_3omega = Cpt(
+        EpicsSignalRO, 'Transmission3Omega_RBV', kind='normal',
+        doc='Normalized transmission at 3 * the reported energy',
+                              )
+    set_metadata(transmission_3omega, dict(variety='scalar',
+                                           display_format='exponential'))
+
+    def __init__(self, *args, index, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.index = index
+
+
+class AttenuatorCalculatorBase(Device, BaseInterface):
+    """Base class for new-style caproto IOC attenuator calculator devices."""
+
+    # QIcon for UX
+    _icon = 'fa.barcode'
+
+    calc_mode = Cpt(
+        EpicsSignal, ':SYS:CalcMode', kind='config', string=True,
+        doc='Floor or Ceiling calculation',
+    )
+
+    energy_source = Cpt(
+        EpicsSignal, ':SYS:EnergySource', kind='config', string=True,
+        doc='Use beamline photon energy or custom energy?',
+    )
+
+    energy_custom = Cpt(
+        EpicsSignal, ':SYS:CustomPhotonEnergy', kind='config',
+        doc='Custom energy to use for calculations [eV]',
+    )
+
+    energy_actual = Cpt(
+        EpicsSignalRO, ':SYS:ActualPhotonEnergy_RBV', kind='config',
+        doc='The reported beamline photon energy [eV]',
+    )
+
+    actual_transmission = Cpt(
+        EpicsSignalRO, ':SYS:ActualTransmission_RBV', kind='normal',
+        doc='Actual normalized transmission value',
+    )
+    set_metadata(actual_transmission,
+                 dict(variety='scalar', display_format='exponential'))
+
+    actual_transmission_3omega = Cpt(
+        EpicsSignalRO, ':SYS:Actual3OmegaTransmission_RBV', kind='normal',
+        doc='Actual 3 omega normalized transmission value',
+    )
+    set_metadata(actual_transmission_3omega,
+                 dict(variety='scalar', display_format='exponential'))
+
+    desired_transmission = Cpt(
+        EpicsSignal, ':SYS:DesiredTransmission', kind='normal',
+        doc='Desired normalized transmission value',
+    )
+    set_metadata(desired_transmission, dict(variety='scalar',
+                                            display_format='exponential'))
+
+    last_energy = Cpt(
+        EpicsSignalRO, ':SYS:LastPhotonEnergy_RBV', kind='config',
+        doc=('The photon energy used for the previous calculation; i.e., '
+             'the one that goes along with `best_config`.'),
+    )
+
+    # NOTE: this variant exists as well but duplicates the bitmask information:
+    # best_config = Cpt(
+    #     EpicsSignalRO, ':SYS:BestConfiguration_RBV', kind='normal',
+    #     doc='The best configuration of filters for the desired transmission',
+    # )
+    # set_metadata(best_config, dict(variety='array-nd'))
+    # # TODO: array-tabular would be nice, but does not work in typhos yet
+
+    best_config_bitmask = Cpt(
+        EpicsSignalRO, ':SYS:BestConfigurationBitmask_RBV', kind='normal',
+        doc='The best configuration of filters for the desired transmission.',
+    )
+    set_metadata(best_config_bitmask, dict(variety='bitmask', bits=18))
+    # TODO: array-tabular would be nice, but does not work in typhos yet
+
+    best_config_error = Cpt(
+        EpicsSignalRO, ':SYS:BestConfigError_RBV', kind='normal',
+        doc='Desired to calculated transmission error',
+    )
+
+    # NOTE: this variant exists as well but duplicates the bitmask information:
+    # active_config = Cpt(
+    #     EpicsSignalRO, ':SYS:ActiveConfiguration_RBV', kind='omitted',
+    #     doc='Where the filters are now',
+    # )
+    # set_metadata(active_config, dict(variety='array-nd'))
+    # TODO: array-tabular would be nice, but does not work in typhos yet
+
+    active_config_bitmask = Cpt(
+        EpicsSignalRO, ':SYS:ActiveConfigurationBitmask_RBV', kind='normal',
+        doc='Where the filters are now (as an integer)',
+    )
+    set_metadata(active_config_bitmask, dict(variety='bitmask', bits=18))
+
+    # NOTE: this variant exists as well but duplicates the bitmask information:
+    # filters_moving = Cpt(
+    #     EpicsSignalRO, ':SYS:FiltersMoving_RBV', kind='normal',
+    #     doc='Filter-by-filter motion status (1 if moving)',
+    # )
+    # set_metadata(filters_moving, dict(variety='array-nd'))
+
+    filters_moving_bitmask = Cpt(
+        EpicsSignalRO, ':SYS:FiltersMovingBitmask_RBV', kind='normal',
+        doc='Filter-by-filter motion status as a bitmask',
+    )
+    set_metadata(filters_moving_bitmask, dict(variety='bitmask', bits=18))
+
+    run_calculation = Cpt(
+        EpicsSignal, ':SYS:Run', kind='config',
+        doc='Start the calculation',
+    )
+    set_metadata(run_calculation, dict(variety='command-proc', value=1))
+
+    apply_config = Cpt(
+        EpicsSignal, ':SYS:ApplyConfiguration', kind='config',
+        doc='Apply the best configuration (i.e., move the filters)',
+    )
+    set_metadata(apply_config, dict(variety='command-proc', value=1))
+
+    moving = Cpt(
+        EpicsSignalRO, ':SYS:Moving_RBV', kind='config',
+        doc='Are filters being moved in/out?',
+    )
+    set_metadata(moving, dict(variety='bitmask', bits=1))
+
+    def __init__(self, prefix, *, name, **kwargs):
+        super().__init__(prefix, name=name, **kwargs)
+        self.filters_by_index = {
+            index: getattr(self.filters, attr)
+            for index, attr in self._filter_index_to_attr.items()
+        }
+
+    def _bitmask_to_list(self, value):
+        """Bitmask value to list of bits (e.g., 23 to [..., 1, 0, 1, 1, 1])."""
+        bits = bin(value)[2:].zfill(self.num_filters)
+        return list(int(i) for i in bits)
+
+    def get_active_config(self, **kwargs):
+        """Get the active filter configuration."""
+        return self._bitmask_to_list(self.active_config_bitmask.get(**kwargs))
+
+    def get_best_config(self, **kwargs):
+        """Get the calculated (best) filter configuration."""
+        return self._bitmask_to_list(self.best_config_bitmask.get(**kwargs))
+
+    def get_moving_status(self, **kwargs):
+        """Get the filter motion status."""
+        return self._bitmask_to_list(self.filters_moving_bitmask.get(**kwargs))
+
+    def calculate(self, transmission, *, energy=None, use_floor=True):
+        """
+        Calculate a blade configuration given a desired transmission value.
+
+        If ``energy`` is not specified, this method defaults to using the
+        current L-line photon energy, as reported by the Photon Machine
+        Protection System: ``PMPS:LFE:PE:UND:CurrentPhotonEnergy_RBV``.
+
+        Parameters
+        ----------
+        transmission : float
+            The desired transmission, in the range [0, 1].
+
+        energy : float, optional
+            The photon energy to use for the calculation.
+
+        use_floor : bool, optional
+            Select floor or ceiling transmission estimation.  Defaults to
+            floor.
+        """
+
+        if energy is not None:
+            self.energy_source.put('Custom')
+            self.energy_custom.put(float(energy))
+        else:
+            self.energy_source.put('Actual')
+
+        self.calc_mode.put('Floor' if use_floor else 'Ceiling')
+        self.desired_transmission.put(transmission)
+        self.run_calculation.put(1, wait=True)
+        return self.get_best_config(use_monitor=False)
+
+
+class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
+    """
+    Solid attenuator variant from the LCLS-II XTES project.
+
+    Parameters
+    ----------
+    prefix : str
+        Full Solid Attenuator base PV.
+
+    name : str
+        Alias for the Solid Attenuator.
+    """
+
+    tab_component_names = True
+    first_filter = 2
+    num_filters = 18
+    _filter_index_to_attr = {
+        idx: f'filter_{idx:02d}' for idx in range(first_filter,
+                                                  num_filters + first_filter)
+    }
+
+    # Creates filters from 2 to num_filters, with attributes filter_02 and so
+    # on.
+    filters = DDC(
+        {attr: (AttenuatorCalculatorFilter,
+                f':FILTER:{idx:02d}:',
+                {'index': idx})
+         for idx, attr in _filter_index_to_attr.items()
+         }
+    )
