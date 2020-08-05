@@ -8,7 +8,7 @@ from ophyd.pseudopos import PseudoPositioner
 from ophyd.pv_positioner import PVPositionerPC
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
 
-from .epics_motor import IMS
+from .epics_motor import IMS, PCDSMotorBase
 from .inout import InOutPositioner
 from .interface import FltMvInterface
 from .pseudopos import PseudoSingleInterface, SyncAxesBase
@@ -138,6 +138,8 @@ class CCM(InOutPositioner):
 
     calc = FCpt(CCMCalc, '{self.alio_prefix}', kind='hinted')
     theta2fine = FCpt(CCMMotor, '{self.theta2fine_prefix}')
+    theta2coarse = FCpt(PCDSMotorBase, '{self.theta2coarse_prefix}')
+    chi2 = FCpt(PCDSMotorBase, '{self.chi2_prefix}')
     x = FCpt(CCMX,
              down_prefix='{self.x_down_prefix}',
              up_prefix='{self.x_up_prefix}',
@@ -156,11 +158,13 @@ class CCM(InOutPositioner):
 
     tab_component_names = True
 
-    def __init__(self, alio_prefix, theta2fine_prefix, x_down_prefix,
-                 x_up_prefix, y_down_prefix, y_up_north_prefix,
-                 y_up_south_prefix, in_pos, out_pos, *args, **kwargs):
+    def __init__(self, alio_prefix, theta2fine_prefix, theta2coarse_prefix,
+                 chi2_prefix, x_down_prefix, x_up_prefix,
+                 y_down_prefix, y_up_north_prefix, y_up_south_prefix,
+                 in_pos, out_pos, *args, **kwargs):
         self.alio_prefix = alio_prefix
         self.theta2fine_prefix = theta2fine_prefix
+        self.theta2coarse_prefix = theta2coarse_prefix
         self.x_down_prefix = x_down_prefix
         self.x_up_prefix = x_up_prefix
         self.y_down_prefix = y_down_prefix
