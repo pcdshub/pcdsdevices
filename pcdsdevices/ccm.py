@@ -45,13 +45,13 @@ class CCMMotor(PVPositioner, FltMvInterface):
         self._last_setpoint = None
         super().__init__(prefix, name=name, **kwargs)
 
-    @setpoint.sub_value
+    @readback.sub_value
     def _update_readback(self, *args, value, **kwargs):
         """Callback to cache the readback and update done state."""
         self._last_readback = value
         self._update_done()
 
-    @readback.sub_value
+    @setpoint.sub_value
     def _update_setpoint(self, *args, value, **kwargs):
         """Callback to cache the setpoint and update done state."""
         self._last_setpoint = value
