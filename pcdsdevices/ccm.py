@@ -59,11 +59,11 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
 
     def __init__(self, *args, theta0=default_theta0, dspacing=default_dspacing,
                  gr=default_gr, gd=default_gd, **kwargs):
-        super().__init__(*args, auto_target=False, **kwargs)
         self.theta0 = theta0
         self.dspacing = dspacing
         self.gr = gr
         self.gd = gd
+        super().__init__(*args, auto_target=False, **kwargs)
 
     def forward(self, pseudo_pos):
         """Take energy, wavelength, or theta and map to alio."""
