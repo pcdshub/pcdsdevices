@@ -6,9 +6,9 @@ from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import PseudoPositioner
 from ophyd.pv_positioner import PVPositionerPC
-from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
+from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO, Signal
 
-from .epics_motor import IMS, PCDSMotorBase
+from .epics_motor import IMS, EpicsMotorInterface
 from .inout import InOutPositioner
 from .interface import FltMvInterface
 from .pseudopos import PseudoSingleInterface, SyncAxesBase
@@ -39,6 +39,32 @@ class CCMMotor(PVPositionerPC, FltMvInterface):
                    kind='hinted')
 
     limits = None
+
+
+class CCMPico(EpicsMotorInterface):
+    """
+    The Pico motors used here seem non-standard, as they are missing spg.
+
+    They still need the direction_of_travel fix from PCDSMotorBase.
+    This is a bit hacky for now, something should be done in the epics_motor
+    file to accomodate these.
+    """
+    direction_of_travel = Cpt(Signal, kind='omitted')
+
+    def _pos_changed(self, timestamp=None, old_value=None,
+                     value=None, **kwargs):
+        # Store the internal travelling direction of the motor to account for
+        # the fact that our EPICS motor does not have TDIR field
+        try:
+            comparison = int(value > old_value)
+            self.direction_of_travel.put(comparison)
+        except TypeError:
+            # We have some sort of null/None/default value
+            logger.debug('Could not compare value=%s > old_value=%s',
+                         value, old_value)
+        # Pass information to PositionerBase
+        super()._pos_changed(timestamp=timestamp, old_value=old_value,
+                             value=value, **kwargs)
 
 
 class CCMCalc(PseudoPositioner, FltMvInterface):
@@ -138,8 +164,8 @@ class CCM(InOutPositioner):
 
     calc = FCpt(CCMCalc, '{self.alio_prefix}', kind='hinted')
     theta2fine = FCpt(CCMMotor, '{self.theta2fine_prefix}')
-    theta2coarse = FCpt(PCDSMotorBase, '{self.theta2coarse_prefix}')
-    chi2 = FCpt(PCDSMotorBase, '{self.chi2_prefix}')
+    theta2coarse = FCpt(CCMPico, '{self.theta2coarse_prefix}')
+    chi2 = FCpt(CCMPico, '{self.chi2_prefix}')
     x = FCpt(CCMX,
              down_prefix='{self.x_down_prefix}',
              up_prefix='{self.x_up_prefix}',
