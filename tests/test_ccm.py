@@ -1,9 +1,10 @@
 import logging
 
 import numpy as np
-import pcdsdevices.ccm as ccm
 import pytest
 from ophyd.sim import fake_device_cache, make_fake_device
+
+import pcdsdevices.ccm as ccm
 from pcdsdevices.sim import FastMotor
 
 logger = logging.getLogger(__name__)
@@ -100,25 +101,22 @@ def test_ccm_calc(fake_ccm):
     energy_func = ccm.wavelength_to_energy(wavelength)
     assert energy == energy_func
 
-    calc.alio.readback.sim_put(0)
-    calc.alio.setpoint.sim_put(0)
+    calc.alio.move(0)
     calc.move(energy, wait=False)
-    assert np.isclose(calc.alio.setpoint.get(), SAMPLE_ALIO)
+    assert np.isclose(calc.alio.position, SAMPLE_ALIO)
 
-    calc.alio.readback.sim_put(0)
-    calc.alio.setpoint.sim_put(0)
+    calc.alio.move(0)
     calc.move(wavelength=wavelength, wait=False)
-    assert np.isclose(calc.alio.setpoint.get(), SAMPLE_ALIO)
+    assert np.isclose(calc.alio.position, SAMPLE_ALIO)
 
-    calc.alio.readback.sim_put(0)
-    calc.alio.setpoint.sim_put(0)
+    calc.alio.move(0)
     calc.move(theta=theta, wait=False)
-    assert np.isclose(calc.alio.setpoint.get(), SAMPLE_ALIO)
+    assert np.isclose(calc.alio.position, SAMPLE_ALIO)
 
-    calc.alio.readback.sim_put(calc.alio.setpoint.get())
+    calc.alio.move(calc.alio.position)
     calc.move(energy=calc.energy.position, wavelength=calc.wavelength.position,
               theta=calc.theta.position, wait=False)
-    assert np.isclose(calc.alio.setpoint.get(), SAMPLE_ALIO)
+    assert np.isclose(calc.alio.position, SAMPLE_ALIO)
 
 
 # Make sure sync'd axes work and that unk/in/out states work
@@ -158,6 +156,7 @@ def test_ccm_main(fake_ccm):
 @pytest.mark.timeout(5)
 def test_disconnected_ccm():
     ccm.CCM(alio_prefix='ALIO', theta2fine_prefix='THETA',
+            theta2coarse_prefix='THTA', chi2_prefix='CHI',
             x_down_prefix='X:DOWN', x_up_prefix='X:UP',
             y_down_prefix='Y:DOWN', y_up_north_prefix='Y:UP:NORTH',
             y_up_south_prefix='Y:UP:SOUTH', in_pos=8, out_pos=0,

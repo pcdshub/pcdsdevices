@@ -165,6 +165,7 @@ class CCM(InOutPositioner):
         self.alio_prefix = alio_prefix
         self.theta2fine_prefix = theta2fine_prefix
         self.theta2coarse_prefix = theta2coarse_prefix
+        self.chi2_prefix = chi2_prefix
         self.x_down_prefix = x_down_prefix
         self.x_up_prefix = x_up_prefix
         self.y_down_prefix = y_down_prefix
