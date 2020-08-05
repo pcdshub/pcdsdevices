@@ -5,13 +5,14 @@ import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import PseudoPositioner
-from ophyd.pv_positioner import PVPositionerPC
+from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO, Signal
 
 from .epics_motor import IMS, EpicsMotorInterface
 from .inout import InOutPositioner
 from .interface import FltMvInterface
 from .pseudopos import PseudoSingleInterface, SyncAxesBase
+from .signal import InternalSignal
 
 logger = logging.getLogger(__name__)
 
@@ -26,19 +27,50 @@ default_gr = 3.175
 default_gd = 231.303
 
 
-class CCMMotor(PVPositionerPC, FltMvInterface):
+class CCMMotor(PVPositioner, FltMvInterface):
     """
     Goofy records used in the CCM.
-
-    TODO: switch to PVPositioner subclass and override code that prevents
-    loading, and make the wait for done just compare the values.
     """
 
     setpoint = Cpt(EpicsSignal, ":POSITIONSET", auto_monitor=True)
     readback = Cpt(EpicsSignalRO, ":POSITIONGET", auto_monitor=True,
                    kind='hinted')
+    done = Cpt(InternalSignal, value=0)
+    done_value = 1
 
     limits = None
+
+    def __init__(self, prefix, *, name, **kwargs):
+        self._last_readback = None
+        self._last_setpoint = None
+        super().__init__(prefix, name=name, **kwargs)
+
+    @setpoint.sub_value
+    def _update_readback(self, *args, value, **kwargs):
+        """Callback to cache the readback and update done state."""
+        self._last_readback = value
+        self._update_done()
+
+    @readback.sub_value
+    def _update_setpoint(self, *args, value, **kwargs):
+        """Callback to cache the setpoint and update done state."""
+        self._last_setpoint = value
+        # Always set done to False when a move is requested
+        # This means we always get a rising edge when finished moving
+        # Even if the move distance is under our done moving tolerance
+        self.done.put(0, force=True)
+        self._update_done()
+
+    def _update_done(self):
+        """
+        Update our status to done if we are within the tolerance.
+
+        This tolerance of 3e-4 was copied as-is from old xcs python code.
+        """
+        if None not in (self._last_readback, self._last_setpoint):
+            is_done = np.isclose(self._last_readback, self._last_setpoint,
+                                 atol=3e-4)
+            self.done.put(int(is_done), force=True)
 
 
 class CCMPico(EpicsMotorInterface):
