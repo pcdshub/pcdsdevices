@@ -53,7 +53,7 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
     wavelength = Cpt(PseudoSingleInterface, egu='A')
     theta = Cpt(PseudoSingleInterface, egu='deg')
-    alio = Cpt(CCMMotor)
+    alio = Cpt(CCMMotor, '')
 
     tab_component_names = True
 
