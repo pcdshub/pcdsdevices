@@ -5,13 +5,14 @@ import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import PseudoPositioner
-from ophyd.pv_positioner import PVPositionerPC
-from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
+from ophyd.pv_positioner import PVPositioner
+from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO, Signal
 
-from .epics_motor import IMS
+from .epics_motor import IMS, EpicsMotorInterface
 from .inout import InOutPositioner
 from .interface import FltMvInterface
 from .pseudopos import PseudoSingleInterface, SyncAxesBase
+from .signal import InternalSignal
 
 logger = logging.getLogger(__name__)
 
@@ -26,19 +27,76 @@ default_gr = 3.175
 default_gd = 231.303
 
 
-class CCMMotor(PVPositionerPC, FltMvInterface):
+class CCMMotor(PVPositioner, FltMvInterface):
     """
     Goofy records used in the CCM.
-
-    TODO: switch to PVPositioner subclass and override code that prevents
-    loading, and make the wait for done just compare the values.
     """
 
     setpoint = Cpt(EpicsSignal, ":POSITIONSET", auto_monitor=True)
     readback = Cpt(EpicsSignalRO, ":POSITIONGET", auto_monitor=True,
                    kind='hinted')
+    done = Cpt(InternalSignal, value=0)
+    done_value = 1
 
     limits = None
+
+    def __init__(self, prefix, *, name, **kwargs):
+        self._last_readback = None
+        self._last_setpoint = None
+        super().__init__(prefix, name=name, **kwargs)
+
+    @readback.sub_value
+    def _update_readback(self, *args, value, **kwargs):
+        """Callback to cache the readback and update done state."""
+        self._last_readback = value
+        self._update_done()
+
+    @setpoint.sub_value
+    def _update_setpoint(self, *args, value, **kwargs):
+        """Callback to cache the setpoint and update done state."""
+        self._last_setpoint = value
+        # Always set done to False when a move is requested
+        # This means we always get a rising edge when finished moving
+        # Even if the move distance is under our done moving tolerance
+        self.done.put(0, force=True)
+        self._update_done()
+
+    def _update_done(self):
+        """
+        Update our status to done if we are within the tolerance.
+
+        This tolerance of 3e-4 was copied as-is from old xcs python code.
+        """
+        if None not in (self._last_readback, self._last_setpoint):
+            is_done = np.isclose(self._last_readback, self._last_setpoint,
+                                 atol=3e-4)
+            self.done.put(int(is_done), force=True)
+
+
+class CCMPico(EpicsMotorInterface):
+    """
+    The Pico motors used here seem non-standard, as they are missing spg.
+
+    They still need the direction_of_travel fix from PCDSMotorBase.
+    This is a bit hacky for now, something should be done in the epics_motor
+    file to accomodate these.
+    """
+    direction_of_travel = Cpt(Signal, kind='omitted')
+
+    def _pos_changed(self, timestamp=None, old_value=None,
+                     value=None, **kwargs):
+        # Store the internal travelling direction of the motor to account for
+        # the fact that our EPICS motor does not have TDIR field
+        try:
+            comparison = int(value > old_value)
+            self.direction_of_travel.put(comparison)
+        except TypeError:
+            # We have some sort of null/None/default value
+            logger.debug('Could not compare value=%s > old_value=%s',
+                         value, old_value)
+        # Pass information to PositionerBase
+        super()._pos_changed(timestamp=timestamp, old_value=old_value,
+                             value=value, **kwargs)
 
 
 class CCMCalc(PseudoPositioner, FltMvInterface):
@@ -53,17 +111,17 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
     wavelength = Cpt(PseudoSingleInterface, egu='A')
     theta = Cpt(PseudoSingleInterface, egu='deg')
-    alio = Cpt(CCMMotor)
+    alio = Cpt(CCMMotor, '')
 
     tab_component_names = True
 
     def __init__(self, *args, theta0=default_theta0, dspacing=default_dspacing,
                  gr=default_gr, gd=default_gd, **kwargs):
-        super().__init__(*args, auto_target=False, **kwargs)
         self.theta0 = theta0
         self.dspacing = dspacing
         self.gr = gr
         self.gd = gd
+        super().__init__(*args, auto_target=False, **kwargs)
 
     def forward(self, pseudo_pos):
         """Take energy, wavelength, or theta and map to alio."""
@@ -138,6 +196,8 @@ class CCM(InOutPositioner):
 
     calc = FCpt(CCMCalc, '{self.alio_prefix}', kind='hinted')
     theta2fine = FCpt(CCMMotor, '{self.theta2fine_prefix}')
+    theta2coarse = FCpt(CCMPico, '{self.theta2coarse_prefix}')
+    chi2 = FCpt(CCMPico, '{self.chi2_prefix}')
     x = FCpt(CCMX,
              down_prefix='{self.x_down_prefix}',
              up_prefix='{self.x_up_prefix}',
@@ -156,11 +216,14 @@ class CCM(InOutPositioner):
 
     tab_component_names = True
 
-    def __init__(self, alio_prefix, theta2fine_prefix, x_down_prefix,
-                 x_up_prefix, y_down_prefix, y_up_north_prefix,
-                 y_up_south_prefix, in_pos, out_pos, *args, **kwargs):
+    def __init__(self, alio_prefix, theta2fine_prefix, theta2coarse_prefix,
+                 chi2_prefix, x_down_prefix, x_up_prefix,
+                 y_down_prefix, y_up_north_prefix, y_up_south_prefix,
+                 in_pos, out_pos, *args, **kwargs):
         self.alio_prefix = alio_prefix
         self.theta2fine_prefix = theta2fine_prefix
+        self.theta2coarse_prefix = theta2coarse_prefix
+        self.chi2_prefix = chi2_prefix
         self.x_down_prefix = x_down_prefix
         self.x_up_prefix = x_up_prefix
         self.y_down_prefix = y_down_prefix
