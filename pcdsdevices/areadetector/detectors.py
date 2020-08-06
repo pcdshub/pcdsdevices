@@ -69,6 +69,8 @@ class PCDSAreaDetectorEmbedded(PCDSAreaDetectorBase):
                  doc='Image plugin used for the camera viewer')
     stats2 = Cpt(StatsPlugin, 'Stats2:', kind='normal',
                  doc='Stats plugin used for alignments')
+    hdf51 = Cpt(HDF5Plugin, 'HDF51:', kind='normal',
+                doc='HDF5 plugin used to create HDF5 files')
 
     def get_full_area_detector(self):
         if isinstance(self, PCDSAreaDetector):
