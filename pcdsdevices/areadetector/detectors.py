@@ -63,6 +63,7 @@ class PCDSAreaDetectorEmbedded(PCDSAreaDetectorBase):
     The plugins included are:
         IMAGE2: reduced rate image, used for camera viewer.
         Stats2: reduced rate stats.
+        HDF51: hdf5 files.
     """
 
     image2 = Cpt(ImagePlugin, 'IMAGE2:', kind='normal',
