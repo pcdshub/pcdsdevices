@@ -141,7 +141,10 @@ class BaseInterface(OphydObject):
             Formatted string with all relevant status information.
         """
         lines = self._status_info_lines(status_info)
-        return '\n'.join(lines)
+        if lines:
+            return '\n'.join(lines)
+        else:
+            return f'{self.name}: No status available'
 
     def _status_info_lines(self, status_info, prefix='', indent=0):
         full_name = status_info['name']
@@ -167,11 +170,15 @@ class BaseInterface(OphydObject):
                 else:
                     # Record extra value
                     data_lines.append(f'{key}: {value}')
-            # Indent the subdevices
-            if indent:
-                for i, line in enumerate(data_lines):
-                    data_lines[i] = ' ' * indent + line
-            return header_lines + data_lines
+            if data_lines:
+                # Indent the subdevices
+                if indent:
+                    for i, line in enumerate(data_lines):
+                        data_lines[i] = ' ' * indent + line
+                return header_lines + data_lines
+            else:
+                # No data = do not print header
+                return []
         else:
             # Just show the name/value pair
             value = status_info['value']
