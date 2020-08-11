@@ -15,8 +15,9 @@ from weakref import WeakSet
 
 import yaml
 from bluesky.utils import ProgressBar
-from ophyd.device import Kind
+from ophyd.device import Device, Kind, Signal
 from ophyd.ophydobj import OphydObject
+from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait
 
 from . import utils as util
@@ -92,6 +93,70 @@ class BaseInterface(OphydObject):
         prefix = getattr(self, 'prefix', None)
         name = getattr(self, 'name', None)
         return f"{self.__class__.__name__}({prefix}, name={name})"
+
+    def _repr_pretty_(self, pp, cycle):
+        """
+        Set pretty-printing to show current status information.
+
+        The default behavior here will probably be good enough for many
+        objects, but there will be some desire to override it with special
+        views.
+
+        By default we will construct a tree that includes all read signals,
+        organized by subdevice.
+
+        Parameters
+        ----------
+        pp: PrettyPrinter
+            An instance of PrettyPrinter is always passed into the method.
+            This is what you use to determine what gets printed.
+            pp.text('text') adds non-breaking text to the output.
+            pp.breakable() either adds a whitespace or breaks here.
+            pp.pretty(obj) pretty prints another object.
+            with pp.group(4, 'text', 'text') groups items into an intended set
+            on multiple lines.
+        cycle: bool
+            This is True when the pretty printer detects a cycle, e.g. to help
+            you avoid infinite loops. For example, your _repr_pretty_ method
+            may call pp.pretty to print a sub-object, and that object might
+            also call pp.pretty to print this object. Then cycle would be True
+            and you know not to make any further recursive calls.
+        """
+        pp.text(self.show_status())
+
+    def show_status(self):
+        """
+        Entry point for the mini status displays in the ipython terminal.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        return self._default_status(self, '', 0)
+
+    def _default_status(self, obj, parent_name, indent):
+        if parent_name and parent_name + '_' in obj.name:
+            name = obj.name.replace(parent_name + '_', '')
+        else:
+            name = obj.name
+        status = f'{name}'
+        if isinstance(obj, Signal):
+            status += f': {obj.get()}\n'
+        elif isinstance(obj, Device) and obj.read_attrs:
+            status += '\n' + '-' * len(name) + '\n'
+            if isinstance(obj, PositionerBase):
+                status += f'position: {obj.position}\n'
+            for cpt_name in obj.component_names:
+                cpt = getattr(obj, cpt_name)
+                if cpt.kind & Kind.normal:
+                    status += self._default_status(cpt, obj.name, indent + 4)
+        if indent:
+            indent_str = ' ' * indent
+            status = status.replace('\n', '\n' + indent_str)
+            status = status.strip(' ')
+            status = indent_str + status
+        return status
 
 
 def set_engineering_mode(expert):
