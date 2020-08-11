@@ -17,7 +17,6 @@ import yaml
 from bluesky.utils import ProgressBar
 from ophyd.device import Device, Kind, Signal
 from ophyd.ophydobj import OphydObject
-from ophyd.positioner import PositionerBase
 from ophyd.status import wait as status_wait
 
 from . import utils as util
@@ -98,12 +97,12 @@ class BaseInterface(OphydObject):
         """
         Set pretty-printing to show current status information.
 
-        The default behavior here will probably be good enough for many
-        objects, but there will be some desire to override it with special
-        views.
+        We will not leverage the feature set here, we will just use it as a
+        convenient IPython entry point for rendering our device info.
 
-        By default we will construct a tree that includes all read signals,
-        organized by subdevice.
+        The parameter set is documented here in case we change our minds,
+        since I already wrote it out before deciding on a renderer-agnostic
+        approach.
 
         Parameters
         ----------
@@ -122,41 +121,153 @@ class BaseInterface(OphydObject):
             also call pp.pretty to print this object. Then cycle would be True
             and you know not to make any further recursive calls.
         """
-        pp.text(self.show_status())
+        pp.text(self.format_status_info(self.status_info()))
 
-    def show_status(self):
+    def format_status_info(self, status_info):
         """
         Entry point for the mini status displays in the ipython terminal.
+
+        This can be overridden if a device wants a custom status printout.
+
+        Parameters
+        ----------
+        status_info: dict
+            See self.status_info method
 
         Returns
         -------
         status: str
             Formatted string with all relevant status information.
         """
-        return self._default_status(self, '', 0)
+        lines = self._status_info_lines(status_info)
+        return '\n'.join(lines)
 
-    def _default_status(self, obj, parent_name, indent):
-        if parent_name and parent_name + '_' in obj.name:
-            name = obj.name.replace(parent_name + '_', '')
+    def _status_info_lines(self, status_info, prefix='', indent=0):
+        full_name = status_info['name']
+        if full_name.startswith(prefix):
+            name = full_name.replace(prefix, '', 1)
         else:
-            name = obj.name
-        status = f'{name}'
-        if isinstance(obj, Signal):
-            status += f': {obj.get()}\n'
-        elif isinstance(obj, Device) and obj.read_attrs:
-            status += '\n' + '-' * len(name) + '\n'
-            if isinstance(obj, PositionerBase):
-                status += f'position: {obj.position}\n'
-            for cpt_name in obj.component_names:
-                cpt = getattr(obj, cpt_name)
-                if cpt.kind & Kind.normal:
-                    status += self._default_status(cpt, obj.name, indent + 4)
-        if indent:
-            indent_str = ' ' * indent
-            status = status.replace('\n', '\n' + indent_str)
-            status = status.strip(' ')
-            status = indent_str + status
-        return status
+            name = full_name
+
+        if status_info['is_device']:
+            # Set up a tree view
+            header_lines = ['', f'{name}', '-' * len(name)]
+            data_lines = []
+            extra_keys = ('name', 'kind', 'is_device')
+            for key in extra_keys:
+                status_info.pop(key)
+            for key, value in status_info.items():
+                if isinstance(value, dict):
+                    # Go recursive
+                    inner = self._status_info_lines(value,
+                                                    prefix=full_name + '_',
+                                                    indent=2)
+                    data_lines.extend(inner)
+                else:
+                    # Record extra value
+                    data_lines.append(f'{key}: {value}')
+            # Indent the subdevices
+            if indent:
+                for i, line in enumerate(data_lines):
+                    data_lines[i] = ' ' * indent + line
+            return header_lines + data_lines
+        else:
+            # Just show the name/value pair
+            value = status_info['value']
+            return [f'{name}: {value}']
+
+    def status_info(self):
+        """
+        Get useful information for the status display.
+
+        This can be overridden if a device wants to feed custom information to
+        the formatter.
+
+        Returns
+        -------
+        info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+        """
+        def subdevice_filter(info):
+            return bool(info['kind'] & Kind.normal)
+
+        return ophydobj_info(self, subdevice_filter=subdevice_filter)
+
+
+def get_name(obj, default):
+    try:
+        return obj.name
+    except AttributeError:
+        try:
+            return str(obj)
+        except Exception:
+            return default
+
+
+def get_kind(obj):
+    try:
+        return obj.kind
+    except Exception:
+        return Kind.omitted
+
+
+def get_value(signal):
+    try:
+        return signal.get()
+    except Exception:
+        return None
+
+
+def ophydobj_info(obj, subdevice_filter=None, devices=None):
+    if isinstance(obj, Signal):
+        return signal_info(obj)
+    elif isinstance(obj, Device):
+        return device_info(obj, subdevice_filter=subdevice_filter,
+                           devices=devices)
+    else:
+        return {}
+
+
+def device_info(device, subdevice_filter=None, devices=None):
+    if devices is None:
+        devices = set()
+    name = get_name(device, default='device')
+    kind = get_kind(device)
+    info = dict(name=name, kind=kind, is_device=True)
+    try:
+        # Extra key for positioners
+        # Do this first for ordered dict niceness
+        info['position'] = device.position
+    except AttributeError:
+        pass
+    if device not in devices:
+        devices.add(device)
+        for cpt_name in device.component_names:
+            cpt = getattr(device, cpt_name)
+            cpt_info = ophydobj_info(cpt, subdevice_filter=subdevice_filter,
+                                     devices=devices)
+            if 'position' in info:
+                # Drop some potential duplicate keys for positioners
+                try:
+                    if cpt.name == cpt.parent.name:
+                        continue
+                except AttributeError:
+                    pass
+                if cpt_name == 'user_readback':
+                    continue
+
+            if not callable(subdevice_filter) or subdevice_filter(cpt_info):
+                info[cpt_name] = cpt_info
+    return info
+
+
+def signal_info(signal):
+    name = get_name(signal, default='signal')
+    kind = get_kind(signal)
+    value = get_value(signal)
+    return dict(name=name, kind=kind, is_device=False, value=value)
 
 
 def set_engineering_mode(expert):
