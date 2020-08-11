@@ -289,7 +289,7 @@ def device_info(device, subdevice_filter=None, devices=None):
                         continue
                 except AttributeError:
                     pass
-                if cpt_name == 'user_readback':
+                if cpt_name in ('readback', 'user_readback'):
                     continue
 
             if not callable(subdevice_filter) or subdevice_filter(cpt_info):
