@@ -15,8 +15,9 @@ from weakref import WeakSet
 
 import yaml
 from bluesky.utils import ProgressBar
-from ophyd.device import Device, Kind, Signal
-from ophyd.ophydobj import OphydObject
+from ophyd.device import Device
+from ophyd.ophydobj import Kind, OphydObject
+from ophyd.signal import Signal, AttributeSignal
 from ophyd.status import wait as status_wait
 
 from . import utils as util
@@ -215,9 +216,12 @@ def get_kind(obj):
 
 def get_value(signal):
     try:
-        return signal.get()
+        # Minimize waiting, we aren't collecting data we're showing info
+        if signal.connected:
+            return signal.get(timeout=0.1, connection_timeout=0.1)
     except Exception:
-        return None
+        pass
+    return None
 
 
 def ophydobj_info(obj, subdevice_filter=None, devices=None):
@@ -244,8 +248,20 @@ def device_info(device, subdevice_filter=None, devices=None):
         pass
     if device not in devices:
         devices.add(device)
-        for cpt_name in device.component_names:
-            cpt = getattr(device, cpt_name)
+        for cpt_name, cpt_desc in device._sig_attrs.items():
+            # Skip lazy signals outright in all cases
+            # Usually these are lazy because they take too long to getattr
+            if cpt_desc.lazy:
+                continue
+            # Skip attribute signals as well
+            # Indeterminate get times, no real connected bool, etc.
+            if issubclass(cpt_desc.cls, AttributeSignal):
+                continue
+            try:
+                cpt = getattr(device, cpt_name)
+            except AttributeError:
+                # Why are we ever in this block?
+                continue
             cpt_info = ophydobj_info(cpt, subdevice_filter=subdevice_filter,
                                      devices=devices)
             if 'position' in info:
