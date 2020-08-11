@@ -21,6 +21,7 @@ from ophyd.signal import Signal, AttributeSignal
 from ophyd.status import wait as status_wait
 
 from . import utils as util
+from .signal import NotImplementedSignal
 
 try:
     import fcntl
@@ -271,9 +272,13 @@ def device_info(device, subdevice_filter=None, devices=None):
             # Usually these are lazy because they take too long to getattr
             if cpt_desc.lazy:
                 continue
-            # Skip attribute signals as well
+            # Skip attribute signals
             # Indeterminate get times, no real connected bool, etc.
             if issubclass(cpt_desc.cls, AttributeSignal):
+                continue
+            # Skip not implemented signals
+            # They never have interesting information
+            if issubclass(cpt_desc.cls, NotImplementedSignal):
                 continue
             try:
                 cpt = getattr(device, cpt_name)

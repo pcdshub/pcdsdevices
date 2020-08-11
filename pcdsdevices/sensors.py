@@ -8,7 +8,7 @@ from ophyd import Device
 from ophyd.signal import SignalRO
 
 from .interface import BaseInterface
-from .signal import PytmcSignal
+from .signal import PytmcSignal, NotImplementedSignal
 
 
 class TwinCATThermocouple(Device, BaseInterface):
@@ -36,5 +36,4 @@ class RTD(Device, BaseInterface):
         The PV base of the device.
     """
 
-    not_implemented = Cpt(SignalRO, name="Not Implemented",
-                          value="Not Implemented", kind='normal')
+    not_implemented = Cpt(NotImplementedSignal, kind='normal')
