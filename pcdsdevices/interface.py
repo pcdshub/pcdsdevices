@@ -253,6 +253,9 @@ def device_info(device, subdevice_filter=None, devices=None):
         info['position'] = device.position
     except AttributeError:
         pass
+    except Exception:
+        # Something else went wrong! We have a position but it didn't work
+        info['position'] = None
     if device not in devices:
         devices.add(device)
         for cpt_name, cpt_desc in device._sig_attrs.items():
