@@ -180,9 +180,17 @@ class BaseInterface(OphydObject):
                 # No data = do not print header
                 return []
         else:
-            # Just show the name/value pair
+            # Show the name/value pair for a signal
             value = status_info['value']
-            return [f'{name}: {value}']
+            value_text = str(value)
+            if '\n' in value_text:
+                # Multiline values (arrays) need special handling
+                value_lines = value_text.split('\n')
+                for i, line in enumerate(value_lines):
+                    value_lines[i] = ' ' * 2 + line
+                return [f'{name}:'] + value_lines
+            else:
+                return [f'{name}: {value}']
 
     def status_info(self):
         """
