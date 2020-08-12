@@ -779,25 +779,24 @@ def render_ascii_att(blade_states):
         The lines that should be printed to the screen.
     """
     filter_line = 'filter # |'
-    out_line =    ' OUT     |'
-    in_line =     ' IN      |'
+    out_line = ' OUT     |'
+    in_line = ' IN      |'
     for i, state in enumerate(blade_states):
         state = get_blade_enum(state)
         filter_line += f'{i}|'
         if state == BladeStateEnum.OUT:
             out_line += 'X|'
-            in_line +=  ' |'
+            in_line += ' |'
         elif state == BladeStateEnum.IN:
             out_line += ' |'
-            in_line +=  'X|'
+            in_line += 'X|'
         elif state == BladeStateEnum.STUCK_OUT:
             out_line += 'S|'
-            in_line +=  ' |'
+            in_line += ' |'
         elif state == BladeStateEnum.STUCK_IN:
             out_line += ' |'
-            in_line +=  'S|'
+            in_line += 'S|'
         else:
             out_line += '?|'
-            in_line +=  '?|'
+            in_line += '?|'
     return [filter_line, out_line, in_line]
-
