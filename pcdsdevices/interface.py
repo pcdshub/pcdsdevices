@@ -298,6 +298,8 @@ def device_info(device, subdevice_filter=None, devices=None):
                 cpt = getattr(device, cpt_name)
             except AttributeError:
                 # Why are we ever in this block?
+                logger.debug(f'Getattr {name}.{cpt_name} failed.',
+                             exc_info=True)
                 continue
             cpt_info = ophydobj_info(cpt, subdevice_filter=subdevice_filter,
                                      devices=devices)
