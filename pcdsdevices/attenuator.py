@@ -1,6 +1,7 @@
 """
 Module for `Attenuator` and related classes.
 """
+import enum
 import logging
 import time
 
@@ -38,9 +39,9 @@ class Filter(InOutPositioner):
     """
 
     state = Cpt(EpicsSignal, ':STATE', write_pv=':GO', kind='hinted')
+    stuck = Cpt(EpicsSignal, ':IS_STUCK', kind='normal')
     thickness = Cpt(EpicsSignal, ':THICK', kind='config')
     material = Cpt(EpicsSignal, ':MATERIAL', kind='config')
-    stuck = Cpt(EpicsSignal, ':IS_STUCK', kind='omitted')
 
     tab_component_names = True
 
@@ -94,6 +95,8 @@ class AttBase(FltMvInterface, PVPositioner):
     SUB_STATE = 'state'
     # Tab complete whitelist
     tab_whitelist = ['set_energy']
+
+    _harmonic = '1st'
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, limits=(0, 1), **kwargs)
@@ -237,6 +240,30 @@ class AttBase(FltMvInterface, PVPositioner):
         kwargs.pop('sub_type')
         kwargs.pop('obj')
         self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the att
+        """
+        # Get the attenuator statuses
+        blade_states = []
+        for i in range(1, MAX_FILTERS + 1):
+            try:
+                filter_info = status_info[f'filter{i}']
+            except KeyError:
+                break
+            state = filter_info['state']['value']
+            is_stuck = filter_info['stuck']['value']
+            if state == 0:
+                blade_states.append(0)
+            else:
+                blade_states.append(state+is_stuck)
+        lines = render_ascii_att(blade_states)
+        energy = status_info['energy']['value'] / 1000
+        trans = status_info['position']
+        harm = self._harmonic
+        # TODO transmission string
+        return '\n'.join(lines)
 
 
 class AttBase3rd(AttBase):
@@ -684,3 +711,57 @@ class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
          for idx, attr in _filter_index_to_attr.items()
          }
     )
+
+
+class BladeStateEnum(enum.Enum):
+    Unknown = 0
+    OUT = 1
+    IN = 2
+    STUCK_OUT = 3
+    STUCK_IN = 4
+
+
+def get_blade_enum(value):
+    try:
+        return BladeStateEnum[value]
+    except KeyError:
+        return BladeStateEnum(value)
+
+
+def render_ascii_att(blade_states):
+    """
+    Creates the attenuator ascii art.
+
+    Parameters
+    ----------
+    blade_states: list of BladeStateEnum
+        The elements of this list represent the current blade states.
+
+    Returns
+    -------
+    ascii_lines: list of str
+        The lines that should be printed to the screen.
+    """
+    filter_line = 'filter # |'
+    out_line =    ' OUT     |'
+    in_line =     ' IN      |'
+    for i, state in enumerate(blade_states):
+        state = get_blade_enum(state)
+        filter_line += f'{i}|'
+        if state == BladeStateEnum.OUT:
+            out_line += 'X|'
+            in_line +=  ' |'
+        elif state == BladeStateEnum.IN:
+            out_line += ' |'
+            in_line +=  'X|'
+        elif state == BladeStateEnum.STUCK_OUT:
+            out_line += 'S|'
+            in_line +=  ' |'
+        elif state == BladeStateEnum.STUCK_IN:
+            out_line += ' |'
+            in_line +=  'S|'
+        else:
+            out_line += '?|'
+            in_line +=  '?|'
+    return [filter_line, out_line, in_line]
+
