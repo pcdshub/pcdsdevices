@@ -256,15 +256,29 @@ def device_info(device, subdevice_filter=None, devices=None):
     name = get_name(device, default='device')
     kind = get_kind(device)
     info = dict(name=name, kind=kind, is_device=True)
+
+    try:
+        # Show the current preset state if we have one
+        # This should be the first key in the ordered dict
+        has_presets = device.presets.has_presets
+    except AttributeError:
+        has_presets = False
+    if has_presets:
+        try:
+            info['preset'] = device.presets.state()
+        except Exception:
+            info['preset'] = 'ERROR'
+
     try:
         # Extra key for positioners
-        # Do this first for ordered dict niceness
+        # This has ordered dict priority over everything but the preset state
         info['position'] = device.position
     except AttributeError:
         pass
     except Exception:
         # Something else went wrong! We have a position but it didn't work
-        info['position'] = None
+        info['position'] = 'ERROR'
+
     if device not in devices:
         devices.add(device)
         for cpt_name, cpt_desc in device._sig_attrs.items():
@@ -922,6 +936,32 @@ class Presets:
                 pass
         self._methods = []
         self.positions = SimpleNamespace()
+
+    @property
+    def has_presets(self):
+        """
+        Returns True if any preset positions are defined.
+        """
+        return bool(self.positions.__dict__)
+
+    def state(self):
+        """
+        Return the current active preset state name.
+
+        This will be the state string name, or Unknown if we're not at any
+        state.
+        """
+        state = 'Unknown'
+        closest = 0.5
+        for device, method_name in self._methods:
+            if method_name.startswith('wm_'):
+                state_name = method_name.replace('wm_', '', 1)
+                wm_state = getattr(device, method_name)
+                diff = wm_state()
+                if diff < closest:
+                    state = state_name
+                    closest = diff
+        return state
 
 
 class PresetPosition:
