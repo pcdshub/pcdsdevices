@@ -311,6 +311,8 @@ class AttBase3rd(AttBase):
     `~Attenuator.use_3rd` argument in the :func:`Attenuator` factory function.
     """
 
+    _harmonic = '3rd'
+
     # Positioner Signals
     setpoint = Cpt(EpicsSignal, ':COM:R3_DES', kind='normal')
     readback = Cpt(EpicsSignalRO, ':COM:R3_CUR', kind='hinted')
