@@ -38,21 +38,60 @@ class Filter(InOutPositioner):
     can instantiate these classes via the :func:`Attenuator` factory function.
     """
 
-    state = Cpt(EpicsSignal, ':STATE', write_pv=':GO', kind='hinted')
+    status = Cpt(InternalSignal, kind='normal')
+    state = Cpt(EpicsSignal, ':STATE', write_pv=':GO', kind='normal')
     stuck = Cpt(EpicsSignal, ':IS_STUCK', kind='normal')
     thickness = Cpt(EpicsSignal, ':THICK', kind='config')
     material = Cpt(EpicsSignal, ':MATERIAL', kind='config')
 
     tab_component_names = True
 
+    def __init__(self, prefix, *, name, **kwargs):
+        self._status_state = None
+        self._stuck_state = None
+        super().__init__(prefix, name=name, **kwargs)
+
+    @state.sub_value
+    def _state_update(self, *args, value, **kwargs):
+        self._status_state = value
+        self._status_update()
+
+    @stuck.sub_value
+    def _stuck_update(self, *args, value, **kwargs):
+        self._stuck_state = value
+        self._status_update()
+
+    def _status_update(self):
+        if self._stuck_state == 1:
+            self.status.put(BladeStateEnum.STUCK_IN, force=True)
+        elif self._stuck_state == 2:
+            self.status.put(BladeStateEnum.STUCK_OUT, force=True)
+        elif self._status_state == 1:
+            self.status.put(BladeStateEnum.IN, force=True)
+        elif self._status_state == 2:
+            self.status.put(BladeStateEnum.OUT, force=True)
+        else:
+            self.status.put(BladeStateEnum.Unknown, force=True)
+
 
 class FeeFilter(InOutPositioner):
     """A single attenuation blade, as implemented in the FEE."""
+
+    status = Cpt(InternalSignal, kind='normal')
     state = Cpt(EpicsSignal, ':STATE', write_pv=':CMD')
 
     states_list = ['IN', 'OUT', 'FAIL']
     _invalid_states = ['FAIL']
     _unknown = 'XSTN'
+
+    @state.sub_value
+    def _status_update(self, *args, value, **kwargs):
+        if value == 1:
+            self.status.put(BladeStateEnum.IN, force=True)
+        elif value == 2:
+            self.status.put(BladeStateEnum.OUT, force=True)
+        else:
+            self.status.put(BladeStateEnum.Unknown, force=True)
 
 
 class AttBase(FltMvInterface, PVPositioner):
@@ -252,17 +291,14 @@ class AttBase(FltMvInterface, PVPositioner):
                 filter_info = status_info[f'filter{i}']
             except KeyError:
                 break
-            state = filter_info['state']['value']
-            is_stuck = filter_info['stuck']['value']
-            if state == 0:
-                blade_states.append(0)
-            else:
-                blade_states.append(state+is_stuck)
+            status = filter_info['status']['value']
+            blade_states.append(status)
         lines = render_ascii_att(blade_states)
+        txt = 'Transmission for {} harmonic (E={:.3} keV): {:.4E}'
         energy = status_info['energy']['value'] / 1000
         trans = status_info['position']
         harm = self._harmonic
-        # TODO transmission string
+        lines.append(txt.format(harm, energy, trans))
         return '\n'.join(lines)
 
 
