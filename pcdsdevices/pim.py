@@ -75,7 +75,7 @@ class PIM(Device, BaseInterface):
 
     _prefix_start = ''
 
-    state = Cpt(PIMY, '', kind='omitted')
+    state = Cpt(PIMY, '', kind='normal')
     zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
     detector = FCpt(PCDSAreaDetectorEmbedded, '{self._prefix_det}',
                     kind='normal')
