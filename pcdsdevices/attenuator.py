@@ -432,61 +432,6 @@ class FEESolidAttenuatorBlade(Device, BaseInterface, LightpathInOutMixin):
     motor = Cpt(BeckhoffAxis, '')
 
 
-class FEESolidAttenuator(Device, BaseInterface, LightpathInOutMixin):
-    """
-    Solid attenuator variant from the LCLS-II XTES project.
-
-    Motorized, 18 filters + 1 inspection mirror.
-
-    This is a quick-and-dirty Ophyd device for controlling AT2L0 motion and
-    generating a PyDM control screen.
-
-    Parameters
-    ----------
-    prefix : str
-        Full Solid Attenuator base PV.
-
-    name : str
-        Alias for the Solid Attenuator.
-    """
-
-    # QIcon for UX
-    _icon = 'fa.barcode'
-
-    # Register that all blades are needed for lightpath calc
-    lightpath_cpts = ['blade_{:02}'.format(i+1) for i in range(19)]
-
-    # Summary for lightpath view
-    num_in = Cpt(InternalSignal, kind='hinted')
-    num_out = Cpt(InternalSignal, kind='hinted')
-
-    blade_01 = Cpt(FEESolidAttenuatorBlade, ':MMS:01')
-    blade_02 = Cpt(FEESolidAttenuatorBlade, ':MMS:02')
-    blade_03 = Cpt(FEESolidAttenuatorBlade, ':MMS:03')
-    blade_04 = Cpt(FEESolidAttenuatorBlade, ':MMS:04')
-    blade_05 = Cpt(FEESolidAttenuatorBlade, ':MMS:05')
-    blade_06 = Cpt(FEESolidAttenuatorBlade, ':MMS:06')
-    blade_07 = Cpt(FEESolidAttenuatorBlade, ':MMS:07')
-    blade_08 = Cpt(FEESolidAttenuatorBlade, ':MMS:08')
-    blade_09 = Cpt(FEESolidAttenuatorBlade, ':MMS:09')
-    blade_10 = Cpt(FEESolidAttenuatorBlade, ':MMS:10')
-    blade_11 = Cpt(FEESolidAttenuatorBlade, ':MMS:11')
-    blade_12 = Cpt(FEESolidAttenuatorBlade, ':MMS:12')
-    blade_13 = Cpt(FEESolidAttenuatorBlade, ':MMS:13')
-    blade_14 = Cpt(FEESolidAttenuatorBlade, ':MMS:14')
-    blade_15 = Cpt(FEESolidAttenuatorBlade, ':MMS:15')
-    blade_16 = Cpt(FEESolidAttenuatorBlade, ':MMS:16')
-    blade_17 = Cpt(FEESolidAttenuatorBlade, ':MMS:17')
-    blade_18 = Cpt(FEESolidAttenuatorBlade, ':MMS:18')
-    blade_19 = Cpt(FEESolidAttenuatorBlade, ':MMS:19')
-
-    def _set_lightpath_states(self, lightpath_values):
-        info = super()._set_lightpath_states(lightpath_values)
-        if info is not None:
-            self.num_in.put(info['in_check'].count(True), force=True)
-            self.num_out.put(info['out_check'].count(True), force=True)
-
-
 class GasAttenuator(Device, BaseInterface):
     """
     AT*:GAS, Base class for an LCLS-II XTES gas attenuator.
@@ -749,6 +694,61 @@ class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
          for idx, attr in _filter_index_to_attr.items()
          }
     )
+
+
+class FEESolidAttenuator(Device, BaseInterface, LightpathInOutMixin):
+    """
+    Solid attenuator variant from the LCLS-II XTES project.
+
+    Motorized, 18 filters + 1 inspection mirror.
+    This class includes a calculator to aid in determining which filters to
+    insert for a given attenuation at a specific energy.
+
+    Parameters
+    ----------
+    prefix : str
+        Solid Attenuator base PV.
+
+    name : str
+        Alias for the Solid Attenuator.
+    """
+
+    # QIcon for UX
+    _icon = 'fa.barcode'
+
+    # Register that all blades are needed for lightpath calc
+    lightpath_cpts = ['blade_{:02}'.format(i+1) for i in range(19)]
+
+    # Summary for lightpath view
+    num_in = Cpt(InternalSignal, kind='hinted')
+    num_out = Cpt(InternalSignal, kind='hinted')
+
+    calculator = Cpt(AttenuatorCalculator_AT2L0, ':CALC')
+    blade_01 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:01')
+    blade_02 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:02')
+    blade_03 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:03')
+    blade_04 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:04')
+    blade_05 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:05')
+    blade_06 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:06')
+    blade_07 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:07')
+    blade_08 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:08')
+    blade_09 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:09')
+    blade_10 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:10')
+    blade_11 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:11')
+    blade_12 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:12')
+    blade_13 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:13')
+    blade_14 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:14')
+    blade_15 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:15')
+    blade_16 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:16')
+    blade_17 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:17')
+    blade_18 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:18')
+    blade_19 = Cpt(FEESolidAttenuatorBlade, 'XTES:MMS:19')
+
+    def _set_lightpath_states(self, lightpath_values):
+        info = super()._set_lightpath_states(lightpath_values)
+        if info is not None:
+            self.num_in.put(info['in_check'].count(True), force=True)
+            self.num_out.put(info['out_check'].count(True), force=True)
 
 
 class BladeStateEnum(enum.Enum):
