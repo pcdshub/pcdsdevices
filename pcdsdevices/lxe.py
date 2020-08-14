@@ -34,7 +34,8 @@ from ophyd import Component as Cpt
 
 from .epics_motor import EpicsMotorInterface
 from .interface import FltMvInterface
-from .pseudopos import LookupTablePositioner, PseudoSingleInterface
+from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
+                        pseudo_position_argument)
 
 if typing.TYPE_CHECKING:
     import matplotlib  # noqa
@@ -74,6 +75,7 @@ class LaserEnergyPlotContext:
     figure: 'matplotlib.figure.Figure'
     pyplot: types.ModuleType  # matplotlib.pyplot
     column_names: typing.Tuple[str, ...]
+    _subplot: 'matplotlib.axes._subplots.AxesSubplot'
 
     def __init__(self, *,
                  table: np.ndarray,
@@ -84,9 +86,11 @@ class LaserEnergyPlotContext:
         import matplotlib.pyplot as pyplot  # noqa
         self.pyplot = pyplot
         self.figure = None
+        self._subplot = None
         self.column_names = tuple(column_names)
 
     def close(self):
+        """Close the plot and clean up."""
         if self.figure is not None:
             self.figure.close()
             self.figure = None
@@ -94,6 +98,14 @@ class LaserEnergyPlotContext:
     def plot(self, new_figure=True, show=True):
         """
         Plot calibration data.
+
+        Parameters
+        ----------
+        new_figure : bool, optional
+            Force creation of a new figure.
+
+        show : bool, optional
+            Show the plot.
         """
         plt = self.pyplot
 
@@ -103,23 +115,27 @@ class LaserEnergyPlotContext:
 
         self.figure = plt.figure() if new_figure else plt.gcf()
 
-        plot = self.figure.subplots()
-        plot.plot(self.table[:, self.column_names.index('motor')],
-                  self.table[:, self.column_names.index('energy')],
-                  "k-o")
+        self._subplot = self.figure.subplots()
+        self._subplot.plot(
+            self.table[:, self.column_names.index('motor')],
+            self.table[:, self.column_names.index('energy')],
+            "k-o"
+        )
         if new_figure:
-            plot.set_xlabel("las_opa_wp")
-            plot.set_ylabel(r"Pulse energy [$\mu$J]")
+            self._subplot.set_xlabel("Motor position")
+            self._subplot.set_ylabel(r"Pulse energy [$\mu$J]")
 
         if show:
             self.figure.show()
 
-    def add_line(self, position, energy):
+    def add_line(self, position: float, energy: float):
+        """Add a new set of lines at (position, energy)."""
         if self.figure is None:
             self.plot(show=False)
 
-        self.figure.axvline(energy)
-        self.figure.axhline(position)
+        self._subplot.axvline(position)
+        self._subplot.axhline(energy)
+        self.figure.canvas.draw()
 
 
 class LaserEnergyPositioner(LookupTablePositioner, FltMvInterface):
@@ -141,6 +157,8 @@ class LaserEnergyPositioner(LookupTablePositioner, FltMvInterface):
         Plot each move.
     """
 
+    _plot_context: LaserEnergyPlotContext
+
     energy = Cpt(PseudoSingleInterface, egu='uJ')
     motor = Cpt(EpicsMotorInterface, '')
 
@@ -155,35 +173,42 @@ class LaserEnergyPositioner(LookupTablePositioner, FltMvInterface):
                          table=table,
                          column_names=column_names,
                          **kwargs)
-        self._plotting = False
+        self._plot_context = None
         self.enable_plotting = enable_plotting
 
     @property
     def enable_plotting(self) -> bool:
-        return self._plotting
+        return self._plot_context is not None
 
     @enable_plotting.setter
-    def enable_plotting(self, plotting: bool):
-        if plotting != self._plotting:
-            self._plotting = plotting
-            if plotting:
-                self._plot_context = LaserEnergyPlotContext(
-                    table=self.table,
-                    column_names=self.column_names,
-                )
-                self._plot_context.plot()
-            else:
-                self._plot_context.close()
-                self._plot_context = None
+    def enable_plotting(self, enable: bool):
+        if enable == self.enable_plotting:
+            return
+
+        if enable:
+            self._plot_context = LaserEnergyPlotContext(
+                table=self.table,
+                column_names=self.column_names,
+            )
+            self._plot_context.plot()
+        else:
+            self._plot_context.close()
+            self._plot_context = None
+
+    @pseudo_position_argument
+    def move(self, position, wait=True, timeout=None, moved_cb=None):
+        ret = super().move(position, wait=wait, timeout=timeout,
+                           moved_cb=moved_cb)
+        if self._plot_context is not None:
+            real = self.forward(position)
+            self._plot_context.add_line(position=real.motor,
+                                        energy=position.energy)
+        return ret
 
     def wm(self) -> float:
         # Remove the PseudoPosition tuple for FltMvInterface compatibility
         return super().wm[0]
 
-
-# TODO: add optional plotting support for each move?
-#   pl.axvline(Evalue)
-#   pl.axhline(WPdes)
 
 if __name__ == '__main__':
     motor = LaserEnergyPositioner(
