@@ -186,3 +186,5 @@ class PseudoSingleInterface(PseudoSingle, FltMvInterface):
             prefix = parent.prefix
 
         super().__init__(prefix=prefix, parent=parent, **kwargs)
+
+        # TODO: update the notepad PVs in this class
