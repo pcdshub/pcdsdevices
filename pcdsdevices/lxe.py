@@ -206,10 +206,3 @@ class LaserEnergyPositioner(LookupTablePositioner, FltMvInterface):
     def wm(self) -> float:
         # Remove the PseudoPosition tuple for FltMvInterface compatibility
         return super().wm[0]
-
-
-if __name__ == '__main__':
-    motor = LaserEnergyPositioner(
-        'sim:mtr1',
-        calibration_file='xcslt8717_wpcalib_opa',
-        name='motor')

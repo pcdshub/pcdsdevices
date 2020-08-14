@@ -1,10 +1,13 @@
 import logging
 
+import numpy as np
 import pytest
+
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
-
-from pcdsdevices.pseudopos import DelayBase, SimDelayStage, SyncAxesBase
+from pcdsdevices.pseudopos import (DelayBase, LookupTablePositioner,
+                                   PseudoSingleInterface, SimDelayStage,
+                                   SyncAxesBase)
 
 logger = logging.getLogger(__name__)
 
@@ -83,3 +86,32 @@ def test_subcls_warning():
         SyncAxesBase('prefix', name='name')
     with pytest.raises(TypeError):
         DelayBase('prefix', name='name')
+
+
+def test_lut_positioner():
+    class MyLUTPositioner(LookupTablePositioner):
+        pseudo = Cpt(PseudoSingleInterface)
+        real = Cpt(SoftPositioner)
+
+    table = np.asarray(
+        [[0, 40],
+         [1, 50],
+         [2, 60],
+         [5, 90],
+         [6, 100],
+         [7, 200],
+         [8, 300],
+         [9, 400],
+         ]
+    )
+    column_names = ['real', 'pseudo']
+    lut = MyLUTPositioner('', table=table, column_names=column_names,
+                          name='lut')
+
+    np.testing.assert_allclose(lut.forward(60)[0], 2)
+    np.testing.assert_allclose(lut.inverse(7)[0], 200)
+    np.testing.assert_allclose(lut.inverse(1.5)[0], 55)
+
+    lut.move(100, wait=True)
+    np.testing.assert_allclose(lut.pseudo.position, 100)
+    np.testing.assert_allclose(lut.real.position, 6)
