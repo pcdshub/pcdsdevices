@@ -90,10 +90,8 @@ class LaserEnergyPlotContext:
         self.column_names = tuple(column_names)
 
     def close(self):
-        """Close the plot and clean up."""
-        if self.figure is not None:
-            self.figure.close()
-            self.figure = None
+        """No longer use the existing figure, but do not close it."""
+        self.figure = None
 
     def plot(self, new_figure=True, show=True):
         """
