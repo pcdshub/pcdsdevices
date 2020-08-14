@@ -24,6 +24,10 @@ LXE::
     Laser energy motor, I assume
 """
 
+import pathlib
+import types
+import typing
+
 import numpy as np
 
 from ophyd import Component as Cpt
@@ -32,8 +36,13 @@ from .epics_motor import EpicsMotorInterface
 from .interface import FltMvInterface
 from .pseudopos import LookupTablePositioner, PseudoSingleInterface
 
+if typing.TYPE_CHECKING:
+    import matplotlib  # noqa
 
-def load_calibration_file(filename: str) -> np.ndarray:
+
+def load_calibration_file(
+        filename: typing.Union[pathlib.Path, str]
+        ) -> np.ndarray:
     """
     Load a calibration file.
 
@@ -53,37 +62,121 @@ def load_calibration_file(filename: str) -> np.ndarray:
     np.ndarray
         Of shape (num_data_rows, 2)
     """
-    data = np.loadtxt(filename)
+    data = np.loadtxt(str(filename))
     sort_indices = data[:, 0].argsort()
     return np.column_stack([data[sort_indices, 0],
                             data[sort_indices, 1]
                             ])
 
 
-def plot_calibration(table: np.ndarray, *, show: bool = True):
-    """
-    Plot calibration data.
-    """
-    # Importing forces backend selection, so do inside method
-    import matplotlib.pyplot as plt  # noqa
-    plt.plot(table[:, 0], table[:, 1], "k-o")
-    plt.xlabel("las_opa_wp")
-    plt.ylabel(r"Pulse energy / $\mu$J")
-    if show:
-        plt.show()
+class LaserEnergyPlotContext:
+    table: np.ndarray
+    figure: 'matplotlib.figure.Figure'
+    pyplot: types.ModuleType  # matplotlib.pyplot
+    column_names: typing.Tuple[str, ...]
+
+    def __init__(self, *,
+                 table: np.ndarray,
+                 column_names: typing.Sequence[str]):
+        self.table = table
+
+        # Importing forces backend selection, so do inside method
+        import matplotlib.pyplot as pyplot  # noqa
+        self.pyplot = pyplot
+        self.figure = None
+        self.column_names = tuple(column_names)
+
+    def close(self):
+        if self.figure is not None:
+            self.figure.close()
+            self.figure = None
+
+    def plot(self, new_figure=True, show=True):
+        """
+        Plot calibration data.
+        """
+        plt = self.pyplot
+
+        if self.figure is not None:
+            # New figure if the last one was closed
+            new_figure = not plt.fignum_exists(self.figure.number)
+
+        self.figure = plt.figure() if new_figure else plt.gcf()
+
+        plot = self.figure.subplots()
+        plot.plot(self.table[:, self.column_names.index('motor')],
+                  self.table[:, self.column_names.index('energy')],
+                  "k-o")
+        if new_figure:
+            plot.set_xlabel("las_opa_wp")
+            plot.set_ylabel(r"Pulse energy [$\mu$J]")
+
+        if show:
+            self.figure.show()
+
+    def add_line(self, position, energy):
+        if self.figure is None:
+            self.plot(show=False)
+
+        self.figure.axvline(energy)
+        self.figure.axhline(position)
 
 
 class LaserEnergyPositioner(LookupTablePositioner, FltMvInterface):
+    """
+    Uses the lookup-table positioner to convert energy <-> motor positions.
+
+    Uses :func:`load_calibration_file` to load the data file.
+
+    Parameters
+    ----------
+    calibration_file : pathlib.Path or str
+        Path to the calibration file.
+
+    column_names : list of str, optional
+        The column names.  May be omitted, assumes the first column is the
+        motor position and the second column is energy.
+
+    enable_plotting : bool, optional
+        Plot each move.
+    """
+
     energy = Cpt(PseudoSingleInterface, egu='uJ')
     motor = Cpt(EpicsMotorInterface, '')
 
-    def __init__(self, *args, calibration_file, column_names=None, **kwargs):
+    def __init__(self, *args,
+                 calibration_file: typing.Union[pathlib.Path, str],
+                 column_names: typing.Sequence[str] = None,
+                 enable_plotting: bool = False,
+                 **kwargs):
         table = load_calibration_file(calibration_file)
         column_names = column_names or ['motor', 'energy']
-        super().__init__(*args, table=table, column_names=column_names,
+        super().__init__(*args,
+                         table=table,
+                         column_names=column_names,
                          **kwargs)
+        self._plotting = False
+        self.enable_plotting = enable_plotting
 
-    def wm(self):
+    @property
+    def enable_plotting(self) -> bool:
+        return self._plotting
+
+    @enable_plotting.setter
+    def enable_plotting(self, plotting: bool):
+        if plotting != self._plotting:
+            self._plotting = plotting
+            if plotting:
+                self._plot_context = LaserEnergyPlotContext(
+                    table=self.table,
+                    column_names=self.column_names,
+                )
+                self._plot_context.plot()
+            else:
+                self._plot_context.close()
+                self._plot_context = None
+
+    def wm(self) -> float:
         # Remove the PseudoPosition tuple for FltMvInterface compatibility
         return super().wm[0]
 

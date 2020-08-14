@@ -197,12 +197,17 @@ class LookupTablePositioner(PseudoPositioner):
         ``"mtr"`` should be in the list of column names of the table.
     """
 
+    table: np.ndarray
+    column_names: typing.Tuple[str, ...]
+    _table_data_by_name: typing.Dict[str, np.ndarray]
+
     def __init__(self, *args,
                  table: np.ndarray,
                  column_names: typing.List[str],
                  **kwargs):
         super().__init__(*args, **kwargs)
         self.table = table
+        self.column_names = tuple(column_names)
         missing = set()
         for positioner in self._real + self._pseudo:
             if positioner.attr_name not in column_names:
