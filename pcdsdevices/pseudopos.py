@@ -174,6 +174,29 @@ class PseudoSingleInterface(PseudoSingle, FltMvInterface):
 
 
 class LookupTablePositioner(PseudoPositioner):
+    """
+    A pseudo positioner which uses a look-up table to compute positions.
+
+    Currently supports 1 pseudo positioner and 1 "real" positioner, which
+    should be columns of a 2D numpy.ndarray ``table``.
+
+    Parameters
+    ----------
+    prefix : str
+        The EPICS prefix of the real motor.
+
+    name : str
+        A name to assign to this delay stage.
+
+    table : np.ndarray
+        The table of information.
+
+    column_names : list of str
+        List of column names, corresponding to the component attribute names.
+        That is, if you have a real motor ``mtr = Cpt(EpicsMotor, ...)``,
+        ``"mtr"`` should be in the list of column names of the table.
+    """
+
     def __init__(self, *args,
                  table: np.ndarray,
                  column_names: typing.List[str],
@@ -201,6 +224,17 @@ class LookupTablePositioner(PseudoPositioner):
             column_name: self.table[:, idx]
             for idx, column_name in enumerate(column_names)
         }
+
+        for attr, data in self._table_data_by_name.items():
+            obj = getattr(self, attr)
+            limits = (np.min(data), np.max(data))
+            if isinstance(obj, PseudoSingle):
+                obj._limits = limits
+            elif hasattr(obj, 'limits'):
+                try:
+                    obj.limits = limits
+                except AttributeError:
+                    self.log.debug('Unable to set limits for %s', obj.name)
 
     @pseudo_position_argument
     def forward(self, pseudo_pos: tuple) -> tuple:

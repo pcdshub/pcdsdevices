@@ -27,8 +27,8 @@ LXE::
 import numpy as np
 
 from ophyd import Component as Cpt
-from ophyd import EpicsMotor, SoftPositioner  # noqa
 
+from .epics_motor import EpicsMotorInterface
 from .interface import FltMvInterface
 from .pseudopos import LookupTablePositioner, PseudoSingleInterface
 
@@ -75,7 +75,7 @@ def plot_calibration(table: np.ndarray, *, show: bool = True):
 
 class LaserEnergyPositioner(LookupTablePositioner, FltMvInterface):
     energy = Cpt(PseudoSingleInterface, egu='uJ')
-    motor = Cpt(EpicsMotor, '')
+    motor = Cpt(EpicsMotorInterface, '')
 
     def __init__(self, *args, calibration_file, column_names=None, **kwargs):
         table = load_calibration_file(calibration_file)
