@@ -27,8 +27,9 @@ LXE::
 import numpy as np
 
 from ophyd import Component as Cpt
-from ophyd.positioner import EpicsMotor, SoftPositioner  # noqa
+from ophyd import EpicsMotor, SoftPositioner  # noqa
 
+from .interface import FltMvInterface
 from .pseudopos import LookupTablePositioner, PseudoSingleInterface
 
 
@@ -72,7 +73,7 @@ def plot_calibration(table: np.ndarray, *, show: bool = True):
         plt.show()
 
 
-class LaserEnergyPositioner(LookupTablePositioner):
+class LaserEnergyPositioner(LookupTablePositioner, FltMvInterface):
     energy = Cpt(PseudoSingleInterface, egu='uJ')
     motor = Cpt(EpicsMotor, '')
 
@@ -81,6 +82,10 @@ class LaserEnergyPositioner(LookupTablePositioner):
         column_names = column_names or ['motor', 'energy']
         super().__init__(*args, table=table, column_names=column_names,
                          **kwargs)
+
+    def wm(self):
+        # Remove the PseudoPosition tuple for FltMvInterface compatibility
+        return super().wm[0]
 
 
 # TODO: add optional plotting support for each move?
