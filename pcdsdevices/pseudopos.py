@@ -7,6 +7,7 @@ from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
 from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
+from .signal import NotepadLinkedSignal
 from .sim import FastMotor
 from .utils import convert_unit
 
@@ -167,4 +168,21 @@ class SimDelayStage(DelayBase):
 
 class PseudoSingleInterface(PseudoSingle, FltMvInterface):
     """PseudoSingle with FltMvInterface mixed in."""
-    pass
+    notepad_setpoint = Cpt(
+        NotepadLinkedSignal, ':OphydSetpoint',
+        notepad_metadata={'record': 'ao', 'default_value': 0.0},
+    )
+
+    notepad_readback = Cpt(
+        NotepadLinkedSignal, ':OphydReadback',
+        notepad_metadata={'record': 'ai', 'default_value': 0.0},
+    )
+
+    def __init__(self, prefix='', parent=None, **kwargs):
+        if not prefix:
+            # PseudoSingle generally does not get a prefix. Fix that here,
+            # or 'notepad_setpoint' and 'notepad_readback' will have no
+            # prefix.
+            prefix = parent.prefix
+
+        super().__init__(prefix=prefix, parent=parent, **kwargs)

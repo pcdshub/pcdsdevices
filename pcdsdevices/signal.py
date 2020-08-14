@@ -13,8 +13,8 @@ import logging
 from threading import RLock, Thread
 
 import numpy as np
-from ophyd.signal import (EpicsSignal, EpicsSignalBase, EpicsSignalRO,
-                          Signal, SignalRO)
+from ophyd.signal import (EpicsSignal, EpicsSignalBase, EpicsSignalRO, Signal,
+                          SignalRO)
 from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
 from pytmc.pragmas import normalize_io
 
@@ -293,3 +293,26 @@ class InternalSignal(SignalRO):
 
     def set(self, value, *, timestamp=None, force=False):
         return Signal.set(self, value, timestamp=timestamp, force=force)
+
+
+class NotepadLinkedSignal(EpicsSignal):
+    def __init__(self, read_pv, write_pv=None, *, notepad_metadata,
+                 kind=None, attr_name=None, parent=None, name=None, **kwargs):
+        # Pre-define some attributes so we can aggregate information:
+        self._parent = parent
+        self._attr_name = attr_name
+        self.notepad_metadata = dict(
+            **notepad_metadata,
+            read_pv=read_pv,
+            write_pv=write_pv,
+            name=name,
+            owner_type=type(parent).__name__,
+            dotted_name=self.root.name + '.' + self.dotted_name,
+            signal_kwargs={key: value
+                           for key, value in kwargs.items()
+                           if isinstance(value, (int, str, float))
+                           },
+        )
+        super().__init__(read_pv=read_pv, write_pv=write_pv, kind='omitted',
+                         parent=parent, attr_name=attr_name, name=name,
+                         **kwargs)
