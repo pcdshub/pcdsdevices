@@ -1,10 +1,13 @@
 import logging
+import typing
+
+import numpy as np
+from scipy.constants import speed_of_light
 
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
                              pseudo_position_argument, real_position_argument)
-from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
 from .sim import FastMotor
@@ -168,3 +171,89 @@ class SimDelayStage(DelayBase):
 class PseudoSingleInterface(PseudoSingle, FltMvInterface):
     """PseudoSingle with FltMvInterface mixed in."""
     pass
+
+
+class LookupTablePositioner(PseudoPositioner):
+    def __init__(self, *args,
+                 table: np.ndarray,
+                 column_names: typing.List[str],
+                 **kwargs):
+        super().__init__(*args, **kwargs)
+        self.table = table
+        missing = set()
+        for positioner in self._real + self._pseudo:
+            if positioner.attr_name not in column_names:
+                missing.add(positioner.attr_name)
+
+        if missing:
+            raise ValueError(f'Positioners {missing} not present in the table')
+
+        if len(column_names) != self.table.shape[-1]:
+            raise ValueError(
+                'Incorrect number of column names for the given table.'
+            )
+
+        # For now, no fancy interpolation options
+        if len(table.shape) != 2:
+            raise ValueError(f'Unsupported table dimensions: {table.shape}')
+
+        self._table_data_by_name = {
+            column_name: self.table[:, idx]
+            for idx, column_name in enumerate(column_names)
+        }
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos: tuple) -> tuple:
+        '''
+        Calculate a RealPosition from a given PseudoPosition
+
+        Must be defined on the subclass.
+
+        Parameters
+        ----------
+        pseudo_pos : PseudoPosition
+            The pseudo position input, a namedtuple.
+
+        Returns
+        -------
+        real_position : RealPosition
+            The real position output, a namedtuple.
+        '''
+        values = pseudo_pos._asdict()
+
+        pseudo_field, = self.PseudoPosition._fields
+        real_field, = self.RealPosition._fields
+
+        real_value = np.interp(
+            values[pseudo_field],
+            self._table_data_by_name[pseudo_field],
+            self._table_data_by_name[real_field]
+        )
+        return self.RealPosition(**{real_field: real_value})
+
+    @real_position_argument
+    def inverse(self, real_pos: tuple) -> tuple:
+        '''Calculate a PseudoPosition from a given RealPosition
+
+        Must be defined on the subclass.
+
+        Parameters
+        ----------
+        real_position : RealPosition
+            The real position input
+
+        Returns
+        -------
+        pseudo_pos : PseudoPosition
+            The pseudo position output
+        '''
+        values = real_pos._asdict()
+        pseudo_field, = self.PseudoPosition._fields
+        real_field, = self.RealPosition._fields
+
+        pseudo_value = np.interp(
+            values[real_field],
+            self._table_data_by_name[real_field],
+            self._table_data_by_name[pseudo_field]
+        )
+        return self.PseudoPosition(**{pseudo_field: pseudo_value})
