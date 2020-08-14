@@ -3,8 +3,10 @@ import logging
 import numpy as np
 import pytest
 
+from conftest import MODULE_PATH
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
+from pcdsdevices.lxe import LaserEnergyPlotContext, LaserEnergyPositioner
 from pcdsdevices.pseudopos import (DelayBase, LookupTablePositioner,
                                    PseudoSingleInterface, SimDelayStage,
                                    SyncAxesBase)
@@ -115,3 +117,31 @@ def test_lut_positioner():
     lut.move(100, wait=True)
     np.testing.assert_allclose(lut.pseudo.position, 100)
     np.testing.assert_allclose(lut.real.position, 6)
+
+
+@pytest.fixture
+def lxe_calibration_file():
+    return MODULE_PATH / 'xcslt8717_wpcalib_opa'
+
+
+def test_laser_energy_positioner(monkeypatch, lxe_calibration_file):
+    class MyLaserEnergyPositioner(LaserEnergyPositioner):
+        motor = Cpt(SoftPositioner)
+
+    def no_op(*args, **kwargs):
+        ...
+
+    monkeypatch.setattr(LaserEnergyPlotContext, 'plot', no_op)
+    monkeypatch.setattr(LaserEnergyPlotContext, 'add_line', no_op)
+
+    lxe = MyLaserEnergyPositioner('', calibration_file=lxe_calibration_file,
+                                  name='lxe')
+    lxe.move(10)
+    lxe.enable_plotting = True
+    lxe.move(20)
+    lxe.enable_plotting = False
+    lxe.move(30)
+
+    with pytest.raises(ValueError):
+        # Out-of-range value
+        lxe.move(1e9)
