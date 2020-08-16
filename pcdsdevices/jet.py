@@ -109,5 +109,5 @@ class BeckhoffJet(Device, BaseInterface):
     tab_component_names = True
 
     jet = Cpt(BeckhoffJetManipulator, ':JET', kind='normal')
-    ss = Cpt(BeckhoffJetSlits, ':SLIT', kind='normal')
+    ss = Cpt(BeckhoffJetSlits, ':SS', kind='normal')
     vh_epix_x = Cpt(BeckhoffAxis, ':DET:X', kind='normal')
