@@ -296,23 +296,86 @@ class InternalSignal(SignalRO):
 
 
 class NotepadLinkedSignal(EpicsSignal):
-    def __init__(self, read_pv, write_pv=None, *, notepad_metadata,
-                 kind=None, attr_name=None, parent=None, name=None, **kwargs):
-        # Pre-define some attributes so we can aggregate information:
-        self._parent = parent
-        self._attr_name = attr_name
-        self.notepad_metadata = dict(
-            **notepad_metadata,
+    """
+    Create the notepad metadata dict for usage by pcdsdevices-notepad.
+    For further information, see :class:`NotepadLinkedSignal`.
+
+    Parameters
+    ----------
+    read_pv : str
+        The PV to read from.
+
+    write_pv : str, optional
+        The PV to write to if different from the read PV.
+
+    notepad_metadata : dict
+        Base metadata for the notepad IOC.  This is a required keyword-only
+        argument.  May include keys ``{"record_type", "default_value"}``.
+
+    Note
+    ----
+    Arguments ``attr_name``, ``parent``, and ``name`` are passed in
+    automatically by the ophyd Device machinery and do not need to be specified
+    here.
+
+    See also
+    --------
+    For further argument information, see :class:`~ophyd.EpicsSignal`.
+    """
+
+    @staticmethod
+    def create_notepad_metadata(
+            base_metadata, dotted_name, read_pv, write_pv=None, *,
+            attr_name=None, parent=None, name=None, **kwargs):
+        """
+        Create the notepad metadata dict for usage by pcdsdevices-notepad.
+        For further information, see :class:`NotepadLinkedSignal`.
+        """
+        return dict(
+            **base_metadata,
             read_pv=read_pv,
             write_pv=write_pv,
             name=name,
             owner_type=type(parent).__name__,
-            dotted_name=self.root.name + '.' + self.dotted_name,
+            dotted_name=dotted_name,
             signal_kwargs={key: value
                            for key, value in kwargs.items()
                            if isinstance(value, (int, str, float))
                            },
         )
-        super().__init__(read_pv=read_pv, write_pv=write_pv, kind='omitted',
-                         parent=parent, attr_name=attr_name, name=name,
-                         **kwargs)
+
+    def __init__(self, read_pv, write_pv=None, *, notepad_metadata,
+                 attr_name=None, parent=None, name=None, **kwargs):
+        # Pre-define some attributes so we can aggregate information:
+        self._parent = parent
+        self._attr_name = attr_name
+        self.notepad_metadata = self.create_notepad_metadata(
+            base_metadata=notepad_metadata,
+            dotted_name=self.root.name + '.' + self.dotted_name,
+            read_pv=read_pv, write_pv=write_pv, name=name, parent=parent,
+            **kwargs
+        )
+        super().__init__(read_pv=read_pv, write_pv=write_pv, parent=parent,
+                         attr_name=attr_name, name=name, **kwargs)
+
+
+class FakeNotepadLinkedSignal(FakeEpicsSignal):
+    """A suitable fake class for NotepadLinkedSignal."""
+    def __init__(self, read_pv, write_pv=None, *, notepad_metadata,
+                 attr_name=None, parent=None, name=None,
+                 **kwargs):
+        # Pre-define some attributes so we can aggregate information:
+        self._parent = parent
+        self._attr_name = attr_name
+        self.notepad_metadata = NotepadLinkedSignal.create_notepad_metadata(
+            base_metadata=notepad_metadata,
+            dotted_name=self.root.name + '.' + self.dotted_name,
+            read_pv=read_pv, write_pv=write_pv, name=name, parent=parent,
+            **kwargs
+        )
+        super().__init__(read_pv=read_pv, write_pv=write_pv, parent=parent,
+                         attr_name=attr_name, name=name, **kwargs)
+
+
+# NOTE: This is an *on-import* update of the ophyd "fake" device cache
+fake_device_cache[NotepadLinkedSignal] = FakeNotepadLinkedSignal
