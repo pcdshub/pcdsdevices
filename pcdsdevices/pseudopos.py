@@ -14,6 +14,31 @@ from .utils import convert_unit
 logger = logging.getLogger(__name__)
 
 
+class PseudoSingleInterface(PseudoSingle, FltMvInterface):
+    """PseudoSingle with FltMvInterface mixed in."""
+    notepad_setpoint = Cpt(
+        NotepadLinkedSignal, ':OphydSetpoint',
+        notepad_metadata={'record': 'ao', 'default_value': 0.0},
+    )
+
+    notepad_readback = Cpt(
+        NotepadLinkedSignal, ':OphydReadback',
+        notepad_metadata={'record': 'ai', 'default_value': 0.0},
+    )
+
+    def __init__(self, prefix='', parent=None, **kwargs):
+        if not prefix:
+            # PseudoSingle generally does not get a prefix. Fix that here,
+            # or 'notepad_setpoint' and 'notepad_readback' will have no
+            # prefix.
+            attr_name = kwargs['attr_name']
+            prefix = f'{parent.prefix}:{attr_name}'
+
+        super().__init__(prefix=prefix, parent=parent, **kwargs)
+
+        # TODO: update the notepad PVs in this class
+
+
 class SyncAxesBase(PseudoPositioner, FltMvInterface):
     """
     Synchronized Axes.
@@ -39,7 +64,7 @@ class SyncAxesBase(PseudoPositioner, FltMvInterface):
     move.
     """
 
-    pseudo = Cpt(PseudoSingle)
+    pseudo = Cpt(PseudoSingleInterface)
 
     def __init__(self, *args, **kwargs):
         if self.__class__ is SyncAxesBase:
@@ -135,7 +160,7 @@ class DelayBase(PseudoPositioner, FltMvInterface):
         branch that bounces the laser back along the axis it enters.
     """
 
-    delay = FCpt(PseudoSingle, egu='{self.egu}', add_prefix=['egu'])
+    delay = FCpt(PseudoSingleInterface, egu='{self.egu}', add_prefix=['egu'])
     motor = None
 
     def __init__(self, *args, egu='s', n_bounces=2, **kwargs):
@@ -164,28 +189,3 @@ class DelayBase(PseudoPositioner, FltMvInterface):
 
 class SimDelayStage(DelayBase):
     motor = Cpt(FastMotor, init_pos=0, egu='mm')
-
-
-class PseudoSingleInterface(PseudoSingle, FltMvInterface):
-    """PseudoSingle with FltMvInterface mixed in."""
-    notepad_setpoint = Cpt(
-        NotepadLinkedSignal, ':OphydSetpoint',
-        notepad_metadata={'record': 'ao', 'default_value': 0.0},
-    )
-
-    notepad_readback = Cpt(
-        NotepadLinkedSignal, ':OphydReadback',
-        notepad_metadata={'record': 'ai', 'default_value': 0.0},
-    )
-
-    def __init__(self, prefix='', parent=None, **kwargs):
-        if not prefix:
-            # PseudoSingle generally does not get a prefix. Fix that here,
-            # or 'notepad_setpoint' and 'notepad_readback' will have no
-            # prefix.
-            attr_name = kwargs['attr_name']
-            prefix = f'{parent.prefix}:{attr_name}'
-
-        super().__init__(prefix=prefix, parent=parent, **kwargs)
-
-        # TODO: update the notepad PVs in this class
