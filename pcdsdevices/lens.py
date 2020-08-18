@@ -10,15 +10,14 @@ import numpy as np
 import yaml
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.pseudopos import (PseudoPositioner, pseudo_position_argument,
-                             real_position_argument)
 from periodictable import xsf
 
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import CombinedInOutRecordPositioner, InOutRecordPositioner
 from .interface import tweak_base
-from .pseudopos import PseudoSingleInterface
+from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
+                        pseudo_position_argument, real_position_argument)
 from .sim import FastMotor
 
 LENS_RADII = [50e-6, 100e-6, 200e-6, 300e-6, 500e-6, 1000e-6, 1500e-6]

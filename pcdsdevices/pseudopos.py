@@ -2,8 +2,9 @@ import logging
 
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
-                             pseudo_position_argument, real_position_argument)
+from ophyd.pseudopos import PseudoPositioner as _PseudoPositioner
+from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
+                             real_position_argument)
 from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
@@ -36,7 +37,84 @@ class PseudoSingleInterface(PseudoSingle, FltMvInterface):
 
         super().__init__(prefix=prefix, parent=parent, **kwargs)
 
-        # TODO: update the notepad PVs in this class
+
+class PseudoPositioner(_PseudoPositioner):
+    """
+    This is a PCDS-specific PseudoPositioner subclass which adds support
+    for NotepadLinkedSignal.  The functionality of the class is otherwise
+    identical to ophyd's PseudoPositioner.
+
+    """ + _PseudoPositioner.__doc__
+
+    def _update_notepad_ioc(self, position, attr):
+        """
+        Update the notepad IOC with a fully-specified ``PseudoPos``.
+
+        Parameters
+        ----------
+        position : PseudoPos
+            The position.
+
+        attr : str
+            The signal attribute name, such as ``notepad_setpoint``.
+        """
+        for positioner, value in zip(self._pseudo, position):
+            try:
+                signal = getattr(positioner, attr, None)
+                if signal is None:
+                    continue
+                if signal.connected and signal.write_access:
+                    if signal.get(use_monitor=True) != value:
+                        signal.put(value, wait=False)
+            except Exception as ex:
+                self.log.debug('Failed to update notepad %s to position %s',
+                               attr, value, exc_info=ex)
+
+    @pseudo_position_argument
+    def move(self, position, wait=True, timeout=None, moved_cb=None):
+        '''
+        Move to a specified position, optionally waiting for motion to
+        complete.
+
+        Parameters
+        ----------
+        position
+            Pseudo position to move to.
+
+        moved_cb : callable
+            Call this callback when movement has finished. This callback must
+            accept one keyword argument: 'obj' which will be set to this
+            positioner instance.
+
+        timeout : float, optional
+            Maximum time to wait for the motion. If None, the default timeout
+            for this positioner is used.
+
+        Returns
+        -------
+        status : MoveStatus
+
+        Raises
+        ------
+        TimeoutError
+            When motion takes longer than `timeout`.
+
+        ValueError
+            On invalid positions.
+
+        RuntimeError
+            If motion fails other than timing out.
+        '''
+        status = super().move(position, wait=wait, timeout=timeout,
+                              moved_cb=moved_cb)
+        self._update_notepad_ioc(position, 'notepad_setpoint')
+        return status
+
+    def _update_position(self):
+        """Update the pseudo position based on that of the real positioners."""
+        position = super()._update_position()
+        self._update_notepad_ioc(position, 'notepad_readback')
+        return position
 
 
 class SyncAxesBase(PseudoPositioner, FltMvInterface):
