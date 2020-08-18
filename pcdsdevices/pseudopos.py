@@ -183,7 +183,8 @@ class PseudoSingleInterface(PseudoSingle, FltMvInterface):
             # PseudoSingle generally does not get a prefix. Fix that here,
             # or 'notepad_setpoint' and 'notepad_readback' will have no
             # prefix.
-            prefix = parent.prefix
+            attr_name = kwargs['attr_name']
+            prefix = f'{parent.prefix}:{attr_name}'
 
         super().__init__(prefix=prefix, parent=parent, **kwargs)
 
