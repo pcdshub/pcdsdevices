@@ -1,10 +1,15 @@
 import logging
 
+import numpy as np
 import pytest
+
+from conftest import MODULE_PATH
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
-
-from pcdsdevices.pseudopos import DelayBase, SimDelayStage, SyncAxesBase
+from pcdsdevices.lxe import LaserEnergyPlotContext, LaserEnergyPositioner
+from pcdsdevices.pseudopos import (DelayBase, LookupTablePositioner,
+                                   PseudoSingleInterface, SimDelayStage,
+                                   SyncAxesBase)
 
 logger = logging.getLogger(__name__)
 
@@ -83,3 +88,60 @@ def test_subcls_warning():
         SyncAxesBase('prefix', name='name')
     with pytest.raises(TypeError):
         DelayBase('prefix', name='name')
+
+
+def test_lut_positioner():
+    class MyLUTPositioner(LookupTablePositioner):
+        pseudo = Cpt(PseudoSingleInterface)
+        real = Cpt(SoftPositioner)
+
+    table = np.asarray(
+        [[0, 40],
+         [1, 50],
+         [2, 60],
+         [5, 90],
+         [6, 100],
+         [7, 200],
+         [8, 300],
+         [9, 400],
+         ]
+    )
+    column_names = ['real', 'pseudo']
+    lut = MyLUTPositioner('', table=table, column_names=column_names,
+                          name='lut')
+
+    np.testing.assert_allclose(lut.forward(60)[0], 2)
+    np.testing.assert_allclose(lut.inverse(7)[0], 200)
+    np.testing.assert_allclose(lut.inverse(1.5)[0], 55)
+
+    lut.move(100, wait=True)
+    np.testing.assert_allclose(lut.pseudo.position, 100)
+    np.testing.assert_allclose(lut.real.position, 6)
+
+
+@pytest.fixture
+def lxe_calibration_file():
+    return MODULE_PATH / 'xcslt8717_wpcalib_opa'
+
+
+def test_laser_energy_positioner(monkeypatch, lxe_calibration_file):
+    class MyLaserEnergyPositioner(LaserEnergyPositioner):
+        motor = Cpt(SoftPositioner)
+
+    def no_op(*args, **kwargs):
+        ...
+
+    monkeypatch.setattr(LaserEnergyPlotContext, 'plot', no_op)
+    monkeypatch.setattr(LaserEnergyPlotContext, 'add_line', no_op)
+
+    lxe = MyLaserEnergyPositioner('', calibration_file=lxe_calibration_file,
+                                  name='lxe')
+    lxe.move(10)
+    lxe.enable_plotting = True
+    lxe.move(20)
+    lxe.enable_plotting = False
+    lxe.move(30)
+
+    with pytest.raises(ValueError):
+        # Out-of-range value
+        lxe.move(1e9)
