@@ -31,22 +31,41 @@ class CCMMotor(PVPositionerIsClose):
     Goofy records used in the CCM.
     """
 
+    # Tolerance from old xcs python code
+    atol = 3e-4
+
     setpoint = Cpt(EpicsSignal, ":POSITIONSET", auto_monitor=True)
     readback = Cpt(EpicsSignalRO, ":POSITIONGET", auto_monitor=True,
                    kind='hinted')
 
-    # Tolerance from old xcs python code
-    atol = 3e-4
-
 
 class VernierMotor(PVPositionerIsClose):
     """
-    Dummy motor that sets and reads from the vernier PV.
+    Motor that manages the vernier PV in units of eV.
 
-    Pseudo positioners need a positioner subclass to work properly.
+    This will only move itself if we ask for a move greater than the atol
+    value. This tolerance defaults to 30 eV. This solves an issue where
+    requesting a vernier shift is very slow, so doing it often during very fine
+    step scans will cause issues. It is easier to manage it in the positioner
+    class than in every individual scan case.
+
+    This needs to be a positioner and not a signal, or the PseudoPositioner
+    will not work correctly.
     """
+
+    # Tolerance from old xcs python code
+    atol = 30
+
     setpoint = Cpt(EpicsSignal, "", auto_monitor=True)
     readback = Cpt(EpicsSignal, "", auto_monitor=True)
+
+    def _setup_move(self, position):
+        """Skip the move part of the move if below the tolerance."""
+        if abs(position - self.position) > self.atol:
+            super()._setup_move(position)
+        else:
+            # Toggle the done bit
+            self._update_setpoint(value=self._last_setpoint)
 
 
 class CCMPico(EpicsMotorInterface):
@@ -126,7 +145,7 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
         logger.debug((energy, wavelength, theta, energy_with_vernier))
         if energy_with_vernier is not None:
             energy = energy_with_vernier
-            vernier = energy_with_vernier
+            vernier = energy_with_vernier * 1000
         else:
             vernier = self.vernier.position
         if energy is not None:
