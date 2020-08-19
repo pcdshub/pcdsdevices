@@ -4,10 +4,12 @@ from ophyd.device import Component as Cpt
 from ophyd.device import Device 
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
-from pcdsdevices.areadetector.detectors import PCDSAreaDetectorBase
+from pcdsdevices.areadetector.detectors import PCDSAreaDetectorTyphos
 
-class ThorlabsWfs40(PCDSAreaDetectorBase):
+class ThorlabsWfs40(PCDSAreaDetectorTyphos):
     """Class to implement a Thorlabs WFS40 Wavefront sensor."""
+
+    beam_status = Cpt(EpicsSignalRO, 'StatHighAmbientLight', kind='normal')
 
     pupil_centroid_x = Cpt(EpicsSignal, 'PupilCentroidX', kind='config')
     pupil_centroid_y = Cpt(EpicsSignal, 'PupilCentroidY', kind='config')
