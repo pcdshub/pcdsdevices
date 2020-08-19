@@ -1,10 +1,12 @@
 import logging
 
 from ophyd.device import Component as Cpt
-from ophyd.device import Device 
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from pcdsdevices.areadetector.detectors import PCDSAreaDetectorTyphos
+
+logger = logging.getLogger(__name__)
+
 
 class ThorlabsWfs40(PCDSAreaDetectorTyphos):
     """Class to implement a Thorlabs WFS40 Wavefront sensor."""
@@ -23,7 +25,7 @@ class ThorlabsWfs40(PCDSAreaDetectorTyphos):
     pupil_diameter_x_rbb = Cpt(EpicsSignal, 'PupilDiameterX_RBV',
                                kind='normal')
     pupil_diameter_y_rbv = Cpt(EpicsSignal, 'PupilDiameterY_RBV',
-                                kind='normal')
+                               kind='normal')
 
     use_beam_centroid = Cpt(EpicsSignal, 'UseBeamCentroid', kind='normal')
     use_beam_diameter = Cpt(EpicsSignal, 'UseBeamDiameter', kind='normal')
