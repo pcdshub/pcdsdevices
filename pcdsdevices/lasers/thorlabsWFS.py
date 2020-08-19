@@ -2,6 +2,7 @@ import logging
 
 from ophyd.device import Component as Cpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.areadetector.base import EpicsSignalWithRBV
 
 from pcdsdevices.areadetector.detectors import PCDSAreaDetectorTyphos
 
@@ -13,19 +14,10 @@ class ThorlabsWfs40(PCDSAreaDetectorTyphos):
 
     beam_status = Cpt(EpicsSignalRO, 'StatHighAmbientLight', kind='normal')
 
-    pupil_centroid_x = Cpt(EpicsSignal, 'PupilCentroidX', kind='config')
-    pupil_centroid_y = Cpt(EpicsSignal, 'PupilCentroidY', kind='config')
-    pupil_diameter_x = Cpt(EpicsSignal, 'PupilDiameterX', kind='config')
-    pupil_diameter_y = Cpt(EpicsSignal, 'PupilDiameterY', kind='config')
-
-    pupil_centroid_x_rbv = Cpt(EpicsSignal, 'PupilCentroidX_RBV',
-                               kind='normal')
-    pupil_centroid_y_rbv = Cpt(EpicsSignal, 'PupilCentroidY_RBV',
-                               kind='normal')
-    pupil_diameter_x_rbb = Cpt(EpicsSignal, 'PupilDiameterX_RBV',
-                               kind='normal')
-    pupil_diameter_y_rbv = Cpt(EpicsSignal, 'PupilDiameterY_RBV',
-                               kind='normal')
+    pupil_centroid_x = Cpt(EpicsSignalWithRBV, 'PupilCentroidX', kind='config')
+    pupil_centroid_y = Cpt(EpicsSignalWithRBV, 'PupilCentroidY', kind='config')
+    pupil_diameter_x = Cpt(EpicsSignalWithRBV, 'PupilDiameterX', kind='config')
+    pupil_diameter_y = Cpt(EpicsSignalWithRBV, 'PupilDiameterY', kind='config')
 
     use_beam_centroid = Cpt(EpicsSignal, 'UseBeamCentroid', kind='normal')
     use_beam_diameter = Cpt(EpicsSignal, 'UseBeamDiameter', kind='normal')
