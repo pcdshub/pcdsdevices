@@ -86,21 +86,24 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
 
     tab_component_names = True
 
-    def __init__(self, *args, theta0=default_theta0, dspacing=default_dspacing,
-                 gr=default_gr, gd=default_gd, hutch='', **kwargs):
+    def __init__(self, prefix, *args, theta0=default_theta0,
+                 dspacing=default_dspacing, gr=default_gr, gd=default_gd,
+                 hutch=None, **kwargs):
         self.theta0 = theta0
         self.dspacing = dspacing
         self.gr = gr
         self.gd = gd
-        if hutch:
+        if hutch is not None:
             self.hutch = hutch
         # Put some effort into filling this automatically
         # CCM exists only in two hutches
-        elif 'XPP' in theta0:
+        elif 'XPP' in prefix:
             self.hutch = 'XPP'
-        elif 'XCS' in theta0:
+        elif 'XCS' in prefix:
             self.hutch = 'XCS'
-        super().__init__(*args, auto_target=False, **kwargs)
+        else:
+            self.hutch = 'TST'
+        super().__init__(prefix, *args, auto_target=False, **kwargs)
 
     def forward(self, pseudo_pos):
         """
@@ -210,7 +213,9 @@ class CCM(InOutPositioner):
     def __init__(self, alio_prefix, theta2fine_prefix, theta2coarse_prefix,
                  chi2_prefix, x_down_prefix, x_up_prefix,
                  y_down_prefix, y_up_north_prefix, y_up_south_prefix,
-                 in_pos, out_pos, *args, **kwargs):
+                 in_pos, out_pos, *args,
+                 theta0=default_theta0, dspacing=default_dspacing,
+                 gr=default_gr, gd=default_gd, **kwargs):
         self.alio_prefix = alio_prefix
         self.theta2fine_prefix = theta2fine_prefix
         self.theta2coarse_prefix = theta2coarse_prefix
@@ -223,6 +228,10 @@ class CCM(InOutPositioner):
         self._in_pos = in_pos
         self._out_pos = out_pos
         super().__init__(alio_prefix, *args, **kwargs)
+        self.calc.theta0 = theta0
+        self.calc.dspacing = dspacing
+        self.calc.gr = gr
+        self.calc.gd = gd
 
     @property
     def _state(self):
