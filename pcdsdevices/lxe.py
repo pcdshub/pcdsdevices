@@ -22,6 +22,10 @@ las_pol_wp::
 LXE::
 
     Laser energy motor, I assume
+
+LXT::
+
+    Laser x-ray timing, probably
 """
 
 import pathlib
