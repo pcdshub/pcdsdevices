@@ -235,4 +235,9 @@ class LaserEnergyTimingLxt(PVPositioner, FltMvInterface):
     done_value = 1
 
     def __init__(self, prefix='', *, egu=None, **kwargs):
+        if egu not in (None, 's'):
+            raise ValueError(
+                f'{self.__class__.__name__} is pre-configured to work in units'
+                f' of seconds.'
+            )
         super().__init__(prefix, egu='s', **kwargs)

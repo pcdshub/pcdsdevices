@@ -171,3 +171,8 @@ def test_laser_energy_timing():
         np.testing.assert_allclose(lxt.position, pos)
         np.testing.assert_allclose(lxt._fs_tgt_time.get(),
                                    convert_unit(pos, 's', 'ns'))
+
+
+def test_laser_energy_timing_no_egu():
+    with pytest.raises(ValueError):
+        LaserEnergyTimingLxt('', egu='foobar', name='lxt')
