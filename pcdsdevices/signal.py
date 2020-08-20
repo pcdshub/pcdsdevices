@@ -306,7 +306,6 @@ class UnitConversionDerivedSignal(DerivedSignal):
     Custom units may be specified for the original signal, or if specified, the
     original signal's units may be retrieved upon first connection.
 
-
     Parameters
     ----------
     derived_from : Signal or str
@@ -314,6 +313,13 @@ class UnitConversionDerivedSignal(DerivedSignal):
         attribute name that indicates a sibling to use.  When used in a
         ``Device``, this is then simply the attribute name of another
         ``Component``.
+
+    derived_units : str
+        The desired units to use for this signal.
+
+    original_units : str, optional
+        The units from the original signal.  If not specified, control system
+        information regarding units will be retrieved upon first connection.
 
     write_access : bool, optional
         Write access may be disabled by setting this to ``False``, regardless
@@ -324,15 +330,18 @@ class UnitConversionDerivedSignal(DerivedSignal):
 
     parent : Device, optional
         The parent device.  Required if ``derived_from`` is an attribute name.
+
+    **kwargs :
+        Keyword arguments are passed to the superclass.
     """
 
-    def __init__(self, *args,
+    def __init__(self, derived_from, *,
                  derived_units: str,
                  original_units: typing.Optional[str] = None,
                  **kwargs):
         self.derived_units = derived_units
         self.original_units = original_units
-        super().__init__(*args, **kwargs)
+        super().__init__(derived_from, **kwargs)
 
     def forward(self, value):
         '''Compute derived signal value -> original signal value'''

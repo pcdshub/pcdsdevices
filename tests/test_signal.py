@@ -65,8 +65,8 @@ def test_unit_conversion_signal():
     assert converted.derived_units == 'mm'
     assert converted.describe()[converted.name]['units'] == 'mm'
 
-    assert converted.get() == 5000
-    converted.put(10000, wait=True)
+    assert converted.get() == 5_000
+    converted.put(10_000, wait=True)
     assert orig.get() == 10
 
     event = threading.Event()
@@ -83,4 +83,4 @@ def test_unit_conversion_signal():
 
     args, kwargs = cb.call_args
     assert kwargs['value'] == 20_000
-    assert converted.get() == 20000
+    assert converted.get() == 20_000
