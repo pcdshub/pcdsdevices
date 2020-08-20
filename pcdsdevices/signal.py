@@ -10,13 +10,17 @@ if __name__ != 'pcdsdevices.signal':
                        'extremely confusing bugs. Please run your script '
                        'elsewhere for better results.')
 import logging
+import typing
 from threading import RLock, Thread
 
 import numpy as np
-from ophyd.signal import (EpicsSignal, EpicsSignalBase, EpicsSignalRO,
-                          Signal, SignalRO)
+
+from ophyd.signal import (DerivedSignal, EpicsSignal, EpicsSignalBase,
+                          EpicsSignalRO, Signal, SignalRO)
 from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
 from pytmc.pragmas import normalize_io
+
+from .utils import convert_unit
 
 logger = logging.getLogger(__name__)
 
@@ -293,3 +297,72 @@ class InternalSignal(SignalRO):
 
     def set(self, value, *, timestamp=None, force=False):
         return Signal.set(self, value, timestamp=timestamp, force=force)
+
+
+class UnitConversionDerivedSignal(DerivedSignal):
+    """
+    A DerivedSignal which performs unit conversion.
+
+    Custom units may be specified for the original signal, or if specified, the
+    original signal's units may be retrieved upon first connection.
+
+    Parameters
+    ----------
+    derived_from : Signal or str
+        The signal from which this one is derived.  This may be a string
+        attribute name that indicates a sibling to use.  When used in a
+        ``Device``, this is then simply the attribute name of another
+        ``Component``.
+
+    derived_units : str
+        The desired units to use for this signal.
+
+    original_units : str, optional
+        The units from the original signal.  If not specified, control system
+        information regarding units will be retrieved upon first connection.
+
+    write_access : bool, optional
+        Write access may be disabled by setting this to ``False``, regardless
+        of the write access of the underlying signal.
+
+    name : str, optional
+        The signal name.
+
+    parent : Device, optional
+        The parent device.  Required if ``derived_from`` is an attribute name.
+
+    **kwargs :
+        Keyword arguments are passed to the superclass.
+    """
+
+    def __init__(self, derived_from, *,
+                 derived_units: str,
+                 original_units: typing.Optional[str] = None,
+                 **kwargs):
+        self.derived_units = derived_units
+        self.original_units = original_units
+        super().__init__(derived_from, **kwargs)
+
+    def forward(self, value):
+        '''Compute derived signal value -> original signal value'''
+        return convert_unit(value, self.derived_units, self.original_units)
+
+    def inverse(self, value):
+        '''Compute original signal value -> derived signal value'''
+        return convert_unit(value, self.original_units, self.derived_units)
+
+    def _derived_metadata_callback(self, *, connected, **kwargs):
+        super()._derived_metadata_callback(connected=connected, **kwargs)
+        if connected and 'units' in kwargs:
+            if self.original_units is None:
+                self.original_units = kwargs['units']
+
+    def describe(self):
+        full_desc = super().describe()
+        desc = full_desc[self.name]
+        desc['units'] = self.derived_units
+        # Note: this should be handled in ophyd:
+        for key in ('lower_ctrl_limit', 'upper_ctrl_limit'):
+            if key in desc:
+                desc[key] = self.inverse(desc[key])
+        return full_desc
