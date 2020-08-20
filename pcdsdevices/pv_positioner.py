@@ -1,6 +1,6 @@
 import numpy as np
 from ophyd.device import Component as Cpt
-from ophyd.positioner import PVPositioner
+from ophyd.pv_positioner import PVPositioner
 
 from .interface import FltMvInterface
 from .signal import InternalSignal
