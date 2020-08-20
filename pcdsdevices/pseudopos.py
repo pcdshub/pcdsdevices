@@ -1,5 +1,7 @@
 import logging
+import typing
 
+import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import PseudoPositioner as _PseudoPositioner
@@ -267,3 +269,133 @@ class DelayBase(PseudoPositioner, FltMvInterface):
 
 class SimDelayStage(DelayBase):
     motor = Cpt(FastMotor, init_pos=0, egu='mm')
+
+
+class PseudoSingleInterface(PseudoSingle, FltMvInterface):
+    """PseudoSingle with FltMvInterface mixed in."""
+    pass
+
+
+class LookupTablePositioner(PseudoPositioner):
+    """
+    A pseudo positioner which uses a look-up table to compute positions.
+
+    Currently supports 1 pseudo positioner and 1 "real" positioner, which
+    should be columns of a 2D numpy.ndarray ``table``.
+
+    Parameters
+    ----------
+    prefix : str
+        The EPICS prefix of the real motor.
+
+    name : str
+        A name to assign to this delay stage.
+
+    table : np.ndarray
+        The table of information.
+
+    column_names : list of str
+        List of column names, corresponding to the component attribute names.
+        That is, if you have a real motor ``mtr = Cpt(EpicsMotor, ...)``,
+        ``"mtr"`` should be in the list of column names of the table.
+    """
+
+    table: np.ndarray
+    column_names: typing.Tuple[str, ...]
+    _table_data_by_name: typing.Dict[str, np.ndarray]
+
+    def __init__(self, *args,
+                 table: np.ndarray,
+                 column_names: typing.List[str],
+                 **kwargs):
+        super().__init__(*args, **kwargs)
+        self.table = table
+        self.column_names = tuple(column_names)
+        missing = set()
+        for positioner in self._real + self._pseudo:
+            if positioner.attr_name not in column_names:
+                missing.add(positioner.attr_name)
+
+        if missing:
+            raise ValueError(f'Positioners {missing} not present in the table')
+
+        if len(column_names) != self.table.shape[-1]:
+            raise ValueError(
+                'Incorrect number of column names for the given table.'
+            )
+
+        # For now, no fancy interpolation options
+        if len(table.shape) != 2:
+            raise ValueError(f'Unsupported table dimensions: {table.shape}')
+
+        self._table_data_by_name = {
+            column_name: self.table[:, idx]
+            for idx, column_name in enumerate(column_names)
+        }
+
+        for attr, data in self._table_data_by_name.items():
+            obj = getattr(self, attr)
+            limits = (np.min(data), np.max(data))
+            if isinstance(obj, PseudoSingle):
+                obj._limits = limits
+            elif hasattr(obj, 'limits'):
+                try:
+                    obj.limits = limits
+                except AttributeError:
+                    self.log.debug('Unable to set limits for %s', obj.name)
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos: tuple) -> tuple:
+        '''
+        Calculate a RealPosition from a given PseudoPosition
+
+        Must be defined on the subclass.
+
+        Parameters
+        ----------
+        pseudo_pos : PseudoPosition
+            The pseudo position input, a namedtuple.
+
+        Returns
+        -------
+        real_position : RealPosition
+            The real position output, a namedtuple.
+        '''
+        values = pseudo_pos._asdict()
+
+        pseudo_field, = self.PseudoPosition._fields
+        real_field, = self.RealPosition._fields
+
+        real_value = np.interp(
+            values[pseudo_field],
+            self._table_data_by_name[pseudo_field],
+            self._table_data_by_name[real_field]
+        )
+        return self.RealPosition(**{real_field: real_value})
+
+    @real_position_argument
+    def inverse(self, real_pos: tuple) -> tuple:
+        '''Calculate a PseudoPosition from a given RealPosition
+
+        Must be defined on the subclass.
+
+        Parameters
+        ----------
+        real_position : RealPosition
+            The real position input
+
+        Returns
+        -------
+        pseudo_pos : PseudoPosition
+            The pseudo position output
+        '''
+        values = real_pos._asdict()
+        pseudo_field, = self.PseudoPosition._fields
+        real_field, = self.RealPosition._fields
+
+        pseudo_value = np.interp(
+            values[real_field],
+            self._table_data_by_name[real_field],
+            self._table_data_by_name[pseudo_field]
+        )
+        return self.PseudoPosition(**{pseudo_field: pseudo_value})

@@ -14,10 +14,11 @@ from types import MethodType, SimpleNamespace
 from weakref import WeakSet
 
 import yaml
+
 from bluesky.utils import ProgressBar
 from ophyd.device import Device
 from ophyd.ophydobj import Kind, OphydObject
-from ophyd.signal import Signal, AttributeSignal
+from ophyd.signal import AttributeSignal, Signal
 from ophyd.status import wait as status_wait
 
 from . import utils as util
@@ -427,7 +428,7 @@ class MvInterface(BaseInterface):
         try:
             self._mov_ev.clear()
             while not self._mov_ev.is_set():
-                print("\r {0:4f}".format(self.position), end=" ")
+                print("\r {0:4f}".format(self.wm()), end=" ")
                 self._mov_ev.wait(0.1)
         except KeyboardInterrupt:
             pass

@@ -1,6 +1,34 @@
 Release History
 ###############
 
+
+v2.9.0 (2020-08-18)
+===================
+
+Features
+--------
+- Devices will now show detailed status information when returned
+  in the ipython terminal.
+
+Device Updates
+--------------
+- Update docs on FSV fast shutter valve
+- Update AT2L0 with state positioners and calculator
+- Update Elliptec classes for cleaner implementation
+- Add missing CCM motors and fix the energy motion (no vernier yet)
+- Add HDF5 plugin to PCDSAreaDetectorEmbedded
+
+New Devices
+-----------
+- Add support for SmarAct motors
+- Add attenuator calculator device for Ken's new calculator
+- Add support for TuttiFruitti diagnostic stack
+
+Bugfixes
+--------
+- Fix typo in PV name of BeckhoffJet slits
+
+
 v2.8.0 (2020-07-24)
 ===================
 

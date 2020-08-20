@@ -5,12 +5,15 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
+
 from epics import PV
 from ophyd.sim import FakeEpicsSignal, make_fake_device
-
 from pcdsdevices.attenuator import (MAX_FILTERS, Attenuator, _att3_classes,
                                     _att_classes)
 from pcdsdevices.mv_interface import setup_preset_paths
+
+MODULE_PATH = Path(__file__).parent
+
 
 # Signal.put warning is a testing artifact.
 # FakeEpicsSignal needs an update, but I don't have time today
