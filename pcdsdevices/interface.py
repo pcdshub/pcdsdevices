@@ -14,7 +14,6 @@ from types import MethodType, SimpleNamespace
 from weakref import WeakSet
 
 import yaml
-
 from bluesky.utils import ProgressBar
 from ophyd.device import Device
 from ophyd.ophydobj import Kind, OphydObject
@@ -184,6 +183,9 @@ class BaseInterface(OphydObject):
         else:
             # Show the name/value pair for a signal
             value = status_info['value']
+            units = status_info.get('units') or ''
+            if units:
+                units = f' [{units}]'
             value_text = str(value)
             if '\n' in value_text:
                 # Multiline values (arrays) need special handling
@@ -192,7 +194,7 @@ class BaseInterface(OphydObject):
                     value_lines[i] = ' ' * 2 + line
                 return [f'{name}:'] + value_lines
             else:
-                return [f'{name}: {value}']
+                return [f'{name}: {value}{units}']
 
     def status_info(self):
         """
@@ -239,6 +241,17 @@ def get_value(signal):
     except Exception:
         pass
     return None
+
+
+def get_units(signal):
+    attrs = ('units', 'egu', 'derived_units')
+    for attr in attrs:
+        try:
+            value = getattr(signal, attr, None) or signal.metadata[attr]
+            if isinstance(value, str):
+                return value
+        except Exception:
+            ...
 
 
 def ophydobj_info(obj, subdevice_filter=None, devices=None):
@@ -323,7 +336,9 @@ def signal_info(signal):
     name = get_name(signal, default='signal')
     kind = get_kind(signal)
     value = get_value(signal)
-    return dict(name=name, kind=kind, is_device=False, value=value)
+    units = get_units(signal)
+    return dict(name=name, kind=kind, is_device=False, value=value,
+                units=units)
 
 
 def set_engineering_mode(expert):
