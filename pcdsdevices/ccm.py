@@ -7,6 +7,7 @@ from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import PseudoPositioner
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO, Signal
 
+from .beam_stats import BeamEnergyRequest
 from .epics_motor import IMS, EpicsMotorInterface
 from .inout import InOutPositioner
 from .interface import FltMvInterface
@@ -37,35 +38,6 @@ class CCMMotor(PVPositionerIsClose):
     setpoint = Cpt(EpicsSignal, ":POSITIONSET", auto_monitor=True)
     readback = Cpt(EpicsSignalRO, ":POSITIONGET", auto_monitor=True,
                    kind='hinted')
-
-
-class VernierMotor(PVPositionerIsClose):
-    """
-    Motor that manages the vernier PV in units of eV.
-
-    This will only move itself if we ask for a move greater than the atol
-    value. This tolerance defaults to 30 eV. This solves an issue where
-    requesting a vernier shift is very slow, so doing it often during very fine
-    step scans will cause issues. It is easier to manage it in the positioner
-    class than in every individual scan case.
-
-    This needs to be a positioner and not a signal, or the PseudoPositioner
-    will not work correctly.
-    """
-
-    # Tolerance from old xcs python code
-    atol = 30
-
-    setpoint = Cpt(EpicsSignal, "", auto_monitor=True)
-    readback = Cpt(EpicsSignal, "", auto_monitor=True)
-
-    def _setup_move(self, position):
-        """Skip the move part of the move if below the tolerance."""
-        if abs(position - self.position) > self.atol:
-            super()._setup_move(position)
-        else:
-            # Toggle the done bit
-            self._update_setpoint(value=self._last_setpoint)
 
 
 class CCMPico(EpicsMotorInterface):
@@ -110,23 +82,30 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
                               kind='omitted')
 
     alio = Cpt(CCMMotor, '', kind='normal')
-    vernier = FCpt(VernierMotor, '{vernier_prefix}', kind='normal')
+    energy_request = FCpt(BeamEnergyRequest, '{hutch}', kind='normal')
 
     tab_component_names = True
 
     def __init__(self, *args, theta0=default_theta0, dspacing=default_dspacing,
-                 gr=default_gr, gd=default_gd, vernier_prefix='', **kwargs):
+                 gr=default_gr, gd=default_gd, hutch='', **kwargs):
         self.theta0 = theta0
         self.dspacing = dspacing
         self.gr = gr
         self.gd = gd
-        self.vernier_prefix = vernier_prefix
+        if hutch:
+            self.hutch = hutch
+        # Put some effort into filling this automatically
+        # CCM exists only in two hutches
+        elif 'XPP' in theta0:
+            self.hutch = 'XPP'
+        elif 'XCS' in theta0:
+            self.hutch = 'XCS'
         super().__init__(*args, auto_target=False, **kwargs)
 
     def forward(self, pseudo_pos):
         """
         Take energy, wavelength, theta, or energy_with_vernier and map to
-        alio and vernier.
+        alio and energy_request.
         """
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         # Figure out which one changed.
@@ -145,9 +124,9 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
         logger.debug((energy, wavelength, theta, energy_with_vernier))
         if energy_with_vernier is not None:
             energy = energy_with_vernier
-            vernier = energy_with_vernier * 1000
+            energy_request = energy_with_vernier * 1000
         else:
-            vernier = self.vernier.position
+            energy_request = self.energy_request.setpoint.get()
         if energy is not None:
             wavelength = energy_to_wavelength(energy)
         if wavelength is not None:
@@ -155,7 +134,7 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
         if theta is not None:
             alio = theta_to_alio(theta * np.pi/180, self.theta0,
                                  self.gr, self.gd)
-        return self.RealPosition(alio=alio, vernier=vernier)
+        return self.RealPosition(alio=alio, energy_request=energy_request)
 
     def inverse(self, real_pos):
         """Take alio and map to energy, wavelength, and theta."""
