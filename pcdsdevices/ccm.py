@@ -124,7 +124,10 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
             theta = pseudo_pos.theta
         else:
             alio = self.alio.position
-        logger.debug((energy, wavelength, theta, energy_with_vernier))
+        logger.debug('Forward (move) calculation args: '
+                     f'energy={energy}, wavelength={wavelength}, '
+                     f'theta={theta}, '
+                     f'energy_with_vernier={energy_with_vernier}')
         if energy_with_vernier is not None:
             energy = energy_with_vernier
             energy_request = energy_with_vernier * 1000
@@ -137,6 +140,8 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
         if theta is not None:
             alio = theta_to_alio(theta * np.pi/180, self.theta0,
                                  self.gr, self.gd)
+        logger.debug('Forward (move) calculation results: '
+                     f'alio={alio}, energy_request={energy_request}')
         return self.RealPosition(alio=alio, energy_request=energy_request)
 
     def inverse(self, real_pos):
