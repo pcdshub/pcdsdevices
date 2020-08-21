@@ -214,7 +214,7 @@ class LaserEnergyPositioner(LookupTablePositioner, FltMvInterface):
         return super().wm[0]
 
 
-class LaserEnergyTimingLxt(PVPositioner, FltMvInterface):
+class LaserTiming(PVPositioner, FltMvInterface):
     """
     "lxt" motor, which may also have been referred to as Vitara.
 

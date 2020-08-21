@@ -8,7 +8,7 @@ from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
 from ophyd.sim import make_fake_device
 from pcdsdevices.lxe import (LaserEnergyPlotContext, LaserEnergyPositioner,
-                             LaserEnergyTimingLxt)
+                             LaserTiming)
 from pcdsdevices.pseudopos import (DelayBase, LookupTablePositioner,
                                    PseudoSingleInterface, SimDelayStage,
                                    SyncAxesBase)
@@ -159,7 +159,7 @@ def test_laser_energy_timing():
             pv_positioner.done.sim_put(pv_positioner.done_value)
         return st
 
-    lxt = make_fake_device(LaserEnergyTimingLxt)('prefix', name='lxt')
+    lxt = make_fake_device(LaserTiming)('prefix', name='lxt')
     lxt._fs_tgt_time.sim_set_limits((0, 4e9))
     lxt._fs_tgt_time.sim_put(0)
 
@@ -175,4 +175,4 @@ def test_laser_energy_timing():
 
 def test_laser_energy_timing_no_egu():
     with pytest.raises(ValueError):
-        LaserEnergyTimingLxt('', egu='foobar', name='lxt')
+        LaserTiming('', egu='foobar', name='lxt')
