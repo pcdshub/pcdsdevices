@@ -6,10 +6,13 @@ import pytest
 from conftest import MODULE_PATH
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
-from pcdsdevices.lxe import LaserEnergyPlotContext, LaserEnergyPositioner
+from ophyd.sim import make_fake_device
+from pcdsdevices.lxe import (LaserEnergyPlotContext, LaserEnergyPositioner,
+                             LaserTiming)
 from pcdsdevices.pseudopos import (DelayBase, LookupTablePositioner,
                                    PseudoSingleInterface, SimDelayStage,
                                    SyncAxesBase)
+from pcdsdevices.utils import convert_unit
 
 logger = logging.getLogger(__name__)
 
@@ -145,3 +148,31 @@ def test_laser_energy_positioner(monkeypatch, lxe_calibration_file):
     with pytest.raises(ValueError):
         # Out-of-range value
         lxe.move(1e9)
+
+
+def test_laser_energy_timing():
+    def _move_helper(pv_positioner, position):
+        # A useful helper for test_pvpositioner.py?
+        st = pv_positioner.move(position, wait=False)
+        if pv_positioner.done is not None:
+            pv_positioner.done.sim_put(1 - pv_positioner.done_value)
+            pv_positioner.done.sim_put(pv_positioner.done_value)
+        return st
+
+    lxt = make_fake_device(LaserTiming)('prefix', name='lxt')
+    lxt._fs_tgt_time.sim_set_limits((0, 4e9))
+    lxt._fs_tgt_time.sim_put(0)
+
+    # A basic dependency sanity check...
+    np.testing.assert_allclose(convert_unit(1, 's', 'ns'), 1e9)
+
+    for pos in range(1, 3):
+        _move_helper(lxt, pos).wait(1)
+        np.testing.assert_allclose(lxt.position, pos)
+        np.testing.assert_allclose(lxt._fs_tgt_time.get(),
+                                   convert_unit(pos, 's', 'ns'))
+
+
+def test_laser_energy_timing_no_egu():
+    with pytest.raises(ValueError):
+        LaserTiming('', egu='foobar', name='lxt')

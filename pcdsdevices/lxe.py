@@ -35,11 +35,13 @@ import typing
 import numpy as np
 
 from ophyd import Component as Cpt
+from ophyd import EpicsSignal, PVPositioner
 
 from .epics_motor import EpicsMotorInterface
 from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
                         pseudo_position_argument)
+from .signal import UnitConversionDerivedSignal
 
 if typing.TYPE_CHECKING:
     import matplotlib  # noqa
@@ -210,3 +212,32 @@ class LaserEnergyPositioner(LookupTablePositioner, FltMvInterface):
     def wm(self) -> float:
         # Remove the PseudoPosition tuple for FltMvInterface compatibility
         return super().wm[0]
+
+
+class LaserTiming(PVPositioner, FltMvInterface):
+    """
+    "lxt" motor, which may also have been referred to as Vitara.
+
+    Conversions for Vitara FS_TGT_TIME nanoseconds <-> seconds are done
+    internally, such that the user may work in units of seconds.
+    """
+
+    _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True)
+    setpoint = Cpt(UnitConversionDerivedSignal,
+                   derived_from='_fs_tgt_time',
+                   derived_units='s',
+                   original_units='ns',
+                   )
+
+    # A motor (record) will be moved after the above record is touched, so
+    # use its done motion status:
+    done = Cpt(EpicsSignal, ':MMS:PH.DMOV', auto_monitor=True)
+    done_value = 1
+
+    def __init__(self, prefix='', *, egu=None, **kwargs):
+        if egu not in (None, 's'):
+            raise ValueError(
+                f'{self.__class__.__name__} is pre-configured to work in units'
+                f' of seconds.'
+            )
+        super().__init__(prefix, egu='s', **kwargs)
