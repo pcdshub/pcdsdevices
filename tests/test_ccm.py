@@ -161,6 +161,51 @@ def test_ccm_main(fake_ccm):
 
 
 @pytest.mark.timeout(5)
+def test_vernier(fake_ccm):
+    logger.debug('test_vernier')
+
+    def finish_energy_move():
+        # Satisfy the isclose positioner's done condition
+        setpoint = fake_ccm.calc.energy_request.setpoint.get()
+        fake_ccm.calc.energy_request.readback.sim_put(setpoint)
+
+    # Moving with vernier should move the energy request motor too
+    fake_ccm.calc.energy_with_vernier.move(7, wait=False)
+    finish_energy_move()
+    assert np.isclose(fake_ccm.calc.energy.position, 7)
+    assert fake_ccm.calc.energy_request.position == 7000
+
+    fake_ccm.calc.energy_with_vernier.move(8, wait=False)
+    finish_energy_move()
+    assert np.isclose(fake_ccm.calc.energy.position, 8)
+    assert fake_ccm.calc.energy_request.position == 8000
+
+    fake_ccm.calc.energy_with_vernier.move(9, wait=False)
+    finish_energy_move()
+    assert np.isclose(fake_ccm.calc.energy.position, 9)
+    assert fake_ccm.calc.energy_request.position == 9000
+
+    # Small moves (less than 30eV) should be skipped on the energy request
+    fake_ccm.calc.energy_with_vernier.move(9.001, wait=False)
+    finish_energy_move()
+    assert np.isclose(fake_ccm.calc.energy.position, 9.001)
+    assert fake_ccm.calc.energy_request.position == 9000
+
+    # Unless we set the option for not skipping them
+    fake_ccm.calc.skip_small_moves = False
+    fake_ccm.calc.energy_with_vernier.move(9.002, wait=False)
+    finish_energy_move()
+    assert np.isclose(fake_ccm.calc.energy.position, 9.002)
+    assert fake_ccm.calc.energy_request.position == 9002
+
+    # Normal moves should ignore the vernier PV
+    fake_ccm.calc.energy.move(10, wait=False)
+    finish_energy_move()
+    assert np.isclose(fake_ccm.calc.energy.position, 10)
+    assert fake_ccm.calc.energy_request.position == 9002
+
+
+@pytest.mark.timeout(5)
 def test_disconnected_ccm():
     ccm.CCM(alio_prefix='ALIO', theta2fine_prefix='THETA',
             theta2coarse_prefix='THTA', chi2_prefix='CHI',
