@@ -84,7 +84,9 @@ class BeamEnergyRequest(PVPositionerIsClose):
         """Skip the move part of the move if below the tolerance."""
         if self.skip_small_moves and abs(position-self.position) < self.atol:
             # Toggle the done bit
+            self.log.debug('Skipping small move in beam energy request')
             self._update_setpoint(value=self._last_setpoint)
         else:
             # Do a move
+            self.log.debug('Doing beam energy request move')
             super()._setup_move(position)

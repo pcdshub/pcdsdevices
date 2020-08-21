@@ -192,7 +192,7 @@ def test_vernier(fake_ccm):
     assert fake_ccm.calc.energy_request.position == 9000
 
     # Unless we set the option for not skipping them
-    fake_ccm.calc.skip_small_moves = False
+    fake_ccm.calc.energy_request.skip_small_moves = False
     fake_ccm.calc.energy_with_vernier.move(9.002, wait=False)
     finish_energy_move()
     assert np.isclose(fake_ccm.calc.energy.position, 9.002)
