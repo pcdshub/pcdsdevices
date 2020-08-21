@@ -7,7 +7,7 @@ v2.10.0 (2020-08-21)
 
 Features
 --------
-- Add LookupTablePositioner PseudoPositioner base clases for moves
+- Add LookupTablePositioner PseudoPositioner base class for moves
   based on a calibration table.
 - Add UnitConversionDerivedSignal as a Signal class for converting
   EPICS units to more desirable units for the user.
