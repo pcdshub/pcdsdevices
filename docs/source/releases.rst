@@ -2,6 +2,31 @@ Release History
 ###############
 
 
+v2.10.0 (2020-08-21)
+====================
+
+Features
+--------
+- Add LookupTablePositioner PseudoPositioner base class for moves
+  based on a calibration table.
+- Add UnitConversionDerivedSignal as a Signal class for converting
+  EPICS units to more desirable units for the user.
+- Add units to the IPython prettyprint repr.
+
+Device Updates
+--------------
+- Add Vernier integration into the CCM class using BeamEnergyRequest.
+
+New Devices
+-----------
+- Add support for Thorlabs WFS40 USB Wavefront Sensor Camera.
+- Add LaserEnergyPositioner PseudoPositioner (lxe) using
+  LookupTablePositioner.
+- Add LaserTiming PVPositioner (lxt) using UnitConversionDerivedSignal.
+- Add BeamEnergyRequest PVPositioner for requesting beam energies in eV from
+  ACR.
+
+
 v2.9.0 (2020-08-18)
 ===================
 
