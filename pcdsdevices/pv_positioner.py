@@ -87,4 +87,9 @@ class PVPositionerIsClose(PVPositionerComparator):
         super().__init__(prefix, name=name, **kwargs)
 
     def done_comparator(self, readback, setpoint):
-        return np.isclose(readback, setpoint, atol=self.atol, rtol=self.rtol)
+        kwargs = {}
+        if self.atol is not None:
+            kwargs['atol'] = self.atol
+        if self.rtol is not None:
+            kwargs['rtol'] = self.rtol
+        return np.isclose(readback, setpoint, **kwargs)
