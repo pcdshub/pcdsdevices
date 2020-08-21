@@ -72,6 +72,13 @@ def make_fake_ccm():
     init_pos(fake_ccm.y.down)
     init_pos(fake_ccm.y.up_north)
     init_pos(fake_ccm.y.up_south)
+
+    def init_pvpos(mot, pos=0):
+        mot.setpoint.sim_put(0)
+        mot.readback.sim_put(0)
+
+    init_pvpos(fake_ccm.calc.energy_request)
+
     return fake_ccm
 
 
