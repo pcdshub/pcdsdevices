@@ -5,14 +5,14 @@ import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import PseudoPositioner
-from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO, Signal
 
+from .beam_stats import BeamEnergyRequest
 from .epics_motor import IMS, EpicsMotorInterface
 from .inout import InOutPositioner
 from .interface import FltMvInterface
 from .pseudopos import PseudoSingleInterface, SyncAxesBase
-from .signal import InternalSignal
+from .pv_positioner import PVPositionerIsClose
 
 logger = logging.getLogger(__name__)
 
@@ -27,50 +27,17 @@ default_gr = 3.175
 default_gd = 231.303
 
 
-class CCMMotor(PVPositioner, FltMvInterface):
+class CCMMotor(PVPositionerIsClose):
     """
     Goofy records used in the CCM.
     """
 
+    # Tolerance from old xcs python code
+    atol = 3e-4
+
     setpoint = Cpt(EpicsSignal, ":POSITIONSET", auto_monitor=True)
     readback = Cpt(EpicsSignalRO, ":POSITIONGET", auto_monitor=True,
                    kind='hinted')
-    done = Cpt(InternalSignal, value=0)
-    done_value = 1
-
-    limits = None
-
-    def __init__(self, prefix, *, name, **kwargs):
-        self._last_readback = None
-        self._last_setpoint = None
-        super().__init__(prefix, name=name, **kwargs)
-
-    @readback.sub_value
-    def _update_readback(self, *args, value, **kwargs):
-        """Callback to cache the readback and update done state."""
-        self._last_readback = value
-        self._update_done()
-
-    @setpoint.sub_value
-    def _update_setpoint(self, *args, value, **kwargs):
-        """Callback to cache the setpoint and update done state."""
-        self._last_setpoint = value
-        # Always set done to False when a move is requested
-        # This means we always get a rising edge when finished moving
-        # Even if the move distance is under our done moving tolerance
-        self.done.put(0, force=True)
-        self._update_done()
-
-    def _update_done(self):
-        """
-        Update our status to done if we are within the tolerance.
-
-        This tolerance of 3e-4 was copied as-is from old xcs python code.
-        """
-        if None not in (self._last_readback, self._last_setpoint):
-            is_done = np.isclose(self._last_readback, self._last_setpoint,
-                                 atol=3e-4)
-            self.done.put(int(is_done), force=True)
 
 
 class CCMPico(EpicsMotorInterface):
@@ -109,26 +76,47 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
     """
 
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
-    wavelength = Cpt(PseudoSingleInterface, egu='A')
-    theta = Cpt(PseudoSingleInterface, egu='deg')
-    alio = Cpt(CCMMotor, '')
+    wavelength = Cpt(PseudoSingleInterface, egu='A', kind='normal')
+    theta = Cpt(PseudoSingleInterface, egu='deg', kind='normal')
+    energy_with_vernier = Cpt(PseudoSingleInterface, egu='keV',
+                              kind='omitted')
+
+    alio = Cpt(CCMMotor, '', kind='normal')
+    energy_request = FCpt(BeamEnergyRequest, '{hutch}', kind='normal')
 
     tab_component_names = True
 
-    def __init__(self, *args, theta0=default_theta0, dspacing=default_dspacing,
-                 gr=default_gr, gd=default_gd, **kwargs):
+    def __init__(self, prefix, *args, theta0=default_theta0,
+                 dspacing=default_dspacing, gr=default_gr, gd=default_gd,
+                 hutch=None, **kwargs):
         self.theta0 = theta0
         self.dspacing = dspacing
         self.gr = gr
         self.gd = gd
-        super().__init__(*args, auto_target=False, **kwargs)
+        if hutch is not None:
+            self.hutch = hutch
+        # Put some effort into filling this automatically
+        # CCM exists only in two hutches
+        elif 'XPP' in prefix:
+            self.hutch = 'XPP'
+        elif 'XCS' in prefix:
+            self.hutch = 'XCS'
+        else:
+            self.hutch = 'TST'
+        super().__init__(prefix, *args, auto_target=False, **kwargs)
 
     def forward(self, pseudo_pos):
-        """Take energy, wavelength, or theta and map to alio."""
+        """
+        Take energy, wavelength, theta, or energy_with_vernier and map to
+        alio and energy_request.
+        """
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         # Figure out which one changed.
-        energy, wavelength, theta = None, None, None
-        if not np.isclose(pseudo_pos.energy, self.energy.position):
+        energy_with_vernier, energy, wavelength, theta = None, None, None, None
+        if not np.isclose(pseudo_pos.energy_with_vernier,
+                          self.energy_with_vernier.position):
+            energy_with_vernier = pseudo_pos.energy_with_vernier
+        elif not np.isclose(pseudo_pos.energy, self.energy.position):
             energy = pseudo_pos.energy
         elif not np.isclose(pseudo_pos.wavelength, self.wavelength.position):
             wavelength = pseudo_pos.wavelength
@@ -136,7 +124,15 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
             theta = pseudo_pos.theta
         else:
             alio = self.alio.position
-        logger.debug((energy, wavelength, theta))
+        logger.debug('Forward (move) calculation args: '
+                     f'energy={energy}, wavelength={wavelength}, '
+                     f'theta={theta}, '
+                     f'energy_with_vernier={energy_with_vernier}')
+        if energy_with_vernier is not None:
+            energy = energy_with_vernier
+            energy_request = energy_with_vernier * 1000
+        else:
+            energy_request = self.energy_request.setpoint.get()
         if energy is not None:
             wavelength = energy_to_wavelength(energy)
         if wavelength is not None:
@@ -144,7 +140,9 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
         if theta is not None:
             alio = theta_to_alio(theta * np.pi/180, self.theta0,
                                  self.gr, self.gd)
-        return self.RealPosition(alio=alio)
+        logger.debug('Forward (move) calculation results: '
+                     f'alio={alio}, energy_request={energy_request}')
+        return self.RealPosition(alio=alio, energy_request=energy_request)
 
     def inverse(self, real_pos):
         """Take alio and map to energy, wavelength, and theta."""
@@ -154,7 +152,8 @@ class CCMCalc(PseudoPositioner, FltMvInterface):
         energy = wavelength_to_energy(wavelength)
         return self.PseudoPosition(energy=energy,
                                    wavelength=wavelength,
-                                   theta=theta*180/np.pi)
+                                   theta=theta*180/np.pi,
+                                   energy_with_vernier=energy)
 
 
 class CCMX(SyncAxesBase):
@@ -219,7 +218,9 @@ class CCM(InOutPositioner):
     def __init__(self, alio_prefix, theta2fine_prefix, theta2coarse_prefix,
                  chi2_prefix, x_down_prefix, x_up_prefix,
                  y_down_prefix, y_up_north_prefix, y_up_south_prefix,
-                 in_pos, out_pos, *args, **kwargs):
+                 in_pos, out_pos, *args,
+                 theta0=default_theta0, dspacing=default_dspacing,
+                 gr=default_gr, gd=default_gd, **kwargs):
         self.alio_prefix = alio_prefix
         self.theta2fine_prefix = theta2fine_prefix
         self.theta2coarse_prefix = theta2coarse_prefix
@@ -232,6 +233,10 @@ class CCM(InOutPositioner):
         self._in_pos = in_pos
         self._out_pos = out_pos
         super().__init__(alio_prefix, *args, **kwargs)
+        self.calc.theta0 = theta0
+        self.calc.dspacing = dspacing
+        self.calc.gr = gr
+        self.calc.gd = gd
 
     @property
     def _state(self):
