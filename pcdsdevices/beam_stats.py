@@ -78,7 +78,7 @@ class BeamEnergyRequest(PVPositionerIsClose):
                  skip_small_moves=True, **kwargs):
         self.energy_pv = energy_pv
         self.skip_small_moves = skip_small_moves
-        super.__init__(prefix, name=name, **kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
     def _setup_move(self, position):
         """Skip the move part of the move if below the tolerance."""
