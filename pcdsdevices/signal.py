@@ -14,7 +14,6 @@ import typing
 from threading import RLock, Thread
 
 import numpy as np
-
 from ophyd.signal import (DerivedSignal, EpicsSignal, EpicsSignalBase,
                           EpicsSignalRO, Signal, SignalRO)
 from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache

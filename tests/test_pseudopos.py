@@ -2,11 +2,11 @@ import logging
 
 import numpy as np
 import pytest
-
 from conftest import MODULE_PATH
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
 from ophyd.sim import make_fake_device
+
 from pcdsdevices.lxe import (LaserEnergyPlotContext, LaserEnergyPositioner,
                              LaserTiming)
 from pcdsdevices.pseudopos import (DelayBase, LookupTablePositioner,
@@ -171,6 +171,31 @@ def test_laser_energy_timing():
         np.testing.assert_allclose(lxt.position, pos)
         np.testing.assert_allclose(lxt._fs_tgt_time.get(),
                                    convert_unit(pos, 's', 'ns'))
+
+    for pos, offset in [(1, 1), (1, 2), (2, -1)]:
+        lxt.user_offset.put(offset)
+        assert lxt.user_offset.get() == offset
+        assert lxt.setpoint.user_offset == offset
+
+        # Test the forward/inverse offset calculations directly:
+        np.testing.assert_allclose(
+            lxt.setpoint.forward(pos),
+            convert_unit(pos + offset, 's', 'ns')
+        )
+        np.testing.assert_allclose(
+            lxt.setpoint.inverse(convert_unit(pos + offset, 's', 'ns')),
+            pos,
+        )
+
+        # And indirectly through moves:
+        _move_helper(lxt, pos).wait(1)
+        np.testing.assert_allclose(lxt.position, pos)
+        np.testing.assert_allclose(lxt._fs_tgt_time.get(),
+                                   convert_unit(pos + offset, 's', 'ns'))
+
+    # Ensure we have the expected keys based on kind:
+    assert 'lxt_user_offset' in lxt.read_configuration()
+    assert 'lxt_setpoint' in lxt.read()
 
 
 def test_laser_energy_timing_no_egu():

@@ -33,9 +33,9 @@ import types
 import typing
 
 import numpy as np
-
 from ophyd import Component as Cpt
 from ophyd import EpicsSignal, PVPositioner
+from ophyd.signal import AttributeSignal
 
 from .epics_motor import EpicsMotorInterface
 from .interface import FltMvInterface
@@ -222,16 +222,20 @@ class LaserTiming(PVPositioner, FltMvInterface):
     internally, such that the user may work in units of seconds.
     """
 
-    _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True)
+    _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True,
+                       kind='omitted')
     setpoint = Cpt(UnitConversionDerivedSignal,
                    derived_from='_fs_tgt_time',
                    derived_units='s',
                    original_units='ns',
+                   kind='hinted',
                    )
+    user_offset = Cpt(AttributeSignal, attr='setpoint.user_offset',
+                      kind='config')
 
     # A motor (record) will be moved after the above record is touched, so
     # use its done motion status:
-    done = Cpt(EpicsSignal, ':MMS:PH.DMOV', auto_monitor=True)
+    done = Cpt(EpicsSignal, ':MMS:PH.DMOV', auto_monitor=True, kind='omitted')
     done_value = 1
 
     def __init__(self, prefix='', *, egu=None, **kwargs):
