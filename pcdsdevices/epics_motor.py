@@ -2,6 +2,7 @@
 Module for LCLS's special motor records.
 """
 import logging
+import math
 import os
 import shutil
 
@@ -48,10 +49,6 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
            the beamline.
     """
 
-    # Reimplemented because pyepics does not recognize when the limits have
-    # been changed without a re-connection of the PV. Instead we trust the soft
-    # limits records
-    user_setpoint = Cpt(EpicsSignal, ".VAL", limits=False, kind='normal')
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
     # Description is valuable
@@ -60,23 +57,28 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     tab_whitelist = ["set_current_position", "home", "velocity",
                      "enable", "disable"]
 
+    def __init__(self, *args, **kwargs):
+        # Locally defined limit overrides, note can only make limits narrower
+        self._limits = (-math.inf, math.inf)
+        super().__init__(self, *args, **kwargs)
+
     @property
     def low_limit(self):
         """The lower soft limit for the motor."""
-        return self.low_limit_travel.get()
+        return max(self._limits[0], super().limits[0])
 
     @low_limit.setter
     def low_limit(self, value):
-        self.low_limit_travel.put(value)
+        self._limits[0] = value
 
     @property
     def high_limit(self):
         """The higher soft limit for the motor."""
-        return self.high_limit_travel.get()
+        return min(self._limits[1], super().limits[1])
 
     @high_limit.setter
     def high_limit(self, value):
-        self.high_limit_travel.put(value)
+        self._limits[1] = value
 
     @property
     def limits(self):
@@ -85,8 +87,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     @limits.setter
     def limits(self, limits):
-        self.low_limit = limits[0]
-        self.high_limit = limits[1]
+        self._limits = limits
 
     def enable(self):
         """
