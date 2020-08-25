@@ -1,5 +1,5 @@
-IssueNumber Title
-#################
+532 / LXT Missing Kinds
+#######################
 
 API Changes
 -----------
@@ -28,4 +28,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- klauer

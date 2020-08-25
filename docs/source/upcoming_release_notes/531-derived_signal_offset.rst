@@ -1,5 +1,5 @@
-IssueNumber Title
-#################
+531 Derived signal offset
+#########################
 
 API Changes
 -----------
@@ -31,4 +31,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- klauer
