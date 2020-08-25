@@ -17,7 +17,7 @@ from periodictable import xsf
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import CombinedInOutRecordPositioner, InOutRecordPositioner
-from .interface import tweak_base, BaseInterface
+from .interface import BaseInterface, tweak_base
 from .sim import FastMotor
 
 LENS_RADII = [50e-6, 100e-6, 200e-6, 300e-6, 500e-6, 1000e-6, 1500e-6]
@@ -324,5 +324,5 @@ class SimLensStackBase(LensStackBase):
     z = Cpt(FastMotor, limits=(-100, 100))
 
 
-class SimLensStack(LensStack, SimLensStackBase):
+class SimLensStack(SimLensStackBase, LensStack):
     pass
