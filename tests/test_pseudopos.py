@@ -93,10 +93,25 @@ def test_subcls_warning():
         DelayBase('prefix', name='name')
 
 
-def test_lut_positioner():
+@pytest.mark.parametrize(
+    'set_motor_limits',
+    [pytest.param(False, id='no_motor_limits'),
+     pytest.param(True, id='motor_limits'),
+     ],
+)
+def test_lut_positioner(set_motor_limits):
+    class LimitSettableSoftPositioner(SoftPositioner):
+        @property
+        def limits(self):
+            return self._limits
+
+        @limits.setter
+        def limits(self, value):
+            self._limits = tuple(value)
+
     class MyLUTPositioner(LookupTablePositioner):
         pseudo = Cpt(PseudoSingleInterface)
-        real = Cpt(SoftPositioner)
+        real = Cpt(LimitSettableSoftPositioner)
 
     table = np.asarray(
         [[0, 40],
@@ -111,7 +126,7 @@ def test_lut_positioner():
     )
     column_names = ['real', 'pseudo']
     lut = MyLUTPositioner('', table=table, column_names=column_names,
-                          name='lut')
+                          name='lut', set_motor_limits=set_motor_limits)
 
     np.testing.assert_allclose(lut.forward(60)[0], 2)
     np.testing.assert_allclose(lut.inverse(7)[0], 200)
@@ -120,6 +135,13 @@ def test_lut_positioner():
     lut.move(100, wait=True)
     np.testing.assert_allclose(lut.pseudo.position, 100)
     np.testing.assert_allclose(lut.real.position, 6)
+
+    if set_motor_limits:
+        assert lut.real.limits == (0, 9)
+    else:
+        assert lut.real.limits == (0, 0)
+
+    assert lut.pseudo.limits == (40, 400)
 
 
 @pytest.fixture

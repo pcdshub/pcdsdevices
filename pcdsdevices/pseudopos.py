@@ -2,12 +2,11 @@ import logging
 import typing
 
 import numpy as np
-from scipy.constants import speed_of_light
-
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
                              pseudo_position_argument, real_position_argument)
+from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
 from .sim import FastMotor
@@ -180,6 +179,8 @@ class LookupTablePositioner(PseudoPositioner):
     Currently supports 1 pseudo positioner and 1 "real" positioner, which
     should be columns of a 2D numpy.ndarray ``table``.
 
+    For additional ``__init__`` arguments, see :class:`ophyd.PseudoPositioner`.
+
     Parameters
     ----------
     prefix : str
@@ -190,6 +191,10 @@ class LookupTablePositioner(PseudoPositioner):
 
     table : np.ndarray
         The table of information.
+
+    set_motor_limits : bool, optional
+        Set EPICS motor limits based on the available calibration data.
+        Defaults to ``False`` as this may affect other applications.
 
     column_names : list of str
         List of column names, corresponding to the component attribute names.
@@ -204,6 +209,7 @@ class LookupTablePositioner(PseudoPositioner):
     def __init__(self, *args,
                  table: np.ndarray,
                  column_names: typing.List[str],
+                 set_motor_limits: typing.Optional[bool] = False,
                  **kwargs):
         super().__init__(*args, **kwargs)
         self.table = table
@@ -235,11 +241,11 @@ class LookupTablePositioner(PseudoPositioner):
             limits = (np.min(data), np.max(data))
             if isinstance(obj, PseudoSingle):
                 obj._limits = limits
-            elif hasattr(obj, 'limits'):
+            elif hasattr(obj, 'limits') and set_motor_limits:
                 try:
                     obj.limits = limits
-                except AttributeError:
-                    self.log.debug('Unable to set limits for %s', obj.name)
+                except Exception:
+                    self.log.exception('Unable to set limits for %s', obj.name)
 
     @pseudo_position_argument
     def forward(self, pseudo_pos: tuple) -> tuple:
