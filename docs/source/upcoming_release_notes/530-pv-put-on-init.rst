@@ -1,5 +1,5 @@
-IssueNumber Title
-#################
+530 / LookupTable limit put on init
+###################################
 
 API Changes
 -----------
