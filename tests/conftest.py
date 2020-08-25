@@ -1,13 +1,17 @@
+import inspect
 import os
+import pkgutil
 import shutil
+import sys
 import warnings
 from pathlib import Path
 from types import SimpleNamespace
 
+import ophyd
 import pytest
-
 from epics import PV
 from ophyd.sim import FakeEpicsSignal, make_fake_device
+
 from pcdsdevices.attenuator import (MAX_FILTERS, Attenuator, _att3_classes,
                                     _att_classes)
 from pcdsdevices.mv_interface import setup_preset_paths
@@ -61,3 +65,35 @@ def presets():
     yield
     setup_preset_paths()
     shutil.rmtree(folder)
+
+
+def find_all_device_classes() -> list:
+    exclude_list = {'_version', }
+    pkgname = 'pcdsdevices'
+    modules = [
+        mod.name for mod in pkgutil.iter_modules(
+            path=[MODULE_PATH.parent / pkgname])
+        if mod not in exclude_list
+    ]
+
+    for module in modules:
+        __import__(f'{pkgname}.{module}')
+
+    devices = set()
+    for mod_name, mod in sys.modules.items():
+        if pkgname not in mod_name:
+            continue
+
+        for mod_attr in dir(mod):
+            obj = getattr(mod, mod_attr)
+            if inspect.isclass(obj) and issubclass(obj, ophyd.Device):
+                if not obj.__module__.startswith('ophyd'):
+                    devices.add(obj)
+
+    return list(devices)
+
+
+all_device_classes = [
+    pytest.param(cls, id=f'{cls.__module__}.{cls.__name__}')
+    for cls in find_all_device_classes()
+]

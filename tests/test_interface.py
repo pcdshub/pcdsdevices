@@ -6,10 +6,12 @@ import signal
 import threading
 import time
 
+import conftest
+import ophyd
 import pytest
 
-from pcdsdevices.interface import (get_engineering_mode, set_engineering_mode,
-                                   setup_preset_paths)
+from pcdsdevices.interface import (BaseInterface, get_engineering_mode,
+                                   set_engineering_mode, setup_preset_paths)
 from pcdsdevices.sim import FastMotor, SlowMotor
 
 logger = logging.getLogger(__name__)
@@ -184,3 +186,22 @@ def test_dir_whitelist_basic(fast_motor):
     set_engineering_mode(True)
     eng_dir = dir(fast_motor)
     assert len(eng_dir) > len(user_dir)
+
+
+@pytest.mark.parametrize('cls', conftest.all_device_classes)
+def test_per_class_whitelist(cls):
+    if BaseInterface not in cls.mro():
+        ignore_list = {'.areadetector.', }
+        fully_qualified_name = f'{cls.__module__}.{cls.__name__}'
+        if any(name in fully_qualified_name for name in ignore_list):
+            pytest.skip()
+        pytest.skip(f'{cls} does not inherit from the interface')
+
+    regex = cls._tab_regex
+    if getattr(cls, 'tab_component_names', False):
+        for name in cls.component_names:
+            if getattr(cls, name).kind != ophyd.Kind.omitted:
+                assert regex.match(name) is not None
+
+    for name in getattr(cls, 'tab_whitelist', []):
+        assert regex.match(name) is not None
