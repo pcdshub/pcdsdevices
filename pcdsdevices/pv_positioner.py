@@ -6,7 +6,7 @@ from .interface import FltMvInterface
 from .signal import InternalSignal
 
 
-class PVPositionerComparator(PVPositioner, FltMvInterface):
+class PVPositionerComparator(FltMvInterface, PVPositioner):
     """
     PV Positioner with a software done signal.
 

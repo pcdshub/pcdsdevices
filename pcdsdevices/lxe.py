@@ -142,7 +142,7 @@ class LaserEnergyPlotContext:
         self.figure.canvas.draw()
 
 
-class LaserEnergyPositioner(LookupTablePositioner, FltMvInterface):
+class LaserEnergyPositioner(FltMvInterface, LookupTablePositioner):
     """
     Uses the lookup-table positioner to convert energy <-> motor positions.
 
@@ -214,7 +214,7 @@ class LaserEnergyPositioner(LookupTablePositioner, FltMvInterface):
         return super().wm[0]
 
 
-class LaserTiming(PVPositioner, FltMvInterface):
+class LaserTiming(FltMvInterface, PVPositioner):
     """
     "lxt" motor, which may also have been referred to as Vitara.
 

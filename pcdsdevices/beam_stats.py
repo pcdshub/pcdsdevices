@@ -8,7 +8,7 @@ from .pv_positioner import PVPositionerIsClose
 from .signal import AvgSignal
 
 
-class BeamStats(Device, BaseInterface):
+class BeamStats(BaseInterface, Device):
     mj = Cpt(EpicsSignalRO, 'GDET:FEE1:241:ENRC', kind='hinted')
     ev = Cpt(EpicsSignalRO, 'BLD:SYS0:500:PHOTONENERGY', kind='normal')
     rate = Cpt(EpicsSignalRO, 'EVNT:SYS0:1:LCLSBEAMRATE', kind='normal')

@@ -66,7 +66,7 @@ class CCMPico(EpicsMotorInterface):
                              value=value, **kwargs)
 
 
-class CCMCalc(PseudoPositioner, FltMvInterface):
+class CCMCalc(FltMvInterface, PseudoPositioner):
     """
     CCM calculation motors to move in terms of physics quantities.
 

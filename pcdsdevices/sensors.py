@@ -10,7 +10,7 @@ from .interface import BaseInterface
 from .signal import PytmcSignal, NotImplementedSignal
 
 
-class TwinCATThermocouple(Device, BaseInterface):
+class TwinCATThermocouple(BaseInterface, Device):
     """
     Basic twincat temperature sensor class.
 
@@ -23,7 +23,7 @@ class TwinCATThermocouple(Device, BaseInterface):
     error = Cpt(PytmcSignal, ':STC:ERR', io='i', kind='normal')
 
 
-class RTD(Device, BaseInterface):
+class RTD(BaseInterface, Device):
     """
     Resistive Temperature Device.
 

@@ -11,7 +11,7 @@ from .interface import BaseInterface
 logger = logging.getLogger(__name__)
 
 
-class EventSequence(Device, BaseInterface):
+class EventSequence(BaseInterface, Device):
     """Class for the event sequence of the event sequencer."""
     ec_array = Cpt(EpicsSignal, ':SEQ.A')
     bd_array = Cpt(EpicsSignal, ':SEQ.B')
@@ -145,7 +145,7 @@ class EventSequence(Device, BaseInterface):
             print(line)
 
 
-class EventSequencer(Device, MonitorFlyerMixin, FlyerInterface, BaseInterface):
+class EventSequencer(BaseInterface, Device, MonitorFlyerMixin, FlyerInterface):
     """
     Event Sequencer.
 
