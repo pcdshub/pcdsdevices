@@ -40,8 +40,8 @@ def test_mv(fast_motor):
 def test_umv(slow_motor):
     logger.debug('test_umv')
     slow_motor._set_position(5)
-    slow_motor.umvr(2)
-    assert slow_motor.position == 7
+    slow_motor.umvr(1)
+    assert slow_motor.position == 6
 
 
 def test_camonitor(fast_motor):
