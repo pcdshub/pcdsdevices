@@ -1173,14 +1173,25 @@ def tweak_base(*args):
     print()
 
 
+loglist = []
+
+
 class AbsProgressBar(ProgressBar):
     """Progress bar that displays the absolute position as well."""
+    def __init__(self, status_objs, delay_draw=1.0):
+        self._last_position = None
+        super().__init__(status_objs, delay_draw=delay_draw)
+
     def update(self, *args, name=None, current=None, **kwargs):
-        if None not in (name, current):
-            super().update(*args, name='{} ({:.3f})'.format(name, current),
-                           current=current, **kwargs)
-        else:
-            super().update(*args, name=name, current=current, **kwargs)
+        try:
+            name = '{} ({:.3f})'.format(name, current)
+            self._last_position = current
+        except Exception:
+            name = name or 'motor'
+
+        current = current or self._last_position
+        loglist.append((name, current, kwargs))
+        super().update(*args, name=name, current=current, **kwargs)
 
 
 class LightpathMixin(OphydObject):
