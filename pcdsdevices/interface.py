@@ -390,9 +390,7 @@ class MvInterface(BaseInterface):
         self._mov_ev = Event()
 
     def _log_move(self, position):
-        template = 'Moving {} from {} to {}'
-        msg = template.format(self.name, self.wm(), position)
-        logger.info(msg)
+        logger.info('Moving %s from %s to %s', self.name, self.wm(), position)
 
     def mv(self, position, timeout=None, wait=False):
         """
