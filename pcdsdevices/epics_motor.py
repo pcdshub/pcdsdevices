@@ -60,7 +60,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     def __init__(self, *args, **kwargs):
         # Locally defined limit overrides, note can only make limits narrower
         self._limits = (-math.inf, math.inf)
-        super().__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @property
     def low_limit(self):
