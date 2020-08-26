@@ -150,7 +150,16 @@ def test_laser_energy_positioner(monkeypatch, lxe_calibration_file):
         lxe.move(1e9)
 
 
-def test_laser_energy_timing():
+@pytest.fixture
+def lxt():
+    """LaserTiming pseudopositioner device instance"""
+    lxt = make_fake_device(LaserTiming)('prefix', name='lxt')
+    lxt._fs_tgt_time.sim_set_limits((0, 4e9))
+    lxt._fs_tgt_time.sim_put(0)
+    return lxt
+
+
+def test_laser_timing_motion(lxt):
     def _move_helper(pv_positioner, position):
         # A useful helper for test_pvpositioner.py?
         st = pv_positioner.move(position, wait=False)
@@ -158,10 +167,6 @@ def test_laser_energy_timing():
             pv_positioner.done.sim_put(1 - pv_positioner.done_value)
             pv_positioner.done.sim_put(pv_positioner.done_value)
         return st
-
-    lxt = make_fake_device(LaserTiming)('prefix', name='lxt')
-    lxt._fs_tgt_time.sim_set_limits((0, 4e9))
-    lxt._fs_tgt_time.sim_put(0)
 
     # A basic dependency sanity check...
     np.testing.assert_allclose(convert_unit(1, 's', 'ns'), 1e9)
@@ -196,6 +201,14 @@ def test_laser_energy_timing():
     # Ensure we have the expected keys based on kind:
     assert 'lxt_user_offset' in lxt.read_configuration()
     assert 'lxt_setpoint' in lxt.read()
+
+
+def test_laser_timing_offset(lxt):
+    for pos in [1.0, 2.0, -1.0, 8.0]:
+        print('Setting the current position to', pos)
+        lxt.set_current_position(pos)
+        print('New offset is', lxt.user_offset.get())
+        np.testing.assert_allclose(lxt.position, pos)
 
 
 def test_laser_energy_timing_no_egu():

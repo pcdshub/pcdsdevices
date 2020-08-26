@@ -245,3 +245,18 @@ class LaserTiming(PVPositioner, FltMvInterface):
                 f' of seconds.'
             )
         super().__init__(prefix, egu='s', **kwargs)
+
+    def set_current_position(self, position):
+        '''
+        Calculate and configure the user_offset value, indicating the provided
+        ``position`` as the new current position.
+
+        Parameters
+        ----------
+        position
+            The new current position.
+        '''
+        self.user_offset.put(0.0)
+
+        new_offset = self.setpoint.get() - position
+        self.user_offset.put(new_offset)
