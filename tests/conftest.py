@@ -91,9 +91,3 @@ def find_all_device_classes() -> list:
                     devices.add(obj)
 
     return list(devices)
-
-
-all_device_classes = [
-    pytest.param(cls, id=f'{cls.__module__}.{cls.__name__}')
-    for cls in find_all_device_classes()
-]

@@ -188,13 +188,32 @@ def test_dir_whitelist_basic(fast_motor):
     assert len(eng_dir) > len(user_dir)
 
 
-@pytest.mark.parametrize('cls', conftest.all_device_classes)
-def test_per_class_whitelist(cls):
+_TAB_COMPLETION_IGNORES = {'.areadetector.', }
+
+
+def _should_check_tab_completion(cls):
+    if BaseInterface in cls.mro():
+        # Include any Devices that have BaseInterface
+        return True
+
+    fully_qualified_name = f'{cls.__module__}.{cls.__name__}'
+    if any(name in fully_qualified_name for name in _TAB_COMPLETION_IGNORES):
+        # This doesn't mix BaseInterface in, but that's OK - it's on our list
+        return False
+
+    # This doesn't mix BaseInterface in, this may be a bad thing: warn in
+    # the test.
+    return True
+
+
+@pytest.mark.parametrize(
+    'cls',
+    [pytest.param(cls, id=f'{cls.__module__}.{cls.__name__}')
+     for cls in conftest.find_all_device_classes()
+     if _should_check_tab_completion(cls)]
+)
+def test_tab_completion(cls):
     if BaseInterface not in cls.mro():
-        ignore_list = {'.areadetector.', }
-        fully_qualified_name = f'{cls.__module__}.{cls.__name__}'
-        if any(name in fully_qualified_name for name in ignore_list):
-            pytest.skip()
         pytest.skip(f'{cls} does not inherit from the interface')
 
     regex = cls._tab_regex
