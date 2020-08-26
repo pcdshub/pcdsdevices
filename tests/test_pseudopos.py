@@ -177,7 +177,8 @@ def test_laser_timing_motion(lxt):
         np.testing.assert_allclose(lxt._fs_tgt_time.get(),
                                    convert_unit(pos, 's', 'ns'))
 
-    for pos, offset in [(1, 1), (1, 2), (2, -1)]:
+    # Note that the offset adjusts the limits dynamically
+    for pos, offset in [(1, 1), (3, 2), (2, -1)]:
         lxt.user_offset.put(offset)
         assert lxt.user_offset.get() == offset
         assert lxt.setpoint.user_offset == offset
@@ -185,10 +186,10 @@ def test_laser_timing_motion(lxt):
         # Test the forward/inverse offset calculations directly:
         np.testing.assert_allclose(
             lxt.setpoint.forward(pos),
-            convert_unit(pos + offset, 's', 'ns')
+            convert_unit(pos - offset, 's', 'ns')
         )
         np.testing.assert_allclose(
-            lxt.setpoint.inverse(convert_unit(pos + offset, 's', 'ns')),
+            lxt.setpoint.inverse(convert_unit(pos - offset, 's', 'ns')),
             pos,
         )
 
@@ -196,7 +197,7 @@ def test_laser_timing_motion(lxt):
         _move_helper(lxt, pos).wait(1)
         np.testing.assert_allclose(lxt.position, pos)
         np.testing.assert_allclose(lxt._fs_tgt_time.get(),
-                                   convert_unit(pos + offset, 's', 'ns'))
+                                   convert_unit(pos - offset, 's', 'ns'))
 
     # Ensure we have the expected keys based on kind:
     assert 'lxt_user_offset' in lxt.read_configuration()
@@ -204,11 +205,15 @@ def test_laser_timing_motion(lxt):
 
 
 def test_laser_timing_offset(lxt):
+    print('Dial position is', lxt.position)
+    initial_limits = lxt.limits
     for pos in [1.0, 2.0, -1.0, 8.0]:
         print('Setting the current position to', pos)
         lxt.set_current_position(pos)
         print('New offset is', lxt.user_offset.get())
         np.testing.assert_allclose(lxt.position, pos)
+        print('Adjusted limits are', lxt.limits)
+        assert lxt.limits == (pos + initial_limits[0], pos + initial_limits[1])
 
 
 def test_laser_energy_timing_no_egu():

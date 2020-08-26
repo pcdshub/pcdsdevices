@@ -322,10 +322,15 @@ class UnitConversionDerivedSignal(DerivedSignal):
         information regarding units will be retrieved upon first connection.
 
     user_offset : any, optional
-        An optional user offset that will be *added* when updating the original
-        signal, and *subtracted* when calculating the derived value.
+        An optional user offset that will be *subtracted* when updating the
+        original signal, and *added* when calculating the derived value.
         This offset should be supplied in ``derived_units`` and not
         ``original_units``.
+
+        For example, if the original signal updates to a converted value of
+        500 ``derived_units`` and the ``user_offset`` is set to 100, this
+        ``DerivedSignal`` will show a value of 600.  When providing a new
+        setpoint, the ``user_offset`` will be subtracted.
 
     write_access : bool, optional
         Write access may be disabled by setting this to ``False``, regardless
@@ -357,7 +362,7 @@ class UnitConversionDerivedSignal(DerivedSignal):
     def forward(self, value):
         '''Compute derived signal value -> original signal value'''
         if self.user_offset is not None:
-            value = value + self.user_offset
+            value = value - self.user_offset
         return convert_unit(value, self.derived_units, self.original_units)
 
     def inverse(self, value):
@@ -365,7 +370,7 @@ class UnitConversionDerivedSignal(DerivedSignal):
         derived_value = convert_unit(value, self.original_units,
                                      self.derived_units)
         if self.user_offset is not None:
-            derived_value = derived_value - self.user_offset
+            derived_value = derived_value + self.user_offset
         return derived_value
 
     @property

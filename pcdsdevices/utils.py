@@ -9,8 +9,8 @@ import ophyd
 import pint
 
 try:
-    import tty
     import termios
+    import tty
 except ImportError:
     tty = None
     termios = None
