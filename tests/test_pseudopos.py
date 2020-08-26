@@ -2,11 +2,11 @@ import logging
 
 import numpy as np
 import pytest
-
 from conftest import MODULE_PATH
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
 from ophyd.sim import make_fake_device
+
 from pcdsdevices.lxe import (LaserEnergyPlotContext, LaserEnergyPositioner,
                              LaserTiming)
 from pcdsdevices.pseudopos import (DelayBase, LookupTablePositioner,
@@ -150,7 +150,16 @@ def test_laser_energy_positioner(monkeypatch, lxe_calibration_file):
         lxe.move(1e9)
 
 
-def test_laser_energy_timing():
+@pytest.fixture
+def lxt():
+    """LaserTiming pseudopositioner device instance"""
+    lxt = make_fake_device(LaserTiming)('prefix', name='lxt')
+    lxt._fs_tgt_time.sim_set_limits((0, 4e9))
+    lxt._fs_tgt_time.sim_put(0)
+    return lxt
+
+
+def test_laser_timing_motion(lxt):
     def _move_helper(pv_positioner, position):
         # A useful helper for test_pvpositioner.py?
         st = pv_positioner.move(position, wait=False)
@@ -158,10 +167,6 @@ def test_laser_energy_timing():
             pv_positioner.done.sim_put(1 - pv_positioner.done_value)
             pv_positioner.done.sim_put(pv_positioner.done_value)
         return st
-
-    lxt = make_fake_device(LaserTiming)('prefix', name='lxt')
-    lxt._fs_tgt_time.sim_set_limits((0, 4e9))
-    lxt._fs_tgt_time.sim_put(0)
 
     # A basic dependency sanity check...
     np.testing.assert_allclose(convert_unit(1, 's', 'ns'), 1e9)
@@ -171,6 +176,44 @@ def test_laser_energy_timing():
         np.testing.assert_allclose(lxt.position, pos)
         np.testing.assert_allclose(lxt._fs_tgt_time.get(),
                                    convert_unit(pos, 's', 'ns'))
+
+    # Note that the offset adjusts the limits dynamically
+    for pos, offset in [(1, 1), (3, 2), (2, -1)]:
+        lxt.user_offset.put(offset)
+        assert lxt.user_offset.get() == offset
+        assert lxt.setpoint.user_offset == offset
+
+        # Test the forward/inverse offset calculations directly:
+        np.testing.assert_allclose(
+            lxt.setpoint.forward(pos),
+            convert_unit(pos - offset, 's', 'ns')
+        )
+        np.testing.assert_allclose(
+            lxt.setpoint.inverse(convert_unit(pos - offset, 's', 'ns')),
+            pos,
+        )
+
+        # And indirectly through moves:
+        _move_helper(lxt, pos).wait(1)
+        np.testing.assert_allclose(lxt.position, pos)
+        np.testing.assert_allclose(lxt._fs_tgt_time.get(),
+                                   convert_unit(pos - offset, 's', 'ns'))
+
+    # Ensure we have the expected keys based on kind:
+    assert 'lxt_user_offset' in lxt.read_configuration()
+    assert 'lxt_setpoint' in lxt.read()
+
+
+def test_laser_timing_offset(lxt):
+    print('Dial position is', lxt.position)
+    initial_limits = lxt.limits
+    for pos in [1.0, 2.0, -1.0, 8.0]:
+        print('Setting the current position to', pos)
+        lxt.set_current_position(pos)
+        print('New offset is', lxt.user_offset.get())
+        np.testing.assert_allclose(lxt.position, pos)
+        print('Adjusted limits are', lxt.limits)
+        assert lxt.limits == (pos + initial_limits[0], pos + initial_limits[1])
 
 
 def test_laser_energy_timing_no_egu():

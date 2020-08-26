@@ -9,8 +9,8 @@ import ophyd
 import pint
 
 try:
-    import tty
     import termios
+    import tty
 except ImportError:
     tty = None
     termios = None
@@ -108,7 +108,8 @@ def convert_unit(value, unit, new_unit):
     """
 
     ureg = pint.UnitRegistry()
-    return (value * ureg[unit]).to(new_unit).magnitude
+    expr = ureg.parse_expression(unit)
+    return (value * expr).to(new_unit).magnitude
 
 
 def ipm_screen(dettype, prefix, prefix_ioc):
