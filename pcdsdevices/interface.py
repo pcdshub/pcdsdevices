@@ -389,6 +389,9 @@ class MvInterface(BaseInterface):
         super().__init__(*args, **kwargs)
         self._mov_ev = Event()
 
+    def _log_move(self, position):
+        logger.info('Moving %s from %s to %s', self.name, self.wm(), position)
+
     def mv(self, position, timeout=None, wait=False):
         """
         Absolute move to a position.
@@ -407,7 +410,7 @@ class MvInterface(BaseInterface):
             If `True`, wait for motion completion before returning.
             Defaults to :keyword:`False`.
         """
-
+        self._log_move(position)
         self.move(position, timeout=timeout, wait=wait)
 
     def wm(self):
@@ -521,6 +524,7 @@ class FltMvInterface(MvInterface):
             will be use.
         """
 
+        self._log_move(position)
         status = self.move(position, timeout=timeout, wait=False)
         AbsProgressBar([status])
         try:
