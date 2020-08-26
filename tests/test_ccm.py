@@ -64,6 +64,7 @@ def make_fake_ccm():
     def init_pos(mot, pos=0):
         mot.user_readback.sim_put(0)
         mot.user_setpoint.sim_put(0)
+        mot.user_setpoint.sim_set_limits((0, 0))
         mot.motor_spg.sim_put(2)
         mot.part_number.sim_put('tasdf')
 

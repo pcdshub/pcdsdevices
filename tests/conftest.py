@@ -7,6 +7,7 @@ from types import SimpleNamespace
 import pytest
 
 from epics import PV
+from ophyd.signal import LimitError
 from ophyd.sim import FakeEpicsSignal, make_fake_device
 from pcdsdevices.attenuator import (MAX_FILTERS, Attenuator, _att3_classes,
                                     _att_classes)
@@ -21,8 +22,27 @@ MODULE_PATH = Path(__file__).parent
 warnings.filterwarnings('ignore',
                         message='Signal.put no longer takes keyword arguments')
 # Other temporary patches to FakeEpicsSignal
+def check_value(self, value):
+    if value is None:
+        raise ValueError('Cannot write None to epics PVs')
+    if not self._use_limits:
+        return
+
+    low_limit, high_limit = self.limits
+    if low_limit >= high_limit:
+        return
+
+    if not (low_limit <= value <= high_limit):
+        raise LimitError('Value {} outside of range: [{}, {}]'
+                         .format(value, low_limit, high_limit))
+
+# Check value is busted, ignores (0, 0) no limits case
+FakeEpicsSignal.check_value = check_value
+# Metadata changed is missing
 FakeEpicsSignal._metadata_changed = lambda *args, **kwargs: None
+# pvname is missing
 FakeEpicsSignal.pvname = ''
+# lots of things are missing
 FakeEpicsSignal._read_pv = SimpleNamespace(get_ctrlvars=lambda: None)
 # Stupid patch that somehow makes the test cleanup bug go away
 PV.count = property(lambda self: 1)
