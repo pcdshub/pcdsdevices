@@ -108,7 +108,8 @@ def convert_unit(value, unit, new_unit):
     """
 
     ureg = pint.UnitRegistry()
-    return (value * ureg[unit]).to(new_unit).magnitude
+    expr = ureg.parse_expression(unit)
+    return (value * expr).to(new_unit).magnitude
 
 
 def ipm_screen(dettype, prefix, prefix_ioc):
