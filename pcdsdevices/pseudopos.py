@@ -192,10 +192,6 @@ class LookupTablePositioner(PseudoPositioner):
     table : np.ndarray
         The table of information.
 
-    set_motor_limits : bool, optional
-        Set EPICS motor limits based on the available calibration data.
-        Defaults to ``False`` as this may affect other applications.
-
     column_names : list of str
         List of column names, corresponding to the component attribute names.
         That is, if you have a real motor ``mtr = Cpt(EpicsMotor, ...)``,
@@ -209,7 +205,6 @@ class LookupTablePositioner(PseudoPositioner):
     def __init__(self, *args,
                  table: np.ndarray,
                  column_names: typing.List[str],
-                 set_motor_limits: typing.Optional[bool] = False,
                  **kwargs):
         super().__init__(*args, **kwargs)
         self.table = table
@@ -241,7 +236,7 @@ class LookupTablePositioner(PseudoPositioner):
             limits = (np.min(data), np.max(data))
             if isinstance(obj, PseudoSingle):
                 obj._limits = limits
-            elif hasattr(obj, 'limits') and set_motor_limits:
+            elif hasattr(obj, 'limits'):
                 try:
                     obj.limits = limits
                 except Exception:

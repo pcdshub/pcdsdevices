@@ -2,11 +2,11 @@ import logging
 
 import numpy as np
 import pytest
-
 from conftest import MODULE_PATH
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
 from ophyd.sim import make_fake_device
+
 from pcdsdevices.lxe import (LaserEnergyPlotContext, LaserEnergyPositioner,
                              LaserTiming)
 from pcdsdevices.pseudopos import (DelayBase, LookupTablePositioner,
@@ -93,13 +93,7 @@ def test_subcls_warning():
         DelayBase('prefix', name='name')
 
 
-@pytest.mark.parametrize(
-    'set_motor_limits',
-    [pytest.param(False, id='no_motor_limits'),
-     pytest.param(True, id='motor_limits'),
-     ],
-)
-def test_lut_positioner(set_motor_limits):
+def test_lut_positioner():
     class LimitSettableSoftPositioner(SoftPositioner):
         @property
         def limits(self):
@@ -126,7 +120,7 @@ def test_lut_positioner(set_motor_limits):
     )
     column_names = ['real', 'pseudo']
     lut = MyLUTPositioner('', table=table, column_names=column_names,
-                          name='lut', set_motor_limits=set_motor_limits)
+                          name='lut')
 
     np.testing.assert_allclose(lut.forward(60)[0], 2)
     np.testing.assert_allclose(lut.inverse(7)[0], 200)
@@ -136,11 +130,7 @@ def test_lut_positioner(set_motor_limits):
     np.testing.assert_allclose(lut.pseudo.position, 100)
     np.testing.assert_allclose(lut.real.position, 6)
 
-    if set_motor_limits:
-        assert lut.real.limits == (0, 9)
-    else:
-        assert lut.real.limits == (0, 0)
-
+    assert lut.real.limits == (0, 9)
     assert lut.pseudo.limits == (40, 400)
 
 
