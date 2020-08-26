@@ -114,7 +114,6 @@ def test_epics_motor_soft_limits(fake_epics_motor):
     m.check_value(42)
 
 
-
 def test_epics_motor_tdir(fake_pcds_motor):
     logger.debug('test_epics_motor_tdir')
     m = fake_pcds_motor

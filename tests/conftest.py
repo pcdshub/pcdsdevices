@@ -21,6 +21,8 @@ MODULE_PATH = Path(__file__).parent
 # Needs to not pass tons of kwargs up to Signal.put
 warnings.filterwarnings('ignore',
                         message='Signal.put no longer takes keyword arguments')
+
+
 # Other temporary patches to FakeEpicsSignal
 def check_value(self, value):
     if value is None:
@@ -35,6 +37,7 @@ def check_value(self, value):
     if not (low_limit <= value <= high_limit):
         raise LimitError('Value {} outside of range: [{}, {}]'
                          .format(value, low_limit, high_limit))
+
 
 # Check value is busted, ignores (0, 0) no limits case
 FakeEpicsSignal.check_value = check_value
