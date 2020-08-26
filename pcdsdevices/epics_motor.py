@@ -65,20 +65,20 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     @property
     def low_limit(self):
         """The lower soft limit for the motor."""
-        return max(self._limits[0], super().limits[0])
+        return max(self._limits[0], self._get_epics_limits()[0])
 
     @low_limit.setter
     def low_limit(self, value):
-        self._limits[0] = value
+        self._limits = (value, self._limits[1])
 
     @property
     def high_limit(self):
         """The higher soft limit for the motor."""
-        return min(self._limits[1], super().limits[1])
+        return min(self._limits[1], self._get_epics_limits()[1])
 
     @high_limit.setter
     def high_limit(self, value):
-        self._limits[1] = value
+        self._limits = (self._limits[0], value)
 
     @property
     def limits(self):
@@ -88,6 +88,14 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     @limits.setter
     def limits(self, limits):
         self._limits = limits
+
+    def _get_epics_limits(self):
+        limits = self.user_setpoint.limits
+        if limits is None:
+            # Not initialized
+            return (0, 0)
+        else:
+            return limits
 
     def enable(self):
         """
