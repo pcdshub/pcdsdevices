@@ -544,6 +544,7 @@ class FltMvInterface(MvInterface):
             status_wait(status)
         except KeyboardInterrupt:
             self.stop()
+        print()
 
     def umvr(self, delta, timeout=None):
         """
