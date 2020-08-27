@@ -90,6 +90,15 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
             self.save_offsets()
         real_pos = {}
         for axis, offset in self._offsets.items():
+            axis_obj = getattr(self, axis)
+            if isinstance(axis_obj, PseudoPositioner):
+                if len(offset) != 1:
+                    raise ValueError(
+                        f'This only supports a scalar pseudo positioner value.'
+                        f' Got offset: {offset}'
+                    )
+
+                offset, = offset
             real_pos[axis] = pseudo_pos.pseudo + offset
         return self.RealPosition(**real_pos)
 
@@ -145,6 +154,10 @@ class DelayBase(FltMvInterface, PseudoPositioner):
                              'a "motor" component, the real motor to move.'))
         self.n_bounces = n_bounces
         super().__init__(*args, egu=egu, **kwargs)
+
+    @pseudo_position_argument   # TODO: upstream this fix
+    def check_value(self, value):
+        return super().check_value(value)
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):

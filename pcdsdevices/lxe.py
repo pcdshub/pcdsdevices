@@ -37,10 +37,11 @@ from ophyd import Component as Cpt
 from ophyd import EpicsSignal, PVPositioner
 from ophyd.signal import AttributeSignal
 
-from .epics_motor import EpicsMotorInterface
+from .component import UnrelatedComponent as UCpt
+from .epics_motor import DelayNewport, EpicsMotorInterface
 from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
-                        pseudo_position_argument)
+                        SyncAxesBase, pseudo_position_argument)
 from .signal import UnitConversionDerivedSignal
 
 if typing.TYPE_CHECKING:
@@ -259,3 +260,31 @@ class LaserTiming(FltMvInterface, PVPositioner):
         self.user_offset.put(0.0)
         new_offset = self.setpoint.get() + position
         self.user_offset.put(new_offset)
+
+
+class TimeToolDelay(DelayNewport):
+    """
+    Laser delay stage to rescale the physical time tool delay stage to units of
+    time.
+
+    A replacement for the ``txt`` motor, this class wraps the functionality of
+    both the old time tool delay stage (``tt_delay``, a Newport XPS motor) and
+    that of the ``DelayStage2time`` virtual motor conversions.
+
+    The default number of bounces (2) are reused from :class:`DelayBase`.
+    """
+
+
+class LaserTimingCompensation(SyncAxesBase):
+    """
+    LaserTimingCompensation (`lxt_ttc`) synchronously moves
+    :class:`LaserTiming` (`lxt`) and also :class:`TimeToolDelay` (`ttc`) to
+    compensate so that the true laser x-ray delay by using the `lxt`-value and
+    the result of time tool data analysis, avoiding double-counting.
+    """
+    delay = UCpt(TimeToolDelay)
+    laser = UCpt(LaserTiming)
+
+    def __init__(self, prefix, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        super().__init__(prefix, **kwargs)
