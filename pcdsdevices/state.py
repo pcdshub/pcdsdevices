@@ -21,7 +21,7 @@ from .variety import set_metadata
 logger = logging.getLogger(__name__)
 
 
-class StatePositioner(Device, PositionerBase, MvInterface):
+class StatePositioner(MvInterface, Device, PositionerBase):
     """
     Base class for state-based positioners.
 

@@ -6,10 +6,12 @@ import signal
 import threading
 import time
 
+import conftest
+import ophyd
 import pytest
 
-from pcdsdevices.interface import (get_engineering_mode, set_engineering_mode,
-                                   setup_preset_paths)
+from pcdsdevices.interface import (BaseInterface, get_engineering_mode,
+                                   set_engineering_mode, setup_preset_paths)
 from pcdsdevices.sim import FastMotor, SlowMotor
 
 logger = logging.getLogger(__name__)
@@ -38,8 +40,8 @@ def test_mv(fast_motor):
 def test_umv(slow_motor):
     logger.debug('test_umv')
     slow_motor._set_position(5)
-    slow_motor.umvr(2)
-    assert slow_motor.position == 7
+    slow_motor.umvr(1)
+    assert slow_motor.position == 6
 
 
 def test_camonitor(fast_motor):
@@ -184,3 +186,41 @@ def test_dir_whitelist_basic(fast_motor):
     set_engineering_mode(True)
     eng_dir = dir(fast_motor)
     assert len(eng_dir) > len(user_dir)
+
+
+_TAB_COMPLETION_IGNORES = {'.areadetector.', }
+
+
+def _should_check_tab_completion(cls):
+    if BaseInterface in cls.mro():
+        # Include any Devices that have BaseInterface
+        return True
+
+    fully_qualified_name = f'{cls.__module__}.{cls.__name__}'
+    if any(name in fully_qualified_name for name in _TAB_COMPLETION_IGNORES):
+        # This doesn't mix BaseInterface in, but that's OK - it's on our list
+        return False
+
+    # This doesn't mix BaseInterface in, this may be a bad thing: warn in
+    # the test.
+    return True
+
+
+@pytest.mark.parametrize(
+    'cls',
+    [pytest.param(cls, id=f'{cls.__module__}.{cls.__name__}')
+     for cls in conftest.find_all_device_classes()
+     if _should_check_tab_completion(cls)]
+)
+def test_tab_completion(cls):
+    if BaseInterface not in cls.mro():
+        pytest.skip(f'{cls} does not inherit from the interface')
+
+    regex = cls._tab_regex
+    if getattr(cls, 'tab_component_names', False):
+        for name in cls.component_names:
+            if getattr(cls, name).kind != ophyd.Kind.omitted:
+                assert regex.match(name) is not None
+
+    for name in getattr(cls, 'tab_whitelist', []):
+        assert regex.match(name) is not None

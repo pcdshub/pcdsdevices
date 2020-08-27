@@ -16,7 +16,7 @@ from .utils import convert_unit
 logger = logging.getLogger(__name__)
 
 
-class SyncAxesBase(PseudoPositioner, FltMvInterface):
+class SyncAxesBase(FltMvInterface, PseudoPositioner):
     """
     Synchronized Axes.
 
@@ -100,7 +100,7 @@ class SyncAxesBase(PseudoPositioner, FltMvInterface):
         return self.PseudoPosition(pseudo=self.calc_combined(real_pos))
 
 
-class DelayBase(PseudoPositioner, FltMvInterface):
+class DelayBase(FltMvInterface, PseudoPositioner):
     """
     Laser delay stage to rescale a physical axis to a time axis.
 
@@ -168,7 +168,7 @@ class SimDelayStage(DelayBase):
     motor = Cpt(FastMotor, init_pos=0, egu='mm')
 
 
-class PseudoSingleInterface(PseudoSingle, FltMvInterface):
+class PseudoSingleInterface(FltMvInterface, PseudoSingle):
     """PseudoSingle with FltMvInterface mixed in."""
     pass
 

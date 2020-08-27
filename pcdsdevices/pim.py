@@ -50,7 +50,7 @@ class PIMY(InOutRecordPositioner, BaseInterface):
         return super().stage()
 
 
-class PIM(Device, BaseInterface):
+class PIM(BaseInterface, Device):
     """
     Profile Intensity Monitor.
 
@@ -251,7 +251,7 @@ class PIMWithBoth(PIMWithFocus, PIMWithLED):
     pass
 
 
-class LCLS2ImagerBase(Device, BaseInterface, LightpathInOutMixin):
+class LCLS2ImagerBase(BaseInterface, Device, LightpathInOutMixin):
     """
     Shared PVs and components from the LCLS2 imagers.
 
@@ -280,7 +280,7 @@ class LCLS2ImagerBase(Device, BaseInterface, LightpathInOutMixin):
         return self.target
 
 
-class PPMPowerMeter(Device, BaseInterface):
+class PPMPowerMeter(BaseInterface, Device):
     """
     Analog measurement tool for beam energy as part of the PPM assembly.
 
@@ -391,7 +391,7 @@ class XPIMFilterWheel(StatePositioner):
     set_metadata(state, dict(variety='command-enum'))
 
 
-class XPIMLED(Device):
+class XPIMLED(BaseInterface, Device):
     """
     Controllable illumination with auto-on, auto-off, and shutdown timer.
 

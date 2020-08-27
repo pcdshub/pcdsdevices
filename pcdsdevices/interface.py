@@ -41,7 +41,7 @@ Positioner_whitelist = ["settle_time", "timeout", "egu", "limits", "move",
                         "position", "moving"]
 
 
-class BaseInterface(OphydObject):
+class BaseInterface:
     """
     Interface layer to attach to any Device for SLAC features.
 
@@ -64,6 +64,18 @@ class BaseInterface(OphydObject):
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
+        mro = cls.mro()
+        if Device in mro and mro.index(BaseInterface) > mro.index(Device):
+            order = '\n    '.join(mro_cls.__name__ for mro_cls in mro)
+            raise RuntimeError(
+                f"{cls.__module__}.{cls.__name__} inherits from "
+                f"`BaseInterface`, but does not correctly mix it in.  Device "
+                f"must come *after* `BaseInterface` in the class method "
+                f"resolution order (MRO).  Try changing the order of class "
+                f"inheritance around or ask an expert.  Current order is:\n"
+                f"    {order}"
+            )
+
         string_whitelist = []
         for parent in cls.mro():
             if hasattr(parent, "tab_whitelist"):
@@ -72,7 +84,8 @@ class BaseInterface(OphydObject):
                 for cpt_name in parent.component_names:
                     if getattr(parent, cpt_name).kind != Kind.omitted:
                         string_whitelist.append(cpt_name)
-        cls._tab_regex = re.compile("|".join(string_whitelist))
+
+        cls._tab_regex = re.compile("|".join(sorted(set(string_whitelist))))
 
     def __dir__(self):
         if get_engineering_mode():

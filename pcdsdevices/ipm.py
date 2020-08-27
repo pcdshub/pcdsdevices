@@ -36,7 +36,7 @@ class IPMTarget(InOutRecordPositioner):
         self.y_motor = self.motor
 
 
-class IPMDiode(Device, BaseInterface):
+class IPMDiode(BaseInterface, Device):
     """
     Diode of a standard intensity position monitor.
 
@@ -86,7 +86,7 @@ class IPMDiode(Device, BaseInterface):
     remove.__doc__ += insert_remove
 
 
-class IPMMotion(Device, BaseInterface):
+class IPMMotion(BaseInterface, Device):
     """
     Standard intensity position monitor.
 
@@ -142,7 +142,7 @@ class IPMMotion(Device, BaseInterface):
         return self.target.transmission * self.diode.transmission
 
 
-class IPIMBChannel(Device, BaseInterface):
+class IPIMBChannel(BaseInterface, Device):
     """
     Class for a single channel read out by an IPIMB box.
 
@@ -176,7 +176,7 @@ class IPIMBChannel(Device, BaseInterface):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class IPIMB(Device, BaseInterface):
+class IPIMB(BaseInterface, Device):
     """
     Class for an IPIMB box.
 
@@ -234,7 +234,7 @@ class IPIMB(Device, BaseInterface):
         return ipm_screen('IPIMB', self._prefix, self._prefix_ioc)
 
 
-class Wave8Channel(Device, BaseInterface):
+class Wave8Channel(BaseInterface, Device):
     """
     Class for a single channel read out by a wave8.
 
@@ -269,7 +269,7 @@ class Wave8Channel(Device, BaseInterface):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class Wave8(Device, BaseInterface):
+class Wave8(BaseInterface, Device):
     """
     Class for a wave8.
 
@@ -325,7 +325,7 @@ class Wave8(Device, BaseInterface):
         raise NotImplementedError
 
 
-class IPM_Det(Device, BaseInterface):
+class IPM_Det(BaseInterface, Device):
     """Base class for IPM_IPIMB and IPM_Wave8. Not meant to be instantiated."""
     tab_component_names = True
 

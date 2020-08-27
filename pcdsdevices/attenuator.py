@@ -426,14 +426,14 @@ def set_combined_attenuation(attenuation, *attenuators):
 '''
 
 
-class FEESolidAttenuatorBlade(Device, BaseInterface, LightpathInOutMixin):
+class FEESolidAttenuatorBlade(BaseInterface, Device, LightpathInOutMixin):
     lightpath_cpts = ['state']
 
     state = Cpt(TwinCATInOutPositioner, ':STATE')
     motor = Cpt(BeckhoffAxis, '')
 
 
-class GasAttenuator(Device, BaseInterface):
+class GasAttenuator(BaseInterface, Device):
     """
     AT*:GAS, Base class for an LCLS-II XTES gas attenuator.
 
@@ -455,7 +455,7 @@ class GasAttenuator(Device, BaseInterface):
                           value="Not Implemented", kind='normal')
 
 
-class AttenuatorCalculatorFilter(Device, BaseInterface):
+class AttenuatorCalculatorFilter(BaseInterface, Device):
     material = Cpt(
         EpicsSignal, 'Material', kind='hinted', string=True,
         doc='The material formula (e.g., Si, C)'
@@ -490,7 +490,7 @@ class AttenuatorCalculatorFilter(Device, BaseInterface):
         self.index = index
 
 
-class AttenuatorCalculatorBase(Device, BaseInterface):
+class AttenuatorCalculatorBase(BaseInterface, Device):
     """Base class for new-style caproto IOC attenuator calculator devices."""
 
     # QIcon for UX
@@ -697,7 +697,7 @@ class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
     )
 
 
-class AT2L0(Device, BaseInterface, LightpathInOutMixin):
+class AT2L0(BaseInterface, Device, LightpathInOutMixin):
     """
     AT2L0 solid attenuator variant from the LCLS-II XTES project.
 

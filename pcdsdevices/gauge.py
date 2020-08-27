@@ -13,7 +13,7 @@ from .interface import BaseInterface
 logger = logging.getLogger(__name__)
 
 
-class MKS937a(Device, BaseInterface):
+class MKS937a(BaseInterface, Device):
     """
     A base class for an MKS637a vacuum gauge controller.
 
@@ -40,7 +40,7 @@ class MKS937a(Device, BaseInterface):
     tab_component_names = True
 
 
-class BaseGauge(Device, BaseInterface):
+class BaseGauge(BaseInterface, Device):
     """
     Base class for vacuum gauges.
 
@@ -91,7 +91,7 @@ class GaugeColdCathode(BaseGauge):
     tab_component_names = True
 
 
-class GaugeSetBase(Device, BaseInterface):
+class GaugeSetBase(BaseInterface, Device):
     """
 %s
     """
