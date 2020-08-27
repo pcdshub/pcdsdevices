@@ -1173,24 +1173,30 @@ def tweak_base(*args):
     print()
 
 
-loglist = []
-
-
 class AbsProgressBar(ProgressBar):
     """Progress bar that displays the absolute position as well."""
-    def __init__(self, status_objs, delay_draw=1.0):
+    def __init__(self, status_objs, **kwargs):
         self._last_position = None
-        super().__init__(status_objs, delay_draw=delay_draw)
+        self._name = None
+        super().__init__(status_objs, **kwargs)
+
+        # Extra call when status is complete
+        for i, obj in enumerate(status_objs):
+            obj.add_callback(functools.partial(self._status_cb, i))
+
+    def _status_cb(self, pos, status):
+        self.update(pos, name=self._name, current=self._last_position)
 
     def update(self, *args, name=None, current=None, **kwargs):
+        current = current or self._last_position
+        self._name = self._name or name
+
         try:
             name = '{} ({:.3f})'.format(name, current)
             self._last_position = current
         except Exception:
-            name = name or 'motor'
+            name = name or self._name or 'motor'
 
-        current = current or self._last_position
-        loglist.append((name, current, kwargs))
         super().update(*args, name=name, current=current, **kwargs)
 
 
