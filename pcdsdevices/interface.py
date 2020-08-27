@@ -539,11 +539,12 @@ class FltMvInterface(MvInterface):
 
         self._log_move(position)
         status = self.move(position, timeout=timeout, wait=False)
-        AbsProgressBar([status])
+        pgb = AbsProgressBar([status])
         try:
             status_wait(status)
         except KeyboardInterrupt:
             self.stop()
+            pgb.no_more_updates()
         print()
 
     def umvr(self, delta, timeout=None):
@@ -1179,6 +1180,7 @@ class AbsProgressBar(ProgressBar):
     def __init__(self, status_objs, **kwargs):
         self._last_position = None
         self._name = None
+        self._no_more = False
         super().__init__(status_objs, **kwargs)
 
         # Extra call when status is complete
@@ -1189,6 +1191,8 @@ class AbsProgressBar(ProgressBar):
         self.update(pos, name=self._name, current=self._last_position)
 
     def update(self, *args, name=None, current=None, **kwargs):
+        if self._no_more:
+            return
         current = current or self._last_position
         self._name = self._name or name
 
@@ -1199,6 +1203,9 @@ class AbsProgressBar(ProgressBar):
             name = name or self._name or 'motor'
 
         super().update(*args, name=name, current=current, **kwargs)
+
+    def no_more_updates(self):
+        self._no_more = True
 
 
 class LightpathMixin(OphydObject):
