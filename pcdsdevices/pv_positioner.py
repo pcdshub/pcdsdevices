@@ -93,3 +93,58 @@ class PVPositionerIsClose(PVPositionerComparator):
         if self.rtol is not None:
             kwargs['rtol'] = self.rtol
         return np.isclose(readback, setpoint, **kwargs)
+
+
+class PVPositionerDone(FltMvInterface, PVPositioner):
+    """
+    PV Positioner with no readback that reports done immediately.
+
+    Optionally, this PV positioner can be configured to skip small moves,
+    e.g. moves that are smaller than the atol value.
+
+    Parameters
+    ----------
+    prefix: str
+        PV prefix for the request setpoint. This should always be a hutch name.
+
+    name: str, required keyword
+        Name to use for this device in log messages, data streams, etc.
+
+    skip_small_moves: bool, optional
+        Defaults to False. If True, ignores move requests that are smaller
+        than the atol factor.
+        This can be very useful for synchronized energy scans where the ACR
+        side of the process can be very slow, but does not necessarily need to
+        happen at every step. Rather than design complicated scan patterns, we
+        can skip the small moves here and move the monochromater and beam
+        request devices in parallel.
+
+    atol: int, optional
+        Absolute tolerance that determines when the move is done and when to
+        skip moves using the skip_small_moves parameter.
+    """
+
+    atol = 0
+
+    setpoint = None
+
+    done = Cpt(InternalSignal, value=0)
+    done_value = 1
+
+    def __init__(self, prefix, *, name, skip_small_moves=False, **kwargs):
+        self.skip_small_moves = skip_small_moves
+        super().__init__(prefix, name=name, **kwargs)
+
+    def _setup_move(self, position):
+        """Skip the move part of the move if below the tolerance."""
+        if self.skip_small_moves and abs(position-self.position) < self.atol:
+            self.log.debug('Skipping small move of %s', self.name)
+            self._toggle_done()
+        else:
+            self.log.debug('Doing pv positioner move of %s', self.name)
+            super()._setup_move(position)
+            self._toggle_done()
+
+    def _toggle_done(self):
+        self.done.put(0, force=True)
+        self.done.put(1, force=True)

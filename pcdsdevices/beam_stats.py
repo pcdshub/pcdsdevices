@@ -1,10 +1,9 @@
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
-from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
 
 from .interface import BaseInterface
-from .pv_positioner import PVPositionerIsClose
+from .pv_positioner import PVPositionerDone
 from .signal import AvgSignal
 
 
@@ -30,17 +29,18 @@ class SxrGmd(Device):
         super().__init__(prefix=prefix, name=name, **kwargs)
 
 
-class BeamEnergyRequest(PVPositionerIsClose):
+class BeamEnergyRequest(PVPositionerDone):
     """
     Positioner to request beam color changes from ACR in eV.
 
     It is up to ACR how to and whether to fulfill these requests. This is often
     fulfilled by moving the Vernier but can also be a more involved process.
 
-    Motion is considered "done" when the photon energy readback is close enough
-    to the requested value. The default tolerance here is 30 eV, but this can
-    be changed on a per-instance basis by passing ``atol`` into the
-    initializer, or on a per-subclass basis by overriding the default.
+    Motion is immedately considered "done", but will not execute unless the
+    requested position is larger than the current position. The default
+    tolerance here is 30 eV, but this can be changed on a per-instance basis
+    by passing ``atol`` into the initializer, or on a per-subclass basis by
+    overriding the default.
 
     Parameters
     ----------
@@ -49,10 +49,6 @@ class BeamEnergyRequest(PVPositionerIsClose):
 
     name: str, required keyword
         Name to use for this device in log messages, data streams, etc.
-
-    energy_pv: str, optional
-        PV to use for the beam energy readback in eV. The default is
-        BLD:SYS0:500:PHOTONENERGY, same as used in the BeamStats class.
 
     skip_small_moves: bool, optional
         Defaults to True, which ignores move requests that are smaller than the
@@ -72,21 +68,7 @@ class BeamEnergyRequest(PVPositionerIsClose):
     atol = 30
 
     setpoint = Cpt(EpicsSignal, ':USER:MCC:EPHOT', kind='hinted')
-    readback = FCpt(EpicsSignalRO, '{energy_pv}', kind='hinted')
 
-    def __init__(self, prefix, *, name, energy_pv='BLD:SYS0:500:PHOTONENERGY',
-                 skip_small_moves=True, **kwargs):
-        self.energy_pv = energy_pv
-        self.skip_small_moves = skip_small_moves
-        super().__init__(prefix, name=name, **kwargs)
-
-    def _setup_move(self, position):
-        """Skip the move part of the move if below the tolerance."""
-        if self.skip_small_moves and abs(position-self.position) < self.atol:
-            # Toggle the done bit
-            self.log.debug('Skipping small move in beam energy request')
-            self._update_setpoint(value=self._last_setpoint)
-        else:
-            # Do a move
-            self.log.debug('Doing beam energy request move')
-            super()._setup_move(position)
+    def __init__(self, prefix, *, name, skip_small_moves=True, **kwargs):
+        super().__init__(prefix, name=name, skip_small_moves=skip_small_moves,
+                         **kwargs)
