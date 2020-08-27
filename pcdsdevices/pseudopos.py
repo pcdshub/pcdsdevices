@@ -2,12 +2,11 @@ import logging
 import typing
 
 import numpy as np
-from scipy.constants import speed_of_light
-
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
                              pseudo_position_argument, real_position_argument)
+from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
 from .sim import FastMotor
@@ -180,6 +179,8 @@ class LookupTablePositioner(PseudoPositioner):
     Currently supports 1 pseudo positioner and 1 "real" positioner, which
     should be columns of a 2D numpy.ndarray ``table``.
 
+    For additional ``__init__`` arguments, see :class:`ophyd.PseudoPositioner`.
+
     Parameters
     ----------
     prefix : str
@@ -238,8 +239,8 @@ class LookupTablePositioner(PseudoPositioner):
             elif hasattr(obj, 'limits'):
                 try:
                     obj.limits = limits
-                except AttributeError:
-                    self.log.debug('Unable to set limits for %s', obj.name)
+                except Exception:
+                    self.log.exception('Unable to set limits for %s', obj.name)
 
     @pseudo_position_argument
     def forward(self, pseudo_pos: tuple) -> tuple:

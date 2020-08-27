@@ -94,9 +94,18 @@ def test_subcls_warning():
 
 
 def test_lut_positioner():
+    class LimitSettableSoftPositioner(SoftPositioner):
+        @property
+        def limits(self):
+            return self._limits
+
+        @limits.setter
+        def limits(self, value):
+            self._limits = tuple(value)
+
     class MyLUTPositioner(LookupTablePositioner):
         pseudo = Cpt(PseudoSingleInterface)
-        real = Cpt(SoftPositioner)
+        real = Cpt(LimitSettableSoftPositioner)
 
     table = np.asarray(
         [[0, 40],
@@ -120,6 +129,9 @@ def test_lut_positioner():
     lut.move(100, wait=True)
     np.testing.assert_allclose(lut.pseudo.position, 100)
     np.testing.assert_allclose(lut.real.position, 6)
+
+    assert lut.real.limits == (0, 9)
+    assert lut.pseudo.limits == (40, 400)
 
 
 @pytest.fixture
