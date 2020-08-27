@@ -37,7 +37,7 @@ class BeamEnergyRequest(PVPositionerDone):
     fulfilled by moving the Vernier but can also be a more involved process.
 
     Motion is immedately considered "done", but will not execute unless the
-    requested position is larger than the current position. The default
+    requested position delta is larger than the tolerance. The default
     tolerance here is 30 eV, but this can be changed on a per-instance basis
     by passing ``atol`` into the initializer, or on a per-subclass basis by
     overriding the default.
