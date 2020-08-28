@@ -47,7 +47,10 @@ class SlowMotor(FastMotor):
 
     def _setup_move(self, position, status):
         if self.position is None:
-            return self._set_position(position)
+            # Initialize position during __init__'s set call
+            self._set_position(position)
+            self._done_moving(success=True)
+            return
 
         def update_thread(positioner, goal):
             positioner._moving = True
@@ -58,7 +61,7 @@ class SlowMotor(FastMotor):
                     positioner._set_position(positioner.position - 1)
                 else:
                     positioner._set_position(goal)
-                    positioner._done_moving()
+                    positioner._done_moving(success=True)
                     return
                 time.sleep(0.1)
             positioner._done_moving(success=False)
