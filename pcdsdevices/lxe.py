@@ -209,10 +209,6 @@ class LaserEnergyPositioner(FltMvInterface, LookupTablePositioner):
                                         energy=position.energy)
         return ret
 
-    def wm(self) -> float:
-        # Remove the PseudoPosition tuple for FltMvInterface compatibility
-        return super().wm[0]
-
 
 class LaserTiming(FltMvInterface, PVPositioner):
     """

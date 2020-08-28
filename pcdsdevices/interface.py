@@ -510,6 +510,13 @@ class FltMvInterface(MvInterface):
             self._presets = Presets(self)
         return self._presets
 
+    def wm(self):
+        pos = super().wm()
+        try:
+            return pos[0]
+        except Exception:
+            return pos
+
     def mvr(self, delta, timeout=None, wait=False, log=True):
         """
         Relative move from this position.
