@@ -1204,25 +1204,24 @@ def tweak_base(*args):
             logger.error('Error in tweak move: %s', exc)
             logger.debug('', exc_info=True)
 
+    start_text = ['{} at {:.4f}'.format(mot.name, mot.wm()) for mot in args]
+    logger.info('Started tweak of ' + ', '.join(start_text))
+
     # Loop takes in user key input and stops when 'q' is pressed
-    if len(args) == 1:
-        logger.info('Started tweak of %s', args[0])
-    else:
-        logger.info('Started tweak of %s', [mot.name for mot in args])
     is_input = True
     while is_input is True:
         show_status()
         inp = utils.get_input()
         if inp in ('q', None):
             is_input = False
+        elif inp in move_keys:
+            movement(scale, inp)
+        elif inp in scale_keys:
+            scale = edit_scale(scale, inp)
         else:
-            if inp in move_keys:
-                movement(scale, inp)
-            elif inp in scale_keys:
-                scale = edit_scale(scale, inp)
-            else:
-                usage()
+            usage()
     print()
+    logger.info('Tweak complete')
 
 
 class AbsProgressBar(ProgressBar):
