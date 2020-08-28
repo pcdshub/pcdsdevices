@@ -277,10 +277,10 @@ class TimeToolDelay(DelayNewport):
 
 class LaserTimingCompensation(SyncAxesBase):
     """
-    LaserTimingCompensation (`lxt_ttc`) synchronously moves
-    :class:`LaserTiming` (`lxt`) and also :class:`TimeToolDelay` (`ttc`) to
-    compensate so that the true laser x-ray delay by using the `lxt`-value and
-    the result of time tool data analysis, avoiding double-counting.
+    LaserTimingCompensation (``lxt_ttc``) synchronously moves
+    :class:`LaserTiming` (``lxt``) and also :class:`TimeToolDelay` (``txt``) to
+    compensate so that the true laser x-ray delay by using the ``lxt``-value
+    and the result of time tool data analysis, avoiding double-counting.
     """
     delay = UCpt(TimeToolDelay)
     laser = UCpt(LaserTiming)
