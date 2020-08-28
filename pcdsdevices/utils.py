@@ -88,6 +88,9 @@ def get_input():
         return inp
 
 
+ureg = pint.UnitRegistry()
+
+
 def convert_unit(value, unit, new_unit):
     """
     One-line unit conversion.
@@ -109,7 +112,6 @@ def convert_unit(value, unit, new_unit):
         The starting value, but converted to the new unit.
     """
 
-    ureg = pint.UnitRegistry()
     expr = ureg.parse_expression(unit)
     return (value * expr).to(new_unit).magnitude
 
