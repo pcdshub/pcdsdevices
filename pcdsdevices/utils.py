@@ -88,7 +88,7 @@ def get_input():
         return inp
 
 
-ureg = pint.UnitRegistry()
+ureg = None
 
 
 def convert_unit(value, unit, new_unit):
@@ -111,6 +111,10 @@ def convert_unit(value, unit, new_unit):
     new_value : float
         The starting value, but converted to the new unit.
     """
+
+    global ureg
+    if ureg is None:
+        ureg = pint.UnitRegistry()
 
     expr = ureg.parse_expression(unit)
     return (value * expr).to(new_unit).magnitude
