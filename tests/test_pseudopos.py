@@ -291,3 +291,31 @@ def test_laser_timing_compensation(lxt_ttc):
     assert lxt_ttc.position[0] == 1.0
     assert lxt_ttc.delay.position[0] == 1.0
     np.testing.assert_allclose(lxt_ttc.laser.position, 1.0)
+
+    seconds_to_mm_values = [
+        0.0,
+        149896229000.0,
+        299792458000.0,
+        449688687000.0,
+        599584916000.0,
+    ]
+
+    mm_to_seconds_values = [
+        0.0,
+        0.06671281903963042,
+        0.13342563807926083,
+        0.20013845711889122,
+        0.26685127615852167,
+    ]
+
+    np.testing.assert_allclose(
+        [lxt_ttc.delay.forward(i).motor
+         for i in range(len(seconds_to_mm_values))],
+        seconds_to_mm_values,
+    )
+
+    np.testing.assert_allclose(
+        [lxt_ttc.delay.inverse(i * 1e10).delay
+         for i in range(len(mm_to_seconds_values))],
+        mm_to_seconds_values,
+    )
