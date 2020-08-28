@@ -91,7 +91,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     def _get_epics_limits(self):
         limits = self.user_setpoint.limits
-        if limits is None:
+        if limits is None or limits == (None, None):
             # Not initialized
             return (0, 0)
         else:
