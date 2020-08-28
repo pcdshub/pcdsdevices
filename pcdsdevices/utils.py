@@ -32,6 +32,8 @@ ctrl_arrow_up = '\x1b[1;5A'
 ctrl_arrow_down = '\x1b[1;5B'
 ctrl_arrow_right = '\x1b[1;5C'
 ctrl_arrow_left = '\x1b[1;5D'
+plus = '+'
+minus = '-'
 
 
 def is_input():

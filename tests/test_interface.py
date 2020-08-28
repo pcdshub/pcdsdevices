@@ -39,9 +39,10 @@ def test_mv(fast_motor):
 @pytest.mark.timeout(5)
 def test_umv(slow_motor):
     logger.debug('test_umv')
-    slow_motor._set_position(5)
-    slow_motor.umvr(1)
-    assert slow_motor.position == 6
+    start_position = slow_motor.position
+    delta = 2
+    slow_motor.umvr(delta)
+    assert slow_motor.position == start_position + delta
 
 
 def test_camonitor(fast_motor):
