@@ -1185,7 +1185,8 @@ class AbsProgressBar(ProgressBar):
 
         # Extra call when status is complete
         for i, obj in enumerate(status_objs):
-            obj.add_callback(functools.partial(self._status_cb, i))
+            if not obj.done:
+                obj.add_callback(functools.partial(self._status_cb, i))
 
     def _status_cb(self, pos, status):
         self.update(pos, name=self._name, current=self._last_position)
