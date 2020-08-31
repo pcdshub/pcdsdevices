@@ -195,7 +195,7 @@ class CCM(InOutPositioner):
     """
 
     calc = FCpt(CCMCalc, '{self.alio_prefix}', kind='hinted')
-    theta2fine = FCpt(CCMMotor, '{self.theta2fine_prefix}')
+    theta2fine = FCpt(CCMMotor, '{self.theta2fine_prefix}', atol=0.01)
     theta2coarse = FCpt(CCMPico, '{self.theta2coarse_prefix}')
     chi2 = FCpt(CCMPico, '{self.chi2_prefix}')
     x = FCpt(CCMX,
