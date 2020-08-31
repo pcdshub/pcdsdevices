@@ -69,6 +69,9 @@ class BeamEnergyRequest(PVPositionerDone):
 
     setpoint = Cpt(EpicsSignal, ':USER:MCC:EPHOT', kind='hinted')
 
-    def __init__(self, prefix, *, name, skip_small_moves=True, **kwargs):
+    def __init__(self, prefix, *, name, skip_small_moves=True, atol=None,
+                 **kwargs):
+        if atol is not None:
+            self.atol = atol
         super().__init__(prefix, name=name, skip_small_moves=skip_small_moves,
                          **kwargs)
