@@ -75,7 +75,8 @@ class CCMCalc(FltMvInterface, PseudoPositioner):
     description instead of giving a partial and possibly incorrect summary.
     """
 
-    energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
+    energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted',
+                 limits=(4, 25))
     wavelength = Cpt(PseudoSingleInterface, egu='A', kind='normal')
     theta = Cpt(PseudoSingleInterface, egu='deg', kind='normal')
     energy_with_vernier = Cpt(PseudoSingleInterface, egu='keV',
