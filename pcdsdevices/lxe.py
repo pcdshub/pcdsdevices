@@ -217,23 +217,37 @@ class LaserEnergyPositioner(FltMvInterface, LookupTablePositioner):
 
 
 class _ScaledUnitConversionDerivedSignal(UnitConversionDerivedSignal):
-    forward_scale = -1
-    inverse_scale = -1
+    UnitConversionDerivedSignal.__doc__ + """
+
+    This semi-private class enables scaling of input/output values from
+    :class:`UnitConversionDerivedSignal`.  Perhaps the only scale that will
+    make sense is that of ``-1`` -- effectively reversing the direction of
+    motion for a positioner.
+
+    Attributes
+    ----------
+    scale : float
+        Scale is in derived units.  It will be applied in both ``forward`` and
+        ``inverse``:  the "original" value will be multiplied by the scale,
+        whereas a new user-specified setpoint value will be divided.
+    """
+    scale = -1
 
     def forward(self, value):
         '''Compute derived signal value -> original signal value'''
-        value *= self.forward_scale
         if self.user_offset is not None:
-            value = value - np.sign(self.forward_scale) * self.user_offset
+            value = value - self.user_offset
+        value /= self.scale
         return convert_unit(value, self.derived_units, self.original_units)
 
     def inverse(self, value):
         '''Compute original signal value -> derived signal value'''
         derived_value = convert_unit(value, self.original_units,
                                      self.derived_units)
+        derived_value *= self.scale
         if self.user_offset is not None:
-            derived_value += np.sign(self.inverse_scale) * self.user_offset
-        return derived_value * self.inverse_scale
+            derived_value += self.user_offset
+        return derived_value
 
 
 class LaserTiming(FltMvInterface, PVPositioner):
