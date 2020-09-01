@@ -215,6 +215,17 @@ class LaserEnergyPositioner(FltMvInterface, LookupTablePositioner):
         return super().wm[0]
 
 
+class _ScaledUnitConversionDerivedSignal(UnitConversionDerivedSignal):
+    forward_scale = -1
+    inverse_scale = -1
+
+    def forward(self, value):
+        return super().forward(value * self.forward_scale)
+
+    def inverse(self, value):
+        return super().inverse(value * self.inverse_scale)
+
+
 class LaserTiming(FltMvInterface, PVPositioner):
     """
     "lxt" motor, which may also have been referred to as Vitara.
@@ -225,7 +236,7 @@ class LaserTiming(FltMvInterface, PVPositioner):
 
     _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True,
                        kind='omitted')
-    setpoint = Cpt(UnitConversionDerivedSignal,
+    setpoint = Cpt(_ScaledUnitConversionDerivedSignal,
                    derived_from='_fs_tgt_time',
                    derived_units='s',
                    original_units='ns',
