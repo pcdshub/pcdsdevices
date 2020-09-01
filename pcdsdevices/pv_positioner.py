@@ -148,3 +148,49 @@ class PVPositionerDone(FltMvInterface, PVPositioner):
     def _toggle_done(self):
         self.done.put(0, force=True)
         self.done.put(1, force=True)
+
+
+class PVPositionerScaled(FltMvInterface, PVPositioner):
+    """
+    ** Position-scaling :class:`PVPositioner` variant. **
+
+    """ + PVPositioner.__doc__
+
+    setpoint_scale = 1.0
+    readback_scale = 1.0
+
+    def _setup_move(self, position):
+        position *= self.setpoint_scale
+        return super()._setup_move(position)
+
+    def _pos_changed(self, value=None, obj=None, **kwargs):
+        '''Callback from EPICS, indicating a change in position'''
+
+        if obj is self.setpoint:
+            scaled = value * self.setpoint_scale
+        elif obj is self.readback:
+            scaled = value * self.readback_scale
+        else:
+            scaled = value
+
+        super()._pos_changed(value=scaled, obj=obj, **kwargs)
+
+    def read(self):
+        read = super().read()
+        items = [(self.setpoint, self.setpoint_scale),
+                 (self.readback, self.readback_scale)]
+
+        for obj, scale in items:
+            if obj is not None:
+                try:
+                    item = read[obj.name]
+                except KeyError:
+                    item['value'] *= scale
+        return read
+
+    @property
+    def limits(self):
+        if self._limits is not None:
+            return tuple(self._limits)
+        return tuple(sorted(pos * self.setpoint_scale
+                            for pos in self.setpoint.limits))
