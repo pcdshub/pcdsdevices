@@ -43,6 +43,7 @@ from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
                         SyncAxesBase, pseudo_position_argument)
 from .signal import UnitConversionDerivedSignal
+from .utils import convert_unit
 
 if typing.TYPE_CHECKING:
     import matplotlib  # noqa
@@ -220,10 +221,19 @@ class _ScaledUnitConversionDerivedSignal(UnitConversionDerivedSignal):
     inverse_scale = -1
 
     def forward(self, value):
-        return super().forward(value * self.forward_scale)
+        '''Compute derived signal value -> original signal value'''
+        value *= self.forward_scale
+        if self.user_offset is not None:
+            value = value - np.sign(self.forward_scale) * self.user_offset
+        return convert_unit(value, self.derived_units, self.original_units)
 
     def inverse(self, value):
-        return super().inverse(value * self.inverse_scale)
+        '''Compute original signal value -> derived signal value'''
+        derived_value = convert_unit(value, self.original_units,
+                                     self.derived_units)
+        if self.user_offset is not None:
+            derived_value += np.sign(self.inverse_scale) * self.user_offset
+        return derived_value * self.inverse_scale
 
 
 class LaserTiming(FltMvInterface, PVPositioner):
