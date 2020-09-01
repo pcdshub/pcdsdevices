@@ -23,6 +23,9 @@ class SynMotor(FltMvInterface, SynAxis):
         return super().set(position)
 
 
+ignore_kwargs = ('atol',)
+
+
 class FastMotor(FltMvInterface, SoftPositioner, Device):
     """
     Instant motor with `FltMvInterface`.
@@ -34,6 +37,8 @@ class FastMotor(FltMvInterface, SoftPositioner, Device):
     user_readback = Cpt(AttributeSignal, 'position')
 
     def __init__(self, *args, init_pos=0, **kwargs):
+        for kw in ignore_kwargs:
+            kwargs.pop(kw, None)
         super().__init__(init_pos=init_pos, **kwargs)
 
 

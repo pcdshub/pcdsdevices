@@ -64,11 +64,14 @@ class BeamEnergyRequest(PVPositionerDone):
         skip moves using the skip_small_moves parameter.
     """
 
-    # Default tolerance from Vernier in legacy XCS python
-    atol = 30
+    # Default vernier tolerance
+    atol = 5
 
     setpoint = Cpt(EpicsSignal, ':USER:MCC:EPHOT', kind='hinted')
 
-    def __init__(self, prefix, *, name, skip_small_moves=True, **kwargs):
+    def __init__(self, prefix, *, name, skip_small_moves=True, atol=None,
+                 **kwargs):
+        if atol is not None:
+            self.atol = atol
         super().__init__(prefix, name=name, skip_small_moves=skip_small_moves,
                          **kwargs)
