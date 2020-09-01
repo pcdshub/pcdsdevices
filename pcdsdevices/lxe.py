@@ -227,8 +227,8 @@ class _ScaledUnitConversionDerivedSignal(UnitConversionDerivedSignal):
     Attributes
     ----------
     scale : float
-        Scale is in derived units.  It will be applied in both ``forward`` and
-        ``inverse``:  the "original" value will be multiplied by the scale,
+        The unitless scale value will be applied in both ``forward`` and
+        ``inverse``: the "original" value will be multiplied by the scale,
         whereas a new user-specified setpoint value will be divided.
     """
     scale = -1
