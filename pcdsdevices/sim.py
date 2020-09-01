@@ -25,6 +25,7 @@ class SynMotor(FltMvInterface, SynAxis):
 
 ignore_kwargs = ('atol',)
 
+
 class FastMotor(FltMvInterface, SoftPositioner, Device):
     """
     Instant motor with `FltMvInterface`.
