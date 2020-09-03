@@ -18,7 +18,7 @@ from bluesky.utils import ProgressBar
 from ophyd.device import Device
 from ophyd.ophydobj import Kind, OphydObject
 from ophyd.signal import AttributeSignal, Signal
-from ophyd.status import wait as status_wait
+from ophyd.status import Status
 
 from . import utils
 from .signal import NotImplementedSignal
@@ -399,14 +399,24 @@ class MvInterface(BaseInterface):
     tab_whitelist = ["mv", "wm", "camonitor", "wm_update"]
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         self._mov_ev = Event()
+        self._last_status = Status()
+        self._last_status.set_finished()
+        super().__init__(*args, **kwargs)
 
     def _log_move(self, position):
         logger.info('Moving %s from %s to %s', self.name, self.wm(), position)
 
     def _log_move_end(self):
         logger.info('%s reached position %s', self.name, self.wm())
+
+    def move(self, *args, **kwargs):
+        st = super().move(*args, **kwargs)
+        self._last_status = st
+        return st
+
+    def wait(self, timeout=None):
+        self._last_status.wait(timeout=timeout)
 
     def mv(self, position, timeout=None, wait=False, log=True):
         """
@@ -567,7 +577,7 @@ class FltMvInterface(MvInterface):
         status = self.move(position, timeout=timeout, wait=False)
         pgb = AbsProgressBar([status])
         try:
-            status_wait(status)
+            status.wait()
             # Avoid race conditions involving the final update
             pgb.manual_update()
             pgb.no_more_updates()
