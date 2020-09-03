@@ -410,8 +410,8 @@ class MvInterface(BaseInterface):
     def _log_move_end(self):
         logger.info('%s reached position %s', self.name, self.wm())
 
-    def move(self, position, timeout=None, **kwargs):
-        st = super().move(position, timeout=timeout, **kwargs)
+    def move(self, *args, **kwargs):
+        st = super().move(*args, **kwargs)
         self._last_status = st
         return st
 
