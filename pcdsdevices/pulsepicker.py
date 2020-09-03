@@ -199,7 +199,7 @@ class PulsePickerInOut(PulsePicker):
     def __init__(self, prefix, **kwargs):
         # inout follows naming convention
         parts = prefix.split(':')
-        self._inout = ':'.join(parts[:1] + ['PP', 'Y'])
+        self._inout = ':'.join(parts[:2] + ['PP', 'Y'])
         super().__init__(prefix, **kwargs)
 
     def _do_move(self, state):
