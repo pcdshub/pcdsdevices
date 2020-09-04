@@ -10,6 +10,7 @@ if __name__ != 'pcdsdevices.signal':
                        'extremely confusing bugs. Please run your script '
                        'elsewhere for better results.')
 import logging
+import numbers
 import typing
 from threading import RLock, Thread
 
@@ -352,7 +353,7 @@ class UnitConversionDerivedSignal(DerivedSignal):
     def __init__(self, derived_from, *,
                  derived_units: str,
                  original_units: typing.Optional[str] = None,
-                 user_offset: typing.Optional[typing.Any] = 0,
+                 user_offset: typing.Optional[numbers.Real] = 0,
                  **kwargs):
         self.derived_units = derived_units
         self.original_units = original_units
