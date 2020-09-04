@@ -352,7 +352,7 @@ class UnitConversionDerivedSignal(DerivedSignal):
     def __init__(self, derived_from, *,
                  derived_units: str,
                  original_units: typing.Optional[str] = None,
-                 user_offset: typing.Optional[typing.Any] = None,
+                 user_offset: typing.Optional[typing.Any] = 0,
                  **kwargs):
         self.derived_units = derived_units
         self.original_units = original_units
@@ -361,17 +361,17 @@ class UnitConversionDerivedSignal(DerivedSignal):
 
     def forward(self, value):
         '''Compute derived signal value -> original signal value'''
-        if self.user_offset is not None:
-            value = value - self.user_offset
-        return convert_unit(value, self.derived_units, self.original_units)
+        if self.user_offset is None:
+            raise ValueError(f'{self.name} must be set to a non-None value.')
+        return convert_unit(value - self.user_offset,
+                            self.derived_units, self.original_units)
 
     def inverse(self, value):
         '''Compute original signal value -> derived signal value'''
-        derived_value = convert_unit(value, self.original_units,
-                                     self.derived_units)
-        if self.user_offset is not None:
-            derived_value = derived_value + self.user_offset
-        return derived_value
+        if self.user_offset is None:
+            raise ValueError(f'{self.name} must be set to a non-None value.')
+        return convert_unit(value, self.original_units,
+                            self.derived_units) + self.user_offset
 
     @property
     def user_offset(self) -> typing.Optional[typing.Any]:
