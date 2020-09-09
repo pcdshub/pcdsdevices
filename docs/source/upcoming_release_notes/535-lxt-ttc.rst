@@ -29,7 +29,9 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- The direction of :class:`LaserTiming` (``lxt``) was inverted and is now
+  fixed.
+
 
 Maintenance
 -----------
