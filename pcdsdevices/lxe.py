@@ -43,6 +43,7 @@ from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
                         SyncAxesBase, pseudo_position_argument)
 from .signal import UnitConversionDerivedSignal
+from .utils import convert_unit
 
 if typing.TYPE_CHECKING:
     import matplotlib  # noqa
@@ -215,6 +216,40 @@ class LaserEnergyPositioner(FltMvInterface, LookupTablePositioner):
         return super().wm[0]
 
 
+class _ScaledUnitConversionDerivedSignal(UnitConversionDerivedSignal):
+    UnitConversionDerivedSignal.__doc__ + """
+
+    This semi-private class enables scaling of input/output values from
+    :class:`UnitConversionDerivedSignal`.  Perhaps the only scale that will
+    make sense is that of ``-1`` -- effectively reversing the direction of
+    motion for a positioner.
+
+    Attributes
+    ----------
+    scale : float
+        The unitless scale value will be applied in both ``forward`` and
+        ``inverse``: the "original" value will be multiplied by the scale,
+        whereas a new user-specified setpoint value will be divided.
+    """
+    scale = -1
+
+    def forward(self, value):
+        '''Compute derived signal value -> original signal value'''
+        if self.user_offset is not None:
+            value = value - self.user_offset
+        value /= self.scale
+        return convert_unit(value, self.derived_units, self.original_units)
+
+    def inverse(self, value):
+        '''Compute original signal value -> derived signal value'''
+        derived_value = convert_unit(value, self.original_units,
+                                     self.derived_units)
+        derived_value *= self.scale
+        if self.user_offset is not None:
+            derived_value += self.user_offset
+        return derived_value
+
+
 class LaserTiming(FltMvInterface, PVPositioner):
     """
     "lxt" motor, which may also have been referred to as Vitara.
@@ -225,7 +260,7 @@ class LaserTiming(FltMvInterface, PVPositioner):
 
     _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True,
                        kind='omitted')
-    setpoint = Cpt(UnitConversionDerivedSignal,
+    setpoint = Cpt(_ScaledUnitConversionDerivedSignal,
                    derived_from='_fs_tgt_time',
                    derived_units='s',
                    original_units='ns',
