@@ -293,7 +293,7 @@ class LaserTiming(FltMvInterface, PVPositioner):
             The new current position.
         '''
         self.user_offset.put(0.0)
-        new_offset = self.setpoint.get() + position
+        new_offset = position - self.setpoint.get()
         self.user_offset.put(new_offset)
 
 
