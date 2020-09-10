@@ -25,13 +25,14 @@ from docutils import statemachine
 from docutils.parsers.rst import Directive, directives
 
 import pcdsdevices
+import pcdsdevices.component
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../')
-sys.path.insert(0,module_path)
+sys.path.insert(0, module_path)
 
 
 # -- General configuration ------------------------------------------------
@@ -181,7 +182,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'PCDSDevices', 'PCDS Devices Documentation',
-     author, 'PCDSDevices', 'One line description of project.',
+     author, 'PCDSDevices', 'ophyd Devices used at the LCLS',
      'Miscellaneous'),
 ]
 
@@ -231,6 +232,7 @@ class DeviceSummary(Directive):
         ophyd.Component: '',
         ophyd.DynamicDeviceComponent: 'DDC',
         ophyd.FormattedComponent: 'FCpt',
+        pcdsdevices.component.UnrelatedComponent: 'UCpt',
     }
 
     def _new_table(self, title, header, rows):
@@ -240,13 +242,18 @@ class DeviceSummary(Directive):
             items = iter(items)
             table.append(f'* - {next(items)}')
             for item in items:
-                table.append(f'  - {item}')
+                if isinstance(item, (list, tuple)):
+                    table.append(f'  - {item[0]}')
+                    for subitem in item[1:]:
+                        table.append(f'    {subitem}')
+                else:
+                    table.append(f'  - {item}')
 
         add_row(*header)
         for row in rows:
             add_row(*row)
 
-        table = directives.tables.ListTable(
+        return table, directives.tables.ListTable(
             name=title,
             arguments=[title],
             options={
@@ -265,9 +272,38 @@ class DeviceSummary(Directive):
             state=self.state,
             state_machine=self.state_machine,
         )
-        return table
+
+    def _dynamic_device_component_to_row(self, base_attrs, cls, attr, cpt):
+        notes = []
+        cpt_type = self.short_component_names.get(type(cpt),
+                                                  type(cpt).__name__)
+
+        if attr in base_attrs:
+            notes.append(f'Inherited from {base_attrs[attr].__name__}')
+
+        doc = cpt.doc or ''
+        if doc.startswith('DynamicDeviceComponent attribute') :
+            doc = ''
+
+        # TODO: no luck with multiline cells here even with raw html
+        nested_components = [
+            f'{attr} ({dynamic_cpt.suffix})'
+            for attr, dynamic_cpt in cpt.components.items()
+        ]
+
+        return (
+            attr if not cpt_type else f'{attr} ({cpt_type})',
+            cpt.clsname,
+            nested_components,
+            doc,
+            cpt.kind.name,
+            '; '.join(notes),
+        )
 
     def _component_to_row(self, base_attrs, cls, attr, cpt):
+        if isinstance(cpt, ophyd.DynamicDeviceComponent):
+            return self._dynamic_device_component_to_row(base_attrs, cls, attr, cpt)
+
         notes = []
         cpt_class = getattr(cpt, 'cls', '')
         if cpt_class:
@@ -280,7 +316,7 @@ class DeviceSummary(Directive):
             notes.append(f'Inherited from {base_attrs[attr].__name__}')
 
         doc = cpt.doc or ''
-        if doc.startswith('Component attribute') :
+        if doc.startswith(f'{cpt.__class__.__name__} attribute') :
             doc = ''
 
         return (
@@ -300,9 +336,13 @@ class DeviceSummary(Directive):
             for attr, cpt in components_dict.items()
         ]
 
+        header = ('Attribute', 'Class', 'Suffix', 'Docs', 'Kind', 'Notes')
+        if not rows:
+            rows = [[''] * len(header)]
+
         return self._new_table(
             title=title,
-            header=('Attribute', 'Class', 'Suffix', 'Docs', 'Kind', 'Notes'),
+            header=header,
             rows=rows,
         )
 
@@ -333,7 +373,7 @@ class DeviceSummary(Directive):
                 if attr in base_attrs
             }
 
-        table = self._table_from_components(
+        _, table = self._table_from_components(
             cls, components,
             title=self.options['title'],
         )
