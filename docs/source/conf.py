@@ -14,10 +14,15 @@
 # serve to show the default.
 
 import datetime
+import enum
 import os
+import re
 import sys
 
+import ophyd
 import sphinx_rtd_theme
+from docutils import statemachine
+from docutils.parsers.rst import Directive, directives
 
 import pcdsdevices
 
@@ -185,3 +190,248 @@ texinfo_documents = [
 intersphinx_mapping = {'ophyd': ('https://blueskyproject.io/ophyd', None),
                        'python': ('https://docs.python.org/3', None),
                        'numpy': ('https://docs.scipy.org/doc/numpy', None)}
+
+
+
+html_context = {
+    'css_files': [
+        '_static/theme_overrides.css',  # override wide tables in RTD theme
+    ],
+}
+
+
+class InheritedOption(enum.Enum):
+    combine = enum.auto()
+    ignore = enum.auto()
+    only = enum.auto()
+
+
+class DeviceSummary(Directive):
+    required_arguments = 1
+    """Number of required directive arguments."""
+
+    optional_arguments = 1
+    """Number of optional arguments after the required arguments."""
+
+    final_argument_whitespace = False
+    """May the final argument contain whitespace?"""
+
+    option_spec = None
+    """Mapping of option names to validator functions."""
+
+    has_content = False
+    """May the directive have content?"""
+
+    option_spec = {
+        'inherited': lambda value: InheritedOption[value or 'include'],
+        'title': str,
+    }
+
+    short_component_names = {
+        ophyd.Component: '',
+        ophyd.DynamicDeviceComponent: 'DDC',
+        ophyd.FormattedComponent: 'FCpt',
+    }
+
+    def _new_table(self, title, header, rows):
+        table = []
+
+        def add_row(*items):
+            items = iter(items)
+            table.append(f'* - {next(items)}')
+            for item in items:
+                table.append(f'  - {item}')
+
+        add_row(*header)
+        for row in rows:
+            add_row(*row)
+
+        table = directives.tables.ListTable(
+            name=title,
+            arguments=[title],
+            options={
+                'header-rows': 1,
+                'stub-columns': 0,
+                # 'width': directives.length_or_percentage_or_unitless,
+                'widths': 'auto',
+                # 'class': directives.class_option,
+                # 'name': directives.unchanged,
+                'align': 'left',
+            },
+            content=statemachine.StringList(statemachine.StringList(table)),
+            lineno=self.lineno,
+            content_offset=self.content_offset,
+            block_text=self.block_text,
+            state=self.state,
+            state_machine=self.state_machine,
+        )
+        return table
+
+    def _component_to_row(self, base_attrs, cls, attr, cpt):
+        notes = []
+        cpt_class = getattr(cpt, 'cls', '')
+        if cpt_class:
+            cpt_class = f':class:`~{cpt_class.__module__}.{cpt_class.__name__}`'
+
+        cpt_type = self.short_component_names.get(type(cpt),
+                                                  type(cpt).__name__)
+
+        if attr in base_attrs:
+            notes.append(f'Inherited from {base_attrs[attr].__name__}')
+
+        doc = cpt.doc or ''
+        if doc.startswith('Component attribute') :
+            doc = ''
+
+        return (
+            attr if not cpt_type else f'{attr} ({cpt_type})',
+            cpt_class,
+            f'``{cpt.suffix}``',
+            doc,
+            cpt.kind.name,
+            '; '.join(notes),
+        )
+
+    def _table_from_components(self, cls, components_dict, title):
+        base_attrs = self._get_base_attrs(cls)
+
+        rows = [
+            self._component_to_row(base_attrs, cls, attr, cpt)
+            for attr, cpt in components_dict.items()
+        ]
+
+        return self._new_table(
+            title=title,
+            header=('Attribute', 'Class', 'Suffix', 'Docs', 'Kind', 'Notes'),
+            rows=rows,
+        )
+
+    def _get_base_attrs(self, cls):
+        base_devices = [
+            base for base in reversed(cls.__bases__)
+            if hasattr(base, '_sig_attrs')
+        ]
+
+        return {
+            attr: base
+            for base in base_devices
+            for attr, cpt in base._sig_attrs.items()
+        }
+
+    def _document_components(self, cls):
+        base_attrs = self._get_base_attrs(cls)
+        if self.options['inherited'] == InheritedOption.combine:
+            components = cls._sig_attrs
+        elif self.options['inherited'] == InheritedOption.ignore:
+            components = {
+                attr: cpt for attr, cpt in cls._sig_attrs.items()
+                if attr not in base_attrs
+            }
+        elif self.options['inherited'] == InheritedOption.only:
+            components = {
+                attr: cpt for attr, cpt in cls._sig_attrs.items()
+                if attr in base_attrs
+            }
+
+        table = self._table_from_components(
+            cls, components,
+            title=self.options['title'],
+        )
+
+        return table.run()
+
+    def run(self):
+        class_name = self.arguments[0]
+        module_name, class_name = class_name.rsplit('.', 1)
+        module = __import__(module_name, globals(), locals(), [class_name])
+        cls = getattr(module, class_name)
+
+        if not self.options['title']:
+            self.options['title'] = f'{cls.__name__} ophyd Device components'
+
+        if issubclass(cls, ophyd.Device):
+            return self._document_components(cls)
+
+        return []
+
+
+OPHYD_SKIP = {
+    # Methods
+    'add_instantiation_callback',
+    'check_value',
+    'clear_sub',
+    # 'configure',
+    # 'describe',
+    'describe_configuration',
+    'destroy',
+    'format_status_info',
+    # 'get',
+    'get_device_tuple',
+    'get_instantiated_signals',
+    'pause',
+    'put',  # prefer `set`
+    # 'read',
+    # 'read_configuration',
+    'resume',
+    'stage',
+    'status_info',
+    # 'stop',
+    'subscribe',
+    # 'summary',
+    # 'trigger',
+    'unstage',
+    'unsubscribe',
+    'unsubscribe_all',
+    'wait_for_connection',
+    'walk_components',
+    'walk_signals',
+    'walk_subdevice_classes',
+    'walk_subdevices',
+
+    # Attributes
+    'SUB_ACQ_DONE',
+    'SUB_STATE',
+    'SUB_DONE',
+    'SUB_READBACK',
+    'SUB_START',
+    'SUB_VALUE',
+    'attr_name',
+    'component_names',
+    # 'configuration_attrs',
+    # 'connected',
+    'dotted_name',
+    'event_types',
+    # 'hints',
+    'inserted',
+    # 'kind',
+    'lazy_wait_for_connection',
+    # 'lightpath_cpts',
+    'name',
+    'parent',
+    'read_attrs',
+    'removed',
+    'report',
+    'root',
+    'signal_names',
+    'tab_component_names',
+    'tab_whitelist',
+    'trigger_signals',
+}
+
+
+def skip_components_and_ophyd_stuff(app, what, name, obj, skip, options):
+    if isinstance(obj, ophyd.Component):
+        return True
+    if name.startswith('_'):
+        # It's unclear if I broke this or if it's always been broken,
+        # but for our use case we never want to document `_` items with
+        # autoclass.
+        return True
+    if name in OPHYD_SKIP:
+        return True
+    return skip
+
+
+def setup(app):
+    app.add_directive('device', DeviceSummary)
+    app.connect('autodoc-skip-member', skip_components_and_ophyd_stuff)
