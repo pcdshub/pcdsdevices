@@ -7,6 +7,7 @@ import numbers
 import re
 import signal
 import time
+import typing
 from contextlib import contextmanager
 from pathlib import Path
 from threading import Event, Thread
@@ -1175,12 +1176,24 @@ def tweak_base(*args):
 
 class AbsProgressBar(ProgressBar):
     """Progress bar that displays the absolute position as well."""
-    def update(self, *args, name=None, current=None, **kwargs):
+    def update(self, *args, name=None, **kwargs):
+        for key in ('current', 'initial', 'target'):
+            value = kwargs.get(key, None)
+            if isinstance(value, typing.Sequence):
+                # Single-valued pseudo positioner values can come through here.
+                assert len(value) == 1
+                kwargs[key] = value[0]
+
+        current = kwargs.get('current', None)
         if None not in (name, current):
-            super().update(*args, name='{} ({:.3f})'.format(name, current),
-                           current=current, **kwargs)
-        else:
-            super().update(*args, name=name, current=current, **kwargs)
+            # TODO: can we get access to the signal's precision?
+            if 0.0 < abs(current) < 1e-6:
+                fmt = '{} ({:.3g})'
+            else:
+                fmt = '{} ({:.3f})'
+            name = fmt.format(name, current)
+
+        super().update(*args, name=name, **kwargs)
 
 
 class LightpathMixin(OphydObject):
