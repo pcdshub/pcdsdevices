@@ -32,6 +32,8 @@ ctrl_arrow_up = '\x1b[1;5A'
 ctrl_arrow_down = '\x1b[1;5B'
 ctrl_arrow_right = '\x1b[1;5C'
 ctrl_arrow_left = '\x1b[1;5D'
+plus = '+'
+minus = '-'
 
 
 def is_input():
@@ -86,6 +88,9 @@ def get_input():
         return inp
 
 
+ureg = None
+
+
 def convert_unit(value, unit, new_unit):
     """
     One-line unit conversion.
@@ -107,7 +112,10 @@ def convert_unit(value, unit, new_unit):
         The starting value, but converted to the new unit.
     """
 
-    ureg = pint.UnitRegistry()
+    global ureg
+    if ureg is None:
+        ureg = pint.UnitRegistry()
+
     expr = ureg.parse_expression(unit)
     return (value * expr).to(new_unit).magnitude
 

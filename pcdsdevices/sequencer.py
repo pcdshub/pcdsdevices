@@ -222,8 +222,9 @@ class EventSequencer(BaseInterface, Device, MonitorFlyerMixin, FlyerInterface):
         super().kickoff()
 
         # Create our status
-        def done(*args, value=None, old_value=None, **kwargs):
-            return value == 2 and old_value == 0
+        def done(*args, value=None, old_value=None, timestamp=0, **kwargs):
+            return all((value == 2, old_value == 0,
+                        timestamp > self.play_control.timestamp))
 
         # Create our status object
         return SubscriptionStatus(self.play_status, done, run=True)
@@ -263,8 +264,9 @@ class EventSequencer(BaseInterface, Device, MonitorFlyerMixin, FlyerInterface):
             return DeviceStatus(self, done=True, success=True)
 
         # Create our status
-        def done(*args, value=None, old_value=None, **kwargs):
-            return value == 0 and old_value == 2
+        def done(*args, value=None, old_value=None, timestamp=0, **kwargs):
+            return all((value == 0, old_value == 2,
+                        timestamp > self.play_control.timestamp))
 
         # Create our status object
         return SubscriptionStatus(self.play_status, done, run=True)
@@ -314,8 +316,9 @@ class EventSequencer(BaseInterface, Device, MonitorFlyerMixin, FlyerInterface):
             return DeviceStatus(self, done=True, success=True)
 
         # Otherwise we should wait for the sequencer to end
-        def done(*args, value=None, old_value=None, **kwargs):
-            return value == 0 and old_value == 2
+        def done(*args, value=None, old_value=None, timestamp=0, **kwargs):
+            return all((value == 0, old_value == 2,
+                        timestamp > self.play_control.timestamp))
 
         # Create a SubscriptionStatus
         logger.debug("EventSequencer has a determined stopping point, "

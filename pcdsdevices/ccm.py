@@ -75,7 +75,8 @@ class CCMCalc(FltMvInterface, PseudoPositioner):
     description instead of giving a partial and possibly incorrect summary.
     """
 
-    energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
+    energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted',
+                 limits=(4, 25))
     wavelength = Cpt(PseudoSingleInterface, egu='A', kind='normal')
     theta = Cpt(PseudoSingleInterface, egu='deg', kind='normal')
     energy_with_vernier = Cpt(PseudoSingleInterface, egu='keV',
@@ -194,7 +195,7 @@ class CCM(InOutPositioner):
     """
 
     calc = FCpt(CCMCalc, '{self.alio_prefix}', kind='hinted')
-    theta2fine = FCpt(CCMMotor, '{self.theta2fine_prefix}')
+    theta2fine = FCpt(CCMMotor, '{self.theta2fine_prefix}', atol=0.01)
     theta2coarse = FCpt(CCMPico, '{self.theta2coarse_prefix}')
     chi2 = FCpt(CCMPico, '{self.chi2_prefix}')
     x = FCpt(CCMX,
