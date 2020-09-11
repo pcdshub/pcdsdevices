@@ -1281,8 +1281,8 @@ class AbsProgressBar(ProgressBar):
                 fmt = '{}: ({:.4g})'
             else:
                 fmt = '{}: ({:.4f})'
-            name = fmt.format(name, current)
 
+            name = fmt.format(name, float(current))
             self._last_position = current
         except Exception:
             # Fallback if there is no position data at all
