@@ -268,7 +268,7 @@ class LaserTiming(FltMvInterface, PVPositioner):
                    kind='hinted',
                    )
     user_offset = Cpt(AttributeSignal, attr='setpoint.user_offset',
-                      kind='config')
+                      kind='normal')
 
     # A motor (record) will be moved after the above record is touched, so
     # use its done motion status:
