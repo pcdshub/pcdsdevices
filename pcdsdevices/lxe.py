@@ -316,6 +316,11 @@ class LaserTimingCompensation(SyncAxesBase):
     :class:`LaserTiming` (``lxt``) with :class:`TimeToolDelay` (``txt``) to
     compensate so that the true laser x-ray delay by using the ``lxt``-value
     and the result of time tool data analysis, avoiding double-counting.
+
+    Notes
+    -----
+    ``delay`` and ``laser`` are intentionally renamed to non-ophyd-style
+    ``txt`` and ``lxt``, respectively.
     """
     delay = UCpt(TimeToolDelay)
     laser = UCpt(LaserTiming)
@@ -323,3 +328,5 @@ class LaserTimingCompensation(SyncAxesBase):
     def __init__(self, prefix, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         super().__init__(prefix, **kwargs)
+        self.delay.name = 'txt'
+        self.laser.name = 'lxt'
