@@ -260,15 +260,19 @@ class LaserTiming(FltMvInterface, PVPositioner):
     """
 
     _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True,
-                       kind='omitted')
+                       kind='omitted',
+                       doc='The internal nanosecond-expecting signal.'
+                       )
     setpoint = Cpt(_ScaledUnitConversionDerivedSignal,
                    derived_from='_fs_tgt_time',
                    derived_units='s',
                    original_units='ns',
                    kind='hinted',
+                   doc='Setpoint which handles the timing conversion.',
                    )
     user_offset = Cpt(AttributeSignal, attr='setpoint.user_offset',
-                      kind='normal')
+                      kind='normal',
+                      doc='A Python-level user offset.')
 
     # A motor (record) will be moved after the above record is touched, so
     # use its done motion status:
