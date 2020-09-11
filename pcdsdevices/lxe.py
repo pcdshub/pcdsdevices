@@ -255,6 +255,7 @@ class LaserTiming(FltMvInterface, PVPositioner):
     internally, such that the user may work in units of seconds.
     """
 
+    limits = (1e-20, 1.1e-3)
     _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True,
                        kind='omitted',
                        doc='The internal nanosecond-expecting signal.'
