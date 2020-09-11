@@ -322,6 +322,7 @@ class LaserTimingCompensation(SyncAxesBase):
     ``delay`` and ``laser`` are intentionally renamed to non-ophyd-style
     ``txt`` and ``lxt``, respectively.
     """
+    pseudo = Cpt(PseudoSingleInterface, limits=(1e-20, 1.1e-3))
     delay = UCpt(TimeToolDelay)
     laser = UCpt(LaserTiming)
 
