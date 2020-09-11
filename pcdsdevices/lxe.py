@@ -41,7 +41,8 @@ from .component import UnrelatedComponent as UCpt
 from .epics_motor import DelayNewport, EpicsMotorInterface
 from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
-                        SyncAxesBase, pseudo_position_argument)
+                        SyncAxesBase, pseudo_position_argument,
+                        real_position_argument)
 from .signal import UnitConversionDerivedSignal
 from .utils import convert_unit
 
@@ -310,6 +311,24 @@ class TimeToolDelay(DelayNewport):
     """
 
 
+class _ReversedTimeToolDelay(DelayNewport):
+    """
+    An inverted version of :class:`TimeToolDelay`.
+    """
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        return self.RealPosition(
+            *[-1.0 * p for p in super().forward(pseudo_pos)]
+        )
+
+    @real_position_argument
+    def inverse(self, real_pos):
+        return self.PseudoPosition(
+            *[-1.0 * p for p in super().inverse(real_pos)]
+        )
+
+
 class LaserTimingCompensation(SyncAxesBase):
     """
     LaserTimingCompensation (``lxt_ttc``) synchronously moves
@@ -323,8 +342,8 @@ class LaserTimingCompensation(SyncAxesBase):
     ``txt`` and ``lxt``, respectively.
     """
     pseudo = Cpt(PseudoSingleInterface, limits=(1e-20, 1.1e-3))
-    delay = UCpt(TimeToolDelay)
-    laser = UCpt(LaserTiming)
+    delay = UCpt(_ReversedTimeToolDelay, doc='The **reversed** txt motor')
+    laser = UCpt(LaserTiming, doc='The lxt motor')
 
     def __init__(self, prefix, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
