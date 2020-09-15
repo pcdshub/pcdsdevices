@@ -400,11 +400,23 @@ class UnitConversionDerivedSignal(DerivedSignal):
         ``Component``.
 
     derived_units : str
-        The desired units to use for this signal.
+        The desired units to use for this signal.  These can also be referred
+        to as the "user-facing" units.
 
     original_units : str, optional
         The units from the original signal.  If not specified, control system
         information regarding units will be retrieved upon first connection.
+
+    user_offset : any, optional
+        An optional user offset that will be *subtracted* when updating the
+        original signal, and *added* when calculating the derived value.
+        This offset should be supplied in ``derived_units`` and not
+        ``original_units``.
+
+        For example, if the original signal updates to a converted value of
+        500 ``derived_units`` and the ``user_offset`` is set to 100, this
+        ``DerivedSignal`` will show a value of 600.  When providing a new
+        setpoint, the ``user_offset`` will be subtracted.
 
     write_access : bool, optional
         Write access may be disabled by setting this to ``False``, regardless
@@ -420,21 +432,56 @@ class UnitConversionDerivedSignal(DerivedSignal):
         Keyword arguments are passed to the superclass.
     """
 
+    derived_units: str
+    original_units: str
+
     def __init__(self, derived_from, *,
                  derived_units: str,
                  original_units: typing.Optional[str] = None,
+                 user_offset: typing.Optional[typing.Any] = None,
                  **kwargs):
         self.derived_units = derived_units
         self.original_units = original_units
+        self._user_offset = user_offset
         super().__init__(derived_from, **kwargs)
 
     def forward(self, value):
         '''Compute derived signal value -> original signal value'''
+        if self.user_offset is not None:
+            value = value - self.user_offset
         return convert_unit(value, self.derived_units, self.original_units)
 
     def inverse(self, value):
         '''Compute original signal value -> derived signal value'''
-        return convert_unit(value, self.original_units, self.derived_units)
+        derived_value = convert_unit(value, self.original_units,
+                                     self.derived_units)
+        if self.user_offset is not None:
+            derived_value = derived_value + self.user_offset
+        return derived_value
+
+    @property
+    def user_offset(self) -> typing.Optional[typing.Any]:
+        """A user-specified offset in *derived*, user-facing units."""
+        return self._user_offset
+
+    @user_offset.setter
+    def user_offset(self, offset):
+        self._user_offset = offset
+        self._recalculate_position()
+
+    def _recalculate_position(self):
+        """
+        Recalculate the derived position and send subscription updates.
+
+        No-operation if the original signal is not connected.
+        """
+        if not self._derived_from.connected:
+            return
+
+        value = self._derived_from.get()
+        if value is not None:
+            # Note: no kwargs here; no metadata updates
+            self._derived_value_callback(value)
 
     def _derived_metadata_callback(self, *, connected, **kwargs):
         super()._derived_metadata_callback(connected=connected, **kwargs)

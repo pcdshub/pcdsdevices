@@ -2,9 +2,10 @@ import logging
 import typing
 
 import numpy as np
+import ophyd
+import ophyd.pseudopos
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.pseudopos import PseudoPositioner as _PseudoPositioner
 from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
                              real_position_argument)
 from scipy.constants import speed_of_light
@@ -17,7 +18,7 @@ from .utils import convert_unit
 logger = logging.getLogger(__name__)
 
 
-class PseudoSingleInterface(PseudoSingle, FltMvInterface):
+class PseudoSingleInterface(FltMvInterface, PseudoSingle):
     """PseudoSingle with FltMvInterface mixed in."""
     notepad_setpoint = Cpt(
         NotepadLinkedSignal, ':OphydSetpoint',
@@ -40,13 +41,13 @@ class PseudoSingleInterface(PseudoSingle, FltMvInterface):
         super().__init__(prefix=prefix, parent=parent, **kwargs)
 
 
-class PseudoPositioner(_PseudoPositioner):
+class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
     """
     This is a PCDS-specific PseudoPositioner subclass which adds support
     for NotepadLinkedSignal.  The functionality of the class is otherwise
     identical to ophyd's PseudoPositioner.
 
-    """ + _PseudoPositioner.__doc__
+    """ + ophyd.pseudopos.PseudoPositioner.__doc__
 
     def _update_notepad_ioc(self, position, attr):
         """
@@ -119,7 +120,7 @@ class PseudoPositioner(_PseudoPositioner):
         return position
 
 
-class SyncAxesBase(PseudoPositioner, FltMvInterface):
+class SyncAxesBase(FltMvInterface, PseudoPositioner):
     """
     Synchronized Axes.
 
@@ -203,7 +204,7 @@ class SyncAxesBase(PseudoPositioner, FltMvInterface):
         return self.PseudoPosition(pseudo=self.calc_combined(real_pos))
 
 
-class DelayBase(PseudoPositioner, FltMvInterface):
+class DelayBase(FltMvInterface, PseudoPositioner):
     """
     Laser delay stage to rescale a physical axis to a time axis.
 
@@ -271,17 +272,14 @@ class SimDelayStage(DelayBase):
     motor = Cpt(FastMotor, init_pos=0, egu='mm')
 
 
-class PseudoSingleInterface(PseudoSingle, FltMvInterface):
-    """PseudoSingle with FltMvInterface mixed in."""
-    pass
-
-
 class LookupTablePositioner(PseudoPositioner):
     """
     A pseudo positioner which uses a look-up table to compute positions.
 
     Currently supports 1 pseudo positioner and 1 "real" positioner, which
     should be columns of a 2D numpy.ndarray ``table``.
+
+    For additional ``__init__`` arguments, see :class:`ophyd.PseudoPositioner`.
 
     Parameters
     ----------
@@ -341,8 +339,8 @@ class LookupTablePositioner(PseudoPositioner):
             elif hasattr(obj, 'limits'):
                 try:
                     obj.limits = limits
-                except AttributeError:
-                    self.log.debug('Unable to set limits for %s', obj.name)
+                except Exception:
+                    self.log.exception('Unable to set limits for %s', obj.name)
 
     @pseudo_position_argument
     def forward(self, pseudo_pos: tuple) -> tuple:

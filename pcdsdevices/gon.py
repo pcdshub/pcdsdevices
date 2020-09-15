@@ -8,7 +8,7 @@ from .epics_motor import IMS
 from .interface import BaseInterface
 
 
-class BaseGon(Device, BaseInterface):
+class BaseGon(BaseInterface, Device):
     """
     Basic goniometer, as present in XPP.
 
@@ -151,7 +151,7 @@ def Goniometer(**kwargs):
         return BaseGon(**kwargs)
 
 
-class XYZStage(Device, BaseInterface):
+class XYZStage(BaseInterface, Device):
     """
     Sample XYZ stage.
 
@@ -183,7 +183,7 @@ class XYZStage(Device, BaseInterface):
         super().__init__('', name=name, **kwargs)
 
 
-class SamPhi(Device, BaseInterface):
+class SamPhi(BaseInterface, Device):
     """
     Sample Phi stage.
 
@@ -210,7 +210,7 @@ class SamPhi(Device, BaseInterface):
         super().__init__('', name=name, **kwargs)
 
 
-class Kappa(Device, BaseInterface):
+class Kappa(BaseInterface, Device):
     """
     Kappa stage.
 

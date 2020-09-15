@@ -9,7 +9,7 @@ from .epics_motor import IMS, BeckhoffAxis
 from .interface import BaseInterface
 
 
-class Injector(Device, BaseInterface):
+class Injector(BaseInterface, Device):
     """
     Positioner for liquid jet Injector.
 
@@ -69,7 +69,7 @@ class InjectorWithFine(Injector):
     fine_z = UCpt(IMS)
 
 
-class BeckhoffJetManipulator(Device, BaseInterface):
+class BeckhoffJetManipulator(BaseInterface, Device):
     """Jet Manipulator controlled by Beckhoff PLC."""
 
     tab_component_names = True
@@ -79,7 +79,7 @@ class BeckhoffJetManipulator(Device, BaseInterface):
     z = Cpt(BeckhoffAxis, ':Z', kind='normal')
 
 
-class BeckhoffJetSlits(Device, BaseInterface):
+class BeckhoffJetSlits(BaseInterface, Device):
     """Pair of Beckhoff-controlled slits where each blade has X & Y motors."""
     tab_component_names = True
 
@@ -89,7 +89,7 @@ class BeckhoffJetSlits(Device, BaseInterface):
     bot_y = Cpt(BeckhoffAxis, ':BOT_Y', kind='normal')
 
 
-class BeckhoffJet(Device, BaseInterface):
+class BeckhoffJet(BaseInterface, Device):
     """
     Full liquid jet setup controlled by a Beckhoff PLC.
 

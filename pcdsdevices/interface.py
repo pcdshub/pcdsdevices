@@ -9,19 +9,18 @@ import signal
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from threading import Event, Thread
+from threading import Event
 from types import MethodType, SimpleNamespace
 from weakref import WeakSet
 
 import yaml
-
 from bluesky.utils import ProgressBar
 from ophyd.device import Device
 from ophyd.ophydobj import Kind, OphydObject
 from ophyd.signal import AttributeSignal, Signal
-from ophyd.status import wait as status_wait
+from ophyd.status import Status
 
-from . import utils as util
+from . import utils
 from .signal import NotImplementedSignal
 
 try:
@@ -42,7 +41,7 @@ Positioner_whitelist = ["settle_time", "timeout", "egu", "limits", "move",
                         "position", "moving"]
 
 
-class BaseInterface(OphydObject):
+class BaseInterface:
     """
     Interface layer to attach to any Device for SLAC features.
 
@@ -65,6 +64,18 @@ class BaseInterface(OphydObject):
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
+        mro = cls.mro()
+        if Device in mro and mro.index(BaseInterface) > mro.index(Device):
+            order = '\n    '.join(mro_cls.__name__ for mro_cls in mro)
+            raise RuntimeError(
+                f"{cls.__module__}.{cls.__name__} inherits from "
+                f"`BaseInterface`, but does not correctly mix it in.  Device "
+                f"must come *after* `BaseInterface` in the class method "
+                f"resolution order (MRO).  Try changing the order of class "
+                f"inheritance around or ask an expert.  Current order is:\n"
+                f"    {order}"
+            )
+
         string_whitelist = []
         for parent in cls.mro():
             if hasattr(parent, "tab_whitelist"):
@@ -73,7 +84,8 @@ class BaseInterface(OphydObject):
                 for cpt_name in parent.component_names:
                     if getattr(parent, cpt_name).kind != Kind.omitted:
                         string_whitelist.append(cpt_name)
-        cls._tab_regex = re.compile("|".join(string_whitelist))
+
+        cls._tab_regex = re.compile("|".join(sorted(set(string_whitelist))))
 
     def __dir__(self):
         if get_engineering_mode():
@@ -184,6 +196,9 @@ class BaseInterface(OphydObject):
         else:
             # Show the name/value pair for a signal
             value = status_info['value']
+            units = status_info.get('units') or ''
+            if units:
+                units = f' [{units}]'
             value_text = str(value)
             if '\n' in value_text:
                 # Multiline values (arrays) need special handling
@@ -192,7 +207,7 @@ class BaseInterface(OphydObject):
                     value_lines[i] = ' ' * 2 + line
                 return [f'{name}:'] + value_lines
             else:
-                return [f'{name}: {value}']
+                return [f'{name}: {value}{units}']
 
     def status_info(self):
         """
@@ -239,6 +254,17 @@ def get_value(signal):
     except Exception:
         pass
     return None
+
+
+def get_units(signal):
+    attrs = ('units', 'egu', 'derived_units')
+    for attr in attrs:
+        try:
+            value = getattr(signal, attr, None) or signal.metadata[attr]
+            if isinstance(value, str):
+                return value
+        except Exception:
+            ...
 
 
 def ophydobj_info(obj, subdevice_filter=None, devices=None):
@@ -323,7 +349,9 @@ def signal_info(signal):
     name = get_name(signal, default='signal')
     kind = get_kind(signal)
     value = get_value(signal)
-    return dict(name=name, kind=kind, is_device=False, value=value)
+    units = get_units(signal)
+    return dict(name=name, kind=kind, is_device=False, value=value,
+                units=units)
 
 
 def set_engineering_mode(expert):
@@ -371,10 +399,26 @@ class MvInterface(BaseInterface):
     tab_whitelist = ["mv", "wm", "camonitor", "wm_update"]
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         self._mov_ev = Event()
+        self._last_status = Status()
+        self._last_status.set_finished()
+        super().__init__(*args, **kwargs)
 
-    def mv(self, position, timeout=None, wait=False):
+    def _log_move(self, position):
+        logger.info('Moving %s from %s to %s', self.name, self.wm(), position)
+
+    def _log_move_end(self):
+        logger.info('%s reached position %s', self.name, self.wm())
+
+    def move(self, *args, **kwargs):
+        st = super().move(*args, **kwargs)
+        self._last_status = st
+        return st
+
+    def wait(self, timeout=None):
+        self._last_status.wait(timeout=timeout)
+
+    def mv(self, position, timeout=None, wait=False, log=True):
         """
         Absolute move to a position.
 
@@ -391,15 +435,21 @@ class MvInterface(BaseInterface):
         wait : bool, optional
             If `True`, wait for motion completion before returning.
             Defaults to :keyword:`False`.
-        """
 
+        log : bool, optional
+            If `True`, logs the move at INFO level.
+        """
+        if log:
+            self._log_move(position)
         self.move(position, timeout=timeout, wait=wait)
+        if wait and log:
+            self._log_move_end()
 
     def wm(self):
         """Get the mover's current positon (where motor)."""
         return self.position
 
-    def __call__(self, position=None, timeout=None, wait=False):
+    def __call__(self, position=None, timeout=None, wait=False, log=True):
         """
         Dispatches to :meth:`mv` or :meth:`wm` based on the arguments.
 
@@ -411,7 +461,7 @@ class MvInterface(BaseInterface):
         if position is None:
             return self.wm()
         else:
-            self.mv(position, timeout=timeout, wait=wait)
+            self.mv(position, timeout=timeout, wait=wait, log=log)
 
     def camonitor(self):
         """
@@ -470,7 +520,14 @@ class FltMvInterface(MvInterface):
             self._presets = Presets(self)
         return self._presets
 
-    def mvr(self, delta, timeout=None, wait=False):
+    def wm(self):
+        pos = super().wm()
+        try:
+            return pos[0]
+        except Exception:
+            return pos
+
+    def mvr(self, delta, timeout=None, wait=False, log=True):
         """
         Relative move from this position.
 
@@ -487,11 +544,14 @@ class FltMvInterface(MvInterface):
         wait : bool, optional
             If `True`, wait for motion completion before returning.
             Defaults to :keyword:`False`.
+
+        log : bool, optional
+            If `True`, logs the move at INFO level.
         """
 
-        self.mv(delta + self.wm(), timeout=timeout, wait=wait)
+        self.mv(delta + self.wm(), timeout=timeout, wait=wait, log=log)
 
-    def umv(self, position, timeout=None):
+    def umv(self, position, timeout=None, log=True, newline=True):
         """
         Move to a position, wait, and update with a progress bar.
 
@@ -504,16 +564,33 @@ class FltMvInterface(MvInterface):
             If provided, the mover will throw an error if motion takes longer
             than timeout to complete. If omitted, the mover's default timeout
             will be use.
+
+        log : bool, optional
+            If True, logs the move at INFO level.
+
+        newline : bool, optional
+            If True, inserts a newline after the updates.
         """
 
+        if log:
+            self._log_move(position)
         status = self.move(position, timeout=timeout, wait=False)
-        AbsProgressBar([status])
+        pgb = AbsProgressBar([status])
         try:
-            status_wait(status)
+            status.wait()
+            # Avoid race conditions involving the final update
+            pgb.manual_update()
+            pgb.no_more_updates()
         except KeyboardInterrupt:
+            pgb.no_more_updates()
             self.stop()
+        if pgb.has_updated and newline:
+            # If we made progress bar prints, we need an extra newline
+            print()
+        if log:
+            self._log_move_end()
 
-    def umvr(self, delta, timeout=None):
+    def umvr(self, delta, timeout=None, log=True, newline=True):
         """
         Relative move from this position, wait, and update with a progress bar.
 
@@ -526,9 +603,15 @@ class FltMvInterface(MvInterface):
             If provided, the mover will throw an error if motion takes longer
             than timeout to complete. If omitted, the mover's default timeout
             will be use.
+
+        log : bool, optional
+            If True, logs the move at INFO level.
+
+        newline : bool, optional
+            If True, inserts a newline after the updates.
         """
 
-        self.umv(delta + self.wm(), timeout=timeout)
+        self.umv(delta + self.wm(), timeout=timeout, log=log, newline=newline)
 
     def mv_ginput(self, timeout=None):
         """
@@ -1056,99 +1139,167 @@ def tweak_base(*args):
     """
     Base function to control motors with the arrow keys.
 
-    With one motor, this will use the left and right arrows for the axis and up
-    and down arrows for scaling the step size. With two motors, this will use
-    left and right for the first axis and up and down for the second axis, with
-    shift+arrow used for scaling the step size. The q key quits, as does
-    ctrl+c.
+    With one motor, you can use the right and left arrow keys to move + and -.
+    With two motors, you can also use the up and down arrow keys for the second
+    motor.
+    Three motor and more are not yet supported.
+
+    The scale for the tweak can be doubled by pressing + and halved by pressing
+    -. Shift+up and shift+down can also be used, and the up and down keys will
+    also adjust the scaling in one motor mode.
+
+    Ctrl+c will stop an ongoing move during a tweak without exiting the tweak.
+    Both q and ctrl+c will quit the tweak between moves.
     """
 
-    up = util.arrow_up
-    down = util.arrow_down
-    left = util.arrow_left
-    right = util.arrow_right
-    shift_up = util.shift_arrow_up
-    shift_down = util.shift_arrow_down
+    up = utils.arrow_up
+    down = utils.arrow_down
+    left = utils.arrow_left
+    right = utils.arrow_right
+    shift_up = utils.shift_arrow_up
+    shift_down = utils.shift_arrow_down
+    plus = utils.plus
+    minus = utils.minus
     scale = 0.1
+    abs_status = '{}: {:.4f}'
+    exp_status = '{}: {:.4e}'
 
-    def thread_event():
-        """Function call camonitor to display motor position."""
-        thrd = Thread(target=args[0].camonitor,)
-        thrd.start()
-        args[0]._mov_ev.set()
+    if len(args) == 1:
+        move_keys = (left, right)
+        scale_keys = (up, down, plus, minus, shift_up, shift_down)
+    elif len(args) == 2:
+        move_keys = (left, right, up, down)
+        scale_keys = (plus, minus, shift_up, shift_down)
 
-    def _scale(scale, direction):
+    def show_status():
+        if scale >= 0.0001:
+            template = abs_status
+        else:
+            template = exp_status
+        text = [template.format(mot.name, mot.wm()) for mot in args]
+        text.append(f'scale: {scale}')
+        print('\x1b[2K\r' + ', '.join(text), end='')
+
+    def usage():
+        print()  # Newline
+        if len(args) == 1:
+            print(" Left: move x motor backward")
+            print(" Right: move x motor forward")
+            print(" Up or +: scale*2")
+            print(" Down or -: scale/2")
+        else:
+            print(" Left: move x motor left")
+            print(" Right: move x motor right")
+            print(" Down: move y motor down")
+            print(" Up: move y motor up")
+            print(" + or Shift_Up: scale*2")
+            print(" - or Shift_Down: scale/2")
+        print(" Press q to quit."
+              " Press any other key to display this message.")
+        print()  # Newline
+
+    def edit_scale(scale, direction):
         """Function used to change the scale."""
-        if direction == up or direction == shift_up:
+        if direction in (up, shift_up, plus):
             scale = scale*2
-            print("\r {0:4f}".format(scale), end=" ")
-        elif direction == down or direction == shift_down:
+        elif direction in (down, shift_down, minus):
             scale = scale/2
-            print("\r {0:4f}".format(scale), end=" ")
         return scale
 
     def movement(scale, direction):
         """Function used to know when and the direction to move the motor."""
         try:
             if direction == left:
-                args[0].umvr(-scale)
-                thread_event()
+                args[0].umvr(-scale, log=False, newline=False)
             elif direction == right:
-                args[0].umvr(scale)
-                thread_event()
-            elif direction == up and len(args) > 1:
-                args[1].umvr(scale)
-                print("\r {0:4f}".format(args[1].position), end=" ")
+                args[0].umvr(scale, log=False, newline=False)
+            elif direction == up:
+                args[1].umvr(scale, log=False, newline=False)
+            elif direction == down:
+                args[1].umvr(-scale, log=False, newline=False)
         except Exception as exc:
             logger.error('Error in tweak move: %s', exc)
             logger.debug('', exc_info=True)
 
+    start_text = ['{} at {:.4f}'.format(mot.name, mot.wm()) for mot in args]
+    logger.info('Started tweak of ' + ', '.join(start_text))
+
     # Loop takes in user key input and stops when 'q' is pressed
-    if len(args) == 1:
-        logger.info('Started tweak of %s', args[0])
-    else:
-        logger.info('Started tweak of %s', [mot.name for mot in args])
     is_input = True
     while is_input is True:
-        inp = util.get_input()
+        show_status()
+        inp = utils.get_input()
         if inp in ('q', None):
             is_input = False
+        elif inp in move_keys:
+            movement(scale, inp)
+        elif inp in scale_keys:
+            scale = edit_scale(scale, inp)
         else:
-            if len(args) > 1 and inp == down:
-                movement(-scale, up)
-            elif len(args) > 1 and inp == up:
-                movement(scale, inp)
-            elif inp not in (up, down, left, right, shift_down, shift_up):
-                print()  # Newline
-                if len(args) == 1:
-                    print(" Left: move x motor backward")
-                    print(" Right: move x motor forward")
-                    print(" Up: scale*2")
-                    print(" Down: scale/2")
-                else:
-                    print(" Left: move x motor left")
-                    print(" Right: move x motor right")
-                    print(" Down: move y motor down")
-                    print(" Up: move y motor up")
-                    print(" Shift_Up: scale*2")
-                    print(" Shift_Down: scale/2")
-                print(" Press q to quit."
-                      " Press any other key to display this message.")
-                print()  # Newline
-            else:
-                movement(scale, inp)
-                scale = _scale(scale, inp)
+            usage()
     print()
+    logger.info('Tweak complete')
 
 
 class AbsProgressBar(ProgressBar):
     """Progress bar that displays the absolute position as well."""
+    def __init__(self, *args, **kwargs):
+        self._last_position = None
+        self._name = None
+        self._no_more = False
+        self._manual_cbs = []
+        self.has_updated = False
+        super().__init__(*args, **kwargs)
+
+        # Allow manual updates for a final status print
+        for i, obj in enumerate(self.status_objs):
+            self._manual_cbs.append(functools.partial(self._status_cb, i))
+
+    def _status_cb(self, pos, status):
+        self.update(pos, name=self._name, current=self._last_position)
+
     def update(self, *args, name=None, current=None, **kwargs):
-        if None not in (name, current):
-            super().update(*args, name='{} ({:.3f})'.format(name, current),
-                           current=current, **kwargs)
-        else:
+        # Escape hatch to avoid post-command prints
+        if self._no_more:
+            return
+
+        # Get cached position and name so they can always be displayed
+        current = current or self._last_position
+        self._name = self._name or name
+        name = self._name
+
+        try:
+            # Expand name to include position to display with progress bar
+            name = '{}: {:.4f}'.format(name, current)
+            self._last_position = current
+        except Exception:
+            # Fallback if there is no position data at all
+            name = name or self._name or 'motor'
+
+        try:
+            # Actually draw the bar
             super().update(*args, name=name, current=current, **kwargs)
+            if not self._no_more:
+                self.has_updated = True
+        except Exception:
+            # Print method failure should never print junk to the screen
+            logger.debug('Error in progress bar update', exc_info=True)
+
+    def manual_update(self):
+        """Execute a manual update of the progress bar."""
+        for cb, status in zip(self._manual_cbs, self.status_objs):
+            cb(status)
+
+    def no_more_updates(self):
+        """Prevent all future prints from the progress bar."""
+        self.fp = NullFile()
+        self._no_more = True
+        self._manual_cbs.clear()
+
+
+class NullFile:
+    def write(*args, **kwargs):
+        pass
 
 
 class LightpathMixin(OphydObject):
@@ -1210,8 +1361,8 @@ class LightpathMixin(OphydObject):
                     # Use this when the device wasn't ready to set states
                     kw = dict(obj=obj)
                     kw.update(kwargs)
-                    util.schedule_task(self._update_lightpath,
-                                       args=args, kwargs=kw, delay=0.2)
+                    utils.schedule_task(self._update_lightpath,
+                                        args=args, kwargs=kw, delay=0.2)
         except Exception:
             # Without this, callbacks fail silently
             logger.exception('Error in lightpath update callback for %s.',

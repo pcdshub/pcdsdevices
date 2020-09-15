@@ -60,7 +60,7 @@ class Foil(InOutRecordPositioner):
         super().__init__(prefix, *args, **kwargs)
 
 
-class LODCM(Device, BaseInterface):
+class LODCM(BaseInterface, Device):
     """
     Large Offset Dual Crystal Monochromator.
 

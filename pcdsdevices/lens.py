@@ -15,7 +15,7 @@ from periodictable import xsf
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import CombinedInOutRecordPositioner, InOutRecordPositioner
-from .interface import tweak_base
+from .interface import BaseInterface, tweak_base
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
 from .sim import FastMotor
@@ -79,7 +79,7 @@ class Prefocus(CombinedInOutRecordPositioner):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class LensStackBase(PseudoPositioner):
+class LensStackBase(BaseInterface, PseudoPositioner):
     """Class for Be lens macros and safe operations."""
     x = FCpt(IMS, '{self.x_prefix}')
     y = FCpt(IMS, '{self.y_prefix}')

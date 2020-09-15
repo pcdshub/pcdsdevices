@@ -64,6 +64,7 @@ def make_fake_ccm():
     def init_pos(mot, pos=0):
         mot.user_readback.sim_put(0)
         mot.user_setpoint.sim_put(0)
+        mot.user_setpoint.sim_set_limits((0, 0))
         mot.motor_spg.sim_put(2)
         mot.part_number.sim_put('tasdf')
 
@@ -72,6 +73,9 @@ def make_fake_ccm():
     init_pos(fake_ccm.y.down)
     init_pos(fake_ccm.y.up_north)
     init_pos(fake_ccm.y.up_south)
+
+    fake_ccm.calc.energy_request.setpoint.sim_put(0)
+
     return fake_ccm
 
 
@@ -151,6 +155,40 @@ def test_ccm_main(fake_ccm):
     fake_ccm.remove(wait=False)
     assert fake_ccm.x.down.user_setpoint.get() == 0
     assert fake_ccm.x.up.user_setpoint.get() == 0
+
+
+@pytest.mark.timeout(5)
+def test_vernier(fake_ccm):
+    logger.debug('test_vernier')
+
+    # Moving with vernier should move the energy request motor too
+    fake_ccm.calc.energy_with_vernier.move(7, wait=False)
+    assert np.isclose(fake_ccm.calc.energy.position, 7)
+    assert fake_ccm.calc.energy_request.position == 7000
+
+    fake_ccm.calc.energy_with_vernier.move(8, wait=False)
+    assert np.isclose(fake_ccm.calc.energy.position, 8)
+    assert fake_ccm.calc.energy_request.position == 8000
+
+    fake_ccm.calc.energy_with_vernier.move(9, wait=False)
+    assert np.isclose(fake_ccm.calc.energy.position, 9)
+    assert fake_ccm.calc.energy_request.position == 9000
+
+    # Small moves (less than 30eV) should be skipped on the energy request
+    fake_ccm.calc.energy_with_vernier.move(9.001, wait=False)
+    assert np.isclose(fake_ccm.calc.energy.position, 9.001)
+    assert fake_ccm.calc.energy_request.position == 9000
+
+    # Unless we set the option for not skipping them
+    fake_ccm.calc.energy_request.skip_small_moves = False
+    fake_ccm.calc.energy_with_vernier.move(9.002, wait=False)
+    assert np.isclose(fake_ccm.calc.energy.position, 9.002)
+    assert fake_ccm.calc.energy_request.position == 9002
+
+    # Normal moves should ignore the vernier PV
+    fake_ccm.calc.energy.move(10, wait=False)
+    assert np.isclose(fake_ccm.calc.energy.position, 10)
+    assert fake_ccm.calc.energy_request.position == 9002
 
 
 @pytest.mark.timeout(5)

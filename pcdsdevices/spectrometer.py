@@ -10,7 +10,7 @@ from .interface import BaseInterface, LightpathMixin
 from .signal import InternalSignal
 
 
-class Kmono(Device, BaseInterface, LightpathMixin):
+class Kmono(BaseInterface, Device, LightpathMixin):
     """
     K-edge Monochromator: Used for Undulator tuning and other experiments.
 
@@ -97,7 +97,7 @@ class Kmono(Device, BaseInterface, LightpathMixin):
             self._transmission = 1
 
 
-class VonHamosCrystal(Device, BaseInterface):
+class VonHamosCrystal(BaseInterface, Device):
     """Pitch, yaw, and translation motors for control of a single crystal."""
     tab_component_names = True
 
@@ -106,7 +106,7 @@ class VonHamosCrystal(Device, BaseInterface):
     trans = Cpt(BeckhoffAxis, ':Translation', kind='normal')
 
 
-class VonHamosFE(Device, BaseInterface):
+class VonHamosFE(BaseInterface, Device):
     """
     von Hamos spectrometer with Focus and Energy motors.
 
