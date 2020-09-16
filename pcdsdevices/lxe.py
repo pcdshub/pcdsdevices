@@ -1,31 +1,5 @@
 """
 'lxe' position / pulse energy pseudopositioner support.
-
-Notes
------
-OPA::
-
-    An optical parametric amplifier, abbreviated OPA, is a laser light source
-    that emits light of variable wavelengths by an optical parametric
-    amplification process. It is essentially the same as an optical parametric
-    oscillator, but without the optical cavity, that is, the light beams pass
-    through the apparatus just once or twice, rather than many many times.
-
-las_comp_wp::
-
-    Laser compressor waveplate
-
-las_pol_wp::
-
-    Laser polarizer waveplate
-
-LXE::
-
-    Laser energy motor, I assume
-
-LXT::
-
-    Laser x-ray timing, probably
 """
 
 import pathlib
@@ -33,15 +7,17 @@ import types
 import typing
 
 import numpy as np
+import ophyd.status
 from ophyd import Component as Cpt
 from ophyd import EpicsSignal, PVPositioner
 from ophyd.signal import AttributeSignal
 
-from .epics_motor import EpicsMotorInterface
+from .epics_motor import DelayNewport, EpicsMotorInterface
 from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
                         pseudo_position_argument)
 from .signal import UnitConversionDerivedSignal
+from .utils import convert_unit
 
 if typing.TYPE_CHECKING:
     import matplotlib  # noqa
@@ -210,6 +186,40 @@ class LaserEnergyPositioner(FltMvInterface, LookupTablePositioner):
         return ret
 
 
+class _ScaledUnitConversionDerivedSignal(UnitConversionDerivedSignal):
+    UnitConversionDerivedSignal.__doc__ + """
+
+    This semi-private class enables scaling of input/output values from
+    :class:`UnitConversionDerivedSignal`.  Perhaps the only scale that will
+    make sense is that of ``-1`` -- effectively reversing the direction of
+    motion for a positioner.
+
+    Attributes
+    ----------
+    scale : float
+        The unitless scale value will be applied in both ``forward`` and
+        ``inverse``: the "original" value will be multiplied by the scale,
+        whereas a new user-specified setpoint value will be divided.
+    """
+    scale = -1
+
+    def forward(self, value):
+        '''Compute derived signal value -> original signal value'''
+        if self.user_offset is not None:
+            value = value - self.user_offset
+        value /= self.scale
+        return convert_unit(value, self.derived_units, self.original_units)
+
+    def inverse(self, value):
+        '''Compute original signal value -> derived signal value'''
+        derived_value = convert_unit(value, self.original_units,
+                                     self.derived_units)
+        derived_value *= self.scale
+        if self.user_offset is not None:
+            derived_value += self.user_offset
+        return derived_value
+
+
 class LaserTiming(FltMvInterface, PVPositioner):
     """
     "lxt" motor, which may also have been referred to as Vitara.
@@ -218,16 +228,21 @@ class LaserTiming(FltMvInterface, PVPositioner):
     internally, such that the user may work in units of seconds.
     """
 
+    limits = (1e-20, 1.1e-3)
     _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True,
-                       kind='omitted')
-    setpoint = Cpt(UnitConversionDerivedSignal,
+                       kind='omitted',
+                       doc='The internal nanosecond-expecting signal.'
+                       )
+    setpoint = Cpt(_ScaledUnitConversionDerivedSignal,
                    derived_from='_fs_tgt_time',
                    derived_units='s',
                    original_units='ns',
                    kind='hinted',
+                   doc='Setpoint which handles the timing conversion.',
                    )
     user_offset = Cpt(AttributeSignal, attr='setpoint.user_offset',
-                      kind='config')
+                      kind='normal',
+                      doc='A Python-level user offset.')
 
     # A motor (record) will be moved after the above record is touched, so
     # use its done motion status:
@@ -253,5 +268,39 @@ class LaserTiming(FltMvInterface, PVPositioner):
             The new current position.
         '''
         self.user_offset.put(0.0)
-        new_offset = self.setpoint.get() + position
+        new_offset = position - self.setpoint.get()
         self.user_offset.put(new_offset)
+
+
+class TimeToolDelay(DelayNewport):
+    """
+    Laser delay stage to rescale the physical time tool delay stage to units of
+    time.
+
+    A replacement for the ``txt`` motor, this class wraps the functionality of
+    both the old time tool delay stage (``tt_delay``, a Newport XPS motor) and
+    that of the ``DelayStage2time`` virtual motor conversions.
+
+    The default number of bounces (2) are reused from :class:`DelayBase`.
+    """
+
+
+def lxt_ttc_move(lxt, txt, position) -> ophyd.status.AndStatus:
+    """
+    A helper function to synchronously move :class:`LaserTiming` (`lxt`) and
+    also :class:`TimeToolDelay` (`ttc`) to compensate so that the true laser
+    x-ray delay by using the `lxt`-value and the result of time tool data
+    analysis, avoiding double-counting.
+
+    Can be defined in beamline profiles as follows::
+
+        import functools
+        lxt_ttc = functools.partial(lxt_ttc_move, lxt, txt)
+        lxt_ttc.__doc__ = 'Synchronously move lxt/txt to a position.'
+
+    Returns
+    -------
+    status : ophyd.status.AndStatus
+        The combined status object from the motion of the two motors.
+    """
+    return ophyd.status.AndStatus(lxt.set(position), txt.set(-position))
