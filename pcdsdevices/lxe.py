@@ -205,19 +205,19 @@ class _ScaledUnitConversionDerivedSignal(UnitConversionDerivedSignal):
 
     def forward(self, value):
         '''Compute derived signal value -> original signal value'''
-        if self.user_offset is not None:
-            value = value - self.user_offset
-        value /= self.scale
-        return convert_unit(value, self.derived_units, self.original_units)
+        if self.user_offset is None:
+            raise ValueError(f'{self.name} must be set to a non-None value.')
+        derived_value = (value - self.user_offset) / self.scale
+        return convert_unit(derived_value, self.derived_units,
+                            self.original_units)
 
     def inverse(self, value):
         '''Compute original signal value -> derived signal value'''
+        if self.user_offset is None:
+            raise ValueError(f'{self.name} must be set to a non-None value.')
         derived_value = convert_unit(value, self.original_units,
                                      self.derived_units)
-        derived_value *= self.scale
-        if self.user_offset is not None:
-            derived_value += self.user_offset
-        return derived_value
+        return (derived_value * self.scale) + self.user_offset
 
 
 class LaserTiming(FltMvInterface, PVPositioner):
