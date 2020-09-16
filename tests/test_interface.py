@@ -217,7 +217,7 @@ def test_tab_completion(cls):
     if BaseInterface not in cls.mro():
         pytest.skip(f'{cls} does not inherit from the interface')
 
-    regex = cls._tab_regex
+    regex = cls._class_tab.build_regex()
     if getattr(cls, 'tab_component_names', False):
         for name in cls.component_names:
             if getattr(cls, name).kind != ophyd.Kind.omitted:

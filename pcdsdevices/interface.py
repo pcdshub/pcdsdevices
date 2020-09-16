@@ -7,6 +7,7 @@ import numbers
 import re
 import signal
 import time
+import typing
 from contextlib import contextmanager
 from pathlib import Path
 from threading import Event
@@ -41,6 +42,120 @@ Positioner_whitelist = ["settle_time", "timeout", "egu", "limits", "move",
                         "position", "moving"]
 
 
+class _TabCompletionHelper:
+    _includes: typing.Set[str]
+    _regex: typing.Optional[typing.Pattern]
+
+    def __init__(self):
+        self._includes = set()
+        self._regex = None
+        self.reset()
+
+    def build_regex(self) -> typing.Pattern:
+        """Update the regular expression based on the current includes."""
+        self._regex = re.compile("|".join(sorted(self._includes)))
+        return self._regex
+
+    def reset(self):
+        """Reset the tab-completion settings."""
+        self._regex = None
+        self._includes.clear()
+
+    def add(self, attr: str):
+        """Add an attribute to the include list."""
+        self._includes.add(attr)
+        self._regex = None
+
+    def remove(self, attr: str):
+        """Remove an attribute from the include list."""
+        self._includes.remove(attr)
+        self._regex = None
+
+    def __repr__(self):
+        return f'{self.__class__.__name__}(includes={self._includes})'
+
+
+class TabCompletionHelperClass(_TabCompletionHelper):
+    """
+    Tab completion helper for the class itself.
+
+    Parameters
+    ----------
+    cls : subclass of BaseInterface
+        Class type object to generate tab completion information from.
+    """
+
+    cls: typing.Type['BaseInterface']
+
+    def __init__(self, cls):
+        self.cls = cls
+        super().__init__()
+
+    def reset(self):
+        super().reset()
+        whitelist = []
+        for parent in self.cls.mro():
+            whitelist.extend(getattr(parent, 'tab_whitelist', []))
+
+            if getattr(parent, "tab_component_names", False):
+                for cpt_name in parent.component_names:
+                    if getattr(parent, cpt_name).kind != Kind.omitted:
+                        whitelist.append(cpt_name)
+
+        self._includes = set(whitelist)
+
+    def new_instance(self, instance) -> 'TabCompletionHelperInstance':
+        return TabCompletionHelperInstance(instance, self)
+
+
+class TabCompletionHelperInstance(_TabCompletionHelper):
+    """
+    Tab completion helper for one instance of a class.
+
+    Parameters
+    ----------
+    instance : object
+        Instance of `class_helper.cls`.
+
+    class_helper : TabCompletionHelperClass
+        Class helper for defaults.
+    """
+
+    class_helper: TabCompletionHelperClass
+    instance: 'BaseInterface'
+    super_dir: typing.Callable[[], typing.List[str]]
+
+    def __init__(self, instance, class_helper):
+        assert isinstance(instance, BaseInterface), 'Must mix in BaseInterface'
+
+        self.class_helper = class_helper
+        self.instance = instance
+        self.super_dir = super(BaseInterface, instance).__dir__
+        super().__init__()
+
+    def reset(self):
+        super().reset()
+        self._includes = set(self.class_helper._includes)
+
+    def get_filtered_dir_list(self) -> typing.List[str]:
+        if self._regex is None:
+            self.build_regex()
+
+        return [
+            elem
+            for elem in self.super_dir()
+            if self._regex.fullmatch(elem)
+        ]
+
+    def get_dir(self) -> typing.List[str]:
+        """
+        Get the dir list based on the engineering mode settings.
+        """
+        if get_engineering_mode():
+            return self.super_dir()
+        return self.get_filtered_dir_list()
+
+
 class BaseInterface:
     """
     Interface layer to attach to any Device for SLAC features.
@@ -60,7 +175,6 @@ class BaseInterface:
     tab_whitelist = (OphydObject_whitelist + BlueskyInterface_whitelist +
                      Device_whitelist + Signal_whitelist +
                      Positioner_whitelist)
-    _filtered_dir_cache = None
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
@@ -76,31 +190,14 @@ class BaseInterface:
                 f"    {order}"
             )
 
-        string_whitelist = []
-        for parent in cls.mro():
-            if hasattr(parent, "tab_whitelist"):
-                string_whitelist.extend(parent.tab_whitelist)
-            if getattr(parent, "tab_component_names", False):
-                for cpt_name in parent.component_names:
-                    if getattr(parent, cpt_name).kind != Kind.omitted:
-                        string_whitelist.append(cpt_name)
+        cls._class_tab = TabCompletionHelperClass(cls)
 
-        cls._tab_regex = re.compile("|".join(sorted(set(string_whitelist))))
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._tab = self._class_tab.new_instance(self)
 
     def __dir__(self):
-        if get_engineering_mode():
-            return super().__dir__()
-        elif self._filtered_dir_cache is None:
-            self._init_filtered_dir_cache()
-        return self._filtered_dir_cache
-
-    def _init_filtered_dir_cache(self):
-        self._filtered_dir_cache = self._get_filtered_tab_dir()
-
-    def _get_filtered_tab_dir(self):
-        return [elem
-                for elem in super().__dir__()
-                if self._tab_regex.fullmatch(elem)]
+        return self._tab.get_dir()
 
     def __repr__(self):
         """Simplify the ophydobject repr to avoid crazy long represenations."""
