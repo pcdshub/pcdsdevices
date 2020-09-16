@@ -987,6 +987,8 @@ class Presets:
         logger.debug('register method %s to %s', method_name, obj.name)
         self._methods.append((obj, method_name))
         setattr(obj, method_name, MethodType(method, obj))
+        if hasattr(obj, '_tab'):
+            obj._tab.add(method_name)
 
     def _make_add(self, preset_type):
         """
@@ -1117,6 +1119,8 @@ class Presets:
                 delattr(obj, method_name)
             except AttributeError:
                 pass
+            if hasattr(obj, '_tab'):
+                obj._tab.remove(method_name)
         self._methods = []
         self.positions = SimpleNamespace()
 
