@@ -1270,7 +1270,13 @@ class AbsProgressBar(ProgressBar):
 
         try:
             # Expand name to include position to display with progress bar
-            name = '{}: {:.4f}'.format(name, current)
+            # TODO: can we get access to the signal's precision?
+            if 0.0 < abs(current) < 1e-6:
+                fmt = '{}: ({:.4g})'
+            else:
+                fmt = '{}: ({:.4f})'
+
+            name = fmt.format(name, float(current))
             self._last_position = current
         except Exception:
             # Fallback if there is no position data at all
