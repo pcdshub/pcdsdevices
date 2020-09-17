@@ -106,7 +106,8 @@ script:
   - |
     if [[ -n "$DOCTR_DEPLOY_ENCRYPTION_KEY_PCDSHUB_PCDSDEVICES" && $BUILD_DOCS ]]; then
       echo "Deploying docs"
-      doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages
+      doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages 2>&1 > /tmp/doctr_deploy.txt
+      tail -n 10000 /tmp/doctr_deploy.txt
     fi
 
 after_success:
