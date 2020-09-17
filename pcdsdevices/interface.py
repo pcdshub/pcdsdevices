@@ -43,6 +43,10 @@ Positioner_whitelist = ["settle_time", "timeout", "egu", "limits", "move",
 
 
 class _TabCompletionHelper:
+    """
+    Base class for `TabCompletionHelperClass`, `TabCompletionHelperInstance`.
+    """
+
     _includes: typing.Set[str]
     _regex: typing.Optional[typing.Pattern]
 
@@ -92,6 +96,7 @@ class TabCompletionHelperClass(_TabCompletionHelper):
         super().__init__()
 
     def reset(self):
+        """Reset the attribute includes to those annotated in the class."""
         super().reset()
         whitelist = []
         for parent in self.cls.mro():
@@ -105,6 +110,14 @@ class TabCompletionHelperClass(_TabCompletionHelper):
         self._includes = set(whitelist)
 
     def new_instance(self, instance) -> 'TabCompletionHelperInstance':
+        """
+        Create a new :class:`TabCompletionHelperInstance` for the given object.
+
+        Parameters
+        ----------
+        instance : object
+            The instance of `self.cls`.
+        """
         return TabCompletionHelperInstance(instance, self)
 
 
@@ -134,10 +147,12 @@ class TabCompletionHelperInstance(_TabCompletionHelper):
         super().__init__()
 
     def reset(self):
+        """Reset the attribute includes to that defined by the class."""
         super().reset()
         self._includes = set(self.class_helper._includes)
 
     def get_filtered_dir_list(self) -> typing.List[str]:
+        """Get the dir list, filtered based on the whitelist."""
         if self._regex is None:
             self.build_regex()
 
@@ -148,9 +163,7 @@ class TabCompletionHelperInstance(_TabCompletionHelper):
         ]
 
     def get_dir(self) -> typing.List[str]:
-        """
-        Get the dir list based on the engineering mode settings.
-        """
+        """Get the dir list based on the engineering mode settings."""
         if get_engineering_mode():
             return self.super_dir()
         return self.get_filtered_dir_list()
