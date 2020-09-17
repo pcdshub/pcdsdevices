@@ -58,7 +58,7 @@ def extend_release_notes(path, version, release_notes):
     new_lines.append('\n')
     for section, section_lines in release_notes.items():
         if section == 'Contributors':
-            section_lines = list(set(section_lines))
+            section_lines = sorted(list(set(section_lines)))
         if len(section_lines) > 0:
             new_lines.append(section + '\n')
             new_lines.append(SECTION_UNDER * len(section) + '\n')
