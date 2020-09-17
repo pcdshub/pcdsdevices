@@ -10,8 +10,9 @@ import conftest
 import ophyd
 import pytest
 
-from pcdsdevices.interface import (BaseInterface, get_engineering_mode,
-                                   set_engineering_mode, setup_preset_paths)
+from pcdsdevices.interface import (BaseInterface, TabCompletionHelperClass,
+                                   get_engineering_mode, set_engineering_mode,
+                                   setup_preset_paths)
 from pcdsdevices.sim import FastMotor, SlowMotor
 
 logger = logging.getLogger(__name__)
@@ -225,3 +226,51 @@ def test_tab_completion(cls):
 
     for name in getattr(cls, 'tab_whitelist', []):
         assert regex.match(name) is not None
+
+
+def test_tab_helper_no_mixin():
+    class MyDevice:
+        ...
+
+    helper = TabCompletionHelperClass(MyDevice)
+    with pytest.raises(AssertionError):
+        # Must mix in BaseInterface
+        helper.new_instance(MyDevice())
+
+
+def test_tab_helper_class():
+    class MyDeviceBaseA(BaseInterface, ophyd.Device):
+        tab_whitelist = ['a']
+        a = 1
+
+    class MyDeviceBaseB:
+        tab_whitelist = ['b']
+        b = 2
+
+    class MyDevice(MyDeviceBaseA, MyDeviceBaseB):
+        tab_whitelist = ['c']
+        c = 3
+        foobar = 4
+        tab_component_names = True
+        cpt = ophyd.Component(ophyd.Signal)
+
+    assert MyDeviceBaseA._class_tab is not MyDevice._class_tab
+    assert {'a'}.issubset(MyDeviceBaseA._class_tab._includes)
+    assert {'a', 'b', 'c', 'cpt'}.issubset(MyDevice._class_tab._includes)
+
+    instance = MyDevice(name='instance')
+
+    tab = instance._tab
+
+    assert {'a', 'b', 'c', 'cpt'}.issubset(tab._includes)
+    for attr in ['a', 'b', 'c', 'cpt']:
+        assert attr in tab.get_filtered_dir_list()
+
+    assert 'foobar' not in tab.get_filtered_dir_list()
+    tab.add('foobar')
+    assert 'foobar' in tab.get_filtered_dir_list()
+    tab.remove('foobar')
+    assert 'foobar' not in tab.get_filtered_dir_list()
+    tab.add('foobar')
+    tab.reset()
+    assert 'foobar' not in tab.get_filtered_dir_list()

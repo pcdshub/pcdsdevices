@@ -189,6 +189,9 @@ class BaseInterface:
                      Device_whitelist + Signal_whitelist +
                      Positioner_whitelist)
 
+    _class_tab: TabCompletionHelperClass
+    _tab: TabCompletionHelperInstance
+
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
         mro = cls.mro()
