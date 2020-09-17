@@ -900,7 +900,7 @@ class Presets:
         ``add_here_preset_type``.
         """
 
-        def add(self, name, value, comment=None):
+        def add(self, name, value=None, comment=None):
             """
             Add a preset position of type "{}".
 
@@ -909,13 +909,15 @@ class Presets:
             name : str
                 The name of the new preset position.
 
-            value : float
-                The value of the new preset_position.
+            value : float, optional
+                The value of the new preset_position.  If unspecified, uses
+                the current position.
 
             comment : str, optional
                 A comment to associate with the preset position.
             """
-
+            if value is None:
+                value = self._device.wm()
             self._update(preset_type, name, value=value,
                          comment=comment)
             self.sync()

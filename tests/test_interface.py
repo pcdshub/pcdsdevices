@@ -94,11 +94,16 @@ def test_mv_ginput(monkeypatch, fast_motor):
 def test_presets(presets, fast_motor):
     logger.debug('test_presets')
 
+    fast_motor.mv(4, wait=True)
+    fast_motor.presets.add_hutch('four', comment='four!')
+
     fast_motor.mv(3, wait=True)
     fast_motor.presets.add_hutch('zero', 0, comment='center')
     fast_motor.presets.add_here_user('sample')
+    print(fast_motor.presets.positions)
     assert fast_motor.wm_zero() == -3
     assert fast_motor.wm_sample() == 0
+    assert fast_motor.wm_four() == 1
 
     # Clear paths, refresh, should still exist
     old_paths = fast_motor.presets._paths
