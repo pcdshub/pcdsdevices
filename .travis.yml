@@ -1,135 +1,49 @@
-language: python
-os: linux
-dist: xenial
+version: ~> 1.0
 
 env:
   global:
-    - OFFICIAL_REPO="pcdshub/pcdsdevices"
     - secure: "XtUZPwPRT/XSynlIxdnFUpSPTuA82YGltQOKYdIUGSGOBA6czzJj0/lk9teemfDk4+6Nai99GFIPMaCKZY3uxPt9+wJqt+BX3YijBduq35xf9Ld+Z875xWZkFm/C3eodJJsaZQ2B1F3eRUVOoC8sbyNaPI5FgX59uwlr+1HBD/249Zj6eTo78TYNy6fx/yXlpuifOozYr1siJ00eunHpT061zwvscXKHEDg7Fjkezyi6oA2KO9eUjDH8sFYFx8RB4H8jkJsShHBIYB/pWLbuznPvGhs9opM0Q1+1vdoHD3F3dYAyNMXg0tgacnU59153oct5la6JUEfe7RSD5DQctrELNUGAoS1o/X1M6xgEmwNRM2VUv6fZFziJGVd2viZ+2VnDS4mfMxgBeh3oq0LRLSYTLMCcitdjI1mBuRymaWP2MbIs2XEqMFRJrAufWOUJ2gey922+emKm2a57lPohfUpfbVKaVsmDy6tPY7t2Xuq7frrOpLrL9H6TV1EqZTp+zBSg+dM38OsVDQ1J1GZa53ESc4YvG941jSjbAgo0Ji1xIcx9eAOGrYiymYUlr3Z2HOoOqGn0dSAJaGqfrSLP/F/kPlj5FzFm8IcsN+UyvQEf0quT2BjJK7/75zNj6goN2UbpZ4BynTBIXr5yIFnyq6hKfUBs+XZoGVxkvO0VL2o="
 
+    # enable the usage of versions menu which allow versioning of the docs
+    # pages and not only the master branch
+    - DOCTR_VERSIONS_MENU="1"
+    # Dependency files used to build the documentation (space separated)
+    - DOCS_REQUIREMENTS="docs-requirements.txt dev-requirements.txt requirements.txt"
+    # Options to be passed to flake8 for package linting. Usually this is just
+    # the package name but you can enable other flake8 options via this config
+    - PYTHON_LINT_OPTIONS="pcdsdevices"
+
+    # The name of the conda package
+    - CONDA_PACKAGE="pcdsdevices"
+    # The folder containing the conda recipe (meta.yaml)
+    - CONDA_RECIPE_FOLDER="conda-recipe"
+    # Extra dependencies needed to run the tests which are not included
+    # at the recipe and dev-requirements.txt. E.g. PyQt
+    - CONDA_EXTRAS="pip"
+    # Requirements file with contents for tests dependencies
+    - CONDA_REQUIREMENTS="dev-requirements.txt"
+
+    # Extra dependencies needed to run the test with Pip (similar to
+    # CONDA_EXTRAS) but for pip
+    - PIP_EXTRAS=""
+
 jobs:
-  fast_finish: true
-  include:
-    - name: "Python 3.6 Unit Tests"
-      python: 3.6
-      env:
-        - UNIT_TEST=1
-        - UPLOAD=1
-    - name: "Python 3.7 Unit Tests"
-      python: 3.7
-      env: UNIT_TEST=1
-    - name: "Python 3.8 Unit Tests"
-      python: 3.8
-      env: UNIT_TEST=1
-    - name: "Build Docs"
-      python: 3.6
-      env: BUILD_DOCS=1
-    - name: "Style Check"
-      python: 3.6
-      env: STYLE=1
   allow_failures:
-    - name: "Python 3.8 Unit Tests"
-      python: 3.8
-      env: UNIT_TEST=1
-    - name: "Build Docs"
-      python: 3.6
-      env: BUILD_DOCS=1
+    - name: "Python 3.6 - PIP"
+    - name: "Python 3.8"
 
-install:
-  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - source $HOME/miniconda/etc/profile.d/conda.sh
-  - conda activate base
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda install python=$TRAVIS_PYTHON_VERSION conda-build=3.12.0
-  #- conda install conda-build
-  #- conda update -q conda conda-build
-  - conda config --add channels pcds-tag
-  - conda config --append channels conda-forge
-  - conda config --remove channels defaults
-  - conda config --set channel_priority true
-  # Useful for debugging any issues with conda
-  - conda info -a
-  # Paranoid check of what version we're using
-  - echo $TRAVIS_PYTHON_VERSION
-  # Test conda build and create test environment
-  - |
-    if [[ $UNIT_TEST || $BUILD_DOCS ]]; then
-      echo "Building full environment"
-      set -e
-      conda build -q conda-recipe --python $TRAVIS_PYTHON_VERSION --output-folder bld-dir
-      conda config --add channels "file://`pwd`/bld-dir"
-      conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION pcdsdevices --file dev-requirements.txt
-      set +e
-    elif [[ $STYLE ]]; then
-      echo "Building minimal flake8 environment"
-      conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION flake8
-    fi
-  # Launch Conda environment
-  - conda activate test-environment
-  # Add the docs packages
-  - |
-    if [[ $BUILD_DOCS ]]; then
-      echo "Adding docs requirements"
-      conda install --file docs-requirements.txt
-    fi
-
-script:
-  # Run tests
-  - |
-    if [[ $UNIT_TEST ]]; then
-      echo "Running tests"
-      coverage run run_tests.py
-    fi
-  - |
-    if [[ $UNIT_TEST ]]; then
-      coverage report -m
-    fi
-  # Check style
-  - |
-    if [[ $STYLE ]]; then
-      echo "Checking style"
-      flake8
-    fi
-  # Build docs
-  - |
-    if [[ $BUILD_DOCS ]]; then
-      echo "Building docs"
-      set -e
-      conda install --file docs-requirements.txt
-      pushd docs
-      make html
-      popd
-    fi
-  # Upload docs
-  - |
-    if [[ -n "$DOCTR_DEPLOY_ENCRYPTION_KEY_PCDSHUB_PCDSDEVICES" && $BUILD_DOCS ]]; then
-      echo "Deploying docs"
-      doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages
-    fi
-
-after_success:
-  - |
-    if [[ $UPLOAD ]]; then
-      echo "Uploading to codecov"
-      codecov
-    fi
-  - |
-    if [[ $UPLOAD && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == $TRAVIS_TAG  && $TRAVIS_TAG != '' && $CONDA_UPLOAD_TOKEN_TAG != '' ]]; then
-      echo "Installing anaconda-client"
-      conda activate base
-      conda install anaconda-client
-      echo "Uploading to pcds-tag channel"
-      export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
-      anaconda upload bld-dir/noarch/*.tar.bz2
-    fi
-  - |
-    if [[ $UPLOAD && $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == $OFFICIAL_REPO && $TRAVIS_BRANCH == 'master' && $TRAVIS_TAG == '' && $CONDA_UPLOAD_TOKEN_DEV != '' ]]; then
-      echo "Installing anaconda-client"
-      conda activate base
-      conda install anaconda-client
-      echo "Uploading to pcds-dev channel"
-      export ANACONDA_API_TOKEN=$CONDA_UPLOAD_TOKEN_DEV
-      anaconda upload bld-dir/noarch/*.tar.bz2
-    fi
+import:
+  # This import enables a set of standard python jobs including:
+  # - Build
+  #   - Anaconda Package Build
+  # - Tests
+  #   - Python Linter
+  #   - Package Linter
+  #   - Documentation
+  #   - Python 3.6 - PIP based
+  #   - Python 3.6, 3.7 & 3.8 - Conda base
+  # - Deploy
+  #   - Documentation using doctr
+  #   - Conda Package - uploaded to pcds-dev and pcds-tag
+  #   - PyPI
+  - pcdshub/pcds-ci-helpers:travis/shared_configs/standard-python-conda.yml
