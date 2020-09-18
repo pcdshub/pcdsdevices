@@ -85,6 +85,10 @@ def test_delay_basic():
     for pos in stage_s.motor.position, stage_ns.motor.position:
         assert abs(pos*1e-3 - 1e-9 * approx_c / 2) < 0.01
 
+    stage_s.set_current_position(1.0e-6)
+    np.testing.assert_allclose(stage_s.position[0], 1.e-6)
+    np.testing.assert_allclose(stage_s.user_offset.get(), 1.e-6 - 1.e-9)
+
 
 def test_subcls_warning():
     logger.debug('test_subcls_warning')
