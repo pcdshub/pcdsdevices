@@ -1,3 +1,4 @@
+import functools
 import logging
 
 from ophyd import Component as Cpt
@@ -11,12 +12,23 @@ from .interface import BaseInterface
 logger = logging.getLogger(__name__)
 
 
+class FixedLengthEpicsSignal(EpicsSignal):
+    def __init__(self, *args, count, auto_monitor=None, **kwargs):
+        super().__init__(*args, auto_monitor=False, **kwargs)
+
+        self._read_pv.get_with_metadata = functools.partial(
+            self._read_pv.get_with_metadata, count=count)
+        if self._read_pv is not self._write_pv:
+            self._write_pv.get_with_metadata = functools.partial(
+                self._write_pv.get_with_metadata, count=count)
+
+
 class EventSequence(BaseInterface, Device):
     """Class for the event sequence of the event sequencer."""
-    ec_array = Cpt(EpicsSignal, ':SEQ.A')
-    bd_array = Cpt(EpicsSignal, ':SEQ.B')
-    fd_array = Cpt(EpicsSignal, ':SEQ.C')
-    bc_array = Cpt(EpicsSignal, ':SEQ.D')
+    ec_array = Cpt(FixedLengthEpicsSignal, ':SEQ.A', count=2048)
+    bd_array = Cpt(FixedLengthEpicsSignal, ':SEQ.B', count=2048)
+    fd_array = Cpt(FixedLengthEpicsSignal, ':SEQ.C', count=2048)
+    bc_array = Cpt(FixedLengthEpicsSignal, ':SEQ.D', count=2048)
 
     tab_whitelist = ['get_seq', 'put_seq', 'show']
 
