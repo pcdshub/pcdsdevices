@@ -8,6 +8,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
                              real_position_argument)
+from ophyd.signal import Signal
 from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
@@ -223,6 +224,10 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         class, but it must have a valid ``egu`` so we know how to convert to
         the time axis.
 
+    user_offset : ~ophyd.signal.Signal
+        An optional offset for the delay.  This must be in the same units as
+        `delay`.
+
     Parameters
     ----------
     prefix : str
@@ -242,6 +247,7 @@ class DelayBase(FltMvInterface, PseudoPositioner):
     """
 
     delay = FCpt(PseudoSingleInterface, egu='{self.egu}', add_prefix=['egu'])
+    user_offset = Cpt(Signal, value=0.0, kind='normal')
     motor = None
 
     def __init__(self, *args, egu='s', n_bounces=2, **kwargs):
@@ -251,10 +257,21 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         self.n_bounces = n_bounces
         super().__init__(*args, egu=egu, **kwargs)
 
+    @user_offset.sub_value
+    def _offset_changed(self, value, **kwargs):
+        """
+        The user offset was changed.  Update the readback value, if possible.
+        """
+        try:
+            self._update_position()
+        except ophyd.utils.DisconnectedError:
+            ...
+
     @pseudo_position_argument
     def forward(self, pseudo_pos):
         """Convert delay unit to motor unit."""
-        seconds = convert_unit(pseudo_pos.delay, self.delay.egu, 'seconds')
+        seconds = convert_unit(pseudo_pos.delay - self.user_offset.get(),
+                               self.delay.egu, 'seconds')
         meters = seconds * speed_of_light / self.n_bounces
         motor_value = convert_unit(meters, 'meters', self.motor.egu)
         return self.RealPosition(motor=motor_value)
@@ -265,7 +282,21 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         meters = convert_unit(real_pos.motor, self.motor.egu, 'meters')
         seconds = meters / speed_of_light * self.n_bounces
         delay_value = convert_unit(seconds, 'seconds', self.delay.egu)
-        return self.PseudoPosition(delay=delay_value)
+        return self.PseudoPosition(delay=delay_value + self.user_offset.get())
+
+    def set_current_position(self, position):
+        '''
+        Calculate and configure the user_offset value, indicating the provided
+        ``position`` as the new current position.
+
+        Parameters
+        ----------
+        position
+            The new current position.
+        '''
+        self.user_offset.put(0.0)
+        new_offset = position - self.position[0]
+        self.user_offset.put(new_offset)
 
 
 class SimDelayStage(DelayBase):
