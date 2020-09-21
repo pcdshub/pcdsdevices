@@ -381,7 +381,6 @@ class _OptionalEpicsSignal(Signal):
     def _proxy_property(prop_name, value):  # noqa
         """Read-only property proxy for the internal EPICS Signal."""
         def getter(self):
-            print('proxy', prop_name, self.should_use_epics_signal())
             if self.should_use_epics_signal():
                 return getattr(self._epics_signal, prop_name)
             return value
