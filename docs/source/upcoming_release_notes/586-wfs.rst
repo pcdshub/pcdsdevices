@@ -16,6 +16,7 @@ Device Updates
 New Devices
 -----------
 - Add WaveFrontSensorTarget for the wavefront sensor targets (PF1K0, PF1L0).
+- Add TwinCATTempSensor for the updated twincat FB with corrected PV pragmas.
 
 Bugfixes
 --------
