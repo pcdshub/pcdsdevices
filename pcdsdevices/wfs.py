@@ -4,7 +4,7 @@ from ophyd import Device
 from .epics_motor import BeckhoffAxis
 from .inout import TwinCATInOutPositioner
 from .interface import BaseInterface, LightpathInOutMixin
-from .sensors import TwinCATThermocouple
+from .sensors import TwinCATTempSensor
 
 
 class WaveFrontSensorTarget(BaseInterface, Device, LightpathInOutMixin):
@@ -20,7 +20,7 @@ class WaveFrontSensorTarget(BaseInterface, Device, LightpathInOutMixin):
     z_motor = Cpt(BeckhoffAxis, ':MMS:Z', kind='normal',
                   doc='Z position of target stack for focus control.')
 
-    thermocouple1 = Cpt(TwinCATThermocouple, ':STC:01', kind='normal',
+    thermocouple1 = Cpt(TwinCATTempSensor, ':STC:01', kind='normal',
                         doc='First thermocouple.')
-    thermocouple2 = Cpt(TwinCATThermocouple, ':STC:02', kind='normal',
+    thermocouple2 = Cpt(TwinCATTempSensor, ':STC:02', kind='normal',
                         doc='Second thermocouple.')
