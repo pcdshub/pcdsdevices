@@ -191,6 +191,12 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         """
         The user offset was changed.  Update the readback value, if possible.
         """
+        if not hasattr(self, 'real_position'):
+            # A race condition on instantiation can cause this subscription to
+            # fire prior to the real position being available.  The position
+            # will update based on this offset when available.
+            return
+
         try:
             self._update_position()
         except ophyd.utils.DisconnectedError:
