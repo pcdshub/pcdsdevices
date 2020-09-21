@@ -1,0 +1,31 @@
+IssueNumber Title
+#################
+
+API Changes
+-----------
+- N/A
+
+Features
+--------
+- N/A
+
+Device Updates
+--------------
+- N/A
+
+New Devices
+-----------
+- Add WaveFrontSensorTarget for the wavefront sensor targets (PF1K0, PF1L0).
+- Add TwinCATTempSensor for the updated twincat FB with corrected PV pragmas.
+
+Bugfixes
+--------
+- N/A
+
+Maintenance
+-----------
+- N/A
+
+Contributors
+------------
+- zllentz
