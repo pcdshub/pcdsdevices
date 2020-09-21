@@ -121,3 +121,19 @@ def test_optional_epics_signal(monkeypatch):
     assert opt.should_use_epics_signal()
     # And reflect its disconnected status:
     assert not opt.connected
+
+
+def test_pvnotepad_signal(monkeypatch):
+    monkeypatch.setattr(pcdsdevices.signal, 'EpicsSignal', FakeEpicsSignal)
+    sig = pcdsdevices.signal.NotepadLinkedSignal(
+        read_pv='__abc123',
+        attr_name='sig',  # pretend this was created with a component
+        name='sig',
+        notepad_metadata={'my': 'metadata'},
+    )
+    assert sig.notepad_metadata['dotted_name'] == 'sig'
+    assert sig.notepad_metadata['read_pv'] == '__abc123'
+    assert sig.notepad_metadata['my'] == 'metadata'
+    # PV obviously will not connect:
+    assert not sig.should_use_epics_signal()
+    sig.destroy()

@@ -451,9 +451,15 @@ class NotepadLinkedSignal(_OptionalEpicsSignal):
         # Pre-define some attributes so we can aggregate information:
         self._parent = parent
         self._attr_name = attr_name
+        self._name = name
+        if self.root is self:
+            full_dotted_name = attr_name
+        else:
+            full_dotted_name = f'{self.root.name}.{attr_name}'
+
         self.notepad_metadata = self.create_notepad_metadata(
             base_metadata=notepad_metadata,
-            dotted_name=self.root.name + '.' + self.dotted_name,
+            dotted_name=full_dotted_name,
             read_pv=read_pv, write_pv=write_pv, name=name, parent=parent,
             **kwargs
         )
