@@ -298,7 +298,106 @@ class InternalSignal(SignalRO):
         return Signal.set(self, value, timestamp=timestamp, force=force)
 
 
-class NotepadLinkedSignal(EpicsSignal):
+class _OptionalEpicsSignal(Signal):
+    """
+    An EPICS Signal which may or may not exist.
+
+    The init parameters mirror those of :class:`~ophyd.EpicsSignal`.
+
+    Notes
+    -----
+    This should be considered for internal use only, and not for
+    user-facing device components.  If you use this in your new device,
+    there is a good chance we will reject your PR.
+    """
+
+    def __init__(self, read_pv, write_pv=None, *, name, parent=None, **kwargs):
+        super().__init__(name=name, parent=parent)
+        self._epics_signal = EpicsSignal(
+            read_pv=read_pv, write_pv=write_pv, parent=self, name=self.name,
+            **kwargs)
+        self._epics_signal.subscribe(
+            self._epics_meta_update,
+            event_type=self._epics_signal.SUB_META,
+        )
+        self._saw_connection = False
+
+    def _epics_value_update(self, **kwargs):
+        """The EpicsSignal value updated."""
+        super().put(value=kwargs['value'], timestamp=kwargs['timestamp'],
+                    force=True)
+        # Note: the above internally calls run_subs
+        # self._run_subs(**kwargs)
+
+    def _epics_meta_update(self, sub_type=None, **kwargs):
+        """The EpicsSignal metadata updated; reflect that here."""
+        self._metadata.update(**kwargs)
+        self._run_subs(sub_type=self.SUB_META, **kwargs)
+
+        if not self._saw_connection and kwargs.get('connected', False):
+            self._epics_signal.subscribe(self._epics_value_update)
+            self._saw_connection = True
+
+    def destroy(self):
+        super().destroy()
+        self._epics_signal.destroy()
+        self._epics_signal = None
+
+    def should_use_epics_signal(self) -> bool:
+        """
+        Tell `_OptionalEpicsSignal` whether or not to use the `EpicsSignal`.
+
+        By default, the `EpicsSignal` will be used if the PV has connected.
+
+        Note
+        ----
+        * Subclasses should override this with their own functionality.
+        * This value should not change during the lifetime of the
+          `_OptionalEpicsSignal`.
+        """
+        return self._saw_connection
+
+    def _proxy_method(method_name):  # noqa
+        """
+        Proxy a method from either the EpicsSignal or the superclass Signal.
+        """
+
+        def method_selector(self, *args, **kwargs):
+            owner = (self._epics_signal if self.should_use_epics_signal()
+                     else super())
+            return getattr(owner, method_name)(*args, **kwargs)
+
+        return method_selector
+
+    describe = _proxy_method('describe')
+    describe_configuration = _proxy_method('describe_configuration')
+    get = _proxy_method('get')
+    put = _proxy_method('put')
+    set = _proxy_method('set')
+    read = _proxy_method('read')
+    read_configuration = _proxy_method('read_configuration')
+    wait_for_connection = _proxy_method('wait_for_connection')
+
+    def _proxy_property(prop_name, value):  # noqa
+        """Read-only property proxy for the internal EPICS Signal."""
+        def getter(self):
+            print('proxy', prop_name, self.should_use_epics_signal())
+            if self.should_use_epics_signal():
+                return getattr(self._epics_signal, prop_name)
+            return value
+
+        # Only support read-only properties for now.
+        return property(getter)
+
+    connected = _proxy_property('connected', True)
+    read_access = _proxy_property('read_access', True)
+    write_access = _proxy_property('write_access', True)
+    precision = _proxy_property('precision', 4)
+    enum_strs = _proxy_property('enum_strs', ())
+    limits = _proxy_property('limits', (0, 0))
+
+
+class NotepadLinkedSignal(_OptionalEpicsSignal):
     """
     Create the notepad metadata dict for usage by pcdsdevices-notepad.
     For further information, see :class:`NotepadLinkedSignal`.
