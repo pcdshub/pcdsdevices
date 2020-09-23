@@ -697,7 +697,7 @@ class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
     )
 
 
-class AT2L0(BaseInterface, Device, LightpathInOutMixin):
+class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     """
     AT2L0 solid attenuator variant from the LCLS-II XTES project.
 
@@ -745,9 +745,30 @@ class AT2L0(BaseInterface, Device, LightpathInOutMixin):
     blade_18 = Cpt(FEESolidAttenuatorBlade, ':MMS:18')
     blade_19 = Cpt(FEESolidAttenuatorBlade, ':MMS:19')
 
-    def __init__(self, *args, **kwargs):
+    @property
+    def setpoint(self):
+        """(PVPositioner compat) - use desired transmission as setpoint."""
+        return self.calculator.desired_transmission
+
+    @property
+    def readback(self):
+        """(PVPositioner compat) - use actual transmission as readback."""
+        return self.calculator.actual_transmission
+
+    @property
+    def actuate(self):
+        """(PVPositioner compat) - use apply_config as an actuation signal."""
+        return self.calculator.apply_config
+
+    def _setup_move(self, position):
+        """(PVPositioner compat) - calculate, then move."""
+        self.calculator.calculate(position)
+        return super()._setup_move(position)
+
+    def __init__(self, *args, limits=None, **kwargs):
         UCpt.collect_prefixes(self, dict(calculator_prefix='AT2L0:CALC'))
-        super().__init__(*args, **kwargs)
+        limits = limits or (0.0, 1.0)
+        super().__init__(*args, limits=limits, **kwargs)
 
     def _set_lightpath_states(self, lightpath_values):
         info = super()._set_lightpath_states(lightpath_values)
