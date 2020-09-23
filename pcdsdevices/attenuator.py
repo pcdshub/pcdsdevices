@@ -511,7 +511,7 @@ class AttenuatorCalculatorBase(BaseInterface, Device):
     )
 
     energy_actual = Cpt(
-        EpicsSignalRO, ':SYS:ActualPhotonEnergy_RBV', kind='config',
+        EpicsSignalRO, ':SYS:ActualPhotonEnergy_RBV', kind='normal',
         doc='The reported beamline photon energy [eV]',
     )
 
@@ -776,6 +776,41 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
             self.num_in.put(info['in_check'].count(True), force=True)
             self.num_out.put(info['out_check'].count(True), force=True)
 
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the att
+        """
+        # Get the attenuator statuses
+        blade_states = []
+        for cpt in self.lightpath_cpts:
+            try:
+                blade_states.append(
+                    status_info[cpt]['state']['state']['value']
+                )
+            except KeyError:
+                break
+
+        lines = render_ascii_att(blade_states, start_index=1)
+        try:
+            calc = status_info['calculator']
+            transmission = calc['actual_transmission']['value']
+            transmission_3omega = calc['actual_transmission_3omega']['value']
+            energy_actual = calc['energy_actual']['value']
+        except KeyError:
+            ...
+        else:
+            energy = energy_actual / 1e3
+            energy_3omega = energy * 3.0
+            lines.append(
+                f'Transmission (E={energy:.3} keV): {transmission:.4E}'
+            )
+            lines.append(
+                f'Transmission for 3rd harmonic (E={energy_3omega:.3} keV): '
+                f'{transmission_3omega:.4E}'
+            )
+
+        return '\n'.join(lines)
+
 
 FEESolidAttenuator = AT2L0  # back-compatibility
 
@@ -787,6 +822,26 @@ class BladeStateEnum(enum.Enum):
     STUCK_OUT = 3
     STUCK_IN = 4
 
+    @property
+    def as_out_row(self) -> str:
+        """Returns ASCII information for "out" row representation."""
+        return {
+            BladeStateEnum.OUT: 'X',
+            BladeStateEnum.IN: '',
+            BladeStateEnum.STUCK_OUT: 'S',
+            BladeStateEnum.STUCK_IN: '',
+        }.get(self, '?')
+
+    @property
+    def as_in_row(self) -> str:
+        """Returns ASCII information for "in" row representation."""
+        return {
+            BladeStateEnum.OUT: '',
+            BladeStateEnum.IN: 'X',
+            BladeStateEnum.STUCK_OUT: '',
+            BladeStateEnum.STUCK_IN: 'S',
+        }.get(self, '?')
+
 
 def get_blade_enum(value):
     try:
@@ -795,7 +850,7 @@ def get_blade_enum(value):
         return BladeStateEnum(value)
 
 
-def render_ascii_att(blade_states):
+def render_ascii_att(blade_states, *, start_index=0):
     """
     Creates the attenuator ascii art.
 
@@ -804,30 +859,26 @@ def render_ascii_att(blade_states):
     blade_states: list of BladeStateEnum
         The elements of this list represent the current blade states.
 
+    start_index : int, optional
+        The starting filter index.
+
     Returns
     -------
     ascii_lines: list of str
         The lines that should be printed to the screen.
     """
-    filter_line = 'filter # |'
-    out_line = ' OUT     |'
-    in_line = ' IN      |'
-    for i, state in enumerate(blade_states):
-        state = get_blade_enum(state)
-        filter_line += f'{i}|'
-        if state == BladeStateEnum.OUT:
-            out_line += 'X|'
-            in_line += ' |'
-        elif state == BladeStateEnum.IN:
-            out_line += ' |'
-            in_line += 'X|'
-        elif state == BladeStateEnum.STUCK_OUT:
-            out_line += 'S|'
-            in_line += ' |'
-        elif state == BladeStateEnum.STUCK_IN:
-            out_line += ' |'
-            in_line += 'S|'
-        else:
-            out_line += '?|'
-            in_line += '?|'
-    return [filter_line, out_line, in_line]
+    filter_line = ['filter # ']
+    out_line = [' OUT     ']
+    in_line = [' IN      ']
+
+    for idx, state in enumerate(blade_states, start_index):
+        index_str = str(idx)
+        filter_line.append(index_str)
+        state_enum = get_blade_enum(state)
+        out_line.append(state_enum.as_out_row.center(len(index_str)))
+        in_line.append(state_enum.as_in_row.center(len(index_str)))
+
+    separator = '|'
+    return [separator.join(filter_line + ['']),
+            separator.join(out_line + ['']),
+            separator.join(in_line + [''])]
