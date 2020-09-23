@@ -6,7 +6,6 @@ import logging
 import time
 
 import numpy as np
-
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import DynamicDeviceComponent as DDC
@@ -716,9 +715,10 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
 
     # QIcon for UX
     _icon = 'fa.barcode'
+    tab_component_names = True
 
     # Register that all blades are needed for lightpath calc
-    lightpath_cpts = ['blade_{:02}'.format(i+1) for i in range(19)]
+    lightpath_cpts = [f'blade_{idx:02}' for idx in range(1, 20)]
 
     # Summary for lightpath view
     num_in = Cpt(InternalSignal, kind='hinted')
