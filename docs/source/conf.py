@@ -22,11 +22,6 @@ import typing
 
 import ophyd
 import sphinx_rtd_theme
-from docutils import statemachine
-from docutils.parsers.rst import Directive, directives
-
-import pcdsdevices
-import pcdsdevices.component
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -34,6 +29,9 @@ import pcdsdevices.component
 #
 module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../')
 sys.path.insert(0, module_path)
+
+import pcdsdevices  # isort: skip
+import pcdsdevices.component  # isort: skip
 
 
 # -- General configuration ------------------------------------------------
