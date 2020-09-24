@@ -4,14 +4,13 @@ import time
 import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.pseudopos import PseudoPositioner
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO, Signal
 
 from .beam_stats import BeamEnergyRequest
 from .epics_motor import IMS, EpicsMotorInterface
 from .inout import InOutPositioner
 from .interface import FltMvInterface
-from .pseudopos import PseudoSingleInterface, SyncAxesBase
+from .pseudopos import PseudoPositioner, PseudoSingleInterface, SyncAxesBase
 from .pv_positioner import PVPositionerIsClose
 
 logger = logging.getLogger(__name__)

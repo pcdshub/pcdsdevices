@@ -3,18 +3,122 @@ import typing
 
 import numpy as np
 import ophyd
+import ophyd.pseudopos
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
-                             pseudo_position_argument, real_position_argument)
+from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
+                             real_position_argument)
 from ophyd.signal import Signal
 from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
+from .signal import NotepadLinkedSignal
 from .sim import FastMotor
 from .utils import convert_unit
 
 logger = logging.getLogger(__name__)
+
+
+class PseudoSingleInterface(FltMvInterface, PseudoSingle):
+    """PseudoSingle with FltMvInterface mixed in."""
+    notepad_setpoint = Cpt(
+        NotepadLinkedSignal, ':OphydSetpoint',
+        notepad_metadata={'record': 'ao', 'default_value': 0.0},
+    )
+
+    notepad_readback = Cpt(
+        NotepadLinkedSignal, ':OphydReadback',
+        notepad_metadata={'record': 'ai', 'default_value': 0.0},
+    )
+
+    def __init__(self, prefix='', parent=None, **kwargs):
+        if not prefix:
+            # PseudoSingle generally does not get a prefix. Fix that here,
+            # or 'notepad_setpoint' and 'notepad_readback' will have no
+            # prefix.
+            attr_name = kwargs['attr_name']
+            prefix = f'{parent.prefix}:{attr_name}'
+
+        super().__init__(prefix=prefix, parent=parent, **kwargs)
+
+
+class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
+    """
+    This is a PCDS-specific PseudoPositioner subclass which adds support
+    for NotepadLinkedSignal.  The functionality of the class is otherwise
+    identical to ophyd's PseudoPositioner.
+
+    """ + ophyd.pseudopos.PseudoPositioner.__doc__
+
+    def _update_notepad_ioc(self, position, attr):
+        """
+        Update the notepad IOC with a fully-specified ``PseudoPos``.
+
+        Parameters
+        ----------
+        position : PseudoPos
+            The position.
+
+        attr : str
+            The signal attribute name, such as ``notepad_setpoint``.
+        """
+        for positioner, value in zip(self._pseudo, position):
+            try:
+                signal = getattr(positioner, attr, None)
+                if signal is None:
+                    continue
+                if signal.connected and signal.write_access:
+                    if signal.get(use_monitor=True) != value:
+                        signal.put(value, wait=False)
+            except Exception as ex:
+                self.log.debug('Failed to update notepad %s to position %s',
+                               attr, value, exc_info=ex)
+
+    @pseudo_position_argument
+    def move(self, position, wait=True, timeout=None, moved_cb=None):
+        '''
+        Move to a specified position, optionally waiting for motion to
+        complete.
+
+        Parameters
+        ----------
+        position
+            Pseudo position to move to.
+
+        moved_cb : callable
+            Call this callback when movement has finished. This callback must
+            accept one keyword argument: 'obj' which will be set to this
+            positioner instance.
+
+        timeout : float, optional
+            Maximum time to wait for the motion. If None, the default timeout
+            for this positioner is used.
+
+        Returns
+        -------
+        status : MoveStatus
+
+        Raises
+        ------
+        TimeoutError
+            When motion takes longer than `timeout`.
+
+        ValueError
+            On invalid positions.
+
+        RuntimeError
+            If motion fails other than timing out.
+        '''
+        status = super().move(position, wait=wait, timeout=timeout,
+                              moved_cb=moved_cb)
+        self._update_notepad_ioc(position, 'notepad_setpoint')
+        return status
+
+    def _update_position(self):
+        """Update the pseudo position based on that of the real positioners."""
+        position = super()._update_position()
+        self._update_notepad_ioc(position, 'notepad_readback')
+        return position
 
 
 class SyncAxesBase(FltMvInterface, PseudoPositioner):
@@ -42,7 +146,7 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
     move.
     """
 
-    pseudo = Cpt(PseudoSingle)
+    pseudo = Cpt(PseudoSingleInterface)
 
     def __init__(self, *args, **kwargs):
         if self.__class__ is SyncAxesBase:
@@ -142,7 +246,7 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         branch that bounces the laser back along the axis it enters.
     """
 
-    delay = FCpt(PseudoSingle, egu='{self.egu}', add_prefix=['egu'])
+    delay = FCpt(PseudoSingleInterface, egu='{self.egu}', add_prefix=['egu'])
     user_offset = Cpt(Signal, value=0.0, kind='normal')
     motor = None
 
@@ -197,11 +301,6 @@ class DelayBase(FltMvInterface, PseudoPositioner):
 
 class SimDelayStage(DelayBase):
     motor = Cpt(FastMotor, init_pos=0, egu='mm')
-
-
-class PseudoSingleInterface(FltMvInterface, PseudoSingle):
-    """PseudoSingle with FltMvInterface mixed in."""
-    pass
 
 
 class LookupTablePositioner(PseudoPositioner):
