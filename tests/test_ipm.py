@@ -118,8 +118,8 @@ def test_ipm_motion(fake_ipm):
     assert ipm.diode.state.state.get() == 2
     # Target_in
     status = ipm.target_in(4)
-    assert ipm.target.state.get() == 4
     status.wait(timeout=1)
+    assert ipm.target.state.get() == 4
     assert status.done and status.success
     # Target_in with callback
     cb = Mock()
