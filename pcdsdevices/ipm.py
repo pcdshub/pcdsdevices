@@ -5,6 +5,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.status import wait as status_wait
 
 from .doc_stubs import IPM_base, basic_positioner_init, insert_remove
 from .epics_motor import IMS
@@ -135,6 +136,51 @@ class IPMMotion(BaseInterface, Device):
         else:
             return (rmstatus & self.diode.remove(moved_cb=moved_cb,
                                                  timeout=timeout, wait=wait))
+
+    def target_in(self, target_num, moved_cb=None, timeout=None, wait=False):
+        """
+        Moves the target to one of the target positions. There are 4 targets
+        with different thinkness and absorbtion/signal.
+        The targets move vertically. To drive them in, use presets:
+        ipm.target_in(x), where x = target number
+
+        Parameters
+        -----------
+        target: int
+            Number of which target to move in.
+            Must be one of the valid target states: 1-4 or out: 5
+            (TARGET1, TARGET2, TARGET3, TARGET4, OUT) respectively
+
+        moved_cb : callable, optional
+            Function to be run when the operation finishes. This callback
+            should not expect any arguments or keywords.
+
+        timeout : float, optional
+            Maximum time for the motion. If `None` is given, the default value
+            of this positioners is used.
+
+        wait : bool
+            If `True`, block until move is completed.
+
+        Returns
+        -------
+        status: MoveStatus
+        """
+        status = self.target.move(target_num, moved_cb=moved_cb,
+                                  timeout=timeout, wait=wait)
+
+        # Add our callback if one was given
+        if moved_cb is not None:
+            status.add_callback(moved_cb)
+
+        # Wait if instructed to do so. Stop the motors if interrupted
+        if wait:
+            try:
+                status_wait(status)
+            except KeyboardInterrupt:
+                self.target.stop()
+                raise
+        return status
 
     @property
     def transmission(self):
