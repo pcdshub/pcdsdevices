@@ -136,6 +136,38 @@ class IPMMotion(BaseInterface, Device):
             return (rmstatus & self.diode.remove(moved_cb=moved_cb,
                                                  timeout=timeout, wait=wait))
 
+    def target_in(self, target_num, moved_cb=None, timeout=None, wait=False):
+        """
+        Moves the target to one of the target positions. There are 4 targets
+        with different thickness and absorption/signal.
+        The targets move vertically. To drive them in, use presets:
+        ipm.target_in(x), where x = target number
+
+        Parameters
+        -----------
+        target: int
+            Number of which target to move in.
+            Must be one of the valid target states: 1-4 or out: 5
+            (TARGET1, TARGET2, TARGET3, TARGET4, OUT) respectively
+
+        moved_cb : callable, optional
+            Function to be run when the operation finishes. This callback
+            should not expect any arguments or keywords.
+
+        timeout : float, optional
+            Maximum time for the motion. If `None` is given, the default value
+            of this positioner is used.
+
+        wait : bool
+            If `True`, block until move is completed.
+
+        Returns
+        -------
+        status: MoveStatus
+        """
+        return self.target.move(target_num, moved_cb=moved_cb,
+                                timeout=timeout, wait=wait)
+
     @property
     def transmission(self):
         """Returns the combined transmission value of the target and diode."""
