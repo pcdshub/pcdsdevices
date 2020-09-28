@@ -255,6 +255,8 @@ class LaserTiming(FltMvInterface, PVPositioner):
     internally, such that the user may work in units of seconds.
     """
 
+    tab_component_names = True
+
     _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True,
                        kind='omitted',
                        doc='The internal nanosecond-expecting signal.'
@@ -368,6 +370,7 @@ class LaserTimingCompensation(SyncAxesBase):
     ``delay`` and ``laser`` are intentionally renamed to non-ophyd-style
     ``txt`` and ``lxt``, respectively.
     """
+    tab_component_names = True
     pseudo = Cpt(PseudoSingleInterface, limits=(1e-20, 1.1e-3))
     delay = UCpt(_ReversedTimeToolDelay, doc='The **reversed** txt motor')
     laser = UCpt(LaserTiming, doc='The lxt motor')
