@@ -2,6 +2,100 @@ Release History
 ###############
 
 
+v2.11.0 (2020-09-21)
+===================
+
+API Changes
+-----------
+- :class:`BaseInterface` no longer inherits from :class:`ophyd.OphydObject`.
+- The order of multiple inheritance for many devices using the LCLS-enhanced
+  :class:`BaseInterface`, :class:`MvInterface`, and :class:`FltMvInterface` has
+  been changed.
+- Added :class:`pcdsdevices.interface.TabCompletionHelperClass` to help hold
+  tab completion information state and also allow for tab-completion
+  customization on a per-instance level.
+- :class:`~pcdsdevices.interface.Presets` ``add_hutch`` (and all similar
+  ``add_*``) methods no longer require a position.  When unspecified, the
+  current position is used.
+
+Features
+--------
+- For :class:`pcdsdevices.pseudopos.DelayBase`, added
+  :meth:`~pcdsdevices.pseudopos.DelayBase.set_current_position` and its related
+  component `user_offset`, allowing for custom offsets.
+- Epics motors can now have local limits updated per-session, rather than
+  only having the option of the EPICS limits. Setting limits attributes will
+  update the python limits, putting to the limits PVs will update the limits
+  PVs.
+- Add PVPositionerDone, a setpoint-only PVPositioner class that is done moving
+  immediately. This is not much more useful than just using a PV, but it is
+  compatibile with pseudopositioners and has a built-in filter for ignoring
+  small moves.
+- Moves using mv and umv will log their moves at info level for interactive
+  use to keep track of the sessions.
+- Add ``user_offset`` to :class:`~pcdsdevices.signal.UnitConversionDerivedSignal`,
+  allowing for an arbitrary user offset in user-facing units.
+- Add ``user_offset`` signal to the :class:`pcdsdevices.lxe.LaserTiming`, by
+  way of :class:`~pcdsdevices.signal.UnitConversionDerivedSignal`, offset
+  support.
+
+Device Updates
+--------------
+- CCM energy limited to the range of 4 to 25 keV
+- CCM theta2fine done moving tolerance raised to 0.01
+- Beam request default move start tolerance dropped to 5eV
+
+New Devices
+-----------
+- Add WaveFrontSensorTarget for the wavefront sensor targets (PF1K0, PF1L0).
+- Add TwinCATTempSensor for the updated twincat FB with corrected PV pragmas.
+
+Bugfixes
+--------
+- Adds hints to the :class:`pcdsdevices.lxe.LaserTiming` class for
+  ``LiveTable`` support.
+- umv will now properly display position and completion status after a move.
+- Tab completion for many devices has been fixed. Regression tests have been
+  added.
+- Fix bug in PulsePickerInOut where it would grab only the first section of
+  of the PV instead of the first two
+- Tweak will feel less "janky" now and give useful feedback.
+- Tweak now accepts + and - as valid inputs for changing the step size.
+- Tweak properly clears lines between prints.
+- Fix issue where putting to the limits property would update live PVs,
+  contrary to the behavior of all other limits attributes in ophyd.
+- Fix issue where doing a getattr on the limits properties would fetch
+  live PVs, which can cause slowdowns and instabilities.
+- Preset methods are now visible when not in engineering mode. (#576)
+- Rework BeamEnergyPositioner to be setpoint-only to work properly
+  with the behavior of the energy PVs.
+- FltMvPositioner.wm will now return numeric values if the position
+  value is a tuple. This value is the first element of the tuple, which
+  for pseudo positioners is a value that can be passed into move and have
+  it do the right thing. This resolves consistency issues and fixes bugs
+  where mvr and umvr would fail.
+- Fixed a race condition in the EventSequencer device's status objects. Waiting
+  on these statuses will now be more reliable.
+- Fix issue where converting units could incur time penalties of up to
+  7 seconds. This should take around 10ms now.
+- Fix bug on beam request where you could not override the tolerance
+  via init kwarg, despite docstring's indication.
+
+Maintenance
+-----------
+- Establish DOC conventions for accumulating release notes from every
+  pull request.
+- Tweak refactored for maintainability.
+- Use more of the built-in ophyd mechanisms for limits rather than
+  relying on local overrides.
+
+Contributors
+------------
+- klauer
+- zllentz
+- zrylettc
+
+
 v2.10.0 (2020-08-21)
 ====================
 
