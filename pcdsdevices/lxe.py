@@ -255,7 +255,6 @@ class LaserTiming(FltMvInterface, PVPositioner):
     internally, such that the user may work in units of seconds.
     """
 
-    limits = (1e-20, 1.1e-3)
     _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True,
                        kind='omitted',
                        doc='The internal nanosecond-expecting signal.'
@@ -266,8 +265,9 @@ class LaserTiming(FltMvInterface, PVPositioner):
                    original_units='ns',
                    kind='hinted',
                    doc='Setpoint which handles the timing conversion.',
+                   limits=(1e-20, 1.1e-3),
                    )
-    user_offset = Cpt(AttributeSignal, attr='setpoint.user_offset',
+    user_offset = Cpt(AttributeSignal, attr='_user_offset',
                       kind='normal',
                       doc='A Python-level user offset.')
 
@@ -283,6 +283,32 @@ class LaserTiming(FltMvInterface, PVPositioner):
                 f' of seconds.'
             )
         super().__init__(prefix, egu='s', **kwargs)
+
+    @property
+    def _user_offset(self):
+        """
+        Used as part of the AttributeSignal above, mirror the user offset from
+        the setpoint.
+        """
+        return self.setpoint.user_offset
+
+    @_user_offset.setter
+    def _user_offset(self, value):
+        self.setpoint.user_offset = value
+
+    @property
+    def limits(self):
+        """
+        Limits as (low_limit, high_limit).
+
+        These Python-only user limits are mirrored from `setpoint`.
+        """
+        return self.setpoint.limits
+
+    @limits.setter
+    def limits(self, limits):
+        # Update the setpoint limits
+        self.setpoint.limits = limits
 
     def set_current_position(self, position):
         '''

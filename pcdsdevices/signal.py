@@ -604,8 +604,14 @@ class UnitConversionDerivedSignal(DerivedSignal):
 
     @user_offset.setter
     def user_offset(self, offset):
+        offset_change = -self._user_offset + offset
         self._user_offset = offset
         self._recalculate_position()
+        if self._custom_limits is not None:
+            self._custom_limits = (
+                self._custom_limits[0] + offset_change,
+                self._custom_limits[1] + offset_change,
+            )
 
     def _recalculate_position(self):
         """

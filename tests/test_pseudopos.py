@@ -258,14 +258,21 @@ def test_laser_timing_motion(lxt):
 
 def test_laser_timing_offset(lxt):
     print('Dial position is', lxt.position)
+    # lxt.limits = (1e-10, 1e-3)
     initial_limits = lxt.limits
-    for pos in [1.0e-6, 2.0e-6, 8.0e-7]:
+    for pos in [1.0e-6, 2.0e-6, 8.0e-4]:
         print('Setting the current position to', pos)
+        print('Limits were', lxt.limits)
         lxt.set_current_position(pos)
         print('New offset is', lxt.user_offset.get())
         np.testing.assert_allclose(lxt.position, pos)
+        print('New position confirmed')
         print('Adjusted limits are', lxt.limits)
-        assert lxt.limits == (pos + initial_limits[0], pos + initial_limits[1])
+        np.testing.assert_allclose(
+            lxt.limits,
+            (pos + initial_limits[0],
+             pos + initial_limits[1])
+        )
 
 
 def test_laser_energy_timing_no_egu():
