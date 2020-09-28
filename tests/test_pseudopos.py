@@ -209,7 +209,7 @@ def wrap_motor_move(monkeypatch, positioner):
 def lxt(monkeypatch):
     """LaserTiming pseudopositioner device instance"""
     lxt = make_fake_device(LaserTiming)('prefix', name='lxt')
-    lxt._fs_tgt_time.sim_set_limits((0, 4e9))
+    lxt._fs_tgt_time.sim_set_limits(lxt.limits)
     lxt._fs_tgt_time.sim_put(0)
     wrap_pv_positioner_move(monkeypatch, lxt)
     return lxt
@@ -220,13 +220,17 @@ def test_laser_timing_motion(lxt):
     np.testing.assert_allclose(convert_unit(1, 's', 'ns'), 1e9)
 
     for pos in range(1, 3):
+        pos *= 1e-6
         lxt.move(pos).wait(1)
         np.testing.assert_allclose(lxt.position, pos)
-        np.testing.assert_allclose(lxt._fs_tgt_time.get(),
+        np.testing.assert_allclose(-lxt._fs_tgt_time.get(),
                                    convert_unit(pos, 's', 'ns'))
 
     # Note that the offset adjusts the limits dynamically
     for pos, offset in [(1, 1), (3, 2), (2, -1)]:
+        pos *= 1e-6
+        offset *= 1e-6
+
         lxt.user_offset.put(offset)
         assert lxt.user_offset.get() == offset
         assert lxt.setpoint.user_offset == offset
@@ -234,28 +238,28 @@ def test_laser_timing_motion(lxt):
         # Test the forward/inverse offset calculations directly:
         np.testing.assert_allclose(
             lxt.setpoint.forward(pos),
-            convert_unit(pos - offset, 's', 'ns')
+            convert_unit(-(pos - offset), 's', 'ns')
         )
         np.testing.assert_allclose(
-            lxt.setpoint.inverse(convert_unit(pos - offset, 's', 'ns')),
+            lxt.setpoint.inverse(convert_unit(-(pos - offset), 's', 'ns')),
             pos,
         )
 
         # And indirectly through moves:
         lxt.move(pos).wait(1)
         np.testing.assert_allclose(lxt.position, pos)
-        np.testing.assert_allclose(lxt._fs_tgt_time.get(),
+        np.testing.assert_allclose(-lxt._fs_tgt_time.get(),
                                    convert_unit(pos - offset, 's', 'ns'))
 
     # Ensure we have the expected keys based on kind:
-    assert 'lxt_user_offset' in lxt.read_configuration()
+    assert 'lxt_user_offset' in lxt.read()
     assert 'lxt_setpoint' in lxt.read()
 
 
 def test_laser_timing_offset(lxt):
     print('Dial position is', lxt.position)
     initial_limits = lxt.limits
-    for pos in [1.0, 2.0, -1.0, 8.0]:
+    for pos in [1.0e-6, 2.0e-6, 8.0e-7]:
         print('Setting the current position to', pos)
         lxt.set_current_position(pos)
         print('New offset is', lxt.user_offset.get())
@@ -282,7 +286,7 @@ def lxt_ttc(monkeypatch):
     lxt_ttc.laser._fs_tgt_time.sim_put(0)
     lxt_ttc.delay.motor.motor_egu.sim_put('mm')
     lxt_ttc.delay.motor.user_readback.sim_put(0)
-    lxt_ttc.delay.motor.user_setpoint.sim_set_limits((0, 1e12))
+    lxt_ttc.delay.motor.user_setpoint.sim_set_limits((-1e12, 1e12))
     lxt_ttc.delay.motor.motor_spg.sim_put('Go')
     wrap_pv_positioner_move(monkeypatch, lxt_ttc.laser)
     wrap_motor_move(monkeypatch, lxt_ttc.delay.motor)
@@ -290,36 +294,38 @@ def lxt_ttc(monkeypatch):
 
 
 def test_laser_timing_compensation(lxt_ttc):
-    st = lxt_ttc.move(1)
-    st.wait(timeout=2)
-    assert lxt_ttc.position[0] == 1.0
-    assert lxt_ttc.delay.position[0] == 1.0
-    np.testing.assert_allclose(lxt_ttc.laser.position, 1.0)
+    pos = 1.0e-6
+    lxt_ttc.move(pos).wait(timeout=2)
 
-    seconds_to_mm_values = [
-        0.0,
-        149896229000.0,
-        299792458000.0,
-        449688687000.0,
-        599584916000.0,
+    assert lxt_ttc.position[0] == pos
+    assert lxt_ttc.delay.position[0] == pos
+    np.testing.assert_allclose(lxt_ttc.laser.position, pos)
+
+    milliseconds_to_mm_values = [
+        # Delay motor is inverted:
+        -0.0,
+        -149896.229,
+        -299792.458,
+        -449688.68700000003,
+        -599584.916,
     ]
 
     mm_to_seconds_values = [
-        0.0,
-        0.06671281903963042,
-        0.13342563807926083,
-        0.20013845711889122,
-        0.26685127615852167,
+        -0.0,
+        -6.671281903963041e-07,
+        -1.3342563807926082e-06,
+        -2.001384571188912e-06,
+        -2.6685127615852163e-06,
     ]
 
     np.testing.assert_allclose(
-        [lxt_ttc.delay.forward(i).motor
-         for i in range(len(seconds_to_mm_values))],
-        seconds_to_mm_values,
+        [lxt_ttc.delay.forward(i * 1e-6).motor
+         for i in range(len(milliseconds_to_mm_values))],
+        milliseconds_to_mm_values,
     )
 
     np.testing.assert_allclose(
-        [lxt_ttc.delay.inverse(i * 1e10).delay
+        [lxt_ttc.delay.inverse(i * 1e5).delay
          for i in range(len(mm_to_seconds_values))],
         mm_to_seconds_values,
     )
