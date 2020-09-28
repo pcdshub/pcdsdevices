@@ -229,7 +229,7 @@ def test_laser_timing_motion(lxt):
     # Note that the offset adjusts the limits dynamically
     for pos, offset in [(1, 1), (3, 2), (2, -1)]:
         pos *= 1e-6
-        offset *= 1e-6
+        offset *= 1e-8
 
         lxt.user_offset.put(offset)
         assert lxt.user_offset.get() == offset

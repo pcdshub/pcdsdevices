@@ -586,6 +586,11 @@ class UnitConversionDerivedSignal(DerivedSignal):
         if self._custom_limits is not None:
             return self._custom_limits
 
+        # Fall back to the superclass derived_from limits:
+        return tuple(
+            sorted(self.inverse(v) for v in self._derived_from.limits)
+        )
+
     @limits.setter
     def limits(self, value):
         if value is None:
