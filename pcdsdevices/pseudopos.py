@@ -86,7 +86,10 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
                     continue
                 if signal.connected and signal.write_access:
                     if signal.get(use_monitor=True) != value:
-                        signal.put(value, wait=False)
+                        if isinstance(signal, ophyd.signal.EpicsSignalBase):
+                            signal.put(value, wait=False)
+                        else:
+                            signal.put(value)
             except Exception as ex:
                 self.log.debug('Failed to update notepad %s to position %s',
                                attr, value, exc_info=ex)
