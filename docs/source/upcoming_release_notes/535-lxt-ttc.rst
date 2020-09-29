@@ -10,6 +10,9 @@ Features
 - :class:`~pcdsdevices.pseudopos.SyncAxes` has been adjusted to support
   scalar-valued pseudopositioners, allowing for more complex devices to be kept
   in lock-step motion.
+- :class:`~pcdsdevices.pseudopos.PseudoPositioner` position tuples, when of
+  length 1, now support casting to floating point, meaning they can be used
+  in many functions which only support floating point values.
 
 Device Updates
 --------------
