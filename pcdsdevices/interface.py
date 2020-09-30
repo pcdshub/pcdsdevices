@@ -418,6 +418,13 @@ def device_info(device, subdevice_filter=None, devices=None):
     except Exception:
         # Something else went wrong! We have a position but it didn't work
         info['position'] = 'ERROR'
+    else:
+        try:
+            if not isinstance(info['position'], numbers.Integral):
+                # Give a floating point value, if possible, when not integral
+                info['position'] = float(info['position'])
+        except Exception:
+            ...
 
     if device not in devices:
         devices.add(device)
@@ -1388,8 +1395,21 @@ class AbsProgressBar(ProgressBar):
         name = self._name
 
         try:
+            if isinstance(current, typing.Sequence):
+                # Single-valued pseudo positioner values can come through here.
+                assert len(current) == 1
+                current, = current
+
+            current = float(current)
+
             # Expand name to include position to display with progress bar
-            name = '{}: {:.4f}'.format(name, current)
+            # TODO: can we get access to the signal's precision?
+            if 0.0 < abs(current) < 1e-6:
+                fmt = '{}: ({:.4g})'
+            else:
+                fmt = '{}: ({:.4f})'
+
+            name = fmt.format(name, current)
             self._last_position = current
         except Exception:
             # Fallback if there is no position data at all

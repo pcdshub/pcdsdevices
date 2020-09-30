@@ -10,6 +10,7 @@ if __name__ != 'pcdsdevices.signal':
                        'extremely confusing bugs. Please run your script '
                        'elsewhere for better results.')
 import logging
+import numbers
 import typing
 from threading import RLock, Thread
 
@@ -532,6 +533,11 @@ class UnitConversionDerivedSignal(DerivedSignal):
     parent : Device, optional
         The parent device.  Required if ``derived_from`` is an attribute name.
 
+    limits : 2-tuple, optional
+        Ophyd signal-level limits in derived units.  DerivedSignal defaults
+        to converting the original signal's limits, but these may be overridden
+        here without modifying the original signal.
+
     **kwargs :
         Keyword arguments are passed to the superclass.
     """
@@ -542,26 +548,59 @@ class UnitConversionDerivedSignal(DerivedSignal):
     def __init__(self, derived_from, *,
                  derived_units: str,
                  original_units: typing.Optional[str] = None,
-                 user_offset: typing.Optional[typing.Any] = None,
+                 user_offset: typing.Optional[numbers.Real] = 0,
+                 limits: typing.Optional[typing.Tuple[numbers.Real,
+                                                      numbers.Real]] = None,
                  **kwargs):
         self.derived_units = derived_units
         self.original_units = original_units
         self._user_offset = user_offset
+        self._custom_limits = limits
         super().__init__(derived_from, **kwargs)
 
     def forward(self, value):
         '''Compute derived signal value -> original signal value'''
-        if self.user_offset is not None:
-            value = value - self.user_offset
-        return convert_unit(value, self.derived_units, self.original_units)
+        if self.user_offset is None:
+            raise ValueError(f'{self.name} must be set to a non-None value.')
+        return convert_unit(value - self.user_offset,
+                            self.derived_units, self.original_units)
 
     def inverse(self, value):
         '''Compute original signal value -> derived signal value'''
-        derived_value = convert_unit(value, self.original_units,
-                                     self.derived_units)
-        if self.user_offset is not None:
-            derived_value = derived_value + self.user_offset
-        return derived_value
+        if self.user_offset is None:
+            raise ValueError(f'{self.name} must be set to a non-None value.')
+        return convert_unit(value, self.original_units,
+                            self.derived_units) + self.user_offset
+
+    @property
+    def limits(self):
+        '''
+        Defaults to limits from the original signal (low, high).
+
+        Limit values may be reversed such that ``low <= value <= high`` after
+        performing the calculation.
+
+        Limits may also be overridden here without affecting the original
+        signal.
+        '''
+        if self._custom_limits is not None:
+            return self._custom_limits
+
+        # Fall back to the superclass derived_from limits:
+        return tuple(
+            sorted(self.inverse(v) for v in self._derived_from.limits)
+        )
+
+    @limits.setter
+    def limits(self, value):
+        if value is None:
+            self._custom_limits = None
+            return
+
+        if len(value) != 2 or value[0] >= value[1]:
+            raise ValueError('Custom limits must be a 2-tuple (low, high)')
+
+        self._custom_limits = tuple(value)
 
     @property
     def user_offset(self) -> typing.Optional[typing.Any]:
@@ -570,8 +609,14 @@ class UnitConversionDerivedSignal(DerivedSignal):
 
     @user_offset.setter
     def user_offset(self, offset):
+        offset_change = -self._user_offset + offset
         self._user_offset = offset
         self._recalculate_position()
+        if self._custom_limits is not None:
+            self._custom_limits = (
+                self._custom_limits[0] + offset_change,
+                self._custom_limits[1] + offset_change,
+            )
 
     def _recalculate_position(self):
         """

@@ -42,13 +42,30 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         super().__init__(prefix=prefix, parent=parent, **kwargs)
 
 
+def _as_float(self):
+    """Pseudo Position scalar value -> float"""
+    return float(self[0])
+
+
 class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
     """
-    This is a PCDS-specific PseudoPositioner subclass which adds support
-    for NotepadLinkedSignal.  The functionality of the class is otherwise
-    identical to ophyd's PseudoPositioner.
+    This is a PCDS-specific PseudoPositioner subclass which has a few notable
+    changes/additions:
+
+    * Adds support for NotepadLinkedSignal.
+    * Makes scalar ``RealPosition`` and ``PseudoPosition`` easily convert
+      to floating point values.
 
     """ + ophyd.pseudopos.PseudoPositioner.__doc__
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if len(self.RealPosition._fields) == 1:
+            self.RealPosition.__float__ = _as_float
+
+        if len(self.PseudoPosition._fields) == 1:
+            self.PseudoPosition.__float__ = _as_float
 
     def _update_notepad_ioc(self, position, attr):
         """
@@ -69,7 +86,10 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
                     continue
                 if signal.connected and signal.write_access:
                     if signal.get(use_monitor=True) != value:
-                        signal.put(value, wait=False)
+                        if isinstance(signal, ophyd.signal.EpicsSignalBase):
+                            signal.put(value, wait=False)
+                        else:
+                            signal.put(value)
             except Exception as ex:
                 self.log.debug('Failed to update notepad %s to position %s',
                                attr, value, exc_info=ex)
@@ -154,7 +174,7 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
                              'the axes to synchronize included as '
                              'components'))
         super().__init__(*args, **kwargs)
-        self._offsets = {}
+        self._offsets = None
 
     def calc_combined(self, real_position):
         """
@@ -184,25 +204,26 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
         """
 
         pos = self.real_position
-        combo = self.calc_combined(pos)
-        offsets = {fld: getattr(pos, fld) - combo for fld in pos._fields}
+        combo = float(self.calc_combined(pos))
+        offsets = {fld: float(getattr(pos, fld)) - combo
+                   for fld in pos._fields}
         self._offsets = offsets
         logger.debug('Offsets %s cached', offsets)
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
         """Composite axes move to the combined axis position plus an offset."""
-        if not self._offsets:
+        if self._offsets is None:
             self.save_offsets()
         real_pos = {}
         for axis, offset in self._offsets.items():
-            real_pos[axis] = pseudo_pos.pseudo + offset
+            real_pos[axis] = float(pseudo_pos.pseudo) + offset
         return self.RealPosition(**real_pos)
 
     @real_position_argument
     def inverse(self, real_pos):
         """Combined axis readback is the mean of the composite axes."""
-        return self.PseudoPosition(pseudo=self.calc_combined(real_pos))
+        return self.PseudoPosition(pseudo=float(self.calc_combined(real_pos)))
 
 
 class DelayBase(FltMvInterface, PseudoPositioner):
@@ -257,11 +278,21 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         self.n_bounces = n_bounces
         super().__init__(*args, egu=egu, **kwargs)
 
+    @pseudo_position_argument   # TODO: upstream this fix
+    def check_value(self, value):
+        return super().check_value(value)
+
     @user_offset.sub_value
     def _offset_changed(self, value, **kwargs):
         """
         The user offset was changed.  Update the readback value, if possible.
         """
+        if not hasattr(self, 'real_position'):
+            # A race condition on instantiation can cause this subscription to
+            # fire prior to the real position being available.  The position
+            # will update based on this offset when available.
+            return
+
         try:
             self._update_position()
         except ophyd.utils.DisconnectedError:
