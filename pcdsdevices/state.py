@@ -229,7 +229,7 @@ class StatePositioner(MvInterface, Device, PositionerBase):
             raise TypeError('Valid states must be of type str or int')
         state = self.get_state(value)
         if state.name in self._invalid_states:
-            raise ValueError('Cannot set the %s state', state.name)
+            raise ValueError(f'Cannot set the {state.name} state')
         return state
 
     def get_state(self, value):
