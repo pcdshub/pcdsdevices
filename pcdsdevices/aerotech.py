@@ -6,7 +6,6 @@ import logging
 import numpy as np
 from ophyd import Component as Cpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
-from ophyd.utils import LimitError
 
 from .epics_motor import EpicsMotorInterface, MotorDisabledError
 from .utils import stop_on_keyboardinterrupt
@@ -93,7 +92,7 @@ class AerotechMotor(EpicsMotorInterface):
         self.configuration_attrs.append("power")
         self._state_list = ["Stop", "Pause", "Move", "Go"]
 
-    def _status_print(self, status, msg=None, ret_status=False, print_set=True,
+    def _status_print(self, status, msg=None, print_set=True,
                       timeout=None, wait=True, reraise=False):
         """
         Internal method that optionally returns the status object and
@@ -107,9 +106,6 @@ class AerotechMotor(EpicsMotorInterface):
 
         msg : str or None, optional
             Message to print if print_set is True.
-
-        ret_status : bool, optional
-            Return the status object of the set.
 
         print_set : bool, optional
             Print a short statement about the set.
@@ -136,8 +132,7 @@ class AerotechMotor(EpicsMotorInterface):
                     logger.info(msg)
                 else:
                     logger.debug(msg)
-            if ret_status:
-                return status
+            return status
 
         # The operation failed for some reason
         except RuntimeError:
@@ -147,15 +142,12 @@ class AerotechMotor(EpicsMotorInterface):
                 raise
 
     @stop_on_keyboardinterrupt
-    def homf(self, ret_status=False, print_set=True, check_status=True):
+    def homf(self, print_set=True, check_status=True):
         """
         Home the motor forward.
 
         Parameters
         ----------
-        ret_status : bool, optional
-            Return the status object of the set.
-
         print_set : bool, optional
             Print a short statement about the set.
 
@@ -172,18 +164,15 @@ class AerotechMotor(EpicsMotorInterface):
             self.check_status()
         status = self.home_forward.set(1, timeout=self.set_timeout)
         return self._status_print(status, f"Homing '{self.name}' forward.",
-                                  print_set=print_set, ret_status=ret_status)
+                                  print_set=print_set)
 
     @stop_on_keyboardinterrupt
-    def homr(self, ret_status=False, print_set=True, check_status=True):
+    def homr(self, print_set=True, check_status=True):
         """
         Home the motor in reverse.
 
         Parameters
         ----------
-        ret_status : bool, optional
-            Return the status object of the set.
-
         print_set : bool, optional
             Print a short statement about the set.
 
@@ -201,123 +190,7 @@ class AerotechMotor(EpicsMotorInterface):
         status = self.home_reverse.set(1, timeout=self.set_timeout)
         return self._status_print(
             status, f"Homing '{self.name}' in reverse.",
-            print_set=print_set, ret_status=ret_status)
-
-    def move(self, position, *args, wait=False, check_status=True,
-             timeout=None, **kwargs):
-        """
-        Move to a specified position, optionally waiting for motion to
-        complete.
-
-        Parameters
-        ----------
-        position
-            Position to move to.
-
-        wait : bool, optional
-            Wait for the motor to complete the motion.
-
-        check_status : bool, optional
-            Check if the motors are in a valid state to move.
-
-        moved_cb : callable
-            Call this callback when movement has finished. This callback must
-            accept one keyword argument: 'obj' which will be set to this
-            positioner instance.
-
-        timeout : float, optional
-            Maximum time to wait for the motion. If None, the default timeout
-            for this positioner is used.
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object for the move.
-
-        Raises
-        ------
-        TimeoutError
-            When motion takes longer than `timeout`
-
-        ValueError
-            On invalid positions
-
-        RuntimeError
-            If motion fails other than timing out
-        """
-        # Check the motor status
-        if check_status:
-            self.check_status(position)
-        logger.debug(f"Moving {self.name} to {position}")
-        return super().move(position, wait=wait, timeout=timeout, *args,
-                            **kwargs)
-
-    def mv(self, position, *args, wait=True, print_move=True, **kwargs):
-        """
-        Move to a specified position, optionally waiting for motion to
-        complete. mv() is different from move() by catching all the common
-        exceptions that this motor can raise and just raises a logger
-        warning. Therefore if building higher level functionality, do not
-        use this method and use move() instead otherwise none of these
-        exceptions will propagate to it.
-
-        Parameters
-        ----------
-        position
-            Position to move to.
-
-        wait : bool, optional
-            Wait for the motor to complete the motion.
-
-        check_status : bool, optional
-            Check if the motors are in a valid state to move.
-
-        print_move : bool, optional
-            Print a short statement about the move.
-
-        Exceptions Caught
-        -----------------
-        LimitError
-            Error raised when the inputted position is beyond the soft limits.
-
-        MotorDisabledError
-            Error raised if the motor is disabled and move is requested.
-
-        MotorFaulted
-            Error raised if the motor is disabled and the move is requested.
-
-        MotorStopped
-            Error raised if the motor is stopped and the move is requested.
-
-        Returns
-        -------
-        status : MoveStatus
-            Status object for the move.
-        """
-        try:
-            status = self.move(position, *args, wait=wait, **kwargs)
-
-            # Notify the user that a motor has completed or the command is sent
-            if print_move:
-                if wait:
-                    logger.info("Move completed for '%s'.", self.name)
-                else:
-                    logger.info("Move command sent to '%s'", self.name)
-            return status
-
-        # Catch all the common motor exceptions
-        except LimitError:
-            logger.warning("Requested move '%s' is outside the soft limits "
-                           "%s for motor %s", position, self.limits, self.name)
-        except MotorDisabledError:
-            logger.warning("Cannot move - motor %s is currently disabled. Try "
-                           "running 'motor.enable()'.", self.name)
-        except AerotechMotorFaulted:
-            logger.warning("Cannot move - motor %s is currently faulted. Try "
-                           "running 'motor.clear()'.", self.name)
-        except AerotechMotorStopped:
-            logger.warning("Cannot move - motor %s is currently stopped. Try "
-                           "running 'motor.state=\"Go\"'.", self.name)
+            print_set=print_set)
 
     def check_status(self, position=None):
         """
@@ -384,15 +257,12 @@ class AerotechMotor(EpicsMotorInterface):
         log_level("'%s' New position: %s, offset: %s", self.position,
                   self.offset)
 
-    def enable(self, ret_status=False, print_set=True):
+    def enable(self, print_set=True):
         """
         Enables the motor power.
 
         Parameters
         ----------
-        ret_status : bool, optional
-            Return the status object of the set.
-
         print_set : bool, optional
             Print a short statement about the set.
 
@@ -403,17 +273,14 @@ class AerotechMotor(EpicsMotorInterface):
         """
         status = self.power.set(1, timeout=self.set_timeout)
         return self._status_print(status, f"Enabled motor '{self.name}'.",
-                                  print_set=print_set, ret_status=ret_status)
+                                  print_set=print_set)
 
-    def disable(self, ret_status=False, print_set=True):
+    def disable(self, print_set=True):
         """
         Disables the motor power.
 
         Parameters
         ----------
-        ret_status : bool, optional
-            Return the status object of the set.
-
         print_set : bool, optional
             Print a short statement about the set.
 
@@ -424,7 +291,7 @@ class AerotechMotor(EpicsMotorInterface):
         """
         status = self.power.set(0, timeout=self.set_timeout)
         return self._status_print(status, f"Disabled motor '{self.name}'.",
-                                  print_set=print_set, ret_status=ret_status)
+                                  print_set=print_set)
 
     @property
     def enabled(self):
@@ -438,15 +305,12 @@ class AerotechMotor(EpicsMotorInterface):
         """
         return bool(self.power.get())
 
-    def clear(self, ret_status=False, print_set=True):
+    def clear(self, print_set=True):
         """
         Clears the motor error.
 
         Parameters
         ----------
-        ret_status : bool, optional
-            Return the status object of the set.
-
         print_set : bool, optional
             Print a short statement about the set.
 
@@ -457,17 +321,14 @@ class AerotechMotor(EpicsMotorInterface):
         """
         status = self.clear_error.set(1, timeout=self.set_timeout)
         return self._status_print(status, f"Cleared motor '{self.name}'.",
-                                  print_set=print_set, ret_status=ret_status)
+                                  print_set=print_set)
 
-    def reconfig(self, ret_status=False, print_set=True):
+    def reconfig(self, print_set=True):
         """
         Re-configures the motor.
 
         Parameters
         ----------
-        ret_status : bool, optional
-            Return the status object of the set.
-
         print_set : bool, optional
             Print a short statement about the set.
 
@@ -478,7 +339,7 @@ class AerotechMotor(EpicsMotorInterface):
         """
         status = self.config.set(1, timeout=self.set_timeout)
         return self._status_print(status, f"Reconfigured motor '{self.name}'.",
-                                  print_set=print_set, ret_status=ret_status)
+                                  print_set=print_set)
 
     @property
     def faulted(self):
@@ -493,15 +354,12 @@ class AerotechMotor(EpicsMotorInterface):
         if self.axis_fault.connected:
             return bool(self.axis_fault.get())
 
-    def zero_all(self, ret_status=False, print_set=True):
+    def zero_all(self, print_set=True):
         """
         Sets the current position to be the zero position of the motor.
 
         Parameters
         ----------
-        ret_status : bool, optional
-            Return the status object of the set.
-
         print_set : bool, optional
             Print a short statement about the set.
 
@@ -512,7 +370,7 @@ class AerotechMotor(EpicsMotorInterface):
         """
         status = self.zero_all_proc.set(1, timeout=self.set_timeout)
         return self._status_print(status, f"Zeroed motor '{self.name}'.",
-                                  print_set=print_set, ret_status=ret_status)
+                                  print_set=print_set)
 
     @property
     def state(self):
@@ -528,7 +386,7 @@ class AerotechMotor(EpicsMotorInterface):
         return self._state_list[self.state_component.get()]
 
     @state.setter
-    def state(self, val, ret_status=False, print_set=True):
+    def state(self, val, print_set=True):
         """
         Sets the state of the motor. Inputted state can be one of the following
         states or the index of the desired state:
@@ -539,9 +397,6 @@ class AerotechMotor(EpicsMotorInterface):
         ----------
         val : int or str
 
-        ret_status : bool, optional
-            Return the status object of the set.
-
         print_set : bool, optional
             Print a short statement about the set.
 
@@ -551,12 +406,12 @@ class AerotechMotor(EpicsMotorInterface):
             The status object for setting the state signal.
         """
         try:
-            return self.set_state(val, ret_status, print_set)
+            return self.set_state(val, print_set)
         except ValueError:
             logger.info("State must be one of the following: %s",
                         self._state_list)
 
-    def set_state(self, state, ret_status=True, print_set=False):
+    def set_state(self, state, print_set=False):
         """
         Sets the state of the motor. Inputted state can be one of the following
         states or the index of the desired state:
@@ -565,9 +420,6 @@ class AerotechMotor(EpicsMotorInterface):
         Parameters
         ----------
         val : int or str
-
-        ret_status : bool, optional
-            Return the status object of the set.
 
         print_set : bool, optional
             Print a short statement about the set.
@@ -593,18 +445,15 @@ class AerotechMotor(EpicsMotorInterface):
 
         return self._status_print(
             status, f"Changed state of '{self.name} to '{val}'.",
-            print_set=print_set, ret_status=ret_status)
+            print_set=print_set)
 
-    def ready_motor(self, ret_status=False, print_set=True):
+    def ready_motor(self, print_set=True):
         """
         Sets the motor to the ready state by clearing any errors, enabling it,
         and setting the state to be 'Go'.
 
         Parameters
         ----------
-        ret_status : bool, optional
-            Return the status object of the set.
-
         print_set : bool, optional
             Print a short statement about the set.
 
@@ -613,12 +462,12 @@ class AerotechMotor(EpicsMotorInterface):
         Status
             The status object for all the sets.
         """
-        status = [self.clear(ret_status=True, print_set=False)]
-        status.append(self.enable(ret_status=True, print_set=False))
-        status.append(self.set_state("Go", ret_status=True, print_set=False))
+        status = [self.clear(print_set=False)]
+        status.append(self.enable(print_set=False))
+        status.append(self.set_state("Go", print_set=False))
         return self._status_print(
             status, f"Motor '{self.name}' is now ready to move.",
-            print_set=print_set, ret_status=ret_status
+            print_set=print_set
         )
 
     # def expert_screen(self, print_msg=True):
