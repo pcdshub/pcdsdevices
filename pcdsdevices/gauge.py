@@ -297,7 +297,7 @@ class GaugeSerialGPI(GaugeSerial):
     """Class for Pirani Vacuum Gauges controlled via serial."""
     atmcalib = Cpt(EpicsSignal, ':ATMCALIB', kind='omitted')
     atmcalibdes = Cpt(EpicsSignal, ':ATMCALIBDES', kind='omitted')
-    autozero = Cpt(EpicsSignal, ':AUTOZERO_RBV', kind='omitted')
+    autozero = Cpt(EpicsSignalRO, ':AUTOZERO_RBV', kind='omitted')
     autozerodes = Cpt(EpicsSignal, ':AUTOZERODES', kind='omitted')
     zeropr = Cpt(EpicsSignal, ':ZEROPR', kind='omitted')
 
