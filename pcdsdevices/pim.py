@@ -15,7 +15,7 @@ from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
 
 from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
-                                     PCDSAreaDetectorTyphos)
+                                     PCDSAreaDetectorTyphosTrigger)
 from .epics_motor import IMS, BeckhoffAxis
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, LightpathInOutMixin
@@ -269,7 +269,7 @@ class LCLS2ImagerBase(BaseInterface, Device, LightpathInOutMixin):
                  doc='Control of the diagnostic stack via saved positions.')
     y_motor = Cpt(BeckhoffAxis, ':MMS', kind='normal',
                   doc='Direct control of the diagnostic stack motor.')
-    detector = Cpt(PCDSAreaDetectorTyphos, ':CAM:', kind='normal',
+    detector = Cpt(PCDSAreaDetectorTyphosTrigger, ':CAM:', kind='normal',
                    doc='Area detector settings and readbacks.')
     cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config',
                     doc='Camera power supply controls.')
