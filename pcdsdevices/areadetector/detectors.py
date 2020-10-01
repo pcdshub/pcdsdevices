@@ -7,12 +7,12 @@ functions needed by all instances of a detector are added here.
 import logging
 import warnings
 
+from ophyd import Device
 from ophyd.areadetector import cam
-from ophyd.areadetector.base import ADComponent, NDDerivedSignal
-from ophyd.areadetector.base import EpicsSignalWithRBV
+from ophyd.areadetector.base import (ADComponent, EpicsSignalWithRBV,
+                                     NDDerivedSignal)
 from ophyd.areadetector.detectors import DetectorBase
 from ophyd.device import Component as Cpt
-from ophyd import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from .plugins import (ColorConvPlugin, HDF5Plugin, ImagePlugin, JPEGPlugin,
@@ -168,11 +168,12 @@ class PCDSAreaDetector(PCDSAreaDetectorEmbedded):
     tiff1 = Cpt(TIFFPlugin, 'TIFF1:')
     trans1 = Cpt(TransformPlugin, 'Trans1:')
 
+
 class PCDSAreaDetectorTyphos(Device):
     """
     A 'bare' PCDS areadetector class specifically for Typhos screens.
     Implements only the most commonly used PVs for areadetector IOCS.
-    Includes a simple image viewer. 
+    Includes a simple image viewer.
     """
 
     # Status and specifications
@@ -196,7 +197,7 @@ class PCDSAreaDetectorTyphos(Device):
     image_counter = Cpt(EpicsSignalRO, 'NumImagesCounter_RBV', kind='normal')
 
     # Image data
-    ndimensions = Cpt(EpicsSignalRO, 'IMAGE2:NDimensions_RBV', kind='omitted') 
+    ndimensions = Cpt(EpicsSignalRO, 'IMAGE2:NDimensions_RBV', kind='omitted')
     width = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize0_RBV', kind='omitted')
     height = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize1_RBV', kind='omitted')
     depth = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize2_RBV', kind='omitted')
@@ -207,3 +208,16 @@ class PCDSAreaDetectorTyphos(Device):
                            'depth'),
                     num_dimensions='ndimensions',
                     kind='normal')
+
+
+class PCDSAreaDetectorTyphosTrigger(PCDSAreaDetectorTyphos):
+    """
+    Expanded typhos-optimized areadetector class for cameras with triggers.
+    """
+
+    event_code = Cpt(EpicsSignalWithRBV, 'CamEventCode', kind='config',
+                     doc='Code to determine beam synchronization rate.')
+    event_rate = Cpt(EpicsSignalRO, 'CamRepRate_RBV', kind='config',
+                     doc='Current rate of the incoming triggers. '
+                         'Determined by event_code and the '
+                         'accelerator state.')
