@@ -15,10 +15,11 @@ from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
 
 from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
-                                     PCDSAreaDetectorTyphos)
+                                     PCDSAreaDetectorTyphosTrigger)
 from .epics_motor import IMS, BeckhoffAxis
-from .inout import InOutRecordPositioner, TwinCATInOutPositioner
+from .inout import InOutRecordPositioner
 from .interface import BaseInterface, LightpathInOutMixin
+from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATThermocouple
 from .signal import PytmcSignal
 from .state import StatePositioner
@@ -264,11 +265,11 @@ class LCLS2ImagerBase(BaseInterface, Device, LightpathInOutMixin):
     lightpath_cpts = ['target']
     _icon = 'fa.video-camera'
 
-    target = Cpt(TwinCATInOutPositioner, ':MMS:STATE', kind='hinted',
+    target = Cpt(TwinCATStatePMPS, ':MMS:STATE', kind='hinted',
                  doc='Control of the diagnostic stack via saved positions.')
     y_motor = Cpt(BeckhoffAxis, ':MMS', kind='normal',
                   doc='Direct control of the diagnostic stack motor.')
-    detector = Cpt(PCDSAreaDetectorTyphos, ':CAM:', kind='normal',
+    detector = Cpt(PCDSAreaDetectorTyphosTrigger, ':CAM:', kind='normal',
                    doc='Area detector settings and readbacks.')
     cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config',
                     doc='Camera power supply controls.')
