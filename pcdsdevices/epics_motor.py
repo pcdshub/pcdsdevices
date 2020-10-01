@@ -463,7 +463,7 @@ class BeckhoffAxisPLC(Device):
                  string=True, doc='PLC error or warning')
     err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal',
                    doc='Current NC error code')
-    cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='o', kind='config',
+    cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='o', kind='normal',
                         doc='Command to reset an active error')
 
     set_metadata(err_code, dict(variety='scalar', display_format='hex'))
