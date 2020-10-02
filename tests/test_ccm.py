@@ -19,17 +19,10 @@ SAMPLE_WAVELENGTH = 1.5  # hard xray
 def test_theta_alio_inversion():
     logger.debug('test_theta_alio_inversion')
 
-    alio_res = ccm.theta_to_alio(SAMPLE_ALIO, ccm.default_theta0,
-                                 ccm.default_gr, ccm.default_gd)
-    theta_res = ccm.alio_to_theta(alio_res, ccm.default_theta0,
-                                  ccm.default_gr, ccm.default_gd)
-
     theta = ccm.alio_to_theta(SAMPLE_ALIO, ccm.default_theta0, ccm.default_gr,
                               ccm.default_gd)
     alio_calc = ccm.theta_to_alio(theta, ccm.default_theta0, ccm.default_gr,
                                   ccm.default_gd)
-
-    assert np.isclose(theta_res, SAMPLE_ALIO)
     assert np.isclose(alio_calc, SAMPLE_ALIO)
 
 
