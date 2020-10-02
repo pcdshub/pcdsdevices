@@ -282,16 +282,9 @@ def alio_to_theta(alio, theta0, gr, gd):
     """
     Converts alio position (mm) to theta angle (rad).
 
-    This is an empirical inversion via binary search. If you decide to spend
-    time trying to find the analytic solution here, please update this
-    docstring, either to indicate your success or to increment the hours
-    counter below.
-
     Conversion function
     theta_angle = f(x) = 2arctan * [(sqrt(x^2 + D^2 + 2Rx) - D)/(2R + x)]
     Note that for x = −R, θ = 2 arctan(−R/D)
-
-    total hours spent here: 2
     """
     return theta0 + 2 * np.arctan(
          (np.sqrt(alio ** 2 + gd ** 2 + 2 * gr * alio) - gd) / (2 * gr + alio)
