@@ -73,6 +73,13 @@ class AerotechMotor(EpicsMotorInterface):
         Print verbose status information.
     """
     tab_component_names = True
+    tab_whitelist = [
+        'check_status', 'clear', 'disable', 'enable', 'get_enabled',
+        'get_faulted', 'get_state', 'homf', 'homr', 'ready_motor', 'reconfig',
+        'set_position', 'set_state', 'status', 'zero_all',
+    ]
+
+    _state_list = ("Stop", "Pause", "Move", "Go")
 
     # TODO: Remove when these have been figured out
     low_limit_switch = Cpt(Signal)
@@ -97,7 +104,6 @@ class AerotechMotor(EpicsMotorInterface):
         self.motor_done_move.unsubscribe(self._move_changed)
         self.user_readback.unsubscribe(self._pos_changed)
         self.configuration_attrs.append("power")
-        self._state_list = ["Stop", "Pause", "Move", "Go"]
         self.print_set = True
         self.set_timeout = 10
 
@@ -126,7 +132,7 @@ class AerotechMotor(EpicsMotorInterface):
         Parameters
         ----------
         status : StatusObject or list
-            The inputted status object.
+            The status object.
 
         msg : str or None, optional
             Message to print if print_set is True.
@@ -140,7 +146,7 @@ class AerotechMotor(EpicsMotorInterface):
         Returns
         -------
         Status
-            Inputted status object.
+            The status object, for convenience.
         """
         try:
             # Wait for the status to complete
@@ -228,17 +234,20 @@ class AerotechMotor(EpicsMotorInterface):
         MotorStopped
             If the motor is stopped.
         """
-        if not self.enabled:
+        enabled = self.get_enabled()
+        if not enabled:
             err = f"Motor '{self.name}' is currently disabled"
             logger.error(err)
             raise MotorDisabledError(err)
 
-        if self.faulted:
+        faulted = self.get_faulted()
+        if faulted:
             err = f"Motor '{self.name}' is currently faulted."
             logger.error(err)
             raise AerotechMotorFaulted(err)
 
-        if self.state == "Stop":
+        state = self.get_state()
+        if state == "Stop":
             err = f"Motor '{self.name}' is currently stopped."
             logger.error(err)
             raise AerotechMotorStopped(err)
@@ -251,7 +260,7 @@ class AerotechMotor(EpicsMotorInterface):
 
     def set_position(self, position_des):
         """
-        Sets the current position to be the inputted position by changing the
+        Sets the current position to be the desired position by changing the
         offset.
 
         Parameters
@@ -295,8 +304,7 @@ class AerotechMotor(EpicsMotorInterface):
         status = self.power.set(0, timeout=self.set_timeout)
         return self._status_print(status, f"Disabled motor '{self.name}'.")
 
-    @property
-    def enabled(self):
+    def get_enabled(self, **kwargs):
         """
         Returns if the motor is curently enabled.
 
@@ -305,7 +313,7 @@ class AerotechMotor(EpicsMotorInterface):
         enabled : bool
             True if the motor is powered, False if not.
         """
-        return bool(self.power.get())
+        return bool(self.power.get(**kwargs))
 
     def clear(self):
         """
@@ -334,8 +342,7 @@ class AerotechMotor(EpicsMotorInterface):
         status = self.config.set(1, timeout=self.set_timeout)
         return self._status_print(status, f"Reconfigured motor '{self.name}'.")
 
-    @property
-    def faulted(self):
+    def get_faulted(self, **kwargs):
         """
         Returns the current fault with the motor.
 
@@ -344,8 +351,7 @@ class AerotechMotor(EpicsMotorInterface):
         faulted
             Fault enumeration.
         """
-        if self.axis_fault.connected:
-            return bool(self.axis_fault.get())
+        return bool(self.axis_fault.get(**kwargs))
 
     def zero_all(self):
         """
@@ -359,8 +365,7 @@ class AerotechMotor(EpicsMotorInterface):
         status = self.zero_all_proc.set(1, timeout=self.set_timeout)
         return self._status_print(status, f"Zeroed motor '{self.name}'.")
 
-    @property
-    def state(self):
+    def get_state(self, **kwargs):
         """
         Returns the state of the motor. State can be one of the following:
             'Stop', 'Pause', 'Move', 'Go'
@@ -370,35 +375,13 @@ class AerotechMotor(EpicsMotorInterface):
         state : str
             The current state of the motor
         """
-        return self._state_list[self.state_component.get()]
-
-    @state.setter
-    def state(self, val):
-        """
-        Sets the state of the motor. Inputted state can be one of the following
-        states or the index of the desired state:
-            'Stop', 'Pause', 'Move', 'Go'
-        Alias for set_state((val, False, True)
-
-        Parameters
-        ----------
-        val : int or str
-
-        Returns
-        -------
-        Status
-            The status object for setting the state signal.
-        """
-        try:
-            return self.set_state(val)
-        except ValueError:
-            logger.info("State must be one of the following: %s",
-                        self._state_list)
+        return self._state_list[self.state_component.get(**kwargs)]
 
     def set_state(self, state):
         """
-        Sets the state of the motor. Inputted state can be one of the following
-        states or the index of the desired state:
+        Sets the state of the motor. State can be one of the following states
+        or the index of the desired state:
+
             'Stop', 'Pause', 'Move', 'Go'
 
         Parameters
@@ -417,7 +400,7 @@ class AerotechMotor(EpicsMotorInterface):
 
         # Make sure it is a valid state or enum
         if val not in self._state_list + list(range(len(self._state_list))):
-            error = f"Invalid state inputted: '{val}'."
+            error = f"Invalid state input: '{val}'."
             logger.error(error)
             raise ValueError(error)
 
@@ -510,7 +493,7 @@ class AerotechMotor(EpicsMotorInterface):
                 {indent}PV: {self.prefix:>25}
                 {indent}Enabled: {self.enabled:>20}
                 {indent}Faulted: {self.faulted:>20}
-                {indent}State: {self.state:>22}
+                {indent}State: {self.get_state():>22}
                 {indent}Position: {position:>19}
                 {indent}Dial: {dial:>23}
                 {indent}Limits: {str(limits):>21}"""
