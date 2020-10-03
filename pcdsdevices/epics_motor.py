@@ -543,7 +543,7 @@ class SmarAct(PCDSMotorBase):
 
 def _GetMotorClass(basepv):
     """
-    Function to determine the appropriate motor class based on the PV. 
+    Function to determine the appropriate motor class based on the PV.
     """
     # Available motor types
     motor_types = (('MMS', IMS),
