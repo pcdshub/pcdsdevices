@@ -204,3 +204,25 @@ class PCDSAreaDetectorTyphos(Device):
                            'depth'),
                     num_dimensions='ndimensions',
                     kind='normal')
+
+
+class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphos):
+    """
+    Adds in some PVs related to beam statistics, as well as a cross hair.
+    Primarily intended for use in the laser control system.
+    """
+
+    # Stats2 PVs
+    stats_enable = Cpt(EpicsSignalWithRBV, 'Stats2:EnableCallbacks',
+                       kind='config')
+    centroid_x = Cpt(EpicsSignalRO, 'Stats2:CentroidX_RBV', kind='normal')
+    centroid_y = Cpt(EpicsSignalRO, 'Stats2:CentroidY_RBV', kind='normal')
+    sigma_x = Cpt(EpicsSignalRO, 'Stats2:SigmaX_RBV', kind='normal')
+    sigma_y = Cpt(EpicsSignalRO, 'Stats2:SigmaY_RBV', kind='normal')
+    centroid_threshold = Cpt(EpicsSignalWithRBV, 'Stats2:CentroidThreshold',
+                             kind='config')
+    centroid_enable = Cpt(EpicsSignal, 'Stats2:ComputeCentroid', kind='config')
+
+    # Cross PVs
+    target_x = Cpt(EpicsSignalWithRBV, 'Cross4:MinX', kind='normal')
+    target_y = Cpt(EpicsSignalWithRBV, 'Cross4:MinY', kind='normal')
