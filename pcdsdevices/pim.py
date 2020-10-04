@@ -15,10 +15,11 @@ from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
 
 from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
-                                     PCDSAreaDetectorTyphos)
+                                     PCDSAreaDetectorTyphosTrigger)
 from .epics_motor import IMS, BeckhoffAxis
-from .inout import InOutRecordPositioner, TwinCATInOutPositioner
+from .inout import InOutRecordPositioner
 from .interface import BaseInterface, LightpathInOutMixin
+from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATThermocouple
 from .signal import PytmcSignal
 from .state import StatePositioner
@@ -50,7 +51,7 @@ class PIMY(InOutRecordPositioner, BaseInterface):
         return super().stage()
 
 
-class PIM(Device, BaseInterface):
+class PIM(BaseInterface, Device):
     """
     Profile Intensity Monitor.
 
@@ -75,7 +76,7 @@ class PIM(Device, BaseInterface):
 
     _prefix_start = ''
 
-    state = Cpt(PIMY, '', kind='omitted')
+    state = Cpt(PIMY, '', kind='normal')
     zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
     detector = FCpt(PCDSAreaDetectorEmbedded, '{self._prefix_det}',
                     kind='normal')
@@ -251,7 +252,7 @@ class PIMWithBoth(PIMWithFocus, PIMWithLED):
     pass
 
 
-class LCLS2ImagerBase(Device, BaseInterface, LightpathInOutMixin):
+class LCLS2ImagerBase(BaseInterface, Device, LightpathInOutMixin):
     """
     Shared PVs and components from the LCLS2 imagers.
 
@@ -264,11 +265,11 @@ class LCLS2ImagerBase(Device, BaseInterface, LightpathInOutMixin):
     lightpath_cpts = ['target']
     _icon = 'fa.video-camera'
 
-    target = Cpt(TwinCATInOutPositioner, ':MMS:STATE', kind='hinted',
+    target = Cpt(TwinCATStatePMPS, ':MMS:STATE', kind='hinted',
                  doc='Control of the diagnostic stack via saved positions.')
     y_motor = Cpt(BeckhoffAxis, ':MMS', kind='normal',
                   doc='Direct control of the diagnostic stack motor.')
-    detector = Cpt(PCDSAreaDetectorTyphos, ':CAM:', kind='normal',
+    detector = Cpt(PCDSAreaDetectorTyphosTrigger, ':CAM:', kind='normal',
                    doc='Area detector settings and readbacks.')
     cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config',
                     doc='Camera power supply controls.')
@@ -280,7 +281,7 @@ class LCLS2ImagerBase(Device, BaseInterface, LightpathInOutMixin):
         return self.target
 
 
-class PPMPowerMeter(Device, BaseInterface):
+class PPMPowerMeter(BaseInterface, Device):
     """
     Analog measurement tool for beam energy as part of the PPM assembly.
 
@@ -391,7 +392,7 @@ class XPIMFilterWheel(StatePositioner):
     set_metadata(state, dict(variety='command-enum'))
 
 
-class XPIMLED(Device):
+class XPIMLED(BaseInterface, Device):
     """
     Controllable illumination with auto-on, auto-off, and shutdown timer.
 

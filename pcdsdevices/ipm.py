@@ -36,7 +36,7 @@ class IPMTarget(InOutRecordPositioner):
         self.y_motor = self.motor
 
 
-class IPMDiode(Device, BaseInterface):
+class IPMDiode(BaseInterface, Device):
     """
     Diode of a standard intensity position monitor.
 
@@ -86,7 +86,7 @@ class IPMDiode(Device, BaseInterface):
     remove.__doc__ += insert_remove
 
 
-class IPMMotion(Device, BaseInterface):
+class IPMMotion(BaseInterface, Device):
     """
     Standard intensity position monitor.
 
@@ -136,13 +136,45 @@ class IPMMotion(Device, BaseInterface):
             return (rmstatus & self.diode.remove(moved_cb=moved_cb,
                                                  timeout=timeout, wait=wait))
 
+    def target_in(self, target_num, moved_cb=None, timeout=None, wait=False):
+        """
+        Moves the target to one of the target positions. There are 4 targets
+        with different thickness and absorption/signal.
+        The targets move vertically. To drive them in, use presets:
+        ipm.target_in(x), where x = target number
+
+        Parameters
+        -----------
+        target: int
+            Number of which target to move in.
+            Must be one of the valid target states: 1-4 or out: 5
+            (TARGET1, TARGET2, TARGET3, TARGET4, OUT) respectively
+
+        moved_cb : callable, optional
+            Function to be run when the operation finishes. This callback
+            should not expect any arguments or keywords.
+
+        timeout : float, optional
+            Maximum time for the motion. If `None` is given, the default value
+            of this positioner is used.
+
+        wait : bool
+            If `True`, block until move is completed.
+
+        Returns
+        -------
+        status: MoveStatus
+        """
+        return self.target.move(target_num, moved_cb=moved_cb,
+                                timeout=timeout, wait=wait)
+
     @property
     def transmission(self):
         """Returns the combined transmission value of the target and diode."""
         return self.target.transmission * self.diode.transmission
 
 
-class IPIMBChannel(Device, BaseInterface):
+class IPIMBChannel(BaseInterface, Device):
     """
     Class for a single channel read out by an IPIMB box.
 
@@ -176,7 +208,7 @@ class IPIMBChannel(Device, BaseInterface):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class IPIMB(Device, BaseInterface):
+class IPIMB(BaseInterface, Device):
     """
     Class for an IPIMB box.
 
@@ -234,7 +266,7 @@ class IPIMB(Device, BaseInterface):
         return ipm_screen('IPIMB', self._prefix, self._prefix_ioc)
 
 
-class Wave8Channel(Device, BaseInterface):
+class Wave8Channel(BaseInterface, Device):
     """
     Class for a single channel read out by a wave8.
 
@@ -269,7 +301,7 @@ class Wave8Channel(Device, BaseInterface):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class Wave8(Device, BaseInterface):
+class Wave8(BaseInterface, Device):
     """
     Class for a wave8.
 
@@ -325,7 +357,7 @@ class Wave8(Device, BaseInterface):
         raise NotImplementedError
 
 
-class IPM_Det(Device, BaseInterface):
+class IPM_Det(BaseInterface, Device):
     """Base class for IPM_IPIMB and IPM_Wave8. Not meant to be instantiated."""
     tab_component_names = True
 

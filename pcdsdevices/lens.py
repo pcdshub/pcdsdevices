@@ -10,14 +10,14 @@ import numpy as np
 import yaml
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.pseudopos import (PseudoPositioner, PseudoSingle,
-                             pseudo_position_argument, real_position_argument)
 from periodictable import xsf
 
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import CombinedInOutRecordPositioner, InOutRecordPositioner
-from .interface import tweak_base
+from .interface import BaseInterface, tweak_base
+from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
+                        pseudo_position_argument, real_position_argument)
 from .sim import FastMotor
 
 LENS_RADII = [50e-6, 100e-6, 200e-6, 300e-6, 500e-6, 1000e-6, 1500e-6]
@@ -79,14 +79,14 @@ class Prefocus(CombinedInOutRecordPositioner):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class LensStackBase(PseudoPositioner):
+class LensStackBase(BaseInterface, PseudoPositioner):
     """Class for Be lens macros and safe operations."""
     x = FCpt(IMS, '{self.x_prefix}')
     y = FCpt(IMS, '{self.y_prefix}')
     z = FCpt(IMS, '{self.z_prefix}')
 
-    calib_z = Cpt(PseudoSingle)
-    beam_size = Cpt(PseudoSingle)
+    calib_z = Cpt(PseudoSingleInterface)
+    beam_size = Cpt(PseudoSingleInterface)
 
     tab_whitelist = ['tweak', 'align']
     tab_component_names = True

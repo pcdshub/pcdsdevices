@@ -14,19 +14,24 @@
 # serve to show the default.
 
 import datetime
+import enum
 import os
+import re
 import sys
+import typing
 
+import ophyd
 import sphinx_rtd_theme
-
-import pcdsdevices
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../')
-sys.path.insert(0,module_path)
+sys.path.insert(0, module_path)
+
+import pcdsdevices  # isort: skip
+import pcdsdevices.component  # isort: skip
 
 
 # -- General configuration ------------------------------------------------
@@ -176,7 +181,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'PCDSDevices', 'PCDS Devices Documentation',
-     author, 'PCDSDevices', 'One line description of project.',
+     author, 'PCDSDevices', 'ophyd Devices used at the LCLS',
      'Miscellaneous'),
 ]
 
@@ -185,3 +190,218 @@ texinfo_documents = [
 intersphinx_mapping = {'ophyd': ('https://blueskyproject.io/ophyd', None),
                        'python': ('https://docs.python.org/3', None),
                        'numpy': ('https://docs.scipy.org/doc/numpy', None)}
+
+
+
+OPHYD_SKIP = {
+    # Methods
+    'add_instantiation_callback',
+    'check_value',
+    'clear_sub',
+    # 'configure',
+    # 'describe',
+    'describe_configuration',
+    'destroy',
+    'format_status_info',
+    # 'get',
+    'get_device_tuple',
+    'get_instantiated_signals',
+    'pause',
+    'put',  # prefer `set`
+    # 'read',
+    # 'read_configuration',
+    'resume',
+    'stage',
+    'status_info',
+    # 'stop',
+    'subscribe',
+    # 'summary',
+    # 'trigger',
+    'unstage',
+    'unsubscribe',
+    'unsubscribe_all',
+    'wait_for_connection',
+    'walk_components',
+    'walk_signals',
+    'walk_subdevice_classes',
+    'walk_subdevices',
+
+    # Attributes
+    'SUB_ACQ_DONE',
+    'SUB_STATE',
+    'SUB_DONE',
+    'SUB_READBACK',
+    'SUB_START',
+    'SUB_VALUE',
+    'attr_name',
+    'component_names',
+    # 'configuration_attrs',
+    # 'connected',
+    'dotted_name',
+    'event_types',
+    # 'hints',
+    'inserted',
+    # 'kind',
+    'lazy_wait_for_connection',
+    # 'lightpath_cpts',
+    'name',
+    'parent',
+    'read_attrs',
+    'removed',
+    'report',
+    'root',
+    'signal_names',
+    'tab_component_names',
+    'tab_whitelist',
+    'trigger_signals',
+}
+
+
+def skip_components_and_ophyd_stuff(app, what, name, obj, skip, options):
+    if isinstance(obj, ophyd.Component):
+        return True
+    if name.startswith('_'):
+        # It's unclear if I broke this or if it's always been broken,
+        # but for our use case we never want to document `_` items with
+        # autoclass.
+        return True
+    if name in OPHYD_SKIP:
+        return True
+    return skip
+
+
+short_component_names = {
+    ophyd.Component: '',
+    ophyd.DynamicDeviceComponent: 'DDC',
+    ophyd.FormattedComponent: 'FCpt',
+    pcdsdevices.component.UnrelatedComponent: 'UCpt',
+}
+
+
+def _get_class_info(cls):
+    if cls is None:
+        return None
+
+    return {
+        'name': cls.__name__,
+        'class': cls,
+        'link': f':class:`~{cls.__module__}.{cls.__name__}`'
+    }
+
+
+def _dynamic_device_component_to_row(base_attrs, cls, attr, cpt):
+    cpt_type = short_component_names.get(type(cpt), type(cpt).__name__)
+
+    doc = cpt.doc or ''
+    if doc.startswith('DynamicDeviceComponent attribute') :
+        doc = ''
+
+    nested_components = [
+        _component_to_row(base_attrs, cls, attr, dynamic_cpt)
+        for attr, dynamic_cpt in cpt.components.items()
+    ]
+
+    return dict(
+        component=cpt,
+        attr=attr if not cpt_type else f'{attr} ({cpt_type})',
+        cls=_get_class_info(getattr(cpt, 'cls', None)),
+        nested_components=nested_components,
+        doc=doc,
+        kind=cpt.kind.name,
+        inherited_from=_get_class_info(base_attrs.get(attr, None)),
+    )
+
+
+def _component_to_row(base_attrs, cls, attr, cpt):
+    if isinstance(cpt, ophyd.DynamicDeviceComponent):
+        return _dynamic_device_component_to_row(base_attrs, cls, attr, cpt)
+
+    cpt_type = short_component_names.get(type(cpt),
+                                              type(cpt).__name__)
+
+    doc = cpt.doc or ''
+    if doc.startswith(f'{cpt.__class__.__name__} attribute') :
+        doc = ''
+
+    return dict(
+        component=cpt,  # access to the component instance itself
+        attr=attr if not cpt_type else f'{attr} ({cpt_type})',
+        cls=_get_class_info(getattr(cpt, 'cls', None)),
+        suffix=f'``{cpt.suffix}``' if cpt.suffix else '',
+        doc=doc,
+        kind=cpt.kind.name,
+        inherited_from=_get_class_info(base_attrs.get(attr, None)),
+    )
+
+
+def _get_base_attrs(cls):
+    base_devices = [
+        base for base in reversed(cls.__bases__)
+        if hasattr(base, '_sig_attrs')
+    ]
+
+    return {
+        attr: base
+        for base in base_devices
+        for attr, cpt in base._sig_attrs.items()
+    }
+
+
+# NOTE: can't use functools.lru_cache here as it's not picklable
+_device_cache = {}
+
+
+def get_device_info(module, name):
+    class_name = f'{module}.{name}'
+    if class_name in _device_cache:
+        return _device_cache[class_name]
+
+    module_name, class_name = class_name.rsplit('.', 1)
+    module = __import__(module_name, globals(), locals(), [class_name])
+    cls = getattr(module, class_name)
+
+    if not issubclass(cls, ophyd.Device):
+        info = []
+    else:
+        base_attrs = _get_base_attrs(cls)
+
+        info = [
+            _component_to_row(base_attrs, cls, attr, cpt)
+            for attr, cpt in cls._sig_attrs.items()
+        ]
+
+    _device_cache[class_name] = info
+    return info
+
+
+autosummary_context = {
+    # Allow autosummary/class.rst to do its magic:
+    'get_device_info': get_device_info,
+}
+
+html_context = {
+    'css_files': [
+        '_static/theme_overrides.css',  # override wide tables in RTD theme
+    ],
+}
+
+
+def rstjinja(app, docname, source):
+    """
+    Render our pages as a jinja template for fancy templating goodness.
+    """
+    # Borrowed from
+    # https://www.ericholscher.com/blog/2016/jul/25/integrating-jinja-rst-sphinx/
+    # Make sure we're outputting HTML
+    if app.builder.format != 'html':
+        return
+
+    src = source[0]
+    rendered = app.builder.templates.render_string(src,
+                                                   app.config.html_context)
+    source[0] = rendered
+
+
+def setup(app):
+    app.connect('autodoc-skip-member', skip_components_and_ophyd_stuff)
+    app.connect("source-read", rstjinja)

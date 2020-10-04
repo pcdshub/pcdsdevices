@@ -33,7 +33,7 @@ from .utils import schedule_task
 logger = logging.getLogger(__name__)
 
 
-class SlitsBase(Device, MvInterface, LightpathMixin):
+class SlitsBase(MvInterface, Device, LightpathMixin):
     """
     Base class for slit motion interfacing.
     """
@@ -209,7 +209,7 @@ class SlitsBase(Device, MvInterface, LightpathMixin):
         self._removed = not self._inserted
 
 
-class BadSlitPositionerBase(PVPositioner, FltMvInterface):
+class BadSlitPositionerBase(FltMvInterface, PVPositioner):
     """Base class for slit positioner with awful PV names."""
 
     readback = FCpt(EpicsSignalRO, '{prefix}:ACTUAL_{_dirlong}',

@@ -42,13 +42,7 @@ HPLC Class
 .. autoclass:: pcdsdevices.sample_delivery.HPLC
 
 
-PressureController Class
-------------------------
-
-.. autoclass:: pcdsdevices.sample_delivery.PressureController
-
-
 FlowIntegrator Class
--------------------
+--------------------
 
 .. autoclass:: pcdsdevices.sample_delivery.FlowIntegrator

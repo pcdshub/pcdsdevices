@@ -116,6 +116,21 @@ def test_ipm_motion(fake_ipm):
     # Remove IPM Diode
     ipm.diode.remove()
     assert ipm.diode.state.state.get() == 2
+    # Target_in
+    status = ipm.target_in(4)
+    status.wait(timeout=1)
+    assert ipm.target.state.get() == 4
+    assert status.done and status.success
+    # Target_in with callback
+    cb = Mock()
+    status = ipm.target_in(3, moved_cb=cb).wait(timeout=1)
+    assert(cb.called)
+    # Target_in with wait
+    ipm.target_in('TARGET2', wait=True)
+    assert(ipm.target.state.get() == 2)
+    # Target_in invalid state
+    with pytest.raises(ValueError):
+        ipm.target_in('TARGET9')
 
 
 def test_ipm_subscriptions(fake_ipm):

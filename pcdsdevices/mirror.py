@@ -149,7 +149,7 @@ class Gantry(OMMotor):
         super().check_value(pos)
 
 
-class OffsetMirror(Device, BaseInterface):
+class OffsetMirror(BaseInterface, Device):
     """
     X-ray Offset Mirror class.
 
@@ -271,7 +271,7 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         return super().check_value(pos)
 
 
-class XOffsetMirror(Device, BaseInterface):
+class XOffsetMirror(BaseInterface, Device):
     """
     X-ray Offset Mirror.
 

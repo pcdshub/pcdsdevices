@@ -80,7 +80,7 @@ class ICTBus(Device):
         return self.bus_voltage.get()
 
 
-class ICT(Device, BaseInterface):
+class ICT(BaseInterface, Device):
     """Complete ICT device with access to all buses and channels."""
     bus_A = FCpt(ICTBus, '{self.prefix}', bus='A')
     bus_B = FCpt(ICTBus, '{self.prefix}', bus='B')
