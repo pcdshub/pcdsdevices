@@ -535,10 +535,16 @@ class MvInterface(BaseInterface):
     def _log_move_end(self):
         logger.info('%s reached position %s', self.name, self.wm())
 
-    def move(self, position, *args, **kwargs):
+    def move(self, *args, **kwargs):
         try:
-            st = super().move(position, *args, **kwargs)
+            st = super().move(*args, **kwargs)
         except ophyd.utils.LimitError as ex:
+            # Pick out the position either in kwargs or args
+            try:
+                position = kwargs['position']
+            except KeyError:
+                position = args[0]
+
             self._log_move_limit_error(position, ex)
             raise
 
