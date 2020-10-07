@@ -6,9 +6,12 @@ import signal
 import threading
 import time
 
+import conftest
+import ophyd
 import pytest
 
-from pcdsdevices.interface import (get_engineering_mode, set_engineering_mode,
+from pcdsdevices.interface import (BaseInterface, TabCompletionHelperClass,
+                                   get_engineering_mode, set_engineering_mode,
                                    setup_preset_paths)
 from pcdsdevices.sim import FastMotor, SlowMotor
 
@@ -37,9 +40,10 @@ def test_mv(fast_motor):
 @pytest.mark.timeout(5)
 def test_umv(slow_motor):
     logger.debug('test_umv')
-    slow_motor._set_position(5)
-    slow_motor.umvr(2)
-    assert slow_motor.position == 7
+    start_position = slow_motor.position
+    delta = 2
+    slow_motor.umvr(delta)
+    assert slow_motor.position == start_position + delta
 
 
 def test_camonitor(fast_motor):
@@ -91,11 +95,16 @@ def test_mv_ginput(monkeypatch, fast_motor):
 def test_presets(presets, fast_motor):
     logger.debug('test_presets')
 
+    fast_motor.mv(4, wait=True)
+    fast_motor.presets.add_hutch('four', comment='four!')
+
     fast_motor.mv(3, wait=True)
     fast_motor.presets.add_hutch('zero', 0, comment='center')
     fast_motor.presets.add_here_user('sample')
+    print(fast_motor.presets.positions)
     assert fast_motor.wm_zero() == -3
     assert fast_motor.wm_sample() == 0
+    assert fast_motor.wm_four() == 1
 
     # Clear paths, refresh, should still exist
     old_paths = fast_motor.presets._paths
@@ -184,3 +193,89 @@ def test_dir_whitelist_basic(fast_motor):
     set_engineering_mode(True)
     eng_dir = dir(fast_motor)
     assert len(eng_dir) > len(user_dir)
+
+
+_TAB_COMPLETION_IGNORES = {'.areadetector.', }
+
+
+def _should_check_tab_completion(cls):
+    if BaseInterface in cls.mro():
+        # Include any Devices that have BaseInterface
+        return True
+
+    fully_qualified_name = f'{cls.__module__}.{cls.__name__}'
+    if any(name in fully_qualified_name for name in _TAB_COMPLETION_IGNORES):
+        # This doesn't mix BaseInterface in, but that's OK - it's on our list
+        return False
+
+    # This doesn't mix BaseInterface in, this may be a bad thing: warn in
+    # the test.
+    return True
+
+
+@pytest.mark.parametrize(
+    'cls',
+    [pytest.param(cls, id=f'{cls.__module__}.{cls.__name__}')
+     for cls in conftest.find_all_device_classes()
+     if _should_check_tab_completion(cls)]
+)
+def test_tab_completion(cls):
+    if BaseInterface not in cls.mro():
+        pytest.skip(f'{cls} does not inherit from the interface')
+
+    regex = cls._class_tab.build_regex()
+    if getattr(cls, 'tab_component_names', False):
+        for name in cls.component_names:
+            if getattr(cls, name).kind != ophyd.Kind.omitted:
+                assert regex.match(name) is not None
+
+    for name in getattr(cls, 'tab_whitelist', []):
+        assert regex.match(name) is not None
+
+
+def test_tab_helper_no_mixin():
+    class MyDevice:
+        ...
+
+    helper = TabCompletionHelperClass(MyDevice)
+    with pytest.raises(AssertionError):
+        # Must mix in BaseInterface
+        helper.new_instance(MyDevice())
+
+
+def test_tab_helper_class():
+    class MyDeviceBaseA(BaseInterface, ophyd.Device):
+        tab_whitelist = ['a']
+        a = 1
+
+    class MyDeviceBaseB:
+        tab_whitelist = ['b']
+        b = 2
+
+    class MyDevice(MyDeviceBaseA, MyDeviceBaseB):
+        tab_whitelist = ['c']
+        c = 3
+        foobar = 4
+        tab_component_names = True
+        cpt = ophyd.Component(ophyd.Signal)
+
+    assert MyDeviceBaseA._class_tab is not MyDevice._class_tab
+    assert {'a'}.issubset(MyDeviceBaseA._class_tab._includes)
+    assert {'a', 'b', 'c', 'cpt'}.issubset(MyDevice._class_tab._includes)
+
+    instance = MyDevice(name='instance')
+
+    tab = instance._tab
+
+    assert {'a', 'b', 'c', 'cpt'}.issubset(tab._includes)
+    for attr in ['a', 'b', 'c', 'cpt']:
+        assert attr in tab.get_filtered_dir_list()
+
+    assert 'foobar' not in tab.get_filtered_dir_list()
+    tab.add('foobar')
+    assert 'foobar' in tab.get_filtered_dir_list()
+    tab.remove('foobar')
+    assert 'foobar' not in tab.get_filtered_dir_list()
+    tab.add('foobar')
+    tab.reset()
+    assert 'foobar' not in tab.get_filtered_dir_list()

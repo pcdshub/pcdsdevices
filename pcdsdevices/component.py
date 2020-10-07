@@ -12,6 +12,21 @@ class UnrelatedComponent(Component):
     The `collect_prefixes` class method is used to gather these special
     prefixes in a convenient one-liner rather than needing to sift through
     formatted components.
+
+    Examples
+    --------
+
+    A simple usage example::
+
+        from pcdsdevices.component import UnrelatedComponent as UCpt
+
+        class MyDevice(Device):
+            motor1 = UCpt(EpicsMotor)
+            motor2 = UCpt(EpicsMotor)
+
+            def __init__(self, prefix, **kwargs):
+                UCpt.collect_prefixes(self, kwargs)
+                super().__init__(prefix, **kwargs)
     """
 
     @classmethod

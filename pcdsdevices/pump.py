@@ -13,7 +13,7 @@ from .interface import BaseInterface
 logger = logging.getLogger(__name__)
 
 
-class TurboPump(Device, BaseInterface):
+class TurboPump(BaseInterface, Device):
     """Turbo Vacuum Pump."""
     atspeed = Cpt(EpicsSignal, ':ATSPEED_DI', kind='normal')
     start = Cpt(EpicsSignal, ':START_SW', kind='normal')
@@ -29,7 +29,7 @@ class TurboPump(Device, BaseInterface):
         self.start.put(0)
 
 
-class EbaraPump(Device, BaseInterface):
+class EbaraPump(BaseInterface, Device):
     """Ebara Turbo Pump."""
     start = Cpt(EpicsSignal, ':MPSTART_SW', kind='normal')
 
@@ -44,7 +44,7 @@ class EbaraPump(Device, BaseInterface):
         self.start.put(0)
 
 
-class GammaController(Device, BaseInterface):
+class GammaController(BaseInterface, Device):
     """Ion Pump Gamma controller."""
     channel1name = Cpt(EpicsSignal, ':CHAN1NAME', kind='config')
     channel2name = Cpt(EpicsSignal, ':CHAN2NAME', kind='config')
@@ -64,7 +64,7 @@ class GammaController(Device, BaseInterface):
     tab_component_names = True
 
 
-class IonPumpBase(Device, BaseInterface):
+class IonPumpBase(BaseInterface, Device):
     """
 %s
     """

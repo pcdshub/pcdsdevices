@@ -4,10 +4,11 @@ Module for the SXR Test Absorbers.
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 
+from .interface import BaseInterface
 from .epics_motor import BeckhoffAxis
 
 
-class SxrTestAbsorber(Device):
+class SxrTestAbsorber(BaseInterface, Device):
     """
     SXR Test Absorber: Used for testing the sxr beamline at high pulse rates.
 
