@@ -24,6 +24,7 @@ def StageStack(mdict, name):
     ----------
     mdict : dictionary
         Dictionary of motor objects and or base PVs.
+
     name : str
         Name for the stack. Used to make a class name. No whitespace.
 
@@ -53,6 +54,7 @@ def StageStack(mdict, name):
     return dev
 
 
+# Internal class
 class GridAxis():
     """
     Class for axes that move in regularly spaced intervals.
@@ -78,6 +80,50 @@ class XYTargetGrid():
     """
     Class methods for managing a target grid oriented normal to the beam, with
     regular X-Y spacing between targets.
+
+    Parameters
+    ----------
+    x : Ophyd motor object
+        X stage (LUSI coords.) to be using in the stack
+
+    y : Ophyd motor object
+        Y stage (LUSI coords.) to be using in the stack
+
+    x_init : float
+        The initial position for the x motor. Defines the x-position of target
+        'zero'.
+
+    x_spacing : float
+        The nominal spacing between targets in the x-direction.
+
+    x_comp : float (optional)
+        A parameter to account for skew in target position due to non-ideal
+        mounting. This skew is assumed to be identical between targets.
+
+    y_init : float
+        The initial position for the y motor. Defines the y-position of target
+        'zero'.
+
+    y_spacing : float
+        The nominal spacing between targets in the y-direction.
+
+    y_comp : float (optional)
+        A parameter to account for skew in target position due to non-ideal
+        mounting. This skew is assumed to be identical between targets.
+
+    Examples
+    --------
+    # Make a target stack with targets spaced in a 1.0mm square grid, starting
+    # at motor positions (0.0, 0.0), with no skew.
+
+    xygrid = XYTargetGrid(x=x_motor, y=y_motor, x_init=0.0, y_init=0.0,
+                          x_spacing=1.0, y_spacing=1.0)
+
+    # Make a target stack as above, but with some skew in x and y.
+
+    xygrid = XYTargetGrid(x=x_motor, y=y_motor, x_init=0.0, y_init=0.0,
+                          x_spacing=1.0, y_spacing=1.0, x_comp=0.05,
+                          y_comp=0.01)
     """
     def __init__(self, x=None, y=None, x_init=None, x_spacing=None,
                  x_comp=0.0, y_init=None, y_spacing=None, y_comp=0.0,
@@ -108,7 +154,8 @@ class XYTargetGrid():
 
     def wm(self):
         """
-        Return current position of X and Y axes.
+        Return current position of X and Y axes as a dictionary, i.e.
+        {x: <x_position>, y: <y_position>}.
         """
         return {'x': self.x.wm(), 'y': self.y.wm()}
 
@@ -117,6 +164,11 @@ class XYTargetGrid():
         Return to the defined initial position (x_init, y_init). Should be
         called during experiment setup prior to using other class methods to
         initialize the position.
+
+        Parameters:
+        -----------
+        wait : bool (default = False)
+            Flag to wait for movement to complete before returning.
         """
         self.x.mv(self.x_init, wait=wait)
         self.y.mv(self.y_init, wait=wait)
@@ -124,6 +176,14 @@ class XYTargetGrid():
     def next(self, nspaces=1, wait=False):
         """
         Move forward (in X) by specified integer number of targets.
+
+        Parameters:
+        -----------
+        wait : bool (default = False)
+            Flag to wait for movement to complete before returning.
+
+        nspaces : int (default = 1)
+            Number of spaces to move "forward" on x-axis.
         """
         self._xgrid.advance(nspaces, 1, wait=wait)
         if self.y_comp:
@@ -132,6 +192,14 @@ class XYTargetGrid():
     def back(self, nspaces=1, wait=False):
         """
         Move backward (in X) by specified integer number of targets.
+
+        Parameters:
+        -----------
+        wait : bool (default = False)
+            Flag to wait for movement to complete before returning.
+
+        nspaces : int (default = 1)
+            Number of spaces to move "backward" on x-axis.
         """
         self._xgrid.advance(nspaces, -1, wait=wait)
         if self.y_comp:
@@ -141,6 +209,14 @@ class XYTargetGrid():
         """
         Move to higher target position by specified integer number of targets
         (stage moves down).
+
+        Parameters:
+        -----------
+        wait : bool (default = False)
+            Flag to wait for movement to complete before returning.
+
+        nspaces : int (default = 1)
+            Number of spaces to move "up" on y-axis.
         """
         self._ygrid.advance(nspaces, 1, wait=wait)
         if self.x_comp:
@@ -150,6 +226,14 @@ class XYTargetGrid():
         """
         Move to lower target position by specified integer number of targets
         (stage moves up).
+
+        Parameters:
+        -----------
+        wait : bool (default = False)
+            Flag to wait for movement to complete before returning.
+
+        nspaces : int (default = 1)
+            Number of spaces to move "down" on y-axis.
         """
         self._ygrid.advance(nspaces, -1, wait=wait)
         if self.x_comp:
@@ -159,6 +243,17 @@ class XYTargetGrid():
         """
         Move to a specific target position given by (xspaces, yspaces)
         from the defined initial position. Includes compensation if defined.
+
+        Parameters:
+        -----------
+        wait : bool (default = False)
+            Flag to wait for movement to complete before returning.
+
+        nxspaces : int (default = 1)
+            Number of spaces to move on x-axis.
+
+        nyspaces : int (default = 1)
+            Number of spaces to move on y-axis.
         """
         xpos = self.x_init + self.x_spacing*nxspaces + self.x_comp*nyspaces
         ypos = self.y_init + self.y_spacing*nyspaces + self.y_comp*nxspaces
