@@ -8,7 +8,7 @@ from . import utils as key_press
 from .interface import BaseInterface
 
 
-class Acromag(Device, BaseInterface):
+class Acromag(BaseInterface, Device):
     """
     Class for Acromag analog input/ouput signals.
 
@@ -61,7 +61,7 @@ class Acromag(Device, BaseInterface):
     tab_component_names = True
 
 
-class Mesh(Device, BaseInterface):
+class Mesh(BaseInterface, Device):
     """
     Class for Mesh HV Supply that is connected to Acromag inputs and outputs.
 

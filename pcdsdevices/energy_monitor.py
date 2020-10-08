@@ -12,7 +12,7 @@ from .interface import BaseInterface
 logger = logging.getLogger(__name__)
 
 
-class GEM(Device, BaseInterface):
+class GEM(BaseInterface, Device):
     """
     Gas Energy Monitor from the LUSI project.
 
@@ -31,7 +31,7 @@ class GEM(Device, BaseInterface):
                           value="Not Implemented", kind='normal')
 
 
-class GMD(Device, BaseInterface):
+class GMD(BaseInterface, Device):
     """
     Gas Monitor Detector, installed in the LCLS-II XTES project.
 
@@ -50,7 +50,7 @@ class GMD(Device, BaseInterface):
                           value="Not Implemented", kind='normal')
 
 
-class XGMD(Device, BaseInterface):
+class XGMD(BaseInterface, Device):
     """
     X Gas Monitor Detector (2nd generation GMD).
 

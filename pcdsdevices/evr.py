@@ -4,7 +4,7 @@ from ophyd import Device, EpicsSignal, EpicsSignalRO
 from .interface import BaseInterface
 
 
-class Trigger(Device, BaseInterface):
+class Trigger(BaseInterface, Device):
     """Class for an individual Trigger."""
     eventcode = Cpt(EpicsSignal, ':EC_RBV', write_pv=':TEC', kind="config")
     eventrate = Cpt(EpicsSignalRO, ':RATE', kind="normal")

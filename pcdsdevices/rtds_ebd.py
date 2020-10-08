@@ -42,7 +42,7 @@ class PneumaticActuator(InOutPositioner):
             self.out_cmd.put(1)
 
 
-class RTDSBase(Device, BaseInterface, LightpathInOutMixin):
+class RTDSBase(BaseInterface, Device, LightpathInOutMixin):
     """Rapid Turnaround Diagnostic Station."""
     lightpath_cpts = ['mpa1', 'mpa2', 'mpa3', 'mpa4']
     _lightpath_mixin = True

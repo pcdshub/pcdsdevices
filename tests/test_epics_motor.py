@@ -28,7 +28,9 @@ def motor_setup(motor):
     """
     if isinstance(motor, EpicsMotorInterface):
         motor.user_readback.sim_put(0)
-        motor.limits = (-100, 100)
+        motor.high_limit_travel.put(100)
+        motor.low_limit_travel.put(-100)
+        motor.user_setpoint.sim_set_limits((-100, 100))
 
     if isinstance(motor, PCDSMotorBase):
         motor.motor_spg.sim_put(2)
@@ -97,6 +99,21 @@ def test_epics_motor_soft_limits(fake_epics_motor):
     # Check that we can not move past the soft limits
     with pytest.raises(ValueError):
         m.move(-150)
+    # Try the local soft limits override
+    m.limits = (-50, 50)
+    with pytest.raises(ValueError):
+        m.move(-75)
+    m.low_limit = -25
+    with pytest.raises(ValueError):
+        m.move(-40)
+    m.high_limit = 25
+    with pytest.raises(ValueError):
+        m.move(40)
+    # Try with no limits set, e.g. (0, 0)
+    m.user_setpoint.sim_set_limits((0, 0))
+    # And of course, clear our soft limits as well:
+    m.limits = (0, 0)
+    m.check_value(42)
 
 
 def test_epics_motor_tdir(fake_pcds_motor):

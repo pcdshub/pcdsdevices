@@ -5,13 +5,12 @@ Classes for the various thermocouples, rtds, flow meters, O2 sensors, etc.
 """
 from ophyd import Component as Cpt
 from ophyd import Device
-from ophyd.signal import SignalRO
 
 from .interface import BaseInterface
-from .signal import PytmcSignal
+from .signal import NotImplementedSignal, PytmcSignal
 
 
-class TwinCATThermocouple(Device, BaseInterface):
+class TwinCATThermocouple(BaseInterface, Device):
     """
     Basic twincat temperature sensor class.
 
@@ -24,7 +23,20 @@ class TwinCATThermocouple(Device, BaseInterface):
     error = Cpt(PytmcSignal, ':STC:ERR', io='i', kind='normal')
 
 
-class RTD(Device, BaseInterface):
+class TwinCATTempSensor(BaseInterface, Device):
+    """
+    Basic twincat temperature sensor class.
+
+    Assumes we're using the ``FB_TempSensor`` function block from
+    ``lcls-twincat-general``.
+    """
+
+    temperature = Cpt(PytmcSignal, ':TEMP', io='i', kind='normal')
+    sensor_connected = Cpt(PytmcSignal, ':CONN', io='i', kind='normal')
+    error = Cpt(PytmcSignal, ':ERR', io='i', kind='normal')
+
+
+class RTD(BaseInterface, Device):
     """
     Resistive Temperature Device.
 
@@ -36,5 +48,4 @@ class RTD(Device, BaseInterface):
         The PV base of the device.
     """
 
-    not_implemented = Cpt(SignalRO, name="Not Implemented",
-                          value="Not Implemented", kind='normal')
+    not_implemented = Cpt(NotImplementedSignal, kind='normal')

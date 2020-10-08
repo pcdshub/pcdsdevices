@@ -22,4 +22,5 @@
    :caption: Developer Notes
 
    releases.rst
+   upcoming_changes.rst
    api.rst
