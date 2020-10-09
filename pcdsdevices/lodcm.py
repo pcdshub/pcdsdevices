@@ -8,10 +8,11 @@ downstream hutches.
 It will not be possible to align the device with the class, and there will be
 no readback into the device's alignment. This is intended for a future update.
 """
-import logging
 import functools
+import logging
 
-from ophyd.device import Device, Component as Cpt
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
 from ophyd.sim import NullStatus
 from ophyd.status import wait as status_wait
 
@@ -59,9 +60,9 @@ class Foil(InOutRecordPositioner):
         super().__init__(prefix, *args, **kwargs)
 
 
-class LODCM(Device, BaseInterface):
+class LODCM(BaseInterface, Device):
     """
-    Large Offset Dual Crystal Monochromator
+    Large Offset Dual Crystal Monochromator.
 
     This is the device that allows XPP and XCS to multiplex with downstream
     hutches. It contains two crystals that steer/split the beam and a number of
@@ -72,18 +73,19 @@ class LODCM(Device, BaseInterface):
 
     Parameters
     ----------
-    prefix: ``str``
-        The PV prefix
+    prefix : str
+        The PV prefix.
 
-    name: ``str``, required keyword
-        The name of this device
+    name : str
+        The name of this device.
 
-    main_line: ``str``, optional
+    main_line : str, optional
         Name of the main, no-bounce beamline.
 
-    mono_line: ``str``, optional
+    mono_line : str, optional
         Name of the mono, double-bounce beamline.
     """
+
     h1n = Cpt(H1N, ':H1N', kind='hinted')
     yag = Cpt(YagLom, ":DV", kind='omitted')
     dectris = Cpt(Dectris, ":DH", kind='omitted')
@@ -103,12 +105,12 @@ class LODCM(Device, BaseInterface):
 
     @property
     def inserted(self):
-        """Returns ``True`` if either h1n crystal is in."""
+        """Returns `True` if either h1n crystal is in."""
         return self.h1n.inserted
 
     @property
     def removed(self):
-        """Returns ``True`` if neither h1n crystal is in."""
+        """Returns `True` if neither h1n crystal is in."""
         return self.h1n.removed
 
     def remove(self, moved_cb=None, timeout=None, wait=False):
@@ -117,17 +119,12 @@ class LODCM(Device, BaseInterface):
 
     @property
     def transmission(self):
-        """Returns h1n's transmission value"""
+        """Returns h1n's transmission value."""
         return self.h1n.transmission
 
     @property
     def branches(self):
-        """
-        Returns
-        -------
-        branches: ``list`` of ``str``
-            A list of possible destinations.
-        """
+        """Returns possible destinations as a list of strings."""
         return [self.main_line, self.mono_line]
 
     @property
@@ -139,10 +136,11 @@ class LODCM(Device, BaseInterface):
 
         Returns
         -------
-        destination: ``list`` of ``str``
-            ``self.main_line`` if the light continues on the main line.
-            ``self.mono_line`` if the light continues on the mono line.
+        destination : list of str
+            `.main_line` if the light continues on the main line.
+            `.mono_line` if the light continues on the mono line.
         """
+
         if self.h1n.position == 'OUT':
             dest = [self.main_line]
         elif self.h1n.position == 'Si':
@@ -164,18 +162,17 @@ class LODCM(Device, BaseInterface):
 
         Returns
         -------
-        diag_clear: ``bool``
-            ``False`` if the diagnostics will prevent beam.
+        diag_clear : bool
+            :keyword:`False` if the diagnostics will prevent beam.
         """
+
         yag_clear = self.yag.removed
         dectris_clear = self.dectris.removed
         foil_clear = self.foil.removed
         return all((yag_clear, dectris_clear, foil_clear))
 
     def remove_dia(self, moved_cb=None, timeout=None, wait=False):
-        """
-        Remove all diagnostic components.
-        """
+        """Remove all diagnostic components."""
         logger.debug('Removing %s diagnostics', self.name)
         status = NullStatus()
         for dia in (self.yag, self.dectris, self.diode, self.foil):

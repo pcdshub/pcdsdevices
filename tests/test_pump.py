@@ -1,6 +1,8 @@
 import logging
+
 import pytest
 from ophyd.sim import make_fake_device
+
 from pcdsdevices.pump import IonPump, IonPumpBase, IonPumpWithController
 
 logger = logging.getLogger(__name__)
@@ -33,3 +35,8 @@ def test_ionpump_factory():
     assert isinstance(m, IonPumpWithController)
     m = IonPump('TST:MY:PIP:01', name='test_pump')
     assert isinstance(m, IonPumpBase)
+
+
+@pytest.mark.timeout(5)
+def test_ionpump_disconnected():
+    IonPumpWithController('tst', name='tst', prefix_controller='gamma')

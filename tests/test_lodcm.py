@@ -1,10 +1,10 @@
 import logging
+from unittest.mock import Mock
 
 import pytest
 from ophyd.sim import make_fake_device
-from unittest.mock import Mock
 
-from pcdsdevices.lodcm import LODCM, H1N, YagLom, Dectris, Diode, Foil
+from pcdsdevices.lodcm import H1N, LODCM, Dectris, Diode, Foil, YagLom
 
 logger = logging.getLogger(__name__)
 
@@ -74,3 +74,8 @@ def test_hutch_foils():
     FakeFoil = make_fake_device(Foil)
     assert 'Zn' in FakeFoil('XPP', name='foil').in_states
     assert 'Ge' in FakeFoil('XCS', name='foil').in_states
+
+
+@pytest.mark.timeout(5)
+def test_lodcm_disconnected():
+    LODCM('TST:LOM', name='test_lom')

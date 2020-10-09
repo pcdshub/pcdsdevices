@@ -15,16 +15,19 @@ requirements:
   build:
     - python >=3.6
     - setuptools
-
   run:
-    - python >=3.6,<3.7.6
-    - ophyd >=1.3.1
-    - bluesky >=1.2.0
-    - pyepics
+    - python >=3.6
+    - ophyd >=1.5.1
+    - bluesky >=1.6.4
+    - pyepics >=3.4.2
+    - pytmc >=2.7.0
     - pyyaml
-    - cf_units >=2.0.1
+    - pint
     - scipy
     - matplotlib <3
+    - periodictable
+    - happi
+    - schema
 
 test:
   imports:

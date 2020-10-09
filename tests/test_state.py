@@ -2,11 +2,11 @@ import logging
 from unittest.mock import Mock
 
 import pytest
-from ophyd.device import Component as Cmp
+from ophyd.device import Component as Cpt
 from ophyd.signal import Signal
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.state import (StatePositioner, PVStatePositioner,
+from pcdsdevices.state import (PVStatePositioner, StatePositioner,
                                StateRecordPositioner, StateStatus)
 
 logger = logging.getLogger(__name__)
@@ -19,8 +19,8 @@ class PrefixSignal(Signal):
 
 # Define the class
 class LimCls(PVStatePositioner):
-    lowlim = Cmp(PrefixSignal, 'lowlim')
-    highlim = Cmp(PrefixSignal, 'highlim')
+    lowlim = Cpt(PrefixSignal, 'lowlim')
+    highlim = Cpt(PrefixSignal, 'highlim')
 
     _state_logic = {'lowlim': {0: 'in',
                                1: 'defer'},
@@ -44,7 +44,7 @@ class LimCls2(LimCls):
 
 # For additional tests
 class IntState(StatePositioner):
-    state = Cmp(PrefixSignal, 'int', value=2)
+    state = Cpt(PrefixSignal, 'int', value=2)
     states_list = [None, 'UNO', 'OUT']
     _states_alias = {'UNO': ['IN', 'in']}
 
@@ -112,7 +112,7 @@ def test_pvstate_positioner_sets():
     with pytest.raises(ValueError):
         lim_obj2.move('Unknown')
     cb = Mock()
-    lim_obj2.move('OUT', moved_cb=cb)
+    lim_obj2.move('OUT', moved_cb=cb).wait(timeout=1)
     assert(cb.called)
     assert(lim_obj2.position == 'OUT')
     lim_obj2.move('IN', wait=True)
@@ -166,6 +166,7 @@ def test_state_status():
     # Put readback to 'in'
     lim_obj.lowlim.put(0)
     lim_obj.highlim.put(1)
+    status.wait(timeout=1)
     assert status.done and status.success
     # Check our callback was cleared
     assert status.check_value not in lim_obj._callbacks[lim_obj.SUB_STATE]
@@ -188,3 +189,19 @@ def test_subcls_warning():
         StatePositioner('prefix', name='name')
     with pytest.raises(TypeError):
         PVStatePositioner('prefix', name='name')
+
+
+class InOutSignal(Signal):
+    _metadata_keys = (Signal._core_metadata_keys + ('enum_strs',))
+
+
+class NoStatesList(StatePositioner):
+    state = Cpt(InOutSignal)
+
+
+def test_auto_states():
+    logger.debug('test_auto_states')
+    states = NoStatesList(prefix='NOSTATE', name='no_state')
+    enum_strs = ('Unknown', 'IN', 'OUT')
+    states.state._run_subs(sub_type=states.state.SUB_META, enum_strs=enum_strs)
+    assert states.states_list == list(enum_strs)

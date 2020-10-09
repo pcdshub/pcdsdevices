@@ -1,5 +1,5 @@
 """
-Offset Mirror Classes
+Offset Mirror Classes.
 
 This module contains all the classes relating to the offset mirrors used in the
 FEE and XRT. Each offset mirror contains a stepper motor and piezo motor to
@@ -9,25 +9,28 @@ vertical gantries.
 import logging
 
 import numpy as np
-from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
-                   PVPositioner, FormattedComponent as FCpt)
+from ophyd import Component as Cpt
+from ophyd import Device, EpicsSignal, EpicsSignalRO
+from ophyd import FormattedComponent as FCpt
+from ophyd import PVPositioner
 
 from .doc_stubs import basic_positioner_init
+from .epics_motor import BeckhoffAxis
 from .inout import InOutRecordPositioner
-from .interface import FltMvInterface, BaseInterface
+from .interface import BaseInterface, FltMvInterface
+from .signal import PytmcSignal
 
 logger = logging.getLogger(__name__)
 
 
 class OMMotor(FltMvInterface, PVPositioner):
-    """
-    Base class for each motor in the LCLS offset mirror system.
-    """
+    """Base class for each motor in the LCLS offset mirror system."""
     __doc__ += basic_positioner_init
 
     # position
     readback = Cpt(EpicsSignalRO, ':RBV', auto_monitor=True, kind='hinted')
-    setpoint = Cpt(EpicsSignal, ':VAL', limits=True, kind='normal')
+    setpoint = Cpt(EpicsSignal, ':VAL', auto_monitor=True, limits=True,
+                   kind='normal')
     done = Cpt(EpicsSignalRO, ':DMOV', auto_monitor=True, kind='omitted')
     motor_egu = Cpt(EpicsSignal, ':RBV.EGU', kind='omitted')
 
@@ -41,32 +44,28 @@ class OMMotor(FltMvInterface, PVPositioner):
     @property
     def egu(self):
         """
-        Engineering units of the readback PV, as reported by EPICS.
-
-        Returns
-        -------
-        egu: ``str``
+        Returns the Engineering Units of the readback PV, as reported by EPICS.
         """
         return self.motor_egu.get()
 
     def check_value(self, position):
         """
-        Checks to make sure the inputted value is both valid and within the
-        soft limits of the motor.
+        Checks that the value is both valid and within the motor's soft limits.
 
         Parameters
         ----------
-        position: ``float``
-            Position to check for validity
+        position : float
+            Position to check for validity.
 
         Raises
         ------
-        ``ValueError``
-            If position is ``None``, ``NaN`` or ``Inf``
+        ValueError
+            If position is `None`, `~numpy.NaN` or `~numpy.Inf`.
 
-        ``LimitError``
-            If the position is outside the soft limits
+        LimitError
+            If the position is outside the soft limits.
         """
+
         # Check that we do not have a NaN or an Inf as those will
         # will make the PLC very unhappy ...
         if position is None or np.isnan(position) or np.isinf(position):
@@ -77,11 +76,12 @@ class OMMotor(FltMvInterface, PVPositioner):
 
 class Pitch(OMMotor):
     """
-    HOMS Pitch Mechanism
+    HOMS Pitch Mechanism.
 
     The axis is actually a piezo actuator and a stepper motor in series, and
-    this is reflected in the PV naming
+    this is reflected in the PV naming.
     """
+
     __doc__ += basic_positioner_init
 
     piezo_volts = FCpt(EpicsSignalRO, "{self._piezo}:VRBV", kind='normal')
@@ -96,35 +96,36 @@ class Pitch(OMMotor):
 
 class Gantry(OMMotor):
     """
-    Gantry Axis
+    Gantry Axis.
 
     The horizontal and vertical motion of the OffsetMirror are controlled by
     two coupled stepper motors. Instructions are sent to both by simply
     requesting a move on the primary so they are represented here as a single
-    motor with additional diagnostics and interlock
+    motor with additional diagnostics and interlock.
 
     Parameters
     ----------
     prefix : str
-        Base prefix for both stepper motors i.e XRT:M1H. Do not include the "P"
-        or "S" to indicate primary or secondary steppers
+        Base prefix for both stepper motors e.g. 'XRT:M1H'. Do not include the
+        'P' or 'S' to indicate primary or secondary steppers.
 
     gantry_prefix : str, optional
         Prefix for the shared gantry diagnostics if it is different than the
-        stepper motor prefix
+        stepper motor prefix.
     """
+
     # Readbacks for gantry information
-    gantry_difference = FCpt(EpicsSignalRO, "{self.gantry_prefix}:GDIF",
+    gantry_difference = FCpt(EpicsSignalRO, '{self.gantry_prefix}:GDIF',
                              kind='normal')
-    decoupled = FCpt(EpicsSignalRO, "{self.gantry_prefix}:DECOUPLE",
+    decoupled = FCpt(EpicsSignalRO, '{self.gantry_prefix}:DECOUPLE',
                      kind='config')
     # Readbacks for the secondary motor
-    follower_readback = FCpt(EpicsSignalRO, "{self.follow_prefix}:RBV",
+    follower_readback = FCpt(EpicsSignalRO, '{self.follow_prefix}:RBV',
                              kind='normal')
-    follower_low_limit_switch = FCpt(EpicsSignalRO, "{self.follow_prefix}:LLS",
+    follower_low_limit_switch = FCpt(EpicsSignalRO, '{self.follow_prefix}:LLS',
                                      kind='omitted')
     follower_high_limit_switch = FCpt(EpicsSignalRO,
-                                      "{self.follow_prefix}:HLS",
+                                      '{self.follow_prefix}:HLS',
                                       kind='omitted')
 
     def __init__(self, prefix, *, gantry_prefix=None, **kwargs):
@@ -134,12 +135,13 @@ class Gantry(OMMotor):
 
     def check_value(self, pos):
         """
-        Add additional check for the gantry coupling
+        Add additional check for the gantry coupling.
 
         This is not a safety measure, but instead just here largely
         for bookkeeping and to give the operator further feedback on why the
         requested move is not completed.
         """
+
         # Check that the gantry is not decoupled
         if self.decoupled.get():
             raise PermissionError("The gantry is not currently coupled")
@@ -147,12 +149,12 @@ class Gantry(OMMotor):
         super().check_value(pos)
 
 
-class OffsetMirror(Device, BaseInterface):
+class OffsetMirror(BaseInterface, Device):
     """
-    X-Ray offset mirror class.
+    X-ray Offset Mirror class.
 
     This is for each individual mirror system used in the FEE
-    and XRT. Controls for the pitch, and primary gantry x and y motors are
+    and XRT. Controls for the pitch, and primary gantry x- and y-motors are
     included.
 
     When controlling the pitch motor, if the piezo is set to 'PID' mode, then
@@ -163,17 +165,18 @@ class OffsetMirror(Device, BaseInterface):
     Parameters
     ----------
     prefix : str
-        The EPICS base PV of the pitch motor
+        The EPICS base PV of the pitch motor.
 
     prefix_xy : str
-        The EPICS base PV of the gantry x and y gantry motors
+        The EPICS base PV of the gantry x and y gantry motors.
 
     xgantry_prefix : str
-        The name of the horizontal gantry if not identical to the prefix
+        The name of the horizontal gantry if not identical to the prefix.
 
     name : str
-        The name of the offset mirror
+        The name of the offset mirror.
     """
+
     # Pitch Motor
     pitch = FCpt(Pitch, "MIRR:{self.prefix}", kind='hinted')
     # Gantry motors
@@ -203,22 +206,18 @@ class OffsetMirror(Device, BaseInterface):
 
     @property
     def inserted(self):
-        """
-        Treat OffsetMirror as always inserted
-        """
+        """Returns `True`. Treats OffsetMirror as always inserted."""
         return True
 
     @property
     def removed(self):
-        """
-        Treat OffsetMirror as always inserted
-        """
+        """Returns :keyword:`False`. Treats OffsetMirror as always inserted."""
         return False
 
 
 class PointingMirror(InOutRecordPositioner, OffsetMirror):
     """
-    Retractable `OffsetMirror`
+    Retractable `OffsetMirror`.
 
     Both XRT M1H and XRT M2H can be completely removed from the beam depending
     on the beam destination. In this case, the X gantry can be controlled via
@@ -228,12 +227,13 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
 
     Parameters
     ----------
-    in_lines: ``list``, optional
-        List of beamlines that are delivered beam when the mirror is in
+    in_lines : list, optional
+        List of beamlines that are delivered beam when the mirror is in.
 
-    out_lines: ``list``, optional
-        List of beamlines thate are delivered beam when the mirror is out
+    out_lines : list, optional
+        List of beamlines thate are delivered beam when the mirror is out.
     """
+
     # Reverse state order as PointingMirror is non-standard
     states_list = ['OUT', 'IN']
 
@@ -245,9 +245,7 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
 
     @property
     def destination(self):
-        """
-        Current list of destinations the mirror currently supports
-        """
+        """Current list of destinations the mirror currently supports."""
         # Inserted
         if self.inserted and not self.removed:
             return self.in_lines
@@ -260,18 +258,67 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
 
     @property
     def branches(self):
-        """
-        Return all possible beamlines for mirror destinations
-        """
+        """Return all possible beamlines for mirror destinations."""
         return self.in_lines + self.out_lines
 
     def check_value(self, pos):
-        """
-        Check that our gantry is coupled before state moves
-        """
+        """Check that our gantry is coupled before state moves."""
         # Check the X gantry
         if self.xgantry.decoupled.get():
             raise PermissionError("Can not move the horizontal gantry is "
                                   "uncoupled")
         # Allow StatePositioner to check the state
         return super().check_value(pos)
+
+
+class XOffsetMirror(BaseInterface, Device):
+    """
+    X-ray Offset Mirror.
+
+    1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # UI representation
+    _icon = 'fa.minus-square'
+
+    # Motor components: can read/write positions
+    y_up = Cpt(BeckhoffAxis, ':MMS:YUP', kind='hinted')
+    x_up = Cpt(BeckhoffAxis, ':MMS:XUP', kind='hinted')
+    pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='hinted')
+    bender = Cpt(BeckhoffAxis, ':MMS:BENDER', kind='normal')
+    y_dwn = Cpt(BeckhoffAxis, ':MMS:YDWN', kind='config')
+    x_dwn = Cpt(BeckhoffAxis, ':MMS:XDWN', kind='config')
+
+    # Gantry components
+    gantry_x = Cpt(PytmcSignal, ':GANTRY_X', io='i', kind='normal')
+    gantry_y = Cpt(PytmcSignal, ':GANTRY_Y', io='i', kind='normal')
+    couple_y = Cpt(PytmcSignal, ':COUPLE_Y', io='o', kind='config')
+    couple_x = Cpt(PytmcSignal, ':COUPLE_X', io='o', kind='config')
+    decouple_y = Cpt(PytmcSignal, ':DECOUPLE_Y', io='o', kind='config')
+    decouple_x = Cpt(PytmcSignal, ':DECOUPLE_X', io='o', kind='config')
+    couple_status_y = Cpt(PytmcSignal, ':ALREADY_COUPLED_Y', io='i',
+                          kind='normal')
+    couple_status_x = Cpt(PytmcSignal, ':ALREADY_COUPLED_X', io='i',
+                          kind='normal')
+
+    # RMS Cpts:
+    y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
+    x_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
+    pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
+    bender_enc_rms = Cpt(PytmcSignal, ':ENC:BENDER:RMS', io='i',
+                         kind='normal')
+
+    # Lightpath config: implement inserted, removed, transmission, subscribe
+    # For now, keep it simple. Some mirrors need more than this, but it is
+    # sufficient for MR1L0 and MR2L0 for today.
+    inserted = True
+    removed = False
+    transmission = 1
+    SUB_STATE = 'state'

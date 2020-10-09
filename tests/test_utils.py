@@ -1,8 +1,8 @@
 import logging
 import pty
 import sys
-import time
 import threading
+import time
 
 import pytest
 

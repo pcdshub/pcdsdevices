@@ -1,11 +1,11 @@
-import time
-import threading
 import logging
+import threading
+import time
+from unittest.mock import Mock
 
 import pytest
-from unittest.mock import Mock
-from ophyd.status import wait as status_wait
 from ophyd.sim import make_fake_device
+from ophyd.status import wait as status_wait
 
 from pcdsdevices.inout import InOutRecordPositioner
 from pcdsdevices.pulsepicker import PulsePickerInOut
@@ -152,3 +152,8 @@ def test_picker_subs(fake_picker):
     # Change the target state
     picker.insert()
     assert cb.called
+
+
+@pytest.mark.timeout(5)
+def test_picker_disconnected():
+    PulsePickerInOut('TST:SB1:MMS:35', name='picker')

@@ -1,8 +1,446 @@
 Release History
 ###############
 
+
+v3.0.0 (2020-10-07)
+===================
+
+API Changes
+-----------
+- The calculations for `alio_to_theta` and `theta_to_alio` in `ccm.py`
+  have been reverted to the old calculations.
+- User-facing move functions will not be able to catch the
+  :class:`~ophyd.utils.LimitError` exception.  These interactive methods are
+  not meant to be used in scans, as that is the role of bluesky.
+
+Features
+--------
+- :class:`pcdsdevices.attenuator.AT2L0` now has a textual representation of
+  filter status, and supports the move interface by way of transmission values.
+- :class:`~pcdsdevices.pseudopos.SyncAxes` has been adjusted to support
+  scalar-valued pseudopositioners, allowing for more complex devices to be kept
+  in lock-step motion.
+- :class:`~pcdsdevices.pseudopos.PseudoPositioner` position tuples, when of
+  length 1, now support casting to floating point, meaning they can be used
+  in many functions which only support floating point values.
+- Added signal annotations for auto-generated notepad IOC support.
+
+Device Updates
+--------------
+- Add event/trigger information to PPM, XPIM.
+- Reclassify twincat motor and states error resets as "normal" for
+  accessibility.
+- Add PMPS maintenance/config PVs class for TwinCAT states devices,
+  propagating this to all consumers.
+
+New Devices
+-----------
+- Adds :class:`~pcdsdevices.lxe.LaserTimingCompensation` (``lxt_ttc``) which
+  synchronously moves :class:`LaserTiming` (``lxt``) with
+  :class:`~pcdsdevices.lxe.TimeToolDelay` (``txt``) to compensate so that the
+  true laser x-ray delay by using the ``lxt``-value and the result of time tool
+  data analysis, avoiding double-counting.
+- Adds :class:`~pcdsdevices.lxe.TimeToolDelay`, an alias for
+  :class:`~pcdsdevices.pseudopos.DelayNewport` with additional contextual
+  information and room for future development.
+- Add LaserInCoupling device for TMO.
+- Add ArrivalTimeMonitor device for TMO.
+- Add ReflaserL2SI device for TMO.
+
+Bugfixes
+--------
+- Fixed a typo in a ``ValueError`` exception in
+  :meth:`pcdsdevices.state.StatePositioner.check_value`.
+- A read-only PV was erroneously marked as read-write in
+  :class:`pcdsdevices.gauge.GaugeSerialGPI`, component ``autozero``.
+  All other devices were audited, finding no other RBV-related read-only items.
+- The direction of :class:`LaserTiming` (``lxt``) was inverted and is now
+  fixed.
+- Allow setting of :class:`~ophyd.EpicsMotor` limits when unset in the motor
+  record (i.e., ``(0, 0)``) when using
+  :class:`~pcdsdevices.epics_motor.EpicsMotorInterface`.
+
+Maintenance
+-----------
+- Added a copy-pastable example to
+  :class:`~pcdsdevices.component.UnrelatedComponent` to ease creation of new
+  devices.
+- Catch :class:`~ophyd.utils.LimitError` in all
+  :class:`pcdsdevices.interface.MvInterface` moves, reporting a simple error by
+  way of the interface module-level logger.
+
+Contributors
+------------
+- cristinasewell
+- klauer
+- zlentz
+
+
+v2.11.0 (2020-09-21)
+===================
+
+API Changes
+-----------
+- :class:`BaseInterface` no longer inherits from :class:`ophyd.OphydObject`.
+- The order of multiple inheritance for many devices using the LCLS-enhanced
+  :class:`BaseInterface`, :class:`MvInterface`, and :class:`FltMvInterface` has
+  been changed.
+- Added :class:`pcdsdevices.interface.TabCompletionHelperClass` to help hold
+  tab completion information state and also allow for tab-completion
+  customization on a per-instance level.
+- :class:`~pcdsdevices.interface.Presets` ``add_hutch`` (and all similar
+  ``add_*``) methods no longer require a position.  When unspecified, the
+  current position is used.
+
+Features
+--------
+- For :class:`pcdsdevices.pseudopos.DelayBase`, added
+  :meth:`~pcdsdevices.pseudopos.DelayBase.set_current_position` and its related
+  component `user_offset`, allowing for custom offsets.
+- Epics motors can now have local limits updated per-session, rather than
+  only having the option of the EPICS limits. Setting limits attributes will
+  update the python limits, putting to the limits PVs will update the limits
+  PVs.
+- Add PVPositionerDone, a setpoint-only PVPositioner class that is done moving
+  immediately. This is not much more useful than just using a PV, but it is
+  compatibile with pseudopositioners and has a built-in filter for ignoring
+  small moves.
+- Moves using mv and umv will log their moves at info level for interactive
+  use to keep track of the sessions.
+- Add ``user_offset`` to :class:`~pcdsdevices.signal.UnitConversionDerivedSignal`,
+  allowing for an arbitrary user offset in user-facing units.
+- Add ``user_offset`` signal to the :class:`pcdsdevices.lxe.LaserTiming`, by
+  way of :class:`~pcdsdevices.signal.UnitConversionDerivedSignal`, offset
+  support.
+
+Device Updates
+--------------
+- CCM energy limited to the range of 4 to 25 keV
+- CCM theta2fine done moving tolerance raised to 0.01
+- Beam request default move start tolerance dropped to 5eV
+
+New Devices
+-----------
+- Add WaveFrontSensorTarget for the wavefront sensor targets (PF1K0, PF1L0).
+- Add TwinCATTempSensor for the updated twincat FB with corrected PV pragmas.
+
+Bugfixes
+--------
+- Adds hints to the :class:`pcdsdevices.lxe.LaserTiming` class for
+  ``LiveTable`` support.
+- umv will now properly display position and completion status after a move.
+- Tab completion for many devices has been fixed. Regression tests have been
+  added.
+- Fix bug in PulsePickerInOut where it would grab only the first section of
+  of the PV instead of the first two
+- Tweak will feel less "janky" now and give useful feedback.
+- Tweak now accepts + and - as valid inputs for changing the step size.
+- Tweak properly clears lines between prints.
+- Fix issue where putting to the limits property would update live PVs,
+  contrary to the behavior of all other limits attributes in ophyd.
+- Fix issue where doing a getattr on the limits properties would fetch
+  live PVs, which can cause slowdowns and instabilities.
+- Preset methods are now visible when not in engineering mode. (#576)
+- Rework BeamEnergyPositioner to be setpoint-only to work properly
+  with the behavior of the energy PVs.
+- FltMvPositioner.wm will now return numeric values if the position
+  value is a tuple. This value is the first element of the tuple, which
+  for pseudo positioners is a value that can be passed into move and have
+  it do the right thing. This resolves consistency issues and fixes bugs
+  where mvr and umvr would fail.
+- Fixed a race condition in the EventSequencer device's status objects. Waiting
+  on these statuses will now be more reliable.
+- Fix issue where converting units could incur time penalties of up to
+  7 seconds. This should take around 10ms now.
+- Fix bug on beam request where you could not override the tolerance
+  via init kwarg, despite docstring's indication.
+
+Maintenance
+-----------
+- Establish DOC conventions for accumulating release notes from every
+  pull request.
+- Tweak refactored for maintainability.
+- Use more of the built-in ophyd mechanisms for limits rather than
+  relying on local overrides.
+
+Contributors
+------------
+- klauer
+- zllentz
+- zrylettc
+
+
+v2.10.0 (2020-08-21)
+====================
+
+Features
+--------
+- Add LookupTablePositioner PseudoPositioner base class for moves
+  based on a calibration table.
+- Add UnitConversionDerivedSignal as a Signal class for converting
+  EPICS units to more desirable units for the user.
+- Add units to the IPython prettyprint repr.
+
+Device Updates
+--------------
+- Add Vernier integration into the CCM class using BeamEnergyRequest.
+
+New Devices
+-----------
+- Add support for Thorlabs WFS40 USB Wavefront Sensor Camera.
+- Add LaserEnergyPositioner PseudoPositioner (lxe) using
+  LookupTablePositioner.
+- Add LaserTiming PVPositioner (lxt) using UnitConversionDerivedSignal.
+- Add BeamEnergyRequest PVPositioner for requesting beam energies in eV from
+  ACR.
+
+
+v2.9.0 (2020-08-18)
+===================
+
+Features
+--------
+- Devices will now show detailed status information when returned
+  in the ipython terminal.
+
+Device Updates
+--------------
+- Update docs on FSV fast shutter valve
+- Update AT2L0 with state positioners and calculator
+- Update Elliptec classes for cleaner implementation
+- Add missing CCM motors and fix the energy motion (no vernier yet)
+- Add HDF5 plugin to PCDSAreaDetectorEmbedded
+
+New Devices
+-----------
+- Add support for SmarAct motors
+- Add attenuator calculator device for Ken's new calculator
+- Add support for TuttiFruitti diagnostic stack
+
+Bugfixes
+--------
+- Fix typo in PV name of BeckhoffJet slits
+
+
+v2.8.0 (2020-07-24)
+===================
+
+Features
+--------
+- Expand variety schema support and add dotted dictionary access.
+
+Device Updates
+--------------
+- Update various vacuum char waveforms with ``string=True`` for proper
+  handling in ``typhos``.
+- Add various missing vacuum PVs to various vacuum devices.
+- Switch twincat state device error reset to ``kind=config`` so it shows up
+  by default in ``typhos``.
+- Update LCLS-II imagers to use the new ``AreaDetectorTyphos``.
+- The following devices now have ``lightpath`` support:
+  - ``FeeAtt``
+  - ``FEESolidAttenuator``
+  - ``XOffsetMirror``
+  - ``PPM``
+  - ``XPIM``
+  - ``PowerSlits``
+  - ``Kmono``
+  - ``VRC`` and all subclasses, such as ``VGC``
+  - ``VFS``
+- Update ``XOffsetMirror`` ``y_up``, ``x_up``, and ``pitch`` to
+  ``kind=hinted`` (previously ``normal``). These axes are usually the
+  most important.
+- Rename ``PPM.y_states`` and ``XPIM.y_states`` to ``target`` for reduced
+  redundancy in screens. The only name is aliased via a property.
+- ``PowerSlits`` now have a feature set on par with the old slits.
+- Update ``VFS`` ``valve_position`` and ``vfs_state`` to ``kind=hinted``
+  (previously ``normal``) for more focused statuses.
+
+New Devices
+-----------
+- Add support for Qmini Spectrometer.
+- Add ``AreaDetectorTyphos`` class for optimized screen view of most used
+  area detector signals.
+- Add ``RTDSL0`` and ``RTDSK0`` to support the rapid turnaround diagnostic
+  station configurations.
+
+Bugfixes
+--------
+- Fix issue with failing callback in ``IMS`` from upstream ``ophyd`` change.
+
+Maintenance
+-----------
+- Switch from using ``cf-units`` to ``pint`` for portability.
+- Add the following helpers:
+  - ``interface.LightpathMixin`` to help establish ``lightpath`` support.
+  - ``signal.NotImplementedSignal`` to help devices that will expand later.
+  - ``signal.InternalSignal`` to help implement read-only signals that can
+    be updated by the parent class.
+  - ``utils.schedule_task`` to help interface with the ``ophyd`` callback
+    queues.
+- The ``slits`` module has been refactored to accomodate both old and new
+  slits.
+
+
+v2.7.0 (2020-07-01)
+===================
+
+Features
+--------
+- Add component variety metadata and schema validation.
+
+Device Updates
+--------------
+- Add many components to ``PIPPLC`` class, adjust component
+  ``kinds`` to be more appropriate, and fix errant PV names.
+- Update component names on ``VVC`` for clarity, and pvnames for accuracy.
+- Update ``XPIM`` class to reflect additional IOC features.
+- Update docs and metadata on all LCLS 2 imager classes.
+- Update spammy TwinCAT state config parameters to omitted.
+- Add interlock device information to ``VGC``.
+- Add ``SPMG`` field to ``BeckhoffAxis``.
+
+New Devices
+-----------
+- Add ``SxrTestAbsorber`` class.
+- Add ``ZoomTelescope`` to support MODS zoom telescope.
+- Add ``El3174AiCh`` to support EK9000 module.
+- Add ``EnvironmentalMonitor`` to support MODS environmental monitors.
+- Add support for ThorLabs Elliptec motors for MODS.
+- Add ``Ebara_EV_A03_1`` class for specific roughing pump support.
+- Migrate SDS jet tracking classes into this repo.
+- Add ``VFS`` class to support fast shutters.
+
+Maintenance
+-----------
+- Remove monkeypatch of ``EventSequence`` in tests, as it was no longer needed.
+- Update dependency from ``cf_units`` to its renamed ``cf-units``.
+- xfail test that fails with ``bluesky=1.6.2``
+
+
+v2.6.0 (2020-05-21)
+===================
+
+Features
+--------
+- ``happi`` entry points have been moved to this library for proper
+  modularization.
+- Area detectors embedded inside of larger devices have been made
+  considerably smaller to improve performance in other applications,
+  for example in ``typhos``.
+
+Bugfixes
+--------
+- Provide ``FakePytmcSignal`` for testing in external libraries. This
+  fixes issues with fake devices not working if they contain ``PytmcSignal``
+  instances outside of the ``pcdsdevices`` testing suite.
+- Fix various issues related to moving to ``ophyd`` ``v1.5.0``.
+- This library is now importable on win32.
+
+Docs
+----
+- Docstrings now conform to the new pcds standards.
+
+
+v2.5.0 (2020-04-15)
+===================
+
+Features
+--------
+- Add classes for Goniometers, Von Hamos spectrometers, Beckhoff liquid jets, TimeTools, and PFLSs
+- Add ``UnrelatedComponent`` as a helper for writing devices with many prefixes
+
+Bugfixes
+--------
+- Fix TwinCAT states enum states
+- Add missing packages to requirements file
+- Compatibility with newest ``ophyd``
+
+Misc
+----
+- Add pre-commit hooks to help with development flow
+- Add license file to manifest
+- Eliminate ``m2r`` docs dependency
+
+
+v2.4.0 (2020-03-12)
+===================
+
+Features
+--------
+- Add ``PytmcSignal``
+- Add ``PPM``, ``XPIM``, ``XOffsetMirror``, and ``Kmono`` classes
+- Update ``IPM`` and ``PIM`` modules to better match physical devices
+- Add various helper classes for TwinCAT devices
+- Stubs created for attenuators, ``RTD``, and ``PowerSlit``
+- Make ``cmd_err_reset`` in ``BeckhoffAxisPLC`` accessible in Typhos
+
+API Changes
+-----------
+- Changed ``set_point_relay`` to ``pump_on_status``, ``at_vac_sp`` to
+  ``at_vac_setpoint`` and added ``pump_state`` to ``PIPPLC``
+
+- Changed ``at_vac_sp`` to ``at_vac_setpoint``, ``at_vac_hysterisis``
+  to ``setpoint_hysterisis``, and added mps_state to ``VGC``
+
+Bugfixes
+--------
+- Make ``protection_setpoint`` writeable in ``GCCPLC``
+- Make ``state`` writeable in ``VCN``
+
+Misc
+----
+- Allow build docs failure to speed up overall CI
+- Specify old working conda version as temporary solution for
+  build failures
+
+
+v2.3.0 (2020-02-05)
+===================
+
+Features
+--------
+- Make everything compatible with the upcoming ``ophyd`` ``v1.4.0``
+- Add be lens calculations port from old python system
+
+
+v2.2.0 (2020-01-22)
+===================
+
+Features
+--------
+- Add a bunch vacuum-related classes for L2SI
+
+Misc
+----
+- Fix an issue with the doctr deploy key
+
+
+v2.1.0 (2020-01-10)
+===================
+
+Features
+--------
+- Add ``screen`` method to ``PCDSMotorBase`` to open the motor expert screen
+- Add tab completion filtering via whitelists as the first feature of the
+  ``engineering_mode`` switch. This was implemented because the tab
+  completion on ophyd devices is extremely overwhelming.
+  Use ``set_engineering_mode(bool)`` to turn ``engineering_mode`` on or off.
+  The default is "on", which means "everything is normal".
+  Turning ``engineering_mode`` off enables the whitelist filtering,
+  and in the future may also have other effects on the user interface.
+- Add ``dc_devices`` module for components from the new DC power system.
+  This currently contains the ``ICT`` and related classes.
+
+Misc
+----
+- Fixed a race condition in the tests
+- Clean up the Travis CI configuration
+- Pin pyepics to >=3.4.1 due to a breaking change from python 3.7.6
+
+
 v2.0.0 (2019-06-28)
-=================
+===================
 
 Features
 --------

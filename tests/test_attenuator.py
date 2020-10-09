@@ -1,14 +1,14 @@
 import logging
-import time
 import threading
-import pytest
-
+import time
 from unittest.mock import Mock
+
+import pytest
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
 
-from pcdsdevices.attenuator import (Attenuator, MAX_FILTERS,
-                                    _att_classes, _att3_classes)
+from pcdsdevices.attenuator import (MAX_FILTERS, AttBase, Attenuator,
+                                    _att3_classes, _att_classes)
 
 logger = logging.getLogger(__name__)
 
@@ -19,17 +19,6 @@ for name, cls in _att_classes.items():
 
 for name, cls in _att3_classes.items():
     _att3_classes[name] = make_fake_device(cls)
-
-
-@pytest.fixture(scope='function')
-def fake_att():
-    att = Attenuator('TST:ATT', MAX_FILTERS-1, name='test_att')
-    att.readback.sim_put(1)
-    att.done.sim_put(0)
-    att.calcpend.sim_put(0)
-    for filt in att.filters:
-        filt.state.put('OUT')
-    return att
 
 
 @pytest.mark.timeout(5)
@@ -73,21 +62,21 @@ def test_attenuator_motion(fake_att):
     # Move to ceil
     status = att.move(0.8, wait=False)
     fake_move_transition(att, status, 0.8001)
-    assert att.setpoint.value == 0.8
+    assert att.setpoint.get() == 0.8
     assert att.actuate_value == 3
     # Move to floor
     status = att.move(0.5, wait=False)
     fake_move_transition(att, status, 0.5001)
-    assert att.setpoint.value == 0.5
+    assert att.setpoint.get() == 0.5
     assert att.actuate_value == 2
     # Call remove method
     status = att.remove(wait=False)
     fake_move_transition(att, status, 1)
-    assert att.setpoint.value == 1
+    assert att.setpoint.get() == 1
     # Call insert method
     status = att.insert(wait=False)
     fake_move_transition(att, status, 0)
-    assert att.setpoint.value == 0
+    assert att.setpoint.get() == 0
 
 
 @pytest.mark.timeout(5)
@@ -169,3 +158,8 @@ def test_attenuator_third_harmonic():
     logger.debug('test_attenuator_third_harmonic')
     att = Attenuator('TRD:ATT', MAX_FILTERS-1, name='third', use_3rd=True)
     att.wait_for_connection()
+
+
+@pytest.mark.timeout(5)
+def test_attenuator_disconnected():
+    AttBase('TST:ATT', name='test_att')

@@ -1,6 +1,8 @@
 import logging
+
 import pytest
 from ophyd.sim import make_fake_device
+
 from pcdsdevices.dc_devices import ICT
 
 logger = logging.getLogger(__name__)
@@ -23,3 +25,8 @@ def test_PDU_status(fake_ICT):
     assert PDU.ch_1A.ch_status.get() == 'DISABLED'
     PDU.ch_1A.on()
     assert PDU.ch_1A.ch_status.get() == 'ENABLED'
+
+
+@pytest.mark.timeout(5)
+def test_disconnected_ict():
+    ICT('TST:PDU:ICT', name='test')

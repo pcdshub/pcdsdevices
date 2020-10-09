@@ -1,14 +1,15 @@
 import logging
 
+import pytest
 from bluesky import RunEngine
-from bluesky.plan_stubs import stage, unstage, open_run, close_run
+from bluesky.plan_stubs import close_run, open_run, stage, unstage
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
-import pytest
 
-from pcdsdevices.epics_motor import (EpicsMotorInterface, PCDSMotorBase, IMS,
-                                     Newport, PMC100, BeckhoffAxis,
-                                     MotorDisabledError, Motor, EpicsMotor)
+from pcdsdevices.epics_motor import (IMS, PMC100, BeckhoffAxis, EpicsMotor,
+                                     EpicsMotorInterface, Motor,
+                                     MotorDisabledError, Newport,
+                                     PCDSMotorBase)
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,9 @@ def motor_setup(motor):
     """
     if isinstance(motor, EpicsMotorInterface):
         motor.user_readback.sim_put(0)
-        motor.limits = (-100, 100)
+        motor.high_limit_travel.put(100)
+        motor.low_limit_travel.put(-100)
+        motor.user_setpoint.sim_set_limits((-100, 100))
 
     if isinstance(motor, PCDSMotorBase):
         motor.motor_spg.sim_put(2)
@@ -96,6 +99,21 @@ def test_epics_motor_soft_limits(fake_epics_motor):
     # Check that we can not move past the soft limits
     with pytest.raises(ValueError):
         m.move(-150)
+    # Try the local soft limits override
+    m.limits = (-50, 50)
+    with pytest.raises(ValueError):
+        m.move(-75)
+    m.low_limit = -25
+    with pytest.raises(ValueError):
+        m.move(-40)
+    m.high_limit = 25
+    with pytest.raises(ValueError):
+        m.move(40)
+    # Try with no limits set, e.g. (0, 0)
+    m.user_setpoint.sim_set_limits((0, 0))
+    # And of course, clear our soft limits as well:
+    m.limits = (0, 0)
+    m.check_value(42)
 
 
 def test_epics_motor_tdir(fake_pcds_motor):
@@ -121,6 +139,7 @@ def test_ims_clear_flag(fake_ims):
     assert not st.done
     assert not st.success
     m.bit_status.sim_put(0)
+    st.wait(timeout=1)
     assert st.done
     assert st.success
 
@@ -198,7 +217,7 @@ def test_disable(fake_pcds_motor):
 def test_beckhoff_error_clear(fake_beckhoff):
     m = fake_beckhoff
     m.clear_error()
-    assert m.cmd_err_reset.get() == 1
+    assert m.plc.cmd_err_reset.get() == 1
     m.stage()
     m.unstage()
 
@@ -208,3 +227,10 @@ def test_motor_factory():
     assert isinstance(m, IMS)
     m = Motor('TST:RANDOM:MTR:01', name='test_motor')
     assert isinstance(m, EpicsMotor)
+
+
+@pytest.mark.parametrize("cls", [PCDSMotorBase, IMS, Newport, PMC100,
+                                 BeckhoffAxis, EpicsMotor])
+@pytest.mark.timeout(5)
+def test_disconnected_motors(cls):
+    cls('MOTOR', name='motor')

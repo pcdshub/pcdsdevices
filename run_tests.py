@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-import sys
-import os
 import logging
-from pathlib import Path
+import os
+import sys
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
+
 import pytest
 
 if __name__ == '__main__':

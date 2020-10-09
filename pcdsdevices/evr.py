@@ -1,12 +1,11 @@
-from ophyd import Device, Component as Cpt, EpicsSignal, EpicsSignalRO
+from ophyd import Component as Cpt
+from ophyd import Device, EpicsSignal, EpicsSignalRO
 
 from .interface import BaseInterface
 
 
-class Trigger(Device, BaseInterface):
-    """
-    Class for an individual Trigger
-    """
+class Trigger(BaseInterface, Device):
+    """Class for an individual Trigger."""
     eventcode = Cpt(EpicsSignal, ':EC_RBV', write_pv=':TEC', kind="config")
     eventrate = Cpt(EpicsSignalRO, ':RATE', kind="normal")
     label = Cpt(EpicsSignal, ':TCTL.DESC', kind="omitted")
@@ -19,9 +18,9 @@ class Trigger(Device, BaseInterface):
     tab_component_names = True
 
     def enable(self):
-        """Enable the trigger"""
+        """Enable the trigger."""
         self.enable_cmd.put(1)
 
     def disable(self):
-        """Disable the trigger"""
+        """Disable the trigger."""
         self.enable_cmd.put(0)

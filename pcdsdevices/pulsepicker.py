@@ -3,12 +3,14 @@ Module for the LCLS1 `PulsePicker`
 """
 import logging
 
-from ophyd.device import Component as Cpt, FormattedComponent as FCpt
+from ophyd.device import Component as Cpt
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
-from ophyd.status import SubscriptionStatus, wait as status_wait
+from ophyd.status import SubscriptionStatus
+from ophyd.status import wait as status_wait
 
 from .doc_stubs import basic_positioner_init
-from .inout import InOutRecordPositioner, InOutPVStatePositioner
+from .inout import InOutPVStatePositioner, InOutRecordPositioner
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +22,7 @@ class PulsePicker(InOutPVStatePositioner):
     This device opens/closes in response to event codes to let certain pulses
     through and block others.
     """
+
     __doc__ += basic_positioner_init
 
     blade = Cpt(EpicsSignalRO, ':READ_DF', kind='normal')
@@ -74,9 +77,10 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
+
         self._log_request('RESET')
         if self.mode.get() not in (0, 'IDLE'):
             self.cmd_reset.put(1)
@@ -89,9 +93,10 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
+
         self.reset(wait=True)
         self._log_request('OPEN')
         self.cmd_open.put(1)
@@ -104,8 +109,8 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
         self.reset(wait=True)
         self._log_request('CLOSED')
@@ -119,8 +124,8 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
         self.reset(wait=True)
         self._log_request('FLIP-FLOP')
@@ -134,9 +139,10 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
+
         self.reset(wait=True)
         self._log_request('BURST')
         self.cmd_burst.put(1)
@@ -149,9 +155,10 @@ class PulsePicker(InOutPVStatePositioner):
 
         Parameters
         ----------
-        wait: ``bool``, optional
-            If ``True``, block until procedure is done.
+        wait : bool, optional
+            If `True`, block until procedure is done.
         """
+
         self.reset(wait=True)
         self._log_request('FOLLOWER')
         self.cmd_follower.put(1)
@@ -173,6 +180,7 @@ class PulsePickerInOut(PulsePicker):
     So therefore, if the picker is 'TST:DG1:MMS:03', the inout states should be
     'TST:DG1:PP:Y'.
     """
+
     __doc__ += basic_positioner_init
 
     inout = FCpt(InOutRecordPositioner, '{self._inout}', kind='normal')
@@ -191,15 +199,18 @@ class PulsePickerInOut(PulsePicker):
     def __init__(self, prefix, **kwargs):
         # inout follows naming convention
         parts = prefix.split(':')
-        self._inout = ':'.join(parts[:1] + ['PP', 'Y'])
+        self._inout = ':'.join(parts[:2] + ['PP', 'Y'])
         super().__init__(prefix, **kwargs)
 
     def _do_move(self, state):
         """
-        Handle moving the state motor OUT when commands like
-        pulsepicker.move('OUT') are called, and inserting on other move
+        Handles movement to state 'OUT'.
+
+        Handles moving the state motor OUT when commands like
+        ``pulsepicker.move('OUT')`` are called, and inserting on other move
         commands.
         """
+
         if state.name == 'OUT':
             self.inout.remove()
         else:
