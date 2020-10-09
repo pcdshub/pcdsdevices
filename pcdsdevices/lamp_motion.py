@@ -4,12 +4,12 @@ LAMP Motion Classes
 This module contains classes related to the TMO-LAMP Motion System
 """
 
-import logging
 from ophyd import Component as Cpt
 from ophyd import Device
 
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface
+
 
 class LAMP(BaseInterface, Device):
     """
