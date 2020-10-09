@@ -16,6 +16,14 @@ class LAMP(BaseInterface, Device):
     LAMP Motion Class
 
     This class controls motors fixed to the LAMP Motion system
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the LAMP motion system
+
+    name : str
+        Alias for the device
     """
     # UI representation
     _icon = 'fa.minus-square'
