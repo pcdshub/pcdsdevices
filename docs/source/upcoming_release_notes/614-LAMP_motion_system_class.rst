@@ -1,5 +1,5 @@
 614 LAMP motion system class
-#################
+############################
 
 API Changes
 -----------
@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- LAMP motion Class for the LAMP endstation TMO. This indluces the following motion axes:
+- LAMP motion Class for the LAMP endstation TMO. This includes the following motion axes:
  - Gas Jet X/Y/Z Axes
  - Gas Needle X/Y/Z Axes
  - Sample Paddle X/Y/Z Axes 
