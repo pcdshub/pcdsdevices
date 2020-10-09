@@ -15,7 +15,8 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- Add XYTargetGrid, a interactive utility class for managing a target grid
+  oriented normal to the beam, with regular X-Y spacing between targets.
 
 Bugfixes
 --------
