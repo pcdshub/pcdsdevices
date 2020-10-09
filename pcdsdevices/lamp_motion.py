@@ -27,6 +27,7 @@ class LAMP(BaseInterface, Device):
     """
     # UI representation
     _icon = 'fa.minus-square'
+    tab_component_names = True
 
     # Motor components
     gas_jet_x = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
