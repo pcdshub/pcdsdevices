@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- LAMP Class: TMO-LAMP Motion system class:
+- LAMP motion Class for the LAMP endstation TMO. This indluces the following motion axes:
  - Gas Jet X/Y/Z Axes
  - Gas Needle X/Y/Z Axes
  - Sample Paddle X/Y/Z Axes 

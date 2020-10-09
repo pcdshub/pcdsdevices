@@ -15,7 +15,8 @@ class LAMP(BaseInterface, Device):
     """
     LAMP Motion Class
 
-    This class controls motors fixed to the LAMP Motion system
+    This class controls motors fixed to the LAMP Motion system for the LAMP
+    endstation in TMO.
 
     Parameters
     ----------
