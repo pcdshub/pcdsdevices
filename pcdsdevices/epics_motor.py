@@ -555,6 +555,31 @@ class SmarAct(PCDSMotorBase):
     # open_loop = Cpt(SmarActOpenLoop, '', kind='omitted')
 
 
+def _GetMotorClass(basepv):
+    """
+    Function to determine the appropriate motor class based on the PV.
+    """
+    # Available motor types
+    motor_types = (('MMS', IMS),
+                   ('CLZ', IMS),
+                   ('CLF', IMS),
+                   ('MMN', Newport),
+                   ('MZM', PMC100),
+                   ('MMB', BeckhoffAxis),
+                   ('PIC', PCDSMotorBase),
+                   ('MCS', SmarAct))
+    # Search for component type in prefix
+    for cpt_abbrev, _type in motor_types:
+        if f':{cpt_abbrev}:' in basepv:
+            logger.debug("Found %r in basepv %r, loading %r",
+                         cpt_abbrev, basepv, _type)
+            return _type
+    # Default to ophyd.EpicsMotor
+    logger.warning("Unable to find type of motor based on component. "
+                   "Using 'ophyd.EpicsMotor'")
+    return EpicsMotor
+
+
 def Motor(prefix, **kwargs):
     """
     Load a PCDSMotor with the correct class based on prefix.
@@ -590,22 +615,8 @@ def Motor(prefix, **kwargs):
     kwargs
         Passed to class constructor.
     """
-    # Available motor types
-    motor_types = (('MMS', IMS),
-                   ('CLZ', IMS),
-                   ('CLF', IMS),
-                   ('MMN', Newport),
-                   ('MZM', PMC100),
-                   ('MMB', BeckhoffAxis),
-                   ('PIC', PCDSMotorBase),
-                   ('MCS', SmarAct))
-    # Search for component type in prefix
-    for cpt_abbrev, _type in motor_types:
-        if f':{cpt_abbrev}:' in prefix:
-            logger.debug("Found %r in prefix %r, loading %r",
-                         cpt_abbrev, prefix, _type)
-            return _type(prefix, **kwargs)
-    # Default to ophyd.EpicsMotor
-    logger.warning("Unable to find type of motor based on component. "
-                   "Using 'ophyd.EpicsMotor'")
-    return EpicsMotor(prefix, **kwargs)
+
+    # Determine motor class
+    cls = _GetMotorClass(prefix)
+
+    return cls(prefix, **kwargs)
