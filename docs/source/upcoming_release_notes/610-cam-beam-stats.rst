@@ -15,7 +15,8 @@ Device Updates
 
 New Devices
 -----------
-- PCDSAreaDetectorTyphosBeamStats
+- PCDSAreaDetectorTyphosBeamStats, a variant of PCSDAreaDetectorTyphos that
+  includes centroid information and the crosshair PVs.
 
 Bugfixes
 --------
