@@ -322,3 +322,76 @@ class XOffsetMirror(BaseInterface, Device):
     removed = False
     transmission = 1
     SUB_STATE = 'state'
+
+
+class KBOMirror(BaseInterface, Device):
+    """
+    Kirkpatrick-Baez Mirror with Bender Axes.
+
+    1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # UI representation
+    _icon = 'fa.minus-square'
+
+    # Motor components: can read/write positions
+    x         = Cpt(BeckhoffAxis, ':MMS:Y', kind='hinted')
+    y         = Cpt(BeckhoffAxis, ':MMS:X', kind='hinted')
+    pitch     = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='hinted')
+    bender_us = Cpt(BeckhoffAxis, ':MMS:BENDER:US', kind='hinted')
+    bender_ds = Cpt(BeckhoffAxis, ':MMS:BENDER:DS', kind='hinted')
+
+    # RMS Cpts:
+    y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
+    x_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
+    pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
+    bender_us_enc_rms = Cpt(PytmcSignal, ':ENC:BENDER:US:RMS', io='i',
+                         kind='normal')
+    bender_ds_enc_rms = Cpt(PytmcSignal, ':ENC:BENDER:DS:RMS', io='i',
+                         kind='normal')
+
+    # Lightpath config: implement inserted, removed, transmission, subscribe
+    inserted = True
+    removed = False
+    transmission = 1
+    SUB_STATE = 'state'
+
+class FFMirror(BaseInterface, Device):
+    """
+    Fixed Focus Kirkpatrick-Baez Mirror.
+
+    1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # UI representation
+    _icon = 'fa.minus-square'
+
+    # Motor components: can read/write positions
+    x         = Cpt(BeckhoffAxis, ':MMS:Y', kind='hinted')
+    y         = Cpt(BeckhoffAxis, ':MMS:X', kind='hinted')
+    pitch     = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='hinted')
+
+    # RMS Cpts:
+    y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
+    x_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
+    pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
+
+    # Lightpath config: implement inserted, removed, transmission, subscribe
+    inserted = True
+    removed = False
+    transmission = 1
+    SUB_STATE = 'state'
