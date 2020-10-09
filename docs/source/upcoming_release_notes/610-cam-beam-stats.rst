@@ -1,5 +1,5 @@
-311 ValueError typo
-###################
+610 cam-beam-stats
+#################
 
 API Changes
 -----------
@@ -15,12 +15,12 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- PCDSAreaDetectorTyphosBeamStats, a variant of PCSDAreaDetectorTyphos that
+  includes centroid information and the crosshair PVs.
 
 Bugfixes
 --------
-- Fixed a typo in a ``ValueError`` exception in
-  :meth:`pcdsdevices.state.StatePositioner.check_value`.
+- N/A
 
 Maintenance
 -----------
@@ -28,4 +28,4 @@ Maintenance
 
 Contributors
 ------------
-- klauer
+- tjohnson

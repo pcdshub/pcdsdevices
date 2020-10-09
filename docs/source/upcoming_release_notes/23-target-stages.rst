@@ -1,10 +1,9 @@
-570 Old CCM Energy Calculation Reversion
+23 target-stages
 #################
 
 API Changes
 -----------
- - The calculations for `alio_to_theta` and `theta_to_alio` in `ccm.py` 
-   have been reverted to the old calculations. 
+- N/A
 
 Features
 --------
@@ -16,7 +15,8 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- Add XYTargetGrid, a interactive utility class for managing a target grid
+  oriented normal to the beam, with regular X-Y spacing between targets.
 
 Bugfixes
 --------
@@ -28,4 +28,4 @@ Maintenance
 
 Contributors
 ------------
-cristinasewell
+- tjohnson

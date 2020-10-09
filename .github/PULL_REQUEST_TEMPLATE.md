@@ -18,3 +18,9 @@
 <!--
 ## Screenshots (if appropriate):
 -->
+
+## Pre-merge checklist
+- [ ] Test suite passes locally
+- [ ] Test suite passes on travis
+- [ ] Code works interactively
+- [ ] Ran docs/pre-release-notes.sh and created a pre-release documentation page
