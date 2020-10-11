@@ -39,7 +39,8 @@ def test_ommotor_positioner_egu(fake_branching_mirror):
     assert fake_branching_mirror.pitch.egu == 'urad'
 
 
-def test_mirror_init(fake_branching_mirror, fake_offset_mirror, fake_kbo_mirror):
+def test_mirror_init(fake_branching_mirror, fake_offset_mirror,
+                     fake_kbo_mirror):
     bm = fake_branching_mirror
     assert bm.pitch.prefix == 'MIRR:TST:M1H'
     assert bm.xgantry.prefix == 'STEP:TST:M1H:X:P'
