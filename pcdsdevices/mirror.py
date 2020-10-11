@@ -342,20 +342,24 @@ class KBOMirror(BaseInterface, Device):
     _icon = 'fa.minus-square'
 
     # Motor components: can read/write positions
-    x = Cpt(BeckhoffAxis, ':MMS:Y', kind='hinted')
-    y = Cpt(BeckhoffAxis, ':MMS:X', kind='hinted')
+    x = Cpt(BeckhoffAxis, ':MMS:X', kind='hinted')
+    y = Cpt(BeckhoffAxis, ':MMS:Y', kind='hinted')
     pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='hinted')
     bender_us = Cpt(BeckhoffAxis, ':MMS:BEND:US', kind='hinted')
     bender_ds = Cpt(BeckhoffAxis, ':MMS:BEND:DS', kind='hinted')
 
     # RMS Cpts:
-    y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
-    x_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
+    y_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
+    x_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
     pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
     bender_us_enc_rms = Cpt(PytmcSignal, ':ENC:BEND:US:RMS', io='i',
                             kind='normal')
     bender_ds_enc_rms = Cpt(PytmcSignal, ':ENC:BENDER:DS:RMS', io='i',
                             kind='normal')
+
+    # Bender RTD Cpts:
+    us_rtd = Cpt(PytmcSignal, ':RTD:BEND:US:1_RBV', io='i', kind='normal')
+    ds_rtd = Cpt(PytmcSignal, ':RTD:BEND:DS:1_RBV', io='i', kind='normal')
 
     # Lightpath config: implement inserted, removed, transmission, subscribe
     inserted = True
@@ -382,13 +386,13 @@ class FFMirror(BaseInterface, Device):
     _icon = 'fa.minus-square'
 
     # Motor components: can read/write positions
-    x = Cpt(BeckhoffAxis, ':MMS:Y', kind='hinted')
-    y = Cpt(BeckhoffAxis, ':MMS:X', kind='hinted')
+    x = Cpt(BeckhoffAxis, ':MMS:X', kind='hinted')
+    y = Cpt(BeckhoffAxis, ':MMS:Y', kind='hinted')
     pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='hinted')
 
     # RMS Cpts:
-    y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
-    x_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
+    y_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
+    x_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
     pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
 
     # Lightpath config: implement inserted, removed, transmission, subscribe
