@@ -358,8 +358,8 @@ class KBOMirror(BaseInterface, Device):
                             kind='normal')
 
     # Bender RTD Cpts:
-    us_rtd = Cpt(PytmcSignal, ':RTD:BEND:US:1_RBV', io='i', kind='normal')
-    ds_rtd = Cpt(PytmcSignal, ':RTD:BEND:DS:1_RBV', io='i', kind='normal')
+    us_rtd = Cpt(EpicsSignalRO, ':RTD:BEND:US:1_RBV', kind='normal')
+    ds_rtd = Cpt(EpicsSignalRO, ':RTD:BEND:DS:1_RBV', kind='normal')
 
     # Lightpath config: implement inserted, removed, transmission, subscribe
     inserted = True
