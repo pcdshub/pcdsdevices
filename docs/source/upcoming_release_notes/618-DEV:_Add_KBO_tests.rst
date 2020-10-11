@@ -1,4 +1,4 @@
-616 DEV: Add KBO tests
+618 DEV: Add KBO tests
 #################
 
 API Changes
@@ -16,9 +16,7 @@ Device Updates
 
 New Devices
 -----------
-- tests/test_mirror.py
-  add prefix and lightpath tests for KBOMirror. FFMirror is an identical
-  but reduced class so did not write an additional test for that.
+- N/A
 
 Bugfixes
 --------
@@ -27,7 +25,9 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- tests/test_mirror.py
+  add prefix and lightpath tests for KBOMirror. FFMirror is an identical
+  but reduced class so did not write an additional test for that.
 
 Contributors
 ------------

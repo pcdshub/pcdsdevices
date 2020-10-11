@@ -349,8 +349,8 @@ class KBOMirror(BaseInterface, Device):
     bender_ds = Cpt(BeckhoffAxis, ':MMS:BEND:DS', kind='hinted')
 
     # RMS Cpts:
-    y_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
-    x_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
+    x_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
+    y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
     pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
     bender_us_enc_rms = Cpt(PytmcSignal, ':ENC:BEND:US:RMS', io='i',
                             kind='normal')
@@ -391,8 +391,8 @@ class FFMirror(BaseInterface, Device):
     pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='hinted')
 
     # RMS Cpts:
-    y_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
-    x_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
+    x_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
+    y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
     pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
 
     # Lightpath config: implement inserted, removed, transmission, subscribe
