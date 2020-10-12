@@ -4,7 +4,7 @@ from unittest.mock import Mock
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.mirror import OffsetMirror, PointingMirror
+from pcdsdevices.mirror import OffsetMirror, PointingMirror, KBOMirror
 
 
 @pytest.fixture(scope='function')
@@ -39,7 +39,8 @@ def test_ommotor_positioner_egu(fake_branching_mirror):
     assert fake_branching_mirror.pitch.egu == 'urad'
 
 
-def test_mirror_init(fake_branching_mirror, fake_offset_mirror):
+def test_mirror_init(fake_branching_mirror, fake_offset_mirror,
+                     fake_kbo_mirror):
     bm = fake_branching_mirror
     assert bm.pitch.prefix == 'MIRR:TST:M1H'
     assert bm.xgantry.prefix == 'STEP:TST:M1H:X:P'
@@ -52,6 +53,12 @@ def test_mirror_init(fake_branching_mirror, fake_offset_mirror):
     assert m.xgantry.gantry_prefix == 'GANTRY:TST:M1H:X'
     assert m.ygantry.prefix == 'TST:M1H:Y:P'
     assert m.ygantry.gantry_prefix == 'GANTRY:TST:M1H:Y'
+    km = fake_kbo_mirror
+    assert km.x.prefix == 'TST:M1H:MMS:X'
+    assert km.y.prefix == 'TST:M1H:MMS:Y'
+    assert km.pitch.prefix == 'TST:M1H:MMS:PITCH'
+    assert km.bender_us.prefix == 'TST:M1H:MMS:BEND:US'
+    assert km.bender_ds.prefix == 'TST:M1H:MMS:BEND:DS'
 
 
 def test_offsetmirror_lighpath(fake_offset_mirror):
@@ -122,3 +129,15 @@ def test_mirror_disconnected():
     PointingMirror("TST:M1H", prefix_xy="STEP:TST:M1H",
                    xgantry_prefix="GANTRY:M1H:X", name='Test Mirror',
                    in_lines=['MFX', 'MEC'], out_lines=['CXI'])
+
+
+@pytest.fixture(scope='function')
+def fake_kbo_mirror():
+    FakeKBO = make_fake_device(KBOMirror)
+    return FakeKBO('TST:M1H', name="Test Mirror")
+
+
+def test_kbomirror_lighpath(fake_kbo_mirror):
+    km = fake_kbo_mirror
+    assert km.inserted
+    assert not km.removed

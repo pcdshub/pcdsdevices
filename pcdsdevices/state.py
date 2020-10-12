@@ -229,7 +229,7 @@ class StatePositioner(MvInterface, Device, PositionerBase):
             raise TypeError('Valid states must be of type str or int')
         state = self.get_state(value)
         if state.name in self._invalid_states:
-            raise ValueError('Cannot set the %s state', state.name)
+            raise ValueError(f'Cannot set the {state.name} state')
         return state
 
     def get_state(self, value):
@@ -598,8 +598,7 @@ class TwinCATStatePositioner(StatePositioner):
                doc='True if we have an ongoing move.')
     done = Cpt(PytmcSignal, ':DONE', io='i', kind='normal',
                doc='True if we completed the last move.')
-
-    reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='config',
+    reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='normal',
                     doc='Command to reset an error.')
 
     config = Cpt(TwinCATStateConfigAll, '', kind='omitted',

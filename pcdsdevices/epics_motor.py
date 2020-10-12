@@ -65,7 +65,10 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     @property
     def low_limit(self):
         """The lower soft limit for the motor."""
-        return max(self._limits[0], self._get_epics_limits()[0])
+        epics_low, epics_high = self._get_epics_limits()
+        if epics_low != epics_high:
+            return max(self._limits[0], epics_low)
+        return self._limits[0]
 
     @low_limit.setter
     def low_limit(self, value):
@@ -74,7 +77,10 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     @property
     def high_limit(self):
         """The higher soft limit for the motor."""
-        return min(self._limits[1], self._get_epics_limits()[1])
+        epics_low, epics_high = self._get_epics_limits()
+        if epics_low != epics_high:
+            return min(self._limits[1], epics_high)
+        return self._limits[1]
 
     @high_limit.setter
     def high_limit(self, value):
@@ -94,8 +100,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         if limits is None or limits == (None, None):
             # Not initialized
             return (0, 0)
-        else:
-            return limits
+        return limits
 
     def enable(self):
         """
@@ -463,7 +468,7 @@ class BeckhoffAxisPLC(Device):
                  string=True, doc='PLC error or warning')
     err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal',
                    doc='Current NC error code')
-    cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='o', kind='config',
+    cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='o', kind='normal',
                         doc='Command to reset an active error')
 
     set_metadata(err_code, dict(variety='scalar', display_format='hex'))
@@ -550,6 +555,31 @@ class SmarAct(PCDSMotorBase):
     # open_loop = Cpt(SmarActOpenLoop, '', kind='omitted')
 
 
+def _GetMotorClass(basepv):
+    """
+    Function to determine the appropriate motor class based on the PV.
+    """
+    # Available motor types
+    motor_types = (('MMS', IMS),
+                   ('CLZ', IMS),
+                   ('CLF', IMS),
+                   ('MMN', Newport),
+                   ('MZM', PMC100),
+                   ('MMB', BeckhoffAxis),
+                   ('PIC', PCDSMotorBase),
+                   ('MCS', SmarAct))
+    # Search for component type in prefix
+    for cpt_abbrev, _type in motor_types:
+        if f':{cpt_abbrev}:' in basepv:
+            logger.debug("Found %r in basepv %r, loading %r",
+                         cpt_abbrev, basepv, _type)
+            return _type
+    # Default to ophyd.EpicsMotor
+    logger.warning("Unable to find type of motor based on component. "
+                   "Using 'ophyd.EpicsMotor'")
+    return EpicsMotor
+
+
 def Motor(prefix, **kwargs):
     """
     Load a PCDSMotor with the correct class based on prefix.
@@ -585,22 +615,8 @@ def Motor(prefix, **kwargs):
     kwargs
         Passed to class constructor.
     """
-    # Available motor types
-    motor_types = (('MMS', IMS),
-                   ('CLZ', IMS),
-                   ('CLF', IMS),
-                   ('MMN', Newport),
-                   ('MZM', PMC100),
-                   ('MMB', BeckhoffAxis),
-                   ('PIC', PCDSMotorBase),
-                   ('MCS', SmarAct))
-    # Search for component type in prefix
-    for cpt_abbrev, _type in motor_types:
-        if f':{cpt_abbrev}:' in prefix:
-            logger.debug("Found %r in prefix %r, loading %r",
-                         cpt_abbrev, prefix, _type)
-            return _type(prefix, **kwargs)
-    # Default to ophyd.EpicsMotor
-    logger.warning("Unable to find type of motor based on component. "
-                   "Using 'ophyd.EpicsMotor'")
-    return EpicsMotor(prefix, **kwargs)
+
+    # Determine motor class
+    cls = _GetMotorClass(prefix)
+
+    return cls(prefix, **kwargs)

@@ -1,6 +1,7 @@
 # flake8: NOQA
 from .analog_signals import Acromag
 from .areadetector.detectors import PCDSAreaDetector
+from .atm import ArrivalTimeMonitor
 from .attenuator import Attenuator
 from .beam_stats import BeamStats, SxrGmd
 from .ccm import CCM
@@ -14,6 +15,7 @@ from .inout import Reflaser, TTReflaser
 from .ipm import IPM, IPM_IPIMB, IPM_Wave8
 from .jet import BeckhoffJet
 from .lens import XFLS, Prefocus
+from .lic import LaserInCoupling
 from .lodcm import LODCM
 from .mirror import OffsetMirror, PointingMirror
 from .movablestand import MovableStand
@@ -22,6 +24,7 @@ from .pim import PIM, PPM, XPIM, PIMWithBoth, PIMWithFocus, PIMWithLED
 from .pseudopos import DelayBase
 from .pulsepicker import PulsePicker
 from .pump import IonPump
+from .ref import ReflaserL2SI
 from .sample_delivery import (HPLC, PCM, CoolerShaker, FlowIntegrator,
                               GasManifold, Selector)
 from .sensors import RTD, TwinCATThermocouple

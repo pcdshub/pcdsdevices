@@ -2,6 +2,80 @@ Release History
 ###############
 
 
+v3.0.0 (2020-10-07)
+===================
+
+API Changes
+-----------
+- The calculations for `alio_to_theta` and `theta_to_alio` in `ccm.py`
+  have been reverted to the old calculations.
+- User-facing move functions will not be able to catch the
+  :class:`~ophyd.utils.LimitError` exception.  These interactive methods are
+  not meant to be used in scans, as that is the role of bluesky.
+
+Features
+--------
+- :class:`pcdsdevices.attenuator.AT2L0` now has a textual representation of
+  filter status, and supports the move interface by way of transmission values.
+- :class:`~pcdsdevices.pseudopos.SyncAxes` has been adjusted to support
+  scalar-valued pseudopositioners, allowing for more complex devices to be kept
+  in lock-step motion.
+- :class:`~pcdsdevices.pseudopos.PseudoPositioner` position tuples, when of
+  length 1, now support casting to floating point, meaning they can be used
+  in many functions which only support floating point values.
+- Added signal annotations for auto-generated notepad IOC support.
+
+Device Updates
+--------------
+- Add event/trigger information to PPM, XPIM.
+- Reclassify twincat motor and states error resets as "normal" for
+  accessibility.
+- Add PMPS maintenance/config PVs class for TwinCAT states devices,
+  propagating this to all consumers.
+
+New Devices
+-----------
+- Adds :class:`~pcdsdevices.lxe.LaserTimingCompensation` (``lxt_ttc``) which
+  synchronously moves :class:`LaserTiming` (``lxt``) with
+  :class:`~pcdsdevices.lxe.TimeToolDelay` (``txt``) to compensate so that the
+  true laser x-ray delay by using the ``lxt``-value and the result of time tool
+  data analysis, avoiding double-counting.
+- Adds :class:`~pcdsdevices.lxe.TimeToolDelay`, an alias for
+  :class:`~pcdsdevices.pseudopos.DelayNewport` with additional contextual
+  information and room for future development.
+- Add LaserInCoupling device for TMO.
+- Add ArrivalTimeMonitor device for TMO.
+- Add ReflaserL2SI device for TMO.
+
+Bugfixes
+--------
+- Fixed a typo in a ``ValueError`` exception in
+  :meth:`pcdsdevices.state.StatePositioner.check_value`.
+- A read-only PV was erroneously marked as read-write in
+  :class:`pcdsdevices.gauge.GaugeSerialGPI`, component ``autozero``.
+  All other devices were audited, finding no other RBV-related read-only items.
+- The direction of :class:`LaserTiming` (``lxt``) was inverted and is now
+  fixed.
+- Allow setting of :class:`~ophyd.EpicsMotor` limits when unset in the motor
+  record (i.e., ``(0, 0)``) when using
+  :class:`~pcdsdevices.epics_motor.EpicsMotorInterface`.
+
+Maintenance
+-----------
+- Added a copy-pastable example to
+  :class:`~pcdsdevices.component.UnrelatedComponent` to ease creation of new
+  devices.
+- Catch :class:`~ophyd.utils.LimitError` in all
+  :class:`pcdsdevices.interface.MvInterface` moves, reporting a simple error by
+  way of the interface module-level logger.
+
+Contributors
+------------
+- cristinasewell
+- klauer
+- zlentz
+
+
 v2.11.0 (2020-09-21)
 ===================
 

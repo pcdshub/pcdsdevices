@@ -14,6 +14,7 @@ from threading import Event
 from types import MethodType, SimpleNamespace
 from weakref import WeakSet
 
+import ophyd
 import yaml
 from bluesky.utils import ProgressBar
 from ophyd.device import Device
@@ -418,6 +419,13 @@ def device_info(device, subdevice_filter=None, devices=None):
     except Exception:
         # Something else went wrong! We have a position but it didn't work
         info['position'] = 'ERROR'
+    else:
+        try:
+            if not isinstance(info['position'], numbers.Integral):
+                # Give a floating point value, if possible, when not integral
+                info['position'] = float(info['position'])
+        except Exception:
+            ...
 
     if device not in devices:
         devices.add(device)
@@ -517,6 +525,10 @@ class MvInterface(BaseInterface):
         self._last_status.set_finished()
         super().__init__(*args, **kwargs)
 
+    def _log_move_limit_error(self, position, ex):
+        logger.error('Failed to move %s from %s to %s: %s', self.name,
+                     self.wm(), position, ex)
+
     def _log_move(self, position):
         logger.info('Moving %s from %s to %s', self.name, self.wm(), position)
 
@@ -524,7 +536,18 @@ class MvInterface(BaseInterface):
         logger.info('%s reached position %s', self.name, self.wm())
 
     def move(self, *args, **kwargs):
-        st = super().move(*args, **kwargs)
+        try:
+            st = super().move(*args, **kwargs)
+        except ophyd.utils.LimitError as ex:
+            # Pick out the position either in kwargs or args
+            try:
+                position = kwargs['position']
+            except KeyError:
+                position = args[0]
+
+            self._log_move_limit_error(position, ex)
+            raise
+
         self._last_status = st
         return st
 
@@ -554,7 +577,12 @@ class MvInterface(BaseInterface):
         """
         if log:
             self._log_move(position)
-        self.move(position, timeout=timeout, wait=wait)
+
+        try:
+            self.move(position, timeout=timeout, wait=wait)
+        except ophyd.utils.LimitError:
+            return
+
         if wait and log:
             self._log_move_end()
 
@@ -687,7 +715,11 @@ class FltMvInterface(MvInterface):
 
         if log:
             self._log_move(position)
-        status = self.move(position, timeout=timeout, wait=False)
+        try:
+            status = self.move(position, timeout=timeout, wait=False)
+        except ophyd.utils.LimitError:
+            return
+
         pgb = AbsProgressBar([status])
         try:
             status.wait()
@@ -751,7 +783,10 @@ class FltMvInterface(MvInterface):
                 limit_plot.append(x)
             plt.plot(limit_plot)
         pos = plt.ginput(1)[0][0]
-        self.move(pos, timeout=timeout)
+        try:
+            self.move(pos, timeout=timeout)
+        except ophyd.utils.LimitError:
+            return
 
     def tweak(self):
         """
@@ -1388,8 +1423,21 @@ class AbsProgressBar(ProgressBar):
         name = self._name
 
         try:
+            if isinstance(current, typing.Sequence):
+                # Single-valued pseudo positioner values can come through here.
+                assert len(current) == 1
+                current, = current
+
+            current = float(current)
+
             # Expand name to include position to display with progress bar
-            name = '{}: {:.4f}'.format(name, current)
+            # TODO: can we get access to the signal's precision?
+            if 0.0 < abs(current) < 1e-6:
+                fmt = '{}: ({:.4g})'
+            else:
+                fmt = '{}: ({:.4f})'
+
+            name = fmt.format(name, current)
             self._last_position = current
         except Exception:
             # Fallback if there is no position data at all
