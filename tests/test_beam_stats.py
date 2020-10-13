@@ -63,9 +63,9 @@ def test_lcls(fake_lcls):
 
 def test_bykik_status(fake_lcls):
     lcls = fake_lcls
-    lcls.bykik_abort.put(1)
+    lcls.bykik_abort.put('Enable')
     assert lcls.bykik_status() == 'Enable'
-    lcls.bykik_abort.put(0)
+    lcls.bykik_abort.put('Disable')
     assert lcls.bykik_status() == 'Disable'
 
 

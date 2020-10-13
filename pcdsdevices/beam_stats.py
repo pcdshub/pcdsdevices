@@ -13,14 +13,14 @@ logger = logging.getLogger(__name__)
 
 
 class BeamStats(BaseInterface, Device):
-    # Pulse energy (in mJ)
-    mj = Cpt(EpicsSignalRO, 'GDET:FEE1:241:ENRC', kind='hinted')
-    # Photon Energy (in eV)
-    ev = Cpt(EpicsSignalRO, 'BLD:SYS0:500:PHOTONENERGY', kind='normal')
-    # LCLSBEAM Event Rate (in Hz)
-    rate = Cpt(EpicsSignalRO, 'EVNT:SYS0:1:LCLSBEAMRATE', kind='normal')
-    # ECS: BEAM_OWNER ID
-    owner = Cpt(EpicsSignalRO, 'ECS:SYS0:0:BEAM_OWNER_ID', kind='omitted')
+    mj = Cpt(EpicsSignalRO, 'GDET:FEE1:241:ENRC', kind='hinted',
+             doc='Pulse energy [mJ]')
+    ev = Cpt(EpicsSignalRO, 'BLD:SYS0:500:PHOTONENERGY', kind='normal',
+             doc='Photon Energy [eV]')
+    rate = Cpt(EpicsSignalRO, 'EVNT:SYS0:1:LCLSBEAMRATE', kind='normal',
+               doc='LCLSBEAM Event Rate [Hz]')
+    owner = Cpt(EpicsSignalRO, 'ECS:SYS0:0:BEAM_OWNER_ID', kind='omitted',
+                doc='BEAM_OWNER ID')
 
     mj_avg = Cpt(AvgSignal, 'mj', averages=120, kind='normal')
     mj_buffersize = Cpt(AttributeSignal, 'mj_avg.averages', kind='config')
@@ -32,6 +32,7 @@ class BeamStats(BaseInterface, Device):
 
 
 class SxrGmd(Device):
+    # TODO: this PV => not found
     mj = Cpt(EpicsSignalRO, 'SXR:GMD:BLD:milliJoulesPerPulse', kind='hinted')
 
     def __init__(self, prefix='', name='sxr_gmd', **kwargs):
@@ -98,72 +99,70 @@ class Lcls(BaseInterface, Device):
     electron bunch length: 23 [fs]
     Last eLoss Scan: 0.93 [mJ]
     '''
-    # Bunch Charge nC: FBCK:BCI0:1:CHRG	no desc
-    # Hard e-Energy GeV/c: BEND:DMPH:400:BDES - Desired B-Field
-    # Soft e-Energ GeV/c: BEND:DMPS:400:BDES - Desired B-Field
-    # Bunch Length fs: SIOC:SYS0:ML00:AO820 estimated FEL Pulse Duration (FWHM)
 
-    # BC2 IPK:	 FBCK:FB04:LG01:S5DES	BC2 Current set point
+    tab_component_names = True
 
-    # Bunch charge (units: nC)
-    bunch_charge = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO470', kind='normal')
-    # also have this one  FBCK:BCI0:1:CHRG (nC)
-    # estimated FEL Pulse Duration (FWHM) (units: fs)
-    bunch_length = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO820', kind='normal')
-    # BLEN:LI21:265:WIDTH - not found
-    # Width of pulse (bunch length) Fsec
+    tab_whitelist = ['bykik_status', 'bykik_disable', 'bykik_enable',
+                     'bykik_get_period', 'bykik_set_period']
 
-    # Peak current after BC2 (units: A)
-    peak_current = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO195', kind='normal')
-    # Last Eloss sxray energy (units: mJ)
-    eloss_energy = Cpt(EpicsSignalRO, 'PHYS:SYS0:1:ELOSSENERGY', kind='normal')
-    # Fast Feedback 6x6 Vernier (units: MeV)
+    # TODO: - these PVs are not necessarily the ones we'll end up using...
+
+    bunch_charge = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO470', kind='normal',
+                       doc='Bunch charge [nC]')
+    bunch_length = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO820', kind='normal',
+                       doc='estimated FEL Pulse Duration (FWHM) [fs]')
+    peak_current = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO195', kind='normal',
+                       doc='Peak current after BC2 [A]')
+    eloss_energy = Cpt(EpicsSignalRO, 'PHYS:SYS0:1:ELOSSENERGY', kind='normal',
+                       doc='Last Eloss sxray energy [mJ]')
     vernier_energy = Cpt(EpicsSignalRO, 'FBCK:FB04:LG01:DL2VERNIER',
-                         kind='normal')
-
+                         kind='normal', doc='Fast Feedback 6x6 Vernier [MeV]')
+    beam_event_rate = Cpt(EpicsSignalRO, 'EVNT:SYS0:1:LCLSBEAMRATE',
+                          kind='normal', doc='LCLSBEAM Event Rate [Hz]')
+    photon_ev_hxr = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO627', kind='normal',
+                        doc='Photon eV HXR (units: eV)')
+    # [ 0] Disable [ 1] Enable
+    bykik_abort = Cpt(EpicsSignal, 'IOC:IN20:EV01:BYKIK_ABTACT', kind='normal',
+                      doc='BYKIK: Abort Active')
+    bykik_period = Cpt(EpicsSignal, 'IOC:IN20:EV01:BYKIK_ABTPRD',
+                       kind='normal', doc='BYKIK: Abort Period [beam shots]')
+    undulator_k_line = Cpt(EpicsSignalRO, 'USEG:UNDS:2650:KAct', kind='normal',
+                           doc='Most upstream undulator K value (K-line)')
+    undulator_l_line = Cpt(EpicsSignalRO, 'USEG:UNDH:1850:KAct', kind='normal',
+                           doc='Most upstream undulator K value (L-line)')
+    # TODO: remove these below, just pasted here for reference - might end up
+    # using some of these PVs...
     # FBCK Vernier SIOC:SYS0:ML00:CALC209 (units: MeV)
     # DL2 Energy - FBCK:FB04:LG01:DL2VERNIER
     # Vernier Limit (% of Bend Energy):	SIOC:SYS0:ML01:AO151 Vernier Scan Range
     # Vernier Limit: SIOC:SYS0:ML01:CALC034 - Vernier Limit
     # Vernie Crtrl w/limits: SIOC:SYS0:ML01:CALC033	- Vernier Ctrl w/ limits
-
-    # LCLSBEAM Event Rate (units: Hz)
-    beam_event_rate = Cpt(EpicsSignalRO, 'EVNT:SYS0:1:LCLSBEAMRATE',
-                          kind='normal')
-    # Photon eV HXR (units: eV)
-    photon_ev_hxr = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO627', kind='normal')
-
-    # Abort Active Status
-    # [ 0] Disable [ 1] Enable
-    bykik_abort = Cpt(EpicsSignal, 'IOC:IN20:EV01:BYKIK_ABTACT', kind='normal')
-
-    # Abort Period in  beam shots
-    bykik_period = Cpt(EpicsSignal, 'IOC:IN20:EV01:BYKIK_ABTPRD',
-                       kind='normal')
-    # undulator k value - not the correct PV i think
-    undulator_k = Cpt(EpicsSignal, 'USEG:UND1:150:KACT', kind='normal')
+    # Bunch Charge nC: FBCK:BCI0:1:CHRG	no desc
+    # Hard e-Energy GeV/c: BEND:DMPH:400:BDES - Desired B-Field
+    # Soft e-Energ GeV/c: BEND:DMPS:400:BDES - Desired B-Field
+    # Bunch Length fs: SIOC:SYS0:ML00:AO820 estimated FEL Pulse Duration (FWHM)
+    # BC2 IPK:	 FBCK:FB04:LG01:S5DES	BC2 Current set point
+    # BLEN:LI21:265:WIDTH - not found
+    # Width of pulse (bunch length) Fsec
+    # also have this one  FBCK:BCI0:1:CHRG (nC)
 
     def bykik_status(self):
         """
         Returns status of bykik abort
         """
-        status = self.bykik_abort.get()
-        if status == 0:
-            return 'Disable'
-        else:
-            return 'Enable'
+        return self.bykik_abort.get(as_string=True)
 
     def bykik_disable(self):
         """
         Disables bykik abort
         """
-        return self.bykik_abort.put(0)
+        return self.bykik_abort.put(value='Disable')
 
     def bykik_enable(self):
         """
         Enables bykik abort
         """
-        return self.bykik_abort.put(1)
+        return self.bykik_abort.put(value='Enable')
 
     def bykik_get_period(self):
         """
