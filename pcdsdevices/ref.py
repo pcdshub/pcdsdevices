@@ -1,7 +1,7 @@
 from ophyd import Component as Cpt
 from ophyd import Device
 
-from .epics_motor import BeckhoffAxis, PCDSMotorBase
+from .epics_motor import BeckhoffAxis, EpicsMotorInterface
 from .interface import BaseInterface, LightpathInOutMixin
 from .pmps import TwinCATStatePMPS
 from .signal import PytmcSignal
@@ -18,11 +18,11 @@ class ReflaserL2SI(BaseInterface, Device, LightpathInOutMixin):
                  doc='In/Out control of Reflaser Mirror')
     y_motor = Cpt(BeckhoffAxis, ':MMS', kind='normal',
                   doc='Direct control of mirror motor.')
-    pico1 = Cpt(PCDSMotorBase, ':MCP:01', kind='config',
+    pico1 = Cpt(EpicsMotorInterface, ':MCP:01', kind='config',
                 doc='Laser alignment 01')
-    pico2 = Cpt(PCDSMotorBase, ':MCP:02', kind='config',
+    pico2 = Cpt(EpicsMotorInterface, ':MCP:02', kind='config',
                 doc='Laser alignment 02')
-    pico3 = Cpt(PCDSMotorBase, ':MCP:03', kind='config',
+    pico3 = Cpt(EpicsMotorInterface, ':MCP:03', kind='config',
                 doc='Laser alignment 03')
-    pico4 = Cpt(PCDSMotorBase, ':MCP:04', kind='config',
+    pico4 = Cpt(EpicsMotorInterface, ':MCP:04', kind='config',
                 doc='Laser alignment 04')
