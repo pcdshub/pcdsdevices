@@ -80,26 +80,12 @@ class BeamEnergyRequest(PVPositionerDone):
 
 
 class Lcls(BaseInterface, Device):
-    """
-    Lcls Linac Status.
-
-    Desired Status Output.
-    bunch charge: 180 [pC]
-    repetition rate: 120 [Hz]
-    ebeam energy: 10.75 [GeV]
-    Vernier energy: -35 [MeV]
-    Photon Energy: 9.91 [keV]
-    BC2 peak current: 3201 [A]
-    electron bunch length: 23 [fs]
-    Last eLoss Scan: 0.93 [mJ]
-    """
+    """Lcls Linac Status."""
 
     tab_component_names = True
 
     tab_whitelist = ['bykik_status', 'bykik_disable', 'bykik_enable',
                      'bykik_get_period', 'bykik_set_period']
-
-    # TODO: - these PVs are not necessarily the ones we'll end up using...
 
     bunch_charge = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO470', kind='normal',
                        doc='Bunch charge [nC]')
@@ -121,7 +107,7 @@ class Lcls(BaseInterface, Device):
     vernier_energy = Cpt(EpicsSignalRO, 'FBCK:FB04:LG01:DL2VERNIER',
                          kind='normal', doc='Fast Feedback 6x6 Vernier [MeV]')
     photon_ev_hxr = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO627', kind='normal',
-                        doc='Photon eV HXR (units: eV)')
+                        doc='Photon eV HXR [eV]')
     # [ 0] Disable [ 1] Enable
     bykik_abort = Cpt(EpicsSignal, 'IOC:IN20:EV01:BYKIK_ABTACT', kind='normal',
                       string=True, doc='BYKIK: Abort Active')
