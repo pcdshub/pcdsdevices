@@ -80,7 +80,9 @@ class BeamEnergyRequest(PVPositionerDone):
 
 
 class Lcls(BaseInterface, Device):
-    """Lcls Linac Status."""
+    """
+    Object to query machine Lcls Linac status.
+    """
 
     tab_component_names = True
 
