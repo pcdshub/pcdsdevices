@@ -79,7 +79,7 @@ class BeamEnergyRequest(PVPositionerDone):
                          **kwargs)
 
 
-class Lcls(BaseInterface, Device):
+class LCLS(BaseInterface, Device):
     """
     Object to query machine Lcls Linac status.
     """

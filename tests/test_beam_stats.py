@@ -3,7 +3,7 @@ import logging
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.beam_stats import BeamStats, Lcls
+from pcdsdevices.beam_stats import BeamStats, LCLS
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +49,7 @@ def test_beam_stats_disconnected():
 
 @pytest.fixture(scope='function')
 def fake_lcls():
-    FakeLcls = make_fake_device(Lcls)
+    FakeLcls = make_fake_device(LCLS)
     lcls = FakeLcls()
     lcls.bykik_period.sim_put(200)
     return lcls
