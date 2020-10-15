@@ -3,7 +3,7 @@
 
 API Changes
 -----------
-- N/A
+- The `SxrGmD` device has been removed from `beam_stats` module. SXR has been disassembled and the GMD was moved into the EBD. Its MJ PVs was not working anymore.
 
 Features
 --------
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- The `SxrGmD` device has been removed from `beam_stats` module. SXR has been disassembled and the GMD was moved into the EBD. Its MJ PVs was not working anymore.
+- N/A
 
 New Devices
 -----------
