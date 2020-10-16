@@ -3,7 +3,7 @@ from .analog_signals import Acromag
 from .areadetector.detectors import PCDSAreaDetector
 from .atm import ArrivalTimeMonitor
 from .attenuator import Attenuator
-from .beam_stats import BeamStats, SxrGmd
+from .beam_stats import BeamStats
 from .ccm import CCM
 from .dc_devices import ICT
 from .epics_motor import (IMS, PMC100, BeckhoffAxis, DelayNewport, EpicsMotor,
