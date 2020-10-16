@@ -526,8 +526,10 @@ class SmarActOpenLoop(Device):
     jog_step_size = Cpt(EpicsSignal, ':STEP_COUNT', kind='normal')
     # Jog forward
     jog_fwd = Cpt(EpicsSignal, ':STEP_FORWARD', kind='normal')
+    set_metadata(jog_fwd, dict(variety='command-proc', value=1))
     # Jog backward
     jog_rev = Cpt(EpicsSignal, ':STEP_REVERSE', kind='normal')
+    set_metadata(jog_rev, dict(variety='command-proc', value=1))
     # Total number of steps counted
     total_step_count = Cpt(EpicsSignalRO, ':TOTAL_STEP_COUNT', kind='normal')
     # Reset steps ("home")
@@ -538,16 +540,16 @@ class SmarActOpenLoop(Device):
     scan_pos = Cpt(EpicsSignal, ':SCAN_POS', kind='omitted')
 
 
-class SmarAct(PCDSMotorBase):
+class SmarAct(EpicsMotorInterface):
     """
     Class for encoded SmarAct motors controlled via the MCS2 controller.
     """
+    # Positioner type - only useful for encoded stages
+    pos_type = Cpt(EpicsSignal, ':PTYPE_RBV', write_pv=':PTYPE', kind='config')
+
     # These PVs will probably not be needed for most encoded motors, but can be
     # useful
-
-    # Even when omitted, the open loop PVs still show up on the config screen.
-    # Leaving this off for now to keep screens clean.
-    # open_loop = Cpt(SmarActOpenLoop, '', kind='omitted')
+    open_loop = Cpt(SmarActOpenLoop, '', kind='omitted')
 
 
 def Motor(prefix, **kwargs):
