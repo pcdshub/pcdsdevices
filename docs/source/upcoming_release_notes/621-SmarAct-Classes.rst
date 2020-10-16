@@ -3,7 +3,7 @@
 
 API Changes
 -----------
-- N/A
+- Added PTYPE PV to SmarAct class
 
 Features
 --------
@@ -11,7 +11,10 @@ Features
 
 Device Updates
 --------------
-- N/A
+
+- Added PTYPE PV to SmarAct class
+- Added metadata to SmarAct jog pvs for better screens
+- Updated SmarAct base class
 
 New Devices
 -----------
@@ -27,4 +30,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- tjohnson
