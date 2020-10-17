@@ -547,11 +547,11 @@ class SmarActOpenLoop(Device):
 class SmarActOpenLoopPositioner(PVPositionerComparator):
     """
     Positioner class for SmarAct open loop stages. Intended to be used in
-    BlueSky scans. Uses an integer open loop step count as the position. 
+    BlueSky scans. Uses an integer open loop step count as the position.
     """
     setpoint = Cpt(EpicsSignal, ':SET_TOTAL_STEP_COUNT')
     readback = Cpt(EpicsSignalRO, ':TOTAL_STEP_COUNT')
-    atol = 1 # step count after the move should be exact, but let's be cautious
+    atol = 1  # step count after move should be exact, but let's be cautious
 
     egu = 'steps'
 
