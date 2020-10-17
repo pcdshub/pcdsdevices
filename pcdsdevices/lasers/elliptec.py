@@ -6,13 +6,14 @@ Classes for ThorLabs Elliptec motors.
 from ophyd import FormattedComponent as FCpt
 from ophyd import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO
+from pcdsdevices.variety import set_metadata
 
 
 class EllBase(Device):
     """
     Base class for Elliptec stages.
     """
-    position = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS',
+    set_position = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS',
                     write_pv='{prefix}:M{self._channel}:MOVE',
                     kind='normal')
 
@@ -20,9 +21,9 @@ class EllBase(Device):
                    kind='normal')
     set_metadata(jog_fwd, dict(variety='command-proc', value=1))
 
-    jog_rev = FCpt(EpicsSignal, '{prefix}:M{self._channel}:MOVE_REV',
+    jog_bwd = FCpt(EpicsSignal, '{prefix}:M{self._channel}:MOVE_BWD',
                    kind='normal')
-    set_metadata(jog_rev, dict(variety='command-proc', value=1))
+    set_metadata(jog_bwd, dict(variety='command-proc', value=1))
 
     status = FCpt(EpicsSignalRO, '{prefix}:M{self._channel}:STATUS',
                   kind='normal')
@@ -35,8 +36,8 @@ class EllBase(Device):
                       kind='omitted')
     _to_addr = FCpt(EpicsSignal, '{prefix}:PORT{self._port}:TO_ADDR',
                     kind='omitted')
-    _save_addr = FCpt(EpicsSignal, '{prefix}:PORT{self._port}:SAVE',
-                      kind='omitted')
+    _save = FCpt(EpicsSignal, '{prefix}:PORT{self._port}:SAVE',
+                 kind='omitted')
     _command = FCpt(EpicsSignal, '{prefix}:PORT{self._port}:CMD',
                     kind='omitted')
     _response = FCpt(EpicsSignalRO, '{prefix}:PORT{self._port}:RESPONSE',
@@ -126,20 +127,20 @@ class EllLinear(EllBase):
     jog_step = FCpt(EpicsSignal, '{prefix}:M{self._channel}:GET_JOG',
                     write_pv='{prefix}:M{self._channel}:SET_JOG', kind='config')
 
-    clean = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CLEAN_MEC',
+    clean = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CLEAN_MECH',
                  kind='omitted')
     set_metadata(clean, dict(variety='command-proc', value=1))
 
+    # Only the linear and rotation stages have extended optimization and
+    # cleaning procedures; the sliders finish almost immediately. This stops
+    # these long procedures prematurely. 
+    stop = FCpt(EpicsSignal, '{prefix}:M{self._channel}:STOP',
+                kind='omitted')
+    set_metadata(stop, dict(variety='command-proc', value=1))
 
-    _current_precision = FCpt(EpicsSignal,
-                              '{prefix}:M{self._channel}:CURPOS.PREC',
-                              kind='omitted')
-    _current_egu = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS.EGU',
-                        kind='omitted')
-    _target_precision = FCpt(EpicsSignal,
-                             '{prefix}:M{self._channel}:MOVE.PREC',
-                             kind='omitted')
-    _target_egu = FCpt(EpicsSignal, '{prefix}:M{self._channel}:MOVE.EGU',
+    current_egu = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS.EGU',
+                       kind='omitted')
+    target_egu = FCpt(EpicsSignal, '{prefix}:M{self._channel}:MOVE.EGU',
                        kind='omitted')
 
 
