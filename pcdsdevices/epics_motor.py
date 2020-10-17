@@ -14,6 +14,8 @@ from ophyd.status import DeviceStatus, SubscriptionStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
 
+from pcdsdevices.pv_positioner import PVPositionerComparator
+
 from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
 from .pseudopos import DelayBase
@@ -531,13 +533,35 @@ class SmarActOpenLoop(Device):
     jog_rev = Cpt(EpicsSignal, ':STEP_REVERSE', kind='normal')
     set_metadata(jog_rev, dict(variety='command-proc', value=1))
     # Total number of steps counted
-    total_step_count = Cpt(EpicsSignalRO, ':TOTAL_STEP_COUNT', kind='normal')
+    total_step_count = Cpt(EpicsSignal, ':TOTAL_STEP_COUNT',
+                           write_pv=':SET_TOTAL_STEP_COUNT', kind='normal')
     # Reset steps ("home")
     step_clear_cmd = Cpt(EpicsSignal, ':CLEAR_COUNT', kind='config')
+    set_metadata(step_clear_cmd, dict(variety='command-proc', value=1))
     # Scan move
     scan_move_cmd = Cpt(EpicsSignal, ':SCAN_MOVE', kind='omitted')
     # Scan pos
     scan_pos = Cpt(EpicsSignal, ':SCAN_POS', kind='omitted')
+
+
+class SmarActOpenLoopPositioner(PVPositionerComparator):
+    """
+    Positioner class for SmarAct open loop stages. Intended to be used in
+    BlueSky scans. Uses an integer open loop step count as the position. 
+    """
+    setpoint = Cpt(EpicsSignal, ':SET_TOTAL_STEP_COUNT')
+    readback = Cpt(EpicsSignalRO, ':TOTAL_STEP_COUNT')
+    atol = 1 # step count after the move should be exact, but let's be cautious
+
+    egu = 'steps'
+
+    open_loop = Cpt(SmarActOpenLoop, '', kind='normal')
+
+    def done_comparator(self, readback, setpoint):
+        if setpoint-self.atol < readback and readback < setpoint+self.atol:
+            return True
+        else:
+            return False
 
 
 class SmarAct(EpicsMotorInterface):
