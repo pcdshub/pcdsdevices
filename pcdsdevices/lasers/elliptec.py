@@ -14,8 +14,8 @@ class EllBase(Device):
     Base class for Elliptec stages.
     """
     set_position = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS',
-                    write_pv='{prefix}:M{self._channel}:MOVE',
-                    kind='normal')
+                        write_pv='{prefix}:M{self._channel}:MOVE',
+                        kind='normal')
 
     jog_fwd = FCpt(EpicsSignal, '{prefix}:M{self._channel}:MOVE_FWD',
                    kind='normal')
@@ -91,9 +91,8 @@ class Ell9(Ell6):
     ell9 = Ell9('LM1K4:COM_DP1_TF1_SL1:ELL', port=0, channel=1, name='ell9')
     """
     home = FCpt(EpicsSignal, '{prefix}:M{self._channel}:HOME',
-                    kind='config')
+                kind='config')
     set_metadata(home, dict(variety='command-proc', value=1))
-
 
     # Names for slider positions
     name_2 = FCpt(EpicsSignal, '{prefix}:M{self._channel}:NAME2',
@@ -121,11 +120,12 @@ class EllLinear(EllBase):
                        name='ell17')
     """
     home = FCpt(EpicsSignal, '{prefix}:M{self._channel}:HOME',
-                    kind='config')
+                kind='config')
     set_metadata(home, dict(variety='command-proc', value=1))
 
     jog_step = FCpt(EpicsSignal, '{prefix}:M{self._channel}:GET_JOG',
-                    write_pv='{prefix}:M{self._channel}:SET_JOG', kind='config')
+                    write_pv='{prefix}:M{self._channel}:SET_JOG',
+                    kind='config')
 
     clean = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CLEAN_MECH',
                  kind='omitted')
@@ -133,7 +133,7 @@ class EllLinear(EllBase):
 
     # Only the linear and rotation stages have extended optimization and
     # cleaning procedures; the sliders finish almost immediately. This stops
-    # these long procedures prematurely. 
+    # these long procedures prematurely.
     stop = FCpt(EpicsSignal, '{prefix}:M{self._channel}:STOP',
                 kind='omitted')
     set_metadata(stop, dict(variety='command-proc', value=1))
@@ -141,7 +141,7 @@ class EllLinear(EllBase):
     current_egu = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS.EGU',
                        kind='omitted')
     target_egu = FCpt(EpicsSignal, '{prefix}:M{self._channel}:MOVE.EGU',
-                       kind='omitted')
+                      kind='omitted')
 
 
 class EllRotation(EllLinear):
