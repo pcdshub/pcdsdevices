@@ -19,6 +19,8 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from pcdsdevices.variety import set_metadata
 
+from pcdsdaq.ext_scripts import hutch_name
+
 from .plugins import (ColorConvPlugin, HDF5Plugin, ImagePlugin, JPEGPlugin,
                       NetCDFPlugin, NexusPlugin, OverlayPlugin, ProcessPlugin,
                       ROIPlugin, StatsPlugin, TIFFPlugin, TransformPlugin)
@@ -213,19 +215,21 @@ class PCDSAreaDetectorTyphos(Device):
                     num_dimensions='ndimensions',
                     kind='normal')
 
+    # Eventually I want to typhos-ify into a button. I couldn't figure out
+    # how to do that, so I will settle for this for now. 
     def viewer(self):
+        """
+        Launch the python camera viewer for this camera.
+        """
         arglist = ['/reg/g/pcds/pyps/apps/camviewer/latest/run_viewer.sh',
                    '--instrument',
-                   'las',
-                   '--oneline']
-
-        oneline = 'GE:16,{0}:IMAGE1;{0},,{0}'
-
-        # Remove terminating colon weirdness of AD ophyd device prefix
-        arglist.append(oneline.format(self.prefix[0:-1]))
+                   '{0}'.format(get_hutch().lower()),
+                   '--oneline',
+                   'GE:16,{0}:IMAGE1;{0},,{0}'.format(self.prefix[0:-1])]
 
         subprocess.run(arglist, stdout=subprocess.PIPE,
                        stderr=subprocess.PIPE, check=True)
+
 
 class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphos):
     """
