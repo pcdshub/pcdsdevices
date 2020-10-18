@@ -7,6 +7,8 @@ functions needed by all instances of a detector are added here.
 import logging
 import warnings
 
+import subprocess
+
 from ophyd import Device
 from ophyd.areadetector import cam
 from ophyd.areadetector.base import (ADComponent, EpicsSignalWithRBV,
@@ -14,6 +16,8 @@ from ophyd.areadetector.base import (ADComponent, EpicsSignalWithRBV,
 from ophyd.areadetector.detectors import DetectorBase
 from ophyd.device import Component as Cpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
+
+from pcdsdevices.variety import set_metadata
 
 from .plugins import (ColorConvPlugin, HDF5Plugin, ImagePlugin, JPEGPlugin,
                       NetCDFPlugin, NexusPlugin, OverlayPlugin, ProcessPlugin,
@@ -209,6 +213,19 @@ class PCDSAreaDetectorTyphos(Device):
                     num_dimensions='ndimensions',
                     kind='normal')
 
+    def viewer(self):
+        arglist = ['/reg/g/pcds/pyps/apps/camviewer/latest/run_viewer.sh',
+                   '--instrument',
+                   'las',
+                   '--oneline']
+
+        oneline = 'GE:16,{0}:IMAGE1;{0},,{0}'
+
+        # Remove terminating colon weirdness of AD ophyd device prefix
+        arglist.append(oneline.format(self.prefix[0:-1]))
+
+        subprocess.run(arglist, stdout=subprocess.PIPE,
+                       stderr=subprocess.PIPE, check=True)
 
 class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphos):
     """
