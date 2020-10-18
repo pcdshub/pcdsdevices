@@ -16,7 +16,7 @@ Device Updates
 New Devices
 -----------
 - SmarActOpenLoopPositioner: Class intended for performing Bluesky scans using
-                             open loop SmarAct motors. 
+   open-loop SmarAct motors. 
 
 Bugfixes
 --------
