@@ -559,9 +559,6 @@ class SmarActOpenLoopPositioner(PVPositionerComparator):
 
     def done_comparator(self, readback, setpoint):
         return setpoint-self.atol < readback < setpoint+self.atol
-            return True
-        else:
-            return False
 
 
 class SmarAct(EpicsMotorInterface):
