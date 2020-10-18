@@ -558,7 +558,7 @@ class SmarActOpenLoopPositioner(PVPositionerComparator):
     open_loop = Cpt(SmarActOpenLoop, '', kind='normal')
 
     def done_comparator(self, readback, setpoint):
-        if setpoint-self.atol < readback and readback < setpoint+self.atol:
+        return setpoint-self.atol < readback < setpoint+self.atol
             return True
         else:
             return False
