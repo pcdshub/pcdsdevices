@@ -2,14 +2,14 @@ import logging
 
 from ophyd.device import Component as Cpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
-from ophyd.areadetector.base import EpicsSignalWithRBV
+from ophyd.areadetector.base import EpicsSignalWithRBV, NDDerivedSignal
 
-from pcdsdevices.areadetector.detectors import PCDSAreaDetectorTyphos
+from pcdsdevices.areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 
 logger = logging.getLogger(__name__)
 
 
-class ThorlabsWfs40(PCDSAreaDetectorTyphos):
+class ThorlabsWfs40(PCDSAreaDetectorTyphosTrigger):
     """Class to implement a Thorlabs WFS40 Wavefront sensor."""
 
     beam_status = Cpt(EpicsSignalRO, 'StatHighAmbientLight', kind='normal')
@@ -36,6 +36,10 @@ class ThorlabsWfs40(PCDSAreaDetectorTyphos):
 
     number_of_exposures = Cpt(EpicsSignal, 'NumExposures', kind='config')
 
-    _xmin = Cpt(EpicsSignalRO, 'Xmin', kind='config')
-    _ymin = Cpt(EpicsSignalRO, 'Ymin', kind='config')
-    _dmin = Cpt(EpicsSignalRO, 'Dmin', kind='config')
+    # Wavefront data
+    wavefront_data = Cpt(EpicsSignal, 'Wavefront_RBV', kind='omitted')
+    wavefront = Cpt(NDDerivedSignal, derived_from='wavefront_data',
+                    shape=(80, 80, 0),
+                    num_dimensions=2,
+                    kind='normal')
+
