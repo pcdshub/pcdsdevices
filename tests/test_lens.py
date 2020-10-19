@@ -12,7 +12,7 @@ from pcdsdevices.lens import (XFLS, LensStack, LensStackBase, Prefocus,
 
 logger = logging.getLogger(__name__)
 
-sample_lens_file = os.path.dirname(__file__) + '/test_lens_sets/test.yaml'
+sample_lens_file = os.path.dirname(__file__) + '/test_lens_sets/test.npy'
 sample_lens_set = [2, 200e-6, 4, 500e-6]
 sample_E = 8
 
@@ -172,48 +172,12 @@ def test_create_lens_file(fake_lensstack):
     assert lensstack.read_lens() == sample_lens_set
 
 
-def test_calc_focal_length(fake_lensstack):
-    logger.debug('test_calc_focal_length')
-    lens = fake_lensstack
-    number = lens.calc_focal_length(lens._E, (2, 200e-6, 4, 500e-6))
-    assert np.isclose(number, 5.2150594897480556)
-
-
-def test_calc_focal_length_for_single_lens(fake_lensstack):
-    logger.debug('test_calc_focal_length_for_single_lens')
-    lens = fake_lensstack
-    f = lens.calc_focal_length_for_single_lens(lens._E, .0001)
-    assert np.isclose(f, 9.387107081546501)
-
-
-def test_get_delta(fake_lensstack):
-    logger.debug('test_get_delta')
-    lens = fake_lensstack
-    assert np.isclose(lens.get_delta(E=sample_E), 5.326454632470501e-06)
-
-
-def test_calc_beam_fwhm(fake_lensstack):
-    logger.debug('test_calc_beam_fwhm')
-    lens = fake_lensstack
-    h = lens.calc_beam_fwhm(8, sample_lens_set, distance=4,
-                            fwhm_unfocused=500e-6)
-    assert np.isclose(h, 0.00011649743222659306)
-
-
 def test_make_safe(fake_lensstack):
     logger.debug('test_make_safe')
     lens = fake_lensstack
     assert lens._make_safe()
     lens._att_obj = None
     assert not lens._make_safe()
-
-
-def test_calc_distance_for_size(fake_lensstack):
-    logger.debug('test_calc_distance_for_size')
-    lens = fake_lensstack
-    dist = lens.calc_distance_for_size(.1, sample_lens_set, E=8,
-                                       fwhm_unfocused=500e-6)
-    assert all(np.isclose(dist, [-1037.79683843, 1048.22695741]))
 
 
 @pytest.mark.timeout(5)
