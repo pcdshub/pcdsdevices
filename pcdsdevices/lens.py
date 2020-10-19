@@ -1,16 +1,15 @@
 """
 Module for Beryllium Lens positioners.
 """
-import shutil
 import time
 from collections import defaultdict
 from datetime import date
+import logging
 
 import numpy as np
-import yaml
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
-from periodictable import xsf
+from pcdscalc import be_lens_calcs as calcs
 
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
@@ -20,7 +19,10 @@ from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
 from .sim import FastMotor
 
-LENS_RADII = [50e-6, 100e-6, 200e-6, 300e-6, 500e-6, 1000e-6, 1500e-6]
+logger = logging.getLogger(__name__)
+
+# Set of Be lenses with thicknesses.
+LENS_RADII = calcs.LENS_RADII
 
 
 class XFLS(InOutRecordPositioner):
@@ -80,7 +82,48 @@ class Prefocus(CombinedInOutRecordPositioner):
 
 
 class LensStackBase(BaseInterface, PseudoPositioner):
-    """Class for Be lens macros and safe operations."""
+    """
+    Class for Be lens macros and safe operations.
+
+    x, y, z: real motors that move the position of the lens set
+    calib_z, beam_size pseudo motors
+
+    An ophyd PseudoPositioner relates one or more pseudo (virtual) axes to one
+    or more real (physical) axes via forward and inverse calculations.
+
+    TODO: revise the information below...(notes from Silke and Zach)
+    The purpose of this class is using the motor that moves the z stage of
+    BeLensStack so that we can scan the focal size. What needs to be done is
+    move the x motor and then the combination motor that when the z motor moves
+    we also move the x and y to compensate for the stage not beign perfect.
+
+    What do we usually do:
+    For each lens pack that is in, tweak x and y until the fixture on YAG
+    screen is as pretty as it can be - save this position.
+    Move the z motor on one extreem to the furthers upstream position, and
+    then figure out the optimal x and y for each lens pack.
+    Move the motor to the other side, the most downstream side and do the same
+    thing. Save the x and y here as well.
+
+    So this focus motor, moves three motors in combination. The z is used for
+    the main calculations records, to get a focal spot size, and x
+    and y are moved based on the tweak that was doen at the beginning.
+
+    In general, it saves an x, y, z at the ends of motion, the idea being that
+    the beam is a line that is not colinear with any one axis, so we draw a
+    line in 3D space to follow the center of the beam.
+
+    The scientist workflow is basically the same as before: you call one
+    function (align) with low beam to find the centers of the lenses, then you
+    have two pseudo motors (calib_z, beam_size) that magically put the lens in
+    the right spot.
+
+    Notes
+    -----
+    Use `pcdscalc.be_lens_cals.configure_defaults` function to set some default
+    parameters used in some calculations for different hutches.
+    Use `pcdscalc.set_lens_set_to_file` to set the lens sets
+    """
     x = FCpt(IMS, '{self.x_prefix}')
     y = FCpt(IMS, '{self.y_prefix}')
     z = FCpt(IMS, '{self.z_prefix}')
@@ -112,39 +155,47 @@ class LensStackBase(BaseInterface, PseudoPositioner):
 
         super().__init__(x_prefix, *args, **kwargs)
 
-    def calc_distance_for_size(self, sizeFWHM, lens_set, E=None,
-                               fwhm_unfocused=None):
-        size = sizeFWHM*2./2.35
-        f = self.calc_focal_length(E, lens_set, 'Be', None)
-        lam = 12.398/E*1e-10
-        # the w parameter used in the usual formula is 2*sigma
-        w_unfocused = fwhm_unfocused*2/2.35
-        # assuming gaussian beam divergence = w_unfocused/f we can obtain
-        waist = lam/np.pi*f/w_unfocused
-        rayleigh_range = np.pi*waist**2/lam
-        distance = ((np.sqrt((size/waist)**2-1)*np.asarray([-1., 1.])
-                     * rayleigh_range) + f)
-        return distance
-
     def tweak(self):
         """
-        Calls the tweak function from mv_interface.
+        Call the tweak function from `pcdsdevice.interface`.
 
-        Use left and right arrow keys for the x motor and up and down for
-        the y motor.
-        Shift and left or right changes the step size.
+        Use the Left arrow to move x motor left.
+        Use the Right arrow to move x motor right.
+        Use the Down arrow to move y motor down.
+        Use the Up arrow to move y motor up.
+        Use Shift & Up arrow to scale*2.
+        Use Shift & Down arrow to scale/2.
         Press q to quit.
         """
-
         tweak_base(self.x, self.y)
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
+        """
+        Run a forward(pseudo -> real) calculation.
+
+        Calculate a RealPosition from a given PseudoPosition.
+        `calc_distance_for_size` calculates distance for beam size (fwhm size)
+
+        Parameters
+        ----------
+        pseudo_pos : PseudoPosition
+            Pseudo position to move to.
+
+        Returns
+        -------
+            RealPosition
+
+        Raises
+        ------
+        AttributeError
+            If pseudo motor is not setup for use.
+        """
         if not np.isclose(pseudo_pos.beam_size, self.beam_size.position):
             beam_size = pseudo_pos.beam_size
-            dist = self.calc_distance_for_size(beam_size, self.lens_set,
-                                               self._E,
-                                               self.beamsize_unfocused)[0]
+            dist = calcs.calc_distance_for_size(beam_size, self.lens_set,
+                                                self._E,
+                                                self.beamsize_unfocused)[0]
             z_pos = (dist - self.z_offset) * self.z_dir * 1000
         else:
             z_pos = pseudo_pos.calib_z
@@ -161,24 +212,38 @@ class LensStackBase(BaseInterface, PseudoPositioner):
         except AttributeError:
             self.log.debug('', exc_info=True)
             self.log.error("Please setup the pseudo motor for use by using "
-                           "the align() method.  If you have already done "
-                           "that, check if the preset pathways have been "
-                           "setup.")
+                           "the align() method. If you have already done that,"
+                           " check if the preset pathways have been setup.")
             return self.RealPosition(x=self.x.position, y=self.y.position,
                                      z=z_pos)
 
     @real_position_argument
     def inverse(self, real_pos):
+        """
+        Run an inverse (real -> pseudo) calculation.
+
+        `calc_beam_fwhm` returns fwhm (Full width at half maximum) size for
+        certain lenses configuration and energy at a given distance.
+
+        Parameters
+        ----------
+        real_pos : RealPosition
+
+        Returns
+        -------
+            PseudoPosition
+        """
         dist_m = real_pos.z / 1000 * self.z_dir + self.z_offset
-        print('dist_m', dist_m)
-        beamsize = self.calc_beam_fwhm(self._E, self.lens_set, distance=dist_m,
-                                       material="Be", density=None,
-                                       fwhm_unfocused=self.beamsize_unfocused)
+        logger.info('dist_m %s', dist_m)
+        beamsize = calcs.calc_beam_fwhm(self._E, self.lens_set,
+                                        distance=dist_m,
+                                        material="Be", density=None,
+                                        fwhm_unfocused=self.beamsize_unfocused)
         return self.PseudoPosition(calib_z=real_pos.z, beam_size=beamsize)
 
     def align(self, z_position=None, edge_offset=20):
         """
-        Generates equations for aligning the beam based on user input.
+        Generate equations for aligning the beam based on user input.
 
         This program uses two points, one made on the lower limit
         and the other made on the upper limit, after the user uses the tweak
@@ -188,6 +253,34 @@ class LensStackBase(BaseInterface, PseudoPositioner):
         The beam line will be saved in a file in the presets folder,
         and can be used with the pseudo positioner on the z-axis.
         If called with an integer, automatically moves the z-motor.
+
+        Parameters
+        ----------
+        z_position : number, optional
+        edge_offset : number, optional
+
+        Notes
+        ----
+        Macro for calibration. Steps:
+
+        1. Make safe
+
+        2. Save z pos
+
+        3. Move z, x to previous reference position
+
+        4. Move y to preset corresponding to lenssetNo,
+           or don't move it if left as None
+
+        5. call .align() to align x and y with beam
+
+        6. save reference position
+
+        7. move z by dz, call .align() to align x and y with beam
+
+        8. save trajectory as dx and dy
+
+        9. return to original z pos, but aligned with the beam
         """
 
         self.z.move(self.z.limits[0] + edge_offset)
@@ -198,6 +291,7 @@ class LensStackBase(BaseInterface, PseudoPositioner):
         self.tweak()
         pos.extend([self.x.position, self.y.position, self.z.position])
         try:
+            # create presets
             self.x.presets.add_hutch(value=pos[0], name="align_position_one")
             self.x.presets.add_hutch(value=pos[3], name="align_position_two")
             self.y.presets.add_hutch(value=pos[1], name="align_position_one")
@@ -206,76 +300,58 @@ class LensStackBase(BaseInterface, PseudoPositioner):
             self.z.presets.add_hutch(value=pos[5], name="align_position_two")
         except AttributeError:
             self.log.debug('', exc_info=True)
-            self.log.error("No folder setup for motor presets. "
-                           "Please add a location to save the positions to "
-                           "using setup_preset_paths from mv_interface to "
-                           "keep the position files.")
+            self.log.error('No folder setup for motor presets. '
+                           'Please add a location to save the positions to '
+                           'using setup_preset_paths from '
+                           'pcdsdevices.interface to keep the position files.')
             return
         if z_position is not None:
             self.calib_z.move(z_position)
 
     @pseudo_position_argument
     def move(self, position, wait=True, timeout=None, moved_cb=None):
+        """
+        Move to a specified position, optionally waiting for motion to
+        complete.
+
+        Moves z to pos and x and y to their calibrated offset positions.
+        If safe is True, then `._make_safe()` gets called
+        TODO: should i have a `safe` attribute here like the old code?
+
+        Parameters
+        ----------
+        position
+            Pseudo position to move to.
+        wait : bool, optional
+            Defaults to True
+        timeout : float, optional
+            Maximum time to wait for the motion. If None, the default timeout
+            for this positioner is used.
+        moved_cb : callable
+            Call this callback when movement has finished. This callback must
+            accept one keyword argument: 'obj' which will be set to this
+            positioner instance.
+        """
         if self._make_safe() is True:
             return super().move(position, wait=wait, timeout=timeout,
                                 moved_cb=moved_cb)
-
-    def get_delta(self, E, material="Be", density=None):
-        delta = 1-np.real(xsf.index_of_refraction(material, density=density,
-                          energy=E))
-        return delta
-
-    def calc_focal_length(self, E, lens_set, material="Be", density=None):
-        # lens_set = (n1,radius1,n2,radius2,...)
-        num = []
-        rad = []
-        ftot_inverse = 0
-        for i in range(len(lens_set)//2):
-            num = lens_set[2*i]
-            rad = lens_set[2*i+1]
-            if rad is not None:
-                rad = float(rad)
-                num = float(num)
-                fln = self.calc_focal_length_for_single_lens(E, rad,
-                                                             material,
-                                                             density)
-                ftot_inverse += num/fln
-        return 1./ftot_inverse
-
-    def calc_focal_length_for_single_lens(self, E, radius,
-                                          material="Be", density=None):
-        delta = self.get_delta(E, material, density)
-        f = (radius/2)/delta
-        return f
-
-    def calc_beam_fwhm(self, E, lens_set, distance=None, material="Be",
-                       density=None, fwhm_unfocused=None, printsummary=True):
-        f = self.calc_focal_length(E, lens_set, material, density)
-        lam = 1.2398/E*1e-9
-        # the w parameter used in the usual formula is 2*sigma
-        w_unfocused = fwhm_unfocused*2/2.35
-        # assuming gaussian beam divergence = w_unfocused/f we can obtain
-        waist = lam/np.pi*f/w_unfocused
-        rayleigh_range = np.pi*waist**2/lam
-        size = waist*np.sqrt(1.+(distance-f)**2./rayleigh_range**2)
-        if printsummary:
-            print("FWHM at lens   : %.3e" % (fwhm_unfocused))
-            print("waist          : %.3e" % (waist))
-            print("waist FWHM     : %.3e" % (waist*2.35/2.))
-            print("rayleigh_range : %.3e" % (rayleigh_range))
-            print("focal length   : %.3e" % (f))
-            print("size           : %.3e" % (size))
-            print("size FWHM      : %.3e" % (size*2.35/2.))
-        return size*2.35/2
+        else:
+            logger.warning('Aborting moving for safety.')
+            return
 
     def _make_safe(self):
         """
         Move the thickest attenuator in to prevent damage due to wayward
-        focused x-rays. Return `True` if the attenuator was moved in.
+        focused x-rays.
+
+        Returns
+        -------
+        safe : bool
+            Return `True` if the attenuator was moved in.
         """
         if self._att_obj is None:
-            print("WARNING: Cannot do safe crl moveZ,\
-                       no attenuator object provided.")
+            logger.warning('Cannot do safe crl moveZ, no attenuator'
+                           ' object provided.')
             return False
         filt, thk = self._att_obj.filters[0], 0
         for f in self._att_obj.filters:
@@ -286,31 +362,135 @@ class LensStackBase(BaseInterface, PseudoPositioner):
             filt.insert()
             time.sleep(0.01)
         if filt.inserted:
-            print("REMINDER: Beam stop attenuator moved in!")
+            logger.info('Beam stop attenuator moved in!')
             safe = True
         else:
-            print("WARNING: Beam stop attenuator did not move in!")
+            logger.warning('Beam stop attenuator did not move in!')
             safe = False
         return safe
 
 
 class LensStack(LensStackBase):
+    """
+    Class for Be lens.
+
+    Parameters
+    ----------
+    x_prefix : str
+        The EPICS prefix that identifies the x motor.
+    y_prefix : str
+        The EPICS prefix that identifies the y motor.
+    z_prefix : str
+        The EPICS prefix that identifies the z motor.
+    lens_set : list, optional
+        List of lens sets. e.g. [numer1, lensthick1, number2, lensthick2...]
+    z_offset : number
+        Distance from sample to lens_z=0 in meters.
+    z_dir : number
+        1 or -1, represents beam direction wrt z direction.
+    E: number, optional
+        Beam energy
+    att_obj : attenuator object, optional
+    lcls_obj
+        Object that gets PVs from lcls (for energy)
+    mono_obj
+        Object that gets energy from monochromator
+    beamsize_unfocused : float, optional
+        Radial size of x-ray beam before focusing.
+    path : str
+        Path to the file that defines which lenses are being used.
+
+    Examples
+    --------
+
+    Provide the path of the be lens set file (the file is of .npy format):
+
+    >>> path = '../path/to/lens_set.npy'
+
+    If no lens sets are added in the file yet, use the
+    `be_lens_calcs.set_lens_set_to_file` function to set the lens sets:
+
+    >>> sets_list_of_tuples = [(3, 0.0001, 1, 0.0002),
+                               (1, 0.0001, 1, 0.0003, 1, 0.0005),
+                               (2, 0.0001, 1, 0.0005)]
+    >>> set_lens_set_to_file(sets_list_of_tuples, ../path/to/lens_set.npy)
+
+    Create the LensStack() object by providing the x, y and z `prefixes`:
+
+    >>> be_stack = LensStack(path=path, x_prefix='X:PREF', y_prefix='Y:PREF',
+        z_prefix='Z:PREF', name='be_stack')
+
+    Now you can use the `be_stack` object to tweak the motors:
+
+    >>> be_stack.tweak()
+    : 0.1000, : -0.2000, scale: 0.2
+    Left: move x motor left
+    Right: move x motor right
+    Down: move y motor down
+    Up: move y motor up
+    + or Shift_Up: scale*2
+    - or Shift_Down: scale/2
+    Press q to quit. Press any other key to display this message.
+
+    You can then call the `align()` function to create presets
+
+    >>> be_stack.align(z_position=0.001)
+
+    Then the `forward` method can be used to calculate a RealPosition from a
+    given PseudoPosition
+
+    >>> be_stack.foward(pseudo_pos)
+
+    Use `inverse` method to calculate a PseudoPosition from a RealPosition:
+
+    >>> be_stack.inverse(real_pos)
+
+    TODO: to be continues and revised...
+
+    """
     def __init__(self, *args, path, **kwargs):
+
         self.path = path
         lens_set = self.read_lens()
         super().__init__(*args, lens_set=lens_set, **kwargs)
 
     def read_lens(self):
-        with open(self.path, 'r') as f:
-            read_data = yaml.safe_load(f)
-        return read_data
+        """
+        TODO: In pcdscalc.be_lens_set we use get_lens_set to get a specific
+        set out of this file, do we want to do the same thing here or do we
+        want to read the entire set here??
+
+        Read the lens sets from the path provided when creating this object.
+
+        Returns
+        -------
+        sets : array
+        """
+        with open(self.path, 'rb') as lens_file:
+            sets = np.load(lens_file, allow_pickle=True)
+        return list(sets)
 
     def create_lens(self, lens_set, make_backup=True):
-        # Make a backup with today's date
-        if make_backup:
-            shutil.copyfile(self.path, self.backup_path)
-        with open(self.path, "w") as f:
-            yaml.dump(self.lens_set, f)
+        """
+        Write lens set to the file provided when creating this object.
+
+        Parameters
+        ----------
+        lens_set : list
+            List with tuples for lens sets
+        make_backup : bool, optional
+            To indicate if a backup file should be created or not.
+            Defaults to `True`.
+
+        Examples
+        --------
+        >>> sets_list_of_tuples = [(3, 0.0001, 1, 0.0002),
+                               (1, 0.0001, 1, 0.0003, 1, 0.0005),
+                               (2, 0.0001, 1, 0.0005)]
+        >>> create_lens(sets_list_of_tuples)
+
+        """
+        calcs.set_lens_set_to_file(lens_set, self.path, make_backup)
 
     @property
     def backup_path(self):
