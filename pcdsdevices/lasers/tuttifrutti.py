@@ -10,6 +10,7 @@ from pcdsdevices.areadetector.detectors import PCDSAreaDetectorTyphos
 from pcdsdevices.lasers.qmini import QminiSpectrometer
 from pcdsdevices.lasers.ek9000 import El3174AiCh
 from pcdsdevices.lasers.elliptec import Ell6
+from pcdsdevices.lasers.thorlabsWFS import ThorlabsWfs40
 
 
 def TuttiFruttiCls(prefix, name, nf=False, ff=False, spec=False, pm=False,
@@ -40,7 +41,8 @@ def TuttiFruttiCls(prefix, name, nf=False, ff=False, spec=False, pm=False,
     if pd:
         raise NotImplementedError("Pulse duration is not yet implemented")
     if wfs:
-        raise NotImplementedError("Wavefront sensor is not yet implemented")
+        cpt = Cpt(ThorlabsWfs40, '_WF1:', kind='normal')
+        cpts['wfs'] = cpt
     if ell:
         cpt = Cpt(Ell6, '_SL1:ELL:M1', kind='normal')
         cpts['slider'] = cpt
@@ -96,7 +98,7 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
     pd : bool <False> (Not Implemented)
         Flag indicating if a pulse duration diagnostic is installed.
 
-    wfs : bool <False> (Not Implemented)
+    wfs : bool <False>
         Flag indicating if a wavefront sensor is installed.
 
     ell : bool <False>
