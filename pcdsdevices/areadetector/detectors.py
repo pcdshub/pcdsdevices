@@ -15,11 +15,11 @@ from ophyd.areadetector.base import (ADComponent, EpicsSignalWithRBV,
                                      NDDerivedSignal)
 from ophyd.areadetector.detectors import DetectorBase
 from ophyd.device import Component as Cpt
-from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.signal import EpicsSignal, EpicsSignalRO, AttributeSignal
 
 from pcdsdevices.variety import set_metadata
 
-from pcdsdaq.ext_scripts import hutch_name
+#from pcdsutils.ext_scripts import get_hutch_name
 
 from .plugins import (ColorConvPlugin, HDF5Plugin, ImagePlugin, JPEGPlugin,
                       NetCDFPlugin, NexusPlugin, OverlayPlugin, ProcessPlugin,
@@ -215,20 +215,30 @@ class PCDSAreaDetectorTyphos(Device):
                     num_dimensions='ndimensions',
                     kind='normal')
 
-    # Eventually I want to typhos-ify into a button. I couldn't figure out
-    # how to do that, so I will settle for this for now. 
-    def viewer(self):
+    def open_viewer(self):
         """
         Launch the python camera viewer for this camera.
         """
         arglist = ['/reg/g/pcds/pyps/apps/camviewer/latest/run_viewer.sh',
                    '--instrument',
-                   '{0}'.format(get_hutch().lower()),
+                   'las',
                    '--oneline',
                    'GE:16,{0}:IMAGE1;{0},,{0}'.format(self.prefix[0:-1])]
 
         subprocess.run(arglist, stdout=subprocess.PIPE,
                        stderr=subprocess.PIPE, check=True)
+
+    # Make viewer available in Typhos screen
+    cam_viewer = Cpt(AttributeSignal, attr='_open_screen', kind='normal')
+    set_metadata(cam_viewer, dict(variety='command-proc', value=1))
+
+    @property
+    def _open_screen(self):
+        return 0
+
+    @_open_screen.setter
+    def _open_screen(self, value):
+        self.open_viewer()
 
 
 class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphos):
