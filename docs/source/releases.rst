@@ -2,6 +2,67 @@ Release History
 ###############
 
 
+v3.1.0 (2020-10-21)
+===================
+
+API Changes
+-----------
+- The `SxrGmD` device has been removed from `beam_stats` module. SXR has been
+  disassembled and the GMD was moved into the EBD. Its MJ PVs was not working
+  anymore.
+
+Device Updates
+--------------
+- Added RTD PVs to KBOMirror class for bender actuators
+- Added PTYPE PV to SmarAct class
+- Added metadata to SmarAct jog pvs for better screens
+- Added additional PVs to lasers/elliptec.py classes
+- TuttiFruttiCls: Added an option to specify the controller channel for
+  Thorlabs Elliptec sliders.
+- Added the Thorlabs WFS class to the TuttiFrutti class.
+
+New Devices
+-----------
+- Add XYTargetGrid, an interactive utility class for managing a target grid
+  oriented normal to the beam, with regular X-Y spacing between targets.
+- PCDSAreaDetectorTyphosBeamStats, a variant of PCSDAreaDetectorTyphos that
+  includes centroid information and the crosshair PVs.
+- KBOMirror Class: Kirkpatrick-Baez Mirror class, X, Y, Pitch, Bender axes
+- FFMirror Class: Kirkpatrick-Baez Mirror without Bender axes. (Fixed focus)
+- LAMP motion Class for the LAMP endstation TMO. This includes the following motion axes:
+
+  - Gas Jet X/Y/Z Axes
+  - Gas Needle X/Y/Z Axes
+  - Sample Paddle X/Y/Z Axes
+
+- A new LCLS class has been added to the `beam_stats` module that contains PVs
+  related to the Lcls Linac Status, as well as a few functions to support with
+  checking the BYKIK status, turning it On and Off, and setting the period.
+- SmarActOpenLoopPositioner: Class intended for performing Bluesky scans using
+  open-loop SmarAct motors.
+
+Bugfixes
+--------
+- Corrected X/Y error in KBOMirror and FFMirror classes
+- Fix issues with L2SI Reflaser Picos being unable to successfully move.
+  This was because they were using the wrong motor class, which had extra
+  PVs that would never connect.
+- Fixed a bug preventing instantiation of the Elliptec sliders in the
+  TuttiFrutti device.
+
+Maintenance
+-----------
+- Add prefix and lightpath tests for KBOMirror.
+
+Contributors
+------------
+- cristinasewell
+- jsheppard95
+- sfsyunus
+- tjohnson
+- zllentz
+
+
 v3.0.0 (2020-10-07)
 ===================
 
