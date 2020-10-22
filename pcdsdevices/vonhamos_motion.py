@@ -1,7 +1,7 @@
 """
-LAMP Motion Classes
+Von Hamos Motion Classes
 
-This module contains classes related to the TMO-LAMP Motion System
+This module contains classes related to the Von Hamos Spectrometer Motion System
 """
 
 from ophyd import Component as Cpt
@@ -11,7 +11,7 @@ from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface
 
 
-class VonHamosBeckhoff(BaseInterface, Device):
+class VonHamos(BaseInterface, Device):
     """
     Von Hamos Beckhoff Motion Class
 
@@ -31,4 +31,4 @@ class VonHamosBeckhoff(BaseInterface, Device):
     tab_component_names = True
 
     # Motor components
-    von_hamos_y = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
+    y = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
