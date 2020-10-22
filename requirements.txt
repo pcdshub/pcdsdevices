@@ -8,3 +8,4 @@ pyyaml
 pint
 scipy
 schema
+pcdscalc
