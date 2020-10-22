@@ -12,7 +12,7 @@ from pcdsdevices.lens import (XFLS, LensStack, LensStackBase, Prefocus,
 
 logger = logging.getLogger(__name__)
 
-sample_lens_file = os.path.dirname(__file__) + '/test_lens_sets/test.npy'
+sample_lens_file = os.path.dirname(__file__) + '/test_lens_sets/test'
 sample_lens_set = [2, 200e-6, 4, 500e-6]
 sample_E = 8
 

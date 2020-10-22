@@ -5,7 +5,6 @@ import time
 from collections import defaultdict
 from datetime import date
 import logging
-
 import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
@@ -91,7 +90,6 @@ class LensStackBase(BaseInterface, PseudoPositioner):
     An ophyd PseudoPositioner relates one or more pseudo (virtual) axes to one
     or more real (physical) axes via forward and inverse calculations.
 
-    TODO: revise the information below...(notes from Silke and Zach)
     The purpose of this class is using the motor that moves the z stage of
     BeLensStack so that we can scan the focal size. What needs to be done is
     move the x motor and then the combination motor that when the z motor moves
@@ -100,14 +98,14 @@ class LensStackBase(BaseInterface, PseudoPositioner):
     What do we usually do:
     For each lens pack that is in, tweak x and y until the fixture on YAG
     screen is as pretty as it can be - save this position.
-    Move the z motor on one extreem to the furthers upstream position, and
+    Move the z motor on one extreem to the furthest upstream position, and
     then figure out the optimal x and y for each lens pack.
     Move the motor to the other side, the most downstream side and do the same
     thing. Save the x and y here as well.
 
     So this focus motor, moves three motors in combination. The z is used for
     the main calculations records, to get a focal spot size, and x
-    and y are moved based on the tweak that was doen at the beginning.
+    and y are moved based on the tweak that was done at the beginning.
 
     In general, it saves an x, y, z at the ends of motion, the idea being that
     the beam is a line that is not colinear with any one axis, so we draw a
@@ -122,7 +120,7 @@ class LensStackBase(BaseInterface, PseudoPositioner):
     -----
     Use `pcdscalc.be_lens_cals.configure_defaults` function to set some default
     parameters used in some calculations for different hutches.
-    Use `pcdscalc.set_lens_set_to_file` to set the lens sets
+    Use `pcdscalc.set_lens_set_to_file` to set the lens sets file
     """
     x = FCpt(IMS, '{self.x_prefix}')
     y = FCpt(IMS, '{self.y_prefix}')
@@ -131,9 +129,13 @@ class LensStackBase(BaseInterface, PseudoPositioner):
     calib_z = Cpt(PseudoSingleInterface)
     beam_size = Cpt(PseudoSingleInterface)
 
-    tab_whitelist = ['tweak', 'align']
+    tab_whitelist = ['tweak', 'align', 'calib_z', 'beam_size', 'create_lens',
+                     'read_lens']
     tab_component_names = True
 
+    # TODO: do we want these guys to be None? it seems like if they
+    # are None calculations fail - at least z_offset and z_dir should
+    # probably not be None
     def __init__(self, x_prefix, y_prefix, z_prefix, lens_set=None,
                  z_offset=None, z_dir=None, E=None, att_obj=None,
                  lcls_obj=None, mono_obj=None, beamsize_unfocused=500e-6,
@@ -350,7 +352,7 @@ class LensStackBase(BaseInterface, PseudoPositioner):
             Return `True` if the attenuator was moved in.
         """
         if self._att_obj is None:
-            logger.warning('Cannot do safe crl moveZ, no attenuator'
+            logger.warning('Cannot do safe moveZ, no attenuator'
                            ' object provided.')
             return False
         filt, thk = self._att_obj.filters[0], 0
@@ -403,27 +405,28 @@ class LensStack(LensStackBase):
     Examples
     --------
 
-    Provide the path of the be lens set file (the file is of .npy format):
+    Provide the path of the be lens set file:
 
-    >>> path = '../path/to/lens_set.npy'
+    >>> path = '../path/to/lens_set'
 
     If no lens sets are added in the file yet, use the
     `be_lens_calcs.set_lens_set_to_file` function to set the lens sets:
 
-    >>> sets_list_of_tuples = [(3, 0.0001, 1, 0.0002),
-                               (1, 0.0001, 1, 0.0003, 1, 0.0005),
-                               (2, 0.0001, 1, 0.0005)]
-    >>> set_lens_set_to_file(sets_list_of_tuples, ../path/to/lens_set.npy)
+    >>> sets_list_of_tuples = [[3, 0.0001, 1, 0.0002],
+                               [1, 0.0001, 1, 0.0003, 1, 0.0005],
+                               [2, 0.0001, 1, 0.0005]]
+    >>> set_lens_set_to_file(sets_list_of_tuples, '../path/to/lens_set.npy')
 
-    Create the LensStack() object by providing the x, y and z `prefixes`:
+    Create the LensStack() object by providing the x, y and z `prefixes`, as
+    well as all the other paramters:
 
     >>> be_stack = LensStack(path=path, x_prefix='X:PREF', y_prefix='Y:PREF',
-        z_prefix='Z:PREF', name='be_stack')
+        z_prefix='Z:PREF', z_offset=2, z_dir=0.2, E=8, name='be_stack')
 
     Now you can use the `be_stack` object to tweak the motors:
 
     >>> be_stack.tweak()
-    : 0.1000, : -0.2000, scale: 0.2
+    sim_x: -0.1000, sim_y: 0.2000, scale: 0.1
     Left: move x motor left
     Right: move x motor right
     Down: move y motor down
@@ -436,14 +439,9 @@ class LensStack(LensStackBase):
 
     >>> be_stack.align(z_position=0.001)
 
-    Then the `forward` method can be used to calculate a RealPosition from a
-    given PseudoPosition
-
-    >>> be_stack.foward(pseudo_pos)
-
-    Use `inverse` method to calculate a PseudoPosition from a RealPosition:
-
-    >>> be_stack.inverse(real_pos)
+    You might get a warning: 'No folder setup for motor presets. Please add a
+    location to save the positions to using setup_preset_paths from
+    pcdsdevices.interface to keep the position files'.
 
     TODO: to be continues and revised...
 
@@ -451,24 +449,56 @@ class LensStack(LensStackBase):
     def __init__(self, *args, path, **kwargs):
 
         self.path = path
-        lens_set = self.read_lens()
+        self.lens_pack = self.read_lens()
+        lens_set = calcs.get_lens_set(1, self.path)
+        # TODO: get a lens set, need a number ?
+        # lens_set = calcs.get_lens_set(1, self.path) # self.read_lens()
+        # I might just provide the whole lens_pack to the class, then
+        # in the calculations i'll be using one set somehow
         super().__init__(*args, lens_set=lens_set, **kwargs)
 
-    def read_lens(self):
+    def read_lens(self, print_only=False):
         """
-        TODO: In pcdscalc.be_lens_set we use get_lens_set to get a specific
-        set out of this file, do we want to do the same thing here or do we
-        want to read the entire set here??
+        Read the lens sets from file provided in the path.
 
-        Read the lens sets from the path provided when creating this object.
+        Parameters
+        ----------
+        print_only : bool
+            To indicate if printing out the currents sets only. If `False`
+            the `self.lens_pack` will be set to get the current file sets.
 
         Returns
         -------
-        sets : array
+        sets : list
+            Pack of lens sets.
         """
-        with open(self.path, 'rb') as lens_file:
-            sets = np.load(lens_file, allow_pickle=True)
-        return list(sets)
+        lens_pack = calcs.get_lens_set(None, self.path, get_all=True)
+        if print_only:
+            logger.info(lens_pack)
+        else:
+            self.lens_pack = lens_pack
+            return self.lens_pack
+
+    # TODO: i think i'll need this one here
+    # def _get_lensset(self):
+    #     """
+    #     Return the index of the lensset closest to the beam
+    #     """
+    #     states = self. ypos.statesAll()
+    #     self._original_vals[self.state] = self.state.get()
+    #     states.remove("OUT")
+    #     states.sort()
+    #     pos_d = self.ypos.statePosAll()
+    #     here = self.y.wm()
+    #     deltas = []
+    #     for s in states:
+    #         deltas.append(abs(pos_d[s] - here))
+    #     index = np.argmin(deltas)
+    #     p_len = len(self._lensPacks)
+    #     if index >= p_len:
+    #         return p_len - 1
+    #     else:
+    #         return index
 
     def create_lens(self, lens_set, make_backup=True):
         """
@@ -484,9 +514,9 @@ class LensStack(LensStackBase):
 
         Examples
         --------
-        >>> sets_list_of_tuples = [(3, 0.0001, 1, 0.0002),
-                               (1, 0.0001, 1, 0.0003, 1, 0.0005),
-                               (2, 0.0001, 1, 0.0005)]
+        >>> sets_list_of_tuples = [[3, 0.0001, 1, 0.0002],
+                                   [1, 0.0001, 1, 0.0003, 1, 0.0005],
+                                   [2, 0.0001, 1, 0.0005]]
         >>> create_lens(sets_list_of_tuples)
 
         """
