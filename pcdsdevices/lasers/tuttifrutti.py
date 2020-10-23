@@ -10,11 +10,12 @@ from pcdsdevices.areadetector.detectors import PCDSAreaDetectorTyphos
 from pcdsdevices.lasers.qmini import QminiSpectrometer
 from pcdsdevices.lasers.ek9000 import El3174AiCh
 from pcdsdevices.lasers.elliptec import Ell6
+from pcdsdevices.lasers.thorlabsWFS import ThorlabsWfs40
 
 
 def TuttiFruttiCls(prefix, name, nf=False, ff=False, spec=False, pm=False,
                    diode=False, em=False, qc=False, pd=False, wfs=False,
-                   ell=False, misc=[]):
+                   ell=False, ellch=1, misc=[]):
     """
     Generate a TuttiFrutti class. See TuttiFrutti function for more details.
     """
@@ -40,9 +41,10 @@ def TuttiFruttiCls(prefix, name, nf=False, ff=False, spec=False, pm=False,
     if pd:
         raise NotImplementedError("Pulse duration is not yet implemented")
     if wfs:
-        raise NotImplementedError("Wavefront sensor is not yet implemented")
+        cpt = Cpt(ThorlabsWfs40, '_WF1:', kind='normal')
+        cpts['wfs'] = cpt
     if ell:
-        cpt = Cpt(Ell6, '_SL1:ELL:M1', kind='normal')
+        cpt = Cpt(Ell6, '_SL1:ELL', channel=ellch, kind='normal')
         cpts['slider'] = cpt
     if misc:  # This feels kind of hacky, but also kind of cool.
         for cptname, cpt in misc.items():
@@ -56,7 +58,7 @@ def TuttiFruttiCls(prefix, name, nf=False, ff=False, spec=False, pm=False,
 
 def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
                 diode=False, em=False, qc=False, pd=False, wfs=False,
-                ell=False, misc=[]):
+                ell=False, ellch=1, misc=[]):
     """
     Factory function for Tuttifrutti diagnostic stack device. Returns a device
     based on the specified components.
@@ -96,12 +98,16 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
     pd : bool <False> (Not Implemented)
         Flag indicating if a pulse duration diagnostic is installed.
 
-    wfs : bool <False> (Not Implemented)
+    wfs : bool <False>
         Flag indicating if a wavefront sensor is installed.
 
     ell : bool <False>
         Flag indicating if a 2-position filter slider is installed is
         installed.
+
+    ellch : int <0x1>
+        The integer channel that the slider is assigned to on the controller.
+        Typically between 0x1 and 0x3, up to 0xF.
 
     misc : dict of ophyd.Component or ophyd.FormattedComponent <empty>
         Dictionary of Cpt and/or FCpt for providing miscellaneous Ophyd
@@ -139,8 +145,8 @@ def TuttiFrutti(prefix, name, nf=False, ff=False, spec=False, pm=False,
                            misc=dmisc)
     """
     cls = TuttiFruttiCls(prefix, name, nf=nf, ff=ff, spec=spec, pm=pm,
-                         diode=diode, em=em, qc=qc, pd=pd, wfs=wfs, ell=False,
-                         misc=misc)
+                         diode=diode, em=em, qc=qc, pd=pd, wfs=wfs, ell=ell,
+                         ellch=ellch, misc=misc)
     dev = cls(prefix, name=name)
 
     return dev

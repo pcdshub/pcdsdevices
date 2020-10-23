@@ -1,4 +1,4 @@
-23 target-stages
+627 Typhos-cam-viewer
 #################
 
 API Changes
@@ -11,12 +11,13 @@ Features
 
 Device Updates
 --------------
-- N/A
+- PCDSAreaDetectorTyphos: Added a camera viewer button to the class to open a
+  python camera viewer for the camera. Removed the old 'cam_image' viewer in
+  favor of this new viewer. 
 
 New Devices
 -----------
-- Add XYTargetGrid, a interactive utility class for managing a target grid
-  oriented normal to the beam, with regular X-Y spacing between targets.
+- N/A
 
 Bugfixes
 --------
