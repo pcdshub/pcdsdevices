@@ -93,12 +93,12 @@ class LensStackBase(BaseInterface, PseudoPositioner):
     The purpose of this class is using the motor that moves the z stage of
     BeLensStack so that we can scan the focal size. What needs to be done is
     move the x motor and then the combination motor that when the z motor moves
-    we also move the x and y to compensate for the stage not beign perfect.
+    we also move the x and y to compensate for the stage not being perfect.
 
     What do we usually do:
     For each lens pack that is in, tweak x and y until the fixture on YAG
     screen is as pretty as it can be - save this position.
-    Move the z motor on one extreem to the furthest upstream position, and
+    Move the z motor on one extreme to the furthest upstream position, and
     then figure out the optimal x and y for each lens pack.
     Move the motor to the other side, the most downstream side and do the same
     thing. Save the x and y here as well.
@@ -260,29 +260,6 @@ class LensStackBase(BaseInterface, PseudoPositioner):
         ----------
         z_position : number, optional
         edge_offset : number, optional
-
-        Notes
-        ----
-        Macro for calibration. Steps:
-
-        1. Make safe
-
-        2. Save z pos
-
-        3. Move z, x to previous reference position
-
-        4. Move y to preset corresponding to lenssetNo,
-           or don't move it if left as None
-
-        5. call .align() to align x and y with beam
-
-        6. save reference position
-
-        7. move z by dz, call .align() to align x and y with beam
-
-        8. save trajectory as dx and dy
-
-        9. return to original z pos, but aligned with the beam
         """
 
         self.z.move(self.z.limits[0] + edge_offset)
@@ -405,27 +382,82 @@ class LensStack(LensStackBase):
     Examples
     --------
 
-    Provide the path of the be lens set file:
-
-    >>> path = '../path/to/lens_set'
+    Before using the LclsStack class, provide the path of the be lens set file
+    to be used for the calculations.
 
     If no lens sets are added in the file yet, use the
     `be_lens_calcs.set_lens_set_to_file` function to set the lens sets:
 
-    >>> sets_list_of_tuples = [[3, 0.0001, 1, 0.0002],
-                               [1, 0.0001, 1, 0.0003, 1, 0.0005],
-                               [2, 0.0001, 1, 0.0005]]
-    >>> set_lens_set_to_file(sets_list_of_tuples, '../path/to/lens_set.npy')
+    >>> import pcdsdevices.lens as lens
+    >>> import pcdscalc.be_lens_calcs as be
+
+    >>> path = '../path/to/lens_set'
+
+    >>> sets_list = [[3, 0.0001, 1, 0.0002],
+                     [1, 0.0001, 1, 0.0003, 1, 0.0005],
+                     [2, 0.0001, 1, 0.0005]]
+    >>> be.set_lens_set_to_file(sets_list, path)
 
     Create the LensStack() object by providing the x, y and z `prefixes`, as
-    well as all the other paramters:
+    well as all the other parameters:
 
-    >>> be_stack = LensStack(path=path, x_prefix='X:PREF', y_prefix='Y:PREF',
-        z_prefix='Z:PREF', z_offset=2, z_dir=0.2, E=8, name='be_stack')
+    >>> att = Attenuator('att', 4, name='att')
 
-    Now you can use the `be_stack` object to tweak the motors:
+    >>> be_stack = lens.LensStack(path=path, x_prefix='X:PREF',
+                                  y_prefix='Y:PREF', z_prefix='Z:PREF',
+                                  att_obj=att, z_offset=2, z_dir=0.2, E=8,
+                                  name='be_stack')
 
-    >>> be_stack.tweak()
+    For this documentation purposes we will use the SimLensStack:
+
+    >>> sim = lens.SimLensStack(path=path, x_prefix='x', y_prefix='y',
+                                z_prefix='z', z_offset=2, z_dir=0.2, E=8,
+                                att_obj=att, name='sim')
+    FWHM at lens   : 5.000e-04
+    waist          : 3.113e-07
+    waist FWHM     : 3.666e-07
+    rayleigh_range : 1.965e-03
+    focal length   : 2.680e+00
+    size           : 2.092e-04
+    size FWHM      : 2.463e-04
+
+    You can check what current sets are in the file as follows:
+
+    >>> sim.read_lens(print_only=True)
+    [[3, 0.0001, 1, 0.0002], [1, 0.0001, 1, 0.0003, 1, 0.0005],
+    [2, 0.0001, 1, 0.0005]]
+
+    If `print_only` is `False`, `self.lens_pack` will be set to use the
+    current sets:
+
+    >>> sim.read_lens()
+    [[3, 0.0001, 1, 0.0002],
+    [1, 0.0001, 1, 0.0003, 1, 0.0005],
+    [2, 0.0001, 1, 0.0005]]
+
+    >>> sim.lens_pack
+    [[3, 0.0001, 1, 0.0002],
+    [1, 0.0001, 1, 0.0003, 1, 0.0005],
+    [2, 0.0001, 1, 0.0005]]
+
+    You can also create the lens sets using this class like so:
+
+    >>> sets_list = [[3, 0.0001, 1, 0.0002],
+                     [1, 0.0001, 1, 0.0003, 1, 0.0005],
+                     [2, 0.0001, 1, 0.0005]]
+    >>> sim.create_lens(sets_list)
+
+    For calculations, one set at the time will be used. Use the `set_lens_set`
+    method to choose what set to use. Ex. to use the second set:
+
+    >>> sim.set_lens_set(2)
+
+    >>> sim.lens_set
+    [1, 0.0001, 1, 0.0003, 1, 0.0005]
+
+    Now you can try to tweak the motors:
+
+    >>> sim.tweak()
     sim_x: -0.1000, sim_y: 0.2000, scale: 0.1
     Left: move x motor left
     Right: move x motor right
@@ -437,24 +469,82 @@ class LensStack(LensStackBase):
 
     You can then call the `align()` function to create presets
 
-    >>> be_stack.align(z_position=0.001)
+    >>> be_stack.align()
+    FWHM at lens   : 5.000e-04
+    waist          : 3.113e-07
+    waist FWHM     : 3.666e-07
+    rayleigh_range : 1.965e-03
+    focal length   : 2.680e+00
+    size           : 2.092e-04
+    size FWHM      : 2.463e-04
+    sim_x: -0.1000, sim_y: 0.2000, scale: 0.1
 
-    You might get a warning: 'No folder setup for motor presets. Please add a
-    location to save the positions to using setup_preset_paths from
-    pcdsdevices.interface to keep the position files'.
+    Check the positions of the motors like so:
 
-    TODO: to be continues and revised...
+    >>> sim.x
+    sim_x
+    -----
+    preset: align_position_one
+    position: -0.1
+
+    >>> sim.calib_z()
+    FWHM at lens   : 5.000e-04
+    waist          : 3.113e-07
+    waist FWHM     : 3.666e-07
+    rayleigh_range : 1.965e-03
+    focal length   : 2.680e+00
+    size           : 2.092e-04
+    size FWHM      : 2.463e-04
+    80
+
+    >>> sim.beam_size()
+    FWHM at lens   : 5.000e-04
+    waist          : 3.113e-07
+    waist FWHM     : 3.666e-07
+    rayleigh_range : 1.965e-03
+    focal length   : 2.680e+00
+    size           : 2.092e-04
+    size FWHM      : 2.463e-04
+    0.00024626624937199417
+
+    Use `calib_z` and `beam_size` to to move the z motor:
+
+    >>> sim.calib_z(sim.x.position, sim.y.position, sim.z.position)
+    >>> sim.beam_size(sim.x.position, sim.y.position, sim.z.position)
+
+    Calculated the pseudo position:
+
+    >>> sim.inverse(sim.x.position, sim.y.position, sim.z.position)
+    FWHM at lens   : 5.000e-04
+    waist          : 3.113e-07
+    waist FWHM     : 3.666e-07
+    rayleigh_range : 1.965e-03
+    focal length   : 2.680e+00
+    size           : 2.092e-04
+    size FWHM      : 2.463e-04
+    SimLensStackPseudoPos(calib_z=0, beam_size=0.00024626624937199417)
+
+    Calculate the real Position:
+
+    >>> sim.forward(3, 5)
+    FWHM at lens   : 5.000e-04
+    waist          : 3.113e-07
+    waist FWHM     : 3.666e-07
+    rayleigh_range : 1.965e-03
+    focal length   : 2.680e+00
+    size           : 2.092e-04
+    size FWHM      : 2.463e-04
+    SimLensStackRealPos(x=-0.1, y=0.4, z=-5359883.247959933)
 
     """
     def __init__(self, *args, path, **kwargs):
 
         self.path = path
         self.lens_pack = self.read_lens()
+        # Defaulting this a the first set in the file
+        # TODO: this will have to change
         lens_set = calcs.get_lens_set(1, self.path)
-        # TODO: get a lens set, need a number ?
-        # lens_set = calcs.get_lens_set(1, self.path) # self.read_lens()
-        # I might just provide the whole lens_pack to the class, then
-        # in the calculations i'll be using one set somehow
+
         super().__init__(*args, lens_set=lens_set, **kwargs)
 
     def read_lens(self, print_only=False):
@@ -474,17 +564,17 @@ class LensStack(LensStackBase):
         """
         lens_pack = calcs.get_lens_set(None, self.path, get_all=True)
         if print_only:
-            logger.info(lens_pack)
+            print(lens_pack)
         else:
             self.lens_pack = lens_pack
             return self.lens_pack
 
-    # TODO: i think i'll need this one here
+    # TODO: i think i'll need this one here or something similar
     # def _get_lensset(self):
     #     """
     #     Return the index of the lensset closest to the beam
     #     """
-    #     states = self. ypos.statesAll()
+    #     states = self.ypos.statesAll()
     #     self._original_vals[self.state] = self.state.get()
     #     states.remove("OUT")
     #     states.sort()
@@ -500,6 +590,24 @@ class LensStack(LensStackBase):
     #     else:
     #         return index
 
+    def set_lens_set(self, index):
+        """
+        Temporary method to get the set from the lens set file at the index.
+
+        TODO: this method will obviously change when we know how we want to get
+        the lens, for now it is merely choosing it manually.
+
+        Parameters
+        ----------
+        index : int
+            Index to indicate which set in the list to get.
+
+        Examples
+        --------
+        >>> set_lens_set(2)
+        """
+        self.lens_set = calcs.get_lens_set(index, self.path)
+
     def create_lens(self, lens_set, make_backup=True):
         """
         Write lens set to the file provided when creating this object.
@@ -514,10 +622,10 @@ class LensStack(LensStackBase):
 
         Examples
         --------
-        >>> sets_list_of_tuples = [[3, 0.0001, 1, 0.0002],
-                                   [1, 0.0001, 1, 0.0003, 1, 0.0005],
-                                   [2, 0.0001, 1, 0.0005]]
-        >>> create_lens(sets_list_of_tuples)
+        >>> sets_list = [[3, 0.0001, 1, 0.0002],
+                         [1, 0.0001, 1, 0.0003, 1, 0.0005],
+                         [2, 0.0001, 1, 0.0005]]
+        >>> create_lens(sets_list)
 
         """
         calcs.set_lens_set_to_file(lens_set, self.path, make_backup)
