@@ -19,12 +19,15 @@ class El3174AiCh(Device):
         The PV base of the card.
     """
     measured = Cpt(EpicsSignalRO, '.VAL', kind='normal')
-    _raw_adc = Cpt(EpicsSignalRO, '.RVAL', kind='config')
+    raw_adc = Cpt(EpicsSignalRO, '.RVAL', kind='config')
     egu = Cpt(EpicsSignal, '.EGU', kind='config')
-    _egu_max = Cpt(EpicsSignal, '.EGUF', kind='config')
-    _egu_min = Cpt(EpicsSignal, '.EGUL', kind='config')
-    _conversion = Cpt(EpicsSignal, '.LINR', kind='config')
-    _precision = Cpt(EpicsSignal, '.PREC', kind='config')
+    # TJ: These may be usefult late, but not now
+    # egu_max = Cpt(EpicsSignal, '.EGUF', kind='config')
+    # egu_min = Cpt(EpicsSignal, '.EGUL', kind='config')
+    eslo = Cpt(EpicsSignal, '.ESLO', kind='config')
+    eoff = Cpt(EpicsSignal, '.EOFF', kind='config')
+    conversion = Cpt(EpicsSignal, '.LINR', kind='config')
+    precision = Cpt(EpicsSignal, '.PREC', kind='config')
 
 
 class EnvironmentalMonitor(Device):
