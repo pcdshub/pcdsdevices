@@ -1,0 +1,31 @@
+637 vgs_2s
+#################
+
+API Changes
+-----------
+- N/A
+
+Features
+--------
+- N/A
+
+Device Updates
+--------------
+- Added VGC_2S, a new valve class that extends the VGC
+  with the addition of a second setpoint and hysteresis.
+
+New Devices
+-----------
+- N/A
+
+Bugfixes
+--------
+- N/A
+
+Maintenance
+-----------
+- N/A
+
+Contributors
+------------
+- ghalym
