@@ -7,6 +7,7 @@ import os
 import shutil
 
 from ophyd.device import Component as Cpt
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.device import Device
 from ophyd.epics_motor import EpicsMotor
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
@@ -547,6 +548,43 @@ class SmarActOpenLoop(Device):
     scan_move_cmd = Cpt(EpicsSignal, ':SCAN_MOVE', kind='omitted')
     # Scan pos
     scan_pos = Cpt(EpicsSignal, ':SCAN_POS', kind='omitted')
+
+
+class SmarActTipTilt(Device):
+    """
+    Class for bundling two SmarActOpenLoop axes arranged in a tip-tilt mirro
+    positioning configuration into a single device.
+
+    Parameters:
+    -----------
+    prefix : str <optional, default=''>
+        The base PV of the stages. Can be omitted, but then tip_pv and
+        tilt_pv must specify the full stage PV.
+
+    tip_pv : str
+        The PV suffix of the "tip" axis to add to the device prefix. Any PV
+        separator (e.g. ':') must be included.
+
+    tilt_pv : str
+        The PV suffix of the "tilt" axis to add to the device prefix. Any PV
+        separator (e.g. ':') must be included.
+
+    Examples
+    --------
+    # Tip Tilt stage with same base PV
+    tt = SmarActTipTilt(prefix='LAS:MCS2:01', tip_pv=':M1', tilt_pv=':M2')
+
+    # Tip Tilt stage with different base PV (separate controller, etc.)
+    tt2 = SmarActTipTilt(tip_pv='LAS:MCS2:01:M1', tilt_pv='LAS:MCS2:02:M1')
+    """
+
+    tip = FCpt(SmarActOpenLoop, '{prefix}{self._tip_pv}', kind='normal')
+    tilt = FCpt(SmarActOpenLoop, '{prefix}{self._tilt_pv}', kind='normal')
+
+    def __init__(self, prefix='', tip_pv=None, tilt_pv=None, **kwargs):
+        self._tip_pv = tip_pv
+        self._tilt_pv = tilt_pv
+        super().__init__(prefix, **kwargs)
 
 
 class SmarActOpenLoopPositioner(PVPositionerComparator):
