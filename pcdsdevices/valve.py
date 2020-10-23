@@ -248,14 +248,18 @@ class VGC(VRC):
                                       doc='Downstream vacuum device used for'
                                       'interlocking this valve')
 
+
 class VGC_2S(VGC):
     """Class for Controlled Gate Valves with 2 setpoints."""
-    at_vac_setpoint_ds = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP_DS', kind='config',
-                          doc='AT VAC Set point value for the downstream gauge')
-    setpoint_hysterisis_ds = Cpt(EpicsSignalWithRBV, ':AT_VAC_HYS_DS', kind='config',
-                              doc='AT VAC Hysterisis for the downstream setpoint')
-    
-    
+    at_vac_setpoint_ds = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP_DS',
+                             kind='config',
+                             doc='AT VAC Set point value '
+                                 'for the downstream gauge')
+    setpoint_hysterisis_ds = Cpt(EpicsSignalWithRBV, ':AT_VAC_HYS_DS',
+                                 kind='config',
+                                 doc='AT VAC Hysterisis for '
+                                     'the downstream setpoint')
+
 
 class VFS(Device, LightpathMixin):
     """Class for Fast Shutter Valve."""
