@@ -581,7 +581,7 @@ class SmarActTipTilt(Device):
     tip = FCpt(SmarActOpenLoop, '{prefix}{self._tip_pv}', kind='normal')
     tilt = FCpt(SmarActOpenLoop, '{prefix}{self._tilt_pv}', kind='normal')
 
-    def __init__(self, prefix='', tip_pv=None, tilt_pv=None, **kwargs):
+    def __init__(self, prefix='', *, tip_pv, tilt_pv, **kwargs):
         self._tip_pv = tip_pv
         self._tilt_pv = tilt_pv
         super().__init__(prefix, **kwargs)
