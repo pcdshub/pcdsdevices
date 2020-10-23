@@ -2,6 +2,29 @@ Release History
 ###############
 
 
+v3.2.0 (2020-10-23)
+===================
+
+Device Updates
+--------------
+- PCDSAreaDetectorTyphos: Added a camera viewer button to the class to open a
+  python camera viewer for the camera. Removed the old 'cam_image' viewer in
+  favor of this new viewer.
+- El3174AiCh: Added ESLO, EOFF fields, removed EGUH, EGUL
+
+New Devices
+-----------
+- SmarActTipTilt: Class for bundling two SmarActOpenLoop axis classes together
+  into a single device for Typhos screen generation and interactive use.
+- Added VGC_2S, a new valve class that extends the VGC
+  with the addition of a second setpoint and hysteresis.
+
+Contributors
+------------
+- ghalym
+- tjohnson
+
+
 v3.1.0 (2020-10-21)
 ===================
 
