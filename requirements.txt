@@ -8,4 +8,8 @@ pyyaml
 pint
 scipy
 schema
+<<<<<<< HEAD
 pcdscalc
+=======
+pcdsutils
+>>>>>>> master

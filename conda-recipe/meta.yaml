@@ -29,6 +29,7 @@ requirements:
     - happi
     - schema
     - pcdscalc
+    - pcdsutils
 
 test:
   imports:

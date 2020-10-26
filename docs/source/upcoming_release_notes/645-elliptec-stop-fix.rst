@@ -1,4 +1,4 @@
-23 target-stages
+645 elliptec-stop-fix
 #################
 
 API Changes
@@ -15,12 +15,11 @@ Device Updates
 
 New Devices
 -----------
-- Add XYTargetGrid, a interactive utility class for managing a target grid
-  oriented normal to the beam, with regular X-Y spacing between targets.
+- N/A
 
 Bugfixes
 --------
-- N/A
+- lasers/elliptec.py: Fix conflict with BlueSky interface and 'stop' signal. 
 
 Maintenance
 -----------
@@ -28,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tjohnson
+- tjohnson 
