@@ -131,12 +131,9 @@ class EllLinear(EllBase):
                  kind='omitted')
     set_metadata(clean, dict(variety='command-proc', value=1))
 
-    # Only the linear and rotation stages have extended optimization and
-    # cleaning procedures; the sliders finish almost immediately. This stops
-    # these long procedures prematurely.
-    stop = FCpt(EpicsSignal, '{prefix}:M{self._channel}:STOP',
-                kind='omitted')
-    set_metadata(stop, dict(variety='command-proc', value=1))
+    stop_optimize = FCpt(EpicsSignal, '{prefix}:M{self._channel}:STOP',
+                         kind='omitted')
+    set_metadata(stop_optimize, dict(variety='command-proc', value=1))
 
     current_egu = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS.EGU',
                        kind='omitted')
