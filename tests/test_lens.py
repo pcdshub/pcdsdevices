@@ -115,8 +115,7 @@ def fake_lensstack(fake_att):
                                   path=sample_lens_file,
                                   E=sample_E,
                                   z_offset=.01, z_dir=1, att_obj=fake_att,
-                                  lcls_obj=.01, mono_obj=.01,
-                                  beamsize_unfocused=500e-6)
+                                  lcls_obj=.01, mono_obj=.01)
     return fake_lensstack
 
 
@@ -193,7 +192,8 @@ def test_prefocus_disconnected():
 
 
 @pytest.mark.timeout(5)
-def test_lens_stack_disconnected():
+def test_lens_stack_disconnected(fake_att):
     logger.debug('test_xfls_disconnected')
     LensStack(name='test', x_prefix='x_motor', y_prefix='y_motor',
-              z_prefix='z_motor', path=sample_lens_file)
+              z_prefix='z_motor', path=sample_lens_file, E=sample_E,
+              z_offset=.01, z_dir=1, att_obj=fake_att)

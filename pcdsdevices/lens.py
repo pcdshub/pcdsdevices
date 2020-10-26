@@ -20,9 +20,6 @@ from .sim import FastMotor
 
 logger = logging.getLogger(__name__)
 
-# Set of Be lenses with thicknesses.
-LENS_RADII = calcs.LENS_RADII
-
 
 class XFLS(InOutRecordPositioner):
     """
@@ -133,19 +130,14 @@ class LensStackBase(BaseInterface, PseudoPositioner):
                      'read_lens']
     tab_component_names = True
 
-    # TODO: do we want these guys to be None? it seems like if they
-    # are None calculations fail - at least z_offset and z_dir should
-    # probably not be None
-    def __init__(self, x_prefix, y_prefix, z_prefix, lens_set=None,
-                 z_offset=None, z_dir=None, E=None, att_obj=None,
-                 lcls_obj=None, mono_obj=None, beamsize_unfocused=500e-6,
-                 *args, **kwargs):
+    def __init__(self, x_prefix, y_prefix, z_prefix, lens_set,
+                 z_offset, z_dir, E, att_obj, lcls_obj=None,
+                 mono_obj=None, *args, **kwargs):
         self.x_prefix = x_prefix
         self.y_prefix = y_prefix
         self.z_prefix = z_prefix
         self.z_dir = z_dir
         self.z_offset = z_offset
-        self.beamsize_unfocused = beamsize_unfocused
 
         self._E = E
         self._att_obj = att_obj
@@ -196,8 +188,7 @@ class LensStackBase(BaseInterface, PseudoPositioner):
         if not np.isclose(pseudo_pos.beam_size, self.beam_size.position):
             beam_size = pseudo_pos.beam_size
             dist = calcs.calc_distance_for_size(beam_size, self.lens_set,
-                                                self._E,
-                                                self.beamsize_unfocused)[0]
+                                                self._E)[0]
             z_pos = (dist - self.z_offset) * self.z_dir * 1000
         else:
             z_pos = pseudo_pos.calib_z
@@ -238,9 +229,7 @@ class LensStackBase(BaseInterface, PseudoPositioner):
         dist_m = real_pos.z / 1000 * self.z_dir + self.z_offset
         logger.info('dist_m %s', dist_m)
         beamsize = calcs.calc_beam_fwhm(self._E, self.lens_set,
-                                        distance=dist_m,
-                                        material="Be", density=None,
-                                        fwhm_unfocused=self.beamsize_unfocused)
+                                        distance=dist_m)
         return self.PseudoPosition(calib_z=real_pos.z, beam_size=beamsize)
 
     def align(self, z_position=None, edge_offset=20):
@@ -374,22 +363,24 @@ class LensStack(LensStackBase):
         Object that gets PVs from lcls (for energy)
     mono_obj
         Object that gets energy from monochromator
-    beamsize_unfocused : float, optional
-        Radial size of x-ray beam before focusing.
     path : str
         Path to the file that defines which lenses are being used.
 
     Examples
     --------
-
-    Before using the LclsStack class, provide the path of the be lens set file
-    to be used for the calculations.
-
-    If no lens sets are added in the file yet, use the
-    `be_lens_calcs.set_lens_set_to_file` function to set the lens sets:
+    Before using the LclsStack class configure the defaults used in some
+    calculations:
 
     >>> import pcdsdevices.lens as lens
     >>> import pcdscalc.be_lens_calcs as be
+
+    >>> be.configure_defaults(distance=4, fwhm_unfocused=500e-6)
+
+    Also, provide the path of the be lens set file to be used for the
+    calculations.
+
+    If no lens sets are added in the file yet, use the
+    `be_lens_calcs.set_lens_set_to_file` function to set the lens sets:
 
     >>> path = '../path/to/lens_set'
 
@@ -398,20 +389,27 @@ class LensStack(LensStackBase):
                      [2, 0.0001, 1, 0.0005]]
     >>> be.set_lens_set_to_file(sets_list, path)
 
-    Create the LensStack() object by providing the x, y and z `prefixes`, as
-    well as all the other parameters:
+    Make sure you have an attenuator object imported eg.:
 
+    >>> from xpp.db import xpp_attenuator
+
+    or create one:
+
+    >>> from pcdsdevices.attenuator import Attenuator
     >>> att = Attenuator('att', 4, name='att')
+
+    Create the LensStack() object by providing the x, y and z `prefixes`, as
+    well as all the other parameters.
 
     >>> be_stack = lens.LensStack(path=path, x_prefix='X:PREF',
                                   y_prefix='Y:PREF', z_prefix='Z:PREF',
-                                  att_obj=att, z_offset=2, z_dir=0.2, E=8,
+                                  att_obj=att, z_offset=3.852, z_dir=-1, E=8,
                                   name='be_stack')
 
     For this documentation purposes we will use the SimLensStack:
 
     >>> sim = lens.SimLensStack(path=path, x_prefix='x', y_prefix='y',
-                                z_prefix='z', z_offset=2, z_dir=0.2, E=8,
+                                z_prefix='z', z_offset=3.852, z_dir=-1, E=8,
                                 att_obj=att, name='sim')
     FWHM at lens   : 5.000e-04
     waist          : 3.113e-07
@@ -455,21 +453,14 @@ class LensStack(LensStackBase):
     >>> sim.lens_set
     [1, 0.0001, 1, 0.0003, 1, 0.0005]
 
-    Now you can try to tweak the motors:
+    Now you can try to tweak the two motors with key arrors using `sim.tweak()`
+    or with calling the relative move `umvr`:
 
-    >>> sim.tweak()
-    sim_x: -0.1000, sim_y: 0.2000, scale: 0.1
-    Left: move x motor left
-    Right: move x motor right
-    Down: move y motor down
-    Up: move y motor up
-    + or Shift_Up: scale*2
-    - or Shift_Down: scale/2
-    Press q to quit. Press any other key to display this message.
+    >>> sim.x.umvr(3)
 
     You can then call the `align()` function to create presets
 
-    >>> be_stack.align()
+    >>> sim.align()
     FWHM at lens   : 5.000e-04
     waist          : 3.113e-07
     waist FWHM     : 3.666e-07
@@ -507,42 +498,24 @@ class LensStack(LensStackBase):
     size FWHM      : 2.463e-04
     0.00024626624937199417
 
-    Use `calib_z` and `beam_size` to to move the z motor:
+    Now if you move the `calib_z` it will move the x, y, and z motors at the
+    same time based on the last time we ran the `align` method.
 
-    >>> sim.calib_z(sim.x.position, sim.y.position, sim.z.position)
-    >>> sim.beam_size(sim.x.position, sim.y.position, sim.z.position)
+    >>> sim.calib_z.move(pos)
 
-    Calculated the pseudo position:
+    The `beam_size` will do a calculation on top of that and move the `calib_z`
+    motor underneath, so you can move x, y, and z appropriately to get the
+    correct spot size at the sample:
 
-    >>> sim.inverse(sim.x.position, sim.y.position, sim.z.position)
-    FWHM at lens   : 5.000e-04
-    waist          : 3.113e-07
-    waist FWHM     : 3.666e-07
-    rayleigh_range : 1.965e-03
-    focal length   : 2.680e+00
-    size           : 2.092e-04
-    size FWHM      : 2.463e-04
-    SimLensStackPseudoPos(calib_z=0, beam_size=0.00024626624937199417)
-
-    Calculate the real Position:
-
-    >>> sim.forward(3, 5)
-    FWHM at lens   : 5.000e-04
-    waist          : 3.113e-07
-    waist FWHM     : 3.666e-07
-    rayleigh_range : 1.965e-03
-    focal length   : 2.680e+00
-    size           : 2.092e-04
-    size FWHM      : 2.463e-04
-    SimLensStackRealPos(x=-0.1, y=0.4, z=-5359883.247959933)
+    >>> sim.beam_size.move(size)
 
     """
+
     def __init__(self, *args, path, **kwargs):
 
         self.path = path
         self.lens_pack = self.read_lens()
         # Defaulting this a the first set in the file
-        # TODO: this will have to change
         lens_set = calcs.get_lens_set(1, self.path)
 
         super().__init__(*args, lens_set=lens_set, **kwargs)
@@ -564,31 +537,10 @@ class LensStack(LensStackBase):
         """
         lens_pack = calcs.get_lens_set(None, self.path, get_all=True)
         if print_only:
-            print(lens_pack)
+            logger.info(lens_pack)
         else:
             self.lens_pack = lens_pack
             return self.lens_pack
-
-    # TODO: i think i'll need this one here or something similar
-    # def _get_lensset(self):
-    #     """
-    #     Return the index of the lensset closest to the beam
-    #     """
-    #     states = self.ypos.statesAll()
-    #     self._original_vals[self.state] = self.state.get()
-    #     states.remove("OUT")
-    #     states.sort()
-    #     pos_d = self.ypos.statePosAll()
-    #     here = self.y.wm()
-    #     deltas = []
-    #     for s in states:
-    #         deltas.append(abs(pos_d[s] - here))
-    #     index = np.argmin(deltas)
-    #     p_len = len(self._lensPacks)
-    #     if index >= p_len:
-    #         return p_len - 1
-    #     else:
-    #         return index
 
     def set_lens_set(self, index):
         """
