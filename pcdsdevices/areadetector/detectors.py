@@ -288,7 +288,7 @@ class BaslerBase(Device):
                       write_pv='GevSCPSPacketSiz', kind='config',
                       doc='Set Ethernet Packet Size (typ. 9000)')
     enet_bw = Cpt(EpicsSignalRO, 'GevSCDCT_RBV', kind='config',
-                  doc='Current Enet BW')
+                  doc='Current Ethernet bandwidth')
 
 
 # Typical "hutch" Basler class
