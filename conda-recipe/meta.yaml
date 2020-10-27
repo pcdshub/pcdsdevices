@@ -28,8 +28,8 @@ requirements:
     - periodictable
     - happi
     - schema
-    - pcdscalc
     - pcdsutils
+    - pcdscalc
 
 test:
   imports:
