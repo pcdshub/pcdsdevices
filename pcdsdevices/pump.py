@@ -194,17 +194,17 @@ class PIPPLC(Device):
 
 class PTMPLC(Device):
     """Class for PLC-controlled Turbo Pump."""
-    switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='omitted')
+    switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='normal')
     reset_fault = Cpt(EpicsSignalWithRBV, ':RST_SW', kind='normal')
     run_do = Cpt(EpicsSignalRO, ':RUN_DO_RBV', kind='normal')
-    pump_at_speed = Cpt(EpicsSignalRO, ':AT_SPD_RBV', kind='omitted')
+    pump_at_speed = Cpt(EpicsSignalRO, ':AT_SPD_RBV', kind='normal')
     pump_accelerating = Cpt(EpicsSignalRO, ':ACCEL_RBV', kind='normal')
     pump_speed = Cpt(EpicsSignalRO, ':SPEED_RBV', kind='normal')
     fault = Cpt(EpicsSignalRO, ':FAULT_RBV', kind='normal')
     warn = Cpt(EpicsSignalRO, ':WARN_RBV', kind='normal')
     alarm = Cpt(EpicsSignalRO, ':ALARM_RBV', kind='normal')
-    bp_sp = Cpt(EpicsSignalWithRBV, ':BP_SP', kind='omitted')
-    ip_sp = Cpt(EpicsSignalWithRBV, ':IP_SP', kind='omitted')
+    bp_sp = Cpt(EpicsSignalWithRBV, ':BP_SP', kind='normal')
+    ip_sp = Cpt(EpicsSignalWithRBV, ':IP_SP', kind='normal')
     interlock_status = Cpt(EpicsSignalRO, ':ILK_STATUS_RBV', kind='normal',
                            doc='interlock  is ok when true')
 
