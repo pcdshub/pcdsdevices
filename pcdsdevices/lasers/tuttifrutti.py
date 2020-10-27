@@ -6,7 +6,7 @@ from ophyd import Component as Cpt
 from ophyd import Device
 from ophyd.device import create_device_from_components
 
-from pcdsdevices.areadetector.detectors import PCDSAreaDetectorTyphos
+from pcdsdevices.areadetector.detectors import LasBasler
 from pcdsdevices.lasers.qmini import QminiSpectrometer
 from pcdsdevices.lasers.ek9000 import El3174AiCh
 from pcdsdevices.lasers.elliptec import Ell6
@@ -21,10 +21,10 @@ def TuttiFruttiCls(prefix, name, nf=False, ff=False, spec=False, pm=False,
     """
     cpts = {}
     if nf:
-        cpt = Cpt(PCDSAreaDetectorTyphos, '_NF1:', kind='normal')
+        cpt = Cpt(LasBasler, '_NF1:', kind='normal')
         cpts['nf_camera'] = cpt
     if nf:
-        cpt = Cpt(PCDSAreaDetectorTyphos, '_FF1:', kind='normal')
+        cpt = Cpt(LasBasler, '_FF1:', kind='normal')
         cpts['ff_camera'] = cpt
     if spec:
         cpt = Cpt(QminiSpectrometer, '_SP1', kind='normal')
