@@ -295,6 +295,10 @@ class BaslerBase(Device):
 class Basler(PCDSAreaDetectorTyphosTrigger, BaslerBase):
     """
     Class for Basler cameras.
+    See Also
+    --------
+    :class:`LasBasler`
+        Basler camera with additional laser-specific entries.
     """
     pass
 
