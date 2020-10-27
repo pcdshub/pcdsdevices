@@ -203,8 +203,8 @@ class PTMPLC(Device):
     fault = Cpt(EpicsSignalRO, ':FAULT_RBV', kind='normal')
     warn = Cpt(EpicsSignalRO, ':WARN_RBV', kind='normal')
     alarm = Cpt(EpicsSignalRO, ':ALARM_RBV', kind='normal')
-    bp_sp = Cpt(EpicsSignalWithRBV, ':BP_SP', kind='normal')
-    ip_sp = Cpt(EpicsSignalWithRBV, ':IP_SP', kind='normal')
+    backingpressure_sp = Cpt(EpicsSignalWithRBV, ':BP_SP', kind='normal')
+    inletpressure_sp = Cpt(EpicsSignalWithRBV, ':IP_SP', kind='normal')
     interlock_status = Cpt(EpicsSignalRO, ':ILK_STATUS_RBV', kind='normal',
                            doc='interlock  is ok when true')
 
