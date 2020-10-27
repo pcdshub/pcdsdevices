@@ -286,7 +286,7 @@ class BaslerBase(Device):
     set_metadata(reset, dict(variety='command-proc', value=1))
     packet_size = Cpt(EpicsSignal, 'GevSCPSPacketSiz_RBV',
                       write_pv='GevSCPSPacketSiz', kind='config',
-                      doc='Set Enet Packet Size (typ. 9000)')
+                      doc='Set Ethernet Packet Size (typ. 9000)')
     enet_bw = Cpt(EpicsSignalRO, 'GevSCDCT_RBV', kind='config',
                   doc='Current Enet BW')
 
