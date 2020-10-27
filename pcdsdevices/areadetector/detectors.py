@@ -242,7 +242,20 @@ class PCDSAreaDetectorTyphos(Device):
         self.open_viewer()
 
 
-class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphos):
+class PCDSAreaDetectorTyphosTrigger(PCDSAreaDetectorTyphos):
+    """
+    Expanded typhos-optimized areadetector class for cameras with triggers.
+    """
+
+    event_code = Cpt(EpicsSignalWithRBV, 'CamEventCode', kind='config',
+                     doc='Code to determine beam synchronization rate.')
+    event_rate = Cpt(EpicsSignalRO, 'CamRepRate_RBV', kind='config',
+                     doc='Current rate of the incoming triggers. '
+                         'Determined by event_code and the '
+                         'accelerator state.')
+
+
+class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphosTrigger):
     """
     Adds in some PVs related to beam statistics, as well as a cross hair.
     Primarily intended for use in the laser control system.
@@ -264,14 +277,34 @@ class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphos):
     target_y = Cpt(EpicsSignalWithRBV, 'Cross4:MinY', kind='normal')
 
 
-class PCDSAreaDetectorTyphosTrigger(PCDSAreaDetectorTyphos):
+class BaslerBase(Device):
     """
-    Expanded typhos-optimized areadetector class for cameras with triggers.
+    Base class with Basler specific PVs. Intended to be sub-classed, not used
+    stand-alone. 
     """
+    reset = Cpt(EpicsSignal, 'RESET.PROC', kind='config', doc='Reset the camera')
+    set_metadata(reset, dict(variety='command-proc', value=1))
+    packet_size = Cpt(EpicsSignal, 'GevSCPSPacketSiz_RBV',
+                      write_pv='GevSCPSPacketSiz', kind='config',
+                      doc='Set Ethernet Packet Size (typ. 9000)')
+    enet_bw = Cpt(EpicsSignalRO, 'GevSCDCT_RBV', kind='config',
+                  doc='Current Ethernet bandwidth')
 
-    event_code = Cpt(EpicsSignalWithRBV, 'CamEventCode', kind='config',
-                     doc='Code to determine beam synchronization rate.')
-    event_rate = Cpt(EpicsSignalRO, 'CamRepRate_RBV', kind='config',
-                     doc='Current rate of the incoming triggers. '
-                         'Determined by event_code and the '
-                         'accelerator state.')
+
+# Typical "hutch" Basler class
+class Basler(PCDSAreaDetectorTyphosTrigger, BaslerBase):
+    """
+    Class for Basler cameras.
+    See Also
+    --------
+    :class:`LasBasler`
+        Basler camera with additional laser-specific entries.
+    """
+    pass
+
+
+class LasBasler(PCDSAreaDetectorTyphosBeamStats, BaslerBase):
+    """
+    Class for the Basler cameras used in the laser control system.
+    """
+    pass
