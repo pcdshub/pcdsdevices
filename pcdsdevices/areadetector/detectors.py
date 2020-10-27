@@ -299,7 +299,6 @@ class Basler(PCDSAreaDetectorTyphosTrigger, BaslerBase):
     pass
 
 
-# More laser-specific Basler class. Maybe belongs in pcdsdevices.lasers?
 class LasBasler(PCDSAreaDetectorTyphosBeamStats, BaslerBase):
     """
     Class for the Basler cameras used in the laser control system.
