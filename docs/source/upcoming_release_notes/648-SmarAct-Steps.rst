@@ -1,4 +1,4 @@
-627 Typhos-cam-viewer
+648 SmarAct-Steps
 #################
 
 API Changes
@@ -11,9 +11,7 @@ Features
 
 Device Updates
 --------------
-- PCDSAreaDetectorTyphos: Added a camera viewer button to the class to open a
-  python camera viewer for the camera. Removed the old 'cam_image' viewer in
-  favor of this new viewer. 
+- SmarActOpenLoop: open loop steps signal changed to RO. Added some docs.
 
 New Devices
 -----------
