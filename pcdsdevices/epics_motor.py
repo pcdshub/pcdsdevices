@@ -527,27 +527,35 @@ class SmarActOpenLoop(Device):
     """
 
     # Voltage for sawtooth ramp
-    step_voltage = Cpt(EpicsSignal, ':STEP_VOLTAGE', kind='omitted')
+    step_voltage = Cpt(EpicsSignal, ':STEP_VOLTAGE', kind='omitted',
+                       doc='Voltage for sawtooth (0-100V)')
     # Frequency of steps
-    step_freq = Cpt(EpicsSignal, ':STEP_FREQ', kind='config')
+    step_freq = Cpt(EpicsSignal, ':STEP_FREQ', kind='config',
+                    doc='Sawtooth drive frequency')
     # Number of steps per step forward, backward command
-    jog_step_size = Cpt(EpicsSignal, ':STEP_COUNT', kind='normal')
+    jog_step_size = Cpt(EpicsSignal, ':STEP_COUNT', kind='normal',
+                        doc='Number of steps per FWD/BWD command')
     # Jog forward
-    jog_fwd = Cpt(EpicsSignal, ':STEP_FORWARD', kind='normal')
+    jog_fwd = Cpt(EpicsSignal, ':STEP_FORWARD', kind='normal',
+                  doc='Jog the stage forward')
     set_metadata(jog_fwd, dict(variety='command-proc', value=1))
     # Jog backward
-    jog_rev = Cpt(EpicsSignal, ':STEP_REVERSE', kind='normal')
+    jog_rev = Cpt(EpicsSignal, ':STEP_REVERSE', kind='normal',
+                  doc='Jog the stage backward')
     set_metadata(jog_rev, dict(variety='command-proc', value=1))
     # Total number of steps counted
-    total_step_count = Cpt(EpicsSignal, ':TOTAL_STEP_COUNT',
-                           write_pv=':SET_TOTAL_STEP_COUNT', kind='normal')
+    total_step_count = Cpt(EpicsSignalRO, ':TOTAL_STEP_COUNT', kind='normal',
+                           doc='Current open loop step count')
     # Reset steps ("home")
-    step_clear_cmd = Cpt(EpicsSignal, ':CLEAR_COUNT', kind='config')
+    step_clear_cmd = Cpt(EpicsSignal, ':CLEAR_COUNT', kind='config',
+                         doc='Clear the current step count')
     set_metadata(step_clear_cmd, dict(variety='command-proc', value=1))
     # Scan move
-    scan_move_cmd = Cpt(EpicsSignal, ':SCAN_MOVE', kind='omitted')
+    scan_move_cmd = Cpt(EpicsSignal, ':SCAN_MOVE', kind='omitted',
+                        doc='Set current piezo voltage (in 16 bit ADC steps)')
     # Scan pos
-    scan_pos = Cpt(EpicsSignal, ':SCAN_POS', kind='omitted')
+    scan_pos = Cpt(EpicsSignal, ':SCAN_POS', kind='omitted',
+                   doc='Current piezo voltage (in 16 bit ADC steps)')
 
 
 class SmarActTipTilt(Device):
