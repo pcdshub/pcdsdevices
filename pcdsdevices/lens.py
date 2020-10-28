@@ -426,7 +426,7 @@ class LensStack(LensStackBase):
 
     To be able to get the current Beam Energy import the lcls object eg.:
 
-    >>> from xpp.db import xpp_lcls
+    >>> from xpp.db import lcls
 
     or create one:
 

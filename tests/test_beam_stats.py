@@ -15,6 +15,7 @@ def fake_beam_stats():
     stats.mj.sim_put(-1)
     return stats
 
+
 def test_beam_stats(fake_beam_stats):
     logger.debug('test_beam_stats')
     stats = fake_beam_stats
