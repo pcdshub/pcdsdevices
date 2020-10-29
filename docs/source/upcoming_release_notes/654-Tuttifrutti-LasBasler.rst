@@ -1,4 +1,4 @@
-23 target-stages
+654 Tuttifrutti-LasBasler
 #################
 
 API Changes
@@ -11,12 +11,11 @@ Features
 
 Device Updates
 --------------
-- N/A
+- TuttiFrutti: Change camera class to LasBasler 
 
 New Devices
 -----------
-- Add XYTargetGrid, a interactive utility class for managing a target grid
-  oriented normal to the beam, with regular X-Y spacing between targets.
+- N/A
 
 Bugfixes
 --------
@@ -28,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tjohnson
+- tjohnson 

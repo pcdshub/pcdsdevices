@@ -7,12 +7,15 @@ import os
 import shutil
 
 from ophyd.device import Component as Cpt
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.device import Device
 from ophyd.epics_motor import EpicsMotor
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.status import DeviceStatus, SubscriptionStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
+
+from pcdsdevices.pv_positioner import PVPositionerComparator
 
 from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
@@ -524,35 +527,101 @@ class SmarActOpenLoop(Device):
     """
 
     # Voltage for sawtooth ramp
-    step_voltage = Cpt(EpicsSignal, ':STEP_VOLTAGE', kind='omitted')
+    step_voltage = Cpt(EpicsSignal, ':STEP_VOLTAGE', kind='omitted',
+                       doc='Voltage for sawtooth (0-100V)')
     # Frequency of steps
-    step_freq = Cpt(EpicsSignal, ':STEP_FREQ', kind='config')
+    step_freq = Cpt(EpicsSignal, ':STEP_FREQ', kind='config',
+                    doc='Sawtooth drive frequency')
     # Number of steps per step forward, backward command
-    jog_step_size = Cpt(EpicsSignal, ':STEP_COUNT', kind='normal')
+    jog_step_size = Cpt(EpicsSignal, ':STEP_COUNT', kind='normal',
+                        doc='Number of steps per FWD/BWD command')
     # Jog forward
-    jog_fwd = Cpt(EpicsSignal, ':STEP_FORWARD', kind='normal')
+    jog_fwd = Cpt(EpicsSignal, ':STEP_FORWARD', kind='normal',
+                  doc='Jog the stage forward')
+    set_metadata(jog_fwd, dict(variety='command-proc', value=1))
     # Jog backward
-    jog_rev = Cpt(EpicsSignal, ':STEP_REVERSE', kind='normal')
+    jog_rev = Cpt(EpicsSignal, ':STEP_REVERSE', kind='normal',
+                  doc='Jog the stage backward')
+    set_metadata(jog_rev, dict(variety='command-proc', value=1))
     # Total number of steps counted
-    total_step_count = Cpt(EpicsSignalRO, ':TOTAL_STEP_COUNT', kind='normal')
+    total_step_count = Cpt(EpicsSignalRO, ':TOTAL_STEP_COUNT', kind='normal',
+                           doc='Current open loop step count')
     # Reset steps ("home")
-    step_clear_cmd = Cpt(EpicsSignal, ':CLEAR_COUNT', kind='config')
+    step_clear_cmd = Cpt(EpicsSignal, ':CLEAR_COUNT', kind='config',
+                         doc='Clear the current step count')
+    set_metadata(step_clear_cmd, dict(variety='command-proc', value=1))
     # Scan move
-    scan_move_cmd = Cpt(EpicsSignal, ':SCAN_MOVE', kind='omitted')
+    scan_move_cmd = Cpt(EpicsSignal, ':SCAN_MOVE', kind='omitted',
+                        doc='Set current piezo voltage (in 16 bit ADC steps)')
     # Scan pos
-    scan_pos = Cpt(EpicsSignal, ':SCAN_POS', kind='omitted')
+    scan_pos = Cpt(EpicsSignal, ':SCAN_POS', kind='omitted',
+                   doc='Current piezo voltage (in 16 bit ADC steps)')
 
 
-class SmarAct(PCDSMotorBase):
+class SmarActTipTilt(Device):
+    """
+    Class for bundling two SmarActOpenLoop axes arranged in a tip-tilt mirro
+    positioning configuration into a single device.
+
+    Parameters:
+    -----------
+    prefix : str <optional, default=''>
+        The base PV of the stages. Can be omitted, but then tip_pv and
+        tilt_pv must specify the full stage PV.
+
+    tip_pv : str
+        The PV suffix of the "tip" axis to add to the device prefix. Any PV
+        separator (e.g. ':') must be included.
+
+    tilt_pv : str
+        The PV suffix of the "tilt" axis to add to the device prefix. Any PV
+        separator (e.g. ':') must be included.
+
+    Examples
+    --------
+    # Tip Tilt stage with same base PV
+    tt = SmarActTipTilt(prefix='LAS:MCS2:01', tip_pv=':M1', tilt_pv=':M2')
+
+    # Tip Tilt stage with different base PV (separate controller, etc.)
+    tt2 = SmarActTipTilt(tip_pv='LAS:MCS2:01:M1', tilt_pv='LAS:MCS2:02:M1')
+    """
+
+    tip = FCpt(SmarActOpenLoop, '{prefix}{self._tip_pv}', kind='normal')
+    tilt = FCpt(SmarActOpenLoop, '{prefix}{self._tilt_pv}', kind='normal')
+
+    def __init__(self, prefix='', *, tip_pv, tilt_pv, **kwargs):
+        self._tip_pv = tip_pv
+        self._tilt_pv = tilt_pv
+        super().__init__(prefix, **kwargs)
+
+
+class SmarActOpenLoopPositioner(PVPositionerComparator):
+    """
+    Positioner class for SmarAct open loop stages. Intended to be used in
+    BlueSky scans. Uses an integer open loop step count as the position.
+    """
+    setpoint = Cpt(EpicsSignal, ':SET_TOTAL_STEP_COUNT')
+    readback = Cpt(EpicsSignalRO, ':TOTAL_STEP_COUNT')
+    atol = 1  # step count after move should be exact, but let's be cautious
+
+    egu = 'steps'
+
+    open_loop = Cpt(SmarActOpenLoop, '', kind='normal')
+
+    def done_comparator(self, readback, setpoint):
+        return setpoint-self.atol < readback < setpoint+self.atol
+
+
+class SmarAct(EpicsMotorInterface):
     """
     Class for encoded SmarAct motors controlled via the MCS2 controller.
     """
+    # Positioner type - only useful for encoded stages
+    pos_type = Cpt(EpicsSignal, ':PTYPE_RBV', write_pv=':PTYPE', kind='config')
+
     # These PVs will probably not be needed for most encoded motors, but can be
     # useful
-
-    # Even when omitted, the open loop PVs still show up on the config screen.
-    # Leaving this off for now to keep screens clean.
-    # open_loop = Cpt(SmarActOpenLoop, '', kind='omitted')
+    open_loop = Cpt(SmarActOpenLoop, '', kind='omitted')
 
 
 def _GetMotorClass(basepv):

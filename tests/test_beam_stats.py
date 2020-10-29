@@ -3,7 +3,7 @@ import logging
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.beam_stats import BeamStats
+from pcdsdevices.beam_stats import BeamStats, LCLS
 
 logger = logging.getLogger(__name__)
 
@@ -45,3 +45,44 @@ def test_beam_stats_avg(fake_beam_stats):
 @pytest.mark.timeout(5)
 def test_beam_stats_disconnected():
     BeamStats()
+
+
+@pytest.fixture(scope='function')
+def fake_lcls():
+    FakeLcls = make_fake_device(LCLS)
+    lcls = FakeLcls()
+    lcls.bykik_period.sim_put(200)
+    return lcls
+
+
+def test_lcls(fake_lcls):
+    lcls = fake_lcls
+    lcls.read()
+    lcls.hints
+
+
+def test_bykik_status(fake_lcls):
+    lcls = fake_lcls
+    lcls.bykik_abort.put('Enable')
+    assert lcls.bykik_status() == 'Enable'
+    lcls.bykik_abort.put('Disable')
+    assert lcls.bykik_status() == 'Disable'
+
+
+def test_bykik_disable(fake_lcls):
+    lcls = fake_lcls
+    lcls.bykik_disable()
+    assert lcls.bykik_status() == 'Disable'
+
+
+def test_bykik_enable(fake_lcls):
+    lcls = fake_lcls
+    lcls.bykik_enable()
+    assert lcls.bykik_status() == 'Enable'
+
+
+def test_get_set_period(fake_lcls):
+    lcls = fake_lcls
+    assert lcls.bykik_get_period() == 200
+    lcls.bykik_set_period(100)
+    assert lcls.bykik_get_period() == 100

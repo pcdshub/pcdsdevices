@@ -1,4 +1,4 @@
-612 DEV: Add KB mirror class
+647 import lasers
 #################
 
 API Changes
@@ -15,8 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- KBOMirror Class: Kirkpatrick-Baez Mirror class, X, Y, Pitch, Bender axes
-- FFMirror Class: Kirkpatrick-Baez Mirror without Bender axes. (Fixed focus)
+- N/A
 
 Bugfixes
 --------
@@ -24,8 +23,9 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Add laser imports to :mod:`pcdsdevices.device_types`.  Test fixtures now
+  verify imported laser devices' tab completion settings.
 
 Contributors
 ------------
-- sfsyunus
+- klauer

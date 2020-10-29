@@ -1,4 +1,4 @@
-610 cam-beam-stats
+645 elliptec-stop-fix
 #################
 
 API Changes
@@ -15,12 +15,11 @@ Device Updates
 
 New Devices
 -----------
-- PCDSAreaDetectorTyphosBeamStats, a variant of PCSDAreaDetectorTyphos that
-  includes centroid information and the crosshair PVs.
+- N/A
 
 Bugfixes
 --------
-- N/A
+- lasers/elliptec.py: Fix conflict with BlueSky interface and 'stop' signal. 
 
 Maintenance
 -----------
@@ -28,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tjohnson
+- tjohnson 

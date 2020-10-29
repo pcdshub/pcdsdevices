@@ -7,13 +7,19 @@ functions needed by all instances of a detector are added here.
 import logging
 import warnings
 
+import subprocess
+
 from ophyd import Device
 from ophyd.areadetector import cam
 from ophyd.areadetector.base import (ADComponent, EpicsSignalWithRBV,
                                      NDDerivedSignal)
 from ophyd.areadetector.detectors import DetectorBase
 from ophyd.device import Component as Cpt
-from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.signal import EpicsSignal, EpicsSignalRO, AttributeSignal
+
+from pcdsdevices.variety import set_metadata
+
+from pcdsutils.ext_scripts import get_hutch_name
 
 from .plugins import (ColorConvPlugin, HDF5Plugin, ImagePlugin, JPEGPlugin,
                       NetCDFPlugin, NexusPlugin, OverlayPlugin, ProcessPlugin,
@@ -196,21 +202,60 @@ class PCDSAreaDetectorTyphos(Device):
     acquire_rbv = Cpt(EpicsSignalRO, 'DetectorState_RBV', kind='normal')
     image_counter = Cpt(EpicsSignalRO, 'NumImagesCounter_RBV', kind='normal')
 
+    # TJ: removing from the class for now. May be useful later. 
     # Image data
-    ndimensions = Cpt(EpicsSignalRO, 'IMAGE2:NDimensions_RBV', kind='omitted')
-    width = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize0_RBV', kind='omitted')
-    height = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize1_RBV', kind='omitted')
-    depth = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize2_RBV', kind='omitted')
-    array_data = Cpt(EpicsSignal, 'IMAGE2:ArrayData', kind='omitted')
-    cam_image = Cpt(NDDerivedSignal, derived_from='array_data',
-                    shape=('height',
-                           'width',
-                           'depth'),
-                    num_dimensions='ndimensions',
-                    kind='normal')
+#    ndimensions = Cpt(EpicsSignalRO, 'IMAGE2:NDimensions_RBV', kind='omitted')
+#    width = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize0_RBV', kind='omitted')
+#    height = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize1_RBV', kind='omitted')
+#    depth = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize2_RBV', kind='omitted')
+#    array_data = Cpt(EpicsSignal, 'IMAGE2:ArrayData', kind='omitted')
+#    cam_image = Cpt(NDDerivedSignal, derived_from='array_data',
+#                    shape=('height',
+#                           'width',
+#                           'depth'),
+#                    num_dimensions='ndimensions',
+#                    kind='normal')
+
+    def open_viewer(self):
+        """
+        Launch the python camera viewer for this camera.
+        """
+        arglist = ['/reg/g/pcds/pyps/apps/camviewer/latest/run_viewer.sh',
+                   '--instrument',
+                   '{}.format(get_hutch_name())',
+                   '--oneline',
+                   'GE:16,{0}:IMAGE1;{0},,{0}'.format(self.prefix[0:-1])]
+
+        subprocess.run(arglist, stdout=subprocess.PIPE,
+                       stderr=subprocess.PIPE, check=True)
+
+    # Make viewer available in Typhos screen
+    cam_viewer = Cpt(AttributeSignal, attr='_open_screen', kind='normal')
+    set_metadata(cam_viewer, dict(variety='command-proc', value=1))
+
+    @property
+    def _open_screen(self):
+        return 0
+
+    @_open_screen.setter
+    def _open_screen(self, value):
+        self.open_viewer()
 
 
-class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphos):
+class PCDSAreaDetectorTyphosTrigger(PCDSAreaDetectorTyphos):
+    """
+    Expanded typhos-optimized areadetector class for cameras with triggers.
+    """
+
+    event_code = Cpt(EpicsSignalWithRBV, 'CamEventCode', kind='config',
+                     doc='Code to determine beam synchronization rate.')
+    event_rate = Cpt(EpicsSignalRO, 'CamRepRate_RBV', kind='config',
+                     doc='Current rate of the incoming triggers. '
+                         'Determined by event_code and the '
+                         'accelerator state.')
+
+
+class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphosTrigger):
     """
     Adds in some PVs related to beam statistics, as well as a cross hair.
     Primarily intended for use in the laser control system.
@@ -232,14 +277,34 @@ class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphos):
     target_y = Cpt(EpicsSignalWithRBV, 'Cross4:MinY', kind='normal')
 
 
-class PCDSAreaDetectorTyphosTrigger(PCDSAreaDetectorTyphos):
+class BaslerBase(Device):
     """
-    Expanded typhos-optimized areadetector class for cameras with triggers.
+    Base class with Basler specific PVs. Intended to be sub-classed, not used
+    stand-alone. 
     """
+    reset = Cpt(EpicsSignal, 'RESET.PROC', kind='config', doc='Reset the camera')
+    set_metadata(reset, dict(variety='command-proc', value=1))
+    packet_size = Cpt(EpicsSignal, 'GevSCPSPacketSiz_RBV',
+                      write_pv='GevSCPSPacketSiz', kind='config',
+                      doc='Set Ethernet Packet Size (typ. 9000)')
+    enet_bw = Cpt(EpicsSignalRO, 'GevSCDCT_RBV', kind='config',
+                  doc='Current Ethernet bandwidth')
 
-    event_code = Cpt(EpicsSignalWithRBV, 'CamEventCode', kind='config',
-                     doc='Code to determine beam synchronization rate.')
-    event_rate = Cpt(EpicsSignalRO, 'CamRepRate_RBV', kind='config',
-                     doc='Current rate of the incoming triggers. '
-                         'Determined by event_code and the '
-                         'accelerator state.')
+
+# Typical "hutch" Basler class
+class Basler(PCDSAreaDetectorTyphosTrigger, BaslerBase):
+    """
+    Class for Basler cameras.
+    See Also
+    --------
+    :class:`LasBasler`
+        Basler camera with additional laser-specific entries.
+    """
+    pass
+
+
+class LasBasler(PCDSAreaDetectorTyphosBeamStats, BaslerBase):
+    """
+    Class for the Basler cameras used in the laser control system.
+    """
+    pass
