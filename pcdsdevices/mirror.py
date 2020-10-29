@@ -324,6 +324,42 @@ class XOffsetMirror(BaseInterface, Device):
     SUB_STATE = 'state'
 
 
+class XOffsetMirror2(XOffsetMirror):
+    """
+    X-ray Offset Mirror with 2 bender acutators.
+
+    1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # UI representation
+    _icon = 'fa.minus-square'
+
+    # Do a dumb thing and kill inherited single bender
+    bender = None
+    bender_enc_rms = None
+
+    # Motor components: can read/write positions
+    bender_us = Cpt(BeckhoffAxis, ':MMS:US', kind='hinted')
+    bender_ds = Cpt(BeckhoffAxis, ':MMS:DS', kind='hinted')
+
+    # RMS Cpts:
+    bender_us_enc_rms = Cpt(PytmcSignal, ':ENC:US:RMS', io='i',
+                            kind='normal')
+    bender_ds_enc_rms = Cpt(PytmcSignal, ':ENC:DS:RMS', io='i',
+                            kind='normal')
+
+    # Bender RTD Cpts:
+    us_rtd = Cpt(EpicsSignalRO, ':RTD:US:1_RBV', kind='normal')
+    ds_rtd = Cpt(EpicsSignalRO, ':RTD:DS:1_RBV', kind='normal')
+
+
 class KBOMirror(BaseInterface, Device):
     """
     Kirkpatrick-Baez Mirror with Bender Axes.
