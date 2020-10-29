@@ -8,7 +8,7 @@ from .interface import BaseInterface
 from .pv_positioner import PVPositionerDone
 from .signal import AvgSignal
 
-_photon_energy = None
+
 logger = logging.getLogger(__name__)
 
 
@@ -108,7 +108,7 @@ class LCLS(BaseInterface, Device):
                        doc='Last Eloss sxray energy [mJ]')
     vernier_energy = Cpt(EpicsSignalRO, 'FBCK:FB04:LG01:DL2VERNIER',
                          kind='normal', doc='Fast Feedback 6x6 Vernier [MeV]')
-    photon_ev_hxr = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO627', kind='hinted',
+    photon_ev_hxr = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO627', kind='normal',
                         doc='Photon eV HXR [eV]')
     # [ 0] Disable [ 1] Enable
     bykik_abort = Cpt(EpicsSignal, 'IOC:IN20:EV01:BYKIK_ABTACT', kind='normal',
@@ -170,16 +170,3 @@ class LCLS(BaseInterface, Device):
 
     def __init__(self, prefix='', name='lcls', **kwargs):
         super().__init__(prefix=prefix, name=name, **kwargs)
-
-    @photon_ev_hxr.sub_value
-    def _energy_changed(self, *args, value, **kwargs):
-        self.set_energy(value)
-
-    def set_energy(self, value):
-        """Set the current beam energy."""
-        global _photon_energy
-        _photon_energy = value
-
-    def get_energy(self):
-        """Get the current beam energy"""
-        return _photon_energy

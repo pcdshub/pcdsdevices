@@ -52,8 +52,6 @@ def fake_lcls():
     FakeLcls = make_fake_device(LCLS)
     lcls = FakeLcls()
     lcls.bykik_period.sim_put(200)
-    # Set energy
-    lcls.photon_ev_hxr.sim_put(0.0)
     return lcls
 
 
@@ -61,9 +59,6 @@ def test_lcls(fake_lcls):
     lcls = fake_lcls
     lcls.read()
     lcls.hints
-    assert lcls.get_energy() == 0.0
-    lcls.photon_ev_hxr.sim_put(29.0)
-    assert lcls.get_energy() == 29.0
 
 
 def test_bykik_status(fake_lcls):

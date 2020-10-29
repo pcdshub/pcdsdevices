@@ -131,7 +131,7 @@ class LensStackBase(BaseInterface, PseudoPositioner):
     tab_component_names = True
 
     def __init__(self, x_prefix, y_prefix, z_prefix, lens_set,
-                 z_offset, z_dir, att_obj, E=None, lcls_obj=None,
+                 z_offset, z_dir, E, att_obj, lcls_obj=None,
                  mono_obj=None, *args, **kwargs):
         self.x_prefix = x_prefix
         self.y_prefix = y_prefix
@@ -148,32 +148,6 @@ class LensStackBase(BaseInterface, PseudoPositioner):
         self.lens_set = lens_set
 
         super().__init__(x_prefix, *args, **kwargs)
-
-    @property
-    def E(self):
-        """
-        The energy used in calculations. User override > lcls
-        """
-        if self._E is not None:
-            print(f' self._E is not none {self._E}')
-            return self._E
-        if self._lcls_obj is not None:
-            try:
-                val = self._lcls_obj.get_energy() / 1000
-                # return value in KeV
-                print(f' self._E is None {val}')
-                return val
-            except Exception as ex:
-                logger.info('Error when getting the energy from lcls %s', ex)
-                pass
-        return None
-
-    @E.setter
-    def E(self, energy):
-        """
-        Override the lcls energy for calculations.
-        """
-        self._E = energy
 
     def tweak(self):
         """
@@ -424,7 +398,7 @@ class LensStack(LensStackBase):
     >>> from pcdsdevices.attenuator import Attenuator
     >>> att = Attenuator('att', 4, name='att')
 
-    To be able to get the current Beam Energy import the lcls object eg.:
+    Import the LCLS object:
 
     >>> from xpp.db import lcls
 
@@ -434,13 +408,12 @@ class LensStack(LensStackBase):
     >>> lcls = LCLS()
 
     Create the LensStack() object by providing the x, y and z `prefixes`, as
-    well as all the other parameters. If energy is provided (E) it will
-    override the Energy coming from the lcls object.
+    well as all the other parameters.
 
     >>> be_stack = lens.LensStack(path=path, x_prefix='X:PREF',
                                   y_prefix='Y:PREF', z_prefix='Z:PREF',
                                   att_obj=att, z_offset=3.852, z_dir=-1,
-                                  lcls_obj=lcls, name='be_stack')
+                                  E=8, name='be_stack')
 
     For this documentation purposes we will use the SimLensStack:
 
