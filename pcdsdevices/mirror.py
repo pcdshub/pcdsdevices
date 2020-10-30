@@ -324,7 +324,7 @@ class XOffsetMirror(BaseInterface, Device):
     SUB_STATE = 'state'
 
 
-class XOffsetMirror2(XOffsetMirror):
+class XOffsetMirrorBend(XOffsetMirror):
     """
     X-ray Offset Mirror with 2 bender acutators.
 
@@ -358,6 +358,34 @@ class XOffsetMirror2(XOffsetMirror):
     # Bender RTD Cpts:
     us_rtd = Cpt(EpicsSignalRO, ':RTD:US:1_RBV', kind='normal')
     ds_rtd = Cpt(EpicsSignalRO, ':RTD:DS:1_RBV', kind='normal')
+
+
+class XOffsetMirrorSwitch(XOffsetMirror):
+    """
+    X-ray Offset Mirror with Yleft/Yright
+
+    1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # UI representation
+    _icon = 'fa.minus-square'
+
+    # Do a dumb thing and kill inherited/unused components
+    y_up = None
+    y_dwn = None
+    bender = None
+    bender_enc_rms = None
+
+    # Motor components: can read/write positions
+    y_left = Cpt(BeckhoffAxis, ':MMS:YLEFT', kind='hinted')
+    y_right = Cpt(BeckhoffAxis, ':MMS:YRIGHT', kind='config')
 
 
 class KBOMirror(BaseInterface, Device):
