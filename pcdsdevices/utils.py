@@ -200,7 +200,8 @@ def schedule_task(func, args=None, kwargs=None, delay=None):
             dispatcher.schedule_utility_task(func, *args, **kwargs)
         else:
             # Put into same queue
-            context.event_thread.queue.put((func, args, kwargs))
+            if context.event_thread is not None:
+                context.event_thread.queue.put((func, args, kwargs))
 
     if delay is None:
         # Do it right away
