@@ -170,12 +170,8 @@ class XppInjectionTile(TileBase):
     zoom_telescope = Cpt(ZoomTelescope, ':INJ_MP1_ZOO1', kind='normal')
     mp1_mr4 = Cpt(SmarActTipTilt, ':INJ_MP1_MR4', tip_pv='_TIP1',
                   tilt_pv='_TILT1', kind='normal')
-# TJ: Two tip-tilts that are mis-named on spreadsheet, line 21-22, 24-25; 
-#     waiting for update.
-#    mp1_mr4 = Cpt(SmarActTipTilt, ':INJ_MP1_MR4', tip_pv='_TIP1',
-#                  tilt_pv='_TILT1', kind='normal')
-#    mp1_mr4 = Cpt(SmarActTipTilt, ':INJ_MP1_MR4', tip_pv='_TIP1',
-#                  tilt_pv='_TILT1', kind='normal')
+    mp1_mr5 = Cpt(SmarActTipTilt, ':INJ_MP1_MR5', tip_pv='_TIP1',
+                  tilt_pv='_TILT1', kind='normal')
     dp1_tf1 = Cpt(TuttiFruttiCls('', 'inj_dp1_tf1', nf=True, ff=True, ell=True),
                   ':INJ_DP1_TF1', kind='normal')
     dp2_tf1 = Cpt(TuttiFruttiCls('', 'inj_dp2_tf1', spec=True, pm=True, ell=True,
