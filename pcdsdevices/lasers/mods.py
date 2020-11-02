@@ -187,7 +187,7 @@ class TmoEjectionTile(TileBase):
     Parameters
     ----------
     prefix : str
-        Five character prefix for particular MODS installation, e.g. LM1k4.
+        Five character prefix for particular MODS installation, e.g. LM1K4.
 
     name : str
         Name for the device, e.g. tmo_ejx_tile
@@ -281,6 +281,51 @@ class TmoAtmTile(TileBase):
     dp2_tf1 = Cpt(TuttiFruttiCls('', 'atm_dp2_tf1', nf=True, ff=True,
                   ell=True, pm=True, spec=True),
                   ':ATM_DP2_TF1', kind='normal')
+
+
+class ChemRixsEjectionTile(TileBase):
+    """
+    Class for the ChemRIXS Ejection TILE.
+
+    Parameters
+    ----------
+    prefix : str
+        Five character prefix for particular MODS installation, e.g. LM2K2.
+
+    name : str
+        Name for the device, e.g. crixs_ejx_tile
+
+    Examples
+    --------
+    # ChemRIXS Ejection TILE
+    crixs_ejx = ChemRixsEjectionTile('LM2K2', 'crixs_ejx')
+    """
+    mp1_s41 = Cpt(Ell9, ':EJX_MP1_S41', port=0, channel=1, kind='normal')
+    mp1_mr3 = Cpt(SmarActTipTilt, ':EJX_MP1_MR3', tip_pv='_TIP1',
+                  tilt_pv='_TILT1', kind='normal')
+    mp1_mr6 = Cpt(SmarActTipTilt, ':EJX_MP1_MR6', tip_pv='_TIP1',
+                  tilt_pv='_TILT1', kind='normal')
+    mp1_ls3_lm1 = Cpt(SmarAct, ':EJX_MP2_LS3_LM1', kind='normal')
+    mp1_ls3_lm2 = Cpt(SmarAct, ':EJX_MP2_LS3_LM2', kind='normal')
+    mp1_ls3_lm3 = Cpt(SmarAct, ':EJX_MP2_LS3_LM3', kind='normal')
+    mp21_mr1 = Cpt(SmarAct, ':EJX_MP21_MR1', kind='normal')
+    mp21_mr3 = Cpt(SmarAct, ':EJX_MP21_MR3', kind='normal')
+    dp1_mr1 = Cpt(SmarAct, ':EJX_DP1_MR1', kind='normal')
+    dp1_tf1 = Cpt(TuttiFruttiCls('', 'ejx_dp1_tf1', ell=True, pm=True,
+                  wfs=True),
+                  ':EJX_DP1_TF1', kind='normal')
+    dp2_mr1 = Cpt(SmarAct, ':EJX_DP2_MR1', kind='normal')
+    #TODO: Add pulse duration diagnostic (dp2_tau1)
+    #dp2_tau1_lm1 = Cpt(SmarAct, ':EJX_DP2_LM1', kind='normal')
+    #dp2_tau1_pd1 = Cpt(LasBasler, ':EJX_DP2_TAU1_PD1', kind='normal')
+    #TODO: Add dp3_tf1 diode
+    dp3_tf1 = Cpt(TuttiFruttiCls('', 'ejx_dp3_tf1', ell=True, nf=True, ff=True,
+                  spec=True, pm=True),
+                  ':EJX_DP3_TF1', kind='normal')
+    #TODO: Add dp4_tf1 energy meter
+    dp4_tf1 = Cpt(TuttiFruttiCls('', 'ejx_dp4_tf1', ell=True, nf=True, ff=True,
+                  spec=True, pm=True),
+                  ':EJX_DP4_TF1', kind='normal')
 
 
 class ChemRixsAtmTile(TileBase):
