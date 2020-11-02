@@ -180,9 +180,9 @@ class XppInjectionTile(TileBase):
     env_sensors = Cpt(EnvironmentalMonitor, '_BHC_AI_01', kind='normal')
 
 
-class TmoEjectionTile(TileBase):
+class TmoIp1EjectionTile(TileBase):
     """
-    Class for the TMO Ejection TILE.
+    Class for the TMO Ip1 Ejection TILE.
 
     Parameters
     ----------
@@ -194,8 +194,8 @@ class TmoEjectionTile(TileBase):
 
     Examples
     --------
-    # TMO Ejection TILE
-    tmo_ejx = TmoEjectionTile('LM1K4', 'tmo_ejx')
+    # TMO IP1 Ejection TILE
+    tmo_ejx = TmoIp1EjectionTile('LM1K4', 'tmo_ejx')
     """
     mp1_mr1 = Cpt(SmarActTipTilt, ':EJX_MP1_MR1', tip_pv='_TIP1',
                  tilt_pv='_TILT1', kind='normal')
@@ -360,3 +360,58 @@ class ChemRixsAtmTile(TileBase):
     dp1_tf1 = Cpt(TuttiFruttiCls('', 'atm_dp1_tf1', nf=True, ff=True,
                   ell=True, pm=True, spec=True),
                   ':ATM_DP1_TF1', kind='normal')
+
+
+### Generic MODS Table Devices
+class ModsBase(Device):
+    """
+    Base class for MODS Tables.
+    """
+    pass
+
+
+### Hutch-specific MODS Table Devices
+class TmoIp1ModsTable(ModsBase):
+    """
+    Class for L2SI IP1 MODS table. Unique to IP1.
+
+    Parameters
+    ----------
+    name : str
+        Name for the table, e.g. ip1_mods_table
+
+    Examples
+    --------
+    # IP1 MODS Table 
+    ip1_mods = TmoIp1ModsTable('ip1_mods_table')
+    """
+    Cpt(InjectionTile, 'LM1K4', kind='normal')
+    Cpt(CompressorTile, 'LM1K4', kind='normal')
+    Cpt(HarmonicsTile, 'LM1K4', kind='normal')
+    Cpt(TmoIp1EjectionTile, 'LM1K4', kind='normal')
+
+    def __init__(self, *, name,  **kwargs):
+        super().__init__('', name=name, **kwargs)
+
+
+class ChemRixsModsTable(ModsBase):
+    """
+    Class for L2SI ChemRIXS MODS table. Unique to ChemRIXS.
+
+    Parameters
+    ----------
+    name : str
+        Name for the table, e.g. crixs_mods_table
+
+    Examples
+    --------
+    # ChemRIXS MODS Table 
+    crixs_mods = ChemRixsModsTable('crixs_mods_table')
+    """
+    Cpt(InjectionTile, 'LM2K2', kind='normal')
+    Cpt(CompressorTile, 'LM2K2', kind='normal')
+    Cpt(HarmonicsTile, 'LM2K2', kind='normal')
+    Cpt(ChemRixsEjectionTile, 'LM2K2', kind='normal')
+
+    def __init__(self, *, name,  **kwargs):
+        super().__init__('', name=name, **kwargs)
