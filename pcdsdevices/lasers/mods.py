@@ -209,7 +209,40 @@ class TmoEjectionTile(TileBase):
                        tilt_pv='_TILT1', kind='normal')
     mp1_oap1_mr3 = Cpt(SmarActTipTilt, ':EJX_OAP1', tip_pv='_TIP3',
                        tilt_pv='_TILT3', kind='normal')
-    #TODO    
+    dp11_ff1 = Cpt(LasBasler, ':EJX_DP11_FF1', kind='normal')
+    #TODO: Add dp12_tf1 diode 
+    dp12_tf1 = Cpt(TuttiFruttiCls('', 'ejx_dp12_tf1', ff=True, ell=True, 
+                   pm=True, wfs=True),
+                   ':EJX_DP12_TF1', kind='normal')
+    #TODO: Add pulse duration diagnostic (dp2_tau1)
+    #dp2_tau1_lm1 = Cpt(SmarAct, ':EJX_DP2_LM1', kind='normal')
+    #dp2_tau1_pd1 = Cpt(LasBasler, ':EJX_DP2_TAU1_PD1', kind='normal')
+    #TODO: Add dp31 energy meter
+    #TODO: Add dp32 diode
+    dp32_tf1 = Cpt(TuttiFruttiCls('', 'ejx_dp32_tf1', nf=True, ff=True,                            ell=True, spec=True),
+                   ':EJX_DP32_TF1', kind='normal')
+    mp2_mr3 = Cpt(SmarAct, ':EJX_MP2_MR3', kind='normal')
+    mp2_att1_pol1 = Cpt(EllRotation, ':EJX_MP2_ATT1_POL1:ELL', port=0,
+                        channel=1, kind='normal')
+    mp2_att1_pol2 = Cpt(EllRotation, ':EJX_MP2_ATT1_POL2:ELL', port=0,
+                        channel=2, kind='normal')
+    mp2_mr5 = Cpt(SmarAct, ':EJX_MP2_MR5', kind='normal')
+    mp2_ls3_lm1 = Cpt(SmarAct, ':EJX_MP2_LS3_LM1', kind='normal')
+    mp2_ls3_lm2 = Cpt(SmarAct, ':EJX_MP2_LS3_LM2', kind='normal')
+    mp2_ls3_lm3 = Cpt(SmarAct, ':EJX_MP2_LS3_LM3', kind='normal')
+    dp4_ap1 = Cpt(SmarActOpenLoop, ':EJX_DP4_AP1', kind='normal')
+    dp4_ap2 = Cpt(SmarActOpenLoop, ':EJX_DP4_AP2', kind='normal')
+    dp4_pm1 = Cpt(El3174AiCh, ':EJX_DP4_PM1', kind='normal')
+    dp5_bs1 = Cpt(SmarAct, ':EJX_DP5_BS1', kind='normal')
+    #TODO: Add dp5 QC1, QC2, diode
+    dp5_tf1 = Cpt(TuttiFruttiCls('', 'ejx_dp5_tf1', ell=True, pm=True),
+                   ':EJX_DP5_TF1', kind='normal')
+    dp6_cvs1_mr1 = Cpt(SmarAct, ':EJX_DP6_CVS1_MR1', kind='normal')
+    dp6_cvs1_mr2 = Cpt(SmarAct, ':EJX_DP6_CVS1_MR2', kind='normal')
+    #TODO: Add dp6 energy meter, diodes
+    dp6_tf1 = Cpt(TuttiFruttiCls('', 'ejx_dp6_tf1', ell=True, nf=True, ff=True,
+                  spec=True),
+                  ':EJX_DP6_TF1', kind='normal')
 
 
 class TmoAtmTile(TileBase):
