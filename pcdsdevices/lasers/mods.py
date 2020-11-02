@@ -1,5 +1,96 @@
 """
 Module for the L2SI Laser MODS Table TILEs and Table classes.
+
+The L2SI laser system MODS table is designed to be a modular system for
+manipulating a 800nm base laser beam to fit the needs of experiments in the
+hutches. This system provides controls for adjusting parameters such as pulse
+energy, wavelenth, pulse duration, etc., though not all necessarily at the same
+time. The MODS table is built out of "TILEs" (Tabletop Interchange-able Laser
+Elements) that provide certain units of functionality, such as harmonics
+generation or pulse compression. These TILEs are meant to be swapped in or out
+as needed. 
+
+Within a TILE, all elements, whether they are controllable via EPICs or not,
+are given PVs. The fungible taxon for laser PVs follow the following naming
+convention: 
+
+    <TILE>_<Laser Path>_<Assembly/Component>_<Component>
+    
+For example, the near-field camera on the first TuttiFrutti on diagnostic path
+1 in the ejection TILE would be given the PV:
+
+    EJX_DP1_TF1_NF1
+
+Since all elements, controllable or not, are given PVs, the TILE class
+components often skip numbers, e.g. MR1 is followed by MR3. 
+
+Below is a compilation of abbreviations used in the laser MODS system.
+
+TILEs
+-----
+INJ: Injection
+COM: Compressor
+HRM: Harmonics generation
+EJX: Ejection
+
+Laser Paths
+-----------
+MP: Main path
+DP: Diagnostic path
+
+Assembly/Components
+-------------------
+ATT:  Attenuator
+ZOO:  Zoom telescope
+PER:  Periscope
+TF:   TuttiFrutti
+RBS:  Rotary Beam Switch
+SHS:  Shutters
+HRO:  Horizontal retro-reflector
+VRO:  Vertical retro-reflector
+DLY:  Delay Stage
+OAP:  Off axis parabola
+ANT:  Anamorphic telescope
+IMG:  ATM imager
+HNF:  High sensitivity NF/FF
+LIC:  Laser in-coupling
+GT:   Grating translation
+AP:   Aperature
+S4:   4-position Thorlabs Elliptec slider (Ell9)
+CVS:  CVMI Switch
+CMC:  CM compressor
+SPO:  Second-harmonic-generation Pick Off
+PC:   Prism compressor
+TAU:  Pulse duration measurement
+MR:   Mirror
+BS:   Beam splitter
+WP:   Waveplate
+LS:   Lens positioner
+BD:   Beam dump
+SL:   Slider
+DI:   Diode
+SP:   Spectrometer
+WF:   Wavefront sensor
+PM:   Power meter
+WIN:  Window
+PIN:  Pinhole
+POL:  Polarizer
+XTL:  Crystal
+EM:   Energy meter
+QC:   Quad cell
+AS:   ATM sample
+OBJ:  Objective
+DEV:  Device
+PZM:  Prism
+NF:   Near-field camera
+FF:   Far-field camera
+PD:   Pulse duration camera
+TIP:  Mirror tip stage
+TILT: Mirror tilt stage
+ALC:  ATM line camera
+AAC:  ATM area camera
+LM:   Linear motion
+RM:   Rotary motion
 """
 from ophyd import Device
 from ophyd import Component as Cpt
