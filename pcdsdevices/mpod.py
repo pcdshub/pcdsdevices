@@ -16,8 +16,10 @@ class MPODChannel(BaseInterface, Device):
 
     Parameters
     ----------
-    prefix : str
-        The EPICS base of the MPOD Channel.
+    channel_prefix : str
+        The EPICS base of the MPOD Channel. E.g.: `XPP:R39:MPD:CH:0`
+    card_prefix : str, optional
+        The EPICS base of the MPOD Module. `XPP:R39:MPD:MOD:10`
 
     name : str
         A name to refer to the device.
@@ -101,9 +103,10 @@ class LVChannel(MPODChannel):
 
     Parameters
     ----------
-    prefix: str
-    The EPICS base of the MPOD Channel.
-
+    channel_prefix : str
+        The EPICS base of the MPOD Channel. E.g.: `XPP:R39:MPD:CH:0`
+    card_prefix : None
+        The EPICS base of the MPOD HV Module.
     name: str
     A name to refer to the device.
     """
@@ -146,8 +149,10 @@ class HVChannel(MPODChannel):
 
     Parameters
     ----------
-    prefix: str
-    The EPICS base of the MPOD Channel. E.g.: `XPP:R39:MPD`
+    channel_prefix : str
+        The EPICS base of the MPOD Channel. E.g.: `XPP:R39:MPD:CH:100`
+    card_prefix : str
+        The EPICS base of the MPOD HV Module. E.g.: `XPP:R39:MPD:MOD:10`
 
     name: str
     A name to refer to the device.
