@@ -161,12 +161,12 @@ class HVChannel(MPODChannel):
     tab_whitelist = ['set_voltage_rise_rate', 'set_voltage_fall_rate']
 
     voltage_rise_rate = FCpt(EpicsSignal, '{self._card_prefix}' +
-                             ':GetVoltageRiseRate',
-                             write_pv=':SetVoltageRiseRate', kind='normal',
+                             ':GetVoltageRiseRate', kind='normal',
+                             write_pv='{self._card_prefix}:SetVoltageRiseRate',
                              doc='MPOD Channel Voltage Rise Rate [V/sec]')
     voltage_fall_rate = FCpt(EpicsSignal, '{self._card_prefix}' +
-                             ':GetVoltageFallRate',
-                             write_pv=':SetVoltageFallRate', kind='normal',
+                             ':GetVoltageFallRate', kind='normal',
+                             write_pv='{self._card_prefix}:SetVoltageFallRate',
                              doc='MPOD Channel Set Voltage Fall Rate [V/sec]')
 
     def set_voltage_rise_rate(self, rise_rate):
