@@ -61,6 +61,56 @@ class Acromag(BaseInterface, Device):
     tab_component_names = True
 
 
+class AcromagChannelInput(BaseInterface, Device):
+    """
+    Class for an Acromag Channel Input.
+
+    Parameters
+    ----------
+    prefix : str
+        The base EPICS PV for the Acromag. E.g.: `XPP:USR:ai1`
+    channel : str
+        The channel number. E.g.: `1` [0-15]
+    name : str
+        A name to refer to the Acromag Input Channel.
+    """
+    channel = FCpt(EpicsSignalRO, '{self._prefix}:{self._channel}',
+                   kind='normal')
+
+    tab_component_names = True
+
+    def __init__(self, prefix, channel, **kwargs):
+        self._channel = channel
+        self._prefix = prefix
+        self._name = ''.join(['ai1_', self._channel])
+        super().__init__(prefix, name=self._name)
+
+
+class AcromagChannelOutput(BaseInterface, Device):
+    """
+    Class for an Acromag Channel Output.
+
+    Parameters
+    ----------
+    prefix : str
+        The base EPICS PV for the Acromag. E.g.: `XPP:USR:ao1`
+    channel : str
+        The channel number. E.g.: `1` [0-15]
+    name : str
+        A name to refer to the Acromag Output Channel.
+    """
+    channel = FCpt(EpicsSignal, '{self._prefix}:{self._channel}',
+                   kind='normal')
+
+    tab_component_names = True
+
+    def __init__(self, prefix, channel, **kwargs):
+        self._channel = channel
+        self._prefix = prefix
+        self._name = ''.join(['ao1_', self._channel])
+        super().__init__(prefix, name=self._name)
+
+
 class Mesh(BaseInterface, Device):
     """
     Class for Mesh HV Supply that is connected to Acromag inputs and outputs.
