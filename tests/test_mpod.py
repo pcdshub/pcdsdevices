@@ -2,14 +2,14 @@ import logging
 
 import pytest
 from ophyd.sim import make_fake_device
-from pcdsdevices.device_types import HVChannel, LVChannel
+from pcdsdevices.device_types import MPODChannelHV, MPODChannelLV
 
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def fake_mpod_lv_channel():
-    FakeMPODChannel = make_fake_device(LVChannel)
+    FakeMPODChannel = make_fake_device(MPODChannelLV)
     mpod_lv_channel = FakeMPODChannel('TEST:MPOD:CHANNEL', name='test')
     # switch Off
     mpod_lv_channel.state.sim_put('Off')
@@ -22,7 +22,7 @@ def fake_mpod_lv_channel():
 
 @pytest.fixture(scope='function')
 def fake_mpod_hv_channel():
-    FakeMPODChannel = make_fake_device(HVChannel)
+    FakeMPODChannel = make_fake_device(MPODChannelHV)
     mpod_hv_channel = FakeMPODChannel('TEST:MPOD:CHANNEL:HV', 'TEST:MPOD:CARD',
                                       name='test')
     # switch Off
@@ -88,9 +88,9 @@ def test_rise_fall_rate_lv(fake_mpod_hv_channel):
 
 @pytest.mark.timeout(5)
 def test_mpod_hv_channel_disconnected():
-    HVChannel('tst', 'card', name='tst')
+    MPODChannelHV('tst', 'card', name='tst')
 
 
 @pytest.mark.timeout(5)
 def test_mpod_lv_channel_disconnected():
-    LVChannel('tst', name='tst')
+    MPODChannelLV('tst', name='tst')

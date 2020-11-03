@@ -1,8 +1,8 @@
 import logging
 
+from ophyd import FormattedComponent as FCpt
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
-from ophyd import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from .interface import BaseInterface
@@ -67,7 +67,7 @@ class MPODChannel(BaseInterface, Device):
         self.state.put('Reset')
 
     def emer_off(self):
-        """TODO: find out what this is."""
+        """Set the EmerOff state."""
         self.state.put('EmerOff')
 
     def clr_evnt(self):
@@ -96,8 +96,38 @@ class MPODChannel(BaseInterface, Device):
         """
         self.current.put(current)
 
+    def set_voltage_rise_rate(self, rise_rate):
+        """
+        Set the voltage rise rate in V/sec.
 
-class LVChannel(MPODChannel):
+        For the Low Voltage channels, it sets the voltage rise rate for each
+        channel. For the High Voltage channels, it sets the voltage rise
+        rate for the entire card.
+
+        Parameters
+        ----------
+        rise_rate : number
+            Voltage rise rate [V/sec].
+        """
+        self.voltage_rise_rate.put(rise_rate)
+
+    def set_voltage_fall_rate(self, fall_rate):
+        """
+        Set the voltage fall rate in V/sec.
+
+        For the Low Voltage channels, it sets the voltage fall rate for each
+        channel. For the High Voltage channels, it sets the voltage fall
+        rate for the entire card.
+
+        Parameters
+        ----------
+        fall_rate : number
+            Voltage fall rate [V/sec].
+        """
+        self.voltage_fall_rate.put(fall_rate)
+
+
+class MPODChannelLV(MPODChannel):
     """
     MPOD Low Voltage Channel Object.
 
@@ -120,30 +150,8 @@ class LVChannel(MPODChannel):
     tab_component_names = True
     tab_whitelist = ['set_voltage_rise_rate', 'set_voltage_fall_rate']
 
-    def set_voltage_rise_rate(self, rise_rate):
-        """
-        Set the mpod channel voltage rise rate in V/sec.
 
-        Parameters
-        ----------
-        rise_rate : number
-            Voltage rise rate [V/sec].
-        """
-        self.voltage_rise_rate.put(rise_rate)
-
-    def set_voltage_fall_rate(self, fall_rate):
-        """
-        Set the mpod channel voltage fall rate in V/sec.
-
-        Parameters
-        ----------
-        fall_rate : number
-            Voltage fall rate [V/sec].
-        """
-        self.voltage_fall_rate.put(fall_rate)
-
-
-class HVChannel(MPODChannel):
+class MPODChannelHV(MPODChannel):
     """
     MPOD High Voltage Channel Object.
 
@@ -169,28 +177,7 @@ class HVChannel(MPODChannel):
                              write_pv='{self._card_prefix}:SetVoltageFallRate',
                              doc='MPOD Channel Set Voltage Fall Rate [V/sec]')
 
-    def set_voltage_rise_rate(self, rise_rate):
-        """
-        Set the MPOD module voltage rise rate in V/sec.
-
-        Parameters
-        ----------
-        rise_rate : number
-            Voltage rise rate [V/sec].
-        """
-        self.voltage_rise_rate.put(rise_rate)
-
-    def set_voltage_fall_rate(self, fall_rate):
-        """
-        Set the MPOD module voltage fall rate in V/sec.
-
-        Parameters
-        ----------
-        fall_rate : number
-            Voltage fall rate [V/sec].
-        """
-        self.voltage_fall_rate.put(fall_rate)
-
-    def __init__(self, channel_prefix, card_prefix, name='hv_mpod', **kwargs):
+    def __init__(self, channel_prefix, card_prefix, name='mpod_hv_channel',
+                 **kwargs):
         self._card_prefix = card_prefix
         super().__init__(channel_prefix, name=name, **kwargs)
