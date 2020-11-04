@@ -75,7 +75,7 @@ class AcromagChannelInput(BaseInterface, Device):
         A name to refer to the Acromag Input Channel.
     """
     channel = FCpt(EpicsSignalRO, '{self._prefix}:{self._channel}',
-                   kind='normal')
+                   kind='normal', doc='Analog Input [Volts]')
 
     tab_component_names = True
 
@@ -100,7 +100,7 @@ class AcromagChannelOutput(BaseInterface, Device):
         A name to refer to the Acromag Output Channel.
     """
     channel = FCpt(EpicsSignal, '{self._prefix}:{self._channel}',
-                   kind='normal')
+                   kind='normal', doc='Analog Output [Volts]')
 
     tab_component_names = True
 

@@ -346,3 +346,23 @@ class Trigger(Device):
     device_class.default = 'pcdsdevices.device_types.Trigger'
     system = copy(Device.system)
     system.default = 'timing'
+
+
+class AcromagChannelInput(Device):
+    """
+    A Generic class for Acromag Channel Input.
+    """
+    device_class = copy(Device.device_class)
+    device_class.default = 'pcdsdevices.device_types.AcromagChannelInput'
+    system = copy(Device.system)
+    system.default = 'acromag_in'
+
+
+class AcromagChannelOutput(Device):
+    """
+    A Generic class for Acromag Channel Output.
+    """
+    device_class = copy(Device.device_class)
+    device_class.default = 'pcdsdevices.device_types.AcromagChannelOutput'
+    system = copy(Device.system)
+    system.default = 'acromag_out'
