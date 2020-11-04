@@ -181,3 +181,28 @@ class MPODChannelHV(MPODChannel):
                  **kwargs):
         self._card_prefix = card_prefix
         super().__init__(channel_prefix, name=name, **kwargs)
+
+
+def _GetMPODClass(channel_prefix, card_prefix=None):
+    """
+    Determine the appropriate MPOD Channel class based on the channel number.
+    """
+    # determine if HV or LV base on channel number, below 100 should be LV.
+    try:
+        channel = str(channel_prefix).split('CH:')[1]
+        channel = int(channel)
+    except Exception:
+        # Default to ophyd.MPODChannel
+        logger.warning('Unable to figure out the type of mpod channel based on'
+                       ' channel number. Using "ophyd.MPODChannel"')
+        return MPODChannel
+    if channel >= 100:
+        return MPODChannelHV
+    return MPODChannelLV
+
+
+def MPOD(channel_prefix, card_prefix=None, **kwargs):
+    # Determine motor class
+    cls = _GetMPODClass(channel_prefix, card_prefix)
+
+    return cls(channel_prefix, card_prefix, **kwargs)
