@@ -2,7 +2,7 @@ import logging
 
 import pytest
 from ophyd.sim import make_fake_device
-from pcdsdevices.device_types import MPODChannelHV, MPODChannelLV
+from pcdsdevices.device_types import MPODChannelHV, MPODChannelLV, MPOD
 
 logger = logging.getLogger(__name__)
 
@@ -84,6 +84,14 @@ def test_rise_fall_rate_lv(fake_mpod_hv_channel):
     fake_mpod_hv_channel.set_voltage_rise_rate(23)
     assert fake_mpod_hv_channel.voltage_fall_rate.get() == 23
     assert fake_mpod_hv_channel.voltage_rise_rate.get() == 23
+
+
+def test_mpod_channel_factory():
+    m = MPOD('TST:MY:MMS:CH:100', name='test_hv_mpod')
+    assert isinstance(m, MPODChannelHV)
+    m = MPOD('TST:RANDOM:MTR:CH:7', name='test_lv_mpod')
+    assert isinstance(m, MPODChannelLV)
+    m = MPOD('TST:RANDOM:MTR:NOTHING', name='test_unknown_ch')
 
 
 @pytest.mark.timeout(5)
