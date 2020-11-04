@@ -4,7 +4,8 @@ import pytest
 from ophyd.sim import make_fake_device
 
 import pcdsdevices.utils as key_press
-from pcdsdevices.analog_signals import Acromag, Mesh
+from pcdsdevices.analog_signals import (Acromag, Mesh, AcromagChannelInput,
+                                        AcromagChannelOutput)
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +51,24 @@ def fake_acromag():
 
 
 @pytest.fixture(scope='function')
+def fake_acromag_in():
+    FakeAcromagInputCh = make_fake_device(AcromagChannelInput)
+    acromag_in = FakeAcromagInputCh(prefix='Test:Acromag:In', channel='10',
+                                    name='test_acromag_in')
+    acromag_in.channel.sim_put(0.23)
+    return acromag_in
+
+
+@pytest.fixture(scope='function')
+def fake_acromag_out():
+    FakeAcromagOutputCh = make_fake_device(AcromagChannelOutput)
+    acromag_out = FakeAcromagOutputCh(prefix='Test:Acromag:Out', channel='10',
+                                      name='test_acromag_out')
+    acromag_out.channel.sim_put(0.33)
+    return acromag_out
+
+
+@pytest.fixture(scope='function')
 def fake_mesh():
     FakeMesh = make_fake_device(Mesh)
     # Using SP channel = 1, RB channel = 2, scale = 1000
@@ -62,6 +81,11 @@ def fake_mesh():
 def test_acromag_readback(fake_acromag):
     assert fake_acromag.ao1_0.get() == 1.0
     assert fake_acromag.ai1_13.get() == 1.0
+
+
+def test_acromag_ch_readback(fake_acromag_in, fake_acromag_out):
+    assert fake_acromag_in.channel.get() == 0.23
+    assert fake_acromag_out.channel.get() == 0.33
 
 
 def test_get_raw_mesh_voltage(fake_mesh):
@@ -108,3 +132,15 @@ def test_acromag_disconnected():
 @pytest.mark.timeout(5)
 def test_mesh_disconnected():
     Mesh('Test:Mesh', 1, 2)
+
+
+@pytest.mark.timeout(5)
+def test_acromag_ch_in_disconnected():
+    AcromagChannelInput(prefix='Test:Acromag:In', channel='10',
+                        name='test_acromag_in')
+
+
+@pytest.mark.timeout(5)
+def test_acromag_ch_out_disconnected():
+    AcromagChannelOutput(prefix='Test:Acromag:Out', channel='10',
+                         name='test_acromag_out')
