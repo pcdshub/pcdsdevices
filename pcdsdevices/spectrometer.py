@@ -208,3 +208,51 @@ class VonHamos4Crystal(VonHamosFE):
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
+
+
+class Mono(BaseInterface, Device):
+    """
+    L2S-I NEH 2.X Monochromator
+
+    Axilon mechatronic desig with LCLS-II Beckhoff motion architecture.
+
+    Parameters:
+    -----------
+    preifx : str
+        Base PV for the monochromator
+
+    name : str
+        Alias for the device
+    """
+    # UI representation
+    _icon = 'fa.minus-square'
+
+    # Motor components: can read/write positions
+    m_pi = Cpt(BeckhoffAxis, ':MMS:M_PI', kind='hinted') # mirror pitch, urad
+    g_pi = Cpt(BeckhoffAxis, ':MMS:G_PI', kind='hinted') # grating pitch, urad
+    m_h = Cpt(BeckhoffAxis, ':MMS:M_H', kind='hinted') # mirror horizontal, um
+    g_h = Cpt(BeckhoffAxis, ':MMS:G_H', kind='hinted') # grating horizontal, um
+    # screwdriver vertical (in/out), um
+    sd_v = Cpt(BeckhoffAxis, ':MMS:SD_V', kind='hinted')
+    # screwdriver rotation, urad
+    sd_rot = Cpt(BeckhoffAxis, ':MMS:SD_ROT', kind='hinted')
+
+    # Additional Pytmc components
+    # Upstream Encoders for pitch axes - not linked to NC axis in PLC
+    m_pi_up_enc = Cpt(PytmcSignal, ':ENC:M_PI:02', kind='hinted')
+    g_pi_up_enc = Cpt(PytmcSignal, ':ENC:G_PI:02', kind='hinted')
+
+    # Flow switches
+    flow_1 = Cpt(PytmcSignal, ':FSW:01', kind='hinted')
+    flow_2 = Cpt(PytmcSignal, ':FSW:02', kind='hinted')
+    pres_1 = Cpt(PytmcSignal, ':P1', kind='hinted')
+
+    # RTDs
+    rtd_1 = Cpt(PytmcSignal, ':RTD:01', kind='hinted')
+    rtd_2 = Cpt(PytmcSignal, ':RTD:02', kind='hinted')
+    rtd_3 = Cpt(PytmcSignal, ':RTD:03', kind='hinted')
+    rtd_4 = Cpt(PytmcSignal, ':RTD:04', kind='hinted')
+    rtd_5 = Cpt(PytmcSignal, ':RTD:05', kind='hinted')
+    rtd_6 = Cpt(PytmcSignal, ':RTD:06', kind='hinted')
+    rtd_7 = Cpt(PytmcSignal, ':RTD:07', kind='hinted')
+    rtd_8 = Cpt(PytmcSignal, ':RTD:08', kind='hinted')
