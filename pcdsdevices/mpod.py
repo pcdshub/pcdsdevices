@@ -183,26 +183,36 @@ class MPODChannelHV(MPODChannel):
         super().__init__(channel_prefix, name=name, **kwargs)
 
 
-def _GetMPODClass(channel_prefix, card_prefix=None):
+def MPOD(channel_prefix, card_prefix=None, **kwargs):
     """
     Determine the appropriate MPOD Channel class based on the channel number.
+
+    Parameters
+    ----------
+    channel_prefix : str
+        Epics base PV for channels.
+    card_prefix : str
+        Epics base PV for the whole MPOD module, HV Channels.
+    kwargs : dict
+        Information to pass through to the device, upon initialization
     """
-    # determine if HV or LV base on channel number, below 100 should be LV.
+    # CH below 100 should be LV, and above or 100 should be HV.
+    # maybe also try to determine the card_prefix as well if none?
     try:
         channel = str(channel_prefix).split('CH:')[1]
+        base = str(channel_prefix).split('CH:')[0]
         channel = int(channel)
     except Exception:
         # Default to ophyd.MPODChannel
         logger.warning('Unable to figure out the type of mpod channel based on'
                        ' channel number. Using "ophyd.MPODChannel"')
         return MPODChannel
-    if channel >= 100:
-        return MPODChannelHV
-    return MPODChannelLV
-
-
-def MPOD(channel_prefix, card_prefix=None, **kwargs):
-    # Determine motor class
-    cls = _GetMPODClass(channel_prefix, card_prefix)
-
-    return cls(channel_prefix, card_prefix, **kwargs)
+    if channel >= 100 and channel < 200:
+        # try to make up the card_prefix PV? `XPP:R39:MPD:MOD:10`
+        card_prefix = ''.join([base, 'MOD:10'])
+        return MPODChannelHV(channel_prefix, card_prefix, **kwargs)
+    elif channel >= 200:
+        # try to make up the card_prefix PV? `XPP:R39:MPD:MOD:20`
+        card_prefix = ':'.join([base, 'MOD:20'])
+        return MPODChannelHV(channel_prefix, card_prefix, **kwargs)
+    return MPODChannelLV(channel_prefix, **kwargs)
