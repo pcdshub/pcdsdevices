@@ -206,7 +206,7 @@ def MPOD(channel_prefix, card_prefix=None, **kwargs):
         # Default to ophyd.MPODChannel
         logger.warning('Unable to figure out the type of mpod channel based on'
                        ' channel number. Using "ophyd.MPODChannel"')
-        return MPODChannel
+        return None
     if channel >= 100 and channel < 200:
         # try to make up the card_prefix PV? `XPP:R39:MPD:MOD:10`
         card_prefix = ''.join([base, 'MOD:10'])

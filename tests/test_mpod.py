@@ -92,6 +92,7 @@ def test_mpod_channel_factory():
     m = MPOD('TST:RANDOM:MTR:CH:7', name='test_lv_mpod')
     assert isinstance(m, MPODChannelLV)
     m = MPOD('TST:RANDOM:MTR:NOTHING', name='test_unknown_ch')
+    assert m is None
 
 
 @pytest.mark.timeout(5)
