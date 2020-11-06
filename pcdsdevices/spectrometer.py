@@ -7,7 +7,7 @@ from ophyd.device import FormattedComponent as FCpt
 
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface, LightpathMixin
-from .signal import InternalSignal
+from .signal import InternalSignal, PytmcSignal
 
 
 class Kmono(BaseInterface, Device, LightpathMixin):
@@ -239,20 +239,20 @@ class Mono(BaseInterface, Device):
 
     # Additional Pytmc components
     # Upstream Encoders for pitch axes - not linked to NC axis in PLC
-    m_pi_up_enc = Cpt(PytmcSignal, ':ENC:M_PI:02', kind='hinted')
-    g_pi_up_enc = Cpt(PytmcSignal, ':ENC:G_PI:02', kind='hinted')
+    m_pi_up_enc = Cpt(PytmcSignal, ':ENC:M_PI:02', io='i', kind='hinted')
+    g_pi_up_enc = Cpt(PytmcSignal, ':ENC:G_PI:02', io='i', kind='hinted')
 
     # Flow switches
-    flow_1 = Cpt(PytmcSignal, ':FSW:01', kind='hinted')
-    flow_2 = Cpt(PytmcSignal, ':FSW:02', kind='hinted')
-    pres_1 = Cpt(PytmcSignal, ':P1', kind='hinted')
+    flow_1 = Cpt(PytmcSignal, ':FSW:01', io='i', kind='hinted')
+    flow_2 = Cpt(PytmcSignal, ':FSW:02', io='i', kind='hinted')
+    pres_1 = Cpt(PytmcSignal, ':P1', io='i', kind='hinted')
 
     # RTDs
-    rtd_1 = Cpt(PytmcSignal, ':RTD:01', kind='hinted')
-    rtd_2 = Cpt(PytmcSignal, ':RTD:02', kind='hinted')
-    rtd_3 = Cpt(PytmcSignal, ':RTD:03', kind='hinted')
-    rtd_4 = Cpt(PytmcSignal, ':RTD:04', kind='hinted')
-    rtd_5 = Cpt(PytmcSignal, ':RTD:05', kind='hinted')
-    rtd_6 = Cpt(PytmcSignal, ':RTD:06', kind='hinted')
-    rtd_7 = Cpt(PytmcSignal, ':RTD:07', kind='hinted')
-    rtd_8 = Cpt(PytmcSignal, ':RTD:08', kind='hinted')
+    rtd_1 = Cpt(PytmcSignal, ':RTD:01:TEMP', io='i', kind='hinted')
+    rtd_2 = Cpt(PytmcSignal, ':RTD:02:TEMP', io='i', kind='hinted')
+    rtd_3 = Cpt(PytmcSignal, ':RTD:03:TEMP', io='i', kind='hinted')
+    rtd_4 = Cpt(PytmcSignal, ':RTD:04:TEMP', io='i', kind='hinted')
+    rtd_5 = Cpt(PytmcSignal, ':RTD:05:TEMP', io='i', kind='hinted')
+    rtd_6 = Cpt(PytmcSignal, ':RTD:06:TEMP', io='i', kind='hinted')
+    rtd_7 = Cpt(PytmcSignal, ':RTD:07:TEMP', io='i', kind='hinted')
+    rtd_8 = Cpt(PytmcSignal, ':RTD:08:TEMP', io='i', kind='hinted')
