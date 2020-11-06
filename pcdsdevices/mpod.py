@@ -199,13 +199,11 @@ def MPOD(channel_prefix, card_prefix=None, **kwargs):
     # CH below 100 should be LV, and above or 100 should be HV.
     # maybe also try to determine the card_prefix as well if none?
     try:
-        channel = str(channel_prefix).split('CH:')[1]
         base, channel = channel_prefix.split('CH:')
         channel = int(channel)
     except Exception:
-        # Default to ophyd.MPODChannel
         logger.warning('Unable to figure out the type of mpod channel based on'
-                       ' channel number. Using "ophyd.MPODChannel"')
+                       ' channel number.')
         return None
     if channel >= 100 and channel < 200:
         # try to make up the card_prefix PV? `XPP:R39:MPD:MOD:10`

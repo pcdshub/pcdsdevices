@@ -346,13 +346,3 @@ class Trigger(Device):
     device_class.default = 'pcdsdevices.device_types.Trigger'
     system = copy(Device.system)
     system.default = 'timing'
-
-
-class MPOD(Device):
-    """
-    A Generic class for MPOD Channels.
-    """
-    device_class = copy(Device.device_class)
-    device_class.default = 'pcdsdevices.device_types.MPOD'
-    system = copy(Device.system)
-    system.default = 'mpod'
