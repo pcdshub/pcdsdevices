@@ -200,7 +200,7 @@ def MPOD(channel_prefix, card_prefix=None, **kwargs):
     # maybe also try to determine the card_prefix as well if none?
     try:
         channel = str(channel_prefix).split('CH:')[1]
-        base = str(channel_prefix).split('CH:')[0]
+        base, channel = channel_prefix.split('CH:')
         channel = int(channel)
     except Exception:
         # Default to ophyd.MPODChannel
@@ -211,7 +211,7 @@ def MPOD(channel_prefix, card_prefix=None, **kwargs):
         # try to make up the card_prefix PV? `XPP:R39:MPD:MOD:10`
         card_prefix = ''.join([base, 'MOD:10'])
         return MPODChannelHV(channel_prefix, card_prefix, **kwargs)
-    elif channel >= 200:
+    if channel >= 200:
         # try to make up the card_prefix PV? `XPP:R39:MPD:MOD:20`
         card_prefix = ':'.join([base, 'MOD:20'])
         return MPODChannelHV(channel_prefix, card_prefix, **kwargs)
