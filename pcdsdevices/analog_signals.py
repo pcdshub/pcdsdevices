@@ -82,7 +82,7 @@ class AcromagChannelInput(BaseInterface, Device):
     def __init__(self, prefix, channel, **kwargs):
         self._channel = channel
         self._prefix = prefix
-        self._name = ''.join(['ai1_', self._channel])
+        self._name = ''.join(['ai_', self._channel])
         super().__init__(prefix, name=self._name)
 
 
@@ -107,7 +107,7 @@ class AcromagChannelOutput(BaseInterface, Device):
     def __init__(self, prefix, channel, **kwargs):
         self._channel = channel
         self._prefix = prefix
-        self._name = ''.join(['ao1_', self._channel])
+        self._name = ''.join(['ao_', self._channel])
         super().__init__(prefix, name=self._name)
 
 

@@ -86,6 +86,8 @@ def test_acromag_readback(fake_acromag):
 def test_acromag_ch_readback(fake_acromag_in, fake_acromag_out):
     assert fake_acromag_in.channel.get() == 0.23
     assert fake_acromag_out.channel.get() == 0.33
+    fake_acromag_out.channel.put(8)
+    assert fake_acromag_out.channel.get() == 8
 
 
 def test_get_raw_mesh_voltage(fake_mesh):
