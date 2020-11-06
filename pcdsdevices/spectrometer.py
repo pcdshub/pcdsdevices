@@ -228,35 +228,48 @@ class Mono(BaseInterface, Device):
     _icon = 'fa.minus-square'
 
     # Motor components: can read/write positions
-    # mirror pitch, urad
-    m_pi = Cpt(BeckhoffAxis, ':MMS:M_PI', kind='hinted')
-    # grating pitch, urad
-    g_pi = Cpt(BeckhoffAxis, ':MMS:G_PI', kind='hinted')
-    # mirror horizontal, um
-    m_h = Cpt(BeckhoffAxis, ':MMS:M_H', kind='hinted')
-    # grating horizontal, um
-    g_h = Cpt(BeckhoffAxis, ':MMS:G_H', kind='hinted')
-    # screwdriver vertical (in/out), um
-    sd_v = Cpt(BeckhoffAxis, ':MMS:SD_V', kind='hinted')
-    # screwdriver rotation, urad
-    sd_rot = Cpt(BeckhoffAxis, ':MMS:SD_ROT', kind='hinted')
+    m_pi = Cpt(BeckhoffAxis, ':MMS:M_PI', kind='normal',
+               doc='mirror pitch [urad]')
+    g_pi = Cpt(BeckhoffAxis, ':MMS:G_PI', kind='normal',
+               doc='grating pitch [urad]')
+    m_h = Cpt(BeckhoffAxis, ':MMS:M_H', kind='normal',
+              doc='mirror horizontal [um]')
+    g_h = Cpt(BeckhoffAxis, ':MMS:G_H', kind='normal',
+              doc='grating horizontal [um]')
+    sd_v = Cpt(BeckhoffAxis, ':MMS:SD_V', kind='normal',
+               doc='screwdriver vertical (in/out) [um]')
+    sd_rot = Cpt(BeckhoffAxis, ':MMS:SD_ROT', kind='normal',
+                 doc='screwdriver rotation [urad]')
 
     # Additional Pytmc components
     # Upstream Encoders for pitch axes - not linked to NC axis in PLC
-    m_pi_up_enc = Cpt(PytmcSignal, ':ENC:M_PI:02', io='i', kind='hinted')
-    g_pi_up_enc = Cpt(PytmcSignal, ':ENC:G_PI:02', io='i', kind='hinted')
+    m_pi_up_enc = Cpt(PytmcSignal, ':ENC:M_PI:02', io='i', kind='normal',
+                      doc='mirror pitch upstream encoder [urad]')
+    g_pi_up_enc = Cpt(PytmcSignal, ':ENC:G_PI:02', io='i', kind='normal',
+                      doc='grating pitch upstream encoder [urad]')
 
     # Flow switches
-    flow_1 = Cpt(PytmcSignal, ':FSW:01', io='i', kind='hinted')
-    flow_2 = Cpt(PytmcSignal, ':FSW:02', io='i', kind='hinted')
-    pres_1 = Cpt(PytmcSignal, ':P1', io='i', kind='hinted')
+    flow_1 = Cpt(PytmcSignal, ':FSW:01', io='i', kind='normal',
+                 doc='flow switch 1')
+    flow_2 = Cpt(PytmcSignal, ':FSW:02', io='i', kind='normal',
+                 doc='flow switch 2')
+    pres_1 = Cpt(PytmcSignal, ':P1', io='i', kind='normal',
+                 doc='pressure sensor 1')
 
     # RTDs
-    rtd_1 = Cpt(PytmcSignal, ':RTD:01:TEMP', io='i', kind='hinted')
-    rtd_2 = Cpt(PytmcSignal, ':RTD:02:TEMP', io='i', kind='hinted')
-    rtd_3 = Cpt(PytmcSignal, ':RTD:03:TEMP', io='i', kind='hinted')
-    rtd_4 = Cpt(PytmcSignal, ':RTD:04:TEMP', io='i', kind='hinted')
-    rtd_5 = Cpt(PytmcSignal, ':RTD:05:TEMP', io='i', kind='hinted')
-    rtd_6 = Cpt(PytmcSignal, ':RTD:06:TEMP', io='i', kind='hinted')
-    rtd_7 = Cpt(PytmcSignal, ':RTD:07:TEMP', io='i', kind='hinted')
-    rtd_8 = Cpt(PytmcSignal, ':RTD:08:TEMP', io='i', kind='hinted')
+    rtd_1 = Cpt(PytmcSignal, ':RTD:01:TEMP', io='i', kind='normal',
+                doc='RTD 1 [deg C]')
+    rtd_2 = Cpt(PytmcSignal, ':RTD:02:TEMP', io='i', kind='normal',
+                doc='RTD 2 [deg C]')
+    rtd_3 = Cpt(PytmcSignal, ':RTD:03:TEMP', io='i', kind='normal',
+                doc='RTD 3 [deg C]')
+    rtd_4 = Cpt(PytmcSignal, ':RTD:04:TEMP', io='i', kind='normal',
+                doc='RTD 4 [deg C]')
+    rtd_5 = Cpt(PytmcSignal, ':RTD:05:TEMP', io='i', kind='normal',
+                doc='RTD 5 [deg C]')
+    rtd_6 = Cpt(PytmcSignal, ':RTD:06:TEMP', io='i', kind='normal',
+                doc='RTD 6 [deg C]')
+    rtd_7 = Cpt(PytmcSignal, ':RTD:07:TEMP', io='i', kind='normal',
+                doc='RTD 7 [deg C]')
+    rtd_8 = Cpt(PytmcSignal, ':RTD:08:TEMP', io='i', kind='normal',
+                doc='RTD 8 [deg C]')
