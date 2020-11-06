@@ -228,10 +228,14 @@ class Mono(BaseInterface, Device):
     _icon = 'fa.minus-square'
 
     # Motor components: can read/write positions
-    m_pi = Cpt(BeckhoffAxis, ':MMS:M_PI', kind='hinted') # mirror pitch, urad
-    g_pi = Cpt(BeckhoffAxis, ':MMS:G_PI', kind='hinted') # grating pitch, urad
-    m_h = Cpt(BeckhoffAxis, ':MMS:M_H', kind='hinted') # mirror horizontal, um
-    g_h = Cpt(BeckhoffAxis, ':MMS:G_H', kind='hinted') # grating horizontal, um
+    # mirror pitch, urad
+    m_pi = Cpt(BeckhoffAxis, ':MMS:M_PI', kind='hinted')
+    # grating pitch, urad
+    g_pi = Cpt(BeckhoffAxis, ':MMS:G_PI', kind='hinted')
+    # mirror horizontal, um
+    m_h = Cpt(BeckhoffAxis, ':MMS:M_H', kind='hinted')
+    # grating horizontal, um
+    g_h = Cpt(BeckhoffAxis, ':MMS:G_H', kind='hinted')
     # screwdriver vertical (in/out), um
     sd_v = Cpt(BeckhoffAxis, ':MMS:SD_V', kind='hinted')
     # screwdriver rotation, urad
