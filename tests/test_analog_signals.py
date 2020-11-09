@@ -58,7 +58,7 @@ def test_acromag_factory():
     assert type(ai_res) == EpicsSignalRO
     assert type(ao_res) == EpicsSignal
     signal_class_res = acromag_factory_func(ao_prefix, channel='7',
-                                      signal_class=EpicsSignalRO)
+                                            signal_class=EpicsSignalRO)
     assert type(signal_class_res) == EpicsSignalRO
 
 
