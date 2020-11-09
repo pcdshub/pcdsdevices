@@ -61,7 +61,8 @@ class Acromag(BaseInterface, Device):
     tab_component_names = True
 
 
-def AcromagChannel(prefix, channel, *, signal_class=None, name=None, **kwargs):
+def acromag_factory_func(prefix, channel, *, signal_class=None, name=None,
+                         **kwargs):
     """
     This is a factory function for creating an Acromag output or input signal.
 
