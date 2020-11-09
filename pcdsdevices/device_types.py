@@ -1,5 +1,5 @@
 # flake8: NOQA
-from .analog_signals import Acromag, AcromagChannelInput, AcromagChannelOutput
+from .analog_signals import Acromag, AcromagChannel
 from .areadetector.detectors import PCDSAreaDetector
 from .atm import ArrivalTimeMonitor
 from .attenuator import Attenuator

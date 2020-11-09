@@ -61,75 +61,30 @@ class Acromag(BaseInterface, Device):
     tab_component_names = True
 
 
-class AcromagChannelInput(BaseInterface, Device):
+def AcromagChannel(prefix, channel, *, signal_class=None, name=None, **kwargs):
     """
-    Class for an Acromag Channel Input.
+    This is a factory function for creating an Acromag output or input signal.
 
     Parameters
     ----------
     prefix : str
         The base EPICS PV for the Acromag. E.g.: `XPP:USR:ai1`
-    channel : str
+    channel : int or str
         The channel number. E.g.: `1` [0-15]
-    name : str
-        A name to refer to the Acromag Input Channel.
+    signal_class : str, optional
+        Signal Class to use. E.g.: `EpicsSignalRO`, `EpicsSignal`. If `None`
+        provided, it will use the prefix to try to generate the appropriate
+        signal class.
+    name : str, optional
+        A name to refer to the Acromag Channel, if `None` it will use the
+        prefix and channel to generate a name. E.g.: `ai_1` or `ao_1`.
     """
-    channel = FCpt(EpicsSignalRO, '{self._prefix}:{self._channel}',
-                   kind='normal', doc='Analog Input [Volts]')
-
-    tab_component_names = True
-    tab_whitelist = ['get_voltage']
-
-    def get_voltage(self):
-        """Get the voltage."""
-        return self.channel.get()
-
-    def __init__(self, prefix, channel, name=None, **kwargs):
-        self._channel = channel
-        self._prefix = prefix
-        self._name = name or ''.join(['ai_', self._channel])
-        super().__init__(prefix, name=self._name)
-
-
-class AcromagChannelOutput(BaseInterface, Device):
-    """
-    Class for an Acromag Channel Output.
-
-    Parameters
-    ----------
-    prefix : str
-        The base EPICS PV for the Acromag. E.g.: `XPP:USR:ao1`
-    channel : str
-        The channel number. E.g.: `1` [0-15]
-    name : str
-        A name to refer to the Acromag Output Channel.
-    """
-    channel = FCpt(EpicsSignal, '{self._prefix}:{self._channel}',
-                   kind='normal', doc='Analog Output [Volts]')
-
-    tab_component_names = True
-    tab_whitelist = ['get_voltage', 'set_voltage']
-
-    def get_voltage(self):
-        """Get the voltage."""
-        return self.channel.get()
-
-    def set_voltage(self, voltage):
-        """
-        Set the voltage in Volts.
-
-        Parameters
-        ----------
-        voltage : number
-            Voltage in Volts.
-        """
-        return self.channel.put(voltage)
-
-    def __init__(self, prefix, channel, name=None, **kwargs):
-        self._channel = channel
-        self._prefix = prefix
-        self._name = name or ''.join(['ao_', self._channel])
-        super().__init__(prefix, name=self._name)
+    if signal_class is None:
+        signal_class = EpicsSignalRO if ':ai' in prefix else EpicsSignal
+    name_prefix = 'ai_' if ':ai' in prefix else 'ao_'
+    name = name or ''.join([name_prefix, str(channel)])
+    prefix = ''.join([prefix, ':', str(channel)])
+    return signal_class(prefix, name=name, kind='normal')
 
 
 class Mesh(BaseInterface, Device):
