@@ -79,10 +79,10 @@ class AcromagChannelInput(BaseInterface, Device):
 
     tab_component_names = True
 
-    def __init__(self, prefix, channel, **kwargs):
+    def __init__(self, prefix, channel, name=None, **kwargs):
         self._channel = channel
         self._prefix = prefix
-        self._name = ''.join(['ai_', self._channel])
+        self._name = name or ''.join(['ai_', self._channel])
         super().__init__(prefix, name=self._name)
 
 
