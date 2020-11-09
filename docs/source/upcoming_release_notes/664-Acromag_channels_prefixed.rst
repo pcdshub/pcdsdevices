@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- N/A
+- Added a factory function `acromag_factory_func` to support the creation of happi entries from the questionnaires for a single acromag channel.
 
 Device Updates
 --------------
@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- Added `AcromagChannelInput` and `AcromagChannelOutput` devices to support the creation of happi entries from the questionnaires for a single acromag channel.
+- N/A
 
 Bugfixes
 --------
