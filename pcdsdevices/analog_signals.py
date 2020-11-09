@@ -83,8 +83,8 @@ def acromag_factory_func(prefix, channel, *, signal_class=None, name=None,
     if signal_class is None:
         signal_class = EpicsSignalRO if ':ai' in prefix else EpicsSignal
     name_prefix = 'ai_' if ':ai' in prefix else 'ao_'
-    name = name or ''.join([name_prefix, str(channel)])
-    prefix = ''.join([prefix, ':', str(channel)])
+    name = name or f'{name_prefix}{channel}'
+    prefix = f'{prefix}:{channel}'
     return signal_class(prefix, name=name, kind='normal')
 
 
