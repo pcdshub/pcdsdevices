@@ -68,21 +68,38 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         super().__init__(*args, **kwargs)
 
     def format_status_info(self, status_info):
-        """Override status info handler to render the motor status."""
+        """
+        Override status info handler to render the motor.
+
+        Display motor status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
         lines = []
-        # in case a .DESC value is missing, use the prefix as name
-        name = ' '.join(self.prefix.split(':'))
-        name = f'{name}: {self.prefix}'
+
         try:
             description = status_info['description']['value']
+            name = f'{description}: {self.prefix}'
+        except KeyError:
+            name = ' '.join(self.prefix.split(':'))
+            name = f'{name}: {self.prefix}'
+        try:
             units = status_info['user_setpoint']['units']
             dial = status_info['dial_position']['value']
             user = status_info['position']
         except KeyError as err:
             logger.error('Key error %s', err)
         else:
-            if description:
-                name = f'{description}: {self.prefix}'
             low, high = self.limits
             switch_limits = self.check_limit_switches()[0]
             position = (f'Current position (user, dial): {user}, {dial}'
@@ -90,11 +107,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
             limits = f'User limits (low, hight): {low}, {high} [{units}]'
             preset = f'Preset position: {self.presets.name}'
             switch = f'Limit Switch: {switch_limits}'
-            lines.append(name)
-            lines.append(position)
-            lines.append(limits)
-            lines.append(preset)
-            lines.append(switch)
+            lines.extend([name, position, limits, preset, switch])
         return '\n'.join(lines)
 
     @property
@@ -195,18 +208,18 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         """Check the limits switches."""
         if self.low_limit_switch.get():
             return (
-                "low",
+                "Low [x] High []",
                 "low limit switch for motor %s (pv %s) activated"
                 % (self.name, self.pvname),
             )
         elif self.high_limit_switch.get():
             return (
-                "high",
+                "Low [] High [x]",
                 "high limit switch for motor %s (pv %s) activated"
                 % (self.name, self.pvname),
             )
         else:
-            return ("ok", "")
+            return ("Low [] High []", "")
 
 
 class PCDSMotorBase(EpicsMotorInterface):
