@@ -62,6 +62,29 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         super().__init__(*args, **kwargs)
         self.nominal_aperture.put(nominal_aperture)
 
+    def format_status_info(self, status_info):
+        lines = []
+        first = self.prefix.split(':')[0].uppder()
+        second = self.prefix.split(':')[1].upper()
+        name = f'{first} Slit {self.name} on {second}'
+        try:
+            x_width = status_info['xwidth']['position']
+            y_width = status_info['ywidth']['position']
+            x_center = status_info['xcenter']['position']
+            y_center = status_info['ycenter']['position']
+            w_units = status_info['ywidth']['setpoint']['units']
+            c_units = status_info['ycenter']['setpoint']['units']
+        except KeyError as err:
+            logger.error('Key error %s', err)
+        else:
+            hg_vg = f'(hg, vg): ({x_width:+.4f}, {y_width:+.4f}) [{w_units}]'
+            ho_vo = f'(ho, vo): ({x_center:+.4f}, {y_center:+.4f}) [{c_units}]'
+            lines.append(name)
+            lines.append(hg_vg)
+            lines.append(ho_vo)
+
+        return '\n'.join(lines)
+
     def move(self, size, wait=False, moved_cb=None, timeout=None):
         """
         Set the dimensions of the width/height of the gap to width paramater.
