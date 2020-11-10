@@ -205,21 +205,22 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
                                      "ignored")
 
     def check_limit_switches(self):
-        """Check the limits switches."""
+        """
+        Check the limits switches.
+
+        Returns
+        -------
+        limit_switch_indicator : str
+            Indicate which limit switch is activated.
+        """
+        if self.low_limit_switch.get() and self.high_limit_switch.get():
+            return "Low [x] High [x]"
         if self.low_limit_switch.get():
-            return (
-                "Low [x] High []",
-                "low limit switch for motor %s (pv %s) activated"
-                % (self.name, self.pvname),
-            )
+            return "Low [x] High []"
         elif self.high_limit_switch.get():
-            return (
-                "Low [] High [x]",
-                "high limit switch for motor %s (pv %s) activated"
-                % (self.name, self.pvname),
-            )
+            return "Low [] High [x]"
         else:
-            return ("Low [] High []", "")
+            return "Low [] High []"
 
 
 class PCDSMotorBase(EpicsMotorInterface):
