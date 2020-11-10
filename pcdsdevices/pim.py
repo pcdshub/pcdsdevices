@@ -91,6 +91,37 @@ class PIM(BaseInterface, Device):
             self._prefix_start = '{0}:{1}:'.format(prefix.split(':')[0],
                                                    prefix.split(':')[1])
 
+    def format_status_info(self, status_info):
+        lines = []
+        name = ' '.join(self.prefix.split(':'))
+        focus_str = ''
+        try:
+            focus = status_info['focus_motor']['position']
+            f_units = status_info['focus_motor']['user_setpoint']['units']
+            focus_str = f' Focus: {focus} [{f_units}]'
+        except KeyError:
+            logger.debug('No focus motor present.')
+
+        try:
+            state_pos = status_info['state']['position']
+            y_pos = status_info['state']['motor']['position']
+            y_units = status_info['state']['motor']['user_setpoint']['units']
+            zoom = status_info['zoom_motor']['position']
+            z_units = status_info['zoom_motor']['user_setpoint']['units']
+        except KeyError as err:
+            logger.error('Key error %s', err)
+        else:
+            name = f'{name}: {state_pos}'
+            y_pos = f'Y Position: {y_pos} [{y_units}]'
+            if focus_str:
+                zoom = f'Navitar Zoom: {zoom} [{z_units}] ' + focus_str
+            else:
+                zoom = f'Navitar Zoom: {zoom} [{z_units}]'
+            lines.append(name)
+            lines.append(y_pos)
+            lines.append(zoom)
+        return '\n'.join(lines)
+
     @property
     def prefix_start(self):
         """Returns the first two segments of the prefix PV."""
