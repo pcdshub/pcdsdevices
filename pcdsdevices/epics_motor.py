@@ -73,23 +73,28 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         # in case a .DESC value is missing, use the prefix as name
         name = ' '.join(self.prefix.split(':'))
         name = f'{name}: {self.prefix}'
-        description = status_info['description']['value']
-        if description:
-            name = f'{description}: {self.prefix}'
-        units = status_info['user_setpoint']['units']
-        dial = status_info['dial_position']['value']
-        user = status_info['position']
-        low, high = self.limits
-        switch_limits = self.check_limit_switches()[0]
-        position = f'current position (user, dial): {user}, {dial} [{units}]'
-        limits = f'user limits (low, hight): {low}, {high} [{units}]'
-        preset = f'preset position: {self.presets.name}'
-        switch = f'Limit Switch: {switch_limits}'
-        lines.append(name)
-        lines.append(position)
-        lines.append(limits)
-        lines.append(preset)
-        lines.append(switch)
+        try:
+            description = status_info['description']['value']
+            units = status_info['user_setpoint']['units']
+            dial = status_info['dial_position']['value']
+            user = status_info['position']
+        except KeyError as err:
+            logger.error('Key error %s', err)
+        else:
+            if description:
+                name = f'{description}: {self.prefix}'
+            low, high = self.limits
+            switch_limits = self.check_limit_switches()[0]
+            position = (f'Current position (user, dial): {user}, {dial}'
+                        f' [{units}]')
+            limits = f'User limits (low, hight): {low}, {high} [{units}]'
+            preset = f'Preset position: {self.presets.name}'
+            switch = f'Limit Switch: {switch_limits}'
+            lines.append(name)
+            lines.append(position)
+            lines.append(limits)
+            lines.append(preset)
+            lines.append(switch)
         return '\n'.join(lines)
 
     @property
