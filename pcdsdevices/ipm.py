@@ -1,6 +1,7 @@
 """
 Module for the `IPM` intensity position monitor classes.
 """
+import logging
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
@@ -12,6 +13,8 @@ from .evr import Trigger
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface
 from .utils import ipm_screen
+
+logger = logging.getLogger(__name__)
 
 
 class IPMTarget(InOutRecordPositioner):
@@ -101,6 +104,30 @@ class IPMMotion(BaseInterface, Device):
 
     tab_whitelist = ['target', 'diode', 'insert', 'remove', 'inserted',
                      'removed']
+
+    def format_status_info(self, status_info):
+        lines = []
+        name = ' '.join(self.prefix.split(':'))
+
+        try:
+            x_motor_pos = status_info['diode']['x_motor']['position']
+            y_motor_pos = status_info['diode']['state']['motor']['position']
+            d_units = status_info['diode']['x_motor']['user_setpoint']['units']
+            target_pos = status_info['target']['motor']['position']
+            t_units = status_info['target']['motor']['user_setpoint']['units']
+            target_state_num = status_info['target']['state']['value']
+            target_state = status_info['target']['position']
+        except KeyError as err:
+            logger.error('Key error %s', err)
+        else:
+            name = f'{name}: Target {target_state_num} {target_state}'
+            target_pos = f'Target Position: {target_pos} [{t_units}]'
+            diode_pos = ('Wave 8 Diode Position(x, y): '
+                         f'{x_motor_pos}, {y_motor_pos} [{d_units}]')
+            lines.append(name)
+            lines.append(target_pos)
+            lines.append(diode_pos)
+        return '\n'.join(lines)
 
     @property
     def inserted(self):
