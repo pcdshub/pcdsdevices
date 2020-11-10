@@ -104,7 +104,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
             switch_limits = self.check_limit_switches()[0]
             position = (f'Current position (user, dial): {user}, {dial}'
                         f' [{units}]')
-            limits = f'User limits (low, hight): {low}, {high} [{units}]'
+            limits = f'User limits (low, high): {low}, {high} [{units}]'
             preset = f'Preset position: {self.presets.name}'
             switch = f'Limit Switch: {switch_limits}'
             lines.extend([name, position, limits, preset, switch])
