@@ -376,6 +376,10 @@ class XOffsetMirrorBend(XOffsetMirror):
     ds_rtd = Cpt(EpicsSignalRO, ':RTD:DS:1_RBV', kind='normal')
 
 
+# Maintain backward compatibility
+XOffsetMirror2 = XOffsetMirrorBend
+
+
 class XOffsetMirrorSwitch(XOffsetMirror):
     """
     X-ray Offset Mirror with Yleft/Yright
