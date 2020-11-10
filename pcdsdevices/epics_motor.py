@@ -56,14 +56,41 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
     # Description is valuable
     description = Cpt(EpicsSignal, '.DESC', kind='normal')
+    # Current Dial position
+    dial_position = Cpt(EpicsSignalRO, '.DRBV', kind='normal')
 
     tab_whitelist = ["set_current_position", "home", "velocity",
-                     "enable", "disable"]
+                     "enable", "disable", "check_limit_switches"]
 
     def __init__(self, *args, **kwargs):
         # Locally defined limit overrides, note can only make limits narrower
         self._limits = (-math.inf, math.inf)
         super().__init__(*args, **kwargs)
+
+    def format_status_info(self, status_info):
+        """Override status info handler to render the motor status."""
+        lines = []
+        # in case a .DESC value is missing, use the prefix as name
+        name = ' '.join(self.prefix.split(':'))
+        name = f'{name}: {self.prefix}'
+        description = status_info['description']['value']
+        if description:
+            name = f'{description}: {self.prefix}'
+        units = status_info['user_setpoint']['units']
+        dial = status_info['dial_position']['value']
+        user = status_info['position']
+        low, high = self.limits
+        switch_limits = self.check_limit_switches()[0]
+        position = f'current position (user, dial): {user}, {dial} [{units}]'
+        limits = f'user limits (low, hight): {low}, {high} [{units}]'
+        preset = f'preset position: {self.presets.name}'
+        switch = f'Limit Switch: {switch_limits}'
+        lines.append(name)
+        lines.append(position)
+        lines.append(limits)
+        lines.append(preset)
+        lines.append(switch)
+        return '\n'.join(lines)
 
     @property
     def low_limit(self):
@@ -158,6 +185,23 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         if self.disabled.get() == 1:
             raise MotorDisabledError("Motor is not enabled. Motion requests "
                                      "ignored")
+
+    def check_limit_switches(self):
+        """Check the limits switches."""
+        if self.low_limit_switch.get():
+            return (
+                "low",
+                "low limit switch for motor %s (pv %s) activated"
+                % (self.name, self.pvname),
+            )
+        elif self.high_limit_switch.get():
+            return (
+                "high",
+                "high limit switch for motor %s (pv %s) activated"
+                % (self.name, self.pvname),
+            )
+        else:
+            return ("ok", "")
 
 
 class PCDSMotorBase(EpicsMotorInterface):
