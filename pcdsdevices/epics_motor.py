@@ -86,28 +86,26 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
             Formatted string with all relevant status information.
         """
         lines = []
+        # return 'N/A' if can't get the values for desired keys
+        description = status_info('description', 'N/A').get('value', 'N/A')
+        units = status_info.get('user_setpoint', 'N/A').get('units', 'N/A')
+        dial = status_info.get('dial_position', 'N/A').get('value', 'N/A')
+        user = status_info.get('position', 'N/A')
 
-        try:
-            description = status_info['description']['value']
+        low, high = self.limits
+        switch_limits = self.check_limit_switches()
+
+        name = ' '.join(self.prefix.split(':'))
+        name = f'{name}: {self.prefix}'
+        if description:
             name = f'{description}: {self.prefix}'
-        except KeyError:
-            name = ' '.join(self.prefix.split(':'))
-            name = f'{name}: {self.prefix}'
-        try:
-            units = status_info['user_setpoint']['units']
-            dial = status_info['dial_position']['value']
-            user = status_info['position']
-        except KeyError as err:
-            logger.error('Key error %s', err)
-        else:
-            low, high = self.limits
-            switch_limits = self.check_limit_switches()[0]
-            position = (f'Current position (user, dial): {user}, {dial}'
-                        f' [{units}]')
-            limits = f'User limits (low, high): {low}, {high} [{units}]'
-            preset = f'Preset position: {self.presets.name}'
-            switch = f'Limit Switch: {switch_limits}'
-            lines.extend([name, position, limits, preset, switch])
+
+        position = f'Current position (user, dial): {user}, {dial} [{units}]'
+        limits = f'User limits (low, high): {low}, {high} [{units}]'
+        preset = f'Preset position: {self.presets.name}'
+        switch = f'Limit Switch: {switch_limits}'
+
+        lines.extend([name, position, limits, preset, switch])
         return '\n'.join(lines)
 
     @property
@@ -213,11 +211,13 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         limit_switch_indicator : str
             Indicate which limit switch is activated.
         """
-        if self.low_limit_switch.get() and self.high_limit_switch.get():
+        low = self.low_limit_switch.get()
+        high = self.high_limit_switch.get()
+        if low and high:
             return "Low [x] High [x]"
-        if self.low_limit_switch.get():
+        elif low:
             return "Low [x] High []"
-        elif self.high_limit_switch.get():
+        elif high:
             return "Low [] High [x]"
         else:
             return "Low [] High []"
