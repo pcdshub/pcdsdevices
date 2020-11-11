@@ -85,7 +85,6 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         status: str
             Formatted string with all relevant status information.
         """
-        lines = []
         # return 'N/A' if can't get the values for desired keys
         description = status_info.get('description', {}).get('value', 'N/A')
         units = status_info.get('user_setpoint', {}).get('units', 'N/A')
@@ -100,13 +99,13 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         if description:
             name = f'{description}: {self.prefix}'
 
-        position = f'Current position (user, dial): {user}, {dial} [{units}]'
-        limits = f'User limits (low, high): {low}, {high} [{units}]'
-        preset = f'Preset position: {self.presets.name}'
-        switch = f'Limit Switch: {switch_limits}'
-
-        lines.extend([name, position, limits, preset, switch])
-        return '\n'.join(lines)
+        return f"""\
+{name}
+Current position (user, dial): {user}, {dial} [{units}]
+User limits (low, high): {low}, {high} [{units}]
+Preset position: {self.presets.name}
+Limit Switch: {switch_limits}
+"""
 
     @property
     def low_limit(self):
