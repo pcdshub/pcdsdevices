@@ -8,6 +8,7 @@ API Changes
 Features
 --------
 - Added a custom status print for slits by overriding the status info handler.
+- Added a helper function in `utils.py`: `get_status_value` to support getting a value from a dictionary.
 
 Device Updates
 --------------
