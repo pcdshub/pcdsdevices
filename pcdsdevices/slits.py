@@ -63,6 +63,23 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         self.nominal_aperture.put(nominal_aperture)
 
     def format_status_info(self, status_info):
+        """
+        Override status info handler to render the slits.
+
+        Display slits status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
         lines = []
 
         hutch = self.prefix.split(':')[0].upper()
