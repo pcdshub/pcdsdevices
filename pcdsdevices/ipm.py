@@ -140,9 +140,9 @@ class IPMMotion(BaseInterface, Device):
         target_state = status_info.get('target', {}).get('position', 'N/A')
 
         name = f'{name}: Target {target_state_num} {target_state}'
-        target_pos = f'Target Position: {target_pos} [{t_units}]'
+        target_pos = f'Target Position: {target_pos:.4f} [{t_units}]'
         diode_pos = ('Wave 8 Diode Position(x, y): '
-                     f'{x_motor_pos}, {y_motor_pos} [{d_units}]')
+                     f'{x_motor_pos:.4f}, {y_motor_pos:.4f} [{d_units}]')
 
         lines.extend([name, target_pos, diode_pos])
         return '\n'.join(lines)
