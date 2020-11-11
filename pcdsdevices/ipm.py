@@ -122,7 +122,6 @@ class IPMMotion(BaseInterface, Device):
         status: str
             Formatted string with all relevant status information.
         """
-        lines = []
         name = ' '.join(self.prefix.split(':'))
 
         x_motor_pos = status_info.get('diode', {}).get('x_motor', {}).get(
@@ -139,13 +138,12 @@ class IPMMotion(BaseInterface, Device):
                                            'value', 'N/A')
         target_state = status_info.get('target', {}).get('position', 'N/A')
 
-        name = f'{name}: Target {target_state_num} {target_state}'
-        target_pos = f'Target Position: {target_pos:.4f} [{t_units}]'
-        diode_pos = ('Wave 8 Diode Position(x, y): '
-                     f'{x_motor_pos:.4f}, {y_motor_pos:.4f} [{d_units}]')
-
-        lines.extend([name, target_pos, diode_pos])
-        return '\n'.join(lines)
+        return f"""\
+{name}: Target {target_state_num} {target_state}
+Target Position: {target_pos:.4f} [{t_units}]
+Wave 8 Diode Position(x, y): \
+{x_motor_pos:.4f}, {y_motor_pos:.4f} [{d_units}]
+"""
 
     @property
     def inserted(self):
