@@ -109,7 +109,7 @@ class IPMMotion(BaseInterface, Device):
         """
         Override status info handler to render the ipm.
 
-        Display slits status info in the ipython terminal.
+        Display ipm status info in the ipython terminal.
 
         Parameters
         ----------
