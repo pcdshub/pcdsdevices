@@ -80,8 +80,6 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         status: str
             Formatted string with all relevant status information.
         """
-        lines = []
-
         hutch = self.prefix.split(':')[0].upper()
         stand = self.prefix.split(':')[1].upper()
         name = f'{hutch} Slit {self.name} on {stand}'
@@ -94,12 +92,11 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
                                   'units', 'N/A')
         c_units = status_info.get('ycenter', {}).get('setpoint', {}).get(
                                   'units', 'N/A')
-
-        hg_vg = f'(hg, vg): ({x_width:+.4f}, {y_width:+.4f}) [{w_units}]'
-        ho_vo = f'(ho, vo): ({x_center:+.4f}, {y_center:+.4f}) [{c_units}]'
-
-        lines.extend([name, hg_vg, ho_vo])
-        return '\n'.join(lines)
+        return f"""\
+{name}
+(hg, vg): ({x_width:+.4f}, {y_width:+.4f}) [{w_units}]
+(ho, vo): ({x_center:+.4f}, {y_center:+.4f}) [{c_units}]
+"""
 
     def move(self, size, wait=False, moved_cb=None, timeout=None):
         """
