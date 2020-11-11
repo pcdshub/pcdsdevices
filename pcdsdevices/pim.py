@@ -92,6 +92,22 @@ class PIM(BaseInterface, Device):
                                                    prefix.split(':')[1])
 
     def format_status_info(self, status_info):
+        """
+        Override status info handler to render the PIM.
+
+        Display pim status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
         lines = []
         name = ' '.join(self.prefix.split(':'))
         focus_str = ''
