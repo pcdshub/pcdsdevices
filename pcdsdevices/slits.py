@@ -64,25 +64,23 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
 
     def format_status_info(self, status_info):
         lines = []
-        first = self.prefix.split(':')[0].uppder()
-        second = self.prefix.split(':')[1].upper()
-        name = f'{first} Slit {self.name} on {second}'
-        try:
-            x_width = status_info['xwidth']['position']
-            y_width = status_info['ywidth']['position']
-            x_center = status_info['xcenter']['position']
-            y_center = status_info['ycenter']['position']
-            w_units = status_info['ywidth']['setpoint']['units']
-            c_units = status_info['ycenter']['setpoint']['units']
-        except KeyError as err:
-            logger.error('Key error %s', err)
-        else:
-            hg_vg = f'(hg, vg): ({x_width:+.4f}, {y_width:+.4f}) [{w_units}]'
-            ho_vo = f'(ho, vo): ({x_center:+.4f}, {y_center:+.4f}) [{c_units}]'
-            lines.append(name)
-            lines.append(hg_vg)
-            lines.append(ho_vo)
 
+        hutch = self.prefix.split(':')[0].upper()
+        stand = self.prefix.split(':')[1].upper()
+        name = f'{hutch} Slit {self.name} on {stand}'
+
+        x_width = status_info.get('xwidth', 'N/A').get('position', 'N/A')
+        y_width = status_info.get('ywidth', 'N/A').get('position', 'N/A')
+        x_center = status_info.get('xcenter', 'N/A').get('position', 'N/A')
+        y_center = status_info.get('ycenter', 'N/A').get('position', 'N/A')
+        w_units = status_info.get('ywidth', 'N/A').get('setpoint').get('units')
+        c_units = status_info.get('ycenter', 'N/A').get('setpoint', 'N/A').get(
+                                  'units', 'N/A')
+
+        hg_vg = f'(hg, vg): ({x_width:+.4f}, {y_width:+.4f}) [{w_units}]'
+        ho_vo = f'(ho, vo): ({x_center:+.4f}, {y_center:+.4f}) [{c_units}]'
+
+        lines.extend([name, hg_vg, ho_vo])
         return '\n'.join(lines)
 
     def move(self, size, wait=False, moved_cb=None, timeout=None):
