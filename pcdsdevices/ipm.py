@@ -140,7 +140,7 @@ class IPMMotion(BaseInterface, Device):
 
         return f"""\
 {name}: Target {target_state_num} {target_state}
-Target Position: {target_pos:.4f} [{t_units}]
+Target Position: {target_pos} [{t_units}]
 Wave 8 Diode Position(x, y): \
 {x_motor_pos:.4f}, {y_motor_pos:.4f} [{d_units}]
 """
