@@ -232,5 +232,8 @@ def get_status_value(status_info, *keys, default_value='N/A'):
     value : dictionary item value
         Value of the last key in the `keys` list.
     """
-    value = reduce(operator.getitem, keys, status_info)
-    return value or default_value
+    try:
+        value = reduce(operator.getitem, keys, status_info)
+        return value
+    except KeyError:
+        return default_value
