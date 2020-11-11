@@ -106,27 +106,45 @@ class IPMMotion(BaseInterface, Device):
                      'removed']
 
     def format_status_info(self, status_info):
+        """
+        Override status info handler to render the ipm.
+
+        Display slits status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
         lines = []
         name = ' '.join(self.prefix.split(':'))
 
-        try:
-            x_motor_pos = status_info['diode']['x_motor']['position']
-            y_motor_pos = status_info['diode']['state']['motor']['position']
-            d_units = status_info['diode']['x_motor']['user_setpoint']['units']
-            target_pos = status_info['target']['motor']['position']
-            t_units = status_info['target']['motor']['user_setpoint']['units']
-            target_state_num = status_info['target']['state']['value']
-            target_state = status_info['target']['position']
-        except KeyError as err:
-            logger.error('Key error %s', err)
-        else:
-            name = f'{name}: Target {target_state_num} {target_state}'
-            target_pos = f'Target Position: {target_pos} [{t_units}]'
-            diode_pos = ('Wave 8 Diode Position(x, y): '
-                         f'{x_motor_pos}, {y_motor_pos} [{d_units}]')
-            lines.append(name)
-            lines.append(target_pos)
-            lines.append(diode_pos)
+        x_motor_pos = status_info.get('diode', 'N/A').get(
+                                      'x_motor', 'N/A').get('position', 'N/A')
+        y_motor_pos = status_info.get('diode', 'N/A').get('state', 'N/A').get(
+                                      'motor', 'N/A').get('position', 'N/A')
+        d_units = status_info.get('diode', 'N/A').get('x_motor', 'N/A').get(
+                                  'user_setpoint', 'N/A').get('units', 'N/A')
+        target_pos = status_info.get('target', 'N/A').get('motor', 'N/A').get(
+                                     'position', 'N/A')
+        t_units = status_info.get('target', 'N/A').get('motor', 'N/A').get(
+                                  'user_setpoint', 'N/A').get('units', 'N/A')
+        target_state_num = status_info.get('target', 'N/A').get(
+                                           'state', 'N/A').get('value', 'N/A')
+        target_state = status_info.get('target', 'N/A').get('position', 'N/A')
+
+        name = f'{name}: Target {target_state_num} {target_state}'
+        target_pos = f'Target Position: {target_pos} [{t_units}]'
+        diode_pos = ('Wave 8 Diode Position(x, y): '
+                     f'{x_motor_pos}, {y_motor_pos} [{d_units}]')
+
+        lines.extend([name, target_pos, diode_pos])
         return '\n'.join(lines)
 
     @property
