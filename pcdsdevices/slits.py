@@ -80,9 +80,6 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         status: str
             Formatted string with all relevant status information.
         """
-        hutch = self.prefix.split(':')[0].upper()
-        stand = self.prefix.split(':')[1].upper()
-
         x_width = get_status_value(status_info, 'xwidth', 'position')
         y_width = get_status_value(status_info, 'ywidth', 'position')
         x_center = get_status_value(status_info, 'xcenter', 'position')
@@ -91,7 +88,7 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         c_units = get_status_value(status_info, 'ycenter', 'setpoint', 'units')
 
         return f"""\
-{hutch} Slit {self.name} on {stand}
+Slit: {self.prefix}
 (hg, vg): ({x_width:+.4f}, {y_width:+.4f}) [{w_units}]
 (ho, vo): ({x_center:+.4f}, {y_center:+.4f}) [{c_units}]
 """
