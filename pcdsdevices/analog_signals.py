@@ -61,8 +61,8 @@ class Acromag(BaseInterface, Device):
     tab_component_names = True
 
 
-def acromag_factory_func(prefix, channel, *, signal_class=None, name=None,
-                         **kwargs):
+def acromag_ch_factory_func(prefix, channel, *, signal_class=None, name=None,
+                            **kwargs):
     """
     This is a factory function for creating an Acromag output or input signal.
 
@@ -86,6 +86,9 @@ def acromag_factory_func(prefix, channel, *, signal_class=None, name=None,
     name = name or f'{name_prefix}{channel}'
     prefix = f'{prefix}:{channel}'
     return signal_class(prefix, name=name, kind='normal')
+
+
+AcromagChannel = acromag_ch_factory_func
 
 
 class Mesh(BaseInterface, Device):
