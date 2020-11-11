@@ -28,7 +28,7 @@ from .epics_motor import BeckhoffAxis
 from .interface import FltMvInterface, MvInterface, LightpathMixin
 from .signal import PytmcSignal, NotImplementedSignal
 from .sensors import RTD
-from .utils import schedule_task
+from .utils import schedule_task, get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -83,14 +83,13 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         hutch = self.prefix.split(':')[0].upper()
         stand = self.prefix.split(':')[1].upper()
 
-        x_width = status_info.get('xwidth', {}).get('position', 'N/A')
-        y_width = status_info.get('ywidth', {}).get('position', 'N/A')
-        x_center = status_info.get('xcenter', {}).get('position', 'N/A')
-        y_center = status_info.get('ycenter', {}).get('position', 'N/A')
-        w_units = status_info.get('ywidth', {}).get('setpoint', {}).get(
-                                  'units', 'N/A')
-        c_units = status_info.get('ycenter', {}).get('setpoint', {}).get(
-                                  'units', 'N/A')
+        x_width = get_status_value(status_info, 'xwidth', 'position')
+        y_width = get_status_value(status_info, 'ywidth', 'position')
+        x_center = get_status_value(status_info, 'xcenter', 'position')
+        y_center = get_status_value(status_info, 'ycenter', 'position')
+        w_units = get_status_value(status_info, 'ywidth', 'setpoint', 'units')
+        c_units = get_status_value(status_info, 'ycenter', 'setpoint', 'units')
+
         return f"""\
 {hutch} Slit {self.name} on {stand}
 (hg, vg): ({x_width:+.4f}, {y_width:+.4f}) [{w_units}]
