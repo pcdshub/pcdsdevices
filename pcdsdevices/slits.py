@@ -86,12 +86,13 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         stand = self.prefix.split(':')[1].upper()
         name = f'{hutch} Slit {self.name} on {stand}'
 
-        x_width = status_info.get('xwidth', 'N/A').get('position', 'N/A')
-        y_width = status_info.get('ywidth', 'N/A').get('position', 'N/A')
-        x_center = status_info.get('xcenter', 'N/A').get('position', 'N/A')
-        y_center = status_info.get('ycenter', 'N/A').get('position', 'N/A')
-        w_units = status_info.get('ywidth', 'N/A').get('setpoint').get('units')
-        c_units = status_info.get('ycenter', 'N/A').get('setpoint', 'N/A').get(
+        x_width = status_info.get('xwidth', {}).get('position', 'N/A')
+        y_width = status_info.get('ywidth', {}).get('position', 'N/A')
+        x_center = status_info.get('xcenter', {}).get('position', 'N/A')
+        y_center = status_info.get('ycenter', {}).get('position', 'N/A')
+        w_units = status_info.get('ywidth', {}).get('setpoint', {}).get(
+                                  'units', 'N/A')
+        c_units = status_info.get('ycenter', {}).get('setpoint', {}).get(
                                   'units', 'N/A')
 
         hg_vg = f'(hg, vg): ({x_width:+.4f}, {y_width:+.4f}) [{w_units}]'
