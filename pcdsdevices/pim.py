@@ -109,33 +109,31 @@ class PIM(BaseInterface, Device):
             Formatted string with all relevant status information.
         """
         lines = []
-        name = ' '.join(self.prefix.split(':'))
-        focus_str = ''
-        try:
-            focus = status_info['focus_motor']['position']
-            f_units = status_info['focus_motor']['user_setpoint']['units']
-            focus_str = f' Focus: {focus} [{f_units}]'
-        except KeyError:
-            logger.debug('No focus motor present.')
 
-        try:
-            state_pos = status_info['state']['position']
-            y_pos = status_info['state']['motor']['position']
-            y_units = status_info['state']['motor']['user_setpoint']['units']
-            zoom = status_info['zoom_motor']['position']
-            z_units = status_info['zoom_motor']['user_setpoint']['units']
-        except KeyError as err:
-            logger.error('Key error %s', err)
+        focus = status_info.get('focus_motor', {}).get('position', 'N/A')
+        f_units = status_info.get('focus_motor', {}).get(
+                                  'user_setpoint', {}).get('units', 'N/A')
+
+        state_pos = status_info.get('state', {}).get('position', 'N/A')
+        y_pos = status_info.get('state', {}).get('motor', {}).get(
+                                'position', 'N/A')
+        y_units = status_info.get('state', {}).get('motor', {}).get(
+                                  'user_setpoint', {}).get('units', 'N/A')
+        zoom = status_info.get('zoom_motor', {}).get('position', 'N/A')
+        z_units = status_info.get('zoom_motor', {}).get(
+                                  'user_setpoint', {}).get('units', 'N/A')
+
+        name = ' '.join(self.prefix.split(':'))
+        name = f'{name}: {state_pos}'
+
+        y_pos = f'Y Position: {y_pos:.4f} [{y_units}]'
+        if focus != 'N/A':
+            zoom = (f'Navitar Zoom: {zoom:.4f} [{z_units}]  '
+                    f'Focus: {focus} [{f_units}]')
         else:
-            name = f'{name}: {state_pos}'
-            y_pos = f'Y Position: {y_pos} [{y_units}]'
-            if focus_str:
-                zoom = f'Navitar Zoom: {zoom} [{z_units}] ' + focus_str
-            else:
-                zoom = f'Navitar Zoom: {zoom} [{z_units}]'
-            lines.append(name)
-            lines.append(y_pos)
-            lines.append(zoom)
+            zoom = f'Navitar Zoom: {zoom:.4f} [{z_units}]'
+
+        lines.extend([name, y_pos, zoom])
         return '\n'.join(lines)
 
     @property
