@@ -87,9 +87,9 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         """
         lines = []
         # return 'N/A' if can't get the values for desired keys
-        description = status_info.get('description', 'N/A').get('value', 'N/A')
-        units = status_info.get('user_setpoint', 'N/A').get('units', 'N/A')
-        dial = status_info.get('dial_position', 'N/A').get('value', 'N/A')
+        description = status_info.get('description', {}).get('value', 'N/A')
+        units = status_info.get('user_setpoint', {}).get('units', 'N/A')
+        dial = status_info.get('dial_position', {}).get('value', 'N/A')
         user = status_info.get('position', 'N/A')
 
         low, high = self.limits
