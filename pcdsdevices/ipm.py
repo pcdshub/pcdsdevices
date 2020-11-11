@@ -125,19 +125,19 @@ class IPMMotion(BaseInterface, Device):
         lines = []
         name = ' '.join(self.prefix.split(':'))
 
-        x_motor_pos = status_info.get('diode', 'N/A').get(
-                                      'x_motor', 'N/A').get('position', 'N/A')
-        y_motor_pos = status_info.get('diode', 'N/A').get('state', 'N/A').get(
-                                      'motor', 'N/A').get('position', 'N/A')
-        d_units = status_info.get('diode', 'N/A').get('x_motor', 'N/A').get(
-                                  'user_setpoint', 'N/A').get('units', 'N/A')
-        target_pos = status_info.get('target', 'N/A').get('motor', 'N/A').get(
+        x_motor_pos = status_info.get('diode', {}).get('x_motor', {}).get(
+                                      'position', 'N/A')
+        y_motor_pos = status_info.get('diode', {}).get('state', {}).get(
+                                      'motor', {}).get('position', 'N/A')
+        d_units = status_info.get('diode', {}).get('x_motor', {}).get(
+                                  'user_setpoint', {}).get('units', 'N/A')
+        target_pos = status_info.get('target', {}).get('motor', {}).get(
                                      'position', 'N/A')
-        t_units = status_info.get('target', 'N/A').get('motor', 'N/A').get(
-                                  'user_setpoint', 'N/A').get('units', 'N/A')
-        target_state_num = status_info.get('target', 'N/A').get(
-                                           'state', 'N/A').get('value', 'N/A')
-        target_state = status_info.get('target', 'N/A').get('position', 'N/A')
+        t_units = status_info.get('target', {}).get('motor', {}).get(
+                                  'user_setpoint', {}).get('units', 'N/A')
+        target_state_num = status_info.get('target', {}).get('state', {}).get(
+                                           'value', 'N/A')
+        target_state = status_info.get('target', {}).get('position', 'N/A')
 
         name = f'{name}: Target {target_state_num} {target_state}'
         target_pos = f'Target Position: {target_pos} [{t_units}]'
