@@ -2,9 +2,10 @@ import logging
 
 import pytest
 from ophyd.sim import make_fake_device
+from ophyd import EpicsSignal, EpicsSignalRO
 
 import pcdsdevices.utils as key_press
-from pcdsdevices.analog_signals import Acromag, Mesh
+from pcdsdevices.analog_signals import Acromag, Mesh, AcromagChannel
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +48,18 @@ def fake_acromag():
     acromag.ai1_14.sim_put(1.0)
     acromag.ai1_15.sim_put(1.0)
     return acromag
+
+
+def test_acromag_factory():
+    ai_prefix = 'TST:PREFIX:ai1'
+    ao_prefix = 'TST:PREFIX:ao1'
+    ai_res = AcromagChannel(ai_prefix, channel='7')
+    ao_res = AcromagChannel(ao_prefix, channel='7')
+    assert type(ai_res) == EpicsSignalRO
+    assert type(ao_res) == EpicsSignal
+    signal_class_res = AcromagChannel(ao_prefix, channel='7',
+                                      signal_class=EpicsSignalRO)
+    assert type(signal_class_res) == EpicsSignalRO
 
 
 @pytest.fixture(scope='function')
