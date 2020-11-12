@@ -24,6 +24,7 @@ from .sensors import TwinCATThermocouple
 from .signal import PytmcSignal
 from .state import StatePositioner
 from .variety import set_metadata
+from .utils import get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -108,33 +109,32 @@ class PIM(BaseInterface, Device):
         status: str
             Formatted string with all relevant status information.
         """
-        lines = []
-
-        focus = status_info.get('focus_motor', {}).get('position', 'N/A')
-        f_units = status_info.get('focus_motor', {}).get(
-                                  'user_setpoint', {}).get('units', 'N/A')
-
-        state_pos = status_info.get('state', {}).get('position', 'N/A')
-        y_pos = status_info.get('state', {}).get('motor', {}).get(
-                                'position', 'N/A')
-        y_units = status_info.get('state', {}).get('motor', {}).get(
-                                  'user_setpoint', {}).get('units', 'N/A')
-        zoom = status_info.get('zoom_motor', {}).get('position', 'N/A')
-        z_units = status_info.get('zoom_motor', {}).get(
-                                  'user_setpoint', {}).get('units', 'N/A')
+        focus = get_status_value(status_info, 'focus_motor', 'position')
+        f_units = get_status_value(status_info, 'focus_motor', 'user_setpoint',
+                                   'units')
+        state_pos = get_status_value(status_info, 'state', 'position')
+        y_pos = get_status_value(status_info, 'state', 'motor', 'position')
+        y_units = get_status_value(status_info, 'state', 'motor',
+                                   'user_setpoint', 'units')
+        zoom = get_status_value(status_info, 'zoom_motor', 'position')
+        z_units = get_status_value(status_info, 'zoom_motor', 'user_setpoint',
+                                   'units')
 
         name = ' '.join(self.prefix.split(':'))
-        name = f'{name}: {state_pos}'
-
-        y_pos = f'Y Position: {y_pos:.4f} [{y_units}]'
         if focus != 'N/A':
-            zoom = (f'Navitar Zoom: {zoom:.4f} [{z_units}]  '
-                    f'Focus: {focus} [{f_units}]')
+            focus = f' Focus: {focus} [{f_units}]'
         else:
+            focus = ''
+        if zoom != 'N/A':
             zoom = f'Navitar Zoom: {zoom:.4f} [{z_units}]'
+        else:
+            zoom = ''
 
-        lines.extend([name, y_pos, zoom])
-        return '\n'.join(lines)
+        return f"""\
+{name}: {state_pos}
+Y Position: {y_pos:.4f} [{y_units}]
+{zoom}{focus}
+"""
 
     @property
     def prefix_start(self):
