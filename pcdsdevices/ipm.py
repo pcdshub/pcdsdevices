@@ -12,7 +12,7 @@ from .epics_motor import IMS
 from .evr import Trigger
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface
-from .utils import ipm_screen
+from .utils import ipm_screen, get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -124,19 +124,20 @@ class IPMMotion(BaseInterface, Device):
         """
         name = ' '.join(self.prefix.split(':'))
 
-        x_motor_pos = status_info.get('diode', {}).get('x_motor', {}).get(
-                                      'position', 'N/A')
-        y_motor_pos = status_info.get('diode', {}).get('state', {}).get(
-                                      'motor', {}).get('position', 'N/A')
-        d_units = status_info.get('diode', {}).get('x_motor', {}).get(
-                                  'user_setpoint', {}).get('units', 'N/A')
-        target_pos = status_info.get('target', {}).get('motor', {}).get(
-                                     'position', 'N/A')
-        t_units = status_info.get('target', {}).get('motor', {}).get(
-                                  'user_setpoint', {}).get('units', 'N/A')
-        target_state_num = status_info.get('target', {}).get('state', {}).get(
-                                           'value', 'N/A')
-        target_state = status_info.get('target', {}).get('position', 'N/A')
+        x_motor_pos = get_status_value(status_info, 'diode', 'x_motor',
+                                       'position')
+        y_motor_pos = get_status_value(status_info, 'diode', 'state', 'motor',
+                                       'position')
+        d_units = get_status_value(status_info, 'diode', 'x_motor',
+                                   'user_setpoint', 'units')
+        target_pos = get_status_value(status_info, 'target', 'motor',
+                                      'position')
+        t_units = get_status_value(status_info, 'target', 'motor',
+                                   'user_setpoint', 'units')
+        target_state_num = get_status_value(status_info, 'target',
+                                            'state', 'value')
+        target_state = get_status_value(status_info, 'target', 'position')
+
         if 'ipimb' in status_info.keys():
             diode_type = 'IPIMB '
         elif 'wave8' in status_info.keys():
