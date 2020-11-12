@@ -4,6 +4,8 @@ import shutil
 import sys
 import threading
 import time
+import operator
+from functools import reduce
 
 import ophyd
 import pint
@@ -210,3 +212,28 @@ def schedule_task(func, args=None, kwargs=None, delay=None):
         # Do it later
         timer = threading.Timer(delay, schedule)
         timer.start()
+
+
+def get_status_value(status_info, *keys, default_value='N/A'):
+    """
+    Get the value of a dictionary key.
+
+    Parameters
+    ----------
+    status_info : dict
+        Dictionary to look through.
+    keys : list
+        List of keys to look through with nested dictionarie.
+    default_value : str
+        A default value to return if the item value was not found.
+
+    Returns
+    -------
+    value : dictionary item value
+        Value of the last key in the `keys` list.
+    """
+    try:
+        value = reduce(operator.getitem, keys, status_info)
+        return value
+    except KeyError:
+        return default_value

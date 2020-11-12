@@ -28,7 +28,7 @@ from .epics_motor import BeckhoffAxis
 from .interface import FltMvInterface, MvInterface, LightpathMixin
 from .signal import PytmcSignal, NotImplementedSignal
 from .sensors import RTD
-from .utils import schedule_task
+from .utils import schedule_task, get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +61,50 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         self._has_subscribed = False
         super().__init__(*args, **kwargs)
         self.nominal_aperture.put(nominal_aperture)
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the slits.
+
+        Display slits status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        # happi metadata
+        try:
+            md = self.root.md
+        except AttributeError:
+            name = f'Slit: {self.prefix}'
+        else:
+            beamline = get_status_value(md, 'beamline')
+            stand = get_status_value(md, 'stand')
+            if stand is not None:
+                name = f'{beamline} Slit {self.name} on {stand}'
+            else:
+                name = f'{beamline} Slit {self.name}'
+
+        x_width = get_status_value(status_info, 'xwidth', 'position')
+        y_width = get_status_value(status_info, 'ywidth', 'position')
+        x_center = get_status_value(status_info, 'xcenter', 'position')
+        y_center = get_status_value(status_info, 'ycenter', 'position')
+        w_units = get_status_value(status_info, 'ywidth', 'setpoint', 'units')
+        c_units = get_status_value(status_info, 'ycenter', 'setpoint', 'units')
+
+        return f"""\
+{name}
+(hg, vg): ({x_width:+.4f}, {y_width:+.4f}) [{w_units}]
+(ho, vo): ({x_center:+.4f}, {y_center:+.4f}) [{c_units}]
+"""
 
     def move(self, size, wait=False, moved_cb=None, timeout=None):
         """
