@@ -1,8 +1,10 @@
 import logging
 
 import pytest
+from unittest.mock import patch
 from ophyd.sim import make_fake_device
 from pcdsdevices.device_types import MPODChannelHV, MPODChannelLV, MPOD
+from pcdsdevices.mpod import MPODChannel
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +33,22 @@ def fake_mpod_hv_channel():
     mpod_hv_channel.voltage_rise_rate.sim_put(60)
     mpod_hv_channel.voltage_fall_rate.sim_put(60)
     return mpod_hv_channel
+
+
+@pytest.fixture(scope='function')
+def fake_mpod_channel_v30():
+    FakeMPODChannel = make_fake_device(MPODChannel)
+    mpod_channel = FakeMPODChannel('TEST:MPOD:CHANNEL', name='test')
+    mpod_channel.max_voltage.sim_put(30)
+    return mpod_channel
+
+
+@pytest.fixture(scope='function')
+def fake_mpod_channel_v500():
+    FakeMPODChannel = make_fake_device(MPODChannel)
+    mpod_channel = FakeMPODChannel('TEST:MPOD:CHANNEL', name='test')
+    mpod_channel.max_voltage.sim_put(500)
+    return mpod_channel
 
 
 def test_switch_on_off(fake_mpod_lv_channel, fake_mpod_hv_channel):
@@ -86,13 +104,15 @@ def test_rise_fall_rate_lv(fake_mpod_hv_channel):
     assert fake_mpod_hv_channel.voltage_rise_rate.get() == 23
 
 
-def test_mpod_channel_factory():
-    m = MPOD('TST:MY:MMS:CH:100', name='test_hv_mpod')
-    assert isinstance(m, MPODChannelHV)
-    m = MPOD('TST:RANDOM:MTR:CH:7', name='test_lv_mpod')
-    assert isinstance(m, MPODChannelLV)
-    m = MPOD('TST:RANDOM:MTR:NOTHING', name='test_unknown_ch')
-    assert m is None
+def test_mpod_channel_factory(fake_mpod_channel_v30, fake_mpod_channel_v500):
+    with patch('pcdsdevices.mpod.MPODChannel',
+               return_value=fake_mpod_channel_v30):
+        hv = MPOD('TST:MY:MMS:CH:100', name='test_hv_mpod')
+        assert isinstance(hv, MPODChannelLV)
+    with patch('pcdsdevices.mpod.MPODChannel',
+               return_value=fake_mpod_channel_v500):
+        hv = MPOD('TST:MY:MMS:CH:100', name='test_hv_mpod')
+        assert isinstance(hv, MPODChannelHV)
 
 
 @pytest.mark.timeout(5)

@@ -126,6 +126,9 @@ class MPODChannel(BaseInterface, Device):
         """
         self.voltage_fall_rate.put(fall_rate)
 
+    def get_max_voltage(self):
+        return self.max_voltage.get()
+
 
 class MPODChannelLV(MPODChannel):
     """
@@ -185,7 +188,9 @@ class MPODChannelHV(MPODChannel):
 
 def MPOD(channel_prefix, card_prefix=None, **kwargs):
     """
-    Determine the appropriate MPOD Channel class based on the channel number.
+    Determine the appropriate MPOD Channel class based on the max voltage.
+
+    Usign 50V as line between the HV and LV max voltage settings.
 
     Parameters
     ----------
@@ -196,21 +201,13 @@ def MPOD(channel_prefix, card_prefix=None, **kwargs):
     kwargs : dict
         Information to pass through to the device, upon initialization
     """
-    # CH below 100 should be LV, and above or 100 should be HV.
-    # maybe also try to determine the card_prefix as well if none?
+    mpod = MPODChannel(channel_prefix)
     try:
-        base, channel = channel_prefix.split('CH:')
-        channel = int(channel)
+        voltage = mpod.get_max_voltage()
     except Exception:
-        logger.warning('Unable to figure out the type of mpod channel based on'
-                       ' channel number.')
         return None
-    if channel >= 100 and channel < 200:
-        # try to make up the card_prefix PV? `XPP:R39:MPD:MOD:10`
-        card_prefix = ''.join([base, 'MOD:10'])
+    else:
+        if voltage < 50:
+            return MPODChannelLV(channel_prefix, **kwargs)
+        # TODO: figure a way to get the card_prefix info
         return MPODChannelHV(channel_prefix, card_prefix, **kwargs)
-    if channel >= 200:
-        # try to make up the card_prefix PV? `XPP:R39:MPD:MOD:20`
-        card_prefix = ':'.join([base, 'MOD:20'])
-        return MPODChannelHV(channel_prefix, card_prefix, **kwargs)
-    return MPODChannelLV(channel_prefix, **kwargs)
