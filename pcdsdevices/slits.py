@@ -81,10 +81,10 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
             Formatted string with all relevant status information.
         """
         # happi metadata
-        md = self.root.md
         try:
-            beamline = md['beamline']
-            stand = md['stand']
+            md = self.root.md
+            beamline = get_status_value(md, 'beamline')
+            stand = get_status_value(md, 'stand')
             if stand is not None:
                 name = f'{beamline} Slit {self.name} on {stand}'
             else:
