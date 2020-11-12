@@ -83,14 +83,15 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         # happi metadata
         try:
             md = self.root.md
+        except AttributeError:
+            name = f'Slit: {self.prefix}'
+        else:
             beamline = get_status_value(md, 'beamline')
             stand = get_status_value(md, 'stand')
             if stand is not None:
                 name = f'{beamline} Slit {self.name} on {stand}'
             else:
                 name = f'{beamline} Slit {self.name}'
-        except AttributeError:
-            name = f'Slit: {self.prefix}'
 
         x_width = get_status_value(status_info, 'xwidth', 'position')
         y_width = get_status_value(status_info, 'ywidth', 'position')
