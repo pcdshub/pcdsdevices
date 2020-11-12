@@ -80,6 +80,18 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         status: str
             Formatted string with all relevant status information.
         """
+        # happi metadata
+        md = self.root.md
+        try:
+            beamline = md['beamline']
+            stand = md['stand']
+            if stand is not None:
+                name = f'{beamline} Slit {self.name} on {stand}'
+            else:
+                name = f'{beamline} Slit {self.name}'
+        except AttributeError:
+            name = f'Slit: {self.prefix}'
+
         x_width = get_status_value(status_info, 'xwidth', 'position')
         y_width = get_status_value(status_info, 'ywidth', 'position')
         x_center = get_status_value(status_info, 'xcenter', 'position')
@@ -88,7 +100,7 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         c_units = get_status_value(status_info, 'ycenter', 'setpoint', 'units')
 
         return f"""\
-Slit: {self.prefix}
+{name}
 (hg, vg): ({x_width:+.4f}, {y_width:+.4f}) [{w_units}]
 (ho, vo): ({x_center:+.4f}, {y_center:+.4f}) [{c_units}]
 """
