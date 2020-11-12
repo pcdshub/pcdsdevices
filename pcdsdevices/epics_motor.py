@@ -22,6 +22,7 @@ from .interface import FltMvInterface
 from .pseudopos import DelayBase
 from .signal import PytmcSignal
 from .variety import set_metadata
+from .utils import get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -85,11 +86,10 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         status: str
             Formatted string with all relevant status information.
         """
-        # return 'N/A' if can't get the values for desired keys
-        description = status_info.get('description', {}).get('value', 'N/A')
-        units = status_info.get('user_setpoint', {}).get('units', 'N/A')
-        dial = status_info.get('dial_position', {}).get('value', 'N/A')
-        user = status_info.get('position', 'N/A')
+        description = get_status_value(status_info, 'description', 'value')
+        units = get_status_value(status_info, 'user_setpoint', 'units')
+        dial = get_status_value(status_info, 'dial_position', 'value')
+        user = get_status_value(status_info, 'position')
 
         low, high = self.limits
         switch_limits = self.check_limit_switches()
