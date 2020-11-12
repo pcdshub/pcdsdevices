@@ -103,7 +103,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 {name}
 Current position (user, dial): {user}, {dial} [{units}]
 User limits (low, high): {low}, {high} [{units}]
-Preset position: {self.presets.name}
+Preset position: {self.presets.state()}
 Limit Switch: {switch_limits}
 """
 
