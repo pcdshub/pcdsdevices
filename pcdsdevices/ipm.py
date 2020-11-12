@@ -137,11 +137,17 @@ class IPMMotion(BaseInterface, Device):
         target_state_num = status_info.get('target', {}).get('state', {}).get(
                                            'value', 'N/A')
         target_state = status_info.get('target', {}).get('position', 'N/A')
+        if 'ipimb' in status_info.keys():
+            diode_type = 'IPIMB '
+        elif 'wave8' in status_info.keys():
+            diode_type = 'Wave8 '
+        else:
+            diode_type = ''
 
         return f"""\
 {name}: Target {target_state_num} {target_state}
 Target Position: {target_pos} [{t_units}]
-Wave 8 Diode Position(x, y): \
+{diode_type}Diode Position(x, y): \
 {x_motor_pos:.4f}, {y_motor_pos:.4f} [{d_units}]
 """
 
