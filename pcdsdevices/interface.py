@@ -226,8 +226,13 @@ class BaseInterface:
         """
         Set pretty-printing to show current status information.
 
-        We will not leverage the feature set here, we will just use it as a
-        convenient IPython entry point for rendering our device info.
+        This will also filter out errors from the ``status_info``
+        and ``format_status_info`` methods, making sure "something"
+        is printed.
+
+        We will not leverage the pretty-printing feature set here,
+        we will just use it as a convenient IPython entry point for
+        rendering our device info.
 
         The parameter set is documented here in case we change our minds,
         since I already wrote it out before deciding on a renderer-agnostic
