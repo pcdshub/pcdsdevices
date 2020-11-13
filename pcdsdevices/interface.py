@@ -250,7 +250,13 @@ class BaseInterface:
             also call pp.pretty to print this object. Then cycle would be True
             and you know not to make any further recursive calls.
         """
-        pp.text(self.format_status_info(self.status_info()))
+        try:
+            status_text = self.format_status_info(self.status_info())
+        except Exception:
+            status_text = (f'{self}: Error showing status information. '
+                           'Check IOC connection and device health.')
+            logger.debug(status_text, exc_info=True)
+        pp.text(status_text)
 
     def format_status_info(self, status_info):
         """
