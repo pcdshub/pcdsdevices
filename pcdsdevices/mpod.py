@@ -209,8 +209,44 @@ def MPOD(channel_prefix, card_prefix=None, **kwargs):
     else:
         if voltage < 50:
             return MPODChannelLV(channel_prefix, **kwargs)
-        # TODO: figure a way to get the card_prefix info
-        return MPODChannelHV(channel_prefix, card_prefix, **kwargs)
+        try:
+            base, channel = channel_prefix.split('CH:')
+        except Exception:
+            return None
+        else:
+            card_number = get_card_number(channel)
+            card = f'{base}:MOD:{card_number}'
+            return MPODChannelHV(channel_prefix, card, **kwargs)
+
+
+def get_card_number(channel):
+    """
+    Helper for creating the card prefix for HV channels.
+
+    For channels `[0-7]` - it will return None
+    For channels `[000-015] - it will return `0`
+    For channels `[100-107] - it will return `10`
+    FOr channels `[200-207] - it will return `20`
+    and so on...
+
+    Parameters
+    ----------
+    channel : str
+
+    Returns
+    -------
+    channel : number or None
+        Number to use for the MPOD card.
+    """
+    if len(channel) <= 1:
+        return None
+    else:
+        channel = int(channel)
+        while channel >= 10:
+            channel /= 10
+        if channel == 0:
+            return channel
+        return (int(channel) * 10)
 
 
 class CxiMPODD50(MPODChannelLV, MPODChannelHV):
@@ -280,6 +316,7 @@ class MfxDetMPOD(MPODChannelLV, MPODChannelHV):
     MFX:DET:MPD:CH:[300-307] LV
 
     caget MFX:DET:MPD:CH:000:GetMaxVoltage 1000
+
     caget MFX:DET:MPD:CH:100:GetMaxVoltage 8
     caget MFX:DET:MPD:CH:200:GetMaxVoltage 8
     caget MFX:DET:MPD:CH:300:GetMaxVoltage 8

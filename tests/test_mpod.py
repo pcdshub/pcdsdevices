@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import patch
 from ophyd.sim import make_fake_device
 from pcdsdevices.device_types import MPODChannelHV, MPODChannelLV, MPOD
-from pcdsdevices.mpod import MPODChannel
+from pcdsdevices.mpod import MPODChannel, get_card_number
 
 logger = logging.getLogger(__name__)
 
@@ -113,6 +113,15 @@ def test_mpod_channel_factory(fake_mpod_channel_v30, fake_mpod_channel_v500):
                return_value=fake_mpod_channel_v500):
         hv = MPOD('TST:MY:MMS:CH:100', name='test_hv_mpod')
         assert isinstance(hv, MPODChannelHV)
+
+
+def test_get_card_number():
+    input_list = ['7', '0', '100', '200', '304', '407', '315', '000']
+    expected_out = [None, None, 10, 20, 30, 40, 30, 0]
+    out_list = []
+    for i in input_list:
+        out_list.append(get_card_number(i))
+    assert out_list == expected_out
 
 
 @pytest.mark.timeout(5)
