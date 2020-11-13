@@ -113,19 +113,19 @@ class AttBase(FltMvInterface, PVPositioner):
                    kind='normal')
     readback = Cpt(EpicsSignalRO, ':COM:R_CUR', auto_monitor=True,
                    kind='hinted')
-    actuate = Cpt(EpicsSignal, ':COM:GO', kind='normal')
+    actuate = Cpt(EpicsSignal, ':COM:GO', kind='omitted')
     done = Cpt(EpicsSignalRO, ':COM:STATUS', auto_monitor=True,
                kind='omitted')
 
     # Attenuator Signals
     energy = Cpt(EpicsSignalRO, ':COM:T_CALC.VALE', kind='normal')
-    trans_ceil = Cpt(EpicsSignalRO, ':COM:R_CEIL', kind='normal')
-    trans_floor = Cpt(EpicsSignalRO, ':COM:R_FLOOR', kind='normal')
-    user_energy = Cpt(EpicsSignal, ':COM:EDES', kind='normal')
-    eget_cmd = Cpt(EpicsSignal, ':COM:EACT.SCAN', kind='normal')
+    trans_ceil = Cpt(EpicsSignalRO, ':COM:R_CEIL', kind='omitted')
+    trans_floor = Cpt(EpicsSignalRO, ':COM:R_FLOOR', kind='omitted')
+    user_energy = Cpt(EpicsSignal, ':COM:EDES', kind='omitted')
+    eget_cmd = Cpt(EpicsSignal, ':COM:EACT.SCAN', kind='omitted')
 
     # Aux Signals
-    calcpend = Cpt(EpicsSignalRO, ':COM:CALCP', kind='normal')
+    calcpend = Cpt(EpicsSignalRO, ':COM:CALCP', kind='omitted')
 
     # 3rd harmonic frequency components
     # ==================================
