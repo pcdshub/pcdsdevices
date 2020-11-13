@@ -19,6 +19,7 @@ from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
 from .signal import InternalSignal
 from .variety import set_metadata
+from .utils import get_status_value
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
@@ -105,25 +106,38 @@ class AttBase(FltMvInterface, PVPositioner):
     vary. You should not instantiate this class directly, but instead use the
     :func:`Attenuator` factory function.
     """
-
+    # fundamental frequency components
+    # ================================
     # Positioner Signals
     setpoint = Cpt(EpicsSignal, ':COM:R_DES', auto_monitor=True,
                    kind='normal')
     readback = Cpt(EpicsSignalRO, ':COM:R_CUR', auto_monitor=True,
                    kind='hinted')
-    actuate = Cpt(EpicsSignal, ':COM:GO', kind='omitted')
+    actuate = Cpt(EpicsSignal, ':COM:GO', kind='normal')
     done = Cpt(EpicsSignalRO, ':COM:STATUS', auto_monitor=True,
                kind='omitted')
 
     # Attenuator Signals
     energy = Cpt(EpicsSignalRO, ':COM:T_CALC.VALE', kind='normal')
-    trans_ceil = Cpt(EpicsSignalRO, ':COM:R_CEIL', kind='omitted')
-    trans_floor = Cpt(EpicsSignalRO, ':COM:R_FLOOR', kind='omitted')
-    user_energy = Cpt(EpicsSignal, ':COM:EDES', kind='omitted')
-    eget_cmd = Cpt(EpicsSignal, ':COM:EACT.SCAN', kind='omitted')
+    trans_ceil = Cpt(EpicsSignalRO, ':COM:R_CEIL', kind='normal')
+    trans_floor = Cpt(EpicsSignalRO, ':COM:R_FLOOR', kind='normal')
+    user_energy = Cpt(EpicsSignal, ':COM:EDES', kind='normal')
+    eget_cmd = Cpt(EpicsSignal, ':COM:EACT.SCAN', kind='normal')
 
     # Aux Signals
-    calcpend = Cpt(EpicsSignalRO, ':COM:CALCP', kind='omitted')
+    calcpend = Cpt(EpicsSignalRO, ':COM:CALCP', kind='normal')
+
+    # 3rd harmonic frequency components
+    # ==================================
+    # Positioner Signals
+    setpoint_3rd = Cpt(EpicsSignal, ':COM:R3_DES', kind='normal')
+    readback_3rd = Cpt(EpicsSignalRO, ':COM:R3_CUR', kind='hinted')
+
+    # Attenuator Signals
+    energy_3rd = Cpt(EpicsSignalRO, ':COM:T_CALC.VALH', kind='normal')
+    trans_ceil_3rd = Cpt(EpicsSignalRO, ':COM:R3_CEIL', kind='omitted')
+    trans_floor_3rd = Cpt(EpicsSignalRO, ':COM:R3_FLOOR', kind='omitted')
+    user_energy_3rd = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
 
     egu = ''  # Transmission is a unitless ratio
     done_value = 0
@@ -134,8 +148,6 @@ class AttBase(FltMvInterface, PVPositioner):
     SUB_STATE = 'state'
     # Tab complete whitelist
     tab_whitelist = ['set_energy']
-
-    _harmonic = '1st'
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, limits=(0, 1), **kwargs)
@@ -283,6 +295,20 @@ class AttBase(FltMvInterface, PVPositioner):
     def format_status_info(self, status_info):
         """
         Override status info handler to render the att
+
+        Display attenuator status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+
         """
         # Get the attenuator statuses
         blade_states = []
@@ -291,37 +317,19 @@ class AttBase(FltMvInterface, PVPositioner):
                 filter_info = status_info[f'filter{i}']
             except KeyError:
                 break
-            status = filter_info['status']['value']
+            status = get_status_value(filter_info, 'status', 'value')
             blade_states.append(status)
-        lines = render_ascii_att(blade_states)
-        txt = 'Transmission for {} harmonic (E={:.3} keV): {:.4E}'
-        energy = status_info['energy']['value'] / 1000
-        trans = status_info['position']
-        harm = self._harmonic
-        lines.append(txt.format(harm, energy, trans))
-        return '\n'.join(lines)
 
+        states = '\n'.join(render_ascii_att(blade_states))
 
-class AttBase3rd(AttBase):
-    """
-    :func:`Attenuator` class to use the 3rd harmonic values.
-
-    This is exactly the same as the normal :class:`AttBase`, but with the
-    alternative transmission PVs. It can be instantiated using the
-    `~Attenuator.use_3rd` argument in the :func:`Attenuator` factory function.
-    """
-
-    _harmonic = '3rd'
-
-    # Positioner Signals
-    setpoint = Cpt(EpicsSignal, ':COM:R3_DES', kind='normal')
-    readback = Cpt(EpicsSignalRO, ':COM:R3_CUR', kind='hinted')
-
-    # Attenuator Signals
-    energy = Cpt(EpicsSignalRO, ':COM:T_CALC.VALH', kind='normal')
-    trans_ceil = Cpt(EpicsSignalRO, ':COM:R3_CEIL', kind='omitted')
-    trans_floor = Cpt(EpicsSignalRO, ':COM:R3_FLOOR', kind='omitted')
-    user_energy = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
+        energy = get_status_value(status_info, 'energy', 'value') * 1e3
+        energy_3rd = get_status_value(status_info, 'energy_3rd', 'value') * 1e3
+        trans = get_status_value(status_info, 'position')
+        return f"""\
+{states}
+Transmission for 1st harmonic (E={energy:.3} keV): {trans:.4E}
+Transmission for 3rd harmonic (E={energy_3rd:.3} keV): {trans:.4E}
+"""
 
 
 class FeeAtt(AttBase, PVPositionerPC):
@@ -377,16 +385,14 @@ def _make_att_classes(max_filters, base, name):
 
 
 _att_classes = _make_att_classes(MAX_FILTERS, AttBase, 'Attenuator')
-_att3_classes = _make_att_classes(MAX_FILTERS, AttBase3rd, 'Attenuator3rd')
 
 
-def Attenuator(prefix, n_filters, *, name, use_3rd=False, **kwargs):
+def Attenuator(prefix, n_filters, *, name, **kwargs):
     """
     A series of filters that attenuates the beam.
 
     This is a factory function for instantiating a subclass of :class:`AttBase`
-    or :class:`AttBase3rd` with the correct number of :class:`Filter`
-    components.
+    with the correct number of :class:`Filter` components.
 
     The :class:`Filter` components will be named 'filter1', 'filter2', ...
     'filter10', ...
@@ -401,16 +407,8 @@ def Attenuator(prefix, n_filters, *, name, use_3rd=False, **kwargs):
 
     name : str
         An identifying name for the attenuator.
-
-    use_3rd : bool, optional
-        If `True`, we'll use the third harmonic transmissions instead
-        of the fundamental frequency.
     """
-
-    if use_3rd:
-        cls = _att3_classes[n_filters]
-    else:
-        cls = _att_classes[n_filters]
+    cls = _att_classes[n_filters]
     return cls(prefix, name=name, **kwargs)
 
 
