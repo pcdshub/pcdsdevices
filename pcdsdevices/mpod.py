@@ -215,7 +215,7 @@ def MPOD(channel_prefix, card_prefix=None, **kwargs):
             return None
         else:
             card_number = get_card_number(channel)
-            card = f'{base}:MOD:{card_number}'
+            card = f'{base}MOD:{card_number}'
             return MPODChannelHV(channel_prefix, card, **kwargs)
 
 

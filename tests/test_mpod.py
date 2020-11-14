@@ -113,6 +113,7 @@ def test_mpod_channel_factory(fake_mpod_channel_v30, fake_mpod_channel_v500):
                return_value=fake_mpod_channel_v500):
         hv = MPOD('TST:MY:MMS:CH:100', name='test_hv_mpod')
         assert isinstance(hv, MPODChannelHV)
+        assert hv._card_prefix == 'TST:MY:MMS:MOD:10'
 
 
 def test_get_card_number():
