@@ -223,7 +223,7 @@ def get_card_number(channel):
     """
     Helper for creating the card prefix for HV channels.
 
-    For channels `[0-7]` - it will return None
+    For channels `[0-7]` - it will return ''
     For channels `[000-015] - it will return `0`
     For channels `[100-107] - it will return `10`
     FOr channels `[200-207] - it will return `20`
@@ -235,11 +235,11 @@ def get_card_number(channel):
 
     Returns
     -------
-    channel : number or None
+    channel : int or empty string
         Number to use for the MPOD card.
     """
     if len(channel) <= 1:
-        return None
+        return ''
     else:
         channel = int(channel)
         while channel >= 10:
