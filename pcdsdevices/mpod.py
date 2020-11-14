@@ -205,6 +205,7 @@ def MPOD(channel_prefix, card_prefix=None, **kwargs):
     try:
         voltage = mpod.get_max_voltage()
     except Exception:
+        logger.error('Could not get the max voltage from from MPOD channel.')
         return None
     else:
         if voltage < 50:
@@ -212,6 +213,7 @@ def MPOD(channel_prefix, card_prefix=None, **kwargs):
         try:
             base, channel = channel_prefix.split('CH:')
         except Exception:
+            logger.error('Could not get the base and channel from PV.')
             return None
         else:
             card_number = get_card_number(channel)
@@ -221,7 +223,7 @@ def MPOD(channel_prefix, card_prefix=None, **kwargs):
 
 def get_card_number(channel):
     """
-    Helper for creating the card prefix for HV channels.
+    Helper function for creating the card prefix for HV channels.
 
     For channels `[0-7]` - it will return ''
     For channels `[000-015] - it will return `0`
