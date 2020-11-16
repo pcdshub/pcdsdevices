@@ -289,31 +289,47 @@ class XOffsetMirror(BaseInterface, Device):
     _icon = 'fa.minus-square'
 
     # Motor components: can read/write positions
-    y_up = Cpt(BeckhoffAxis, ':MMS:YUP', kind='hinted')
-    x_up = Cpt(BeckhoffAxis, ':MMS:XUP', kind='hinted')
-    pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='hinted')
-    bender = Cpt(BeckhoffAxis, ':MMS:BENDER', kind='normal')
-    y_dwn = Cpt(BeckhoffAxis, ':MMS:YDWN', kind='config')
-    x_dwn = Cpt(BeckhoffAxis, ':MMS:XDWN', kind='config')
+    y_up = Cpt(BeckhoffAxis, ':MMS:YUP', kind='hinted',
+               doc='Yupstream master axis [um]')
+    x_up = Cpt(BeckhoffAxis, ':MMS:XUP', kind='hinted',
+               doc='Xupstream master [um]')
+    pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='hinted',
+                doc='Pitch stepper and piezo axes [urad]')
+    bender = Cpt(BeckhoffAxis, ':MMS:BENDER', kind='normal',
+                 doc='Bender motor [um]')
+    y_dwn = Cpt(BeckhoffAxis, ':MMS:YDWN', kind='config',
+                doc='Ydwnstream slave axis [um]')
+    x_dwn = Cpt(BeckhoffAxis, ':MMS:XDWN', kind='config',
+                doc='Xdwnstream slave axis [um]')
 
     # Gantry components
-    gantry_x = Cpt(PytmcSignal, ':GANTRY_X', io='i', kind='normal')
-    gantry_y = Cpt(PytmcSignal, ':GANTRY_Y', io='i', kind='normal')
-    couple_y = Cpt(PytmcSignal, ':COUPLE_Y', io='o', kind='config')
-    couple_x = Cpt(PytmcSignal, ':COUPLE_X', io='o', kind='config')
-    decouple_y = Cpt(PytmcSignal, ':DECOUPLE_Y', io='o', kind='config')
-    decouple_x = Cpt(PytmcSignal, ':DECOUPLE_X', io='o', kind='config')
+    gantry_x = Cpt(PytmcSignal, ':GANTRY_X', io='i', kind='normal',
+                   doc='X gantry difference [um]')
+    gantry_y = Cpt(PytmcSignal, ':GANTRY_Y', io='i', kind='normal',
+                   doc='Y gantry difference [um]')
+    couple_y = Cpt(PytmcSignal, ':COUPLE_Y', io='o', kind='config',
+                   doc='Couple Y motors [bool]')
+    couple_x = Cpt(PytmcSignal, ':COUPLE_X', io='o', kind='config',
+                   doc='Couple X motors [bool]')
+    decouple_y = Cpt(PytmcSignal, ':DECOUPLE_Y', io='o', kind='config',
+                     doc='Decouple Y motors [bool]')
+    decouple_x = Cpt(PytmcSignal, ':DECOUPLE_X', io='o', kind='config',
+                     doc='Decouple X motors [bool]')
     couple_status_y = Cpt(PytmcSignal, ':ALREADY_COUPLED_Y', io='i',
                           kind='normal')
     couple_status_x = Cpt(PytmcSignal, ':ALREADY_COUPLED_X', io='i',
                           kind='normal')
 
     # RMS Cpts:
-    y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal')
-    x_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
-    pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
+    y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal',
+                    doc='Yup encoder RMS deviation [um]')
+    x_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal',
+                    doc='Xup encoder RMS deviation [um]')
+    pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal',
+                        doc='Pitch encoder RMS deviation [urad]')
     bender_enc_rms = Cpt(PytmcSignal, ':ENC:BENDER:RMS', io='i',
-                         kind='normal')
+                         kind='normal',
+                         doc='Bender encoder RMS deviation [um]')
 
     # Lightpath config: implement inserted, removed, transmission, subscribe
     # For now, keep it simple. Some mirrors need more than this, but it is
@@ -324,7 +340,7 @@ class XOffsetMirror(BaseInterface, Device):
     SUB_STATE = 'state'
 
 
-class XOffsetMirror2(XOffsetMirror):
+class XOffsetMirrorBend(XOffsetMirror):
     """
     X-ray Offset Mirror with 2 bender acutators.
 
@@ -358,6 +374,40 @@ class XOffsetMirror2(XOffsetMirror):
     # Bender RTD Cpts:
     us_rtd = Cpt(EpicsSignalRO, ':RTD:US:1_RBV', kind='normal')
     ds_rtd = Cpt(EpicsSignalRO, ':RTD:DS:1_RBV', kind='normal')
+
+
+# Maintain backward compatibility
+XOffsetMirror2 = XOffsetMirrorBend
+
+
+class XOffsetMirrorSwitch(XOffsetMirror):
+    """
+    X-ray Offset Mirror with Yleft/Yright
+
+    1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # UI representation
+    _icon = 'fa.minus-square'
+
+    # Do a dumb thing and kill inherited/unused components
+    y_up = None
+    y_dwn = None
+    bender = None
+    bender_enc_rms = None
+
+    # Motor components: can read/write positions
+    y_left = Cpt(BeckhoffAxis, ':MMS:YLEFT', kind='hinted',
+                 doc='Yleft master axis [um]')
+    y_right = Cpt(BeckhoffAxis, ':MMS:YRIGHT', kind='config',
+                  doc='Yright slave axis [um]')
 
 
 class KBOMirror(BaseInterface, Device):
