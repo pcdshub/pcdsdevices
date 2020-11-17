@@ -176,7 +176,7 @@ class IPMMotion(BaseInterface, Device):
             diode_type = ''
 
         return f"""\
-{name}: Target {target_state_num} {target_state} {composition}
+{name}: Target {target_state_num} {target_state} [{composition}]
 Target Position: {target_pos} [{t_units}]
 {diode_type}Diode Position(x, y): \
 {x_motor_pos:.4f}, {y_motor_pos:.4f} [{d_units}]
