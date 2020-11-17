@@ -327,7 +327,7 @@ Transmission for 1st harmonic (E={energy:.3} keV): {trans:.4E}
 """
 
 
-class AttBaseWith3rd(FltMvInterface, PVPositioner):
+class AttBaseWith3rdHarmonic(FltMvInterface, PVPositioner):
     """
     Base class for attenuators with 3rd harmonic frequency.
 
@@ -381,7 +381,7 @@ class FeeAtt(AttBase, PVPositionerPC):
         super().__init__(prefix, name=name, **kwargs)
 
 
-def _make_att_classes(max_filters, base, third_base, name):
+def _make_att_classes(max_filters, base, base_3rd_harmonic, name):
     """Generate all possible subclasses."""
     att_classes = {}
     for i in range(1, max_filters + 1):
@@ -391,14 +391,14 @@ def _make_att_classes(max_filters, base, third_base, name):
             att_filters['filter{}'.format(n)] = comp
 
         cls_name = '{}{}'.format(name, i)
-        cls = type(cls_name, (base, third_base,), att_filters)
+        cls = type(cls_name, (base, base_3rd_harmonic,), att_filters)
         cls.num_att = i
         att_classes[i] = cls
     return att_classes
 
 
 _att_classes = _make_att_classes(
-    MAX_FILTERS, AttBase, AttBaseWith3rd, 'Attenuator')
+    MAX_FILTERS, AttBase, AttBaseWith3rdHarmonic, 'Attenuator')
 
 
 def Attenuator(prefix, n_filters, *, name, **kwargs):
