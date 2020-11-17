@@ -97,7 +97,7 @@ class FeeFilter(InOutPositioner):
 
 class AttBase(FltMvInterface, PVPositioner):
     """
-    Base class for the attenuators.
+    Base class for attenuators with fundamental frequency.
 
     This is a device that puts an array of filters in or out to achieve a
     desired transmission ratio.
@@ -107,7 +107,6 @@ class AttBase(FltMvInterface, PVPositioner):
     :func:`Attenuator` factory function.
     """
     # fundamental frequency components
-    # ================================
     # Positioner Signals
     setpoint = Cpt(EpicsSignal, ':COM:R_DES', auto_monitor=True,
                    kind='normal')
@@ -126,18 +125,6 @@ class AttBase(FltMvInterface, PVPositioner):
 
     # Aux Signals
     calcpend = Cpt(EpicsSignalRO, ':COM:CALCP', kind='omitted')
-
-    # 3rd harmonic frequency components
-    # ==================================
-    # Positioner Signals
-    setpoint_3rd = Cpt(EpicsSignal, ':COM:R3_DES', kind='normal')
-    readback_3rd = Cpt(EpicsSignalRO, ':COM:R3_CUR', kind='hinted')
-
-    # Attenuator Signals
-    energy_3rd = Cpt(EpicsSignalRO, ':COM:T_CALC.VALH', kind='normal')
-    trans_ceil_3rd = Cpt(EpicsSignalRO, ':COM:R3_CEIL', kind='omitted')
-    trans_floor_3rd = Cpt(EpicsSignalRO, ':COM:R3_FLOOR', kind='omitted')
-    user_energy_3rd = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
 
     egu = ''  # Transmission is a unitless ratio
     done_value = 0
@@ -323,13 +310,40 @@ class AttBase(FltMvInterface, PVPositioner):
         states = '\n'.join(render_ascii_att(blade_states))
 
         energy = get_status_value(status_info, 'energy', 'value') * 1e3
-        energy_3rd = get_status_value(status_info, 'energy_3rd', 'value') * 1e3
+        energy_3rd = get_status_value(status_info, 'energy_3rd', 'value')
         trans = get_status_value(status_info, 'position')
-        return f"""\
+
+        if energy_3rd != 'N/A':
+            energy_3rd = energy_3rd * 1e3
+            return f"""\
 {states}
 Transmission for 1st harmonic (E={energy:.3} keV): {trans:.4E}
 Transmission for 3rd harmonic (E={energy_3rd:.3} keV): {trans:.4E}
 """
+        else:
+            return f"""\
+{states}
+Transmission for 1st harmonic (E={energy:.3} keV): {trans:.4E}
+"""
+
+
+class AttBaseWith3rd(FltMvInterface, PVPositioner):
+    """
+    Base class for attenuators with 3rd harmonic frequency.
+
+    This base class contains 3rd harmonic frequncy components.
+    You should not instantiate this class directly, but instead use the
+    :func:`Attenuator` factory function.
+    """
+    # Positioner Signals
+    setpoint_3rd = Cpt(EpicsSignal, ':COM:R3_DES', kind='normal')
+    readback_3rd = Cpt(EpicsSignalRO, ':COM:R3_CUR', kind='hinted')
+
+    # Attenuator Signals
+    energy_3rd = Cpt(EpicsSignalRO, ':COM:T_CALC.VALH', kind='normal')
+    trans_ceil_3rd = Cpt(EpicsSignalRO, ':COM:R3_CEIL', kind='omitted')
+    trans_floor_3rd = Cpt(EpicsSignalRO, ':COM:R3_FLOOR', kind='omitted')
+    user_energy_3rd = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
 
 
 class FeeAtt(AttBase, PVPositionerPC):
@@ -367,7 +381,7 @@ class FeeAtt(AttBase, PVPositionerPC):
         super().__init__(prefix, name=name, **kwargs)
 
 
-def _make_att_classes(max_filters, base, name):
+def _make_att_classes(max_filters, base, third_base, name):
     """Generate all possible subclasses."""
     att_classes = {}
     for i in range(1, max_filters + 1):
@@ -377,14 +391,14 @@ def _make_att_classes(max_filters, base, name):
             att_filters['filter{}'.format(n)] = comp
 
         cls_name = '{}{}'.format(name, i)
-        cls = type(cls_name, (base,), att_filters)
-        # Store the number of filters
+        cls = type(cls_name, (base, third_base,), att_filters)
         cls.num_att = i
         att_classes[i] = cls
     return att_classes
 
 
-_att_classes = _make_att_classes(MAX_FILTERS, AttBase, 'Attenuator')
+_att_classes = _make_att_classes(
+    MAX_FILTERS, AttBase, AttBaseWith3rd, 'Attenuator')
 
 
 def Attenuator(prefix, n_filters, *, name, **kwargs):
