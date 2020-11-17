@@ -7,61 +7,81 @@ v3.3.0 (2020-11-17)
 
 API Changes
 -----------
-- Changed the `read_lens` to open a normal file instead of a `.yaml` file, and to be able to read one lens set at the time from a file with multiple lens sets.
-- Changed the `create_lens` methods to use a normal file instead of `.yaml` file, and also to be able to create a set with multiple sets of lens.
+- The belens classes use ``pcdscalc`` to handle their calculations,
+  changing the lens file specifications as follows:
+
+  - Changed the ``read_lens`` to open a normal file instead of a ``.yaml``
+    file, and to be able to read one lens set at the time from a file
+    with multiple lens sets.
+  - Changed the ``create_lens`` methods to use a normal file instead of
+    ``.yaml`` file, and also to be able to create a set with multiple sets of lens.
+
+- This is not expected to be breaking, as this feature
+  is underused in the deployed environments.
 
 Features
 --------
-- Added a `set_lens_set` method to allow the user to choose what set from the file to use for calculations.
-- Added a factory function `acromag_ch_factory_func` to support the creation of happi entries from the questionnaires for a single acromag channel.
-- Added an alias for this function `AcromagChannel`.
+- Added a ``LensStack.set_lens_set`` method to allow the user
+  to choose what set from the file to use for calculations.
+- Added a factory function ``acromag_ch_factory_func`` to
+  support the creation of happi entries from the questionnaire
+  for a single acromag channel.
+
+  - Added an alias for this function ``AcromagChannel``.
+
 - Added a custom status print for motors by overriding the status info handler.
-- Added a new component for `dial_position`
-- Added a new method `check_limit_switches` to check for the limit switches.
+- Added a new component for ``EpicsMotorInterface.dial_position``
+- Added a new method ``EpicsMotorInterface.check_limit_switches`` to return a
+  string visualization of the limit switch state.
 - Added a custom status print for slits by overriding the status info handler.
-- Added a helper function in `utils.py`: `get_status_value` to support getting a value from a dictionary.
+- Added a helper function in ``utils.get_status_value`` to support getting
+  a value from a dictionary.
 - Added a custom status print for PIM by overriding the status info handler.
 - Added a custom status print for IPM by overriding the status info handler.
 
 Device Updates
 --------------
-- SmarActOpenLoop: open loop steps signal changed to RO. Added some docs.
-- PCDSAreaDetectorTyphosBeamStats: Now sub-classes PCDSAreaDetectorTyphosTrigger
-- TuttiFrutti: Change camera class to LasBasler
-- Added XOffsetMirror2 class to mirror.py
-- Renamed mirror.XOffsetMirror2 to mirror.XOffsetMirrorBend for clarity
+- ``SmarActOpenLoop``: open loop steps signal changed to RO.
+  Added some docs.
+- ``PCDSAreaDetectorTyphosBeamStats`` Now sub-classes
+  ``PCDSAreaDetectorTyphosTrigger``
+- ``TuttiFrutti``: Change camera class to ``LasBasler``
 
 New Devices
 -----------
-- BaslerBase: Base class for inheriting some Basler-specific PVs.
-- Basler: Class for "typical" Basler deployed in a hutch.
-- LasBasler: Class for more laser-specific Basler cameras.
-- `MPODChannelHV`, and `MPODChannelLV` new Devices have been added.
-- Added the `AcromagChannel` that supports the creation of an Acromag Channel signal
-- Added mirror.XOffsetMirrorSwitch
+- ``BaslerBase``: Base class for inheriting some Basler-specific PVs.
+- ``Basler``: Class for "typical" Basler deployed in a hutch.
+- ``LasBasler``: Class for more laser-specific Basler cameras.
+- ``MPODChannelHV``, and ``MPODChannelLV`` for MPOD high voltage and
+  low voltage channels, respectively.
+- Added the ``AcromagChannel`` that supports the creation of an Acromag Channel signal
+- Added ``mirror.XOffsetMirrorBend`` class for offset mirrors with benders.
+- Added ``mirror.XOffsetMirrorSwitch``.
   This is nearly identical to mirror.XOffsetMirror but with no Bender and
-  vertical axes YLEFT/YRIGHT instead of YUP/YDWN
-- Added spectrometer.Mono
-  This includes all motion axes and Pytmc signals for SP1K1-MONO system
+  vertical axes YLEFT/YRIGHT instead of YUP/YDWN.
+- Added ``spectrometer.Mono``,
+  this includes all motion axes and Pytmc signals for SP1K1-MONO system
 
 Bugfixes
 --------
-- lasers/elliptec.py: Fix conflict with BlueSky interface and 'stop' signal.
-- Ensure that we only try to put into the queue if event_thread is not None.
+- ``lasers/elliptec.py``: Fix conflict with BlueSky interface and 'stop'
+  signal.
+- For event scheduling, ensure that we only try to put into the queue
+  if event_thread is not None. This resolves some of the startup terminal spam
+  in lucid.
 - PTMPLC ilk pv was incorrect, changed from ILK_STATUS_RBV to ILK_OK_RBV
 - Create a default status info message for devices that have
   errors in constructing their status.
 
 Maintenance
 -----------
-- Added more documentation to methods and LensStack class.
-- Chaged from using functions defined in these classes to using the `pcdscalc.be_lens_calcs`
+- Added more documentation to methods and ``LensStack`` class.
+- Refactored be lens classes to use ``pcdscalc.be_lens_calcs``
 - Add laser imports to :mod:`pcdsdevices.device_types`.  Test fixtures now
   verify imported laser devices' tab completion settings.
 
 Contributors
 ------------
-- ZLLentz
 - cristinasewell
 - ghalym
 - hhslepicka
@@ -69,8 +89,7 @@ Contributors
 - klauer
 - sfsyunus
 - tjohnson
-- tjohnson
-
+- zllentz
 
 
 v3.2.0 (2020-10-23)
