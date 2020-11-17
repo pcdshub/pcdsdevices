@@ -31,8 +31,36 @@ class IPMTarget(InOutRecordPositioner):
     in_states = ['TARGET1', 'TARGET2', 'TARGET3', 'TARGET4']
     states_list = in_states + ['OUT']
 
+    t1_composition = Cpt(EpicsSignalRO, ':TARGET1.DESC', kind='omitted')
+    t2_composition = Cpt(EpicsSignalRO, ':TARGET2.DESC', kind='omitted')
+    t3_composition = Cpt(EpicsSignalRO, ':TARGET3.DESC', kind='omitted')
+    t4_composition = Cpt(EpicsSignalRO, ':TARGET4.DESC', kind='omitted')
+
     # Assume that having any target in gives transmission 0.8
     _transmission = {st: 0.8 for st in in_states}
+
+    def get_composition(self):
+        """
+        Get the target composition.
+
+        Each state is a different target with different material/thicknesses.
+
+        Returns
+        -------
+        composition : str
+            Composition of target.
+        """
+        current_state = self.state.get()
+        if current_state == 1:
+            return self.t1_composition.get()
+        elif current_state == 2:
+            return self.t2_composition.get()
+        elif current_state == 3:
+            return self.t3_composition.get()
+        elif current_state == 4:
+            return self.t4_composition.get()
+        else:
+            return None
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
@@ -138,6 +166,8 @@ class IPMMotion(BaseInterface, Device):
                                             'state', 'value')
         target_state = get_status_value(status_info, 'target', 'position')
 
+        composition = self.target.get_composition() or ''
+
         if 'ipimb' in status_info.keys():
             diode_type = 'IPIMB '
         elif 'wave8' in status_info.keys():
@@ -146,7 +176,7 @@ class IPMMotion(BaseInterface, Device):
             diode_type = ''
 
         return f"""\
-{name}: Target {target_state_num} {target_state}
+{name}: Target {target_state_num} {target_state} {composition}
 Target Position: {target_pos} [{t_units}]
 {diode_type}Diode Position(x, y): \
 {x_motor_pos:.4f}, {y_motor_pos:.4f} [{d_units}]
