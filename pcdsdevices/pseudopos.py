@@ -8,13 +8,13 @@ from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
                              real_position_argument)
-from ophyd.signal import Signal
+from ophyd.signal import Signal, EpicsSignalRO
 from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
 from .signal import NotepadLinkedSignal
 from .sim import FastMotor
-from .utils import convert_unit
+from .utils import convert_unit, get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +31,10 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         notepad_metadata={'record': 'ai', 'default_value': 0.0},
     )
 
+    # Current Dial position
+    dial_position = Cpt(EpicsSignalRO, '.DRBV', kind='normal')
+    description = Cpt(EpicsSignalRO, '.DESC', kind='normal')
+
     def __init__(self, prefix='', parent=None, **kwargs):
         if not prefix:
             # PseudoSingle generally does not get a prefix. Fix that here,
@@ -40,6 +44,41 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
             prefix = f'{parent.prefix}:{attr_name}'
 
         super().__init__(prefix=prefix, parent=parent, **kwargs)
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the virtual motor.
+
+        Display virtual motor status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        description = get_status_value(status_info, 'description', 'value')
+        units = get_status_value(status_info, 'notepad_setpoint', 'units')
+        dial = get_status_value(status_info, 'dial_position', 'value')
+        position = get_status_value(status_info, 'position')
+
+        low, high = self.limits
+        name = self.prefix
+        if description:
+            name = f'{description}: {self.prefix}'
+
+        return f"""\
+Virtual Motor {name}
+Current position (user, dial): {position}, {dial} [{units}]
+User limits (low, high): {low}, {high} [{units}]
+Preset position: {self.presets.state()}
+"""
 
 
 def _as_float(self):
