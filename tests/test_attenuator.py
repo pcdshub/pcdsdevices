@@ -151,9 +151,9 @@ def test_attenuator_staging(fake_att):
         assert filt.removed
 
 
-def test_attenuator_third_harmonic():
-    logger.debug('test_attenuator_third_harmonic')
-    att = Attenuator('TRD:ATT', MAX_FILTERS-1, name='third')
+def test_attenuator():
+    logger.debug('test_attenuator')
+    att = Attenuator('TRD:ATT', MAX_FILTERS-1, name='att')
     att.wait_for_connection()
 
 
