@@ -241,17 +241,16 @@ class OffsetMirror(BaseInterface, Device):
         else:
             beamline = get_status_value(md, 'beamline')
             functional_group = get_status_value(md, 'functional_group')
-            name = f'{self.prefix} ({beamline} {functional_group})'
+            if functional_group is not None:
+                name = f'{self.prefix} ({beamline} {functional_group})'
+            else:
+                name = f'{self.prefix} ({beamline})'
 
         p_position = get_status_value(status_info, 'pitch', 'position')
         p_setpoint = get_status_value(status_info, 'pitch',
                                       'setpoint', 'value')
         p_units = get_status_value(status_info, 'pitch', 'setpoint',
                                    'units')
-        p_p_volts = get_status_value(status_info, 'pitch', 'piezo_volts',
-                                     'value')
-        p_p_units = get_status_value(status_info, 'pitch', 'piezo_volts',
-                                     'units')
         return f"""\
 {name}
 ------
@@ -259,7 +258,6 @@ pitch: ({self.pitch.prefix})
 ------
     position: {p_position}
     setpoint: {p_setpoint} [{p_units}]
-    piezo volts: {p_p_volts} [{p_p_units}]
 """
 
 
@@ -405,6 +403,7 @@ class XOffsetMirror(BaseInterface, Device):
         status: str
             Formatted string with all relevant status information.
         """
+        # happi metadata
         try:
             md = self.root.md
         except AttributeError:
@@ -412,7 +411,10 @@ class XOffsetMirror(BaseInterface, Device):
         else:
             beamline = get_status_value(md, 'beamline')
             functional_group = get_status_value(md, 'functional_group')
-            name = f'{self.prefix} ({beamline} {functional_group})'
+            if functional_group is not None:
+                name = f'{self.prefix} ({beamline} {functional_group})'
+            else:
+                name = f'{self.prefix} ({beamline})'
 
         x_position = get_status_value(status_info, 'x_up', 'position')
         x_user_setpoint = get_status_value(status_info, 'x_up',
@@ -588,7 +590,10 @@ class KBOMirror(BaseInterface, Device):
         else:
             beamline = get_status_value(md, 'beamline')
             functional_group = get_status_value(md, 'functional_group')
-            name = f'{self.prefix} ({beamline} {functional_group})'
+            if functional_group is not None:
+                name = f'{self.prefix} ({beamline} {functional_group})'
+            else:
+                name = f'{self.prefix} ({beamline})'
 
         x_position = get_status_value(status_info, 'x', 'position')
         x_user_setpoint = get_status_value(status_info, 'x',
@@ -714,7 +719,10 @@ class FFMirror(BaseInterface, Device):
         else:
             beamline = get_status_value(md, 'beamline')
             functional_group = get_status_value(md, 'functional_group')
-            name = f'{self.prefix} ({beamline} {functional_group})'
+            if functional_group is not None:
+                name = f'{self.prefix} ({beamline} {functional_group})'
+            else:
+                name = f'{self.prefix} ({beamline})'
 
         x_position = get_status_value(status_info, 'x', 'position')
         x_user_setpoint = get_status_value(status_info, 'x',
