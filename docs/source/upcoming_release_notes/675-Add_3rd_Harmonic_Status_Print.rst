@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- N/A
+- Instead of creating separated devices for Fundamental Frequency and 3rd Harmonic Frequency, we are now creating Attenuators that have both frequencies.
 
 New Devices
 -----------
