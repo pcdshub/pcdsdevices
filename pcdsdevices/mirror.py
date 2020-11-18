@@ -742,7 +742,7 @@ class FFMirror(BaseInterface, Device):
         p_enc_rms = get_status_value(status_info, 'pitch_enc_rms', 'value')
 
         return f"""\
-    {name}
+{name}
 ------
 x_up: ({self.x.prefix})
 ------
