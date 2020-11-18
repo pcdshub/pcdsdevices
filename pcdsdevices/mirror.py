@@ -19,6 +19,7 @@ from .epics_motor import BeckhoffAxis
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, FltMvInterface
 from .signal import PytmcSignal
+from .utils import get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -338,6 +339,68 @@ class XOffsetMirror(BaseInterface, Device):
     removed = False
     transmission = 1
     SUB_STATE = 'state'
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the homs X-ray Offset Mirror.
+
+        Display motor status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        # happi metadata
+        try:
+            md = self.root.md
+        except AttributeError:
+            name = f'{self.prefix}'
+        else:
+            beamline = get_status_value(md, 'beamline')
+            functional_group = get_status_value(md, 'functional_group')
+            name = f'{self.prefix} ({beamline} {functional_group})'
+
+        x_position = get_status_value(status_info, 'x_up', 'position')
+        x_user_setpoint = get_status_value(status_info, 'x_up',
+                                           'user_setpoint', 'value')
+        x_units = get_status_value(status_info, 'x_up', 'user_setpoint',
+                                   'units')
+        x_description = get_status_value(status_info, 'x_up', 'description',
+                                         'value')
+
+        p_position = get_status_value(status_info, 'pitch', 'position')
+        p_user_setpoint = get_status_value(status_info, 'x_up',
+                                           'user_setpoint', 'value')
+        p_units = get_status_value(status_info, 'x_up', 'user_setpoint',
+                                   'units')
+        p_description = get_status_value(status_info, 'x_up', 'description',
+                                         'value')
+        p_enc_rms = get_status_value(status_info, 'pitch_enc_rms', 'value')
+
+        return f"""\
+{name}
+------
+x_up:
+------
+    position: {x_position}
+    user_setpoint: {x_user_setpoint} [{x_units}]
+    description: {x_description}
+------
+pitch:
+------
+    position: {p_position}
+    user_setpoint: {p_user_setpoint} [{p_units}]
+    description: {p_description}
+    pitch_enc_rms: {p_enc_rms}
+"""
 
 
 class XOffsetMirrorBend(XOffsetMirror):
