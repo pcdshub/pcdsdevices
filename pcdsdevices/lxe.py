@@ -34,7 +34,7 @@ import typing
 
 import numpy as np
 from ophyd import Component as Cpt
-from ophyd import EpicsSignal, PVPositioner
+from ophyd import EpicsSignal, PVPositioner, EpicsSignalRO
 from ophyd.signal import AttributeSignal
 
 from .component import UnrelatedComponent as UCpt
@@ -44,7 +44,7 @@ from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
                         SyncAxesBase, pseudo_position_argument,
                         real_position_argument)
 from .signal import UnitConversionDerivedSignal
-from .utils import convert_unit
+from .utils import convert_unit, get_status_value
 
 if typing.TYPE_CHECKING:
     import matplotlib  # noqa
@@ -257,6 +257,8 @@ class LaserTiming(FltMvInterface, PVPositioner):
 
     tab_component_names = True
 
+    _lxt_verbose_name = 'Laser X-ray Timing'
+
     _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True,
                        kind='omitted',
                        doc='The internal nanosecond-expecting signal.'
@@ -272,6 +274,8 @@ class LaserTiming(FltMvInterface, PVPositioner):
     user_offset = Cpt(AttributeSignal, attr='_user_offset',
                       kind='normal',
                       doc='A Python-level user offset.')
+    # Current Dial position
+    dial_position = Cpt(EpicsSignalRO, '.DRBV', kind='normal')
 
     # A motor (record) will be moved after the above record is touched, so
     # use its done motion status:
@@ -325,6 +329,50 @@ class LaserTiming(FltMvInterface, PVPositioner):
         self.user_offset.put(0.0)
         new_offset = position - self.setpoint.get()
         self.user_offset.put(new_offset)
+
+    @property
+    def verbose_name(self):
+        """Get the verbose name for LXT motor"""
+        return self._lxt_verbose_name
+
+    @verbose_name.setter
+    def verbose_name(self, name):
+        """
+        Set a verbose name for the LXT motor.
+
+        Parameters
+        ----------
+        name : str
+            Verbose name for the LXT motor.
+        """
+        self._lxt_verbose_name = name
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the LXT motor.
+
+        Display lxt motor status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        position = get_status_value(status_info, 'position')
+        units = get_status_value(status_info, 'setpoint', 'units')
+        dial_pos = get_status_value(status_info, 'dial_position', 'value')
+        d_units = get_status_value(status_info, 'dial_position', 'units')
+        return f"""\
+Virtual Motor {self.verbose_name} {self.prefix}
+Current position (user, dial): {position} [{units}], {dial_pos} [{d_units}]
+"""
 
 
 class TimeToolDelay(DelayNewport):

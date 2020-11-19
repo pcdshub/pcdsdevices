@@ -33,9 +33,8 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
 
     # Current Dial position
     dial_position = Cpt(EpicsSignalRO, '.DRBV', kind='normal')
-    description = Cpt(EpicsSignalRO, '.DESC', kind='normal')
 
-    def __init__(self, prefix='', parent=None, **kwargs):
+    def __init__(self, prefix='', parent=None, verbose_name=None, **kwargs):
         if not prefix:
             # PseudoSingle generally does not get a prefix. Fix that here,
             # or 'notepad_setpoint' and 'notepad_readback' will have no
@@ -44,6 +43,7 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
             prefix = f'{parent.prefix}:{attr_name}'
 
         super().__init__(prefix=prefix, parent=parent, **kwargs)
+        self._verbose_name = verbose_name
 
     def format_status_info(self, status_info):
         """
@@ -63,15 +63,14 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         status: str
             Formatted string with all relevant status information.
         """
-        description = get_status_value(status_info, 'description', 'value')
         units = get_status_value(status_info, 'notepad_setpoint', 'units')
         dial = get_status_value(status_info, 'dial_position', 'value')
         position = get_status_value(status_info, 'position')
 
         low, high = self.limits
         name = self.prefix
-        if description:
-            name = f'{description}: {self.prefix}'
+        if self._verbose_name:
+            name = f'{self._verbose_name}: {self.prefix}'
 
         return f"""\
 Virtual Motor {name}
