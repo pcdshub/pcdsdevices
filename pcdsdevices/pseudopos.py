@@ -70,7 +70,7 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         low, high = self.limits
         name = self.prefix
         if self._verbose_name:
-            name = f'{self._verbose_name}: {self.prefix}'
+            name = f'{self._verbose_name} {self.prefix}'
 
         return f"""\
 Virtual Motor {name}
