@@ -104,10 +104,10 @@ def test_epics_motor_soft_limits(fake_epics_motor):
     m.limits = (-50, 50)
     with pytest.raises(ValueError):
         m.move(-75)
-    m._low_limit = -25
+    m.low_limit = -25
     with pytest.raises(ValueError):
         m.move(-40)
-    m._high_limit = 25
+    m.high_limit = 25
     with pytest.raises(ValueError):
         m.move(40)
     # Try with no limits set, e.g. (0, 0)

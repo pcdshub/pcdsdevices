@@ -108,33 +108,33 @@ Limit Switch: {switch_limits}
 """
 
     @property
-    def _low_limit(self):
+    def low_limit(self):
         """The lower soft limit for the motor."""
         epics_low, epics_high = self._get_epics_limits()
         if epics_low != epics_high:
             return max(self._limits[0], epics_low)
         return self._limits[0]
 
-    @_low_limit.setter
-    def _low_limit(self, value):
+    @low_limit.setter
+    def low_limit(self, value):
         self._limits = (value, self._limits[1])
 
     @property
-    def _high_limit(self):
+    def high_limit(self):
         """The higher soft limit for the motor."""
         epics_low, epics_high = self._get_epics_limits()
         if epics_low != epics_high:
             return min(self._limits[1], epics_high)
         return self._limits[1]
 
-    @_high_limit.setter
-    def _high_limit(self, value):
+    @high_limit.setter
+    def high_limit(self, value):
         self._limits = (self._limits[0], value)
 
     @property
     def limits(self):
         """The soft limits of the motor."""
-        return (self._low_limit, self._high_limit)
+        return (self.low_limit, self.high_limit)
 
     @limits.setter
     def limits(self, limits):
