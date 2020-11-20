@@ -45,6 +45,10 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         super().__init__(prefix=prefix, parent=parent, **kwargs)
         self._verbose_name = verbose_name
 
+    # Current Dial position
+    dial_position = FCpt(EpicsSignalRO, '{self.parent.prefix}.DRBV',
+                         kind='normal')
+
     def format_status_info(self, status_info):
         """
         Override status info handler to render the virtual motor.
@@ -63,7 +67,7 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         status: str
             Formatted string with all relevant status information.
         """
-        units = get_status_value(status_info, 'notepad_setpoint', 'units')
+        units = get_status_value(status_info, 'notepad_readback', 'units')
         dial = get_status_value(status_info, 'dial_position', 'value')
         position = get_status_value(status_info, 'position')
 
