@@ -141,6 +141,16 @@ def test_epics_motor_soft_limits(fake_epics_motor):
     assert m.get_high_limit() == 110
 
 
+def test_clearing_limits(fake_epics_motor):
+    m = fake_epics_motor
+    # current limits: -100, 100
+    assert m.get_low_limit() == -100
+    assert m.get_high_limit() == 100
+    m.clear_limits()
+    assert m.get_low_limit() == 0
+    assert m.get_high_limit() == 0
+
+
 def test_epics_motor_tdir(fake_pcds_motor):
     logger.debug('test_epics_motor_tdir')
     m = fake_pcds_motor
