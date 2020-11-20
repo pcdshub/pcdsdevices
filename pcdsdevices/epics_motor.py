@@ -2,7 +2,6 @@
 Module for LCLS's special motor records.
 """
 import logging
-import math
 import os
 import shutil
 
@@ -64,8 +63,6 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
                      "set_low_lim", "get_hi_lim", "set_hi_lim"]
 
     def __init__(self, *args, **kwargs):
-        # Locally defined limit overrides, note can only make limits narrower
-        self._limits = (-math.inf, math.inf)
         super().__init__(*args, **kwargs)
 
     def format_status_info(self, status_info):
@@ -106,39 +103,6 @@ User limits (low, high): {low}, {high} [{units}]
 Preset position: {self.presets.state()}
 Limit Switch: {switch_limits}
 """
-
-    @property
-    def low_limit(self):
-        """The lower soft limit for the motor."""
-        epics_low, epics_high = self._get_epics_limits()
-        if epics_low != epics_high:
-            return max(self._limits[0], epics_low)
-        return self._limits[0]
-
-    @low_limit.setter
-    def low_limit(self, value):
-        self._limits = (value, self._limits[1])
-
-    @property
-    def high_limit(self):
-        """The higher soft limit for the motor."""
-        epics_low, epics_high = self._get_epics_limits()
-        if epics_low != epics_high:
-            return min(self._limits[1], epics_high)
-        return self._limits[1]
-
-    @high_limit.setter
-    def high_limit(self, value):
-        self._limits = (self._limits[0], value)
-
-    @property
-    def limits(self):
-        """The soft limits of the motor."""
-        return (self.low_limit, self.high_limit)
-
-    @limits.setter
-    def limits(self, limits):
-        self._limits = limits
 
     def _get_epics_limits(self):
         limits = self.user_setpoint.limits
@@ -234,13 +198,14 @@ Limit Switch: {switch_limits}
         value : float
             Limit of travel in the negative direction.
         """
+        self.low_limit_travel.put(value)
         if not self.moving:
             # update EPICS
             if value <= self.position:
                 self.low_limit_travel.put(value)
             else:
-                logger.debug('Could not set motor low limit to %f at '
-                             'position %f', value, self.position)
+                self.log.debug('Could not set motor low limit to %f at '
+                               'position %f', value, self.position)
 
     def get_hi_lim(self):
         """Get high limit."""
@@ -260,8 +225,8 @@ Limit Switch: {switch_limits}
             if self.position <= value:
                 self.high_limit_travel.put(value)
             else:
-                logger.debug('Could not set motor high limit to %f at '
-                             'position %f', value, self.position)
+                self.log.debug('Could not set motor high limit to %f at '
+                               'position %f', value, self.position)
 
 
 class PCDSMotorBase(EpicsMotorInterface):

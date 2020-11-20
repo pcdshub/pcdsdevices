@@ -100,20 +100,15 @@ def test_epics_motor_soft_limits(fake_epics_motor):
     # Check that we can not move past the soft limits
     with pytest.raises(ValueError):
         m.move(-150)
-    # Try the local soft limits override
-    m.limits = (-50, 50)
+    # Try the soft limits override
+    m.user_setpoint.sim_set_limits((-50, 50))
+    assert m.limits == (-50, 50)
     with pytest.raises(ValueError):
         m.move(-75)
-    m.low_limit = -25
-    with pytest.raises(ValueError):
-        m.move(-40)
-    m.high_limit = 25
-    with pytest.raises(ValueError):
-        m.move(40)
     # Try with no limits set, e.g. (0, 0)
     m.user_setpoint.sim_set_limits((0, 0))
-    # And of course, clear our soft limits as well:
-    m.limits = (0, 0)
+    m.set_hi_lim(23)
+    assert m.get_hi_lim() == 23
     m.check_value(42)
 
 
