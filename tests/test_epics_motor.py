@@ -95,21 +95,50 @@ def test_epics_motor_soft_limits(fake_epics_motor):
     m = fake_epics_motor
     # Check that our limits were set correctly
     assert m.limits == (-100, 100)
-    assert m.get_low_lim() == -100
-    assert m.get_hi_lim() == 100
+    assert m.get_low_limit() == -100
+    assert m.get_high_limit() == 100
     # Check that we can not move past the soft limits
     with pytest.raises(ValueError):
         m.move(-150)
-    # Try the soft limits override
-    m.user_setpoint.sim_set_limits((-50, 50))
-    assert m.limits == (-50, 50)
+    # Try to move to a valid position
+    m.move(60, wait=False)
+    # move current position to -150
+    m.user_readback.sim_put(-150)
+    # Try to set low limit to higher than current position
     with pytest.raises(ValueError):
-        m.move(-75)
-    # Try with no limits set, e.g. (0, 0)
-    m.user_setpoint.sim_set_limits((0, 0))
-    m.set_hi_lim(23)
-    assert m.get_hi_lim() == 23
+        # current position: -150
+        m.set_low_limit(-101)
+    # move current position to 150
+    m.user_readback.sim_put(150)
+    # Try to set low limit to lower than the current
+    # position but higher than high limit.
+    with pytest.raises(ValueError):
+        # current high limit: 100
+        # current position: 150
+        m.set_low_limit(120)
+    # Try to set hi limit to lower than current position
+    with pytest.raises(ValueError):
+        # current position: 150
+        m.set_high_limit(90)
+    # Try to set high limit to higher than the current
+    # position but lower than low limit.
+    # change the current position to -110
+    m.user_readback.sim_put(-110)
+    with pytest.raises(ValueError):
+        # current low limit: -100
+        # current position: -110
+        m.set_high_limit(-105)
+    # change the current position to 50
+    m.user_readback.sim_put(50)
+    # Try to successfully set the high and low limits:
+    # current low limit: -100
+    # current high limit: 100
+    # current position:  50
+    m.set_low_limit(-110)
+    m.set_high_limit(110)
     m.check_value(42)
+    assert m.get_low_limit() == -110
+    assert m.get_high_limit() == 110
 
 
 def test_epics_motor_tdir(fake_pcds_motor):
