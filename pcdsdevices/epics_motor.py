@@ -59,8 +59,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     dial_position = Cpt(EpicsSignalRO, '.DRBV', kind='normal')
 
     tab_whitelist = ["set_current_position", "home", "velocity", "enable",
-                     "disable", "check_limit_switches", "get_low_lim",
-                     "set_low_lim", "get_hi_lim", "set_hi_lim"]
+                     "disable", "check_limit_switches", "get_low_limit",
+                     "set_low_limit", "get_high_limit", "set_high_limit"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -204,24 +204,22 @@ Limit Switch: {switch_limits}
         ValueError
             When motor in motion or position outside of limit.
         """
-        if not self.moving:
-            # update EPICS
-            _current_high_limit = self._get_epics_limits()[1]
-            if value <= self.position:
-                if value < _current_high_limit:
-                    self.low_limit_travel.put(value)
-                else:
-                    raise ValueError('Could not set motor low limit to %f. '
-                                     'Low limit must be lower than the '
-                                     'current high limit: %f',
-                                     value, _current_high_limit)
-            else:
-                raise ValueError('Could not set motor low limit to %f at '
-                                 'position %f. Low limit must be lower than '
-                                 'the current position.', value, self.position)
-        else:
-            raise ValueError('Could not set the low limit, the motor is in'
-                             ' motion')
+        if self.moving:
+            raise ValueError('Motor is in motion, cannot set the low limit!')
+
+        if value > self.position:
+            raise ValueError(f'Could not set motor low limit to {value} at'
+                             f' position {self.position}. Low limit must '
+                             'be lower than the current position.')
+
+        _current_high_limit = self._get_epics_limits()[1]
+        if value > _current_high_limit:
+            raise ValueError(f'Could not set motor low limit to {value}.'
+                             'Low limit must be lower than the current'
+                             f'high limit: {_current_high_limit}')
+
+        # update EPICS limits
+        self.low_limit_travel.put(value)
 
     def get_high_limit(self):
         """Get high limit."""
@@ -241,24 +239,21 @@ Limit Switch: {switch_limits}
         ValueError
             When motor in motion or position outside of limit.
         """
-        if not self.moving:
-            # update EPICS
-            _current_low_limit = self._get_epics_limits()[0]
-            if self.position <= value:
-                if value > _current_low_limit:
-                    self.high_limit_travel.put(value)
-                else:
-                    raise ValueError('Could not set motor high limit to %f. '
-                                     'High limit must be higher than the '
-                                     'current low limit: %f',
-                                     value, _current_low_limit)
-            else:
-                raise ValueError('Could not set motor high limit to %f at '
-                                 'position %f. High limit must be higher than '
-                                 'the current position.', value, self.position)
-        else:
-            raise ValueError('Could not set the high limit, the motor is in'
-                             ' motion')
+        if self.moving:
+            raise ValueError('Motor is in motion, cannot set the high limit!')
+
+        if value < self.position:
+            raise ValueError(f'Could not set motor high limit to {value} '
+                             f'at position {self.position}. High limit '
+                             'must be higher than the current position.')
+
+        _current_low_limit = self._get_epics_limits()[0]
+        if value < _current_low_limit:
+            raise ValueError(f'Could not set motor high limit to {value}. '
+                             'High limit must be higher than the current low '
+                             f'limit: {_current_low_limit}')
+        # update EPICS limits
+        self.high_limit_travel.put(value)
 
     def clear_limits(self):
         """Set both low and high limits to 0."""
