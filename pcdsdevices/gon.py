@@ -234,13 +234,13 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
     name : str
         A name to refer to the Kappa stage device.
 
-    prefix_x : str, optional
+    prefix_x : str
         The EPICS base PV of the Kappa stage's x motor.
 
-    prefix_y : str, optional
+    prefix_y : str
         The EPICS base PV of the Kappa stage's y motor.
 
-    prefix_z : str, optional
+    prefix_z : str
         The EPICS base PV of the Kappa stage's z motor.
 
     prefix_eta : str
@@ -303,10 +303,8 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
 
     tab_component_names = True
 
-    tab_whitelist = ['stop', 'wait', 'eta_position', 'kappa_postion',
-                     'phi_position', 'e_eta_coord', 'e_chi_coord',
-                     'e_phi_coord', 'k_to_e', 'e_to_k', 'mv_e_eta', 'mv_e_chi',
-                     'mv_e_phi', 'check_motor_step']
+    tab_whitelist = ['stop', 'wait', 'k_to_e', 'e_to_k', 'mv_e_eta',
+                     'mv_e_chi', 'mv_e_phi', 'check_motor_step']
 
     def __init__(self, *, name, prefix_x, prefix_y, prefix_z,
                  prefix_eta, prefix_kappa, prefix_phi, eta_max_step=2,
