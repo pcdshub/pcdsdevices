@@ -28,7 +28,8 @@ def motor_setup(motor):
     """
     if isinstance(motor, EpicsMotorInterface):
         motor.user_readback.sim_put(0)
-        motor.set_lim(100, -100)
+        motor.high_limit_travel.put(100)
+        motor.low_limit_travel.put(-100)
         motor.user_setpoint.sim_set_limits((-100, 100))
 
     if isinstance(motor, PCDSMotorBase):

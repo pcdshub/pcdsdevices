@@ -104,6 +104,11 @@ Preset position: {self.presets.state()}
 Limit Switch: {switch_limits}
 """
 
+    @property
+    def limits(self):
+        """Override the limits attribute"""
+        return self._get_epics_limits()
+
     def _get_epics_limits(self):
         limits = self.user_setpoint.limits
         if limits is None or limits == (None, None):
@@ -257,8 +262,8 @@ Limit Switch: {switch_limits}
 
     def clear_limits(self):
         """Set both low and high limits to 0."""
-        self.set_low_limit(0)
-        self.set_high_limit(0)
+        self.high_limit_travel.put(0)
+        self.low_limit_travel.put(0)
 
 
 class PCDSMotorBase(EpicsMotorInterface):
