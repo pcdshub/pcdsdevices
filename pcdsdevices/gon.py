@@ -5,12 +5,15 @@ import logging
 import numpy as np
 from prettytable import PrettyTable
 from ophyd import Device
+from ophyd.device import Component as Cpt
 from ophyd import FormattedComponent as FCpt
+
 
 from .epics_motor import IMS
 from .interface import BaseInterface
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
+from .sim import FastMotor
 
 logger = logging.getLogger(__name__)
 
@@ -328,26 +331,11 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         self.kappa.stop()
         self.phi.stop()
 
-    def wait(self):
+    def wait(self, timeout=None):
         """Block until the action completes."""
-        self.eta.wait()
-        self.kappa.wait()
-        self.phi.wait()
-
-    @property
-    def eta_position(self):
-        """Get the eta motor current position."""
-        return self.eta.wm()
-
-    @property
-    def kappa_position(self):
-        """Get the kappa motor current position."""
-        return self.kappa.wm()
-
-    @property
-    def phi_position(self):
-        """Get the phi motor's current position."""
-        return self.phi.wm()
+        self.eta.wait(timeout=timeout)
+        self.kappa.wait(timeout=timeout)
+        self.phi.wait(timeout=timeout)
 
     @property
     def e_eta_coord(self):
@@ -388,11 +376,11 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
             Spherical coordinates.
         """
         if not eta and eta != 0:
-            eta = self.eta_position
+            eta = self.eta.position
         if not kappa and kappa != 0:
-            kappa = self.kappa_position
+            kappa = self.kappa.position
         if not phi and phi != 0:
-            phi = -self.phi_position
+            phi = -self.phi.position
 
         kappa_ang = self.kappa_ang * np.pi / 180
 
@@ -416,8 +404,11 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         Parameters
         ----------
         e_eta : number
+            e_eta pseudo motor's spherical coordinate
         e_chi : number
+            e_chi pseudo motor's spherical coordinate
         e_phi : number
+            e_phi pseudo motor's spherical coordinate
 
         Returns
         -------
@@ -523,7 +514,12 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         real_position : RealPosition
             The real position output.
         """
-        return self.e_to_k(*pseudo_pos)
+        pseudo_pos = self.PseudoPosition(*pseudo_pos)
+        eta, chi, phi = self.e_to_k(pseudo_pos.e_eta, pseudo_pos.e_chi,
+                                    pseudo_pos.e_phi)
+        return self.RealPosition(eta=eta, kappa=chi, phi=phi,
+                                 x=self.x.position, y=self.y.position,
+                                 z=self.z.position)
 
     @real_position_argument
     def inverse(self, real_pos):
@@ -539,6 +535,7 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         pseudo_pos : PseudoPosition
             The pseudo position output.
         """
+        real_pos = self.RealPosition(*real_pos)
         e_eta, e_chi, e_phi = self.k_to_e(real_pos.eta, real_pos.kappa,
                                           real_pos.phi)
         return self.PseudoPosition(e_eta=e_eta, e_chi=e_chi, e_phi=e_phi)
@@ -566,9 +563,9 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
            `True` if motor step is smaller than the respective max step and/or
            the user has confirmed yes.
         """
-        eta_step = abs(eta - self.eta_position)
-        kappa_step = abs(kappa - self.kappa_postion)
-        phi_step = abs(phi - self.phi_position)
+        eta_step = abs(eta - self.eta.position)
+        kappa_step = abs(kappa - self.kappa.position)
+        phi_step = abs(phi - self.phi.position)
 
         is_eta_above_max = eta_step > self.eta_max_step
         is_kappa_above_max = kappa_step > self.kappa_max_step
@@ -579,12 +576,12 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
             t = PrettyTable(['Motor', 'Current position', 'to',
                              'Target position'])
             if is_eta_above_max:
-                t.add_row(['eta', 5, '-->', eta])
+                t.add_row(['eta', self.eta.position, '-->', eta])
             if is_kappa_above_max:
-                t.add_row(['kappa', 6, '-->', kappa])
+                t.add_row(['kappa', self.kappa.position, '-->', kappa])
             if is_phi_above_max:
-                t.add_row(['phi', 7, '-->', phi])
-            logger.info(d_str, t)
+                t.add_row(['phi', self.phi.position, '-->', phi])
+            print(d_str, t)
 
             if input('  (y/n) ') == 'y':
                 move_on = True
@@ -593,3 +590,13 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         else:
             move_on = True
         return move_on
+
+
+class SimKappa(Kappa):
+    """Test version of the Kappa object."""
+    x = Cpt(FastMotor, limits=(-100, 100))
+    y = Cpt(FastMotor, limits=(-100, 100))
+    z = Cpt(FastMotor, limits=(-100, 100))
+    eta = Cpt(FastMotor, limits=(-100, 100))
+    kappa = Cpt(FastMotor, limits=(-100, 100))
+    phi = Cpt(FastMotor, limits=(-100, 100))
