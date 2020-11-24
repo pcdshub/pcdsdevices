@@ -9,7 +9,8 @@ from ophyd import FormattedComponent as FCpt
 
 from .epics_motor import IMS
 from .interface import BaseInterface
-from .pseudopos import PseudoPositioner, PseudoSingleInterface
+from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
+                        pseudo_position_argument, real_position_argument)
 
 logger = logging.getLogger(__name__)
 
@@ -292,11 +293,11 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
     x = FCpt(IMS, '{self._prefix_x}', kind='normal')
     y = FCpt(IMS, '{self._prefix_y}', kind='normal')
     z = FCpt(IMS, '{self._prefix_z}', kind='normal')
-
+    # The real (or physical) positioners:
     eta = FCpt(IMS, '{self._prefix_eta}', kind='normal')
     kappa = FCpt(IMS, '{self._prefix_kappa}', kind='normal')
     phi = FCpt(IMS, '{self._prefix_phi}', kind='normal')
-
+    # The pseudo positioner axes:
     e_eta = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_eta')
     e_chi = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_chi')
     e_phi = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_phi')
@@ -366,7 +367,8 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         e_eta, e_chi, e_phi = self.k_to_e()
         return e_phi
 
-    def k_to_e(self, eta=None, kappa=None, phi=None):
+    @real_position_argument
+    def k_to_e(self, real_pos=None):
         """
         Convert from native kappa coordinates to spherical coordinates.
 
@@ -386,27 +388,32 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         coordinates : tuple
             Spherical coordinates.
         """
-        if not eta and eta != 0:
-            eta = self.eta_position
-        if not kappa and kappa != 0:
-            kap = self.kappa_position
-        if not phi and phi != 0:
-            phi = -self.phi_position
+        real_pos = self.RealPosition(*real_pos)
+
+        if not real_pos.eta and real_pos.eta != 0:
+            real_pos.eta = self.eta_position
+        if not real_pos.kappa and real_pos.kappa != 0:
+            real_pos.kap = self.kappa_position
+        if not real_pos.phi and real_pos.phi != 0:
+            real_pos.phi = -self.phi_position
 
         kappa_ang = self.kappa_ang * np.pi / 180
 
-        delta = np.arctan(np.tan(kap * np.pi / 180 / 2.0) * np.cos(kappa_ang))
-        e_eta = -eta * np.pi / 180 - delta
-        e_chi = 2.0 * np.arcsin(np.sin(kap * np.pi /
+        delta = np.arctan(np.tan(real_pos.kappa * np.pi /
+                                 180 / 2.0) * np.cos(kappa_ang))
+        e_eta = -real_pos.eta * np.pi / 180 - delta
+        e_chi = 2.0 * np.arcsin(np.sin(real_pos.kappa * np.pi /
                                        180 / 2.0) * np.sin(kappa_ang))
-        e_phi = phi * np.pi / 180 - delta
+        e_phi = real_pos.phi * np.pi / 180 - delta
 
         e_eta = e_eta * 180 / np.pi
         e_chi = e_chi * 180 / np.pi
         e_phi = e_phi * 180 / np.pi
-        return e_eta, e_chi, e_phi
+        # return e_eta, e_chi, e_phi
+        return self.PseudoPosition(e_eta=e_eta, e_chi=e_chi, e_phi=e_phi)
 
-    def e_to_k(self, e_eta=None, e_chi=None, e_phi=None):
+    @pseudo_position_argument
+    def e_to_k(self, pseudo_pos):
         """
         Convert from spherical coordinates to the native kappa coordinates.
 
@@ -423,26 +430,29 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         coordinates : tuple
             Native kappa coordinates.
         """
-        if not e_eta and e_eta != 0:
-            e_eta = self.e_eta_coord
-        if not e_chi and e_chi != 0:
-            e_chi = self.e_chi_coord
-        if not e_phi and e_phi != 0:
-            e_phi = self.e_phi_coord
+        pseudo_pos = self.PseudoPosition(*pseudo_pos)
+        if not pseudo_pos.e_eta and pseudo_pos.e_eta != 0:
+            pseudo_pos.e_eta = self.e_eta_coord
+        if not pseudo_pos.e_chi and pseudo_pos.e_chi != 0:
+            pseudo_pos.e_chi = self.e_chi_coord
+        if not pseudo_pos.e_phi and pseudo_pos.e_phi != 0:
+            pseudo_pos.e_phi = self.e_phi_coord
 
         kappa_ang = self.kappa_ang * np.pi / 180
 
-        delta = np.arcsin(-np.tan(e_chi * np.pi / 180 /
+        delta = np.arcsin(-np.tan(pseudo_pos.e_chi * np.pi / 180 /
                                   2.0) / np.tan(kappa_ang))
-        k_eta = -(e_eta * np.pi / 180 - delta)
-        k_kap = 2.0 * np.arcsin(np.sin(e_chi * np.pi /
+        k_eta = -(pseudo_pos.e_eta * np.pi / 180 - delta)
+        k_kap = 2.0 * np.arcsin(np.sin(pseudo_pos.e_chi * np.pi /
                                        180 / 2.0) / np.sin(kappa_ang))
-        k_phi = e_phi * np.pi / 180 - delta
+        k_phi = pseudo_pos.e_phi * np.pi / 180 - delta
 
         k_eta = k_eta * 180 / np.pi
         k_kap = k_kap * 180 / np.pi
         k_phi = -k_phi * 180 / np.pi
-        return k_eta, k_kap, k_phi
+        # return k_eta, k_kap, k_phi
+        return self.RealPosition(eta=k_eta, kappa=k_kap, phi=k_phi, x=None,
+                                 y=None, z=None)
 
     def mv_e_eta(self, value):
         """
@@ -454,7 +464,7 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
             Position value to set e_eta to.
         """
         try:
-            k_eta, k_kap, k_phi = self.e_to_k(eta=value)
+            k_eta, k_kap, k_phi = self.e_to_k(e_eta=value)
             if self.check_motor_step(k_eta, k_kap, k_phi):
                 logger.info("Starting now moving things!!!")
                 self.eta.mv(k_eta)
@@ -477,8 +487,8 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         try:
             if value == 0:
                 value = 10e-9
-            k_eta, k_kap, k_phi = self.e_to_k(chi=value)
-            if self.checkMotorStep(k_eta, k_kap, k_phi):
+            k_eta, k_kap, k_phi = self.e_to_k(e_chi=value)
+            if self.check_motor_step(k_eta, k_kap, k_phi):
                 logger.info("Starting now moving things!!!")
                 self.eta.mv(k_eta)
                 self.kappa.mv(k_kap)
@@ -498,7 +508,7 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
             Position value to set the e_phi to.
         """
         try:
-            k_eta, k_kap, k_phi = self.E2K(phi=value)
+            k_eta, k_kap, k_phi = self.e_to_k(e_phi=value)
             if self.check_motor_step(k_eta, k_kap, k_phi):
                 logger.info("Starting now moving things!!!")
                 self.eta.mv(k_eta)
