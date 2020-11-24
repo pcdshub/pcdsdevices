@@ -518,6 +518,38 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
             logger.info("Motion interrupted by ctrl+c")
             self.stop()
 
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        """
+        Calculate a RealPosition from a given PseudoPosition.
+
+        Parameters
+        ----------
+        pseudo_pos : PseudoPosition
+            The pseudo position input.
+        Returns
+        -------
+        real_position : RealPosition
+            The real position output.
+        """
+        return self.e_to_k(*pseudo_pos)
+
+    @real_position_argument
+    def inverse(self, real_pos):
+        """
+        Calculate a PseudoPosition from a given RealPosition.
+
+        Parameters
+        ----------
+        real_position : RealPosition
+            The real position input.
+        Returns
+        -------
+        pseudo_pos : PseudoPosition
+            The pseudo position output.
+        """
+        return self.k_to_e(*real_pos)
+
     def check_motor_step(self, eta, kappa, phi):
         """
         Check for the motor steps.
