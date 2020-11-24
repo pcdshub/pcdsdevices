@@ -160,8 +160,7 @@ Limit Switch: {switch_limits}
         # Find the soft limit values from EPICS records and check that this
         # command will be accepted by the motor
         if any(self.limits):
-            if not (self._get_epics_limits()[0] <= value
-                    <= self._get_epics_limits()[1]):
+            if not (self.low_limit <= value <= self.high_limit):
                 raise LimitError("Value {} outside of range: [{}, {}]"
                                  .format(value, self.low_limit,
                                          self.high_limit))
@@ -217,7 +216,7 @@ Limit Switch: {switch_limits}
                              f' position {self.position}. Low limit must '
                              'be lower than the current position.')
 
-        _current_high_limit = self._get_epics_limits()[1]
+        _current_high_limit = self.limits[1]
         if value > _current_high_limit:
             raise ValueError(f'Could not set motor low limit to {value}.'
                              'Low limit must be lower than the current'
@@ -252,7 +251,7 @@ Limit Switch: {switch_limits}
                              f'at position {self.position}. High limit '
                              'must be higher than the current position.')
 
-        _current_low_limit = self._get_epics_limits()[0]
+        _current_low_limit = self.limits[0]
         if value < _current_low_limit:
             raise ValueError(f'Could not set motor high limit to {value}. '
                              'High limit must be higher than the current low '
