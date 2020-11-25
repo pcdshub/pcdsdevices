@@ -515,9 +515,9 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
             The real position output.
         """
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
-        eta, chi, phi = self.e_to_k(pseudo_pos.e_eta, pseudo_pos.e_chi,
-                                    pseudo_pos.e_phi)
-        return self.RealPosition(eta=eta, kappa=chi, phi=phi,
+        eta, kappa, phi = self.e_to_k(pseudo_pos.e_eta, pseudo_pos.e_chi,
+                                      pseudo_pos.e_phi)
+        return self.RealPosition(eta=eta, kappa=kappa, phi=phi,
                                  x=self.x.position, y=self.y.position,
                                  z=self.z.position)
 
