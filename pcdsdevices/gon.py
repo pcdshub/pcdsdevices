@@ -6,6 +6,7 @@ from ophyd import FormattedComponent as FCpt
 
 from .epics_motor import IMS
 from .interface import BaseInterface
+from .utils import get_status_value
 
 
 class BaseGon(BaseInterface, Device):
@@ -52,6 +53,40 @@ class BaseGon(BaseInterface, Device):
         self._prefix_tip = prefix_tip
         self._prefix_tilt = prefix_tilt
         super().__init__('', name=name, **kwargs)
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the xpp goniometer.
+
+        Display xpp goniometer status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        horiz = get_status_value(status_info, 'hor', 'position')
+        vert = get_status_value(status_info, 'ver', 'position')
+        units = get_status_value(status_info, 'hor', 'user_setpoint', 'units')
+
+        rot = get_status_value(status_info, 'rot', 'position')
+        tip = get_status_value(status_info, 'tip', 'position')
+        tilt = get_status_value(status_info, 'tilt', 'position')
+        angle_units = get_status_value(status_info, 'rot', 'user_setpoint',
+                                       'units')
+
+        return f"""\
+XPP Goniometer
+H, V: {horiz}, {vert} [{units}]
+Theta, Pitch, Roll: {rot}, {tip}, {tilt} [{angle_units}]
+"""
 
 
 class GonWithDetArm(BaseGon):
