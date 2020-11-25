@@ -84,8 +84,8 @@ class BaseGon(BaseInterface, Device):
 
         return f"""\
 XPP Goniometer
-H, V: {horiz}, {vert} [{units}]
-Theta, Pitch, Roll: {rot}, {tip}, {tilt} [{angle_units}]
+H, V: {horiz:+.4f}, {vert:+.4f} [{units}]
+Theta, Pitch, Roll: {rot:+.4f}, {tip:+.4f}, {tilt:+.4f} [{angle_units}]
 """
 
 
@@ -217,6 +217,18 @@ class XYZStage(BaseInterface, Device):
         self._prefix_z = prefix_z
         super().__init__('', name=name, **kwargs)
 
+    def format_status_info(self, status_info):
+        """Override status info handler to render the `XYZStage`."""
+        x = get_status_value(status_info, 'x', 'position')
+        y = get_status_value(status_info, 'y', 'position')
+        z = get_status_value(status_info, 'z', 'position')
+        units = get_status_value(status_info, 'x', 'user_setpoint', 'units')
+
+        return f"""\
+XYZStage
+X, Y, Z: {x:+.4f}, {y:+.4f}, {z:+.4f} [{units}]
+"""
+
 
 class SamPhi(BaseInterface, Device):
     """
@@ -291,3 +303,21 @@ class Kappa(BaseInterface, Device):
         self._prefix_kappa = prefix_kappa
         self._prefix_phi = prefix_phi
         super().__init__('', name=name, **kwargs)
+
+    def format_status_info(self, status_info):
+        """Override status info handler to render the Kappa object."""
+        x = get_status_value(status_info, 'x', 'position')
+        y = get_status_value(status_info, 'y', 'position')
+        z = get_status_value(status_info, 'z', 'position')
+        units = get_status_value(status_info, 'x', 'user_setpoint', 'units')
+
+        eta = get_status_value(status_info, 'eta', 'position')
+        kappa = get_status_value(status_info, 'kappa', 'position')
+        phi = get_status_value(status_info, 'phi', 'position')
+        angle_units = get_status_value(status_info, 'eta', 'user_setpoint',
+                                       'units')
+        return f"""\
+Kappa
+eta, kappa, phi: {eta:+.4f}, {kappa:+.4f}, {phi:+.4f} [{angle_units}]
+X, Y, Z: {x:+.4f}, {y:+.4f}, {z:+.4f} [{units}]
+"""
