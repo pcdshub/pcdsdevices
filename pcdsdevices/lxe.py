@@ -34,7 +34,7 @@ import typing
 
 import numpy as np
 from ophyd import Component as Cpt
-from ophyd import EpicsSignal, PVPositioner, EpicsSignalRO
+from ophyd import EpicsSignal, PVPositioner
 from ophyd.signal import AttributeSignal
 
 from .component import UnrelatedComponent as UCpt
@@ -274,8 +274,6 @@ class LaserTiming(FltMvInterface, PVPositioner):
     user_offset = Cpt(AttributeSignal, attr='_user_offset',
                       kind='normal',
                       doc='A Python-level user offset.')
-    # Current Dial position
-    dial_position = Cpt(EpicsSignalRO, '.DRBV', kind='normal')
 
     # A motor (record) will be moved after the above record is touched, so
     # use its done motion status:
@@ -367,11 +365,9 @@ class LaserTiming(FltMvInterface, PVPositioner):
         """
         position = get_status_value(status_info, 'position')
         units = get_status_value(status_info, 'setpoint', 'units')
-        dial_pos = get_status_value(status_info, 'dial_position', 'value')
-        d_units = get_status_value(status_info, 'dial_position', 'units')
         return f"""\
 Virtual Motor {self.verbose_name} {self.prefix}
-Current position (user, dial): {position} [{units}], {dial_pos} [{d_units}]
+Current position (user): {position} [{units}]
 """
 
 

@@ -8,7 +8,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
                              real_position_argument)
-from ophyd.signal import Signal, EpicsSignalRO
+from ophyd.signal import Signal
 from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
@@ -31,9 +31,6 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         notepad_metadata={'record': 'ai', 'default_value': 0.0},
     )
 
-    # Current Dial position
-    dial_position = Cpt(EpicsSignalRO, '.DRBV', kind='normal')
-
     def __init__(self, prefix='', parent=None, verbose_name=None, **kwargs):
         if not prefix:
             # PseudoSingle generally does not get a prefix. Fix that here,
@@ -44,10 +41,6 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
 
         super().__init__(prefix=prefix, parent=parent, **kwargs)
         self._verbose_name = verbose_name
-
-    # Current Dial position
-    dial_position = FCpt(EpicsSignalRO, '{self.parent.prefix}.DRBV',
-                         kind='normal')
 
     def format_status_info(self, status_info):
         """
@@ -68,7 +61,6 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
             Formatted string with all relevant status information.
         """
         units = get_status_value(status_info, 'notepad_readback', 'units')
-        dial = get_status_value(status_info, 'dial_position', 'value')
         position = get_status_value(status_info, 'position')
 
         low, high = self.limits
@@ -78,7 +70,7 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
 
         return f"""\
 Virtual Motor {name}
-Current position (user, dial): {position}, {dial} [{units}]
+Current position (user): {position}[{units}]
 User limits (low, high): {low}, {high} [{units}]
 Preset position: {self.presets.state()}
 """
