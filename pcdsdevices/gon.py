@@ -319,5 +319,5 @@ class Kappa(BaseInterface, Device):
         return f"""\
 Kappa
 eta, kappa, phi: {eta:+.4f}, {kappa:+.4f}, {phi:+.4f} [{angle_units}]
-X, Y, Z: {x:+.4f}, {y:+.4f}, {z:+.4f} [{units}]
+x, y, z: {x:+.4f}, {y:+.4f}, {z:+.4f} [{units}]
 """
