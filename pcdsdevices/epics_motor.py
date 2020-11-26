@@ -62,9 +62,6 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
                      "disable", "check_limit_switches", "get_low_limit",
                      "set_low_limit", "get_high_limit", "set_high_limit"]
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def format_status_info(self, status_info):
         """
         Override status info handler to render the motor.
