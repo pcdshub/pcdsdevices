@@ -7,10 +7,9 @@ API Changes
 
 Features
 --------
-- Added two methods to the `epics_motors`: `set_high_limit()` and `set_low_limit()`, as well as `get_low_limit()` and `get_high_limit()`.
-- Added a little method to clear limits: `clear_limits` - this sets both limits to 0.
+- Added two methods to `EpicsMotorInterface`: `set_high_limit()` and `set_low_limit()`, as well as `get_low_limit()` and `get_high_limit()`.
+- Added a little method to clear limits: `clear_limits` - by EPICS convention, this sets both limits to 0.
 - Removed the other limit setters and getters `low_limit`, `high_limit` `limits`
-- Overrode the `limits` property
 
 Device Updates
 --------------
