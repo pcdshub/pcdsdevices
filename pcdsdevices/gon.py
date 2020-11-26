@@ -84,8 +84,8 @@ class BaseGon(BaseInterface, Device):
 
         return f"""\
 XPP Goniometer
-H, V: {horiz:+.4f}, {vert:+.4f} [{units}]
-Theta, Pitch, Roll: {rot:+.4f}, {tip:+.4f}, {tilt:+.4f} [{angle_units}]
+H, V: {horiz:.4f}, {vert:.4f} [{units}]
+Theta, Pitch, Roll: {rot:.4f}, {tip:.4f}, {tilt:.4f} [{angle_units}]
 """
 
 
@@ -226,7 +226,7 @@ class XYZStage(BaseInterface, Device):
 
         return f"""\
 XYZStage
-X, Y, Z: {x:+.4f}, {y:+.4f}, {z:+.4f} [{units}]
+X, Y, Z: {x:.4f}, {y:.4f}, {z:.4f} [{units}]
 """
 
 
@@ -318,6 +318,6 @@ class Kappa(BaseInterface, Device):
                                        'units')
         return f"""\
 Kappa
-eta, kappa, phi: {eta:+.4f}, {kappa:+.4f}, {phi:+.4f} [{angle_units}]
-x, y, z: {x:+.4f}, {y:+.4f}, {z:+.4f} [{units}]
+eta, kappa, phi: {eta:.4f}, {kappa:.4f}, {phi:.4f} [{angle_units}]
+x, y, z: {x:.4f}, {y:.4f}, {z:.4f} [{units}]
 """
