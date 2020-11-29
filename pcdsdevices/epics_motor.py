@@ -22,6 +22,7 @@ from .interface import FltMvInterface
 from .pseudopos import DelayBase
 from .signal import PytmcSignal
 from .variety import set_metadata
+from .utils import get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -56,14 +57,55 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
     # Description is valuable
     description = Cpt(EpicsSignal, '.DESC', kind='normal')
+    # Current Dial position
+    dial_position = Cpt(EpicsSignalRO, '.DRBV', kind='normal')
 
     tab_whitelist = ["set_current_position", "home", "velocity",
-                     "enable", "disable"]
+                     "enable", "disable", "check_limit_switches"]
 
     def __init__(self, *args, **kwargs):
         # Locally defined limit overrides, note can only make limits narrower
         self._limits = (-math.inf, math.inf)
         super().__init__(*args, **kwargs)
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the motor.
+
+        Display motor status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        description = get_status_value(status_info, 'description', 'value')
+        units = get_status_value(status_info, 'user_setpoint', 'units')
+        dial = get_status_value(status_info, 'dial_position', 'value')
+        user = get_status_value(status_info, 'position')
+
+        low, high = self.limits
+        switch_limits = self.check_limit_switches()
+
+        name = ' '.join(self.prefix.split(':'))
+        name = f'{name}: {self.prefix}'
+        if description:
+            name = f'{description}: {self.prefix}'
+
+        return f"""\
+{name}
+Current position (user, dial): {user}, {dial} [{units}]
+User limits (low, high): {low}, {high} [{units}]
+Preset position: {self.presets.state()}
+Limit Switch: {switch_limits}
+"""
 
     @property
     def low_limit(self):
@@ -158,6 +200,26 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         if self.disabled.get() == 1:
             raise MotorDisabledError("Motor is not enabled. Motion requests "
                                      "ignored")
+
+    def check_limit_switches(self):
+        """
+        Check the limits switches.
+
+        Returns
+        -------
+        limit_switch_indicator : str
+            Indicate which limit switch is activated.
+        """
+        low = self.low_limit_switch.get()
+        high = self.high_limit_switch.get()
+        if low and high:
+            return "Low [x] High [x]"
+        elif low:
+            return "Low [x] High []"
+        elif high:
+            return "Low [] High [x]"
+        else:
+            return "Low [] High []"
 
 
 class PCDSMotorBase(EpicsMotorInterface):

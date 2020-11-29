@@ -1,5 +1,5 @@
 # flake8: NOQA
-from .analog_signals import Acromag
+from .analog_signals import Acromag, AcromagChannel
 from .areadetector.detectors import PCDSAreaDetector
 from .atm import ArrivalTimeMonitor
 from .attenuator import Attenuator
@@ -14,6 +14,11 @@ from .gon import BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi, XYZStage
 from .inout import Reflaser, TTReflaser
 from .ipm import IPM, IPM_IPIMB, IPM_Wave8
 from .jet import BeckhoffJet
+from .lasers.ek9000 import El3174AiCh, EnvironmentalMonitor
+from .lasers.elliptec import Ell6, Ell9, EllBase, EllLinear, EllRotation
+from .lasers.qmini import QminiSpectrometer
+from .lasers.thorlabsWFS import ThorlabsWfs40
+from .lasers.zoomtelescope import ZoomTelescope
 from .lens import XFLS, Prefocus
 from .lic import LaserInCoupling
 from .lodcm import LODCM
@@ -34,3 +39,4 @@ from .spectrometer import Kmono, VonHamos4Crystal
 from .timetool import Timetool, TimetoolWithNav
 from .valve import GateValve, Stopper
 from .wfs import WaveFrontSensorTarget
+from .mpod import MPODChannelHV, MPODChannelLV

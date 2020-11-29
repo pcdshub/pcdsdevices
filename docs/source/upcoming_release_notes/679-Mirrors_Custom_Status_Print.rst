@@ -1,4 +1,4 @@
-645 elliptec-stop-fix
+679 Mirrors Custom Status Print
 #################
 
 API Changes
@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- N/A
+- Added custom status print for `XOffsetMirror`, `OffsetMirror`, `KBOMirror`, and `FFMirror`.
 
 Device Updates
 --------------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- lasers/elliptec.py: Fix conflict with BlueSky interface and 'stop' signal. 
+- N/A
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tjohnson 
+- cristinasewell

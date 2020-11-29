@@ -8,7 +8,7 @@ from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
 
 from pcdsdevices.attenuator import (MAX_FILTERS, AttBase, Attenuator,
-                                    _att3_classes, _att_classes)
+                                    _att_classes)
 
 logger = logging.getLogger(__name__)
 
@@ -16,9 +16,6 @@ logger = logging.getLogger(__name__)
 # Replace all the Attenuator classes with fake classes
 for name, cls in _att_classes.items():
     _att_classes[name] = make_fake_device(cls)
-
-for name, cls in _att3_classes.items():
-    _att3_classes[name] = make_fake_device(cls)
 
 
 @pytest.mark.timeout(5)
@@ -154,9 +151,9 @@ def test_attenuator_staging(fake_att):
         assert filt.removed
 
 
-def test_attenuator_third_harmonic():
-    logger.debug('test_attenuator_third_harmonic')
-    att = Attenuator('TRD:ATT', MAX_FILTERS-1, name='third', use_3rd=True)
+def test_attenuator():
+    logger.debug('test_attenuator')
+    att = Attenuator('TRD:ATT', MAX_FILTERS-1, name='att')
     att.wait_for_connection()
 
 

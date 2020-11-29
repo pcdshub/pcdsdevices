@@ -8,6 +8,7 @@ Common EPICS Devices
 
     Attenuator
     Acromag
+    AcromagChannel
     BeckhoffAxis
     BeckhoffJet
     CCM
