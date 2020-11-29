@@ -62,27 +62,22 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     tab_whitelist = ["set_current_position", "home", "velocity",
                      "enable", "disable"]
 
-    set_metadata(EpicsMotor.home_forward, dict(variety='command-proc', value=1))
+    set_metadata(EpicsMotor.home_forward, dict(variety='command-proc',
+                                               value=1))
     EpicsMotor.home_forward.kind = Kind.normal
-    set_metadata(EpicsMotor.home_reverse, dict(variety='command-proc', value=1))
+    set_metadata(EpicsMotor.home_reverse, dict(variety='command-proc',
+                                               value=1))
     EpicsMotor.home_reverse.kind = Kind.normal
     set_metadata(EpicsMotor.low_limit_switch, dict(variety='bitmask', bits=1))
     EpicsMotor.low_limit_switch.kind = Kind.normal
     set_metadata(EpicsMotor.high_limit_switch, dict(variety='bitmask', bits=1))
     EpicsMotor.high_limit_switch.kind = Kind.normal
     set_metadata(EpicsMotor.motor_done_move, dict(variety='bitmask', bits=1))
-    EpicsMotor.motor_done_move.kind = Kind.config
+    EpicsMotor.motor_done_move.kind = Kind.omitted
     set_metadata(EpicsMotor.motor_is_moving, dict(variety='bitmask', bits=1))
-    # Had no joy here or anywhere else with enums. I still get the <val> <egu> 
-    # "0 mm" readback. Maybe I'm doing it wrong?
-#    set_metadata(EpicsMotor.motor_is_moving, dict(variety='enum',
-#                                                  enum_strings=['No', 'Yes']))
     EpicsMotor.motor_is_moving.kind = Kind.normal
     set_metadata(EpicsMotor.motor_stop, dict(variety='command-proc', value=1))
     EpicsMotor.motor_stop.kind = Kind.normal
-    # Had no luck with text either, same as enums above. 
-#    set_metadata(EpicsMotor.direction_of_travel, dict(variety='text',
-#                                                      enum_strings=['Rev', 'Fwd']))
     EpicsMotor.direction_of_travel.kind = Kind.normal
 
     def __init__(self, *args, **kwargs):
