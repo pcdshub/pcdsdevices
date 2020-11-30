@@ -85,7 +85,7 @@ class BaseGon(BaseInterface, Device):
         return f"""\
 XPP Goniometer
 H, V: {horiz:.4f}, {vert:.4f} [{units}]
-Theta, Pitch, Roll: {rot:.4f}, {tip:.4f}, {tilt:.4f} [{angle_units}]
+Theta, Pitch, Roll: {rot:.4f}, {tilt:.4f}, {tip:.4f} [{angle_units}]
 """
 
 
