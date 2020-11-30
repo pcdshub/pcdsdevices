@@ -3,7 +3,8 @@
 
 API Changes
 -----------
-- N/A
+- SmarActOpenLoop: Combined scan_move_cmd and scan_pos into single EpicsSignal,
+  scan_move, with separate read and write PVs. 
 
 Features
 --------
