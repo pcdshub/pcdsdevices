@@ -21,7 +21,7 @@ from .component import UnrelatedComponent as UCpt
 from .doc_stubs import insert_remove
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface
-from .epics_motor import IMS, Motor
+from .epics_motor import IMS
 from .sim import FastMotor
 from .utils import get_status_value
 
@@ -97,56 +97,32 @@ class Y2(InOutRecordPositioner):
 
 LODCM_MOTORS = {
     # CRYSTAL TOWER ONE
-    'z1': {'prefix': 'XPP:MON:MMS:04', 'description': 'LOM Xtal1 Z',
-           'motor': Motor('XPP:MON:MMS:04', name='z1')},
-    'x1': {'prefix': 'XPP:MON:MMS:05', 'description': 'LOM Xtal1 X',
-           'motor': Motor('XPP:MON:MMS:05', name='x1')},
-    'y1': {'prefix': 'XPP:MON:MMS:06', 'description': 'LOM Xtal1 Y',
-           'motor': Motor('XPP:MON:MMS:06', name='y1')},
-    'th1': {'prefix': 'XPP:MON:MMS:07', 'description': 'LOM Xtal1 Theta',
-            'motor': Motor('XPP:MON:MMS:07', name='th1')},
-    'ch1': {'prefix': 'XPP:MON:MMS:08', 'description': 'LOM Xtal1 Chi',
-            'motor': Motor('XPP:MON:MMS:08', name='ch1')},
-    'h1n_m': {'prefix': 'XPP:MON:MMS:09', 'description': 'LOM Xtal1 Hn',
-              'motor': Motor('XPP:MON:MMS:09', name='h1n_m')},
-    'h1p': {'prefix': 'XPP:MON:MMS:20', 'description': 'LOM Xtal1 Hp',
-            'motor': Motor('XPP:MON:MMS:20', name='h1p')},
-    'th1f': {'prefix': 'XPP:MON:PIC:01', 'description': '',
-             'motor': Motor('XPP:MON:PIC:01', name='th1f')},
-    'ch1f': {'prefix': 'XPP:MON:PIC:02', 'description': '',
-             'motor': Motor('XPP:MON:PIC:02', name='ch1f')},
+    'z1': {'prefix': 'XPP:MON:MMS:04', 'description': 'LOM Xtal1 Z'},
+    'x1': {'prefix': 'XPP:MON:MMS:05', 'description': 'LOM Xtal1 X'},
+    'y1': {'prefix': 'XPP:MON:MMS:06', 'description': 'LOM Xtal1 Y'},
+    'th1': {'prefix': 'XPP:MON:MMS:07', 'description': 'LOM Xtal1 Theta'},
+    'ch1': {'prefix': 'XPP:MON:MMS:08', 'description': 'LOM Xtal1 Chi'},
+    'h1n_m': {'prefix': 'XPP:MON:MMS:09', 'description': 'LOM Xtal1 Hn'},
+    'h1p': {'prefix': 'XPP:MON:MMS:20', 'description': 'LOM Xtal1 Hp'},
+    'th1f': {'prefix': 'XPP:MON:PIC:01', 'description': ''},
+    'ch1f': {'prefix': 'XPP:MON:PIC:02', 'description': ''},
     # CRYSTAL TOWER TWO
-    'z2': {'prefix': 'XPP:MON:MMS:10', 'description': 'LOM Xtal2 Z',
-           'motor': Motor('XPP:MON:MMS:10', name='z2')},
-    'x2': {'prefix': 'XPP:MON:MMS:11', 'description': 'LOM Xtal2 X',
-           'motor': Motor('XPP:MON:MMS:11', name='x2')},
-    'y2': {'prefix': 'XPP:MON:MMS:12', 'description': 'LOM Xtal2 Y',
-           'motor': Motor('XPP:MON:MMS:12', name='y2')},
-    'th2': {'prefix': 'XPP:MON:MMS:13', 'description': 'LOM Xtal2 Theta',
-            'motor': Motor('XPP:MON:MMS:13', name='th2')},
-    'ch2': {'prefix': 'XPP:MON:MMS:14', 'description': 'LOM Xtal2 Chi',
-            'motor': Motor('XPP:MON:MMS:14', name='ch2')},
-    'h2n': {'prefix': 'XPP:MON:MMS:15', 'description': 'LOM Xtal2 Hn',
-            'motor': Motor('XPP:MON:MMS:15', name='h2n')},
-    'diode2': {'prefix': 'XPP:MON:MMS:21', 'description': 'LOM Xtal2 PIPS',
-               'motor': Motor('XPP:MON:MMS:21', name='diode2')},
-    'th2f': {'prefix': 'XPP:MON:PIC:03', 'description': '',
-             'motor': Motor('XPP:MON:PIC:03', name='th2f')},
-    'ch2f': {'prefix': 'XPP:MON:PIC:04', 'description': '',
-             'motor': Motor('XPP:MON:PIC:04', name='ch2f')},
+    'z2': {'prefix': 'XPP:MON:MMS:10', 'description': 'LOM Xtal2 Z'},
+    'x2': {'prefix': 'XPP:MON:MMS:11', 'description': 'LOM Xtal2 X'},
+    'y2': {'prefix': 'XPP:MON:MMS:12', 'description': 'LOM Xtal2 Y'},
+    'th2': {'prefix': 'XPP:MON:MMS:13', 'description': 'LOM Xtal2 Theta'},
+    'ch2': {'prefix': 'XPP:MON:MMS:14', 'description': 'LOM Xtal2 Chi'},
+    'h2n': {'prefix': 'XPP:MON:MMS:15', 'description': 'LOM Xtal2 Hn'},
+    'diode2': {'prefix': 'XPP:MON:MMS:21', 'description': 'LOM Xtal2 PIPS'},
+    'th2f': {'prefix': 'XPP:MON:PIC:03', 'description': ''},
+    'ch2f': {'prefix': 'XPP:MON:PIC:04', 'description': ''},
     # DIAGNOSTICS TOWER
-    'dh': {'prefix': 'XPP:MON:MMS:16', 'description': 'LOM Dia H',
-           'motor': Motor('XPP:MON:MMS:16', name='dh')},
-    'dv': {'prefix': 'XPP:MON:MMS:17', 'description': 'LOM Dia V',
-           'motor': Motor('XPP:MON:MMS:17', name='dv')},
-    'dr': {'prefix': 'XPP:MON:MMS:19', 'description': 'LOM Dia Theta',
-           'motor': Motor('XPP:MON:MMS:19', name='dr')},
-    'df': {'prefix': 'XPP:MON:MMS:27', 'description': 'LOM Dia Filter Wheel',
-           'motor': Motor('XPP:MON:MMS:27', name='df')},
-    'dd': {'prefix': 'XPP:MON:MMS:18', 'description': 'LOM Dia PIPS',
-           'motor': Motor('XPP:MON:MMS:18', name='dd')},
-    'yag_zoom': {'prefix': 'XPP:MON:CLZ:01', 'description': 'LOM Zoom',
-                 'motor': Motor('XPP:MON:CLZ:01', name='yag_zoom')},
+    'dh': {'prefix': 'XPP:MON:MMS:16', 'description': 'LOM Dia H'},
+    'dv': {'prefix': 'XPP:MON:MMS:17', 'description': 'LOM Dia V'},
+    'dr': {'prefix': 'XPP:MON:MMS:19', 'description': 'LOM Dia Theta'},
+    'df': {'prefix': 'XPP:MON:MMS:27', 'description': 'LOM Dia Filter Wheel'},
+    'dd': {'prefix': 'XPP:MON:MMS:18', 'description': 'LOM Dia PIPS'},
+    'yag_zoom': {'prefix': 'XPP:MON:CLZ:01', 'description': 'LOM Zoom'},
 }
 
 
