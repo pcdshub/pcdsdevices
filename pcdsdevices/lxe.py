@@ -270,6 +270,9 @@ class LaserTiming(FltMvInterface, PVPositioner):
                    doc='Setpoint which handles the timing conversion.',
                    limits=(-10e-6, 10e-6),
                    )
+    notepad_readback = Cpt(NotepadLinkedSignal, ':lxt:OphydReadback',
+                           notepad_metadata={'record': 'ao', 'default_value': 0.0},
+                           kind='omitted')
     user_offset = Cpt(NotepadLinkedSignal, ':lxt:OphydOffset',
                       notepad_metadata={'record': 'ao', 'default_value': 0.0},
                       kind='normal',
@@ -294,6 +297,19 @@ class LaserTiming(FltMvInterface, PVPositioner):
         The user offset was changed.  Update the value in the setpoint attribute.
         """
         self.setpoint.user_offset = value
+
+    @setpoint.sub_value
+    def _pos_changed(self, timestamp=None, value=None, **kwargs):
+        """The position was moved. Update the notepad readback."""
+        try:
+            signal = self.notepad_readback
+            if signal.connected and signal.write_access:
+                if signal.get(use_monitor=True) != value:
+                    signal.put(value, wait=False)
+        except Exception as ex:
+            self.log.debug('Failed to update notepad readback to position %s',
+                           value, exc_info=ex)
+        super()._pos_changed(timestamp=timestamp, value=value, **kwargs)
 
     @property
     def limits(self):
