@@ -295,7 +295,7 @@ class LODCM(BaseInterface, Device):
     def __init__(self, prefix, *, name, main_line='MAIN', mono_line='MONO',
                  **kwargs):
         kwargs['z1_prefix'] = kwargs.get('z1_prefix') or get_prefix('z1')
-        kwargs['x1_prefix'] = kwargs.get('x1_prefix') or get_prefix('z1')
+        kwargs['x1_prefix'] = kwargs.get('x1_prefix') or get_prefix('x1')
         kwargs['y1_prefix'] = kwargs.get('y1_prefix') or get_prefix('y1')
         kwargs['th1_prefix'] = kwargs.get('th1_prefix') or get_prefix('th1')
         kwargs['ch1_prefix'] = kwargs.get('ch1_prefix') or get_prefix('ch1')
@@ -536,10 +536,10 @@ class LODCM(BaseInterface, Device):
         y_user = get_status_value(status_info, 'y1', 'position')
         y_dial = get_status_value(status_info, 'y1', 'dial_position', 'value')
 
-        hn_units = get_status_value(status_info, 'h1n', 'user_setpoint',
+        hn_units = get_status_value(status_info, 'h1n_m', 'user_setpoint',
                                     'units')
-        hn_user = get_status_value(status_info, 'h1n', 'position')
-        hn_dial = get_status_value(status_info, 'h1n', 'dial_position',
+        hn_user = get_status_value(status_info, 'h1n_m', 'position')
+        hn_dial = get_status_value(status_info, 'h1n_m', 'dial_position',
                                    'value')
 
         hp_units = get_status_value(status_info, 'h1p', 'user_setpoint',
