@@ -36,6 +36,7 @@ import numpy as np
 from ophyd import Component as Cpt
 from ophyd import EpicsSignal, PVPositioner
 from ophyd.signal import AttributeSignal
+from scipy.constants import speed_of_light
 
 from .component import UnrelatedComponent as UCpt
 from .epics_motor import DelayNewport, EpicsMotorInterface
@@ -343,15 +344,20 @@ class _ReversedTimeToolDelay(DelayNewport):
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
-        return self.RealPosition(
-            *[-1.0 * p for p in super().forward(pseudo_pos)]
-        )
+        """Convert delay unit to motor unit."""
+        seconds = convert_unit(-pseudo_pos.delay - self.user_offset.get(),
+                               self.delay.egu, 'seconds')
+        meters = seconds * speed_of_light / self.n_bounces
+        motor_value = convert_unit(meters, 'meters', self.motor.egu)
+        return self.RealPosition(motor=motor_value)
 
     @real_position_argument
     def inverse(self, real_pos):
-        return self.PseudoPosition(
-            *[-1.0 * p for p in super().inverse(real_pos)]
-        )
+        """Convert motor unit to delay unit."""
+        meters = convert_unit(real_pos.motor, self.motor.egu, 'meters')
+        seconds = meters / speed_of_light * self.n_bounces
+        delay_value = convert_unit(seconds, 'seconds', self.delay.egu)
+        return self.PseudoPosition(delay=-(delay_value + self.user_offset.get()))
 
 
 class LaserTimingCompensation(SyncAxesBase):
@@ -374,5 +380,5 @@ class LaserTimingCompensation(SyncAxesBase):
     def __init__(self, prefix, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         super().__init__(prefix, **kwargs)
-        self.delay.name = 'txt'
+        self.delay.name = 'txt_reversed'
         self.laser.name = 'lxt'
