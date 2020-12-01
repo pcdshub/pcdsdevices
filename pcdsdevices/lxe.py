@@ -43,7 +43,7 @@ from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
                         SyncAxesBase, pseudo_position_argument,
                         real_position_argument)
-from .signal import UnitConversionDerivedSignal
+from .signal import UnitConversionDerivedSignal, NotepadLinkedSignal
 from .utils import convert_unit
 
 if typing.TYPE_CHECKING:
@@ -269,7 +269,8 @@ class LaserTiming(FltMvInterface, PVPositioner):
                    doc='Setpoint which handles the timing conversion.',
                    limits=(1e-20, 1.1e-3),
                    )
-    user_offset = Cpt(AttributeSignal, attr='_user_offset',
+    user_offset = Cpt(NotepadLinkedSignal, ':lxt:OphydOffset',
+                      notepad_metadata={'record': 'ao', 'default_value': 0.0},
                       kind='normal',
                       doc='A Python-level user offset.')
 
@@ -286,16 +287,11 @@ class LaserTiming(FltMvInterface, PVPositioner):
             )
         super().__init__(prefix, egu='s', **kwargs)
 
-    @property
-    def _user_offset(self):
+    @user_offset.sub_value
+    def _offset_changed(self, value, **kwargs):
         """
-        Used as part of the AttributeSignal above, mirror the user offset from
-        the setpoint.
+        The user offset was changed.  Update the value in the setpoint attribute.
         """
-        return self.setpoint.user_offset
-
-    @_user_offset.setter
-    def _user_offset(self, value):
         self.setpoint.user_offset = value
 
     @property
