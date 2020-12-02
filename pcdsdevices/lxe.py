@@ -269,6 +269,11 @@ class LaserTiming(FltMvInterface, PVPositioner):
                    doc='Setpoint which handles the timing conversion.',
                    limits=(-10e-6, 10e-6),
                    )
+    notepad_setpoint = Cpt(NotepadLinkedSignal, ':lxt:OphydSetpoint',
+                           notepad_metadata={'record': 'ao',
+                                             'default_value': 0.0},
+                           kind='omitted'
+                           )
     notepad_readback = Cpt(NotepadLinkedSignal, ':lxt:OphydReadback',
                            notepad_metadata={'record': 'ao',
                                              'default_value': 0.0},
@@ -300,16 +305,30 @@ class LaserTiming(FltMvInterface, PVPositioner):
         """
         self.setpoint.user_offset = value
 
+    @done.sub_value
+    def	_update_position(self, value=None, **kwargs):
+        """The move was completed. Update the notepad readback."""
+        if value == self.done_value:
+            try:
+                signal = self.notepad_readback
+                position = self.setpoint.get() 
+                if signal.connected and signal.write_access:
+                    if signal.get(use_monitor=True) != position:
+                        signal.put(position, wait=False)
+            except Exception as ex:
+                self.log.debug('Failed to update notepad readback to position %s',
+                               position, exc_info=ex)
+
     @setpoint.sub_value
     def _pos_changed(self, timestamp=None, value=None, **kwargs):
-        """The position was moved. Update the notepad readback."""
+        """The setpoint was changed. Update the notepad setpoint."""
         try:
-            signal = self.notepad_readback
+            signal = self.notepad_setpoint
             if signal.connected and signal.write_access:
                 if signal.get(use_monitor=True) != value:
                     signal.put(value, wait=False)
         except Exception as ex:
-            self.log.debug('Failed to update notepad readback to position %s',
+            self.log.debug('Failed to update notepad setpoint to position %s',
                            value, exc_info=ex)
         super()._pos_changed(timestamp=timestamp, value=value, **kwargs)
 
