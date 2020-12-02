@@ -305,32 +305,31 @@ class LaserTiming(FltMvInterface, PVPositioner):
         """
         self.setpoint.user_offset = value
 
+    def _setup_move(self, position):
+        """Update the notepad setpoint, move, and do not wait."""
+        try:
+            signal = self.notepad_setpoint
+            if signal.connected and signal.write_access:
+                if signal.get(use_monitor=True) != position:
+                    signal.put(position, wait=False)
+        except Exception as ex:
+            self.log.debug('Failed to update notepad setpoint to position %s',
+                           position, exc_info=ex)
+        super()._setup_move(position)
+
     @done.sub_value
-    def	_update_position(self, value=None, **kwargs):
+    def _update_position(self, old_value=None, value=None, **kwargs):
         """The move was completed. Update the notepad readback."""
-        if value == self.done_value:
+        if value == self.done_value and old_value == 0:
             try:
                 signal = self.notepad_readback
-                position = self.setpoint.get() 
+                position = self.setpoint.get()
                 if signal.connected and signal.write_access:
                     if signal.get(use_monitor=True) != position:
                         signal.put(position, wait=False)
             except Exception as ex:
-                self.log.debug('Failed to update notepad readback to position %s',
-                               position, exc_info=ex)
-
-    @setpoint.sub_value
-    def _pos_changed(self, timestamp=None, value=None, **kwargs):
-        """The setpoint was changed. Update the notepad setpoint."""
-        try:
-            signal = self.notepad_setpoint
-            if signal.connected and signal.write_access:
-                if signal.get(use_monitor=True) != value:
-                    signal.put(value, wait=False)
-        except Exception as ex:
-            self.log.debug('Failed to update notepad setpoint to position %s',
-                           value, exc_info=ex)
-        super()._pos_changed(timestamp=timestamp, value=value, **kwargs)
+                self.log.debug('Failed to update notepad readback to position'
+                               ' %s', position, exc_info=ex)
 
     @property
     def limits(self):
