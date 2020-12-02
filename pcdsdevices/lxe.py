@@ -35,7 +35,6 @@ import typing
 import numpy as np
 from ophyd import Component as Cpt
 from ophyd import EpicsSignal, PVPositioner
-from ophyd.signal import AttributeSignal
 from scipy.constants import speed_of_light
 
 from .component import UnrelatedComponent as UCpt
@@ -271,12 +270,15 @@ class LaserTiming(FltMvInterface, PVPositioner):
                    limits=(-10e-6, 10e-6),
                    )
     notepad_readback = Cpt(NotepadLinkedSignal, ':lxt:OphydReadback',
-                           notepad_metadata={'record': 'ao', 'default_value': 0.0},
-                           kind='omitted')
+                           notepad_metadata={'record': 'ao',
+                                             'default_value': 0.0},
+                           kind='omitted'
+                           )
     user_offset = Cpt(NotepadLinkedSignal, ':lxt:OphydOffset',
                       notepad_metadata={'record': 'ao', 'default_value': 0.0},
                       kind='normal',
-                      doc='A Python-level user offset.')
+                      doc='A Python-level user offset.'
+                      )
 
     # A motor (record) will be moved after the above record is touched, so
     # use its done motion status:
@@ -294,7 +296,7 @@ class LaserTiming(FltMvInterface, PVPositioner):
     @user_offset.sub_value
     def _offset_changed(self, value, **kwargs):
         """
-        The user offset was changed.  Update the value in the setpoint attribute.
+        The user offset was changed.  Update the setpoint attribute.
         """
         self.setpoint.user_offset = value
 
@@ -373,7 +375,8 @@ class _ReversedTimeToolDelay(DelayNewport):
         meters = convert_unit(real_pos.motor, self.motor.egu, 'meters')
         seconds = meters / speed_of_light * self.n_bounces
         delay_value = convert_unit(seconds, 'seconds', self.delay.egu)
-        return self.PseudoPosition(delay=-(delay_value + self.user_offset.get()))
+        return self.PseudoPosition(delay=-(delay_value
+                                           + self.user_offset.get()))
 
 
 class LaserTimingCompensation(SyncAxesBase):
