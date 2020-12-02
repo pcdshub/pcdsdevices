@@ -16,6 +16,8 @@ from ophyd.sim import NullStatus
 from ophyd.signal import EpicsSignalRO
 from ophyd.status import wait as status_wait
 from numbers import Number
+import numpy as np
+from pcdscalc import misc_calcs as m_calcs
 
 from .component import UnrelatedComponent as UCpt
 from .doc_stubs import insert_remove
@@ -24,8 +26,40 @@ from .interface import BaseInterface
 from .epics_motor import IMS
 from .sim import FastMotor
 from .utils import get_status_value
+from .pseudopos import (PseudoSingleInterface, PseudoPositioner,
+                        pseudo_position_argument, real_position_argument)
 
 logger = logging.getLogger(__name__)
+
+LODCM_MOTORS = {
+    # CRYSTAL TOWER ONE
+    'z1': {'prefix': 'XPP:MON:MMS:04', 'description': 'LOM Xtal1 Z'},
+    'x1': {'prefix': 'XPP:MON:MMS:05', 'description': 'LOM Xtal1 X'},
+    'y1': {'prefix': 'XPP:MON:MMS:06', 'description': 'LOM Xtal1 Y'},
+    'th1': {'prefix': 'XPP:MON:MMS:07', 'description': 'LOM Xtal1 Theta'},
+    'ch1': {'prefix': 'XPP:MON:MMS:08', 'description': 'LOM Xtal1 Chi'},
+    'h1n_m': {'prefix': 'XPP:MON:MMS:09', 'description': 'LOM Xtal1 Hn'},
+    'h1p': {'prefix': 'XPP:MON:MMS:20', 'description': 'LOM Xtal1 Hp'},
+    'th1f': {'prefix': 'XPP:MON:PIC:01', 'description': ''},
+    'ch1f': {'prefix': 'XPP:MON:PIC:02', 'description': ''},
+    # CRYSTAL TOWER TWO
+    'z2': {'prefix': 'XPP:MON:MMS:10', 'description': 'LOM Xtal2 Z'},
+    'x2': {'prefix': 'XPP:MON:MMS:11', 'description': 'LOM Xtal2 X'},
+    'y2': {'prefix': 'XPP:MON:MMS:12', 'description': 'LOM Xtal2 Y'},
+    'th2': {'prefix': 'XPP:MON:MMS:13', 'description': 'LOM Xtal2 Theta'},
+    'ch2': {'prefix': 'XPP:MON:MMS:14', 'description': 'LOM Xtal2 Chi'},
+    'h2n': {'prefix': 'XPP:MON:MMS:15', 'description': 'LOM Xtal2 Hn'},
+    'diode2': {'prefix': 'XPP:MON:MMS:21', 'description': 'LOM Xtal2 PIPS'},
+    'th2f': {'prefix': 'XPP:MON:PIC:03', 'description': ''},
+    'ch2f': {'prefix': 'XPP:MON:PIC:04', 'description': ''},
+    # DIAGNOSTICS TOWER
+    'dh': {'prefix': 'XPP:MON:MMS:16', 'description': 'LOM Dia H'},
+    'dv': {'prefix': 'XPP:MON:MMS:17', 'description': 'LOM Dia V'},
+    'dr': {'prefix': 'XPP:MON:MMS:19', 'description': 'LOM Dia Theta'},
+    'df': {'prefix': 'XPP:MON:MMS:27', 'description': 'LOM Dia Filter Wheel'},
+    'dd': {'prefix': 'XPP:MON:MMS:18', 'description': 'LOM Dia PIPS'},
+    'yag_zoom': {'prefix': 'XPP:MON:CLZ:01', 'description': 'LOM Zoom'},
+}
 
 
 class H1N(InOutRecordPositioner):
@@ -95,37 +129,6 @@ class Y2(InOutRecordPositioner):
     out_states = []
 
 
-LODCM_MOTORS = {
-    # CRYSTAL TOWER ONE
-    'z1': {'prefix': 'XPP:MON:MMS:04', 'description': 'LOM Xtal1 Z'},
-    'x1': {'prefix': 'XPP:MON:MMS:05', 'description': 'LOM Xtal1 X'},
-    'y1': {'prefix': 'XPP:MON:MMS:06', 'description': 'LOM Xtal1 Y'},
-    'th1': {'prefix': 'XPP:MON:MMS:07', 'description': 'LOM Xtal1 Theta'},
-    'ch1': {'prefix': 'XPP:MON:MMS:08', 'description': 'LOM Xtal1 Chi'},
-    'h1n_m': {'prefix': 'XPP:MON:MMS:09', 'description': 'LOM Xtal1 Hn'},
-    'h1p': {'prefix': 'XPP:MON:MMS:20', 'description': 'LOM Xtal1 Hp'},
-    'th1f': {'prefix': 'XPP:MON:PIC:01', 'description': ''},
-    'ch1f': {'prefix': 'XPP:MON:PIC:02', 'description': ''},
-    # CRYSTAL TOWER TWO
-    'z2': {'prefix': 'XPP:MON:MMS:10', 'description': 'LOM Xtal2 Z'},
-    'x2': {'prefix': 'XPP:MON:MMS:11', 'description': 'LOM Xtal2 X'},
-    'y2': {'prefix': 'XPP:MON:MMS:12', 'description': 'LOM Xtal2 Y'},
-    'th2': {'prefix': 'XPP:MON:MMS:13', 'description': 'LOM Xtal2 Theta'},
-    'ch2': {'prefix': 'XPP:MON:MMS:14', 'description': 'LOM Xtal2 Chi'},
-    'h2n': {'prefix': 'XPP:MON:MMS:15', 'description': 'LOM Xtal2 Hn'},
-    'diode2': {'prefix': 'XPP:MON:MMS:21', 'description': 'LOM Xtal2 PIPS'},
-    'th2f': {'prefix': 'XPP:MON:PIC:03', 'description': ''},
-    'ch2f': {'prefix': 'XPP:MON:PIC:04', 'description': ''},
-    # DIAGNOSTICS TOWER
-    'dh': {'prefix': 'XPP:MON:MMS:16', 'description': 'LOM Dia H'},
-    'dv': {'prefix': 'XPP:MON:MMS:17', 'description': 'LOM Dia V'},
-    'dr': {'prefix': 'XPP:MON:MMS:19', 'description': 'LOM Dia Theta'},
-    'df': {'prefix': 'XPP:MON:MMS:27', 'description': 'LOM Dia Filter Wheel'},
-    'dd': {'prefix': 'XPP:MON:MMS:18', 'description': 'LOM Dia PIPS'},
-    'yag_zoom': {'prefix': 'XPP:MON:CLZ:01', 'description': 'LOM Zoom'},
-}
-
-
 def get_prefix(motor):
     try:
         return LODCM_MOTORS[motor]['prefix']
@@ -133,7 +136,7 @@ def get_prefix(motor):
         logging.error('Could not get the value of %f', motor)
 
 
-class LODCM(BaseInterface, Device):
+class LODCM(BaseInterface, PseudoPositioner, Device):
     """
     Large Offset Dual Crystal Monochromator.
 
@@ -228,6 +231,8 @@ class LODCM(BaseInterface, Device):
     h2n_state = Cpt(H2N, ':H2N', kind='omitted')
     y2_state = Cpt(Y2, ':Y2', kind='omitted')
     chi2_state = Cpt(CHI2, ':CHI2', kind='omitted')
+    # TODO energy component??
+    energy = Cpt(PseudoSingleInterface, egu='eV')
 
     # Crystal Tower 1
     z1 = UCpt(IMS, kind='normal', doc='LOM Xtal1 Z')
@@ -252,7 +257,7 @@ class LODCM(BaseInterface, Device):
     df = UCpt(IMS, kind='normal', doc='LOM Dia Filter Wheel')
     dd = UCpt(IMS, kind='normal', doc='LOM Dia PIPS')
     yag_zoom = UCpt(IMS, kind='normal', doc='LOM Zoom')
-
+    # reflection pvs
     t1_c_ref = Cpt(EpicsSignalRO, ':T1C:REF', kind='omitted',
                    doc='Tower 1 Diamond crystal reflection')
     t1_si_ref = Cpt(EpicsSignalRO, ':T1Si:REF', kind='omitted',
@@ -261,12 +266,28 @@ class LODCM(BaseInterface, Device):
                    doc='Tower 2 Diamond crystal reflection')
     t2_si_ref = Cpt(EpicsSignalRO, ':T2Si:REF', kind='omitted',
                     doc='Tower 2 Silicon crystal reflection')
+    # pseudo positioners
+    th1_si = Cpt(PseudoSingleInterface, ':TH1:OFF_Si', kind='normal',
+                 name='th1_silicon', doc='Th1 motor offset for Si')
+    th1_c = Cpt(PseudoSingleInterface, ':TH1:OFF_C', kind='normal',
+                name='th1_diamond', doc='Th1 motor offset for C')
+    th2_si = Cpt(PseudoSingleInterface, ':TH2:OFF_Si', kind='normal',
+                 name='th2_silicon', doc='Th2 motor offset for Si')
+    th2_c = Cpt(PseudoSingleInterface, ':TH2:OFF_C', kind='normal',
+                name='th2_diamond', doc='Th2 motor offset for C')
+    z1_si = Cpt(PseudoSingleInterface, ':Z1:OFF_Si', kind='normal',
+                name='z1_silicon', doc='Z1 motor offset for Si')
+    z1_c = Cpt(PseudoSingleInterface, ':Z1:OFF_C', kind='normal',
+               name='z1_diamond', doc='Z1 motor offset for C')
+    z2_si = Cpt(PseudoSingleInterface, ':Z2:OFF_Si', kind='normal',
+                name='z1_diamond', doc='Z2 motor offset for Si')
+    z2_c = Cpt(PseudoSingleInterface, ':Z2:OFF_C', kind='normal',
+               name='z1_diamond', doc='Z2 motor offset for C')
 
     # QIcon for UX
     _icon = 'fa.share-alt-square'
 
-    tab_whitelist = ['h1n', 'yag', 'dectris', 'diode', 'foil',
-                     'remove_dia']
+    tab_whitelist = ['h1n', 'yag', 'dectris', 'diode', 'foil', 'remove_dia']
 
     def __init__(self, prefix, *, name, main_line='MAIN', mono_line='MONO',
                  **kwargs):
@@ -383,6 +404,45 @@ class LODCM(BaseInterface, Device):
 
         return status
 
+    remove_dia.__doc__ += insert_remove
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        energy = self.get_energy()
+        # TODO this seems ridiculous, needs revising
+        return self.RealPosition(th1=energy, h1n=None, yag=None,
+                                 dectris=None, diode=None, foil=None,
+                                 y1_state=None, chi1_state=None,
+                                 h2n_state=None, y2_state=None,
+                                 chi2_state=None, z1=None, x1=None,
+                                 y1=None, ch1=None, h1n_m=None,
+                                 h1p=None, z2=None, x2=None, y2=None, th2=None,
+                                 ch2=None, h2n=None, diode2=None, dh=None,
+                                 dv=None, dr=None, df=None, dd=None,
+                                 yag_zoom=None)
+
+    @real_position_argument
+    def inverse(self, real_pos):
+        # energy = self.get_energy()
+        # TODO: where do i get the energy from?
+        th, z, material = self.calc_energy(8)
+        if material == "Si":
+            return self.PseudoPosition(th1_si=th, th2_si=th, z1_si=-z, z2_si=z)
+            # self.th1Si.set(th)
+            # self.th2Si.set(th)
+            # self.z1Si.set(-z)
+            # self.z2Si.set(z)
+        elif material == "C":
+            return self.PseudoPosition(th1_c=th, th2_c=th, z1_c=-z, z2_c=z,
+                                       th1_si=None, th2_si=None, z1_si=None,
+                                       z2_si=None, energy=None)
+            # self.th1C.set(th)
+            # self.th2C.set(th)
+            # self.z1C.set(-z)
+            # self.z2C.set(z)
+        else:
+            raise ValueError("Invalid material ID: %s" % material)
+
     def _is_tower_1_c(self):
         """Check if tower 1 is with Diamond (C) material."""
         return (
@@ -411,10 +471,18 @@ class LODCM(BaseInterface, Device):
                 self.y2_state.position == 'Si' and
                 self.chi2_state.position == 'Si')
 
+    def get_first_tower_reflection(self, as_tuple=False, check=False):
+        """Get the reflection of the first tower."""
+        return self._get_reflection(1, as_tuple, check)
+
+    def get_second_tower_reflection(self, as_tuple=False, check=False):
+        """Get the reflection of the second tower."""
+        return self._get_reflection(2, as_tuple, check)
+
     def get_reflection(self, as_tuple, check):
         """Get the crystal reflection"""
-        ref_1 = self._get_reflection(1, as_tuple=False, check=False)
-        ref_2 = self._get_reflection(2, as_tuple=False, check=False)
+        ref_1 = self.get_first_tower_reflection(as_tuple, check)
+        ref_2 = self.get_second_tower_reflection(as_tuple, check)
         if ref_1 != ref_2:
             logger.warning('Crystals do not match: c1: %s, c2: %s',
                            ref_1, ref_2)
@@ -458,18 +526,106 @@ class LODCM(BaseInterface, Device):
                 return 'C'
             elif self._is_tower_2_si():
                 return 'Si'
+        # TODO: this check here does not make sense so far?
         if check:
-            raise ValueError("Unable to determine crysta's material.")
+            raise ValueError("Unable to determine crystal's material.")
+
+    def get_first_tower_material(self, check=False):
+        """Get the material Id for the first tower."""
+        return self._get_material(1, check)
+
+    def get_second_tower_material(self, check=False):
+        """Get the material Id for the second tower."""
+        return self._get_material(2, check)
 
     def get_material(self, check=False):
-        m_1 = self._get_material(1, check=False)
-        m_2 = self._get_material(2, check=False)
+        m_1 = self.get_first_tower_material(check)
+        m_2 = self.get_second_tower_material(check)
         if m_1 != m_2:
             logger.warning('Crystals do not match: c1: %s, c2: %s', m_1, m_2)
             raise ValueError('Invalid Crystal Arrangement.')
         return m_1
 
-    remove_dia.__doc__ += insert_remove
+    def calc_energy(self, energy, material=None, reflection=None):
+        if reflection is None:
+            # try to determine possible current reflection
+            reflection = self.get_reflection(as_tuple=True, check=True)
+        if material is None:
+            # try to determine possible current material ID
+            material = self.get_material(check=True)
+        (th, z) = m_calcs.get_geometry(energy, material, reflection)
+        return (th, z, material)
+
+    def get_first_tower_energy(self, material=None, reflection=None):
+        """
+        Get photon energy for first tower in keV.
+
+        Parameters
+        ----------
+        material : str, optional
+            Chemical formula. E.g.: `Si`.
+        reflection : tuple, optional
+            Reflection of material. E.g.: `(1, 1, 1)`
+
+        Returns
+        -------
+        energy : number
+            Photon energy in keV.
+        """
+        if reflection is None:
+            # try to determine possible current reflection
+            reflection = self.get_first_tower_reflection(as_tuple=True,
+                                                         check=True)
+        if material is None:
+            # try to determine possible current material id
+            material = self.get_first_tower_material(check=True)
+        if material == "Si":
+            th = self.th1_si.wm()
+        elif material == "C":
+            th = self.th1_c.wm()
+        else:
+            raise ValueError("Invalid material Id: %s" % material)
+        length = 2 * np.sin(np.deg2rad(th)) * m_calcs.d_space(
+            material, reflection)
+        return m_calcs.wavelength_to_energy(length) / 1000
+
+    def get_second_tower_energy(self, material=None, reflection=None):
+        """
+        Get photon energy for second tower in keV.
+
+        Parameters
+        ----------
+        material : str, optional
+            Chemical formula. E.g.:`Si`.
+        reflection : tuple, optional
+            Reflection of material. E.g.: `(1, 1, 1)`
+
+        Returns
+        -------
+        energy : number
+            Photon Energy in eV.
+        """
+        if reflection is None:
+            # try to determine possible current reflection
+            reflection = self.get_second_tower_reflection(as_tuple=True,
+                                                          check=True)
+        if material is None:
+            # try to determine possible current material ID
+            material = self.get_second_tower_material(check=True)
+        if material == "Si":
+            th = self.th2_si.wm()
+        elif material == "C":
+            th = self.th2_c.wm()
+        else:
+            raise ValueError("Invalid material ID: %s" % material)
+        # th = self.th2.wm()
+        length = 2 * np.sin(np.deg2rad(th)) * m_calcs.d_space(
+            material, reflection)
+        return m_calcs.wavelength_to_energy(length) / 1000
+
+    def get_energy(self, material=None, reflection=None):
+        """Get the Photon Energy. Energy is determined by the first crystal."""
+        return self.get_first_tower_energy(material, reflection)
 
     def format_status_info(self, status_info):
         """Override status info handler to render the lodcm."""
@@ -486,6 +642,12 @@ class LODCM(BaseInterface, Device):
             configuration = 'Silicon'
         else:
             configuration = 'Unknown'
+
+        try:
+            energy = self.get_energy()
+        except Exception:
+            energy = 'Unknown'
+
         ref = self.get_reflection(as_tuple=True, check=False)
         # tower 1
         z_units = get_status_value(status_info, 'z1', 'user_setpoint', 'units')
@@ -601,6 +763,7 @@ class LODCM(BaseInterface, Device):
         return f"""\
 {hutch}LODCM Motor Status Positions
 Current Configuration: {configuration} ({ref})
+Photon Energy: {energy} [keV]
 -----------------------------------------------------------------
 {form(' ', 'Crystal Tower 1', 'Crystal Tower 2')}
 {form(f'z [{z_units}]', f'{ff(z_user)} ({ff(z_dial)})',
