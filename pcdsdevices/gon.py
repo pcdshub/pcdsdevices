@@ -14,6 +14,7 @@ from .interface import BaseInterface
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
 from .sim import FastMotor
+from .utils import get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -304,7 +305,7 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
     The x, y, and z are the sample adjustment motors used to attain center of
     rotation
     """
-    sample_stage = Cpt(KappaXYZStage, name='', kind='omitted')
+    sample_stage = Cpt(KappaXYZStage, name='', kind='normal')
 
     # The real (or physical) positioners:
     eta = FCpt(IMS, '{self._prefix_eta}', kind='normal')
@@ -546,6 +547,30 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         else:
             move_on = True
         return move_on
+
+    def format_status_info(self, status_info):
+        """Override status info handler to render the Kappa object."""
+        x = get_status_value(status_info, 'sample_stage', 'x', 'position')
+        y = get_status_value(status_info, 'sample_stage', 'y', 'position')
+        z = get_status_value(status_info, 'sample_stage', 'z', 'position')
+        units = get_status_value(status_info, 'sample_stage', 'x',
+                                 'user_setpoint', 'units')
+
+        eta = get_status_value(status_info, 'eta', 'position')
+        kappa = get_status_value(status_info, 'kappa', 'position')
+        phi = get_status_value(status_info, 'phi', 'position')
+        angle_units = get_status_value(status_info, 'eta', 'user_setpoint',
+                                       'units')
+        e_eta = get_status_value(status_info, 'e_eta', 'position')
+        e_chi = get_status_value(status_info, 'e_chi', 'position')
+        e_phi = get_status_value(status_info, 'e_phi', 'position')
+
+        return f"""\
+Kappa
+eta, kappa, phi: {eta:.4f}, {kappa:.4f}, {phi:.4f} [{angle_units}]
+e_eta, e_chi, e_phi: {e_eta:.4f}, {e_chi:.4f}, {e_phi:.4f}
+x, y, z: {x:.4f}, {y:.4f}, {z:.4f} [{units}]
+"""
 
 
 class SimKappa(Kappa):
