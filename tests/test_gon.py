@@ -172,9 +172,10 @@ def test_check_motor_step(fake_kappa):
 
 def test_moving(fake_kappa):
     eta_pos, kappa_pos, phi_pos = fake_kappa.e_to_k(e_eta=3, e_chi=5, e_phi=7)
-    fake_kappa.e_eta.mv(3)
-    fake_kappa.e_chi.mv(5)
-    fake_kappa.e_phi.mv(7)
+    with patch('builtins.input', return_value='y'):
+        fake_kappa.e_eta.mv(3)
+        fake_kappa.e_chi.mv(5)
+        fake_kappa.e_phi.mv(7)
     assert fake_kappa.eta.position == eta_pos
     assert fake_kappa.kappa.position == kappa_pos
     assert fake_kappa.phi.position == phi_pos

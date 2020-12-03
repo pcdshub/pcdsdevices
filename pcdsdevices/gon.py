@@ -525,6 +525,16 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
                                       pseudo_pos.e_phi)
         return self.RealPosition(eta=eta, kappa=kappa, phi=phi)
 
+    @pseudo_position_argument
+    def move(self, position, wait=True, timeout=None, moved_cb=None):
+        if self.check_motor_step(position.e_eta, position.e_chi,
+                                 position.e_phi):
+            return super().move(position, wait=wait, timeout=timeout,
+                                moved_cb=moved_cb)
+        else:
+            logger.warning('Aborting moving for safety.')
+            return
+
     @real_position_argument
     def inverse(self, real_pos):
         """
