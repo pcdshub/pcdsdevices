@@ -193,6 +193,17 @@ class XYZStage(BaseInterface, Device):
         super().__init__('', name=name, **kwargs)
 
 
+class KappaXYZStage(XYZStage):
+    """Helper initializing function for XYZStage object."""
+    def __init__(self, *args, parent, **kwargs):
+        self._prefix_x = parent._prefix_x
+        self._prefix_y = parent._prefix_y
+        self._prefix_z = parent._prefix_z
+        super().__init__(*args, parent=parent, prefix_x=self._prefix_x,
+                         prefix_y=self._prefix_y, prefix_z=self._prefix_z,
+                         **kwargs)
+
+
 class SamPhi(BaseInterface, Device):
     """
     Sample Phi stage.
@@ -293,9 +304,11 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
     The x, y, and z are the sample adjustment motors used to attain center of
     rotation
     """
-    x = FCpt(IMS, '{self._prefix_x}', kind='normal')
-    y = FCpt(IMS, '{self._prefix_y}', kind='normal')
-    z = FCpt(IMS, '{self._prefix_z}', kind='normal')
+    # x = FCpt(IMS, '{self._prefix_x}', name='x',  kind='normal')
+    # y = FCpt(IMS, '{self._prefix_y}', kind='normal')
+    # z = FCpt(IMS, '{self._prefix_z}', kind='normal')
+    sample_stage = Cpt(KappaXYZStage, name='', kind='omitted')
+
     # The real (or physical) positioners:
     eta = FCpt(IMS, '{self._prefix_eta}', kind='normal')
     kappa = FCpt(IMS, '{self._prefix_kappa}', kind='normal')
@@ -304,11 +317,20 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
     e_eta = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_eta')
     e_chi = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_chi')
     e_phi = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_phi')
-
     tab_component_names = True
 
     tab_whitelist = ['stop', 'wait', 'k_to_e', 'e_to_k', 'mv_e_eta',
                      'mv_e_chi', 'mv_e_phi', 'check_motor_step']
+
+    def __new__(cls, *, name, prefix_x, prefix_y, prefix_z,
+                prefix_eta, prefix_kappa, prefix_phi, eta_max_step=2,
+                kappa_max_step=2, phi_max_step=2, kappa_ang=50, **kwargs):
+        print("Creating instance")
+        cls._prefix_x = prefix_x
+        cls._prefix_y = prefix_y
+        cls._prefix_z = prefix_z
+        return super(Kappa, cls).__new__(cls)
+        cls.x = cls.sample_stage.x
 
     def __init__(self, *, name, prefix_x, prefix_y, prefix_z,
                  prefix_eta, prefix_kappa, prefix_phi, eta_max_step=2,
@@ -323,13 +345,19 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         self.kappa_max_step = kappa_max_step
         self.phi_max_step = phi_max_step
         self.kappa_ang = kappa_ang
-        super().__init__('', name=name, **kwargs)
 
-    def stop(self):
-        """Stop the pseudo motors."""
-        self.eta.stop()
-        self.kappa.stop()
-        self.phi.stop()
+        super().__init__('', name=name, **kwargs)
+        Kappa.x = self.sample_stage.x
+        Kappa.y = self.sample_stage.y
+        Kappa.z = self.sample_stage.z
+
+        # self.x = self.sample_stage.x
+        # self.y = self.sample_stage.y
+        # self.z = self.sample_stage.z
+
+        # self.x.__dict__ = self.sample_stage.x.__dict__.copy()
+        # self.y.__dict__ = self.sample_stage.y.__dict__.copy()
+        # self.z.__dict__ = self.sample_stage.z.__dict__.copy()
 
     def wait(self, timeout=None):
         """Block until the action completes."""
@@ -517,9 +545,7 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         eta, kappa, phi = self.e_to_k(pseudo_pos.e_eta, pseudo_pos.e_chi,
                                       pseudo_pos.e_phi)
-        return self.RealPosition(eta=eta, kappa=kappa, phi=phi,
-                                 x=self.x.position, y=self.y.position,
-                                 z=self.z.position)
+        return self.RealPosition(eta=eta, kappa=kappa, phi=phi)
 
     @real_position_argument
     def inverse(self, real_pos):
