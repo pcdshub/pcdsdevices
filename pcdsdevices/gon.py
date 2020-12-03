@@ -304,9 +304,6 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
     The x, y, and z are the sample adjustment motors used to attain center of
     rotation
     """
-    # x = FCpt(IMS, '{self._prefix_x}', name='x',  kind='normal')
-    # y = FCpt(IMS, '{self._prefix_y}', kind='normal')
-    # z = FCpt(IMS, '{self._prefix_z}', kind='normal')
     sample_stage = Cpt(KappaXYZStage, name='', kind='omitted')
 
     # The real (or physical) positioners:
@@ -322,16 +319,6 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
     tab_whitelist = ['stop', 'wait', 'k_to_e', 'e_to_k', 'mv_e_eta',
                      'mv_e_chi', 'mv_e_phi', 'check_motor_step']
 
-    def __new__(cls, *, name, prefix_x, prefix_y, prefix_z,
-                prefix_eta, prefix_kappa, prefix_phi, eta_max_step=2,
-                kappa_max_step=2, phi_max_step=2, kappa_ang=50, **kwargs):
-        print("Creating instance")
-        cls._prefix_x = prefix_x
-        cls._prefix_y = prefix_y
-        cls._prefix_z = prefix_z
-        return super(Kappa, cls).__new__(cls)
-        cls.x = cls.sample_stage.x
-
     def __init__(self, *, name, prefix_x, prefix_y, prefix_z,
                  prefix_eta, prefix_kappa, prefix_phi, eta_max_step=2,
                  kappa_max_step=2, phi_max_step=2, kappa_ang=50, **kwargs):
@@ -345,19 +332,10 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         self.kappa_max_step = kappa_max_step
         self.phi_max_step = phi_max_step
         self.kappa_ang = kappa_ang
-
         super().__init__('', name=name, **kwargs)
-        Kappa.x = self.sample_stage.x
-        Kappa.y = self.sample_stage.y
-        Kappa.z = self.sample_stage.z
-
-        # self.x = self.sample_stage.x
-        # self.y = self.sample_stage.y
-        # self.z = self.sample_stage.z
-
-        # self.x.__dict__ = self.sample_stage.x.__dict__.copy()
-        # self.y.__dict__ = self.sample_stage.y.__dict__.copy()
-        # self.z.__dict__ = self.sample_stage.z.__dict__.copy()
+        self.x = self.sample_stage.x
+        self.y = self.sample_stage.y
+        self.z = self.sample_stage.z
 
     def wait(self, timeout=None):
         """Block until the action completes."""
