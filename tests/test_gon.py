@@ -181,22 +181,22 @@ def test_moving(fake_kappa):
     assert fake_kappa.phi.position == phi_pos
 
 
-def test_mv_e_eta(fake_kappa):
-    eta_pos = fake_kappa.e_to_k(e_eta=3)[0]
-    with patch('pcdsdevices.gon.Kappa.check_motor_step', return_value=True):
-        fake_kappa.mv_e_eta(value=3)
-        assert fake_kappa.eta.position == eta_pos
+# def test_mv_e_eta(fake_kappa):
+#     eta_pos = fake_kappa.e_to_k(e_eta=3)[0]
+#     with patch('pcdsdevices.gon.Kappa.check_motor_step', return_value=True):
+#         fake_kappa.mv_e_eta(value=3)
+#         assert fake_kappa.eta.position == eta_pos
 
 
-def test_mv_e_chi(fake_kappa):
-    kappa_pos = fake_kappa.e_to_k(e_chi=5)[1]
-    with patch('pcdsdevices.gon.Kappa.check_motor_step', return_value=True):
-        fake_kappa.mv_e_chi(value=5)
-        assert fake_kappa.kappa.position == kappa_pos
+# def test_mv_e_chi(fake_kappa):
+#     kappa_pos = fake_kappa.e_to_k(e_chi=5)[1]
+#     with patch('pcdsdevices.gon.Kappa.check_motor_step', return_value=True):
+#         fake_kappa.mv_e_chi(value=5)
+#         assert fake_kappa.kappa.position == kappa_pos
 
 
-def test_mv_e_phi(fake_kappa):
-    phi_pos = fake_kappa.e_to_k(e_phi=7)[2]
-    with patch('pcdsdevices.gon.Kappa.check_motor_step', return_value=True):
-        fake_kappa.mv_e_phi(value=7)
-        assert fake_kappa.phi.position == phi_pos
+# def test_mv_e_phi(fake_kappa):
+#     phi_pos = fake_kappa.e_to_k(e_phi=7)[2]
+#     with patch('pcdsdevices.gon.Kappa.check_motor_step', return_value=True):
+#         fake_kappa.mv_e_phi(value=7)
+#         assert fake_kappa.phi.position == phi_pos

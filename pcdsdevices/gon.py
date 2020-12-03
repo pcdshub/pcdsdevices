@@ -316,8 +316,7 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
     e_phi = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_phi')
     tab_component_names = True
 
-    tab_whitelist = ['stop', 'wait', 'k_to_e', 'e_to_k', 'mv_e_eta',
-                     'mv_e_chi', 'mv_e_phi', 'check_motor_step']
+    tab_whitelist = ['stop', 'wait', 'k_to_e', 'e_to_k', 'check_motor_step']
 
     def __init__(self, *, name, prefix_x, prefix_y, prefix_z,
                  prefix_eta, prefix_kappa, prefix_phi, eta_max_step=2,
@@ -442,70 +441,6 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         k_phi = -k_phi * 180 / np.pi
         return k_eta, k_kap, k_phi
 
-    def mv_e_eta(self, value):
-        """
-        Change the e_eta position to value, keeping e_chi and e_phi the same.
-
-        Parameters
-        ----------
-        value : number
-            Position value to set e_eta to.
-        """
-        try:
-            k_eta, k_kap, k_phi = self.e_to_k(e_eta=value)
-            if self.check_motor_step(k_eta, k_kap, k_phi):
-                logger.info("Starting now moving things!!!")
-                self.eta.mv(k_eta)
-                self.kappa.mv(k_kap)
-                self.phi.mv(k_phi)
-                self.wait()
-        except KeyboardInterrupt:
-            logger.info("Motion interrupted by ctrl+c")
-            self.stop()
-
-    def mv_e_chi(self, value):
-        """
-        Change the e_chi position to value, keeping e_eta and e_phi the same.
-
-        Parameters
-        ----------
-        value : number
-            Position value to set e_chi to.
-        """
-        try:
-            if value == 0:
-                value = 10e-9
-            k_eta, k_kap, k_phi = self.e_to_k(e_chi=value)
-            if self.check_motor_step(k_eta, k_kap, k_phi):
-                logger.info("Starting now moving things!!!")
-                self.eta.mv(k_eta)
-                self.kappa.mv(k_kap)
-                self.phi.mv(k_phi)
-                self.wait()
-        except KeyboardInterrupt:
-            logger.info("Motion interrupted by ctrl+c")
-            self.stop()
-
-    def mv_e_phi(self, value):
-        """
-        Change the e_phi position to value, keeping e_eta and e_phi the same.
-
-        Parameters
-        ----------
-        value : number
-            Position value to set the e_phi to.
-        """
-        try:
-            k_eta, k_kap, k_phi = self.e_to_k(e_phi=value)
-            if self.check_motor_step(k_eta, k_kap, k_phi):
-                logger.info("Starting now moving things!!!")
-                self.eta.mv(k_eta)
-                self.kappa.mv(k_kap)
-                self.phi.mv(k_phi)
-        except KeyboardInterrupt:
-            logger.info("Motion interrupted by ctrl+c")
-            self.stop()
-
     @pseudo_position_argument
     def forward(self, pseudo_pos):
         """
@@ -527,6 +462,13 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
 
     @pseudo_position_argument
     def move(self, position, wait=True, timeout=None, moved_cb=None):
+        """
+        Move to a specified position, optionally waiting for motion to
+        complete.
+
+        Checks for the motor step, and ask the user for confirmation if
+        movement step is greater than default one.
+        """
         if self.check_motor_step(position.e_eta, position.e_chi,
                                  position.e_phi):
             return super().move(position, wait=wait, timeout=timeout,
