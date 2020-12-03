@@ -598,9 +598,6 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
 
 class SimKappa(Kappa):
     """Test version of the Kappa object."""
-    x = Cpt(FastMotor, limits=(-100, 100))
-    y = Cpt(FastMotor, limits=(-100, 100))
-    z = Cpt(FastMotor, limits=(-100, 100))
     eta = Cpt(FastMotor, limits=(-100, 100))
     kappa = Cpt(FastMotor, limits=(-100, 100))
     phi = Cpt(FastMotor, limits=(-100, 100))
