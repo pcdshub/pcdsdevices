@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- Add custom status print for `gon` classes: `BaseGon`, `XYZStage` and `Kappa` class.
+- Add custom status print for `gon` classes: `BaseGon`, and `XYZStage` class.
 
 Device Updates
 --------------

@@ -303,21 +303,3 @@ class Kappa(BaseInterface, Device):
         self._prefix_kappa = prefix_kappa
         self._prefix_phi = prefix_phi
         super().__init__('', name=name, **kwargs)
-
-    def format_status_info(self, status_info):
-        """Override status info handler to render the Kappa object."""
-        x = get_status_value(status_info, 'x', 'position')
-        y = get_status_value(status_info, 'y', 'position')
-        z = get_status_value(status_info, 'z', 'position')
-        units = get_status_value(status_info, 'x', 'user_setpoint', 'units')
-
-        eta = get_status_value(status_info, 'eta', 'position')
-        kappa = get_status_value(status_info, 'kappa', 'position')
-        phi = get_status_value(status_info, 'phi', 'position')
-        angle_units = get_status_value(status_info, 'eta', 'user_setpoint',
-                                       'units')
-        return f"""\
-Kappa
-eta, kappa, phi: {eta:.4f}, {kappa:.4f}, {phi:.4f} [{angle_units}]
-x, y, z: {x:.4f}, {y:.4f}, {z:.4f} [{units}]
-"""
