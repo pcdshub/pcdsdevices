@@ -1,4 +1,5 @@
 import logging
+import time
 
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
@@ -17,6 +18,7 @@ class EventSequence(BaseInterface, Device):
     bd_array = Cpt(EpicsSignal, ':SEQ.B')
     fd_array = Cpt(EpicsSignal, ':SEQ.C')
     bc_array = Cpt(EpicsSignal, ':SEQ.D')
+    seq_proc = Cpt(EpicsSignal, ':SEQ.PROC')
 
     tab_whitelist = ['get_seq', 'put_seq', 'show']
 
@@ -114,6 +116,8 @@ class EventSequence(BaseInterface, Device):
         self.bd_array.put(seq[1])
         self.fd_array.put(seq[2])
         self.bc_array.put(seq[3])
+        time.sleep(0.5) # dumb sleep to wait for array PVs to reach sequencer
+        self.seq_proc.put(1)
 
     def show(self, num_lines=None):
         """
