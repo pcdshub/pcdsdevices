@@ -237,3 +237,34 @@ def get_status_value(status_info, *keys, default_value='N/A'):
         return value
     except KeyError:
         return default_value
+
+
+def get_status_float(status_info, *keys, default_value='N/A', precision=4):
+    """
+    Get the value of a dictionary key.
+
+    Format the value with the precision requested if it is a float value.
+
+    Parameters
+    ----------
+    status_info : dict
+        Dictionary to look through.
+    keys : list
+        List of keys to look through with nested dictionarie.
+    default_value : str
+        A default value to return if the item value was not found.
+    precision: int
+        Precision requested for the float values. Defaults to 4.
+
+    Returns
+    -------
+    value : dictionary item value, or `N/A`
+        Value of the last key in the `keys` list formated with precision.
+    """
+    try:
+        value = reduce(operator.getitem, keys, status_info)
+        if isinstance(value, float):
+            return ('{:.%df}' % precision).format(value)
+        return value
+    except KeyError:
+        return default_value
