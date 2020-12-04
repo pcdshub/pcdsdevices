@@ -6,7 +6,7 @@ from ophyd import FormattedComponent as FCpt
 
 from .epics_motor import IMS
 from .interface import BaseInterface
-from .utils import get_status_value
+from .utils import get_status_value, get_status_float
 
 
 class BaseGon(BaseInterface, Device):
@@ -72,20 +72,20 @@ class BaseGon(BaseInterface, Device):
         status: str
             Formatted string with all relevant status information.
         """
-        horiz = get_status_value(status_info, 'hor', 'position')
-        vert = get_status_value(status_info, 'ver', 'position')
+        horiz = get_status_float(status_info, 'hor', 'position')
+        vert = get_status_float(status_info, 'ver', 'position')
         units = get_status_value(status_info, 'hor', 'user_setpoint', 'units')
 
-        rot = get_status_value(status_info, 'rot', 'position')
-        tip = get_status_value(status_info, 'tip', 'position')
-        tilt = get_status_value(status_info, 'tilt', 'position')
+        rot = get_status_float(status_info, 'rot', 'position')
+        tip = get_status_float(status_info, 'tip', 'position')
+        tilt = get_status_float(status_info, 'tilt', 'position')
         angle_units = get_status_value(status_info, 'rot', 'user_setpoint',
                                        'units')
 
         return f"""\
 XPP Goniometer
-H, V: {horiz:.4f}, {vert:.4f} [{units}]
-Theta, Pitch, Roll: {rot:.4f}, {tilt:.4f}, {tip:.4f} [{angle_units}]
+H, V: {horiz}, {vert} [{units}]
+Theta, Pitch, Roll: {rot}, {tilt}, {tip} [{angle_units}]
 """
 
 
@@ -219,14 +219,14 @@ class XYZStage(BaseInterface, Device):
 
     def format_status_info(self, status_info):
         """Override status info handler to render the `XYZStage`."""
-        x = get_status_value(status_info, 'x', 'position')
-        y = get_status_value(status_info, 'y', 'position')
-        z = get_status_value(status_info, 'z', 'position')
+        x = get_status_float(status_info, 'x', 'position')
+        y = get_status_float(status_info, 'y', 'position')
+        z = get_status_float(status_info, 'z', 'position')
         units = get_status_value(status_info, 'x', 'user_setpoint', 'units')
 
         return f"""\
 XYZStage
-X, Y, Z: {x:.4f}, {y:.4f}, {z:.4f} [{units}]
+X, Y, Z: {x}, {y}, {z} [{units}]
 """
 
 
