@@ -17,7 +17,7 @@ from ophyd.signal import EpicsSignalRO
 from ophyd.status import wait as status_wait
 from numbers import Number
 import numpy as np
-from pcdscalc import misc_calcs as m_calcs
+from pcdscalc import diffraction
 
 from .component import UnrelatedComponent as UCpt
 from .doc_stubs import insert_remove
@@ -423,9 +423,9 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
 
     @real_position_argument
     def inverse(self, real_pos):
-        # energy = self.get_energy()
-        # TODO: where do i get the energy from?
-        th, z, material = self.calc_energy(8)
+        energy = self.get_energy()
+        # TODO: where do i get the energy from tower 1, 2?
+        th, z, material = self.calc_energy(energy)
         if material == "Si":
             return self.PseudoPosition(th1_si=th, th2_si=th, z1_si=-z, z2_si=z)
             # self.th1Si.set(th)
@@ -553,7 +553,7 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
         if material is None:
             # try to determine possible current material ID
             material = self.get_material(check=True)
-        (th, z) = m_calcs.get_geometry(energy, material, reflection)
+        (th, z) = diffraction.get_lom_geometry(energy, material, reflection)
         return (th, z, material)
 
     def get_first_tower_energy(self, material=None, reflection=None):
@@ -585,9 +585,9 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
             th = self.th1_c.wm()
         else:
             raise ValueError("Invalid material Id: %s" % material)
-        length = 2 * np.sin(np.deg2rad(th)) * m_calcs.d_space(
+        length = 2 * np.sin(np.deg2rad(th)) * diffraction.d_space(
             material, reflection)
-        return m_calcs.wavelength_to_energy(length) / 1000
+        return diffraction.wavelength_to_energy(length) / 1000
 
     def get_second_tower_energy(self, material=None, reflection=None):
         """
@@ -619,9 +619,9 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
         else:
             raise ValueError("Invalid material ID: %s" % material)
         # th = self.th2.wm()
-        length = 2 * np.sin(np.deg2rad(th)) * m_calcs.d_space(
+        length = 2 * np.sin(np.deg2rad(th)) * diffraction.d_space(
             material, reflection)
-        return m_calcs.wavelength_to_energy(length) / 1000
+        return diffraction.wavelength_to_energy(length) / 1000
 
     def get_energy(self, material=None, reflection=None):
         """Get the Photon Energy. Energy is determined by the first crystal."""
