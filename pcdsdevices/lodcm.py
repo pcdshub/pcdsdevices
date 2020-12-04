@@ -15,7 +15,6 @@ from ophyd.device import Component as Cpt, Device
 from ophyd.sim import NullStatus
 from ophyd.signal import EpicsSignalRO
 from ophyd.status import wait as status_wait
-from numbers import Number
 import numpy as np
 from pcdscalc import diffraction
 
@@ -24,8 +23,7 @@ from .doc_stubs import insert_remove
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface
 from .epics_motor import IMS
-from .sim import FastMotor
-from .utils import get_status_value
+from .utils import get_status_value, get_status_float
 from .pseudopos import (PseudoSingleInterface, PseudoPositioner,
                         pseudo_position_argument, real_position_argument)
 
@@ -424,7 +422,7 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
     @real_position_argument
     def inverse(self, real_pos):
         energy = self.get_energy()
-        # TODO: where do i get the energy from tower 1, 2?
+        # TODO: where do i get the energy from tower 1 or 2?
         th, z, material = self.calc_energy(energy)
         if material == "Si":
             return self.PseudoPosition(th1_si=th, th2_si=th, z1_si=-z, z2_si=z)
@@ -624,7 +622,10 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
         return diffraction.wavelength_to_energy(length) / 1000
 
     def get_energy(self, material=None, reflection=None):
-        """Get the Photon Energy. Energy is determined by the first crystal."""
+        """
+        Get the Photon Energy. Energy is determined by the first crystal.
+        TODO: why is energy determined by the first crystal?
+        """
         return self.get_first_tower_energy(material, reflection)
 
     def format_status_info(self, status_info):
@@ -649,116 +650,112 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
             energy = 'Unknown'
 
         ref = self.get_reflection(as_tuple=True, check=False)
+
         # tower 1
         z_units = get_status_value(status_info, 'z1', 'user_setpoint', 'units')
-        z_user = get_status_value(status_info, 'z1', 'position')
-        z_dial = get_status_value(status_info, 'z1', 'dial_position', 'value')
+        z_user = get_status_float(status_info, 'z1', 'position')
+        z_dial = get_status_float(status_info, 'z1', 'dial_position', 'value')
 
         x_units = get_status_value(status_info, 'x1', 'user_setpoint', 'units')
-        x_user = get_status_value(status_info, 'x1', 'position')
-        x_dial = get_status_value(status_info, 'x1', 'dial_position', 'value')
+        x_user = get_status_float(status_info, 'x1', 'position')
+        x_dial = get_status_float(status_info, 'x1', 'dial_position', 'value')
 
         th_units = get_status_value(status_info, 'th1', 'user_setpoint',
                                     'units')
-        th_user = get_status_value(status_info, 'th1', 'position')
-        th_dial = get_status_value(status_info, 'th1', 'dial_position',
+        th_user = get_status_float(status_info, 'th1', 'position')
+        th_dial = get_status_float(status_info, 'th1', 'dial_position',
                                    'value')
 
         chi_units = get_status_value(status_info, 'ch1', 'user_setpoint',
                                      'units')
-        chi_user = get_status_value(status_info, 'ch1', 'position')
-        chi_dial = get_status_value(status_info, 'ch1', 'dial_position',
+        chi_user = get_status_float(status_info, 'ch1', 'position')
+        chi_dial = get_status_float(status_info, 'ch1', 'dial_position',
                                     'value')
 
         y_units = get_status_value(status_info, 'y1', 'user_setpoint', 'units')
-        y_user = get_status_value(status_info, 'y1', 'position')
-        y_dial = get_status_value(status_info, 'y1', 'dial_position', 'value')
+        y_user = get_status_float(status_info, 'y1', 'position')
+        y_dial = get_status_float(status_info, 'y1', 'dial_position', 'value')
 
         hn_units = get_status_value(status_info, 'h1n_m', 'user_setpoint',
                                     'units')
-        hn_user = get_status_value(status_info, 'h1n_m', 'position')
-        hn_dial = get_status_value(status_info, 'h1n_m', 'dial_position',
+        hn_user = get_status_float(status_info, 'h1n_m', 'position')
+        hn_dial = get_status_float(status_info, 'h1n_m', 'dial_position',
                                    'value')
 
         hp_units = get_status_value(status_info, 'h1p', 'user_setpoint',
                                     'units')
-        hp_user = get_status_value(status_info, 'h1p', 'position')
-        hp_dial = get_status_value(status_info, 'h1p', 'dial_position',
+        hp_user = get_status_float(status_info, 'h1p', 'position')
+        hp_dial = get_status_float(status_info, 'h1p', 'dial_position',
                                    'value')
 
         diode_units = get_status_value(status_info, 'diode2', 'user_setpoint',
                                        'units')
-        diode_user = get_status_value(status_info, 'diode', 'position')
-        diode_dial = get_status_value(status_info, 'diode', 'dial_position',
+        diode_user = get_status_float(status_info, 'diode', 'position')
+        diode_dial = get_status_float(status_info, 'diode', 'dial_position',
                                       'value')
         # tower 2
-        z2_user = get_status_value(status_info, 'z2', 'position')
-        z2_dial = get_status_value(status_info, 'z2', 'dial_position', 'value')
+        z2_user = get_status_float(status_info, 'z2', 'position')
+        z2_dial = get_status_float(status_info, 'z2', 'dial_position', 'value')
 
-        x2_user = get_status_value(status_info, 'x2', 'position')
-        x2_dial = get_status_value(status_info, 'x2', 'dial_position', 'value')
+        x2_user = get_status_float(status_info, 'x2', 'position')
+        x2_dial = get_status_float(status_info, 'x2', 'dial_position', 'value')
 
-        th2_user = get_status_value(status_info, 'th2', 'position')
-        th2_dial = get_status_value(status_info, 'th2', 'dial_position',
+        th2_user = get_status_float(status_info, 'th2', 'position')
+        th2_dial = get_status_float(status_info, 'th2', 'dial_position',
                                     'value')
 
-        chi2_user = get_status_value(status_info, 'ch2', 'position')
-        chi2_dial = get_status_value(status_info, 'ch2', 'dial_position',
+        chi2_user = get_status_float(status_info, 'ch2', 'position')
+        chi2_dial = get_status_float(status_info, 'ch2', 'dial_position',
                                      'value')
 
-        y2_user = get_status_value(status_info, 'y2', 'position')
-        y2_dial = get_status_value(status_info, 'y2', 'dial_position', 'value')
+        y2_user = get_status_float(status_info, 'y2', 'position')
+        y2_dial = get_status_float(status_info, 'y2', 'dial_position', 'value')
 
-        hn2_user = get_status_value(status_info, 'h2n', 'position')
-        hn2_dial = get_status_value(status_info, 'h2n', 'dial_position',
+        hn2_user = get_status_float(status_info, 'h2n', 'position')
+        hn2_dial = get_status_float(status_info, 'h2n', 'dial_position',
                                     'value')
 
-        hp2_user = get_status_value(status_info, 'h2p', 'position')
-        hp2_dial = get_status_value(status_info, 'h2p', 'dial_position',
+        hp2_user = get_status_float(status_info, 'h2p', 'position')
+        hp2_dial = get_status_float(status_info, 'h2p', 'dial_position',
                                     'value')
 
-        diode2_user = get_status_value(status_info, 'diode2', 'position')
-        diode2_dial = get_status_value(status_info, 'diode2', 'dial_position',
+        diode2_user = get_status_float(status_info, 'diode2', 'position')
+        diode2_dial = get_status_float(status_info, 'diode2', 'dial_position',
                                        'value')
         # diagnostics
         dh_units = get_status_value(status_info, 'dh', 'user_setpoint',
                                     'units')
-        dh_user = get_status_value(status_info, 'dh', 'position')
-        dh_dial = get_status_value(status_info, 'dh', 'dial_position', 'value')
+        dh_user = get_status_float(status_info, 'dh', 'position')
+        dh_dial = get_status_float(status_info, 'dh', 'dial_position', 'value')
 
         dv_units = get_status_value(status_info, 'dv', 'user_setpoint',
                                     'units')
-        dv_user = get_status_value(status_info, 'dv', 'position')
-        dv_dial = get_status_value(status_info, 'dv', 'dial_position', 'value')
+        dv_user = get_status_float(status_info, 'dv', 'position')
+        dv_dial = get_status_float(status_info, 'dv', 'dial_position', 'value')
 
         dr_units = get_status_value(status_info, 'dr', 'user_setpoint',
                                     'units')
-        dr_user = get_status_value(status_info, 'dr', 'position')
-        dr_dial = get_status_value(status_info, 'dr', 'dial_position', 'value')
+        dr_user = get_status_float(status_info, 'dr', 'position')
+        dr_dial = get_status_float(status_info, 'dr', 'dial_position', 'value')
 
         df_units = get_status_value(status_info, 'df', 'user_setpoint',
                                     'units')
-        df_user = get_status_value(status_info, 'df', 'position')
-        df_dial = get_status_value(status_info, 'df', 'dial_position', 'value')
+        df_user = get_status_float(status_info, 'df', 'position')
+        df_dial = get_status_float(status_info, 'df', 'dial_position', 'value')
 
         dd_units = get_status_value(status_info, 'dd', 'user_setpoint',
                                     'units')
-        dd_user = get_status_value(status_info, 'dd', 'position')
-        dd_dial = get_status_value(status_info, 'dd', 'dial_position', 'value')
+        dd_user = get_status_float(status_info, 'dd', 'position')
+        dd_dial = get_status_float(status_info, 'dd', 'dial_position', 'value')
 
         yag_zoom_units = get_status_value(status_info, 'yag_zoom',
                                           'user_setpoint', 'units')
-        yag_zoom_user = get_status_value(status_info, 'yag_zoom', 'position')
-        yag_zoom_dial = get_status_value(status_info, 'yag_zoom',
+        yag_zoom_user = get_status_float(status_info, 'yag_zoom', 'position')
+        yag_zoom_dial = get_status_float(status_info, 'yag_zoom',
                                          'dial_position', 'value')
 
         def form(left_str, center_str, right_str):
             return f'{left_str:<15}{center_str:>25}{right_str:>25}'
-
-        def ff(float_str):
-            if isinstance(float_str, Number):
-                return f'{float_str:.4f}'
-            return float_str
 
         return f"""\
 {hutch}LODCM Motor Status Positions
@@ -766,56 +763,29 @@ Current Configuration: {configuration} ({ref})
 Photon Energy: {energy} [keV]
 -----------------------------------------------------------------
 {form(' ', 'Crystal Tower 1', 'Crystal Tower 2')}
-{form(f'z [{z_units}]', f'{ff(z_user)} ({ff(z_dial)})',
-      f'{ff(z2_user)} ({ff(z2_dial)})')}
-{form(f'x [{x_units}]', f'{ff(x_user)} ({ff(x_dial)})',
-      f'{ff(x2_user)} ({ff(x2_dial)})')}
-{form(f'th [{th_units}]', f'{ff(th_user)} ({ff(th_dial)})',
-      f'{ff(th2_user)} ({ff(th2_dial)})')}
-{form(f'chi [{chi_units}]', f'{ff(chi_user)} ({ff(chi_dial)})',
-      f'{ff(chi2_user)} ({ff(chi2_dial)})')}
-{form(f'y [{y_units}]', f'{ff(y_user)} ({ff(y_dial)})',
-      f'{ff(y2_user)} ({ff(y2_dial)})')}
-{form(f'hn [{hn_units}]', f'{ff(hn_user)} ({ff(hn_dial)})',
-      f'{ff(hn2_user)} ({ff(hn2_dial)})')}
-{form(f'hp [{hp_units}]', f'{ff(hp_user)} ({ff(hp_dial)})',
-      f'{ff(hp2_user)} ({ff(hp2_dial)})')}
-{form(f'diode [{diode_units}]', f'{ff(diode_user)} ({ff(diode_dial)})',
-      f'{ff(diode2_user)} ({ff(diode2_dial)})')}
+{form(f'z [{z_units}]', f'{z_user} ({z_dial})',
+      f'{z2_user} ({z2_dial})')}
+{form(f'x [{x_units}]', f'{x_user} ({x_dial})',
+      f'{x2_user} ({x2_dial})')}
+{form(f'th [{th_units}]', f'{th_user} ({th_dial})',
+      f'{th2_user} ({th2_dial})')}
+{form(f'chi [{chi_units}]', f'{chi_user} ({chi_dial})',
+      f'{chi2_user} ({chi2_dial})')}
+{form(f'y [{y_units}]', f'{y_user} ({y_dial})',
+      f'{y2_user} ({y2_dial})')}
+{form(f'hn [{hn_units}]', f'{hn_user} ({hn_dial})',
+      f'{hn2_user} ({hn2_dial})')}
+{form(f'hp [{hp_units}]', f'{hp_user} ({hp_dial})',
+      f'{hp2_user} ({hp2_dial})')}
+{form(f'diode [{diode_units}]', f'{diode_user} ({diode_dial})',
+      f'{diode2_user} ({diode2_dial})')}
 -----------------------------------------------------------------
 {form(' ', 'Diagnostic Tower', ' ')}
-{form(f'diag r [{dr_units}]', f'{ff(dr_user)} ({ff(dr_dial)})', '')}
-{form(f'diag h [{dh_units}]', f'{ff(dh_user)} ({ff(dh_dial)})', '')}
-{form(f'diag v [{dv_units}]', f'{ff(dv_user)} ({ff(dv_dial)})', '')}
-{form(f'filter [{df_units}]', f'{ff(df_user)} ({ff(df_dial)})', '')}
-{form(f'diode [{dd_units}]', f'{ff(dd_user)} ({ff(dd_dial)})', '')}
+{form(f'diag r [{dr_units}]', f'{dr_user} ({dr_dial})', '')}
+{form(f'diag h [{dh_units}]', f'{dh_user} ({dh_dial})', '')}
+{form(f'diag v [{dv_units}]', f'{dv_user} ({dv_dial})', '')}
+{form(f'filter [{df_units}]', f'{df_user} ({df_dial})', '')}
+{form(f'diode [{dd_units}]', f'{dd_user} ({dd_dial})', '')}
 {form(f'navitar [{yag_zoom_units}]',
-      f'{ff(yag_zoom_user)} ({ff(yag_zoom_dial)})', '')}
+      f'{yag_zoom_user} ({yag_zoom_dial})', '')}
 """
-
-
-class SimLODCM(LODCM):
-    """Test version of the LODCM object."""
-    # tower 1
-    x1 = Cpt(FastMotor, limits=(-100, 100))
-    y1 = Cpt(FastMotor, limits=(-100, 100))
-    z1 = Cpt(FastMotor, limits=(-100, 100))
-    th1 = Cpt(FastMotor, limits=(-100, 100))
-    ch1 = Cpt(FastMotor, limits=(-100, 100))
-    h1n = Cpt(FastMotor, limits=(-100, 100))
-    h1p = Cpt(FastMotor, limits=(-100, 100))
-    # tower 2
-    z2 = Cpt(FastMotor, limits=(-100, 100))
-    x2 = Cpt(FastMotor, limits=(-100, 100))
-    y2 = Cpt(FastMotor, limits=(-100, 100))
-    th2 = Cpt(FastMotor, limits=(-100, 100))
-    ch2 = Cpt(FastMotor, limits=(-100, 100))
-    h2n = Cpt(FastMotor, limits=(-100, 100))
-    diode2 = Cpt(FastMotor, limits=(-100, 100))
-    # TOWER DIAG
-    dh = Cpt(FastMotor, limits=(-100, 100))
-    dv = Cpt(FastMotor, limits=(-100, 100))
-    dr = Cpt(FastMotor, limits=(-100, 100))
-    df = Cpt(FastMotor, limits=(-100, 100))
-    dd = Cpt(FastMotor, limits=(-100, 100))
-    yag_zoom = Cpt(FastMotor, limits=(-100, 100))
