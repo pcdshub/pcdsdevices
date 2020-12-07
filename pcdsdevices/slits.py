@@ -24,11 +24,18 @@ from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import Signal
 from ophyd.status import wait as status_wait, Status
 
+from .areadetector.detectors import (PCDSAreaDetectorTyphosTrigger)
+
 from .epics_motor import BeckhoffAxis
-from .interface import FltMvInterface, MvInterface, LightpathMixin
+from .interface import (BaseInterface, FltMvInterface, MvInterface,
+                        LightpathMixin, LightpathInOutMixin)
 from .signal import PytmcSignal, NotImplementedSignal
-from .sensors import RTD
+from .sensors import RTD, TwinCATTempSensor
 from .utils import schedule_task, get_status_value
+
+from .pmps import TwinCATStatePMPS
+from .variety import set_metadata
+
 
 logger = logging.getLogger(__name__)
 
@@ -492,3 +499,55 @@ class PowerSlits(BeckhoffSlits):
 
     rtds = DDCpt(_rtd_fields(RTD, 'rtd', range(1, 9)))
     fsw = Cpt(NotImplementedSignal, ':FSW', kind='normal')
+
+
+class ExitSlits(BaseInterface, Device, LightpathInOutMixin):
+    tab_component_names = True
+
+    lightpath_cpts = ['target']
+    _icon = 'fa.video-camera'
+
+    target = Cpt(TwinCATStatePMPS, ':YAG:STATE', kind='hinted',
+                 doc='Control of the YAG  stack via saved positions.')
+    yag_motor = Cpt(BeckhoffAxis, ':MMS:YAG', kind='normal',
+                    doc='Direct control of the Yag Stack motor.')
+    pitch_motor = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='normal',
+                      doc='Direct control of the slits assembly pitch  motor.')
+    vert_motor = Cpt(
+        BeckhoffAxis, ':MMS:VERT', kind='normal',
+        doc='Direct control of the slits assembly vertical motor.'
+    )
+    roll_motor = Cpt(BeckhoffAxis, ':MMS:ROLL', kind='normal',
+                     doc='Direct control of the slits assembly roll motor.')
+    gap_motor = Cpt(BeckhoffAxis, ':MMS:GAP', kind='normal',
+                    doc='Direct control of the slits gap  motor.')
+    detector = Cpt(PCDSAreaDetectorTyphosTrigger, ':CAM:', kind='normal',
+                   doc='Area detector settings and readbacks.')
+    cam_power = Cpt(PytmcSignal, ':CAM:PWR', io='io', kind='config',
+                    doc='Camera power supply controls.')
+    fan_power = Cpt(PytmcSignal, ':FAN:PWR', io='io', kind='config',
+                    doc='Fan power supply controls.')
+    led_power = Cpt(PytmcSignal, ':LED:PWR', io='io', kind='config',
+                    doc='LED power supply controls.')
+    led = Cpt(PytmcSignal, ':CAM:CIL:PCT', io='io', kind='config',
+              doc='Percent of light from the dimmable illuminatior.')
+    yag_thermocouple = Cpt(TwinCATTempSensor, ':RTD:YAG', kind='normal',
+                           doc='Thermocouple on the YAG holder.')
+    upper_crystal_thermocouple = Cpt(
+        TwinCATTempSensor, ':RTD:CRYSTAL_TOP', kind='normal',
+        doc='Thermocouple on the TOP CRYSTAL.'
+    )
+    lower_crystal_thermocouple = Cpt(
+        TwinCATTempSensor, ':RTD:CRYSTAL_BOTTOM', kind='normal',
+        doc='Thermocouple on the BOTTOM CRYSTAL.'
+    )
+    heatsync_thermocouple = Cpt(
+        TwinCATTempSensor, ':RTD:HeatSync', kind='normal',
+        doc='Thermocouple on the Heat Sync.'
+    )
+    set_metadata(cam_power, dict(variety='command-enum'))
+
+    @property
+    def y_states(self):
+        """Alias old name. Will deprecate."""
+        return self.target
