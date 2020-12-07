@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- N/A
+- led metadata scalar range
 
 New Devices
 -----------
