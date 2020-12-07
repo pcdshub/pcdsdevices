@@ -503,7 +503,7 @@ class PowerSlits(BeckhoffSlits):
 
 
 
-class ExitSlits(BaseInterface,Device,LightpathInOutMixin):
+class ExitSlits(BaseInterface, Device, LightpathInOutMixin):
  
     tab_component_names = True
 
