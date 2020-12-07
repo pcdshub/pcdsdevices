@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- Added `ExitSlits` device.
 
 Bugfixes
 --------
