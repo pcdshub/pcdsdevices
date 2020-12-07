@@ -250,7 +250,7 @@ class Mono(BaseInterface, Device):
     
     # LED PWR
     led_power_1 = Cpt(PytmcSignal, ':LED:01:PWR', io='io', kind='config',
-                    doc='LED power supply controls.')
+                      doc='LED power supply controls.')
     led_power_2 = Cpt(PytmcSignal, ':LED:02:PWR', io='io', kind='config',
                     doc='LED power supply controls.')
     led_power_3 = Cpt(PytmcSignal, ':LED:03:PWR', io='io', kind='config',
