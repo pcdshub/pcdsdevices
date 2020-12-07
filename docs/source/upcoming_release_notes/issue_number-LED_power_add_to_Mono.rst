@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- N/A
+- Add LED power to the Mono device.
 
 New Devices
 -----------
