@@ -16,12 +16,13 @@ from ophyd.sim import NullStatus
 from ophyd.signal import EpicsSignalRO
 from ophyd.status import wait as status_wait
 import numpy as np
-from pcdscalc import diffraction
+from pcdscalc import diffraction, common
 
 from .component import UnrelatedComponent as UCpt
+from ophyd.device import FormattedComponent as FCpt
 from .doc_stubs import insert_remove
 from .inout import InOutRecordPositioner
-from .interface import BaseInterface
+from .interface import BaseInterface, FltMvInterface
 from .epics_motor import IMS
 from .utils import get_status_value, get_status_float
 from .pseudopos import (PseudoSingleInterface, PseudoPositioner,
@@ -134,6 +135,347 @@ def get_prefix(motor):
         logging.error('Could not get the value of %f', motor)
 
 
+class CrystalTower1(BaseInterface, Device):
+    """
+    Crystal Tower 1.
+
+    Has the Si and C crystals with 2 angles and 5 linear motions.
+
+    Parameters
+    ----------
+    z1_prefix : str
+        LOM Xtal1 Z motor prefix.
+
+    x1_prefix : str
+        LOM Xtal1 X motor prefix.
+
+    y1_prefix : str
+        LOM Xtal1 Y motor prefix.
+
+    th1_prefix : str
+        LOM Xtal1 Theta motor prefix.
+
+    ch1_prefix : str
+        LOM Xtal1 Chi motor prefix.
+
+    h1n_m_prefix : str
+        LOM Xtal1 Hn motor prefix. Normal to the crystal surface movement.
+
+    h1p_prefix : str
+        LOM Xtal1 Hp motor prefix. Paralel to the crystal surface movement.
+
+    """
+    h1n = FCpt(H1N, '{self._prefix}:H1N', kind='hinted')
+    y1_state = FCpt(Y1, '{self._prefix}:Y1', kind='omitted')
+    chi1_state = FCpt(CHI1, '{self._prefix}:CHI1', kind='omitted')
+    # x, y, and z are on the base but not touched in normal operations
+    z1 = FCpt(IMS, '{self._z1_prefix}', kind='normal', doc='LOM Xtal1 Z')
+    x1 = FCpt(IMS, '{self._x1_prefix}', kind='normal', doc='LOM Xtal1 X')
+    y1 = FCpt(IMS, '{self._y1_prefix}', kind='normal', doc='LOM Xtal1 Y')
+    # theta movement
+    th1 = FCpt(IMS, '{self._th1_prefix}', kind='normal', doc='LOM Xtal1 Theta')
+    # chi movement
+    ch1 = FCpt(IMS, '{self._ch1_prefix}', kind='normal', doc='LOM Xtal1 Chi')
+    # normal to the crystal surface movement
+    h1n_m = FCpt(IMS, '{self._h1n_m_prefix}', kind='normal',
+                 doc='LOM Xtal1 Hn')
+    # paralell to the crystal surface movement
+    h1p = FCpt(IMS, '{self._h1p_prefix}', kind='normal', doc='LOM Xtal1 Hp')
+
+    # pseudo positioners
+    # th1_si = FCpt(PseudoSingleInterface, '{self._prefix}:TH1:OFF_Si',
+    #               kind='normal', name='th1_silicon',
+    #               doc='Th1 motor offset for Si')
+    # th1_c = FCpt(PseudoSingleInterface, '{self._prefix}:TH1:OFF_C',
+    #              kind='normal', name='th1_diamond',
+    #              doc='Th1 motor offset for C')
+    # z1_si = FCpt(PseudoSingleInterface, '{self._prefix}:Z1:OFF_Si',
+    #              kind='normal', name='z1_silicon',
+    #              doc='Z1 motor offset for Si')
+    # z1_c = FCpt(PseudoSingleInterface, '{self._prefix}:Z1:OFF_C',
+    #             kind='normal', name='z1_diamond',
+    #             doc='Z1 motor offset for C')
+
+    # reflection pvs
+    diamond_reflection = FCpt(EpicsSignalRO, '{self._prefix}:T1C:REF',
+                              kind='omitted',
+                              doc='Tower 1 Diamond crystal reflection')
+    silicon_reflection = FCpt(EpicsSignalRO, '{self._prefix}:T1Si:REF',
+                              kind='omitted',
+                              doc='Tower 1 Silicon crystal reflection')
+
+    tab_component_names = True
+
+    def __init__(self, prefix, z1_prefix, x1_prefix, y1_prefix, th1_prefix,
+                 ch1_prefix, h1n_m_prefix, h1p_prefix, *args, **kwargs):
+        self._z1_prefix = z1_prefix
+        self._x1_prefix = x1_prefix
+        self._y1_prefix = y1_prefix
+        self._th1_prefix = th1_prefix
+        self._ch1_prefix = ch1_prefix
+        self._h1n_m_prefix = h1n_m_prefix
+        self._h1p_prefix = h1p_prefix
+        self._prefix = prefix
+        super().__init__('', *args, **kwargs)
+
+    def is_diamond(self):
+        """Check if tower 1 is with Diamond (C) material."""
+        return (
+            (self.h1n.position == 'C' or self.h1n.position == 'OUT') and
+            self.y1_state.position == 'C' and
+            self.chi1_state.position == 'C'
+        )
+
+    def is_silicon(self):
+        """Check if tower 1 is with Silicon (Si) material."""
+        return (
+            (self.h1n.position == 'Si' or self.h1n.position == 'OUT') and
+            self.y1_state.position == 'Si' and
+            self.chi1_state.position == 'Si'
+        )
+
+    def get_reflection(self):
+        """Get crystal's reflection."""
+        if self.is_diamond():
+            reflection = self.diamond_reflection.get()
+        elif self.is_silicon():
+            reflection = self.silicon_reflection.get()
+
+        if reflection is None:
+            raise ValueError('Unable to determine the crystal reflection')
+        return reflection
+
+    def get_material(self):
+        """Get the current material."""
+        if self.is_diamond():
+            return 'C'
+        elif self.is_silicon():
+            return 'Si'
+
+
+class CrystalTower1Init(CrystalTower1):
+    """Helper initializing function for CrystalTower1 object."""
+    def __init__(self, *args, parent, **kwargs):
+        self._z1_prefix = parent._z1_prefix
+        self._x1_prefix = parent._x1_prefix
+        self._y1_prefix = parent._y1_prefix
+        self._th1_prefix = parent._th1_prefix
+        self._ch1_prefix = parent._ch1_prefix
+        self._h1n_m_prefix = parent._h1n_m_prefix
+        self._h1p_prefix = parent._h1p_prefix
+        self._prefix = parent._prefix
+        super().__init__(*args, parent=parent, z1_prefix=self._z1_prefix,
+                         x1_prefix=self._x1_prefix, y1_prefix=self._y1_prefix,
+                         th1_prefix=self._th1_prefix,
+                         ch1_prefix=self._ch1_prefix,
+                         h1n_m_prefix=self._h1n_m_prefix,
+                         h1p_prefix=self._h1n_m_prefix,
+                         prefix=self._prefix,
+                         **kwargs)
+
+
+class CrystalTower2(BaseInterface, Device):
+    """
+    Crystal Tower 2.
+
+    Has the second Si and C crystals and a diode behind the crystals.
+
+    Parameters
+    ----------
+    z2_prefix : str
+        LOM Xtal2 Z motor prefix.
+
+    x2_prefix : str
+        LOM Xtal2 X motor prefix.
+
+    y2_prefix : str
+        LOM Xtal2 Y motor prefix.
+
+    th2_prefix : str
+        LOM Xtal2 Theta motor prefix.
+
+    ch2_prefix : str
+        LOM Xtal2 Chi motor prefix.
+
+    h2n_prefix : str
+        LOM Xtal2 Hn motor prefix.
+
+    diode2_prefix : str
+        LOM Xtal2 PIPS motor prefix.
+    """
+    h2n_state = FCpt(H2N, '{self._prefix}:H2N', kind='hinted')
+    y2_state = FCpt(Y2, '{self._prefix}:Y2', kind='omitted')
+    chi2_state = FCpt(CHI2, '{self._prefix}:CHI2', kind='omitted')
+    # x, y, and z are on the base but not touched in normal operations
+    z2 = FCpt(IMS, '{self._z2_prefix}', kind='normal', doc='LOM Xtal2 Z')
+    x2 = FCpt(IMS, '{self._x2_prefix}', kind='normal', doc='LOM Xtal2 X')
+    y2 = FCpt(IMS, '{self._y2_prefix}', kind='normal', doc='LOM Xtal2 Y')
+    # thata movement
+    th2 = FCpt(IMS, '{self._th2_prefix}', kind='normal', doc='LOM Xtal2 Theta')
+    # chi movement
+    ch2 = FCpt(IMS, '{self._ch2_prefix}', kind='normal', doc='LOM Xtal2 Chi')
+    # normal to the crystal surface movement
+    h2n = FCpt(IMS, '{self._h2n_prefix}', kind='normal', doc='LOM Xtal2 Hn')
+    # in the DAQ for scanning in python
+    diode2 = FCpt(IMS, '{self._diode2_prefix}',
+                  kind='normal', doc='LOM Xtal2 PIPS')
+
+    # pseudo positioners
+    # th2_si = FCpt(PseudoSingleInterface, '{self._prefix}:TH2:OFF_Si',
+    #               kind='normal', name='th2_silicon',
+    #               doc='Th2 motor offset for Si')
+    # th2_c = FCpt(PseudoSingleInterface, '{self._prefix}:TH2:OFF_C',
+    #              kind='normal', name='th2_diamond',
+    #              doc='Th2 motor offset for C')
+    # z2_si = FCpt(PseudoSingleInterface, '{self._prefix}:Z2:OFF_Si',
+    #              kind='normal', name='z1_diamond',
+    #              doc='Z2 motor offset for Si')
+    # z2_c = FCpt(PseudoSingleInterface, '{self._prefix}:Z2:OFF_C',
+    #             kind='normal', name='z1_diamond',
+    #             doc='Z2 motor offset for C')
+
+    # reflection pvs
+    diamond_reflection = FCpt(EpicsSignalRO, '{self._prefix}:T2C:REF',
+                              kind='omitted',
+                              doc='Tower 2 Diamond crystal reflection')
+    silicon_reflection = FCpt(EpicsSignalRO, '{self._prefix}:T2Si:REF',
+                              kind='omitted',
+                              doc='Tower 2 Silicon crystal reflection')
+
+    tab_component_names = True
+
+    def __init__(self, prefix, z2_prefix, x2_prefix, y2_prefix, th2_prefix,
+                 ch2_prefix, h2n_prefix, diode2_prefix, *args, **kwargs):
+        self._z2_prefix = z2_prefix
+        self._x2_prefix = x2_prefix
+        self._y2_prefix = y2_prefix
+        self._th2_prefix = th2_prefix
+        self._ch2_prefix = ch2_prefix
+        self._h2n_prefix = h2n_prefix
+        self._diode2_prefix = diode2_prefix
+        self._prefix = prefix
+        super().__init__('', *args, **kwargs)
+
+    def is_diamond(self):
+        """Check if tower 2 is with Diamond (C) material."""
+        return (self.h2n_state.position == 'C' and
+                self.y2_state.position == 'C' and
+                self.chi2_state.position == 'C')
+
+    def is_silicon(self):
+        """Check if tower 2 is with Silicon (Si) material."""
+        return (self.h2n_state.position == 'Si' and
+                self.y2_state.position == 'Si' and
+                self.chi2_state.position == 'Si')
+
+    def get_reflection(self):
+        """Get crystal's reflection."""
+        if self.is_diamond():
+            reflection = self.diamond_reflection.get()
+        elif self.is_silicon():
+            reflection = self.silicon_reflection.get()
+
+        if reflection is None:
+            raise ValueError('Unable to determine the crystal reflection')
+        return reflection
+
+    def get_material(self):
+        """Get the current material."""
+        if self.is_diamond():
+            return 'C'
+        elif self.is_silicon():
+            return 'Si'
+
+
+class CrystalTower2Init(CrystalTower2):
+    """Helper initializing function for CrystalTower2 object."""
+    def __init__(self, *args, parent, **kwargs):
+        self._z2_prefix = parent._z2_prefix
+        self._x2_prefix = parent._x2_prefix
+        self._y2_prefix = parent._y2_prefix
+        self._th2_prefix = parent._th2_prefix
+        self._ch2_prefix = parent._ch2_prefix
+        self._h2n_prefix = parent._h2n_prefix
+        self._diode2_prefix = parent._diode2_prefix
+        self._prefix = parent._prefix
+        super().__init__(*args, parent=parent, z2_prefix=self._z2_prefix,
+                         x2_prefix=self._x2_prefix, y2_prefix=self._y2_prefix,
+                         th2_prefix=self._th2_prefix,
+                         ch2_prefix=self._ch2_prefix,
+                         h2n_prefix=self._h2n_prefix,
+                         diode2_prefix=self._diode2_prefix,
+                         prefix=self._prefix,
+                         **kwargs)
+
+
+class DiagnosticsTower(BaseInterface, Device):
+    """
+    Diagnostic Tower.
+
+    Parameters
+    ----------
+    dh_prefix : str
+        LOM Dia H motor prefix.
+
+    dv_prefix : str
+        LOM Dia V motor prefix.
+
+    dr_prefix : str
+        LOM Dia Theta motor prefix.
+
+    df_prefix : str
+        LOM Dia Filter Wheel motor prefix.
+
+    dd_prefix : str
+        LOM Dia PIPS motor prefix.
+
+    yag_zoom_prefix : str
+        LOM Zoom motor prefix.
+    """
+    # Located midway between T1 and T2 in the center of rotation of the device.
+    # horizontal slits
+    dh = FCpt(IMS, '{self._dh_prefix}', kind='normal', doc='LOM Dia H')
+    # vertical slits
+    dv = FCpt(IMS, '{self._dv_prefix}', kind='normal', doc='LOM Dia V')
+    dr = FCpt(IMS, '{self._dr_prefix}', kind='normal', doc='LOM Dia Theta')
+    # filters wheel
+    df = FCpt(IMS, '{self._df_prefix}', kind='normal',
+              doc='LOM Dia Filter Wheel')
+    # pips diode
+    dd = FCpt(IMS, '{self._dd_prefix}', kind='normal', doc='LOM Dia PIPS')
+    # yag screen
+    yag_zoom = FCpt(IMS, '{self._yag_zoom_prefix}', kind='normal',
+                    doc='LOM Zoom')
+
+    tab_component_names = True
+
+    def __init__(self, dh_prefix, dv_prefix, dr_prefix, df_prefix,
+                 dd_prefix, yag_zoom_prefix, * args, **kwargs):
+        self._dh_prefix = dh_prefix
+        self._dv_prefix = dv_prefix
+        self._dr_prefix = dr_prefix
+        self._df_prefix = df_prefix
+        self._dd_prefix = dd_prefix
+        self._yag_zoom_prefix = yag_zoom_prefix
+        super().__init__('', *args, **kwargs)
+
+
+class DiagnosticsTowerInit(DiagnosticsTower):
+    """Helper initializing function for DiagnosticsTower object."""
+    def __init__(self, *args, parent, **kwargs):
+        self._dh_prefix = parent._dh_prefix
+        self._dv_prefix = parent._dv_prefix
+        self._dr_prefix = parent._dr_prefix
+        self._df_prefix = parent._df_prefix
+        self._dd_prefix = parent._dd_prefix
+        self._yag_zoom_prefix = parent._yag_zoom_prefix
+        super().__init__(*args, parent=parent, dh_prefix=self._dh_prefix,
+                         dv_prefix=self._dv_prefix, dr_prefix=self._dr_prefix,
+                         df_prefix=self._df_prefix, dd_prefix=self._dd_prefix,
+                         yag_zoom_prefix=self._yag_zoom_prefix,
+                         **kwargs)
+
+
 class LODCM(BaseInterface, PseudoPositioner, Device):
     """
     Large Offset Dual Crystal Monochromator.
@@ -175,10 +517,10 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
         LOM Xtal1 Chi motor prefix.
 
     h1n_m_prefix : str
-        LOM Xtal1 Hn motor prefix.
+        LOM Xtal1 Hn motor prefix. Normal to the crystal surface movement.
 
     h1p_prefix : str
-        LOM Xtal1 Hp motor prefix.
+        LOM Xtal1 Hp motor prefix. Paralel to the crystal surface movement.
 
     z2_prefix : str
         LOM Xtal2 Z motor prefix.
@@ -224,46 +566,21 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
     dectris = Cpt(Dectris, ":DH", kind='omitted')
     diode = Cpt(Diode, ":DIODE", kind='omitted')
     foil = Cpt(Foil, ":FOIL", kind='omitted')
-    y1_state = Cpt(Y1, ':Y1', kind='omitted')
-    chi1_state = Cpt(CHI1, ':CHI1', kind='omitted')
-    h2n_state = Cpt(H2N, ':H2N', kind='omitted')
-    y2_state = Cpt(Y2, ':Y2', kind='omitted')
-    chi2_state = Cpt(CHI2, ':CHI2', kind='omitted')
+    # y1_state = Cpt(Y1, ':Y1', kind='omitted')
+    # chi1_state = Cpt(CHI1, ':CHI1', kind='omitted')
+    # h2n_state = Cpt(H2N, ':H2N', kind='omitted')
+    # y2_state = Cpt(Y2, ':Y2', kind='omitted')
+    # chi2_state = Cpt(CHI2, ':CHI2', kind='omitted')
     # TODO energy component??
-    energy = Cpt(PseudoSingleInterface, egu='eV')
+    # energy = Cpt(PseudoSingleInterface, egu='keV', limits=(4, 25))
+    # vernier = Cpt(PseudoSingleInterface, egu='keV')
+    # energy_c = Cpt(PseudoSingleInterface, egu='keV')
+    # energy_si = Cpt(PseudoSingleInterface, egu='keV')
 
-    # Crystal Tower 1
-    z1 = UCpt(IMS, kind='normal', doc='LOM Xtal1 Z')
-    x1 = UCpt(IMS, kind='normal', doc='LOM Xtal1 X')
-    y1 = UCpt(IMS, kind='normal', doc='LOM Xtal1 Y')
-    th1 = UCpt(IMS, kind='normal', doc='LOM Xtal1 Theta')
-    ch1 = UCpt(IMS, kind='normal', doc='LOM Xtal1 Chi')
-    h1n_m = UCpt(IMS, kind='normal', doc='LOM Xtal1 Hn')
-    h1p = UCpt(IMS, kind='normal', doc='LOM Xtal1 Hp')
-    # Crystal Tower 2
-    z2 = UCpt(IMS, kind='normal', doc='LOM Xtal2 Z')
-    x2 = UCpt(IMS, kind='normal', doc='LOM Xtal2 X')
-    y2 = UCpt(IMS, kind='normal', doc='LOM Xtal2 Y')
-    th2 = UCpt(IMS, kind='normal', doc='LOM Xtal2 Theta')
-    ch2 = UCpt(IMS, kind='normal', doc='LOM Xtal2 Chi')
-    h2n = UCpt(IMS, kind='normal', doc='LOM Xtal2 Hn')
-    diode2 = UCpt(IMS, kind='normal', doc='LOM Xtal2 PIPS')
-    # Diagnostic Tower
-    dh = UCpt(IMS, kind='normal', doc='LOM Dia H')
-    dv = UCpt(IMS, kind='normal', doc='LOM Dia V')
-    dr = UCpt(IMS, kind='normal', doc='LOM Dia Theta')
-    df = UCpt(IMS, kind='normal', doc='LOM Dia Filter Wheel')
-    dd = UCpt(IMS, kind='normal', doc='LOM Dia PIPS')
-    yag_zoom = UCpt(IMS, kind='normal', doc='LOM Zoom')
-    # reflection pvs
-    t1_c_ref = Cpt(EpicsSignalRO, ':T1C:REF', kind='omitted',
-                   doc='Tower 1 Diamond crystal reflection')
-    t1_si_ref = Cpt(EpicsSignalRO, ':T1Si:REF', kind='omitted',
-                    doc='Tower 1 Silicon crystal reflection')
-    t2_c_ref = Cpt(EpicsSignalRO, ':T2C:REF', kind='omitted',
-                   doc='Tower 2 Diamond crystal reflection')
-    t2_si_ref = Cpt(EpicsSignalRO, ':T2Si:REF', kind='omitted',
-                    doc='Tower 2 Silicon crystal reflection')
+    first_tower = Cpt(CrystalTower1Init, name='T1', kind='normal')
+    second_tower = Cpt(CrystalTower2Init, name='T2', kind='normal')
+    diagnostic_tower = Cpt(DiagnosticsTowerInit, name='DT', kind='normal')
+
     # pseudo positioners
     th1_si = Cpt(PseudoSingleInterface, ':TH1:OFF_Si', kind='normal',
                  name='th1_silicon', doc='Th1 motor offset for Si')
@@ -287,37 +604,67 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
 
     tab_whitelist = ['h1n', 'yag', 'dectris', 'diode', 'foil', 'remove_dia']
 
-    def __init__(self, prefix, *, name, main_line='MAIN', mono_line='MONO',
-                 **kwargs):
-        kwargs['z1_prefix'] = kwargs.get('z1_prefix') or get_prefix('z1')
-        kwargs['x1_prefix'] = kwargs.get('x1_prefix') or get_prefix('x1')
-        kwargs['y1_prefix'] = kwargs.get('y1_prefix') or get_prefix('y1')
-        kwargs['th1_prefix'] = kwargs.get('th1_prefix') or get_prefix('th1')
-        kwargs['ch1_prefix'] = kwargs.get('ch1_prefix') or get_prefix('ch1')
-        kwargs['h1n_m_prefix'] = (kwargs.get('h1n_m_prefix') or
-                                  get_prefix('h1n_m'))
-        kwargs['h1p_prefix'] = kwargs.get('h1p_prefix') or get_prefix('h1p')
+    def __init__(self, prefix, *, name, z1_prefix=None, x1_prefix=None,
+                 y1_prefix=None, th1_prefix=None, ch1_prefix=None,
+                 h1n_m_prefix=None, h1p_prefix=None, z2_prefix=None,
+                 x2_prefix=None, y2_prefix=None, th2_prefix=None,
+                 ch2_prefix=None, h2n_prefix=None, diode2_prefix=None,
+                 dh_prefix=None, dv_prefix=None, dr_prefix=None,
+                 df_prefix=None, dd_prefix=None, yag_zoom_prefix=None,
+                 main_line='MAIN', mono_line='MONO', **kwargs):
+        self._prefix = prefix
+        # tower 1
+        self._z1_prefix = kwargs.get('z1_prefix') or get_prefix('z1')
+        self._x1_prefix = kwargs.get('x1_prefix') or get_prefix('x1')
+        self._y1_prefix = kwargs.get('y1_prefix') or get_prefix('y1')
+        self._th1_prefix = kwargs.get('th1_prefix') or get_prefix('th1')
+        self._ch1_prefix = kwargs.get('ch1_prefix') or get_prefix('ch1')
+        self._h1n_m_prefix = (kwargs.get('h1n_m_prefix') or
+                              get_prefix('h1n_m'))
+        self._h1p_prefix = kwargs.get('h1p_prefix') or get_prefix('h1p')
         # tower 2
-        kwargs['z2_prefix'] = kwargs.get('z2_prefix') or get_prefix('z2')
-        kwargs['x2_prefix'] = kwargs.get('x2_prefix') or get_prefix('x2')
-        kwargs['y2_prefix'] = kwargs.get('y2_prefix') or get_prefix('y2')
-        kwargs['th2_prefix'] = kwargs.get('th2_prefix') or get_prefix('th2')
-        kwargs['ch2_prefix'] = kwargs.get('ch2_prefix') or get_prefix('ch2')
-        kwargs['h2n_prefix'] = kwargs.get('h2n_prefix') or get_prefix('h2n')
-        kwargs['diode2_prefix'] = kwargs.get(
-            'diode2_prefix') or get_prefix('diode2')
+        self._z2_prefix = kwargs.get('z2_prefix') or get_prefix('z2')
+        self._x2_prefix = kwargs.get('x2_prefix') or get_prefix('x2')
+        self._y2_prefix = kwargs.get('y2_prefix') or get_prefix('y2')
+        self._th2_prefix = kwargs.get('th2_prefix') or get_prefix('th2')
+        self._ch2_prefix = kwargs.get('ch2_prefix') or get_prefix('ch2')
+        self._h2n_prefix = kwargs.get('h2n_prefix') or get_prefix('h2n')
+        self._diode2_prefix = (kwargs.get('diode2_prefix') or
+                               get_prefix('diode2'))
         # Diagnostic Tower
-        kwargs['dh_prefix'] = kwargs.get('dh_prefix') or get_prefix('dh')
-        kwargs['dv_prefix'] = kwargs.get('dv_prefix') or get_prefix('dv')
-        kwargs['dr_prefix'] = kwargs.get('dr_prefix') or get_prefix('dr')
-        kwargs['df_prefix'] = kwargs.get('df_prefix') or get_prefix('df')
-        kwargs['dd_prefix'] = kwargs.get('dd_prefix') or get_prefix('dd')
-        kwargs['yag_zoom_prefix'] = kwargs.get(
-            'yag_zoom_prefix') or get_prefix('yag_zoom')
-        UCpt.collect_prefixes(self, kwargs)
+        self._dh_prefix = kwargs.get('dh_prefix') or get_prefix('dh')
+        self._dv_prefix = kwargs.get('dv_prefix') or get_prefix('dv')
+        self._dr_prefix = kwargs.get('dr_prefix') or get_prefix('dr')
+        self._df_prefix = kwargs.get('df_prefix') or get_prefix('df')
+        self._dd_prefix = kwargs.get('dd_prefix') or get_prefix('dd')
+        self._yag_zoom_prefix = (kwargs.get('yag_zoom_prefix') or
+                                 get_prefix('yag_zoom'))
         super().__init__(prefix, name=name, **kwargs)
         self.main_line = main_line
         self.mono_line = mono_line
+        # first tower
+        self.z1 = self.first_tower.z1
+        self.x1 = self.first_tower.x1
+        self.y1 = self.first_tower.y1
+        self.th1 = self.first_tower.th1
+        self.ch1 = self.first_tower.ch1
+        self.h1n_m = self.first_tower.h1n_m
+        self.h1p = self.first_tower.h1p
+        # second tower
+        self.z2 = self.second_tower.z2
+        self.x2 = self.second_tower.x2
+        self.y2 = self.second_tower.y2
+        self.th2 = self.second_tower.th2
+        self.ch2 = self.second_tower.ch2
+        self.h2n = self.second_tower.h2n
+        self.diode2 = self.second_tower.diode2
+        # diagnostic tower
+        self.dh = self.diagnostic_tower.dh
+        self.dv = self.diagnostic_tower.dv
+        self.dr = self.diagnostic_tower.dr
+        self.df = self.diagnostic_tower.df
+        self.dd = self.diagnostic_tower.dd
+        self.yag_zoom = self.diagnostic_tower.yag_zoom
 
     @property
     def inserted(self):
@@ -406,139 +753,50 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
-        energy = self.get_energy()
-        # TODO this seems ridiculous, needs revising
-        return self.RealPosition(th1=energy, h1n=None, yag=None,
-                                 dectris=None, diode=None, foil=None,
-                                 y1_state=None, chi1_state=None,
-                                 h2n_state=None, y2_state=None,
-                                 chi2_state=None, z1=None, x1=None,
-                                 y1=None, ch1=None, h1n_m=None,
-                                 h1p=None, z2=None, x2=None, y2=None, th2=None,
-                                 ch2=None, h2n=None, diode2=None, dh=None,
-                                 dv=None, dr=None, df=None, dd=None,
-                                 yag_zoom=None)
+        """
+        Calculate a RealPosition from a given PseudoPosition.
+        """
+        # def moveE1(self, E, ID=None, reflection=None, tweak=False):
+        # if reflection is None:
+        #     # try to determine possible current reflection
+        #reflection = self.get_tower1_reflection(astuple=True, check=True)
+        #one of the theta motors to set what the energy is
+        energy = self.get_energy() # - this gives me the wavelength
+        return self.RealPosition(th1=energy)
 
     @real_position_argument
     def inverse(self, real_pos):
-        energy = self.get_energy()
-        # TODO: where do i get the energy from tower 1 or 2?
-        th, z, material = self.calc_energy(energy)
+        """Calculate a PseudoPosition from a given RealPosition."""
+        # th, z, material = self.calc_energy(energy=9000, material='Si', reflection=(1,1,1))
+        # TODO: what energy should i use here?
+        # set() 
+        print(real_pos)
+        th, z, material = self.calc_energy(self.th1.position)
         if material == "Si":
-            return self.PseudoPosition(th1_si=th, th2_si=th, z1_si=-z, z2_si=z)
-            # self.th1Si.set(th)
-            # self.th2Si.set(th)
-            # self.z1Si.set(-z)
-            # self.z2Si.set(z)
+            return self.PseudoPosition(th1_si=th, th2_si=th, z1_si=-z, z2_si=z,
+                                       th1_c=None, th2_c=None, z2_c=None,
+                                       z1_c=None)
         elif material == "C":
             return self.PseudoPosition(th1_c=th, th2_c=th, z1_c=-z, z2_c=z,
                                        th1_si=None, th2_si=None, z1_si=None,
                                        z2_si=None, energy=None)
-            # self.th1C.set(th)
-            # self.th2C.set(th)
-            # self.z1C.set(-z)
-            # self.z2C.set(z)
         else:
             raise ValueError("Invalid material ID: %s" % material)
 
-    def _is_tower_1_c(self):
-        """Check if tower 1 is with Diamond (C) material."""
-        return (
-            (self.h1n.position == 'C' or self.h1n.position == 'OUT') and
-            self.y1_state.position == 'C' and
-            self.chi1_state.position == 'C'
-        )
-
-    def _is_tower_1_si(self):
-        """Check if tower 1 is with Silicon (Si) material."""
-        return (
-            (self.h1n.position == 'Si' or self.h1n.position == 'OUT') and
-            self.y1_state.position == 'Si' and
-            self.chi1_state.position == 'Si'
-        )
-
-    def _is_tower_2_c(self):
-        """Check if tower 2 is with Diamond (C) material."""
-        return (self.h2n_state.position == 'C' and
-                self.y2_state.position == 'C' and
-                self.chi2_state.position == 'C')
-
-    def _is_tower_2_si(self):
-        """Check if tower 2 is with Silicon (Si) material."""
-        return (self.h2n_state.position == 'Si' and
-                self.y2_state.position == 'Si' and
-                self.chi2_state.position == 'Si')
-
-    def get_first_tower_reflection(self, as_tuple=False, check=False):
-        """Get the reflection of the first tower."""
-        return self._get_reflection(1, as_tuple, check)
-
-    def get_second_tower_reflection(self, as_tuple=False, check=False):
-        """Get the reflection of the second tower."""
-        return self._get_reflection(2, as_tuple, check)
-
-    def get_reflection(self, as_tuple, check):
+    def get_reflection(self):
         """Get the crystal reflection"""
-        ref_1 = self.get_first_tower_reflection(as_tuple, check)
-        ref_2 = self.get_second_tower_reflection(as_tuple, check)
+        ref_1 = self.first_tower.get_reflection()
+        ref_2 = self.second_tower.get_reflection()
         if ref_1 != ref_2:
             logger.warning('Crystals do not match: c1: %s, c2: %s',
                            ref_1, ref_2)
             raise ValueError('Invalid Crystal Arrangement')
         return ref_1
 
-    def _get_reflection(self, tower_num, as_tuple, check):
-        refs = None
-        ref = None
-        if tower_num == 1:
-            if self._is_tower_1_c():
-                refs = self.t1_c_ref.get()
-            elif self._is_tower_1_si():
-                refs = self.t1_si_ref.get()
-        elif tower_num == 2:
-            if self._is_tower_2_c():
-                refs = self.t2_c_ref.get()
-            elif self._is_tower_2_si():
-                refs = self.t2_si_ref.get()
-        if check and refs is None:
-            raise ValueError('Unable to determine the crystal reflection')
-        if as_tuple:
-            return refs
-        else:
-            if refs is not None:
-                for r in refs:
-                    if ref is None:
-                        ref = str(r)
-                    else:
-                        ref += str(r)
-            return ref
-
-    def _get_material(self, tower_num, check):
-        if tower_num == 1:
-            if self._is_tower_1_c():
-                return 'C'
-            elif self._is_tower_1_si():
-                return 'Si'
-        elif tower_num == 2:
-            if self._is_tower_2_c():
-                return 'C'
-            elif self._is_tower_2_si():
-                return 'Si'
-        # TODO: this check here does not make sense so far?
-        if check:
-            raise ValueError("Unable to determine crystal's material.")
-
-    def get_first_tower_material(self, check=False):
-        """Get the material Id for the first tower."""
-        return self._get_material(1, check)
-
-    def get_second_tower_material(self, check=False):
-        """Get the material Id for the second tower."""
-        return self._get_material(2, check)
-
-    def get_material(self, check=False):
-        m_1 = self.get_first_tower_material(check)
-        m_2 = self.get_second_tower_material(check)
+    def get_material(self):
+        """Get the current crystals material."""
+        m_1 = self.first_tower.get_material()
+        m_2 = self.second_tower.get_material()
         if m_1 != m_2:
             logger.warning('Crystals do not match: c1: %s, c2: %s', m_1, m_2)
             raise ValueError('Invalid Crystal Arrangement.')
@@ -605,11 +863,10 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
         """
         if reflection is None:
             # try to determine possible current reflection
-            reflection = self.get_second_tower_reflection(as_tuple=True,
-                                                          check=True)
+            reflection = self.second_tower.get_reflection()
         if material is None:
             # try to determine possible current material ID
-            material = self.get_second_tower_material(check=True)
+            material = self.second_tower.get_material()
         if material == "Si":
             th = self.th2_si.wm()
         elif material == "C":
@@ -627,6 +884,34 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
         TODO: why is energy determined by the first crystal?
         """
         return self.get_first_tower_energy(material, reflection)
+
+    # @pseudo_position_argument
+    # def move(self, position, wait=True, timeout=None, moved_cb=None):
+    #     """
+    #     Move to a specified position, optionally waiting for motion to
+    #     complete.
+    #     Checks for the motor step, and ask the user for confirmation if
+    #     movement step is greater than default one.
+    #     """
+    #     if reflection is None:
+    #         # try to determine possible current reflection
+    #         reflection = self.get_t1_reflection(astuple=True, check=True)
+    #     if ID is None:
+    #         # try to determine possible current material ID
+    #         ID = self.get_t1_material(check=True)
+    #     (th, z) = self.getLomGeom(E, ID, reflection)
+    #     if ID == "Si":
+    #         self.th1Si.move_silent(th)
+    #         if not tweak:
+    #             self.dr.move_silent(2 * th)
+    #         self.z1Si.move_silent(-z)
+    #     elif ID == "C":
+    #         self.th1C.move_silent(th)
+    #         if not tweak:
+    #             self.dr.move_silent(2 * th)
+    #         self.z1C.move_silent(-z)
+    #     else:
+    #         raise ValueError("Invalid material ID: %s" % ID)
 
     def format_status_info(self, status_info):
         """Override status info handler to render the lodcm."""
@@ -649,110 +934,145 @@ class LODCM(BaseInterface, PseudoPositioner, Device):
         except Exception:
             energy = 'Unknown'
 
-        ref = self.get_reflection(as_tuple=True, check=False)
+        ref = self.get_reflection()
 
         # tower 1
-        z_units = get_status_value(status_info, 'z1', 'user_setpoint', 'units')
-        z_user = get_status_float(status_info, 'z1', 'position')
-        z_dial = get_status_float(status_info, 'z1', 'dial_position', 'value')
+        z_units = get_status_value(
+            status_info, 'first_tower', 'z1', 'user_setpoint', 'units')
+        z_user = get_status_float(
+            status_info, 'first_tower', 'z1', 'position')
+        z_dial = get_status_float(
+            status_info, 'first_tower', 'z1', 'dial_position', 'value')
 
-        x_units = get_status_value(status_info, 'x1', 'user_setpoint', 'units')
-        x_user = get_status_float(status_info, 'x1', 'position')
-        x_dial = get_status_float(status_info, 'x1', 'dial_position', 'value')
+        x_units = get_status_value(
+            status_info, 'first_tower', 'x1', 'user_setpoint', 'units')
+        x_user = get_status_float(status_info, 'first_tower', 'x1', 'position')
+        x_dial = get_status_float(
+            status_info, 'first_tower', 'x1', 'dial_position', 'value')
 
-        th_units = get_status_value(status_info, 'th1', 'user_setpoint',
-                                    'units')
-        th_user = get_status_float(status_info, 'th1', 'position')
-        th_dial = get_status_float(status_info, 'th1', 'dial_position',
-                                   'value')
+        th_units = get_status_value(
+            status_info, 'first_tower', 'th1', 'user_setpoint', 'units')
+        th_user = get_status_float(
+            status_info, 'first_tower', 'th1', 'position')
+        th_dial = get_status_float(
+            status_info, 'first_tower', 'th1', 'dial_position', 'value')
 
-        chi_units = get_status_value(status_info, 'ch1', 'user_setpoint',
-                                     'units')
-        chi_user = get_status_float(status_info, 'ch1', 'position')
-        chi_dial = get_status_float(status_info, 'ch1', 'dial_position',
-                                    'value')
+        chi_units = get_status_value(
+            status_info, 'first_tower', 'ch1', 'user_setpoint', 'units')
+        chi_user = get_status_float(
+            status_info, 'first_tower', 'ch1', 'position')
+        chi_dial = get_status_float(
+            status_info, 'first_tower', 'ch1', 'dial_position', 'value')
 
-        y_units = get_status_value(status_info, 'y1', 'user_setpoint', 'units')
-        y_user = get_status_float(status_info, 'y1', 'position')
-        y_dial = get_status_float(status_info, 'y1', 'dial_position', 'value')
+        y_units = get_status_value(
+            status_info, 'first_tower', 'y1', 'user_setpoint', 'units')
+        y_user = get_status_float(
+            status_info, 'first_tower', 'y1', 'position')
+        y_dial = get_status_float(
+            status_info, 'first_tower', 'y1', 'dial_position', 'value')
 
-        hn_units = get_status_value(status_info, 'h1n_m', 'user_setpoint',
-                                    'units')
-        hn_user = get_status_float(status_info, 'h1n_m', 'position')
-        hn_dial = get_status_float(status_info, 'h1n_m', 'dial_position',
-                                   'value')
+        hn_units = get_status_value(
+            status_info, 'first_tower', 'h1n_m', 'user_setpoint', 'units')
+        hn_user = get_status_float(
+            status_info, 'first_tower', 'h1n_m', 'position')
+        hn_dial = get_status_float(
+            status_info, 'first_tower', 'h1n_m', 'dial_position', 'value')
 
-        hp_units = get_status_value(status_info, 'h1p', 'user_setpoint',
-                                    'units')
-        hp_user = get_status_float(status_info, 'h1p', 'position')
-        hp_dial = get_status_float(status_info, 'h1p', 'dial_position',
-                                   'value')
+        hp_units = get_status_value(
+            status_info, 'first_tower', 'h1p', 'user_setpoint', 'units')
+        hp_user = get_status_float(
+            status_info, 'first_tower', 'h1p', 'position')
+        hp_dial = get_status_float(
+            status_info, 'first_tower', 'h1p', 'dial_position', 'value')
 
-        diode_units = get_status_value(status_info, 'diode2', 'user_setpoint',
-                                       'units')
-        diode_user = get_status_float(status_info, 'diode', 'position')
-        diode_dial = get_status_float(status_info, 'diode', 'dial_position',
-                                      'value')
+        diode_units = get_status_value(
+            status_info, 'first_tower', 'diode2', 'user_setpoint', 'units')
+        diode_user = get_status_float(
+            status_info, 'first_tower', 'diode', 'position')
+        diode_dial = get_status_float(
+            status_info, 'first_tower', 'diode', 'dial_position', 'value')
         # tower 2
-        z2_user = get_status_float(status_info, 'z2', 'position')
-        z2_dial = get_status_float(status_info, 'z2', 'dial_position', 'value')
+        z2_user = get_status_float(
+            status_info, 'second_tower', 'z2', 'position')
+        z2_dial = get_status_float(
+            status_info, 'second_tower', 'z2', 'dial_position', 'value')
 
-        x2_user = get_status_float(status_info, 'x2', 'position')
-        x2_dial = get_status_float(status_info, 'x2', 'dial_position', 'value')
+        x2_user = get_status_float(
+            status_info, 'second_tower', 'x2', 'position')
+        x2_dial = get_status_float(
+            status_info, 'second_tower', 'x2', 'dial_position', 'value')
 
-        th2_user = get_status_float(status_info, 'th2', 'position')
-        th2_dial = get_status_float(status_info, 'th2', 'dial_position',
-                                    'value')
+        th2_user = get_status_float(
+            status_info, 'second_tower', 'th2', 'position')
+        th2_dial = get_status_float(
+            status_info, 'second_tower', 'th2', 'dial_position', 'value')
 
-        chi2_user = get_status_float(status_info, 'ch2', 'position')
-        chi2_dial = get_status_float(status_info, 'ch2', 'dial_position',
-                                     'value')
+        chi2_user = get_status_float(
+            status_info, 'second_tower', 'ch2', 'position')
+        chi2_dial = get_status_float(
+            status_info, 'second_tower', 'ch2', 'dial_position', 'value')
 
-        y2_user = get_status_float(status_info, 'y2', 'position')
-        y2_dial = get_status_float(status_info, 'y2', 'dial_position', 'value')
+        y2_user = get_status_float(
+            status_info, 'second_tower', 'y2', 'position')
+        y2_dial = get_status_float(
+            status_info, 'second_tower', 'y2', 'dial_position', 'value')
 
-        hn2_user = get_status_float(status_info, 'h2n', 'position')
-        hn2_dial = get_status_float(status_info, 'h2n', 'dial_position',
-                                    'value')
+        hn2_user = get_status_float(
+            status_info, 'second_tower', 'h2n', 'position')
+        hn2_dial = get_status_float(
+            status_info, 'second_tower', 'h2n', 'dial_position', 'value')
 
-        hp2_user = get_status_float(status_info, 'h2p', 'position')
-        hp2_dial = get_status_float(status_info, 'h2p', 'dial_position',
-                                    'value')
+        hp2_user = get_status_float(
+            status_info, 'second_tower', 'h2p', 'position')
+        hp2_dial = get_status_float(
+            status_info, 'second_tower', 'h2p', 'dial_position', 'value')
 
-        diode2_user = get_status_float(status_info, 'diode2', 'position')
-        diode2_dial = get_status_float(status_info, 'diode2', 'dial_position',
-                                       'value')
+        diode2_user = get_status_float(
+            status_info, 'second_tower', 'diode2', 'position')
+        diode2_dial = get_status_float(
+            status_info, 'second_tower', 'diode2', 'dial_position', 'value')
         # diagnostics
-        dh_units = get_status_value(status_info, 'dh', 'user_setpoint',
-                                    'units')
-        dh_user = get_status_float(status_info, 'dh', 'position')
-        dh_dial = get_status_float(status_info, 'dh', 'dial_position', 'value')
+        dh_units = get_status_value(
+            status_info, 'diagnostic_tower', 'dh', 'user_setpoint', 'units')
+        dh_user = get_status_float(
+            status_info, 'diagnostic_tower', 'dh', 'position')
+        dh_dial = get_status_float(
+            status_info, 'diagnostic_tower', 'dh', 'dial_position', 'value')
 
-        dv_units = get_status_value(status_info, 'dv', 'user_setpoint',
-                                    'units')
-        dv_user = get_status_float(status_info, 'dv', 'position')
-        dv_dial = get_status_float(status_info, 'dv', 'dial_position', 'value')
+        dv_units = get_status_value(
+            status_info, 'diagnostic_tower', 'dv', 'user_setpoint', 'units')
+        dv_user = get_status_float(
+            status_info, 'diagnostic_tower', 'dv', 'position')
+        dv_dial = get_status_float(
+            status_info, 'diagnostic_tower', 'dv', 'dial_position', 'value')
 
-        dr_units = get_status_value(status_info, 'dr', 'user_setpoint',
-                                    'units')
-        dr_user = get_status_float(status_info, 'dr', 'position')
-        dr_dial = get_status_float(status_info, 'dr', 'dial_position', 'value')
+        dr_units = get_status_value(
+            status_info, 'diagnostic_tower', 'dr', 'user_setpoint', 'units')
+        dr_user = get_status_float(
+            status_info, 'diagnostic_tower', 'dr', 'position')
+        dr_dial = get_status_float(
+            status_info, 'diagnostic_tower', 'dr', 'dial_position', 'value')
 
-        df_units = get_status_value(status_info, 'df', 'user_setpoint',
-                                    'units')
-        df_user = get_status_float(status_info, 'df', 'position')
-        df_dial = get_status_float(status_info, 'df', 'dial_position', 'value')
+        df_units = get_status_value(
+            status_info, 'diagnostic_tower', 'df', 'user_setpoint', 'units')
+        df_user = get_status_float(
+            status_info, 'diagnostic_tower', 'df', 'position')
+        df_dial = get_status_float(
+            status_info, 'diagnostic_tower', 'df', 'dial_position', 'value')
 
-        dd_units = get_status_value(status_info, 'dd', 'user_setpoint',
-                                    'units')
-        dd_user = get_status_float(status_info, 'dd', 'position')
-        dd_dial = get_status_float(status_info, 'dd', 'dial_position', 'value')
+        dd_units = get_status_value(
+            status_info, 'diagnostic_tower', 'dd', 'user_setpoint', 'units')
+        dd_user = get_status_float(
+            status_info, 'diagnostic_tower', 'dd', 'position')
+        dd_dial = get_status_float(
+            status_info, 'diagnostic_tower', 'dd', 'dial_position', 'value')
 
-        yag_zoom_units = get_status_value(status_info, 'yag_zoom',
-                                          'user_setpoint', 'units')
-        yag_zoom_user = get_status_float(status_info, 'yag_zoom', 'position')
-        yag_zoom_dial = get_status_float(status_info, 'yag_zoom',
-                                         'dial_position', 'value')
+        yag_zoom_units = get_status_value(status_info, 'diagnostic_tower',
+                                          'yag_zoom', 'user_setpoint', 'units')
+        yag_zoom_user = get_status_float(
+            status_info, 'diagnostic_tower', 'yag_zoom', 'position')
+        yag_zoom_dial = get_status_float(status_info, 'diagnostic_tower',
+                                         'yag_zoom', 'dial_position', 'value')
 
         def form(left_str, center_str, right_str):
             return f'{left_str:<15}{center_str:>25}{right_str:>25}'
