@@ -531,6 +531,10 @@ class ExitSlits(BaseInterface, Device, LightpathInOutMixin):
                     doc='LED power supply controls.')
     led = Cpt(PytmcSignal, ':CAM:CIL:PCT', io='io', kind='config',
               doc='Percent of light from the dimmable illuminatior.')
+    set_metadata(led, dict(variety='scalar-range',
+                           range={'value': (0, 100),
+                                  'source': 'value'}
+                           ))
     yag_thermocouple = Cpt(TwinCATTempSensor, ':RTD:YAG', kind='normal',
                            doc='Thermocouple on the YAG holder.')
     upper_crystal_thermocouple = Cpt(
