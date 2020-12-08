@@ -19,6 +19,7 @@ from .epics_motor import BeckhoffAxis
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, FltMvInterface
 from .signal import PytmcSignal
+from .utils import get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -214,6 +215,51 @@ class OffsetMirror(BaseInterface, Device):
         """Returns :keyword:`False`. Treats OffsetMirror as always inserted."""
         return False
 
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the `OffsetMirror`.
+
+        Display `OffsetMirror` status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        # happi metadata
+        try:
+            md = self.root.md
+        except AttributeError:
+            name = f'{self.prefix}'
+        else:
+            beamline = get_status_value(md, 'beamline')
+            functional_group = get_status_value(md, 'functional_group')
+            if functional_group is not None:
+                name = f'{self.prefix} ({beamline} {functional_group})'
+            else:
+                name = f'{self.prefix} ({beamline})'
+
+        p_position = get_status_value(status_info, 'pitch', 'position')
+        p_setpoint = get_status_value(status_info, 'pitch',
+                                      'setpoint', 'value')
+        p_units = get_status_value(status_info, 'pitch', 'setpoint',
+                                   'units')
+        return f"""\
+{name}
+------
+pitch: ({self.pitch.prefix})
+------
+    position: {p_position}
+    setpoint: {p_setpoint} [{p_units}]
+"""
+
 
 class PointingMirror(InOutRecordPositioner, OffsetMirror):
     """
@@ -339,6 +385,71 @@ class XOffsetMirror(BaseInterface, Device):
     transmission = 1
     SUB_STATE = 'state'
 
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the Hard X-ray Offset Mirror.
+
+        Display homs status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        # happi metadata
+        try:
+            md = self.root.md
+        except AttributeError:
+            name = f'{self.prefix}'
+        else:
+            beamline = get_status_value(md, 'beamline')
+            functional_group = get_status_value(md, 'functional_group')
+            if functional_group is not None:
+                name = f'{self.prefix} ({beamline} {functional_group})'
+            else:
+                name = f'{self.prefix} ({beamline})'
+
+        x_position = get_status_value(status_info, 'x_up', 'position')
+        x_user_setpoint = get_status_value(status_info, 'x_up',
+                                           'user_setpoint', 'value')
+        x_units = get_status_value(status_info, 'x_up', 'user_setpoint',
+                                   'units')
+        x_description = get_status_value(status_info, 'x_up', 'description',
+                                         'value')
+
+        p_position = get_status_value(status_info, 'pitch', 'position')
+        p_user_setpoint = get_status_value(status_info, 'pitch',
+                                           'user_setpoint', 'value')
+        p_units = get_status_value(status_info, 'pitch', 'user_setpoint',
+                                   'units')
+        p_description = get_status_value(status_info, 'pitch', 'description',
+                                         'value')
+        p_enc_rms = get_status_value(status_info, 'pitch_enc_rms', 'value')
+
+        return f"""\
+{name}
+------
+x_up: ({self.x_up.prefix})
+------
+    position: {x_position}
+    user_setpoint: {x_user_setpoint} [{x_units}]
+    description: {x_description}
+------
+pitch: ({self.pitch.prefix})
+------
+    position: {p_position}
+    user_setpoint: {p_user_setpoint} [{p_units}]
+    description: {p_description}
+    pitch_enc_rms: {p_enc_rms}
+"""
+
 
 class XOffsetMirrorBend(XOffsetMirror):
     """
@@ -453,6 +564,101 @@ class KBOMirror(BaseInterface, Device):
     transmission = 1
     SUB_STATE = 'state'
 
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the `KBOMirror`.
+
+        Display `KBOMirror` status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        # happi metadata
+        try:
+            md = self.root.md
+        except AttributeError:
+            name = f'{self.prefix}'
+        else:
+            beamline = get_status_value(md, 'beamline')
+            functional_group = get_status_value(md, 'functional_group')
+            if functional_group is not None:
+                name = f'{self.prefix} ({beamline} {functional_group})'
+            else:
+                name = f'{self.prefix} ({beamline})'
+
+        x_position = get_status_value(status_info, 'x', 'position')
+        x_user_setpoint = get_status_value(status_info, 'x',
+                                           'user_setpoint', 'value')
+        x_units = get_status_value(status_info, 'x', 'user_setpoint',
+                                   'units')
+        x_description = get_status_value(status_info, 'x', 'description',
+                                         'value')
+        p_position = get_status_value(status_info, 'pitch', 'position')
+        p_user_setpoint = get_status_value(status_info, 'pitch',
+                                           'user_setpoint', 'value')
+        p_units = get_status_value(status_info, 'pitch', 'user_setpoint',
+                                   'units')
+        p_description = get_status_value(status_info, 'pitch', 'description',
+                                         'value')
+        p_enc_rms = get_status_value(status_info, 'pitch_enc_rms', 'value')
+        b_us_position = get_status_value(status_info, 'bender_us', 'position')
+        b_us_setpoint = get_status_value(status_info, 'bender_us',
+                                         'user_setpoint', 'value')
+        b_us_units = get_status_value(status_info, 'bender_us',
+                                      'user_setpoint', 'units')
+        b_us_description = get_status_value(status_info, 'bender_us',
+                                            'description', 'value')
+        b_us_enc_rms = get_status_value(status_info, 'bender_us_enc_rms',
+                                        'value')
+        b_ds_position = get_status_value(status_info, 'bender_ds', 'position')
+        b_ds_setpoint = get_status_value(status_info, 'bender_ds',
+                                         'user_setpoint', 'value')
+        b_ds_units = get_status_value(status_info, 'bender_ds',
+                                      'user_setpoint', 'units')
+        b_ds_description = get_status_value(status_info, 'bender_ds',
+                                            'description', 'value')
+        b_ds_enc_rms = get_status_value(status_info, 'bender_ds_enc_rms',
+                                        'value')
+        return f"""\
+{name}
+------
+x_up: ({self.x.prefix})
+------
+    position: {x_position}
+    user_setpoint: {x_user_setpoint} [{x_units}]
+    description: {x_description}
+------
+pitch: ({self.pitch.prefix})
+------
+    position: {p_position}
+    user_setpoint: {p_user_setpoint} [{p_units}]
+    description: {p_description}
+    pitch_enc_rms: {p_enc_rms}
+---------
+bender_us ({self.bender_us.prefix})
+---------
+    position {b_us_position}
+    user_setpoint: {b_us_setpoint} [{b_us_units}]
+    description: {b_us_description}
+    bender_us_enc_rms: {b_us_enc_rms}
+---------
+bender_ds ({self.bender_ds.prefix})
+---------
+    position: {b_ds_position}
+    user_setpoint: {b_ds_setpoint} [{b_ds_units}]
+    description: {b_ds_description}
+    bender_ds_enc_rms: {b_ds_enc_rms}
+"""
+
 
 class FFMirror(BaseInterface, Device):
     """
@@ -486,3 +692,68 @@ class FFMirror(BaseInterface, Device):
     removed = False
     transmission = 1
     SUB_STATE = 'state'
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the `FFMirror`.
+
+        Display `FFMirror` status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        # happi metadata
+        try:
+            md = self.root.md
+        except AttributeError:
+            name = f'{self.prefix}'
+        else:
+            beamline = get_status_value(md, 'beamline')
+            functional_group = get_status_value(md, 'functional_group')
+            if functional_group is not None:
+                name = f'{self.prefix} ({beamline} {functional_group})'
+            else:
+                name = f'{self.prefix} ({beamline})'
+
+        x_position = get_status_value(status_info, 'x', 'position')
+        x_user_setpoint = get_status_value(status_info, 'x',
+                                           'user_setpoint', 'value')
+        x_units = get_status_value(status_info, 'x', 'user_setpoint',
+                                   'units')
+        x_description = get_status_value(status_info, 'x', 'description',
+                                         'value')
+
+        p_position = get_status_value(status_info, 'pitch', 'position')
+        p_user_setpoint = get_status_value(status_info, 'pitch',
+                                           'user_setpoint', 'value')
+        p_units = get_status_value(status_info, 'pitch', 'user_setpoint',
+                                   'units')
+        p_description = get_status_value(status_info, 'pitch', 'description',
+                                         'value')
+        p_enc_rms = get_status_value(status_info, 'pitch_enc_rms', 'value')
+
+        return f"""\
+{name}
+------
+x_up: ({self.x.prefix})
+------
+    position: {x_position}
+    user_setpoint: {x_user_setpoint} [{x_units}]
+    description: {x_description}
+------
+pitch: ({self.pitch.prefix})
+------
+    position: {p_position}
+    user_setpoint: {p_user_setpoint} [{p_units}]
+    description: {p_description}
+    pitch_enc_rms: {p_enc_rms}
+"""

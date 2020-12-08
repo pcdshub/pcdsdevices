@@ -1,4 +1,4 @@
-692 pump PTMPLC ILK status pv fix
+679 Mirrors Custom Status Print
 #################
 
 API Changes
@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- N/A
+- Added custom status print for `XOffsetMirror`, `OffsetMirror`, `KBOMirror`, and `FFMirror`.
 
 Device Updates
 --------------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- PTMPLC ilk pv was incorrect, changed from ILK_STATUS_RBV to ILK_OK_RBV
+- N/A
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- ghalym
+- cristinasewell
