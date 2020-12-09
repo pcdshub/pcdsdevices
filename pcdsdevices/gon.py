@@ -7,6 +7,7 @@ from prettytable import PrettyTable
 from ophyd import Device
 from ophyd.device import Component as Cpt
 from ophyd import FormattedComponent as FCpt
+from ophyd.status import DeviceStatus
 
 
 from .epics_motor import IMS

@@ -182,7 +182,14 @@ def test_moving(fake_kappa):
 
     eta_pos, kappa_pos, phi_pos = fake_kappa.e_to_k(e_eta=4, e_chi=6, e_phi=8)
     with patch('builtins.input', return_value='y'):
-        fake_kappa.move(4, 6, 8)
+        status = fake_kappa.move(4, 6, 8)
     assert fake_kappa.eta.position == eta_pos
     assert fake_kappa.kappa.position == kappa_pos
     assert fake_kappa.phi.position == phi_pos
+    assert status.done is True
+    assert status.success is True
+
+    with patch('builtins.input', return_value='n'):
+        status = fake_kappa.move(4, 6, 8)
+    assert status.done is False
+    assert status.success is False
