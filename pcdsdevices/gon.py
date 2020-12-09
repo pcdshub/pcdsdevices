@@ -476,7 +476,9 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
                                 moved_cb=moved_cb)
         else:
             logger.warning('Aborting moving for safety.')
-            return
+            status = DeviceStatus(self)
+            status.set_exception(ValueError('Unsafe Kappa move aborted!'))
+            return status
 
     @real_position_argument
     def inverse(self, real_pos):
