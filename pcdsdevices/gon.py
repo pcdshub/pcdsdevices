@@ -9,7 +9,6 @@ from ophyd.device import Component as Cpt
 from ophyd import FormattedComponent as FCpt
 from ophyd.status import DeviceStatus
 
-
 from .epics_motor import IMS
 from .interface import BaseInterface
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
@@ -64,6 +63,40 @@ class BaseGon(BaseInterface, Device):
         self._prefix_tip = prefix_tip
         self._prefix_tilt = prefix_tilt
         super().__init__('', name=name, **kwargs)
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the xpp goniometer.
+
+        Display xpp goniometer status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        horiz = get_status_float(status_info, 'hor', 'position')
+        vert = get_status_float(status_info, 'ver', 'position')
+        units = get_status_value(status_info, 'hor', 'user_setpoint', 'units')
+
+        rot = get_status_float(status_info, 'rot', 'position')
+        tip = get_status_float(status_info, 'tip', 'position')
+        tilt = get_status_float(status_info, 'tilt', 'position')
+        angle_units = get_status_value(status_info, 'rot', 'user_setpoint',
+                                       'units')
+
+        return f"""\
+XPP Goniometer
+H, V: {horiz}, {vert} [{units}]
+Theta, Pitch, Roll: {rot}, {tilt}, {tip} [{angle_units}]
+"""
 
 
 class GonWithDetArm(BaseGon):
@@ -193,6 +226,18 @@ class XYZStage(BaseInterface, Device):
         self._prefix_y = prefix_y
         self._prefix_z = prefix_z
         super().__init__('', name=name, **kwargs)
+
+    def format_status_info(self, status_info):
+        """Override status info handler to render the `XYZStage`."""
+        x = get_status_float(status_info, 'x', 'position')
+        y = get_status_float(status_info, 'y', 'position')
+        z = get_status_float(status_info, 'z', 'position')
+        units = get_status_value(status_info, 'x', 'user_setpoint', 'units')
+
+        return f"""\
+XYZStage
+X, Y, Z: {x}, {y}, {z} [{units}]
+"""
 
 
 class KappaXYZStage(XYZStage):
