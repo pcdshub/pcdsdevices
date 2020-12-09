@@ -1,4 +1,4 @@
-661 Ophyd utility thread scheduling
+issue_number update ExitSlits
 #################
 
 API Changes
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- N/A
+- led metadata scalar range
 
 New Devices
 -----------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- Ensure that we only try to put into the queue if event_thread is not None.
+- N/A
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- hhslepicka
+- ghalym

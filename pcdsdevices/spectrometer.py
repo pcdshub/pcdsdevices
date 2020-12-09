@@ -248,6 +248,14 @@ class Mono(BaseInterface, Device):
     g_pi_up_enc = Cpt(PytmcSignal, ':ENC:G_PI:02', io='i', kind='normal',
                       doc='grating pitch upstream encoder [urad]')
 
+    # LED PWR
+    led_power_1 = Cpt(PytmcSignal, ':LED:01:PWR', io='io', kind='config',
+                      doc='LED power supply controls.')
+    led_power_2 = Cpt(PytmcSignal, ':LED:02:PWR', io='io', kind='config',
+                      doc='LED power supply controls.')
+    led_power_3 = Cpt(PytmcSignal, ':LED:03:PWR', io='io', kind='config',
+                      doc='LED power supply controls.')
+
     # Flow switches
     flow_1 = Cpt(PytmcSignal, ':FSW:01', io='i', kind='normal',
                  doc='flow switch 1')

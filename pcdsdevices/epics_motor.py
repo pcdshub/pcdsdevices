@@ -13,6 +13,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.status import DeviceStatus, SubscriptionStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
+from ophyd.ophydobj import Kind
 
 from pcdsdevices.pv_positioner import PVPositionerComparator
 
@@ -53,6 +54,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     """
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
+    set_metadata(disabled, dict(variety='command-enum'))
     # Description is valuable
     description = Cpt(EpicsSignal, '.DESC', kind='normal')
     # Current Dial position
@@ -61,6 +63,24 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     tab_whitelist = ["set_current_position", "home", "velocity", "enable",
                      "disable", "check_limit_switches", "get_low_limit",
                      "set_low_limit", "get_high_limit", "set_high_limit"]
+
+    set_metadata(EpicsMotor.home_forward, dict(variety='command-proc',
+                                               value=1))
+    EpicsMotor.home_forward.kind = Kind.normal
+    set_metadata(EpicsMotor.home_reverse, dict(variety='command-proc',
+                                               value=1))
+    EpicsMotor.home_reverse.kind = Kind.normal
+    set_metadata(EpicsMotor.low_limit_switch, dict(variety='bitmask', bits=1))
+    EpicsMotor.low_limit_switch.kind = Kind.normal
+    set_metadata(EpicsMotor.high_limit_switch, dict(variety='bitmask', bits=1))
+    EpicsMotor.high_limit_switch.kind = Kind.normal
+    set_metadata(EpicsMotor.motor_done_move, dict(variety='bitmask', bits=1))
+    EpicsMotor.motor_done_move.kind = Kind.omitted
+    set_metadata(EpicsMotor.motor_is_moving, dict(variety='bitmask', bits=1))
+    EpicsMotor.motor_is_moving.kind = Kind.normal
+    set_metadata(EpicsMotor.motor_stop, dict(variety='command-proc', value=1))
+    EpicsMotor.motor_stop.kind = Kind.normal
+    EpicsMotor.direction_of_travel.kind = Kind.normal
 
     def format_status_info(self, status_info):
         """
@@ -653,11 +673,9 @@ class SmarActOpenLoop(Device):
                          doc='Clear the current step count')
     set_metadata(step_clear_cmd, dict(variety='command-proc', value=1))
     # Scan move
-    scan_move_cmd = Cpt(EpicsSignal, ':SCAN_MOVE', kind='omitted',
-                        doc='Set current piezo voltage (in 16 bit ADC steps)')
-    # Scan pos
-    scan_pos = Cpt(EpicsSignal, ':SCAN_POS', kind='omitted',
-                   doc='Current piezo voltage (in 16 bit ADC steps)')
+    scan_move = Cpt(EpicsSignal, ':SCAN_POS', write_pv=':SCAN_MOVE',
+                    kind='config',
+                    doc='Set current piezo voltage (in 16 bit ADC steps)')
 
 
 class SmarActTipTilt(Device):

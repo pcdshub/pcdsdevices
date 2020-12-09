@@ -1,4 +1,4 @@
-654 Tuttifrutti-LasBasler
+issue_number LED power add to Mono
 #################
 
 API Changes
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- TuttiFrutti: Change camera class to LasBasler 
+- Add LED power to the Mono device.
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tjohnson 
+- ghalym

@@ -13,8 +13,7 @@ from epics import PV
 from ophyd.signal import LimitError
 from ophyd.sim import FakeEpicsSignal, make_fake_device
 
-from pcdsdevices.attenuator import (MAX_FILTERS, Attenuator, _att3_classes,
-                                    _att_classes)
+from pcdsdevices.attenuator import MAX_FILTERS, Attenuator, _att_classes
 from pcdsdevices.mv_interface import setup_preset_paths
 
 MODULE_PATH = Path(__file__).parent
@@ -56,9 +55,6 @@ PV.count = property(lambda self: 1)
 
 for name, cls in _att_classes.items():
     _att_classes[name] = make_fake_device(cls)
-
-for name, cls in _att3_classes.items():
-    _att3_classes[name] = make_fake_device(cls)
 
 
 # Used in multiple test files

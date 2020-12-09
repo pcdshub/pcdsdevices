@@ -1,4 +1,4 @@
-692 pump PTMPLC ILK status pv fix
+issue_number add ExitSlits
 #################
 
 API Changes
@@ -15,11 +15,11 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- Added `ExitSlits` device.
 
 Bugfixes
 --------
-- PTMPLC ilk pv was incorrect, changed from ILK_STATUS_RBV to ILK_OK_RBV
+- N/A
 
 Maintenance
 -----------

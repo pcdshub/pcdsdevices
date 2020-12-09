@@ -1,4 +1,4 @@
-670 Custom Motor Status Print
+718 Add get_status_float function in utils
 #################
 
 API Changes
@@ -7,9 +7,7 @@ API Changes
 
 Features
 --------
-- Added a custom status print for motors by overriding the status info handler.
-- Added a new component for `dial_position`
-- Added a new method `check_limit_switches` to check for the limit switches.
+- Added a new function in `utils` to get the status value and format that value with the requested precision.
 
 Device Updates
 --------------
