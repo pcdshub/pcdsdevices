@@ -261,6 +261,7 @@ class CrystalTower1State(BaseInterface, Device):
 
     def get_reflection(self, check=False):
         """Get crystal's reflection."""
+        reflection = None
         if self.is_diamond():
             reflection = self.diamond_reflection.get()
         elif self.is_silicon():
@@ -289,15 +290,15 @@ class CrystalTower2State(BaseInterface, Device):
     prefix : str
         Epics Base PV prefix.
     """
-    h2n_state = FCpt(H2N, ':H2N', kind='hinted')
-    y2_state = FCpt(Y2, ':Y2', kind='omitted')
-    chi2_state = FCpt(CHI2, ':CHI2', kind='omitted')
+    h2n_state = Cpt(H2N, ':H2N', kind='hinted')
+    y2_state = Cpt(Y2, ':Y2', kind='omitted')
+    chi2_state = Cpt(CHI2, ':CHI2', kind='omitted')
 
     # reflection pvs
-    diamond_reflection = FCpt(EpicsSignalRO, ':T2C:REF', kind='omitted',
-                              doc='Tower 2 Diamond crystal reflection')
-    silicon_reflection = FCpt(EpicsSignalRO, ':T2Si:REF', kind='omitted',
-                              doc='Tower 2 Silicon crystal reflection')
+    diamond_reflection = Cpt(EpicsSignalRO, ':T2C:REF', kind='omitted',
+                             doc='Tower 2 Diamond crystal reflection')
+    silicon_reflection = Cpt(EpicsSignalRO, ':T2Si:REF', kind='omitted',
+                             doc='Tower 2 Silicon crystal reflection')
 
     tab_component_names = True
     tab_whitelist = ['is_diamond', 'is_silicon', 'get_reflection',
@@ -320,6 +321,7 @@ class CrystalTower2State(BaseInterface, Device):
 
     def get_reflection(self, check=False):
         """Get crystal's reflection."""
+        reflection = None
         if self.is_diamond():
             reflection = self.diamond_reflection.get()
         elif self.is_silicon():
@@ -401,7 +403,7 @@ class LODCMEnergy(PseudoPositioner):
             reflection = self.get_reflection(check=True)
         if material is None:
             # try to determine possible current material ID
-            material = self.get_material(check=True)
+            material = self.get_material()
         (th, z) = diffraction.get_lom_geometry(energy, material, reflection)
         return (th, z, material)
 
@@ -696,7 +698,11 @@ class LODCM(BaseInterface, Device):
         elif 'XCS' in self.prefix:
             hutch = 'XCS '
 
-        material = self.get_material()
+        try:
+            material = self.material
+        except Exception:
+            material = 'Unknown'
+
         if material == 'C':
             configuration = 'Diamond'
         elif material == 'Si':
@@ -705,12 +711,14 @@ class LODCM(BaseInterface, Device):
             configuration = 'Unknown'
 
         try:
-            energy = self.get_energy()
+            energy = self.calc.get_energy()
         except Exception:
             energy = 'Unknown'
 
-        ref = self.get_reflection()
-
+        try:
+            ref = self.reflection
+        except Exception:
+            ref = 'Unknown'
         # tower 1
         z_units = get_status_value(
             status_info, 'first_tower', 'z1', 'user_setpoint', 'units')
