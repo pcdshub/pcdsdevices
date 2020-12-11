@@ -116,8 +116,7 @@ class EventSequence(BaseInterface, Device):
         self.bd_array.put(seq[1])
         self.fd_array.put(seq[2])
         self.bc_array.put(seq[3])
-        time.sleep(0.5) # dumb sleep to wait for array PVs to reach sequencer
-        self.seq_proc.put(1)
+        self.seq_proc.put(1) # Force the sequencer to update sequence
 
     def show(self, num_lines=None):
         """
