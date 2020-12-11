@@ -132,8 +132,8 @@ class CrystalTower1(BaseInterface, Device):
     th1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:07',
                kind='normal', doc='LOM Xtal1 Theta')
     # chi movement
-    ch1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:08',
-               kind='normal', doc='LOM Xtal1 Chi')
+    chi1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:08',
+                kind='normal', doc='LOM Xtal1 Chi')
     # normal to the crystal surface movement
     h1n = FCpt(IMS, '{self._m_prefix}:MON:MMS:09',
                kind='normal', doc='LOM Xtal1 Hn')
@@ -190,12 +190,14 @@ class CrystalTower1(BaseInterface, Device):
             raise ValueError('Unable to determine the crystal reflection')
         return reflection
 
-    def get_material(self):
+    def get_material(self, check=False):
         """Get the current material."""
         if self.is_diamond():
             return 'C'
         elif self.is_silicon():
             return 'Si'
+        if check:
+            raise ValueError("Unable to determine crystal material")
 
 
 class CrystalTower2(BaseInterface, Device):
@@ -220,8 +222,8 @@ class CrystalTower2(BaseInterface, Device):
     th2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:13',
                kind='normal', doc='LOM Xtal2 Theta')
     # chi movement
-    ch2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:14',
-               kind='normal', doc='LOM Xtal2 Chi')
+    chi2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:14',
+                kind='normal', doc='LOM Xtal2 Chi')
     # normal to the crystal surface movement
     h2n = FCpt(IMS, '{self._m_prefix}:MON:MMS:15',
                kind='normal', doc='LOM Xtal2 Hn')
@@ -276,12 +278,14 @@ class CrystalTower2(BaseInterface, Device):
             raise ValueError('Unable to determine the crystal reflection')
         return reflection
 
-    def get_material(self):
+    def get_material(self, check=False):
         """Get the current material."""
         if self.is_diamond():
             return 'C'
         elif self.is_silicon():
             return 'Si'
+        if check:
+            raise ValueError("Unable to determine crystal material")
 
 
 class DiagnosticsTower(BaseInterface, Device):
@@ -326,27 +330,29 @@ class OffsetIMS(PseudoPositioner):
     Each different calculation can be independent, making it simpler to
     implement and maintain.
     """
-    motor = Cpt(IMS, kind='normal')
+    motor = FCpt(IMS, '{self._prefix}', kind='normal')
     offset = Cpt(PseudoSingleInterface, kind='normal')
+
+    # TODO: fix this OffsetIMS !!!!
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         # for the given pseudo_pos, where should the motor be
-        motor_value = pseudo_pos.offset + self.offset.notepad_setpoint.get()
+        motor_value = pseudo_pos.offset + self.motor.position
         return self.RealPosition(motor=motor_value)
 
     @real_position_argument
     def inverse(self, real_pos):
         real_pos = self.RealPosition(*real_pos)
         # for a given real_pos, where should the pseudo motor be
-        # TODO: if i call directly the offset.position here it will keep
-        # calling itself.....
-        offset = self.motor.position - real_pos.motor
+        offset = real_pos.motor - self.motor.position
+        # offset = self.motor.position - real_pos.motor
         return self.PseudoPosition(offset=offset)
 
     def __init__(self, prefix, *args, **kwargs):
-        super().__init__('', *args, **kwargs)
+        self._prefix = prefix
+        super().__init__(prefix, *args, **kwargs)
 
 
 class LODCMEnergy(PseudoPositioner):
@@ -356,24 +362,64 @@ class LODCMEnergy(PseudoPositioner):
     # we get the energy from theta1
     th1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:07',
                kind='normal', doc='LOM Xtal1 Theta')
-    # offset positioners
-    th1_si = Cpt(OffsetIMS, ':TH1:OFF_Si', kind='normal', name='th1_silicon',
+    # offset positioners used to set the Energy
+    th1_si = Cpt(OffsetIMS, ':TH1:OFF_Si', kind='normal', name='th1_si',
                  doc='Th1 motor offset for Si')
-    th1_c = Cpt(OffsetIMS, ':TH1:OFF_C', kind='normal', name='th1_diamond',
+    th1_c = Cpt(OffsetIMS, ':TH1:OFF_C', kind='normal', name='th1_c',
                 doc='Th1 motor offset for C')
-    th2_si = Cpt(OffsetIMS, ':TH2:OFF_Si', kind='normal', name='th2_silicon',
+    th2_si = Cpt(OffsetIMS, ':TH2:OFF_Si', kind='normal', name='th2_si',
                  doc='Th2 motor offset for Si')
-    th2_c = Cpt(OffsetIMS, ':TH2:OFF_C', kind='normal', name='th2_diamond',
+    th2_c = Cpt(OffsetIMS, ':TH2:OFF_C', kind='normal', name='th2_c',
                 doc='Th2 motor offset for C')
-    z1_si = Cpt(OffsetIMS, ':Z1:OFF_Si', kind='normal', name='z1_silicon',
+    z1_si = Cpt(OffsetIMS, ':Z1:OFF_Si', kind='normal', name='z1_si',
                 doc='Z1 motor offset for Si')
-    z1_c = Cpt(OffsetIMS, ':Z1:OFF_C', kind='normal', name='z1_diamond',
+    z1_c = Cpt(OffsetIMS, ':Z1:OFF_C', kind='normal', name='z1_c',
                doc='Z1 motor offset for C')
-    z2_si = Cpt(OffsetIMS, ':Z2:OFF_Si', kind='normal', name='z1_diamond',
+    z2_si = Cpt(OffsetIMS, ':Z2:OFF_Si', kind='normal', name='z1_si',
                 doc='Z2 motor offset for Si')
-    z2_c = Cpt(OffsetIMS, ':Z2:OFF_C', kind='normal', name='z1_diamond',
+    z2_c = Cpt(OffsetIMS, ':Z2:OFF_C', kind='normal', name='z1_c',
                doc='Z2 motor offset for C')
-    # pseudo positioner
+    # offset positioners
+    # tower 1
+    x1_c = Cpt(OffsetIMS, ':X1:OFF_C', kind='normal',
+               name='x1_c', doc='X1 motor offset for C')
+    x1_si = Cpt(OffsetIMS, ':X1:OFF_Si', kind='normal',
+                name='x1_si', doc='X1 motor offset for Si')
+    y1_c = Cpt(OffsetIMS, ':Y1:OFF_C', kind='normal',
+               name='y1_c', doc='Y1 motor offset for C')
+    y1_si = Cpt(OffsetIMS, ':Y1:OFF_Si', kind='normal',
+                name='y1_si', doc='Y1 motor offset for Si')
+    chi1_c = Cpt(OffsetIMS, ':CHI1:OFF_C', kind='normal',
+                 name='chi1_c ', doc='Chi 1 motor offset for C')
+    chi1_si = Cpt(OffsetIMS, ':CHI1:OFF_Si', kind='normal',
+                  name='chi1_si', doc='Chi 1 motor offset for Si')
+    h1n_c = Cpt(OffsetIMS, ':H1N:OFF_C', kind='normal',
+                name='', doc='H1n motor offset for C')
+    h1n_si = Cpt(OffsetIMS, ':H1N:OFF_Si', kind='normal',
+                 name='h1n_si', doc='H1n motor offset for Si')
+    h1p_c = Cpt(OffsetIMS, ':H1P:OFF_C', kind='normal',
+                name='h1p_c', doc='H1p motor offset for C')
+    h1p_si = Cpt(OffsetIMS, ':H1P:OFF_Si', kind='normal',
+                 name='h1p_si', doc='H1p motor offset for Si')
+    # tower 2
+    x2_c = Cpt(OffsetIMS, ':X2:OFF_C', kind='normal',
+               name='x2_c ', doc='X2 motor offset for C')
+    x2_si = Cpt(OffsetIMS, ':X2:OFF_Si', kind='normal',
+                name='x2_si', doc='X2 motor offset for Si')
+    y2_c = Cpt(OffsetIMS, ':Y2:OFF_C', kind='normal',
+               name='y2_c', doc='Y2 motor offset for C')
+    y2_si = Cpt(OffsetIMS, ':Y2:OFF_Si', kind='normal',
+                name='y2_si', doc='Y2 motor offset for Si')
+    chi2_c = Cpt(OffsetIMS, ':CHI2:OFF_C', kind='normal',
+                 name='chi2_c', doc='Chi 2 motor offset for C')
+    chi2_si = Cpt(OffsetIMS, ':CHI2:OFF_Si', kind='normal',
+                  name='chi2_si', doc='Chi 2 motor offset for Si')
+    h2n_c = Cpt(OffsetIMS, ':H2N:OFF_C', kind='normal',
+                name='h2n_c', doc=' H2n motor offset for C')
+    h2n_si = Cpt(OffsetIMS, ':H2N:OFF_Si', kind='normal',
+                 name='h2n_si', doc='H2n motor offset for Si')
+
+    # energy pseudo positioner
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted',
                  limits=(5, 25))
 
@@ -396,7 +442,7 @@ class LODCMEnergy(PseudoPositioner):
             raise ValueError('Invalid Crystal Arrangement')
         return ref_1
 
-    def get_material(self):
+    def get_material(self, check=False):
         """Get the current crystals material."""
         m_1 = self.first_tower.get_material()
         m_2 = self.second_tower.get_material()
@@ -406,12 +452,13 @@ class LODCMEnergy(PseudoPositioner):
         return m_1
 
     def calc_energy(self, energy, material=None, reflection=None):
+        """Calculate the lom geometry."""
         if reflection is None:
             # try to determine possible current reflection
             reflection = self.get_reflection(check=True)
         if material is None:
             # try to determine possible current material ID
-            material = self.get_material()
+            material = self.get_material(check=True)
         (th, z) = diffraction.get_lom_geometry(energy, material, reflection)
         return (th, z, material)
 
@@ -438,7 +485,7 @@ class LODCMEnergy(PseudoPositioner):
             reflection = self.first_tower.get_reflection(check=True)
         if material is None:
             # try to determine possible current material id
-            material = self.first_tower.get_material()
+            material = self.first_tower.get_material(check=True)
         if material == "Si":
             th = self.th1_si.wm()
         elif material == "C":
@@ -512,7 +559,8 @@ class LODCM(BaseInterface, Device):
     _icon = 'fa.share-alt-square'
 
     tab_whitelist = ['h1n_state', 'yag', 'dectris', 'diode', 'foil',
-                     'remove_dia']
+                     'remove_dia', 'first_tower', 'second_tower',
+                     'diagnostic_tower', 'calc']
 
     def __init__(self, prefix, *, name, main_line='MAIN', mono_line='MONO',
                  **kwargs):
@@ -531,7 +579,7 @@ class LODCM(BaseInterface, Device):
         self.x1 = self.first_tower.x1
         self.y1 = self.first_tower.y1
         self.th1 = self.first_tower.th1
-        self.ch1 = self.first_tower.ch1
+        self.chi1 = self.first_tower.chi1
         self.h1n = self.first_tower.h1n
         self.h1p = self.first_tower.h1p
         # second tower
@@ -539,7 +587,7 @@ class LODCM(BaseInterface, Device):
         self.x2 = self.second_tower.x2
         self.y2 = self.second_tower.y2
         self.th2 = self.second_tower.th2
-        self.ch2 = self.second_tower.ch2
+        self.chi2 = self.second_tower.chi2
         self.h2n = self.second_tower.h2n
         self.diode2 = self.second_tower.diode2
         # diagnostic tower
@@ -557,6 +605,34 @@ class LODCM(BaseInterface, Device):
         self.h2n_state = self.second_tower.h2n_state
         self.y2_state = self.second_tower.y2_state
         self.chi2_state = self.second_tower.chi2_state
+        # offset positioners - tower 1
+        self.z1_c = self.calc.z1_c
+        self.z1_si = self.calc.z1_si
+        self.x1_c = self.calc.x1_c
+        self.x1_si = self.calc.x1_si
+        self.y1_c = self.calc.y1_c
+        self.y1_si = self.calc.y1_si
+        self.th1_c = self.calc.th1_c
+        self.th1_si = self.calc.th1_si
+        self.chi1_c = self.calc.chi1_c
+        self.chi1_si = self.calc.chi1_si
+        self.h1n_c = self.calc.h1n_c
+        self.h1n_si = self.calc.h1n_si
+        self.h1p_c = self.calc.h1p_c
+        self.h1p_si = self.calc.h1p_si
+        # offset positioners - tower 2
+        self.z2_c = self.calc.z2_c
+        self.z2_si = self.calc.z2_si
+        self.x2_c = self.calc.x2_c
+        self.x2_si = self.calc.x2_si
+        self.y2_c = self.calc.y2_c
+        self.y2_si = self.calc.y2_si
+        self.th2_c = self.calc.th2_c
+        self.th2_si = self.calc.th2_si
+        self.chi2_c = self.calc.chi2_c
+        self.chi2_si = self.calc.chi2_si
+        self.h2n_c = self.calc.h2n_c
+        self.h2n_si = self.calc.h2n_si
 
     @property
     def reflection(self):
@@ -705,11 +781,11 @@ class LODCM(BaseInterface, Device):
             status_info, 'first_tower', 'th1', 'dial_position', 'value')
 
         chi_units = get_status_value(
-            status_info, 'first_tower', 'ch1', 'user_setpoint', 'units')
+            status_info, 'first_tower', 'chi1', 'user_setpoint', 'units')
         chi_user = get_status_float(
-            status_info, 'first_tower', 'ch1', 'position')
+            status_info, 'first_tower', 'chi1', 'position')
         chi_dial = get_status_float(
-            status_info, 'first_tower', 'ch1', 'dial_position', 'value')
+            status_info, 'first_tower', 'chi1', 'dial_position', 'value')
 
         y_units = get_status_value(
             status_info, 'first_tower', 'y1', 'user_setpoint', 'units')
@@ -755,9 +831,9 @@ class LODCM(BaseInterface, Device):
             status_info, 'second_tower', 'th2', 'dial_position', 'value')
 
         chi2_user = get_status_float(
-            status_info, 'second_tower', 'ch2', 'position')
+            status_info, 'second_tower', 'chi2', 'position')
         chi2_dial = get_status_float(
-            status_info, 'second_tower', 'ch2', 'dial_position', 'value')
+            status_info, 'second_tower', 'chi2', 'dial_position', 'value')
 
         y2_user = get_status_float(
             status_info, 'second_tower', 'y2', 'position')
@@ -816,10 +892,11 @@ class LODCM(BaseInterface, Device):
 
         yag_zoom_units = get_status_value(status_info, 'diagnostic_tower',
                                           'yag_zoom', 'user_setpoint', 'units')
-        yag_zoom_user = get_status_float(
-            status_info, 'diagnostic_tower', 'yag_zoom', 'position')
+        yag_zoom_user = get_status_float(status_info, 'diagnostic_tower',
+                                         'yag_zoom', 'position', precision=0)
         yag_zoom_dial = get_status_float(status_info, 'diagnostic_tower',
-                                         'yag_zoom', 'dial_position', 'value')
+                                         'yag_zoom', 'dial_position', 'value',
+                                         precision=0)
 
         def form(left_str, center_str, right_str):
             return f'{left_str:<15}{center_str:>25}{right_str:>25}'

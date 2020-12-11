@@ -112,6 +112,8 @@ def fake_calc():
 def fake_offset_ims():
     FakeOffsetIms = make_fake_device(SIMOffsetIMS)
     off_ims = FakeOffsetIms('FAKE:OFFSET:IMS', name='fake_offset_ims')
+    off_ims.motor.move(4)
+    off_ims.offset.mv(0)
 
     return off_ims
 
@@ -238,14 +240,16 @@ def test_get_reflection_lodcm(fake_calc):
 
 def test_offset_ims(fake_offset_ims):
     ims = fake_offset_ims
-    ims.motor.move(3)
-    # offset == 3
-    # motor pos == 0 + 3
-    # ims.motor.move(4)
-    # assert ims.offset_pv.position == 4
-    # ims.move(3)
-    # assert ims.motor.position == 3
-    # assert ims.offset_pv.position == 0
+    # motor position: 4
+    # offset: 0
+    assert ims.motor.position == 4
+    ims.move(2)
+    assert ims.motor.position == 6
+    assert ims.offset.notepad_setpoint.get() == 2
+    ims.move(1)
+    assert ims.motor.position == 7
+    assert ims.offset.notepad_setpoint.get() == 1
+    ims.motor.move(10)
 
 
 @pytest.mark.timeout(5)
