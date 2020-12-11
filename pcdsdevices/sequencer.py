@@ -1,5 +1,4 @@
 import logging
-import time
 
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
@@ -116,7 +115,7 @@ class EventSequence(BaseInterface, Device):
         self.bd_array.put(seq[1])
         self.fd_array.put(seq[2])
         self.bc_array.put(seq[3])
-        self.seq_proc.put(1) # Force the sequencer to update sequence
+        self.seq_proc.put(1)  # Force the sequencer to update sequence
 
     def show(self, num_lines=None):
         """
