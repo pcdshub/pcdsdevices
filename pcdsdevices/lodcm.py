@@ -327,24 +327,23 @@ class OffsetIMS(PseudoPositioner):
     implement and maintain.
     """
     motor = Cpt(IMS, kind='normal')
-    offset_pv = Cpt(PseudoSingleInterface, kind='normal')
+    offset = Cpt(PseudoSingleInterface, kind='normal')
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         # for the given pseudo_pos, where should the motor be
-        motor_value = (pseudo_pos.offset_pv +
-                       self.offset_pv.notepad_setpoint.get())
+        motor_value = pseudo_pos.offset + self.offset.notepad_setpoint.get()
         return self.RealPosition(motor=motor_value)
 
     @real_position_argument
     def inverse(self, real_pos):
         real_pos = self.RealPosition(*real_pos)
         # for a given real_pos, where should the pseudo motor be
-        # TODO: if i call directly the offset_pv.position here it will keep
+        # TODO: if i call directly the offset.position here it will keep
         # calling itself.....
-        offset = real_pos.motor - self.offset_pv.notepad_setpoint.get()
-        return self.PseudoPosition(offset_pv=offset)
+        offset = self.motor.position - real_pos.motor
+        return self.PseudoPosition(offset=offset)
 
     def __init__(self, prefix, *args, **kwargs):
         super().__init__('', *args, **kwargs)
