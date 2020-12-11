@@ -23,7 +23,7 @@ from pcdscalc import common, diffraction
 from .doc_stubs import insert_remove
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
-from .interface import BaseInterface
+from .interface import BaseInterface, FltMvInterface
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
 from .sim import FastMotor
@@ -321,7 +321,7 @@ class DiagnosticsTower(BaseInterface, Device):
         super().__init__(prefix, *args, **kwargs)
 
 
-class OffsetIMS(PseudoPositioner):
+class OffsetIMS(FltMvInterface, PseudoPositioner):
     """
     IMS motor with an offset.
 
@@ -339,6 +339,7 @@ class OffsetIMS(PseudoPositioner):
     def forward(self, pseudo_pos):
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         # for the given pseudo_pos, where should the motor be
+        # TODO: what if this is none?
         motor_value = pseudo_pos.offset + self.motor.position
         return self.RealPosition(motor=motor_value)
 
@@ -347,7 +348,6 @@ class OffsetIMS(PseudoPositioner):
         real_pos = self.RealPosition(*real_pos)
         # for a given real_pos, where should the pseudo motor be
         offset = real_pos.motor - self.motor.position
-        # offset = self.motor.position - real_pos.motor
         return self.PseudoPosition(offset=offset)
 
     def __init__(self, prefix, *args, **kwargs):
@@ -360,8 +360,8 @@ class LODCMEnergy(PseudoPositioner):
     first_tower = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
     second_tower = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
     # we get the energy from theta1
-    th1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:07',
-               kind='normal', doc='LOM Xtal1 Theta')
+    # th1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:07',
+    #            kind='normal', doc='LOM Xtal1 Theta')
     # offset positioners used to set the Energy
     th1_si = Cpt(OffsetIMS, ':TH1:OFF_Si', kind='normal', name='th1_si',
                  doc='Th1 motor offset for Si')
@@ -496,23 +496,56 @@ class LODCMEnergy(PseudoPositioner):
             material, reflection)
         return common.wavelength_to_energy(length) / 1000
 
+    # @pseudo_position_argument
+    # def forward(self, pseudo_pos):
+    #     """Calculate a RealPosition from a given PseudoPosition."""
+    #     energy = self.get_energy()
+    #     return self.RealPosition(th1=energy)
+
+    # @real_position_argument
+    # def inverse(self, real_pos):
+    #     """Calculate a PseudoPosition from a given RealPosition."""
+    #     real_pos = self.RealPosition(*real_pos)
+    #     th, z, material = self.calc_energy(real_pos.th1)
+    #     if material == "Si":
+    #         return self.PseudoPosition(th1_si=th, th2_si=th, z1_si=-z,
+    #                                    z2_si=z)
+    #     elif material == "C":
+    #         return self.PseudoPosition(th1_c=th, th2_c=th, z1_c=-z, z2_c=z)
+    #     else:
+    #         raise ValueError("Invalid material ID: %s" % material)
+
     @pseudo_position_argument
     def forward(self, pseudo_pos):
         """Calculate a RealPosition from a given PseudoPosition."""
-        energy = self.get_energy()
-        return self.RealPosition(th1=energy)
+        # if my pseudo positioner is here,
+        # this is where my real motor should be
+        pseudo_pos = self.PseudoPosition(*pseudo_pos)
+        th, z, material = self.calc_energy(pseudo_pos.energy)
+        if material == "Si":
+            return self.RealPosition(th1_si=th, th2_si=th, z1_si=-z, z2_si=z)
+        elif material == "C":
+            return self.RealPosition(th1_c=th, th2_c=th, z1_c=-z, z2_c=z)
+        else:
+            raise ValueError("Invalid material ID: %s" % material)
 
     @real_position_argument
     def inverse(self, real_pos):
         """Calculate a PseudoPosition from a given RealPosition."""
-        real_pos = self.RealPosition(*real_pos)
-        th, z, material = self.calc_energy(real_pos.th1)
-        if material == "Si":
-            return self.PseudoPosition(th1_si=th, th2_si=th, z1_si=-z, z2_si=z)
-        elif material == "C":
-            return self.PseudoPosition(th1_c=th, th2_c=th, z1_c=-z, z2_c=z)
-        else:
-            raise ValueError("Invalid material ID: %s" % material)
+        # if my real motor is here,
+        # this is where my pseudo positioner should be
+        # real_pos = self.RealPosition(*real_pos)
+        energy = self.get_energy()
+        return self.PseudoPosition(energy=energy)
+        # real_pos = self.RealPosition(*real_pos)
+        # th, z, material = self.calc_energy(real_pos.th1)
+        # if material == "Si":
+        #     return self.PseudoPosition(th1_si=th, th2_si=th, z1_si=-z,
+        #                                z2_si=z)
+        # elif material == "C":
+        #     return self.PseudoPosition(th1_c=th, th2_c=th, z1_c=-z, z2_c=z)
+        # else:
+        #     raise ValueError("Invalid material ID: %s" % material)
 
 
 class LODCM(BaseInterface, Device):

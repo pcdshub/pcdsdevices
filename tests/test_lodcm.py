@@ -249,7 +249,11 @@ def test_offset_ims(fake_offset_ims):
     ims.move(1)
     assert ims.motor.position == 7
     assert ims.offset.notepad_setpoint.get() == 1
-    ims.motor.move(10)
+    ims.motor.mv(0)
+    ims.offset.mv(2)
+    ims.move(3)
+    assert ims.motor.position == 5
+    assert ims.offset.notepad_setpoint.get() == 3
 
 
 @pytest.mark.timeout(5)
