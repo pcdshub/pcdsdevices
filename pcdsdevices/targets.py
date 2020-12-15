@@ -283,6 +283,12 @@ class XYTargetGrid():
         """
         Save three preset coordinate points.
         """
+        if not (self.y.presets.has_presets and self.x.presets.has_presets):
+            raise AttributeError('No folder setup for motor presets. '
+                                 'Please add a location to save the positions '
+                                 'to, using setup_preset_paths from '
+                                 'pcdsdevices.interface to save the position.')
+
         print('Setting coordinates for (N, 0) bottom left corner')
         self.tweak()
         pos = [self.x.position, self.y.position]
@@ -292,20 +298,13 @@ class XYTargetGrid():
         print('Setting coordinates for (0, M) top right corner')
         self.tweak()
         pos.extend([self.x.position, self.y.position])
-        try:
-            # create presets
-            self.x.presets.add_hutch(value=pos[0], name="x_bottom_left")
-            self.x.presets.add_hutch(value=pos[2], name="x_top_left")
-            self.x.presets.add_hutch(value=pos[4], name="x_top_right")
-            self.y.presets.add_hutch(value=pos[1], name="y_bottom_left")
-            self.y.presets.add_hutch(value=pos[3], name="y_top_left")
-            self.y.presets.add_hutch(value=pos[5], name="y_top_right")
-        except AttributeError:
-            logger.warning('No folder setup for motor presets. '
-                           'Please add a location to save the positions to '
-                           'using setup_preset_paths from '
-                           'pcdsdevices.interface to keep the position files.')
-            return
+        # create presets
+        self.x.presets.add_hutch(value=pos[0], name="x_bottom_left")
+        self.x.presets.add_hutch(value=pos[2], name="x_top_left")
+        self.x.presets.add_hutch(value=pos[4], name="x_top_right")
+        self.y.presets.add_hutch(value=pos[1], name="y_bottom_left")
+        self.y.presets.add_hutch(value=pos[3], name="y_top_left")
+        self.y.presets.add_hutch(value=pos[5], name="y_top_right")
 
     def get_presets(self):
         """
