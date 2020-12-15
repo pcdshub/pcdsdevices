@@ -1,5 +1,5 @@
-issue_number update ExitSlits
-#################
+723 update ExitSlits
+####################
 
 API Changes
 -----------
