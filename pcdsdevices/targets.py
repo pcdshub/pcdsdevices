@@ -2,10 +2,14 @@
 Module for common target stage stack configurations.
 """
 import logging
+import numpy as np
 
 from ophyd.device import Device
+import matplotlib.pyplot as plt
+from itertools import chain
 
 from pcdsdevices.epics_motor import _GetMotorClass
+from .interface import tweak_base
 
 logger = logging.getLogger(__name__)
 
@@ -125,9 +129,9 @@ class XYTargetGrid():
                           x_spacing=1.0, y_spacing=1.0, x_comp=0.05,
                           y_comp=0.01)
     """
-    def __init__(self, x=None, y=None, x_init=None, x_spacing=None,
-                 x_comp=0.0, y_init=None, y_spacing=None, y_comp=0.0,
-                 name=None):
+
+    def __init__(self, name, x=None, y=None, x_init=None, x_spacing=None,
+                 x_comp=0.0, y_init=None, y_spacing=None, y_comp=0.0):
 
         self.x_init = x_init
         self.x_spacing = x_spacing
@@ -260,3 +264,122 @@ class XYTargetGrid():
 
         self.x.mv(xpos, wait=wait)
         self.y.mv(ypos, wait=wait)
+
+    def tweak(self):
+        """
+        Call the tweak function from `pcdsdevice.interface`.
+
+        Use the Left arrow to move x motor left.
+        Use the Right arrow to move x motor right.
+        Use the Down arrow to move y motor down.
+        Use the Up arrow to move y motor up.
+        Use Shift & Up arrow to scale*2.
+        Use Shift & Down arrow to scale/2.
+        Press q to quit.
+        """
+        tweak_base(self.x, self.y)
+
+    def set_presets(self):
+        """
+        Save three preset coordinate points.
+        """
+        print('Setting coordinates for (N, 0) bottom left corner')
+        self.tweak()
+        pos = [self.x.position, self.y.position]
+        print('Setting coordinates for (0, 0) top left corner')
+        self.tweak()
+        pos.extend([self.x.position, self.y.position])
+        print('Setting coordinates for (0, M) top right corner')
+        self.tweak()
+        pos.extend([self.x.position, self.y.position])
+        try:
+            # create presets
+            self.x.presets.add_hutch(value=pos[0], name="x_bottom_left")
+            self.x.presets.add_hutch(value=pos[2], name="x_top_left")
+            self.x.presets.add_hutch(value=pos[4], name="x_top_right")
+            self.y.presets.add_hutch(value=pos[1], name="y_bottom_left")
+            self.y.presets.add_hutch(value=pos[3], name="y_top_left")
+            self.y.presets.add_hutch(value=pos[5], name="y_top_right")
+        except AttributeError:
+            logger.warning('No folder setup for motor presets. '
+                           'Please add a location to save the positions to '
+                           'using setup_preset_paths from '
+                           'pcdsdevices.interface to keep the position files.')
+            return
+
+    def get_presets(self):
+        """
+        Get the saved presets if any.
+
+        Returns
+        -------
+        pos : tuple
+            Three coordinate positions - bottom_left, top_left, top_right
+        """
+        try:
+            pos = [self.x.presets.positions.x_bottom_left.pos,
+                   self.y.presets.positions.y_bottom_left.pos,
+                   self.x.presets.positions.x_top_left.pos,
+                   self.y.presets.positions.y_top_left.pos,
+                   self.x.presets.positions.x_top_right.pos,
+                   self.y.presets.positions.y_top_right.pos]
+            bottom_left = (pos[0], pos[1])
+            top_left = (pos[2], pos[3])
+            top_right = (pos[4], pos[5])
+            return bottom_left, top_left, top_right
+        except Exception:
+            logger.warning('Could not get presets, try to set_presets.')
+
+    def map_points(self):
+        """
+        Map all the sample positions in 2-d coordinates.
+
+        Returns
+        -------
+        coord : list
+            List of all coordinate points for samples on the grid.
+        """
+        bottom_left, top_left, top_right = self.get_presets()
+        if all([bottom_left, top_left, top_right]) is None:
+            logger.warning('Could not get presets, make sure you set presets')
+            return
+        # distance from bottom_left to top_left
+        height = np.sqrt(np.power((top_left[0] - bottom_left[0]), 2)
+                         + np.power((top_left[1] - bottom_left[1]), 2))
+        # distance from top_left to top_right
+        width = np.sqrt(np.power((top_right[0] - top_left[0]), 2)
+                        + np.power((top_right[1] - top_left[1]), 2))
+
+        # the very first coordinate is the most top-left sample on the grid
+        current_x = top_left[0]
+        current_y = top_left[1]
+        # we need to get all the places where the samples will be on both axes
+        x_grid_points = [current_x]
+        y_grid_points = [current_y]
+
+        # starting at the top left corner of the grid
+        # find all the samples locations on the x axes
+        while current_x < width - self.x_spacing:
+            current_x = current_x + self.x_spacing
+            x_grid_points.append(current_x)
+
+        # starting at the top left corner of the grid
+        # find all the samples locations on the y axes
+        while current_y < height + self.y_spacing:
+            current_y = current_y + self.y_spacing
+            y_grid_points.append(current_y)
+
+        # The meshgrid function returns
+        # two 2-dimensional arrays
+        xx, yy = np.meshgrid(x_grid_points, y_grid_points,
+                             sparse=False, indexing='xy')
+
+        plt.plot(xx, yy, marker='.', color='k', linestyle='none')
+        plt.show()
+
+        # flat out the arrays of points
+        flat_xx = list(chain.from_iterable(xx))
+        flat_yy = list(chain.from_iterable(yy))
+        # make paris of (x, y) coordinates
+        # coord = list(zip(flat_xx, flat_yy))
+        return flat_xx, flat_yy
