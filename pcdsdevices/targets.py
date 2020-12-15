@@ -330,9 +330,14 @@ class XYTargetGrid():
         except Exception:
             logger.warning('Could not get presets, try to set_presets.')
 
-    def map_points(self):
+    def map_points(self, snake_like=True):
         """
         Map all the sample positions in 2-d coordinates.
+
+        Parameters
+        ----------
+        snake_like : bool
+            Indicates if the points should be mapped in a snake-like pattern.
 
         Returns
         -------
@@ -378,8 +383,48 @@ class XYTargetGrid():
         plt.show()
 
         # flat out the arrays of points
-        flat_xx = list(chain.from_iterable(xx))
-        flat_yy = list(chain.from_iterable(yy))
+        if not snake_like:
+            flat_xx = list(chain.from_iterable(xx))
+            flat_yy = list(chain.from_iterable(yy))
+            return flat_xx, flat_yy
         # make paris of (x, y) coordinates
         # coord = list(zip(flat_xx, flat_yy))
-        return flat_xx, flat_yy
+        return self.get_snake_grid_list(xx, yy)
+
+    def get_snake_grid_list(self, xx, yy):
+        """
+        Flatten out the x and y meshgrids.
+
+        Flatten them into lists with snake_like pattern coordinate points.
+
+        Parameters
+        ----------
+        xx : array
+            Array containing the grid points for x.
+        yy : array
+            Array containing the grid points for y.
+
+        Returns
+        -------
+        xx, yy : tuple
+            Lists of all the x and y grid points folowing a snake-like pattern.
+        """
+        temp_x = []
+        temp_y = []
+        for i in range(xx.shape[0]):
+            if i % 2 == 0:
+                temp_x.append(xx[i])
+            else:
+                t = xx[i]
+                tt = t[::-1]
+                temp_x.append(tt)
+        for i in range(yy.shape[0]):
+            if i % 2 == 0:
+                temp_y.append(yy[i])
+            else:
+                t = yy[i]
+                tt = t[::-1]
+                temp_y.append(tt)
+        xx = list(chain.from_iterable(temp_x))
+        yy = list(chain.from_iterable(temp_y))
+        return xx, yy
