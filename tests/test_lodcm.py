@@ -1,5 +1,6 @@
 import logging
 from unittest.mock import Mock
+import numpy as np
 
 import pytest
 from ophyd.sim import make_fake_device
@@ -112,8 +113,7 @@ def fake_calc():
 def fake_offset_ims():
     FakeOffsetIms = make_fake_device(SIMOffsetIMS)
     off_ims = FakeOffsetIms('FAKE:OFFSET:IMS', name='fake_offset_ims')
-    off_ims.motor.move(4)
-    off_ims.offset.mv(0)
+    off_ims.offset.notepad_setpoint.sim_put(3)
 
     return off_ims
 
@@ -240,20 +240,55 @@ def test_get_reflection_lodcm(fake_calc):
 
 def test_offset_ims(fake_offset_ims):
     ims = fake_offset_ims
-    # motor position: 4
-    # offset: 0
-    assert ims.motor.position == 4
-    ims.move(2)
-    assert ims.motor.position == 6
-    assert ims.offset.notepad_setpoint.get() == 2
-    ims.move(1)
-    assert ims.motor.position == 7
-    assert ims.offset.notepad_setpoint.get() == 1
-    ims.motor.mv(0)
-    ims.offset.mv(2)
-    ims.move(3)
-    assert ims.motor.position == 5
-    assert ims.offset.notepad_setpoint.get() == 3
+    # start with an offset of 3
+    # motor at 0
+    ims.move(5)
+    assert ims.motor.position == 8
+    assert ims.offset.position == 3
+    ims.motor.move(2)
+    assert ims.offset.position == -3
+    # motor = 5 + offset
+    # motor = 5 + 3 => 8
+    # assert ims.motor.position == 8
+    # ims.motor.move(1)
+    # assert ims.offset.position == -2
+    print(ims.motor.position)
+    print(ims.offset.position)
+    print(ims.position)
+
+
+def test_energy(fake_calc):
+    calc = fake_calc
+    # material should be 'C'
+    # make second tower have same reflection (1, 1, 1)
+    calc.second_tower.diamond_reflection.sim_put((1, 1, 1))
+    calc.second_tower.silicon_reflection.sim_put((1, 1, 1))
+    # for energy 10e3 > (17.51878596767417, 427.8469911590626)
+    th, z, material = calc.calc_energy(energy=10e3)
+    assert np.isclose(th, 17.51878596767417)
+    assert np.isclose(z, 427.8469911590626)
+    assert material == 'C'
+
+
+def test_move(fake_calc):
+    calc = fake_calc
+    # invalid crystal arrangement
+    # with pytest.raises(ValueError):
+    #     calc.energy.move(6)
+    calc.second_tower.diamond_reflection.sim_put((1, 1, 1))
+    calc.second_tower.silicon_reflection.sim_put((1, 1, 1))
+    print(calc.energy)
+    print(calc.inverse(23, 43))
+    # energy.move(#number) - this number has to be pretty high
+    # otherwise it will give an error when `np.arcsin(x)`
+    print(calc.forward(16000))
+    # th1_c=10.844055509398181, th2_c=10.844055509398181
+    # z1_c=-754.3222862635085, z2_c=754.3222862635085
+    # calc.energy.move(4.4137713930852005)
+    # calc.th1_c.move(10.844055509398181)
+    # calc.th2_c.move(10.844055509398181)
+    # calc.z1_c.move(-754.3222862635085)
+    # calc.z2_c.move(754.3222862635085)
 
 
 @pytest.mark.timeout(5)

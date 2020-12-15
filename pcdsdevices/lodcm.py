@@ -102,6 +102,54 @@ class Y2(InOutRecordPositioner):
     out_states = []
 
 
+class OffsetIMS(FltMvInterface, PseudoPositioner):
+    """
+    IMS motor with an offset.
+
+    The driving idea for OffsetIMS is to let us separate the
+    various unrelated PseudoPositioner-like things from the main class.
+    Each different calculation can be independent, making it simpler to
+    implement and maintain.
+    """
+    motor = Cpt(IMS, kind='normal')
+    offset = Cpt(PseudoSingleInterface,  kind='normal')
+
+    # @property
+    # def position(self):
+    #     return self.motor.wm()
+
+    # TODO: fix this OffsetIMS !!!!
+    # def move(pos):
+    #     motor.mv(pos + Pv.get(offset_pv))
+
+    # def wm():
+    #     return motor.wm() - Pv.get(offset_pv)
+
+    # def set(value):
+    #     if use_ims_preset:
+    #         Pv.put("%s_SET" % offset_pv, motor.wm() - value)
+    #     Pv.put(offset_pv, motor.wm() - value)
+
+    def get_offset(self):
+        return self.offset.wm()
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        pseudo_pos = self.PseudoPosition(*pseudo_pos)
+        motor_value = pseudo_pos.offset + self.offset.notepad_setpoint.get()
+        return self.RealPosition(motor=motor_value)
+
+    @real_position_argument
+    def inverse(self, real_pos):
+        real_pos = self.RealPosition(*real_pos)
+        # offset = real_pos.motor - self.offset.notepad_setpoint.get()
+        offset = real_pos.motor - self.offset.notepad_setpoint.get()
+        return self.PseudoPosition(offset=offset)
+
+    def __init__(self, prefix, *args, **kwargs):
+        super().__init__(prefix, *args, **kwargs)
+
+
 class CrystalTower1(BaseInterface, Device):
     """
     Crystal Tower 1.
@@ -151,6 +199,36 @@ class CrystalTower1(BaseInterface, Device):
                              doc='Tower 1 Diamond crystal reflection')
     silicon_reflection = Cpt(EpicsSignalRO, ':T1Si:REF', kind='omitted',
                              doc='Tower 1 Silicon crystal reflection')
+
+    # motor offsets
+    th1_si = Cpt(OffsetIMS, ':TH1:OFF_Si', kind='normal', name='th1_si',
+                 doc='Th1 motor offset for Si')
+    th1_c = Cpt(OffsetIMS, ':TH1:OFF_C', kind='normal', name='th1_c',
+                doc='Th1 motor offset for C')
+    z1_si = Cpt(OffsetIMS, ':Z1:OFF_Si', kind='normal', name='z1_si',
+                doc='Z1 motor offset for Si')
+    z1_c = Cpt(OffsetIMS, ':Z1:OFF_C', kind='normal', name='z1_c',
+               doc='Z1 motor offset for C')
+    x1_c = Cpt(OffsetIMS, ':X1:OFF_C', kind='normal',
+               name='x1_c', doc='X1 motor offset for C')
+    x1_si = Cpt(OffsetIMS, ':X1:OFF_Si', kind='normal',
+                name='x1_si', doc='X1 motor offset for Si')
+    y1_c = Cpt(OffsetIMS, ':Y1:OFF_C', kind='normal',
+               name='y1_c', doc='Y1 motor offset for C')
+    y1_si = Cpt(OffsetIMS, ':Y1:OFF_Si', kind='normal',
+                name='y1_si', doc='Y1 motor offset for Si')
+    chi1_c = Cpt(OffsetIMS, ':CHI1:OFF_C', kind='normal',
+                 name='chi1_c ', doc='Chi 1 motor offset for C')
+    chi1_si = Cpt(OffsetIMS, ':CHI1:OFF_Si', kind='normal',
+                  name='chi1_si', doc='Chi 1 motor offset for Si')
+    h1n_c = Cpt(OffsetIMS, ':H1N:OFF_C', kind='normal',
+                name='', doc='H1n motor offset for C')
+    h1n_si = Cpt(OffsetIMS, ':H1N:OFF_Si', kind='normal',
+                 name='h1n_si', doc='H1n motor offset for Si')
+    h1p_c = Cpt(OffsetIMS, ':H1P:OFF_C', kind='normal',
+                name='h1p_c', doc='H1p motor offset for C')
+    h1p_si = Cpt(OffsetIMS, ':H1P:OFF_Si', kind='normal',
+                 name='h1p_si', doc='H1p motor offset for Si')
 
     tab_component_names = True
     tab_whitelist = ['is_diamond', 'is_silicon', 'get_reflection',
@@ -242,6 +320,32 @@ class CrystalTower2(BaseInterface, Device):
     silicon_reflection = Cpt(EpicsSignalRO, ':T2Si:REF', kind='omitted',
                              doc='Tower 2 Silicon crystal reflection')
 
+    # motor offsets
+    th2_si = Cpt(OffsetIMS, ':TH2:OFF_Si', kind='normal', name='th2_si',
+                 doc='Th2 motor offset for Si')
+    th2_c = Cpt(OffsetIMS, ':TH2:OFF_C', kind='normal', name='th2_c',
+                doc='Th2 motor offset for C')
+    z2_si = Cpt(OffsetIMS, ':Z2:OFF_Si', kind='normal', name='z1_si',
+                doc='Z2 motor offset for Si')
+    z2_c = Cpt(OffsetIMS, ':Z2:OFF_C', kind='normal', name='z1_c',
+               doc='Z2 motor offset for C')
+    x2_c = Cpt(OffsetIMS, ':X2:OFF_C', kind='normal',
+               name='x2_c ', doc='X2 motor offset for C')
+    x2_si = Cpt(OffsetIMS, ':X2:OFF_Si', kind='normal',
+                name='x2_si', doc='X2 motor offset for Si')
+    y2_c = Cpt(OffsetIMS, ':Y2:OFF_C', kind='normal',
+               name='y2_c', doc='Y2 motor offset for C')
+    y2_si = Cpt(OffsetIMS, ':Y2:OFF_Si', kind='normal',
+                name='y2_si', doc='Y2 motor offset for Si')
+    chi2_c = Cpt(OffsetIMS, ':CHI2:OFF_C', kind='normal',
+                 name='chi2_c', doc='Chi 2 motor offset for C')
+    chi2_si = Cpt(OffsetIMS, ':CHI2:OFF_Si', kind='normal',
+                  name='chi2_si', doc='Chi 2 motor offset for Si')
+    h2n_c = Cpt(OffsetIMS, ':H2N:OFF_C', kind='normal',
+                name='h2n_c', doc=' H2n motor offset for C')
+    h2n_si = Cpt(OffsetIMS, ':H2N:OFF_Si', kind='normal',
+                 name='h2n_si', doc='H2n motor offset for Si')
+
     tab_component_names = True
     tab_whitelist = ['is_diamond', 'is_silicon', 'get_reflection',
                      'get_material']
@@ -321,47 +425,11 @@ class DiagnosticsTower(BaseInterface, Device):
         super().__init__(prefix, *args, **kwargs)
 
 
-class OffsetIMS(FltMvInterface, PseudoPositioner):
-    """
-    IMS motor with an offset.
-
-    The driving idea for OffsetIMS is to let us separate the
-    various unrelated PseudoPositioner-like things from the main class.
-    Each different calculation can be independent, making it simpler to
-    implement and maintain.
-    """
-    motor = FCpt(IMS, '{self._prefix}', kind='normal')
-    offset = Cpt(PseudoSingleInterface, kind='normal')
-
-    # TODO: fix this OffsetIMS !!!!
-
-    @pseudo_position_argument
-    def forward(self, pseudo_pos):
-        pseudo_pos = self.PseudoPosition(*pseudo_pos)
-        # for the given pseudo_pos, where should the motor be
-        # TODO: what if this is none?
-        motor_value = pseudo_pos.offset + self.motor.position
-        return self.RealPosition(motor=motor_value)
-
-    @real_position_argument
-    def inverse(self, real_pos):
-        real_pos = self.RealPosition(*real_pos)
-        # for a given real_pos, where should the pseudo motor be
-        offset = real_pos.motor - self.motor.position
-        return self.PseudoPosition(offset=offset)
-
-    def __init__(self, prefix, *args, **kwargs):
-        self._prefix = prefix
-        super().__init__(prefix, *args, **kwargs)
-
-
 class LODCMEnergy(PseudoPositioner):
     # tower 1 states
     first_tower = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
     second_tower = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
-    # we get the energy from theta1
-    # th1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:07',
-    #            kind='normal', doc='LOM Xtal1 Theta')
+
     # offset positioners used to set the Energy
     th1_si = Cpt(OffsetIMS, ':TH1:OFF_Si', kind='normal', name='th1_si',
                  doc='Th1 motor offset for Si')
@@ -379,49 +447,9 @@ class LODCMEnergy(PseudoPositioner):
                 doc='Z2 motor offset for Si')
     z2_c = Cpt(OffsetIMS, ':Z2:OFF_C', kind='normal', name='z1_c',
                doc='Z2 motor offset for C')
-    # offset positioners
-    # tower 1
-    x1_c = Cpt(OffsetIMS, ':X1:OFF_C', kind='normal',
-               name='x1_c', doc='X1 motor offset for C')
-    x1_si = Cpt(OffsetIMS, ':X1:OFF_Si', kind='normal',
-                name='x1_si', doc='X1 motor offset for Si')
-    y1_c = Cpt(OffsetIMS, ':Y1:OFF_C', kind='normal',
-               name='y1_c', doc='Y1 motor offset for C')
-    y1_si = Cpt(OffsetIMS, ':Y1:OFF_Si', kind='normal',
-                name='y1_si', doc='Y1 motor offset for Si')
-    chi1_c = Cpt(OffsetIMS, ':CHI1:OFF_C', kind='normal',
-                 name='chi1_c ', doc='Chi 1 motor offset for C')
-    chi1_si = Cpt(OffsetIMS, ':CHI1:OFF_Si', kind='normal',
-                  name='chi1_si', doc='Chi 1 motor offset for Si')
-    h1n_c = Cpt(OffsetIMS, ':H1N:OFF_C', kind='normal',
-                name='', doc='H1n motor offset for C')
-    h1n_si = Cpt(OffsetIMS, ':H1N:OFF_Si', kind='normal',
-                 name='h1n_si', doc='H1n motor offset for Si')
-    h1p_c = Cpt(OffsetIMS, ':H1P:OFF_C', kind='normal',
-                name='h1p_c', doc='H1p motor offset for C')
-    h1p_si = Cpt(OffsetIMS, ':H1P:OFF_Si', kind='normal',
-                 name='h1p_si', doc='H1p motor offset for Si')
-    # tower 2
-    x2_c = Cpt(OffsetIMS, ':X2:OFF_C', kind='normal',
-               name='x2_c ', doc='X2 motor offset for C')
-    x2_si = Cpt(OffsetIMS, ':X2:OFF_Si', kind='normal',
-                name='x2_si', doc='X2 motor offset for Si')
-    y2_c = Cpt(OffsetIMS, ':Y2:OFF_C', kind='normal',
-               name='y2_c', doc='Y2 motor offset for C')
-    y2_si = Cpt(OffsetIMS, ':Y2:OFF_Si', kind='normal',
-                name='y2_si', doc='Y2 motor offset for Si')
-    chi2_c = Cpt(OffsetIMS, ':CHI2:OFF_C', kind='normal',
-                 name='chi2_c', doc='Chi 2 motor offset for C')
-    chi2_si = Cpt(OffsetIMS, ':CHI2:OFF_Si', kind='normal',
-                  name='chi2_si', doc='Chi 2 motor offset for Si')
-    h2n_c = Cpt(OffsetIMS, ':H2N:OFF_C', kind='normal',
-                name='h2n_c', doc=' H2n motor offset for C')
-    h2n_si = Cpt(OffsetIMS, ':H2N:OFF_Si', kind='normal',
-                 name='h2n_si', doc='H2n motor offset for Si')
 
     # energy pseudo positioner
-    energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted',
-                 limits=(5, 25))
+    energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
 
     def __init__(self, prefix, *args, **kwargs):
         self._prefix = prefix
@@ -523,9 +551,13 @@ class LODCMEnergy(PseudoPositioner):
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         th, z, material = self.calc_energy(pseudo_pos.energy)
         if material == "Si":
-            return self.RealPosition(th1_si=th, th2_si=th, z1_si=-z, z2_si=z)
+            return self.RealPosition(th1_si=th, th2_si=th, z1_si=-z, z2_si=z,
+                                     th1_c=None, th2_c=None, z1_c=None,
+                                     z2_c=None)
         elif material == "C":
-            return self.RealPosition(th1_c=th, th2_c=th, z1_c=-z, z2_c=z)
+            return self.RealPosition(th1_c=th, th2_c=th, z1_c=-z, z2_c=z,
+                                     th1_si=None, th2_si=None, z1_si=None,
+                                     z2_si=None)
         else:
             raise ValueError("Invalid material ID: %s" % material)
 
@@ -534,8 +566,20 @@ class LODCMEnergy(PseudoPositioner):
         """Calculate a PseudoPosition from a given RealPosition."""
         # if my real motor is here,
         # this is where my pseudo positioner should be
-        # real_pos = self.RealPosition(*real_pos)
-        energy = self.get_energy()
+        # try to determine possible current reflection
+        reflection = self.first_tower.get_reflection(check=True)
+        # try to determine possible current material id
+        material = self.first_tower.get_material(check=True)
+        if material == "Si":
+            th = real_pos.th1_si
+        elif material == "C":
+            th = real_pos.th1_c
+        else:
+            raise ValueError("Invalid material Id: %s" % material)
+        length = 2 * np.sin(np.deg2rad(th)) * diffraction.d_space(
+            material, reflection)
+        energy = common.wavelength_to_energy(length) / 1000
+        print(energy)
         return self.PseudoPosition(energy=energy)
         # real_pos = self.RealPosition(*real_pos)
         # th, z, material = self.calc_energy(real_pos.th1)
@@ -639,33 +683,33 @@ class LODCM(BaseInterface, Device):
         self.y2_state = self.second_tower.y2_state
         self.chi2_state = self.second_tower.chi2_state
         # offset positioners - tower 1
-        self.z1_c = self.calc.z1_c
-        self.z1_si = self.calc.z1_si
-        self.x1_c = self.calc.x1_c
-        self.x1_si = self.calc.x1_si
-        self.y1_c = self.calc.y1_c
-        self.y1_si = self.calc.y1_si
-        self.th1_c = self.calc.th1_c
-        self.th1_si = self.calc.th1_si
-        self.chi1_c = self.calc.chi1_c
-        self.chi1_si = self.calc.chi1_si
-        self.h1n_c = self.calc.h1n_c
-        self.h1n_si = self.calc.h1n_si
-        self.h1p_c = self.calc.h1p_c
-        self.h1p_si = self.calc.h1p_si
+        self.z1_c = self.first_tower.z1_c
+        self.z1_si = self.first_tower.z1_si
+        self.x1_c = self.first_tower.x1_c
+        self.x1_si = self.first_tower.x1_si
+        self.y1_c = self.first_tower.y1_c
+        self.y1_si = self.first_tower.y1_si
+        self.th1_c = self.first_tower.th1_c
+        self.th1_si = self.first_tower.th1_si
+        self.chi1_c = self.first_tower.chi1_c
+        self.chi1_si = self.first_tower.chi1_si
+        self.h1n_c = self.first_tower.h1n_c
+        self.h1n_si = self.first_tower.h1n_si
+        self.h1p_c = self.first_tower.h1p_c
+        self.h1p_si = self.first_tower.h1p_si
         # offset positioners - tower 2
-        self.z2_c = self.calc.z2_c
-        self.z2_si = self.calc.z2_si
-        self.x2_c = self.calc.x2_c
-        self.x2_si = self.calc.x2_si
-        self.y2_c = self.calc.y2_c
-        self.y2_si = self.calc.y2_si
-        self.th2_c = self.calc.th2_c
-        self.th2_si = self.calc.th2_si
-        self.chi2_c = self.calc.chi2_c
-        self.chi2_si = self.calc.chi2_si
-        self.h2n_c = self.calc.h2n_c
-        self.h2n_si = self.calc.h2n_si
+        self.z2_c = self.second_tower.z2_c
+        self.z2_si = self.second_tower.z2_si
+        self.x2_c = self.second_tower.x2_c
+        self.x2_si = self.second_tower.x2_si
+        self.y2_c = self.second_tower.y2_c
+        self.y2_si = self.second_tower.y2_si
+        self.th2_c = self.second_tower.th2_c
+        self.th2_si = self.second_tower.th2_si
+        self.chi2_c = self.second_tower.chi2_c
+        self.chi2_si = self.second_tower.chi2_si
+        self.h2n_c = self.second_tower.h2n_c
+        self.h2n_si = self.second_tower.h2n_si
 
     @property
     def reflection(self):
