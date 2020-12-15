@@ -1,4 +1,4 @@
-issue_number LED power add to Mono
+720 add ExitSlits
 #################
 
 API Changes
@@ -11,11 +11,11 @@ Features
 
 Device Updates
 --------------
-- Add LED power to the Mono device.
+- N/A
 
 New Devices
 -----------
-- N/A
+- Added `ExitSlits` device.
 
 Bugfixes
 --------
