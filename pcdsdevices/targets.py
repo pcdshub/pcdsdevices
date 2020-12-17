@@ -329,7 +329,7 @@ class XYTargetGrid():
         except Exception:
             logger.warning('Could not get presets, try to set_presets.')
 
-    def map_points(self, snake_like=True):
+    def map_points(self, snake_like=True, show_grid=False):
         """
         Map all the sample positions in 2-d coordinates.
 
@@ -337,6 +337,8 @@ class XYTargetGrid():
         ----------
         snake_like : bool
             Indicates if the points should be mapped in a snake-like pattern.
+        show_grid : bool
+            Indicates if the grid of mapped points should be displayed.
 
         Returns
         -------
@@ -345,85 +347,127 @@ class XYTargetGrid():
         """
         bottom_left, top_left, top_right = self.get_presets()
         if all([bottom_left, top_left, top_right]) is None:
-            logger.warning('Could not get presets, make sure you set presets')
-            return
-        # distance from bottom_left to top_left
-        height = np.sqrt(np.power((top_left[0] - bottom_left[0]), 2)
-                         + np.power((top_left[1] - bottom_left[1]), 2))
-        # distance from top_left to top_right
-        width = np.sqrt(np.power((top_right[0] - top_left[0]), 2)
-                        + np.power((top_right[1] - top_left[1]), 2))
+            msg = 'Could not get presets, make sure you set presets'
+            logger.error(msg)
+            raise ValueError(msg)
 
-        # the very first coordinate is the most top-left sample on the grid
-        current_x = top_left[0]
-        current_y = top_left[1]
-        # we need to get all the places where the samples will be on both axes
-        x_grid_points = [current_x]
-        y_grid_points = [current_y]
+        # leaving these guys here for reference only for now
+        # # distance from bottom_left to top_left
+        # height = np.sqrt(np.power((top_left[0] - bottom_left[0]), 2)
+        #                  + np.power((top_left[1] - bottom_left[1]), 2))
+        # # distance from top_left to top_right
+        # width = np.sqrt(np.power((top_right[0] - top_left[0]), 2)
+        #                 + np.power((top_right[1] - top_left[1]), 2))
 
-        # starting at the top left corner of the grid
-        # find all the samples locations on the x axes
-        while current_x < width - self.x_spacing:
-            current_x = current_x + self.x_spacing
-            x_grid_points.append(current_x)
-
-        # starting at the top left corner of the grid
-        # find all the samples locations on the y axes
-        while current_y < height + self.y_spacing:
-            current_y = current_y + self.y_spacing
-            y_grid_points.append(current_y)
+        x_grid_points = np.arange(top_left[0], top_right[0], self.x_spacing)
+        y_grid_points = np.arange(bottom_left[1], top_left[1], self.y_spacing)
 
         # The meshgrid function returns
         # two 2-dimensional arrays
         xx, yy = np.meshgrid(x_grid_points, y_grid_points,
                              sparse=False, indexing='xy')
 
-        plt.plot(xx, yy, marker='.', color='k', linestyle='none')
-        plt.show()
+        if show_grid:
+            plt.plot(xx, yy, marker='.', color='k', linestyle='none')
+            plt.show()
 
         # flat out the arrays of points
         if not snake_like:
             flat_xx = list(chain.from_iterable(xx))
             flat_yy = list(chain.from_iterable(yy))
             return flat_xx, flat_yy
-        # make paris of (x, y) coordinates
-        # coord = list(zip(flat_xx, flat_yy))
-        return self.get_snake_grid_list(xx, yy)
 
-    def get_snake_grid_list(self, xx, yy):
+        xx = self.snake_grid_list(xx)
+        yy = self.snake_grid_list(yy)
+        return xx, yy
+
+    def map_skewed(self, height=2500, width=2500, snake_like=True,
+                   show_grid=False):
         """
-        Flatten out the x and y meshgrids.
+        Temporary function - just for practice ... will be eventually removed
+        """
+        bottom_left, top_left, top_right = self.get_presets()
+        if all([bottom_left, top_left, top_right]) is None:
+            msg = 'Could not get presets, make sure you set presets'
+            logger.error(msg)
+            raise ValueError(msg)
+
+        # get the original meshgrid
+        # starting at 0, 0 top left corner, find the other 2 points if known
+        # distance
+        start_x, start_y = top_left[0], top_left[1]
+        original_bl = [start_x, start_y - height]
+        original_tr = [start_x + width, start_y]
+
+        x_grid_points = np.arange(top_left[0], original_tr[0], self.x_spacing)
+        y_grid_points = np.arange(original_bl[1], top_left[1], self.y_spacing)
+
+        # The meshgrid function returns
+        # two 2-dimensional arrays
+        xx, yy = np.meshgrid(x_grid_points, y_grid_points,
+                             sparse=False, indexing='xy')
+        original_shape = xx.shape
+
+        # this is a silly way to determine the points....
+        # just for practice..
+        # skewd when:
+        # if buttom_left[0] != to_left[0]
+        # if top_right[y] != top_left[1]
+        # how much is skewed:
+        x_skewed = bottom_left[0] - top_left[0]
+        y_skewed = top_right[1] - top_left[1]
+        pts = None
+        if not np.isclose(x_skewed, 0) or not np.isclose(y_skewed, 0):
+            # needs to be adjusted for skewd
+            sk = x_skewed/height
+            affine = np.array([[1, 0], [-sk, 1]])
+            # pts = np.einsum('ij, jk->ik', affine,
+            pts = np.einsum('ij, ik->jk', affine,
+                            np.array([xx.flatten(), yy.flatten()]))
+        xx = pts[0, :]
+        yy = pts[1, :]
+        # reshape these guys xx, yy into original shape
+        xx = xx.reshape(original_shape)
+        yy = yy.reshape(original_shape)
+
+        if show_grid:
+            plt.plot(xx, yy, marker='.', color='k', linestyle='none')
+            plt.show()
+
+        # flat out the arrays of points
+        if not snake_like:
+            flat_xx = list(chain.from_iterable(xx))
+            flat_yy = list(chain.from_iterable(yy))
+            return flat_xx, flat_yy
+
+        xx = self.snake_grid_list(xx)
+        yy = self.snake_grid_list(yy)
+        return xx, yy
+
+    def snake_grid_list(self, points):
+        """
+        Flatten out a meshgrid.
 
         Flatten them into lists with snake_like pattern coordinate points.
+        [[1, 2], [3, 4]] => [1, 2, 4, 3]
 
         Parameters
         ----------
-        xx : array
-            Array containing the grid points for x.
-        yy : array
-            Array containing the grid points for y.
+        points : array
+            Array containing the grid points for an axes.
 
         Returns
         -------
-        xx, yy : tuple
-            Lists of all the x and y grid points folowing a snake-like pattern.
+        flat_points : list
+            List of all the grid points folowing a snake-like pattern.
         """
-        temp_x = []
-        temp_y = []
-        for i in range(xx.shape[0]):
+        temp_points = []
+        for i in range(points.shape[0]):
             if i % 2 == 0:
-                temp_x.append(xx[i])
+                temp_points.append(points[i])
             else:
-                t = xx[i]
+                t = points[i]
                 tt = t[::-1]
-                temp_x.append(tt)
-        for i in range(yy.shape[0]):
-            if i % 2 == 0:
-                temp_y.append(yy[i])
-            else:
-                t = yy[i]
-                tt = t[::-1]
-                temp_y.append(tt)
-        xx = list(chain.from_iterable(temp_x))
-        yy = list(chain.from_iterable(temp_y))
-        return xx, yy
+                temp_points.append(tt)
+        flat_points = list(chain.from_iterable(temp_points))
+        return flat_points
