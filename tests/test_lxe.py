@@ -298,8 +298,10 @@ def test_laser_timing_compensation(lxt_ttc):
 
 
 @pytest.mark.timeout(5)
-def test_lxe_disconnected():
+def test_lxe_disconnected(lxe_calibration_file):
     logger.debug('test_lxe_disconnected')
     LaserTiming('TST', name='tst')
-    LaserEnergyPositioner('TST2', name='tst2')
-    LaserTimingCompensation('TST3', name='tst3')
+    LaserEnergyPositioner('TST2', name='tst2',
+                          calibration_file=lxe_calibration_file)
+    LaserTimingCompensation('TST3', delay_prefix='TST3:DELAY',
+                            laser_prefix='TST3:LASER', name='tst3')
