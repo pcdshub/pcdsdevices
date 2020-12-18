@@ -71,6 +71,7 @@ def test_sync_offset(five_axes, two_axes):
 
 
 def test_delay_basic():
+    logger.debug('test_delay_basic')
     stage_s = SimDelayStage('prefix', name='name', egu='s', n_bounces=2)
     stage_ns = SimDelayStage('prefix', name='name', egu='ns', n_bounces=2)
     approx_c = 3e8
@@ -93,6 +94,8 @@ def test_subcls_warning():
 
 
 def test_lut_positioner():
+    logger.debug('test_lut_positioner')
+
     class LimitSettableSoftPositioner(SoftPositioner):
         @property
         def limits(self):

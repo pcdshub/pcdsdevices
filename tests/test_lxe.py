@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 import pytest
 from conftest import MODULE_PATH
@@ -10,6 +12,8 @@ from pcdsdevices.lxe import (LaserEnergyPlotContext, LaserEnergyPositioner,
                              LaserTiming, LaserTimingCompensation)
 from pcdsdevices.utils import convert_unit
 
+logger = logging.getLogger(__name__)
+
 
 @pytest.fixture
 def lxe_calibration_file():
@@ -17,6 +21,8 @@ def lxe_calibration_file():
 
 
 def test_laser_energy_positioner(monkeypatch, lxe_calibration_file):
+    logger.debug('test_laser_energy_positioner')
+
     class MyLaserEnergyPositioner(LaserEnergyPositioner):
         motor = Cpt(SoftPositioner)
 
@@ -88,6 +94,7 @@ def lxt(monkeypatch):
 
 
 def test_laser_timing_motion(lxt):
+    logger.debug('test_laser_timing_motion')
     # A basic dependency sanity check...
     np.testing.assert_allclose(convert_unit(1, 's', 'ns'), 1e9)
 
@@ -129,6 +136,7 @@ def test_laser_timing_motion(lxt):
 
 
 def test_laser_timing_offset(lxt):
+    logger.debug('test_laser_timing_offset')
     print('Dial position is', lxt.position)
     # lxt.limits = (1e-10, 1e-3)
     initial_limits = lxt.limits
@@ -148,6 +156,7 @@ def test_laser_timing_offset(lxt):
 
 
 def test_laser_energy_timing_no_egu():
+    logger.debug('test_laser_energy_timing_no_egu')
     with pytest.raises(ValueError):
         LaserTiming('', egu='foobar', name='lxt')
 
@@ -173,6 +182,8 @@ def lxt_ttc(monkeypatch):
 
 
 def test_laser_timing_compensation(lxt_ttc):
+    logger.debug('test_laser_timing_compensation')
+
     pos = 1.0e-6
     lxt_ttc.move(pos).wait(timeout=2)
 
