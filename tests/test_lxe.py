@@ -6,6 +6,7 @@ from conftest import MODULE_PATH
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
 from ophyd.sim import make_fake_device
+from ophyd.status import StatusTimeoutError
 from ophyd.status import wait as wait_status
 
 from pcdsdevices.lxe import (LaserEnergyPlotContext, LaserEnergyPositioner,
@@ -93,6 +94,19 @@ def lxt(monkeypatch):
     return lxt
 
 
+def test_lasertiming_dmov_pass(lxt):
+    logger.debug('test_lasertiming_dmov')
+    lxt.mv(1e-6, wait=True, timeout=1)
+
+
+def test_lasertiming_dmov_fail():
+    logger.debug('test_lasertiming_dmov_fail')
+    FakeLaserTiming = make_fake_device(LaserTiming)
+    lxt = FakeLaserTiming('FAKE:VIT', name='fstiming')
+    with pytest.raises(StatusTimeoutError):
+        lxt.mv(1e-6, wait=True, timeout=1)
+
+
 def test_laser_timing_motion(lxt):
     logger.debug('test_laser_timing_motion')
     # A basic dependency sanity check...
@@ -135,6 +149,38 @@ def test_laser_timing_motion(lxt):
     assert 'lxt_setpoint' in lxt.read()
 
 
+def test_laser_timing_delay(lxt):
+    logger.debug('test_laser_timing_delay')
+    assert lxt.wm() == 0
+    assert lxt._fs_tgt_time.get() == -0
+    lxt.mv(1e-6)
+    assert lxt.wm() == 1e-6
+    assert lxt._fs_tgt_time.get() == pytest.approx(-1000)
+    lxt.mv(-5e-6)
+    assert lxt.wm() == -5e-6
+    assert lxt._fs_tgt_time.get() == pytest.approx(5000)
+
+
+def test_laser_timing_limits(lxt):
+    logger.debug('test_laser_timing_limits')
+    assert lxt.limits == (-10e-6, 10e-6)
+
+    with pytest.raises(ValueError):
+        lxt.mv(11e-6)
+    with pytest.raises(ValueError):
+        lxt.mv(-11e-6)
+
+    with pytest.raises(TypeError):
+        lxt.limits = 1
+    lxt.limits = (-1e-9, 10e-9)
+
+    with pytest.raises(ValueError):
+        lxt.mv(-1.1e-9)
+    with pytest.raises(ValueError):
+        lxt.mv(11e-9)
+    lxt.mv(1e-9)
+
+
 def test_laser_timing_offset(lxt):
     logger.debug('test_laser_timing_offset')
     print('Dial position is', lxt.position)
@@ -159,6 +205,24 @@ def test_laser_energy_timing_no_egu():
     logger.debug('test_laser_energy_timing_no_egu')
     with pytest.raises(ValueError):
         LaserTiming('', egu='foobar', name='lxt')
+
+
+def test_laser_timing_notepad(lxt):
+    logger.debug('test_laser_timing_notepad')
+    assert lxt.notepad_setpoint.get() == 0
+    assert lxt.notepad_readback.get() == 0
+
+    lxt.mv(5e-6)
+    assert lxt.notepad_setpoint.get() == 5e-6
+    assert lxt.notepad_readback.get() == 0
+
+    def complete_move(*args, **kwargs):
+        lxt.done.put(0)
+        lxt.done.put(1)
+    lxt._fs_tgt_time.subscribe(complete_move, run=False)
+    lxt.mv(5e-6)
+    assert lxt.notepad_setpoint.get() == 5e-6
+    assert lxt.notepad_readback.get() == 5e-6
 
 
 @pytest.fixture
@@ -219,3 +283,11 @@ def test_laser_timing_compensation(lxt_ttc):
          for i in range(len(mm_to_seconds_values))],
         mm_to_seconds_values,
     )
+
+
+@pytest.mark.timeout(5)
+def test_lxe_disconnected():
+    logger.debug('test_lxe_disconnected')
+    LaserTiming('TST', name='tst')
+    LaserEnergyPositioner('TST2', name='tst2')
+    LaserTimingCompensation('TST3', name='tst3')
