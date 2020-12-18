@@ -47,6 +47,7 @@ def test_laser_energy_positioner(monkeypatch, lxe_calibration_file):
 
 
 def wrap_pv_positioner_move(monkeypatch, pv_positioner):
+    """Monkeypatch move method on PV positioner to allow testing."""
     if getattr(pv_positioner.move, '_wrapped', False):
         return
 
@@ -66,6 +67,7 @@ def wrap_pv_positioner_move(monkeypatch, pv_positioner):
 
 
 def wrap_motor_move(monkeypatch, positioner):
+    """Monkeypatch move method on motor to allow testing."""
     if getattr(positioner.move, '_wrapped', False):
         return
 
@@ -86,7 +88,7 @@ def wrap_motor_move(monkeypatch, positioner):
 
 @pytest.fixture
 def lxt(monkeypatch):
-    """LaserTiming pseudopositioner device instance"""
+    """LaserTiming pseudopositioner device instance for testing."""
     lxt = make_fake_device(LaserTiming)('prefix', name='lxt')
     lxt._fs_tgt_time.sim_set_limits(lxt.limits)
     lxt._fs_tgt_time.sim_put(0)
@@ -96,6 +98,7 @@ def lxt(monkeypatch):
 
 def test_lasertiming_dmov_pass(lxt):
     logger.debug('test_lasertiming_dmov')
+    # Ensure the wrapper and pv_positioner done checking are working
     lxt.mv(1e-6, wait=True, timeout=1)
 
 
@@ -103,6 +106,7 @@ def test_lasertiming_dmov_fail():
     logger.debug('test_lasertiming_dmov_fail')
     FakeLaserTiming = make_fake_device(LaserTiming)
     lxt = FakeLaserTiming('FAKE:VIT', name='fstiming')
+    # The move should timeout if the DMOV signal is never put to
     with pytest.raises(StatusTimeoutError):
         lxt.mv(1e-6, wait=True, timeout=1)
 
@@ -150,6 +154,13 @@ def test_laser_timing_motion(lxt):
 
 
 def test_laser_timing_delay(lxt):
+    """
+    Check basic moves are getting to the fs_tgt_time signal.
+
+    That signal's value is off by 10e9 for the ns to s conversion
+    and negative due to the convention that positive lxt means earlier laser.
+    """
+
     logger.debug('test_laser_timing_delay')
     assert lxt.wm() == 0
     assert lxt._fs_tgt_time.get() == -0
@@ -201,8 +212,9 @@ def test_laser_timing_offset(lxt):
         )
 
 
-def test_laser_energy_timing_no_egu():
-    logger.debug('test_laser_energy_timing_no_egu')
+def test_laser_timing_no_egu():
+    logger.debug('test_laser_timing_no_egu')
+    # Should raise ValueError if egu is unrecognized
     with pytest.raises(ValueError):
         LaserTiming('', egu='foobar', name='lxt')
 
@@ -227,7 +239,7 @@ def test_laser_timing_notepad(lxt):
 
 @pytest.fixture
 def lxt_ttc(monkeypatch):
-    """LaserTimingCompensation pseudopositioner device instance"""
+    """LaserTimingCompensation pseudopositioner device instance for testing."""
     lxt_ttc = make_fake_device(LaserTimingCompensation)(
         '',
         delay_prefix='DELAY:',
