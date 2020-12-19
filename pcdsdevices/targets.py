@@ -5,15 +5,13 @@ import logging
 import numpy as np
 
 from ophyd.device import Device
-from ophyd import Component as Cpt
-from ophyd import FormattedComponent as FCpt
 import matplotlib.pyplot as plt
 from itertools import chain
 import json
 import jsonschema
 import yaml
 
-from pcdsdevices.epics_motor import _GetMotorClass, Newport
+from pcdsdevices.epics_motor import _GetMotorClass
 from .interface import tweak_base
 
 logger = logging.getLogger(__name__)
@@ -445,7 +443,7 @@ class XYGridStage(XYTargetGrid):
         Returns
         -------
         samples : list
-            List of string of all the sample names available.
+            List of strings of all the sample names available.
         """
         with open(path) as sample_file:
             try:
@@ -545,14 +543,13 @@ class XYGridStage(XYTargetGrid):
         coord : list
             List of all coordinate points for samples on the grid.
         """
-        bottom_left, top_left, top_right = self.get_presets()
-        if all([bottom_left, top_left, top_right]) is None:
-            msg = 'Could not get presets, make sure you set presets'
-            logger.error(msg)
-            raise ValueError(msg)
+        top_left, top_right, bottom_right, bottom_left = self.get_presets()
+        if all([top_left, top_right, bottom_right, bottom_left]) is None:
+            raise ValueError('Could not get presets, make sure you set presets'
+                             ' first using the `set_presets` method.')
 
         # leaving these guys here for reference only for now
-        # # distance from bottom_left to top_left
+        # distance from bottom_left to top_left
         # height = np.sqrt(np.power((top_left[0] - bottom_left[0]), 2)
         #                  + np.power((top_left[1] - bottom_left[1]), 2))
         # # distance from top_left to top_right
