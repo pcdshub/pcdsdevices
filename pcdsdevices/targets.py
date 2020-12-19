@@ -5,10 +5,15 @@ import logging
 import numpy as np
 
 from ophyd.device import Device
+from ophyd import Component as Cpt
+from ophyd import FormattedComponent as FCpt
 import matplotlib.pyplot as plt
 from itertools import chain
+import json
+import jsonschema
+import yaml
 
-from pcdsdevices.epics_motor import _GetMotorClass
+from pcdsdevices.epics_motor import _GetMotorClass, Newport
 from .interface import tweak_base
 
 logger = logging.getLogger(__name__)
@@ -281,53 +286,248 @@ class XYTargetGrid():
 
     def set_presets(self):
         """
-        Save three preset coordinate points.
+        Save four preset coordinate points.
+
+        These are the coordinates from the four corners of the
+        wanted/defined grid. The points for these coordinates shuld be taken
+        from the middle of the four targets that are encasing the grid.
+
+        The user will be asked to define the coordinates using the `tweak`
+        method.
+
+        Examples
+        --------
+        # Press q when ready to save the coordinates
+        >>> xy.set_presets()
+        Setting coordinates for (0, 0) top left corner:
+
+        0.0000, : 0.0000, scale: 0.1
+
+        Setting coordinates for (0, M) top right corner:
+
+        10.0000, : 0.0000, scale: 0.1
+
+        Setting coordinates for (N, M) bottom right corner:
+
+        10.0000, : -10.0000, scale: 0.1
+
+        Setting coordinates for (N, 0) bottom left corner:
+
+        -0.0000, : -10.0000, scale: 0.1
         """
-        if not (self.y.presets.has_presets and self.x.presets.has_presets):
+        if not hasattr(self.y, 'presets') or not hasattr(self.y, 'presets'):
             raise AttributeError('No folder setup for motor presets. '
                                  'Please add a location to save the positions '
                                  'to, using setup_preset_paths from '
                                  'pcdsdevices.interface to save the position.')
 
-        print('Setting coordinates for (N, 0) bottom left corner')
+        print('\nSetting coordinates for (0, 0) top left corner: \n')
         self.tweak()
         pos = [self.x.position, self.y.position]
-        print('Setting coordinates for (0, 0) top left corner')
+        print('\nSetting coordinates for (0, M) top right corner: \n')
         self.tweak()
         pos.extend([self.x.position, self.y.position])
-        print('Setting coordinates for (0, M) top right corner')
+        print('\nSetting coordinates for (N, M) bottom right corner: \n')
+        self.tweak()
+        pos.extend([self.x.position, self.y.position])
+        print('\nSetting coordinates for (N, 0) bottom left corner: \n')
         self.tweak()
         pos.extend([self.x.position, self.y.position])
         # create presets
-        self.x.presets.add_hutch(value=pos[0], name="x_bottom_left")
-        self.x.presets.add_hutch(value=pos[2], name="x_top_left")
-        self.x.presets.add_hutch(value=pos[4], name="x_top_right")
-        self.y.presets.add_hutch(value=pos[1], name="y_bottom_left")
-        self.y.presets.add_hutch(value=pos[3], name="y_top_left")
-        self.y.presets.add_hutch(value=pos[5], name="y_top_right")
+        # corner (0, 0)
+        self.x.presets.add_hutch(value=pos[0], name="x_top_left")
+        self.y.presets.add_hutch(value=pos[1], name="y_top_left")
+        # corner (0, M)
+        self.x.presets.add_hutch(value=pos[2], name="x_top_right")
+        self.y.presets.add_hutch(value=pos[3], name="y_top_right")
+        # corner (M, N)
+        self.x.presets.add_hutch(value=pos[4], name="x_bottom_right")
+        self.y.presets.add_hutch(value=pos[5], name="y_bottom_right")
+        # corner (N, 0)
+        self.x.presets.add_hutch(value=pos[6], name="x_bottom_left")
+        self.y.presets.add_hutch(value=pos[7], name="y_bottom_left")
 
     def get_presets(self):
         """
         Get the saved presets if any.
 
+        Examples
+        --------
+        >>> xy.get_presets()
+        ((0, 0),
+        (9.99999999999998, 0),
+        (9.99999999999998, -9.99999999999998),
+        (-6.38378239159465e-16, -9.99999999999998))
+
         Returns
         -------
-        pos : tuple
-            Three coordinate positions - bottom_left, top_left, top_right
+        coord : tuple
+            Four coordinate positions.
+            (top_left, top_right, bottom_right, bottom_left)
         """
         try:
-            pos = [self.x.presets.positions.x_bottom_left.pos,
-                   self.y.presets.positions.y_bottom_left.pos,
-                   self.x.presets.positions.x_top_left.pos,
-                   self.y.presets.positions.y_top_left.pos,
-                   self.x.presets.positions.x_top_right.pos,
-                   self.y.presets.positions.y_top_right.pos]
-            bottom_left = (pos[0], pos[1])
-            top_left = (pos[2], pos[3])
-            top_right = (pos[4], pos[5])
-            return bottom_left, top_left, top_right
+            # corner (0, 0)
+            top_left = (self.x.presets.positions.x_top_left.pos,
+                        self.y.presets.positions.y_top_left.pos)
+            # corner (0, M)
+            top_right = (self.x.presets.positions.x_top_right.pos,
+                         self.y.presets.positions.y_top_right.pos)
+            # corner (M, N)
+            bottom_right = (self.x.presets.positions.x_bottom_right.pos,
+                            self.y.presets.positions.y_bottom_right.pos)
+            # corner (N, 0)
+            bottom_left = (self.x.presets.positions.x_bottom_left.pos,
+                           self.y.presets.positions.y_bottom_left.pos)
+            return top_left, top_right, bottom_right, bottom_left
         except Exception:
             logger.warning('Could not get presets, try to set_presets.')
+
+
+class XYGridStage(XYTargetGrid):
+    """
+    Class that helps support multiple samples on a mount for an XY Grid setup.
+
+    We could have multiple samples mounted in a setup. This class helps
+    figuring out the samples' patterns and maps points accordingly, and saves
+    those records in a file.
+
+    Parameters
+    ----------
+    name
+    x_prefix : str
+        Epics PV prefix for x motor.
+    y_prefix : str
+        Epics PV prefix for y motor.
+    x_spacing : float
+        Spacing between targets of the sample on the x axis in mm.
+    y_spacing : float
+        Spacing between targets of the sample on y the axis in mm.
+    path : str
+        Path to an `yaml` file where to save the grid patterns for
+        different samples.
+    """
+    # # XPP:USR:PRT:MMN:06
+    # x = FCpt(Newport, '{self._x_prefix}', doc='X axis', name='x_axis')
+    # # XPP:USR:PRT:MMN:07
+    # y = FCpt(Newport, '{self._y_prefix}', doc='Y axis', name='y_axis')
+
+    # grid = FCpt(XYTargetGrid, x='{self._x_prefix}', y='{self._y_prefix}',
+    #             name='{self._name}', x_spacing='{self._x_spacing}',
+    #             y_scaping='{self._y_spacing}')
+
+    sample_schema = json.loads("""
+    {
+        "type": "object",
+        "properties": {
+            "x_points": {"type": "array", "items": {"type": "number"}},
+            "y_points": {"type": "array", "items": {"type": "number"}}
+        },
+        "required": ["x_points", "y_points"],
+        "additionalProperties": false
+    }
+    """)
+
+    def __init__(self, name, x_prefix, y_prefix, x_spacing, y_spacing, path):
+        self._x_prefix = x_prefix
+        self._y_prefix = y_prefix
+        self._x_spacing = x_spacing
+        self._y_spacing = y_spacing
+        self._name = name
+        self._path = path
+        # TODO: assert here for a valid path, also valid yaml file
+        super().__init__(name=name, x=x_prefix, y=y_prefix,
+                         x_spacing=x_spacing, y_spacing=y_spacing)
+
+    def mapped_samples(self, path=None):
+        """
+        Get all the available sample grids names that are currently saved.
+
+        Returns
+        -------
+        samples : list
+            List of string of all the sample names available.
+        """
+        with open(path) as sample_file:
+            try:
+                data = yaml.safe_load(sample_file)
+            except yaml.YAMLError as err:
+                logger.error('Error when loading the samples yaml file: %s',
+                             err)
+        return list(data.keys())
+
+    def get_grid(self, sample_name, path=None):
+        """
+        Get the mapped grid of a sample.
+
+        Parameters
+        ----------
+        sample_name : str
+            The sample name that we want the grid for. To see current
+            avaialble samples call `mapped_grids`
+        path : str, optional
+            Path to the `.yml` file. Defaults to the path defined when
+            creating this object.
+
+        Returns
+        -------
+        grid : tuple
+            List of all the mapped points on the grid for the sample.
+            `(x_points, y_points)`
+        """
+        path = path or self._path
+        data = None
+        with open(path) as sample_file:
+            try:
+                data = yaml.safe_load(sample_file)
+            except yaml.YAMLError as err:
+                logger.error('Error when loading the samples yaml file: %s',
+                             err)
+        if data is None:
+            logger.warning('The file is empy, not sample grid yet. '
+                           'Please use `save_presets` to insert grids '
+                           'in the file.')
+        try:
+            return data[sample_name]['x_points'], data[sample_name]['y_points']
+        except KeyError:
+            logger.error('The sample %s might not have x and y points devined '
+                         'in the file.', sample_name)
+
+    def save_grid(self, sample_name, x_points, y_points, path=None):
+        """
+        Save a grid of mapped points for a sample.
+
+        Parameters
+        ----------
+        sample_name : int
+            A name to identify the sample grid, should be snake_case style.
+        x_points : list
+            List of all the mapped x points on the grid.
+        y_points : list
+            List of all the mapped y points on the grid.
+        path : str, optional
+            Path to the `.yml` file. Defaults to the path defined when
+            creating this object.
+
+        Examples
+        --------
+        >>> x_points = [1, 2, 3, 4, 5]
+        >>> y_points = [1, 2, 3, 4, 5]
+        >>> save_grid('sample_1', x_points, y_points)
+        """
+        path = path or self._path
+        data = {sample_name: {"x_points": x_points, "y_points": y_points}}
+        # validate the data
+        try:
+            temp_data = json.loads(json.dumps(data[sample_name]))
+            jsonschema.validate(temp_data, self.sample_schema)
+        except jsonschema.exceptions.ValidationError as err:
+            logger.warning('Invalid input: %s', err)
+        # override the existing sample grids or append other grids
+        with open(path) as sample_file:
+            yaml_dict = yaml.safe_load(sample_file) or {}
+            yaml_dict.update(data)
+        with open(path, 'w') as sample_file:
+            yaml.safe_dump(yaml_dict, sample_file)
 
     def map_points(self, snake_like=True, show_grid=False):
         """
@@ -419,9 +619,15 @@ class XYTargetGrid():
         pts = None
         if not np.isclose(x_skewed, 0) or not np.isclose(y_skewed, 0):
             # needs to be adjusted for skewd
-            sk = x_skewed/height
-            affine = np.array([[1, 0], [-sk, 1]])
+            sk = x_skewed / height
+            sky = y_skewed / width
+            print(f'x_skewed: {x_skewed}')
+            print(f'y_skewed: {y_skewed}')
+            affine = np.array([[1, sky], [-sk, 1]])
+            # affine = np.array([[1, 0], [-sk, 1]])
+            # x values are skewed
             # pts = np.einsum('ij, jk->ik', affine,
+            # y values are skewed
             pts = np.einsum('ij, ik->jk', affine,
                             np.array([xx.flatten(), yy.flatten()]))
         xx = pts[0, :]
@@ -454,7 +660,7 @@ class XYTargetGrid():
         Parameters
         ----------
         points : array
-            Array containing the grid points for an axes.
+            Array containing the grid points for an axis.
 
         Returns
         -------
