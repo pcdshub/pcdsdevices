@@ -682,7 +682,7 @@ class XYGridStage(XYTargetGrid):
                                       bottom_right=bottom_right,
                                       bottom_left=bottom_left)
         # return the original xx and yy if no transformations applied
-        if not (shear and projective):
+        if not shear and not projective:
             xx, yy = xx_origin, yy_origin
 
         if show_grid:
