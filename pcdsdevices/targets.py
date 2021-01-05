@@ -619,17 +619,25 @@ class XYGridStage(XYTargetGrid):
         with open(path, 'w') as sample_file:
             yaml.safe_dump(None, sample_file)
 
-    def map_points(self, snake_like=True, show_grid=False):
+    def map_points(self, snake_like=True, show_grid=False, shear=True,
+                   projective=False):
         """
         Map all the sample positions in 2-d coordinates.
 
         Parameters
         ----------
-        snake_like : bool
+        snake_like : bool, optional
             Indicates if the points should be mapped in a snake-like pattern.
-        show_grid : bool
+            Defaults to `True`.
+        show_grid : bool, optional
             Indicates if the grid of mapped points should be displayed.
-
+            Defaults to `False`
+        shear : bool, optional
+            Indicates if shear transformation should be applied.
+            Defaults to `True`.
+        projective : bool, optional
+            Indicates if projective transformation should be applied.
+            Defaults to `False`.
         Returns
         -------
         xx, yy : tuple
@@ -658,12 +666,24 @@ class XYGridStage(XYTargetGrid):
             top_left[1], perfect_bl[1], num=y_point_num)
 
         # The meshgrid function returns two 2-dimensional arrays
-        xx, yy = np.meshgrid(x_grid_points, y_grid_points)
+        xx_origin, yy_origin = np.meshgrid(x_grid_points, y_grid_points)
 
-        # apply shear transformation
-        xx, yy = self.shear_transform(xx=xx, yy=yy, top_left=top_left,
+        # # apply shear transformation
+        if shear:
+            xx, yy = self.shear_transform(xx=xx_origin, yy=yy_origin,
+                                          top_left=top_left,
+                                          top_right=top_right,
+                                          bottom_left=bottom_left)
+        # apply projective transformation
+        if projective:
+            self.projective_transform(xx=xx_origin, yy=yy_origin,
+                                      top_left=top_left,
                                       top_right=top_right,
+                                      bottom_right=bottom_right,
                                       bottom_left=bottom_left)
+        # return the original xx and yy if no transformations applied
+        if not (shear and projective):
+            xx, yy = xx_origin, yy_origin
 
         if show_grid:
             plt.plot(xx, yy, marker='.', color='k', linestyle='none')
@@ -725,8 +745,73 @@ class XYGridStage(XYTargetGrid):
 
     def projective_transform(self, xx, yy, top_left, top_right, bottom_right,
                              bottom_left):
-        """TODO: to be added here..."""
-        pass
+        """
+        Find the projective transformation of the sample grid.
+
+        Parameters
+        ----------
+        xx : array
+            Array with 'perfectly' mapped x coordinate points.
+        yy : array
+            Array with 'perfectly' mapped y coordinate points.
+        top_left : tuple
+            (x, y) coordinates of the top left corner
+        top_right : tuple
+            (x, y) coordinates of the top right corner
+        bottom_right : tuple
+            (x, y) coordinates of the bottom right corner
+        bottom_left : tuple
+            (x, y) coordinates of the bottom left corner
+
+        Returns
+        -------
+        points : tuple
+            xx, yy arrays of mapped points after projective transformation.
+        """
+        perfect_plane = [(0.0, 0.0),
+                         (self.dimensions[1], 0.0),
+                         (self.dimensions[1], -self.dimensions[1]),
+                         (0.0, -self.dimensions[0])]
+
+        new_plane = [(0.0, 0.0),
+                     (top_right[0], top_right[1]),
+                     (bottom_right[0], bottom_right[1]),
+                     (bottom_left[0], bottom_left[1])]
+
+        grid = []
+        for p1, p2 in zip(perfect_plane, new_plane):
+            grid.append([p1[0], p1[1], 1, 0, 0, 0, -p2[0]*p1[0], -p2[0]*p1[1]])
+            grid.append([0, 0, 0, p1[0], p1[1], 1, -p2[1]*p1[0], -p2[1]*p1[1]])
+
+        grid_matrix = np.matrix(grid, dtype=np.float64)
+        new_plane_matrix = np.array(new_plane).reshape(8)
+        coefficients = np.dot(np.linalg.inv(grid_matrix.T * grid_matrix)
+                              * grid_matrix.T, new_plane_matrix)
+        coeff = np.array(coefficients).reshape(8)
+
+        # The homography transformation coefficients
+        # a b c
+        # d e f
+        # g h 1
+        a, b, c = coeff[0], coeff[1], coeff[2]
+        d, e, f = coeff[3], coeff[4], coeff[5]
+        g, h = coeff[6], coeff[7]
+
+        def x_formula(x, y):
+            # x = (ax + by + c) / (gx + hy + 1)
+            new_x = (a*x + b*y + c) / (g*x + h*y + 1)
+            return new_x
+
+        def y_formula(x, y):
+            # y = (dx + ey + f) / (gx + hy + 1)
+            new_y = (d*x + e*y + f) / (g*x + h*y + 1)
+            return new_y
+
+        new_xx = np.array([x_formula(xx[i], yy[i])
+                          for i in range(xx.shape[0])])
+        new_yy = np.array([y_formula(xx[i], yy[i])
+                           for i in range(xx.shape[0])])
+        return new_xx, new_yy
 
     def snake_grid_list(self, points):
         """
