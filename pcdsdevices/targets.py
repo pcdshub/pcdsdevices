@@ -3,6 +3,7 @@ Module for common target stage stack configurations.
 """
 import logging
 import numpy as np
+import os
 
 from ophyd.device import Device
 import matplotlib.pyplot as plt
@@ -365,17 +366,19 @@ class XYTargetGrid():
         """
         try:
             # corner (0, 0)
-            top_left = (self.x.presets.positions.x_top_left.pos,
-                        self.y.presets.positions.y_top_left.pos)
+            top_left = (round(self.x.presets.positions.x_top_left.pos, 3),
+                        round(self.y.presets.positions.y_top_left.pos, 3))
             # corner (0, M)
-            top_right = (self.x.presets.positions.x_top_right.pos,
-                         self.y.presets.positions.y_top_right.pos)
+            top_right = (round(self.x.presets.positions.x_top_right.pos, 3),
+                         round(self.y.presets.positions.y_top_right.pos, 3))
             # corner (M, N)
-            bottom_right = (self.x.presets.positions.x_bottom_right.pos,
-                            self.y.presets.positions.y_bottom_right.pos)
+            bottom_right = (
+                round(self.x.presets.positions.x_bottom_right.pos, 3),
+                round(self.y.presets.positions.y_bottom_right.pos, 3))
             # corner (N, 0)
-            bottom_left = (self.x.presets.positions.x_bottom_left.pos,
-                           self.y.presets.positions.y_bottom_left.pos)
+            bottom_left = (
+                round(self.x.presets.positions.x_bottom_left.pos, 3),
+                round(self.y.presets.positions.y_bottom_left.pos, 3))
             return top_left, top_right, bottom_right, bottom_left
         except Exception:
             logger.warning('Could not get presets, try to set_presets.')
@@ -425,16 +428,86 @@ class XYGridStage(XYTargetGrid):
     }
     """)
 
-    def __init__(self, name, x_prefix, y_prefix, x_spacing, y_spacing, path):
+    def __init__(self, name, x_prefix, y_prefix, path, x_spacing=0.25,
+                 y_spacing=0.25, height=25, width=25):
         self._x_prefix = x_prefix
         self._y_prefix = y_prefix
         self._x_spacing = x_spacing
         self._y_spacing = y_spacing
         self._name = name
         self._path = path
+        self._height = height
+        self._width = width
         # TODO: assert here for a valid path, also valid yaml file
+        assert os.path.exists(path)
         super().__init__(name=name, x=x_prefix, y=y_prefix,
                          x_spacing=x_spacing, y_spacing=y_spacing)
+
+    @property
+    def spacing(self):
+        """
+        Get the x and y spacing of the grid.
+
+        Returns
+        -------
+        x_spacing, y_spacing : tuple
+        """
+        return self._x_spacing, self._y_spacing
+
+    @spacing.setter
+    def spacing(self, spacing):
+        """
+        Set the x and y spacing of the grid in mm.
+
+        Parameters
+        ----------
+        spacing : tuple
+            Spacing from center target to next center target of the grid on x
+            axis and y axis. E.g.: `(x_spacing, y_spacing)`
+
+        Examples
+        --------
+        >>> xy_grid.spacing = 0.25, 0.25
+        """
+        try:
+            self._x_spacing, self._y_spacing = spacing
+        except ValueError:
+            logger.error("Please pass an iterable with two items for x spacing"
+                         " and y spacing respectively.")
+
+    @property
+    def dimensions(self):
+        """
+        Get the current dimmensions of the sample grid in mm.
+
+        Returns
+        -------
+        height, width : tuple
+            The height is the dimension along the y axis,
+            and width along the x axis.
+        """
+        return self._height, self._width
+
+    @dimensions.setter
+    def dimensions(self, dimensions):
+        """
+        Set the dimensions of height and width in mm.
+
+        Parameters
+        ----------
+        dimensions : tuple
+            The height in mm along y axis and width along x axis.
+            E.g.: `(x_dimensions, y_dimensions)`
+
+        Examples
+        --------
+        >>> xy_grid.dimensions = 25, 25
+        """
+        try:
+            self._height, self._width = dimensions
+        except ValueError:
+            logger.error("Please pass an iterable with two items for height"
+                         " and width respectively.")
 
     def mapped_samples(self, path=None):
         """
@@ -445,15 +518,19 @@ class XYGridStage(XYTargetGrid):
         samples : list
             List of strings of all the sample names available.
         """
+        path = path or self._path
         with open(path) as sample_file:
             try:
                 data = yaml.safe_load(sample_file)
+                if not data:
+                    logger.info('The file is empty, no samples saved yet.')
+                    return
+                return list(data.keys())
             except yaml.YAMLError as err:
                 logger.error('Error when loading the samples yaml file: %s',
                              err)
-        return list(data.keys())
 
-    def get_grid(self, sample_name, path=None):
+    def get_sample(self, sample_name, path=None):
         """
         Get the mapped grid of a sample.
 
@@ -481,12 +558,12 @@ class XYGridStage(XYTargetGrid):
                 logger.error('Error when loading the samples yaml file: %s',
                              err)
         if data is None:
-            logger.warning('The file is empy, not sample grid yet. '
+            logger.warning('The file is empty, not sample grid yet. '
                            'Please use `save_presets` to insert grids '
                            'in the file.')
         try:
             return data[sample_name]['x_points'], data[sample_name]['y_points']
-        except KeyError:
+        except Exception:
             logger.error('The sample %s might not have x and y points devined '
                          'in the file.', sample_name)
 
@@ -527,6 +604,21 @@ class XYGridStage(XYTargetGrid):
         with open(path, 'w') as sample_file:
             yaml.safe_dump(yaml_dict, sample_file)
 
+    def remove_all_samples(self, path=None):
+        """
+        Empty the samples file.
+
+        All the grid samples will be deleted.
+
+        Parameters
+        ----------
+        path : string, optional
+            Path of .yml file with samples.
+        """
+        path = path or self._path
+        with open(path, 'w') as sample_file:
+            yaml.safe_dump(None, sample_file)
+
     def map_points(self, snake_like=True, show_grid=False):
         """
         Map all the sample positions in 2-d coordinates.
@@ -540,98 +632,38 @@ class XYGridStage(XYTargetGrid):
 
         Returns
         -------
-        coord : list
-            List of all coordinate points for samples on the grid.
+        xx, yy : tuple
+            xx and yy list of all coordinate points for samples on the grid.
         """
         top_left, top_right, bottom_right, bottom_left = self.get_presets()
         if all([top_left, top_right, bottom_right, bottom_left]) is None:
             raise ValueError('Could not get presets, make sure you set presets'
                              ' first using the `set_presets` method.')
 
-        # leaving these guys here for reference only for now
-        # distance from bottom_left to top_left
-        # height = np.sqrt(np.power((top_left[0] - bottom_left[0]), 2)
-        #                  + np.power((top_left[1] - bottom_left[1]), 2))
-        # # distance from top_left to top_right
-        # width = np.sqrt(np.power((top_right[0] - top_left[0]), 2)
-        #                 + np.power((top_right[1] - top_left[1]), 2))
+        height, width = self.dimensions
+        x_space, y_space = self.spacing
+        # approximate how many dots there will be in a given distance
+        x_point_num = int(np.abs(np.round(width / x_space))) + 1
+        y_point_num = int(np.abs(np.round(height / y_space))) + 1
 
-        x_grid_points = np.arange(top_left[0], top_right[0], self.x_spacing)
-        y_grid_points = np.arange(bottom_left[1], top_left[1], self.y_spacing)
-
-        # The meshgrid function returns
-        # two 2-dimensional arrays
-        xx, yy = np.meshgrid(x_grid_points, y_grid_points,
-                             sparse=False, indexing='xy')
-
-        if show_grid:
-            plt.plot(xx, yy, marker='.', color='k', linestyle='none')
-            plt.show()
-
-        # flat out the arrays of points
-        if not snake_like:
-            flat_xx = list(chain.from_iterable(xx))
-            flat_yy = list(chain.from_iterable(yy))
-            return flat_xx, flat_yy
-
-        xx = self.snake_grid_list(xx)
-        yy = self.snake_grid_list(yy)
-        return xx, yy
-
-    def map_skewed(self, height=2500, width=2500, snake_like=True,
-                   show_grid=False):
-        """
-        Temporary function - just for practice ... will be eventually removed
-        """
-        bottom_left, top_left, top_right = self.get_presets()
-        if all([bottom_left, top_left, top_right]) is None:
-            msg = 'Could not get presets, make sure you set presets'
-            logger.error(msg)
-            raise ValueError(msg)
-
-        # get the original meshgrid
         # starting at 0, 0 top left corner, find the other 2 points if known
-        # distance
+        # distance such that we create a perfectly rectilinear grid
         start_x, start_y = top_left[0], top_left[1]
-        original_bl = [start_x, start_y - height]
-        original_tr = [start_x + width, start_y]
+        perfect_bl = [start_x, start_y - height]
+        perfect_tr = [start_x + width, start_y]
 
-        x_grid_points = np.arange(top_left[0], original_tr[0], self.x_spacing)
-        y_grid_points = np.arange(original_bl[1], top_left[1], self.y_spacing)
+        x_grid_points = np.linspace(
+            top_left[0], perfect_tr[0], num=x_point_num)
+        y_grid_points = np.linspace(
+            top_left[1], perfect_bl[1], num=y_point_num)
 
-        # The meshgrid function returns
-        # two 2-dimensional arrays
-        xx, yy = np.meshgrid(x_grid_points, y_grid_points,
-                             sparse=False, indexing='xy')
-        original_shape = xx.shape
+        # The meshgrid function returns two 2-dimensional arrays
+        xx, yy = np.meshgrid(x_grid_points, y_grid_points)
 
-        # this is a silly way to determine the points....
-        # just for practice..
-        # skewd when:
-        # if buttom_left[0] != to_left[0]
-        # if top_right[y] != top_left[1]
-        # how much is skewed:
-        x_skewed = bottom_left[0] - top_left[0]
-        y_skewed = top_right[1] - top_left[1]
-        pts = None
-        if not np.isclose(x_skewed, 0) or not np.isclose(y_skewed, 0):
-            # needs to be adjusted for skewd
-            sk = x_skewed / height
-            sky = y_skewed / width
-            print(f'x_skewed: {x_skewed}')
-            print(f'y_skewed: {y_skewed}')
-            affine = np.array([[1, sky], [-sk, 1]])
-            # affine = np.array([[1, 0], [-sk, 1]])
-            # x values are skewed
-            # pts = np.einsum('ij, jk->ik', affine,
-            # y values are skewed
-            pts = np.einsum('ij, ik->jk', affine,
-                            np.array([xx.flatten(), yy.flatten()]))
-        xx = pts[0, :]
-        yy = pts[1, :]
-        # reshape these guys xx, yy into original shape
-        xx = xx.reshape(original_shape)
-        yy = yy.reshape(original_shape)
+        # apply shear transformation
+        xx, yy = self.shear_transform(xx=xx, yy=yy, top_left=top_left,
+                                      top_right=top_right,
+                                      bottom_left=bottom_left)
 
         if show_grid:
             plt.plot(xx, yy, marker='.', color='k', linestyle='none')
@@ -639,13 +671,62 @@ class XYGridStage(XYTargetGrid):
 
         # flat out the arrays of points
         if not snake_like:
-            flat_xx = list(chain.from_iterable(xx))
-            flat_yy = list(chain.from_iterable(yy))
+            flat_xx = list(chain.from_iterable(xx.tolist()))
+            flat_yy = list(chain.from_iterable(yy.tolist()))
             return flat_xx, flat_yy
 
         xx = self.snake_grid_list(xx)
         yy = self.snake_grid_list(yy)
         return xx, yy
+
+    def shear_transform(self, xx, yy, top_left, top_right, bottom_left):
+        """
+        Perform shear transformation.
+
+        Parameters
+        ----------
+        xx : array
+            Array with 'perfectly' mapped x coordinate points.
+        yy : array
+            Array with 'perfectly' mapped y coordinate points.
+        top_left : tuple
+            (x, y) coordinates of the top left corner
+        top_right : tuple
+            (x, y) coordinates of the top right corner
+        bottom_left : tuple
+            (x, y) coordinates of the bottom left corner
+
+        Returns
+        -------
+        points : tuple
+            xx, yy arrays of mapped points after shear transformation.
+        """
+        xx_shape = xx.shape
+        yy_shape = yy.shape
+
+        if (bottom_left[1] - top_left[1]) == 0:
+            x_factor = 0
+        else:
+            x_factor = np.arctan(
+                (bottom_left[0] - top_left[0])
+                / (bottom_left[1] - top_left[1]))
+        if (top_right[0] - top_left[0]) == 0:
+            y_factor = 0
+        else:
+            y_factor = (np.arctan(
+                (top_right[1] - top_left[1]) / (top_right[0] - top_left[0])))
+
+        shear_arr = (np.array([1.0, x_factor,
+                               y_factor, 1.0]).reshape(2, 2))
+        points = np.einsum('ij, jk', shear_arr, np.array(
+            [xx.flatten(), yy.flatten()]))
+
+        return points[0].reshape(xx_shape), points[1].reshape(yy_shape)
+
+    def projective_transform(self, xx, yy, top_left, top_right, bottom_right,
+                             bottom_left):
+        """TODO: to be added here..."""
+        pass
 
     def snake_grid_list(self, points):
         """
@@ -673,4 +754,7 @@ class XYGridStage(XYTargetGrid):
                 tt = t[::-1]
                 temp_points.append(tt)
         flat_points = list(chain.from_iterable(temp_points))
+        # convert the numpy.float64 to normal float to be able to easily
+        # save them in the yaml file
+        flat_points = [float(v) for v in flat_points]
         return flat_points
