@@ -648,6 +648,16 @@ class XYGridStage(XYTargetGrid):
             raise ValueError('Could not get presets, make sure you set presets'
                              ' first using the `set_presets` method.')
 
+        # leaving these guys here for reference only for now
+        # distance from bottom_left to top_left
+        # height = np.sqrt(np.power((top_left[0] - bottom_left[0]), 2)
+        #                  + np.power((top_left[1] - bottom_left[1]), 2))
+        # # distance from top_left to top_right
+        # width = np.sqrt(np.power((top_right[0] - top_left[0]), 2)
+        #                 + np.power((top_right[1] - top_left[1]), 2))
+        # height = abs(bottom_left[1] - top_left[1])
+        # width = abs(top_right[0] - top_left[0])
+
         height, width = self.dimensions
         x_space, y_space = self.spacing
         # approximate how many dots there will be in a given distance
@@ -676,11 +686,11 @@ class XYGridStage(XYTargetGrid):
                                           bottom_left=bottom_left)
         # apply projective transformation
         if projective:
-            self.projective_transform(xx=xx_origin, yy=yy_origin,
-                                      top_left=top_left,
-                                      top_right=top_right,
-                                      bottom_right=bottom_right,
-                                      bottom_left=bottom_left)
+            xx, yy = self.projective_transform(xx=xx_origin, yy=yy_origin,
+                                               top_left=top_left,
+                                               top_right=top_right,
+                                               bottom_right=bottom_right,
+                                               bottom_left=bottom_left)
         # return the original xx and yy if no transformations applied
         if not shear and not projective:
             xx, yy = xx_origin, yy_origin
