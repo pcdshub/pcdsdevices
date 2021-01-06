@@ -309,13 +309,14 @@ class AttBase(FltMvInterface, PVPositioner):
 
         states = '\n'.join(render_ascii_att(blade_states))
 
-        energy = (get_status_float(status_info, 'energy', 'value', precision=3)
-                  * 1e3)
+        energy = get_status_float(status_info, 'energy', 'value', precision=3)
         energy_3rd = get_status_float(status_info, 'energy_3rd', 'value',
                                       precision=3)
         trans = get_status_float(status_info, 'position')
         trans_3rd = get_status_float(status_info, 'readback_3rd', 'value')
 
+        if energy != 'N/A':
+            energy = energy * 1e3
         if energy_3rd != 'N/A':
             energy_3rd = energy_3rd * 1e3
             return f"""\
