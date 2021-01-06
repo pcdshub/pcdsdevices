@@ -19,7 +19,7 @@ from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
 from .signal import InternalSignal
 from .variety import set_metadata
-from .utils import get_status_value
+from .utils import get_status_value, get_status_float
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
@@ -309,21 +309,24 @@ class AttBase(FltMvInterface, PVPositioner):
 
         states = '\n'.join(render_ascii_att(blade_states))
 
-        energy = get_status_value(status_info, 'energy', 'value') * 1e3
-        energy_3rd = get_status_value(status_info, 'energy_3rd', 'value')
-        trans = get_status_value(status_info, 'position')
+        energy = (get_status_float(status_info, 'energy', 'value', precision=3)
+                  * 1e3)
+        energy_3rd = get_status_float(status_info, 'energy_3rd', 'value',
+                                      precision=3)
+        trans = get_status_float(status_info, 'position')
+        trans_3rd = get_status_float(status_info, 'readback_3rd', 'value')
 
         if energy_3rd != 'N/A':
             energy_3rd = energy_3rd * 1e3
             return f"""\
 {states}
-Transmission for 1st harmonic (E={energy:.3} keV): {trans:.4E}
-Transmission for 3rd harmonic (E={energy_3rd:.3} keV): {trans:.4E}
+Transmission for 1st harmonic (E={energy} keV): {trans}
+Transmission for 3rd harmonic (E={energy_3rd} keV): {trans_3rd}
 """
         else:
             return f"""\
 {states}
-Transmission for 1st harmonic (E={energy:.3} keV): {trans:.4E}
+Transmission for 1st harmonic (E={energy} keV): {trans}
 """
 
 
