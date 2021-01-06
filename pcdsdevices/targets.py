@@ -3,6 +3,7 @@ Module for common target stage stack configurations.
 """
 import logging
 import numpy as np
+from datetime import datetime
 
 from ophyd.device import Device
 import matplotlib.pyplot as plt
@@ -410,15 +411,23 @@ class XYGridStage(XYTargetGrid):
         Path to an `yaml` file where to save the grid patterns for
         different samples.
     """
+    # TODO: i don't really need this
     sample_schema = json.loads("""
     {
         "type": "object",
         "properties": {
-            "x_points": {"type": "array", "items": {"type": "number"}},
-            "y_points": {"type": "array", "items": {"type": "number"}}
+            "time_created": {"type": "string"},
+            "top_left": {"type": "array", "items": {"type": "number"}},
+            "top_rigt": {"type": "array", "items": {"type": "number"}},
+            "bottom_right": {"type": "array", "items": {"type": "number"}},
+            "bottom_left": {"type": "array", "items": {"type": "number"}},
+            "M": {"type": "number"},
+            "N": {"type": "number"},
+            "coefficients": {"type": "array"}
         },
-        "required": ["x_points", "y_points"],
-        "additionalProperties": false
+        "required": ["time_created", "top_left", "top_right", "bottom_right",
+        "bottom_left", "coefficients"],
+        "additionalProperties": true
     }
     """)
 
@@ -428,7 +437,11 @@ class XYGridStage(XYTargetGrid):
         self._n_points = n_points
         # TODO: assert here for a valid path, also valid yaml file
         # assert os.path.exists(path)
-        super().__init__(name=name, x=x_motor, y=y_motor)
+        # TODO: i don't need y and x spacing, because it is asserting as flaot
+        # in GridAxis - it will make me add them here
+        super().__init__(name=name, x=x_motor, y=y_motor,
+                         x_spacing=0.0, y_spacing=0.0)
+        self._coefficients = []
 
     @property
     def m_n_points(self):
@@ -469,6 +482,36 @@ class XYGridStage(XYTargetGrid):
             logger.error("Please pass an iterable with two items for m points"
                          " and n points respectively.")
 
+    @property
+    def coefficients(self):
+        """
+        Get the current coefficients if any.
+
+        These coefficients are calculated from the projective transformation.
+        Knowing the coefficients, and x an y value can be determined.
+
+        Returns
+        -------
+        coefficients : list
+            Array of 8 projective transformation coefficients.
+        """
+        return self._coefficients
+
+    @coefficients.setter
+    def coefficients(self, coefficients):
+        """
+        Set the current coefficients.
+
+        These coefficients are calculated from the projective transformation.
+        Knowing the coefficients, and x an y value can be determined.
+
+        Parameters
+        ----------
+        coefficients : array
+            Array of 8 projective transformation coefficients.
+        """
+        self._coefficients = coefficients
+
     def mapped_samples(self, path=None):
         """
         Get all the available sample grids names that are currently saved.
@@ -492,7 +535,7 @@ class XYGridStage(XYTargetGrid):
 
     def get_sample(self, sample_name, path=None):
         """
-        Get the mapped grid of a sample.
+        Get the information for a saved sample.
 
         Parameters
         ----------
@@ -505,9 +548,27 @@ class XYGridStage(XYTargetGrid):
 
         Returns
         -------
-        grid : tuple
-            List of all the mapped points on the grid for the sample.
-            `(x_points, y_points)`
+        data : dictionary
+            Dictionary of all the information for a saved sample.
+
+        Examples
+        --------
+        >>> get_sample('sample1')
+        {'time_created': '2021-01-06 11:43:40.701095',
+        'top_left': [0, 0],
+        'top_right': [4.0, -1.0],
+        'bottom_right': [4.4, -3.5],
+        'bottom_left': [1.0, -3.0],
+        'M': 10,
+        'N': 10,
+        'coefficients': [1.1686746987951824,
+        -0.3855421686746996,
+        -9.730859023513261e-15,
+        -0.29216867469879476,
+        1.1566265060240974,
+        6.281563288265657e-16,
+        0.042168674698794054,
+        -0.05220883534136586]}
         """
         path = path or self._path
         data = None
@@ -522,12 +583,12 @@ class XYGridStage(XYTargetGrid):
                            'Please use `save_presets` to insert grids '
                            'in the file.')
         try:
-            return data[sample_name]['x_points'], data[sample_name]['y_points']
+            return data[sample_name]
         except Exception:
             logger.error('The sample %s might not have x and y points devined '
                          'in the file.', sample_name)
 
-    def save_grid(self, sample_name, x_points, y_points, path=None):
+    def save_grid(self, sample_name, path=None):
         """
         Save a grid of mapped points for a sample.
 
@@ -535,23 +596,31 @@ class XYGridStage(XYTargetGrid):
         ----------
         sample_name : int
             A name to identify the sample grid, should be snake_case style.
-        x_points : list
-            List of all the mapped x points on the grid.
-        y_points : list
-            List of all the mapped y points on the grid.
         path : str, optional
             Path to the `.yml` file. Defaults to the path defined when
             creating this object.
 
         Examples
         --------
-        >>> x_points = [1, 2, 3, 4, 5]
-        >>> y_points = [1, 2, 3, 4, 5]
-        >>> save_grid('sample_1', x_points, y_points)
+        >>> save_grid('sample_1')
         """
         path = path or self._path
-        data = {sample_name: {"x_points": x_points, "y_points": y_points}}
+        now = str(datetime.now())
+        top_left, top_right, bottom_right, bottom_left = (), (), (), ()
+        if self.get_presets():
+            top_left, top_right, bottom_right, bottom_left = self.get_presets()
+        m_points, n_points = self.m_n_points
+        coefficients = self.coefficients
+        data = {sample_name: {"time_created": now,
+                              "top_left": top_left,
+                              "top_right": top_right,
+                              "bottom_right": bottom_right,
+                              "bottom_left": bottom_left,
+                              "M": m_points,
+                              "N": n_points,
+                              "coefficients": coefficients}}
         # validate the data
+        # TODO: don't need this anymore, so maybe remove it
         try:
             temp_data = json.loads(json.dumps(data[sample_name]))
             jsonschema.validate(temp_data, self.sample_schema)
@@ -562,7 +631,8 @@ class XYGridStage(XYTargetGrid):
             yaml_dict = yaml.safe_load(sample_file) or {}
             yaml_dict.update(data)
         with open(path, 'w') as sample_file:
-            yaml.safe_dump(yaml_dict, sample_file)
+            yaml.safe_dump(yaml_dict, sample_file,
+                           sort_keys=False, default_flow_style=False)
 
     def remove_all_samples(self, path=None):
         """
@@ -579,8 +649,7 @@ class XYGridStage(XYTargetGrid):
         with open(path, 'w') as sample_file:
             yaml.safe_dump(None, sample_file)
 
-    def map_points(self, snake_like=True, show_grid=False, shear=False,
-                   projective=True):
+    def map_points(self, snake_like=True, show_grid=False, projective=True):
         """
         Map all the sample positions in 2-d coordinates.
 
@@ -615,42 +684,19 @@ class XYGridStage(XYTargetGrid):
         # # distance from top_left to top_right
         # width = np.sqrt(np.power((top_right[0] - top_left[0]), 2)
         #                 + np.power((top_right[1] - top_left[1]), 2))
-        # height = abs(bottom_left[1] - top_left[1])
-        # width = abs(top_right[0] - top_left[0])
 
-        # height, width = self.dimensions
-        # x_space, y_space = self.spacing
-        # approximate how many dots there will be in a given distance
-        # x_point_num = int(np.abs(np.round(width / x_space))) + 1
-        # y_point_num = int(np.abs(np.round(height / y_space))) + 1
         m_points, n_points = self.m_n_points
 
         # starting at 0, 0 top left corner, find the other 2 points if known
-        # distance such that we create a perfectly rectilinear grid
-        start_x, start_y = top_left[0], top_left[1]
-        # perfect_bl = [start_x, start_y + height]
-        # perfect_tr = [start_x + width, start_y]
-        perfect_bl = [start_x, start_y + n_points]
-        perfect_tr = [start_x + n_points, start_y]
-
+        # m and n such that we would create a perfectly rectilinear grid
         x_grid_points = np.linspace(
-            top_left[0], perfect_tr[0], num=m_points)
+            top_left[0], top_left[0] + n_points, num=m_points)
         y_grid_points = np.linspace(
-            top_left[1], perfect_bl[1], num=n_points)
-        # x_grid_points = np.linspace(
-        #     top_left[0], perfect_tr[0], num=x_point_num)
-        # y_grid_points = np.linspace(
-        #     perfect_bl[1], top_left[1], num=y_point_num)
+            top_left[1], top_left[1] + n_points, num=n_points)
 
         # The meshgrid function returns two 2-dimensional arrays
         xx_origin, yy_origin = np.meshgrid(x_grid_points, y_grid_points)
 
-        # # apply shear transformation
-        if shear:
-            xx, yy = self.shear_transform(xx=xx_origin, yy=yy_origin,
-                                          top_left=top_left,
-                                          top_right=top_right,
-                                          bottom_left=bottom_left)
         # apply projective transformation
         if projective:
             xx, yy = self.projective_transform(xx=xx_origin, yy=yy_origin,
@@ -659,7 +705,7 @@ class XYGridStage(XYTargetGrid):
                                                bottom_right=bottom_right,
                                                bottom_left=bottom_left)
         # return the original xx and yy if no transformations applied
-        if not shear and not projective:
+        if not projective:
             xx, yy = xx_origin, yy_origin
 
         if show_grid:
@@ -676,49 +722,49 @@ class XYGridStage(XYTargetGrid):
         yy = self.snake_grid_list(yy)
         return xx, yy
 
-    def shear_transform(self, xx, yy, top_left, top_right, bottom_left):
-        """
-        Perform shear transformation.
+    # def shear_transform(self, xx, yy, top_left, top_right, bottom_left):
+    #     """
+    #     Perform shear transformation.
 
-        Parameters
-        ----------
-        xx : array
-            Array with 'perfectly' mapped x coordinate points.
-        yy : array
-            Array with 'perfectly' mapped y coordinate points.
-        top_left : tuple
-            (x, y) coordinates of the top left corner
-        top_right : tuple
-            (x, y) coordinates of the top right corner
-        bottom_left : tuple
-            (x, y) coordinates of the bottom left corner
+    #     Parameters
+    #     ----------
+    #     xx : array
+    #         Array with 'perfectly' mapped x coordinate points.
+    #     yy : array
+    #         Array with 'perfectly' mapped y coordinate points.
+    #     top_left : tuple
+    #         (x, y) coordinates of the top left corner
+    #     top_right : tuple
+    #         (x, y) coordinates of the top right corner
+    #     bottom_left : tuple
+    #         (x, y) coordinates of the bottom left corner
 
-        Returns
-        -------
-        points : tuple
-            xx, yy arrays of mapped points after shear transformation.
-        """
-        xx_shape = xx.shape
-        yy_shape = yy.shape
+    #     Returns
+    #     -------
+    #     points : tuple
+    #         xx, yy arrays of mapped points after shear transformation.
+    #     """
+    #     xx_shape = xx.shape
+    #     yy_shape = yy.shape
 
-        if (bottom_left[1] - top_left[1]) == 0:
-            x_factor = 0
-        else:
-            x_factor = np.arctan(
-                (bottom_left[0] - top_left[0])
-                / (bottom_left[1] - top_left[1]))
-        if (top_right[0] - top_left[0]) == 0:
-            y_factor = 0
-        else:
-            y_factor = (np.arctan(
-                (top_right[1] - top_left[1]) / (top_right[0] - top_left[0])))
+    #     if (bottom_left[1] - top_left[1]) == 0:
+    #         x_factor = 0
+    #     else:
+    #         x_factor = np.arctan(
+    #             (bottom_left[0] - top_left[0])
+    #             / (bottom_left[1] - top_left[1]))
+    #     if (top_right[0] - top_left[0]) == 0:
+    #         y_factor = 0
+    #     else:
+    #         y_factor = (np.arctan(
+    #             (top_right[1] - top_left[1]) / (top_right[0] - top_left[0])))
 
-        shear_arr = (np.array([1.0, x_factor,
-                               y_factor, 1.0]).reshape(2, 2))
-        points = np.einsum('ij, jk', shear_arr, np.array(
-            [xx.flatten(), yy.flatten()]))
+    #     shear_arr = (np.array([1.0, x_factor,
+    #                            y_factor, 1.0]).reshape(2, 2))
+    #     points = np.einsum('ij, jk', shear_arr, np.array(
+    #         [xx.flatten(), yy.flatten()]))
 
-        return points[0].reshape(xx_shape), points[1].reshape(yy_shape)
+        # return points[0].reshape(xx_shape), points[1].reshape(yy_shape)
 
     def projective_transform(self, xx, yy, top_left, top_right, bottom_right,
                              bottom_left):
@@ -765,7 +811,34 @@ class XYGridStage(XYTargetGrid):
         coefficients = np.dot(np.linalg.inv(grid_matrix.T * grid_matrix)
                               * grid_matrix.T, new_plane_matrix)
         coeff = np.array(coefficients).reshape(8)
+        self._coefficients = coeff.tolist()
 
+        a, b, c = coeff[0], coeff[1], coeff[2]
+        d, e, f = coeff[3], coeff[4], coeff[5]
+        g, h = coeff[6], coeff[7]
+
+        def x_formula(x, y):
+            # x = (ax + by + c) / (gx + hy + 1)
+            new_x = (a*x + b*y + c) / (g*x + h*y + 1)
+            return new_x
+
+        def y_formula(x, y):
+            # y = (dx + ey + f) / (gx + hy + 1)
+            new_y = (d*x + e*y + f) / (g*x + h*y + 1)
+            return new_y
+
+        new_xx = np.array([x_formula(xx[i], yy[i])
+                           for i in range(xx.shape[0])])
+        new_yy = np.array([y_formula(xx[i], yy[i])
+                           for i in range(xx.shape[0])])
+        return new_xx, new_yy
+
+    def get_points(self, xx, yy):
+        """
+        TODO: some type of function that will return x, y values from a grid,
+        given the coefficients and the coordinates.
+        """
+        coeff = self.coefficients
         # The homography transformation coefficients
         # a b c
         # d e f

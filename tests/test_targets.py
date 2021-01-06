@@ -16,37 +16,22 @@ def sample_file(tmp_path):
 def fake_grid_stage(sample_file):
     FakeGridStage = make_fake_device(XYGridStage)
     grid = FakeGridStage(
-        name='test', x_prefix='X:MMN:PREFIX',
-        y_prefix='Y:MMN:PREFIX', x_spacing=0.25, y_spacing=0.25,
+        name='test', x_motor='X:MMN:PREFIX',
+        y_motor='Y:MMN:PREFIX', m_points=10, n_points=10,
         path=sample_file)
     return grid
 
 
 def test_samples_yaml_file(fake_grid_stage, sample_file):
     xy = fake_grid_stage
-    x_points = [1, 2, 3, 4]
-    y_points = [1, 2, 3, 4]
-    xy.save_grid(sample_name='sample1', x_points=x_points, y_points=y_points,
-                 path=sample_file)
+    xy.save_grid(sample_name='sample1', path=sample_file)
     # test sample1 in the file:
     res = xy.get_sample('sample1', path=sample_file)
-    assert res == (x_points, y_points)
-    # test update grid for sample1
-    y_points = [4, 4, 4, 4]
-    xy.save_grid(sample_name='sample1', x_points=x_points, y_points=y_points,
-                 path=sample_file)
-    res = xy.get_sample('sample1', path=sample_file)
-    assert res == (x_points, y_points)
+    assert res['M'] == 10
+    assert res["N"] == 10
     # test sample2 in the file
-    x2_points = [0, -1, -2, -3]
-    y2_points = [1, 0, 3, 1]
-    xy.save_grid(sample_name='sample2', x_points=x2_points, y_points=y2_points,
-                 path=sample_file)
+    xy.save_grid(sample_name='sample2', path=sample_file)
     res = xy.get_sample('sample2', path=sample_file)
-    assert res == (x2_points, y2_points)
-    # assert sample1 is still there
-    res = xy.get_sample('sample1', path=sample_file)
-    assert res == (x_points, y_points)
     # test all mapped samples
     res = xy.mapped_samples(path=sample_file)
     assert res == ['sample1', 'sample2']
