@@ -3,7 +3,6 @@ Module for common target stage stack configurations.
 """
 import logging
 import numpy as np
-import os
 
 from ophyd.device import Device
 import matplotlib.pyplot as plt
@@ -439,7 +438,7 @@ class XYGridStage(XYTargetGrid):
         self._height = height
         self._width = width
         # TODO: assert here for a valid path, also valid yaml file
-        assert os.path.exists(path)
+        # assert os.path.exists(path)
         super().__init__(name=name, x=x_prefix, y=y_prefix,
                          x_spacing=x_spacing, y_spacing=y_spacing)
 
@@ -619,8 +618,8 @@ class XYGridStage(XYTargetGrid):
         with open(path, 'w') as sample_file:
             yaml.safe_dump(None, sample_file)
 
-    def map_points(self, snake_like=True, show_grid=False, shear=True,
-                   projective=False):
+    def map_points(self, snake_like=True, show_grid=False, shear=False,
+                   projective=True):
         """
         Map all the sample positions in 2-d coordinates.
 
@@ -667,13 +666,17 @@ class XYGridStage(XYTargetGrid):
         # starting at 0, 0 top left corner, find the other 2 points if known
         # distance such that we create a perfectly rectilinear grid
         start_x, start_y = top_left[0], top_left[1]
-        perfect_bl = [start_x, start_y - height]
+        perfect_bl = [start_x, start_y + height]
         perfect_tr = [start_x + width, start_y]
 
         x_grid_points = np.linspace(
             top_left[0], perfect_tr[0], num=x_point_num)
         y_grid_points = np.linspace(
             top_left[1], perfect_bl[1], num=y_point_num)
+        # x_grid_points = np.linspace(
+        #     top_left[0], perfect_tr[0], num=x_point_num)
+        # y_grid_points = np.linspace(
+        #     perfect_bl[1], top_left[1], num=y_point_num)
 
         # The meshgrid function returns two 2-dimensional arrays
         xx_origin, yy_origin = np.meshgrid(x_grid_points, y_grid_points)
@@ -778,12 +781,12 @@ class XYGridStage(XYTargetGrid):
         points : tuple
             xx, yy arrays of mapped points after projective transformation.
         """
-        perfect_plane = [(0.0, 0.0),
-                         (self.dimensions[1], 0.0),
-                         (self.dimensions[1], -self.dimensions[1]),
-                         (0.0, -self.dimensions[0])]
+        perfect_plane = [(top_left[0], top_left[1]),
+                         (top_right[0], top_left[1]),
+                         (top_right[0], bottom_left[1]),
+                         (top_left[0], bottom_left[1])]
 
-        new_plane = [(0.0, 0.0),
+        new_plane = [(top_left[0], top_left[1]),
                      (top_right[0], top_right[1]),
                      (bottom_right[0], bottom_right[1]),
                      (bottom_left[0], bottom_left[1])]
