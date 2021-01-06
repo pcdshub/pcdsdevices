@@ -394,27 +394,22 @@ class XYGridStage(XYTargetGrid):
     Parameters
     ----------
     name
-    x_prefix : str
-        Epics PV prefix for x motor.
-    y_prefix : str
-        Epics PV prefix for y motor.
-    x_spacing : float
-        Spacing between targets of the sample on the x axis in mm.
-    y_spacing : float
-        Spacing between targets of the sample on y the axis in mm.
+    x_motor : str or motor object
+        Epics PV prefix for x motor, or a motor object.
+    y_motor : str or motor object
+        Epics PV prefix for y motor, or a motor object.
+    m_points : int
+        Number of targets in x direction, used to determine the coordinate
+        points, where for e.g.: `(0, m_points)` would represent the top right
+        corner of the desired sample grid.
+    n_points : int
+        Number of targets in y direction, used to determine the coordinate
+        points, where for e.g.: `(n_points, 0)` would represent the bottom
+        left corner of the desired sample grid.
     path : str
         Path to an `yaml` file where to save the grid patterns for
         different samples.
     """
-    # # XPP:USR:PRT:MMN:06
-    # x = FCpt(Newport, '{self._x_prefix}', doc='X axis', name='x_axis')
-    # # XPP:USR:PRT:MMN:07
-    # y = FCpt(Newport, '{self._y_prefix}', doc='Y axis', name='y_axis')
-
-    # grid = FCpt(XYTargetGrid, x='{self._x_prefix}', y='{self._y_prefix}',
-    #             name='{self._name}', x_spacing='{self._x_spacing}',
-    #             y_scaping='{self._y_spacing}')
-
     sample_schema = json.loads("""
     {
         "type": "object",
@@ -427,86 +422,52 @@ class XYGridStage(XYTargetGrid):
     }
     """)
 
-    def __init__(self, name, x_prefix, y_prefix, path, x_spacing=0.25,
-                 y_spacing=0.25, height=25, width=25):
-        self._x_prefix = x_prefix
-        self._y_prefix = y_prefix
-        self._x_spacing = x_spacing
-        self._y_spacing = y_spacing
-        self._name = name
+    def __init__(self, name, x_motor, y_motor, m_points, n_points, path):
         self._path = path
-        self._height = height
-        self._width = width
+        self._m_points = m_points
+        self._n_points = n_points
         # TODO: assert here for a valid path, also valid yaml file
         # assert os.path.exists(path)
-        super().__init__(name=name, x=x_prefix, y=y_prefix,
-                         x_spacing=x_spacing, y_spacing=y_spacing)
+        super().__init__(name=name, x=x_motor, y=y_motor)
 
     @property
-    def spacing(self):
+    def m_n_points(self):
         """
-        Get the x and y spacing of the grid.
+        Get the current m and n points.
+
+        The m and n points represents the number of grid points on the current
+        grid in the x and y direction respectively.
 
         Returns
         -------
-        x_spacing, y_spacing : tuple
+        m_points, n_points : tuple
+            The number of grid points on the x and y axis.
+            E.g.: `10, 5` -> 10 by 5 grid.
         """
-        return self._x_spacing, self._y_spacing
+        return self._m_points, self._n_points
 
-    @spacing.setter
-    def spacing(self, spacing):
+    @m_n_points.setter
+    def m_n_points(self, m_n_values):
         """
-        Set the x and y spacing of the grid in mm.
+        Set m and n points.
+
+        Set the m value representing the number of grid points in x direction,
+        and n value representing the number of grid points in the y direction.
 
         Parameters
         ----------
-        spacing : tuple
-            Spacing from center target to next center target of the grid on x
-            axis and y axis. E.g.: `(x_spacing, y_spacing)`
+        m_n_values : tuple
+            The number of grid points on the x and y axis respecively.
 
         Examples
         --------
-        >>> xy_grid.spacing = 0.25, 0.25
+        >>> xy_grid.m_n_points = 10, 10
         """
         try:
-            self._x_spacing, self._y_spacing = spacing
+            self._m_points, self._n_points = m_n_values
         except ValueError:
-            logger.error("Please pass an iterable with two items for x spacing"
-                         " and y spacing respectively.")
-
-    @property
-    def dimensions(self):
-        """
-        Get the current dimmensions of the sample grid in mm.
-
-        Returns
-        -------
-        height, width : tuple
-            The height is the dimension along the y axis,
-            and width along the x axis.
-        """
-        return self._height, self._width
-
-    @dimensions.setter
-    def dimensions(self, dimensions):
-        """
-        Set the dimensions of height and width in mm.
-
-        Parameters
-        ----------
-        dimensions : tuple
-            The height in mm along y axis and width along x axis.
-            E.g.: `(x_dimensions, y_dimensions)`
-
-        Examples
-        --------
-        >>> xy_grid.dimensions = 25, 25
-        """
-        try:
-            self._height, self._width = dimensions
-        except ValueError:
-            logger.error("Please pass an iterable with two items for height"
-                         " and width respectively.")
+            logger.error("Please pass an iterable with two items for m points"
+                         " and n points respectively.")
 
     def mapped_samples(self, path=None):
         """
@@ -657,22 +618,25 @@ class XYGridStage(XYTargetGrid):
         # height = abs(bottom_left[1] - top_left[1])
         # width = abs(top_right[0] - top_left[0])
 
-        height, width = self.dimensions
-        x_space, y_space = self.spacing
+        # height, width = self.dimensions
+        # x_space, y_space = self.spacing
         # approximate how many dots there will be in a given distance
-        x_point_num = int(np.abs(np.round(width / x_space))) + 1
-        y_point_num = int(np.abs(np.round(height / y_space))) + 1
+        # x_point_num = int(np.abs(np.round(width / x_space))) + 1
+        # y_point_num = int(np.abs(np.round(height / y_space))) + 1
+        m_points, n_points = self.m_n_points
 
         # starting at 0, 0 top left corner, find the other 2 points if known
         # distance such that we create a perfectly rectilinear grid
         start_x, start_y = top_left[0], top_left[1]
-        perfect_bl = [start_x, start_y + height]
-        perfect_tr = [start_x + width, start_y]
+        # perfect_bl = [start_x, start_y + height]
+        # perfect_tr = [start_x + width, start_y]
+        perfect_bl = [start_x, start_y + n_points]
+        perfect_tr = [start_x + n_points, start_y]
 
         x_grid_points = np.linspace(
-            top_left[0], perfect_tr[0], num=x_point_num)
+            top_left[0], perfect_tr[0], num=m_points)
         y_grid_points = np.linspace(
-            top_left[1], perfect_bl[1], num=y_point_num)
+            top_left[1], perfect_bl[1], num=n_points)
         # x_grid_points = np.linspace(
         #     top_left[0], perfect_tr[0], num=x_point_num)
         # y_grid_points = np.linspace(
