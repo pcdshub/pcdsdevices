@@ -650,7 +650,7 @@ class XYGridStage(XYTargetGrid):
         with open(path, 'w') as sample_file:
             yaml.safe_dump(None, sample_file)
 
-    def map_points(self, snake_like=True, show_grid=False, projective=True):
+    def map_points(self, snake_like=True, show_grid=False):
         """
         Map all the sample positions in 2-d coordinates.
 
@@ -665,9 +665,6 @@ class XYGridStage(XYTargetGrid):
         shear : bool, optional
             Indicates if shear transformation should be applied.
             Defaults to `True`.
-        projective : bool, optional
-            Indicates if projective transformation should be applied.
-            Defaults to `False`.
         Returns
         -------
         xx, yy : tuple
@@ -694,24 +691,34 @@ class XYGridStage(XYTargetGrid):
         #     top_left[0], top_left[0] + m_points, num=m_points)
         # y_grid_points = np.linspace(
         #     top_left[1], top_left[1] + n_points, num=n_points)
+        # x_grid_points = np.linspace(
+        #     top_left[0], top_left[0] + m_points, num=m_points)
+        # y_grid_points = np.linspace(
+        #     top_left[1], top_left[1] + n_points, num=n_points)
+        # maybe max of absolute value of y.....
         x_grid_points = np.linspace(
-            top_left[0], top_left[0] + m_points, num=m_points)
+            top_left[0], top_right[0], num=m_points)
         y_grid_points = np.linspace(
-            top_left[1], top_left[1] + n_points, num=n_points)
+            top_left[1], bottom_left[1], num=n_points)
 
         # The meshgrid function returns two 2-dimensional arrays
         xx_origin, yy_origin = np.meshgrid(x_grid_points, y_grid_points)
 
         # apply projective transformation
-        if projective:
-            xx, yy = self.projective_transform(xx=xx_origin, yy=yy_origin,
-                                               top_left=top_left,
-                                               top_right=top_right,
-                                               bottom_right=bottom_right,
-                                               bottom_left=bottom_left)
+        coeffs = self.projective_transform(
+            top_left=top_left, top_right=top_right,
+            bottom_right=bottom_right, bottom_left=bottom_left)
+        coeffs = list(coeffs)
+        xx, yy = self.get_xy_coordinate(xx_origin, yy_origin, coeffs)
+        # if projective:
+        #     xx, yy = self.projective_transform(xx=xx_origin, yy=yy_origin,
+        #                                        top_left=top_left,
+        #                                        top_right=top_right,
+        #                                        bottom_right=bottom_right,
+        #                                        bottom_left=bottom_left)
         # return the original xx and yy if no transformations applied
-        if not projective:
-            xx, yy = xx_origin, yy_origin
+        # if not projective:
+        #     xx, yy = xx_origin, yy_origin
 
         if show_grid:
             plt.plot(xx, yy, marker='.', color='k', linestyle='none')
@@ -772,7 +779,7 @@ class XYGridStage(XYTargetGrid):
         # return points[0].reshape(xx_shape), points[1].reshape(yy_shape)
 
     # TODO: this probably belongs somewhere else as well as the snake like grid
-    def projective_transform(self, xx, yy, top_left, top_right, bottom_right,
+    def projective_transform(self, top_left, top_right, bottom_right,
                              bottom_left):
         """
         Find the projective transformation of the sample grid.
@@ -804,18 +811,12 @@ class XYGridStage(XYTargetGrid):
         # # find x given the perfect y at top_left[1]
         # x_tr = slope * top_left[1] + y_intercept
 
+        # TODO i don't know how to find the true coordinate values of this
+        # perfect plane
         perfect_plane = [(top_left[0], top_left[1]),
                          (top_right[0], top_left[1]),
                          (top_right[0], bottom_left[1]),
                          (top_left[0], bottom_left[1])]
-
-        # the bouding box
-        # px = [top_left[0], top_right[0], bottom_right[0], bottom_left[0]]
-        # py = [top_left[1], top_right[1], bottom_right[1], bottom_left[1]]
-        # x0 = min(px)
-        # lx = max(px) - min(px)
-        # y0 = min(py)
-        # ly = max(py) - min(py)
 
         new_plane = [(top_left[0], top_left[1]),
                      (top_right[0], top_right[1]),
@@ -835,33 +836,69 @@ class XYGridStage(XYTargetGrid):
         coefficients = (np.dot(np.linalg.inv(np.transpose(grid_matrix)
                         * grid_matrix) * np.transpose(grid_matrix),
                         new_plane_matrix))
-        coeff = np.array(coefficients).reshape(8)
-        self._coefficients = coeff.tolist()
+        coeffs = np.array(coefficients).reshape(8)
+        self._coefficients = coeffs.tolist()
+        return coeffs
 
-        a, b, c = coeff[0], coeff[1], coeff[2]
-        d, e, f = coeff[3], coeff[4], coeff[5]
-        g, h = coeff[6], coeff[7]
+        # a, b, c = coeff[0], coeff[1], coeff[2]
+        # d, e, f = coeff[3], coeff[4], coeff[5]
+        # g, h = coeff[6], coeff[7]
+
+        # def x_formula(x, y):
+        #     # x = (ax + by + c) / (gx + hy + 1)
+        #     new_x = (a*x + b*y + c) / (g*x + h*y + 1)
+        #     return np.round(new_x, decimals=4)
+
+        # def y_formula(x, y):
+        #     # y = (dx + ey + f) / (gx + hy + 1)
+        #     new_y = (d*x + e*y + f) / (g*x + h*y + 1)
+        #     return np.round(new_y, decimals=4)
+
+        # new_xx = np.array([x_formula(xx[i], yy[i])
+        #                    for i in range(xx.shape[0])])
+        # new_yy = np.array([y_formula(xx[i], yy[i])
+        #                    for i in range(xx.shape[0])])
+        # return new_xx, new_yy
+
+    def get_xy_coordinate(self, xx, yy, coefficients=None):
+        """
+        TODO: some type of function that will return x, y values from a grid,
+        given the coefficients and the coordinates.
+
+        TODO: make it work with one single pair of elements?
+
+        Parameters
+        ----------
+        xx : list
+        yy : list
+        """
+        # The homography transformation coefficients
+        coeffs = coefficients or self.coefficients
 
         def x_formula(x, y):
             # x = (ax + by + c) / (gx + hy + 1)
-            new_x = (a*x + b*y + c) / (g*x + h*y + 1)
-            return np.round(new_x, decimals=4)
+            new_x = ((coeffs[0] * x + coeffs[1] * y
+                     + coeffs[2]) / (coeffs[6] * x + coeffs[7] * y + 1))
+            return new_x
 
         def y_formula(x, y):
             # y = (dx + ey + f) / (gx + hy + 1)
-            new_y = (d*x + e*y + f) / (g*x + h*y + 1)
-            return np.round(new_y, decimals=4)
+            new_y = ((coeffs[3] * x + coeffs[4] * y
+                     + coeffs[5]) / (coeffs[6] * x + coeffs[7] * y + 1))
+            return new_y
 
         new_xx = np.array([x_formula(xx[i], yy[i])
                            for i in range(xx.shape[0])])
         new_yy = np.array([y_formula(xx[i], yy[i])
-                           for i in range(xx.shape[0])])
+                           for i in range(yy.shape[0])])
         return new_xx, new_yy
 
     def mesh_interpolation(self, top_left, top_right, bottom_right,
                            bottom_left):
         """
         Mapping functions for an arbitrary quadrilateral.
+
+        Reference: https://www.particleincell.com/2012/quad-interpolation/
 
         Parameters
         ----------
@@ -886,24 +923,18 @@ class XYGridStage(XYTargetGrid):
                               [1, 1, 1, 1],
                               [1, 0, 1, 0]])
         # x value coordinates for current grid (4 corners)
-        px = np.array([[top_left[0]],
-                       [top_right[0]],
-                       [bottom_right[0]],
-                       [bottom_left[0]]])
+        px = np.array([top_left[0],
+                       top_right[0],
+                       bottom_right[0],
+                       bottom_left[0]])
         # y value coordinates for current grid (4 corners)
-        py = np.array([[top_left[1]],
-                       [top_right[1]],
-                       [bottom_right[1]],
-                       [bottom_left[1]]])
-        # px = np.reshape(px, newshape=(1, 4))
-        # py = np.reshape(py, newshape=(1, 4))
-        # a_coeffs = np.linalg.inv(unit_grid).dot(np.transpose(px))
-        # b_coeffs = np.linalg.inv(unit_grid).dot(np.transpose(py))
-        a_coeffs = np.linalg.inv(unit_grid).dot(px)
-        b_coeffs = np.linalg.inv(unit_grid).dot(py)
-        # or we can use the solve method
-        # a_coeffs = np.linalg.solve(unit_grid, np.transpose(px))
-        # b_coeffs = np.linalg.solve(unit_grid, np.transpose(py))
+        py = np.array([top_left[1],
+                       top_right[1],
+                       bottom_right[1],
+                       bottom_left[1]])
+
+        a_coeffs = np.linalg.inv(unit_grid).dot(np.transpose(px))
+        b_coeffs = np.linalg.inv(unit_grid).dot(np.transpose(py))
 
         return a_coeffs.flatten(), b_coeffs.flatten()
 
@@ -971,38 +1002,9 @@ class XYGridStage(XYTargetGrid):
              b_coeffs[2] * m_point + b_coeffs[3] * l_point * m_point)
         return x, y
 
-    def get_points(self, xx, yy):
-        """
-        TODO: some type of function that will return x, y values from a grid,
-        given the coefficients and the coordinates.
-        """
-        coeff = self.coefficients
-        # The homography transformation coefficients
-        # a b c
-        # d e f
-        # g h 1
-        a, b, c = coeff[0], coeff[1], coeff[2]
-        d, e, f = coeff[3], coeff[4], coeff[5]
-        g, h = coeff[6], coeff[7]
-
-        def x_formula(x, y):
-            # x = (ax + by + c) / (gx + hy + 1)
-            new_x = (a*x + b*y + c) / (g*x + h*y + 1)
-            return new_x
-
-        def y_formula(x, y):
-            # y = (dx + ey + f) / (gx + hy + 1)
-            new_y = (d*x + e*y + f) / (g*x + h*y + 1)
-            return new_y
-
-        new_xx = np.array([x_formula(xx[i], yy[i])
-                          for i in range(xx.shape[0])])
-        new_yy = np.array([y_formula(xx[i], yy[i])
-                           for i in range(xx.shape[0])])
-        return new_xx, new_yy
-
     def snake_grid_list(self, points):
         """
+        TODO: maybe find something in bluesky to do this based on m/n
         Flatten out a meshgrid.
 
         Flatten them into lists with snake_like pattern coordinate points.

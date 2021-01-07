@@ -82,16 +82,12 @@ def test_mapping_points(fake_grid_stage):
                          4.0, 4.0, 4.0, 4.0, 4.0]
 
     assert expected_x_points == x_points
-
-    x, y = fake_grid_stage.projective_transform(
-            xx=xx, yy=yy, top_left=top_left, top_right=top_right,
-            bottom_right=bottom_right, bottom_left=bottom_left)
-
-    # the_x, the_y = [], []
-    # for i in range(x.shape[0]):
-    #     the_x.extend(x[i])
-    #     the_y.extend(y[i])
-
+    # I AM NOT GET THE EXPECTED Ys!!
+    coeffs = fake_grid_stage.projective_transform(
+                top_left=top_left, top_right=top_right,
+                bottom_right=bottom_right, bottom_left=bottom_left)
+    coeffs = list(coeffs)
+    x, y = fake_grid_stage.get_xy_coordinate(xx, yy, coeffs)
     assert np.isclose(x.flatten(), expected_x_points).all()
     assert np.isclose(y.flatten(), expected_y_points).all()
 
@@ -102,9 +98,12 @@ def test_mapping_points(fake_grid_stage):
     bottom_left, bottom_right = (1, 4), (5, 3)
     xx, yy = np.meshgrid(xx, yy)
 
-    x, y = fake_grid_stage.projective_transform(
-        xx=xx, yy=yy, top_left=top_left, top_right=top_right,
+    coeffs = fake_grid_stage.projective_transform(
+        top_left=top_left, top_right=top_right,
         bottom_right=bottom_right, bottom_left=bottom_left)
+
+    coeffs = list(coeffs)
+    x, y = fake_grid_stage.get_xy_coordinate(xx, yy, coeffs)
 
     # seems to work fine here too
     # plt.scatter(x, y)
@@ -131,7 +130,3 @@ def test_mapping_points(fake_grid_stage):
                                                    m_point=m_points[i])
         x_points.append(x)
         y_points.append(y)
-
-    # with my old function this seems to work again...
-    # plt.scatter(x_points, y_points)
-    # # plt.show()
