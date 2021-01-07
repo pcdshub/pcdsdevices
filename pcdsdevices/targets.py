@@ -620,7 +620,8 @@ class XYGridStage(XYTargetGrid):
                               "N": n_points,
                               "coefficients": coefficients}}
         # validate the data
-        # TODO: don't need this anymore, so maybe remove it
+        # TODO: don't need this anymore, so maybe remove it,
+        # but it won't hurt to have it anyway
         try:
             temp_data = json.loads(json.dumps(data[sample_name]))
             jsonschema.validate(temp_data, self.sample_schema)
@@ -689,8 +690,12 @@ class XYGridStage(XYTargetGrid):
 
         # starting at 0, 0 top left corner, find the other 2 points if known
         # m and n such that we would create a perfectly rectilinear grid
+        # x_grid_points = np.linspace(
+        #     top_left[0], top_left[0] + m_points, num=m_points)
+        # y_grid_points = np.linspace(
+        #     top_left[1], top_left[1] + n_points, num=n_points)
         x_grid_points = np.linspace(
-            top_left[0], top_left[0] + n_points, num=m_points)
+            top_left[0], top_left[0] + m_points, num=m_points)
         y_grid_points = np.linspace(
             top_left[1], top_left[1] + n_points, num=n_points)
 
@@ -766,6 +771,7 @@ class XYGridStage(XYTargetGrid):
 
         # return points[0].reshape(xx_shape), points[1].reshape(yy_shape)
 
+    # TODO: this probably belongs somewhere else as well as the snake like grid
     def projective_transform(self, xx, yy, top_left, top_right, bottom_right,
                              bottom_left):
         """
@@ -773,10 +779,6 @@ class XYGridStage(XYTargetGrid):
 
         Parameters
         ----------
-        xx : array
-            Array with 'perfectly' mapped x coordinate points.
-        yy : array
-            Array with 'perfectly' mapped y coordinate points.
         top_left : tuple
             (x, y) coordinates of the top left corner
         top_right : tuple
@@ -788,13 +790,32 @@ class XYGridStage(XYTargetGrid):
 
         Returns
         -------
-        points : tuple
-            xx, yy arrays of mapped points after projective transformation.
+        coeff : list
+            List of 8 projective transformation coefficients. They are used to
+            find x and y.
         """
+        # to find the 'perfect' x value for the top_right we can calculate it
+        # knowing the 'perfect' y value at that point
+        # y = mx + b
+        # m = (y1 - y0) / (x1-x0)
+        # b = y - mx
+        # slope = (top_right[1] - top_left[0]) / (top_right[0] - top_left[0])
+        # y_intercept = top_left[1] - slope * top_left[0]
+        # # find x given the perfect y at top_left[1]
+        # x_tr = slope * top_left[1] + y_intercept
+
         perfect_plane = [(top_left[0], top_left[1]),
                          (top_right[0], top_left[1]),
                          (top_right[0], bottom_left[1]),
                          (top_left[0], bottom_left[1])]
+
+        # the bouding box
+        # px = [top_left[0], top_right[0], bottom_right[0], bottom_left[0]]
+        # py = [top_left[1], top_right[1], bottom_right[1], bottom_left[1]]
+        # x0 = min(px)
+        # lx = max(px) - min(px)
+        # y0 = min(py)
+        # ly = max(py) - min(py)
 
         new_plane = [(top_left[0], top_left[1]),
                      (top_right[0], top_right[1]),
@@ -803,13 +824,17 @@ class XYGridStage(XYTargetGrid):
 
         grid = []
         for p1, p2 in zip(perfect_plane, new_plane):
-            grid.append([p1[0], p1[1], 1, 0, 0, 0, -p2[0]*p1[0], -p2[0]*p1[1]])
-            grid.append([0, 0, 0, p1[0], p1[1], 1, -p2[1]*p1[0], -p2[1]*p1[1]])
+            grid.append([
+                p1[0], p1[1], 1, 0, 0, 0, -p2[0] * p1[0], -p2[0] * p1[1]])
+            grid.append([
+                0, 0, 0, p1[0], p1[1], 1, -p2[1] * p1[0], -p2[1] * p1[1]])
 
         grid_matrix = np.matrix(grid, dtype=np.float64)
+
         new_plane_matrix = np.array(new_plane).reshape(8)
-        coefficients = np.dot(np.linalg.inv(grid_matrix.T * grid_matrix)
-                              * grid_matrix.T, new_plane_matrix)
+        coefficients = (np.dot(np.linalg.inv(np.transpose(grid_matrix)
+                        * grid_matrix) * np.transpose(grid_matrix),
+                        new_plane_matrix))
         coeff = np.array(coefficients).reshape(8)
         self._coefficients = coeff.tolist()
 
@@ -820,18 +845,131 @@ class XYGridStage(XYTargetGrid):
         def x_formula(x, y):
             # x = (ax + by + c) / (gx + hy + 1)
             new_x = (a*x + b*y + c) / (g*x + h*y + 1)
-            return new_x
+            return np.round(new_x, decimals=4)
 
         def y_formula(x, y):
             # y = (dx + ey + f) / (gx + hy + 1)
             new_y = (d*x + e*y + f) / (g*x + h*y + 1)
-            return new_y
+            return np.round(new_y, decimals=4)
 
         new_xx = np.array([x_formula(xx[i], yy[i])
                            for i in range(xx.shape[0])])
         new_yy = np.array([y_formula(xx[i], yy[i])
                            for i in range(xx.shape[0])])
         return new_xx, new_yy
+
+    def mesh_interpolation(self, top_left, top_right, bottom_right,
+                           bottom_left):
+        """
+        Mapping functions for an arbitrary quadrilateral.
+
+        Parameters
+        ----------
+        top_left : tuple
+            (x, y) coordinates of the top left corner
+        top_right : tuple
+            (x, y) coordinates of the top right corner
+        bottom_right : tuple
+            (x, y) coordinates of the bottom right corner
+        bottom_left : tuple
+            (x, y) coordinates of the bottom left corner
+
+        Returns
+        -------
+        a_coeffs, b_coeffs : tuple
+            List of tuples with the alpha and beta coefficients for projective
+            transformation. They are used to find x and y.
+        """
+        # describes the entire point space enclosed by the quadrilateral
+        unit_grid = np.array([[1, 0, 0, 0],
+                              [1, 1, 0, 0],
+                              [1, 1, 1, 1],
+                              [1, 0, 1, 0]])
+        # x value coordinates for current grid (4 corners)
+        px = np.array([[top_left[0]],
+                       [top_right[0]],
+                       [bottom_right[0]],
+                       [bottom_left[0]]])
+        # y value coordinates for current grid (4 corners)
+        py = np.array([[top_left[1]],
+                       [top_right[1]],
+                       [bottom_right[1]],
+                       [bottom_left[1]]])
+        # px = np.reshape(px, newshape=(1, 4))
+        # py = np.reshape(py, newshape=(1, 4))
+        # a_coeffs = np.linalg.inv(unit_grid).dot(np.transpose(px))
+        # b_coeffs = np.linalg.inv(unit_grid).dot(np.transpose(py))
+        a_coeffs = np.linalg.inv(unit_grid).dot(px)
+        b_coeffs = np.linalg.inv(unit_grid).dot(py)
+        # or we can use the solve method
+        # a_coeffs = np.linalg.solve(unit_grid, np.transpose(px))
+        # b_coeffs = np.linalg.solve(unit_grid, np.transpose(py))
+
+        return a_coeffs.flatten(), b_coeffs.flatten()
+
+    def convert_physical_to_logical(self, a_coeffs, b_coeffs, x, y):
+        """
+        Convert the physical coordinates to logical coordinates.
+
+        Parameters
+        ----------
+        a_coeffs : array
+            Perspective transformation coefficients for alpha.
+        b_coeffs : array
+            Perspective transformation coefficients for beta.
+        x : float
+            The x coordinate value.
+        y : float
+            The y coordinate value.
+        """
+        # aa = a(4)*b(3) - a(3)*b(4)
+        aa = a_coeffs[3] * b_coeffs[2] - a_coeffs[2] * b_coeffs[3]
+        # bb = a(4)*b(1) - a(1)*b(4) + a(2)*b(3) - a(3)*b(2) + x*b(4) - y*a(4)
+        bb = (a_coeffs[3] * b_coeffs[0] - a_coeffs[0] * b_coeffs[3]
+              + a_coeffs[1] * b_coeffs[2] - a_coeffs[2]
+              * b_coeffs[1] + x * b_coeffs[3] - y * a_coeffs[3])
+        # cc = a(2)*b(1) - a(1)*b(2) + x*b(2) - y*a(2)
+        cc = (a_coeffs[1]*b_coeffs[0] - b_coeffs[0]
+              * b_coeffs[1] + x * b_coeffs[1] - y * b_coeffs[1])
+
+        # compute m_points (-b+sqrt(b ^ 2-4ac))/(2a)
+        det = np.sqrt((bb * bb) - (4 * aa * cc))
+        if(aa.all() == 0.0):
+            m_points = -cc / bb
+        else:
+            m_points = (-bb + det) / (2 * aa)
+        # compute l_points
+        l_points = ((x - a_coeffs[0] - a_coeffs[2] * m_points) /
+                    (a_coeffs[1] + a_coeffs[3] * m_points))
+        return m_points.tolist(), l_points.tolist()
+
+    def convert_to_physical(self, a_coeffs, b_coeffs, l_point, m_point):
+        """
+        Convert to physical coordinates from logical coordinates.
+
+        Parameters
+        ----------
+        a_coeffs : array
+            Perspective transformation coefficients for alpha.
+        b_coeffs : array
+            Perspective transformation coefficients for beta.
+        l_points : float
+            Logical point in the x direction.
+        m_point : float
+            Logical point in the y direction.
+
+        Returns
+        -------
+        x, y : tuple
+            The x and y physical values on the specified grid.
+        """
+        # x = a(1) + a(2)*l + a(3)*m + a(4)*l*m
+        x = (a_coeffs[0] + a_coeffs[1] * l_point + a_coeffs[2]
+             * m_point + a_coeffs[3] * l_point * m_point)
+        # y = b(1) + b(2)*l + b(3)*m + b(4)*l*m
+        y = (b_coeffs[0] + b_coeffs[1] * l_point +
+             b_coeffs[2] * m_point + b_coeffs[3] * l_point * m_point)
+        return x, y
 
     def get_points(self, xx, yy):
         """

@@ -1,6 +1,7 @@
 import pytest
 from ophyd.sim import make_fake_device
 from pcdsdevices.targets import XYGridStage
+import numpy as np
 
 
 @pytest.fixture(scope='function')
@@ -35,3 +36,102 @@ def test_samples_yaml_file(fake_grid_stage, sample_file):
     # test all mapped samples
     res = xy.mapped_samples(path=sample_file)
     assert res == ['sample1', 'sample2']
+
+
+def test_mapping_points(fake_grid_stage):
+    xx = np.linspace(0, 4, 5)
+    yy = np.linspace(0, 4, 5)
+
+    top_left, top_right = (0, 0), (4, 0)
+    bottom_left, bottom_right = (0, 4), (4, 4)
+    xx, yy = np.meshgrid(xx, yy)
+
+    coeffs = fake_grid_stage.mesh_interpolation(top_left=top_left,
+                                                top_right=top_right,
+                                                bottom_right=bottom_right,
+                                                bottom_left=bottom_left)
+    a = coeffs[0]
+    b = coeffs[1]
+    # find logical l and m
+    m_points, l_points = [], []
+    for i in range(xx.shape[0]):
+        m_point, l_point = fake_grid_stage.convert_physical_to_logical(
+                            a_coeffs=a, b_coeffs=b, x=xx[i], y=yy[i])
+        m_points.extend(m_point)
+        l_points.extend(l_point)
+
+    # find physical x and y
+    x_points, y_points = [], []
+    for i in range(len(m_points)):
+        x, y = fake_grid_stage.convert_to_physical(a_coeffs=a, b_coeffs=b,
+                                                   l_point=l_points[i],
+                                                   m_point=m_points[i])
+        x_points.append(x)
+        y_points.append(y)
+
+    expected_x_points = [0.0, 1.0, 2.0, 3.0, 4.0,
+                         0.0, 1.0, 2.0, 3.0, 4.0,
+                         0.0, 1.0, 2.0, 3.0, 4.0,
+                         0.0, 1.0, 2.0, 3.0, 4.0,
+                         0.0, 1.0, 2.0, 3.0, 4.0]
+
+    expected_y_points = [0.0, 0.0, 0.0, 0.0, 0.0,
+                         1.0, 1.0, 1.0, 1.0, 1.0,
+                         2.0, 2.0, 2.0, 2.0, 2.0,
+                         3.0, 3.0, 3.0, 3.0, 3.0,
+                         4.0, 4.0, 4.0, 4.0, 4.0]
+
+    assert expected_x_points == x_points
+
+    x, y = fake_grid_stage.projective_transform(
+            xx=xx, yy=yy, top_left=top_left, top_right=top_right,
+            bottom_right=bottom_right, bottom_left=bottom_left)
+
+    # the_x, the_y = [], []
+    # for i in range(x.shape[0]):
+    #     the_x.extend(x[i])
+    #     the_y.extend(y[i])
+
+    assert np.isclose(x.flatten(), expected_x_points).all()
+    assert np.isclose(y.flatten(), expected_y_points).all()
+
+    xx = np.linspace(0, 4, 5)
+    yy = np.linspace(0, 4, 5)
+
+    top_left, top_right = (0, 0), (4, -1)
+    bottom_left, bottom_right = (1, 4), (5, 3)
+    xx, yy = np.meshgrid(xx, yy)
+
+    x, y = fake_grid_stage.projective_transform(
+        xx=xx, yy=yy, top_left=top_left, top_right=top_right,
+        bottom_right=bottom_right, bottom_left=bottom_left)
+
+    # seems to work fine here too
+    # plt.scatter(x, y)
+    # plt.show()
+    coeffs = fake_grid_stage.mesh_interpolation(top_left=top_left,
+                                                top_right=top_right,
+                                                bottom_right=bottom_right,
+                                                bottom_left=bottom_left)
+    a = coeffs[0]
+    b = coeffs[1]
+    # find logical l and m
+    m_points, l_points = [], []
+    for i in range(xx.shape[0]):
+        m_point, l_point = fake_grid_stage.convert_physical_to_logical(
+            a_coeffs=a, b_coeffs=b, x=xx[i], y=yy[i])
+        m_points.extend(m_point)
+        l_points.extend(l_point)
+
+    # find physical x and y
+    x_points, y_points = [], []
+    for i in range(len(m_points)):
+        x, y = fake_grid_stage.convert_to_physical(a_coeffs=a, b_coeffs=b,
+                                                   l_point=l_points[i],
+                                                   m_point=m_points[i])
+        x_points.append(x)
+        y_points.append(y)
+
+    # with my old function this seems to work again...
+    # plt.scatter(x_points, y_points)
+    # # plt.show()
