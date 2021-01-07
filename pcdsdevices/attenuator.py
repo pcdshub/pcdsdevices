@@ -722,15 +722,11 @@ class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
     )
 
 
-class AttenuatorCalculatorSXR_Blade(BaseInterface, Device):
+class AttenuatorCalculatorSXR_Blade(AttenuatorCalculatorFilter):
     # TODO FltMvInterface?
     """
     A single blade, holding up to 8 filters.
     """
-    def __init__(self, *args, index, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.index = index
-
     tab_component_names = True
     filter_01 = Cpt(AttenuatorCalculatorFilter, ':FILTER:01:', index=1)
     filter_02 = Cpt(AttenuatorCalculatorFilter, ':FILTER:02:', index=2)
@@ -740,6 +736,8 @@ class AttenuatorCalculatorSXR_Blade(BaseInterface, Device):
     filter_06 = Cpt(AttenuatorCalculatorFilter, ':FILTER:06:', index=6)
     filter_07 = Cpt(AttenuatorCalculatorFilter, ':FILTER:07:', index=7)
     filter_08 = Cpt(AttenuatorCalculatorFilter, ':FILTER:08:', index=8)
+    inserted_filter_index = Cpt(EpicsSignalRO, ':InsertedFilter_RBV',
+                                kind='normal')
 
     _filter_index_to_attr = {
         1: 'filter_01',
@@ -754,8 +752,16 @@ class AttenuatorCalculatorSXR_Blade(BaseInterface, Device):
 
     def format_status_info(self, status_info):
         """
-        Override status info handler to render the attenuator.
+        Override status info handler to render the attenuator blade.
         """
+        inserted_filter = get_status_value(
+            status_info, 'inserted_filter_index', 'value')
+        material = get_status_value(status_info, 'material', 'value')
+        thickness = get_status_value(status_info, 'thickness', 'value')
+        transmission = get_status_value(
+            status_info, 'transmission', 'value', default_value=0.0)
+        transmission3 = get_status_value(
+            status_info, 'transmission_3omega', 'value', default_value=0.0)
         table = utils.format_status_table(
             status_info,
             row_to_key=self._filter_index_to_attr,
@@ -769,7 +775,21 @@ class AttenuatorCalculatorSXR_Blade(BaseInterface, Device):
             },
             row_identifier='Filter',
         )
-        return str(table)
+
+        if inserted_filter is not None and inserted_filter > 0:
+            inserted_info = (
+                f'Inserted filter: #{inserted_filter}'
+                f'{material} {thickness} um (T={transmission} '
+                f'T3={transmission3})'
+            )
+        else:
+            inserted_info = 'Inserted filter: None'
+
+        return f'''\
+{inserted_info}
+
+{table}
+'''
 
 
 class AttenuatorCalculatorSXR_FourBlade(AttenuatorCalculatorBase):
