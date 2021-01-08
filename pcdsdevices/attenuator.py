@@ -1096,6 +1096,44 @@ class BladeStateEnum(enum.Enum):
         }.get(self, '?')
 
 
+class LadderBladeState(enum.IntEnum):
+    """
+    SXR attenuator ladder motion states.
+    """
+    # 'Moving' is also: "unknown" or "between states"
+    Moving = 0
+
+    # 'Out' is fixed at 1:
+    Out = 1
+
+    # And any "in" states follow:
+    In_01 = 2
+    In_02 = 3
+    In_03 = 4
+    In_04 = 5
+    In_05 = 6
+    In_06 = 7
+    In_07 = 8
+    In_08 = 9
+
+    @property
+    def filter_index(self):
+        """The one-based filter index, if inserted."""
+        if not self.is_inserted:
+            return None
+        return self.value - 1
+
+    @property
+    def is_inserted(self):
+        """Is a filter inserted?"""
+        return self not in {LadderBladeState.Moving, LadderBladeState.Out}
+
+    @property
+    def is_moving(self) -> bool:
+        """Is the blade moving?"""
+        return self == LadderBladeState.Moving
+
+
 def get_blade_enum(value):
     try:
         return BladeStateEnum[value]
