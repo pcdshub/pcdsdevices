@@ -82,6 +82,7 @@ def test_mapping_points(fake_grid_stage):
                          4.0, 4.0, 4.0, 4.0, 4.0]
 
     assert expected_x_points == x_points
+    print(y_points)
     # I AM NOT GET THE EXPECTED Ys!!
     coeffs = fake_grid_stage.projective_transform(
                 top_left=top_left, top_right=top_right,
@@ -114,6 +115,8 @@ def test_mapping_points(fake_grid_stage):
                                                 bottom_left=bottom_left)
     a = coeffs[0]
     b = coeffs[1]
+    print(f'a: {a}')
+    print(f'b: {b}')
     # find logical l and m
     m_points, l_points = [], []
     for i in range(xx.shape[0]):

@@ -675,31 +675,29 @@ class XYGridStage(XYTargetGrid):
             raise ValueError('Could not get presets, make sure you set presets'
                              ' first using the `set_presets` method.')
 
-        # leaving these guys here for reference only for now
         # distance from bottom_left to top_left
-        # height = np.sqrt(np.power((top_left[0] - bottom_left[0]), 2)
-        #                  + np.power((top_left[1] - bottom_left[1]), 2))
-        # # distance from top_left to top_right
-        # width = np.sqrt(np.power((top_right[0] - top_left[0]), 2)
-        #                 + np.power((top_right[1] - top_left[1]), 2))
+        height = np.sqrt(np.power((top_left[0] - bottom_left[0]), 2)
+                         + np.power((top_left[1] - bottom_left[1]), 2))
+        # distance from top_left to top_right
+        width = np.sqrt(np.power((top_right[0] - top_left[0]), 2)
+                        + np.power((top_right[1] - top_left[1]), 2))
+        start_x, start_y = top_left[0], top_left[1]
+        perfect_bl = [start_x, start_y + height]
+        perfect_tr = [start_x + width, start_y]
 
         m_points, n_points = self.m_n_points
 
-        # starting at 0, 0 top left corner, find the other 2 points if known
-        # m and n such that we would create a perfectly rectilinear grid
-        # x_grid_points = np.linspace(
-        #     top_left[0], top_left[0] + m_points, num=m_points)
-        # y_grid_points = np.linspace(
-        #     top_left[1], top_left[1] + n_points, num=n_points)
-        # x_grid_points = np.linspace(
-        #     top_left[0], top_left[0] + m_points, num=m_points)
-        # y_grid_points = np.linspace(
-        #     top_left[1], top_left[1] + n_points, num=n_points)
-        # maybe max of absolute value of y.....
         x_grid_points = np.linspace(
-            top_left[0], top_right[0], num=m_points)
+            top_left[0], perfect_tr[0], num=m_points)
         y_grid_points = np.linspace(
-            top_left[1], bottom_left[1], num=n_points)
+            top_left[1], perfect_bl[1], num=n_points)
+
+        # leaving this here for now, it was working fine but might not work in
+        #  all cases
+        # x_grid_points = np.linspace(
+        #     top_left[0], top_right[0], num=m_points)
+        # y_grid_points = np.linspace(
+        #     top_left[1], bottom_left[1], num=n_points)
 
         # The meshgrid function returns two 2-dimensional arrays
         xx_origin, yy_origin = np.meshgrid(x_grid_points, y_grid_points)
@@ -734,49 +732,42 @@ class XYGridStage(XYTargetGrid):
         yy = self.snake_grid_list(yy)
         return xx, yy
 
-    # def shear_transform(self, xx, yy, top_left, top_right, bottom_left):
-    #     """
-    #     Perform shear transformation.
+    def find_perfect_coordiantes(self, top_left, top_right, bottom_right,
+                                 bottom_left):
+        """
+        Find a rectangule given 4 points for a quarilateral.
 
-    #     Parameters
-    #     ----------
-    #     xx : array
-    #         Array with 'perfectly' mapped x coordinate points.
-    #     yy : array
-    #         Array with 'perfectly' mapped y coordinate points.
-    #     top_left : tuple
-    #         (x, y) coordinates of the top left corner
-    #     top_right : tuple
-    #         (x, y) coordinates of the top right corner
-    #     bottom_left : tuple
-    #         (x, y) coordinates of the bottom left corner
+        Based on 4 coordinates ABCD find the distance A->B and distance
+        B->C and add those distances to the starting coordinates to find
+        the top_right corner and bottom_left corner respectively.
+        Add perfect top_right coordinats to the perfect bottom_left
+        coordinates to get the bottom_right corner coordinates.
+        """
+        # a, b, c, d = top_left, top_right, bottom_right, bottom_left
+        # area1 = ((a[0] * (b[1] - c[1]) + b[0] *
+        #          (c[1] - a[1]) + c[0] * (a[1] - b[1])) / 2)
 
-    #     Returns
-    #     -------
-    #     points : tuple
-    #         xx, yy arrays of mapped points after shear transformation.
-    #     """
-    #     xx_shape = xx.shape
-    #     yy_shape = yy.shape
+        # area2 = ((a[0] * (d[1] - c[1]) + d[0] *
+        #           (c[1] - a[1]) + c[0] * (a[1] - d[1])) / 2)
+        # area = abs(area1) + abs(area2)
+        # distance from bottom_left to top_left
+        height = np.sqrt(np.power((top_left[0] - bottom_left[0]), 2)
+                         + np.power((top_left[1] - bottom_left[1]), 2))
+        # distance from top_left to top_right
+        width = np.sqrt(np.power((top_right[0] - top_left[0]), 2)
+                        + np.power((top_right[1] - top_left[1]), 2))
+        start_x, start_y = top_left[0], top_left[1]
+        perfect_bl = [start_x, start_y + height]
+        perfect_tr = [start_x + width, start_y]
+        # find the 4th perfect coordinate
+        perfect_br = [perfect_tr[0] + perfect_bl[0],
+                      perfect_tr[1] + perfect_bl[1]]
 
-    #     if (bottom_left[1] - top_left[1]) == 0:
-    #         x_factor = 0
-    #     else:
-    #         x_factor = np.arctan(
-    #             (bottom_left[0] - top_left[0])
-    #             / (bottom_left[1] - top_left[1]))
-    #     if (top_right[0] - top_left[0]) == 0:
-    #         y_factor = 0
-    #     else:
-    #         y_factor = (np.arctan(
-    #             (top_right[1] - top_left[1]) / (top_right[0] - top_left[0])))
-
-    #     shear_arr = (np.array([1.0, x_factor,
-    #                            y_factor, 1.0]).reshape(2, 2))
-    #     points = np.einsum('ij, jk', shear_arr, np.array(
-    #         [xx.flatten(), yy.flatten()]))
-
-        # return points[0].reshape(xx_shape), points[1].reshape(yy_shape)
+        perfect_plane = [(top_left[0], top_left[1]),
+                         (perfect_tr[0], perfect_tr[1]),
+                         (perfect_br[0], perfect_br[1]),
+                         (perfect_bl[0], perfect_bl[1])]
+        return perfect_plane
 
     # TODO: this probably belongs somewhere else as well as the snake like grid
     def projective_transform(self, top_left, top_right, bottom_right,
@@ -801,22 +792,11 @@ class XYGridStage(XYTargetGrid):
             List of 8 projective transformation coefficients. They are used to
             find x and y.
         """
-        # to find the 'perfect' x value for the top_right we can calculate it
-        # knowing the 'perfect' y value at that point
-        # y = mx + b
-        # m = (y1 - y0) / (x1-x0)
-        # b = y - mx
-        # slope = (top_right[1] - top_left[0]) / (top_right[0] - top_left[0])
-        # y_intercept = top_left[1] - slope * top_left[0]
-        # # find x given the perfect y at top_left[1]
-        # x_tr = slope * top_left[1] + y_intercept
-
         # TODO i don't know how to find the true coordinate values of this
-        # perfect plane
-        perfect_plane = [(top_left[0], top_left[1]),
-                         (top_right[0], top_left[1]),
-                         (top_right[0], bottom_left[1]),
-                         (top_left[0], bottom_left[1])]
+        # perfect plane - not sure if this will work fine...
+        perfect_plane = self.find_perfect_coordiantes(top_left, top_right,
+                                                      bottom_right,
+                                                      bottom_left)
 
         new_plane = [(top_left[0], top_left[1]),
                      (top_right[0], top_right[1]),
@@ -998,8 +978,16 @@ class XYGridStage(XYTargetGrid):
         x = (a_coeffs[0] + a_coeffs[1] * l_point + a_coeffs[2]
              * m_point + a_coeffs[3] * l_point * m_point)
         # y = b(1) + b(2)*l + b(3)*m + b(4)*l*m
-        y = (b_coeffs[0] + b_coeffs[1] * l_point +
-             b_coeffs[2] * m_point + b_coeffs[3] * l_point * m_point)
+        # y = (b_coeffs[0] + b_coeffs[1] * l_point +
+        #      b_coeffs[2] * m_point + b_coeffs[3] * l_point * m_point)
+        a = a_coeffs
+        b = b_coeffs
+        m = m_point
+        y = ((1) / (a[1] + a[3] * m) * (-a[0] * b[1] - a[0] * b[3] * m + a[1]
+                                        * b[0] + a[1] * b[2] * m - a[2] * b[1]
+                                        * m - (a[2] * b[3]) * m * m + a[3]
+                                        * b[0] * m + a[3] * b[2] * (m * m)
+                                        + b[1] * x + b[3] * m))
         return x, y
 
     def snake_grid_list(self, points):
