@@ -20,7 +20,7 @@ from .epics_motor import BeckhoffAxis
 from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
 from .signal import InternalSignal, _OptionalEpicsSignal
-from .utils import get_status_value
+from .utils import get_status_float, get_status_value
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -901,19 +901,23 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
         """
         Override status info handler to render the attenuator.
         """
-        transmission = get_status_value(
-            status_info, 'calculator', 'actual_transmission', 'value',
-            default_value=0.0,
+        calc_status = status_info.get('calculator', {})
+        transmission = get_status_float(
+            calc_status, 'actual_transmission', 'value',
+            format='E', precision=3,
         )
-        transmission_3 = get_status_value(
-            status_info, 'calculator', 'actual_transmission_3omega', 'value',
-            default_value=0.0,
+        transmission_3 = get_status_float(
+            calc_status, 'actual_transmission_3omega', 'value',
+            format='E', precision=3,
         )
-        energy = get_status_value(
-            status_info, 'calculator', 'energy_actual', 'value',
-            default_value=0.0,
-        ) / 1e3
-
+        energy = get_status_float(
+            calc_status, 'energy_actual', 'value',
+            scale=1e-3,
+        )
+        energy_3 = get_status_float(
+            calc_status, 'energy_actual', 'value',
+            scale=3 * 1e-3,
+        )
         cpt_states = [
             get_status_value(
                 status_info, cpt, 'state', 'state', 'value',
@@ -931,8 +935,8 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
 
         return f"""
 {table}
-Transmission (E={energy:.3} keV): {transmission:.4E}
-Transmission for 3rd harmonic (E={energy * 3.0:.3} keV): {transmission_3:.4E}
+Transmission (E={energy} keV): {transmission}
+Transmission for 3rd harmonic (E={energy_3} keV): {transmission_3}
 """
 
 
