@@ -728,15 +728,15 @@ class AttenuatorCalculatorSXR_Blade(AttenuatorCalculatorFilter):
     A single blade, holding up to 8 filters.
     """
     tab_component_names = True
-    filter_01 = Cpt(AttenuatorCalculatorFilter, ':FILTER:01:', index=1)
-    filter_02 = Cpt(AttenuatorCalculatorFilter, ':FILTER:02:', index=2)
-    filter_03 = Cpt(AttenuatorCalculatorFilter, ':FILTER:03:', index=3)
-    filter_04 = Cpt(AttenuatorCalculatorFilter, ':FILTER:04:', index=4)
-    filter_05 = Cpt(AttenuatorCalculatorFilter, ':FILTER:05:', index=5)
-    filter_06 = Cpt(AttenuatorCalculatorFilter, ':FILTER:06:', index=6)
-    filter_07 = Cpt(AttenuatorCalculatorFilter, ':FILTER:07:', index=7)
-    filter_08 = Cpt(AttenuatorCalculatorFilter, ':FILTER:08:', index=8)
-    inserted_filter_index = Cpt(EpicsSignalRO, ':InsertedFilter_RBV',
+    filter_01 = Cpt(AttenuatorCalculatorFilter, 'FILTER:01:', index=1)
+    filter_02 = Cpt(AttenuatorCalculatorFilter, 'FILTER:02:', index=2)
+    filter_03 = Cpt(AttenuatorCalculatorFilter, 'FILTER:03:', index=3)
+    filter_04 = Cpt(AttenuatorCalculatorFilter, 'FILTER:04:', index=4)
+    filter_05 = Cpt(AttenuatorCalculatorFilter, 'FILTER:05:', index=5)
+    filter_06 = Cpt(AttenuatorCalculatorFilter, 'FILTER:06:', index=6)
+    filter_07 = Cpt(AttenuatorCalculatorFilter, 'FILTER:07:', index=7)
+    filter_08 = Cpt(AttenuatorCalculatorFilter, 'FILTER:08:', index=8)
+    inserted_filter_index = Cpt(EpicsSignalRO, 'InsertedFilter_RBV',
                                 kind='normal')
 
     _filter_index_to_attr = {
@@ -776,11 +776,12 @@ class AttenuatorCalculatorSXR_Blade(AttenuatorCalculatorFilter):
             row_identifier='Filter',
         )
 
-        if inserted_filter is not None and inserted_filter > 0:
+        if inserted_filter is not None and inserted_filter > 1:
+            # Subtract 1 from the filter to match state -> filter index
             inserted_info = (
-                f'Inserted filter: #{inserted_filter}'
-                f'{material} {thickness} um (T={transmission} '
-                f'T3={transmission3})'
+                f'Inserted filter: #{inserted_filter - 1} ('
+                f'{material} {thickness} um T={transmission} '
+                f'at 3 omega={transmission3})'
             )
         else:
             inserted_info = 'Inserted filter: None'
@@ -815,10 +816,10 @@ class AttenuatorCalculatorSXR_FourBlade(AttenuatorCalculatorBase):
         4: 'axis_04',
     }
 
-    axis_01 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:01', index=1)
-    axis_02 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:02', index=2)
-    axis_03 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:03', index=3)
-    axis_04 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:04', index=4)
+    axis_01 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:01:', index=1)
+    axis_02 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:02:', index=2)
+    axis_03 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:03:', index=3)
+    axis_04 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:04:', index=4)
 
     def format_status_info(self, status_info):
         """
