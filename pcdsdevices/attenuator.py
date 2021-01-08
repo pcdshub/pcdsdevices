@@ -6,6 +6,7 @@ import logging
 import time
 
 import numpy as np
+import prettytable
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import DynamicDeviceComponent as DDC
@@ -562,10 +563,10 @@ class AttenuatorCalculatorBase(BaseInterface, Device):
     )
 
     # NOTE: this variant exists as well but duplicates the bitmask information:
-    # best_config = Cpt(
-    #     EpicsSignalRO, ':SYS:BestConfiguration_RBV', kind='normal',
-    #     doc='The best configuration of filters for the desired transmission',
-    # )
+    best_config = Cpt(
+        EpicsSignalRO, ':SYS:BestConfiguration_RBV', kind='normal',
+        doc='The best configuration of filters for the desired transmission',
+    )
     # set_metadata(best_config, dict(variety='array-nd'))
     # # TODO: array-tabular would be nice, but does not work in typhos yet
 
@@ -582,10 +583,10 @@ class AttenuatorCalculatorBase(BaseInterface, Device):
     )
 
     # NOTE: this variant exists as well but duplicates the bitmask information:
-    # active_config = Cpt(
-    #     EpicsSignalRO, ':SYS:ActiveConfiguration_RBV', kind='omitted',
-    #     doc='Where the filters are now',
-    # )
+    active_config = Cpt(
+        EpicsSignalRO, ':SYS:ActiveConfiguration_RBV', kind='omitted',
+        doc='Where the filters are now',
+    )
     # set_metadata(active_config, dict(variety='array-nd'))
     # TODO: array-tabular would be nice, but does not work in typhos yet
 
@@ -596,10 +597,10 @@ class AttenuatorCalculatorBase(BaseInterface, Device):
     set_metadata(active_config_bitmask, dict(variety='bitmask', bits=18))
 
     # NOTE: this variant exists as well but duplicates the bitmask information:
-    # filters_moving = Cpt(
-    #     EpicsSignalRO, ':SYS:FiltersMoving_RBV', kind='normal',
-    #     doc='Filter-by-filter motion status (1 if moving)',
-    # )
+    filters_moving = Cpt(
+        EpicsSignalRO, ':SYS:FiltersMoving_RBV', kind='normal',
+        doc='Filter-by-filter motion status (1 if moving)',
+    )
     # set_metadata(filters_moving, dict(variety='array-nd'))
 
     filters_moving_bitmask = Cpt(
@@ -638,22 +639,17 @@ class AttenuatorCalculatorBase(BaseInterface, Device):
             for index, attr in self._filter_index_to_attr.items()
         }
 
-    def _bitmask_to_list(self, value):
-        """Bitmask value to list of bits (e.g., 23 to [..., 1, 0, 1, 1, 1])."""
-        bits = bin(value)[2:].zfill(self.num_filters)
-        return list(int(i) for i in bits)
-
     def get_active_config(self, **kwargs):
         """Get the active filter configuration."""
-        return self._bitmask_to_list(self.active_config_bitmask.get(**kwargs))
+        return list(self.active_config.get(**kwargs))
 
     def get_best_config(self, **kwargs):
         """Get the calculated (best) filter configuration."""
-        return self._bitmask_to_list(self.best_config_bitmask.get(**kwargs))
+        return list(self.best_config.get(**kwargs))
 
     def get_moving_status(self, **kwargs):
         """Get the filter motion status."""
-        return self._bitmask_to_list(self.filters_moving_bitmask.get(**kwargs))
+        return list(self.filters_moving.get(**kwargs))
 
     def calculate(self, transmission, *, energy=None, use_floor=True):
         """
@@ -807,6 +803,8 @@ class AttenuatorCalculatorSXR_FourBlade(AttenuatorCalculatorBase):
     """
 
     tab_component_names = True
+    first_filter = 1
+    num_filters = 4
     # Not using "DDC" here, so the parent is `self`:
     _filter_parent = None
     _filter_index_to_attr = {
@@ -903,12 +901,6 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
         """
         Override status info handler to render the attenuator.
         """
-        # Get the attenuator statuses
-        states = [
-            get_status_value(status_info, cpt, 'state', 'state', 'value')
-            for cpt in self.lightpath_cpts
-        ]
-
         transmission = get_status_value(
             status_info, 'calculator', 'actual_transmission', 'value',
             default_value=0.0,
@@ -922,7 +914,23 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
             default_value=0.0,
         ) / 1e3
 
-        return '\n'.join(render_ascii_att(states, start_index=1)) + f"""
+        cpt_states = [
+            get_status_value(
+                status_info, cpt, 'state', 'state', 'value',
+                default_value=0
+            )
+            for cpt in self.lightpath_cpts
+        ]
+
+        table = prettytable.PrettyTable()
+        table.field_names = ['State'] + list(self.lightpath_cpts)
+        for state in LadderBladeState:
+            row = [state.name] + ['X' if cpt_state == state.value else ''
+                                  for cpt_state in cpt_states]
+            table.add_row(row)
+
+        return f"""
+{table}
 Transmission (E={energy:.3} keV): {transmission:.4E}
 Transmission for 3rd harmonic (E={energy * 3.0:.3} keV): {transmission_3:.4E}
 """
