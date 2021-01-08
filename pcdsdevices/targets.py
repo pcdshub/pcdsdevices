@@ -877,12 +877,12 @@ class XYGridStage(XYTargetGrid):
             transformation. They are used to find x and y.
         """
         # describes the entire point space enclosed by the quadrilateral
-        unit_grid = np.array([[1, 0, 0, 0],
-                              [1, 1, 0, 0],
-                              [1, 1, 1, 1],
-                              [1, 0, 1, 0]])
-        # unit_grid = self.get_unit_grid(top_left, top_right, bottom_right,
-        #                                bottom_left)
+        # unit_grid = np.array([[1, 0, 0, 0],
+        #                       [1, 1, 0, 0],
+        #                       [1, 1, 1, 1],
+        #                       [1, 0, 1, 0]])
+        unit_grid = self.get_unit_grid(top_left, top_right, bottom_right,
+                                       bottom_left)
         # x value coordinates for current grid (4 corners)
         px = np.array([top_left[0],
                        top_right[0],
@@ -893,17 +893,8 @@ class XYGridStage(XYTargetGrid):
                        top_right[1],
                        bottom_right[1],
                        bottom_left[1]])
-        # inv_unit_grid = np.linalg.inv(unit_grid)
-        # a_coeffs = inv_unit_grid * px
-        # b_coeffs = inv_unit_grid * py
-        # print(a_coeffs, b_coeffs)
-        # a_coeffs = (inv_unit_grid.T * px).T
-        # b_coeffs = (inv_unit_grid.T * py).T
-        # print(a_coeffs, b_coeffs)
         a_coeffs = np.linalg.inv(unit_grid).dot(np.transpose(px))
         b_coeffs = np.linalg.inv(unit_grid).dot(np.transpose(py))
-        # print('\n')
-        # print(a_coeffs, b_coeffs)
         return a_coeffs.flatten(), b_coeffs.flatten()
 
     def map_points_second(self, top_left=None, top_right=None,
@@ -926,23 +917,29 @@ class XYGridStage(XYTargetGrid):
         a_coeffs, b_coeffs = self.mesh_interpolation(top_left, top_right,
                                                      bottom_right, bottom_left)
 
-        ll, mm = [], []
+        # ll, mm = [], []
         xx, yy = self.get_meshgrid(top_left, top_right, bottom_right,
                                    bottom_left, m_points, n_points)
 
-        for i in range(len(xx)):
-            for j in range(len(xx[i])):
-                m_point, l_point = self.convert_physical_to_logical(
-                    a_coeffs, b_coeffs, xx[i][j], yy[i][j])
-                mm.append(m_point)
-                ll.append(l_point)
+        # for i in range(len(xx)):
+        #     for j in range(len(xx[i])):
+        #         m_point, l_point = self.convert_physical_to_logical(
+        #             a_coeffs, b_coeffs, xx[i][j], yy[i][j])
+        #         mm.append(m_point)
+        #         ll.append(l_point)
 
         x_points, y_points = [], []
-        for i in range(len(mm)):
-            x, y = self.convert_to_physical(
-                a_coeffs, b_coeffs, ll[i], mm[i])
-            x_points.append(x)
-            y_points.append(y)
+        # for i in range(len(mm)):
+        #     x, y = self.convert_to_physical(
+        #         a_coeffs, b_coeffs, ll[i], mm[i])
+        #     x_points.append(x)
+        #     y_points.append(y)
+        for i in range(len(xx)):
+            for j in range(len(xx[i])):
+                m_point, l_point = self.convert_to_physical(
+                    a_coeffs, b_coeffs, xx[i][j], yy[i][j])
+                x_points.append(m_point)
+                y_points.append(l_point)
 
         if not snake_like:
             return x_points, y_points

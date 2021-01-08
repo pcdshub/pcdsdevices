@@ -64,7 +64,7 @@ def test_mapping_points(fake_grid_stage):
                          4.0, 4.0, 4.0, 4.0, 4.0]
 
     assert expected_x_points == x
-    #  I AM NOT GETTING THE EXPECTED Ys!!
+    assert expected_y_points == y
 
     coeffs = fake_grid_stage.projective_transform(
                 top_left=top_left, top_right=top_right,
@@ -76,3 +76,8 @@ def test_mapping_points(fake_grid_stage):
 
     top_left, top_right = (0, 0), (4, -1)
     bottom_left, bottom_right = (1, 4), (5, 3)
+
+    x, y = fake_grid_stage.map_points_second(top_left, top_right, bottom_right,
+                                             bottom_left, 5, 5, False)
+    # plt.scatter(x, y)
+    # plt.show()
