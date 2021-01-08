@@ -389,8 +389,8 @@ class XYGridStage(XYTargetGrid):
     Class that helps support multiple samples on a mount for an XY Grid setup.
 
     We could have multiple samples mounted in a setup. This class helps
-    figuring out the samples' patterns and maps points accordingly, and saves
-    those records in a file.
+    figuring out the samples xy coordinates for each target on the grid,
+    maps points accordingly, and saves those records in a file.
 
     Parameters
     ----------
@@ -411,7 +411,7 @@ class XYGridStage(XYTargetGrid):
         Path to an `yaml` file where to save the grid patterns for
         different samples.
     """
-    # TODO: i don't really need this
+
     sample_schema = json.loads("""
     {
         "type": "object",
@@ -448,8 +448,8 @@ class XYGridStage(XYTargetGrid):
         """
         Get the current m and n points.
 
-        The m and n points represents the number of grid points on the current
-        grid in the x and y direction respectively.
+        The m and n points represent the number of grid points on the current
+        grid in the x (m) and y (n) direction.
 
         Returns
         -------
@@ -470,7 +470,7 @@ class XYGridStage(XYTargetGrid):
         Parameters
         ----------
         m_n_values : tuple
-            The number of grid points on the x and y axis respecively.
+            The number of grid points on the x and y axis respectively.
 
         Examples
         --------
@@ -488,7 +488,7 @@ class XYGridStage(XYTargetGrid):
         Get the current coefficients if any.
 
         These coefficients are calculated from the projective transformation.
-        Knowing the coefficients, and x an y value can be determined.
+        Knowing the coefficients, the x an y values can be determined.
 
         Returns
         -------
@@ -503,7 +503,7 @@ class XYGridStage(XYTargetGrid):
         Set the current coefficients.
 
         These coefficients are calculated from the projective transformation.
-        Knowing the coefficients, and x an y value can be determined.
+        Knowing the coefficients, the x an y values can be determined.
 
         Parameters
         ----------
@@ -541,7 +541,7 @@ class XYGridStage(XYTargetGrid):
         ----------
         sample_name : str
             The sample name that we want the grid for. To see current
-            avaialble samples call `mapped_grids`
+            available samples call `mapped_grids`
         path : str, optional
             Path to the `.yml` file. Defaults to the path defined when
             creating this object.
@@ -579,18 +579,24 @@ class XYGridStage(XYTargetGrid):
                 logger.error('Error when loading the samples yaml file: %s',
                              err)
         if data is None:
-            logger.warning('The file is empty, not sample grid yet. '
+            logger.warning('The file is empty, no sample grid yet. '
                            'Please use `save_presets` to insert grids '
                            'in the file.')
         try:
             return data[sample_name]
         except Exception:
-            logger.error('The sample %s might not have x and y points devined '
-                         'in the file.', sample_name)
+            logger.error('The sample %s might not exist in the file.',
+                         sample_name)
 
     def save_grid(self, sample_name, path=None):
         """
         Save a grid of mapped points for a sample.
+
+        This will save the date it was created, along with the sample name,
+        the m and n points, the coordinates for the four corners, and the
+        coefficients that will help get the x and y position on the grid.
+        If an existing name for a sample is saved again, it will override
+        the information for that sample.
 
         Parameters
         ----------
@@ -619,9 +625,6 @@ class XYGridStage(XYTargetGrid):
                               "M": m_points,
                               "N": n_points,
                               "coefficients": coefficients}}
-        # validate the data
-        # TODO: don't need this anymore, so maybe remove it,
-        # but it won't hurt to have it anyway
         try:
             temp_data = json.loads(json.dumps(data[sample_name]))
             jsonschema.validate(temp_data, self.sample_schema)
@@ -692,7 +695,7 @@ class XYGridStage(XYTargetGrid):
         y_grid_points = np.linspace(
             top_left[1], perfect_bl[1], num=n_points)
 
-        # leaving this here for now, it was working fine but might not work in
+        # leaving this here for now, it was working fine but migth not work in
         #  all cases
         # x_grid_points = np.linspace(
         #     top_left[0], top_right[0], num=m_points)
@@ -708,15 +711,6 @@ class XYGridStage(XYTargetGrid):
             bottom_right=bottom_right, bottom_left=bottom_left)
         coeffs = list(coeffs)
         xx, yy = self.get_xy_coordinate(xx_origin, yy_origin, coeffs)
-        # if projective:
-        #     xx, yy = self.projective_transform(xx=xx_origin, yy=yy_origin,
-        #                                        top_left=top_left,
-        #                                        top_right=top_right,
-        #                                        bottom_right=bottom_right,
-        #                                        bottom_left=bottom_left)
-        # return the original xx and yy if no transformations applied
-        # if not projective:
-        #     xx, yy = xx_origin, yy_origin
 
         if show_grid:
             plt.plot(xx, yy, marker='.', color='k', linestyle='none')
@@ -727,7 +721,7 @@ class XYGridStage(XYTargetGrid):
             flat_xx = list(chain.from_iterable(xx.tolist()))
             flat_yy = list(chain.from_iterable(yy.tolist()))
             return flat_xx, flat_yy
-
+        # get the points in a snake-like pattern
         xx = self.snake_grid_list(xx)
         yy = self.snake_grid_list(yy)
         return xx, yy
@@ -769,7 +763,6 @@ class XYGridStage(XYTargetGrid):
                          (perfect_bl[0], perfect_bl[1])]
         return perfect_plane
 
-    # TODO: this probably belongs somewhere else as well as the snake like grid
     def projective_transform(self, top_left, top_right, bottom_right,
                              bottom_left):
         """
@@ -820,30 +813,12 @@ class XYGridStage(XYTargetGrid):
         self._coefficients = coeffs.tolist()
         return coeffs
 
-        # a, b, c = coeff[0], coeff[1], coeff[2]
-        # d, e, f = coeff[3], coeff[4], coeff[5]
-        # g, h = coeff[6], coeff[7]
-
-        # def x_formula(x, y):
-        #     # x = (ax + by + c) / (gx + hy + 1)
-        #     new_x = (a*x + b*y + c) / (g*x + h*y + 1)
-        #     return np.round(new_x, decimals=4)
-
-        # def y_formula(x, y):
-        #     # y = (dx + ey + f) / (gx + hy + 1)
-        #     new_y = (d*x + e*y + f) / (g*x + h*y + 1)
-        #     return np.round(new_y, decimals=4)
-
-        # new_xx = np.array([x_formula(xx[i], yy[i])
-        #                    for i in range(xx.shape[0])])
-        # new_yy = np.array([y_formula(xx[i], yy[i])
-        #                    for i in range(xx.shape[0])])
-        # return new_xx, new_yy
-
     def get_xy_coordinate(self, xx, yy, coefficients=None):
         """
-        TODO: some type of function that will return x, y values from a grid,
-        given the coefficients and the coordinates.
+        Return x, y values from a grid.
+
+        Calculates the position of x and y given the projective transformation
+        coefficients and the coordinates.
 
         TODO: make it work with one single pair of elements?
 
@@ -852,7 +827,7 @@ class XYGridStage(XYTargetGrid):
         xx : list
         yy : list
         """
-        # The homography transformation coefficients
+        # The projective transformation coefficients
         coeffs = coefficients or self.coefficients
 
         def x_formula(x, y):
@@ -873,6 +848,10 @@ class XYGridStage(XYTargetGrid):
                            for i in range(yy.shape[0])])
         return new_xx, new_yy
 
+#######################################################################
+# Second type of transformation - will eventually have one at the end
+# but for now I'm keeping both because this one right here is getting bad
+# values for y ... for now
     def mesh_interpolation(self, top_left, top_right, bottom_right,
                            bottom_left):
         """
@@ -902,6 +881,8 @@ class XYGridStage(XYTargetGrid):
                               [1, 1, 0, 0],
                               [1, 1, 1, 1],
                               [1, 0, 1, 0]])
+        # unit_grid = self.get_unit_grid(top_left, top_right, bottom_right,
+        #                                bottom_left)
         # x value coordinates for current grid (4 corners)
         px = np.array([top_left[0],
                        top_right[0],
@@ -912,11 +893,106 @@ class XYGridStage(XYTargetGrid):
                        top_right[1],
                        bottom_right[1],
                        bottom_left[1]])
-
+        # inv_unit_grid = np.linalg.inv(unit_grid)
+        # a_coeffs = inv_unit_grid * px
+        # b_coeffs = inv_unit_grid * py
+        # print(a_coeffs, b_coeffs)
+        # a_coeffs = (inv_unit_grid.T * px).T
+        # b_coeffs = (inv_unit_grid.T * py).T
+        # print(a_coeffs, b_coeffs)
         a_coeffs = np.linalg.inv(unit_grid).dot(np.transpose(px))
         b_coeffs = np.linalg.inv(unit_grid).dot(np.transpose(py))
-
+        # print('\n')
+        # print(a_coeffs, b_coeffs)
         return a_coeffs.flatten(), b_coeffs.flatten()
+
+    def map_points_second(self, top_left=None, top_right=None,
+                          bottom_right=None, bottom_left=None, m_points=None,
+                          n_points=None, snake_like=True):
+        """
+        Other method to find the points.
+        """
+        top_left = top_left or self.get_presets()[0]
+        top_right = top_right or self.get_presets()[1]
+        bottom_right = bottom_right or self.get_presets()[2]
+        bottom_left = bottom_left or self.get_presets()[3]
+
+        if all([top_left, top_right, bottom_right, bottom_left]) is None:
+            raise ValueError('Could not get presets, make sure you set presets'
+                             ' first using the `set_presets` method.')
+        m_points = m_points or self.m_n_points[0]
+        n_points = n_points or self.m_n_points[1]
+
+        a_coeffs, b_coeffs = self.mesh_interpolation(top_left, top_right,
+                                                     bottom_right, bottom_left)
+
+        ll, mm = [], []
+        xx, yy = self.get_meshgrid(top_left, top_right, bottom_right,
+                                   bottom_left, m_points, n_points)
+
+        for i in range(len(xx)):
+            for j in range(len(xx[i])):
+                m_point, l_point = self.convert_physical_to_logical(
+                    a_coeffs, b_coeffs, xx[i][j], yy[i][j])
+                mm.append(m_point)
+                ll.append(l_point)
+
+        x_points, y_points = [], []
+        for i in range(len(mm)):
+            x, y = self.convert_to_physical(
+                a_coeffs, b_coeffs, ll[i], mm[i])
+            x_points.append(x)
+            y_points.append(y)
+
+        if not snake_like:
+            return x_points, y_points
+        else:
+            xx = np.array(x_points).reshape(m_points, n_points)
+            yy = np.array(y_points).reshape(m_points, n_points)
+            xx = self.snake_grid_list(xx)
+            yy = self.snake_grid_list(yy)
+            return xx, yy
+
+    def get_unit_grid(self, top_left, top_right, bottom_right,
+                      bottom_left):
+        unit_grid = np.array([
+            [1, top_left[0], top_left[1], top_left[0] * top_left[1]],
+            [1, top_right[0], top_right[1], top_right[0] * top_right[1]],
+            [1, bottom_right[0], bottom_right[1],
+                bottom_right[0] * bottom_right[1]],
+            [1, bottom_left[0], bottom_left[1], bottom_left[0]*bottom_left[1]]
+            ])
+        return unit_grid
+
+    def get_meshgrid(self, top_left, top_right, bottom_right,
+                     bottom_left, m_points, n_points):
+        """
+        Based on the 4 coordinates and m and n points, find the meshgrid.
+        """
+        px = [top_left[0], top_right[0], bottom_right[0], bottom_left[0]]
+        py = [top_left[1], top_right[1], bottom_right[1], bottom_left[1]]
+        x0 = min(px)
+        lx = max(px) - min(px)
+        y0 = min(py)
+        ly = max(py) - min(py)
+
+        ni = m_points
+        nj = n_points
+
+        dx = lx / (ni - 1)
+        dy = ly / (nj - 1)
+
+        xx = []
+        yy = []
+
+        for i in range(1, ni+1):
+            x = x0 + (i - 1) * dx
+            xx.append(x)
+        for i in range(1, nj+1):
+            y = y0 + (i - 1) * dy
+            yy.append(y)
+
+        return np.meshgrid(xx, yy)
 
     def convert_physical_to_logical(self, a_coeffs, b_coeffs, x, y):
         """
@@ -952,7 +1028,8 @@ class XYGridStage(XYTargetGrid):
         # compute l_points
         l_points = ((x - a_coeffs[0] - a_coeffs[2] * m_points) /
                     (a_coeffs[1] + a_coeffs[3] * m_points))
-        return m_points.tolist(), l_points.tolist()
+
+        return m_points, l_points
 
     def convert_to_physical(self, a_coeffs, b_coeffs, l_point, m_point):
         """
@@ -974,27 +1051,20 @@ class XYGridStage(XYTargetGrid):
         x, y : tuple
             The x and y physical values on the specified grid.
         """
-        # x = a(1) + a(2)*l + a(3)*m + a(4)*l*m
-        x = (a_coeffs[0] + a_coeffs[1] * l_point + a_coeffs[2]
-             * m_point + a_coeffs[3] * l_point * m_point)
-        # y = b(1) + b(2)*l + b(3)*m + b(4)*l*m
-        # y = (b_coeffs[0] + b_coeffs[1] * l_point +
-        #      b_coeffs[2] * m_point + b_coeffs[3] * l_point * m_point)
-        a = a_coeffs
-        b = b_coeffs
-        m = m_point
-        y = ((1) / (a[1] + a[3] * m) * (-a[0] * b[1] - a[0] * b[3] * m + a[1]
-                                        * b[0] + a[1] * b[2] * m - a[2] * b[1]
-                                        * m - (a[2] * b[3]) * m * m + a[3]
-                                        * b[0] * m + a[3] * b[2] * (m * m)
-                                        + b[1] * x + b[3] * m))
+        # for a[1] - a[3]*m != 0
+        if (a_coeffs[1] - a_coeffs[3]*m_point) != 0:
+            # x = a(1) + a(2)*l + a(3)*m + a(4)*l*m
+            x = (a_coeffs[0] + a_coeffs[1] * l_point + a_coeffs[2]
+                 * m_point + a_coeffs[3] * l_point * m_point)
+            # y = b(1) + b(2)*l + b(3)*m + b(4)*l*m
+            y = (b_coeffs[0] + b_coeffs[1] * l_point +
+                 b_coeffs[2] * m_point + b_coeffs[3] * l_point * m_point)
+        else:
+            logger.error("Can't find the poins..... something like this.")
         return x, y
 
     def snake_grid_list(self, points):
         """
-        TODO: maybe find something in bluesky to do this based on m/n
-        Flatten out a meshgrid.
-
         Flatten them into lists with snake_like pattern coordinate points.
         [[1, 2], [3, 4]] => [1, 2, 4, 3]
 
