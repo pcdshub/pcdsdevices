@@ -653,7 +653,9 @@ class XYGridStage(XYTargetGrid):
         with open(path, 'w') as sample_file:
             yaml.safe_dump(None, sample_file)
 
-    def map_points(self, snake_like=True, show_grid=False):
+    def map_points(self, top_left=None, top_right=None,
+                   bottom_right=None, bottom_left=None, m_points=None,
+                   n_points=None, snake_like=True, show_grid=False):
         """
         Map all the sample positions in 2-d coordinates.
 
@@ -673,37 +675,43 @@ class XYGridStage(XYTargetGrid):
         xx, yy : tuple
             xx and yy list of all coordinate points for samples on the grid.
         """
-        top_left, top_right, bottom_right, bottom_left = self.get_presets()
+        top_left = top_left or self.get_presets()[0]
+        top_right = top_right or self.get_presets()[1]
+        bottom_right = bottom_right or self.get_presets()[2]
+        bottom_left = bottom_left or self.get_presets()[3]
+
         if all([top_left, top_right, bottom_right, bottom_left]) is None:
             raise ValueError('Could not get presets, make sure you set presets'
                              ' first using the `set_presets` method.')
+        m_points = m_points or self.m_n_points[0]
+        n_points = n_points or self.m_n_points[1]
 
+        # TODO: I have some code repetition here but this code below that
+        # deals with xx and yy points will probably be removed....
         # distance from bottom_left to top_left
-        height = np.sqrt(np.power((top_left[0] - bottom_left[0]), 2)
-                         + np.power((top_left[1] - bottom_left[1]), 2))
-        # distance from top_left to top_right
-        width = np.sqrt(np.power((top_right[0] - top_left[0]), 2)
-                        + np.power((top_right[1] - top_left[1]), 2))
-        start_x, start_y = top_left[0], top_left[1]
-        perfect_bl = [start_x, start_y + height]
-        perfect_tr = [start_x + width, start_y]
+        # height = np.sqrt(np.power((top_left[0] - bottom_left[0]), 2)
+        #                  + np.power((top_left[1] - bottom_left[1]), 2))
+        # # distance from top_left to top_right
+        # width = np.sqrt(np.power((top_right[0] - top_left[0]), 2)
+        #                 + np.power((top_right[1] - top_left[1]), 2))
+        # start_x, start_y = top_left[0], top_left[1]
+        # perfect_bl = [start_x, start_y + height]
+        # perfect_tr = [start_x + width, start_y]
 
-        m_points, n_points = self.m_n_points
+        xx_origin, yy_origin = self.get_perfect_meshgrid(top_left, top_right,
+                                                         bottom_right,
+                                                         bottom_left,
+                                                         m_points, n_points)
+        # perfect_plane = self.find_perfect_coordiantes(
+        #     top_left, top_right, bottom_right, bottom_left)
 
-        x_grid_points = np.linspace(
-            top_left[0], perfect_tr[0], num=m_points)
-        y_grid_points = np.linspace(
-            top_left[1], perfect_bl[1], num=n_points)
-
-        # leaving this here for now, it was working fine but migth not work in
-        #  all cases
         # x_grid_points = np.linspace(
-        #     top_left[0], top_right[0], num=m_points)
+        #     top_left[0], perfect_plane[0][1], num=m_points)
         # y_grid_points = np.linspace(
-        #     top_left[1], bottom_left[1], num=n_points)
+        #     top_left[1], perfect_plane[3][1], num=n_points)
 
         # The meshgrid function returns two 2-dimensional arrays
-        xx_origin, yy_origin = np.meshgrid(x_grid_points, y_grid_points)
+        # xx_origin, yy_origin = np.meshgrid(x_grid_points, y_grid_points)
 
         # apply projective transformation
         coeffs = self.projective_transform(
@@ -737,13 +745,6 @@ class XYGridStage(XYTargetGrid):
         Add perfect top_right coordinats to the perfect bottom_left
         coordinates to get the bottom_right corner coordinates.
         """
-        # a, b, c, d = top_left, top_right, bottom_right, bottom_left
-        # area1 = ((a[0] * (b[1] - c[1]) + b[0] *
-        #          (c[1] - a[1]) + c[0] * (a[1] - b[1])) / 2)
-
-        # area2 = ((a[0] * (d[1] - c[1]) + d[0] *
-        #           (c[1] - a[1]) + c[0] * (a[1] - d[1])) / 2)
-        # area = abs(area1) + abs(area2)
         # distance from bottom_left to top_left
         height = np.sqrt(np.power((top_left[0] - bottom_left[0]), 2)
                          + np.power((top_left[1] - bottom_left[1]), 2))
@@ -753,15 +754,28 @@ class XYGridStage(XYTargetGrid):
         start_x, start_y = top_left[0], top_left[1]
         perfect_bl = [start_x, start_y + height]
         perfect_tr = [start_x + width, start_y]
-        # find the 4th perfect coordinate
-        perfect_br = [perfect_tr[0] + perfect_bl[0],
-                      perfect_tr[1] + perfect_bl[1]]
+        perfect_br = [perfect_tr[0], perfect_bl[1]]
 
         perfect_plane = [(top_left[0], top_left[1]),
                          (perfect_tr[0], perfect_tr[1]),
                          (perfect_br[0], perfect_br[1]),
                          (perfect_bl[0], perfect_bl[1])]
         return perfect_plane
+
+    def get_perfect_meshgrid(self, top_left, top_right, bottom_right,
+                             bottom_left, m_points, n_points):
+        perfect_plane = self.find_perfect_coordiantes(
+            top_left, top_right, bottom_right, bottom_left)
+
+        x_grid_points = np.linspace(
+            top_left[0], perfect_plane[1][0], num=m_points)
+        y_grid_points = np.linspace(
+            top_left[1], perfect_plane[3][1], num=n_points)
+
+        # The meshgrid function returns two 2-dimensional arrays
+        xx_origin, yy_origin = np.meshgrid(x_grid_points, y_grid_points)
+
+        return xx_origin, yy_origin
 
     def projective_transform(self, top_left, top_right, bottom_right,
                              bottom_left):
@@ -785,8 +799,6 @@ class XYGridStage(XYTargetGrid):
             List of 8 projective transformation coefficients. They are used to
             find x and y.
         """
-        # TODO i don't know how to find the true coordinate values of this
-        # perfect plane - not sure if this will work fine...
         perfect_plane = self.find_perfect_coordiantes(top_left, top_right,
                                                       bottom_right,
                                                       bottom_left)
@@ -916,39 +928,68 @@ class XYGridStage(XYTargetGrid):
 
         a_coeffs, b_coeffs = self.mesh_interpolation(top_left, top_right,
                                                      bottom_right, bottom_left)
-
-        # ll, mm = [], []
-        xx, yy = self.get_meshgrid(top_left, top_right, bottom_right,
-                                   bottom_left, m_points, n_points)
-
-        # for i in range(len(xx)):
-        #     for j in range(len(xx[i])):
-        #         m_point, l_point = self.convert_physical_to_logical(
-        #             a_coeffs, b_coeffs, xx[i][j], yy[i][j])
-        #         mm.append(m_point)
-        #         ll.append(l_point)
+        self.coefficients = a_coeffs, b_coeffs
 
         x_points, y_points = [], []
+        xx, yy = self.get_meshgrid(top_left, top_right, bottom_right,
+                                   bottom_left, m_points, n_points)
+        # c = node values
+        # c = [1, 2, 3, 4]
+        # val = np.zeros(shape=(n_points, m_points))
+        # m, l = [(xx[i][j], yy[i][j]) for i in xx for j in yy]
+        for j in range(0, n_points):
+            for i in range(0, m_points):
+                m_point, l_point = self.convert_physical_to_logical(a_coeffs,
+                                                                    b_coeffs,
+                                                                    i, j)
+                x, y = self.convert_to_physical(a_coeffs=a_coeffs,
+                                                b_coeffs=b_coeffs,
+                                                l_point=l_point,
+                                                m_point=m_point)
+                x_points.append(x)
+                y_points.append(y)
+                # if (l_point > 0 and l_point <= 1 and
+                #  m_point >= 0 and m_point <= 1):
+                #     dl, dm = l_point, m_point
+                # dl = l_point
+                # dm = m_point
+
+                # val[j, i] = ((1 - dl) * (1 - dm) * c[0] + dl * (1 - dm)
+                #  * c[1] + dl * dm * c[2] + (1 - dl) * dm * c[3])
+
+        # x_points = ll
+        # y_points = mm
+
+        # x_points, y_points = [], []
         # for i in range(len(mm)):
         #     x, y = self.convert_to_physical(
         #         a_coeffs, b_coeffs, ll[i], mm[i])
         #     x_points.append(x)
         #     y_points.append(y)
-        for i in range(len(xx)):
-            for j in range(len(xx[i])):
-                m_point, l_point = self.convert_to_physical(
-                    a_coeffs, b_coeffs, xx[i][j], yy[i][j])
-                x_points.append(m_point)
-                y_points.append(l_point)
 
-        if not snake_like:
-            return x_points, y_points
-        else:
-            xx = np.array(x_points).reshape(m_points, n_points)
-            yy = np.array(y_points).reshape(m_points, n_points)
-            xx = self.snake_grid_list(xx)
-            yy = self.snake_grid_list(yy)
-            return xx, yy
+        # for i in range(len(xx)):
+        #     for j in range(len(xx[i])):
+        #         m_point, l_point = self.convert_to_physical(
+        #             a_coeffs, b_coeffs, xx[i][j], yy[i][j])
+        #         x_points.append(m_point)
+        #         y_points.append(l_point)
+
+        # if snake_like:
+        #     xx = np.array(x_points).reshape(m_points, n_points)
+        #     yy = np.array(y_points).reshape(m_points, n_points)
+        #     xx = self.snake_grid_list(xx)
+        #     yy = self.snake_grid_list(yy)
+        #     return xx, yy
+
+        # if not snake_like:
+        #     return x_points, y_points
+        # else:
+        #     xx = np.array(x_points).reshape(m_points, n_points)
+        #     yy = np.array(y_points).reshape(m_points, n_points)
+        #     xx = self.snake_grid_list(xx)
+        #     yy = self.snake_grid_list(yy)
+        #     return xx, yy
+        return x_points, y_points
 
     def get_unit_grid(self, top_left, top_right, bottom_right,
                       bottom_left):
@@ -957,7 +998,8 @@ class XYGridStage(XYTargetGrid):
             [1, top_right[0], top_right[1], top_right[0] * top_right[1]],
             [1, bottom_right[0], bottom_right[1],
                 bottom_right[0] * bottom_right[1]],
-            [1, bottom_left[0], bottom_left[1], bottom_left[0]*bottom_left[1]]
+            [1, bottom_left[0], bottom_left[1],
+                bottom_left[0] * bottom_left[1]]
             ])
         return unit_grid
 
@@ -979,17 +1021,9 @@ class XYGridStage(XYTargetGrid):
         dx = lx / (ni - 1)
         dy = ly / (nj - 1)
 
-        xx = []
-        yy = []
-
-        for i in range(1, ni+1):
-            x = x0 + (i - 1) * dx
-            xx.append(x)
-        for i in range(1, nj+1):
-            y = y0 + (i - 1) * dy
-            yy.append(y)
-
-        return np.meshgrid(xx, yy)
+        xx = [x0 + (i - 1) * dx for i in range(1, ni + 1)]
+        yy = [y0 + (j - 1) * dy for j in range(1, nj + 1)]
+        return xx, yy
 
     def convert_physical_to_logical(self, a_coeffs, b_coeffs, x, y):
         """
@@ -1088,3 +1122,74 @@ class XYGridStage(XYTargetGrid):
         # save them in the yaml file
         flat_points = [float(v) for v in flat_points]
         return flat_points
+
+    def compute_mapped_point(self, sample_name, m_point, n_point,
+                             compute_all=False, path=None):
+        """
+        For a given sample, compute the x, y position for M and N respecively.
+
+        If `compute_all` is True, than compute all the point positions
+        for this sample.
+
+        Parameters
+        ----------
+        sample_name : str
+            The name of the sample to get the mapped points from. To see the
+            available mapped samples call the `mapped_samples()` method.
+        m_point : int
+            Represents the row value of the point we want the position for.
+        n_point : int
+            Represents the column value of the point we want the position for.
+        compute_all : boolean
+            If `True` all the point positions will be computed for this sample.
+
+        Returns
+        -------
+        x, y : tuple
+            The x, y position for m n location.
+            Or, all the xx, yy values if `compute_all` is `True`.
+        """
+        path = path or self._path
+        sample = self.get_sample(sample_name)
+        coeffs = []
+        top_left, top_right, bottom_right, bottom_left = (), (), (), ()
+        m_points, n_points = 0, 0
+        if sample:
+            try:
+                coeffs = sample["coefficients"]
+                top_left = sample["top_left"]
+                top_right = sample["top_right"]
+                bottom_right = sample["bottom_right"]
+                bottom_left = sample["bottom_left"]
+                m_points = sample['M']
+                n_points = sample['N']
+            except Exception as ex:
+                logger.error('Something went wrong when getting the '
+                             'information for sample %s. %s', sample_name, ex)
+                return
+        else:
+            logger.error('This sample probably does not exist. Please call'
+                         ' mapped_samples() to see which ones are available.')
+            return
+
+        xx_origin, yy_origin = self.get_perfect_meshgrid(top_left, top_right,
+                                                         bottom_right,
+                                                         bottom_left,
+                                                         m_points, n_points)
+
+        if (m_point > m_points) and (n_point > n_points):
+            raise IndexError('Index out of range, make sure the m and n values'
+                             f' are between ({m_points, n_points})')
+
+        # TODO: this function here is computing the points for all of the
+        # coordinates so we'll have extra unwanted delay......
+        xx, yy = self.get_xy_coordinate(xx_origin, yy_origin, coeffs)
+
+        if compute_all:
+            return xx, yy
+
+        # one dimensional array
+        if n_points == 1:
+            return xx[m_point-1]
+
+        return(xx[m_point - 1][n_point - 1])
