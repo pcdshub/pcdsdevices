@@ -888,7 +888,10 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
 
     def _setup_move(self, position):
         """(PVPositioner compat) - calculate, then move."""
-        self.calculator.calculate(position)
+        # Do not call `calculator.calculate()` here to respect the current
+        # calculator settings:
+        self.calculator.desired_transmission.put(position)
+        self.calculator.run_calculation.put(1, wait=True)
         return super()._setup_move(position)
 
     def _set_lightpath_states(self, lightpath_values):
@@ -1027,7 +1030,10 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
 
     def _setup_move(self, position):
         """(PVPositioner compat) - calculate, then move."""
-        self.calculator.calculate(position)
+        # Do not call `calculator.calculate()` here to respect the current
+        # calculator settings:
+        self.calculator.desired_transmission.put(position)
+        self.calculator.run_calculation.put(1, wait=True)
         return super()._setup_move(position)
 
     def __init__(self, *args, limits=None, **kwargs):
