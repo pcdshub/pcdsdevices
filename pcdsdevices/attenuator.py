@@ -717,6 +717,26 @@ class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
          }
     )
 
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the attenuator.
+        """
+        table = utils.format_status_table(
+            status_info.get('filters', {}),
+            row_to_key=self._filter_index_to_attr,
+            column_to_key={
+                'Active': 'active',
+                'Material': 'material',
+                'Thickness [um]': 'thickness',
+                'Stuck': 'is_stuck',
+                'Transmission': 'transmission',
+                'Transmission 3 Omega': 'transmission_3omega',
+            },
+            row_identifier='Filter',
+        )
+
+        return str(table)
+
 
 class AttenuatorCalculatorSXR_Blade(AttenuatorCalculatorFilter):
     # TODO FltMvInterface?
@@ -764,7 +784,7 @@ class AttenuatorCalculatorSXR_Blade(AttenuatorCalculatorFilter):
             column_to_key={
                 'Active': 'active',
                 'Material': 'material',
-                'Thickness': 'thickness',
+                'Thickness [um]': 'thickness',
                 'Stuck': 'is_stuck',
                 'Transmission': 'transmission',
                 'Transmission 3 Omega': 'transmission_3omega',
