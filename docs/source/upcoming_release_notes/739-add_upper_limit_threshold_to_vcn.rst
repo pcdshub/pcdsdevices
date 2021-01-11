@@ -1,4 +1,4 @@
-issue_number add upper limit threshold to vcn
+739 add upper limit threshold to vcn
 #################
 
 API Changes
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- N/A
+- VCN upper limit can be changed from epics.
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- mghaly
