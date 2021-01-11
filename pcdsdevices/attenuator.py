@@ -808,16 +808,16 @@ class AttenuatorCalculatorSXR_FourBlade(AttenuatorCalculatorBase):
     # Not using "DDC" here, so the parent is `self`:
     _filter_parent = None
     _filter_index_to_attr = {
-        1: 'axis_01',
-        2: 'axis_02',
-        3: 'axis_03',
-        4: 'axis_04',
+        1: 'blade_01',
+        2: 'blade_02',
+        3: 'blade_03',
+        4: 'blade_04',
     }
 
-    axis_01 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:01:', index=1)
-    axis_02 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:02:', index=2)
-    axis_03 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:03:', index=3)
-    axis_04 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:04:', index=4)
+    blade_01 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:01:', index=1)
+    blade_02 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:02:', index=2)
+    blade_03 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:03:', index=3)
+    blade_04 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:04:', index=4)
 
     def format_status_info(self, status_info):
         """
