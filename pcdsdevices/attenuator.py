@@ -777,7 +777,7 @@ class AttenuatorCalculatorSXR_Blade(AttenuatorCalculatorFilter):
             inserted_info = (
                 f'Inserted filter: #{inserted_filter - 1} ('
                 f'{material} {thickness} um T={transmission} '
-                f'at 3 omega={transmission3})'
+                f'T3={transmission3})'
             )
         else:
             inserted_info = 'Inserted filter: None'
