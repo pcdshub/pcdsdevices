@@ -330,6 +330,9 @@ class VCN(Device):
     position_control = Cpt(EpicsSignalWithRBV, ':POS_REQ', kind='normal',
                            doc=('requested positition to control the valve '
                                 '0-100%'))
+    upper_limit = Cpt(EpicsSignalWithRBV, ':Limit', kind='normal',
+                      doc=('max upper limit position to open the valve '
+                           '0-100%'))
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
                        doc='interlock ok status')
     open_command = Cpt(EpicsSignalWithRBV, ':OPN_SW', kind='normal',
