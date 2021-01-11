@@ -818,9 +818,10 @@ class XYGridStage(XYTargetGrid):
         grid_matrix = np.matrix(grid, dtype=np.float64)
 
         new_plane_matrix = np.array(new_plane).reshape(8)
-        coefficients = (np.dot(np.linalg.inv(np.transpose(grid_matrix)
-                        * grid_matrix) * np.transpose(grid_matrix),
-                        new_plane_matrix))
+        # coefficients = (np.dot(np.linalg.inv(np.transpose(grid_matrix)
+        #                 * grid_matrix) * np.transpose(grid_matrix),
+        #                 new_plane_matrix))
+        coefficients = np.linalg.solve(grid_matrix, new_plane_matrix)
         coeffs = np.array(coefficients).reshape(8)
         self._coefficients = coeffs.tolist()
         return coeffs
@@ -889,12 +890,10 @@ class XYGridStage(XYTargetGrid):
             transformation. They are used to find x and y.
         """
         # describes the entire point space enclosed by the quadrilateral
-        # unit_grid = np.array([[1, 0, 0, 0],
-        #                       [1, 1, 0, 0],
-        #                       [1, 1, 1, 1],
-        #                       [1, 0, 1, 0]])
-        unit_grid = self.get_unit_grid(top_left, top_right, bottom_right,
-                                       bottom_left)
+        unit_grid = np.array([[1, 0, 0, 0],
+                              [1, 1, 0, 0],
+                              [1, 1, 1, 1],
+                              [1, 0, 1, 0]])
         # x value coordinates for current grid (4 corners)
         px = np.array([top_left[0],
                        top_right[0],
@@ -905,8 +904,10 @@ class XYGridStage(XYTargetGrid):
                        top_right[1],
                        bottom_right[1],
                        bottom_left[1]])
-        a_coeffs = np.linalg.inv(unit_grid).dot(np.transpose(px))
-        b_coeffs = np.linalg.inv(unit_grid).dot(np.transpose(py))
+
+        a_coeffs = np.linalg.solve(unit_grid, px)
+        b_coeffs = np.linalg.solve(unit_grid, py)
+
         return a_coeffs.flatten(), b_coeffs.flatten()
 
     def map_points_second(self, top_left=None, top_right=None,
@@ -929,79 +930,31 @@ class XYGridStage(XYTargetGrid):
         a_coeffs, b_coeffs = self.mesh_interpolation(top_left, top_right,
                                                      bottom_right, bottom_left)
         self.coefficients = a_coeffs, b_coeffs
-
         x_points, y_points = [], []
-        xx, yy = self.get_meshgrid(top_left, top_right, bottom_right,
-                                   bottom_left, m_points, n_points)
-        # c = node values
-        # c = [1, 2, 3, 4]
-        # val = np.zeros(shape=(n_points, m_points))
-        # m, l = [(xx[i][j], yy[i][j]) for i in xx for j in yy]
-        for j in range(0, n_points):
-            for i in range(0, m_points):
-                m_point, l_point = self.convert_physical_to_logical(a_coeffs,
-                                                                    b_coeffs,
-                                                                    i, j)
-                x, y = self.convert_to_physical(a_coeffs=a_coeffs,
-                                                b_coeffs=b_coeffs,
-                                                l_point=l_point,
-                                                m_point=m_point)
-                x_points.append(x)
-                y_points.append(y)
-                # if (l_point > 0 and l_point <= 1 and
-                #  m_point >= 0 and m_point <= 1):
-                #     dl, dm = l_point, m_point
-                # dl = l_point
-                # dm = m_point
 
-                # val[j, i] = ((1 - dl) * (1 - dm) * c[0] + dl * (1 - dm)
-                #  * c[1] + dl * dm * c[2] + (1 - dl) * dm * c[3])
+        xx, yy = self.get_meshgrid((0, 0), (1, 0), (1, 1), (0, 1), m_points,
+                                   n_points)
 
-        # x_points = ll
-        # y_points = mm
+        # return x_points, y_points
+        for rowx, rowy in zip(xx, yy):
+            for x, y in zip(rowx, rowy):
+                i, j = self.convert_to_physical(a_coeffs, b_coeffs, x, y)
+                x_points.append(i)
+                y_points.append(j)
 
-        # x_points, y_points = [], []
-        # for i in range(len(mm)):
-        #     x, y = self.convert_to_physical(
-        #         a_coeffs, b_coeffs, ll[i], mm[i])
-        #     x_points.append(x)
-        #     y_points.append(y)
-
-        # for i in range(len(xx)):
-        #     for j in range(len(xx[i])):
-        #         m_point, l_point = self.convert_to_physical(
-        #             a_coeffs, b_coeffs, xx[i][j], yy[i][j])
-        #         x_points.append(m_point)
-        #         y_points.append(l_point)
-
-        # if snake_like:
-        #     xx = np.array(x_points).reshape(m_points, n_points)
-        #     yy = np.array(y_points).reshape(m_points, n_points)
-        #     xx = self.snake_grid_list(xx)
-        #     yy = self.snake_grid_list(yy)
-        #     return xx, yy
-
-        # if not snake_like:
-        #     return x_points, y_points
-        # else:
-        #     xx = np.array(x_points).reshape(m_points, n_points)
-        #     yy = np.array(y_points).reshape(m_points, n_points)
-        #     xx = self.snake_grid_list(xx)
-        #     yy = self.snake_grid_list(yy)
-        #     return xx, yy
         return x_points, y_points
 
-    def get_unit_grid(self, top_left, top_right, bottom_right,
-                      bottom_left):
-        unit_grid = np.array([
-            [1, top_left[0], top_left[1], top_left[0] * top_left[1]],
-            [1, top_right[0], top_right[1], top_right[0] * top_right[1]],
-            [1, bottom_right[0], bottom_right[1],
-                bottom_right[0] * bottom_right[1]],
-            [1, bottom_left[0], bottom_left[1],
-                bottom_left[0] * bottom_left[1]]
-            ])
-        return unit_grid
+    # def get_unit_grid(self, top_left, top_right, bottom_right,
+    #                   bottom_left):
+    #     unit_grid = np.array([
+    #         [1, top_left[0], top_left[1], top_left[0] * top_left[1]],
+    #         [1, top_right[0], top_right[1], top_right[0] * top_right[1]],
+    #         [1, bottom_right[0], bottom_right[1],
+    #             bottom_right[0] * bottom_right[1]],
+    #         [1, bottom_left[0], bottom_left[1],
+    #             bottom_left[0] * bottom_left[1]]
+    #         ])
+    #     return unit_grid
 
     def get_meshgrid(self, top_left, top_right, bottom_right,
                      bottom_left, m_points, n_points):
@@ -1023,7 +976,8 @@ class XYGridStage(XYTargetGrid):
 
         xx = [x0 + (i - 1) * dx for i in range(1, ni + 1)]
         yy = [y0 + (j - 1) * dy for j in range(1, nj + 1)]
-        return xx, yy
+
+        return np.meshgrid(xx, yy)
 
     def convert_physical_to_logical(self, a_coeffs, b_coeffs, x, y):
         """
@@ -1177,9 +1131,13 @@ class XYGridStage(XYTargetGrid):
                                                          bottom_left,
                                                          m_points, n_points)
 
+        n_points = 5
+        m_points = 5
         if (m_point > m_points) and (n_point > n_points):
             raise IndexError('Index out of range, make sure the m and n values'
                              f' are between ({m_points, n_points})')
+        if (m_point or n_point) == 0:
+            raise IndexError('Please start at 1, 1, as the initial points.')
 
         # TODO: this function here is computing the points for all of the
         # coordinates so we'll have extra unwanted delay......
@@ -1192,4 +1150,4 @@ class XYGridStage(XYTargetGrid):
         if n_points == 1:
             return xx[m_point-1]
 
-        return(xx[m_point - 1][n_point - 1])
+        return xx[m_point - 1][n_point - 1], yy[n_point - 1][n_point - 1]
