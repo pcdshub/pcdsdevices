@@ -1048,39 +1048,38 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
             self.num_out.put(info['out_check'].count(True), force=True)
 
     def format_status_info(self, status_info):
-        """
-        Override status info handler to render the att
-        """
-        # Get the attenuator statuses
-        blade_states = []
-        for cpt in self.lightpath_cpts:
-            try:
-                blade_states.append(
-                    status_info[cpt]['state']['state']['value']
-                )
-            except KeyError:
-                break
-
-        lines = render_ascii_att(blade_states, start_index=1)
-        try:
-            calc = status_info['calculator']
-            transmission = calc['actual_transmission']['value']
-            transmission_3omega = calc['actual_transmission_3omega']['value']
-            energy_actual = calc['energy_actual']['value']
-        except KeyError:
-            ...
-        else:
-            energy = energy_actual / 1e3
-            energy_3omega = energy * 3.0
-            lines.append(
-                f'Transmission (E={energy:.3} keV): {transmission:.4E}'
+        """Override status info handler to render the attenuator."""
+        calc_status = status_info.get('calculator', {})
+        transmission = get_status_float(
+            calc_status, 'actual_transmission', 'value',
+            format='E', precision=3,
+        )
+        transmission_3 = get_status_float(
+            calc_status, 'actual_transmission_3omega', 'value',
+            format='E', precision=3,
+        )
+        energy = get_status_float(
+            calc_status, 'energy_actual', 'value',
+            scale=1e-3,
+        )
+        energy_3 = get_status_float(
+            calc_status, 'energy_actual', 'value',
+            scale=3 * 1e-3,
+        )
+        cpt_states = [
+            get_status_value(
+                status_info, cpt, 'state', 'state', 'value',
+                default_value=0
             )
-            lines.append(
-                f'Transmission for 3rd harmonic (E={energy_3omega:.3} keV): '
-                f'{transmission_3omega:.4E}'
-            )
+            for cpt in self.lightpath_cpts
+        ]
 
-        return '\n'.join(lines)
+        table = '\n'.join(render_ascii_att(cpt_states, start_index=1))
+        return f"""
+{table}
+Transmission (E={energy} keV): {transmission}
+Transmission for 3rd harmonic (E={energy_3} keV): {transmission_3}
+"""
 
 
 FEESolidAttenuator = AT2L0  # back-compatibility
