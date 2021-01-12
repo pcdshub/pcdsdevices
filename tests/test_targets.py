@@ -1,7 +1,6 @@
 import pytest
 from ophyd.sim import make_fake_device
 from pcdsdevices.targets import XYGridStage
-import numpy as np
 
 
 @pytest.fixture(scope='function')
@@ -39,18 +38,11 @@ def test_samples_yaml_file(fake_grid_stage, sample_file):
 
 
 def test_mapping_points(fake_grid_stage):
-    xx = np.linspace(0, 4, 5)
-    yy = np.linspace(0, 4, 5)
-
-    top_left, top_right = (0, 0), (4, 0)
-    bottom_left, bottom_right = (0, 4), (4, 4)
-    xx, yy = np.meshgrid(xx, yy)
-
-    x, y = fake_grid_stage.map_points_second(top_left, top_right, bottom_right,
-                                             bottom_left, 5, 5, False)
-    # plt.scatter(x, y)
-    # plt.show()
-
+    # test grid of 5 rows by 5 columns
+    top_left, top_right, bottom_right, bottom_left = ((0, 0), (4, 0), (4, 4),
+                                                      (0, 4))
+    x, y = fake_grid_stage.map_points(top_left, top_right, bottom_right,
+                                      bottom_left, 5, 5)
     expected_x_points = [0.0, 1.0, 2.0, 3.0, 4.0,
                          0.0, 1.0, 2.0, 3.0, 4.0,
                          0.0, 1.0, 2.0, 3.0, 4.0,
@@ -62,22 +54,43 @@ def test_mapping_points(fake_grid_stage):
                          2.0, 2.0, 2.0, 2.0, 2.0,
                          3.0, 3.0, 3.0, 3.0, 3.0,
                          4.0, 4.0, 4.0, 4.0, 4.0]
-
     assert expected_x_points == x
     assert expected_y_points == y
 
-    coeffs = fake_grid_stage.projective_transform(
-                top_left=top_left, top_right=top_right,
-                bottom_right=bottom_right, bottom_left=bottom_left)
-    coeffs = list(coeffs)
-    x, y = fake_grid_stage.get_xy_coordinate(xx, yy, coeffs)
-    assert np.isclose(x.flatten(), expected_x_points).all()
-    assert np.isclose(y.flatten(), expected_y_points).all()
+    # test grid of 3 rows by 5 columns
+    top_left, top_right, bottom_right, bottom_left = ((0, 0), (2, 0), (2, 4),
+                                                      (0, 4))
+    x, y = fake_grid_stage.map_points(top_left, top_right, bottom_right,
+                                      bottom_left, 5, 3)
+    expected_x_points = [0.0, 1.0, 2.0,
+                         0.0, 1.0, 2.0,
+                         0.0, 1.0, 2.0,
+                         0.0, 1.0, 2.0,
+                         0.0, 1.0, 2.0]
 
-    top_left, top_right = (0, 0), (4, -1)
-    bottom_left, bottom_right = (1, 4), (5, 3)
+    expected_y_points = [0.0, 0.0, 0.0,
+                         1.0, 1.0, 1.0,
+                         2.0, 2.0, 2.0,
+                         3.0, 3.0, 3.0,
+                         4.0, 4.0, 4.0]
+    assert expected_x_points == x
+    assert expected_y_points == y
 
-    x, y = fake_grid_stage.map_points_second(top_left, top_right, bottom_right,
-                                             bottom_left, 5, 5, False)
-    # plt.scatter(x, y)
-    # plt.show()
+    # test 5 by 5 grid with slope of -0.25
+    top_left, top_right, bottom_right, bottom_left = ((0, 0), (4, -1), (5, 3),
+                                                      (1, 4))
+    x, y = fake_grid_stage.map_points(top_left, top_right, bottom_right,
+                                      bottom_left, 5, 5)
+    expected_x_points = [0.0, 1.0, 2.0, 3.0, 4.0,
+                         0.25, 1.25, 2.25, 3.25, 4.25,
+                         0.50, 1.50, 2.50, 3.50, 4.50,
+                         0.75, 1.75, 2.75, 3.75, 4.75,
+                         1.0, 2.0, 3.0, 4.0, 5.0]
+
+    expected_y_points = [0.0, -0.25, -0.50, -0.75, -1,
+                         1.0, 0.75, 0.50, 0.25, 0,
+                         2.0, 1.75, 1.50, 1.25, 1,
+                         3.0, 2.75, 2.50, 2.25, 2,
+                         4.0, 3.75, 3.50, 3.25, 3]
+    assert expected_x_points == x
+    assert expected_y_points == y
