@@ -366,20 +366,17 @@ class XYTargetGrid():
             (top_left, top_right, bottom_right, bottom_left)
         """
         try:
-            # corner (0, 0)
-            top_left = (round(self.x.presets.positions.x_top_left.pos, 5),
-                        round(self.y.presets.positions.y_top_left.pos, 5))
+            top_left = (self.x.presets.positions.x_top_left.pos,
+                        self.y.presets.positions.y_top_left.pos)
             # corner (0, M)
-            top_right = (round(self.x.presets.positions.x_top_right.pos, 5),
-                         round(self.y.presets.positions.y_top_right.pos, 5))
+            top_right = (self.x.presets.positions.x_top_right.pos,
+                         self.y.presets.positions.y_top_right.pos)
             # corner (M, N)
-            bottom_right = (
-                round(self.x.presets.positions.x_bottom_right.pos, 5),
-                round(self.y.presets.positions.y_bottom_right.pos, 5))
+            bottom_right = (self.x.presets.positions.x_bottom_right.pos,
+                            self.y.presets.positions.y_bottom_right.pos)
             # corner (N, 0)
-            bottom_left = (
-                round(self.x.presets.positions.x_bottom_left.pos, 5),
-                round(self.y.presets.positions.y_bottom_left.pos, 5))
+            bottom_left = (self.x.presets.positions.x_bottom_left.pos,
+                           self.y.presets.positions.y_bottom_left.pos)
             return top_left, top_right, bottom_right, bottom_left
         except Exception:
             logger.warning('Could not get presets, try to set_presets.')
@@ -712,6 +709,7 @@ class XYGridStage(XYTargetGrid):
             yaml.safe_dump(yaml_dict, sample_file,
                            sort_keys=False, default_flow_style=False)
 
+    # TODO: maybe I shouold not have this here...
     def remove_all_samples(self, path=None):
         """
         Empty the samples file.
