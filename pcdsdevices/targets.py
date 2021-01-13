@@ -283,6 +283,7 @@ class XYTargetGrid():
         """
         tweak_base(self.x, self.y)
 
+    # TODO: maybe add an option here for setting parameters directly
     def set_presets(self):
         """
         Save four preset coordinate points.
@@ -367,19 +368,19 @@ class XYTargetGrid():
         """
         try:
             # corner (0, 0)
-            top_left = (round(self.x.presets.positions.x_top_left.pos, 4),
-                        round(self.y.presets.positions.y_top_left.pos, 4))
+            top_left = (round(self.x.presets.positions.x_top_left.pos, 5),
+                        round(self.y.presets.positions.y_top_left.pos, 5))
             # corner (0, M)
-            top_right = (round(self.x.presets.positions.x_top_right.pos, 4),
-                         round(self.y.presets.positions.y_top_right.pos, 4))
+            top_right = (round(self.x.presets.positions.x_top_right.pos, 5),
+                         round(self.y.presets.positions.y_top_right.pos, 5))
             # corner (M, N)
             bottom_right = (
-                round(self.x.presets.positions.x_bottom_right.pos, 4),
-                round(self.y.presets.positions.y_bottom_right.pos, 4))
+                round(self.x.presets.positions.x_bottom_right.pos, 5),
+                round(self.y.presets.positions.y_bottom_right.pos, 5))
             # corner (N, 0)
             bottom_left = (
-                round(self.x.presets.positions.x_bottom_left.pos, 3),
-                round(self.y.presets.positions.y_bottom_left.pos, 3))
+                round(self.x.presets.positions.x_bottom_left.pos, 5),
+                round(self.y.presets.positions.y_bottom_left.pos, 5))
             return top_left, top_right, bottom_right, bottom_left
         except Exception:
             logger.warning('Could not get presets, try to set_presets.')
@@ -401,11 +402,11 @@ class XYGridStage(XYTargetGrid):
     y_motor : str or motor object
         Epics PV prefix for y motor, or a motor object.
     m_points : int
-        Number of targets in x direction, used to determine the coordinate
+        Number of rows the grid has, used to determine the coordinate
         points, where for e.g.: `(0, m_points)` would represent the top right
         corner of the desired sample grid.
     n_points : int
-        Number of targets in y direction, used to determine the coordinate
+        Number of columns the grid has, used to determine the coordinate
         points, where for e.g.: `(n_points, 0)` would represent the bottom
         left corner of the desired sample grid.
     path : str
@@ -424,7 +425,7 @@ class XYGridStage(XYTargetGrid):
             "bottom_left": {"type": "array", "items": {"type": "number"}},
             "M": {"type": "number"},
             "N": {"type": "number"},
-            "coefficients": {"type": "array"}
+            "coefficients": {"type": "array", "items": {"type": "number"}}
         },
         "required": ["time_created", "top_left", "top_right", "bottom_right",
         "bottom_left", "coefficients"],
@@ -443,6 +444,7 @@ class XYGridStage(XYTargetGrid):
         super().__init__(name=name, x=x_motor, y=y_motor,
                          x_spacing=0.0, y_spacing=0.0)
         self._coefficients = []
+        self._current_sample = ''
 
     @property
     def m_n_points(self):
@@ -516,7 +518,7 @@ class XYGridStage(XYTargetGrid):
         """
         self._coefficients = coefficients
 
-    def mapped_samples(self, path=None):
+    def get_samples(self, path=None):
         """
         Get all the available sample grids names that are currently saved.
 
@@ -537,7 +539,42 @@ class XYGridStage(XYTargetGrid):
                 logger.error('Error when loading the samples yaml file: %s',
                              err)
 
-    def get_sample(self, sample_name, path=None):
+    def get_current_sample(self):
+        """
+        Get the current sample that is loaded.
+
+        Returns
+        -------
+        sample : dict
+            Dictionary with current sample information.
+        """
+        return self._current_sample
+
+    def load_sample(self, sample_name, path=None):
+        """
+        Get the sample information and populate these parameters.
+
+        This function displays the parameters for the sample just loaded, but
+        also populates them, in the sense that it sets the current
+        `coefficients` and current `m, n` values.
+
+        Parameters
+        ----------
+        sample_name : str
+            Name of the sample to load.
+        path : str, optional
+            Path where the samples yaml file exists.
+        """
+        path = path or self._path
+        m_points, n_points, coeffs = self.get_sample_map_info(str(sample_name),
+                                                              path)
+        self.m_n_points = m_points, n_points
+        self.coefficients = coeffs
+        # make this sample the current one
+        self._current_sample = str(sample_name)
+        # TODO: might need to the set presets here tooo??
+
+    def get_sample_data(self, sample_name, path=None):
         """
         Get the information for a saved sample.
 
@@ -587,10 +624,42 @@ class XYGridStage(XYTargetGrid):
                            'Please use `save_presets` to insert grids '
                            'in the file.')
         try:
-            return data[sample_name]
+            return data[str(sample_name)]
         except Exception:
             logger.error('The sample %s might not exist in the file.',
                          sample_name)
+
+    def get_sample_map_info(self, sample_name, path=None):
+        """
+        Given a sample name, get the m and n points, as well as the coeffs.
+
+        Parameters
+        ----------
+        sample_name : str
+            The name of the sample to get the mapped points from. To see the
+            available mapped samples call the `mapped_samples()` method.
+        path : str, optional
+            Path to the samples yaml file.
+        """
+        path = path or self._path
+        sample = self.get_sample_data(str(sample_name))
+        coeffs = []
+        m_points, n_points = 0, 0
+        if sample:
+            try:
+                coeffs = sample["coefficients"]
+                m_points = sample['M']
+                n_points = sample['N']
+            except Exception as ex:
+                logger.error('Something went wrong when getting the '
+                             'information for sample %s. %s', sample_name, ex)
+                return
+        else:
+            logger.error('This sample probably does not exist. Please call'
+                         ' mapped_samples() to see which ones are available.')
+            return
+
+        return m_points, n_points, coeffs
 
     def save_grid(self, sample_name, path=None):
         """
@@ -895,7 +964,6 @@ class XYGridStage(XYTargetGrid):
         b_coeffs = coeffs[4:]
 
         if not compute_all:
-
             logic_x = xx_origin[m_row - 1][n_column - 1]
             logic_y = yy_origin[m_row - 1][n_column - 1]
             x, y = self.convert_to_physical(a_coeffs, b_coeffs, logic_x,
@@ -913,37 +981,77 @@ class XYGridStage(XYTargetGrid):
                 y_points.append(j)
         return x_points, y_points
 
-    def get_sample_map_info(self, sample_name, path=None):
+    def move_to_sample(self, m, n):
         """
-        Given a sample name, get the m and n points, as well as the coeffs.
+        Move x,y motors to the computed positions of n, m of current sample.
+
+        Given m (row) and n (column), compute the positions for x and y based
+        on the current sample's parameters. See `get_current_sample()` and move
+        the x and y motor to those positions.
 
         Parameters
         ----------
-        sample_name : str
-            The name of the sample to get the mapped points from. To see the
-            available mapped samples call the `mapped_samples()` method.
-        path : str, optional
-            Path to the samples yaml file.
+        m : int
+            Indicates the row on the grid.
+        n : int
+            Indicates the column on the grid.
         """
-        path = path or self._path
-        sample = self.get_sample(sample_name)
-        coeffs = []
-        m_points, n_points = 0, 0
-        if sample:
-            try:
-                coeffs = sample["coefficients"]
-                m_points = sample['M']
-                n_points = sample['N']
-            except Exception as ex:
-                logger.error('Something went wrong when getting the '
-                             'information for sample %s. %s', sample_name, ex)
-                return
-        else:
-            logger.error('This sample probably does not exist. Please call'
-                         ' mapped_samples() to see which ones are available.')
-            return
+        sample_name = self._current_sample
+        if sample_name:
+            m, n = self.compute_mapped_point(sample_name, m_row=m, n_column=n,
+                                             compute_all=False, path=None)
+        # TODO is it safe to do this here or should i be adding some checks?
+        self.x.mv(n)
+        self.y.mv(m)
 
-        return m_points, n_points, coeffs
+    def move_to(self, sample, m, n):
+        """
+        Move x,y motors to the computed positions of n, m of given sample.
+
+        Given m (row) and n (column), compute the positions for x and y based
+        on the current sample's parameters. See `get_current_sample()`
+
+        Parameters
+        ----------
+        m : int
+            Indicates the row on the grid.
+        n : int
+            Indicates the column on the grid.
+        """
+        m, n = self.compute_mapped_point(str(sample), m_row=m, n_column=n,
+                                         compute_all=False, path=None)
+        self.x.mv(n)
+        self.y.mv(m)
+
+    def snake_grid_list(self, points):
+        """
+        Flatten them into lists with snake_like pattern coordinate points.
+        [[1, 2], [3, 4]] => [1, 2, 4, 3]
+
+        Parameters
+        ----------
+        points : array
+            Array containing the grid points for an axis with shape MxN.
+
+        Returns
+        -------
+        flat_points : list
+            List of all the grid points folowing a snake-like pattern.
+        """
+        temp_points = []
+        for i in range(points.shape[0]):
+            if i % 2 == 0:
+                temp_points.append(points[i])
+            else:
+                t = points[i]
+                tt = t[::-1]
+                temp_points.append(tt)
+        flat_points = list(chain.from_iterable(temp_points))
+        # convert the numpy.float64 to normal float to be able to easily
+        # save them in the yaml file
+        flat_points = [float(v) for v in flat_points]
+        return flat_points
+
 
 ###############################################################################
 # The first method of transformation - is drifting a bit for the middle targets
@@ -1197,7 +1305,9 @@ class XYGridStage(XYTargetGrid):
 
     #     return m_points, l_points
 
-    def snake_grid_list(self, points):
+
+
+    def snake_grid_list(self, points, m, n):
         """
         Flatten them into lists with snake_like pattern coordinate points.
         [[1, 2], [3, 4]] => [1, 2, 4, 3]
@@ -1212,6 +1322,7 @@ class XYGridStage(XYTargetGrid):
         flat_points : list
             List of all the grid points folowing a snake-like pattern.
         """
+        points = np.array(points).reshape(m, n)
         temp_points = []
         for i in range(points.shape[0]):
             if i % 2 == 0:
@@ -1253,7 +1364,7 @@ class XYGridStage(XYTargetGrid):
             Or, all the xx, yy values if `compute_all` is `True`.
         """
         path = path or self._path
-        sample = self.get_sample(sample_name)
+        sample = self.get_sample_data(sample_name)
         coeffs = []
         top_left, top_right, bottom_right, bottom_left = (), (), (), ()
         m_points, n_points = 0, 0
