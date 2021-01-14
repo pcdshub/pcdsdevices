@@ -309,11 +309,11 @@ class AttBase(FltMvInterface, PVPositioner):
 
         states = '\n'.join(render_ascii_att(blade_states))
 
-        energy = get_status_float(status_info, 'energy', 'value', precision=3)
-        energy_3rd = get_status_float(status_info, 'energy_3rd', 'value',
-                                      precision=3)
-        trans = get_status_float(status_info, 'position')
-        trans_3rd = get_status_float(status_info, 'readback_3rd', 'value')
+        energy = get_status_value(status_info, 'energy', 'value')
+        energy_3rd = get_status_value(status_info, 'energy_3rd', 'value')
+        trans = get_status_float(status_info, 'position', precision=4)
+        trans_3rd = get_status_float(status_info, 'readback_3rd', 'value',
+                                     precision=4)
 
         if energy != 'N/A':
             energy = energy * 1e3
@@ -321,8 +321,8 @@ class AttBase(FltMvInterface, PVPositioner):
             energy_3rd = energy_3rd * 1e3
             return f"""\
 {states}
-Transmission for 1st harmonic (E={energy} keV): {trans}
-Transmission for 3rd harmonic (E={energy_3rd} keV): {trans_3rd}
+Transmission for 1st harmonic (E={energy:.3E} keV): {trans}
+Transmission for 3rd harmonic (E={energy_3rd:.3E} keV): {trans_3rd}
 """
         else:
             return f"""\
