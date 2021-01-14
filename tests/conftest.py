@@ -14,6 +14,7 @@ from ophyd.signal import LimitError
 from ophyd.sim import FakeEpicsSignal, make_fake_device
 
 from pcdsdevices.attenuator import MAX_FILTERS, Attenuator, _att_classes
+from pcdsdevices.component import UnrelatedComponent
 from pcdsdevices.mv_interface import setup_preset_paths
 
 MODULE_PATH = Path(__file__).parent
@@ -110,3 +111,47 @@ def find_all_device_classes() -> list:
                     devices.add(obj)
 
     return list(devices)
+
+
+def best_effort_instantiation(device_cls, *, skip_on_failure=True):
+    """
+    Best effort create a fake device instance from "real" device_cls.
+
+    Optionally skips the test automatically on failure.
+
+    Parameters
+    ----------
+    device_cls : type
+        Device class, a subclass of ophyd.Device
+
+    skip_on_failure : bool, optional
+        If set, skip the test with a reasonable message.
+    """
+    fake_cls = make_fake_device(device_cls)
+
+    kwargs = {
+        'name': device_cls.__name__,
+    }
+
+    # Add in unrelated components as strings - we know about these ahead
+    # of time.
+    for cpt_walk in fake_cls.walk_components():
+        if isinstance(cpt_walk.item, UnrelatedComponent):
+            kwarg = cpt_walk.dotted_name.replace('.', '_') + '_prefix'
+            kwargs[kwarg] = f'{kwarg}:'  # this is arbitrary
+
+    # Otherwise, try to look at the signature and give us *something* for
+    # the required ones without defaults.
+    sig = inspect.signature(fake_cls)
+    for param in sig.parameters.values():
+        if param.default is inspect.Signature.empty:
+            if param.kind not in {param.VAR_KEYWORD, param.VAR_POSITIONAL}:
+                # This is best effort, after all!
+                kwargs.setdefault(param.name, 0)
+
+    try:
+        return fake_cls(**kwargs)
+    except Exception as ex:
+        if skip_on_failure:
+            pytest.skip(f'Unable to instantiate {device_cls}: {ex}')
+        raise

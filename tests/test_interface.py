@@ -233,6 +233,21 @@ def test_tab_completion(cls):
         assert regex.match(name) is not None
 
 
+@pytest.mark.parametrize(
+    'cls',
+    [pytest.param(cls, id=f'{cls.__module__}.{cls.__name__}')
+     for cls in conftest.find_all_device_classes()
+     if BaseInterface in cls.mro()]
+)
+def test_smoke_status_prints(cls):
+    if BaseInterface not in cls.mro():
+        pytest.skip(f'{cls} does not inherit from the interface')
+
+    instance = conftest.best_effort_instantiation(cls)
+    status_info = instance.status_info()
+    print(instance.format_status_info(status_info))
+
+
 def test_tab_helper_no_mixin():
     class MyDevice:
         ...
