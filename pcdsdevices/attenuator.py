@@ -19,7 +19,7 @@ from .component import UnrelatedComponent as UCpt
 from .epics_motor import BeckhoffAxis
 from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
-from .signal import InternalSignal, _OptionalEpicsSignal
+from .signal import InternalSignal
 from .utils import get_status_float, get_status_value
 from .variety import set_metadata
 
@@ -478,9 +478,7 @@ class AttenuatorCalculatorFilter(BaseInterface, Device):
         doc='Thickness in micron',
     )
     active = Cpt(
-        # TODO: this is *new* API. I want to unify AT2L0/AT1K4, but need
-        # time to get there.
-        _OptionalEpicsSignal, 'Active', kind='normal',
+        EpicsSignal, 'Active', kind='normal',
         doc='Should the filter be used in calculations?',
     )
     is_stuck = Cpt(
