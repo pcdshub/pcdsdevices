@@ -624,7 +624,7 @@ class BeckhoffAxis(EpicsMotorInterface):
     motor_spmg = Cpt(EpicsSignal, '.SPMG', kind='config',
                      doc='Stop, Pause, Move, Go')
 
-    # Clear the normal homing PVs that don't really work hero
+    # Clear the normal homing PVs that don't really work here
     home_forward = None
     home_reverse = None
 
