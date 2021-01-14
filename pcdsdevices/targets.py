@@ -546,6 +546,17 @@ class XYGridStage(XYTargetGrid):
         """
         return self._current_sample
 
+    def set_current_sample(self, sample_name):
+        """
+        Set the current sample.
+
+        Parameters
+        ----------
+        sample_name : str
+            The name of the sample to be set as current one.
+        """
+        self._current_sample = str(sample_name)
+
     def load_sample(self, sample_name, path=None):
         """
         Get the sample information and populate these parameters.
@@ -567,7 +578,7 @@ class XYGridStage(XYTargetGrid):
         self.m_n_points = m_points, n_points
         self.coefficients = coeffs
         # make this sample the current one
-        self._current_sample = str(sample_name)
+        self.set_current_sample(str(sample_name))
         # TODO: might need to the set presets here tooo??
 
     def get_sample_data(self, sample_name, path=None):
@@ -993,9 +1004,9 @@ class XYGridStage(XYTargetGrid):
         n : int
             Indicates the column on the grid.
         """
-        sample_name = self._current_sample
+        sample_name = self.get_current_sample()
         if sample_name:
-            m, n = self.compute_mapped_point(sample_name, m_row=m, n_column=n,
+            n, m = self.compute_mapped_point(sample_name, m_row=m, n_column=n,
                                              compute_all=False, path=None)
         # TODO is it safe to do this here or should i be adding some checks?
         self.x.mv(n)
@@ -1015,7 +1026,7 @@ class XYGridStage(XYTargetGrid):
         n : int
             Indicates the column on the grid.
         """
-        m, n = self.compute_mapped_point(str(sample), m_row=m, n_column=n,
+        n, m = self.compute_mapped_point(str(sample), m_row=m, n_column=n,
                                          compute_all=False, path=None)
         self.x.mv(n)
         self.y.mv(m)

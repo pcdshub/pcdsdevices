@@ -224,8 +224,8 @@ def test_move_to_sample(fake_grid_stage, sample_file):
     assert stage.x.position == 0
     assert stage.y.position == 0
     stage.move_to_sample(3, 1)
-    assert stage.x.position == 2.0
-    assert stage.y.position == 0.0
+    assert stage.x.position == 0.0
+    assert stage.y.position == 2.0
 
 
 def test_move_to(fake_grid_stage, sample_file):
@@ -236,5 +236,12 @@ def test_move_to(fake_grid_stage, sample_file):
     assert stage.x.position == 0
     assert stage.y.position == 0
     stage.move_to('test_sample', 3, 1)
-    assert stage.x.position == 2.0
-    assert stage.y.position == 0.0
+    assert stage.x.position == 0.0
+    assert stage.y.position == 2.0
+
+
+def test_load_sample(fake_grid_stage, sample_file):
+    stage = fake_grid_stage
+    stage.save_grid(sample_name='current_sample', path=sample_file)
+    stage.load_sample('current_sample')
+    assert stage.get_current_sample() == 'current_sample'
