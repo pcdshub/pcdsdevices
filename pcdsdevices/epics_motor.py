@@ -652,9 +652,15 @@ class BeckhoffAxis(EpicsMotorInterface):
         the single pre-programmed homing routine can be used, so the
         ``direction`` argument has no effect.
         """
+        self._run_subs(sub_type=self._SUB_REQ_DONE, success=False)
+        self._reset_sub(self._SUB_REQ_DONE)
+
         status = MoveStatus(self, self.plc.home_pos.get(),
                             timeout=None, settle_time=self._settle_time)
         self.plc.cmd_home.put(1)
+
+        self.subscribe(status._finished, event_type=self._SUB_REQ_DONE,
+                       run=False)
 
         try:
             if wait:
