@@ -113,6 +113,13 @@ def find_all_device_classes() -> list:
     return list(devices)
 
 
+# If your device class has some essential keyword arguments necesary to be
+# instantiated that cannot be automatically determined from its signature,
+# add them here.
+class_to_essential_kwargs = {
+}
+
+
 def best_effort_instantiation(device_cls, *, skip_on_failure=True):
     """
     Best effort create a fake device instance from "real" device_cls.
@@ -147,11 +154,16 @@ def best_effort_instantiation(device_cls, *, skip_on_failure=True):
         if param.default is inspect.Signature.empty:
             if param.kind not in {param.VAR_KEYWORD, param.VAR_POSITIONAL}:
                 # This is best effort, after all!
-                kwargs.setdefault(param.name, 0)
+                kwargs.setdefault(param.name, "test")
+
+    # Add in essential kwargs, if available:
+    kwargs.update(class_to_essential_kwargs.get(device_cls, {}).items())
 
     try:
         return fake_cls(**kwargs)
     except Exception as ex:
         if skip_on_failure:
-            pytest.skip(f'Unable to instantiate {device_cls}: {ex}')
+            pytest.skip(
+                f'Unable to instantiate {device_cls}: {ex} (kwargs={kwargs})'
+            )
         raise
