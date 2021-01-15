@@ -240,9 +240,6 @@ def test_tab_completion(cls):
      if BaseInterface in cls.mro()]
 )
 def test_smoke_status_prints(cls):
-    if BaseInterface not in cls.mro():
-        pytest.skip(f'{cls} does not inherit from the interface')
-
     instance = conftest.best_effort_instantiation(cls)
     status_info = instance.status_info()
     print(instance.format_status_info(status_info))
