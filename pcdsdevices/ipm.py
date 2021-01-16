@@ -2,6 +2,7 @@
 Module for the `IPM` intensity position monitor classes.
 """
 import logging
+
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
@@ -12,7 +13,7 @@ from .epics_motor import IMS
 from .evr import Trigger
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface
-from .utils import ipm_screen, get_status_value
+from .utils import get_status_float, get_status_value, ipm_screen
 
 logger = logging.getLogger(__name__)
 
@@ -152,9 +153,9 @@ class IPMMotion(BaseInterface, Device):
         """
         name = ' '.join(self.prefix.split(':'))
 
-        x_motor_pos = get_status_value(status_info, 'diode', 'x_motor',
+        x_motor_pos = get_status_float(status_info, 'diode', 'x_motor',
                                        'position')
-        y_motor_pos = get_status_value(status_info, 'diode', 'state', 'motor',
+        y_motor_pos = get_status_float(status_info, 'diode', 'state', 'motor',
                                        'position')
         d_units = get_status_value(status_info, 'diode', 'x_motor',
                                    'user_setpoint', 'units')
@@ -179,7 +180,7 @@ class IPMMotion(BaseInterface, Device):
 {name}: Target {target_state_num} {target_state} [{composition}]
 Target Position: {target_pos} [{t_units}]
 {diode_type}Diode Position(x, y): \
-{x_motor_pos:.4f}, {y_motor_pos:.4f} [{d_units}]
+{x_motor_pos}, {y_motor_pos} [{d_units}]
 """
 
     @property
@@ -487,9 +488,10 @@ class IPM_IPIMB(IPMMotion, IPM_Det):
     _num_channels = 4
     _det = 'ipimb'
 
-    def __init__(self, prefix, *, name, **kwargs):
-        self.prefix_ipimb = kwargs.pop('prefix_ipimb')
-        self.prefix_ioc = kwargs.pop('prefix_ioc', None)
+    def __init__(self, prefix, *, name, prefix_ipimb, prefix_ioc=None,
+                 **kwargs):
+        self.prefix_ipimb = prefix_ipimb
+        self.prefix_ioc = prefix_ioc
         super().__init__(prefix, name=name, **kwargs)
 
 
@@ -508,9 +510,10 @@ class IPM_Wave8(IPMMotion, IPM_Det):
     _num_channels = 16
     _det = 'wave8'
 
-    def __init__(self, prefix, *, name, **kwargs):
-        self.prefix_wave8 = kwargs.pop('prefix_wave8')
-        self.prefix_ioc = kwargs.pop('prefix_ioc', None)
+    def __init__(self, prefix, *, name, prefix_wave8, prefix_ioc=None,
+                 **kwargs):
+        self.prefix_wave8 = prefix_wave8
+        self.prefix_ioc = prefix_ioc
         super().__init__(prefix, name=name, **kwargs)
         self.det = self.wave8
 
