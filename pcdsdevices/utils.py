@@ -241,7 +241,7 @@ def get_status_value(status_info, *keys, default_value='N/A'):
 
 
 def get_status_float(status_info, *keys, default_value='N/A', precision=4,
-                     format='f', scale=1.0):
+                     format='f', scale=1.0, include_plus_sign=False):
     """
     Get the value of a dictionary key.
 
@@ -253,14 +253,17 @@ def get_status_float(status_info, *keys, default_value='N/A', precision=4,
         Dictionary to look through.
     keys : list
         List of keys to look through with nested dictionarie.
-    default_value : str
+    default_value : str, optional
         A default value to return if the item value was not found.
-    precision : int
+    precision : int, optional
         Precision requested for the float values. Defaults to 4.
-    format : str
+    format : str, optional
         Format specifier to use for the floating point value. Defaults to 'f'.
-    scale : float
+    scale : float, optional
         Scale to apply to value prior to formatting.
+    include_plus_sign : bool, optional
+        Include a plus sign before a positive value for text alignment
+        purposes. Defaults to False.
 
     Returns
     -------
@@ -271,7 +274,11 @@ def get_status_float(status_info, *keys, default_value='N/A', precision=4,
         value = reduce(operator.getitem, keys, status_info)
         if isinstance(value, (int, float)):
             value = float(value) * scale
-            return ('{:.%d%s}' % (precision, format)).format(value)
+            if include_plus_sign:
+                fmt = '{:+.%d%s}' % (precision, format)
+            else:
+                fmt = '{:.%d%s}' % (precision, format)
+            return fmt.format(value)
         return value
     except KeyError:
         return default_value
