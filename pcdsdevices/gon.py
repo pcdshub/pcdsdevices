@@ -2,19 +2,20 @@
 Module for goniometers and sample stages used with them.
 """
 import logging
+
 import numpy as np
-from prettytable import PrettyTable
 from ophyd import Device
-from ophyd.device import Component as Cpt
 from ophyd import FormattedComponent as FCpt
+from ophyd.device import Component as Cpt
 from ophyd.status import DeviceStatus
+from prettytable import PrettyTable
 
 from .epics_motor import IMS
 from .interface import BaseInterface
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
 from .sim import FastMotor
-from .utils import get_status_value, get_status_float
+from .utils import get_status_float, get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -141,11 +142,15 @@ class GonWithDetArm(BaseGon):
     det_ver = FCpt(IMS, '{self._prefix_detver}', kind='normal')
 
     def __init__(self, *, name, prefix_2theta, prefix_dettilt, prefix_detver,
+                 prefix_hor, prefix_ver, prefix_rot, prefix_tip, prefix_tilt,
                  **kwargs):
         self._prefix_2theta = prefix_2theta
         self._prefix_dettilt = prefix_dettilt
         self._prefix_detver = prefix_detver
-        super().__init__(name=name, **kwargs)
+        super().__init__(name=name, prefix_hor=prefix_hor,
+                         prefix_ver=prefix_ver, prefix_rot=prefix_rot,
+                         prefix_tip=prefix_tip, prefix_tilt=prefix_tilt,
+                         **kwargs)
 
 
 def Goniometer(**kwargs):
