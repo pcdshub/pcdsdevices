@@ -311,21 +311,24 @@ class AttBase(FltMvInterface, PVPositioner):
 
         states = '\n'.join(render_ascii_att(blade_states))
 
-        energy = get_status_value(status_info, 'energy', 'value') * 1e3
-        energy_3rd = get_status_value(status_info, 'energy_3rd', 'value')
-        trans = get_status_value(status_info, 'position')
+        energy = get_status_float(
+            status_info, 'energy', 'value', scale=1e3, precision=3)
+        energy_3rd = get_status_float(
+            status_info, 'energy_3rd', 'value', scale=1e3, precision=3)
+        trans = get_status_float(
+            status_info, 'position', precision=4, format='E')
 
         if energy_3rd != 'N/A':
-            energy_3rd = energy_3rd * 1e3
-            return f"""\
-{states}
-Transmission for 1st harmonic (E={energy:.3} keV): {trans:.4E}
-Transmission for 3rd harmonic (E={energy_3rd:.3} keV): {trans:.4E}
-"""
+            status_3rd = (
+                f'Transmission for 3rd harmonic (E={energy_3rd} keV): {trans}'
+            )
         else:
-            return f"""\
+            status_3rd = ''
+
+        return f"""\
 {states}
-Transmission for 1st harmonic (E={energy:.3} keV): {trans:.4E}
+Transmission for 1st harmonic (E={energy} keV): {trans}
+{status_3rd}
 """
 
 
@@ -1054,8 +1057,9 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
         self.calculator.run_calculation.put(1, wait=True)
         return super()._setup_move(position)
 
-    def __init__(self, *args, limits=None, **kwargs):
-        UCpt.collect_prefixes(self, dict(calculator_prefix='AT2L0:CALC'))
+    def __init__(self, *args, limits=None, calculator_prefix='AT2L0:CALC',
+                 **kwargs):
+        UCpt.collect_prefixes(self, dict(calculator_prefix=calculator_prefix))
         limits = limits or (0.0, 1.0)
         super().__init__(*args, limits=limits, **kwargs)
 
