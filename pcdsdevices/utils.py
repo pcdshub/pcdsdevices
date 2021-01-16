@@ -1,14 +1,15 @@
+import operator
 import os
 import select
 import shutil
 import sys
 import threading
 import time
-import operator
 from functools import reduce
 
 import ophyd
 import pint
+import prettytable
 
 try:
     import termios
@@ -239,7 +240,8 @@ def get_status_value(status_info, *keys, default_value='N/A'):
         return default_value
 
 
-def get_status_float(status_info, *keys, default_value='N/A', precision=4):
+def get_status_float(status_info, *keys, default_value='N/A', precision=4,
+                     format='f', scale=1.0):
     """
     Get the value of a dictionary key.
 
@@ -253,8 +255,12 @@ def get_status_float(status_info, *keys, default_value='N/A', precision=4):
         List of keys to look through with nested dictionarie.
     default_value : str
         A default value to return if the item value was not found.
-    precision: int
+    precision : int
         Precision requested for the float values. Defaults to 4.
+    format : str
+        Format specifier to use for the floating point value. Defaults to 'f'.
+    scale : float
+        Scale to apply to value prior to formatting.
 
     Returns
     -------
@@ -263,8 +269,69 @@ def get_status_float(status_info, *keys, default_value='N/A', precision=4):
     """
     try:
         value = reduce(operator.getitem, keys, status_info)
-        if isinstance(value, float):
-            return ('{:.%df}' % precision).format(value)
+        if isinstance(value, (int, float)):
+            value = float(value) * scale
+            return ('{:.%d%s}' % (precision, format)).format(value)
         return value
     except KeyError:
         return default_value
+
+
+def format_status_table(status_info, row_to_key, column_to_key,
+                        row_identifier='Index'):
+    """
+    Create a PrettyTable based on status information.
+
+    Parameters
+    ----------
+    status_info : dict
+        The status information dictionary.
+
+    row_to_key : dict
+        Dictionary of the form ``{'display_text': 'status_key'}``.
+
+    column_to_key : dict
+        Dictionary of the form ``{'display_text': 'status_key'}``.
+
+    row_identifier : str, optional
+        What to show for the first column, likely an 'Index' or 'Component'.
+    """
+
+    table = prettytable.PrettyTable()
+    table.field_names = [row_identifier] + list(column_to_key)
+    for row_name, row_key in row_to_key.items():
+        row = [
+            get_status_value(status_info, row_key, key, 'value')
+            for key in column_to_key.values()
+        ]
+        table.add_row([str(row_name)] + row)
+
+    return table
+
+
+def combine_status_info(obj, status_info, attrs, separator='\n= {attr} ='):
+    """
+    Combine status information from the given attributes.
+
+    Parameters
+    ----------
+    obj : OphydObj
+        The parent ophyd object.
+
+    status_info : dict
+        The status information dictionary.
+
+    attrs : sequence of str
+        The attribute names.
+
+    separator : str, optional
+        The separator line between the statuses.  May be formatted
+        with variables ``attr``, ``parent``, or ``child``.
+    """
+    lines = []
+    for attr in attrs:
+        child = getattr(obj, attr)
+        lines.append(separator.format(attr=attr, parent=obj, child=child))
+        lines.append(child.format_status_info(status_info[attr]))
+
+    return '\n'.join(lines)
