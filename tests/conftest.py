@@ -13,6 +13,10 @@ from epics import PV
 from ophyd.signal import LimitError
 from ophyd.sim import FakeEpicsSignal, make_fake_device
 
+import pcdsdevices
+import pcdsdevices.analog_signals
+import pcdsdevices.lens
+import pcdsdevices.lxe
 from pcdsdevices.attenuator import MAX_FILTERS, Attenuator, _att_classes
 from pcdsdevices.component import UnrelatedComponent
 from pcdsdevices.mv_interface import setup_preset_paths
@@ -88,6 +92,7 @@ def presets():
 
 
 def find_all_device_classes() -> list:
+    """Find all device classes in pcdsdevices and return them as a list."""
     exclude_list = {'_version', }
     pkgname = 'pcdsdevices'
     modules = [
@@ -100,11 +105,11 @@ def find_all_device_classes() -> list:
         __import__(f'{pkgname}.{module}')
 
     devices = set()
-    for mod_name, mod in sys.modules.items():
+    for mod_name, mod in sorted(sys.modules.items()):
         if pkgname not in mod_name:
             continue
 
-        for mod_attr in dir(mod):
+        for mod_attr in sorted(dir(mod)):
             obj = getattr(mod, mod_attr)
             if inspect.isclass(obj) and issubclass(obj, ophyd.Device):
                 if not obj.__module__.startswith('ophyd'):
@@ -117,6 +122,16 @@ def find_all_device_classes() -> list:
 # instantiated that cannot be automatically determined from its signature,
 # add them here.
 class_to_essential_kwargs = {
+    pcdsdevices.analog_signals.Mesh: dict(sp_ch=0, rb_ch=0),
+    pcdsdevices.lens.LensStack: dict(
+        path=str(MODULE_PATH / 'test_lens_sets' / 'test'),
+    ),
+    pcdsdevices.lens.SimLensStack: dict(
+        path=str(MODULE_PATH / 'test_lens_sets' / 'test'),
+    ),
+    pcdsdevices.lxe.LaserEnergyPositioner: dict(
+        calibration_file=MODULE_PATH / 'xcslt8717_wpcalib_opa',
+    ),
 }
 
 
@@ -154,7 +169,10 @@ def best_effort_instantiation(device_cls, *, skip_on_failure=True):
         if param.default is inspect.Signature.empty:
             if param.kind not in {param.VAR_KEYWORD, param.VAR_POSITIONAL}:
                 # This is best effort, after all!
-                kwargs.setdefault(param.name, "test")
+                kwargs.setdefault(
+                    param.name,
+                    'test:abcd' if 'prefix' in param.name else 'test'
+                )
 
     # Add in essential kwargs, if available:
     kwargs.update(class_to_essential_kwargs.get(device_cls, {}).items())

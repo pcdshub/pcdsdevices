@@ -199,6 +199,7 @@ _TAB_COMPLETION_IGNORES = {'.areadetector.', }
 
 
 def _should_check_tab_completion(cls):
+    """Filter out classes for checking tab completion."""
     if BaseInterface in cls.mro():
         # Include any Devices that have BaseInterface
         return True
@@ -233,11 +234,39 @@ def test_tab_completion(cls):
         assert regex.match(name) is not None
 
 
+_STATUS_PRINT_IGNORES = {
+    '.AttenuatorCalculatorBase',
+    '.BadSlitPositionerBase',
+    '.DelayBase',
+    '.IPM_Det',
+    '.InOutPVStatePositioner',
+    '.KappaXYZStage',
+    '.PVPositionerComparator',
+    '.PVPositionerDone',
+    '.PVPositionerIsClose',
+    '.PseudoSingleInterface',
+    '.PulsePicker',
+    '.SlitsBase',
+    '.SyncAxesBase',
+}
+
+
+def _should_check_status_prints(cls):
+    """Filter out classes for checking ``status_info``."""
+    fully_qualified_name = f'{cls.__module__}.{cls.__name__}'
+    if any(name in fully_qualified_name for name in _STATUS_PRINT_IGNORES):
+        return False
+
+    # Otherwise, include any Devices that inherit from BaseInterface.
+    return BaseInterface in cls.mro()
+
+
 @pytest.mark.parametrize(
     'cls',
     [pytest.param(cls, id=f'{cls.__module__}.{cls.__name__}')
      for cls in conftest.find_all_device_classes()
-     if BaseInterface in cls.mro()]
+     if _should_check_status_prints(cls)
+     ]
 )
 def test_smoke_status_prints(cls):
     instance = conftest.best_effort_instantiation(cls)
