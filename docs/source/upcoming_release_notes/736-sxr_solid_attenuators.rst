@@ -4,7 +4,7 @@
 API Changes
 -----------
 - Added ``format`` and ``scale`` arguments to
-  :func:`~pcdsdevices.utils.get_status_float`, which are affect floating point
+  :func:`~pcdsdevices.utils.get_status_float`, which affect floating point
   formatting of values available in the ``status_info`` dictionary.
 
 Features
