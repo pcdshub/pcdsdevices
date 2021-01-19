@@ -105,17 +105,20 @@ def find_all_device_classes() -> list:
         __import__(f'{pkgname}.{module}')
 
     devices = set()
-    for mod_name, mod in sorted(sys.modules.items()):
+    for mod_name, mod in sys.modules.items():
         if pkgname not in mod_name:
             continue
 
-        for mod_attr in sorted(dir(mod)):
+        for mod_attr in dir(mod):
             obj = getattr(mod, mod_attr)
             if inspect.isclass(obj) and issubclass(obj, ophyd.Device):
                 if not obj.__module__.startswith('ophyd'):
                     devices.add(obj)
 
-    return list(devices)
+    def sort_key(cls):
+        return (cls.__module__, cls.__name__)
+
+    return list(sorted(devices, key=sort_key))
 
 
 # If your device class has some essential keyword arguments necesary to be
