@@ -326,7 +326,7 @@ Transmission for 3rd harmonic (E={energy_3rd:.3E} keV): {trans_3rd:.4E}
         else:
             return f"""\
 {states}
-Transmission for 1st harmonic (E={energy} keV): {trans}
+Transmission for 1st harmonic (E={energy:.3E} keV): {trans:.4E}
 """
 
 
