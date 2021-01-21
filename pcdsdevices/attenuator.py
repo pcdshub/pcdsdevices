@@ -317,12 +317,13 @@ class AttBase(FltMvInterface, PVPositioner):
             status_info, 'energy_3rd', 'value', scale=1e3, precision=3)
         trans = get_status_float(
             status_info, 'position', precision=4, format='E')
+        trans_3rd = get_status_float(
+            status_info, 'readback_3rd', 'value', precision=4, format='E')
 
-        if energy != 'N/A':
-            energy = energy * 1e3
         if energy_3rd != 'N/A':
             status_3rd = (
-                f'Transmission for 3rd harmonic (E={energy_3rd} keV): {trans}'
+                f'Transmission for 3rd harmonic (E={energy_3rd} keV): '
+                f'{trans_3rd}'
             )
         else:
             status_3rd = ''
