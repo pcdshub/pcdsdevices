@@ -22,20 +22,18 @@ from ophyd import EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import Signal
-from ophyd.status import wait as status_wait, Status
+from ophyd.status import Status
+from ophyd.status import wait as status_wait
 
-from .areadetector.detectors import (PCDSAreaDetectorTyphosTrigger)
-
+from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .epics_motor import BeckhoffAxis
-from .interface import (BaseInterface, FltMvInterface, MvInterface,
-                        LightpathMixin, LightpathInOutMixin)
-from .signal import PytmcSignal, NotImplementedSignal
-from .sensors import RTD, TwinCATTempSensor
-from .utils import schedule_task, get_status_value
-
+from .interface import (BaseInterface, FltMvInterface, LightpathInOutMixin,
+                        LightpathMixin, MvInterface)
 from .pmps import TwinCATStatePMPS
+from .sensors import RTD, TwinCATTempSensor
+from .signal import NotImplementedSignal, PytmcSignal
+from .utils import get_status_float, get_status_value, schedule_task
 from .variety import set_metadata
-
 
 logger = logging.getLogger(__name__)
 
@@ -100,17 +98,21 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
             else:
                 name = f'{beamline} Slit {self.name}'
 
-        x_width = get_status_value(status_info, 'xwidth', 'position')
-        y_width = get_status_value(status_info, 'ywidth', 'position')
-        x_center = get_status_value(status_info, 'xcenter', 'position')
-        y_center = get_status_value(status_info, 'ycenter', 'position')
+        x_width = get_status_float(status_info, 'xwidth', 'position',
+                                   include_plus_sign=True)
+        y_width = get_status_float(status_info, 'ywidth', 'position',
+                                   include_plus_sign=True)
+        x_center = get_status_float(status_info, 'xcenter', 'position',
+                                    include_plus_sign=True)
+        y_center = get_status_float(status_info, 'ycenter', 'position',
+                                    include_plus_sign=True)
         w_units = get_status_value(status_info, 'ywidth', 'setpoint', 'units')
         c_units = get_status_value(status_info, 'ycenter', 'setpoint', 'units')
 
         return f"""\
 {name}
-(hg, vg): ({x_width:+.4f}, {y_width:+.4f}) [{w_units}]
-(ho, vo): ({x_center:+.4f}, {y_center:+.4f}) [{c_units}]
+(hg, vg): ({x_width}, {y_width}) [{w_units}]
+(ho, vo): ({x_center}, {y_center}) [{c_units}]
 """
 
     def move(self, size, wait=False, moved_cb=None, timeout=None):

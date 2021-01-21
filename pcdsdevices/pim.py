@@ -23,8 +23,8 @@ from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATThermocouple
 from .signal import PytmcSignal
 from .state import StatePositioner
+from .utils import get_status_float, get_status_value
 from .variety import set_metadata
-from .utils import get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -113,10 +113,12 @@ class PIM(BaseInterface, Device):
         f_units = get_status_value(status_info, 'focus_motor', 'user_setpoint',
                                    'units')
         state_pos = get_status_value(status_info, 'state', 'position')
-        y_pos = get_status_value(status_info, 'state', 'motor', 'position')
+        y_pos = get_status_float(status_info, 'state', 'motor', 'position',
+                                 precision=4)
         y_units = get_status_value(status_info, 'state', 'motor',
                                    'user_setpoint', 'units')
-        zoom = get_status_value(status_info, 'zoom_motor', 'position')
+        zoom = get_status_float(status_info, 'zoom_motor', 'position',
+                                precision=4)
         z_units = get_status_value(status_info, 'zoom_motor', 'user_setpoint',
                                    'units')
 
@@ -126,13 +128,13 @@ class PIM(BaseInterface, Device):
         else:
             focus = ''
         if zoom != 'N/A':
-            zoom = f'Navitar Zoom: {zoom:.4f} [{z_units}]'
+            zoom = f'Navitar Zoom: {zoom} [{z_units}]'
         else:
             zoom = ''
 
         return f"""\
 {name}: {state_pos}
-Y Position: {y_pos:.4f} [{y_units}]
+Y Position: {y_pos} [{y_units}]
 {zoom}{focus}
 """
 
@@ -294,7 +296,11 @@ class PIMWithBoth(PIMWithFocus, PIMWithLED):
         inferred from `prefix`.
     """
 
-    pass
+    def __init__(self, prefix, *, name, prefix_focus=None, prefix_led=None,
+                 prefix_det=None, prefix_zoom=None, **kwargs):
+        super().__init__(prefix, name=name, prefix_focus=prefix_focus,
+                         prefix_led=prefix_led, prefix_det=prefix_det,
+                         prefix_zoom=prefix_zoom, **kwargs)
 
 
 class LCLS2ImagerBase(BaseInterface, Device, LightpathInOutMixin):

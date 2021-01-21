@@ -6,14 +6,15 @@ import os
 import shutil
 
 from ophyd.device import Component as Cpt
-from ophyd.device import FormattedComponent as FCpt
 from ophyd.device import Device
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.epics_motor import EpicsMotor
+from ophyd.ophydobj import Kind
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
-from ophyd.status import DeviceStatus, SubscriptionStatus
+from ophyd.status import DeviceStatus, MoveStatus, SubscriptionStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
-from ophyd.ophydobj import Kind
+from ophyd.utils.epics_pvs import raise_if_disconnected
 
 from pcdsdevices.pv_positioner import PVPositionerComparator
 
@@ -21,8 +22,8 @@ from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
 from .pseudopos import DelayBase
 from .signal import PytmcSignal
-from .variety import set_metadata
 from .utils import get_status_value
+from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
 
@@ -595,9 +596,14 @@ class BeckhoffAxisPLC(Device):
                    doc='Current NC error code')
     cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='o', kind='normal',
                         doc='Command to reset an active error')
+    cmd_home = Cpt(PytmcSignal, 'bHomeCmd', io='o', kind='normal',
+                   doc='Start TwinCAT homing routine.')
+    home_pos = Cpt(PytmcSignal, 'fHomePosition', io='io', kind='config',
+                   doc='Numeric position of home.')
 
     set_metadata(err_code, dict(variety='scalar', display_format='hex'))
     set_metadata(cmd_err_reset, dict(variety='command', value=1))
+    set_metadata(cmd_home, dict(variety='command-proc', value=1))
 
 
 class BeckhoffAxis(EpicsMotorInterface):
@@ -618,6 +624,10 @@ class BeckhoffAxis(EpicsMotorInterface):
     motor_spmg = Cpt(EpicsSignal, '.SPMG', kind='config',
                      doc='Stop, Pause, Move, Go')
 
+    # Clear the normal homing PVs that don't really work here
+    home_forward = None
+    home_reverse = None
+
     def clear_error(self):
         """Clear any active motion errors on this axis."""
         self.plc.cmd_err_reset.put(1)
@@ -632,6 +642,34 @@ class BeckhoffAxis(EpicsMotorInterface):
 
         self.clear_error()
         return super().stage()
+
+    @raise_if_disconnected
+    def home(self, direction=None, wait=True, **kwargs):
+        """
+        Perform the configured homing function.
+
+        This is set on the controller. Unlike other kinds of axes, only
+        the single pre-programmed homing routine can be used, so the
+        ``direction`` argument has no effect.
+        """
+        self._run_subs(sub_type=self._SUB_REQ_DONE, success=False)
+        self._reset_sub(self._SUB_REQ_DONE)
+
+        status = MoveStatus(self, self.plc.home_pos.get(),
+                            timeout=None, settle_time=self._settle_time)
+        self.plc.cmd_home.put(1)
+
+        self.subscribe(status._finished, event_type=self._SUB_REQ_DONE,
+                       run=False)
+
+        try:
+            if wait:
+                status_wait(status)
+        except KeyboardInterrupt:
+            self.stop()
+            raise
+
+        return status
 
 
 class MotorDisabledError(Exception):

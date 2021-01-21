@@ -10,3 +10,4 @@ scipy
 schema
 pcdsutils
 pcdscalc
+prettytable

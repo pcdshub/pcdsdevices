@@ -170,12 +170,12 @@ class VonHamosFER(VonHamosFE):
 
     rot = FCpt(BeckhoffAxis, '{self._prefix_rot}', kind='normal')
 
-    def __init__(self, *args, name, prefix_rot, **kwargs):
+    def __init__(self, *args, name, prefix_rot, prefix_focus, prefix_energy,
+                 **kwargs):
         self._prefix_rot = prefix_rot
-        if args:
-            super().__init__(args[0], name=name, **kwargs)
-        else:
-            super().__init__('', name=name, **kwargs)
+        super().__init__(args[0] if args else '',
+                         name=name, prefix_focus=prefix_focus,
+                         prefix_energy=prefix_energy, **kwargs)
 
 
 class VonHamos4Crystal(VonHamosFE):
@@ -206,8 +206,9 @@ class VonHamos4Crystal(VonHamosFE):
     c3 = Cpt(VonHamosCrystal, ':3', kind='normal')
     c4 = Cpt(VonHamosCrystal, ':4', kind='normal')
 
-    def __init__(self, prefix, *, name, **kwargs):
-        super().__init__(prefix, name=name, **kwargs)
+    def __init__(self, prefix, *, name, prefix_focus, prefix_energy, **kwargs):
+        super().__init__(prefix, name=name, prefix_focus=prefix_focus,
+                         prefix_energy=prefix_energy, **kwargs)
 
 
 class Mono(BaseInterface, Device):
