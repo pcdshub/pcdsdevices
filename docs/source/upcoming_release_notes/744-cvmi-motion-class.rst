@@ -3,7 +3,8 @@
 
 API Changes
 -----------
-- N/A
+- CVMI Motion System Prefix: 'TMO:CVMI'
+- KTOF Motion System Prefix: 'TMO:KTOF'
 
 Features
 --------
