@@ -64,6 +64,9 @@ class Stopper(InOutPVStatePositioner):
 
     tab_whitelist = ['open', 'close']
 
+    def __init__(self, prefix, *, name, **kwargs):
+        super().__init__(prefix, name=name, **kwargs)
+
     def _do_move(self, state):
         if state.name == 'IN':
             self.command.put(self.commands.close_valve.value)
