@@ -31,28 +31,52 @@ def fake_grid_stage(sample_file):
     return grid
 
 
-def test_samples_yaml_file(fake_grid_stage, sample_file):
+def test_get_samples(fake_grid_stage, sample_file):
     xy = fake_grid_stage
+    res = xy.get_samples()
+    assert res == []
+    xy.save_grid(sample_name='sample1', path=sample_file)
+    xy.save_grid(sample_name='sample2', path=sample_file)
+    # test all mapped samples
+    res = xy.get_samples(path=sample_file)
+    assert res == ['sample1', 'sample2']
+    with pytest.raises(Exception):
+        xy.get_samples(paht='bad_file')
+
+
+def test_get_set_current_sample(fake_grid_stage, sample_file):
+    xy = fake_grid_stage
+    current_sample = xy.get_current_sample()
+    assert current_sample == 'current_sample'
+
+
+def test_get_sample_data(fake_grid_stage, sample_file):
+    xy = fake_grid_stage
+    res = xy.get_sample_data('sample1', path=sample_file)
+    assert res == {}
     xy.save_grid(sample_name='sample1', path=sample_file)
     # test sample1 in the file:
     res = xy.get_sample_data('sample1', path=sample_file)
     assert res['M'] == 5
     assert res["N"] == 5
-    # test sample2 in the file
     xy.save_grid(sample_name='sample2', path=sample_file)
-    res = xy.get_sample_data('sample2', path=sample_file)
-    # test all mapped samples
-    res = xy.get_samples(path=sample_file)
-    assert res == ['sample1', 'sample2']
-    # test current sample
-    current_sample = xy.get_current_sample()
-    assert current_sample == 'current_sample'
-    # test get_sample_data
     res = xy.get_sample_data('sample2')
     assert res['M'] == 5
     assert res['N'] == 5
     coeffs = [0.0, 4.0, 0.0, 0.0, 0.0, 0.0, 4.0, 0.0]
     assert res['coefficients'] == coeffs
+    # return empty dictionary if could not find the sample
+    res = xy.get_sample_data("non_sample", path=sample_file)
+    assert res == {}
+    # raise an exception if could not load file
+    with pytest.raises(Exception):
+        xy.get_sample_data("non_sample", path='no_file')
+
+
+def test_get_sample_map_info(fake_grid_stage, sample_file):
+    xy = fake_grid_stage
+    xy.save_grid(sample_name='sample2', path=sample_file)
+    coeffs = [0.0, 4.0, 0.0, 0.0, 0.0, 0.0, 4.0, 0.0]
     # test get_sample_map_info - dummy values
     res = xy.get_sample_map_info('sample2')
     assert res == (5, 5, coeffs)
@@ -245,3 +269,12 @@ def test_load_sample(fake_grid_stage, sample_file):
     stage.save_grid(sample_name='current_sample', path=sample_file)
     stage.load_sample('current_sample')
     assert stage.get_current_sample() == 'current_sample'
+
+
+def test_set_m_n_points(fake_grid_stage):
+    stage = fake_grid_stage
+    assert stage.m_n_points == (5, 5)
+    stage.m_n_points = 10, 23
+    assert stage.m_n_points == (10, 23)
+    with pytest.raises(Exception):
+        stage.m_n_points = 23

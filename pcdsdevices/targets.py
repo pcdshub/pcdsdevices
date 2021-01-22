@@ -133,8 +133,9 @@ class XYTargetGrid():
                           y_comp=0.01)
     """
 
-    def __init__(self, name, x=None, y=None, x_init=None, x_spacing=None,
-                 x_comp=0.0, y_init=None, y_spacing=None, y_comp=0.0):
+    def __init__(self, x=None, y=None, x_init=None, x_spacing=None,
+                 x_comp=0.0, y_init=None, y_spacing=None, y_comp=0.0,
+                 name=None):
 
         self.x_init = x_init
         self.x_spacing = x_spacing
@@ -268,6 +269,142 @@ class XYTargetGrid():
         self.x.mv(xpos, wait=wait)
         self.y.mv(ypos, wait=wait)
 
+
+class XYGridStage():
+    """
+    Class that helps support multiple samples on a mount for an XY Grid setup.
+
+    We could have multiple samples mounted in a setup. This class helps
+    figuring out the samples xy coordinates for each target on the grid,
+    maps points accordingly, and saves those records in a file.
+
+    Parameters
+    ----------
+    name : str, otpinal
+        Name of the XYGridStage object.
+    x_motor : str or motor object
+        Epics PV prefix for x motor, or a motor object.
+    y_motor : str or motor object
+        Epics PV prefix for y motor, or a motor object.
+    m_points : int
+        Number of rows the grid has, used to determine the coordinate
+        points, where for e.g.: `(0, m_points)` would represent the top right
+        corner of the desired sample grid.
+    n_points : int
+        Number of columns the grid has, used to determine the coordinate
+        points, where for e.g.: `(n_points, 0)` would represent the bottom
+        left corner of the desired sample grid.
+    path : str
+        Path to an `yaml` file where to save the grid patterns for
+        different samples.
+    """
+
+    sample_schema = json.loads("""
+    {
+        "type": "object",
+        "properties": {
+            "time_created": {"type": "string"},
+            "top_left": {"type": "array", "items": {"type": "number"}},
+            "top_rigt": {"type": "array", "items": {"type": "number"}},
+            "bottom_right": {"type": "array", "items": {"type": "number"}},
+            "bottom_left": {"type": "array", "items": {"type": "number"}},
+            "M": {"type": "number"},
+            "N": {"type": "number"},
+            "coefficients": {"type": "array", "items": {"type": "number"}}
+        },
+        "required": ["time_created", "top_left", "top_right", "bottom_right",
+        "bottom_left", "coefficients"],
+        "additionalProperties": true
+    }
+    """)
+
+    def __init__(self, x_motor, y_motor, m_points, n_points, path, name=None):
+        self._path = path
+        self._m_points = m_points
+        self._n_points = n_points
+        self._name = name or 'xy_grid_stage'
+        d = {'x': x_motor, 'y': y_motor}
+        self._stack = StageStack(d, self._name)
+        self.x = self._stack.x
+        self.y = self._stack.y
+        # TODO: assert here for a valid path, also valid yaml file
+        # assert os.path.exists(path)
+        self._coefficients = []
+        self._current_sample = ''
+
+    @property
+    def m_n_points(self):
+        """
+        Get the current m and n points.
+
+        The m and n points represent the number of grid points on the current
+        grid, `m` -> representing the number of rows, and `n` -> representing
+        the number of columns.
+
+        Returns
+        -------
+        m_points, n_points : tuple
+            The number of grid points on the x and y axis.
+            E.g.: `10, 5` -> 10 rows by 5 columns grid.
+        """
+        return self._m_points, self._n_points
+
+    @m_n_points.setter
+    def m_n_points(self, m_n_values):
+        """
+        Set m and n points.
+
+        Set the m value representing the number of grid points in x direction,
+        and n value representing the number of grid points in the y direction.
+
+        Parameters
+        ----------
+        m_n_values : tuple
+            The number of grid points on the x and y axis respectively.
+
+        Examples
+        --------
+        >>> xy_grid.m_n_points = 10, 10
+        """
+        try:
+            self._m_points, self._n_points = m_n_values
+        except Exception:
+            err_msg = ("Please pass an iterable with two items for m points"
+                       " and n points respectively.")
+            raise Exception(err_msg)
+
+    @property
+    def coefficients(self):
+        """
+        Get the current coefficients if any.
+
+        These coefficients are calculated from the projective transformation.
+        Knowing the coefficients, the x an y values can be determined.
+
+        Returns
+        -------
+        coefficients : list
+            Array of 8 projective transformation coefficients.
+            First 4 -> alpha, last 4 -> beta
+        """
+        return self._coefficients
+
+    @coefficients.setter
+    def coefficients(self, coefficients):
+        """
+        Set the current coefficients.
+
+        These coefficients are calculated from the projective transformation.
+        Knowing the coefficients, the x an y values can be determined.
+
+        Parameters
+        ----------
+        coefficients : array
+            Array of 8 projective transformation coefficients.
+            First 4 -> alpha, last 4 -> beta
+        """
+        self._coefficients = coefficients
+
     def tweak(self):
         """
         Call the tweak function from `pcdsdevice.interface`.
@@ -282,7 +419,6 @@ class XYTargetGrid():
         """
         tweak_base(self.x, self.y)
 
-    # TODO: maybe add an option here for setting parameters directly
     def set_presets(self):
         """
         Save four preset coordinate points.
@@ -381,139 +517,6 @@ class XYTargetGrid():
         except Exception:
             logger.warning('Could not get presets, try to set_presets.')
 
-
-class XYGridStage(XYTargetGrid):
-    """
-    Class that helps support multiple samples on a mount for an XY Grid setup.
-
-    We could have multiple samples mounted in a setup. This class helps
-    figuring out the samples xy coordinates for each target on the grid,
-    maps points accordingly, and saves those records in a file.
-
-    Parameters
-    ----------
-    name
-    x_motor : str or motor object
-        Epics PV prefix for x motor, or a motor object.
-    y_motor : str or motor object
-        Epics PV prefix for y motor, or a motor object.
-    m_points : int
-        Number of rows the grid has, used to determine the coordinate
-        points, where for e.g.: `(0, m_points)` would represent the top right
-        corner of the desired sample grid.
-    n_points : int
-        Number of columns the grid has, used to determine the coordinate
-        points, where for e.g.: `(n_points, 0)` would represent the bottom
-        left corner of the desired sample grid.
-    path : str
-        Path to an `yaml` file where to save the grid patterns for
-        different samples.
-    """
-
-    sample_schema = json.loads("""
-    {
-        "type": "object",
-        "properties": {
-            "time_created": {"type": "string"},
-            "top_left": {"type": "array", "items": {"type": "number"}},
-            "top_rigt": {"type": "array", "items": {"type": "number"}},
-            "bottom_right": {"type": "array", "items": {"type": "number"}},
-            "bottom_left": {"type": "array", "items": {"type": "number"}},
-            "M": {"type": "number"},
-            "N": {"type": "number"},
-            "coefficients": {"type": "array", "items": {"type": "number"}}
-        },
-        "required": ["time_created", "top_left", "top_right", "bottom_right",
-        "bottom_left", "coefficients"],
-        "additionalProperties": true
-    }
-    """)
-
-    def __init__(self, name, x_motor, y_motor, m_points, n_points, path):
-        self._path = path
-        self._m_points = m_points
-        self._n_points = n_points
-        # TODO: assert here for a valid path, also valid yaml file
-        # assert os.path.exists(path)
-        # TODO: i don't need y and x spacing, because it is asserting as flaot
-        # in GridAxis - it will make me add them here
-        super().__init__(name=name, x=x_motor, y=y_motor,
-                         x_spacing=0.0, y_spacing=0.0)
-        self._coefficients = []
-        self._current_sample = ''
-
-    @property
-    def m_n_points(self):
-        """
-        Get the current m and n points.
-
-        The m and n points represent the number of grid points on the current
-        grid, `m` -> representing the number of rows, and `n` -> representing
-        the number of columns.
-
-        Returns
-        -------
-        m_points, n_points : tuple
-            The number of grid points on the x and y axis.
-            E.g.: `10, 5` -> 10 rows by 5 columns grid.
-        """
-        return self._m_points, self._n_points
-
-    @m_n_points.setter
-    def m_n_points(self, m_n_values):
-        """
-        Set m and n points.
-
-        Set the m value representing the number of grid points in x direction,
-        and n value representing the number of grid points in the y direction.
-
-        Parameters
-        ----------
-        m_n_values : tuple
-            The number of grid points on the x and y axis respectively.
-
-        Examples
-        --------
-        >>> xy_grid.m_n_points = 10, 10
-        """
-        try:
-            self._m_points, self._n_points = m_n_values
-        except ValueError:
-            logger.error("Please pass an iterable with two items for m points"
-                         " and n points respectively.")
-
-    @property
-    def coefficients(self):
-        """
-        Get the current coefficients if any.
-
-        These coefficients are calculated from the projective transformation.
-        Knowing the coefficients, the x an y values can be determined.
-
-        Returns
-        -------
-        coefficients : list
-            Array of 8 projective transformation coefficients.
-            First 4 -> alpha, last 4 -> beta
-        """
-        return self._coefficients
-
-    @coefficients.setter
-    def coefficients(self, coefficients):
-        """
-        Set the current coefficients.
-
-        These coefficients are calculated from the projective transformation.
-        Knowing the coefficients, the x an y values can be determined.
-
-        Parameters
-        ----------
-        coefficients : array
-            Array of 8 projective transformation coefficients.
-            First 4 -> alpha, last 4 -> beta
-        """
-        self._coefficients = coefficients
-
     def get_samples(self, path=None):
         """
         Get all the available sample grids names that are currently saved.
@@ -529,11 +532,12 @@ class XYGridStage(XYTargetGrid):
                 data = yaml.safe_load(sample_file)
                 if not data:
                     logger.info('The file is empty, no samples saved yet.')
-                    return
+                    return []
                 return list(data.keys())
             except yaml.YAMLError as err:
                 logger.error('Error when loading the samples yaml file: %s',
                              err)
+                raise err
 
     def get_current_sample(self):
         """
@@ -597,7 +601,8 @@ class XYGridStage(XYTargetGrid):
         Returns
         -------
         data : dictionary
-            Dictionary of all the information for a saved sample.
+            Dictionary of all the information for a saved sample, or empty
+            dictionary if troubles getting the sample.
 
         Examples
         --------
@@ -626,15 +631,18 @@ class XYGridStage(XYTargetGrid):
             except yaml.YAMLError as err:
                 logger.error('Error when loading the samples yaml file: %s',
                              err)
+                raise err
         if data is None:
             logger.warning('The file is empty, no sample grid yet. '
                            'Please use `save_presets` to insert grids '
                            'in the file.')
+            return {}
         try:
             return data[str(sample_name)]
         except Exception:
             logger.error('The sample %s might not exist in the file.',
                          sample_name)
+            return {}
 
     def get_sample_map_info(self, sample_name, path=None):
         """
@@ -660,11 +668,12 @@ class XYGridStage(XYTargetGrid):
             except Exception as ex:
                 logger.error('Something went wrong when getting the '
                              'information for sample %s. %s', sample_name, ex)
-                return
+                raise ex
         else:
-            logger.error('This sample probably does not exist. Please call'
-                         ' mapped_samples() to see which ones are available.')
-            return
+            err_msg = ('This sample probably does not exist. Please call'
+                       ' mapped_samples() to see which ones are available.')
+            logger.error(err_msg)
+            raise Exception(err_msg)
 
         return m_points, n_points, coeffs
 
