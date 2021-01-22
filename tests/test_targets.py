@@ -20,7 +20,7 @@ def fake_grid_stage(sample_file):
     x_motor = FastMotor()
     y_motor = FastMotor()
     grid = FakeGridStage(
-        name='test', x_motor=x_motor,
+        x_motor=x_motor,
         y_motor=y_motor, m_points=5, n_points=5,
         path=sample_file)
     grid._current_sample = 'current_sample'
