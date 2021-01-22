@@ -132,7 +132,6 @@ class XYTargetGrid():
                           x_spacing=1.0, y_spacing=1.0, x_comp=0.05,
                           y_comp=0.01)
     """
-
     def __init__(self, x=None, y=None, x_init=None, x_spacing=None,
                  x_comp=0.0, y_init=None, y_spacing=None, y_comp=0.0,
                  name=None):
@@ -318,13 +317,12 @@ class XYGridStage():
     }
     """)
 
-    def __init__(self, x_motor, y_motor, m_points, n_points, path, name=None):
+    def __init__(self, x_motor, y_motor, m_points, n_points, path):
         self._path = path
         self._m_points = m_points
         self._n_points = n_points
-        self._name = name or 'xy_grid_stage'
         d = {'x': x_motor, 'y': y_motor}
-        self._stack = StageStack(d, self._name)
+        self._stack = StageStack(d, 'xy_stage_grid')
         self.x = self._stack.x
         self.y = self._stack.y
         # TODO: assert here for a valid path, also valid yaml file
