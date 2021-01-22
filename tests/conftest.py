@@ -118,18 +118,23 @@ def find_pcdsdevices_submodules() -> Dict[str, ModuleType]:
 
 def find_all_device_classes() -> list:
     """Find all device classes in pcdsdevices and return them as a list."""
-    devices = set()
-    for mod in find_pcdsdevices_submodules().values():
-        for mod_attr in dir(mod):
-            obj = getattr(mod, mod_attr)
-            if inspect.isclass(obj) and issubclass(obj, ophyd.Device):
-                if not obj.__module__.startswith('ophyd'):
-                    devices.add(obj)
+    def should_include(obj):
+        return (
+            inspect.isclass(obj) and
+            issubclass(obj, ophyd.Device) and
+            not obj.__module__.startswith('ophyd')
+        )
 
     def sort_key(cls):
         return (cls.__module__, cls.__name__)
 
-    return list(sorted(devices, key=sort_key))
+    devices = [
+        obj
+        for module in find_pcdsdevices_submodules().values()
+        for _, obj in inspect.getmembers(module, predicate=should_include)
+    ]
+
+    return list(sorted(set(devices), key=sort_key))
 
 
 # If your device class has some essential keyword arguments necesary to be
