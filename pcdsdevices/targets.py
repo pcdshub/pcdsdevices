@@ -309,10 +309,13 @@ class XYGridStage():
             "bottom_left": {"type": "array", "items": {"type": "number"}},
             "M": {"type": "number"},
             "N": {"type": "number"},
-            "coefficients": {"type": "array", "items": {"type": "number"}}
+            "coefficients": {"type": "array", "items": {"type": "number"}},
+            "last_shot_index": {"type": "number"},
+            "xx" : {"type": "array", "items": {"type": "number"}},
+            "yy" : {"type": "array", "items": {"type": "number"}}
         },
         "required": ["time_created", "top_left", "top_right", "bottom_right",
-        "bottom_left", "coefficients"],
+        "bottom_left", "coefficients", "last_shot_index", "xx", "yy"],
         "additionalProperties": true
     }
     """)
@@ -575,13 +578,12 @@ class XYGridStage():
             Path where the samples yaml file exists.
         """
         path = path or self._path
-        m_points, n_points, coeffs = self.get_sample_map_info(str(sample_name),
-                                                              path)
+        m_points, n_points, coeffs, _ = self.get_sample_map_info(
+                                            str(sample_name), path)
         self.m_n_points = m_points, n_points
         self.coefficients = coeffs
         # make this sample the current one
         self.set_current_sample(str(sample_name))
-        # TODO: might need to the set presets here tooo??
 
     def get_sample_data(self, sample_name, path=None):
         """
@@ -619,7 +621,11 @@ class XYGridStage():
         1.1566265060240974,
         6.281563288265657e-16,
         0.042168674698794054,
-        -0.05220883534136586]}
+        -0.05220883534136586],
+        xx:
+        ...
+        yy:
+        ...}
         """
         path = path or self._path
         data = None
@@ -663,6 +669,7 @@ class XYGridStage():
                 coeffs = sample["coefficients"]
                 m_points = sample['M']
                 n_points = sample['N']
+                last_shot_index = sample['last_shot_index']
             except Exception as ex:
                 logger.error('Something went wrong when getting the '
                              'information for sample %s. %s', sample_name, ex)
@@ -673,7 +680,7 @@ class XYGridStage():
             logger.error(err_msg)
             raise Exception(err_msg)
 
-        return m_points, n_points, coeffs
+        return m_points, n_points, coeffs, last_shot_index
 
     def save_grid(self, sample_name, path=None):
         """
@@ -687,7 +694,7 @@ class XYGridStage():
 
         Parameters
         ----------
-        sample_name : int
+        sample_name : str
             A name to identify the sample grid, should be snake_case style.
         path : str, optional
             Path to the `.yml` file. Defaults to the path defined when
@@ -699,9 +706,13 @@ class XYGridStage():
         """
         path = path or self._path
         now = str(datetime.now())
-        top_left, top_right, bottom_right, bottom_left = (), (), (), ()
+        top_left, top_right, bottom_right, bottom_left = [], [], [], []
+        flat_xx, flat_yy = [], []
         if self.get_presets():
             top_left, top_right, bottom_right, bottom_left = self.get_presets()
+            xx, yy = self.map_points()
+            flat_xx = [float(x) for x in xx]
+            flat_yy = [float(y) for y in yy]
         m_points, n_points = self.m_n_points
         coefficients = self.coefficients
         data = {sample_name: {"time_created": now,
@@ -711,23 +722,28 @@ class XYGridStage():
                               "bottom_left": bottom_left,
                               "M": m_points,  # number of rows
                               "N": n_points,  # number of columns
-                              "coefficients": coefficients}}
+                              "coefficients": coefficients,
+                              "last_shot_index": -1,
+                              "xx": flat_xx,
+                              "yy": flat_yy}}
         try:
-            temp_data = json.loads(json.dumps(data[sample_name]))
-            jsonschema.validate(temp_data, self.sample_schema)
+            jsonschema.validate(data[sample_name], self.sample_schema)
         except jsonschema.exceptions.ValidationError as err:
             logger.warning('Invalid input: %s', err)
+            raise err
         # override the existing sample grids or append other grids
-        # TODO: how do i prevent from writing something bad and wiping the
-        # whole file off - check for None values???
+        # check to see if sample exists
         with open(path) as sample_file:
             yaml_dict = yaml.safe_load(sample_file) or {}
-            yaml_dict.update(data)
+            sample = yaml_dict.get('sample_name')
+            if sample:
+                yaml_dict[sample_name].update(data)
+            else:
+                yaml_dict.update(data)
         with open(path, 'w') as sample_file:
             yaml.safe_dump(yaml_dict, sample_file,
                            sort_keys=False, default_flow_style=False)
 
-    # TODO: maybe I shouold not have this here...
     def remove_all_samples(self, path=None):
         """
         Empty the samples file.
@@ -742,75 +758,6 @@ class XYGridStage():
         path = path or self._path
         with open(path, 'w') as sample_file:
             yaml.safe_dump(None, sample_file)
-
-    def mesh_interpolation(self, top_left, top_right, bottom_right,
-                           bottom_left):
-        """
-        Mapping functions for an arbitrary quadrilateral.
-
-        Reference: https://www.particleincell.com/2012/quad-interpolation/
-
-        In order to perform the interpolation on an arbitrary quad, we need to
-        obtain a mapping function. Our goal is to come up with a function such
-        as (x, y) = f(l, m) where l = [0, 1] and m = [0, 1] describes the
-        entire point space enclosed by the quadrilateral. In addition, we want
-        f(0, 0) = (x1, y1), f(1, 0) = (x2, y2) and so on to correspond to the
-        polygon vertices. This function forms a map that allows us to
-        transform the quad from the physical coordinates set to a logical
-        coordinate space. In the logical coordinates, the polygon morphs into
-        a square, regardless of its physical form. Once the logical
-        coordinates are obtained, we perform the scatter and find the
-        physical x, y values.
-
-        To find the map, we assume a bilinear mapping function given by:
-        x = alpha_1 + alpha_2*l + alpha_3*m + alpha_4 * l _ m
-        y = beta_1 + beta_2 * l + beta_3 * m + beta_4 * l * m
-
-        Next we use these experessions to solve for the 4 coefficients:
-        x1    1  0  0  0   alpha_1
-        x2    1  1  0  0   alpha_2
-        x3    1  1  1  1   alpha_3
-        x4    1  0  1  0   alpha_4
-
-        We do the same for the beta coefficients.
-
-        Parameters
-        ----------
-        top_left : tuple
-            (x, y) coordinates of the top left corner
-        top_right : tuple
-            (x, y) coordinates of the top right corner
-        bottom_right : tuple
-            (x, y) coordinates of the bottom right corner
-        bottom_left : tuple
-            (x, y) coordinates of the bottom left corner
-
-        Returns
-        -------
-        a_coeffs, b_coeffs : tuple
-            List of tuples with the alpha and beta coefficients for projective
-            transformation. They are used to find x and y.
-        """
-        # describes the entire point space enclosed by the quadrilateral
-        unit_grid = np.array([[1, 0, 0, 0],
-                              [1, 1, 0, 0],
-                              [1, 1, 1, 1],
-                              [1, 0, 1, 0]])
-        # x value coordinates for current grid (4 corners)
-        px = np.array([top_left[0],
-                       top_right[0],
-                       bottom_right[0],
-                       bottom_left[0]])
-        # y value coordinates for current grid (4 corners)
-        py = np.array([top_left[1],
-                       top_right[1],
-                       bottom_right[1],
-                       bottom_left[1]])
-
-        a_coeffs = np.linalg.solve(unit_grid, px)
-        b_coeffs = np.linalg.solve(unit_grid, py)
-
-        return a_coeffs, b_coeffs
 
     def map_points(self, top_left=None, top_right=None, bottom_right=None,
                    bottom_left=None, m_rows=None, n_columns=None):
@@ -846,88 +793,29 @@ class XYGridStage():
         bottom_right = bottom_right or self.get_presets()[2]
         bottom_left = bottom_left or self.get_presets()[3]
 
-        if all([top_left, top_right, bottom_right, bottom_left]) is None:
+        if any(v is None for v in [top_left, top_right, bottom_right,
+                                   bottom_left]):
             raise ValueError('Could not get presets, make sure you set presets'
                              ' first using the `set_presets` method.')
         rows = m_rows or self.m_n_points[0]
         columns = n_columns or self.m_n_points[1]
 
-        a_coeffs, b_coeffs = self.mesh_interpolation(top_left, top_right,
-                                                     bottom_right, bottom_left)
+        a_coeffs, b_coeffs = mesh_interpolation(top_left, top_right,
+                                                bottom_right, bottom_left)
         self.coefficients = a_coeffs.tolist() + b_coeffs.tolist()
         x_points, y_points = [], []
 
-        xx, yy = self.get_unit_meshgrid(m_rows=rows, n_columns=columns)
+        xx, yy = get_unit_meshgrid(m_rows=rows, n_columns=columns)
 
         # return x_points, y_points
         for rowx, rowy in zip(xx, yy):
             for x, y in zip(rowx, rowy):
-                i, j = self.convert_to_physical(a_coeffs=a_coeffs,
-                                                b_coeffs=b_coeffs,
-                                                logic_x=x, logic_y=y)
+                i, j = convert_to_physical(a_coeffs=a_coeffs,
+                                           b_coeffs=b_coeffs,
+                                           logic_x=x, logic_y=y)
                 x_points.append(i)
                 y_points.append(j)
         return x_points, y_points
-
-    def get_unit_meshgrid(self, m_rows, n_columns):
-        """
-        Based on the 4 coordinates and m and n points, find the meshgrid.
-
-        Regardless of the physical form of our polygon, we first need to morph
-        it into a unit square.
-
-        Parameters
-        ----------
-        m_rows : int
-            Number of rows our grid has.
-        n_columns : int
-            Number of columns our grid has.
-        """
-        px = [0, 1, 1, 0]
-        py = [0, 0, 1, 1]
-        x0 = min(px)
-        lx = max(px) - min(px)
-        y0 = min(py)
-        ly = max(py) - min(py)
-
-        ni = n_columns
-        nj = m_rows
-
-        dx = lx / (ni - 1)
-        dy = ly / (nj - 1)
-
-        xx = [x0 + (i - 1) * dx for i in range(1, ni + 1)]
-        yy = [y0 + (j - 1) * dy for j in range(1, nj + 1)]
-
-        return np.meshgrid(xx, yy)
-
-    def convert_to_physical(self, a_coeffs, b_coeffs, logic_x, logic_y):
-        """
-        Convert to physical coordinates from logical coordinates.
-
-        Parameters
-        ----------
-        a_coeffs : array
-            Perspective transformation coefficients for alpha.
-        b_coeffs : array
-            Perspective transformation coefficients for beta.
-        logic_x : float
-            Logical point in the x direction.
-        logic_y : float
-            Logical point in the y direction.
-
-        Returns
-        -------
-        x, y : tuple
-            The x and y physical values on the specified grid.
-        """
-        # x = a(1) + a(2)*l + a(3)*m + a(4)*l*m
-        x = (a_coeffs[0] + a_coeffs[1] * logic_x + a_coeffs[2]
-             * logic_y + a_coeffs[3] * logic_x * logic_y)
-        # y = b(1) + b(2)*l + b(3)*m + b(4)*l*m
-        y = (b_coeffs[0] + b_coeffs[1] * logic_x +
-             b_coeffs[2] * logic_y + b_coeffs[3] * logic_x * logic_y)
-        return x, y
 
     def compute_mapped_point(self, sample_name, m_row, n_column,
                              compute_all=False, path=None):
@@ -959,11 +847,10 @@ class XYGridStage():
         """
         path = path or self._path
 
-        m_points, n_points, coeffs = self.get_sample_map_info(str(sample_name),
-                                                              path=path)
-
-        if any([m_points, n_points, coeffs]) is None:
-            raise ValueError('The values are empty, please check the sample '
+        m_points, n_points, coeffs, _ = self.get_sample_map_info(
+                                            str(sample_name), path=path)
+        if any(v is None for v in [m_points, n_points, coeffs]):
+            raise ValueError('Some values are empty, please check the sample '
                              f'{sample_name} in the yaml file.')
 
         if (m_row > m_points) and (n_column > n_points):
@@ -972,8 +859,8 @@ class XYGridStage():
         if (m_row or n_column) == 0:
             raise IndexError('Please start at 1, 1, as the initial points.')
 
-        xx_origin, yy_origin = self.get_unit_meshgrid(m_rows=m_points,
-                                                      n_columns=n_points)
+        xx_origin, yy_origin = get_unit_meshgrid(m_rows=m_points,
+                                                 n_columns=n_points)
 
         a_coeffs = coeffs[:4]
         b_coeffs = coeffs[4:]
@@ -981,17 +868,16 @@ class XYGridStage():
         if not compute_all:
             logic_x = xx_origin[m_row - 1][n_column - 1]
             logic_y = yy_origin[m_row - 1][n_column - 1]
-            x, y = self.convert_to_physical(a_coeffs, b_coeffs, logic_x,
-                                            logic_y)
+            x, y = convert_to_physical(a_coeffs, b_coeffs, logic_x, logic_y)
             return x, y
 
         # compute all points
         x_points, y_points = [], []
         for rowx, rowy in zip(xx_origin, yy_origin):
             for x, y in zip(rowx, rowy):
-                i, j = self.convert_to_physical(a_coeffs=a_coeffs,
-                                                b_coeffs=b_coeffs,
-                                                logic_x=x, logic_y=y)
+                i, j = convert_to_physical(a_coeffs=a_coeffs,
+                                           b_coeffs=b_coeffs,
+                                           logic_x=x, logic_y=y)
                 x_points.append(i)
                 y_points.append(j)
         return x_points, y_points
@@ -1038,31 +924,163 @@ class XYGridStage():
         self.x.mv(n)
         self.y.mv(m)
 
-    def snake_grid_list(self, points):
-        """
-        Flatten them into lists with snake_like pattern coordinate points.
-        [[1, 2], [3, 4]] => [1, 2, 4, 3]
 
-        Parameters
-        ----------
-        points : array
-            Array containing the grid points for an axis with shape MxN.
+def snake_grid_list(points):
+    """
+    Flatten them into lists with snake_like pattern coordinate points.
+    [[1, 2], [3, 4]] => [1, 2, 4, 3]
 
-        Returns
-        -------
-        flat_points : list
-            List of all the grid points folowing a snake-like pattern.
-        """
-        temp_points = []
-        for i in range(points.shape[0]):
-            if i % 2 == 0:
-                temp_points.append(points[i])
-            else:
-                t = points[i]
-                tt = t[::-1]
-                temp_points.append(tt)
-        flat_points = list(chain.from_iterable(temp_points))
-        # convert the numpy.float64 to normal float to be able to easily
-        # save them in the yaml file
-        flat_points = [float(v) for v in flat_points]
-        return flat_points
+    Parameters
+    ----------
+    points : array
+        Array containing the grid points for an axis with shape MxN.
+
+    Returns
+    -------
+    flat_points : list
+        List of all the grid points folowing a snake-like pattern.
+    """
+    temp_points = []
+    for i in range(points.shape[0]):
+        if i % 2 == 0:
+            temp_points.append(points[i])
+        else:
+            t = points[i]
+            tt = t[::-1]
+            temp_points.append(tt)
+    flat_points = list(chain.from_iterable(temp_points))
+    # convert the numpy.float64 to normal float to be able to easily
+    # save them in the yaml file
+    flat_points = [float(v) for v in flat_points]
+    return flat_points
+
+
+def mesh_interpolation(top_left, top_right, bottom_right, bottom_left):
+    """
+    Mapping functions for an arbitrary quadrilateral.
+
+    Reference: https://www.particleincell.com/2012/quad-interpolation/
+
+    In order to perform the interpolation on an arbitrary quad, we need to
+    obtain a mapping function. Our goal is to come up with a function such
+    as (x, y) = f(l, m) where l = [0, 1] and m = [0, 1] describes the
+    entire point space enclosed by the quadrilateral. In addition, we want
+    f(0, 0) = (x1, y1), f(1, 0) = (x2, y2) and so on to correspond to the
+    polygon vertices. This function forms a map that allows us to
+    transform the quad from the physical coordinates set to a logical
+    coordinate space. In the logical coordinates, the polygon morphs into
+    a square, regardless of its physical form. Once the logical
+    coordinates are obtained, we perform the scatter and find the
+    physical x, y values.
+
+    To find the map, we assume a bilinear mapping function given by:
+    x = alpha_1 + alpha_2*l + alpha_3*m + alpha_4 * l _ m
+    y = beta_1 + beta_2 * l + beta_3 * m + beta_4 * l * m
+
+    Next we use these experessions to solve for the 4 coefficients:
+    x1    1  0  0  0   alpha_1
+    x2    1  1  0  0   alpha_2
+    x3    1  1  1  1   alpha_3
+    x4    1  0  1  0   alpha_4
+
+    We do the same for the beta coefficients.
+
+    Parameters
+    ----------
+    top_left : tuple
+        (x, y) coordinates of the top left corner
+    top_right : tuple
+        (x, y) coordinates of the top right corner
+    bottom_right : tuple
+        (x, y) coordinates of the bottom right corner
+    bottom_left : tuple
+        (x, y) coordinates of the bottom left corner
+
+    Returns
+    -------
+    a_coeffs, b_coeffs : tuple
+        List of tuples with the alpha and beta coefficients for projective
+        transformation. They are used to find x and y.
+    """
+    # describes the entire point space enclosed by the quadrilateral
+    unit_grid = np.array([[1, 0, 0, 0],
+                          [1, 1, 0, 0],
+                          [1, 1, 1, 1],
+                          [1, 0, 1, 0]])
+    # x value coordinates for current grid (4 corners)
+    px = np.array([top_left[0],
+                   top_right[0],
+                   bottom_right[0],
+                   bottom_left[0]])
+    # y value coordinates for current grid (4 corners)
+    py = np.array([top_left[1],
+                   top_right[1],
+                   bottom_right[1],
+                   bottom_left[1]])
+
+    a_coeffs = np.linalg.solve(unit_grid, px)
+    b_coeffs = np.linalg.solve(unit_grid, py)
+
+    return a_coeffs, b_coeffs
+
+
+def get_unit_meshgrid(m_rows, n_columns):
+    """
+    Based on the 4 coordinates and m and n points, find the meshgrid.
+
+    Regardless of the physical form of our polygon, we first need to morph
+    it into a unit square.
+
+    Parameters
+    ----------
+    m_rows : int
+        Number of rows our grid has.
+    n_columns : int
+        Number of columns our grid has.
+    """
+    px = [0, 1, 1, 0]
+    py = [0, 0, 1, 1]
+    x0 = min(px)
+    lx = max(px) - min(px)
+    y0 = min(py)
+    ly = max(py) - min(py)
+
+    ni = n_columns
+    nj = m_rows
+
+    dx = lx / (ni - 1)
+    dy = ly / (nj - 1)
+
+    xx = [x0 + (i - 1) * dx for i in range(1, ni + 1)]
+    yy = [y0 + (j - 1) * dy for j in range(1, nj + 1)]
+
+    return np.meshgrid(xx, yy)
+
+
+def convert_to_physical(a_coeffs, b_coeffs, logic_x, logic_y):
+    """
+    Convert to physical coordinates from logical coordinates.
+
+    Parameters
+    ----------
+    a_coeffs : array
+        Perspective transformation coefficients for alpha.
+    b_coeffs : array
+        Perspective transformation coefficients for beta.
+    logic_x : float
+        Logical point in the x direction.
+    logic_y : float
+        Logical point in the y direction.
+
+    Returns
+    -------
+    x, y : tuple
+        The x and y physical values on the specified grid.
+    """
+    # x = a(1) + a(2)*l + a(3)*m + a(4)*l*m
+    x = (a_coeffs[0] + a_coeffs[1] * logic_x + a_coeffs[2]
+         * logic_y + a_coeffs[3] * logic_x * logic_y)
+    # y = b(1) + b(2)*l + b(3)*m + b(4)*l*m
+    y = (b_coeffs[0] + b_coeffs[1] * logic_x +
+         b_coeffs[2] * logic_y + b_coeffs[3] * logic_x * logic_y)
+    return x, y
