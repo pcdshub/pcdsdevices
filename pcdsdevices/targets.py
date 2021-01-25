@@ -715,10 +715,10 @@ class XYGridStage():
         m_points, n_points = self.m_n_points
         coefficients = self.coefficients
         data = {sample_name: {"time_created": now,
-                              "top_left": top_left,
-                              "top_right": top_right,
-                              "bottom_right": bottom_right,
-                              "bottom_left": bottom_left,
+                              "top_left": list(top_left),
+                              "top_right": list(top_right),
+                              "bottom_right": list(bottom_right),
+                              "bottom_left": list(bottom_left),
                               "M": m_points,  # number of rows
                               "N": n_points,  # number of columns
                               "coefficients": coefficients,
