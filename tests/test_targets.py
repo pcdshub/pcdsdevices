@@ -2,8 +2,7 @@ import pytest
 import numpy as np
 from ophyd.sim import make_fake_device
 from pcdsdevices.targets import (XYGridStage, convert_to_physical,
-                                 get_unit_meshgrid, mesh_interpolation,
-                                 snake_grid_list)
+                                 get_unit_meshgrid, mesh_interpolation)
 from pcdsdevices.sim import FastMotor
 
 
@@ -324,35 +323,3 @@ def test_convert_to_physical():
     x, y = convert_to_physical(a_coeffs, b_coeffs, 0.5, 0.0)
     # should be 2, 0
     assert (x, y) == (2.0, 0.0)
-
-
-def test_snake_like_list():
-    xx = np.array([[0, 0.25, 0.5, 0.75, 1.0],
-                   [0, 0.25, 0.5, 0.75, 1.0],
-                   [0, 0.25, 0.5, 0.75, 1.0],
-                   [0, 0.25, 0.5, 0.75, 1.0],
-                   [0, 0.25, 0.5, 0.75, 1.0]])
-    yy = np.array([[0.0, 0.0, 0.0, 0.0, 0.0],
-                   [0.25, 0.25, 0.25, 0.25, 0.25],
-                   [0.5, 0.5, 0.5, 0.5, 0.5],
-                   [0.75, 0.75, 0.75, 0.75, 0.75],
-                   [1.0, 1.0, 1.0, 1.0, 1.0]])
-
-    # expected values:
-    xx_expected = [0, 0.25, 0.5, 0.75, 1.0,
-                   1.0, 0.75, 0.5, 0.25, 0,
-                   0, 0.25, 0.5, 0.75, 1.0,
-                   1.0, 0.75, 0.5, 0.25, 0,
-                   0, 0.25, 0.5, 0.75, 1.0]
-    yy_expected = [0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.25, 0.25, 0.25, 0.25, 0.25,
-                   0.5, 0.5, 0.5, 0.5, 0.5,
-                   0.75, 0.75, 0.75, 0.75, 0.75,
-                   1.0, 1.0, 1.0, 1.0, 1.0]
-
-    xx_res = snake_grid_list(xx)
-    # the y values are basically stying the same
-    # so there is no need to even run thm through this function
-    yy_res = snake_grid_list(yy)
-    assert xx_res == xx_expected
-    assert yy_res == yy_expected

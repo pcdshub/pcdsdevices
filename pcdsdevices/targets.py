@@ -6,7 +6,6 @@ import numpy as np
 from datetime import datetime
 
 from ophyd.device import Device
-from itertools import chain
 import json
 import jsonschema
 import yaml
@@ -923,36 +922,6 @@ class XYGridStage():
                                          compute_all=False, path=None)
         self.x.mv(n)
         self.y.mv(m)
-
-
-def snake_grid_list(points):
-    """
-    Flatten them into lists with snake_like pattern coordinate points.
-    [[1, 2], [3, 4]] => [1, 2, 4, 3]
-
-    Parameters
-    ----------
-    points : array
-        Array containing the grid points for an axis with shape MxN.
-
-    Returns
-    -------
-    flat_points : list
-        List of all the grid points folowing a snake-like pattern.
-    """
-    temp_points = []
-    for i in range(points.shape[0]):
-        if i % 2 == 0:
-            temp_points.append(points[i])
-        else:
-            t = points[i]
-            tt = t[::-1]
-            temp_points.append(tt)
-    flat_points = list(chain.from_iterable(temp_points))
-    # convert the numpy.float64 to normal float to be able to easily
-    # save them in the yaml file
-    flat_points = [float(v) for v in flat_points]
-    return flat_points
 
 
 def mesh_interpolation(top_left, top_right, bottom_right, bottom_left):
