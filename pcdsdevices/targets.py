@@ -734,9 +734,13 @@ class XYGridStage():
         # check to see if sample exists
         with open(path) as sample_file:
             yaml_dict = yaml.safe_load(sample_file) or {}
-            sample = yaml_dict.get('sample_name')
+            sample = yaml_dict.get(sample_name)
             if sample:
-                yaml_dict[sample_name].update(data)
+                # do not override the index, in case we need to re-calibrate
+                # the positions
+                temp_index = sample['last_shot_index']
+                data[sample_name]['last_shot_index'] = temp_index
+                yaml_dict.update(data)
             else:
                 yaml_dict.update(data)
         with open(path, 'w') as sample_file:
