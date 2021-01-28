@@ -9,9 +9,11 @@ from ophyd.device import Device
 import json
 import jsonschema
 import yaml
+from itertools import chain
 
 from pcdsdevices.epics_motor import _GetMotorClass
 from .interface import tweak_base
+
 
 logger = logging.getLogger(__name__)
 
@@ -309,12 +311,11 @@ class XYGridStage():
             "M": {"type": "number"},
             "N": {"type": "number"},
             "coefficients": {"type": "array", "items": {"type": "number"}},
-            "last_shot_index": {"type": "number"},
-            "xx" : {"type": "array", "items": {"type": "number"}},
-            "yy" : {"type": "array", "items": {"type": "number"}}
+            "xx" : {"type": "array", "items": {"type": "object"}},
+            "yy" : {"type": "array", "items": {"type": "object"}}
         },
         "required": ["time_created", "top_left", "top_right", "bottom_right",
-        "bottom_left", "coefficients", "last_shot_index", "xx", "yy"],
+        "bottom_left", "coefficients", "xx", "yy"],
         "additionalProperties": true
     }
     """)
@@ -331,6 +332,8 @@ class XYGridStage():
         # assert os.path.exists(path)
         self._coefficients = []
         self._current_sample = ''
+        self._positions_x = []
+        self._positions_y = []
 
     @property
     def m_n_points(self):
@@ -404,6 +407,64 @@ class XYGridStage():
             First 4 -> alpha, last 4 -> beta
         """
         self._coefficients = coefficients
+
+    @property
+    def positions_x(self):
+        """
+        Get the current mapped x positions if any.
+
+        These positions are set when `map_points` method is called.
+
+        Returns
+        -------
+        positions_x : list
+            List of all target x positions mapped for a sample.
+        """
+        return self._positions_x
+
+    @property
+    def positions_y(self):
+        """
+        Get the current mapped y positions if any.
+
+        These positions are set when `map_points` method is called.
+
+        Returns
+        -------
+        positions_y : list
+            List of all target y positions mapped for a sample.
+        """
+        return self._positions_y
+
+    @positions_x.setter
+    def positions_x(self, x_positions):
+        """
+        Set the x positions.
+
+        These positions are be saved in the sample file when `save_grid`
+        method is called.
+
+        Parameters
+        ----------
+        x_positions : list
+            List of all the x positions.
+        """
+        self._positions_x = x_positions
+
+    @positions_y.setter
+    def positions_y(self, y_positions):
+        """
+        Set the y positions.
+
+        These positions are be saved in the sample file when `save_grid`
+        method is called.
+
+        Parameters
+        ----------
+        y_positions : list
+            List of all the y positions.
+        """
+        self._positions_y = y_positions
 
     def tweak(self):
         """
@@ -577,7 +638,7 @@ class XYGridStage():
             Path where the samples yaml file exists.
         """
         path = path or self._path
-        m_points, n_points, coeffs, _ = self.get_sample_map_info(
+        m_points, n_points, coeffs = self.get_sample_map_info(
                                             str(sample_name), path)
         self.m_n_points = m_points, n_points
         self.coefficients = coeffs
@@ -668,7 +729,6 @@ class XYGridStage():
                 coeffs = sample["coefficients"]
                 m_points = sample['M']
                 n_points = sample['N']
-                last_shot_index = sample['last_shot_index']
             except Exception as ex:
                 logger.error('Something went wrong when getting the '
                              'information for sample %s. %s', sample_name, ex)
@@ -679,7 +739,7 @@ class XYGridStage():
             logger.error(err_msg)
             raise Exception(err_msg)
 
-        return m_points, n_points, coeffs, last_shot_index
+        return m_points, n_points, coeffs
 
     def save_grid(self, sample_name, path=None):
         """
@@ -688,8 +748,12 @@ class XYGridStage():
         This will save the date it was created, along with the sample name,
         the m and n points, the coordinates for the four corners, and the
         coefficients that will help get the x and y position on the grid.
+
         If an existing name for a sample is saved again, it will override
-        the information for that sample.
+        the information for that sample keeping the status of the targets.
+        When overriding a sample, this is assuming that a re-calibration was
+        needed for that sample, so in case we have already shot targets from
+        that sample - we want to keep track of that.
 
         Parameters
         ----------
@@ -709,9 +773,14 @@ class XYGridStage():
         flat_xx, flat_yy = [], []
         if self.get_presets():
             top_left, top_right, bottom_right, bottom_left = self.get_presets()
-            xx, yy = self.map_points()
+        xx, yy = self.positions_x, self.positions_y
+        if xx and yy:
             flat_xx = [float(x) for x in xx]
             flat_yy = [float(y) for y in yy]
+            # add False to each target to indicate they
+            # have not been shot yet
+            flat_xx = [{"pos": x, "status": False} for x in flat_xx]
+            flat_yy = [{"pos": y, "status": False} for y in flat_yy]
         m_points, n_points = self.m_n_points
         coefficients = self.coefficients
         data = {sample_name: {"time_created": now,
@@ -722,7 +791,6 @@ class XYGridStage():
                               "M": m_points,  # number of rows
                               "N": n_points,  # number of columns
                               "coefficients": coefficients,
-                              "last_shot_index": -1,
                               "xx": flat_xx,
                               "yy": flat_yy}}
         try:
@@ -731,15 +799,23 @@ class XYGridStage():
             logger.warning('Invalid input: %s', err)
             raise err
         # override the existing sample grids or append other grids
-        # check to see if sample exists
+        # check to see if sample exists already
         with open(path) as sample_file:
             yaml_dict = yaml.safe_load(sample_file) or {}
             sample = yaml_dict.get(sample_name)
             if sample:
-                # do not override the index, in case we need to re-calibrate
-                # the positions
-                temp_index = sample['last_shot_index']
-                data[sample_name]['last_shot_index'] = temp_index
+                # when overriding the same sample, this is assuming that a
+                # re-calibration was done - so keep the previous statuses.
+                temp_xx = sample['xx']
+                temp_yy = sample['yy']
+                temp_x_status = [i['status'] for i in temp_xx]
+                temp_y_status = [i['status'] for i in temp_yy]
+                for xd, status in zip(data[sample_name]['xx'], temp_x_status):
+                    xd.update((k, status)
+                              for k, v in xd.items() if k == 'status')
+                for yd, status in zip(data[sample_name]['yy'], temp_y_status):
+                    yd.update((k, status)
+                              for k, v in yd.items() if k == 'status')
                 yaml_dict.update(data)
             else:
                 yaml_dict.update(data)
@@ -762,8 +838,9 @@ class XYGridStage():
         with open(path, 'w') as sample_file:
             yaml.safe_dump(None, sample_file)
 
-    def map_points(self, top_left=None, top_right=None, bottom_right=None,
-                   bottom_left=None, m_rows=None, n_columns=None):
+    def map_points(self, snake_like=True, top_left=None, top_right=None,
+                   bottom_right=None, bottom_left=None, m_rows=None,
+                   n_columns=None):
         """
         Map the points of a quadrilateral.
 
@@ -772,6 +849,8 @@ class XYGridStage():
 
         Parameters
         ----------
+        snake_like : bool
+            Indicates if the points should be saved in a snake_like pattern.
         top_left : tuple, optional
             (x, y) coordinates of the top left corner
         top_right : tuple, optional
@@ -818,6 +897,11 @@ class XYGridStage():
                                            logic_x=x, logic_y=y)
                 x_points.append(i)
                 y_points.append(j)
+        if snake_like:
+            x_points = snake_grid_list(
+                np.array(x_points).reshape(rows, columns))
+        self.positions_x = x_points
+        self.positions_y = y_points
         return x_points, y_points
 
     def compute_mapped_point(self, sample_name, m_row, n_column,
@@ -848,9 +932,10 @@ class XYGridStage():
             The x, y position for m n location.
             Or, all the xx, yy values if `compute_all` is `True`.
         """
+        # TODO: do not check the m and n if compute_all=True
         path = path or self._path
 
-        m_points, n_points, coeffs, _ = self.get_sample_map_info(
+        m_points, n_points, coeffs = self.get_sample_map_info(
                                             str(sample_name), path=path)
         if any(v is None for v in [m_points, n_points, coeffs]):
             raise ValueError('Some values are empty, please check the sample '
@@ -1057,3 +1142,33 @@ def convert_to_physical(a_coeffs, b_coeffs, logic_x, logic_y):
     y = (b_coeffs[0] + b_coeffs[1] * logic_x +
          b_coeffs[2] * logic_y + b_coeffs[3] * logic_x * logic_y)
     return x, y
+
+
+def snake_grid_list(points):
+    """
+    Flatten them into lists with snake_like pattern coordinate points.
+    [[1, 2], [3, 4]] => [1, 2, 4, 3]
+
+    Parameters
+    ----------
+    points : array
+        Array containing the grid points for an axis with shape MxN.
+
+    Returns
+    -------
+    flat_points : list
+        List of all the grid points folowing a snake-like pattern.
+    """
+    temp_points = []
+    for i in range(points.shape[0]):
+        if i % 2 == 0:
+            temp_points.append(points[i])
+        else:
+            t = points[i]
+            tt = t[::-1]
+            temp_points.append(tt)
+    flat_points = list(chain.from_iterable(temp_points))
+    # convert the numpy.float64 to normal float to be able to easily
+    # save them in the yaml file
+    flat_points = [float(v) for v in flat_points]
+    return flat_points

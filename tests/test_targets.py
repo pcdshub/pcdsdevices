@@ -2,7 +2,8 @@ import pytest
 import numpy as np
 from ophyd.sim import make_fake_device
 from pcdsdevices.targets import (XYGridStage, convert_to_physical,
-                                 get_unit_meshgrid, mesh_interpolation)
+                                 get_unit_meshgrid, mesh_interpolation,
+                                 snake_grid_list)
 from pcdsdevices.sim import FastMotor
 
 
@@ -37,25 +38,40 @@ test_sample:
   - -0.006250000000004974
   - 25.000000000000224
   - -0.012499999999977973
-  last_shot_index: -1
   xx:
-  - -20.59374999999996
-  - -20.342057291666624
-  - -20.090364583333283
-  - -19.838671874999946
-  - -20.589574218749963
-  - -20.33789843749996
-  - -20.08622265624995
-  - -19.834546874999948
+  - pos: -20.59374999999996
+    status: false
+  - pos: -20.342057291666624
+    status: false
+  - pos: -20.090364583333283
+    status: false
+  - pos: -19.838671874999946
+    status: false
+  - pos: -19.834546874999948
+    status: false
+  - pos: -20.08622265624995
+    status: false
+  - pos: -20.33789843749996
+    status: false
+  - pos: -20.589574218749963
+    status: false
   yy:
-  - 26.41445312499999
-  - 26.412369791666656
-  - 26.41028645833332
-  - 26.408203124999986
-  - 26.664453124999994
-  - 26.66232812499999
-  - 26.660203124999992
-  - 26.65807812499999
+  - pos: 26.41445312499999
+    status: false
+  - pos: 26.412369791666656
+    status: false
+  - pos: 26.41028645833332
+    status: false
+  - pos: 26.408203124999986
+    status: false
+  - pos: 26.664453124999994
+    status: false
+  - pos: 26.66232812499999
+    status: false
+  - pos: 26.660203124999992
+    status: false
+  - pos: 26.65807812499999
+    status: false
     """)
     return sample_file
 
@@ -126,15 +142,18 @@ def test_get_sample_map_info(fake_grid_stage, sample_file):
     coeffs = [0.0, 4.0, 0.0, 0.0, 0.0, 0.0, 4.0, 0.0]
     # test get_sample_map_info - dummy values
     res = xy.get_sample_map_info('sample2')
-    assert res == (5, 5, coeffs, -1)
+    assert res == (5, 5, coeffs)
 
 
 def test_mapping_points(fake_grid_stage):
     # test grid of 5 rows by 5 columns
     top_left, top_right, bottom_right, bottom_left = ((0, 0), (4, 0), (4, 4),
                                                       (0, 4))
-    x, y = fake_grid_stage.map_points(top_left, top_right, bottom_right,
-                                      bottom_left, 5, 5)
+    x, y = fake_grid_stage.map_points(snake_like=False, top_left=top_left,
+                                      top_right=top_right,
+                                      bottom_right=bottom_right,
+                                      bottom_left=bottom_left,
+                                      m_rows=5, n_columns=5)
     expected_x_points = [0.0, 1.0, 2.0, 3.0, 4.0,
                          0.0, 1.0, 2.0, 3.0, 4.0,
                          0.0, 1.0, 2.0, 3.0, 4.0,
@@ -152,8 +171,11 @@ def test_mapping_points(fake_grid_stage):
     # test grid of 3 rows by 5 columns
     top_left, top_right, bottom_right, bottom_left = ((0, 0), (2, 0), (2, 4),
                                                       (0, 4))
-    x, y = fake_grid_stage.map_points(top_left, top_right, bottom_right,
-                                      bottom_left, 5, 3)
+    x, y = fake_grid_stage.map_points(snake_like=False, top_left=top_left,
+                                      top_right=top_right,
+                                      bottom_right=bottom_right,
+                                      bottom_left=bottom_left,
+                                      m_rows=5, n_columns=3)
     expected_x_points = [0.0, 1.0, 2.0,
                          0.0, 1.0, 2.0,
                          0.0, 1.0, 2.0,
@@ -171,12 +193,39 @@ def test_mapping_points(fake_grid_stage):
     # test 5 by 5 grid with slope of -0.25
     top_left, top_right, bottom_right, bottom_left = ((0, 0), (4, -1), (5, 3),
                                                       (1, 4))
-    x, y = fake_grid_stage.map_points(top_left, top_right, bottom_right,
-                                      bottom_left, 5, 5)
+    x, y = fake_grid_stage.map_points(snake_like=False, top_left=top_left,
+                                      top_right=top_right,
+                                      bottom_right=bottom_right,
+                                      bottom_left=bottom_left,
+                                      m_rows=5, n_columns=5)
     expected_x_points = [0.0, 1.0, 2.0, 3.0, 4.0,
                          0.25, 1.25, 2.25, 3.25, 4.25,
                          0.50, 1.50, 2.50, 3.50, 4.50,
                          0.75, 1.75, 2.75, 3.75, 4.75,
+                         1.0, 2.0, 3.0, 4.0, 5.0]
+
+    expected_y_points = [0.0, -0.25, -0.50, -0.75, -1,
+                         1.0, 0.75, 0.50, 0.25, 0,
+                         2.0, 1.75, 1.50, 1.25, 1,
+                         3.0, 2.75, 2.50, 2.25, 2,
+                         4.0, 3.75, 3.50, 3.25, 3]
+    assert expected_x_points == x
+    assert expected_y_points == y
+
+
+def test_mapping_points_snake_like(fake_grid_stage):
+    # test 5 by 5 grid with slope of -0.25
+    top_left, top_right, bottom_right, bottom_left = ((0, 0), (4, -1), (5, 3),
+                                                      (1, 4))
+    x, y = fake_grid_stage.map_points(snake_like=True, top_left=top_left,
+                                      top_right=top_right,
+                                      bottom_right=bottom_right,
+                                      bottom_left=bottom_left,
+                                      m_rows=5, n_columns=5)
+    expected_x_points = [0.0, 1.0, 2.0, 3.0, 4.0,
+                         4.25, 3.25, 2.25, 1.25, 0.25,
+                         0.50, 1.50, 2.50, 3.50, 4.50,
+                         4.75, 3.75, 2.75, 1.75, 0.75,
                          1.0, 2.0, 3.0, 4.0, 5.0]
 
     expected_y_points = [0.0, -0.25, -0.50, -0.75, -1,
@@ -323,3 +372,35 @@ def test_convert_to_physical():
     x, y = convert_to_physical(a_coeffs, b_coeffs, 0.5, 0.0)
     # should be 2, 0
     assert (x, y) == (2.0, 0.0)
+
+
+def test_snake_like_list():
+    xx = np.array([[0, 0.25, 0.5, 0.75, 1.0],
+                   [0, 0.25, 0.5, 0.75, 1.0],
+                   [0, 0.25, 0.5, 0.75, 1.0],
+                   [0, 0.25, 0.5, 0.75, 1.0],
+                   [0, 0.25, 0.5, 0.75, 1.0]])
+    yy = np.array([[0.0, 0.0, 0.0, 0.0, 0.0],
+                   [0.25, 0.25, 0.25, 0.25, 0.25],
+                   [0.5, 0.5, 0.5, 0.5, 0.5],
+                   [0.75, 0.75, 0.75, 0.75, 0.75],
+                   [1.0, 1.0, 1.0, 1.0, 1.0]])
+
+    # expected values:
+    xx_expected = [0, 0.25, 0.5, 0.75, 1.0,
+                   1.0, 0.75, 0.5, 0.25, 0,
+                   0, 0.25, 0.5, 0.75, 1.0,
+                   1.0, 0.75, 0.5, 0.25, 0,
+                   0, 0.25, 0.5, 0.75, 1.0]
+    yy_expected = [0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.25, 0.25, 0.25, 0.25, 0.25,
+                   0.5, 0.5, 0.5, 0.5, 0.5,
+                   0.75, 0.75, 0.75, 0.75, 0.75,
+                   1.0, 1.0, 1.0, 1.0, 1.0]
+
+    xx_res = snake_grid_list(xx)
+    # the y values are basically stying the same
+    # so there is no need to even run thm through this function
+    yy_res = snake_grid_list(yy)
+    assert xx_res == xx_expected
+    assert yy_res == yy_expected
