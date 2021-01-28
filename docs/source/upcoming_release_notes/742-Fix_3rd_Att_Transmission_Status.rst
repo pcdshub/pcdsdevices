@@ -1,4 +1,4 @@
-718 Add get_status_float function in utils
+742 Fix 3rd Att Transmission Status
 #################
 
 API Changes
@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- Added a new function in `utils` to get the status value and format that value with the requested precision.
+- N/A
 
 Device Updates
 --------------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- The transmission status value for the 3rd harmonic has been fixed, it was previously using the wrong value.
 
 Maintenance
 -----------

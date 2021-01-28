@@ -1,9 +1,10 @@
-issue_number add ExitSlits
+744 cvmi-motion-class
 #################
 
 API Changes
 -----------
-- N/A
+- CVMI Motion System Prefix: 'TMO:CVMI'
+- KTOF Motion System Prefix: 'TMO:KTOF'
 
 Features
 --------
@@ -15,7 +16,8 @@ Device Updates
 
 New Devices
 -----------
-- Added `ExitSlits` device.
+- pcdsdevices.cvmi_motion.CVMI
+- pcdsdevices.cvmi_motion.KTOF
 
 Bugfixes
 --------
@@ -27,4 +29,4 @@ Maintenance
 
 Contributors
 ------------
-- ghalym
+- sheppard

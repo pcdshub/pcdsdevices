@@ -1,4 +1,4 @@
-issue_number LED power add to Mono
+739 add upper limit threshold to vcn
 #################
 
 API Changes
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- Add LED power to the Mono device.
+- VCN upper limit can be changed from epics.
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- ghalym
+- mghaly

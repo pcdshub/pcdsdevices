@@ -1,4 +1,4 @@
-682 Gon Custom Status Print
+745 pypi-testing
 #################
 
 API Changes
@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- Add custom status print for `gon` classes: `BaseGon`, and `XYZStage` class.
+- N/A
 
 Device Updates
 --------------
@@ -23,8 +23,9 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Perform continuous integration tests with pip-based installs, with
+  dependencies installed from PyPI.
 
 Contributors
 ------------
-- cristinasewell
+- klauer
