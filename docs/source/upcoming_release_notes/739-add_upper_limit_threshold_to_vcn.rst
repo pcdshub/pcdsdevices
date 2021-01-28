@@ -1,4 +1,4 @@
-679 Mirrors Custom Status Print
+739 add upper limit threshold to vcn
 #################
 
 API Changes
@@ -7,11 +7,11 @@ API Changes
 
 Features
 --------
-- Added custom status print for `XOffsetMirror`, `OffsetMirror`, `KBOMirror`, and `FFMirror`.
+- N/A
 
 Device Updates
 --------------
-- N/A
+- VCN upper limit can be changed from epics.
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- cristinasewell
+- mghaly

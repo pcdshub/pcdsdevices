@@ -1,3 +1,3 @@
 doctr
-sphinx >=3.2.1
+sphinx >=3.3.1
 sphinx_rtd_theme

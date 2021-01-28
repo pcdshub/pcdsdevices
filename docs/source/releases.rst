@@ -1,6 +1,57 @@
 Release History
 ###############
 
+v4.0.0 (2020-12-22)
+===================
+
+API Changes
+-----------
+- On our EPICS motor classes, remove the ability to use setattr for
+  `low_limit` and `high_limit`.
+- SmarActOpenLoop: Combined scan_move_cmd and scan_pos into single EpicsSignal,
+  scan_move, with separate read and write PVs.
+
+Features
+--------
+- Added pseudo motors and related calculations to the `Kappa` object.
+- Added two methods to `EpicsMotorInterface`: `set_high_limit()` and `set_low_limit()`, as well as `get_low_limit()` and `get_high_limit()`.
+- Added a little method to clear limits: `clear_limits` - by EPICS convention, this sets both limits to 0.
+- Added 3rd harmonic frequncy transmission info to the status print for the Attenuator.
+- Added custom status print for `XOffsetMirror`, `OffsetMirror`, `KBOMirror`, and `FFMirror`.
+- Add custom status print for `gon` classes: `BaseGon`, and `XYZStage` class.
+- Add notepad signals to `LaserTiming` and `DelayBase` classes
+
+Device Updates
+--------------
+- Instead of creating separated devices for Fundamental Frequency and 3rd Harmonic Frequency, we are now creating Attenuators that have both frequencies.
+- EpicsMotorInterface: Add metadata to various upstream Ophyd methods to clean
+  up screens generated via Typhos.
+- Allow negative positions in `LaserTiming` and `LaserTimingCompensation`
+  devices
+- Add LED power to the Mono device.
+- led metadata scalar range
+
+New Devices
+-----------
+- Added `ExitSlits` device.
+
+Bugfixes
+--------
+- sequencer.EventSequencer.EventSequence: Add an explicit put to SEQ.PROC to
+  force the event sequencer to update with the new sequence.
+- Fix position handling in `ReversedTimeToolDelay`
+- AvgSignal will no longer spam exceptions text to the terminal when the signal
+  it is averaging is disconnected. This will primarily be noticed in the
+  BeamStats class, loaded in every hutch-python session.
+
+Contributors
+------------
+- ZryletTC
+- cristinasewell
+- ghalym
+- tjohnson
+- zllentz
+
 
 v3.3.0 (2020-11-17)
 ===================

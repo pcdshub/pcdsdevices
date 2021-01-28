@@ -95,6 +95,9 @@ class Mesh(BaseInterface, Device):
     """
     Class for Mesh HV Supply that is connected to Acromag inputs and outputs.
 
+    The standard Device ``name`` parameter is ignored here and replaced with
+    ``"mesh_raw"``.
+
     Parameters
     ----------
     prefix : str
@@ -118,7 +121,7 @@ class Mesh(BaseInterface, Device):
     write_sig = FCpt(EpicsSignal, '{self.prefix}' + ':ao1:' + '{self.sp_ch}')
     read_sig = FCpt(EpicsSignalRO, '{self.prefix}' + ':ai1:' + '{self.rb_ch}')
 
-    def __init__(self, prefix, sp_ch, rb_ch, scale=1000.0):
+    def __init__(self, prefix, sp_ch, rb_ch, scale=1000.0, name=None):
         self.scale = scale
         self.prefix = prefix
         self.sp_ch = sp_ch

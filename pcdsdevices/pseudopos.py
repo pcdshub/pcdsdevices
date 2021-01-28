@@ -8,7 +8,6 @@ from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
                              real_position_argument)
-from ophyd.signal import Signal
 from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
@@ -268,7 +267,8 @@ class DelayBase(FltMvInterface, PseudoPositioner):
     """
 
     delay = FCpt(PseudoSingleInterface, egu='{self.egu}', add_prefix=['egu'])
-    user_offset = Cpt(Signal, value=0.0, kind='normal')
+    user_offset = Cpt(NotepadLinkedSignal, ':OphydOffset',
+                      notepad_metadata={'record': 'ao', 'default_value': 0.0})
     motor = None
 
     def __init__(self, *args, egu='s', n_bounces=2, **kwargs):

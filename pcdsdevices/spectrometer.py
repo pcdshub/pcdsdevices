@@ -170,12 +170,12 @@ class VonHamosFER(VonHamosFE):
 
     rot = FCpt(BeckhoffAxis, '{self._prefix_rot}', kind='normal')
 
-    def __init__(self, *args, name, prefix_rot, **kwargs):
+    def __init__(self, *args, name, prefix_rot, prefix_focus, prefix_energy,
+                 **kwargs):
         self._prefix_rot = prefix_rot
-        if args:
-            super().__init__(args[0], name=name, **kwargs)
-        else:
-            super().__init__('', name=name, **kwargs)
+        super().__init__(args[0] if args else '',
+                         name=name, prefix_focus=prefix_focus,
+                         prefix_energy=prefix_energy, **kwargs)
 
 
 class VonHamos4Crystal(VonHamosFE):
@@ -206,8 +206,9 @@ class VonHamos4Crystal(VonHamosFE):
     c3 = Cpt(VonHamosCrystal, ':3', kind='normal')
     c4 = Cpt(VonHamosCrystal, ':4', kind='normal')
 
-    def __init__(self, prefix, *, name, **kwargs):
-        super().__init__(prefix, name=name, **kwargs)
+    def __init__(self, prefix, *, name, prefix_focus, prefix_energy, **kwargs):
+        super().__init__(prefix, name=name, prefix_focus=prefix_focus,
+                         prefix_energy=prefix_energy, **kwargs)
 
 
 class Mono(BaseInterface, Device):
@@ -247,6 +248,14 @@ class Mono(BaseInterface, Device):
                       doc='mirror pitch upstream encoder [urad]')
     g_pi_up_enc = Cpt(PytmcSignal, ':ENC:G_PI:02', io='i', kind='normal',
                       doc='grating pitch upstream encoder [urad]')
+
+    # LED PWR
+    led_power_1 = Cpt(PytmcSignal, ':LED:01:PWR', io='io', kind='config',
+                      doc='LED power supply controls.')
+    led_power_2 = Cpt(PytmcSignal, ':LED:02:PWR', io='io', kind='config',
+                      doc='LED power supply controls.')
+    led_power_3 = Cpt(PytmcSignal, ':LED:03:PWR', io='io', kind='config',
+                      doc='LED power supply controls.')
 
     # Flow switches
     flow_1 = Cpt(PytmcSignal, ':FSW:01', io='i', kind='normal',

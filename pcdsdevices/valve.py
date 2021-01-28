@@ -64,6 +64,9 @@ class Stopper(InOutPVStatePositioner):
 
     tab_whitelist = ['open', 'close']
 
+    def __init__(self, prefix, *, name, **kwargs):
+        super().__init__(prefix, name=name, **kwargs)
+
     def _do_move(self, state):
         if state.name == 'IN':
             self.command.put(self.commands.close_valve.value)
@@ -330,6 +333,9 @@ class VCN(Device):
     position_control = Cpt(EpicsSignalWithRBV, ':POS_REQ', kind='normal',
                            doc=('requested positition to control the valve '
                                 '0-100%'))
+    upper_limit = Cpt(EpicsSignalWithRBV, ':Limit', kind='normal',
+                      doc=('max upper limit position to open the valve '
+                           '0-100%'))
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
                        doc='interlock ok status')
     open_command = Cpt(EpicsSignalWithRBV, ':OPN_SW', kind='normal',

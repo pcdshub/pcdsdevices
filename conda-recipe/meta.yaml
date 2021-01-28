@@ -30,6 +30,7 @@ requirements:
     - schema
     - pcdsutils
     - pcdscalc
+    - prettytable
 
 test:
   imports:
