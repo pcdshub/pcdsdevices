@@ -1104,7 +1104,6 @@ class SimFirstTower(CrystalTower1):
     h1p_si = Cpt(SimOffsetIMS, '')
 
 
-
 class SimSecondTower(CrystalTower2):
     """Crystal Tower 2 Simulator for Testing."""
     # second tower
