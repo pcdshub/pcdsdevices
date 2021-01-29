@@ -459,3 +459,119 @@ class LookupTablePositioner(PseudoPositioner):
             self._table_data_by_name[pseudo_field]
         )
         return self.PseudoPosition(**{pseudo_field: pseudo_value})
+
+
+class OffsetMotorBase(FltMvInterface, PseudoPositioner):
+    """
+    Motor with an offset.
+    """
+    motor = None
+    pseudo_motor = FCpt(PseudoSingleInterface, kind='normal')
+    user_offset = Cpt(NotepadLinkedSignal, ':OphydOffset',
+                      notepad_metadata={'record': 'ao', 'default_value': 0.0})
+
+    def __init__(self, prefix, *args, **kwargs):
+        if self.__class__ is OffsetMotorBase:
+            raise TypeError('OffsetMotorBase must be subclassed with '
+                            'a "motor" component, the real motor to move.')
+        self._motor_prefix = prefix
+        super().__init__(prefix, *args, **kwargs)
+
+    # TODO remove this old code, keeping now for reference
+    # @property
+    # def position(self):
+    #     return self.motor.wm()
+
+    # def move(pos):
+    #     motor.mv(pos + Pv.get(offset_pv))
+
+    # def wm():
+    #     return motor.wm() - Pv.get(offset_pv)
+
+    # def set(value):
+    #     if use_ims_preset:
+    #         Pv.put("%s_SET" % offset_pv, motor.wm() - value)
+    #     Pv.put(offset_pv, motor.wm() - value)
+
+    # def get_offset(self):
+    #     return self.offset.wm()
+    @pseudo_position_argument
+    def check_value(self, value):
+        return super().check_value(value)
+
+    @user_offset.sub_value
+    def _offset_changed(self, value, **kwargs):
+        """
+        The user offset was changed. Update the readback value, if possible.
+        """
+        if not hasattr(self, 'real_position'):
+            # A race condition on instantiation can cause this subscription to
+            # fire prior to the real position being available. The position
+            # will update based on this offset when available.
+            return
+
+        try:
+            self._update_position()
+        except ophyd.utils.DisconnectedError:
+            ...
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos: tuple) -> tuple:
+        """
+        Calculate a RealPosition from a given PseudoPosition.
+
+        Parameters
+        ----------
+        pseudo_pos : PseudoPosition
+            The pseudo position input, a namedtuple.
+
+        Returns
+        -------
+        real_pos : RealPosition
+            The real position output, a namedtuple.
+        """
+        pseudo_pos = self.PseudoPosition(*pseudo_pos)
+        motor_value = pseudo_pos.pseudo_motor + self.user_offset.get()
+        # motor_value = pseudo_pos.offset + self.offset.notepad_setpoint.get()
+        # motor_value = self.user_offset.get()
+        return self.RealPosition(motor=motor_value)
+
+    @real_position_argument
+    def inverse(self, real_pos: tuple) -> tuple:
+        """
+        Calculate a PseudoPosition from a given RealPosition.
+
+        Parameters
+        ----------
+        real_pos : RealPosition
+            The real position input.
+
+        Returns
+        -------
+        pseudo_pos : PseudoPosition
+            The pseudo position output.
+        """
+        real_pos = self.RealPosition(*real_pos)
+        offset = real_pos.motor - self.user_offset.get()
+        # offset = real_pos.motor - self.offset.notepad_setpoint.get()
+        # offset = real_pos.motor - self.offset.notepad_setpoint.get()
+        return self.PseudoPosition(pseudo_motor=offset)
+
+    def set_current_position(self, position):
+        '''
+        Calculate and configure the user_offset value, indicating the provided
+        ``position`` as the new current position.
+
+        Parameters
+        ----------
+        position
+            The new current position.
+        '''
+        self.user_offset.put(0.0)
+        new_offset = position - self.position[0]
+        self.user_offset.put(new_offset)
+
+
+class SimOffsetIMS(OffsetMotorBase):
+    """IMS Offset Simulator for Testing."""
+    motor = Cpt(FastMotor, limits=(-100, 100))
