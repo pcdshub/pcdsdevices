@@ -95,40 +95,43 @@ def fake_tower2():
     return tower2
 
 
+def energy_motor_setup(motor):
+    motor.tower1.h1n_state.state.sim_put(1)
+    motor.tower1.y1_state.state.sim_put(1)
+    motor.tower1.chi1_state.state.sim_put(1)
+    motor.tower2.y2_state.state.sim_put(1)
+    motor.tower2.chi2_state.state.sim_put(1)
+    motor.tower2.h2n_state.state.sim_put(1)
+    motor.tower1.h1n_state.state.sim_put(1)
+    motor.tower1.h1n_state.state.sim_set_enum_strs(
+        ['Unknown'] + H1N.states_list)
+    motor.tower1.y1_state.state.sim_put(1)
+    motor.tower1.y1_state.state.sim_set_enum_strs(
+        ['Unknown'] + Y1.states_list)
+    motor.tower1.chi1_state.state.sim_put(1)
+    motor.tower1.chi1_state.state.sim_set_enum_strs(
+        ['Unknown'] + CHI1.states_list)
+    motor.tower2.y2_state.state.sim_put(1)
+    motor.tower2.y2_state.state.sim_set_enum_strs(
+        ['Unknown'] + Y2.states_list)
+    motor.tower2.chi2_state.state.sim_put(1)
+    motor.tower2.chi2_state.state.sim_set_enum_strs(
+        ['Unknown'] + CHI2.states_list)
+    motor.tower2.h2n_state.state.sim_put(1)
+    motor.tower2.h2n_state.state.sim_set_enum_strs(
+        ['Unknown'] + H2N.states_list)
+    motor.tower1.diamond_reflection.sim_put((1, 1, 1))
+    motor.tower1.silicon_reflection.sim_put((1, 1, 1))
+    motor.tower2.diamond_reflection.sim_put((2, 2, 2))
+    motor.tower2.silicon_reflection.sim_put((2, 2, 2))
+
+
 # Energy C LODCM setup
 @pytest.fixture(scope='function')
 def fake_energy_c():
     FakeLODCMEnergy = make_fake_device(SimLODCMEnergyC)
     energy_c = FakeLODCMEnergy('FAKE:CALC', name='fake_lom')
-    energy_c.tower1.h1n_state.state.sim_put(1)
-    energy_c.tower1.y1_state.state.sim_put(1)
-    energy_c.tower1.chi1_state.state.sim_put(1)
-    energy_c.tower2.y2_state.state.sim_put(1)
-    energy_c.tower2.chi2_state.state.sim_put(1)
-    energy_c.tower2.h2n_state.state.sim_put(1)
-    energy_c.tower1.h1n_state.state.sim_put(1)
-    energy_c.tower1.h1n_state.state.sim_set_enum_strs(
-        ['Unknown'] + H1N.states_list)
-    energy_c.tower1.y1_state.state.sim_put(1)
-    energy_c.tower1.y1_state.state.sim_set_enum_strs(
-        ['Unknown'] + Y1.states_list)
-    energy_c.tower1.chi1_state.state.sim_put(1)
-    energy_c.tower1.chi1_state.state.sim_set_enum_strs(
-        ['Unknown'] + CHI1.states_list)
-    energy_c.tower2.y2_state.state.sim_put(1)
-    energy_c.tower2.y2_state.state.sim_set_enum_strs(
-        ['Unknown'] + Y2.states_list)
-    energy_c.tower2.chi2_state.state.sim_put(1)
-    energy_c.tower2.chi2_state.state.sim_set_enum_strs(
-        ['Unknown'] + CHI2.states_list)
-    energy_c.tower2.h2n_state.state.sim_put(1)
-    energy_c.tower2.h2n_state.state.sim_set_enum_strs(
-        ['Unknown'] + H2N.states_list)
-    energy_c.tower1.diamond_reflection.sim_put((1, 1, 1))
-    energy_c.tower1.silicon_reflection.sim_put((1, 1, 1))
-    energy_c.tower2.diamond_reflection.sim_put((2, 2, 2))
-    energy_c.tower2.silicon_reflection.sim_put((2, 2, 2))
-
+    energy_motor_setup(energy_c)
     # offset of 23
     energy_c.th1_c.set_current_position(23)
     return energy_c
@@ -139,35 +142,7 @@ def fake_energy_c():
 def fake_energy_si():
     FakeLODCMEnergy = make_fake_device(SimLODCMEnergySi)
     energy_si = FakeLODCMEnergy('FAKE:CALC', name='fake_lom')
-    energy_si.tower1.h1n_state.state.sim_put(1)
-    energy_si.tower1.y1_state.state.sim_put(1)
-    energy_si.tower1.chi1_state.state.sim_put(1)
-    energy_si.tower2.y2_state.state.sim_put(1)
-    energy_si.tower2.chi2_state.state.sim_put(1)
-    energy_si.tower2.h2n_state.state.sim_put(1)
-    energy_si.tower1.h1n_state.state.sim_put(1)
-    energy_si.tower1.h1n_state.state.sim_set_enum_strs(
-        ['Unknown'] + H1N.states_list)
-    energy_si.tower1.y1_state.state.sim_put(1)
-    energy_si.tower1.y1_state.state.sim_set_enum_strs(
-        ['Unknown'] + Y1.states_list)
-    energy_si.tower1.chi1_state.state.sim_put(1)
-    energy_si.tower1.chi1_state.state.sim_set_enum_strs(
-        ['Unknown'] + CHI1.states_list)
-    energy_si.tower2.y2_state.state.sim_put(1)
-    energy_si.tower2.y2_state.state.sim_set_enum_strs(
-        ['Unknown'] + Y2.states_list)
-    energy_si.tower2.chi2_state.state.sim_put(1)
-    energy_si.tower2.chi2_state.state.sim_set_enum_strs(
-        ['Unknown'] + CHI2.states_list)
-    energy_si.tower2.h2n_state.state.sim_put(1)
-    energy_si.tower2.h2n_state.state.sim_set_enum_strs(
-        ['Unknown'] + H2N.states_list)
-    energy_si.tower1.diamond_reflection.sim_put((1, 1, 1))
-    energy_si.tower1.silicon_reflection.sim_put((1, 1, 1))
-    energy_si.tower2.diamond_reflection.sim_put((2, 2, 2))
-    energy_si.tower2.silicon_reflection.sim_put((2, 2, 2))
-
+    energy_motor_setup(energy_si)
     # offset of 23
     energy_si.th1_si.set_current_position(23)
     return energy_si

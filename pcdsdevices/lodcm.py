@@ -767,7 +767,7 @@ class LODCM(BaseInterface, Device):
     diag_tower = FCpt(DiagnosticsTower, '{self._m_prefix}', name='DT',
                       kind='normal')
     energy_si = FCpt(LODCMEnergySi, '{self._prefix}', kind='normal')
-    energy__c = FCpt(LODCMEnergyC, '{self._prefix}', kind='normal')
+    energy_c = FCpt(LODCMEnergyC, '{self._prefix}', kind='normal')
 
     # QIcon for UX
     _icon = 'fa.share-alt-square'
