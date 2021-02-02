@@ -156,33 +156,33 @@ class CrystalTower1(BaseInterface, Device):
 
     # motor offsets
     th1_si = Cpt(OffsetIMS, ':TH1:OFF_Si', kind='normal', name='th1_si',
-                 doc='Th1 motor offset for Si')
+                 doc='Th1 motor offset for Si [deg]')
     th1_c = Cpt(OffsetIMS, ':TH1:OFF_C', kind='normal', name='th1_c',
-                doc='Th1 motor offset for C')
+                doc='Th1 motor offset for C [deg]')
     z1_si = Cpt(OffsetIMS, ':Z1:OFF_Si', kind='normal', name='z1_si',
-                doc='Z1 motor offset for Si')
+                doc='Z1 motor offset for Si [mm]')
     z1_c = Cpt(OffsetIMS, ':Z1:OFF_C', kind='normal', name='z1_c',
-               doc='Z1 motor offset for C')
+               doc='Z1 motor offset for C [mm]')
     x1_c = Cpt(OffsetIMS, ':X1:OFF_C', kind='normal',
-               name='x1_c', doc='X1 motor offset for C')
+               name='x1_c', doc='X1 motor offset for C [mm]')
     x1_si = Cpt(OffsetIMS, ':X1:OFF_Si', kind='normal',
-                name='x1_si', doc='X1 motor offset for Si')
+                name='x1_si', doc='X1 motor offset for Si [mm]')
     y1_c = Cpt(OffsetIMS, ':Y1:OFF_C', kind='normal',
-               name='y1_c', doc='Y1 motor offset for C')
+               name='y1_c', doc='Y1 motor offset for C [mm]')
     y1_si = Cpt(OffsetIMS, ':Y1:OFF_Si', kind='normal',
-                name='y1_si', doc='Y1 motor offset for Si')
+                name='y1_si', doc='Y1 motor offset for Si [mm]')
     chi1_c = Cpt(OffsetIMS, ':CHI1:OFF_C', kind='normal',
-                 name='chi1_c ', doc='Chi 1 motor offset for C')
+                 name='chi1_c ', doc='Chi 1 motor offset for C [deg]')
     chi1_si = Cpt(OffsetIMS, ':CHI1:OFF_Si', kind='normal',
-                  name='chi1_si', doc='Chi 1 motor offset for Si')
+                  name='chi1_si', doc='Chi 1 motor offset for Si [deg]')
     h1n_c = Cpt(OffsetIMS, ':H1N:OFF_C', kind='normal',
-                name='', doc='H1n motor offset for C')
+                name='', doc='H1n motor offset for C [mm]')
     h1n_si = Cpt(OffsetIMS, ':H1N:OFF_Si', kind='normal',
-                 name='h1n_si', doc='H1n motor offset for Si')
+                 name='h1n_si', doc='H1n motor offset for Si [mm]')
     h1p_c = Cpt(OffsetIMS, ':H1P:OFF_C', kind='normal',
-                name='h1p_c', doc='H1p motor offset for C')
+                name='h1p_c', doc='H1p motor offset for C [mm]')
     h1p_si = Cpt(OffsetIMS, ':H1P:OFF_Si', kind='normal',
-                 name='h1p_si', doc='H1p motor offset for Si')
+                 name='h1p_si', doc='H1p motor offset for Si [mm]')
 
     tab_component_names = True
     tab_whitelist = ['is_diamond', 'is_silicon', 'get_reflection',
@@ -306,29 +306,29 @@ class CrystalTower2(BaseInterface, Device):
 
     # motor offsets
     th2_si = Cpt(OffsetIMS, ':TH2:OFF_Si', kind='normal', name='th2_si',
-                 doc='Th2 motor offset for Si')
+                 doc='Th2 motor offset for Si [deg]')
     th2_c = Cpt(OffsetIMS, ':TH2:OFF_C', kind='normal', name='th2_c',
-                doc='Th2 motor offset for C')
+                doc='Th2 motor offset for C [deg]')
     z2_si = Cpt(OffsetIMS, ':Z2:OFF_Si', kind='normal', name='z1_si',
-                doc='Z2 motor offset for Si')
+                doc='Z2 motor offset for Si [mm]')
     z2_c = Cpt(OffsetIMS, ':Z2:OFF_C', kind='normal', name='z1_c',
-               doc='Z2 motor offset for C')
+               doc='Z2 motor offset for C [mm]')
     x2_c = Cpt(OffsetIMS, ':X2:OFF_C', kind='normal',
-               name='x2_c ', doc='X2 motor offset for C')
+               name='x2_c ', doc='X2 motor offset for C [mm]')
     x2_si = Cpt(OffsetIMS, ':X2:OFF_Si', kind='normal',
-                name='x2_si', doc='X2 motor offset for Si')
+                name='x2_si', doc='X2 motor offset for Si [mm]')
     y2_c = Cpt(OffsetIMS, ':Y2:OFF_C', kind='normal',
-               name='y2_c', doc='Y2 motor offset for C')
+               name='y2_c', doc='Y2 motor offset for C [mm]')
     y2_si = Cpt(OffsetIMS, ':Y2:OFF_Si', kind='normal',
-                name='y2_si', doc='Y2 motor offset for Si')
+                name='y2_si', doc='Y2 motor offset for Si [mm]')
     chi2_c = Cpt(OffsetIMS, ':CHI2:OFF_C', kind='normal',
-                 name='chi2_c', doc='Chi 2 motor offset for C')
+                 name='chi2_c', doc='Chi 2 motor offset for C [deg]')
     chi2_si = Cpt(OffsetIMS, ':CHI2:OFF_Si', kind='normal',
-                  name='chi2_si', doc='Chi 2 motor offset for Si')
+                  name='chi2_si', doc='Chi 2 motor offset for Si [deg]')
     h2n_c = Cpt(OffsetIMS, ':H2N:OFF_C', kind='normal',
-                name='h2n_c', doc=' H2n motor offset for C')
+                name='h2n_c', doc=' H2n motor offset for C [mm]')
     h2n_si = Cpt(OffsetIMS, ':H2N:OFF_Si', kind='normal',
-                 name='h2n_si', doc='H2n motor offset for Si')
+                 name='h2n_si', doc='H2n motor offset for Si [mm]')
 
     tab_component_names = True
     tab_whitelist = ['is_diamond', 'is_silicon', 'get_reflection',
@@ -449,14 +449,25 @@ class DiagnosticsTower(BaseInterface, Device):
 
 
 class LODCMEnergyC(PseudoPositioner):
+    """
+    Energy Motor for `C` material.
+
+    Parameters
+    ----------
+    prefix : str
+         Epics base PV prefix.
+    """
     tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
     tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
 
     # TODO: figure out what are the limits here...and what units
+    # if i have this to keV, then when calling get_lom_geometry
+    # i shouold be converting the energy to eV before calculations
     energy = Cpt(PseudoSingleInterface, egu='keV',
-                 kind='hinted',  limits=(5000, 25000))
+                 kind='hinted',  limits=(5, 25))
 
-    dr = Cpt(IMS, ':MON:MMS:19', kind='normal', doc='LOM Dia Theta')
+    dr = FCpt(IMS, '{self._m_prefix}:MON:MMS:19',
+              kind='normal', doc='LOM Dia Theta')
     # offset positioners used to set the Energy
     th1_c = Cpt(OffsetIMS, ':TH1:OFF_C', kind='normal', name='th1_c',
                 doc='Th1 motor offset for C')
@@ -526,7 +537,6 @@ class LODCMEnergyC(PseudoPositioner):
             material, reflection)
         if length == 0:
             return 0
-        # TODO: do i need to devide here at all?
         return common.wavelength_to_energy(length) / 1000
 
     def calc_energy(self, energy, material='C', reflection=None):
@@ -534,7 +544,7 @@ class LODCMEnergyC(PseudoPositioner):
 
         reflection = reflection or self.get_reflection(
             as_tuple=True, check=True)
-        th, z = diffraction.get_lom_geometry(energy, material, reflection)
+        th, z = diffraction.get_lom_geometry(energy*1e3, material, reflection)
         return (th, z)
 
     @pseudo_position_argument
@@ -590,20 +600,28 @@ class LODCMEnergyC(PseudoPositioner):
             # don't bother transforming this
             # TODO maybe catch error in common.wave.. when send 0
             return 0
-        # TODO i might not need to devide here by 1000
         energy = common.wavelength_to_energy(length) / 1000
         return self.PseudoPosition(energy=energy)
 
 
 class LODCMEnergySi(PseudoPositioner):
+    """
+    Energy Motor for `Si` material.
+
+    Parameters
+    ----------
+    prefix : str
+         Epics base PV prefix.
+    """
     tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
     tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
 
     # TODO: figure out what are the limits here...and what units
     energy = Cpt(PseudoSingleInterface, egu='keV',
-                 kind='hinted', limits=(5000, 25000))
+                 kind='hinted', limits=(5, 25))
 
-    dr = Cpt(IMS, ':MON:MMS:19', kind='normal', doc='LOM Dia Theta')
+    dr = FCpt(IMS, '{self._m_prefix}:MON:MMS:19',
+              kind='normal', doc='LOM Dia Theta')
     # offset positioners used to set the Energy
     th1_si = Cpt(OffsetIMS, ':TH1:OFF_Si', kind='normal', name='th1_si',
                  doc='Th1 motor offset for Si')
@@ -672,14 +690,13 @@ class LODCMEnergySi(PseudoPositioner):
             as_tuple=True, check=True)
         length = (2 * np.sin(np.deg2rad(self.th1_si.wm())) *
                   diffraction.d_space(material, reflection))
-        # TODO: do i need to devide here at all?
         return common.wavelength_to_energy(length) / 1000
 
     def calc_energy(self, energy, material='Si', reflection=None):
         """Calculate the lom geometry."""
         reflection = reflection or self.get_reflection(
             as_tuple=True, check=True)
-        th, z = diffraction.get_lom_geometry(energy, material, reflection)
+        th, z = diffraction.get_lom_geometry(energy*1e3, material, reflection)
         return (th, z)
 
     @pseudo_position_argument
@@ -735,7 +752,6 @@ class LODCMEnergySi(PseudoPositioner):
             # don't bother transforming this
             # TODO maybe catch error in common.wave.. when send 0
             return 0
-        # TODO i might not need to devide here by 1000
         energy = common.wavelength_to_energy(length) / 1000
         return self.PseudoPosition(energy=energy)
 
@@ -1233,7 +1249,7 @@ Photon Energy: {energy} [keV]
 
 class SimOffsetIMS(OffsetMotorBase):
     """IMS Offset Simulator for Testing."""
-    motor = Cpt(FastMotor, limits=(-100, 100))
+    motor = Cpt(FastMotor, limits=(-1000, 1000))
 
 
 class SimFirstTower(CrystalTower1):
