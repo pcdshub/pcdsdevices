@@ -30,3 +30,6 @@ class MovableStand(InOutPVStatePositioner):
 
     def set(self, *args, **kwargs):
         raise NotImplementedError('Stand not motorized')
+
+    def __init__(self, prefix, *, name, **kwargs):
+        super().__init__(prefix, name=name, **kwargs)

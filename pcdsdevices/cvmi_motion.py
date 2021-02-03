@@ -11,11 +11,11 @@ from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface
 
 
-class LAMP(BaseInterface, Device):
+class CVMI(BaseInterface, Device):
     """
-    LAMP Motion Class
+    CVMI Motion Class
 
-    This class controls motors fixed to the LAMP Motion system for the IP1
+    This class controls motors fixed to the CVMI Motion system for the IP1
     endstation in TMO.
 
     Parameters
@@ -39,6 +39,29 @@ class LAMP(BaseInterface, Device):
     gas_needle_y = Cpt(BeckhoffAxis, ':MMS:05', kind='normal')
     gas_needle_z = Cpt(BeckhoffAxis, ':MMS:06', kind='normal')
 
-    sample_paddle_x = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
-    sample_paddle_y = Cpt(BeckhoffAxis, ':MMS:08', kind='normal')
-    sample_paddle_z = Cpt(BeckhoffAxis, ':MMS:09', kind='normal')
+    sample_paddle = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
+
+
+class KTOF(BaseInterface, Device):
+    """
+    KTOF Motion Class
+
+    This class controls motors fixed to the KTOF Motion system for the IP1
+    endstation in TMO.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the LAMP motion system
+
+    name : str
+        Alias for the device
+    """
+    # UI representation
+    _icon = 'fa.minus-square'
+    tab_component_names = True
+
+    # Motor components
+    spec_x = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
+    spec_y = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
+    spec_z = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')

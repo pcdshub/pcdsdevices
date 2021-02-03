@@ -1,13 +1,14 @@
-679 Mirrors Custom Status Print
+744 cvmi-motion-class
 #################
 
 API Changes
 -----------
-- N/A
+- CVMI Motion System Prefix: 'TMO:CVMI'
+- KTOF Motion System Prefix: 'TMO:KTOF'
 
 Features
 --------
-- Added custom status print for `XOffsetMirror`, `OffsetMirror`, `KBOMirror`, and `FFMirror`.
+- N/A
 
 Device Updates
 --------------
@@ -15,7 +16,8 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- pcdsdevices.cvmi_motion.CVMI
+- pcdsdevices.cvmi_motion.KTOF
 
 Bugfixes
 --------
@@ -27,4 +29,4 @@ Maintenance
 
 Contributors
 ------------
-- cristinasewell
+- sheppard
