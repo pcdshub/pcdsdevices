@@ -20,7 +20,7 @@ from pcdsdevices.pv_positioner import PVPositionerComparator
 
 from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
-from .pseudopos import DelayBase, OffsetMotorBase
+from .pseudopos import DelayBase
 from .signal import PytmcSignal
 from .utils import get_status_value
 from .variety import set_metadata
@@ -568,10 +568,6 @@ class Newport(PCDSMotorBase):
 
 class DelayNewport(DelayBase):
     motor = Cpt(Newport, '')
-
-
-class OffsetIMS(OffsetMotorBase):
-    motor = Cpt(IMS, '')
 
 
 class PMC100(PCDSMotorBase):

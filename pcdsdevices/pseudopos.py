@@ -470,11 +470,14 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
     user_offset = Cpt(NotepadLinkedSignal, ':OphydOffset',
                       notepad_metadata={'record': 'ao', 'default_value': 0.0})
 
+    # def __init__(self, prefix, motor_prefix, *args, **kwargs):
     def __init__(self, prefix, *args, **kwargs):
         if self.__class__ is OffsetMotorBase:
             raise TypeError('OffsetMotorBase must be subclassed with '
                             'a "motor" component, the real motor to move.')
-        self._motor_prefix = prefix
+        # self._motor_prefix = motor_prefix
+        # self._motor_prefix = motor_prefix
+        self._prefix = prefix
         super().__init__(prefix, *args, **kwargs)
 
     # TODO remove this old code, keeping now for reference
@@ -495,6 +498,7 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
 
     # def get_offset(self):
     #     return self.offset.wm()
+
     @pseudo_position_argument
     def check_value(self, value):
         return super().check_value(value)
@@ -514,6 +518,9 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
             self._update_position()
         except ophyd.utils.DisconnectedError:
             ...
+
+    def set(self, value):
+        self.user_offset.put(self.motor.wm() - value)
 
     @pseudo_position_argument
     def forward(self, pseudo_pos: tuple) -> tuple:

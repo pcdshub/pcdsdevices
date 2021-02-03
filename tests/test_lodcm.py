@@ -7,15 +7,14 @@ import numpy as np
 
 from pcdsdevices.lodcm import (H1N, LODCM, Dectris, Diode, Foil, YagLom, Y1,
                                CHI1, Y2, CHI2, H2N, SimFirstTower,
-                               SimSecondTower, SimLODCMEnergyC,
-                               SimLODCMEnergySi)
+                               SimSecondTower, SimLODCMEnergy, SimLODCM)
 
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def fake_lodcm():
-    FakeLODCM = make_fake_device(LODCM)
+    FakeLODCM = make_fake_device(SimLODCM)
     lodcm = FakeLODCM('FAKE:LOM', name='fake_lom')
     lodcm.h1n_state.state.sim_put(1)
     lodcm.h1n_state.state.sim_set_enum_strs(['Unknown'] + H1N.states_list)
@@ -52,6 +51,46 @@ def fake_lodcm():
     lodcm.tower1.silicon_reflection.sim_put((1, 1, 1))
     lodcm.tower2.diamond_reflection.sim_put((1, 1, 1))
     lodcm.tower2.silicon_reflection.sim_put((1, 1, 1))
+
+    # setup virtual some motors for C material
+    lodcm.energy.th1_c.motor.user_readback.sim_put(77)
+    lodcm.energy.th1_c.motor.user_setpoint.sim_put(77)
+    lodcm.energy.th2_c.motor.user_readback.sim_put(0)
+    lodcm.energy.th2_c.motor.user_setpoint.sim_put(0)
+    lodcm.energy.z1_c.motor.user_readback.sim_put(0)
+    lodcm.energy.z1_c.motor.user_setpoint.sim_put(0)
+    lodcm.energy.z2_c.motor.user_readback.sim_put(0)
+    lodcm.energy.z2_c.motor.user_setpoint.sim_put(0)
+
+    lodcm.energy.th1_c.motor.user_setpoint.sim_set_limits((-1000, 1000))
+    lodcm.energy.th2_c.motor.user_setpoint.sim_set_limits((-1000, 1000))
+    lodcm.energy.z1_c.motor.user_setpoint.sim_set_limits((-1000, 1000))
+    lodcm.energy.z2_c.motor.user_setpoint.sim_set_limits((-1000, 1000))
+
+    lodcm.energy.th2_c.motor.motor_spg.sim_put(2)
+    lodcm.energy.th1_c.motor.motor_spg.sim_put(2)
+    lodcm.energy.z1_c.motor.motor_spg.sim_put(2)
+    lodcm.energy.z2_c.motor.motor_spg.sim_put(2)
+
+    # setup virtual some motors for Si material
+    lodcm.energy.th1_si.motor.user_readback.sim_put(77)
+    lodcm.energy.th1_si.motor.user_setpoint.sim_put(77)
+    lodcm.energy.th2_si.motor.user_readback.sim_put(0)
+    lodcm.energy.th2_si.motor.user_setpoint.sim_put(0)
+    lodcm.energy.z1_si.motor.user_readback.sim_put(0)
+    lodcm.energy.z1_si.motor.user_setpoint.sim_put(0)
+    lodcm.energy.z2_si.motor.user_readback.sim_put(0)
+    lodcm.energy.z2_si.motor.user_setpoint.sim_put(0)
+
+    lodcm.energy.th1_si.motor.user_setpoint.sim_set_limits((-1000, 1000))
+    lodcm.energy.th2_si.motor.user_setpoint.sim_set_limits((-1000, 1000))
+    lodcm.energy.z1_si.motor.user_setpoint.sim_set_limits((-1000, 1000))
+    lodcm.energy.z2_si.motor.user_setpoint.sim_set_limits((-1000, 1000))
+
+    lodcm.energy.th2_si.motor.motor_spg.sim_put(2)
+    lodcm.energy.th1_si.motor.motor_spg.sim_put(2)
+    lodcm.energy.z1_si.motor.motor_spg.sim_put(2)
+    lodcm.energy.z2_si.motor.motor_spg.sim_put(2)
 
     return lodcm
 
@@ -130,27 +169,54 @@ def energy_motor_setup(motor):
     motor.tower2.diamond_reflection.sim_put((2, 2, 2))
     motor.tower2.silicon_reflection.sim_put((2, 2, 2))
 
+    motor.th1_c.motor.user_readback.sim_put(77)
+    motor.th1_c.motor.user_setpoint.sim_put(77)
+    motor.th2_c.motor.user_readback.sim_put(0)
+    motor.th2_c.motor.user_setpoint.sim_put(0)
+    motor.z1_c.motor.user_readback.sim_put(0)
+    motor.z1_c.motor.user_setpoint.sim_put(0)
+    motor.z2_c.motor.user_readback.sim_put(0)
+    motor.z2_c.motor.user_setpoint.sim_put(0)
 
-# Energy C LODCM setup
+    motor.th1_si.motor.user_readback.sim_put(77)
+    motor.th1_si.motor.user_setpoint.sim_put(77)
+    motor.th2_si.motor.user_readback.sim_put(0)
+    motor.th2_si.motor.user_setpoint.sim_put(0)
+    motor.z1_si.motor.user_readback.sim_put(0)
+    motor.z1_si.motor.user_setpoint.sim_put(0)
+    motor.z2_si.motor.user_readback.sim_put(0)
+    motor.z2_si.motor.user_setpoint.sim_put(0)
+
+    motor.th1_c.motor.user_setpoint.sim_set_limits((-1000, 1000))
+    motor.th2_c.motor.user_setpoint.sim_set_limits((-1000, 1000))
+    motor.z1_c.motor.user_setpoint.sim_set_limits((-1000, 1000))
+    motor.z2_c.motor.user_setpoint.sim_set_limits((-1000, 1000))
+
+    motor.th1_si.motor.user_setpoint.sim_set_limits((-1000, 1000))
+    motor.th2_si.motor.user_setpoint.sim_set_limits((-1000, 1000))
+    motor.z1_si.motor.user_setpoint.sim_set_limits((-1000, 1000))
+    motor.z2_si.motor.user_setpoint.sim_set_limits((-1000, 1000))
+
+    motor.th2_c.motor.motor_spg.sim_put(2)
+    motor.th1_c.motor.motor_spg.sim_put(2)
+    motor.z1_c.motor.motor_spg.sim_put(2)
+    motor.z2_c.motor.motor_spg.sim_put(2)
+
+    motor.th2_si.motor.motor_spg.sim_put(2)
+    motor.th1_si.motor.motor_spg.sim_put(2)
+    motor.z1_si.motor.motor_spg.sim_put(2)
+    motor.z2_si.motor.motor_spg.sim_put(2)
+
+
+# Energy LODCM setup
 @pytest.fixture(scope='function')
-def fake_energy_c():
-    FakeLODCMEnergy = make_fake_device(SimLODCMEnergyC)
-    energy_c = FakeLODCMEnergy('FAKE:ENERGY:C', name='fake_energy_c')
-    energy_motor_setup(energy_c)
+def fake_energy():
+    FakeLODCMEnergy = make_fake_device(SimLODCMEnergy)
+    energy = FakeLODCMEnergy('FAKE:ENERGY', name='fake_energy')
+    energy_motor_setup(energy)
     # offset of 23
-    energy_c.th1_c.set_current_position(23)
-    return energy_c
-
-
-# Energy Si LODCM setup
-@pytest.fixture(scope='function')
-def fake_energy_si():
-    FakeLODCMEnergy = make_fake_device(SimLODCMEnergySi)
-    energy_si = FakeLODCMEnergy('FAKE:ENERGY:SI', name='fake_energy_si')
-    energy_motor_setup(energy_si)
-    # offset of 23
-    energy_si.th1_si.set_current_position(23)
-    return energy_si
+    # energy_c.th1_c.set_current_position(23)
+    return energy
 
 
 def test_lodcm_destination(fake_lodcm):
@@ -247,8 +313,8 @@ def test_get_reflection_tower2(fake_tower2):
     assert res == (2, 2, 2)
 
 
-def test_get_reflection_lodcm(fake_energy_c):
-    energy = fake_energy_c
+def test_get_reflection_lodcm(fake_energy):
+    energy = fake_energy
     # as of now tower 1: (1, 1, 1), tower 2: (2, 2, 2) - do not match
     # should raise an error
     with pytest.raises(ValueError):
@@ -261,8 +327,8 @@ def test_get_reflection_lodcm(fake_energy_c):
     assert res == (1, 1, 1)
 
 
-def test_calc_energy_c(fake_energy_c):
-    energy = fake_energy_c
+def test_calc_energy_c(fake_energy):
+    energy = fake_energy
     # material should be 'C'
     with pytest.raises(ValueError):
         energy.calc_energy(energy=10)
@@ -275,29 +341,29 @@ def test_calc_energy_c(fake_energy_c):
     assert np.isclose(z, 427.8469911590626)
 
 
-def test_calc_energy_si(fake_energy_si):
-    energy = fake_energy_si
+def test_calc_energy_si(fake_energy):
+    energy = fake_energy
     with pytest.raises(ValueError):
-        energy.calc_energy(energy=10)
+        energy.calc_energy(energy=10, material='Si')
     energy.tower2.diamond_reflection.sim_put((1, 1, 1))
     energy.tower2.silicon_reflection.sim_put((1, 1, 1))
-    th, z = energy.calc_energy(energy=10)
+    th, z = energy.calc_energy(energy=10, material='Si')
     # th should be 11.402710639982848
     # z should be 713.4828146545175
     assert th == 11.402710639982848
     assert z == 713.4828146545175
 
 
-def test_get_energy_c(fake_energy_c):
-    energy = fake_energy_c
+def test_get_energy_c(fake_energy):
+    energy = fake_energy
     # material should be 'C'
     # with offset of 23
     # motor moving at 77
     # try to move it when it does not match reflection
-    energy.th1_c.move(77)
-    assert energy.th1_c.motor.position == 100
-    assert energy.th1_c.pseudo_motor.position == 77
-    assert energy.th1_c.user_offset.get() == 23
+    # energy.th1.move(77)
+    # assert energy.th1_c.motor.position == 100
+    # assert energy.th1_c.pseudo_motor.position == 77
+    # assert energy.th1_c.user_offset.get() == 23
     # when calculating energy, the th1_c.wm() should be 100 - 23: 100
     # so calculating this:
     # length = 2 * np.sin(np.deg2rad(77)) * d_space('C', (1, 1, 1))
@@ -309,21 +375,24 @@ def test_get_energy_c(fake_energy_c):
     # make the reflection match
     energy.tower2.diamond_reflection.sim_put((1, 1, 1))
     energy.tower2.silicon_reflection.sim_put((1, 1, 1))
-    assert energy.energy.position == 3.089365078593997
+    # assert energy.energy.position == 3.089365078593997
+    # res = energy.get_energy()
+    energy.move(6)
     res = energy.get_energy()
-    assert res == 3.089365078593997
+    print(res)
+    assert res == 6
 
 
-def test_get_energy_si(fake_energy_si):
-    energy = fake_energy_si
+def test_get_energy_si(fake_energy):
+    energy = fake_energy
     # material should be 'Si'
     # with offset of 23
     # motor moving at 77
     # try to move when reflecion does not match
-    energy.th1_si.move(77)
-    assert energy.th1_si.motor.position == 100
-    assert energy.th1_si.pseudo_motor.position == 77
-    assert energy.th1_si.user_offset.get() == 23
+    # energy.th1_si.move(77)
+    # assert energy.th1_si.motor.position == 100
+    # assert energy.th1_si.pseudo_motor.position == 77
+    # assert energy.th1_si.user_offset.get() == 23
     # when calculating energy, the th1_si.wm() should be 100 - 23: 77
     # so calculating this:
     # length = 2 * np.sin(np.deg2rad(77)) * d_space('Si', (1, 1, 1))
@@ -335,21 +404,9 @@ def test_get_energy_si(fake_energy_si):
     # change the reflection so it matches
     energy.tower2.diamond_reflection.sim_put((1, 1, 1))
     energy.tower2.silicon_reflection.sim_put((1, 1, 1))
-    res = energy.get_energy()
-    assert res == 2.029041362547755
-    assert energy.energy.position == 2.029041362547755
-
-    # test with no offset
-    # energy.tower2.diamond_reflection.sim_put((1, 1, 1))
-    # energy.tower2.silicon_reflection.sim_put((1, 1, 1))
-    energy.th1_si.user_offset.sim_put(0)
-    energy.move(6)
-    # energy.calc_energy(6, 'Si', (1, 1, 1))
-    assert energy.th1_si.wm() == 19.23880622548293
-    assert energy.th2_si.wm() == 19.23880622548293
-    assert energy.z1_si.wm() == -377.45432488131866
-    assert energy.z2_si.wm() == 377.45432488131866
-    assert energy.dr.wm() == 38.47761245096586
+    th, z = energy.calc_energy(6, 'Si')
+    assert th == 19.23880622548293
+    assert z == 377.45432488131866
 
 
 def test_my_fake_lodcm(fake_lodcm):
@@ -359,44 +416,18 @@ def test_my_fake_lodcm(fake_lodcm):
     res = lodcm.get_material(check=True)
     assert res == 'C'
     # setup the motors for testing
-    energy_motor_setup(lodcm.energy_c)
+    energy_motor_setup(lodcm.energy)
     # relflections should not match:
     with pytest.raises(ValueError):
         lodcm.get_energy()
     # change reflection so it matches
-    lodcm.energy_c.tower2.diamond_reflection.sim_put((1, 1, 1))
-    lodcm.energy_c.tower2.silicon_reflection.sim_put((1, 1, 1))
+    lodcm.energy.tower2.diamond_reflection.sim_put((1, 1, 1))
+    lodcm.energy.tower2.silicon_reflection.sim_put((1, 1, 1))
     assert lodcm.get_reflection(as_tuple=True) == (1, 1, 1)
     assert lodcm.get_material() == 'C'
 
-    # setup some motors for C material
-    lodcm.energy_c.th1_c.user_offset.sim_put(23)
-    lodcm.energy_c.th1_c.motor.user_readback.sim_put(100)
-    lodcm.energy_c.th1_c.motor.user_setpoint.sim_put(100)
-    lodcm.energy_c.th2_c.motor.user_readback.sim_put(0)
-    lodcm.energy_c.th2_c.motor.user_setpoint.sim_put(0)
-    lodcm.energy_c.z1_c.motor.user_readback.sim_put(0)
-    lodcm.energy_c.z1_c.motor.user_setpoint.sim_put(0)
-    lodcm.energy_c.z2_c.motor.user_readback.sim_put(0)
-    lodcm.energy_c.z2_c.motor.user_setpoint.sim_put(0)
-    lodcm.energy_c.dr.user_readback.sim_put(0)
-    lodcm.energy_c.dr.user_setpoint.sim_put(0)
-
-    lodcm.energy_c.th1_c.motor.user_setpoint.sim_set_limits((-100, 100))
-    lodcm.energy_c.th2_c.motor.user_setpoint.sim_set_limits((-100, 100))
-    lodcm.energy_c.z1_c.motor.user_setpoint.sim_set_limits((-100, 100))
-    lodcm.energy_c.z2_c.motor.user_setpoint.sim_set_limits((-100, 100))
-    lodcm.energy_c.dr.user_setpoint.sim_set_limits((-100, 100))
-
-    lodcm.energy_c.dr.motor_spg.sim_put(2)
-    lodcm.energy_c.th2_c.motor.motor_spg.sim_put(2)
-    lodcm.energy_c.th1_c.motor.motor_spg.sim_put(2)
-    lodcm.energy_c.z1_c.motor.motor_spg.sim_put(2)
-    lodcm.energy_c.z2_c.motor.motor_spg.sim_put(2)
-
-    lodcm.energy_c.move(5, wait=False)
     res = lodcm.get_energy()
-    res2 = lodcm.energy_c.get_energy()
+    res2 = lodcm.energy.get_energy()
     assert res == res2
     # based on previous tests above
     assert res == 3.089365078593997
