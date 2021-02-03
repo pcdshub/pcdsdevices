@@ -900,6 +900,8 @@ class XYGridStage():
         if snake_like:
             x_points = snake_grid_list(
                 np.array(x_points).reshape(rows, columns))
+            y_points = snake_grid_list(
+                np.array(y_points).reshape(rows, columns))
         self.positions_x = x_points
         self.positions_y = y_points
         return x_points, y_points
