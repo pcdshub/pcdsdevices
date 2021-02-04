@@ -823,21 +823,6 @@ class XYGridStage():
             yaml.safe_dump(yaml_dict, sample_file,
                            sort_keys=False, default_flow_style=False)
 
-    def remove_all_samples(self, path=None):
-        """
-        Empty the samples file.
-
-        All the grid samples will be deleted.
-
-        Parameters
-        ----------
-        path : string, optional
-            Path of .yml file with samples.
-        """
-        path = path or self._path
-        with open(path, 'w') as sample_file:
-            yaml.safe_dump(None, sample_file)
-
     def map_points(self, snake_like=True, top_left=None, top_right=None,
                    bottom_right=None, bottom_left=None, m_rows=None,
                    n_columns=None):
@@ -971,6 +956,42 @@ class XYGridStage():
                 x_points.append(i)
                 y_points.append(j)
         return x_points, y_points
+
+    def is_target_shot(self, sample, m, n, path=None):
+        """
+        Check to see if the target position at MxN is shot.
+
+        Parameters
+        ----------
+        sample_name : str
+            The name of the sample to get the mapped points from. To see the
+            available mapped samples call the `mapped_samples()` method.
+        m_point : int
+            Represents the row value of the point we want the position for.
+        n_point : int
+            Represents the column value of the point we want the position for.
+        path : str, optional
+            Sample path.
+
+        Returns
+        -------
+        is_shot : bool
+            Indicates is target is shot or not.
+        """
+        path = path or self._path
+        x, y = self.compute_mapped_point(sample_name=sample, m_row=m,
+                                         n_column=n, compute_all=False,
+                                         path=path)
+
+        data = self.get_sample_data(sample)
+        xx = data.get('xx')
+        x_status = None
+        # one value should be enough
+        # TODO: this is assuming that none of the points will be the unique.
+        if xx is not None:
+            x_status = next((item['status']
+                             for item in xx if item['pos'] == x), None)
+        return x_status
 
     def move_to_sample(self, m, n):
         """
