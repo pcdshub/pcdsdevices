@@ -5,6 +5,7 @@ from pcdsdevices.targets import (XYGridStage, convert_to_physical,
                                  get_unit_meshgrid, mesh_interpolation,
                                  snake_grid_list)
 from pcdsdevices.sim import FastMotor
+import yaml
 
 
 @pytest.fixture(scope='function')
@@ -40,13 +41,13 @@ test_sample:
   - -0.012499999999977973
   xx:
   - pos: -20.59374999999996
-    status: false
+    status: true
   - pos: -20.342057291666624
-    status: false
+    status: true
   - pos: -20.090364583333283
-    status: false
+    status: true
   - pos: -19.838671874999946
-    status: false
+    status: true
   - pos: -19.834546874999948
     status: false
   - pos: -20.08622265624995
@@ -57,13 +58,13 @@ test_sample:
     status: false
   yy:
   - pos: 26.41445312499999
-    status: false
+    status: true
   - pos: 26.412369791666656
-    status: false
+    status: true
   - pos: 26.41028645833332
-    status: false
+    status: true
   - pos: 26.408203124999986
-    status: false
+    status: true
   - pos: 26.664453124999994
     status: false
   - pos: 26.66232812499999
@@ -403,3 +404,48 @@ def test_snake_like_list():
     yy_res = snake_grid_list(yy)
     assert xx_res == xx_expected
     assert yy_res == yy_expected
+
+
+def test_reset_status(fake_grid_stage, sample_file):
+    stage = fake_grid_stage
+    origin_info = stage.get_sample_data('test_sample', sample_file)
+    xx = origin_info.get('xx')
+    yy = origin_info.get('yy')
+    x_statuses = [x['status'] for x in xx]
+    y_statuses = [y['status'] for y in yy]
+    x_pos_expected = [x['pos'] for x in xx]
+    y_pos_expected = [y['pos'] for y in yy]
+    yaml_dict_original = []
+    with open(sample_file) as f:
+        yaml_dict = yaml.safe_load(f)
+    # current statuses
+    current_statuses = [True, True, True, True, False, False, False, False]
+    assert x_statuses == current_statuses == y_statuses
+    stage.reset_statuses('test_sample', sample_file)
+    new_statuses = [False, False, False, False, False, False, False, False]
+    # make sure the points have not been changed
+    info = stage.get_sample_data('test_sample', sample_file)
+    xx = info.get('xx')
+    yy = info.get('yy')
+    x_statuses = [x['status'] for x in xx]
+    y_statuses = [y['status'] for y in yy]
+    x_pos = [x['pos'] for x in xx]
+    y_pos = [y['pos'] for y in yy]
+    assert new_statuses == x_statuses == y_statuses
+
+    # make sure the points are still the same:
+    assert x_pos == x_pos_expected
+    assert y_pos == y_pos_expected
+    with open(sample_file) as f:
+        yaml_dict = yaml.safe_load(f)
+        assert yaml_dict_original != yaml_dict
+        assert len(yaml_dict) == 1
+        assert (yaml_dict['test_sample']['time_created'] ==
+                origin_info.get('time_created'))
+        assert (yaml_dict['test_sample']['coefficients'] ==
+                origin_info.get('coefficients'))
+        assert (yaml_dict['test_sample']['M'] ==
+                origin_info.get('M'))
+        assert (yaml_dict['test_sample']['N'] ==
+                origin_info.get('N'))
+        assert len(yaml_dict['test_sample']) == 10

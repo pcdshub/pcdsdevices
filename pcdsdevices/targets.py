@@ -823,6 +823,37 @@ class XYGridStage():
             yaml.safe_dump(yaml_dict, sample_file,
                            sort_keys=False, default_flow_style=False)
 
+    def reset_statuses(self, sample_name, path=None):
+        """
+        Reset the statuses to `False` for the sample targets.
+
+        Parameters
+        ----------
+        sample_name : str
+            A name to identify the sample grid, should be snake_case style.
+        path : str, optional
+            Path to the `.yml` file. Defaults to the path defined when
+            creating this object.
+        """
+        path = path or self._path
+        with open(path) as sample_file:
+            yaml_dict = yaml.safe_load(sample_file) or {}
+            sample = yaml_dict.get(sample_name)
+            if sample:
+                for xd in sample.get('xx'):
+                    xd.update((k, False)
+                              for k, v in xd.items() if k == 'status')
+                for yd in sample.get('yy'):
+                    yd.update((k, False)
+                              for k, v in yd.items() if k == 'status')
+                yaml_dict[sample_name].update(sample)
+            else:
+                raise ValueError('Could not find this sample name in the file:'
+                                 f' {sample}')
+        with open(path, 'w') as sample_file:
+            yaml.safe_dump(yaml_dict, sample_file,
+                           sort_keys=False, default_flow_style=False)
+
     def map_points(self, snake_like=True, top_left=None, top_right=None,
                    bottom_right=None, bottom_left=None, m_rows=None,
                    n_columns=None):
