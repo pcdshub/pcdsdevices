@@ -34,11 +34,11 @@ logger = logging.getLogger(__name__)
 
 
 class OffsetMotor(OffsetMotorBase):
-    motor = FCpt(IMS, '{self._prefix}', kind='normal')
+    motor = FCpt(IMS, '{self._motor_prefix}')
 
-    def __init__(self, prefix, *args, **kwargs):
-        self._prefix = prefix
-        super().__init__(prefix, *args, **kwargs)
+    def __init__(self, prefix, motor_prefix, *args, **kwargs):
+        self._motor_prefix = motor_prefix
+        super().__init__(prefix, motor_prefix, *args, **kwargs)
 
 
 class H1N(InOutRecordPositioner):
@@ -162,34 +162,34 @@ class CrystalTower1(BaseInterface, Device):
                              doc='Tower 1 Silicon crystal reflection')
 
     # motor offsets
-    th1_si = Cpt(OffsetMotor, ':TH1:OFF_Si', kind='normal', name='th1_si',
-                 doc='Th1 motor offset for Si [deg]')
-    th1_c = Cpt(OffsetMotor, ':TH1:OFF_C', kind='normal', name='th1_c',
-                doc='Th1 motor offset for C [deg]')
-    z1_si = Cpt(OffsetMotor, ':Z1:OFF_Si', kind='normal', name='z1_si',
-                doc='Z1 motor offset for Si [mm]')
-    z1_c = Cpt(OffsetMotor, ':Z1:OFF_C', kind='normal', name='z1_c',
-               doc='Z1 motor offset for C [mm]')
-    x1_c = Cpt(OffsetMotor, ':X1:OFF_C', kind='normal',
-               name='x1_c', doc='X1 motor offset for C [mm]')
-    x1_si = Cpt(OffsetMotor, ':X1:OFF_Si', kind='normal',
-                name='x1_si', doc='X1 motor offset for Si [mm]')
-    y1_c = Cpt(OffsetMotor, ':Y1:OFF_C', kind='normal',
-               name='y1_c', doc='Y1 motor offset for C [mm]')
-    y1_si = Cpt(OffsetMotor, ':Y1:OFF_Si', kind='normal',
-                name='y1_si', doc='Y1 motor offset for Si [mm]')
-    chi1_c = Cpt(OffsetMotor, ':CHI1:OFF_C', kind='normal',
-                 name='chi1_c ', doc='Chi 1 motor offset for C [deg]')
-    chi1_si = Cpt(OffsetMotor, ':CHI1:OFF_Si', kind='normal',
-                  name='chi1_si', doc='Chi 1 motor offset for Si [deg]')
-    h1n_c = Cpt(OffsetMotor, ':H1N:OFF_C', kind='normal',
-                name='', doc='H1n motor offset for C [mm]')
-    h1n_si = Cpt(OffsetMotor, ':H1N:OFF_Si', kind='normal',
-                 name='h1n_si', doc='H1n motor offset for Si [mm]')
-    h1p_c = Cpt(OffsetMotor, ':H1P:OFF_C', kind='normal',
-                name='h1p_c', doc='H1p motor offset for C [mm]')
-    h1p_si = Cpt(OffsetMotor, ':H1P:OFF_Si', kind='normal',
-                 name='h1p_si', doc='H1p motor offset for Si [mm]')
+    # th1_si = Cpt(..., ':TH1:OFF_Si', kind='normal', name='th1_si',
+    #              doc='Th1 motor offset for Si [deg]')
+    # th1_c = Cpt(..., ':TH1:OFF_C', kind='normal', name='th1_c',
+    #             doc='Th1 motor offset for C [deg]')
+    # z1_si = Cpt(..., ':Z1:OFF_Si', kind='normal', name='z1_si',
+    #             doc='Z1 motor offset for Si [mm]')
+    # z1_c = Cpt(..., ':Z1:OFF_C', kind='normal', name='z1_c',
+    #            doc='Z1 motor offset for C [mm]')
+    # x1_c = Cpt(..., ':X1:OFF_C', kind='normal',
+    #            name='x1_c', doc='X1 motor offset for C [mm]')
+    # x1_si = Cpt(..., ':X1:OFF_Si', kind='normal',
+    #             name='x1_si', doc='X1 motor offset for Si [mm]')
+    # y1_c = Cpt(..., ':Y1:OFF_C', kind='normal',
+    #            name='y1_c', doc='Y1 motor offset for C [mm]')
+    # y1_si = Cpt(..., ':Y1:OFF_Si', kind='normal',
+    #             name='y1_si', doc='Y1 motor offset for Si [mm]')
+    # chi1_c = Cpt(..., ':CHI1:OFF_C', kind='normal',
+    #              name='chi1_c ', doc='Chi 1 motor offset for C [deg]')
+    # chi1_si = Cpt(..., ':CHI1:OFF_Si', kind='normal',
+    #               name='chi1_si', doc='Chi 1 motor offset for Si [deg]')
+    # h1n_c = Cpt(..., ':H1N:OFF_C', kind='normal',
+    #             name='', doc='H1n motor offset for C [mm]')
+    # h1n_si = Cpt(..., ':H1N:OFF_Si', kind='normal',
+    #              name='h1n_si', doc='H1n motor offset for Si [mm]')
+    # h1p_c = Cpt(..., ':H1P:OFF_C', kind='normal',
+    #             name='h1p_c', doc='H1p motor offset for C [mm]')
+    # h1p_si = Cpt(..., ':H1P:OFF_Si', kind='normal',
+    #              name='h1p_si', doc='H1p motor offset for Si [mm]')
 
     tab_component_names = True
     tab_whitelist = ['is_diamond', 'is_silicon', 'get_reflection',
@@ -311,31 +311,31 @@ class CrystalTower2(BaseInterface, Device):
     silicon_reflection = Cpt(EpicsSignalRO, ':T2Si:REF', kind='omitted',
                              doc='Tower 2 Silicon crystal reflection')
 
-    # motor offsets
-    th2_si = Cpt(OffsetMotor, ':TH2:OFF_Si', kind='normal', name='th2_si',
-                 doc='Th2 motor offset for Si [deg]')
-    th2_c = Cpt(OffsetMotor, ':TH2:OFF_C', kind='normal', name='th2_c',
-                doc='Th2 motor offset for C [deg]')
-    z2_si = Cpt(OffsetMotor, ':Z2:OFF_Si', kind='normal', name='z1_si',
-                doc='Z2 motor offset for Si [mm]')
-    z2_c = Cpt(OffsetMotor, ':Z2:OFF_C', kind='normal', name='z1_c',
-               doc='Z2 motor offset for C [mm]')
-    x2_c = Cpt(OffsetMotor, ':X2:OFF_C', kind='normal',
-               name='x2_c ', doc='X2 motor offset for C [mm]')
-    x2_si = Cpt(OffsetMotor, ':X2:OFF_Si', kind='normal',
-                name='x2_si', doc='X2 motor offset for Si [mm]')
-    y2_c = Cpt(OffsetMotor, ':Y2:OFF_C', kind='normal',
-               name='y2_c', doc='Y2 motor offset for C [mm]')
-    y2_si = Cpt(OffsetMotor, ':Y2:OFF_Si', kind='normal',
-                name='y2_si', doc='Y2 motor offset for Si [mm]')
-    chi2_c = Cpt(OffsetMotor, ':CHI2:OFF_C', kind='normal',
-                 name='chi2_c', doc='Chi 2 motor offset for C [deg]')
-    chi2_si = Cpt(OffsetMotor, ':CHI2:OFF_Si', kind='normal',
-                  name='chi2_si', doc='Chi 2 motor offset for Si [deg]')
-    h2n_c = Cpt(OffsetMotor, ':H2N:OFF_C', kind='normal',
-                name='h2n_c', doc=' H2n motor offset for C [mm]')
-    h2n_si = Cpt(OffsetMotor, ':H2N:OFF_Si', kind='normal',
-                 name='h2n_si', doc='H2n motor offset for Si [mm]')
+    # # motor offsets
+    # th2_si = Cpt(..., ':TH2:OFF_Si', kind='normal', name='th2_si',
+    #              doc='Th2 motor offset for Si [deg]')
+    # th2_c = Cpt(..., ':TH2:OFF_C', kind='normal', name='th2_c',
+    #             doc='Th2 motor offset for C [deg]')
+    # z2_si = Cpt(..., ':Z2:OFF_Si', kind='normal', name='z1_si',
+    #             doc='Z2 motor offset for Si [mm]')
+    # z2_c = Cpt(..., ':Z2:OFF_C', kind='normal', name='z1_c',
+    #            doc='Z2 motor offset for C [mm]')
+    # x2_c = Cpt(..., ':X2:OFF_C', kind='normal',
+    #            name='x2_c ', doc='X2 motor offset for C [mm]')
+    # x2_si = Cpt(..., ':X2:OFF_Si', kind='normal',
+    #             name='x2_si', doc='X2 motor offset for Si [mm]')
+    # y2_c = Cpt(..., ':Y2:OFF_C', kind='normal',
+    #            name='y2_c', doc='Y2 motor offset for C [mm]')
+    # y2_si = Cpt(..., ':Y2:OFF_Si', kind='normal',
+    #             name='y2_si', doc='Y2 motor offset for Si [mm]')
+    # chi2_c = Cpt(..., ':CHI2:OFF_C', kind='normal',
+    #              name='chi2_c', doc='Chi 2 motor offset for C [deg]')
+    # chi2_si = Cpt(..., ':CHI2:OFF_Si', kind='normal',
+    #               name='chi2_si', doc='Chi 2 motor offset for Si [deg]')
+    # h2n_c = Cpt(..., ':H2N:OFF_C', kind='normal',
+    #             name='h2n_c', doc=' H2n motor offset for C [mm]')
+    # h2n_si = Cpt(..., ':H2N:OFF_Si', kind='normal',
+    #              name='h2n_si', doc='H2n motor offset for Si [mm]')
 
     tab_component_names = True
     tab_whitelist = ['is_diamond', 'is_silicon', 'get_reflection',
@@ -457,7 +457,7 @@ class DiagnosticsTower(BaseInterface, Device):
 
 class LODCMEnergy(PseudoPositioner):
     """
-    Energy Motor for `Si` material.
+    Energy Motor.
 
     Parameters
     ----------
@@ -467,54 +467,32 @@ class LODCMEnergy(PseudoPositioner):
     tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
     tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
 
-    z1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:04',
+    z1 = FCpt(OffsetMotor, '{self._z1_offset_prefix}',
+              motor_prefix='{self._m_prefix}:MON:MMS:04',
+              add_prefix=('prefix', 'motor_prefix'),
               kind='normal', doc='LOM Xtal1 Z')
     # theta movement
-    th1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:07',
+    th1 = FCpt(OffsetMotor, '{self._th1_offset_prefix}',
+               motor_prefix='{self._m_prefix}:MON:MMS:07',
+               add_prefix=('prefix', 'motor_prefix'),
                kind='normal', doc='LOM Xtal1 Theta')
-    z2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:10',
+
+    z2 = FCpt(OffsetMotor, '{self._z2_offset_prefix}',
+              motor_prefix='{self._m_prefix}:MON:MMS:10',
+              add_prefix=('prefix', 'motor_prefix'),
               kind='normal', doc='LOM Xtal2 Z')
     # thata movement
-    th2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:13',
+    th2 = FCpt(OffsetMotor, '{self._th2_offset_prefix}',
+               motor_prefix='{self._m_prefix}:MON:MMS:13',
+               add_prefix=('prefix', 'motor_prefix'),
                kind='normal', doc='LOM Xtal2 Theta')
+
     dr = FCpt(IMS, '{self._m_prefix}:MON:MMS:19',
               kind='normal', doc='LOM Dia Theta')
 
     # TODO: figure out what are the limits here...and what units
     energy = Cpt(PseudoSingleInterface, egu='keV',
                  kind='hinted', limits=(5, 25))
-
-    # th1_si = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_Si',
-    #               motor_prefix='{self._m_prefix}:MON:MMS:07',
-    #               add_prefix=('prefix', 'motor_prefix'), name='th1_si')
-    # th2_si = FCpt(OffsetMotor, prefix='{self._prefix}:TH2:OFF_Si',
-    #               motor_prefix='{self._m_prefix}:MON:MMS:13',
-    #               add_prefix=('prefix', 'motor_prefix'), name='th2_si')
-    # z1_si = FCpt(OffsetMotor, prefix='{self._prefix}:Z1:OFF_Si',
-    #              name='z1_si',
-    #              motor_prefix='{self._m_prefix}:MON:MMS:04',
-    #              add_prefix=('prefix', 'motor_prefix'))
-    # z2_si = FCpt(OffsetMotor, prefix='{self._prefix}:Z2:OFF_Si',
-    #              name='z1_si',
-    #              motor_prefix='{self._m_prefix}:MON:MMS:10',
-    #              add_prefix=('prefix', 'motor_prefix'))
-
-    # th1_c = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_C',
-    #              name='th1_c',
-    #              motor_prefix='{self._m_prefix}:MON:MMS:07',
-    #              add_prefix=('prefix', 'motor_prefix'))
-    # th2_c = FCpt(OffsetMotor, prefix='{self._prefix}:TH2:OFF_C',
-    #              name='th2_c',
-    #              motor_prefix='{self._m_prefix}:MON:MMS:13',
-    #              add_prefix=('prefix', 'motor_prefix'))
-    # z1_c = FCpt(OffsetMotor, prefix='{self._prefix}:Z1:OFF_C', name='z1_c',
-    #             motor_prefix='{self._m_prefix}:MON:MMS:04',
-    #             add_prefix=('prefix', 'motor_prefix'))
-    # z2_c = FCpt(OffsetMotor, prefix='{self._prefix}:Z2:OFF_C', name='z1_c',
-    #             motor_prefix='{self._m_prefix}:MON:MMS:10',
-    #             add_prefix=('prefix', 'motor_prefix'))
-
-    # _real = ['th1_c', 'th2_c', 'z1_c', 'z2_c', 'dr']
 
     def __init__(self, prefix, *args, **kwargs):
         self._prefix = prefix
@@ -523,15 +501,32 @@ class LODCMEnergy(PseudoPositioner):
             self._m_prefix = 'XPP'
         elif 'XCS' in self._prefix:
             self._m_prefix = 'HFX'
+
+        # if material == 'Si'
+        # self._th1_offset_prefix = f'{self._prefix}:TH1:OFF_Si'
+        # self._th2_offset_prefix = f'{self._prefix}:TH2:OFF_Si'
+        # self._z1_offset_prefix = f'{self._prefix}:Z1:OFF_Si'
+        # self._z2_offset_prefix = f'{self._prefix}:Z2:OFF_Si'
+        # if material == 'C'
+        self._th1_offset_prefix = f'{self._prefix}:TH1:OFF_C'
+        self._th2_offset_prefix = f'{self._prefix}:TH2:OFF_C'
+        self._z1_offset_prefix = f'{self._prefix}:Z1:OFF_C'
+        self._z2_offset_prefix = f'{self._prefix}:Z2:OFF_C'
         super().__init__(prefix=prefix, *args, **kwargs)
-        self.th1_c = self.tower1.th1_c
-        self.th2_c = self.tower2.th2_c
-        self.z1_c = self.tower1.z1_c
-        self.z2_c = self.tower2.z2_c
-        self.th1_si = self.tower1.th1_si
-        self.th2_si = self.tower2.th2_si
-        self.z1_si = self.tower1.z1_si
-        self.z2_si = self.tower2.z2_si
+        # TODO: check to see if Si or C, and define the offset PVs accordingly
+        # material = self.get_material()
+        # if material == 'Si':
+        #     self._th1_offset_prefix = f'{self._prefix}:TH1:OFF_Si'
+        #     self._th2_offset_prefix = f'{self._prefix}:TH2:OFF_Si'
+        #     self._z1_offset_prefix = f'{self._prefix}:Z1:OFF_Si'
+        #     self._z2_offset_prefix = f'{self._prefix}:Z2:OFF_Si'
+        # elif material == 'C':
+        #     self._th1_offset_prefix = f'{self._prefix}:TH1:OFF_C'
+        #     self._th2_offset_prefix = f'{self._prefix}:TH2:OFF_C'
+        #     self._z1_offset_prefix = f'{self._prefix}:Z1:OFF_C'
+        #     self._z2_offset_prefix = f'{self._prefix}:Z2:OFF_C'
+        # raise ValueError('Cannot initialize energy motor because could not '
+        #                  'determine the material.')
 
     def get_reflection(self, as_tuple=False, check=False):
         """
@@ -602,13 +597,7 @@ class LODCMEnergy(PseudoPositioner):
         material = material or self.get_material(check=True)
         reflection = reflection or self.get_reflection(
             as_tuple=True, check=True)
-
-        if material == 'C':
-            th = self.th1_c.wm()
-        elif material == 'Si':
-            th = self.th1_si.wm()
-        else:
-            raise ValueError("Invalid material ID: %s" % material)
+        th = self.th1.wm()
         length = (2 * np.sin(np.deg2rad(th)) *
                   diffraction.d_space(material, reflection))
         return common.wavelength_to_energy(length) / 1000
@@ -633,18 +622,12 @@ class LODCMEnergy(PseudoPositioner):
         reflection = reflection or self.get_reflection(
             as_tuple=True, check=True)
         th, z = diffraction.get_lom_geometry(energy*1e3, material, reflection)
-        if material == 'C':
-            self.th1_c.set(th)
-            self.th2_c.set(th)
-            self.z1_c.set(-z)
-            self.z2_c.set(z)
-        elif material == 'Si':
-            self.th1_si.set(th)
-            self.th2_si.set(th)
-            self.z1_si.set(-z)
-            self.z2_si.set(z)
-        else:
-            raise ValueError("Invalid material ID: %s" % material)
+        self.th1.set(th)
+        self.th2.set(th)
+        self.z1.set(-z)
+        self.z2.set(z)
+        self.dr.set(2*th)
+
         return (th, z)
 
     @pseudo_position_argument
@@ -695,14 +678,6 @@ class LODCMEnergy(PseudoPositioner):
             as_tuple=True, check=True)
         material = self.get_material(check=True)
         real_pos = self.RealPosition(*real_pos)
-        # if material == 'C':
-        #     th = self.th1_c.wm()
-        #     #th = real_pos.th1
-        # elif material == 'Si':
-        #     th = self.th1_si.wm()
-        #     #th = real_pos.th1
-        # else:
-        #     raise ValueError("Invalid material ID: %s" % material)
         length = (2 * np.sin(np.deg2rad(real_pos.th1))
                     * diffraction.d_space(material, reflection))
         if length == 0:
@@ -711,6 +686,47 @@ class LODCMEnergy(PseudoPositioner):
             return 0
         energy = common.wavelength_to_energy(length) / 1000
         return self.PseudoPosition(energy=energy)
+
+    # TODO: add tweakX method?
+
+    def tweak_x(self, value):
+        self.x2.mvr(value)
+        th = self.th2.wm()
+        z = value / common.tand(2 * th)
+        self.z2.mvr(z)
+        # def tweakX(self, x, ID=None):
+        # if ID is None:
+        #     # try to determine possible current material ID
+        #     ID = self.get_material(check=True)
+        # if ID == "Si":
+        #     th = self.th2Si.wm()
+        # elif ID == "C":
+        #     th = self.th2C.wm()
+        # else:
+        #     raise ValueError("Invalid material ID: %s" % ID)
+        # z = x / tand(2 * th)
+        # start_x = self.x2.wm()
+        # start_z = self.z2.wm()
+        # self.x2.move_relative(x)
+        # self.z2.move_relative(z)
+        # self.x2.wait()
+        # self.z2.wait()
+        # end_x = self.x2.wm()
+        # end_z = self.z2.wm()
+        # dx = end_x - start_x
+        # dz = end_z - start_z
+        # if abs(dx - x) > self.x2.get_par("retry_deadband"):
+        #     print(
+        #         "WARNING: x2 did not reach desired position of %f!
+        #         Check motors! now at: %f, deadband %f "
+        #         % (start_x + x, end_x, self.x2.get_par("retry_deadband"),)
+        #     )
+        # if abs(dz - z) > self.z2.get_par("retry_deadband"):
+        #     print(
+        #         "WARNING: z2 did not reach desired position of %f!
+        #          Check motors! now at: %f, deadband %f "
+        #         % (start_z + z, end_z, self.z2.get_par("retry_deadband"),)
+        #     )
 
 
 class LODCM(BaseInterface, Device):
@@ -803,33 +819,33 @@ class LODCM(BaseInterface, Device):
         self.y2_state = self.tower2.y2_state
         self.chi2_state = self.tower2.chi2_state
         # offset positioners - tower 1
-        self.z1_c = self.tower1.z1_c
-        self.z1_si = self.tower1.z1_si
-        self.x1_c = self.tower1.x1_c
-        self.x1_si = self.tower1.x1_si
-        self.y1_c = self.tower1.y1_c
-        self.y1_si = self.tower1.y1_si
-        self.th1_c = self.tower1.th1_c
-        self.th1_si = self.tower1.th1_si
-        self.chi1_c = self.tower1.chi1_c
-        self.chi1_si = self.tower1.chi1_si
-        self.h1n_c = self.tower1.h1n_c
-        self.h1n_si = self.tower1.h1n_si
-        self.h1p_c = self.tower1.h1p_c
-        self.h1p_si = self.tower1.h1p_si
-        # offset positioners - tower 2
-        self.z2_c = self.tower2.z2_c
-        self.z2_si = self.tower2.z2_si
-        self.x2_c = self.tower2.x2_c
-        self.x2_si = self.tower2.x2_si
-        self.y2_c = self.tower2.y2_c
-        self.y2_si = self.tower2.y2_si
-        self.th2_c = self.tower2.th2_c
-        self.th2_si = self.tower2.th2_si
-        self.chi2_c = self.tower2.chi2_c
-        self.chi2_si = self.tower2.chi2_si
-        self.h2n_c = self.tower2.h2n_c
-        self.h2n_si = self.tower2.h2n_si
+        # self.z1_c = self.tower1.z1_c
+        # self.z1_si = self.tower1.z1_si
+        # self.x1_c = self.tower1.x1_c
+        # self.x1_si = self.tower1.x1_si
+        # self.y1_c = self.tower1.y1_c
+        # self.y1_si = self.tower1.y1_si
+        # self.th1_c = self.tower1.th1_c
+        # self.th1_si = self.tower1.th1_si
+        # self.chi1_c = self.tower1.chi1_c
+        # self.chi1_si = self.tower1.chi1_si
+        # self.h1n_c = self.tower1.h1n_c
+        # self.h1n_si = self.tower1.h1n_si
+        # self.h1p_c = self.tower1.h1p_c
+        # self.h1p_si = self.tower1.h1p_si
+        # # offset positioners - tower 2
+        # self.z2_c = self.tower2.z2_c
+        # self.z2_si = self.tower2.z2_si
+        # self.x2_c = self.tower2.x2_c
+        # self.x2_si = self.tower2.x2_si
+        # self.y2_c = self.tower2.y2_c
+        # self.y2_si = self.tower2.y2_si
+        # self.th2_c = self.tower2.th2_c
+        # self.th2_si = self.tower2.th2_si
+        # self.chi2_c = self.tower2.chi2_c
+        # self.chi2_si = self.tower2.chi2_si
+        # self.h2n_c = self.tower2.h2n_c
+        # self.h2n_si = self.tower2.h2n_si
 
     @property
     def inserted(self):
@@ -985,45 +1001,8 @@ class LODCM(BaseInterface, Device):
         """
         return self.energy.get_energy()
 
-    # TODO: add tweakX method?
-    def tweak_x(self, x):
-        self.x2.mvr(x)
-        th = self.th2.wm()
-        z = x / common.tand(2 * th)
-        self.z2.mvr(z)
-        # def tweakX(self, x, ID=None):
-        # if ID is None:
-        #     # try to determine possible current material ID
-        #     ID = self.get_material(check=True)
-        # if ID == "Si":
-        #     th = self.th2Si.wm()
-        # elif ID == "C":
-        #     th = self.th2C.wm()
-        # else:
-        #     raise ValueError("Invalid material ID: %s" % ID)
-        # z = x / tand(2 * th)
-        # start_x = self.x2.wm()
-        # start_z = self.z2.wm()
-        # self.x2.move_relative(x)
-        # self.z2.move_relative(z)
-        # self.x2.wait()
-        # self.z2.wait()
-        # end_x = self.x2.wm()
-        # end_z = self.z2.wm()
-        # dx = end_x - start_x
-        # dz = end_z - start_z
-        # if abs(dx - x) > self.x2.get_par("retry_deadband"):
-        #     print(
-        #         "WARNING: x2 did not reach desired position of %f!
-        #         Check motors! now at: %f, deadband %f "
-        #         % (start_x + x, end_x, self.x2.get_par("retry_deadband"),)
-        #     )
-        # if abs(dz - z) > self.z2.get_par("retry_deadband"):
-        #     print(
-        #         "WARNING: z2 did not reach desired position of %f!
-        #          Check motors! now at: %f, deadband %f "
-        #         % (start_z + z, end_z, self.z2.get_par("retry_deadband"),)
-        #     )
+    def calc_energy(self, energy):
+        return self.energy.calc_energy(energy)
 
     def format_status_info(self, status_info):
         """Override status info handler to render the lodcm."""
@@ -1230,11 +1209,6 @@ Photon Energy: {energy} [keV]
 """
 
 
-class SimOffsetIMS(OffsetMotorBase):
-    """IMS Offset Simulator for Testing."""
-    motor = Cpt(FastMotor, limits=(-1000, 1000))
-
-
 class SimFirstTower(CrystalTower1):
     """Crystal Tower 1 Simulator for Testing."""
     # first tower
@@ -1246,20 +1220,20 @@ class SimFirstTower(CrystalTower1):
     h1n = Cpt(FastMotor, limits=(-1000, 1000))
     h1p = Cpt(FastMotor, limits=(-1000, 1000))
     # offset positioners - tower 1
-    z1_c = Cpt(SimOffsetIMS, '')
-    z1_si = Cpt(SimOffsetIMS, '')
-    x1_c = Cpt(SimOffsetIMS, '')
-    x1_si = Cpt(SimOffsetIMS, '')
-    y1_c = Cpt(SimOffsetIMS, '')
-    y1_si = Cpt(SimOffsetIMS, '')
-    th1_c = Cpt(SimOffsetIMS, '')
-    th1_si = Cpt(SimOffsetIMS, '')
-    chi1_c = Cpt(SimOffsetIMS, '')
-    chi1_si = Cpt(SimOffsetIMS, '')
-    h1n_c = Cpt(SimOffsetIMS, '')
-    h1n_si = Cpt(SimOffsetIMS, '')
-    h1p_c = Cpt(SimOffsetIMS, '')
-    h1p_si = Cpt(SimOffsetIMS, '')
+    # z1_c = Cpt(SimOffsetIMS, '')
+    # z1_si = Cpt(SimOffsetIMS, '')
+    # x1_c = Cpt(SimOffsetIMS, '')
+    # x1_si = Cpt(SimOffsetIMS, '')
+    # y1_c = Cpt(SimOffsetIMS, '')
+    # y1_si = Cpt(SimOffsetIMS, '')
+    # th1_c = Cpt(SimOffsetIMS, '')
+    # th1_si = Cpt(SimOffsetIMS, '')
+    # chi1_c = Cpt(SimOffsetIMS, '')
+    # chi1_si = Cpt(SimOffsetIMS, '')
+    # h1n_c = Cpt(SimOffsetIMS, '')
+    # h1n_si = Cpt(SimOffsetIMS, '')
+    # h1p_c = Cpt(SimOffsetIMS, '')
+    # h1p_si = Cpt(SimOffsetIMS, '')
 
 
 class SimSecondTower(CrystalTower2):
@@ -1273,18 +1247,18 @@ class SimSecondTower(CrystalTower2):
     h2n = Cpt(FastMotor, limits=(-1000, 1000))
     diode2 = Cpt(FastMotor, limits=(-1000, 1000))
     # offset positioners - tower 2
-    z2_c = Cpt(SimOffsetIMS, '')
-    z2_si = Cpt(SimOffsetIMS, '')
-    x2_c = Cpt(SimOffsetIMS, '')
-    x2_si = Cpt(SimOffsetIMS, '')
-    y2_c = Cpt(SimOffsetIMS, '')
-    y2_si = Cpt(SimOffsetIMS, '')
-    th2_c = Cpt(SimOffsetIMS, '')
-    th2_si = Cpt(SimOffsetIMS, '')
-    chi2_c = Cpt(SimOffsetIMS, '')
-    chi2_si = Cpt(SimOffsetIMS, '')
-    h2n_c = Cpt(SimOffsetIMS, '')
-    h2n_si = Cpt(SimOffsetIMS, '')
+    # z2_c = Cpt(SimOffsetIMS, '')
+    # z2_si = Cpt(SimOffsetIMS, '')
+    # x2_c = Cpt(SimOffsetIMS, '')
+    # x2_si = Cpt(SimOffsetIMS, '')
+    # y2_c = Cpt(SimOffsetIMS, '')
+    # y2_si = Cpt(SimOffsetIMS, '')
+    # th2_c = Cpt(SimOffsetIMS, '')
+    # th2_si = Cpt(SimOffsetIMS, '')
+    # chi2_c = Cpt(SimOffsetIMS, '')
+    # chi2_si = Cpt(SimOffsetIMS, '')
+    # h2n_c = Cpt(SimOffsetIMS, '')
+    # h2n_si = Cpt(SimOffsetIMS, '')
 
 
 class SimDiagnosticsTower(DiagnosticsTower):
@@ -1296,15 +1270,6 @@ class SimDiagnosticsTower(DiagnosticsTower):
     df = Cpt(FastMotor, limits=(-1000, 1000))
     dd = Cpt(FastMotor, limits=(-1000, 1000))
     yag_zoom = Cpt(FastMotor, limits=(-1000, 1000))
-
-
-class SimLODCMEnergy(LODCMEnergy):
-    """Energy Si Motor Simulator for Testing."""
-    th1 = Cpt(FastMotor, '', limits=(-1000, 1000))
-    th2 = Cpt(FastMotor, '', limits=(-1000, 1000))
-    z1 = Cpt(FastMotor, '', limits=(-1000, 1000))
-    z2 = Cpt(FastMotor, '', limits=(-1000, 1000))
-    dr = Cpt(FastMotor, '', limits=(-1000, 1000))
 
 
 class SimLODCM(LODCM):
