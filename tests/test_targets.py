@@ -103,7 +103,9 @@ def test_get_samples(fake_grid_stage, sample_file):
     xy.save_grid(sample_name='sample2', path=sample_file.parent)
     # test all mapped samples
     res = xy.get_samples(path=sample_file.parent)
-    assert res == ['sample1', 'sample2', 'test_sample']
+    for ff in res:
+        assert ff in ['sample1', 'sample2', 'test_sample']
+    assert len(res) == 3
     with pytest.raises(Exception):
         xy.get_samples(path='bad_file')
 

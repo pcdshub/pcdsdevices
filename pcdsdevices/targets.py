@@ -620,6 +620,20 @@ class XYGridStage():
         """
         self._current_sample = str(sample_name)
 
+    @property
+    def current_sample_path(self):
+        """
+        Get the current path for the sample that is loaded.
+
+        Returns
+        -------
+        sample: dict
+        Dictionary with current sample information.
+        """
+        if self._current_sample != '':
+            return os.path.join(self._path, self._current_sample + '.yml')
+        raise ValueError('No current sample loaded, please use load() first.')
+
     def load(self, sample_name, path=None):
         """
         Get the sample information and populate these parameters.
