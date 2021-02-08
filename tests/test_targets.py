@@ -12,7 +12,7 @@ import yaml
 def sample_file(tmp_path):
     path = tmp_path / "sub"
     path.mkdir()
-    sample_file = path / "samples.yml"
+    sample_file = path / "test_sample.yml"
     sample_file.write_text("""
 test_sample:
   time_created: '2021-01-22 14:29:29.681059'
@@ -85,7 +85,7 @@ def fake_grid_stage(sample_file):
     grid = FakeGridStage(
         x_motor=x_motor,
         y_motor=y_motor, m_points=5, n_points=5,
-        path=sample_file)
+        path=sample_file.parent)
     grid._current_sample = 'current_sample'
     # dummy coeffs
     # a_coeffs = [0.0, 4.0, 0.0, 0.0]
@@ -97,20 +97,20 @@ def fake_grid_stage(sample_file):
 def test_get_samples(fake_grid_stage, sample_file):
     xy = fake_grid_stage
     res = xy.get_samples()
-    # existing sample already
+    # not existing files yet
     assert res == ['test_sample']
-    xy.save_grid(sample_name='sample1', path=sample_file)
-    xy.save_grid(sample_name='sample2', path=sample_file)
+    xy.save_grid(sample_name='sample1', path=sample_file.parent)
+    xy.save_grid(sample_name='sample2', path=sample_file.parent)
     # test all mapped samples
-    res = xy.get_samples(path=sample_file)
-    assert res == ['test_sample', 'sample1', 'sample2']
+    res = xy.get_samples(path=sample_file.parent)
+    assert res == ['sample1', 'sample2', 'test_sample']
     with pytest.raises(Exception):
-        xy.get_samples(paht='bad_file')
+        xy.get_samples(path='bad_file')
 
 
-def test_get_set_current_sample(fake_grid_stage, sample_file):
+def test_get_set_current_sample(fake_grid_stage):
     xy = fake_grid_stage
-    current_sample = xy.get_current_sample()
+    current_sample = xy.current_sample
     assert current_sample == 'current_sample'
 
 
@@ -118,15 +118,12 @@ def test_get_sample_data(fake_grid_stage, sample_file):
     xy = fake_grid_stage
     res = xy.get_sample_data('sample1', path=sample_file)
     assert res == {}
-    xy.save_grid(sample_name='sample1', path=sample_file)
-    # test sample1 in the file:
-    res = xy.get_sample_data('sample1', path=sample_file)
-    assert res['M'] == 5
-    assert res["N"] == 5
-    xy.save_grid(sample_name='sample2', path=sample_file)
+    # test test_sample in the file:
+    res = xy.get_sample_data('test_sample')
+    assert res['M'] == 101
+    assert res["N"] == 4
+    xy.save_grid(sample_name='sample2', path=sample_file.parent)
     res = xy.get_sample_data('sample2')
-    assert res['M'] == 5
-    assert res['N'] == 5
     coeffs = [0.0, 4.0, 0.0, 0.0, 0.0, 0.0, 4.0, 0.0]
     assert res['coefficients'] == coeffs
     # return empty dictionary if could not find the sample
@@ -139,7 +136,7 @@ def test_get_sample_data(fake_grid_stage, sample_file):
 
 def test_get_sample_map_info(fake_grid_stage, sample_file):
     xy = fake_grid_stage
-    xy.save_grid(sample_name='sample2', path=sample_file)
+    xy.save_grid(sample_name='sample2', path=sample_file.parent)
     coeffs = [0.0, 4.0, 0.0, 0.0, 0.0, 0.0, 4.0, 0.0]
     # test get_sample_map_info - dummy values
     res = xy.get_sample_map_info('sample2')
@@ -238,41 +235,39 @@ def test_mapping_points_snake_like(fake_grid_stage):
 
 
 def test_compute_mapped_point(fake_grid_stage, sample_file):
-    fake_grid_stage.save_grid(sample_name='test_sample', path=sample_file)
+    stage = fake_grid_stage
+    stage.save_grid(sample_name='test_sample', path=sample_file.parent)
 
-    x, y = fake_grid_stage.compute_mapped_point('test_sample', 1, 1)
+    x, y = stage.compute_mapped_point(
+        m_row=1, n_column=1, sample_name='test_sample',
+        path=sample_file.parent)
     # first row, first column
     assert (x, y) == (0, 0)
-    x, y = fake_grid_stage.compute_mapped_point('test_sample', 1, 2)
+    x, y = stage.compute_mapped_point(
+        m_row=1, n_column=2, sample_name='test_sample',
+        path=sample_file.parent)
     # first row, second column
     assert (x, y) == (1.0, 0)
-    # test compute all
-    res = fake_grid_stage.compute_mapped_point('test_sample', 1, 2,
-                                               compute_all=True)
-    expected_x_points = [0.0, 1.0, 2.0, 3.0, 4.0,
-                         0.0, 1.0, 2.0, 3.0, 4.0,
-                         0.0, 1.0, 2.0, 3.0, 4.0,
-                         0.0, 1.0, 2.0, 3.0, 4.0,
-                         0.0, 1.0, 2.0, 3.0, 4.0]
 
-    expected_y_points = [0.0, 0.0, 0.0, 0.0, 0.0,
-                         1.0, 1.0, 1.0, 1.0, 1.0,
-                         2.0, 2.0, 2.0, 2.0, 2.0,
-                         3.0, 3.0, 3.0, 3.0, 3.0,
-                         4.0, 4.0, 4.0, 4.0, 4.0]
-    assert res[0] == expected_x_points
-    assert res[1] == expected_y_points
+    stage.load('test_sample')
+    assert stage.current_sample == 'test_sample'
+    x, y = stage.compute_mapped_point(1, 1)
+    # first row, first column
+    assert (x, y) == (0, 0)
+    x, y = stage.compute_mapped_point(1, 2)
+    # first row, second column
+    assert (x, y) == (1.0, 0)
+
     with pytest.raises(IndexError):
-        fake_grid_stage.compute_mapped_point('test_sample', 0, 0)
+        stage.compute_mapped_point(0, 0, 'test_sample',)
     with pytest.raises(IndexError):
-        fake_grid_stage.compute_mapped_point('test_sample', 6, 0)
+        stage.compute_mapped_point(6, 0, 'test_sample')
 
 
 def test_move_to_sample(fake_grid_stage, sample_file):
     # position of x and y shouold be 0, 0
     stage = fake_grid_stage
-    stage.save_grid(sample_name='test_sample', path=sample_file)
-    stage._current_sample = 'test_sample'
+    stage.current_sample = 'test_sample'
     assert stage.x.position == 0
     assert stage.y.position == 0
     stage.move_to_sample(3, 1)
@@ -280,11 +275,9 @@ def test_move_to_sample(fake_grid_stage, sample_file):
     assert stage.y.position == 2.0
 
 
-def test_move_to(fake_grid_stage, sample_file):
+def test_move_to(fake_grid_stage):
     stage = fake_grid_stage
-    stage.save_grid(sample_name='current_sample', path=sample_file)
-    stage._current_sample = 'current_sample'
-    stage.save_grid(sample_name='test_sample', path=sample_file)
+    assert stage.current_sample == 'current_sample'
     assert stage.x.position == 0
     assert stage.y.position == 0
     stage.move_to('test_sample', 3, 1)
@@ -292,11 +285,11 @@ def test_move_to(fake_grid_stage, sample_file):
     assert stage.y.position == 2.0
 
 
-def test_load_sample(fake_grid_stage, sample_file):
+def test_load(fake_grid_stage, sample_file):
     stage = fake_grid_stage
-    stage.save_grid(sample_name='current_sample', path=sample_file)
-    stage.load_sample('current_sample')
-    assert stage.get_current_sample() == 'current_sample'
+    stage.save_grid(sample_name='current_sample', path=sample_file.parent)
+    stage.load('current_sample')
+    assert stage.current_sample == 'current_sample'
 
 
 def test_set_m_n_points(fake_grid_stage):
