@@ -3,6 +3,7 @@ Define subclasses of Device for specific hardware.
 """
 import re
 from copy import copy, deepcopy
+from schema import Schema, And
 
 from happi.device import Device, EntryInfo
 from happi.item import OphydItem
@@ -23,6 +24,19 @@ class LCLSItem(OphydItem):
                       enforce=re.compile(r'[A-Z0-9]{3}$|[A-Z][0-9]S[0-9]{2}$'))
     lightpath = EntryInfo("If the device should be included in the "
                           "LCLS Lightpath", enforce=bool, default=False)
+    ioc_engineer= EntryInfo('Engineer for the IOC. Used to build IOC configs.',
+                        optional=True, enforce=str)
+    ioc_location = EntryInfo(('Hutch the IOC will be in. Used to build IOC '
+                              'configs.'),
+                             optional=True, enforce=str)
+    ioc_release = EntryInfo(('Full path to IOC release directory. Used to '
+                             'build IOC configs.'),
+                            optional=True, enforce=str)
+    ioc_arch = EntryInfo(('The IOC host architecture. Used to build IOC '
+                          'configs.'),
+                         optional=True, enforce=str)
+    ioc_name = EntryInfo('The name of the device IOC. Used to build the IOC.',
+                          optional=True, enforce=str)
 
 
 class Vacuum(Device):
@@ -346,3 +360,42 @@ class Trigger(Device):
     device_class.default = 'pcdsdevices.device_types.Trigger'
     system = copy(Device.system)
     system.default = 'timing'
+
+
+class Elliptec(LCLSItem):
+    """
+    A Generic class for Elliptec Motors
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.device_types.EllBase'
+    ioc_serial = EntryInfo(('Serial number of the stage controller. Used to '
+                            'build IOC configs.'),
+                           optional=True, enforce=str)
+    ioc_model = EntryInfo(('Model number of the stage. Used to build IOC '
+                           'configs.'),
+                          optional=True, enforce=str)
+    ioc_channel = EntryInfo(('Channel number of the stage. Used to build IOC '
+                             'configs.'),
+                            optional=True, enforce=str)
+    ioc_base = EntryInfo(('Elliptec controller PV base. This is not '
+                          'necessarily the same as the desired axis '
+                          'base PV. Use the "ioc_alias" entry to modify '
+                          'if a different axis PV is desired.'),
+                         optional=True, enforce=str)
+    ioc_alias = EntryInfo('Optional alias to give the axis.', optional=True,
+                           enforce=str, default=None)
+
+class Qmini(LCLSItem):
+    """
+    A Generic class for Qseries spectrometers
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.device_types.QminiSpectrometer'
+    ioc_serial = EntryInfo(('Serial number of the spectrometer. Used to '
+                            'build IOC configs.'),
+                           optional=True, enforce=str)
+    ioc_use_evr = EntryInfo(('Option to use an EVR or not. Options are "yes"'
+                                ' and "no". Default is no.'),
+                                optional=True, default='no', enforce=str)
+    ioc_evr_channel = EntryInfo('The EVR channel the IOC will use, if any.',
+                                optional=True, default='1', enforce=str)
