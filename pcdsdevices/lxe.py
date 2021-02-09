@@ -29,6 +29,7 @@ LXT::
 """
 
 import pathlib
+import time
 import types
 import typing
 
@@ -43,7 +44,7 @@ from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
                         SyncAxesBase, pseudo_position_argument,
                         real_position_argument)
-from .signal import UnitConversionDerivedSignal, NotepadLinkedSignal
+from .signal import NotepadLinkedSignal, UnitConversionDerivedSignal
 from .utils import convert_unit
 
 if typing.TYPE_CHECKING:
@@ -316,6 +317,12 @@ class LaserTiming(FltMvInterface, PVPositioner):
             self.log.debug('Failed to update notepad setpoint to position %s',
                            position, exc_info=ex)
         super()._setup_move(position)
+
+        # Trigger dmov for tiny moves since done PV doesn't work here
+        if np.isclose(position, self.setpoint.get(), atol=20e-15, rtol=0):
+            time.sleep(0.01)
+            self._move_changed(value=1-self.done_value)
+            self._move_changed(value=self.done_value)
 
     @done.sub_value
     def _update_position(self, old_value=None, value=None, **kwargs):
