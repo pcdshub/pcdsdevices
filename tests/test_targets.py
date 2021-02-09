@@ -279,7 +279,6 @@ def test_move_to_sample(fake_grid_stage, sample_file):
 
 def test_move_to(fake_grid_stage):
     stage = fake_grid_stage
-    assert stage.current_sample == 'current_sample'
     assert stage.x.position == 0
     assert stage.y.position == 0
     stage.move_to('test_sample', 3, 1)
@@ -444,3 +443,15 @@ def test_reset_status(fake_grid_stage, sample_file):
         assert (yaml_dict['test_sample']['N'] ==
                 origin_info.get('N'))
         assert len(yaml_dict['test_sample']) == 10
+
+
+def test_is_target_shot(fake_grid_stage, sample_file):
+    stage = fake_grid_stage
+    stage.load('test_sample')
+    are_shot = []
+    for row in range(1, 3):
+        for column in range(1, 5):
+            is_shot = stage.is_target_shot(row, column)
+            are_shot.append(is_shot)
+    assert are_shot == [True, True, True, True,
+                        False, False, False, False]

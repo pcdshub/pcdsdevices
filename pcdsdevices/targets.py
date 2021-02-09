@@ -940,13 +940,13 @@ class XYGridStage():
         self.positions_y = y_points
         return x_points, y_points
 
-    def is_target_shot(self, sample, m, n, path=None):
+    def is_target_shot(self, m, n, sample=None, path=None):
         """
         Check to see if the target position at MxN is shot.
 
         Parameters
         ----------
-        sample_name : str
+        sample_name : str, optional
             The name of the sample to get the mapped points from. To see the
             available mapped samples call the `mapped_samples()` method.
         m_point : int
@@ -961,10 +961,11 @@ class XYGridStage():
         is_shot : bool
             Indicates is target is shot or not.
         """
-        path = path or os.path.join(self._path, sample + '.yml')
-        x, y = self.compute_mapped_point(sample_name=sample, m_row=m,
-                                         n_column=n, compute_all=False,
-                                         path=path)
+        sample = sample or self.current_sample
+        path = path or self.current_sample_path
+        x, y = self.compute_mapped_point(m_row=m,
+                                         n_column=n,
+                                         sample_name=sample, path=path)
 
         data = self.get_sample_data(sample)
         xx = data.get('xx')
@@ -1057,7 +1058,6 @@ class XYGridStage():
         sample_name = self.current_sample
         if sample_name:
             n, m = self.compute_mapped_point(m_row=m, n_column=n)
-        # TODO is it safe to do this here or should i be adding some checks?
         self.x.mv(n)
         self.y.mv(m)
 
@@ -1075,8 +1075,9 @@ class XYGridStage():
         n : int
             Indicates the column on the grid.
         """
+        entry = os.path.join(self._path, sample + '.yml')
         n, m = self.compute_mapped_point(m_row=m, n_column=n,
-                                         sample_name=sample, path=None)
+                                         sample_name=sample, path=entry)
         self.x.mv(n)
         self.y.mv(m)
 
