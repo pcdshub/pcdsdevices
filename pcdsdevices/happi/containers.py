@@ -3,7 +3,6 @@ Define subclasses of Device for specific hardware.
 """
 import re
 from copy import copy, deepcopy
-from schema import Schema, And
 
 from happi.device import Device, EntryInfo
 from happi.item import OphydItem
