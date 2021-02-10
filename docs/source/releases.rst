@@ -1,6 +1,80 @@
 Release History
 ###############
 
+
+v4.1.0 (2021-02-10)
+===================
+
+API Changes
+-----------
+- Update twincat motors to use the correct homing PV.
+  This is an alternative PV to the normal motor record PVs for IOC/PLC
+  management reasons.
+  It is possible that this will break devices that have not updated to the
+  latest motion PLC library.
+- Added ``format`` and ``scale`` arguments to
+  :func:`~pcdsdevices.utils.get_status_float`, which affect floating point
+  formatting of values available in the ``status_info`` dictionary.
+- CVMI Motion System Prefix: 'TMO:CVMI'
+- KTOF Motion System Prefix: 'TMO:KTOF'
+
+Features
+--------
+- Added :func:`~pcdsdevices.utils.format_status_table` for ease of generating
+  status tables from ``status_info`` dictionaries.
+- Added :func:`~pcdsdevices.utils.combine_status_info` to simplify joining
+  status information of child components.
+
+Device Updates
+--------------
+- VCN upper limit can be changed from epics.
+- Added the ``active`` component to
+  :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`, indicating
+  whether or not the filter should be used in calculations.
+- Multiple devices have been modified to include explicit argument and keyword
+  argument names in ``__init__`` for clarity and introspectability.
+
+New Devices
+-----------
+- XYGridStage - maps targets from grids to x,y positions, and supports multiple samples on a stage.
+- Added :class:`~pcdsdevices.attenuator.AT1K4` and supporting SXR solid
+  attenuator classes, including
+  :class:`~pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade`,
+  :class:`~pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade`, and
+  :class:`~pcdsdevices.attenuator.AttenuatorSXR_Ladder`.
+- pcdsdevices.cvmi_motion.CVMI
+- pcdsdevices.cvmi_motion.KTOF
+
+Bugfixes
+--------
+- The transmission status value for the 3rd harmonic has been fixed, it was previously using the wrong value.
+
+Maintenance
+-----------
+- The test suite will now find all devices in pcdsdevices submodules at
+  arbitrary import depth.
+- Minor cleanup of the pcds-tag conda recipe
+- Relocate happi name length restriction for lcls devices to this package
+  as a requirement on LCLSItem
+- Updated AT2L0 to use newer status formatting utilities.
+- Added prettytable as an explicit dependency.  It was previously assumed to
+  be installed with a sub-dependency.
+- Added test suite to try to instantiate all device classes with
+  ``make_fake_device`` and perform status print formatting checks on them.
+- Added ``include_plus_sign`` option for ``get_status_float``.
+- Perform continuous integration tests with pip-based installs, with
+  dependencies installed from PyPI.
+
+Contributors
+------------
+- ZLLentz
+- cristinasewell
+- klauer
+- mghaly
+- sheppard
+- zllentz
+
+
 v4.0.0 (2020-12-22)
 ===================
 
