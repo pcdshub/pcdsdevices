@@ -621,6 +621,35 @@ class XYGridStage():
         self._current_sample = str(sample_name)
 
     @property
+    def status(self):
+        x_index = ''
+        y_index = ''
+        x_pos = self.x.position
+        y_pos = self.y.position
+        data = self.get_sample_data(self.current_sample)
+        try:
+            xx = data['xx']
+            yy = data['yy']
+            x_index = next((index for (index, d) in enumerate(xx)
+                            if np.isclose(d["pos"], x_pos)))
+            y_index = next((index for (index, d) in enumerate(yy)
+                            if np.isclose(d["pos"], y_pos)))
+        except Exception:
+            logger.warning('Could not determine the m n points from position.')
+        if x_index != '':
+            # to start from 1 instead of 0
+            x_index += 1
+        if y_index != '':
+            y_index += 1
+        lines = []
+        sample = f'current_sample: {self.current_sample}'
+        grid = f'grid M x N: {self.m_n_points}'
+        m_n = f'current m, n : {y_index, x_index}'
+        lines.extend([sample, grid, m_n])
+
+        print('\n'.join(lines))
+
+    @property
     def current_sample_path(self):
         """
         Get the current path for the sample that is loaded.
@@ -978,7 +1007,7 @@ class XYGridStage():
         return x_status
 
     def compute_mapped_point(self, m_row, n_column, sample_name=None,
-                             path=None):
+                             path=None, compute_all=False):
         """
         For a given sample, compute the x, y position for M and N respecively.
 
@@ -1035,10 +1064,22 @@ class XYGridStage():
         a_coeffs = coeffs[:4]
         b_coeffs = coeffs[4:]
 
-        logic_x = xx_origin[m_row - 1][n_column - 1]
-        logic_y = yy_origin[m_row - 1][n_column - 1]
-        x, y = convert_to_physical(a_coeffs, b_coeffs, logic_x, logic_y)
-        return x, y
+        if not compute_all:
+            logic_x = xx_origin[m_row - 1][n_column - 1]
+            logic_y = yy_origin[m_row - 1][n_column - 1]
+            x, y = convert_to_physical(a_coeffs, b_coeffs, logic_x, logic_y)
+            return x, y
+        else:
+            # compute all points
+            x_points, y_points = [], []
+            for rowx, rowy in zip(xx_origin, yy_origin):
+                for x, y in zip(rowx, rowy):
+                    i, j = convert_to_physical(a_coeffs=a_coeffs,
+                                               b_coeffs=b_coeffs,
+                                               logic_x=x, logic_y=y)
+                    x_points.append(i)
+                    y_points.append(j)
+            return x_points, y_points
 
     def move_to_sample(self, m, n):
         """
