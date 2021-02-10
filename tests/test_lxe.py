@@ -106,9 +106,14 @@ def test_lasertiming_dmov_fail():
     logger.debug('test_lasertiming_dmov_fail')
     FakeLaserTiming = make_fake_device(LaserTiming)
     lxt = FakeLaserTiming('FAKE:VIT', name='fstiming')
+    lxt.mv(0, wait=False)
+
     # The move should timeout if the DMOV signal is never put to
     with pytest.raises(StatusTimeoutError):
         lxt.mv(1e-6, wait=True, timeout=1)
+
+    # But we should skip dmov step on repeated moves to the same position
+    lxt.move(1e-6, wait=True, timeout=1)
 
 
 def test_laser_timing_motion(lxt):
