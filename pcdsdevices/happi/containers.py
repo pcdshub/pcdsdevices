@@ -9,6 +9,10 @@ from happi.item import OphydItem
 
 
 class LCLSItem(OphydItem):
+    name = EntryInfo(('Shorthand Python-valid name for the Python instance. '
+                      'Must be between 3 and 80 characters.'),
+                     optional=False,
+                     enforce=re.compile(r'[a-z][a-z\_0-9]{2,78}$'))
     beamline = EntryInfo('Section of beamline the device belongs',
                          optional=False, enforce=str)
     location_group = EntryInfo('LUCID grouping parameter for location',
