@@ -316,10 +316,16 @@ class LaserTiming(FltMvInterface, PVPositioner):
         except Exception as ex:
             self.log.debug('Failed to update notepad setpoint to position %s',
                            position, exc_info=ex)
-        super()._setup_move(position)
 
         # Trigger dmov for tiny moves since done PV doesn't work here
         if np.isclose(position, self.setpoint.get(), atol=20e-15, rtol=0):
+            short_move = True
+        else:
+            short_move = False
+
+        super()._setup_move(position)
+
+        if short_move:
             time.sleep(0.01)
             self._move_changed(value=1-self.done_value)
             self._move_changed(value=self.done_value)
