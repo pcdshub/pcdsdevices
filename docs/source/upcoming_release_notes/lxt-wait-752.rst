@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- `LaserTiming` will now report done after 0.01s for infintesimal moves,
+- `LaserTiming` will now report done after 0.01s for infinitesimal moves,
   rather than the previous freeze-and-never-report-done.
 
 Maintenance
