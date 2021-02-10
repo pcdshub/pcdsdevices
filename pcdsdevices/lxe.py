@@ -318,10 +318,8 @@ class LaserTiming(FltMvInterface, PVPositioner):
                            position, exc_info=ex)
 
         # Trigger dmov for tiny moves since done PV doesn't work here
-        if np.isclose(position, self.setpoint.get(), atol=20e-15, rtol=0):
-            short_move = True
-        else:
-            short_move = False
+        short_move = np.isclose(position, self.setpoint.get(),
+                                atol=20e-15, rtol=0)
 
         super()._setup_move(position)
 
