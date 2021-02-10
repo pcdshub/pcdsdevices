@@ -67,7 +67,6 @@ Maintenance
 
 Contributors
 ------------
-- ZLLentz
 - cristinasewell
 - klauer
 - mghaly
