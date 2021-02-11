@@ -68,9 +68,9 @@ Maintenance
 Contributors
 ------------
 - cristinasewell
+- ghalym
+- jsheppard95
 - klauer
-- mghaly
-- sheppard
 - zllentz
 
 
