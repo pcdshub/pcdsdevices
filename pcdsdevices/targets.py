@@ -630,17 +630,30 @@ class XYGridStage():
         try:
             xx = data['xx']
             yy = data['yy']
+
             x_index = next((index for (index, d) in enumerate(xx)
                             if np.isclose(d["pos"], x_pos)))
             y_index = next((index for (index, d) in enumerate(yy)
                             if np.isclose(d["pos"], y_pos)))
         except Exception:
             logger.warning('Could not determine the m n points from position.')
+        n_points = self.m_n_points[1]
+
+        x_index += 1
+        m = int(np.ceil(x_index / n_points))
+        res = np.mod(x_index, 2 * n_points)
+        if res == 0:
+            n = 1
+        elif res <= n_points:
+            n = res
+        else:
+            n = 2 * n_points - (res + 1)
+
         if x_index != '':
             # to start from 1 instead of 0
-            x_index += 1
+            x_index = n
         if y_index != '':
-            y_index += 1
+            y_index = m
         lines = []
         sample = f'current_sample: {self.current_sample}'
         grid = f'grid M x N: {self.m_n_points}'
@@ -1052,7 +1065,7 @@ class XYGridStage():
                              f'{sample_name} in the has the M and N values as '
                              'well as coefficients saved')
 
-        if (m_row > m_points) and (n_column > n_points):
+        if (m_row > m_points) or (n_column > n_points):
             raise IndexError('Index out of range, make sure the m and n values'
                              f' are between ({m_points, n_points})')
         if (m_row or n_column) == 0:
@@ -1121,6 +1134,65 @@ class XYGridStage():
                                          sample_name=sample, path=entry)
         self.x.mv(n)
         self.y.mv(m)
+
+    def set_status(self, m, n, status=False, sample_name=None, path=None):
+        """
+        TODO not working properly yet
+        Set the status for a specific m and n point.
+
+        Parametrs:
+        ---------
+        m : int
+            Indicates the row number starting at 1.
+        n : int
+            Indicates the column number starting at 1.
+        status : bool, optional
+            `False` to indicate that is has been shot, and `True` for
+            available.
+        """
+        assert isinstance(status, bool)
+        sample_name = sample_name or self.current_sample
+        path = path or os.path.join(self._path, sample_name + '.yml')
+        m_points, n_points = self.m_n_points
+
+        if (m > m_points) or (n > n_points):
+            raise IndexError('Index out of range, make sure the m and n values'
+                             f' are between ({m_points, n_points})')
+        if (m or n) == 0:
+            raise IndexError('Please start at 1, 1, as the initial points.')
+
+        with open(path) as sample_file:
+            yaml_dict = yaml.safe_load(sample_file) or {}
+            sample = yaml_dict.get(sample_name)
+            if sample:
+                xx = sample['xx']
+                yy = sample['yy']
+
+                n_pos = next(d['pos'] for (index, d) in enumerate(xx)
+                             if index == n - 1)
+
+                m_pos = next(d['pos'] for (index, d) in enumerate(yy)
+                             if index == m - 1)
+
+                for xd in sample.get('xx'):
+                    for k, v in xd.items():
+                        if k == 'pos' and v == n_pos:
+                            xd.update((st, status)
+                                      for st, vv in xd.items()
+                                      if st == 'status')
+                for yd in sample.get('yy'):
+                    for k, v in yd.items():
+                        if k == 'pos' and v == m_pos:
+                            yd.update((st, status)
+                                      for st, vv in xd.items()
+                                      if st == 'status')
+                yaml_dict[sample_name].update(sample)
+            else:
+                raise ValueError('Could not find this sample name in the file:'
+                                 f' {sample}')
+        with open(path, 'w') as sample_file:
+            yaml.safe_dump(yaml_dict, sample_file,
+                           sort_keys=False, default_flow_style=False)
 
 
 def mesh_interpolation(top_left, top_right, bottom_right, bottom_left):

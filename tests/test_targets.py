@@ -455,3 +455,21 @@ def test_is_target_shot(fake_grid_stage, sample_file):
             are_shot.append(is_shot)
     assert are_shot == [True, True, True, True,
                         False, False, False, False]
+
+
+def test_set_status(fake_grid_stage, sample_file):
+    stage = fake_grid_stage
+    stage.load('test_sample')
+    stage.set_status(1, 1, False, 'test_sample')
+    info = stage.get_sample_data('test_sample')
+    expceted = [False, True, True, True,
+                False, False, False, False]
+    xx = info['xx']
+    res = []
+    for x in xx:
+        res.append(x['status'])
+
+    assert expceted == res
+
+    with pytest.raises(IndexError):
+        stage.set_status(1, 5, False, 'test_sample')
