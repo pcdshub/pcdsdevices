@@ -616,7 +616,6 @@ class LODCMEnergy(PseudoPositioner):
         self.z1.set(-z)
         self.z2.set(z)
         self.dr.set(2*th)
-
         return (th, z)
 
     @pseudo_position_argument
@@ -675,46 +674,6 @@ class LODCMEnergy(PseudoPositioner):
             return 0
         energy = common.wavelength_to_energy(length) / 1000
         return self.PseudoPosition(energy=energy)
-
-    # TODO: add tweakX method?
-    def tweak_x(self, value):
-        self.x2.mvr(value)
-        th = self.th2.wm()
-        z = value / common.tand(2 * th)
-        self.z2.mvr(z)
-        # def tweakX(self, x, ID=None):
-        # if ID is None:
-        #     # try to determine possible current material ID
-        #     ID = self.get_material(check=True)
-        # if ID == "Si":
-        #     th = self.th2Si.wm()
-        # elif ID == "C":
-        #     th = self.th2C.wm()
-        # else:
-        #     raise ValueError("Invalid material ID: %s" % ID)
-        # z = x / tand(2 * th)
-        # start_x = self.x2.wm()
-        # start_z = self.z2.wm()
-        # self.x2.move_relative(x)
-        # self.z2.move_relative(z)
-        # self.x2.wait()
-        # self.z2.wait()
-        # end_x = self.x2.wm()
-        # end_z = self.z2.wm()
-        # dx = end_x - start_x
-        # dz = end_z - start_z
-        # if abs(dx - x) > self.x2.get_par("retry_deadband"):
-        #     print(
-        #         "WARNING: x2 did not reach desired position of %f!
-        #         Check motors! now at: %f, deadband %f "
-        #         % (start_x + x, end_x, self.x2.get_par("retry_deadband"),)
-        #     )
-        # if abs(dz - z) > self.z2.get_par("retry_deadband"):
-        #     print(
-        #         "WARNING: z2 did not reach desired position of %f!
-        #          Check motors! now at: %f, deadband %f "
-        #         % (start_z + z, end_z, self.z2.get_par("retry_deadband"),)
-        #     )
 
 
 class LODCM(BaseInterface, Device):
@@ -1232,8 +1191,31 @@ class SimDiagnosticsTower(DiagnosticsTower):
     yag_zoom = Cpt(FastMotor, limits=(-1000, 1000))
 
 
+class SimOffsetIMS(OffsetMotor):
+    """IMS Offset Simulator for Testing."""
+    motor = Cpt(FastMotor, limits=(-100, 100))
+
+
+class SimLODCMEnergy(LODCMEnergy):
+    dr = None
+    energy = None
+
+    def __init__(self, *args, **kwargs):
+        self.th1 = SimOffsetIMS(
+            'FAKE:TH1', motor_prefix='MOTOR:TH1', name='fake_th1')
+        self.th2 = SimOffsetIMS(
+            'FAKE:TH2', motor_prefix='MOTOR:TH2', name='fake_th2')
+        self.z1 = SimOffsetIMS(
+            'FAKE:Z1', motor_prefix='MOTOR:Z1', name='fake_z1')
+        self.z2 = SimOffsetIMS(
+            'FAKE:Z2', motor_prefix='MOTOR:Z2', name='fake_z2')
+        self.dr = FastMotor(limits=(-1000, 1000))
+        self.energy = Cpt(PseudoSingleInterface)
+
+
 class SimLODCM(LODCM):
     """LODCM Simulator for Testing."""
     tower1 = Cpt(SimFirstTower, 'FIRST:TOWER', name='first_tower')
     tower2 = Cpt(SimSecondTower, 'SECOND:TOWER', name='seond_tower')
     diag_tower = Cpt(SimDiagnosticsTower, 'DIAG:TOWER', name='diag_tower')
+    energy = Cpt(SimLODCMEnergy, 'FAKE:ENERGY', name='energy')
