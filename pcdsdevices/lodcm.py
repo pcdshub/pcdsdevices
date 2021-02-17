@@ -479,6 +479,12 @@ class DiagnosticsTower(BaseInterface, Device):
 
 
 class LODCMEnergySi(FltMvInterface, PseudoPositioner):
+    """
+    Energy calculations for the Si material.
+
+    Assume material is 'Si' without checking if the crystal's materials are
+    aligned for both towers.
+    """
     tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
     tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
     dr = FCpt(IMS, '{self._m_prefix}:MON:MMS:19',
@@ -541,29 +547,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
             raise ValueError('Invalid Crystal Arrangement')
         return ref_1
 
-    def get_material(self, check=False):
-        """
-        Get the current crystals material.
-
-        Parameters
-        ----------
-        check : bool
-            Indicates if an exception should occure in case it could not
-            determine the material for a tower.
-
-        Returns
-        -------
-        m_1 : str
-            Crystals material.
-        """
-        m_1 = self.tower1.get_material(check)
-        m_2 = self.tower2.get_material(check)
-        if m_1 != m_2:
-            logger.warning('Crystals do not match: c1: %s, c2: %s', m_1, m_2)
-            raise ValueError('Invalid Crystal Arrangement.')
-        return m_1
-
-    def get_energy(self, material=None, reflection=None):
+    def get_energy(self, material='Si', reflection=None):
         """
         Get photon energy from first tower in keV.
 
@@ -581,16 +565,14 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
         energy : number
             Photon energy in keV.
         """
-        material = material or self.get_material(check=True)
         reflection = reflection or self.get_reflection(
             as_tuple=True, check=True)
-        # TODO can i always assume we're taking this value from tower1
         th = self.th1.wm()
         length = (2 * np.sin(np.deg2rad(th)) *
                   diffraction.d_space(material, reflection))
         return common.wavelength_to_energy(length) / 1000
 
-    def calc_energy(self, energy, material=None, reflection=None):
+    def calc_energy(self, energy, material='Si', reflection=None):
         """
         Calculate the lom geometry.
 
@@ -606,7 +588,6 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
         th, z : tuple
             Returns `theta` in degrees and `zm` TODO: what is this?
         """
-        material = material or self.get_material(check=True)
         reflection = reflection or self.get_reflection(
             as_tuple=True, check=True)
         th, z = diffraction.get_lom_geometry(energy*1e3, material, reflection)
@@ -660,10 +641,9 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
         """
         reflection = self.get_reflection(
             as_tuple=True, check=True)
-        material = self.get_material(check=True)
         real_pos = self.RealPosition(*real_pos)
         length = (2 * np.sin(np.deg2rad(real_pos.th1))
-                    * diffraction.d_space(material, reflection))
+                    * diffraction.d_space('Si', reflection))
         if length == 0:
             # don't bother transforming this
             # TODO maybe catch error in common.wave.. when send 0
@@ -673,6 +653,12 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
 
 
 class LODCMEnergyC(FltMvInterface, PseudoPositioner):
+    """
+    Energy calculations for the C material.
+
+    Assume material is 'C' without checking if the crystal's materials are
+    aligned for both towers.
+    """
     tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
     tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
     dr = FCpt(IMS, '{self._m_prefix}:MON:MMS:19',
@@ -735,29 +721,7 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
             raise ValueError('Invalid Crystal Arrangement')
         return ref_1
 
-    def get_material(self, check=False):
-        """
-        Get the current crystals material.
-
-        Parameters
-        ----------
-        check : bool
-            Indicates if an exception should occure in case it could not
-            determine the material for a tower.
-
-        Returns
-        -------
-        m_1 : str
-            Crystals material.
-        """
-        m_1 = self.tower1.get_material(check)
-        m_2 = self.tower2.get_material(check)
-        if m_1 != m_2:
-            logger.warning('Crystals do not match: c1: %s, c2: %s', m_1, m_2)
-            raise ValueError('Invalid Crystal Arrangement.')
-        return m_1
-
-    def get_energy(self, material=None, reflection=None):
+    def get_energy(self, material='C', reflection=None):
         """
         Get photon energy from first tower in keV.
 
@@ -766,7 +730,7 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
         Parameters
         ----------
         material : str, optional
-            Chemical formula. E.g.: `Si`
+            Chemical formula. Defaults to `C`
         reflection : tuple, optional
             Reflection of material. E.g.: `(1, 1, 1)`
 
@@ -775,7 +739,6 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
         energy : number
             Photon energy in keV.
         """
-        material = material or self.get_material(check=True)
         reflection = reflection or self.get_reflection(
             as_tuple=True, check=True)
         th = self.th1.wm()
@@ -783,14 +746,14 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
                   diffraction.d_space(material, reflection))
         return common.wavelength_to_energy(length) / 1000
 
-    def calc_energy(self, energy, material=None, reflection=None):
+    def calc_energy(self, energy, material='C', reflection=None):
         """
         Calculate the lom geometry.
 
         Parameters
         ----------
         material : str, optional
-            Chemical formula. E.g.: `Si`
+            Chemical formula. Defaults to `C`
         reflection : tuple, optional
             Reflection of material. E.g.: `(1, 1, 1)`
 
@@ -799,7 +762,6 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
         th, z : tuple
             Returns `theta` in degrees and `zm` TODO: what is this?
         """
-        material = material or self.get_material(check=True)
         reflection = reflection or self.get_reflection(
             as_tuple=True, check=True)
         th, z = diffraction.get_lom_geometry(energy*1e3, material, reflection)
@@ -852,10 +814,9 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
         """
         reflection = self.get_reflection(
             as_tuple=True, check=True)
-        material = self.get_material(check=True)
         real_pos = self.RealPosition(*real_pos)
         length = (2 * np.sin(np.deg2rad(real_pos.th1))
-                    * diffraction.d_space(material, reflection))
+                    * diffraction.d_space('C', reflection))
         if length == 0:
             # don't bother transforming this
             # TODO maybe catch error in common.wave.. when send 0
