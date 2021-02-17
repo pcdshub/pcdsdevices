@@ -519,9 +519,6 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
     def set(self, value):
         self.user_offset.put(self.motor.wm() - value)
 
-    # def wm(self):
-    #     return self.motor.wm() - self.user_offset.get()
-
     @pseudo_position_argument
     def forward(self, pseudo_pos: tuple) -> tuple:
         """
@@ -539,8 +536,6 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
         """
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
         motor_value = pseudo_pos.pseudo_motor + self.user_offset.get()
-        # motor_value = pseudo_pos.offset + self.offset.notepad_setpoint.get()
-        # motor_value = self.user_offset.get()
         return self.RealPosition(motor=motor_value)
 
     @real_position_argument
@@ -560,8 +555,6 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
         """
         real_pos = self.RealPosition(*real_pos)
         offset = real_pos.motor - self.user_offset.get()
-        # offset = real_pos.motor - self.offset.notepad_setpoint.get()
-        # offset = real_pos.motor - self.offset.notepad_setpoint.get()
         return self.PseudoPosition(pseudo_motor=offset)
 
     def set_current_position(self, position):

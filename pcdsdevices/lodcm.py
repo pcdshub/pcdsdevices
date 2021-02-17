@@ -22,7 +22,7 @@ from pcdscalc import common, diffraction
 from .doc_stubs import insert_remove
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
-from .interface import BaseInterface
+from .interface import BaseInterface, FltMvInterface
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument,
                         OffsetMotorBase)
@@ -455,20 +455,26 @@ class DiagnosticsTower(BaseInterface, Device):
         super().__init__(prefix, *args, **kwargs)
 
 
-class LODCMEnergy(PseudoPositioner):
-    """
-    Energy Motor.
-
-    Parameters
-    ----------
-    prefix : str
-         Epics base PV prefix.
-    """
+class LODCMEnergySi(FltMvInterface, PseudoPositioner):
     tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
     tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
-
     dr = FCpt(IMS, '{self._m_prefix}:MON:MMS:19',
               kind='normal', doc='LOM Dia Theta')
+
+    th1 = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_Si',
+               motor_prefix='{self._m_prefix}:MON:MMS:07',
+               add_prefix=('prefix', 'motor_prefix'), name='th1_si')
+    th2 = FCpt(OffsetMotor, prefix='{self._prefix}:TH2:OFF_Si',
+               motor_prefix='{self._m_prefix}:MON:MMS:13',
+               add_prefix=('prefix', 'motor_prefix'), name='th2_si')
+    z1 = FCpt(OffsetMotor, prefix='{self._prefix}:Z1:OFF_Si',
+              name='z1_si',
+              motor_prefix='{self._m_prefix}:MON:MMS:04',
+              add_prefix=('prefix', 'motor_prefix'))
+    z2 = FCpt(OffsetMotor, prefix='{self._prefix}:Z2:OFF_Si',
+              name='z1_si',
+              motor_prefix='{self._m_prefix}:MON:MMS:10',
+              add_prefix=('prefix', 'motor_prefix'))
 
     # TODO: figure out what are the limits here...and what units
     energy = Cpt(PseudoSingleInterface, egu='keV',
@@ -483,39 +489,6 @@ class LODCMEnergy(PseudoPositioner):
             self._m_prefix = 'HFX'
 
         super().__init__(prefix=prefix, *args, **kwargs)
-        # check to see if Si or C, and define the offset PVs accordingly
-        try:
-            material = self.get_material()
-            if material == 'Si':
-                self._th1_offset_prefix = f'{self._prefix}:TH1:OFF_Si'
-                self._th2_offset_prefix = f'{self._prefix}:TH2:OFF_Si'
-                self._z1_offset_prefix = f'{self._prefix}:Z1:OFF_Si'
-                self._z2_offset_prefix = f'{self._prefix}:Z2:OFF_Si'
-            if material == 'C':
-                self._th1_offset_prefix = f'{self._prefix}:TH1:OFF_C'
-                self._th2_offset_prefix = f'{self._prefix}:TH2:OFF_C'
-                self._z1_offset_prefix = f'{self._prefix}:Z1:OFF_C'
-                self._z2_offset_prefix = f'{self._prefix}:Z2:OFF_C'
-        except Exception:
-            raise ValueError('Cannot initialize energy motor because could not'
-                             ' determine the material.')
-
-        self.z1 = OffsetMotor(f'{self._z1_offset_prefix}',
-                              motor_prefix=f'{self._m_prefix}:MON:MMS:04',
-                              name='z1')
-
-        # # theta movement
-        self.th1 = OffsetMotor(f'{self._th1_offset_prefix}',
-                               motor_prefix=f'{self._m_prefix}:MON:MMS:07',
-                               name='th1')
-
-        self.z2 = OffsetMotor(f'{self._z2_offset_prefix}',
-                              motor_prefix=f'{self._m_prefix}:MON:MMS:10',
-                              name='z2')
-        # # thata movement
-        self.th2 = OffsetMotor(f'{self._th2_offset_prefix}',
-                               motor_prefix=f'{self._m_prefix}:MON:MMS:13',
-                               name='th2')
 
     def get_reflection(self, as_tuple=False, check=False):
         """
@@ -676,6 +649,497 @@ class LODCMEnergy(PseudoPositioner):
         return self.PseudoPosition(energy=energy)
 
 
+class LODCMEnergyC(FltMvInterface, PseudoPositioner):
+    tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
+    tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
+    dr = FCpt(IMS, '{self._m_prefix}:MON:MMS:19',
+              kind='normal', doc='LOM Dia Theta')
+
+    th1 = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_C',
+               name='th1_c',
+               motor_prefix='{self._m_prefix}:MON:MMS:07',
+               add_prefix=('prefix', 'motor_prefix'))
+    th2 = FCpt(OffsetMotor, prefix='{self._prefix}:TH2:OFF_C',
+               name='th2_c',
+               motor_prefix='{self._m_prefix}:MON:MMS:13',
+               add_prefix=('prefix', 'motor_prefix'))
+    z1 = FCpt(OffsetMotor, prefix='{self._prefix}:Z1:OFF_C', name='z1_c',
+              motor_prefix='{self._m_prefix}:MON:MMS:04',
+              add_prefix=('prefix', 'motor_prefix'))
+    z2 = FCpt(OffsetMotor, prefix='{self._prefix}:Z2:OFF_C', name='z1_c',
+              motor_prefix='{self._m_prefix}:MON:MMS:10',
+              add_prefix=('prefix', 'motor_prefix'))
+
+    # TODO: figure out what are the limits here...and what units
+    energy = Cpt(PseudoSingleInterface, egu='keV',
+                 kind='hinted', limits=(5, 25))
+
+    def __init__(self, prefix, *args, **kwargs):
+        self._prefix = prefix
+        self._m_prefix = ''
+        if 'XPP' in self._prefix:
+            self._m_prefix = 'XPP'
+        elif 'XCS' in self._prefix:
+            self._m_prefix = 'HFX'
+
+        super().__init__(prefix=prefix, *args, **kwargs)
+
+    def get_reflection(self, as_tuple=False, check=False):
+        """
+        Get the crystal reflection.
+
+        Parameters
+        ----------
+        as_tuple : bool, optional
+            Indicates if it should return the reflection in tuple format.
+            Defaults to `False`.
+        check : bool, optional
+            Indicates if an exception should be raise in case the materials
+            do not match. Defaults to `False`.
+
+        Returns
+        -------
+        ref_1 : str or tuple
+            Reflection of the two Crystal Towers.
+        """
+        ref_1 = self.tower1.get_reflection(as_tuple=as_tuple, check=check)
+        ref_2 = self.tower2.get_reflection(as_tuple=as_tuple, check=check)
+        if ref_1 != ref_2:
+            logger.warning('Crystals do not match: c1: %s, c2: %s',
+                           ref_1, ref_2)
+            raise ValueError('Invalid Crystal Arrangement')
+        return ref_1
+
+    def get_material(self, check=False):
+        """
+        Get the current crystals material.
+
+        Parameters
+        ----------
+        check : bool
+            Indicates if an exception should occure in case it could not
+            determine the material for a tower.
+
+        Returns
+        -------
+        m_1 : str
+            Crystals material.
+        """
+        m_1 = self.tower1.get_material(check)
+        m_2 = self.tower2.get_material(check)
+        if m_1 != m_2:
+            logger.warning('Crystals do not match: c1: %s, c2: %s', m_1, m_2)
+            raise ValueError('Invalid Crystal Arrangement.')
+        return m_1
+
+    def get_energy(self, material=None, reflection=None):
+        """
+        Get photon energy from first tower in keV.
+
+        Energy is determined by the first crystal (Theta motor).
+
+        Parameters
+        ----------
+        material : str, optional
+            Chemical formula. E.g.: `Si`
+        reflection : tuple, optional
+            Reflection of material. E.g.: `(1, 1, 1)`
+
+        Returns
+        -------
+        energy : number
+            Photon energy in keV.
+        """
+        material = material or self.get_material(check=True)
+        reflection = reflection or self.get_reflection(
+            as_tuple=True, check=True)
+        th = self.th1.wm()
+        length = (2 * np.sin(np.deg2rad(th)) *
+                  diffraction.d_space(material, reflection))
+        return common.wavelength_to_energy(length) / 1000
+
+    def calc_energy(self, energy, material=None, reflection=None):
+        """
+        Calculate the lom geometry.
+
+        Parameters
+        ----------
+        material : str, optional
+            Chemical formula. E.g.: `Si`
+        reflection : tuple, optional
+            Reflection of material. E.g.: `(1, 1, 1)`
+
+        Returns
+        -------
+        th, z : tuple
+            Returns `theta` in degrees and `zm` TODO: what is this?
+        """
+        material = material or self.get_material(check=True)
+        reflection = reflection or self.get_reflection(
+            as_tuple=True, check=True)
+        th, z = diffraction.get_lom_geometry(energy*1e3, material, reflection)
+        self.th1.set(th)
+        self.th2.set(th)
+        self.z1.set(-z)
+        self.z2.set(z)
+        self.dr.set(2*th)
+        return (th, z)
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        """
+        Calculate a RealPosition from a given PseudoPosition.
+
+        If the pseudo positioner is here at `pseudo_pos`, then this is where
+        my real motor should be.
+
+        Parameters
+        ----------
+        pseudo_pos : PseudoPosition
+            The pseudo position input, a namedtuple.
+
+        Returns
+        -------
+        real_pos : RealPosition
+            The real position output, a namedtuple.
+        """
+        pseudo_pos = self.PseudoPosition(*pseudo_pos)
+        th, z = self.calc_energy(energy=pseudo_pos.energy)
+        return self.RealPosition(th1=th,
+                                 th2=th,
+                                 z1=-z,
+                                 z2=z,
+                                 dr=2*th)
+
+    @real_position_argument
+    def inverse(self, real_pos):
+        """
+        Calculate a PseudoPosition from a given RealPosition.
+
+        If the real motor is at this `real_pos`, then this is where my pseudo
+        position should be.
+
+        Parameters
+        ----------
+        real_pos : RealPosition
+            The real position input.
+
+        Returns
+        -------
+        pseudo_pos : PseudoPosition
+            The pseudo position output.
+        """
+        reflection = self.get_reflection(
+            as_tuple=True, check=True)
+        material = self.get_material(check=True)
+        real_pos = self.RealPosition(*real_pos)
+        length = (2 * np.sin(np.deg2rad(real_pos.th1))
+                    * diffraction.d_space(material, reflection))
+        if length == 0:
+            # don't bother transforming this
+            # TODO maybe catch error in common.wave.. when send 0
+            return 0
+        energy = common.wavelength_to_energy(length) / 1000
+        return self.PseudoPosition(energy=energy)
+
+
+# class LODCMEnergy(FltMvInterface, PseudoPositioner):
+#     """
+#     Energy Motor.
+
+#     Parameters
+#     ----------
+#     prefix : str
+#          Epics base PV prefix.
+#     """
+#     tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
+#     tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
+
+#     # z1 = None
+#     # th1 = None
+#     # z2 = None
+#     # th2 = None
+
+#     # z1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:04',
+#     #           kind='normal', doc='LOM Xtal1 Z')
+#     # th1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:07',
+#     #            kind='normal', doc='LOM Xtal1 Theta')
+#     # z2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:10',
+#     #           kind='normal', doc='LOM Xtal2 Z')
+#     # th2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:13',
+#     #            kind='normal', doc='LOM Xtal2 Theta')
+#     dr = FCpt(IMS, '{self._m_prefix}:MON:MMS:19',
+#               kind='normal', doc='LOM Dia Theta')
+
+#     # th1 = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_Si',
+#     #               motor_prefix='{self._m_prefix}:MON:MMS:07',
+#     #               add_prefix=('prefix', 'motor_prefix'), name='th1_si')
+#     # th2 = FCpt(OffsetMotor, prefix='{self._prefix}:TH2:OFF_Si',
+#     #               motor_prefix='{self._m_prefix}:MON:MMS:13',
+#     #               add_prefix=('prefix', 'motor_prefix'), name='th2_si')
+#     # z1 = FCpt(OffsetMotor, prefix='{self._prefix}:Z1:OFF_Si',
+#     #              name='z1_si',
+#     #              motor_prefix='{self._m_prefix}:MON:MMS:04',
+#     #              add_prefix=('prefix', 'motor_prefix'))
+#     # z2 = FCpt(OffsetMotor, prefix='{self._prefix}:Z2:OFF_Si',
+#     #              name='z1_si',
+#     #              motor_prefix='{self._m_prefix}:MON:MMS:10',
+#     #              add_prefix=('prefix', 'motor_prefix'))
+
+#     # th1_si = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_Si',
+#     #               motor_prefix='{self._m_prefix}:MON:MMS:07',
+#     #               add_prefix=('prefix', 'motor_prefix'), name='th1_si')
+#     # th2_si = FCpt(OffsetMotor, prefix='{self._prefix}:TH2:OFF_Si',
+#     #               motor_prefix='{self._m_prefix}:MON:MMS:13',
+#     #               add_prefix=('prefix', 'motor_prefix'), name='th2_si')
+#     # z1_si = FCpt(OffsetMotor, prefix='{self._prefix}:Z1:OFF_Si',
+#     #              name='z1_si',
+#     #              motor_prefix='{self._m_prefix}:MON:MMS:04',
+#     #              add_prefix=('prefix', 'motor_prefix'))
+#     # z2_si = FCpt(OffsetMotor, prefix='{self._prefix}:Z2:OFF_Si',
+#     #              name='z1_si',
+#     #              motor_prefix='{self._m_prefix}:MON:MMS:10',
+#     #              add_prefix=('prefix', 'motor_prefix'))
+
+#     # th1_c = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_C',
+#     #              name='th1_c',
+#     #              motor_prefix='{self._m_prefix}:MON:MMS:07',
+#     #              add_prefix=('prefix', 'motor_prefix'))
+#     # th2_c = FCpt(OffsetMotor, prefix='{self._prefix}:TH2:OFF_C',
+#     #              name='th2_c',
+#     #              motor_prefix='{self._m_prefix}:MON:MMS:13',
+#     #              add_prefix=('prefix', 'motor_prefix'))
+#     # z1_c = FCpt(OffsetMotor, prefix='{self._prefix}:Z1:OFF_C', name='z1_c',
+#     #             motor_prefix='{self._m_prefix}:MON:MMS:04',
+#     #             add_prefix=('prefix', 'motor_prefix'))
+#     # z2_c = FCpt(OffsetMotor, prefix='{self._prefix}:Z2:OFF_C', name='z1_c',
+#     #             motor_prefix='{self._m_prefix}:MON:MMS:10',
+#     #             add_prefix=('prefix', 'motor_prefix'))
+
+
+#     # TODO: figure out what are the limits here...and what units
+#     energy = Cpt(PseudoSingleInterface, egu='keV',
+#                  kind='hinted', limits=(5, 25))
+#     #th1, th2, z1, z2 = None, None, None, None
+#    # _real = ['th1', 'th2', 'z1', 'z2', 'dr']
+
+#     def __init__(self, prefix, *args, **kwargs):
+#         self._prefix = prefix
+#         self._m_prefix = ''
+#         if 'XPP' in self._prefix:
+#             self._m_prefix = 'XPP'
+#         elif 'XCS' in self._prefix:
+#             self._m_prefix = 'HFX'
+
+#         self._th1_offset_prefix = f'{self._prefix}:TH1:OFF_Si'
+#         self._th2_offset_prefix = f'{self._prefix}:TH2:OFF_Si'
+#         self._z1_offset_prefix = f'{self._prefix}:Z1:OFF_Si'
+#         self._z2_offset_prefix = f'{self._prefix}:Z2:OFF_Si'
+
+#         super().__init__(prefix=prefix, *args, **kwargs)
+#         # check to see if Si or C, and define the offset PVs accordingly
+#         # try:
+#         #     material = self.get_material()
+#         #     if material == 'Si':
+#         #         self.th1 = self.th1_si
+#         #         self.th2 = self.th2_si
+#         #         self.z1 = self.z2_si
+#         #         self.z2 = self.z2_si
+#         #         # self._th1_offset_prefix = f'{self._prefix}:TH1:OFF_Si'
+#         #         # self._th2_offset_prefix = f'{self._prefix}:TH2:OFF_Si'
+#         #         # self._z1_offset_prefix = f'{self._prefix}:Z1:OFF_Si'
+#         #         # self._z2_offset_prefix = f'{self._prefix}:Z2:OFF_Si'
+#         #     if material == 'C':
+#         #         self.th1 = self.th1_c
+#         #         self.th2 = self.th2_c
+#         #         self.z1 = self.z2_c
+#         #         self.z2 = self.z2_c
+#         #         # self._th1_offset_prefix = f'{self._prefix}:TH1:OFF_C'
+#         #         # self._th2_offset_prefix = f'{self._prefix}:TH2:OFF_C'
+#         #         # self._z1_offset_prefix = f'{self._prefix}:Z1:OFF_C'
+#         #         # self._z2_offset_prefix = f'{self._prefix}:Z2:OFF_C'
+#         # except Exception:
+#         #     raise ValueError('Cannot initialize energy motor because could'
+#         #                      ' not determine the material.')
+
+#         self.z1 = OffsetMotor(f'{self._z1_offset_prefix}',
+#                               motor_prefix=f'{self._m_prefix}:MON:MMS:04',
+#                               name='z1')
+
+#         # # theta movement
+#         self.th1 = OffsetMotor(f'{self._th1_offset_prefix}',
+#                                motor_prefix=f'{self._m_prefix}:MON:MMS:07',
+#                                name='th1')
+
+#         self.z2 = OffsetMotor(f'{self._z2_offset_prefix}',
+#                               motor_prefix=f'{self._m_prefix}:MON:MMS:10',
+#                               name='z2')
+#         # # thata movement
+#         self.th2 = OffsetMotor(f'{self._th2_offset_prefix}',
+#                                motor_prefix=f'{self._m_prefix}:MON:MMS:13',
+#                                name='th2')
+#         # self._real = ['th1', 'th2', 'z1', 'z2']
+
+#     def get_reflection(self, as_tuple=False, check=False):
+#         """
+#         Get the crystal reflection.
+
+#         Parameters
+#         ----------
+#         as_tuple : bool, optional
+#             Indicates if it should return the reflection in tuple format.
+#             Defaults to `False`.
+#         check : bool, optional
+#             Indicates if an exception should be raise in case the materials
+#             do not match. Defaults to `False`.
+
+#         Returns
+#         -------
+#         ref_1 : str or tuple
+#             Reflection of the two Crystal Towers.
+#         """
+#         ref_1 = self.tower1.get_reflection(as_tuple=as_tuple, check=check)
+#         ref_2 = self.tower2.get_reflection(as_tuple=as_tuple, check=check)
+#         if ref_1 != ref_2:
+#             logger.warning('Crystals do not match: c1: %s, c2: %s',
+#                            ref_1, ref_2)
+#             raise ValueError('Invalid Crystal Arrangement')
+#         return ref_1
+
+#     def get_material(self, check=False):
+#         """
+#         Get the current crystals material.
+
+#         Parameters
+#         ----------
+#         check : bool
+#             Indicates if an exception should occure in case it could not
+#             determine the material for a tower.
+
+#         Returns
+#         -------
+#         m_1 : str
+#             Crystals material.
+#         """
+#         m_1 = self.tower1.get_material(check)
+#         m_2 = self.tower2.get_material(check)
+#         if m_1 != m_2:
+#             logger.warning('Crystals do not match: c1: %s, c2: %s', m_1, m_2)
+#             raise ValueError('Invalid Crystal Arrangement.')
+#         return m_1
+
+#     def get_energy(self, material=None, reflection=None):
+#         """
+#         Get photon energy from first tower in keV.
+
+#         Energy is determined by the first crystal (Theta motor).
+
+#         Parameters
+#         ----------
+#         material : str, optional
+#             Chemical formula. E.g.: `Si`
+#         reflection : tuple, optional
+#             Reflection of material. E.g.: `(1, 1, 1)`
+
+#         Returns
+#         -------
+#         energy : number
+#             Photon energy in keV.
+#         """
+#         material = material or self.get_material(check=True)
+#         reflection = reflection or self.get_reflection(
+#             as_tuple=True, check=True)
+#         th = self.th1.wm()
+#         length = (2 * np.sin(np.deg2rad(th)) *
+#                   diffraction.d_space(material, reflection))
+#         return common.wavelength_to_energy(length) / 1000
+
+#     def calc_energy(self, energy, material=None, reflection=None):
+#         """
+#         Calculate the lom geometry.
+
+#         Parameters
+#         ----------
+#         material : str, optional
+#             Chemical formula. E.g.: `Si`
+#         reflection : tuple, optional
+#             Reflection of material. E.g.: `(1, 1, 1)`
+
+#         Returns
+#         -------
+#         th, z : tuple
+#             Returns `theta` in degrees and `zm` TODO: what is this?
+#         """
+#         material = material or self.get_material(check=True)
+#         reflection = reflection or self.get_reflection(
+#             as_tuple=True, check=True)
+#         th, z = diffraction.get_lom_geometry(energy*1e3, material,
+#                                              reflection)
+#         self.th1.set(th)
+#         self.th2.set(th)
+#         self.z1.set(-z)
+#         self.z2.set(z)
+#         self.dr.set(2*th)
+#         return (th, z)
+
+#     @pseudo_position_argument
+#     def forward(self, pseudo_pos):
+#         """
+#         Calculate a RealPosition from a given PseudoPosition.
+
+#         If the pseudo positioner is here at `pseudo_pos`, then this is where
+#         my real motor should be.
+
+#         Parameters
+#         ----------
+#         pseudo_pos : PseudoPosition
+#             The pseudo position input, a namedtuple.
+
+#         Returns
+#         -------
+#         real_pos : RealPosition
+#             The real position output, a namedtuple.
+#         """
+#         pseudo_pos = self.PseudoPosition(*pseudo_pos)
+#         th, z = self.calc_energy(energy=pseudo_pos.energy)
+#         return self.RealPosition(th1=th,
+#                                  th2=th,
+#                                  z1=-z,
+#                                  z2=z,
+#                                  dr=2*th)
+
+#     @real_position_argument
+#     def inverse(self, real_pos):
+#         """
+#         Calculate a PseudoPosition from a given RealPosition.
+
+#         If the real motor is at this `real_pos`, then this is where my pseudo
+#         position should be.
+
+#         Parameters
+#         ----------
+#         real_pos : RealPosition
+#             The real position input.
+
+#         Returns
+#         -------
+#         pseudo_pos : PseudoPosition
+#             The pseudo position output.
+#         """
+#         reflection = self.get_reflection(
+#             as_tuple=True, check=True)
+#         material = self.get_material(check=True)
+#         real_pos = self.RealPosition(*real_pos)
+#         length = (2 * np.sin(np.deg2rad(real_pos.th1))
+#                     * diffraction.d_space(material, reflection))
+#         if length == 0:
+#             # don't bother transforming this
+#             # TODO maybe catch error in common.wave.. when send 0
+#             return 0
+#         energy = common.wavelength_to_energy(length) / 1000
+#         return self.PseudoPosition(energy=energy)
+
+
 class LODCM(BaseInterface, Device):
     """
     Large Offset Dual Crystal Monochromator.
@@ -715,7 +1179,10 @@ class LODCM(BaseInterface, Device):
     # diagnostics tower
     diag_tower = FCpt(DiagnosticsTower, '{self._prefix}', name='DT',
                       kind='normal')
-    energy = FCpt(LODCMEnergy, '{self._prefix}', kind='normal')
+    # energy = FCpt(LODCMEnergy, '{self._prefix}', kind='normal')
+
+    energy_si = FCpt(LODCMEnergySi, '{self._prefix}', kind='normal')
+    energy_c = FCpt(LODCMEnergyC, '{self._prefix}', kind='normal')
     # QIcon for UX
     _icon = 'fa.share-alt-square'
 
@@ -928,7 +1395,7 @@ class LODCM(BaseInterface, Device):
             raise ValueError('Invalid Crystal Arrangement.')
         return m_1
 
-    def get_energy(self):
+    def get_energy(self, material=None, reflection=None):
         """
         Get photon energy from first tower in keV.
 
@@ -946,10 +1413,37 @@ class LODCM(BaseInterface, Device):
         energy : number
             Photon energy in keV.
         """
-        return self.energy.get_energy()
+        material = material or self.get_material(check=True)
+        reflection = reflection or self.get_reflection(
+            as_tuple=True, check=True)
+        if material == 'Si':
+            return self.energy_si.get_energy()
+        elif material == 'C':
+            return self.energy_c.get_energy()
+        else:
+            raise ValueError('Cannot initialize energy motor because could not'
+                             ' determine the material.')
 
-    def calc_energy(self, energy):
-        return self.energy.calc_energy(energy)
+    def calc_energy(self, energy, material=None, reflection=None):
+        """
+        Calculate the lom geometry.
+
+        Parameters
+        ----------
+        material : str, optional
+            Chemical formula. E.g.: `Si`
+        reflection : tuple, optional
+            Reflection of material. E.g.: `(1, 1, 1)`
+
+        Returns
+        -------
+        th, z : tuple
+        """
+        # try to determine the material and reflection:
+        material = material or self.get_material(check=True)
+        reflection = reflection or self.get_reflection(
+            as_tuple=True, check=True)
+        return self.energy.calc_energy(energy, material, reflection)
 
     def format_status_info(self, status_info):
         """Override status info handler to render the lodcm."""
@@ -1191,31 +1685,42 @@ class SimDiagnosticsTower(DiagnosticsTower):
     yag_zoom = Cpt(FastMotor, limits=(-1000, 1000))
 
 
-class SimOffsetIMS(OffsetMotor):
-    """IMS Offset Simulator for Testing."""
-    motor = Cpt(FastMotor, limits=(-100, 100))
+# class SimOffsetIMS(OffsetMotor):
+#     """IMS Offset Simulator for Testing."""
+#     motor = Cpt(FastMotor, limits=(-100, 100))
 
 
-class SimLODCMEnergy(LODCMEnergy):
-    dr = None
-    energy = None
+# class SimLODCMEnergy(LODCMEnergy):
+#     ...
+#    # dr = None
+#     # energy = Cpt(PseudoSingleInterface, "PREFIX")
+#     #  energy = None
+#     # energy = Cpt(PseudoSingleInterface, prefix='ENERGY:PREFIX')
+#     # th1 = Cpt(SimOffsetIMS, name='th1')
+#     # th2 = Cpt(SimOffsetIMS, name='th2')
+#     # z1 = Cpt(SimOffsetIMS, name='z1')
+#     # z2 = Cpt(SimOffsetIMS, name='z2')
+#     # #dr = FastMotor(limits=(-1000, 1000))
+#     # dr = Cpt(FastMotor, limits=(-1000, 1000))
+#     # def __init__(self, *args, **kwargs):
+#     #     ...
 
-    def __init__(self, *args, **kwargs):
-        self.th1 = SimOffsetIMS(
-            'FAKE:TH1', motor_prefix='MOTOR:TH1', name='fake_th1')
-        self.th2 = SimOffsetIMS(
-            'FAKE:TH2', motor_prefix='MOTOR:TH2', name='fake_th2')
-        self.z1 = SimOffsetIMS(
-            'FAKE:Z1', motor_prefix='MOTOR:Z1', name='fake_z1')
-        self.z2 = SimOffsetIMS(
-            'FAKE:Z2', motor_prefix='MOTOR:Z2', name='fake_z2')
-        self.dr = FastMotor(limits=(-1000, 1000))
-        self.energy = Cpt(PseudoSingleInterface)
+#     # def __init__(self, *args, **kwargs):
+#     #     self.th1 = SimOffsetIMS(
+#     #         'FAKE:TH1', motor_prefix='MOTOR:TH1', name='fake_th1')
+#     #     self.th2 = SimOffsetIMS(
+#     #         'FAKE:TH2', motor_prefix='MOTOR:TH2', name='fake_th2')
+#     #     self.z1 = SimOffsetIMS(
+#     #         'FAKE:Z1', motor_prefix='MOTOR:Z1', name='fake_z1')
+#     #     self.z2 = SimOffsetIMS(
+#     #         'FAKE:Z2', motor_prefix='MOTOR:Z2', name='fake_z2')
+#     #     self.dr = FastMotor(limits=(-1000, 1000))
+#     #     # self.energy = PseudoSingleInterface(prefix='PREFIX')
 
 
-class SimLODCM(LODCM):
-    """LODCM Simulator for Testing."""
-    tower1 = Cpt(SimFirstTower, 'FIRST:TOWER', name='first_tower')
-    tower2 = Cpt(SimSecondTower, 'SECOND:TOWER', name='seond_tower')
-    diag_tower = Cpt(SimDiagnosticsTower, 'DIAG:TOWER', name='diag_tower')
-    energy = Cpt(SimLODCMEnergy, 'FAKE:ENERGY', name='energy')
+# class SimLODCM(LODCM):
+#     """LODCM Simulator for Testing."""
+#     tower1 = Cpt(SimFirstTower, 'FIRST:TOWER', name='first_tower')
+#     tower2 = Cpt(SimSecondTower, 'SECOND:TOWER', name='seond_tower')
+#     diag_tower = Cpt(SimDiagnosticsTower, 'DIAG:TOWER', name='diag_tower')
+#     #energy = Cpt(SimLODCMEnergy, 'FAKE:ENERGY', name='energy')
