@@ -2,6 +2,7 @@ import logging
 from unittest.mock import Mock, patch
 
 import pytest
+import numpy as np
 from ophyd.sim import make_fake_device
 
 from pcdsdevices.lodcm import (H1N, LODCM, Dectris, Diode, Foil, YagLom, Y1,
@@ -118,11 +119,6 @@ def fake_tower2():
 
 @pytest.fixture(scope='function')
 def fake_energy_si(monkeypatch):
-
-    def get_material(self, check=True):
-        return "Si"
-    monkeypatch.setattr(LODCMEnergySi, 'get_material', get_material)
-
     FakeLODCMEnergy = make_fake_device(LODCMEnergySi)
     energy = FakeLODCMEnergy('FAKE:ENERGY:SI', name='fake_energy_si')
 
@@ -137,11 +133,6 @@ def fake_energy_si(monkeypatch):
 
 @pytest.fixture(scope='function')
 def fake_energy_c(monkeypatch):
-
-    def get_material(self, check=True):
-        return "C"
-    monkeypatch.setattr(LODCMEnergyC, 'get_material', get_material)
-
     FakeLODCMEnergy = make_fake_device(LODCMEnergyC)
     energy = FakeLODCMEnergy('FAKE:ENERGY:C', name='fake_energy_c')
 
@@ -263,8 +254,6 @@ def test_get_reflection_lodcm(fake_lodcm):
 def test_calc_energy_c(fake_energy_c):
     energy = fake_energy_c
     logger.info('Testing with C, (1, 1, 1)')
-    # with patch('pcdsdevices.lodcm.LODCMEnergy.get_material',
-    #            return_value='C'):
     with patch('pcdsdevices.lodcm.LODCMEnergyC.get_reflection',
                return_value=(1, 1, 1)):
         th, z = energy.calc_energy(energy=10)
@@ -314,12 +303,10 @@ def test_get_energy_c(fake_energy_c, monkeypatch):
 
     with patch("pcdsdevices.lodcm.LODCMEnergyC.get_reflection",
                return_value=(1, 1, 1)):
-        # with patch('pcdsdevices.lodcm.LODCMEnergy.get_material',
-        #            return_value='C'):
         # offset of 23, motor position 0
         # current th1.wm() should be 23
+        assert energy.th1.wm() == 23
         res = energy.get_energy()
-        # TODO: why is this NONE?
         assert res == 7.7039801344046515
 
 
@@ -331,77 +318,61 @@ def test_get_energy_si(fake_energy_si, monkeypatch):
                return_value=(1, 1, 1)):
         # offset of 23, motor position 0
         # current th1.wm() should be 23
+        assert energy.th1.wm() == 23
         res = energy.get_energy()
         assert res == 5.059840436879476
 
 
-def test_move_energy_c(fake_energy_c, monkeypatch):
-    energy = fake_energy_c
-    with patch("pcdsdevices.lodcm.LODCMEnergyC.get_reflection",
-               return_value=(1, 1, 1)):
-        # with patch('pcdsdevices.lodcm.LODCMEnergy.get_material',
-        #            return_value='C'):
-        energy.move(10, wait=False)
-        assert energy.th1.wm() == 17.51878596767417
-        assert energy.th2.wm() == 17.51878596767417
-        assert energy.z1.wm() == -427.8469911590626
-        assert energy.z2.wm() == 427.8469911590626
-        assert energy.th1.pseudo_motor.position == 17.51878596767417
-        assert energy.th1.user_offset.get() == -17.51878596767417
-
-
-def test_move_energy_si(fake_energy_si, monkeypatch):
+def test_forward_si(fake_energy_si, monkeypatch):
     energy = fake_energy_si
+
+    energy.th1.set_current_position(-23)
     with patch("pcdsdevices.lodcm.LODCMEnergySi.get_reflection",
                return_value=(1, 1, 1)):
-        # with patch('pcdsdevices.lodcm.LODCMEnergy.get_material',
-        #            return_value='Si'):
-        energy.move(10, wait=False)
-        assert energy.th1.wm() == 11.402710639982848
-        assert energy.th2.wm() == 11.402710639982848
-        assert energy.z1.wm() == -713.4828146545175
-        assert energy.z2.wm() == 713.4828146545175
-        # TODO: why is this 0?
-        # print(f'dr.position: {energy.dr.wm()}')
-        assert energy.th1.pseudo_motor.position == 11.402710639982848
-        assert energy.th1.user_offset.get() == -11.402710639982848
+        res = energy.get_energy()
+        assert res == 5.059840436879476
+        res = energy.forward(5.059840436879476)
+        received = []
+        for i in res:
+            received.append(i)
+        expected = [23, 23, 46, -289.70663244212216, 289.70663244212216]
+        assert np.allclose(sorted(received), sorted(expected))
 
 
-# def test_lodcm_energy(fake_lodcm):
-#     lodcm = fake_lodcm
-#     # res = lodcm.get_reflection(as_tuple=True)
-#     # assert res == (1, 1, 1)
-#     # res = lodcm.get_material(check=True)
-#     # assert res == 'C'
+def test_forward_c(fake_energy_c, monkeypatch):
+    energy = fake_energy_c
 
-#     # relflections should not match:
-#     with patch("pcdsdevices.lodcm.LODCMEnergy.get_reflection",
-#                return_value=(1, 1, 1)):
-#         with patch('pcdsdevices.lodcm.LODCMEnergy.get_material',
-#                    return_value='Si'):
-#             res = lodcm.calc_energy(10)
-#             res2 = lodcm.energy.calc_energy(10)
-#             assert res == res2
-#             assert res == (11.402710639982848, 713.4828146545175)
+    energy.th1.set_current_position(-23)
+    with patch("pcdsdevices.lodcm.LODCMEnergyC.get_reflection",
+               return_value=(1, 1, 1)):
+        res = energy.get_energy()
+        assert res == 7.7039801344046515
+        res = energy.forward(7.7039801344046515)
+        received = []
+        for i in res:
+            received.append(i)
+        expected = [23, 23, 46, -289.70663244212216, 289.70663244212216]
+        assert np.allclose(sorted(received), sorted(expected))
 
 
-# def test_others(fake_lodcm):
-#     lodcm = fake_lodcm
-#    # setup_energy_motor(lodcm.energy)
-#     with patch("pcdsdevices.lodcm.LODCMEnergySi.get_reflection",
-#                return_value=(1, 1, 1)):
-#         # with patch('pcdsdevices.lodcm.LODCM.get_material',
-#         #            return_value='Si'):
-#         # print(lodcm)
-#         # print(lodcm.energy_si)
-#         #  print(lodcm.energy)
-#         lodcm.energy_si.move(6, wait=False)
-#         assert lodcm.energy.th1.wm() == 19.23880622548293
+def test_inverse_si(fake_energy_si, monkeypatch):
+    energy = fake_energy_si
+    energy.th1.set_current_position(-23)
+    with patch("pcdsdevices.lodcm.LODCMEnergySi.get_reflection",
+               return_value=(1, 1, 1)):
+        res = energy.inverse(23)
+        assert np.isclose(res[0], 5.05984044)
+
+
+def test_inverse_c(fake_energy_c, monkeypatch):
+    energy = fake_energy_c
+    energy.th1.set_current_position(-23)
+    with patch("pcdsdevices.lodcm.LODCMEnergyC.get_reflection",
+               return_value=(1, 1, 1)):
+        res = energy.inverse(23)
+        assert np.isclose(res[0], 7.7039801344046515)
 
 
 @pytest.mark.timeout(5)
 def test_lodcm_disconnected():
-    # def get_material(self):
-    #     return "C"
-    # monkeypatch.setattr(LODCMEnergy, 'get_material', get_material)
     LODCM('TST:LOM', name='test_lom')
