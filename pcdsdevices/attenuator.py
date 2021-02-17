@@ -1110,7 +1110,7 @@ Transmission for 3rd harmonic (E={energy_3} keV): {transmission_3}
 FEESolidAttenuator = AT2L0  # back-compatibility
 
 
-class BladeStateEnum(enum.Enum):
+class BladeStateEnum(enum.IntEnum):
     Unknown = 0
     OUT = 1
     IN = 2
