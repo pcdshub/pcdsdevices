@@ -32,6 +32,12 @@ def test_attenuator_states(fake_att):
     assert not att.inserted
 
 
+def test_attenuator_bluesky(fake_att):
+    logger.debug('test_attenuator_bluesky')
+    fake_att.read()
+    fake_att.describe()
+
+
 def fake_move_transition(att, status, goal):
     """
     Set to the PVs sort of like it would happen in the real world and check the
