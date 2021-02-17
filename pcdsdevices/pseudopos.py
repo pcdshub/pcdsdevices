@@ -4,6 +4,7 @@ import typing
 import numpy as np
 import ophyd
 import ophyd.pseudopos
+from ophyd.signal import EpicsSignal
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
@@ -466,9 +467,8 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
     Motor with an offset.
     """
     motor = None
-    pseudo_motor = FCpt(PseudoSingleInterface, kind='normal')
-    user_offset = Cpt(NotepadLinkedSignal, ':OphydOffset',
-                      notepad_metadata={'record': 'ao', 'default_value': 0.0})
+    pseudo_motor = Cpt(PseudoSingleInterface, kind='normal')
+    user_offset = Cpt(EpicsSignal, '', kind='normal')
 
     def __init__(self, prefix, motor_prefix, * args, **kwargs):
         if self.__class__ is OffsetMotorBase:
@@ -476,25 +476,6 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
                             'a "motor" component, the real motor to move.')
         self._motor_prefix = motor_prefix
         super().__init__(prefix, *args, **kwargs)
-
-    # TODO remove this old code, keeping now for reference
-    # @property
-    # def position(self):
-    #     return self.motor.wm()
-
-    # def move(pos):
-    #     motor.mv(pos + Pv.get(offset_pv))
-
-    # def wm():
-    #     return motor.wm() - Pv.get(offset_pv)
-
-    # def set(value):
-    #     if use_ims_preset:
-    #         Pv.put("%s_SET" % offset_pv, motor.wm() - value)
-    #     Pv.put(offset_pv, motor.wm() - value)
-
-    # def get_offset(self):
-    #     return self.offset.wm()
 
     @pseudo_position_argument
     def check_value(self, value):
@@ -512,12 +493,10 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
             return
 
         try:
+            # Update the internal position based on the real positioner
             self._update_position()
         except ophyd.utils.DisconnectedError:
             ...
-
-    def set(self, value):
-        self.user_offset.put(self.motor.wm() - value)
 
     @pseudo_position_argument
     def forward(self, pseudo_pos: tuple) -> tuple:
