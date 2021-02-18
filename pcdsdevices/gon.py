@@ -492,20 +492,17 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
             e_phi = self.e_phi_coord
 
         kappa_ang = self.kappa_ang * np.pi / 180
+        delta = np.arcsin(-np.tan(e_chi * np.pi / 180 / 2)
+                          / np.tan(kappa_ang))
+        k_eta = -(e_eta * np.pi / 180 - delta)
+        k_kap = 2 * np.arcsin(np.sin(e_chi * np.pi / 180 / 2)
+                              / np.sin(kappa_ang))
+        k_phi = e_phi * np.pi / 180 - delta
 
-        if self.kappa.position < 180:
-            delta = np.arcsin(-np.tan(e_chi * np.pi/180/2)
-                              / np.tan(kappa_ang))
-            k_eta = -(e_eta * np.pi / 180 - delta)
-            k_kap = 2 * np.arcsin(np.sin(e_chi * np.pi/180/2)
-                                  / np.sin(kappa_ang))
-            k_phi = e_phi * np.pi / 180 - delta
-        else:
-            delta = np.arcsin(-np.tan(e_chi * np.pi/180/2)
-                              / np.tan(kappa_ang))
-            k_eta = (e_eta * np.pi / 180 - delta) - np.pi
-            k_kap = 2 * np.pi - 2 * np.arcsin(np.sin(e_chi * np.pi/180/2)
-                                              / np.sin(kappa_ang))
+        # Phase shift for flipped kappa
+        if self.kappa.position > 180:
+            k_eta = -k_eta - np.pi
+            k_kap = 2 * np.pi - k_kap
             k_phi = -e_phi * np.pi / 180 - delta
 
         k_eta = k_eta * 180 / np.pi
