@@ -156,11 +156,6 @@ class CrystalTower1(BaseInterface, Device):
     # motor offsets
     # the folowing are declared in Energy classes
     # th1_si, th1_c, z1_si, z1_c
-    x2_c = FCpt(OffsetMotor, prefix='{self._prefix}:X2:OFF_C', name='x2_c ',
-                motor_prefix='{self._m_prefix}:MON:MMS:11',
-                add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                doc='X2 motor offset for C [mm]')
-
     x1_c = FCpt(OffsetMotor, prefix='{self._prefix}:X1:OFF_C',
                 motor_prefix='{self._m_prefix}:MON:MMS:05', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
@@ -919,35 +914,35 @@ class LODCM(BaseInterface, Device):
         self.y2_state = self.tower2.y2_state
         self.chi2_state = self.tower2.chi2_state
         # # offset positioners - tower 1
-        self.th1_si = self.energy_si.th1
-        self.z1_si = self.energy_si.z1
-        self.th1_c = self.energy_c.th1
-        self.z1_c = self.energy_c.z1
+        self.th1Si = self.energy_si.th1
+        self.z1Si = self.energy_si.z1
+        self.th1C = self.energy_c.th1
+        self.z1C = self.energy_c.z1
 
-        self.x1_c = self.tower1.x1_c
-        self.x1_si = self.tower1.x1_si
-        self.y1_c = self.tower1.y1_c
-        self.y1_si = self.tower1.y1_si
-        self.chi1_c = self.tower1.chi1_c
-        self.chi1_si = self.tower1.chi1_si
-        self.h1n_c = self.tower1.h1n_c
-        self.h1n_si = self.tower1.h1n_si
-        self.h1p_c = self.tower1.h1p_c
-        self.h1p_si = self.tower1.h1p_si
+        self.x1C = self.tower1.x1_c
+        self.x1Si = self.tower1.x1_si
+        self.y1C = self.tower1.y1_c
+        self.y1Si = self.tower1.y1_si
+        self.chi1C = self.tower1.chi1_c
+        self.chi1Si = self.tower1.chi1_si
+        self.h1nC = self.tower1.h1n_c
+        self.h1nSi = self.tower1.h1n_si
+        self.h1pC = self.tower1.h1p_c
+        self.h1pSi = self.tower1.h1p_si
         # # offset positioners - tower 2
-        self.th2_si = self.energy_si.th2
-        self.z2_si = self.energy_si.z2
-        self.th2_c = self.energy_c.th2
-        self.z2_c = self.energy_c.z2
+        self.th2Si = self.energy_si.th2
+        self.z2Si = self.energy_si.z2
+        self.th2C = self.energy_c.th2
+        self.z2C = self.energy_c.z2
 
-        self.x2_c = self.tower2.x2_c
-        self.x2_si = self.tower2.x2_si
-        self.y2_c = self.tower2.y2_c
-        self.y2_si = self.tower2.y2_si
-        self.chi2_c = self.tower2.chi2_c
-        self.chi2_si = self.tower2.chi2_si
-        self.h2n_c = self.tower2.h2n_c
-        self.h2n_si = self.tower2.h2n_si
+        self.x2C = self.tower2.x2_c
+        self.x2Si = self.tower2.x2_si
+        self.y2C = self.tower2.y2_c
+        self.y2Si = self.tower2.y2_si
+        self.chi2C = self.tower2.chi2_c
+        self.chi2Si = self.tower2.chi2_si
+        self.h2nC = self.tower2.h2n_c
+        self.h2nSi = self.tower2.h2n_si
 
     @property
     def energy(self):
