@@ -1308,7 +1308,7 @@ class LODCM(BaseInterface, Device):
                                          precision=0)
 
         def form(left_str, center_str, right_str):
-            return f'{left_str:<15}{center_str:>25}{right_str:>25}'
+            return f'{left_str:<16}{center_str:>26}{right_str:>26}'
 
         return f"""\
 {hutch}LODCM Motor Status Positions
