@@ -262,16 +262,16 @@ class CrystalTower1(BaseInterface, Device):
         """
         Get the current material.
 
-        Parameters
-        ----------
-        check : bool, optional
-            Indicates if an exception should be raised in case it could not
-            determine the material. Defaults to `False`.
-
         Returns
         -------
         material : str
             Material of the crystal.
+
+        Raises
+        ------
+        ValueError
+            When the material could not be determined or is something else
+             other than `Si` or `C`.
         """
         if self.is_diamond():
             return 'C'
@@ -418,16 +418,16 @@ class CrystalTower2(BaseInterface, Device):
         """
         Get the current material.
 
-        Parameters
-        ----------
-        check : bool, optional
-            Indicates if an exception should be raised in case it could not
-            determine the material. Defaults to `False`.
-
         Returns
         -------
         material : str
             Material of the crystal.
+
+        Raises
+        ------
+        ValueError
+            When the material could not be determined or is something else
+             other than `Si` or `C`.
         """
         if self.is_diamond():
             return 'C'
