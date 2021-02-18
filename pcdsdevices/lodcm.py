@@ -1155,6 +1155,8 @@ class LODCM(BaseInterface, Device):
             configuration = 'Diamond'
         elif material == 'Si':
             configuration = 'Silicon'
+        if self.h1n_state.position == 'OUT':
+            configuration = 'OUT'
         else:
             configuration = 'Unknown'
 
