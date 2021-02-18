@@ -20,12 +20,12 @@ def motor_setup(mot, pos=0):
 
 
 @pytest.fixture(scope='function')
-def fake_lodcm():
+def fake_lodcm(monkeypatch):
     FakeLODCM = make_fake_device(LODCM)
 
-    # def get_material(self, check):
-    #     return "C"
-    # monkeypatch.setattr(LODCMEnergy, 'get_material', get_material)
+    def get_material(self, check):
+        return "Si"
+    monkeypatch.setattr(LODCM, 'get_material', get_material)
 
     lodcm = FakeLODCM('FAKE:LOM', name='fake_lom')
     lodcm.h1n_state.state.sim_put(1)
@@ -69,7 +69,6 @@ def fake_lodcm():
     motor_setup(lodcm.energy_si.z1.motor)
     motor_setup(lodcm.energy_si.z2.motor)
     motor_setup(lodcm.energy_si.dr)
-
     return lodcm
 
 
@@ -371,6 +370,19 @@ def test_inverse_c(fake_energy_c, monkeypatch):
                return_value=(1, 1, 1)):
         res = energy.inverse(23)
         assert np.isclose(res[0], 7.7039801344046515)
+
+
+def test_lodcm_move(fake_lodcm):
+    lodcm = fake_lodcm
+    with patch("pcdsdevices.lodcm.LODCMEnergySi.get_reflection",
+               return_value=(1, 1, 1)):
+
+        lodcm.energy_si.move(10, wait=False)
+        assert lodcm.energy.th1.motor.user_setpoint.get() == 11.402710639982848
+        assert lodcm.energy.th2.motor.user_setpoint.get() == 11.402710639982848
+        assert lodcm.energy.dr.user_setpoint.get() == 11.402710639982848*2
+        assert lodcm.energy.z1.motor.user_setpoint.get() == -713.4828146545175
+        assert lodcm.energy.z2.motor.user_setpoint.get() == 713.4828146545175
 
 
 @pytest.mark.timeout(5)
