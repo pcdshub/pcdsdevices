@@ -442,7 +442,7 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         if kappa is None:
             kappa = self.kappa.position
         if phi is None:
-            phi = -self.phi.position
+            phi = self.phi.position
 
         kappa_ang = self.kappa_ang * np.pi / 180
 
@@ -451,7 +451,7 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         e_eta = -eta * np.pi / 180 - delta
         e_chi = 2.0 * np.arcsin(np.sin(kappa * np.pi / 180 / 2.0)
                                 * np.sin(kappa_ang))
-        e_phi = phi * np.pi / 180 - delta
+        e_phi = -phi * np.pi / 180 - delta
         e_eta = e_eta * 180 / np.pi
         e_chi = e_chi * 180 / np.pi
         e_phi = e_phi * 180 / np.pi
