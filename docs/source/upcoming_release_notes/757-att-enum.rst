@@ -1,5 +1,5 @@
-739 add upper limit threshold to vcn
-#################
+757 att-enum
+############
 
 API Changes
 -----------
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- VCN upper limit can be changed from epics.
+- N/A
 
 New Devices
 -----------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Fix issue where legacy attenuator classes would break bluesky scans.
 
 Maintenance
 -----------
@@ -27,4 +27,5 @@ Maintenance
 
 Contributors
 ------------
-- mghaly
+- klauer
+- zllentz
