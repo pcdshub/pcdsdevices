@@ -953,8 +953,10 @@ class LODCM(BaseInterface, Device):
             return self.energy_c
         elif material == 'Si':
             return self.energy_si
-        else:
-            return None
+        # return energy_c as default if could not determine the material
+        # TODO consider "energy" proxy motor object that picks where to
+        # forward the commands instead of this property
+        return self.energy_c
 
     @property
     def inserted(self):
