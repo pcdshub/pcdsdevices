@@ -283,6 +283,11 @@ class SamPhi(BaseInterface, Device):
         super().__init__('', name=name, **kwargs)
 
 
+class KappaMoveAbort(ValueError):
+    """Exception raised when the user aborts a Kappa move."""
+    pass
+
+
 class Kappa(BaseInterface, PseudoPositioner, Device):
     """
     Kappa stage, control the Kappa diffractometer in spherical coordinates.
@@ -432,11 +437,11 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         coordinates : tuple
             Spherical coordinates.
         """
-        if not eta and eta != 0:
+        if eta is None:
             eta = self.eta.position
-        if not kappa and kappa != 0:
+        if kappa is None:
             kappa = self.kappa.position
-        if not phi and phi != 0:
+        if phi is None:
             phi = -self.phi.position
 
         kappa_ang = self.kappa_ang * np.pi / 180
@@ -472,11 +477,11 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         coordinates : tuple
             Native kappa coordinates.
         """
-        if not e_eta and e_eta != 0:
+        if e_eta is None:
             e_eta = self.e_eta_coord
-        if not e_chi and e_chi != 0:
+        if e_chi is None:
             e_chi = self.e_chi_coord
-        if not e_phi and e_phi != 0:
+        if e_phi is None:
             e_phi = self.e_phi_coord
 
         kappa_ang = self.kappa_ang * np.pi / 180
@@ -521,14 +526,13 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         Checks for the motor step, and ask the user for confirmation if
         movement step is greater than default one.
         """
-        if self.check_motor_step(position.e_eta, position.e_chi,
-                                 position.e_phi):
+        try:
             return super().move(position, wait=wait, timeout=timeout,
                                 moved_cb=moved_cb)
-        else:
+        except KappaMoveAbort as exc:
             logger.warning('Aborting moving for safety.')
             status = DeviceStatus(self)
-            status.set_exception(ValueError('Unsafe Kappa move aborted!'))
+            status.set_exception(exc)
             return status
 
     @real_position_argument
@@ -549,6 +553,18 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         e_eta, e_chi, e_phi = self.k_to_e(real_pos.eta, real_pos.kappa,
                                           real_pos.phi)
         return self.PseudoPosition(e_eta=e_eta, e_chi=e_chi, e_phi=e_phi)
+
+    def check_value(self, position):
+        """
+        Check the goal position and raise an exception if it is not safe.
+
+        This is called before executing any move.
+        """
+        super().check_value(position)
+        eta, kappa, phi = self.e_to_k(position.e_eta, position.e_chi,
+                                      position.e_phi)
+        if not self.check_motor_step(eta, kappa, phi):
+            raise KappaMoveAbort('Unsafe Kappa move aborted!')
 
     def check_motor_step(self, eta, kappa, phi):
         """
@@ -585,12 +601,13 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
             d_str = '\nDo you really intend to do the following motions?\n'
             t = PrettyTable(['Motor', 'Current position', 'to',
                              'Target position'])
-            if is_eta_above_max:
-                t.add_row(['eta', self.eta.position, '-->', eta])
-            if is_kappa_above_max:
-                t.add_row(['kappa', self.kappa.position, '-->', kappa])
-            if is_phi_above_max:
-                t.add_row(['phi', self.phi.position, '-->', phi])
+            t.add_row(['eta', self.eta.position, '-->', eta])
+            t.add_row(['kappa', self.kappa.position, '-->', kappa])
+            t.add_row(['phi', self.phi.position, '-->', phi])
+            e_eta, e_chi, e_phi = self.k_to_e(eta=eta, kappa=kappa, phi=phi)
+            t.add_row(['e_eta', self.e_eta.position, '-->', e_eta])
+            t.add_row(['e_chi', self.e_chi.position, '-->', e_chi])
+            t.add_row(['e_phi', self.e_phi.position, '-->', e_phi])
             print(d_str, t)
 
             if input('  (y/n) ') == 'y':
@@ -626,8 +643,20 @@ x, y, z: {x}, {y}, {z} [{units}]
 """
 
 
+class SimSampleStage(KappaXYZStage):
+    x = Cpt(FastMotor, limits=(-100, 100))
+    y = Cpt(FastMotor, limits=(-100, 100))
+    z = Cpt(FastMotor, limits=(-100, 100))
+
+
 class SimKappa(Kappa):
     """Test version of the Kappa object."""
+    sample_stage = Cpt(SimSampleStage, name='')
     eta = Cpt(FastMotor, limits=(-100, 100))
     kappa = Cpt(FastMotor, limits=(-100, 100))
     phi = Cpt(FastMotor, limits=(-100, 100))
+
+    def __init__(self):
+        super().__init__(name='SimKappa', prefix_x='X', prefix_y='Y',
+                         prefix_z='Z', prefix_eta='ETA', prefix_kappa='KAPPA',
+                         prefix_phi='PHI')
