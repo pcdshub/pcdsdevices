@@ -370,13 +370,15 @@ class CrystalTower2(BaseInterface, Device):
 
     def is_diamond(self):
         """Check if tower 2 is with Diamond (C) material."""
-        return (self.h2n_state.position == 'C' and
+        return ((self.h2n_state.position == 'C' or
+                 self.h2n_state.position == 'OUT') and
                 self.y2_state.position == 'C' and
                 self.chi2_state.position == 'C')
 
     def is_silicon(self):
         """Check if tower 2 is with Silicon (Si) material."""
-        return (self.h2n_state.position == 'Si' and
+        return ((self.h2n_state.position == 'Si' or
+                 self.h2n_state.position == 'OUT') and
                 self.y2_state.position == 'Si' and
                 self.chi2_state.position == 'Si')
 
@@ -1140,8 +1142,10 @@ class LODCM(BaseInterface, Device):
 
     def format_status_info(self, status_info):
         """Override status info handler to render the lodcm."""
-        t1_state = self.h1n_state.position
-        t2_state = self.h2n_state.position
+        t1_state = get_status_value(
+            status_info, 'tower1', 'h1n_state', 'position')
+        t2_state = get_status_value(
+            status_info, 'tower2', 'h2n_state', 'position')
         state = ''
         hutch = ''
         if 'XPP' in self.prefix:
