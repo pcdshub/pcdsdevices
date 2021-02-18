@@ -1,22 +1,20 @@
 import logging
+from unittest.mock import patch
+
 import numpy as np
 import pytest
 from ophyd.sim import make_fake_device
-from unittest.mock import patch
 
 from pcdsdevices.gon import (BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi,
-                             XYZStage, SimKappa)
+                             SimKappa, XYZStage)
 
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def fake_kappa():
-    FakeKappa = make_fake_device(SimKappa)
-    fake_kap = FakeKappa(name='test', prefix_x='x', prefix_y='y', prefix_z='z',
-                         prefix_eta='eta', prefix_kappa='kappa',
-                         prefix_phi='phi', eta_max_step=2, kappa_max_step=2,
-                         phi_max_step=2, kappa_ang=50)
+    fake_kap = SimKappa()
+
     # set current positions
     fake_kap.eta.move(10)
     fake_kap.kappa.move(20)
@@ -73,8 +71,8 @@ def test_gon_disconnected():
 
 
 def test_k_to_e(fake_kappa):
-    # expected result based on old code
-    expected_res = (-27.51268029508058, 10.713563480515766, 41.48731970491941)
+    # modified test based on calculation fixes
+    expected_res = (-27.51268029508058, 10.713563480515766, -50.51268029508058)
     result = fake_kappa.k_to_e(eta=23, kappa=14, phi=46)
     assert np.isclose(expected_res, result).all()
     # test with constructor's params
@@ -89,7 +87,7 @@ def test_e_to_k(fake_kappa):
     result = fake_kappa.e_to_k(e_eta=23, e_chi=14, e_phi=46)
     assert np.isclose(expected_res, result).all()
     # test with constructor's params
-    # when positions are: eat = 10, kappa = 20, phi = 30, angle = 50
+    # when positions are: eta = 10, kappa = 20, phi = 30, angle = 50
     # the coordinates are:
     # (-16.466354394274497, 15.288540112588864, -36.46635439427449)
     expected_res = (10, 20, 30)
@@ -109,7 +107,7 @@ def test_forward(fake_kappa):
 
 
 def test_inverse(fake_kappa):
-    inverse = fake_kappa.inverse(eta=10, kappa=20, phi=-30)
+    inverse = fake_kappa.inverse(eta=10, kappa=20, phi=30)
     # original pseudo coord: eta=-16.466354394274497, kappa=15.288540112588864,
     # phi=-36.46635439427449
     assert np.isclose(inverse.e_eta, -16.466354394274497)
@@ -170,6 +168,7 @@ def test_check_motor_step(fake_kappa):
     assert res is False
 
 
+@pytest.mark.timeout(5)
 def test_moving(fake_kappa):
     eta_pos, kappa_pos, phi_pos = fake_kappa.e_to_k(e_eta=3, e_chi=5, e_phi=7)
     with patch('builtins.input', return_value='y'):
@@ -180,16 +179,35 @@ def test_moving(fake_kappa):
     assert fake_kappa.kappa.position == kappa_pos
     assert fake_kappa.phi.position == phi_pos
 
-    eta_pos, kappa_pos, phi_pos = fake_kappa.e_to_k(e_eta=4, e_chi=6, e_phi=8)
+    eta_pos, kappa_pos, phi_pos = fake_kappa.e_to_k(e_eta=45, e_chi=45,
+                                                    e_phi=45)
     with patch('builtins.input', return_value='y'):
-        status = fake_kappa.move(4, 6, 8)
+        status = fake_kappa.move(45, 45, 45)
     assert fake_kappa.eta.position == eta_pos
     assert fake_kappa.kappa.position == kappa_pos
     assert fake_kappa.phi.position == phi_pos
-    assert status.done is True
-    assert status.success is True
+    status.wait()
+    assert status.done
+    assert status.success
 
     with patch('builtins.input', return_value='n'):
-        status = fake_kappa.move(4, 6, 8)
-    assert status.done is False
-    assert status.success is False
+        status = fake_kappa.move(0, 0, 0)
+    try:
+        status.wait()
+    except Exception:
+        pass
+    assert status.done
+    assert not status.success
+
+
+@pytest.mark.parametrize("eta,kappa,phi", [
+    (0, 0, 0), (1, 2, 3), (10, 20, 30), (45, 45, 45),
+    (6, 2, 6), (42, 0, 0), (0, 42, 0), (0, 0, 42),
+    (7, 7, 7), (-1, -2, -3), (-10, 25, -30), (9, -1, 1)
+    ])
+def test_kappa_calculations(fake_kappa, eta, kappa, phi):
+    e_eta, e_chi, e_phi = fake_kappa.k_to_e(eta, kappa, phi)
+    k_eta, k_kap, k_phi = fake_kappa.e_to_k(e_eta, e_chi, e_phi)
+    assert np.isclose(eta, k_eta)
+    assert np.isclose(kappa, k_kap)
+    assert np.isclose(phi, k_phi)
