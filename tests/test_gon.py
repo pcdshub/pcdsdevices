@@ -168,6 +168,7 @@ def test_check_motor_step(fake_kappa):
     assert res is False
 
 
+@pytest.mark.timeout(5)
 def test_moving(fake_kappa):
     eta_pos, kappa_pos, phi_pos = fake_kappa.e_to_k(e_eta=3, e_chi=5, e_phi=7)
     with patch('builtins.input', return_value='y'):
@@ -185,11 +186,16 @@ def test_moving(fake_kappa):
     assert fake_kappa.eta.position == eta_pos
     assert fake_kappa.kappa.position == kappa_pos
     assert fake_kappa.phi.position == phi_pos
+    status.wait()
     assert status.done
     assert status.success
 
     with patch('builtins.input', return_value='n'):
         status = fake_kappa.move(0, 0, 0)
+    try:
+        status.wait()
+    except Exception:
+        pass
     assert status.done
     assert not status.success
 
