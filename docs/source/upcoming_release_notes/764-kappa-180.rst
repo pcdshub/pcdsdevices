@@ -1,0 +1,30 @@
+764 kappa-180
+#############
+
+API Changes
+-----------
+- N/A
+
+Features
+--------
+- N/A
+
+Device Updates
+--------------
+- N/A
+
+New Devices
+-----------
+- N/A
+
+Bugfixes
+--------
+- Fix Kappa behavior for kappa angles above 180 degrees.
+
+Maintenance
+-----------
+- N/A
+
+Contributors
+------------
+- zllentz
