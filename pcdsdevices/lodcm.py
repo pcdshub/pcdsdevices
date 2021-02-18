@@ -258,7 +258,7 @@ class CrystalTower1(BaseInterface, Device):
             return ''.join(map(str, reflection))
         return tuple(reflection)
 
-    def get_material(self, check=False):
+    def get_material(self):
         """
         Get the current material.
 
@@ -277,8 +277,9 @@ class CrystalTower1(BaseInterface, Device):
             return 'C'
         elif self.is_silicon():
             return 'Si'
-        if check:
-            raise ValueError("Unable to determine crystal material")
+        else:
+            raise ValueError(
+                "Unable to determine crystal material for Tower 1")
 
 
 class CrystalTower2(BaseInterface, Device):
@@ -413,7 +414,7 @@ class CrystalTower2(BaseInterface, Device):
             return ''.join(map(str, reflection))
         return tuple(reflection)
 
-    def get_material(self, check=False):
+    def get_material(self):
         """
         Get the current material.
 
@@ -432,8 +433,9 @@ class CrystalTower2(BaseInterface, Device):
             return 'C'
         elif self.is_silicon():
             return 'Si'
-        if check:
-            raise ValueError("Unable to determine crystal material")
+        else:
+            raise ValueError(
+                "Unable to determine crystal material for Tower 2")
 
 
 class DiagnosticsTower(BaseInterface, Device):
@@ -949,7 +951,7 @@ class LODCM(BaseInterface, Device):
 
     @property
     def energy(self):
-        material = self.get_material(check=True)
+        material = self.get_material()
         if material == 'C':
             return self.energy_c
         elif material == 'Si':
@@ -1069,7 +1071,7 @@ class LODCM(BaseInterface, Device):
             raise ValueError('Invalid Crystal Arrangement')
         return ref_1
 
-    def get_material(self, check=False):
+    def get_material(self):
         """
         Get the current crystals material.
 
@@ -1084,8 +1086,8 @@ class LODCM(BaseInterface, Device):
         m_1 : str
             Crystals material.
         """
-        m_1 = self.tower1.get_material(check)
-        m_2 = self.tower2.get_material(check)
+        m_1 = self.tower1.get_material()
+        m_2 = self.tower2.get_material()
         if m_1 != m_2:
             logger.warning('Crystals do not match: c1: %s, c2: %s', m_1, m_2)
             raise ValueError('Invalid Crystal Arrangement.')
@@ -1109,7 +1111,7 @@ class LODCM(BaseInterface, Device):
         energy : number
             Photon energy in keV.
         """
-        material = material or self.get_material(check=True)
+        material = material or self.get_material()
         reflection = reflection or self.get_reflection(
             as_tuple=True, check=True)
         if material == 'Si':
@@ -1136,7 +1138,7 @@ class LODCM(BaseInterface, Device):
         th, z : tuple
         """
         # try to determine the material and reflection:
-        material = material or self.get_material(check=True)
+        material = material or self.get_material()
         reflection = reflection or self.get_reflection(
             as_tuple=True, check=True)
         return self.energy.calc_energy(energy, material, reflection)

@@ -23,7 +23,7 @@ def motor_setup(mot, pos=0):
 def fake_lodcm(monkeypatch):
     FakeLODCM = make_fake_device(LODCM)
 
-    def get_material(self, check):
+    def get_material(self):
         return "Si"
     monkeypatch.setattr(LODCM, 'get_material', get_material)
 
