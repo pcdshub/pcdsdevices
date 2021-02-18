@@ -1140,11 +1140,17 @@ class LODCM(BaseInterface, Device):
 
     def format_status_info(self, status_info):
         """Override status info handler to render the lodcm."""
+        t1_state = self.h1n_state.position
+        t2_state = self.h2n_state.position
+        state = ''
         hutch = ''
         if 'XPP' in self.prefix:
             hutch = 'XPP '
+            state = f'Crystal 1 state: {t1_state}'
         elif 'XCS' in self.prefix:
             hutch = 'XCS '
+            state = f'Crystal 1 state: {t1_state}'
+            state = f'{state}\nCrystal 2 state: {t2_state}'
 
         try:
             material = self.get_material()
@@ -1155,8 +1161,6 @@ class LODCM(BaseInterface, Device):
             configuration = 'Diamond'
         elif material == 'Si':
             configuration = 'Silicon'
-        if self.h1n_state.position == 'OUT':
-            configuration = 'OUT'
         else:
             configuration = 'Unknown'
 
@@ -1314,6 +1318,7 @@ class LODCM(BaseInterface, Device):
 
         return f"""\
 {hutch}LODCM Motor Status Positions
+{state}
 Current Configuration: {configuration} ({ref})
 Photon Energy: {energy} [keV]
 -----------------------------------------------------------------
