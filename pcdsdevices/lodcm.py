@@ -1160,6 +1160,7 @@ class LODCM(BaseInterface, Device):
 
         try:
             energy = self.get_energy()
+            energy = "{:.4f}".format(energy)
         except Exception:
             energy = 'Unknown'
 
@@ -1338,7 +1339,7 @@ Photon Energy: {energy} [keV]
 {form(f'diag v [{dv_units}]', f'{dv_user} ({dv_dial})', '')}
 {form(f'filter [{df_units}]', f'{df_user} ({df_dial})', '')}
 {form(f'diode [{dd_units}]', f'{dd_user} ({dd_dial})', '')}
-{form(f'navitar [{yag_zoom_units}]',
+{form(f'navitar zoom [{yag_zoom_units}]',
       f'{yag_zoom_user} ({yag_zoom_dial})', '')}
 """
 
