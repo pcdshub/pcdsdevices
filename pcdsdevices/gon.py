@@ -521,8 +521,9 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         Checks for the motor step, and ask the user for confirmation if
         movement step is greater than default one.
         """
-        if self.check_motor_step(position.e_eta, position.e_chi,
-                                 position.e_phi):
+        position_k = self.e_to_k(position.e_eta, position.e_chi, position.e_phi)
+        if self.check_motor_step(position_k.eta, position_k.chi,
+                                 position_k.phi):
             return super().move(position, wait=wait, timeout=timeout,
                                 moved_cb=moved_cb)
         else:
