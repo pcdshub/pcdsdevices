@@ -517,24 +517,6 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
                                       pseudo_pos.e_phi)
         return self.RealPosition(eta=eta, kappa=kappa, phi=phi)
 
-    @pseudo_position_argument
-    def move(self, position, wait=True, timeout=None, moved_cb=None):
-        """
-        Move to a specified position, optionally waiting for motion to
-        complete.
-
-        Checks for the motor step, and ask the user for confirmation if
-        movement step is greater than default one.
-        """
-        try:
-            return super().move(position, wait=wait, timeout=timeout,
-                                moved_cb=moved_cb)
-        except KappaMoveAbort as exc:
-            logger.warning('Aborting moving for safety.')
-            status = DeviceStatus(self)
-            status.set_exception(exc)
-            return status
-
     @real_position_argument
     def inverse(self, real_pos):
         """
@@ -553,6 +535,24 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         e_eta, e_chi, e_phi = self.k_to_e(real_pos.eta, real_pos.kappa,
                                           real_pos.phi)
         return self.PseudoPosition(e_eta=e_eta, e_chi=e_chi, e_phi=e_phi)
+
+    @pseudo_position_argument
+    def move(self, position, wait=True, timeout=None, moved_cb=None):
+        """
+        Move to a specified position, optionally waiting for motion to
+        complete.
+
+        Checks for the motor step, and ask the user for confirmation if
+        movement step is greater than default one.
+        """
+        try:
+            return super().move(position, wait=wait, timeout=timeout,
+                                moved_cb=moved_cb)
+        except KappaMoveAbort as exc:
+            logger.warning('Aborting moving for safety.')
+            status = DeviceStatus(self)
+            status.set_exception(exc)
+            return status
 
     def check_value(self, position):
         """
