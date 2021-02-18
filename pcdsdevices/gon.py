@@ -446,12 +446,21 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
 
         kappa_ang = self.kappa_ang * np.pi / 180
 
-        delta = np.arctan(np.tan(kappa * np.pi / 180 / 2.0)
-                          * np.cos(kappa_ang))
-        e_eta = -eta * np.pi / 180 - delta
-        e_chi = 2.0 * np.arcsin(np.sin(kappa * np.pi / 180 / 2.0)
-                                * np.sin(kappa_ang))
-        e_phi = -phi * np.pi / 180 - delta
+        if self.kappa.position < 180:
+            delta = np.arctan(np.tan(kappa * np.pi / 180 / 2)
+                              * np.cos(kappa_ang))
+            e_eta = -eta * np.pi / 180 - delta
+            e_chi = 2 * np.arcsin(np.sin(kappa * np.pi / 180 / 2)
+                                  * np.sin(kappa_ang))
+            e_phi = -phi * np.pi / 180 - delta
+        else:
+            delta = np.arctan(np.tan(kappa * np.pi / 180 / 2)
+                              * np.cos(kappa_ang))
+            e_eta = np.pi - (-eta * np.pi / 180 - delta)
+            e_chi = 2 * np.arcsin(np.sin(kappa * np.pi / 180 / 2)
+                                  * np.sin(kappa_ang))
+            e_phi = phi * np.pi / 180 - delta
+
         e_eta = e_eta * 180 / np.pi
         e_chi = e_chi * 180 / np.pi
         e_phi = e_phi * 180 / np.pi
@@ -660,9 +669,9 @@ class SimSampleStage(KappaXYZStage):
 class SimKappa(Kappa):
     """Test version of the Kappa object."""
     sample_stage = Cpt(SimSampleStage, name='')
-    eta = Cpt(FastMotor, limits=(-100, 100))
-    kappa = Cpt(FastMotor, limits=(-100, 100))
-    phi = Cpt(FastMotor, limits=(-100, 100))
+    eta = Cpt(FastMotor, limits=(-180, 180))
+    kappa = Cpt(FastMotor, limits=(-360, 360))
+    phi = Cpt(FastMotor, limits=(-180, 180))
 
     def __init__(self):
         super().__init__(name='SimKappa', prefix_x='X', prefix_y='Y',
