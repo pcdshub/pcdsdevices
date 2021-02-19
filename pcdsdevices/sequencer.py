@@ -17,6 +17,7 @@ class EventSequence(BaseInterface, Device):
     bd_array = Cpt(EpicsSignal, ':SEQ.B')
     fd_array = Cpt(EpicsSignal, ':SEQ.C')
     bc_array = Cpt(EpicsSignal, ':SEQ.D')
+    seq_proc = Cpt(EpicsSignal, ':SEQ.PROC')
 
     tab_whitelist = ['get_seq', 'put_seq', 'show']
 
@@ -114,6 +115,7 @@ class EventSequence(BaseInterface, Device):
         self.bd_array.put(seq[1])
         self.fd_array.put(seq[2])
         self.bc_array.put(seq[3])
+        self.seq_proc.put(1)  # Force the sequencer to update sequence
 
     def show(self, num_lines=None):
         """

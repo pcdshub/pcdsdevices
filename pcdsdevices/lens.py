@@ -1,10 +1,11 @@
 """
 Module for Beryllium Lens positioners.
 """
+import logging
 import time
 from collections import defaultdict
 from datetime import date
-import logging
+
 import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
@@ -520,14 +521,21 @@ class LensStack(LensStackBase):
 
     """
 
-    def __init__(self, *args, path, **kwargs):
+    def __init__(self, x_prefix, y_prefix, z_prefix, z_offset, z_dir, E,
+                 att_obj, lcls_obj=None, mono_obj=None, *args, path,
+                 lens_set=None, **kwargs):
 
         self.path = path
         self.lens_pack = self.read_lens()
-        # Defaulting this a the first set in the file for now
-        lens_set = calcs.get_lens_set(1, self.path)
 
-        super().__init__(*args, lens_set=lens_set, **kwargs)
+        if lens_set is None:
+            # Defaulting this a the first set in the file for now
+            lens_set = calcs.get_lens_set(1, self.path)
+
+        super().__init__(
+            x_prefix, y_prefix, z_prefix, lens_set, z_offset, z_dir, E,
+            att_obj, *args, **kwargs
+        )
 
     def read_lens(self, print_only=False):
         """

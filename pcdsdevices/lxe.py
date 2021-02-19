@@ -35,7 +35,7 @@ import typing
 import numpy as np
 from ophyd import Component as Cpt
 from ophyd import EpicsSignal, PVPositioner
-from ophyd.signal import AttributeSignal
+from scipy.constants import speed_of_light
 
 from .component import UnrelatedComponent as UCpt
 from .epics_motor import DelayNewport, EpicsMotorInterface
@@ -43,7 +43,7 @@ from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
                         SyncAxesBase, pseudo_position_argument,
                         real_position_argument)
-from .signal import UnitConversionDerivedSignal
+from .signal import UnitConversionDerivedSignal, NotepadLinkedSignal
 from .utils import convert_unit, get_status_value
 
 if typing.TYPE_CHECKING:
@@ -269,11 +269,23 @@ class LaserTiming(FltMvInterface, PVPositioner):
                    original_units='ns',
                    kind='hinted',
                    doc='Setpoint which handles the timing conversion.',
-                   limits=(1e-20, 1.1e-3),
+                   limits=(-10e-6, 10e-6),
                    )
-    user_offset = Cpt(AttributeSignal, attr='_user_offset',
+    notepad_setpoint = Cpt(NotepadLinkedSignal, ':lxt:OphydSetpoint',
+                           notepad_metadata={'record': 'ao',
+                                             'default_value': 0.0},
+                           kind='omitted'
+                           )
+    notepad_readback = Cpt(NotepadLinkedSignal, ':lxt:OphydReadback',
+                           notepad_metadata={'record': 'ao',
+                                             'default_value': 0.0},
+                           kind='omitted'
+                           )
+    user_offset = Cpt(NotepadLinkedSignal, ':lxt:OphydOffset',
+                      notepad_metadata={'record': 'ao', 'default_value': 0.0},
                       kind='normal',
-                      doc='A Python-level user offset.')
+                      doc='A Python-level user offset.'
+                      )
 
     # A motor (record) will be moved after the above record is touched, so
     # use its done motion status:
@@ -288,17 +300,38 @@ class LaserTiming(FltMvInterface, PVPositioner):
             )
         super().__init__(prefix, egu='s', **kwargs)
 
-    @property
-    def _user_offset(self):
+    @user_offset.sub_value
+    def _offset_changed(self, value, **kwargs):
         """
-        Used as part of the AttributeSignal above, mirror the user offset from
-        the setpoint.
+        The user offset was changed.  Update the setpoint attribute.
         """
-        return self.setpoint.user_offset
-
-    @_user_offset.setter
-    def _user_offset(self, value):
         self.setpoint.user_offset = value
+
+    def _setup_move(self, position):
+        """Update the notepad setpoint, move, and do not wait."""
+        try:
+            signal = self.notepad_setpoint
+            if signal.connected and signal.write_access:
+                if signal.get(use_monitor=True) != position:
+                    signal.put(position, wait=False)
+        except Exception as ex:
+            self.log.debug('Failed to update notepad setpoint to position %s',
+                           position, exc_info=ex)
+        super()._setup_move(position)
+
+    @done.sub_value
+    def _update_position(self, old_value=None, value=None, **kwargs):
+        """The move was completed. Update the notepad readback."""
+        if value == self.done_value and old_value == 0:
+            try:
+                signal = self.notepad_readback
+                position = self.setpoint.get()
+                if signal.connected and signal.write_access:
+                    if signal.get(use_monitor=True) != position:
+                        signal.put(position, wait=False)
+            except Exception as ex:
+                self.log.debug('Failed to update notepad readback to position'
+                               ' %s', position, exc_info=ex)
 
     @property
     def limits(self):
@@ -391,15 +424,21 @@ class _ReversedTimeToolDelay(DelayNewport):
 
     @pseudo_position_argument
     def forward(self, pseudo_pos):
-        return self.RealPosition(
-            *[-1.0 * p for p in super().forward(pseudo_pos)]
-        )
+        """Convert delay unit to motor unit."""
+        seconds = convert_unit(-pseudo_pos.delay - self.user_offset.get(),
+                               self.delay.egu, 'seconds')
+        meters = seconds * speed_of_light / self.n_bounces
+        motor_value = convert_unit(meters, 'meters', self.motor.egu)
+        return self.RealPosition(motor=motor_value)
 
     @real_position_argument
     def inverse(self, real_pos):
-        return self.PseudoPosition(
-            *[-1.0 * p for p in super().inverse(real_pos)]
-        )
+        """Convert motor unit to delay unit."""
+        meters = convert_unit(real_pos.motor, self.motor.egu, 'meters')
+        seconds = meters / speed_of_light * self.n_bounces
+        delay_value = convert_unit(seconds, 'seconds', self.delay.egu)
+        return self.PseudoPosition(delay=-(delay_value
+                                           + self.user_offset.get()))
 
 
 class LaserTimingCompensation(SyncAxesBase):
@@ -415,12 +454,12 @@ class LaserTimingCompensation(SyncAxesBase):
     ``txt`` and ``lxt``, respectively.
     """
     tab_component_names = True
-    pseudo = Cpt(PseudoSingleInterface, limits=(1e-20, 1.1e-3))
+    pseudo = Cpt(PseudoSingleInterface, limits=(-10e-6, 10e-6))
     delay = UCpt(_ReversedTimeToolDelay, doc='The **reversed** txt motor')
     laser = UCpt(LaserTiming, doc='The lxt motor')
 
     def __init__(self, prefix, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         super().__init__(prefix, **kwargs)
-        self.delay.name = 'txt'
+        self.delay.name = 'txt_reversed'
         self.laser.name = 'lxt'

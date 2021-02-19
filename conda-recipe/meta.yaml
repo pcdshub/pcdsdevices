@@ -17,19 +17,20 @@ requirements:
     - setuptools
   run:
     - python >=3.6
-    - ophyd >=1.5.1
     - bluesky >=1.6.4
+    - happi
+    - matplotlib-base
+    - numpy
+    - ophyd >=1.5.1
+    - pcdscalc >=0.2.0
+    - pcdsutils >=0.4.0
+    - pint
+    - prettytable
     - pyepics >=3.4.2
     - pytmc >=2.7.0
     - pyyaml
-    - pint
-    - scipy
-    - matplotlib <3
-    - periodictable
-    - happi
     - schema
-    - pcdsutils
-    - pcdscalc
+    - scipy
 
 test:
   imports:

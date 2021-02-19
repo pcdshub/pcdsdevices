@@ -1,5 +1,5 @@
-679 Mirrors Custom Status Print
-#################
+757 att-enum
+############
 
 API Changes
 -----------
@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- Added custom status print for `XOffsetMirror`, `OffsetMirror`, `KBOMirror`, and `FFMirror`.
+- N/A
 
 Device Updates
 --------------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Fix issue where legacy attenuator classes would break bluesky scans.
 
 Maintenance
 -----------
@@ -27,4 +27,5 @@ Maintenance
 
 Contributors
 ------------
-- cristinasewell
+- klauer
+- zllentz

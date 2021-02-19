@@ -12,7 +12,7 @@ if __name__ != 'pcdsdevices.signal':
 import logging
 import numbers
 import typing
-from threading import RLock, Thread
+from threading import RLock
 
 import numpy as np
 from ophyd.signal import (DerivedSignal, EpicsSignal, EpicsSignalBase,
@@ -235,18 +235,11 @@ class AvgSignal(Signal):
         self.raw_sig = signal
         self._lock = RLock()
         self.averages = averages
-        self._con = False
-        t = Thread(target=self._init_subs, args=())
-        t.start()
-
-    def _init_subs(self):
-        self.raw_sig.wait_for_connection()
         self.raw_sig.subscribe(self._update_avg)
-        self._con = True
 
     @property
     def connected(self):
-        return self._con
+        return self.raw_sig.connected
 
     @property
     def averages(self):

@@ -1,5 +1,5 @@
-718 Add get_status_float function in utils
-#################
+764 kappa-180
+#############
 
 API Changes
 -----------
@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- Added a new function in `utils` to get the status value and format that value with the requested precision.
+- N/A
 
 Device Updates
 --------------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Fix Kappa behavior for kappa angles above 180 degrees.
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- cristinasewell
+- zllentz
