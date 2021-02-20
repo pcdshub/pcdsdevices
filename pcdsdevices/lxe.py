@@ -44,7 +44,7 @@ from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
                         SyncAxesBase, pseudo_position_argument,
                         real_position_argument)
 from .signal import UnitConversionDerivedSignal, NotepadLinkedSignal
-from .utils import convert_unit, get_status_value
+from .utils import convert_unit, get_status_value, get_status_float
 
 if typing.TYPE_CHECKING:
     import matplotlib  # noqa
@@ -396,7 +396,7 @@ class LaserTiming(FltMvInterface, PVPositioner):
         status: str
             Formatted string with all relevant status information.
         """
-        position = get_status_value(status_info, 'position')
+        position = get_status_float(status_info, 'position', precision=3)
         units = get_status_value(status_info, 'setpoint', 'units')
         return f"""\
 Virtual Motor {self.verbose_name} {self.prefix}

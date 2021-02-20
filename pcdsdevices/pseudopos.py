@@ -13,7 +13,7 @@ from scipy.constants import speed_of_light
 from .interface import FltMvInterface
 from .signal import NotepadLinkedSignal
 from .sim import FastMotor
-from .utils import convert_unit, get_status_value
+from .utils import convert_unit, get_status_value, get_status_float
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +41,18 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         super().__init__(prefix=prefix, parent=parent, **kwargs)
         self._verbose_name = verbose_name
 
+    # TODO: this implementation might be totally crazy....
+    @property
+    def calculated_dial_pos(self):
+        """
+        Calculate the dial position of the real motor dial position.
+        """
+        # assumes one real motor
+        real_dial = self.parent.real_positioners[0].dial_position.get()
+        if real_dial:
+            return round(self.parent.inverse(real_dial), 3)
+        return 'N/A'
+
     def format_status_info(self, status_info):
         """
         Override status info handler to render the virtual motor.
@@ -60,7 +72,8 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
             Formatted string with all relevant status information.
         """
         units = get_status_value(status_info, 'notepad_readback', 'units')
-        position = get_status_value(status_info, 'position')
+        position = get_status_float(status_info, 'position', precision=3)
+        dial_pos = self.calculated_dial_pos
 
         low, high = self.limits
         name = self.prefix
@@ -69,7 +82,7 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
 
         return f"""\
 Virtual Motor {name}
-Current position (user): {position}[{units}]
+Current position (user, dial): {position}, {dial_pos} [{units}]
 User limits (low, high): {low}, {high} [{units}]
 Preset position: {self.presets.state()}
 """
