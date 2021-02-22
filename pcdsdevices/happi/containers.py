@@ -27,6 +27,24 @@ class LCLSItem(OphydItem):
                       enforce=re.compile(r'[A-Z0-9]{3}$|[A-Z][0-9]S[0-9]{2}$'))
     lightpath = EntryInfo("If the device should be included in the "
                           "LCLS Lightpath", enforce=bool, default=False)
+    ioc_engineer = EntryInfo(('Engineer for the IOC. Used to build IOC '
+                             'configs.'),
+                             optional=True, enforce=str)
+    ioc_location = EntryInfo('Location of the IOC. Used to build IOC configs.',
+                             optional=True, enforce=str)
+    ioc_hutch = EntryInfo(('Hutch the IOC will be used in. Used to build IOC '
+                           'configs.'), optional=True, enforce=str)
+    ioc_release = EntryInfo(('Full path to IOC release directory. Used to '
+                            'build IOC configs.'),
+                            optional=True, enforce=str)
+    ioc_arch = EntryInfo(('The IOC host architecture. Used to build IOC '
+                         'configs.'), optional=True, enforce=str)
+    ioc_name = EntryInfo('The name of the device IOC. Used to build the IOC.',
+                         optional=True, enforce=str)
+    ioc_type = EntryInfo(('The type of device IOC. Useful when multiple '
+                          'device classes can occupy the same controller. Can '
+                          'be used to tell higher level code how to interpret '
+                          'the ioc data.'), optional=True, enforce=str)
 
 
 class Vacuum(Device):
@@ -350,3 +368,201 @@ class Trigger(Device):
     device_class.default = 'pcdsdevices.device_types.Trigger'
     system = copy(Device.system)
     system.default = 'timing'
+
+
+class Elliptec(LCLSItem):
+    """
+    A Generic class for Elliptec Motors
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.device_types.EllBase'
+    ioc_type = copy(LCLSItem.ioc_type)
+    ioc_type.default = 'Elliptec'
+    kwargs = deepcopy(Device.kwargs)
+    kwargs.default['port'] = "0"
+    kwargs.default['channel'] = "{{ioc_channel}}"
+    ioc_serial = EntryInfo(('Serial number of the stage controller. Used to '
+                            'build IOC configs.'),
+                           optional=True, enforce=str)
+    ioc_model = EntryInfo(('Model number of the stage. Used to build IOC '
+                           'configs.'),
+                          optional=True, enforce=str)
+    ioc_channel = EntryInfo(('Channel number of the stage. Used to build IOC '
+                             'configs, and passed to python object.'),
+                            optional=False, enforce=str)
+    ioc_base = EntryInfo(('Elliptec controller PV base. This is not '
+                          'necessarily the same as the desired axis '
+                          'base PV. Use the "ioc_alias" entry to modify '
+                          'if a different axis PV is desired.'),
+                         optional=True, enforce=str)
+    ioc_alias = EntryInfo('Optional alias to give the axis.', optional=True,
+                          enforce=str, default=None)
+
+
+class Qmini(LCLSItem):
+    """
+    A Generic class for Qseries spectrometers
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.device_types.QminiSpectrometer'
+    ioc_type = copy(LCLSItem.ioc_type)
+    ioc_type.default = 'Qmini'
+    ioc_serial = EntryInfo(('Serial number of the spectrometer. Used to '
+                            'build IOC configs.'),
+                           optional=True, enforce=str)
+    ioc_use_evr = EntryInfo(('Option to use an EVR or not. Options are "yes"'
+                             ' and "no". Default is no.'), optional=True,
+                            default='no', enforce=str)
+    ioc_evr_channel = EntryInfo('The EVR channel the IOC will use, if any.',
+                                optional=True, default='1', enforce=str)
+
+
+class SmarActMotor(LCLSItem):
+    """
+    Container for individual SmarAct motors (open or closed loop).
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.epics_motor.SmarAct'
+    ioc_type = copy(LCLSItem.ioc_type)
+    ioc_type.default = 'SmarAct'
+    ioc_ip = EntryInfo(('Netconfig entry name for motor controller. Used to '
+                        'build IOC configs.'),
+                       optional=True, enforce=str)
+    ioc_base = EntryInfo(('Base PV of the SmarAct controller. Used to build '
+                          'IOC configs.'), optional=True, enforce=str)
+    ioc_channel = EntryInfo(('Controller channel that the axis is on. Ranges '
+                             'from 1 to 18.'), optional=True, enforce=str)
+    ioc_alias = EntryInfo('Optional PV alias to give this axis.',
+                          optional=True, enforce=str)
+
+
+class SmarActTipTiltMotor(LCLSItem):
+    """
+    Container for SmarAct tip-tilt motor pairs.
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.epics_motor.SmarActTipTilt'
+    ioc_type = copy(LCLSItem.ioc_type)
+    ioc_type.default = 'SmarAct'
+    kwargs = deepcopy(Device.kwargs)
+    args = deepcopy(Device.args)
+    args = []  # No args for me, thank you
+    kwargs.default['tip_pv'] = "{{ioc_tip_suffix}}"
+    kwargs.default['tilt_pv'] = "{{ioc_tilt_suffix}}"
+    ioc_ip = EntryInfo(('Netconfig entry name for motor controller. Used to '
+                        'build IOC configs.'), optional=True, enforce=str)
+    ioc_tip_channel = EntryInfo(('Controller channel that the tip axis is on. '
+                                 'Ranges from 1 to 18.'), optional=True,
+                                enforce=str)
+    ioc_tilt_channel = EntryInfo(('Controller channel that the tilt axis is '
+                                  'on. Ranges from 1 to 18.'), optional=True,
+                                 enforce=str)
+    ioc_base = EntryInfo(('Base PV of the SmarAct controller. Used to build '
+                          'IOC configs.'), optional=True, enforce=str)
+    ioc_alias = EntryInfo(('Base alias PV of the two stages. Used to build '
+                          'IOC configs.'), optional=True, enforce=str)
+    ioc_tip_suffix = EntryInfo('PV suffix to give the tip axis alias.',
+                               default='_TIP1', optional=True, enforce=str)
+    ioc_tilt_suffix = EntryInfo('PV suffix to give the tilt axis alias.',
+                                default='_TILT1', optional=True, enforce=str)
+
+
+class BaslerCamera(LCLSItem):
+    """
+    Container for Basler cameras.
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.areadetector.detectors.Basler'
+    ioc_type = copy(LCLSItem.ioc_type)
+    ioc_type.default = 'BaslerGigE'
+    ioc_ip = EntryInfo(('IP address (not netconfig name) of the camera. Used '
+                        'to build IOC configs.'), optional=True, enforce=str)
+    ioc_cam_model = EntryInfo(('Model number of the camera, e.g. '
+                               '"Basler_acA2500-20gm". Used to build IOC '
+                               'config files.'), optional=True, enforce=str)
+    ioc_use_evr = EntryInfo(('Option to use an EVR or not. Options are "yes"'
+                             ' and "no". Default is no.'), optional=True,
+                            default='no', enforce=str)
+    ioc_evr_channel = EntryInfo('The EVR channel the IOC will use, if any.',
+                                optional=True, default='1', enforce=str)
+    ioc_net_if = EntryInfo(('Network interface name. Typically ETH0, ETH1, '
+                           'ENO1 or ENO2.'), optional=True, default='ETH0',
+                           enforce=str)
+    ioc_net_if_num = EntryInfo('Network interface number. Typically 1.',
+                               optional=True, default='1', enforce=str)
+    ioc_http_port = EntryInfo('Unique HTTP port. Needed for MJPG plugin.',
+                              optional=True, default='7801', enforce=str)
+
+
+class LasBasler(BaslerCamera):
+    """
+    Container for MODS system Basler cameras.
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.areadetector.detectors.LasBasler'
+
+
+class ThorlabsWfs(LCLSItem):
+    """
+    Container for Thorlabs WFS sensors.
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.device_types.ThorlabsWfs40'
+    # This device uses a weird version of gcc. Also needs special environment
+    # to compile; this can be set using a script in the IOC parent directory.
+    ioc_arch = copy(LCLSItem.ioc_arch)
+    ioc_arch.default = 'rhel7-gcc494-x86_64'
+    ioc_type = copy(LCLSItem.ioc_type)
+    ioc_type.default = 'ThorLabsWfs40'
+    ioc_model = EntryInfo('Thorlabs camera model number.', optional=True,
+                          default='WFS-40', enforce=str)
+    ioc_id_num = EntryInfo('Unique ID number of the camera', optional=True,
+                           enforce=str)
+    ioc_lenslet_pitch = EntryInfo('Pitch of WFS lenslets.', optional=True,
+                                  default='150', enforce=str)
+    ioc_use_evr = EntryInfo(('Option to use an EVR or not. Options are "yes"'
+                             ' and "no". Default is no.'), optional=True,
+                            default='no', enforce=str)
+    ioc_evr_channel = EntryInfo('The EVR channel the IOC will use, if any.',
+                                optional=True, default='1', enforce=str)
+
+
+class ThorlabsPM101PowerMeter(LCLSItem):
+    """
+    Container for the Thorlabs PM101A power meter, digitized with an EL3174.
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.device_types.El3174AiCh'
+    ioc_type = copy(LCLSItem.ioc_type)
+    ioc_type.default = 'EK9000'
+    ioc_ip = EntryInfo(('Netconfig name of the EK9000 the power meter is '
+                        'connected to. Used to build IOC configs.'),
+                       optional=True, enforce=str)
+    ioc_card_num = EntryInfo(('Card number of the EL3174 the power meter is '
+                              'connected to.'), optional=True, enforce=str)
+    ioc_chan_num = EntryInfo(('Channel number of the EL3174 the power meter '
+                              'is connected to.'), optional=True, enforce=str)
+    ioc_base = EntryInfo('Base PV of the EK9000 IOC', optional=True,
+                         enforce=str)
+    ioc_alias = EntryInfo('Optional PV alias to give this power meter.',
+                          optional=True, enforce=str)
+
+
+class EnvironmentalMonitor(LCLSItem):
+    """
+    Container for MODS environmental monitor units.
+
+    These units follow a standard deployment and naming configuration. It is
+    assumed that the sensors will be connected to the first card, an EL3174,
+    on the EK9000 with the pressure, humidity and temperature sensors connected
+    to channels1, 2 and 3 respectively.
+    """
+    device_class = copy(LCLSItem.device_class)
+    device_class.default = 'pcdsdevices.device_types.EnvironmentalMonitor'
+    ioc_type = copy(LCLSItem.ioc_type)
+    ioc_type.default = 'EK9000'
+    ioc_ip = EntryInfo(('Netconfig name of the EK9000 the sensors are '
+                        'connected to. Used to build IOC configs.'),
+                       optional=True, enforce=str)
+    ioc_base = EntryInfo('Base PV of the EK9000 IOC', optional=True,
+                         enforce=str)
