@@ -26,7 +26,7 @@ class LCLSItem(OphydItem):
     ioc_engineer = EntryInfo(('Engineer for the IOC. Used to build IOC '
                              'configs.'),
                              optional=True, enforce=str)
-    ioc_location = EntryInfo('Loction of the IOC. Used to build IOC configs.',
+    ioc_location = EntryInfo('Location of the IOC. Used to build IOC configs.',
                              optional=True, enforce=str)
     ioc_hutch = EntryInfo(('Hutch the IOC will be used in. Used to build IOC '
                            'configs.'), optional=True, enforce=str)
