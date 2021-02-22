@@ -48,7 +48,7 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         """
         dial_pos = []
         # assume the name will be something like: parent_name_self_name
-        name = self.__getattribute__('name').split('_')[-1]
+        name = self.name.split('_')[-1]
         try:
             for real_pos in self.parent.real_positioners:
                 dial_pos.append(real_pos.dial_position.get())
