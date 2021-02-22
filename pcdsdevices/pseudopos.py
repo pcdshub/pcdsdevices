@@ -55,8 +55,8 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
             if dial_pos:
                 calc_dial = self.parent.inverse(
                     self.parent.RealPosition(*dial_pos))
-            # try to get the correct pseudo position
-            return f'{calc_dial.__getattribute__(name):.3e}'
+            # try to get the correct pseudo position base on the name
+            return f'{calc_dial[calc_dial._fields.index(name)]:.3e}'
         # some motors might not have dial_position
         except Exception:
             return None
