@@ -50,7 +50,7 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         # assumes one real motor
         real_dial = self.parent.real_positioners[0].dial_position.get()
         if real_dial:
-            return round(self.parent.inverse(real_dial), 3)
+            return f'{self.parent.inverse(real_dial)[0]:.3f}'
         return 'N/A'
 
     def format_status_info(self, status_info):
