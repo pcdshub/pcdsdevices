@@ -396,7 +396,8 @@ class LaserTiming(FltMvInterface, PVPositioner):
         status: str
             Formatted string with all relevant status information.
         """
-        position = get_status_float(status_info, 'position', precision=3)
+        position = get_status_float(
+            status_info, 'position', precision=3, format='E')
         units = get_status_value(status_info, 'setpoint', 'units')
         return f"""\
 Virtual Motor {self.verbose_name} {self.prefix}

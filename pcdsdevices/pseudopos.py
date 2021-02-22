@@ -41,17 +41,25 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         super().__init__(prefix=prefix, parent=parent, **kwargs)
         self._verbose_name = verbose_name
 
-    # TODO: this implementation might be totally crazy....
     @property
     def calculated_dial_pos(self):
         """
         Calculate the dial position of the real motor dial position.
         """
-        # assumes one real motor
-        real_dial = self.parent.real_positioners[0].dial_position.get()
-        if real_dial:
-            return f'{self.parent.inverse(real_dial)[0]:.3f}'
-        return 'N/A'
+        dial_pos = []
+        # assume the name will be something like: parent_name_self_name
+        name = self.__getattribute__('name').split('_')[-1]
+        try:
+            for real_pos in self.parent.real_positioners:
+                dial_pos.append(real_pos.dial_position.get())
+            if dial_pos:
+                calc_dial = self.parent.inverse(
+                    self.parent.RealPosition(*dial_pos))
+            # try to get the correct pseudo position
+            return f'{calc_dial.__getattribute__(name):.3e}'
+        # some motors might not have dial_position
+        except Exception:
+            return None
 
     def format_status_info(self, status_info):
         """
@@ -72,8 +80,11 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
             Formatted string with all relevant status information.
         """
         units = get_status_value(status_info, 'notepad_readback', 'units')
-        position = get_status_float(status_info, 'position', precision=3)
-        dial_pos = self.calculated_dial_pos
+        position = get_status_float(
+            status_info, 'position', precision=3, format='E')
+        # if a dial_pos is not present we can assume that the dial position is
+        # the same as the normal position
+        dial_pos = self.calculated_dial_pos or None
 
         low, high = self.limits
         name = self.prefix
