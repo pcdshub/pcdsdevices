@@ -47,8 +47,6 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         Calculate the dial position of the real motor dial position.
         """
         dial_pos = []
-        # assume the name will be something like: parent_name_self_name
-        name = self.name.split('_')[-1]
         try:
             for real_pos in self.parent.real_positioners:
                 dial_pos.append(real_pos.dial_position.get())
@@ -56,7 +54,7 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
                 calc_dial = self.parent.inverse(
                     self.parent.RealPosition(*dial_pos))
             # try to get the correct pseudo position base on the name
-            return f'{calc_dial[calc_dial._fields.index(name)]:.3e}'
+            return f'{calc_dial[calc_dial._fields.index(self.attr_name)]:.3e}'
         # some motors might not have dial_position
         except Exception:
             return None
