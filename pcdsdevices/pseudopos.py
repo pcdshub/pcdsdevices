@@ -549,8 +549,3 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
         self.user_offset.put(0.0)
         new_offset = position - self.position[0]
         self.user_offset.put(new_offset)
-
-
-class SimOffsetIMS(OffsetMotorBase):
-    """IMS Offset Simulator for Testing."""
-    motor = Cpt(FastMotor, limits=(-100, 100))

@@ -7,7 +7,7 @@ from ophyd.positioner import SoftPositioner
 
 from pcdsdevices.pseudopos import (DelayBase, LookupTablePositioner,
                                    PseudoSingleInterface, SimDelayStage,
-                                   SyncAxesBase, OffsetMotorBase, SimOffsetIMS)
+                                   SyncAxesBase, OffsetMotorBase)
 
 logger = logging.getLogger(__name__)
 
@@ -136,20 +136,3 @@ def test_lut_positioner():
 
     assert lut.real.limits == (0, 9)
     assert lut.pseudo.limits == (40, 400)
-
-
-def fake_offset_ims():
-    off_ims = SimOffsetIMS('FAKE:OFFSET:IMS', name='fake_offset_ims')
-    # set offset to 3
-    off_ims.user_offset.sim_put(3)
-    # start with an offset of 3
-    # motor at 0
-    off_ims.move(5)
-    assert off_ims.motor.position == 8
-    assert off_ims.pseudo_motor.position == 5
-    # move to position 2
-    # offset == 3
-    off_ims.move(2)
-    assert off_ims.pseudo_motor.position == 2
-    off_ims.motor.move(6)
-    assert off_ims.pseudo_motor.position == 3

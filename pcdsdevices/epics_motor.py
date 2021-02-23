@@ -571,11 +571,7 @@ class DelayNewport(DelayBase):
 
 
 class OffsetMotor(OffsetMotorBase):
-    motor = FCpt(IMS, '{self._motor_prefix}')
-
-    def __init__(self, prefix, motor_prefix, *args, **kwargs):
-        self._motor_prefix = motor_prefix
-        super().__init__(prefix, motor_prefix, *args, **kwargs)
+    motor = FCpt(IMS, '')
 
 
 class PMC100(PCDSMotorBase):
