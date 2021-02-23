@@ -370,15 +370,13 @@ class CrystalTower2(BaseInterface, Device):
 
     def is_diamond(self):
         """Check if tower 2 is with Diamond (C) material."""
-        return ((self.h2n_state.position == 'C' or
-                 self.h2n_state.position == 'OUT') and
+        return (self.h2n_state.position == 'C' and
                 self.y2_state.position == 'C' and
                 self.chi2_state.position == 'C')
 
     def is_silicon(self):
         """Check if tower 2 is with Silicon (Si) material."""
-        return ((self.h2n_state.position == 'Si' or
-                 self.h2n_state.position == 'OUT') and
+        return (self.h2n_state.position == 'Si' and
                 self.y2_state.position == 'Si' and
                 self.chi2_state.position == 'Si')
 
@@ -466,6 +464,8 @@ class DiagnosticsTower(BaseInterface, Device):
     tab_component_names = True
 
     def __init__(self, prefix, *args, **kwargs):
+        # The df component has a different PV suffix in `XPP` vs `XCS`
+        # XPP:MON:MMS:27 vs HFX:MON:MMS:22
         self._m_prefix = ''
         self._df_suffix = '27'
         if 'XPP' in prefix:
@@ -850,7 +850,6 @@ class LODCM(BaseInterface, Device):
     mono_line : str, optional
         Name of the mono, double-bounce beamline.
     """
-    # h1n_state = Cpt(H1N, ':H1N', kind='hinted')
     yag = Cpt(YagLom, ":DV", kind='omitted')
     dectris = Cpt(Dectris, ":DH", kind='omitted')
     diode = Cpt(Diode, ":DIODE", kind='omitted')
@@ -1118,7 +1117,7 @@ class LODCM(BaseInterface, Device):
         elif material == 'C':
             return self.energy_c.get_energy()
         else:
-            raise ValueError('Cannot initialize energy motor because could not'
+            raise ValueError('Cannot decide the energy motor because could not'
                              ' determine the material.')
 
     def calc_energy(self, energy, material=None, reflection=None):

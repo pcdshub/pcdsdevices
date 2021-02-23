@@ -80,17 +80,18 @@ def fake_tower1():
 
     tower1.diamond_reflection.sim_put((1, 1, 1))
     tower1.silicon_reflection.sim_put((1, 1, 1))
-    # 1 = 'C'
+    # set h1n_state to 'OUT'
     tower1.h1n_state.state.sim_put(1)
     tower1.h1n_state.state.sim_set_enum_strs(
         ['Unknown'] + H1N.states_list)
+    # set y1_state to 'C'
     tower1.y1_state.state.sim_put(1)
     tower1.y1_state.state.sim_set_enum_strs(
         ['Unknown'] + Y1.states_list)
+    # set chi1_state to 'C'
     tower1.chi1_state.state.sim_put(1)
     tower1.chi1_state.state.sim_set_enum_strs(
         ['Unknown'] + CHI1.states_list)
-
     return tower1
 
 
@@ -102,13 +103,15 @@ def fake_tower2():
 
     tower2.diamond_reflection.sim_put((2, 2, 2))
     tower2.silicon_reflection.sim_put((2, 2, 2))
-
+    # set y2_state to 'C'
     tower2.y2_state.state.sim_put(1)
     tower2.y2_state.state.sim_set_enum_strs(
         ['Unknown'] + Y2.states_list)
+    # set chi2_state to 'C'
     tower2.chi2_state.state.sim_put(1)
     tower2.chi2_state.state.sim_set_enum_strs(
         ['Unknown'] + CHI2.states_list)
+    # set h2n_state to 'OUT'
     tower2.h2n_state.state.sim_put(1)
     tower2.h2n_state.state.sim_set_enum_strs(
         ['Unknown'] + H2N.states_list)
@@ -135,7 +138,7 @@ def fake_energy_c(monkeypatch):
     FakeLODCMEnergy = make_fake_device(LODCMEnergyC)
     energy = FakeLODCMEnergy('FAKE:ENERGY:C', name='fake_energy_c')
 
-    motor_setup(energy.th1.motor, pos=77)
+    motor_setup(energy.th1.motor)
     motor_setup(energy.th2.motor)
     motor_setup(energy.z1.motor)
     motor_setup(energy.z2.motor)
@@ -210,6 +213,12 @@ def test_tower1_crystal_type(fake_tower1):
     assert tower1.is_diamond()
     tower1.h1n_state.move('C')
     assert tower1.is_diamond()
+    # tower1 bad states:
+    tower1.h1n_state.move('OUT')
+    tower1.y1_state.move('C')
+    tower1.chi1_state.move('Si')
+    with pytest.raises(ValueError):
+        tower1.get_material()
 
 
 def test_tower2_crystal_type(fake_tower2):
@@ -224,6 +233,12 @@ def test_tower2_crystal_type(fake_tower2):
     tower2.y2_state.move('C')
     tower2.chi2_state.move('C')
     assert tower2.is_diamond()
+    # tower2 bad states:
+    tower2.h2n_state.move('C')
+    tower2.y2_state.move('Si')
+    tower2.chi2_state.move('Si')
+    with pytest.raises(ValueError):
+        tower2.get_material()
 
 
 def test_get_reflection_tower1(fake_tower1):
@@ -331,11 +346,11 @@ def test_forward_si(fake_energy_si, monkeypatch):
         res = energy.get_energy()
         assert res == 5.059840436879476
         res = energy.forward(5.059840436879476)
-        received = []
-        for i in res:
-            received.append(i)
-        expected = [23, 23, 46, -289.70663244212216, 289.70663244212216]
-        assert np.allclose(sorted(received), sorted(expected))
+        assert np.isclose(res.dr, 46)
+        assert np.isclose(res.th1, 23)
+        assert np.isclose(res.th2, 23)
+        assert np.isclose(res.z1, -289.70663244212216)
+        assert np.isclose(res.z2, 289.70663244212216)
 
 
 def test_forward_c(fake_energy_c, monkeypatch):
@@ -347,11 +362,11 @@ def test_forward_c(fake_energy_c, monkeypatch):
         res = energy.get_energy()
         assert res == 7.7039801344046515
         res = energy.forward(7.7039801344046515)
-        received = []
-        for i in res:
-            received.append(i)
-        expected = [23, 23, 46, -289.70663244212216, 289.70663244212216]
-        assert np.allclose(sorted(received), sorted(expected))
+        assert np.isclose(res.dr, 46)
+        assert np.isclose(res.th1, 23)
+        assert np.isclose(res.th2, 23)
+        assert np.isclose(res.z1, -289.70663244212216)
+        assert np.isclose(res.z2, 289.70663244212216)
 
 
 def test_inverse_si(fake_energy_si, monkeypatch):
