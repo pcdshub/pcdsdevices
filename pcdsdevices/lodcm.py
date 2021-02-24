@@ -495,24 +495,24 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
     dr = FCpt(IMS, '{self._m_prefix}:MON:MMS:19',
               kind='normal', doc='LOM Dia Theta')
 
-    th1 = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_Si',
-               motor_prefix='{self._m_prefix}:MON:MMS:07',
-               add_prefix=('prefix', 'motor_prefix'), name='th1_si',
-               doc='Th1 motor offset for Si [deg]')
-    th2 = FCpt(OffsetMotor, prefix='{self._prefix}:TH2:OFF_Si',
-               motor_prefix='{self._m_prefix}:MON:MMS:13',
-               add_prefix=('prefix', 'motor_prefix'), name='th2_si',
-               doc='Th2 motor offset for Si [deg]')
-    z1 = FCpt(OffsetMotor, prefix='{self._prefix}:Z1:OFF_Si',
-              name='z1_si',
-              motor_prefix='{self._m_prefix}:MON:MMS:04',
-              add_prefix=('prefix', 'motor_prefix'),
-              doc='Z1 motor offset for Si [mm]')
-    z2 = FCpt(OffsetMotor, prefix='{self._prefix}:Z2:OFF_Si',
-              name='z1_si',
-              motor_prefix='{self._m_prefix}:MON:MMS:10',
-              add_prefix=('prefix', 'motor_prefix'),
-              doc='Z2 motor offset for Si [mm]')
+    th1Si = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_Si',
+                 motor_prefix='{self._m_prefix}:MON:MMS:07',
+                 add_prefix=('prefix', 'motor_prefix'), name='th1_si',
+                 doc='Th1 motor offset for Si [deg]')
+    th2Si = FCpt(OffsetMotor, prefix='{self._prefix}:TH2:OFF_Si',
+                 motor_prefix='{self._m_prefix}:MON:MMS:13',
+                 add_prefix=('prefix', 'motor_prefix'), name='th2_si',
+                 doc='Th2 motor offset for Si [deg]')
+    z1Si = FCpt(OffsetMotor, prefix='{self._prefix}:Z1:OFF_Si',
+                name='z1_si',
+                motor_prefix='{self._m_prefix}:MON:MMS:04',
+                add_prefix=('prefix', 'motor_prefix'),
+                doc='Z1 motor offset for Si [mm]')
+    z2Si = FCpt(OffsetMotor, prefix='{self._prefix}:Z2:OFF_Si',
+                name='z1_si',
+                motor_prefix='{self._m_prefix}:MON:MMS:10',
+                add_prefix=('prefix', 'motor_prefix'),
+                doc='Z2 motor offset for Si [mm]')
 
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
 
@@ -572,7 +572,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
         """
         reflection = reflection or self.get_reflection(
             as_tuple=True, check=True)
-        th = self.th1.wm()
+        th = self.th1Si.wm()
         length = (2 * np.sin(np.deg2rad(th)) *
                   diffraction.d_space(material, reflection))
         return common.wavelength_to_energy(length) / 1000
@@ -620,10 +620,10 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
 
         th, z = self.calc_energy(energy=pseudo_pos.energy)
 
-        return self.RealPosition(th1=th,
-                                 th2=th,
-                                 z1=-z,
-                                 z2=z,
+        return self.RealPosition(th1Si=th,
+                                 th2Si=th,
+                                 z1Si=-z,
+                                 z2Si=z,
                                  dr=2*th)
 
     @real_position_argument
@@ -647,7 +647,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
         reflection = self.get_reflection(
             as_tuple=True, check=True)
         real_pos = self.RealPosition(*real_pos)
-        length = (2 * np.sin(np.deg2rad(real_pos.th1))
+        length = (2 * np.sin(np.deg2rad(real_pos.th1Si))
                     * diffraction.d_space('Si', reflection))
         if length == 0:
             # don't bother transforming this
@@ -921,8 +921,8 @@ class LODCM(BaseInterface, Device):
         self.y2_state = self.tower2.y2_state
         self.chi2_state = self.tower2.chi2_state
         # # offset positioners - tower 1
-        self.th1Si = self.energy_si.th1
-        self.z1Si = self.energy_si.z1
+        self.th1Si = self.energy_si.th1Si
+        self.z1Si = self.energy_si.z1Si
         self.th1C = self.energy_c.th1
         self.z1C = self.energy_c.z1
 
@@ -937,8 +937,8 @@ class LODCM(BaseInterface, Device):
         self.h1pC = self.tower1.h1p_c
         self.h1pSi = self.tower1.h1p_si
         # # offset positioners - tower 2
-        self.th2Si = self.energy_si.th2
-        self.z2Si = self.energy_si.z2
+        self.th2Si = self.energy_si.th2Si
+        self.z2Si = self.energy_si.z2Si
         self.th2C = self.energy_c.th2
         self.z2C = self.energy_c.z2
 
@@ -1528,10 +1528,10 @@ class SimEnergyC(LODCMEnergyC):
 
 class SimEnergySi(LODCMEnergySi):
     """Energy Si Simulator for Testing"""
-    th1 = Cpt(FastMotor, limits=(-1000, 1000))
-    th2 = Cpt(FastMotor, limits=(-1000, 1000))
-    z1 = Cpt(FastMotor, limits=(-1000, 1000))
-    z2 = Cpt(FastMotor, limits=(-1000, 1000))
+    th1Si = Cpt(FastMotor, limits=(-1000, 1000))
+    th2Si = Cpt(FastMotor, limits=(-1000, 1000))
+    z1Si = Cpt(FastMotor, limits=(-1000, 1000))
+    z2Si = Cpt(FastMotor, limits=(-1000, 1000))
     dr = Cpt(FastMotor, limits=(-1000, 1000))
 
     def get_reflection(self, as_tuple=False, check=False):
