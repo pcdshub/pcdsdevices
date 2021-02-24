@@ -225,22 +225,20 @@ class CrystalTower1(BaseInterface, Device):
                 self.y1_state.position == 'Si' and
                 self.chi1_state.position == 'Si')
 
-    def get_reflection(self, as_tuple=False, check=False):
+    def get_reflection(self):
         """
         Get crystal's reflection.
 
-        Parameters
-        ----------
-        as_tuple : bool
-            Indicates if it should return it as string or tuple format.
-            Defaults to `False`.
-        check : bool
-            Indicates if an exception should be raised in case it could not
-            determine the crystal's reflection. Defaults to `False`.
+        Tries to get the reflection depending on the material in use.
 
         Returns
         -------
-        reflection : str or tuple
+        reflection : tuple
+
+        Raises
+        ------
+        ValueError
+            When cannot determine the reflection.
         """
         reflection = None
         if self.is_diamond():
@@ -248,11 +246,9 @@ class CrystalTower1(BaseInterface, Device):
         elif self.is_silicon():
             reflection = self.silicon_reflection.get()
 
-        if check and reflection is None:
-            raise ValueError('Unable to determine the crystal reflection')
-        if not as_tuple and reflection is not None:
-            return ''.join(map(str, reflection))
-        return tuple(reflection)
+        if reflection:
+            return tuple(reflection)
+        raise ValueError('Unable to determine the crystal reflection')
 
     def get_material(self):
         """
@@ -389,22 +385,20 @@ class CrystalTower2(BaseInterface, Device):
                 self.y2_state.position == 'Si' and
                 self.chi2_state.position == 'Si')
 
-    def get_reflection(self, as_tuple=False, check=False):
+    def get_reflection(self):
         """
         Get crystal's reflection.
 
-        Parameters
-        ----------
-        as_tuple : bool
-            Indicates if it should return it as string or tuple format.
-            Defaults to `False`.
-        check : bool
-            Indicates if an exception should be raised in case it could not
-            determine the crystal's reflection. Defaults to `False`.
+        Tries to get the reflection depending on the material in use.
 
         Returns
         -------
-        reflection : str or tuple
+        reflection : tuple
+
+        Raises
+        ------
+        ValueError
+            When cannot determine the reflection.
         """
         reflection = None
         if self.is_diamond():
@@ -412,11 +406,9 @@ class CrystalTower2(BaseInterface, Device):
         elif self.is_silicon():
             reflection = self.silicon_reflection.get()
 
-        if check and reflection is None:
-            raise ValueError('Unable to determine the crystal reflection')
-        if not as_tuple and reflection is not None:
-            return ''.join(map(str, reflection))
-        return tuple(reflection)
+        if reflection:
+            return tuple(reflection)
+        raise ValueError('Unable to determine the crystal reflection')
 
     def get_material(self):
         """
@@ -529,26 +521,26 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
 
         super().__init__(prefix=prefix, *args, **kwargs)
 
-    def get_reflection(self, as_tuple=False, check=False):
+    def get_reflection(self):
         """
         Get the crystal reflection.
 
-        Parameters
-        ----------
-        as_tuple : bool, optional
-            Indicates if it should return the reflection in tuple format.
-            Defaults to `False`.
-        check : bool, optional
-            Indicates if an exception should be raise in case the materials
-            do not match. Defaults to `False`.
+        Check both towers, and compare the if they match.
+        If they do not match an error will be raised.
 
         Returns
         -------
-        ref_1 : str or tuple
+        ref_1 : tuple
             Reflection of the two Crystal Towers.
+
+        Raises
+        ------
+        ValueError
+            When the reflection of first tower does not match the one of
+            second tower.
         """
-        ref_1 = self.tower1.get_reflection(as_tuple=as_tuple, check=check)
-        ref_2 = self.tower2.get_reflection(as_tuple=as_tuple, check=check)
+        ref_1 = self.tower1.get_reflection()
+        ref_2 = self.tower2.get_reflection()
         if ref_1 != ref_2:
             logger.warning('Crystals do not match: c1: %s, c2: %s',
                            ref_1, ref_2)
@@ -573,8 +565,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
         energy : number
             Photon energy in keV.
         """
-        reflection = reflection or self.get_reflection(
-            as_tuple=True, check=True)
+        reflection = reflection or self.get_reflection()
         th = self.th1Si.wm()
         length = (2 * np.sin(np.deg2rad(th)) *
                   diffraction.d_space(material, reflection))
@@ -596,8 +587,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
         th, z : tuple
             Returns `theta` in degrees and `zm` TODO: what is this?
         """
-        reflection = reflection or self.get_reflection(
-            as_tuple=True, check=True)
+        reflection = reflection or self.get_reflection()
         th, z = diffraction.get_lom_geometry(energy*1e3, material, reflection)
         return (th, z)
 
@@ -647,8 +637,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
         pseudo_pos : PseudoPosition
             The pseudo position output.
         """
-        reflection = self.get_reflection(
-            as_tuple=True, check=True)
+        reflection = self.get_reflection()
         real_pos = self.RealPosition(*real_pos)
         length = (2 * np.sin(np.deg2rad(real_pos.th1Si))
                     * diffraction.d_space('Si', reflection))
@@ -703,26 +692,26 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
 
         super().__init__(prefix=prefix, *args, **kwargs)
 
-    def get_reflection(self, as_tuple=False, check=False):
+    def get_reflection(self):
         """
         Get the crystal reflection.
 
-        Parameters
-        ----------
-        as_tuple : bool, optional
-            Indicates if it should return the reflection in tuple format.
-            Defaults to `False`.
-        check : bool, optional
-            Indicates if an exception should be raise in case the materials
-            do not match. Defaults to `False`.
+        Check both towers, and compare the if they match.
+        If they do not match an error will be raised.
 
         Returns
         -------
-        ref_1 : str or tuple
+        ref_1 : tuple
             Reflection of the two Crystal Towers.
+
+        Raises
+        ------
+        ValueError
+            When the reflection of first tower does not match the one of
+            second tower.
         """
-        ref_1 = self.tower1.get_reflection(as_tuple=as_tuple, check=check)
-        ref_2 = self.tower2.get_reflection(as_tuple=as_tuple, check=check)
+        ref_1 = self.tower1.get_reflection()
+        ref_2 = self.tower2.get_reflection()
         if ref_1 != ref_2:
             logger.warning('Crystals do not match: c1: %s, c2: %s',
                            ref_1, ref_2)
@@ -747,8 +736,7 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
         energy : number
             Photon energy in keV.
         """
-        reflection = reflection or self.get_reflection(
-            as_tuple=True, check=True)
+        reflection = reflection or self.get_reflection()
         th = self.th1C.wm()
         length = (2 * np.sin(np.deg2rad(th)) *
                   diffraction.d_space(material, reflection))
@@ -770,8 +758,7 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
         th, z : tuple
             Returns `theta` in degrees and `zm` TODO: what is this?
         """
-        reflection = reflection or self.get_reflection(
-            as_tuple=True, check=True)
+        reflection = reflection or self.get_reflection()
         th, z = diffraction.get_lom_geometry(energy*1e3, material, reflection)
         return (th, z)
 
@@ -820,8 +807,7 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
         pseudo_pos : PseudoPosition
             The pseudo position output.
         """
-        reflection = self.get_reflection(
-            as_tuple=True, check=True)
+        reflection = self.get_reflection()
         real_pos = self.RealPosition(*real_pos)
         length = (2 * np.sin(np.deg2rad(real_pos.th1C))
                     * diffraction.d_space('C', reflection))
@@ -1052,26 +1038,26 @@ class LODCM(BaseInterface, Device):
 
     remove_dia.__doc__ += insert_remove
 
-    def get_reflection(self, as_tuple=False, check=False):
+    def get_reflection(self):
         """
         Get the crystal reflection.
 
-        Parameters
-        ----------
-        as_tuple : bool, optional
-            Indicates if it should return the reflection in tuple format.
-            Defaults to `False`.
-        check : bool, optional
-            Indicates if an exception should be raise in case the materials
-            do not match. Defaults to `False`.
+        Check both towers, and compare the if they match.
+        If they do not match an error will be raised.
 
         Returns
         -------
-        ref_1 : str or tuple
+        ref_1 : tuple
             Reflection of the two Crystal Towers.
+
+        Raises
+        ------
+        ValueError
+            When the reflection of first tower does not match the one of
+            second tower.
         """
-        ref_1 = self.tower1.get_reflection(as_tuple=as_tuple, check=check)
-        ref_2 = self.tower2.get_reflection(as_tuple=as_tuple, check=check)
+        ref_1 = self.tower1.get_reflection()
+        ref_2 = self.tower2.get_reflection()
         if ref_1 != ref_2:
             logger.warning('Crystals do not match: c1: %s, c2: %s',
                            ref_1, ref_2)
@@ -1119,8 +1105,7 @@ class LODCM(BaseInterface, Device):
             Photon energy in keV.
         """
         material = material or self.get_material()
-        reflection = reflection or self.get_reflection(
-            as_tuple=True, check=True)
+        reflection = reflection or self.get_reflection()
         if material == 'Si':
             return self.energy_si.get_energy()
         elif material == 'C':
@@ -1146,8 +1131,7 @@ class LODCM(BaseInterface, Device):
         """
         # try to determine the material and reflection:
         material = material or self.get_material()
-        reflection = reflection or self.get_reflection(
-            as_tuple=True, check=True)
+        reflection = reflection or self.get_reflection()
         return self.energy.calc_geometry(energy, material, reflection)
 
     def set_energy(self, energy, material=None, reflection=None):
@@ -1165,8 +1149,7 @@ class LODCM(BaseInterface, Device):
         """
         # try to determine the material and reflection:
         material = material or self.get_material()
-        reflection = reflection or self.get_reflection(
-            as_tuple=True, check=True)
+        reflection = reflection or self.get_reflection()
         th, z = diffraction.get_lom_geometry(energy * 1e3, material,
                                              reflection)
         # TODO: probably not the correct approach here to use
@@ -1303,6 +1286,7 @@ class LODCM(BaseInterface, Device):
 
         try:
             ref = self.get_reflection()
+            ref = ''.join(map(str, ref))
         except Exception:
             ref = 'Unknown'
         # tower 1
@@ -1525,7 +1509,7 @@ class SimEnergyC(LODCMEnergyC):
     z2C = Cpt(FastMotor, limits=(-1000, 1000))
     dr = Cpt(FastMotor, limits=(-1000, 1000))
 
-    def get_reflection(self, as_tuple=False, check=False):
+    def get_reflection(self):
         return (1, 1, 1)
 
 
@@ -1537,7 +1521,7 @@ class SimEnergySi(LODCMEnergySi):
     z2Si = Cpt(FastMotor, limits=(-1000, 1000))
     dr = Cpt(FastMotor, limits=(-1000, 1000))
 
-    def get_reflection(self, as_tuple=False, check=False):
+    def get_reflection(self):
         return (1, 1, 1)
 
 
