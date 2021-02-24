@@ -157,46 +157,46 @@ class CrystalTower1(BaseInterface, Device):
     # motor offsets
     # the folowing are declared in Energy classes
     # th1_si, th1_c, z1_si, z1_c
-    x1_c = FCpt(OffsetMotor, prefix='{self._prefix}:X1:OFF_C',
+    x1C = FCpt(OffsetMotor, prefix='{self._prefix}:X1:OFF_C',
+               motor_prefix='{self._m_prefix}:MON:MMS:05', kind='normal',
+               add_prefix=('prefix', 'motor_prefix'),
+               name='x1_c', doc='X1 motor offset for C [mm]')
+    x1Si = FCpt(OffsetMotor, prefix='{self._prefix}:X1:OFF_Si',
                 motor_prefix='{self._m_prefix}:MON:MMS:05', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
-                name='x1_c', doc='X1 motor offset for C [mm]')
-    x1_si = FCpt(OffsetMotor, prefix='{self._prefix}:X1:OFF_Si',
-                 motor_prefix='{self._m_prefix}:MON:MMS:05', kind='normal',
-                 add_prefix=('prefix', 'motor_prefix'),
-                 name='x1_si', doc='X1 motor offset for Si [mm]')
-    y1_c = FCpt(OffsetMotor, prefix='{self._prefix}:Y1:OFF_C',
+                name='x1_si', doc='X1 motor offset for Si [mm]')
+    y1C = FCpt(OffsetMotor, prefix='{self._prefix}:Y1:OFF_C',
+               motor_prefix='{self._m_prefix}:MON:MMS:06', kind='normal',
+               add_prefix=('prefix', 'motor_prefix'),
+               name='y1_c', doc='Y1 motor offset for C [mm]')
+    y1Si = FCpt(OffsetMotor, prefix='{self._prefix}:Y1:OFF_Si',
                 motor_prefix='{self._m_prefix}:MON:MMS:06', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
-                name='y1_c', doc='Y1 motor offset for C [mm]')
-    y1_si = FCpt(OffsetMotor, prefix='{self._prefix}:Y1:OFF_Si',
-                 motor_prefix='{self._m_prefix}:MON:MMS:06', kind='normal',
+                name='y1_si', doc='Y1 motor offset for Si [mm]')
+    chi1C = FCpt(OffsetMotor, prefix='{self._prefix}:CHI1:OFF_C',
+                 motor_prefix='{self._m_prefix}:MON:MMS:08', kind='normal',
                  add_prefix=('prefix', 'motor_prefix'),
-                 name='y1_si', doc='Y1 motor offset for Si [mm]')
-    chi1_c = FCpt(OffsetMotor, prefix='{self._prefix}:CHI1:OFF_C',
+                 name='chi1_c ', doc='Chi 1 motor offset for C [deg]')
+    chi1Si = FCpt(OffsetMotor, prefix='{self._prefix}:CHI1:OFF_Si',
                   motor_prefix='{self._m_prefix}:MON:MMS:08', kind='normal',
                   add_prefix=('prefix', 'motor_prefix'),
-                  name='chi1_c ', doc='Chi 1 motor offset for C [deg]')
-    chi1_si = FCpt(OffsetMotor, prefix='{self._prefix}:CHI1:OFF_Si',
-                   motor_prefix='{self._m_prefix}:MON:MMS:08', kind='normal',
-                   add_prefix=('prefix', 'motor_prefix'),
-                   name='chi1_si', doc='Chi 1 motor offset for Si [deg]')
-    h1n_c = FCpt(OffsetMotor, prefix='{self._prefix}:H1N:OFF_C',
+                  name='chi1_si', doc='Chi 1 motor offset for Si [deg]')
+    h1nC = FCpt(OffsetMotor, prefix='{self._prefix}:H1N:OFF_C',
+                motor_prefix='{self._m_prefix}:MON:MMS:09', kind='normal',
+                add_prefix=('prefix', 'motor_prefix'),
+                name='', doc='H1n motor offset for C [mm]')
+    h1nSi = FCpt(OffsetMotor, prefix='{self._prefix}:H1N:OFF_Si',
                  motor_prefix='{self._m_prefix}:MON:MMS:09', kind='normal',
                  add_prefix=('prefix', 'motor_prefix'),
-                 name='', doc='H1n motor offset for C [mm]')
-    h1n_si = FCpt(OffsetMotor, prefix='{self._prefix}:H1N:OFF_Si',
-                  motor_prefix='{self._m_prefix}:MON:MMS:09', kind='normal',
-                  add_prefix=('prefix', 'motor_prefix'),
-                  name='h1n_si', doc='H1n motor offset for Si [mm]')
-    h1p_c = FCpt(OffsetMotor, prefix='{self._prefix}:H1P:OFF_C',
+                 name='h1n_si', doc='H1n motor offset for Si [mm]')
+    h1pC = FCpt(OffsetMotor, prefix='{self._prefix}:H1P:OFF_C',
+                motor_prefix='{self._m_prefix}:MON:MMS:20', kind='normal',
+                add_prefix=('prefix', 'motor_prefix'),
+                name='h1p_c', doc='H1p motor offset for C [mm]')
+    h1pSi = FCpt(OffsetMotor, prefix='{self._prefix}:H1P:OFF_Si',
                  motor_prefix='{self._m_prefix}:MON:MMS:20', kind='normal',
                  add_prefix=('prefix', 'motor_prefix'),
-                 name='h1p_c', doc='H1p motor offset for C [mm]')
-    h1p_si = FCpt(OffsetMotor, prefix='{self._prefix}:H1P:OFF_Si',
-                  motor_prefix='{self._m_prefix}:MON:MMS:20', kind='normal',
-                  add_prefix=('prefix', 'motor_prefix'),
-                  name='h1p_si', doc='H1p motor offset for Si [mm]')
+                 name='h1p_si', doc='H1p motor offset for Si [mm]')
 
     tab_component_names = True
     tab_whitelist = ['is_diamond', 'is_silicon', 'get_reflection',
@@ -328,38 +328,38 @@ class CrystalTower2(BaseInterface, Device):
     # motor offsets
     # the following ones are declared in the Energy classes
     # th2_si, th2_c, z2_si, z2_c
-    x2_c = FCpt(OffsetMotor, prefix='{self._prefix}:X2:OFF_C', name='x2_c ',
+    x2C = FCpt(OffsetMotor, prefix='{self._prefix}:X2:OFF_C', name='x2_c ',
+               motor_prefix='{self._m_prefix}:MON:MMS:11',
+               add_prefix=('prefix', 'motor_prefix'), kind='normal',
+               doc='X2 motor offset for C [mm]')
+    x2Si = FCpt(OffsetMotor, prefix='{self._prefix}:X2:OFF_Si', name='x2_si',
                 motor_prefix='{self._m_prefix}:MON:MMS:11',
                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                doc='X2 motor offset for C [mm]')
-    x2_si = FCpt(OffsetMotor, prefix='{self._prefix}:X2:OFF_Si', name='x2_si',
-                 motor_prefix='{self._m_prefix}:MON:MMS:11',
-                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                 doc='X2 motor offset for Si [mm]')
-    y2_c = FCpt(OffsetMotor, prefix='{self._prefix}:Y2:OFF_C', name='y2_c',
+                doc='X2 motor offset for Si [mm]')
+    y2C = FCpt(OffsetMotor, prefix='{self._prefix}:Y2:OFF_C', name='y2_c',
+               motor_prefix='{self._m_prefix}:MON:MMS:12',
+               add_prefix=('prefix', 'motor_prefix'), kind='normal',
+               doc='Y2 motor offset for C [mm]')
+    y2Si = FCpt(OffsetMotor, prefix='{self._prefix}:Y2:OFF_Si', name='y2_si',
                 motor_prefix='{self._m_prefix}:MON:MMS:12',
                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                doc='Y2 motor offset for C [mm]')
-    y2_si = FCpt(OffsetMotor, prefix='{self._prefix}:Y2:OFF_Si', name='y2_si',
-                 motor_prefix='{self._m_prefix}:MON:MMS:12',
+                doc='Y2 motor offset for Si [mm]')
+    chi2C = FCpt(OffsetMotor, prefix='{self._prefix}:CHI2:OFF_C',
+                 name='chi2_c', motor_prefix='{self._m_prefix}:MON:MMS:14',
                  add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                 doc='Y2 motor offset for Si [mm]')
-    chi2_c = FCpt(OffsetMotor, prefix='{self._prefix}:CHI2:OFF_C',
-                  name='chi2_c', motor_prefix='{self._m_prefix}:MON:MMS:14',
+                 doc='Chi 2 motor offset for C [deg]')
+    chi2Si = FCpt(OffsetMotor, prefix='{self._prefix}:CHI2:OFF_Si',
+                  name='chi2_si', motor_prefix='{self._m_prefix}:MON:MMS:14',
                   add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                  doc='Chi 2 motor offset for C [deg]')
-    chi2_si = FCpt(OffsetMotor, prefix='{self._prefix}:CHI2:OFF_Si',
-                   name='chi2_si', motor_prefix='{self._m_prefix}:MON:MMS:14',
-                   add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                   doc='Chi 2 motor offset for Si [deg]')
-    h2n_c = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_C', name='h2n_c',
-                 motor_prefix='{self._m_prefix}:MON:MMS:15',
+                  doc='Chi 2 motor offset for Si [deg]')
+    h2nC = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_C', name='h2n_c',
+                motor_prefix='{self._m_prefix}:MON:MMS:15',
+                add_prefix=('prefix', 'motor_prefix'), kind='normal',
+                doc=' H2n motor offset for C [mm]')
+    h2nSi = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_Si',
+                 name='h2n_si', motor_prefix='{self._m_prefix}:MON:MMS:15',
                  add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                 doc=' H2n motor offset for C [mm]')
-    h2n_si = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_Si',
-                  name='h2n_si', motor_prefix='{self._m_prefix}:MON:MMS:15',
-                  add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                  doc='H2n motor offset for Si [mm]')
+                 doc='H2n motor offset for Si [mm]')
 
     tab_component_names = True
     tab_whitelist = ['is_diamond', 'is_silicon', 'get_reflection',
@@ -926,30 +926,30 @@ class LODCM(BaseInterface, Device):
         self.th1C = self.energy_c.th1C
         self.z1C = self.energy_c.z1C
 
-        self.x1C = self.tower1.x1_c
-        self.x1Si = self.tower1.x1_si
-        self.y1C = self.tower1.y1_c
-        self.y1Si = self.tower1.y1_si
-        self.chi1C = self.tower1.chi1_c
-        self.chi1Si = self.tower1.chi1_si
-        self.h1nC = self.tower1.h1n_c
-        self.h1nSi = self.tower1.h1n_si
-        self.h1pC = self.tower1.h1p_c
-        self.h1pSi = self.tower1.h1p_si
+        self.x1C = self.tower1.x1C
+        self.x1Si = self.tower1.x1Si
+        self.y1C = self.tower1.y1C
+        self.y1Si = self.tower1.y1Si
+        self.chi1C = self.tower1.chi1C
+        self.chi1Si = self.tower1.chi1Si
+        self.h1nC = self.tower1.h1nC
+        self.h1nSi = self.tower1.h1nSi
+        self.h1pC = self.tower1.h1pC
+        self.h1pSi = self.tower1.h1pSi
         # # offset positioners - tower 2
         self.th2Si = self.energy_si.th2Si
         self.z2Si = self.energy_si.z2Si
         self.th2C = self.energy_c.th2C
         self.z2C = self.energy_c.z2C
 
-        self.x2C = self.tower2.x2_c
-        self.x2Si = self.tower2.x2_si
-        self.y2C = self.tower2.y2_c
-        self.y2Si = self.tower2.y2_si
-        self.chi2C = self.tower2.chi2_c
-        self.chi2Si = self.tower2.chi2_si
-        self.h2nC = self.tower2.h2n_c
-        self.h2nSi = self.tower2.h2n_si
+        self.x2C = self.tower2.x2C
+        self.x2Si = self.tower2.x2Si
+        self.y2C = self.tower2.y2C
+        self.y2Si = self.tower2.y2Si
+        self.chi2C = self.tower2.chi2C
+        self.chi2Si = self.tower2.chi2Si
+        self.h2nC = self.tower2.h2nC
+        self.h2nSi = self.tower2.h2nSi
 
     @property
     def energy(self):
