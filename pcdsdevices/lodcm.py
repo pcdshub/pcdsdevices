@@ -246,7 +246,7 @@ class CrystalTower1(BaseInterface, Device):
         elif self.is_silicon():
             reflection = self.silicon_reflection.get()
 
-        if reflection:
+        if reflection is not None:
             return tuple(reflection)
         raise ValueError('Unable to determine the crystal reflection')
 
@@ -406,7 +406,7 @@ class CrystalTower2(BaseInterface, Device):
         elif self.is_silicon():
             reflection = self.silicon_reflection.get()
 
-        if reflection:
+        if reflection is not None:
             return tuple(reflection)
         raise ValueError('Unable to determine the crystal reflection')
 
