@@ -165,10 +165,10 @@ def fake_energy_c():
     FakeLODCMEnergy = make_fake_device(LODCMEnergyC)
     energy = FakeLODCMEnergy('FAKE:ENERGY:C', name='fake_energy_c')
 
-    motor_setup(energy.th1.motor)
-    motor_setup(energy.th2.motor)
-    motor_setup(energy.z1.motor)
-    motor_setup(energy.z2.motor)
+    motor_setup(energy.th1C.motor)
+    motor_setup(energy.th2C.motor)
+    motor_setup(energy.z1C.motor)
+    motor_setup(energy.z2C.motor)
     motor_setup(energy.dr)
 
     return energy
@@ -395,13 +395,13 @@ def test_calc_energy_si(fake_energy_si):
 
 def test_get_energy_c(fake_energy_c):
     energy = fake_energy_c
-    energy.th1.set_current_position(-23)
+    energy.th1C.set_current_position(-23)
 
     with patch("pcdsdevices.lodcm.LODCMEnergyC.get_reflection",
                return_value=(1, 1, 1)):
         # offset of 23, motor position 0
-        # current th1.wm() should be 23
-        assert energy.th1.wm() == 23
+        # current th1C.wm() should be 23
+        assert energy.th1C.wm() == 23
         res = energy.get_energy()
         assert res == 7.7039801344046515
 
@@ -413,7 +413,7 @@ def test_get_energy_si(fake_energy_si):
     with patch("pcdsdevices.lodcm.LODCMEnergySi.get_reflection",
                return_value=(1, 1, 1)):
         # offset of 23, motor position 0
-        # current th1.wm() should be 23
+        # current th1Si.wm() should be 23
         assert energy.th1Si.wm() == 23
         res = energy.get_energy()
         assert res == 5.059840436879476
@@ -438,17 +438,17 @@ def test_forward_si(fake_energy_si):
 def test_forward_c(fake_energy_c):
     energy = fake_energy_c
 
-    energy.th1.set_current_position(-23)
+    energy.th1C.set_current_position(-23)
     with patch("pcdsdevices.lodcm.LODCMEnergyC.get_reflection",
                return_value=(1, 1, 1)):
         res = energy.get_energy()
         assert res == 7.7039801344046515
         res = energy.forward(7.7039801344046515)
         assert np.isclose(res.dr, 46)
-        assert np.isclose(res.th1, 23)
-        assert np.isclose(res.th2, 23)
-        assert np.isclose(res.z1, -289.70663244212216)
-        assert np.isclose(res.z2, 289.70663244212216)
+        assert np.isclose(res.th1C, 23)
+        assert np.isclose(res.th2C, 23)
+        assert np.isclose(res.z1C, -289.70663244212216)
+        assert np.isclose(res.z2C, 289.70663244212216)
 
 
 def test_inverse_si(fake_energy_si):
@@ -462,7 +462,7 @@ def test_inverse_si(fake_energy_si):
 
 def test_inverse_c(fake_energy_c):
     energy = fake_energy_c
-    energy.th1.set_current_position(-23)
+    energy.th1C.set_current_position(-23)
     with patch("pcdsdevices.lodcm.LODCMEnergyC.get_reflection",
                return_value=(1, 1, 1)):
         res = energy.inverse(23)
