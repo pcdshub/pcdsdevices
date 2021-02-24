@@ -248,6 +248,7 @@ _STATUS_PRINT_IGNORES = {
     '.PulsePicker',
     '.SlitsBase',
     '.SyncAxesBase',
+    '.OffsetMotorBase',
 }
 
 

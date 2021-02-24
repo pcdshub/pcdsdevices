@@ -7,7 +7,7 @@ from ophyd.positioner import SoftPositioner
 
 from pcdsdevices.pseudopos import (DelayBase, LookupTablePositioner,
                                    PseudoSingleInterface, SimDelayStage,
-                                   SyncAxesBase)
+                                   SyncAxesBase, OffsetMotorBase)
 
 logger = logging.getLogger(__name__)
 
@@ -91,6 +91,8 @@ def test_subcls_warning():
         SyncAxesBase('prefix', name='name')
     with pytest.raises(TypeError):
         DelayBase('prefix', name='name')
+    with pytest.raises(TypeError):
+        OffsetMotorBase('prefix', name='name')
 
 
 def test_lut_positioner():
