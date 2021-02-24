@@ -19,16 +19,17 @@ from ophyd.signal import EpicsSignalRO
 from ophyd.sim import NullStatus
 from ophyd.status import wait as status_wait
 from pcdscalc import common, diffraction
+
+from pcdsdevices.epics_motor import OffsetMotor
+from pcdsdevices.sim import FastMotor
+
 from .doc_stubs import insert_remove
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, FltMvInterface
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
-from pcdsdevices.sim import FastMotor
-from pcdsdevices.epics_motor import OffsetMotor
 from .utils import get_status_float, get_status_value
-
 
 logger = logging.getLogger(__name__)
 
@@ -307,6 +308,11 @@ class CrystalTower2(BaseInterface, Device):
     # in the DAQ for scanning in python, only used for commissioning
     diode2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:21',
                   kind='normal', doc='LOM Xtal2 PIPS')
+
+    x2_retry_deadband = FCpt(EpicsSignalRO, '{self._m_prefix}:MON:MMS:11.RDBD',
+                             doc='Retry Deadband for x2', kind='omitted')
+    z2_retry_deadband = FCpt(EpicsSignalRO, '{self._m_prefix}:MON:MMS:10.RDBD',
+                             doc='Retry Deadband for z2', kind='omitted')
 
     # states
     h2n_state = Cpt(H2N, ':H2N', kind='hinted')
@@ -1141,6 +1147,123 @@ class LODCM(BaseInterface, Device):
             as_tuple=True, check=True)
         return self.energy.calc_energy(energy, material, reflection)
 
+    def set_energy(self, energy, material=None, reflection=None):
+        """
+        Set the current positions of th1, th2, z1 and z2 offset motors.
+
+        Parameters
+        ----------
+        energy : number
+            Energy in keV.
+        material : str, optional
+            Crystal material. E.g.: `Si`
+        reflection : tuple, optional
+            Crystal's reflections. E.g.: `(1,1,1)`
+        """
+        # try to determine the material and reflection:
+        material = material or self.get_material()
+        reflection = reflection or self.get_reflection(
+            as_tuple=True, check=True)
+        th, z = diffraction.get_lom_geometry(energy * 1e3, material,
+                                             reflection)
+        # TODO: probably not the correct approach here to use
+        # set_current_position
+        if material == 'Si':
+            self.th1Si.set_current_position(th)
+            self.th2Si.set_current_position(th)
+            self.z1Si.set_current_position(-z)
+            self.z2Si.set_current_position(z)
+        elif material == 'C':
+            self.th1C.set_current_position(th)
+            self.th2C.set_current_position(th)
+            self.z1C.set_current_position(-z)
+            self.z2C.set_current_position(z)
+        else:
+            raise ValueError("Invalid material: %s", material)
+
+    def tweak_x(self, x_value, material=None, wait=False):
+        """
+        Tweak some motors to center the beam on YAG2 horizontally based on
+        the calibrated s4 position.
+
+        Parameters
+        ----------
+        x_value : number
+            The value that we want to move `x2` by from current position.
+        material : str, optional
+            Crystal material. E.g.: `Si`
+        wait : bool, optional
+            Wait for motion to complete if wait is `True`. Defaults to `False`.
+        """
+        # try to determine the material:
+        material = material or self.get_material()
+        if material == 'Si':
+            th = self.th2Si.wm()
+        elif material == 'C':
+            th = self.th2C.wm()
+        else:
+            raise ValueError("Invalid material: %s", material)
+        z_value = x_value / np.tan(2 * th)
+        start_x = self.x2.wm()
+        start_z = self.z2.wm()
+        self.x2.mvr(x_value, wait=wait)
+        self.z2.mvr(z_value, wait=wait)
+        end_x = self.x2.wm()
+        end_z = self.z2.wm()
+        dx = end_x - start_x
+        dz = end_z - start_z
+
+        if abs(dx - x_value) > self.tower2.x2_retry_deadband.get():
+            logger.warning("x2 did not reach to the desired position of %f! "
+                           "Check the motors, now at: %f, deadband %f" % (
+                               start_x + x_value, end_x, self.x2.get()))
+        if abs(dz - z_value) > self.tower2.z2_retry_deadband.get():
+            logger.warning("z2 did not reach the desired position of %f! "
+                           "Check the motors, now at %f, deadband %f" % (
+                               start_z + z_value, end_z, self.z2.get()))
+
+    def tweak_parallel(self, p_value, material=None, wait=False):
+        """
+        Tweak the `x2` and `z2` motors.
+
+        Parameters
+        ----------
+        p_value : number
+            The number we want to use to tweak the position of x2 and z2
+        material : str, optional
+            Crystal material. E.g.: `Si`
+        wait : bool
+            Wait for motion to complete if wait is `True`. Defaults to `False`.
+        """
+        # try to determine the material:
+        material = material or self.get_material()
+        if material == 'Si':
+            th = self.th2Si.wm()
+            self.x2.mvr(p_value * np.sin(th * np.pi / 180), wait=wait)
+            self.z2.mvr(p_value * np.cos(th * np.pi / 180), wait=wait)
+        elif material == 'C':
+            th = self.th2C.wm()
+            self.x2.mvr(p_value * np.sin(th * np.pi / 180), wait=wait)
+            self.z2.mvr(p_value * np.cos(th * np.pi / 180), wait=wait)
+        else:
+            raise ValueError("Invalid material: %s", material)
+
+    def wait_energy(self, timeout=None):
+        """
+        Block all these motors untill some action completes.
+
+        Parameters
+        ----------
+        timeout: number, optional
+            If None, wait indefinitely until the status finishes.
+            Defaults to None.
+        """
+        self.th1.wait(timeout=timeout)
+        self.th2.wait(timeout=timeout)
+        self.dr.wait(timeout=timeout)
+        self.z1.wait(timeout=timeout)
+        self.z2.wait(timeout=timeout)
+
     def format_status_info(self, status_info):
         """Override status info handler to render the lodcm."""
         t1_state = get_status_value(
@@ -1389,3 +1512,63 @@ class SimDiagnosticsTower(DiagnosticsTower):
     df = Cpt(FastMotor, limits=(-1000, 1000))
     dd = Cpt(FastMotor, limits=(-1000, 1000))
     yag_zoom = Cpt(FastMotor, limits=(-1000, 1000))
+
+
+class SimEnergyC(LODCMEnergyC):
+    """Energy C Simulator for Testing"""
+    th1 = Cpt(FastMotor, limits=(-1000, 1000))
+    th2 = Cpt(FastMotor, limits=(-1000, 1000))
+    z1 = Cpt(FastMotor, limits=(-1000, 1000))
+    z2 = Cpt(FastMotor, limits=(-1000, 1000))
+    dr = Cpt(FastMotor, limits=(-1000, 1000))
+
+    def get_reflection(self, as_tuple=False, check=False):
+        return (1, 1, 1)
+
+
+class SimEnergySi(LODCMEnergySi):
+    """Energy Si Simulator for Testing"""
+    th1 = Cpt(FastMotor, limits=(-1000, 1000))
+    th2 = Cpt(FastMotor, limits=(-1000, 1000))
+    z1 = Cpt(FastMotor, limits=(-1000, 1000))
+    z2 = Cpt(FastMotor, limits=(-1000, 1000))
+    dr = Cpt(FastMotor, limits=(-1000, 1000))
+
+    def get_reflection(self, as_tuple=False, check=False):
+        return (1, 1, 1)
+
+
+class SimLODCM(LODCM):
+    """LODCM Simulator for Testing"""
+    tower1 = Cpt(SimFirstTower, 'TOWER:1', name='tower1')
+    tower2 = Cpt(SimSecondTower, 'TOWER:2', name='tower2')
+    diag_tower = Cpt(SimDiagnosticsTower, 'DIAG', name='diag')
+    energy_si = Cpt(SimEnergySi, 'ENERGY:SI', name='energy_si')
+    energy_c = Cpt(SimEnergyC, 'ENERGY:C', name='energy_c')
+
+    def __init__(self, prefix, *args, **kwargs):
+
+        super().__init__(prefix=prefix, *args, **kwargs)
+        # first tower
+        self.z1 = FastMotor(limits=(-1000, 1000))
+        self.x1 = FastMotor(limits=(-1000, 1000))
+        self.y1 = FastMotor(limits=(-1000, 1000))
+        self.th1 = FastMotor(limits=(-1000, 1000))
+        self.chi1 = FastMotor(limits=(-1000, 1000))
+        self.h1n = FastMotor(limits=(-1000, 1000))
+        self.h1p = FastMotor(limits=(-1000, 1000))
+        # second tower
+        self.z2 = FastMotor(limits=(-1000, 1000))
+        self.x2 = FastMotor(limits=(-1000, 1000))
+        self.y2 = FastMotor(limits=(-1000, 1000))
+        self.th2 = FastMotor(limits=(-1000, 1000))
+        self.chi2 = FastMotor(limits=(-1000, 1000))
+        self.h2n = FastMotor(limits=(-1000, 1000))
+        self.diode2 = FastMotor(limits=(-1000, 1000))
+        # diagnostic tower
+        self.dh = FastMotor(limits=(-1000, 1000))
+        self.dv = FastMotor(limits=(-1000, 1000))
+        self.dr = FastMotor(limits=(-1000, 1000))
+        self.df = FastMotor(limits=(-1000, 1000))
+        self.dd = FastMotor(limits=(-1000, 1000))
+        self.yag_zoom = FastMotor(limits=(-1000, 1000))

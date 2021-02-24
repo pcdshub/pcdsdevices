@@ -4,10 +4,13 @@ from unittest.mock import Mock, patch
 import pytest
 import numpy as np
 from ophyd.sim import make_fake_device
+from pcdsdevices.epics_motor import OffsetMotor
+
 
 from pcdsdevices.lodcm import (H1N, LODCM, Dectris, Diode, Foil, YagLom, Y1,
                                CHI1, Y2, CHI2, H2N, SimFirstTower,
-                               SimSecondTower, LODCMEnergySi, LODCMEnergyC)
+                               SimSecondTower, LODCMEnergySi, LODCMEnergyC,
+                               SimLODCM)
 
 logger = logging.getLogger(__name__)
 
@@ -19,9 +22,25 @@ def motor_setup(mot, pos=0):
     mot.motor_spg.sim_put(2)
 
 
+def make_fake_offset_ims(prefix, motor_pos=0, user_offset=0):
+    class MyOffsetIMS(OffsetMotor):
+        def set_current_position(self, position):
+            logger.debug('Set current position to %d', position)
+            new_offset = self.motor.position - position
+            self.user_offset.sim_put(new_offset)
+
+    fake_ims = make_fake_device(MyOffsetIMS)('PREFIX',
+                                             motor_prefix='MOTOR:PREFIX',
+                                             name='fake_ims')
+
+    motor_setup(fake_ims.motor, pos=motor_pos)
+    fake_ims.user_offset.sim_put(user_offset)
+    return fake_ims
+
+
 @pytest.fixture(scope='function')
 def fake_lodcm(monkeypatch):
-    FakeLODCM = make_fake_device(LODCM)
+    FakeLODCM = make_fake_device(SimLODCM)
 
     def get_material(self):
         return "Si"
@@ -64,11 +83,16 @@ def fake_lodcm(monkeypatch):
     lodcm.tower2.diamond_reflection.sim_put((1, 1, 1))
     lodcm.tower2.silicon_reflection.sim_put((1, 1, 1))
 
-    motor_setup(lodcm.energy_si.th1.motor)
-    motor_setup(lodcm.energy_si.th2.motor)
-    motor_setup(lodcm.energy_si.z1.motor)
-    motor_setup(lodcm.energy_si.z2.motor)
-    motor_setup(lodcm.energy_si.dr)
+    lodcm.th1Si = make_fake_offset_ims('TH1SI:PREFIX', user_offset=-23)
+    lodcm.th2Si = make_fake_offset_ims('TH2C:PREFIX', user_offset=-23)
+    lodcm.th1C = make_fake_offset_ims('TH1C:PREFIX')
+    lodcm.th2C = make_fake_offset_ims('TH2C:PREFIX')
+
+    lodcm.z1Si = make_fake_offset_ims('TH1SI:PREFIX')
+    lodcm.z2Si = make_fake_offset_ims('TH2C:PREFIX')
+    lodcm.z1C = make_fake_offset_ims('TH1C:PREFIX')
+    lodcm.z2C = make_fake_offset_ims('TH2C:PREFIX')
+
     return lodcm
 
 
@@ -120,7 +144,7 @@ def fake_tower2():
 
 
 @pytest.fixture(scope='function')
-def fake_energy_si(monkeypatch):
+def fake_energy_si():
     FakeLODCMEnergy = make_fake_device(LODCMEnergySi)
     energy = FakeLODCMEnergy('FAKE:ENERGY:SI', name='fake_energy_si')
 
@@ -134,7 +158,7 @@ def fake_energy_si(monkeypatch):
 
 
 @pytest.fixture(scope='function')
-def fake_energy_c(monkeypatch):
+def fake_energy_c():
     FakeLODCMEnergy = make_fake_device(LODCMEnergyC)
     energy = FakeLODCMEnergy('FAKE:ENERGY:C', name='fake_energy_c')
 
@@ -145,6 +169,49 @@ def fake_energy_c(monkeypatch):
     motor_setup(energy.dr)
 
     return energy
+
+
+def test_move_energy(fake_lodcm):
+    lom = fake_lodcm
+    lom.energy.move(10, wait=False)
+    assert np.isclose(lom.energy.th2.wm(), 11.402710639982848)
+    assert np.isclose(lom.energy.z1.wm(), -713.4828146545175)
+    assert np.isclose(lom.energy.z2.wm(), 713.4828146545175)
+    assert np.isclose(lom.energy.dr.wm(), 22.805421279965696)
+
+
+def test_tweak_x(fake_lodcm):
+    lom = fake_lodcm
+    # with th2Si == 23 (init_pos)
+    # with x = 3 => z = -1.437736291486497
+    lom.tweak_x(3, 'Si', wait=False)
+    assert lom.x2.wm() == 3
+    assert lom.z2.wm() == -1.437736291486497
+
+
+def test_tweak_parallel(fake_lodcm):
+    lom = fake_lodcm
+    # with th2Si == 23 (init_pos)
+    # with Si, x2 = 0, z2 = 0 (init_pos)
+    # x2.mvr(p * np.sin(th * np.pi / 180)) => 0 + 1.1721933854678213
+    # z2.mvr(p * np.cos(th * np.pi / 180)) => 24 + 2.761514560357321
+    lom.tweak_parallel(3)
+    assert lom.x2.wm() == 1.1721933854678213
+    assert lom.z2.wm() == 2.761514560357321
+    lom.tweak_parallel(3)
+    # with now x2 = 1.1721933854678213, z2 = 2.761514560357321
+    assert lom.x2.wm() == 1.1721933854678213 * 2
+    assert lom.z2.wm() == 2.761514560357321 * 2
+
+
+def test_set_energy(fake_lodcm, monkeypatch):
+    lom = fake_lodcm
+    lom.set_energy(10, material='Si', reflection=(1, 1, 1))
+
+    assert lom.th1Si.wm() == 11.402710639982848
+    assert lom.th2Si.wm() == 11.402710639982848
+    assert lom.z1Si.wm() == -713.4828146545175
+    assert lom.z2Si.wm() == 713.4828146545175
 
 
 def test_lodcm_destination(fake_lodcm):
@@ -324,7 +391,7 @@ def test_get_energy_c(fake_energy_c, monkeypatch):
         assert res == 7.7039801344046515
 
 
-def test_get_energy_si(fake_energy_si, monkeypatch):
+def test_get_energy_si(fake_energy_si):
     energy = fake_energy_si
 
     energy.th1.set_current_position(-23)
@@ -337,7 +404,7 @@ def test_get_energy_si(fake_energy_si, monkeypatch):
         assert res == 5.059840436879476
 
 
-def test_forward_si(fake_energy_si, monkeypatch):
+def test_forward_si(fake_energy_si):
     energy = fake_energy_si
 
     energy.th1.set_current_position(-23)
@@ -353,7 +420,7 @@ def test_forward_si(fake_energy_si, monkeypatch):
         assert np.isclose(res.z2, 289.70663244212216)
 
 
-def test_forward_c(fake_energy_c, monkeypatch):
+def test_forward_c(fake_energy_c):
     energy = fake_energy_c
 
     energy.th1.set_current_position(-23)
@@ -369,7 +436,7 @@ def test_forward_c(fake_energy_c, monkeypatch):
         assert np.isclose(res.z2, 289.70663244212216)
 
 
-def test_inverse_si(fake_energy_si, monkeypatch):
+def test_inverse_si(fake_energy_si):
     energy = fake_energy_si
     energy.th1.set_current_position(-23)
     with patch("pcdsdevices.lodcm.LODCMEnergySi.get_reflection",
@@ -378,7 +445,7 @@ def test_inverse_si(fake_energy_si, monkeypatch):
         assert np.isclose(res[0], 5.05984044)
 
 
-def test_inverse_c(fake_energy_c, monkeypatch):
+def test_inverse_c(fake_energy_c):
     energy = fake_energy_c
     energy.th1.set_current_position(-23)
     with patch("pcdsdevices.lodcm.LODCMEnergyC.get_reflection",
@@ -387,17 +454,16 @@ def test_inverse_c(fake_energy_c, monkeypatch):
         assert np.isclose(res[0], 7.7039801344046515)
 
 
-def test_lodcm_move(fake_lodcm):
+def test_lodcm_move_energy_si(fake_lodcm):
     lodcm = fake_lodcm
     with patch("pcdsdevices.lodcm.LODCMEnergySi.get_reflection",
                return_value=(1, 1, 1)):
-
         lodcm.energy_si.move(10, wait=False)
-        assert lodcm.energy.th1.motor.user_setpoint.get() == 11.402710639982848
-        assert lodcm.energy.th2.motor.user_setpoint.get() == 11.402710639982848
-        assert lodcm.energy.dr.user_setpoint.get() == 11.402710639982848*2
-        assert lodcm.energy.z1.motor.user_setpoint.get() == -713.4828146545175
-        assert lodcm.energy.z2.motor.user_setpoint.get() == 713.4828146545175
+        assert np.isclose(lodcm.energy.th1.wm(), 11.402710639982848)
+        assert np.isclose(lodcm.energy.th2.wm(), 11.402710639982848)
+        assert np.isclose(lodcm.energy.dr.wm(), 11.402710639982848*2)
+        assert np.isclose(lodcm.energy.z1.wm(), -713.4828146545175)
+        assert np.isclose(lodcm.energy.z2.wm(), 713.4828146545175)
 
 
 @pytest.mark.timeout(5)
