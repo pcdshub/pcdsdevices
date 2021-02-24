@@ -347,48 +347,48 @@ def test_get_reflection_lodcm(fake_lodcm):
         lodcm.get_reflection(as_tuple=True, check=True)
 
 
-def test_calc_energy_c(fake_energy_c):
+def test_calc_geometry_c(fake_energy_c):
     energy = fake_energy_c
     logger.info('Testing with C, (1, 1, 1)')
     with patch('pcdsdevices.lodcm.LODCMEnergyC.get_reflection',
                return_value=(1, 1, 1)):
-        th, z = energy.calc_energy(energy=10)
+        th, z = energy.calc_geometry(energy=10)
         assert th == 17.51878596767417
         assert z == 427.8469911590626
-        th, z = energy.calc_energy(energy=6)
+        th, z = energy.calc_geometry(energy=6)
         assert th == 30.112367750143974
         assert z == 171.63966796710216
 
     logger.info('Testing with C, (2, 2, 0)')
     with patch('pcdsdevices.lodcm.LODCMEnergyC.get_reflection',
                return_value=(2, 2, 0)):
-        th, z = energy.calc_energy(energy=10)
+        th, z = energy.calc_geometry(energy=10)
         assert th == 29.443241721774093
         assert z == 181.06811018121837
-        th, z = energy.calc_energy(energy=6)
+        th, z = energy.calc_geometry(energy=6)
         assert th == 55.01163934185574
         assert z == -109.32912449140694
 
 
-def test_calc_energy_si(fake_energy_si):
+def test_calc_geometry_si(fake_energy_si):
     energy = fake_energy_si
     logger.info('Testing with Si, (1, 1, 1)')
     with patch("pcdsdevices.lodcm.LODCMEnergySi.get_reflection",
                return_value=(1, 1, 1)):
-        th, z = energy.calc_energy(energy=10)
+        th, z = energy.calc_geometry(energy=10)
         assert th == 11.402710639982848
         assert z == 713.4828146545175
-        th, z = energy.calc_energy(energy=6)
+        th, z = energy.calc_geometry(energy=6)
         assert th == 19.23880622548293
         assert z == 377.45432488131866
 
     logger.info('Testing with Si, (2, 2, 0)')
     with patch("pcdsdevices.lodcm.LODCMEnergySi.get_reflection",
                return_value=(2, 2, 0)):
-        th, z = energy.calc_energy(energy=10)
+        th, z = energy.calc_geometry(energy=10)
         assert th == 18.835297041786244
         assert z == 388.56663653387835
-        th, z = energy.calc_energy(energy=6)
+        th, z = energy.calc_geometry(energy=6)
         assert th == 32.55312408478254
         assert z == 139.21560118646275
 

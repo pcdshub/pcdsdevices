@@ -124,77 +124,77 @@ class CrystalTower1(BaseInterface, Device):
         Epics base Pv prefix.
     """
     # x, y, and z are on the base but not touched in normal operations
-    z1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:04',
+    z1 = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:04',
               kind='normal', doc='LOM Xtal1 Z')
-    x1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:05',
+    x1 = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:05',
               kind='normal', doc='LOM Xtal1 X')
-    y1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:06',
+    y1 = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:06',
               kind='normal', doc='LOM Xtal1 Y')
     # theta movement
-    th1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:07',
+    th1 = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:07',
                kind='normal', doc='LOM Xtal1 Theta')
     # chi movement
-    chi1 = FCpt(IMS, '{self._m_prefix}:MON:MMS:08',
+    chi1 = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:08',
                 kind='normal', doc='LOM Xtal1 Chi')
     # normal to the crystal surface movement
-    h1n = FCpt(IMS, '{self._m_prefix}:MON:MMS:09',
+    h1n = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:09',
                kind='normal', doc='LOM Xtal1 Hn')
     # paralell to the crystal surface movement
-    h1p = FCpt(IMS, '{self._m_prefix}:MON:MMS:20',
+    h1p = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:20',
                kind='normal', doc='LOM Xtal1 Hp')
 
     # states
     h1n_state = Cpt(H1N, ':H1N', kind='hinted')
-    y1_state = Cpt(Y1, ':Y1', kind='omitted')
-    chi1_state = Cpt(CHI1, ':CHI1', kind='omitted')
+    y1_state = Cpt(Y1, ':Y1', kind='normal')
+    chi1_state = Cpt(CHI1, ':CHI1', kind='normal')
 
     # reflection pvs (3 1 1 1)
-    diamond_reflection = Cpt(EpicsSignalRO, ':T1C:REF', kind='omitted',
+    diamond_reflection = Cpt(EpicsSignalRO, ':T1C:REF', kind='normal',
                              doc='Tower 1 Diamond crystal reflection')
-    silicon_reflection = Cpt(EpicsSignalRO, ':T1Si:REF', kind='omitted',
+    silicon_reflection = Cpt(EpicsSignalRO, ':T1Si:REF', kind='normal',
                              doc='Tower 1 Silicon crystal reflection')
 
     # motor offsets
     # the folowing are declared in Energy classes
     # th1_si, th1_c, z1_si, z1_c
     x1C = FCpt(OffsetMotor, prefix='{self._prefix}:X1:OFF_C',
-               motor_prefix='{self._m_prefix}:MON:MMS:05', kind='normal',
+               motor_prefix='{self._hutch_prefix}:MON:MMS:05', kind='normal',
                add_prefix=('prefix', 'motor_prefix'),
                name='x1_c', doc='X1 motor offset for C [mm]')
     x1Si = FCpt(OffsetMotor, prefix='{self._prefix}:X1:OFF_Si',
-                motor_prefix='{self._m_prefix}:MON:MMS:05', kind='normal',
+                motor_prefix='{self._hutch_prefix}:MON:MMS:05', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
                 name='x1_si', doc='X1 motor offset for Si [mm]')
     y1C = FCpt(OffsetMotor, prefix='{self._prefix}:Y1:OFF_C',
-               motor_prefix='{self._m_prefix}:MON:MMS:06', kind='normal',
+               motor_prefix='{self._hutch_prefix}:MON:MMS:06', kind='normal',
                add_prefix=('prefix', 'motor_prefix'),
                name='y1_c', doc='Y1 motor offset for C [mm]')
     y1Si = FCpt(OffsetMotor, prefix='{self._prefix}:Y1:OFF_Si',
-                motor_prefix='{self._m_prefix}:MON:MMS:06', kind='normal',
+                motor_prefix='{self._hutch_prefix}:MON:MMS:06', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
                 name='y1_si', doc='Y1 motor offset for Si [mm]')
     chi1C = FCpt(OffsetMotor, prefix='{self._prefix}:CHI1:OFF_C',
-                 motor_prefix='{self._m_prefix}:MON:MMS:08', kind='normal',
+                 motor_prefix='{self._hutch_prefix}:MON:MMS:08', kind='normal',
                  add_prefix=('prefix', 'motor_prefix'),
                  name='chi1_c ', doc='Chi 1 motor offset for C [deg]')
     chi1Si = FCpt(OffsetMotor, prefix='{self._prefix}:CHI1:OFF_Si',
-                  motor_prefix='{self._m_prefix}:MON:MMS:08', kind='normal',
-                  add_prefix=('prefix', 'motor_prefix'),
+                  motor_prefix='{self._hutch_prefix}:MON:MMS:08',
+                  kind='normal', add_prefix=('prefix', 'motor_prefix'),
                   name='chi1_si', doc='Chi 1 motor offset for Si [deg]')
     h1nC = FCpt(OffsetMotor, prefix='{self._prefix}:H1N:OFF_C',
-                motor_prefix='{self._m_prefix}:MON:MMS:09', kind='normal',
+                motor_prefix='{self._hutch_prefix}:MON:MMS:09', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
                 name='', doc='H1n motor offset for C [mm]')
     h1nSi = FCpt(OffsetMotor, prefix='{self._prefix}:H1N:OFF_Si',
-                 motor_prefix='{self._m_prefix}:MON:MMS:09', kind='normal',
+                 motor_prefix='{self._hutch_prefix}:MON:MMS:09', kind='normal',
                  add_prefix=('prefix', 'motor_prefix'),
                  name='h1n_si', doc='H1n motor offset for Si [mm]')
     h1pC = FCpt(OffsetMotor, prefix='{self._prefix}:H1P:OFF_C',
-                motor_prefix='{self._m_prefix}:MON:MMS:20', kind='normal',
+                motor_prefix='{self._hutch_prefix}:MON:MMS:20', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
                 name='h1p_c', doc='H1p motor offset for C [mm]')
     h1pSi = FCpt(OffsetMotor, prefix='{self._prefix}:H1P:OFF_Si',
-                 motor_prefix='{self._m_prefix}:MON:MMS:20', kind='normal',
+                 motor_prefix='{self._hutch_prefix}:MON:MMS:20', kind='normal',
                  add_prefix=('prefix', 'motor_prefix'),
                  name='h1p_si', doc='H1p motor offset for Si [mm]')
 
@@ -203,12 +203,12 @@ class CrystalTower1(BaseInterface, Device):
                      'get_material']
 
     def __init__(self, prefix, *args, **kwargs):
-        self._m_prefix = ''
+        self._hutch_prefix = ''
         self._prefix = prefix
         if 'XPP' in prefix:
-            self._m_prefix = 'XPP'
+            self._hutch_prefix = 'XPP'
         elif 'XCS' in prefix:
-            self._m_prefix = 'HFX'
+            self._hutch_prefix = 'HFX'
         super().__init__(prefix, *args, **kwargs)
 
     def is_diamond(self):
@@ -290,74 +290,77 @@ class CrystalTower2(BaseInterface, Device):
         Epics base Pv prefix.
     """
     # x, y, and z are on the base but not touched in normal operations
-    z2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:10',
+    z2 = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:10',
               kind='normal', doc='LOM Xtal2 Z')
-    x2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:11',
+    x2 = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:11',
               kind='normal', doc='LOM Xtal2 X')
-    y2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:12',
+    y2 = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:12',
               kind='normal', doc='LOM Xtal2 Y')
     # thata movement
-    th2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:13',
+    th2 = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:13',
                kind='normal', doc='LOM Xtal2 Theta')
     # chi movement
-    chi2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:14',
+    chi2 = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:14',
                 kind='normal', doc='LOM Xtal2 Chi')
     # normal to the crystal surface movement
-    h2n = FCpt(IMS, '{self._m_prefix}:MON:MMS:15',
+    h2n = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:15',
                kind='normal', doc='LOM Xtal2 Hn')
     # in the DAQ for scanning in python, only used for commissioning
-    diode2 = FCpt(IMS, '{self._m_prefix}:MON:MMS:21',
+    diode2 = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:21',
                   kind='normal', doc='LOM Xtal2 PIPS')
 
-    x2_retry_deadband = FCpt(EpicsSignalRO, '{self._m_prefix}:MON:MMS:11.RDBD',
+    x2_retry_deadband = FCpt(EpicsSignalRO,
+                             '{self._hutch_prefix}:MON:MMS:11.RDBD',
                              doc='Retry Deadband for x2', kind='omitted')
-    z2_retry_deadband = FCpt(EpicsSignalRO, '{self._m_prefix}:MON:MMS:10.RDBD',
+    z2_retry_deadband = FCpt(EpicsSignalRO,
+                             '{self._hutch_prefix}:MON:MMS:10.RDBD',
                              doc='Retry Deadband for z2', kind='omitted')
 
     # states
     h2n_state = Cpt(H2N, ':H2N', kind='hinted')
-    y2_state = Cpt(Y2, ':Y2', kind='omitted')
-    chi2_state = Cpt(CHI2, ':CHI2', kind='omitted')
+    y2_state = Cpt(Y2, ':Y2', kind='normal')
+    chi2_state = Cpt(CHI2, ':CHI2', kind='normal')
 
     # reflection pvs
-    diamond_reflection = Cpt(EpicsSignalRO, ':T2C:REF', kind='omitted',
+    diamond_reflection = Cpt(EpicsSignalRO, ':T2C:REF', kind='normal',
                              doc='Tower 2 Diamond crystal reflection')
-    silicon_reflection = Cpt(EpicsSignalRO, ':T2Si:REF', kind='omitted',
+    silicon_reflection = Cpt(EpicsSignalRO, ':T2Si:REF', kind='normal',
                              doc='Tower 2 Silicon crystal reflection')
 
     # motor offsets
     # the following ones are declared in the Energy classes
     # th2_si, th2_c, z2_si, z2_c
     x2C = FCpt(OffsetMotor, prefix='{self._prefix}:X2:OFF_C', name='x2_c ',
-               motor_prefix='{self._m_prefix}:MON:MMS:11',
+               motor_prefix='{self._hutch_prefix}:MON:MMS:11',
                add_prefix=('prefix', 'motor_prefix'), kind='normal',
                doc='X2 motor offset for C [mm]')
     x2Si = FCpt(OffsetMotor, prefix='{self._prefix}:X2:OFF_Si', name='x2_si',
-                motor_prefix='{self._m_prefix}:MON:MMS:11',
+                motor_prefix='{self._hutch_prefix}:MON:MMS:11',
                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
                 doc='X2 motor offset for Si [mm]')
     y2C = FCpt(OffsetMotor, prefix='{self._prefix}:Y2:OFF_C', name='y2_c',
-               motor_prefix='{self._m_prefix}:MON:MMS:12',
+               motor_prefix='{self._hutch_prefix}:MON:MMS:12',
                add_prefix=('prefix', 'motor_prefix'), kind='normal',
                doc='Y2 motor offset for C [mm]')
     y2Si = FCpt(OffsetMotor, prefix='{self._prefix}:Y2:OFF_Si', name='y2_si',
-                motor_prefix='{self._m_prefix}:MON:MMS:12',
+                motor_prefix='{self._hutch_prefix}:MON:MMS:12',
                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
                 doc='Y2 motor offset for Si [mm]')
     chi2C = FCpt(OffsetMotor, prefix='{self._prefix}:CHI2:OFF_C',
-                 name='chi2_c', motor_prefix='{self._m_prefix}:MON:MMS:14',
+                 name='chi2_c', motor_prefix='{self._hutch_prefix}:MON:MMS:14',
                  add_prefix=('prefix', 'motor_prefix'), kind='normal',
                  doc='Chi 2 motor offset for C [deg]')
     chi2Si = FCpt(OffsetMotor, prefix='{self._prefix}:CHI2:OFF_Si',
-                  name='chi2_si', motor_prefix='{self._m_prefix}:MON:MMS:14',
+                  name='chi2_si',
+                  motor_prefix='{self._hutch_prefix}:MON:MMS:14',
                   add_prefix=('prefix', 'motor_prefix'), kind='normal',
                   doc='Chi 2 motor offset for Si [deg]')
     h2nC = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_C', name='h2n_c',
-                motor_prefix='{self._m_prefix}:MON:MMS:15',
+                motor_prefix='{self._hutch_prefix}:MON:MMS:15',
                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
                 doc=' H2n motor offset for C [mm]')
     h2nSi = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_Si',
-                 name='h2n_si', motor_prefix='{self._m_prefix}:MON:MMS:15',
+                 name='h2n_si', motor_prefix='{self._hutch_prefix}:MON:MMS:15',
                  add_prefix=('prefix', 'motor_prefix'), kind='normal',
                  doc='H2n motor offset for Si [mm]')
 
@@ -366,12 +369,12 @@ class CrystalTower2(BaseInterface, Device):
                      'get_material']
 
     def __init__(self, prefix, *args, **kwargs):
-        self._m_prefix = ''
+        self._hutch_prefix = ''
         self._prefix = prefix
         if 'XPP' in prefix:
-            self._m_prefix = 'XPP'
+            self._hutch_prefix = 'XPP'
         elif 'XCS' in prefix:
-            self._m_prefix = 'HFX'
+            self._hutch_prefix = 'HFX'
         super().__init__(prefix, *args, **kwargs)
 
     def is_diamond(self):
@@ -450,21 +453,21 @@ class DiagnosticsTower(BaseInterface, Device):
     """
     # Located midway between T1 and T2 in the center of rotation of the device.
     # horizontal slits
-    dh = FCpt(IMS, '{self._m_prefix}:MON:MMS:16',
+    dh = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:16',
               kind='normal', doc='LOM Dia H')
     # vertical slits
-    dv = FCpt(IMS, '{self._m_prefix}:MON:MMS:17',
+    dv = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:17',
               kind='normal', doc='LOM Dia V')
-    dr = FCpt(IMS, '{self._m_prefix}:MON:MMS:19',
+    dr = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:19',
               kind='normal', doc='LOM Dia Theta')
     # filters wheel
-    df = FCpt(IMS, '{self._m_prefix}:MON:MMS:{self._df_suffix}', kind='normal',
-              doc='LOM Dia Filter Wheel')
+    df = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:{self._df_suffix}',
+              kind='normal', doc='LOM Dia Filter Wheel')
     # pips diode
-    dd = FCpt(IMS, '{self._m_prefix}:MON:MMS:18',
+    dd = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:18',
               kind='normal', doc='LOM Dia PIPS')
     # yag screen
-    yag_zoom = FCpt(IMS, '{self._m_prefix}:MON:CLZ:01',
+    yag_zoom = FCpt(IMS, '{self._hutch_prefix}:MON:CLZ:01',
                     kind='normal', doc='LOM Zoom')
 
     tab_component_names = True
@@ -472,12 +475,12 @@ class DiagnosticsTower(BaseInterface, Device):
     def __init__(self, prefix, *args, **kwargs):
         # The df component has a different PV suffix in `XPP` vs `XCS`
         # XPP:MON:MMS:27 vs HFX:MON:MMS:22
-        self._m_prefix = ''
+        self._hutch_prefix = ''
         self._df_suffix = '27'
         if 'XPP' in prefix:
-            self._m_prefix = 'XPP'
+            self._hutch_prefix = 'XPP'
         elif 'XCS' in prefix:
-            self._m_prefix = 'HFX'
+            self._hutch_prefix = 'HFX'
             self._df_suffix = '22'
 
         super().__init__(prefix, *args, **kwargs)
@@ -492,25 +495,25 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
     """
     tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
     tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
-    dr = FCpt(IMS, '{self._m_prefix}:MON:MMS:19',
+    dr = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:19',
               kind='normal', doc='LOM Dia Theta')
 
     th1Si = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_Si',
-                 motor_prefix='{self._m_prefix}:MON:MMS:07',
+                 motor_prefix='{self._hutch_prefix}:MON:MMS:07',
                  add_prefix=('prefix', 'motor_prefix'), name='th1_si',
                  doc='Th1 motor offset for Si [deg]')
     th2Si = FCpt(OffsetMotor, prefix='{self._prefix}:TH2:OFF_Si',
-                 motor_prefix='{self._m_prefix}:MON:MMS:13',
+                 motor_prefix='{self._hutch_prefix}:MON:MMS:13',
                  add_prefix=('prefix', 'motor_prefix'), name='th2_si',
                  doc='Th2 motor offset for Si [deg]')
     z1Si = FCpt(OffsetMotor, prefix='{self._prefix}:Z1:OFF_Si',
                 name='z1_si',
-                motor_prefix='{self._m_prefix}:MON:MMS:04',
+                motor_prefix='{self._hutch_prefix}:MON:MMS:04',
                 add_prefix=('prefix', 'motor_prefix'),
                 doc='Z1 motor offset for Si [mm]')
     z2Si = FCpt(OffsetMotor, prefix='{self._prefix}:Z2:OFF_Si',
                 name='z1_si',
-                motor_prefix='{self._m_prefix}:MON:MMS:10',
+                motor_prefix='{self._hutch_prefix}:MON:MMS:10',
                 add_prefix=('prefix', 'motor_prefix'),
                 doc='Z2 motor offset for Si [mm]')
 
@@ -518,11 +521,11 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
 
     def __init__(self, prefix, *args, **kwargs):
         self._prefix = prefix
-        self._m_prefix = ''
+        self._hutch_prefix = ''
         if 'XPP' in self._prefix:
-            self._m_prefix = 'XPP'
+            self._hutch_prefix = 'XPP'
         elif 'XCS' in self._prefix:
-            self._m_prefix = 'HFX'
+            self._hutch_prefix = 'HFX'
 
         super().__init__(prefix=prefix, *args, **kwargs)
 
@@ -577,7 +580,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
                   diffraction.d_space(material, reflection))
         return common.wavelength_to_energy(length) / 1000
 
-    def calc_energy(self, energy, material='Si', reflection=None):
+    def calc_geometry(self, energy, material='Si', reflection=None):
         """
         Calculate the lom geometry.
 
@@ -618,7 +621,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
         """
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
 
-        th, z = self.calc_energy(energy=pseudo_pos.energy)
+        th, z = self.calc_geometry(energy=pseudo_pos.energy)
 
         return self.RealPosition(th1Si=th,
                                  th2Si=th,
@@ -666,25 +669,25 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
     """
     tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
     tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
-    dr = FCpt(IMS, '{self._m_prefix}:MON:MMS:19',
+    dr = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:19',
               kind='normal', doc='LOM Dia Theta')
 
     th1C = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_C',
                 name='th1_c',
-                motor_prefix='{self._m_prefix}:MON:MMS:07',
+                motor_prefix='{self._hutch_prefix}:MON:MMS:07',
                 add_prefix=('prefix', 'motor_prefix'),
                 doc='Th1 motor offset for C [deg]')
     th2C = FCpt(OffsetMotor, prefix='{self._prefix}:TH2:OFF_C',
                 name='th2_c',
-                motor_prefix='{self._m_prefix}:MON:MMS:13',
+                motor_prefix='{self._hutch_prefix}:MON:MMS:13',
                 add_prefix=('prefix', 'motor_prefix'),
                 doc='Th2 motor offset for C [deg]')
     z1C = FCpt(OffsetMotor, prefix='{self._prefix}:Z1:OFF_C', name='z1_c',
-               motor_prefix='{self._m_prefix}:MON:MMS:04',
+               motor_prefix='{self._hutch_prefix}:MON:MMS:04',
                add_prefix=('prefix', 'motor_prefix'),
                doc='Z1 motor offset for C [mm]')
     z2C = FCpt(OffsetMotor, prefix='{self._prefix}:Z2:OFF_C', name='z1_c',
-               motor_prefix='{self._m_prefix}:MON:MMS:10',
+               motor_prefix='{self._hutch_prefix}:MON:MMS:10',
                add_prefix=('prefix', 'motor_prefix'),
                doc='Z2 motor offset for C [mm]')
 
@@ -692,11 +695,11 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
 
     def __init__(self, prefix, *args, **kwargs):
         self._prefix = prefix
-        self._m_prefix = ''
+        self._hutch_prefix = ''
         if 'XPP' in self._prefix:
-            self._m_prefix = 'XPP'
+            self._hutch_prefix = 'XPP'
         elif 'XCS' in self._prefix:
-            self._m_prefix = 'HFX'
+            self._hutch_prefix = 'HFX'
 
         super().__init__(prefix=prefix, *args, **kwargs)
 
@@ -751,7 +754,7 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
                   diffraction.d_space(material, reflection))
         return common.wavelength_to_energy(length) / 1000
 
-    def calc_energy(self, energy, material='C', reflection=None):
+    def calc_geometry(self, energy, material='C', reflection=None):
         """
         Calculate the lom geometry.
 
@@ -791,7 +794,7 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
             The real position output, a namedtuple.
         """
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
-        th, z = self.calc_energy(energy=pseudo_pos.energy)
+        th, z = self.calc_geometry(energy=pseudo_pos.energy)
 
         return self.RealPosition(th1C=th,
                                  th2C=th,
@@ -881,11 +884,11 @@ class LODCM(BaseInterface, Device):
     def __init__(self, prefix, *, name, main_line='MAIN', mono_line='MONO',
                  **kwargs):
         self._prefix = prefix
-        self._m_prefix = ''
+        self._hutch_prefix = ''
         if 'XPP' in self._prefix:
-            self._m_prefix = 'XPP'
+            self._hutch_prefix = 'XPP'
         elif 'XCS' in self._prefix:
-            self._m_prefix = 'HFX'
+            self._hutch_prefix = 'HFX'
 
         super().__init__(prefix, name=name, **kwargs)
         self.main_line = main_line
@@ -1126,7 +1129,7 @@ class LODCM(BaseInterface, Device):
             raise ValueError('Cannot decide the energy motor because could not'
                              ' determine the material.')
 
-    def calc_energy(self, energy, material=None, reflection=None):
+    def calc_geometry(self, energy, material=None, reflection=None):
         """
         Calculate the lom geometry.
 
@@ -1145,7 +1148,7 @@ class LODCM(BaseInterface, Device):
         material = material or self.get_material()
         reflection = reflection or self.get_reflection(
             as_tuple=True, check=True)
-        return self.energy.calc_energy(energy, material, reflection)
+        return self.energy.calc_geometry(energy, material, reflection)
 
     def set_energy(self, energy, material=None, reflection=None):
         """
