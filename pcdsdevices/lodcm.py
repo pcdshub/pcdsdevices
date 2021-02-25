@@ -106,22 +106,24 @@ class Y2(InOutRecordPositioner):
 
 class CrystalTower1(BaseInterface, Device):
     """
-    Crystal Tower 1.
+    LODCM Crystal Tower 1.
 
     Has the Si and C crystals with 2 angles and 5 linear motions.
-    `h1n_state` brings the crystal into the beam, moving horizontally
-    (normal to the beam and parallel to the ground). It's also the only axis
+    The `h1n_state` brings the crystal into the beam, moving horizontally
+    (normal to the beam and parallel to the ground). It is also the only axis
     that can fully clear the crystal assembly from the beam. If h1n state is
-    `OUT` and if we were to insert into the beam, we'd be aligned to the C
+    `OUT` and if we were to insert into the beam, we would be aligned to the C
     crystal.
-    `y1_state` brings the crystal into the beam, moving vertically
-    (normal to the beam and normal to the ground)
-    `chi1_state` rotates the crystal assembly.
+    The `y1_state` brings the crystal into the beam, moving vertically
+    (normal to the beam and normal to the ground).
+    The `chi1_state` rotates the crystal assembly.
 
     Parameters
     ----------
     prefix : str
         Epics base Pv prefix.
+    name : str
+        The name of this device.
     """
     # x, y, and z are on the base but not touched in normal operations
     z1 = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:04',
@@ -366,7 +368,7 @@ hp [{hp_units}]  {hp_user} ({hp_dial})
 
 class CrystalTower2(BaseInterface, Device):
     """
-    Crystal Tower 2.
+    LODCM Crystal Tower 2.
 
     Has the second Si and C crystals and a diode behind the crystals.
 
@@ -374,6 +376,8 @@ class CrystalTower2(BaseInterface, Device):
     ----------
     prefix : str
         Epics base Pv prefix.
+    name : str
+        The name of this device.
     """
     # x, y, and z are on the base but not touched in normal operations
     z2 = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:10',
@@ -617,12 +621,19 @@ diode [{diode_units}]  {diode_user} ({diode_dial})
 
 class DiagnosticsTower(BaseInterface, Device):
     """
-    Diagnostic Tower Motors.
+    LODCM Diagnostic Tower.
+
+    Located midway between Crystal Tower 1 and Crystal Tower 2, in the center
+    of rotation of the device.
+    It contains a pips diode(dd), yag screen(dv), filters wheel (df)
+    and vertical (dh) and horizontal slits (dd).
 
     Parameters
     ----------
     prefix : str
         Epics base PV prefix.
+    name : str
+        The name of this device.
     """
     # Located midway between T1 and T2 in the center of rotation of the device.
     # horizontal slits
@@ -724,6 +735,13 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
 
     Assume material is 'Si' without checking if the crystal's materials are
     aligned for both towers.
+
+    Parameters
+    ----------
+    prefix : str
+        Epics base PV prefix.
+    name : str
+        The name of this device.
     """
     tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
     tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
@@ -895,6 +913,13 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
 
     Assume material is 'C' without checking if the crystal's materials are
     aligned for both towers.
+
+    Parameters
+    ----------
+    prefix : str
+        Epics base PV prefix.
+    name : str
+        The name of this device.
     """
     tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
     tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
