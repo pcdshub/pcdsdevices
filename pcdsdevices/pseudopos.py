@@ -79,7 +79,7 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         """
         units = get_status_value(status_info, 'notepad_readback', 'units')
         position = get_status_float(
-            status_info, 'position', precision=3, format='E')
+            status_info, 'position', precision=3, format='e')
         # if a dial_pos is not present we can assume that the dial position is
         # the same as the normal position
         dial_pos = self.calculated_dial_pos or position

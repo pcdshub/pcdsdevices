@@ -378,6 +378,25 @@ class LaserTiming(FltMvInterface, PVPositioner):
         """
         self._lxt_verbose_name = name
 
+    @property
+    def dial_pos(self):
+        """
+        Calculate the dial position.
+
+        The _fs_tgt_time is the actual dial_position in ns.
+
+        Returns
+        -------
+        dial_pos : number
+            The dial position in [s] seconds, or 'N/A' if the dial position is
+            0 or None.
+        """
+        dial_pos = self._fs_tgt_time.get()
+        if dial_pos:
+            # convert from ns to s
+            return f'{(dial_pos * 1e-9):.3e}'
+        return 'N/A'
+
     def format_status_info(self, status_info):
         """
         Override status info handler to render the LXT motor.
@@ -396,12 +415,13 @@ class LaserTiming(FltMvInterface, PVPositioner):
         status: str
             Formatted string with all relevant status information.
         """
+        dial_pos = self.dial_pos
         position = get_status_float(
-            status_info, 'position', precision=3, format='E')
+            status_info, 'position', precision=3, format='e')
         units = get_status_value(status_info, 'setpoint', 'units')
         return f"""\
 Virtual Motor {self.verbose_name} {self.prefix}
-Current position (user): {position} [{units}]
+Current position (user, dial): {position} [{units}] {dial_pos} [s]
 """
 
 
