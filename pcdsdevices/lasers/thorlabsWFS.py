@@ -76,4 +76,3 @@ class ThorlabsWfs40(PCDSAreaDetectorTyphosTrigger):
                     shape=(80, 80, 0),
                     num_dimensions=2,
                     kind='normal')
-
