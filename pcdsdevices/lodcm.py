@@ -273,6 +273,96 @@ class CrystalTower1(BaseInterface, Device):
             raise ValueError(
                 "Unable to determine crystal material for Tower 1")
 
+    def format_status_info(self, status_info):
+        """Override status info handler to render the crystal tower 1."""
+        t1_state = get_status_value(
+            status_info, 'h1n_state', 'position')
+        state = f'h1n_state: {t1_state}'
+        hutch = ''
+        if 'XPP' in self.prefix:
+            hutch = 'XPP '
+        elif 'XCS' in self.prefix:
+            hutch = 'XCS '
+
+        try:
+            material = self.get_material()
+        except Exception:
+            material = 'Unknown'
+
+        if material == 'C':
+            configuration = 'Diamond'
+        elif material == 'Si':
+            configuration = 'Silicon'
+        else:
+            configuration = 'Unknown'
+
+        try:
+            ref = self.get_reflection()
+            ref = ''.join(map(str, ref))
+        except Exception:
+            ref = 'Unknown'
+        # tower 1
+        z_units = get_status_value(
+            status_info, 'z1', 'user_setpoint', 'units')
+        z_user = get_status_float(
+            status_info, 'z1', 'position')
+        z_dial = get_status_float(
+            status_info, 'z1', 'dial_position', 'value')
+
+        x_units = get_status_value(
+            status_info, 'x1', 'user_setpoint', 'units')
+        x_user = get_status_float(status_info, 'tower1', 'x1', 'position')
+        x_dial = get_status_float(
+            status_info, 'x1', 'dial_position', 'value')
+
+        th_units = get_status_value(
+            status_info, 'th1', 'user_setpoint', 'units')
+        th_user = get_status_float(
+            status_info, 'th1', 'position')
+        th_dial = get_status_float(
+            status_info, 'th1', 'dial_position', 'value')
+
+        chi_units = get_status_value(
+            status_info, 'chi1', 'user_setpoint', 'units')
+        chi_user = get_status_float(
+            status_info, 'chi1', 'position')
+        chi_dial = get_status_float(
+            status_info, 'chi1', 'dial_position', 'value')
+
+        y_units = get_status_value(
+            status_info, 'y1', 'user_setpoint', 'units')
+        y_user = get_status_float(
+            status_info, 'y1', 'position')
+        y_dial = get_status_float(
+            status_info, 'y1', 'dial_position', 'value')
+
+        hn_units = get_status_value(
+            status_info, 'h1n', 'user_setpoint', 'units')
+        hn_user = get_status_float(
+            status_info, 'h1n', 'position')
+        hn_dial = get_status_float(
+            status_info, 'h1n', 'dial_position', 'value')
+
+        hp_units = get_status_value(
+            status_info, 'h1p', 'user_setpoint', 'units')
+        hp_user = get_status_float(
+            status_info, 'h1p', 'position')
+        hp_dial = get_status_float(
+            status_info, 'h1p', 'dial_position', 'value')
+
+        return f"""\
+{hutch}LODCM Crystal Tower 1
+{state}
+Current Configuration: {configuration} ({ref})
+z [{z_units}]  {z_user} ({z_dial})
+x [{x_units}]  {x_user} ({x_dial})
+th [{th_units}]  {th_user} ({th_dial})
+chi [{chi_units}]  {chi_user} ({chi_dial})
+y [{y_units}]  {y_user} ({y_dial})
+hn [{hn_units}]  {hn_user} ({hn_dial})
+hp [{hp_units}]  {hp_user} ({hp_dial})
+"""
+
 
 class CrystalTower2(BaseInterface, Device):
     """
@@ -433,6 +523,97 @@ class CrystalTower2(BaseInterface, Device):
             raise ValueError(
                 "Unable to determine crystal material for Tower 2")
 
+    def format_status_info(self, status_info):
+        """Override status info handler to render the crystal tower 2."""
+        t2_state = get_status_value(
+            status_info, 'h2n_state', 'position')
+        state = f'h2n_state: {t2_state}'
+        hutch = ''
+        if 'XPP' in self.prefix:
+            hutch = 'XPP '
+        elif 'XCS' in self.prefix:
+            hutch = 'XCS '
+
+        try:
+            material = self.get_material()
+        except Exception:
+            material = 'Unknown'
+
+        if material == 'C':
+            configuration = 'Diamond'
+        elif material == 'Si':
+            configuration = 'Silicon'
+        else:
+            configuration = 'Unknown'
+
+        try:
+            ref = self.get_reflection()
+            ref = ''.join(map(str, ref))
+        except Exception:
+            ref = 'Unknown'
+        # tower 2
+        z_units = get_status_value(
+            status_info, 'z2', 'user_setpoint', 'units')
+        z_user = get_status_float(
+            status_info, 'z2', 'position')
+        z_dial = get_status_float(
+            status_info, 'z2', 'dial_position', 'value')
+
+        x_units = get_status_value(
+            status_info, 'x2', 'user_setpoint', 'units')
+        x_user = get_status_float(
+            status_info, 'x2', 'position')
+        x_dial = get_status_float(
+            status_info, 'x2', 'dial_position', 'value')
+
+        th_units = get_status_value(
+            status_info, 'th2', 'user_setpoint', 'units')
+        th_user = get_status_float(
+            status_info, 'th2', 'position')
+        th_dial = get_status_float(
+            status_info,  'th2', 'dial_position', 'value')
+
+        chi_units = get_status_value(
+            status_info, 'chi2', 'user_setpoint', 'units')
+        chi_user = get_status_float(
+            status_info,  'chi2', 'position')
+        chi_dial = get_status_float(
+            status_info,  'chi2', 'dial_position', 'value')
+
+        y_units = get_status_value(
+            status_info, 'y2', 'user_setpoint', 'units')
+        y_user = get_status_float(
+            status_info,  'y2', 'position')
+        y_dial = get_status_float(
+            status_info,  'y2', 'dial_position', 'value')
+
+        hn_units = get_status_value(
+            status_info, 'h2n', 'user_setpoint', 'units')
+        hn_user = get_status_float(
+            status_info,  'h2n', 'position')
+        hn_dial = get_status_float(
+            status_info,  'h2n', 'dial_position', 'value')
+
+        diode_units = get_status_value(
+            status_info, 'diode2', 'user_setpoint', 'units')
+        diode_user = get_status_float(
+            status_info, 'diode2', 'position')
+        diode_dial = get_status_float(
+            status_info, 'diode2', 'dial_position', 'value')
+
+        return f"""\
+{hutch}LODCM Crystal Tower 2
+{state}
+Current Configuration: {configuration} ({ref})
+z [{z_units}]  {z_user} ({z_dial})
+x [{x_units}]  {x_user} ({x_dial})
+th [{th_units}]  {th_user} ({th_dial})
+chi [{chi_units}]  {chi_user} ({chi_dial})
+y [{y_units}]  {y_user} ({y_dial})
+hn [{hn_units}]  {hn_user} ({hn_dial})
+diode [{diode_units}]  {diode_user} ({diode_dial})
+"""
+
 
 class DiagnosticsTower(BaseInterface, Device):
     """
@@ -476,6 +657,65 @@ class DiagnosticsTower(BaseInterface, Device):
             self._df_suffix = '22'
 
         super().__init__(prefix, *args, **kwargs)
+
+    def format_status_info(self, status_info):
+        """Override status info handler to render the diagnostics tower."""
+        hutch = ''
+        if 'XPP' in self.prefix:
+            hutch = 'XPP '
+        elif 'XCS' in self.prefix:
+            hutch = 'XCS '
+        # diagnostics
+        dh_units = get_status_value(
+            status_info, 'dh', 'user_setpoint', 'units')
+        dh_user = get_status_float(
+            status_info, 'dh', 'position')
+        dh_dial = get_status_float(
+            status_info, 'dh', 'dial_position', 'value')
+
+        dv_units = get_status_value(
+            status_info, 'dv', 'user_setpoint', 'units')
+        dv_user = get_status_float(
+            status_info,  'dv', 'position')
+        dv_dial = get_status_float(
+            status_info, 'dv', 'dial_position', 'value')
+
+        dr_units = get_status_value(
+            status_info, 'dr', 'user_setpoint', 'units')
+        dr_user = get_status_float(
+            status_info, 'dr', 'position')
+        dr_dial = get_status_float(
+            status_info, 'dr', 'dial_position', 'value')
+
+        df_units = get_status_value(
+            status_info, 'df', 'user_setpoint', 'units')
+        df_user = get_status_float(
+            status_info, 'df', 'position')
+        df_dial = get_status_float(
+            status_info, 'df', 'dial_position', 'value')
+
+        dd_units = get_status_value(
+            status_info, 'dd', 'user_setpoint', 'units')
+        dd_user = get_status_float(
+            status_info, 'dd', 'position')
+        dd_dial = get_status_float(
+            status_info, 'dd', 'dial_position', 'value')
+
+        yag_zoom_units = get_status_value(status_info, 'yag_zoom',
+                                          'user_setpoint', 'units')
+        yag_zoom_user = get_status_float(status_info, 'yag_zoom', 'position',
+                                         precision=0)
+        yag_zoom_dial = get_status_float(status_info, 'yag_zoom',
+                                         'dial_position', 'value', precision=0)
+        return f"""\
+{hutch}Diagnostics Tower
+diag r [{dr_units}]  {dr_user} ({dr_dial})
+diag h [{dh_units}]  {dh_user} ({dh_dial})
+diag v [{dv_units}]  {dv_user} ({dv_dial})
+filter [{df_units}]  {df_user} ({df_dial})
+diode [{dd_units}]  {dd_user} ({dd_dial})
+navitar zoom [{yag_zoom_units}]  {yag_zoom_user} ({yag_zoom_dial})
+"""
 
 
 class LODCMEnergySi(FltMvInterface, PseudoPositioner):
