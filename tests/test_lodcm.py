@@ -187,15 +187,23 @@ def test_lodcm_destination(fake_lodcm):
 
     lodcm.h1n_state.move('OUT')
     assert len(lodcm.destination) == 1
+    assert lodcm.main_line in lodcm.destination
+
     lodcm.h1n_state.move('C')
+    assert lodcm.main_line in lodcm.destination
+    assert lodcm.mono_line in lodcm.destination
     assert len(lodcm.destination) == 2
+
     # Block the mono line
     lodcm.yag.move('IN')
     assert len(lodcm.destination) == 1
+    assert lodcm.mono_line not in lodcm.destination
+    assert lodcm.main_line in lodcm.destination
     lodcm.h1n_state.move('Si')
     assert len(lodcm.destination) == 0
     lodcm.yag.move('OUT')
     assert len(lodcm.destination) == 1
+    assert lodcm.mono_line in lodcm.destination
 
     # Unknown state
     lodcm.h1n_state.state.sim_put('Unknown')
