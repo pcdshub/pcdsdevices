@@ -906,6 +906,44 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
         energy = common.wavelength_to_energy(length) / 1000
         return self.PseudoPosition(energy=energy)
 
+    def format_status_info(self, status_info):
+        """Override status info handler to render the energy si."""
+        hutch = ''
+        if 'XPP' in self.prefix:
+            hutch = 'XPP '
+        elif 'XCS' in self.prefix:
+            hutch = 'XCS '
+
+        try:
+            material = self.get_material()
+        except Exception:
+            material = 'Unknown'
+
+        if material == 'C':
+            configuration = 'Diamond'
+        elif material == 'Si':
+            configuration = 'Silicon'
+        else:
+            configuration = 'Unknown'
+
+        try:
+            energy = self.get_energy()
+            energy = "{:.4f}".format(energy)
+        except Exception:
+            energy = 'Unknown'
+
+        try:
+            ref = self.get_reflection()
+            ref = ''.join(map(str, ref))
+        except Exception:
+            ref = 'Unknown'
+
+            return f"""\
+{hutch}LODCM Energy Si
+Current Configuration: {configuration} ({ref})
+Photon Energy: {energy} [keV]
+"""
+
 
 class LODCMEnergyC(FltMvInterface, PseudoPositioner):
     """
@@ -1082,6 +1120,44 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
             return 0
         energy = common.wavelength_to_energy(length) / 1000
         return self.PseudoPosition(energy=energy)
+
+    def format_status_info(self, status_info):
+        """Override status info handler to render the energy c."""
+        hutch = ''
+        if 'XPP' in self.prefix:
+            hutch = 'XPP '
+        elif 'XCS' in self.prefix:
+            hutch = 'XCS '
+
+        try:
+            material = self.get_material()
+        except Exception:
+            material = 'Unknown'
+
+        if material == 'C':
+            configuration = 'Diamond'
+        elif material == 'Si':
+            configuration = 'Silicon'
+        else:
+            configuration = 'Unknown'
+
+        try:
+            energy = self.get_energy()
+            energy = "{:.4f}".format(energy)
+        except Exception:
+            energy = 'Unknown'
+
+        try:
+            ref = self.get_reflection()
+            ref = ''.join(map(str, ref))
+        except Exception:
+            ref = 'Unknown'
+
+            return f"""\
+{hutch}LODCM Energy C
+Current Configuration: {configuration} ({ref})
+Photon Energy: {energy} [keV]
+"""
 
 
 class LODCM(BaseInterface, Device):
