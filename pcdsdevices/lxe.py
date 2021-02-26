@@ -257,7 +257,7 @@ class LaserTiming(FltMvInterface, PVPositioner):
 
     tab_component_names = True
 
-    _lxt_verbose_name = 'Laser X-ray Timing'
+    verbose_name = 'Laser X-ray Timing'
 
     _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True,
                        kind='omitted',
@@ -362,23 +362,6 @@ class LaserTiming(FltMvInterface, PVPositioner):
         self.user_offset.put(new_offset)
 
     @property
-    def verbose_name(self):
-        """Get the verbose name for LXT motor"""
-        return self._lxt_verbose_name
-
-    @verbose_name.setter
-    def verbose_name(self, name):
-        """
-        Set a verbose name for the LXT motor.
-
-        Parameters
-        ----------
-        name : str
-            Verbose name for the LXT motor.
-        """
-        self._lxt_verbose_name = name
-
-    @property
     def dial_pos(self):
         """
         Calculate the dial position.
@@ -391,11 +374,12 @@ class LaserTiming(FltMvInterface, PVPositioner):
             The dial position in [s] seconds, or 'N/A' if the dial position is
             0 or None.
         """
-        dial_pos = self._fs_tgt_time.get()
-        if dial_pos:
+        try:
+            dial_pos = self._fs_tgt_time.get()
             # convert from ns to s
             return f'{(dial_pos * 1e-9):.3e}'
-        return 'N/A'
+        except Exception:
+            return 'N/A'
 
     def format_status_info(self, status_info):
         """
