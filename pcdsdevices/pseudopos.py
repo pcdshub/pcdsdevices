@@ -4,11 +4,11 @@ import typing
 import numpy as np
 import ophyd
 import ophyd.pseudopos
-from ophyd.signal import EpicsSignal
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
                              real_position_argument)
+from ophyd.signal import EpicsSignal
 from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
@@ -167,6 +167,7 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
     """
 
     pseudo = Cpt(PseudoSingleInterface)
+    _offsets = None
 
     def __init__(self, *args, **kwargs):
         if self.__class__ is SyncAxesBase:
@@ -174,7 +175,6 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
                              'the axes to synchronize included as '
                              'components'))
         super().__init__(*args, **kwargs)
-        self._offsets = None
 
     def calc_combined(self, real_position):
         """
@@ -222,7 +222,7 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
 
     @real_position_argument
     def inverse(self, real_pos):
-        """Combined axis readback is the mean of the composite axes."""
+        """Combined axis readback is defined in calc_combined."""
         return self.PseudoPosition(pseudo=float(self.calc_combined(real_pos)))
 
 

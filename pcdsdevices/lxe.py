@@ -43,7 +43,8 @@ from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
                         SyncAxesBase, pseudo_position_argument,
                         real_position_argument)
-from .signal import UnitConversionDerivedSignal, NotepadLinkedSignal
+from .signal import NotepadLinkedSignal, UnitConversionDerivedSignal
+from .sim import FastMotor
 from .utils import convert_unit
 
 if typing.TYPE_CHECKING:
@@ -413,9 +414,18 @@ class LaserTimingCompensation(SyncAxesBase):
     pseudo = Cpt(PseudoSingleInterface, limits=(-10e-6, 10e-6))
     delay = UCpt(_ReversedTimeToolDelay, doc='The **reversed** txt motor')
     laser = UCpt(LaserTiming, doc='The lxt motor')
+    _offsets = {'delay': 0, 'laser': 0}
 
     def __init__(self, prefix, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         super().__init__(prefix, **kwargs)
         self.delay.name = 'txt_reversed'
         self.laser.name = 'lxt'
+
+
+class FakeLaserTimingCompensation(LaserTimingCompensation):
+    delay = Cpt(FastMotor)
+    laser = Cpt(FastMotor)
+
+    def __init__(self):
+        super().__init__('FAKE:TTC', name='fake_ttc')

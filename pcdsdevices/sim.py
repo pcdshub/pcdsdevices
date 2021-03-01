@@ -41,6 +41,12 @@ class FastMotor(FltMvInterface, SoftPositioner, Device):
             kwargs.pop(kw, None)
         super().__init__(init_pos=init_pos, **kwargs)
 
+    def set_current_position(self, position):
+        """
+        Adjust offset until the current position is the input position.
+        """
+        self._set_position(position)
+
 
 class SlowMotor(FastMotor):
     """
