@@ -4,11 +4,11 @@ import typing
 import numpy as np
 import ophyd
 import ophyd.pseudopos
-from ophyd.signal import EpicsSignal
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
                              real_position_argument)
+from ophyd.signal import EpicsSignal
 from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
@@ -55,6 +55,7 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
     * Adds support for NotepadLinkedSignal.
     * Makes scalar ``RealPosition`` and ``PseudoPosition`` easily convert
       to floating point values.
+    * Adds a set_current_position helper method
 
     """ + ophyd.pseudopos.PseudoPositioner.__doc__
 
@@ -139,6 +140,22 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         position = super()._update_position()
         self._update_notepad_ioc(position, 'notepad_readback')
         return position
+
+    def set_current_position(self, position):
+        """
+        Adjust all offsets so that the pseudo position matches the input.
+
+        This will raise an AttributeError if any of the real motors is missing
+        a ``set_current_position`` method.
+
+        Parameters
+        ----------
+        position : PseudoPos
+            The position
+        """
+        real_pos = self.forward(position)
+        for motor, pos in zip(self._real, real_pos):
+            motor.set_current_position(pos)
 
 
 class SyncAxesBase(FltMvInterface, PseudoPositioner):
