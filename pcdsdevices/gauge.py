@@ -198,9 +198,25 @@ class GaugePLC(Device):
 class GCCPLC(GaugePLC):
     """Class for a Cold Cathode Gauge controlled by PLC."""
     high_voltage_on = Cpt(EpicsSignalWithRBV, ':HV_SW', kind='normal',
-                          doc='command to switch the hight voltage on')
+                          doc='command to switch the high voltage on')
     high_voltage_disable = Cpt(EpicsSignalRO, ':HV_DIS_DO_RBV', kind='normal',
                                doc=('enables the high voltage on the cold '
+                                    'cathode gauge'))
+    protection_setpoint = Cpt(EpicsSignalWithRBV, ':PRO_SP', kind='normal',
+                              doc=('Protection setpoint for ion gauges at '
+                                   'which the gauge turns off'))
+    setpoint_hysterisis = Cpt(EpicsSignalWithRBV, ':SP_HYS', kind='config',
+                              doc='Protection setpoint hysteresis')
+    interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
+                       doc='Interlock is ok')
+
+
+class GHCPLC(GaugePLC):
+    """Class for a Hot Cathode Gauge controlled by PLC."""
+    high_voltage_on = Cpt(EpicsSignalWithRBV, ':HV_SW', kind='normal',
+                          doc='command to switch the high voltage on')
+    high_voltage_disable = Cpt(EpicsSignalRO, ':HV_DIS_DO_RBV', kind='normal',
+                               doc=('enables the high voltage on the hot '
                                     'cathode gauge'))
     protection_setpoint = Cpt(EpicsSignalWithRBV, ':PRO_SP', kind='normal',
                               doc=('Protection setpoint for ion gauges at '
