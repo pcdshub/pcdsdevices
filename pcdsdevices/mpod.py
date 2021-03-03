@@ -126,6 +126,9 @@ class MPODChannel(BaseInterface, Device):
         """
         self.voltage_fall_rate.put(fall_rate)
 
+    def get_max_voltage(self):
+        return self.max_voltage.get()
+
 
 class MPODChannelLV(MPODChannel):
     """
@@ -181,3 +184,68 @@ class MPODChannelHV(MPODChannel):
                  **kwargs):
         self._card_prefix = card_prefix
         super().__init__(channel_prefix, name=name, **kwargs)
+
+
+def MPOD(channel_prefix, card_prefix=None, **kwargs):
+    """
+    Determine the appropriate MPOD Channel class based on the max voltage.
+
+    Usign 50V as line between the HV and LV max voltage settings.
+
+    Parameters
+    ----------
+    channel_prefix : str
+        Epics base PV for channels.
+    card_prefix : str
+        Epics base PV for the whole MPOD module, HV Channels.
+    kwargs : dict
+        Information to pass through to the device, upon initialization
+    """
+    mpod = MPODChannel(channel_prefix)
+    try:
+        voltage = mpod.get_max_voltage()
+    except Exception:
+        logger.error('Could not get the max voltage from from MPOD channel.')
+        return None
+    else:
+        if voltage < 50:
+            return MPODChannelLV(channel_prefix, **kwargs)
+        try:
+            base, channel = channel_prefix.split('CH:')
+        except Exception:
+            logger.error('Could not get the base and channel from PV.')
+            return None
+        else:
+            card_number = get_card_number(channel)
+            card = f'{base}MOD:{card_number}'
+            return MPODChannelHV(channel_prefix, card, **kwargs)
+
+
+def get_card_number(channel):
+    """
+    Helper function for creating the card prefix for HV channels.
+
+    For channels `[0-7]` - it will return ''
+    For channels `[000-015] - it will return `0`
+    For channels `[100-107] - it will return `10`
+    FOr channels `[200-207] - it will return `20`
+    and so on...
+
+    Parameters
+    ----------
+    channel : str
+
+    Returns
+    -------
+    channel : int or empty string
+        Number to use for the MPOD card.
+    """
+    if len(channel) <= 1:
+        return ''
+    else:
+        channel = int(channel)
+        while channel >= 10:
+            channel /= 10
+        if channel == 0:
+            return channel
+        return (int(channel) * 10)

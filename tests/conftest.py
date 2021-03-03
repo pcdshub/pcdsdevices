@@ -1,11 +1,14 @@
+import importlib
 import inspect
+import logging
 import os
 import pkgutil
 import shutil
 import sys
 import warnings
 from pathlib import Path
-from types import SimpleNamespace
+from types import ModuleType, SimpleNamespace
+from typing import Dict
 
 import ophyd
 import pytest
@@ -29,6 +32,8 @@ MODULE_PATH = Path(__file__).parent
 # Needs to not pass tons of kwargs up to Signal.put
 warnings.filterwarnings('ignore',
                         message='Signal.put no longer takes keyword arguments')
+
+logger = logging.getLogger(__name__)
 
 
 # Other temporary patches to FakeEpicsSignal
@@ -91,34 +96,45 @@ def presets():
     shutil.rmtree(folder)
 
 
+def find_pcdsdevices_submodules() -> Dict[str, ModuleType]:
+    """Find all pcdsdevices submodules, as a dictionary of name to module."""
+    modules = {}
+    package_root = str(MODULE_PATH.parent / 'pcdsdevices')
+    for item in pkgutil.walk_packages(path=[package_root],
+                                      prefix='pcdsdevices.'):
+        try:
+            modules[item.name] = sys.modules[item.name]
+        except KeyError:
+            # Submodules may not yet be imported; do that here.
+            try:
+                modules[item.name] = importlib.import_module(
+                    item.name, package='pcdsdevices'
+                )
+            except Exception:
+                logger.exception('Failed to import %s', item.name)
+
+    return modules
+
+
 def find_all_device_classes() -> list:
     """Find all device classes in pcdsdevices and return them as a list."""
-    exclude_list = {'_version', }
-    pkgname = 'pcdsdevices'
-    modules = [
-        mod.name for mod in pkgutil.iter_modules(
-            path=[MODULE_PATH.parent / pkgname])
-        if mod not in exclude_list
-    ]
-
-    for module in modules:
-        __import__(f'{pkgname}.{module}')
-
-    devices = set()
-    for mod_name, mod in sys.modules.items():
-        if pkgname not in mod_name:
-            continue
-
-        for mod_attr in dir(mod):
-            obj = getattr(mod, mod_attr)
-            if inspect.isclass(obj) and issubclass(obj, ophyd.Device):
-                if not obj.__module__.startswith('ophyd'):
-                    devices.add(obj)
+    def should_include(obj):
+        return (
+            inspect.isclass(obj) and
+            issubclass(obj, ophyd.Device) and
+            not obj.__module__.startswith('ophyd')
+        )
 
     def sort_key(cls):
         return (cls.__module__, cls.__name__)
 
-    return list(sorted(devices, key=sort_key))
+    devices = [
+        obj
+        for module in find_pcdsdevices_submodules().values()
+        for _, obj in inspect.getmembers(module, predicate=should_include)
+    ]
+
+    return list(sorted(set(devices), key=sort_key))
 
 
 # If your device class has some essential keyword arguments necesary to be
