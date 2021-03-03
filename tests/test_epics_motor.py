@@ -9,7 +9,7 @@ from ophyd.status import wait as status_wait
 from pcdsdevices.epics_motor import (IMS, PMC100, BeckhoffAxis, EpicsMotor,
                                      EpicsMotorInterface, Motor,
                                      MotorDisabledError, Newport,
-                                     PCDSMotorBase)
+                                     PCDSMotorBase, OffsetMotor)
 
 logger = logging.getLogger(__name__)
 
@@ -96,24 +96,60 @@ def test_epics_motor_soft_limits(fake_epics_motor):
     m = fake_epics_motor
     # Check that our limits were set correctly
     assert m.limits == (-100, 100)
+    assert m.get_low_limit() == -100
+    assert m.get_high_limit() == 100
     # Check that we can not move past the soft limits
     with pytest.raises(ValueError):
         m.move(-150)
-    # Try the local soft limits override
-    m.limits = (-50, 50)
+    # Try to move to a valid position
+    m.move(60, wait=False)
+    # move current position to -150
+    m.user_readback.sim_put(-150)
+    # Try to set low limit to higher than current position
     with pytest.raises(ValueError):
-        m.move(-75)
-    m.low_limit = -25
+        # current position: -150
+        m.set_low_limit(-101)
+    # move current position to 150
+    m.user_readback.sim_put(150)
+    # Try to set low limit to lower than the current
+    # position but higher than high limit.
     with pytest.raises(ValueError):
-        m.move(-40)
-    m.high_limit = 25
+        # current high limit: 100
+        # current position: 150
+        m.set_low_limit(120)
+    # Try to set hi limit to lower than current position
     with pytest.raises(ValueError):
-        m.move(40)
-    # Try with no limits set, e.g. (0, 0)
-    m.user_setpoint.sim_set_limits((0, 0))
-    # And of course, clear our soft limits as well:
-    m.limits = (0, 0)
+        # current position: 150
+        m.set_high_limit(90)
+    # Try to set high limit to higher than the current
+    # position but lower than low limit.
+    # change the current position to -110
+    m.user_readback.sim_put(-110)
+    with pytest.raises(ValueError):
+        # current low limit: -100
+        # current position: -110
+        m.set_high_limit(-105)
+    # change the current position to 50
+    m.user_readback.sim_put(50)
+    # Try to successfully set the high and low limits:
+    # current low limit: -100
+    # current high limit: 100
+    # current position:  50
+    m.set_low_limit(-110)
+    m.set_high_limit(110)
     m.check_value(42)
+    assert m.get_low_limit() == -110
+    assert m.get_high_limit() == 110
+
+
+def test_clearing_limits(fake_epics_motor):
+    m = fake_epics_motor
+    # current limits: -100, 100
+    assert m.get_low_limit() == -100
+    assert m.get_high_limit() == 100
+    m.clear_limits()
+    assert m.get_low_limit() == 0
+    assert m.get_high_limit() == 0
 
 
 def test_epics_motor_tdir(fake_pcds_motor):
@@ -234,3 +270,55 @@ def test_motor_factory():
 @pytest.mark.timeout(5)
 def test_disconnected_motors(cls):
     cls('MOTOR', name='motor')
+
+
+@pytest.fixture(scope='function')
+def fake_offset_ims(fake_ims):
+    off_ims = make_fake_device(OffsetMotor)('FAKE:OFFSET:IMS',
+                                            motor_prefix='MOTOR:PREFIX',
+                                            name='fake_offset_ims')
+    motor_setup(off_ims.motor)
+    # start with motor position at 1
+    off_ims.motor.user_readback.sim_put(1)
+    return off_ims
+
+
+def test_fake_offset_ims(fake_offset_ims):
+    off_ims = fake_offset_ims
+    # with motor position at 1
+    logger.debug('Motor position: %d', off_ims.motor.position)
+    logger.debug('User Offset: %d', off_ims.user_offset.get())
+    # set offset to 3
+    off_ims.user_offset.sim_put(3)
+    # pseudo_motor pos => real_pos.motor - self.user_offset.get()
+    # pseudo_motor = 1 + -3 = -2
+    assert off_ims.pseudo_motor.position == -2
+
+    # set current position to 5
+    off_ims.set_current_position(5)
+    # new_offset = position - self.position[0]
+    # new_offset = 5 - 1 => 4
+    logger.debug('New Offset: %d', off_ims.user_offset.get())
+    assert off_ims.user_offset.get() == 4
+    logger.debug('Motor position %d', off_ims.motor.position)
+    # if new offset 4, motor pos == 1
+    # pseudo pos = real_pos.motor - self.user_offset.get()
+    # 1 - (4) = -3
+    assert off_ims.pseudo_motor.position == -3
+
+    # test moving
+    off_ims.move(7, wait=False)
+    # motor pos =  pseudo_pos.pseudo_motor + self.user_offset.get()
+    # 7 + (4) = 11
+    assert off_ims.motor.user_setpoint.get() == 11
+    # the actuall motor has not move technically, so to trully test the
+    # pseudo motor here, we should put the value of motor at 11:
+    off_ims.motor.user_readback.sim_put(11)
+    # pseudo pos == real_pos.motor - self.user_offset.get()
+    # 11 - 4 = 7
+    assert off_ims.pseudo_motor.position == 7
+
+    off_ims.motor.user_readback.sim_put(-6)
+    # pseudo pos == real_pos.motor - self.user_offset.get()
+    # -6 - 4 = -10
+    assert off_ims.pseudo_motor.position == -10

@@ -9,3 +9,5 @@ pint
 scipy
 schema
 pcdsutils
+pcdscalc
+prettytable

@@ -2,6 +2,220 @@ Release History
 ###############
 
 
+v4.1.0 (2021-02-10)
+===================
+
+API Changes
+-----------
+- Update twincat motors to use the correct homing PV.
+  This is an alternative PV to the normal motor record PVs for IOC/PLC
+  management reasons.
+  It is possible that this will break devices that have not updated to the
+  latest motion PLC library.
+- Added ``format`` and ``scale`` arguments to
+  :func:`~pcdsdevices.utils.get_status_float`, which affect floating point
+  formatting of values available in the ``status_info`` dictionary.
+- CVMI Motion System Prefix: 'TMO:CVMI'
+- KTOF Motion System Prefix: 'TMO:KTOF'
+
+Features
+--------
+- Added :func:`~pcdsdevices.utils.format_status_table` for ease of generating
+  status tables from ``status_info`` dictionaries.
+- Added :func:`~pcdsdevices.utils.combine_status_info` to simplify joining
+  status information of child components.
+
+Device Updates
+--------------
+- VCN upper limit can be changed from epics.
+- Added the ``active`` component to
+  :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`, indicating
+  whether or not the filter should be used in calculations.
+- Multiple devices have been modified to include explicit argument and keyword
+  argument names in ``__init__`` for clarity and introspectability.
+
+New Devices
+-----------
+- XYGridStage - maps targets from grids to x,y positions, and supports multiple samples on a stage.
+- Added :class:`~pcdsdevices.attenuator.AT1K4` and supporting SXR solid
+  attenuator classes, including
+  :class:`~pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade`,
+  :class:`~pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade`, and
+  :class:`~pcdsdevices.attenuator.AttenuatorSXR_Ladder`.
+- pcdsdevices.cvmi_motion.CVMI
+- pcdsdevices.cvmi_motion.KTOF
+
+Bugfixes
+--------
+- The transmission status value for the 3rd harmonic has been fixed, it was previously using the wrong value.
+
+Maintenance
+-----------
+- The test suite will now find all devices in pcdsdevices submodules at
+  arbitrary import depth.
+- Minor cleanup of the pcds-tag conda recipe
+- Relocate happi name length restriction for lcls devices to this package
+  as a requirement on LCLSItem
+- Updated AT2L0 to use newer status formatting utilities.
+- Added prettytable as an explicit dependency.  It was previously assumed to
+  be installed with a sub-dependency.
+- Added test suite to try to instantiate all device classes with
+  ``make_fake_device`` and perform status print formatting checks on them.
+- Added ``include_plus_sign`` option for ``get_status_float``.
+- Perform continuous integration tests with pip-based installs, with
+  dependencies installed from PyPI.
+
+Contributors
+------------
+- cristinasewell
+- ghalym
+- jsheppard95
+- klauer
+- zllentz
+
+
+v4.0.0 (2020-12-22)
+===================
+
+API Changes
+-----------
+- On our EPICS motor classes, remove the ability to use setattr for
+  `low_limit` and `high_limit`.
+- SmarActOpenLoop: Combined scan_move_cmd and scan_pos into single EpicsSignal,
+  scan_move, with separate read and write PVs.
+
+Features
+--------
+- Added pseudo motors and related calculations to the `Kappa` object.
+- Added two methods to `EpicsMotorInterface`: `set_high_limit()` and `set_low_limit()`, as well as `get_low_limit()` and `get_high_limit()`.
+- Added a little method to clear limits: `clear_limits` - by EPICS convention, this sets both limits to 0.
+- Added 3rd harmonic frequncy transmission info to the status print for the Attenuator.
+- Added custom status print for `XOffsetMirror`, `OffsetMirror`, `KBOMirror`, and `FFMirror`.
+- Add custom status print for `gon` classes: `BaseGon`, and `XYZStage` class.
+- Add notepad signals to `LaserTiming` and `DelayBase` classes
+
+Device Updates
+--------------
+- Instead of creating separated devices for Fundamental Frequency and 3rd Harmonic Frequency, we are now creating Attenuators that have both frequencies.
+- EpicsMotorInterface: Add metadata to various upstream Ophyd methods to clean
+  up screens generated via Typhos.
+- Allow negative positions in `LaserTiming` and `LaserTimingCompensation`
+  devices
+- Add LED power to the Mono device.
+- led metadata scalar range
+
+New Devices
+-----------
+- Added `ExitSlits` device.
+
+Bugfixes
+--------
+- sequencer.EventSequencer.EventSequence: Add an explicit put to SEQ.PROC to
+  force the event sequencer to update with the new sequence.
+- Fix position handling in `ReversedTimeToolDelay`
+- AvgSignal will no longer spam exceptions text to the terminal when the signal
+  it is averaging is disconnected. This will primarily be noticed in the
+  BeamStats class, loaded in every hutch-python session.
+
+Contributors
+------------
+- ZryletTC
+- cristinasewell
+- ghalym
+- tjohnson
+- zllentz
+
+
+v3.3.0 (2020-11-17)
+===================
+
+API Changes
+-----------
+- The belens classes use ``pcdscalc`` to handle their calculations,
+  changing the lens file specifications as follows:
+
+  - Changed the ``read_lens`` to open a normal file instead of a ``.yaml``
+    file, and to be able to read one lens set at the time from a file
+    with multiple lens sets.
+  - Changed the ``create_lens`` methods to use a normal file instead of
+    ``.yaml`` file, and also to be able to create a set with multiple sets of lens.
+
+- This is not expected to be breaking, as this feature
+  is underused in the deployed environments.
+
+Features
+--------
+- Added a ``LensStack.set_lens_set`` method to allow the user
+  to choose what set from the file to use for calculations.
+- Added a factory function ``acromag_ch_factory_func`` to
+  support the creation of happi entries from the questionnaire
+  for a single acromag channel.
+
+  - Added an alias for this function ``AcromagChannel``.
+
+- Added a custom status print for motors by overriding the status info handler.
+- Added a new component for ``EpicsMotorInterface.dial_position``
+- Added a new method ``EpicsMotorInterface.check_limit_switches`` to return a
+  string visualization of the limit switch state.
+- Added a custom status print for slits by overriding the status info handler.
+- Added a helper function in ``utils.get_status_value`` to support getting
+  a value from a dictionary.
+- Added a custom status print for PIM by overriding the status info handler.
+- Added a custom status print for IPM by overriding the status info handler.
+
+Device Updates
+--------------
+- ``SmarActOpenLoop``: open loop steps signal changed to RO.
+  Added some docs.
+- ``PCDSAreaDetectorTyphosBeamStats`` Now sub-classes
+  ``PCDSAreaDetectorTyphosTrigger``
+- ``TuttiFrutti``: Change camera class to ``LasBasler``
+
+New Devices
+-----------
+- ``BaslerBase``: Base class for inheriting some Basler-specific PVs.
+- ``Basler``: Class for "typical" Basler deployed in a hutch.
+- ``LasBasler``: Class for more laser-specific Basler cameras.
+- ``MPODChannelHV``, and ``MPODChannelLV`` for MPOD high voltage and
+  low voltage channels, respectively.
+- Added the ``AcromagChannel`` that supports the creation of an Acromag Channel signal
+- Added ``mirror.XOffsetMirrorBend`` class for offset mirrors with benders.
+- Added ``mirror.XOffsetMirrorSwitch``.
+  This is nearly identical to mirror.XOffsetMirror but with no Bender and
+  vertical axes YLEFT/YRIGHT instead of YUP/YDWN.
+- Added ``spectrometer.Mono``,
+  this includes all motion axes and Pytmc signals for SP1K1-MONO system
+
+Bugfixes
+--------
+- ``lasers/elliptec.py``: Fix conflict with BlueSky interface and 'stop'
+  signal.
+- For event scheduling, ensure that we only try to put into the queue
+  if event_thread is not None. This resolves some of the startup terminal spam
+  in lucid.
+- PTMPLC ilk pv was incorrect, changed from ILK_STATUS_RBV to ILK_OK_RBV
+- Create a default status info message for devices that have
+  errors in constructing their status.
+
+Maintenance
+-----------
+- Added more documentation to methods and ``LensStack`` class.
+- Refactored be lens classes to use ``pcdscalc.be_lens_calcs``
+- Add laser imports to :mod:`pcdsdevices.device_types`.  Test fixtures now
+  verify imported laser devices' tab completion settings.
+
+Contributors
+------------
+- cristinasewell
+- ghalym
+- hhslepicka
+- jsheppard95
+- klauer
+- sfsyunus
+- tjohnson
+- zllentz
+
+
 v3.2.0 (2020-10-23)
 ===================
 

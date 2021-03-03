@@ -1,6 +1,8 @@
 """
 Module for the `IPM` intensity position monitor classes.
 """
+import logging
+
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
@@ -11,7 +13,9 @@ from .epics_motor import IMS
 from .evr import Trigger
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface
-from .utils import ipm_screen
+from .utils import get_status_float, get_status_value, ipm_screen
+
+logger = logging.getLogger(__name__)
 
 
 class IPMTarget(InOutRecordPositioner):
@@ -28,8 +32,36 @@ class IPMTarget(InOutRecordPositioner):
     in_states = ['TARGET1', 'TARGET2', 'TARGET3', 'TARGET4']
     states_list = in_states + ['OUT']
 
+    t1_composition = Cpt(EpicsSignalRO, ':TARGET1.DESC', kind='omitted')
+    t2_composition = Cpt(EpicsSignalRO, ':TARGET2.DESC', kind='omitted')
+    t3_composition = Cpt(EpicsSignalRO, ':TARGET3.DESC', kind='omitted')
+    t4_composition = Cpt(EpicsSignalRO, ':TARGET4.DESC', kind='omitted')
+
     # Assume that having any target in gives transmission 0.8
     _transmission = {st: 0.8 for st in in_states}
+
+    def get_composition(self):
+        """
+        Get the target composition.
+
+        Each state is a different target with different material/thicknesses.
+
+        Returns
+        -------
+        composition : str
+            Composition of target.
+        """
+        current_state = self.state.get()
+        if current_state == 1:
+            return self.t1_composition.get()
+        elif current_state == 2:
+            return self.t2_composition.get()
+        elif current_state == 3:
+            return self.t3_composition.get()
+        elif current_state == 4:
+            return self.t4_composition.get()
+        else:
+            return None
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
@@ -101,6 +133,55 @@ class IPMMotion(BaseInterface, Device):
 
     tab_whitelist = ['target', 'diode', 'insert', 'remove', 'inserted',
                      'removed']
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the ipm.
+
+        Display ipm status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        name = ' '.join(self.prefix.split(':'))
+
+        x_motor_pos = get_status_float(status_info, 'diode', 'x_motor',
+                                       'position')
+        y_motor_pos = get_status_float(status_info, 'diode', 'state', 'motor',
+                                       'position')
+        d_units = get_status_value(status_info, 'diode', 'x_motor',
+                                   'user_setpoint', 'units')
+        target_pos = get_status_value(status_info, 'target', 'motor',
+                                      'position')
+        t_units = get_status_value(status_info, 'target', 'motor',
+                                   'user_setpoint', 'units')
+        target_state_num = get_status_value(status_info, 'target',
+                                            'state', 'value')
+        target_state = get_status_value(status_info, 'target', 'position')
+
+        composition = self.target.get_composition() or ''
+
+        if 'ipimb' in status_info.keys():
+            diode_type = 'IPIMB '
+        elif 'wave8' in status_info.keys():
+            diode_type = 'Wave8 '
+        else:
+            diode_type = ''
+
+        return f"""\
+{name}: Target {target_state_num} {target_state} [{composition}]
+Target Position: {target_pos} [{t_units}]
+{diode_type}Diode Position(x, y): \
+{x_motor_pos}, {y_motor_pos} [{d_units}]
+"""
 
     @property
     def inserted(self):
@@ -407,9 +488,10 @@ class IPM_IPIMB(IPMMotion, IPM_Det):
     _num_channels = 4
     _det = 'ipimb'
 
-    def __init__(self, prefix, *, name, **kwargs):
-        self.prefix_ipimb = kwargs.pop('prefix_ipimb')
-        self.prefix_ioc = kwargs.pop('prefix_ioc', None)
+    def __init__(self, prefix, *, name, prefix_ipimb, prefix_ioc=None,
+                 **kwargs):
+        self.prefix_ipimb = prefix_ipimb
+        self.prefix_ioc = prefix_ioc
         super().__init__(prefix, name=name, **kwargs)
 
 
@@ -428,9 +510,10 @@ class IPM_Wave8(IPMMotion, IPM_Det):
     _num_channels = 16
     _det = 'wave8'
 
-    def __init__(self, prefix, *, name, **kwargs):
-        self.prefix_wave8 = kwargs.pop('prefix_wave8')
-        self.prefix_ioc = kwargs.pop('prefix_ioc', None)
+    def __init__(self, prefix, *, name, prefix_wave8, prefix_ioc=None,
+                 **kwargs):
+        self.prefix_wave8 = prefix_wave8
+        self.prefix_ioc = prefix_ioc
         super().__init__(prefix, name=name, **kwargs)
         self.det = self.wave8
 

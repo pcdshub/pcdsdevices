@@ -2,25 +2,27 @@
 Module for LCLS's special motor records.
 """
 import logging
-import math
 import os
 import shutil
 
 from ophyd.device import Component as Cpt
-from ophyd.device import FormattedComponent as FCpt
 from ophyd.device import Device
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.epics_motor import EpicsMotor
+from ophyd.ophydobj import Kind
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
-from ophyd.status import DeviceStatus, SubscriptionStatus
+from ophyd.status import DeviceStatus, MoveStatus, SubscriptionStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
+from ophyd.utils.epics_pvs import raise_if_disconnected
 
 from pcdsdevices.pv_positioner import PVPositionerComparator
 
 from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
-from .pseudopos import DelayBase
+from .pseudopos import DelayBase, OffsetMotorBase
 from .signal import PytmcSignal
+from .utils import get_status_value
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -51,52 +53,79 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         4. The description field keeps track of the motors scientific use along
            the beamline.
     """
-
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
+    set_metadata(disabled, dict(variety='command-enum'))
     # Description is valuable
     description = Cpt(EpicsSignal, '.DESC', kind='normal')
+    # Current Dial position
+    dial_position = Cpt(EpicsSignalRO, '.DRBV', kind='normal')
 
-    tab_whitelist = ["set_current_position", "home", "velocity",
-                     "enable", "disable"]
+    tab_whitelist = ["set_current_position", "home", "velocity", "enable",
+                     "disable", "check_limit_switches", "get_low_limit",
+                     "set_low_limit", "get_high_limit", "set_high_limit"]
 
-    def __init__(self, *args, **kwargs):
-        # Locally defined limit overrides, note can only make limits narrower
-        self._limits = (-math.inf, math.inf)
-        super().__init__(*args, **kwargs)
+    set_metadata(EpicsMotor.home_forward, dict(variety='command-proc',
+                                               value=1))
+    EpicsMotor.home_forward.kind = Kind.normal
+    set_metadata(EpicsMotor.home_reverse, dict(variety='command-proc',
+                                               value=1))
+    EpicsMotor.home_reverse.kind = Kind.normal
+    set_metadata(EpicsMotor.low_limit_switch, dict(variety='bitmask', bits=1))
+    EpicsMotor.low_limit_switch.kind = Kind.normal
+    set_metadata(EpicsMotor.high_limit_switch, dict(variety='bitmask', bits=1))
+    EpicsMotor.high_limit_switch.kind = Kind.normal
+    set_metadata(EpicsMotor.motor_done_move, dict(variety='bitmask', bits=1))
+    EpicsMotor.motor_done_move.kind = Kind.omitted
+    set_metadata(EpicsMotor.motor_is_moving, dict(variety='bitmask', bits=1))
+    EpicsMotor.motor_is_moving.kind = Kind.normal
+    set_metadata(EpicsMotor.motor_stop, dict(variety='command-proc', value=1))
+    EpicsMotor.motor_stop.kind = Kind.normal
+    EpicsMotor.direction_of_travel.kind = Kind.normal
 
-    @property
-    def low_limit(self):
-        """The lower soft limit for the motor."""
-        epics_low, epics_high = self._get_epics_limits()
-        if epics_low != epics_high:
-            return max(self._limits[0], epics_low)
-        return self._limits[0]
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the motor.
 
-    @low_limit.setter
-    def low_limit(self, value):
-        self._limits = (value, self._limits[1])
+        Display motor status info in the ipython terminal.
 
-    @property
-    def high_limit(self):
-        """The higher soft limit for the motor."""
-        epics_low, epics_high = self._get_epics_limits()
-        if epics_low != epics_high:
-            return min(self._limits[1], epics_high)
-        return self._limits[1]
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
 
-    @high_limit.setter
-    def high_limit(self, value):
-        self._limits = (self._limits[0], value)
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        description = get_status_value(status_info, 'description', 'value')
+        units = get_status_value(status_info, 'user_setpoint', 'units')
+        dial = get_status_value(status_info, 'dial_position', 'value')
+        user = get_status_value(status_info, 'position')
+
+        low, high = self.limits
+        switch_limits = self.check_limit_switches()
+
+        name = ' '.join(self.prefix.split(':'))
+        name = f'{name}: {self.prefix}'
+        if description:
+            name = f'{description}: {self.prefix}'
+
+        return f"""\
+{name}
+Current position (user, dial): {user}, {dial} [{units}]
+User limits (low, high): {low}, {high} [{units}]
+Preset position: {self.presets.state()}
+Limit Switch: {switch_limits}
+"""
 
     @property
     def limits(self):
-        """The soft limits of the motor."""
-        return (self.low_limit, self.high_limit)
-
-    @limits.setter
-    def limits(self, limits):
-        self._limits = limits
+        """Override the limits attribute"""
+        return self._get_epics_limits()
 
     def _get_epics_limits(self):
         limits = self.user_setpoint.limits
@@ -158,6 +187,100 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         if self.disabled.get() == 1:
             raise MotorDisabledError("Motor is not enabled. Motion requests "
                                      "ignored")
+
+    def check_limit_switches(self):
+        """
+        Check the limits switches.
+
+        Returns
+        -------
+        limit_switch_indicator : str
+            Indicate which limit switch is activated.
+        """
+        low = self.low_limit_switch.get()
+        high = self.high_limit_switch.get()
+        if low and high:
+            return "Low [x] High [x]"
+        elif low:
+            return "Low [x] High []"
+        elif high:
+            return "Low [] High [x]"
+        else:
+            return "Low [] High []"
+
+    def get_low_limit(self):
+        """Get the low limit."""
+        return self.low_limit_travel.get()
+
+    def set_low_limit(self, value):
+        """
+        Set the low limit.
+
+        Parameters
+        ----------
+        value : float
+            Limit of travel in the negative direction.
+
+        Raises
+        ------
+        ValueError
+            When motor in motion or position outside of limit.
+        """
+        if self.moving:
+            raise ValueError('Motor is in motion, cannot set the low limit!')
+
+        if value > self.position:
+            raise ValueError(f'Could not set motor low limit to {value} at'
+                             f' position {self.position}. Low limit must '
+                             'be lower than the current position.')
+
+        _current_high_limit = self.limits[1]
+        if value > _current_high_limit:
+            raise ValueError(f'Could not set motor low limit to {value}.'
+                             'Low limit must be lower than the current'
+                             f'high limit: {_current_high_limit}')
+
+        # update EPICS limits
+        self.low_limit_travel.put(value)
+
+    def get_high_limit(self):
+        """Get high limit."""
+        return self.high_limit_travel.get()
+
+    def set_high_limit(self, value):
+        """
+        Limit of travel in the positive direction.
+
+        Parameters
+        ----------
+        value : float
+            High limit value to be set.
+
+        Raises
+        ------
+        ValueError
+            When motor in motion or position outside of limit.
+        """
+        if self.moving:
+            raise ValueError('Motor is in motion, cannot set the high limit!')
+
+        if value < self.position:
+            raise ValueError(f'Could not set motor high limit to {value} '
+                             f'at position {self.position}. High limit '
+                             'must be higher than the current position.')
+
+        _current_low_limit = self.limits[0]
+        if value < _current_low_limit:
+            raise ValueError(f'Could not set motor high limit to {value}. '
+                             'High limit must be higher than the current low '
+                             f'limit: {_current_low_limit}')
+        # update EPICS limits
+        self.high_limit_travel.put(value)
+
+    def clear_limits(self):
+        """Set both low and high limits to 0."""
+        self.high_limit_travel.put(0)
+        self.low_limit_travel.put(0)
 
 
 class PCDSMotorBase(EpicsMotorInterface):
@@ -447,6 +570,10 @@ class DelayNewport(DelayBase):
     motor = Cpt(Newport, '')
 
 
+class OffsetMotor(OffsetMotorBase):
+    motor = FCpt(IMS, '{self._motor_prefix}')
+
+
 class PMC100(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record PMC100 motors.
@@ -473,9 +600,14 @@ class BeckhoffAxisPLC(Device):
                    doc='Current NC error code')
     cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='o', kind='normal',
                         doc='Command to reset an active error')
+    cmd_home = Cpt(PytmcSignal, 'bHomeCmd', io='o', kind='normal',
+                   doc='Start TwinCAT homing routine.')
+    home_pos = Cpt(PytmcSignal, 'fHomePosition', io='io', kind='config',
+                   doc='Numeric position of home.')
 
     set_metadata(err_code, dict(variety='scalar', display_format='hex'))
     set_metadata(cmd_err_reset, dict(variety='command', value=1))
+    set_metadata(cmd_home, dict(variety='command-proc', value=1))
 
 
 class BeckhoffAxis(EpicsMotorInterface):
@@ -496,6 +628,10 @@ class BeckhoffAxis(EpicsMotorInterface):
     motor_spmg = Cpt(EpicsSignal, '.SPMG', kind='config',
                      doc='Stop, Pause, Move, Go')
 
+    # Clear the normal homing PVs that don't really work here
+    home_forward = None
+    home_reverse = None
+
     def clear_error(self):
         """Clear any active motion errors on this axis."""
         self.plc.cmd_err_reset.put(1)
@@ -510,6 +646,34 @@ class BeckhoffAxis(EpicsMotorInterface):
 
         self.clear_error()
         return super().stage()
+
+    @raise_if_disconnected
+    def home(self, direction=None, wait=True, **kwargs):
+        """
+        Perform the configured homing function.
+
+        This is set on the controller. Unlike other kinds of axes, only
+        the single pre-programmed homing routine can be used, so the
+        ``direction`` argument has no effect.
+        """
+        self._run_subs(sub_type=self._SUB_REQ_DONE, success=False)
+        self._reset_sub(self._SUB_REQ_DONE)
+
+        status = MoveStatus(self, self.plc.home_pos.get(),
+                            timeout=None, settle_time=self._settle_time)
+        self.plc.cmd_home.put(1)
+
+        self.subscribe(status._finished, event_type=self._SUB_REQ_DONE,
+                       run=False)
+
+        try:
+            if wait:
+                status_wait(status)
+        except KeyboardInterrupt:
+            self.stop()
+            raise
+
+        return status
 
 
 class MotorDisabledError(Exception):
@@ -551,11 +715,9 @@ class SmarActOpenLoop(Device):
                          doc='Clear the current step count')
     set_metadata(step_clear_cmd, dict(variety='command-proc', value=1))
     # Scan move
-    scan_move_cmd = Cpt(EpicsSignal, ':SCAN_MOVE', kind='omitted',
-                        doc='Set current piezo voltage (in 16 bit ADC steps)')
-    # Scan pos
-    scan_pos = Cpt(EpicsSignal, ':SCAN_POS', kind='omitted',
-                   doc='Current piezo voltage (in 16 bit ADC steps)')
+    scan_move = Cpt(EpicsSignal, ':SCAN_POS', write_pv=':SCAN_MOVE',
+                    kind='config',
+                    doc='Set current piezo voltage (in 16 bit ADC steps)')
 
 
 class SmarActTipTilt(Device):

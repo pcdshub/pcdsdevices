@@ -61,9 +61,42 @@ class Acromag(BaseInterface, Device):
     tab_component_names = True
 
 
+def acromag_ch_factory_func(prefix, channel, *, signal_class=None, name=None,
+                            **kwargs):
+    """
+    This is a factory function for creating an Acromag output or input signal.
+
+    Parameters
+    ----------
+    prefix : str
+        The base EPICS PV for the Acromag. E.g.: `XPP:USR:ai1`
+    channel : int or str
+        The channel number. E.g.: `1` [0-15]
+    signal_class : str, optional
+        Signal Class to use. E.g.: `EpicsSignalRO`, `EpicsSignal`. If `None`
+        provided, it will use the prefix to try to generate the appropriate
+        signal class.
+    name : str, optional
+        A name to refer to the Acromag Channel, if `None` it will use the
+        prefix and channel to generate a name. E.g.: `ai_1` or `ao_1`.
+    """
+    if signal_class is None:
+        signal_class = EpicsSignalRO if ':ai' in prefix else EpicsSignal
+    name_prefix = 'ai_' if ':ai' in prefix else 'ao_'
+    name = name or f'{name_prefix}{channel}'
+    prefix = f'{prefix}:{channel}'
+    return signal_class(prefix, name=name, kind='normal')
+
+
+AcromagChannel = acromag_ch_factory_func
+
+
 class Mesh(BaseInterface, Device):
     """
     Class for Mesh HV Supply that is connected to Acromag inputs and outputs.
+
+    The standard Device ``name`` parameter is ignored here and replaced with
+    ``"mesh_raw"``.
 
     Parameters
     ----------
@@ -88,7 +121,7 @@ class Mesh(BaseInterface, Device):
     write_sig = FCpt(EpicsSignal, '{self.prefix}' + ':ao1:' + '{self.sp_ch}')
     read_sig = FCpt(EpicsSignalRO, '{self.prefix}' + ':ai1:' + '{self.rb_ch}')
 
-    def __init__(self, prefix, sp_ch, rb_ch, scale=1000.0):
+    def __init__(self, prefix, sp_ch, rb_ch, scale=1000.0, name=None):
         self.scale = scale
         self.prefix = prefix
         self.sp_ch = sp_ch

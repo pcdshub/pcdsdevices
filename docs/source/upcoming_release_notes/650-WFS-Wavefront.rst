@@ -1,4 +1,4 @@
-654 Tuttifrutti-LasBasler
+650 WFS-Wavefront
 #################
 
 API Changes
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- TuttiFrutti: Change camera class to LasBasler 
+- ThorlabsWfs40: Added wavefront PV and viewer, added some docs
 
 New Devices
 -----------

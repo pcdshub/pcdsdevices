@@ -1,5 +1,5 @@
-648 SmarAct-Steps
-#################
+757 att-enum
+############
 
 API Changes
 -----------
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- SmarActOpenLoop: open loop steps signal changed to RO. Added some docs.
+- N/A
 
 New Devices
 -----------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Fix issue where legacy attenuator classes would break bluesky scans.
 
 Maintenance
 -----------
@@ -27,4 +27,5 @@ Maintenance
 
 Contributors
 ------------
-- tjohnson
+- klauer
+- zllentz

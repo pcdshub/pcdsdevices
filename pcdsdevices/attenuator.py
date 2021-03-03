@@ -6,6 +6,7 @@ import logging
 import time
 
 import numpy as np
+import prettytable
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import DynamicDeviceComponent as DDC
@@ -13,11 +14,13 @@ from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositioner, PVPositionerPC
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
+from . import utils
 from .component import UnrelatedComponent as UCpt
 from .epics_motor import BeckhoffAxis
 from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
 from .signal import InternalSignal
+from .utils import get_status_float, get_status_value
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -96,7 +99,7 @@ class FeeFilter(InOutPositioner):
 
 class AttBase(FltMvInterface, PVPositioner):
     """
-    Base class for the attenuators.
+    Base class for attenuators with fundamental frequency.
 
     This is a device that puts an array of filters in or out to achieve a
     desired transmission ratio.
@@ -105,7 +108,7 @@ class AttBase(FltMvInterface, PVPositioner):
     vary. You should not instantiate this class directly, but instead use the
     :func:`Attenuator` factory function.
     """
-
+    # fundamental frequency components
     # Positioner Signals
     setpoint = Cpt(EpicsSignal, ':COM:R_DES', auto_monitor=True,
                    kind='normal')
@@ -134,8 +137,6 @@ class AttBase(FltMvInterface, PVPositioner):
     SUB_STATE = 'state'
     # Tab complete whitelist
     tab_whitelist = ['set_energy']
-
-    _harmonic = '1st'
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, limits=(0, 1), **kwargs)
@@ -283,6 +284,20 @@ class AttBase(FltMvInterface, PVPositioner):
     def format_status_info(self, status_info):
         """
         Override status info handler to render the att
+
+        Display attenuator status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+
         """
         # Get the attenuator statuses
         blade_states = []
@@ -291,37 +306,52 @@ class AttBase(FltMvInterface, PVPositioner):
                 filter_info = status_info[f'filter{i}']
             except KeyError:
                 break
-            status = filter_info['status']['value']
+            status = get_status_value(filter_info, 'status', 'value')
             blade_states.append(status)
-        lines = render_ascii_att(blade_states)
-        txt = 'Transmission for {} harmonic (E={:.3} keV): {:.4E}'
-        energy = status_info['energy']['value'] / 1000
-        trans = status_info['position']
-        harm = self._harmonic
-        lines.append(txt.format(harm, energy, trans))
-        return '\n'.join(lines)
+
+        states = '\n'.join(render_ascii_att(blade_states))
+
+        energy = get_status_float(
+            status_info, 'energy', 'value', scale=1e-3, precision=3)
+        energy_3rd = get_status_float(
+            status_info, 'energy_3rd', 'value', scale=1e-3, precision=3)
+        trans = get_status_float(
+            status_info, 'position', precision=4, format='E')
+        trans_3rd = get_status_float(
+            status_info, 'readback_3rd', 'value', precision=4, format='E')
+
+        if energy_3rd != 'N/A':
+            status_3rd = (
+                f'Transmission for 3rd harmonic (E={energy_3rd} keV): '
+                f'{trans_3rd}'
+            )
+        else:
+            status_3rd = ''
+
+        return f"""\
+{states}
+Transmission for 1st harmonic (E={energy} keV): {trans}
+{status_3rd}
+"""
 
 
-class AttBase3rd(AttBase):
+class AttBaseWith3rdHarmonic(AttBase):
     """
-    :func:`Attenuator` class to use the 3rd harmonic values.
+    Base class for attenuators with 3rd harmonic frequency.
 
-    This is exactly the same as the normal :class:`AttBase`, but with the
-    alternative transmission PVs. It can be instantiated using the
-    `~Attenuator.use_3rd` argument in the :func:`Attenuator` factory function.
+    This base class contains 3rd harmonic frequncy components.
+    You should not instantiate this class directly, but instead use the
+    :func:`Attenuator` factory function.
     """
-
-    _harmonic = '3rd'
-
     # Positioner Signals
-    setpoint = Cpt(EpicsSignal, ':COM:R3_DES', kind='normal')
-    readback = Cpt(EpicsSignalRO, ':COM:R3_CUR', kind='hinted')
+    setpoint_3rd = Cpt(EpicsSignal, ':COM:R3_DES', kind='normal')
+    readback_3rd = Cpt(EpicsSignalRO, ':COM:R3_CUR', kind='hinted')
 
     # Attenuator Signals
-    energy = Cpt(EpicsSignalRO, ':COM:T_CALC.VALH', kind='normal')
-    trans_ceil = Cpt(EpicsSignalRO, ':COM:R3_CEIL', kind='omitted')
-    trans_floor = Cpt(EpicsSignalRO, ':COM:R3_FLOOR', kind='omitted')
-    user_energy = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
+    energy_3rd = Cpt(EpicsSignalRO, ':COM:T_CALC.VALH', kind='normal')
+    trans_ceil_3rd = Cpt(EpicsSignalRO, ':COM:R3_CEIL', kind='omitted')
+    trans_floor_3rd = Cpt(EpicsSignalRO, ':COM:R3_FLOOR', kind='omitted')
+    user_energy_3rd = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
 
 
 class FeeAtt(AttBase, PVPositionerPC):
@@ -359,7 +389,7 @@ class FeeAtt(AttBase, PVPositionerPC):
         super().__init__(prefix, name=name, **kwargs)
 
 
-def _make_att_classes(max_filters, base, name):
+def _make_att_classes(max_filters, base_with_3rd_harmonic, name):
     """Generate all possible subclasses."""
     att_classes = {}
     for i in range(1, max_filters + 1):
@@ -369,24 +399,22 @@ def _make_att_classes(max_filters, base, name):
             att_filters['filter{}'.format(n)] = comp
 
         cls_name = '{}{}'.format(name, i)
-        cls = type(cls_name, (base,), att_filters)
-        # Store the number of filters
+        cls = type(cls_name, (base_with_3rd_harmonic,), att_filters)
         cls.num_att = i
         att_classes[i] = cls
     return att_classes
 
 
-_att_classes = _make_att_classes(MAX_FILTERS, AttBase, 'Attenuator')
-_att3_classes = _make_att_classes(MAX_FILTERS, AttBase3rd, 'Attenuator3rd')
+_att_classes = _make_att_classes(
+    MAX_FILTERS, AttBaseWith3rdHarmonic, 'Attenuator')
 
 
-def Attenuator(prefix, n_filters, *, name, use_3rd=False, **kwargs):
+def Attenuator(prefix, n_filters, *, name, **kwargs):
     """
     A series of filters that attenuates the beam.
 
     This is a factory function for instantiating a subclass of :class:`AttBase`
-    or :class:`AttBase3rd` with the correct number of :class:`Filter`
-    components.
+    with the correct number of :class:`Filter` components.
 
     The :class:`Filter` components will be named 'filter1', 'filter2', ...
     'filter10', ...
@@ -401,16 +429,8 @@ def Attenuator(prefix, n_filters, *, name, use_3rd=False, **kwargs):
 
     name : str
         An identifying name for the attenuator.
-
-    use_3rd : bool, optional
-        If `True`, we'll use the third harmonic transmissions instead
-        of the fundamental frequency.
     """
-
-    if use_3rd:
-        cls = _att3_classes[n_filters]
-    else:
-        cls = _att_classes[n_filters]
+    cls = _att_classes[n_filters]
     return cls(prefix, name=name, **kwargs)
 
 
@@ -462,6 +482,10 @@ class AttenuatorCalculatorFilter(BaseInterface, Device):
     thickness = Cpt(
         EpicsSignal, 'Thickness', kind='hinted',
         doc='Thickness in micron',
+    )
+    active = Cpt(
+        EpicsSignal, 'Active', kind='normal',
+        doc='Should the filter be used in calculations?',
     )
     is_stuck = Cpt(
         EpicsSignal, 'IsStuck', kind='hinted',
@@ -543,10 +567,10 @@ class AttenuatorCalculatorBase(BaseInterface, Device):
     )
 
     # NOTE: this variant exists as well but duplicates the bitmask information:
-    # best_config = Cpt(
-    #     EpicsSignalRO, ':SYS:BestConfiguration_RBV', kind='normal',
-    #     doc='The best configuration of filters for the desired transmission',
-    # )
+    best_config = Cpt(
+        EpicsSignalRO, ':SYS:BestConfiguration_RBV', kind='normal',
+        doc='The best configuration of filters for the desired transmission',
+    )
     # set_metadata(best_config, dict(variety='array-nd'))
     # # TODO: array-tabular would be nice, but does not work in typhos yet
 
@@ -563,10 +587,10 @@ class AttenuatorCalculatorBase(BaseInterface, Device):
     )
 
     # NOTE: this variant exists as well but duplicates the bitmask information:
-    # active_config = Cpt(
-    #     EpicsSignalRO, ':SYS:ActiveConfiguration_RBV', kind='omitted',
-    #     doc='Where the filters are now',
-    # )
+    active_config = Cpt(
+        EpicsSignalRO, ':SYS:ActiveConfiguration_RBV', kind='omitted',
+        doc='Where the filters are now',
+    )
     # set_metadata(active_config, dict(variety='array-nd'))
     # TODO: array-tabular would be nice, but does not work in typhos yet
 
@@ -577,10 +601,10 @@ class AttenuatorCalculatorBase(BaseInterface, Device):
     set_metadata(active_config_bitmask, dict(variety='bitmask', bits=18))
 
     # NOTE: this variant exists as well but duplicates the bitmask information:
-    # filters_moving = Cpt(
-    #     EpicsSignalRO, ':SYS:FiltersMoving_RBV', kind='normal',
-    #     doc='Filter-by-filter motion status (1 if moving)',
-    # )
+    filters_moving = Cpt(
+        EpicsSignalRO, ':SYS:FiltersMoving_RBV', kind='normal',
+        doc='Filter-by-filter motion status (1 if moving)',
+    )
     # set_metadata(filters_moving, dict(variety='array-nd'))
 
     filters_moving_bitmask = Cpt(
@@ -609,27 +633,27 @@ class AttenuatorCalculatorBase(BaseInterface, Device):
 
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
+        if self._filter_parent is not None:
+            filter_parent = getattr(self, self._filter_parent)
+        else:
+            filter_parent = self
+
         self.filters_by_index = {
-            index: getattr(self.filters, attr)
+            index: getattr(filter_parent, attr)
             for index, attr in self._filter_index_to_attr.items()
         }
 
-    def _bitmask_to_list(self, value):
-        """Bitmask value to list of bits (e.g., 23 to [..., 1, 0, 1, 1, 1])."""
-        bits = bin(value)[2:].zfill(self.num_filters)
-        return list(int(i) for i in bits)
-
     def get_active_config(self, **kwargs):
         """Get the active filter configuration."""
-        return self._bitmask_to_list(self.active_config_bitmask.get(**kwargs))
+        return list(self.active_config.get(**kwargs))
 
     def get_best_config(self, **kwargs):
         """Get the calculated (best) filter configuration."""
-        return self._bitmask_to_list(self.best_config_bitmask.get(**kwargs))
+        return list(self.best_config.get(**kwargs))
 
     def get_moving_status(self, **kwargs):
         """Get the filter motion status."""
-        return self._bitmask_to_list(self.filters_moving_bitmask.get(**kwargs))
+        return list(self.filters_moving.get(**kwargs))
 
     def calculate(self, transmission, *, energy=None, use_floor=True):
         """
@@ -680,6 +704,8 @@ class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
     tab_component_names = True
     first_filter = 2
     num_filters = 18
+    # "filters" DDC holds all the individual components:
+    _filter_parent = 'filters'
     _filter_index_to_attr = {
         idx: f'filter_{idx:02d}' for idx in range(first_filter,
                                                   num_filters + first_filter)
@@ -694,6 +720,272 @@ class AttenuatorCalculator_AT2L0(AttenuatorCalculatorBase):
          for idx, attr in _filter_index_to_attr.items()
          }
     )
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the attenuator.
+        """
+        table = utils.format_status_table(
+            status_info.get('filters', {}),
+            row_to_key=self._filter_index_to_attr,
+            column_to_key={
+                'Active': 'active',
+                'Material': 'material',
+                'Thickness [um]': 'thickness',
+                'Stuck': 'is_stuck',
+                'Transmission': 'transmission',
+                'Transmission 3 Omega': 'transmission_3omega',
+            },
+            row_identifier='Filter',
+        )
+
+        return str(table)
+
+
+class AttenuatorCalculatorSXR_Blade(AttenuatorCalculatorFilter):
+    # TODO FltMvInterface?
+    """
+    A single blade, holding up to 8 filters.
+    """
+    tab_component_names = True
+    filter_01 = Cpt(AttenuatorCalculatorFilter, 'FILTER:01:', index=1)
+    filter_02 = Cpt(AttenuatorCalculatorFilter, 'FILTER:02:', index=2)
+    filter_03 = Cpt(AttenuatorCalculatorFilter, 'FILTER:03:', index=3)
+    filter_04 = Cpt(AttenuatorCalculatorFilter, 'FILTER:04:', index=4)
+    filter_05 = Cpt(AttenuatorCalculatorFilter, 'FILTER:05:', index=5)
+    filter_06 = Cpt(AttenuatorCalculatorFilter, 'FILTER:06:', index=6)
+    filter_07 = Cpt(AttenuatorCalculatorFilter, 'FILTER:07:', index=7)
+    filter_08 = Cpt(AttenuatorCalculatorFilter, 'FILTER:08:', index=8)
+    inserted_filter_index = Cpt(EpicsSignalRO, 'InsertedFilter_RBV',
+                                kind='normal')
+
+    _filter_index_to_attr = {
+        1: 'filter_01',
+        2: 'filter_02',
+        3: 'filter_03',
+        4: 'filter_04',
+        5: 'filter_05',
+        6: 'filter_06',
+        7: 'filter_07',
+        8: 'filter_08',
+    }
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the attenuator blade.
+        """
+        inserted_filter = get_status_value(
+            status_info, 'inserted_filter_index', 'value')
+        material = get_status_value(status_info, 'material', 'value')
+        thickness = get_status_value(status_info, 'thickness', 'value')
+        transmission = get_status_value(
+            status_info, 'transmission', 'value', default_value=0.0)
+        transmission3 = get_status_value(
+            status_info, 'transmission_3omega', 'value', default_value=0.0)
+        table = utils.format_status_table(
+            status_info,
+            row_to_key=self._filter_index_to_attr,
+            column_to_key={
+                'Active': 'active',
+                'Material': 'material',
+                'Thickness [um]': 'thickness',
+                'Stuck': 'is_stuck',
+                'Transmission': 'transmission',
+                'Transmission 3 Omega': 'transmission_3omega',
+            },
+            row_identifier='Filter',
+        )
+
+        if inserted_filter is not None and inserted_filter > 1:
+            # Subtract 1 from the filter to match state -> filter index
+            inserted_info = (
+                f'Inserted filter: #{inserted_filter - 1} ('
+                f'{material} {thickness} um T={transmission} '
+                f'T3={transmission3})'
+            )
+        else:
+            inserted_info = 'Inserted filter: None'
+
+        return f'''\
+{inserted_info}
+
+{table}
+'''
+
+
+class AttenuatorCalculatorSXR_FourBlade(AttenuatorCalculatorBase):
+    """
+    4 blade x 8 filter solid attenuator variant from the L2SI project.
+
+    Parameters
+    ----------
+    prefix : str
+        Full Solid Attenuator base PV.
+
+    name : str
+        Alias for the Solid Attenuator.
+    """
+
+    tab_component_names = True
+    first_filter = 1
+    num_filters = 4
+    # Not using "DDC" here, so the parent is `self`:
+    _filter_parent = None
+    _filter_index_to_attr = {
+        1: 'blade_01',
+        2: 'blade_02',
+        3: 'blade_03',
+        4: 'blade_04',
+    }
+
+    blade_01 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:01:', index=1)
+    blade_02 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:02:', index=2)
+    blade_03 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:03:', index=3)
+    blade_04 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:04:', index=4)
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the attenuator.
+        """
+        return utils.combine_status_info(
+            self, status_info, self._filter_index_to_attr.values(),
+        )
+
+
+class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
+                           LightpathInOutMixin):
+    """
+    Ladder-style solid attenuator variant from the LCLS-II L2SI project.
+
+    This has 4 blades, each with up to 8 filters each.
+    This class includes a calculator to aid in determining which filters to
+    insert for a given attenuation at a specific energy.
+
+    Parameters
+    ----------
+    prefix : str
+        Solid Attenuator base PV.
+
+    name : str
+        Alias for the Solid Attenuator.
+
+    calculator_prefix : str
+        The prefix for the calculator PVs.
+    """
+
+    # QIcon for UX
+    _icon = 'fa.barcode'
+    tab_component_names = True
+
+    # Register that all blades are needed for lightpath calc
+    lightpath_cpts = [f'blade_{idx:02}' for idx in range(1, 5)]
+
+    # Summary for lightpath view
+    num_in = Cpt(InternalSignal, kind='hinted')
+    num_out = Cpt(InternalSignal, kind='hinted')
+
+    calculator = UCpt(AttenuatorCalculatorSXR_FourBlade)
+    blade_01 = Cpt(FEESolidAttenuatorBlade, ':MMS:01')
+    blade_02 = Cpt(FEESolidAttenuatorBlade, ':MMS:02')
+    blade_03 = Cpt(FEESolidAttenuatorBlade, ':MMS:03')
+    blade_04 = Cpt(FEESolidAttenuatorBlade, ':MMS:04')
+
+    def __init__(self, *args, limits=None, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        limits = limits or (0.0, 1.0)
+        super().__init__(*args, limits=limits, **kwargs)
+
+    @property
+    def setpoint(self):
+        """(PVPositioner compat) - use desired transmission as setpoint."""
+        return self.calculator.desired_transmission
+
+    @property
+    def readback(self):
+        """(PVPositioner compat) - use actual transmission as readback."""
+        return self.calculator.actual_transmission
+
+    @property
+    def actuate(self):
+        """(PVPositioner compat) - use apply_config as an actuation signal."""
+        return self.calculator.apply_config
+
+    def _setup_move(self, position):
+        """(PVPositioner compat) - calculate, then move."""
+        # Do not call `calculator.calculate()` here to respect the current
+        # calculator settings:
+        self.calculator.desired_transmission.put(position)
+        self.calculator.run_calculation.put(1, wait=True)
+        return super()._setup_move(position)
+
+    def _set_lightpath_states(self, lightpath_values):
+        info = super()._set_lightpath_states(lightpath_values)
+        if info is not None:
+            self.num_in.put(info['in_check'].count(True), force=True)
+            self.num_out.put(info['out_check'].count(True), force=True)
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the attenuator.
+        """
+        calc_status = status_info.get('calculator', {})
+        transmission = get_status_float(
+            calc_status, 'actual_transmission', 'value',
+            format='E', precision=3,
+        )
+        transmission_3 = get_status_float(
+            calc_status, 'actual_transmission_3omega', 'value',
+            format='E', precision=3,
+        )
+        energy = get_status_float(
+            calc_status, 'energy_actual', 'value',
+            scale=1e-3,
+        )
+        energy_3 = get_status_float(
+            calc_status, 'energy_actual', 'value',
+            scale=3 * 1e-3,
+        )
+        cpt_states = [
+            get_status_value(
+                status_info, cpt, 'state', 'state', 'value',
+                default_value=0
+            )
+            for cpt in self.lightpath_cpts
+        ]
+
+        table = prettytable.PrettyTable()
+        table.field_names = ['State'] + list(self.lightpath_cpts)
+        for state in LadderBladeState:
+            row = [state.name] + ['X' if cpt_state == state.value else ''
+                                  for cpt_state in cpt_states]
+            table.add_row(row)
+
+        return f"""
+{table}
+Transmission (E={energy} keV): {transmission}
+Transmission for 3rd harmonic (E={energy_3} keV): {transmission_3}
+"""
+
+
+class AT1K4(AttenuatorSXR_Ladder):
+    """
+    AT1K4 solid attenuator variant from the LCLS-II L2SI project.
+
+    This has 4 blades, each with up to 8 filters each.
+    This class includes a calculator to aid in determining which filters to
+    insert for a given attenuation at a specific energy.
+
+    Parameters
+    ----------
+    prefix : str
+        Solid Attenuator base PV.
+
+    name : str
+        Alias for the Solid Attenuator.
+
+    calculator_prefix : str
+        The prefix for the calculator PVs.
+    """
 
 
 class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
@@ -762,11 +1054,15 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
 
     def _setup_move(self, position):
         """(PVPositioner compat) - calculate, then move."""
-        self.calculator.calculate(position)
+        # Do not call `calculator.calculate()` here to respect the current
+        # calculator settings:
+        self.calculator.desired_transmission.put(position)
+        self.calculator.run_calculation.put(1, wait=True)
         return super()._setup_move(position)
 
-    def __init__(self, *args, limits=None, **kwargs):
-        UCpt.collect_prefixes(self, dict(calculator_prefix='AT2L0:CALC'))
+    def __init__(self, *args, limits=None, calculator_prefix='AT2L0:CALC',
+                 **kwargs):
+        UCpt.collect_prefixes(self, dict(calculator_prefix=calculator_prefix))
         limits = limits or (0.0, 1.0)
         super().__init__(*args, limits=limits, **kwargs)
 
@@ -777,45 +1073,44 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
             self.num_out.put(info['out_check'].count(True), force=True)
 
     def format_status_info(self, status_info):
-        """
-        Override status info handler to render the att
-        """
-        # Get the attenuator statuses
-        blade_states = []
-        for cpt in self.lightpath_cpts:
-            try:
-                blade_states.append(
-                    status_info[cpt]['state']['state']['value']
-                )
-            except KeyError:
-                break
-
-        lines = render_ascii_att(blade_states, start_index=1)
-        try:
-            calc = status_info['calculator']
-            transmission = calc['actual_transmission']['value']
-            transmission_3omega = calc['actual_transmission_3omega']['value']
-            energy_actual = calc['energy_actual']['value']
-        except KeyError:
-            ...
-        else:
-            energy = energy_actual / 1e3
-            energy_3omega = energy * 3.0
-            lines.append(
-                f'Transmission (E={energy:.3} keV): {transmission:.4E}'
+        """Override status info handler to render the attenuator."""
+        calc_status = status_info.get('calculator', {})
+        transmission = get_status_float(
+            calc_status, 'actual_transmission', 'value',
+            format='E', precision=3,
+        )
+        transmission_3 = get_status_float(
+            calc_status, 'actual_transmission_3omega', 'value',
+            format='E', precision=3,
+        )
+        energy = get_status_float(
+            calc_status, 'energy_actual', 'value',
+            scale=1e-3,
+        )
+        energy_3 = get_status_float(
+            calc_status, 'energy_actual', 'value',
+            scale=3 * 1e-3,
+        )
+        cpt_states = [
+            get_status_value(
+                status_info, cpt, 'state', 'state', 'value',
+                default_value=0
             )
-            lines.append(
-                f'Transmission for 3rd harmonic (E={energy_3omega:.3} keV): '
-                f'{transmission_3omega:.4E}'
-            )
+            for cpt in self.lightpath_cpts
+        ]
 
-        return '\n'.join(lines)
+        table = '\n'.join(render_ascii_att(cpt_states, start_index=1))
+        return f"""
+{table}
+Transmission (E={energy} keV): {transmission}
+Transmission for 3rd harmonic (E={energy_3} keV): {transmission_3}
+"""
 
 
 FEESolidAttenuator = AT2L0  # back-compatibility
 
 
-class BladeStateEnum(enum.Enum):
+class BladeStateEnum(enum.IntEnum):
     Unknown = 0
     OUT = 1
     IN = 2
@@ -841,6 +1136,44 @@ class BladeStateEnum(enum.Enum):
             BladeStateEnum.STUCK_OUT: '',
             BladeStateEnum.STUCK_IN: 'S',
         }.get(self, '?')
+
+
+class LadderBladeState(enum.IntEnum):
+    """
+    SXR attenuator ladder motion states.
+    """
+    # 'Moving' is also: "unknown" or "between states"
+    Moving = 0
+
+    # 'Out' is fixed at 1:
+    Out = 1
+
+    # And any "in" states follow:
+    In_01 = 2
+    In_02 = 3
+    In_03 = 4
+    In_04 = 5
+    In_05 = 6
+    In_06 = 7
+    In_07 = 8
+    In_08 = 9
+
+    @property
+    def filter_index(self):
+        """The one-based filter index, if inserted."""
+        if not self.is_inserted:
+            return None
+        return self.value - 1
+
+    @property
+    def is_inserted(self):
+        """Is a filter inserted?"""
+        return self not in {LadderBladeState.Moving, LadderBladeState.Out}
+
+    @property
+    def is_moving(self) -> bool:
+        """Is the blade moving?"""
+        return self == LadderBladeState.Moving
 
 
 def get_blade_enum(value):

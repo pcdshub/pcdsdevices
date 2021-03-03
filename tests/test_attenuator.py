@@ -7,8 +7,8 @@ import pytest
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
 
-from pcdsdevices.attenuator import (MAX_FILTERS, AttBase, Attenuator,
-                                    _att3_classes, _att_classes)
+from pcdsdevices.attenuator import (AT1K4, AT2L0, MAX_FILTERS, AttBase,
+                                    Attenuator, _att_classes)
 
 logger = logging.getLogger(__name__)
 
@@ -16,9 +16,6 @@ logger = logging.getLogger(__name__)
 # Replace all the Attenuator classes with fake classes
 for name, cls in _att_classes.items():
     _att_classes[name] = make_fake_device(cls)
-
-for name, cls in _att3_classes.items():
-    _att3_classes[name] = make_fake_device(cls)
 
 
 @pytest.mark.timeout(5)
@@ -33,6 +30,12 @@ def test_attenuator_states(fake_att):
     att.readback.sim_put(1)
     assert att.removed
     assert not att.inserted
+
+
+def test_attenuator_bluesky(fake_att):
+    logger.debug('test_attenuator_bluesky')
+    fake_att.read()
+    fake_att.describe()
 
 
 def fake_move_transition(att, status, goal):
@@ -154,12 +157,41 @@ def test_attenuator_staging(fake_att):
         assert filt.removed
 
 
-def test_attenuator_third_harmonic():
-    logger.debug('test_attenuator_third_harmonic')
-    att = Attenuator('TRD:ATT', MAX_FILTERS-1, name='third', use_3rd=True)
+def test_attenuator():
+    logger.debug('test_attenuator')
+    att = Attenuator('TRD:ATT', MAX_FILTERS-1, name='att')
     att.wait_for_connection()
 
 
 @pytest.mark.timeout(5)
 def test_attenuator_disconnected():
     AttBase('TST:ATT', name='test_att')
+
+
+@pytest.fixture(
+    params=['at2l0', 'at1k4']
+)
+def fake_new_attenuator(request):
+    """AT2L0, AT1K4 - attenuators new to LCLS-II."""
+    if request.param == 'at2l0':
+        FakeAT2L0 = make_fake_device(AT2L0)
+        return FakeAT2L0('AT2L0:', name='fake_at2l0')
+    FakeAT1K4 = make_fake_device(AT1K4)
+    return FakeAT1K4('AT1K4:', calculator_prefix='AT1K4:CALC',
+                     name='fake_at1k4')
+
+
+def test_new_attenuator_smoke(fake_new_attenuator):
+    fake_new_attenuator.setpoint
+    fake_new_attenuator.readback
+    fake_new_attenuator.actuate
+    fake_new_attenuator(0.0)
+    fake_new_attenuator(1.0)
+    fake_new_attenuator.wm()
+    with pytest.raises(ValueError):
+        fake_new_attenuator(1.1)
+    print(
+        fake_new_attenuator.format_status_info(
+            fake_new_attenuator.status_info()
+        )
+    )

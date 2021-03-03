@@ -60,3 +60,22 @@ def test_cbreak(sim_input):
     # send the ctrl+c character
     input_later(sim_input, '\x03\n')
     assert util.get_input() == '\n'
+
+
+def test_get_status_value():
+    dummy_dictionary = {'dict1': {'dict2': {'value': 23}}}
+    res = util.get_status_value(dummy_dictionary, 'dict1', 'dict2', 'value')
+    assert res == 23
+    res = util.get_status_value(dummy_dictionary, 'dict1', 'dict2', 'blah')
+    assert res == 'N/A'
+
+
+def test_get_status_float():
+    dummy_dictionary = {'dict1': {'dict2': {'value': 23.34343}}}
+    res = util.get_status_float(dummy_dictionary, 'dict1', 'dict2', 'value')
+    assert res == '23.3434'
+    res = util.get_status_float(dummy_dictionary, 'dict1', 'dict2', 'blah')
+    assert res == 'N/A'
+    res = util.get_status_float(dummy_dictionary, 'dict1', 'dict2', 'value',
+                                precision=3)
+    assert res == '23.343'

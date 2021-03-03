@@ -23,6 +23,7 @@ from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATThermocouple
 from .signal import PytmcSignal
 from .state import StatePositioner
+from .utils import get_status_float, get_status_value
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -90,6 +91,52 @@ class PIM(BaseInterface, Device):
         if not self._prefix_start:
             self._prefix_start = '{0}:{1}:'.format(prefix.split(':')[0],
                                                    prefix.split(':')[1])
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the PIM.
+
+        Display pim status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        focus = get_status_value(status_info, 'focus_motor', 'position')
+        f_units = get_status_value(status_info, 'focus_motor', 'user_setpoint',
+                                   'units')
+        state_pos = get_status_value(status_info, 'state', 'position')
+        y_pos = get_status_float(status_info, 'state', 'motor', 'position',
+                                 precision=4)
+        y_units = get_status_value(status_info, 'state', 'motor',
+                                   'user_setpoint', 'units')
+        zoom = get_status_float(status_info, 'zoom_motor', 'position',
+                                precision=4)
+        z_units = get_status_value(status_info, 'zoom_motor', 'user_setpoint',
+                                   'units')
+
+        name = ' '.join(self.prefix.split(':'))
+        if focus != 'N/A':
+            focus = f' Focus: {focus} [{f_units}]'
+        else:
+            focus = ''
+        if zoom != 'N/A':
+            zoom = f'Navitar Zoom: {zoom} [{z_units}]'
+        else:
+            zoom = ''
+
+        return f"""\
+{name}: {state_pos}
+Y Position: {y_pos} [{y_units}]
+{zoom}{focus}
+"""
 
     @property
     def prefix_start(self):
@@ -249,7 +296,11 @@ class PIMWithBoth(PIMWithFocus, PIMWithLED):
         inferred from `prefix`.
     """
 
-    pass
+    def __init__(self, prefix, *, name, prefix_focus=None, prefix_led=None,
+                 prefix_det=None, prefix_zoom=None, **kwargs):
+        super().__init__(prefix, name=name, prefix_focus=prefix_focus,
+                         prefix_led=prefix_led, prefix_det=prefix_det,
+                         prefix_zoom=prefix_zoom, **kwargs)
 
 
 class LCLS2ImagerBase(BaseInterface, Device, LightpathInOutMixin):

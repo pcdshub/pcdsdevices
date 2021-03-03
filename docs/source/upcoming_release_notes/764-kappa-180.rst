@@ -1,5 +1,5 @@
-645 elliptec-stop-fix
-#################
+764 kappa-180
+#############
 
 API Changes
 -----------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- lasers/elliptec.py: Fix conflict with BlueSky interface and 'stop' signal. 
+- Fix Kappa behavior for kappa angles above 180 degrees.
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tjohnson 
+- zllentz

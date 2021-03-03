@@ -205,7 +205,7 @@ class PTMPLC(Device):
     alarm = Cpt(EpicsSignalRO, ':ALARM_RBV', kind='normal')
     backingpressure_sp = Cpt(EpicsSignalWithRBV, ':BP_SP', kind='config')
     inletpressure_sp = Cpt(EpicsSignalWithRBV, ':IP_SP', kind='config')
-    interlock_status = Cpt(EpicsSignalRO, ':ILK_STATUS_RBV', kind='normal',
+    interlock_status = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
                            doc='interlock  is ok when true')
 
 

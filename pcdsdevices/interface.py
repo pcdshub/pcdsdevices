@@ -226,8 +226,13 @@ class BaseInterface:
         """
         Set pretty-printing to show current status information.
 
-        We will not leverage the feature set here, we will just use it as a
-        convenient IPython entry point for rendering our device info.
+        This will also filter out errors from the ``status_info``
+        and ``format_status_info`` methods, making sure "something"
+        is printed.
+
+        We will not leverage the pretty-printing feature set here,
+        we will just use it as a convenient IPython entry point for
+        rendering our device info.
 
         The parameter set is documented here in case we change our minds,
         since I already wrote it out before deciding on a renderer-agnostic
@@ -250,7 +255,14 @@ class BaseInterface:
             also call pp.pretty to print this object. Then cycle would be True
             and you know not to make any further recursive calls.
         """
-        pp.text(self.format_status_info(self.status_info()))
+        try:
+            status_text = self.format_status_info(self.status_info())
+        except Exception:
+            status_text = (f'{self}: Error showing status information. '
+                           'Check IOC connection and device health.')
+            logger.debug(status_text, exc_info=True)
+            raise
+        pp.text(status_text)
 
     def format_status_info(self, status_info):
         """
