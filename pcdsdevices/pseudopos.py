@@ -14,7 +14,7 @@ from scipy.constants import speed_of_light
 from .interface import FltMvInterface
 from .signal import NotepadLinkedSignal
 from .sim import FastMotor
-from .utils import convert_unit
+from .utils import convert_unit, get_status_value, get_status_float
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         notepad_metadata={'record': 'ai', 'default_value': 0.0},
     )
 
-    def __init__(self, prefix='', parent=None, **kwargs):
+    def __init__(self, prefix='', parent=None, verbose_name=None, **kwargs):
         if not prefix:
             # PseudoSingle generally does not get a prefix. Fix that here,
             # or 'notepad_setpoint' and 'notepad_readback' will have no
@@ -40,6 +40,62 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
             prefix = f'{parent.prefix}:{attr_name}'
 
         super().__init__(prefix=prefix, parent=parent, **kwargs)
+        self._verbose_name = verbose_name
+
+    @property
+    def calculated_dial_pos(self):
+        """
+        Calculate the dial position of the real motor dial position.
+        """
+        dial_pos = []
+        try:
+            for real_pos in self.parent.real_positioners:
+                dial_pos.append(real_pos.dial_position.get())
+            if dial_pos:
+                calc_dial = self.parent.inverse(
+                    self.parent.RealPosition(*dial_pos))
+            # try to get the correct pseudo position base on the name
+            return f'{calc_dial[calc_dial._fields.index(self.attr_name)]:.3e}'
+        # some motors might not have dial_position
+        except Exception:
+            return None
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the virtual motor.
+
+        Display virtual motor status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        units = get_status_value(status_info, 'notepad_readback', 'units')
+        position = get_status_float(
+            status_info, 'position', precision=3, format='e')
+        # if a dial_pos is not present we can assume that the dial position is
+        # the same as the normal position
+        dial_pos = self.calculated_dial_pos or position
+
+        low, high = self.limits
+        name = self.prefix
+        if self._verbose_name:
+            name = f'{self._verbose_name} {self.prefix}'
+
+        return f"""\
+Virtual Motor {name}
+Current position (user, dial): {position}, {dial_pos} [{units}]
+User limits (low, high): {low}, {high} [{units}]
+Preset position: {self.presets.state()}
+"""
 
 
 def _as_float(self):

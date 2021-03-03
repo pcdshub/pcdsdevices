@@ -44,7 +44,7 @@ from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
                         SyncAxesBase, pseudo_position_argument,
                         real_position_argument)
 from .signal import UnitConversionDerivedSignal, NotepadLinkedSignal
-from .utils import convert_unit
+from .utils import convert_unit, get_status_value, get_status_float
 
 if typing.TYPE_CHECKING:
     import matplotlib  # noqa
@@ -257,6 +257,8 @@ class LaserTiming(FltMvInterface, PVPositioner):
 
     tab_component_names = True
 
+    verbose_name = 'Laser X-ray Timing'
+
     _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True,
                        kind='omitted',
                        doc='The internal nanosecond-expecting signal.'
@@ -358,6 +360,53 @@ class LaserTiming(FltMvInterface, PVPositioner):
         self.user_offset.put(0.0)
         new_offset = position - self.setpoint.get()
         self.user_offset.put(new_offset)
+
+    @property
+    def dial_pos(self):
+        """
+        Calculate the dial position.
+
+        The _fs_tgt_time is the actual dial_position in ns.
+
+        Returns
+        -------
+        dial_pos : number
+            The dial position in [s] seconds, or 'N/A' if the dial position is
+            0 or None.
+        """
+        try:
+            dial_pos = self._fs_tgt_time.get()
+            # convert from ns to s
+            return f'{(dial_pos * 1e-9):.3e}'
+        except Exception:
+            return 'N/A'
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the LXT motor.
+
+        Display lxt motor status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        dial_pos = self.dial_pos
+        position = get_status_float(
+            status_info, 'position', precision=3, format='e')
+        units = get_status_value(status_info, 'setpoint', 'units')
+        return f"""\
+Virtual Motor {self.verbose_name} {self.prefix}
+Current position (user, dial): {position} [{units}] {dial_pos} [s]
+"""
 
 
 class TimeToolDelay(DelayNewport):

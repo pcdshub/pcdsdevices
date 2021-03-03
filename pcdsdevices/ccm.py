@@ -74,7 +74,7 @@ class CCMCalc(FltMvInterface, PseudoPositioner):
     """
 
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted',
-                 limits=(4, 25))
+                 limits=(4, 25), verbose_name='CCM Photon Energy')
     wavelength = Cpt(PseudoSingleInterface, egu='A', kind='normal')
     theta = Cpt(PseudoSingleInterface, egu='deg', kind='normal')
     energy_with_vernier = Cpt(PseudoSingleInterface, egu='keV',

@@ -383,7 +383,7 @@ def get_value(signal):
 
 
 def get_units(signal):
-    attrs = ('units', 'egu', 'derived_units')
+    attrs = ('derived_units', 'units', 'egu')
     for attr in attrs:
         try:
             value = getattr(signal, attr, None) or signal.metadata[attr]
