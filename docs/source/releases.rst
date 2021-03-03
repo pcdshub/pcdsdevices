@@ -42,13 +42,11 @@ Bugfixes
 
 Contributors
 ------------
-- adpai
 - cristinasewell
 - klauer
-- tjohnson
-- tjohnson
+- slacAdpai
+- slactjohnson
 - zllentz
-
 
 
 v4.1.0 (2021-02-10)
