@@ -2,6 +2,53 @@ Release History
 ###############
 
 
+v4.2.0 (2021-03-03)
+===================
+
+Features
+--------
+- Happi IOC Data: added new EntryInfo to happi.containers.LCLSItem  for ioc
+  configuration data including engineer, location, hutch, release, arch, name,
+  and ioc type.
+- New containers: added new Happi containers with device specific metadata for
+  building MODS IOCs.
+- Custom status print for `LODCM` object.
+- Added the `MPOD` class that determines the appropriate MPOD Channel classes. This is to help support the happi entry creation from the questionnaire.
+- Add custom status for LaserTiming and for PseudoSingleInterface
+- Add verbose_name attribute to PseudoSingleInterface and caclulated dial position
+- Add verbose_name property to LaserTiming
+
+Device Updates
+--------------
+- `LODCM` object has been updated to contain the Energy motors as well as the other motors and offsets.
+- Update various signal kinds on PTMPLC from omitted to normal or config as
+  appropriate.
+- ThorlabsWfs40: Added wavefront PV and viewer, added some docs
+
+New Devices
+-----------
+- `OffsetMotor` - PseudoPositioner with an offset
+- Add GHCPLC (Hot Cathode) class as a counterpart to the GCCPLC (Cold Cathode)
+  class.
+
+Bugfixes
+--------
+- Fix issue where the Kappa had an incorrect e_phi calculation
+  in certain situations.
+- Fix issue where the Kappa used the calculated motors for the
+  safety check instead of the real motors.
+- Fix issue where legacy attenuator classes would break bluesky scans.
+- Fix Kappa behavior for kappa angles above 180 degrees.
+
+Contributors
+------------
+- cristinasewell
+- klauer
+- slacAdpai
+- slactjohnson
+- zllentz
+
+
 v4.1.0 (2021-02-10)
 ===================
 
