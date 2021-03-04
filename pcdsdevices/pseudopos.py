@@ -221,7 +221,7 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
     """
     Synchronized Axes.
 
-    This class is deprecated. Use SyncAxis instead.
+    This class is deprecated. Use `SyncAxis` instead.
 
     This will move all axes in a coordinated way, retaining offsets.
 
@@ -528,7 +528,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
 
         This gives us the real motor setpoint value for one axis.
         """
-        return pos * self.scales[attr] + self.offset[attr]
+        return pos * self.scales[attr] + self.offsets[attr]
 
     @real_position_argument
     def inverse(self, real_pos):
@@ -563,7 +563,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
 
         This gives us the sync readback position.
         """
-        return (pos - self.offset[attr]) / self.scale[attr]
+        return (pos - self.offsets[attr]) / self.scales[attr]
 
     def consistency_warning(self):
         """
