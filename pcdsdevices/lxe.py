@@ -44,6 +44,7 @@ from .pseudopos import (DelayMotor, LookupTablePositioner,
                         PseudoSingleInterface, SyncAxesBase, SyncAxis,
                         pseudo_position_argument, real_position_argument)
 from .signal import NotepadLinkedSignal, UnitConversionDerivedSignal
+from .sim import FastMotor
 from .utils import convert_unit, get_status_float, get_status_value
 
 if typing.TYPE_CHECKING:
@@ -484,3 +485,13 @@ class LxtTtcExample(SyncAxis):
     warn_deadband = 1e-14
     fix_sync_keep_still = 'lxt'
     sync_limits = (-10e-6, 10e-6)
+
+
+class FakeLxtTtc(LxtTtcExample):
+    lxt = Cpt(FastMotor)
+    txt = Cpt(FastMotor)
+
+    scale = {'txt': -1}
+
+    def __init__(self):
+        super().__init__('FAKE:LXT:TTC', name='fake_lxt_ttc')
