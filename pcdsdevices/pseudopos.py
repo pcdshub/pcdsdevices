@@ -742,7 +742,7 @@ def delay_class_factory(motor_class):
     except KeyError:
         cls = type(
             'Delay' + motor_class.__name__,
-            DelayBase,
+            (DelayBase,),
             {'motor': Cpt(motor_class, '')}
         )
         delay_classes[motor_class] = cls
