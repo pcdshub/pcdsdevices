@@ -37,14 +37,12 @@ from ophyd import Component as Cpt
 from ophyd import EpicsSignal, PVPositioner
 from scipy.constants import speed_of_light
 
-from .component import UnrelatedComponent as UCpt
 from .epics_motor import DelayNewport, EpicsMotorInterface
 from .interface import FltMvInterface
-from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
-                        SyncAxesBase, pseudo_position_argument,
-                        real_position_argument)
-from .signal import UnitConversionDerivedSignal, NotepadLinkedSignal
-from .utils import convert_unit, get_status_value, get_status_float
+from .pseudopos import (LookupTablePositioner, PseudoSingleInterface, SyncAxis,
+                        pseudo_position_argument, real_position_argument)
+from .signal import NotepadLinkedSignal, UnitConversionDerivedSignal
+from .utils import convert_unit, get_status_float, get_status_value
 
 if typing.TYPE_CHECKING:
     import matplotlib  # noqa
@@ -446,7 +444,7 @@ class _ReversedTimeToolDelay(DelayNewport):
                                            + self.user_offset.get()))
 
 
-class LaserTimingCompensation(SyncAxesBase):
+class LaserTimingCompensation(SyncAxis):
     """
     LaserTimingCompensation (``lxt_ttc``) synchronously moves
     :class:`LaserTiming` (``lxt``) with :class:`TimeToolDelay` (``txt``) to
@@ -458,13 +456,6 @@ class LaserTimingCompensation(SyncAxesBase):
     ``delay`` and ``laser`` are intentionally renamed to non-ophyd-style
     ``txt`` and ``lxt``, respectively.
     """
-    tab_component_names = True
-    pseudo = Cpt(PseudoSingleInterface, limits=(-10e-6, 10e-6))
-    delay = UCpt(_ReversedTimeToolDelay, doc='The **reversed** txt motor')
-    laser = UCpt(LaserTiming, doc='The lxt motor')
+    sync = Cpt(PseudoSingleInterface, limits=(-10e-6, 10e-6))
 
-    def __init__(self, prefix, **kwargs):
-        UCpt.collect_prefixes(self, kwargs)
-        super().__init__(prefix, **kwargs)
-        self.delay.name = 'txt_reversed'
-        self.laser.name = 'lxt'
+    warn_deadband = 1e-14

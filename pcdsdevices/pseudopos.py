@@ -1,5 +1,8 @@
+import copy
+import enum
 import logging
 import typing
+import warnings
 
 import numpy as np
 import ophyd
@@ -14,7 +17,7 @@ from scipy.constants import speed_of_light
 from .interface import FltMvInterface
 from .signal import NotepadLinkedSignal
 from .sim import FastMotor
-from .utils import convert_unit, get_status_value, get_status_float
+from .utils import convert_unit, get_status_float, get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -218,6 +221,8 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
     """
     Synchronized Axes.
 
+    This class is deprecated. Use SyncAxes instead.
+
     This will move all axes in a coordinated way, retaining offsets.
 
     This can be configured to report its position as the min, max, mean, or any
@@ -242,6 +247,10 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
     pseudo = Cpt(PseudoSingleInterface)
 
     def __init__(self, *args, **kwargs):
+        warnings.warn(
+            'SyncAxesBase is deprecated and will be removed in a future '
+            'release. Please switch to SyncAxis.',
+            DeprecationWarning)
         if self.__class__ is SyncAxesBase:
             raise TypeError(('SyncAxesBase must be subclassed with '
                              'the axes to synchronize included as '
@@ -299,6 +308,133 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
         return self.PseudoPosition(pseudo=float(self.calc_combined(real_pos)))
 
 
+class SyncAxisOffsetMode(enum.IntEnum):
+    # Define a static offset and do not change it
+    STATIC_FIXED = 0
+    # Automatically pick a static offset based on initial positions
+    AUTO_FIXED = 1
+
+
+class SyncAxis(FltMvInterface, PseudoPositioner):
+    """
+    Pseudomotor class for moving motors with linear relationships.
+
+    The default settings will simply move all included real motors
+    to the same value when the sync motor is moved.
+    """
+    sync = Cpt(PseudoSingleInterface, kind='omitted')
+
+    # Enum that defines how and when offsets are interpreted
+    offset_mode = SyncAxisOffsetMode.STATIC_FIXED
+    # dict {str: float} that defines what offset to apply to each motor
+    offsets = None
+    # float that defines what offset to use for motors missing from offsets
+    default_offset = 0
+    # dict {str: float} that defines what scale to apply to each motor
+    scales = None
+    # float that defines what scale to use for motors missing from scales
+    default_scale = 1
+    # bool that defines if we should warn about inconsistent axes
+    warn_inconsistent = True
+    # float that defines how much of a deviation to warn on
+    warn_deadband = 0.001
+
+    def __init__(self, *args, **kwargs):
+        if self.__class__ is SyncAxis:
+            raise TypeError(
+                'SyncAxes must be subclassed with '
+                'the axes to synchronize included as '
+                'components')
+        super().__init__(*args, **kwargs)
+        self._real_attrs = [attr for attr, _ in self._get_real_positioners()]
+        self.scales = self._fill_info_dict(
+            self.scales, self.default_scale, 'scales')
+        self._has_setup = False
+
+    def _fill_info_dict(self, setting, default, info_kind):
+        if setting is None:
+            setting = {}
+        elif isinstance(setting, dict):
+            setting = copy.copy(setting)
+        else:
+            raise ValueError(
+                f'Invalid {info_kind}: {setting}, must be dict or None')
+        for attr in self._real_attrs:
+            if attr not in setting:
+                setting[attr] = default
+        return setting
+
+    def _setup_offsets(self):
+        if self.offset_mode == SyncAxisOffsetMode.STATIC_FIXED:
+            self._handle_static_fixed()
+        elif self.offset_mode == SyncAxisOffsetMode.AUTO_FIXED:
+            self._handle_auto_fixed()
+        else:
+            raise ValueError(f'Invalid offset_mode: {self.offset_mode}')
+        self._has_setup = True
+
+    def _handle_static_fixed(self):
+        self.offsets = self._fill_info_dict(
+            self.offsets, self.default_offset, 'offsets')
+
+    def _handle_auto_fixed(self):
+        pos = self.real_position
+        first_pos = pos[0]
+        self.offsets = {
+            fld: float(getattr(pos, fld)) - first_pos for fld in pos._fields}
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        """
+        Calculate where to move each real motor when the sync moves.
+
+        The calculation is:
+        1. Multiply by scale
+        2. Add the offset
+
+        Offsets are defined in the class definition.
+        """
+        self._setup_offsets()
+        real_pos = {}
+        for attr in self._real_attrs:
+            real_pos[attr] = (
+                pseudo_pos.sync * self.scales[attr] + self.offset[attr])
+        return self.RealPosition(**real_pos)
+
+    @real_position_argument
+    def inverse(self, real_pos):
+        """
+        Calculate where the sync motor is based on the first real motor.
+
+        The calculation is:
+        1. Subtract the offset
+        2. Divide by the scale
+
+        If warn_inconsistent is True, and any of the other real motors has a
+        position inconsistent with the first, this will warn the user about the
+        inconsistency if the calculated position differs by more than the
+        warn_deadband.
+        """
+        self._setup_offsets()
+        pseudo_calcs = []
+        for attr, pos in real_pos._asdict().items():
+            calc = (pos - self.offset[attr]) / self.scale[attr]
+            pseudo_calcs.append(calc)
+        pick_answer = pseudo_calcs[0]
+        if self.warn_inconsistent:
+            for calc in pseudo_calcs:
+                if not np.isclose(pick_answer, calc, atol=self.warn_deadband):
+                    self.consistency_hook()
+                    break
+        return self.PseudoPosition(sync=pick_answer)
+
+    def consistency_hook(self):
+        """
+        Code to run when we have an inconsistent axis configuration.
+        """
+        logger.warning(f'{self.name} is in an inconsistent state')
+
+
 class DelayBase(FltMvInterface, PseudoPositioner):
     """
     Laser delay stage to rescale a physical axis to a time axis.
@@ -338,6 +474,10 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         The number of times the laser bounces on the delay stage, e.g. the
         number of mirrors that this stage moves. The default is 2, a delay
         branch that bounces the laser back along the axis it enters.
+
+    invert : bool, optional
+        If True, increasing the real motor will decrease the delay.
+        If False (default), increasing the real motor will increase the delay.
     """
 
     delay = FCpt(PseudoSingleInterface, egu='{self.egu}', add_prefix=['egu'])
