@@ -485,11 +485,13 @@ class DelayBase(FltMvInterface, PseudoPositioner):
                       notepad_metadata={'record': 'ao', 'default_value': 0.0})
     motor = None
 
-    def __init__(self, *args, egu='s', n_bounces=2, **kwargs):
+    def __init__(self, *args, egu='s', n_bounces=2, invert=False, **kwargs):
         if self.__class__ is DelayBase:
             raise TypeError(('DelayBase must be subclassed with '
                              'a "motor" component, the real motor to move.'))
         self.n_bounces = n_bounces
+        if invert:
+            self.n_bounces *= -1
         super().__init__(*args, egu=egu, **kwargs)
 
     @pseudo_position_argument   # TODO: upstream this fix
