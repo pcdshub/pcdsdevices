@@ -324,6 +324,8 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
     """
     sync = Cpt(PseudoSingleInterface, kind='omitted')
 
+    tab_whitelist = ['fix_sync']
+
     # Enum that defines how and when offsets are interpreted
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     # dict {str: float} that defines what offset to apply to each motor
@@ -338,18 +340,58 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
     warn_inconsistent = True
     # float that defines how much of a deviation to warn on
     warn_deadband = 0.001
+    # bool that defines which motor to keep still when calling fix_sync
+    # if omitted, we'll keep the first real motor still
+    fix_sync_keep_still = None
+    # tuple of two floats that defines if we should add limits to the sync axis
+    sync_limits = None
 
     def __init__(self, *args, **kwargs):
-        if self.__class__ is SyncAxis:
-            raise TypeError(
-                'SyncAxes must be subclassed with '
-                'the axes to synchronize included as '
-                'components')
+        self._check_settings()
         super().__init__(*args, **kwargs)
         self._real_attrs = [attr for attr, _ in self._get_real_positioners()]
         self.scales = self._fill_info_dict(
             self.scales, self.default_scale, 'scales')
+        if self.sync_limits is not None:
+            self.sync._limits = tuple(self.sync_limits)
         self._has_setup = False
+
+    def _check_settings(self):
+        """Mostly just a typo check."""
+        if self.__class__ is SyncAxis:
+            raise TypeError(
+                'SyncAxes must be subclassed with '
+                'the axes to synchronize included as '
+                'components'
+                )
+        try:
+            self.offset_mode = SyncAxisOffsetMode(self.offset_mode)
+        except ValueError:
+            try:
+                self.offset_mode = SyncAxisOffsetMode[self.offset_mode]
+            except KeyError:
+                raise ValueError(
+                    f'Invalid offset_mode: {self.offset_mode}'
+                    ) from None
+        self._check_info_dict(self.offsets, 'offsets')
+        self._check_info_dict(self.scales, 'scales')
+        if self.fix_sync_keep_still is not None:
+            try:
+                getattr(self.__class__, self.fix_sync_keep_still)
+            except AttributeError:
+                raise ValueError(
+                    'Invalid fix_sync_keep_still. Must match a motor.'
+                    ) from None
+
+    def _check_info_dict(self, setting, info_kind):
+        if setting is not None:
+            try:
+                for attr, _ in setting.items():
+                    getattr(self.__class__, attr)
+            except AttributeError:
+                raise ValueError(
+                    f'Invalid key {attr} in {info_kind}. Must match a motor.'
+                    ) from None
 
     def _fill_info_dict(self, setting, default, info_kind):
         if setting is None:
@@ -397,9 +439,16 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         self._setup_offsets()
         real_pos = {}
         for attr in self._real_attrs:
-            real_pos[attr] = (
-                pseudo_pos.sync * self.scales[attr] + self.offset[attr])
+            real_pos[attr] = self.forward_single(attr, pseudo_pos.sync)
         return self.RealPosition(**real_pos)
+
+    def forward_single(self, attr, pos):
+        """
+        Run the forward calculation for a single real motor from the sync pos.
+
+        This gives us the real motor setpoint value for one axis.
+        """
+        return pos * self.scales[attr] + self.offset[attr]
 
     @real_position_argument
     def inverse(self, real_pos):
@@ -418,7 +467,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         self._setup_offsets()
         pseudo_calcs = []
         for attr, pos in real_pos._asdict().items():
-            calc = (pos - self.offset[attr]) / self.scale[attr]
+            calc = self.inverse_single(attr, pos)
             pseudo_calcs.append(calc)
         pick_answer = pseudo_calcs[0]
         if self.warn_inconsistent:
@@ -428,11 +477,63 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
                     break
         return self.PseudoPosition(sync=pick_answer)
 
+    def inverse_single(self, attr, pos):
+        """
+        Run the inverse calculation on a single real motor value.
+
+        This gives us the sync readback position.
+        """
+        return (pos - self.offset[attr]) / self.scale[attr]
+
     def consistency_hook(self):
         """
         Code to run when we have an inconsistent axis configuration.
         """
-        logger.warning(f'{self.name} is in an inconsistent state')
+        if self.warn_inconsistent:
+            logger.warning(
+                f'{self.name} is in an inconsistent state. Call '
+                'set_current_position or fix_sync to resolve.')
+
+    def fix_sync(self, confirm=True, wait=True, timeout=10):
+        """
+        Method to re-synchronize the axes via motion.
+
+        This will move every motor except the one defined by the
+        fix_sync_keep_still attribute, which will be used to define the
+        correct position.
+        """
+        anchor = self.fix_sync_keep_still or self._real_attrs[0]
+
+        # Calculate the sync position using anchor
+        anchor_pos = getattr(self.real_position, anchor)
+        sync_pos = self.inverse_single(anchor, anchor_pos)
+
+        # Calculate the goal positions for every motor
+        goal = self.forward(self.PseudoPosition(sync=sync_pos))
+        logger.info('Planning to perform the following moves:')
+        moves = {}
+
+        for attr, pos in goal._asdict.items():
+            if attr == anchor:
+                logger.info(f'Keep {attr} at {anchor_pos}')
+            else:
+                logger.info(f'Move {attr} to {pos}')
+                moves[attr] = pos
+
+        if not confirm:
+            logger.info('Automatically doing moves because confirm=False')
+            do_moves = True
+        else:
+            do_moves = input('Confirm? y/n').lower().startswith('y')
+
+        if do_moves:
+            statuses = []
+            for attr, pos in moves.items():
+                motor = getattr(self, attr)
+                statuses.append(motor.move(pos))
+            if wait:
+                for status in statuses:
+                    status.wait(timeout=timeout)
 
 
 class DelayBase(FltMvInterface, PseudoPositioner):
@@ -546,8 +647,44 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         self.user_offset.put(new_offset)
 
 
+delay_classes = {}
+
+
+def delay_class_factory(motor_class):
+    """
+    Create a subclass of DelayBase that controls a motor of class motor_class.
+
+    Used in delay_instace_factory (DelayMotor), may be useful for one-line
+    declarations inside ophyd Devices.
+    """
+    try:
+        cls = delay_classes[motor_class]
+    except KeyError:
+        cls = type(
+            'Delay' + motor_class.__name__,
+            DelayBase,
+            {'motor': Cpt(motor_class, '')}
+        )
+        delay_classes[motor_class] = cls
+    return cls
+
+
+def delay_instance_factory(
+        motor_class, prefix, egu='s', n_bounces=2, invert=False, **kwargs
+        ):
+    cls = delay_class_factory(motor_class)
+    return cls(prefix, egu=egu, n_bounces=n_bounces, invert=invert, **kwargs)
+
+
+delay_instance_factory.__doc__ = DelayBase.__doc__
+DelayMotor = delay_instance_factory
+
+
 class SimDelayStage(DelayBase):
     motor = Cpt(FastMotor, init_pos=0, egu='mm')
+
+
+delay_classes[FastMotor] = SimDelayStage
 
 
 class LookupTablePositioner(PseudoPositioner):
