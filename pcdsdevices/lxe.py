@@ -481,5 +481,6 @@ class LxtTtcExample(SyncAxis):
               n_bounces=14, invert=True)
 
     tab_component_names = True
+    warn_deadband = 1e-14
     fix_sync_keep_still = 'lxt'
     sync_limits = (-10e-6, 10e-6)
