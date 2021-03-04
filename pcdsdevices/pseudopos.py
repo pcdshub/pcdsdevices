@@ -221,7 +221,7 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
     """
     Synchronized Axes.
 
-    This class is deprecated. Use SyncAxes instead.
+    This class is deprecated. Use SyncAxis instead.
 
     This will move all axes in a coordinated way, retaining offsets.
 
@@ -319,8 +319,85 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
     """
     Pseudomotor class for moving motors with linear relationships.
 
+    This will move all axes in a configurable coordinated way. It handles all
+    cases where the motor coordination can be described by a simple scale and
+    offset (multiply by a number, then add a number).
+
+    The calculation for moves is simply:
+    pos = sync * scale + offset
+
+    Where sync is the pseudomotor's position and every real motor can have
+    a unique scale and offset.
+
     The default settings will simply move all included real motors
-    to the same value when the sync motor is moved.
+    to the same value when the sync motor is moved. That is to say, a scale of
+    1 and an offset of 0.
+
+    You should subclass this by adding real motors as components. The class
+    will pick them up and include them correctly into the coordinated move.
+
+    An example:
+
+    .. code-block:: python
+
+       class Parallel(SyncAxis):
+           left = Cpt(EpicsMotor, ':01')
+           right = Cpt(EpicsMotor, ':02')
+
+    Like all `~ophyd.pseudopos.PseudoPositioner` classes, any subclass of
+    `~ophyd.positioner.PositionerBase` will be included in the synchronized
+    move.
+
+    See the following attributes for a dive into the settings and internals:
+
+    Attributes
+    ----------
+    offset_mode : SyncAxisOffsetMode (enum)
+        Selection of how and when offsets are interpreted. The default is
+        ``STATIC_FIXED``, which means "define static offsets at class creation
+        and never change them." Also available is ``AUTO_FIXED``, which means
+        "define offsets based on the current motor positions at the first move
+        and do not change them during this session."
+
+    offsets : dict {str: float} or None
+        Specification of which offset to use for each motor. The mapping should
+        be from attribute name to offset value. Any omitted motor will have an
+        offset of ``default_offset``.
+
+    default_offset : float
+        Any motor omitted from ``offsets`` will have this number assigned to
+        them and its offset. The default value is 0.
+
+    scales : dict {str: float} or None
+        Specification of which scale to use for each motor. The mapping should
+        be from attribute name to scale value. Any omitted motor will have a
+        scale of ``default_scale``.
+
+    default_scale : float
+        Any motor omitted from ``scales`` will have this number assigned to
+        them and its scale. The default value is 1.
+
+    warn_inconsistent : bool
+        If `True` (the default), warn the user if the real motors are not in a
+        consistent position. An inconsistent position, or desync, can occur if
+        a motor in the `SyncAxis` group has been moved manually.
+
+    warn_deadband : float
+        How far out of sync our motors can be before we consider ourselves to
+        be in an inconsistent, or desync state. Defaults to 0.001.
+
+    fix_sync_keep_still : str or None
+        Which motor to keep still when we recover the position using the
+        `fix_sync` method. We will assume one motor (this motor) is in the
+        correct position and move all the other motors to their correct
+        positions. If omitted, the first motor will be considered the guiding
+        motor that we do not move.
+
+    sync_limits : tuple or None
+        Limits to apply to the sync axis. Set these if you don't think your
+        real motor limits are sufficient to protect your application.
+        e.g. sync_limits = (-100, 100) will bind the `SyncAxis` to move between
+        -100 and 100.
     """
     sync = Cpt(PseudoSingleInterface, kind='omitted')
 
@@ -360,7 +437,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         """Mostly just a typo check."""
         if self.__class__ is SyncAxis:
             raise TypeError(
-                'SyncAxes must be subclassed with '
+                'SyncAxis must be subclassed with '
                 'the axes to synchronize included as '
                 'components'
                 )
@@ -384,6 +461,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
                     ) from None
 
     def _check_info_dict(self, setting, info_kind):
+        """Helper function to check that all keys in the dict are Cpts"""
         if setting is not None:
             try:
                 for attr, _ in setting.items():
@@ -394,6 +472,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
                     ) from None
 
     def _fill_info_dict(self, setting, default, info_kind):
+        """Helper function to fill default values into the dict"""
         if setting is None:
             setting = {}
         elif isinstance(setting, dict):
@@ -407,13 +486,14 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         return setting
 
     def _setup_offsets(self):
-        if self.offset_mode == SyncAxisOffsetMode.STATIC_FIXED:
-            self._handle_static_fixed()
-        elif self.offset_mode == SyncAxisOffsetMode.AUTO_FIXED:
-            self._handle_auto_fixed()
-        else:
-            raise ValueError(f'Invalid offset_mode: {self.offset_mode}')
-        self._has_setup = True
+        if not self._has_setup:
+            if self.offset_mode == SyncAxisOffsetMode.STATIC_FIXED:
+                self._handle_static_fixed()
+            elif self.offset_mode == SyncAxisOffsetMode.AUTO_FIXED:
+                self._handle_auto_fixed()
+            else:
+                raise ValueError(f'Invalid offset_mode: {self.offset_mode}')
+            self._has_setup = True
 
     def _handle_static_fixed(self):
         self.offsets = self._fill_info_dict(
@@ -473,7 +553,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         if self.warn_inconsistent:
             for calc in pseudo_calcs:
                 if not np.isclose(pick_answer, calc, atol=self.warn_deadband):
-                    self.consistency_hook()
+                    self.consistency_warning()
                     break
         return self.PseudoPosition(sync=pick_answer)
 
@@ -485,9 +565,9 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         """
         return (pos - self.offset[attr]) / self.scale[attr]
 
-    def consistency_hook(self):
+    def consistency_warning(self):
         """
-        Code to run when we have an inconsistent axis configuration.
+        Let the user know that the axes are desync'd
         """
         if self.warn_inconsistent:
             logger.warning(
