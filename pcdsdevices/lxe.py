@@ -477,7 +477,7 @@ class LxtTtcExample(SyncAxis):
     XPP's config on March 4, 2021
     """
     lxt = Cpt(LaserTiming, 'LAS:FS11')
-    txt = Cpt(DelayMotor, Newport, 'XPP:LAS:MMN:16',
+    txt = Cpt(DelayMotor, 'XPP:LAS:MMN:16', motor_class=Newport,
               n_bounces=14, invert=True)
 
     tab_component_names = True

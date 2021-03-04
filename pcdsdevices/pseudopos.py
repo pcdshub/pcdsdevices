@@ -750,7 +750,7 @@ def delay_class_factory(motor_class):
 
 
 def delay_instance_factory(
-        motor_class, prefix, egu='s', n_bounces=2, invert=False, **kwargs
+        prefix, motor_class, egu='s', n_bounces=2, invert=False, **kwargs
         ):
     cls = delay_class_factory(motor_class)
     return cls(prefix, egu=egu, n_bounces=n_bounces, invert=invert, **kwargs)
