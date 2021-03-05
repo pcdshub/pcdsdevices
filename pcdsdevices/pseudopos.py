@@ -480,8 +480,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
             raise ValueError(
                 f'Invalid {info_kind}: {setting}, must be dict or None')
         for attr in self._real_attrs:
-            if attr not in setting:
-                setting[attr] = default
+            setting.setdefault(attr, default)
         return setting
 
     def _setup_offsets(self):
