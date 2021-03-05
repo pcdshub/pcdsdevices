@@ -539,25 +539,12 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         The calculation is:
         1. Subtract the offset
         2. Divide by the scale
-
-        If warn_inconsistent is True, and any of the other real motors has a
-        position inconsistent with the first, this will warn the user about the
-        inconsistency if the calculated position differs by more than the
-        warn_deadband.
         """
         self._setup_offsets()
-        pseudo_calcs = []
-        for attr, pos in real_pos._asdict().items():
-            calc = self.inverse_single(attr, pos)
-            pseudo_calcs.append(calc)
-        pick_answer = pseudo_calcs[0]
-        if self.warn_inconsistent:
-            for calc in pseudo_calcs:
-                if not np.isclose(pick_answer, calc,
-                                  atol=self.warn_deadband, rtol=0):
-                    self.consistency_warning()
-                    break
-        return self.PseudoPosition(sync=pick_answer)
+        attr = real_pos._fields[0]
+        pos = real_pos[0]
+        calc = self.inverse_single(attr, pos)
+        return self.PseudoPosition(sync=calc)
 
     def inverse_single(self, attr, pos):
         """
@@ -567,14 +554,60 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         """
         return (pos - self.offsets[attr]) / self.scales[attr]
 
+    def is_synced(self, real_pos=None):
+        """
+        Check all motor positions for consistency.
+
+        This gets called in status_info if warn_inconsistent is True.
+        If the motors are desyncronized greater than the warn_deadband,
+        this will return ``False``. Otherwise it will return ``True``.
+        """
+        if real_pos is None:
+            real_pos = self.real_position
+        pseudo_calcs = []
+        for attr, pos in real_pos._asdict().items():
+            calc = self.inverse_single(attr, pos)
+            pseudo_calcs.append(calc)
+        pick_answer = pseudo_calcs[0]
+        for calc in pseudo_calcs:
+            if not np.isclose(pick_answer, calc,
+                              atol=self.warn_deadband, rtol=0):
+                return False
+        return True
+
     def consistency_warning(self):
         """
-        Let the user know that the axes are desync'd
+        Return the consistency warning text
         """
-        if self.warn_inconsistent:
-            logger.warning(
-                f'{self.name} is in an inconsistent state. Call '
-                'set_current_position or fix_sync to resolve.')
+        return (
+            f'{self.name} is in an inconsistent state. Call '
+            'set_current_position or fix_sync to resolve.'
+            )
+
+    def _status_info_lines(self, status_info, prefix='', indent=0):
+        """
+        Extend the status info formatter to add consistency warnings
+        """
+        lines = []
+        if self.warn_inconsistent and status_info['name'] == self.name:
+            try:
+                real_pos_dict = {}
+                for attr in self.RealPosition._fields:
+                    real_pos_dict[attr] = status_info[attr]['position']
+                real_pos = self.RealPosition(**real_pos_dict)
+                if not self.is_synced(real_pos=real_pos):
+                    lines.append(self.consistency_warning())
+            except Exception:
+                err = 'Error checking for sync axis consistency.'
+                lines.append(err)
+                logger.debug(err, exc_info=True)
+
+        lines.extend(
+            super()._status_info_lines(
+                status_info, prefix=prefix, indent=indent
+                )
+            )
+        return lines
 
     def fix_sync(self, confirm=True, wait=True, timeout=10):
         """
