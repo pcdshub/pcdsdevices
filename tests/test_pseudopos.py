@@ -6,8 +6,10 @@ from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
 
 from pcdsdevices.pseudopos import (DelayBase, LookupTablePositioner,
-                                   PseudoSingleInterface, SimDelayStage,
-                                   SyncAxesBase, OffsetMotorBase)
+                                   OffsetMotorBase, PseudoSingleInterface,
+                                   SimDelayStage, SyncAxesBase, SyncAxis,
+                                   SyncAxisOffsetMode)
+from pcdsdevices.sim import FastMotor
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +28,29 @@ class MaxTwoSyncSoftPositioner(SyncAxesBase):
 
     def calc_combined(self, real_position):
         return max(real_position)
+
+
+class SyncAxisDefault(SyncAxis):
+    one = Cpt(FastMotor)
+    two = Cpt(FastMotor)
+
+
+class SyncAxisAuto(SyncAxis):
+    one = Cpt(FastMotor, init_pos=0)
+    two = Cpt(FastMotor, init_pos=2)
+
+    offset_mode = SyncAxisOffsetMode.AUTO_FIXED
+
+
+class SyncAxisCrazy(SyncAxis):
+    one = Cpt(FastMotor)
+    two = Cpt(FastMotor)
+    three = Cpt(FastMotor)
+
+    offsets = {'three': 3}
+    scales = {'two': -2, 'three': 3}
+    fix_sync_keep_still = 'two'
+    sync_limits = (-10, 10)
 
 
 @pytest.fixture(scope='function')
@@ -68,6 +93,39 @@ def test_sync_offset(five_axes, two_axes):
     assert five_axes.five.position == 14
 
     assert two_axes.pseudo.position == 5
+
+
+def test_sync_axis_default():
+    logger.debug('test_sync_axis_default')
+    sync = SyncAxisDefault('DEFAULT', name='sync_default')
+    sync.move(5, wait=True)
+    assert sync.one.position == 5
+    assert sync.two.position == 5
+    assert sync.is_synced()
+    sync.one.move(0)
+    assert not sync.is_synced()
+    assert 'fix_sync' in sync.format_status_info(sync.status_info())
+
+
+def test_sync_axis_auto():
+    logger.debug('test_sync_axis_auto')
+    sync = SyncAxisAuto('AUTO', name='sync_auto')
+    sync.move(5)
+    assert sync.one.position == 5
+    assert sync.two.position == 7
+
+
+def test_sync_axis_crazy():
+    logger.debug('test_sync_axis_crazy')
+    sync = SyncAxisCrazy('CRAZY', name='sync_crazy')
+    sync.move(5)
+    assert sync.is_synced()
+    assert sync.one.position == 5
+    assert sync.two.position == -10
+    assert sync.three.position == 18
+    assert sync.position.sync == 5
+    with pytest.raises(Exception):
+        sync.move(20)
 
 
 def test_delay_basic():
