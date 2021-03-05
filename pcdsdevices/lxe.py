@@ -491,7 +491,7 @@ class FakeLxtTtc(LxtTtcExample):
     lxt = Cpt(FastMotor)
     txt = Cpt(FastMotor)
 
-    scale = {'txt': -1}
+    scales = {'txt': -1}
 
     def __init__(self):
         super().__init__('FAKE:LXT:TTC', name='fake_lxt_ttc')

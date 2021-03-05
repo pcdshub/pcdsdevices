@@ -426,13 +426,13 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
 
     def __init__(self, *args, **kwargs):
         self._check_settings()
-        super().__init__(*args, **kwargs)
+        self._has_setup = False
         self._real_attrs = [attr for attr, _ in self._get_real_positioners()]
         self.scales = self._fill_info_dict(
             self.scales, self.default_scale, 'scales')
+        super().__init__(*args, **kwargs)
         if self.sync_limits is not None:
             self.sync._limits = tuple(self.sync_limits)
-        self._has_setup = False
 
     def _check_settings(self):
         """Mostly just a typo check."""
@@ -553,7 +553,8 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         pick_answer = pseudo_calcs[0]
         if self.warn_inconsistent:
             for calc in pseudo_calcs:
-                if not np.isclose(pick_answer, calc, atol=self.warn_deadband):
+                if not np.isclose(pick_answer, calc,
+                                  atol=self.warn_deadband, rtol=0):
                     self.consistency_warning()
                     break
         return self.PseudoPosition(sync=pick_answer)
@@ -594,7 +595,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         logger.info('Planning to perform the following moves:')
         moves = {}
 
-        for attr, pos in goal._asdict.items():
+        for attr, pos in goal._asdict().items():
             if attr == anchor:
                 logger.info(f'Keep {attr} at {anchor_pos}')
             else:
@@ -605,7 +606,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
             logger.info('Automatically doing moves because confirm=False')
             do_moves = True
         else:
-            do_moves = input('Confirm? y/n').lower().startswith('y')
+            do_moves = input('Confirm? (y/n): ').lower().startswith('y')
 
         if do_moves:
             statuses = []
