@@ -132,10 +132,14 @@ def test_delay_basic():
     logger.debug('test_delay_basic')
     stage_s = SimDelayStage('prefix', name='name', egu='s', n_bounces=2)
     stage_ns = SimDelayStage('prefix', name='name', egu='ns', n_bounces=2)
+    stage_inv = SimDelayStage('prefix', name='name', egu='s', n_bounces=2,
+                              invert=True)
     approx_c = 3e8
     stage_s.move(1e-9)
     stage_ns.move(1)
-    for pos in stage_s.motor.position, stage_ns.motor.position:
+    stage_inv.move(-1e-9)
+    for pos in (stage_s.motor.position, stage_ns.motor.position,
+                stage_inv.motor.position):
         assert abs(pos*1e-3 - 1e-9 * approx_c / 2) < 0.01
 
     stage_s.set_current_position(1.0e-6)
