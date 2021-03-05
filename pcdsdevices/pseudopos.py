@@ -453,24 +453,22 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
                     ) from None
         self._check_info_dict(self.offsets, 'offsets')
         self._check_info_dict(self.scales, 'scales')
-        if self.fix_sync_keep_still is not None:
-            try:
-                getattr(self.__class__, self.fix_sync_keep_still)
-            except AttributeError:
-                raise ValueError(
-                    'Invalid fix_sync_keep_still. Must match a motor.'
-                    ) from None
+        if (self.fix_sync_keep_still is not None
+                and self.fix_sync_keep_still not in self.component_names):
+            raise ValueError(
+                f'Invalid fix_sync_keep_still == {self.fix_sync_keep_still}. '
+                'Must match a motor.'
+                )
 
     def _check_info_dict(self, setting, info_kind):
         """Helper function to check that all keys in the dict are Cpts"""
         if setting is not None:
-            try:
-                for attr, _ in setting.items():
-                    getattr(self.__class__, attr)
-            except AttributeError:
-                raise ValueError(
-                    f'Invalid key {attr} in {info_kind}. Must match a motor.'
-                    ) from None
+            for attr, _ in setting.items():
+                if attr not in self.component_names:
+                    raise ValueError(
+                        f'Invalid key {attr} in {info_kind}. '
+                        'Must match a motor.'
+                        )
 
     def _fill_info_dict(self, setting, default, info_kind):
         """Helper function to fill default values into the dict"""
