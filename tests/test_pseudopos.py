@@ -128,6 +128,37 @@ def test_sync_axis_crazy():
         sync.move(20)
 
 
+def test_sync_axis_class_checks():
+    logger.debug('test_sync_axis_class_checks')
+
+    class BadSync(SyncAxisDefault):
+        def __init__(self):
+            super().__init__('Bad', name='bad')
+
+    # Original
+    BadSync()
+    # Bad offset_mode
+    BadSync.offset_mode = 'potatoes'
+    with pytest.raises(ValueError):
+        BadSync()
+    BadSync.offset_mode = SyncAxisOffsetMode.STATIC_FIXED
+    # Bad offsets
+    BadSync.offsets = {'seven_billion': 3}
+    with pytest.raises(ValueError):
+        BadSync()
+    BadSync.offsets = None
+    # Bad scales
+    BadSync.scales = {'longcat': 100000000}
+    with pytest.raises(ValueError):
+        BadSync()
+    BadSync.scales = None
+    # Bad fix_sync_keep_still
+    BadSync.fix_sync_keep_still = 'zoomer'
+    with pytest.raises(ValueError):
+        BadSync()
+    BadSync.fix_sync_keep_still = None
+
+
 def test_delay_basic():
     logger.debug('test_delay_basic')
     stage_s = SimDelayStage('prefix', name='name', egu='s', n_bounces=2)
