@@ -548,9 +548,10 @@ class Newport(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record for Newport motors.
 
-    This is a subclass of :class:`PCDSMotorBase` that overwrites missing
-    signals and disables the :meth:`home` method, because it will not work the
-    same way for Newport motors.
+    This is a subclass of :class:`PCDSMotorBase` that:
+    - Overwrites missing signals for Newports
+    - Disables the :meth:`home` method broken for Newports
+    - Does special metadata handling because this is broken for Newports
     """
 
     __doc__ += basic_positioner_init
@@ -559,11 +560,37 @@ class Newport(PCDSMotorBase):
     home_forward = Cpt(Signal, kind='omitted')
     home_reverse = Cpt(Signal, kind='omitted')
 
+    high_limit_travel = Cpt(EpicsSignal, '.HLM', kind='omitted',
+                            auto_monitor=True)
+    low_limit_travel = Cpt(EpicsSignal, '.LLM', kind='omitted',
+                           auto_monitor=True)
+    motor_prec = Cpt(EpicsSignalRO, '.PREC', kind='omitted',
+                     auto_monitor=True)
+
     def home(self, *args, **kwargs):
         # This function should eventually be used. There is a way to home
         # Newport motors to a reference mark
         raise NotImplementedError("Homing is not yet implemented for Newport "
                                   "motors")
+
+    @high_limit_travel.sub_value
+    def _update_hlt(self, value, **kwargs):
+        print('update_hlt')
+        self._update_rbv_md(upper_ctrl_limit=value)
+
+    @low_limit_travel.sub_value
+    def _update_llt(self, value, **kwargs):
+        print('update_llt')
+        self._update_rbv_md(lower_ctrl_limit=value)
+
+    @motor_prec.sub_value
+    def _update_prec(self, value, **kwargs):
+        print('update_prec')
+        self._update_rbv_md(precision=value)
+
+    def _update_rbv_md(self, **kwargs):
+        self.user_readback.wait_for_connection()
+        self.user_readback._metadata.update(**kwargs)
 
 
 class DelayNewport(DelayBase):
