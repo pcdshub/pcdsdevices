@@ -38,11 +38,11 @@ from ophyd import EpicsSignal, PVPositioner
 from scipy.constants import speed_of_light
 
 from .component import UnrelatedComponent as UCpt
-from .epics_motor import DelayNewport, EpicsMotorInterface, Newport
+from .epics_motor import DelayNewport, EpicsMotorInterface
 from .interface import FltMvInterface
-from .pseudopos import (DelayMotor, LookupTablePositioner,
-                        PseudoSingleInterface, SyncAxesBase, SyncAxis,
-                        pseudo_position_argument, real_position_argument)
+from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
+                        SyncAxesBase, SyncAxis, pseudo_position_argument,
+                        real_position_argument)
 from .signal import NotepadLinkedSignal, UnitConversionDerivedSignal
 from .sim import FastMotor
 from .utils import convert_unit, get_status_float, get_status_value
@@ -478,11 +478,12 @@ class LxtTtcExample(SyncAxis):
     XPP's config on March 4, 2021
     """
     lxt = Cpt(LaserTiming, 'LAS:FS11')
-    txt = Cpt(DelayMotor, 'XPP:LAS:MMN:16', motor_class=Newport,
-              n_bounces=14, invert=True)
+    txt = Cpt(DelayNewport, 'XPP:LAS:MMN:16',
+              n_bounces=14)
 
     tab_component_names = True
-    warn_deadband = 1e-14
+    scales = {'txt': -1}
+    warn_deadband = 5e-14
     fix_sync_keep_still = 'lxt'
     sync_limits = (-10e-6, 10e-6)
 
@@ -490,8 +491,6 @@ class LxtTtcExample(SyncAxis):
 class FakeLxtTtc(LxtTtcExample):
     lxt = Cpt(FastMotor)
     txt = Cpt(FastMotor)
-
-    scales = {'txt': -1}
 
     def __init__(self):
         super().__init__('FAKE:LXT:TTC', name='fake_lxt_ttc')
