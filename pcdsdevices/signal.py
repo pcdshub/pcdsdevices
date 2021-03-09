@@ -709,3 +709,17 @@ class EpicsSignalROEditMD(EpicsSignalRO, EpicsSignalBaseEditMD):
 
 EpicsSignalEditMD.__doc__ = EpicsSignal.__doc__
 EpicsSignalROEditMD.__doc__ = EpicsSignalRO.__doc__
+
+
+class FakeEpicsSignalEditMD(FakeEpicsSignal):
+    def _override_metadata(self, **kwargs):
+        pass
+
+
+class FakeEpicsSignalROEditMD(FakeEpicsSignalRO):
+    def _override_metadata(self, **kwargs):
+        pass
+
+
+fake_device_cache[EpicsSignalEditMD] = FakeEpicsSignalEditMD
+fake_device_cache[EpicsSignalROEditMD] = FakeEpicsSignalROEditMD
