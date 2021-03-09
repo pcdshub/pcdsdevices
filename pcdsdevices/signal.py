@@ -670,8 +670,7 @@ class SignalEditMD(Signal):
         try:
             self._metadata_override.update(**md)
         except AttributeError:
-            self._metadata_override = {}
-            self._metadata_override.update(**md)
+            self._metadata_override = md
 
     @property
     def metadata(self):
