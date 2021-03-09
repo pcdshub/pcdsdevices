@@ -671,6 +671,7 @@ class SignalEditMD(Signal):
             self._metadata_override.update(**md)
         except AttributeError:
             self._metadata_override = md
+        self._run_metadata_callbacks()
 
     @property
     def metadata(self):
@@ -682,8 +683,14 @@ class SignalEditMD(Signal):
             pass
         return md
 
+    # Switch out _metadata for metadata
+    def _run_metadata_callbacks(self):
+        self._metadata_thread_ctx.run(self._run_subs, sub_type=self.SUB_META,
+                                      **self.metadata)
+
 
 class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
+    # Switch out _metadata for metadata where appropriate
     @property
     def precision(self):
         return self.metadata['precision']
