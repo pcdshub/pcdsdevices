@@ -640,3 +640,73 @@ class UnitConversionDerivedSignal(DerivedSignal):
             if key in desc:
                 desc[key] = self.inverse(desc[key])
         return full_desc
+
+
+class SignalEditMD(Signal):
+    """
+    Subclass for allowing an external override of signal metadata.
+
+    This can be useful in cases where the signal metadata is wrong, not
+    included properly in the signal, or where you'd like different
+    metadata-dependent behavior than what is discovered via the cl.
+
+    Does some minimal checking against the signal's metadata keys and ensures
+    the override values always take priority over the normally found values.
+    """
+    def _override_metadata(self, **md):
+        """
+        Externally override the signal metadata.
+
+        This is a semi-private member that should only be called from device
+        classes on their own signals.
+        """
+        for key in md.keys():
+            if key not in self._metadata_keys:
+                raise ValueError(
+                    f'Tried to override metadata key {key} in {self.name}, '
+                    'but this is not one of the metadata keys: '
+                    f'{self._metadata_keys}'
+                    )
+        try:
+            self._metadata_override.update(**md)
+        except AttributeError:
+            self._metadata_override = {}
+            self._metadata_override.update(**md)
+
+    @property
+    def metadata(self):
+        md = {}
+        md.update(self._metadata)
+        try:
+            md.update(self._metadata_override)
+        except AttributeError:
+            pass
+        return md
+
+
+class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
+    @property
+    def precision(self):
+        return self.metadata['precision']
+
+    @property
+    def limits(self):
+        return (self.metadata['lower_ctrl_limit'],
+                self.metadata['upper_ctrl_limit'])
+
+    def describe(self):
+        desc = super().describe()
+        desc[self.name]['units'] = self.metadata['units']
+        return desc
+
+
+class EpicsSignalEditMD(EpicsSignal, EpicsSignalBaseEditMD):
+    pass
+
+
+class EpicsSignalROEditMD(EpicsSignalRO, EpicsSignalBaseEditMD):
+    pass
+
+
+EpicsSignalEditMD.__doc__ = EpicsSignal.__doc__
+EpicsSignalROEditMD.__doc__ = EpicsSignalRO.__doc__

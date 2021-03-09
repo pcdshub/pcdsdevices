@@ -21,7 +21,7 @@ from pcdsdevices.pv_positioner import PVPositionerComparator
 from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
 from .pseudopos import DelayBase, OffsetMotorBase
-from .signal import PytmcSignal
+from .signal import EpicsSignalROEditMD, PytmcSignal
 from .utils import get_status_value
 from .variety import set_metadata
 
@@ -555,15 +555,30 @@ class Newport(PCDSMotorBase):
     """
 
     __doc__ += basic_positioner_init
+    # Overrides are in roughly the same order as from EpicsMotor
 
+    # Override from EpicsMotor to change class for MD update
+    user_readback = Cpt(EpicsSignalROEditMD, '.RBV', kind='hinted',
+                        auto_monitor=True)
+
+    # Override from EpicsMotor to disable
     offset_freeze_switch = Cpt(Signal, kind='omitted')
-    home_forward = Cpt(Signal, kind='omitted')
-    home_reverse = Cpt(Signal, kind='omitted')
 
+    # Override from EpicsMotor to add subscription
+    motor_egu = Cpt(EpicsSignal, '.EGU', kind='config',
+                    auto_monitor=True)
+
+    # Override from EpicsMotor to add subscription
     high_limit_travel = Cpt(EpicsSignal, '.HLM', kind='omitted',
                             auto_monitor=True)
     low_limit_travel = Cpt(EpicsSignal, '.LLM', kind='omitted',
                            auto_monitor=True)
+
+    # Override from EpicsMotor to disable
+    home_forward = Cpt(Signal, kind='omitted')
+    home_reverse = Cpt(Signal, kind='omitted')
+
+    # Add new signal for subscription
     motor_prec = Cpt(EpicsSignalRO, '.PREC', kind='omitted',
                      auto_monitor=True)
 
@@ -573,24 +588,21 @@ class Newport(PCDSMotorBase):
         raise NotImplementedError("Homing is not yet implemented for Newport "
                                   "motors")
 
+    @motor_egu.sub_value
+    def _update_units(self, value, **kwargs):
+        self.user_readback._override_metadata(units=value)
+
     @high_limit_travel.sub_value
     def _update_hlt(self, value, **kwargs):
-        print('update_hlt')
-        self._update_rbv_md(upper_ctrl_limit=value)
+        self.user_readback._override_metadata(upper_ctrl_limit=value)
 
     @low_limit_travel.sub_value
     def _update_llt(self, value, **kwargs):
-        print('update_llt')
-        self._update_rbv_md(lower_ctrl_limit=value)
+        self.user_readback._override_metadata(lower_ctrl_limit=value)
 
     @motor_prec.sub_value
     def _update_prec(self, value, **kwargs):
-        print('update_prec')
-        self._update_rbv_md(precision=value)
-
-    def _update_rbv_md(self, **kwargs):
-        self.user_readback.wait_for_connection()
-        self.user_readback._metadata.update(**kwargs)
+        self.user_readback._override_metadata(precision=value)
 
 
 class DelayNewport(DelayBase):
