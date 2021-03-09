@@ -719,11 +719,19 @@ EpicsSignalROEditMD.__doc__ = EpicsSignalRO.__doc__
 
 
 class FakeEpicsSignalEditMD(FakeEpicsSignal):
+    """
+    API stand-in for EpicsSignalEditMD
+    Add to this if you need it to actually work for your test.
+    """
     def _override_metadata(self, **kwargs):
         pass
 
 
 class FakeEpicsSignalROEditMD(FakeEpicsSignalRO):
+    """
+    API stand-in for EpicsSignalROEditMD
+    Add to this if you need it to actually work for your test.
+    """
     def _override_metadata(self, **kwargs):
         pass
 
