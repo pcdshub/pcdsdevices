@@ -588,6 +588,11 @@ class Newport(PCDSMotorBase):
         raise NotImplementedError("Homing is not yet implemented for Newport "
                                   "motors")
 
+    # This needs to be re-done if you override user_readback
+    @user_readback.sub_value
+    def _pos_changed(self, *args, **kwargs):
+        super()._pos_changed(*args, **kwargs)
+
     @motor_egu.sub_value
     def _update_units(self, value, **kwargs):
         self.user_readback._override_metadata(units=value)
