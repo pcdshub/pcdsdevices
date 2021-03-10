@@ -64,7 +64,8 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         If provided, the metadata units for the positioner.
 
     limits : tuple of floats, optional
-        If provided, we'll force all moves to be within these bounds.
+        If provided, we'll raise an exception to reject moves outside of this
+        range.
 
     update_rate : float, optional
         How often to update the position and check for move completion during a
@@ -75,7 +76,9 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         Defaults to 60 seconds.
 
     notepad_pv : str, optional
-        If provided, a PV to put to whenever we move.
+        If provided, a PV to put to whenever we move. This can be used to allow
+        other elements in the control system to see what this positioner is
+        doing.
     """
     def __init__(
             self, *, name, move, get_pos, set_pos=None, stop=None, done=None,
