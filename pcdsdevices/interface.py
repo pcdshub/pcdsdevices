@@ -401,7 +401,7 @@ def ophydobj_info(obj, subdevice_filter=None, devices=None):
         return device_info(obj, subdevice_filter=subdevice_filter,
                            devices=devices)
     elif isinstance(obj, PositionerBase):
-        return base_info(obj)
+        return positionerbase_info(obj)
     else:
         return {}
 
@@ -490,7 +490,7 @@ def signal_info(signal):
                 units=units)
 
 
-def base_info(positioner):
+def positionerbase_info(positioner):
     name = get_name(positioner, default='positioner')
     kind = get_kind(positioner)
     return dict(name=name, kind=kind, is_device=True,
