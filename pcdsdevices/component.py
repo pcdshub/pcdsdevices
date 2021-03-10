@@ -88,3 +88,17 @@ class UnrelatedComponent(Component):
         except KeyError:
             raise ValueError(f'Missing {expected_kwarg} in __init__ for '
                              f'{instance.name}.')
+
+
+class ObjectComponent(Component):
+    def __init__(self, obj):
+        super().__init__(object)
+        self.obj = obj
+
+    def create_component(self, instance):
+        return self.obj
+
+
+class InterfaceComponent(Component):
+    def create_component(self, instance):
+        return instance._interface_obj[self.attr]
