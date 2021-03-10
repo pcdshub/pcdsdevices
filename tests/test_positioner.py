@@ -35,28 +35,28 @@ def advanced():
         timeout=5)
 
 
-@pytest.mark.timeout(10)
-def test_funcpos_basic(basic):
-    logger.debug('test_funcpos_basic')
-    basic.move(1, wait=True)
-    assert basic.position == 1
-    assert 1 in basic.read()[basic.name].values()
-    assert basic.name in basic.hints['fields']
-
-
 def move_and_check(positioner, points):
     for pos in points:
         positioner.move(pos, wait=True)
         assert positioner.position == pos
+        assert positioner.notepad_signal.get() == pos
 
 
 @pytest.mark.timeout(10)
+def test_funcpos_basic(basic):
+    logger.debug('test_funcpos_basic')
+    move_and_check(basic, [1])
+    assert 1 in basic.read()[basic.name].values()
+    assert basic.name in basic.hints['fields']
+
+
+@pytest.mark.timeout(60)
 def test_funcpos_moves_basic(basic):
     logger.debug('test_funcpos_moves')
     move_and_check(basic, range(10))
 
 
-@pytest.mark.timeout(10)
+@pytest.mark.timeout(60)
 def test_funcpos_moves_advanced(advanced):
     logger.debug('test_funcpos_moves_advanced')
     move_and_check(advanced, range(-5, 5))

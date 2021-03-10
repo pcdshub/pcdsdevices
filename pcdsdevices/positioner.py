@@ -3,6 +3,7 @@ import time
 import numpy as np
 from ophyd.positioner import SoftPositioner
 from ophyd.signal import EpicsSignal, Signal
+from ophyd.utils import InvalidState
 
 from .interface import FltMvInterface
 from .utils import schedule_task
@@ -97,6 +98,7 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         self._goal = position
         self._started_moving = True
         self._moving = True
+        self._finished = False
         self._move(position)
         self._new_update(status)
 
@@ -108,12 +110,15 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
     def _update_task(self, status):
         self._update_position()
         if self._check_finished():
-            status.set_finished()
-        elif not status.done:
-            self._new_update()
+            try:
+                status.set_finished()
+            except InvalidState:
+                pass
         if status.done:
             self._started_moving = False
             self._moving = False
+        else:
+            self._new_update(status)
 
     @property
     def position(self):
