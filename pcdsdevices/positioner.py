@@ -71,7 +71,8 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
     def __init__(
             self, *, name, move, get_pos, set_pos=None, done=None,
             check_value=None, egu='', limits=None, update_rate=1,
-            timeout=60, notepad_pv=None
+            timeout=60, notepad_pv=None, parent=None, kind=None,
+            **kwargs
             ):
         self._move = move
         self._get_pos = get_pos
@@ -81,21 +82,23 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         self._last_update = 0
         self._goal = None
         self.update_rate = 1
+        notepad_name = name + '_notepad'
         if notepad_pv is None:
-            self.notepad_signal = Signal()
+            self.notepad_signal = Signal(name=notepad_name)
         else:
-            self.notepad_signal = EpicsSignal(notepad_pv)
+            self.notepad_signal = EpicsSignal(notepad_pv, name=notepad_name)
+        if parent is None and kind is None:
+            kind = 'hinted'
         super().__init__(name=name, egu=egu, limits=limits, source='func',
-                         timeout=timeout)
+                         timeout=timeout, parent=parent, kind=kind, **kwargs)
 
     def _setup_move(self, position, status):
         self._run_subs(sub_type=self.SUB_START, timestamp=time.time())
         self._goal = position
         self._started_moving = True
         self._moving = True
-        self._new_update()
-        self._update_loop()
         self._move(position)
+        self._new_update(status)
 
     def _new_update(self, status):
         schedule_task(
@@ -126,7 +129,7 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
 
     def _check_finished(self):
         if self._done is None:
-            finished = np.is_close(self._goal, self.position)
+            finished = np.isclose(self._goal, self.position)
         else:
             finished = self._done()
         if finished:
