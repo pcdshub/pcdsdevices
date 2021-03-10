@@ -19,6 +19,7 @@ import yaml
 from bluesky.utils import ProgressBar
 from ophyd.device import Device
 from ophyd.ophydobj import Kind, OphydObject
+from ophyd.positioner import PositionerBase
 from ophyd.signal import AttributeSignal, Signal
 from ophyd.status import Status
 
@@ -399,6 +400,8 @@ def ophydobj_info(obj, subdevice_filter=None, devices=None):
     elif isinstance(obj, Device):
         return device_info(obj, subdevice_filter=subdevice_filter,
                            devices=devices)
+    elif isinstance(obj, PositionerBase):
+        return base_info(obj)
     else:
         return {}
 
@@ -485,6 +488,13 @@ def signal_info(signal):
     units = get_units(signal)
     return dict(name=name, kind=kind, is_device=False, value=value,
                 units=units)
+
+
+def base_info(positioner):
+    name = get_name(positioner, default='positioner')
+    kind = get_kind(positioner)
+    return dict(name=name, kind=kind, is_device=True,
+                position=positioner.position)
 
 
 def set_engineering_mode(expert):
