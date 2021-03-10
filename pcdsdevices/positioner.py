@@ -43,6 +43,10 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         If provided, the function to call to change the device's shown
         position without moving it. The signature must be def fn(position)
 
+    stop : func, optional, keyword-only
+        If provided, the function to call to stop the motor.
+        The signature must be def fn()
+
     done : func, optional, keyword-only
         If provided, the function to call to check if the device
         is done moving. The signature must be def fn() -> bool, and it
@@ -70,7 +74,7 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         If provided, a PV to put to whenever we move.
     """
     def __init__(
-            self, *, name, move, get_pos, set_pos=None, done=None,
+            self, *, name, move, get_pos, set_pos=None, stop=None, done=None,
             check_value=None, egu='', limits=None, update_rate=1,
             timeout=60, notepad_pv=None, parent=None, kind=None,
             **kwargs
@@ -78,6 +82,7 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         self._move = move
         self._get_pos = get_pos
         self._set_pos = set_pos
+        self._stop = stop
         self._done = done
         self._check = check_value
         self._last_update = 0
@@ -144,10 +149,22 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
     def set_position(self, position):
         if self._set_pos is None:
             raise NotImplementedError(
-                f'{self.name} was not given a set_pos argument.'
+                f'FuncPositioner {self.name} was not '
+                'given a set_pos argument.'
                 )
         else:
             self._set_pos(position)
+
+    def stop(self, *args, **kwargs):
+        if self._stop is None:
+            # Often called by bluesky, don't throw an exception
+            self.log.warning(
+                f'Called stop on FuncPositioner {self.name}, '
+                'but was not given a stop argument.'
+                )
+        else:
+            self._stop()
+        super().stop(*args, **kwargs)
 
     def check_value(self, pos):
         super().check_value(pos)
