@@ -56,6 +56,10 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         If provided, an extra function to call to check if it is safe to
         move. The signature must be def fn(position) -> raise ValueError
 
+    info : func, optional, keyword-only
+        If provided, an extra function to add data to the ipython console
+        pretty-print. The signature must be def fn() -> dict{str: value}.
+
     egu : str, optional
         If provided, the metadata units for the positioner.
 
@@ -75,7 +79,7 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
     """
     def __init__(
             self, *, name, move, get_pos, set_pos=None, stop=None, done=None,
-            check_value=None, egu='', limits=None, update_rate=1,
+            check_value=None, info=None, egu='', limits=None, update_rate=1,
             timeout=60, notepad_pv=None, parent=None, kind=None,
             **kwargs
             ):
@@ -85,6 +89,7 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         self._stop = stop
         self._done = done
         self._check = check_value
+        self._info = info
         self._last_update = 0
         self._goal = None
         self.update_rate = 1
@@ -170,6 +175,12 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         super().check_value(pos)
         if self._check is not None:
             self._check(pos)
+
+    def status_info(self):
+        info = super().status_info()
+        if self._info is not None:
+            info.update(self._info())
+        return info
 
 
 # Legacy name from old code
