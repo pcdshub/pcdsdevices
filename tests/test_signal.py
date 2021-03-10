@@ -6,7 +6,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.sim import FakeEpicsSignal
 
 import pcdsdevices
-from pcdsdevices.signal import (AvgSignal, PytmcSignal,
+from pcdsdevices.signal import (AvgSignal, PytmcSignal, SignalEditMD,
                                 UnitConversionDerivedSignal)
 
 logger = logging.getLogger(__name__)
@@ -137,3 +137,24 @@ def test_pvnotepad_signal(monkeypatch):
     # PV obviously will not connect:
     assert not sig.should_use_epics_signal()
     sig.destroy()
+
+
+def test_editmd_signal():
+    sig = SignalEditMD(name='sig')
+    cache = {}
+    ev = threading.Event()
+
+    def add_call(*args, **kwargs):
+        cache.update(**kwargs)
+        ev.set()
+
+    sig.subscribe(add_call, event_type=sig.SUB_META)
+
+    assert sig.metadata['precision'] is None
+    assert not cache
+    ev.clear()
+    sig._override_metadata(precision=4)
+    assert sig.metadata['precision'] == 4
+    # Metadata updates are threaded! Need to wait a moment!
+    ev.wait(timeout=1)
+    assert cache['precision'] == 4
