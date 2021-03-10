@@ -1,6 +1,7 @@
 import logging
 
 import pytest
+from ophyd.signal import Signal
 from ophyd.utils import StatusTimeoutError
 
 from pcdsdevices.positioner import FuncPositioner
@@ -11,11 +12,11 @@ logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope='function')
 def basic():
-    pos = FastMotor()
+    pos = Signal(name='pos')
     return FuncPositioner(
         name='basic',
-        move=pos.move,
-        get_pos=lambda: pos.position,
+        move=pos.put,
+        get_pos=pos.get,
         update_rate=0.1,
         )
 
