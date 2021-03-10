@@ -13,7 +13,7 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
     Class for hacking together a positioner-like object.
 
     Before you use this, make sure your use case cannot be easily handled by a
-    PVPositioner or by a PseudoPositioner.
+    `PVPositioner` or by a `PseudoPositioner`.
 
     This should be fast to set up, but has the following limitations:
     - Inspection tools will not work properly, in general
@@ -24,12 +24,58 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
     - It's not possible to intelligently subscribe to control layer signals.
       Everything will be periodic polls on background threads.
     - Session performance may be negatively impacted by slow polling functions.
+
+    Parameters
+    ----------
+    name : str, keyword-only
+        The name to use when we refer to this positioner.
+
+    move : func, keyword-only
+        The function to call to cause the device to move.
+        The signature must be def fn(position)
+
+    get_pos : func, keyword-only
+        The function to call to check the device's position.
+        The signature must be def fn()
+
+    set_pos : func, optional, keyword-only
+        If provided, the function to call to change the device's shown
+        position without moving it. The signature must be def fn(position)
+
+    done : func, optional, keyword-only
+        If provided, the function to call to check if the device
+        is done moving. The signature must be def fn() -> bool, and it
+        must return True when motion is complete and false otherwise.
+
+    check_value : func, optional, keyword-only
+        If provided, an extra function to call to check if it is safe to
+        move. The signature must be def fn(position) -> raise ValueError
+
+    egu : str, optional
+        If provided, the metadata units for the positioner.
+
+    limits : tuple of floats, optional
+        If provided, we'll force all moves to be within these bounds.
+
+    update_rate : float, optional
+        How often to update the position and check for move completion during a
+        move. Defaults to 1 second.
+
+    timeout : float, optional
+        How long to wait before marking an in-progress move as failed.
+        Defaults to 60 seconds.
+
+    notepad_pv : str, optional
+        If provided, a PV to put to whenever we move.
     """
-    def __init__(self, *, name, mv, wm, done=None, check_value=None,
-                 egu='', limits=None, update_rate=1, timeout=60,
-                 notepad_pv=None):
-        self._move = mv
-        self._get_pos = wm
+    def __init__(
+            self, *, name, move, get_pos, set_pos=None, done=None,
+            check_value=None, egu='', limits=None, update_rate=1,
+            timeout=60, notepad_pv=None
+            ):
+        self._move = move
+        self._get_pos = get_pos
+        self._set_pos = set_pos
         self._done = done
         self._check = check_value
         self._last_update = 0
@@ -86,6 +132,14 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         if finished:
             self._done_moving()
         return finished
+
+    def set_position(self, position):
+        if self._set_pos is None:
+            raise NotImplementedError(
+                f'{self.name} was not given a set_pos argument.'
+                )
+        else:
+            self._set_pos(position)
 
     def check_value(self, pos):
         super().check_value(pos)

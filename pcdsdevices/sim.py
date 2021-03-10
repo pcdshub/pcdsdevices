@@ -41,6 +41,9 @@ class FastMotor(FltMvInterface, SoftPositioner, Device):
             kwargs.pop(kw, None)
         super().__init__(init_pos=init_pos, **kwargs)
 
+    def set_position(self, position):
+        self._set_position(position)
+
 
 class SlowMotor(FastMotor):
     """
