@@ -22,17 +22,30 @@ def basic():
 
 @pytest.fixture(scope='function')
 def advanced():
-    pos = SlowMotor()
+    pos = FastMotor()
     return FuncPositioner(
         name='advanced',
         move=pos.move,
         get_pos=lambda: pos.position,
         set_pos=pos.set_position,
+        stop=lambda: 0,
         done=lambda: not pos.moving,
         check_value=lambda pos: 0,
         limits=(-10, 10),
         update_rate=0.1,
         timeout=5)
+
+
+@pytest.fixture(scope='function')
+def slow():
+    pos = SlowMotor()
+    return FuncPositioner(
+        name='slow',
+        move=pos.move,
+        get_pos=lambda: pos.position,
+        update_rate=0.1,
+        timeout=0.1,
+        )
 
 
 def move_and_check(positioner, points):
@@ -50,26 +63,33 @@ def test_funcpos_basic(basic):
     assert basic.name in basic.hints['fields']
 
 
-@pytest.mark.timeout(60)
+@pytest.mark.timeout(10)
 def test_funcpos_moves_basic(basic):
     logger.debug('test_funcpos_moves')
-    move_and_check(basic, range(10))
-
-
-@pytest.mark.timeout(60)
-def test_funcpos_moves_advanced(advanced):
-    logger.debug('test_funcpos_moves_advanced')
-    move_and_check(advanced, range(-5, 5))
+    move_and_check(basic, range(3))
+    basic.stop()
 
 
 @pytest.mark.timeout(10)
-def test_funcpos_failure_states(advanced):
+def test_funcpos_advanced(advanced):
+    logger.debug('test_funcpos_advanced')
+    advanced.set_position(0)
+    advanced.stop()
+    advanced.check_value(0)
+
+
+@pytest.mark.timeout(20)
+def test_funcpos_moves_advanced(advanced):
+    logger.debug('test_funcpos_moves_advanced')
+    move_and_check(advanced, range(3))
+
+
+@pytest.mark.timeout(10)
+def test_funcpos_failure_states(advanced, slow):
     logger.debug('test_funcpos_failure_states')
     with pytest.raises(ValueError):
         advanced.move(20)
-    advanced.timeout = 0.1
-    advanced.set_position(0)
-    status = advanced.move(5, wait=False)
+    status = slow.move(5, wait=False)
     with pytest.raises(StatusTimeoutError):
         status.wait()
     assert not status.success
