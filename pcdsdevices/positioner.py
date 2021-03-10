@@ -1,3 +1,4 @@
+import inspect
 import time
 
 import numpy as np
@@ -86,11 +87,17 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
             timeout=60, notepad_pv=None, parent=None, kind=None,
             **kwargs
             ):
+        self._check_signature('move', move, 1)
         self._move = move
+        self._check_signature('get_pos', get_pos, 0)
         self._get_pos = get_pos
+        self._check_signature('set_pos', set_pos, 1)
         self._set_pos = set_pos
+        self._check_signature('stop', stop, 0)
         self._stop = stop
+        self._check_signature('done', done, 0)
         self._done = done
+        self._check_signature('check_value', check_value, 1)
         self._check = check_value
         self._info = info
         self._last_update = 0
@@ -105,6 +112,18 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
             kind = 'hinted'
         super().__init__(name=name, egu=egu, limits=limits, source='func',
                          timeout=timeout, parent=parent, kind=kind, **kwargs)
+
+    def _check_signature(self, name, func, nargs):
+        if func is None:
+            return
+        sig = inspect.signature(func)
+        try:
+            sig.bind(*(0,) * nargs)
+        except TypeError:
+            raise ValueError(
+                f'FuncPositioner recieved {name} with an incorrect. '
+                f'signature. Must be able to take {nargs} args.'
+                ) from None
 
     def _setup_move(self, position, status):
         self._run_subs(sub_type=self.SUB_START, timestamp=time.time())

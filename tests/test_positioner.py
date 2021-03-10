@@ -94,3 +94,5 @@ def test_funcpos_failure_states(advanced, slow):
     with pytest.raises(StatusTimeoutError):
         status.wait()
     assert not status.success
+    with pytest.raises(ValueError):
+        FuncPositioner(name='name', move=lambda: 0, get_pos=lambda: 0)
