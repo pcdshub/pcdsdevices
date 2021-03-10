@@ -305,16 +305,18 @@ class _OptionalEpicsSignal(Signal):
     there is a good chance we will reject your PR.
     """
 
-    def __init__(self, read_pv, write_pv=None, *, name, parent=None, **kwargs):
-        super().__init__(name=name, parent=parent)
+    def __init__(self, read_pv, write_pv=None, *, name, parent=None, kind=None,
+                 **kwargs):
+        self._saw_connection = False
         self._epics_signal = EpicsSignal(
-            read_pv=read_pv, write_pv=write_pv, parent=self, name=self.name,
-            **kwargs)
+            read_pv=read_pv, write_pv=write_pv, parent=self, name=name,
+            kind=kind, **kwargs
+        )
+        super().__init__(name=name, parent=parent, kind=kind)
         self._epics_signal.subscribe(
             self._epics_meta_update,
             event_type=self._epics_signal.SUB_META,
         )
-        self._saw_connection = False
 
     def _epics_value_update(self, **kwargs):
         """The EpicsSignal value updated."""
@@ -388,6 +390,15 @@ class _OptionalEpicsSignal(Signal):
     precision = _proxy_property('precision', 4)
     enum_strs = _proxy_property('enum_strs', ())
     limits = _proxy_property('limits', (0, 0))
+
+    @property
+    def kind(self):
+        """The EPICS signal's kind."""
+        return self._epics_signal.kind
+
+    @kind.setter
+    def kind(self, value):
+        self._epics_signal.kind = value
 
 
 class NotepadLinkedSignal(_OptionalEpicsSignal):
