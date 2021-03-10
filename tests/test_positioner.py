@@ -3,14 +3,14 @@ import logging
 import pytest
 
 from pcdsdevices.positioner import FuncPositioner
-from pcdsdevices.sim import FastPositioner, SlowPositioner
+from pcdsdevices.sim import FastMotor, SlowMotor
 
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def basic():
-    pos = FastPositioner()
+    pos = FastMotor()
     return FuncPositioner(
         name='basic',
         move=pos.move,
@@ -21,7 +21,7 @@ def basic():
 
 @pytest.fixture(scope='function')
 def advanced():
-    pos = SlowPositioner()
+    pos = SlowMotor()
     return FuncPositioner(
         name='advanced',
         move=pos.move,
