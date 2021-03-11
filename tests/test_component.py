@@ -1,7 +1,9 @@
 import pytest
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
+from ophyd.signal import Signal
 
+from pcdsdevices.component import ObjectComponent as OCpt
 from pcdsdevices.component import UnrelatedComponent as UCpt
 
 
@@ -58,3 +60,19 @@ def test_complex_class():
     assert obj.two.sauce.prefix == 'SAUCE:02'
     assert obj.two.empty.prefix == 'DOS:EMPTY'
     assert obj.tomayto.prefix == 'APPT:TOMAHTO'
+
+
+def test_ocpt():
+    sig_one = Signal(name='one')
+    sig_two = Signal(name='two')
+
+    class ObjectDevice(Device):
+        one = OCpt(sig_one)
+        two = OCpt(sig_two)
+
+    obj = ObjectDevice('prefix', name='name')
+    assert 'one' in obj.component_names
+    obj.one.put(5)
+    assert sig_one.get() == 5
+    obj.two.put(3)
+    assert sig_two.get() == 3
