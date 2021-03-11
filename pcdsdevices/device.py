@@ -24,3 +24,17 @@ class InterfaceDevice(Device):
                         )
 
         super().__init__(*args, **kwargs)
+
+
+def to_interface(device_class):
+    interface_cpts = {}
+
+    for cpt_name in device_class.component_names:
+        cpt = getattr(device_class, cpt_name)
+        interface_cpts[cpt_name] = InterfaceComponent(cpt.cls)
+
+    return type(
+        device_class.__name__ + 'Interface',
+        (InterfaceDevice, device_class),
+        interface_cpts
+        )
