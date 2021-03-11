@@ -23,7 +23,7 @@ class SynMotor(FltMvInterface, SynAxis):
         return super().set(position)
 
 
-ignore_kwargs = ('atol',)
+ignore_kwargs = ('atol', 'n_bounces', 'invert')
 
 
 class FastMotor(FltMvInterface, SoftPositioner, Device):
@@ -40,6 +40,9 @@ class FastMotor(FltMvInterface, SoftPositioner, Device):
         for kw in ignore_kwargs:
             kwargs.pop(kw, None)
         super().__init__(init_pos=init_pos, **kwargs)
+
+    def set_current_position(self, position):
+        self._set_position(position)
 
 
 class SlowMotor(FastMotor):
