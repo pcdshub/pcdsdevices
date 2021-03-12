@@ -9,12 +9,14 @@ import ophyd
 import ophyd.pseudopos
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
+from ophyd.positioner import PositionerBase
 from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
                              real_position_argument)
 from ophyd.signal import EpicsSignal
-from ophyd.sim import fake_device_cache
 from scipy.constants import speed_of_light
 
+from .device import InterfaceComponent as ICpt
+from .device import InterfaceDevice
 from .interface import FltMvInterface
 from .signal import NotepadLinkedSignal
 from .sim import FastMotor
@@ -789,8 +791,17 @@ def delay_instance_factory(
 
 
 delay_instance_factory.__doc__ = DelayBase.__doc__
-DelayMotor = delay_instance_factory
-fake_device_cache[DelayMotor] = FastMotor
+
+
+class DelayMotor(InterfaceDevice, DelayBase):
+    motor = ICpt(PositionerBase)
+
+    def __init__(self, motor, egu='s', n_bounces=2, invert=False, **kwargs):
+        super().__init__(
+            motor.prefix, name=motor.name,
+            egu=egu, n_bounces=n_bounces, invert=invert,
+            motor=motor, **kwargs,
+            )
 
 
 class SimDelayStage(DelayBase):
