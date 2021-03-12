@@ -37,14 +37,14 @@ from ophyd import Component as Cpt
 from ophyd import EpicsSignal, PVPositioner
 from scipy.constants import speed_of_light
 
-from .component import UnrelatedComponent as UCpt
+from .device import UnrelatedComponent as UCpt
 from .epics_motor import DelayNewport, EpicsMotorInterface
 from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
                         SyncAxesBase, pseudo_position_argument,
                         real_position_argument)
-from .signal import UnitConversionDerivedSignal, NotepadLinkedSignal
-from .utils import convert_unit, get_status_value, get_status_float
+from .signal import NotepadLinkedSignal, UnitConversionDerivedSignal
+from .utils import convert_unit, get_status_float, get_status_value
 
 if typing.TYPE_CHECKING:
     import matplotlib  # noqa

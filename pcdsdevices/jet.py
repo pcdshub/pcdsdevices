@@ -4,7 +4,7 @@ Module for the liquid jet classes.
 from ophyd import Component as Cpt
 from ophyd import Device
 
-from .component import UnrelatedComponent as UCpt
+from .device import UnrelatedComponent as UCpt
 from .epics_motor import IMS, BeckhoffAxis
 from .interface import BaseInterface
 

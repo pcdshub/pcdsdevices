@@ -8,7 +8,6 @@ Full API
    ~pcdsdevices.attenuator
    ~pcdsdevices.beam_stats
    ~pcdsdevices.ccm
-   ~pcdsdevices.component
    ~pcdsdevices.dc_devices
    ~pcdsdevices.device
    ~pcdsdevices.device_types
