@@ -41,10 +41,11 @@ from .component import UnrelatedComponent as UCpt
 from .epics_motor import DelayNewport, EpicsMotorInterface
 from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
-                        SyncAxesBase, pseudo_position_argument,
+                        SyncAxesBase, SyncAxis, pseudo_position_argument,
                         real_position_argument)
-from .signal import UnitConversionDerivedSignal, NotepadLinkedSignal
-from .utils import convert_unit, get_status_value, get_status_float
+from .signal import NotepadLinkedSignal, UnitConversionDerivedSignal
+from .sim import FastMotor
+from .utils import convert_unit, get_status_float, get_status_value
 
 if typing.TYPE_CHECKING:
     import matplotlib  # noqa
@@ -468,3 +469,28 @@ class LaserTimingCompensation(SyncAxesBase):
         super().__init__(prefix, **kwargs)
         self.delay.name = 'txt_reversed'
         self.laser.name = 'lxt'
+
+
+class LxtTtcExample(SyncAxis):
+    """
+    Example of one way to set up the lxt_ttc construct using SyncAxis
+
+    XPP's config on March 4, 2021
+    """
+    lxt = Cpt(LaserTiming, 'LAS:FS11')
+    txt = Cpt(DelayNewport, 'XPP:LAS:MMN:16',
+              n_bounces=14)
+
+    tab_component_names = True
+    scales = {'txt': -1}
+    warn_deadband = 5e-14
+    fix_sync_keep_still = 'lxt'
+    sync_limits = (-10e-6, 10e-6)
+
+
+class FakeLxtTtc(LxtTtcExample):
+    lxt = Cpt(FastMotor)
+    txt = Cpt(FastMotor)
+
+    def __init__(self):
+        super().__init__('FAKE:LXT:TTC', name='fake_lxt_ttc')

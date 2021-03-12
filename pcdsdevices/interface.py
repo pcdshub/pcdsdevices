@@ -41,7 +41,8 @@ Device_whitelist = ["read_attrs", "configuration_attrs", "summary",
                     "wait_for_connection", "stop", "get", "configure"]
 Signal_whitelist = ["value", "put"]
 Positioner_whitelist = ["settle_time", "timeout", "egu", "limits", "move",
-                        "position", "moving"]
+                        "position", "moving", "set_position",
+                        "set_current_position"]
 
 
 class _TabCompletionHelper:
@@ -820,6 +821,14 @@ class FltMvInterface(MvInterface):
         """
 
         return tweak_base(self)
+
+    def set_position(self, position):
+        """
+        Alias for set_current_position.
+
+        Will fail if the motor does not have set_current_position.
+        """
+        self.set_current_position(position)
 
 
 def setup_preset_paths(**paths):

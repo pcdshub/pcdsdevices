@@ -1,20 +1,24 @@
+import copy
+import enum
 import logging
 import typing
+import warnings
 
 import numpy as np
 import ophyd
 import ophyd.pseudopos
-from ophyd.signal import EpicsSignal
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
                              real_position_argument)
+from ophyd.signal import EpicsSignal
+from ophyd.sim import fake_device_cache
 from scipy.constants import speed_of_light
 
 from .interface import FltMvInterface
 from .signal import NotepadLinkedSignal
 from .sim import FastMotor
-from .utils import convert_unit, get_status_value, get_status_float
+from .utils import convert_unit, get_status_float, get_status_value
 
 logger = logging.getLogger(__name__)
 
@@ -111,6 +115,7 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
     * Adds support for NotepadLinkedSignal.
     * Makes scalar ``RealPosition`` and ``PseudoPosition`` easily convert
       to floating point values.
+    * Adds a set_current_position helper method
 
     """ + ophyd.pseudopos.PseudoPositioner.__doc__
 
@@ -196,10 +201,28 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         self._update_notepad_ioc(position, 'notepad_readback')
         return position
 
+    def set_current_position(self, position):
+        """
+        Adjust all offsets so that the pseudo position matches the input.
+
+        This will raise an AttributeError if any of the real motors is missing
+        a ``set_current_position`` method.
+
+        Parameters
+        ----------
+        position : PseudoPos
+            The position
+        """
+        real_pos = self.forward(position)
+        for motor, pos in zip(self._real, real_pos):
+            motor.set_current_position(pos)
+
 
 class SyncAxesBase(FltMvInterface, PseudoPositioner):
     """
     Synchronized Axes.
+
+    This class is deprecated. Use `SyncAxis` instead.
 
     This will move all axes in a coordinated way, retaining offsets.
 
@@ -225,6 +248,10 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
     pseudo = Cpt(PseudoSingleInterface)
 
     def __init__(self, *args, **kwargs):
+        warnings.warn(
+            'SyncAxesBase is deprecated and will be removed in a future '
+            'release. Please switch to SyncAxis.',
+            DeprecationWarning)
         if self.__class__ is SyncAxesBase:
             raise TypeError(('SyncAxesBase must be subclassed with '
                              'the axes to synchronize included as '
@@ -282,6 +309,345 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
         return self.PseudoPosition(pseudo=float(self.calc_combined(real_pos)))
 
 
+class SyncAxisOffsetMode(enum.IntEnum):
+    # Define a static offset and do not change it
+    STATIC_FIXED = 0
+    # Automatically pick a static offset based on initial positions
+    AUTO_FIXED = 1
+
+
+class SyncAxis(FltMvInterface, PseudoPositioner):
+    """
+    Pseudomotor class for moving motors with linear relationships.
+
+    This will move all axes in a configurable coordinated way. It handles all
+    cases where the motor coordination can be described by a simple scale and
+    offset (multiply by a number, then add a number).
+
+    The calculation for moves is simply:
+    pos = sync * scale + offset
+
+    Where sync is the pseudomotor's position and every real motor can have
+    a unique scale and offset.
+
+    The default settings will simply move all included real motors
+    to the same value when the sync motor is moved. That is to say, a scale of
+    1 and an offset of 0.
+
+    You should subclass this by adding real motors as components. The class
+    will pick them up and include them correctly into the coordinated move.
+
+    An example:
+
+    .. code-block:: python
+
+       class Parallel(SyncAxis):
+           left = Cpt(EpicsMotor, ':01')
+           right = Cpt(EpicsMotor, ':02')
+
+    Like all `~ophyd.pseudopos.PseudoPositioner` classes, any subclass of
+    `~ophyd.positioner.PositionerBase` will be included in the synchronized
+    move.
+
+    See the following attributes for a dive into the settings and internals:
+
+    Attributes
+    ----------
+    offset_mode : SyncAxisOffsetMode (enum)
+        Selection of how and when offsets are interpreted. The default is
+        ``STATIC_FIXED``, which means "define static offsets at class creation
+        and never change them." Also available is ``AUTO_FIXED``, which means
+        "define offsets based on the current motor positions at the first move
+        and do not change them during this session."
+
+    offsets : dict {str: float} or None
+        Specification of which offset to use for each motor. The mapping should
+        be from attribute name to offset value. Any omitted motor will have an
+        offset of ``default_offset``.
+
+    default_offset : float
+        Any motor omitted from ``offsets`` will have this number assigned to
+        them and its offset. The default value is 0.
+
+    scales : dict {str: float} or None
+        Specification of which scale to use for each motor. The mapping should
+        be from attribute name to scale value. Any omitted motor will have a
+        scale of ``default_scale``.
+
+    default_scale : float
+        Any motor omitted from ``scales`` will have this number assigned to
+        them and its scale. The default value is 1.
+
+    warn_inconsistent : bool
+        If `True` (the default), warn the user if the real motors are not in a
+        consistent position. An inconsistent position, or desync, can occur if
+        a motor in the `SyncAxis` group has been moved manually.
+
+    warn_deadband : float
+        How far out of sync our motors can be before we consider ourselves to
+        be in an inconsistent, or desync state. Defaults to 0.001.
+
+    fix_sync_keep_still : str or None
+        Which motor to keep still when we recover the position using the
+        `fix_sync` method. We will assume one motor (this motor) is in the
+        correct position and move all the other motors to their correct
+        positions. If omitted, the first motor will be considered the guiding
+        motor that we do not move.
+
+    sync_limits : tuple or None
+        Limits to apply to the sync axis. Set these if you don't think your
+        real motor limits are sufficient to protect your application.
+        e.g. sync_limits = (-100, 100) will bind the `SyncAxis` to move between
+        -100 and 100.
+    """
+    sync = Cpt(PseudoSingleInterface, kind='omitted')
+
+    tab_whitelist = ['fix_sync']
+
+    # Enum that defines how and when offsets are interpreted
+    offset_mode = SyncAxisOffsetMode.STATIC_FIXED
+    # dict {str: float} that defines what offset to apply to each motor
+    offsets = None
+    # float that defines what offset to use for motors missing from offsets
+    default_offset = 0
+    # dict {str: float} that defines what scale to apply to each motor
+    scales = None
+    # float that defines what scale to use for motors missing from scales
+    default_scale = 1
+    # bool that defines if we should warn about inconsistent axes
+    warn_inconsistent = True
+    # float that defines how much of a deviation to warn on
+    warn_deadband = 0.001
+    # bool that defines which motor to keep still when calling fix_sync
+    # if omitted, we'll keep the first real motor still
+    fix_sync_keep_still = None
+    # tuple of two floats that defines if we should add limits to the sync axis
+    sync_limits = None
+
+    def __init__(self, *args, **kwargs):
+        self._check_settings()
+        self._has_setup = False
+        self._real_attrs = [attr for attr, _ in self._get_real_positioners()]
+        self.scales = self._fill_info_dict(
+            self.scales, self.default_scale, 'scales')
+        super().__init__(*args, **kwargs)
+        if self.sync_limits is not None:
+            self.sync._limits = tuple(self.sync_limits)
+
+    def _check_settings(self):
+        """Mostly just a typo check."""
+        if self.__class__ is SyncAxis:
+            raise TypeError(
+                'SyncAxis must be subclassed with '
+                'the axes to synchronize included as '
+                'components'
+                )
+        try:
+            self.offset_mode = SyncAxisOffsetMode(self.offset_mode)
+        except ValueError:
+            try:
+                self.offset_mode = SyncAxisOffsetMode[self.offset_mode]
+            except KeyError:
+                raise ValueError(
+                    f'Invalid offset_mode: {self.offset_mode}'
+                    ) from None
+        self._check_info_dict(self.offsets, 'offsets')
+        self._check_info_dict(self.scales, 'scales')
+        if (self.fix_sync_keep_still is not None
+                and self.fix_sync_keep_still not in self.component_names):
+            raise ValueError(
+                f'Invalid fix_sync_keep_still == {self.fix_sync_keep_still}. '
+                'Must match a motor.'
+                )
+
+    def _check_info_dict(self, setting, info_kind):
+        """Helper function to check that all keys in the dict are Cpts"""
+        if setting is not None:
+            for attr, _ in setting.items():
+                if attr not in self.component_names:
+                    raise ValueError(
+                        f'Invalid key {attr} in {info_kind}. '
+                        'Must match a motor.'
+                        )
+
+    def _fill_info_dict(self, setting, default, info_kind):
+        """Helper function to fill default values into the dict"""
+        if setting is None:
+            setting = {}
+        elif isinstance(setting, dict):
+            setting = copy.copy(setting)
+        else:
+            raise ValueError(
+                f'Invalid {info_kind}: {setting}, must be dict or None')
+        for attr in self._real_attrs:
+            setting.setdefault(attr, default)
+        return setting
+
+    def _setup_offsets(self):
+        if not self._has_setup:
+            if self.offset_mode == SyncAxisOffsetMode.STATIC_FIXED:
+                self._handle_static_fixed()
+            elif self.offset_mode == SyncAxisOffsetMode.AUTO_FIXED:
+                self._handle_auto_fixed()
+            else:
+                raise ValueError(f'Invalid offset_mode: {self.offset_mode}')
+            self._has_setup = True
+
+    def _handle_static_fixed(self):
+        self.offsets = self._fill_info_dict(
+            self.offsets, self.default_offset, 'offsets')
+
+    def _handle_auto_fixed(self):
+        pos = self.real_position
+        first_pos = pos[0]
+        self.offsets = {
+            fld: float(getattr(pos, fld)) - first_pos for fld in pos._fields}
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        """
+        Calculate where to move each real motor when the sync moves.
+
+        The calculation is:
+        1. Multiply by scale
+        2. Add the offset
+
+        Offsets are defined in the class definition.
+        """
+        self._setup_offsets()
+        real_pos = {}
+        for attr in self._real_attrs:
+            real_pos[attr] = self.forward_single(attr, pseudo_pos.sync)
+        return self.RealPosition(**real_pos)
+
+    def forward_single(self, attr, pos):
+        """
+        Run the forward calculation for a single real motor from the sync pos.
+
+        This gives us the real motor setpoint value for one axis.
+        """
+        return pos * self.scales[attr] + self.offsets[attr]
+
+    @real_position_argument
+    def inverse(self, real_pos):
+        """
+        Calculate where the sync motor is based on the first real motor.
+
+        The calculation is:
+        1. Subtract the offset
+        2. Divide by the scale
+        """
+        self._setup_offsets()
+        attr = real_pos._fields[0]
+        pos = real_pos[0]
+        calc = self.inverse_single(attr, pos)
+        return self.PseudoPosition(sync=calc)
+
+    def inverse_single(self, attr, pos):
+        """
+        Run the inverse calculation on a single real motor value.
+
+        This gives us the sync readback position.
+        """
+        return (pos - self.offsets[attr]) / self.scales[attr]
+
+    def is_synced(self, real_pos=None):
+        """
+        Check all motor positions for consistency.
+
+        This gets called in status_info if warn_inconsistent is True.
+        If the motors are desyncronized greater than the warn_deadband,
+        this will return ``False``. Otherwise it will return ``True``.
+        """
+        if real_pos is None:
+            real_pos = self.real_position
+        pseudo_calcs = []
+        for attr, pos in real_pos._asdict().items():
+            calc = self.inverse_single(attr, pos)
+            pseudo_calcs.append(calc)
+        pick_answer = pseudo_calcs[0]
+        for calc in pseudo_calcs:
+            if not np.isclose(pick_answer, calc,
+                              atol=self.warn_deadband, rtol=0):
+                return False
+        return True
+
+    def consistency_warning(self):
+        """
+        Return the consistency warning text
+        """
+        return (
+            f'{self.name} is in an inconsistent state. Call '
+            'set_current_position or fix_sync to resolve.'
+            )
+
+    def _status_info_lines(self, status_info, prefix='', indent=0):
+        """
+        Extend the status info formatter to add consistency warnings
+        """
+        lines = []
+        if self.warn_inconsistent and status_info['name'] == self.name:
+            try:
+                real_pos_dict = {}
+                for attr in self.RealPosition._fields:
+                    real_pos_dict[attr] = status_info[attr]['position']
+                real_pos = self.RealPosition(**real_pos_dict)
+                if not self.is_synced(real_pos=real_pos):
+                    lines.append(self.consistency_warning())
+            except Exception:
+                err = 'Error checking for sync axis consistency.'
+                lines.append(err)
+                logger.debug(err, exc_info=True)
+
+        lines.extend(
+            super()._status_info_lines(
+                status_info, prefix=prefix, indent=indent
+                )
+            )
+        return lines
+
+    def fix_sync(self, confirm=True, wait=True, timeout=10):
+        """
+        Method to re-synchronize the axes via motion.
+
+        This will move every motor except the one defined by the
+        fix_sync_keep_still attribute, which will be used to define the
+        correct position.
+        """
+        anchor = self.fix_sync_keep_still or self._real_attrs[0]
+
+        # Calculate the sync position using anchor
+        anchor_pos = getattr(self.real_position, anchor)
+        sync_pos = self.inverse_single(anchor, anchor_pos)
+
+        # Calculate the goal positions for every motor
+        goal = self.forward(self.PseudoPosition(sync=sync_pos))
+        logger.info('Planning to perform the following moves:')
+        moves = {}
+
+        for attr, pos in goal._asdict().items():
+            if attr == anchor:
+                logger.info(f'Keep {attr} at {anchor_pos}')
+            else:
+                logger.info(f'Move {attr} to {pos}')
+                moves[attr] = pos
+
+        if not confirm:
+            logger.info('Automatically doing moves because confirm=False')
+            do_moves = True
+        else:
+            do_moves = input('Confirm? (y/n): ').lower().startswith('y')
+
+        if do_moves:
+            statuses = []
+            for attr, pos in moves.items():
+                motor = getattr(self, attr)
+                statuses.append(motor.move(pos))
+            if wait:
+                for status in statuses:
+                    status.wait(timeout=timeout)
+
+
 class DelayBase(FltMvInterface, PseudoPositioner):
     """
     Laser delay stage to rescale a physical axis to a time axis.
@@ -321,6 +687,10 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         The number of times the laser bounces on the delay stage, e.g. the
         number of mirrors that this stage moves. The default is 2, a delay
         branch that bounces the laser back along the axis it enters.
+
+    invert : bool, optional
+        If True, increasing the real motor will decrease the delay.
+        If False (default), increasing the real motor will increase the delay.
     """
 
     delay = FCpt(PseudoSingleInterface, egu='{self.egu}', add_prefix=['egu'])
@@ -328,11 +698,13 @@ class DelayBase(FltMvInterface, PseudoPositioner):
                       notepad_metadata={'record': 'ao', 'default_value': 0.0})
     motor = None
 
-    def __init__(self, *args, egu='s', n_bounces=2, **kwargs):
+    def __init__(self, *args, egu='s', n_bounces=2, invert=False, **kwargs):
         if self.__class__ is DelayBase:
             raise TypeError(('DelayBase must be subclassed with '
                              'a "motor" component, the real motor to move.'))
         self.n_bounces = n_bounces
+        if invert:
+            self.n_bounces *= -1
         super().__init__(*args, egu=egu, **kwargs)
 
     @pseudo_position_argument   # TODO: upstream this fix
@@ -387,8 +759,45 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         self.user_offset.put(new_offset)
 
 
+delay_classes = {}
+
+
+def delay_class_factory(motor_class):
+    """
+    Create a subclass of DelayBase that controls a motor of class motor_class.
+
+    Used in delay_instace_factory (DelayMotor), may be useful for one-line
+    declarations inside ophyd Devices.
+    """
+    try:
+        cls = delay_classes[motor_class]
+    except KeyError:
+        cls = type(
+            'Delay' + motor_class.__name__,
+            (DelayBase,),
+            {'motor': Cpt(motor_class, '')}
+        )
+        delay_classes[motor_class] = cls
+    return cls
+
+
+def delay_instance_factory(
+        prefix, motor_class, egu='s', n_bounces=2, invert=False, **kwargs
+        ):
+    cls = delay_class_factory(motor_class)
+    return cls(prefix, egu=egu, n_bounces=n_bounces, invert=invert, **kwargs)
+
+
+delay_instance_factory.__doc__ = DelayBase.__doc__
+DelayMotor = delay_instance_factory
+fake_device_cache[DelayMotor] = FastMotor
+
+
 class SimDelayStage(DelayBase):
     motor = Cpt(FastMotor, init_pos=0, egu='mm')
+
+
+delay_classes[FastMotor] = SimDelayStage
 
 
 class LookupTablePositioner(PseudoPositioner):
