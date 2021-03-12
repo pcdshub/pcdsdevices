@@ -1,4 +1,5 @@
 from ophyd.device import Component, Device
+from ophyd.ophydobj import Kind
 
 
 class UnrelatedComponent(Component):
@@ -108,17 +109,33 @@ class ObjectComponent(Component):
         times. If you would like to create a re-usable device that includes
         pre-instantiated devices at init time, see `InterfaceDevice`.
 
+    .. note::
+
+        This does not set the ``parent`` attribute on the object, which will
+        retain its original ``parent`` despite being adopted here.
+
     Parameters
     ----------
     obj : object
         Any existing object. This will be included in the Device as a proper
         component, as if it was constructed by the class itself.
+
+    kind : `ophydobj.Kind` or str, optional
+        If provided, override the object's kind. In standard components this
+        defaults to Kind.normal, but here it will default to "do not change
+        the kind, leave it as is". If provided, it is up the user to make sure
+        they are being consistent with the setting of kinds on their devices.
     """
-    def __init__(self, obj):
-        super().__init__(object)
+    def __init__(self, obj, kind=None):
+        self._override_kind = kind
+        if kind is None:
+            kind = Kind.normal
+        super().__init__(object, kind=kind)
         self.obj = obj
 
     def create_component(self, instance):
+        if self._override_kind is not None:
+            self.obj.kind = self._override_kind
         return self.obj
 
 
@@ -130,15 +147,37 @@ class InterfaceComponent(Component):
     pre-instantiated devices into the Device constructor and type-check
     them approriately.
 
+    .. note::
+
+        This does not set the ``parent`` attribute on the object, which will
+        retain its original ``parent`` despite being adopted here.
+
     Parameters
     ----------
     cls : type
         Any class definition. When we pass an object into the
         `InterfaceDevice`, its type will be checked against this type.
         Any subclass of the input class type will also be accepted.
+
+    kind : `ophydobj.Kind` or str, optional
+        If provided, override the object's kind. In standard components this
+        defaults to Kind.normal, but here it will default to "do not change
+        the kind, leave it as is". If provided, it is up the user to make sure
+        they are being consistent with the setting of kinds on their devices.
     """
+    def __init__(self, cls, kind=None, **kwargs):
+        self._override_kind = kind
+        if kind is None:
+            kind = Kind.normal
+        super().__init__(cls, kind=kind, **kwargs)
+
     def create_component(self, instance):
-        return instance._interface_obj[self.attr]
+        # Retrieve instance from the _interface_obj dict
+        # This is assembled in InterfaceDevice.__init__
+        obj = instance._interface_obj[self.attr]
+        if self._override_kind is not None:
+            obj.kind = self._override_kind
+        return obj
 
 
 class InterfaceDevice(Device):

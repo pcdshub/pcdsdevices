@@ -1,6 +1,7 @@
 import pytest
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
+from ophyd.ophydobj import Kind
 from ophyd.signal import Signal
 
 from pcdsdevices.device import InterfaceComponent as ICpt
@@ -66,15 +67,17 @@ def test_complex_class():
 
 
 def test_ocpt():
-    sig_one = Signal(name='one')
+    sig_one = Signal(name='one', kind=Kind.config)
     sig_two = Signal(name='two')
 
     class ObjectDevice(Device):
-        one = OCpt(sig_one)
+        one = OCpt(sig_one, kind=Kind.hinted)
         two = OCpt(sig_two)
 
+    assert sig_one.kind == Kind.config
     obj = ObjectDevice('prefix', name='name')
     assert 'one' in obj.component_names
+    assert obj.one.kind == Kind.hinted
     obj.one.put(5)
     assert sig_one.get() == 5
     obj.two.put(3)
@@ -82,7 +85,7 @@ def test_ocpt():
 
 
 class TwoSignal(InterfaceDevice):
-    sig_one = ICpt(Signal)
+    sig_one = ICpt(Signal, kind=Kind.hinted)
     sig_two = ICpt(Signal)
 
 
@@ -92,10 +95,12 @@ class SomeDevice(Device):
 
 
 def test_interface_basic():
-    one = Signal(name='one')
+    one = Signal(name='one', kind=Kind.config)
     two = Signal(name='two')
 
+    assert one.kind == Kind.config
     two_sig = TwoSignal('prefix', name='name', sig_one=one, sig_two=two)
+    assert one.kind == Kind.hinted
     two_sig.sig_one.put(1)
     two_sig.sig_two.put(2)
 
