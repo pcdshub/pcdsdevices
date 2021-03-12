@@ -91,6 +91,29 @@ class UnrelatedComponent(Component):
 
 
 class ObjectComponent(Component):
+    """
+    A component that includes an existing instantiated object into a Device.
+
+    Typically, component classes exist as a description of how to create the
+    subdevice or signal, and this continues to be the preferred way to
+    define Device classes.
+
+    This exists as a convenience tool for one-off devices that need to include
+    other pre-instantiated devices as elements.
+
+    .. note::
+
+        Since this picks an object to include at class definition time,
+        you should avoid instantiating classes with object components multiple
+        times. If you would like to create a re-usable device that includes
+        pre-instantiated devices at init time, see `InterfaceDevice`.
+
+    Parameters
+    ----------
+    obj : object
+        Any existing object. This will be included in the Device as a proper
+        component, as if it was constructed by the class itself.
+    """
     def __init__(self, obj):
         super().__init__(object)
         self.obj = obj
@@ -100,5 +123,19 @@ class ObjectComponent(Component):
 
 
 class InterfaceComponent(Component):
+    """
+    A special component to be used in the `InterfaceDevice`.
+
+    By defining a required class here, this allows us to pass
+    pre-instantiated devices into the Device constructor and type-check
+    them approriately.
+
+    Parameters
+    ----------
+    cls : type
+        Any class definition. When we pass an object into the
+        `InterfaceDevice`, its type will be checked against this type.
+        Any subclass of the input class type will also be accepted.
+    """
     def create_component(self, instance):
         return instance._interface_obj[self.attr]
