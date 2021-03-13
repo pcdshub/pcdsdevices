@@ -806,7 +806,12 @@ class DelayMotor(InterfaceDevice, DelayBase):
     ----------
     motor : `PositionerBase`
         An instantiated motor to transform into a DelayMotor. Will be included
-        as a subcomponent in this device.
+        as a subcomponent in this device. This motor must have a valid
+        engineering unit assigned to it in length units.
+
+    name : str, optional
+        A name to refer to this `DelayMotor` by. If omitted, will default to
+        the motor's name with _delay_motor appended to the end.
 
     egu : str, optional
         The units to use for the delay axis. The default is seconds. Any
@@ -823,9 +828,14 @@ class DelayMotor(InterfaceDevice, DelayBase):
     """
     motor = ICpt(PositionerBase)
 
-    def __init__(self, motor, egu='s', n_bounces=2, invert=False, **kwargs):
+    def __init__(
+            self, motor, name=None, egu='s', n_bounces=2, invert=False,
+            **kwargs,
+            ):
+        if name is None:
+            name = motor.name + '_delay_motor'
         super().__init__(
-            motor.prefix, name=motor.name,
+            motor.prefix, name=name,
             egu=egu, n_bounces=n_bounces, invert=invert,
             motor=motor, **kwargs,
             )
