@@ -274,7 +274,7 @@ short_component_names = {
     ophyd.Component: '',
     ophyd.DynamicDeviceComponent: 'DDC',
     ophyd.FormattedComponent: 'FCpt',
-    pcdsdevices.component.UnrelatedComponent: 'UCpt',
+    pcdsdevices.device.UnrelatedComponent: 'UCpt',
 }
 
 
