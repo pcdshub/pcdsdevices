@@ -794,6 +794,33 @@ delay_instance_factory.__doc__ = DelayBase.__doc__
 
 
 class DelayMotor(InterfaceDevice, DelayBase):
+    """
+    Generic time delay-stage with variable units and number of bounces.
+
+    The optical laser travels along the motor's axis and bounces off a number
+    of mirrors, then continues to the destination. In this way, the path length
+    of the laser changes, which introduces a variable delay. This delay is a
+    simple multiplier based on the speed of light.
+
+    Parameters
+    ----------
+    motor : `PositionerBase`
+        An instantiated motor to transform into a DelayMotor. Will be included
+        as a subcomponent in this device.
+
+    egu : str, optional
+        The units to use for the delay axis. The default is seconds. Any
+        time unit is acceptable.
+
+    n_bounces : int, optional
+        The number of times the laser bounces on the delay stage, e.g. the
+        number of mirrors that this stage moves. The default is 2, a delay
+        branch that bounces the laser back along the axis it enters.
+
+    invert : bool, optional
+        If True, increasing the real motor will decrease the delay.
+        If False (default), increasing the real motor will increase the delay.
+    """
     motor = ICpt(PositionerBase)
 
     def __init__(self, motor, egu='s', n_bounces=2, invert=False, **kwargs):
