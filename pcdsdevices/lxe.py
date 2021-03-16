@@ -37,7 +37,7 @@ from ophyd import Component as Cpt
 from ophyd import EpicsSignal, PVPositioner
 from scipy.constants import speed_of_light
 
-from .component import UnrelatedComponent as UCpt
+from .device import UnrelatedComponent as UCpt
 from .epics_motor import DelayNewport, EpicsMotorInterface
 from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,

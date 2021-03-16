@@ -5,7 +5,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.signal import EpicsSignal
 
-from .component import UnrelatedComponent as UCpt
+from .device import UnrelatedComponent as UCpt
 from .interface import BaseInterface
 from .signal import PytmcSignal
 

@@ -9,12 +9,14 @@ import ophyd
 import ophyd.pseudopos
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
+from ophyd.positioner import PositionerBase
 from ophyd.pseudopos import (PseudoSingle, pseudo_position_argument,
                              real_position_argument)
 from ophyd.signal import EpicsSignal
-from ophyd.sim import fake_device_cache
 from scipy.constants import speed_of_light
 
+from .device import InterfaceComponent as ICpt
+from .device import InterfaceDevice
 from .interface import FltMvInterface
 from .signal import NotepadLinkedSignal
 from .sim import FastMotor
@@ -789,8 +791,54 @@ def delay_instance_factory(
 
 
 delay_instance_factory.__doc__ = DelayBase.__doc__
-DelayMotor = delay_instance_factory
-fake_device_cache[DelayMotor] = FastMotor
+
+
+class DelayMotor(InterfaceDevice, DelayBase):
+    """
+    Generic time delay-stage with variable units and number of bounces.
+
+    The optical laser travels along the motor's axis and bounces off a number
+    of mirrors, then continues to the destination. In this way, the path length
+    of the laser changes, which introduces a variable delay. This delay is a
+    simple multiplier based on the speed of light.
+
+    Parameters
+    ----------
+    motor : `PositionerBase`
+        An instantiated motor to transform into a DelayMotor. Will be included
+        as a subcomponent in this device. This motor must have a valid
+        engineering unit assigned to it in length units.
+
+    name : str, optional
+        A name to refer to this `DelayMotor` by. If omitted, will default to
+        the motor's name with _delay_motor appended to the end.
+
+    egu : str, optional
+        The units to use for the delay axis. The default is seconds. Any
+        time unit is acceptable.
+
+    n_bounces : int, optional
+        The number of times the laser bounces on the delay stage, e.g. the
+        number of mirrors that this stage moves. The default is 2, a delay
+        branch that bounces the laser back along the axis it enters.
+
+    invert : bool, optional
+        If True, increasing the real motor will decrease the delay.
+        If False (default), increasing the real motor will increase the delay.
+    """
+    motor = ICpt(PositionerBase)
+
+    def __init__(
+            self, motor, name=None, egu='s', n_bounces=2, invert=False,
+            **kwargs,
+            ):
+        if name is None:
+            name = motor.name + '_delay_motor'
+        super().__init__(
+            motor.prefix, name=name,
+            egu=egu, n_bounces=n_bounces, invert=invert,
+            motor=motor, **kwargs,
+            )
 
 
 class SimDelayStage(DelayBase):
