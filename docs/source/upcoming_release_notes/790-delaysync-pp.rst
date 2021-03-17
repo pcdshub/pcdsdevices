@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Fix issue where Newport motors would not show units in their status prints.
 
 Maintenance
 -----------
