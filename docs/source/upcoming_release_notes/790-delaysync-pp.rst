@@ -20,6 +20,8 @@ New Devices
 Bugfixes
 --------
 - Fix issue where Newport motors would not show units in their status prints.
+- Fix issue where SyncAxis was not compatible with PseudoPositioners as
+  its synchronized "real" motors.
 
 Maintenance
 -----------
