@@ -553,6 +553,10 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
 
         This gives us the sync readback position.
         """
+        if isinstance(pos, tuple):
+            # Psuedo position tuple, assume first value is correct
+            # This happens if we are synchronizing pseudo motors
+            pos = pos[0]
         return (pos - self.offsets[attr]) / self.scales[attr]
 
     def is_synced(self, real_pos=None):
