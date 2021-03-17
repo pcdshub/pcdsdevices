@@ -84,7 +84,9 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         status: str
             Formatted string with all relevant status information.
         """
-        units = get_status_value(status_info, 'notepad_readback', 'units')
+        units = get_status_value(status_info, 'units')
+        if not units:
+            units = get_status_value(status_info, 'notepad_readback', 'units')
         position = get_status_float(
             status_info, 'position', precision=3, format='e')
         # if a dial_pos is not present we can assume that the dial position is

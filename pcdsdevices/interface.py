@@ -443,6 +443,12 @@ def device_info(device, subdevice_filter=None, devices=None):
         except Exception:
             ...
 
+    try:
+        # Best-effort try at getting the units
+        info['units'] = get_units(device)
+    except Exception:
+        pass
+
     if device not in devices:
         devices.add(device)
         for cpt_name, cpt_desc in device._sig_attrs.items():
