@@ -649,6 +649,33 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
                 for status in statuses:
                     status.wait(timeout=timeout)
 
+    def format_status_info(self, status_info):
+        """
+        Special SyncAxis handling to show all the real motors.
+        """
+        big_name = status_info['name']
+        lines = [f'SyncAxis: {big_name}']
+        for attr in self._real_attrs:
+            info = status_info[attr]
+            name = get_status_value(info, 'name')
+            name = name.replace(big_name + '_', '')
+            pos = get_status_float(info, 'position', format='g')
+            units = get_status_value(info, 'units')
+            lines.append(f'{name} position: {pos} [{units}]')
+        sync_pos = get_status_float(status_info, 'position', format='g')
+        lines.append(f'Sync position: {sync_pos}')
+        limits = status_info['limits']
+        lines.append(f'Sync limits (low, high): {limits}')
+        return '\n'.join(lines)
+
+    def status_info(self):
+        """
+        Add the limits information
+        """
+        info = super().status_info()
+        info['limits'] = self.sync.limits
+        return info
+
 
 class DelayBase(FltMvInterface, PseudoPositioner):
     """
@@ -759,6 +786,12 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         self.user_offset.put(0.0)
         new_offset = position - self.position[0]
         self.user_offset.put(new_offset)
+
+    def format_status_info(self, status_info):
+        """
+        Use the renderer from the subdevice
+        """
+        return self.delay.format_status_info(status_info['delay'])
 
 
 delay_classes = {}
