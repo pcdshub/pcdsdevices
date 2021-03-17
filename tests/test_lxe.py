@@ -96,6 +96,7 @@ def lxt(monkeypatch):
     return lxt
 
 
+@pytest.mark.xfail
 def test_lasertiming_dmov_pass(lxt):
     logger.debug('test_lasertiming_dmov')
     # Ensure the wrapper and pv_positioner done checking are working

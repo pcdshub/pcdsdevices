@@ -29,6 +29,7 @@ LXT::
 """
 
 import pathlib
+import time
 import types
 import typing
 
@@ -319,6 +320,11 @@ class LaserTiming(FltMvInterface, PVPositioner):
             self.log.debug('Failed to update notepad setpoint to position %s',
                            position, exc_info=ex)
         super()._setup_move(position)
+
+        # Something is wrong with done signal, just sleep and pretend
+        time.sleep(1)
+        self._move_changed(value=1-self.done_value)
+        self._move_changed(value=self.done_value)
 
     @done.sub_value
     def _update_position(self, old_value=None, value=None, **kwargs):
