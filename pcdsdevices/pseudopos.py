@@ -583,31 +583,6 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
             'set_current_position or fix_sync to resolve.'
             )
 
-    def _status_info_lines(self, status_info, prefix='', indent=0):
-        """
-        Extend the status info formatter to add consistency warnings
-        """
-        lines = []
-        if self.warn_inconsistent and status_info['name'] == self.name:
-            try:
-                real_pos_dict = {}
-                for attr in self.RealPosition._fields:
-                    real_pos_dict[attr] = status_info[attr]['position']
-                real_pos = self.RealPosition(**real_pos_dict)
-                if not self.is_synced(real_pos=real_pos):
-                    lines.append(self.consistency_warning())
-            except Exception:
-                err = 'Error checking for sync axis consistency.'
-                lines.append(err)
-                logger.debug(err, exc_info=True)
-
-        lines.extend(
-            super()._status_info_lines(
-                status_info, prefix=prefix, indent=indent
-                )
-            )
-        return lines
-
     def fix_sync(self, confirm=True, wait=True, timeout=10):
         """
         Method to re-synchronize the axes via motion.
@@ -653,8 +628,11 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         """
         Special SyncAxis handling to show all the real motors.
         """
+        lines = []
+        if self.warn_inconsistent and not status_info['is_synced']:
+            lines.append(self.consistency_warning())
         big_name = status_info['name']
-        lines = [f'SyncAxis: {big_name}']
+        lines.append(f'SyncAxis: {big_name}')
         for attr in self._real_attrs:
             info = status_info[attr]
             name = get_status_value(info, 'name')
@@ -670,10 +648,18 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
 
     def status_info(self):
         """
-        Add the limits information
+        Add the limits and sync information
         """
         info = super().status_info()
         info['limits'] = self.sync.limits
+        if self.warn_inconsistent:
+            try:
+                info['is_synced'] = self.is_synced()
+            except Exception:
+                info['is_synced'] = False
+                err = 'Error checking for sync axis consistency.'
+                logger.debug(err, exc_info=True)
+                logger.error(err)
         return info
 
 
