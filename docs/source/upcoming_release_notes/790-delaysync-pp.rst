@@ -23,7 +23,8 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Make unit handling in status_info more consistent to improve reliability of
+  status printouts.
 
 Contributors
 ------------
