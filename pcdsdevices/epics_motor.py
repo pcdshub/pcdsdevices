@@ -81,6 +81,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     EpicsMotor.motor_is_moving.kind = Kind.normal
     set_metadata(EpicsMotor.motor_stop, dict(variety='command-proc', value=1))
     EpicsMotor.motor_stop.kind = Kind.normal
+    EpicsMotor.high_limit_travel.kind = Kind.config
+    EpicsMotor.low_limit_travel.kind = Kind.config
     EpicsMotor.direction_of_travel.kind = Kind.normal
 
     def format_status_info(self, status_info):
