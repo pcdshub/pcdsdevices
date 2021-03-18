@@ -84,7 +84,9 @@ class PseudoSingleInterface(FltMvInterface, PseudoSingle):
         status: str
             Formatted string with all relevant status information.
         """
-        units = get_status_value(status_info, 'notepad_readback', 'units')
+        units = get_status_value(status_info, 'units')
+        if not units:
+            units = get_status_value(status_info, 'notepad_readback', 'units')
         position = get_status_float(
             status_info, 'position', precision=3, format='e')
         # if a dial_pos is not present we can assume that the dial position is
@@ -551,6 +553,10 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
 
         This gives us the sync readback position.
         """
+        if isinstance(pos, tuple):
+            # Psuedo position tuple, assume first value is correct
+            # This happens if we are synchronizing pseudo motors
+            pos = pos[0]
         return (pos - self.offsets[attr]) / self.scales[attr]
 
     def is_synced(self, real_pos=None):
@@ -582,31 +588,6 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
             f'{self.name} is in an inconsistent state. Call '
             'set_current_position or fix_sync to resolve.'
             )
-
-    def _status_info_lines(self, status_info, prefix='', indent=0):
-        """
-        Extend the status info formatter to add consistency warnings
-        """
-        lines = []
-        if self.warn_inconsistent and status_info['name'] == self.name:
-            try:
-                real_pos_dict = {}
-                for attr in self.RealPosition._fields:
-                    real_pos_dict[attr] = status_info[attr]['position']
-                real_pos = self.RealPosition(**real_pos_dict)
-                if not self.is_synced(real_pos=real_pos):
-                    lines.append(self.consistency_warning())
-            except Exception:
-                err = 'Error checking for sync axis consistency.'
-                lines.append(err)
-                logger.debug(err, exc_info=True)
-
-        lines.extend(
-            super()._status_info_lines(
-                status_info, prefix=prefix, indent=indent
-                )
-            )
-        return lines
 
     def fix_sync(self, confirm=True, wait=True, timeout=10):
         """
@@ -648,6 +629,44 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
             if wait:
                 for status in statuses:
                     status.wait(timeout=timeout)
+
+    def format_status_info(self, status_info):
+        """
+        Special SyncAxis handling to show all the real motors.
+        """
+        lines = []
+        if self.warn_inconsistent and not status_info['is_synced']:
+            lines.append(self.consistency_warning())
+        big_name = status_info['name']
+        lines.append(f'SyncAxis: {big_name}')
+        for attr in self._real_attrs:
+            info = status_info[attr]
+            name = get_status_value(info, 'name')
+            name = name.replace(big_name + '_', '')
+            pos = get_status_float(info, 'position', format='g')
+            units = get_status_value(info, 'units')
+            lines.append(f'{name} position: {pos} [{units}]')
+        sync_pos = get_status_float(status_info, 'position', format='g')
+        lines.append(f'Sync position: {sync_pos}')
+        limits = status_info['limits']
+        lines.append(f'Sync limits (low, high): {limits}')
+        return '\n'.join(lines)
+
+    def status_info(self):
+        """
+        Add the limits and sync information
+        """
+        info = super().status_info()
+        info['limits'] = self.sync.limits
+        if self.warn_inconsistent:
+            try:
+                info['is_synced'] = self.is_synced()
+            except Exception:
+                info['is_synced'] = False
+                err = 'Error checking for sync axis consistency.'
+                logger.debug(err, exc_info=True)
+                logger.error(err)
+        return info
 
 
 class DelayBase(FltMvInterface, PseudoPositioner):
@@ -759,6 +778,12 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         self.user_offset.put(0.0)
         new_offset = position - self.position[0]
         self.user_offset.put(new_offset)
+
+    def format_status_info(self, status_info):
+        """
+        Use the renderer from the subdevice
+        """
+        return self.delay.format_status_info(status_info['delay'])
 
 
 delay_classes = {}
