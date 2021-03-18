@@ -122,7 +122,7 @@ class CrystalTower1(BaseInterface, Device):
     ----------
     prefix : str
         Epics base Pv prefix.
-    name : str
+    name : str, keyword-only
         The name of this device.
     """
     # x, y, and z are on the base but not touched in normal operations
