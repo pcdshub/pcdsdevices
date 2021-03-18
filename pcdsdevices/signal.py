@@ -561,6 +561,12 @@ class UnitConversionDerivedSignal(DerivedSignal):
         self._user_offset = user_offset
         self._custom_limits = limits
         super().__init__(derived_from, **kwargs)
+        self._metadata['units'] = derived_units
+
+        # Ensure that we include units in metadata callbacks, even if the
+        # original signal does not include them.
+        if 'units' not in self._metadata_keys:
+            self._metadata_keys = self._metadata_keys + ('units', )
 
     def forward(self, value):
         '''Compute derived signal value -> original signal value'''
@@ -637,10 +643,12 @@ class UnitConversionDerivedSignal(DerivedSignal):
             self._derived_value_callback(value)
 
     def _derived_metadata_callback(self, *, connected, **kwargs):
-        super()._derived_metadata_callback(connected=connected, **kwargs)
         if connected and 'units' in kwargs:
             if self.original_units is None:
                 self.original_units = kwargs['units']
+        # Do not pass through units, as we have our own.
+        kwargs['units'] = self.derived_units
+        super()._derived_metadata_callback(connected=connected, **kwargs)
 
     def describe(self):
         full_desc = super().describe()
