@@ -20,7 +20,7 @@ from ophyd.sim import NullStatus
 from ophyd.status import wait as status_wait
 from pcdscalc import common, diffraction
 
-from pcdsdevices.epics_motor import OffsetMotor
+from pcdsdevices.epics_motor import OffsetMotor, OffsetIMSWithPreset
 from pcdsdevices.sim import FastMotor
 
 from .doc_stubs import insert_remove
@@ -167,36 +167,30 @@ class CrystalTower1(BaseInterface, Device):
                 motor_prefix='{self._hutch_prefix}:MON:MMS:05', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
                 name='x1_si', doc='X1 motor offset for Si [mm]')
-    y1C = FCpt(OffsetMotor, prefix='{self._prefix}:Y1:OFF_C',
+    y1C = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:Y1:OFF_C',
                motor_prefix='{self._hutch_prefix}:MON:MMS:06', kind='normal',
                add_prefix=('prefix', 'motor_prefix'),
-               name='y1_c', doc='Y1 motor offset for C [mm]',
-               use_ims_preset=True)
-    y1Si = FCpt(OffsetMotor, prefix='{self._prefix}:Y1:OFF_Si',
+               name='y1_c', doc='Y1 motor offset for C [mm]')
+    y1Si = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:Y1:OFF_Si',
                 motor_prefix='{self._hutch_prefix}:MON:MMS:06', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
-                name='y1_si', doc='Y1 motor offset for Si [mm]',
-                use_ims_preset=True)
-    chi1C = FCpt(OffsetMotor, prefix='{self._prefix}:CHI1:OFF_C',
+                name='y1_si', doc='Y1 motor offset for Si [mm]')
+    chi1C = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:CHI1:OFF_C',
                  motor_prefix='{self._hutch_prefix}:MON:MMS:08', kind='normal',
                  add_prefix=('prefix', 'motor_prefix'),
-                 name='chi1_c ', doc='Chi 1 motor offset for C [deg]',
-                 use_ims_preset=True)
-    chi1Si = FCpt(OffsetMotor, prefix='{self._prefix}:CHI1:OFF_Si',
+                 name='chi1_c ', doc='Chi 1 motor offset for C [deg]')
+    chi1Si = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:CHI1:OFF_Si',
                   motor_prefix='{self._hutch_prefix}:MON:MMS:08',
                   kind='normal', add_prefix=('prefix', 'motor_prefix'),
-                  name='chi1_si', doc='Chi 1 motor offset for Si [deg]',
-                  use_ims_preset=True)
-    h1nC = FCpt(OffsetMotor, prefix='{self._prefix}:H1N:OFF_C',
+                  name='chi1_si', doc='Chi 1 motor offset for Si [deg]')
+    h1nC = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:H1N:OFF_C',
                 motor_prefix='{self._hutch_prefix}:MON:MMS:09', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
-                name='', doc='H1n motor offset for C [mm]',
-                use_ims_preset=True)
-    h1nSi = FCpt(OffsetMotor, prefix='{self._prefix}:H1N:OFF_Si',
+                name='', doc='H1n motor offset for C [mm]')
+    h1nSi = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:H1N:OFF_Si',
                  motor_prefix='{self._hutch_prefix}:MON:MMS:09', kind='normal',
                  add_prefix=('prefix', 'motor_prefix'),
-                 name='h1n_si', doc='H1n motor offset for Si [mm]',
-                 use_ims_preset=True)
+                 name='h1n_si', doc='H1n motor offset for Si [mm]')
     h1pC = FCpt(OffsetMotor, prefix='{self._prefix}:H1P:OFF_C',
                 motor_prefix='{self._hutch_prefix}:MON:MMS:20', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
@@ -434,37 +428,31 @@ class CrystalTower2(BaseInterface, Device):
                 motor_prefix='{self._hutch_prefix}:MON:MMS:11',
                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
                 doc='X2 motor offset for Si [mm]')
-    y2C = FCpt(OffsetMotor, prefix='{self._prefix}:Y2:OFF_C', name='y2_c',
-               motor_prefix='{self._hutch_prefix}:MON:MMS:12',
+    y2C = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:Y2:OFF_C',
+               name='y2_c', motor_prefix='{self._hutch_prefix}:MON:MMS:12',
                add_prefix=('prefix', 'motor_prefix'), kind='normal',
-               doc='Y2 motor offset for C [mm]',
-               use_ims_preset=True)
-    y2Si = FCpt(OffsetMotor, prefix='{self._prefix}:Y2:OFF_Si', name='y2_si',
-                motor_prefix='{self._hutch_prefix}:MON:MMS:12',
+               doc='Y2 motor offset for C [mm]')
+    y2Si = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:Y2:OFF_Si',
+                name='y2_si', motor_prefix='{self._hutch_prefix}:MON:MMS:12',
                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                doc='Y2 motor offset for Si [mm]',
-                use_ims_preset=True)
-    chi2C = FCpt(OffsetMotor, prefix='{self._prefix}:CHI2:OFF_C',
+                doc='Y2 motor offset for Si [mm]')
+    chi2C = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:CHI2:OFF_C',
                  name='chi2_c', motor_prefix='{self._hutch_prefix}:MON:MMS:14',
                  add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                 doc='Chi 2 motor offset for C [deg]',
-                 use_ims_preset=True)
-    chi2Si = FCpt(OffsetMotor, prefix='{self._prefix}:CHI2:OFF_Si',
+                 doc='Chi 2 motor offset for C [deg]')
+    chi2Si = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:CHI2:OFF_Si',
                   name='chi2_si',
                   motor_prefix='{self._hutch_prefix}:MON:MMS:14',
                   add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                  doc='Chi 2 motor offset for Si [deg]',
-                  use_ims_preset=True)
-    h2nC = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_C', name='h2n_c',
-                motor_prefix='{self._hutch_prefix}:MON:MMS:15',
+                  doc='Chi 2 motor offset for Si [deg]')
+    h2nC = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:H2N:OFF_C',
+                name='h2n_c', motor_prefix='{self._hutch_prefix}:MON:MMS:15',
                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                doc=' H2n motor offset for C [mm]',
-                use_ims_preset=True)
-    h2nSi = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_Si',
+                doc=' H2n motor offset for C [mm]')
+    h2nSi = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:H2N:OFF_Si',
                  name='h2n_si', motor_prefix='{self._hutch_prefix}:MON:MMS:15',
                  add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                 doc='H2n motor offset for Si [mm]',
-                 use_ims_preset=True)
+                 doc='H2n motor offset for Si [mm]')
 
     tab_component_names = True
     tab_whitelist = ['is_diamond', 'is_silicon', 'get_reflection',
