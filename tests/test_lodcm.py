@@ -97,6 +97,9 @@ def fake_lodcm():
     lodcm.z1C = make_fake_offset_ims('TH1C:PREFIX')
     lodcm.z2C = make_fake_offset_ims('TH2C:PREFIX')
 
+    lodcm.tower2.x2_retry_deadband.sim_put(-1)
+    lodcm.tower2.z2_retry_deadband.sim_put(-1)
+
     return lodcm
 
 
@@ -251,10 +254,17 @@ def test_move_energy(fake_lodcm):
 def test_tweak_x(fake_lodcm):
     lom = fake_lodcm
     # with th2Si == 23 (init_pos) in fake_lodcm setup
-    # with x = 3 => z = -1.437736291486497
+    # with x = 3 => z = 2.897066324421222
     lom.tweak_x(3, 'Si', wait=False)
     assert lom.x2.wm() == 3
-    assert lom.z2.wm() == -1.437736291486497
+    assert lom.z2.wm() == 2.897066324421222
+    # should move relative to current position
+    # x2 = 3, z2 = 2.897066324421222
+    lom.tweak_x(10, 'Si', wait=False)
+    # x = 10 + current position
+    # z = 9.656887748070739 + current position
+    assert lom.x2.wm() == 13
+    assert lom.z2.wm() == 9.656887748070739 + 2.897066324421222
 
 
 def test_tweak_parallel(fake_lodcm):

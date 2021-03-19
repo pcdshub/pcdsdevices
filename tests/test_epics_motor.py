@@ -276,7 +276,8 @@ def test_disconnected_motors(cls):
 def fake_offset_ims(fake_ims):
     off_ims = make_fake_device(OffsetMotor)('FAKE:OFFSET:IMS',
                                             motor_prefix='MOTOR:PREFIX',
-                                            name='fake_offset_ims')
+                                            name='fake_offset_ims',
+                                            use_ims_preset=True)
     motor_setup(off_ims.motor)
     # start with motor position at 1
     off_ims.motor.user_readback.sim_put(1)
@@ -300,6 +301,8 @@ def test_fake_offset_ims(fake_offset_ims):
     # new_offset = 5 - 1 => 4
     logger.debug('New Offset: %d', off_ims.user_offset.get())
     assert off_ims.user_offset.get() == 4
+    # because use_ims_preset == True we should have the _SET pv with same value
+    assert off_ims.offset_set_pv.get() == 4
     logger.debug('Motor position %d', off_ims.motor.position)
     # if new offset 4, motor pos == 1
     # pseudo pos = real_pos.motor - self.user_offset.get()

@@ -469,12 +469,17 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
     motor = None
     pseudo_motor = Cpt(PseudoSingleInterface, kind='normal')
     user_offset = Cpt(EpicsSignal, '', kind='normal')
+    # TODO: probably not all offset motors have a _SET pv
+    offset_set_pv = FCpt(EpicsSignal, '{self._prefix}:_SET', kind='normal')
 
-    def __init__(self, prefix, motor_prefix, * args, **kwargs):
+    def __init__(self, prefix, motor_prefix, use_ims_preset=False,
+                 *args, **kwargs):
         if self.__class__ is OffsetMotorBase:
             raise TypeError('OffsetMotorBase must be subclassed with '
                             'a "motor" component, the real motor to move.')
         self._motor_prefix = motor_prefix
+        self._prefix = prefix
+        self._use_ims_preset = use_ims_preset
         super().__init__(prefix, *args, **kwargs)
 
     @pseudo_position_argument
@@ -536,16 +541,20 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
         offset = real_pos.motor - self.user_offset.get()
         return self.PseudoPosition(pseudo_motor=offset)
 
-    def set_current_position(self, position):
+    def set_current_position(self, position, use_ims_preset=False):
         '''
         Calculate and configure the user_offset value, indicating the provided
         ``position`` as the new current position.
 
         Parameters
         ----------
-        position
+        position : number
             The new current position.
+        use_ims_preset : bool
+
         '''
         self.user_offset.put(0.0)
         new_offset = position - self.position[0]
+        if self._use_ims_preset:
+            self.offset_set_pv.put(new_offset)
         self.user_offset.put(new_offset)

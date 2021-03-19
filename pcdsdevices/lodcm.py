@@ -170,27 +170,33 @@ class CrystalTower1(BaseInterface, Device):
     y1C = FCpt(OffsetMotor, prefix='{self._prefix}:Y1:OFF_C',
                motor_prefix='{self._hutch_prefix}:MON:MMS:06', kind='normal',
                add_prefix=('prefix', 'motor_prefix'),
-               name='y1_c', doc='Y1 motor offset for C [mm]')
+               name='y1_c', doc='Y1 motor offset for C [mm]',
+               use_ims_preset=True)
     y1Si = FCpt(OffsetMotor, prefix='{self._prefix}:Y1:OFF_Si',
                 motor_prefix='{self._hutch_prefix}:MON:MMS:06', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
-                name='y1_si', doc='Y1 motor offset for Si [mm]')
+                name='y1_si', doc='Y1 motor offset for Si [mm]',
+                use_ims_preset=True)
     chi1C = FCpt(OffsetMotor, prefix='{self._prefix}:CHI1:OFF_C',
                  motor_prefix='{self._hutch_prefix}:MON:MMS:08', kind='normal',
                  add_prefix=('prefix', 'motor_prefix'),
-                 name='chi1_c ', doc='Chi 1 motor offset for C [deg]')
+                 name='chi1_c ', doc='Chi 1 motor offset for C [deg]',
+                 use_ims_preset=True)
     chi1Si = FCpt(OffsetMotor, prefix='{self._prefix}:CHI1:OFF_Si',
                   motor_prefix='{self._hutch_prefix}:MON:MMS:08',
                   kind='normal', add_prefix=('prefix', 'motor_prefix'),
-                  name='chi1_si', doc='Chi 1 motor offset for Si [deg]')
+                  name='chi1_si', doc='Chi 1 motor offset for Si [deg]',
+                  use_ims_preset=True)
     h1nC = FCpt(OffsetMotor, prefix='{self._prefix}:H1N:OFF_C',
                 motor_prefix='{self._hutch_prefix}:MON:MMS:09', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
-                name='', doc='H1n motor offset for C [mm]')
+                name='', doc='H1n motor offset for C [mm]',
+                use_ims_preset=True)
     h1nSi = FCpt(OffsetMotor, prefix='{self._prefix}:H1N:OFF_Si',
                  motor_prefix='{self._hutch_prefix}:MON:MMS:09', kind='normal',
                  add_prefix=('prefix', 'motor_prefix'),
-                 name='h1n_si', doc='H1n motor offset for Si [mm]')
+                 name='h1n_si', doc='H1n motor offset for Si [mm]',
+                 use_ims_preset=True)
     h1pC = FCpt(OffsetMotor, prefix='{self._prefix}:H1P:OFF_C',
                 motor_prefix='{self._hutch_prefix}:MON:MMS:20', kind='normal',
                 add_prefix=('prefix', 'motor_prefix'),
@@ -431,28 +437,34 @@ class CrystalTower2(BaseInterface, Device):
     y2C = FCpt(OffsetMotor, prefix='{self._prefix}:Y2:OFF_C', name='y2_c',
                motor_prefix='{self._hutch_prefix}:MON:MMS:12',
                add_prefix=('prefix', 'motor_prefix'), kind='normal',
-               doc='Y2 motor offset for C [mm]')
+               doc='Y2 motor offset for C [mm]',
+               use_ims_preset=True)
     y2Si = FCpt(OffsetMotor, prefix='{self._prefix}:Y2:OFF_Si', name='y2_si',
                 motor_prefix='{self._hutch_prefix}:MON:MMS:12',
                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                doc='Y2 motor offset for Si [mm]')
+                doc='Y2 motor offset for Si [mm]',
+                use_ims_preset=True)
     chi2C = FCpt(OffsetMotor, prefix='{self._prefix}:CHI2:OFF_C',
                  name='chi2_c', motor_prefix='{self._hutch_prefix}:MON:MMS:14',
                  add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                 doc='Chi 2 motor offset for C [deg]')
+                 doc='Chi 2 motor offset for C [deg]',
+                 use_ims_preset=True)
     chi2Si = FCpt(OffsetMotor, prefix='{self._prefix}:CHI2:OFF_Si',
                   name='chi2_si',
                   motor_prefix='{self._hutch_prefix}:MON:MMS:14',
                   add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                  doc='Chi 2 motor offset for Si [deg]')
+                  doc='Chi 2 motor offset for Si [deg]',
+                  use_ims_preset=True)
     h2nC = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_C', name='h2n_c',
                 motor_prefix='{self._hutch_prefix}:MON:MMS:15',
                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                doc=' H2n motor offset for C [mm]')
+                doc=' H2n motor offset for C [mm]',
+                use_ims_preset=True)
     h2nSi = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_Si',
                  name='h2n_si', motor_prefix='{self._hutch_prefix}:MON:MMS:15',
                  add_prefix=('prefix', 'motor_prefix'), kind='normal',
-                 doc='H2n motor offset for Si [mm]')
+                 doc='H2n motor offset for Si [mm]',
+                 use_ims_preset=True)
 
     tab_component_names = True
     tab_whitelist = ['is_diamond', 'is_silicon', 'get_reflection',
@@ -1493,8 +1505,6 @@ class LODCM(BaseInterface, Device):
         reflection = reflection or self.get_reflection()
         th, z = diffraction.get_lom_geometry(energy * 1e3, material,
                                              reflection)
-        # TODO: probably not the correct approach here to use
-        # set_current_position
         if material == 'Si':
             self.th1Si.set_current_position(th)
             self.th2Si.set_current_position(th)
@@ -1530,7 +1540,7 @@ class LODCM(BaseInterface, Device):
             th = self.th2C.wm()
         else:
             raise ValueError("Invalid material: %s", material)
-        z_value = x_value / np.tan(2 * th)
+        z_value = x_value / common.tand(2 * th)
         start_x = self.x2.wm()
         start_z = self.z2.wm()
         self.x2.mvr(x_value, wait=wait)
@@ -1543,11 +1553,11 @@ class LODCM(BaseInterface, Device):
         if abs(dx - x_value) > self.tower2.x2_retry_deadband.get():
             logger.warning("x2 did not reach to the desired position of %f! "
                            "Check the motors, now at: %f, deadband %f" % (
-                               start_x + x_value, end_x, self.x2.get()))
+                               start_x + x_value, end_x, self.x2.position))
         if abs(dz - z_value) > self.tower2.z2_retry_deadband.get():
             logger.warning("z2 did not reach the desired position of %f! "
                            "Check the motors, now at %f, deadband %f" % (
-                               start_z + z_value, end_z, self.z2.get()))
+                               start_z + z_value, end_z, self.z2.position))
 
     def tweak_parallel(self, p_value, material=None, wait=False):
         """
