@@ -24,9 +24,10 @@ from .lic import LaserInCoupling
 from .lodcm import LODCM
 from .mirror import OffsetMirror, PointingMirror
 from .movablestand import MovableStand
+from .mpod import MPOD, MPODChannelHV, MPODChannelLV
 from .mps import MPS
 from .pim import PIM, PPM, XPIM, PIMWithBoth, PIMWithFocus, PIMWithLED
-from .pseudopos import DelayBase
+from .pseudopos import DelayBase, DelayMotor
 from .pulsepicker import PulsePicker
 from .pump import IonPump
 from .ref import ReflaserL2SI
@@ -39,4 +40,3 @@ from .spectrometer import Kmono, VonHamos4Crystal
 from .timetool import Timetool, TimetoolWithNav
 from .valve import GateValve, Stopper
 from .wfs import WaveFrontSensorTarget
-from .mpod import MPODChannelHV, MPODChannelLV

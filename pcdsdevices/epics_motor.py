@@ -20,8 +20,8 @@ from pcdsdevices.pv_positioner import PVPositionerComparator
 
 from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
-from .pseudopos import DelayBase, OffsetMotorBase
-from .signal import PytmcSignal
+from .pseudopos import OffsetMotorBase, delay_class_factory
+from .signal import EpicsSignalEditMD, EpicsSignalROEditMD, PytmcSignal
 from .utils import get_status_value
 from .variety import set_metadata
 
@@ -81,6 +81,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     EpicsMotor.motor_is_moving.kind = Kind.normal
     set_metadata(EpicsMotor.motor_stop, dict(variety='command-proc', value=1))
     EpicsMotor.motor_stop.kind = Kind.normal
+    EpicsMotor.high_limit_travel.kind = Kind.config
+    EpicsMotor.low_limit_travel.kind = Kind.config
     EpicsMotor.direction_of_travel.kind = Kind.normal
 
     def format_status_info(self, status_info):
@@ -548,16 +550,41 @@ class Newport(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record for Newport motors.
 
-    This is a subclass of :class:`PCDSMotorBase` that overwrites missing
-    signals and disables the :meth:`home` method, because it will not work the
-    same way for Newport motors.
+    This is a subclass of :class:`PCDSMotorBase` that:
+    - Overwrites missing signals for Newports
+    - Disables the :meth:`home` method broken for Newports
+    - Does special metadata handling because this is broken for Newports
     """
 
     __doc__ += basic_positioner_init
+    # Overrides are in roughly the same order as from EpicsMotor
 
+    # Override from EpicsMotor to change class for MD update
+    user_readback = Cpt(EpicsSignalROEditMD, '.RBV', kind='hinted',
+                        auto_monitor=True)
+    user_setpoint = Cpt(EpicsSignalEditMD, '.VAL', limits=True,
+                        auto_monitor=True)
+
+    # Override from EpicsMotor to disable
     offset_freeze_switch = Cpt(Signal, kind='omitted')
+
+    # Override from EpicsMotor to add subscription
+    motor_egu = Cpt(EpicsSignal, '.EGU', kind='config',
+                    auto_monitor=True)
+
+    # Override from EpicsMotor to add subscription
+    high_limit_travel = Cpt(EpicsSignal, '.HLM', kind='omitted',
+                            auto_monitor=True)
+    low_limit_travel = Cpt(EpicsSignal, '.LLM', kind='omitted',
+                           auto_monitor=True)
+
+    # Override from EpicsMotor to disable
     home_forward = Cpt(Signal, kind='omitted')
     home_reverse = Cpt(Signal, kind='omitted')
+
+    # Add new signal for subscription
+    motor_prec = Cpt(EpicsSignalRO, '.PREC', kind='omitted',
+                     auto_monitor=True)
 
     def home(self, *args, **kwargs):
         # This function should eventually be used. There is a way to home
@@ -565,9 +592,33 @@ class Newport(PCDSMotorBase):
         raise NotImplementedError("Homing is not yet implemented for Newport "
                                   "motors")
 
+    # This needs to be re-done if you override user_readback
+    @user_readback.sub_value
+    def _pos_changed(self, *args, **kwargs):
+        super()._pos_changed(*args, **kwargs)
 
-class DelayNewport(DelayBase):
-    motor = Cpt(Newport, '')
+    @motor_egu.sub_value
+    def _update_units(self, value, **kwargs):
+        self.user_readback._override_metadata(units=value)
+        self.user_setpoint._override_metadata(units=value)
+
+    @high_limit_travel.sub_value
+    def _update_hlt(self, value, **kwargs):
+        self.user_readback._override_metadata(upper_ctrl_limit=value)
+        self.user_setpoint._override_metadata(upper_ctrl_limit=value)
+
+    @low_limit_travel.sub_value
+    def _update_llt(self, value, **kwargs):
+        self.user_readback._override_metadata(lower_ctrl_limit=value)
+        self.user_setpoint._override_metadata(lower_ctrl_limit=value)
+
+    @motor_prec.sub_value
+    def _update_prec(self, value, **kwargs):
+        self.user_readback._override_metadata(precision=value)
+        self.user_setpoint._override_metadata(precision=value)
+
+
+DelayNewport = delay_class_factory(Newport)
 
 
 class OffsetMotor(OffsetMotorBase):

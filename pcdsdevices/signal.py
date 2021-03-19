@@ -305,16 +305,18 @@ class _OptionalEpicsSignal(Signal):
     there is a good chance we will reject your PR.
     """
 
-    def __init__(self, read_pv, write_pv=None, *, name, parent=None, **kwargs):
-        super().__init__(name=name, parent=parent)
+    def __init__(self, read_pv, write_pv=None, *, name, parent=None, kind=None,
+                 **kwargs):
+        self._saw_connection = False
         self._epics_signal = EpicsSignal(
-            read_pv=read_pv, write_pv=write_pv, parent=self, name=self.name,
-            **kwargs)
+            read_pv=read_pv, write_pv=write_pv, parent=self, name=name,
+            kind=kind, **kwargs
+        )
+        super().__init__(name=name, parent=parent, kind=kind)
         self._epics_signal.subscribe(
             self._epics_meta_update,
             event_type=self._epics_signal.SUB_META,
         )
-        self._saw_connection = False
 
     def _epics_value_update(self, **kwargs):
         """The EpicsSignal value updated."""
@@ -388,6 +390,15 @@ class _OptionalEpicsSignal(Signal):
     precision = _proxy_property('precision', 4)
     enum_strs = _proxy_property('enum_strs', ())
     limits = _proxy_property('limits', (0, 0))
+
+    @property
+    def kind(self):
+        """The EPICS signal's kind."""
+        return self._epics_signal.kind
+
+    @kind.setter
+    def kind(self, value):
+        self._epics_signal.kind = value
 
 
 class NotepadLinkedSignal(_OptionalEpicsSignal):
@@ -550,6 +561,12 @@ class UnitConversionDerivedSignal(DerivedSignal):
         self._user_offset = user_offset
         self._custom_limits = limits
         super().__init__(derived_from, **kwargs)
+        self._metadata['units'] = derived_units
+
+        # Ensure that we include units in metadata callbacks, even if the
+        # original signal does not include them.
+        if 'units' not in self._metadata_keys:
+            self._metadata_keys = self._metadata_keys + ('units', )
 
     def forward(self, value):
         '''Compute derived signal value -> original signal value'''
@@ -626,10 +643,12 @@ class UnitConversionDerivedSignal(DerivedSignal):
             self._derived_value_callback(value)
 
     def _derived_metadata_callback(self, *, connected, **kwargs):
-        super()._derived_metadata_callback(connected=connected, **kwargs)
         if connected and 'units' in kwargs:
             if self.original_units is None:
                 self.original_units = kwargs['units']
+        # Do not pass through units, as we have our own.
+        kwargs['units'] = self.derived_units
+        super()._derived_metadata_callback(connected=connected, **kwargs)
 
     def describe(self):
         full_desc = super().describe()
@@ -640,3 +659,101 @@ class UnitConversionDerivedSignal(DerivedSignal):
             if key in desc:
                 desc[key] = self.inverse(desc[key])
         return full_desc
+
+
+class SignalEditMD(Signal):
+    """
+    Subclass for allowing an external override of signal metadata.
+
+    This can be useful in cases where the signal metadata is wrong, not
+    included properly in the signal, or where you'd like different
+    metadata-dependent behavior than what is discovered via the cl.
+
+    Does some minimal checking against the signal's metadata keys and ensures
+    the override values always take priority over the normally found values.
+    """
+    def _override_metadata(self, **md):
+        """
+        Externally override the signal metadata.
+
+        This is a semi-private member that should only be called from device
+        classes on their own signals.
+        """
+        for key in md.keys():
+            if key not in self._metadata_keys:
+                raise ValueError(
+                    f'Tried to override metadata key {key} in {self.name}, '
+                    'but this is not one of the metadata keys: '
+                    f'{self._metadata_keys}'
+                    )
+        try:
+            self._metadata_override.update(**md)
+        except AttributeError:
+            self._metadata_override = md
+        self._run_metadata_callbacks()
+
+    @property
+    def metadata(self):
+        md = {}
+        md.update(self._metadata)
+        try:
+            md.update(self._metadata_override)
+        except AttributeError:
+            pass
+        return md
+
+    # Switch out _metadata for metadata
+    def _run_metadata_callbacks(self):
+        self._metadata_thread_ctx.run(self._run_subs, sub_type=self.SUB_META,
+                                      **self.metadata)
+
+
+class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
+    # Switch out _metadata for metadata where appropriate
+    @property
+    def precision(self):
+        return self.metadata['precision']
+
+    @property
+    def limits(self):
+        return (self.metadata['lower_ctrl_limit'],
+                self.metadata['upper_ctrl_limit'])
+
+    def describe(self):
+        desc = super().describe()
+        desc[self.name]['units'] = self.metadata['units']
+        return desc
+
+
+class EpicsSignalEditMD(EpicsSignal, EpicsSignalBaseEditMD):
+    pass
+
+
+class EpicsSignalROEditMD(EpicsSignalRO, EpicsSignalBaseEditMD):
+    pass
+
+
+EpicsSignalEditMD.__doc__ = EpicsSignal.__doc__
+EpicsSignalROEditMD.__doc__ = EpicsSignalRO.__doc__
+
+
+class FakeEpicsSignalEditMD(FakeEpicsSignal):
+    """
+    API stand-in for EpicsSignalEditMD
+    Add to this if you need it to actually work for your test.
+    """
+    def _override_metadata(self, **kwargs):
+        pass
+
+
+class FakeEpicsSignalROEditMD(FakeEpicsSignalRO):
+    """
+    API stand-in for EpicsSignalROEditMD
+    Add to this if you need it to actually work for your test.
+    """
+    def _override_metadata(self, **kwargs):
+        pass
+
+
+fake_device_cache[EpicsSignalEditMD] = FakeEpicsSignalEditMD
+fake_device_cache[EpicsSignalROEditMD] = FakeEpicsSignalROEditMD

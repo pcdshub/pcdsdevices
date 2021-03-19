@@ -9,7 +9,8 @@ from .beam_stats import BeamEnergyRequest
 from .epics_motor import IMS, EpicsMotorInterface
 from .inout import InOutPositioner
 from .interface import FltMvInterface
-from .pseudopos import PseudoPositioner, PseudoSingleInterface, SyncAxesBase
+from .pseudopos import (PseudoPositioner, PseudoSingleInterface, SyncAxis,
+                        SyncAxisOffsetMode)
 from .pv_positioner import PVPositionerIsClose
 
 logger = logging.getLogger(__name__)
@@ -74,7 +75,7 @@ class CCMCalc(FltMvInterface, PseudoPositioner):
     """
 
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted',
-                 limits=(4, 25))
+                 limits=(4, 25), verbose_name='CCM Photon Energy')
     wavelength = Cpt(PseudoSingleInterface, egu='A', kind='normal')
     theta = Cpt(PseudoSingleInterface, egu='deg', kind='normal')
     energy_with_vernier = Cpt(PseudoSingleInterface, egu='keV',
@@ -155,11 +156,12 @@ class CCMCalc(FltMvInterface, PseudoPositioner):
                                    energy_with_vernier=energy)
 
 
-class CCMX(SyncAxesBase):
+class CCMX(SyncAxis):
     """Combined motion of the CCM X motors."""
     down = FCpt(IMS, '{self.down_prefix}')
     up = FCpt(IMS, '{self.up_prefix}')
 
+    offset_mode = SyncAxisOffsetMode.AUTO_FIXED
     tab_component_names = True
 
     def __init__(self, down_prefix, up_prefix, *args, **kwargs):
@@ -168,12 +170,13 @@ class CCMX(SyncAxesBase):
         super().__init__(down_prefix, *args, **kwargs)
 
 
-class CCMY(SyncAxesBase):
+class CCMY(SyncAxis):
     """Combined motion of the CCM Y motors."""
     down = FCpt(IMS, '{self.down_prefix}')
     up_north = FCpt(IMS, '{self.up_north_prefix}')
     up_south = FCpt(IMS, '{self.up_south_prefix}')
 
+    offset_mode = SyncAxisOffsetMode.AUTO_FIXED
     tab_component_names = True
 
     def __init__(self, down_prefix, up_north_prefix, up_south_prefix,

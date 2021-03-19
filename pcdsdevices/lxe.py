@@ -29,6 +29,7 @@ LXT::
 """
 
 import pathlib
+import time
 import types
 import typing
 
@@ -37,14 +38,15 @@ from ophyd import Component as Cpt
 from ophyd import EpicsSignal, PVPositioner
 from scipy.constants import speed_of_light
 
-from .component import UnrelatedComponent as UCpt
+from .device import UnrelatedComponent as UCpt
 from .epics_motor import DelayNewport, EpicsMotorInterface
 from .interface import FltMvInterface
 from .pseudopos import (LookupTablePositioner, PseudoSingleInterface,
-                        SyncAxesBase, pseudo_position_argument,
+                        SyncAxesBase, SyncAxis, pseudo_position_argument,
                         real_position_argument)
-from .signal import UnitConversionDerivedSignal, NotepadLinkedSignal
-from .utils import convert_unit
+from .signal import NotepadLinkedSignal, UnitConversionDerivedSignal
+from .sim import FastMotor
+from .utils import convert_unit, get_status_float, get_status_value
 
 if typing.TYPE_CHECKING:
     import matplotlib  # noqa
@@ -257,6 +259,8 @@ class LaserTiming(FltMvInterface, PVPositioner):
 
     tab_component_names = True
 
+    verbose_name = 'Laser X-ray Timing'
+
     _fs_tgt_time = Cpt(EpicsSignal, ':VIT:FS_TGT_TIME', auto_monitor=True,
                        kind='omitted',
                        doc='The internal nanosecond-expecting signal.'
@@ -317,6 +321,11 @@ class LaserTiming(FltMvInterface, PVPositioner):
                            position, exc_info=ex)
         super()._setup_move(position)
 
+        # Something is wrong with done signal, just sleep and pretend
+        time.sleep(1)
+        self._move_changed(value=1-self.done_value)
+        self._move_changed(value=self.done_value)
+
     @done.sub_value
     def _update_position(self, old_value=None, value=None, **kwargs):
         """The move was completed. Update the notepad readback."""
@@ -358,6 +367,53 @@ class LaserTiming(FltMvInterface, PVPositioner):
         self.user_offset.put(0.0)
         new_offset = position - self.setpoint.get()
         self.user_offset.put(new_offset)
+
+    @property
+    def dial_pos(self):
+        """
+        Calculate the dial position.
+
+        The _fs_tgt_time is the actual dial_position in ns.
+
+        Returns
+        -------
+        dial_pos : number
+            The dial position in [s] seconds, or 'N/A' if the dial position is
+            0 or None.
+        """
+        try:
+            dial_pos = self._fs_tgt_time.get()
+            # convert from ns to s
+            return f'{(dial_pos * 1e-9):.3e}'
+        except Exception:
+            return 'N/A'
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the LXT motor.
+
+        Display lxt motor status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        dial_pos = self.dial_pos
+        position = get_status_float(
+            status_info, 'position', precision=3, format='e')
+        units = get_status_value(status_info, 'setpoint', 'units')
+        return f"""\
+Virtual Motor {self.verbose_name} {self.prefix}
+Current position (user, dial): {position} [{units}] {dial_pos} [s]
+"""
 
 
 class TimeToolDelay(DelayNewport):
@@ -419,3 +475,28 @@ class LaserTimingCompensation(SyncAxesBase):
         super().__init__(prefix, **kwargs)
         self.delay.name = 'txt_reversed'
         self.laser.name = 'lxt'
+
+
+class LxtTtcExample(SyncAxis):
+    """
+    Example of one way to set up the lxt_ttc construct using SyncAxis
+
+    XPP's config on March 4, 2021
+    """
+    lxt = Cpt(LaserTiming, 'LAS:FS11')
+    txt = Cpt(DelayNewport, 'XPP:LAS:MMN:16',
+              n_bounces=14)
+
+    tab_component_names = True
+    scales = {'txt': -1}
+    warn_deadband = 5e-14
+    fix_sync_keep_still = 'lxt'
+    sync_limits = (-10e-6, 10e-6)
+
+
+class FakeLxtTtc(LxtTtcExample):
+    lxt = Cpt(FastMotor)
+    txt = Cpt(FastMotor)
+
+    def __init__(self):
+        super().__init__('FAKE:LXT:TTC', name='fake_lxt_ttc')

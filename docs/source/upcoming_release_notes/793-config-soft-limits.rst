@@ -1,5 +1,5 @@
-764 kappa-180
-#############
+793 config-soft-limits
+######################
 
 API Changes
 -----------
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- N/A
+- Set EpicsMotor soft limit kinds to "config" for use in typhos.
 
 New Devices
 -----------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- Fix Kappa behavior for kappa angles above 180 degrees.
+- N/A
 
 Maintenance
 -----------

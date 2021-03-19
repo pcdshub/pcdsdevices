@@ -1,4 +1,4 @@
-757 att-enum
+782 fix-kind
 ############
 
 API Changes
@@ -19,7 +19,8 @@ New Devices
 
 Bugfixes
 --------
-- Fix issue where legacy attenuator classes would break bluesky scans.
+- Fix an issue where various special Signal classes had their kinds
+  improperly reported as "hinted".
 
 Maintenance
 -----------
