@@ -632,7 +632,7 @@ class OffsetIMSWithPreset(OffsetMotorBase):
     This motor puts to an additional PV (_SET) during `set_current_postion`.
     """
     motor = FCpt(IMS, '{self._motor_prefix}')
-    offset_set_pv = FCpt(EpicsSignal, '{self._prefix}:_SET', kind='normal')
+    offset_set_pv = FCpt(EpicsSignal, '{self._prefix}_SET', kind='normal')
 
     # override the set_current_position
     def set_current_position(self, position):
