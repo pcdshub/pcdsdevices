@@ -1079,7 +1079,7 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
         offset = real_pos.motor - self.user_offset.get()
         return self.PseudoPosition(pseudo_motor=offset)
 
-    def set_current_position(self, position, use_ims_preset=False):
+    def set_current_position(self, position):
         '''
         Calculate and configure the user_offset value, indicating the provided
         ``position`` as the new current position.
