@@ -43,6 +43,7 @@ class LAMP(BaseInterface, Device):
     sample_paddle_y = Cpt(BeckhoffAxis, ':MMS:08', kind='normal')
     sample_paddle_z = Cpt(BeckhoffAxis, ':MMS:09', kind='normal')
 
+
 class LAMPMagneticBottle(BaseInterface, Device):
     """
     LAMPMagneticBottle Motion Class
@@ -67,7 +68,7 @@ class LAMPMagneticBottle(BaseInterface, Device):
     gas_needle_y = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
     gas_needle_z = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
     gas_needle_theta = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
-    
+
     magnet_x = Cpt(BeckhoffAxis, ':MMS:05', kind='normal')
     magnet_y = Cpt(BeckhoffAxis, ':MMS:06', kind='normal')
     magnet_z = Cpt(BeckhoffAxis, ':MMS:04', kind='normal')
