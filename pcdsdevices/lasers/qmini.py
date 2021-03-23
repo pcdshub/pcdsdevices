@@ -1,6 +1,9 @@
 import logging
 
-from ophyd import Device, EpicsSignal, EpicsSignalRO, Component as Cpt
+from ophyd import (Device, EpicsSignal, EpicsSignalRO, Component as Cpt,
+                   FormattedComponent as FCpt)
+
+from pcdsdevices.variety import set_metadata
 
 logger = logging.getLogger(__name__)
 
@@ -35,12 +38,14 @@ class QminiSpectrometer(Device):
                     kind='config')
     trig_enable = Cpt(EpicsSignal, ':GET_TRIG_ENABLE',
                       write_pv=':SET_TRIG_ENABLE', kind='config')
-    scan_rate = Cpt(EpicsSignal, ':START_EXPOSURE.SCAN', kind='config')
+    scan_rate = Cpt(EpicsSignal, ':GET_SPECTRUM.SCAN', kind='config')
     reset = Cpt(EpicsSignal, ':CLEAR_SPECTROMETER', kind='config')
+    set_metadata(reset, dict(variety='command-proc', value=1))
     spectrum = Cpt(EpicsSignalRO, ':SPECTRUM', kind='normal')
     wavelengths = Cpt(EpicsSignalRO, ':WAVELENGTHS', kind='normal')
 
     model = Cpt(EpicsSignalRO, ':MODEL_CODE', kind='config')
+    set_metadata(model, dict(variety='scalar', display_format='hex'))
     serial_number = Cpt(EpicsSignalRO, ':SERIAL_NUMBER', kind='config')
 
     # Processing Steps
@@ -73,3 +78,25 @@ class QminiSpectrometer(Device):
     fit_amplitude = Cpt(EpicsSignalRO, ':AMPLITUDE', kind='config')
     fit_stdev = Cpt(EpicsSignalRO, ':STDEV', kind='config')
     fit_chisq = Cpt(EpicsSignalRO, ':CHISQ', kind='config')
+
+
+class QminiWithEvr(QminiSpectrometer):
+    """
+    A class for Qmini spectromters that use an EVR for hardware triggering.
+    """
+    def __init__(self, prefix, *args, evr_pv=None, evr_ch=None, **kwargs):
+        self._evr_pv = evr_pv
+        self._evr_ch = evr_ch
+
+        super().__init__(prefix, **kwargs)
+
+    event_code = FCpt(EpicsSignal, '{self._evr_pv}:TRIG{self._evr_ch}:EC_RBV',
+                      write_pv='{self._evr_pv}:TRIG{self._evr_ch}:TEC',
+                      kind='config')
+    evr_width = FCpt(EpicsSignal,
+                     '{self._evr_pv}:TRIG{self._evr_ch}:BW_TWIDCALC',
+                     write_pv='{self._evr_pv}:TRIG{self._evr_ch}:TWID',
+                     kind='config')
+    evr_delay = FCpt(EpicsSignal, '{self._evr_pv}:TRIG{self._evr_ch}:BW_TDES',
+                     write_pv='{self._evr_pv}:TRIG{self._evr_ch}:TDES',
+                     kind='config')
