@@ -2,11 +2,12 @@ import logging
 import threading
 from unittest.mock import Mock
 
+import pytest
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.sim import FakeEpicsSignal
 
 import pcdsdevices
-from pcdsdevices.signal import (AvgSignal, PytmcSignal,
+from pcdsdevices.signal import (AvgSignal, PytmcSignal, SignalEditMD,
                                 UnitConversionDerivedSignal)
 
 logger = logging.getLogger(__name__)
@@ -52,40 +53,79 @@ def test_avg_signal():
     assert cb.called
 
 
-def test_unit_conversion_signal():
+class MockCallbackHelper:
+    """
+    Simple helper for getting a callback, setting an event, and checking args.
+
+    Use __call__ as the hook and inspect/verify ``mock`` or ``call_kwargs``.
+    """
+
+    def __init__(self):
+        self.event = threading.Event()
+        self.mock = Mock()
+
+    def __call__(self, *args, **kwargs):
+        self.mock(*args, **kwargs)
+        self.event.set()
+
+    def wait(self, timeout=1.0):
+        """Wait for the callback to be called."""
+        self.event.wait(timeout)
+
+    @property
+    def call_kwargs(self):
+        """Call keyword arguments."""
+        _, kwargs = self.mock.call_args
+        return kwargs
+
+
+@pytest.fixture(scope='function')
+def unit_conv_signal():
     orig = FakeEpicsSignal('sig', name='orig')
+    if 'units' not in orig.metadata_keys:
+        # HACK: This will need to be fixed upstream in ophyd as part of
+        # upstreaming UnitConversionDerivedSignal
+        orig._metadata_keys = orig.metadata_keys + ('units', )
+
     orig.sim_put(5)
 
-    converted = UnitConversionDerivedSignal(
+    return UnitConversionDerivedSignal(
         derived_from=orig,
         original_units='m',
         derived_units='mm',
         name='converted',
     )
 
-    assert converted.original_units == 'm'
-    assert converted.derived_units == 'mm'
-    assert converted.describe()[converted.name]['units'] == 'mm'
 
-    assert converted.get() == 5_000
-    converted.put(10_000, wait=True)
-    assert orig.get() == 10
+def test_unit_conversion_signal_units(unit_conv_signal):
+    assert unit_conv_signal.original_units == 'm'
+    assert unit_conv_signal.derived_units == 'mm'
+    assert unit_conv_signal.describe()[unit_conv_signal.name]['units'] == 'mm'
 
-    event = threading.Event()
-    cb = Mock()
 
-    def callback(**kwargs):
-        cb(**kwargs)
-        event.set()
+def test_unit_conversion_signal_get_put(unit_conv_signal):
+    assert unit_conv_signal.get() == 5_000
+    unit_conv_signal.put(10_000, wait=True)
+    assert unit_conv_signal.derived_from.get() == 10
 
-    converted.subscribe(callback, run=False)
-    orig.put(20, wait=True)
-    event.wait(1)
-    cb.assert_called_once()
 
-    args, kwargs = cb.call_args
-    assert kwargs['value'] == 20_000
-    assert converted.get() == 20_000
+def test_unit_conversion_signal_value_sub(unit_conv_signal):
+    helper = MockCallbackHelper()
+    unit_conv_signal.subscribe(helper, run=False)
+    unit_conv_signal.derived_from.put(20, wait=True)
+    helper.wait(1)
+    helper.mock.assert_called_once()
+
+    assert helper.call_kwargs['value'] == 20_000
+    assert unit_conv_signal.get() == 20_000
+
+
+def test_unit_conversion_signal_metadata_sub(unit_conv_signal):
+    helper = MockCallbackHelper()
+    unit_conv_signal.subscribe(helper, run=True, event_type='meta')
+    helper.wait(1)
+    helper.mock.assert_called_once()
+    assert helper.call_kwargs['units'] == 'mm'
 
 
 def test_optional_epics_signal(monkeypatch):
@@ -137,3 +177,24 @@ def test_pvnotepad_signal(monkeypatch):
     # PV obviously will not connect:
     assert not sig.should_use_epics_signal()
     sig.destroy()
+
+
+def test_editmd_signal():
+    sig = SignalEditMD(name='sig')
+    cache = {}
+    ev = threading.Event()
+
+    def add_call(*args, **kwargs):
+        cache.update(**kwargs)
+        ev.set()
+
+    sig.subscribe(add_call, event_type=sig.SUB_META)
+
+    assert sig.metadata['precision'] is None
+    assert not cache
+    ev.clear()
+    sig._override_metadata(precision=4)
+    assert sig.metadata['precision'] == 4
+    # Metadata updates are threaded! Need to wait a moment!
+    ev.wait(timeout=1)
+    assert cache['precision'] == 4

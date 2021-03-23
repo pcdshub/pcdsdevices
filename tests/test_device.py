@@ -1,8 +1,14 @@
 import pytest
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
+from ophyd.ophydobj import Kind
+from ophyd.signal import Signal
 
-from pcdsdevices.component import UnrelatedComponent as UCpt
+from pcdsdevices.device import InterfaceComponent as ICpt
+from pcdsdevices.device import InterfaceDevice
+from pcdsdevices.device import ObjectComponent as OCpt
+from pcdsdevices.device import UnrelatedComponent as UCpt
+from pcdsdevices.device import to_interface
 
 
 class Basic(Device):
@@ -58,3 +64,62 @@ def test_complex_class():
     assert obj.two.sauce.prefix == 'SAUCE:02'
     assert obj.two.empty.prefix == 'DOS:EMPTY'
     assert obj.tomayto.prefix == 'APPT:TOMAHTO'
+
+
+def test_ocpt():
+    sig_one = Signal(name='one', kind=Kind.config)
+    sig_two = Signal(name='two')
+
+    class ObjectDevice(Device):
+        one = OCpt(sig_one, kind=Kind.hinted)
+        two = OCpt(sig_two)
+
+    assert sig_one.kind == Kind.config
+    obj = ObjectDevice('prefix', name='name')
+    assert 'one' in obj.component_names
+    assert obj.one.kind == Kind.hinted
+    obj.one.put(5)
+    assert sig_one.get() == 5
+    obj.two.put(3)
+    assert sig_two.get() == 3
+
+
+class TwoSignal(InterfaceDevice):
+    sig_one = ICpt(Signal, kind=Kind.hinted)
+    sig_two = ICpt(Signal)
+
+
+class SomeDevice(Device):
+    some = Cpt(Signal)
+    where = Cpt(Signal)
+
+
+def test_interface_basic():
+    one = Signal(name='one', kind=Kind.config)
+    two = Signal(name='two')
+
+    assert one.kind == Kind.config
+    two_sig = TwoSignal('prefix', name='name', sig_one=one, sig_two=two)
+    assert one.kind == Kind.hinted
+    two_sig.sig_one.put(1)
+    two_sig.sig_two.put(2)
+
+    assert one.get() == 1
+    assert two.get() == 2
+
+
+def test_to_interface():
+    SomeDeviceInterface = to_interface(SomeDevice)
+    some = Signal(name='some')
+    where = Signal(name='where')
+
+    sdi = SomeDeviceInterface('', name='sdi', some=some, where=where)
+    sd = SomeDevice('', name='sd')
+
+    sdi.some.put(1)
+    sdi.where.put(2)
+    sd.some.put(3)
+    sd.where.put(4)
+
+    assert some.get() == 1
+    assert where.get() == 2

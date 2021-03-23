@@ -19,6 +19,7 @@ import yaml
 from bluesky.utils import ProgressBar
 from ophyd.device import Device
 from ophyd.ophydobj import Kind, OphydObject
+from ophyd.positioner import PositionerBase
 from ophyd.signal import AttributeSignal, Signal
 from ophyd.status import Status
 
@@ -40,7 +41,8 @@ Device_whitelist = ["read_attrs", "configuration_attrs", "summary",
                     "wait_for_connection", "stop", "get", "configure"]
 Signal_whitelist = ["value", "put"]
 Positioner_whitelist = ["settle_time", "timeout", "egu", "limits", "move",
-                        "position", "moving"]
+                        "position", "moving", "set_position",
+                        "set_current_position"]
 
 
 class _TabCompletionHelper:
@@ -399,6 +401,8 @@ def ophydobj_info(obj, subdevice_filter=None, devices=None):
     elif isinstance(obj, Device):
         return device_info(obj, subdevice_filter=subdevice_filter,
                            devices=devices)
+    elif isinstance(obj, PositionerBase):
+        return positionerbase_info(obj)
     else:
         return {}
 
@@ -438,6 +442,12 @@ def device_info(device, subdevice_filter=None, devices=None):
                 info['position'] = float(info['position'])
         except Exception:
             ...
+
+    try:
+        # Best-effort try at getting the units
+        info['units'] = get_units(device)
+    except Exception:
+        pass
 
     if device not in devices:
         devices.add(device)
@@ -485,6 +495,13 @@ def signal_info(signal):
     units = get_units(signal)
     return dict(name=name, kind=kind, is_device=False, value=value,
                 units=units)
+
+
+def positionerbase_info(positioner):
+    name = get_name(positioner, default='positioner')
+    kind = get_kind(positioner)
+    return dict(name=name, kind=kind, is_device=True,
+                position=positioner.position)
 
 
 def set_engineering_mode(expert):
@@ -810,6 +827,14 @@ class FltMvInterface(MvInterface):
         """
 
         return tweak_base(self)
+
+    def set_position(self, position):
+        """
+        Alias for set_current_position.
+
+        Will fail if the motor does not have set_current_position.
+        """
+        self.set_current_position(position)
 
 
 def setup_preset_paths(**paths):

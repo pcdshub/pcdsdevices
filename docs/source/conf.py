@@ -31,7 +31,7 @@ module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../')
 sys.path.insert(0, module_path)
 
 import pcdsdevices  # isort: skip
-import pcdsdevices.component  # isort: skip
+import pcdsdevices.device  # isort: skip
 
 
 # -- General configuration ------------------------------------------------
@@ -274,7 +274,7 @@ short_component_names = {
     ophyd.Component: '',
     ophyd.DynamicDeviceComponent: 'DDC',
     ophyd.FormattedComponent: 'FCpt',
-    pcdsdevices.component.UnrelatedComponent: 'UCpt',
+    pcdsdevices.device.UnrelatedComponent: 'UCpt',
 }
 
 

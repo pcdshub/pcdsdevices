@@ -15,7 +15,7 @@ from ophyd.pv_positioner import PVPositioner, PVPositionerPC
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
 from . import utils
-from .component import UnrelatedComponent as UCpt
+from .device import UnrelatedComponent as UCpt
 from .epics_motor import BeckhoffAxis
 from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
