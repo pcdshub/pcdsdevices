@@ -45,7 +45,7 @@ class LAMP(BaseInterface, Device):
 
 class LAMPMagneticBottle(BaseInterface, Device):
     """
-    LAMP_MBES Motion Class
+    LAMPMagneticBottle Motion Class
 
     This class controls motors fixed to the LAMP Motion system for the IP1
     endstation in TMO with Magnetic Bottle configuration
