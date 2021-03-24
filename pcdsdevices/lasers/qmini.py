@@ -82,7 +82,7 @@ class QminiSpectrometer(Device):
 
 class QminiWithEvr(QminiSpectrometer):
     """
-    A class for Qmini spectromters that use an EVR for hardware triggering.
+    A class for Qmini spectrometers that use an EVR for hardware triggering.
     """
     def __init__(self, prefix, *args, evr_pv=None, evr_ch=None, **kwargs):
         self._evr_pv = evr_pv
