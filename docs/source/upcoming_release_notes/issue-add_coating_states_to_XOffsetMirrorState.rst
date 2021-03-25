@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- mghaly
+- ghalym
