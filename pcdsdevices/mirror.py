@@ -20,6 +20,7 @@ from .inout import InOutRecordPositioner
 from .interface import BaseInterface, FltMvInterface
 from .signal import PytmcSignal
 from .utils import get_status_value
+from .pmps import TwinCATStatePMPS
 
 logger = logging.getLogger(__name__)
 
@@ -365,7 +366,6 @@ class XOffsetMirror(BaseInterface, Device):
                           kind='normal')
     couple_status_x = Cpt(PytmcSignal, ':ALREADY_COUPLED_X', io='i',
                           kind='normal')
-
     # RMS Cpts:
     y_enc_rms = Cpt(PytmcSignal, ':ENC:Y:RMS', io='i', kind='normal',
                     doc='Yup encoder RMS deviation [um]')
@@ -757,3 +757,29 @@ pitch: ({self.pitch.prefix})
     description: {p_description}
     pitch_enc_rms: {p_enc_rms}
 """
+
+
+class CoatingState(Device):
+    # Coating States
+    coating = Cpt(TwinCATStatePMPS, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
+
+
+class XOffsetMirrorState(XOffsetMirror, CoatingState):
+    """
+    X-ray Offset Mirror with Yleft/Yright
+
+    1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+
+    With Coating State selection implemented
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # UI representation
+    _icon = 'fa.minus-square'
