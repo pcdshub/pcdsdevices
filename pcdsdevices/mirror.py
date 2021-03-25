@@ -783,4 +783,3 @@ class XOffsetMirrorState(XOffsetMirror, CoatingState):
     """
     # UI representation
     _icon = 'fa.minus-square'
-    pass
