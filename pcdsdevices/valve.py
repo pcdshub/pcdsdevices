@@ -170,6 +170,8 @@ class ValveBase(Device):
     """
     Base class for valves.
 
+    Valves are normally closed by default.
+
     Newer class. This and below are still missing some functionality.
     Still need to work out replacement of old classes.
     """
@@ -324,6 +326,29 @@ class VVCNO(Device):
                    doc='used for normally open valves')
     close_do = Cpt(EpicsSignalRO, ':CLS_DO_RBV', kind='normal',
                    doc='PLC Output to close valve')
+
+
+class VRCNO(VVCNO, LightpathMixin):
+    """Gate Valve, Controlled, Normally Open."""
+
+    # Configuration for lightpath
+    lightpath_cpts = ['open_limit', 'closed_limit']
+    _icon = 'fa.hourglass'
+
+    state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal', doc='Valve state')
+
+    error_reset = Cpt(EpicsSignalWithRBV, ':ALM_RST', kind='normal',
+                      doc='Reset Error state to valid by toggling this')
+    open_limit = Cpt(EpicsSignalRO, ':OPN_DI_RBV', kind='hinted',
+                     doc='Open limit switch digital input')
+    closed_limit = Cpt(EpicsSignalRO, ':CLS_DI_RBV', kind='hinted',
+                       doc='Closed limit switch digital input')
+
+    def _set_lightpath_states(self, lightpath_values):
+        """Callback for updating inserted/removed for lightpath."""
+
+        self._inserted = lightpath_values[self.closed_limit]['value']
+        self._removed = lightpath_values[self.open_limit]['value']
 
 
 class VCN(Device):
