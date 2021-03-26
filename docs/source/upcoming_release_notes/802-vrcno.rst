@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- bosum123
+- Mbosum
