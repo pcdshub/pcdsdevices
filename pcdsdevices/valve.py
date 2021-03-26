@@ -228,41 +228,6 @@ class VRC(VVC, LightpathMixin):
         self._removed = lightpath_values[self.open_limit]['value']
 
 
-class VRCNO(Device, LightpathMixin):
-    """Gate Valve, Controlled, Normally Open."""
-
-    # Configuration for lightpath
-    lightpath_cpts = ['open_limit', 'closed_limit']
-    _icon = 'fa.hourglass'
-
-    close_command = Cpt(EpicsSignalWithRBV, ':CLS_SW', kind='normal',
-                        doc='Epics command to close valve')
-    close_override = Cpt(EpicsSignalWithRBV, ':FORCE_CLS', kind='omitted',
-                         doc=('Epics Command for open the valve in override '
-                              'mode'))
-    override_on = Cpt(EpicsSignalWithRBV, ':OVRD_ON', kind='omitted',
-                      doc='Epics Command to set/reset Override mode')
-    close_ok = Cpt(EpicsSignalRO, ':CLS_OK_RBV', kind='normal',
-                   doc='used for normally open valves')
-    close_do = Cpt(EpicsSignalRO, ':CLS_DO_RBV', kind='normal',
-                   doc='PLC Output to close valve')
-
-    state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal', doc='Valve state')
-
-    error_reset = Cpt(EpicsSignalWithRBV, ':ALM_RST', kind='normal',
-                      doc='Reset Error state to valid by toggling this')
-    open_limit = Cpt(EpicsSignalRO, ':OPN_DI_RBV', kind='hinted',
-                     doc='Open limit switch digital input')
-    closed_limit = Cpt(EpicsSignalRO, ':CLS_DI_RBV', kind='hinted',
-                       doc='Closed limit switch digital input')
-
-    def _set_lightpath_states(self, lightpath_values):
-        """Callback for updating inserted/removed for lightpath."""
-
-        self._inserted = lightpath_values[self.closed_limit]['value']
-        self._removed = lightpath_values[self.open_limit]['value']
-
-
 class VGC(VRC):
     """Class for Controlled Gate Valves."""
     diff_press_ok = Cpt(EpicsSignalRO, ':DP_OK_RBV', kind='normal',
@@ -361,6 +326,29 @@ class VVCNO(Device):
                    doc='used for normally open valves')
     close_do = Cpt(EpicsSignalRO, ':CLS_DO_RBV', kind='normal',
                    doc='PLC Output to close valve')
+
+
+class VRCNO(VVCNO, LightpathMixin):
+    """Gate Valve, Controlled, Normally Open."""
+
+    # Configuration for lightpath
+    lightpath_cpts = ['open_limit', 'closed_limit']
+    _icon = 'fa.hourglass'
+
+    state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal', doc='Valve state')
+
+    error_reset = Cpt(EpicsSignalWithRBV, ':ALM_RST', kind='normal',
+                      doc='Reset Error state to valid by toggling this')
+    open_limit = Cpt(EpicsSignalRO, ':OPN_DI_RBV', kind='hinted',
+                     doc='Open limit switch digital input')
+    closed_limit = Cpt(EpicsSignalRO, ':CLS_DI_RBV', kind='hinted',
+                       doc='Closed limit switch digital input')
+
+    def _set_lightpath_states(self, lightpath_values):
+        """Callback for updating inserted/removed for lightpath."""
+
+        self._inserted = lightpath_values[self.closed_limit]['value']
+        self._removed = lightpath_values[self.open_limit]['value']
 
 
 class VCN(Device):
