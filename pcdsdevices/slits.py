@@ -66,6 +66,10 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         self._has_subscribed = False
         super().__init__(*args, **kwargs)
         self.nominal_aperture.put(nominal_aperture)
+        self.hg = self.xwidth
+        self.vg = self.ywidth
+        self.ho = self.xcenter
+        self.vo = self.ycenter
 
     def format_status_info(self, status_info):
         """
@@ -115,7 +119,7 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
 (ho, vo): ({x_center}, {y_center}) [{c_units}]
 """
 
-    def move(self, size, wait=False, moved_cb=None, timeout=None):
+    def move(self, width, height=None, *, wait=False, moved_cb=None, timeout=None):
         """
         Set the dimensions of the width/height of the gap to width paramater.
 
@@ -145,10 +149,10 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         """
 
         # Check for rectangular setpoint
-        if isinstance(size, tuple):
-            (width, height) = size
-        else:
-            width, height = size, size
+        if isinstance(width, tuple):
+            (width, height) = width
+        elif height is None:
+            height = width
         # Instruct both width and height then combine the output status
         x_stat = self.xwidth.move(width, wait=False, timeout=timeout)
         y_stat = self.ywidth.move(height, wait=False, timeout=timeout)
@@ -165,6 +169,12 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
                 self.ywidth.stop()
                 raise
         return status
+
+    def __call__(self, width=None, height=None):
+        if width is None and height is None:
+            return self.wm()
+        else:
+            return self.move(width=width, height=height)
 
     @property
     def current_aperture(self):
