@@ -14,7 +14,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.status import DeviceStatus, MoveStatus, SubscriptionStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
-from ophyd.utils.epics_pvs import raise_if_disconnected
+from ophyd.utils.epics_pvs import raise_if_disconnected, set_and_wait
 
 from pcdsdevices.pv_positioner import PVPositionerComparator
 
@@ -310,6 +310,9 @@ class PCDSMotorBase(EpicsMotorInterface):
         motor record.  This is a reduced version of the standard EPICS
         'SPMG' field.  Setting to 'STOP', 'PAUSE' and 'GO'  will respectively
         stop motor movement, pause a move in progress, or resume a paused move.
+        3. In some cases, puts to the setpoint PV cannot be waited on. In fact
+        this seems to brick the whole python session, requiring a slightly
+        modified set_current_position method.
     """
 
     # Disable missing field that our EPICS motor record lacks
@@ -406,6 +409,20 @@ class PCDSMotorBase(EpicsMotorInterface):
             return
         arg = self.prefix
         os.system(executable + ' ' + arg)
+
+    @raise_if_disconnected
+    def set_current_position(self, pos):
+        """
+        Change the offset such that pos is the current position.
+
+        This is a re-implementation of the ophyd set_current_position, which
+        does not work on some legacy PCDS motors because they do not use the
+        standard motor record. This non-standard record does not respond
+        correctly to wait=True on the VAL field while SET/USE is set to SET.
+        """
+        self.set_use_switch.put(1, wait=True)
+        set_and_wait(self.user_setpoint, pos, timeout=1)
+        self.set_use_switch.put(0, wait=True)
 
 
 class IMS(PCDSMotorBase):
