@@ -418,7 +418,7 @@ class PCDSMotorBase(EpicsMotorInterface):
         This is a re-implementation of the ophyd set_current_position, which
         does not work on some legacy PCDS motors because they do not use the
         standard motor record. This non-standard record does not respond
-        correctly to wait=True on the VAL field with SET/USE set to USE.
+        correctly to wait=True on the VAL field while SET/USE is set to SET.
         """
         self.set_use_switch.put(1, wait=True)
         set_and_wait(self.user_setpoint, pos, timeout=1)
