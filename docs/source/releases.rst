@@ -2,6 +2,86 @@ Release History
 ###############
 
 
+v4.3.0 (2021-04-02)
+===================
+
+API Changes
+-----------
+- new LAMPMangeticBottle device class
+- Deprecate ``pcdsdevices.component`` in favor of ``pcdsdevices.device``
+  to avoid circular imports and to more closely mirror the structure of
+  ``ophyd``.
+
+Features
+--------
+- Add FuncPositioner as a replacement for VirtualMotor.
+  This is a "dirty" positioner intended for quick hacks
+  in the beamline setup files, instantiated via handing
+  various functions to the init.
+- Add ``EpicsSignalEditMD`` and ``EpicsSignalROEditMD`` classes for
+  situations where you need to override the control system's
+  discovered metadata.
+- Adding a normally open class (VRCNO) for VRC gate valves to valve module. VRCNO extends VVCNO and adds VRC functionality.
+- Add ``SyncAxis`` to replace deprecated ``SyncAxesBase`` with expanded
+  feature set, more sensible defaults, and more solid foundation.
+- Add ``set_current_position`` to all ``PseudoPositioner`` classes.
+- Add ``invert`` parameter to ``DelayBase`` for inverting any delay stage.
+- Add ``set_position`` as an alias to ``set_current_position``
+- New motor configuration for LAMP.  Hoping we only have two configurations to switch between
+- Add ``InterfaceDevice`` and ``InterfaceComponent`` as a tool for
+  including pre-build objects in a device at init time.
+- Add ``to_interface`` helper function for converting normal ``Device``
+  classes into ``InterfaceDevice`` classes.
+- Add ``ObjectComponent`` as a tool for including pre-build objects in
+  a device at class definition time.
+
+Device Updates
+--------------
+- Add custom status prints for DelayBase and SyncAxis
+- QminiSpectrometer: A few variety metadata updates for Typhos screens.
+- Set EpicsMotor soft limit kinds to "config" for use in typhos.
+
+New Devices
+-----------
+- QminiWithEvr: A new class with added PVs for controlling an EVR from a
+  Typhos screen.
+- LAMPMagneticBottle
+
+Bugfixes
+--------
+- Include hacky fix from XPP/XCS that allows LaserTiming to complete moves
+  in all situations. The real cause and ideas for a clean fix are not
+  currently known/explored.
+- Fix issue where Newport motors would not show units in their status prints.
+- Fix issue where SyncAxis was not compatible with PseudoPositioners as
+  its synchronized "real" motors.
+- Fix an issue where calling ``set_current_position`` on certain motors would
+  cause the ipython session to freeze, leaving the motor in the ``set`` state
+  instead of bringing it back to the ``use`` state.
+- Hacky workaround for IMS motor part number strings being unable to be read
+  through pyepics when they contain invalid utf-8 characters.
+- Fix issue where ``Newport`` user_readback had incorrect metadata.
+- :class:`~pcdsdevices.signal.UnitConversionDerivedSignal` will now pass
+  through the ``units`` keyword argument in its metadata (``SUB_META`` or
+  ``'meta'``) callbacks.  It will be included even if the original signal
+  did not include ``units`` in metadata callbacks. (#767)
+- Fix an issue where various special Signal classes had their kinds
+  improperly reported as "hinted".
+
+Maintenance
+-----------
+- Make unit handling in status_info more consistent to improve reliability of
+  status printouts.
+
+Contributors
+------------
+- Mbosum
+- klauer
+- tjohnson
+- zllentz
+
+
+
 v4.2.0 (2021-03-03)
 ===================
 
