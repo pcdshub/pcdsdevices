@@ -46,6 +46,7 @@ New Devices
 - QminiWithEvr: A new class with added PVs for controlling an EVR from a
   Typhos screen.
 - LAMPMagneticBottle
+- XOffsetMirrorState for mirror coatings
 
 Bugfixes
 --------
@@ -76,6 +77,7 @@ Maintenance
 Contributors
 ------------
 - Mbosum
+- ghalym
 - klauer
 - tjohnson
 - zllentz
