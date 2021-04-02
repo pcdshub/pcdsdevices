@@ -7,7 +7,6 @@ v4.3.0 (2021-04-02)
 
 API Changes
 -----------
-- new LAMPMangeticBottle device class
 - Deprecate ``pcdsdevices.component`` in favor of ``pcdsdevices.device``
   to avoid circular imports and to more closely mirror the structure of
   ``ophyd``.
