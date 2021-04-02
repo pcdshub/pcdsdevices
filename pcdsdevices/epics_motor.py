@@ -642,6 +642,35 @@ class OffsetMotor(OffsetMotorBase):
     motor = FCpt(IMS, '{self._motor_prefix}')
 
 
+class OffsetIMSWithPreset(OffsetMotorBase):
+    """
+    Offset IMS with an additiona Offset _SET PV.
+
+    This motor puts to an additional PV (_SET) during `set_current_postion`.
+    """
+    motor = FCpt(IMS, '{self._motor_prefix}')
+    offset_set_pv = FCpt(EpicsSignal, '{self._prefix}_SET', kind='normal')
+
+    # override the set_current_position
+    def set_current_position(self, position):
+        '''
+        Override this method defined in OffsetMotorBase to allow setting the
+        new current position to the _SET pv as well.
+
+        Calculate and configure the user_offset value, indicating the provided
+        ``position`` as the new current position.
+
+        Parameters
+        ----------
+        position : number
+            The new current position.
+        '''
+        self.user_offset.put(0.0)
+        new_offset = position - self.position[0]
+        self.offset_set_pv.put(new_offset)
+        self.user_offset.put(new_offset)
+
+
 class PMC100(PCDSMotorBase):
     """
     PCDS implementation of the Motor Record PMC100 motors.

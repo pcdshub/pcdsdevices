@@ -9,7 +9,8 @@ from ophyd.status import wait as status_wait
 from pcdsdevices.epics_motor import (IMS, PMC100, BeckhoffAxis, EpicsMotor,
                                      EpicsMotorInterface, Motor,
                                      MotorDisabledError, Newport,
-                                     PCDSMotorBase, OffsetMotor)
+                                     PCDSMotorBase, OffsetMotor,
+                                     OffsetIMSWithPreset)
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +90,30 @@ def fake_beckhoff():
     Test Beckhoff-specific overrides
     """
     return fake_motor(BeckhoffAxis)
+
+
+@pytest.fixture(scope='function')
+def fake_offset_ims():
+    off_ims = make_fake_device(OffsetMotor)('FAKE:OFFSET:IMS',
+                                            motor_prefix='MOTOR:PREFIX',
+                                            name='fake_offset_ims')
+    motor_setup(off_ims.motor)
+    # start with motor position at 1
+    off_ims.motor.user_readback.sim_put(1)
+    return off_ims
+
+
+@pytest.fixture(scope='function')
+def fake_offset_ims_with_preset():
+    off_ims = make_fake_device(OffsetIMSWithPreset)(
+        'OFFSET:IMS:WITH:PRESET',
+        motor_prefix='MOTOR:PREFIX',
+        name='fake_offset_ims_with_preset')
+
+    motor_setup(off_ims.motor)
+    # start with motor position at 1
+    off_ims.motor.user_readback.sim_put(1)
+    return off_ims
 
 
 def test_epics_motor_soft_limits(fake_epics_motor):
@@ -265,24 +290,6 @@ def test_motor_factory():
     assert isinstance(m, EpicsMotor)
 
 
-@pytest.mark.parametrize("cls", [PCDSMotorBase, IMS, Newport, PMC100,
-                                 BeckhoffAxis, EpicsMotor])
-@pytest.mark.timeout(5)
-def test_disconnected_motors(cls):
-    cls('MOTOR', name='motor')
-
-
-@pytest.fixture(scope='function')
-def fake_offset_ims(fake_ims):
-    off_ims = make_fake_device(OffsetMotor)('FAKE:OFFSET:IMS',
-                                            motor_prefix='MOTOR:PREFIX',
-                                            name='fake_offset_ims')
-    motor_setup(off_ims.motor)
-    # start with motor position at 1
-    off_ims.motor.user_readback.sim_put(1)
-    return off_ims
-
-
 def test_fake_offset_ims(fake_offset_ims):
     off_ims = fake_offset_ims
     # with motor position at 1
@@ -322,3 +329,33 @@ def test_fake_offset_ims(fake_offset_ims):
     # pseudo pos == real_pos.motor - self.user_offset.get()
     # -6 - 4 = -10
     assert off_ims.pseudo_motor.position == -10
+
+
+def test_offset_ims_with_preset(fake_offset_ims_with_preset):
+    off_ims = fake_offset_ims_with_preset
+    # set current position to 5
+    off_ims.set_current_position(5)
+    # new_offset = position - self.position[0]
+    # new_offset = 5 - 1 => 4
+    logger.debug('New Offset: %d', off_ims.user_offset.get())
+    assert off_ims.user_offset.get() == 4
+    # because use_ims_preset == True we should have the _SET pv with same value
+    assert off_ims.offset_set_pv.get() == 4
+    logger.debug('Motor position %d', off_ims.motor.position)
+    # if new offset 4, motor pos == 1
+    # pseudo pos = real_pos.motor - self.user_offset.get()
+    # 1 - (4) = -3
+    assert off_ims.pseudo_motor.position == -3
+
+
+@pytest.mark.parametrize("cls", [PCDSMotorBase, IMS, Newport, PMC100,
+                                 BeckhoffAxis, EpicsMotor])
+@pytest.mark.timeout(5)
+def test_disconnected_motors(cls):
+    cls('MOTOR', name='motor')
+
+
+@pytest.mark.parametrize("cls", [OffsetMotor, OffsetIMSWithPreset])
+@pytest.mark.timeout(5)
+def test_disconnected_offset_motors(cls):
+    cls('MOTOR', motor_prefix='MOTOR:PREFIX', name='motor')

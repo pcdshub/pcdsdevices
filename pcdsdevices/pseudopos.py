@@ -1008,11 +1008,12 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
     pseudo_motor = Cpt(PseudoSingleInterface, kind='normal')
     user_offset = Cpt(EpicsSignal, '', kind='normal')
 
-    def __init__(self, prefix, motor_prefix, * args, **kwargs):
+    def __init__(self, prefix, motor_prefix, *args, **kwargs):
         if self.__class__ is OffsetMotorBase:
             raise TypeError('OffsetMotorBase must be subclassed with '
                             'a "motor" component, the real motor to move.')
         self._motor_prefix = motor_prefix
+        self._prefix = prefix
         super().__init__(prefix, *args, **kwargs)
 
     @pseudo_position_argument
@@ -1081,7 +1082,7 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
 
         Parameters
         ----------
-        position
+        position : number
             The new current position.
         '''
         self.user_offset.put(0.0)
