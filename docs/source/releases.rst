@@ -1,7 +1,6 @@
 Release History
 ###############
 
-
 v4.3.0 (2021-04-02)
 ===================
 
@@ -80,7 +79,6 @@ Contributors
 - klauer
 - tjohnson
 - zllentz
-
 
 
 v4.2.0 (2021-03-03)
