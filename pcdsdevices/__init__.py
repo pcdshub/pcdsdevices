@@ -30,7 +30,7 @@ try:
 except AttributeError:
     pass
 
-del epics.ca
+del epics
 del make_new_bts
 
 __version__ = get_versions()['version']
