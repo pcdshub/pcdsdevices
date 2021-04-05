@@ -1,6 +1,18 @@
 Release History
 ###############
 
+v4.3.2 (2021-04-05)
+==================
+
+Bugfixes
+--------
+- Fix an issue where pcdsdevices would break pyepics and ophyd in such a
+  way to cause thousands of lines of teardown spam at exit.
+
+Contributors
+------------
+- zllentz
+
 
 v4.3.1 (2021-04-02)
 ===================
