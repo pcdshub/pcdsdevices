@@ -18,9 +18,9 @@ from .doc_stubs import basic_positioner_init
 from .epics_motor import BeckhoffAxis
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, FltMvInterface
+from .pmps import TwinCATStatePMPS
 from .signal import PytmcSignal
 from .utils import get_status_value
-from .pmps import TwinCATStatePMPS
 
 logger = logging.getLogger(__name__)
 
@@ -759,9 +759,35 @@ pitch: ({self.pitch.prefix})
 """
 
 
+class TwinCATMirrorStripe(TwinCATStatePMPS):
+    """
+    Subclass of TwinCATStatePMPS for the mirror coatings.
+
+    Unless most TwinCATStatePMPS, we have:
+    - Only in_states
+    - No in_states block the beam
+
+    We also clear the states_list and set _in_if_not_out to True
+    to automatically pick up the coatings from each mirror enum.
+    """
+    states_list = []
+    in_states = []
+    out_states = []
+    _in_if_not_out = True
+
+    @property
+    def transmission(self):
+        """The mirror coating never blocks the beam."""
+        return 1
+
+
 class CoatingState(Device):
-    # Coating States
-    coating = Cpt(TwinCATStatePMPS, ':COATING:STATE', kind='hinted',
+    """
+    Extra parent class to put "coating" as the first device in order.
+
+    This makes it appear at the top of the screen in typhos.
+    """
+    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
                   doc='Control of the coating states via saved positions.')
 
 
