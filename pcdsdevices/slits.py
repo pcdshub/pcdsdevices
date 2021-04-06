@@ -119,19 +119,21 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
 (ho, vo): ({x_center}, {y_center}) [{c_units}]
 """
 
-    def move(self, width, height=None, *, wait=False, moved_cb=None, timeout=None):
+    def move(self, width, height=None, *, wait=False, moved_cb=None,
+             timeout=None):
         """
-        Set the dimensions of the width/height of the gap to width paramater.
+        Set the dimensions of the width/height of the slits gap.
 
         Parameters
         ---------
         size : float or tuple of float
-            Target size for slits in both x and y axis. Either specify as a
-            tuple for a rectangular aperture, ``(width, height)``, or set both
-            with single floating point value to use a square opening.
+            Target size for slits in both x and y axis. If a square gap is
+            desired, a single value can be entered. Otherwise, the width and
+            height can both be entered, either as separate arguments or as a
+            tuple.
 
-        wait : bool
-            If `True`, block until move is completed.
+        wait : bool, optional
+            If `True`, block until move is completed. Defaults to `False`.
 
         timeout : float, optional
             Maximum time for the motion. If `None` is given, the default value
@@ -171,6 +173,9 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         return status
 
     def __call__(self, width=None, height=None):
+        """
+        If arguments are provided, attempt a move. Otherwise, query position.
+        """
         if width is None and height is None:
             return self.wm()
         else:
