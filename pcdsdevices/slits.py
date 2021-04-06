@@ -150,8 +150,14 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
             motors.
         """
 
+        # Check for missing size
+        if width is None and height is None:
+            raise TypeError("move() missing 1 required positional "
+                            "argument: 'width'")
+        elif width is None:
+            width = height
         # Check for rectangular setpoint
-        if isinstance(width, tuple):
+        elif isinstance(width, tuple):
             (width, height) = width
         elif height is None:
             height = width
