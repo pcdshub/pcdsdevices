@@ -75,6 +75,13 @@ def test_slit_motion(fake_slits):
     assert status.done and status.success
 
 
+def test_slit_interface(fake_slits):
+    logger.debug('test_slits_interface')
+    slits = fake_slits
+    slits(3, 5)
+    assert slits() == (3, 5)
+
+
 def test_slit_subscriptions(fake_slits):
     logger.debug('test_slit_subscriptions')
     slits = fake_slits
