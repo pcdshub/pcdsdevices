@@ -18,9 +18,9 @@ from .doc_stubs import basic_positioner_init
 from .epics_motor import BeckhoffAxis
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, FltMvInterface
+from .pmps import TwinCATStatePMPS
 from .signal import PytmcSignal
 from .utils import get_status_value
-from .pmps import TwinCATStatePMPS
 
 logger = logging.getLogger(__name__)
 
@@ -759,9 +759,21 @@ pitch: ({self.pitch.prefix})
 """
 
 
+class TwinCATMirrorStripe(TwinCATStatePMPS):
+    # Select auto mode: get states from EPICS, every state is IN
+    states_list = []
+    in_states = []
+    out_states = []
+    _in_if_not_out = True
+
+    @property
+    def transmission(self):
+        return 1
+
+
 class CoatingState(Device):
     # Coating States
-    coating = Cpt(TwinCATStatePMPS, ':COATING:STATE', kind='hinted',
+    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
                   doc='Control of the coating states via saved positions.')
 
 
