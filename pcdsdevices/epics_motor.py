@@ -22,7 +22,7 @@ from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
 from .pseudopos import OffsetMotorBase, delay_class_factory
 from .signal import EpicsSignalEditMD, EpicsSignalROEditMD, PytmcSignal
-from .utils import get_status_float
+from .utils import get_status_float, get_status_value
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -103,10 +103,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         status: str
             Formatted string with all relevant status information.
         """
-        description = get_status_float(status_info, 'description', 'value',
-                                       precision=3)
-        units = get_status_float(status_info, 'user_setpoint', 'units',
-                                 precision=3)
+        description = get_status_value(status_info, 'description', 'value')
+        units = get_status_value(status_info, 'user_setpoint', 'units')
         dial = get_status_float(status_info, 'dial_position', 'value',
                                 precision=3)
         user = get_status_float(status_info, 'position', precision=3)
