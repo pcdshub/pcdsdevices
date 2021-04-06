@@ -760,7 +760,16 @@ pitch: ({self.pitch.prefix})
 
 
 class TwinCATMirrorStripe(TwinCATStatePMPS):
-    # Select auto mode: get states from EPICS, every state is IN
+    """
+    Subclass of TwinCATStatePMPS for the mirror coatings.
+
+    Unless most TwinCATStatePMPS, we have:
+    - Only in_states
+    - No in_states block the beam
+
+    We also clear the states_list and set _in_if_not_out to True
+    to automatically pick up the coatings from each mirror enum.
+    """
     states_list = []
     in_states = []
     out_states = []
@@ -768,11 +777,16 @@ class TwinCATMirrorStripe(TwinCATStatePMPS):
 
     @property
     def transmission(self):
+        """The mirror coating never blocks the beam."""
         return 1
 
 
 class CoatingState(Device):
-    # Coating States
+    """
+    Extra parent class to put "coating" as the first device in order.
+
+    This makes it appear at the top of the screen in typhos.
+    """
     coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
                   doc='Control of the coating states via saved positions.')
 
