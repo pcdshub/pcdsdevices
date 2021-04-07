@@ -1,4 +1,5 @@
-from ophyd import Device, Signal, Component as Cpt
+from ophyd import Component as Cpt
+from ophyd import Device, Signal
 
 from .inout import InOutPositioner
 from .interface import BaseInterface, LightpathInOutMixin
@@ -64,4 +65,7 @@ class RTDSL0(RTDSBase):
 
 class RTDSK0(RTDSBase):
     """RTDS Configuration on the SXR Line."""
-    pass
+    lightpath_cpts = ['mpa1', 'mpa2']
+
+    mpa3 = None
+    mpa4 = None
