@@ -32,6 +32,7 @@ from .interface import (BaseInterface, FltMvInterface, LightpathInOutMixin,
 from .pmps import TwinCATStatePMPS
 from .sensors import RTD, TwinCATTempSensor
 from .signal import NotImplementedSignal, PytmcSignal
+from .sim import FastMotor
 from .utils import get_status_float, get_status_value, schedule_task
 from .variety import set_metadata
 
@@ -578,3 +579,10 @@ class ExitSlits(BaseInterface, Device, LightpathInOutMixin):
     def y_states(self):
         """Alias old name. Will deprecate."""
         return self.target
+
+
+class SimLusiSlits(LusiSlits):
+    xwidth = Cpt(FastMotor)
+    ywidth = Cpt(FastMotor)
+    xcenter = Cpt(FastMotor)
+    ycenter = Cpt(FastMotor)
