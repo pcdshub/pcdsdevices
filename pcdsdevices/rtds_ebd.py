@@ -1,4 +1,5 @@
-from ophyd import Device, Signal, Component as Cpt
+from ophyd import Component as Cpt
+from ophyd import Device, Signal
 
 from .inout import InOutPositioner
 from .interface import BaseInterface, LightpathInOutMixin
@@ -56,12 +57,23 @@ class RTDSBase(BaseInterface, Device, LightpathInOutMixin):
 
 
 class RTDSL0(RTDSBase):
-    """RTDS Configuration on the HXR Line."""
+    """
+    RTDS Configuration on the HXR Line.
+
+    mpa4 is an available but unused channel, showing invalid data.
+    """
     lightpath_cpts = ['mpa1', 'mpa2', 'mpa3']
 
     mpa4 = None
 
 
 class RTDSK0(RTDSBase):
-    """RTDS Configuration on the SXR Line."""
-    pass
+    """
+    RTDS Configuration on the SXR Line.
+
+    mpa3 and mpa4 are available but unused channels, showing invalid data.
+    """
+    lightpath_cpts = ['mpa1', 'mpa2']
+
+    mpa3 = None
+    mpa4 = None
