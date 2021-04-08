@@ -22,7 +22,7 @@ from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
 from .pseudopos import OffsetMotorBase, delay_class_factory
 from .signal import EpicsSignalEditMD, EpicsSignalROEditMD, PytmcSignal
-from .utils import get_status_value
+from .utils import get_status_float, get_status_value
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -103,10 +103,12 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         status: str
             Formatted string with all relevant status information.
         """
+        precision = self.user_readback.metadata['precision'] or 3
         description = get_status_value(status_info, 'description', 'value')
         units = get_status_value(status_info, 'user_setpoint', 'units')
-        dial = get_status_value(status_info, 'dial_position', 'value')
-        user = get_status_value(status_info, 'position')
+        dial = get_status_float(status_info, 'dial_position', 'value',
+                                precision=precision)
+        user = get_status_float(status_info, 'position', precision=precision)
 
         low, high = self.limits
         switch_limits = self.check_limit_switches()
@@ -119,7 +121,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         return f"""\
 {name}
 Current position (user, dial): {user}, {dial} [{units}]
-User limits (low, high): {low}, {high} [{units}]
+User limits (low, high): {low:.{precision}f}, {high:.{precision}f} [{units}]
 Preset position: {self.presets.state()}
 Limit Switch: {switch_limits}
 """

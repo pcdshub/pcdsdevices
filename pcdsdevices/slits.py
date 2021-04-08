@@ -32,6 +32,7 @@ from .interface import (BaseInterface, FltMvInterface, LightpathInOutMixin,
 from .pmps import TwinCATStatePMPS
 from .sensors import RTD, TwinCATTempSensor
 from .signal import NotImplementedSignal, PytmcSignal
+from .sim import FastMotor
 from .utils import get_status_float, get_status_value, schedule_task
 from .variety import set_metadata
 
@@ -66,6 +67,10 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         self._has_subscribed = False
         super().__init__(*args, **kwargs)
         self.nominal_aperture.put(nominal_aperture)
+        self.hg = self.xwidth
+        self.vg = self.ywidth
+        self.ho = self.xcenter
+        self.vo = self.ycenter
 
     def format_status_info(self, status_info):
         """
@@ -115,19 +120,21 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
 (ho, vo): ({x_center}, {y_center}) [{c_units}]
 """
 
-    def move(self, size, wait=False, moved_cb=None, timeout=None):
+    def move(self, width, height=None, *, wait=False, moved_cb=None,
+             timeout=None):
         """
-        Set the dimensions of the width/height of the gap to width paramater.
+        Set the dimensions of the width/height of the slits gap.
 
         Parameters
         ---------
         size : float or tuple of float
-            Target size for slits in both x and y axis. Either specify as a
-            tuple for a rectangular aperture, ``(width, height)``, or set both
-            with single floating point value to use a square opening.
+            Target size for slits in both x and y axis. If a square gap is
+            desired, a single value can be entered. Otherwise, the width and
+            height can both be entered, either as separate arguments or as a
+            tuple.
 
-        wait : bool
-            If `True`, block until move is completed.
+        wait : bool, optional
+            If `True`, block until move is completed. Defaults to `False`.
 
         timeout : float, optional
             Maximum time for the motion. If `None` is given, the default value
@@ -144,11 +151,17 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
             motors.
         """
 
+        # Check for missing size
+        if width is None and height is None:
+            raise TypeError("move() missing 1 required positional "
+                            "argument: 'width'")
+        elif width is None:
+            width = height
         # Check for rectangular setpoint
-        if isinstance(size, tuple):
-            (width, height) = size
-        else:
-            width, height = size, size
+        elif isinstance(width, tuple):
+            (width, height) = width
+        elif height is None:
+            height = width
         # Instruct both width and height then combine the output status
         x_stat = self.xwidth.move(width, wait=False, timeout=timeout)
         y_stat = self.ywidth.move(height, wait=False, timeout=timeout)
@@ -165,6 +178,15 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
                 self.ywidth.stop()
                 raise
         return status
+
+    def __call__(self, width=None, height=None):
+        """
+        If arguments are provided, attempt a move. Otherwise, query position.
+        """
+        if width is None and height is None:
+            return self.wm()
+        else:
+            return self.move(width=width, height=height)
 
     @property
     def current_aperture(self):
@@ -557,3 +579,10 @@ class ExitSlits(BaseInterface, Device, LightpathInOutMixin):
     def y_states(self):
         """Alias old name. Will deprecate."""
         return self.target
+
+
+class SimLusiSlits(LusiSlits):
+    xwidth = Cpt(FastMotor)
+    ywidth = Cpt(FastMotor)
+    xcenter = Cpt(FastMotor)
+    ycenter = Cpt(FastMotor)

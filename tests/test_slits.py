@@ -4,14 +4,14 @@ from unittest.mock import Mock
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.slits import Slits
+from pcdsdevices.slits import LusiSlits, SimLusiSlits
 
 logger = logging.getLogger(__name__)
 
 
 @pytest.fixture(scope='function')
 def fake_slits():
-    FakeSlits = make_fake_device(Slits)
+    FakeSlits = make_fake_device(LusiSlits)
     slits = FakeSlits("TST:JAWS:", name='Test Slits')
     # Set centers
     slits.xcenter.readback.sim_put(0.0)
@@ -75,6 +75,13 @@ def test_slit_motion(fake_slits):
     assert status.done and status.success
 
 
+def test_slit_interface():
+    logger.debug('test_slits_interface')
+    slits = SimLusiSlits('SIM:SLIT', name='sim_slits')
+    slits(3, 5)
+    assert slits() == (3, 5)
+
+
 def test_slit_subscriptions(fake_slits):
     logger.debug('test_slit_subscriptions')
     slits = fake_slits
@@ -104,4 +111,4 @@ def test_slit_staging(fake_slits):
 
 @pytest.mark.timeout(5)
 def test_slits_disconnected():
-    Slits("TST:JAWS:", name='Test Slits')
+    LusiSlits("TST:JAWS:", name='Test Slits')
