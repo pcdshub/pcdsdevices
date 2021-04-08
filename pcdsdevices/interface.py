@@ -1566,7 +1566,7 @@ class LightpathMixin(OphydObject):
                     kw = dict(obj=obj)
                     kw.update(kwargs)
                     utils.schedule_task(self._update_lightpath,
-                                        args=args, kwargs=kw, delay=0.2)
+                                        args=args, kwargs=kw, delay=1.0)
         except Exception:
             # Without this, callbacks fail silently
             logger.exception('Error in lightpath update callback for %s.',
