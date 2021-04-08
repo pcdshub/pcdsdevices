@@ -22,7 +22,7 @@ class LICMirror(TwinCATStatePMPS):
 
 class LaserInCoupling(BaseInterface, Device, LightpathInOutMixin):
     """
-    Device to bring the optical laser and the xray laser collinear.
+    Device to bring the optical laser to the sample via mirrors.
     """
     tab_component_names = True
 
