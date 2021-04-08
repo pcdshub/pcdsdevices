@@ -460,7 +460,7 @@ class BeckhoffSlits(SlitsBase):
 
     def __init__(self, prefix, *, name, **kwargs):
         self._started_move = False
-        super().__init__(prefix, name=name, **kwargs)
+        super().__init__(prefix, name=name, nominal_aperture=3, **kwargs)
 
     @exec_queue.sub_value
     def _exec_handler(self, *args, value, old_value, **kwargs):
