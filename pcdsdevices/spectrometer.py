@@ -282,3 +282,9 @@ class Mono(BaseInterface, Device):
                 doc='RTD 7 [deg C]')
     rtd_8 = Cpt(PytmcSignal, ':RTD:08:TEMP', io='i', kind='normal',
                 doc='RTD 8 [deg C]')
+
+    # Lightpath constants
+    inserted = True
+    removed = False
+    transmission = 1
+    SUB_STATE = 'state'
