@@ -103,11 +103,12 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         status: str
             Formatted string with all relevant status information.
         """
+        precision = self.user_readback.metadata['precision']
         description = get_status_value(status_info, 'description', 'value')
         units = get_status_value(status_info, 'user_setpoint', 'units')
         dial = get_status_float(status_info, 'dial_position', 'value',
-                                precision=3)
-        user = get_status_float(status_info, 'position', precision=3)
+                                precision=precision)
+        user = get_status_float(status_info, 'position', precision=precision)
 
         low, high = self.limits
         switch_limits = self.check_limit_switches()
@@ -120,7 +121,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         return f"""\
 {name}
 Current position (user, dial): {user}, {dial} [{units}]
-User limits (low, high): {low:.3f}, {high:.3f} [{units}]
+User limits (low, high): {low:.{precision}f}, {high:.{precision}f} [{units}]
 Preset position: {self.presets.state()}
 Limit Switch: {switch_limits}
 """
