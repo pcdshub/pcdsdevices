@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import IntEnum
 
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
@@ -7,7 +7,7 @@ from .inout import InOutPositioner, InOutPVStatePositioner
 from .interface import BaseInterface, LightpathMixin
 
 
-class Commands(Enum):
+class Commands(IntEnum):
     """Command aliases for opening and closing stoppers."""
     close_valve = 0
     open_valve = 1
@@ -31,7 +31,7 @@ class Stopper(InOutPVStatePositioner):
 
     Attributes
     ----------
-    commands : ~enum.Enum
+    commands : ~enum.IntEnum
         An enum with integer values for `~Commands.open_valve` and
         `~Commands.close_valve` values.
     """

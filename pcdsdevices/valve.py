@@ -2,7 +2,7 @@
 Standard classes for LCLS Gate Valves.
 """
 import logging
-from enum import Enum
+from enum import IntEnum
 
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
@@ -13,7 +13,7 @@ from .stopper import PPSStopper, Stopper  # noqa import PPS for backcompat
 logger = logging.getLogger(__name__)
 
 
-class Commands(Enum):
+class Commands(IntEnum):
     """Command aliases for opening and closing valves."""
     close_valve = 0
     open_valve = 1
