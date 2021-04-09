@@ -37,11 +37,15 @@ class Stopper(InOutPVStatePositioner):
     """
 
     # Limit-based states
-    open_limit = Cpt(EpicsSignalRO, ':OPEN', kind='normal')
-    closed_limit = Cpt(EpicsSignalRO, ':CLOSE', kind='normal')
+    open_limit = Cpt(EpicsSignalRO, ':OPEN', kind='normal',
+                     doc='Reads 1 if the stopper is out, at the open limit.')
+    closed_limit = Cpt(EpicsSignalRO, ':CLOSE', kind='normal',
+                       doc=('Reads 1 if the stopper is in, '
+                            'at the closed limit.'))
 
     # Information on device control
-    command = Cpt(EpicsSignal, ':CMD', kind='omitted')
+    command = Cpt(EpicsSignal, ':CMD', kind='omitted',
+                  doc='Put here to command a stopper move.')
     commands = Commands
 
     _state_logic = {'open_limit': {0: 'defer',
@@ -97,7 +101,9 @@ class PPSStopper(InOutPositioner):
         String associatted with out enum value.
     """
 
-    state = Cpt(EpicsSignalRO, '', string=True, kind='hinted')
+    state = Cpt(EpicsSignalRO, '', string=True, kind='hinted',
+                doc=('Stopper state summary PV that tells us if it is in, '
+                     'out, or inconsistent.'))
     # QIcon for UX
     _icon = 'fa.times-circle'
 
@@ -123,8 +129,10 @@ class PPSStopperL2SI(LightpathMixin, BaseInterface, Device):
     so this Device only serves as a way to check status and display in the
     lightpath.
     """
-    in_signal = Cpt(EpicsSignalRO, 'INSUM', kind='hinted')
-    out_signal = Cpt(EpicsSignalRO, 'OUTSUM', kind='hinted')
+    in_signal = Cpt(EpicsSignalRO, 'INSUM', kind='hinted',
+                    doc='Tells us if the stopper is IN or NOT_IN')
+    out_signal = Cpt(EpicsSignalRO, 'OUTSUM', kind='hinted',
+                     doc='Tells us if the stopper is OUT or NOT_OUT')
 
     # QIcon for UX
     _icon = 'fa.times-circle'
