@@ -66,9 +66,11 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
                      "set_low_limit", "get_high_limit", "set_high_limit"]
 
     set_metadata(EpicsMotor.home_forward, dict(variety='command-proc',
+                                               tags={"confirm"},
                                                value=1))
     EpicsMotor.home_forward.kind = Kind.normal
     set_metadata(EpicsMotor.home_reverse, dict(variety='command-proc',
+                                               tags={"confirm"},
                                                value=1))
     EpicsMotor.home_reverse.kind = Kind.normal
     set_metadata(EpicsMotor.low_limit_switch, dict(variety='bitmask', bits=1))
@@ -706,7 +708,9 @@ class BeckhoffAxisPLC(Device):
 
     set_metadata(err_code, dict(variety='scalar', display_format='hex'))
     set_metadata(cmd_err_reset, dict(variety='command', value=1))
-    set_metadata(cmd_home, dict(variety='command-proc', value=1))
+    set_metadata(cmd_home, dict(variety='command-proc',
+                                value=1,
+                                tags={"confirm"}))
 
 
 class BeckhoffAxis(EpicsMotorInterface):
