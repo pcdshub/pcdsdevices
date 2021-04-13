@@ -130,7 +130,7 @@ class ObjectComponent(Component):
         self._override_kind = kind
         if kind is None:
             kind = Kind.normal
-        super().__init__(object, kind=kind)
+        super().__init__(obj.__class__, kind=kind)
         self.obj = obj
 
     def create_component(self, instance):
