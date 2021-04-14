@@ -3,6 +3,7 @@ import time
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
+from ophyd.ophydobj import Kind
 from ophyd.positioner import SoftPositioner
 from ophyd.signal import AttributeSignal
 from ophyd.sim import SynAxis
@@ -36,10 +37,10 @@ class FastMotor(FltMvInterface, SoftPositioner, Device):
 
     user_readback = Cpt(AttributeSignal, 'position')
 
-    def __init__(self, *args, init_pos=0, **kwargs):
+    def __init__(self, *args, init_pos=0, kind=Kind.hinted, **kwargs):
         for kw in ignore_kwargs:
             kwargs.pop(kw, None)
-        super().__init__(init_pos=init_pos, **kwargs)
+        super().__init__(init_pos=init_pos, kind=kind, **kwargs)
 
     def set_current_position(self, position):
         self._set_position(position)
