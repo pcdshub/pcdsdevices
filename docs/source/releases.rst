@@ -1,6 +1,55 @@
 Release History
 ###############
 
+
+v4.4.0 (2021-04-15)
+===================
+
+API Changes
+-----------
+- Move stoppers into stopper.py, but keep reverse imports for
+  backwards compatibility. This will be deprecated and then removed
+  at a later date.
+
+Device Updates
+--------------
+- Add "confirm" variety metadata tag to ``EpicsMotorInterface`` and
+  ``BeckhoffAxisPLC`` home commands, requiring user confirmation prior to
+  performing the homing motion in auto-generated Typhos screens.
+- Slits objects now have vo, vg, ho, and hg aliases.
+- Motor objects now print out values with a precision of 3 places.
+- Remove mpa3 and mpa4 from rtdsk0, they do not have filters and are always
+  in invalid states that confuse the lightpath.
+- Update the mono spectrometer class to provide status to lightpath.
+- Make sim devices hinted by default so they show up in the
+  best-effort callback in bluesky.
+
+New Devices
+-----------
+- Add PPSStopperL2SI for having readbacks of the new PPS stoppers inside
+  of lightpath.
+
+Bugfixes
+--------
+- Fix issue where the mirror coating states were expecting the default
+  'OUT' position, which does not exist on the real device.
+- Fix an issue where ``ObjectComponent`` instances did not have proper class
+  information.
+- Increase the retry delay in lightpath state updater to avoid issue where
+  long lightpaths would fail to update the first few devices in the path.
+- Fix issue where LICMirror would appear blocking in the mirror states on
+  lightpath.
+- Fix issue where PowerSlits would appear blocking on lightpath for some
+  positions reached by fulfilling normal PMPS requests.
+- Fix issue where SxtTestAbsorber would report no status on lightpath.
+
+Contributors
+------------
+- ZryletTC
+- klauer
+- zllentz
+
+
 v4.3.2 (2021-04-05)
 ==================
 
