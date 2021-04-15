@@ -32,12 +32,6 @@
    src="https://img.shields.io/travis/pcdshub/pcdsdevices/master.svg?style=flat-square"
          alt="Build Status" />
      </a>
-     <!-- Test Coverage -->
-     <a href="https://codecov.io/github/pcdshub/pcdsdevices">
-       <img
-   src="https://img.shields.io/codecov/c/github/pcdshub/pcdsdevices/master.svg?style=flat-square"
-         alt="Test Coverage" />
-     </a>
    </div>
 
 
