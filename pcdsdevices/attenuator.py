@@ -988,6 +988,27 @@ class AT1K4(AttenuatorSXR_Ladder):
     """
 
 
+class AT2K2(AttenuatorSXR_Ladder):
+    """
+    AT2K2 solid attenuator variant from the LCLS-II L2SI project.
+
+    This has 4 blades, each with up to 8 filters each.
+    This class includes a calculator to aid in determining which filters to
+    insert for a given attenuation at a specific energy.
+
+    Parameters
+    ----------
+    prefix : str
+        Solid Attenuator base PV.
+
+    name : str
+        Alias for the Solid Attenuator.
+
+    calculator_prefix : str
+        The prefix for the calculator PVs.
+    """
+
+
 class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     """
     AT2L0 solid attenuator variant from the LCLS-II XTES project.
