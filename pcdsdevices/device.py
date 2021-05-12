@@ -268,6 +268,29 @@ def to_interface(device_class):
 class UpdateComponent(Component):
     """
     A component that copies and updates a parent component in a subclass.
+
+    Use this like any other component, adding it to your device that is a
+    subclass of another device, using the same name as the component you'd like
+    to update.
+
+    Pass to this component class the arguments you'd like to change from the
+    subdevice component definition.
+
+    Some limitations:
+
+    - It is not possible to use this to change the component class itself, e.g.
+      if you would like to change something from a "Component" to a
+      "FormattedComponent".
+    - All arguments to update must be provided as keyword arguments, so we know
+      which value to change in the component class.
+    - UpdateComponent will always fail isinstance checks for Component
+      subclasses.
+    - UpdateComponent is not mutable after instantiation.
+
+    Parameters
+    ----------
+    **kwargs: any, optional
+        keyword arguments to update
     """
     def __init__(self, **kwargs):
         # Store the original kwargs for use later
