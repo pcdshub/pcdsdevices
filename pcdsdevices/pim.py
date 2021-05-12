@@ -16,7 +16,7 @@ from ophyd.signal import EpicsSignal
 
 from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
                                      PCDSAreaDetectorTyphosTrigger)
-from .epics_motor import IMS, BeckhoffAxis
+from .epics_motor import IMS, BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, LightpathInOutMixin
 from .pmps import TwinCATStatePMPS
@@ -318,7 +318,7 @@ class LCLS2ImagerBase(BaseInterface, Device, LightpathInOutMixin):
 
     target = Cpt(TwinCATStatePMPS, ':MMS:STATE', kind='hinted',
                  doc='Control of the diagnostic stack via saved positions.')
-    y_motor = Cpt(BeckhoffAxis, ':MMS', kind='normal',
+    y_motor = Cpt(BeckhoffAxisNoOffset, ':MMS', kind='normal',
                   doc='Direct control of the diagnostic stack motor.')
     detector = Cpt(PCDSAreaDetectorTyphosTrigger, ':CAM:', kind='normal',
                    doc='Area detector settings and readbacks.')
@@ -497,9 +497,9 @@ class XPIM(LCLS2ImagerBase):
         An identifying name for this motor, e.g. 'im3l0'.
     """
 
-    zoom_motor = Cpt(BeckhoffAxis, ':CLZ', kind='normal',
+    zoom_motor = Cpt(BeckhoffAxisNoOffset, ':CLZ', kind='normal',
                      doc='Motorized zoom.')
-    focus_motor = Cpt(BeckhoffAxis, ':CLF', kind='normal',
+    focus_motor = Cpt(BeckhoffAxisNoOffset, ':CLF', kind='normal',
                       doc='Motorized focus.')
 
     zoom_lock = Cpt(PytmcSignal, ':CLZ:LOCK', io='io', kind='config',

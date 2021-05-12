@@ -4,7 +4,7 @@ Module for the SXR Test Absorbers.
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 
-from .epics_motor import BeckhoffAxis
+from .epics_motor import BeckhoffAxisNoOffset
 from .interface import BaseInterface, LightpathMixin
 
 
@@ -20,7 +20,7 @@ class SxrTestAbsorber(BaseInterface, LightpathMixin, Device):
 
     tab_component_names = True
 
-    absorber_vert = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
+    absorber_vert = Cpt(BeckhoffAxisNoOffset, ':MMS:01', kind='normal')
 
     lightpath_cpts = ['absorber_vert']
 

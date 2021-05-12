@@ -16,7 +16,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
 from . import utils
 from .device import UnrelatedComponent as UCpt
-from .epics_motor import BeckhoffAxis
+from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
 from .signal import InternalSignal
@@ -449,7 +449,7 @@ class FEESolidAttenuatorBlade(BaseInterface, Device, LightpathInOutMixin):
     lightpath_cpts = ['state']
 
     state = Cpt(TwinCATInOutPositioner, ':STATE')
-    motor = Cpt(BeckhoffAxis, '')
+    motor = Cpt(BeckhoffAxisNoOffset, '')
 
 
 class GasAttenuator(BaseInterface, Device):
