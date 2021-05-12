@@ -787,6 +787,9 @@ class BeckhoffAxisNoOffset(BeckhoffAxis):
     This is to prevent a user from messing themselves up by changing things
     like user offset and user direction. This is desirable for static beamline
     configurations.
+
+    Rather than removing these entirely, keep them readable in case it is
+    useful to know their values.
     """
     user_offset = UpCpt(cls=EpicsSignalRO)
     user_offset_dir = UpCpt(cls=EpicsSignalRO)
