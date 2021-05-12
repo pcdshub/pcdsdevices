@@ -272,17 +272,13 @@ class UpdateComponent(Component):
     def __init__(self, **kwargs):
         # Store the original kwargs for use later
         self.update_kwargs = kwargs
+        # Begin with "something" as the copy_cpt to avoid issues on edge cases.
+        self.copy_cpt = None
 
     def __set_name__(self, owner, attr_name):
-        # Find the parent cpt of the same name
+        # Find the parent cpt of the same name and copy it
         parent_cpt = getattr(owner.mro()[1], attr_name)
-
-        if isinstance(parent_cpt, UpdateComponent):
-            # If the parent is also an updater, copy the copy
-            self.copy_cpt = copy.copy(parent_cpt.copy_cpt)
-        else:
-            # Otherwise, copy the original
-            self.copy_cpt = copy.copy(parent_cpt)
+        self.copy_cpt = copy.copy(parent_cpt)
 
         # Edit this object as needed
         for key, value in self.update_kwargs.items():
@@ -299,6 +295,10 @@ class UpdateComponent(Component):
     def __getattr__(self, name):
         # If we are missing something, check the copied/edited hostage cpt
         return getattr(self.copy_cpt, name)
+
+    def __copy__(self):
+        # Copy and return the internal component to avoid recursive loops
+        return copy.copy(self.copy_cpt)
 
     def create_component(self, instance):
         # Use our hostage component from __set_name__
