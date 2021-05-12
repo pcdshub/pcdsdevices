@@ -1,3 +1,5 @@
+import copy
+
 from ophyd.device import Component, Device
 from ophyd.ophydobj import Kind
 
@@ -261,3 +263,43 @@ def to_interface(device_class):
         (InterfaceDevice, device_class),
         interface_cpts
         )
+
+
+class UpdateComponent(Component):
+    """
+    A component that copies and updates a parent component in a subclass.
+    """
+    def __init__(self, **kwargs):
+        # Store the original kwargs for use later
+        self.update_kwargs = kwargs
+
+    def __set_name__(self, owner, attr_name):
+        # Find the parent cpt of the same name
+        parent_cpt = getattr(owner.mro()[1], attr_name)
+
+        if isinstance(parent_cpt, UpdateComponent):
+            # If the parent is also an updater, copy the copy
+            self.copy_cpt = copy.copy(parent_cpt.copy_cpt)
+        else:
+            # Otherwise, copy the original
+            self.copy_cpt = copy.copy(parent_cpt)
+
+        # Edit this object as needed
+        for key, value in self.update_kwargs.items():
+            # Set the attrs if they exist
+            if hasattr(self.copy_cpt, key):
+                setattr(self.copy_cpt, key, value)
+            # Add to kwargs if they don't exist
+            else:
+                self.copy_cpt.kwargs[key] = value
+
+        # Defer to the normal component setup for the rest
+        super().__set_name__(owner, attr_name)
+
+    def __getattr__(self, name):
+        # If we are missing something, check the copied/edited hostage cpt
+        return getattr(self.copy_cpt, name)
+
+    def create_component(self, instance):
+        # Use our hostage component from __set_name__
+        return self.copy_cpt.create_component(instance)
