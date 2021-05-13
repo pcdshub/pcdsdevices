@@ -69,7 +69,7 @@ class Kmono(BaseInterface, Device, LightpathMixin):
     @ret_vert.sub_default
     def _ret_state(self, *args, value, **kwargs):
         if value is not None:
-            inserted = value < 0
+            inserted = value < -0.5
             removed = not inserted
             self._update_state(inserted, removed, 'ret')
 
