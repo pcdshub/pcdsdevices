@@ -306,7 +306,11 @@ class UpdateComponent(Component):
         # Edit this object as needed
         for key, value in self.update_kwargs.items():
             # Set the attrs if they exist
-            if hasattr(self.copy_cpt, key):
+            if key == 'kind':
+                value = (Kind[value.lower()] if isinstance(value, str)
+                         else Kind(value))
+                self.copy_cpt.kind = value
+            elif hasattr(self.copy_cpt, key):
                 setattr(self.copy_cpt, key, value)
             # Add to kwargs if they don't exist
             else:

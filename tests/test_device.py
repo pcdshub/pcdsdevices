@@ -1,13 +1,15 @@
 import pytest
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
-from ophyd.ophydobj import Kind
+from ophyd.device import FormattedComponent as FCpt
+from ophyd.device import Kind
 from ophyd.signal import Signal
 
 from pcdsdevices.device import InterfaceComponent as ICpt
 from pcdsdevices.device import InterfaceDevice
 from pcdsdevices.device import ObjectComponent as OCpt
 from pcdsdevices.device import UnrelatedComponent as UCpt
+from pcdsdevices.device import UpdateComponent as UpCpt
 from pcdsdevices.device import to_interface
 
 
@@ -123,3 +125,48 @@ def test_to_interface():
 
     assert some.get() == 1
     assert where.get() == 2
+
+
+def test_update_component():
+    # Make some classes
+    class PrefixSignal(Signal):
+        def __init__(self, prefix, **kwargs):
+            self.prefix = prefix
+            super().__init__(**kwargs)
+
+    class PrefixSignalAlt(PrefixSignal):
+        ...
+
+    class One(Device):
+        cpt = Cpt(PrefixSignal, 'CPT', kind='normal')
+        fcpt = FCpt(PrefixSignal, '{_fcpt}', kind='normal')
+
+        def __init__(self, prefix, fcpt, **kwargs):
+            self._fcpt = fcpt
+            super().__init__(prefix, **kwargs)
+
+    class Two(One):
+        cpt = UpCpt(cls=PrefixSignalAlt, kind='hinted')
+
+    class Three(Two):
+        fcpt = UpCpt(suffix='fcpt{_fcpt}')
+
+    # Check that the modifications were correct
+    assert Two.cpt.cls is PrefixSignalAlt
+    assert Two.cpt.kind == Kind.hinted
+    assert Two.fcpt.suffix == '{_fcpt}'
+
+    assert Three.cpt.cls is PrefixSignalAlt
+    assert Three.cpt.kind == Kind.hinted
+    assert Three.fcpt.suffix == 'fcpt{_fcpt}'
+
+    # Let's make a device
+    three = Three('DEVICE:', '42', name='three')
+
+    # Check the names, kinds, and pvnames
+    assert three.cpt.prefix == 'DEVICE:CPT'
+    assert three.cpt.name == 'three_cpt'
+    assert three.cpt.kind == Kind.hinted
+    assert three.fcpt.prefix == 'fcpt42'
+    assert three.fcpt.name == 'three_fcpt'
+    assert three.fcpt.kind == Kind.normal
