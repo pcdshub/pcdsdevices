@@ -4,9 +4,11 @@ Module for the various spectrometers.
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
+from ophyd.pseudopos import pseudo_position_argument, real_position_argument
 
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface, LightpathMixin
+from .pseudopos import PseudoPositioner, PseudoSingleInterface
 from .signal import InternalSignal, PytmcSignal
 
 
@@ -211,11 +213,45 @@ class VonHamos4Crystal(VonHamosFE):
                          prefix_energy=prefix_energy, **kwargs)
 
 
+class MonoEnergy(BaseInterface, PseudoPositioner):
+    """
+    L2S-I NEH 2.X Monochomator Energy Calculation Motor
+
+    Converts the grating pitch angle in urad to an energy in eV.
+    """
+    energy_calc = Cpt(PseudoSingleInterface, egu='eV', kind='hinted')
+    grating_pitch = Cpt(BeckhoffAxis, '', kind='normal')
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        """
+        Calculate the moves (given energy_calc, get grating_pitch).
+        """
+        energy = pseudo_pos.energy_calc
+        pitch = self.energy_to_pitch(energy)
+        return self.RealPosition(grating_pitch=pitch)
+
+    @real_position_argument
+    def inverse(self, real_pos):
+        """
+        Calculate the readback (given grating_pitch, get energy_calc).
+        """
+        pitch = real_pos.grating_pitch
+        energy = self.pitch_to_energy(pitch)
+        return self.PseudoPosition(energy_calc=energy)
+
+    def energy_to_pitch(self, energy):
+        raise NotImplementedError()
+
+    def pitch_to_energy(self, pitch):
+        raise NotImplementedError()
+
+
 class Mono(BaseInterface, Device):
     """
     L2S-I NEH 2.X Monochromator
 
-    Axilon mechatronic desig with LCLS-II Beckhoff motion architecture.
+    Axilon mechatronic design with LCLS-II Beckhoff motion architecture.
 
     Parameters:
     -----------
@@ -227,6 +263,9 @@ class Mono(BaseInterface, Device):
     """
     # UI representation
     _icon = 'fa.minus-square'
+
+    # The calculated energy as a motor
+    energy = Cpt(MonoEnergy, ':MMS:G_PI', kind='hinted')
 
     # Motor components: can read/write positions
     m_pi = Cpt(BeckhoffAxis, ':MMS:M_PI', kind='normal',
