@@ -6,6 +6,7 @@ from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pseudopos import pseudo_position_argument, real_position_argument
 
+from .beam_stats import BeamEnergyRequest
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface, LightpathMixin
 from .pseudopos import PseudoPositioner, PseudoSingleInterface
@@ -215,7 +216,7 @@ class VonHamos4Crystal(VonHamosFE):
 
 class MonoEnergy(BaseInterface, PseudoPositioner):
     """
-    L2S-I NEH 2.X Monochomator Energy Calculation Motor
+    L2S-I NEH 2.X Monochromator Energy Calculation Motor
 
     Converts the grating pitch angle in urad to an energy in eV.
     """
@@ -247,6 +248,24 @@ class MonoEnergy(BaseInterface, PseudoPositioner):
         raise NotImplementedError()
 
 
+class MonoEnergyWithVernier(MonoEnergy):
+    """
+    L2S-I NEH 2.X Monochromater Energy Calculation With Vernier
+
+    Move the grating pitch and the vernier at the same time
+    """
+    energy_request = FCpt(BeamEnergyRequest, 'RIX', kind='normal')
+
+    @pseudo_position_argument
+    def forward(self, pseudo_pos):
+        """
+        Also move the vernier when we ask for a move.
+        """
+        energy = pseudo_pos.energy_calc
+        pitch = self.energy_to_pitch(energy)
+        return self.RealPosition(grating_pitch=pitch, energy_request=energy)
+
+
 class Mono(BaseInterface, Device):
     """
     L2S-I NEH 2.X Monochromator
@@ -266,6 +285,9 @@ class Mono(BaseInterface, Device):
 
     # The calculated energy as a motor
     energy = Cpt(MonoEnergy, ':MMS:G_PI', kind='hinted')
+    # The energy motor, but also moves the vernier
+    energy_with_vernier = Cpt(MonoEnergyWithVernier, ':MMS:G_PI',
+                              kind='omitted')
 
     # Motor components: can read/write positions
     m_pi = Cpt(BeckhoffAxis, ':MMS:M_PI', kind='normal',
