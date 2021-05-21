@@ -18,6 +18,7 @@ from ophyd.utils.epics_pvs import raise_if_disconnected, set_and_wait
 
 from pcdsdevices.pv_positioner import PVPositionerComparator
 
+from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
 from .pseudopos import OffsetMotorBase, delay_class_factory
@@ -777,6 +778,23 @@ class BeckhoffAxis(EpicsMotorInterface):
             raise
 
         return status
+
+
+class BeckhoffAxisNoOffset(BeckhoffAxis):
+    """
+    A BeckhoffAxis with various fields read-only.
+
+    This is to prevent a user from messing themselves up by changing things
+    like user offset and user direction. This is desirable for static beamline
+    configurations.
+
+    Rather than removing these entirely, keep them readable in case it is
+    useful to know their values.
+    """
+    user_offset = UpCpt(cls=EpicsSignalRO)
+    user_offset_dir = UpCpt(cls=EpicsSignalRO)
+    offset_freeze_switch = UpCpt(cls=EpicsSignalRO)
+    set_use_switch = UpCpt(cls=EpicsSignalRO)
 
 
 class MotorDisabledError(Exception):

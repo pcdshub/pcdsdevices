@@ -1,7 +1,7 @@
 from ophyd import Component as Cpt
 from ophyd import Device
 
-from .epics_motor import BeckhoffAxis
+from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset
 from .interface import BaseInterface, LightpathInOutMixin
 from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATTempSensor
@@ -15,7 +15,7 @@ class ArrivalTimeMonitor(BaseInterface, Device, LightpathInOutMixin):
 
     target = Cpt(TwinCATStatePMPS, ':MMS:STATE', kind='hinted',
                  doc='Control of the diagnostic stack via saved positions.')
-    y_motor = Cpt(BeckhoffAxis, ':MMS:Y', kind='normal',
+    y_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:Y', kind='normal',
                   doc='Direct control of the diagnostic stack motor.')
     x_motor = Cpt(BeckhoffAxis, ':MMS:X', kind='normal',
                   doc='X position of target stack for alignment')

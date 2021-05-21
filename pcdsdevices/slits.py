@@ -26,7 +26,7 @@ from ophyd.status import Status
 from ophyd.status import wait as status_wait
 
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
-from .epics_motor import BeckhoffAxis
+from .epics_motor import BeckhoffAxisNoOffset
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutMixin,
                         LightpathMixin, MvInterface)
 from .pmps import TwinCATStatePMPS
@@ -453,10 +453,10 @@ class BeckhoffSlits(SlitsBase):
     done_south = Cpt(PytmcSignal, ':SOUTH:DMOV', io='i', kind='omitted')
 
     # Raw motors
-    top = Cpt(BeckhoffAxis, ':MMS:TOP', kind='normal')
-    bottom = Cpt(BeckhoffAxis, ':MMS:BOTTOM', kind='normal')
-    north = Cpt(BeckhoffAxis, ':MMS:NORTH', kind='normal')
-    south = Cpt(BeckhoffAxis, ':MMS:SOUTH', kind='normal')
+    top = Cpt(BeckhoffAxisNoOffset, ':MMS:TOP', kind='normal')
+    bottom = Cpt(BeckhoffAxisNoOffset, ':MMS:BOTTOM', kind='normal')
+    north = Cpt(BeckhoffAxisNoOffset, ':MMS:NORTH', kind='normal')
+    south = Cpt(BeckhoffAxisNoOffset, ':MMS:SOUTH', kind='normal')
 
     def __init__(self, prefix, *, name, **kwargs):
         self._started_move = False
@@ -533,17 +533,17 @@ class ExitSlits(BaseInterface, Device, LightpathInOutMixin):
 
     target = Cpt(TwinCATStatePMPS, ':YAG:STATE', kind='hinted',
                  doc='Control of the YAG  stack via saved positions.')
-    yag_motor = Cpt(BeckhoffAxis, ':MMS:YAG', kind='normal',
+    yag_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:YAG', kind='normal',
                     doc='Direct control of the Yag Stack motor.')
-    pitch_motor = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='normal',
+    pitch_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:PITCH', kind='normal',
                       doc='Direct control of the slits assembly pitch  motor.')
     vert_motor = Cpt(
-        BeckhoffAxis, ':MMS:VERT', kind='normal',
+        BeckhoffAxisNoOffset, ':MMS:VERT', kind='normal',
         doc='Direct control of the slits assembly vertical motor.'
     )
-    roll_motor = Cpt(BeckhoffAxis, ':MMS:ROLL', kind='normal',
+    roll_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:ROLL', kind='normal',
                      doc='Direct control of the slits assembly roll motor.')
-    gap_motor = Cpt(BeckhoffAxis, ':MMS:GAP', kind='normal',
+    gap_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:GAP', kind='normal',
                     doc='Direct control of the slits gap  motor.')
     detector = Cpt(PCDSAreaDetectorTyphosTrigger, ':CAM:', kind='normal',
                    doc='Area detector settings and readbacks.')

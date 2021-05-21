@@ -5,7 +5,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 
-from .epics_motor import BeckhoffAxis
+from .epics_motor import BeckhoffAxisNoOffset
 from .interface import BaseInterface, LightpathMixin
 from .signal import InternalSignal, PytmcSignal
 
@@ -37,12 +37,12 @@ class Kmono(BaseInterface, Device, LightpathMixin):
                       'ret_in', 'ret_out',
                       'diode_in', 'diode_out']
 
-    xtal_angle = Cpt(BeckhoffAxis, ':XTAL_ANGLE', kind='normal')
-    xtal_vert = Cpt(BeckhoffAxis, ':XTAL_VERT', kind='normal')
-    ret_horiz = Cpt(BeckhoffAxis, ':RET_HORIZ', kind='normal')
-    ret_vert = Cpt(BeckhoffAxis, ':RET_VERT', kind='normal')
-    diode_horiz = Cpt(BeckhoffAxis, ':DIODE_HORIZ', kind='normal')
-    diode_vert = Cpt(BeckhoffAxis, ':DIODE_VERT', kind='normal')
+    xtal_angle = Cpt(BeckhoffAxisNoOffset, ':XTAL_ANGLE', kind='normal')
+    xtal_vert = Cpt(BeckhoffAxisNoOffset, ':XTAL_VERT', kind='normal')
+    ret_horiz = Cpt(BeckhoffAxisNoOffset, ':RET_HORIZ', kind='normal')
+    ret_vert = Cpt(BeckhoffAxisNoOffset, ':RET_VERT', kind='normal')
+    diode_horiz = Cpt(BeckhoffAxisNoOffset, ':DIODE_HORIZ', kind='normal')
+    diode_vert = Cpt(BeckhoffAxisNoOffset, ':DIODE_VERT', kind='normal')
 
     xtal_in = Cpt(InternalSignal, value=None, kind='omitted')
     xtal_out = Cpt(InternalSignal, value=None, kind='omitted')
@@ -101,9 +101,9 @@ class VonHamosCrystal(BaseInterface, Device):
     """Pitch, yaw, and translation motors for control of a single crystal."""
     tab_component_names = True
 
-    pitch = Cpt(BeckhoffAxis, ':Pitch', kind='normal')
-    yaw = Cpt(BeckhoffAxis, ':Yaw', kind='normal')
-    trans = Cpt(BeckhoffAxis, ':Translation', kind='normal')
+    pitch = Cpt(BeckhoffAxisNoOffset, ':Pitch', kind='normal')
+    yaw = Cpt(BeckhoffAxisNoOffset, ':Yaw', kind='normal')
+    trans = Cpt(BeckhoffAxisNoOffset, ':Translation', kind='normal')
 
 
 class VonHamosFE(BaseInterface, Device):
@@ -131,8 +131,8 @@ class VonHamosFE(BaseInterface, Device):
     tab_component_names = True
 
     # Update PVs in IOC and change here to reflect
-    f = FCpt(BeckhoffAxis, '{self._prefix_focus}', kind='normal')
-    e = FCpt(BeckhoffAxis, '{self._prefix_energy}', kind='normal')
+    f = FCpt(BeckhoffAxisNoOffset, '{self._prefix_focus}', kind='normal')
+    e = FCpt(BeckhoffAxisNoOffset, '{self._prefix_energy}', kind='normal')
 
     def __init__(self, *args, name, prefix_focus, prefix_energy, **kwargs):
         self._prefix_focus = prefix_focus
@@ -168,7 +168,7 @@ class VonHamosFER(VonHamosFE):
         The EPICS base PV of the common rotation motor.
     """
 
-    rot = FCpt(BeckhoffAxis, '{self._prefix_rot}', kind='normal')
+    rot = FCpt(BeckhoffAxisNoOffset, '{self._prefix_rot}', kind='normal')
 
     def __init__(self, *args, name, prefix_rot, prefix_focus, prefix_energy,
                  **kwargs):
@@ -229,17 +229,17 @@ class Mono(BaseInterface, Device):
     _icon = 'fa.minus-square'
 
     # Motor components: can read/write positions
-    m_pi = Cpt(BeckhoffAxis, ':MMS:M_PI', kind='normal',
+    m_pi = Cpt(BeckhoffAxisNoOffset, ':MMS:M_PI', kind='normal',
                doc='mirror pitch [urad]')
-    g_pi = Cpt(BeckhoffAxis, ':MMS:G_PI', kind='normal',
+    g_pi = Cpt(BeckhoffAxisNoOffset, ':MMS:G_PI', kind='normal',
                doc='grating pitch [urad]')
-    m_h = Cpt(BeckhoffAxis, ':MMS:M_H', kind='normal',
+    m_h = Cpt(BeckhoffAxisNoOffset, ':MMS:M_H', kind='normal',
               doc='mirror horizontal [um]')
-    g_h = Cpt(BeckhoffAxis, ':MMS:G_H', kind='normal',
+    g_h = Cpt(BeckhoffAxisNoOffset, ':MMS:G_H', kind='normal',
               doc='grating horizontal [um]')
-    sd_v = Cpt(BeckhoffAxis, ':MMS:SD_V', kind='normal',
+    sd_v = Cpt(BeckhoffAxisNoOffset, ':MMS:SD_V', kind='normal',
                doc='screwdriver vertical (in/out) [um]')
-    sd_rot = Cpt(BeckhoffAxis, ':MMS:SD_ROT', kind='normal',
+    sd_rot = Cpt(BeckhoffAxisNoOffset, ':MMS:SD_ROT', kind='normal',
                  doc='screwdriver rotation [urad]')
 
     # Additional Pytmc components

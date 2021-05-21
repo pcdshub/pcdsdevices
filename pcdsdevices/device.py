@@ -1,3 +1,5 @@
+import copy
+
 from ophyd.device import Component, Device
 from ophyd.ophydobj import Kind
 
@@ -261,3 +263,76 @@ def to_interface(device_class):
         (InterfaceDevice, device_class),
         interface_cpts
         )
+
+
+class UpdateComponent(Component):
+    """
+    A component that copies and updates a parent component in a subclass.
+
+    Use this like any other component, adding it to your device that is a
+    subclass of another device, using the same name as the component you'd like
+    to update.
+
+    Pass keyword args to this component to update the values from the parent in
+    your subclass.
+
+    Some limitations:
+
+    - It is not possible to use this to change the component class itself, e.g.
+      if you would like to change something from a "Component" to a
+      "FormattedComponent".
+    - All arguments to update must be provided as keyword arguments, so we know
+      which value to change in the component class.
+    - UpdateComponent will always fail isinstance checks for Component
+      subclasses.
+    - UpdateComponent is not mutable after instantiation.
+
+    Parameters
+    ----------
+    **kwargs: any, optional
+        keyword arguments to update
+    """
+    def __init__(self, **kwargs):
+        # Store the original kwargs for use later
+        self.update_kwargs = kwargs
+        # Begin with "something" as the copy_cpt to avoid issues on edge cases.
+        self.copy_cpt = None
+
+    def __set_name__(self, owner, attr_name):
+        # Find the parent cpt of the same name and copy it
+        for cls in owner.mro()[1:]:
+            try:
+                parent_cpt = getattr(cls, attr_name)
+                break
+            except AttributeError:
+                continue
+        self.copy_cpt = copy.copy(parent_cpt)
+
+        # Edit this object as needed
+        for key, value in self.update_kwargs.items():
+            # Set the attrs if they exist
+            if key == 'kind':
+                # Special handling to ensure kind is a Kind
+                value = (Kind[value.lower()] if isinstance(value, str)
+                         else Kind(value))
+                self.copy_cpt.kind = value
+            elif hasattr(self.copy_cpt, key):
+                setattr(self.copy_cpt, key, value)
+            # Add to kwargs if they don't exist
+            else:
+                self.copy_cpt.kwargs[key] = value
+
+        # Defer to the normal component setup for the rest
+        super().__set_name__(owner, attr_name)
+
+    def __getattr__(self, name):
+        # If we are missing something, check the copied/edited hostage cpt
+        return getattr(self.copy_cpt, name)
+
+    def __copy__(self):
+        # Copy and return the internal component to avoid recursive loops
+        return copy.copy(self.copy_cpt)
+
+    def create_component(self, instance):
+        # Use our hostage component from __set_name__
+        return self.copy_cpt.create_component(instance)

@@ -15,7 +15,7 @@ from ophyd import FormattedComponent as FCpt
 from ophyd import PVPositioner
 
 from .doc_stubs import basic_positioner_init
-from .epics_motor import BeckhoffAxis
+from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, FltMvInterface
 from .pmps import TwinCATStatePMPS
@@ -336,17 +336,17 @@ class XOffsetMirror(BaseInterface, Device):
     _icon = 'fa.minus-square'
 
     # Motor components: can read/write positions
-    y_up = Cpt(BeckhoffAxis, ':MMS:YUP', kind='hinted',
+    y_up = Cpt(BeckhoffAxisNoOffset, ':MMS:YUP', kind='hinted',
                doc='Yupstream master axis [um]')
-    x_up = Cpt(BeckhoffAxis, ':MMS:XUP', kind='hinted',
+    x_up = Cpt(BeckhoffAxisNoOffset, ':MMS:XUP', kind='hinted',
                doc='Xupstream master [um]')
-    pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='hinted',
+    pitch = Cpt(BeckhoffAxisNoOffset, ':MMS:PITCH', kind='hinted',
                 doc='Pitch stepper and piezo axes [urad]')
-    bender = Cpt(BeckhoffAxis, ':MMS:BENDER', kind='normal',
+    bender = Cpt(BeckhoffAxisNoOffset, ':MMS:BENDER', kind='normal',
                  doc='Bender motor [um]')
-    y_dwn = Cpt(BeckhoffAxis, ':MMS:YDWN', kind='config',
+    y_dwn = Cpt(BeckhoffAxisNoOffset, ':MMS:YDWN', kind='config',
                 doc='Ydwnstream slave axis [um]')
-    x_dwn = Cpt(BeckhoffAxis, ':MMS:XDWN', kind='config',
+    x_dwn = Cpt(BeckhoffAxisNoOffset, ':MMS:XDWN', kind='config',
                 doc='Xdwnstream slave axis [um]')
 
     # Gantry components
@@ -473,8 +473,8 @@ class XOffsetMirrorBend(XOffsetMirror):
     bender_enc_rms = None
 
     # Motor components: can read/write positions
-    bender_us = Cpt(BeckhoffAxis, ':MMS:US', kind='hinted')
-    bender_ds = Cpt(BeckhoffAxis, ':MMS:DS', kind='hinted')
+    bender_us = Cpt(BeckhoffAxisNoOffset, ':MMS:US', kind='hinted')
+    bender_ds = Cpt(BeckhoffAxisNoOffset, ':MMS:DS', kind='hinted')
 
     # RMS Cpts:
     bender_us_enc_rms = Cpt(PytmcSignal, ':ENC:US:RMS', io='i',
@@ -515,9 +515,9 @@ class XOffsetMirrorSwitch(XOffsetMirror):
     bender_enc_rms = None
 
     # Motor components: can read/write positions
-    y_left = Cpt(BeckhoffAxis, ':MMS:YLEFT', kind='hinted',
+    y_left = Cpt(BeckhoffAxisNoOffset, ':MMS:YLEFT', kind='hinted',
                  doc='Yleft master axis [um]')
-    y_right = Cpt(BeckhoffAxis, ':MMS:YRIGHT', kind='config',
+    y_right = Cpt(BeckhoffAxisNoOffset, ':MMS:YRIGHT', kind='config',
                   doc='Yright slave axis [um]')
 
 
@@ -539,11 +539,11 @@ class KBOMirror(BaseInterface, Device):
     _icon = 'fa.minus-square'
 
     # Motor components: can read/write positions
-    x = Cpt(BeckhoffAxis, ':MMS:X', kind='hinted')
-    y = Cpt(BeckhoffAxis, ':MMS:Y', kind='hinted')
-    pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='hinted')
-    bender_us = Cpt(BeckhoffAxis, ':MMS:BEND:US', kind='hinted')
-    bender_ds = Cpt(BeckhoffAxis, ':MMS:BEND:DS', kind='hinted')
+    x = Cpt(BeckhoffAxisNoOffset, ':MMS:X', kind='hinted')
+    y = Cpt(BeckhoffAxisNoOffset, ':MMS:Y', kind='hinted')
+    pitch = Cpt(BeckhoffAxisNoOffset, ':MMS:PITCH', kind='hinted')
+    bender_us = Cpt(BeckhoffAxisNoOffset, ':MMS:BEND:US', kind='hinted')
+    bender_ds = Cpt(BeckhoffAxisNoOffset, ':MMS:BEND:DS', kind='hinted')
 
     # RMS Cpts:
     x_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
@@ -678,9 +678,9 @@ class FFMirror(BaseInterface, Device):
     _icon = 'fa.minus-square'
 
     # Motor components: can read/write positions
-    x = Cpt(BeckhoffAxis, ':MMS:X', kind='hinted')
-    y = Cpt(BeckhoffAxis, ':MMS:Y', kind='hinted')
-    pitch = Cpt(BeckhoffAxis, ':MMS:PITCH', kind='hinted')
+    x = Cpt(BeckhoffAxisNoOffset, ':MMS:X', kind='hinted')
+    y = Cpt(BeckhoffAxisNoOffset, ':MMS:Y', kind='hinted')
+    pitch = Cpt(BeckhoffAxisNoOffset, ':MMS:PITCH', kind='hinted')
 
     # RMS Cpts:
     x_enc_rms = Cpt(PytmcSignal, ':ENC:X:RMS', io='i', kind='normal')
