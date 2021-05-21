@@ -273,8 +273,8 @@ class UpdateComponent(Component):
     subclass of another device, using the same name as the component you'd like
     to update.
 
-    Pass to this component class the arguments you'd like to change from the
-    subdevice component definition.
+    Pass keyword args to this component to update the values from the parent in
+    your subclass.
 
     Some limitations:
 
@@ -300,13 +300,19 @@ class UpdateComponent(Component):
 
     def __set_name__(self, owner, attr_name):
         # Find the parent cpt of the same name and copy it
-        parent_cpt = getattr(owner.mro()[1], attr_name)
+        for cls in owner.mro()[1:]:
+            try:
+                parent_cpt = getattr(cls, attr_name)
+                break
+            except AttributeError:
+                continue
         self.copy_cpt = copy.copy(parent_cpt)
 
         # Edit this object as needed
         for key, value in self.update_kwargs.items():
             # Set the attrs if they exist
             if key == 'kind':
+                # Special handling to ensure kind is a Kind
                 value = (Kind[value.lower()] if isinstance(value, str)
                          else Kind(value))
                 self.copy_cpt.kind = value
