@@ -507,7 +507,7 @@ class BeckhoffSlits(SlitsBase):
     @done_south.sub_value
     def _update_south_done(self, value, *args, **kwargs):
         self._south_done = value
-        self._update_dmove()
+        self._update_dmov()
 
     def _update_dmov(self, *args, **kwargs):
         """When part of the dmov updates, update the done_all flag."""
