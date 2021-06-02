@@ -460,6 +460,10 @@ class BeckhoffSlits(SlitsBase):
 
     def __init__(self, prefix, *, name, **kwargs):
         self._started_move = False
+        self._top_done = False
+        self._bottom_done = False
+        self._north_done = False
+        self._south_done = False
         super().__init__(prefix, name=name, nominal_aperture=3, **kwargs)
 
     @exec_queue.sub_value
@@ -486,15 +490,31 @@ class BeckhoffSlits(SlitsBase):
         self.ycenter.done.put(value)
 
     @done_top.sub_value
+    def _update_top_done(self, value, *args, **kwargs):
+        self._top_done = value
+        self._update_dmov()
+
     @done_bottom.sub_value
+    def _update_bottom_done(self, value, *args, **kwargs):
+        self._bottom_done = value
+        self._update_dmov()
+
     @done_north.sub_value
+    def _update_north_done(self, value, *args, **kwargs):
+        self._north_done = value
+        self._update_dmov()
+
     @done_south.sub_value
+    def _update_south_done(self, value, *args, **kwargs):
+        self._south_done = value
+        self._update_dmove()
+
     def _update_dmov(self, *args, **kwargs):
         """When part of the dmov updates, update the done_all flag."""
-        done = all((self.done_top.get(),
-                    self.done_bottom.get(),
-                    self.done_north.get(),
-                    self.done_south.get()))
+        done = all((self._top_done,
+                    self._bottom_done,
+                    self._north_done,
+                    self._south_done))
         if done != self.done_all.get():
             self.done_all.put(done)
 
