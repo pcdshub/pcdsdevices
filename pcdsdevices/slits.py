@@ -491,26 +491,36 @@ class BeckhoffSlits(SlitsBase):
 
     @done_top.sub_value
     def _update_top_done(self, value, *args, **kwargs):
+        """Update axis done flag, and then the group done if applicable"""
         self._top_done = value
         self._update_dmov()
 
     @done_bottom.sub_value
     def _update_bottom_done(self, value, *args, **kwargs):
+        """Update axis done flag, and then the group done if applicable"""
         self._bottom_done = value
         self._update_dmov()
 
     @done_north.sub_value
     def _update_north_done(self, value, *args, **kwargs):
+        """Update axis done flag, and then the group done if applicable"""
         self._north_done = value
         self._update_dmov()
 
     @done_south.sub_value
     def _update_south_done(self, value, *args, **kwargs):
+        """Update axis done flag, and then the group done if applicable"""
         self._south_done = value
         self._update_dmov()
 
     def _update_dmov(self, *args, **kwargs):
-        """When part of the dmov updates, update the done_all flag."""
+        """
+        Call this inside a callback to update the done_all signal.
+
+        Each direction's done moving signal should update its
+        individual done moving boolean in a callback and then call
+        this method to update the aggregate done_all signal.
+        """
         done = all((self._top_done,
                     self._bottom_done,
                     self._north_done,
