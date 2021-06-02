@@ -4,7 +4,7 @@ from unittest.mock import Mock
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.slits import LusiSlits, SimLusiSlits
+from pcdsdevices.slits import BeckhoffSlits, LusiSlits, SimLusiSlits
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +22,13 @@ def fake_slits():
     # Initialize dmov
     slits.xwidth.done.sim_put(0)
     slits.ywidth.done.sim_put(0)
+    return slits
+
+
+@pytest.fixture(scope='function')
+def fake_beckhoff_slits():
+    FakeBeckhoffSlits = make_fake_device(BeckhoffSlits)
+    slits = FakeBeckhoffSlits('TST:BKSLITS', name='test_slits')
     return slits
 
 
@@ -109,6 +116,25 @@ def test_slit_staging(fake_slits):
     assert slits.ywidth.setpoint.get() == 2.5
 
 
+def test_beckhoffslits_dmov(fake_beckhoff_slits):
+    logger.debug('test_beckhoffslits_dmov')
+    sl = fake_beckhoff_slits
+
+    def set_all(dmov):
+        sl.done_top.sim_put(dmov)
+        sl.done_bottom.sim_put(dmov)
+        sl.done_north.sim_put(dmov)
+        sl.done_south.sim_put(dmov)
+
+    set_all(False)
+    assert not sl.done_all.get()
+    set_all(True)
+    assert sl.done_all.get()
+    sl.done_top.sim_put(False)
+    assert not sl.done_all.get()
+
+
 @pytest.mark.timeout(5)
 def test_slits_disconnected():
     LusiSlits("TST:JAWS:", name='Test Slits')
+    BeckhoffSlits('TST:BK', name='test_slits')
