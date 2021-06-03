@@ -2,6 +2,7 @@ from enum import IntEnum
 
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
+from ophyd import FormattedComponent as FCpt
 
 from .inout import InOutPositioner, InOutPVStatePositioner
 from .interface import BaseInterface, LightpathMixin
@@ -120,19 +121,42 @@ class PPSStopper(InOutPositioner):
         raise PermissionError("PPSStopper can not be commanded via EPICS")
 
 
-class PPSStopperL2SI(LightpathMixin, BaseInterface, Device):
+class PPSStopper2PV(LightpathMixin, BaseInterface, Device):
     """
-    PPS Stopper as deployed alongside L2SI.
+    PPS Stopper with two PVs defining the state together.
 
-    These stoppers have IN/NOT_IN and OUT/NOT_OUT PVs with a consistent
-    pattern. We have no direct control over these from the photon side,
+    One PV is the state of the IN limit switch, one is the state of the OUT
+    limit switch.
+
+    By default, these stoppers have IN/NOT_IN and OUT/NOT_OUT PVs with a PV
+    suffix of 'INSUM' and 'OUTSUM', but often this is not true and there are
+    init arguments to get around these inconsistencies.
+
+    We have no direct control over these from the photon side,
     so this Device only serves as a way to check status and display in the
     lightpath.
+
+    In addition to standard device args, note the following additions:
+
+    Parameters
+    ----------
+    in_suffix : str, optional
+        The suffix for the in_signal that tells us if the stopper is inserted
+        or not. Defaults to 'INSUM'.
+    out_suffix : str, optional
+        The suffix for the out_signal that tells us if the stopper is removed
+        or not. Defaults to 'OUTSUM'
+    in_value : int, optional
+        The value of the in_signal that tells us that the stopper is inserted.
+        Defaults to 1.
+    out_value : int, optional
+        The value of the out_signal that tells us that the stopper is removed.
+        Defaults to 1.
     """
-    in_signal = Cpt(EpicsSignalRO, 'INSUM', kind='hinted',
-                    doc='Tells us if the stopper is IN or NOT_IN')
-    out_signal = Cpt(EpicsSignalRO, 'OUTSUM', kind='hinted',
-                     doc='Tells us if the stopper is OUT or NOT_OUT')
+    in_signal = FCpt(EpicsSignalRO, '{prefix}{in_suffix}', kind='hinted',
+                     doc='Tells us if the stopper is IN or NOT_IN')
+    out_signal = FCpt(EpicsSignalRO, '{prefix}{out_suffix}', kind='hinted',
+                      doc='Tells us if the stopper is OUT or NOT_OUT')
 
     # QIcon for UX
     _icon = 'fa.times-circle'
@@ -140,6 +164,19 @@ class PPSStopperL2SI(LightpathMixin, BaseInterface, Device):
     # Lightpath settings
     lightpath_cpts = ['in_signal', 'out_signal']
 
+    def __init__(self, prefix, *, in_suffix='INSUM', out_suffix='OUTSUM',
+                 in_value=1, out_value=1, **kwargs):
+        self.in_suffix = in_suffix
+        self.out_suffix = out_suffix
+        self.in_value = in_value
+        self.out_value = out_value
+        super().__init__(prefix, **kwargs)
+
     def _set_lightpath_states(self, lightpath_values):
-        self._inserted = bool(lightpath_values[self.in_signal]['value'])
-        self._removed = bool(lightpath_values[self.out_signal]['value'])
+        self._inserted = (lightpath_values[self.in_signal]['value']
+                          == self.in_value)
+        self._removed = (lightpath_values[self.out_signal]['value']
+                         == self.out_value)
+
+
+PPSStopperL2SI = PPSStopper2PV
