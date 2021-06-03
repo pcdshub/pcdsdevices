@@ -2,6 +2,39 @@ Release History
 ###############
 
 
+v4.5.0 (2021-06-03)
+===================
+
+Device Updates
+--------------
+- Update kmono threshold for showing beam passing in lightpath
+- Rename PPSStopperL2SI to PPSStopper2PV and generalize to all PPS stoppers
+  whose states are determined by the combination of two PVs. The old name and
+  old defaults are retained for backcompatibility and have not yet been
+  deprecated. This was done to support the PVs for ST1K2 which do not follow
+  any existing pattern.
+
+New Devices
+-----------
+-MRCO motion clas for MRCO IP1 endstation in TMO.
+- Added a class for the RIX ladder-style solid attenuator ``AT2K2``.
+
+Bugfixes
+--------
+- Fix issue where BeckhoffSlits devices could show metadata errors on startup
+  by cleaning up the done moving handling. This would typically spam the
+  terminal in cases where we were making large numbers of PV connections in
+  the session at once, such as at the start of a hutch-python load.
+
+Contributors
+------------
+- Mbosum
+- ZLLentz
+- jsheppard95
+- klauer
+
+
+
 v4.4.0 (2021-04-15)
 ===================
 
