@@ -5,6 +5,11 @@ Release History
 v4.5.0 (2021-06-03)
 ===================
 
+Features
+--------
+- Add UpdateComponent, a component class to upgrade component args
+  in subclasses.
+
 Device Updates
 --------------
 - Update kmono threshold for showing beam passing in lightpath
@@ -13,11 +18,19 @@ Device Updates
   old defaults are retained for backcompatibility and have not yet been
   deprecated. This was done to support the PVs for ST1K2 which do not follow
   any existing pattern.
+- Set various beamline component motor offset signals to read-only, using the
+  new BeckhoffAxisNoOffset class,  to prevent  accidental changes.
+  These are static components that have no need for this level of
+  customization, which tends to just cause confusion.
+
 
 New Devices
 -----------
 -MRCO motion clas for MRCO IP1 endstation in TMO.
 - Added a class for the RIX ladder-style solid attenuator ``AT2K2``.
+- Add BeckhoffAxisNoOffset, a varition on BeckhoffAxis that uses
+  UpdateComponent to remove write access on the user offset signals.
+
 
 Bugfixes
 --------
