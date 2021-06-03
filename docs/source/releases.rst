@@ -7,7 +7,7 @@ v4.5.0 (2021-06-03)
 
 Features
 --------
-- Add UpdateComponent, a component class to upgrade component args
+- Add UpdateComponent, a component class to update component args
   in subclasses.
 
 Device Updates
@@ -23,14 +23,12 @@ Device Updates
   These are static components that have no need for this level of
   customization, which tends to just cause confusion.
 
-
 New Devices
 -----------
--MRCO motion clas for MRCO IP1 endstation in TMO.
+- MRCO motion class for MRCO IP1 endstation in TMO.
 - Added a class for the RIX ladder-style solid attenuator ``AT2K2``.
 - Add BeckhoffAxisNoOffset, a varition on BeckhoffAxis that uses
   UpdateComponent to remove write access on the user offset signals.
-
 
 Bugfixes
 --------
@@ -45,7 +43,6 @@ Contributors
 - ZLLentz
 - jsheppard95
 - klauer
-
 
 
 v4.4.0 (2021-04-15)
