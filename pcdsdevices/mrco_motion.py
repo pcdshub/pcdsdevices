@@ -16,7 +16,8 @@ class MRCO(BaseInterface, Device):
     MRCO Motion Class
 
     This class controls motors fixed to the MRCO Motion system for the IP1
-    endstation in TMO. Offset/Dir changes on Python/UI level have been disabled.
+    endstation in TMO. Offset/Dir changes on Python/UI level have been 
+    disabled.
 
     Parameters
     ----------
