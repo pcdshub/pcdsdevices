@@ -551,7 +551,7 @@ class KBOMirror(BaseInterface, Device):
     pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
     bender_us_enc_rms = Cpt(PytmcSignal, ':ENC:BEND:US:RMS', io='i',
                             kind='normal')
-    bender_ds_enc_rms = Cpt(PytmcSignal, ':ENC:BENDER:DS:RMS', io='i',
+    bender_ds_enc_rms = Cpt(PytmcSignal, ':ENC:BEND:DS:RMS', io='i',
                             kind='normal')
 
     # Bender RTD Cpts:
