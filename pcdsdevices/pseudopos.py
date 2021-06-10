@@ -748,6 +748,12 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         except ophyd.utils.DisconnectedError:
             ...
 
+    def _real_pos_update(self, *args, **kwargs):
+        try:
+            super()._real_pos_update(*args, **kwargs)
+        except TimeoutError:
+            pass
+
     @pseudo_position_argument
     def forward(self, pseudo_pos):
         """Convert delay unit to motor unit."""
