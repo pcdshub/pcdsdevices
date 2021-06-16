@@ -514,3 +514,23 @@ class XPIM(LCLS2ImagerBase):
 
     set_metadata(zoom_lock, dict(variety='command-enum'))
     set_metadata(focus_lock, dict(variety='command-enum'))
+
+
+class IM2K0(LCLS2ImagerBase):
+    """
+    One-off combination of an XPIM and a PPM for scientific merit.
+
+    This is primarily an XPIM, but the lens/camera/illuminator are swapped for
+    the PPM models.
+    """
+    # PPM illuminator
+    led = Cpt(PytmcSignal, ':CAM:CIL:PCT', io='io', kind='config',
+              doc='Percent of light from the dimmable illuminatior.')
+    set_metadata(led, dict(variety='scalar-range',
+                           range={'value': (0, 100),
+                                  'source': 'value'}
+                           ))
+    # XPIM filter wheel
+    filter_wheel = Cpt(XPIMFilterWheel, ':MFW', kind='config',
+                       doc='Optical filter wheel in front of the camera '
+                           'to prevent saturation.')
