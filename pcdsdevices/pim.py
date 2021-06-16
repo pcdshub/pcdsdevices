@@ -521,7 +521,8 @@ class IM2K0(LCLS2ImagerBase):
     One-off combination of an XPIM and a PPM for scientific merit.
 
     This is primarily an XPIM, but the lens/camera/illuminator are swapped for
-    the PPM models.
+    the PPM models. Somehow this makes it the least complicated imager on the
+    beamline.
     """
     # PPM illuminator
     led = Cpt(PytmcSignal, ':CAM:CIL:PCT', io='io', kind='config',
@@ -530,7 +531,3 @@ class IM2K0(LCLS2ImagerBase):
                            range={'value': (0, 100),
                                   'source': 'value'}
                            ))
-    # XPIM filter wheel
-    filter_wheel = Cpt(XPIMFilterWheel, ':MFW', kind='config',
-                       doc='Optical filter wheel in front of the camera '
-                           'to prevent saturation.')
