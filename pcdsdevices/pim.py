@@ -524,10 +524,7 @@ class IM2K0(LCLS2ImagerBase):
     the PPM models. Somehow this makes it the least complicated imager on the
     beamline.
     """
-    # PPM illuminator
-    led = Cpt(PytmcSignal, ':CAM:CIL:PCT', io='io', kind='config',
-              doc='Percent of light from the dimmable illuminatior.')
-    set_metadata(led, dict(variety='scalar-range',
-                           range={'value': (0, 100),
-                                  'source': 'value'}
-                           ))
+    # XPIM illuminator
+    led = Cpt(XPIMLED, ':CIL', kind='config',
+              doc='LED for viewing the reticle.')
+    # Nothing else! No power meter, no zoom/focus, no filter wheel...
