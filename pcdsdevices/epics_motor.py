@@ -289,6 +289,24 @@ Limit Switch: {switch_limits}
         self.high_limit_travel.put(0)
         self.low_limit_travel.put(0)
 
+    @raise_if_disconnected
+    def set_current_position(self, pos):
+        '''Configure the motor user position to the given value
+
+        Override ophyd's method temporarily for error handling.
+
+        Parameters
+        ----------
+        pos
+           Position to set.
+
+        '''
+        self.set_use_switch.put(1, wait=True)
+        try:
+            self.user_setpoint.put(pos, wait=True, force=True)
+        finally:
+            self.set_use_switch.put(0, wait=True)
+
 
 class PCDSMotorBase(EpicsMotorInterface):
     """
@@ -426,8 +444,10 @@ class PCDSMotorBase(EpicsMotorInterface):
         correctly to wait=True on the VAL field while SET/USE is set to SET.
         """
         self.set_use_switch.put(1, wait=True)
-        set_and_wait(self.user_setpoint, pos, timeout=1)
-        self.set_use_switch.put(0, wait=True)
+        try:
+            set_and_wait(self.user_setpoint, pos, timeout=1)
+        finally:
+            self.set_use_switch.put(0, wait=True)
 
 
 class IMS(PCDSMotorBase):
