@@ -297,9 +297,8 @@ Limit Switch: {switch_limits}
 
         Parameters
         ----------
-        pos
+        pos : number
            Position to set.
-
         '''
         self.set_use_switch.put(1, wait=True)
         try:
