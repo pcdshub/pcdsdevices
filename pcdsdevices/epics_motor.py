@@ -15,6 +15,8 @@ from ophyd.status import DeviceStatus, MoveStatus, SubscriptionStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
 from ophyd.utils.epics_pvs import raise_if_disconnected, set_and_wait
+from pcdsutils.ext_scripts import get_hutch_name
+from pmgr import pmgrAPI
 
 from pcdsdevices.pv_positioner import PVPositionerComparator
 
@@ -25,8 +27,6 @@ from .pseudopos import OffsetMotorBase, delay_class_factory
 from .signal import EpicsSignalEditMD, EpicsSignalROEditMD, PytmcSignal
 from .utils import get_status_float, get_status_value
 from .variety import set_metadata
-from pmgr import pmgrAPI
-from pcdsutils.ext_scripts import get_hutch_name
 
 logger = logging.getLogger(__name__)
 
@@ -482,7 +482,31 @@ class IMS(PCDSMotorBase):
     tab_whitelist = ['auto_setup', 'reinitialize', 'clear_.*']
 
     # The singleton parameter manager object.
-    _pm = pmgrAPI.pmgrAPI("ims_motor", get_hutch_name())
+    _pm = None
+    # If we fail to create _pm, set bool to only try once
+    _pm_init_error = False
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self._pm is None and not self._pm_init_error:
+            self._setup_pmgr()
+
+    @classmethod
+    def _setup_pmgr(cls):
+        try:
+            hutch = get_hutch_name()
+        except Exception:
+            logger.error('Could not determine hutch for pmgr!')
+            logger.debug('', exc_info=True)
+            cls._pm_init_error = True
+            return
+        try:
+            cls._pm = pmgrAPI.pmgrAPI("ims_motor", hutch)
+        except Exception:
+            logger.error('Failed to create IMS pmgr object!')
+            logger.debug('', exc_info=True)
+            cls._pm_init_error = True
+            return
 
     def stage(self):
         """
@@ -607,10 +631,11 @@ class IMS(PCDSMotorBase):
         """
         Find the current configuration of the motor in the parameter manager.
 
-        Returns the current configuration name as a string or throws an exception.
+        Returns the current configuration name as a string or throws an
+        exception.
         """
         return self._pm.get_config(self.prefix)
-    
+
     @staticmethod
     def find_configuration(pattern, case_insensitive=True, display=20):
         """
@@ -635,11 +660,13 @@ class IMS(PCDSMotorBase):
             return matches
         if len(matches) >= display:
             print("'%s' matches %d configurations." % (pattern, len(matches)))
-            print("Use a more restrictive pattern or larger value for display (%d)." % display)
+            print("Use a more restrictive pattern or "
+                  "larger value for display (%d)." % display)
         else:
             print("Matches for '%s':" % pattern)
             for m in matches:
-                  print("    %s" % m)
+                print("    %s" % m)
+
 
 class Newport(PCDSMotorBase):
     """
