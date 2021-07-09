@@ -514,3 +514,17 @@ class XPIM(LCLS2ImagerBase):
 
     set_metadata(zoom_lock, dict(variety='command-enum'))
     set_metadata(focus_lock, dict(variety='command-enum'))
+
+
+class IM2K0(LCLS2ImagerBase):
+    """
+    One-off combination of an XPIM and a PPM for scientific merit.
+
+    This is primarily an XPIM, but the lens/camera/illuminator are swapped for
+    the PPM models. Somehow this makes it the least complicated imager on the
+    beamline.
+    """
+    # XPIM illuminator
+    led = Cpt(XPIMLED, ':CIL', kind='config',
+              doc='LED for viewing the reticle.')
+    # Nothing else! No power meter, no zoom/focus, no filter wheel...
