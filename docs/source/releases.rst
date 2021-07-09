@@ -14,6 +14,8 @@ Device Updates
 --------------
 - User changes to offset/dir on python or UI level to MRCO motion have been disabled.
 - Add the veto_device signal (:VETO_DEVICE_RBV) to the VFS class.
+- The fixed target scanning classes now use one file per sample instead of
+  one giant file for all samples.
 
 New Devices
 -----------
