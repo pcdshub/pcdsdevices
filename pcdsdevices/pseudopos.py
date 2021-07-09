@@ -749,6 +749,19 @@ class DelayBase(FltMvInterface, PseudoPositioner):
             ...
 
     def _real_pos_update(self, *args, **kwargs):
+        """
+        Callback on the real motor's readback.
+
+        This is used in PseudoPositioner to set some of the calculated
+        variables at startup and every time the motor's readback changes, but
+        it fails and causes spam when we have many devices because this class's
+        inverse method relies on the motor.egu variable being ready to access,
+        which may not be true when we are running many startup callbacks for
+        all devices at the same time.
+
+        For delay motors, these internal variables are not used and are safe to
+        skip at startup.
+        """
         try:
             super()._real_pos_update(*args, **kwargs)
         except TimeoutError:
