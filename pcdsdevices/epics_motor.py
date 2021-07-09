@@ -25,6 +25,8 @@ from .pseudopos import OffsetMotorBase, delay_class_factory
 from .signal import EpicsSignalEditMD, EpicsSignalROEditMD, PytmcSignal
 from .utils import get_status_float, get_status_value
 from .variety import set_metadata
+from pmgr import pmgrAPI
+from pcdsutils.ext_scripts import get_hutch_name
 
 logger = logging.getLogger(__name__)
 
@@ -479,6 +481,9 @@ class IMS(PCDSMotorBase):
 
     tab_whitelist = ['auto_setup', 'reinitialize', 'clear_.*']
 
+    # The singleton parameter manager object.
+    _pm = pmgrAPI.pmgrAPI("ims_motor", get_hutch_name())
+
     def stage(self):
         """
         Stage the IMS motor.
@@ -586,6 +591,55 @@ class IMS(PCDSMotorBase):
             status_wait(st, timeout=timeout)
         return st
 
+    def configure(self, cfgname=None):
+        """
+        Use the parameter manager to configure the motor.
+
+        cfgname : str | None
+            The name of the configuration to apply.  If None, use the
+            configuration saved in the database.
+
+        Returns nothing.
+        """
+        self._pm.apply_config(self.prefix, cfgname)
+
+    def get_configuration(self):
+        """
+        Find the current configuration of the motor in the parameter manager.
+
+        Returns the current configuration name as a string or throws an exception.
+        """
+        return self._pm.get_config(self.prefix)
+    
+    @staticmethod
+    def find_configuration(pattern, case_insensitive=True, display=20):
+        """
+        Find parameter manager configurations that match the pattern.
+
+        pattern : str
+            The substring to match.  "." matches any character, and "*"
+            matches any string.  These maybe quoted using "\".
+
+        case_insensitive : boolean
+            True if the match should be case insensitive, False if it
+            should be case sensitive.
+
+        display : int | None
+            The maximum number of configurations to display.  If None,
+            don't display any, but return a list of all matches.
+
+        Returns a list of strings if display is None, and nothing otherwise.
+        """
+        matches = IMS._pm.match_config(pattern, ci=case_insensitive)
+        if display is None:
+            return matches
+        if len(matches) >= display:
+            print("'%s' matches %d configurations." % (pattern, len(matches)))
+            print("Use a more restrictive pattern or larger value for display (%d)." % display)
+        else:
+            print("Matches for '%s':" % pattern)
+            for m in matches:
+                  print("    %s" % m)
 
 class Newport(PCDSMotorBase):
     """
