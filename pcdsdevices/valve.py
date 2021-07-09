@@ -207,6 +207,9 @@ class VFS(Device, LightpathMixin):
                        doc=('Fast Shutter Vacuum Fault OK Readback'))
     mps_ok = Cpt(EpicsSignalRO, ':MPS_FAULT_OK_RBV', kind='normal',
                  doc='Fast Shutter Fast Fault Output OK')
+    veto_device = Cpt(EpicsSignalRO, ':VETO_DEVICE_RBV',
+                      kind='normal', string=True,
+                      doc='Name of device that can veto this VFS')
 
     def _set_lightpath_states(self, lightpath_values):
         self._inserted = lightpath_values[self.position_close]['value']
