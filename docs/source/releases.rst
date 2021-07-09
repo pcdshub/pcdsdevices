@@ -14,8 +14,9 @@ Device Updates
 --------------
 - User changes to offset/dir on python or UI level to MRCO motion have been disabled.
 - Add the veto_device signal (:VETO_DEVICE_RBV) to the VFS class.
-- The fixed target scanning classes now use one file per sample instead of
-  one giant file for all samples.
+- `XYGridStage` now uses one file per sample instead of
+  one giant file for all samples, and it writes to these files less often.
+  This speeds up operations. Various additional improvements to the class.
 
 New Devices
 -----------
@@ -34,6 +35,7 @@ Bugfixes
 
 Contributors
 ------------
+- cristinasewell
 - jsheppard95
 - jyotiphy
 - Mbosum
