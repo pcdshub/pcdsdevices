@@ -923,6 +923,24 @@ class PMC100(PCDSMotorBase):
         raise NotImplementedError("PMC100 motors have no homing procedure")
 
 
+class MMC100(PCDSMotorBase):
+    """
+    PCDS implementation of the Motor Record for MMC100 controlled motors.
+
+    This is a subclass of :class:`PCDSMotorBase` that:
+    - Overwrites missing freeze offset signal for Newports
+    - Changes the homing PVs to those used for moving to limits on MMC100s
+    """
+
+    __doc__ += basic_positioner_init
+    # Overrides are in roughly the same order as from EpicsMotor
+
+    offset_freeze_switch = Cpt(Signal, kind='omitted')
+
+    home_forward = Cpt(EpicsSignal, '.MLP', kind='omitted')
+    home_reverse = Cpt(EpicsSignal, '.MLN', kind='omitted')
+
+
 class BeckhoffAxisPLC(Device):
     """Error handling for the Beckhoff Axis PLC code."""
     status = Cpt(PytmcSignal, 'sErrorMessage', io='i', kind='normal',
@@ -1178,6 +1196,7 @@ def _GetMotorClass(basepv):
                    ('CLF', IMS),
                    ('MMN', Newport),
                    ('MZM', PMC100),
+                   ('MMC', MMC100),
                    ('MMB', BeckhoffAxis),
                    ('PIC', PCDSMotorBase),
                    ('MCS', SmarAct))
@@ -1212,6 +1231,8 @@ def Motor(prefix, **kwargs):
     | MMN           | :class:`.Newport`       |
     +---------------+-------------------------+
     | MZM           | :class:`.PMC100`        |
+    +---------------+-------------------------+
+    | MMC           | :class:`.MMC100`        |
     +---------------+-------------------------+
     | MMB           | :class:`.BeckhoffAxis`  |
     +---------------+-------------------------+
