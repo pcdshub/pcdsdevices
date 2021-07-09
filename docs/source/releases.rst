@@ -1,7 +1,6 @@
 Release History
 ###############
 
-
 v4.6.0 (2021-07-09)
 ===================
 
@@ -13,7 +12,7 @@ Features
 
 Device Updates
 --------------
-- User changes to offset/dir on python or UI level to MRCO motion has been disabled.
+- User changes to offset/dir on python or UI level to MRCO motion have been disabled.
 - Add the veto_device signal (:VETO_DEVICE_RBV) to the VFS class.
 
 New Devices
@@ -25,7 +24,7 @@ Bugfixes
 --------
 - Fix an issue where DelayBase subclasses could spam the terminal at
   startup if we load too many devices at once.
-- Fix a typo in the KBO DS Bender RMS PV
+- Fix a typo in the KBO DS Bender RMS PV.
 - Fix issue where motor presets would not load until the first access of the
   presets object.
 - Fix an issue where an epics motor could get stuck with a bad state of its
@@ -33,13 +32,11 @@ Bugfixes
 
 Contributors
 ------------
-- ZLLentz
+- jsheppard95
 - jyotiphy
+- Mbosum
 - mcb64
 - zllentz
--Mbosum
--jsheppard95
-
 
 
 v4.5.0 (2021-06-03)
