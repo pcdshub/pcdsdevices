@@ -1,6 +1,47 @@
 Release History
 ###############
 
+v4.6.0 (2021-07-09)
+===================
+
+Features
+--------
+- Add pmgr support to the `IMS` class! There are three new methods on IMS
+  for interacting with pmgr: ``configure``, ``get_configuration``, and
+  ``find_configuration``.
+
+Device Updates
+--------------
+- User changes to offset/dir on python or UI level to MRCO motion have been disabled.
+- Add the veto_device signal (:VETO_DEVICE_RBV) to the VFS class.
+- `XYGridStage` now uses one file per sample instead of
+  one giant file for all samples, and it writes to these files less often.
+  This speeds up operations. Various additional improvements to the class.
+
+New Devices
+-----------
+- Add special IM2K0 device for the new configuration of IM2K0, where we
+  swapped its XTES style camera setup for a L2SI style camera setup.
+
+Bugfixes
+--------
+- Fix an issue where DelayBase subclasses could spam the terminal at
+  startup if we load too many devices at once.
+- Fix a typo in the KBO DS Bender RMS PV.
+- Fix issue where motor presets would not load until the first access of the
+  presets object.
+- Fix an issue where an epics motor could get stuck with a bad state of its
+  set_use_switch after a call to set_current_position with a bad value.
+
+Contributors
+------------
+- cristinasewell
+- jsheppard95
+- jyotiphy
+- Mbosum
+- mcb64
+- zllentz
+
 
 v4.5.0 (2021-06-03)
 ===================
