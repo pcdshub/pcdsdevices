@@ -1,3 +1,6 @@
 include versioneer.py
-include devices/_version.py
+include pcdsdevices/_version.py
 include LICENSE.md
+include requirements.txt
+include dev-requirements.txt
+include docs-requirements.txt
