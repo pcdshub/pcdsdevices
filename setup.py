@@ -2,15 +2,23 @@ from setuptools import find_packages, setup
 
 import versioneer
 
+with open("requirements.txt", "rt") as fp:
+    install_requires = [
+        line for line in fp.read().splitlines()
+        if line and not line.startswith("#")
+    ]
+
 setup(
-    name='pcdsdevices',
+    name="pcdsdevices",
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    license='BSD',
-    author='SLAC National Accelerator Laboratory',
+    license="BSD",
+    author="SLAC National Accelerator Laboratory",
     packages=find_packages(),
-    description='IOC definitions for LCLS Beamline Devices',
+    description="Ophyd Device definitions for LCLS Beamline components",
     entry_points={
-        'happi.containers': ['pcdsdevices = pcdsdevices.happi.containers'],
-    }
+        "happi.containers": ["pcdsdevices = pcdsdevices.happi.containers"],
+    },
+    install_requires=install_requires,
+    python_requires=">=3.6",
 )
