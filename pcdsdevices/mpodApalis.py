@@ -1,10 +1,9 @@
 import logging
-from ophyd import FormattedComponent as FCpt
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 from pcdsdevices.interface import BaseInterface
-from time import *
+import time
 logger = logging.getLogger(__name__)
 
 
@@ -17,7 +16,7 @@ class MPODApalisChannel(BaseInterface, Device):
     channel_prefix : str
         The EPICS base of the MPOD Channel. E.g.: `TMO:MPOD:01:M5:C6
     name : str
-       A name to refer to the device. - get from questionnaire...?
+       A name to refer to the device.
 
     """
     voltage = Cpt(EpicsSignal, ':VoltageMeasure',
@@ -27,15 +26,16 @@ class MPODApalisChannel(BaseInterface, Device):
     max_voltage = Cpt(EpicsSignalRO, ':VoltageNominal', kind='normal',
                       doc='MPOD Channel Maximum Voltage [V]')
 
-    current = Cpt(EpicsSignal, ':CurrentMeasure', 
+    current = Cpt(EpicsSignal, ':CurrentMeasure',
                   write_pv=':CurrentSet', kind='normal',
                   doc='MPOD Channel Current Measure')
 
     max_current = Cpt(EpicsSignalRO, ':CurrentNominal', kind='normal',
-                      doc='MPOD Channel Current Maximum')                  
+                      doc='MPOD Channel Current Maximum')
+
     state = Cpt(EpicsSignal, ':isOn', write_pv=':Control:setOn',
                 kind='normal', string=True,
-                doc='MPOD Channel State [Off/On]')    
+                doc='MPOD Channel State [Off/On]')
 
     tab_component_names = True
     tab_whitelist = ['on', 'off',
@@ -73,13 +73,12 @@ class MPODApalisChannel(BaseInterface, Device):
         if current_number <= self.max_current:
             self.current.put(current_number)
         else:
-            print('The maximal current limit is %g' %self.max_current)
+            print('The maximal current limit is %g' % self.max_current)
             print('will set current limit to max')
             self.current.put(self.max_current)
 
 
 class MPODApalisModule(BaseInterface, Device):
-    #module, channel = channel_prefix.split('C:')...
 
     """
     MPODApalis Module Object.
@@ -89,7 +88,7 @@ class MPODApalisModule(BaseInterface, Device):
     card_prefix : str
         The EPICS base of the MPOD Module. `TMO:MPOD:01:M6
     name : str
-       A name to refer to the device. - get from questionnaire...?
+       A name to refer to the device.
     """
 
     temperature = Cpt(EpicsSignalRO, ':Temperature', kind='normal',
@@ -136,7 +135,7 @@ class MPODApalisModule16Channel(MPODApalisModule):
     c4 = Cpt(MPODApalisChannel, ":C4")
     c5 = Cpt(MPODApalisChannel, ":C5")
     c6 = Cpt(MPODApalisChannel, ":C6")
-    c7 = Cpt(MPODApalisChannel, ":C7")    
+    c7 = Cpt(MPODApalisChannel, ":C7")
     c8 = Cpt(MPODApalisChannel, ":C8")
     c9 = Cpt(MPODApalisChannel, ":C9")
     c10 = Cpt(MPODApalisChannel, ":C10")
@@ -175,10 +174,20 @@ class MPODApalisModule24Channel(MPODApalisModule):
 
 
 class MPODApalisCrate(BaseInterface, Device):
-##crate, module = channel_prefix.split('M:')...
-    
-    power = Cpt(EpicsSignal, ':Crate:PowerOn', 
-                kind='normal', string=True, 
+
+    """
+    MPODApalis Crate Object.
+
+    Parameters
+    ----------
+    card_prefix : str
+        The EPICS base of the MPOD Crate. `TMO:MPOD:01
+    name : str
+       A name to refer to the device.
+    """
+
+    power = Cpt(EpicsSignal, ':Crate:PowerOn',
+                kind='normal', string=True,
                 doc='Crate power status and control')
 
     def __init__(self, crate_prefix, name='MPOD',
@@ -190,5 +199,5 @@ class MPODApalisCrate(BaseInterface, Device):
 
     def power_cycle(self):
         self.power.put(0)
-        wait(5)
+        time.sleep(5)
         self.power.put(1)
