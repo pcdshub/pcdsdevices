@@ -67,10 +67,13 @@ class MPODApalisChannel(BaseInterface, Device):
         current_number : number
             Current in A.
         """
-        if current_number <= self.max_current:
+
+        maxCurrent = self.max_current.get()
+
+        if current_number <= maxCurrent:
             self.current.put(current_number)
         else:
-            print('The maximal current limit is %g' % self.max_current)
+            logger.info('The maximal current limit is %g', self.max_current)
             print('will set current limit to max')
             self.current.put(self.max_current)
 
