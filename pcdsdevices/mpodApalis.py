@@ -110,6 +110,18 @@ class MPODApalisModule(BaseInterface, Device):
 
 
 class MPODApalisModule4Channel(MPODApalisModule):
+
+    """
+    MPODApalis 4 channel Module Object.
+
+    Parameters
+    ----------
+    card_prefix : str
+        The EPICS base of the MPOD Module. `TMO:MPOD:01:M6
+    name : str
+       A name to refer to the device.
+    """
+
     c0 = Cpt(MPODApalisChannel, ":C0")
     c1 = Cpt(MPODApalisChannel, ":C1")
     c2 = Cpt(MPODApalisChannel, ":C2")
@@ -117,6 +129,18 @@ class MPODApalisModule4Channel(MPODApalisModule):
 
 
 class MPODApalisModule8Channel(MPODApalisModule):
+
+    """
+    MPODApalis 8 channel Module Object.
+
+    Parameters
+    ----------
+    card_prefix : str
+        The EPICS base of the MPOD Module. `TMO:MPOD:01:M6
+    name : str
+       A name to refer to the device.
+    """
+
     c0 = Cpt(MPODApalisChannel, ":C0")
     c1 = Cpt(MPODApalisChannel, ":C1")
     c2 = Cpt(MPODApalisChannel, ":C2")
@@ -128,6 +152,18 @@ class MPODApalisModule8Channel(MPODApalisModule):
 
 
 class MPODApalisModule16Channel(MPODApalisModule):
+
+    """
+    MPODApalis 16 channel Module Object.
+
+    Parameters
+    ----------
+    card_prefix : str
+        The EPICS base of the MPOD Module. `TMO:MPOD:01:M6
+    name : str
+       A name to refer to the device.
+    """
+
     c0 = Cpt(MPODApalisChannel, ":C0")
     c1 = Cpt(MPODApalisChannel, ":C1")
     c2 = Cpt(MPODApalisChannel, ":C2")
@@ -147,6 +183,18 @@ class MPODApalisModule16Channel(MPODApalisModule):
 
 
 class MPODApalisModule24Channel(MPODApalisModule):
+
+    """
+    MPODApalis 24 channel Module Object.
+
+    Parameters
+    ----------
+    card_prefix : str
+        The EPICS base of the MPOD Module. `TMO:MPOD:01:M6
+    name : str
+       A name to refer to the device.
+    """
+
     c0 = Cpt(MPODApalisChannel, ":C0")
     c1 = Cpt(MPODApalisChannel, ":C1")
     c2 = Cpt(MPODApalisChannel, ":C2")
