@@ -41,9 +41,6 @@ class MPODApalisChannel(BaseInterface, Device):
     tab_whitelist = ['on', 'off',
                      'set_voltage', 'set_current']
 
-    def __init__(self, channel_prefix, name='MPOD Channels', **kwargs):
-        super().__init__(channel_prefix, name=name, **kwargs)
-
     def on(self):
         """Set mpod channel On."""
         self.state.put(1)
@@ -94,19 +91,16 @@ class MPODApalisModule(BaseInterface, Device):
     temperature = Cpt(EpicsSignalRO, ':Temperature', kind='normal',
                       doc='MPOD Temperature [C]')
 
-    clear_faults = Cpt(EpicsSignal, ':isEventActive',
-                       write_pv=':Control:doClear',
-                       kind='normal', string=True,
-                       doc='Clears all MPOD module faults')
+    faults = Cpt(EpicsSignal, ':isEventActive',
+                 write_pv=':Control:doClear',
+                 kind='normal', string=True,
+                 doc='Clears all MPOD module faults')
 
-    def __init__(self, card_prefix, name='MPOD Module',
-                 **kwargs):
-        super().__init__(card_prefix, name=name, **kwargs)
     tab_component_names = True
-    tab_whitelist = ['clr_evnts']
+    tab_whitelist = ['clear_faults']
 
-    def clr_evnts(self):
-        self.clear_faults.put(1)
+    def clear_faults(self):
+        self.faults.put(1)
 
 
 class MPODApalisModule4Channel(MPODApalisModule):
@@ -238,14 +232,13 @@ class MPODApalisCrate(BaseInterface, Device):
                 kind='normal', string=True,
                 doc='Crate power status and control')
 
-    def __init__(self, crate_prefix, name='MPOD',
-                 **kwargs):
-        super().__init__(crate_prefix, name=name, **kwargs)
-
     tab_component_names = True
     tab_whitelist = ['power']
 
     def power_cycle(self):
+        """
+       Function used to power cycle the MPOD crate
+        """
         self.power.put(0)
         time.sleep(5)
         self.power.put(1)
