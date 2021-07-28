@@ -103,6 +103,7 @@ class MPODApalisModule(BaseInterface, Device):
     tab_whitelist = ['clear_faults']
 
     def clear_faults(self):
+        """Clears all module faults"""
         self.faults.put(1)
 
 
