@@ -74,6 +74,9 @@ class StatePositioner(MvInterface, Device, PositionerBase):
 
     egu = 'state'
 
+    # We can't necessarily stop in this interface
+    stop = None
+
     def __init__(self, prefix, *, name, **kwargs):
         if self.__class__ is StatePositioner:
             raise TypeError(('StatePositioner must be subclassed with at '
@@ -482,6 +485,9 @@ class StateRecordPositioner(StateRecordPositionerBase):
             self._has_subscribed_readback = True
         return cid
 
+    def stop(self, *, success=False):
+        return self.motor.stop(success=success)
+
 
 class CombinedStateRecordPositioner(StateRecordPositionerBase):
     """
@@ -606,6 +612,9 @@ class TwinCATStatePositioner(StatePositioner):
 
     set_metadata(error_id, dict(variety='scalar', display_format='hex'))
     set_metadata(reset_cmd, dict(variety='command', value=1))
+
+    def clear_error(self):
+        self.reset_cmd.put(1)
 
 
 class StateStatus(SubscriptionStatus):
