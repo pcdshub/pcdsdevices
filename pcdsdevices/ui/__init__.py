@@ -1,3 +1,3 @@
 import pathlib
 
-path = pathlib.Path(__file__).resolve().dirname
+path = pathlib.Path(__file__).resolve().parent

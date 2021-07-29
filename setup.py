@@ -18,7 +18,7 @@ setup(
     description="Ophyd Device definitions for LCLS Beamline components",
     entry_points={
         "happi.containers": ["pcdsdevices = pcdsdevices.happi.containers"],
-        "typhos.ui": ["pcdsdevices = pcdsdevices.ui.path"],
+        "typhos.ui": ["pcdsdevices = pcdsdevices.ui:path"],
     },
     install_requires=install_requires,
     python_requires=">=3.6",
