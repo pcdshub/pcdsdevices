@@ -93,10 +93,10 @@ class MPODApalisModule(BaseInterface, Device):
     """
 
     voltage_ramp_speed = Cpt(EpicsSignal, ':VoltageRampSpeed', kind='normal',
-                            doc='MPOD module Voltage Rise/Fall Rate [%/sec*Vnom]'
+                            doc='MPOD module Voltage Rise/Fall Rate [%/sec*Vnom]')
 
     current_ramp_speed = Cpt(EpicsSignal, ':CurrentRampSpeed', kind='normal',
-                            doc='MPOD module current Rise/Fall Rate [%/sec*Inom]'
+                            doc='MPOD module current Rise/Fall Rate [%/sec*Inom]')
 
     temperature = Cpt(EpicsSignalRO, ':Temperature', kind='normal',
                       doc='MPOD Temperature [C]')
