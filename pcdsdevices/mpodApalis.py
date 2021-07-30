@@ -14,9 +14,9 @@ class MPODApalisChannel(BaseInterface, Device):
     Parameters
     ----------
     channel_prefix : str
-        The EPICS base of the MPOD Channel. E.g.: `TMO:MPOD:01:M5:C6
+        The EPICS base of the MPOD Channel, e.g. 'TMO:MPOD:01:M6:C6'.
     name : str
-       A name to refer to the device.
+        A name to refer to the device.
 
     """
     voltage = Cpt(EpicsSignal, ':VoltageMeasure',
@@ -36,6 +36,7 @@ class MPODApalisChannel(BaseInterface, Device):
     state = Cpt(EpicsSignal, ':isOn', write_pv=':Control:setOn',
                 kind='normal', string=True,
                 doc='MPOD Channel State [Off/On]')
+
 
     tab_component_names = True
     tab_whitelist = ['on', 'off',
@@ -73,8 +74,8 @@ class MPODApalisChannel(BaseInterface, Device):
         if current_number <= maxCurrent:
             self.current.put(current_number)
         else:
-            logger.info('The maximal current limit is %g', self.max_current)
-            print('will set current limit to max')
+            logger.warning('The maximal current limit is %g', self.max_current)
+            logger.warning('will set current limit to max')
             self.current.put(self.max_current)
 
 
@@ -86,10 +87,16 @@ class MPODApalisModule(BaseInterface, Device):
     Parameters
     ----------
     card_prefix : str
-        The EPICS base of the MPOD Module. `TMO:MPOD:01:M6
+        The EPICS base of the MPOD Module, e.g. 'TMO:MPOD:01:M6'.
     name : str
-       A name to refer to the device.
+        A name to refer to the device.
     """
+
+    voltage_ramp_speed = Cpt(EpicsSignal, ':VoltageRampSpeed', kind='normal',
+                            doc='MPOD module Voltage Rise/Fall Rate [%/sec*Vnom]'
+
+    current_ramp_speed = Cpt(EpicsSignal, ':CurrentRampSpeed', kind='normal',
+                            doc='MPOD module current Rise/Fall Rate [%/sec*Inom]'
 
     temperature = Cpt(EpicsSignalRO, ':Temperature', kind='normal',
                       doc='MPOD Temperature [C]')
@@ -100,11 +107,37 @@ class MPODApalisModule(BaseInterface, Device):
                  doc='Clears all MPOD module faults')
 
     tab_component_names = True
-    tab_whitelist = ['clear_faults']
+    tab_whitelist = ['clear_faults', 'set_voltage_ramp_speed', 'set_current_ramp_speed', ]
 
     def clear_faults(self):
         """Clears all module faults"""
         self.faults.put(1)
+
+    def set_voltage_ramp_speed(self, ramp_speed):
+        """
+        Set the voltage ramp speed in %/sec*Vnom.
+
+        It sets the voltage ramp speed for the entire card.
+
+        Parameters
+        ----------
+        ramp_speed : number
+            Voltage rise rate [%/sec*Vnom].
+        """
+        self.voltage_ramp_speed.put(ramp_speed)
+
+    def set_current_ramp_speed(self, ramp_speed):
+        """
+        Set the current ramp speed in %/sec*Inom.
+
+        It sets the current ramp speed for the entire card.
+
+        Parameters
+        ----------
+        ramp_speed : number
+            Current ramp speed [%/sec*Vnom].
+        """
+        self.voltage_ramp_speed.put(ramp_speed)
 
 
 class MPODApalisModule4Channel(MPODApalisModule):
@@ -115,9 +148,9 @@ class MPODApalisModule4Channel(MPODApalisModule):
     Parameters
     ----------
     card_prefix : str
-        The EPICS base of the MPOD Module. `TMO:MPOD:01:M6
+        The EPICS base of the MPOD Module, e.g. 'TMO:MPOD:01:M6'.
     name : str
-       A name to refer to the device.
+        A name to refer to the device.
     """
 
     c0 = Cpt(MPODApalisChannel, ":C0")
@@ -134,9 +167,9 @@ class MPODApalisModule8Channel(MPODApalisModule):
     Parameters
     ----------
     card_prefix : str
-        The EPICS base of the MPOD Module. `TMO:MPOD:01:M6
+        The EPICS base of the MPOD Module, e.g. 'TMO:MPOD:01:M6'.
     name : str
-       A name to refer to the device.
+        A name to refer to the device.
     """
 
     c0 = Cpt(MPODApalisChannel, ":C0")
@@ -157,9 +190,9 @@ class MPODApalisModule16Channel(MPODApalisModule):
     Parameters
     ----------
     card_prefix : str
-        The EPICS base of the MPOD Module. `TMO:MPOD:01:M6
+        The EPICS base of the MPOD Module, e.g. 'TMO:MPOD:01:M6'.
     name : str
-       A name to refer to the device.
+        A name to refer to the device.
     """
 
     c0 = Cpt(MPODApalisChannel, ":C0")
@@ -188,9 +221,9 @@ class MPODApalisModule24Channel(MPODApalisModule):
     Parameters
     ----------
     card_prefix : str
-        The EPICS base of the MPOD Module. `TMO:MPOD:01:M6
+        The EPICS base of the MPOD Module, e.g. 'TMO:MPOD:01:M6'.
     name : str
-       A name to refer to the device.
+        A name to refer to the device.
     """
 
     c0 = Cpt(MPODApalisChannel, ":C0")
@@ -227,9 +260,9 @@ class MPODApalisCrate(BaseInterface, Device):
     Parameters
     ----------
     card_prefix : str
-        The EPICS base of the MPOD Crate. `TMO:MPOD:01
+        The EPICS base of the MPOD Crate, e.g. 'TMO:MPOD:01'.
     name : str
-       A name to refer to the device.
+        A name to refer to the device.
     """
 
     power = Cpt(EpicsSignal, ':Crate:PowerOn',
@@ -241,7 +274,7 @@ class MPODApalisCrate(BaseInterface, Device):
 
     def power_cycle(self):
         """
-       Function used to power cycle the MPOD crate
+        Function used to power cycle the MPOD crate
         """
         self.power.put(0)
         time.sleep(5)
