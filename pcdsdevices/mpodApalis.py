@@ -37,7 +37,6 @@ class MPODApalisChannel(BaseInterface, Device):
                 kind='normal', string=True,
                 doc='MPOD Channel State [Off/On]')
 
-
     tab_component_names = True
     tab_whitelist = ['on', 'off',
                      'set_voltage', 'set_current']
@@ -93,10 +92,10 @@ class MPODApalisModule(BaseInterface, Device):
     """
 
     voltage_ramp_speed = Cpt(EpicsSignal, ':VoltageRampSpeed', kind='normal',
-                            doc='MPOD module Voltage Rise/Fall Rate [%/sec*Vnom]')
+                             doc='MPOD module Voltage Ramp Rate [%/sec*Vnom]')
 
     current_ramp_speed = Cpt(EpicsSignal, ':CurrentRampSpeed', kind='normal',
-                            doc='MPOD module current Rise/Fall Rate [%/sec*Inom]')
+                             doc='MPOD module current Ramp  Rate [%/sec*Inom]')
 
     temperature = Cpt(EpicsSignalRO, ':Temperature', kind='normal',
                       doc='MPOD Temperature [C]')
@@ -107,7 +106,8 @@ class MPODApalisModule(BaseInterface, Device):
                  doc='Clears all MPOD module faults')
 
     tab_component_names = True
-    tab_whitelist = ['clear_faults', 'set_voltage_ramp_speed', 'set_current_ramp_speed', ]
+    tab_whitelist = ['clear_faults', 'set_voltage_ramp_speed',
+                     'set_current_ramp_speed']
 
     def clear_faults(self):
         """Clears all module faults"""
