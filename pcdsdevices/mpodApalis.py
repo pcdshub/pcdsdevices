@@ -49,15 +49,22 @@ class MPODApalisChannel(BaseInterface, Device):
         """Set mpod channel Off."""
         self.state.put(0)
 
-    def set_voltage(self, voltage):
+    def set_voltage(self, voltage_number):
         """
         Set mpod channel voltage in V.
         Parameters
         ----------
-        voltage : number
+        voltage_number : number
             Voltage in V.
         """
-        self.voltage.put(voltage)
+        maxVoltage = self.max_voltage.get()
+
+        if voltage_number <= maxVoltage:
+            self.voltage.put(voltage_number)
+        else:
+            logger.warning('The maximal voltage is %g', self.max_voltage)
+            logger.warning('will set voltage to max')
+            self.voltage.put(self.max_voltage)
 
     def set_current(self, current_number):
         """
