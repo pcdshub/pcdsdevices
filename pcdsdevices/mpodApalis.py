@@ -62,9 +62,9 @@ class MPODApalisChannel(BaseInterface, Device):
         if voltage_number <= maxVoltage:
             self.voltage.put(voltage_number)
         else:
-            logger.warning('The maximal voltage is %g', self.max_voltage)
-            logger.warning('will set voltage to max')
-            self.voltage.put(self.max_voltage)
+            self.voltage.put(maxVoltage)
+            logger.warning('The maximal voltage is %g will set voltage to %g'
+                           % (maxVoltage, maxVoltage))
 
     def set_current(self, current_number):
         """
@@ -80,9 +80,9 @@ class MPODApalisChannel(BaseInterface, Device):
         if current_number <= maxCurrent:
             self.current.put(current_number)
         else:
-            logger.warning('The maximal current limit is %g', self.max_current)
-            logger.warning('will set current limit to max')
-            self.current.put(self.max_current)
+            self.current.put(maxCurrent)
+            logger.warning('The maximal current is %g will set current to %g'
+                           % (maxCurrent, maxCurrent))
 
 
 class MPODApalisModule(BaseInterface, Device):
@@ -144,7 +144,7 @@ class MPODApalisModule(BaseInterface, Device):
         ramp_speed : number
             Current ramp speed [%/sec*Vnom].
         """
-        self.voltage_ramp_speed.put(ramp_speed)
+        self.current_ramp_speed.put(ramp_speed)
 
 
 class MPODApalisModule4Channel(MPODApalisModule):
