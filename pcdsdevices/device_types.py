@@ -25,6 +25,7 @@ from .lodcm import LODCM
 from .mirror import OffsetMirror, PointingMirror
 from .movablestand import MovableStand
 from .mpod import MPOD, MPODChannelHV, MPODChannelLV
+from .mpod_apalis import MPODApalisModule4Channel, MPODApalisModule8Channel, MPODApalisModule16Channel, MPODApalisModule24Channel
 from .mps import MPS
 from .pim import PIM, PPM, XPIM, PIMWithBoth, PIMWithFocus, PIMWithLED
 from .pseudopos import DelayBase, DelayMotor
@@ -40,4 +41,3 @@ from .spectrometer import Kmono, VonHamos4Crystal
 from .timetool import Timetool, TimetoolWithNav
 from .valve import GateValve, Stopper
 from .wfs import WaveFrontSensorTarget
-from .mpodApalis import MPODApalisModule4Channel, MPODApalisModule8Channel, MPODApalisModule16Channel, MPODApalisModule24Channel
