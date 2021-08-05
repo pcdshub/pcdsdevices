@@ -74,9 +74,6 @@ class StatePositioner(MvInterface, Device, PositionerBase):
 
     egu = 'state'
 
-    # We can't necessarily stop in this interface
-    stop = None
-
     def __init__(self, prefix, *, name, **kwargs):
         if self.__class__ is StatePositioner:
             raise TypeError(('StatePositioner must be subclassed with at '
@@ -307,6 +304,16 @@ class StatePositioner(MvInterface, Device, PositionerBase):
                               'states_list {} or _states_alias {}'
                               ''.format(self.states_list, self._states_alias)))
         return enum
+
+    @property
+    def stop(self):
+        """
+        Hide the stop method behind an AttributeError.
+
+        This makes it so that other interfaces know that the stop method can't
+        be run without needing to run it to find out.
+        """
+        raise AttributeError('StatePositioner has no stop method.')
 
 
 class PVStateSignal(AggregateSignal):
