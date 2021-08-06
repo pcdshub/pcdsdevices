@@ -305,6 +305,16 @@ class StatePositioner(MvInterface, Device, PositionerBase):
                               ''.format(self.states_list, self._states_alias)))
         return enum
 
+    @property
+    def stop(self):
+        """
+        Hide the stop method behind an AttributeError.
+
+        This makes it so that other interfaces know that the stop method can't
+        be run without needing to run it to find out.
+        """
+        raise AttributeError('StatePositioner has no stop method.')
+
 
 class PVStateSignal(AggregateSignal):
     """
@@ -482,6 +492,9 @@ class StateRecordPositioner(StateRecordPositionerBase):
             self._has_subscribed_readback = True
         return cid
 
+    def stop(self, *, success=False):
+        return self.motor.stop(success=success)
+
 
 class CombinedStateRecordPositioner(StateRecordPositionerBase):
     """
@@ -606,6 +619,9 @@ class TwinCATStatePositioner(StatePositioner):
 
     set_metadata(error_id, dict(variety='scalar', display_format='hex'))
     set_metadata(reset_cmd, dict(variety='command', value=1))
+
+    def clear_error(self):
+        self.reset_cmd.put(1)
 
 
 class StateStatus(SubscriptionStatus):
