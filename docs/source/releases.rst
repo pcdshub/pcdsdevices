@@ -29,7 +29,7 @@ New Devices
 Contributors
 ------------
 - klauer
-- spencera
+- spenc333
 - zllentz
 
 
