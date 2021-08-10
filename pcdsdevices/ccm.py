@@ -79,7 +79,7 @@ class CCMCalc(FltMvInterface, PseudoPositioner):
     wavelength = Cpt(PseudoSingleInterface, egu='A', kind='normal')
     theta = Cpt(PseudoSingleInterface, egu='deg', kind='normal')
     energy_with_vernier = Cpt(PseudoSingleInterface, egu='keV',
-                              kind='omitted')
+                              kind='hinted')
 
     alio = Cpt(CCMMotor, '', kind='normal')
     energy_request = FCpt(BeamEnergyRequest, '{hutch}', kind='normal')
@@ -255,6 +255,20 @@ class CCM(InOutPositioner):
             self.x.move(self._in_pos, wait=False)
         elif value == 2:
             self.x.move(self._out_pos, wait=False)
+
+    def stage(self):
+        """
+        Do not stage subdevices, they are independent for the purposes of
+        bluesky scans.
+        """
+        return [self]
+
+    def unstage(self):
+        """
+        Do not unstage subdevices, they are independent for the purposes of
+        bluesky scans.
+        """
+        return [self]
 
 
 # Calculations between alio position and energy, with all intermediates.
