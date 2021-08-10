@@ -19,6 +19,7 @@ requirements:
     - python >=3.6
     - bluesky >=1.6.4
     - happi
+    - jsonschema
     - matplotlib-base
     - numpy
     - ophyd >=1.5.1
