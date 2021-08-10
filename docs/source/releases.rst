@@ -1,6 +1,42 @@
 Release History
 ###############
 
+
+v4.7.0 (2021-08-09)
+===================
+
+Features
+--------
+- Added a typhos.ui entry point, so we can version control our typhos
+  templates in the same place as our device definitions. This also
+  allows us to remove pcds-specific assumptions from typhos to make
+  the library more community-friendly.
+- Added the pcds typhos templates from typhos.
+
+New Devices
+-----------
+- Add classes for controlling the new apalis mpods. The new apalis mpod
+  PVs differ from previous model PVs and needed new classes to
+  accommodate those changes. Features:
+
+  - Turn on/off HV channels
+  - Set current/voltage
+  - Get max current/voltage
+  - Clear module faults
+  - Obtain module temperature
+  - Power cycle mpod crate.
+
+Maintenance
+-----------
+- Add missing jsonschema dependency.
+
+Contributors
+------------
+- klauer
+- spenc333
+- zllentz
+
+
 v4.6.0 (2021-07-09)
 ===================
 
