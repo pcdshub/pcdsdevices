@@ -26,6 +26,10 @@ New Devices
   - Obtain module temperature
   - Power cycle mpod crate.
 
+Maintenance
+-----------
+- Add missing jsonschema dependency.
+
 Contributors
 ------------
 - klauer
