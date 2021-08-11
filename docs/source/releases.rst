@@ -1,6 +1,14 @@
 Release History
 ###############
 
+v4.7.1 (2021-08-11)
+===================
+
+Maintenance
+-----------
+- Fix a packaging issue where the ui files were not included in the
+  distribution.
+
 
 v4.7.0 (2021-08-09)
 ===================
