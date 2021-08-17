@@ -336,3 +336,26 @@ class UpdateComponent(Component):
     def create_component(self, instance):
         # Use our hostage component from __set_name__
         return self.copy_cpt.create_component(instance)
+
+
+class GroupDevice(Device):
+    """
+    A device that is a group of components that will act independently.
+
+    This has the following implications:
+    - Components will have no references to this parent device. If
+      accessed and used out of context, the device will be as if it
+      was instantited completely separately.
+    - If a component is staged in a bluesky plan, it will not stage
+      the entire device tree. If you'd like to stage everything, then this
+      group device must participate in the scan.
+    - When represented in typhos, we'd rather see the GroupDevice screen than
+      the default device screens. (Note: at time of writing, this GroupDevice
+      ui template does not yet exist).
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Remove references to parent (in this case, self)
+        for cpt_name in self.component_names:
+            cpt = getattr(self, cpt_name)
+            cpt.parent = None
