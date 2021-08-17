@@ -344,13 +344,17 @@ class GroupDevice(Device):
 
     This has the following implications:
     - Components will have no references to this parent device. If
-      accessed and used out of context, the device will be as if it
-      was instantited completely separately.
+      accessed and used out of context, the components will be as if
+      they were instantited completely separately.
     - If a component is staged in a bluesky plan, it will not stage
-      the entire device tree. If you'd like to stage everything, then this
-      group device must participate in the scan.
-    - When represented in typhos, we'd rather see the GroupDevice screen than
-      the default device screens. (Note: at time of writing, this GroupDevice
+      the ``GroupDevice``, and therefore will not stage the entire
+      device tree.
+    - ``GroupDevice`` instances cannot in themselves be staged.
+      This would necessarily create a redundant staging error when
+      used in a bluesky scan alongside the more useful subdevices.
+    - When represented in typhos, we'll see the GroupDevice screen
+      instead of the default device screens.
+      (Note: at time of writing, this hypothetical ``GroupDevice``
       ui template does not yet exist).
     """
     def __init__(self, *args, **kwargs):
@@ -359,3 +363,15 @@ class GroupDevice(Device):
         for cpt_name in self.component_names:
             cpt = getattr(self, cpt_name)
             cpt.parent = None
+
+    def stage(self):
+        raise RuntimeError(
+            "Group devices cannot be staged and should not be "
+            "used in a bluesky plan."
+            )
+
+    def unstage(self):
+        raise RuntimeError(
+            "Group devices cannot be unstaged and should not be "
+            "used in a bluesky plan."
+            )
