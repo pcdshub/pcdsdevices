@@ -10,6 +10,7 @@ from ophyd.device import Component as Cpt
 from ophyd.status import DeviceStatus
 from prettytable import PrettyTable
 
+from .device import GroupDevice
 from .epics_motor import IMS
 from .interface import BaseInterface
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
@@ -20,7 +21,7 @@ from .utils import get_status_float, get_status_value
 logger = logging.getLogger(__name__)
 
 
-class BaseGon(BaseInterface, Device):
+class BaseGon(BaseInterface, GroupDevice):
     """
     Basic goniometer, as present in XPP.
 
@@ -201,7 +202,7 @@ def Goniometer(**kwargs):
         return BaseGon(**kwargs)
 
 
-class XYZStage(BaseInterface, Device):
+class XYZStage(BaseInterface, GroupDevice):
     """
     Sample XYZ stage.
 
@@ -256,7 +257,7 @@ class KappaXYZStage(XYZStage):
                          **kwargs)
 
 
-class SamPhi(BaseInterface, Device):
+class SamPhi(BaseInterface, GroupDevice):
     """
     Sample Phi stage.
 

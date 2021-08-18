@@ -1,6 +1,6 @@
 from ophyd import Component as Cpt
-from ophyd import Device
 
+from .device import GroupDevice
 from .epics_motor import BeckhoffAxisNoOffset
 from .interface import BaseInterface, LightpathInOutMixin
 from .pmps import TwinCATStatePMPS
@@ -20,7 +20,7 @@ class LICMirror(TwinCATStatePMPS):
     }
 
 
-class LaserInCoupling(BaseInterface, Device, LightpathInOutMixin):
+class LaserInCoupling(BaseInterface, GroupDevice, LightpathInOutMixin):
     """
     Device to bring the optical laser to the sample via mirrors.
     """

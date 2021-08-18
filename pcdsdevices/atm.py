@@ -1,13 +1,13 @@
 from ophyd import Component as Cpt
-from ophyd import Device
 
+from .device import GroupDevice
 from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset
 from .interface import BaseInterface, LightpathInOutMixin
 from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATTempSensor
 
 
-class ArrivalTimeMonitor(BaseInterface, Device, LightpathInOutMixin):
+class ArrivalTimeMonitor(BaseInterface, GroupDevice, LightpathInOutMixin):
     tab_component_names = True
 
     lightpath_cpts = ['target']

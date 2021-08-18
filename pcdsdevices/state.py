@@ -12,6 +12,7 @@ from ophyd.signal import EpicsSignal
 from ophyd.status import SubscriptionStatus
 from ophyd.status import wait as status_wait
 
+from .device import GroupDevice
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
@@ -437,7 +438,7 @@ class PVStatePositioner(StatePositioner):
                                    'override the move and set methods'))
 
 
-class StateRecordPositionerBase(StatePositioner):
+class StateRecordPositionerBase(StatePositioner, GroupDevice):
     """
     A `StatePositioner` for an EPICS states record.
 

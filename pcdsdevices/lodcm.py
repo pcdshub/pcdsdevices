@@ -13,16 +13,16 @@ import logging
 
 import numpy as np
 from ophyd.device import Component as Cpt
-from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignalRO
 from ophyd.sim import NullStatus
 from ophyd.status import wait as status_wait
 from pcdscalc import common, diffraction
 
-from pcdsdevices.epics_motor import OffsetMotor, OffsetIMSWithPreset
+from pcdsdevices.epics_motor import OffsetIMSWithPreset, OffsetMotor
 from pcdsdevices.sim import FastMotor
 
+from .device import GroupDevice
 from .doc_stubs import insert_remove
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
@@ -104,7 +104,7 @@ class Y2(InOutRecordPositioner):
     out_states = []
 
 
-class CrystalTower1(BaseInterface, Device):
+class CrystalTower1(BaseInterface, GroupDevice):
     """
     LODCM Crystal Tower 1.
 
@@ -366,7 +366,7 @@ hp [{hp_units}]  {hp_user} ({hp_dial})
 """
 
 
-class CrystalTower2(BaseInterface, Device):
+class CrystalTower2(BaseInterface, GroupDevice):
     """
     LODCM Crystal Tower 2.
 
@@ -619,7 +619,7 @@ diode [{diode_units}]  {diode_user} ({diode_dial})
 """
 
 
-class DiagnosticsTower(BaseInterface, Device):
+class DiagnosticsTower(BaseInterface, GroupDevice):
     """
     LODCM Diagnostic Tower.
 
@@ -729,7 +729,7 @@ navitar zoom [{yag_zoom_units}]  {yag_zoom_user} ({yag_zoom_dial})
 """
 
 
-class LODCMEnergySi(FltMvInterface, PseudoPositioner):
+class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
     """
     Energy calculations for the Si material.
 
@@ -945,7 +945,7 @@ Photon Energy: {energy} [keV]
 """
 
 
-class LODCMEnergyC(FltMvInterface, PseudoPositioner):
+class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
     """
     Energy calculations for the C material.
 
@@ -1160,7 +1160,7 @@ Photon Energy: {energy} [keV]
 """
 
 
-class LODCM(BaseInterface, Device):
+class LODCM(BaseInterface, GroupDevice):
     """
     Large Offset Dual Crystal Monochromator.
 

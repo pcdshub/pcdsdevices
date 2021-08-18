@@ -16,6 +16,7 @@ from ophyd.signal import EpicsSignal
 
 from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
                                      PCDSAreaDetectorTyphosTrigger)
+from .device import GroupDevice
 from .epics_motor import IMS, BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, LightpathInOutMixin
@@ -52,7 +53,7 @@ class PIMY(InOutRecordPositioner, BaseInterface):
         return super().stage()
 
 
-class PIM(BaseInterface, Device):
+class PIM(BaseInterface, GroupDevice):
     """
     Profile Intensity Monitor.
 
@@ -303,7 +304,7 @@ class PIMWithBoth(PIMWithFocus, PIMWithLED):
                          prefix_zoom=prefix_zoom, **kwargs)
 
 
-class LCLS2ImagerBase(BaseInterface, Device, LightpathInOutMixin):
+class LCLS2ImagerBase(BaseInterface, GroupDevice, LightpathInOutMixin):
     """
     Shared PVs and components from the LCLS2 imagers.
 

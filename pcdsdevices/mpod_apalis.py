@@ -7,6 +7,8 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from pcdsdevices.interface import BaseInterface
 
+from .device import GroupDevice
+
 logger = logging.getLogger(__name__)
 
 
@@ -88,7 +90,7 @@ class MPODApalisChannel(BaseInterface, Device):
                            % (max_current, max_current))
 
 
-class MPODApalisModule(BaseInterface, Device):
+class MPODApalisModule(BaseInterface, GroupDevice):
 
     """
     MPODApalis Module Object.

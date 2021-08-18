@@ -11,6 +11,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from pcdscalc import be_lens_calcs as calcs
 
+from .device import GroupDevice
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import CombinedInOutRecordPositioner, InOutRecordPositioner
@@ -78,7 +79,7 @@ class Prefocus(CombinedInOutRecordPositioner):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class LensStackBase(BaseInterface, PseudoPositioner):
+class LensStackBase(BaseInterface, PseudoPositioner, GroupDevice):
     """
     Class for Be lens macros and safe operations.
 

@@ -1,13 +1,13 @@
 from ophyd import Component as Cpt
-from ophyd import Device
 
+from .device import GroupDevice
 from .epics_motor import BeckhoffAxis, EpicsMotorInterface
 from .interface import BaseInterface, LightpathInOutMixin
 from .pmps import TwinCATStatePMPS
 from .signal import PytmcSignal
 
 
-class ReflaserL2SI(BaseInterface, Device, LightpathInOutMixin):
+class ReflaserL2SI(BaseInterface, GroupDevice, LightpathInOutMixin):
     tab_component_names = True
 
     lightpath_cpts = ['mirror']

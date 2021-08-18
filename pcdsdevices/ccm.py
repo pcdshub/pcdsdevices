@@ -6,6 +6,7 @@ from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO, Signal
 
 from .beam_stats import BeamEnergyRequest
+from .device import GroupDevice
 from .epics_motor import IMS, EpicsMotorInterface
 from .inout import InOutPositioner
 from .interface import FltMvInterface
@@ -187,7 +188,7 @@ class CCMY(SyncAxis):
         super().__init__(down_prefix, *args, **kwargs)
 
 
-class CCM(InOutPositioner):
+class CCM(InOutPositioner, GroupDevice):
     """
     The full CCM assembly.
 

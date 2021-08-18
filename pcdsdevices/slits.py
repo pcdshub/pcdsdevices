@@ -16,7 +16,6 @@ import logging
 from collections import OrderedDict
 
 from ophyd import Component as Cpt
-from ophyd import Device
 from ophyd import DynamicDeviceComponent as DDCpt
 from ophyd import EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
@@ -26,6 +25,7 @@ from ophyd.status import Status
 from ophyd.status import wait as status_wait
 
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
+from .device import GroupDevice
 from .epics_motor import BeckhoffAxisNoOffset
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutMixin,
                         LightpathMixin, MvInterface)
@@ -39,7 +39,7 @@ from .variety import set_metadata
 logger = logging.getLogger(__name__)
 
 
-class SlitsBase(MvInterface, Device, LightpathMixin):
+class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
     """
     Base class for slit motion interfacing.
     """
@@ -555,7 +555,7 @@ class PowerSlits(BeckhoffSlits):
     fsw = Cpt(NotImplementedSignal, ':FSW', kind='normal')
 
 
-class ExitSlits(BaseInterface, Device, LightpathInOutMixin):
+class ExitSlits(BaseInterface, GroupDevice, LightpathInOutMixin):
     tab_component_names = True
 
     lightpath_cpts = ['target']

@@ -2,15 +2,15 @@
 Module for the various spectrometers.
 """
 from ophyd.device import Component as Cpt
-from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 
+from .device import GroupDevice
 from .epics_motor import BeckhoffAxisNoOffset
 from .interface import BaseInterface, LightpathMixin
 from .signal import InternalSignal, PytmcSignal
 
 
-class Kmono(BaseInterface, Device, LightpathMixin):
+class Kmono(BaseInterface, GroupDevice, LightpathMixin):
     """
     K-edge Monochromator: Used for Undulator tuning and other experiments.
 
@@ -97,7 +97,7 @@ class Kmono(BaseInterface, Device, LightpathMixin):
             self._transmission = 1
 
 
-class VonHamosCrystal(BaseInterface, Device):
+class VonHamosCrystal(BaseInterface, GroupDevice):
     """Pitch, yaw, and translation motors for control of a single crystal."""
     tab_component_names = True
 
@@ -106,7 +106,7 @@ class VonHamosCrystal(BaseInterface, Device):
     trans = Cpt(BeckhoffAxisNoOffset, ':Translation', kind='normal')
 
 
-class VonHamosFE(BaseInterface, Device):
+class VonHamosFE(BaseInterface, GroupDevice):
     """
     von Hamos spectrometer with Focus and Energy motors.
 
@@ -211,7 +211,7 @@ class VonHamos4Crystal(VonHamosFE):
                          prefix_energy=prefix_energy, **kwargs)
 
 
-class Mono(BaseInterface, Device):
+class Mono(BaseInterface, GroupDevice):
     """
     L2S-I NEH 2.X Monochromator
 

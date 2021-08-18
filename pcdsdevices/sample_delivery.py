@@ -5,6 +5,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.signal import EpicsSignal
 
+from .device import GroupDevice
 from .device import UnrelatedComponent as UCpt
 from .interface import BaseInterface
 from .signal import PytmcSignal
@@ -38,7 +39,7 @@ class ViciValve(BaseInterface, Device):
     curr_pos = Cpt(PytmcSignal, ':CurrentPos', io='i', kind='normal')
 
 
-class Selector(M3BasePLCDevice):
+class Selector(M3BasePLCDevice, GroupDevice):
     """
     A Selector for the sample delivery system.
 
@@ -232,7 +233,7 @@ class PropAir(BaseInterface, Device):
     high_limit = Cpt(PytmcSignal, ':HighLimit', io='io', kind='normal')
 
 
-class PCM(M3BasePLCDevice):
+class PCM(M3BasePLCDevice, GroupDevice):
     """
     A Pressure Control Module for the sample delivery system.
 
@@ -274,7 +275,7 @@ class IntegratedFlow(BaseInterface, Device):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class FlowIntegrator(BaseInterface, Device):
+class FlowIntegrator(BaseInterface, GroupDevice):
     """
     A Flow Integrator for the sample delivery system.
 
@@ -419,7 +420,7 @@ class ManifoldValve(BaseInterface, Device):
     interlocked = Cpt(PytmcSignal, ':Ilk', io='i', kind='normal')
 
 
-class GasManifold(M3BasePLCDevice):
+class GasManifold(M3BasePLCDevice, GroupDevice):
     """
     A Gas Manifold as used in the sample delivery system.
 
