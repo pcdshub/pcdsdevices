@@ -374,7 +374,8 @@ class GroupDevice(Device):
         super().__init_subclass__(**kwargs)
         if issubclass(cls, PseudoPositioner):
             raise TypeError(
-                "GroupDevice cannot be applied to a PseudoPositioner"
+                f"Cannot apply GroupDevice to {cls.__name__} because it is "
+                "a PseudoPositioner."
                 )
 
     def stage(self):
