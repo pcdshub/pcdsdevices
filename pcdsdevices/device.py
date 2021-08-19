@@ -2,6 +2,7 @@ import copy
 
 from ophyd.device import Component, Device
 from ophyd.ophydobj import Kind
+from ophyd.pseudopos import PseudoPositioner
 
 
 class UnrelatedComponent(Component):
@@ -356,13 +357,25 @@ class GroupDevice(Device):
       instead of the default device screens.
       (Note: at time of writing, this hypothetical ``GroupDevice``
       ui template does not yet exist).
+    - Certain devices will completely break if we remove their subdevice
+      references: for example, consider the PsuedoPositioner class.
+      For classes like these, we'll raise an exception at class definition
+      time. We can't just ignore it since we make other changes here that
+      would make it impossible to scan these objects.
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Remove references to parent (in this case, self)
         for cpt_name in self.component_names:
             cpt = getattr(self, cpt_name)
-            cpt.parent = None
+            cpt._parent = None
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if issubclass(cls, PseudoPositioner):
+            raise TypeError(
+                "GroupDevice cannot be applied to a PseudoPositioner"
+                )
 
     def stage(self):
         raise RuntimeError(
