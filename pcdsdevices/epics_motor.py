@@ -16,7 +16,6 @@ from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
 from ophyd.utils.epics_pvs import raise_if_disconnected, set_and_wait
 from pcdsutils.ext_scripts import get_hutch_name
-from pmgr import pmgrAPI
 
 from pcdsdevices.pv_positioner import PVPositionerComparator
 
@@ -488,25 +487,7 @@ class IMS(PCDSMotorBase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self._pm is None and not self._pm_init_error:
-            self._setup_pmgr()
-
-    @classmethod
-    def _setup_pmgr(cls):
-        try:
-            hutch = get_hutch_name()
-        except Exception:
-            logger.error('Could not determine hutch for pmgr!')
-            logger.debug('', exc_info=True)
-            cls._pm_init_error = True
-            return
-        try:
-            cls._pm = pmgrAPI.pmgrAPI("ims_motor", hutch)
-        except Exception:
-            logger.error('Failed to create IMS pmgr object!')
-            logger.debug('', exc_info=True)
-            cls._pm_init_error = True
-            return
+        self._setup_pmgr_if_needed()
 
     def stage(self):
         """
@@ -625,6 +606,7 @@ class IMS(PCDSMotorBase):
 
         Returns nothing.
         """
+        self.check_pmgr()
         self._pm.apply_config(self.prefix, cfgname)
 
     def get_configuration(self):
@@ -634,6 +616,7 @@ class IMS(PCDSMotorBase):
         Returns the current configuration name as a string or throws an
         exception.
         """
+        self.check_pmgr()
         return self._pm.get_config(self.prefix)
 
     @staticmethod
@@ -655,6 +638,7 @@ class IMS(PCDSMotorBase):
 
         Returns a list of strings if display is None, and nothing otherwise.
         """
+        IMS._setup_and_check_pmgr()
         matches = IMS._pm.match_config(pattern, ci=case_insensitive)
         if display is None:
             return matches
@@ -666,6 +650,44 @@ class IMS(PCDSMotorBase):
             print("Matches for '%s':" % pattern)
             for m in matches:
                 print("    %s" % m)
+
+    @staticmethod
+    def _setup_pmgr():
+        try:
+            from pmgr import pmgrAPI
+        except ImportError:
+            logger.error('Failed to import pmgr!')
+            logger.debug('', exc_info=True)
+            IMS._pm_init_error = True
+        try:
+            hutch = get_hutch_name()
+        except Exception:
+            logger.error('Could not determine hutch for pmgr!')
+            logger.debug('', exc_info=True)
+            IMS._pm_init_error = True
+            return
+        try:
+            IMS._pm = pmgrAPI.pmgrAPI("ims_motor", hutch)
+        except Exception:
+            logger.error('Failed to create IMS pmgr object!')
+            logger.debug('', exc_info=True)
+            IMS._pm_init_error = True
+            return
+
+    @staticmethod
+    def _setup_pmgr_if_needed():
+        if IMS._pm is None and not IMS._pm_init_error:
+            IMS._setup_pmgr()
+
+    @staticmethod
+    def check_pmgr():
+        if IMS._pm_init_error:
+            raise RuntimeError('pmgr not available, initialized with an error')
+
+    @staticmethod
+    def _setup_and_check_pmgr():
+        IMS._setup_pmgr_if_needed()
+        IMS.check_pmgr()
 
 
 class Newport(PCDSMotorBase):
