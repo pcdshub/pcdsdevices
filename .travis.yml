@@ -27,11 +27,6 @@ env:
     # CONDA_EXTRAS) but for pip
     - PIP_EXTRAS=""
 
-jobs:
-  allow_failures:
-    - name: "Python 3.8 - PIP"
-    - name: "Python 3.9"
-
 import:
   # This import enables a set of standard python jobs including:
   # - Build
