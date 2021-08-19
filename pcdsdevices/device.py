@@ -362,6 +362,9 @@ class GroupDevice(Device):
       For classes like these, we'll raise an exception at class definition
       time. We can't just ignore it since we make other changes here that
       would make it impossible to scan these objects.
+    - Certain devices will completely break if we change their staging
+      behavior: for example, any motor. These will also raise an Exception
+      at class definition time.
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -376,6 +379,11 @@ class GroupDevice(Device):
             raise TypeError(
                 f"Cannot apply GroupDevice to {cls.__name__} because it is "
                 "a PseudoPositioner."
+                )
+        if hasattr(cls, 'set'):
+            raise TypeError(
+                f"Cannot apply GroupDevice to {cls.__name__} because it is "
+                "a Movable device according to bluesky."
                 )
 
     def stage(self):
