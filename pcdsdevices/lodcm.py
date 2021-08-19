@@ -729,7 +729,7 @@ navitar zoom [{yag_zoom_units}]  {yag_zoom_user} ({yag_zoom_dial})
 """
 
 
-class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
+class LODCMEnergySi(FltMvInterface, PseudoPositioner):
     """
     Energy calculations for the Si material.
 
@@ -945,7 +945,7 @@ Photon Energy: {energy} [keV]
 """
 
 
-class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
+class LODCMEnergyC(FltMvInterface, PseudoPositioner):
     """
     Energy calculations for the C material.
 
