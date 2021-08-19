@@ -2,7 +2,7 @@ import copy
 
 from ophyd.device import Component, Device
 from ophyd.ophydobj import Kind
-from ophyd.pseudopos import PseudoPositioner
+from ophyd.pseudopos import PseudoSingle
 
 
 class UnrelatedComponent(Component):
@@ -350,50 +350,55 @@ class GroupDevice(Device):
     - If a component is staged in a bluesky plan, it will not stage
       the ``GroupDevice``, and therefore will not stage the entire
       device tree.
-    - ``GroupDevice`` instances cannot in themselves be staged.
-      This would necessarily create a redundant staging error when
-      used in a bluesky scan alongside the more useful subdevices.
+    - ``GroupDevice`` instances by default do nothing when staged.
+      You can add specific subdevices to the stage list by setting the
+      ``stage_group`` class attribute to a list of components.
+    - ``GroupDevice`` instances that implement ``set`` are required
+      to specify a ``stage_group`` to help remind you that these classes
+      really do need to stage "something" before scanning. If your
+      movable device really does not need this, you can set ``stage_group``
+      to an empty list.
     - When represented in typhos, we'll see the GroupDevice screen
       instead of the default device screens.
       (Note: at time of writing, this hypothetical ``GroupDevice``
       ui template does not yet exist).
     - Certain devices will completely break if we remove their subdevice
       references: for example, consider the PsuedoPositioner class.
-      For classes like these, we'll raise an exception at class definition
-      time. We can't just ignore it since we make other changes here that
-      would make it impossible to scan these objects.
-    - Certain devices will completely break if we change their staging
-      behavior: for example, any motor. These will also raise an Exception
-      at class definition time.
+      For classes like these, we'll need to keep the parent references
+      for the PseudoSingle instances.
     """
+    stage_group = None
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Remove references to parent (in this case, self)
         for cpt_name in self.component_names:
             cpt = getattr(self, cpt_name)
-            cpt._parent = None
+            if not isinstance(cpt, PseudoSingle):
+                cpt._parent = None
+        if self.stage_group is None:
+            self.stage_group = []
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
-        if issubclass(cls, PseudoPositioner):
+        if hasattr(cls, 'set') and cls.stage_group is None:
             raise TypeError(
-                f"Cannot apply GroupDevice to {cls.__name__} because it is "
-                "a PseudoPositioner."
+                f"Must specify a stage_group in {cls.__name__} because it "
+                "is a movable device. See the GroupDevice docs."
                 )
-        if hasattr(cls, 'set'):
-            raise TypeError(
-                f"Cannot apply GroupDevice to {cls.__name__} because it is "
-                "a Movable device according to bluesky."
-                )
+
+    def stage_group_instances(self):
+        """Yields an iterator of subdevices that should be staged."""
+        return (getattr(self, cpt.attr) for cpt in self.stage_group)
 
     def stage(self):
-        raise RuntimeError(
-            "Group devices cannot be staged and should not be "
-            "used in a bluesky plan."
-            )
+        staged = [self]
+        for obj in self.stage_group_instances():
+            staged.extend(obj.stage())
+        return staged
 
     def unstage(self):
-        raise RuntimeError(
-            "Group devices cannot be unstaged and should not be "
-            "used in a bluesky plan."
-            )
+        unstaged = [self]
+        for obj in self.stage_group_instances():
+            unstaged.extend(obj.unstage())
+        return unstaged
