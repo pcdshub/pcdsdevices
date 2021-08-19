@@ -9,6 +9,7 @@ pint
 pmgr>=2.0.2
 prettytable
 pyepics>=3.4.2
+python>=3.9
 pytmc>=2.7.0
 pyyaml
 schema

@@ -1,4 +1,5 @@
 import copy
+from collections.abc import Iterator
 
 from ophyd.device import Component, Device
 from ophyd.ophydobj import Kind
@@ -367,7 +368,7 @@ class GroupDevice(Device):
       For classes like these, we'll need to keep the parent references
       for the PseudoSingle instances.
     """
-    stage_group = None
+    stage_group: list[Component] = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -387,17 +388,17 @@ class GroupDevice(Device):
                 "is a movable device. See the GroupDevice docs."
                 )
 
-    def stage_group_instances(self):
+    def stage_group_instances(self) -> Iterator[Device]:
         """Yields an iterator of subdevices that should be staged."""
         return (getattr(self, cpt.attr) for cpt in self.stage_group)
 
-    def stage(self):
+    def stage(self) -> list[Device]:
         staged = [self]
         for obj in self.stage_group_instances():
             staged.extend(obj.stage())
         return staged
 
-    def unstage(self):
+    def unstage(self) -> list[Device]:
         unstaged = [self]
         for obj in self.stage_group_instances():
             unstaged.extend(obj.unstage())

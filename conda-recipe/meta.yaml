@@ -13,10 +13,10 @@ build:
 
 requirements:
   build:
-    - python >=3.6
+    - python >=3.9
     - setuptools
   run:
-    - python >=3.6
+    - python >=3.9
     - bluesky >=1.6.4
     - happi
     - jsonschema
