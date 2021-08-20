@@ -2,8 +2,9 @@ import copy
 from collections.abc import Iterator
 
 from ophyd.device import Component, Device
-from ophyd.ophydobj import Kind
+from ophyd.ophydobj import Kind, OphydObject
 from ophyd.pseudopos import PseudoSingle
+from ophyd.signal import AttributeSignal
 
 
 class UnrelatedComponent(Component):
@@ -366,16 +367,20 @@ class GroupDevice(Device):
     - Certain devices will completely break if we remove their subdevice
       references: for example, consider the PsuedoPositioner class.
       For classes like these, we'll need to keep the parent references
-      for the PseudoSingle instances.
+      for the PseudoSingle instances. For the full list of classes that
+      need to retain their ``parent`` attribute, see
+      ``GroupDevice.needs_parent``.
     """
     stage_group: list[Component] = None
+    needs_parent: list[OphydObject] = [PseudoSingle, AttributeSignal]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Remove references to parent (in this case, self)
         for cpt_name in self.component_names:
             cpt = getattr(self, cpt_name)
-            if not isinstance(cpt, PseudoSingle):
+            # The following types break without parents
+            if not any(isinstance(cpt, cls) for cls in self.needs_parent):
                 cpt._parent = None
         if self.stage_group is None:
             self.stage_group = []
