@@ -355,6 +355,10 @@ class GroupDevice(Device):
     - ``GroupDevice`` instances by default do nothing when staged.
       You can add specific subdevices to the stage list by setting the
       ``stage_group`` class attribute to a list of components.
+    - Following from the previous point, note that ``GroupDevice``
+      instances cannot process top-level ``stage_sigs``. If you need
+      top-level ``stage_sigs``, you should instead contain them in a
+      subdevice that is not a ``GroupDevice``.
     - ``GroupDevice`` instances that implement ``set`` are required
       to specify a ``stage_group`` to help remind you that these classes
       really do need to stage "something" before scanning. If your
@@ -393,20 +397,20 @@ class GroupDevice(Device):
                 "is a movable device. See the GroupDevice docs."
                 )
 
-    def stage_group_instances(self) -> Iterator[Device]:
+    def stage_group_instances(self) -> Iterator[OphydObject]:
         """Yields an iterator of subdevices that should be staged."""
         return (getattr(self, cpt.attr) for cpt in self.stage_group)
 
-    def stage(self) -> list[Device]:
+    def stage(self) -> list[OphydObject]:
         staged = [self]
         for obj in self.stage_group_instances():
             if hasattr(obj, 'stage'):
                 staged.extend(obj.stage())
         return staged
 
-    def unstage(self) -> list[Device]:
+    def unstage(self) -> list[OphydObject]:
         unstaged = [self]
-        for obj in self.stage_group_instances():
+        for obj in reversed(self.stage_group_instances()):
             if hasattr(obj, 'unstage'):
                 unstaged.extend(obj.unstage())
         return unstaged
