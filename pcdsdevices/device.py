@@ -395,11 +395,13 @@ class GroupDevice(Device):
     def stage(self) -> list[Device]:
         staged = [self]
         for obj in self.stage_group_instances():
-            staged.extend(obj.stage())
+            if hasattr(obj, 'stage'):
+                staged.extend(obj.stage())
         return staged
 
     def unstage(self) -> list[Device]:
         unstaged = [self]
         for obj in self.stage_group_instances():
-            unstaged.extend(obj.unstage())
+            if hasattr(obj, 'unstage'):
+                unstaged.extend(obj.unstage())
         return unstaged
