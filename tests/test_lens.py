@@ -1,6 +1,7 @@
 import logging
 import os
 import os.path
+import sys
 from unittest.mock import Mock
 
 import numpy as np
@@ -132,6 +133,10 @@ def test_lensstack_beamsize(monkeypatch, fake_lensstack):
     assert np.isclose(lensstack.beam_size.position, 500e-6, rtol=0.1, atol=0)
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Fails on Windows, presets needed and not supported.",
+    )
 def test_lensstack_align(presets, monkeypatch, fake_lensstack):
     logger.debug('test_lensstack_align')
 
