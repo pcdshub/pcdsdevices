@@ -1,5 +1,6 @@
 import logging
 import multiprocessing as mp
+import sys
 import threading
 import time
 
@@ -93,6 +94,10 @@ def test_mv_ginput(monkeypatch, fast_motor):
     inner_test()
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Fails on Windows, no fcntl and different signal handling",
+    )
 def test_presets(presets, fast_motor):
     logger.debug('test_presets')
 
