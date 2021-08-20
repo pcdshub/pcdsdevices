@@ -4,7 +4,6 @@ Module for goniometers and sample stages used with them.
 import logging
 
 import numpy as np
-from ophyd import Device
 from ophyd import FormattedComponent as FCpt
 from ophyd.device import Component as Cpt
 from ophyd.status import DeviceStatus
@@ -289,7 +288,7 @@ class KappaMoveAbort(ValueError):
     pass
 
 
-class Kappa(BaseInterface, PseudoPositioner, Device):
+class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
     """
     Kappa stage, control the Kappa diffractometer in spherical coordinates.
 
@@ -372,8 +371,10 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
     e_eta = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_eta')
     e_chi = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_chi')
     e_phi = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_phi')
-    tab_component_names = True
 
+    # Only stage the motors involved in the coordinate transform
+    stage_group = [eta, kappa, phi]
+    tab_component_names = True
     tab_whitelist = ['stop', 'wait', 'k_to_e', 'e_to_k', 'check_motor_step']
 
     def __init__(self, *, name, prefix_x, prefix_y, prefix_z,

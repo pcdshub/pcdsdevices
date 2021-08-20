@@ -217,6 +217,8 @@ class CCM(InOutPositioner, GroupDevice):
     _transmission = {'IN': 0.9}
 
     tab_component_names = True
+    # When we move the top-level CCM, it moves X
+    stage_group = [x]
 
     def __init__(self, alio_prefix, theta2fine_prefix, theta2coarse_prefix,
                  chi2_prefix, x_down_prefix, x_up_prefix,

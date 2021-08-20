@@ -769,6 +769,8 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
 
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
 
+    stage_group = [dr, th1Si, th2Si, z1Si, z2Si]
+
     def __init__(self, prefix, *args, **kwargs):
         self._prefix = prefix
         self._hutch_prefix = ''
@@ -984,6 +986,8 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
                doc='Z2 motor offset for C [mm]')
 
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
+
+    stage_group = [dr, th1C, th2C, z1C, z2C]
 
     def __init__(self, prefix, *args, **kwargs):
         self._prefix = prefix

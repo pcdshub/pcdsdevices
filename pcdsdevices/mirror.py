@@ -284,6 +284,8 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
 
     # Reverse state order as PointingMirror is non-standard
     states_list = ['OUT', 'IN']
+    # Moving PointingMirror moves the x gantry
+    stage_group = [OffsetMirror.xgantry]
 
     def __init__(self, prefix, *, out_lines=None, in_lines=None, **kwargs):
         # Branching pattern

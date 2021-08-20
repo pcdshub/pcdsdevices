@@ -447,6 +447,9 @@ class StateRecordPositionerBase(StatePositioner, GroupDevice):
 
     state = Cpt(EpicsSignal, '', write_pv=':GO', kind='hinted')
 
+    # Moving a state positioner puts to state
+    stage_group = [state]
+
     def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
         self._has_subscribed_readback = False

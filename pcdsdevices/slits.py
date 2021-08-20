@@ -20,7 +20,7 @@ from ophyd import DynamicDeviceComponent as DDCpt
 from ophyd import EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositioner
-from ophyd.signal import Signal
+from ophyd.signal import Signal, SignalRO
 from ophyd.status import Status
 from ophyd.status import wait as status_wait
 
@@ -58,10 +58,13 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
 
     # Placeholders for each component to override
     # These are expected to be positioners
-    xwidth = None
-    ywidth = None
-    xcenter = None
-    ycenter = None
+    xwidth = Cpt(SignalRO)
+    ywidth = Cpt(SignalRO)
+    xcenter = Cpt(SignalRO)
+    ycenter = Cpt(SignalRO)
+
+    # The gap opens/closes when we move the slits device
+    stage_group = [xwidth, ywidth]
 
     def __init__(self, *args, nominal_aperture=5.0, **kwargs):
         self._has_subscribed = False

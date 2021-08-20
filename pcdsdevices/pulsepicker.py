@@ -197,6 +197,9 @@ class PulsePickerInOut(PulsePicker, GroupDevice):
                               2: 'CLOSED'}}
     _state_logic_mode = 'FIRST'
 
+    # When we move PulsePickerInOut, it moves inout
+    stage_group = [inout]
+
     def __init__(self, prefix, **kwargs):
         # inout follows naming convention
         parts = prefix.split(':')
