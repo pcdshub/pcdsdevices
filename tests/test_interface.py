@@ -1,8 +1,5 @@
-import fcntl
 import logging
 import multiprocessing as mp
-import os
-import signal
 import threading
 import time
 
@@ -14,6 +11,11 @@ from pcdsdevices.interface import (BaseInterface, TabCompletionHelperClass,
                                    get_engineering_mode, set_engineering_mode,
                                    setup_preset_paths)
 from pcdsdevices.sim import FastMotor, SlowMotor
+
+try:
+    import fcntl
+except ImportError:
+    fcntl = None
 
 logger = logging.getLogger(__name__)
 
@@ -48,11 +50,10 @@ def test_umv(slow_motor):
 
 def test_camonitor(fast_motor):
     logger.debug('test_camonitor')
-    pid = os.getpid()
 
     def interrupt():
-        time.sleep(0.1)
-        os.kill(pid, signal.SIGINT)
+        time.sleep(0.2)
+        fast_motor.end_monitor_thread()
 
     threading.Thread(target=interrupt, args=()).start()
     fast_motor.camonitor()
