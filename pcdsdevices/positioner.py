@@ -144,11 +144,11 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         if self._check_finished():
             self._started_moving = False
             self._moving = False
+            self._update_position(force=True)
             try:
                 status.set_finished()
             except InvalidState:
                 pass
-            self._update_position(force=True)
         else:
             self._new_update(status)
 
