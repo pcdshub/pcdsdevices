@@ -26,7 +26,6 @@ requirements:
     - pcdscalc >=0.2.0
     - pcdsutils >=0.4.0
     - pint
-    - pmgr >=2.0.2
     - prettytable
     - pyepics >=3.4.2
     - pytmc >=2.7.0
