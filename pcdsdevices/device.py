@@ -416,7 +416,7 @@ class GroupDevice(Device):
 
     def unstage(self) -> list[OphydObject]:
         unstaged = [self]
-        for obj in reversed(self.stage_group_instances()):
+        for obj in reversed(list(self.stage_group_instances())):
             if hasattr(obj, 'unstage'):
                 unstaged.extend(obj.unstage())
         return unstaged
