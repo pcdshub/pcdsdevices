@@ -6,6 +6,8 @@ from ophyd.ophydobj import Kind, OphydObject
 from ophyd.pseudopos import PseudoSingle
 from ophyd.signal import AttributeSignal
 
+from .signal import PVStateSignal
+
 
 class UnrelatedComponent(Component):
     """
@@ -376,7 +378,11 @@ class GroupDevice(Device):
       ``GroupDevice.needs_parent``.
     """
     stage_group: list[Component] = None
-    needs_parent: list[OphydObject] = [PseudoSingle, AttributeSignal]
+    needs_parent: list[OphydObject] = [
+        PseudoSingle,
+        AttributeSignal,
+        PVStateSignal,
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

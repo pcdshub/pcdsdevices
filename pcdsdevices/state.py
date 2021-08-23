@@ -16,7 +16,7 @@ from .device import GroupDevice
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
-from .signal import AggregateSignal, PytmcSignal
+from .signal import PVStateSignal, PytmcSignal
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -315,65 +315,6 @@ class StatePositioner(MvInterface, Device, PositionerBase):
         be run without needing to run it to find out.
         """
         raise AttributeError('StatePositioner has no stop method.')
-
-
-class PVStateSignal(AggregateSignal):
-    """
-    Signal that implements the `PVStatePositioner` state logic.
-
-    See `AggregateSignal` for more information.
-    """
-
-    def __init__(self, *, name, **kwargs):
-        super().__init__(name=name, **kwargs)
-        self._sub_map = {}
-        for signal_name in self.parent._state_logic.keys():
-            sig = self.parent
-            for part in signal_name.split('.'):
-                sig = getattr(sig, part)
-            self._sub_signals.append(sig)
-            self._sub_map[signal_name] = sig
-
-    def describe(self):
-        # Base description information
-        sub_sigs = [sig.name for sig in self._sub_signals]
-        desc = {'source': 'SUM:{}'.format(','.join(sub_sigs)),
-                'dtype': 'string',
-                'shape': [],
-                'enum_strs': tuple(state.name
-                                   for state in self.parent.states_enum)}
-        return {self.name: desc}
-
-    def _calc_readback(self):
-        state_value = None
-        for signal_name, info in self.parent._state_logic.items():
-            # Get last cached value
-            value = self._cache[self._sub_map[signal_name]]
-            try:
-                signal_state = info[value]
-            # Handle unaccounted readbacks
-            except KeyError:
-                state_value = self.parent._unknown
-                break
-            # Associate readback with device state
-            if signal_state != 'defer':
-                if state_value:
-                    # Handle inconsistent readbacks
-                    if signal_state != state_value:
-                        state_value = self.parent._unknown
-                        break
-                else:
-                    # Set state to first non-deferred value
-                    state_value = signal_state
-                    if self.parent._state_logic_mode == 'ALL':
-                        continue
-                    elif self.parent._state_logic_mode == 'FIRST':
-                        break
-        # If all states deferred, report as unknown
-        return state_value or self.parent._unknown
-
-    def put(self, value, **kwargs):
-        self.parent.move(value, **kwargs)
 
 
 class PVStatePositioner(StatePositioner):
