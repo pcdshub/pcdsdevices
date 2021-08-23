@@ -246,9 +246,15 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         """
         Store the initial values of the aperture position before scanning.
         """
-        self._original_vals[self.xwidth.setpoint] = self.xwidth.readback.get()
-        self._original_vals[self.ywidth.setpoint] = self.ywidth.readback.get()
+        self._pre_stage_gap = self.position
         return super().stage()
+
+    def unstage(self):
+        """
+        Restore the initial values of the aperture position.
+        """
+        self.move(self._pre_stage_gap[0], self._pre_stage_gap[1], wait=True)
+        return super().unstage()
 
     def subscribe(self, cb, event_type=None, run=True):
         """
