@@ -161,8 +161,8 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         if force or time.monotonic() - self._last_update > self.update_rate:
             self._last_update = time.monotonic()
             pos = self._get_pos()
-            self._set_position(pos)
             self.notepad_signal.put(pos)
+            self._set_position(pos)
 
     def _check_finished(self):
         if self._done is None:
