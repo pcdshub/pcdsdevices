@@ -15,54 +15,54 @@ Device Updates
 
   - Acromag
   - ArrivalTimeMonitor
-  - CCM
-  - CVMI
-  - KTOF
-  - ICT
   - BaseGon
-  - XYZStage
-  - SamPhi
-  - Kappa
-  - IPMDiode
-  - IPMMotion
-  - IPIMB
-  - Wave8
-  - Injector
+  - BeckhoffJet
   - BeckhoffJetManipulator
   - BeckhoffJetSlits
-  - BeckhoffJet
+  - CCM
+  - CrystalTower1
+  - CrystalTower2
+  - CVMI
+  - DiagnosticTower
+  - ExitSlits
+  - FFMirror
+  - FlowIntegrator
+  - GasManifold
+  - ICT
+  - Injector
+  - IPIMB
+  - IPMDiode
+  - IPMMotion
+  - Kappa
+  - KBOMirror
+  - KMono
+  - KTOF
   - LAMP
   - LAMPMagneticBottle
   - LaserInCoupling
-  - CrystalTower1
-  - CrystalTower2
-  - DiagnosticTower
-  - LODCMEnergySi
-  - LODCMEnergyC
+  - LCLS2ImagerBase
   - LODCM
-  - OffsetMirror
-  - XOffsetMirror
-  - KBOMirror
-  - FFMirror
+  - LODCMEnergyC
+  - LODCMEnergySi
+  - Mono
   - MPODApalisModule
   - MRCO
+  - OffsetMirror
+  - PCM
   - PIM
-  - LCLS2ImagerBase
   - PulsePickerInOut
   - ReflaserL2SI
   - RTDSBase
+  - SamPhi
   - Selector
-  - PCM
-  - FlowIntegrator
-  - GasManifold
   - SlitsBase
-  - ExitSlits
-  - KMono
+  - StateRecordPositionerBase
   - VonHamosCrystal
   - VonHamosFE
-  - Mono
-  - StateRecordPositionerBase
+  - Wave8
   - WaveFrontSensorTarget
+  - XOffsetMirror
+  - XYZStage
 
 - Clean up pmgr loading a bit on IMS (my previous edit to Mike's setup was a bit rough)
 - Edit stage/unstage on PIMY to be compatible with GroupDevice
