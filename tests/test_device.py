@@ -3,8 +3,10 @@ from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.device import Kind
+from ophyd.positioner import SoftPositioner
 from ophyd.signal import Signal
 
+from pcdsdevices.device import GroupDevice
 from pcdsdevices.device import InterfaceComponent as ICpt
 from pcdsdevices.device import InterfaceDevice
 from pcdsdevices.device import ObjectComponent as OCpt
@@ -170,3 +172,61 @@ def test_update_component():
     assert three.fcpt.prefix == 'fcpt42'
     assert three.fcpt.name == 'three_fcpt'
     assert three.fcpt.kind == Kind.normal
+
+
+class BadStager(Device):
+    dev = Cpt(Device, ':DEV')
+
+    def stage(self):
+        raise RuntimeError('This should not have been called!')
+
+
+class BasicGroup(GroupDevice):
+    one = Cpt(Device, ':BASIC')
+    two = Cpt(Device, ':COMPLEX')
+    bad = Cpt(BadStager, ':BAD')
+
+
+def test_group_device_basic():
+    """
+    Make sure group device basic features work.
+    """
+    group = BasicGroup('GROUP', name='group')
+    assert group.one.parent is None
+    assert group.two.parent is None
+    assert group.bad.dev.parent is group.bad
+    assert group.one not in group.stage()
+    assert group.two not in group.unstage()
+
+
+def test_group_device_partial():
+    """
+    We should call stage this time, but not on BadStager
+    """
+    class StageGroupPartial(BasicGroup):
+        stage_group = [BasicGroup.one, BasicGroup.two]
+
+    group = StageGroupPartial('PARTIAL', name='partial')
+    assert group.one in group.stage()
+    assert group.two in group.unstage()
+
+
+def test_group_device_class_errors():
+    """
+    Various issues that should be caught when we define a class.
+    """
+    # If we're a positioner, we must define a stage_group
+    with pytest.raises(TypeError):
+        class PosGroup(SoftPositioner, GroupDevice):
+            pass
+
+    # stage_group must have only components in it
+    with pytest.raises(TypeError):
+        class MessyGroup(BasicGroup):
+            stage_group = [BasicGroup.one, 'cats']
+
+    # stage_group targets should not be overriden in subclass
+    with pytest.raises(TypeError):
+        class OverrideGroup(BasicGroup):
+            one = None
+            stage_group = [BasicGroup.one, BasicGroup.two]
