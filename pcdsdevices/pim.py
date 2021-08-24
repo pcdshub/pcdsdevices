@@ -59,7 +59,7 @@ class PIMY(InOutRecordPositioner, BaseInterface):
         if self._pre_stage_state is not None:
             self.state.put(self._pre_stage_state)
         self._pre_stage_state = None
-        return super().stage()
+        return super().unstage()
 
 
 class PIM(BaseInterface, GroupDevice):
