@@ -378,7 +378,7 @@ class GroupDevice(Device):
       ``GroupDevice.needs_parent``.
     """
     stage_group: list[Component] = None
-    needs_parent: list[type] = [
+    needs_parent: list[type[OphydObject]] = [
         PseudoSingle,
         AttributeSignal,
         PVStateSignal,
