@@ -1,10 +1,11 @@
 import copy
 from collections.abc import Iterator
 
+from ophyd.areadetector.plugins import PluginBase
 from ophyd.device import Component, Device
 from ophyd.ophydobj import Kind, OphydObject
 from ophyd.pseudopos import PseudoSingle
-from ophyd.signal import AttributeSignal
+from ophyd.signal import AttributeSignal, DerivedSignal
 
 from .signal import PVStateSignal
 
@@ -379,8 +380,10 @@ class GroupDevice(Device):
     """
     stage_group: list[Component] = None
     needs_parent: list[type[OphydObject]] = [
-        PseudoSingle,
         AttributeSignal,
+        DerivedSignal,
+        PluginBase,
+        PseudoSingle,
         PVStateSignal,
         ]
 
