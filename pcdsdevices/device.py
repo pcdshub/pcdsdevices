@@ -394,6 +394,9 @@ class GroupDevice(Device):
                 cpt._parent = None
         if self.stage_group is None:
             self.stage_group = []
+        else:
+            # Avoid potential issues from shared mutable class attribute
+            self.stage_group = list(self.stage_group)
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
