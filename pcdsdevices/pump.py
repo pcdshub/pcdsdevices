@@ -7,7 +7,6 @@ from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
 from ophyd import FormattedComponent as FCpt
 
-from .device import GroupDevice
 from .doc_stubs import IonPump_base
 from .interface import BaseInterface
 
@@ -123,7 +122,7 @@ class IonPumpBase(BaseInterface, Device):
         return self._egu.get()
 
 
-class IonPumpWithController(IonPumpBase, GroupDevice):
+class IonPumpWithController(IonPumpBase):
     """
 %s
 

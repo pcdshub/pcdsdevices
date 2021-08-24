@@ -1,9 +1,9 @@
 import logging
 
 from ophyd.device import Component as Cpt
+from ophyd.device import Device
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
 
-from .device import GroupDevice
 from .interface import BaseInterface
 from .pv_positioner import PVPositionerDone
 from .signal import AvgSignal
@@ -11,7 +11,7 @@ from .signal import AvgSignal
 logger = logging.getLogger(__name__)
 
 
-class BeamStats(BaseInterface, GroupDevice):
+class BeamStats(BaseInterface, Device):
     mj = Cpt(EpicsSignalRO, 'GDET:FEE1:241:ENRC', kind='hinted',
              doc='Pulse energy [mJ]')
     ev = Cpt(EpicsSignalRO, 'BLD:SYS0:500:PHOTONENERGY', kind='normal',
@@ -78,7 +78,7 @@ class BeamEnergyRequest(PVPositionerDone):
                          **kwargs)
 
 
-class LCLS(BaseInterface, GroupDevice):
+class LCLS(BaseInterface, Device):
     """
     Object to query machine Lcls Linac status.
     """
