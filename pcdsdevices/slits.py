@@ -19,6 +19,7 @@ from ophyd import Component as Cpt
 from ophyd import DynamicDeviceComponent as DDCpt
 from ophyd import EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
+from ophyd.ophydobj import OphydObject
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import Signal, SignalRO
 from ophyd.status import Status
@@ -74,6 +75,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         self.vg = self.ywidth
         self.ho = self.xcenter
         self.vo = self.ycenter
+        self._pre_stage_gap: tuple[float, float] = None
 
     def format_status_info(self, status_info):
         """
@@ -192,7 +194,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
             return self.move(width=width, height=height)
 
     @property
-    def current_aperture(self):
+    def current_aperture(self) -> tuple[float, float]:
         """
         Current size of the aperture. Returns a tuple in the form
         ``(width, height)``.
@@ -200,7 +202,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         return (self.xwidth.position, self.ywidth.position)
 
     @property
-    def position(self):
+    def position(self) -> tuple[float, float]:
         return self.current_aperture
 
     def remove(self, size=None, wait=False, timeout=None, **kwargs):
@@ -242,18 +244,24 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         """Alias for the move method, here for ``bluesky`` compatibilty."""
         return self.move(size, wait=False)
 
-    def stage(self):
+    def stage(self) -> list[OphydObject]:
         """
         Store the initial values of the aperture position before scanning.
         """
         self._pre_stage_gap = self.position
         return super().stage()
 
-    def unstage(self):
+    def unstage(self) -> list[OphydObject]:
         """
         Restore the initial values of the aperture position.
         """
-        self.move(self._pre_stage_gap[0], self._pre_stage_gap[1], wait=True)
+        if self._pre_stage_gap is not None:
+            self.move(
+                self._pre_stage_gap[0],
+                self._pre_stage_gap[1],
+                wait=True
+                )
+        self._pre_stage_gap = None
         return super().unstage()
 
     def subscribe(self, cb, event_type=None, run=True):
