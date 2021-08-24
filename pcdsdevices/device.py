@@ -371,14 +371,14 @@ class GroupDevice(Device):
       (Note: at time of writing, this hypothetical ``GroupDevice``
       ui template does not yet exist).
     - Certain devices will completely break if we remove their subdevice
-      references: for example, consider the PsuedoPositioner class.
+      references: for example, consider the ``PsuedoPositioner`` class.
       For classes like these, we'll need to keep the parent references
-      for the PseudoSingle instances. For the full list of classes that
+      for the ``PseudoSingle`` instances. For the full list of classes that
       need to retain their ``parent`` attribute, see
       ``GroupDevice.needs_parent``.
     """
     stage_group: list[Component] = None
-    needs_parent: list[OphydObject] = [
+    needs_parent: list[type] = [
         PseudoSingle,
         AttributeSignal,
         PVStateSignal,
