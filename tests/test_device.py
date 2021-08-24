@@ -225,7 +225,7 @@ def test_group_device_class_errors():
         class MessyGroup(BasicGroup):
             stage_group = [BasicGroup.one, 'cats']
 
-    # stage_group targets should not be overriden in subclass
+    # stage_group targets should not be overriden in subclass except by Cpt
     with pytest.raises(TypeError):
         class OverrideGroup(BasicGroup):
             one = None
