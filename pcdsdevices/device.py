@@ -366,7 +366,7 @@ class GroupDevice(Device):
       really do need to stage "something" before scanning. If your
       movable device really does not need this, you can set ``stage_group``
       to an empty list.
-    - When represented in typhos, we'll see the GroupDevice screen
+    - When represented in typhos, we'll see the ``GroupDevice`` screen
       instead of the default device screens.
       (Note: at time of writing, this hypothetical ``GroupDevice``
       ui template does not yet exist).
