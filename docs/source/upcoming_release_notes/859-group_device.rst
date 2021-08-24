@@ -79,7 +79,7 @@ Bugfixes
 
 Maintenance
 -----------
-- Move PVstateSignal from state.py to signal.py to avoid a circular import
+- Move PVStateSignal from state.py to signal.py to avoid a circular import
 - Make the tests importable and runnable on Windows
 - Require Python 3.9 for type annotations
 - Make pmgr optional, but if installed make sure it has a compatible version.
