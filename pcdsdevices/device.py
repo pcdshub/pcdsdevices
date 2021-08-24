@@ -413,7 +413,7 @@ class GroupDevice(Device):
                         f"{cls.__name__}! Only Component types are allowed!"
                     )
                 subcls_cpt = getattr(cls, cpt.attr, None)
-                if not issubclass(subcls_cpt, Component):
+                if not isinstance(subcls_cpt, Component):
                     raise TypeError(
                         f"In stage_group for {cls.__name__}, {cpt.attr} "
                         f"referenced {subcls_cpt}, which is not a Component! "
