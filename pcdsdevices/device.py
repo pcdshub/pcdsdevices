@@ -390,7 +390,7 @@ class GroupDevice(Device):
         for cpt_name in self.component_names:
             cpt = getattr(self, cpt_name)
             # The following types break without parents
-            if not isinstance(cpt, self.needs_parent):
+            if not isinstance(cpt, tuple(self.needs_parent)):
                 cpt._parent = None
         if self.stage_group is None:
             self.stage_group = []
