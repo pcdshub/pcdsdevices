@@ -405,6 +405,20 @@ class GroupDevice(Device):
                 f"Must specify a stage_group in {cls.__name__} because it "
                 "is a movable device. See the GroupDevice docs."
                 )
+        if cls.stage_group is not None:
+            for cpt in cls.stage_group:
+                if not isinstance(cpt, Component):
+                    raise TypeError(
+                        f"Found non-Component {cpt} in stage_group for "
+                        f"{cls.__name__}! Only Component types are allowed!"
+                    )
+                subcls_cpt = getattr(cls, cpt.attr, None)
+                if not issubclass(subcls_cpt, Component):
+                    raise TypeError(
+                        f"In stage_group for {cls.__name__}, {cpt.attr} "
+                        f"referenced {subcls_cpt}, which is not a Component! "
+                        "Only Component types are allowed!"
+                    )
 
     def stage_group_instances(self) -> Iterator[OphydObject]:
         """Yields an iterator of subdevices that should be staged."""
