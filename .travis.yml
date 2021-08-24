@@ -27,11 +27,6 @@ env:
     # CONDA_EXTRAS) but for pip
     - PIP_EXTRAS="PyQt5 -e ./"
 
-jobs:
-  allow_failures:
-    - name: "Python 3.7"
-    - name: "Python 3.8"
-
 import:
   # This import enables a set of standard python jobs including:
   # - Build
@@ -40,10 +35,10 @@ import:
   #   - Python Linter
   #   - Package Linter
   #   - Documentation
-  #   - Python 3.6 - PIP based
-  #   - Python 3.6, 3.7 & 3.8 - Conda base
+  #   - Python - PIP based
+  #   - Python 3.9 - Conda base
   # - Deploy
   #   - Documentation using doctr
   #   - Conda Package - uploaded to pcds-dev and pcds-tag
   #   - PyPI
-  - pcdshub/pcds-ci-helpers:travis/shared_configs/standard-python-conda.yml
+  - pcdshub/pcds-ci-helpers:travis/shared_configs/standard-python-conda-latest.yml
