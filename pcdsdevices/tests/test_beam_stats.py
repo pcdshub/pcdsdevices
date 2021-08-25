@@ -3,7 +3,7 @@ import logging
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.beam_stats import BeamStats, LCLS
+from pcdsdevices.beam_stats import LCLS, BeamStats
 
 logger = logging.getLogger(__name__)
 

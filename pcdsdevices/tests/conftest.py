@@ -99,7 +99,7 @@ def presets():
 def find_pcdsdevices_submodules() -> Dict[str, ModuleType]:
     """Find all pcdsdevices submodules, as a dictionary of name to module."""
     modules = {}
-    package_root = str(MODULE_PATH.parent / 'pcdsdevices')
+    package_root = str(MODULE_PATH.parent)
     for item in pkgutil.walk_packages(path=[package_root],
                                       prefix='pcdsdevices.'):
         try:

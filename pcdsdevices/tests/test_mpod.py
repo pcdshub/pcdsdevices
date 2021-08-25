@@ -1,9 +1,10 @@
 import logging
+from unittest.mock import patch
 
 import pytest
-from unittest.mock import patch
 from ophyd.sim import make_fake_device
-from pcdsdevices.device_types import MPODChannelHV, MPODChannelLV, MPOD
+
+from pcdsdevices.device_types import MPOD, MPODChannelHV, MPODChannelLV
 from pcdsdevices.mpod import MPODChannel, get_card_number
 
 logger = logging.getLogger(__name__)

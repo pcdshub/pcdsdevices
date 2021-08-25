@@ -1,9 +1,9 @@
 import inspect
 
+import ophyd
 import pytest
 import schema
 
-import ophyd
 from pcdsdevices import tags
 from pcdsdevices.variety import (expand_dotted_dict, get_metadata,
                                  set_metadata, validate_metadata)
