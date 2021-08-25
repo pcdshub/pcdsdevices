@@ -24,7 +24,7 @@ from pcdsdevices.attenuator import MAX_FILTERS, Attenuator, _att_classes
 from pcdsdevices.device import UnrelatedComponent
 from pcdsdevices.interface import setup_preset_paths
 
-MODULE_PATH = Path(__file__).parent
+MODULE_PATH = Path(__file__).parent.parent
 
 
 # Signal.put warning is a testing artifact.
