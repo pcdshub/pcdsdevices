@@ -1,8 +1,11 @@
 import logging
+import typing
+from collections import namedtuple
 
 import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
+from ophyd.ophydobj import OphydObject
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.status import MoveStatus
 
@@ -67,95 +70,145 @@ class CCMPico(EpicsMotorInterface):
                              value=value, **kwargs)
 
 
-class CCMCalc(FltMvInterface, PseudoPositioner):
+class CCMEnergy(FltMvInterface, PseudoPositioner):
     """
-    CCM calculation motors to move in terms of physics quantities.
+    CCM energy motor.
 
-    All new parameters are scientific constants, and the current docstring
-    writer is not familiar with all of them, so I will omit the full
-    description instead of giving a partial and possibly incorrect summary.
+    Calculated the current CCM energy using the alio position, and
+    requests moves to the alio based on energy requests.
+
+    Presents itself like a motor.
     """
-
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted',
                  limits=(4, 25), verbose_name='CCM Photon Energy')
-    wavelength = Cpt(PseudoSingleInterface, egu='A', kind='normal')
-    theta = Cpt(PseudoSingleInterface, egu='deg', kind='normal')
-    energy_with_vernier = Cpt(PseudoSingleInterface, egu='keV',
-                              kind='omitted')
-
     alio = Cpt(CCMMotor, '', kind='normal')
-    energy_request = FCpt(BeamEnergyRequest, '{hutch}', kind='normal')
 
     tab_component_names = True
 
-    def __init__(self, prefix, *args, theta0=default_theta0,
-                 dspacing=default_dspacing, gr=default_gr, gd=default_gd,
-                 hutch=None, **kwargs):
+    def __init__(self, prefix: str,
+                 theta0: float = default_theta0,
+                 dspacing: float = default_dspacing,
+                 gr: float = default_gr,
+                 gd: float = default_gd,
+                 **kwargs):
         self.theta0 = theta0
         self.dspacing = dspacing
         self.gr = gr
         self.gd = gd
-        if hutch is not None:
-            self.hutch = hutch
+        super().__init__(prefix, auto_target=False, **kwargs)
+
+    def forward(self, pseudo_pos: namedtuple) -> namedtuple:
+        """
+        PseudoPositioner interface function for calculating the setpoint.
+
+        Converts the requested energy to the real position of the alio.
+        """
+        pseudo_pos = self.PseudoPosition(*pseudo_pos)
+        energy = pseudo_pos.energy
+        alio = self.energy_to_alio(energy)
+        return self.RealPosition(alio=alio)
+
+    def inverse(self, real_pos: namedtuple) -> namedtuple:
+        """
+        PseudoPositioner interface function for calculating the readback.
+
+        Converts the real position of the alio to the calculated energy.
+        """
+        real_pos = self.RealPosition(*real_pos)
+        alio = real_pos.alio
+        energy = self.alio_to_energy(alio)
+        return self.PseudoPosition(energy=energy)
+
+    def energy_to_alio(self, energy: float) -> float:
+        """
+        Converts energy to alio.
+
+        Parameters
+        ----------
+        energy : float
+            The photon energy (color) in keV.
+
+        Returns
+        -------
+        alio : float
+            The alio position in mm
+        """
+        wavelength = energy_to_wavelength(energy)
+        theta = wavelength_to_theta(wavelength, self.dspacing) * 180/np.pi
+        alio = theta_to_alio(theta * np.pi/180, self.theta0, self.gr, self.gd)
+        return alio
+
+    def alio_to_energy(self, alio: float) -> float:
+        """
+        Converts alio to energy.
+
+        Parameters
+        ----------
+        alio : float
+            The alio position in mm
+
+        Returns
+        -------
+        energy : float
+            The photon energy (color) in keV.
+        """
+        theta = alio_to_theta(alio, self.theta0, self.gr, self.gd)
+        wavelength = theta_to_wavelength(theta, self.dspacing)
+        energy = wavelength_to_energy(wavelength)
+        return energy
+
+
+class CCMEnergyWithVernier(CCMEnergy):
+    """
+    CCM energy motor and the vernier.
+
+    Moves the alio based on the requested energy using the values
+    of the calculation constants, and reports the current energy
+    based on the alio's position.
+
+    Also moves the vernier when a move is requested to the alio.
+    Note that the vernier is in units of eV, while the energy
+    calculations are in units of keV.
+    """
+    vernier = FCpt(BeamEnergyRequest, '{hutch}', kind='normal')
+
+    def __init__(self, prefix: str, hutch: str = None, **kwargs):
         # Put some effort into filling this automatically
         # CCM exists only in two hutches
+        if hutch is not None:
+            self.hutch = hutch
         elif 'XPP' in prefix:
             self.hutch = 'XPP'
         elif 'XCS' in prefix:
             self.hutch = 'XCS'
         else:
             self.hutch = 'TST'
-        super().__init__(prefix, *args, auto_target=False, **kwargs)
+        super().__init__(prefix, **kwargs)
 
-    def forward(self, pseudo_pos):
+    def forward(self, pseudo_pos: namedtuple) -> namedtuple:
         """
-        Take energy, wavelength, theta, or energy_with_vernier and map to
-        alio and energy_request.
+        PseudoPositioner interface function for calculating the setpoint.
+
+        Converts the requested energy to the real position of the alio,
+        and also converts that energy to eV and passes it along to
+        the vernier.
         """
         pseudo_pos = self.PseudoPosition(*pseudo_pos)
-        # Figure out which one changed.
-        energy_with_vernier, energy, wavelength, theta = None, None, None, None
-        if not np.isclose(pseudo_pos.energy_with_vernier,
-                          self.energy_with_vernier.position):
-            energy_with_vernier = pseudo_pos.energy_with_vernier
-        elif not np.isclose(pseudo_pos.energy, self.energy.position):
-            energy = pseudo_pos.energy
-        elif not np.isclose(pseudo_pos.wavelength, self.wavelength.position):
-            wavelength = pseudo_pos.wavelength
-        elif not np.isclose(pseudo_pos.theta, self.theta.position):
-            theta = pseudo_pos.theta
-        else:
-            alio = self.alio.position
-        logger.debug('Forward (move) calculation args: '
-                     f'energy={energy}, wavelength={wavelength}, '
-                     f'theta={theta}, '
-                     f'energy_with_vernier={energy_with_vernier}')
-        if energy_with_vernier is not None:
-            energy = energy_with_vernier
-            energy_request = energy_with_vernier * 1000
-        else:
-            energy_request = self.energy_request.setpoint.get()
-        if energy is not None:
-            wavelength = energy_to_wavelength(energy)
-        if wavelength is not None:
-            theta = wavelength_to_theta(wavelength, self.dspacing) * 180/np.pi
-        if theta is not None:
-            alio = theta_to_alio(theta * np.pi/180, self.theta0,
-                                 self.gr, self.gd)
-        logger.debug('Forward (move) calculation results: '
-                     f'alio={alio}, energy_request={energy_request}')
-        return self.RealPosition(alio=alio, energy_request=energy_request)
+        energy = pseudo_pos.energy
+        alio = self.energy_to_alio(energy)
+        vernier = energy * 1000
+        return self.RealPosition(alio=alio, vernier=vernier)
 
-    def inverse(self, real_pos):
-        """Take alio and map to energy, wavelength, and theta."""
+    def inverse(self, real_pos: namedtuple) -> namedtuple:
+        """
+        PseudoPositioner interface function for calculating the readback.
+
+        Converts the real position of the alio to the calculated energy
+        """
         real_pos = self.RealPosition(*real_pos)
-        theta = alio_to_theta(real_pos.alio, self.theta0, self.gr, self.gd)
-        wavelength = theta_to_wavelength(theta, self.dspacing)
-        energy = wavelength_to_energy(wavelength)
-        return self.PseudoPosition(energy=energy,
-                                   wavelength=wavelength,
-                                   theta=theta*180/np.pi,
-                                   energy_with_vernier=energy)
+        alio = real_pos.alio
+        energy = self.alio_to_energy(alio)
+        return self.PseudoPosition(energy=energy)
 
 
 class CCMX(SyncAxis):
@@ -166,9 +219,9 @@ class CCMX(SyncAxis):
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
 
-    def __init__(self, prefix=None, **kwargs):
+    def __init__(self, prefix: str = None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
-        prefix = self.unrelated_prefixes['down_prefix']
+        prefix = prefix or self.unrelated_prefixes['down_prefix']
         super().__init__(prefix, **kwargs)
 
 
@@ -181,9 +234,9 @@ class CCMY(SyncAxis):
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
 
-    def __init__(self, prefix=None, **kwargs):
+    def __init__(self, prefix: str = None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
-        prefix = self.unrelated_prefixes['down_prefix']
+        prefix = prefix or self.unrelated_prefixes['down_prefix']
         super().__init__(prefix, **kwargs)
 
 
@@ -194,7 +247,8 @@ class CCM(GroupDevice, LightpathMixin):
     This requires a huge number of motor pv prefixes to be passed in, and they
     are all labelled accordingly.
     """
-    calc = Cpt(CCMCalc, '', kind='hinted')
+    energy = Cpt(CCMEnergy, '', kind='hinted')
+    energy_with_vernier = Cpt(CCMEnergyWithVernier, '', kind='normal')
 
     alio = UCpt(CCMMotor, kind='normal')
     theta2fine = UCpt(CCMMotor, atol=0.01, kind='normal')
@@ -206,21 +260,86 @@ class CCM(GroupDevice, LightpathMixin):
     lightpath_cpts = ['x']
     tab_component_names = True
 
-    def __init__(self, *, prefix=None,
-                 in_pos, out_pos,
-                 theta0=default_theta0, dspacing=default_dspacing,
-                 gr=default_gr, gd=default_gd, **kwargs):
+    def __init__(self, *, prefix: str = None, in_pos: float, out_pos: float,
+                 theta0: float = default_theta0,
+                 dspacing: float = default_dspacing,
+                 gr: float = default_gr,
+                 gd: float = default_gd,
+                 **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         self._in_pos = in_pos
         self._out_pos = out_pos
-        prefix = self.unrelated_prefixes['alio_prefix']
+        prefix = prefix or self.unrelated_prefixes['alio_prefix']
         super().__init__(prefix, **kwargs)
-        self.calc.theta0 = theta0
-        self.calc.dspacing = dspacing
-        self.calc.gr = gr
-        self.calc.gd = gd
+        self.theta0 = theta0
+        self.dspacing = dspacing
+        self.gr = gr
+        self.gd = gd
 
-    def _set_lightpath_states(self, lightpath_values) -> None:
+    @property
+    def theta0(self) -> float:
+        """
+        The calculation constant theta0 for the alio <-> energy calc.
+
+        This seems to be a reference angle for the calculation.
+        """
+        return self._theta0
+
+    @theta0.setter
+    def theta0(self, value: float):
+        self.energy.theta0 = value
+        self.energy_with_vernier.theta0 = value
+        self._theta0 = value
+
+    @property
+    def dspacing(self) -> float:
+        """
+        The calculation constant dspacing for the alio <-> energy calc.
+
+        This seems to be information about the crystal lattice.
+        """
+        return self._dspacing
+
+    @dspacing.setter
+    def dspacing(self, value: float):
+        self.energy.dspacing = value
+        self.energy_with_vernier.dspacing = value
+        self._dspacing = value
+
+    @property
+    def gr(self) -> float:
+        """
+        The calculation constant gr for the alio <-> energy calc.
+
+        I'm not sure what this actually is geometrically.
+        """
+        return self._gr
+
+    @gr.setter
+    def gr(self, value: float):
+        self.energy.gr = value
+        self.energy_with_vernier.gr = value
+        self._gr = value
+
+    @property
+    def gd(self) -> float:
+        """
+        The calculation constant gd for the alio <-> energy calc.
+
+        I'm not sure what this actually is geometrically.
+        """
+        return self._gd
+
+    @gd.setter
+    def gd(self, value: float):
+        self.energy.gd = value
+        self.energy_with_vernier.gd = value
+        self._gd = value
+
+    def _set_lightpath_states(
+            self,
+            lightpath_values: dict[OphydObject, dict[str, typing.Any]],
+            ) -> None:
         """
         Update the fields used by the lightpath to determine in/out.
 
@@ -235,13 +354,13 @@ class CCM(GroupDevice, LightpathMixin):
             # Placeholder "small attenuation" value
             self._transmission = 0.9
 
-    def insert(self, wait=False) -> MoveStatus:
+    def insert(self, wait: bool = False) -> MoveStatus:
         """
         Move the x motors to the saved "in" position.
         """
         return self.x.move(self._in_pos, wait=wait)
 
-    def remove(self, wait=False) -> MoveStatus:
+    def remove(self, wait: bool = False) -> MoveStatus:
         """
         Move the x motors to the saved "out" position.
         """
