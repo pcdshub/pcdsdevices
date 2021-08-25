@@ -9,8 +9,8 @@ from ophyd.status import wait as status_wait
 from pcdsdevices.epics_motor import (IMS, PMC100, BeckhoffAxis, EpicsMotor,
                                      EpicsMotorInterface, Motor,
                                      MotorDisabledError, Newport,
-                                     PCDSMotorBase, OffsetMotor,
-                                     OffsetIMSWithPreset)
+                                     OffsetIMSWithPreset, OffsetMotor,
+                                     PCDSMotorBase)
 
 logger = logging.getLogger(__name__)
 

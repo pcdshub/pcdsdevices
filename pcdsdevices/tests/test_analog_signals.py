@@ -1,11 +1,11 @@
 import logging
 
 import pytest
-from ophyd.sim import make_fake_device
 from ophyd import EpicsSignal, EpicsSignalRO
+from ophyd.sim import make_fake_device
 
 import pcdsdevices.utils as key_press
-from pcdsdevices.analog_signals import Acromag, Mesh, AcromagChannel
+from pcdsdevices.analog_signals import Acromag, AcromagChannel, Mesh
 
 logger = logging.getLogger(__name__)
 

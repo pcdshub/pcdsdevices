@@ -4,6 +4,7 @@ from unittest.mock import Mock, patch
 import numpy as np
 import pytest
 from ophyd.sim import make_fake_device
+
 from pcdsdevices.epics_motor import OffsetMotor
 from pcdsdevices.lodcm import (CHI1, CHI2, H1N, H2N, LODCM, Y1, Y2, Dectris,
                                Diode, Foil, LODCMEnergyC, LODCMEnergySi,

@@ -4,7 +4,6 @@ import sys
 import threading
 import time
 
-import conftest
 import ophyd
 import pytest
 
@@ -12,6 +11,8 @@ from pcdsdevices.interface import (BaseInterface, TabCompletionHelperClass,
                                    get_engineering_mode, set_engineering_mode,
                                    setup_preset_paths)
 from pcdsdevices.sim import FastMotor, SlowMotor
+
+from . import conftest
 
 try:
     import fcntl
