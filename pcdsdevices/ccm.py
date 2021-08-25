@@ -8,6 +8,7 @@ from ophyd.status import MoveStatus
 
 from .beam_stats import BeamEnergyRequest
 from .device import GroupDevice
+from .device import UnrelatedComponent as UCpt
 from .epics_motor import IMS, EpicsMotorInterface
 from .interface import FltMvInterface, LightpathMixin
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface, SyncAxis,
@@ -159,33 +160,31 @@ class CCMCalc(FltMvInterface, PseudoPositioner):
 
 class CCMX(SyncAxis):
     """Combined motion of the CCM X motors."""
-    down = FCpt(IMS, '{self.down_prefix}')
-    up = FCpt(IMS, '{self.up_prefix}')
+    down = UCpt(IMS, kind='normal')
+    up = UCpt(IMS, kind='normal')
 
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
 
-    def __init__(self, down_prefix, up_prefix, *args, **kwargs):
-        self.down_prefix = down_prefix
-        self.up_prefix = up_prefix
-        super().__init__(down_prefix, *args, **kwargs)
+    def __init__(self, prefix=None, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        prefix = self.unrelated_prefixes['down_prefix']
+        super().__init__(prefix, **kwargs)
 
 
 class CCMY(SyncAxis):
     """Combined motion of the CCM Y motors."""
-    down = FCpt(IMS, '{self.down_prefix}')
-    up_north = FCpt(IMS, '{self.up_north_prefix}')
-    up_south = FCpt(IMS, '{self.up_south_prefix}')
+    down = UCpt(IMS, kind='normal')
+    up_north = UCpt(IMS, kind='normal')
+    up_south = UCpt(IMS, kind='normal')
 
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
 
-    def __init__(self, down_prefix, up_north_prefix, up_south_prefix,
-                 *args, **kwargs):
-        self.down_prefix = down_prefix
-        self.up_north_prefix = up_north_prefix
-        self.up_south_prefix = up_south_prefix
-        super().__init__(down_prefix, *args, **kwargs)
+    def __init__(self, prefix=None, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        prefix = self.unrelated_prefixes['down_prefix']
+        super().__init__(prefix, **kwargs)
 
 
 class CCM(GroupDevice, LightpathMixin):
@@ -195,44 +194,27 @@ class CCM(GroupDevice, LightpathMixin):
     This requires a huge number of motor pv prefixes to be passed in, and they
     are all labelled accordingly.
     """
+    calc = Cpt(CCMCalc, '', kind='hinted')
 
-    calc = FCpt(CCMCalc, '{self.alio_prefix}', kind='hinted')
-    theta2fine = FCpt(CCMMotor, '{self.theta2fine_prefix}', atol=0.01)
-    theta2coarse = FCpt(CCMPico, '{self.theta2coarse_prefix}')
-    chi2 = FCpt(CCMPico, '{self.chi2_prefix}')
-    x = FCpt(CCMX,
-             down_prefix='{self.x_down_prefix}',
-             up_prefix='{self.x_up_prefix}',
-             add_prefix=('down_prefix', 'up_prefix'),
-             kind='omitted')
-    y = FCpt(CCMY,
-             down_prefix='{self.y_down_prefix}',
-             up_north_prefix='{self.y_up_north_prefix}',
-             up_south_prefix='{self.y_up_south_prefix}',
-             add_prefix=('down_prefix', 'up_north_prefix', 'up_south_prefix'),
-             kind='omitted')
+    alio = UCpt(CCMMotor, kind='normal')
+    theta2fine = UCpt(CCMMotor, atol=0.01, kind='normal')
+    theta2coarse = UCpt(CCMPico, kind='normal')
+    chi2 = UCpt(CCMPico, kind='normal')
+    x = UCpt(CCMX, add_prefix=[], kind='normal')
+    y = UCpt(CCMY, add_prefix=[], kind='normal')
 
     lightpath_cpts = ['x']
     tab_component_names = True
 
-    def __init__(self, alio_prefix, theta2fine_prefix, theta2coarse_prefix,
-                 chi2_prefix, x_down_prefix, x_up_prefix,
-                 y_down_prefix, y_up_north_prefix, y_up_south_prefix,
-                 in_pos, out_pos, *args,
+    def __init__(self, *, prefix=None,
+                 in_pos, out_pos,
                  theta0=default_theta0, dspacing=default_dspacing,
                  gr=default_gr, gd=default_gd, **kwargs):
-        self.alio_prefix = alio_prefix
-        self.theta2fine_prefix = theta2fine_prefix
-        self.theta2coarse_prefix = theta2coarse_prefix
-        self.chi2_prefix = chi2_prefix
-        self.x_down_prefix = x_down_prefix
-        self.x_up_prefix = x_up_prefix
-        self.y_down_prefix = y_down_prefix
-        self.y_up_north_prefix = y_up_north_prefix
-        self.y_up_south_prefix = y_up_south_prefix
+        UCpt.collect_prefixes(self, kwargs)
         self._in_pos = in_pos
         self._out_pos = out_pos
-        super().__init__(alio_prefix, *args, **kwargs)
+        prefix = self.unrelated_prefixes['alio_prefix']
+        super().__init__(prefix, **kwargs)
         self.calc.theta0 = theta0
         self.calc.dspacing = dspacing
         self.calc.gr = gr
