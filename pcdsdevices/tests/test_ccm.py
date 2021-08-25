@@ -132,19 +132,16 @@ def test_ccm_main(fake_ccm):
     assert fake_ccm.y.up_north.user_setpoint.get() == 5
     assert fake_ccm.y.up_south.user_setpoint.get() == 5
 
-    assert fake_ccm.position == 'OUT'
     assert fake_ccm.removed
     assert not fake_ccm.inserted
 
     fake_ccm.x.down.user_readback.sim_put(8)
     fake_ccm.x.up.user_readback.sim_put(8)
-    assert fake_ccm.position == 'IN'
     assert not fake_ccm.removed
     assert fake_ccm.inserted
 
     fake_ccm.x.down.user_readback.sim_put(4)
     fake_ccm.x.up.user_readback.sim_put(4)
-    assert fake_ccm.position == 'Unknown'
     assert not fake_ccm.removed
     assert not fake_ccm.inserted
 

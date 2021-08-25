@@ -3,13 +3,13 @@ import logging
 import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO, Signal
+from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
+from ophyd.status import MoveStatus
 
 from .beam_stats import BeamEnergyRequest
 from .device import GroupDevice
 from .epics_motor import IMS, EpicsMotorInterface
-from .inout import InOutPositioner
-from .interface import FltMvInterface
+from .interface import FltMvInterface, LightpathMixin
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface, SyncAxis,
                         SyncAxisOffsetMode)
 from .pv_positioner import PVPositionerIsClose
@@ -188,7 +188,7 @@ class CCMY(SyncAxis):
         super().__init__(down_prefix, *args, **kwargs)
 
 
-class CCM(InOutPositioner, GroupDevice):
+class CCM(GroupDevice, LightpathMixin):
     """
     The full CCM assembly.
 
@@ -211,14 +211,9 @@ class CCM(InOutPositioner, GroupDevice):
              up_south_prefix='{self.y_up_south_prefix}',
              add_prefix=('down_prefix', 'up_north_prefix', 'up_south_prefix'),
              kind='omitted')
-    state = Cpt(AttributeSignal, attr='_state', kind='omitted')
 
-    # Placeholder value. This represents "not full transmission".
-    _transmission = {'IN': 0.9}
-
+    lightpath_cpts = ['x']
     tab_component_names = True
-    # When we move the top-level CCM, it moves X
-    stage_group = [x]
 
     def __init__(self, alio_prefix, theta2fine_prefix, theta2coarse_prefix,
                  chi2_prefix, x_down_prefix, x_up_prefix,
@@ -243,21 +238,32 @@ class CCM(InOutPositioner, GroupDevice):
         self.calc.gr = gr
         self.calc.gd = gd
 
-    @property
-    def _state(self):
-        if np.isclose(self.x.position, self._in_pos):
-            return 1
-        elif np.isclose(self.x.position, self._out_pos):
-            return 2
-        else:
-            return 0
+    def _set_lightpath_states(self, lightpath_values) -> None:
+        """
+        Update the fields used by the lightpath to determine in/out.
 
-    @_state.setter
-    def _state(self, value):
-        if value == 1:
-            self.x.move(self._in_pos, wait=False)
-        elif value == 2:
-            self.x.move(self._out_pos, wait=False)
+        Compares the x position with the saved in and out values.
+        """
+        x_pos = lightpath_values[self.x]['value']
+        self._inserted = np.isclose(x_pos, self._in_pos)
+        self._removed = np.isclose(x_pos, self._out_pos)
+        if self._removed:
+            self._transmission = 1
+        else:
+            # Placeholder "small attenuation" value
+            self._transmission = 0.9
+
+    def insert(self, wait=False) -> MoveStatus:
+        """
+        Move the x motors to the saved "in" position.
+        """
+        return self.x.move(self._in_pos, wait=wait)
+
+    def remove(self, wait=False) -> MoveStatus:
+        """
+        Move the x motors to the saved "out" position.
+        """
+        return self.x.move(self._out_pos, wait=wait)
 
 
 # Calculations between alio position and energy, with all intermediates.
