@@ -24,7 +24,7 @@ from pcdsdevices.attenuator import MAX_FILTERS, Attenuator, _att_classes
 from pcdsdevices.device import UnrelatedComponent
 from pcdsdevices.interface import setup_preset_paths
 
-MODULE_PATH = Path(__file__).parent.parent
+MODULE_PATH = Path(__file__).parent
 
 
 # Signal.put warning is a testing artifact.
@@ -99,7 +99,7 @@ def presets():
 def find_pcdsdevices_submodules() -> Dict[str, ModuleType]:
     """Find all pcdsdevices submodules, as a dictionary of name to module."""
     modules = {}
-    package_root = str(MODULE_PATH.parent / 'pcdsdevices')
+    package_root = str(MODULE_PATH.parent)
     for item in pkgutil.walk_packages(path=[package_root],
                                       prefix='pcdsdevices.'):
         try:
