@@ -1,5 +1,4 @@
 import logging
-import pty
 import sys
 import threading
 import time
@@ -8,7 +7,14 @@ import pytest
 
 import pcdsdevices.utils as util
 
+try:
+    import pty
+except ImportError:
+    pty = None
+
+
 logger = logging.getLogger(__name__)
+pty_missing = "Fails on Windows, pty not supported in Windows Python."
 
 
 @pytest.fixture(scope='function')
@@ -27,12 +33,20 @@ def input_later(sim_input, inp, delay=0.1):
     threading.Thread(target=inner, args=()).start()
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason=pty_missing,
+    )
 def test_is_input(sim_input):
     logger.debug('test_is_input')
     sim_input.write('a\n')
     assert util.is_input()
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason=pty_missing,
+    )
 @pytest.mark.timeout(5)
 def test_get_input_waits(sim_input):
     logger.debug('test_get_input_waits')
@@ -40,6 +54,10 @@ def test_get_input_waits(sim_input):
     assert util.get_input() == 'a'
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason=pty_missing,
+    )
 @pytest.mark.timeout(0.5)
 def test_get_input_arrow(sim_input):
     logger.debug('test_get_input_arrow')
@@ -47,6 +65,10 @@ def test_get_input_arrow(sim_input):
     assert util.get_input() == util.arrow_up
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason=pty_missing,
+    )
 @pytest.mark.timeout(0.5)
 def test_get_input_shift_arrow(sim_input):
     logger.debug('test_get_input_arrow')
@@ -54,6 +76,10 @@ def test_get_input_shift_arrow(sim_input):
     assert util.get_input() == util.shift_arrow_up
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason=pty_missing,
+    )
 @pytest.mark.timeout(0.5)
 def test_cbreak(sim_input):
     logger.debug('test_cbreak')

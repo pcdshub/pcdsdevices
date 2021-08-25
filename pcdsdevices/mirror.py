@@ -14,6 +14,7 @@ from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 from ophyd import PVPositioner
 
+from .device import GroupDevice
 from .doc_stubs import basic_positioner_init
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
@@ -151,7 +152,7 @@ class Gantry(OMMotor):
         super().check_value(pos)
 
 
-class OffsetMirror(BaseInterface, Device):
+class OffsetMirror(BaseInterface, GroupDevice):
     """
     X-ray Offset Mirror class.
 
@@ -283,6 +284,8 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
 
     # Reverse state order as PointingMirror is non-standard
     states_list = ['OUT', 'IN']
+    # Moving PointingMirror moves the x gantry
+    stage_group = [OffsetMirror.xgantry]
 
     def __init__(self, prefix, *, out_lines=None, in_lines=None, **kwargs):
         # Branching pattern
@@ -318,7 +321,7 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         return super().check_value(pos)
 
 
-class XOffsetMirror(BaseInterface, Device):
+class XOffsetMirror(BaseInterface, GroupDevice):
     """
     X-ray Offset Mirror.
 
@@ -521,7 +524,7 @@ class XOffsetMirrorSwitch(XOffsetMirror):
                   doc='Yright slave axis [um]')
 
 
-class KBOMirror(BaseInterface, Device):
+class KBOMirror(BaseInterface, GroupDevice):
     """
     Kirkpatrick-Baez Mirror with Bender Axes.
 
@@ -660,7 +663,7 @@ bender_ds ({self.bender_ds.prefix})
 """
 
 
-class FFMirror(BaseInterface, Device):
+class FFMirror(BaseInterface, GroupDevice):
     """
     Fixed Focus Kirkpatrick-Baez Mirror.
 

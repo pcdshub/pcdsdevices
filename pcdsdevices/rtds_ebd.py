@@ -1,6 +1,7 @@
 from ophyd import Component as Cpt
-from ophyd import Device, Signal
+from ophyd import Signal
 
+from .device import GroupDevice
 from .inout import InOutPositioner
 from .interface import BaseInterface, LightpathInOutMixin
 from .signal import PytmcSignal
@@ -43,7 +44,7 @@ class PneumaticActuator(InOutPositioner):
             self.out_cmd.put(1)
 
 
-class RTDSBase(BaseInterface, Device, LightpathInOutMixin):
+class RTDSBase(BaseInterface, GroupDevice, LightpathInOutMixin):
     """Rapid Turnaround Diagnostic Station."""
     lightpath_cpts = ['mpa1', 'mpa2', 'mpa3', 'mpa4']
     _lightpath_mixin = True

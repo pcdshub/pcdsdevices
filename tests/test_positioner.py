@@ -24,13 +24,25 @@ def basic():
 @pytest.fixture(scope='function')
 def advanced():
     pos = FastMotor()
+
+    fpstate = dict(status=None)
+
+    def move(*args, **kwargs):
+        fpstate['status'] = pos.move(*args, **kwargs)
+
+    def done(*args, **kwargs):
+        try:
+            return fpstate['status'].done
+        except KeyError:
+            return True
+
     return FuncPositioner(
         name='advanced',
-        move=pos.move,
+        move=move,
         get_pos=lambda: pos.position,
         set_pos=pos.set_position,
         stop=lambda: 0,
-        done=lambda: not pos.moving,
+        done=done,
         check_value=lambda pos: 0,
         limits=(-10, 10),
         update_rate=0.1,

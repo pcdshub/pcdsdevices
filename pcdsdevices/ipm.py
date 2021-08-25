@@ -8,6 +8,7 @@ from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
+from .device import GroupDevice
 from .doc_stubs import IPM_base, basic_positioner_init, insert_remove
 from .epics_motor import IMS
 from .evr import Trigger
@@ -68,7 +69,7 @@ class IPMTarget(InOutRecordPositioner):
         self.y_motor = self.motor
 
 
-class IPMDiode(BaseInterface, Device):
+class IPMDiode(BaseInterface, GroupDevice):
     """
     Diode of a standard intensity position monitor.
 
@@ -118,7 +119,7 @@ class IPMDiode(BaseInterface, Device):
     remove.__doc__ += insert_remove
 
 
-class IPMMotion(BaseInterface, Device):
+class IPMMotion(BaseInterface, GroupDevice):
     """
     Standard intensity position monitor.
 
@@ -289,7 +290,7 @@ class IPIMBChannel(BaseInterface, Device):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class IPIMB(BaseInterface, Device):
+class IPIMB(BaseInterface, GroupDevice):
     """
     Class for an IPIMB box.
 
@@ -382,7 +383,7 @@ class Wave8Channel(BaseInterface, Device):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class Wave8(BaseInterface, Device):
+class Wave8(BaseInterface, GroupDevice):
     """
     Class for a wave8.
 

@@ -8,7 +8,6 @@ from .interface import BaseInterface
 from .pv_positioner import PVPositionerDone
 from .signal import AvgSignal
 
-
 logger = logging.getLogger(__name__)
 
 

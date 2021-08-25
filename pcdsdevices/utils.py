@@ -198,13 +198,12 @@ def schedule_task(func, args=None, kwargs=None, delay=None):
             break
 
     def schedule():
-        if matched_thread is None:
+        if matched_thread is not None and context.event_thread is not None:
+            # Put into same queue
+            context.event_thread.queue.put((func, args, kwargs))
+        else:
             # Put into utility queue
             dispatcher.schedule_utility_task(func, *args, **kwargs)
-        else:
-            # Put into same queue
-            if context.event_thread is not None:
-                context.event_thread.queue.put((func, args, kwargs))
 
     if delay is None:
         # Do it right away

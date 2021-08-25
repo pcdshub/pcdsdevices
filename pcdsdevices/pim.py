@@ -12,10 +12,12 @@ import logging
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
+from ophyd.ophydobj import OphydObject
 from ophyd.signal import EpicsSignal
 
 from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
                                      PCDSAreaDetectorTyphosTrigger)
+from .device import GroupDevice
 from .epics_motor import IMS, BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, LightpathInOutMixin
@@ -45,14 +47,22 @@ class PIMY(InOutRecordPositioner, BaseInterface):
     _icon = 'fa.camera-retro'
 
     tab_whitelist = ['stage']
+    _pre_stage_state = None
 
-    def stage(self):
+    def stage(self) -> list[OphydObject]:
         """Save the original position to be restored on `unstage`."""
-        self._original_vals[self.state] = self.state.get()
+        self._pre_stage_state = self.state.get()
         return super().stage()
 
+    def unstage(self) -> list[OphydObject]:
+        """Load the original position that was saved on `stage`."""
+        if self._pre_stage_state is not None:
+            self.state.put(self._pre_stage_state)
+        self._pre_stage_state = None
+        return super().unstage()
 
-class PIM(BaseInterface, Device):
+
+class PIM(BaseInterface, GroupDevice):
     """
     Profile Intensity Monitor.
 
@@ -303,7 +313,7 @@ class PIMWithBoth(PIMWithFocus, PIMWithLED):
                          prefix_zoom=prefix_zoom, **kwargs)
 
 
-class LCLS2ImagerBase(BaseInterface, Device, LightpathInOutMixin):
+class LCLS2ImagerBase(BaseInterface, GroupDevice, LightpathInOutMixin):
     """
     Shared PVs and components from the LCLS2 imagers.
 

@@ -22,5 +22,5 @@ setup(
         "typhos.ui": ["pcdsdevices = pcdsdevices.ui:path"],
     },
     install_requires=install_requires,
-    python_requires=">=3.6",
+    python_requires=">=3.9",
 )

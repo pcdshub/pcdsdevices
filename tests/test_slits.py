@@ -100,6 +100,7 @@ def test_slit_subscriptions(fake_slits):
     assert cb.called
 
 
+@pytest.mark.timeout(10)
 def test_slit_staging(fake_slits):
     logger.debug('test_slit_staging')
     slits = fake_slits
@@ -111,6 +112,18 @@ def test_slit_staging(fake_slits):
     # Check that unstage places everything back
     slits.xwidth.setpoint.sim_put(1.5)
     slits.ywidth.setpoint.sim_put(1.5)
+
+    def x_done(*args, **kwargs):
+        slits.xwidth.done.sim_put(0)
+        slits.xwidth.done.sim_put(1)
+
+    def y_done(*args, **kwargs):
+        slits.ywidth.done.sim_put(0)
+        slits.ywidth.done.sim_put(1)
+
+    slits.xwidth.setpoint.subscribe(x_done)
+    slits.ywidth.setpoint.subscribe(y_done)
+
     slits.unstage()
     assert slits.xwidth.setpoint.get() == 2.5
     assert slits.ywidth.setpoint.get() == 2.5

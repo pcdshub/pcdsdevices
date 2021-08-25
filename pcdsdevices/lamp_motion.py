@@ -5,13 +5,13 @@ This module contains classes related to the TMO-LAMP Motion System
 """
 
 from ophyd import Component as Cpt
-from ophyd import Device
 
+from .device import GroupDevice
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface
 
 
-class LAMP(BaseInterface, Device):
+class LAMP(BaseInterface, GroupDevice):
     """
     LAMP Motion Class
 
@@ -44,7 +44,7 @@ class LAMP(BaseInterface, Device):
     sample_paddle_z = Cpt(BeckhoffAxis, ':MMS:09', kind='normal')
 
 
-class LAMPMagneticBottle(BaseInterface, Device):
+class LAMPMagneticBottle(BaseInterface, GroupDevice):
     """
     LAMPMagneticBottle Motion Class
 

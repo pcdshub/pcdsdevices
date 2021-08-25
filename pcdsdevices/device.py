@@ -1,7 +1,13 @@
 import copy
+from collections.abc import Iterator
 
+from ophyd.areadetector.plugins import PluginBase
 from ophyd.device import Component, Device
-from ophyd.ophydobj import Kind
+from ophyd.ophydobj import Kind, OphydObject
+from ophyd.pseudopos import PseudoSingle
+from ophyd.signal import AttributeSignal, DerivedSignal
+
+from .signal import PVStateSignal
 
 
 class UnrelatedComponent(Component):
@@ -336,3 +342,101 @@ class UpdateComponent(Component):
     def create_component(self, instance):
         # Use our hostage component from __set_name__
         return self.copy_cpt.create_component(instance)
+
+
+class GroupDevice(Device):
+    """
+    A device that is a group of components that will act independently.
+
+    This has the following implications:
+    - Components will have no references to this parent device. If
+      accessed and used out of context, the components will be as if
+      they were instantited completely separately.
+    - If a component is staged in a bluesky plan, it will not stage
+      the ``GroupDevice``, and therefore will not stage the entire
+      device tree.
+    - ``GroupDevice`` instances by default do nothing when staged.
+      You can add specific subdevices to the stage list by setting the
+      ``stage_group`` class attribute to a list of components.
+    - Following from the previous point, note that ``GroupDevice``
+      instances cannot process top-level ``stage_sigs``. If you need
+      top-level ``stage_sigs``, you should instead contain them in a
+      subdevice that is not a ``GroupDevice``.
+    - ``GroupDevice`` instances that implement ``set`` are required
+      to specify a ``stage_group`` to help remind you that these classes
+      really do need to stage "something" before scanning. If your
+      movable device really does not need this, you can set ``stage_group``
+      to an empty list.
+    - When represented in typhos, we'll see the ``GroupDevice`` screen
+      instead of the default device screens.
+      (Note: at time of writing, this hypothetical ``GroupDevice``
+      ui template does not yet exist).
+    - Certain devices will completely break if we remove their subdevice
+      references: for example, consider the ``PsuedoPositioner`` class.
+      For classes like these, we'll need to keep the parent references
+      for the ``PseudoSingle`` instances. For the full list of classes that
+      need to retain their ``parent`` attribute, see
+      ``GroupDevice.needs_parent``.
+    """
+    stage_group: list[Component] = None
+    needs_parent: list[type[OphydObject]] = [
+        AttributeSignal,
+        DerivedSignal,
+        PluginBase,
+        PseudoSingle,
+        PVStateSignal,
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Remove references to parent (in this case, self)
+        for cpt_name in self.component_names:
+            cpt = getattr(self, cpt_name)
+            # The following types break without parents
+            if not isinstance(cpt, tuple(self.needs_parent)):
+                cpt._parent = None
+        if self.stage_group is None:
+            self.stage_group = []
+        else:
+            # Avoid potential issues from shared mutable class attribute
+            self.stage_group = list(self.stage_group)
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if hasattr(cls, 'set') and cls.stage_group is None:
+            raise TypeError(
+                f"Must specify a stage_group in {cls.__name__} because it "
+                "is a movable device. See the GroupDevice docs."
+                )
+        if cls.stage_group is not None:
+            for cpt in cls.stage_group:
+                if not isinstance(cpt, Component):
+                    raise TypeError(
+                        f"Found non-Component {cpt} in stage_group for "
+                        f"{cls.__name__}! Only Component types are allowed!"
+                    )
+                subcls_cpt = getattr(cls, cpt.attr, None)
+                if not isinstance(subcls_cpt, Component):
+                    raise TypeError(
+                        f"In stage_group for {cls.__name__}, {cpt.attr} "
+                        f"referenced {subcls_cpt}, which is not a Component! "
+                        "Only Component types are allowed!"
+                    )
+
+    def stage_group_instances(self) -> Iterator[OphydObject]:
+        """Yields an iterator of subdevices that should be staged."""
+        return (getattr(self, cpt.attr) for cpt in self.stage_group)
+
+    def stage(self) -> list[OphydObject]:
+        staged = [self]
+        for obj in self.stage_group_instances():
+            if hasattr(obj, 'stage'):
+                staged.extend(obj.stage())
+        return staged
+
+    def unstage(self) -> list[OphydObject]:
+        unstaged = [self]
+        for obj in reversed(list(self.stage_group_instances())):
+            if hasattr(obj, 'unstage'):
+                unstaged.extend(obj.unstage())
+        return unstaged

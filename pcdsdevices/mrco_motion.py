@@ -5,13 +5,13 @@ This module contains classes related to the TMO-MRCO Motion System
 """
 
 from ophyd import Component as Cpt
-from ophyd import Device
 
+from .device import GroupDevice
 from .epics_motor import BeckhoffAxisNoOffset
 from .interface import BaseInterface
 
 
-class MRCO(BaseInterface, Device):
+class MRCO(BaseInterface, GroupDevice):
     """
     MRCO Motion Class
 

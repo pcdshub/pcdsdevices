@@ -2,14 +2,14 @@
 Module for the liquid jet classes.
 """
 from ophyd import Component as Cpt
-from ophyd import Device
 
+from .device import GroupDevice
 from .device import UnrelatedComponent as UCpt
 from .epics_motor import IMS, BeckhoffAxis
 from .interface import BaseInterface
 
 
-class Injector(BaseInterface, Device):
+class Injector(BaseInterface, GroupDevice):
     """
     Positioner for liquid jet Injector.
 
@@ -69,7 +69,7 @@ class InjectorWithFine(Injector):
     fine_z = UCpt(IMS)
 
 
-class BeckhoffJetManipulator(BaseInterface, Device):
+class BeckhoffJetManipulator(BaseInterface, GroupDevice):
     """Jet Manipulator controlled by Beckhoff PLC."""
 
     tab_component_names = True
@@ -79,7 +79,7 @@ class BeckhoffJetManipulator(BaseInterface, Device):
     z = Cpt(BeckhoffAxis, ':Z', kind='normal')
 
 
-class BeckhoffJetSlits(BaseInterface, Device):
+class BeckhoffJetSlits(BaseInterface, GroupDevice):
     """Pair of Beckhoff-controlled slits where each blade has X & Y motors."""
     tab_component_names = True
 
@@ -89,7 +89,7 @@ class BeckhoffJetSlits(BaseInterface, Device):
     bot_y = Cpt(BeckhoffAxis, ':BOT_Y', kind='normal')
 
 
-class BeckhoffJet(BaseInterface, Device):
+class BeckhoffJet(BaseInterface, GroupDevice):
     """
     Full liquid jet setup controlled by a Beckhoff PLC.
 

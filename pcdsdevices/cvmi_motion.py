@@ -5,13 +5,13 @@ This module contains classes related to the TMO-LAMP Motion System
 """
 
 from ophyd import Component as Cpt
-from ophyd import Device
 
+from .device import GroupDevice
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface
 
 
-class CVMI(BaseInterface, Device):
+class CVMI(BaseInterface, GroupDevice):
     """
     CVMI Motion Class
 
@@ -42,7 +42,7 @@ class CVMI(BaseInterface, Device):
     sample_paddle = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
 
 
-class KTOF(BaseInterface, Device):
+class KTOF(BaseInterface, GroupDevice):
     """
     KTOF Motion Class
 

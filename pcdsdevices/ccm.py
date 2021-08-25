@@ -6,6 +6,7 @@ from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO, Signal
 
 from .beam_stats import BeamEnergyRequest
+from .device import GroupDevice
 from .epics_motor import IMS, EpicsMotorInterface
 from .inout import InOutPositioner
 from .interface import FltMvInterface
@@ -187,7 +188,7 @@ class CCMY(SyncAxis):
         super().__init__(down_prefix, *args, **kwargs)
 
 
-class CCM(InOutPositioner):
+class CCM(InOutPositioner, GroupDevice):
     """
     The full CCM assembly.
 
@@ -216,6 +217,8 @@ class CCM(InOutPositioner):
     _transmission = {'IN': 0.9}
 
     tab_component_names = True
+    # When we move the top-level CCM, it moves X
+    stage_group = [x]
 
     def __init__(self, alio_prefix, theta2fine_prefix, theta2coarse_prefix,
                  chi2_prefix, x_down_prefix, x_up_prefix,
