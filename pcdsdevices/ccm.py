@@ -162,7 +162,7 @@ class CCMX(SyncAxis):
     down = FCpt(IMS, '{self.down_prefix}')
     up = FCpt(IMS, '{self.up_prefix}')
 
-    offset_mode = SyncAxisOffsetMode.AUTO_FIXED
+    offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
 
     def __init__(self, down_prefix, up_prefix, *args, **kwargs):
@@ -177,7 +177,7 @@ class CCMY(SyncAxis):
     up_north = FCpt(IMS, '{self.up_north_prefix}')
     up_south = FCpt(IMS, '{self.up_south_prefix}')
 
-    offset_mode = SyncAxisOffsetMode.AUTO_FIXED
+    offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
 
     def __init__(self, down_prefix, up_north_prefix, up_south_prefix,
