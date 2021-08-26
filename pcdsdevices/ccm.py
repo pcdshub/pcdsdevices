@@ -100,9 +100,15 @@ class CCMEnergy(FltMvInterface, PseudoPositioner):
 
     Presents itself like a motor.
     """
+    # Pseudo motor and real motor
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted',
                  limits=(4, 25), verbose_name='CCM Photon Energy')
     alio = Cpt(CCMAlio, '', kind='normal')
+
+    # Calculation intermediates
+    theta_deg = Cpt(Signal, kind='normal')
+    wavelength = Cpt(Signal, kind='normal')
+    resolution = Cpt(Signal, kind='normal')
 
     tab_component_names = True
 
@@ -117,6 +123,23 @@ class CCMEnergy(FltMvInterface, PseudoPositioner):
         self.gr = gr
         self.gd = gd
         super().__init__(prefix, auto_target=False, **kwargs)
+
+    @alio.sub_default
+    def _update_intermediates(self, value=None, **kwargs):
+        """
+        Update the calculation intermediates when the alio position updates.
+        """
+        if value is None:
+            return
+        theta = alio_to_theta(value, self.theta0, self.gr, self.gd)
+        wavelength = theta_to_wavelength(theta, self.dspacing)
+        self.theta_deg.put(theta * 180/np.pi)
+        self.wavelength.put(wavelength)
+
+        res_delta = 1e-4
+        ref1 = self.alio_to_energy(value - res_delta/2)
+        ref2 = self.alio_to_energy(value + res_delta/2)
+        self.resolution.put(abs((ref1 - ref2) / res_delta))
 
     def forward(self, pseudo_pos: namedtuple) -> namedtuple:
         """
@@ -326,7 +349,31 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
         # This is used for elog and is also the __repr__ for old hutch python
         # Need to compare with other schemes we use for status printouts so it
         # Doesn't break the logging
-        raise NotImplementedError()
+        return self.format_status_info(self.status_info())
+
+    def format_status_info(self, status_info: dict[str, typing.Any]) -> str:
+        """
+        Define how we're going to format the state of the CCM for the user.
+        """
+        # Pull out the numbers we want
+        alio = status_info['alio']['position']
+        theta = status_info['energy']['theta_deg']['value']
+        wavelength = status_info['energy']['wavelength']['value']
+        resolution = status_info['energy']['resolution']['value']
+        energy = status_info['energy']['energy']['position']
+        x1 = status_info['x']['down']['position']
+        x2 = status_info['x']['up']['position']
+        xavg = (x1 + x2) / 2
+
+        # Fill out the text
+        text = f'alio    (mm): {alio:.4f}\n'
+        text += f'angle  (deg): {theta:.3f}\n'
+        text += f'lambda   (A): {wavelength:.4f}\n'
+        text += f'Energy (keV): {energy:.4f}\n'
+        text += f'res  (eV/mm): {resolution*1e3:.1f}\n'
+        text += f'res  (eV/um): {resolution:.2f}\n'
+        text += f'x       (mm): {xavg:.3f} [x1,x2={x1:.3f},{x2:.3f}]\n'
+        return text
 
     @property
     def theta0(self) -> float:

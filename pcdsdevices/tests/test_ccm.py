@@ -50,8 +50,14 @@ def fake_ccm():
     return make_fake_ccm()
 
 
+class FakeAlio(FastMotor):
+    kill = None
+    home = None
+
+
 def make_fake_ccm():
     fake_device_cache[ccm.CCMMotor] = FastMotor
+    fake_device_cache[ccm.CCMAlio] = FakeAlio
     FakeCCM = make_fake_device(ccm.CCM)
     fake_ccm = FakeCCM(alio_prefix='ALIO', theta2fine_prefix='THETA',
                        theta2coarse_prefix='THTA', chi2_prefix='CHI',
@@ -73,6 +79,7 @@ def make_fake_ccm():
     init_pos(fake_ccm.y.up_north)
     init_pos(fake_ccm.y.up_south)
 
+    fake_ccm.alio.set(SAMPLE_ALIO)
     fake_ccm.energy.alio.set(SAMPLE_ALIO)
     fake_ccm.energy_with_vernier.alio.set(SAMPLE_ALIO)
     fake_ccm.energy_with_vernier.vernier.setpoint.sim_put(0)
