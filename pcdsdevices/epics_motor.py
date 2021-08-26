@@ -520,14 +520,18 @@ class IMS(PCDSMotorBase):
         # Clear all flags
         self.clear_all_flags()
 
-    def reinitialize(self, wait=False):
+    def reinitialize(self, wait: bool = False,
+                     timeout: float = 10.0) -> SubscriptionStatus:
         """
         Reinitialize the IMS motor.
 
         Parameters
         ----------
-        wait : bool
+        wait : bool, optional
             Wait for the motor to be fully intialized.
+
+        timeout : float, optional
+            If the re-initialization takes too long, raise an error.
 
         Returns
         -------
@@ -543,9 +547,12 @@ class IMS(PCDSMotorBase):
             return value != 3
 
         # Generate a status
-        st = SubscriptionStatus(self.error_severity,
-                                initialize_complete,
-                                settle_time=0.5)
+        st = SubscriptionStatus(
+            self.error_severity,
+            initialize_complete,
+            timeout=timeout,
+            settle_time=0.5,
+            )
         # Wait on status if requested
         if wait:
             status_wait(st)
