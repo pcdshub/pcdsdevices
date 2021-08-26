@@ -17,6 +17,7 @@ from .interface import BaseInterface, FltMvInterface, LightpathMixin
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface, SyncAxis,
                         SyncAxisOffsetMode)
 from .pv_positioner import PVPositionerIsClose
+from .signal import InternalSignal
 from .utils import get_status_float
 
 logger = logging.getLogger(__name__)
@@ -36,18 +37,26 @@ class CCMMotor(PVPositionerIsClose):
     """
     Goofy records used in the CCM.
     """
-
     # Tolerance from old xcs python code
     atol = 3e-4
 
-    setpoint = Cpt(EpicsSignal, ":POSITIONSET", auto_monitor=True)
+    setpoint = Cpt(EpicsSignal, ":POSITIONSET", auto_monitor=True,
+                   doc='The motor setpoint. Writing begins a move.')
     readback = Cpt(EpicsSignalRO, ":POSITIONGET", auto_monitor=True,
-                   kind='hinted')
+                   kind='hinted',
+                   doc='The current motor position.')
 
 
 class CCMAlio(CCMMotor):
-    cmd_home = Cpt(EpicsSignal, ':ENABLEPLC11', kind='omitted')
-    cmd_kill = Cpt(EpicsSignal, ':KILL', kind='omitted')
+    """
+    Controls specifically the Alio motor.
+
+    Adds some controller-specific items.
+    """
+    cmd_home = Cpt(EpicsSignal, ':ENABLEPLC11', kind='omitted',
+                   doc='Tells the controller to home the motor.')
+    cmd_kill = Cpt(EpicsSignal, ':KILL', kind='omitted',
+                   doc='Tells the controller to kill the PID.')
 
     def home(self) -> None:
         """
@@ -74,12 +83,19 @@ class CCMPico(EpicsMotorInterface):
     This is a bit hacky for now, something should be done in the epics_motor
     file to accomodate these.
     """
-    direction_of_travel = Cpt(Signal, kind='omitted')
+    direction_of_travel = Cpt(Signal, kind='omitted',
+                              doc='The direction the motor is moving.')
 
-    def _pos_changed(self, timestamp=None, old_value=None,
-                     value=None, **kwargs):
-        # Store the internal travelling direction of the motor to account for
-        # the fact that our EPICS motor does not have TDIR field
+    def _pos_changed(self, timestamp: float = None, old_value: float = None,
+                     value: float = None, **kwargs) -> None:
+        """
+        Callback for when the readback position changes.
+
+        Stores the internal travelling direction of the motor to account for
+        the fact that our EPICS motor does not have a TDIR field.
+
+        Uses the standard ophyd arguments for a value subscription.
+        """
         try:
             comparison = int(value > old_value)
             self.direction_of_travel.put(comparison)
@@ -96,20 +112,47 @@ class CCMEnergy(FltMvInterface, PseudoPositioner):
     """
     CCM energy motor.
 
-    Calculated the current CCM energy using the alio position, and
+    Calculates the current CCM energy using the alio position, and
     requests moves to the alio based on energy requests.
 
     Presents itself like a motor.
+
+    Parameters
+    ----------
+    prefix : str
+        The PV prefix of the Alio motor, e.g. XPP:MON:MPZ:07A
+    theta0 : float, optional
+        Starting value for the theta0 calculation constant.
+        This is the scattering angle offset of the first crystal.
+    dspacing : float, optional
+        Starting value for the dspacing calculation constant.
+        This is the lattice spacing of the crystal.
+    gr : float, optional
+        Starting value for the gr calculation constant.
+        This is the radius of the sapphire ball connected to the
+        Alio stage in mm.
+    gd : float, optional
+        Starting value for the gr calculation constant.
+        This is the distance between the rotation axis and the
+        center of the saphire sphere located on the Alio stage
+        in mm.
     """
     # Pseudo motor and real motor
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted',
-                 limits=(4, 25), verbose_name='CCM Photon Energy')
-    alio = Cpt(CCMAlio, '', kind='normal')
+                 limits=(4, 25), verbose_name='CCM Photon Energy',
+                 doc='PseudoSingle that moves the calculated CCM '
+                     'selected energy in keV.')
+    alio = Cpt(CCMAlio, '', kind='normal',
+               doc='The motor that rotates the CCM crystal.')
 
     # Calculation intermediates
-    theta_deg = Cpt(Signal, kind='normal')
-    wavelength = Cpt(Signal, kind='normal')
-    resolution = Cpt(Signal, kind='normal')
+    theta_deg = Cpt(InternalSignal, kind='normal',
+                    doc='The crystal angle in degrees.')
+    wavelength = Cpt(InternalSignal, kind='normal',
+                     doc='The wavelength picked by the CCM in Angstroms.')
+    resolution = Cpt(InternalSignal, kind='normal',
+                     doc='A measure of how finely we can control the ccm '
+                         'output at this position in eV/um.')
 
     tab_component_names = True
 
@@ -126,21 +169,31 @@ class CCMEnergy(FltMvInterface, PseudoPositioner):
         super().__init__(prefix, auto_target=False, **kwargs)
 
     @alio.sub_default
-    def _update_intermediates(self, value=None, **kwargs):
+    def _update_intermediates(self, value: float = None, **kwargs) -> None:
         """
-        Update the calculation intermediates when the alio position updates.
+        Updates the calculation intermediates when the alio position updates.
+
+        This includes the theta_deg, wavelength, and resolution signals.
+
+        Parameters
+        ----------
+        value : float, optional
+            The position of the alio motor, called as it updates.
+            If this is not provided, the update will do nothing.
+        kwargs : dict
+            Other keywords from the subscription are ignored.
         """
         if value is None:
             return
         theta = alio_to_theta(value, self.theta0, self.gr, self.gd)
         wavelength = theta_to_wavelength(theta, self.dspacing)
-        self.theta_deg.put(theta * 180/np.pi)
-        self.wavelength.put(wavelength)
+        self.theta_deg.put(theta * 180/np.pi, force=True)
+        self.wavelength.put(wavelength, force=True)
 
         res_delta = 1e-4
         ref1 = self.alio_to_energy(value - res_delta/2)
         ref2 = self.alio_to_energy(value + res_delta/2)
-        self.resolution.put(abs((ref1 - ref2) / res_delta))
+        self.resolution.put(abs((ref1 - ref2) / res_delta), force=True)
 
     def forward(self, pseudo_pos: namedtuple) -> namedtuple:
         """
@@ -214,8 +267,33 @@ class CCMEnergyWithVernier(CCMEnergy):
     Also moves the vernier when a move is requested to the alio.
     Note that the vernier is in units of eV, while the energy
     calculations are in units of keV.
+
+    Parameters
+    ----------
+    prefix : str
+        The PV prefix of the Alio motor, e.g. XPP:MON:MPZ:07A
+    hutch : str, optional
+        The hutch we're in. This informs us as to which vernier
+        PVs to write to. If omitted, we can guess this from the
+        prefix.
+    theta0 : float, optional
+        Starting value for the theta0 calculation constant.
+        This is the scattering angle offset of the first crystal.
+    dspacing : float, optional
+        Starting value for the dspacing calculation constant.
+        This is the lattice spacing of the crystal.
+    gr : float, optional
+        Starting value for the gr calculation constant.
+        This is the radius of the sapphire ball connected to the
+        Alio stage in mm.
+    gd : float, optional
+        Starting value for the gr calculation constant.
+        This is the distance between the rotation axis and the
+        center of the saphire sphere located on the Alio stage
+        in mm.
     """
-    vernier = FCpt(BeamEnergyRequest, '{hutch}', kind='normal')
+    vernier = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
+                   doc='Requests ACR to move the Vernier.')
 
     def __init__(self, prefix: str, hutch: str = None, **kwargs):
         # Put some effort into filling this automatically
@@ -257,9 +335,29 @@ class CCMEnergyWithVernier(CCMEnergy):
 
 
 class CCMX(SyncAxis):
-    """Combined motion of the CCM X motors."""
-    down = UCpt(IMS, kind='normal')
-    up = UCpt(IMS, kind='normal')
+    """
+    Combined motion of the CCM X motors.
+
+    You can use this device like a motor, and the position setpoint will be
+    forwarded to both x motors.
+
+    This is used to bring the CCM in and out of the beam.
+
+    Parameters
+    ----------
+    prefix : str, optional
+        Devices are required to have a positional argument here,
+        but this is not used. If provided, it should be the same as
+        down_prefix (x1).
+    down_prefix : str, required keyword
+        The prefix for the downstream ccm x translation motor (x1).
+    up_prefix : str, required keyword
+        The prefix for the upstream ccm x translation motor (x2).
+    """
+    down = UCpt(IMS, kind='normal',
+                doc='Downstream ccm x translation motor (x1).')
+    up = UCpt(IMS, kind='normal',
+              doc='Upstream ccm x translation motor(x2).')
 
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
@@ -271,10 +369,33 @@ class CCMX(SyncAxis):
 
 
 class CCMY(SyncAxis):
-    """Combined motion of the CCM Y motors."""
-    down = UCpt(IMS, kind='normal')
-    up_north = UCpt(IMS, kind='normal')
-    up_south = UCpt(IMS, kind='normal')
+    """
+    Combined motion of the CCM Y motors.
+
+    You can use this device like a motor, and the position setpoint will be
+    forwarded to all three y motors.
+
+    These motors are typically powered off for RP reasons.
+
+    Parameters
+    ----------
+    prefix : str, optional
+        Devices are required to have a positional argument here,
+        but this is not used. If provided, it should be the same as
+        down_prefix (y1).
+    down_prefix : str, required keyword
+        The prefix for the downstream ccm y translation motor (y1).
+    up_north_prefix : str, required keyword
+        The prefix for the north upstream ccm y translation motor (y2).
+    up_south_prefix : str, required keyword
+        The prefix for the south upstream ccm y translation motor (y3).
+    """
+    down = UCpt(IMS, kind='normal',
+                doc='Downstream ccm y translation motor (y1).')
+    up_north = UCpt(IMS, kind='normal',
+                    doc='North upstream ccm y translation motor (y2).')
+    up_south = UCpt(IMS, kind='normal',
+                    doc='South upstream ccm y translation motor (y3).')
 
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
@@ -289,18 +410,79 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
     """
     The full CCM assembly.
 
-    This requires a huge number of motor pv prefixes to be passed in, and they
-    are all labelled accordingly.
-    """
-    energy = Cpt(CCMEnergy, '', kind='hinted')
-    energy_with_vernier = Cpt(CCMEnergyWithVernier, '', kind='normal')
+    This requires a huge number of motor pv prefixes to be passed in.
+    Pay attention to this docstring because most of the arguments are in
+    the kwargs.
 
-    alio = UCpt(CCMAlio, kind='normal')
-    theta2fine = UCpt(CCMMotor, atol=0.01, kind='normal')
-    theta2coarse = UCpt(CCMPico, kind='normal')
-    chi2 = UCpt(CCMPico, kind='normal')
-    x = UCpt(CCMX, add_prefix=[], kind='normal')
-    y = UCpt(CCMY, add_prefix=[], kind='normal')
+    Parameters
+    ----------
+    prefix : str, optional
+        Devices are required to have a positional argument here,
+        but this is not used. If provided, it should be the same as
+        alio_prefix.
+    in_pos : float, required keyword
+        The x position to consider as "inserted" into the beam.
+    out_pos : float, required keyword
+        The x position to consider as "removed" from the beam.
+    theta0 : float, optional
+        Starting value for the theta0 calculation constant.
+        This is the scattering angle offset of the first crystal.
+    dspacing : float, optional
+        Starting value for the dspacing calculation constant.
+        This is the lattice spacing of the crystal.
+    gr : float, optional
+        Starting value for the gr calculation constant.
+        This is the radius of the sapphire ball connected to the
+        Alio stage in mm.
+    gd : float, optional
+        Starting value for the gr calculation constant.
+        This is the distance between the rotation axis and the
+        center of the saphire sphere located on the Alio stage.
+    alio_prefix : str, required keyword
+        The PV prefix of the Alio motor, e.g. XPP:MON:MPZ:07A
+    theta2fine_prefix : str, required keyword
+        The PV prefix of the motor that controls the fine adjustment
+        of the of the second crystal's theta angle.
+    theta2coarse : str, required keyword
+        The PV prefix of the motor that controls the coarse adjustment
+        of the of the second crystal's theta angle.
+    chi2 : str, required keyword
+        The PV prefix of the motor that controls the adjustment
+        of the of the second crystal's chi angle.
+    x_down_prefix : str, required keyword
+        The prefix for the downstream ccm x translation motor (x1).
+    x_up_prefix : str, required keyword
+        The prefix for the upstream ccm x translation motor (x2).
+    y_down_prefix : str, required keyword
+        The prefix for the downstream ccm y translation motor (y1).
+    y_up_north_prefix : str, required keyword
+        The prefix for the north upstream ccm y translation motor (y2).
+    y_up_south_prefix : str, required keyword
+        The prefix for the south upstream ccm y translation motor (y3).
+    """
+    energy = Cpt(CCMEnergy, '', kind='hinted',
+                 doc='PseudoPositioner that moves the alio in '
+                     'terms of the calculated CCM energy.')
+    energy_with_vernier = Cpt(CCMEnergyWithVernier, '', kind='normal',
+                              doc='PsuedoPositioner that moves the alio in '
+                                  'terms of the calculated CCM energy while '
+                                  'also requesting a vernier move.')
+
+    alio = UCpt(CCMAlio, kind='normal',
+                doc='The motor that rotates the CCM crystal.')
+    theta2fine = UCpt(CCMMotor, atol=0.01, kind='normal',
+                      doc='The motor that controls the fine adjustment '
+                          'of the of the second crystal theta angle.')
+    theta2coarse = UCpt(CCMPico, kind='normal',
+                        doc='The motor that controls the coarse adjustment '
+                            'of the of the second crystal theta angle.')
+    chi2 = UCpt(CCMPico, kind='normal',
+                doc='The motor that controls the adjustment of the'
+                    'second crystal chi angle.')
+    x = UCpt(CCMX, add_prefix=[], kind='normal',
+             doc='Combined motion of the CCM X motors.')
+    y = UCpt(CCMY, add_prefix=[], kind='normal',
+             doc='Combined motion of the CCM Y motors.')
 
     lightpath_cpts = ['x']
     tab_component_names = True
@@ -383,7 +565,7 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
         """
         The calculation constant theta0 for the alio <-> energy calc.
 
-        This seems to be a reference angle for the calculation.
+        This is the scattering angle offset of the first crystal.
         """
         return self._theta0
 
@@ -398,7 +580,7 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
         """
         The calculation constant dspacing for the alio <-> energy calc.
 
-        This seems to be information about the crystal lattice.
+        This is the lattice spacing of the crystal.
         """
         return self._dspacing
 
@@ -413,7 +595,8 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
         """
         The calculation constant gr for the alio <-> energy calc.
 
-        I'm not sure what this actually is geometrically.
+        This is the radius of the sapphire ball connected to the
+        Alio stage in mm.
         """
         return self._gr
 
@@ -428,7 +611,8 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
         """
         The calculation constant gd for the alio <-> energy calc.
 
-        I'm not sure what this actually is geometrically.
+        This is the distance between the rotation axis and the
+        center of the saphire sphere located on the Alio stage.
         """
         return self._gd
 
@@ -459,12 +643,36 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
     def insert(self, wait: bool = False) -> MoveStatus:
         """
         Move the x motors to the saved "in" position.
+
+        Parameters
+        ----------
+        wait : bool, optional
+            If True, wait for the move to complete.
+            If False, return without waiting.
+
+        Returns
+        -------
+        move_status : MoveStatus
+            A status object that tells you information about the
+            success/failure/completion status of the move.
         """
         return self.x.move(self._in_pos, wait=wait)
 
     def remove(self, wait: bool = False) -> MoveStatus:
         """
         Move the x motors to the saved "out" position.
+
+        Parameters
+        ----------
+        wait : bool, optional
+            If True, wait for the move to complete.
+            If False, return without waiting.
+
+        Returns
+        -------
+        move_status : MoveStatus
+            A status object that tells you information about the
+            success/failure/completion status of the move.
         """
         return self.x.move(self._out_pos, wait=wait)
 
