@@ -17,6 +17,7 @@ from .interface import BaseInterface, FltMvInterface, LightpathMixin
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface, SyncAxis,
                         SyncAxisOffsetMode)
 from .pv_positioner import PVPositionerIsClose
+from .utils import get_status_float
 
 logger = logging.getLogger(__name__)
 
@@ -351,24 +352,36 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
         """
         Define how we're going to format the state of the CCM for the user.
         """
-        # Pull out the numbers we want
-        alio = status_info['alio']['position']
-        theta = status_info['energy']['theta_deg']['value']
-        wavelength = status_info['energy']['wavelength']['value']
-        resolution = status_info['energy']['resolution']['value']
-        energy = status_info['energy']['energy']['position']
-        x1 = status_info['x']['down']['position']
-        x2 = status_info['x']['up']['position']
-        xavg = (x1 + x2) / 2
+        # Pull out the numbers we want and format them, or show N/A if failed
+        alio = get_status_float(status_info, 'alio', 'position', precision=4)
+        theta = get_status_float(status_info, 'energy', 'theta_deg', 'value',
+                                 precision=3)
+        wavelength = get_status_float(status_info, 'energy', 'wavelength',
+                                      'value', precision=4)
+        energy = get_status_float(status_info, 'energy', 'energy', 'position',
+                                  precision=4)
+        res_mm = get_status_float(status_info, 'energy', 'resolution', 'value',
+                                  scale=1e3, precision=1)
+        res_um = get_status_float(status_info, 'energy', 'resolution', 'value',
+                                  precision=2)
+        x_down = get_status_float(status_info, 'x', 'down', 'position',
+                                  precision=3)
+        x_up = get_status_float(status_info, 'x', 'up', 'position',
+                                precision=3)
+        try:
+            xavg = np.average([float(x_down), float(x_up)])
+            xavg = f'{xavg:.3f}'
+        except TypeError:
+            xavg = 'N/A'
 
         # Fill out the text
-        text = f'alio    (mm): {alio:.4f}\n'
-        text += f'angle  (deg): {theta:.3f}\n'
-        text += f'lambda   (A): {wavelength:.4f}\n'
-        text += f'Energy (keV): {energy:.4f}\n'
-        text += f'res  (eV/mm): {resolution*1e3:.1f}\n'
-        text += f'res  (eV/um): {resolution:.2f}\n'
-        text += f'x       (mm): {xavg:.3f} [x1,x2={x1:.3f},{x2:.3f}]\n'
+        text = f'alio    (mm): {alio}\n'
+        text += f'angle  (deg): {theta}\n'
+        text += f'lambda   (A): {wavelength}\n'
+        text += f'Energy (keV): {energy}\n'
+        text += f'res  (eV/mm): {res_mm}\n'
+        text += f'res  (eV/um): {res_um}\n'
+        text += f'x       (mm): {xavg} [x1,x2={x_down},{x_up}]\n'
         return text
 
     @property
