@@ -13,7 +13,7 @@ from .beam_stats import BeamEnergyRequest
 from .device import GroupDevice
 from .device import UnrelatedComponent as UCpt
 from .epics_motor import IMS, EpicsMotorInterface
-from .interface import FltMvInterface, LightpathMixin
+from .interface import BaseInterface, FltMvInterface, LightpathMixin
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface, SyncAxis,
                         SyncAxisOffsetMode)
 from .pv_positioner import PVPositionerIsClose
@@ -261,7 +261,7 @@ class CCMY(SyncAxis):
         super().__init__(prefix, **kwargs)
 
 
-class CCM(GroupDevice, LightpathMixin):
+class CCM(BaseInterface, GroupDevice, LightpathMixin):
     """
     The full CCM assembly.
 
@@ -280,6 +280,10 @@ class CCM(GroupDevice, LightpathMixin):
 
     lightpath_cpts = ['x']
     tab_component_names = True
+    tab_whitelist = ['x1', 'x2', 'y1', 'y2', 'y3', 'E', 'E_vernier',
+                     'th2coarse', 'th2fine', 'alio2E', 'E2alio',
+                     'home', 'kill', 'status',
+                     'insert', 'remove', 'inserted', 'removed']
 
     def __init__(self, *, prefix: str = None, in_pos: float, out_pos: float,
                  theta0: float = default_theta0,
