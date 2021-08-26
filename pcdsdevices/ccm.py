@@ -276,6 +276,45 @@ class CCM(GroupDevice, LightpathMixin):
         self.gr = gr
         self.gd = gd
 
+        # Aliases: defined by the scientists
+        self.x1 = self.x.down
+        self.x2 = self.x.up
+        self.y1 = self.y.down
+        self.y2 = self.y.up_north
+        self.y3 = self.y.up_south
+        # TODO investigate request for set_current_position on ccm.E to
+        # reset the offset values used for alio/energy conversion
+        self.E = self.energy.energy
+        self.E_vernier = self.energy_with_vernier.energy
+        self.th2coarse = self.theta2coarse
+        self.th2fine = self.theta2fine
+        self.alio2E = self.energy.alio_to_energy
+        self.E2alio = self.energy.energy_to_alio
+
+    def status(self) -> str:
+        """
+        Returns a str with the current pv values for the device.
+        """
+        # TODO read the old code and make sure something similar happens here
+        # This is used for elog and is also the __repr__ for old hutch python
+        # Need to compare with other schemes we use for status printouts so it
+        # Doesn't break the logging
+        raise NotImplementedError()
+
+    def kill(self):
+        """
+        Stop the Alio motion PID
+        """
+        # TODO find the PVs needed to do this
+        raise NotImplementedError()
+
+    def home(self):
+        """
+        Same as home button on EDM screen
+        """
+        # TODO investigate the EDM screen and implement appropriately
+        raise NotImplementedError()
+
     @property
     def theta0(self) -> float:
         """
