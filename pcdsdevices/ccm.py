@@ -345,10 +345,6 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
         """
         Returns a str with the current pv values for the device.
         """
-        # TODO read the old code and make sure something similar happens here
-        # This is used for elog and is also the __repr__ for old hutch python
-        # Need to compare with other schemes we use for status printouts so it
-        # Doesn't break the logging
         return self.format_status_info(self.status_info())
 
     def format_status_info(self, status_info: dict[str, typing.Any]) -> str:
