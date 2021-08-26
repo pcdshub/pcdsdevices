@@ -375,13 +375,13 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
             xavg = 'N/A'
 
         # Fill out the text
-        text = f'alio    (mm): {alio}\n'
-        text += f'angle  (deg): {theta}\n'
-        text += f'lambda   (A): {wavelength}\n'
+        text = f'alio   (mm): {alio}\n'
+        text += f'angle (deg): {theta}\n'
+        text += f'lambda  (A): {wavelength}\n'
         text += f'Energy (keV): {energy}\n'
-        text += f'res  (eV/mm): {res_mm}\n'
-        text += f'res  (eV/um): {res_um}\n'
-        text += f'x       (mm): {xavg} [x1,x2={x_down},{x_up}]\n'
+        text += f'res (eV/mm): {res_mm}\n'
+        text += f'res (eV/um): {res_um}\n'
+        text += f'x @ (mm): {xavg} [x1,x2={x_down},{x_up}]\n'
         return text
 
     @property
