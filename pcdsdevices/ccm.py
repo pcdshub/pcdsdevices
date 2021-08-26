@@ -516,7 +516,9 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
         # TODO investigate request for set_current_position on ccm.E to
         # reset the offset values used for alio/energy conversion
         self.E = self.energy.energy
-        self.E_vernier = self.energy_with_vernier.energy
+        self.E.name = f'{self.name}E'
+        self.E_Vernier = self.energy_with_vernier.energy
+        self.E_Vernier.name = f'{self.name}E_Vernier'
         self.th2coarse = self.theta2coarse
         self.th2fine = self.theta2fine
         self.alio2E = self.energy.alio_to_energy
