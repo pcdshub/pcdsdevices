@@ -44,6 +44,27 @@ class CCMMotor(PVPositionerIsClose):
                    kind='hinted')
 
 
+class CCMAlio(CCMMotor):
+    cmd_home = Cpt(EpicsSignal, ':ENABLEPLC11', kind='omitted')
+    cmd_kill = Cpt(EpicsSignal, ':KILL', kind='omitted')
+
+    def home(self) -> None:
+        """
+        Finds the reference used for the Alio's position.
+
+        Same as pressing "HOME" in the edm screen.
+        """
+        self.cmd_home.put(1)
+
+    def kill(self) -> None:
+        """
+        Terminates the motion PID
+
+        Same as pressing "KILL" in the edm screen.
+        """
+        self.cmd_kill.put(1)
+
+
 class CCMPico(EpicsMotorInterface):
     """
     The Pico motors used here seem non-standard, as they are missing spg.
@@ -81,7 +102,7 @@ class CCMEnergy(FltMvInterface, PseudoPositioner):
     """
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted',
                  limits=(4, 25), verbose_name='CCM Photon Energy')
-    alio = Cpt(CCMMotor, '', kind='normal')
+    alio = Cpt(CCMAlio, '', kind='normal')
 
     tab_component_names = True
 
@@ -250,7 +271,7 @@ class CCM(GroupDevice, LightpathMixin):
     energy = Cpt(CCMEnergy, '', kind='hinted')
     energy_with_vernier = Cpt(CCMEnergyWithVernier, '', kind='normal')
 
-    alio = UCpt(CCMMotor, kind='normal')
+    alio = UCpt(CCMAlio, kind='normal')
     theta2fine = UCpt(CCMMotor, atol=0.01, kind='normal')
     theta2coarse = UCpt(CCMPico, kind='normal')
     chi2 = UCpt(CCMPico, kind='normal')
@@ -290,6 +311,8 @@ class CCM(GroupDevice, LightpathMixin):
         self.th2fine = self.theta2fine
         self.alio2E = self.energy.alio_to_energy
         self.E2alio = self.energy.energy_to_alio
+        self.home = self.alio.home
+        self.kill = self.alio.kill
 
     def status(self) -> str:
         """
@@ -299,20 +322,6 @@ class CCM(GroupDevice, LightpathMixin):
         # This is used for elog and is also the __repr__ for old hutch python
         # Need to compare with other schemes we use for status printouts so it
         # Doesn't break the logging
-        raise NotImplementedError()
-
-    def kill(self):
-        """
-        Stop the Alio motion PID
-        """
-        # TODO find the PVs needed to do this
-        raise NotImplementedError()
-
-    def home(self):
-        """
-        Same as home button on EDM screen
-        """
-        # TODO investigate the EDM screen and implement appropriately
         raise NotImplementedError()
 
     @property
