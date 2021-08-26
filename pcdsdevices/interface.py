@@ -266,6 +266,12 @@ class BaseInterface:
             raise
         pp.text(status_text)
 
+    def status(self) -> str:
+        """
+        Returns a str with the current pv values for the device.
+        """
+        return self.format_status_info(self.status_info())
+
     def format_status_info(self, status_info):
         """
         Entry point for the mini status displays in the ipython terminal.

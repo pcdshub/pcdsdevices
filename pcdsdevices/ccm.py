@@ -342,12 +342,6 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
         self.home = self.alio.home
         self.kill = self.alio.kill
 
-    def status(self) -> str:
-        """
-        Returns a str with the current pv values for the device.
-        """
-        return self.format_status_info(self.status_info())
-
     def format_status_info(self, status_info: dict[str, typing.Any]) -> str:
         """
         Define how we're going to format the state of the CCM for the user.
