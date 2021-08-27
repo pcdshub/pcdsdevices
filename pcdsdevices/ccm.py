@@ -134,7 +134,7 @@ class CCMEnergy(FltMvInterface, PseudoPositioner):
     gd : float, optional
         Starting value for the gr calculation constant.
         This is the distance between the rotation axis and the
-        center of the saphire sphere located on the Alio stage
+        center of the sapphire sphere located on the Alio stage
         in mm.
     """
     # Pseudo motor and real motor
@@ -289,7 +289,7 @@ class CCMEnergyWithVernier(CCMEnergy):
     gd : float, optional
         Starting value for the gr calculation constant.
         This is the distance between the rotation axis and the
-        center of the saphire sphere located on the Alio stage
+        center of the sapphire sphere located on the Alio stage
         in mm.
     """
     vernier = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
@@ -437,7 +437,7 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
     gd : float, optional
         Starting value for the gr calculation constant.
         This is the distance between the rotation axis and the
-        center of the saphire sphere located on the Alio stage.
+        center of the sapphire sphere located on the Alio stage.
     alio_prefix : str, required keyword
         The PV prefix of the Alio motor, e.g. XPP:MON:MPZ:07A
     theta2fine_prefix : str, required keyword
@@ -614,7 +614,7 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
         The calculation constant gd for the alio <-> energy calc.
 
         This is the distance between the rotation axis and the
-        center of the saphire sphere located on the Alio stage.
+        center of the sapphire sphere located on the Alio stage.
         """
         return self._gd
 
@@ -690,7 +690,7 @@ def theta_to_alio(theta, theta0, gr, gd):
     Delta_Theta:   the effective scattering angle (adjusted with Alio stage)
     R = 0.003175m: radius of the sapphire ball connected to the Alio stage
     D = 0.232156m: distance between the Theta_B rotation axis and the center
-                   of the saphire sphere located on the Alio stage.
+                   of the sapphire sphere located on the Alio stage.
                    note: The current value that we're using for D is 0.231303 -
                    possibly measured by metrology
 
