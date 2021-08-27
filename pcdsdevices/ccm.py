@@ -86,8 +86,11 @@ class CCMPico(EpicsMotorInterface):
     direction_of_travel = Cpt(Signal, kind='omitted',
                               doc='The direction the motor is moving.')
 
-    def _pos_changed(self, timestamp: float = None, old_value: float = None,
-                     value: float = None, **kwargs) -> None:
+    def _pos_changed(self,
+                     timestamp: typing.Optional[float] = None,
+                     old_value: typing.Optional[float] = None,
+                     value: typing.Optional[float] = None,
+                     **kwargs) -> None:
         """
         Callback for when the readback position changes.
 
@@ -169,7 +172,9 @@ class CCMEnergy(FltMvInterface, PseudoPositioner):
         super().__init__(prefix, auto_target=False, **kwargs)
 
     @alio.sub_default
-    def _update_intermediates(self, value: float = None, **kwargs) -> None:
+    def _update_intermediates(self,
+                              value: typing.Optional[float] = None,
+                              **kwargs) -> None:
         """
         Updates the calculation intermediates when the alio position updates.
 
@@ -295,7 +300,10 @@ class CCMEnergyWithVernier(CCMEnergy):
     vernier = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
                    doc='Requests ACR to move the Vernier.')
 
-    def __init__(self, prefix: str, hutch: str = None, **kwargs):
+    def __init__(self,
+                 prefix: str,
+                 hutch: typing.Optional[str] = None,
+                 **kwargs):
         # Put some effort into filling this automatically
         # CCM exists only in two hutches
         if hutch is not None:
@@ -362,7 +370,9 @@ class CCMX(SyncAxis):
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
 
-    def __init__(self, prefix: str = None, **kwargs):
+    def __init__(self,
+                 prefix: typing.Optional[str] = None,
+                 **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         prefix = prefix or self.unrelated_prefixes['down_prefix']
         super().__init__(prefix, **kwargs)
@@ -400,7 +410,9 @@ class CCMY(SyncAxis):
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
 
-    def __init__(self, prefix: str = None, **kwargs):
+    def __init__(self,
+                 prefix: typing.Optional[str] = None,
+                 **kwargs):
         UCpt.collect_prefixes(self, kwargs)
         prefix = prefix or self.unrelated_prefixes['down_prefix']
         super().__init__(prefix, **kwargs)
@@ -491,7 +503,10 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
                      'home', 'kill', 'status',
                      'insert', 'remove', 'inserted', 'removed']
 
-    def __init__(self, *, prefix: str = None, in_pos: float, out_pos: float,
+    def __init__(self, *,
+                 prefix: typing.Optional[str] = None,
+                 in_pos: float,
+                 out_pos: float,
                  theta0: float = default_theta0,
                  dspacing: float = default_dspacing,
                  gr: float = default_gr,
