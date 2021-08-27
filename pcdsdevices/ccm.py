@@ -513,8 +513,6 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
         self.y1 = self.y.down
         self.y2 = self.y.up_north
         self.y3 = self.y.up_south
-        # TODO investigate request for set_current_position on ccm.E to
-        # reset the offset values used for alio/energy conversion
         self.E = self.energy.energy
         self.E.readback.name = f'{self.name}E'
         self.E_Vernier = self.energy_with_vernier.energy
