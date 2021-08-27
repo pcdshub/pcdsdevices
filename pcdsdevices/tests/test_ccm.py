@@ -50,8 +50,14 @@ def fake_ccm():
     return make_fake_ccm()
 
 
+class FakeAlio(FastMotor):
+    kill = None
+    home = None
+
+
 def make_fake_ccm():
     fake_device_cache[ccm.CCMMotor] = FastMotor
+    fake_device_cache[ccm.CCMAlio] = FakeAlio
     FakeCCM = make_fake_device(ccm.CCM)
     fake_ccm = FakeCCM(alio_prefix='ALIO', theta2fine_prefix='THETA',
                        theta2coarse_prefix='THTA', chi2_prefix='CHI',
@@ -59,7 +65,6 @@ def make_fake_ccm():
                        y_down_prefix='Y:DOWN', y_up_north_prefix='Y:UP:NORTH',
                        y_up_south_prefix='Y:UP:SOUTH', in_pos=8, out_pos=0,
                        name='fake_ccm')
-    fake_ccm.calc.alio.set(SAMPLE_ALIO)
 
     def init_pos(mot, pos=0):
         mot.user_readback.sim_put(0)
@@ -74,7 +79,10 @@ def make_fake_ccm():
     init_pos(fake_ccm.y.up_north)
     init_pos(fake_ccm.y.up_south)
 
-    fake_ccm.calc.energy_request.setpoint.sim_put(0)
+    fake_ccm.alio.set(SAMPLE_ALIO)
+    fake_ccm.energy.alio.set(SAMPLE_ALIO)
+    fake_ccm.energy_with_vernier.alio.set(SAMPLE_ALIO)
+    fake_ccm.energy_with_vernier.vernier.setpoint.sim_put(0)
 
     return fake_ccm
 
@@ -87,39 +95,24 @@ def test_fake_ccm(fake_ccm):
 # Make sure we set up the forward/inverse to use the right methods
 def test_ccm_calc(fake_ccm):
     logger.debug('test_ccm_calc')
-    calc = fake_ccm.calc
+    calc = fake_ccm.energy
 
     logger.debug('physics pos is %s', calc.position)
     logger.debug('real pos is %s', calc.real_position)
     logger.debug('sample alio is %s', SAMPLE_ALIO)
 
-    theta = calc.theta.position
     theta_func = ccm.alio_to_theta(SAMPLE_ALIO, calc.theta0, calc.gr, calc.gd)
-    assert theta == theta_func * 180/np.pi
-
-    wavelength = calc.wavelength.position
-    wavelength_func = ccm.theta_to_wavelength(theta * np.pi/180, calc.dspacing)
-    assert wavelength == wavelength_func
-
+    wavelength_func = ccm.theta_to_wavelength(theta_func, calc.dspacing)
+    energy_func = ccm.wavelength_to_energy(wavelength_func)
     energy = calc.energy.position
-    energy_func = ccm.wavelength_to_energy(wavelength)
     assert energy == energy_func
 
     calc.alio.move(0)
     calc.move(energy, wait=False)
     assert np.isclose(calc.alio.position, SAMPLE_ALIO)
 
-    calc.alio.move(0)
-    calc.move(wavelength=wavelength, wait=False)
-    assert np.isclose(calc.alio.position, SAMPLE_ALIO)
-
-    calc.alio.move(0)
-    calc.move(theta=theta, wait=False)
-    assert np.isclose(calc.alio.position, SAMPLE_ALIO)
-
     calc.alio.move(calc.alio.position)
-    calc.move(energy=calc.energy.position, wavelength=calc.wavelength.position,
-              theta=calc.theta.position, wait=False)
+    calc.move(energy=calc.energy.position, wait=False)
     assert np.isclose(calc.alio.position, SAMPLE_ALIO)
 
 
@@ -132,19 +125,16 @@ def test_ccm_main(fake_ccm):
     assert fake_ccm.y.up_north.user_setpoint.get() == 5
     assert fake_ccm.y.up_south.user_setpoint.get() == 5
 
-    assert fake_ccm.position == 'OUT'
     assert fake_ccm.removed
     assert not fake_ccm.inserted
 
     fake_ccm.x.down.user_readback.sim_put(8)
     fake_ccm.x.up.user_readback.sim_put(8)
-    assert fake_ccm.position == 'IN'
     assert not fake_ccm.removed
     assert fake_ccm.inserted
 
     fake_ccm.x.down.user_readback.sim_put(4)
     fake_ccm.x.up.user_readback.sim_put(4)
-    assert fake_ccm.position == 'Unknown'
     assert not fake_ccm.removed
     assert not fake_ccm.inserted
 
@@ -161,34 +151,31 @@ def test_ccm_main(fake_ccm):
 def test_vernier(fake_ccm):
     logger.debug('test_vernier')
 
+    pseudopos = fake_ccm.energy_with_vernier
+
     # Moving with vernier should move the energy request motor too
-    fake_ccm.calc.energy_with_vernier.move(7, wait=False)
-    assert np.isclose(fake_ccm.calc.energy.position, 7)
-    assert fake_ccm.calc.energy_request.position == 7000
+    pseudopos.move(7, wait=False)
+    assert np.isclose(pseudopos.energy.position, 7)
+    assert pseudopos.vernier.position == 7000
 
-    fake_ccm.calc.energy_with_vernier.move(8, wait=False)
-    assert np.isclose(fake_ccm.calc.energy.position, 8)
-    assert fake_ccm.calc.energy_request.position == 8000
+    pseudopos.move(8, wait=False)
+    assert np.isclose(pseudopos.energy.position, 8)
+    assert pseudopos.vernier.position == 8000
 
-    fake_ccm.calc.energy_with_vernier.move(9, wait=False)
-    assert np.isclose(fake_ccm.calc.energy.position, 9)
-    assert fake_ccm.calc.energy_request.position == 9000
+    pseudopos.move(9, wait=False)
+    assert np.isclose(pseudopos.energy.position, 9)
+    assert pseudopos.vernier.position == 9000
 
     # Small moves (less than 30eV) should be skipped on the energy request
-    fake_ccm.calc.energy_with_vernier.move(9.001, wait=False)
-    assert np.isclose(fake_ccm.calc.energy.position, 9.001)
-    assert fake_ccm.calc.energy_request.position == 9000
+    pseudopos.move(9.001, wait=False)
+    assert np.isclose(pseudopos.energy.position, 9.001)
+    assert pseudopos.vernier.position == 9000
 
     # Unless we set the option for not skipping them
-    fake_ccm.calc.energy_request.skip_small_moves = False
-    fake_ccm.calc.energy_with_vernier.move(9.002, wait=False)
-    assert np.isclose(fake_ccm.calc.energy.position, 9.002)
-    assert fake_ccm.calc.energy_request.position == 9002
-
-    # Normal moves should ignore the vernier PV
-    fake_ccm.calc.energy.move(10, wait=False)
-    assert np.isclose(fake_ccm.calc.energy.position, 10)
-    assert fake_ccm.calc.energy_request.position == 9002
+    pseudopos.vernier.skip_small_moves = False
+    pseudopos.move(9.002, wait=False)
+    assert np.isclose(pseudopos.energy.position, 9.002)
+    assert pseudopos.vernier.position == 9002
 
 
 @pytest.mark.timeout(5)
