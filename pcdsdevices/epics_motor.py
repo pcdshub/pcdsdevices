@@ -102,7 +102,6 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         self.subscribe(
             self._reset_moved_in_session,
             event_type=self.SUB_DONE,
-            run=True,
         )
         self._install_motion_error_filter()
 
@@ -367,7 +366,8 @@ Limit Switch: {switch_limits}
         """
         if not self._motion_error_log_filters:
             filter_obj = SimpleNamespace(filter=self._motion_error_filter)
-            self.log.logger.add_filter(filter_obj)
+            self.log.logger.addFilter(filter_obj)
+        self._reset_moved_in_session()
         self._motion_error_log_filters[self.name] = self._instance_error_filter
 
     def _reset_moved_in_session(self, *args, **kwargs):
