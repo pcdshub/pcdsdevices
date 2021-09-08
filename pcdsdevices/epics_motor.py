@@ -338,6 +338,12 @@ Limit Switch: {switch_limits}
         Returns True if the message should pass, or False if the message
         should be filtered.
         """
+        try:
+            name = record.ophyd_object_name
+        except AttributeError:
+            return True
+        if self.name != name:
+            return True
         return self._moved_in_session or ' alarm ' not in record.msg
 
     def _install_motion_error_filter(self):
@@ -345,7 +351,7 @@ Limit Switch: {switch_limits}
         Applies the _motion_error_filter to self.log.
         """
         filter_obj = SimpleNamespace(filter=self._motion_error_filter)
-        self.log.add_filter(filter_obj)
+        self.log.logger.add_filter(filter_obj)
 
     def _reset_moved_in_session(self, *args, **kwargs):
         """
