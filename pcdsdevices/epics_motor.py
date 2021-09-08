@@ -94,6 +94,9 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     EpicsMotor.low_limit_travel.kind = Kind.config
     EpicsMotor.direction_of_travel.kind = Kind.normal
 
+    # Registry of log filters by device name
+    _motion_error_log_filters: dict[str, filter] = {}
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.subscribe(
@@ -325,33 +328,47 @@ Limit Switch: {switch_limits}
         finally:
             self.set_use_switch.put(0, wait=True)
 
-    def _motion_error_filter(self, record: logging.LogRecord) -> bool:
+    @classmethod
+    def _motion_error_filter(cls, record: logging.LogRecord) -> bool:
         """
         A filter for removing spammy end of move logs.
 
-        This filter will remove log messages that contain the
-        keyword "alarm" unless a move was requested in this
-        session and is active.
-
         This removes the cross-session error spam issues.
-
-        Returns True if the message should pass, or False if the message
-        should be filtered.
+        This should be added to the ophyd.objects filter exactly once
+        per session.
         """
         try:
             name = record.ophyd_object_name
         except AttributeError:
             return True
-        if self.name != name:
+        try:
+            filt = cls._motion_error_log_filters[name]
+        except KeyError:
             return True
+        return filt(record)
+
+    def _instance_error_filter(self, record: logging.LogRecord) -> bool:
+        """
+        Instance-specific motion error filter.
+
+        This filter will remove log messages that contain the
+        keyword "alarm" unless a move was requested in this
+        session and is active.
+
+        Returns True if the message should pass, or False if the message
+        should be filtered.
+        """
         return self._moved_in_session or ' alarm ' not in record.msg
 
     def _install_motion_error_filter(self):
         """
-        Applies the _motion_error_filter to self.log.
+        Applies the class _motion_error_filter to self.log if needed
+        Adds our _instance_error_filter to the filter registry
         """
-        filter_obj = SimpleNamespace(filter=self._motion_error_filter)
-        self.log.logger.add_filter(filter_obj)
+        if not self._motion_error_log_filters:
+            filter_obj = SimpleNamespace(filter=self._motion_error_filter)
+            self.log.logger.add_filter(filter_obj)
+        self._motion_error_log_filters[self.name] = self._instance_error_filter
 
     def _reset_moved_in_session(self, *args, **kwargs):
         """
