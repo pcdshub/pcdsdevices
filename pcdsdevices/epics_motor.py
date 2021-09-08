@@ -4,7 +4,7 @@ Module for LCLS's special motor records.
 import logging
 import os
 import shutil
-import typing
+from types import SimpleNamespace
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -15,8 +15,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.status import DeviceStatus, MoveStatus, SubscriptionStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
-from ophyd.utils.epics_pvs import (AlarmSeverity, raise_if_disconnected,
-                                   set_and_wait)
+from ophyd.utils.epics_pvs import raise_if_disconnected, set_and_wait
 from pcdsutils.ext_scripts import get_hutch_name
 
 from pcdsdevices.pv_positioner import PVPositionerComparator
@@ -58,8 +57,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
            the beamline.
         5. The post-move error logs only appear after a move in that session,
            not after a move in another user's session. This is achieved by
-           modulating self.tolerated_alarm appropriately to tolerate alarms
-           except when we ask for a move in this session.
+           keeping track of whether or not a move was caused by this session
+           and filtering self.log appropriately.
     """
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
@@ -95,16 +94,14 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     EpicsMotor.low_limit_travel.kind = Kind.config
     EpicsMotor.direction_of_travel.kind = Kind.normal
 
-    # Alarm modulation
-    _tolerated_alarm: AlarmSeverity = AlarmSeverity.NO_ALARM
-    _moved_in_session: bool = False
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.subscribe(
             self._reset_moved_in_session,
             event_type=self.SUB_DONE,
+            run=True,
         )
+        self._install_motion_error_filter()
 
     def move(self, position, wait=True, **kwargs):
         self._moved_in_session = True
@@ -328,34 +325,27 @@ Limit Switch: {switch_limits}
         finally:
             self.set_use_switch.put(0, wait=True)
 
-    @property
-    def tolerated_alarm(self) -> AlarmSeverity:
+    def _motion_error_filter(self, record: logging.LogRecord) -> bool:
         """
-        Return or mask the tolerated_alarm setting based on the context.
+        A filter for removing spammy end of move logs.
 
-        This is AlarmSeverity.INVALID if we didn't ask for a move
-        to allow us to ignore all warnings caused by other sessions.
+        This filter will remove log messages that contain the
+        keyword "alarm" unless a move was requested in this
+        session and is active.
 
-        This is the last value to set to tolerated alarm if we
-        are doing a move that we asked for in this session.
+        This removes the cross-session error spam issues.
 
-        The default is AlarmSeverity.NO_ALARM to not ignore any
-        issues.
+        Returns True if the message should pass, or False if the message
+        should be filtered.
         """
-        if self._moved_in_session:
-            return self._tolerated_alarm
-        else:
-            return AlarmSeverity.INVALID
+        return self._moved_in_session or ' alarm ' not in record.msg
 
-    @tolerated_alarm.setter
-    def tolerated_alarm(self, alarm: typing.Union[AlarmSeverity, int, str]):
-        try:
-            self._tolerated_alarm = AlarmSeverity(alarm)
-        except ValueError:
-            try:
-                self._tolerated_alarm = AlarmSeverity[alarm]
-            except KeyError:
-                raise ValueError(f'{alarm} is not a valid Alarm Severity')
+    def _install_motion_error_filter(self):
+        """
+        Applies the _motion_error_filter to self.log.
+        """
+        filter_obj = SimpleNamespace(filter=self._motion_error_filter)
+        self.log.add_filter(filter_obj)
 
     def _reset_moved_in_session(self, *args, **kwargs):
         """
