@@ -4,6 +4,7 @@ Module for LCLS's special motor records.
 import logging
 import os
 import shutil
+import typing
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -14,7 +15,8 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.status import DeviceStatus, MoveStatus, SubscriptionStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
-from ophyd.utils.epics_pvs import raise_if_disconnected, set_and_wait
+from ophyd.utils.epics_pvs import (AlarmSeverity, raise_if_disconnected,
+                                   set_and_wait)
 from pcdsutils.ext_scripts import get_hutch_name
 
 from pcdsdevices.pv_positioner import PVPositionerComparator
@@ -54,6 +56,10 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
            interface.
         4. The description field keeps track of the motors scientific use along
            the beamline.
+        5. The post-move error logs only appear after a move in that session,
+           not after a move in another user's session. This is achieved by
+           modulating self.tolerated_alarm appropriately to tolerate alarms
+           except when we ask for a move in this session.
     """
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
@@ -88,6 +94,21 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     EpicsMotor.high_limit_travel.kind = Kind.config
     EpicsMotor.low_limit_travel.kind = Kind.config
     EpicsMotor.direction_of_travel.kind = Kind.normal
+
+    # Alarm modulation
+    _tolerated_alarm: AlarmSeverity = AlarmSeverity.NO_ALARM
+    _moved_in_session: bool = False
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.subscribe(
+            self._reset_moved_in_session,
+            event_type=self.SUB_DONE,
+        )
+
+    def move(self, position, wait=True, **kwargs):
+        self._moved_in_session = True
+        return super().move(position, wait=wait, **kwargs)
 
     def format_status_info(self, status_info):
         """
@@ -306,6 +327,41 @@ Limit Switch: {switch_limits}
             self.user_setpoint.put(pos, wait=True, force=True)
         finally:
             self.set_use_switch.put(0, wait=True)
+
+    @property
+    def tolerated_alarm(self) -> AlarmSeverity:
+        """
+        Return or mask the tolerated_alarm setting based on the context.
+
+        This is AlarmSeverity.INVALID if we didn't ask for a move
+        to allow us to ignore all warnings caused by other sessions.
+
+        This is the last value to set to tolerated alarm if we
+        are doing a move that we asked for in this session.
+
+        The default is AlarmSeverity.NO_ALARM to not ignore any
+        issues.
+        """
+        if self._moved_in_session:
+            return self._tolerated_alarm
+        else:
+            return AlarmSeverity.INVALID
+
+    @tolerated_alarm.setter
+    def tolerated_alarm(self, alarm: typing.Union[AlarmSeverity, int, str]):
+        try:
+            self._tolerated_alarm = AlarmSeverity(alarm)
+        except ValueError:
+            try:
+                self._tolerated_alarm = AlarmSeverity[alarm]
+            except KeyError:
+                raise ValueError(f'{alarm} is not a valid Alarm Severity')
+
+    def _reset_moved_in_session(self, *args, **kwargs):
+        """
+        Callback to reset self._moved_in_session after every move.
+        """
+        self._moved_in_session = False
 
 
 class PCDSMotorBase(EpicsMotorInterface):
