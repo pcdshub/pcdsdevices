@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
--GFS, GCC, PIP 
+- Added GFS fault setpoint, GCC, PIP auto-on and countdown timer
 
 New Devices
 -----------
