@@ -19,7 +19,7 @@ from .pseudopos import (PseudoPositioner, PseudoSingleInterface, SyncAxis,
                         SyncAxisOffsetMode)
 from .pv_positioner import PVPositionerIsClose
 from .signal import InternalSignal
-from .utils import get_status_float
+from .utils import doc_format_decorator, get_status_float
 
 logger = logging.getLogger(__name__)
 
@@ -191,8 +191,14 @@ class CCMConstantsMixin(Device):
         elif obj is self.gd:
             self._gd = value
 
+    @doc_format_decorator(
+        default_theta0_deg=default_theta0_deg,
+        default_dspacing=default_dspacing,
+        default_gr=default_gr,
+        default_gd=default_gd,
+    )
     def reset_calc_constant_defaults(self, confirm: bool = True):
-        f"""
+        """
         Put the default values into the ccm constants.
 
         This can be useful if values were reset due to autosave errors or if
