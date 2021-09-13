@@ -270,6 +270,8 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         self.energy.dspacing = self.dspacing
         self.energy.gr = self.gr
         self.energy.gd = self.gd
+        # Alias the position setter as well
+        self.energy.set_current_position = self.set_current_position
 
     @alio.sub_default
     def _update_intermediates(
@@ -366,6 +368,24 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         wavelength = theta_to_wavelength(theta, self._dspacing)
         energy = wavelength_to_energy(wavelength)
         return energy
+
+    def set_current_position(self, energy: float):
+        """
+        Adjust the offset to make input energy the current position.
+
+        This changes the value of the theta0 PV.
+        """
+        wavelength = energy_to_wavelength(energy)
+        theta_rad_calc = wavelength_to_theta(wavelength, self._dspacing)
+        theta_rad_no_offset = alio_to_theta(
+            self.alio.position,
+            theta0=0,
+            gr=self._gr,
+            gd=self._gd,
+        )
+        new_theta0_rad = theta_rad_calc - theta_rad_no_offset
+        new_theta0_deg = new_theta0_rad * 180 / np.pi
+        self.theta0_deg.put(new_theta0_deg)
 
 
 class CCMEnergyWithVernier(CCMEnergy):
