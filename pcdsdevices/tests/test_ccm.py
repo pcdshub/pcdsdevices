@@ -184,6 +184,15 @@ def test_vernier(fake_ccm):
 
 
 @pytest.mark.timeout(5)
+def test_set_current_position(fake_ccm):
+    logger.debug('test_set_current_position')
+    mot = fake_ccm.energy.energy
+    for energy in range(6, 14):
+        mot.set_current_position(energy)
+        assert np.isclose(mot.position, energy)
+
+
+@pytest.mark.timeout(5)
 def test_disconnected_ccm():
     ccm.CCM(alio_prefix='ALIO', theta2fine_prefix='THETA',
             theta2coarse_prefix='THTA', chi2_prefix='CHI',
