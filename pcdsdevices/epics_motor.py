@@ -307,6 +307,16 @@ Limit Switch: {switch_limits}
         finally:
             self.set_use_switch.put(0, wait=True)
 
+    @property
+    def egu(self) -> str:
+        """
+        Engineering units str if available, otherwise 'N/A'
+        """
+        if self.motor_egu.connected:
+            return self.motor_egu.get()
+        else:
+            return 'N/A'
+
 
 class PCDSMotorBase(EpicsMotorInterface):
     """
