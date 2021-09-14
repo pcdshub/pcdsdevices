@@ -1,3 +1,4 @@
+import enum
 import logging
 import time
 import typing
@@ -116,6 +117,19 @@ class CCMPico(EpicsMotorInterface):
                              value=value, **kwargs)
 
 
+class CCMConstantWarning(enum.IntEnum):
+    # No warning
+    NO_WARNING = 0
+    # Disconnected at start, still disconnected
+    ALWAYS_DISCONNECT = 1
+    # Got a good value, disconnected later
+    VALID_DISCONNECT = 2
+    # Got a bad value, disconnected later
+    INVALID_DISCONNECT = 3
+    # Connected with a bad value
+    INVALID_CONNECT = 4
+
+
 class CCMConstantsMixin(Device):
     """
     Mixin class that includes PVs that hold CCM constants.
@@ -157,6 +171,8 @@ class CCMConstantsMixin(Device):
             'Alio stage in mm',
     )
 
+    _enable_warn_constants: bool = True
+
     def __init__(self, prefix: str, *args, **kwargs):
         if 'XPP' in prefix:
             self._constants_prefix = 'XPP:CCM'
@@ -170,7 +186,8 @@ class CCMConstantsMixin(Device):
         self._gd: float = default_gd
         self._gr: float = default_gr
         self._initialized_signal_names = set()
-        self._last_constant_warning = 0
+        self._prev_warnings = [CCMConstantWarning.NO_WARNING] * 4
+        self._init_time = time.monotonic()
         super().__init__(prefix, *args, **kwargs)
 
     @theta0_deg.sub_value
@@ -317,11 +334,9 @@ class CCMConstantsMixin(Device):
         self.gr.put(default_gr)
         self.gd.put(default_gd)
 
-    def _warn_invalid_constants(self) -> None:
+    def warn_invalid_constants(self, only_new: bool = False) -> None:
         """
         Warn if we have invalid values for our calculation constants.
-
-        This will show warnings at most every 5 seconds.
 
         For values to be valid, the PVs need to be connected and all
         but theta0 must be nonzero. Theta0 should also not be zero,
@@ -342,54 +357,74 @@ class CCMConstantsMixin(Device):
         3. The constant PVs connect, but disconnect later
           - In this case, we should warn that the IOC died
           - We should continue using the last known good values
+
+        Parameters
+        ----------
+        only_new : bool, optional
+            If False, the default, always show us the warnings.
+            If True, do not show warnings if they have not changed.
         """
-        now = time.monotonic()
-        if now - self._last_constant_warning < 5:
-            # Don't warn too often to avoid spam
+        if not self._enable_warn_constants:
             return
+        if time.monotonic() - self._init_time < 10:
+            return
+
         # Check for connections
         sigs = (self.theta0_deg, self.dspacing, self.gr, self.gd)
         vals = (self._theta0_deg, self._dspacing, self._gr, self._gd)
         default_vals = (default_theta0_deg, default_dspacing,
                         default_gr, default_gd)
-        for sig, val, default in zip(sigs, vals, default_vals):
+        for num, (sig, val, default, old_warning) in enumerate(zip(
+            sigs, vals, default_vals, self._prev_warnings,
+        )):
+            new_warning = CCMConstantWarning.NO_WARNING
             if sig.connected:
-                # Show warning if value is bad
                 if sig is self.theta0_deg:
                     # theta0 has no bad values
-                    continue
+                    pass
                 elif not val:
-                    self.log.warning(
-                        f'Calculation constant {sig.name} has an '
-                        f'invalid value of {val}. Using the default value '
-                        f'{default} for calculations.'
-                    )
-            elif sig.name in self.initialized_signal_names:
-                # Show lost connection warning
+                    new_warning = CCMConstantWarning.INVALID_CONNECT
+            elif sig.name in self._initialized_signal_names:
                 if val or sig is self.theta0_deg:
+                    new_warning = CCMConstantWarning.VALID_DISCONNECT
+                else:
+                    new_warning = CCMConstantWarning.INVALID_DISCONNECT
+            else:
+                new_warning = CCMConstantWarning.ALWAYS_DISCONNECT
+
+            if new_warning != old_warning or not only_new:
+                if new_warning == CCMConstantWarning.ALWAYS_DISCONNECT:
+                    self.log.warning(
+                        f'Calculation constant {sig.name} never connected. '
+                        'The IOC is probably offline or misconfigured. '
+                        f'Using the default value {default} for '
+                        'calculations.'
+                    )
+                elif new_warning == CCMConstantWarning.VALID_DISCONNECT:
                     self.log.warning(
                         f'Calculation constant {sig.name} previously '
                         'connected, but is now disconnected. '
                         'The IOC must have gone down. '
                         f'Using the last known good value {val}.'
                     )
-                else:
+                elif new_warning == CCMConstantWarning.INVALID_DISCONNECT:
                     self.log.warning(
                         f'Calculation constant {sig.name} previously '
                         'connected, but is now disconnected. '
                         'The IOC must have gone down. '
-                        f'Never had a good value, using the default value '
+                        'Never had a good value, using the default value '
                         f'{default} for calculations.'
                     )
-            else:
-                # Show never connected warning
-                self.log.warning(
-                    f'Calculation constant {sig.name} never connected. '
-                    'The IOC is probably offline or misconfigured. '
-                    f'Using the default value {default} for '
-                    'calculations.'
-                )
-        self._last_constant_warning = now
+                elif new_warning == CCMConstantWarning.INVALID_CONNECT:
+                    self.log.warning(
+                        f'Calculation constant {sig.name} has an '
+                        f'invalid value of {val}. Using the default value '
+                        f'{default} for calculations. '
+                        'Consider calling reset_calc_constant_defaults to '
+                        'restore the default values to the constant PVs.'
+                    )
+
+            self._prev_warnings[num] = new_warning
 
 
 class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
@@ -456,7 +491,7 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         """
         if value is None:
             return
-        self._warn_invalid_constants()
+        self.warn_invalid_constants(only_new=True)
         theta = alio_to_theta(
             value,
             self.theta0_rad_val,
@@ -508,7 +543,7 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         alio : float
             The alio position in mm
         """
-        self._warn_invalid_constants()
+        self.warn_invalid_constants(only_new=True)
         wavelength = energy_to_wavelength(energy)
         theta = wavelength_to_theta(wavelength, self.dspacing_val)
         alio = theta_to_alio(
@@ -533,7 +568,7 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         energy : float
             The photon energy (color) in keV.
         """
-        self._warn_invalid_constants()
+        self.warn_invalid_constants(only_new=True)
         theta = alio_to_theta(
             alio,
             self.theta0_rad_val,
@@ -550,7 +585,7 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
 
         This changes the value of the theta0 PV.
         """
-        self._warn_invalid_constants()
+        self.warn_invalid_constants(only_new=True)
         wavelength = energy_to_wavelength(energy)
         theta_rad_calc = wavelength_to_theta(wavelength, self.dspacing_val)
         theta_rad_no_offset = alio_to_theta(
@@ -587,6 +622,9 @@ class CCMEnergyWithVernier(CCMEnergy):
     """
     vernier = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
                    doc='Requests ACR to move the Vernier.')
+
+    # These are duplicate warnings with main energy motor
+    _enable_warn_constants: bool = False
 
     def __init__(
         self,
