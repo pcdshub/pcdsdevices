@@ -376,15 +376,14 @@ class CCMConstantsMixin(Device):
         for num, (sig, val, default, old_warning) in enumerate(zip(
             sigs, vals, default_vals, self._prev_warnings,
         )):
-            new_warning = CCMConstantWarning.NO_WARNING
+            good_value = val or sig is self.theta0_deg
             if sig.connected:
-                if sig is self.theta0_deg:
-                    # theta0 has no bad values
-                    pass
-                elif not val:
+                if good_value:
+                    new_warning = CCMConstantWarning.NO_WARNING
+                else:
                     new_warning = CCMConstantWarning.INVALID_CONNECT
             elif sig.name in self._initialized_signal_names:
-                if val or sig is self.theta0_deg:
+                if good_value:
                     new_warning = CCMConstantWarning.VALID_DISCONNECT
                 else:
                     new_warning = CCMConstantWarning.INVALID_DISCONNECT
