@@ -181,7 +181,6 @@ class CCMConstantsMixin(Device):
         else:
             self._constants_prefix = 'TST:CCM'
         self._theta0_deg: float = default_theta0_deg
-        self._theta0: float = default_theta0
         self._dspacing: float = default_dspacing
         self._gd: float = default_gd
         self._gr: float = default_gr
