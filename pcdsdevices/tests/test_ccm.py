@@ -103,11 +103,11 @@ def test_ccm_calc(fake_ccm):
 
     theta_func = ccm.alio_to_theta(
         SAMPLE_ALIO,
-        calc._theta0,
-        calc._gr,
-        calc._gd,
+        calc.theta0_rad_val,
+        calc.gr_val,
+        calc.gd_val,
     )
-    wavelength_func = ccm.theta_to_wavelength(theta_func, calc._dspacing)
+    wavelength_func = ccm.theta_to_wavelength(theta_func, calc.dspacing_val)
     energy_func = ccm.wavelength_to_energy(wavelength_func)
     energy = calc.energy.position
     assert energy == energy_func
