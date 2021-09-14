@@ -1,4 +1,5 @@
 import logging
+import time
 import typing
 from collections import namedtuple
 
@@ -168,13 +169,20 @@ class CCMConstantsMixin(Device):
         self._dspacing: float = default_dspacing
         self._gd: float = default_gd
         self._gr: float = default_gr
+        self._initialized_signal_names = set()
+        self._last_constant_warning = 0
         super().__init__(prefix, *args, **kwargs)
 
     @theta0_deg.sub_value
     @dspacing.sub_value
     @gr.sub_value
     @gd.sub_value
-    def _update_constant(self, value: float, obj: EpicsSignal, **kwargs):
+    def _update_constant(
+        self,
+        value: float,
+        obj: EpicsSignal,
+        **kwargs
+    ) -> None:
         """
         Put PV updates to an attribute for the calculation.
 
@@ -183,13 +191,87 @@ class CCMConstantsMixin(Device):
         """
         if obj is self.theta0_deg:
             self._theta0_deg = value
-            self._theta0 = value * np.pi / 180
         elif obj is self.dspacing:
             self._dspacing = value
         elif obj is self.gr:
             self._gr = value
         elif obj is self.gd:
             self._gd = value
+        self._initialized_signal_names.add(obj.name)
+
+    @property
+    def theta0_deg_val(self) -> float:
+        """
+        The theta0 value currently used in calculations.
+
+        This is the reference angle for the first crystal in deg.
+
+        This will be the value from the PV if things are working properly,
+        otherwise it will fall back to the default value.
+        """
+        if self.theta0_deg.name in self._initialized_signal_names:
+            return self._theta0_deg
+        return default_theta0_deg
+
+    @property
+    def theta0_rad_val(self) -> float:
+        """
+        The theta0 value currently used in calculations.
+
+        This is the reference angle for the first crystal in rad.
+
+        This will be the value from the PV if things are working properly,
+        otherwise it will fall back to the default value.
+        """
+        return self.theta0_deg_val * np.pi / 180
+
+    @property
+    def dspacing_val(self) -> float:
+        """
+        The dspacing value currently used in calculations.
+
+        This is the crystal lattice spacing.
+
+        This will be the value from the PV if things are working properly,
+        otherwise it will fall back to the default value.
+        """
+        if (
+            self._dspacing
+            and self.dspacing.name in self._initialized_signal_names
+        ):
+            return self._dspacing
+        return default_dspacing
+
+    @property
+    def gr_val(self) -> float:
+        """
+        The gr value currently used in calculations.
+
+        This is the radius of the sapphire ball
+        connected to the Alio stage in mm.
+
+        This will be the value from the PV if things are working properly,
+        otherwise it will fall back to the default value.
+        """
+        if self._gr and self.gr.name in self._initialized_signal_names:
+            return self._gr
+        return default_gr
+
+    @property
+    def gd_val(self) -> float:
+        """
+        The gd value currently used in calculations.
+
+        This is the distance between the rotation axis and the
+        center of the sapphire sphere located on the
+        Alio stage in mm.
+
+        This will be the value from the PV if things are working properly,
+        otherwise it will fall back to the default value.
+        """
+        if self._gd and self.gd.name in self._initialized_signal_names:
+            return self._gd
+        return default_gd
 
     @doc_format_decorator(
         default_theta0_deg=default_theta0_deg,
@@ -197,7 +279,7 @@ class CCMConstantsMixin(Device):
         default_gr=default_gr,
         default_gd=default_gd,
     )
-    def reset_calc_constant_defaults(self, confirm: bool = True):
+    def reset_calc_constant_defaults(self, confirm: bool = True) -> None:
         """
         Put the default values into the ccm constants.
 
@@ -234,6 +316,80 @@ class CCMConstantsMixin(Device):
         self.dspacing.put(default_dspacing)
         self.gr.put(default_gr)
         self.gd.put(default_gd)
+
+    def _warn_invalid_constants(self) -> None:
+        """
+        Warn if we have invalid values for our calculation constants.
+
+        This will show warnings at most every 5 seconds.
+
+        For values to be valid, the PVs need to be connected and all
+        but theta0 must be nonzero. Theta0 should also not be zero,
+        but it doesn't break the math and someone could conceivably
+        set it to zero during debug.
+
+        If this isn't satisfied, we will show an appropriate warning
+        message when this method is called. The intention is for this
+        to pop up whenever we run the forward/inverse calculations.
+
+        For more detail, consider the following failure modes:
+        1. The constant PVs don't connect and never connect
+          - In this case, we must warn that the constants IOC is off
+          - We should use the default values in calculations
+        2. The constant PVs connect, but their values are zero
+          - In this case, we must warn that the constant values were lost
+          - We should use the default values in calculations
+        3. The constant PVs connect, but disconnect later
+          - In this case, we should warn that the IOC died
+          - We should continue using the last known good values
+        """
+        now = time.monotonic()
+        if now - self._last_constant_warning < 5:
+            # Don't warn too often to avoid spam
+            return
+        # Check for connections
+        sigs = (self.theta0_deg, self.dspacing, self.gr, self.gd)
+        vals = (self._theta0_deg, self._dspacing, self._gr, self._gd)
+        default_vals = (default_theta0_deg, default_dspacing,
+                        default_gr, default_gd)
+        for sig, val, default in zip(sigs, vals, default_vals):
+            if sig.connected:
+                # Show warning if value is bad
+                if sig is self.theta0_deg:
+                    # theta0 has no bad values
+                    continue
+                elif not val:
+                    self.log.warning(
+                        f'Calculation constant {sig.name} has an '
+                        f'invalid value of {val}. Using the default value '
+                        f'{default} for calculations.'
+                    )
+            elif sig.name in self.initialized_signal_names:
+                # Show lost connection warning
+                if val or sig is self.theta0_deg:
+                    self.log.warning(
+                        f'Calculation constant {sig.name} previously '
+                        'connected, but is now disconnected. '
+                        'The IOC must have gone down. '
+                        f'Using the last known good value {val}.'
+                    )
+                else:
+                    self.log.warning(
+                        f'Calculation constant {sig.name} previously '
+                        'connected, but is now disconnected. '
+                        'The IOC must have gone down. '
+                        f'Never had a good value, using the default value '
+                        f'{default} for calculations.'
+                    )
+            else:
+                # Show never connected warning
+                self.log.warning(
+                    f'Calculation constant {sig.name} never connected. '
+                    'The IOC is probably offline or misconfigured. '
+                    f'Using the default value {default} for '
+                    'calculations.'
+                )
+        self._last_constant_warning = now
 
 
 class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
@@ -300,8 +456,14 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         """
         if value is None:
             return
-        theta = alio_to_theta(value, self._theta0, self._gr, self._gd)
-        wavelength = theta_to_wavelength(theta, self._dspacing)
+        self._warn_invalid_constants()
+        theta = alio_to_theta(
+            value,
+            self.theta0_rad_val,
+            self.gr_val,
+            self.gd_val,
+        )
+        wavelength = theta_to_wavelength(theta, self.dspacing_val)
         self.theta_deg.put(theta * 180/np.pi, force=True)
         self.wavelength.put(wavelength, force=True)
 
@@ -346,13 +508,14 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         alio : float
             The alio position in mm
         """
+        self._warn_invalid_constants()
         wavelength = energy_to_wavelength(energy)
-        theta = wavelength_to_theta(wavelength, self._dspacing) * 180/np.pi
+        theta = wavelength_to_theta(wavelength, self.dspacing_val)
         alio = theta_to_alio(
-            theta * np.pi/180,
-            self._theta0,
-            self._gr,
-            self._gd,
+            theta,
+            self.theta0_rad_val,
+            self.gr_val,
+            self.gd_val,
         )
         return alio
 
@@ -370,24 +533,31 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         energy : float
             The photon energy (color) in keV.
         """
-        theta = alio_to_theta(alio, self._theta0, self._gr, self._gd)
-        wavelength = theta_to_wavelength(theta, self._dspacing)
+        self._warn_invalid_constants()
+        theta = alio_to_theta(
+            alio,
+            self.theta0_rad_val,
+            self.gr_val,
+            self.gd_val,
+        )
+        wavelength = theta_to_wavelength(theta, self.dspacing_val)
         energy = wavelength_to_energy(wavelength)
         return energy
 
-    def set_current_position(self, energy: float):
+    def set_current_position(self, energy: float) -> None:
         """
         Adjust the offset to make input energy the current position.
 
         This changes the value of the theta0 PV.
         """
+        self._warn_invalid_constants()
         wavelength = energy_to_wavelength(energy)
-        theta_rad_calc = wavelength_to_theta(wavelength, self._dspacing)
+        theta_rad_calc = wavelength_to_theta(wavelength, self.dspacing_val)
         theta_rad_no_offset = alio_to_theta(
             self.alio.position,
             theta0=0,
-            gr=self._gr,
-            gd=self._gd,
+            gr=self.gr_val,
+            gd=self.gd_val,
         )
         new_theta0_rad = theta_rad_calc - theta_rad_no_offset
         new_theta0_deg = new_theta0_rad * 180 / np.pi
