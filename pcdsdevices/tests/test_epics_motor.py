@@ -5,7 +5,7 @@ from bluesky import RunEngine
 from bluesky.plan_stubs import close_run, open_run, stage, unstage
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
-from ophyd.utils.epics_pvs import AlarmSeverity
+from ophyd.utils.epics_pvs import AlarmSeverity, AlarmStatus
 
 from pcdsdevices.epics_motor import (IMS, PMC100, BeckhoffAxis, EpicsMotor,
                                      EpicsMotorInterface, Motor,
@@ -383,22 +383,26 @@ def test_motion_error_filter(fake_epics_motor, caplog):
         mot.log.error('fake log error')
         return 2
 
+    # Initialize the alarm status/severity attributes
+    fake_epics_motor.user_readback.alarm_status = AlarmStatus.NO_ALARM
+    fake_epics_motor.user_readback.alarm_severity = AlarmSeverity.NO_ALARM
     # We expect alarm logs to be filtered outside of moves
     # Make sure the normal mechanisms work: all logs happen during our moves
     sim_do_move(fake_epics_motor)
     caplog.clear()
     count = generate_test_logs(fake_epics_motor)
-    assert len(caplog.records) == count
+    assert len(caplog.records) == count, "Did not see all the logs"
     # Make sure only the unfiltered logs happen between moves
     sim_done(fake_epics_motor)
     caplog.clear()
     generate_filtered_logs(fake_epics_motor)
     count = generate_unfiltered_logs(fake_epics_motor)
-    assert len(caplog.records) == count
+    assert len(caplog.records) == count, "Did not filter the logs correctly."
 
     # Now that the baseline works, examine the full codepaths
     # First, emulate a MAJOR alarm state
-    fake_epics_motor.user_readback.alarm_status = AlarmSeverity.MAJOR
+    fake_epics_motor.user_readback.alarm_status = AlarmStatus.STATE
+    fake_epics_motor.user_readback.alarm_severity = AlarmSeverity.MAJOR
     # Cause a move and check how many logs at end
     sim_do_move(fake_epics_motor)
     caplog.clear()
@@ -409,7 +413,7 @@ def test_motion_error_filter(fake_epics_motor, caplog):
     caplog.clear()
     sim_done(fake_epics_motor)
     filtered = len(caplog.records)
-    assert unfiltered > filtered
+    assert unfiltered > filtered, "No logs filtered in the observed move."
 
 
 @pytest.mark.parametrize("cls", [PCDSMotorBase, IMS, Newport, PMC100,
