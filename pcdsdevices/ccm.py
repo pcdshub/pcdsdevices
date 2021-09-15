@@ -1,9 +1,12 @@
+import enum
 import logging
+import time
 import typing
 from collections import namedtuple
 
 import numpy as np
 from ophyd.device import Component as Cpt
+from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.ophydobj import OphydObject
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
@@ -18,7 +21,7 @@ from .pseudopos import (PseudoPositioner, PseudoSingleInterface, SyncAxis,
                         SyncAxisOffsetMode)
 from .pv_positioner import PVPositionerIsClose
 from .signal import InternalSignal
-from .utils import get_status_float
+from .utils import doc_format_decorator, get_status_float
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +30,8 @@ si_111_dspacing = 3.1356011499587773
 si_511_dspacing = 1.0452003833195924
 
 # Defaults
-default_theta0 = 14.9792 * np.pi/180
+default_theta0_deg = 14.9792
+default_theta0 = default_theta0_deg * np.pi/180
 default_dspacing = si_111_dspacing
 default_gr = 3.175
 default_gd = 231.303
@@ -86,11 +90,13 @@ class CCMPico(EpicsMotorInterface):
     direction_of_travel = Cpt(Signal, kind='omitted',
                               doc='The direction the motor is moving.')
 
-    def _pos_changed(self,
-                     timestamp: typing.Optional[float] = None,
-                     old_value: typing.Optional[float] = None,
-                     value: typing.Optional[float] = None,
-                     **kwargs) -> None:
+    def _pos_changed(
+        self,
+        timestamp: typing.Optional[float] = None,
+        old_value: typing.Optional[float] = None,
+        value: typing.Optional[float] = None,
+        **kwargs
+    ) -> None:
         """
         Callback for when the readback position changes.
 
@@ -111,7 +117,387 @@ class CCMPico(EpicsMotorInterface):
                              value=value, **kwargs)
 
 
-class CCMEnergy(FltMvInterface, PseudoPositioner):
+class CCMConstantWarning(enum.IntEnum):
+    # No warning
+    NO_WARNING = 0
+    # Disconnected at start, still disconnected
+    ALWAYS_DISCONNECT = 1
+    # Got a good value, disconnected later
+    VALID_DISCONNECT = 2
+    # Got a bad value, disconnected later
+    INVALID_DISCONNECT = 3
+    # Connected with a bad value
+    INVALID_CONNECT = 4
+
+
+class CCMConstantsMixin(Device):
+    """
+    Mixin class that includes PVs that hold CCM constants.
+
+    This allows us to keep the CCM parameters synchronized between sessions
+    and between different devices in the same session.
+
+    Contains user PVs for theta0, dspacing, gr, and gd.
+    These are intended to be run from the user pv notepad IOCs and are
+    available in the most recent tags.
+
+    Prefix can be any of the prefixes from any of the CCM motors.
+    """
+    theta0_deg = FCpt(
+        EpicsSignal,
+        '{_constants_prefix}:THETA0',
+        kind='config',
+        doc='Reference angle for the first crystal in deg.',
+    )
+    dspacing = FCpt(
+        EpicsSignal,
+        '{_constants_prefix}:DSPACING',
+        kind='config',
+        doc='Crystal lattice spacing.',
+    )
+    gr = FCpt(
+        EpicsSignal,
+        '{_constants_prefix}:GR',
+        kind='config',
+        doc=(
+            'The radius of the sapphire ball '
+            'connected to the Alio stage in mm.'
+        ),
+    )
+    gd = FCpt(
+        EpicsSignal,
+        '{_constants_prefix}:GD',
+        kind='config',
+        doc=(
+            'Distance between the rotation axis and the '
+            'center of the sapphire sphere located on the '
+            'Alio stage in mm.'
+        ),
+    )
+
+    _enable_warn_constants: bool = True
+    _theta0_deg: float
+    _dspacing: float
+    _gd: float
+    _gr: float
+    _initialized_signal_names: set
+    _prev_warnings: list[CCMConstantWarning]
+    _init_time: float
+
+    def __init__(self, prefix: str, *args, **kwargs):
+        if 'XPP' in prefix:
+            self._constants_prefix = 'XPP:CCM'
+        elif 'XCS' in prefix:
+            self._constants_prefix = 'XCS:CCM'
+        else:
+            self._constants_prefix = 'TST:CCM'
+        self._theta0_deg = default_theta0_deg
+        self._dspacing = default_dspacing
+        self._gd = default_gd
+        self._gr = default_gr
+        self._initialized_signal_names = set()
+        self._prev_warnings = [CCMConstantWarning.NO_WARNING] * 4
+        self._init_time = time.monotonic()
+        super().__init__(prefix, *args, **kwargs)
+
+    @theta0_deg.sub_value
+    @dspacing.sub_value
+    @gr.sub_value
+    @gd.sub_value
+    def _update_constant(
+        self,
+        value: float,
+        obj: EpicsSignal,
+        **kwargs
+    ) -> None:
+        """
+        Put PV updates to an attribute for the calculation.
+
+        Calculations should never rely on network resources directly.
+        Instead, let us monitor and cache the values.
+        """
+        if obj is self.theta0_deg:
+            self._theta0_deg = value
+        elif obj is self.dspacing:
+            self._dspacing = value
+        elif obj is self.gr:
+            self._gr = value
+        elif obj is self.gd:
+            self._gd = value
+        self._initialized_signal_names.add(obj.name)
+
+    @property
+    def theta0_deg_val(self) -> float:
+        """
+        The theta0 value currently used in calculations.
+
+        This is the reference angle for the first crystal in deg.
+
+        This will be the value from the PV if things are working properly,
+        otherwise it will fall back to the default value.
+        """
+        if self.theta0_deg.name in self._initialized_signal_names:
+            return self._theta0_deg
+        return default_theta0_deg
+
+    @property
+    def theta0_rad_val(self) -> float:
+        """
+        The theta0 value currently used in calculations.
+
+        This is the reference angle for the first crystal in rad.
+
+        This will be the value from the PV if things are working properly,
+        otherwise it will fall back to the default value.
+        """
+        return self.theta0_deg_val * np.pi / 180
+
+    @property
+    def dspacing_val(self) -> float:
+        """
+        The dspacing value currently used in calculations.
+
+        This is the crystal lattice spacing.
+
+        This will be the value from the PV if things are working properly,
+        otherwise it will fall back to the default value.
+
+        This is necessary because a value of 0 is nonphysical and in the case
+        of a disconnected value the show must go on.
+        """
+        if (
+            self._dspacing
+            and self.dspacing.name in self._initialized_signal_names
+        ):
+            return self._dspacing
+        return default_dspacing
+
+    @property
+    def gr_val(self) -> float:
+        """
+        The gr value currently used in calculations.
+
+        This is the radius of the sapphire ball
+        connected to the Alio stage in mm.
+
+        This will be the value from the PV if things are working properly,
+        otherwise it will fall back to the default value.
+
+        This is necessary because a value of 0 is nonphysical and in the case
+        of a disconnected value the show must go on.
+        """
+        if self._gr and self.gr.name in self._initialized_signal_names:
+            return self._gr
+        return default_gr
+
+    @property
+    def gd_val(self) -> float:
+        """
+        The gd value currently used in calculations.
+
+        This is the distance between the rotation axis and the
+        center of the sapphire sphere located on the
+        Alio stage in mm.
+
+        This will be the value from the PV if things are working properly,
+        otherwise it will fall back to the default value.
+
+        This is necessary because a value of 0 is nonphysical and in the case
+        of a disconnected value the show must go on.
+        """
+        if self._gd and self.gd.name in self._initialized_signal_names:
+            return self._gd
+        return default_gd
+
+    @doc_format_decorator(
+        default_theta0_deg=default_theta0_deg,
+        default_dspacing=default_dspacing,
+        default_gr=default_gr,
+        default_gd=default_gd,
+    )
+    def reset_calc_constant_defaults(self, confirm: bool = True) -> None:
+        """
+        Put the default values into the ccm constants.
+
+        This can be useful if values were reset due to autosave errors or if
+        they've otherwise accidentally been set to crazy values.
+
+        This relies on the default values in ccm.py being set up reasonably:
+        theta0_deg = {default_theta0_deg}
+        dspacing = {default_dspacing}
+        gr = {default_gr}
+        gd = {default_gd}
+
+        Parameters
+        ----------
+        confirm : bool, optional
+            If True, we'll ask for confirmation from the user before doing
+            the reset. This is because an accidental reset can cost some
+            time as we scramble to figure out what the values should be
+            restored to.
+        """
+        if confirm:
+            response = input(
+                'Are you sure you want to reset the CCM constants? (y/n)\n'
+                f'theta0_deg = {default_theta0_deg}\n'
+                f'dspacing = {default_dspacing}\n'
+                f'gr = {default_gr}\n'
+                f'gd = {default_gd}\n'
+            )
+            if response.lower() != 'y':
+                self.log.info('Aborting CCM reset_defaults')
+                return
+        self.log.info('Resetting to default CCM constants')
+        self.theta0_deg.put(default_theta0_deg)
+        self.dspacing.put(default_dspacing)
+        self.gr.put(default_gr)
+        self.gd.put(default_gd)
+
+    def warn_invalid_constants(self, only_new: bool = False) -> None:
+        """
+        Warn if we have invalid values for our calculation constants.
+
+        The motivation here is twofold:
+        1. It should be easy for the user to know what is wrong and
+           why. The calculations should not be opaque.
+        2. The user should still be able to do "something" if there is
+           an issue here.
+
+        For values to be valid, the PVs need to be connected and all
+        but theta0 must be nonzero. Theta0 should also not be zero,
+        but it doesn't break the math and someone could conceivably
+        set it to zero during debug.
+
+        If this isn't satisfied, we will show an appropriate warning
+        message when this method is called. The intention is for this
+        to pop up whenever we run the forward/inverse calculations.
+
+        For more detail, consider the following failure modes:
+        1. The constant PVs don't connect and never connect
+          - In this case, we must warn that the constants IOC is off
+          - We should use the default values in calculations
+        2. The constant PVs connect, but their values are zero
+          - In this case, we must warn that the constant values were lost
+          - We should use the default values in calculations
+        3. The constant PVs connect, but disconnect later
+          - In this case, we should warn that the IOC died
+          - We should continue using the last known good values
+
+        Parameters
+        ----------
+        only_new : bool, optional
+            If False, the default, always show us the warnings.
+            If True, do not show warnings if they have not changed.
+        """
+        if not self._enable_warn_constants:
+            return
+        if time.monotonic() - self._init_time < 10:
+            return
+        sigs = (self.theta0_deg, self.dspacing, self.gr, self.gd)
+        vals = (self._theta0_deg, self._dspacing, self._gr, self._gd)
+        default_vals = (default_theta0_deg, default_dspacing,
+                        default_gr, default_gd)
+        for num, (sig, val, default, old_warning) in enumerate(zip(
+            sigs, vals, default_vals, self._prev_warnings,
+        )):
+            new_warning = self._check_valid_constant(sig, val)
+            if new_warning != old_warning or not only_new:
+                self._show_constant_warning(new_warning, sig, val, default)
+            self._prev_warnings[num] = new_warning
+
+    def _check_valid_constant(
+        self,
+        sig: EpicsSignal,
+        val: float,
+    ) -> CCMConstantWarning:
+        """
+        Return the CCMConstantWarning state for a particular signal.
+
+        This is used internally in warn_invalid_constants.
+
+        Parameters
+        ----------
+        sig : EpicsSignal
+            The signal to check for.
+        val : float
+            The most recent cached value from that signal.
+
+        Returns
+        -------
+        warn : CCMConstantWarning
+            One of the enum states that represents our constant warning state.
+            Note that one of the states is NO_WARNING- we don't necessarily
+            have a problem.
+        """
+        good_value = val or sig is self.theta0_deg
+        if sig.connected:
+            if good_value:
+                return CCMConstantWarning.NO_WARNING
+            else:
+                return CCMConstantWarning.INVALID_CONNECT
+        elif sig.name in self._initialized_signal_names:
+            if good_value:
+                return CCMConstantWarning.VALID_DISCONNECT
+            else:
+                return CCMConstantWarning.INVALID_DISCONNECT
+        return CCMConstantWarning.ALWAYS_DISCONNECT
+
+    def _show_constant_warning(
+        self,
+        warning: CCMConstantWarning,
+        sig: EpicsSignal,
+        val: float,
+        default: float
+    ) -> None:
+        """
+        Log an appropriate warning to the object logger.
+
+        This is used internally in warn_invalid_constants.
+
+        Parameters
+        ----------
+        warning : CCMConstantWarning
+            The appropriate warning category.
+        sig : EpicsSignal
+            The signal we're warning about, for use in the message.
+        val : float
+            The cached signal value, for use in the message.
+        default : float
+            The default constant value, for use in the message.
+        """
+        if warning == CCMConstantWarning.ALWAYS_DISCONNECT:
+            self.log.warning(
+                f'Calculation constant {sig.name} never connected. '
+                'The IOC is probably offline or misconfigured. '
+                f'Using the default value {default} for '
+                'calculations.'
+            )
+        elif warning == CCMConstantWarning.VALID_DISCONNECT:
+            self.log.warning(
+                f'Calculation constant {sig.name} previously '
+                'connected, but is now disconnected. '
+                'The IOC must have gone down. '
+                f'Using the last known good value {val}.'
+            )
+        elif warning == CCMConstantWarning.INVALID_DISCONNECT:
+            self.log.warning(
+                f'Calculation constant {sig.name} previously '
+                'connected, but is now disconnected. '
+                'The IOC must have gone down. '
+                'Never had a good value, using the default value '
+                f'{default} for calculations.'
+            )
+        elif warning == CCMConstantWarning.INVALID_CONNECT:
+            self.log.warning(
+                f'Calculation constant {sig.name} has an '
+                f'invalid value of {val}. Using the default value '
+                f'{default} for calculations. '
+                'Consider calling reset_calc_constant_defaults to '
+                'restore the default values to the constant PVs.'
+            )
+
+
+class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
     """
     CCM energy motor.
 
@@ -124,27 +510,19 @@ class CCMEnergy(FltMvInterface, PseudoPositioner):
     ----------
     prefix : str
         The PV prefix of the Alio motor, e.g. XPP:MON:MPZ:07A
-    theta0 : float, optional
-        Starting value for the theta0 calculation constant.
-        This is the scattering angle offset of the first crystal.
-    dspacing : float, optional
-        Starting value for the dspacing calculation constant.
-        This is the lattice spacing of the crystal.
-    gr : float, optional
-        Starting value for the gr calculation constant.
-        This is the radius of the sapphire ball connected to the
-        Alio stage in mm.
-    gd : float, optional
-        Starting value for the gr calculation constant.
-        This is the distance between the rotation axis and the
-        center of the sapphire sphere located on the Alio stage
-        in mm.
     """
     # Pseudo motor and real motor
-    energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted',
-                 limits=(4, 25), verbose_name='CCM Photon Energy',
-                 doc='PseudoSingle that moves the calculated CCM '
-                     'selected energy in keV.')
+    energy = Cpt(
+        PseudoSingleInterface,
+        egu='keV',
+        kind='hinted',
+        limits=(4, 25),
+        verbose_name='CCM Photon Energy',
+        doc=(
+            'PseudoSingle that moves the calculated CCM '
+            'selected energy in keV.'
+        ),
+    )
     alio = Cpt(CCMAlio, '', kind='normal',
                doc='The motor that rotates the CCM crystal.')
 
@@ -153,28 +531,33 @@ class CCMEnergy(FltMvInterface, PseudoPositioner):
                     doc='The crystal angle in degrees.')
     wavelength = Cpt(InternalSignal, kind='normal',
                      doc='The wavelength picked by the CCM in Angstroms.')
-    resolution = Cpt(InternalSignal, kind='normal',
-                     doc='A measure of how finely we can control the ccm '
-                         'output at this position in eV/um.')
+    resolution = Cpt(
+        InternalSignal,
+        kind='normal',
+        doc=(
+            'A measure of how finely we can control the ccm '
+            'output at this position in eV/um.'
+        ),
+    )
 
     tab_component_names = True
 
-    def __init__(self, prefix: str,
-                 theta0: float = default_theta0,
-                 dspacing: float = default_dspacing,
-                 gr: float = default_gr,
-                 gd: float = default_gd,
-                 **kwargs):
-        self.theta0 = theta0
-        self.dspacing = dspacing
-        self.gr = gr
-        self.gd = gd
-        super().__init__(prefix, auto_target=False, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Alias the constants signals onto the main energy pseudomotor
+        self.energy.theta0_deg = self.theta0_deg
+        self.energy.dspacing = self.dspacing
+        self.energy.gr = self.gr
+        self.energy.gd = self.gd
+        # Alias the position setter as well
+        self.energy.set_current_position = self.set_current_position
 
     @alio.sub_default
-    def _update_intermediates(self,
-                              value: typing.Optional[float] = None,
-                              **kwargs) -> None:
+    def _update_intermediates(
+        self,
+        value: typing.Optional[float] = None,
+        **kwargs
+    ) -> None:
         """
         Updates the calculation intermediates when the alio position updates.
 
@@ -190,8 +573,14 @@ class CCMEnergy(FltMvInterface, PseudoPositioner):
         """
         if value is None:
             return
-        theta = alio_to_theta(value, self.theta0, self.gr, self.gd)
-        wavelength = theta_to_wavelength(theta, self.dspacing)
+        self.warn_invalid_constants(only_new=True)
+        theta = alio_to_theta(
+            value,
+            self.theta0_rad_val,
+            self.gr_val,
+            self.gd_val,
+        )
+        wavelength = theta_to_wavelength(theta, self.dspacing_val)
         self.theta_deg.put(theta * 180/np.pi, force=True)
         self.wavelength.put(wavelength, force=True)
 
@@ -236,9 +625,15 @@ class CCMEnergy(FltMvInterface, PseudoPositioner):
         alio : float
             The alio position in mm
         """
+        self.warn_invalid_constants(only_new=True)
         wavelength = energy_to_wavelength(energy)
-        theta = wavelength_to_theta(wavelength, self.dspacing) * 180/np.pi
-        alio = theta_to_alio(theta * np.pi/180, self.theta0, self.gr, self.gd)
+        theta = wavelength_to_theta(wavelength, self.dspacing_val)
+        alio = theta_to_alio(
+            theta,
+            self.theta0_rad_val,
+            self.gr_val,
+            self.gd_val,
+        )
         return alio
 
     def alio_to_energy(self, alio: float) -> float:
@@ -255,10 +650,35 @@ class CCMEnergy(FltMvInterface, PseudoPositioner):
         energy : float
             The photon energy (color) in keV.
         """
-        theta = alio_to_theta(alio, self.theta0, self.gr, self.gd)
-        wavelength = theta_to_wavelength(theta, self.dspacing)
+        self.warn_invalid_constants(only_new=True)
+        theta = alio_to_theta(
+            alio,
+            self.theta0_rad_val,
+            self.gr_val,
+            self.gd_val,
+        )
+        wavelength = theta_to_wavelength(theta, self.dspacing_val)
         energy = wavelength_to_energy(wavelength)
         return energy
+
+    def set_current_position(self, energy: float) -> None:
+        """
+        Adjust the offset to make input energy the current position.
+
+        This changes the value of the theta0 PV.
+        """
+        self.warn_invalid_constants(only_new=True)
+        wavelength = energy_to_wavelength(energy)
+        theta_rad_calc = wavelength_to_theta(wavelength, self.dspacing_val)
+        theta_rad_no_offset = alio_to_theta(
+            self.alio.position,
+            theta0=0,
+            gr=self.gr_val,
+            gd=self.gd_val,
+        )
+        new_theta0_rad = theta_rad_calc - theta_rad_no_offset
+        new_theta0_deg = new_theta0_rad * 180 / np.pi
+        self.theta0_deg.put(new_theta0_deg)
 
 
 class CCMEnergyWithVernier(CCMEnergy):
@@ -281,29 +701,20 @@ class CCMEnergyWithVernier(CCMEnergy):
         The hutch we're in. This informs us as to which vernier
         PVs to write to. If omitted, we can guess this from the
         prefix.
-    theta0 : float, optional
-        Starting value for the theta0 calculation constant.
-        This is the scattering angle offset of the first crystal.
-    dspacing : float, optional
-        Starting value for the dspacing calculation constant.
-        This is the lattice spacing of the crystal.
-    gr : float, optional
-        Starting value for the gr calculation constant.
-        This is the radius of the sapphire ball connected to the
-        Alio stage in mm.
-    gd : float, optional
-        Starting value for the gr calculation constant.
-        This is the distance between the rotation axis and the
-        center of the sapphire sphere located on the Alio stage
-        in mm.
     """
     vernier = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
                    doc='Requests ACR to move the Vernier.')
 
-    def __init__(self,
-                 prefix: str,
-                 hutch: typing.Optional[str] = None,
-                 **kwargs):
+    # These are duplicate warnings with main energy motor
+    _enable_warn_constants: bool = False
+    hutch: str
+
+    def __init__(
+        self,
+        prefix: str,
+        hutch: typing.Optional[str] = None,
+        **kwargs
+    ):
         # Put some effort into filling this automatically
         # CCM exists only in two hutches
         if hutch is not None:
@@ -370,9 +781,11 @@ class CCMX(SyncAxis):
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
 
-    def __init__(self,
-                 prefix: typing.Optional[str] = None,
-                 **kwargs):
+    def __init__(
+        self,
+        prefix: typing.Optional[str] = None,
+        **kwargs
+    ):
         UCpt.collect_prefixes(self, kwargs)
         prefix = prefix or self.unrelated_prefixes['down_prefix']
         super().__init__(prefix, **kwargs)
@@ -410,15 +823,17 @@ class CCMY(SyncAxis):
     offset_mode = SyncAxisOffsetMode.STATIC_FIXED
     tab_component_names = True
 
-    def __init__(self,
-                 prefix: typing.Optional[str] = None,
-                 **kwargs):
+    def __init__(
+        self,
+        prefix: typing.Optional[str] = None,
+        **kwargs
+    ):
         UCpt.collect_prefixes(self, kwargs)
         prefix = prefix or self.unrelated_prefixes['down_prefix']
         super().__init__(prefix, **kwargs)
 
 
-class CCM(BaseInterface, GroupDevice, LightpathMixin):
+class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
     """
     The full CCM assembly.
 
@@ -436,20 +851,6 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
         The x position to consider as "inserted" into the beam.
     out_pos : float, required keyword
         The x position to consider as "removed" from the beam.
-    theta0 : float, optional
-        Starting value for the theta0 calculation constant.
-        This is the scattering angle offset of the first crystal.
-    dspacing : float, optional
-        Starting value for the dspacing calculation constant.
-        This is the lattice spacing of the crystal.
-    gr : float, optional
-        Starting value for the gr calculation constant.
-        This is the radius of the sapphire ball connected to the
-        Alio stage in mm.
-    gd : float, optional
-        Starting value for the gr calculation constant.
-        This is the distance between the rotation axis and the
-        center of the sapphire sphere located on the Alio stage.
     alio_prefix : str, required keyword
         The PV prefix of the Alio motor, e.g. XPP:MON:MPZ:07A
     theta2fine_prefix : str, required keyword
@@ -472,25 +873,45 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
     y_up_south_prefix : str, required keyword
         The prefix for the south upstream ccm y translation motor (y3).
     """
-    energy = Cpt(CCMEnergy, '', kind='hinted',
-                 doc='PseudoPositioner that moves the alio in '
-                     'terms of the calculated CCM energy.')
-    energy_with_vernier = Cpt(CCMEnergyWithVernier, '', kind='normal',
-                              doc='PsuedoPositioner that moves the alio in '
-                                  'terms of the calculated CCM energy while '
-                                  'also requesting a vernier move.')
+    energy = Cpt(
+        CCMEnergy, '', kind='hinted',
+        doc=(
+            'PseudoPositioner that moves the alio in '
+            'terms of the calculated CCM energy.'
+        ),
+    )
+    energy_with_vernier = Cpt(
+        CCMEnergyWithVernier, '', kind='normal',
+        doc=(
+            'PsuedoPositioner that moves the alio in '
+            'terms of the calculated CCM energy while '
+            'also requesting a vernier move.'
+        ),
+    )
 
     alio = UCpt(CCMAlio, kind='normal',
                 doc='The motor that rotates the CCM crystal.')
-    theta2fine = UCpt(CCMMotor, atol=0.01, kind='normal',
-                      doc='The motor that controls the fine adjustment '
-                          'of the of the second crystal theta angle.')
-    theta2coarse = UCpt(CCMPico, kind='normal',
-                        doc='The motor that controls the coarse adjustment '
-                            'of the of the second crystal theta angle.')
-    chi2 = UCpt(CCMPico, kind='normal',
-                doc='The motor that controls the adjustment of the'
-                    'second crystal chi angle.')
+    theta2fine = UCpt(
+        CCMMotor, atol=0.01, kind='normal',
+        doc=(
+            'The motor that controls the fine adjustment '
+            'of the of the second crystal theta angle.'
+        ),
+    )
+    theta2coarse = UCpt(
+        CCMPico, kind='normal',
+        doc=(
+            'The motor that controls the coarse adjustment '
+            'of the of the second crystal theta angle.'
+        ),
+    )
+    chi2 = UCpt(
+        CCMPico, kind='normal',
+        doc=(
+            'The motor that controls the adjustment of the'
+            'second crystal chi angle.'
+        ),
+    )
     x = UCpt(CCMX, add_prefix=[], kind='normal',
              doc='Combined motion of the CCM X motors.')
     y = UCpt(CCMY, add_prefix=[], kind='normal',
@@ -503,24 +924,22 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
                      'home', 'kill', 'status',
                      'insert', 'remove', 'inserted', 'removed']
 
-    def __init__(self, *,
-                 prefix: typing.Optional[str] = None,
-                 in_pos: float,
-                 out_pos: float,
-                 theta0: float = default_theta0,
-                 dspacing: float = default_dspacing,
-                 gr: float = default_gr,
-                 gd: float = default_gd,
-                 **kwargs):
+    _in_pos: float
+    _out_pos: float
+
+    def __init__(
+        self,
+        *,
+        prefix: typing.Optional[str] = None,
+        in_pos: float,
+        out_pos: float,
+        **kwargs
+    ):
         UCpt.collect_prefixes(self, kwargs)
         self._in_pos = in_pos
         self._out_pos = out_pos
         prefix = prefix or self.unrelated_prefixes['alio_prefix']
         super().__init__(prefix, **kwargs)
-        self.theta0 = theta0
-        self.dspacing = dspacing
-        self.gr = gr
-        self.gd = gd
 
         # Aliases: defined by the scientists
         self.x1 = self.x.down
@@ -575,72 +994,10 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
         text += f'x @ (mm): {xavg} [x1,x2={x_down},{x_up}]\n'
         return text
 
-    @property
-    def theta0(self) -> float:
-        """
-        The calculation constant theta0 for the alio <-> energy calc.
-
-        This is the scattering angle offset of the first crystal.
-        """
-        return self._theta0
-
-    @theta0.setter
-    def theta0(self, value: float):
-        self.energy.theta0 = value
-        self.energy_with_vernier.theta0 = value
-        self._theta0 = value
-
-    @property
-    def dspacing(self) -> float:
-        """
-        The calculation constant dspacing for the alio <-> energy calc.
-
-        This is the lattice spacing of the crystal.
-        """
-        return self._dspacing
-
-    @dspacing.setter
-    def dspacing(self, value: float):
-        self.energy.dspacing = value
-        self.energy_with_vernier.dspacing = value
-        self._dspacing = value
-
-    @property
-    def gr(self) -> float:
-        """
-        The calculation constant gr for the alio <-> energy calc.
-
-        This is the radius of the sapphire ball connected to the
-        Alio stage in mm.
-        """
-        return self._gr
-
-    @gr.setter
-    def gr(self, value: float):
-        self.energy.gr = value
-        self.energy_with_vernier.gr = value
-        self._gr = value
-
-    @property
-    def gd(self) -> float:
-        """
-        The calculation constant gd for the alio <-> energy calc.
-
-        This is the distance between the rotation axis and the
-        center of the sapphire sphere located on the Alio stage.
-        """
-        return self._gd
-
-    @gd.setter
-    def gd(self, value: float):
-        self.energy.gd = value
-        self.energy_with_vernier.gd = value
-        self._gd = value
-
     def _set_lightpath_states(
-            self,
-            lightpath_values: dict[OphydObject, dict[str, typing.Any]],
-            ) -> None:
+        self,
+        lightpath_values: dict[OphydObject, dict[str, typing.Any]],
+    ) -> None:
         """
         Update the fields used by the lightpath to determine in/out.
 
@@ -693,7 +1050,7 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin):
 
 
 # Calculations between alio position and energy, with all intermediates.
-def theta_to_alio(theta, theta0, gr, gd):
+def theta_to_alio(theta: float, theta0: float, gr: float, gd: float) -> float:
     """
     Converts theta angle (rad) to alio position (mm).
 
@@ -716,7 +1073,7 @@ def theta_to_alio(theta, theta0, gr, gd):
     return gr * (1 / np.cos(t_rad) - 1) + gd * np.tan(t_rad)
 
 
-def alio_to_theta(alio, theta0, gr, gd):
+def alio_to_theta(alio: float, theta0: float, gr: float, gd: float) -> float:
     """
     Converts alio position (mm) to theta angle (rad).
 
@@ -729,21 +1086,21 @@ def alio_to_theta(alio, theta0, gr, gd):
      )
 
 
-def wavelength_to_theta(wavelength, dspacing):
+def wavelength_to_theta(wavelength: float, dspacing: float) -> float:
     """Converts wavelength (A) to theta angle (rad)."""
     return np.arcsin(wavelength/2/dspacing)
 
 
-def theta_to_wavelength(theta, dspacing):
+def theta_to_wavelength(theta: float, dspacing: float) -> float:
     """Converts theta angle (rad) to wavelength (A)."""
     return 2*dspacing*np.sin(theta)
 
 
-def energy_to_wavelength(energy):
+def energy_to_wavelength(energy: float) -> float:
     """Converts photon energy (keV) to wavelength (A)."""
     return 12.39842/energy
 
 
-def wavelength_to_energy(wavelength):
+def wavelength_to_energy(wavelength: float) -> float:
     """Converts wavelength (A) to photon energy (keV)."""
     return 12.39842/wavelength
