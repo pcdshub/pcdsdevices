@@ -243,12 +243,13 @@ def test_show_constant_warning(fake_ccm, caplog):
         ccm.CCMConstantWarning.INVALID_CONNECT,
     ):
         caplog.clear()
-        fake_ccm._show_constant_warning(
-            warning,
-            fake_ccm.dspacing,
-            0.111111,
-            0.222222,
-        )
+        with caplog.at_level(logging.WARNING):
+            fake_ccm._show_constant_warning(
+                warning,
+                fake_ccm.dspacing,
+                0.111111,
+                0.222222,
+            )
         if warning == ccm.CCMConstantWarning.NO_WARNING:
             assert len(caplog.records) == 0
         else:
@@ -266,21 +267,22 @@ def test_warn_invalid_constants(fake_ccm, caplog):
     fake_ccm.gd.put(0)
     # We expect three warnings from the fake PVs that start at 0
     caplog.clear()
-    fake_ccm.warn_invalid_constants(only_new=False)
-    assert len(caplog.records) == 3
-    # We expect the warnings to not repeat
-    caplog.clear()
-    fake_ccm.warn_invalid_constants(only_new=True)
-    assert len(caplog.records) == 0
-    # Unless we ask them to
-    caplog.clear()
-    fake_ccm.warn_invalid_constants(only_new=False)
-    assert len(caplog.records) == 3
-    # Let's fix the issue and make sure no warnings are shown
-    fake_ccm.reset_calc_constant_defaults(confirm=False)
-    caplog.clear()
-    fake_ccm.warn_invalid_constants(only_new=False)
-    assert len(caplog.records) == 0
+    with caplog.at_level(logging.WARNING):
+        fake_ccm.warn_invalid_constants(only_new=False)
+        assert len(caplog.records) == 3
+        # We expect the warnings to not repeat
+        caplog.clear()
+        fake_ccm.warn_invalid_constants(only_new=True)
+        assert len(caplog.records) == 0
+        # Unless we ask them to
+        caplog.clear()
+        fake_ccm.warn_invalid_constants(only_new=False)
+        assert len(caplog.records) == 3
+        # Let's fix the issue and make sure no warnings are shown
+        fake_ccm.reset_calc_constant_defaults(confirm=False)
+        caplog.clear()
+        fake_ccm.warn_invalid_constants(only_new=False)
+        assert len(caplog.records) == 0
 
 
 @pytest.mark.timeout(5)
