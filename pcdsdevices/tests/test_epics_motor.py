@@ -45,12 +45,12 @@ def motor_setup(motor):
         motor.reinit_command.sim_put(0)
 
 
-def fake_motor(cls):
+def fake_motor(cls, name='test_motor'):
     """
     Given a real class, lets get a fake motor
     """
     FakeCls = fake_class_setup(cls)
-    motor = FakeCls('TST:MTR', name='test_motor')
+    motor = FakeCls('TST:MTR', name=name)
     motor_setup(motor)
     return motor
 
@@ -65,7 +65,7 @@ def fake_epics_motor(request):
     """
     Test EpicsMotorInterface and subclasses
     """
-    return fake_motor(request.param)
+    return fake_motor(request.param, name=f'mot_{request.node.name}')
 
 
 @pytest.fixture(scope='function',
@@ -74,23 +74,23 @@ def fake_pcds_motor(request):
     """
     Test PCDSMotorBase and subclasses
     """
-    return fake_motor(request.param)
+    return fake_motor(request.param, name=f'mot_{request.node.name}')
 
 
 @pytest.fixture(scope='function')
-def fake_ims():
+def fake_ims(request):
     """
     Test IMS-specific overrides
     """
-    return fake_motor(IMS)
+    return fake_motor(IMS, name=f'mot_{request.node.name}')
 
 
 @pytest.fixture(scope='function')
-def fake_beckhoff():
+def fake_beckhoff(request):
     """
     Test Beckhoff-specific overrides
     """
-    return fake_motor(BeckhoffAxis)
+    return fake_motor(BeckhoffAxis, name=f'mot_{request.node.name}')
 
 
 @pytest.fixture(scope='function')
