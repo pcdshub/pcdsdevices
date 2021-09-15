@@ -5,6 +5,7 @@ import logging
 import os
 import shutil
 from types import SimpleNamespace
+from typing import Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -105,7 +106,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         self.motor_egu.subscribe(self._cache_egu)
         self._install_motion_error_filter()
 
-    def move(self, position, wait=True, **kwargs):
+    def move(self, position: float, wait: bool = True, **kwargs) -> MoveStatus:
         self._moved_in_session = True
         return super().move(position, wait=wait, **kwargs)
 
@@ -336,7 +337,7 @@ Limit Switch: {switch_limits}
         """
         return self._egu
 
-    def _cache_egu(self, value: str, **kwargs):
+    def _cache_egu(self, value: str, **kwargs) -> None:
         """
         Cache the value of EGU for later use in the egu property.
         """
@@ -376,7 +377,7 @@ Limit Switch: {switch_limits}
         """
         return self._moved_in_session or ' alarm ' not in record.msg
 
-    def _install_motion_error_filter(self):
+    def _install_motion_error_filter(self) -> None:
         """
         Applies the class _motion_error_filter to self.log if needed
         Adds our _instance_error_filter to the filter registry
@@ -387,7 +388,7 @@ Limit Switch: {switch_limits}
         self._reset_moved_in_session()
         self._motion_error_log_filters[self.name] = self._instance_error_filter
 
-    def _done_moving(self, value=None, **kwargs):
+    def _done_moving(self, value: Optional[int] = None, **kwargs) -> None:
         """
         Override _done_moving to always reset our _moved_in_session attribute.
 
@@ -399,7 +400,7 @@ Limit Switch: {switch_limits}
         if value:
             self._reset_moved_in_session()
 
-    def _reset_moved_in_session(self):
+    def _reset_moved_in_session(self) -> None:
         """
         Mark that a move have not yet been requested in this session.
         """
