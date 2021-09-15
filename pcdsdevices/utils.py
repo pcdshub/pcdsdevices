@@ -341,3 +341,18 @@ def combine_status_info(obj, status_info, attrs, separator='\n= {attr} ='):
         lines.append(child.format_status_info(status_info[attr]))
 
     return '\n'.join(lines)
+
+
+def doc_format_decorator(**doc_fmts):
+    """
+    Decorator for substituting values into a docstring.
+
+    This is useful for cases where we want to include module
+    constants in docstrings but we want the docstring to
+    update automatically when we decide to change the
+    constant.
+    """
+    def inner_decorator(func):
+        func.__doc__ = func.__doc__.format(**doc_fmts)
+        return func
+    return inner_decorator

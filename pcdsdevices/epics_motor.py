@@ -96,9 +96,12 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     # Registry of log filters by device name
     _motion_error_log_filters: dict[str, filter] = {}
+    _egu: str
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self._egu = ''
+        self.motor_egu.subscribe(self._cache_egu)
         self.subscribe(
             self._reset_moved_in_session,
             event_type=self.SUB_DONE,
@@ -326,6 +329,21 @@ Limit Switch: {switch_limits}
             self.user_setpoint.put(pos, wait=True, force=True)
         finally:
             self.set_use_switch.put(0, wait=True)
+
+    @property
+    def egu(self) -> str:
+        """
+        Engineering units str if available, otherwise ''
+
+        Use the monitored/cached value rather than checking EPICS.
+        """
+        return self._egu
+
+    def _cache_egu(self, value: str, **kwargs):
+        """
+        Cache the value of EGU for later use in the egu property.
+        """
+        self._egu = value
 
     @classmethod
     def _motion_error_filter(cls, record: logging.LogRecord) -> bool:
