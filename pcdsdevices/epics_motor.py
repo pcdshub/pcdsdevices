@@ -89,6 +89,13 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     EpicsMotor.low_limit_travel.kind = Kind.config
     EpicsMotor.direction_of_travel.kind = Kind.normal
 
+    _egu: str
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._egu = ''
+        self.motor_egu.subscribe(self._cache_egu)
+
     def format_status_info(self, status_info):
         """
         Override status info handler to render the motor.
@@ -310,12 +317,17 @@ Limit Switch: {switch_limits}
     @property
     def egu(self) -> str:
         """
-        Engineering units str if available, otherwise 'N/A'
+        Engineering units str if available, otherwise ''
+
+        Use the monitored/cached value rather than checking EPICS.
         """
-        if self.motor_egu.connected:
-            return self.motor_egu.get()
-        else:
-            return 'N/A'
+        return self._egu
+
+    def _cache_egu(self, value: str, **kwargs):
+        """
+        Cache the value of EGU for later use in the egu property.
+        """
+        self._egu = value
 
 
 class PCDSMotorBase(EpicsMotorInterface):
