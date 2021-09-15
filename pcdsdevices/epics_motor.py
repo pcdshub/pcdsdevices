@@ -96,16 +96,13 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
 
     # Registry of log filters by device name
     _motion_error_log_filters: dict[str, filter] = {}
+    _moved_in_session: bool
     _egu: str
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._egu = ''
         self.motor_egu.subscribe(self._cache_egu)
-        self.subscribe(
-            self._reset_moved_in_session,
-            event_type=self.SUB_DONE,
-        )
         self._install_motion_error_filter()
 
     def move(self, position, wait=True, **kwargs):
@@ -357,10 +354,12 @@ Limit Switch: {switch_limits}
         try:
             name = record.ophyd_object_name
         except AttributeError:
+            logger.debug('logging filter applied to wrong logger')
             return True
         try:
             filt = cls._motion_error_log_filters[name]
         except KeyError:
+            logger.debug(f'logging filter not found for {name}')
             return True
         return filt(record)
 
@@ -388,9 +387,21 @@ Limit Switch: {switch_limits}
         self._reset_moved_in_session()
         self._motion_error_log_filters[self.name] = self._instance_error_filter
 
-    def _reset_moved_in_session(self, *args, **kwargs):
+    def _done_moving(self, value=None, **kwargs):
         """
-        Callback to reset self._moved_in_session after every move.
+        Override _done_moving to always reset our _moved_in_session attribute.
+
+        This is not possible through adding subscriptions because SUB_DONE
+        is only run on success and _SUB_REQ_DONE is private and repeatedly
+        cleared.
+        """
+        super()._done_moving(value=value, **kwargs)
+        if value:
+            self._reset_moved_in_session()
+
+    def _reset_moved_in_session(self):
+        """
+        Mark that a move have not yet been requested in this session.
         """
         self._moved_in_session = False
 

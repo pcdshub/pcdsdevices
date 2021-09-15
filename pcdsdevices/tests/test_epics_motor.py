@@ -383,6 +383,25 @@ def test_motion_error_filter(fake_epics_motor, caplog):
         mot.log.error('fake log error')
         return 2
 
+    def get_logs():
+        return list(
+            tup for tup in caplog.record_tuples if tup[0] == 'ophyd.objects'
+        )
+
+    def assert_real_test(mot):
+        # Cause a move and check how many logs at end
+        sim_do_move(mot)
+        caplog.clear()
+        sim_done(mot)
+        unfiltered = get_logs()
+        # See a move and check how many logs at end
+        sim_is_moving(mot)
+        caplog.clear()
+        sim_done(mot)
+        filtered = get_logs()
+        msg = "No logs filtered in the observed move."
+        assert len(unfiltered) > len(filtered), msg
+
     # Initialize the alarm status/severity attributes
     fake_epics_motor.user_readback.alarm_status = AlarmStatus.NO_ALARM
     fake_epics_motor.user_readback.alarm_severity = AlarmSeverity.NO_ALARM
@@ -391,34 +410,26 @@ def test_motion_error_filter(fake_epics_motor, caplog):
     sim_do_move(fake_epics_motor)
     caplog.clear()
     count = generate_test_logs(fake_epics_motor)
-    assert len(caplog.records) == count, "Did not see all the logs"
+    normal_logs = get_logs()
+    assert len(normal_logs) == count, "Did not see all the logs"
     # Make sure only the unfiltered logs happen between moves
     sim_done(fake_epics_motor)
     caplog.clear()
     generate_filtered_logs(fake_epics_motor)
     count = generate_unfiltered_logs(fake_epics_motor)
-    assert len(caplog.records) == count, "Did not filter the logs correctly."
+    filtered_logs = get_logs()
+    assert len(filtered_logs) == count, "Did not filter the logs correctly."
 
     # Now that the baseline works, examine the full codepaths
-    # First, emulate a MAJOR alarm state
+    # First, try for an accepted alarm state
     fake_epics_motor.user_readback.alarm_status = AlarmStatus.STATE
+    fake_epics_motor.user_readback.alarm_severity = AlarmSeverity.MINOR
+    fake_epics_motor.tolerated_alarm = AlarmSeverity.MINOR
+    assert_real_test(fake_epics_motor)
+
+    # Second, try for an unaccepted alarm state
     fake_epics_motor.user_readback.alarm_severity = AlarmSeverity.MAJOR
-    # Cause a move and check how many logs at end
-    sim_do_move(fake_epics_motor)
-    caplog.clear()
-    sim_done(fake_epics_motor)
-    unfiltered = list(
-        tup for tup in caplog.record_tuples if tup[0] == 'ophyd.objects'
-    )
-    # See a move and check how many logs at end
-    sim_is_moving(fake_epics_motor)
-    caplog.clear()
-    sim_done(fake_epics_motor)
-    filtered = list(
-        tup for tup in caplog.record_tuples if tup[0] == 'ophyd.objects'
-    )
-    msg = "No logs filtered in the observed move."
-    assert len(unfiltered) > len(filtered), msg
+    assert_real_test(fake_epics_motor)
 
 
 @pytest.mark.parametrize("cls", [PCDSMotorBase, IMS, Newport, PMC100,
