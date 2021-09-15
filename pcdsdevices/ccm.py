@@ -176,6 +176,13 @@ class CCMConstantsMixin(Device):
     )
 
     _enable_warn_constants: bool = True
+    _theta0_deg: float
+    _dspacing: float
+    _gd: float
+    _gr: float
+    _initialized_signal_names: set
+    _prev_warnings: list[CCMConstantWarning]
+    _init_time: float
 
     def __init__(self, prefix: str, *args, **kwargs):
         if 'XPP' in prefix:
@@ -184,10 +191,10 @@ class CCMConstantsMixin(Device):
             self._constants_prefix = 'XCS:CCM'
         else:
             self._constants_prefix = 'TST:CCM'
-        self._theta0_deg: float = default_theta0_deg
-        self._dspacing: float = default_dspacing
-        self._gd: float = default_gd
-        self._gr: float = default_gr
+        self._theta0_deg = default_theta0_deg
+        self._dspacing = default_dspacing
+        self._gd = default_gd
+        self._gr = default_gr
         self._initialized_signal_names = set()
         self._prev_warnings = [CCMConstantWarning.NO_WARNING] * 4
         self._init_time = time.monotonic()
