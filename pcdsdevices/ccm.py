@@ -159,16 +159,20 @@ class CCMConstantsMixin(Device):
         EpicsSignal,
         '{_constants_prefix}:GR',
         kind='config',
-        doc='The radius of the sapphire ball '
-            'connected to the Alio stage in mm.',
+        doc=(
+            'The radius of the sapphire ball '
+            'connected to the Alio stage in mm.'
+        ),
     )
     gd = FCpt(
         EpicsSignal,
         '{_constants_prefix}:GD',
         kind='config',
-        doc='Distance between the rotation axis and the '
+        doc=(
+            'Distance between the rotation axis and the '
             'center of the sapphire sphere located on the '
-            'Alio stage in mm',
+            'Alio stage in mm.'
+        ),
     )
 
     _enable_warn_constants: bool = True
@@ -486,10 +490,17 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         The PV prefix of the Alio motor, e.g. XPP:MON:MPZ:07A
     """
     # Pseudo motor and real motor
-    energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted',
-                 limits=(4, 25), verbose_name='CCM Photon Energy',
-                 doc='PseudoSingle that moves the calculated CCM '
-                     'selected energy in keV.')
+    energy = Cpt(
+        PseudoSingleInterface,
+        egu='keV',
+        kind='hinted',
+        limits=(4, 25),
+        verbose_name='CCM Photon Energy',
+        doc=(
+            'PseudoSingle that moves the calculated CCM '
+            'selected energy in keV.'
+        ),
+    )
     alio = Cpt(CCMAlio, '', kind='normal',
                doc='The motor that rotates the CCM crystal.')
 
@@ -498,9 +509,14 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
                     doc='The crystal angle in degrees.')
     wavelength = Cpt(InternalSignal, kind='normal',
                      doc='The wavelength picked by the CCM in Angstroms.')
-    resolution = Cpt(InternalSignal, kind='normal',
-                     doc='A measure of how finely we can control the ccm '
-                         'output at this position in eV/um.')
+    resolution = Cpt(
+        InternalSignal,
+        kind='normal',
+        doc=(
+            'A measure of how finely we can control the ccm '
+            'output at this position in eV/um.'
+        ),
+    )
 
     tab_component_names = True
 
@@ -834,25 +850,45 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
     y_up_south_prefix : str, required keyword
         The prefix for the south upstream ccm y translation motor (y3).
     """
-    energy = Cpt(CCMEnergy, '', kind='hinted',
-                 doc='PseudoPositioner that moves the alio in '
-                     'terms of the calculated CCM energy.')
-    energy_with_vernier = Cpt(CCMEnergyWithVernier, '', kind='normal',
-                              doc='PsuedoPositioner that moves the alio in '
-                                  'terms of the calculated CCM energy while '
-                                  'also requesting a vernier move.')
+    energy = Cpt(
+        CCMEnergy, '', kind='hinted',
+        doc=(
+            'PseudoPositioner that moves the alio in '
+            'terms of the calculated CCM energy.'
+        ),
+    )
+    energy_with_vernier = Cpt(
+        CCMEnergyWithVernier, '', kind='normal',
+        doc=(
+            'PsuedoPositioner that moves the alio in '
+            'terms of the calculated CCM energy while '
+            'also requesting a vernier move.'
+        ),
+    )
 
     alio = UCpt(CCMAlio, kind='normal',
                 doc='The motor that rotates the CCM crystal.')
-    theta2fine = UCpt(CCMMotor, atol=0.01, kind='normal',
-                      doc='The motor that controls the fine adjustment '
-                          'of the of the second crystal theta angle.')
-    theta2coarse = UCpt(CCMPico, kind='normal',
-                        doc='The motor that controls the coarse adjustment '
-                            'of the of the second crystal theta angle.')
-    chi2 = UCpt(CCMPico, kind='normal',
-                doc='The motor that controls the adjustment of the'
-                    'second crystal chi angle.')
+    theta2fine = UCpt(
+        CCMMotor, atol=0.01, kind='normal',
+        doc=(
+            'The motor that controls the fine adjustment '
+            'of the of the second crystal theta angle.'
+        ),
+    )
+    theta2coarse = UCpt(
+        CCMPico, kind='normal',
+        doc=(
+            'The motor that controls the coarse adjustment '
+            'of the of the second crystal theta angle.'
+        ),
+    )
+    chi2 = UCpt(
+        CCMPico, kind='normal',
+        doc=(
+            'The motor that controls the adjustment of the'
+            'second crystal chi angle.'
+        ),
+    )
     x = UCpt(CCMX, add_prefix=[], kind='normal',
              doc='Combined motion of the CCM X motors.')
     y = UCpt(CCMY, add_prefix=[], kind='normal',
