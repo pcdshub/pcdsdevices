@@ -261,6 +261,9 @@ class CCMConstantsMixin(Device):
 
         This will be the value from the PV if things are working properly,
         otherwise it will fall back to the default value.
+
+        This is necessary because a value of 0 is nonphysical and in the case
+        of a disconnected value the show must go on.
         """
         if (
             self._dspacing
@@ -279,6 +282,9 @@ class CCMConstantsMixin(Device):
 
         This will be the value from the PV if things are working properly,
         otherwise it will fall back to the default value.
+
+        This is necessary because a value of 0 is nonphysical and in the case
+        of a disconnected value the show must go on.
         """
         if self._gr and self.gr.name in self._initialized_signal_names:
             return self._gr
@@ -295,6 +301,9 @@ class CCMConstantsMixin(Device):
 
         This will be the value from the PV if things are working properly,
         otherwise it will fall back to the default value.
+
+        This is necessary because a value of 0 is nonphysical and in the case
+        of a disconnected value the show must go on.
         """
         if self._gd and self.gd.name in self._initialized_signal_names:
             return self._gd
@@ -347,6 +356,12 @@ class CCMConstantsMixin(Device):
     def warn_invalid_constants(self, only_new: bool = False) -> None:
         """
         Warn if we have invalid values for our calculation constants.
+
+        The motivation here is twofold:
+        1. It should be easy for the user to know what is wrong and
+           why. The calculations should not be opaque.
+        2. The user should still be able to do "something" if there is
+           an issue here.
 
         For values to be valid, the PVs need to be connected and all
         but theta0 must be nonzero. Theta0 should also not be zero,
