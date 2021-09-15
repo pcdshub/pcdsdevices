@@ -193,6 +193,97 @@ def test_set_current_position(fake_ccm):
 
 
 @pytest.mark.timeout(5)
+def test_check_valid_constant(fake_ccm):
+    logger.debug('test_check_valid_constant')
+
+    # First call to make_valid sends the first monitor update
+    def make_valid(sig, valid):
+        if valid:
+            sig.put(1)
+        else:
+            sig.put(0)
+
+    def make_conn(sig, conn):
+        sig._metadata['connected'] = conn
+
+    def output(sig):
+        return fake_ccm._check_valid_constant(sig, sig.get())
+
+    test_sig = fake_ccm.dspacing
+
+    # Can we get to all the enum values?
+    make_conn(test_sig, False)
+    assert output(test_sig) == ccm.CCMConstantWarning.ALWAYS_DISCONNECT
+    make_conn(test_sig, True)
+    make_valid(test_sig, False)
+    assert output(test_sig) == ccm.CCMConstantWarning.INVALID_CONNECT
+    make_conn(test_sig, False)
+    assert output(test_sig) == ccm.CCMConstantWarning.INVALID_DISCONNECT
+    make_conn(test_sig, True)
+    make_valid(test_sig, True)
+    assert output(test_sig) == ccm.CCMConstantWarning.NO_WARNING
+    make_conn(test_sig, False)
+    assert output(test_sig) == ccm.CCMConstantWarning.VALID_DISCONNECT
+
+    # theta0_deg is allowed to be zero, unlike the others
+    test_sig2 = fake_ccm.theta0_deg
+    make_conn(test_sig2, True)
+    make_valid(test_sig2, False)
+    assert output(test_sig2) == ccm.CCMConstantWarning.NO_WARNING
+
+
+@pytest.mark.timeout(5)
+def test_show_constant_warning(fake_ccm, caplog):
+    logger.debug('test_show_constant_warning')
+    for warning in (
+        ccm.CCMConstantWarning.NO_WARNING,
+        ccm.CCMConstantWarning.ALWAYS_DISCONNECT,
+        ccm.CCMConstantWarning.VALID_DISCONNECT,
+        ccm.CCMConstantWarning.INVALID_DISCONNECT,
+        ccm.CCMConstantWarning.INVALID_CONNECT,
+    ):
+        caplog.clear()
+        fake_ccm._show_constant_warning(
+            warning,
+            fake_ccm.dspacing,
+            0.111111,
+            0.222222,
+        )
+        if warning == ccm.CCMConstantWarning.NO_WARNING:
+            assert len(caplog.records) == 0
+        else:
+            assert len(caplog.records) == 1
+
+
+@pytest.mark.timeout(5)
+def test_warn_invalid_constants(fake_ccm, caplog):
+    logger.debug('test_warn_invalid_constants')
+    # Trick the warning into thinking we've be initialized for a while
+    fake_ccm._init_time = 0
+    fake_ccm.theta0_deg.put(0)
+    fake_ccm.dspacing.put(0)
+    fake_ccm.gr.put(0)
+    fake_ccm.gd.put(0)
+    # We expect three warnings from the fake PVs that start at 0
+    caplog.clear()
+    fake_ccm.warn_invalid_constants(only_new=False)
+    assert len(caplog.records) == 3
+    # We expect the warnings to not repeat
+    caplog.clear()
+    fake_ccm.warn_invalid_constants(only_new=True)
+    assert len(caplog.records) == 0
+    # Unless we ask them to
+    caplog.clear()
+    fake_ccm.warn_invalid_constants(only_new=False)
+    assert len(caplog.records) == 3
+    # Let's fix the issue and make sure no warnings are shown
+    fake_ccm.reset_calc_constant_defaults(confirm=False)
+    caplog.clear()
+    fake_ccm.warn_invalid_constants(only_new=False)
+    assert len(caplog.records) == 0
+
+
+@pytest.mark.timeout(5)
 def test_disconnected_ccm():
     ccm.CCM(alio_prefix='ALIO', theta2fine_prefix='THETA',
             theta2coarse_prefix='THTA', chi2_prefix='CHI',

@@ -367,8 +367,6 @@ class CCMConstantsMixin(Device):
             return
         if time.monotonic() - self._init_time < 10:
             return
-
-        # Check for connections
         sigs = (self.theta0_deg, self.dspacing, self.gr, self.gd)
         vals = (self._theta0_deg, self._dspacing, self._gr, self._gd)
         default_vals = (default_theta0_deg, default_dspacing,
@@ -376,53 +374,101 @@ class CCMConstantsMixin(Device):
         for num, (sig, val, default, old_warning) in enumerate(zip(
             sigs, vals, default_vals, self._prev_warnings,
         )):
-            good_value = val or sig is self.theta0_deg
-            if sig.connected:
-                if good_value:
-                    new_warning = CCMConstantWarning.NO_WARNING
-                else:
-                    new_warning = CCMConstantWarning.INVALID_CONNECT
-            elif sig.name in self._initialized_signal_names:
-                if good_value:
-                    new_warning = CCMConstantWarning.VALID_DISCONNECT
-                else:
-                    new_warning = CCMConstantWarning.INVALID_DISCONNECT
-            else:
-                new_warning = CCMConstantWarning.ALWAYS_DISCONNECT
-
+            new_warning = self._check_valid_constant(sig, val)
             if new_warning != old_warning or not only_new:
-                if new_warning == CCMConstantWarning.ALWAYS_DISCONNECT:
-                    self.log.warning(
-                        f'Calculation constant {sig.name} never connected. '
-                        'The IOC is probably offline or misconfigured. '
-                        f'Using the default value {default} for '
-                        'calculations.'
-                    )
-                elif new_warning == CCMConstantWarning.VALID_DISCONNECT:
-                    self.log.warning(
-                        f'Calculation constant {sig.name} previously '
-                        'connected, but is now disconnected. '
-                        'The IOC must have gone down. '
-                        f'Using the last known good value {val}.'
-                    )
-                elif new_warning == CCMConstantWarning.INVALID_DISCONNECT:
-                    self.log.warning(
-                        f'Calculation constant {sig.name} previously '
-                        'connected, but is now disconnected. '
-                        'The IOC must have gone down. '
-                        'Never had a good value, using the default value '
-                        f'{default} for calculations.'
-                    )
-                elif new_warning == CCMConstantWarning.INVALID_CONNECT:
-                    self.log.warning(
-                        f'Calculation constant {sig.name} has an '
-                        f'invalid value of {val}. Using the default value '
-                        f'{default} for calculations. '
-                        'Consider calling reset_calc_constant_defaults to '
-                        'restore the default values to the constant PVs.'
-                    )
-
+                self._show_constant_warning(new_warning, sig, val, default)
             self._prev_warnings[num] = new_warning
+
+    def _check_valid_constant(
+        self,
+        sig: EpicsSignal,
+        val: float,
+    ) -> CCMConstantWarning:
+        """
+        Return the CCMConstantWarning state for a particular signal.
+
+        This is used internally in warn_invalid_constants.
+
+        Parameters
+        ----------
+        sig : EpicsSignal
+            The signal to check for.
+        val : float
+            The most recent cached value from that signal.
+
+        Returns
+        -------
+        warn : CCMConstantWarning
+            One of the enum states that represents our constant warning state.
+            Note that one of the states is NO_WARNING- we don't necessarily
+            have a problem.
+        """
+        good_value = val or sig is self.theta0_deg
+        if sig.connected:
+            if good_value:
+                return CCMConstantWarning.NO_WARNING
+            else:
+                return CCMConstantWarning.INVALID_CONNECT
+        elif sig.name in self._initialized_signal_names:
+            if good_value:
+                return CCMConstantWarning.VALID_DISCONNECT
+            else:
+                return CCMConstantWarning.INVALID_DISCONNECT
+        return CCMConstantWarning.ALWAYS_DISCONNECT
+
+    def _show_constant_warning(
+        self,
+        warning: CCMConstantWarning,
+        sig: EpicsSignal,
+        val: float,
+        default: float
+    ) -> None:
+        """
+        Log an appropriate warning to the object logger.
+
+        This is used internally in warn_invalid_constants.
+
+        Parameters
+        ----------
+        warning : CCMConstantWarning
+            The appropriate warning category.
+        sig : EpicsSignal
+            The signal we're warning about, for use in the message.
+        val : float
+            The cached signal value, for use in the message.
+        default : float
+            The default constant value, for use in the message.
+        """
+        if warning == CCMConstantWarning.ALWAYS_DISCONNECT:
+            self.log.warning(
+                f'Calculation constant {sig.name} never connected. '
+                'The IOC is probably offline or misconfigured. '
+                f'Using the default value {default} for '
+                'calculations.'
+            )
+        elif warning == CCMConstantWarning.VALID_DISCONNECT:
+            self.log.warning(
+                f'Calculation constant {sig.name} previously '
+                'connected, but is now disconnected. '
+                'The IOC must have gone down. '
+                f'Using the last known good value {val}.'
+            )
+        elif warning == CCMConstantWarning.INVALID_DISCONNECT:
+            self.log.warning(
+                f'Calculation constant {sig.name} previously '
+                'connected, but is now disconnected. '
+                'The IOC must have gone down. '
+                'Never had a good value, using the default value '
+                f'{default} for calculations.'
+            )
+        elif warning == CCMConstantWarning.INVALID_CONNECT:
+            self.log.warning(
+                f'Calculation constant {sig.name} has an '
+                f'invalid value of {val}. Using the default value '
+                f'{default} for calculations. '
+                'Consider calling reset_calc_constant_defaults to '
+                'restore the default values to the constant PVs.'
+            )
 
 
 class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
