@@ -5,6 +5,7 @@ from bluesky import RunEngine
 from bluesky.plan_stubs import close_run, open_run, stage, unstage
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
+from ophyd.utils.epics_pvs import AlarmSeverity
 
 from pcdsdevices.epics_motor import (IMS, PMC100, BeckhoffAxis, EpicsMotor,
                                      EpicsMotorInterface, Motor,
@@ -346,6 +347,69 @@ def test_offset_ims_with_preset(fake_offset_ims_with_preset):
     # pseudo pos = real_pos.motor - self.user_offset.get()
     # 1 - (4) = -3
     assert off_ims.pseudo_motor.position == -3
+
+
+def test_motion_error_filter(fake_epics_motor, caplog):
+    # Quick utilities for changing our state
+    def sim_do_move(mot):
+        mot.move(mot.position + 1, wait=False)
+        sim_is_moving(mot)
+
+    def sim_is_moving(mot):
+        pos = mot.user_readback.get()
+        if mot.user_setpoint.get() == pos:
+            mot.user_setpoint.sim_put(pos + 1)
+        mot.motor_is_moving.sim_put(1)
+        mot.motor_done_move.sim_put(0)
+
+    def sim_done(mot):
+        mot.user_readback.sim_put(mot.user_setpoint.get())
+        mot.motor_is_moving.sim_put(0)
+        mot.motor_done_move.sim_put(1)
+
+    def generate_test_logs(mot):
+        num = 0
+        num += generate_filtered_logs(mot)
+        num += generate_unfiltered_logs(mot)
+        return num
+
+    def generate_filtered_logs(mot):
+        mot.log.warning('fake log alarm warning')
+        mot.log.error('fake log alarm error')
+        return 2
+
+    def generate_unfiltered_logs(mot):
+        mot.log.warning('fake log warning')
+        mot.log.error('fake log error')
+        return 2
+
+    # We expect alarm logs to be filtered outside of moves
+    # Make sure the normal mechanisms work: all logs happen during our moves
+    sim_do_move(fake_epics_motor)
+    caplog.clear()
+    count = generate_test_logs(fake_epics_motor)
+    assert len(caplog.records) == count
+    # Make sure only the unfiltered logs happen between moves
+    sim_done(fake_epics_motor)
+    caplog.clear()
+    generate_filtered_logs(fake_epics_motor)
+    count = generate_unfiltered_logs(fake_epics_motor)
+    assert len(caplog.records) == count
+
+    # Now that the baseline works, examine the full codepaths
+    # First, emulate a MAJOR alarm state
+    fake_epics_motor.user_readback.alarm_status = AlarmSeverity.MAJOR
+    # Cause a move and check how many logs at end
+    sim_do_move(fake_epics_motor)
+    caplog.clear()
+    sim_done(fake_epics_motor)
+    unfiltered = len(caplog.records)
+    # See a move and check how many logs at end
+    sim_is_moving(fake_epics_motor)
+    caplog.clear()
+    sim_done(fake_epics_motor)
+    filtered = len(caplog.records)
+    assert unfiltered > filtered
 
 
 @pytest.mark.parametrize("cls", [PCDSMotorBase, IMS, Newport, PMC100,
