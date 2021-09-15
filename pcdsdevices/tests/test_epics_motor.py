@@ -407,13 +407,18 @@ def test_motion_error_filter(fake_epics_motor, caplog):
     sim_do_move(fake_epics_motor)
     caplog.clear()
     sim_done(fake_epics_motor)
-    unfiltered = len(caplog.records)
+    unfiltered = list(
+        tup for tup in caplog.record_tuples if tup[0] == 'ophyd.objects'
+    )
     # See a move and check how many logs at end
     sim_is_moving(fake_epics_motor)
     caplog.clear()
     sim_done(fake_epics_motor)
-    filtered = len(caplog.records)
-    assert unfiltered > filtered, "No logs filtered in the observed move."
+    filtered = list(
+        tup for tup in caplog.record_tuples if tup[0] == 'ophyd.objects'
+    )
+    msg = "No logs filtered in the observed move."
+    assert len(unfiltered) > len(filtered), msg
 
 
 @pytest.mark.parametrize("cls", [PCDSMotorBase, IMS, Newport, PMC100,
