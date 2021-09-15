@@ -692,6 +692,7 @@ class CCMEnergyWithVernier(CCMEnergy):
 
     # These are duplicate warnings with main energy motor
     _enable_warn_constants: bool = False
+    hutch: str
 
     def __init__(
         self,
@@ -907,6 +908,9 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
                      'th2coarse', 'th2fine', 'alio2E', 'E2alio',
                      'home', 'kill', 'status',
                      'insert', 'remove', 'inserted', 'removed']
+
+    _in_pos: float
+    _out_pos: float
 
     def __init__(
         self,
