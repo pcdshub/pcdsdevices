@@ -1,4 +1,3 @@
-# Make sure this runs as early as possible
 # Hacky ophyd and pyepics hotfixes
 import epics.ca
 from ophyd.device import Device
