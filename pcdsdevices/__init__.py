@@ -1,8 +1,10 @@
+# Make sure this runs as early as possible
 # Hacky ophyd and pyepics hotfixes
 import epics.ca
 from ophyd.device import Device
 
 from ._version import get_versions
+from .registry import device_registry  # NOQA
 
 
 def __contains__(self, value):

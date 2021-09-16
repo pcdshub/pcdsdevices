@@ -4,8 +4,7 @@ Module for LCLS's special motor records.
 import logging
 import os
 import shutil
-from types import SimpleNamespace
-from typing import Optional
+from typing import ClassVar, Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -25,6 +24,7 @@ from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
 from .pseudopos import OffsetMotorBase, delay_class_factory
+from .registry import device_registry
 from .signal import EpicsSignalEditMD, EpicsSignalROEditMD, PytmcSignal
 from .utils import get_status_float, get_status_value
 from .variety import set_metadata
@@ -95,16 +95,16 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     EpicsMotor.low_limit_travel.kind = Kind.config
     EpicsMotor.direction_of_travel.kind = Kind.normal
 
-    # Registry of log filters by device name
-    _motion_error_log_filters: dict[str, filter] = {}
+    _alarm_filter_installed: ClassVar[bool] = False
     _moved_in_session: bool
     _egu: str
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        self._moved_in_session = False
         self._egu = ''
-        self.motor_egu.subscribe(self._cache_egu)
+        super().__init__(*args, **kwargs)
         self._install_motion_error_filter()
+        self.motor_egu.subscribe(self._cache_egu)
 
     def move(self, position: float, wait: bool = True, **kwargs) -> MoveStatus:
         self._moved_in_session = True
@@ -343,27 +343,6 @@ Limit Switch: {switch_limits}
         """
         self._egu = value
 
-    @classmethod
-    def _motion_error_filter(cls, record: logging.LogRecord) -> bool:
-        """
-        A filter for removing spammy end of move logs.
-
-        This removes the cross-session error spam issues.
-        This should be added to the ophyd.objects filter exactly once
-        per session.
-        """
-        try:
-            name = record.ophyd_object_name
-        except AttributeError:
-            logger.debug('logging filter applied to wrong logger')
-            return True
-        try:
-            filt = cls._motion_error_log_filters[name]
-        except KeyError:
-            logger.debug(f'logging filter not found for {name}')
-            return True
-        return filt(record)
-
     def _instance_error_filter(self, record: logging.LogRecord) -> bool:
         """
         Instance-specific motion error filter.
@@ -379,14 +358,11 @@ Limit Switch: {switch_limits}
 
     def _install_motion_error_filter(self) -> None:
         """
-        Applies the class _motion_error_filter to self.log if needed
-        Adds our _instance_error_filter to the filter registry
+        Applies the class _motion_error_filter to self.log
         """
-        if not self._motion_error_log_filters:
-            filter_obj = SimpleNamespace(filter=self._motion_error_filter)
-            self.log.logger.addFilter(filter_obj)
-        self._reset_moved_in_session()
-        self._motion_error_log_filters[self.name] = self._instance_error_filter
+        if not EpicsMotorInterface._alarm_filter_installed:
+            EpicsMotorInterface._alarm_filter_installed = True
+            self.log.logger.addFilter(EpicsMotorInterfaceAlarmFilter())
 
     def _done_moving(self, value: Optional[int] = None, **kwargs) -> None:
         """
@@ -405,6 +381,33 @@ Limit Switch: {switch_limits}
         Mark that a move have not yet been requested in this session.
         """
         self._moved_in_session = False
+
+
+class EpicsMotorInterfaceAlarmFilter(logging.Filter):
+    """
+    Log filter dispatcher for the EpicsMotorInterface alarm filters.
+
+    Finds the EpicsMotorInterface object associated with a ophyd.objects log
+    message and gives it a chance to filter the log message out.
+    """
+    def filter(self, record: logging.LogRecord) -> bool:
+        """Find the motor in the device registry and run its filter."""
+        try:
+            name = record.ophyd_object_name
+        except AttributeError:
+            # Fails if not the ophyd.objects logger -> ignore
+            return True
+        try:
+            obj = device_registry[name]
+        except KeyError:
+            # Fails if the device was destroyed - can we even get here?
+            return True
+        try:
+            filt = obj._instance_error_filter
+        except AttributeError:
+            # Fails if the device is not an EpicsMotorInterface -> ignore
+            return True
+        return filt(record)
 
 
 class PCDSMotorBase(EpicsMotorInterface):
