@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>708</width>
-    <height>495</height>
+    <width>498</width>
+    <height>413</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -40,7 +40,7 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>480</width>
+       <width>450</width>
        <height>150</height>
       </size>
      </property>
@@ -62,38 +62,6 @@
      <property name="lineWidth">
       <number>0</number>
      </property>
-     <widget class="PyDMLabel" name="PyDMLabel_39">
-      <property name="geometry">
-       <rect>
-        <x>224</x>
-        <y>18</y>
-        <width>41</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string/>
-      </property>
-      <property name="text">
-       <string>Top</string>
-      </property>
-     </widget>
-     <widget class="PyDMLabel" name="PyDMLabel_40">
-      <property name="geometry">
-       <rect>
-        <x>404</x>
-        <y>88</y>
-        <width>61</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string/>
-      </property>
-      <property name="text">
-       <string>Bottom</string>
-      </property>
-     </widget>
      <widget class="PyDMScaleIndicator" name="PyDMScaleIndicator_14">
       <property name="geometry">
        <rect>
@@ -259,22 +227,6 @@
        <double>0.000000000000000</double>
       </property>
      </widget>
-     <widget class="PyDMLabel" name="PyDMLabel_42">
-      <property name="geometry">
-       <rect>
-        <x>4</x>
-        <y>18</y>
-        <width>51</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="toolTip">
-       <string/>
-      </property>
-      <property name="text">
-       <string>North</string>
-      </property>
-     </widget>
      <widget class="PyDMScaleIndicator" name="PyDMScaleIndicator_16">
       <property name="enabled">
        <bool>false</bool>
@@ -437,20 +389,56 @@
        <double>0.000000000000000</double>
       </property>
      </widget>
-     <widget class="PyDMLabel" name="PyDMLabel_43">
+     <widget class="QLabel" name="label_5">
       <property name="geometry">
        <rect>
-        <x>194</x>
-        <y>88</y>
-        <width>51</width>
-        <height>21</height>
+        <x>4</x>
+        <y>18</y>
+        <width>47</width>
+        <height>14</height>
        </rect>
       </property>
-      <property name="toolTip">
-       <string/>
+      <property name="text">
+       <string>North</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_6">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>88</y>
+        <width>47</width>
+        <height>14</height>
+       </rect>
       </property>
       <property name="text">
        <string>South</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_7">
+      <property name="geometry">
+       <rect>
+        <x>224</x>
+        <y>18</y>
+        <width>47</width>
+        <height>14</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Top</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_8">
+      <property name="geometry">
+       <rect>
+        <x>410</x>
+        <y>88</y>
+        <width>47</width>
+        <height>14</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Bottom</string>
       </property>
      </widget>
     </widget>
@@ -460,40 +448,6 @@
      <property name="topMargin">
       <number>0</number>
      </property>
-     <item row="1" column="1">
-      <widget class="PyDMLabel" name="PyDMLabel_48">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>75</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="whatsThis">
-        <string/>
-       </property>
-       <property name="precision" stdset="0">
-        <number>3</number>
-       </property>
-       <property name="precisionFromPV" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:ACTUAL_XWIDTH_RBV</string>
-       </property>
-       <property name="displayFormat" stdset="0">
-        <enum>PyDMLabel::Decimal</enum>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="2">
       <widget class="PyDMLineEdit" name="PyDMLineEdit_23">
        <property name="sizePolicy">
@@ -501,6 +455,12 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
        </property>
        <property name="toolTip">
         <string/>
@@ -516,22 +476,6 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="PyDMLabel" name="PyDMLabel_41">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="text">
-        <string>Gap (mm)</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="2">
       <widget class="PyDMLineEdit" name="PyDMLineEdit_24">
        <property name="sizePolicy">
@@ -539,6 +483,12 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
        </property>
        <property name="toolTip">
         <string/>
@@ -554,19 +504,28 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="PyDMLabel" name="PyDMLabel_44">
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_10">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="toolTip">
-        <string/>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
        </property>
        <property name="text">
-        <string>Center (mm)</string>
+        <string>Gap (mm)</string>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <property name="indent">
+        <number>5</number>
        </property>
       </widget>
      </item>
@@ -582,6 +541,12 @@
         <size>
          <width>75</width>
          <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
         </size>
        </property>
        <property name="toolTip">
@@ -604,53 +569,28 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="3">
-      <widget class="PyDMLabel" name="PyDMLabel_37">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_9">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="toolTip">
-        <string/>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
        </property>
        <property name="text">
         <string>Center (mm)</string>
        </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="PyDMLabel" name="PyDMLabel_45">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+       <property name="margin">
+        <number>0</number>
        </property>
-       <property name="minimumSize">
-        <size>
-         <width>75</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="whatsThis">
-        <string/>
-       </property>
-       <property name="precision" stdset="0">
-        <number>3</number>
-       </property>
-       <property name="precisionFromPV" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${prefix}:ACTUAL_YCENTER_RBV</string>
-       </property>
-       <property name="displayFormat" stdset="0">
-        <enum>PyDMLabel::Decimal</enum>
+       <property name="indent">
+        <number>5</number>
        </property>
       </widget>
      </item>
@@ -661,6 +601,12 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
        </property>
        <property name="toolTip">
         <string/>
@@ -676,19 +622,31 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="3">
-      <widget class="PyDMLabel" name="PyDMLabel_38">
+     <item row="1" column="5">
+      <widget class="PyDMLineEdit" name="PyDMLineEdit_8">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
-       <property name="text">
-        <string>Gap (mm)</string>
+       <property name="precision" stdset="0">
+        <number>3</number>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:YWID_REQ</string>
        </property>
       </widget>
      </item>
@@ -704,6 +662,12 @@
         <size>
          <width>75</width>
          <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
         </size>
        </property>
        <property name="toolTip">
@@ -726,15 +690,30 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="5">
-      <widget class="PyDMLineEdit" name="PyDMLineEdit_8">
+     <item row="1" column="1">
+      <widget class="PyDMLabel" name="PyDMLabel_48">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="minimumSize">
+        <size>
+         <width>75</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="toolTip">
+        <string/>
+       </property>
+       <property name="whatsThis">
         <string/>
        </property>
        <property name="precision" stdset="0">
@@ -744,7 +723,100 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://${prefix}:YWID_REQ</string>
+        <string>ca://${prefix}:ACTUAL_XWIDTH_RBV</string>
+       </property>
+       <property name="displayFormat" stdset="0">
+        <enum>PyDMLabel::Decimal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="PyDMLabel" name="PyDMLabel_45">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>75</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="precision" stdset="0">
+        <number>3</number>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${prefix}:ACTUAL_YCENTER_RBV</string>
+       </property>
+       <property name="displayFormat" stdset="0">
+        <enum>PyDMLabel::Decimal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QLabel" name="label_11">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Center (mm)</string>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <property name="indent">
+        <number>5</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QLabel" name="label_12">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Gap (mm)</string>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <property name="indent">
+        <number>5</number>
        </property>
       </widget>
      </item>
@@ -760,10 +832,19 @@
        <property name="text">
         <string>SOUTH</string>
        </property>
+       <property name="indent">
+        <number>5</number>
+       </property>
       </widget>
      </item>
      <item row="2" column="2">
       <widget class="PyDMLabel" name="PyDMLabel_3">
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
@@ -771,7 +852,7 @@
         <bool>true</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:NORTH.RBV</string>
+        <string>ca://${prefix}:MMS:NORTH.RBV</string>
        </property>
       </widget>
      </item>
@@ -781,7 +862,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:TOP.HLS</string>
+        <string>ca://${prefix}:MMS:TOP.HLS</string>
        </property>
        <property name="onColor" stdset="0">
         <color>
@@ -804,7 +885,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:SOUTH.LLS</string>
+        <string>ca://${prefix}:MMS:SOUTH.LLS</string>
        </property>
        <property name="onColor" stdset="0">
         <color>
@@ -823,6 +904,12 @@
      </item>
      <item row="3" column="2">
       <widget class="PyDMLabel" name="PyDMLabel_4">
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
@@ -830,7 +917,7 @@
         <bool>true</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:SOUTH.RBV</string>
+        <string>ca://${prefix}:MMS:SOUTH.RBV</string>
        </property>
       </widget>
      </item>
@@ -840,7 +927,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:TOP.LLS</string>
+        <string>ca://${prefix}:MMS:TOP.LLS</string>
        </property>
        <property name="onColor" stdset="0">
         <color>
@@ -863,7 +950,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:BOTTOM.LLS</string>
+        <string>ca://${prefix}:MMS:BOTTOM.LLS</string>
        </property>
        <property name="onColor" stdset="0">
         <color>
@@ -885,10 +972,19 @@
        <property name="text">
         <string>TOP</string>
        </property>
+       <property name="indent">
+        <number>5</number>
+       </property>
       </widget>
      </item>
      <item row="0" column="2">
       <widget class="PyDMLabel" name="PyDMLabel">
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
@@ -896,7 +992,7 @@
         <bool>true</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:TOP.RBV</string>
+        <string>ca://${prefix}:MMS:TOP.RBV</string>
        </property>
       </widget>
      </item>
@@ -904,6 +1000,9 @@
       <widget class="QLabel" name="label_4">
        <property name="text">
         <string>BOTTOM</string>
+       </property>
+       <property name="indent">
+        <number>5</number>
        </property>
       </widget>
      </item>
@@ -919,6 +1018,12 @@
      </item>
      <item row="1" column="2">
       <widget class="PyDMLabel" name="PyDMLabel_2">
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
@@ -926,7 +1031,7 @@
         <bool>true</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:BOTTOM.RBV</string>
+        <string>ca://${prefix}:MMS:BOTTOM.RBV</string>
        </property>
       </widget>
      </item>
@@ -942,7 +1047,7 @@
         <string>Stop</string>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:TOP.STOP</string>
+        <string>ca://${prefix}:MMS:TOP.STOP</string>
        </property>
        <property name="pressValue" stdset="0">
         <string>1</string>
@@ -957,11 +1062,17 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:TOP.VAL</string>
+        <string>ca://${prefix}:MMS:TOP.VAL</string>
        </property>
       </widget>
      </item>
@@ -971,7 +1082,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:NORTH.LLS</string>
+        <string>ca://${prefix}:MMS:NORTH.LLS</string>
        </property>
        <property name="onColor" stdset="0">
         <color>
@@ -993,6 +1104,9 @@
        <property name="text">
         <string>NORTH</string>
        </property>
+       <property name="indent">
+        <number>5</number>
+       </property>
       </widget>
      </item>
      <item row="1" column="3">
@@ -1001,7 +1115,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:BOTTOM.HLS</string>
+        <string>ca://${prefix}:MMS:BOTTOM.HLS</string>
        </property>
        <property name="onColor" stdset="0">
         <color>
@@ -1024,7 +1138,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:NORTH.HLS</string>
+        <string>ca://${prefix}:MMS:NORTH.HLS</string>
        </property>
        <property name="onColor" stdset="0">
         <color>
@@ -1047,7 +1161,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:SOUTH.HLS</string>
+        <string>ca://${prefix}:MMS:SOUTH.HLS</string>
        </property>
        <property name="onColor" stdset="0">
         <color>
@@ -1072,11 +1186,17 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:BOTTOM.VAL</string>
+        <string>ca://${prefix}:MMS:BOTTOM.VAL</string>
        </property>
       </widget>
      </item>
@@ -1088,11 +1208,17 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:NORTH.VAL</string>
+        <string>ca://${prefix}:MMS:NORTH.VAL</string>
        </property>
       </widget>
      </item>
@@ -1104,11 +1230,17 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:NORTH.VAL</string>
+        <string>ca://${prefix}:MMS:NORTH.VAL</string>
        </property>
       </widget>
      </item>
@@ -1124,7 +1256,7 @@
         <string>Stop</string>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:BOTTOM.STOP</string>
+        <string>ca://${prefix}:MMS:BOTTOM.STOP</string>
        </property>
        <property name="pressValue" stdset="0">
         <string>1</string>
@@ -1143,7 +1275,7 @@
         <string>Stop</string>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:NORTH.STOP</string>
+        <string>ca://${prefix}:MMS:NORTH.STOP</string>
        </property>
        <property name="pressValue" stdset="0">
         <string>1</string>
@@ -1162,7 +1294,7 @@
         <string>Stop</string>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://{prefix}:MMS:NORTH.STOP</string>
+        <string>ca://${prefix}:MMS:NORTH.STOP</string>
        </property>
        <property name="pressValue" stdset="0">
         <string>1</string>
