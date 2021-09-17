@@ -1,0 +1,854 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>816</width>
+    <height>395</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>300</width>
+    <height>150</height>
+   </size>
+  </property>
+  <property name="sizeIncrement">
+   <size>
+    <width>1</width>
+    <height>1</height>
+   </size>
+  </property>
+  <property name="baseSize">
+   <size>
+    <width>400</width>
+    <height>200</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="main_layout" stretch="0,0,0">
+   <property name="spacing">
+    <number>3</number>
+   </property>
+   <property name="sizeConstraint">
+    <enum>QLayout::SetDefaultConstraint</enum>
+   </property>
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="rightMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
+    <number>5</number>
+   </property>
+   <item>
+    <widget class="TyphosDisplayTitle" name="TyphosDisplayTitle">
+     <property name="toolTip">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame">
+     <property name="minimumSize">
+      <size>
+       <width>691</width>
+       <height>301</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <widget class="PyDMLineEdit" name="PyDMLineEdit_7">
+      <property name="geometry">
+       <rect>
+        <x>372</x>
+        <y>157</y>
+        <width>60</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="precision" stdset="0">
+       <number>3</number>
+      </property>
+      <property name="precisionFromPV" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://${prefix}:YCEN_REQ</string>
+      </property>
+     </widget>
+     <widget class="PyDMLabel" name="PyDMLabel_37">
+      <property name="geometry">
+       <rect>
+        <x>224</x>
+        <y>160</y>
+        <width>71</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string>Center (mm)</string>
+      </property>
+     </widget>
+     <widget class="PyDMLabel" name="PyDMLabel_38">
+      <property name="geometry">
+       <rect>
+        <x>224</x>
+        <y>188</y>
+        <width>67</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string>Gap (mm)</string>
+      </property>
+     </widget>
+     <widget class="PyDMLineEdit" name="PyDMLineEdit_8">
+      <property name="geometry">
+       <rect>
+        <x>372</x>
+        <y>187</y>
+        <width>60</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="precision" stdset="0">
+       <number>3</number>
+      </property>
+      <property name="precisionFromPV" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://${prefix}:YWID_REQ</string>
+      </property>
+     </widget>
+     <widget class="PyDMLabel" name="PyDMLabel_39">
+      <property name="geometry">
+       <rect>
+        <x>224</x>
+        <y>24</y>
+        <width>41</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string>Top</string>
+      </property>
+     </widget>
+     <widget class="PyDMLabel" name="PyDMLabel_40">
+      <property name="geometry">
+       <rect>
+        <x>404</x>
+        <y>94</y>
+        <width>51</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string>Bottom</string>
+      </property>
+     </widget>
+     <widget class="PyDMScaleIndicator" name="PyDMScaleIndicator_14">
+      <property name="geometry">
+       <rect>
+        <x>334</x>
+        <y>4</y>
+        <width>71</width>
+        <height>144</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="precision" stdset="0">
+       <number>3</number>
+      </property>
+      <property name="precisionFromPV" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://${prefix}:MMS:BOTTOM.RBV</string>
+      </property>
+      <property name="showValue" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="showLimits" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="showTicks" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="orientation" stdset="0">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="flipScale" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="barIndicator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="backgroundColor" stdset="0">
+       <color>
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </property>
+      <property name="indicatorColor" stdset="0">
+       <color>
+        <red>255</red>
+        <green>170</green>
+        <blue>0</blue>
+       </color>
+      </property>
+      <property name="scaleHeight" stdset="0">
+       <number>80</number>
+      </property>
+      <property name="valuePosition" stdset="0">
+       <enum>Qt::TopEdge</enum>
+      </property>
+      <property name="originAtZero" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="limitsFromChannel" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="userLowerLimit" stdset="0">
+       <double>-32.000000000000000</double>
+      </property>
+      <property name="userUpperLimit" stdset="0">
+       <double>0.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="PyDMScaleIndicator" name="PyDMScaleIndicator_15">
+      <property name="geometry">
+       <rect>
+        <x>264</x>
+        <y>4</y>
+        <width>71</width>
+        <height>144</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="precision" stdset="0">
+       <number>3</number>
+      </property>
+      <property name="precisionFromPV" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://${prefix}:MMS:TOP.RBV</string>
+      </property>
+      <property name="showValue" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="showLimits" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="showTicks" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="orientation" stdset="0">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="flipScale" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="invertedAppearance" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="barIndicator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="backgroundColor" stdset="0">
+       <color>
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </property>
+      <property name="indicatorColor" stdset="0">
+       <color>
+        <red>255</red>
+        <green>170</green>
+        <blue>0</blue>
+       </color>
+      </property>
+      <property name="scaleHeight" stdset="0">
+       <number>80</number>
+      </property>
+      <property name="valuePosition" stdset="0">
+       <enum>Qt::TopEdge</enum>
+      </property>
+      <property name="originAtZero" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="limitsFromChannel" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="userLowerLimit" stdset="0">
+       <double>-32.000000000000000</double>
+      </property>
+      <property name="userUpperLimit" stdset="0">
+       <double>0.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="PyDMLabel" name="PyDMLabel_41">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>188</y>
+        <width>67</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string>Gap (mm)</string>
+      </property>
+     </widget>
+     <widget class="PyDMLabel" name="PyDMLabel_42">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>24</y>
+        <width>41</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string>North</string>
+      </property>
+     </widget>
+     <widget class="PyDMScaleIndicator" name="PyDMScaleIndicator_16">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>54</x>
+        <y>4</y>
+        <width>141</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
+      </property>
+      <property name="midLineWidth">
+       <number>0</number>
+      </property>
+      <property name="precision" stdset="0">
+       <number>3</number>
+      </property>
+      <property name="precisionFromPV" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://${prefix}:MMS:NORTH.RBV</string>
+      </property>
+      <property name="showValue" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="showLimits" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="showTicks" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="orientation" stdset="0">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="flipScale" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="invertedAppearance" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="barIndicator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="backgroundColor" stdset="0">
+       <color>
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </property>
+      <property name="indicatorColor" stdset="0">
+       <color>
+        <red>255</red>
+        <green>170</green>
+        <blue>0</blue>
+       </color>
+      </property>
+      <property name="scaleHeight" stdset="0">
+       <number>80</number>
+      </property>
+      <property name="originAtZero" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="limitsFromChannel" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="userLowerLimit" stdset="0">
+       <double>-32.000000000000000</double>
+      </property>
+      <property name="userUpperLimit" stdset="0">
+       <double>0.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="PyDMScaleIndicator" name="PyDMScaleIndicator_17">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>54</x>
+        <y>74</y>
+        <width>141</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="precision" stdset="0">
+       <number>3</number>
+      </property>
+      <property name="precisionFromPV" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://${prefix}:MMS:SOUTH.RBV</string>
+      </property>
+      <property name="showValue" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="showLimits" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="showTicks" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="orientation" stdset="0">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="flipScale" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="invertedAppearance" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="barIndicator" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="backgroundColor" stdset="0">
+       <color>
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </property>
+      <property name="indicatorColor" stdset="0">
+       <color>
+        <red>255</red>
+        <green>170</green>
+        <blue>0</blue>
+       </color>
+      </property>
+      <property name="scaleHeight" stdset="0">
+       <number>80</number>
+      </property>
+      <property name="valuePosition" stdset="0">
+       <enum>Qt::TopEdge</enum>
+      </property>
+      <property name="limitsFromChannel" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="userLowerLimit" stdset="0">
+       <double>-32.000000000000000</double>
+      </property>
+      <property name="userUpperLimit" stdset="0">
+       <double>0.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="PyDMLabel" name="PyDMLabel_43">
+      <property name="geometry">
+       <rect>
+        <x>194</x>
+        <y>94</y>
+        <width>41</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string>South</string>
+      </property>
+     </widget>
+     <widget class="PyDMLabel" name="PyDMLabel_44">
+      <property name="geometry">
+       <rect>
+        <x>4</x>
+        <y>160</y>
+        <width>71</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="text">
+       <string>Center (mm)</string>
+      </property>
+     </widget>
+     <widget class="PyDMLineEdit" name="PyDMLineEdit_23">
+      <property name="geometry">
+       <rect>
+        <x>154</x>
+        <y>160</y>
+        <width>60</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="precision" stdset="0">
+       <number>3</number>
+      </property>
+      <property name="precisionFromPV" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://${prefix}:XCEN_REQ</string>
+      </property>
+     </widget>
+     <widget class="PyDMLineEdit" name="PyDMLineEdit_24">
+      <property name="geometry">
+       <rect>
+        <x>154</x>
+        <y>187</y>
+        <width>60</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="precision" stdset="0">
+       <number>3</number>
+      </property>
+      <property name="precisionFromPV" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://${prefix}:XWID_REQ</string>
+      </property>
+     </widget>
+     <widget class="PyDMLabel" name="PyDMLabel_45">
+      <property name="geometry">
+       <rect>
+        <x>302</x>
+        <y>160</y>
+        <width>75</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>75</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="whatsThis">
+       <string/>
+      </property>
+      <property name="precision" stdset="0">
+       <number>3</number>
+      </property>
+      <property name="precisionFromPV" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://${prefix}:ACTUAL_YCENTER_RBV</string>
+      </property>
+      <property name="displayFormat" stdset="0">
+       <enum>PyDMLabel::Decimal</enum>
+      </property>
+     </widget>
+     <widget class="PyDMLabel" name="PyDMLabel_46">
+      <property name="geometry">
+       <rect>
+        <x>302</x>
+        <y>188</y>
+        <width>75</width>
+        <height>19</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>75</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="whatsThis">
+       <string/>
+      </property>
+      <property name="precision" stdset="0">
+       <number>3</number>
+      </property>
+      <property name="precisionFromPV" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://${prefix}:ACTUAL_YWIDTH_RBV</string>
+      </property>
+      <property name="displayFormat" stdset="0">
+       <enum>PyDMLabel::Decimal</enum>
+      </property>
+     </widget>
+     <widget class="PyDMLabel" name="PyDMLabel_47">
+      <property name="geometry">
+       <rect>
+        <x>83</x>
+        <y>160</y>
+        <width>75</width>
+        <height>19</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>75</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="whatsThis">
+       <string/>
+      </property>
+      <property name="precision" stdset="0">
+       <number>3</number>
+      </property>
+      <property name="precisionFromPV" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://${prefix}:ACTUAL_XCENTER_RBV</string>
+      </property>
+      <property name="displayFormat" stdset="0">
+       <enum>PyDMLabel::Decimal</enum>
+      </property>
+     </widget>
+     <widget class="PyDMLabel" name="PyDMLabel_48">
+      <property name="geometry">
+       <rect>
+        <x>83</x>
+        <y>188</y>
+        <width>75</width>
+        <height>19</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>75</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="whatsThis">
+       <string/>
+      </property>
+      <property name="precision" stdset="0">
+       <number>3</number>
+      </property>
+      <property name="precisionFromPV" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://${prefix}:ACTUAL_XWIDTH_RBV</string>
+      </property>
+      <property name="displayFormat" stdset="0">
+       <enum>PyDMLabel::Decimal</enum>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TyphosDisplayTitle</class>
+   <extends>QFrame</extends>
+   <header>typhos.display</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMLabel</class>
+   <extends>QLabel</extends>
+   <header>pydm.widgets.label</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>pydm.widgets.line_edit</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMScaleIndicator</class>
+   <extends>QFrame</extends>
+   <header>pydm.widgets.scale</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
