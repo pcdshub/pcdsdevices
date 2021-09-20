@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>468</width>
+    <width>480</width>
     <height>443</height>
    </rect>
   </property>
@@ -978,7 +978,7 @@
        </property>
        <property name="commands" stdset="0">
         <stringlist>
-         <string>typhos pcdsdevices.epics_motor.BeckhoffAxis[{&quot;prefix&quot;:&quot;${prefix}:MMS:BOTTOM&quot;,&quot;name&quot;:&quot;${name}_bottom&quot;}]</string>
+         <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:BOTTOM','name':'${name}_bottom'}]&quot;</string>
         </stringlist>
        </property>
       </widget>
@@ -1200,7 +1200,7 @@
        </property>
        <property name="commands" stdset="0">
         <stringlist>
-         <string>typhos pcdsdevices.epics_motor.BeckhoffAxis[{&quot;prefix&quot;:&quot;${prefix}:MMS:NORTH&quot;,&quot;name&quot;:&quot;${name}_north&quot;}]</string>
+         <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:NORTH','name':'${name}_north'}]&quot;</string>
         </stringlist>
        </property>
       </widget>
@@ -1236,9 +1236,12 @@
        <property name="text">
         <string>Expert</string>
        </property>
+       <property name="showIcon" stdset="0">
+        <bool>true</bool>
+       </property>
        <property name="commands" stdset="0">
         <stringlist>
-         <string>typhos pcdsdevices.epics_motor.BeckhoffAxis[{&quot;prefix&quot;:&quot;${prefix}:MMS:TOP&quot;,&quot;name&quot;:&quot;${name}_top&quot;}]</string>
+         <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:TOP','name':'${name}_top'}]&quot;</string>
         </stringlist>
        </property>
       </widget>
@@ -1253,7 +1256,7 @@
        </property>
        <property name="commands" stdset="0">
         <stringlist>
-         <string>typhos pcdsdevices.epics_motor.BeckhoffAxis[{&quot;prefix&quot;:&quot;${prefix}:MMS:SOUTH&quot;,&quot;name&quot;:&quot;${name}_south&quot;}]</string>
+         <string>typhos &quot;pcdsdevices.epics_motor.BeckhoffAxis[{'prefix':'${prefix}:MMS:SOUTH','name':'${name}_south'}]&quot;</string>
         </stringlist>
        </property>
       </widget>
