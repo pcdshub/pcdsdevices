@@ -40,13 +40,13 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>450</width>
+       <width>460</width>
        <height>150</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>450</width>
+       <width>460</width>
        <height>150</height>
       </size>
      </property>
@@ -857,7 +857,7 @@
        </property>
        <property name="onColor" stdset="0">
         <color>
-         <red>0</red>
+         <red>255</red>
          <green>255</green>
          <blue>0</blue>
         </color>
@@ -880,7 +880,7 @@
        </property>
        <property name="onColor" stdset="0">
         <color>
-         <red>0</red>
+         <red>255</red>
          <green>255</green>
          <blue>0</blue>
         </color>
@@ -922,7 +922,7 @@
        </property>
        <property name="onColor" stdset="0">
         <color>
-         <red>0</red>
+         <red>255</red>
          <green>255</green>
          <blue>0</blue>
         </color>
@@ -955,7 +955,7 @@
        </property>
        <property name="onColor" stdset="0">
         <color>
-         <red>0</red>
+         <red>255</red>
          <green>255</green>
          <blue>0</blue>
         </color>
@@ -1104,7 +1104,7 @@
        </property>
        <property name="onColor" stdset="0">
         <color>
-         <red>0</red>
+         <red>255</red>
          <green>255</green>
          <blue>0</blue>
         </color>
@@ -1215,7 +1215,7 @@
        </property>
        <property name="onColor" stdset="0">
         <color>
-         <red>0</red>
+         <red>255</red>
          <green>255</green>
          <blue>0</blue>
         </color>
@@ -1290,7 +1290,7 @@
        </property>
        <property name="onColor" stdset="0">
         <color>
-         <red>0</red>
+         <red>255</red>
          <green>255</green>
          <blue>0</blue>
         </color>
@@ -1323,7 +1323,7 @@
        </property>
        <property name="onColor" stdset="0">
         <color>
-         <red>0</red>
+         <red>255</red>
          <green>255</green>
          <blue>0</blue>
         </color>

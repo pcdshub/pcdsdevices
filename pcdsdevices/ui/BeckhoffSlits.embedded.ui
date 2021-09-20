@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>464</width>
+    <width>468</width>
     <height>276</height>
    </rect>
   </property>
@@ -63,7 +63,7 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item alignment="Qt::AlignHCenter">
     <widget class="QFrame" name="frame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -73,13 +73,13 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>450</width>
+       <width>460</width>
        <height>150</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>450</width>
+       <width>460</width>
        <height>150</height>
       </size>
      </property>
