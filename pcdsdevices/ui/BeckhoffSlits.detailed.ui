@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
+    <width>488</width>
     <height>443</height>
    </rect>
   </property>
@@ -30,7 +30,7 @@
      </property>
     </widget>
    </item>
-   <item alignment="Qt::AlignHCenter">
+   <item>
     <widget class="QFrame" name="frame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -40,18 +40,22 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>460</width>
+       <width>470</width>
        <height>150</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>460</width>
+       <width>470</width>
        <height>150</height>
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">PyDMLabel {
+color: black;
+background-color: none;
+border-radius: 0px;
+}</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
@@ -394,12 +398,15 @@
        <rect>
         <x>4</x>
         <y>18</y>
-        <width>47</width>
-        <height>14</height>
+        <width>48</width>
+        <height>16</height>
        </rect>
       </property>
       <property name="text">
        <string>North</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_6">
@@ -420,12 +427,15 @@
        <rect>
         <x>224</x>
         <y>18</y>
-        <width>47</width>
-        <height>14</height>
+        <width>38</width>
+        <height>16</height>
        </rect>
       </property>
       <property name="text">
        <string>Top</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_8">
