@@ -876,6 +876,7 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
     # QIcon for UX
     _icon = 'fa.barcode'
     tab_component_names = True
+    config_state_count = 9
 
     # Register that all blades are needed for lightpath calc
     lightpath_cpts = [f'blade_{idx:02}' for idx in range(1, 5)]
@@ -1029,6 +1030,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     # QIcon for UX
     _icon = 'fa.barcode'
     tab_component_names = True
+    config_state_count = 2
 
     # Register that all blades are needed for lightpath calc
     lightpath_cpts = [f'blade_{idx:02}' for idx in range(1, 20)]
