@@ -12,6 +12,7 @@ class ArrivalTimeMonitor(BaseInterface, GroupDevice, LightpathInOutMixin):
 
     lightpath_cpts = ['target']
     _icon = 'fa.clock-o'
+    config_state_count = 6
 
     target = Cpt(TwinCATStatePMPS, ':MMS:STATE', kind='hinted',
                  doc='Control of the diagnostic stack via saved positions.')
@@ -22,3 +23,7 @@ class ArrivalTimeMonitor(BaseInterface, GroupDevice, LightpathInOutMixin):
 
     thermocouple1 = Cpt(TwinCATTempSensor, ':STC:01', kind='normal',
                         doc='First thermocouple.')
+
+
+class TM2K2(ArrivalTimeMonitor):
+    config_state_count = 7

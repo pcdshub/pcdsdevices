@@ -12,6 +12,7 @@ class WaveFrontSensorTarget(BaseInterface, GroupDevice, LightpathInOutMixin):
 
     lightpath_cpts = ['target']
     _icon = 'fa.ellipsis-v'
+    config_state_count = 6
 
     target = Cpt(TwinCATStatePMPS, ':MMS:STATE', kind='hinted',
                  doc='Control of the diagnostic stack via saved positions.')

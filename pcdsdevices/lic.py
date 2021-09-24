@@ -28,6 +28,7 @@ class LaserInCoupling(BaseInterface, GroupDevice, LightpathInOutMixin):
 
     lightpath_cpts = ['mirror']
     _icon = 'fa.dot-circle-o'
+    config_state_count = 4
 
     mirror = Cpt(LICMirror, ':MMS:STATE', kind='hinted',
                  doc='Control of the mirror via saved positions.')

@@ -12,6 +12,7 @@ class ReflaserL2SI(BaseInterface, GroupDevice, LightpathInOutMixin):
 
     lightpath_cpts = ['mirror']
     _icon = 'fa.bullseye'
+    config_state_count = 2
 
     las_pct = Cpt(PytmcSignal, ':LAS:PCT', io='io', kind='hinted')
     mirror = Cpt(TwinCATStatePMPS, ':MMS:STATE', kind='hinted',

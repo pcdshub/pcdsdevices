@@ -320,7 +320,7 @@ class LCLS2ImagerBase(BaseInterface, GroupDevice, LightpathInOutMixin):
     All LCLS2 imagers are guaranteed to have the following components that
     behave essentially the same.
     """
-
+    config_state_count = 4
     tab_component_names = True
 
     lightpath_cpts = ['target']

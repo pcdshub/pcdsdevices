@@ -497,19 +497,56 @@ class TwinCATStateConfigOne(Device):
                 doc='True if the state is defined (not empty).')
 
 
-class TwinCATStateConfigAll(Device):
+class TwinCATStateConfigDynamic(Device):
     """
-    Configuration of all possible state positions in TwinCAT.
+    Configuration of a number of twincat states based on the parent device.
 
-    Designed to be used with the array of ``DUT_PositionState`` from
-    ``FB_PositionStateManager``.
+    This will become an instance with a number of config states based on the
+    parent devices. We'll check if parent.parent has a valid class with
+    a ``config_state_count`` class attribute first, and dynamically create
+    our class based on that variable. If that is missing, we'll also try
+    the direct parent's class, which should at minimum find the fallback value
+    of 9 from TwinCATStatePositioner.
+
+    Under the hood, this creates classes dynamically and stores them for later
+    use. Classes created here will pass an
+    isinstance(cls, TwinCATStateConfigDynamic) check, and two devices of the
+    same class will use exactly the same state config class from the
+    registry, rather than creating a duplicate.
     """
+    _state_config_registry: dict = {}
 
-    state01 = Cpt(TwinCATStateConfigOne, ':01', kind='omitted')
-    state02 = Cpt(TwinCATStateConfigOne, ':02', kind='omitted')
-    state03 = Cpt(TwinCATStateConfigOne, ':03', kind='omitted')
-    state04 = Cpt(TwinCATStateConfigOne, ':04', kind='omitted')
-    state05 = Cpt(TwinCATStateConfigOne, ':05', kind='omitted')
+    def __new__(
+        cls,
+        prefix: str,
+        *,
+        parent: Device,
+        **kwargs
+    ):
+        try:
+            count = parent.parent.__class__.config_state_count
+            key = parent.parent.__class__
+        except AttributeError:
+            count = parent.__class__.config_state_count
+            key = parent.__class__
+        try:
+            new_cls = cls._state_config_registry[key]
+        except KeyError:
+            new_cls = type(
+                key.__name__ + 'StateConfig',
+                (TwinCATStateConfigDynamic,),
+                {
+                    f'state{num:02}':
+                    Cpt(
+                        TwinCATStateConfigOne,
+                        f':{num:02}',
+                        kind='omitted',
+                    )
+                    for num in range(1, count + 1)
+                }
+            )
+            cls._state_config_registry[key] = new_cls
+        return super().__new__(new_cls)
 
 
 class TwinCATStatePositioner(StatePositioner):
@@ -559,8 +596,12 @@ class TwinCATStatePositioner(StatePositioner):
     reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='normal',
                     doc='Command to reset an error.')
 
-    config = Cpt(TwinCATStateConfigAll, '', kind='omitted',
+    config = Cpt(TwinCATStateConfigDynamic, '', kind='omitted',
                  doc='Configuration of state positions, deltas, etc.')
+
+    # 9 is the maximum states you can have in lcls-twincat-motion
+    # Can be overriden in subclass or by parent to include fewer PVs
+    config_state_count: int = 9
 
     set_metadata(error_id, dict(variety='scalar', display_format='hex'))
     set_metadata(reset_cmd, dict(variety='command', value=1))
