@@ -3,11 +3,13 @@ from unittest.mock import Mock
 
 import pytest
 from ophyd.device import Component as Cpt
+from ophyd.device import Device
 from ophyd.signal import Signal
 from ophyd.sim import make_fake_device
 
 from pcdsdevices.state import (PVStatePositioner, StatePositioner,
-                               StateRecordPositioner, StateStatus)
+                               StateRecordPositioner, StateStatus,
+                               TwinCATStatePositioner)
 
 logger = logging.getLogger(__name__)
 
@@ -205,3 +207,47 @@ def test_auto_states():
     enum_strs = ('Unknown', 'IN', 'OUT')
     states.state._run_subs(sub_type=states.state.SUB_META, enum_strs=enum_strs)
     assert states.states_list == list(enum_strs)
+
+
+def test_twincat_state_config_dynamic():
+    logger.debug('test_twincat_state_config_dynamic')
+    # Make some classes that use the dynamic states and count states
+    # Instantiate real and fake versions
+
+    class StandaloneStates(TwinCATStatePositioner):
+        config_state_count = 2
+
+    class DeviceWithStates(Device):
+        config_state_count = 3
+        state = Cpt(StandaloneStates, 'TST', kind='normal')
+
+    FakeStandaloneStates = make_fake_device(StandaloneStates)
+    FakeDeviceWithStates = make_fake_device(DeviceWithStates)
+
+    states2 = StandaloneStates('STATES2:', name='states2')
+    for name in ('state01', 'state02'):
+        assert name in states2.config.component_names
+        getattr(states2.config, name)
+    with pytest.raises(AttributeError):
+        states2.config.state03
+
+    states3 = DeviceWithStates('STATES3:', name='states3')
+    for name in ('state01', 'state02', 'state03'):
+        assert name in states3.state.config.component_names
+        getattr(states3.state.config, name)
+    with pytest.raises(AttributeError):
+        states3.state.config.state04
+
+    fake_states2 = FakeStandaloneStates('STATES2:', name='fake_states2')
+    for name in ('state01', 'state02'):
+        assert name in fake_states2.config.component_names
+        getattr(fake_states2.config, name)
+    with pytest.raises(AttributeError):
+        fake_states2.config.state03
+
+    fake_states3 = FakeDeviceWithStates('STATES3:', name='fake_states3')
+    for name in ('state01', 'state02', 'state03'):
+        assert name in fake_states3.state.config.component_names
+        getattr(fake_states3.state.config, name)
+    with pytest.raises(AttributeError):
+        fake_states3.state.config.state04

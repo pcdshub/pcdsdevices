@@ -9,6 +9,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import Device, required_for_connection
 from ophyd.positioner import PositionerBase
 from ophyd.signal import EpicsSignal
+from ophyd.sim import fake_device_cache, make_fake_device
 from ophyd.status import SubscriptionStatus
 from ophyd.status import wait as status_wait
 
@@ -515,6 +516,7 @@ class TwinCATStateConfigDynamic(Device):
     registry, rather than creating a duplicate.
     """
     _state_config_registry: dict = {}
+    _config_cls: type = TwinCATStateConfigOne
 
     def __new__(
         cls,
@@ -538,7 +540,7 @@ class TwinCATStateConfigDynamic(Device):
                 {
                     f'state{num:02}':
                     Cpt(
-                        TwinCATStateConfigOne,
+                        cls._config_cls,
                         f':{num:02}',
                         kind='omitted',
                     )
@@ -547,6 +549,23 @@ class TwinCATStateConfigDynamic(Device):
             )
             cls._state_config_registry[key] = new_cls
         return super().__new__(new_cls)
+
+
+class FakeTwinCATStateConfigDynamic(TwinCATStateConfigDynamic):
+    """
+    Proper fake device class for TwinCATStateConfigDynamic.
+
+    Useful in test suites.
+    """
+    _config_cls = make_fake_device(TwinCATStateConfigOne)
+
+
+# Import-time editing of fake_device_cache!
+# This forces fake devices that include TwinCATStateConfigDynamic
+# to use our special fake class instead.
+# This is needed because the make_fake_device won't find our
+# dynamic subclasses.
+fake_device_cache[TwinCATStateConfigDynamic] = FakeTwinCATStateConfigDynamic
 
 
 class TwinCATStatePositioner(StatePositioner):
