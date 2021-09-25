@@ -289,6 +289,7 @@ class Mono(BaseInterface, GroupDevice):
     transmission = 1
     SUB_STATE = 'state'
 
+
 class TMO_Spectrometer(BaseInterface, GroupDevice):
     """
     TMO Fresnel Photon Spectrometer Motion components class.
@@ -303,11 +304,11 @@ class TMO_Spectrometer(BaseInterface, GroupDevice):
     name : str
         Alias for the device
     """
-    #UI Representation
+    # UI Representation
     _icon = 'fa.minus-square'
     tab_component_names = True
 
-     # Motor components: can read/write positions
+    # Motor components: can read/write positions
     lens_x = Cpt(BeckhoffAxisNoOffset, ':MMS:01', kind='normal')
     foil_x = Cpt(BeckhoffAxisNoOffset, ':MMS:02', kind='normal')
     zone_plate_x = Cpt(BeckhoffAxisNoOffset, ':MMS:03', kind='normal')
