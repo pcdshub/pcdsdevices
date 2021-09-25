@@ -209,6 +209,18 @@ class GCCPLC(GaugePLC):
                               doc='Protection setpoint hysteresis')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
                        doc='Interlock is ok')
+    auto_on = Cpt(EpicsSignalWithRBV, ':Auto_On', kind='config',
+                  doc=('Setting to automatically turn on the gauge when the'
+                       'reference gauge pressure is below protection '
+                       'setpoint'))
+    autoOn_countdown = Cpt(EpicsSignalRO, ':AutoOn_timer_RBV', kind='normal',
+                           doc='timer count down to turn on the gauge ')
+
+
+class GFSPLC(GCCPLC):
+    """Class for a fast shutter sensor gauge controlled by PLC."""
+    fault_setpoint_FS = Cpt(EpicsSignalRO, ':PSTATSPRBCK_FS', kind='config',
+                            doc='Vacuum fault setpoint for Fast shutter valve')
 
 
 class GHCPLC(GaugePLC):

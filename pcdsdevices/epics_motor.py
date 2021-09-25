@@ -4,6 +4,7 @@ Module for LCLS's special motor records.
 import logging
 import os
 import shutil
+from typing import ClassVar, Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -23,6 +24,7 @@ from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
 from .interface import FltMvInterface
 from .pseudopos import OffsetMotorBase, delay_class_factory
+from .registry import device_registry
 from .signal import EpicsSignalEditMD, EpicsSignalROEditMD, PytmcSignal
 from .utils import get_status_float, get_status_value
 from .variety import set_metadata
@@ -54,6 +56,10 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
            interface.
         4. The description field keeps track of the motors scientific use along
            the beamline.
+        5. The post-move error logs only appear after a move in that session,
+           not after a move in another user's session. This is achieved by
+           keeping track of whether or not a move was caused by this session
+           and filtering self.log appropriately.
     """
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
@@ -88,6 +94,21 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     EpicsMotor.high_limit_travel.kind = Kind.config
     EpicsMotor.low_limit_travel.kind = Kind.config
     EpicsMotor.direction_of_travel.kind = Kind.normal
+
+    _alarm_filter_installed: ClassVar[bool] = False
+    _moved_in_session: bool
+    _egu: str
+
+    def __init__(self, *args, **kwargs):
+        self._moved_in_session = False
+        self._egu = ''
+        super().__init__(*args, **kwargs)
+        self._install_motion_error_filter()
+        self.motor_egu.subscribe(self._cache_egu)
+
+    def move(self, position: float, wait: bool = True, **kwargs) -> MoveStatus:
+        self._moved_in_session = True
+        return super().move(position, wait=wait, **kwargs)
 
     def format_status_info(self, status_info):
         """
@@ -306,6 +327,87 @@ Limit Switch: {switch_limits}
             self.user_setpoint.put(pos, wait=True, force=True)
         finally:
             self.set_use_switch.put(0, wait=True)
+
+    @property
+    def egu(self) -> str:
+        """
+        Engineering units str if available, otherwise ''
+
+        Use the monitored/cached value rather than checking EPICS.
+        """
+        return self._egu
+
+    def _cache_egu(self, value: str, **kwargs) -> None:
+        """
+        Cache the value of EGU for later use in the egu property.
+        """
+        self._egu = value
+
+    def _instance_error_filter(self, record: logging.LogRecord) -> bool:
+        """
+        Instance-specific motion error filter.
+
+        This filter will remove log messages that contain the
+        keyword "alarm" unless a move was requested in this
+        session and is active.
+
+        Returns True if the message should pass, or False if the message
+        should be filtered.
+        """
+        return self._moved_in_session or ' alarm ' not in record.msg
+
+    def _install_motion_error_filter(self) -> None:
+        """
+        Applies the class _motion_error_filter to self.log
+        """
+        if not EpicsMotorInterface._alarm_filter_installed:
+            EpicsMotorInterface._alarm_filter_installed = True
+            self.log.logger.addFilter(EpicsMotorInterfaceAlarmFilter())
+
+    def _done_moving(self, value: Optional[int] = None, **kwargs) -> None:
+        """
+        Override _done_moving to always reset our _moved_in_session attribute.
+
+        This is not possible through adding subscriptions because SUB_DONE
+        is only run on success and _SUB_REQ_DONE is private and repeatedly
+        cleared.
+        """
+        super()._done_moving(value=value, **kwargs)
+        if value:
+            self._reset_moved_in_session()
+
+    def _reset_moved_in_session(self) -> None:
+        """
+        Mark that a move have not yet been requested in this session.
+        """
+        self._moved_in_session = False
+
+
+class EpicsMotorInterfaceAlarmFilter(logging.Filter):
+    """
+    Log filter dispatcher for the EpicsMotorInterface alarm filters.
+
+    Finds the EpicsMotorInterface object associated with a ophyd.objects log
+    message and gives it a chance to filter the log message out.
+    """
+    def filter(self, record: logging.LogRecord) -> bool:
+        """Find the motor in the device registry and run its filter."""
+        try:
+            name = record.ophyd_object_name
+        except AttributeError:
+            # Fails if not the ophyd.objects logger -> ignore
+            return True
+        try:
+            obj = device_registry[name]
+        except KeyError:
+            # Fails if the device was destroyed - can we even get here?
+            return True
+        try:
+            filt = obj._instance_error_filter
+        except AttributeError:
+            # Fails if the device is not an EpicsMotorInterface -> ignore
+            return True
+        return filt(record)
 
 
 class PCDSMotorBase(EpicsMotorInterface):
