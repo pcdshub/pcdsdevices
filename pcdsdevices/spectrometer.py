@@ -291,7 +291,7 @@ class Mono(BaseInterface, GroupDevice):
 
 class TMO_Spectrometer(BaseInterface, GroupDevice):
     """
-    TMO Spectrometer Motion components class.
+    TMO Fresnel Photon Spectrometer Motion components class.
 
     Photon Spectrometer with LCLS-II Beckhoff motion architecture.
 
@@ -304,8 +304,8 @@ class TMO_Spectrometer(BaseInterface, GroupDevice):
         Alias for the device
     """
     #UI Representation
-     _icon = 'fa.minus-square'
-     tab_component_names = True
+    _icon = 'fa.minus-square'
+    tab_component_names = True
 
      # Motor components: can read/write positions
     lens_x = Cpt(BeckhoffAxisNoOffset, ':MMS:01', kind='normal')
