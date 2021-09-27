@@ -290,7 +290,7 @@ class Mono(BaseInterface, GroupDevice):
     SUB_STATE = 'state'
 
 
-class TMO_Spectrometer(BaseInterface, GroupDevice):
+class TMOSpectrometer(BaseInterface, GroupDevice):
     """
     TMO Fresnel Photon Spectrometer Motion components class.
 
