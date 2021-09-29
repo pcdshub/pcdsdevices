@@ -1,17 +1,18 @@
 Release History
 ###############
 
-
 v4.8.0 (2021-09-28)
 ===================
 
 Features
 --------
-- Add GroupDevice: A device that is a group of components that will act independently.
+- Add ``GroupDevice``: A device that is a group of components that will act
+  independently. This has some performance improvements and small optimizations
+  for when we expect the different subdevices to act fully independently.
 - Add a ``status`` method to ``BaseInterface`` to return the device's status
   string. This is useful for recording device status in the elog.
-- Add typhos templates for BeckhoffSlits and PowerSlits using existing
-  elements from their normal pydm screens.
+- Add ``typhos`` templates for ``BeckhoffSlits`` and ``PowerSlits`` using existing
+  elements from their normal ``pydm`` screens.
 
 Device Updates
 --------------
@@ -66,9 +67,10 @@ Device Updates
   - WaveFrontSensorTarget
   - XOffsetMirror
   - XYZStage
-- Clean up pmgr loading a bit on IMS (my previous edit to Mike's setup was a bit rough)
-- Edit stage/unstage on PIMY to be compatible with GroupDevice
-- Edit stage/unstage and the class definition on SlitsBase to be compatible with GroupDevice
+- Clean up pmgr loading on the IMS class.
+- Edit stage/unstage on ``PIMY`` to be compatible with ``GroupDevice``.
+- Edit stage/unstage and the class definition on ``SlitsBase`` to be
+  compatible with ``GroupDevice``
 - Change ``CCM`` from a ``InOutPositioner`` to a normal device with a
   ``LightpathMixin`` interface. Being a positioner that contained a bunch
   of other positioners, methods like ``move`` were extremely ambiguous
@@ -88,24 +90,25 @@ Device Updates
   will only be shown if they were the result of moves in the current session.
   Note that this log filtering assumes that all epics motors will have unique
   ophyd names.
-- Added GFS fault setpoint, GCC, PIP auto-on and countdown timer
-- Switch the CCM energy devices to use user PVs as the canonical source
+- Added ``GFS`` fault setpoint, ``GCC``, ``PIP`` auto-on and countdown timer
+- Switch the ``CCM`` energy devices to use user PVs as the canonical source
   of calculation constants. This allows the constants to be consistent
   between sessions and keeps different sessions in sync with each other.
-- Add ``CCM.energy.set_current_position`` utility for adjusting the CCM
+- Add ``CCM.energy.set_current_position`` utility for adjusting the ``CCM``
   theta0 offset in order to synchronize the calculation with a known
   photon energy values.
 
 New Devices
 -----------
--  TMO Fresnel Photon Spectrometer Motion components class.
+- TMO Fresnel Photon Spectrometer Motion components class,
+  ``TMOSpectrometer``
 
 Bugfixes
 --------
-- Fix some race conditions in FuncPositioner
+- Fix some race conditions in ``FuncPositioner``
 - Fix a race condition in schedule_task that could cause a task to never be run
-- Add a timeout parameter to IMS.reinitialize, and set it as the default arg
-  for use in the stage method, which is run during scans. This avoids
+- Add a timeout parameter to ``IMS.reinitialize``, and set it as the default
+  arg for use in the stage method, which is run during scans. This avoids
   a bug where the stage method could hang forever instead of erroring out,
   halting a scan in its tracks.
 - Fix an issue where epics motors could time out on the getting of
@@ -114,7 +117,7 @@ Bugfixes
 
 Maintenance
 -----------
-- Move PVStateSignal from state.py to signal.py to avoid a circular import
+- Move ``PVStateSignal`` from state.py to signal.py to avoid a circular import
 - Make the tests importable and runnable on Windows
 - Require Python 3.9 for type annotations
 - Make pmgr optional, but if installed make sure it has a compatible version.
@@ -128,10 +131,9 @@ Maintenance
 
 Contributors
 ------------
-- Mbosum
-- ZLLentz
 - ghalym
 - jyin999
+- mbosum
 - zllentz
 
 
