@@ -1012,6 +1012,15 @@ class BeckhoffAxis(EpicsMotorInterface):
         return status
 
 
+class OldBeckhoffAxisPLC(BeckhoffAxisPLC):
+    cmd_home = None
+
+
+class OldBeckhoffAxis(BeckhoffAxis):
+    plc = Cpt(OldBeckhoffAxisPLC, ':PLC:', kind='normal',
+              doc='PLC error handling.')
+
+
 class BeckhoffAxisNoOffset(BeckhoffAxis):
     """
     A BeckhoffAxis with various fields read-only.
