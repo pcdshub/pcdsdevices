@@ -88,11 +88,11 @@ class PIM(BaseInterface, GroupDevice):
     _prefix_start = ''
 
     state = Cpt(PIMY, '', kind='normal')
-    zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
+    zoom = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
     detector = FCpt(PCDSAreaDetectorEmbedded, '{self._prefix_det}',
                     kind='normal')
 
-    tab_whitelist = ['y_motor', 'remove', 'insert', 'removed', 'inserted']
+    tab_whitelist = ['y', 'remove', 'insert', 'removed', 'inserted']
     tab_component_names = True
 
     def infer_prefix(self, prefix):
@@ -119,17 +119,17 @@ class PIM(BaseInterface, GroupDevice):
         status: str
             Formatted string with all relevant status information.
         """
-        focus = get_status_value(status_info, 'focus_motor', 'position')
-        f_units = get_status_value(status_info, 'focus_motor', 'user_setpoint',
+        focus = get_status_value(status_info, 'focus', 'position')
+        f_units = get_status_value(status_info, 'focus', 'user_setpoint',
                                    'units')
         state_pos = get_status_value(status_info, 'state', 'position')
         y_pos = get_status_float(status_info, 'state', 'motor', 'position',
                                  precision=4)
         y_units = get_status_value(status_info, 'state', 'motor',
                                    'user_setpoint', 'units')
-        zoom = get_status_float(status_info, 'zoom_motor', 'position',
+        zoom = get_status_float(status_info, 'zoom', 'position',
                                 precision=4)
-        z_units = get_status_value(status_info, 'zoom_motor', 'user_setpoint',
+        z_units = get_status_value(status_info, 'zoom', 'user_setpoint',
                                    'units')
 
         name = ' '.join(self.prefix.split(':'))
@@ -190,7 +190,7 @@ Y Position: {y_pos} [{y_units}]
             self._prefix_zoom = self.prefix_start+'CLZ:01'
 
         super().__init__(prefix, name=name, **kwargs)
-        self.y_motor = self.state.motor
+        self.y = self.state.motor
 
 
 class PIMWithFocus(PIM):
@@ -220,7 +220,7 @@ class PIMWithFocus(PIM):
         be inferred from `prefix`.
     """
 
-    focus_motor = FCpt(IMS, '{self._prefix_focus}', kind='normal')
+    focus = FCpt(IMS, '{self._prefix_focus}', kind='normal')
 
     def __init__(self, prefix, *, name, prefix_focus=None, **kwargs):
         self.infer_prefix(prefix)
