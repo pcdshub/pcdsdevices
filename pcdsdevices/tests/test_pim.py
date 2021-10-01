@@ -16,9 +16,9 @@ def fake_pim():
     pim = FakePIM('Test:Yag', name='test')
     pim.state.state.sim_put(0)
     pim.state.state.sim_set_enum_strs(['Unknown'] + PIMY.states_list)
-    pim.y_motor.error_severity.sim_put(0)
-    pim.y_motor.bit_status.sim_put(0)
-    pim.y_motor.motor_spg.sim_put(2)
+    pim.y.error_severity.sim_put(0)
+    pim.y.bit_status.sim_put(0)
+    pim.y.motor_spg.sim_put(2)
     return pim
 
 
