@@ -69,8 +69,8 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
     # Current Dial position
     dial_position = Cpt(EpicsSignalRO, '.DRBV', kind='normal')
 
-    tab_whitelist = ["set_current_position", "home", "velocity", "enable",
-                     "disable", "check_limit_switches", "get_low_limit",
+    tab_whitelist = ["set_current_position", "home", "velocity",
+                     "check_limit_switches", "get_low_limit",
                      "set_low_limit", "get_high_limit", "set_high_limit"]
 
     set_metadata(EpicsMotor.home_forward, dict(variety='command-proc',
@@ -447,8 +447,6 @@ class PCDSMotorBase(EpicsMotorInterface):
     # paused and ready to resume on Go 'Paused', and to resume a move 'Go'.
     motor_spg = Cpt(EpicsSignal, '.SPG', kind='omitted')
 
-    tab_whitelist = ["spg_stop", "spg_pause", "spg_go"]
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.stage_sigs[self.motor_spg] = 2
@@ -581,7 +579,7 @@ class IMS(PCDSMotorBase):
     velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
     acceleration = Cpt(EpicsSignal, '.ACCL', kind='config')
 
-    tab_whitelist = ['auto_setup', 'reinitialize', 'clear_.*']
+    tab_whitelist = ['reinitialize', 'acceleration', 'clear_.*']
 
     # The singleton parameter manager object.
     _pm = None

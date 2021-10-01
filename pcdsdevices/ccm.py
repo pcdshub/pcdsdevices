@@ -918,11 +918,9 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
              doc='Combined motion of the CCM Y motors.')
 
     lightpath_cpts = ['x']
-    tab_component_names = True
-    tab_whitelist = ['x1', 'x2', 'y1', 'y2', 'y3', 'E', 'E_vernier',
-                     'th2coarse', 'th2fine', 'alio2E', 'E2alio',
-                     'home', 'kill', 'status',
-                     'insert', 'remove', 'inserted', 'removed']
+    tab_whitelist = ['x1', 'x2', 'y1', 'y2', 'y3', 'E', 'E_Vernier',
+                     'th2fine', 'alio2E', 'E2alio', 'alio', 'home',
+                     'kill', 'insert', 'remove', 'inserted', 'removed']
 
     _in_pos: float
     _out_pos: float
