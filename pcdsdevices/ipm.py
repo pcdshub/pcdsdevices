@@ -313,7 +313,7 @@ class IPIMB(BaseInterface, GroupDevice):
 
     Attributes
     ----------
-    isum
+    sum
         Total sum of all 4 channels (i0 if standard IPM device).
 
     xpos, ypos
@@ -329,9 +329,9 @@ class IPIMB(BaseInterface, GroupDevice):
         Trigger component.
     """
 
-    tab_whitelist = ['isum', 'xpos', 'ypos']
+    tab_whitelist = ['sum', 'xpos', 'ypos']
 
-    isum = Cpt(EpicsSignalRO, ':SUM', kind='hinted')
+    sum = Cpt(EpicsSignalRO, ':SUM', kind='hinted')
     xpos = Cpt(EpicsSignalRO, ':XPOS', kind='normal')
     ypos = Cpt(EpicsSignalRO, ':YPOS', kind='normal')
     evr_channel = Cpt(Trigger, ':TRIG:TRIG0', kind='normal')
@@ -402,9 +402,9 @@ class Wave8(BaseInterface, GroupDevice):
         Alias for the wave8.
     """
 
-    tab_whitelist = ['isum', 'xpos', 'ypos']
+    tab_whitelist = ['sum', 'xpos', 'ypos']
 
-    isum = Cpt(EpicsSignalRO, ':SUM', kind='normal')
+    sum = Cpt(EpicsSignalRO, ':SUM', kind='normal')
     xpos = Cpt(EpicsSignalRO, ':XPOS', kind='normal')
     ypos = Cpt(EpicsSignalRO, ':YPOS', kind='normal')
     evr_channel = Cpt(Trigger, ':TRIG:TRIG0', kind='normal')
@@ -449,9 +449,9 @@ class IPM_Det(BaseInterface, Device):
     """Base class for IPM_IPIMB and IPM_Wave8. Not meant to be instantiated."""
     tab_component_names = True
 
-    def isum(self):
-        """Returns the detector's isum value."""
-        return self.det.isum.get()
+    def sum(self):
+        """Returns the detector's sum value."""
+        return self.det.sum.get()
 
     def xpos(self):
         """Returns the detector's xpos value."""
