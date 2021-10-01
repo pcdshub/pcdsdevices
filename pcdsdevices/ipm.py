@@ -133,7 +133,13 @@ class IPMMotion(BaseInterface, GroupDevice):
     _icon = 'ei.screenshot'
 
     tab_whitelist = ['target', 'diode', 'insert', 'remove', 'inserted',
-                     'removed']
+                     'removed', 'ty', 'dx', 'dy']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ty = self.target.motor
+        self.dx = self.diode.x_motor
+        self.dy = self.diode.y_motor
 
     def format_status_info(self, status_info):
         """
