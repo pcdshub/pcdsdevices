@@ -98,11 +98,12 @@ class LAMPFlowCell(BaseInterface, GroupDevice):
     gas_jet_y = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
     gas_jet_z = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
 
-    flow_cell_x = Cpt(BeckhoffAxis, ':MMS:04', kind='normal')
-    flow_cell_y = Cpt(BeckhoffAxis, ':MMS:05', kind='normal')
-    flow_cell_z = Cpt(BeckhoffAxis, ':MMS:06', kind='normal')
-    flow_cell_theta = Cpt(BeckhoffAxis, 'MMS:10', kind='normal')
-
     sample_paddle_x = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
     sample_paddle_y = Cpt(BeckhoffAxis, ':MMS:08', kind='normal')
     sample_paddle_z = Cpt(BeckhoffAxis, ':MMS:09', kind='normal')
+
+    flow_cell_x = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
+    flow_cell_y = Cpt(BeckhoffAxis, ':MMS:11', kind='normal')
+    flow_cell_z = Cpt(BeckhoffAxis, ':MMS:12', kind='normal')
+    flow_cell_theta = Cpt(BeckhoffAxis, ':MMS:13', kind='normal')
+
