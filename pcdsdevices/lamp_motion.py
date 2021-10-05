@@ -106,4 +106,3 @@ class LAMPFlowCell(BaseInterface, GroupDevice):
     flow_cell_y = Cpt(BeckhoffAxis, ':MMS:11', kind='normal')
     flow_cell_z = Cpt(BeckhoffAxis, ':MMS:12', kind='normal')
     flow_cell_theta = Cpt(BeckhoffAxis, ':MMS:13', kind='normal')
-
