@@ -22,6 +22,24 @@ class M3BasePLCDevice(BaseInterface, Device):
     status = Cpt(PytmcSignal, ':IO:SyncUnitOK', io='i', kind='normal')
 
 
+class Bronkhorst(BaseInterface, Device):
+    """
+    A Bronkhorst mass flow meter/controller for sample delivery systems.
+
+    Parameters
+    ----------
+    prefix : str
+        The base PV for the Bronkhorst.
+
+    name : str
+        A name for the device.
+    """
+
+    unit = Cpt(PytmcSignal, ':Unit', io='i', kind='normal')
+    flow = Cpt(PytmcSignal, ':Flow', io='i', kind='normal')
+    setpoint = Cpt(PytmcSignal, ':Setpoint', io='o', kind='normal')
+
+
 class ViciValve(BaseInterface, Device):
     """
     A Vici Valve as used in the SDS Selector.
@@ -29,7 +47,7 @@ class ViciValve(BaseInterface, Device):
     Parameters
     ----------
     prefix : str
-        The base PV for the Selector.
+        The base PV for the Vici Valve.
 
     name : str
         A name for the device.
@@ -37,6 +55,26 @@ class ViciValve(BaseInterface, Device):
 
     req_pos = Cpt(PytmcSignal, ':ReqPos', io='io', kind='normal')
     curr_pos = Cpt(PytmcSignal, ':CurrentPos', io='i', kind='normal')
+
+
+class Sensirion(BaseInterface, Device):
+    """
+    A Sensirion liquid flow meter for sample delivery systems.
+
+    Parameters
+    ----------
+    prefix : str
+        The base PV for the Sensirion.
+
+    name : str
+        A name for the device.
+    """
+
+    flow = Cpt(PytmcSignal, ':Flow', io='i', kind='normal')
+    state = Cpt(PytmcSignal, ':State', io='i', kind='normal')
+    reset = Cpt(PytmcSignal, ':Reset', io='o', kind='normal')
+    mode = Cpt(PytmcSignal, ':Mode', io='o', kind='normal')
+    mode_rb = Cpt(PytmcSignal, ':ModeRb', io='i', kind='normal')
 
 
 class Selector(M3BasePLCDevice, GroupDevice):
@@ -55,24 +93,8 @@ class Selector(M3BasePLCDevice, GroupDevice):
         A name for the device.
     """
 
-    sampleFM_flow = Cpt(PytmcSignal, ':SampleFM:Flow', io='i', kind='normal')
-    sampleFM_state = Cpt(PytmcSignal, ':SampleFM:State', io='i',
-                         kind='normal')
-    sampleFM_reset = Cpt(PytmcSignal, ':SampleFM:Reset', io='o', kind='normal')
-    sampleFM_mode = Cpt(PytmcSignal, ':SampleFM:Mode', io='o', kind='normal')
-    sampleFM_mode_rb = Cpt(PytmcSignal, ':SampleFM:ModeRb', io='i',
-                           kind='normal')
-
-    sheathFM_flow = Cpt(PytmcSignal, ':SheathFM:Flow', io='i', kind='normal')
-    sheathFM_state = Cpt(PytmcSignal, ':SheathFM:State', io='i',
-                         kind='normal')
-    sheathFM_reset = Cpt(PytmcSignal, ':SheathFM:Reset', io='o', kind='normal')
-    sheathFM_mode = Cpt(PytmcSignal, ':SheathFM:Mode', io='o', kind='normal')
-    sheathFM_mode_rb = Cpt(PytmcSignal, ':SheathFM:ModeRb', io='i',
-                           kind='normal')
-
-    massFM_unit = Cpt(PytmcSignal, ':MassFM:Unit', io='i', kind='normal')
-    massFM_flow = Cpt(PytmcSignal, ':MassFM:Flow', io='i', kind='normal')
+    sampleFM = Cpt(Sensirion, ':SampleFM', kind='normal')
+    sheathFM = Cpt(Sensirion, ':SheathFM', kind='normal')
 
     # TODO: Add CXI:SDS:SEL1:SYNC_RES_REQ and other aux records
 
