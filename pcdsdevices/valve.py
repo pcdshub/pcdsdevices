@@ -154,16 +154,44 @@ class VGC(VRC):
                                       'interlocking this valve')
 
 
-class VGC_2S(VGC):
+class VGC_2S(VRC):
     """Class for Controlled Gate Valves with 2 setpoints."""
+    diff_press_ok = Cpt(EpicsSignalRO, ':DP_OK_RBV', kind='normal',
+                        doc='Differential pressure interlock ok')
+    ext_ilk_ok = Cpt(EpicsSignalRO, ':EXT_ILK_OK_RBV', kind='normal',
+                     doc='External interlock ok')
+
+    at_vac_setpoint_us = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP_US',
+                             kind='config',
+                             doc='AT VAC Set point value '
+                             'for the upstream gauge')
+    setpoint_hysterisis_us = Cpt(EpicsSignalWithRBV, ':AT_VAC_HYS_US',
+                                 kind='config',
+                                 doc='AT VAC Hysterisis for '
+                                 'the upstream setpoint')
     at_vac_setpoint_ds = Cpt(EpicsSignalWithRBV, ':AT_VAC_SP_DS',
                              kind='config',
                              doc='AT VAC Set point value '
-                                 'for the downstream gauge')
+                             'for the downstream gauge')
     setpoint_hysterisis_ds = Cpt(EpicsSignalWithRBV, ':AT_VAC_HYS_DS',
                                  kind='config',
                                  doc='AT VAC Hysterisis for '
-                                     'the downstream setpoint')
+                                 'the downstream setpoint')
+
+    at_vac = Cpt(EpicsSignalRO, ':AT_VAC_RBV', kind='normal',
+                 doc='at vacuum sp is reached')
+    error = Cpt(EpicsSignalRO, ':ERROR_RBV', kind='normal',
+                doc='Error Present')
+    mps_state = Cpt(EpicsSignalRO, ':MPS_FAULT_OK_RBV', kind='omitted',
+                    doc=('individual valve MPS state for debugging'))
+    interlock_device_upstream = Cpt(EpicsSignalRO, ':ILK_DEVICE_US_RBV',
+                                    kind='config', string=True,
+                                    doc='Upstream vacuum device used for'
+                                    'interlocking this valve')
+    interlock_device_downstream = Cpt(EpicsSignalRO, ':ILK_DEVICE_DS_RBV',
+                                      kind='config', string=True,
+                                      doc='Downstream vacuum device used for'
+                                      'interlocking this valve')
 
 
 class VFS(Device, LightpathMixin):
