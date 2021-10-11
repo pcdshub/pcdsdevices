@@ -856,10 +856,10 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
     theta2fine_prefix : str, required keyword
         The PV prefix of the motor that controls the fine adjustment
         of the of the second crystal's theta angle.
-    theta2coarse : str, required keyword
+    theta2coarse_prefix : str, required keyword
         The PV prefix of the motor that controls the coarse adjustment
         of the of the second crystal's theta angle.
-    chi2 : str, required keyword
+    chi2_prefix : str, required keyword
         The PV prefix of the motor that controls the adjustment
         of the of the second crystal's chi angle.
     x_down_prefix : str, required keyword
