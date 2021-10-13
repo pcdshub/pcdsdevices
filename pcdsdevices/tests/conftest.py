@@ -116,17 +116,53 @@ def find_pcdsdevices_submodules() -> Dict[str, ModuleType]:
     return modules
 
 
-def find_all_device_classes() -> list:
+def find_all_classes(classes) -> list:
     """Find all device classes in pcdsdevices and return them as a list."""
     def should_include(obj):
         return (
             inspect.isclass(obj) and
-            issubclass(obj, ophyd.Device) and
-            not obj.__module__.startswith('ophyd')
+            issubclass(obj, classes) and
+            not obj.__module__.startswith("ophyd") and
+            not obj.__module__.startswith("pcdsdevices.tests")
         )
 
     def sort_key(cls):
         return (cls.__module__, cls.__name__)
+
+    devices = [
+        obj
+        for module in find_pcdsdevices_submodules().values()
+        for _, obj in inspect.getmembers(module, predicate=should_include)
+    ]
+
+    return list(sorted(set(devices), key=sort_key))
+
+
+def find_all_device_classes() -> list:
+    """Find all device classes in pcdsdevices and return them as a list."""
+    return find_all_classes(ophyd.Device)
+
+
+def find_all_callables() -> list:
+    """Find all callables in pcdsdevices and return them as a list."""
+    def should_include(obj):
+        try:
+            name = obj.__name__
+            module = obj.__module__
+        except AttributeError:
+            return False
+
+        return (
+            callable(obj) and
+            not inspect.isclass(obj) and
+            module.startswith('pcdsdevices') and
+            not module.startswith('pcdsdevices._version') and
+            not module.startswith('pcdsdevices.tests')
+            and not name.startswith("_")
+        )
+
+    def sort_key(obj):
+        return (obj.__module__, obj.__name__)
 
     devices = [
         obj
