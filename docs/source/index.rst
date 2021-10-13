@@ -10,7 +10,7 @@
 
 .. toctree::
    :maxdepth: 1
-   :caption: Developer Features
+   :caption: Features
 
    mv.rst
    presets.rst
