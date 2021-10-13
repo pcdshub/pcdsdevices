@@ -13,6 +13,7 @@ from pcdsdevices.tests import conftest
 classes = conftest.find_all_classes(
     (
         ophyd.Device,
+        ophyd.ophydobj.OphydObject,
         pcdsdevices.interface.BaseInterface,
         pcdsdevices.interface._TabCompletionHelper,
     )

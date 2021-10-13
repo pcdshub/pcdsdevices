@@ -258,6 +258,8 @@ pcdsdevices.interface
 
     pcdsdevices.interface.BaseInterface
     pcdsdevices.interface.FltMvInterface
+    pcdsdevices.interface.LightpathInOutMixin
+    pcdsdevices.interface.LightpathMixin
     pcdsdevices.interface.MvInterface
     pcdsdevices.interface.TabCompletionHelperClass
     pcdsdevices.interface.TabCompletionHelperInstance
@@ -434,6 +436,7 @@ pcdsdevices.lxe
     pcdsdevices.lxe.LxtTtcExample
     pcdsdevices.lxe.TimeToolDelay
     pcdsdevices.lxe._ReversedTimeToolDelay
+    pcdsdevices.lxe._ScaledUnitConversionDerivedSignal
     pcdsdevices.lxe.load_calibration_file
 
 pcdsdevices.mirror
@@ -675,6 +678,27 @@ pcdsdevices.signal
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.signal.AggregateSignal
+    pcdsdevices.signal.AvgSignal
+    pcdsdevices.signal.EpicsSignalBaseEditMD
+    pcdsdevices.signal.EpicsSignalEditMD
+    pcdsdevices.signal.EpicsSignalROEditMD
+    pcdsdevices.signal.FakeEpicsSignalEditMD
+    pcdsdevices.signal.FakeEpicsSignalROEditMD
+    pcdsdevices.signal.FakeNotepadLinkedSignal
+    pcdsdevices.signal.FakePytmcSignal
+    pcdsdevices.signal.FakePytmcSignalRO
+    pcdsdevices.signal.FakePytmcSignalRW
+    pcdsdevices.signal.InternalSignal
+    pcdsdevices.signal.NotImplementedSignal
+    pcdsdevices.signal.NotepadLinkedSignal
+    pcdsdevices.signal.PVStateSignal
+    pcdsdevices.signal.PytmcSignal
+    pcdsdevices.signal.PytmcSignalRO
+    pcdsdevices.signal.PytmcSignalRW
+    pcdsdevices.signal.SignalEditMD
+    pcdsdevices.signal.UnitConversionDerivedSignal
+    pcdsdevices.signal._OptionalEpicsSignal
     pcdsdevices.signal.pytmc_writable
     pcdsdevices.signal.select_pytmc_class
 
