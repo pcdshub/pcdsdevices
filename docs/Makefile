@@ -18,10 +18,8 @@ clean:
 	-rm -rf $(BUILDDIR)
 	-rm -rf $(SOURCEDIR)/generated
 
-api_list:
-	python update_api_list.py > $(SOURCEDIR)/api.rst
-
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
-%: Makefile api_list
+%: Makefile
+	python update_api_list.py > $(SOURCEDIR)/api.rst
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
