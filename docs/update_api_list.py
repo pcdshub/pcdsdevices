@@ -1,4 +1,8 @@
-import pathlib
+"""
+Tool that generates the source for ``source/api.rst``.
+
+Uses tools from the pcdsdevices test suite to enumerate classes and callables.
+"""
 import sys
 
 import ophyd
@@ -23,42 +27,44 @@ modules = set(
 )
 
 
-automodules = "".join(
-    f"""
-.. automodule:: {module}
-    :members:
-
-"""
-    for module in sorted(modules)
-)
-
-
-print(f"""
-API
-###
-
-""".rstrip())
-
-
-for module_name in sorted(modules):
-    underline = "-" * len(module_name)
-    print(module_name)
-    print(underline)
-    print()
-    module = sys.modules[module_name]
-    objects = [
-        obj
-        for obj in list(classes) + list(callables)
-        if obj.__module__ == module_name and
-        hasattr(module, obj.__name__)
+def create_api_list() -> list[str]:
+    """Create the API list with all classes and functions."""
+    output = [
+        "API",
+        "###",
+        "",
     ]
 
-    if objects:
-        print(".. autosummary::")
-        print("    :toctree: generated")
-        print()
 
-        for obj in sorted(objects, key=lambda obj: obj.__name__):
-            print(f"    {obj.__module__}.{obj.__name__}")
+    for module_name in sorted(modules):
+        underline = "-" * len(module_name)
+        output.append(module_name)
+        output.append(underline)
+        output.append("")
+        module = sys.modules[module_name]
+        objects = [
+            obj
+            for obj in list(classes) + list(callables)
+            if obj.__module__ == module_name and
+            hasattr(module, obj.__name__)
+        ]
 
-        print()
+        if objects:
+            output.append(".. autosummary::")
+            output.append("    :toctree: generated")
+            output.append("")
+
+            for obj in sorted(objects, key=lambda obj: obj.__name__):
+                output.append(f"    {obj.__module__}.{obj.__name__}")
+
+            output.append("")
+
+
+    while output[-1] == "":
+        output.pop(-1)
+    return output
+
+
+if __name__ == "__main__":
+    output = create_api_list()
+    print("\n".join(output))
