@@ -1,31 +1,64 @@
 import pathlib
 import sys
 
+import ophyd
+
+import pcdsdevices.interface
 from pcdsdevices.tests import conftest
 
+classes = conftest.find_all_classes(
+    (
+        ophyd.Device,
+        pcdsdevices.interface.BaseInterface,
+        pcdsdevices.interface._TabCompletionHelper,
+    )
+)
 
-def create_section(name, objects, prefix=""):
-    object_names = [f"{prefix}{obj.__module__}.{obj.__name__}" for obj in objects]
-    separator = "\n    "
-    return f"""
+callables = conftest.find_all_callables()
 
-{name}
-{"^" * len(name)}
-
-.. autosummary::
-   :toctree: generated
-{separator}{separator.join(object_names)}
-""".rstrip()
+modules = set(
+    obj.__module__
+    for obj in list(classes) + list(callables)
+    if obj.__module__.startswith("pcdsdevices.")
+)
 
 
-class_section = create_section("Classes", conftest.find_all_device_classes())
-callable_section = create_section("Functions", conftest.find_all_callables())
+automodules = "".join(
+    f"""
+.. automodule:: {module}
+    :members:
+
+"""
+    for module in sorted(modules)
+)
+
 
 print(f"""
-Full API
-########
+API
+###
 
-{class_section}
-
-{callable_section}
 """.rstrip())
+
+
+for module_name in sorted(modules):
+    underline = "-" * len(module_name)
+    print(module_name)
+    print(underline)
+    print()
+    module = sys.modules[module_name]
+    objects = [
+        obj
+        for obj in list(classes) + list(callables)
+        if obj.__module__ == module_name and
+        hasattr(module, obj.__name__)
+    ]
+
+    if objects:
+        print(".. autosummary::")
+        print("    :toctree: generated")
+        print()
+
+        for obj in sorted(objects, key=lambda obj: obj.__name__):
+            print(f"    {obj.__module__}.{obj.__name__}")
+
+        print()

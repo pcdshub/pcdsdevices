@@ -33,6 +33,7 @@ sys.path.insert(0, module_path)
 import pcdsdevices  # isort: skip
 import pcdsdevices.device  # isort: skip
 
+from ophyd.docs import get_device_info
 
 # -- General configuration ------------------------------------------------
 
@@ -187,10 +188,11 @@ texinfo_documents = [
 
 # -- Sources of external documentation to cross-referencing----------------
 
-intersphinx_mapping = {'ophyd': ('https://blueskyproject.io/ophyd', None),
-                       'python': ('https://docs.python.org/3', None),
-                       'numpy': ('https://docs.scipy.org/doc/numpy', None)}
-
+intersphinx_mapping = {
+    "ophyd": ("https://blueskyproject.io/ophyd", None),
+    "python": ("https://docs.python.org/3", None),
+    "numpy": ("https://docs.scipy.org/doc/numpy", None),
+}
 
 
 OPHYD_SKIP = {
@@ -277,113 +279,14 @@ short_component_names = {
     pcdsdevices.device.UnrelatedComponent: 'UCpt',
 }
 
-
-def _get_class_info(cls):
-    if cls is None:
-        return None
-
-    return {
-        'name': cls.__name__,
-        'class': cls,
-        'link': f':class:`~{cls.__module__}.{cls.__name__}`'
-    }
-
-
-def _dynamic_device_component_to_row(base_attrs, cls, attr, cpt):
-    cpt_type = short_component_names.get(type(cpt), type(cpt).__name__)
-
-    doc = cpt.doc or ''
-    if doc.startswith('DynamicDeviceComponent attribute') :
-        doc = ''
-
-    nested_components = [
-        _component_to_row(base_attrs, cls, attr, dynamic_cpt)
-        for attr, dynamic_cpt in cpt.components.items()
-    ]
-
-    return dict(
-        component=cpt,
-        attr=attr if not cpt_type else f'{attr} ({cpt_type})',
-        cls=_get_class_info(getattr(cpt, 'cls', None)),
-        nested_components=nested_components,
-        doc=doc,
-        kind=cpt.kind.name,
-        inherited_from=_get_class_info(base_attrs.get(attr, None)),
-    )
-
-
-def _component_to_row(base_attrs, cls, attr, cpt):
-    if isinstance(cpt, ophyd.DynamicDeviceComponent):
-        return _dynamic_device_component_to_row(base_attrs, cls, attr, cpt)
-
-    cpt_type = short_component_names.get(type(cpt),
-                                              type(cpt).__name__)
-
-    doc = cpt.doc or ''
-    if doc.startswith(f'{cpt.__class__.__name__} attribute') :
-        doc = ''
-
-    return dict(
-        component=cpt,  # access to the component instance itself
-        attr=attr if not cpt_type else f'{attr} ({cpt_type})',
-        cls=_get_class_info(getattr(cpt, 'cls', None)),
-        suffix=f'``{cpt.suffix}``' if cpt.suffix else '',
-        doc=doc,
-        kind=cpt.kind.name,
-        inherited_from=_get_class_info(base_attrs.get(attr, None)),
-    )
-
-
-def _get_base_attrs(cls):
-    base_devices = [
-        base for base in reversed(cls.__bases__)
-        if hasattr(base, '_sig_attrs')
-    ]
-
-    return {
-        attr: base
-        for base in base_devices
-        for attr, cpt in base._sig_attrs.items()
-    }
-
-
-# NOTE: can't use functools.lru_cache here as it's not picklable
-_device_cache = {}
-
-
-def get_device_info(module, name):
-    class_name = f'{module}.{name}'
-    if class_name in _device_cache:
-        return _device_cache[class_name]
-
-    module_name, class_name = class_name.rsplit('.', 1)
-    module = __import__(module_name, globals(), locals(), [class_name])
-    cls = getattr(module, class_name)
-
-    if not issubclass(cls, ophyd.Device):
-        info = []
-    else:
-        base_attrs = _get_base_attrs(cls)
-
-        info = [
-            _component_to_row(base_attrs, cls, attr, cpt)
-            for attr, cpt in cls._sig_attrs.items()
-        ]
-
-    _device_cache[class_name] = info
-    return info
-
-
 autosummary_context = {
     # Allow autosummary/class.rst to do its magic:
     'get_device_info': get_device_info,
 }
 
-html_context = {
-    'css_files': [
-        '_static/theme_overrides.css',  # override wide tables in RTD theme
-    ],
-}
+html_css_files = [
+    '_static/theme_overrides.css',  # override wide tables in RTD theme
+]
 
 
 def rstjinja(app, docname, source):

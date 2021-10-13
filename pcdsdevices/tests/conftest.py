@@ -116,12 +116,12 @@ def find_pcdsdevices_submodules() -> Dict[str, ModuleType]:
     return modules
 
 
-def find_all_device_classes() -> list:
+def find_all_classes(classes) -> list:
     """Find all device classes in pcdsdevices and return them as a list."""
     def should_include(obj):
         return (
             inspect.isclass(obj) and
-            issubclass(obj, ophyd.Device) and
+            issubclass(obj, classes) and
             not obj.__module__.startswith("ophyd") and
             not obj.__module__.startswith("pcdsdevices.tests")
         )
@@ -136,6 +136,11 @@ def find_all_device_classes() -> list:
     ]
 
     return list(sorted(set(devices), key=sort_key))
+
+
+def find_all_device_classes() -> list:
+    """Find all device classes in pcdsdevices and return them as a list."""
+    return find_all_classes(ophyd.Device)
 
 
 def find_all_callables() -> list:

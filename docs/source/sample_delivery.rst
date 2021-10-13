@@ -20,10 +20,6 @@ https://confluence.slac.stanford.edu/display/PCDS/sample+delivery+system+automat
 
 https://github.com/pcdshub/SDS_test
 
-
-API
-###
-
 Selector Class
 --------------
 
