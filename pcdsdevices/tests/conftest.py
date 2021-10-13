@@ -122,7 +122,8 @@ def find_all_device_classes() -> list:
         return (
             inspect.isclass(obj) and
             issubclass(obj, ophyd.Device) and
-            not obj.__module__.startswith('ophyd')
+            not obj.__module__.startswith("ophyd") and
+            not obj.__module__.startswith("pcdsdevices.tests")
         )
 
     def sort_key(cls):
@@ -150,7 +151,8 @@ def find_all_callables() -> list:
             callable(obj) and
             not inspect.isclass(obj) and
             module.startswith('pcdsdevices') and
-            not module.startswith('pcdsdevices._version')
+            not module.startswith('pcdsdevices._version') and
+            not module.startswith('pcdsdevices.tests')
             and not name.startswith("_")
         )
 

@@ -1,10 +1,7 @@
 import pathlib
 import sys
 
-git_root = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(git_root / "tests"))
-
-import conftest
+from pcdsdevices.tests import conftest
 
 
 def create_section(name, objects, prefix=""):
@@ -18,7 +15,7 @@ def create_section(name, objects, prefix=""):
 .. autosummary::
    :toctree: generated
 {separator}{separator.join(object_names)}
-"""
+""".rstrip()
 
 
 class_section = create_section("Classes", conftest.find_all_device_classes())
@@ -31,4 +28,4 @@ Full API
 {class_section}
 
 {callable_section}
-""")
+""".rstrip())

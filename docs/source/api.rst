@@ -40,9 +40,11 @@ Classes
     pcdsdevices.areadetector.plugins.TransformPlugin
     pcdsdevices.atm.ArrivalTimeMonitor
     pcdsdevices.attenuator.AT1K4
+    pcdsdevices.attenuator.AT2K2
     pcdsdevices.attenuator.AT2L0
     pcdsdevices.attenuator.AttBase
     pcdsdevices.attenuator.AttBaseWith3rdHarmonic
+    pcdsdevices.attenuator.Attenuator12
     pcdsdevices.attenuator.AttenuatorCalculatorBase
     pcdsdevices.attenuator.AttenuatorCalculatorFilter
     pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade
@@ -58,7 +60,10 @@ Classes
     pcdsdevices.beam_stats.BeamStats
     pcdsdevices.beam_stats.LCLS
     pcdsdevices.ccm.CCM
-    pcdsdevices.ccm.CCMCalc
+    pcdsdevices.ccm.CCMAlio
+    pcdsdevices.ccm.CCMConstantsMixin
+    pcdsdevices.ccm.CCMEnergy
+    pcdsdevices.ccm.CCMEnergyWithVernier
     pcdsdevices.ccm.CCMMotor
     pcdsdevices.ccm.CCMPico
     pcdsdevices.ccm.CCMX
@@ -68,11 +73,13 @@ Classes
     pcdsdevices.dc_devices.ICT
     pcdsdevices.dc_devices.ICTBus
     pcdsdevices.dc_devices.ICTChannel
+    pcdsdevices.device.GroupDevice
     pcdsdevices.device.InterfaceDevice
     pcdsdevices.energy_monitor.GEM
     pcdsdevices.energy_monitor.GMD
     pcdsdevices.energy_monitor.XGMD
     pcdsdevices.epics_motor.BeckhoffAxis
+    pcdsdevices.epics_motor.BeckhoffAxisNoOffset
     pcdsdevices.epics_motor.BeckhoffAxisPLC
     pcdsdevices.epics_motor.EpicsMotorInterface
     pcdsdevices.epics_motor.IMS
@@ -90,6 +97,7 @@ Classes
     pcdsdevices.gauge.GCC500PLC
     pcdsdevices.gauge.GCCPLC
     pcdsdevices.gauge.GCT
+    pcdsdevices.gauge.GFSPLC
     pcdsdevices.gauge.GHCPLC
     pcdsdevices.gauge.GaugeColdCathode
     pcdsdevices.gauge.GaugePLC
@@ -135,6 +143,7 @@ Classes
     pcdsdevices.jet.Injector
     pcdsdevices.jet.InjectorWithFine
     pcdsdevices.lamp_motion.LAMP
+    pcdsdevices.lamp_motion.LAMPFlowCell
     pcdsdevices.lamp_motion.LAMPMagneticBottle
     pcdsdevices.lasers.ek9000.El3174AiCh
     pcdsdevices.lasers.ek9000.EnvironmentalMonitor
@@ -201,9 +210,18 @@ Classes
     pcdsdevices.mpod.MPODChannel
     pcdsdevices.mpod.MPODChannelHV
     pcdsdevices.mpod.MPODChannelLV
+    pcdsdevices.mpod_apalis.MPODApalisChannel
+    pcdsdevices.mpod_apalis.MPODApalisCrate
+    pcdsdevices.mpod_apalis.MPODApalisModule
+    pcdsdevices.mpod_apalis.MPODApalisModule16Channel
+    pcdsdevices.mpod_apalis.MPODApalisModule24Channel
+    pcdsdevices.mpod_apalis.MPODApalisModule4Channel
+    pcdsdevices.mpod_apalis.MPODApalisModule8Channel
     pcdsdevices.mps.MPS
     pcdsdevices.mps.MPSLimits
+    pcdsdevices.mrco_motion.MRCO
     pcdsdevices.my_device.MyDevice
+    pcdsdevices.pim.IM2K0
     pcdsdevices.pim.LCLS2ImagerBase
     pcdsdevices.pim.PIM
     pcdsdevices.pim.PIMWithBoth
@@ -283,6 +301,7 @@ Classes
     pcdsdevices.slits.SlitsBase
     pcdsdevices.spectrometer.Kmono
     pcdsdevices.spectrometer.Mono
+    pcdsdevices.spectrometer.TMOSpectrometer
     pcdsdevices.spectrometer.VonHamos4Crystal
     pcdsdevices.spectrometer.VonHamosCrystal
     pcdsdevices.spectrometer.VonHamosFE
@@ -296,7 +315,7 @@ Classes
     pcdsdevices.state.TwinCATStateConfigOne
     pcdsdevices.state.TwinCATStatePositioner
     pcdsdevices.stopper.PPSStopper
-    pcdsdevices.stopper.PPSStopperL2SI
+    pcdsdevices.stopper.PPSStopper2PV
     pcdsdevices.stopper.Stopper
     pcdsdevices.sxr_test_absorber.SxrTestAbsorber
     pcdsdevices.timetool.Timetool
@@ -313,7 +332,6 @@ Classes
     pcdsdevices.valve.VVCNO
     pcdsdevices.valve.ValveBase
     pcdsdevices.wfs.WaveFrontSensorTarget
-
 
 
 
@@ -372,6 +390,7 @@ Functions
     pcdsdevices.targets.snake_grid_list
     pcdsdevices.utils.combine_status_info
     pcdsdevices.utils.convert_unit
+    pcdsdevices.utils.doc_format_decorator
     pcdsdevices.utils.format_status_table
     pcdsdevices.utils.get_component
     pcdsdevices.utils.get_input
