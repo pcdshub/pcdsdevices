@@ -437,7 +437,7 @@ class StateRecordPositioner(StateRecordPositionerBase):
             self._has_subscribed_readback = True
         return cid
 
-    def stop(self, *, success=False):
+    def stop(self, *, success: bool = False):
         return self.motor.stop(success=success)
 
 

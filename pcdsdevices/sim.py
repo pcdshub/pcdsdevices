@@ -81,7 +81,7 @@ class SlowMotor(FastMotor):
                              args=(self, position))
         t.start()
 
-    def stop(self):
+    def stop(self, *, success: bool = False):
         self._stop = True
 
 
