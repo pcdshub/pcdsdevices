@@ -95,9 +95,9 @@ def test_mv_ginput(monkeypatch, fast_motor):
 
 
 @pytest.mark.skipif(
-    sys.platform == "win32",
+    sys.platform in ("win32", "darwin"),
     reason="Fails on Windows, no fcntl and different signal handling",
-    )
+)
 def test_presets(presets, fast_motor):
     logger.debug('test_presets')
 
