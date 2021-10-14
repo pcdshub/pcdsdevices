@@ -5,10 +5,10 @@ import numpy as np
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.epics_motor import OffsetMotor
-from pcdsdevices.lodcm import (CHI1, CHI2, H1N, H2N, LODCM, Y1, Y2, Dectris,
-                               Diode, Foil, LODCMEnergyC, LODCMEnergySi,
-                               SimFirstTower, SimLODCM, SimSecondTower, YagLom)
+from ..epics_motor import OffsetMotor
+from ..lodcm import (CHI1, CHI2, H1N, H2N, LODCM, Y1, Y2, Dectris, Diode, Foil,
+                     LODCMEnergyC, LODCMEnergySi, SimFirstTower, SimLODCM,
+                     SimSecondTower, YagLom)
 
 logger = logging.getLogger(__name__)
 
@@ -285,7 +285,7 @@ def test_tweak_parallel(fake_lodcm):
         assert lom.z2.wm() == 2.761514560357321 * 2
 
 
-def test_set_energy(fake_lodcm, monkeypatch):
+def test_set_energy(fake_lodcm):
     lom = fake_lodcm
     lom.set_energy(10, material='Si', reflection=(1, 1, 1))
 

@@ -8,8 +8,7 @@ import numpy as np
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.lens import (XFLS, LensStack, LensStackBase, Prefocus,
-                              SimLensStack)
+from ..lens import XFLS, LensStack, LensStackBase, Prefocus, SimLensStack
 
 logger = logging.getLogger(__name__)
 

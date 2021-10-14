@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from pcdsdevices.atm import ArrivalTimeMonitor
+from ..atm import ArrivalTimeMonitor
 
 logger = logging.getLogger(__name__)
 

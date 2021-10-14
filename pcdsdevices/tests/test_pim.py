@@ -4,8 +4,7 @@ from unittest.mock import Mock
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.pim import (PIM, PIMY, PPM, XPIM, PIMWithBoth, PIMWithFocus,
-                             PIMWithLED)
+from ..pim import PIM, PIMY, PPM, XPIM, PIMWithBoth, PIMWithFocus, PIMWithLED
 
 logger = logging.getLogger(__name__)
 

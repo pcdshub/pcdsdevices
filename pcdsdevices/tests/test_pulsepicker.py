@@ -7,8 +7,8 @@ import pytest
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
 
-from pcdsdevices.inout import InOutRecordPositioner
-from pcdsdevices.pulsepicker import PulsePickerInOut
+from ..inout import InOutRecordPositioner
+from ..pulsepicker import PulsePickerInOut
 
 logger = logging.getLogger(__name__)
 

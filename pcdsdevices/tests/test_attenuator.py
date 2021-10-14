@@ -7,8 +7,8 @@ import pytest
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
 
-from pcdsdevices.attenuator import (AT1K4, AT2L0, MAX_FILTERS, AttBase,
-                                    Attenuator, _att_classes)
+from ..attenuator import (AT1K4, AT2L0, MAX_FILTERS, AttBase, Attenuator,
+                          _att_classes)
 
 logger = logging.getLogger(__name__)
 

@@ -4,7 +4,7 @@ from unittest.mock import Mock
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.timetool import Timetool, TimetoolWithNav
+from ..timetool import Timetool, TimetoolWithNav
 
 logger = logging.getLogger(__name__)
 

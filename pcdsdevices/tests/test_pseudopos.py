@@ -5,11 +5,10 @@ import pytest
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
 
-from pcdsdevices.pseudopos import (DelayBase, LookupTablePositioner,
-                                   OffsetMotorBase, PseudoSingleInterface,
-                                   SimDelayStage, SyncAxesBase, SyncAxis,
-                                   SyncAxisOffsetMode)
-from pcdsdevices.sim import FastMotor
+from ..pseudopos import (DelayBase, LookupTablePositioner, OffsetMotorBase,
+                         PseudoSingleInterface, SimDelayStage, SyncAxesBase,
+                         SyncAxis, SyncAxisOffsetMode)
+from ..sim import FastMotor
 
 logger = logging.getLogger(__name__)
 

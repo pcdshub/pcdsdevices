@@ -6,8 +6,8 @@ from ophyd.device import Component as Cpt
 from ophyd.signal import Signal
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.state import (PVStatePositioner, StatePositioner,
-                               StateRecordPositioner, StateStatus)
+from ..state import (PVStatePositioner, StatePositioner, StateRecordPositioner,
+                     StateStatus)
 
 logger = logging.getLogger(__name__)
 
