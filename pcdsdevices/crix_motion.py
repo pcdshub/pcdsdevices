@@ -1,4 +1,5 @@
 import copy
+import functools
 from collections import namedtuple
 
 import numpy as np
@@ -19,9 +20,31 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
     calc = Cpt(PseudoSingleInterface, egu='mrad', kind='hinted')
     real = Cpt(BeckhoffAxis, '', kind='omitted')
 
-    # Aux signals for the typhos screen
-    high_limit_travel = Cpt(InternalSignal, kind='omitted')
-    low_limit_travel = Cpt(InternalSignal, kind='omitted')
+    # Aux signals for the typhos positioner widget
+    _extra_sig_md = {
+        'precision': 3,
+        'units': 'mrad',
+    }
+    user_readback = Cpt(
+        InternalSignal,
+        metadata=_extra_sig_md,
+        kind='omitted',
+    )
+    user_setpoint = Cpt(
+        InternalSignal,
+        metadata=_extra_sig_md,
+        kind='omitted',
+    )
+    high_limit_travel = Cpt(
+        InternalSignal,
+        metadata=_extra_sig_md,
+        kind='omitted',
+    )
+    low_limit_travel = Cpt(
+        InternalSignal,
+        metadata=_extra_sig_md,
+        kind='omitted',
+    )
 
     def __init__(self, prefix, *, name, ca, cb, cc, pol, limits, **kwargs):
         self.ca = ca
@@ -32,6 +55,18 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
         self.calc._limits = limits
         self.low_limit_travel.put(limits[0], force=True)
         self.high_limit_travel.put(limits[1], force=True)
+        self.real.user_readback.subscribe(
+            functools.partial(
+                self._calc_internal_update,
+                internal_sig=self.user_readback,
+            ),
+        )
+        self.real.user_setpoint.subscribe(
+            functools.partial(
+                self._calc_internal_update,
+                internal_sig=self.user_setpoint,
+            ),
+        )
 
     def forward(self, pseudo_pos: namedtuple) -> namedtuple:
         """
@@ -51,6 +86,10 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
         real = real_pos.real
         calc = self.ca * real**2 + self.cb * real + self.cc
         return self.PseudoPosition(calc=calc)
+
+    def _calc_internal_update(self, internal_sig, value, **kwargs):
+        calc = self.inverse(self.RealPosition(real=value)).calc
+        internal_sig.put(calc, force=True)
 
 
 class QuadraticSimMotor(QuadraticBeckhoffMotor):

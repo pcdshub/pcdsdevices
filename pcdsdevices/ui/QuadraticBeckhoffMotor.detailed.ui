@@ -45,10 +45,10 @@
       <string/>
      </property>
      <property name="readback_attribute" stdset="0">
-      <string>calc.readback</string>
+      <string>user_readback</string>
      </property>
      <property name="setpoint_attribute" stdset="0">
-      <string>calc.setpoint</string>
+      <string>user_setpoint</string>
      </property>
      <property name="low_limit_switch_attribute" stdset="0">
       <string>real.low_limit_switch</string>
@@ -251,7 +251,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>94</width>
+            <width>98</width>
             <height>28</height>
            </rect>
           </property>
