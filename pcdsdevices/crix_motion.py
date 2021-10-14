@@ -9,6 +9,7 @@ from .device import GroupDevice
 from .epics_motor import BeckhoffAxis
 from .interface import FltMvInterface
 from .pseudopos import PseudoPositioner, PseudoSingleInterface
+from .signal import InternalSignal
 
 
 class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
@@ -18,6 +19,10 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
     calc = Cpt(PseudoSingleInterface, egu='mrad', kind='hinted')
     real = Cpt(BeckhoffAxis, '', kind='omitted')
 
+    # Aux signals for the typhos screen
+    high_limit_travel = Cpt(InternalSignal, kind='omitted')
+    low_limit_travel = Cpt(InternalSignal, kind='omitted')
+
     def __init__(self, prefix, *, name, ca, cb, cc, pol, limits, **kwargs):
         self.ca = ca
         self.cb = cb
@@ -25,6 +30,8 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
         self.pol = pol
         super().__init__(prefix, name=name, **kwargs)
         self.calc._limits = limits
+        self.low_limit_travel.put(limits[0], force=True)
+        self.high_limit_travel.put(limits[1], force=True)
 
     def forward(self, pseudo_pos: namedtuple) -> namedtuple:
         """
