@@ -328,7 +328,7 @@ class EventSequencer(BaseInterface, Device, MonitorFlyerMixin, FlyerInterface):
         st = SubscriptionStatus(self.play_status, done, run=True)
         return st
 
-    def stop(self):
+    def stop(self, *, success: bool = False):
         """Stop the EventSequencer."""
         logger.debug("Stopping the EventSequencer")
         self.play_control.put(0)
