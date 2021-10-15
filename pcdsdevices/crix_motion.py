@@ -1,10 +1,12 @@
 import copy
 import functools
 from collections import namedtuple
+from typing import Union
 
 import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
+from ophyd.pseudopos import pseudo_position_argument, real_position_argument
 
 from .device import GroupDevice
 from .epics_motor import BeckhoffAxis
@@ -15,7 +17,33 @@ from .signal import InternalSignal
 
 class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
     """
-    Calc = ax^2 + bx + c
+    Pseudomotor of the form calc = ax^2 + bx + c.
+
+    This represents a linear BeckhoffAxis that turns a crystal.
+    The translation from linear (mm) motion to angular (mrad)
+    motion can be approximated well by a best-fit polynomial
+    of degree 2.
+
+    Parameters
+    ----------
+    prefix : str
+        The motor record prefix of the underlying real BeckhoffAxis.
+    name : str, required keyword
+        The name of the device to use as a reference.
+    ca : float, required keyword
+        The "a" constant in the best-fit polynomial.
+    cb : float, required keyword
+        The "b" constant in the best-fit polynomial.
+    cc : float, required keyword
+        The "c" constant in the best-fit polynomial.
+    pol : -1 or 1, required keyword
+        The polarity of the best-fit curve when converting back from
+        calculated position to real position for requesting a move.
+        The inverse of a quadratic function has two solutions at
+        most points, so we need to pick which one is correct.
+    limits : tuple of floats, required keyword
+        The limits to enforce on moves of the calculated axis.
+        This should be a tuple of size 2.
     """
     calc = Cpt(PseudoSingleInterface, egu='mrad', kind='hinted')
     real = Cpt(BeckhoffAxis, '', kind='omitted')
@@ -46,7 +74,18 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
         kind='omitted',
     )
 
-    def __init__(self, prefix, *, name, ca, cb, cc, pol, limits, **kwargs):
+    def __init__(
+        self,
+        prefix: str,
+        *,
+        name: str,
+        ca: float,
+        cb: float,
+        cc: float,
+        pol: Union[-1, 1],
+        limits: tuple[float, float],
+        **kwargs
+    ):
         self.ca = ca
         self.cb = cb
         self.cc = cc
@@ -68,9 +107,13 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
             ),
         )
 
-    def forward(self, pseudo_pos: namedtuple) -> namedtuple:
+    @pseudo_position_argument
+    def forward(self, pseudo_pos: namedtuple[float]) -> namedtuple[float]:
         """
-        Called to calc desired real using given mrad when we move
+        Calculate the position of the motor in mm given the mrad angle.
+
+        This is called when we request a move and when we check if the
+        position requested is within the limits of the linear motor.
         """
         calc = pseudo_pos.calc
         real = (
@@ -79,24 +122,53 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
             ) / (2*self.ca)
         return self.RealPosition(real=real)
 
-    def inverse(self, real_pos: namedtuple) -> namedtuple:
+    @real_position_argument
+    def inverse(self, real_pos: namedtuple[float]) -> namedtuple[float]:
         """
-        Called to calc the mrad using the current real when we get position
+        Calculate the position of the crystal in mrad given the mm position.
+
+        This is called when we check the current position of the
+        PseudoPositioner.
         """
         real = real_pos.real
         calc = self.ca * real**2 + self.cb * real + self.cc
         return self.PseudoPosition(calc=calc)
 
-    def _calc_internal_update(self, internal_sig, value, **kwargs):
+    def _calc_internal_update(
+        self,
+        internal_sig: InternalSignal,
+        value: float,
+        **kwargs
+    ):
+        """
+        Callback to update InternalSignal elements for the typhos UI.
+
+        This simply does the inverse calculation based on the given
+        mm value in order to put the mrad value into the
+        pre-registered signal.
+        """
         calc = self.inverse(self.RealPosition(real=value)).calc
         internal_sig.put(calc, force=True)
 
 
 class QuadraticSimMotor(QuadraticBeckhoffMotor):
+    """Simulated version of the QuadraticBeckhoffMotor for offline testing."""
     real = Cpt(SoftPositioner, kind='omitted')
 
 
 class VLSOptics(GroupDevice):
+    """
+    Device that collects the VLS mirror and grating together.
+
+    This also defines their polynomial fit constants, polarities, and limits.
+
+    Parameters
+    ----------
+    prefix : str,
+        This value is currently unused.
+    name : str, required keyword
+        This value is used to name the subcomponents.
+    """
     mirror = Cpt(
         QuadraticBeckhoffMotor,
         "CRIX:VLS:MMS:MP",
@@ -120,6 +192,7 @@ class VLSOptics(GroupDevice):
 
 
 class VLSOpticsSim(VLSOptics):
+    """Simulated version of VLSOptics for offline testing."""
     mirror = copy.copy(VLSOptics.mirror)
     mirror.cls = QuadraticSimMotor
     grating = copy.copy(VLSOptics.grating)
