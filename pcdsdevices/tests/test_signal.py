@@ -6,9 +6,9 @@ import pytest
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.sim import FakeEpicsSignal
 
-import pcdsdevices
-from pcdsdevices.signal import (AvgSignal, PytmcSignal, SignalEditMD,
-                                UnitConversionDerivedSignal)
+from .. import signal as signal_module
+from ..signal import (AvgSignal, PytmcSignal, SignalEditMD,
+                      UnitConversionDerivedSignal)
 
 logger = logging.getLogger(__name__)
 
@@ -129,8 +129,8 @@ def test_unit_conversion_signal_metadata_sub(unit_conv_signal):
 
 
 def test_optional_epics_signal(monkeypatch):
-    monkeypatch.setattr(pcdsdevices.signal, 'EpicsSignal', FakeEpicsSignal)
-    opt = pcdsdevices.signal._OptionalEpicsSignal('test', name='opt')
+    monkeypatch.setattr(signal_module, 'EpicsSignal', FakeEpicsSignal)
+    opt = signal_module._OptionalEpicsSignal('test', name='opt')
 
     opt._epics_signal.put(123)
 
@@ -164,8 +164,8 @@ def test_optional_epics_signal(monkeypatch):
 
 
 def test_pvnotepad_signal(monkeypatch):
-    monkeypatch.setattr(pcdsdevices.signal, 'EpicsSignal', FakeEpicsSignal)
-    sig = pcdsdevices.signal.NotepadLinkedSignal(
+    monkeypatch.setattr(signal_module, 'EpicsSignal', FakeEpicsSignal)
+    sig = signal_module.NotepadLinkedSignal(
         read_pv='__abc123',
         attr_name='sig',  # pretend this was created with a component
         name='sig',

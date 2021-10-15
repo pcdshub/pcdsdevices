@@ -3,8 +3,7 @@ import logging
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.spectrometer import (Kmono, VonHamos4Crystal, VonHamosFE,
-                                      VonHamosFER)
+from ..spectrometer import Kmono, VonHamos4Crystal, VonHamosFE, VonHamosFER
 
 logger = logging.getLogger(__name__)
 

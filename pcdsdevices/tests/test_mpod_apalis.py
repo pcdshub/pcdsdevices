@@ -3,8 +3,8 @@ import logging
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.device_types import MPODApalisModule4Channel
-from pcdsdevices.mpod_apalis import MPODApalisChannel, MPODApalisCrate
+from ..device_types import MPODApalisModule4Channel
+from ..mpod_apalis import MPODApalisChannel, MPODApalisCrate
 
 logger = logging.getLogger(__name__)
 

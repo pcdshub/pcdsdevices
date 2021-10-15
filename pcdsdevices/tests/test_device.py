@@ -6,13 +6,13 @@ from ophyd.device import Kind
 from ophyd.positioner import SoftPositioner
 from ophyd.signal import Signal
 
-from pcdsdevices.device import GroupDevice
-from pcdsdevices.device import InterfaceComponent as ICpt
-from pcdsdevices.device import InterfaceDevice
-from pcdsdevices.device import ObjectComponent as OCpt
-from pcdsdevices.device import UnrelatedComponent as UCpt
-from pcdsdevices.device import UpdateComponent as UpCpt
-from pcdsdevices.device import to_interface
+from ..device import GroupDevice
+from ..device import InterfaceComponent as ICpt
+from ..device import InterfaceDevice
+from ..device import ObjectComponent as OCpt
+from ..device import UnrelatedComponent as UCpt
+from ..device import UpdateComponent as UpCpt
+from ..device import to_interface
 
 
 class Basic(Device):
