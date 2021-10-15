@@ -1,11 +1,9 @@
 import copy
 import functools
-from collections import namedtuple
-from typing import Union
+import typing
 
 import numpy as np
 from ophyd.device import Component as Cpt
-from ophyd.positioner import SoftPositioner
 from ophyd.pseudopos import pseudo_position_argument, real_position_argument
 
 from .device import GroupDevice
@@ -13,6 +11,7 @@ from .epics_motor import BeckhoffAxis
 from .interface import FltMvInterface
 from .pseudopos import PseudoPositioner, PseudoSingleInterface
 from .signal import InternalSignal
+from .sim import FastMotor
 
 
 class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
@@ -82,7 +81,7 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
         ca: float,
         cb: float,
         cc: float,
-        pol: Union[-1, 1],
+        pol: int,
         limits: tuple[float, float],
         **kwargs
     ):
@@ -108,7 +107,7 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
         )
 
     @pseudo_position_argument
-    def forward(self, pseudo_pos: namedtuple[float]) -> namedtuple[float]:
+    def forward(self, pseudo_pos: typing.NamedTuple) -> typing.NamedTuple:
         """
         Calculate the position of the motor in mm given the mrad angle.
 
@@ -123,7 +122,7 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
         return self.RealPosition(real=real)
 
     @real_position_argument
-    def inverse(self, real_pos: namedtuple[float]) -> namedtuple[float]:
+    def inverse(self, real_pos: typing.NamedTuple) -> typing.NamedTuple:
         """
         Calculate the position of the crystal in mrad given the mm position.
 
@@ -153,7 +152,7 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
 
 class QuadraticSimMotor(QuadraticBeckhoffMotor):
     """Simulated version of the QuadraticBeckhoffMotor for offline testing."""
-    real = Cpt(SoftPositioner, kind='omitted')
+    real = Cpt(FastMotor, kind='omitted')
 
 
 class VLSOptics(GroupDevice):
