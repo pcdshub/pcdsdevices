@@ -113,6 +113,12 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
 
         This is called when we request a move and when we check if the
         position requested is within the limits of the linear motor.
+
+        Note: it is possible for this to come up with a "nan" value if
+        the input falls outside the bounds and gives us a negative
+        in the sqrt function. However, during normal use, we can rely on
+        the pseudo limits to keep us within the range that this
+        calculation is valid and non-nan.
         """
         calc = pseudo_pos.calc
         real = (
