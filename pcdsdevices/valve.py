@@ -128,10 +128,8 @@ class VRC(VVC, LightpathMixin):
         self._removed = lightpath_values[self.open_limit]['value']
 
 
-class VRC_ClsLS(VVC):
-    """
-    Class for Gate Valves with Control and only close limit switch readback.
-    """
+class VRCClsLS(VVC):
+    """Class for Gate Valves with Control and Closed Limit Switch Readback."""
 
     state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal', doc='Valve state')
     closed_limit = Cpt(EpicsSignalRO, ':CLS_DI_RBV', kind='hinted',
