@@ -1,4 +1,4 @@
-issue_number add VRC_ClsLS
+897 Add VRCClsLS
 #################
 
 API Changes
@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 --------------
-- VRC_ClsLS
+- Add VRCClsLS, a class for Gate Valves with Control and Closed Limit Switch Readback.
 
 Bugfixes
 --------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- jyin999
