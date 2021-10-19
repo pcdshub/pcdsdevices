@@ -9,12 +9,15 @@ if __name__ != 'pcdsdevices.signal':
                        'inside the pcdsdevices directory and can cause '
                        'extremely confusing bugs. Please run your script '
                        'elsewhere for better results.')
+import itertools
 import logging
 import numbers
 import typing
 from threading import RLock
+from typing import Optional
 
 import numpy as np
+import ophyd
 from ophyd.signal import (DerivedSignal, EpicsSignal, EpicsSignalBase,
                           EpicsSignalRO, Signal, SignalRO)
 from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
@@ -802,7 +805,7 @@ class FakeEpicsSignalEditMD(FakeEpicsSignal):
     Add to this if you need it to actually work for your test.
     """
     def _override_metadata(self, **kwargs):
-        pass
+        ...
 
 
 class FakeEpicsSignalROEditMD(FakeEpicsSignalRO):
@@ -811,8 +814,214 @@ class FakeEpicsSignalROEditMD(FakeEpicsSignalRO):
     Add to this if you need it to actually work for your test.
     """
     def _override_metadata(self, **kwargs):
-        pass
+        ...
 
 
 fake_device_cache[EpicsSignalEditMD] = FakeEpicsSignalEditMD
 fake_device_cache[EpicsSignalROEditMD] = FakeEpicsSignalROEditMD
+
+
+class EpicsSignalBaseEditEnum(EpicsSignalBaseEditMD):
+    """
+    EpicsSignal variant which allows for user correction of enum strings.
+
+    Parameters
+    ----------
+    enum_attrs : list of str
+        List of attribute names, relative to the parent device.  That is to
+        say the attribute is assumed to be a sibling of this signal instance.
+        Attribute names may be ``None`` in the case where the original enum
+        string should be passed through.
+
+    See Also
+    ---------
+    `ophyd.signal.EpicsSignal` for further parameter information.
+    """
+
+    _enum_attrs: list[Optional[str]]
+    _enum_count: int
+    _enum_strings: list[str]
+    _original_enum_strings: list[str]
+    _enum_signals: list[Optional[ophyd.ophydobj.OphydObject]]
+    _pending_signals: set[ophyd.ophydobj.OphydObject]
+
+    def __init__(self, *args, enum_attrs: list[Optional[str]], **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.parent is None:
+            raise RuntimeError(
+                "This signal {self.name!r} must be used in a Device/Component "
+                "hierarchy."
+            )
+
+        self._enum_attrs = list(enum_attrs)
+        self._enum_strings = [""] * len(self.enum_attrs)
+        self._pending_signals = set()
+        self._original_enum_strings = []
+        self._enum_signals = []
+        self._enum_count = 0
+
+        # The following magic is provided by EpicsSignalBaseEditMD.
+        # The end result is:
+        # -> self.metadata["enum_strs"] => self._enum_strings
+        self._metadata_override = {
+            # We need to control 'connected' status based on other signals
+            "connected": False,
+            "enum_strs": self._enum_strings,
+        }
+
+        for attr in self.enum_attrs:
+            if attr is None:
+                # Opt-out for a specific signal
+                self._enum_signals.append(None)
+                continue
+
+            try:
+                obj = getattr(self.parent, attr)
+            except AttributeError as ex:
+                raise RuntimeError(
+                    f"Attribute {attr!r} specified in enum list appears to be "
+                    f"invalid for the device {self.parent.name}."
+                ) from ex
+
+            if obj is self:
+                raise RuntimeError(
+                    f"Recursively specified {self.name!r} in the enum_attrs "
+                    "list.  Don't do that."
+                )
+            self._enum_signals.append(obj)
+            self._pending_signals.add(obj)
+            obj.subscribe(self._enum_string_updated, run=True)
+
+    @property
+    def enum_attrs(self) -> list[str]:
+        """Enum attribute names - the source of each enum string."""
+        return list(self._enum_attrs)
+
+    def _enum_string_updated(
+        self,
+        value: str,
+        obj: ophyd.ophydobj.OphydObject,
+        **kwargs
+    ):
+        """
+        A single Signal from ``enum_signals`` updated its value.
+
+        This is a ``SUB_VALUE`` subscription callback from that signal.
+
+        Parameters
+        ----------
+        value : str
+            The value of that enum index.
+
+        obj : ophyd.ophydobj.OphydObject
+            The ophyd object with the value.
+
+        **kwargs :
+            Additional metadata from ``self._metadata``.
+        """
+        if value is None:
+            # The callback may run before it's connected
+            return
+
+        try:
+            idx = self._enum_signals.index(obj)
+        except IndexError:
+            return
+
+        self._enum_strings[idx] = str(value)
+        try:
+            self._pending_signals.remove(obj)
+        except KeyError:
+            ...
+
+        if not self._pending_signals:
+            # We're probably connected!
+            self._run_metadata_callbacks()
+
+    @property
+    def connected(self) -> bool:
+        """Is the signal connected and ready to use?"""
+        return (
+            self._metadata["connected"]
+            and not self._destroyed
+            and not len(self._pending_signals)
+        )
+
+    @property
+    def enum_strs(self) -> list[str]:
+        """
+        List of enum strings.
+
+        For an EpicsSignalEditEnum, this could be the original enum strings
+        from the PV or the strings found from the respective signals
+        referenced by ``enum_attrs``.
+        """
+        return list(self._enum_strings)[:self._enum_count]
+
+    def _check_signal_metadata(self):
+        """Check the original enum strings to compare the attributes."""
+        self._original_enum_strings = self._metadata.get(
+            "enum_strs", None
+        ) or []
+        if not self._original_enum_strings:
+            self.log.error(
+                "No enum strings on %r; was %r used inappropriately?",
+                self.pvname, type(self).__name__
+            )
+            return
+
+        if self._enum_count == 0:
+            self._enum_count = len(self._original_enum_strings)
+
+            # Only update ones that have yet to be populated;  this can
+            # be a race for who connects first:
+            updated_enums = [
+                existing or original
+                for existing, original in itertools.zip_longest(
+                    self._enum_strings,
+                    self._original_enum_strings,
+                    fillvalue=""
+                )
+            ]
+            self._enum_strings[:] = updated_enums
+
+    def _run_metadata_callbacks(self):
+        """Hook for metadata callbacks, mostly run by superclasses."""
+        self._metadata_override["connected"] = self.connected
+        if self._metadata["connected"]:
+            # The underlying PV has connected - check its enum_strs:
+            self._check_signal_metadata()
+        super()._run_metadata_callbacks()
+
+
+class EpicsSignalEditEnum(EpicsSignal, EpicsSignalBaseEditEnum):
+    ...
+
+
+class EpicsSignalROEditEnum(EpicsSignalRO, EpicsSignalBaseEditEnum):
+    ...
+
+
+class FakeEpicsSignalEditEnum(FakeEpicsSignal):
+    """
+    API stand-in for EpicsSignalEditEnum.
+
+    Add to this if you need it to actually work for your test.
+    """
+    def __init__(self, *args, enum_attrs: list[str], **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class FakeEpicsSignalROEditEnum(FakeEpicsSignalRO):
+    """
+    API stand-in for EpicsSignalROEditEnum.
+
+    Add to this if you need it to actually work for your test.
+    """
+    def __init__(self, *args, enum_attrs: list[str], **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+fake_device_cache[EpicsSignalEditEnum] = FakeEpicsSignalEditEnum
+fake_device_cache[EpicsSignalROEditEnum] = FakeEpicsSignalROEditEnum
