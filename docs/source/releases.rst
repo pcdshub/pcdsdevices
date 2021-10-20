@@ -1,6 +1,45 @@
 Release History
 ###############
 
+
+v4.9.0 (2021-10-19)
+===================
+
+Device Updates
+--------------
+- Changed pv names for flow cell xyz-theta
+
+New Devices
+-----------
+- LAMPFlowCell class for new 4 axis flow cell manipulator replacing cVMI on LAMP.
+
+Bugfixes
+--------
+- All stop methods now use the ophyd-defined signature, including a
+  keyword-only ``success`` boolean.
+- Test suite utility ``find_all_classes`` will no longer report test suite
+  classes.
+
+Maintenance
+-----------
+- Removed prototype-grade documentation helpers in favor of those in ophyd.docs
+- Added similar ``find_all_callables`` for the purposes of documentation and
+  testing.
+- Added documentation helper for auto-generating ``docs/source/api.rst``.  This
+  should be run when devices are added, removed, or moved.
+- Docstring fixup on CCM class.
+- Imports changed to relative in test suite.
+- Miscellaneous floating point comparison fixes for test suite.
+- Fixed CCM test failure when run individually or quickly (failure when run
+  less than 10 seconds after Python starts up)
+- Linux-only ``test_presets`` now skips macOS as well.
+
+Contributors
+------------
+- Mbosum
+- klauer
+
+
 v4.8.0 (2021-09-28)
 ===================
 
