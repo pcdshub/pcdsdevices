@@ -3,6 +3,13 @@ import pytest
 
 from ..crix_motion import VLSOpticsSim
 
+# Calculation answers
+# Component = (mm, mrad)
+vls_mirror_lower = (-3.4743, -31.99)
+vls_mirror_upper = (0.4209, 41.42)
+vls_grating_lower = (-1.74, 51.8462)
+vls_grating_upper = (1.2, 3.5410)
+
 
 @pytest.fixture(scope='function')
 def vls():
@@ -19,12 +26,39 @@ def test_calc_reverses(vls):
 
 
 def test_calc_accuracy(vls):
-    pass
+    def compare(pseudopos, answer):
+        assert np.isclose(pseudopos.forward(answer[1]), answer[0])
+        assert np.isclose(pseudopos.inverse(answer[0]), answer[1])
+
+    compare(vls.mirror, vls_mirror_lower)
+    compare(vls.mirror, vls_mirror_upper)
+    compare(vls.grating, vls_grating_lower)
+    compare(vls.grating, vls_grating_upper)
 
 
 def test_move_consistency(vls):
-    pass
+    for optic in (vls.mirror, vls.grating):
+        lower_mrad, upper_mrad = optic.limits
+        optic.move(lower_mrad)
+        assert np.isclose(optic.position[0], lower_mrad)
+        optic.move(upper_mrad)
+        assert np.isclose(optic.position[0], upper_mrad)
 
 
 def test_move_accuracy(vls):
-    pass
+    def test_real_move(pseudopos, answer):
+        pseudopos.real.move(answer[0])
+        assert np.isclose(pseudopos.calc.position, answer[1])
+
+    def test_pseudo_move(pseudopos, answer):
+        pseudopos.calc.move(answer[1])
+        assert np.isclose(pseudopos.real.position, answer[0])
+
+    def test_moves(pseudopos, answer):
+        test_real_move(pseudopos, answer)
+        test_pseudo_move(pseudopos, answer)
+
+    test_moves(vls.mirror, vls_mirror_lower)
+    test_moves(vls.mirror, vls_mirror_upper)
+    test_moves(vls.grating, vls_grating_lower)
+    test_moves(vls.grating, vls_grating_upper)
