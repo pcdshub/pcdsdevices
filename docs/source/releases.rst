@@ -8,7 +8,10 @@ v4.9.0 (2021-10-19)
 Device Updates
 --------------
 - Changed pv names for flow cell xyz-theta
-- LAMPFlowCell class for new 4 axis flow cell manipulator replacing dVMI on LAMP.
+
+New Devices
+-----------
+- LAMPFlowCell class for new 4 axis flow cell manipulator replacing cVMI on LAMP.
 
 Bugfixes
 --------
