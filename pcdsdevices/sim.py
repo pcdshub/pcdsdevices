@@ -36,6 +36,7 @@ class FastMotor(FltMvInterface, SoftPositioner, Device):
     """
 
     user_readback = Cpt(AttributeSignal, 'position')
+    user_setpoint = Cpt(AttributeSignal, 'position')
 
     def __init__(self, *args, init_pos=0, kind=Kind.hinted, **kwargs):
         for kw in ignore_kwargs:
