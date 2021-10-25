@@ -6,7 +6,7 @@ from bluesky.plan_stubs import sleep
 from bluesky.preprocessors import fly_during_wrapper, run_wrapper
 from ophyd.sim import NullStatus, make_fake_device
 
-from pcdsdevices.sequencer import EventSequencer
+from ..sequencer import EventSequencer
 
 logger = logging.getLogger(__name__)
 

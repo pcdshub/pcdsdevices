@@ -4,8 +4,8 @@ import pytest
 from ophyd import EpicsSignal, EpicsSignalRO
 from ophyd.sim import make_fake_device
 
-import pcdsdevices.utils as key_press
-from pcdsdevices.analog_signals import Acromag, AcromagChannel, Mesh
+from .. import utils
+from ..analog_signals import Acromag, AcromagChannel, Mesh
 
 logger = logging.getLogger(__name__)
 
@@ -105,10 +105,10 @@ def test_tweak_mesh_voltage(fake_mesh, monkeypatch):
     def mock_tweak_down():
         return '\x1b[D'  # arrow left
 
-    monkeypatch.setattr(key_press, 'get_input', mock_tweak_up)
+    monkeypatch.setattr(utils, 'get_input', mock_tweak_up)
     fake_mesh.tweak_mesh_voltage(500.0, test_flag=True)
     assert fake_mesh.write_sig.get() == 1.5
-    monkeypatch.setattr(key_press, 'get_input', mock_tweak_down)
+    monkeypatch.setattr(utils, 'get_input', mock_tweak_down)
     fake_mesh.tweak_mesh_voltage(500.0, test_flag=True)
     assert fake_mesh.write_sig.get() == 1.0
 

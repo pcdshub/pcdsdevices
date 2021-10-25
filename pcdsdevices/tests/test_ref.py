@@ -2,7 +2,7 @@ import logging
 
 import pytest
 
-from pcdsdevices.ref import ReflaserL2SI
+from ..ref import ReflaserL2SI
 
 logger = logging.getLogger(__name__)
 

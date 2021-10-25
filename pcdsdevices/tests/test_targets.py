@@ -3,10 +3,9 @@ import pytest
 import yaml
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.sim import FastMotor
-from pcdsdevices.targets import (XYGridStage, convert_to_physical,
-                                 get_unit_meshgrid, mesh_interpolation,
-                                 snake_grid_list)
+from ..sim import FastMotor
+from ..targets import (XYGridStage, convert_to_physical, get_unit_meshgrid,
+                       mesh_interpolation, snake_grid_list)
 
 
 @pytest.fixture(scope='function')

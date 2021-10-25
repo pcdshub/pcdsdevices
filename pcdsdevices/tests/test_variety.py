@@ -4,9 +4,9 @@ import ophyd
 import pytest
 import schema
 
-from pcdsdevices import tags
-from pcdsdevices.variety import (expand_dotted_dict, get_metadata,
-                                 set_metadata, validate_metadata)
+from .. import tags
+from ..variety import (expand_dotted_dict, get_metadata, set_metadata,
+                       validate_metadata)
 
 # A sentinel indicating the validated metadata should match the provided
 # metadata exactly

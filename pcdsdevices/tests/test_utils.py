@@ -5,7 +5,7 @@ import time
 
 import pytest
 
-import pcdsdevices.utils as util
+from .. import utils
 
 try:
     import pty
@@ -40,7 +40,7 @@ def input_later(sim_input, inp, delay=0.1):
 def test_is_input(sim_input):
     logger.debug('test_is_input')
     sim_input.write('a\n')
-    assert util.is_input()
+    assert utils.is_input()
 
 
 @pytest.mark.skipif(
@@ -51,7 +51,7 @@ def test_is_input(sim_input):
 def test_get_input_waits(sim_input):
     logger.debug('test_get_input_waits')
     input_later(sim_input, 'a\n', delay=2)
-    assert util.get_input() == 'a'
+    assert utils.get_input() == 'a'
 
 
 @pytest.mark.skipif(
@@ -61,8 +61,8 @@ def test_get_input_waits(sim_input):
 @pytest.mark.timeout(0.5)
 def test_get_input_arrow(sim_input):
     logger.debug('test_get_input_arrow')
-    input_later(sim_input, util.arrow_up + '\n')
-    assert util.get_input() == util.arrow_up
+    input_later(sim_input, utils.arrow_up + '\n')
+    assert utils.get_input() == utils.arrow_up
 
 
 @pytest.mark.skipif(
@@ -72,8 +72,8 @@ def test_get_input_arrow(sim_input):
 @pytest.mark.timeout(0.5)
 def test_get_input_shift_arrow(sim_input):
     logger.debug('test_get_input_arrow')
-    input_later(sim_input, util.shift_arrow_up + '\n')
-    assert util.get_input() == util.shift_arrow_up
+    input_later(sim_input, utils.shift_arrow_up + '\n')
+    assert utils.get_input() == utils.shift_arrow_up
 
 
 @pytest.mark.skipif(
@@ -85,23 +85,24 @@ def test_cbreak(sim_input):
     logger.debug('test_cbreak')
     # send the ctrl+c character
     input_later(sim_input, '\x03\n')
-    assert util.get_input() == '\n'
+    assert utils.get_input() == '\n'
 
 
 def test_get_status_value():
     dummy_dictionary = {'dict1': {'dict2': {'value': 23}}}
-    res = util.get_status_value(dummy_dictionary, 'dict1', 'dict2', 'value')
+    res = utils.get_status_value(dummy_dictionary, 'dict1', 'dict2', 'value')
     assert res == 23
-    res = util.get_status_value(dummy_dictionary, 'dict1', 'dict2', 'blah')
+    res = utils.get_status_value(dummy_dictionary, 'dict1', 'dict2', 'blah')
     assert res == 'N/A'
 
 
 def test_get_status_float():
     dummy_dictionary = {'dict1': {'dict2': {'value': 23.34343}}}
-    res = util.get_status_float(dummy_dictionary, 'dict1', 'dict2', 'value')
+    res = utils.get_status_float(dummy_dictionary, 'dict1', 'dict2', 'value')
     assert res == '23.3434'
-    res = util.get_status_float(dummy_dictionary, 'dict1', 'dict2', 'blah')
+    res = utils.get_status_float(dummy_dictionary, 'dict1', 'dict2', 'blah')
     assert res == 'N/A'
-    res = util.get_status_float(dummy_dictionary, 'dict1', 'dict2', 'value',
-                                precision=3)
+    res = utils.get_status_float(
+        dummy_dictionary, 'dict1', 'dict2', 'value', precision=3
+    )
     assert res == '23.343'

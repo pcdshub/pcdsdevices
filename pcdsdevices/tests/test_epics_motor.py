@@ -7,11 +7,10 @@ from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
 from ophyd.utils.epics_pvs import AlarmSeverity, AlarmStatus
 
-from pcdsdevices.epics_motor import (IMS, PMC100, BeckhoffAxis, EpicsMotor,
-                                     EpicsMotorInterface, Motor,
-                                     MotorDisabledError, Newport,
-                                     OffsetIMSWithPreset, OffsetMotor,
-                                     PCDSMotorBase)
+from ..epics_motor import (IMS, PMC100, BeckhoffAxis, EpicsMotor,
+                           EpicsMotorInterface, Motor, MotorDisabledError,
+                           Newport, OffsetIMSWithPreset, OffsetMotor,
+                           PCDSMotorBase)
 
 logger = logging.getLogger(__name__)
 

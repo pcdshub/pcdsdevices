@@ -16,13 +16,10 @@ from epics import PV
 from ophyd.signal import LimitError
 from ophyd.sim import FakeEpicsSignal, make_fake_device
 
-import pcdsdevices
-import pcdsdevices.analog_signals
-import pcdsdevices.lens
-import pcdsdevices.lxe
-from pcdsdevices.attenuator import MAX_FILTERS, Attenuator, _att_classes
-from pcdsdevices.device import UnrelatedComponent
-from pcdsdevices.interface import setup_preset_paths
+from .. import analog_signals, lens, lxe
+from ..attenuator import MAX_FILTERS, Attenuator, _att_classes
+from ..device import UnrelatedComponent
+from ..interface import setup_preset_paths
 
 MODULE_PATH = Path(__file__).parent
 
@@ -116,13 +113,14 @@ def find_pcdsdevices_submodules() -> Dict[str, ModuleType]:
     return modules
 
 
-def find_all_device_classes() -> list:
+def find_all_classes(classes) -> list:
     """Find all device classes in pcdsdevices and return them as a list."""
     def should_include(obj):
         return (
             inspect.isclass(obj) and
-            issubclass(obj, ophyd.Device) and
-            not obj.__module__.startswith('ophyd')
+            issubclass(obj, classes) and
+            not obj.__module__.startswith("ophyd") and
+            not obj.__module__.startswith("pcdsdevices.tests")
         )
 
     def sort_key(cls):
@@ -137,18 +135,53 @@ def find_all_device_classes() -> list:
     return list(sorted(set(devices), key=sort_key))
 
 
+def find_all_device_classes() -> list:
+    """Find all device classes in pcdsdevices and return them as a list."""
+    return find_all_classes(ophyd.Device)
+
+
+def find_all_callables() -> list:
+    """Find all callables in pcdsdevices and return them as a list."""
+    def should_include(obj):
+        try:
+            name = obj.__name__
+            module = obj.__module__
+        except AttributeError:
+            return False
+
+        return (
+            callable(obj) and
+            not inspect.isclass(obj) and
+            module.startswith('pcdsdevices') and
+            not module.startswith('pcdsdevices._version') and
+            not module.startswith('pcdsdevices.tests')
+            and not name.startswith("_")
+        )
+
+    def sort_key(obj):
+        return (obj.__module__, obj.__name__)
+
+    devices = [
+        obj
+        for module in find_pcdsdevices_submodules().values()
+        for _, obj in inspect.getmembers(module, predicate=should_include)
+    ]
+
+    return list(sorted(set(devices), key=sort_key))
+
+
 # If your device class has some essential keyword arguments necesary to be
 # instantiated that cannot be automatically determined from its signature,
 # add them here.
 class_to_essential_kwargs = {
-    pcdsdevices.analog_signals.Mesh: dict(sp_ch=0, rb_ch=0),
-    pcdsdevices.lens.LensStack: dict(
+    analog_signals.Mesh: dict(sp_ch=0, rb_ch=0),
+    lens.LensStack: dict(
         path=str(MODULE_PATH / 'test_lens_sets' / 'test'),
     ),
-    pcdsdevices.lens.SimLensStack: dict(
+    lens.SimLensStack: dict(
         path=str(MODULE_PATH / 'test_lens_sets' / 'test'),
     ),
-    pcdsdevices.lxe.LaserEnergyPositioner: dict(
+    lxe.LaserEnergyPositioner: dict(
         calibration_file=MODULE_PATH / 'xcslt8717_wpcalib_opa',
     ),
 }

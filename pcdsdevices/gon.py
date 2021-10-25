@@ -341,7 +341,7 @@ class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
         Defaults to 50.
 
     Notes
-    --------
+    -----
     When using the Kappa, it is most convenient to work through the pseudo
     motors:
 

@@ -4,8 +4,8 @@ import pytest
 from ophyd.signal import Signal
 from ophyd.utils import StatusTimeoutError
 
-from pcdsdevices.positioner import FuncPositioner
-from pcdsdevices.sim import FastMotor, SlowMotor
+from ..positioner import FuncPositioner
+from ..sim import FastMotor, SlowMotor
 
 logger = logging.getLogger(__name__)
 
