@@ -821,9 +821,18 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
                 "enum_attrs OR enum_strs may be set, but not both"
             )
 
+        self._enum_string_override = bool(enum_attrs or enum_strs)
+        if self._enum_string_override:
+            # We need to control 'connected' status based on other signals
+            self._metadata_override["connected"] = False
+
         if enum_attrs:
             # Override by way of other signals
             self._enum_strings = [""] * len(self.enum_attrs)
+            # The following magic is provided by EpicsSignalBaseEditMD.
+            # The end result is:
+            # -> self.metadata["enum_strs"] => self._enum_strings
+            self._metadata_override["enum_strs"] = self._enum_strings
             if self.parent is None:
                 raise RuntimeError(
                     "This signal {self.name!r} must be used in a "
@@ -835,17 +844,7 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
         elif enum_strs:
             # Override with strings
             self._enum_strings = list(enum_strs)
-
-        self._enum_string_override = bool(
-            self.enum_attrs or self._enum_strings
-        )
-        if self._enum_string_override:
-            # The following magic is provided by EpicsSignalBaseEditMD.
-            # The end result is:
-            # -> self.metadata["enum_strs"] => self._enum_strings
             self._metadata_override["enum_strs"] = self._enum_strings
-            # We need to control 'connected' status based on other signals
-            self._metadata_override["connected"] = False
 
     def destroy(self):
         super().destroy()
@@ -1027,8 +1026,10 @@ class EpicsSignalROEditMD(EpicsSignalRO, EpicsSignalBaseEditMD):
     pass
 
 
-EpicsSignalEditMD.__doc__ += EpicsSignal.__doc__
-EpicsSignalROEditMD.__doc__ += EpicsSignalRO.__doc__
+EpicsSignalEditMD.__doc__ = EpicsSignalBaseEditMD.__doc__ + EpicsSignal.__doc__
+EpicsSignalROEditMD.__doc__ = (
+    EpicsSignalBaseEditMD.__doc__ + EpicsSignalRO.__doc__
+)
 
 
 class FakeEpicsSignalEditMD(FakeEpicsSignal):
