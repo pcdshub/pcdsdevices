@@ -771,105 +771,91 @@ class SignalEditMD(Signal):
 
 
 class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
-    # Switch out _metadata for metadata where appropriate
-    @property
-    def precision(self):
-        return self.metadata['precision']
-
-    @property
-    def limits(self):
-        return (self.metadata['lower_ctrl_limit'],
-                self.metadata['upper_ctrl_limit'])
-
-    def describe(self):
-        desc = super().describe()
-        desc[self.name]['units'] = self.metadata['units']
-        return desc
-
-
-class EpicsSignalEditMD(EpicsSignal, EpicsSignalBaseEditMD):
-    pass
-
-
-class EpicsSignalROEditMD(EpicsSignalRO, EpicsSignalBaseEditMD):
-    pass
-
-
-EpicsSignalEditMD.__doc__ = EpicsSignal.__doc__
-EpicsSignalROEditMD.__doc__ = EpicsSignalRO.__doc__
-
-
-class FakeEpicsSignalEditMD(FakeEpicsSignal):
     """
-    API stand-in for EpicsSignalEditMD
-    Add to this if you need it to actually work for your test.
-    """
-    def _override_metadata(self, **kwargs):
-        ...
-
-
-class FakeEpicsSignalROEditMD(FakeEpicsSignalRO):
-    """
-    API stand-in for EpicsSignalROEditMD
-    Add to this if you need it to actually work for your test.
-    """
-    def _override_metadata(self, **kwargs):
-        ...
-
-
-fake_device_cache[EpicsSignalEditMD] = FakeEpicsSignalEditMD
-fake_device_cache[EpicsSignalROEditMD] = FakeEpicsSignalROEditMD
-
-
-class EpicsSignalBaseEditEnum(EpicsSignalBaseEditMD):
-    """
-    EpicsSignal variant which allows for user correction of enum strings.
+    EpicsSignal variant which allows for user correction of various metadata.
 
     Parameters
     ----------
-    enum_attrs : list of str
-        List of attribute names, relative to the parent device.  That is to
-        say the attribute is assumed to be a sibling of this signal instance.
-        Attribute names may be ``None`` in the case where the original enum
-        string should be passed through.
+    enum_strings : list of str, optional
+        List of enum strings to replace the EPICS originals.  May not be
+        used in conjunction with the dynamic ``enum_attrs``.
+
+    enum_attrs : list of str, optional
+        List of signal attribute names, relative to the parent device.  That is
+        to say a given attribute is assumed to be a sibling of this signal
+        instance.  Attribute names may be ``None`` in the case where the
+        original enum string should be passed through.
 
     See Also
     ---------
     `ophyd.signal.EpicsSignal` for further parameter information.
     """
-
     _enum_attrs: list[Optional[str]]
     _enum_count: int
     _enum_strings: list[str]
     _original_enum_strings: list[str]
     _enum_signals: list[Optional[ophyd.ophydobj.OphydObject]]
+    _enum_string_override: bool
+    _enum_subscriptions: dict[ophyd.ophydobj.OphydObject, int]
     _pending_signals: set[ophyd.ophydobj.OphydObject]
 
-    def __init__(self, *args, enum_attrs: list[Optional[str]], **kwargs):
+    def __init__(
+        self,
+        *args,
+        enum_attrs: Optional[list[Optional[str]]] = None,
+        enum_strs: Optional[list[str]] = None,
+        **kwargs
+    ):
         super().__init__(*args, **kwargs)
 
-        if self.parent is None:
-            raise RuntimeError(
-                "This signal {self.name!r} must be used in a Device/Component "
-                "hierarchy."
-            )
-
-        self._enum_attrs = list(enum_attrs)
-        self._enum_strings = [""] * len(self.enum_attrs)
+        self._enum_attrs = list(enum_attrs or [])
         self._pending_signals = set()
         self._original_enum_strings = []
         self._enum_signals = []
+        self._enum_subscriptions = {}
         self._enum_count = 0
+        self._metadata_override = {}
 
-        # The following magic is provided by EpicsSignalBaseEditMD.
-        # The end result is:
-        # -> self.metadata["enum_strs"] => self._enum_strings
-        self._metadata_override = {
+        if enum_attrs and enum_strs:
+            raise ValueError(
+                "enum_attrs OR enum_strs may be set, but not both"
+            )
+
+        if enum_attrs:
+            # Override by way of other signals
+            self._enum_strings = [""] * len(self.enum_attrs)
+            if self.parent is None:
+                raise RuntimeError(
+                    "This signal {self.name!r} must be used in a "
+                    "Device/Component hierarchy."
+                )
+
+            self._subscribe_enum_attrs()
+
+        elif enum_strs:
+            # Override with strings
+            self._enum_strings = list(enum_strs)
+
+        self._enum_string_override = bool(
+            self.enum_attrs or self._enum_strings
+        )
+        if self._enum_string_override:
+            # The following magic is provided by EpicsSignalBaseEditMD.
+            # The end result is:
+            # -> self.metadata["enum_strs"] => self._enum_strings
+            self._metadata_override["enum_strs"] = self._enum_strings
             # We need to control 'connected' status based on other signals
-            "connected": False,
-            "enum_strs": self._enum_strings,
-        }
+            self._metadata_override["connected"] = False
 
+    def destroy(self):
+        super().destroy()
+        for sig, sub in self._enum_subscriptions.items():
+            if sig is not None:
+                sig.unsubscribe(sub)
+        self._enum_subscriptions.clear()
+
+    def _subscribe_enum_attrs(self):
+        """Subscribe to enum signals by attribute name."""
         for attr in self.enum_attrs:
             if attr is None:
                 # Opt-out for a specific signal
@@ -891,7 +877,52 @@ class EpicsSignalBaseEditEnum(EpicsSignalBaseEditMD):
                 )
             self._enum_signals.append(obj)
             self._pending_signals.add(obj)
-            obj.subscribe(self._enum_string_updated, run=True)
+            self._enum_subscriptions[obj] = obj.subscribe(
+                self._enum_string_updated, run=True
+            )
+
+    # Switch out _metadata for metadata where appropriate
+    @property
+    def enum_strs(self) -> list[str]:
+        """
+        List of enum strings.
+
+        For an EpicsSignalEditMD, this could be one of:
+
+        1. The original enum strings from the PV
+        2. The strings found from the respective signals referenced by
+            ``enum_attrs``.
+        3. The user-provided strings in ``enum_strs``.
+        """
+        if self._enum_string_override:
+            return list(self._enum_strings)[:self._enum_count]
+        return self.metadata['enum_strs']
+
+    @property
+    def precision(self):
+        """The PV precision as reported by EPICS (or EpicsSignalEditMD)."""
+        return self.metadata['precision']
+
+    @property
+    def limits(self) -> tuple[numbers.Real, numbers.Real]:
+        """The PV limits as reported by EPICS (or EpicsSignalEditMD)."""
+        return (self.metadata['lower_ctrl_limit'],
+                self.metadata['upper_ctrl_limit'])
+
+    def describe(self):
+        """
+        Return the signal description as a dictionary.
+
+        Units, limits, precision, and enum strings may be overridden.
+
+        Returns
+        -------
+        dict
+            Dictionary of name and formatted description string
+        """
+        desc = super().describe()
+        desc[self.name]['units'] = self.metadata['units']
+        return desc
 
     @property
     def enum_attrs(self) -> list[str]:
@@ -930,6 +961,10 @@ class EpicsSignalBaseEditEnum(EpicsSignalBaseEditMD):
             return
 
         self._enum_strings[idx] = str(value)
+        self.log.debug(
+            "Got enum %s [%d] = %s from %s",
+            self.name, idx, value, getattr(obj, "pvname", "(no pvname)")
+        )
         try:
             self._pending_signals.remove(obj)
         except KeyError:
@@ -947,17 +982,6 @@ class EpicsSignalBaseEditEnum(EpicsSignalBaseEditMD):
             and not self._destroyed
             and not len(self._pending_signals)
         )
-
-    @property
-    def enum_strs(self) -> list[str]:
-        """
-        List of enum strings.
-
-        For an EpicsSignalEditEnum, this could be the original enum strings
-        from the PV or the strings found from the respective signals
-        referenced by ``enum_attrs``.
-        """
-        return list(self._enum_strings)[:self._enum_count]
 
     def _check_signal_metadata(self):
         """Check the original enum strings to compare the attributes."""
@@ -995,33 +1019,35 @@ class EpicsSignalBaseEditEnum(EpicsSignalBaseEditMD):
         super()._run_metadata_callbacks()
 
 
-class EpicsSignalEditEnum(EpicsSignal, EpicsSignalBaseEditEnum):
-    ...
+class EpicsSignalEditMD(EpicsSignal, EpicsSignalBaseEditMD):
+    pass
 
 
-class EpicsSignalROEditEnum(EpicsSignalRO, EpicsSignalBaseEditEnum):
-    ...
+class EpicsSignalROEditMD(EpicsSignalRO, EpicsSignalBaseEditMD):
+    pass
 
 
-class FakeEpicsSignalEditEnum(FakeEpicsSignal):
+EpicsSignalEditMD.__doc__ += EpicsSignal.__doc__
+EpicsSignalROEditMD.__doc__ += EpicsSignalRO.__doc__
+
+
+class FakeEpicsSignalEditMD(FakeEpicsSignal):
     """
-    API stand-in for EpicsSignalEditEnum.
-
+    API stand-in for EpicsSignalEditMD
     Add to this if you need it to actually work for your test.
     """
-    def __init__(self, *args, enum_attrs: list[str], **kwargs):
-        super().__init__(*args, **kwargs)
+    def _override_metadata(self, **kwargs):
+        ...
 
 
-class FakeEpicsSignalROEditEnum(FakeEpicsSignalRO):
+class FakeEpicsSignalROEditMD(FakeEpicsSignalRO):
     """
-    API stand-in for EpicsSignalROEditEnum.
-
+    API stand-in for EpicsSignalROEditMD
     Add to this if you need it to actually work for your test.
     """
-    def __init__(self, *args, enum_attrs: list[str], **kwargs):
-        super().__init__(*args, **kwargs)
+    def _override_metadata(self, **kwargs):
+        ...
 
 
-fake_device_cache[EpicsSignalEditEnum] = FakeEpicsSignalEditEnum
-fake_device_cache[EpicsSignalROEditEnum] = FakeEpicsSignalROEditEnum
+fake_device_cache[EpicsSignalEditMD] = FakeEpicsSignalEditMD
+fake_device_cache[EpicsSignalROEditMD] = FakeEpicsSignalROEditMD

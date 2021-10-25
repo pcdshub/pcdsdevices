@@ -16,7 +16,7 @@ from .device import GroupDevice
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
-from .signal import PVStateSignal, PytmcSignal
+from .signal import EpicsSignalEditMD, PVStateSignal, PytmcSignal
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -542,8 +542,21 @@ class TwinCATStatePositioner(StatePositioner):
         in-progress move as failed.
     """
 
-    state = Cpt(EpicsSignal, ':GET_RBV', write_pv=':SET', kind='hinted',
-                doc='Setpoint and readback for TwinCAT state position.')
+    state = Cpt(
+        EpicsSignalEditMD,
+        ":GET_RBV",
+        write_pv=":SET",
+        enum_attrs=[
+            None,  # Unknown
+            "config.state01.state_name",
+            "config.state02.state_name",
+            "config.state03.state_name",
+            "config.state04.state_name",
+            "config.state05.state_name",
+        ],
+        kind="hinted",
+        doc="Setpoint and readback for TwinCAT state position.",
+    )
     set_metadata(state, dict(variety='command-enum'))
 
     error = Cpt(PytmcSignal, ':ERR', io='i', kind='normal',
