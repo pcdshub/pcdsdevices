@@ -1037,6 +1037,25 @@ class FakeEpicsSignalEditMD(FakeEpicsSignal):
     API stand-in for EpicsSignalEditMD
     Add to this if you need it to actually work for your test.
     """
+    def __init__(
+        self,
+        *args,
+        enum_attrs: Optional[list[Optional[str]]] = None,
+        enum_strs: Optional[list[str]] = None,
+        **kwargs
+    ):
+        super().__init__(*args, **kwargs)
+        self._enum_attrs = enum_attrs
+        self._enum_strs = enum_strs
+
+    @property
+    def enum_attrs(self):
+        return self._enum_attrs
+
+    @property
+    def enum_strs(self):
+        return self._enum_attrs or self._enum_strs or None
+
     def _override_metadata(self, **kwargs):
         ...
 
@@ -1046,6 +1065,25 @@ class FakeEpicsSignalROEditMD(FakeEpicsSignalRO):
     API stand-in for EpicsSignalROEditMD
     Add to this if you need it to actually work for your test.
     """
+    def __init__(
+        self,
+        *args,
+        enum_attrs: Optional[list[Optional[str]]] = None,
+        enum_strs: Optional[list[str]] = None,
+        **kwargs
+    ):
+        super().__init__(*args, **kwargs)
+        self._enum_attrs = enum_attrs
+        self._enum_strs = enum_strs
+
+    @property
+    def enum_attrs(self):
+        return self._enum_attrs
+
+    @property
+    def enum_strs(self):
+        return self._enum_attrs or self._enum_strs or None
+
     def _override_metadata(self, **kwargs):
         ...
 
