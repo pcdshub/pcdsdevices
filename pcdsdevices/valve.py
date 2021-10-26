@@ -77,15 +77,15 @@ class ValveBase(Device):
     """
 
     open_command = Cpt(
-	               EpicsSignalWithRBV,
-		       ':OPN_SW',
-		       kind='normal',
+                       EpicsSignalWithRBV,
+                       ':OPN_SW',
+                       kind='normal',
                        doc='Epics command to Open valve'
     )
     interlock_ok = Cpt(
                        EpicsSignalRO,
-		       ':OPN_OK_RBV',
-		       kind='normal',
+                       ':OPN_OK_RBV',
+                       kind='normal',
                        doc='Valve is OK to Open interlock '
     )
     open_do = Cpt(
@@ -127,7 +127,7 @@ class VGCLegacy(ValveBase):
     """
 
     open_limit = Cpt(
-	             EpicsSignalRO,
+                     EpicsSignalRO,
                      ':OPN_DI_RBV',
                      kind='hinted',
                      doc='Open limit switch digital input'
@@ -333,7 +333,7 @@ class VFS(Device, LightpathMixin):
                     doc='Fast Shutter Current State'
     )
     request_close = Cpt(
-                        EpicsSignalWithRBV, 
+                        EpicsSignalWithRBV,
                         ':CLS_SW',
                         kind='normal',
                         doc=('Request Fast Shutter to Close. When both close'
@@ -361,8 +361,10 @@ class VFS(Device, LightpathMixin):
                         ':OVRD_ON',
                         kind='normal',
                         doc='Epics Command to set Override mode'
-    ) 
-    override_force_open = Cpt(EpicsSignalWithRBV, ':FORCE_OPN',
+    )
+    override_force_open = Cpt(
+                              EpicsSignalWithRBV,
+                              ':FORCE_OPN',
                               kind='normal',
                               doc=('Epics Command to force open'
                                    'the valve in override mode')
@@ -518,7 +520,7 @@ class VCN(Device):
                        EpicsSignalRO,
                        ':ILK_OK_RBV',
                        kind='normal',
-                       doc='interlock ok status' 
+                       doc='interlock ok status'
     )
     open_command = Cpt(
                        EpicsSignalWithRBV,
