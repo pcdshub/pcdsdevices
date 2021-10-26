@@ -267,14 +267,14 @@ class VGC_2S(VRC):
     )
     at_vac_setpoint_us = Cpt(
         EpicsSignalWithRBV,
-        ':AT_VAC_SP_US',
+        ':AT_VAC_SP',
         kind='config',
         doc='AT VAC Set point value '
             'for the upstream gauge'
     )
     setpoint_hysterisis_us = Cpt(
         EpicsSignalWithRBV,
-        ':AT_VAC_HYS_US',
+        ':AT_VAC_HYS',
         kind='config',
         doc='AT VAC Hysteresis for '
             'the upstream setpoint'
