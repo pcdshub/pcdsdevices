@@ -3,7 +3,7 @@ import logging
 import pytest
 from ophyd.sim import make_fake_device
 
-from ..beam_stats import LCLS, BeamStats
+from ..beam_stats import LCLS, BeamEnergyRequest, BeamStats
 
 logger = logging.getLogger(__name__)
 
@@ -86,3 +86,26 @@ def test_get_set_period(fake_lcls):
     assert lcls.bykik_get_period() == 200
     lcls.bykik_set_period(100)
     assert lcls.bykik_get_period() == 100
+
+
+def test_beam_energy_request_args():
+    # Defaults for xpp and tmo
+    xpp_request = BeamEnergyRequest('XPP', name='xpp_request')
+    assert xpp_request.setpoint.pvname == 'XPP:USER:MCC:EPHOT:SET1'
+    tmo_request = BeamEnergyRequest('TMO', name='tmo_request')
+    assert tmo_request.setpoint.pvname == 'TMO:USER:MCC:EPHOTK:SET1'
+    # Future TXI and multi-bunch specific options
+    tst_k1_request = BeamEnergyRequest(
+        'TST',
+        name='tst_k1_request',
+        line='k',
+        bunch=1,
+    )
+    assert tst_k1_request.setpoint.pvname == 'TST:USER:MCC:EPHOTK:SET1'
+    tst_l2_request = BeamEnergyRequest(
+        'TST',
+        name='tst_l2_request',
+        line='L',
+        bunch=2,
+    )
+    assert tst_l2_request.setpoint.pvname == 'TST:USER:MCC:EPHOT:SET2'
