@@ -24,7 +24,7 @@ class TurboPump(BaseInterface, Device):
         """Start the Turbo Pump"""
         self.start.put(1)
 
-    def stop(self):
+    def stop(self, *, success: bool = False):
         """Start the Turbo Pump"""
         self.start.put(0)
 
@@ -39,7 +39,7 @@ class EbaraPump(BaseInterface, Device):
         """Start the Turbo Pump"""
         self.start.put(1)
 
-    def stop(self):
+    def stop(self, *, success: bool = False):
         """Start the Turbo Pump"""
         self.start.put(0)
 

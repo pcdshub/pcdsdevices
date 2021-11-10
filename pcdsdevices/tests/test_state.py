@@ -7,9 +7,9 @@ from ophyd.device import Device
 from ophyd.signal import Signal
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.state import (PVStatePositioner, StatePositioner,
-                               StateRecordPositioner, StateStatus,
-                               TwinCATStatePositioner)
+from ..state import (
+    PVStatePositioner, StatePositioner, StateRecordPositioner, StateStatus,
+    TwinCATStatePositioner)
 
 logger = logging.getLogger(__name__)
 

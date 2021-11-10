@@ -1,6 +1,14 @@
 .. include:: README.inc
 
 .. toctree::
+   :maxdepth: 2
+   :caption: Device Types
+
+   api.rst
+   base_classes.rst
+   sim_types.rst
+
+.. toctree::
    :maxdepth: 1
    :caption: Features
 
@@ -11,17 +19,7 @@
 
 .. toctree::
    :maxdepth: 1
-   :caption: Device Types
-
-   epics_types.rst
-   base_classes.rst
-   sim_types.rst
-   sample_delivery.rst
-
-.. toctree::
-   :maxdepth: 1
    :caption: Developer Notes
 
    releases.rst
    upcoming_changes.rst
-   api.rst

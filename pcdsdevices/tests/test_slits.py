@@ -4,7 +4,7 @@ from unittest.mock import Mock
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.slits import BeckhoffSlits, LusiSlits, SimLusiSlits
+from ..slits import BeckhoffSlits, LusiSlits, SimLusiSlits
 
 logger = logging.getLogger(__name__)
 

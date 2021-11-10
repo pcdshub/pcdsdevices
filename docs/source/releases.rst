@@ -1,6 +1,181 @@
 Release History
 ###############
 
+
+v4.9.0 (2021-10-19)
+===================
+
+Device Updates
+--------------
+- Changed pv names for flow cell xyz-theta
+
+New Devices
+-----------
+- LAMPFlowCell class for new 4 axis flow cell manipulator replacing cVMI on LAMP.
+
+Bugfixes
+--------
+- All stop methods now use the ophyd-defined signature, including a
+  keyword-only ``success`` boolean.
+- Test suite utility ``find_all_classes`` will no longer report test suite
+  classes.
+
+Maintenance
+-----------
+- Removed prototype-grade documentation helpers in favor of those in ophyd.docs
+- Added similar ``find_all_callables`` for the purposes of documentation and
+  testing.
+- Added documentation helper for auto-generating ``docs/source/api.rst``.  This
+  should be run when devices are added, removed, or moved.
+- Docstring fixup on CCM class.
+- Imports changed to relative in test suite.
+- Miscellaneous floating point comparison fixes for test suite.
+- Fixed CCM test failure when run individually or quickly (failure when run
+  less than 10 seconds after Python starts up)
+- Linux-only ``test_presets`` now skips macOS as well.
+
+Contributors
+------------
+- Mbosum
+- klauer
+
+
+v4.8.0 (2021-09-28)
+===================
+
+Features
+--------
+- Add ``GroupDevice``: A device that is a group of components that will act
+  independently. This has some performance improvements and small optimizations
+  for when we expect the different subdevices to act fully independently.
+- Add a ``status`` method to ``BaseInterface`` to return the device's status
+  string. This is useful for recording device status in the elog.
+- Add ``typhos`` templates for ``BeckhoffSlits`` and ``PowerSlits`` using existing
+  elements from their normal ``pydm`` screens.
+
+Device Updates
+--------------
+- The following devices have become group devices:
+  - Acromag
+  - ArrivalTimeMonitor
+  - BaseGon
+  - BeckhoffJet
+  - BeckhoffJetManipulator
+  - BeckhoffJetSlits
+  - CCM
+  - CrystalTower1
+  - CrystalTower2
+  - CVMI
+  - DiagnosticTower
+  - ExitSlits
+  - FFMirror
+  - FlowIntegrator
+  - GasManifold
+  - ICT
+  - Injector
+  - IPIMB
+  - IPMDiode
+  - IPMMotion
+  - Kappa
+  - KBOMirror
+  - KMono
+  - KTOF
+  - LAMP
+  - LAMPMagneticBottle
+  - LaserInCoupling
+  - LCLS2ImagerBase
+  - LODCM
+  - LODCMEnergyC
+  - LODCMEnergySi
+  - Mono
+  - MPODApalisModule
+  - MRCO
+  - OffsetMirror
+  - PCM
+  - PIM
+  - PulsePickerInOut
+  - ReflaserL2SI
+  - RTDSBase
+  - SamPhi
+  - Selector
+  - SlitsBase
+  - StateRecordPositionerBase
+  - VonHamosCrystal
+  - VonHamosFE
+  - Wave8
+  - WaveFrontSensorTarget
+  - XOffsetMirror
+  - XYZStage
+- Clean up pmgr loading on the IMS class.
+- Edit stage/unstage on ``PIMY`` to be compatible with ``GroupDevice``.
+- Edit stage/unstage and the class definition on ``SlitsBase`` to be
+  compatible with ``GroupDevice``
+- Change ``CCM`` from a ``InOutPositioner`` to a normal device with a
+  ``LightpathMixin`` interface. Being a positioner that contained a bunch
+  of other positioners, methods like ``move`` were extremely ambiguous
+  and confusing. The ``insert`` and ``remove`` methods are re-implemented
+  as they are useful enough to keep.
+- Split ``CCMCalc`` into ``CCMEnergy`` and ``CCMEnergyWithVernier`` to
+  make the code easier to follow
+- Remove unused ``CCMCalc`` feature to move to wavelength or theta
+  to make the code simpler to debug
+- Add aliases to the ``CCM`` for each of the motors.
+- Adjust the ``CCM`` status to be identical to that from the old python code.
+- Add functions and PVs to kill and home the ``CCM`` alio
+- Calculate intermediate quantities in the ``CCM`` energy calc and make them
+  available in both the status and as read-only signals.
+- ``EpicsMotorInterface`` subclasses will no longer spam logger errors and
+  warnings about alarm issues encountered by other users. These log messages
+  will only be shown if they were the result of moves in the current session.
+  Note that this log filtering assumes that all epics motors will have unique
+  ophyd names.
+- Added ``GFS`` fault setpoint, ``GCC``, ``PIP`` auto-on and countdown timer
+- Switch the ``CCM`` energy devices to use user PVs as the canonical source
+  of calculation constants. This allows the constants to be consistent
+  between sessions and keeps different sessions in sync with each other.
+- Add ``CCM.energy.set_current_position`` utility for adjusting the ``CCM``
+  theta0 offset in order to synchronize the calculation with a known
+  photon energy values.
+
+New Devices
+-----------
+- TMO Fresnel Photon Spectrometer Motion components class,
+  ``TMOSpectrometer``
+
+Bugfixes
+--------
+- Fix some race conditions in ``FuncPositioner``
+- Fix a race condition in schedule_task that could cause a task to never be run
+- Add a timeout parameter to ``IMS.reinitialize``, and set it as the default
+  arg for use in the stage method, which is run during scans. This avoids
+  a bug where the stage method could hang forever instead of erroring out,
+  halting a scan in its tracks.
+- Fix an issue where epics motors could time out on the getting of
+  the ``egu`` property, which was causing issues with the displaying
+  of device status.
+
+Maintenance
+-----------
+- Move ``PVStateSignal`` from state.py to signal.py to avoid a circular import
+- Make the tests importable and runnable on Windows
+- Require Python 3.9 for type annotations
+- Make pmgr optional, but if installed make sure it has a compatible version.
+- Update to 3.9-only CI
+- Fix the CI PIP test build
+- Include the pcdsdevices test suite in the package distribution.
+- Add missing docstrings in the ``ccm`` module where appropriate.
+- Add doc kwarg to all components in the ``ccm`` module.
+- Add type hints to all method signatures in the ``ccm`` module.
+- Adjust the ``CCM`` unit tests appropriately.
+
+Contributors
+------------
+- ghalym
+- jyin999
+- mbosum
+- zllentz
+
+
 v4.7.1 (2021-08-11)
 ===================
 
@@ -179,7 +354,7 @@ Contributors
 
 
 v4.3.2 (2021-04-05)
-==================
+===================
 
 Bugfixes
 --------
@@ -709,7 +884,7 @@ Contributors
 
 
 v2.11.0 (2020-09-21)
-===================
+====================
 
 API Changes
 -----------

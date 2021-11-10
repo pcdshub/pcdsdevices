@@ -7,11 +7,10 @@ import time
 import ophyd
 import pytest
 
-from pcdsdevices.interface import (BaseInterface, TabCompletionHelperClass,
-                                   get_engineering_mode, set_engineering_mode,
-                                   setup_preset_paths)
-from pcdsdevices.sim import FastMotor, SlowMotor
-
+from ..interface import (BaseInterface, TabCompletionHelperClass,
+                         get_engineering_mode, set_engineering_mode,
+                         setup_preset_paths)
+from ..sim import FastMotor, SlowMotor
 from . import conftest
 
 try:
@@ -96,9 +95,9 @@ def test_mv_ginput(monkeypatch, fast_motor):
 
 
 @pytest.mark.skipif(
-    sys.platform == "win32",
+    sys.platform in ("win32", "darwin"),
     reason="Fails on Windows, no fcntl and different signal handling",
-    )
+)
 def test_presets(presets, fast_motor):
     logger.debug('test_presets')
 

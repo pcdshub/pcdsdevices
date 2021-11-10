@@ -1,4 +1,4 @@
-869 added GFS fault setpoint, GCC, PIP autoOn and countdown timer
+897 Add VRCClsLS
 #################
 
 API Changes
@@ -11,11 +11,11 @@ Features
 
 Device Updates
 --------------
-- Added GFS fault setpoint, GCC, PIP auto-on and countdown timer
+- N/A
 
 New Devices
------------
-- N/A
+--------------
+- Add VRCClsLS, a class for Gate Valves with Control and Closed Limit Switch Readback.
 
 Bugfixes
 --------

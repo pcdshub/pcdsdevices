@@ -1,11 +1,12 @@
 import logging
+import time
 
 import numpy as np
 import pytest
 from ophyd.sim import fake_device_cache, make_fake_device
 
-import pcdsdevices.ccm as ccm
-from pcdsdevices.sim import FastMotor
+from .. import ccm
+from ..sim import FastMotor
 
 logger = logging.getLogger(__name__)
 
@@ -260,7 +261,7 @@ def test_show_constant_warning(fake_ccm, caplog):
 def test_warn_invalid_constants(fake_ccm, caplog):
     logger.debug('test_warn_invalid_constants')
     # Trick the warning into thinking we've be initialized for a while
-    fake_ccm._init_time = 0
+    fake_ccm._init_time = time.monotonic() - 1000
     fake_ccm.theta0_deg.put(0)
     fake_ccm.dspacing.put(0)
     fake_ccm.gr.put(0)

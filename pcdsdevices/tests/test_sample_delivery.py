@@ -3,8 +3,8 @@ import logging
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.sample_delivery import (HPLC, PCM, CoolerShaker,
-                                         FlowIntegrator, GasManifold, Selector)
+from ..sample_delivery import (HPLC, PCM, CoolerShaker, FlowIntegrator,
+                               GasManifold, Selector)
 
 logger = logging.getLogger(__name__)
 

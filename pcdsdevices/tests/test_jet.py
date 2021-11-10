@@ -3,7 +3,7 @@ import logging
 import pytest
 from ophyd.sim import make_fake_device
 
-from pcdsdevices.jet import BeckhoffJet, Injector, InjectorWithFine
+from ..jet import BeckhoffJet, Injector, InjectorWithFine
 
 logger = logging.getLogger(__name__)
 

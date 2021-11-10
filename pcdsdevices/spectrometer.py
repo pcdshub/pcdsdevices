@@ -288,3 +288,33 @@ class Mono(BaseInterface, GroupDevice):
     removed = False
     transmission = 1
     SUB_STATE = 'state'
+
+
+class TMOSpectrometer(BaseInterface, GroupDevice):
+    """
+    TMO Fresnel Photon Spectrometer Motion components class.
+
+    Photon Spectrometer with LCLS-II Beckhoff motion architecture.
+
+    Parameters:
+    -----------
+    prefix : str
+        Base PV for the motion system
+
+    name : str
+        Alias for the device
+    """
+    # UI Representation
+    _icon = 'fa.minus-square'
+    tab_component_names = True
+
+    # Motor components: can read/write positions
+    lens_x = Cpt(BeckhoffAxisNoOffset, ':MMS:01', kind='normal')
+    foil_x = Cpt(BeckhoffAxisNoOffset, ':MMS:02', kind='normal')
+    zone_plate_x = Cpt(BeckhoffAxisNoOffset, ':MMS:03', kind='normal')
+    zone_plate_y = Cpt(BeckhoffAxisNoOffset, ':MMS:04', kind='normal')
+    zone_plate_z = Cpt(BeckhoffAxisNoOffset, ':MMS:05', kind='normal')
+    yag_x = Cpt(BeckhoffAxisNoOffset, ':MMS:06', kind='normal')
+    yag_y = Cpt(BeckhoffAxisNoOffset, ':MMS:07', kind='normal')
+    yag_z = Cpt(BeckhoffAxisNoOffset, ':MMS:08', kind='normal')
+    yag_theta = Cpt(BeckhoffAxisNoOffset, ':MMS:09', kind='normal')

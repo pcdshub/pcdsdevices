@@ -1,4 +1,4 @@
-863 embed-tests
+889 vls-optics
 #################
 
 API Changes
@@ -15,7 +15,9 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- Added the crix_motion.VLSOptics Device, which contains calculated
+  axes for the VLS optical components. The rotation state of these
+  crystals is approximated by a best-fit 2nd order polynomial.
 
 Bugfixes
 --------
@@ -23,7 +25,7 @@ Bugfixes
 
 Maintenance
 -----------
-- Include the pcdsdevices test suite in the package distribution.
+- N/A
 
 Contributors
 ------------
