@@ -1,6 +1,7 @@
 from ophyd import Component as Cpt
 
 from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxisNoOffset
 from .interface import BaseInterface, LightpathInOutMixin
 from .pmps import TwinCATStatePMPS
@@ -18,6 +19,7 @@ class LICMirror(TwinCATStatePMPS):
         'MIRROR1': 1,
         'MIRROR2': 1,
     }
+    config = UpCpt(state_count=4)
 
 
 class LaserInCoupling(BaseInterface, GroupDevice, LightpathInOutMixin):
@@ -28,7 +30,6 @@ class LaserInCoupling(BaseInterface, GroupDevice, LightpathInOutMixin):
 
     lightpath_cpts = ['mirror']
     _icon = 'fa.dot-circle-o'
-    config_state_count = 4
 
     mirror = Cpt(LICMirror, ':MMS:STATE', kind='hinted',
                  doc='Control of the mirror via saved positions.')

@@ -7,6 +7,7 @@ from ophyd.device import Device
 from ophyd.signal import Signal
 from ophyd.sim import make_fake_device
 
+from ..device import UpdateComponent as UpCpt
 from ..state import (
     PVStatePositioner, StatePositioner, StateRecordPositioner, StateStatus,
     TwinCATStatePositioner)
@@ -215,11 +216,13 @@ def test_twincat_state_config_dynamic():
     # Instantiate real and fake versions
 
     class StandaloneStates(TwinCATStatePositioner):
-        config_state_count = 2
+        config = UpCpt(states_count=2)
+
+    class EmbStates(TwinCATStatePositioner):
+        config = UpCpt(states_count=3)
 
     class DeviceWithStates(Device):
-        config_state_count = 3
-        state = Cpt(StandaloneStates, 'TST', kind='normal')
+        state = Cpt(EmbStates, 'TST', kind='normal')
 
     FakeStandaloneStates = make_fake_device(StandaloneStates)
     FakeDeviceWithStates = make_fake_device(DeviceWithStates)

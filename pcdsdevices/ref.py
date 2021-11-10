@@ -1,10 +1,15 @@
 from ophyd import Component as Cpt
 
 from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxis, EpicsMotorInterface
 from .interface import BaseInterface, LightpathInOutMixin
 from .pmps import TwinCATStatePMPS
 from .signal import PytmcSignal
+
+
+class ReflaserL2SIMirror(TwinCATStatePMPS):
+    count = UpCpt(state_count=2)
 
 
 class ReflaserL2SI(BaseInterface, GroupDevice, LightpathInOutMixin):
@@ -12,10 +17,9 @@ class ReflaserL2SI(BaseInterface, GroupDevice, LightpathInOutMixin):
 
     lightpath_cpts = ['mirror']
     _icon = 'fa.bullseye'
-    config_state_count = 2
 
     las_pct = Cpt(PytmcSignal, ':LAS:PCT', io='io', kind='hinted')
-    mirror = Cpt(TwinCATStatePMPS, ':MMS:STATE', kind='hinted',
+    mirror = Cpt(ReflaserL2SIMirror, ':MMS:STATE', kind='hinted',
                  doc='In/Out control of Reflaser Mirror')
     y_motor = Cpt(BeckhoffAxis, ':MMS', kind='normal',
                   doc='Direct control of mirror motor.')

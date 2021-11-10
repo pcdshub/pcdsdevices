@@ -16,6 +16,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
 from . import utils
 from .device import UnrelatedComponent as UCpt
+from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
@@ -445,10 +446,14 @@ def set_combined_attenuation(attenuation, *attenuators):
 '''
 
 
+class FEESolidAttenuatorStates(TwinCATInOutPositioner):
+    config = UpCpt(state_count=2)
+
+
 class FEESolidAttenuatorBlade(BaseInterface, Device, LightpathInOutMixin):
     lightpath_cpts = ['state']
 
-    state = Cpt(TwinCATInOutPositioner, ':STATE')
+    state = Cpt(FEESolidAttenuatorStates, ':STATE')
     motor = Cpt(BeckhoffAxisNoOffset, '')
 
 
@@ -876,7 +881,6 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
     # QIcon for UX
     _icon = 'fa.barcode'
     tab_component_names = True
-    config_state_count = 10
 
     # Register that all blades are needed for lightpath calc
     lightpath_cpts = [f'blade_{idx:02}' for idx in range(1, 5)]
@@ -1030,7 +1034,6 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     # QIcon for UX
     _icon = 'fa.barcode'
     tab_component_names = True
-    config_state_count = 2
 
     # Register that all blades are needed for lightpath calc
     lightpath_cpts = [f'blade_{idx:02}' for idx in range(1, 20)]

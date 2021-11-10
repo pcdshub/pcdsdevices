@@ -1,6 +1,7 @@
 """
 Module to define positioners that move between discrete named states.
 """
+import copy
 import functools
 import logging
 from enum import Enum
@@ -469,6 +470,10 @@ class CombinedStateRecordPositioner(StateRecordPositionerBase):
         return cid
 
 
+# See MOTION_GVL.MAX_STATES in lcls-twincat-motion
+TWINCAT_MAX_STATES = 9
+
+
 class TwinCATStateConfigOne(Device):
     """
     Configuration of a single state position in TwinCAT.
@@ -500,42 +505,31 @@ class TwinCATStateConfigOne(Device):
 
 class TwinCATStateConfigDynamic(Device):
     """
-    Configuration of a number of twincat states based on the parent device.
+    Configuration of a variable number of TwinCAT states.
 
     This will become an instance with a number of config states based on the
-    parent devices. We'll check if parent.parent has a valid class with
-    a ``config_state_count`` class attribute first, and dynamically create
-    our class based on that variable. If that is missing, we'll also try
-    the direct parent's class, which should at minimum find the fallback value
-    of 9 from TwinCATStatePositioner.
+    input "count" keyword-only required argument.
 
     Under the hood, this creates classes dynamically and stores them for later
     use. Classes created here will pass an
-    isinstance(cls, TwinCATStateConfigDynamic) check, and two devices of the
-    same class will use exactly the same state config class from the
-    registry, rather than creating a duplicate.
+    isinstance(cls, TwinCATStateConfigDynamic) check, and two devices with
+    the same number of states will use the same class from the registry.
     """
-    _state_config_registry: dict = {}
+    _state_config_registry: dict[int, type] = {}
     _config_cls: type = TwinCATStateConfigOne
 
     def __new__(
         cls,
         prefix: str,
         *,
-        parent: Device,
+        state_count: int,
         **kwargs
     ):
         try:
-            count = parent.parent.__class__.config_state_count
-            key = parent.parent.__class__
-        except AttributeError:
-            count = parent.__class__.config_state_count
-            key = parent.__class__
-        try:
-            new_cls = cls._state_config_registry[key]
+            new_cls = cls._state_config_registry[state_count]
         except KeyError:
             new_cls = type(
-                key.__name__ + 'StateConfig',
+                f'StateConfig{state_count}',
                 (TwinCATStateConfigDynamic,),
                 {
                     f'state{num:02}':
@@ -544,11 +538,16 @@ class TwinCATStateConfigDynamic(Device):
                         f':{num:02}',
                         kind='omitted',
                     )
-                    for num in range(1, count + 1)
+                    for num in range(1, state_count + 1)
                 }
             )
-            cls._state_config_registry[key] = new_cls
+            cls._state_config_registry[state_count] = new_cls
         return super().__new__(new_cls)
+
+    def __init__(self, *args, state_count, **kwargs):
+        # This is unused, but it can't be allowed to pass into **kwargs
+        self.state_count = state_count
+        super().__init__(*args, **kwargs)
 
 
 class FakeTwinCATStateConfigDynamic(TwinCATStateConfigDynamic):
@@ -566,6 +565,12 @@ class FakeTwinCATStateConfigDynamic(TwinCATStateConfigDynamic):
 # This is needed because the make_fake_device won't find our
 # dynamic subclasses.
 fake_device_cache[TwinCATStateConfigDynamic] = FakeTwinCATStateConfigDynamic
+
+
+def state_config_dotted_names(state_count):
+    yield None  # Unknown state at index 0 always
+    for state_num in range(1, state_count + 1):
+        yield f'config.state{state_num:02}.state_name'
 
 
 class TwinCATStatePositioner(StatePositioner):
@@ -597,19 +602,11 @@ class TwinCATStatePositioner(StatePositioner):
         The amount of time to wait before automatically marking a long
         in-progress move as failed.
     """
-
     state = Cpt(
         EpicsSignalEditMD,
         ":GET_RBV",
         write_pv=":SET",
-        enum_attrs=[
-            None,  # Unknown
-            "config.state01.state_name",
-            "config.state02.state_name",
-            "config.state03.state_name",
-            "config.state04.state_name",
-            "config.state05.state_name",
-        ],
+        enum_attrs=list(state_config_dotted_names(TWINCAT_MAX_STATES)),
         kind="hinted",
         doc="Setpoint and readback for TwinCAT state position.",
     )
@@ -628,15 +625,23 @@ class TwinCATStatePositioner(StatePositioner):
     reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='normal',
                     doc='Command to reset an error.')
 
-    config = Cpt(TwinCATStateConfigDynamic, '', kind='omitted',
-                 doc='Configuration of state positions, deltas, etc.')
-
-    # 9 is the maximum states you can have in lcls-twincat-motion
-    # Can be overriden in subclass or by parent to include fewer PVs
-    config_state_count: int = 9
+    config = Cpt(
+        TwinCATStateConfigDynamic,
+        '',
+        state_count=TWINCAT_MAX_STATES,
+        kind='omitted',
+        doc='Configuration of state positions, deltas, etc.',
+    )
 
     set_metadata(error_id, dict(variety='scalar', display_format='hex'))
     set_metadata(reset_cmd, dict(variety='command', value=1))
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.state = copy.copy(cls.state)
+        cls.state.kwargs['enum_attrs'] = list(
+            state_config_dotted_names(cls.config.kwargs['state_count'])
+        )
 
     def clear_error(self):
         self.reset_cmd.put(1)
