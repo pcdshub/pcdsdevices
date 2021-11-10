@@ -216,10 +216,10 @@ def test_twincat_state_config_dynamic():
     # Instantiate real and fake versions
 
     class StandaloneStates(TwinCATStatePositioner):
-        config = UpCpt(states_count=2)
+        config = UpCpt(state_count=2)
 
     class EmbStates(TwinCATStatePositioner):
-        config = UpCpt(states_count=3)
+        config = UpCpt(state_count=3)
 
     class DeviceWithStates(Device):
         state = Cpt(EmbStates, 'TST', kind='normal')
