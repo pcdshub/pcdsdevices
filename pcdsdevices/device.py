@@ -319,7 +319,7 @@ class UpdateComponent(Component):
                 f"on any parent class of {owner}, "
                 "nothing to update!"
             )
-        self.copy_cpt = copy.copy(parent_cpt)
+        self.copy_cpt = copy.deepcopy(parent_cpt)
 
         # Edit this object as needed
         for key, value in self.update_kwargs.items():
@@ -345,6 +345,10 @@ class UpdateComponent(Component):
     def __copy__(self):
         # Copy and return the internal component to avoid recursive loops
         return copy.copy(self.copy_cpt)
+
+    def __deepcopy__(self, _memo):
+        # Copy and return the internal component to avoid recursive loops
+        return copy.deepcopy(self.copy_cpt)
 
     def create_component(self, instance):
         # Use our hostage component from __set_name__

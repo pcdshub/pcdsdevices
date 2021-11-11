@@ -637,13 +637,17 @@ class TwinCATStatePositioner(StatePositioner):
     set_metadata(reset_cmd, dict(variety='command', value=1))
 
     def __init_subclass__(cls, **kwargs):
-        super().__init_subclass__(**kwargs)
         state_count = cls.config.kwargs['state_count']
-        if state_count != cls.mro()[1].config.kwargs['state_count']:
+        parent_count = cls.mro()[1].config.kwargs['state_count']
+        if state_count != parent_count:
             cls.state = copy.deepcopy(cls.state)
             cls.state.kwargs['enum_attrs'] = list(
                 state_config_dotted_names(state_count)
             )
+        # This includes the Device initialization, which assumes our
+        # Component instances are finalized.
+        # Therefore, do it last
+        super().__init_subclass__(**kwargs)
 
     def clear_error(self):
         self.reset_cmd.put(1)
