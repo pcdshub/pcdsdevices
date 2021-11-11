@@ -450,11 +450,19 @@ class FEESolidAttenuatorStates(TwinCATInOutPositioner):
     config = UpCpt(state_count=2)
 
 
+class SXRFEESolidAttenuatorStates(TwinCATInOutPositioner):
+    config = UpCpt(state_count=9)
+
+
 class FEESolidAttenuatorBlade(BaseInterface, Device, LightpathInOutMixin):
     lightpath_cpts = ['state']
 
     state = Cpt(FEESolidAttenuatorStates, ':STATE')
     motor = Cpt(BeckhoffAxisNoOffset, '')
+
+
+class SXRFEESolidAttenuatorBlade(FEESolidAttenuatorBlade):
+    state = Cpt(SXRFEESolidAttenuatorStates, ':STATE')
 
 
 class GasAttenuator(BaseInterface, Device):
@@ -890,10 +898,10 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
     num_out = Cpt(InternalSignal, kind='hinted')
 
     calculator = UCpt(AttenuatorCalculatorSXR_FourBlade)
-    blade_01 = Cpt(FEESolidAttenuatorBlade, ':MMS:01')
-    blade_02 = Cpt(FEESolidAttenuatorBlade, ':MMS:02')
-    blade_03 = Cpt(FEESolidAttenuatorBlade, ':MMS:03')
-    blade_04 = Cpt(FEESolidAttenuatorBlade, ':MMS:04')
+    blade_01 = Cpt(SXRFEESolidAttenuatorBlade, ':MMS:01')
+    blade_02 = Cpt(SXRFEESolidAttenuatorBlade, ':MMS:02')
+    blade_03 = Cpt(SXRFEESolidAttenuatorBlade, ':MMS:03')
+    blade_04 = Cpt(SXRFEESolidAttenuatorBlade, ':MMS:04')
 
     def __init__(self, *args, limits=None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)

@@ -807,7 +807,6 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
         **kwargs
     ):
         super().__init__(*args, **kwargs)
-
         self._enum_attrs = list(enum_attrs or [])
         self._pending_signals = set()
         self._original_enum_strings = []

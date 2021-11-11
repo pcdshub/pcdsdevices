@@ -9,7 +9,7 @@ from .signal import PytmcSignal
 
 
 class ReflaserL2SIMirror(TwinCATStatePMPS):
-    count = UpCpt(state_count=2)
+    config = UpCpt(state_count=2)
 
 
 class ReflaserL2SI(BaseInterface, GroupDevice, LightpathInOutMixin):

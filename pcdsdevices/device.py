@@ -306,12 +306,19 @@ class UpdateComponent(Component):
 
     def __set_name__(self, owner, attr_name):
         # Find the parent cpt of the same name and copy it
+        parent_cpt = None
         for cls in owner.mro()[1:]:
             try:
                 parent_cpt = getattr(cls, attr_name)
                 break
             except AttributeError:
                 continue
+        if parent_cpt is None:
+            raise RuntimeError(
+                f"Did not find component {attr_name} "
+                f"on any parent class of {owner}, "
+                "nothing to update!"
+            )
         self.copy_cpt = copy.copy(parent_cpt)
 
         # Edit this object as needed

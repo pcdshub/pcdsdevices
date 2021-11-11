@@ -638,10 +638,12 @@ class TwinCATStatePositioner(StatePositioner):
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
-        cls.state = copy.copy(cls.state)
-        cls.state.kwargs['enum_attrs'] = list(
-            state_config_dotted_names(cls.config.kwargs['state_count'])
-        )
+        state_count = cls.config.kwargs['state_count']
+        if state_count != cls.mro()[1].config.kwargs['state_count']:
+            cls.state = copy.deepcopy(cls.state)
+            cls.state.kwargs['enum_attrs'] = list(
+                state_config_dotted_names(state_count)
+            )
 
     def clear_error(self):
         self.reset_cmd.put(1)

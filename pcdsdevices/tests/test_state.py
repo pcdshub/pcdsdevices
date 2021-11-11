@@ -8,9 +8,9 @@ from ophyd.signal import Signal
 from ophyd.sim import make_fake_device
 
 from ..device import UpdateComponent as UpCpt
-from ..state import (
-    PVStatePositioner, StatePositioner, StateRecordPositioner, StateStatus,
-    TwinCATStatePositioner)
+from ..state import (TWINCAT_MAX_STATES, PVStatePositioner, StatePositioner,
+                     StateRecordPositioner, StateStatus,
+                     TwinCATStatePositioner, state_config_dotted_names)
 
 logger = logging.getLogger(__name__)
 
@@ -212,20 +212,46 @@ def test_auto_states():
 
 def test_twincat_state_config_dynamic():
     logger.debug('test_twincat_state_config_dynamic')
-    # Make some classes that use the dynamic states and count states
-    # Instantiate real and fake versions
+
+    def check_class(cls, state_count):
+        assert cls.config.kwargs['state_count'] == state_count, (
+            f"Found the wrong state count for {cls}, "
+            "must be some error related to UpdateComponent."
+        )
+        assert len(cls.state.kwargs['enum_attrs']) == state_count + 1, (
+            f"Found the wrong number of enum_attrs for {cls}, something "
+            "must have gone wrong in __init_subclass__."
+        )
+
+    # Check the base class first, to make sure it hasn't been broken.
+    check_class(TwinCATStatePositioner, TWINCAT_MAX_STATES)
+
+    # Make some classes that use the dynamic states and update state_count
+    # We will instantiate real and fake versions
 
     class StandaloneStates(TwinCATStatePositioner):
         config = UpCpt(state_count=2)
 
+    check_class(StandaloneStates, 2)
+
     class EmbStates(TwinCATStatePositioner):
         config = UpCpt(state_count=3)
+
+    check_class(EmbStates, 3)
 
     class DeviceWithStates(Device):
         state = Cpt(EmbStates, 'TST', kind='normal')
 
     FakeStandaloneStates = make_fake_device(StandaloneStates)
     FakeDeviceWithStates = make_fake_device(DeviceWithStates)
+
+    all_states = TwinCATStatePositioner('ALL:STATES', name='all_states')
+    for name in state_config_dotted_names(TWINCAT_MAX_STATES):
+        if name is None:
+            continue
+        name = name.split('.')[-2]
+        assert name in all_states.config.component_names
+        getattr(all_states.config, name)
 
     states2 = StandaloneStates('STATES2:', name='states2')
     for name in ('state01', 'state02'):
