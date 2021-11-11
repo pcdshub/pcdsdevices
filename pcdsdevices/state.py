@@ -517,6 +517,7 @@ class TwinCATStateConfigDynamic(Device):
     """
     _state_config_registry: dict[int, type] = {}
     _config_cls: type = TwinCATStateConfigOne
+    _class_prefix: str = 'StateConfig'
 
     def __new__(
         cls,
@@ -529,8 +530,8 @@ class TwinCATStateConfigDynamic(Device):
             new_cls = cls._state_config_registry[state_count]
         except KeyError:
             new_cls = type(
-                f'StateConfig{state_count}',
-                (TwinCATStateConfigDynamic,),
+                f'{cls._class_prefix}{state_count}',
+                (cls,),
                 {
                     f'state{num:02}':
                     Cpt(
@@ -556,7 +557,9 @@ class FakeTwinCATStateConfigDynamic(TwinCATStateConfigDynamic):
 
     Useful in test suites.
     """
+    _state_config_registry: dict[int, type] = {}
     _config_cls = make_fake_device(TwinCATStateConfigOne)
+    _class_prefix: str = 'FakeStateConfig'
 
 
 # Import-time editing of fake_device_cache!
