@@ -11,13 +11,13 @@ Features
 - Update TwinCATStatePositioner to have a configurable and variable number
   of state configuration PVs. These are the structures that allow you to
   check and change state setpoints, deltas, velocities, etc. This is
-  implemented through the new TwinCATStateDynamic class.
+  implemented through the new TwinCATStateConfigDynamic class.
 - Increase the maximum number of connected state configuration records to
   match the current motion library limit (9)
 
 Device Updates
 --------------
-- Using the new TwinCATStateDynamic mechanisms and the UpdateComponent,
+- Using the new TwinCATStateConfigDynamic mechanisms and the UpdateComponent,
   update the following classes to contain exactly the correct number of
   twincat configuration states in their component state records:
   - ArrivalTimeMonitor (6)
