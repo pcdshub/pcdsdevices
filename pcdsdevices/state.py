@@ -7,7 +7,7 @@ import copy
 import functools
 import logging
 from enum import Enum
-from typing import Optional
+from typing import ClassVar, Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device, required_for_connection
@@ -518,9 +518,11 @@ class TwinCATStateConfigDynamic(Device):
     isinstance(cls, TwinCATStateConfigDynamic) check, and two devices with
     the same number of states will use the same class from the registry.
     """
-    _state_config_registry: dict[int, TwinCATStateConfigDynamic] = {}
-    _config_cls: type = TwinCATStateConfigOne
-    _class_prefix: str = 'StateConfig'
+    _state_config_registry: ClassVar[
+        dict[int, TwinCATStateConfigDynamic]
+    ] = {}
+    _config_cls: ClassVar[type] = TwinCATStateConfigOne
+    _class_prefix: ClassVar[str] = 'StateConfig'
 
     def __new__(
         cls,
@@ -560,9 +562,11 @@ class FakeTwinCATStateConfigDynamic(TwinCATStateConfigDynamic):
 
     Useful in test suites.
     """
-    _state_config_registry: dict[int, FakeTwinCATStateConfigDynamic] = {}
-    _config_cls: type = make_fake_device(TwinCATStateConfigOne)
-    _class_prefix: str = 'FakeStateConfig'
+    _state_config_registry: ClassVar[
+        dict[int, FakeTwinCATStateConfigDynamic]
+    ] = {}
+    _config_cls: ClassVar[type] = make_fake_device(TwinCATStateConfigOne)
+    _class_prefix: ClassVar[str] = 'FakeStateConfig'
 
 
 # Import-time editing of fake_device_cache!
