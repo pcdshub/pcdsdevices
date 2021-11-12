@@ -485,14 +485,14 @@ class TwinCATStateConfigOne(Device):
     Corresponds with ``DUT_PositionState``.
     """
 
-    state_name = Cpt(PytmcSignal, ':NAME', io='i', kind='omitted', string=True,
+    state_name = Cpt(PytmcSignal, ':NAME', io='i', kind='config', string=True,
                      doc='The defined state name.')
-    setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='omitted',
+    setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='config',
                    doc='The corresponding motor set position.')
-    delta = Cpt(PytmcSignal, ':DELTA', io='io', kind='omitted',
+    delta = Cpt(PytmcSignal, ':DELTA', io='io', kind='config',
                 doc='The deviation from setpoint that still counts '
                     'as at the position.')
-    velo = Cpt(PytmcSignal, ':VELO', io='io', kind='omitted',
+    velo = Cpt(PytmcSignal, ':VELO', io='io', kind='config',
                doc='Velocity to move to the state at.')
     accl = Cpt(PytmcSignal, ':ACCL', io='io', kind='omitted',
                doc='Acceleration to move to the state with.')
@@ -540,7 +540,7 @@ class TwinCATStateConfigDynamic(Device):
                     Cpt(
                         cls._config_cls,
                         f':{num:02}',
-                        kind='omitted',
+                        kind='config',
                     )
                     for num in range(1, state_count + 1)
                 }
