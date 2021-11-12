@@ -3,7 +3,8 @@ twincat-states 875
 
 API Changes
 -----------
-- N/A
+- TwinCATStateConfigAll has been removed. This was considered an
+  internal API.
 
 Features
 --------
@@ -44,7 +45,7 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Add various missing docstrings and type annotations.
 
 Contributors
 ------------
