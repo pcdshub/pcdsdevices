@@ -19,7 +19,11 @@ Device Updates
 --------------
 - Using the new TwinCATStateConfigDynamic mechanisms and the UpdateComponent,
   update the following classes to contain exactly the correct number of
-  twincat configuration states in their component state records:
+  twincat configuration states in their component state records.
+  Note that the number of states here does not include the "Unknown"
+  or "Moving" state associated with index 0. A device with n states will have
+  typically have 1 out state and n-1 target states by this count, and the
+  EPICS record will have n+1 possible enum values.
   - ArrivalTimeMonitor (6)
   - AttenuatorSXR_Ladder (9)
   - AT2L0 (2)
