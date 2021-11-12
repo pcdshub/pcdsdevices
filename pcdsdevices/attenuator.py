@@ -456,7 +456,7 @@ class FEESolidAttenuatorStates(TwinCATInOutPositioner):
     config = UpCpt(state_count=2)
 
 
-class SXRFEESolidAttenuatorStates(TwinCATInOutPositioner):
+class SXRLadderAttenuatorStates(TwinCATInOutPositioner):
     """
     The states class for the SXR Ladder-style attenuators.
 
@@ -478,13 +478,13 @@ class FEESolidAttenuatorBlade(BaseInterface, Device, LightpathInOutMixin):
     motor = Cpt(BeckhoffAxisNoOffset, '')
 
 
-class SXRFEESolidAttenuatorBlade(FEESolidAttenuatorBlade):
+class SXRLadderAttenuatorBlade(FEESolidAttenuatorBlade):
     """
     Represents one ladder solid attenuator blade.
 
     This includes the out/8 targets state and a raw motor.
     """
-    state = Cpt(SXRFEESolidAttenuatorStates, ':STATE')
+    state = Cpt(SXRLadderAttenuatorStates, ':STATE')
 
 
 class GasAttenuator(BaseInterface, Device):
@@ -920,10 +920,10 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
     num_out = Cpt(InternalSignal, kind='hinted')
 
     calculator = UCpt(AttenuatorCalculatorSXR_FourBlade)
-    blade_01 = Cpt(SXRFEESolidAttenuatorBlade, ':MMS:01')
-    blade_02 = Cpt(SXRFEESolidAttenuatorBlade, ':MMS:02')
-    blade_03 = Cpt(SXRFEESolidAttenuatorBlade, ':MMS:03')
-    blade_04 = Cpt(SXRFEESolidAttenuatorBlade, ':MMS:04')
+    blade_01 = Cpt(SXRLadderAttenuatorBlade, ':MMS:01')
+    blade_02 = Cpt(SXRLadderAttenuatorBlade, ':MMS:02')
+    blade_03 = Cpt(SXRLadderAttenuatorBlade, ':MMS:03')
+    blade_04 = Cpt(SXRLadderAttenuatorBlade, ':MMS:04')
 
     def __init__(self, *args, limits=None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
