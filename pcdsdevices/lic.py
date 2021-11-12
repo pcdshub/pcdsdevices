@@ -14,6 +14,9 @@ class LICMirror(TwinCATStatePMPS):
     The LICMirror does not block beam while at a mirror state.
     This is because it has a hole in the middle of the mirror for the
     x-ray beam to travel through.
+
+    This class also defines the state count as 4 (OUT and 3 targets)
+    to limit the number of config PVs we connect to.
     """
     _transmission = {
         'MIRROR1': 1,

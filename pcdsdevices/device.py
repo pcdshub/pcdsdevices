@@ -1,5 +1,6 @@
 import copy
 from collections.abc import Iterator
+from typing import Any, Optional
 
 from ophyd.areadetector.plugins import PluginBase
 from ophyd.device import Component, Device
@@ -298,13 +299,16 @@ class UpdateComponent(Component):
     **kwargs: any, optional
         keyword arguments to update
     """
+    update_kwargs: dict[str, Any]
+    copt_cpt: Optional[Component]
+
     def __init__(self, **kwargs):
         # Store the original kwargs for use later
         self.update_kwargs = kwargs
         # Begin with "something" as the copy_cpt to avoid issues on edge cases.
         self.copy_cpt = None
 
-    def __set_name__(self, owner, attr_name):
+    def __set_name__(self, owner: Device, attr_name: str):
         # Find the parent cpt of the same name and copy it
         parent_cpt = None
         for cls in owner.mro()[1:]:
@@ -338,7 +342,7 @@ class UpdateComponent(Component):
         # Defer to the normal component setup for the rest
         super().__set_name__(owner, attr_name)
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str):
         # If we are missing something, check the copied/edited hostage cpt
         return getattr(self.copy_cpt, name)
 
@@ -347,7 +351,7 @@ class UpdateComponent(Component):
         return copy.copy(self.copy_cpt)
 
     def __deepcopy__(self, _memo):
-        # Copy and return the internal component to avoid recursive loops
+        # Deep copy and return the internal component to avoid recursive loops
         return copy.deepcopy(self.copy_cpt)
 
     def create_component(self, instance):

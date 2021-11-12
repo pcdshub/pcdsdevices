@@ -315,6 +315,15 @@ class PIMWithBoth(PIMWithFocus, PIMWithLED):
 
 
 class LCLS2Target(TwinCATStatePMPS):
+    """
+    Controls the PPM and XTES Imager states.
+
+    Defines the state count as 4 (OUT and 3 targets) to limit the number of
+    config PVs we connect to.
+
+    The PPM and the XTES Imager have the same state count,
+    despite having different targets at those states.
+    """
     config = UpCpt(state_count=4)
 
 

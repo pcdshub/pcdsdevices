@@ -1,10 +1,13 @@
 """
 Module to define positioners that move between discrete named states.
 """
+from __future__ import annotations
+
 import copy
 import functools
 import logging
 from enum import Enum
+from typing import Generator, Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device, required_for_connection
@@ -515,7 +518,7 @@ class TwinCATStateConfigDynamic(Device):
     isinstance(cls, TwinCATStateConfigDynamic) check, and two devices with
     the same number of states will use the same class from the registry.
     """
-    _state_config_registry: dict[int, type] = {}
+    _state_config_registry: dict[int, TwinCATStateConfigDynamic] = {}
     _config_cls: type = TwinCATStateConfigOne
     _class_prefix: str = 'StateConfig'
 
@@ -557,8 +560,8 @@ class FakeTwinCATStateConfigDynamic(TwinCATStateConfigDynamic):
 
     Useful in test suites.
     """
-    _state_config_registry: dict[int, type] = {}
-    _config_cls = make_fake_device(TwinCATStateConfigOne)
+    _state_config_registry: dict[int, FakeTwinCATStateConfigDynamic] = {}
+    _config_cls: type = make_fake_device(TwinCATStateConfigOne)
     _class_prefix: str = 'FakeStateConfig'
 
 
@@ -570,7 +573,24 @@ class FakeTwinCATStateConfigDynamic(TwinCATStateConfigDynamic):
 fake_device_cache[TwinCATStateConfigDynamic] = FakeTwinCATStateConfigDynamic
 
 
-def state_config_dotted_names(state_count):
+def state_config_dotted_names(
+    state_count: int
+) -> Generator[Optional[str], None, None]:
+    """
+    Yields the full dotted names of the state config state_name components.
+
+    This includes None for the Unknown state.
+
+    Parameters
+    ----------
+    state_count : int
+        The number of known states used by the device.
+
+    Yields
+    ------
+    dotted_name : str or None
+        The next full dotted name in state enum order.
+    """
     yield None  # Unknown state at index 0 always
     for state_num in range(1, state_count + 1):
         yield f'config.state{state_num:02}.state_name'
@@ -640,6 +660,8 @@ class TwinCATStatePositioner(StatePositioner):
     set_metadata(reset_cmd, dict(variety='command', value=1))
 
     def __init_subclass__(cls, **kwargs):
+        # We need to adjust the state enum_attrs appropriately if
+        # state_count was updated.
         state_count = cls.config.kwargs['state_count']
         parent_count = cls.mro()[1].config.kwargs['state_count']
         if state_count != parent_count:

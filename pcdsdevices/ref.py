@@ -9,10 +9,24 @@ from .signal import PytmcSignal
 
 
 class ReflaserL2SIMirror(TwinCATStatePMPS):
+    """
+    Controls the reference laser's states.
+
+    Defines the state count as 2 (OUT and IN) to limit the number of
+    config PVs we connect to.
+    """
     config = UpCpt(state_count=2)
 
 
 class ReflaserL2SI(BaseInterface, GroupDevice, LightpathInOutMixin):
+    """
+    The L2SI design for the reference laser.
+
+    The reference laser is an optical laser that is pointed down the beam
+    path in lieu of the x-ray beam. This is useful for alignment purposes
+    and to verify a through path from the reference laser to the sample
+    chamber.
+    """
     tab_component_names = True
 
     lightpath_cpts = ['mirror']
