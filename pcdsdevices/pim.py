@@ -18,6 +18,7 @@ from ophyd.signal import EpicsSignal
 from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
                                      PCDSAreaDetectorTyphosTrigger)
 from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .epics_motor import IMS, BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, LightpathInOutMixin
@@ -313,6 +314,19 @@ class PIMWithBoth(PIMWithFocus, PIMWithLED):
                          prefix_zoom=prefix_zoom, **kwargs)
 
 
+class LCLS2Target(TwinCATStatePMPS):
+    """
+    Controls the PPM and XTES Imager states.
+
+    Defines the state count as 4 (OUT and 3 targets) to limit the number of
+    config PVs we connect to.
+
+    The PPM and the XTES Imager have the same state count,
+    despite having different targets at those states.
+    """
+    config = UpCpt(state_count=4)
+
+
 class LCLS2ImagerBase(BaseInterface, GroupDevice, LightpathInOutMixin):
     """
     Shared PVs and components from the LCLS2 imagers.
@@ -320,13 +334,12 @@ class LCLS2ImagerBase(BaseInterface, GroupDevice, LightpathInOutMixin):
     All LCLS2 imagers are guaranteed to have the following components that
     behave essentially the same.
     """
-
     tab_component_names = True
 
     lightpath_cpts = ['target']
     _icon = 'fa.video-camera'
 
-    target = Cpt(TwinCATStatePMPS, ':MMS:STATE', kind='hinted',
+    target = Cpt(LCLS2Target, ':MMS:STATE', kind='hinted',
                  doc='Control of the diagnostic stack via saved positions.')
     y_motor = Cpt(BeckhoffAxisNoOffset, ':MMS', kind='normal',
                   doc='Direct control of the diagnostic stack motor.')
