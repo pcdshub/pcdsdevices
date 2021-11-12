@@ -18,7 +18,7 @@ Features
 Device Updates
 --------------
 - Using the new TwinCATStateDynamic mechanisms and the UpdateComponent,
-  Update the following classes to contain exactly the correct number of
+  update the following classes to contain exactly the correct number of
   twincat configuration states in their component state records:
   - ArrivalTimeMonitor (6)
   - AttenuatorSXR_Ladder (9)
