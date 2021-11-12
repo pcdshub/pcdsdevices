@@ -7,7 +7,7 @@ import copy
 import functools
 import logging
 from enum import Enum
-from typing import Generator, Optional
+from typing import Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device, required_for_connection
@@ -536,7 +536,7 @@ class TwinCATStateConfigDynamic(Device):
                 f'{cls._class_prefix}{state_count}',
                 (cls,),
                 {
-                    f'state{num:02}':
+                    get_dynamic_state_attr(num):
                     Cpt(
                         cls._config_cls,
                         f':{num:02}',
@@ -573,27 +573,52 @@ class FakeTwinCATStateConfigDynamic(TwinCATStateConfigDynamic):
 fake_device_cache[TwinCATStateConfigDynamic] = FakeTwinCATStateConfigDynamic
 
 
-def state_config_dotted_names(
-    state_count: int
-) -> Generator[Optional[str], None, None]:
+def get_dynamic_state_attr(state_index: int) -> str:
     """
-    Yields the full dotted names of the state config state_name components.
+    Get the attr string associated with a single state index.
 
-    This includes None for the Unknown state.
+    For example, the 5th state should create an attribute on
+    TwinCATStateConfigDynamic called "state05". Therefore,
+    get_dynamic_state_attr(5) == "state05".
+
+    This is only applicable for integers between 1
+    and the TWINCAT_MAX_STATES global variable, inclusive.
+
+    Parameters
+    ----------
+    state_index : int
+        The index of the state.
+
+    Returns
+    -------
+    state_attr : str
+        The corresponding attribute name.
+    """
+    return f'state{state_index:02}'
+
+
+def state_config_dotted_names(state_count: int) -> list[Optional[str]]:
+    """
+    Returns the full dotted names of the state config state_name components.
+
+    This includes None for the Unknown state and is valid for use in
+    EpicsSignalEditMD's enum_attrs argument, matching the structure found in
+    TwinCATStatePositioner.
 
     Parameters
     ----------
     state_count : int
         The number of known states used by the device.
 
-    Yields
-    ------
-    dotted_name : str or None
-        The next full dotted name in state enum order.
+    Returns
+    -------
+    dotted_names : list of str or None
+        The full dotted names in state enum order.
     """
-    yield None  # Unknown state at index 0 always
-    for state_num in range(1, state_count + 1):
-        yield f'config.state{state_num:02}.state_name'
+    return [None] + [
+        f'config.{get_dynamic_state_attr(num)}.state_name'
+        for num in range(1, state_count + 1)
+    ]
 
 
 class TwinCATStatePositioner(StatePositioner):
@@ -629,7 +654,7 @@ class TwinCATStatePositioner(StatePositioner):
         EpicsSignalEditMD,
         ":GET_RBV",
         write_pv=":SET",
-        enum_attrs=list(state_config_dotted_names(TWINCAT_MAX_STATES)),
+        enum_attrs=state_config_dotted_names(TWINCAT_MAX_STATES),
         kind="hinted",
         doc="Setpoint and readback for TwinCAT state position.",
     )
@@ -666,7 +691,7 @@ class TwinCATStatePositioner(StatePositioner):
         parent_count = cls.mro()[1].config.kwargs['state_count']
         if state_count != parent_count:
             cls.state = copy.deepcopy(cls.state)
-            cls.state.kwargs['enum_attrs'] = list(
+            cls.state.kwargs['enum_attrs'] = (
                 state_config_dotted_names(state_count)
             )
         # This includes the Device initialization, which assumes our
