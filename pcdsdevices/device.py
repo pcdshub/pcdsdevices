@@ -344,7 +344,7 @@ class UpdateComponent(Component):
 
     def __getattr__(self, name: str):
         # If we are missing something, check the copied/edited hostage cpt
-        return getattr(self.copy_cpt, name)
+        return copy.deepcopy(getattr(self.copy_cpt, name))
 
     def __copy__(self):
         # Copy and return the internal component to avoid recursive loops
