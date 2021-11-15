@@ -1009,13 +1009,33 @@ class BeckhoffAxis(EpicsMotorInterface):
         return status
 
 
-class OldBeckhoffAxisPLC(BeckhoffAxisPLC):
+class BeckhoffAxis_Pre140PLC(BeckhoffAxisPLC):
+    """
+    Disable some newly introduced signals.
+    """
     cmd_home = None
+    user_enable = None
 
 
-class OldBeckhoffAxis(BeckhoffAxis):
-    plc = Cpt(OldBeckhoffAxisPLC, ':PLC:', kind='normal',
+class BeckhoffAxis_Pre140(BeckhoffAxis):
+    """
+    Beckhoff Axis compatible with PLCs running older software.
+
+    This version targets the versions of lcls-twincat-motion
+    prior to v1.4.0, which is when the homing routines were
+    introduced.
+    """
+    plc = Cpt(BeckhoffAxis_Pre140PLC, ':PLC:', kind='normal',
               doc='PLC error handling.')
+
+    def home(self, *args, **kwargs):
+        """
+        Override ``home`` with a clear error message.
+        """
+        raise NotImplementedError("This axis does not support homing.")
+
+
+OldBeckhoffAxis = BeckhoffAxis_Pre140
 
 
 class BeckhoffAxisNoOffset(BeckhoffAxis):

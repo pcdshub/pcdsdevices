@@ -18,7 +18,8 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- BeckhoffAxis_Pre140 has been added to support versions of lcls-twincat-motion
+  prior to v1.4.0. This has been aliased to OldBeckhoffAxis for backcompat.
 
 Bugfixes
 --------
