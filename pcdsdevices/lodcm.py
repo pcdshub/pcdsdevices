@@ -897,7 +897,10 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
         pseudo_pos : PseudoPosition
             The pseudo position output.
         """
-        reflection = self.get_reflection()
+        try:
+            reflection = self.get_reflection()
+        except Exception:
+            return self.PseudoPosition(energy=np.NaN)
         real_pos = self.RealPosition(*real_pos)
         length = (2 * np.sin(np.deg2rad(real_pos.th1Si))
                     * diffraction.d_space('Si', reflection))
@@ -1114,7 +1117,10 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
         pseudo_pos : PseudoPosition
             The pseudo position output.
         """
-        reflection = self.get_reflection()
+        try:
+            reflection = self.get_reflection()
+        except Exception:
+            return self.PseudoPosition(energy=np.NaN)
         real_pos = self.RealPosition(*real_pos)
         length = (2 * np.sin(np.deg2rad(real_pos.th1C))
                     * diffraction.d_space('C', reflection))
