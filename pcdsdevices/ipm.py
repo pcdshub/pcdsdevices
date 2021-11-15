@@ -2,6 +2,7 @@
 Module for the `IPM` intensity position monitor classes.
 """
 import logging
+import warnings
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -352,6 +353,17 @@ class IPIMB(BaseInterface, GroupDevice):
     def screen(self):
         """Function to call the (pyQT) screen for an IPIMB box."""
         return ipm_screen('IPIMB', self._prefix, self._prefix_ioc)
+
+    @property
+    def isum(self):
+        """
+        Backcompatibility alias for the sum signal.
+        """
+        warnings.warn(
+            'isum is deprecated, please use sum instead',
+            DeprecationWarning,
+        )
+        return self.sum
 
 
 class Wave8Channel(BaseInterface, Device):
