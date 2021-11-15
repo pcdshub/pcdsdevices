@@ -937,6 +937,8 @@ class BeckhoffAxisPLC(Device):
                    doc='Start TwinCAT homing routine.')
     home_pos = Cpt(PytmcSignal, 'fHomePosition', io='io', kind='config',
                    doc='Numeric position of home.')
+    user_enable = Cpt(PytmcSignal, 'bUserEnable', io='io', kind='config',
+                      doc='Power enable/disable')
 
     set_metadata(err_code, dict(variety='scalar', display_format='hex'))
     set_metadata(cmd_err_reset, dict(variety='command', value=1))
