@@ -1009,7 +1009,7 @@ class BeckhoffAxis(EpicsMotorInterface):
         return status
 
 
-class BeckhoffAxis_Pre140PLC(BeckhoffAxisPLC):
+class BeckhoffAxisPLC_Pre140(BeckhoffAxisPLC):
     """
     Disable some newly introduced signals.
     """
@@ -1026,7 +1026,7 @@ class BeckhoffAxis_Pre140(BeckhoffAxis):
     prior to v1.4.0, which is when the homing routines were
     introduced.
     """
-    plc = Cpt(BeckhoffAxis_Pre140PLC, ':PLC:', kind='normal',
+    plc = Cpt(BeckhoffAxisPLC_Pre140, ':PLC:', kind='normal',
               doc='PLC error handling.')
 
     def home(self, *args, **kwargs):
