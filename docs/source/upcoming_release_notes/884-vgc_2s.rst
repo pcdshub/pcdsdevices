@@ -1,0 +1,30 @@
+884 vgc_2s
+#################
+
+API Changes
+-----------
+- N/A
+
+Features
+--------
+- N/A
+
+Device Updates
+--------------
+- allow for user to change at_vac setpoint value for upstream and downstream gauges separately.
+
+New Devices
+-----------
+- N/A
+
+Bugfixes
+--------
+- N/A
+
+Maintenance
+-----------
+- N/A
+
+Contributors
+------------
+- Mbosum
