@@ -1014,6 +1014,7 @@ class BeckhoffAxis_Pre140PLC(BeckhoffAxisPLC):
     Disable some newly introduced signals.
     """
     cmd_home = None
+    home_pos = None
     user_enable = None
 
 
