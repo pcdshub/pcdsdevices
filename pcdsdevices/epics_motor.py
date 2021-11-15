@@ -577,7 +577,6 @@ class IMS(PCDSMotorBase):
     velocity = Cpt(EpicsSignal, '.VELO', limits=True, kind='config')
     velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
     velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
-    acceleration = Cpt(EpicsSignal, '.ACCL', kind='config')
 
     tab_whitelist = ['reinitialize', 'acceleration', 'clear_.*']
 
