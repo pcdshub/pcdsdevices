@@ -30,7 +30,7 @@ si_111_dspacing = 3.1356011499587773
 si_511_dspacing = 1.0452003833195924
 
 # Defaults
-default_theta0_deg = 14.9792
+default_theta0_deg = 15.1027
 default_theta0 = default_theta0_deg * np.pi/180
 default_dspacing = si_111_dspacing
 default_gr = 3.175
@@ -918,11 +918,9 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
              doc='Combined motion of the CCM Y motors.')
 
     lightpath_cpts = ['x']
-    tab_component_names = True
-    tab_whitelist = ['x1', 'x2', 'y1', 'y2', 'y3', 'E', 'E_vernier',
-                     'th2coarse', 'th2fine', 'alio2E', 'E2alio',
-                     'home', 'kill', 'status',
-                     'insert', 'remove', 'inserted', 'removed']
+    tab_whitelist = ['x1', 'x2', 'y1', 'y2', 'y3', 'E', 'E_Vernier',
+                     'th2fine', 'alio2E', 'E2alio', 'alio', 'home',
+                     'kill', 'insert', 'remove', 'inserted', 'removed']
 
     _in_pos: float
     _out_pos: float

@@ -2,6 +2,7 @@
 Module for the `IPM` intensity position monitor classes.
 """
 import logging
+import warnings
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -133,7 +134,13 @@ class IPMMotion(BaseInterface, GroupDevice):
     _icon = 'ei.screenshot'
 
     tab_whitelist = ['target', 'diode', 'insert', 'remove', 'inserted',
-                     'removed']
+                     'removed', 'ty', 'dx', 'dy']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ty = self.target.motor
+        self.dx = self.diode.x_motor
+        self.dy = self.diode.y_motor
 
     def format_status_info(self, status_info):
         """
@@ -307,7 +314,7 @@ class IPIMB(BaseInterface, GroupDevice):
 
     Attributes
     ----------
-    isum
+    sum
         Total sum of all 4 channels (i0 if standard IPM device).
 
     xpos, ypos
@@ -323,9 +330,9 @@ class IPIMB(BaseInterface, GroupDevice):
         Trigger component.
     """
 
-    tab_whitelist = ['isum', 'xpos', 'ypos']
+    tab_whitelist = ['sum', 'xpos', 'ypos']
 
-    isum = Cpt(EpicsSignalRO, ':SUM', kind='hinted')
+    sum = Cpt(EpicsSignalRO, ':SUM', kind='hinted')
     xpos = Cpt(EpicsSignalRO, ':XPOS', kind='normal')
     ypos = Cpt(EpicsSignalRO, ':YPOS', kind='normal')
     evr_channel = Cpt(Trigger, ':TRIG:TRIG0', kind='normal')
@@ -346,6 +353,17 @@ class IPIMB(BaseInterface, GroupDevice):
     def screen(self):
         """Function to call the (pyQT) screen for an IPIMB box."""
         return ipm_screen('IPIMB', self._prefix, self._prefix_ioc)
+
+    @property
+    def isum(self):
+        """
+        Backcompatibility alias for the sum signal.
+        """
+        warnings.warn(
+            'isum is deprecated, please use sum instead',
+            DeprecationWarning,
+        )
+        return self.sum
 
 
 class Wave8Channel(BaseInterface, Device):
@@ -396,9 +414,9 @@ class Wave8(BaseInterface, GroupDevice):
         Alias for the wave8.
     """
 
-    tab_whitelist = ['isum', 'xpos', 'ypos']
+    tab_whitelist = ['sum', 'xpos', 'ypos']
 
-    isum = Cpt(EpicsSignalRO, ':SUM', kind='normal')
+    sum = Cpt(EpicsSignalRO, ':SUM', kind='normal')
     xpos = Cpt(EpicsSignalRO, ':XPOS', kind='normal')
     ypos = Cpt(EpicsSignalRO, ':YPOS', kind='normal')
     evr_channel = Cpt(Trigger, ':TRIG:TRIG0', kind='normal')
@@ -443,9 +461,9 @@ class IPM_Det(BaseInterface, Device):
     """Base class for IPM_IPIMB and IPM_Wave8. Not meant to be instantiated."""
     tab_component_names = True
 
-    def isum(self):
-        """Returns the detector's isum value."""
-        return self.det.isum.get()
+    def sum(self):
+        """Returns the detector's sum value."""
+        return self.det.sum.get()
 
     def xpos(self):
         """Returns the detector's xpos value."""

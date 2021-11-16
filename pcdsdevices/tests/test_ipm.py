@@ -146,7 +146,7 @@ def test_ipm_subscriptions(fake_ipm):
 def test_ipm_box_readback(fake_ipm_with_box):
     logger.debug('test_ipm_ipimb_readback')
     ipm = fake_ipm_with_box
-    ipm.isum()
+    ipm.sum()
     ipm.xpos()
     ipm.ypos()
     ipm.channel().amplitude.get()
