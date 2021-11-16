@@ -64,7 +64,10 @@ pcdsdevices.atm
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.atm.ATMTarget
     pcdsdevices.atm.ArrivalTimeMonitor
+    pcdsdevices.atm.TM2K2
+    pcdsdevices.atm.TM2K2Target
 
 pcdsdevices.attenuator
 ----------------------
@@ -85,10 +88,13 @@ pcdsdevices.attenuator
     pcdsdevices.attenuator.AttenuatorCalculator_AT2L0
     pcdsdevices.attenuator.AttenuatorSXR_Ladder
     pcdsdevices.attenuator.FEESolidAttenuatorBlade
+    pcdsdevices.attenuator.FEESolidAttenuatorStates
     pcdsdevices.attenuator.FeeAtt
     pcdsdevices.attenuator.FeeFilter
     pcdsdevices.attenuator.Filter
     pcdsdevices.attenuator.GasAttenuator
+    pcdsdevices.attenuator.SXRLadderAttenuatorBlade
+    pcdsdevices.attenuator.SXRLadderAttenuatorStates
     pcdsdevices.attenuator.get_blade_enum
     pcdsdevices.attenuator.render_ascii_att
 
@@ -123,6 +129,17 @@ pcdsdevices.ccm
     pcdsdevices.ccm.theta_to_wavelength
     pcdsdevices.ccm.wavelength_to_energy
     pcdsdevices.ccm.wavelength_to_theta
+
+pcdsdevices.crix_motion
+-----------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.crix_motion.QuadraticBeckhoffMotor
+    pcdsdevices.crix_motion.QuadraticSimMotor
+    pcdsdevices.crix_motion.VLSOptics
+    pcdsdevices.crix_motion.VLSOpticsSim
 
 pcdsdevices.cvmi_motion
 -----------------------
@@ -172,6 +189,8 @@ pcdsdevices.epics_motor
     pcdsdevices.epics_motor.BeckhoffAxis
     pcdsdevices.epics_motor.BeckhoffAxisNoOffset
     pcdsdevices.epics_motor.BeckhoffAxisPLC
+    pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140
+    pcdsdevices.epics_motor.BeckhoffAxis_Pre140
     pcdsdevices.epics_motor.EpicsMotorInterface
     pcdsdevices.epics_motor.IMS
     pcdsdevices.epics_motor.Motor
@@ -514,14 +533,6 @@ pcdsdevices.mrco_motion
 
     pcdsdevices.mrco_motion.MRCO
 
-pcdsdevices.my_device
----------------------
-
-.. autosummary::
-    :toctree: generated
-
-    pcdsdevices.my_device.MyDevice
-
 pcdsdevices.pim
 ---------------
 
@@ -530,6 +541,7 @@ pcdsdevices.pim
 
     pcdsdevices.pim.IM2K0
     pcdsdevices.pim.LCLS2ImagerBase
+    pcdsdevices.pim.LCLS2Target
     pcdsdevices.pim.PIM
     pcdsdevices.pim.PIMWithBoth
     pcdsdevices.pim.PIMWithFocus
@@ -623,6 +635,7 @@ pcdsdevices.ref
     :toctree: generated
 
     pcdsdevices.ref.ReflaserL2SI
+    pcdsdevices.ref.ReflaserL2SIMirror
 
 pcdsdevices.rtds_ebd
 --------------------
@@ -641,6 +654,7 @@ pcdsdevices.sample_delivery
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.sample_delivery.Bronkhorst
     pcdsdevices.sample_delivery.CoolerShaker
     pcdsdevices.sample_delivery.FlowIntegrator
     pcdsdevices.sample_delivery.GasManifold
@@ -651,6 +665,7 @@ pcdsdevices.sample_delivery
     pcdsdevices.sample_delivery.PCM
     pcdsdevices.sample_delivery.PropAir
     pcdsdevices.sample_delivery.Selector
+    pcdsdevices.sample_delivery.Sensirion
     pcdsdevices.sample_delivery.ViciValve
 
 pcdsdevices.sensors
@@ -752,13 +767,16 @@ pcdsdevices.state
     :toctree: generated
 
     pcdsdevices.state.CombinedStateRecordPositioner
+    pcdsdevices.state.FakeTwinCATStateConfigDynamic
     pcdsdevices.state.PVStatePositioner
     pcdsdevices.state.StatePositioner
     pcdsdevices.state.StateRecordPositioner
     pcdsdevices.state.StateRecordPositionerBase
-    pcdsdevices.state.TwinCATStateConfigAll
+    pcdsdevices.state.TwinCATStateConfigDynamic
     pcdsdevices.state.TwinCATStateConfigOne
     pcdsdevices.state.TwinCATStatePositioner
+    pcdsdevices.state.get_dynamic_state_attr
+    pcdsdevices.state.state_config_dotted_names
 
 pcdsdevices.stopper
 -------------------
@@ -839,6 +857,7 @@ pcdsdevices.valve
     pcdsdevices.valve.VGCLegacy
     pcdsdevices.valve.VGC_2S
     pcdsdevices.valve.VRC
+    pcdsdevices.valve.VRCClsLS
     pcdsdevices.valve.VRCNO
     pcdsdevices.valve.VVC
     pcdsdevices.valve.VVCNO
@@ -861,4 +880,5 @@ pcdsdevices.wfs
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.wfs.WaveFrontSensorStates
     pcdsdevices.wfs.WaveFrontSensorTarget

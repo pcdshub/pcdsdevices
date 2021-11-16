@@ -2,6 +2,105 @@ Release History
 ###############
 
 
+v5.0.0 (2021-11-15)
+===================
+
+API Changes
+-----------
+- ``TwinCATStateConfigAll`` has been removed. This was considered an
+  internal API.
+- ``isum`` components have been renamed to ``sum`` in IPM detector classes.
+- The motor components for PIM classes have been shortened by removing
+  ``_motor`` from their names (e.g. ``zoom_motor`` is now ``zoom``).
+- Switch the target PVs for ``BeamEnergyRequest`` from e.g. "XPP:USR:MCC:EPHOT" to
+  e.g. "XPP:USR:MCC:EPHOT:SET1", "RIX:USR:MCC:EPHOTK:SET1".
+
+Features
+--------
+- ``EpicsSignalEditMD`` and ``EpicsSignalROEditMD`` now allow for overriding of
+  enumeration strings (``enum_strs``) by way of a static list of strings
+  (``enum_strs`` kwarg) or a list of signal attribute names (``enum_attrs``
+  kwarg).
+- Update ``TwinCATStatePositioner`` to have a configurable and variable number
+  of state configuration PVs. These are the structures that allow you to
+  check and change state setpoints, deltas, velocities, etc. This is
+  implemented through the new ``TwinCATStateConfigDynamic`` class.
+- Increase the maximum number of connected state configuration records to
+  match the current motion library limit (9)
+
+Device Updates
+--------------
+- Using the new ``TwinCATStateConfigDynamic`` mechanisms and the ``UpdateComponent``,
+  update the following classes to contain exactly the correct number of
+  twincat configuration states in their component state records.
+  Note that the number of states here does not include the "Unknown"
+  or "Moving" state associated with index 0. A device with n states will have
+  typically have 1 out state and n-1 target states by this count, and the
+  EPICS record will have n+1 possible enum values.
+  - ``ArrivalTimeMonitor`` (6)
+  - ``AttenuatorSXR_Ladder`` (9)
+  - ``AT2L0`` (2)
+  - ``FEESolidAttenuatorBlade`` (2)
+  - ``LaserInCoupling`` (2)
+  - ``PPM`` (4)
+  - ``ReflaserL2SI`` (2)
+  - ``WavefrontSensorTarget`` (6)
+  - ``XPIM`` (4)
+- The default ``theta0`` values for CCM objects has been changed from
+  ``14.9792`` to ``15.1027``.
+- ``IPM`` objects now have short aliases for their motors (`ty`, `dx`, `dy`).
+- Reorganized the sample delivery ``Selector`` class to be composed of two
+  ``Sensiron`` devices instead of a flat collection of PVs.
+- In ``VGC_2S``, allow for the user to change the ``at_vac`` setpoint value
+  for upstream and downstream gauges separately.
+- Add the ``user_enable`` signal (``bUserEnable``) to the ``BeckhoffAxisPLC`` class.
+  This is a signal that allows the user to unilaterally disable a
+  running motor's power. When enabled, it is up to the controller
+  whether or not to actually power the motor, but when disabled the
+  power will be shut off.
+- Add the ability for ``BeamEnergyRequest`` to write to PVs for either
+  the K or the L line and for either bunch 1 or bunch 2 in two bunch mode.
+
+New Devices
+-----------
+- Add ``TM2K2``, a variant of the ``ArrivalTimeMonitor`` class that has an extra
+  state (7). The real ``TM2K2`` has one extra target holder compared to the
+  standard ``ArrivalTimeMonitor``.
+- ``BeckhoffAxis_Pre140`` has been added to support versions of ``lcls-twincat-motion``
+  prior to ``v1.4.0``. This has been aliased to ``OldBeckhoffAxis`` for backcompat.
+- Created ``Bronkhorst`` and ``Sensiron`` flow meter devices for sample delivery.
+- Added the ``crix_motion.VLSOptics`` Device, which contains calculated
+  axes for the VLS optical components. The rotation state of these
+  crystals is approximated by a best-fit 2nd order polynomial.
+- Add ``VRCClsLS``, a class for gate valves with control and closed limit switch readback.
+
+Bugfixes
+--------
+- Fix subtle bugs related to the ``UpdateComponent`` and using copy vs deepcopy.
+  This was needed to make the dynamic state classes easy to customize.
+- Add an extra error state in ``UpdateComponent`` for when you've made a typo
+  in your component name. Previously this would give a confusing ``NameError``.
+- In the ``LODCM`` "inverse" calculations, return a NaN energy instead of
+  raising an exception when there is a problem determining the crystal
+  orientation. This prevents the calculated value from going stale when
+  it has become invalid, and it prevents logger spam when this is
+  called in the pseudopositioner update position callback.
+
+Maintenance
+-----------
+- Add various missing docstrings and type annotations.
+- Tab whitelists have been cut down to make things simpler for non-expert users.
+
+Contributors
+------------
+- cymel123
+- jyin999
+- klauer
+- mbosum
+- zllentz
+- zrylettc
+
+
 v4.9.0 (2021-10-19)
 ===================
 
