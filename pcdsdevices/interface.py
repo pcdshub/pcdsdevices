@@ -260,7 +260,6 @@ class BaseInterface:
             status_text = (f'{self}: Error showing status information. '
                            'Check IOC connection and device health.')
             logger.debug(status_text, exc_info=True)
-            raise
         pp.text(status_text)
 
     def status(self) -> str:
