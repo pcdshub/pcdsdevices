@@ -2,6 +2,21 @@ Release History
 ###############
 
 
+v5.0.1 (2021-11-19)
+===================
+
+Bugfixes
+--------
+- CCM status representation fixed in certain situations. (#908)
+- Exceptions will no longer be raised when generating device status
+  representations. (#909)
+
+Contributors
+------------
+- klauer
+
+
+
 v5.0.0 (2021-11-15)
 ===================
 
