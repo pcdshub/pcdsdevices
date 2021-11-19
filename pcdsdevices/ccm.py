@@ -979,7 +979,7 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
         try:
             xavg = np.average([float(x_down), float(x_up)])
             xavg = f'{xavg:.3f}'
-        except TypeError:
+        except Exception:
             xavg = 'N/A'
 
         # Fill out the text
