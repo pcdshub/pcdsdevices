@@ -988,10 +988,11 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
             "enum_strs", None
         ) or []
         if not self._original_enum_strings:
-            self.log.error(
-                "No enum strings on %r; was %r used inappropriately?",
-                self.pvname, type(self).__name__
-            )
+            if self._enum_string_override:
+                self.log.error(
+                    "No enum strings on %r; was %r used inappropriately?",
+                    self.pvname, type(self).__name__
+                )
             return
 
         if self._enum_count == 0:
