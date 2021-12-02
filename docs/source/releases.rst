@@ -1,6 +1,18 @@
 Release History
 ###############
 
+v5.0.2 (2021-12-02)
+===================
+
+Bugfixes
+--------
+- Fix issue where EpicsSignalEditMD could log enum error messages
+  for signals that did not edit their enum metadata.
+
+Contributors
+------------
+- zllentz
+
 
 v5.0.1 (2021-11-19)
 ===================
@@ -14,7 +26,6 @@ Bugfixes
 Contributors
 ------------
 - klauer
-
 
 
 v5.0.0 (2021-11-15)

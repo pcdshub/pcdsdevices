@@ -984,6 +984,9 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
 
     def _check_signal_metadata(self):
         """Check the original enum strings to compare the attributes."""
+        if not self._enum_string_override:
+            return
+
         self._original_enum_strings = self._metadata.get(
             "enum_strs", None
         ) or []
