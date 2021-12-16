@@ -32,4 +32,4 @@ Maintenance
 
 Contributors
 ------------
-- tjohnson
+- slactjohnson
