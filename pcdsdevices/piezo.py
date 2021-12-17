@@ -10,10 +10,12 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from pcdsdevices.variety import set_metadata
 
+from .interface import BaseInterface
+
 logger = logging.getLogger(__name__)
 
 
-class SliceDhvChannel(Device):
+class SliceDhvChannel(BaseInterface, Device):
     """
     Class for controlling a single channel from a Vescent Photonics Slice-DHV
     piezo driver channel PVs.
@@ -52,7 +54,7 @@ class SliceDhvChannel(Device):
                       write_pv=':OUTPUT_MODE_SET', kind='config')
 
 
-class SliceDhvController(Device):
+class SliceDhvController(BaseInterface, Device):
     """
     Class for the Vescent Photonics Slice-DHV piezo driver controller PVs.
     """
@@ -85,7 +87,7 @@ class SliceDhvController(Device):
     dhv_fw = Cpt(EpicsSignalRO, ':DHV_FW', kind='omitted')
 
 
-class SliceDhv(Device):
+class SliceDhv(BaseInterface, Device):
     """
     Class for a complete two channel  Vescent Photonics Slice-DHV piezo
     driver.
