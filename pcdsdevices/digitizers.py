@@ -387,9 +387,9 @@ class Wave8V2PgpMon(BaseInterface, Device):
                         kind='config')
 
     rx_phy_active_cnt = Cpt(EpicsSignalRO, ':RxStatus:PhyActiveCnt',
-                             kind='config')
+                            kind='config')
     rx_phy_active = Cpt(EpicsSignalRO, ':RxStatus:PhyActive',
-                         kind='config')
+                        kind='config')
 
     rx_rem_overflow_cnt0 = Cpt(EpicsSignalRO, ':RxStatus:RemOverflowCnt0',
                                kind='config')
@@ -422,9 +422,9 @@ class Wave8V2PgpMon(BaseInterface, Device):
                                kind='config')
 
     tx_phy_active_cnt = Cpt(EpicsSignalRO, ':TxStatus:PhyActiveCnt',
-                             kind='config')
+                            kind='config')
     tx_phy_active = Cpt(EpicsSignalRO, ':TxStatus:PhyActive',
-                         kind='config')
+                        kind='config')
 
 
 class Wave8V2Timing(BaseInterface, Device):
