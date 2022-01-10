@@ -110,10 +110,6 @@ def make_class(name, d):
             sub_class_lines.append('\n\n')
         else:
             dcpt = get_components(d[key])
-            print("w_rbv:")
-            print(dcpt['w_rbv'])
-            print("wo_rbv:")
-            print(dcpt['wo_rbv'])
             for cpt in dcpt['w_rbv']:
                 make_signal_wrbv(cpt, class_lines)
             for cpt in dcpt['wo_rbv']:
