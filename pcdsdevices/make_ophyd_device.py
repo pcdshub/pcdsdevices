@@ -44,7 +44,7 @@ def make_class_name(pv):
     """
     Make a class name based on a given PV.
     """
-    return '{}Class'.format(pv.title())
+    return '{}'.format(pv.title())
 
 
 def make_class_line(name, lines):
