@@ -179,7 +179,7 @@ if __name__ == '__main__':
     d = {}
     for record in record_list:
         # Sanitize the record of macros
-        record = re.sub(r'\:?\$?\(\w*\)\:?', '', record)
+        record = re.sub(r'\:?\$?\(.*\)\:?', '', record)
         recurse_record(d, record.split(':'))
 
     class_lines = make_class(args.name, d)
