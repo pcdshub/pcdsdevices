@@ -26,7 +26,7 @@ def make_signal(suffix, lines):
     Create a Cpt line with specified suffix. This line is added to a supplied
     list, used for storing components within a particular class.
     """
-    s = "\t{0} = Cpt(EpicsSignal, \':{1}\', kind=\'normal\')"
+    s = "    {0} = Cpt(EpicsSignal, \':{1}\', kind=\'normal\')"
     lines.append(s.format(suffix.lower(), suffix))
 
 
@@ -79,8 +79,9 @@ def get_components(pv_list):
         if pv+'_RBV' in pv_list:
             cpts_w_rbv.append(pv)
         # in case we found the RBV pv first:
-        elif pv.removesuffix('_RBV') in pv_list:
-            cpts_w_rbv.append(pv.removesuffix('_RBV'))
+        elif '_RBV' in pv:
+            if pv.removesuffix('_RBV') in pv_list:
+                cpts_w_rbv.append(pv.removesuffix('_RBV'))
         else:
             cpts_wo_rbv.append(pv)
     pv_dict = {}
@@ -109,6 +110,10 @@ def make_class(name, d):
             sub_class_lines.append('\n\n')
         else:
             dcpt = get_components(d[key])
+            print("w_rbv:")
+            print(dcpt['w_rbv'])
+            print("wo_rbv:")
+            print(dcpt['wo_rbv'])
             for cpt in dcpt['w_rbv']:
                 make_signal_wrbv(cpt, class_lines)
             for cpt in dcpt['wo_rbv']:
