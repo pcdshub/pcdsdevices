@@ -35,7 +35,7 @@ def make_signal_wrbv(suffix, lines):
     Create a Cpt line with RBV pv and separate write_PV. This line is added to
     a supplied list, used for storing components within a particular class.
     """
-    s = ("\t{0} = Cpt(EpicsSignal, \':{1}_RBV\', write_pv=\':{1}\', "
+    s = ("    {0} = Cpt(EpicsSignal, \':{1}_RBV\', write_pv=\':{1}\', "
          "kind=\'normal\')")
     lines.append(s.format(suffix.lower(), suffix))
 
@@ -61,7 +61,7 @@ def make_cpt(name, lines):
     Make a component line for a sub-class, based on the supplied name.
     Appends the generated line to a list of lines.
     """
-    s = "\t{0} = Cpt({1}, \':{2}\', kind=\'normal\')"
+    s = "    {0} = Cpt({1}, \':{2}\', kind=\'normal\')"
     lines.append(s.format(name.lower(), make_class_name(name), name))
 
 
