@@ -185,6 +185,8 @@ if __name__ == '__main__':
 
     class_lines = make_class(args.name, d)
     file_lines = []
+    docstring = '\"\"\"\n{0} class generated from {1}.\n\"\"\"\n'
+    file_lines.append(docstring.format(args.name, args.db))
     file_lines.append('from ophyd import Component as Cpt')
     file_lines.append('from ophyd import Device, EpicsSignal')
     file_lines.append('\nfrom .interface import BaseInterface\n\n')
@@ -195,6 +197,8 @@ if __name__ == '__main__':
         sys.exit(0)
     elif args.output:
         write_file(file_lines, args.output)
+        print("\nDone!")
+        print("Don't forget to run `black` and `flake8` on your new file!\n")
         sys.exit(0)
     else:
         parser.print_help()
