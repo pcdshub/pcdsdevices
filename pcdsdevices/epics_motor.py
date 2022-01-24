@@ -578,7 +578,14 @@ class IMS(PCDSMotorBase):
     velocity_base = Cpt(EpicsSignal, '.VBAS', kind='omitted')
     velocity_max = Cpt(EpicsSignal, '.VMAX', kind='config')
 
-    tab_whitelist = ['reinitialize', 'acceleration', 'clear_.*']
+    tab_whitelist = [
+        'reinitialize',
+        'acceleration',
+        'clear_.*',
+        'configure',
+        'get_configuration',
+        'find_configuration',
+    ]
 
     # The singleton parameter manager object.
     _pm = None
