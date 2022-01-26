@@ -8,6 +8,8 @@ import ophyd
 from ophyd import Component as C
 from ophyd import EpicsSignal
 from ophyd.areadetector.base import ADBase
+from ophyd.areadetector.filestore_mixins import FileStoreHDF5IterativeWrite
+from ophyd.areadetector.plugins import HDF5Plugin_V31
 from ophyd.device import GenerateDatumInterface
 from ophyd.utils import set_and_wait
 
@@ -162,3 +164,7 @@ class HDF5Plugin(ophyd.plugins.HDF5Plugin, FilePlugin):
 
 class MagickPlugin(ophyd.plugins.MagickPlugin, FilePlugin):
     pass
+
+
+class HDF5FileStore(FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
+    ...

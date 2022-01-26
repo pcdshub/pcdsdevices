@@ -5,25 +5,25 @@ All components at the detector level such as plugins or image processing
 functions needed by all instances of a detector are added here.
 """
 import logging
-import warnings
-
 import subprocess
+import warnings
 
 from ophyd import Device
 from ophyd.areadetector import cam
 from ophyd.areadetector.base import (ADComponent, EpicsSignalWithRBV,
                                      NDDerivedSignal)
 from ophyd.areadetector.detectors import DetectorBase
+from ophyd.areadetector.trigger_mixins import SingleTrigger
 from ophyd.device import Component as Cpt
-from ophyd.signal import EpicsSignal, EpicsSignalRO, AttributeSignal
+from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
+from pcdsutils.ext_scripts import get_hutch_name
 
 from pcdsdevices.variety import set_metadata
 
-from pcdsutils.ext_scripts import get_hutch_name
-
-from .plugins import (ColorConvPlugin, HDF5Plugin, ImagePlugin, JPEGPlugin,
-                      NetCDFPlugin, NexusPlugin, OverlayPlugin, ProcessPlugin,
-                      ROIPlugin, StatsPlugin, TIFFPlugin, TransformPlugin)
+from .plugins import (ColorConvPlugin, HDF5FileStore, HDF5Plugin, ImagePlugin,
+                      JPEGPlugin, NetCDFPlugin, NexusPlugin, OverlayPlugin,
+                      ProcessPlugin, ROIPlugin, StatsPlugin, TIFFPlugin,
+                      TransformPlugin)
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +60,36 @@ class PCDSAreaDetectorBase(DetectorBase):
             port_edges = [(port_map[src].name, port_map[dest].name)
                           for src, dest in port_edges]
         return port_edges
+
+
+class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
+    """
+    Saves an HDF5 file in a bluesky plan.
+    """
+    hdf51 = ADComponent(
+        HDF5FileStore,
+        'HDF51:',
+        write_path_template='/dev/null',
+        kind='normal',
+        doc='Save output as an HDF5 file'
+    )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # TODO probably need interactive mode and scan mode
+        # XPP does '%s_Run%03d'%(expname, runnr+1) [scan]
+        # RIX does f'{self.camera.name}-{int(time.time())}' [interactive]
+        # self.hdf51.stage_sigs['filename'] = ???
+        ##
+        # XPP does '%s%s_%d.h5'
+        # RIX does '%s%s_%03d.h5'
+        self.hdf51.stage_sigs['file_template'] = '%s%s_%03d.h5'
+        # TODO num_capture configurable
+        # self.hdf51.stage_sigs['num_capture'] = ???
+        # Capture (1) = 1 file per step
+        # Stream (2) = 1 file per run
+        # self.hdf51.stage_sigs['file_write_mode'] = 'Capture'
+
+
 
 
 class PCDSAreaDetectorEmbedded(PCDSAreaDetectorBase):
@@ -202,7 +232,7 @@ class PCDSAreaDetectorTyphos(Device):
     acquire_rbv = Cpt(EpicsSignalRO, 'DetectorState_RBV', kind='normal')
     image_counter = Cpt(EpicsSignalRO, 'NumImagesCounter_RBV', kind='normal')
 
-    # TJ: removing from the class for now. May be useful later. 
+    # TJ: removing from the class for now. May be useful later.
     # Image data
 #    ndimensions = Cpt(EpicsSignalRO, 'IMAGE2:NDimensions_RBV', kind='omitted')
 #    width = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize0_RBV', kind='omitted')
@@ -280,7 +310,7 @@ class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphosTrigger):
 class BaslerBase(Device):
     """
     Base class with Basler specific PVs. Intended to be sub-classed, not used
-    stand-alone. 
+    stand-alone.
     """
     reset = Cpt(EpicsSignal, 'RESET.PROC', kind='config', doc='Reset the camera')
     set_metadata(reset, dict(variety='command-proc', value=1))
