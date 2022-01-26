@@ -87,11 +87,13 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         # RIX does '%s%s_%03d.h5'
         self.hdf51.stage_sigs['file_template'] = '%s%s_%03d.h5'
         # TODO num_capture configurable
-        self.hdf51.stage_sigs['num_capture'] = 5
+        self.cam.stage_sigs['num_images'] = 5
         # Capture (1) = 1 file per step
         # Stream (2) = 1 file per run
         self.hdf51.stage_sigs['file_write_mode'] = 'Capture'
         # TODO Double-check on self.capture if something is broken
+        del self.hdf1.stage_sigs["capture"]
+        self.hdf1.stage_sigs["capture"] = 1
 
 
 class PCDSAreaDetectorEmbedded(PCDSAreaDetectorBase):
