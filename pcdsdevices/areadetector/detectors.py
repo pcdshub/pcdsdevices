@@ -81,7 +81,7 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         self.hdf51.write_path_template = (
             f'/cds/data/iocData/ioc-{self.name}-gige/hdf5'
         )
-        self.hdf51.stage_sigs['filename'] = 'test'
+        self.hdf51.stage_sigs['file_name'] = 'test'
         ##
         # XPP does '%s%s_%d.h5'
         # RIX does '%s%s_%03d.h5'
