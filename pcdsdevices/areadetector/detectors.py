@@ -92,8 +92,8 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         # Stream (2) = 1 file per run
         self.hdf51.stage_sigs['file_write_mode'] = 'Capture'
         # TODO Double-check on self.capture if something is broken
-        del self.hdf1.stage_sigs["capture"]
-        self.hdf1.stage_sigs["capture"] = 1
+        del self.hdf51.stage_sigs["capture"]
+        self.hdf51.stage_sigs["capture"] = 1
 
 
 class PCDSAreaDetectorEmbedded(PCDSAreaDetectorBase):
