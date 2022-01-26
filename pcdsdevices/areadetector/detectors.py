@@ -78,18 +78,20 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         # TODO probably need interactive mode and scan mode
         # XPP does '%s_Run%03d'%(expname, runnr+1) [scan]
         # RIX does f'{self.camera.name}-{int(time.time())}' [interactive]
-        # self.hdf51.stage_sigs['filename'] = ???
+        self.hdf51.write_path_template = (
+            f'/cds/data/iocData/ioc-{self.name}-gige/hdf5'
+        )
+        self.hdf51.stage_sigs['filename'] = 'test'
         ##
         # XPP does '%s%s_%d.h5'
         # RIX does '%s%s_%03d.h5'
         self.hdf51.stage_sigs['file_template'] = '%s%s_%03d.h5'
         # TODO num_capture configurable
-        # self.hdf51.stage_sigs['num_capture'] = ???
+        self.hdf51.stage_sigs['num_capture'] = 5
         # Capture (1) = 1 file per step
         # Stream (2) = 1 file per run
-        # self.hdf51.stage_sigs['file_write_mode'] = 'Capture'
-
-
+        self.hdf51.stage_sigs['file_write_mode'] = 'Capture'
+        # TODO Double-check on self.capture if something is broken
 
 
 class PCDSAreaDetectorEmbedded(PCDSAreaDetectorBase):
