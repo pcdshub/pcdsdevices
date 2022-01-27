@@ -73,15 +73,13 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         kind='normal',
         doc='Save output as an HDF5 file'
     )
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, write_path, **kwargs):
         super().__init__(*args, **kwargs)
         # TODO probably need interactive mode and scan mode
         # XPP does '%s_Run%03d'%(expname, runnr+1) [scan]
         # RIX does f'{self.camera.name}-{int(time.time())}' [interactive]
         # TODO set this using prefix as a backup if folder DNE
-        self.hdf51.write_path_template = (
-            f'/cds/data/iocData/ioc-{self.name}-gige/hdf5'
-        )
+        self.hdf51.write_path_template = write_path
         # XPP does '%s%s_%d.h5'
         # RIX does '%s%s_%03d.h5'
         self.hdf51.stage_sigs['file_template'] = '%s%s_%03d.h5'
@@ -95,11 +93,31 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         self.hdf51.stage_sigs["capture"] = 1
         self.hutch_name = get_hutch_name()
 
+    def trigger(self):
+        def escape_hatch(old_value, value, **kwargs):
+            if value < 0.1 and old_value > 0.1:
+                logger.warning('Camera froze! Resetting to continue...')
+                self.cam.acquire.put(0)
+                cleanup()
+
+        def finished_ok(old_value, value, **kwargs):
+            if value == 0:
+                cleanup()
+
+        def cleanup():
+            self.cam.array_rate.unsubscribe(escape_cbid)
+            self.cam.acquire.unsubscribe(finished_cbid)
+
+        escape_cbid = self.cam.array_rate.subscribe(escape_hatch, run=False)
+        finished_cbid = self.cam.acquire.subscribe(finished_ok, run=False)
+
+        return super().trigger()
+
     @property
     def num_images_per_point(self):
         return self.cam.stage_sigs['num_images']
 
-    @num_images.setter
+    @num_images_per_point.setter
     def num_images_per_point(self, num_images: int):
         self.cam.stage_sigs['num_images'] = num_images
 
