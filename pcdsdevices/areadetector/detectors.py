@@ -6,10 +6,8 @@ functions needed by all instances of a detector are added here.
 """
 import logging
 import subprocess
-import time
 import warnings
 
-from hutch_python.utils import get_current_experiment
 from ophyd import Device
 from ophyd.areadetector import cam
 from ophyd.areadetector.base import (ADComponent, EpicsSignalWithRBV,
@@ -18,7 +16,7 @@ from ophyd.areadetector.detectors import DetectorBase
 from ophyd.areadetector.trigger_mixins import SingleTrigger
 from ophyd.device import Component as Cpt
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
-from pcdsutils.ext_scripts import get_hutch_name, get_run_number
+from pcdsutils.ext_scripts import get_hutch_name
 
 from pcdsdevices.variety import set_metadata
 
@@ -88,31 +86,27 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         # RIX does '%s%s_%03d.h5'
         self.hdf51.stage_sigs['file_template'] = '%s%s_%03d.h5'
         # TODO num_images configurable
-        self.num_images = 1
+        self.num_images_per_point = 1
         # Capture (1) = 1 file per step
         # Stream (2) = 1 file per run
-        self.hdf51.stage_sigs['file_write_mode'] = 'Capture'
+        self.hdf51.stage_sigs['file_write_mode'] = 'Stream'
         # TODO Double-check on self.capture if something is broken
-        del self.hdf1.stage_sigs["capture"]
-        self.hdf1.stage_sigs["capture"] = 1
+        del self.hdf51.stage_sigs["capture"]
+        self.hdf51.stage_sigs["capture"] = 1
         self.hutch_name = get_hutch_name()
 
     @property
-    def num_images(self):
+    def num_images_per_point(self):
         return self.cam.stage_sigs['num_images']
 
     @num_images.setter
-    def num_images(self, num_images: int):
+    def num_images_per_point(self, num_images: int):
         self.cam.stage_sigs['num_images'] = num_images
 
-    def make_filename(self) -> str:
-        run_number = get_run_number(hutch=self.hutch_name, live=True)
-        experiment = get_current_experiment(self.hutch_name)
-        return f'{experiment}_run{run_number}_{time.time():.0f}'
-
-    def unstage(self):
-        super().unstage()
-        print(f'Created file {self._fn}')
+    def save_images(self):
+        self.stage()
+        self.trigger().wait()
+        self.unstage()
 
 
 class PCDSAreaDetectorEmbedded(PCDSAreaDetectorBase):
