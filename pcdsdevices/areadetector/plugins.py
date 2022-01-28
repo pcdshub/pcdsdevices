@@ -194,4 +194,4 @@ class HDF5FileStore(FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
 
     def unstage(self):
         super().unstage()
-        print(f'Created file {self._fn}')
+        print(f'Created file {self.full_file_name.get()}')
