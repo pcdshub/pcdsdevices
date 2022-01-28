@@ -27,6 +27,10 @@ env:
     # CONDA_EXTRAS) but for pip
     - PIP_EXTRAS="PyQt5 -e ./"
 
+jobs:
+  allow_failures:
+    - name: "Python - PIP"
+
 import:
   # This import enables a set of standard python jobs including:
   # - Build
