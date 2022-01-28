@@ -6,6 +6,7 @@ functions needed by all instances of a detector are added here.
 """
 import logging
 import subprocess
+import time
 import warnings
 
 from ophyd import Device
@@ -73,53 +74,54 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         kind='normal',
         doc='Save output as an HDF5 file'
     )
-    def __init__(self, *args, write_path, **kwargs):
+    def __init__(self, *args, write_path, always_acquire=True, **kwargs):
         super().__init__(*args, **kwargs)
-        # TODO probably need interactive mode and scan mode
-        # XPP does '%s_Run%03d'%(expname, runnr+1) [scan]
-        # RIX does f'{self.camera.name}-{int(time.time())}' [interactive]
-        # TODO set this using prefix as a backup if folder DNE
-        self.hdf51.write_path_template = write_path
-        # XPP does '%s%s_%d.h5'
-        # RIX does '%s%s_%03d.h5'
-        self.hdf51.stage_sigs['file_template'] = '%s%s_%03d.h5'
-        # TODO num_images configurable
-        self.num_images_per_point = 1
-        # Capture (1) = 1 file per step
-        # Stream (2) = 1 file per run
-        self.hdf51.stage_sigs['file_write_mode'] = 'Stream'
-        # TODO Double-check on self.capture if something is broken
-        del self.hdf51.stage_sigs["capture"]
-        self.hdf51.stage_sigs["capture"] = 1
         self.hutch_name = get_hutch_name()
+        self.always_acquire = always_acquire
+        self.num_images_per_point = 1
+        self.hdf51.write_path_template = write_path
+        self.hdf51.stage_sigs['file_template'] = '%s%s_%03d.h5'
+        self.hdf51.stage_sigs['file_write_mode'] = 'Stream'
+        del self.hdf51.stage_sigs["capture"]
+        if always_acquire:
+            # This mode is "acquire always, capture on trigger"
+            # Override the default to Continuous, always go
+            self.stage_sigs['cam.acquire'] = 1
+            self.stage_sigs['cam.image_mode'] = 2
+            # Make sure we toggle capture for trigger
+            self._acquisition_signal = self.hdf51.capture
+        else:
+            # This mode is "acquire on trigger, capture always"
+            # Confirm default of Multiple, start off
+            # Redundantly set these here for code clarity
+            self.stage_sigs['cam.acquire'] = 0
+            self.stage_sigs['cam.image_mode'] = 1
+            # If we include capture in stage, it must be last
+            self.hdf51.stage_sigs["capture"] = 1
+            # Ensure we use the cam acquire as the trigger
+            self._acquisition_signal = self.cam.acquire
 
-    def trigger(self):
-        def escape_hatch(old_value, value, **kwargs):
-            if value < 0.1 and old_value > 0.1:
-                logger.warning('Camera froze! Resetting to continue...')
-                self.cam.acquire.put(0)
-                cleanup()
-
-        def finished_ok(old_value, value, **kwargs):
-            if value == 0:
-                cleanup()
-
-        def cleanup():
-            self.cam.array_rate.unsubscribe(escape_cbid)
-            self.cam.acquire.unsubscribe(finished_cbid)
-
-        escape_cbid = self.cam.array_rate.subscribe(escape_hatch, run=False)
-        finished_cbid = self.cam.acquire.subscribe(finished_ok, run=False)
-
-        return super().trigger()
+    def stage(self):
+        rval = super().stage()
+        # It takes a moment for the IOC to be ready sometimes
+        time.sleep(0.1)
+        return rval
 
     @property
     def num_images_per_point(self):
-        return self.cam.stage_sigs['num_images']
+        if self.always_acquire:
+            return self.cam.stage_sigs['num_images']
+        else:
+            return self.hdf51.stage_sigs['num_capture']
 
     @num_images_per_point.setter
     def num_images_per_point(self, num_images: int):
-        self.cam.stage_sigs['num_images'] = num_images
+        if self.always_acquire:
+            self.hdf51.stage_sigs['num_capture'] = num_images
+            self.cam.stage_sigs['num_images'] = 1
+        else:
+            self.hdf51.stage_sigs['num_capture'] = 0
+            self.cam.stage_sigs['num_images'] = num_images
 
     def save_images(self):
         self.stage()

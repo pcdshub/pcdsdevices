@@ -182,7 +182,7 @@ class HDF5FileStore(FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
             experiment = get_current_experiment(
                 self.parent.hutch_name,
             )
-            filename = f'{experiment}_run{run_number+1}_{time.time():.0f}'
+            filename = f'{experiment}_run{run_number}_{time.time():.0f}'
         except Exception:
             filename = f'{self.name}_{time.time():.0f}'
         formatter = datetime.datetime.now().strftime
