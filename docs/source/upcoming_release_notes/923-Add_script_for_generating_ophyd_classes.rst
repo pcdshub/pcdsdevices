@@ -8,7 +8,7 @@ API Changes
 Features
 --------
 - Adds a new script, make_ophyd_device.py, that helps with autogeneration of
-  an ophyd device class from an IOC db file. 
+  an ophyd device class from an IOC db file. Includes a helper script. 
 
 Device Updates
 --------------
