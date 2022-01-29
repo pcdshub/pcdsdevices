@@ -106,3 +106,34 @@ class LAMPFlowCell(BaseInterface, GroupDevice):
     flow_cell_y = Cpt(BeckhoffAxis, ':MMS:11', kind='normal')
     flow_cell_z = Cpt(BeckhoffAxis, ':MMS:12', kind='normal')
     flow_cell_theta = Cpt(BeckhoffAxis, ':MMS:13', kind='normal')
+
+class LAMP_LV_17(BaseInterface, GroupDevice):
+      """
+      LAMP Motion Class
+ 
+      This class controls motors fixed to the LAMP Motion system for the IP1
+      endstation in TMO with the Gas Jet, Sample Paddle, and Detector configuration for LV17.
+ 
+      Parameters
+      ----------
+      prefix : str
+          Base PV for the LAMP motion system
+
+     name : str
+         Alias for the device
+     """
+     # UI representation
+     _icon = 'fa.minus-square'
+     tab_component_names = True
+
+     # Motor Component 
+     gas_jet_x = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
+     gas_jet_y = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
+     gas_jet_z = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
+
+     sample_paddle_x = Cpt(BeckhoffAxis, ':MMS:04', kind='normal')
+     sample_paddle_y = Cpt(BeckhoffAxis, ':MMS:05', kind='normal')
+     sample_paddle_z = Cpt(BeckhoffAxis, ':MMS:06', kind='normal')
+
+     detector_x = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
+     detector_y = Cpt(BeckhoffAxis, ':MMS:08', kind='normal')
