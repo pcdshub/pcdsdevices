@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Source keeps stealing my args
+sourceWrapper() {
+ source /reg/g/pcds/pyps/conda/py36env.sh
+}
+
+sourceWrapper
+
+python -m pcdsdevices.make_ophyd_device "$@"
