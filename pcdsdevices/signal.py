@@ -798,6 +798,7 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
     _enum_string_override: bool
     _enum_subscriptions: dict[ophyd.ophydobj.OphydObject, int]
     _pending_signals: set[ophyd.ophydobj.OphydObject]
+    _sent_first_md_callbacks: bool
 
     def __init__(
         self,
@@ -815,6 +816,7 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
         self._enum_subscriptions = {}
         self._enum_count = 0
         self._metadata_override = {}
+        self._sent_first_md_callbacks = False
 
         if enum_attrs and enum_strs:
             raise ValueError(
@@ -959,7 +961,14 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
         except IndexError:
             return
 
+        if value == "Invalid":
+            try:
+                value = self._original_enum_strings[idx]
+            except IndexError:
+                ...
+
         self._enum_strings[idx] = str(value)
+
         self.log.debug(
             "Got enum %s [%d] = %s from %s",
             self.name, idx, value, getattr(obj, "pvname", "(no pvname)")
@@ -1000,10 +1009,22 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
         if self._enum_count == 0:
             self._enum_count = len(self._original_enum_strings)
 
+            def pick_enum_string(existing: str, original: str) -> str:
+                """
+                Pick the best enum string, given two options.
+
+                The "Invalid" marker indicates that the PLC sName for the state
+                has not yet been updated.  Ignore it and fall back to the
+                PLC enum-defined value.
+                """
+                if existing.lower() == "invalid":
+                    existing = ""
+                return existing or original
+
             # Only update ones that have yet to be populated;  this can
             # be a race for who connects first:
             updated_enums = [
-                existing or original
+                pick_enum_string(existing, original)
                 for existing, original in itertools.zip_longest(
                     self._enum_strings,
                     self._original_enum_strings,
@@ -1018,7 +1039,9 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
         if self._metadata["connected"]:
             # The underlying PV has connected - check its enum_strs:
             self._check_signal_metadata()
-        super()._run_metadata_callbacks()
+        if self.connected or self._sent_first_md_callbacks:
+            self._sent_first_md_callbacks = True
+            super()._run_metadata_callbacks()
 
 
 class EpicsSignalEditMD(EpicsSignal, EpicsSignalBaseEditMD):
