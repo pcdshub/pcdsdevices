@@ -252,18 +252,26 @@ class StatePositioner(MvInterface, Device, PositionerBase):
         # Check for a malformed string digit
         if isinstance(value, str) and value.isdigit():
             value = int(value)
-        try:
-            return self.states_enum[value]
-        except KeyError:
+
+        if isinstance(value, int):
             try:
                 return self.states_enum(value)
             except ValueError:
-                err = ('{0} is not a valid state for {1}. Valid state names '
-                       'are: {2}, and their corresponding values are {3}.')
-                enum_names = [state.name for state in self.states_enum]
-                enum_values = [state.value for state in self.states_enum]
-                raise ValueError(err.format(value, self.name, enum_names,
-                                            enum_values))
+                ...
+        elif isinstance(value, self.states_enum):
+            return value
+        else:
+            for state_enum in self.states_enum:
+                if state_enum.name.lower() == value.lower():
+                    return state_enum
+
+        enum_names = [state.name for state in self.states_enum]
+        enum_values = [state.value for state in self.states_enum]
+        raise ValueError(
+            f"{value} is not a valid state for {self.name}."
+            f"Valid state names are: {enum_names}, "
+            f"and their corresponding values are {enum_values}."
+        )
 
     def _do_move(self, state):
         """

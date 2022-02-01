@@ -138,7 +138,7 @@ class InOutPositioner(StatePositioner):
             self._update_trans_enum(state, default)
 
     def _update_trans_enum(self, state, default):
-        index = self.states_list.index(state)
+        index = self.states_list.index(self.get_state(state).name)
         self._trans_enum[index] = self._transmission.get(state, default)
 
     def _pos_in_list(self, state_list, check_state=None):
