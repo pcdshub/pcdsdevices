@@ -68,9 +68,15 @@ class InOutPositioner(StatePositioner):
     def _state_init(self):
         super()._state_init()
         if self._in_if_not_out:
-            self.in_states = [state for state in self.states_list
-                              if state not in self.out_states
-                              and state != self._unknown]
+            outish_states = [
+                self.get_state(state).name
+                for state in self.out_states + [self._unknown]
+            ]
+            self.in_states = [
+                state
+                for state in self.states_list
+                if state not in outish_states
+            ]
         self._trans_enum = {}
         self._extend_trans_enum(self.in_states, 0)
         self._extend_trans_enum(self.out_states, 1)
