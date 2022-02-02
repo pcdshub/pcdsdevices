@@ -111,7 +111,6 @@ class StatePositioner(MvInterface, Device, PositionerBase):
     def _late_state_init(
         self,
         *args,
-        connected: bool = False,
         enum_strs: Optional[List[str]] = None,
         **kwargs
     ):
