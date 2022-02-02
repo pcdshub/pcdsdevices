@@ -6,7 +6,6 @@ from __future__ import annotations
 import copy
 import functools
 import logging
-from enum import Enum
 from typing import ClassVar, List, Optional
 
 from ophyd.device import Component as Cpt
@@ -22,6 +21,7 @@ from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
 from .signal import EpicsSignalEditMD, PVStateSignal, PytmcSignal
+from .utils import HelpfulIntEnum
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -318,7 +318,7 @@ class StatePositioner(MvInterface, Device, PositionerBase):
                 for alias in aliases:
                     state_def[alias] = i
         enum_name = self.__class__.__name__ + 'States'
-        enum = Enum(enum_name, state_def, start=0)
+        enum = HelpfulIntEnum(enum_name, state_def, start=0, module=__name__)
         if len(enum) != state_count:
             raise ValueError(('Bad states definition! Inconsistency in '
                               'states_list {} or _states_alias {}'
