@@ -7,7 +7,7 @@ import copy
 import functools
 import logging
 from enum import Enum
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device, required_for_connection
@@ -108,7 +108,13 @@ class StatePositioner(MvInterface, Device, PositionerBase):
                 self.states_enum = self._create_states_enum()
             self._state_initialized = True
 
-    def _late_state_init(self, *args, enum_strs=None, **kwargs):
+    def _late_state_init(
+        self,
+        *args,
+        connected: bool = False,
+        enum_strs: Optional[List[str]] = None,
+        **kwargs
+    ):
         if enum_strs is not None and not self.states_list:
             self.states_list = list(enum_strs)
             # Unknown state reserved for slot zero, automatically added later
@@ -268,7 +274,7 @@ class StatePositioner(MvInterface, Device, PositionerBase):
         enum_names = [state.name for state in self.states_enum]
         enum_values = [state.value for state in self.states_enum]
         raise ValueError(
-            f"{value} is not a valid state for {self.name}."
+            f"{value} is not a valid state for {self.name}. "
             f"Valid state names are: {enum_names}, "
             f"and their corresponding values are {enum_values}."
         )
@@ -404,10 +410,13 @@ class StateRecordPositionerBase(StatePositioner, GroupDevice):
     # Moving a state positioner puts to state
     stage_group = [state]
 
+    _has_subscribed_readback: bool
+    _has_checked_state_enum: bool
+
     def __init__(self, prefix, *, name, **kwargs):
-        super().__init__(prefix, name=name, **kwargs)
         self._has_subscribed_readback = False
         self._has_checked_state_enum = False
+        super().__init__(prefix, name=name, **kwargs)
 
     def _run_sub_readback(self, *args, **kwargs):
         kwargs.pop('sub_type')
