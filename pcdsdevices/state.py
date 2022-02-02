@@ -259,25 +259,16 @@ class StatePositioner(MvInterface, Device, PositionerBase):
         if isinstance(value, str) and value.isdigit():
             value = int(value)
 
-        if isinstance(value, int):
-            try:
-                return self.states_enum(value)
-            except ValueError:
-                ...
-        elif isinstance(value, self.states_enum):
-            return value
-        else:
-            for state_enum in self.states_enum:
-                if state_enum.name.lower() == value.lower():
-                    return state_enum
-
-        enum_names = [state.name for state in self.states_enum]
-        enum_values = [state.value for state in self.states_enum]
-        raise ValueError(
-            f"{value} is not a valid state for {self.name}. "
-            f"Valid state names are: {enum_names}, "
-            f"and their corresponding values are {enum_values}."
-        )
+        try:
+            return self.states_enum.from_any(value)
+        except ValueError:
+            enum_names = [state.name for state in self.states_enum]
+            enum_values = [state.value for state in self.states_enum]
+            raise ValueError(
+                f"{value} is not a valid state for {self.name}. "
+                f"Valid state names are: {enum_names}, "
+                f"and their corresponding values are {enum_values}."
+            ) from None
 
     def _do_move(self, state):
         """
