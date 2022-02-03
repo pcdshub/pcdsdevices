@@ -1036,6 +1036,11 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
     def _run_metadata_callbacks(self):
         """Hook for metadata callbacks, mostly run by superclasses."""
         self._metadata_override["connected"] = self.connected
+        # TODO: to truncate the number of enum strings reported to the number
+        # that EPICS reports for the given PV, the following may be advisable.
+        # However, it seems to add additional confusing errors; so consider
+        # this a todo.
+        # self._metadata_override["enum_strs"] = self.enum_strs
         if self._metadata["connected"]:
             # The underlying PV has connected - check its enum_strs:
             self._check_signal_metadata()
