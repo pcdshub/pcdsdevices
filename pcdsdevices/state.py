@@ -6,7 +6,7 @@ from __future__ import annotations
 import copy
 import functools
 import logging
-from typing import ClassVar, List, Optional
+from typing import Any, ClassVar, List, Optional, Type
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device, required_for_connection
@@ -17,6 +17,7 @@ from ophyd.status import SubscriptionStatus
 from ophyd.status import wait as status_wait
 
 from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
@@ -695,6 +696,9 @@ class TwinCATStatePositioner(StatePositioner):
     set_metadata(error_id, dict(variety='scalar', display_format='hex'))
     set_metadata(reset_cmd, dict(variety='command', value=1))
 
+    _customized_classes_: ClassVar[dict[Any, Type[TwinCATStatePositioner]]] = {
+    }
+
     def __init_subclass__(cls, **kwargs):
         # We need to adjust the state enum_attrs appropriately if
         # state_count was updated.
@@ -712,6 +716,35 @@ class TwinCATStatePositioner(StatePositioner):
 
     def clear_error(self):
         self.reset_cmd.put(1)
+
+    @classmethod
+    def customized(cls, cls_name=None, **config) -> type:
+        """
+        Return a customized version of this TwinCATStatePositioner class.
+
+        Creates a new subclass of ``cls`` (optionally named ``cls_name``)
+        with an UpdateComponent with configuration ``config``.
+
+        Parameters
+        ----------
+        cls_name : str, optional
+            The class name to use.  Defaults to using the config arguments.
+
+        **config :
+            UpdateComponent arguments for the config component.
+        """
+        key = (cls, tuple(sorted(config.items())))
+        if key in cls._customized_classes_:
+            return cls._customized_classes_[key]
+        suffix = "_".join(
+            f"{key}_{value}"
+            for key, value in sorted(config.items())
+        )
+        return type(
+            cls_name or f"{cls.__name__}_{suffix}",
+            (cls, ),
+            {"config": UpCpt(**config)},
+        )
 
 
 class StateStatus(SubscriptionStatus):

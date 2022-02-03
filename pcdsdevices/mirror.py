@@ -790,8 +790,12 @@ class CoatingState(Device):
 
     This makes it appear at the top of the screen in typhos.
     """
-    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
-                  doc='Control of the coating states via saved positions.')
+    coating = Cpt(
+        TwinCATMirrorStripe.customized(state_count=2),
+        ':COATING:STATE',
+        kind='hinted',
+        doc='Control of the coating states via saved positions.',
+    )
 
 
 class XOffsetMirrorState(XOffsetMirror, CoatingState):
