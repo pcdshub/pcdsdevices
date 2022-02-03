@@ -15,6 +15,7 @@ from ophyd import FormattedComponent as FCpt
 from ophyd import PVPositioner
 
 from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
@@ -777,6 +778,7 @@ class TwinCATMirrorStripe(TwinCATStatePMPS):
     in_states = []
     out_states = []
     _in_if_not_out = True
+    config = UpCpt(state_count=2)
 
     @property
     def transmission(self):
