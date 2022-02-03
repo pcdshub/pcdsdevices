@@ -3,7 +3,7 @@ Module for counters such as frequency counters and time interval counters.
 """
 
 from ophyd import Component as Cpt
-from ophyd import Device, EpicsSignal
+from ophyd import Device, EpicsSignal, EpicsSignalRO
 
 from pcdsdevices.variety import set_metadata
 
@@ -19,8 +19,8 @@ class Agilent53210A(BaseInterface, Device):
     protocol = Cpt(EpicsSignal, ':PROTOCOL_RBV', write_pv=':PROTOCOL',
                    kind='omitted')
 
-    freq_rbck = Cpt(EpicsSignal, ':FREQ_RBCK', kind='normal')
-    freq_rbck_raw = Cpt(EpicsSignal, ':FREQ_RBCK_RAW', kind='omitted')
+    freq_rbck = Cpt(EpicsSignalRO, ':FREQ_RBCK', kind='normal')
+    freq_rbck_raw = Cpt(EpicsSignalRO, ':FREQ_RBCK_RAW', kind='omitted')
 
     auto_level = Cpt(EpicsSignal, ':GET_AUTO_LEVEL',
                      write_pv=':SET_AUTO_LEVEL', kind='config')
@@ -40,7 +40,7 @@ class Agilent53210A(BaseInterface, Device):
     trig_percent = Cpt(EpicsSignal, ':GET_TRIG_PERCENT',
                        write_pv=':SET_TRIG_PERCENT', kind='config')
 
-    identity = Cpt(EpicsSignal, ':IDENTITY', kind='omitted')
+    identity = Cpt(EpicsSignalRO, ':IDENTITY', kind='omitted')
 
     reset = Cpt(EpicsSignal, ':RESET', kind='config')
     set_metadata(reset, dict(variety='command-proc', value=1))
