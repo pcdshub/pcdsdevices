@@ -27,6 +27,7 @@ from ophyd.status import wait as status_wait
 
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxisNoOffset
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutMixin,
                         LightpathMixin, MvInterface)
@@ -572,13 +573,22 @@ class PowerSlits(BeckhoffSlits):
     fsw = Cpt(NotImplementedSignal, ':FSW', kind='normal')
 
 
+class ExitSlitTarget(TwinCATStatePMPS):
+    """
+    Controls the exit slits target state.
+    Defines the state count as 3 (OUT and 2 targets) to limit the number of
+    config PVs we connect to.
+    """
+    config = UpCpt(state_count=3)
+
+
 class ExitSlits(BaseInterface, GroupDevice, LightpathInOutMixin):
     tab_component_names = True
 
     lightpath_cpts = ['target']
     _icon = 'fa.video-camera'
 
-    target = Cpt(TwinCATStatePMPS, ':YAG:STATE', kind='hinted',
+    target = Cpt(ExitSlitTarget, ':YAG:STATE', kind='hinted',
                  doc='Control of the YAG  stack via saved positions.')
     yag_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:YAG', kind='normal',
                     doc='Direct control of the Yag Stack motor.')
