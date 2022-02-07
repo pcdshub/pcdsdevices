@@ -1,7 +1,6 @@
 Release History
 ###############
 
-
 v5.1.0 (2022-02-07)
 ===================
 
@@ -14,7 +13,6 @@ Features
 Device Updates
 --------------
 - Add pmgr methods to the IMS class's tab whitelist.
-- Adds a new class to interface with the LAMP motion configuration for LV17.
 
 New Devices
 -----------
@@ -28,8 +26,8 @@ New Devices
 - Qadc: Class for FMC126 (old) digitizers
 - QadcSparsification: Class for holding FMC134 sparsification PVs.
 - Qadc134: Class for FMC134 (new) digitizers
--Wave8V2Simple: A simple class for the LCLS-II Wave8. Provides waveforms
- and acquisition start/stop buttons.
+- Wave8V2Simple: A simple class for the LCLS-II Wave8. Provides waveforms
+  and acquisition start/stop buttons.
 - Wave8V2: A complete top-level class for the LCLS-II Wave8. Includes many
   configuration and diagnostic PVs, in addition to what is provided by
   Wave8V2Simple.
@@ -37,6 +35,7 @@ New Devices
 - CycleRfofRx: class for Cycle RFoF receiver.
 - CycleRfofTx: class for Cycle RFoF transmitter.
 - Agilent53210A: Device for controlling frequency counters by the same name.
+- Adds a new class to interface with the LAMP motion configuration for LV17.
 
 Bugfixes
 --------
@@ -54,18 +53,15 @@ Maintenance
 -----------
 - ``detailed_tree.ui`` was vendored from typhos. The default attenuator screens
   AT2L0, AT1K4, and AT2K2 will now default to ``detailed_tree.ui``.
-- Mobosum
 - HelpfulIntEnum has been vendored from pcdsutils. This will be
   switched to an import in a future release.
 
 Contributors
 ------------
-- Mbosum
+- mbosum
 - klauer
 - slactjohnson
 - tangkong
-- tjohnson
-- tjohnson
 - zllentz
 
 
