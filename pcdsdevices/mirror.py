@@ -562,6 +562,11 @@ class KBOMirror(BaseInterface, GroupDevice):
     us_rtd = Cpt(EpicsSignalRO, ':RTD:BEND:US:1_RBV', kind='normal')
     ds_rtd = Cpt(EpicsSignalRO, ':RTD:BEND:DS:1_RBV', kind='normal')
 
+    # Cooling water flow and pressure sensors
+    cool_flow1  = Cpt(EpicsSignalRO, ':FLOW:1_RBV', kind='normal')
+    cool_flow2  = Cpt(EpicsSignalRO, ':FLOW:2_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PRESS:1_RBV', kind='normal')
+
     # Lightpath config: implement inserted, removed, transmission, subscribe
     inserted = True
     removed = False
