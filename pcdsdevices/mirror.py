@@ -611,6 +611,13 @@ class KBOMirror(BaseInterface, GroupDevice):
                                    'units')
         x_description = get_status_value(status_info, 'x', 'description',
                                          'value')
+        y_position = get_status_value(status_info, 'y', 'position')
+        y_user_setpoint = get_status_value(status_info, 'y',
+                                           'user_setpoint', 'value')
+        y_units = get_status_value(status_info, 'y', 'user_setpoint',
+                                   'units')
+        y_description = get_status_value(status_info, 'y', 'description',
+                                         'value')
         p_position = get_status_value(status_info, 'pitch', 'position')
         p_user_setpoint = get_status_value(status_info, 'pitch',
                                            'user_setpoint', 'value')
@@ -645,6 +652,12 @@ x_up: ({self.x.prefix})
     position: {x_position}
     user_setpoint: {x_user_setpoint} [{x_units}]
     description: {x_description}
+------
+y_up: ({self.y.prefix})
+------
+    position: {y_position}
+    user_setpoint: {y_user_setpoint} [{y_units}]
+    description: {y_description}
 ------
 pitch: ({self.pitch.prefix})
 ------
