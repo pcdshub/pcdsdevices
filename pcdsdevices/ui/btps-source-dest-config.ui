@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QFrame" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>660</width>
+    <height>523</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="toolTip">
+        <string>If camera plugins don't update this fast, their data will be considered invalid/stale.</string>
+       </property>
+       <property name="text">
+        <string>Source</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <widget class="PyDMLabel" name="PyDMLabel_3">
+       <property name="font">
+        <font>
+         <family>Century Schoolbook L</family>
+         <weight>75</weight>
+         <bold>true</bold>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${DEST}Name_RBV</string>
+       </property>
+       <property name="displayFormat" stdset="0">
+        <enum>PyDMLabel::String</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="PyDMLabel" name="PyDMLabel_2">
+       <property name="font">
+        <font>
+         <family>Century Schoolbook L</family>
+         <weight>75</weight>
+         <bold>true</bold>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${SOURCE}Name_RBV</string>
+       </property>
+       <property name="displayFormat" stdset="0">
+        <enum>PyDMLabel::String</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_3">
+       <property name="toolTip">
+        <string>If camera plugins don't update this fast, their data will be considered invalid/stale.</string>
+       </property>
+       <property name="text">
+        <string>Destination</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="label_4">
+       <property name="toolTip">
+        <string>If camera plugins don't update this fast, their data will be considered invalid/stale.</string>
+       </property>
+       <property name="text">
+        <string>---&gt;</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_9">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="macros" stdset="0">
+        <string>{}</string>
+       </property>
+       <property name="filename" stdset="0">
+        <string>btps-source-summary.ui</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="macros" stdset="0">
+        <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Linear:&quot;, &quot;DESC&quot;: &quot;Linear stage&quot;}</string>
+       </property>
+       <property name="filename" stdset="0">
+        <string>btps-range-config.ui</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_3">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="macros" stdset="0">
+        <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Rotary:&quot;, &quot;DESC&quot;: &quot;Rotary stage&quot;}</string>
+       </property>
+       <property name="filename" stdset="0">
+        <string>btps-range-config.ui</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_4">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="macros" stdset="0">
+        <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Goniometer:&quot;, &quot;DESC&quot;: &quot;Goniometer&quot;}</string>
+       </property>
+       <property name="filename" stdset="0">
+        <string>btps-range-config.ui</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_5">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="macros" stdset="0">
+        <string>{&quot;PREFIX&quot;: &quot;${SOURCE}NFCenterX:&quot;, &quot;DESC&quot;: &quot;NF Centroid X&quot;}</string>
+       </property>
+       <property name="filename" stdset="0">
+        <string>btps-range-config.ui</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_6">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="macros" stdset="0">
+        <string>{&quot;PREFIX&quot;: &quot;${SOURCE}NFCenterY:&quot;, &quot;DESC&quot;: &quot;NF Centroid Y&quot;}</string>
+       </property>
+       <property name="filename" stdset="0">
+        <string>btps-range-config.ui</string>
+       </property>
+      </widget>
+     </item>
+     <item alignment="Qt::AlignTop">
+      <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_8">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="macros" stdset="0">
+        <string>{&quot;PREFIX&quot;: &quot;${SOURCE}FFCenterX:&quot;, &quot;DESC&quot;: &quot;FF Centroid X&quot;}</string>
+       </property>
+       <property name="filename" stdset="0">
+        <string>btps-range-config.ui</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_7">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>60</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="macros" stdset="0">
+        <string>{&quot;PREFIX&quot;: &quot;${SOURCE}FFCenterY:&quot;, &quot;DESC&quot;: &quot;FF Centroid Y&quot;}</string>
+       </property>
+       <property name="filename" stdset="0">
+        <string>btps-range-config.ui</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PyDMLabel</class>
+   <extends>QLabel</extends>
+   <header>pydm.widgets.label</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMEmbeddedDisplay</class>
+   <extends>QFrame</extends>
+   <header>pydm.widgets.embedded_display</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

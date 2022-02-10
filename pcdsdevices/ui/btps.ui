@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>723</width>
+    <height>937</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_7">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="macros" stdset="0">
+      <string>{&quot;EDIT&quot;: &quot;0&quot;}</string>
+     </property>
+     <property name="filename" stdset="0">
+      <string>btps-camera-summary.ui</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_4">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="macros" stdset="0">
+      <string>{}</string>
+     </property>
+     <property name="filename" stdset="0">
+      <string>btps-overview.ui</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="PyDMRelatedDisplayButton" name="PyDMRelatedDisplayButton">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>Configuration Editor...</string>
+     </property>
+     <property name="filenames" stdset="0">
+      <stringlist>
+       <string>btps-config.ui</string>
+      </stringlist>
+     </property>
+     <property name="titles" stdset="0">
+      <stringlist>
+       <string>&amp;Configuration editor...</string>
+      </stringlist>
+     </property>
+     <property name="openInNewWindow" stdset="0">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="PyDMTabWidget" name="PyDMTabWidget">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <property name="alarmChannels">
+      <stringlist>
+       <string></string>
+       <string></string>
+       <string></string>
+       <string></string>
+       <string></string>
+       <string></string>
+       <string></string>
+      </stringlist>
+     </property>
+     <widget class="QWidget" name="dest1">
+      <attribute name="title">
+       <string>TMO IP1</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="PyDMTabWidget" name="PyDMTabWidget_2">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string/>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <property name="currentTabAlarmChannel" stdset="0">
+          <cstring>ca://SIM:BTPS:DEST:01:SRC:01:ChecksOK_RBV</cstring>
+         </property>
+         <property name="alarmChannels">
+          <stringlist>
+           <string>ca://SIM:BTPS:DEST:01:SRC:01:ChecksOK_RBV</string>
+           <string>ca://SIM:BTPS:DEST:01:SRC:03:ChecksOK_RBV</string>
+           <string>ca://SIM:BTPS:DEST:01:SRC:04:ChecksOK_RBV</string>
+          </stringlist>
+         </property>
+         <widget class="QWidget" name="source1">
+          <attribute name="title">
+           <string>Source 1</string>
+          </attribute>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="macros" stdset="0">
+              <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:01:&quot;, &quot;DEST&quot;: &quot;SIM:BTPS:DEST:01:&quot;}</string>
+             </property>
+             <property name="filename" stdset="0">
+              <string>btps-source-dest.ui</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="source3">
+          <attribute name="title">
+           <string>Source 3</string>
+          </attribute>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_2">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="macros" stdset="0">
+              <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:03:&quot;, &quot;DEST&quot;: &quot;SIM:BTPS:DEST:01:&quot;}</string>
+             </property>
+             <property name="filename" stdset="0">
+              <string>btps-source-dest.ui</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="source4">
+          <attribute name="title">
+           <string>Source 4</string>
+          </attribute>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_3">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="macros" stdset="0">
+              <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:04:&quot;, &quot;DEST&quot;: &quot;SIM:BTPS:DEST:01:&quot;}</string>
+             </property>
+             <property name="filename" stdset="0">
+              <string>btps-source-dest.ui</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="dest2">
+      <attribute name="title">
+       <string>TMO IP2</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="dest3">
+      <attribute name="title">
+       <string>TMO IP3</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_11"/>
+     </widget>
+     <widget class="QWidget" name="dest4">
+      <attribute name="title">
+       <string>qRIXS</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="dest5">
+      <attribute name="title">
+       <string>ChemRIXS</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="dest6">
+      <attribute name="title">
+       <string>XPP</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="dest7">
+      <attribute name="title">
+       <string>Laser Lab</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PyDMTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>pydm.widgets.tab_bar</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMEmbeddedDisplay</class>
+   <extends>QFrame</extends>
+   <header>pydm.widgets.embedded_display</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMRelatedDisplayButton</class>
+   <extends>QPushButton</extends>
+   <header>pydm.widgets.related_display_button</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

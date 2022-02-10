@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>661</width>
+    <height>109</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="1">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Near Field Camera Update Rates</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLabel" name="label_12">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Far Field Camera Update Rates</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="4">
+        <widget class="QLabel" name="label_11">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 4</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="PyDMLabel" name="PyDMLabel_8">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://SIM:BTPS:Chk:FF4:FrameTime_RBV</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="label_8">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 3</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_5">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://SIM:BTPS:Chk:FF1:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_6">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://SIM:BTPS:Chk:FF4:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_4">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://SIM:BTPS:Chk:FF3:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_10">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 2</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="PyDMLabel" name="PyDMLabel_7">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://SIM:BTPS:Chk:FF3:FrameTime_RBV</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_9">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 1</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="PyDMLabel" name="PyDMLabel_6">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://SIM:BTPS:Chk:FF1:FrameTime_RBV</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_5">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 3</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_2">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://SIM:BTPS:Chk:NF3:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://SIM:BTPS:Chk:NF1:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="PyDMLabel" name="PyDMLabel_3">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://SIM:BTPS:Chk:NF1:FrameTime_RBV</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="PyDMLabel" name="PyDMLabel_4">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://SIM:BTPS:Chk:NF3:FrameTime_RBV</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 1</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_6">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 2</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="label_7">
+         <property name="font">
+          <font>
+           <underline>true</underline>
+          </font>
+         </property>
+         <property name="text">
+          <string>Bay 4</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="PyDMLabel" name="PyDMLabel_5">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://SIM:BTPS:Chk:NF4:FrameTime_RBV</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="3">
+        <widget class="PyDMByteIndicator" name="PyDMByteIndicator_3">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://SIM:BTPS:Chk:NF4:IsUpdating_RBV</string>
+         </property>
+         <property name="showLabels" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="circles" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="1">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="toolTip">
+          <string>If camera plugins don't update this fast, their data will be considered invalid/stale.</string>
+         </property>
+         <property name="text">
+          <string>Maximum frame time [s]</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://SIM:BTPS:Config:MaxFrameTime_RBV</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PyDMLabel</class>
+   <extends>QLabel</extends>
+   <header>pydm.widgets.label</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMByteIndicator</class>
+   <extends>QWidget</extends>
+   <header>pydm.widgets.byte</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
