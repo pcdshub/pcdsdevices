@@ -16,6 +16,7 @@ from ophyd.areadetector.base import (ADComponent, EpicsSignalWithRBV,
 from ophyd.areadetector.detectors import DetectorBase
 from ophyd.areadetector.trigger_mixins import SingleTrigger
 from ophyd.device import Component as Cpt
+from ophyd.ophydobj import OphydObject
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
 from pcdsutils.ext_scripts import get_hutch_name
 
@@ -66,6 +67,63 @@ class PCDSAreaDetectorBase(DetectorBase):
 class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
     """
     Saves an HDF5 file in a bluesky plan.
+
+    This class takes care of all the standard setup for saving the files
+    using the HDF5 plugin for our area detector setups at LCLS during
+    bluesky scans, including configuration of the stage signals
+    and various site-specific settings.
+
+    You can decide how many images we'll take at each point by setting
+    the `num_images_per_point` attribute.
+
+    There are two modes provided: "always aquire" and "aquire at points"
+    with key differences in the behavior. You can select which one
+    to use using the ``always_acquire`` keyword argument, which
+    defaults to True.
+
+    With always_aquire=True (default):
+    - Viewers will remain updated althroughout the scan, even between
+      scan points.
+    - The camera will be set to ``acquire`` at ``stage``, if needed, which
+      begins taking images. This happens early in the scan.
+    - At each point, the ``capture`` feature of the HDF5 plugin will be
+      toggled on until we've saved an image count equal to the
+      `num_images_per_point` attribute. The counting is handled by the
+      plugin.
+    - If the camera or server lags during the aquisition, the scan will
+      patiently wait for the correct number of images to be saved.
+    - There is no guarantee that the images are sequential, there can be
+      gaps, but each image that does get saved will be trigger-synchronized.
+      (And therefore, beam-synchronized with beam-synchronized triggers).
+    - Each point in the scan will have its own associate hdf5 file.
+    - If the camera needed to be set to ``acquire`` at ``stage``,
+      it will revert to ``stop`` at ``unstage``.
+
+    With always_acquire=False:
+    - Viewers will only be updated at the specific scan points.
+    - The HDF5 plugin will be set to ``capture`` at stage, and the camera
+      will be configured to take a fixed number of images per acquisition
+      cycle.
+    - At each point, the ``acquire`` bit will be turned on, which causes
+      `num_images_per_point` images to be acquired.
+    - If the camera or server lags during the acquisition, it will be
+      unable to complete it cleanly.
+    - There is a guarantee that the images are sequential.
+    - All the points in the scan will be grouped into one larger hdf5 file.
+
+    This class can be also be used interactively via the ``save_images``
+    function.
+
+    Parameters
+    ----------
+    prefix : ``str``
+        The PV prefix that leads us to this camera's PVs.
+    write_path : ``str``
+        The directory to drop our hdf5 files into.
+    always_acquire : ``bool``, optional
+        Determines which mode we use to collect images as described above.
+    name : ``str``, keyword-only
+        A name to associate with the camera for bluesky.
     """
     hdf51 = ADComponent(
         HDF5FileStore,
@@ -74,7 +132,13 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         kind='normal',
         doc='Save output as an HDF5 file'
     )
-    def __init__(self, *args, write_path, always_acquire=True, **kwargs):
+    def __init__(
+        self,
+        *args,
+        write_path: str,
+        always_acquire: bool = True,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
         self.hutch_name = get_hutch_name()
         self.always_acquire = always_acquire
@@ -101,14 +165,23 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
             # Ensure we use the cam acquire as the trigger
             self._acquisition_signal = self.cam.acquire
 
-    def stage(self):
+    def stage(self) -> list[OphydObject]:
+        """
+        Bluesky interface for setting up the plan.
+
+        This will unpack all of our stage_sigs like normal, but also
+        add a small delay to avoid a race condition in the IOC.
+        """
         rval = super().stage()
         # It takes a moment for the IOC to be ready sometimes
         time.sleep(0.1)
         return rval
 
     @property
-    def num_images_per_point(self):
+    def num_images_per_point(self) -> int:
+        """
+        The number of images to save at each point in the scan.
+        """
         if self.always_acquire:
             return self.cam.stage_sigs['num_images']
         else:
@@ -123,7 +196,10 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
             self.hdf51.stage_sigs['num_capture'] = 0
             self.cam.stage_sigs['num_images'] = num_images
 
-    def save_images(self):
+    def save_images(self) -> None:
+        """
+        Save images interactively as if we were currently at a scan point.
+        """
         self.stage()
         self.trigger().wait()
         self.unstage()

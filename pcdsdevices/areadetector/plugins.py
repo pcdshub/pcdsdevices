@@ -13,6 +13,7 @@ from ophyd.areadetector.base import ADBase
 from ophyd.areadetector.filestore_mixins import FileStoreHDF5IterativeWrite
 from ophyd.areadetector.plugins import HDF5Plugin_V31
 from ophyd.device import GenerateDatumInterface
+from ophyd.ophydobj import OphydObject
 from ophyd.utils import set_and_wait
 from pcdsutils.ext_scripts import get_current_experiment, get_run_number
 
@@ -170,8 +171,15 @@ class MagickPlugin(ophyd.plugins.MagickPlugin, FilePlugin):
 
 
 class HDF5FileStore(FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
-    """Select a filename that makes SLAC scientists happy"""
+    """
+    HDF5 Plugin to use for interactive/in-scan saving at LCLS.
+
+    Includes some mangling of the filename selection to keep
+    the names human-readable because we don't actually use
+    filestore/databroker at LCLS.
+    """
     def make_filename(self) -> str:
+        """Select a filename that makes SLAC scientists happy"""
         try:
             run_number = get_run_number(
                 hutch=self.parent.hutch_name,
@@ -193,6 +201,9 @@ class HDF5FileStore(FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
             formatter(self.write_path_template),
         )
 
-    def unstage(self):
+    def unstage(self) -> list[OphydObject]:
+        """
+        At cleanup, let the user know which file has been created last.
+        """
         super().unstage()
         print(f'Created file {self.full_file_name.get()}')
