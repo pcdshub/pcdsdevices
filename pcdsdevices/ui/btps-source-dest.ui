@@ -6,30 +6,84 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>660</width>
-    <height>575</height>
+    <width>563</width>
+    <height>525</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetFixedSize</enum>
+     </property>
+     <item>
+      <widget class="PyDMLabel" name="PyDMLabel_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Century Schoolbook L</family>
+         <weight>75</weight>
+         <bold>true</bold>
+         <underline>true</underline>
+        </font>
+       </property>
        <property name="toolTip">
-        <string>If camera plugins don't update this fast, their data will be considered invalid/stale.</string>
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${SOURCE}Name_RBV</string>
+       </property>
+       <property name="displayFormat" stdset="0">
+        <enum>PyDMLabel::String</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="toolTip">
+        <string/>
        </property>
        <property name="text">
-        <string>Source</string>
+        <string>---&gt;</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
+     <item>
       <widget class="PyDMLabel" name="PyDMLabel_3">
        <property name="font">
         <font>
@@ -53,77 +107,15 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="PyDMLabel" name="PyDMLabel_2">
-       <property name="font">
-        <font>
-         <family>Century Schoolbook L</family>
-         <weight>75</weight>
-         <bold>true</bold>
-         <underline>true</underline>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${SOURCE}Name_RBV</string>
-       </property>
-       <property name="displayFormat" stdset="0">
-        <enum>PyDMLabel::String</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="label_3">
-       <property name="toolTip">
-        <string>If camera plugins don't update this fast, their data will be considered invalid/stale.</string>
-       </property>
-       <property name="text">
-        <string>Destination</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="label_4">
-       <property name="toolTip">
-        <string>If camera plugins don't update this fast, their data will be considered invalid/stale.</string>
-       </property>
-       <property name="text">
-        <string>---&gt;</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>
     <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_9">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
+       <verstretch>1</verstretch>
       </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>50</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>60</height>
-      </size>
      </property>
      <property name="toolTip">
       <string/>
@@ -140,43 +132,9 @@
     </widget>
    </item>
    <item>
-    <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_10">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>50</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>60</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
-     <property name="macros" stdset="0">
-      <string>{}</string>
-     </property>
-     <property name="filename" stdset="0">
-      <string>btps-source-valves.ui</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_2">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -190,7 +148,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>60</height>
+       <height>50</height>
       </size>
      </property>
      <property name="toolTip">
@@ -210,7 +168,7 @@
    <item>
     <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_3">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -224,7 +182,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>60</height>
+       <height>50</height>
       </size>
      </property>
      <property name="toolTip">
@@ -244,7 +202,7 @@
    <item>
     <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_4">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -258,7 +216,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>60</height>
+       <height>50</height>
       </size>
      </property>
      <property name="toolTip">
@@ -278,7 +236,7 @@
    <item>
     <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_5">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -292,7 +250,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>60</height>
+       <height>50</height>
       </size>
      </property>
      <property name="toolTip">
@@ -312,7 +270,7 @@
    <item>
     <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_6">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -326,7 +284,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>60</height>
+       <height>50</height>
       </size>
      </property>
      <property name="toolTip">
@@ -346,7 +304,7 @@
    <item>
     <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_8">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -360,7 +318,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>60</height>
+       <height>50</height>
       </size>
      </property>
      <property name="toolTip">
@@ -380,7 +338,7 @@
    <item>
     <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_7">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -394,7 +352,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>60</height>
+       <height>50</height>
       </size>
      </property>
      <property name="toolTip">
@@ -410,9 +368,6 @@
       <string>btps-range-summary.ui</string>
      </property>
     </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout"/>
    </item>
   </layout>
  </widget>

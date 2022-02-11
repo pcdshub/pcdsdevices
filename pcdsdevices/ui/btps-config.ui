@@ -19,9 +19,6 @@
      <property name="toolTip">
       <string/>
      </property>
-     <property name="macros" stdset="0">
-      <string>{&quot;EDIT&quot;: &quot;0&quot;}</string>
-     </property>
      <property name="filename" stdset="0">
       <string>btps-camera-summary.ui</string>
      </property>
@@ -43,9 +40,6 @@
       <widget class="PyDMLineEdit" name="PyDMLineEdit">
        <property name="toolTip">
         <string/>
-       </property>
-       <property name="rules" stdset="0">
-        <string>[{&quot;name&quot;: &quot;Editable&quot;, &quot;property&quot;: &quot;Visible&quot;, &quot;initial_value&quot;: &quot;True&quot;, &quot;expression&quot;: &quot;$(EDIT) == \&quot;1\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://SIM:BTPS:Config:MaxFrameTime&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: false}]}]</string>
        </property>
        <property name="channel" stdset="0">
         <string>ca://SIM:BTPS:Config:MaxFrameTime</string>
