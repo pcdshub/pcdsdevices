@@ -7,7 +7,6 @@ import time
 
 import numpy as np
 import ophyd
-from hutch_python.utils import get_current_experiment
 from ophyd import Component as C
 from ophyd import EpicsSignal
 from ophyd.areadetector.base import ADBase
@@ -15,7 +14,7 @@ from ophyd.areadetector.filestore_mixins import FileStoreHDF5IterativeWrite
 from ophyd.areadetector.plugins import HDF5Plugin_V31
 from ophyd.device import GenerateDatumInterface
 from ophyd.utils import set_and_wait
-from pcdsutils.ext_scripts import get_run_number
+from pcdsutils.ext_scripts import get_current_experiment, get_run_number
 
 logger = logging.getLogger(__name__)
 
@@ -181,6 +180,8 @@ class HDF5FileStore(FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
             )
             experiment = get_current_experiment(
                 self.parent.hutch_name,
+                live=False,
+                timeout=5,
             )
             filename = f'{experiment}_run{run_number}_{time.time():.0f}'
         except Exception:
