@@ -562,11 +562,6 @@ class KBOMirror(BaseInterface, GroupDevice):
     us_rtd = Cpt(EpicsSignalRO, ':RTD:BEND:US:1_RBV', kind='normal')
     ds_rtd = Cpt(EpicsSignalRO, ':RTD:BEND:DS:1_RBV', kind='normal')
 
-    # Cooling water flow and pressure sensors
-    cool_flow1  = Cpt(EpicsSignalRO, ':FLOW:1_RBV', kind='normal')
-    cool_flow2  = Cpt(EpicsSignalRO, ':FLOW:2_RBV', kind='normal')
-    cool_press = Cpt(EpicsSignalRO, ':PRESS:1_RBV', kind='normal')
-
     # Lightpath config: implement inserted, removed, transmission, subscribe
     inserted = True
     removed = False
@@ -681,6 +676,24 @@ bender_ds ({self.bender_ds.prefix})
     bender_ds_enc_rms: {b_ds_enc_rms}
 """
 
+class KBOMirrorHE(KBOMirror):
+    """
+    Kirkpatrick-Baez Mirror with Bender Axes and Cooling.
+
+    1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # Cooling water flow and pressure sensors
+    cool_flow1 = Cpt(EpicsSignalRO, ':FLOW:1_RBV', kind='normal')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FLOW:2_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PRESS:1_RBV', kind='normal')
 
 class FFMirror(BaseInterface, GroupDevice):
     """
