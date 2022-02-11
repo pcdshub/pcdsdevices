@@ -676,6 +676,7 @@ bender_ds ({self.bender_ds.prefix})
     bender_ds_enc_rms: {b_ds_enc_rms}
 """
 
+
 class KBOMirrorHE(KBOMirror):
     """
     Kirkpatrick-Baez Mirror with Bender Axes and Cooling.
