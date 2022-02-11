@@ -19,8 +19,18 @@
      <property name="toolTip">
       <string/>
      </property>
+     <property name="alarmSensitiveBorder" stdset="0">
+      <bool>false</bool>
+     </property>
      <property name="channel" stdset="0">
-      <string>ca://SIM:BTPS:Chk:NF1:IsUpdating_RBV</string>
+      <string>ca://${SOURCE}EntryValveReady_RBV</string>
+     </property>
+     <property name="offColor" stdset="0">
+      <color>
+       <red>255</red>
+       <green>0</green>
+       <blue>0</blue>
+      </color>
      </property>
      <property name="showLabels" stdset="0">
       <bool>false</bool>
@@ -47,12 +57,35 @@
     </widget>
    </item>
    <item>
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <widget class="PyDMByteIndicator" name="PyDMByteIndicator_2">
      <property name="toolTip">
       <string/>
      </property>
+     <property name="alarmSensitiveBorder" stdset="0">
+      <bool>false</bool>
+     </property>
      <property name="channel" stdset="0">
-      <string>ca://SIM:BTPS:Chk:NF1:IsUpdating_RBV</string>
+      <string>ca://${DEST}ExitValveReady_RBV</string>
+     </property>
+     <property name="offColor" stdset="0">
+      <color>
+       <red>255</red>
+       <green>0</green>
+       <blue>0</blue>
+      </color>
      </property>
      <property name="showLabels" stdset="0">
       <bool>false</bool>
