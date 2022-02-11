@@ -1,30 +1,8 @@
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
-from ophyd.signal import EpicsSignalRO
 
 from ..interface import BaseInterface
 from ..signal import PytmcSignal
-from ..valve import VGC
-
-
-class ReadOnlyValve(BaseInterface, Device):
-    alm_rst = Cpt(EpicsSignalRO, ':ALM_RST_RBV', kind='normal')
-    at_vac_hys = Cpt(EpicsSignalRO, ':AT_VAC_HYS_RBV', kind='normal')
-    at_vac_sp = Cpt(EpicsSignalRO, ':AT_VAC_SP_RBV', kind='normal')
-    dis_dpilk = Cpt(EpicsSignalRO, ':Dis_DPIlk_RBV', kind='normal')
-    eps_ok = Cpt(EpicsSignalRO, ':EPS_OK_RBV', kind='normal')
-    error = Cpt(EpicsSignalRO, ':ERROR_RBV', kind='normal')
-    err_difpres = Cpt(EpicsSignalRO, ':ERR_DifPres_RBV', kind='normal')
-    err_ext = Cpt(EpicsSignalRO, ':ERR_Ext_RBV', kind='normal')
-    err_sp = Cpt(EpicsSignalRO, ':ERR_SP_RBV', kind='normal')
-    errmsg = Cpt(EpicsSignalRO, ':ErrMsg_RBV', kind='normal', string=True)
-    ff_reset = Cpt(EpicsSignalRO, ':FF_Reset_RBV', kind='normal')
-    force_opn = Cpt(EpicsSignalRO, ':FORCE_OPN_RBV', kind='normal')
-    hyst_perc = Cpt(EpicsSignalRO, ':HYST_PERC_RBV', kind='normal')
-    mps_fault_ok = Cpt(EpicsSignalRO, ':MPS_FAULT_OK_RBV', kind='normal')
-    mps_ok = Cpt(EpicsSignalRO, ':MPS_OK_RBV', kind='normal')
-    opn_sw = Cpt(EpicsSignalRO, ':OPN_SW_RBV', kind='normal')
-    ovrd_on = Cpt(EpicsSignalRO, ':OVRD_ON_RBV', kind='normal')
 
 
 class RangeComparison(BaseInterface, Device):
@@ -97,6 +75,14 @@ class SourceConfig(BaseInterface, Device):
     goniometer = Cpt(RangeComparison, "Goniometer:", kind="normal", doc="Goniometer stage")
     linear = Cpt(RangeComparison, "Linear:", kind="normal", doc="Linear stage")
     rotary = Cpt(RangeComparison, "Rotary:", kind="normal", doc="Rotary stage")
+    entry_valve_ready = Cpt(
+        PytmcSignal,
+        "EntryValveReady",
+        io="input",
+        kind="normal",
+        doc="Entry valve is open and ready",
+    )
+
     checks_ok = Cpt(
         PytmcSignal, "ChecksOK", io="input", kind="normal",
         doc="Check summary"
@@ -107,7 +93,7 @@ class SourceConfig(BaseInterface, Device):
     )
 
     # TODO: good or bad idea?
-    entry_valve = Cpt(ReadOnlyValve, "Valve", kind="normal", doc="Source entry valve")
+    # entry_valve = Cpt(VGC, "Valve", kind="normal", doc="Source entry valve")
 
 
 class DestinationConfig(BaseInterface, Device):
@@ -123,7 +109,14 @@ class DestinationConfig(BaseInterface, Device):
     source1 = Cpt(SourceConfig, "SRC:01:", doc="Settings for source 1")
     source3 = Cpt(SourceConfig, "SRC:03:", doc="Settings for source 3")
     source4 = Cpt(SourceConfig, "SRC:04:", doc="Settings for source 4")
-    exit_valve = Cpt(ReadOnlyValve, "DestValve", doc="Exit valve for the destination")
+    # exit_valve = Cpt(VGC, "DestValve", doc="Exit valve for the destination")
+    exit_valve_ready = Cpt(
+        PytmcSignal,
+        "ExitValveReady",
+        io="input",
+        kind="normal",
+        doc="Exit valve is open and ready",
+    )
 
 
 class GlobalConfig(BaseInterface, Device):
@@ -137,11 +130,74 @@ class GlobalConfig(BaseInterface, Device):
     )
 
 
+class ShutterSafety(BaseInterface, Device):
+    """BTPS per-source shutter safety status."""
+    open_request = Cpt(
+        PytmcSignal,
+        "UserOpen",
+        io="io",
+        kind="normal",
+        doc="User request to open/close shutter",
+    )
+
+    latched_error = Cpt(
+        PytmcSignal,
+        "Error",
+        io="input",
+        kind="normal",
+        doc="Latched error",
+    )
+
+    acknowledge = Cpt(
+        PytmcSignal,
+        "Acknowledge",
+        io="io",
+        kind="normal",
+        doc="User acknowledgement of latched fault",
+    )
+
+    override = Cpt(
+        PytmcSignal,
+        "Override",
+        io="io",
+        kind="normal",
+        doc="BTPS advanced override mode",
+    )
+
+    lss_permission = Cpt(
+        PytmcSignal,
+        "LSS:Permission",
+        io="input",
+        kind="normal",
+        doc="LSS permission to open shutter",
+    )
+
+    lss_open_request = Cpt(
+        PytmcSignal,
+        "LSS:OpenRequest",
+        io="input",
+        kind="normal",
+        doc="Output request to LSS open shutter",
+    )
+
+    safe_to_open = Cpt(
+        PytmcSignal,
+        "Safe",
+        io="input",
+        kind="normal",
+        doc="BTPS safe to open indicator",
+    )
+
+
 class BtpsState(BaseInterface, Device):
     """
     Beam Transport Protection System (BTPS) State
     """
     config = Cpt(GlobalConfig, "Config:", doc="Global configuration")
+
+    shutter1 = Cpt(ShutterSafety, "Shutter:01:", doc="Source Shutter 1")
+    shutter3 = Cpt(ShutterSafety, "Shutter:03:", doc="Source Shutter 3")
+    shutter4 = Cpt(ShutterSafety, "Shutter:04:", doc="Source Shutter 4")
 
     dest1 = Cpt(DestinationConfig, "DEST:01:", doc="Destination 1")
     dest2 = Cpt(DestinationConfig, "DEST:02:", doc="Destination 2")
