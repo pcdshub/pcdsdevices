@@ -696,6 +696,7 @@ class KBOMirrorHE(KBOMirror):
     cool_flow2 = Cpt(EpicsSignalRO, ':FLOW:2_RBV', kind='normal')
     cool_press = Cpt(EpicsSignalRO, ':PRESS:1_RBV', kind='normal')
 
+
 class FFMirror(BaseInterface, GroupDevice):
     """
     Fixed Focus Kirkpatrick-Baez Mirror.
