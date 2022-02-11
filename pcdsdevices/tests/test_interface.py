@@ -44,6 +44,8 @@ def test_mv(fast_motor):
 def test_umv(slow_motor):
     logger.debug('test_umv')
     start_position = slow_motor.position
+    slow_motor.umvr(0)
+    assert slow_motor.position == start_position
     delta = 2
     slow_motor.umvr(delta)
     assert slow_motor.position == start_position + delta

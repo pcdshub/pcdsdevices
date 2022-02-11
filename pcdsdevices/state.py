@@ -6,8 +6,7 @@ from __future__ import annotations
 import copy
 import functools
 import logging
-from enum import Enum
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device, required_for_connection
@@ -22,6 +21,7 @@ from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
 from .signal import EpicsSignalEditMD, PVStateSignal, PytmcSignal
+from .utils import HelpfulIntEnum
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -108,7 +108,12 @@ class StatePositioner(MvInterface, Device, PositionerBase):
                 self.states_enum = self._create_states_enum()
             self._state_initialized = True
 
-    def _late_state_init(self, *args, enum_strs=None, **kwargs):
+    def _late_state_init(
+        self,
+        *args,
+        enum_strs: Optional[List[str]] = None,
+        **kwargs
+    ):
         if enum_strs is not None and not self.states_list:
             self.states_list = list(enum_strs)
             # Unknown state reserved for slot zero, automatically added later
@@ -252,18 +257,17 @@ class StatePositioner(MvInterface, Device, PositionerBase):
         # Check for a malformed string digit
         if isinstance(value, str) and value.isdigit():
             value = int(value)
+
         try:
-            return self.states_enum[value]
-        except KeyError:
-            try:
-                return self.states_enum(value)
-            except ValueError:
-                err = ('{0} is not a valid state for {1}. Valid state names '
-                       'are: {2}, and their corresponding values are {3}.')
-                enum_names = [state.name for state in self.states_enum]
-                enum_values = [state.value for state in self.states_enum]
-                raise ValueError(err.format(value, self.name, enum_names,
-                                            enum_values))
+            return self.states_enum.from_any(value)
+        except ValueError:
+            enum_names = [state.name for state in self.states_enum]
+            enum_values = [state.value for state in self.states_enum]
+            raise ValueError(
+                f"{value} is not a valid state for {self.name}. "
+                f"Valid state names are: {enum_names}, "
+                f"and their corresponding values are {enum_values}."
+            ) from None
 
     def _do_move(self, state):
         """
@@ -304,7 +308,7 @@ class StatePositioner(MvInterface, Device, PositionerBase):
                 for alias in aliases:
                     state_def[alias] = i
         enum_name = self.__class__.__name__ + 'States'
-        enum = Enum(enum_name, state_def, start=0)
+        enum = HelpfulIntEnum(enum_name, state_def, start=0, module=__name__)
         if len(enum) != state_count:
             raise ValueError(('Bad states definition! Inconsistency in '
                               'states_list {} or _states_alias {}'
@@ -396,10 +400,13 @@ class StateRecordPositionerBase(StatePositioner, GroupDevice):
     # Moving a state positioner puts to state
     stage_group = [state]
 
+    _has_subscribed_readback: bool
+    _has_checked_state_enum: bool
+
     def __init__(self, prefix, *, name, **kwargs):
-        super().__init__(prefix, name=name, **kwargs)
         self._has_subscribed_readback = False
         self._has_checked_state_enum = False
+        super().__init__(prefix, name=name, **kwargs)
 
     def _run_sub_readback(self, *args, **kwargs):
         kwargs.pop('sub_type')

@@ -64,6 +64,12 @@ class SlowMotor(FastMotor):
 
         def update_thread(positioner, goal):
             positioner._moving = True
+            if positioner.position == goal:
+                # if already at the requested position, mark success
+                positioner._set_position(goal)  # needed for LiveTable format
+                positioner._done_moving(success=True)
+                return
+
             while positioner.position != goal and not self._stop:
                 if goal - positioner.position > 1:
                     positioner._set_position(positioner.position + 1)

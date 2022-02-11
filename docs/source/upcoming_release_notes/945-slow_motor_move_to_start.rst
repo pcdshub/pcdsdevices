@@ -1,4 +1,4 @@
-920 Add DiCon switch
+945 slow_motor_move_to_start
 #################
 
 API Changes
@@ -15,11 +15,12 @@ Device Updates
 
 New Devices
 -----------
-- DiconSwitch: new device class for the DiCon fiber switch.
+- N/A
 
 Bugfixes
 --------
-- N/A
+- Fixes issue in sim.slow_motor classes where threading behavior would fail if
+the destination was the same as the current position.
 
 Maintenance
 -----------
@@ -27,4 +28,4 @@ Maintenance
 
 Contributors
 ------------
-- slactjohnson
+- tangkong

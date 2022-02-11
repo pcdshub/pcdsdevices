@@ -1,6 +1,70 @@
 Release History
 ###############
 
+v5.1.0 (2022-02-07)
+===================
+
+Features
+--------
+- Adds a new script, make_ophyd_device.py, that helps with autogeneration of
+  an ophyd device class from an IOC db file. Includes a helper script.
+- State names are no longer case-sensitive.
+
+Device Updates
+--------------
+- Add pmgr methods to the IMS class's tab whitelist.
+
+New Devices
+-----------
+- SliceDhvChannel: a device for controlling a single channel on a Vescent
+  Photonics Slice-DHV controller.
+- SliceDhvController: a device for controlling the controller of a Vescent
+  Photonics Slice-DHV controller.
+- SliceDhv: a top-level device for controlling a complete 2-channel Vescent
+  Photonics Slice-DHV controller.
+- QadcBase: Base class for qadc digitizers
+- Qadc: Class for FMC126 (old) digitizers
+- QadcSparsification: Class for holding FMC134 sparsification PVs.
+- Qadc134: Class for FMC134 (new) digitizers
+- Wave8V2Simple: A simple class for the LCLS-II Wave8. Provides waveforms
+  and acquisition start/stop buttons.
+- Wave8V2: A complete top-level class for the LCLS-II Wave8. Includes many
+  configuration and diagnostic PVs, in addition to what is provided by
+  Wave8V2Simple.
+- DiconSwitch: new device class for the DiCon fiber switch.
+- CycleRfofRx: class for Cycle RFoF receiver.
+- CycleRfofTx: class for Cycle RFoF transmitter.
+- Agilent53210A: Device for controlling frequency counters by the same name.
+- Adds a new class to interface with the LAMP motion configuration for LV17.
+
+Bugfixes
+--------
+- EpicsSignalEditMD will be more lenient for cases where we have unset
+  metadata strings ("Invalid") from TwinCAT. This fixes recent issues
+  involving terminal spam and failure to update enum strings for
+  devices like the solid attenuators.
+- EpicsSignalEditMD will not send metadata updates until all composite
+  signals have connected and updated us with their values.
+- Fix SL1K2 target count (2 states + out instead of default).
+- Fixed mr1l0_homs and mr2l0_homs state counts in TwinCATMirrorStripe.
+  This should be set to 2 for mr1l0 (B4C, B4C/Ni) and mr2l0 (B4C, Ni).
+
+Maintenance
+-----------
+- ``detailed_tree.ui`` was vendored from typhos. The default attenuator screens
+  AT2L0, AT1K4, and AT2K2 will now default to ``detailed_tree.ui``.
+- HelpfulIntEnum has been vendored from pcdsutils. This will be
+  switched to an import in a future release.
+
+Contributors
+------------
+- mbosum
+- klauer
+- slactjohnson
+- tangkong
+- zllentz
+
+
 v5.0.2 (2021-12-02)
 ===================
 
