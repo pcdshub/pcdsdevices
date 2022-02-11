@@ -9,7 +9,6 @@ import subprocess
 import time
 import warnings
 
-from hutch_python.utils import get_current_experiment
 from ophyd import Device
 from ophyd.areadetector import cam
 from ophyd.areadetector.base import (ADComponent, EpicsSignalWithRBV,
@@ -18,7 +17,7 @@ from ophyd.areadetector.detectors import DetectorBase
 from ophyd.areadetector.trigger_mixins import SingleTrigger
 from ophyd.device import Component as Cpt
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
-from pcdsutils.ext_scripts import get_hutch_name, get_run_number
+from pcdsutils.ext_scripts import get_hutch_name
 
 from pcdsdevices.variety import set_metadata
 
@@ -75,44 +74,59 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         kind='normal',
         doc='Save output as an HDF5 file'
     )
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, write_path, always_acquire=True, **kwargs):
         super().__init__(*args, **kwargs)
-        # TODO probably need interactive mode and scan mode
-        # XPP does '%s_Run%03d'%(expname, runnr+1) [scan]
-        # RIX does f'{self.camera.name}-{int(time.time())}' [interactive]
-        # TODO set this using prefix as a backup if folder DNE
-        self.hdf51.write_path_template = (
-            f'/cds/data/iocData/ioc-{self.name}-gige/hdf5'
-        )
-        # XPP does '%s%s_%d.h5'
-        # RIX does '%s%s_%03d.h5'
-        self.hdf51.stage_sigs['file_template'] = '%s%s_%03d.h5'
-        # TODO num_images configurable
-        self.num_images = 1
-        # Capture (1) = 1 file per step
-        # Stream (2) = 1 file per run
-        self.hdf51.stage_sigs['file_write_mode'] = 'Capture'
-        # TODO Double-check on self.capture if something is broken
-        del self.hdf1.stage_sigs["capture"]
-        self.hdf1.stage_sigs["capture"] = 1
         self.hutch_name = get_hutch_name()
+        self.always_acquire = always_acquire
+        self.num_images_per_point = 1
+        self.hdf51.write_path_template = write_path
+        self.hdf51.stage_sigs['file_template'] = '%s%s_%03d.h5'
+        self.hdf51.stage_sigs['file_write_mode'] = 'Stream'
+        del self.hdf51.stage_sigs["capture"]
+        if always_acquire:
+            # This mode is "acquire always, capture on trigger"
+            # Override the default to Continuous, always go
+            self.stage_sigs['cam.acquire'] = 1
+            self.stage_sigs['cam.image_mode'] = 2
+            # Make sure we toggle capture for trigger
+            self._acquisition_signal = self.hdf51.capture
+        else:
+            # This mode is "acquire on trigger, capture always"
+            # Confirm default of Multiple, start off
+            # Redundantly set these here for code clarity
+            self.stage_sigs['cam.acquire'] = 0
+            self.stage_sigs['cam.image_mode'] = 1
+            # If we include capture in stage, it must be last
+            self.hdf51.stage_sigs["capture"] = 1
+            # Ensure we use the cam acquire as the trigger
+            self._acquisition_signal = self.cam.acquire
+
+    def stage(self):
+        rval = super().stage()
+        # It takes a moment for the IOC to be ready sometimes
+        time.sleep(0.1)
+        return rval
 
     @property
-    def num_images(self):
-        return self.cam.stage_sigs['num_images']
+    def num_images_per_point(self):
+        if self.always_acquire:
+            return self.cam.stage_sigs['num_images']
+        else:
+            return self.hdf51.stage_sigs['num_capture']
 
-    @num_images.setter
-    def num_images(self, num_images: int):
-        self.cam.stage_sigs['num_images'] = num_images
+    @num_images_per_point.setter
+    def num_images_per_point(self, num_images: int):
+        if self.always_acquire:
+            self.hdf51.stage_sigs['num_capture'] = num_images
+            self.cam.stage_sigs['num_images'] = 1
+        else:
+            self.hdf51.stage_sigs['num_capture'] = 0
+            self.cam.stage_sigs['num_images'] = num_images
 
-    def make_filename(self) -> str:
-        run_number = get_run_number(hutch=self.hutch_name, live=True)
-        experiment = get_current_experiment(self.hutch_name)
-        return f'{experiment}_run{run_number}_{time.time():.0f}'
-
-    def unstage(self):
-        super().unstage()
-        print(f'Created file {self._fn}')
+    def save_images(self):
+        self.stage()
+        self.trigger().wait()
+        self.unstage()
 
 
 class PCDSAreaDetectorEmbedded(PCDSAreaDetectorBase):

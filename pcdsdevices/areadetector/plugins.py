@@ -1,10 +1,13 @@
 """
 PCDS plugins and Overrides for AreaDetector Plugins.
 """
+import datetime
 import logging
+import time
 
 import numpy as np
 import ophyd
+from hutch_python.utils import get_current_experiment
 from ophyd import Component as C
 from ophyd import EpicsSignal
 from ophyd.areadetector.base import ADBase
@@ -12,6 +15,7 @@ from ophyd.areadetector.filestore_mixins import FileStoreHDF5IterativeWrite
 from ophyd.areadetector.plugins import HDF5Plugin_V31
 from ophyd.device import GenerateDatumInterface
 from ophyd.utils import set_and_wait
+from pcdsutils.ext_scripts import get_run_number
 
 logger = logging.getLogger(__name__)
 
@@ -167,4 +171,27 @@ class MagickPlugin(ophyd.plugins.MagickPlugin, FilePlugin):
 
 
 class HDF5FileStore(FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
-    ...
+    """Select a filename that makes SLAC scientists happy"""
+    def make_filename(self) -> str:
+        try:
+            run_number = get_run_number(
+                hutch=self.parent.hutch_name,
+                live=False,
+                timeout=5,
+            )
+            experiment = get_current_experiment(
+                self.parent.hutch_name,
+            )
+            filename = f'{experiment}_run{run_number}_{time.time():.0f}'
+        except Exception:
+            filename = f'{self.name}_{time.time():.0f}'
+        formatter = datetime.datetime.now().strftime
+        return (
+            filename,
+            formatter(self.read_path_template),
+            formatter(self.write_path_template),
+        )
+
+    def unstage(self):
+        super().unstage()
+        print(f'Created file {self.full_file_name.get()}')
