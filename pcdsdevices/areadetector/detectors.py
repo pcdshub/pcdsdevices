@@ -184,8 +184,7 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         """
         if self.always_acquire:
             return self.cam.stage_sigs['num_images']
-        else:
-            return self.hdf51.stage_sigs['num_capture']
+        return self.hdf51.stage_sigs['num_capture']
 
     @num_images_per_point.setter
     def num_images_per_point(self, num_images: int):
