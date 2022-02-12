@@ -82,7 +82,7 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
     defaults to True.
 
     With always_aquire=True (default):
-    - Viewers will remain updated althroughout the scan, even between
+    - Viewers will remain updated throughout the scan, even between
       scan points.
     - The camera will be set to ``acquire`` at ``stage``, if needed, which
       begins taking images. This happens early in the scan.
