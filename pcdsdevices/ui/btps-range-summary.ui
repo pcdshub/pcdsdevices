@@ -6,19 +6,25 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>587</width>
-    <height>50</height>
+    <width>580</width>
+    <height>34</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
     <horstretch>0</horstretch>
-    <verstretch>1</verstretch>
+    <verstretch>0</verstretch>
    </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
     <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
     <height>50</height>
    </size>
   </property>
@@ -28,15 +34,24 @@
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1">
+  <layout class="QHBoxLayout" name="framelayout" stretch="1,1">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
    <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
     <number>0</number>
    </property>
    <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="leftlayout">
      <item>
       <widget class="PyDMByteIndicator" name="PyDMByteIndicator">
        <property name="toolTip">
@@ -92,7 +107,7 @@
      <item>
       <widget class="PyDMLabel" name="ValidReadback_2">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -132,11 +147,23 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="rightlayout">
      <item>
       <widget class="PyDMLabel" name="LowReadback">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
        <property name="channel" stdset="0">
         <string>ca://${PREFIX}Low_RBV</string>
@@ -156,7 +183,7 @@
        </property>
       </spacer>
      </item>
-     <item>
+     <item alignment="Qt::AlignRight">
       <widget class="PyDMLabel" name="LessThan_Low">
        <property name="toolTip">
         <string/>
@@ -164,31 +191,46 @@
        <property name="text">
         <string>&lt;</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
        <property name="rules" stdset="0">
         <string>[{&quot;name&quot;: &quot;LessThan&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;&lt;&quot;, &quot;expression&quot;: &quot;(ch[0] == \&quot;Exclusive\&quot; and \&quot;&lt;\&quot;) or \&quot;&lt;=\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${PREFIX}Inclusive_RBV&quot;, &quot;trigger&quot;: true}]}]</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item alignment="Qt::AlignRight">
       <widget class="PyDMLabel" name="ValueReadback">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
        <property name="text">
         <string>(Value)</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
        <property name="channel" stdset="0">
         <string>ca://${PREFIX}Value_RBV</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item alignment="Qt::AlignRight">
       <widget class="PyDMLabel" name="LessThan_High">
        <property name="toolTip">
         <string/>
        </property>
        <property name="text">
         <string>&lt;</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
        <property name="rules" stdset="0">
         <string>[{&quot;name&quot;: &quot;LessThan&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;&lt;&quot;, &quot;expression&quot;: &quot;(ch[0] == \&quot;Exclusive\&quot; and \&quot;&lt;\&quot;) or \&quot;&lt;=\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${PREFIX}Inclusive_RBV&quot;, &quot;trigger&quot;: true}]}]</string>
@@ -208,10 +250,19 @@
        </property>
       </spacer>
      </item>
-     <item>
+     <item alignment="Qt::AlignRight">
       <widget class="PyDMLabel" name="HighReadback">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="toolTip">
         <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
        <property name="channel" stdset="0">
         <string>ca://${PREFIX}High_RBV</string>

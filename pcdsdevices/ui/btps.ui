@@ -15,18 +15,19 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_7">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+    <widget class="QLabel" name="label">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
-     <property name="toolTip">
-      <string/>
+     <property name="text">
+      <string>BTPS - Beam Transport Protection System Overview</string>
      </property>
-     <property name="filename" stdset="0">
-      <string>btps-camera-summary.ui</string>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
@@ -50,35 +51,52 @@
     </widget>
    </item>
    <item>
-    <widget class="PyDMRelatedDisplayButton" name="PyDMRelatedDisplayButton">
-     <property name="toolTip">
-      <string/>
-     </property>
-     <property name="text">
-      <string>Configuration Editor...</string>
-     </property>
-     <property name="filenames" stdset="0">
-      <stringlist>
-       <string>btps-config.ui</string>
-      </stringlist>
-     </property>
-     <property name="titles" stdset="0">
-      <stringlist>
-       <string>&amp;Configuration editor...</string>
-      </stringlist>
-     </property>
-     <property name="showIcon" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="macros" stdset="0">
-      <stringlist>
-       <string>{}</string>
-      </stringlist>
-     </property>
-     <property name="openInNewWindow" stdset="0">
-      <bool>true</bool>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="PyDMRelatedDisplayButton" name="PyDMRelatedDisplayButton_2">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string>Configuration Editor...</string>
+       </property>
+       <property name="filenames" stdset="0">
+        <stringlist>
+         <string>btps-config.ui</string>
+        </stringlist>
+       </property>
+       <property name="titles" stdset="0">
+        <stringlist>
+         <string>&amp;Configuration editor...</string>
+        </stringlist>
+       </property>
+       <property name="showIcon" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="macros" stdset="0">
+        <stringlist>
+         <string>{}</string>
+        </stringlist>
+       </property>
+       <property name="openInNewWindow" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="PyDMTabWidget" name="PyDMTabWidget">

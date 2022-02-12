@@ -80,126 +80,274 @@
        <string></string>
       </stringlist>
      </property>
-     <widget class="QWidget" name="dest1">
+     <widget class="QWidget" name="dest1_2">
       <attribute name="title">
        <string>TMO IP1</string>
       </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
-        <widget class="PyDMTabWidget" name="PyDMTabWidget_2">
+        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_4">
          <property name="toolTip">
           <string/>
          </property>
-         <property name="whatsThis">
-          <string/>
+         <property name="macros" stdset="0">
+          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:01:&quot;}</string>
          </property>
-         <property name="currentIndex">
-          <number>0</number>
+         <property name="filename" stdset="0">
+          <string>btps-source-tabs-config.ui</string>
          </property>
-         <property name="currentTabAlarmChannel" stdset="0">
-          <cstring>ca://SIM:BTPS:DEST:01:SRC:01:ChecksOK_RBV</cstring>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
          </property>
-         <property name="alarmChannels">
-          <stringlist>
-           <string>ca://SIM:BTPS:DEST:01:SRC:01:ChecksOK_RBV</string>
-           <string>ca://SIM:BTPS:DEST:01:SRC:03:ChecksOK_RBV</string>
-           <string>ca://SIM:BTPS:DEST:01:SRC:04:ChecksOK_RBV</string>
-          </stringlist>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
          </property>
-         <widget class="QWidget" name="source1">
-          <attribute name="title">
-           <string>Source 1</string>
-          </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
-           <item>
-            <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay">
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="macros" stdset="0">
-              <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:01:&quot;, &quot;DEST&quot;: &quot;SIM:BTPS:DEST:01:&quot;}</string>
-             </property>
-             <property name="filename" stdset="0">
-              <string>btps-source-dest-config.ui</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="source3">
-          <attribute name="title">
-           <string>Source 3</string>
-          </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_2">
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="macros" stdset="0">
-              <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:03:&quot;, &quot;DEST&quot;: &quot;SIM:BTPS:DEST:01:&quot;}</string>
-             </property>
-             <property name="filename" stdset="0">
-              <string>btps-source-dest-config.ui</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="source4">
-          <attribute name="title">
-           <string>Source 4</string>
-          </attribute>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <item>
-            <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_3">
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="macros" stdset="0">
-              <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:04:&quot;, &quot;DEST&quot;: &quot;SIM:BTPS:DEST:01:&quot;}</string>
-             </property>
-             <property name="filename" stdset="0">
-              <string>btps-source-dest-config.ui</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="dest2">
+     <widget class="QWidget" name="dest2_2">
       <attribute name="title">
        <string>TMO IP2</string>
       </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_10">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:02:&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-tabs-config.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
-     <widget class="QWidget" name="dest3">
+     <widget class="QWidget" name="dest3_2">
       <attribute name="title">
        <string>TMO IP3</string>
       </attribute>
-      <layout class="QHBoxLayout" name="horizontalLayout_11"/>
+      <layout class="QHBoxLayout" name="horizontalLayout_12">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_11">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:03:&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-tabs-config.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
-     <widget class="QWidget" name="dest4">
+     <widget class="QWidget" name="dest4_2">
       <attribute name="title">
        <string>qRIXS</string>
       </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_17">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_12">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:04:&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-tabs-config.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
-     <widget class="QWidget" name="dest5">
+     <widget class="QWidget" name="dest5_2">
       <attribute name="title">
        <string>ChemRIXS</string>
       </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_21">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_13">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:05:&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-tabs-config.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
-     <widget class="QWidget" name="dest6">
+     <widget class="QWidget" name="dest6_2">
       <attribute name="title">
        <string>XPP</string>
       </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_25">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_14">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:06:&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-tabs-config.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
-     <widget class="QWidget" name="dest7">
+     <widget class="QWidget" name="dest7_2">
       <attribute name="title">
        <string>Laser Lab</string>
       </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_29">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_15">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:07:&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-tabs-config.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
