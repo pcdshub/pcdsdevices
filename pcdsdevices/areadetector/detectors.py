@@ -5,25 +5,27 @@ All components at the detector level such as plugins or image processing
 functions needed by all instances of a detector are added here.
 """
 import logging
-import warnings
-
 import subprocess
+import time
+import warnings
 
 from ophyd import Device
 from ophyd.areadetector import cam
 from ophyd.areadetector.base import (ADComponent, EpicsSignalWithRBV,
                                      NDDerivedSignal)
 from ophyd.areadetector.detectors import DetectorBase
+from ophyd.areadetector.trigger_mixins import SingleTrigger
 from ophyd.device import Component as Cpt
-from ophyd.signal import EpicsSignal, EpicsSignalRO, AttributeSignal
+from ophyd.ophydobj import OphydObject
+from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
+from pcdsutils.ext_scripts import get_hutch_name
 
 from pcdsdevices.variety import set_metadata
 
-from pcdsutils.ext_scripts import get_hutch_name
-
-from .plugins import (ColorConvPlugin, HDF5Plugin, ImagePlugin, JPEGPlugin,
-                      NetCDFPlugin, NexusPlugin, OverlayPlugin, ProcessPlugin,
-                      ROIPlugin, StatsPlugin, TIFFPlugin, TransformPlugin)
+from .plugins import (ColorConvPlugin, HDF5FileStore, HDF5Plugin, ImagePlugin,
+                      JPEGPlugin, NetCDFPlugin, NexusPlugin, OverlayPlugin,
+                      ProcessPlugin, ROIPlugin, StatsPlugin, TIFFPlugin,
+                      TransformPlugin)
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +62,146 @@ class PCDSAreaDetectorBase(DetectorBase):
             port_edges = [(port_map[src].name, port_map[dest].name)
                           for src, dest in port_edges]
         return port_edges
+
+
+class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
+    """
+    Saves an HDF5 file in a bluesky plan.
+
+    This class takes care of all the standard setup for saving the files
+    using the HDF5 plugin for our area detector setups at LCLS during
+    bluesky scans, including configuration of the stage signals
+    and various site-specific settings.
+
+    You can decide how many images we'll take at each point by setting
+    the `num_images_per_point` attribute.
+
+    There are two modes provided: "always aquire" and "aquire at points"
+    with key differences in the behavior. You can select which one
+    to use using the ``always_acquire`` keyword argument, which
+    defaults to True.
+
+    With always_aquire=True (default):
+    - Viewers will remain updated throughout the scan, even between
+      scan points.
+    - The camera will be set to ``acquire`` at ``stage``, if needed, which
+      begins taking images. This happens early in the scan.
+    - At each point, the ``capture`` feature of the HDF5 plugin will be
+      toggled on until we've saved an image count equal to the
+      `num_images_per_point` attribute. The counting is handled by the
+      plugin.
+    - If the camera or server lags during the aquisition, the scan will
+      patiently wait for the correct number of images to be saved.
+    - There is no guarantee that the images are sequential, there can be
+      gaps, but each image that does get saved will be trigger-synchronized.
+      (And therefore, beam-synchronized with beam-synchronized triggers).
+    - Each point in the scan will have its own associate hdf5 file.
+    - If the camera needed to be set to ``acquire`` at ``stage``,
+      it will revert to ``stop`` at ``unstage``.
+
+    With always_acquire=False:
+    - Viewers will only be updated at the specific scan points.
+    - The HDF5 plugin will be set to ``capture`` at stage, and the camera
+      will be configured to take a fixed number of images per acquisition
+      cycle.
+    - At each point, the ``acquire`` bit will be turned on, which causes
+      `num_images_per_point` images to be acquired.
+    - If the camera or server lags during the acquisition, it will be
+      unable to complete it cleanly.
+    - There is a guarantee that the images are sequential.
+    - All the points in the scan will be grouped into one larger hdf5 file.
+
+    This class can be also be used interactively via the ``save_images``
+    function.
+
+    Parameters
+    ----------
+    prefix : ``str``
+        The PV prefix that leads us to this camera's PVs.
+    write_path : ``str``
+        The directory to drop our hdf5 files into.
+    always_acquire : ``bool``, optional
+        Determines which mode we use to collect images as described above.
+    name : ``str``, keyword-only
+        A name to associate with the camera for bluesky.
+    """
+    hdf51 = ADComponent(
+        HDF5FileStore,
+        'HDF51:',
+        write_path_template='/dev/null',
+        kind='normal',
+        doc='Save output as an HDF5 file'
+    )
+    def __init__(
+        self,
+        *args,
+        write_path: str,
+        always_acquire: bool = True,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.hutch_name = get_hutch_name()
+        self.always_acquire = always_acquire
+        self.num_images_per_point = 1
+        self.hdf51.write_path_template = write_path
+        self.hdf51.stage_sigs['file_template'] = '%s%s_%03d.h5'
+        self.hdf51.stage_sigs['file_write_mode'] = 'Stream'
+        del self.hdf51.stage_sigs["capture"]
+        if always_acquire:
+            # This mode is "acquire always, capture on trigger"
+            # Override the default to Continuous, always go
+            self.stage_sigs['cam.acquire'] = 1
+            self.stage_sigs['cam.image_mode'] = 2
+            # Make sure we toggle capture for trigger
+            self._acquisition_signal = self.hdf51.capture
+        else:
+            # This mode is "acquire on trigger, capture always"
+            # Confirm default of Multiple, start off
+            # Redundantly set these here for code clarity
+            self.stage_sigs['cam.acquire'] = 0
+            self.stage_sigs['cam.image_mode'] = 1
+            # If we include capture in stage, it must be last
+            self.hdf51.stage_sigs["capture"] = 1
+            # Ensure we use the cam acquire as the trigger
+            self._acquisition_signal = self.cam.acquire
+
+    def stage(self) -> list[OphydObject]:
+        """
+        Bluesky interface for setting up the plan.
+
+        This will unpack all of our stage_sigs like normal, but also
+        add a small delay to avoid a race condition in the IOC.
+        """
+        rval = super().stage()
+        # It takes a moment for the IOC to be ready sometimes
+        time.sleep(0.1)
+        return rval
+
+    @property
+    def num_images_per_point(self) -> int:
+        """
+        The number of images to save at each point in the scan.
+        """
+        if self.always_acquire:
+            return self.cam.stage_sigs['num_images']
+        return self.hdf51.stage_sigs['num_capture']
+
+    @num_images_per_point.setter
+    def num_images_per_point(self, num_images: int):
+        if self.always_acquire:
+            self.hdf51.stage_sigs['num_capture'] = num_images
+            self.cam.stage_sigs['num_images'] = 1
+        else:
+            self.hdf51.stage_sigs['num_capture'] = 0
+            self.cam.stage_sigs['num_images'] = num_images
+
+    def save_images(self) -> None:
+        """
+        Save images interactively as if we were currently at a scan point.
+        """
+        self.stage()
+        self.trigger().wait()
+        self.unstage()
 
 
 class PCDSAreaDetectorEmbedded(PCDSAreaDetectorBase):
@@ -202,7 +344,7 @@ class PCDSAreaDetectorTyphos(Device):
     acquire_rbv = Cpt(EpicsSignalRO, 'DetectorState_RBV', kind='normal')
     image_counter = Cpt(EpicsSignalRO, 'NumImagesCounter_RBV', kind='normal')
 
-    # TJ: removing from the class for now. May be useful later. 
+    # TJ: removing from the class for now. May be useful later.
     # Image data
 #    ndimensions = Cpt(EpicsSignalRO, 'IMAGE2:NDimensions_RBV', kind='omitted')
 #    width = Cpt(EpicsSignalRO, 'IMAGE2:ArraySize0_RBV', kind='omitted')
@@ -280,7 +422,7 @@ class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphosTrigger):
 class BaslerBase(Device):
     """
     Base class with Basler specific PVs. Intended to be sub-classed, not used
-    stand-alone. 
+    stand-alone.
     """
     reset = Cpt(EpicsSignal, 'RESET.PROC', kind='config', doc='Reset the camera')
     set_metadata(reset, dict(variety='command-proc', value=1))
