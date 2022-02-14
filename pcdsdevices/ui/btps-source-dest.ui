@@ -164,7 +164,7 @@
         <item>
          <widget class="PyDMByteIndicator" name="PyDMByteIndicator_4">
           <property name="toolTip">
-           <string/>
+           <string>Is BTPS requesting shutter open?</string>
           </property>
           <property name="alarmSensitiveContent" stdset="0">
            <bool>false</bool>
@@ -233,7 +233,7 @@
         <item>
          <widget class="PyDMByteIndicator" name="PyDMByteIndicator_6">
           <property name="toolTip">
-           <string/>
+           <string>Indicates if all data is being sourced correctly.</string>
           </property>
           <property name="alarmSensitiveContent" stdset="0">
            <bool>false</bool>
@@ -313,49 +313,6 @@
       <item row="2" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_10">
         <item>
-         <widget class="PyDMPushButton" name="PyDMPushButton_11">
-          <property name="toolTip">
-           <string>Request shutter open</string>
-          </property>
-          <property name="text">
-           <string>Open</string>
-          </property>
-          <property name="alarmSensitiveContent" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="alarmSensitiveBorder" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="channel" stdset="0">
-           <string>ca://${SHUTTER}UserOpen</string>
-          </property>
-          <property name="passwordProtected" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="password" stdset="0">
-           <string/>
-          </property>
-          <property name="protectedPassword" stdset="0">
-           <string/>
-          </property>
-          <property name="showConfirmDialog" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="confirmMessage" stdset="0">
-           <string/>
-          </property>
-          <property name="pressValue" stdset="0">
-           <string>1</string>
-          </property>
-          <property name="relativeChange" stdset="0">
-           <bool>false</bool>
-          </property>
-          <property name="writeWhenRelease" stdset="0">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="PyDMPushButton" name="PyDMPushButton_12">
           <property name="toolTip">
            <string>Request shutter close</string>
@@ -401,6 +358,49 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="PyDMPushButton" name="PyDMPushButton_11">
+          <property name="toolTip">
+           <string>Request shutter open</string>
+          </property>
+          <property name="text">
+           <string>Open</string>
+          </property>
+          <property name="alarmSensitiveContent" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alarmSensitiveBorder" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="channel" stdset="0">
+           <string>ca://${SHUTTER}UserOpen</string>
+          </property>
+          <property name="passwordProtected" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="password" stdset="0">
+           <string/>
+          </property>
+          <property name="protectedPassword" stdset="0">
+           <string/>
+          </property>
+          <property name="showConfirmDialog" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="confirmMessage" stdset="0">
+           <string/>
+          </property>
+          <property name="pressValue" stdset="0">
+           <string>1</string>
+          </property>
+          <property name="relativeChange" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="writeWhenRelease" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item row="3" column="1">
@@ -408,7 +408,7 @@
         <item>
          <widget class="PyDMByteIndicator" name="PyDMByteIndicator_8">
           <property name="toolTip">
-           <string/>
+           <string>Indicates if all comparisons on this page are valid.</string>
           </property>
           <property name="alarmSensitiveContent" stdset="0">
            <bool>false</bool>
@@ -515,7 +515,7 @@
         <item>
          <widget class="PyDMByteIndicator" name="PyDMByteIndicator_9">
           <property name="toolTip">
-           <string/>
+           <string>Indicates if override mode is set.</string>
           </property>
           <property name="alarmSensitiveContent" stdset="0">
            <bool>false</bool>
@@ -689,7 +689,7 @@
         <item>
          <widget class="PyDMByteIndicator" name="PyDMByteIndicator_5">
           <property name="toolTip">
-           <string/>
+           <string>Is the destination (exit) valve open?</string>
           </property>
           <property name="alarmSensitiveBorder" stdset="0">
            <bool>false</bool>
@@ -741,7 +741,7 @@
         <item>
          <widget class="PyDMByteIndicator" name="PyDMByteIndicator_2">
           <property name="toolTip">
-           <string/>
+           <string>Is the source (entry) valve open?</string>
           </property>
           <property name="alarmSensitiveContent" stdset="0">
            <bool>false</bool>
@@ -799,7 +799,7 @@
         <item>
          <widget class="PyDMByteIndicator" name="PyDMByteIndicator_7">
           <property name="toolTip">
-           <string/>
+           <string>Is the user requesting the shutter to be open/closed?</string>
           </property>
           <property name="alarmSensitiveContent" stdset="0">
            <bool>false</bool>
@@ -902,7 +902,7 @@
         <item>
          <widget class="PyDMByteIndicator" name="PyDMByteIndicator_10">
           <property name="toolTip">
-           <string/>
+           <string>Is there a latched error that must be acknowledged?</string>
           </property>
           <property name="alarmSensitiveContent" stdset="0">
            <bool>false</bool>
