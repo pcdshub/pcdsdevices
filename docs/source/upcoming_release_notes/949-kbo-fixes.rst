@@ -11,14 +11,11 @@ Features
 
 Device Updates
 --------------
-Flow/Pressure sensor hardware added to MR2K4 KBO. 
-Update software for readbacks.                                        
+- Added Y axis to KBOMirror status printout
 
-Added KBOMirrorHE class
-Added Y axis to KBOMirror status
 New Devices
 -----------
-- N/A
+- Added KBOMirrorHE class to be used with KBOMirrors with cooling, like MR2K4.
 
 Bugfixes
 --------
@@ -30,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-Nick Waters
+- nrwslac
