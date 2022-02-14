@@ -55,7 +55,7 @@
      <item>
       <widget class="PyDMByteIndicator" name="PyDMByteIndicator">
        <property name="toolTip">
-        <string/>
+        <string>Is the source data updating and valid?</string>
        </property>
        <property name="alarmSensitiveContent" stdset="0">
         <bool>true</bool>
@@ -81,7 +81,7 @@
      <item>
       <widget class="PyDMByteIndicator" name="PyDMByteIndicator_2">
        <property name="toolTip">
-        <string/>
+        <string>Does this pass the range check?</string>
        </property>
        <property name="alarmSensitiveContent" stdset="0">
         <bool>true</bool>
@@ -163,7 +163,7 @@
         <enum>QFrame::NoFrame</enum>
        </property>
        <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
        <property name="channel" stdset="0">
         <string>ca://${PREFIX}Low_RBV</string>
@@ -183,19 +183,34 @@
        </property>
       </spacer>
      </item>
-     <item alignment="Qt::AlignRight">
-      <widget class="PyDMLabel" name="LessThan_Low">
+     <item>
+      <widget class="PyDMLabel" name="LessThan_Low_2">
        <property name="toolTip">
         <string/>
        </property>
        <property name="text">
         <string>&lt;</string>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
        <property name="rules" stdset="0">
-        <string>[{&quot;name&quot;: &quot;LessThan&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;&lt;&quot;, &quot;expression&quot;: &quot;(ch[0] == \&quot;Exclusive\&quot; and \&quot;&lt;\&quot;) or \&quot;&lt;=\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${PREFIX}Inclusive_RBV&quot;, &quot;trigger&quot;: true}]}]</string>
+        <string>[{&quot;name&quot;: &quot;LessThan&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;&lt;&quot;, &quot;expression&quot;: &quot;(ch[0] == \&quot;Exclusive\&quot; and \&quot;&lt; \&quot;) or \&quot;&lt;=\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${PREFIX}Inclusive_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: true}]}]</string>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string/>
        </property>
       </widget>
      </item>
@@ -214,26 +229,41 @@
         <string>(Value)</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        <set>Qt::AlignCenter</set>
        </property>
        <property name="channel" stdset="0">
         <string>ca://${PREFIX}Value_RBV</string>
        </property>
       </widget>
      </item>
-     <item alignment="Qt::AlignRight">
-      <widget class="PyDMLabel" name="LessThan_High">
+     <item>
+      <widget class="PyDMLabel" name="LessThan_High_2">
        <property name="toolTip">
         <string/>
        </property>
        <property name="text">
         <string>&lt;</string>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
        <property name="rules" stdset="0">
-        <string>[{&quot;name&quot;: &quot;LessThan&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;&lt;&quot;, &quot;expression&quot;: &quot;(ch[0] == \&quot;Exclusive\&quot; and \&quot;&lt;\&quot;) or \&quot;&lt;=\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${PREFIX}Inclusive_RBV&quot;, &quot;trigger&quot;: true}]}]</string>
+        <string>[{&quot;name&quot;: &quot;LessThan&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;&lt;&quot;, &quot;expression&quot;: &quot;(ch[0] == \&quot;Exclusive\&quot; and \&quot;&lt; \&quot;) or \&quot;&lt;=\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${PREFIX}Inclusive_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: true}]}]</string>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string/>
        </property>
       </widget>
      </item>

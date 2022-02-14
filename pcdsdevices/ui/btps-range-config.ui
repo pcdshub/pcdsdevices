@@ -98,7 +98,25 @@
         <string>&lt;</string>
        </property>
        <property name="rules" stdset="0">
-        <string>[{&quot;name&quot;: &quot;LessThan&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;&lt;&quot;, &quot;expression&quot;: &quot;(ch[0] == \&quot;Exclusive\&quot; and \&quot;&lt;\&quot;) or \&quot;&lt;=\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${PREFIX}Inclusive_RBV&quot;, &quot;trigger&quot;: true}]}]</string>
+        <string>[{&quot;name&quot;: &quot;LessThan&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;&lt;&quot;, &quot;expression&quot;: &quot;(ch[0] == \&quot;Exclusive\&quot; and \&quot;&lt; \&quot;) or \&quot;&lt;=\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${PREFIX}Inclusive_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: true}]}]</string>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string/>
        </property>
       </widget>
      </item>
@@ -152,6 +170,9 @@
        <property name="text">
         <string>(Value)</string>
        </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
        <property name="channel" stdset="0">
         <string>ca://${PREFIX}Value_RBV</string>
        </property>
@@ -166,7 +187,25 @@
         <string>&lt;</string>
        </property>
        <property name="rules" stdset="0">
-        <string>[{&quot;name&quot;: &quot;LessThan&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;&lt;&quot;, &quot;expression&quot;: &quot;(ch[0] == \&quot;Exclusive\&quot; and \&quot;&lt;\&quot;) or \&quot;&lt;=\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${PREFIX}Inclusive_RBV&quot;, &quot;trigger&quot;: true}]}]</string>
+        <string>[{&quot;name&quot;: &quot;LessThan&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;&lt;&quot;, &quot;expression&quot;: &quot;(ch[0] == \&quot;Exclusive\&quot; and \&quot;&lt; \&quot;) or \&quot;&lt;=\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${PREFIX}Inclusive_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: true}]}]</string>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string/>
        </property>
       </widget>
      </item>
@@ -216,7 +255,7 @@
      <item row="0" column="1">
       <widget class="PyDMByteIndicator" name="PyDMByteIndicator">
        <property name="toolTip">
-        <string/>
+        <string>Does this pass the range check?</string>
        </property>
        <property name="alarmSensitiveContent" stdset="0">
         <bool>true</bool>
@@ -252,7 +291,7 @@
      <item row="0" column="0">
       <widget class="PyDMByteIndicator" name="PyDMByteIndicator_2">
        <property name="toolTip">
-        <string/>
+        <string>Is the source data updating and valid?</string>
        </property>
        <property name="alarmSensitiveContent" stdset="0">
         <bool>true</bool>
