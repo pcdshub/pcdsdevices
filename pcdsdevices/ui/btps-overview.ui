@@ -136,13 +136,6 @@
        <property name="channel" stdset="0">
         <string>ca://SIM:BTPS:Shutter:01:LSS:OpenRequest_RBV</string>
        </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
        </property>
@@ -222,13 +215,6 @@
        </property>
        <property name="channel" stdset="0">
         <string>ca://SIM:BTPS:Shutter:03:LSS:OpenRequest_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -894,13 +880,6 @@
        <property name="channel" stdset="0">
         <string>ca://SIM:BTPS:Shutter:04:LSS:OpenRequest_RBV</string>
        </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
        </property>
@@ -993,6 +972,13 @@
        <property name="channel" stdset="0">
         <string>ca://SIM:BTPS:Chk:NF1:IsUpdating_RBV</string>
        </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
        </property>
@@ -1054,6 +1040,13 @@
        </property>
        <property name="channel" stdset="0">
         <string>ca://SIM:BTPS:Chk:FF1:IsUpdating_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
