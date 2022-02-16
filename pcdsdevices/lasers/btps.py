@@ -37,6 +37,13 @@ class RangeComparison(BaseInterface, Device):
         kind="normal",
         doc="Configurable lower bound for the value range",
     )
+    nominal = Cpt(
+        PytmcSignal,
+        "Nominal",
+        io="io",
+        kind="normal",
+        doc="The nominal value",
+    )
     high = Cpt(
         PytmcSignal,
         "High",
@@ -55,8 +62,18 @@ class RangeComparison(BaseInterface, Device):
 
 class CentroidConfig(BaseInterface, Device):
     """BTPS camera centroid range comparison."""
-    centroid_x = Cpt(RangeComparison, "CenterX:", kind="normal", doc="Centroid X range")
-    centroid_y = Cpt(RangeComparison, "CenterY:", kind="normal", doc="Centroid Y range")
+    centroid_x = Cpt(
+        RangeComparison,
+        "CenterX:",
+        kind="normal",
+        doc="Centroid X range"
+    )
+    centroid_y = Cpt(
+        RangeComparison,
+        "CenterY:",
+        kind="normal",
+        doc="Centroid Y range"
+    )
 
 
 class SourceConfig(BaseInterface, Device):
@@ -69,10 +86,24 @@ class SourceConfig(BaseInterface, Device):
         doc="Source name",
         string=True,
     )
-    far_field = Cpt(CentroidConfig, "FF", kind="normal", doc="Far field centroid")
-    near_field = Cpt(CentroidConfig, "NF", kind="normal", doc="Near field centroid")
-
-    goniometer = Cpt(RangeComparison, "Goniometer:", kind="normal", doc="Goniometer stage")
+    far_field = Cpt(
+        CentroidConfig,
+        "FF",
+        kind="normal",
+        doc="Far field centroid"
+    )
+    near_field = Cpt(
+        CentroidConfig,
+        "NF",
+        kind="normal",
+        doc="Near field centroid"
+    )
+    goniometer = Cpt(
+        RangeComparison,
+        "Goniometer:",
+        kind="normal",
+        doc="Goniometer stage"
+    )
     linear = Cpt(RangeComparison, "Linear:", kind="normal", doc="Linear stage")
     rotary = Cpt(RangeComparison, "Rotary:", kind="normal", doc="Rotary stage")
     entry_valve_ready = Cpt(
@@ -126,7 +157,21 @@ class GlobalConfig(BaseInterface, Device):
         "MaxFrameTime",
         io="io",
         kind="normal",
-        doc="Maximum time between frame updates in seconds to be considered 'valid' data",
+        doc=(
+            "Maximum time between frame updates in seconds to be considered "
+            "'valid' data"
+        ),
+    )
+
+    min_centroid_change = Cpt(
+        PytmcSignal,
+        "MinCentroidChange",
+        io="io",
+        kind="normal",
+        doc=(
+            "Minimal change (in pixels) for centroid values to be considered "
+            "valid"
+        ),
     )
 
 
