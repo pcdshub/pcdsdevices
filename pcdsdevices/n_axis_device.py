@@ -1,5 +1,4 @@
 """
-
 This module contains a generic class to handle a simple n-axis device
 """
 
