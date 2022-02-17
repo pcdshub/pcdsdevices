@@ -6,6 +6,7 @@ import logging
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 
+from .device import GroupDevice
 from .interface import BaseInterface
 
 logger = logging.getLogger(__name__)
@@ -80,7 +81,7 @@ class ICTBus(Device):
         return self.bus_voltage.get()
 
 
-class ICT(BaseInterface, Device):
+class ICT(BaseInterface, GroupDevice):
     """Complete ICT device with access to all buses and channels."""
     bus_A = FCpt(ICTBus, '{self.prefix}', bus='A')
     bus_B = FCpt(ICTBus, '{self.prefix}', bus='B')

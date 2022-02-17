@@ -16,6 +16,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
 from . import utils
 from .device import UnrelatedComponent as UCpt
+from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
@@ -445,11 +446,45 @@ def set_combined_attenuation(attenuation, *attenuators):
 '''
 
 
+class FEESolidAttenuatorStates(TwinCATInOutPositioner):
+    """
+    The states class for a standard in/out attenuator blade.
+
+    Defines the state count as 2 (OUT and IN) to limit the number of
+    config PVs we connect to.
+    """
+    config = UpCpt(state_count=2)
+
+
+class SXRLadderAttenuatorStates(TwinCATInOutPositioner):
+    """
+    The states class for the SXR Ladder-style attenuators.
+
+    Defines the state count as 9 (OUT and 8 targets) to limit the
+    number of config PVs we connect to.
+    """
+    config = UpCpt(state_count=9)
+
+
 class FEESolidAttenuatorBlade(BaseInterface, Device, LightpathInOutMixin):
+    """
+    Represents one basic solid attenuator blade.
+
+    This includes the binary in/out state and a raw motor.
+    """
     lightpath_cpts = ['state']
 
-    state = Cpt(TwinCATInOutPositioner, ':STATE')
+    state = Cpt(FEESolidAttenuatorStates, ':STATE')
     motor = Cpt(BeckhoffAxisNoOffset, '')
+
+
+class SXRLadderAttenuatorBlade(FEESolidAttenuatorBlade):
+    """
+    Represents one ladder solid attenuator blade.
+
+    This includes the out/8 targets state and a raw motor.
+    """
+    state = Cpt(SXRLadderAttenuatorStates, ':STATE')
 
 
 class GasAttenuator(BaseInterface, Device):
@@ -885,10 +920,10 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
     num_out = Cpt(InternalSignal, kind='hinted')
 
     calculator = UCpt(AttenuatorCalculatorSXR_FourBlade)
-    blade_01 = Cpt(FEESolidAttenuatorBlade, ':MMS:01')
-    blade_02 = Cpt(FEESolidAttenuatorBlade, ':MMS:02')
-    blade_03 = Cpt(FEESolidAttenuatorBlade, ':MMS:03')
-    blade_04 = Cpt(FEESolidAttenuatorBlade, ':MMS:04')
+    blade_01 = Cpt(SXRLadderAttenuatorBlade, ':MMS:01')
+    blade_02 = Cpt(SXRLadderAttenuatorBlade, ':MMS:02')
+    blade_03 = Cpt(SXRLadderAttenuatorBlade, ':MMS:03')
+    blade_04 = Cpt(SXRLadderAttenuatorBlade, ':MMS:04')
 
     def __init__(self, *args, limits=None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)

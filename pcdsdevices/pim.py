@@ -12,10 +12,13 @@ import logging
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
+from ophyd.ophydobj import OphydObject
 from ophyd.signal import EpicsSignal
 
 from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
                                      PCDSAreaDetectorTyphosTrigger)
+from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .epics_motor import IMS, BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
 from .interface import BaseInterface, LightpathInOutMixin
@@ -45,14 +48,22 @@ class PIMY(InOutRecordPositioner, BaseInterface):
     _icon = 'fa.camera-retro'
 
     tab_whitelist = ['stage']
+    _pre_stage_state = None
 
-    def stage(self):
+    def stage(self) -> list[OphydObject]:
         """Save the original position to be restored on `unstage`."""
-        self._original_vals[self.state] = self.state.get()
+        self._pre_stage_state = self.state.get()
         return super().stage()
 
+    def unstage(self) -> list[OphydObject]:
+        """Load the original position that was saved on `stage`."""
+        if self._pre_stage_state is not None:
+            self.state.put(self._pre_stage_state)
+        self._pre_stage_state = None
+        return super().unstage()
 
-class PIM(BaseInterface, Device):
+
+class PIM(BaseInterface, GroupDevice):
     """
     Profile Intensity Monitor.
 
@@ -78,11 +89,11 @@ class PIM(BaseInterface, Device):
     _prefix_start = ''
 
     state = Cpt(PIMY, '', kind='normal')
-    zoom_motor = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
+    zoom = FCpt(IMS, '{self._prefix_zoom}', kind='normal')
     detector = FCpt(PCDSAreaDetectorEmbedded, '{self._prefix_det}',
                     kind='normal')
 
-    tab_whitelist = ['y_motor', 'remove', 'insert', 'removed', 'inserted']
+    tab_whitelist = ['y', 'remove', 'insert', 'removed', 'inserted']
     tab_component_names = True
 
     def infer_prefix(self, prefix):
@@ -109,17 +120,17 @@ class PIM(BaseInterface, Device):
         status: str
             Formatted string with all relevant status information.
         """
-        focus = get_status_value(status_info, 'focus_motor', 'position')
-        f_units = get_status_value(status_info, 'focus_motor', 'user_setpoint',
+        focus = get_status_value(status_info, 'focus', 'position')
+        f_units = get_status_value(status_info, 'focus', 'user_setpoint',
                                    'units')
         state_pos = get_status_value(status_info, 'state', 'position')
         y_pos = get_status_float(status_info, 'state', 'motor', 'position',
                                  precision=4)
         y_units = get_status_value(status_info, 'state', 'motor',
                                    'user_setpoint', 'units')
-        zoom = get_status_float(status_info, 'zoom_motor', 'position',
+        zoom = get_status_float(status_info, 'zoom', 'position',
                                 precision=4)
-        z_units = get_status_value(status_info, 'zoom_motor', 'user_setpoint',
+        z_units = get_status_value(status_info, 'zoom', 'user_setpoint',
                                    'units')
 
         name = ' '.join(self.prefix.split(':'))
@@ -180,7 +191,7 @@ Y Position: {y_pos} [{y_units}]
             self._prefix_zoom = self.prefix_start+'CLZ:01'
 
         super().__init__(prefix, name=name, **kwargs)
-        self.y_motor = self.state.motor
+        self.y = self.state.motor
 
 
 class PIMWithFocus(PIM):
@@ -210,7 +221,7 @@ class PIMWithFocus(PIM):
         be inferred from `prefix`.
     """
 
-    focus_motor = FCpt(IMS, '{self._prefix_focus}', kind='normal')
+    focus = FCpt(IMS, '{self._prefix_focus}', kind='normal')
 
     def __init__(self, prefix, *, name, prefix_focus=None, **kwargs):
         self.infer_prefix(prefix)
@@ -303,20 +314,32 @@ class PIMWithBoth(PIMWithFocus, PIMWithLED):
                          prefix_zoom=prefix_zoom, **kwargs)
 
 
-class LCLS2ImagerBase(BaseInterface, Device, LightpathInOutMixin):
+class LCLS2Target(TwinCATStatePMPS):
+    """
+    Controls the PPM and XTES Imager states.
+
+    Defines the state count as 4 (OUT and 3 targets) to limit the number of
+    config PVs we connect to.
+
+    The PPM and the XTES Imager have the same state count,
+    despite having different targets at those states.
+    """
+    config = UpCpt(state_count=4)
+
+
+class LCLS2ImagerBase(BaseInterface, GroupDevice, LightpathInOutMixin):
     """
     Shared PVs and components from the LCLS2 imagers.
 
     All LCLS2 imagers are guaranteed to have the following components that
     behave essentially the same.
     """
-
     tab_component_names = True
 
     lightpath_cpts = ['target']
     _icon = 'fa.video-camera'
 
-    target = Cpt(TwinCATStatePMPS, ':MMS:STATE', kind='hinted',
+    target = Cpt(LCLS2Target, ':MMS:STATE', kind='hinted',
                  doc='Control of the diagnostic stack via saved positions.')
     y_motor = Cpt(BeckhoffAxisNoOffset, ':MMS', kind='normal',
                   doc='Direct control of the diagnostic stack motor.')

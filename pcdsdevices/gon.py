@@ -4,12 +4,12 @@ Module for goniometers and sample stages used with them.
 import logging
 
 import numpy as np
-from ophyd import Device
 from ophyd import FormattedComponent as FCpt
 from ophyd.device import Component as Cpt
 from ophyd.status import DeviceStatus
 from prettytable import PrettyTable
 
+from .device import GroupDevice
 from .epics_motor import IMS
 from .interface import BaseInterface
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
@@ -20,7 +20,7 @@ from .utils import get_status_float, get_status_value
 logger = logging.getLogger(__name__)
 
 
-class BaseGon(BaseInterface, Device):
+class BaseGon(BaseInterface, GroupDevice):
     """
     Basic goniometer, as present in XPP.
 
@@ -201,7 +201,7 @@ def Goniometer(**kwargs):
         return BaseGon(**kwargs)
 
 
-class XYZStage(BaseInterface, Device):
+class XYZStage(BaseInterface, GroupDevice):
     """
     Sample XYZ stage.
 
@@ -256,7 +256,7 @@ class KappaXYZStage(XYZStage):
                          **kwargs)
 
 
-class SamPhi(BaseInterface, Device):
+class SamPhi(BaseInterface, GroupDevice):
     """
     Sample Phi stage.
 
@@ -288,7 +288,7 @@ class KappaMoveAbort(ValueError):
     pass
 
 
-class Kappa(BaseInterface, PseudoPositioner, Device):
+class Kappa(BaseInterface, PseudoPositioner, GroupDevice):
     """
     Kappa stage, control the Kappa diffractometer in spherical coordinates.
 
@@ -341,7 +341,7 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
         Defaults to 50.
 
     Notes
-    --------
+    -----
     When using the Kappa, it is most convenient to work through the pseudo
     motors:
 
@@ -371,8 +371,10 @@ class Kappa(BaseInterface, PseudoPositioner, Device):
     e_eta = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_eta')
     e_chi = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_chi')
     e_phi = FCpt(PseudoSingleInterface, kind='normal', name='gon_kappa_e_phi')
-    tab_component_names = True
 
+    # Only stage the motors involved in the coordinate transform
+    stage_group = [eta, kappa, phi]
+    tab_component_names = True
     tab_whitelist = ['stop', 'wait', 'k_to_e', 'e_to_k', 'check_motor_step']
 
     def __init__(self, *, name, prefix_x, prefix_y, prefix_z,

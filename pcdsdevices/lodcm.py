@@ -13,16 +13,16 @@ import logging
 
 import numpy as np
 from ophyd.device import Component as Cpt
-from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignalRO
 from ophyd.sim import NullStatus
 from ophyd.status import wait as status_wait
 from pcdscalc import common, diffraction
 
-from pcdsdevices.epics_motor import OffsetMotor, OffsetIMSWithPreset
+from pcdsdevices.epics_motor import OffsetIMSWithPreset, OffsetMotor
 from pcdsdevices.sim import FastMotor
 
+from .device import GroupDevice
 from .doc_stubs import insert_remove
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
@@ -104,7 +104,7 @@ class Y2(InOutRecordPositioner):
     out_states = []
 
 
-class CrystalTower1(BaseInterface, Device):
+class CrystalTower1(BaseInterface, GroupDevice):
     """
     LODCM Crystal Tower 1.
 
@@ -366,7 +366,7 @@ hp [{hp_units}]  {hp_user} ({hp_dial})
 """
 
 
-class CrystalTower2(BaseInterface, Device):
+class CrystalTower2(BaseInterface, GroupDevice):
     """
     LODCM Crystal Tower 2.
 
@@ -619,7 +619,7 @@ diode [{diode_units}]  {diode_user} ({diode_dial})
 """
 
 
-class DiagnosticsTower(BaseInterface, Device):
+class DiagnosticsTower(BaseInterface, GroupDevice):
     """
     LODCM Diagnostic Tower.
 
@@ -729,7 +729,7 @@ navitar zoom [{yag_zoom_units}]  {yag_zoom_user} ({yag_zoom_dial})
 """
 
 
-class LODCMEnergySi(FltMvInterface, PseudoPositioner):
+class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
     """
     Energy calculations for the Si material.
 
@@ -768,6 +768,8 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
                 doc='Z2 motor offset for Si [mm]')
 
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
+
+    stage_group = [dr, th1Si, th2Si, z1Si, z2Si]
 
     def __init__(self, prefix, *args, **kwargs):
         self._prefix = prefix
@@ -895,7 +897,10 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner):
         pseudo_pos : PseudoPosition
             The pseudo position output.
         """
-        reflection = self.get_reflection()
+        try:
+            reflection = self.get_reflection()
+        except Exception:
+            return self.PseudoPosition(energy=np.NaN)
         real_pos = self.RealPosition(*real_pos)
         length = (2 * np.sin(np.deg2rad(real_pos.th1Si))
                     * diffraction.d_space('Si', reflection))
@@ -945,7 +950,7 @@ Photon Energy: {energy} [keV]
 """
 
 
-class LODCMEnergyC(FltMvInterface, PseudoPositioner):
+class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
     """
     Energy calculations for the C material.
 
@@ -984,6 +989,8 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
                doc='Z2 motor offset for C [mm]')
 
     energy = Cpt(PseudoSingleInterface, egu='keV', kind='hinted')
+
+    stage_group = [dr, th1C, th2C, z1C, z2C]
 
     def __init__(self, prefix, *args, **kwargs):
         self._prefix = prefix
@@ -1110,7 +1117,10 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner):
         pseudo_pos : PseudoPosition
             The pseudo position output.
         """
-        reflection = self.get_reflection()
+        try:
+            reflection = self.get_reflection()
+        except Exception:
+            return self.PseudoPosition(energy=np.NaN)
         real_pos = self.RealPosition(*real_pos)
         length = (2 * np.sin(np.deg2rad(real_pos.th1C))
                     * diffraction.d_space('C', reflection))
@@ -1160,7 +1170,7 @@ Photon Energy: {energy} [keV]
 """
 
 
-class LODCM(BaseInterface, Device):
+class LODCM(BaseInterface, GroupDevice):
     """
     Large Offset Dual Crystal Monochromator.
 

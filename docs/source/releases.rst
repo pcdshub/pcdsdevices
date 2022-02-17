@@ -1,6 +1,414 @@
 Release History
 ###############
 
+v5.1.0 (2022-02-07)
+===================
+
+Features
+--------
+- Adds a new script, make_ophyd_device.py, that helps with autogeneration of
+  an ophyd device class from an IOC db file. Includes a helper script.
+- State names are no longer case-sensitive.
+
+Device Updates
+--------------
+- Add pmgr methods to the IMS class's tab whitelist.
+
+New Devices
+-----------
+- SliceDhvChannel: a device for controlling a single channel on a Vescent
+  Photonics Slice-DHV controller.
+- SliceDhvController: a device for controlling the controller of a Vescent
+  Photonics Slice-DHV controller.
+- SliceDhv: a top-level device for controlling a complete 2-channel Vescent
+  Photonics Slice-DHV controller.
+- QadcBase: Base class for qadc digitizers
+- Qadc: Class for FMC126 (old) digitizers
+- QadcSparsification: Class for holding FMC134 sparsification PVs.
+- Qadc134: Class for FMC134 (new) digitizers
+- Wave8V2Simple: A simple class for the LCLS-II Wave8. Provides waveforms
+  and acquisition start/stop buttons.
+- Wave8V2: A complete top-level class for the LCLS-II Wave8. Includes many
+  configuration and diagnostic PVs, in addition to what is provided by
+  Wave8V2Simple.
+- DiconSwitch: new device class for the DiCon fiber switch.
+- CycleRfofRx: class for Cycle RFoF receiver.
+- CycleRfofTx: class for Cycle RFoF transmitter.
+- Agilent53210A: Device for controlling frequency counters by the same name.
+- Adds a new class to interface with the LAMP motion configuration for LV17.
+
+Bugfixes
+--------
+- EpicsSignalEditMD will be more lenient for cases where we have unset
+  metadata strings ("Invalid") from TwinCAT. This fixes recent issues
+  involving terminal spam and failure to update enum strings for
+  devices like the solid attenuators.
+- EpicsSignalEditMD will not send metadata updates until all composite
+  signals have connected and updated us with their values.
+- Fix SL1K2 target count (2 states + out instead of default).
+- Fixed mr1l0_homs and mr2l0_homs state counts in TwinCATMirrorStripe.
+  This should be set to 2 for mr1l0 (B4C, B4C/Ni) and mr2l0 (B4C, Ni).
+
+Maintenance
+-----------
+- ``detailed_tree.ui`` was vendored from typhos. The default attenuator screens
+  AT2L0, AT1K4, and AT2K2 will now default to ``detailed_tree.ui``.
+- HelpfulIntEnum has been vendored from pcdsutils. This will be
+  switched to an import in a future release.
+
+Contributors
+------------
+- mbosum
+- klauer
+- slactjohnson
+- tangkong
+- zllentz
+
+
+v5.0.2 (2021-12-02)
+===================
+
+Bugfixes
+--------
+- Fix issue where EpicsSignalEditMD could log enum error messages
+  for signals that did not edit their enum metadata.
+
+Contributors
+------------
+- zllentz
+
+
+v5.0.1 (2021-11-19)
+===================
+
+Bugfixes
+--------
+- CCM status representation fixed in certain situations. (#908)
+- Exceptions will no longer be raised when generating device status
+  representations. (#909)
+
+Contributors
+------------
+- klauer
+
+
+v5.0.0 (2021-11-15)
+===================
+
+API Changes
+-----------
+- ``TwinCATStateConfigAll`` has been removed. This was considered an
+  internal API.
+- ``isum`` components have been renamed to ``sum`` in IPM detector classes.
+- The motor components for PIM classes have been shortened by removing
+  ``_motor`` from their names (e.g. ``zoom_motor`` is now ``zoom``).
+- Switch the target PVs for ``BeamEnergyRequest`` from e.g. "XPP:USR:MCC:EPHOT" to
+  e.g. "XPP:USR:MCC:EPHOT:SET1", "RIX:USR:MCC:EPHOTK:SET1".
+
+Features
+--------
+- ``EpicsSignalEditMD`` and ``EpicsSignalROEditMD`` now allow for overriding of
+  enumeration strings (``enum_strs``) by way of a static list of strings
+  (``enum_strs`` kwarg) or a list of signal attribute names (``enum_attrs``
+  kwarg).
+- Update ``TwinCATStatePositioner`` to have a configurable and variable number
+  of state configuration PVs. These are the structures that allow you to
+  check and change state setpoints, deltas, velocities, etc. This is
+  implemented through the new ``TwinCATStateConfigDynamic`` class.
+- Increase the maximum number of connected state configuration records to
+  match the current motion library limit (9)
+
+Device Updates
+--------------
+- Using the new ``TwinCATStateConfigDynamic`` mechanisms and the ``UpdateComponent``,
+  update the following classes to contain exactly the correct number of
+  twincat configuration states in their component state records.
+  Note that the number of states here does not include the "Unknown"
+  or "Moving" state associated with index 0. A device with n states will have
+  typically have 1 out state and n-1 target states by this count, and the
+  EPICS record will have n+1 possible enum values.
+  - ``ArrivalTimeMonitor`` (6)
+  - ``AttenuatorSXR_Ladder`` (9)
+  - ``AT2L0`` (2)
+  - ``FEESolidAttenuatorBlade`` (2)
+  - ``LaserInCoupling`` (2)
+  - ``PPM`` (4)
+  - ``ReflaserL2SI`` (2)
+  - ``WavefrontSensorTarget`` (6)
+  - ``XPIM`` (4)
+- The default ``theta0`` values for CCM objects has been changed from
+  ``14.9792`` to ``15.1027``.
+- ``IPM`` objects now have short aliases for their motors (`ty`, `dx`, `dy`).
+- Reorganized the sample delivery ``Selector`` class to be composed of two
+  ``Sensiron`` devices instead of a flat collection of PVs.
+- In ``VGC_2S``, allow for the user to change the ``at_vac`` setpoint value
+  for upstream and downstream gauges separately.
+- Add the ``user_enable`` signal (``bUserEnable``) to the ``BeckhoffAxisPLC`` class.
+  This is a signal that allows the user to unilaterally disable a
+  running motor's power. When enabled, it is up to the controller
+  whether or not to actually power the motor, but when disabled the
+  power will be shut off.
+- Add the ability for ``BeamEnergyRequest`` to write to PVs for either
+  the K or the L line and for either bunch 1 or bunch 2 in two bunch mode.
+
+New Devices
+-----------
+- Add ``TM2K2``, a variant of the ``ArrivalTimeMonitor`` class that has an extra
+  state (7). The real ``TM2K2`` has one extra target holder compared to the
+  standard ``ArrivalTimeMonitor``.
+- ``BeckhoffAxis_Pre140`` has been added to support versions of ``lcls-twincat-motion``
+  prior to ``v1.4.0``. This has been aliased to ``OldBeckhoffAxis`` for backcompat.
+- Created ``Bronkhorst`` and ``Sensiron`` flow meter devices for sample delivery.
+- Added the ``crix_motion.VLSOptics`` Device, which contains calculated
+  axes for the VLS optical components. The rotation state of these
+  crystals is approximated by a best-fit 2nd order polynomial.
+- Add ``VRCClsLS``, a class for gate valves with control and closed limit switch readback.
+
+Bugfixes
+--------
+- Fix subtle bugs related to the ``UpdateComponent`` and using copy vs deepcopy.
+  This was needed to make the dynamic state classes easy to customize.
+- Add an extra error state in ``UpdateComponent`` for when you've made a typo
+  in your component name. Previously this would give a confusing ``NameError``.
+- In the ``LODCM`` "inverse" calculations, return a NaN energy instead of
+  raising an exception when there is a problem determining the crystal
+  orientation. This prevents the calculated value from going stale when
+  it has become invalid, and it prevents logger spam when this is
+  called in the pseudopositioner update position callback.
+
+Maintenance
+-----------
+- Add various missing docstrings and type annotations.
+- Tab whitelists have been cut down to make things simpler for non-expert users.
+
+Contributors
+------------
+- cymel123
+- jyin999
+- klauer
+- mbosum
+- zllentz
+- zrylettc
+
+
+v4.9.0 (2021-10-19)
+===================
+
+Device Updates
+--------------
+- Changed pv names for flow cell xyz-theta
+
+New Devices
+-----------
+- LAMPFlowCell class for new 4 axis flow cell manipulator replacing cVMI on LAMP.
+
+Bugfixes
+--------
+- All stop methods now use the ophyd-defined signature, including a
+  keyword-only ``success`` boolean.
+- Test suite utility ``find_all_classes`` will no longer report test suite
+  classes.
+
+Maintenance
+-----------
+- Removed prototype-grade documentation helpers in favor of those in ophyd.docs
+- Added similar ``find_all_callables`` for the purposes of documentation and
+  testing.
+- Added documentation helper for auto-generating ``docs/source/api.rst``.  This
+  should be run when devices are added, removed, or moved.
+- Docstring fixup on CCM class.
+- Imports changed to relative in test suite.
+- Miscellaneous floating point comparison fixes for test suite.
+- Fixed CCM test failure when run individually or quickly (failure when run
+  less than 10 seconds after Python starts up)
+- Linux-only ``test_presets`` now skips macOS as well.
+
+Contributors
+------------
+- Mbosum
+- klauer
+
+
+v4.8.0 (2021-09-28)
+===================
+
+Features
+--------
+- Add ``GroupDevice``: A device that is a group of components that will act
+  independently. This has some performance improvements and small optimizations
+  for when we expect the different subdevices to act fully independently.
+- Add a ``status`` method to ``BaseInterface`` to return the device's status
+  string. This is useful for recording device status in the elog.
+- Add ``typhos`` templates for ``BeckhoffSlits`` and ``PowerSlits`` using existing
+  elements from their normal ``pydm`` screens.
+
+Device Updates
+--------------
+- The following devices have become group devices:
+  - Acromag
+  - ArrivalTimeMonitor
+  - BaseGon
+  - BeckhoffJet
+  - BeckhoffJetManipulator
+  - BeckhoffJetSlits
+  - CCM
+  - CrystalTower1
+  - CrystalTower2
+  - CVMI
+  - DiagnosticTower
+  - ExitSlits
+  - FFMirror
+  - FlowIntegrator
+  - GasManifold
+  - ICT
+  - Injector
+  - IPIMB
+  - IPMDiode
+  - IPMMotion
+  - Kappa
+  - KBOMirror
+  - KMono
+  - KTOF
+  - LAMP
+  - LAMPMagneticBottle
+  - LaserInCoupling
+  - LCLS2ImagerBase
+  - LODCM
+  - LODCMEnergyC
+  - LODCMEnergySi
+  - Mono
+  - MPODApalisModule
+  - MRCO
+  - OffsetMirror
+  - PCM
+  - PIM
+  - PulsePickerInOut
+  - ReflaserL2SI
+  - RTDSBase
+  - SamPhi
+  - Selector
+  - SlitsBase
+  - StateRecordPositionerBase
+  - VonHamosCrystal
+  - VonHamosFE
+  - Wave8
+  - WaveFrontSensorTarget
+  - XOffsetMirror
+  - XYZStage
+- Clean up pmgr loading on the IMS class.
+- Edit stage/unstage on ``PIMY`` to be compatible with ``GroupDevice``.
+- Edit stage/unstage and the class definition on ``SlitsBase`` to be
+  compatible with ``GroupDevice``
+- Change ``CCM`` from a ``InOutPositioner`` to a normal device with a
+  ``LightpathMixin`` interface. Being a positioner that contained a bunch
+  of other positioners, methods like ``move`` were extremely ambiguous
+  and confusing. The ``insert`` and ``remove`` methods are re-implemented
+  as they are useful enough to keep.
+- Split ``CCMCalc`` into ``CCMEnergy`` and ``CCMEnergyWithVernier`` to
+  make the code easier to follow
+- Remove unused ``CCMCalc`` feature to move to wavelength or theta
+  to make the code simpler to debug
+- Add aliases to the ``CCM`` for each of the motors.
+- Adjust the ``CCM`` status to be identical to that from the old python code.
+- Add functions and PVs to kill and home the ``CCM`` alio
+- Calculate intermediate quantities in the ``CCM`` energy calc and make them
+  available in both the status and as read-only signals.
+- ``EpicsMotorInterface`` subclasses will no longer spam logger errors and
+  warnings about alarm issues encountered by other users. These log messages
+  will only be shown if they were the result of moves in the current session.
+  Note that this log filtering assumes that all epics motors will have unique
+  ophyd names.
+- Added ``GFS`` fault setpoint, ``GCC``, ``PIP`` auto-on and countdown timer
+- Switch the ``CCM`` energy devices to use user PVs as the canonical source
+  of calculation constants. This allows the constants to be consistent
+  between sessions and keeps different sessions in sync with each other.
+- Add ``CCM.energy.set_current_position`` utility for adjusting the ``CCM``
+  theta0 offset in order to synchronize the calculation with a known
+  photon energy values.
+
+New Devices
+-----------
+- TMO Fresnel Photon Spectrometer Motion components class,
+  ``TMOSpectrometer``
+
+Bugfixes
+--------
+- Fix some race conditions in ``FuncPositioner``
+- Fix a race condition in schedule_task that could cause a task to never be run
+- Add a timeout parameter to ``IMS.reinitialize``, and set it as the default
+  arg for use in the stage method, which is run during scans. This avoids
+  a bug where the stage method could hang forever instead of erroring out,
+  halting a scan in its tracks.
+- Fix an issue where epics motors could time out on the getting of
+  the ``egu`` property, which was causing issues with the displaying
+  of device status.
+
+Maintenance
+-----------
+- Move ``PVStateSignal`` from state.py to signal.py to avoid a circular import
+- Make the tests importable and runnable on Windows
+- Require Python 3.9 for type annotations
+- Make pmgr optional, but if installed make sure it has a compatible version.
+- Update to 3.9-only CI
+- Fix the CI PIP test build
+- Include the pcdsdevices test suite in the package distribution.
+- Add missing docstrings in the ``ccm`` module where appropriate.
+- Add doc kwarg to all components in the ``ccm`` module.
+- Add type hints to all method signatures in the ``ccm`` module.
+- Adjust the ``CCM`` unit tests appropriately.
+
+Contributors
+------------
+- ghalym
+- jyin999
+- mbosum
+- zllentz
+
+
+v4.7.1 (2021-08-11)
+===================
+
+Maintenance
+-----------
+- Fix a packaging issue where the ui files were not included in the
+  distribution.
+
+
+v4.7.0 (2021-08-09)
+===================
+
+Features
+--------
+- Added a typhos.ui entry point, so we can version control our typhos
+  templates in the same place as our device definitions. This also
+  allows us to remove pcds-specific assumptions from typhos to make
+  the library more community-friendly.
+- Added the pcds typhos templates from typhos.
+
+New Devices
+-----------
+- Add classes for controlling the new apalis mpods. The new apalis mpod
+  PVs differ from previous model PVs and needed new classes to
+  accommodate those changes. Features:
+
+  - Turn on/off HV channels
+  - Set current/voltage
+  - Get max current/voltage
+  - Clear module faults
+  - Obtain module temperature
+  - Power cycle mpod crate.
+
+Maintenance
+-----------
+- Add missing jsonschema dependency.
+
+Contributors
+------------
+- klauer
+- spenc333
+- zllentz
+
+
 v4.6.0 (2021-07-09)
 ===================
 
@@ -135,7 +543,7 @@ Contributors
 
 
 v4.3.2 (2021-04-05)
-==================
+===================
 
 Bugfixes
 --------
@@ -665,7 +1073,7 @@ Contributors
 
 
 v2.11.0 (2020-09-21)
-===================
+====================
 
 API Changes
 -----------

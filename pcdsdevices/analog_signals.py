@@ -5,10 +5,11 @@ from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 
 from . import utils as key_press
+from .device import GroupDevice
 from .interface import BaseInterface
 
 
-class Acromag(BaseInterface, Device):
+class Acromag(BaseInterface, GroupDevice):
     """
     Class for Acromag analog input/ouput signals.
 
