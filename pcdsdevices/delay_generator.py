@@ -11,10 +11,27 @@ from ophyd import Component as Cpt
 from ophyd import EpicsSignalRO
 from ophyd import EpicsSignal
 
-from .interface import BaseInterface
+from pcdsdevices.interface import BaseInterface
 
 
 CHANNELS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'T0']
+TRIGGER_SOURCES = {
+    '0': 'Internal',
+    '1': 'Ext ^edge',
+    '2': 'Ext ~edge',
+    '3': 'SS ext ^edge',
+    '4': 'SS ext ~edge',
+    '5': 'Single Shot',
+    '6': 'Line'
+}
+TRIGGER_INHIBITS = {
+    '0': 'Off',
+    '1': 'Triggers',
+    '2': 'AB',
+    '3': 'AB,CD',
+    '4': 'AB,CD,EF',
+    '5': 'AB,CD,EF,GH'
+}
 
 
 class Dg_channel(BaseInterface, Device):
@@ -55,21 +72,66 @@ class Dg_channel(BaseInterface, Device):
             print(f'New setting for {self.name}: {self.get_str()}')
 
 
-"""
-Basic delay generator class. Collection of channels A to H.
+class Delay_generator(BaseInterface, Device):
+    """
+    Delay generator class. Collection of channels A to H.
 
-Parameters
-----------
-prefix: str
-    Base PV for the delay generator.
+    Parameters
+    ----------
+    prefix: str
+        Base PV for the delay generator.
 
-name: str
-    Alias for the device
-"""
+    name: str
+        Alias for the device
+    """
+    trig_source = Cpt(EpicsSignal, ':triggerSourceMO', kind='config')
+    trig_source_rbk = Cpt(EpicsSignal, ':triggerSourceMI', kind='config')
+    trig_inhibit = Cpt(EpicsSignal, ':triggerInhibitMO', kind='config')
+    trig_inhibit_rbk = Cpt(EpicsSignal, ':triggerInhibitMI', kind='config')
+
+    tab_component_names = True
+
+    @staticmethod
+    def print_trigger_sources():
+        for ii, source in TRIGGER_SOURCES.items():
+            print(f'{ii}: {source}')
+
+    def get_trigger_source(self):
+        n = self.trig_source_rbk.get()
+        val = TRIGGER_SOURCES[str(n)]
+        print(f'{val} ({n})\n')
+        return
+
+    def set_trigger_source(self, new_val):
+        self.trig_source.set(new_val)
+        sleep(0.01)
+        self.get_trigger_source()
+        return
+ 
+    @staticmethod
+    def print_trigger_inhibit():
+        for ii, inhibit in TRIGGER_INHIBITS.items():
+            print(f'{ii}: {inhibit}')
+        return
+
+    def get_trigger_inhibit(self):
+        n = self.trig_inhibit_rbk.get()
+        val = TRIGGER_INHIBITS[str(n)]
+        print(f'{val} ({n})\n')
+        return n
+
+    def set_trigger_inhibit(self, new_val):
+        self.trig_inhibit.set(new_val)
+        sleep(0.01)
+        self.get_trigger_inhibit()
+        return
+
+
 channel_cpts = {}
 for channel in CHANNELS[:-1]:
     channel_cpts[f'ch{channel}'] = Cpt(
         Dg_channel, f":{channel.lower()}", name=f"ch{channel}"
         )
 channel_cpts['tab_component_names'] = True
-Dg = type('Dg', (BaseInterface, Device), channel_cpts)
+
+Dg = type('Dg', (Delay_generator, ), channel_cpts)
