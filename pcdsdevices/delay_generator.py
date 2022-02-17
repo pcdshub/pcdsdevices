@@ -90,6 +90,10 @@ class Delay_generator(BaseInterface, Device):
     trig_inhibit_rbk = Cpt(EpicsSignal, ':triggerInhibitMI', kind='config')
 
     tab_component_names = True
+    tab_whitelist = ['print_trigger_sources', 'get_trigger_source',
+                     'set_trigger_source', 'print_trigger_inhibit',
+                     'get_trigger_inhibit',
+                     'set_trigger_inhibit']
 
     @staticmethod
     def print_trigger_sources():
@@ -107,7 +111,7 @@ class Delay_generator(BaseInterface, Device):
         sleep(0.01)
         self.get_trigger_source()
         return
- 
+
     @staticmethod
     def print_trigger_inhibit():
         for ii, inhibit in TRIGGER_INHIBITS.items():
