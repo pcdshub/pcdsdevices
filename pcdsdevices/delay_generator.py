@@ -54,10 +54,14 @@ class Dg_channel(BaseInterface, Device):
     tab_whitelist = ['set_reference', 'get_str']
 
     def get(self):
-        """ The readback is a string formatted as"<REF> + <DELAY>" """
+        """
+        The readback is a string formatted as"<REF> + <DELAY>".
+        Returns the <DELAY> as a float
+        """
         return float(self.delay_rbk.get().split("+")[1])
 
     def get_str(self):
+        """ Returns the full <REF> + <DELAY> string. """
         return self.delay_rbk.get()
 
     def set(self, new_delay):
@@ -69,7 +73,7 @@ class Dg_channel(BaseInterface, Device):
         else:
             self.reference.set(new_ref)
             sleep(0.05)
-            print(f'New setting for {self.name}: {self.get_str()}')
+            print(f'Setting for {self.name}: {self.get_str()}')
 
 
 class Delay_generator(BaseInterface, Device):
@@ -103,31 +107,28 @@ class Delay_generator(BaseInterface, Device):
     def get_trigger_source(self):
         n = self.trig_source_rbk.get()
         val = TRIGGER_SOURCES[str(n)]
-        print(f'{val} ({n})\n')
-        return
+        return f'{val} ({n})'
 
     def set_trigger_source(self, new_val):
         self.trig_source.set(new_val)
         sleep(0.01)
-        self.get_trigger_source()
+        print(f'Trigger source: {self.get_trigger_source()}')
         return
 
     @staticmethod
     def print_trigger_inhibit():
         for ii, inhibit in TRIGGER_INHIBITS.items():
             print(f'{ii}: {inhibit}')
-        return
 
     def get_trigger_inhibit(self):
         n = self.trig_inhibit_rbk.get()
         val = TRIGGER_INHIBITS[str(n)]
-        print(f'{val} ({n})\n')
-        return n
+        return f'{val} ({n})'
 
     def set_trigger_inhibit(self, new_val):
         self.trig_inhibit.set(new_val)
         sleep(0.01)
-        self.get_trigger_inhibit()
+        print(f'Trigger inhibit: {self.get_trigger_inhibit()}')
         return
 
 
@@ -136,6 +137,5 @@ for channel in CHANNELS[:-1]:
     channel_cpts[f'ch{channel}'] = Cpt(
         Dg_channel, f":{channel.lower()}", name=f"ch{channel}"
         )
-channel_cpts['tab_component_names'] = True
 
 Dg = type('Dg', (Delay_generator, ), channel_cpts)
