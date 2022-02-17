@@ -16,16 +16,18 @@ import logging
 from collections import OrderedDict
 
 from ophyd import Component as Cpt
-from ophyd import Device
 from ophyd import DynamicDeviceComponent as DDCpt
 from ophyd import EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
+from ophyd.ophydobj import OphydObject
 from ophyd.pv_positioner import PVPositioner
-from ophyd.signal import Signal
+from ophyd.signal import Signal, SignalRO
 from ophyd.status import Status
 from ophyd.status import wait as status_wait
 
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
+from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxisNoOffset
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutMixin,
                         LightpathMixin, MvInterface)
@@ -39,7 +41,7 @@ from .variety import set_metadata
 logger = logging.getLogger(__name__)
 
 
-class SlitsBase(MvInterface, Device, LightpathMixin):
+class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
     """
     Base class for slit motion interfacing.
     """
@@ -58,10 +60,13 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
 
     # Placeholders for each component to override
     # These are expected to be positioners
-    xwidth = None
-    ywidth = None
-    xcenter = None
-    ycenter = None
+    xwidth = Cpt(SignalRO)
+    ywidth = Cpt(SignalRO)
+    xcenter = Cpt(SignalRO)
+    ycenter = Cpt(SignalRO)
+
+    # The gap opens/closes when we move the slits device
+    stage_group = [xwidth, ywidth]
 
     def __init__(self, *args, nominal_aperture=5.0, **kwargs):
         self._has_subscribed = False
@@ -71,6 +76,7 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         self.vg = self.ywidth
         self.ho = self.xcenter
         self.vo = self.ycenter
+        self._pre_stage_gap: tuple[float, float] = None
 
     def format_status_info(self, status_info):
         """
@@ -189,7 +195,7 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
             return self.move(width=width, height=height)
 
     @property
-    def current_aperture(self):
+    def current_aperture(self) -> tuple[float, float]:
         """
         Current size of the aperture. Returns a tuple in the form
         ``(width, height)``.
@@ -197,7 +203,7 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         return (self.xwidth.position, self.ywidth.position)
 
     @property
-    def position(self):
+    def position(self) -> tuple[float, float]:
         return self.current_aperture
 
     def remove(self, size=None, wait=False, timeout=None, **kwargs):
@@ -239,13 +245,25 @@ class SlitsBase(MvInterface, Device, LightpathMixin):
         """Alias for the move method, here for ``bluesky`` compatibilty."""
         return self.move(size, wait=False)
 
-    def stage(self):
+    def stage(self) -> list[OphydObject]:
         """
         Store the initial values of the aperture position before scanning.
         """
-        self._original_vals[self.xwidth.setpoint] = self.xwidth.readback.get()
-        self._original_vals[self.ywidth.setpoint] = self.ywidth.readback.get()
+        self._pre_stage_gap = self.position
         return super().stage()
+
+    def unstage(self) -> list[OphydObject]:
+        """
+        Restore the initial values of the aperture position.
+        """
+        if self._pre_stage_gap is not None:
+            self.move(
+                self._pre_stage_gap[0],
+                self._pre_stage_gap[1],
+                wait=True
+                )
+        self._pre_stage_gap = None
+        return super().unstage()
 
     def subscribe(self, cb, event_type=None, run=True):
         """
@@ -555,13 +573,22 @@ class PowerSlits(BeckhoffSlits):
     fsw = Cpt(NotImplementedSignal, ':FSW', kind='normal')
 
 
-class ExitSlits(BaseInterface, Device, LightpathInOutMixin):
+class ExitSlitTarget(TwinCATStatePMPS):
+    """
+    Controls the exit slits target state.
+    Defines the state count as 3 (OUT and 2 targets) to limit the number of
+    config PVs we connect to.
+    """
+    config = UpCpt(state_count=3)
+
+
+class ExitSlits(BaseInterface, GroupDevice, LightpathInOutMixin):
     tab_component_names = True
 
     lightpath_cpts = ['target']
     _icon = 'fa.video-camera'
 
-    target = Cpt(TwinCATStatePMPS, ':YAG:STATE', kind='hinted',
+    target = Cpt(ExitSlitTarget, ':YAG:STATE', kind='hinted',
                  doc='Control of the YAG  stack via saved positions.')
     yag_motor = Cpt(BeckhoffAxisNoOffset, ':MMS:YAG', kind='normal',
                     doc='Direct control of the Yag Stack motor.')

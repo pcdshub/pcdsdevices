@@ -34,15 +34,12 @@ except ImportError:
 logger = logging.getLogger(__name__)
 engineering_mode = True
 
-OphydObject_whitelist = ["name", "connected", "check_value", "log"]
-BlueskyInterface_whitelist = ["trigger", "read", "describe", "stage",
-                              "unstage"]
-Device_whitelist = ["read_attrs", "configuration_attrs", "summary",
-                    "wait_for_connection", "stop", "get", "configure"]
-Signal_whitelist = ["value", "put"]
+OphydObject_whitelist = []
+BlueskyInterface_whitelist = []
+Device_whitelist = ["stop"]
+Signal_whitelist = ["value", "put", "get"]
 Positioner_whitelist = ["settle_time", "timeout", "egu", "limits", "move",
-                        "position", "moving", "set_position",
-                        "set_current_position"]
+                        "position", "moving", "set_current_position"]
 
 
 class _TabCompletionHelper:
@@ -263,8 +260,13 @@ class BaseInterface:
             status_text = (f'{self}: Error showing status information. '
                            'Check IOC connection and device health.')
             logger.debug(status_text, exc_info=True)
-            raise
         pp.text(status_text)
+
+    def status(self) -> str:
+        """
+        Returns a str with the current pv values for the device.
+        """
+        return self.format_status_info(self.status_info())
 
     def format_status_info(self, status_info):
         """
@@ -546,7 +548,7 @@ class MvInterface(BaseInterface):
     applications.
     """
 
-    tab_whitelist = ["mv", "wm", "camonitor", "wm_update"]
+    tab_whitelist = ["mv", "wm", "wm_update"]
 
     def __init__(self, *args, **kwargs):
         self._mov_ev = Event()

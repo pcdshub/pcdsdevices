@@ -4,3 +4,6 @@ include LICENSE.md
 include requirements.txt
 include dev-requirements.txt
 include docs-requirements.txt
+include pcdsdevices/ui/*
+include pcdsdevices/tests/*
+include pcdsdevices/tests/test_lens_sets/*

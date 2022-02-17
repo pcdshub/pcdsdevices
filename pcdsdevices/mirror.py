@@ -14,6 +14,8 @@ from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 from ophyd import PVPositioner
 
+from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
@@ -151,7 +153,7 @@ class Gantry(OMMotor):
         super().check_value(pos)
 
 
-class OffsetMirror(BaseInterface, Device):
+class OffsetMirror(BaseInterface, GroupDevice):
     """
     X-ray Offset Mirror class.
 
@@ -283,6 +285,8 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
 
     # Reverse state order as PointingMirror is non-standard
     states_list = ['OUT', 'IN']
+    # Moving PointingMirror moves the x gantry
+    stage_group = [OffsetMirror.xgantry]
 
     def __init__(self, prefix, *, out_lines=None, in_lines=None, **kwargs):
         # Branching pattern
@@ -318,7 +322,7 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         return super().check_value(pos)
 
 
-class XOffsetMirror(BaseInterface, Device):
+class XOffsetMirror(BaseInterface, GroupDevice):
     """
     X-ray Offset Mirror.
 
@@ -521,7 +525,7 @@ class XOffsetMirrorSwitch(XOffsetMirror):
                   doc='Yright slave axis [um]')
 
 
-class KBOMirror(BaseInterface, Device):
+class KBOMirror(BaseInterface, GroupDevice):
     """
     Kirkpatrick-Baez Mirror with Bender Axes.
 
@@ -602,6 +606,13 @@ class KBOMirror(BaseInterface, Device):
                                    'units')
         x_description = get_status_value(status_info, 'x', 'description',
                                          'value')
+        y_position = get_status_value(status_info, 'y', 'position')
+        y_user_setpoint = get_status_value(status_info, 'y',
+                                           'user_setpoint', 'value')
+        y_units = get_status_value(status_info, 'y', 'user_setpoint',
+                                   'units')
+        y_description = get_status_value(status_info, 'y', 'description',
+                                         'value')
         p_position = get_status_value(status_info, 'pitch', 'position')
         p_user_setpoint = get_status_value(status_info, 'pitch',
                                            'user_setpoint', 'value')
@@ -637,6 +648,12 @@ x_up: ({self.x.prefix})
     user_setpoint: {x_user_setpoint} [{x_units}]
     description: {x_description}
 ------
+y_up: ({self.y.prefix})
+------
+    position: {y_position}
+    user_setpoint: {y_user_setpoint} [{y_units}]
+    description: {y_description}
+------
 pitch: ({self.pitch.prefix})
 ------
     position: {p_position}
@@ -660,7 +677,27 @@ bender_ds ({self.bender_ds.prefix})
 """
 
 
-class FFMirror(BaseInterface, Device):
+class KBOMirrorHE(KBOMirror):
+    """
+    Kirkpatrick-Baez Mirror with Bender Axes and Cooling.
+
+    1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # Cooling water flow and pressure sensors
+    cool_flow1 = Cpt(EpicsSignalRO, ':FLOW:1_RBV', kind='normal')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FLOW:2_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PRESS:1_RBV', kind='normal')
+
+
+class FFMirror(BaseInterface, GroupDevice):
     """
     Fixed Focus Kirkpatrick-Baez Mirror.
 
@@ -774,6 +811,7 @@ class TwinCATMirrorStripe(TwinCATStatePMPS):
     in_states = []
     out_states = []
     _in_if_not_out = True
+    config = UpCpt(state_count=2)
 
     @property
     def transmission(self):

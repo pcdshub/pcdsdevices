@@ -15,10 +15,12 @@ setup(
     license="BSD",
     author="SLAC National Accelerator Laboratory",
     packages=find_packages(),
+    include_package_data=True,
     description="Ophyd Device definitions for LCLS Beamline components",
     entry_points={
         "happi.containers": ["pcdsdevices = pcdsdevices.happi.containers"],
+        "typhos.ui": ["pcdsdevices = pcdsdevices.ui:path"],
     },
     install_requires=install_requires,
-    python_requires=">=3.6",
+    python_requires=">=3.9",
 )

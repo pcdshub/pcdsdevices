@@ -9,6 +9,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO
 from ophyd.status import SubscriptionStatus
 from ophyd.status import wait as status_wait
 
+from .device import GroupDevice
 from .doc_stubs import basic_positioner_init
 from .inout import InOutPVStatePositioner, InOutRecordPositioner
 
@@ -166,7 +167,7 @@ class PulsePicker(InOutPVStatePositioner):
             self._wait(self.mode, 6, 'FOLLOWER')
 
 
-class PulsePickerInOut(PulsePicker):
+class PulsePickerInOut(PulsePicker, GroupDevice):
     """
     `PulsePicker` paired with a states record to control the Y position.
 
@@ -195,6 +196,9 @@ class PulsePickerInOut(PulsePicker):
                               1: 'CLOSED',
                               2: 'CLOSED'}}
     _state_logic_mode = 'FIRST'
+
+    # When we move PulsePickerInOut, it moves inout
+    stage_group = [inout]
 
     def __init__(self, prefix, **kwargs):
         # inout follows naming convention

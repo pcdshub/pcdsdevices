@@ -142,13 +142,13 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
     def _update_task(self, status):
         self._update_position()
         if self._check_finished():
+            self._started_moving = False
+            self._moving = False
+            self._update_position(force=True)
             try:
                 status.set_finished()
             except InvalidState:
                 pass
-        if status.done:
-            self._started_moving = False
-            self._moving = False
         else:
             self._new_update(status)
 
@@ -157,12 +157,12 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         self._update_position()
         return self._position
 
-    def _update_position(self):
-        if time.monotonic() - self._last_update > self.update_rate:
+    def _update_position(self, force=False):
+        if force or time.monotonic() - self._last_update > self.update_rate:
             self._last_update = time.monotonic()
             pos = self._get_pos()
-            self._set_position(pos)
             self.notepad_signal.put(pos)
+            self._set_position(pos)
 
     def _check_finished(self):
         if self._done is None:

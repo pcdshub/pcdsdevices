@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import enum
 import operator
 import os
 import select
@@ -6,6 +9,7 @@ import sys
 import threading
 import time
 from functools import reduce
+from typing import Iterator, Union
 
 import ophyd
 import pint
@@ -198,13 +202,12 @@ def schedule_task(func, args=None, kwargs=None, delay=None):
             break
 
     def schedule():
-        if matched_thread is None:
+        if matched_thread is not None and context.event_thread is not None:
+            # Put into same queue
+            context.event_thread.queue.put((func, args, kwargs))
+        else:
             # Put into utility queue
             dispatcher.schedule_utility_task(func, *args, **kwargs)
-        else:
-            # Put into same queue
-            if context.event_thread is not None:
-                context.event_thread.queue.put((func, args, kwargs))
 
     if delay is None:
         # Do it right away
@@ -342,3 +345,112 @@ def combine_status_info(obj, status_info, attrs, separator='\n= {attr} ='):
         lines.append(child.format_status_info(status_info[attr]))
 
     return '\n'.join(lines)
+
+
+def doc_format_decorator(**doc_fmts):
+    """
+    Decorator for substituting values into a docstring.
+
+    This is useful for cases where we want to include module
+    constants in docstrings but we want the docstring to
+    update automatically when we decide to change the
+    constant.
+    """
+    def inner_decorator(func):
+        func.__doc__ = func.__doc__.format(**doc_fmts)
+        return func
+    return inner_decorator
+
+
+EnumId = Union[enum.Enum, int, str]
+
+
+class HelpfulIntEnumMeta(enum.EnumMeta):
+    def __getattr__(self, key):
+        if hasattr(key, "lower"):
+            for item in self:
+                if item.name.lower() == key.lower():
+                    return item
+        return super().__getattr__(key)
+
+    def __getitem__(self, key):
+        if hasattr(key, "lower"):
+            for item in self:
+                if item.name.lower() == key.lower():
+                    return item
+        return super().__getitem__(key)
+
+
+class HelpfulIntEnum(enum.IntEnum, metaclass=HelpfulIntEnumMeta):
+    """
+    IntEnum subclass with some utility extensions and case insensitivity.
+    """
+
+    @classmethod
+    def from_any(cls, identifier: EnumId) -> HelpfulIntEnum:
+        """
+        Try all the ways to interpret identifier as the enum.
+        This is intended to consolidate the try/except tree typically used
+        to interpret external input as an enum.
+
+        Parameters
+        ----------
+        identifier : EnumId
+            Any str, int, or Enum value that corresponds with a valid value
+            on this HelpfulIntEnum instance.
+
+        Returns
+        -------
+        enum : HelpfulIntEnum
+            The corresponding enum object associated with the identifier.
+        """
+        try:
+            return cls[identifier]
+        except KeyError:
+            return cls(identifier)
+
+    @classmethod
+    def include(
+        cls,
+        identifiers: Iterator[EnumId],
+    ) -> set[HelpfulIntEnum]:
+        """
+        Returns all enum values matching the identifiers given.
+        This is a shortcut for calling cls.from_any many times and
+        assembling a set of the results.
+
+        Parameters
+        ----------
+        identifiers : Iterator[EnumId]
+            Any iterable that contains strings, ints, and Enum values that
+            correspond with valid values on this HelpfulIntEnum instance.
+
+        Returns
+        -------
+        enums : set[HelpfulIntEnum]
+            A set whose elements are the enum objects associated with the
+            input identifiers.
+        """
+        return {cls.from_any(ident) for ident in identifiers}
+
+    @classmethod
+    def exclude(
+        cls,
+        identifiers: Iterator[EnumId],
+    ) -> set[HelpfulIntEnum]:
+        """
+        Return all enum values other than the ones given.
+
+        Parameters
+        ----------
+        identifiers : Iterator[EnumId]
+            Any iterable that contains strings, ints, and Enum values that
+            correspond with valid values on this HelpfulIntEnum instance.
+
+        Returns
+        -------
+        enums : set[HelpfulIntEnum]
+            A set whose elements are the valid enum objects not associated
+            with the input identifiers.
+        """
+        return set(cls.__members__.values()) - cls.include(identifiers)

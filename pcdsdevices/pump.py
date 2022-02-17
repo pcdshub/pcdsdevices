@@ -24,7 +24,7 @@ class TurboPump(BaseInterface, Device):
         """Start the Turbo Pump"""
         self.start.put(1)
 
-    def stop(self):
+    def stop(self, *, success: bool = False):
         """Start the Turbo Pump"""
         self.start.put(0)
 
@@ -39,7 +39,7 @@ class EbaraPump(BaseInterface, Device):
         """Start the Turbo Pump"""
         self.start.put(1)
 
-    def stop(self):
+    def stop(self, *, success: bool = False):
         """Start the Turbo Pump"""
         self.start.put(0)
 
@@ -175,7 +175,7 @@ class PIPPLC(Device):
     plc_ai_offset = Cpt(EpicsSignalRO, ':AI_Offset_RBV', kind='config',
                         doc=('Analog input offset must match ion pump '
                              'analog ouput offset. Default: 13'))
-    auto_on = Cpt(EpicsSignalRO, ':Auto_On_RBV', kind='config',
+    auto_on = Cpt(EpicsSignalWithRBV, ':Auto_On', kind='config',
                   doc=('Setting to automatically turn on the ion pump when the'
                        'reference gauge pressure is below protection '
                        'setpoint'))
@@ -190,6 +190,8 @@ class PIPPLC(Device):
     interlock_device = Cpt(EpicsSignalRO, ':ILK_DEVICE_RBV', kind='config',
                            string=True,
                            doc='Vacuum device used for interlocking this pump')
+    autoOn_countdown = Cpt(EpicsSignalRO, ':AutoOn_timer_RBV', kind='normal',
+                           doc='Timer count down to turn on the ion pump ')
 
 
 class PTMPLC(Device):

@@ -13,25 +13,27 @@ build:
 
 requirements:
   build:
-    - python >=3.6
+    - python >=3.9
     - setuptools
   run:
-    - python >=3.6
+    - python >=3.9
     - bluesky >=1.6.4
     - happi
+    - jsonschema
     - matplotlib-base
     - numpy
     - ophyd >=1.5.1
     - pcdscalc >=0.2.0
     - pcdsutils >=0.4.0
     - pint
-    - pmgr >=2.0.2
     - prettytable
     - pyepics >=3.4.2
     - pytmc >=2.7.0
     - pyyaml
     - schema
     - scipy
+  run_constrained:
+    - pmgr >=2.0.2
 
 test:
   imports:

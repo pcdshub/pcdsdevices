@@ -1,13 +1,15 @@
 import logging
+import numbers
+import typing
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
+from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
 
 from .interface import BaseInterface
 from .pv_positioner import PVPositionerDone
 from .signal import AvgSignal
-
 
 logger = logging.getLogger(__name__)
 
@@ -64,17 +66,51 @@ class BeamEnergyRequest(PVPositionerDone):
     atol: int, optional
         Absolute tolerance that determines when the move is done and when to
         skip moves using the skip_small_moves parameter.
+
+    line: str, optional
+        Whether to use the K line or L line PV. If provided this should be a
+        string with a single character. The K line PVs have "EPHOTK"
+        in them, the L line PVs just have "EPHOT". This will default to the
+        line associated with the prefix hutch name, or to L line failing that.
+
+    bunch: int, optional
+        Whether to move the first bunch (1) or the second bunch (2). This is
+        only relevant for 2-color mode. Defaults to bunch 1.
     """
 
     # Default vernier tolerance
     atol = 5
 
-    setpoint = Cpt(EpicsSignal, ':USER:MCC:EPHOT', kind='hinted')
+    setpoint = FCpt(
+        EpicsSignal,
+        '{prefix}:USER:MCC:EPHOT{line_text}:SET{bunch}',
+        kind='hinted',
+    )
 
-    def __init__(self, prefix, *, name, skip_small_moves=True, atol=None,
-                 **kwargs):
+    line_text_dict = {
+        'K': 'K',
+        'L': '',
+    }
+    for k_hutch in ('k', 'TMO', 'RIX'):
+        line_text_dict[k_hutch] = line_text_dict['K']
+    for l_hutch in ('l', 'XPP', 'XCS', 'MFX', 'CXI', 'MEC'):
+        line_text_dict[l_hutch] = line_text_dict['L']
+
+    def __init__(
+        self,
+        prefix: str,
+        *,
+        name: str,
+        skip_small_moves: bool = True,
+        atol: typing.Optional[numbers.Real] = None,
+        line: typing.Optional[str] = None,
+        bunch: int = 1,
+        **kwargs
+    ):
         if atol is not None:
             self.atol = atol
+        self.line_text = self.line_text_dict.get(line or prefix, '')
+        self.bunch = bunch
         super().__init__(prefix, name=name, skip_small_moves=skip_small_moves,
                          **kwargs)
 

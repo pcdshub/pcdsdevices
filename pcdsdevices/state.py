@@ -1,21 +1,27 @@
 """
 Module to define positioners that move between discrete named states.
 """
+from __future__ import annotations
+
+import copy
 import functools
 import logging
-from enum import Enum
+from typing import ClassVar, List, Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device, required_for_connection
 from ophyd.positioner import PositionerBase
 from ophyd.signal import EpicsSignal
+from ophyd.sim import fake_device_cache, make_fake_device
 from ophyd.status import SubscriptionStatus
 from ophyd.status import wait as status_wait
 
+from .device import GroupDevice
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
-from .signal import AggregateSignal, PytmcSignal
+from .signal import EpicsSignalEditMD, PVStateSignal, PytmcSignal
+from .utils import HelpfulIntEnum
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -102,7 +108,12 @@ class StatePositioner(MvInterface, Device, PositionerBase):
                 self.states_enum = self._create_states_enum()
             self._state_initialized = True
 
-    def _late_state_init(self, *args, enum_strs=None, **kwargs):
+    def _late_state_init(
+        self,
+        *args,
+        enum_strs: Optional[List[str]] = None,
+        **kwargs
+    ):
         if enum_strs is not None and not self.states_list:
             self.states_list = list(enum_strs)
             # Unknown state reserved for slot zero, automatically added later
@@ -246,18 +257,17 @@ class StatePositioner(MvInterface, Device, PositionerBase):
         # Check for a malformed string digit
         if isinstance(value, str) and value.isdigit():
             value = int(value)
+
         try:
-            return self.states_enum[value]
-        except KeyError:
-            try:
-                return self.states_enum(value)
-            except ValueError:
-                err = ('{0} is not a valid state for {1}. Valid state names '
-                       'are: {2}, and their corresponding values are {3}.')
-                enum_names = [state.name for state in self.states_enum]
-                enum_values = [state.value for state in self.states_enum]
-                raise ValueError(err.format(value, self.name, enum_names,
-                                            enum_values))
+            return self.states_enum.from_any(value)
+        except ValueError:
+            enum_names = [state.name for state in self.states_enum]
+            enum_values = [state.value for state in self.states_enum]
+            raise ValueError(
+                f"{value} is not a valid state for {self.name}. "
+                f"Valid state names are: {enum_names}, "
+                f"and their corresponding values are {enum_values}."
+            ) from None
 
     def _do_move(self, state):
         """
@@ -298,71 +308,22 @@ class StatePositioner(MvInterface, Device, PositionerBase):
                 for alias in aliases:
                     state_def[alias] = i
         enum_name = self.__class__.__name__ + 'States'
-        enum = Enum(enum_name, state_def, start=0)
+        enum = HelpfulIntEnum(enum_name, state_def, start=0, module=__name__)
         if len(enum) != state_count:
             raise ValueError(('Bad states definition! Inconsistency in '
                               'states_list {} or _states_alias {}'
                               ''.format(self.states_list, self._states_alias)))
         return enum
 
+    @property
+    def stop(self):
+        """
+        Hide the stop method behind an AttributeError.
 
-class PVStateSignal(AggregateSignal):
-    """
-    Signal that implements the `PVStatePositioner` state logic.
-
-    See `AggregateSignal` for more information.
-    """
-
-    def __init__(self, *, name, **kwargs):
-        super().__init__(name=name, **kwargs)
-        self._sub_map = {}
-        for signal_name in self.parent._state_logic.keys():
-            sig = self.parent
-            for part in signal_name.split('.'):
-                sig = getattr(sig, part)
-            self._sub_signals.append(sig)
-            self._sub_map[signal_name] = sig
-
-    def describe(self):
-        # Base description information
-        sub_sigs = [sig.name for sig in self._sub_signals]
-        desc = {'source': 'SUM:{}'.format(','.join(sub_sigs)),
-                'dtype': 'string',
-                'shape': [],
-                'enum_strs': tuple(state.name
-                                   for state in self.parent.states_enum)}
-        return {self.name: desc}
-
-    def _calc_readback(self):
-        state_value = None
-        for signal_name, info in self.parent._state_logic.items():
-            # Get last cached value
-            value = self._cache[self._sub_map[signal_name]]
-            try:
-                signal_state = info[value]
-            # Handle unaccounted readbacks
-            except KeyError:
-                state_value = self.parent._unknown
-                break
-            # Associate readback with device state
-            if signal_state != 'defer':
-                if state_value:
-                    # Handle inconsistent readbacks
-                    if signal_state != state_value:
-                        state_value = self.parent._unknown
-                        break
-                else:
-                    # Set state to first non-deferred value
-                    state_value = signal_state
-                    if self.parent._state_logic_mode == 'ALL':
-                        continue
-                    elif self.parent._state_logic_mode == 'FIRST':
-                        break
-        # If all states deferred, report as unknown
-        return state_value or self.parent._unknown
-
-    def put(self, value, **kwargs):
-        self.parent.move(value, **kwargs)
+        This makes it so that other interfaces know that the stop method can't
+        be run without needing to run it to find out.
+        """
+        raise AttributeError('StatePositioner has no stop method.')
 
 
 class PVStatePositioner(StatePositioner):
@@ -427,7 +388,7 @@ class PVStatePositioner(StatePositioner):
                                    'override the move and set methods'))
 
 
-class StateRecordPositionerBase(StatePositioner):
+class StateRecordPositionerBase(StatePositioner, GroupDevice):
     """
     A `StatePositioner` for an EPICS states record.
 
@@ -436,10 +397,16 @@ class StateRecordPositionerBase(StatePositioner):
 
     state = Cpt(EpicsSignal, '', write_pv=':GO', kind='hinted')
 
+    # Moving a state positioner puts to state
+    stage_group = [state]
+
+    _has_subscribed_readback: bool
+    _has_checked_state_enum: bool
+
     def __init__(self, prefix, *, name, **kwargs):
-        super().__init__(prefix, name=name, **kwargs)
         self._has_subscribed_readback = False
         self._has_checked_state_enum = False
+        super().__init__(prefix, name=name, **kwargs)
 
     def _run_sub_readback(self, *args, **kwargs):
         kwargs.pop('sub_type')
@@ -482,6 +449,9 @@ class StateRecordPositioner(StateRecordPositionerBase):
             self._has_subscribed_readback = True
         return cid
 
+    def stop(self, *, success: bool = False):
+        return self.motor.stop(success=success)
+
 
 class CombinedStateRecordPositioner(StateRecordPositionerBase):
     """
@@ -510,6 +480,10 @@ class CombinedStateRecordPositioner(StateRecordPositionerBase):
         return cid
 
 
+# See MOTION_GVL.MAX_STATES in lcls-twincat-motion
+TWINCAT_MAX_STATES = 9
+
+
 class TwinCATStateConfigOne(Device):
     """
     Configuration of a single state position in TwinCAT.
@@ -518,14 +492,14 @@ class TwinCATStateConfigOne(Device):
     Corresponds with ``DUT_PositionState``.
     """
 
-    state_name = Cpt(PytmcSignal, ':NAME', io='i', kind='omitted', string=True,
+    state_name = Cpt(PytmcSignal, ':NAME', io='i', kind='config', string=True,
                      doc='The defined state name.')
-    setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='omitted',
+    setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='config',
                    doc='The corresponding motor set position.')
-    delta = Cpt(PytmcSignal, ':DELTA', io='io', kind='omitted',
+    delta = Cpt(PytmcSignal, ':DELTA', io='io', kind='config',
                 doc='The deviation from setpoint that still counts '
                     'as at the position.')
-    velo = Cpt(PytmcSignal, ':VELO', io='io', kind='omitted',
+    velo = Cpt(PytmcSignal, ':VELO', io='io', kind='config',
                doc='Velocity to move to the state at.')
     accl = Cpt(PytmcSignal, ':ACCL', io='io', kind='omitted',
                doc='Acceleration to move to the state with.')
@@ -539,19 +513,123 @@ class TwinCATStateConfigOne(Device):
                 doc='True if the state is defined (not empty).')
 
 
-class TwinCATStateConfigAll(Device):
+class TwinCATStateConfigDynamic(Device):
     """
-    Configuration of all possible state positions in TwinCAT.
+    Configuration of a variable number of TwinCAT states.
 
-    Designed to be used with the array of ``DUT_PositionState`` from
-    ``FB_PositionStateManager``.
+    This will become an instance with a number of config states based on the
+    input "count" keyword-only required argument.
+
+    Under the hood, this creates classes dynamically and stores them for later
+    use. Classes created here will pass an
+    isinstance(cls, TwinCATStateConfigDynamic) check, and two devices with
+    the same number of states will use the same class from the registry.
     """
+    _state_config_registry: ClassVar[
+        dict[int, TwinCATStateConfigDynamic]
+    ] = {}
+    _config_cls: ClassVar[type] = TwinCATStateConfigOne
+    _class_prefix: ClassVar[str] = 'StateConfig'
 
-    state01 = Cpt(TwinCATStateConfigOne, ':01', kind='omitted')
-    state02 = Cpt(TwinCATStateConfigOne, ':02', kind='omitted')
-    state03 = Cpt(TwinCATStateConfigOne, ':03', kind='omitted')
-    state04 = Cpt(TwinCATStateConfigOne, ':04', kind='omitted')
-    state05 = Cpt(TwinCATStateConfigOne, ':05', kind='omitted')
+    def __new__(
+        cls,
+        prefix: str,
+        *,
+        state_count: int,
+        **kwargs
+    ):
+        try:
+            new_cls = cls._state_config_registry[state_count]
+        except KeyError:
+            new_cls = type(
+                f'{cls._class_prefix}{state_count}',
+                (cls,),
+                {
+                    get_dynamic_state_attr(num):
+                    Cpt(
+                        cls._config_cls,
+                        f':{num:02}',
+                        kind='config',
+                    )
+                    for num in range(1, state_count + 1)
+                }
+            )
+            cls._state_config_registry[state_count] = new_cls
+        return super().__new__(new_cls)
+
+    def __init__(self, *args, state_count, **kwargs):
+        # This is unused, but it can't be allowed to pass into **kwargs
+        self.state_count = state_count
+        super().__init__(*args, **kwargs)
+
+
+class FakeTwinCATStateConfigDynamic(TwinCATStateConfigDynamic):
+    """
+    Proper fake device class for TwinCATStateConfigDynamic.
+
+    Useful in test suites.
+    """
+    _state_config_registry: ClassVar[
+        dict[int, FakeTwinCATStateConfigDynamic]
+    ] = {}
+    _config_cls: ClassVar[type] = make_fake_device(TwinCATStateConfigOne)
+    _class_prefix: ClassVar[str] = 'FakeStateConfig'
+
+
+# Import-time editing of fake_device_cache!
+# This forces fake devices that include TwinCATStateConfigDynamic
+# to use our special fake class instead.
+# This is needed because the make_fake_device won't find our
+# dynamic subclasses.
+fake_device_cache[TwinCATStateConfigDynamic] = FakeTwinCATStateConfigDynamic
+
+
+def get_dynamic_state_attr(state_index: int) -> str:
+    """
+    Get the attr string associated with a single state index.
+
+    For example, the 5th state should create an attribute on
+    TwinCATStateConfigDynamic called "state05". Therefore,
+    get_dynamic_state_attr(5) == "state05".
+
+    This is only applicable for integers between 1
+    and the TWINCAT_MAX_STATES global variable, inclusive.
+
+    Parameters
+    ----------
+    state_index : int
+        The index of the state.
+
+    Returns
+    -------
+    state_attr : str
+        The corresponding attribute name.
+    """
+    return f'state{state_index:02}'
+
+
+def state_config_dotted_names(state_count: int) -> list[Optional[str]]:
+    """
+    Returns the full dotted names of the state config state_name components.
+
+    This includes None for the Unknown state and is valid for use in
+    EpicsSignalEditMD's enum_attrs argument, matching the structure found in
+    TwinCATStatePositioner.
+
+    Parameters
+    ----------
+    state_count : int
+        The number of known states used by the device.
+
+    Returns
+    -------
+    dotted_names : list of str or None
+        The full dotted names in state enum order.
+    """
+    return [None] + [
+        f'config.{get_dynamic_state_attr(num)}.state_name'
+        for num in range(1, state_count + 1)
+    ]
 
 
 class TwinCATStatePositioner(StatePositioner):
@@ -583,9 +661,14 @@ class TwinCATStatePositioner(StatePositioner):
         The amount of time to wait before automatically marking a long
         in-progress move as failed.
     """
-
-    state = Cpt(EpicsSignal, ':GET_RBV', write_pv=':SET', kind='hinted',
-                doc='Setpoint and readback for TwinCAT state position.')
+    state = Cpt(
+        EpicsSignalEditMD,
+        ":GET_RBV",
+        write_pv=":SET",
+        enum_attrs=state_config_dotted_names(TWINCAT_MAX_STATES),
+        kind="hinted",
+        doc="Setpoint and readback for TwinCAT state position.",
+    )
     set_metadata(state, dict(variety='command-enum'))
 
     error = Cpt(PytmcSignal, ':ERR', io='i', kind='normal',
@@ -601,11 +684,34 @@ class TwinCATStatePositioner(StatePositioner):
     reset_cmd = Cpt(PytmcSignal, ':RESET', io='o', kind='normal',
                     doc='Command to reset an error.')
 
-    config = Cpt(TwinCATStateConfigAll, '', kind='omitted',
-                 doc='Configuration of state positions, deltas, etc.')
+    config = Cpt(
+        TwinCATStateConfigDynamic,
+        '',
+        state_count=TWINCAT_MAX_STATES,
+        kind='omitted',
+        doc='Configuration of state positions, deltas, etc.',
+    )
 
     set_metadata(error_id, dict(variety='scalar', display_format='hex'))
     set_metadata(reset_cmd, dict(variety='command', value=1))
+
+    def __init_subclass__(cls, **kwargs):
+        # We need to adjust the state enum_attrs appropriately if
+        # state_count was updated.
+        state_count = cls.config.kwargs['state_count']
+        parent_count = cls.mro()[1].config.kwargs['state_count']
+        if state_count != parent_count:
+            cls.state = copy.deepcopy(cls.state)
+            cls.state.kwargs['enum_attrs'] = (
+                state_config_dotted_names(state_count)
+            )
+        # This includes the Device initialization, which assumes our
+        # Component instances are finalized.
+        # Therefore, do it last
+        super().__init_subclass__(**kwargs)
+
+    def clear_error(self):
+        self.reset_cmd.put(1)
 
 
 class StateStatus(SubscriptionStatus):

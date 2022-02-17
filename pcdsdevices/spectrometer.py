@@ -2,15 +2,15 @@
 Module for the various spectrometers.
 """
 from ophyd.device import Component as Cpt
-from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 
+from .device import GroupDevice
 from .epics_motor import BeckhoffAxisNoOffset
 from .interface import BaseInterface, LightpathMixin
 from .signal import InternalSignal, PytmcSignal
 
 
-class Kmono(BaseInterface, Device, LightpathMixin):
+class Kmono(BaseInterface, GroupDevice, LightpathMixin):
     """
     K-edge Monochromator: Used for Undulator tuning and other experiments.
 
@@ -97,7 +97,7 @@ class Kmono(BaseInterface, Device, LightpathMixin):
             self._transmission = 1
 
 
-class VonHamosCrystal(BaseInterface, Device):
+class VonHamosCrystal(BaseInterface, GroupDevice):
     """Pitch, yaw, and translation motors for control of a single crystal."""
     tab_component_names = True
 
@@ -106,7 +106,7 @@ class VonHamosCrystal(BaseInterface, Device):
     trans = Cpt(BeckhoffAxisNoOffset, ':Translation', kind='normal')
 
 
-class VonHamosFE(BaseInterface, Device):
+class VonHamosFE(BaseInterface, GroupDevice):
     """
     von Hamos spectrometer with Focus and Energy motors.
 
@@ -211,7 +211,7 @@ class VonHamos4Crystal(VonHamosFE):
                          prefix_energy=prefix_energy, **kwargs)
 
 
-class Mono(BaseInterface, Device):
+class Mono(BaseInterface, GroupDevice):
     """
     L2S-I NEH 2.X Monochromator
 
@@ -288,3 +288,33 @@ class Mono(BaseInterface, Device):
     removed = False
     transmission = 1
     SUB_STATE = 'state'
+
+
+class TMOSpectrometer(BaseInterface, GroupDevice):
+    """
+    TMO Fresnel Photon Spectrometer Motion components class.
+
+    Photon Spectrometer with LCLS-II Beckhoff motion architecture.
+
+    Parameters:
+    -----------
+    prefix : str
+        Base PV for the motion system
+
+    name : str
+        Alias for the device
+    """
+    # UI Representation
+    _icon = 'fa.minus-square'
+    tab_component_names = True
+
+    # Motor components: can read/write positions
+    lens_x = Cpt(BeckhoffAxisNoOffset, ':MMS:01', kind='normal')
+    foil_x = Cpt(BeckhoffAxisNoOffset, ':MMS:02', kind='normal')
+    zone_plate_x = Cpt(BeckhoffAxisNoOffset, ':MMS:03', kind='normal')
+    zone_plate_y = Cpt(BeckhoffAxisNoOffset, ':MMS:04', kind='normal')
+    zone_plate_z = Cpt(BeckhoffAxisNoOffset, ':MMS:05', kind='normal')
+    yag_x = Cpt(BeckhoffAxisNoOffset, ':MMS:06', kind='normal')
+    yag_y = Cpt(BeckhoffAxisNoOffset, ':MMS:07', kind='normal')
+    yag_z = Cpt(BeckhoffAxisNoOffset, ':MMS:08', kind='normal')
+    yag_theta = Cpt(BeckhoffAxisNoOffset, ':MMS:09', kind='normal')
