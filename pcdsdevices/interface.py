@@ -1234,7 +1234,7 @@ class Presets:
             if method_name.startswith('wm_'):
                 state_name = method_name.replace('wm_', '', 1)
                 wm_state = getattr(device, method_name)
-                diff = wm_state()
+                diff = abs(wm_state())
                 if diff < closest:
                     state = state_name
                     closest = diff
