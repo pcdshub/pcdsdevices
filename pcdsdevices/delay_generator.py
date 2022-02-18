@@ -11,7 +11,7 @@ from ophyd import Component as Cpt
 from ophyd import EpicsSignalRO
 from ophyd import EpicsSignal
 
-from pcdsdevices.interface import BaseInterface
+from .interface import BaseInterface
 
 
 CHANNELS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'T0']
@@ -34,7 +34,7 @@ TRIGGER_INHIBITS = {
 }
 
 
-class Dg_channel(BaseInterface, Device):
+class DgChannel(BaseInterface, Device):
     """
     Delay generator single channel class
 
@@ -46,8 +46,9 @@ class Dg_channel(BaseInterface, Device):
     name: str
         Alias of the channel
     """
-    delay = Cpt(EpicsSignal, 'DelayAO', kind='hinted')
-    delay_rbk = Cpt(EpicsSignalRO, 'DelaySI', kind='normal')
+    delay = Cpt(EpicsSignal, 'DelaySI', write_pv='DelayAO', kind='hinted')
+    #delay = Cpt(EpicsSignal, 'DelayAO', kind='hinted')
+    #delay_rbk = Cpt(EpicsSignalRO, 'DelaySI', kind='normal')
     reference = Cpt(EpicsSignal, 'ReferenceMO', kind='normal')
 
     tab_component_names = True
@@ -58,11 +59,11 @@ class Dg_channel(BaseInterface, Device):
         The readback is a string formatted as"<REF> + <DELAY>".
         Returns the <DELAY> as a float
         """
-        return float(self.delay_rbk.get().split("+")[1])
+        return float(self.delay.get().split("+")[1])
 
     def get_str(self):
         """ Returns the full <REF> + <DELAY> string. """
-        return self.delay_rbk.get()
+        return self.delay.get()
 
     def set(self, new_delay):
         return self.delay.set(new_delay)
@@ -71,12 +72,11 @@ class Dg_channel(BaseInterface, Device):
         if new_ref.upper() not in CHANNELS:
             raise ValueError(f'New reference must be one of {CHANNELS}')
         else:
-            self.reference.set(new_ref)
-            sleep(0.05)
+            self.reference.set_and_wait(new_ref)
             print(f'Setting for {self.name}: {self.get_str()}')
 
 
-class Delay_generator(BaseInterface, Device):
+class DelayGeneratorBase(BaseInterface, Device):
     """
     Delay generator class. Collection of channels A to H.
 
@@ -110,8 +110,7 @@ class Delay_generator(BaseInterface, Device):
         return f'{val} ({n})'
 
     def set_trigger_source(self, new_val):
-        self.trig_source.set(new_val)
-        sleep(0.01)
+        self.trig_source.set_and_wait(new_val)
         print(f'Trigger source: {self.get_trigger_source()}')
         return
 
@@ -126,8 +125,7 @@ class Delay_generator(BaseInterface, Device):
         return f'{val} ({n})'
 
     def set_trigger_inhibit(self, new_val):
-        self.trig_inhibit.set(new_val)
-        sleep(0.01)
+        self.trig_inhibit.set_and_wait(new_val)
         print(f'Trigger inhibit: {self.get_trigger_inhibit()}')
         return
 
@@ -135,7 +133,8 @@ class Delay_generator(BaseInterface, Device):
 channel_cpts = {}
 for channel in CHANNELS[:-1]:
     channel_cpts[f'ch{channel}'] = Cpt(
-        Dg_channel, f":{channel.lower()}", name=f"ch{channel}"
+        DgChannel, f":{channel.lower()}", name=f"ch{channel}"
         )
 
-Dg = type('Dg', (Delay_generator, ), channel_cpts)
+DelayGenerator = type('DelayGenerator', (DelayGeneratorBase, ), channel_cpts)
+Dg = DelayGenerator
