@@ -113,6 +113,7 @@ def test_presets(presets, fast_motor):
     assert fast_motor.wm_zero() == -3
     assert fast_motor.wm_sample() == 0
     assert fast_motor.wm_four() == 1
+    assert fast_motor.presets.state() == 'sample'
 
     # Clear paths, refresh, should still exist
     old_paths = fast_motor.presets._paths
@@ -121,11 +122,13 @@ def test_presets(presets, fast_motor):
     setup_preset_paths(**old_paths)
     assert fast_motor.wm_zero() == -3
     assert fast_motor.wm_sample() == 0
+    assert fast_motor.presets.state() == 'sample'
 
     fast_motor.mv_zero(wait=True)
     fast_motor.mvr(1, wait=True)
     assert fast_motor.wm_zero() == -1
     assert fast_motor.wm() == 1
+    assert fast_motor.presets.state() == 'zero'
 
     # Sleep for one so we don't override old history
     time.sleep(1)
