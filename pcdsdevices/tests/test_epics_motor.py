@@ -7,7 +7,7 @@ from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
 from ophyd.utils.epics_pvs import AlarmSeverity, AlarmStatus
 
-from ..epics_motor import (IMS, PMC100, BeckhoffAxis, EpicsMotor,
+from ..epics_motor import (IMS, MMC100, PMC100, BeckhoffAxis, EpicsMotor,
                            EpicsMotorInterface, Motor, MotorDisabledError,
                            Newport, OffsetIMSWithPreset, OffsetMotor,
                            PCDSMotorBase)
@@ -59,7 +59,7 @@ def fake_motor(cls, name='test_motor'):
 
 @pytest.fixture(scope='function',
                 params=[EpicsMotorInterface, PCDSMotorBase, IMS, Newport,
-                        PMC100, BeckhoffAxis])
+                        MMC100, PMC100, BeckhoffAxis])
 def fake_epics_motor(request):
     """
     Test EpicsMotorInterface and subclasses
@@ -68,7 +68,7 @@ def fake_epics_motor(request):
 
 
 @pytest.fixture(scope='function',
-                params=[PCDSMotorBase, IMS, Newport, PMC100])
+                params=[PCDSMotorBase, IMS, Newport, MMC100, PMC100])
 def fake_pcds_motor(request):
     """
     Test PCDSMotorBase and subclasses
@@ -431,8 +431,8 @@ def test_motion_error_filter(fake_epics_motor, caplog):
     assert_real_test(fake_epics_motor)
 
 
-@pytest.mark.parametrize("cls", [PCDSMotorBase, IMS, Newport, PMC100,
-                                 BeckhoffAxis, EpicsMotor])
+@pytest.mark.parametrize("cls", [PCDSMotorBase, IMS, Newport, MMC100,
+                                 PMC100, BeckhoffAxis, EpicsMotor])
 @pytest.mark.timeout(5)
 def test_disconnected_motors(cls):
     cls('MOTOR', name='motor')
