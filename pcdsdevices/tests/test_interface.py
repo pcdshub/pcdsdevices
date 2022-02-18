@@ -125,10 +125,11 @@ def test_presets(presets, fast_motor):
     assert fast_motor.presets.state() == 'sample'
 
     fast_motor.mv_zero(wait=True)
+    assert fast_motor.presets.state() == 'zero'
     fast_motor.mvr(1, wait=True)
     assert fast_motor.wm_zero() == -1
     assert fast_motor.wm() == 1
-    assert fast_motor.presets.state() == 'zero'
+    assert fast_motor.presets.state() == 'Unknown'
 
     # Sleep for one so we don't override old history
     time.sleep(1)
