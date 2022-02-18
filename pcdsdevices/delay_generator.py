@@ -4,11 +4,9 @@ Delay generator class
 This module contains classes related to the SRS DG645 delay generator.
 """
 
-from time import sleep
-
 from ophyd import Device
 from ophyd import Component as Cpt
-from ophyd import EpicsSignalRO
+# from ophyd import EpicsSignalRO
 from ophyd import EpicsSignal
 
 from .interface import BaseInterface
@@ -47,9 +45,10 @@ class DgChannel(BaseInterface, Device):
         Alias of the channel
     """
     delay = Cpt(EpicsSignal, 'DelaySI', write_pv='DelayAO', kind='hinted')
-    #delay = Cpt(EpicsSignal, 'DelayAO', kind='hinted')
-    #delay_rbk = Cpt(EpicsSignalRO, 'DelaySI', kind='normal')
-    reference = Cpt(EpicsSignal, 'ReferenceMO', kind='normal')
+    # delay = Cpt(EpicsSignal, 'DelayAO', kind='hinted')
+    # delay_rbk = Cpt(EpicsSignalRO, 'DelaySI', kind='normal')
+    reference = Cpt(EpicsSignal, 'ReferenceMO', kind='normal',
+                    doc='Reference channel from which the delay taken.')
 
     tab_component_names = True
     tab_whitelist = ['set_reference', 'get_str']
@@ -88,16 +87,21 @@ class DelayGeneratorBase(BaseInterface, Device):
     name: str
         Alias for the device
     """
-    trig_source = Cpt(EpicsSignal, ':triggerSourceMO', kind='config')
-    trig_source_rbk = Cpt(EpicsSignal, ':triggerSourceMI', kind='config')
-    trig_inhibit = Cpt(EpicsSignal, ':triggerInhibitMO', kind='config')
-    trig_inhibit_rbk = Cpt(EpicsSignal, ':triggerInhibitMI', kind='config')
+    trig_source = Cpt(EpicsSignal, ':triggerSourceMI',
+                      write_pv=':triggerSourceMO',
+                      kind='config')
+    trig_inhibit = Cpt(EpicsSignal, ':triggerInhibitMI',
+                       write_pv=':triggerInhibitMO',
+                       kind='config')
+    # trig_source = Cpt(EpicsSignal, ':triggerSourceMO', kind='config')
+    # trig_source_rbk = Cpt(EpicsSignal, ':triggerSourceMI', kind='config')
+    # trig_inhibit = Cpt(EpicsSignal, ':triggerInhibitMO', kind='config')
+    # trig_inhibit_rbk = Cpt(EpicsSignal, ':triggerInhibitMI', kind='config')
 
     tab_component_names = True
     tab_whitelist = ['print_trigger_sources', 'get_trigger_source',
                      'set_trigger_source', 'print_trigger_inhibit',
-                     'get_trigger_inhibit',
-                     'set_trigger_inhibit']
+                     'get_trigger_inhibit', 'set_trigger_inhibit']
 
     @staticmethod
     def print_trigger_sources():
@@ -105,7 +109,7 @@ class DelayGeneratorBase(BaseInterface, Device):
             print(f'{ii}: {source}')
 
     def get_trigger_source(self):
-        n = self.trig_source_rbk.get()
+        n = self.trig_source.get()
         val = TRIGGER_SOURCES[str(n)]
         return f'{val} ({n})'
 
@@ -120,7 +124,7 @@ class DelayGeneratorBase(BaseInterface, Device):
             print(f'{ii}: {inhibit}')
 
     def get_trigger_inhibit(self):
-        n = self.trig_inhibit_rbk.get()
+        n = self.trig_inhibit.get()
         val = TRIGGER_INHIBITS[str(n)]
         return f'{val} ({n})'
 
