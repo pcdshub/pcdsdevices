@@ -367,6 +367,8 @@ class GroupDevice(Device):
     - Components will have no references to this parent device. If
       accessed and used out of context, the components will be as if
       they were instantited completely separately.
+    - The parent device will be stashed in the ``biological_parent``
+      attribute, in case it's needed (by something other than the RE)
     - If a component is staged in a bluesky plan, it will not stage
       the ``GroupDevice``, and therefore will not stage the entire
       device tree.
@@ -410,6 +412,7 @@ class GroupDevice(Device):
             # The following types break without parents
             if not isinstance(cpt, tuple(self.needs_parent)):
                 cpt._parent = None
+                cpt.biological_parent = self
         if self.stage_group is None:
             self.stage_group = []
         else:
