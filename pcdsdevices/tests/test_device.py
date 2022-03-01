@@ -194,6 +194,7 @@ def test_group_device_basic():
     group = BasicGroup('GROUP', name='group')
     assert group.one.parent is None
     assert group.two.parent is None
+    assert group.two.biological_parent is group
     assert group.bad.dev.parent is group.bad
     assert group.one not in group.stage()
     assert group.two not in group.unstage()
