@@ -323,7 +323,7 @@ class TMOSpectrometer(BaseInterface, GroupDevice):
 class HXRSpectrometer(BaseInterface, GroupDevice):
     """
     HXR Single Shot Spectrometer motion components class.
-    
+
     krst : crystal y
     ksta : crystal angle
     cama : camera angle
@@ -342,7 +342,6 @@ class HXRSpectrometer(BaseInterface, GroupDevice):
     """
 
     tab_component_names = True
-
 
     krst = Cpt(IMS, ':441:MOTR', kind='normal')
     ksta = Cpt(IMS, ':442:MOTR', kind='normal')
