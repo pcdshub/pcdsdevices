@@ -6,8 +6,9 @@ This module contains classes related to the SRS DG645 delay generator.
 
 from ophyd import Device
 from ophyd import Component as Cpt
-# from ophyd import EpicsSignalRO
+from ophyd import EpicsSignalRO
 from ophyd import EpicsSignal
+from ophyd.utils.epics_pvs import set_and_wait
 
 from .interface import BaseInterface
 
@@ -44,34 +45,34 @@ class DgChannel(BaseInterface, Device):
     name: str
         Alias of the channel
     """
-    delay = Cpt(EpicsSignal, 'DelaySI', write_pv='DelayAO', kind='hinted')
-    # delay = Cpt(EpicsSignal, 'DelayAO', kind='hinted')
-    # delay_rbk = Cpt(EpicsSignalRO, 'DelaySI', kind='normal')
+    #delay = Cpt(EpicsSignal, 'DelaySI', write_pv='DelayAO', kind='hinted')
+    delay = Cpt(EpicsSignal, 'DelayAO', kind='hinted')
+    delay_str = Cpt(EpicsSignalRO, 'DelaySI', kind='normal')
     reference = Cpt(EpicsSignal, 'ReferenceMO', kind='normal',
                     doc='Reference channel from which the delay taken.')
 
     tab_component_names = True
     tab_whitelist = ['set_reference', 'get_str']
 
-    def get(self):
-        """
-        The readback is a string formatted as"<REF> + <DELAY>".
-        Returns the <DELAY> as a float
-        """
-        return float(self.delay.get().split("+")[1])
+    #def get(self):
+    #    """
+    #    The readback is a string formatted as"<REF> + <DELAY>".
+    #    Returns the <DELAY> as a float
+    #    """
+    #    return float(self.delay.get().split("+")[1])
 
     def get_str(self):
         """ Returns the full <REF> + <DELAY> string. """
-        return self.delay.get()
+        return self.delay_str.get()
 
     def set(self, new_delay):
-        return self.delay.set(new_delay)
+        return set_and_wait(self.delay, new_delay)
 
     def set_reference(self, new_ref):
         if new_ref.upper() not in CHANNELS:
             raise ValueError(f'New reference must be one of {CHANNELS}')
         else:
-            self.reference.set_and_wait(new_ref)
+            set_and_wait(self.reference, new_ref)
             print(f'Setting for {self.name}: {self.get_str()}')
 
 
@@ -93,10 +94,6 @@ class DelayGeneratorBase(BaseInterface, Device):
     trig_inhibit = Cpt(EpicsSignal, ':triggerInhibitMI',
                        write_pv=':triggerInhibitMO',
                        kind='config')
-    # trig_source = Cpt(EpicsSignal, ':triggerSourceMO', kind='config')
-    # trig_source_rbk = Cpt(EpicsSignal, ':triggerSourceMI', kind='config')
-    # trig_inhibit = Cpt(EpicsSignal, ':triggerInhibitMO', kind='config')
-    # trig_inhibit_rbk = Cpt(EpicsSignal, ':triggerInhibitMI', kind='config')
 
     tab_component_names = True
     tab_whitelist = ['print_trigger_sources', 'get_trigger_source',
@@ -114,7 +111,7 @@ class DelayGeneratorBase(BaseInterface, Device):
         return f'{val} ({n})'
 
     def set_trigger_source(self, new_val):
-        self.trig_source.set_and_wait(new_val)
+        set_and_wait(self.trig_source, new_val)
         print(f'Trigger source: {self.get_trigger_source()}')
         return
 
@@ -129,7 +126,7 @@ class DelayGeneratorBase(BaseInterface, Device):
         return f'{val} ({n})'
 
     def set_trigger_inhibit(self, new_val):
-        self.trig_inhibit.set_and_wait(new_val)
+        set_and_wait(self.trig_inhibit, new_val)
         print(f'Trigger inhibit: {self.get_trigger_inhibit()}')
         return
 
