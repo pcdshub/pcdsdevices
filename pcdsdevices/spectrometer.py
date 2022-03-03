@@ -319,6 +319,7 @@ class TMOSpectrometer(BaseInterface, GroupDevice):
     yag_z = Cpt(BeckhoffAxisNoOffset, ':MMS:08', kind='normal')
     yag_theta = Cpt(BeckhoffAxisNoOffset, ':MMS:09', kind='normal')
 
+
 class HXRSpectrometer(BaseInterface, GroupDevice):
     """
     HXR Single Shot Spectrometer motion components class.
@@ -336,10 +337,10 @@ class HXRSpectrometer(BaseInterface, GroupDevice):
 
     # Motor components: can read/write positions
 
-    krst = Cpt(IMS, ':441:MOTR', kind = 'normal') #crystal y
-    ksta = Cpt(IMS, ':442:MOTR', kind = 'normal') #crystal angle
-    cama = Cpt(IMS, ':443:MOTR', kind = 'normal') #camera angle
-    camd = Cpt(IMS, ':444:MOTR', kind = 'normal') #camera distance
-    camy = Cpt(IMS, ':447:MOTR', kind = 'normal') #camera y
-    cami = Cpt(IMS, ':445:MOTR', kind = 'normal') #camera iris
-    fw = Cpt(IMS, ':446:MOTR', kind = 'normal') #filter wheel, tbd if necessary
+    krst = Cpt(IMS, ':441:MOTR', kind='normal')  # crystal y
+    ksta = Cpt(IMS, ':442:MOTR', kind='normal')  # crystal angle
+    cama = Cpt(IMS, ':443:MOTR', kind='normal')  # camera angle
+    camd = Cpt(IMS, ':444:MOTR', kind='normal')  # camera distance
+    camy = Cpt(IMS, ':447:MOTR', kind='normal')  # camera y
+    cami = Cpt(IMS, ':445:MOTR', kind='normal')  # camera iris
+    fw = Cpt(IMS, ':446:MOTR', kind='normal')  # filter wheel, tbd if necessary
