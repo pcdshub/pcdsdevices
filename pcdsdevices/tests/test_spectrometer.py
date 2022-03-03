@@ -33,9 +33,4 @@ def test_spectrometer_disconnected():
                 prefix_energy='buzz', prefix_rot='whirl')
     VonHamos4Crystal('TST4', name='test4', prefix_focus='zoom',
                      prefix_energy='buzz')
-
-
-@pytest.mark.timeout(5)
-def test_HXRspectrometer_disconnected():
-    logger.debug('test_HXRspectrometer_disconnected')
     HXRSpectrometer('TST5', name='test5')
