@@ -1071,6 +1071,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     # Summary for lightpath view
     num_in = Cpt(InternalSignal, kind='hinted')
     num_out = Cpt(InternalSignal, kind='hinted')
+    
 
     calculator = UCpt(AttenuatorCalculator_AT2L0)
     blade_01 = Cpt(FEESolidAttenuatorBlade, ':MMS:01')
@@ -1107,6 +1108,75 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     def actuate(self):
         """(PVPositioner compat) - use apply_config as an actuation signal."""
         return self.calculator.apply_config
+
+    @property
+    def reset_errors(self):
+        """resets error states of attenuator blades and motors"""
+        for num in range(19):
+            num += 1
+            if num < 10:
+               blade_name = 'blade_0'+str(num)
+            elif num >= 10:
+               blade_name = 'blade_'+str(num)
+   
+            blade = getattr(self, blade_name)
+            blade.state.clear_error()
+            blade.motor.clear_error()
+    
+    @property
+    def collect_errors(self):
+        """collects metadata of errors for each blade in a list of dicts"""
+        self.err_list = []
+        for num in range(19):
+            num += 1
+            err=False
+
+            if num < 10:
+               blade_name = 'blade_0'+str(num)
+            elif num >= 10:
+               blade_name = 'blade_'+str(num)
+            
+            blade = getattr(self, blade_name)
+            
+            #check for errors in blade state
+            comp_str = str(blade.motor.user_readback.metadata.get("severity"))
+            if "MAJOR" in comp_str:
+               err=True
+            elif "MINOR" in comp_str:
+               err=True
+            if blade.state.error.get() == 1:
+               err=True
+            elif blade.motor.plc.err_code.get() == 1:
+               err=True
+              
+            #values to be read in status rendering
+            if err == True:
+               ren_err = 5
+            else:
+               ren_err = 1
+
+            err_dict = {'any_err':err,
+                        'render_err':ren_err,
+                        'blade_name':blade_name,
+                        'state_err':blade.state.error.get(),
+                        'mot_plc_err': blade.motor.plc.err_code.get()}
+            
+            #collect metadata and err_dict into one dict                                    
+            blade_dict =  {**blade.motor.user_readback.metadata,**err_dict}
+
+            #collect list of dicts
+            self.err_list.append(blade_dict)
+
+        return self.err_list
+            
+    @property
+    def read_errors(self):
+        """lists the error metadata of any blades with errors"""
+        err_list = self.collect_errors
+        for state in err_list: 
+            if state.get('any_err')== True:
+               print(state)
+
 
     def _setup_move(self, position):
         """(PVPositioner compat) - calculate, then move."""
@@ -1155,7 +1225,13 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
             for cpt in self.lightpath_cpts
         ]
 
-        table = '\n'.join(render_ascii_att(cpt_states, start_index=1))
+        #list of error states for blades 
+        err_states = []
+        err_list = self.collect_errors
+        for state in err_list:
+           err_states.append(state.get('render_err','?'))
+
+        table = '\n'.join(render_ascii_att(cpt_states,err_states,  start_index=1))
         return f"""
 {table}
 Transmission (E={energy} keV): {transmission}
@@ -1172,6 +1248,7 @@ class BladeStateEnum(enum.IntEnum):
     IN = 2
     STUCK_OUT = 3
     STUCK_IN = 4
+    ERR_STATE = 5
 
     @property
     def as_out_row(self) -> str:
@@ -1181,6 +1258,7 @@ class BladeStateEnum(enum.IntEnum):
             BladeStateEnum.IN: '',
             BladeStateEnum.STUCK_OUT: 'S',
             BladeStateEnum.STUCK_IN: '',
+            BladeStateEnum.ERR_STATE:'',
         }.get(self, '?')
 
     @property
@@ -1191,8 +1269,19 @@ class BladeStateEnum(enum.IntEnum):
             BladeStateEnum.IN: 'X',
             BladeStateEnum.STUCK_OUT: '',
             BladeStateEnum.STUCK_IN: 'S',
+            BladeStateEnum.ERR_STATE: '',
         }.get(self, '?')
 
+    @property
+    def as_err_row(self) -> str:
+        """Returns ASCII information for error row representation."""
+        return {
+            BladeStateEnum.OUT: '',
+            BladeStateEnum.IN: '',
+            BladeStateEnum.STUCK_OUT: '',
+            BladeStateEnum.STUCK_IN: '',
+            BladeStateEnum.ERR_STATE: 'X',
+        }.get(self, '?')
 
 class LadderBladeState(enum.IntEnum):
     """
@@ -1239,7 +1328,7 @@ def get_blade_enum(value):
         return BladeStateEnum(value)
 
 
-def render_ascii_att(blade_states, *, start_index=0):
+def render_ascii_att(blade_states, err_states, *, start_index=0):
     """
     Creates the attenuator ascii art.
 
@@ -1256,9 +1345,11 @@ def render_ascii_att(blade_states, *, start_index=0):
     ascii_lines: list of str
         The lines that should be printed to the screen.
     """
+ 
     filter_line = ['filter # ']
     out_line = [' OUT     ']
     in_line = [' IN      ']
+    err_line= [' ERROR   ']
 
     for idx, state in enumerate(blade_states, start_index):
         index_str = str(idx)
@@ -1266,8 +1357,14 @@ def render_ascii_att(blade_states, *, start_index=0):
         state_enum = get_blade_enum(state)
         out_line.append(state_enum.as_out_row.center(len(index_str)))
         in_line.append(state_enum.as_in_row.center(len(index_str)))
-
+    #evaluate if there is any error associated with the blade
+    for idx, state in enumerate(err_states, start_index):
+        index_str = str(idx)
+        state_enum = get_blade_enum(state)
+        err_line.append(state_enum.as_err_row.center(len(index_str)))
+    
     separator = '|'
     return [separator.join(filter_line + ['']),
             separator.join(out_line + ['']),
-            separator.join(in_line + [''])]
+            separator.join(in_line + ['']),
+            separator.join(err_line + [''])]
