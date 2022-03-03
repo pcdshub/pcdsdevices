@@ -343,7 +343,6 @@ class HXRSpectrometer(BaseInterface, GroupDevice):
 
     tab_component_names = True
 
-    # Motor components: can read/write positions
 
     krst = Cpt(IMS, ':441:MOTR', kind='normal')
     ksta = Cpt(IMS, ':442:MOTR', kind='normal')
