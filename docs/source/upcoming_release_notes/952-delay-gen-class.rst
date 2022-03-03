@@ -1,4 +1,4 @@
-IssueNumber Title
+952 delay-gen-class
 #################
 
 API Changes
@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- Dg, for SRS645 delay generator
+- Dg /DelayGenerator class to handle SRS645 delay generator
 
 Bugfixes
 --------
