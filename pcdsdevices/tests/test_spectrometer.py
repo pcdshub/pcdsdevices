@@ -3,7 +3,7 @@ import logging
 import pytest
 from ophyd.sim import make_fake_device
 
-from ..spectrometer import Kmono, VonHamos4Crystal, VonHamosFE, VonHamosFER
+from ..spectrometer import Kmono, VonHamos4Crystal, VonHamosFE, VonHamosFER, HXRSpectrometer
 
 logger = logging.getLogger(__name__)
 
@@ -32,3 +32,8 @@ def test_spectrometer_disconnected():
                 prefix_energy='buzz', prefix_rot='whirl')
     VonHamos4Crystal('TST4', name='test4', prefix_focus='zoom',
                      prefix_energy='buzz')
+
+@pytest.mark.timeout(5)
+def test_HXRspectrometer_disconnected():
+    logger.debug('test_HXRspectrometer_disconnected')
+    HXRSpectrometer('TST', name='test')
