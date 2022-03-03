@@ -324,29 +324,28 @@ class HXRSpectrometer(BaseInterface, GroupDevice):
     """
     HXR Single Shot Spectrometer motion components class.
 
-    krst : crystal y
-    ksta : crystal angle
-    cama : camera angle
-    camd : camera distance
-    camy : camera y
-    cami : camera iris
-    fw   : filter wheel, tbd if necessary
-
     Parameters:
     -----------
     prefix : str
-        Base PV for spectrometer motors
+        Base PV for spectrometer motors.
 
     name : str
-        Alias for the device
+        Alias for the device.
     """
 
     tab_component_names = True
 
-    krst = Cpt(IMS, ':441:MOTR', kind='normal')
-    ksta = Cpt(IMS, ':442:MOTR', kind='normal')
-    cama = Cpt(IMS, ':443:MOTR', kind='normal')
-    camd = Cpt(IMS, ':444:MOTR', kind='normal')
-    camy = Cpt(IMS, ':447:MOTR', kind='normal')
-    cami = Cpt(IMS, ':445:MOTR', kind='normal')
-    fw = Cpt(IMS, ':446:MOTR', kind='normal')
+    krst = Cpt(IMS, ':441:MOTR', kind='normal',
+               doc='crystal y')
+    ksta = Cpt(IMS, ':442:MOTR', kind='normal'
+               doc='crystal angle')
+    cama = Cpt(IMS, ':443:MOTR', kind='normal',
+               doc='camera angle')
+    camd = Cpt(IMS, ':444:MOTR', kind='normal',
+               doc='camera distance')
+    camy = Cpt(IMS, ':447:MOTR', kind='normal',
+               doc='camera y')
+    cami = Cpt(IMS, ':445:MOTR', kind='normal',
+               doc='camera iris')
+    fw = Cpt(IMS, ':446:MOTR', kind='normal',
+             doc='filter wheel, tbd if necessary')
