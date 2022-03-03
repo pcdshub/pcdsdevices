@@ -335,17 +335,17 @@ class HXRSpectrometer(BaseInterface, GroupDevice):
 
     tab_component_names = True
 
-    krst = Cpt(IMS, ':441:MOTR', kind='normal',
-               doc='crystal y')
-    ksta = Cpt(IMS, ':442:MOTR', kind='normal'
-               doc='crystal angle')
-    cama = Cpt(IMS, ':443:MOTR', kind='normal',
-               doc='camera angle')
+    xtaly = Cpt(IMS, ':441:MOTR', kind='normal',
+                doc='crystal y')
+    th = Cpt(IMS, ':442:MOTR', kind='normal',
+             doc='crystal angle')
+    tth = Cpt(IMS, ':443:MOTR', kind='normal',
+              doc='camera angle')
     camd = Cpt(IMS, ':444:MOTR', kind='normal',
                doc='camera distance')
     camy = Cpt(IMS, ':447:MOTR', kind='normal',
                doc='camera y')
-    cami = Cpt(IMS, ':445:MOTR', kind='normal',
+    iris = Cpt(IMS, ':445:MOTR', kind='normal',
                doc='camera iris')
-    fw = Cpt(IMS, ':446:MOTR', kind='normal',
-             doc='filter wheel, tbd if necessary')
+    filter = Cpt(IMS, ':446:MOTR', kind='normal',
+                 doc='filter wheel, tbd if necessary')
