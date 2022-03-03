@@ -5,7 +5,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
 from .device import GroupDevice
-from .epics_motor import BeckhoffAxisNoOffset
+from .epics_motor import BeckhoffAxisNoOffset, IMS
 from .interface import BaseInterface, LightpathMixin
 from .signal import InternalSignal, PytmcSignal
 
@@ -318,3 +318,34 @@ class TMOSpectrometer(BaseInterface, GroupDevice):
     yag_y = Cpt(BeckhoffAxisNoOffset, ':MMS:07', kind='normal')
     yag_z = Cpt(BeckhoffAxisNoOffset, ':MMS:08', kind='normal')
     yag_theta = Cpt(BeckhoffAxisNoOffset, ':MMS:09', kind='normal')
+
+
+class HXRSpectrometer(BaseInterface, GroupDevice):
+    """
+    HXR Single Shot Spectrometer motion components class.
+
+    Parameters:
+    -----------
+    prefix : str
+        Base PV for spectrometer motors.
+
+    name : str
+        Alias for the device.
+    """
+
+    tab_component_names = True
+
+    xtaly = Cpt(IMS, ':441:MOTR', kind='normal',
+                doc='crystal y')
+    th = Cpt(IMS, ':442:MOTR', kind='normal',
+             doc='crystal angle')
+    tth = Cpt(IMS, ':443:MOTR', kind='normal',
+              doc='camera angle')
+    camd = Cpt(IMS, ':444:MOTR', kind='normal',
+               doc='camera distance')
+    camy = Cpt(IMS, ':447:MOTR', kind='normal',
+               doc='camera y')
+    iris = Cpt(IMS, ':445:MOTR', kind='normal',
+               doc='camera iris')
+    filter = Cpt(IMS, ':446:MOTR', kind='normal',
+                 doc='filter wheel, tbd if necessary')
