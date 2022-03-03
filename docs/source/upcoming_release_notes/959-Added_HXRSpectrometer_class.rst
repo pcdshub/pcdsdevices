@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- Class created for the HXR Single Shot spectrometer that contains all motor objects associated with the device.
+- Class created for the HXR Single Shot Spectrometer.
 
 Bugfixes
 --------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- Aalayah Spencer (spencera)
+- (spencera)
