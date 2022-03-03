@@ -45,21 +45,13 @@ class DgChannel(BaseInterface, Device):
     name: str
         Alias of the channel
     """
-    #delay = Cpt(EpicsSignal, 'DelaySI', write_pv='DelayAO', kind='hinted')
     delay = Cpt(EpicsSignal, 'DelayAO', kind='hinted')
     delay_str = Cpt(EpicsSignalRO, 'DelaySI', kind='normal')
     reference = Cpt(EpicsSignal, 'ReferenceMO', kind='normal',
                     doc='Reference channel from which the delay taken.')
 
     tab_component_names = True
-    tab_whitelist = ['set_reference', 'get_str']
-
-    #def get(self):
-    #    """
-    #    The readback is a string formatted as"<REF> + <DELAY>".
-    #    Returns the <DELAY> as a float
-    #    """
-    #    return float(self.delay.get().split("+")[1])
+    tab_whitelist = ['set', 'set_reference', 'get_str']
 
     def get_str(self):
         """ Returns the full <REF> + <DELAY> string. """
