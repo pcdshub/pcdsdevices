@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>659</width>
+    <width>734</width>
     <height>580</height>
    </rect>
   </property>
@@ -49,7 +49,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="macros" stdset="0">
-          <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:01:&quot;, &quot;SHUTTER&quot;: &quot;SIM:BTPS:Shutter:01:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;}</string>
+          <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:01:&quot;, &quot;SHUTTER&quot;: &quot;SIM:BTPS:Shutter:01:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m1&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m2&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m3&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_ff&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-dest.ui</string>

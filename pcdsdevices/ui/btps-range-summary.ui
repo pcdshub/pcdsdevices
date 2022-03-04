@@ -105,29 +105,31 @@
       </widget>
      </item>
      <item>
-      <widget class="PyDMLabel" name="ValidReadback_2">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <underline>true</underline>
-        </font>
-       </property>
+      <widget class="PyDMShellCommand" name="PyDMShellCommand">
        <property name="toolTip">
-        <string/>
+        <string>Launch typhos screen for ${DESC} (${HAPPI_DEVICE})</string>
        </property>
        <property name="text">
         <string>${DESC}</string>
        </property>
-       <property name="alarmSensitiveContent" stdset="0">
+       <property name="showIcon" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="redirectCommandOutput" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="allowMultipleExecutions" stdset="0">
         <bool>true</bool>
        </property>
-       <property name="channel" stdset="0">
-        <string/>
+       <property name="titles" stdset="0">
+        <stringlist>
+         <string>Launch typhos screen...</string>
+        </stringlist>
+       </property>
+       <property name="commands" stdset="0">
+        <stringlist>
+         <string>typhos ${HAPPI_DEVICE}</string>
+        </stringlist>
        </property>
       </widget>
      </item>
@@ -313,6 +315,11 @@
    <class>PyDMByteIndicator</class>
    <extends>QWidget</extends>
    <header>pydm.widgets.byte</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMShellCommand</class>
+   <extends>QPushButton</extends>
+   <header>pydm.widgets.shell_command</header>
   </customwidget>
  </customwidgets>
  <resources/>

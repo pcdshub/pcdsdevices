@@ -158,7 +158,7 @@
        <height>100</height>
       </size>
      </property>
-     <layout class="QGridLayout" name="gridLayout" rowstretch="2,0,0,0,0">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="2,0,0,0">
       <item row="1" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
@@ -1122,7 +1122,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Linear:&quot;, &quot;DESC&quot;: &quot;Linear stage&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Linear:&quot;, &quot;DESC&quot;: &quot;Linear stage&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_LINEAR}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
