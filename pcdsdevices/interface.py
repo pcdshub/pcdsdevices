@@ -31,6 +31,12 @@ try:
 except ImportError:
     fcntl = None
 
+try:
+    from elog.utils import get_primary_elog
+    has_elog = True
+except ImportError:
+    has_elog = False
+
 logger = logging.getLogger(__name__)
 engineering_mode = True
 
@@ -357,6 +363,21 @@ class BaseInterface:
             return bool(info['kind'] & Kind.normal)
 
         return ophydobj_info(self, subdevice_filter=subdevice_filter)
+
+    def post_elog_status(self):
+        """
+        Post device status to the primary elog, if possible.
+        """
+        if has_elog:
+            try:
+                elog = get_primary_elog()
+                final_post = f'<pre>{self.status()}</pre>'
+                elog.post(final_post, tags=['ophyd_status'],
+                          title=f'{self.name} status report')
+            except ValueError:
+                logger.info('elog exists but has not been registered')
+        else:
+            logger.info('No primary elog found, cannot post status.')
 
 
 def get_name(obj, default):
