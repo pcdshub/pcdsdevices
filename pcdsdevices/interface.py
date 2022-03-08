@@ -12,6 +12,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from threading import Event
 from types import MethodType, SimpleNamespace
+from typing import Optional
 from weakref import WeakSet
 
 import ophyd
@@ -21,7 +22,6 @@ from ophyd.device import Device
 from ophyd.ophydobj import Kind, OphydObject
 from ophyd.positioner import PositionerBase
 from ophyd.signal import AttributeSignal, Signal
-from ophyd.status import Status
 
 from . import utils
 from .signal import NotImplementedSignal
@@ -549,11 +549,12 @@ class MvInterface(BaseInterface):
     """
 
     tab_whitelist = ["mv", "wm", "wm_update"]
+    _last_status: Optional[ophyd.status.MoveStatus]
+    _mov_ev: Event
 
     def __init__(self, *args, **kwargs):
         self._mov_ev = Event()
-        self._last_status = Status()
-        self._last_status.set_finished()
+        self._last_status = None
         super().__init__(*args, **kwargs)
 
     def _log_move_limit_error(self, position, ex):
@@ -583,6 +584,8 @@ class MvInterface(BaseInterface):
         return st
 
     def wait(self, timeout=None):
+        if self._last_status is None:
+            return
         self._last_status.wait(timeout=timeout)
 
     def mv(self, position, timeout=None, wait=False, log=True):
