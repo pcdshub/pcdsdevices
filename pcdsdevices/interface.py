@@ -368,16 +368,19 @@ class BaseInterface:
         """
         Post device status to the primary elog, if possible.
         """
-        if has_elog:
-            try:
-                elog = get_primary_elog()
-                final_post = f'<pre>{self.status()}</pre>'
-                elog.post(final_post, tags=['ophyd_status'],
-                          title=f'{self.name} status report')
-            except ValueError:
-                logger.info('elog exists but has not been registered')
-        else:
+        if not has_elog:
             logger.info('No primary elog found, cannot post status.')
+            return
+
+        try:
+            elog = get_primary_elog()
+        except ValueError:
+            logger.info('elog exists but has not been registered')
+            return
+
+        final_post = f'<pre>{self.status()}</pre>'
+        elog.post(final_post, tags=['ophyd_status'],
+                  title=f'{self.name} status report')
 
 
 def get_name(obj, default):
