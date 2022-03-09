@@ -57,8 +57,8 @@ class DgChannel(BaseInterface, Device):
         """ Returns the full <REF> + <DELAY> string. """
         return self.delay_str.get()
 
-    def set(self, new_delay):
-        return set_and_wait(self.delay, new_delay)
+    def set(self, new_delay, **kwargs):
+        return self.delay.set(delay, **kwargs)
 
     def set_reference(self, new_ref):
         if new_ref.upper() not in CHANNELS:
