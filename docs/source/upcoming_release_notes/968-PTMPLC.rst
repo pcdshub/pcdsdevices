@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- Added Current Monitoring PV.
+- Added Current Monitoring PV to ``pcdsdevices.pump.PTMPLC``.
 
 New Devices
 -----------
