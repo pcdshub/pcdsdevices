@@ -128,7 +128,7 @@ class AggregateSignal(Signal):
     _cache : dict
         Mapping from signal to last known value.
 
-    _sub_map : dict of Signal to callback ID (or None)
+    _signal_to_callback : dict of Signal to callback ID (or None)
         Signals that contribute to this signal.  Callback ID will be None
         if .subscribe() has not been called yet.
     """
@@ -140,7 +140,7 @@ class AggregateSignal(Signal):
         self._cache = {}
         self._has_subscribed = False
         self._lock = RLock()
-        self._sub_map = {}
+        self._signal_to_callback = {}
 
     def _calc_readback(self):
         """
@@ -170,7 +170,7 @@ class AggregateSignal(Signal):
     def get(self, **kwargs):
         """Update all values and recalculate."""
         with self._lock:
-            for signal in self._sub_map:
+            for signal in self._signal_to_callback:
                 self._cache[signal] = signal.get(**kwargs)
             self._update_readback()
             return self._readback
@@ -188,7 +188,7 @@ class AggregateSignal(Signal):
         cid = super().subscribe(cb, event_type=event_type, run=run)
         if event_type in (None, self.SUB_VALUE) and not self._has_subscribed:
             # We need to subscribe to ALL relevant signals!
-            for signal, cbid in self._sub_map.items():
+            for signal, cbid in self._signal_to_callback.items():
                 if cbid is None:
                     cbid = signal.subscribe(self._run_sub_value, run=False)
                     self._signal_to_callback[signal] = cbid
@@ -249,14 +249,14 @@ class AggregateSignal(Signal):
             sig = getattr(sig, part)
 
         # Add if not yet there; but do not subscribe just yet.
-        self._sub_map.setdefault(sig, None)
+        self._signal_to_callback.setdefault(sig, None)
         return sig
 
     def destroy(self):
-        for sig, cbid in self._sub_map.items():
+        for sig, cbid in self._signal_to_callback.items():
             if cbid is not None:
                 sig.unsubscribe(cbid)
-                self._sub_map[sig] = None
+                self._signal_to_callback[sig] = None
 
         return super().destroy()
 
@@ -277,7 +277,7 @@ class PVStateSignal(AggregateSignal):
 
     def describe(self):
         # Base description information
-        sub_sigs = [sig.name for sig in self._sub_map]
+        sub_sigs = [sig.name for sig in self._signal_to_callback]
         desc = {'source': 'SUM:{}'.format(','.join(sub_sigs)),
                 'dtype': 'string',
                 'shape': [],
