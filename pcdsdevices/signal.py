@@ -128,8 +128,9 @@ class AggregateSignal(Signal):
     _cache : dict
         Mapping from signal to last known value.
 
-    _sub_signals : list
-        Signals that contribute to this signal.
+    _sub_map : dict of Signal to callback ID (or None)
+        Signals that contribute to this signal.  Callback ID will be None
+        if .subscribe() has not been called yet.
     """
 
     _update_only_on_change = True
@@ -139,7 +140,6 @@ class AggregateSignal(Signal):
         self._cache = {}
         self._has_subscribed = False
         self._lock = RLock()
-        self._sub_signals = []
         self._sub_map = {}
 
     def _calc_readback(self):
@@ -170,7 +170,7 @@ class AggregateSignal(Signal):
     def get(self, **kwargs):
         """Update all values and recalculate."""
         with self._lock:
-            for signal in self._sub_signals:
+            for signal in self._sub_map:
                 self._cache[signal] = signal.get(**kwargs)
             self._update_readback()
             return self._readback
@@ -188,8 +188,9 @@ class AggregateSignal(Signal):
         cid = super().subscribe(cb, event_type=event_type, run=run)
         if event_type in (None, self.SUB_VALUE) and not self._has_subscribed:
             # We need to subscribe to ALL relevant signals!
-            for signal in self._sub_signals:
-                signal.subscribe(self._run_sub_value, run=False)
+            for signal, cbid in self._sub_map.items():
+                if cbid is None:
+                    signal.subscribe(self._run_sub_value, run=False)
             self.get()  # Ensure we have a full cache
         return cid
 
@@ -246,10 +247,8 @@ class AggregateSignal(Signal):
         for part in name.split('.'):
             sig = getattr(sig, part)
 
-        if sig not in self._sub_signals:
-            self._sub_signals.append(sig)
-            self._sub_map[name] = sig
-
+        # Add if not yet there; but do not subscribe just yet.
+        self._sub_map.setdefault(sig, None)
         return sig
 
     def destroy(self):
@@ -265,12 +264,14 @@ class PVStateSignal(AggregateSignal):
 
     def __init__(self, *, name, **kwargs):
         super().__init__(name=name, **kwargs)
-        for signal_name in self.parent._state_logic:
-            self.add_signal_by_attr_name(signal_name)
+        self._attr_to_signal = {}
+        for attr_name in self.parent._state_logic:
+            sig = self.add_signal_by_attr_name(attr_name)
+            self._attr_to_signal[attr_name] = sig
 
     def describe(self):
         # Base description information
-        sub_sigs = [sig.name for sig in self._sub_signals]
+        sub_sigs = [sig.name for sig in self._sub_map]
         desc = {'source': 'SUM:{}'.format(','.join(sub_sigs)),
                 'dtype': 'string',
                 'shape': [],
@@ -280,9 +281,9 @@ class PVStateSignal(AggregateSignal):
 
     def _calc_readback(self):
         state_value = None
-        for signal_name, info in self.parent._state_logic.items():
+        for attr_name, info in self.parent._state_logic.items():
             # Get last cached value
-            value = self._cache[self._sub_map[signal_name]]
+            value = self._cache[self._attr_to_signal[attr_name]]
             try:
                 signal_state = info[value]
             # Handle unaccounted readbacks
