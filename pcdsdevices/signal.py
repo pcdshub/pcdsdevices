@@ -140,6 +140,7 @@ class AggregateSignal(Signal):
         self._has_subscribed = False
         self._lock = RLock()
         self._sub_signals = []
+        self._sub_map = {}
 
     def _calc_readback(self):
         """
@@ -206,6 +207,54 @@ class AggregateSignal(Signal):
                 self._run_subs(sub_type=self.SUB_VALUE, obj=self, value=value,
                                old_value=old_value)
 
+    def add_signal_by_attr_name(self, name: str) -> Signal:
+        """
+        Add a signal from which to aggregate information.
+
+        This must be called before any subscriptions are made to the signal.
+        Duplicate signals will not be re-added.
+
+        Parameters
+        ----------
+        name : str
+            The attribute name of the signal, relative to the parent device.
+
+        Returns
+        -------
+        sig : ophyd.Signal
+            The signal referenced by the attribute name.
+
+        Raises
+        ------
+        RuntimError
+            If called after .subscribe() or used without a parent Device.
+        """
+        if self._has_subscribed:
+            raise RuntimeError(
+                "Cannot add signals to an AggregateSignal after it has been "
+                "subscribed to."
+            )
+
+        sig = self.parent
+
+        if sig is None:
+            raise RuntimeError(
+                "Cannot use an AggregateSignal with attribute names outside "
+                "of a Device/Component hierarchy."
+            )
+
+        for part in name.split('.'):
+            sig = getattr(sig, part)
+
+        if sig not in self._sub_signals:
+            self._sub_signals.append(sig)
+            self._sub_map[name] = sig
+
+        return sig
+
+    def destroy(self):
+        return super().destroy()
+
 
 class PVStateSignal(AggregateSignal):
     """
@@ -216,13 +265,8 @@ class PVStateSignal(AggregateSignal):
 
     def __init__(self, *, name, **kwargs):
         super().__init__(name=name, **kwargs)
-        self._sub_map = {}
-        for signal_name in self.parent._state_logic.keys():
-            sig = self.parent
-            for part in signal_name.split('.'):
-                sig = getattr(sig, part)
-            self._sub_signals.append(sig)
-            self._sub_map[signal_name] = sig
+        for signal_name in self.parent._state_logic:
+            self.add_signal_by_attr_name(signal_name)
 
     def describe(self):
         # Base description information
