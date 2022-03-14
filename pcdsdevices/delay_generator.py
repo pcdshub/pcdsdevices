@@ -58,7 +58,7 @@ class DgChannel(BaseInterface, Device):
         return self.delay_str.get()
 
     def set(self, new_delay, **kwargs):
-        return self.delay.set(delay, **kwargs)
+        return self.delay.set(new_delay, **kwargs)
 
     def set_reference(self, new_ref):
         if new_ref.upper() not in CHANNELS:
