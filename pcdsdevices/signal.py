@@ -190,7 +190,8 @@ class AggregateSignal(Signal):
             # We need to subscribe to ALL relevant signals!
             for signal, cbid in self._sub_map.items():
                 if cbid is None:
-                    signal.subscribe(self._run_sub_value, run=False)
+                    cbid = signal.subscribe(self._run_sub_value, run=False)
+                    self._signal_to_callback[signal] = cbid
             self.get()  # Ensure we have a full cache
         return cid
 
@@ -252,6 +253,11 @@ class AggregateSignal(Signal):
         return sig
 
     def destroy(self):
+        for sig, cbid in self._sub_map.items():
+            if cbid is not None:
+                sig.unsubscribe(cbid)
+                self._sub_map[sig] = None
+
         return super().destroy()
 
 
