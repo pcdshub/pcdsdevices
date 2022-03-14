@@ -142,8 +142,14 @@ def test_basic_subscribe():
     lim_obj.lowlim.put(1)
     lim_obj.highlim.put(1)
     lim_obj.highlim.put(0)
+
+    assert len(lim_obj.state._signal_to_callback) == 2
+    for sig, cbid in lim_obj.state._signal_to_callback.items():
+        assert cbid is not None, f"{sig.name} not subscribed"
     assert cb.called
     lim_obj.destroy()
+    for sig, cbid in lim_obj.state._signal_to_callback.items():
+        assert cbid is None, f"{sig.name} not unsubscribed"
 
 
 def test_staterecord_positioner():
