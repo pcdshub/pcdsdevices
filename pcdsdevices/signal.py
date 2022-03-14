@@ -158,10 +158,10 @@ class AggregateSignal(Signal):
         """Update the cache with one value and recalculate."""
         with self._lock:
             self._cache[signal] = value
-            self._update_state()
+            self._update_readback()
             return self._readback
 
-    def _update_state(self):
+    def _update_readback(self):
         """Recalculate the state."""
         with self._lock:
             self._readback = self._calc_readback()
@@ -171,7 +171,7 @@ class AggregateSignal(Signal):
         with self._lock:
             for signal in self._sub_signals:
                 self._cache[signal] = signal.get(**kwargs)
-            self._update_state()
+            self._update_readback()
             return self._readback
 
     def put(self, value, **kwargs):
