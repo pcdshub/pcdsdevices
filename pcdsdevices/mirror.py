@@ -199,7 +199,8 @@ class OffsetMirror(BaseInterface, GroupDevice):
     # Subscription types
     SUB_STATE = 'state'
 
-    tab_whitelist = ['pitch', 'xgantry', 'ygantry']
+    # Tab config: show components
+    tab_component_names = True
 
     def __init__(self, prefix, *, prefix_xy=None,
                  xgantry_prefix=None, **kwargs):
@@ -389,6 +390,9 @@ class XOffsetMirror(BaseInterface, GroupDevice):
     transmission = 1
     SUB_STATE = 'state'
 
+    # Tab config: show components
+    tab_component_names = True
+
     def format_status_info(self, status_info):
         """
         Override status info handler to render the Hard X-ray Offset Mirror.
@@ -490,6 +494,9 @@ class XOffsetMirrorBend(XOffsetMirror):
     us_rtd = Cpt(EpicsSignalRO, ':RTD:US:1_RBV', kind='normal')
     ds_rtd = Cpt(EpicsSignalRO, ':RTD:DS:1_RBV', kind='normal')
 
+    # Tab config: show components
+    tab_component_names = True
+
 
 # Maintain backward compatibility
 XOffsetMirror2 = XOffsetMirrorBend
@@ -523,6 +530,9 @@ class XOffsetMirrorSwitch(XOffsetMirror):
                  doc='Yleft master axis [um]')
     y_right = Cpt(BeckhoffAxisNoOffset, ':MMS:YRIGHT', kind='config',
                   doc='Yright slave axis [um]')
+
+    # Tab config: show components
+    tab_component_names = True
 
 
 class KBOMirror(BaseInterface, GroupDevice):
@@ -567,6 +577,9 @@ class KBOMirror(BaseInterface, GroupDevice):
     removed = False
     transmission = 1
     SUB_STATE = 'state'
+
+    # Tab config: show components
+    tab_component_names = True
 
     def format_status_info(self, status_info):
         """
@@ -696,6 +709,9 @@ class KBOMirrorHE(KBOMirror):
     cool_flow2 = Cpt(EpicsSignalRO, ':FLOW:2_RBV', kind='normal')
     cool_press = Cpt(EpicsSignalRO, ':PRESS:1_RBV', kind='normal')
 
+    # Tab config: show components
+    tab_component_names = True
+
 
 class FFMirror(BaseInterface, GroupDevice):
     """
@@ -729,6 +745,9 @@ class FFMirror(BaseInterface, GroupDevice):
     removed = False
     transmission = 1
     SUB_STATE = 'state'
+
+    # Tab config: show components
+    tab_component_names = True
 
     def format_status_info(self, status_info):
         """
