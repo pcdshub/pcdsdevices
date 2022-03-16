@@ -202,6 +202,7 @@ class PTMPLC(Device):
     pump_at_speed = Cpt(EpicsSignalRO, ':AT_SPD_RBV', kind='normal')
     pump_accelerating = Cpt(EpicsSignalRO, ':ACCEL_RBV', kind='normal')
     pump_speed = Cpt(EpicsSignalRO, ':SPEED_RBV', kind='normal')
+    pump_current = Cpt(EpicsSignalRO, ':CURR_MON_RBV', kind='normal')
     fault = Cpt(EpicsSignalRO, ':FAULT_RBV', kind='normal')
     warn = Cpt(EpicsSignalRO, ':WARN_RBV', kind='normal')
     alarm = Cpt(EpicsSignalRO, ':ALARM_RBV', kind='normal')
