@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>753</width>
+    <width>765</width>
     <height>606</height>
    </rect>
   </property>
@@ -1063,8 +1063,8 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>721</width>
+        <y>-249</y>
+        <width>733</width>
         <height>708</height>
        </rect>
       </property>
@@ -1162,7 +1162,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Rotary:&quot;, &quot;DESC&quot;: &quot;Rotary stage&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Rotary:&quot;, &quot;DESC&quot;: &quot;Rotary stage&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_ROTARY}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1202,7 +1202,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Goniometer:&quot;, &quot;DESC&quot;: &quot;Goniometer&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Goniometer:&quot;, &quot;DESC&quot;: &quot;Goniometer&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_GONIOMETER}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1242,7 +1242,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}NFCenterX:&quot;, &quot;DESC&quot;: &quot;NF Centroid X&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}NFCenterX:&quot;, &quot;DESC&quot;: &quot;NF Centroid X&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_NF_CAM}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1282,7 +1282,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}NFCenterY:&quot;, &quot;DESC&quot;: &quot;NF Centroid Y&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}NFCenterY:&quot;, &quot;DESC&quot;: &quot;NF Centroid Y&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_NF_CAM}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1322,7 +1322,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}FFCenterX:&quot;, &quot;DESC&quot;: &quot;FF Centroid X&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}FFCenterX:&quot;, &quot;DESC&quot;: &quot;FF Centroid X&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_FF_CAM}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1362,7 +1362,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}FFCenterY:&quot;, &quot;DESC&quot;: &quot;FF Centroid Y&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}FFCenterY:&quot;, &quot;DESC&quot;: &quot;FF Centroid Y&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_FF_CAM}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
