@@ -49,7 +49,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="macros" stdset="0">
-          <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:01:&quot;, &quot;SHUTTER&quot;: &quot;SIM:BTPS:Shutter:01:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m1&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m2&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m3&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_ff&quot;, &quot;BAY&quot;: &quot;1&quot;}</string>
+          <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:01:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:BTPS:Shutter:01:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m1&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m2&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m3&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_ff&quot;, &quot;BAY&quot;: &quot;1&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-dest.ui</string>
@@ -78,7 +78,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="macros" stdset="0">
-          <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:03:&quot;, &quot;SHUTTER&quot;: &quot;SIM:BTPS:Shutter:03:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m4&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m6&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m5&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_ff&quot;, &quot;BAY&quot;: &quot;3&quot;}</string>
+          <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:03:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:BTPS:Shutter:03:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m4&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m6&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m5&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_ff&quot;, &quot;BAY&quot;: &quot;3&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-dest.ui</string>
@@ -107,7 +107,7 @@
           <enum>QFrame::NoFrame</enum>
          </property>
          <property name="macros" stdset="0">
-          <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:04:&quot;, &quot;SHUTTER&quot;: &quot;SIM:BTPS:Shutter:04:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m7&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m8&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m9&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_ff&quot;, &quot;BAY&quot;: &quot;4&quot;}</string>
+          <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:04:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:BTPS:Shutter:04:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-summary.ui&quot;, &quot;HAPPI_LINEAR&quot;: &quot;las_bts_mcs2_01_m7&quot;, &quot;HAPPI_ROTARY&quot;: &quot;las_bts_mcs2_01_m8&quot;, &quot;HAPPI_GONIOMETER&quot;: &quot;las_bts_mcs2_01_m9&quot;, &quot;HAPPI_NF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_nf&quot;, &quot;HAPPI_FF_CAM&quot;: &quot;las_lhn_bay${BAY}_cam_ff&quot;, &quot;BAY&quot;: &quot;4&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-dest.ui</string>

@@ -72,7 +72,7 @@
           <string/>
          </property>
          <property name="macros" stdset="0">
-          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:01:&quot;}</string>
+          <string>{&quot;DEST&quot;: &quot;LTLHN:BTPS:DEST:01:&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-tabs-config.ui</string>
@@ -110,7 +110,7 @@
           <string/>
          </property>
          <property name="macros" stdset="0">
-          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:02:&quot;}</string>
+          <string>{&quot;DEST&quot;: &quot;LTLHN:BTPS:DEST:02:&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-tabs-config.ui</string>
@@ -148,7 +148,7 @@
           <string/>
          </property>
          <property name="macros" stdset="0">
-          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:03:&quot;}</string>
+          <string>{&quot;DEST&quot;: &quot;LTLHN:BTPS:DEST:03:&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-tabs-config.ui</string>
@@ -186,7 +186,7 @@
           <string/>
          </property>
          <property name="macros" stdset="0">
-          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:04:&quot;}</string>
+          <string>{&quot;DEST&quot;: &quot;LTLHN:BTPS:DEST:04:&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-tabs-config.ui</string>
@@ -224,7 +224,7 @@
           <string/>
          </property>
          <property name="macros" stdset="0">
-          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:05:&quot;}</string>
+          <string>{&quot;DEST&quot;: &quot;LTLHN:BTPS:DEST:05:&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-tabs-config.ui</string>
@@ -262,7 +262,7 @@
           <string/>
          </property>
          <property name="macros" stdset="0">
-          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:06:&quot;}</string>
+          <string>{&quot;DEST&quot;: &quot;LTLHN:BTPS:DEST:06:&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-tabs-config.ui</string>
@@ -300,7 +300,7 @@
           <string/>
          </property>
          <property name="macros" stdset="0">
-          <string>{&quot;DEST&quot;: &quot;SIM:BTPS:DEST:07:&quot;}</string>
+          <string>{&quot;DEST&quot;: &quot;LTLHN:BTPS:DEST:07:&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-tabs-config.ui</string>
