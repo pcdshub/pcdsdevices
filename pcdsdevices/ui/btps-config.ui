@@ -25,6 +25,61 @@
     </widget>
    </item>
    <item>
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>BTPS System Override</string>
+      </property>
+     </widget>
+     <widget class="PyDMEnumComboBox" name="Inclusive_Setpoint_2">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="alarmSensitiveContent" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="alarmSensitiveBorder" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://LTLHN:BTPS:Config:SystemOverride</string>
+      </property>
+     </widget>
+     <widget class="PyDMLabel" name="PyDMLabel_2">
+      <property name="toolTip">
+       <string/>
+      </property>
+      <property name="precision" stdset="0">
+       <number>0</number>
+      </property>
+      <property name="showUnits" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="precisionFromPV" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="alarmSensitiveContent" stdset="0">
+       <bool>false</bool>
+      </property>
+      <property name="alarmSensitiveBorder" stdset="0">
+       <bool>true</bool>
+      </property>
+      <property name="channel" stdset="0">
+       <string>ca://LTLHN:BTPS:Config:SystemOverride</string>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item>
     <widget class="PyDMTabWidget" name="PyDMTabWidget">
      <property name="toolTip">
       <string/>
@@ -33,7 +88,7 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>6</number>
      </property>
      <property name="alarmChannels">
       <stringlist>
@@ -326,9 +381,19 @@
    <header>pydm.widgets.tab_bar</header>
   </customwidget>
   <customwidget>
+   <class>PyDMLabel</class>
+   <extends>QLabel</extends>
+   <header>pydm.widgets.label</header>
+  </customwidget>
+  <customwidget>
    <class>PyDMEmbeddedDisplay</class>
    <extends>QFrame</extends>
    <header>pydm.widgets.embedded_display</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMEnumComboBox</class>
+   <extends>QComboBox</extends>
+   <header>pydm.widgets.enum_combo_box</header>
   </customwidget>
  </customwidgets>
  <resources/>
