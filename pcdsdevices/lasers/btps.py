@@ -209,14 +209,6 @@ class ShutterSafety(BaseInterface, Device):
         doc="BTPS advanced override mode",
     )
 
-    lss_permission = Cpt(
-        PytmcSignal,
-        "LSS:Permission",
-        io="input",
-        kind="normal",
-        doc="LSS permission to open shutter",
-    )
-
     lss_open_request = Cpt(
         PytmcSignal,
         "LSS:OpenRequest",
