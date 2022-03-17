@@ -40,40 +40,60 @@
    </property>
    <item>
     <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="5">
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="10">
-      <widget class="PyDMLabel" name="HighReadback">
+     <item row="0" column="1">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_2">
        <property name="toolTip">
-        <string/>
+        <string>Is the source data updating and valid?</string>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>true</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://${PREFIX}High_RBV</string>
+        <string>ca://${PREFIX}InRange_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="0" column="11">
-      <widget class="PyDMLabel" name="InclusiveReadback">
+     <item row="0" column="3">
+      <widget class="PyDMLabel" name="ValidReadback_3">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
+       <property name="text">
+        <string>${DESC}</string>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>true</bool>
+       </property>
        <property name="channel" stdset="0">
-        <string>ca://${PREFIX}Inclusive_RBV</string>
+        <string/>
        </property>
       </widget>
      </item>
-     <item row="1" column="10">
+     <item row="1" column="11">
       <widget class="PyDMLineEdit" name="HighSetpoint">
        <property name="minimumSize">
         <size>
@@ -89,7 +109,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="8">
+     <item row="0" column="9">
       <widget class="PyDMLabel" name="LessThan_High">
        <property name="toolTip">
         <string/>
@@ -120,7 +140,43 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="11">
+     <item row="0" column="4">
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="6">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="12">
+      <widget class="PyDMLabel" name="InclusiveReadback">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${PREFIX}Inclusive_RBV</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="12">
       <widget class="PyDMEnumComboBox" name="Inclusive_Setpoint">
        <property name="minimumSize">
         <size>
@@ -136,33 +192,17 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="3">
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+     <item row="0" column="5">
+      <widget class="PyDMLabel" name="LowReadback">
+       <property name="toolTip">
+        <string/>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
+       <property name="channel" stdset="0">
+        <string>ca://${PREFIX}Low_RBV</string>
        </property>
-      </spacer>
+      </widget>
      </item>
-     <item row="0" column="9">
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>25</width>
-         <height>17</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="7">
+     <item row="0" column="8">
       <widget class="PyDMLabel" name="ValueReadback">
        <property name="toolTip">
         <string/>
@@ -178,7 +218,46 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="6">
+     <item row="1" column="5">
+      <widget class="PyDMLineEdit" name="LowSetpoint">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${PREFIX}Low</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="11">
+      <widget class="PyDMLabel" name="HighReadback">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${PREFIX}High_RBV</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="10">
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>25</width>
+         <height>17</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="7">
       <widget class="PyDMLabel" name="LessThan_Low">
        <property name="toolTip">
         <string/>
@@ -209,50 +288,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="4">
-      <widget class="PyDMLineEdit" name="LowSetpoint">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${PREFIX}Low</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="PyDMLabel" name="ValidReadback_3">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <underline>true</underline>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="text">
-        <string>${DESC}</string>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
+     <item row="0" column="0">
       <widget class="PyDMByteIndicator" name="PyDMByteIndicator">
        <property name="toolTip">
         <string>Does this pass the range check?</string>
@@ -262,42 +298,6 @@
        </property>
        <property name="channel" stdset="0">
         <string>ca://${PREFIX}Valid_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="PyDMLabel" name="LowReadback">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${PREFIX}Low_RBV</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_2">
-       <property name="toolTip">
-        <string>Is the source data updating and valid?</string>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://${PREFIX}InRange_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
