@@ -5,7 +5,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
 from .device import GroupDevice
-from .epics_motor import BeckhoffAxisNoOffset, IMS
+from .epics_motor import BeckhoffAxisNoOffset, IMS, BeckhoffAxis
 from .interface import BaseInterface, LightpathMixin
 from .signal import InternalSignal, PytmcSignal
 
@@ -309,15 +309,15 @@ class TMOSpectrometer(BaseInterface, GroupDevice):
     tab_component_names = True
 
     # Motor components: can read/write positions
-    lens_x = Cpt(BeckhoffAxisNoOffset, ':MMS:01', kind='normal')
-    foil_x = Cpt(BeckhoffAxisNoOffset, ':MMS:02', kind='normal')
-    zone_plate_x = Cpt(BeckhoffAxisNoOffset, ':MMS:03', kind='normal')
-    zone_plate_y = Cpt(BeckhoffAxisNoOffset, ':MMS:04', kind='normal')
-    zone_plate_z = Cpt(BeckhoffAxisNoOffset, ':MMS:05', kind='normal')
-    yag_x = Cpt(BeckhoffAxisNoOffset, ':MMS:06', kind='normal')
-    yag_y = Cpt(BeckhoffAxisNoOffset, ':MMS:07', kind='normal')
-    yag_z = Cpt(BeckhoffAxisNoOffset, ':MMS:08', kind='normal')
-    yag_theta = Cpt(BeckhoffAxisNoOffset, ':MMS:09', kind='normal')
+    lens_x = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
+    foil_x = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
+    zone_plate_x = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
+    zone_plate_y = Cpt(BeckhoffAxis, ':MMS:04', kind='normal')
+    zone_plate_z = Cpt(BeckhoffAxis, ':MMS:05', kind='normal')
+    yag_x = Cpt(BeckhoffAxis, ':MMS:06', kind='normal')
+    yag_y = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
+    yag_z = Cpt(BeckhoffAxis, ':MMS:08', kind='normal')
+    yag_theta = Cpt(BeckhoffAxis, ':MMS:09', kind='normal')
 
 
 class HXRSpectrometer(BaseInterface, GroupDevice):
