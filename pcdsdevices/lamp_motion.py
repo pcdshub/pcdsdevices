@@ -67,7 +67,7 @@ class LAMPMagneticBottle(BaseInterface, GroupDevice):
     gas_needle_x = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
     gas_needle_y = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
     gas_needle_z = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
-    gas_needle_theta = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
+#    gas_needle_theta = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
 
     magnet_x = Cpt(BeckhoffAxis, ':MMS:05', kind='normal')
     magnet_y = Cpt(BeckhoffAxis, ':MMS:06', kind='normal')
