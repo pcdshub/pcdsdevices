@@ -237,3 +237,16 @@ def best_effort_instantiation(device_cls, *, skip_on_failure=True):
                 f'Unable to instantiate {device_cls}: {ex} (kwargs={kwargs})'
             )
         raise
+
+
+@pytest.fixture(scope='function')
+def elog():
+    class MockELog:
+        def __init__(self, *args, **kwargs):
+            self.posts = list()
+            self.enable_run_posts = True
+
+        def post(self, *args, **kwargs):
+            self.posts.append((args, kwargs))
+
+    return MockELog('TST')

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import enum
+import logging
 import operator
 import os
 import select
@@ -8,12 +9,15 @@ import shutil
 import sys
 import threading
 import time
+from collections import Iterable
 from functools import reduce
 from typing import Iterator, Union
 
 import ophyd
 import pint
 import prettytable
+
+from ._html import collapse_list_head, collapse_list_tail
 
 try:
     import termios
@@ -22,6 +26,7 @@ except ImportError:
     tty = None
     termios = None
 
+logger = logging.getLogger(__name__)
 
 arrow_up = '\x1b[A'
 arrow_down = '\x1b[B'
@@ -454,3 +459,130 @@ class HelpfulIntEnum(enum.IntEnum, metaclass=HelpfulIntEnumMeta):
             with the input identifiers.
         """
         return set(cls.__members__.values()) - cls.include(identifiers)
+
+
+def format_ophyds_to_html(obj, allow_child=False):
+    """
+    Recursively construct html that contains the output from .status() for
+    each object provided.  Base case is being passed a single ophyd object
+    with a `.status()` method.  Any object without a `.status()` method is
+    ignored.
+
+    Creates divs and buttons based on styling
+    from `nabs._html.collapse_list_head` and `nabs._html.collapse_list_tail`
+
+    Parameters
+    ----------
+    obj : ophyd object or Iterable of ophyd objects
+        Objects to format into html
+
+    allow_child : bool, optional
+        Whether or not to post child devices to the elog.  Defaults to False,
+        to keep long lists of devices concise
+
+    Returns
+    -------
+    out : string
+        html body containing ophyd object representations (sans styling, JS)
+    """
+    if isinstance(obj, Iterable):
+        content = ""
+
+        for o in obj:
+            content += format_ophyds_to_html(o, allow_child=allow_child)
+
+        # Don't return wrapping if there's no content
+        if content == "":
+            return content
+
+        # HelpfulNamespaces tend to lack names, maybe they won't some day
+        parent_default = ('Ophyd status: ' +
+                          ', '.join('[...]' if isinstance(o, Iterable)
+                                    else o.name for o in obj))
+        parent_name = getattr(obj, '__name__', parent_default[:60] + ' ...')
+
+        # Wrap in a parent div
+        out = (
+            "<button class='collapsible'>" +
+            f"{parent_name}" +  # should be a namespace name
+            "</button><div class='parent'>" +
+            content +
+            "</div>"
+        )
+        return out
+
+    # check if parent level ophyd object
+    elif (callable(getattr(obj, 'status', None)) and
+            ((getattr(obj, 'parent', None) is None and
+              getattr(obj, 'biological_parent', None) is None) or
+             allow_child)):
+        content = ""
+        try:
+            content = (
+                f"<button class='collapsible'>{obj.name}</button>" +
+                f"<div class='child content'><pre>{obj.status()}</pre></div>"
+            )
+        except Exception as ex:
+            logger.info(f'skipped {str(obj)}, due to Exception: {ex}')
+
+        return content
+
+    # fallback base case (if ignoring obj)
+    else:
+        return ""
+
+
+def post_ophyds_to_elog(objs, allow_child=False, hutch_elog=None):
+    """
+    Take a list of ophyd objects and post their status representations
+    to the elog.  Handles singular objects, lists of objects, and
+    HelpfulNamespace's provided in hutch-python
+
+    .. code-block:: python
+
+        # pass in an object
+        post_ophyds_to_elog(at2l0)
+
+        # or a list of objects
+        post_ophyds_to_elog([at2l0, im3l0])
+
+        # devices with no parents are ignored by default :(
+        post_ophyds_to_elog([at2l0, at2l0.blade_01], allow_child=True)
+
+        # or a HelpfulNamespace
+        post_ophyds_to_elog(m)
+
+    Parameters
+    ----------
+    objs : ophyd object or Iterable of ophyd objects
+        Objects to format and post
+
+    allow_child : bool, optional
+        Whether or not to post child devices to the elog.  Defaults to False,
+        to keep long lists of devices concise
+
+    hutch_elog : HutchELog, optional
+        ELog instance to post to.  If not provided, will attempt to grab
+        primary registered ELog instance
+    """
+    if hutch_elog is None:
+        try:
+            from elog.utils import get_primary_elog
+            hutch_elog = get_primary_elog()
+        except ValueError:
+            logger.info('elog module exists, but no elog registered')
+            return
+    else:
+        logger.info('Posting to provided elog')
+
+    post = format_ophyds_to_html(objs, allow_child=allow_child)
+
+    if post == "":
+        logger.info("No valid devices found, no post submitted")
+        return
+
+    # wrap post in head and tail
+    final_post = collapse_list_head + post + collapse_list_tail
+
+    hutch_elog.post(final_post, tags=['ophyd_status'],
+                    title='ophyd status report')
