@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>659</width>
+    <height>580</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="PyDMTabWidget" name="PyDMTabWidget_2">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="whatsThis">
+      <string/>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <property name="currentTabAlarmChannel" stdset="0">
+      <cstring>ca://${DEST}SRC:01:ChecksOK_RBV</cstring>
+     </property>
+     <property name="alarmChannels">
+      <stringlist>
+       <string>ca://${DEST}SRC:01:ChecksOK_RBV</string>
+       <string>ca://${DEST}SRC:03:ChecksOK_RBV</string>
+       <string>ca://${DEST}SRC:04:ChecksOK_RBV</string>
+      </stringlist>
+     </property>
+     <widget class="QWidget" name="source1">
+      <attribute name="title">
+       <string>Source 1</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:01:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:BTPS:Shutter:01:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-config.ui&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-dest.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="source3">
+      <attribute name="title">
+       <string>Source 3</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_2">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:03:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:BTPS:Shutter:03:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-config.ui&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-dest.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="source4">
+      <attribute name="title">
+       <string>Source 4</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_3">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;SOURCE&quot;: &quot;${DEST}SRC:04:&quot;, &quot;SHUTTER&quot;: &quot;LTLHN:BTPS:Shutter:04:&quot;, &quot;RANGE_SCREEN&quot;: &quot;btps-range-config.ui&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-dest.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PyDMTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>pydm.widgets.tab_bar</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMEmbeddedDisplay</class>
+   <extends>QFrame</extends>
+   <header>pydm.widgets.embedded_display</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
