@@ -286,8 +286,28 @@ def test_multi_derived_connectivity(multi_derived_ro: Device):
     assert connected is True
 
 
-@pytest.fixture
-def multi_derived_rw() -> Device:
+@pytest.fixture(
+    params=["subclassed", "arguments"]
+)
+def multi_derived_rw(request) -> Device:
+    class ReusableSignal(MultiDerivedSignal):
+        def calculate(self, items: SignalToValue) -> int:
+            return sum(value for value in items.values())
+
+        def calculate_on_put(self, value: OphydDataType) -> SignalToValue:
+            to_write = float(value / 3.)
+            return {
+                self.parent.a: to_write,
+                self.parent.b: to_write,
+                self.parent.c: to_write,
+            }
+
+    class MultiDerivedRW_Subclass(Device):
+        cpt = Cpt(ReusableSignal, attrs=["a", "b", "c"])
+        a = Cpt(FakeEpicsSignal, "a")
+        b = Cpt(FakeEpicsSignal, "b")
+        c = Cpt(FakeEpicsSignal, "c")
+
     class MultiDerivedRW(Device):
         def _do_sum(self, items: SignalToValue) -> int:
             return sum(value for value in items.values())
@@ -310,7 +330,12 @@ def multi_derived_rw() -> Device:
         b = Cpt(FakeEpicsSignal, "b")
         c = Cpt(FakeEpicsSignal, "c")
 
-    dev = MultiDerivedRW(name="dev")
+    if request.param == "subclassed":
+        cls = MultiDerivedRW_Subclass
+    else:
+        cls = MultiDerivedRW
+
+    dev = cls(name="dev")
     dev.a.sim_put(1)
     dev.b.sim_put(2)
     dev.c.sim_put(3)
@@ -381,3 +406,38 @@ def test_multi_derived_rw_sub(multi_derived_rw: Device):
     assert multi_derived_rw.a.get() == 8.
     assert multi_derived_rw.b.get() == 8.
     assert multi_derived_rw.c.get() == 8.
+
+
+def test_multi_derived_bad_instantiation():
+    # Missing calculation param
+
+    class BadDevice(Device):
+        cpt = Cpt(MultiDerivedSignal, attrs=["a", "b", "c"])
+        a = Cpt(FakeEpicsSignal, "a")
+        b = Cpt(FakeEpicsSignal, "b")
+        c = Cpt(FakeEpicsSignal, "c")
+
+    with pytest.raises(ValueError):
+        BadDevice(name="dev")
+
+    def do_sum(self, items: SignalToValue) -> int:
+        return sum(value for value in items.values())
+
+    # Bad attribute name
+
+    class BadDevice1(Device):
+        cpt = Cpt(
+            MultiDerivedSignal, calculate=do_sum, attrs=["a", "bad_attr"]
+        )
+        a = Cpt(FakeEpicsSignal, "a")
+
+    with pytest.raises(RuntimeError):
+        # AttributeError gets eaten up into a RuntimeError by ophyd
+        BadDevice1(name="dev")
+
+    # No attrs
+    class BadDevice2(Device):
+        cpt = Cpt(MultiDerivedSignal, calculate=do_sum, attrs=[])
+
+    with pytest.raises(ValueError):
+        BadDevice2(name="dev")

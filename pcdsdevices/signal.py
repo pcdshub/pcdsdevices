@@ -536,6 +536,13 @@ class MultiDerivedSignal(AggregateSignal):
             self.calculate_on_put = None
 
         self.attrs = list(attrs)
+        if len(self.attrs) == 0:
+            raise ValueError(
+                "At least one attribute name must be supplied for a "
+                "MultiDerivedSignal.  Also consider using DerivedSignal "
+                "directly for the one-to-one case."
+            )
+
         for attr_name in self.attrs:
             self.add_signal_by_attr_name(attr_name)
 
