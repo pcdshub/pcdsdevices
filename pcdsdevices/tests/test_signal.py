@@ -318,6 +318,14 @@ def multi_derived_rw() -> Device:
     dev.destroy()
 
 
+def test_multi_derived_rw_wait_for_connection(multi_derived_rw: Device):
+    multi_derived_rw.cpt.wait_for_connection()
+    assert multi_derived_rw.cpt.connected
+    multi_derived_rw.wait_for_connection()
+    assert multi_derived_rw.connected
+    assert multi_derived_rw.cpt.get() == (1 + 2 + 3)
+
+
 def test_multi_derived_rw_basic(multi_derived_rw: Device):
     multi_derived_rw.wait_for_connection()
     assert multi_derived_rw.connected
