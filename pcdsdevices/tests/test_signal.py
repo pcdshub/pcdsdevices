@@ -1,5 +1,7 @@
 import logging
 import threading
+import time
+from typing import Any
 from unittest.mock import Mock
 
 import pytest
@@ -238,16 +240,15 @@ def test_multi_derived_basic(multi_derived_ro: Device):
 
 def test_multi_derived_sub(multi_derived_ro: Device):
     ev = threading.Event()
-    result = None
+    values = []
 
     def subscription(*args, value, **kwargs):
-        nonlocal result
-        result = value
+        values.append(value)
         ev.set()
 
     multi_derived_ro.cpt.subscribe(subscription)
-    ev.wait(timeout=0.5)
-    assert result == multi_derived_ro.cpt.get()
+    wait_until_value(ev, values, waiting_value=6)
+    assert values[-1] == multi_derived_ro.cpt.get()
 
 
 def test_multi_derived_ro_no_put(multi_derived_ro: Device):
@@ -327,3 +328,48 @@ def test_multi_derived_rw_basic(multi_derived_rw: Device):
 
     multi_derived_rw.cpt.set(24).wait(timeout=1)
     assert multi_derived_rw.get() == (24, 8., 8., 8.,)
+
+
+def wait_until_value(
+    ev: threading.Event, values: list, waiting_value: Any, timeout: float = 1.0
+) -> None:
+    """Wait until a value is added to the provided list."""
+    t0 = time.monotonic()
+    while not values or values[-1] != waiting_value:
+        try:
+            ev.wait(timeout / 10.)
+        except TimeoutError:
+            elapsed = time.monotonic() - t0
+            if elapsed > timeout:
+                raise
+        else:
+            ev.clear()
+
+
+def test_multi_derived_rw_sub(multi_derived_rw: Device):
+    def value_callback(*args, value, **kwargs):
+        values.append(value)
+        ev.set()
+
+    values = []
+    ev = threading.Event()
+
+    # The initial subscription request will make sure the underlying signals
+    # are subscribed to as well and run a callback in the background once
+    # everything connects.
+    multi_derived_rw.cpt.subscribe(
+        value_callback, event_type="value", run=False
+    )
+    wait_until_value(ev, values, waiting_value=6)
+
+    multi_derived_rw.cpt.put(12)
+    wait_until_value(ev, values, waiting_value=12)
+    assert multi_derived_rw.a.get() == 4.
+    assert multi_derived_rw.b.get() == 4.
+    assert multi_derived_rw.c.get() == 4.
+
+    multi_derived_rw.cpt.put(24)
+    wait_until_value(ev, values, waiting_value=24)
+    assert multi_derived_rw.a.get() == 8.
+    assert multi_derived_rw.b.get() == 8.
+    assert multi_derived_rw.c.get() == 8.
