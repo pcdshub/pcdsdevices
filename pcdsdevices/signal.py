@@ -135,7 +135,7 @@ def is_meek_ophyd_object(obj: ophyd.ophydobj.OphydObject):
 
 
 @dataclasses.dataclass
-class _SubSignal:
+class _AggregateSignalState:
     signal: Signal
     connected: bool = False
     value: Optional[OphydDataType] = None
@@ -150,11 +150,12 @@ class AggregateSignal(Signal):
     This class exists to handle the group subscriptions without repeatedly
     getting the values of all the subsignals at all times.
 
-    This signal type is intended to be used programmatically.  For simple
-    per-device usage, see :class:`MultiDerivedSignal`.
+    This signal type is intended to be used programmatically with a subclass.
+    For simple per-device usage, see :class:`MultiDerivedSignal`.
     """
 
     _update_only_on_change = True
+    _signals: Dict[Signal, _AggregateSignalState]
 
     def __init__(self, *, name, **kwargs):
         super().__init__(name=name, **kwargs)
@@ -380,7 +381,7 @@ class AggregateSignal(Signal):
             sig = getattr(sig, part)
 
         # Add if not yet there; but do not subscribe just yet.
-        self._signals[sig] = _SubSignal(signal=sig)
+        self._signals[sig] = _AggregateSignalState(signal=sig)
         return sig
 
     def destroy(self):
