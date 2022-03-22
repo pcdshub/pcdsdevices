@@ -805,9 +805,14 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
         *args,
         enum_attrs: Optional[list[Optional[str]]] = None,
         enum_strs: Optional[list[str]] = None,
+        parent: Optional[ophyd.ophydobj.OphydObject] = None,
+        name: Optional[str] = None,
         **kwargs
     ):
-        super().__init__(*args, **kwargs)
+        # Duplicate superclass handling of ``parent`` and ``name`` so we can
+        # initialize everything prior to calling super().__init__.
+        self._parent = parent
+        self._name = name or ""
 
         self._enum_attrs = list(enum_attrs or [])
         self._pending_signals = set()
@@ -847,6 +852,8 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
             # Override with strings
             self._enum_strings = list(enum_strs)
             self._metadata_override["enum_strs"] = self._enum_strings
+
+        super().__init__(*args, parent=parent, name=name, **kwargs)
 
     def destroy(self):
         super().destroy()
