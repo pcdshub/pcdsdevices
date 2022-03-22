@@ -16,7 +16,7 @@ import logging
 import numbers
 import typing
 from threading import RLock
-from typing import Dict, Generator, Mapping, Optional, Union
+from typing import Dict, Generator, List, Mapping, Optional, Union
 
 import numpy as np
 import ophyd
@@ -545,6 +545,11 @@ class MultiDerivedSignal(AggregateSignal):
 
         for attr_name in self.attrs:
             self.add_signal_by_attr_name(attr_name)
+
+    @property
+    def signals(self) -> List[Signal]:
+        """The signals used to calculate this MultiDerivedSignal."""
+        return list(self._signals)
 
     def _calc_readback(self) -> OphydDataType:
         """Calculate the new readback value."""

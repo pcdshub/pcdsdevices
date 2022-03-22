@@ -233,6 +233,12 @@ def multi_derived_ro(request) -> Device:
 
 
 def test_multi_derived_basic(multi_derived_ro: Device):
+    assert multi_derived_ro.cpt.signals == [
+        multi_derived_ro.a,
+        multi_derived_ro.b,
+        multi_derived_ro.c,
+    ]
+
     multi_derived_ro.wait_for_connection()
     assert multi_derived_ro.connected
     assert multi_derived_ro.cpt.get() == (1 + 2 + 3)
