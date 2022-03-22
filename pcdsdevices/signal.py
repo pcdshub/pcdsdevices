@@ -9,13 +9,14 @@ if __name__ != 'pcdsdevices.signal':
                        'inside the pcdsdevices directory and can cause '
                        'extremely confusing bugs. Please run your script '
                        'elsewhere for better results.')
+import contextlib
 import dataclasses
 import itertools
 import logging
 import numbers
 import typing
 from threading import RLock
-from typing import Dict, Optional, Protocol, Union
+from typing import Dict, Generator, Optional, Protocol, Union
 
 import numpy as np
 import ophyd
@@ -215,14 +216,28 @@ class AggregateSignal(Signal):
         cid = super().subscribe(cb, event_type=event_type, run=run)
         recognized_event = event_type in (None, self.SUB_VALUE, self.SUB_META)
         if recognized_event and not self._has_subscribed:
-            # We need to subscribe to ALL relevant signals!
+            self._setup_subscriptions()
+            # Ensure that the cache is full of values
+            self.get()
+
+        return cid
+
+    def _setup_subscriptions(self):
+        """
+        Subscribe to all relevant signals.
+        """
+        if self._has_subscribed:
+            return
+
+        try:
             for signal, siginfo in self._signals.items():
+                self.log.debug("Subscribing %s", signal.name)
                 if siginfo.value_cbid is not None:
                     # Only subscribe once.
                     continue
 
                 siginfo.meta_cbid = signal.subscribe(
-                    self._run_sub_meta,
+                    self._signal_meta_callback,
                     run=True,
                     event_type=signal.SUB_META,
                 )
@@ -230,14 +245,23 @@ class AggregateSignal(Signal):
                 # Run the subscription now, only if it's a signal that doesn't
                 # normally run callbacks.
                 siginfo.value_cbid = signal.subscribe(
-                    self._run_sub_value,
+                    self._signal_value_callback,
                     run=is_meek_ophyd_object(signal),
                 )
+        finally:
+            self._has_subscribed = True
 
-            self.get()  # Ensure we have a full cache
-        return cid
+    def wait_for_connection(self, *args, **kwargs):
+        self._setup_subscriptions()
+        return super().wait_for_connection(*args, **kwargs)
 
-    def _run_sub_value(self, *args, **kwargs):
+    def _signal_meta_callback(
+        self, *args, connected: bool = False, obj: Signal, **kwargs
+    ) -> None:
+        with self._check_connectivity():
+            self._signals[obj].connected = connected
+
+    def _signal_value_callback(self, *args, **kwargs):
         kwargs.pop('sub_type')
         sig = kwargs.pop('obj')
         kwargs.pop('old_value')
@@ -246,7 +270,13 @@ class AggregateSignal(Signal):
             old_value = self._readback
             # Update just one value and assume the rest are cached
             # This allows us to run subs without EPICS gets
-            value = self._insert_value(sig, value)
+            # Run metadata callbacks before the value callback, if appropriate
+            with self._check_connectivity() as connectivity_info:
+                value = self._insert_value(sig, value)
+            if connectivity_info["sent_value_callback"]:
+                # Avoid sending a duplicate SUB_VALUE event since the
+                # connectivity check above did it already
+                return
             if value != old_value or not self._update_only_on_change:
                 self._run_subs(sub_type=self.SUB_VALUE, obj=self, value=value,
                                old_value=old_value)
@@ -254,32 +284,61 @@ class AggregateSignal(Signal):
     @property
     def connected(self) -> bool:
         """Are all relevant signals connected?"""
+        # Subscriptions are used to see if the device is connected:
+        self._setup_subscriptions()
+        # Rely on the signal info dataclass information instead of the signals
+        # themselves to determine connectivity status:
         return not self._destroyed and all(
-            siginfo.connected for siginfo in self._signals.values()
+            siginfo.connected and siginfo.value is not None
+            for siginfo in self._signals.values()
         )
 
-    def _run_sub_meta(
-        self, *args, connected: bool = False, obj: Signal, **kwargs
-    ) -> None:
-        was_connected = self.connected
-        self._signals[obj].connected = connected
-        connected = self.connected
-        if was_connected != connected:
-            self._metadata["connected"] = connected
-            self._run_metadata_callbacks()
+    @contextlib.contextmanager
+    def _check_connectivity(self) -> Generator[Dict[str, bool], None, None]:
+        """
+        Context manager for checking connectivity.
 
-        if not was_connected and connected:
-            # disconnected -> connected; give a proper value callback
+        The block for the context manager should perform some operation
+        to change the state of the signal.
+
+        Returns state information as a dictionary, accessible after the
+        context manager block has finished evaluation.
+        """
+        was_connected = self.connected
+        state_info = {
+            "was_connected": was_connected,
+            "is_connected": was_connected,
+            "sent_md_callback": False,
+            "sent_value_callback": False,
+        }
+
+        yield state_info
+
+        # Now that the caller has updated state, check to see if our
+        # connectivity status has changed.  Update the mutable return
+        # value at this point.
+        is_connected = self.connected
+        state_info["is_connected"] = is_connected
+        if was_connected != is_connected:
+            self._metadata["connected"] = is_connected
+            self._run_metadata_callbacks()
+            state_info["sent_md_callback"] = True
+
+        if not was_connected and is_connected:
+            # disconnected -> connected; give a proper value callback.
+            # "connected" indicates that:
+            # 1. All underlying signals are connected
+            # 2. All underlying signals have a value cached
             with self._lock:
-                if self._have_values:
-                    old_value = self._readback
-                    self._readback = self._calc_readback()
-                    self._run_subs(
-                        sub_type=self.SUB_VALUE,
-                        obj=self,
-                        value=self._readback,
-                        old_value=old_value,
-                    )
+                old_value = self._readback
+                self._readback = self._calc_readback()
+                self._run_subs(
+                    sub_type=self.SUB_VALUE,
+                    obj=self,
+                    value=self._readback,
+                    old_value=old_value,
+                )
+                state_info["sent_value_callback"] = True
 
     def add_signal_by_attr_name(self, name: str) -> Signal:
         """
@@ -325,14 +384,14 @@ class AggregateSignal(Signal):
         return sig
 
     def destroy(self):
-        for sig in self._signals:
-            if sig.value_cbid is not None:
-                sig.unsubscribe(sig.value_cbid)
-                sig.value_cbid = None
+        for signal, info in self._signals.items():
+            if info.value_cbid is not None:
+                signal.unsubscribe(info.value_cbid)
+                info.value_cbid = None
 
-            if sig.meta_cbid is not None:
-                sig.unsubscribe(sig.meta_cbid)
-                sig.meta_cbid = None
+            if info.meta_cbid is not None:
+                signal.unsubscribe(info.meta_cbid)
+                info.meta_cbid = None
 
         return super().destroy()
 

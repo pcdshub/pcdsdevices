@@ -221,10 +221,12 @@ def multi_derived_1() -> Device:
     dev.a.sim_put(1)
     dev.b.sim_put(2)
     dev.c.sim_put(3)
-    return dev
+    yield dev
+    dev.destroy()
 
 
 def test_multi_derived_basic(multi_derived_1: Device):
+    multi_derived_1.wait_for_connection()
     assert multi_derived_1.connected
     assert multi_derived_1.cpt.get() == (1 + 2 + 3)
 
@@ -246,7 +248,6 @@ def test_multi_derived_sub(multi_derived_1: Device):
 def test_multi_derived_connectivity(multi_derived_1: Device):
     def meta_sub(*args, **kwargs):
         nonlocal connected
-        # print("meta sub!")
         connected = kwargs.pop("connected")
         ev.set()
 
