@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import enum
+import inspect
 import operator
 import os
 import select
@@ -9,7 +10,8 @@ import sys
 import threading
 import time
 from functools import reduce
-from typing import Iterator, Union
+from types import MethodType
+from typing import Callable, Iterator, Optional, Union
 
 import ophyd
 import pint
@@ -454,3 +456,32 @@ class HelpfulIntEnum(enum.IntEnum, metaclass=HelpfulIntEnumMeta):
             with the input identifiers.
         """
         return set(cls.__members__.values()) - cls.include(identifiers)
+
+
+def maybe_make_method(
+    func: Optional[Callable], owner: object
+) -> Optional[Callable]:
+    """
+    Bind ``func`` as a method of ``owner`` if ``self`` is the first parameter.
+
+    Additionally, this accepts ``None`` and passes it through.
+
+    Parameters
+    ----------
+    func : callable or None
+        The function to optionally wrap.
+
+    owner : object
+        The owner class instance to optionally bind ``func`` to.
+
+    Returns
+    -------
+    maybe_method : callable or None
+        A callable function or method, depending on the signature of ``func``.
+    """
+    if func is None:
+        return None
+    sig = inspect.signature(func)
+    if "self" in sig.parameters and list(sig.parameters)[0] == "self":
+        return MethodType(func, owner)
+    return func

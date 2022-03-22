@@ -16,7 +16,7 @@ import logging
 import numbers
 import typing
 from threading import RLock
-from typing import Dict, Generator, Optional, Protocol, Union
+from typing import Dict, Generator, Mapping, Optional, Protocol, Union
 
 import numpy as np
 import ophyd
@@ -27,7 +27,7 @@ from ophyd.utils import ReadOnlyError
 from pytmc.pragmas import normalize_io
 
 from .type_hints import Number, OphydCallback, OphydDataType
-from .utils import convert_unit
+from .utils import convert_unit, maybe_make_method
 
 logger = logging.getLogger(__name__)
 
@@ -225,6 +225,8 @@ class AggregateSignal(Signal):
         if self._has_subscribed:
             return
 
+        self._has_subscribed = True
+
         try:
             for signal, siginfo in self._signals.items():
                 self.log.debug("Subscribing %s", signal.name)
@@ -244,8 +246,8 @@ class AggregateSignal(Signal):
                     self._signal_value_callback,
                     run=is_meek_ophyd_object(signal),
                 )
-        finally:
-            self._has_subscribed = True
+        except Exception:
+            self.log.exception("Failed to subscribe to signals")
 
     def wait_for_connection(self, *args, **kwargs):
         """Wait for underlying signals to connect."""
@@ -452,7 +454,6 @@ class PVStateSignal(AggregateSignal):
 SignalToValue = Dict[ophyd.Signal, OphydDataType]
 
 
-@staticmethod
 def set_many(
     to_set: SignalToValue,
     *,
@@ -508,19 +509,45 @@ class MultiDerivedSignal(AggregateSignal):
     """
     Signal derived from multiple signals in the device hierarchy.
 
-    Requires a calculation function to be passed in or set in a subclass.
+    Requires a calculation function to be passed in. Support writing to
+    multiple signals if an additional ``calculate_on_put`` function is
+    supplied.
 
+    Functions may also be defined in a subclass for advanced or repeated usage.
+
+    Functions may or may be methods.  If ``self`` is noted as the first
+    argument of your function, it will be assumed to be a method.  ``self``
+    will then refer to the ``MultiDerivedSignal`` instance.
+
+    Parameters
+    ----------
+    attrs : list of str
+        Attribute names of signals that are used to generate a value for this
+        signal.
+
+    calculate : CalculationFunction
+        A calculation function that takes in a dictionary of signals to values.
+        It should be made to return a value of a compatible ophyd data type,
+        such as an integer, float, or an array.
+
+    calculate_on_put : CalculationFunction
+        A calculation function that allows this MultiDerivedSignal to be
+        read-write instead of just read-only.  It should take in a single value
+        and return a dictionary of signal-to-value to write, each with a
+        compatible ophyd data type, such as an integer, float, or an array.
+        Values will be written to simultaneously and result in a single
+        ``Status`` object.
     """
 
     calculate: CalculateFunction
-    on_put_calculate: Optional[OnPutFunction]
+    calculate_on_put: Optional[OnPutFunction]
 
     def __init__(
         self,
         *args,
         attrs: list[str],
         calculate: Optional[CalculateFunction] = None,
-        on_put: Optional[OnPutFunction] = None,
+        calculate_on_put: Optional[OnPutFunction] = None,
         timeout: Optional[Number] = None,
         settle_time: Optional[Number] = None,
         **kwargs
@@ -530,7 +557,7 @@ class MultiDerivedSignal(AggregateSignal):
         self.settle_time = settle_time
 
         if calculate is not None:
-            self.calculate = calculate
+            self.calculate = maybe_make_method(calculate, self)
         elif not hasattr(self, "calculate"):
             raise ValueError(
                 "The `calculate` argument must be provided for non-subclassed "
@@ -539,11 +566,11 @@ class MultiDerivedSignal(AggregateSignal):
                 "value for the MultiDerivedSignal."
             )
 
-        if on_put is not None:
-            self.on_put_calculate = on_put
+        if calculate_on_put is not None:
+            self.calculate_on_put = maybe_make_method(calculate_on_put, self)
         elif type(self) is MultiDerivedSignal:
             self._metadata["read_only"] = True
-            self.on_put_calculate = None
+            self.calculate_on_put = None
 
         self.attrs = list(attrs)
         for attr_name in self.attrs:
@@ -571,8 +598,8 @@ class MultiDerivedSignal(AggregateSignal):
         Parameters
         ----------
         value : OphydDataType
-            The value to set.  This is sent to the ``on_put`` function to
-            determine which values to write to which signals.
+            The value to set.  This is sent to the ``calculate_on_put``
+            function to determine which values to write to which signals.
         callback : callable
             Callback for when the put has completed.
         timeout : float, optional
@@ -597,13 +624,21 @@ class MultiDerivedSignal(AggregateSignal):
         timeout: Optional[float] = None,
         settle_time: Optional[float] = None
     ) -> ophyd.status.StatusBase:
-        if self.on_put_calculate is None:
+        if self.calculate_on_put is None:
             raise ReadOnlyError(
                 f"{self.name} is read-only. "
-                f"`on_put` function not defined for {self.name} "
+                f"`calculate_on_put` function not defined for {self.name} "
                 f"({type(self).__name__})."
             )
-        to_write = self.on_put_calculate(value) or []
+        to_write = self.calculate_on_put(value) or {}
+        if not isinstance(to_write, Mapping):
+            raise RuntimeError(
+                f"Internal error: "
+                f"{self.calculate_on_put.__name__} for {self.name} failed to "
+                f"return an appropriate signal-to-value dictionary. Got: "
+                f"{type(to_write).__name__}.  Please contact your POC to get "
+                f"this issue fixed."
+            )
         return set_many(to_write, owner=self)
 
 
