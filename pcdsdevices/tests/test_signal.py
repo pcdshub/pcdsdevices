@@ -207,7 +207,7 @@ def test_editmd_signal():
 
 @pytest.fixture(params=["method", "func"])
 def multi_derived_ro(request) -> Device:
-    class MultiDerived1(Device):
+    class MultiDerivedRO(Device):
         if request.param == "method":
             def _do_sum(self, items: SignalToValue) -> int:
                 return sum(value for value in items.values())
@@ -224,7 +224,7 @@ def multi_derived_ro(request) -> Device:
         b = Cpt(FakeEpicsSignal, "b")
         c = Cpt(FakeEpicsSignal, "c")
 
-    dev = MultiDerived1(name="dev")
+    dev = MultiDerivedRO(name="dev")
     dev.a.sim_put(1)
     dev.b.sim_put(2)
     dev.c.sim_put(3)
@@ -288,7 +288,7 @@ def test_multi_derived_connectivity(multi_derived_ro: Device):
 
 @pytest.fixture
 def multi_derived_rw() -> Device:
-    class MultiDerived1(Device):
+    class MultiDerivedRW(Device):
         def _do_sum(self, items: SignalToValue) -> int:
             return sum(value for value in items.values())
 
@@ -310,7 +310,7 @@ def multi_derived_rw() -> Device:
         b = Cpt(FakeEpicsSignal, "b")
         c = Cpt(FakeEpicsSignal, "c")
 
-    dev = MultiDerived1(name="dev")
+    dev = MultiDerivedRW(name="dev")
     dev.a.sim_put(1)
     dev.b.sim_put(2)
     dev.c.sim_put(3)
