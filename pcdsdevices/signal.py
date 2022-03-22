@@ -190,11 +190,12 @@ class AggregateSignal(Signal):
             siginfo.value is not None for siginfo in self._signals.values()
         )
 
-    def _update_readback(self):
-        """Recalculate the state."""
+    def _update_readback(self) -> Optional[OphydDataType]:
+        """Recalculate the readback value."""
         with self._lock:
             if self._have_values:
                 self._readback = self._calc_readback()
+                return self._readback
 
     def get(self, **kwargs):
         """Update all values and recalculate."""
@@ -208,12 +209,6 @@ class AggregateSignal(Signal):
         raise NotImplementedError('put should be overriden in the subclass')
 
     def subscribe(self, cb, event_type=None, run=True):
-        """
-        Set up a callback function to run at specific times.
-
-        See the `ophyd` documentation for details.
-        """
-
         cid = super().subscribe(cb, event_type=event_type, run=run)
         recognized_event = event_type in (None, self.SUB_VALUE, self.SUB_META)
         if recognized_event and not self._has_subscribed:
@@ -223,10 +218,10 @@ class AggregateSignal(Signal):
 
         return cid
 
+    subscribe.__doc__ = ophyd.ophydobj.OphydObject.subscribe.__doc__
+
     def _setup_subscriptions(self):
-        """
-        Subscribe to all relevant signals.
-        """
+        """Subscribe to all relevant signals."""
         if self._has_subscribed:
             return
 
@@ -253,18 +248,20 @@ class AggregateSignal(Signal):
             self._has_subscribed = True
 
     def wait_for_connection(self, *args, **kwargs):
+        """Wait for underlying signals to connect."""
         self._setup_subscriptions()
         return super().wait_for_connection(*args, **kwargs)
 
     def _signal_meta_callback(
-        self, *args, connected: bool = False, obj: Signal, **kwargs
+        self, *, connected: bool = False, obj: Signal, **kwargs
     ) -> None:
+        """This is a SUB_META callback from one of the aggregated signals."""
         with self._check_connectivity():
             self._signals[obj].connected = connected
 
-    def _signal_value_callback(self, *args, **kwargs):
+    def _signal_value_callback(self, *, obj: Signal, **kwargs):
+        """This is a SUB_VALUE callback from one of the aggregated signals."""
         kwargs.pop('sub_type')
-        sig = kwargs.pop('obj')
         kwargs.pop('old_value')
         value = kwargs['value']
         with self._lock:
@@ -273,7 +270,7 @@ class AggregateSignal(Signal):
             # This allows us to run subs without EPICS gets
             # Run metadata callbacks before the value callback, if appropriate
             with self._check_connectivity() as connectivity_info:
-                value = self._insert_value(sig, value)
+                value = self._insert_value(obj, value)
             if connectivity_info["sent_value_callback"]:
                 # Avoid sending a duplicate SUB_VALUE event since the
                 # connectivity check above did it already
