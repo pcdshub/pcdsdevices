@@ -3,12 +3,14 @@ import threading
 from unittest.mock import Mock
 
 import pytest
+from ophyd import Component as Cpt
+from ophyd import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.sim import FakeEpicsSignal
 
 from .. import signal as signal_module
-from ..signal import (AvgSignal, PytmcSignal, SignalEditMD,
-                      UnitConversionDerivedSignal)
+from ..signal import (AvgSignal, MultiDerivedSignal, PytmcSignal, SignalEditMD,
+                      SignalToValue, UnitConversionDerivedSignal)
 
 logger = logging.getLogger(__name__)
 
@@ -198,3 +200,75 @@ def test_editmd_signal():
     # Metadata updates are threaded! Need to wait a moment!
     ev.wait(timeout=1)
     assert cache['precision'] == 4
+
+
+@pytest.fixture()
+def multi_derived_1() -> Device:
+    class MultiDerived1(Device):
+        def _do_sum(items: SignalToValue) -> int:
+            return sum(value for value in items.values())
+
+        cpt = Cpt(
+            MultiDerivedSignal,
+            attrs=["a", "b", "c"],
+            calculate=_do_sum,
+        )
+        a = Cpt(FakeEpicsSignal, "a")
+        b = Cpt(FakeEpicsSignal, "b")
+        c = Cpt(FakeEpicsSignal, "c")
+
+    dev = MultiDerived1(name="dev")
+    dev.a.sim_put(1)
+    dev.b.sim_put(2)
+    dev.c.sim_put(3)
+    return dev
+
+
+def test_multi_derived_basic(multi_derived_1: Device):
+    assert multi_derived_1.connected
+    assert multi_derived_1.cpt.get() == (1 + 2 + 3)
+
+
+def test_multi_derived_sub(multi_derived_1: Device):
+    ev = threading.Event()
+    result = None
+
+    def subscription(*args, value, **kwargs):
+        nonlocal result
+        result = value
+        ev.set()
+
+    multi_derived_1.cpt.subscribe(subscription)
+    ev.wait(timeout=0.5)
+    assert result == multi_derived_1.cpt.get()
+
+
+def test_multi_derived_connectivity(multi_derived_1: Device):
+    def meta_sub(*args, **kwargs):
+        nonlocal connected
+        # print("meta sub!")
+        connected = kwargs.pop("connected")
+        ev.set()
+
+    connected = None
+
+    ev = threading.Event()
+    multi_derived_1.cpt.subscribe(meta_sub, event_type="meta", run=True)
+    ev.wait(timeout=0.5)
+    assert multi_derived_1.cpt.connected
+    assert connected
+
+    ev = threading.Event()
+    # Hack in metadata for connectivity
+    multi_derived_1.a._metadata["connected"] = False
+    multi_derived_1.a._run_metadata_callbacks()
+    ev.wait(timeout=0.5)
+    assert multi_derived_1.cpt.connected is False
+    assert connected is False
+
+    ev = threading.Event()
+    multi_derived_1.a._metadata["connected"] = True
+    multi_derived_1.a._run_metadata_callbacks()
+    ev.wait(timeout=0.5)
+    assert multi_derived_1.cpt.connected
+    assert connected is True
