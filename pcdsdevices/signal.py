@@ -16,7 +16,7 @@ import logging
 import numbers
 import typing
 from threading import RLock
-from typing import Dict, Generator, Mapping, Optional, Protocol, Union
+from typing import Dict, Generator, Mapping, Optional, Union
 
 import numpy as np
 import ophyd
@@ -26,7 +26,8 @@ from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
 from ophyd.utils import ReadOnlyError
 from pytmc.pragmas import normalize_io
 
-from .type_hints import Number, OphydCallback, OphydDataType
+from .type_hints import (MdsCalculateFunction, MdsOnPutFunction, Number,
+                         OphydCallback, OphydDataType)
 from .utils import convert_unit, maybe_make_method
 
 logger = logging.getLogger(__name__)
@@ -136,10 +137,22 @@ def is_meek_ophyd_object(obj: ophyd.ophydobj.OphydObject):
 
 @dataclasses.dataclass
 class _AggregateSignalState:
+    """
+    This class holds per-Signal state information when used as part of an
+    AggregateSignal.
+
+    It includes a cache of the last value, connectivity status, and callback
+    identifiers from ophyd.
+    """
+    #: The signal itself
     signal: Signal
+    #: Is the signal connected according to its metadata callback?
     connected: bool = False
+    #: The last value retrieved from a value callback, or a direct get request.
     value: Optional[OphydDataType] = None
+    #: The value subscription callback ID (None if not yet subscribed)
     value_cbid: Optional[int] = None
+    #: The meta subscription callback ID (None if not yet subscribed)
     meta_cbid: Optional[int] = None
 
 
@@ -154,7 +167,8 @@ class AggregateSignal(Signal):
     For simple per-device usage, see :class:`MultiDerivedSignal`.
     """
 
-    _update_only_on_change = True
+    _update_only_on_change: bool = True
+    _has_subscribed: bool
     _signals: Dict[Signal, _AggregateSignalState]
 
     def __init__(self, *, name, **kwargs):
@@ -451,11 +465,8 @@ class PVStateSignal(AggregateSignal):
         self.parent.move(value, **kwargs)
 
 
-SignalToValue = Dict[ophyd.Signal, OphydDataType]
-
-
 def set_many(
-    to_set: SignalToValue,
+    to_set: Dict[ophyd.Signal, OphydDataType],
     *,
     owner: Optional[ophyd.ophydobj.OphydObject],
     timeout: Optional[Number] = None,
@@ -493,18 +504,6 @@ def set_many(
     return status
 
 
-class CalculateFunction(Protocol):
-    """Calculation handler for MultiDerivedSignal."""
-    def __call__(self, signal_to_value: SignalToValue) -> OphydDataType:
-        ...
-
-
-class OnPutFunction(Protocol):
-    """Put handler for MultiDerivedSignal."""
-    def __call__(self, value: OphydDataType) -> Optional[SignalToValue]:
-        ...
-
-
 class MultiDerivedSignal(AggregateSignal):
     """
     Signal derived from multiple signals in the device hierarchy.
@@ -525,12 +524,12 @@ class MultiDerivedSignal(AggregateSignal):
         Attribute names of signals that are used to generate a value for this
         signal.
 
-    calculate : CalculationFunction
+    calculate : MdsCalculationFunction
         A calculation function that takes in a dictionary of signals to values.
         It should be made to return a value of a compatible ophyd data type,
         such as an integer, float, or an array.
 
-    calculate_on_put : CalculationFunction
+    calculate_on_put : MdsOnPutFunction
         A calculation function that allows this MultiDerivedSignal to be
         read-write instead of just read-only.  It should take in a single value
         and return a dictionary of signal-to-value to write, each with a
@@ -539,15 +538,15 @@ class MultiDerivedSignal(AggregateSignal):
         ``Status`` object.
     """
 
-    calculate: CalculateFunction
-    calculate_on_put: Optional[OnPutFunction]
+    calculate: MdsCalculateFunction
+    calculate_on_put: Optional[MdsOnPutFunction]
 
     def __init__(
         self,
         *args,
         attrs: list[str],
-        calculate: Optional[CalculateFunction] = None,
-        calculate_on_put: Optional[OnPutFunction] = None,
+        calculate: Optional[MdsCalculateFunction] = None,
+        calculate_on_put: Optional[MdsOnPutFunction] = None,
         timeout: Optional[Number] = None,
         settle_time: Optional[Number] = None,
         **kwargs

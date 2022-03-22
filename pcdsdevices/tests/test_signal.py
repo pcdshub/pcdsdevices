@@ -10,9 +10,8 @@ from ophyd.sim import FakeEpicsSignal
 
 from .. import signal as signal_module
 from ..signal import (AvgSignal, MultiDerivedSignal, PytmcSignal,
-                      ReadOnlyError, SignalEditMD, SignalToValue,
-                      UnitConversionDerivedSignal)
-from ..type_hints import OphydDataType
+                      ReadOnlyError, SignalEditMD, UnitConversionDerivedSignal)
+from ..type_hints import OphydDataType, SignalToValue
 
 logger = logging.getLogger(__name__)
 
