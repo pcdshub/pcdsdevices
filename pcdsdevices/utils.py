@@ -10,7 +10,7 @@ import shutil
 import sys
 import threading
 import time
-from collections import Iterable
+from collections.abc import Iterable
 from functools import reduce
 from types import MethodType
 from typing import Callable, Dict, Iterator, Optional, Union
