@@ -26,9 +26,10 @@ from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
 from ophyd.utils import ReadOnlyError
 from pytmc.pragmas import normalize_io
 
+from . import utils
 from .type_hints import (MdsCalculateFunction, MdsOnPutFunction, Number,
                          OphydCallback, OphydDataType)
-from .utils import convert_unit, maybe_make_method
+from .utils import convert_unit
 
 logger = logging.getLogger(__name__)
 
@@ -465,45 +466,6 @@ class PVStateSignal(AggregateSignal):
         self.parent.move(value, **kwargs)
 
 
-def set_many(
-    to_set: Dict[ophyd.Signal, OphydDataType],
-    *,
-    owner: Optional[ophyd.ophydobj.OphydObject],
-    timeout: Optional[Number] = None,
-    settle_time: Optional[Number] = None,
-    raise_on_set_failure: bool = False
-) -> ophyd.status.StatusBase:
-    """
-    Call ``set`` on all given signal-to-value pairs with a single Status
-    return value.
-    """
-    statuses = []
-    log = owner.log if owner is not None else logger
-    for signal, value in to_set.items():
-        try:
-            st = signal.set(
-                value, timeout=timeout, settle_time=settle_time
-            )
-        except Exception:
-            log.exception(
-                "Failed to set %s to %s", signal.name, value
-            )
-            if raise_on_set_failure:
-                raise
-        else:
-            statuses.append(st)
-
-    if not statuses:
-        st = ophyd.status.Status(obj=owner)
-        st.set_finished()
-        return st
-
-    status = statuses[0]
-    for st in statuses[1:]:
-        status = ophyd.status.AndStatus(status, st)
-    return status
-
-
 class MultiDerivedSignal(AggregateSignal):
     """
     Signal derived from multiple signals in the device hierarchy.
@@ -556,7 +518,7 @@ class MultiDerivedSignal(AggregateSignal):
         self.settle_time = settle_time
 
         if calculate is not None:
-            self.calculate = maybe_make_method(calculate, self)
+            self.calculate = utils.maybe_make_method(calculate, self)
         elif not hasattr(self, "calculate"):
             raise ValueError(
                 "The `calculate` argument must be provided for non-subclassed "
@@ -566,7 +528,9 @@ class MultiDerivedSignal(AggregateSignal):
             )
 
         if calculate_on_put is not None:
-            self.calculate_on_put = maybe_make_method(calculate_on_put, self)
+            self.calculate_on_put = utils.maybe_make_method(
+                calculate_on_put, self
+            )
         elif type(self) is MultiDerivedSignal:
             self._metadata["read_only"] = True
             self.calculate_on_put = None
@@ -638,7 +602,7 @@ class MultiDerivedSignal(AggregateSignal):
                 f"{type(to_write).__name__}.  Please contact your POC to get "
                 f"this issue fixed."
             )
-        return set_many(to_write, owner=self)
+        return utils.set_many(to_write, owner=self)
 
 
 class AvgSignal(Signal):

@@ -13,13 +13,14 @@ import time
 from collections import Iterable
 from functools import reduce
 from types import MethodType
-from typing import Callable, Iterator, Optional, Union
+from typing import Callable, Dict, Iterator, Optional, Union
 
 import ophyd
 import pint
 import prettytable
 
 from ._html import collapse_list_head, collapse_list_tail
+from .type_hints import Number, OphydDataType
 
 try:
     import termios
@@ -461,6 +462,63 @@ class HelpfulIntEnum(enum.IntEnum, metaclass=HelpfulIntEnumMeta):
             with the input identifiers.
         """
         return set(cls.__members__.values()) - cls.include(identifiers)
+
+
+def set_many(
+    to_set: Dict[ophyd.Signal, OphydDataType],
+    *,
+    owner: Optional[ophyd.ophydobj.OphydObject] = None,
+    timeout: Optional[Number] = None,
+    settle_time: Optional[Number] = None,
+    raise_on_set_failure: bool = False
+) -> ophyd.status.StatusBase:
+    """
+    Call ``set`` on all given signal-to-value pairs with a single Status
+    return value.
+
+    Returns
+    -------
+    status : ophyd.Status.StatusBase
+        One Status or AndStatus instance that reflects the completion status of
+        the setting all signal to the provided values.
+
+    owner : OphydObject, optional
+        The owner object, to be used for logging / Status object attribution.
+
+    timeout : float, optional
+        Per-signal timeout to configure during set.
+
+    settle_time : float, optional
+        Per-signal settle time to configure during set.
+
+    raise_on_set_failure : bool, optional
+        Raise if any of the ``set`` calls fail.
+    """
+    statuses = []
+    log = owner.log if owner is not None else logger
+    for signal, value in to_set.items():
+        try:
+            st = signal.set(
+                value, timeout=timeout, settle_time=settle_time
+            )
+        except Exception:
+            log.exception(
+                "Failed to set %s to %s", signal.name, value
+            )
+            if raise_on_set_failure:
+                raise
+        else:
+            statuses.append(st)
+
+    if not statuses:
+        st = ophyd.status.Status(obj=owner)
+        st.set_finished()
+        return st
+
+    status = statuses[0]
+    for st in statuses[1:]:
+        status = ophyd.status.AndStatus(status, st)
+    return status
 
 
 def maybe_make_method(
