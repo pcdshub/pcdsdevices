@@ -476,11 +476,10 @@ def set_many(
     Call ``set`` on all given signal-to-value pairs with a single Status
     return value.
 
-    Returns
-    -------
-    status : ophyd.Status.StatusBase
-        One Status or AndStatus instance that reflects the completion status of
-        the setting all signal to the provided values.
+    Parameters
+    ----------
+    to_set : Dict[ophyd.Signal, OphydDataType]
+        Dictionary of Signal to data to ``set``.
 
     owner : OphydObject, optional
         The owner object, to be used for logging / Status object attribution.
@@ -493,6 +492,12 @@ def set_many(
 
     raise_on_set_failure : bool, optional
         Raise if any of the ``set`` calls fail.
+
+    Returns
+    -------
+    status : ophyd.Status.StatusBase
+        One Status or AndStatus instance that reflects the completion status of
+        the setting all signal to the provided values.
     """
     statuses = []
     log = owner.log if owner is not None else logger
