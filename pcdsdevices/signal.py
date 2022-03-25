@@ -122,20 +122,6 @@ class FakePytmcSignalRO(FakePytmcSignal, FakeEpicsSignalRO):
 fake_device_cache[PytmcSignal] = FakePytmcSignal
 
 
-def is_meek_ophyd_object(obj: ophyd.ophydobj.OphydObject):
-    """
-    Can you expect the ophyd object to ever give subscription callbacks?
-
-    If not, pcdsdevices considers that object to be "meek" or quiet.  This can
-    be useful to determine whether or not you should wait on a subscription
-    callback to happen before continuing.
-    """
-    if not isinstance(obj, ophyd.ophydobj.OphydObject):
-        raise ValueError(f"{obj} is not an ophyd object")
-
-    return any(isinstance(obj, cls) for cls in fake_device_cache.values())
-
-
 @dataclasses.dataclass
 class _AggregateSignalState:
     """
@@ -172,8 +158,8 @@ class AggregateSignal(Signal):
     _has_subscribed: bool
     _signals: Dict[Signal, _AggregateSignalState]
 
-    def __init__(self, *, name, **kwargs):
-        super().__init__(name=name, **kwargs)
+    def __init__(self, *, name, value=None, **kwargs):
+        super().__init__(name=name, value=value, **kwargs)
         self._has_subscribed = False
         self._lock = RLock()
         self._signals = {}
@@ -206,22 +192,42 @@ class AggregateSignal(Signal):
         )
 
     def _update_readback(self) -> Optional[OphydDataType]:
-        """Recalculate the readback value."""
+        """
+        Recalculate the readback value.
+
+        Requires that the signal info cache has been updated prior to the
+        call.  This information could be sourced via subscriptions or manually
+        queried updates as in ``.get()``.
+
+        Returns
+        -------
+        value : OphydDataType or None
+            This is the newly-calculated value, if available. If there are
+            missing values in the cache, the previously-calculated readback
+            value (or the default passed into the ``Signal`` instance or
+            ``None``) will be returned.
+        """
         with self._lock:
             if self._have_values:
                 self._readback = self._calc_readback()
-                return self._readback
+            return self._readback
 
     def get(self, **kwargs):
-        """Update all values and recalculate."""
+        """
+        Update all values and recalculate.
+
+        Parameters
+        ----------
+        **kwargs :
+            Keyword arguments are passed to each ``signal.get(**kwargs)``.
+        """
         with self._lock:
             for signal, siginfo in self._signals.items():
                 siginfo.value = signal.get(**kwargs)
-            self._update_readback()
-            return self._readback
+            return self._update_readback()
 
     def put(self, value, **kwargs):
-        raise NotImplementedError('put should be overriden in the subclass')
+        raise NotImplementedError('put should be overridden in a subclass')
 
     def subscribe(self, cb, event_type=None, run=True):
         cid = super().subscribe(cb, event_type=event_type, run=run)
@@ -254,12 +260,9 @@ class AggregateSignal(Signal):
                     run=True,
                     event_type=signal.SUB_META,
                 )
-
-                # Run the subscription now, only if it's a signal that doesn't
-                # normally run callbacks.
                 siginfo.value_cbid = signal.subscribe(
                     self._signal_value_callback,
-                    run=is_meek_ophyd_object(signal),
+                    run=True,
                 )
         except Exception:
             self.log.exception("Failed to subscribe to signals")
@@ -299,13 +302,18 @@ class AggregateSignal(Signal):
     @property
     def connected(self) -> bool:
         """Are all relevant signals connected?"""
-        # Subscriptions are used to see if the device is connected:
-        self._setup_subscriptions()
-        # Rely on the signal info dataclass information instead of the signals
-        # themselves to determine connectivity status:
-        return not self._destroyed and all(
-            siginfo.connected and siginfo.value is not None
-            for siginfo in self._signals.values()
+        if self._destroyed:
+            return False
+
+        if self._has_subscribed:
+            return all(
+                siginfo.connected and siginfo.value is not None
+                for siginfo in self._signals.values()
+            )
+
+        return all(
+            signal.connected and signal.get() is not None
+            for signal in self._signals
         )
 
     @contextlib.contextmanager
