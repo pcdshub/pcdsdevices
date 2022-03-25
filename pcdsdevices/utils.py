@@ -549,6 +549,13 @@ def maybe_make_method(
     """
     if func is None:
         return None
+
+    if not callable(func):
+        raise ValueError(
+            f"The provided ``func`` is not callable: {func!r} is of "
+            f"type {type(func).__name__}"
+        )
+
     sig = inspect.signature(func)
     if "self" in sig.parameters and list(sig.parameters)[0] == "self":
         return MethodType(func, owner)

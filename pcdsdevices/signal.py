@@ -538,6 +538,13 @@ class MultiDerivedSignal(AggregateSignal):
             )
 
         if calculate_on_put is not None:
+            if isinstance(self, SignalRO):
+                raise ValueError(
+                    f"Read-only signal classes ({type(self).__name__}) cannot"
+                    f" use a ``calculate_on_put`` function.  Did you mean to "
+                    f"use MultiDerivedSignal instead of MultiDerivedSignalRO?"
+                )
+
             self.calculate_on_put = utils.maybe_make_method(
                 calculate_on_put, self
             )
@@ -625,6 +632,11 @@ class MultiDerivedSignal(AggregateSignal):
                 f"this issue fixed."
             )
         return utils.set_many(to_write, owner=self)
+
+
+class MultiDerivedSignalRO(SignalRO, MultiDerivedSignal):
+    """Read-only variant of a MultiDerivedSignal."""
+    ...
 
 
 class AvgSignal(Signal):

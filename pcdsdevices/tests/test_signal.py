@@ -12,8 +12,8 @@ from ophyd.sim import FakeEpicsSignal
 
 from .. import signal as signal_module
 from ..signal import (AggregateSignal, AvgSignal, MultiDerivedSignal,
-                      PytmcSignal, ReadOnlyError, SignalEditMD,
-                      UnitConversionDerivedSignal)
+                      MultiDerivedSignalRO, PytmcSignal, ReadOnlyError,
+                      SignalEditMD, UnitConversionDerivedSignal)
 from ..type_hints import OphydDataType, SignalToValue
 
 logger = logging.getLogger(__name__)
@@ -217,7 +217,7 @@ def multi_derived_ro(request) -> Device:
                 return sum(value for value in items.values())
 
         cpt = Cpt(
-            MultiDerivedSignal,
+            MultiDerivedSignalRO,
             attrs=["a", "b", "c"],
             calculate=_do_sum,
         )
@@ -261,6 +261,30 @@ def test_multi_derived_sub(multi_derived_ro: Device):
 def test_multi_derived_ro_no_put(multi_derived_ro: Device):
     with pytest.raises(ReadOnlyError):
         multi_derived_ro.cpt.put(0)
+
+
+def test_multi_derived_ro_no_put_func():
+    with pytest.raises(ValueError):
+        MultiDerivedSignalRO(
+            calculate_on_put=test_multi_derived_bad_instantiation,
+            name="", attrs=[]
+        )
+
+
+def test_multi_derived_ro_not_callable():
+    class MultiDerivedRO(Device):
+        cpt = Cpt(
+            MultiDerivedSignalRO,
+            attrs=["a", "b", "c"],
+            calculate="not_callable",
+        )
+        a = Cpt(FakeEpicsSignal, "a")
+        b = Cpt(FakeEpicsSignal, "b")
+        c = Cpt(FakeEpicsSignal, "c")
+
+    with pytest.raises(ValueError):
+        # Not callable
+        MultiDerivedRO(name="dev")
 
 
 def test_multi_derived_connectivity(multi_derived_ro: Device):
