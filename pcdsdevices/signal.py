@@ -311,10 +311,9 @@ class AggregateSignal(Signal):
                 for siginfo in self._signals.values()
             )
 
-        return all(
-            signal.connected and signal.get() is not None
-            for signal in self._signals
-        )
+        # Only check connectivity status of the signal; cross fingers that it
+        # reflects both being connected and having a not-None value.
+        return all(signal.connected for signal in self._signals)
 
     @contextlib.contextmanager
     def _check_connectivity(self) -> Generator[Dict[str, bool], None, None]:
