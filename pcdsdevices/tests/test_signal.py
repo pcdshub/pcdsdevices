@@ -11,8 +11,9 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.sim import FakeEpicsSignal
 
 from .. import signal as signal_module
-from ..signal import (AvgSignal, MultiDerivedSignal, PytmcSignal,
-                      ReadOnlyError, SignalEditMD, UnitConversionDerivedSignal)
+from ..signal import (AggregateSignal, AvgSignal, MultiDerivedSignal,
+                      PytmcSignal, ReadOnlyError, SignalEditMD,
+                      UnitConversionDerivedSignal)
 from ..type_hints import OphydDataType, SignalToValue
 
 logger = logging.getLogger(__name__)
@@ -447,3 +448,48 @@ def test_multi_derived_bad_instantiation():
 
     with pytest.raises(ValueError):
         BadDevice2(name="dev")
+
+
+def test_aggregate_signal_bad_instantiation_attrs():
+    sig = AggregateSignal(name="sig")
+    with pytest.raises(RuntimeError):
+        # Not in a device hierarchy
+        sig.add_signal_by_attr_name("attr")
+
+    assert hasattr(sig, "_has_subscribed")  # api change guard
+    sig._has_subscribed = True
+    with pytest.raises(RuntimeError):
+        # Already subscribed
+        sig.add_signal_by_attr_name("attr")
+
+
+@pytest.fixture(
+    params=["rw", "ro"]
+)
+def any_multi_derived(request, multi_derived_ro, multi_derived_rw):
+    if request.param == "rw":
+        return multi_derived_rw
+    return multi_derived_ro
+
+
+def test_multi_derived_connectivity_with_subs(any_multi_derived):
+    # This starts subscriptions, and the following property check will rely on
+    # those subscriptions.
+    any_multi_derived.cpt.wait_for_connection()
+    assert any_multi_derived.cpt.connected
+    # Check the higher-level device too
+    assert any_multi_derived.connected
+    any_multi_derived.destroy()
+    assert not any_multi_derived.cpt.connected
+
+
+def test_multi_derived_connectivity_without_subs(any_multi_derived):
+    # Ensure the underlying signals report connected prior to checking the
+    # multi-derived signal
+    for sig in any_multi_derived.cpt.signals:
+        sig.wait_for_connection()
+    assert any_multi_derived.cpt.connected
+    # Check the higher-level device too
+    assert any_multi_derived.connected
+    any_multi_derived.destroy()
+    assert not any_multi_derived.cpt.connected

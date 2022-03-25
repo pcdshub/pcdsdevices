@@ -175,7 +175,9 @@ class AggregateSignal(Signal):
             The result of the calculation.
         """
 
-        raise NotImplementedError('Subclasses must implement _calc_readback')
+        raise NotImplementedError(
+            'Subclasses must implement _calc_readback'
+        )  # pragma nocover
 
     def _insert_value(self, signal, value):
         """Update the cache with one value and recalculate."""
@@ -227,7 +229,9 @@ class AggregateSignal(Signal):
             return self._update_readback()
 
     def put(self, value, **kwargs):
-        raise NotImplementedError('put should be overridden in a subclass')
+        raise NotImplementedError(
+            'put should be overridden in a subclass'
+        )  # pragma nocover
 
     def subscribe(self, cb, event_type=None, run=True):
         cid = super().subscribe(cb, event_type=event_type, run=run)
@@ -243,10 +247,11 @@ class AggregateSignal(Signal):
 
     def _setup_subscriptions(self):
         """Subscribe to all relevant signals."""
-        if self._has_subscribed:
-            return
+        with self._lock:
+            if self._has_subscribed:
+                return
 
-        self._has_subscribed = True
+            self._has_subscribed = True
 
         try:
             for signal, siginfo in self._signals.items():
