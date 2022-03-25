@@ -542,7 +542,7 @@ class MultiDerivedSignal(AggregateSignal):
                 calculate_on_put, self
             )
         elif type(self) is MultiDerivedSignal:
-            self._metadata["read_only"] = True
+            self._metadata["write_access"] = False
             self.calculate_on_put = None
 
         self.attrs = list(attrs)
