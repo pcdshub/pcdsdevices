@@ -238,8 +238,6 @@ class AggregateSignal(Signal):
         recognized_event = event_type in (None, self.SUB_VALUE, self.SUB_META)
         if recognized_event and not self._has_subscribed:
             self._setup_subscriptions()
-            # Ensure that the cache is full of values
-            self.get()
 
         return cid
 
