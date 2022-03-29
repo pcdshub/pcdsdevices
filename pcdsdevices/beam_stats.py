@@ -86,6 +86,11 @@ class BeamEnergyRequest(PVPositionerDone):
         '{prefix}:USER:MCC:EPHOT{line_text}:SET{bunch}',
         kind='hinted',
     )
+    ref = FCpt(
+        EpicsSignal,
+        '{prefix}:USER:MCC:EPHOT{line_text}:REF{bunch}',
+        kind='normal',
+    )
 
     line_text_dict = {
         'K': 'K',
