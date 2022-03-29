@@ -518,6 +518,15 @@ class VRCNO(VVCNO, LightpathMixin):
         self._removed = lightpath_values[self.open_limit]['value']
 
 
+class VRCDA(VRC, VRCNO):
+    """
+    Gate valve, dual acting.
+
+    Has all the normally open and all the normally closed PVs.
+    """
+    ...
+
+
 class VCN(Device):
     """Class for Variable Controlled Needle Valves."""
     position_readback = Cpt(
