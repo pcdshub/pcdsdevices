@@ -3,9 +3,10 @@ Module for the various spectrometers.
 """
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
+from ophyd.signal import EpicsSignal
 
 from .device import GroupDevice
-from .epics_motor import BeckhoffAxisNoOffset, IMS, BeckhoffAxis
+from .epics_motor import IMS, BeckhoffAxis, BeckhoffAxisNoOffset
 from .interface import BaseInterface, LightpathMixin
 from .signal import InternalSignal, PytmcSignal
 
@@ -320,6 +321,14 @@ class TMOSpectrometer(BaseInterface, GroupDevice):
     yag_theta = Cpt(BeckhoffAxis, ':MMS:09', kind='normal')
 
 
+class IMSPatch(IMS):
+    user_setpoint = Cpt(EpicsSignal, ".VAL", limits=False, auto_monitor=True)
+
+    @property
+    def limits(self):
+        return (self.low_limit_travel.get(), self.high_limit_travel.get())
+
+
 class HXRSpectrometer(BaseInterface, GroupDevice):
     """
     HXR Single Shot Spectrometer motion components class.
@@ -335,17 +344,17 @@ class HXRSpectrometer(BaseInterface, GroupDevice):
 
     tab_component_names = True
 
-    xtaly = Cpt(IMS, ':441:MOTR', kind='normal',
+    xtaly = Cpt(IMSPatch, ':441:MOTR', kind='normal',
                 doc='crystal y')
-    th = Cpt(IMS, ':442:MOTR', kind='normal',
+    th = Cpt(IMSPatch, ':442:MOTR', kind='normal',
              doc='crystal angle')
-    tth = Cpt(IMS, ':443:MOTR', kind='normal',
+    tth = Cpt(IMSPatch, ':443:MOTR', kind='normal',
               doc='camera angle')
-    camd = Cpt(IMS, ':444:MOTR', kind='normal',
+    camd = Cpt(IMSPatch, ':444:MOTR', kind='normal',
                doc='camera distance')
-    camy = Cpt(IMS, ':447:MOTR', kind='normal',
+    camy = Cpt(IMSPatch, ':447:MOTR', kind='normal',
                doc='camera y')
-    iris = Cpt(IMS, ':445:MOTR', kind='normal',
+    iris = Cpt(IMSPatch, ':445:MOTR', kind='normal',
                doc='camera iris')
-    filter = Cpt(IMS, ':446:MOTR', kind='normal',
+    filter = Cpt(IMSPatch, ':446:MOTR', kind='normal',
                  doc='filter wheel, tbd if necessary')
