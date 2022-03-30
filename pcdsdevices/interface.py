@@ -844,7 +844,7 @@ class FltMvInterface(MvInterface):
         except ophyd.utils.LimitError:
             return
 
-    def tweak(self, **kwargs):
+    def tweak(self, scale=0.1):
         """
         Control this motor using the arrow keys.
 
@@ -858,7 +858,7 @@ class FltMvInterface(MvInterface):
             starting step size, default = 0.1
         """
 
-        return tweak_base(self, **kwargs)
+        return tweak_base(self, scale=scale)
 
     def set_position(self, position):
         """
