@@ -58,11 +58,11 @@ Maintenance
 
 Contributors
 ------------
-- espov
 - klauer
 - mbosum
 - nrwslac
-- spencera
+- spenc333
+- vespos
 - tangkong
 - zrylettc
 - zllentz
