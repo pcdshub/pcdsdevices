@@ -96,6 +96,7 @@ def test_pvstate_positioner_logic():
     lim_obj.states_enum['Unknown']
     with pytest.raises(KeyError):
         lim_obj.states_enum['defer']
+    lim_obj.destroy()
 
 
 def test_pvstate_positioner_describe():
@@ -105,6 +106,7 @@ def test_pvstate_positioner_describe():
     desc = lim_obj.state.describe()[lim_obj.state.name]
     assert len(desc['enum_strs']) == 3  # In, Out, Unknown
     assert desc['dtype'] == 'string'
+    lim_obj.destroy()
 
 
 def test_pvstate_positioner_sets():
@@ -129,6 +131,7 @@ def test_pvstate_positioner_sets():
 
     lim_obj2.state.put('IN')
     assert(lim_obj2.position == 'IN')
+    lim_obj2.destroy()
 
 
 def test_basic_subscribe():
@@ -139,7 +142,14 @@ def test_basic_subscribe():
     lim_obj.lowlim.put(1)
     lim_obj.highlim.put(1)
     lim_obj.highlim.put(0)
+
+    assert len(lim_obj.state._signals) == 2
+    for sig, info in lim_obj.state._signals.items():
+        assert info.value_cbid is not None, f"{sig.name} not subscribed"
     assert cb.called
+    lim_obj.destroy()
+    for sig, info in lim_obj.state._signals.items():
+        assert info.value_cbid is None, f"{sig.name} not unsubscribed"
 
 
 def test_staterecord_positioner():
@@ -159,6 +169,7 @@ def test_staterecord_positioner():
     state.subscribe(cb, event_type=state.SUB_READBACK, run=False)
     state.motor.user_readback.sim_put(1.23)
     assert cb.called
+    state.destroy()
 
 
 def test_state_status():
@@ -173,6 +184,7 @@ def test_state_status():
     assert status.done and status.success
     # Check our callback was cleared
     assert status.check_value not in lim_obj._callbacks[lim_obj.SUB_STATE]
+    lim_obj.destroy()
 
 
 class InconsistentState(StatePositioner):
@@ -280,3 +292,5 @@ def test_twincat_state_config_dynamic():
         getattr(fake_states3.state.config, name)
     with pytest.raises(AttributeError):
         fake_states3.state.config.state04
+
+    all_states.destroy()

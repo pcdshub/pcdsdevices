@@ -1,14 +1,20 @@
 import logging
 import threading
+import time
+from typing import Any
 from unittest.mock import Mock
 
 import pytest
+from ophyd import Component as Cpt
+from ophyd import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.sim import FakeEpicsSignal
 
 from .. import signal as signal_module
-from ..signal import (AvgSignal, PytmcSignal, SignalEditMD,
-                      UnitConversionDerivedSignal)
+from ..signal import (AggregateSignal, AvgSignal, MultiDerivedSignal,
+                      MultiDerivedSignalRO, PytmcSignal, ReadOnlyError,
+                      SignalEditMD, UnitConversionDerivedSignal)
+from ..type_hints import OphydDataType, SignalToValue
 
 logger = logging.getLogger(__name__)
 
@@ -198,3 +204,316 @@ def test_editmd_signal():
     # Metadata updates are threaded! Need to wait a moment!
     ev.wait(timeout=1)
     assert cache['precision'] == 4
+
+
+@pytest.fixture(params=["method", "func"])
+def multi_derived_ro(request) -> Device:
+    class MultiDerivedRO(Device):
+        if request.param == "method":
+            def _do_sum(self, items: SignalToValue) -> int:
+                return sum(value for value in items.values())
+        else:
+            def _do_sum(items: SignalToValue) -> int:
+                return sum(value for value in items.values())
+
+        cpt = Cpt(
+            MultiDerivedSignalRO,
+            attrs=["a", "b", "c"],
+            calculate=_do_sum,
+        )
+        a = Cpt(FakeEpicsSignal, "a")
+        b = Cpt(FakeEpicsSignal, "b")
+        c = Cpt(FakeEpicsSignal, "c")
+
+    dev = MultiDerivedRO(name="dev")
+    dev.a.sim_put(1)
+    dev.b.sim_put(2)
+    dev.c.sim_put(3)
+    yield dev
+    dev.destroy()
+
+
+def test_multi_derived_basic(multi_derived_ro: Device):
+    assert multi_derived_ro.cpt.signals == [
+        multi_derived_ro.a,
+        multi_derived_ro.b,
+        multi_derived_ro.c,
+    ]
+
+    multi_derived_ro.wait_for_connection()
+    assert multi_derived_ro.connected
+    assert multi_derived_ro.cpt.get() == (1 + 2 + 3)
+
+
+def test_multi_derived_sub(multi_derived_ro: Device):
+    ev = threading.Event()
+    values = []
+
+    def subscription(*args, value, **kwargs):
+        values.append(value)
+        ev.set()
+
+    multi_derived_ro.cpt.subscribe(subscription)
+    wait_until_value(ev, values, waiting_value=6)
+    assert values[-1] == multi_derived_ro.cpt.get()
+
+
+def test_multi_derived_ro_no_put(multi_derived_ro: Device):
+    with pytest.raises(ReadOnlyError):
+        multi_derived_ro.cpt.put(0)
+
+
+def test_multi_derived_ro_no_put_func():
+    with pytest.raises(ValueError):
+        MultiDerivedSignalRO(
+            calculate_on_put=test_multi_derived_bad_instantiation,
+            name="", attrs=[]
+        )
+
+
+def test_multi_derived_ro_not_callable():
+    class MultiDerivedRO(Device):
+        cpt = Cpt(
+            MultiDerivedSignalRO,
+            attrs=["a", "b", "c"],
+            calculate="not_callable",
+        )
+        a = Cpt(FakeEpicsSignal, "a")
+        b = Cpt(FakeEpicsSignal, "b")
+        c = Cpt(FakeEpicsSignal, "c")
+
+    with pytest.raises(ValueError):
+        # Not callable
+        MultiDerivedRO(name="dev")
+
+
+def test_multi_derived_connectivity(multi_derived_ro: Device):
+    def meta_sub(*args, **kwargs):
+        nonlocal connected
+        connected = kwargs.pop("connected")
+        ev.set()
+
+    connected = None
+
+    ev = threading.Event()
+    multi_derived_ro.cpt.subscribe(meta_sub, event_type="meta", run=True)
+    ev.wait(timeout=0.5)
+    assert multi_derived_ro.cpt.connected
+    assert connected
+
+    ev = threading.Event()
+    # Hack in metadata for connectivity
+    multi_derived_ro.a._metadata["connected"] = False
+    multi_derived_ro.a._run_metadata_callbacks()
+    ev.wait(timeout=0.5)
+    assert multi_derived_ro.cpt.connected is False
+    assert connected is False
+
+    ev = threading.Event()
+    multi_derived_ro.a._metadata["connected"] = True
+    multi_derived_ro.a._run_metadata_callbacks()
+    ev.wait(timeout=0.5)
+    assert multi_derived_ro.cpt.connected
+    assert connected is True
+
+
+@pytest.fixture(
+    params=["subclassed", "arguments"]
+)
+def multi_derived_rw(request) -> Device:
+    class ReusableSignal(MultiDerivedSignal):
+        def calculate(self, items: SignalToValue) -> int:
+            return sum(value for value in items.values())
+
+        def calculate_on_put(self, value: OphydDataType) -> SignalToValue:
+            to_write = float(value / 3.)
+            return {
+                self.parent.a: to_write,
+                self.parent.b: to_write,
+                self.parent.c: to_write,
+            }
+
+    class MultiDerivedRW_Subclass(Device):
+        cpt = Cpt(ReusableSignal, attrs=["a", "b", "c"])
+        a = Cpt(FakeEpicsSignal, "a")
+        b = Cpt(FakeEpicsSignal, "b")
+        c = Cpt(FakeEpicsSignal, "c")
+
+    class MultiDerivedRW(Device):
+        def _do_sum(self, items: SignalToValue) -> int:
+            return sum(value for value in items.values())
+
+        def _write_handler(self, value: OphydDataType) -> SignalToValue:
+            to_write = float(value / 3.)
+            return {
+                self.parent.a: to_write,
+                self.parent.b: to_write,
+                self.parent.c: to_write,
+            }
+
+        cpt = Cpt(
+            MultiDerivedSignal,
+            attrs=["a", "b", "c"],
+            calculate=_do_sum,
+            calculate_on_put=_write_handler,
+        )
+        a = Cpt(FakeEpicsSignal, "a")
+        b = Cpt(FakeEpicsSignal, "b")
+        c = Cpt(FakeEpicsSignal, "c")
+
+    if request.param == "subclassed":
+        cls = MultiDerivedRW_Subclass
+    else:
+        cls = MultiDerivedRW
+
+    dev = cls(name="dev")
+    dev.a.sim_put(1)
+    dev.b.sim_put(2)
+    dev.c.sim_put(3)
+    yield dev
+    dev.destroy()
+
+
+def test_multi_derived_rw_wait_for_connection(multi_derived_rw: Device):
+    multi_derived_rw.cpt.wait_for_connection()
+    assert multi_derived_rw.cpt.connected
+    multi_derived_rw.wait_for_connection()
+    assert multi_derived_rw.connected
+    assert multi_derived_rw.cpt.get() == (1 + 2 + 3)
+
+
+def test_multi_derived_rw_basic(multi_derived_rw: Device):
+    multi_derived_rw.wait_for_connection()
+    assert multi_derived_rw.connected
+    assert multi_derived_rw.cpt.get() == (1 + 2 + 3)
+
+    multi_derived_rw.cpt.set(12).wait(timeout=1)
+    assert multi_derived_rw.get() == (12, 4., 4., 4.,)
+
+    multi_derived_rw.cpt.set(24).wait(timeout=1)
+    assert multi_derived_rw.get() == (24, 8., 8., 8.,)
+
+
+def wait_until_value(
+    ev: threading.Event, values: list, waiting_value: Any, timeout: float = 1.0
+) -> None:
+    """Wait until a value is added to the provided list."""
+    t0 = time.monotonic()
+    while not values or values[-1] != waiting_value:
+        try:
+            ev.wait(timeout / 10.)
+        except TimeoutError:
+            elapsed = time.monotonic() - t0
+            if elapsed > timeout:
+                raise
+        else:
+            ev.clear()
+
+
+def test_multi_derived_rw_sub(multi_derived_rw: Device):
+    def value_callback(*args, value, **kwargs):
+        values.append(value)
+        ev.set()
+
+    values = []
+    ev = threading.Event()
+
+    # The initial subscription request will make sure the underlying signals
+    # are subscribed to as well and run a callback in the background once
+    # everything connects.
+    multi_derived_rw.cpt.subscribe(
+        value_callback, event_type="value", run=False
+    )
+    wait_until_value(ev, values, waiting_value=6)
+
+    multi_derived_rw.cpt.put(12)
+    wait_until_value(ev, values, waiting_value=12)
+    assert multi_derived_rw.a.get() == 4.
+    assert multi_derived_rw.b.get() == 4.
+    assert multi_derived_rw.c.get() == 4.
+
+    multi_derived_rw.cpt.put(24)
+    wait_until_value(ev, values, waiting_value=24)
+    assert multi_derived_rw.a.get() == 8.
+    assert multi_derived_rw.b.get() == 8.
+    assert multi_derived_rw.c.get() == 8.
+
+
+def test_multi_derived_bad_instantiation():
+    # Missing calculation param
+
+    class BadDevice(Device):
+        cpt = Cpt(MultiDerivedSignal, attrs=["a", "b", "c"])
+        a = Cpt(FakeEpicsSignal, "a")
+        b = Cpt(FakeEpicsSignal, "b")
+        c = Cpt(FakeEpicsSignal, "c")
+
+    with pytest.raises(ValueError):
+        BadDevice(name="dev")
+
+    def do_sum(self, items: SignalToValue) -> int:
+        return sum(value for value in items.values())
+
+    # Bad attribute name
+
+    class BadDevice1(Device):
+        cpt = Cpt(
+            MultiDerivedSignal, calculate=do_sum, attrs=["a", "bad_attr"]
+        )
+        a = Cpt(FakeEpicsSignal, "a")
+
+    with pytest.raises(RuntimeError):
+        # AttributeError gets eaten up into a RuntimeError by ophyd
+        BadDevice1(name="dev")
+
+    # No attrs
+    class BadDevice2(Device):
+        cpt = Cpt(MultiDerivedSignal, calculate=do_sum, attrs=[])
+
+    with pytest.raises(ValueError):
+        BadDevice2(name="dev")
+
+
+def test_aggregate_signal_bad_instantiation_attrs():
+    sig = AggregateSignal(name="sig")
+    with pytest.raises(RuntimeError):
+        # Not in a device hierarchy
+        sig.add_signal_by_attr_name("attr")
+
+    assert hasattr(sig, "_has_subscribed")  # api change guard
+    sig._has_subscribed = True
+    with pytest.raises(RuntimeError):
+        # Already subscribed
+        sig.add_signal_by_attr_name("attr")
+
+
+@pytest.fixture(
+    params=["rw", "ro"]
+)
+def any_multi_derived(request, multi_derived_ro, multi_derived_rw):
+    if request.param == "rw":
+        return multi_derived_rw
+    return multi_derived_ro
+
+
+def test_multi_derived_connectivity_with_subs(any_multi_derived):
+    # This starts subscriptions, and the following property check will rely on
+    # those subscriptions.
+    any_multi_derived.cpt.wait_for_connection()
+    assert any_multi_derived.cpt.connected
+    # Check the higher-level device too
+    assert any_multi_derived.connected
+    any_multi_derived.destroy()
+    assert not any_multi_derived.cpt.connected
+
+
+def test_multi_derived_connectivity_without_subs(any_multi_derived):
+    # Ensure the underlying signals report connected prior to checking the
+    # multi-derived signal
+    for sig in any_multi_derived.cpt.signals:
+        sig.wait_for_connection()
+    assert any_multi_derived.cpt.connected
+    # Check the higher-level device too
+    assert any_multi_derived.connected
+    any_multi_derived.destroy()
+    assert not any_multi_derived.cpt.connected

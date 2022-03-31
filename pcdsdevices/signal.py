@@ -9,20 +9,26 @@ if __name__ != 'pcdsdevices.signal':
                        'inside the pcdsdevices directory and can cause '
                        'extremely confusing bugs. Please run your script '
                        'elsewhere for better results.')
+import contextlib
+import dataclasses
 import itertools
 import logging
 import numbers
 import typing
 from threading import RLock
-from typing import Optional
+from typing import Dict, Generator, List, Mapping, Optional, Union
 
 import numpy as np
 import ophyd
-from ophyd.signal import (DerivedSignal, EpicsSignal, EpicsSignalBase,
-                          EpicsSignalRO, Signal, SignalRO)
+from ophyd.signal import (DEFAULT_WRITE_TIMEOUT, DerivedSignal, EpicsSignal,
+                          EpicsSignalBase, EpicsSignalRO, Signal, SignalRO)
 from ophyd.sim import FakeEpicsSignal, FakeEpicsSignalRO, fake_device_cache
+from ophyd.utils import ReadOnlyError
 from pytmc.pragmas import normalize_io
 
+from . import utils
+from .type_hints import (MdsCalculateFunction, MdsOnPutFunction, Number,
+                         OphydCallback, OphydDataType)
 from .utils import convert_unit
 
 logger = logging.getLogger(__name__)
@@ -116,6 +122,27 @@ class FakePytmcSignalRO(FakePytmcSignal, FakeEpicsSignalRO):
 fake_device_cache[PytmcSignal] = FakePytmcSignal
 
 
+@dataclasses.dataclass
+class _AggregateSignalState:
+    """
+    This class holds per-Signal state information when used as part of an
+    AggregateSignal.
+
+    It includes a cache of the last value, connectivity status, and callback
+    identifiers from ophyd.
+    """
+    #: The signal itself
+    signal: Signal
+    #: Is the signal connected according to its metadata callback?
+    connected: bool = False
+    #: The last value retrieved from a value callback, or a direct get request.
+    value: Optional[OphydDataType] = None
+    #: The value subscription callback ID (None if not yet subscribed)
+    value_cbid: Optional[int] = None
+    #: The meta subscription callback ID (None if not yet subscribed)
+    meta_cbid: Optional[int] = None
+
+
 class AggregateSignal(Signal):
     """
     Signal that is composed of a number of other signals.
@@ -123,23 +150,19 @@ class AggregateSignal(Signal):
     This class exists to handle the group subscriptions without repeatedly
     getting the values of all the subsignals at all times.
 
-    Attributes
-    ----------
-    _cache : dict
-        Mapping from signal to last known value.
-
-    _sub_signals : list
-        Signals that contribute to this signal.
+    This signal type is intended to be used programmatically with a subclass.
+    For simple per-device usage, see :class:`MultiDerivedSignal`.
     """
 
-    _update_only_on_change = True
+    _update_only_on_change: bool = True
+    _has_subscribed: bool
+    _signals: Dict[Signal, _AggregateSignalState]
 
-    def __init__(self, *, name, **kwargs):
-        super().__init__(name=name, **kwargs)
-        self._cache = {}
+    def __init__(self, *, name, value=None, **kwargs):
+        super().__init__(name=name, value=value, **kwargs)
         self._has_subscribed = False
         self._lock = RLock()
-        self._sub_signals = []
+        self._signals = {}
 
     def _calc_readback(self):
         """
@@ -152,59 +175,250 @@ class AggregateSignal(Signal):
             The result of the calculation.
         """
 
-        raise NotImplementedError('Subclasses must implement _calc_readback')
+        raise NotImplementedError(
+            'Subclasses must implement _calc_readback'
+        )  # pragma nocover
 
     def _insert_value(self, signal, value):
         """Update the cache with one value and recalculate."""
         with self._lock:
-            self._cache[signal] = value
-            self._update_state()
+            self._signals[signal].value = value
+            self._update_readback()
             return self._readback
 
-    def _update_state(self):
-        """Recalculate the state."""
+    @property
+    def _have_values(self) -> bool:
+        """Is the value cache populated?"""
+        return all(
+            siginfo.value is not None for siginfo in self._signals.values()
+        )
+
+    def _update_readback(self) -> Optional[OphydDataType]:
+        """
+        Recalculate the readback value.
+
+        Requires that the signal info cache has been updated prior to the
+        call.  This information could be sourced via subscriptions or manually
+        queried updates as in ``.get()``.
+
+        Returns
+        -------
+        value : OphydDataType or None
+            This is the newly-calculated value, if available. If there are
+            missing values in the cache, the previously-calculated readback
+            value (or the default passed into the ``Signal`` instance or
+            ``None``) will be returned.
+        """
         with self._lock:
-            self._readback = self._calc_readback()
+            if self._have_values:
+                self._readback = self._calc_readback()
+            return self._readback
 
     def get(self, **kwargs):
-        """Update all values and recalculate."""
+        """
+        Update all values and recalculate.
+
+        Parameters
+        ----------
+        **kwargs :
+            Keyword arguments are passed to each ``signal.get(**kwargs)``.
+        """
         with self._lock:
-            for signal in self._sub_signals:
-                self._cache[signal] = signal.get(**kwargs)
-            self._update_state()
-            return self._readback
+            for signal, siginfo in self._signals.items():
+                siginfo.value = signal.get(**kwargs)
+            return self._update_readback()
 
     def put(self, value, **kwargs):
-        raise NotImplementedError('put should be overriden in the subclass')
+        raise NotImplementedError(
+            'put should be overridden in a subclass'
+        )  # pragma nocover
 
     def subscribe(self, cb, event_type=None, run=True):
-        """
-        Set up a callback function to run at specific times.
-
-        See the `ophyd` documentation for details.
-        """
-
         cid = super().subscribe(cb, event_type=event_type, run=run)
-        if event_type in (None, self.SUB_VALUE) and not self._has_subscribed:
-            # We need to subscribe to ALL relevant signals!
-            for signal in self._sub_signals:
-                signal.subscribe(self._run_sub_value, run=False)
-            self.get()  # Ensure we have a full cache
+        recognized_event = event_type in (None, self.SUB_VALUE, self.SUB_META)
+        if recognized_event and not self._has_subscribed:
+            self._setup_subscriptions()
+
         return cid
 
-    def _run_sub_value(self, *args, **kwargs):
+    subscribe.__doc__ = ophyd.ophydobj.OphydObject.subscribe.__doc__
+
+    def _setup_subscriptions(self):
+        """Subscribe to all relevant signals."""
+        with self._lock:
+            if self._has_subscribed:
+                return
+
+            self._has_subscribed = True
+
+        try:
+            for signal, siginfo in self._signals.items():
+                self.log.debug("Subscribing %s", signal.name)
+                if siginfo.value_cbid is not None:
+                    # Only subscribe once.
+                    continue
+
+                siginfo.meta_cbid = signal.subscribe(
+                    self._signal_meta_callback,
+                    run=True,
+                    event_type=signal.SUB_META,
+                )
+                siginfo.value_cbid = signal.subscribe(
+                    self._signal_value_callback,
+                    run=True,
+                )
+        except Exception:
+            self.log.exception("Failed to subscribe to signals")
+
+    def wait_for_connection(self, *args, **kwargs):
+        """Wait for underlying signals to connect."""
+        self._setup_subscriptions()
+        return super().wait_for_connection(*args, **kwargs)
+
+    def _signal_meta_callback(
+        self, *, connected: bool = False, obj: Signal, **kwargs
+    ) -> None:
+        """This is a SUB_META callback from one of the aggregated signals."""
+        with self._check_connectivity():
+            self._signals[obj].connected = connected
+
+    def _signal_value_callback(self, *, obj: Signal, **kwargs):
+        """This is a SUB_VALUE callback from one of the aggregated signals."""
         kwargs.pop('sub_type')
-        sig = kwargs.pop('obj')
         kwargs.pop('old_value')
         value = kwargs['value']
         with self._lock:
             old_value = self._readback
             # Update just one value and assume the rest are cached
             # This allows us to run subs without EPICS gets
-            value = self._insert_value(sig, value)
+            # Run metadata callbacks before the value callback, if appropriate
+            with self._check_connectivity() as connectivity_info:
+                value = self._insert_value(obj, value)
+            if connectivity_info["sent_value_callback"]:
+                # Avoid sending a duplicate SUB_VALUE event since the
+                # connectivity check above did it already
+                return
             if value != old_value or not self._update_only_on_change:
                 self._run_subs(sub_type=self.SUB_VALUE, obj=self, value=value,
                                old_value=old_value)
+
+    @property
+    def connected(self) -> bool:
+        """Are all relevant signals connected?"""
+        if self._destroyed:
+            return False
+
+        if self._has_subscribed:
+            return all(
+                siginfo.connected and siginfo.value is not None
+                for siginfo in self._signals.values()
+            )
+
+        # Only check connectivity status of the signal; cross fingers that it
+        # reflects both being connected and having a not-None value.
+        return all(signal.connected for signal in self._signals)
+
+    @contextlib.contextmanager
+    def _check_connectivity(self) -> Generator[Dict[str, bool], None, None]:
+        """
+        Context manager for checking connectivity.
+
+        The block for the context manager should perform some operation
+        to change the state of the signal.
+
+        Returns state information as a dictionary, accessible after the
+        context manager block has finished evaluation.
+        """
+        was_connected = self.connected
+        state_info = {
+            "was_connected": was_connected,
+            "is_connected": was_connected,
+            "sent_md_callback": False,
+            "sent_value_callback": False,
+        }
+
+        yield state_info
+
+        # Now that the caller has updated state, check to see if our
+        # connectivity status has changed.  Update the mutable return
+        # value at this point.
+        is_connected = self.connected
+        state_info["is_connected"] = is_connected
+        if was_connected != is_connected:
+            self._metadata["connected"] = is_connected
+            self._run_metadata_callbacks()
+            state_info["sent_md_callback"] = True
+
+        if not was_connected and is_connected:
+            # disconnected -> connected; give a proper value callback.
+            # "connected" indicates that:
+            # 1. All underlying signals are connected
+            # 2. All underlying signals have a value cached
+            with self._lock:
+                old_value = self._readback
+                self._readback = self._calc_readback()
+                self._run_subs(
+                    sub_type=self.SUB_VALUE,
+                    obj=self,
+                    value=self._readback,
+                    old_value=old_value,
+                )
+                state_info["sent_value_callback"] = True
+
+    def add_signal_by_attr_name(self, name: str) -> Signal:
+        """
+        Add a signal from which to aggregate information.
+
+        This must be called before any subscriptions are made to the signal.
+        Duplicate signals will not be re-added.
+
+        Parameters
+        ----------
+        name : str
+            The attribute name of the signal, relative to the parent device.
+
+        Returns
+        -------
+        sig : ophyd.Signal
+            The signal referenced by the attribute name.
+
+        Raises
+        ------
+        RuntimError
+            If called after .subscribe() or used without a parent Device.
+        """
+        if self._has_subscribed:
+            raise RuntimeError(
+                "Cannot add signals to an AggregateSignal after it has been "
+                "subscribed to."
+            )
+
+        sig = self.parent
+
+        if sig is None:
+            raise RuntimeError(
+                "Cannot use an AggregateSignal with attribute names outside "
+                "of a Device/Component hierarchy."
+            )
+
+        for part in name.split('.'):
+            sig = getattr(sig, part)
+
+        # Add if not yet there; but do not subscribe just yet.
+        self._signals[sig] = _AggregateSignalState(signal=sig)
+        return sig
+
+    def destroy(self):
+        for signal, info in self._signals.items():
+            if info.value_cbid is not None:
+                signal.unsubscribe(info.value_cbid)
+                info.value_cbid = None
+
+            if info.meta_cbid is not None:
+                signal.unsubscribe(info.meta_cbid)
+                info.meta_cbid = None
+
+        return super().destroy()
 
 
 class PVStateSignal(AggregateSignal):
@@ -216,17 +430,12 @@ class PVStateSignal(AggregateSignal):
 
     def __init__(self, *, name, **kwargs):
         super().__init__(name=name, **kwargs)
-        self._sub_map = {}
-        for signal_name in self.parent._state_logic.keys():
-            sig = self.parent
-            for part in signal_name.split('.'):
-                sig = getattr(sig, part)
-            self._sub_signals.append(sig)
-            self._sub_map[signal_name] = sig
+        for attr_name in self.parent._state_logic:
+            self.add_signal_by_attr_name(attr_name)
 
     def describe(self):
         # Base description information
-        sub_sigs = [sig.name for sig in self._sub_signals]
+        sub_sigs = [sig.name for sig in self._signals]
         desc = {'source': 'SUM:{}'.format(','.join(sub_sigs)),
                 'dtype': 'string',
                 'shape': [],
@@ -236,11 +445,12 @@ class PVStateSignal(AggregateSignal):
 
     def _calc_readback(self):
         state_value = None
-        for signal_name, info in self.parent._state_logic.items():
-            # Get last cached value
-            value = self._cache[self._sub_map[signal_name]]
+        for states, sig_info in zip(
+            self.parent._state_logic.values(), self._signals.values()
+        ):
+            # Get state information from last cached value
             try:
-                signal_state = info[value]
+                signal_state = states[sig_info.value]
             # Handle unaccounted readbacks
             except KeyError:
                 state_value = self.parent._unknown
@@ -264,6 +474,169 @@ class PVStateSignal(AggregateSignal):
 
     def put(self, value, **kwargs):
         self.parent.move(value, **kwargs)
+
+
+class MultiDerivedSignal(AggregateSignal):
+    """
+    Signal derived from multiple signals in the device hierarchy.
+
+    Requires a calculation function to be passed in. Support writing to
+    multiple signals if an additional ``calculate_on_put`` function is
+    supplied.
+
+    Functions may also be defined in a subclass for advanced or repeated usage.
+
+    Functions may or may be methods.  If ``self`` is noted as the first
+    argument of your function, it will be assumed to be a method.  ``self``
+    will then refer to the ``MultiDerivedSignal`` instance.
+
+    Parameters
+    ----------
+    attrs : list of str
+        Attribute names of signals that are used to generate a value for this
+        signal.
+
+    calculate : MdsCalculationFunction
+        A calculation function that takes in a dictionary of signals to values.
+        It should be made to return a value of a compatible ophyd data type,
+        such as an integer, float, or an array.
+
+    calculate_on_put : MdsOnPutFunction
+        A calculation function that allows this MultiDerivedSignal to be
+        read-write instead of just read-only.  It should take in a single value
+        and return a dictionary of signal-to-value to write, each with a
+        compatible ophyd data type, such as an integer, float, or an array.
+        Values will be written to simultaneously and result in a single
+        ``Status`` object.
+    """
+
+    calculate: MdsCalculateFunction
+    calculate_on_put: Optional[MdsOnPutFunction]
+
+    def __init__(
+        self,
+        *args,
+        attrs: list[str],
+        calculate: Optional[MdsCalculateFunction] = None,
+        calculate_on_put: Optional[MdsOnPutFunction] = None,
+        timeout: Optional[Number] = None,
+        settle_time: Optional[Number] = None,
+        **kwargs
+    ):
+        super().__init__(*args, **kwargs)
+        self.timeout = timeout
+        self.settle_time = settle_time
+
+        if calculate is not None:
+            self.calculate = utils.maybe_make_method(calculate, self)
+        elif not hasattr(self, "calculate"):
+            raise ValueError(
+                "The `calculate` argument must be provided for non-subclassed "
+                "MultiDerivedSignal instances.  This calculate function "
+                "should take all signals as arguments and return a single "
+                "value for the MultiDerivedSignal."
+            )
+
+        if calculate_on_put is not None:
+            if isinstance(self, SignalRO):
+                raise ValueError(
+                    f"Read-only signal classes ({type(self).__name__}) cannot"
+                    f" use a ``calculate_on_put`` function.  Did you mean to "
+                    f"use MultiDerivedSignal instead of MultiDerivedSignalRO?"
+                )
+
+            self.calculate_on_put = utils.maybe_make_method(
+                calculate_on_put, self
+            )
+        elif type(self) is MultiDerivedSignal:
+            self._metadata["write_access"] = False
+            self.calculate_on_put = None
+
+        self.attrs = list(attrs)
+        if len(self.attrs) == 0:
+            raise ValueError(
+                "At least one attribute name must be supplied for a "
+                "MultiDerivedSignal.  Also consider using DerivedSignal "
+                "directly for the one-to-one case."
+            )
+
+        for attr_name in self.attrs:
+            self.add_signal_by_attr_name(attr_name)
+
+    @property
+    def signals(self) -> List[Signal]:
+        """The signals used to calculate this MultiDerivedSignal."""
+        return list(self._signals)
+
+    def _calc_readback(self) -> OphydDataType:
+        """Calculate the new readback value."""
+        cache = {sig: siginfo.value for sig, siginfo in self._signals.items()}
+        return self.calculate(cache)
+
+    def put(
+        self,
+        value: OphydDataType,
+        callback: Optional[OphydCallback] = None,
+        timeout: Union[Number, object] = DEFAULT_WRITE_TIMEOUT,
+        settle_time: Optional[float] = None,
+        **kwargs
+    ) -> ophyd.status.StatusBase:
+        """
+        Calculate new values for the given derived signals and write.
+
+        Keyword arguments outside of the listed parameters are ignored for
+        ophyd ``Signal.put()`` compatibility.
+
+        Parameters
+        ----------
+        value : OphydDataType
+            The value to set.  This is sent to the ``calculate_on_put``
+            function to determine which values to write to which signals.
+        callback : callable
+            Callback for when the put has completed.
+        timeout : float, optional
+            Timeout before assuming that put has failed.
+        settle_time : float, optional
+            Time after writing to wait before indicating the put has completely
+            finished.
+        """
+        if timeout is DEFAULT_WRITE_TIMEOUT:
+            timeout = self.timeout
+        if settle_time is DEFAULT_WRITE_TIMEOUT:
+            settle_time = self.settle_time
+        st = self.set(value, timeout=timeout, settle_time=settle_time)
+        if callback is not None:
+            st.add_callback(callback)
+        return st
+
+    def set(
+        self,
+        value: OphydDataType,
+        *,
+        timeout: Optional[float] = None,
+        settle_time: Optional[float] = None
+    ) -> ophyd.status.StatusBase:
+        if self.calculate_on_put is None:
+            raise ReadOnlyError(
+                f"{self.name} is read-only. "
+                f"`calculate_on_put` function not defined for {self.name} "
+                f"({type(self).__name__})."
+            )
+        to_write = self.calculate_on_put(value) or {}
+        if not isinstance(to_write, Mapping):
+            raise RuntimeError(
+                f"Internal error: "
+                f"{self.calculate_on_put.__name__} for {self.name} failed to "
+                f"return an appropriate signal-to-value dictionary. Got: "
+                f"{type(to_write).__name__}.  Please contact your POC to get "
+                f"this issue fixed."
+            )
+        return utils.set_many(to_write, owner=self)
+
+
+class MultiDerivedSignalRO(SignalRO, MultiDerivedSignal):
+    """Read-only variant of a MultiDerivedSignal."""
+    ...
 
 
 class AvgSignal(Signal):
