@@ -20,7 +20,7 @@ New Devices
 Bugfixes
 --------
 - Fix race condition on initialization of new ``EpicsSignalEditMD`` and
-  ``EpicsSignalROEditMD``. (#963)
+  ``EpicsSignalROEditMD``. (#963, #978)
 
 Maintenance
 -----------

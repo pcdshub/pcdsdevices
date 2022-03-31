@@ -1182,11 +1182,6 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
         name: Optional[str] = None,
         **kwargs
     ):
-        # Duplicate superclass handling of ``parent`` and ``name`` so we can
-        # initialize everything prior to calling super().__init__.
-        self._parent = parent
-        self._name = name or ""
-
         self._enum_attrs = list(enum_attrs or [])
         self._pending_signals = set()
         self._original_enum_strings = []
@@ -1213,13 +1208,11 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
             # The end result is:
             # -> self.metadata["enum_strs"] => self._enum_strings
             self._metadata_override["enum_strs"] = self._enum_strings
-            if self.parent is None:
+            if parent is None:
                 raise RuntimeError(
-                    "This signal {self.name!r} must be used in a "
+                    "This signal {name!r} must be used in a "
                     "Device/Component hierarchy."
                 )
-
-            self._subscribe_enum_attrs()
 
         elif enum_strs:
             # Override with strings
@@ -1227,6 +1220,11 @@ class EpicsSignalBaseEditMD(EpicsSignalBase, SignalEditMD):
             self._metadata_override["enum_strs"] = self._enum_strings
 
         super().__init__(*args, parent=parent, name=name, **kwargs)
+
+        if enum_attrs:
+            # NOTE: Ensure that subscriptions happen only after everything
+            # else is already configured.
+            self._subscribe_enum_attrs()
 
     def destroy(self):
         super().destroy()
