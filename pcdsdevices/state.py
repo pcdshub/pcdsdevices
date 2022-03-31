@@ -639,7 +639,7 @@ def state_config_dotted_velos(state_count: int) -> list[Optional[str]]:
     Returns the full dotted names of the state config velo components.
 
     This does not include any entry for the unknown state and can be
-    passed direcly into the velocity summary MultiDerivedSignal attrs.
+    passed directly into the velocity summary MultiDerivedSignal attrs.
 
     Parameters
     ----------
