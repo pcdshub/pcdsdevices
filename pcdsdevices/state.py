@@ -22,6 +22,7 @@ from .epics_motor import IMS
 from .interface import MvInterface
 from .signal import (EpicsSignalEditMD, MultiDerivedSignal, PVStateSignal,
                      PytmcSignal)
+from .type_hints import SignalToValue
 from .utils import HelpfulIntEnum
 from .variety import set_metadata
 
@@ -716,11 +717,11 @@ class TwinCATStatePositioner(StatePositioner):
         doc='Configuration of state positions, deltas, etc.',
     )
 
-    def _get_state_velo(self, items):
+    def _get_state_velo(self, items: SignalToValue) -> float:
         """For state_velo, calculate the velocity to show."""
         return max(value for value in items.values())
 
-    def _set_state_velo(self, value):
+    def _set_state_velo(self, value: float) -> SignalToValue:
         """For state_velo, distribute the puts to all fields."""
         return {
             getattr(self.parent, name): value for name in
