@@ -20,7 +20,8 @@ from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
-from .signal import InternalSignal
+from .signal import InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO
+from .type_hints import OphydDataType, SignalToValue
 from .utils import get_status_float, get_status_value
 from .variety import set_metadata
 
