@@ -1,6 +1,77 @@
 Release History
 ###############
 
+
+v5.2.0 (2022-03-31)
+===================
+
+API Changes
+-----------
+- adds the scale keyword argument to tweak() method.
+
+Features
+--------
+- Adds a post_elog_status method to the BaseInterface class, which posts to the registered primary elog if it exists.
+- Add function for posting ophyd object status (and lists of objects) to ELog as html.
+- Added new ``AggregateSignal`` variant ``MultiDerivedSignal``.  With a list of
+  signal names and a calculation function, it is now possible to create a new
+  signal derived from the values of the provided signals. For example, if a
+  hutch has many temperature sensors - each with their own corresponding
+  ``EpicsSignal`` instance - a signal that shows the maximum value from all of
+  those temperatures would be easy to implement.
+
+Device Updates
+--------------
+- Added Y axis to KBOMirror status printout
+- TwinCAT state devices now have a top-level "state_velo" summary signal.
+  This can be used to view the highest speed of all the configured state
+  speeds, and it can also be used to do a bulk edit. These are stored per
+  state destination in the IOC.
+- Adds a biological parent attribute to GroupDevice, for tracking parents without alerting stage() methods
+- Added Current Monitoring PV to ``pcdsdevices.pump.PTMPLC``.
+- Allow for user offsets to TMO Spectrometer motors.
+- Commented out GasNeedleTheta motor for 3/22 LAMPMBES configuration.
+
+New Devices
+-----------
+- Added ``PCDSHDF5BlueskyTriggerable``, a variant of area detector
+  specialized for doing ``bluesky`` scans.
+- Added KBOMirrorHE class to be used with KBOMirrors with cooling, like MR2K4.
+- Added the laser beam transport protection system device classes and related
+  screens.
+- Dg /DelayGenerator class to handle SRS645 delay generator
+- MMC100, for motors controlled by Micronix MMC100 controllers
+- Class created for the HXR Single Shot Spectrometer.
+- Add VRCDA, a dual-acting valve class.
+
+Bugfixes
+--------
+- Fixes issue in sim.slow_motor classes where threading behavior would fail if
+- States readbacks from preset positions are now correct.
+- Fix race condition on initialization of new ``EpicsSignalEditMD`` and
+  ``EpicsSignalROEditMD``. (#963, #978)
+- Fix issue where mirror devices had overfiltered tab completion results.
+
+Maintenance
+-----------
+- Remove the instantiation of a status object at motor startup to help
+  improve the performance of loading large sessions. This object was not
+  strictly needed.
+- Removed deprecation warning from ``pcdsdevices.utils`` import.
+- Update the docstrings in the valve submodule with detailed descriptions.
+
+Contributors
+------------
+- Mbosum
+- ZryletTC
+- espov
+- klauer
+- nrwslac
+- spencera
+- tangkong
+- zllentz
+
+
 v5.1.0 (2022-02-07)
 ===================
 
