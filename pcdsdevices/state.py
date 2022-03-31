@@ -723,10 +723,7 @@ class TwinCATStatePositioner(StatePositioner):
 
     def _set_state_velo(self, value: float) -> SignalToValue:
         """For state_velo, distribute the puts to all fields."""
-        return {
-            getattr(self.parent, name): value for name in
-            state_config_dotted_velos(self.parent.config.state_count)
-        }
+        return {sig: value for sig in self.signals}
 
     state_velo = Cpt(
         MultiDerivedSignal,
