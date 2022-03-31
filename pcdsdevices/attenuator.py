@@ -1146,7 +1146,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
                err=True
             if blade.state.error.get() == 1:
                err=True
-            elif blade.motor.plc.err_code.get() == 1:
+            if blade.motor.plc.err_code.get() == 1:
                err=True
               
             #values to be read in status rendering
