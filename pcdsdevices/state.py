@@ -717,9 +717,11 @@ class TwinCATStatePositioner(StatePositioner):
     )
 
     def _get_state_velo(self, items):
+        """For state_velo, calculate the velocity to show."""
         return max(value for value in items.values())
 
     def _set_state_velo(self, value):
+        """For state_velo, distribute the puts to all fields."""
         return {
             getattr(self.parent, name): value for name in
             state_config_dotted_velos(self.parent.config.state_count)
@@ -736,6 +738,12 @@ class TwinCATStatePositioner(StatePositioner):
         kind='config',
         # Real PV has no unit info yet, assume mm/s
         metadata={'units': 'mm/s'},
+        doc=(
+            'State mover velocity. Displays the highest velocity of all the '
+            'state move destinations and allows bulk writes to all of these '
+            'velocity settings. Note that this velocity only applies to '
+            'moves done using the state selector box.'
+        ),
     )
 
     set_metadata(error_id, dict(variety='scalar', display_format='hex'))
