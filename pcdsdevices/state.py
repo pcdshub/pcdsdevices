@@ -20,7 +20,8 @@ from .device import GroupDevice
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .interface import MvInterface
-from .signal import EpicsSignalEditMD, PVStateSignal, PytmcSignal
+from .signal import (EpicsSignalEditMD, MultiDerivedSignal, PVStateSignal,
+                     PytmcSignal)
 from .utils import HelpfulIntEnum
 from .variety import set_metadata
 
@@ -632,6 +633,29 @@ def state_config_dotted_names(state_count: int) -> list[Optional[str]]:
     ]
 
 
+def state_config_dotted_velos(state_count: int) -> list[Optional[str]]:
+    """
+    Returns the full dotted names of the state config velo components.
+
+    This does not include any entry for the unknown state and can be
+    passed direcly into the velocity summary MultiDerivedSignal attrs.
+
+    Parameters
+    ----------
+    state_count : int
+        The number of known states used by the device.
+
+    Returns
+    -------
+    dotted_names : list of str
+        The full dotted names in state enum order.
+    """
+    return [
+        f'config.{get_dynamic_state_attr(num)}.velo'
+        for num in range(1, state_count + 1)
+    ]
+
+
 class TwinCATStatePositioner(StatePositioner):
     """
     A `StatePositioner` from Beckhoff land.
@@ -692,6 +716,28 @@ class TwinCATStatePositioner(StatePositioner):
         doc='Configuration of state positions, deltas, etc.',
     )
 
+    def _get_state_velo(self, items):
+        return max(value for value in items.values())
+
+    def _set_state_velo(self, value):
+        return {
+            getattr(self.parent, name): value for name in
+            state_config_dotted_velos(self.parent.config.state_count)
+        }
+
+    state_velo = Cpt(
+        MultiDerivedSignal,
+        attrs=[
+            name for name in
+            state_config_dotted_velos(TWINCAT_MAX_STATES)
+        ],
+        calculate=_get_state_velo,
+        calculate_on_put=_set_state_velo,
+        kind='config',
+        # Real PV has no unit info yet, assume mm/s
+        metadata={'units': 'mm/s'},
+    )
+
     set_metadata(error_id, dict(variety='scalar', display_format='hex'))
     set_metadata(reset_cmd, dict(variety='command', value=1))
 
@@ -705,6 +751,11 @@ class TwinCATStatePositioner(StatePositioner):
             cls.state.kwargs['enum_attrs'] = (
                 state_config_dotted_names(state_count)
             )
+            cls.state_velo = copy.deepcopy(cls.state_velo)
+            cls.state_velo.kwargs['attrs'] = [
+                name for name in
+                state_config_dotted_velos(state_count)
+            ]
         # This includes the Device initialization, which assumes our
         # Component instances are finalized.
         # Therefore, do it last
