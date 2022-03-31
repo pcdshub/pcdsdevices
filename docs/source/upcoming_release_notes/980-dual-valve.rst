@@ -23,7 +23,7 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Update the docstrings in the valve submodule with detailed descriptions.
 
 Contributors
 ------------
