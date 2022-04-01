@@ -11,6 +11,7 @@ if __name__ != 'pcdsdevices.signal':
                        'elsewhere for better results.')
 import contextlib
 import dataclasses
+import inspect
 import itertools
 import logging
 import numbers
@@ -27,7 +28,7 @@ from ophyd.utils import ReadOnlyError
 from pytmc.pragmas import normalize_io
 
 from . import utils
-from .type_hints import (MdsCalculateFunction, MdsOnPutFunction, Number,
+from .type_hints import (MdsOnGetFunction, MdsOnPutFunction, Number,
                          OphydCallback, OphydDataType)
 from .utils import convert_unit
 
@@ -496,7 +497,7 @@ class MultiDerivedSignal(AggregateSignal):
         Attribute names of signals that are used to generate a value for this
         signal.
 
-    calculate : MdsCalculationFunction
+    calculate_on_get : MdsCalculationFunction
         A calculation function that takes in a dictionary of signals to values.
         It should be made to return a value of a compatible ophyd data type,
         such as an integer, float, or an array.
@@ -510,14 +511,14 @@ class MultiDerivedSignal(AggregateSignal):
         ``Status`` object.
     """
 
-    calculate: MdsCalculateFunction
+    calculate_on_get: MdsOnGetFunction
     calculate_on_put: Optional[MdsOnPutFunction]
 
     def __init__(
         self,
         *args,
         attrs: list[str],
-        calculate: Optional[MdsCalculateFunction] = None,
+        calculate_on_get: Optional[MdsOnGetFunction] = None,
         calculate_on_put: Optional[MdsOnPutFunction] = None,
         timeout: Optional[Number] = None,
         settle_time: Optional[Number] = None,
@@ -527,14 +528,18 @@ class MultiDerivedSignal(AggregateSignal):
         self.timeout = timeout
         self.settle_time = settle_time
 
-        if calculate is not None:
-            self.calculate = utils.maybe_make_method(calculate, self)
-        elif not hasattr(self, "calculate"):
+        if calculate_on_get is not None:
+            self.calculate_on_get = utils.maybe_make_method(
+                calculate_on_get, owner=self.parent
+            )
+        elif not hasattr(self, "calculate_on_get"):
             raise ValueError(
-                "The `calculate` argument must be provided for non-subclassed "
-                "MultiDerivedSignal instances.  This calculate function "
-                "should take all signals as arguments and return a single "
-                "value for the MultiDerivedSignal."
+                "The `calculate_on_get` argument must be provided for "
+                "non-subclassed MultiDerivedSignal instances.  This function "
+                "should have the following signature: "
+                "calculate_on_get(mds, items) "
+                "where ``mds`` is this signal and ``items`` is a dictionary "
+                "of the source signal-to-values items."
             )
 
         if calculate_on_put is not None:
@@ -546,11 +551,16 @@ class MultiDerivedSignal(AggregateSignal):
                 )
 
             self.calculate_on_put = utils.maybe_make_method(
-                calculate_on_put, self
+                calculate_on_put,
+                owner=self.parent
             )
         elif type(self) is MultiDerivedSignal:
             self._metadata["write_access"] = False
             self.calculate_on_put = None
+
+        self._check_calculate_on_get_signature(self.calculate_on_get)
+        if not isinstance(self, SignalRO):
+            self._check_calculate_on_put_signature(self.calculate_on_put)
 
         self.attrs = list(attrs)
         if len(self.attrs) == 0:
@@ -563,15 +573,39 @@ class MultiDerivedSignal(AggregateSignal):
         for attr_name in self.attrs:
             self.add_signal_by_attr_name(attr_name)
 
+    def _check_calculate_on_get_signature(self, func: MdsOnGetFunction):
+        """Ensure the ``calculate_on_get`` signature is correct."""
+        if not isinstance(func, MdsOnGetFunction):
+            sig = inspect.signature(func)
+            raise ValueError(
+                f"The `calculate_on_get` signature is incorrect for "
+                f"MultiDerivedSignal.  It should take two parameters, "
+                f"'mds' and 'items' as either positional or keyword "
+                f"arguments.\nGot: {sig}"
+            )
+
+    def _check_calculate_on_put_signature(
+        self, func: Optional[MdsOnGetFunction]
+    ):
+        """Ensure the ``calculate_on_put`` signature is correct."""
+        if func is not None and not isinstance(func, MdsOnPutFunction):
+            sig = inspect.signature(func)
+            raise ValueError(
+                f"The `calculate_on_put` signature is incorrect for "
+                f"MultiDerivedSignal.  It should take two parameters, "
+                f"'mds' and 'value' as either positional or keyword "
+                f"arguments.\nGot: {sig}"
+            )
+
     @property
     def signals(self) -> List[Signal]:
-        """The signals used to calculate this MultiDerivedSignal."""
+        """The signals used to calculate_on_get this MultiDerivedSignal."""
         return list(self._signals)
 
     def _calc_readback(self) -> OphydDataType:
-        """Calculate the new readback value."""
-        cache = {sig: siginfo.value for sig, siginfo in self._signals.items()}
-        return self.calculate(cache)
+        """calculate_on_get the new readback value."""
+        items = {sig: siginfo.value for sig, siginfo in self._signals.items()}
+        return self.calculate_on_get(mds=self, items=items)
 
     def put(
         self,
@@ -582,7 +616,7 @@ class MultiDerivedSignal(AggregateSignal):
         **kwargs
     ) -> ophyd.status.StatusBase:
         """
-        Calculate new values for the given derived signals and write.
+        calculate_on_get new values for the given derived signals and write.
 
         Keyword arguments outside of the listed parameters are ignored for
         ophyd ``Signal.put()`` compatibility.
@@ -622,7 +656,7 @@ class MultiDerivedSignal(AggregateSignal):
                 f"`calculate_on_put` function not defined for {self.name} "
                 f"({type(self).__name__})."
             )
-        to_write = self.calculate_on_put(value) or {}
+        to_write = self.calculate_on_put(mds=self, value=value) or {}
         if not isinstance(to_write, Mapping):
             raise RuntimeError(
                 f"Internal error: "

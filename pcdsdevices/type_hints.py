@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Optional, Protocol, Union
+from typing import Dict, Optional, Protocol, Union, runtime_checkable
 
 import numpy.typing as npt
 import ophyd
@@ -29,13 +29,19 @@ class OphydCallback(Protocol):
 SignalToValue = Dict[ophyd.Signal, OphydDataType]
 
 
-class MdsCalculateFunction(Protocol):
+@runtime_checkable
+class MdsOnGetFunction(Protocol):
     """Calculation handler for MultiDerivedSignal."""
-    def __call__(self, signal_to_value: SignalToValue) -> OphydDataType:
+    def __call__(
+        self, mds: ophyd.Signal, items: SignalToValue
+    ) -> OphydDataType:
         ...
 
 
+@runtime_checkable
 class MdsOnPutFunction(Protocol):
     """Put handler for MultiDerivedSignal."""
-    def __call__(self, value: OphydDataType) -> Optional[SignalToValue]:
+    def __call__(
+        self, mds: ophyd.Signal, value: OphydDataType
+    ) -> Optional[SignalToValue]:
         ...

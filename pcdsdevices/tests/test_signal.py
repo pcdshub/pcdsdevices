@@ -210,16 +210,16 @@ def test_editmd_signal():
 def multi_derived_ro(request) -> Device:
     class MultiDerivedRO(Device):
         if request.param == "method":
-            def _do_sum(self, items: SignalToValue) -> int:
+            def _do_sum(self, mds, items: SignalToValue) -> int:
                 return sum(value for value in items.values())
         else:
-            def _do_sum(items: SignalToValue) -> int:
+            def _do_sum(mds: MultiDerivedSignal, items: SignalToValue) -> int:
                 return sum(value for value in items.values())
 
         cpt = Cpt(
             MultiDerivedSignalRO,
             attrs=["a", "b", "c"],
-            calculate=_do_sum,
+            calculate_on_get=_do_sum,
         )
         a = Cpt(FakeEpicsSignal, "a")
         b = Cpt(FakeEpicsSignal, "b")
@@ -276,7 +276,7 @@ def test_multi_derived_ro_not_callable():
         cpt = Cpt(
             MultiDerivedSignalRO,
             attrs=["a", "b", "c"],
-            calculate="not_callable",
+            calculate_on_get="not_callable",
         )
         a = Cpt(FakeEpicsSignal, "a")
         b = Cpt(FakeEpicsSignal, "b")
@@ -322,11 +322,17 @@ def test_multi_derived_connectivity(multi_derived_ro: Device):
 )
 def multi_derived_rw(request) -> Device:
     class ReusableSignal(MultiDerivedSignal):
-        def calculate(self, items: SignalToValue) -> int:
+        def calculate_on_get(
+            self, mds: MultiDerivedSignal, items: SignalToValue
+        ) -> int:
             return sum(value for value in items.values())
 
-        def calculate_on_put(self, value: OphydDataType) -> SignalToValue:
+        def calculate_on_put(
+            self, mds: MultiDerivedSignal, value: OphydDataType
+        ) -> SignalToValue:
             to_write = float(value / 3.)
+            # `self` here is the Signal, so components are accessed through
+            # the parent device:
             return {
                 self.parent.a: to_write,
                 self.parent.b: to_write,
@@ -340,22 +346,27 @@ def multi_derived_rw(request) -> Device:
         c = Cpt(FakeEpicsSignal, "c")
 
     class MultiDerivedRW(Device):
-        def _do_sum(self, items: SignalToValue) -> int:
+        def _on_get(
+            self, mds: MultiDerivedSignal, items: SignalToValue
+        ) -> int:
             return sum(value for value in items.values())
 
-        def _write_handler(self, value: OphydDataType) -> SignalToValue:
+        def _on_put(
+            self, mds: MultiDerivedSignal, value: OphydDataType
+        ) -> SignalToValue:
             to_write = float(value / 3.)
+            # `self` here is the Device, so components are accessed directly:
             return {
-                self.parent.a: to_write,
-                self.parent.b: to_write,
-                self.parent.c: to_write,
+                self.a: to_write,
+                self.b: to_write,
+                self.c: to_write,
             }
 
         cpt = Cpt(
             MultiDerivedSignal,
             attrs=["a", "b", "c"],
-            calculate=_do_sum,
-            calculate_on_put=_write_handler,
+            calculate_on_get=_on_get,
+            calculate_on_put=_on_put,
         )
         a = Cpt(FakeEpicsSignal, "a")
         b = Cpt(FakeEpicsSignal, "b")
@@ -451,14 +462,16 @@ def test_multi_derived_bad_instantiation():
     with pytest.raises(ValueError):
         BadDevice(name="dev")
 
-    def do_sum(self, items: SignalToValue) -> int:
+    def do_sum(self, mds: MultiDerivedSignal, items: SignalToValue) -> int:
         return sum(value for value in items.values())
 
     # Bad attribute name
 
     class BadDevice1(Device):
         cpt = Cpt(
-            MultiDerivedSignal, calculate=do_sum, attrs=["a", "bad_attr"]
+            MultiDerivedSignal,
+            calculate_on_get=do_sum,
+            attrs=["a", "bad_attr"]
         )
         a = Cpt(FakeEpicsSignal, "a")
 
@@ -468,7 +481,7 @@ def test_multi_derived_bad_instantiation():
 
     # No attrs
     class BadDevice2(Device):
-        cpt = Cpt(MultiDerivedSignal, calculate=do_sum, attrs=[])
+        cpt = Cpt(MultiDerivedSignal, calculate_on_get=do_sum, attrs=[])
 
     with pytest.raises(ValueError):
         BadDevice2(name="dev")
