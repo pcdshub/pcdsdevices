@@ -90,6 +90,9 @@ class ValveBase(Device):
 
     Newer class. This and below are still missing some functionality.
     Still need to work out replacement of old classes.
+
+    This corresponds to ST_ValveBase in the lcls-twincat-vacuum library.
+    PVs that are omitted in VCGLegacy are instead put in the VVC class.
     """
 
     open_command = Cpt(
@@ -119,7 +122,14 @@ class ValveBase(Device):
 
 
 class VVC(ValveBase):
-    """Vent Valve, Controlled."""
+    """
+    VVC = Vent Valve, Controlled.
+
+    This corresponds to ST_ValveBase in the lcls-twincat-vacuum library.
+    It contains PVs missing for VGCLegacy.
+
+    All new controlled valve classes should inherit from VVC.
+    """
     override_status = Cpt(
         EpicsSignalRO,
         ':OVRD_ON_RBV',
@@ -140,6 +150,7 @@ class VGCLegacy(ValveBase):
     Class for Basic Vacuum Valve.
 
     Replaces the `GateValve` class.
+    This does not correspond to any TwinCAT libraries.
     """
 
     open_limit = Cpt(
@@ -157,7 +168,16 @@ class VGCLegacy(ValveBase):
 
 
 class VRC(VVC, LightpathMixin):
-    """Class for Gate Valves with Control and readback."""
+    """
+    VRC = Valve with Readback and Control
+
+    This is the standard normally-closed valve class.
+    It corresponds with ST_VRC in the lcls-twincat-vacuum library,
+    though it also adds some PVs from ST_ValveBase.
+
+    This class does not contain detailed interlocking information,
+    rather it only includes whether or not an interlock is present.
+    """
 
     # Configuration for lightpath
     lightpath_cpts = ['open_limit', 'closed_limit']
@@ -190,7 +210,11 @@ class VRC(VVC, LightpathMixin):
 
 
 class VRCClsLS(VVC):
-    """Class for Gate Valves with Control and Closed Limit Switch Readback."""
+    """
+    Valve with Readback and Control and only a Closed Limit Switch.
+
+    This class is just VRC but without open_limit.
+    """
 
     state = Cpt(EpicsSignalRO, ':STATE_RBV', kind='normal', doc='Valve state')
     closed_limit = Cpt(EpicsSignalRO, ':CLS_DI_RBV', kind='hinted',
@@ -198,7 +222,19 @@ class VRCClsLS(VVC):
 
 
 class VGC(VRC):
-    """Class for Controlled Gate Valves."""
+    """
+    VGC = Vacuum Gate valve, Controlled
+
+    This is the gate valve class with detailed interlocking information
+    available. These valves are typically along the beam path and are
+    prevented from opening when the pressure differential is too great.
+
+    These are always normally closed valves, meaning that they are
+    always safe to close (in terms of vacuum) and that turning the PLC
+    off will cause them to close immediately.
+
+    This corresponds with ST_VGC in the lcls-twincat-vacuum library.
+    """
     diff_press_ok = Cpt(
         EpicsSignalRO,
         ':DP_OK_RBV',
@@ -260,7 +296,14 @@ class VGC(VRC):
 
 
 class VGC_2S(VRC):
-    """Class for Controlled Gate Valves with 2 setpoints."""
+    """
+    VGC_2S = Vacuum Gate valve, Controlled, with 2 Setpoints.
+
+    This is the class for VGC elements that have different interlock setpoints
+    for the upstream and downstream gauges respectively.
+
+    This corresponds with ST_VGC_2S in the lcls-twincat-vacuum library.
+    """
     diff_press_ok = Cpt(
         EpicsSignalRO,
         ':DP_OK_RBV',
@@ -338,7 +381,17 @@ class VGC_2S(VRC):
 
 
 class VFS(Device, LightpathMixin):
-    """Class for Fast Shutter Valve."""
+    """
+    VFS = Fast Shutter Valve
+
+    This valve is typically used to protect sensitive beamline components
+    from bad vacuum events that would otherwise damage them. It has an
+    especially fast response time compared to other vacuum system elements.
+
+    This corresponds with ST_VFS in the lcls-twincat-vacuum library,
+    but rather than inherit from other classes it includes repeated
+    elements from ST_ValveBase.
+    """
 
     # Configuration for lightpath
     lightpath_cpts = ['position_open', 'position_close']
@@ -444,7 +497,19 @@ class VFS(Device, LightpathMixin):
 
 
 class VVCNO(Device):
-    """Vent Valve, Controlled, Normally Open."""
+    """
+    VVCNO = Vent Valve, Controlled, Normally Open.
+
+    This is the class for valves that default to the "open" state rather than
+    the "closed" state.
+
+    This corresponds with ST_VCCNO in the lcls-twincat-vacuum library,
+    though I suspect this is a typo and the file should have been ST_VVCNO.
+
+    This correctly does not inherit from the other classes because the
+    corresponding library elements also do not inherit from the other
+    classes.
+    """
     close_command = Cpt(
         EpicsSignalWithRBV,
         ':CLS_SW',
@@ -479,7 +544,16 @@ class VVCNO(Device):
 
 
 class VRCNO(VVCNO, LightpathMixin):
-    """Gate Valve, Controlled, Normally Open."""
+    """
+    VRCNO = Valve with Readback and Control, Normally Open
+
+    This is a valve that defaults to the "open" state and includes
+    controllable elements.
+
+    It corresponds with ST_VRC_NO in the lcls-twincat-vacuum library,
+    but it also includes elements defined in ST_ValveBase, and it
+    doesn't use all of the PVs defined in the struct.
+    """
 
     # Configuration for lightpath
     lightpath_cpts = ['open_limit', 'closed_limit']
@@ -518,8 +592,30 @@ class VRCNO(VVCNO, LightpathMixin):
         self._removed = lightpath_values[self.open_limit]['value']
 
 
+class VRCDA(VRC, VRCNO):
+    """
+    VRCDA = Valve with Readback and Control, Dual Acting
+
+    This is a valve that has no default state. It will maintain its current
+    state until asked to change it, and it can be interlocked in either
+    direction to prevent opening and to prevent closing.
+
+    This corresponds to ST_VRC_NO in the lcls-twincat-vacuum library, just
+    like VRCNO, but it uses more of the PVs that were defined in
+    ST_ValveBase.
+    """
+    ...
+
+
 class VCN(Device):
-    """Class for Variable Controlled Needle Valves."""
+    """
+    VCN = Variable Controlled Needle valve
+
+    This is a valve that controls the amount of flow between two gas volumes,
+    rather than cutting off or opening the flow entirely.
+
+    It corresponds to ST_VCN in the lcls-twincat-vacuum library.
+    """
     position_readback = Cpt(
         EpicsSignalRO,
         ':POS_RDBK_RBV',
