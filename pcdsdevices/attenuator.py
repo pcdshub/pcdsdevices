@@ -1073,6 +1073,46 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     num_in = Cpt(InternalSignal, kind='hinted')
     num_out = Cpt(InternalSignal, kind='hinted')
     
+    def _check_errors(signals: SignalToValue) ->  str:
+        errors = []
+        for sig, value in signals.items():
+            if value not in (0,""):
+                errors.append(f"{sig.name}: {value}")
+
+        if errors:
+            return "\n".join(["Error summary:"] + errors)
+
+        return "No errors"
+
+    error_summary = Cpt(
+        MultiDerivedSignalRO,
+        calculate=_check_errors,
+        attrs=sum(
+            (
+                [
+                    f"blade_{_blade:02d}.state.error",
+                    f"blade_{_blade:02d}.state.error_id",
+                    f"blade_{_blade:02d}.state.error_message",
+                    f"blade_{_blade:02d}.motor.plc.err_code",
+                ]
+                for _blade in range(1,20)
+            ),
+            [],
+        ),
+    )
+    def _reset_errors(self, value: OphydDataType) -> SignalToValue:
+        return{sig: 1 for sig in self.parent.reset_errors.signals}
+
+    reset_errors = Cpt(
+        MultiDerivedSignal,
+        calculate=lambda values: 0,
+        caulculate_on_put=_reset_errors,
+        attrs=[
+            f"blade_{_blade:02d}.motor.plc.cmd_err_reset"
+            for _blade in range(1,20)
+        ],
+    )
+    set_metadata(reset_errors, dict(variety='command-proc',value=1))
 
     calculator = UCpt(AttenuatorCalculator_AT2L0)
     blade_01 = Cpt(FEESolidAttenuatorBlade, ':MMS:01')
