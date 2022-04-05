@@ -1093,8 +1093,11 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
             if value not in (0,""):
                 blade_errors.append(1)
             else:
-                 blade_errors.append(0) 
-        for idx in range(1,20):
+                 blade_errors.append(0)
+
+        #remove error messages for blade one
+        del blade_errors[0:4] 
+        for idx in range(1,19):
             sum_error=sum(blade_errors[0:4])
             if sum_error >= 1:
                 errors.append(1)
