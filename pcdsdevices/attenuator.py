@@ -1073,6 +1073,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     num_in = Cpt(InternalSignal, kind='hinted')
     num_out = Cpt(InternalSignal, kind='hinted')
     
+    """check for errors and return a string indicating any errors verbally"""
     def _check_errors(signals: SignalToValue) ->  str:
         errors = []
         for sig, value in signals.items():
@@ -1084,6 +1085,35 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
 
         return "No errors"
 
+    """check for errors and return an array of binaries 1=error, 0=no error"""
+    def _check_errors_bitmask(signals: SignalToValue):
+        errors = []
+        blade_errors=[]
+        for sig, value in signals.items():
+            if value not in (0,""):
+                blade_errors.append(1)
+            else:
+                 blade_errors.append(0) 
+        for idx in range(1,20):
+            sum_error=sum(blade_errors[0:4])
+            if sum_error >= 1:
+                errors.append(1)
+            else:
+                errors.append(0)
+
+            del blade_errors[0:4]
+
+        #print(errors)
+        #test_list = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        decimal_value = 0
+        for next_bit in errors:
+            decimal_value= decimal_value * 2 + next_bit
+
+
+        #test random configuration of bitmask
+        return decimal_value
+
+    """summarize the errors occurring at any time on any blade via a string"""
     error_summary = Cpt(
         MultiDerivedSignalRO,
         calculate=_check_errors,
@@ -1100,13 +1130,34 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
             [],
         ),
     )
+    """summarize errors occurring at any time on any blade via a bitmask"""
+    error_summary_bitmask = Cpt(
+        MultiDerivedSignalRO,
+        calculate=_check_errors_bitmask,
+        attrs=sum(
+            (
+                [
+                    f"blade_{_blade:02d}.state.error",
+                    f"blade_{_blade:02d}.state.error_id",
+                    f"blade_{_blade:02d}.state.error_message",
+                    f"blade_{_blade:02d}.motor.plc.err_code",
+                ]
+                for _blade in range(1,20)
+            ),
+            [],
+        ),
+    )
+
+
     def _reset_errors(self, value: OphydDataType) -> SignalToValue:
+        print("i'm in!")
         return{sig: 1 for sig in self.parent.reset_errors.signals}
+        #return 0
 
     reset_errors = Cpt(
         MultiDerivedSignal,
         calculate=lambda values: 0,
-        caulculate_on_put=_reset_errors,
+        calculate_on_put=_reset_errors,
         attrs=[
             f"blade_{_blade:02d}.motor.plc.cmd_err_reset"
             for _blade in range(1,20)
@@ -1266,13 +1317,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
             for cpt in self.lightpath_cpts
         ]
 
-        #list of error states for blades 
-        err_states = []
-        err_list = self.collect_errors
-        for state in err_list:
-           err_states.append(state.get('render_err','?'))
-
-        table = '\n'.join(render_ascii_att(cpt_states,err_states,  start_index=1))
+        table = '\n'.join(render_ascii_att(cpt_states,  start_index=1))
         return f"""
 {table}
 Transmission (E={energy} keV): {transmission}
@@ -1289,7 +1334,6 @@ class BladeStateEnum(enum.IntEnum):
     IN = 2
     STUCK_OUT = 3
     STUCK_IN = 4
-    ERR_STATE = 5
 
     @property
     def as_out_row(self) -> str:
@@ -1299,7 +1343,6 @@ class BladeStateEnum(enum.IntEnum):
             BladeStateEnum.IN: '',
             BladeStateEnum.STUCK_OUT: 'S',
             BladeStateEnum.STUCK_IN: '',
-            BladeStateEnum.ERR_STATE:'',
         }.get(self, '?')
 
     @property
@@ -1310,19 +1353,8 @@ class BladeStateEnum(enum.IntEnum):
             BladeStateEnum.IN: 'X',
             BladeStateEnum.STUCK_OUT: '',
             BladeStateEnum.STUCK_IN: 'S',
-            BladeStateEnum.ERR_STATE: '',
         }.get(self, '?')
 
-    @property
-    def as_err_row(self) -> str:
-        """Returns ASCII information for error row representation."""
-        return {
-            BladeStateEnum.OUT: '',
-            BladeStateEnum.IN: '',
-            BladeStateEnum.STUCK_OUT: '',
-            BladeStateEnum.STUCK_IN: '',
-            BladeStateEnum.ERR_STATE: 'X',
-        }.get(self, '?')
 
 class LadderBladeState(enum.IntEnum):
     """
@@ -1369,7 +1401,7 @@ def get_blade_enum(value):
         return BladeStateEnum(value)
 
 
-def render_ascii_att(blade_states, err_states, *, start_index=0):
+def render_ascii_att(blade_states, *, start_index=0):
     """
     Creates the attenuator ascii art.
 
@@ -1390,7 +1422,6 @@ def render_ascii_att(blade_states, err_states, *, start_index=0):
     filter_line = ['filter # ']
     out_line = [' OUT     ']
     in_line = [' IN      ']
-    err_line= [' ERROR   ']
 
     for idx, state in enumerate(blade_states, start_index):
         index_str = str(idx)
@@ -1399,13 +1430,8 @@ def render_ascii_att(blade_states, err_states, *, start_index=0):
         out_line.append(state_enum.as_out_row.center(len(index_str)))
         in_line.append(state_enum.as_in_row.center(len(index_str)))
     #evaluate if there is any error associated with the blade
-    for idx, state in enumerate(err_states, start_index):
-        index_str = str(idx)
-        state_enum = get_blade_enum(state)
-        err_line.append(state_enum.as_err_row.center(len(index_str)))
     
     separator = '|'
     return [separator.join(filter_line + ['']),
             separator.join(out_line + ['']),
-            separator.join(in_line + ['']),
-            separator.join(err_line + [''])]
+            separator.join(in_line + [''])]
