@@ -1096,6 +1096,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
                  blade_errors.append(0)
 
         #remove error messages for blade one
+        #TODO-change this to accept 5 inputs
         del blade_errors[0:4] 
         for idx in range(1,19):
             sum_error=sum(blade_errors[0:4])
@@ -1106,7 +1107,6 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
 
             del blade_errors[0:4]
 
-        #print(errors)
         #test_list = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         decimal_value = 0
         for next_bit in errors:
@@ -1140,10 +1140,12 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
         attrs=sum(
             (
                 [
+                ####TODO -- dtermine if user_readback is redundant and integrate
                     f"blade_{_blade:02d}.state.error",
                     f"blade_{_blade:02d}.state.error_id",
                     f"blade_{_blade:02d}.state.error_message",
                     f"blade_{_blade:02d}.motor.plc.err_code",
+                    f"blade_{_blade:02d}.motor.user_readback",
                 ]
                 for _blade in range(1,20)
             ),
@@ -1163,6 +1165,8 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
         calculate_on_put=_reset_errors,
         attrs=[
             f"blade_{_blade:02d}.motor.plc.cmd_err_reset"
+            #f"blade_{_blade:02d}.state.plc.cmd_clear_error",
+            #f"blade_{_blade:02d}.motor.clear_error",
             for _blade in range(1,20)
         ],
     )
@@ -1252,11 +1256,15 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
         ]
 
         table = '\n'.join(render_ascii_att(cpt_states,  start_index=1))
+
         return f"""
 {table}
 Transmission (E={energy} keV): {transmission}
 Transmission for 3rd harmonic (E={energy_3} keV): {transmission_3}
+{self.error_summary.get()}
 """
+
+
 
 
 FEESolidAttenuator = AT2L0  # back-compatibility
@@ -1363,9 +1371,9 @@ def render_ascii_att(blade_states, *, start_index=0):
         state_enum = get_blade_enum(state)
         out_line.append(state_enum.as_out_row.center(len(index_str)))
         in_line.append(state_enum.as_in_row.center(len(index_str)))
-    #evaluate if there is any error associated with the blade
     
     separator = '|'
     return [separator.join(filter_line + ['']),
             separator.join(out_line + ['']),
             separator.join(in_line + [''])]
+
