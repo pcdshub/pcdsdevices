@@ -13,7 +13,7 @@ import time
 from collections.abc import Iterable
 from functools import reduce
 from types import MethodType
-from typing import Callable, Dict, Iterator, Optional, Union
+from typing import Callable, Dict, Iterator, List, Optional, Union
 
 import ophyd
 import pint
@@ -687,3 +687,31 @@ def post_ophyds_to_elog(objs, allow_child=False, hutch_elog=None):
 
     hutch_elog.post(final_post, tags=['ophyd_status'],
                     title='ophyd status report')
+
+
+def reorder_components(
+    cls: type,
+    start_with: Optional[List[str]] = None,
+    end_with: Optional[List[str]] = None,
+) -> None:
+    """
+    Rearrange the components in cls for typhos displays.
+
+    Internally, this works by switching around the keys in the _sig_attrs
+    OrderedDict.
+
+    Parameters
+    ----------
+    cls : type
+        The Device subclass that we'd like to rearrange the order of.
+    start_with : list of str, optional
+        The component names to bring to the top of the screen.
+    end_with : list of str, optional
+        The component names to bring to the bottom of the screen.
+    """
+    start_with = start_with or []
+    end_with = end_with or []
+    for cpt_name in reversed(start_with):
+        cls._sig_attrs.move_to_end(cpt_name, last=False)
+    for cpt_name in end_with:
+        cls._sig_attrs.move_to_end(cpt_name, last=True)
