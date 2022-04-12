@@ -12,8 +12,7 @@ import numpy as np
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
-from ophyd import PVPositioner
-
+from ophyd import PVPositioner 
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
@@ -23,8 +22,27 @@ from .interface import BaseInterface, FltMvInterface
 from .pmps import TwinCATStatePMPS
 from .signal import PytmcSignal
 from .utils import get_status_value
+from .inout import TwinCATInOutPositioner
 
 logger = logging.getLogger(__name__)
+
+
+class TwinCATMirrorStripeNoPMPS(TwinCATInOutPositioner):
+    states_list = []
+    in_states = []
+    out_states = []
+    _in_if_not_out = True
+    config = UpCpt(state_count=2)
+
+
+class CoatingStateNoPMPS(Device):
+    """
+    Extra parent class to put "coating" as the first device in order.
+
+    This makes it appear at the top of the screen in typhos.
+    """
+    coating = Cpt(TwinCATMirrorStripeNoPMPS, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
 
 
 class TwinCATMirrorStripe(TwinCATStatePMPS):
@@ -908,7 +926,7 @@ class FFMirrorZ(FFMirror):
     z_enc_rms = Cpt(PytmcSignal, ':ENC:Z:RMS', io='i', kind='normal')
 
 
-class XOffsetMirrorState(XOffsetMirror, CoatingState):
+class XOffsetMirrorState(XOffsetMirror, CoatingStateNoPMPS):
     """
     X-ray Offset Mirror with Yleft/Yright
 
