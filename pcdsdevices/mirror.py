@@ -13,6 +13,7 @@ from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 from ophyd import PVPositioner 
+
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
@@ -507,12 +508,9 @@ class XOffsetMirrorRTDs(XOffsetMirror):
         Alias for the device.
     """
     # RTD Cpts:
-    rtd_1 = Cpt(PytmcSignal, ':RTD:1', io='i',
-                          kind='normal')
-    rtd_2 = Cpt(PytmcSignal, ':RTD:2', io='i',
-                          kind='normal')
-    rtd_3 = Cpt(PytmcSignal, ':RTD:3', io='i',
-                          kind='normal')
+    rtd_1 = Cpt(PytmcSignal, ':RTD:1', io='i', kind='normal')
+    rtd_2 = Cpt(PytmcSignal, ':RTD:2', io='i', kind='normal')
+    rtd_3 = Cpt(PytmcSignal, ':RTD:3', io='i', kind='normal')
 
 
 class XOffsetMirrorBend(XOffsetMirror):
