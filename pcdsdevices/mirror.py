@@ -767,7 +767,7 @@ bender_ds ({self.bender_ds.prefix})
 
 class KBOMirrorState(KBOMirror, CoatingStateNoPMPS):
     """
-    Kirkpatrick-Baez Mirror with Bender Axes and Coating States
+    Kirkpatrick-Baez Mirror with Bender Axes and Coating States. Manual PMPS. 
 
     1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
 
