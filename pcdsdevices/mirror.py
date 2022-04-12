@@ -27,6 +27,39 @@ from .utils import get_status_value
 logger = logging.getLogger(__name__)
 
 
+class TwinCATMirrorStripe(TwinCATStatePMPS):
+    """
+    Subclass of TwinCATStatePMPS for the mirror coatings.
+
+    Unless most TwinCATStatePMPS, we have:
+    - Only in_states
+    - No in_states block the beam
+
+    We also clear the states_list and set _in_if_not_out to True
+    to automatically pick up the coatings from each mirror enum.
+    """
+    states_list = []
+    in_states = []
+    out_states = []
+    _in_if_not_out = True
+    config = UpCpt(state_count=2)
+
+    @property
+    def transmission(self):
+        """The mirror coating never blocks the beam."""
+        return 1
+
+
+class CoatingState(Device):
+    """
+    Extra parent class to put "coating" as the first device in order.
+
+    This makes it appear at the top of the screen in typhos.
+    """
+    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
+
+
 class OMMotor(FltMvInterface, PVPositioner):
     """Base class for each motor in the LCLS offset mirror system."""
     __doc__ += basic_positioner_init
@@ -459,6 +492,31 @@ pitch: ({self.pitch.prefix})
 """
 
 
+class XOffsetMirrorRTDs(XOffsetMirror):
+    """
+    X-ray Offset Mirror.
+
+    1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+    
+    With 3 RTD sensors installed.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # RTD Cpts:
+    rtd_1 = Cpt(PytmcSignal, ':RTD:1', io='i',
+                          kind='normal')
+    rtd_2 = Cpt(PytmcSignal, ':RTD:2', io='i',
+                          kind='normal')
+    rtd_3 = Cpt(PytmcSignal, ':RTD:3', io='i',
+                          kind='normal')
+
+
 class XOffsetMirrorBend(XOffsetMirror):
     """
     X-ray Offset Mirror with 2 bender acutators.
@@ -689,6 +747,20 @@ bender_ds ({self.bender_ds.prefix})
     bender_ds_enc_rms: {b_ds_enc_rms}
 """
 
+class KBOMirrorState(KBOMirror, CoatingState):
+    """
+    Kirkpatrick-Baez Mirror with Bender Axes and Coating States
+
+    1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+    """
+
 
 class KBOMirrorHE(KBOMirror):
     """
@@ -815,37 +887,25 @@ pitch: ({self.pitch.prefix})
 """
 
 
-class TwinCATMirrorStripe(TwinCATStatePMPS):
+class FFMirrorZ(FFMirror):
     """
-    Subclass of TwinCATStatePMPS for the mirror coatings.
+    Fixed Focus Kirkpatrick-Baez Mirror with Z axis.
 
-    Unless most TwinCATStatePMPS, we have:
-    - Only in_states
-    - No in_states block the beam
+    1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
 
-    We also clear the states_list and set _in_if_not_out to True
-    to automatically pick up the coatings from each mirror enum.
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
     """
-    states_list = []
-    in_states = []
-    out_states = []
-    _in_if_not_out = True
-    config = UpCpt(state_count=2)
+    # Motor components: can read/write positions
+    z = Cpt(BeckhoffAxisNoOffset, ':MMS:Z', kind='hinted')
 
-    @property
-    def transmission(self):
-        """The mirror coating never blocks the beam."""
-        return 1
-
-
-class CoatingState(Device):
-    """
-    Extra parent class to put "coating" as the first device in order.
-
-    This makes it appear at the top of the screen in typhos.
-    """
-    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
-                  doc='Control of the coating states via saved positions.')
+    # RMS Cpts:
+    z_enc_rms = Cpt(PytmcSignal, ':ENC:Z:RMS', io='i', kind='normal')
 
 
 class XOffsetMirrorState(XOffsetMirror, CoatingState):
