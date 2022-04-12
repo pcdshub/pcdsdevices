@@ -22,27 +22,8 @@ from .interface import BaseInterface, FltMvInterface
 from .pmps import TwinCATStatePMPS
 from .signal import PytmcSignal
 from .utils import get_status_value
-from .inout import TwinCATInOutPositioner
 
 logger = logging.getLogger(__name__)
-
-
-class TwinCATMirrorStripeNoPMPS(TwinCATInOutPositioner):
-    states_list = []
-    in_states = []
-    out_states = []
-    _in_if_not_out = True
-    config = UpCpt(state_count=2)
-
-
-class CoatingStateNoPMPS(Device):
-    """
-    Extra parent class to put "coating" as the first device in order.
-
-    This makes it appear at the top of the screen in typhos.
-    """
-    coating = Cpt(TwinCATMirrorStripeNoPMPS, ':COATING:STATE', kind='hinted',
-                  doc='Control of the coating states via saved positions.')
 
 
 class TwinCATMirrorStripe(TwinCATStatePMPS):
@@ -110,8 +91,7 @@ class OMMotor(FltMvInterface, PVPositioner):
         Parameters
         ----------
         position : float
-            Position to check for validity.
-
+            Position to check for validity.  
         Raises
         ------
         ValueError
@@ -764,20 +744,6 @@ bender_ds ({self.bender_ds.prefix})
     description: {b_ds_description}
     bender_ds_enc_rms: {b_ds_enc_rms}
 """
-
-class KBOMirrorState(KBOMirror, CoatingStateNoPMPS):
-    """
-    Kirkpatrick-Baez Mirror with Bender Axes and Coating States. Manual PMPS. 
-
-    1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
-
-    Parameters
-    ----------
-    prefix : str
-        Base PV for the mirror.
-
-    name : str
-    """
 
 
 class KBOMirrorHE(KBOMirror):
