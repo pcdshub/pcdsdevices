@@ -765,7 +765,7 @@ bender_ds ({self.bender_ds.prefix})
     bender_ds_enc_rms: {b_ds_enc_rms}
 """
 
-class KBOMirrorState(KBOMirror, CoatingState):
+class KBOMirrorState(KBOMirror, CoatingStateNoPMPS):
     """
     Kirkpatrick-Baez Mirror with Bender Axes and Coating States
 
@@ -926,7 +926,7 @@ class FFMirrorZ(FFMirror):
     z_enc_rms = Cpt(PytmcSignal, ':ENC:Z:RMS', io='i', kind='normal')
 
 
-class XOffsetMirrorState(XOffsetMirror, CoatingStateNoPMPS):
+class XOffsetMirrorState(XOffsetMirror, CoatingState):
     """
     X-ray Offset Mirror with Yleft/Yright
 
