@@ -27,39 +27,6 @@ from .utils import get_status_value
 logger = logging.getLogger(__name__)
 
 
-class TwinCATMirrorStripe(TwinCATStatePMPS):
-    """
-    Subclass of TwinCATStatePMPS for the mirror coatings.
-
-    Unless most TwinCATStatePMPS, we have:
-    - Only in_states
-    - No in_states block the beam
-
-    We also clear the states_list and set _in_if_not_out to True
-    to automatically pick up the coatings from each mirror enum.
-    """
-    states_list = []
-    in_states = []
-    out_states = []
-    _in_if_not_out = True
-    config = UpCpt(state_count=2)
-
-    @property
-    def transmission(self):
-        """The mirror coating never blocks the beam."""
-        return 1
-
-
-class CoatingState(Device):
-    """
-    Extra parent class to put "coating" as the first device in order.
-
-    This makes it appear at the top of the screen in typhos.
-    """
-    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
-                  doc='Control of the coating states via saved positions.')
-
-
 class OMMotor(FltMvInterface, PVPositioner):
     """Base class for each motor in the LCLS offset mirror system."""
     __doc__ += basic_positioner_init
@@ -93,6 +60,7 @@ class OMMotor(FltMvInterface, PVPositioner):
         ----------
         position : float
             Position to check for validity.  
+
         Raises
         ------
         ValueError
@@ -888,6 +856,39 @@ class FFMirrorZ(FFMirror):
 
     # RMS Cpts:
     z_enc_rms = Cpt(PytmcSignal, ':ENC:Z:RMS', io='i', kind='normal')
+
+
+class TwinCATMirrorStripe(TwinCATStatePMPS):
+    """
+    Subclass of TwinCATStatePMPS for the mirror coatings.
+
+    Unless most TwinCATStatePMPS, we have:
+    - Only in_states
+    - No in_states block the beam
+
+    We also clear the states_list and set _in_if_not_out to True
+    to automatically pick up the coatings from each mirror enum.
+    """
+    states_list = []
+    in_states = []
+    out_states = []
+    _in_if_not_out = True
+    config = UpCpt(state_count=2)
+
+    @property
+    def transmission(self):
+        """The mirror coating never blocks the beam."""
+        return 1
+
+
+class CoatingState(Device):
+    """
+    Extra parent class to put "coating" as the first device in order.
+
+    This makes it appear at the top of the screen in typhos.
+    """
+    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
 
 
 class XOffsetMirrorState(XOffsetMirror, CoatingState):
