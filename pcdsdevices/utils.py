@@ -18,6 +18,9 @@ from typing import Callable, Dict, Iterator, List, Optional, Union
 import ophyd
 import pint
 import prettytable
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
+from ophyd.ophydobj import Kind
 
 from ._html import collapse_list_head, collapse_list_tail
 from .type_hints import Number, OphydDataType
@@ -691,8 +694,8 @@ def post_ophyds_to_elog(objs, allow_child=False, hutch_elog=None):
 
 def reorder_components(
     cls: type,
-    start_with: Optional[List[str]] = None,
-    end_with: Optional[List[str]] = None,
+    start_with: Optional[List[Union[str, Cpt]]] = None,
+    end_with: Optional[List[Union[str, Cpt]]] = None,
 ) -> None:
     """
     Rearrange the components in cls for typhos displays.
@@ -709,9 +712,129 @@ def reorder_components(
     end_with : list of str, optional
         The component names to bring to the bottom of the screen.
     """
-    start_with = start_with or []
-    end_with = end_with or []
+    start_with = _normalize_reorder_list(cls, start_with)
+    end_with = _normalize_reorder_list(cls, end_with)
     for cpt_name in reversed(start_with):
         cls._sig_attrs.move_to_end(cpt_name, last=False)
     for cpt_name in end_with:
         cls._sig_attrs.move_to_end(cpt_name, last=True)
+
+
+def _normalize_reorder_list(
+    cls: type,
+    cpts_or_names: Optional[List[Union[str, Cpt]]],
+) -> List[str]:
+    """
+    Simplify the user's variable arguments for the component reordering.
+    """
+    if cpts_or_names is None:
+        return []
+    reverse_map = {cpt: name for name, cpt in cls._sig_attrs.items()}
+    output = []
+    for obj in cpts_or_names:
+        if isinstance(obj, Cpt):
+            output.append(reverse_map[obj])
+        else:
+            output.append(obj)
+    return output
+
+
+def move_subdevices_to_start(cls: type, subdevice_cls: type = Device):
+    """
+    Arrange the component order of a device class to put subdevices first.
+
+    This can be useful to bring e.g. all the motors to the top for the
+    typhos screen.
+
+    The relative ordering of subdevices is preserved.
+
+    Parameters
+    ----------
+    cls : type
+        The Device subclass that we'd like to rearrange the order of.
+    subdevice_cls: type, optional
+        A specific class type to move to the front. If omitted, all device
+        subclasses will be moved.
+    """
+    device_names = []
+    for name, cpt in cls._sig_attrs:
+        if issubclass(cpt.cls, subdevice_cls):
+            device_names.append(name)
+    reorder_components(cls, start_with=device_names)
+
+
+def sort_components_by_name(cls: type, reverse: bool = False):
+    """
+    Arrange the component order of a device class in alphabetical order.
+
+    This can be useful as a first step before bringing specific components
+    to the top of the queue for the typhos screen.
+
+    Parameters
+    ----------
+    cls : type
+        The Device subclass that we'd like to rearrange the order of.
+    reverse : bool, optional
+        Set to True to sort in descending order instead.
+    """
+    alphabetical = list(sorted(cls._sig_attrs, reverse=reverse))
+    reorder_components(cls, start_with=alphabetical)
+
+
+def sort_components_by_kind(cls: type):
+    """
+    Arrange the component order of a device class in kind order.
+
+    Kind order is hinted > normal > config > omitted.
+
+    This can be useful because typically the higher kind classes
+    are more important, and therefore should be higher up on the
+    typhos screen.
+
+    The relative ordering of subdevices within a kind is preserved.
+
+    Parameters
+    ----------
+    cls : type
+        The Device subclass that we'd like to rearrange the order of.
+    """
+    hinted = []
+    normal = []
+    config = []
+    omitted = []
+    for name, cpt in cls._sig_attrs.items():
+        if cpt.kind is Kind.hinted:
+            hinted.append(name)
+        elif cpt.kind is Kind.normal:
+            normal.append(name)
+        elif cpt.kind is Kind.config:
+            config.append(name)
+        elif cpt.kind is Kind.omitted:
+            omitted.append(name)
+        else:
+            raise TypeError(f'Invalid component kind {cpt.kind}')
+    reorder_components(type, end_with=hinted)
+    reorder_components(type, end_with=normal)
+    reorder_components(type, end_with=config)
+    reorder_components(type, end_with=omitted)
+
+
+def set_standard_ordering(cls: type):
+    """
+    Set a sensible "standard" ordering for use in typhos.
+
+    This ordering is:
+    - Devices first, then signals
+    - Within the above, kind order
+    - Within a kind, alphabetical order
+
+    This is not universally applicable and is just a suggested starting point.
+
+    Parameters
+    ----------
+    cls : type
+        The Device subclass that we'd like to rearrange the order of.
+    """
+    sort_components_by_name(cls)
+    sort_components_by_kind(cls)
+    move_subdevices_to_start(cls)
