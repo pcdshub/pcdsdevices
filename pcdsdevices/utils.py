@@ -757,7 +757,7 @@ def move_subdevices_to_start(cls: type, subdevice_cls: type = Device):
         subclasses will be moved.
     """
     device_names = []
-    for name, cpt in cls._sig_attrs:
+    for name, cpt in cls._sig_attrs.items():
         if issubclass(cpt.cls, subdevice_cls):
             device_names.append(name)
     reorder_components(cls, start_with=device_names)
@@ -813,10 +813,10 @@ def sort_components_by_kind(cls: type):
             omitted.append(name)
         else:
             raise TypeError(f'Invalid component kind {cpt.kind}')
-    reorder_components(type, end_with=hinted)
-    reorder_components(type, end_with=normal)
-    reorder_components(type, end_with=config)
-    reorder_components(type, end_with=omitted)
+    reorder_components(cls, end_with=hinted)
+    reorder_components(cls, end_with=normal)
+    reorder_components(cls, end_with=config)
+    reorder_components(cls, end_with=omitted)
 
 
 def set_standard_ordering(cls: type):

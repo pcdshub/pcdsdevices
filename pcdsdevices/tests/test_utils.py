@@ -5,11 +5,13 @@ import time
 
 import pytest
 from ophyd import Component as Cpt
-from ophyd import Device
+from ophyd import Device, Signal
 
 from .. import utils
 from ..device import GroupDevice
-from ..utils import post_ophyds_to_elog
+from ..utils import (move_subdevices_to_start, post_ophyds_to_elog,
+                     reorder_components, set_standard_ordering,
+                     sort_components_by_kind, sort_components_by_name)
 
 try:
     import pty
@@ -153,3 +155,59 @@ def test_ophyd_to_elog(elog):
     for post in elog.posts:
         for tag in ['pre', 'div', 'button']:
             assert post[0][0].count('<'+tag) == post[0][0].count('</'+tag)
+
+
+class SampleSub(Device):
+    sig = Cpt(Signal)
+
+
+@pytest.fixture(scope='function')
+def SampleClass():
+    class SampleClass(Device):
+        omit = Cpt(Signal, kind='omitted')
+        cfg = Cpt(Signal, kind='config')
+        norm = Cpt(Signal, kind='normal')
+        hint = Cpt(Signal, kind='hinted')
+        mot = Cpt(SampleSub, 'MOT', kind='normal')
+        sub = Cpt(SampleSub, 'SUB', kind='hinted')
+    return SampleClass
+
+
+def get_order(cls):
+    return list(cls._sig_attrs)
+
+
+def test_reorder_components(SampleClass):
+    reorder_components(
+        SampleClass,
+        start_with=['norm', SampleClass.sub],
+        end_with=['hint', SampleClass.cfg]
+    )
+    target_order = ['norm', 'sub', 'omit', 'mot', 'hint', 'cfg']
+    assert get_order(SampleClass) == target_order
+    reorder_components(SampleClass)
+    assert get_order(SampleClass) == target_order
+
+
+def test_move_subdevices_to_start(SampleClass):
+    move_subdevices_to_start(SampleClass)
+    target_order = ['mot', 'sub', 'omit', 'cfg', 'norm', 'hint']
+    assert get_order(SampleClass) == target_order
+
+
+def test_sort_components_by_name(SampleClass):
+    sort_components_by_name(SampleClass)
+    target_order = sorted(['mot', 'sub', 'omit', 'cfg', 'norm', 'hint'])
+    assert get_order(SampleClass) == target_order
+
+
+def test_sort_components_by_kind(SampleClass):
+    sort_components_by_kind(SampleClass)
+    target_order = ['hint', 'sub', 'norm', 'mot', 'cfg', 'omit']
+    assert get_order(SampleClass) == target_order
+
+
+def test_set_standard_ordering(SampleClass):
+    set_standard_ordering(SampleClass)
+    target_order = ['sub', 'mot', 'hint', 'norm', 'cfg', 'omit']
+    assert get_order(SampleClass) == target_order
