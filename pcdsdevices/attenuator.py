@@ -19,6 +19,7 @@ from .device import UnrelatedComponent as UCpt
 from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutPositioner, TwinCATInOutPositioner
+from .pmps import TwinCATStatePMPS
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
 from .signal import InternalSignal
 from .utils import get_status_float, get_status_value
@@ -27,6 +28,31 @@ from .variety import set_metadata
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
 
+class Gatt_Y_aperture(TwinCATStatePMPS):
+    """
+    Controls the Y axis component of the apertures inside AT1K0
+    Defines the state count as 4 (5.5mm, 8mm, 10mm, 13mm) to limit the number of
+    config PVs we connect to.
+    """
+
+    states_list = []
+    in_states = []
+    out_states = []
+    _in_if_not_out = True
+    config = UpCpt(state_count=4)
+
+class Gatt_X_aperture(TwinCATStatePMPS):
+    """
+    Controls the X axis component of the apertures inside AT1K0
+    Defines the state count as 1 (centered) to limit the number of
+    config PVs we connect to.
+    """
+
+    states_list = []
+    in_states = []
+    out_states = []
+    _in_if_not_out = True
+    config = UpCpt(state_count=1)
 
 class Filter(InOutPositioner):
     """
