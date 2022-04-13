@@ -464,7 +464,7 @@ class XOffsetMirrorRTDs(XOffsetMirror):
     X-ray Offset Mirror.
 
     1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
-    
+
     With 3 RTD sensors installed.
 
     Parameters
