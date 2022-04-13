@@ -12,7 +12,7 @@ import numpy as np
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
-from ophyd import PVPositioner 
+from ophyd import PVPositioner
 
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
@@ -59,7 +59,7 @@ class OMMotor(FltMvInterface, PVPositioner):
         Parameters
         ----------
         position : float
-            Position to check for validity.  
+            Position to check for validity.
 
         Raises
         ------
