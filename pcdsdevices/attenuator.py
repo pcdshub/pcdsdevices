@@ -1076,6 +1076,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     """check for errors and return a string indicating any errors verbally"""
     def _check_errors(signals: SignalToValue) ->  str:
         errors = []
+        #sort out .motor from .motor.plc signals
         for sig, value in signals.items():
             if ("motor" in sig.name) ^ ("plc" in sig.name):
                 value=sig.metadata.get('severity').value
@@ -1131,7 +1132,6 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
 
             del blade_errors[0:5]
 
-        #test_list = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         decimal_value = 0
         for next_bit in errors:
             decimal_value = decimal_value * 2 + next_bit
@@ -1148,7 +1148,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
                     f"blade_{_blade:02d}.state.error_id",
                     f"blade_{_blade:02d}.state.error_message",
                     f"blade_{_blade:02d}.motor.plc.err_code",
-                    #f"blade_{_blade:02d}.motor.user_readback",
+                    f"blade_{_blade:02d}.motor.user_readback",
                 ]
                 for _blade in range(1,20)
             ),
