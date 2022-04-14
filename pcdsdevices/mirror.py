@@ -459,6 +459,28 @@ pitch: ({self.pitch.prefix})
 """
 
 
+class XOffsetMirrorRTDs(XOffsetMirror):
+    """
+    X-ray Offset Mirror.
+
+    1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+
+    With 3 RTD sensors installed.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # RTD Cpts:
+    rtd_1 = Cpt(PytmcSignal, ':RTD:1', io='i', kind='normal')
+    rtd_2 = Cpt(PytmcSignal, ':RTD:2', io='i', kind='normal')
+    rtd_3 = Cpt(PytmcSignal, ':RTD:3', io='i', kind='normal')
+
+
 class XOffsetMirrorBend(XOffsetMirror):
     """
     X-ray Offset Mirror with 2 bender acutators.
@@ -813,6 +835,33 @@ pitch: ({self.pitch.prefix})
     description: {p_description}
     pitch_enc_rms: {p_enc_rms}
 """
+
+
+class FFMirrorZ(FFMirror):
+    """
+    Fixed Focus Kirkpatrick-Baez Mirror with Z axis.
+
+    1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # Motor components: can read/write positions
+    z = Cpt(BeckhoffAxisNoOffset, ':MMS:Z', kind='hinted')
+
+    # RMS Cpts:
+    z_enc_rms = Cpt(PytmcSignal, ':ENC:Z:RMS', io='i', kind='normal')
+
+
+end_with = ['x_enc_rms', 'y_enc_rms', 'z_enc_rms', 'pitch_enc_rms']
+
+for cpt_name in end_with:
+    FFMirrorZ._sig_attrs.move_to_end(cpt_name, last=True)
 
 
 class TwinCATMirrorStripe(TwinCATStatePMPS):
