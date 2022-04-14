@@ -857,7 +857,8 @@ class FFMirrorZ(FFMirror):
     # RMS Cpts:
     z_enc_rms = Cpt(PytmcSignal, ':ENC:Z:RMS', io='i', kind='normal')
 
-end_with = ['x_enc_rms', 'y_enc_rms', 'pitch_enc_rms']
+
+end_with = ['x_enc_rms', 'y_enc_rms', 'z_enc_rms','pitch_enc_rms']
 
 for cpt_name in end_with:
     FFMirrorZ._sig_attrs.move_to_end(cpt_name, last=True)
