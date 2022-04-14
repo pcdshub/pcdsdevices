@@ -1202,10 +1202,10 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     blade_18 = Cpt(FEESolidAttenuatorBlade, ':MMS:18')
     blade_19 = Cpt(FEESolidAttenuatorBlade, ':MMS:19')
 
-    @property
     def summarize_err(self):
         """returns the error summary """
-        return self.error_summary.get()
+        print(self.error_summary.get())
+        
     @property
     def setpoint(self):
         """(PVPositioner compat) - use desired transmission as setpoint."""
