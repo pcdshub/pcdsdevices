@@ -693,7 +693,7 @@ def post_ophyds_to_elog(objs, allow_child=False, hutch_elog=None):
 
 
 def reorder_components(
-    cls: type,
+    cls: type[Device],
     start_with: Optional[List[Union[str, Cpt]]] = None,
     end_with: Optional[List[Union[str, Cpt]]] = None,
 ) -> None:
@@ -705,7 +705,7 @@ def reorder_components(
 
     Parameters
     ----------
-    cls : type
+    cls : Device subclass
         The Device subclass that we'd like to rearrange the order of.
     start_with : list of str, optional
         The component names to bring to the top of the screen.
@@ -721,7 +721,7 @@ def reorder_components(
 
 
 def _normalize_reorder_list(
-    cls: type,
+    cls: type[Device],
     cpts_or_names: Optional[List[Union[str, Cpt]]],
 ) -> List[str]:
     """
@@ -739,7 +739,10 @@ def _normalize_reorder_list(
     return output
 
 
-def move_subdevices_to_start(cls: type, subdevice_cls: type = Device):
+def move_subdevices_to_start(
+    cls: type[Device],
+    subdevice_cls: type[Device] = Device,
+):
     """
     Arrange the component order of a device class to put subdevices first.
 
@@ -750,7 +753,7 @@ def move_subdevices_to_start(cls: type, subdevice_cls: type = Device):
 
     Parameters
     ----------
-    cls : type
+    cls : Device subclass
         The Device subclass that we'd like to rearrange the order of.
     subdevice_cls: type, optional
         A specific class type to move to the front. If omitted, all device
@@ -763,7 +766,7 @@ def move_subdevices_to_start(cls: type, subdevice_cls: type = Device):
     reorder_components(cls, start_with=device_names)
 
 
-def sort_components_by_name(cls: type, reverse: bool = False):
+def sort_components_by_name(cls: type[Device], reverse: bool = False):
     """
     Arrange the component order of a device class in alphabetical order.
 
@@ -772,7 +775,7 @@ def sort_components_by_name(cls: type, reverse: bool = False):
 
     Parameters
     ----------
-    cls : type
+    cls : Device subclass
         The Device subclass that we'd like to rearrange the order of.
     reverse : bool, optional
         Set to True to sort in descending order instead.
@@ -781,7 +784,7 @@ def sort_components_by_name(cls: type, reverse: bool = False):
     reorder_components(cls, start_with=alphabetical)
 
 
-def sort_components_by_kind(cls: type):
+def sort_components_by_kind(cls: type[Device]):
     """
     Arrange the component order of a device class in kind order.
 
@@ -795,7 +798,7 @@ def sort_components_by_kind(cls: type):
 
     Parameters
     ----------
-    cls : type
+    cls : Device subclass
         The Device subclass that we'd like to rearrange the order of.
     """
     hinted = []
@@ -819,7 +822,7 @@ def sort_components_by_kind(cls: type):
     reorder_components(cls, end_with=omitted)
 
 
-def set_standard_ordering(cls: type):
+def set_standard_ordering(cls: type[Device]):
     """
     Set a sensible "standard" ordering for use in typhos.
 
@@ -832,7 +835,7 @@ def set_standard_ordering(cls: type):
 
     Parameters
     ----------
-    cls : type
+    cls : Device subclass
         The Device subclass that we'd like to rearrange the order of.
     """
     sort_components_by_name(cls)
