@@ -693,10 +693,10 @@ def post_ophyds_to_elog(objs, allow_child=False, hutch_elog=None):
 
 
 def reorder_components(
-    cls: type[Device],
+    cls: Optional[type[Device]] = None,
     start_with: Optional[List[Union[str, Cpt]]] = None,
     end_with: Optional[List[Union[str, Cpt]]] = None,
-) -> None:
+) -> Union[type[Device], Callable[[type[Device]], type[Device]]]:
     """
     Rearrange the components in cls for typhos displays.
 
@@ -711,13 +711,32 @@ def reorder_components(
         The component names to bring to the top of the screen.
     end_with : list of str, optional
         The component names to bring to the bottom of the screen.
+
+    Returns
+    -------
+    cls : Device subclass, or function that returns it
+        Decorator-compatible output. When used as a function or as a
+        no-argument decorator, this will return the input device.
+        When used as a decorator with the reverse argument, this will
+        return a function as required by the decorator interface.
     """
+    # Must happen outside of inner scope
     start_with = _normalize_reorder_list(cls, start_with)
     end_with = _normalize_reorder_list(cls, end_with)
-    for cpt_name in reversed(start_with):
-        cls._sig_attrs.move_to_end(cpt_name, last=False)
-    for cpt_name in end_with:
-        cls._sig_attrs.move_to_end(cpt_name, last=True)
+
+    # Special decorator handling
+    def inner(cls: type[Device]) -> type[Device]:
+        for cpt_name in reversed(start_with):
+            cls._sig_attrs.move_to_end(cpt_name, last=False)
+        for cpt_name in end_with:
+            cls._sig_attrs.move_to_end(cpt_name, last=True)
+        return cls
+
+    if cls is not None:
+        # For function call or no-args decorator
+        return inner(cls)
+    # For decorator with args
+    return inner
 
 
 def _normalize_reorder_list(
@@ -751,9 +770,9 @@ def _normalize_reorder_list(
 
 
 def move_subdevices_to_start(
-    cls: type[Device],
+    cls: Optional[type[Device]] = None,
     subdevice_cls: type[Device] = Device,
-):
+) -> Union[type[Device], Callable[[type[Device]], type[Device]]]:
     """
     Arrange the component order of a device class to put subdevices first.
 
@@ -769,15 +788,35 @@ def move_subdevices_to_start(
     subdevice_cls: type, optional
         A specific class type to move to the front. If omitted, all device
         subclasses will be moved.
+
+    Returns
+    -------
+    cls : Device subclass, or function that returns it
+        Decorator-compatible output. When used as a function or as a
+        no-argument decorator, this will return the input device.
+        When used as a decorator with the subdevice_cls argument, this will
+        return a function as required by the decorator interface.
     """
-    device_names = []
-    for name, cpt in cls._sig_attrs.items():
-        if issubclass(cpt.cls, subdevice_cls):
-            device_names.append(name)
-    reorder_components(cls, start_with=device_names)
+    # Special decorator handling
+    def inner(cls: type[Device]) -> type[Device]:
+        device_names = []
+        for name, cpt in cls._sig_attrs.items():
+            if issubclass(cpt.cls, subdevice_cls):
+                device_names.append(name)
+        reorder_components(cls, start_with=device_names)
+        return cls
+
+    if cls is not None:
+        # For function call or no-args decorator
+        return inner(cls)
+    # For decorator with args
+    return inner
 
 
-def sort_components_by_name(cls: type[Device], reverse: bool = False):
+def sort_components_by_name(
+    cls: Optional[type[Device]] = None,
+    reverse: bool = False,
+) -> Union[type[Device], Callable[[type[Device]], type[Device]]]:
     """
     Arrange the component order of a device class in alphabetical order.
 
@@ -790,12 +829,29 @@ def sort_components_by_name(cls: type[Device], reverse: bool = False):
         The Device subclass that we'd like to rearrange the order of.
     reverse : bool, optional
         Set to True to sort in descending order instead.
+
+    Returns
+    -------
+    cls : Device subclass, or function that returns it
+        Decorator-compatible output. When used as a function or as a
+        no-argument decorator, this will return the input device.
+        When used as a decorator with the reverse argument, this will
+        return a function as required by the decorator interface.
     """
-    alphabetical = list(sorted(cls._sig_attrs, reverse=reverse))
-    reorder_components(cls, start_with=alphabetical)
+    # Special decorator handling
+    def inner(cls: type[Device]) -> type[Device]:
+        alphabetical = list(sorted(cls._sig_attrs, reverse=reverse))
+        reorder_components(cls, start_with=alphabetical)
+        return cls
+
+    if cls is not None:
+        # For function call or no-args decorator
+        return inner(cls)
+    # For decorator with args
+    return inner
 
 
-def sort_components_by_kind(cls: type[Device]):
+def sort_components_by_kind(cls: type[Device]) -> type[Device]:
     """
     Arrange the component order of a device class in kind order.
 
@@ -817,6 +873,12 @@ def sort_components_by_kind(cls: type[Device]):
     ----------
     cls : Device subclass
         The Device subclass that we'd like to rearrange the order of.
+
+    Returns
+    -------
+    cls : Device subclass
+        The same class from the input, mutated. This is returned so that
+        sort_components_by_kind can be used as a class decorator.
     """
     hinted = []
     normal = []
@@ -836,6 +898,7 @@ def sort_components_by_kind(cls: type[Device]):
     reorder_components(cls, end_with=normal)
     reorder_components(cls, end_with=config)
     reorder_components(cls, end_with=omitted)
+    return cls
 
 
 def check_kind_flag(kind: int, flag: Kind) -> bool:
@@ -843,7 +906,7 @@ def check_kind_flag(kind: int, flag: Kind) -> bool:
     return kind & flag == flag
 
 
-def set_standard_ordering(cls: type[Device]):
+def set_standard_ordering(cls: type[Device]) -> type[Device]:
     """
     Set a sensible "standard" ordering for use in typhos.
 
@@ -858,7 +921,14 @@ def set_standard_ordering(cls: type[Device]):
     ----------
     cls : Device subclass
         The Device subclass that we'd like to rearrange the order of.
+
+    Returns
+    -------
+    cls : Device subclass
+        The same class from the input, mutated. This is returned so that
+        set_standard_ordering can be used as a class decorator.
     """
     sort_components_by_name(cls)
     sort_components_by_kind(cls)
     move_subdevices_to_start(cls)
+    return cls
