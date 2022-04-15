@@ -807,6 +807,12 @@ def sort_components_by_kind(cls: type[Device]):
 
     The relative ordering of subdevices within a kind is preserved.
 
+    This function makes no attempt to disambiguate or sort
+    combination kinds. For example:
+
+    - "hinted | config" counts as "hinted"
+    - "normal | config" counts as "normal"
+
     Parameters
     ----------
     cls : Device subclass
@@ -817,20 +823,24 @@ def sort_components_by_kind(cls: type[Device]):
     config = []
     omitted = []
     for name, cpt in cls._sig_attrs.items():
-        if cpt.kind is Kind.hinted:
+        if check_kind_flag(cpt.kind, Kind.hinted):
+            print(cpt.kind)
             hinted.append(name)
-        elif cpt.kind is Kind.normal:
+        elif check_kind_flag(cpt.kind, Kind.normal):
             normal.append(name)
-        elif cpt.kind is Kind.config:
+        elif check_kind_flag(cpt.kind, Kind.config):
             config.append(name)
-        elif cpt.kind is Kind.omitted:
-            omitted.append(name)
         else:
-            raise TypeError(f'Invalid component kind {cpt.kind}')
+            omitted.append(name)
     reorder_components(cls, end_with=hinted)
     reorder_components(cls, end_with=normal)
     reorder_components(cls, end_with=config)
     reorder_components(cls, end_with=omitted)
+
+
+def check_kind_flag(kind: int, flag: Kind) -> bool:
+    """Return True if kind contains flag."""
+    return kind & flag == flag
 
 
 def set_standard_ordering(cls: type[Device]):
