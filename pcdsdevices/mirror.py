@@ -22,7 +22,7 @@ from .inout import InOutRecordPositioner
 from .interface import BaseInterface, FltMvInterface
 from .pmps import TwinCATStatePMPS
 from .signal import PytmcSignal
-from .utils import get_status_value
+from .utils import get_status_value, reorder_components
 
 logger = logging.getLogger(__name__)
 
@@ -837,6 +837,9 @@ pitch: ({self.pitch.prefix})
 """
 
 
+@reorder_components(
+    end_with=['x_enc_rms', 'y_enc_rms', 'z_enc_rms', 'pitch_enc_rms']
+)
 class FFMirrorZ(FFMirror):
     """
     Fixed Focus Kirkpatrick-Baez Mirror with Z axis.
@@ -856,12 +859,6 @@ class FFMirrorZ(FFMirror):
 
     # RMS Cpts:
     z_enc_rms = Cpt(PytmcSignal, ':ENC:Z:RMS', io='i', kind='normal')
-
-
-end_with = ['x_enc_rms', 'y_enc_rms', 'z_enc_rms', 'pitch_enc_rms']
-
-for cpt_name in end_with:
-    FFMirrorZ._sig_attrs.move_to_end(cpt_name, last=True)
 
 
 class TwinCATMirrorStripe(TwinCATStatePMPS):
