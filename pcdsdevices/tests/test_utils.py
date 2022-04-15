@@ -218,3 +218,47 @@ def test_set_standard_ordering(SampleClass):
     set_standard_ordering(SampleClass)
     target_order = ['sub', 'mot', 'hint', 'norm', 'cfg', 'omit']
     assert get_order(SampleClass) == target_order
+
+
+def test_reorder_decorators():
+    @reorder_components(start_with=['cat'])
+    class Pets(Device):
+        dog = Cpt(Signal)
+        cat = Cpt(Signal)
+
+    assert get_order(Pets) == ['cat', 'dog']
+
+    @move_subdevices_to_start(subdevice_cls=SampleSub)
+    class Fruits(Device):
+        apple = Cpt(Signal)
+        banana = Cpt(SampleSub, 'BANANA')
+
+    assert get_order(Fruits) == ['banana', 'apple']
+
+    @sort_components_by_name(reverse=True)
+    class Veggies(Device):
+        celery = Cpt(Signal)
+        lettuce = Cpt(Signal)
+
+    assert get_order(Veggies) == ['lettuce', 'celery']
+
+    @sort_components_by_kind
+    class Colors(Device):
+        blue = Cpt(Signal, kind='normal')
+        red = Cpt(Signal, kind='hinted')
+
+    assert get_order(Colors) == ['red', 'blue']
+
+    @set_standard_ordering
+    class ChessPieces(Device):
+        pawn = Cpt(Signal, kind='omitted')
+        king = Cpt(Signal, kind='hinted')
+        queen = Cpt(SampleSub, kind='hinted')
+        knight = Cpt(Signal, kind='config')
+        rook = Cpt(SampleSub, kind='normal')
+        bishop = Cpt(Signal, kind='config')
+
+    assert (
+        get_order(ChessPieces)
+        == ['queen', 'rook', 'king', 'bishop', 'knight', 'pawn']
+    )

@@ -720,15 +720,13 @@ def reorder_components(
         When used as a decorator with the reverse argument, this will
         return a function as required by the decorator interface.
     """
-    # Must happen outside of inner scope
-    start_with = _normalize_reorder_list(cls, start_with)
-    end_with = _normalize_reorder_list(cls, end_with)
-
     # Special decorator handling
     def inner(cls: type[Device]) -> type[Device]:
-        for cpt_name in reversed(start_with):
+        start_norm = _normalize_reorder_list(cls, start_with)
+        end_norm = _normalize_reorder_list(cls, end_with)
+        for cpt_name in reversed(start_norm):
             cls._sig_attrs.move_to_end(cpt_name, last=False)
-        for cpt_name in end_with:
+        for cpt_name in end_norm:
             cls._sig_attrs.move_to_end(cpt_name, last=True)
         return cls
 
