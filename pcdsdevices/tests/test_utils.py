@@ -189,6 +189,13 @@ def test_reorder_components(SampleClass):
     assert get_order(SampleClass) == target_order
 
 
+def test_normalize_reorder_list_errors(SampleClass):
+    with pytest.raises(ValueError):
+        reorder_components(SampleClass, start_with=[Cpt(Signal)])
+    with pytest.raises(TypeError):
+        reorder_components(SampleClass, start_with=[1])
+
+
 def test_move_subdevices_to_start(SampleClass):
     move_subdevices_to_start(SampleClass)
     target_order = ['mot', 'sub', 'omit', 'cfg', 'norm', 'hint']

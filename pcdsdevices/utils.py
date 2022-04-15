@@ -733,9 +733,20 @@ def _normalize_reorder_list(
     output = []
     for obj in cpts_or_names:
         if isinstance(obj, Cpt):
-            output.append(reverse_map[obj])
-        else:
+            try:
+                output.append(reverse_map[obj])
+            except KeyError as exc:
+                raise ValueError(
+                    f'Recieved component {obj}, which is not from the device '
+                    f'class {cls}. We have components with the following '
+                    f'names: {", ".join(cls._sig_attrs)}'
+                ) from exc
+        elif isinstance(obj, str):
             output.append(obj)
+        else:
+            raise TypeError(
+                f'Recieved object {obj}, which is not a str or Component.'
+            )
     return output
 
 
