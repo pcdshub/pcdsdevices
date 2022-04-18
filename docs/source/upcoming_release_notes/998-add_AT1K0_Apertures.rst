@@ -15,8 +15,8 @@ Device Updates
 
 New Devices
 -----------
-The X apertures for AT1K0 now have their own device with 1 state, "centered"
-The Y apertures for AT1K0 now have their own device with 4 states, ["5.5mm","8mm","10mm","13mm"]
+- The X apertures for AT1K0 now have their own device with 1 state, "centered"
+- The Y apertures for AT1K0 now have their own device with 4 states, ["5.5mm","8mm","10mm","13mm"]
 
 Bugfixes
 --------
