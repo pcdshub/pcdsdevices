@@ -754,7 +754,7 @@ def _normalize_reorder_list(
                 output.append(reverse_map[obj])
             except KeyError as exc:
                 raise ValueError(
-                    f'Recieved component {obj}, which is not from the device '
+                    f'Received component {obj}, which is not from the device '
                     f'class {cls}. We have components with the following '
                     f'names: {", ".join(cls._sig_attrs)}'
                 ) from exc
@@ -762,7 +762,7 @@ def _normalize_reorder_list(
             output.append(obj)
         else:
             raise TypeError(
-                f'Recieved object {obj}, which is not a str or Component.'
+                f'Received object {obj}, which is not a str or Component.'
             )
     return output
 
@@ -884,7 +884,6 @@ def sort_components_by_kind(cls: type[Device]) -> type[Device]:
     omitted = []
     for name, cpt in cls._sig_attrs.items():
         if check_kind_flag(cpt.kind, Kind.hinted):
-            print(cpt.kind)
             hinted.append(name)
         elif check_kind_flag(cpt.kind, Kind.normal):
             normal.append(name)
