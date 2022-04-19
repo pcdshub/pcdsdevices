@@ -643,3 +643,18 @@ class SimLusiSlits(LusiSlits):
     ywidth = Cpt(FastMotor)
     xcenter = Cpt(FastMotor)
     ycenter = Cpt(FastMotor)
+
+class JJSlits(SlitsBase):
+    '''
+    Parameters
+    ---------
+    prefix : str
+    Base PV for the JJ X-RAY PLC System
+    name : str
+    '''
+
+    # Motor Components
+    xwidth = Cpt(BeckhoffAxis, ':XWIDTH', kind='normal')
+    ywidth = Cpt(BeckhoffAxis, ':YWIDTH', kind='normal')
+    xcenter = Cpt(BeckhoffAxis, ':XCENTER', kind='normal')
+    ycenter = Cpt(BeckhoffAxis, ':YCENTER', kind='normal')
