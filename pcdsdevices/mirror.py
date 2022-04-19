@@ -915,3 +915,26 @@ class XOffsetMirrorState(XOffsetMirror, CoatingState):
     """
     # UI representation
     _icon = 'fa.minus-square'
+
+
+class OpticsPitchNotepad(BaseInterface, Device):
+    """
+        Class for storing pitch positions based on state 
+    """
+    MR1L0_Pitch_W = Cpt(EpicsSignal, 'MR1L0:PITCH:Coating1')
+    MR1L0_Pitch_SiC = Cpt(EpicsSignal, 'MR1L0:PITCH:Coating2')
+
+    MR2L0_Pitch_Coating1 = Cpt(EpicsSignal, 'MR2L0:PITCH:Coating1')
+    MR2L0_Pitch_Coating2 = Cpt(EpicsSignal, 'MR2L0:PITCH:Coating2')
+
+    MR1L4_Pitch_MEC_W = Cpt(EpicsSignal, 'MR1L4:PITCH:MEC:Coating1')
+    MR1L4_Pitch_MEC_SiC = Cpt(EpicsSignal, 'MR1L4:PITCH:MEC:Coating2')
+
+    MR1L4_Pitch_MFX_W = Cpt(EpicsSignal, 'MR1L4:PITCH:MFX:Coating1')
+    MR1L4_Pitch_MFX_SiC = Cpt(EpicsSignal, 'MR1L4:PITCH:MFX:Coating2')
+
+    MR1L3_Pitch_W = Cpt(EpicsSignal, 'MR1L3:PITCH:Coating1')
+    MR1L3_Pitch_SiC = Cpt(EpicsSignal, 'MR1L3:PITCH:Coating2')
+
+    MR2L3_Pitch_W = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating1')
+    MR2L3_Pitch_SiC = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating2')
