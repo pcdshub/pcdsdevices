@@ -919,27 +919,27 @@ class XOffsetMirrorState(XOffsetMirror, CoatingState):
 
 class OpticsPitchNotepad(BaseInterface, Device):
     """
-    Class for storing pitch positions based on state 
+    Class for storing pitch positions based on state
 
-    This provides an interface to the optics notepad IOC where 
+    This provides an interface to the optics notepad IOC where
     the X-Ray beam delivery team can store
     pitch set points based on coating state.
 
     """
-    MR1L0_Pitch_B4C = Cpt(EpicsSignal, 'MR1L0:PITCH:Coating1')
-    MR1L0_Pitch_Ni = Cpt(EpicsSignal, 'MR1L0:PITCH:Coating2')
+    mr1l0_pitch_b4c = Cpt(EpicsSignal, 'MR1L0:PITCH:Coating1')
+    mr1l0_pitch_ni = Cpt(EpicsSignal, 'MR1L0:PITCH:Coating2')
 
-    MR2L0_Pitch_B4C = Cpt(EpicsSignal, 'MR2L0:PITCH:Coating1')
-    MR2L0_Pitch_Ni = Cpt(EpicsSignal, 'MR2L0:PITCH:Coating2')
+    mr2l0_pitch_b4c = Cpt(EpicsSignal, 'MR2L0:PITCH:Coating1')
+    mr2l0_pitch_ni = Cpt(EpicsSignal, 'MR2L0:PITCH:Coating2')
 
-    MR1L4_Pitch_MEC_SiC = Cpt(EpicsSignal, 'MR1L4:PITCH:MEC:Coating1')
-    MR1L4_Pitch_MEC_W = Cpt(EpicsSignal, 'MR1L4:PITCH:MEC:Coating2')
+    mr1l4_pitch_mec_sic = Cpt(EpicsSignal, 'MR1L4:PITCH:MEC:Coating1')
+    mr1l4_pitch_mec_w = Cpt(EpicsSignal, 'MR1L4:PITCH:MEC:Coating2')
 
-    MR1L4_Pitch_MFX_SiC = Cpt(EpicsSignal, 'MR1L4:PITCH:MFX:Coating1')
-    MR1L4_Pitch_MFX_W = Cpt(EpicsSignal, 'MR1L4:PITCH:MFX:Coating2')
+    mr1l4_pitch_mfx_sic = Cpt(EpicsSignal, 'MR1L4:PITCH:MFX:Coating1')
+    mr1l4_pitch_mfx_w = Cpt(EpicsSignal, 'MR1L4:PITCH:MFX:Coating2')
 
-    MR1L3_Pitch_SiC = Cpt(EpicsSignal, 'MR1L3:PITCH:Coating1')
-    MR1L3_Pitch_W = Cpt(EpicsSignal, 'MR1L3:PITCH:Coating2')
+    mr1l3_pitch_sic = Cpt(EpicsSignal, 'MR1L3:PITCH:Coating1')
+    mr1l3_pitch_w = Cpt(EpicsSignal, 'MR1L3:PITCH:Coating2')
 
-    MR2L3_Pitch_SiC = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating1')
-    MR2L3_Pitch_W = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating2')
+    mr2l3_pitch_sic = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating1')
+    mr2l3_pitch_w = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating2')
