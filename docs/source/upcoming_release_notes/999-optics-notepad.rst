@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- class for storing pitch positions based on state
+- N/A 
 
 Device Updates
 --------------
@@ -15,7 +15,8 @@ Device Updates
 
 New Devices
 -----------
-- OpticsPitchNotepad
+- OpticsPitchNotepad - a class for storing pitch positions based on state in a notepad IOC
+  for mr1l0, mr2l0, mr1l4, mr1l3, and mr2l3.
 
 Bugfixes
 --------
