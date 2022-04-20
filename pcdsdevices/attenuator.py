@@ -22,11 +22,40 @@ from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
 from .signal import InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO
 from .type_hints import OphydDataType, SignalToValue
+from .pmps import TwinCATStatePMPS
 from .utils import get_status_float, get_status_value
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
 MAX_FILTERS = 12
+
+
+class GattApertureY(TwinCATStatePMPS):
+    """
+    AT1K0 is a gas attenuator containing 4 discrete aperture arrays,
+    each with 4 discrete aperture sizes to attenuate the intensity of the beam.
+    This class Controls the Y axis component of the apertures inside AT1K0 and
+    Defines the state count as 4, (5.5mm, 8mm, 10mm, 13mm) to limit the
+    number of config PVs we connect to.
+    """
+
+    in_states = []
+    out_states = []
+    config = UpCpt(state_count=4)
+
+
+class GattApertureX(TwinCATStatePMPS):
+    """
+    AT1K0 is a gas attenuator containing 4 discrete aperture arrays,
+    each with 4 discrete aperture sizes to attenuate the intensity of the beam.
+    Controls the X axis component of the apertures inside AT1K0
+    Defines the state count as 1, (centered) to limit the number of
+    config PVs we connect to.
+    """
+
+    in_states = []
+    out_states = []
+    config = UpCpt(state_count=1)
 
 
 class Filter(InOutPositioner):
