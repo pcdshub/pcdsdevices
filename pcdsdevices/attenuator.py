@@ -1072,96 +1072,84 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     # Summary for lightpath view
     num_in = Cpt(InternalSignal, kind='hinted')
     num_out = Cpt(InternalSignal, kind='hinted')
-    
-    """check for errors and return a string indicating any errors verbally"""
-    def _check_errors(signals: SignalToValue) ->  str:
+
+    def _get_blade_error_attrs():
+        """Get the blade attribute names used for checking errors."""
+        for index in range(1, 20):
+            yield f"blade_{index:02d}.state.error"
+            yield f"blade_{index:02d}.state.error_id"
+            yield f"blade_{index:02d}.state.error_message"
+            yield f"blade_{index:02d}.motor.plc.err_code"
+            yield f"blade_{index:02d}.motor.user_readback"
+
+    def _check_errors(signals: SignalToValue) -> str:
+        """check for errors, return a string indicating any errors verbally"""
         errors = []
-        #sort out .motor from .motor.plc signals
+        # sort out .motor from .motor.plc signals
         for sig, value in signals.items():
             if ("motor" in sig.name) ^ ("plc" in sig.name):
-                value=sig.metadata.get('severity').value
+                value = int(sig.metadata["severity"])
 
-            if value not in (0,""):
+            if value not in (0, ""):
                 errors.append(f"{sig.name}: {value}")
 
         if errors:
             return "\n".join(["Error summary:"] + errors)
 
-        return "No errors"
+        return "No Errors"
 
-    """summarize the errors occurring at any time on any blade via a string"""
     error_summary = Cpt(
         MultiDerivedSignalRO,
         calculate=_check_errors,
-        attrs=sum(
-            (
-                [
-                    f"blade_{_blade:02d}.state.error",
-                    f"blade_{_blade:02d}.state.error_id",
-                    f"blade_{_blade:02d}.state.error_message",
-                    f"blade_{_blade:02d}.motor.plc.err_code",
-                    f"blade_{_blade:02d}.motor.user_readback",
-                ]
-                for _blade in range(1,20)
-            ),
-            [],
-        ),
+        attrs=list(_get_blade_error_attrs()),
+        doc='summarize the errors at any time on any blade via a string',
     )
+    set_metadata(error_summary, dict(variety='text-multiline'))
 
-    """check for errors and return an array of binaries 1=error, 0=no error"""
     def _check_errors_bitmask(signals: SignalToValue):
+        """check for errors, return an array of binaries 1=error, 0=no error"""
         errors = []
-        blade_errors=[]
+        blade_errors = []
         for sig, value in signals.items():
             if ("motor" in sig.name) ^ ("plc" in sig.name):
-                value=sig.metadata.get('severity').value
-            
-            if value not in (0,""):
+                value = int(sig.metadata["severity"])
+
+            if value not in (0, ""):
                 blade_errors.append(1)
             else:
-                 blade_errors.append(0)
+                blade_errors.append(0)
 
-        #remove error messages for blade one
-        del blade_errors[0:5] 
-        for idx in range(1,19):
-            #sum all errors on the 5 possible sources of error
-            if sum(blade_errors[0:5]) >= 1:
-                errors.append(1)
-            else:
-                errors.append(0)
-
-            del blade_errors[0:5]
+        step = 5
+        # first blade errors not reported in bit array
+        start_index = step
+        end_index = 2*step
+        for _ in range(1, 19):
+            error_count = sum(blade_errors[start_index:end_index])
+            errors.append(1 if error_count >= 1 else 0)
+            start_index += step
+            end_index += step
 
         decimal_value = 0
         for next_bit in errors:
             decimal_value = decimal_value * 2 + next_bit
 
         return decimal_value
+
     """summarize errors occurring at any time on any blade via a bitmask"""
     error_summary_bitmask = Cpt(
         MultiDerivedSignalRO,
         calculate=_check_errors_bitmask,
-        attrs=sum(
-            (
-                [
-                    f"blade_{_blade:02d}.state.error",
-                    f"blade_{_blade:02d}.state.error_id",
-                    f"blade_{_blade:02d}.state.error_message",
-                    f"blade_{_blade:02d}.motor.plc.err_code",
-                    f"blade_{_blade:02d}.motor.user_readback",
-                ]
-                for _blade in range(1,20)
-            ),
-            [],
-        ),
+        attrs=list(_get_blade_error_attrs()),
+        doc='summarize errors at any time on any blade via a bitmask',
     )
+    set_metadata(error_summary_bitmask, dict(variety='bitmask', bits=18))
 
-    def reset_err(self):
+    def clear_errors(self):
         """wrap reset errors a function with no arguments """
         self.reset_errors.put(1)
 
     def _reset_errors(self, value: OphydDataType) -> SignalToValue:
-        return{sig: 1 for sig in self.parent.reset_errors.signals};
+        return{sig: 1 for sig in self.parent.reset_errors.signals}
 
     reset_errors = Cpt(
         MultiDerivedSignal,
@@ -1173,13 +1161,12 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
                     f"blade_{_blade:02d}.motor.plc.cmd_err_reset",
                     f"blade_{_blade:02d}.state.reset_cmd",
                 ]
-                for _blade in range(1,20)
+                for _blade in range(1, 20)
             ),
             [],
         ),
     )
-
-    set_metadata(reset_errors, dict(variety='command-proc',value=1))
+    set_metadata(reset_errors, dict(variety='command-proc', value=1))
 
     calculator = UCpt(AttenuatorCalculator_AT2L0)
     blade_01 = Cpt(FEESolidAttenuatorBlade, ':MMS:01')
@@ -1202,10 +1189,10 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     blade_18 = Cpt(FEESolidAttenuatorBlade, ':MMS:18')
     blade_19 = Cpt(FEESolidAttenuatorBlade, ':MMS:19')
 
-    def summarize_err(self):
-        """returns the error summary """
+    def print_errors(self):
+        """prints the error summary """
         print(self.error_summary.get())
-        
+
     @property
     def setpoint(self):
         """(PVPositioner compat) - use desired transmission as setpoint."""
@@ -1260,6 +1247,10 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
             calc_status, 'energy_actual', 'value',
             scale=3 * 1e-3,
         )
+        error_sum = get_status_value(
+            status_info, 'error_summary', 'value',
+            default_value='No Errors',
+        )
         cpt_states = [
             get_status_value(
                 status_info, cpt, 'state', 'state', 'value',
@@ -1274,10 +1265,8 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
 {table}
 Transmission (E={energy} keV): {transmission}
 Transmission for 3rd harmonic (E={energy_3} keV): {transmission_3}
-{self.error_summary.get()}
+Error Summary: {error_sum}
 """
-
-
 
 
 FEESolidAttenuator = AT2L0  # back-compatibility
@@ -1373,7 +1362,7 @@ def render_ascii_att(blade_states, *, start_index=0):
     ascii_lines: list of str
         The lines that should be printed to the screen.
     """
- 
+
     filter_line = ['filter # ']
     out_line = [' OUT     ']
     in_line = [' IN      ']
@@ -1384,9 +1373,8 @@ def render_ascii_att(blade_states, *, start_index=0):
         state_enum = get_blade_enum(state)
         out_line.append(state_enum.as_out_row.center(len(index_str)))
         in_line.append(state_enum.as_in_row.center(len(index_str)))
-    
+
     separator = '|'
     return [separator.join(filter_line + ['']),
             separator.join(out_line + ['']),
             separator.join(in_line + [''])]
-
