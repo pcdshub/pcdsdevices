@@ -915,3 +915,31 @@ class XOffsetMirrorState(XOffsetMirror, CoatingState):
     """
     # UI representation
     _icon = 'fa.minus-square'
+
+
+class OpticsPitchNotepad(BaseInterface, Device):
+    """
+    class for storing pitch positions based on state
+
+    This provides an interface to the optics notepad IOC where
+    the X-Ray beam delivery team can store
+    pitch set points based on coating state.
+
+    """
+    mr1l0_pitch_b4c = Cpt(EpicsSignal, 'MR1L0:PITCH:Coating1')
+    mr1l0_pitch_ni = Cpt(EpicsSignal, 'MR1L0:PITCH:Coating2')
+
+    mr2l0_pitch_b4c = Cpt(EpicsSignal, 'MR2L0:PITCH:Coating1')
+    mr2l0_pitch_ni = Cpt(EpicsSignal, 'MR2L0:PITCH:Coating2')
+
+    mr1l4_pitch_mec_sic = Cpt(EpicsSignal, 'MR1L4:PITCH:MEC:Coating1')
+    mr1l4_pitch_mec_w = Cpt(EpicsSignal, 'MR1L4:PITCH:MEC:Coating2')
+
+    mr1l4_pitch_mfx_sic = Cpt(EpicsSignal, 'MR1L4:PITCH:MFX:Coating1')
+    mr1l4_pitch_mfx_w = Cpt(EpicsSignal, 'MR1L4:PITCH:MFX:Coating2')
+
+    mr1l3_pitch_sic = Cpt(EpicsSignal, 'MR1L3:PITCH:Coating1')
+    mr1l3_pitch_w = Cpt(EpicsSignal, 'MR1L3:PITCH:Coating2')
+
+    mr2l3_pitch_sic = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating1')
+    mr2l3_pitch_w = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating2')
