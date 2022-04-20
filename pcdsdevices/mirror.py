@@ -919,7 +919,7 @@ class XOffsetMirrorState(XOffsetMirror, CoatingState):
 
 class OpticsPitchNotepad(BaseInterface, Device):
     """
-    Class for storing pitch positions based on state
+    class for storing pitch positions based on state
 
     This provides an interface to the optics notepad IOC where
     the X-Ray beam delivery team can store

@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- N/A
+- class for storing pitch positions based on state
 
 Device Updates
 --------------
