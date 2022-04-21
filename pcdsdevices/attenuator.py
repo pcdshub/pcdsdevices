@@ -20,9 +20,9 @@ from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
+from .pmps import TwinCATStatePMPS
 from .signal import InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO
 from .type_hints import OphydDataType, SignalToValue
-from .pmps import TwinCATStatePMPS
 from .utils import get_status_float, get_status_value
 from .variety import set_metadata
 
@@ -1094,6 +1094,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     # QIcon for UX
     _icon = 'fa.barcode'
     tab_component_names = True
+    tab_whitelist = ['clear_errors', 'reset_errors']
 
     # Register that all blades are needed for lightpath calc
     lightpath_cpts = [f'blade_{idx:02}' for idx in range(1, 20)]
@@ -1174,7 +1175,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     set_metadata(error_summary_bitmask, dict(variety='bitmask', bits=18))
 
     def clear_errors(self):
-        """wrap reset errors a function with no arguments """
+        """Reset all attenuator errors, making the device ready to move."""
         self.reset_errors.put(1)
 
     def _reset_errors(self, value: OphydDataType) -> SignalToValue:
