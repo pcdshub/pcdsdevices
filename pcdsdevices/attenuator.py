@@ -1165,7 +1165,6 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
 
         return decimal_value
 
-    """summarize errors occurring at any time on any blade via a bitmask"""
     error_summary_bitmask = Cpt(
         MultiDerivedSignalRO,
         calculate=_check_errors_bitmask,
@@ -1179,7 +1178,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
         self.reset_errors.put(1)
 
     def _reset_errors(self, value: OphydDataType) -> SignalToValue:
-        return{sig: 1 for sig in self.parent.reset_errors.signals}
+        return {sig: 1 for sig in self.parent.reset_errors.signals}
 
     reset_errors = Cpt(
         MultiDerivedSignal,
