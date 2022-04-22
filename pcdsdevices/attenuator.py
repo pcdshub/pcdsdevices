@@ -21,7 +21,8 @@ from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
 from .pmps import TwinCATStatePMPS
-from .signal import InternalSignal
+from .signal import InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO
+from .type_hints import OphydDataType, SignalToValue
 from .utils import get_status_float, get_status_value
 from .variety import set_metadata
 
@@ -1093,6 +1094,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     # QIcon for UX
     _icon = 'fa.barcode'
     tab_component_names = True
+    tab_whitelist = ['clear_errors', 'reset_errors']
 
     # Register that all blades are needed for lightpath calc
     lightpath_cpts = [f'blade_{idx:02}' for idx in range(1, 20)]
@@ -1100,6 +1102,100 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     # Summary for lightpath view
     num_in = Cpt(InternalSignal, kind='hinted')
     num_out = Cpt(InternalSignal, kind='hinted')
+
+    def _get_blade_error_attrs():
+        """Get the blade attribute names used for checking errors."""
+        for index in range(1, 20):
+            yield f"blade_{index:02d}.state.error"
+            yield f"blade_{index:02d}.state.error_id"
+            yield f"blade_{index:02d}.state.error_message"
+            yield f"blade_{index:02d}.motor.plc.err_code"
+            yield f"blade_{index:02d}.motor.user_readback"
+
+    def _check_errors(signals: SignalToValue) -> str:
+        """check for errors, return a string indicating any errors verbally"""
+        errors = []
+        # sort out .motor from .motor.plc signals
+        for sig, value in signals.items():
+            if ("motor" in sig.name) ^ ("plc" in sig.name):
+                value = int(sig.metadata["severity"])
+
+            if value not in (0, ""):
+                errors.append(f"{sig.name}: {value}")
+
+        if errors:
+            return "\n".join(["Error summary:"] + errors)
+
+        return "No Errors"
+
+    error_summary = Cpt(
+        MultiDerivedSignalRO,
+        calculate=_check_errors,
+        attrs=list(_get_blade_error_attrs()),
+        doc='summarize the errors at any time on any blade via a string',
+    )
+    set_metadata(error_summary, dict(variety='text-multiline'))
+
+    def _check_errors_bitmask(signals: SignalToValue):
+        """check for errors, return an array of binaries 1=error, 0=no error"""
+        errors = []
+        blade_errors = []
+        for sig, value in signals.items():
+            if ("motor" in sig.name) ^ ("plc" in sig.name):
+                value = int(sig.metadata["severity"])
+
+            if value not in (0, ""):
+                blade_errors.append(1)
+            else:
+                blade_errors.append(0)
+
+        step = 5
+        # first blade errors not reported in bit array
+        start_index = step
+        end_index = 2*step
+        for _ in range(1, 19):
+            error_count = sum(blade_errors[start_index:end_index])
+            errors.append(1 if error_count >= 1 else 0)
+            start_index += step
+            end_index += step
+
+        decimal_value = 0
+        for next_bit in errors:
+            decimal_value = decimal_value * 2 + next_bit
+
+        return decimal_value
+
+    error_summary_bitmask = Cpt(
+        MultiDerivedSignalRO,
+        calculate=_check_errors_bitmask,
+        attrs=list(_get_blade_error_attrs()),
+        doc='summarize errors at any time on any blade via a bitmask',
+    )
+    set_metadata(error_summary_bitmask, dict(variety='bitmask', bits=18))
+
+    def clear_errors(self):
+        """Reset all attenuator errors, making the device ready to move."""
+        self.reset_errors.put(1)
+
+    def _reset_errors(self, value: OphydDataType) -> SignalToValue:
+        return {sig: 1 for sig in self.parent.reset_errors.signals}
+
+    reset_errors = Cpt(
+        MultiDerivedSignal,
+        calculate=lambda values: 0,
+        calculate_on_put=_reset_errors,
+        attrs=sum(
+            (
+                [
+                    f"blade_{_blade:02d}.motor.plc.cmd_err_reset",
+                    f"blade_{_blade:02d}.state.reset_cmd",
+                ]
+                for _blade in range(1, 20)
+            ),
+            [],
+        ),
+    )
+    set_metadata(reset_errors, dict(variety='command-proc', value=1))
 
     calculator = UCpt(AttenuatorCalculator_AT2L0)
     blade_01 = Cpt(FEESolidAttenuatorBlade, ':MMS:01')
@@ -1121,6 +1217,10 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     blade_17 = Cpt(FEESolidAttenuatorBlade, ':MMS:17')
     blade_18 = Cpt(FEESolidAttenuatorBlade, ':MMS:18')
     blade_19 = Cpt(FEESolidAttenuatorBlade, ':MMS:19')
+
+    def print_errors(self):
+        """prints the error summary """
+        print(self.error_summary.get())
 
     @property
     def setpoint(self):
@@ -1176,6 +1276,10 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
             calc_status, 'energy_actual', 'value',
             scale=3 * 1e-3,
         )
+        error_sum = get_status_value(
+            status_info, 'error_summary', 'value',
+            default_value='No Errors',
+        )
         cpt_states = [
             get_status_value(
                 status_info, cpt, 'state', 'state', 'value',
@@ -1184,11 +1288,13 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
             for cpt in self.lightpath_cpts
         ]
 
-        table = '\n'.join(render_ascii_att(cpt_states, start_index=1))
+        table = '\n'.join(render_ascii_att(cpt_states,  start_index=1))
+
         return f"""
 {table}
 Transmission (E={energy} keV): {transmission}
 Transmission for 3rd harmonic (E={energy_3} keV): {transmission_3}
+Error Summary: {error_sum}
 """
 
 
@@ -1285,6 +1391,7 @@ def render_ascii_att(blade_states, *, start_index=0):
     ascii_lines: list of str
         The lines that should be printed to the screen.
     """
+
     filter_line = ['filter # ']
     out_line = [' OUT     ']
     in_line = [' IN      ']
