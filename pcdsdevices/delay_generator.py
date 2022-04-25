@@ -4,14 +4,11 @@ Delay generator class
 This module contains classes related to the SRS DG645 delay generator.
 """
 
-from ophyd import Device
 from ophyd import Component as Cpt
-from ophyd import EpicsSignalRO
-from ophyd import EpicsSignal
+from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd.utils.epics_pvs import set_and_wait
 
 from .interface import BaseInterface
-
 
 CHANNELS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'T0']
 TRIGGER_SOURCES = {

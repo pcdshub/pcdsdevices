@@ -5,8 +5,8 @@ import numpy as np
 import pytest
 from ophyd.sim import make_fake_device
 
-from ..gon import (BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi, SimKappa,
-                   XYZStage)
+from ..gon import (
+    BaseGon, Goniometer, GonWithDetArm, Kappa, SamPhi, SimKappa, XYZStage)
 
 logger = logging.getLogger(__name__)
 

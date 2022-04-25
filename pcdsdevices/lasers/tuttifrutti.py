@@ -7,9 +7,9 @@ from ophyd import Device
 from ophyd.device import create_device_from_components
 
 from pcdsdevices.areadetector.detectors import LasBasler
-from pcdsdevices.lasers.qmini import QminiSpectrometer
 from pcdsdevices.lasers.ek9000 import El3174AiCh
 from pcdsdevices.lasers.elliptec import Ell6
+from pcdsdevices.lasers.qmini import QminiSpectrometer
 from pcdsdevices.lasers.thorlabsWFS import ThorlabsWfs40
 
 
