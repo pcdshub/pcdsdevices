@@ -644,13 +644,14 @@ class SimLusiSlits(LusiSlits):
     xcenter = Cpt(FastMotor)
     ycenter = Cpt(FastMotor)
 
-class JJSlits(SlitsBase):
+
+class JJSlits_AT_C8_HV(SlitsBase):
     '''
     Parameters
     ---------
     prefix : str
-    Base PV for the JJ X-RAY PLC System
-    name : str
+       Base PV for the JJ X-RAY PLC System
+    name : str, keyword-only
     '''
 
     # Motor Components

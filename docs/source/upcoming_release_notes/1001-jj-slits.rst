@@ -7,15 +7,15 @@ API Changes
 
 Features
 --------
-- New typhos screen for newly created JJSlits class
+- New typhos screen for newly created JJSlits class.
 
 Device Updates
 --------------
-- N/A
+- Updated the slits.py file to contain a new specific JJ Slit model AT_C8_HV. 
 
 New Devices
 -----------
-- JJSlits class within slits.py
+- JJSlits_AT_C8_HV class within slits.py and a corresponding typhos screen for it.
 
 Bugfixes
 --------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- Ricardo Martinez (rsmm97)
+- rsmm97
