@@ -28,7 +28,7 @@ from ophyd.status import wait as status_wait
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
-from .epics_motor import BeckhoffAxisNoOffset
+from .epics_motor import BeckhoffAxisNoOffset, BeckhoffAxis
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutMixin,
                         LightpathMixin, MvInterface)
 from .pmps import TwinCATStatePMPS
