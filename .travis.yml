@@ -45,4 +45,4 @@ import:
   #   - Documentation using doctr
   #   - Conda Package - uploaded to pcds-dev and pcds-tag
   #   - PyPI
-  - zllentz/pcds-ci-helpers:travis/shared_configs/standard-python-conda-latest.yml@python-pre-commit
+  - pcdshub/pcds-ci-helpers:travis/shared_configs/standard-python-conda-latest.yml
