@@ -1,20 +1,20 @@
 """
 Module for common target stage stack configurations.
 """
-import logging
-import numpy as np
-from datetime import datetime
-import os
-
-from ophyd.device import Device
 import json
-import jsonschema
-import yaml
+import logging
+import os
+from datetime import datetime
 from itertools import chain
 
-from pcdsdevices.epics_motor import _GetMotorClass
-from .interface import tweak_base
+import jsonschema
+import numpy as np
+import yaml
+from ophyd.device import Device
 
+from pcdsdevices.epics_motor import _GetMotorClass
+
+from .interface import tweak_base
 
 logger = logging.getLogger(__name__)
 
