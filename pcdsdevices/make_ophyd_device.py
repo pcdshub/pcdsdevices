@@ -1,5 +1,5 @@
-import re
 import sys
+import re
 
 from whatrecord import db
 

@@ -3,10 +3,9 @@ Classes for ThorLabs Elliptec motors.
 """
 
 
-from ophyd import Device
 from ophyd import FormattedComponent as FCpt
+from ophyd import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO
-
 from pcdsdevices.variety import set_metadata
 
 

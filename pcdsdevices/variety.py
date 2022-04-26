@@ -1,8 +1,9 @@
 """Additional component metadata, classifying each into a "variety"."""
 
-import ophyd
 import schema
 from schema import Optional
+
+import ophyd
 
 from . import tags, utils
 

@@ -1,7 +1,6 @@
 import logging
 
-from ophyd import Component as Cpt
-from ophyd import Device, EpicsSignal, EpicsSignalRO
+from ophyd import Device, EpicsSignal, EpicsSignalRO, Component as Cpt
 
 logger = logging.getLogger(__name__)
 

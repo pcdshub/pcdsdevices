@@ -5,8 +5,9 @@ Module for counters such as frequency counters and time interval counters.
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 
-from pcdsdevices.interface import BaseInterface
 from pcdsdevices.variety import set_metadata
+
+from pcdsdevices.interface import BaseInterface
 
 
 class Agilent53210A(BaseInterface, Device):
