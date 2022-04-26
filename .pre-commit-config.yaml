@@ -2,7 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 exclude: |
         (?x)^(
-            pcdsdevices/tests/test_lens_sets|
+            pcdsdevices/tests/test_lens_sets/.*|
             .*\.ui$
         )$
 
