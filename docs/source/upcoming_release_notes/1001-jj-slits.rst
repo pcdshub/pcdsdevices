@@ -11,11 +11,13 @@ Features
 
 Device Updates
 --------------
-- Updated the slits.py file to contain a new specific JJ Slit model AT_C8_HV. 
+- Added JJSlits_AT_C8_HV class within slits.py and a corresponding typhos screen for new Model: JJ X-Ray AT-C8-HV
+- Controls for x-axis GAP and Width.
+- Controls for y-axis GAP and Width.
 
 New Devices
 -----------
-- JJSlits_AT_C8_HV class within slits.py and a corresponding typhos screen for it.
+- Model: JJ X-Ray AT-C8-HV
 
 Bugfixes
 --------
