@@ -5,6 +5,7 @@ All components at the detector level such as plugins or image processing
 functions needed by all instances of a detector are added here.
 """
 import logging
+import shutil
 import subprocess
 import time
 import warnings
@@ -62,6 +63,20 @@ class PCDSAreaDetectorBase(DetectorBase):
             port_edges = [(port_map[src].name, port_map[dest].name)
                           for src, dest in port_edges]
         return port_edges
+
+    def screen(self, main=False):
+        """ Try and call camviewer here... """
+        if shutil.which('camViewer'):
+            arglist = ['camViewer', '-H', str(get_hutch_name()).lower(),
+                       '-c', self.name]
+            if main:
+                arglist.append('-m')
+
+            logger.info('starting camviewer')
+            subprocess.run(arglist, check=False)
+        else:
+            logger.info('no camViewer available')
+            return
 
 
 class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
@@ -381,6 +396,10 @@ class PCDSAreaDetectorTyphos(Device):
 
     @_open_screen.setter
     def _open_screen(self, value):
+        self.open_viewer()
+
+    def screen(self):
+        """ Lean on open_viewer method """
         self.open_viewer()
 
 
