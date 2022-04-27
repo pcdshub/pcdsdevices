@@ -65,7 +65,15 @@ class PCDSAreaDetectorBase(DetectorBase):
         return port_edges
 
     def screen(self, main=False):
-        """ Try and call camviewer here... """
+        """
+        Open camViewer screen for camera.
+
+        Parameters
+        ----------
+        main : bool, optional
+            Set to True to bring up 'main' edm config screen.
+            Defaults to False, which opens python viewer.
+        """
         if shutil.which('camViewer'):
             arglist = ['camViewer', '-H', str(get_hutch_name()).lower(),
                        '-c', self.name]
