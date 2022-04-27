@@ -7,13 +7,11 @@ API Changes
 
 Features
 --------
-- New typhos screen for newly created JJSlits class.
+- New class and typhos screen for controlling JJSlits class.
 
 Device Updates
 --------------
-- Added JJSlits_AT_C8_HV class within slits.py and a corresponding typhos screen for new Model: JJ X-Ray AT-C8-HV
-- Controls for x-axis GAP and Width.
-- Controls for y-axis GAP and Width.
+- Added JJSlits class within slits.py and a corresponding typhos screen.
 
 New Devices
 -----------
