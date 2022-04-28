@@ -7,15 +7,15 @@ API Changes
 
 Features
 --------
-- New class and typhos screen for controlling JJSlits class.
+- N/A
 
 Device Updates
 --------------
-- Added JJSlits class within slits.py and a corresponding typhos screen.
+- N/A
 
 New Devices
 -----------
-- Model: JJ X-Ray AT-C8-HV
+- New `JJSlits` class and typhos screen for controlling JJSlits model AT-C8-HV with Beckhoff controls.
 
 Bugfixes
 --------
