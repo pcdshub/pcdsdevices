@@ -651,11 +651,11 @@ class JJSlits(SlitsBase):
     The JJSlits class defines motor components for the specific JJ X-Ray slits
     model AT-C8-HV. This model of JJSlits holds four in-vacuum motors that set
     the position and opening of the aperture in two dimensions. For each
-    dimension, one motor defines the aperture opening, and another determines the
-    position of the aperture. This class allows an operator to control and scan
-    the position 'center' and opening 'width' of the aperture. The 'JJSlits'
-    class instantiates four sub-devices: 'JJSlits.xwidth', 'JJSlits.xcenter',
-    'JJSlits.ywidth', 'JJSlits.ycenter'.
+    dimension, one motor defines the aperture opening, and another determines
+    the position of the aperture. This class allows an operator to control
+    and scan the position 'center' and opening 'width' of the aperture. The
+    'JJSlits' class instantiates four sub-devices: 'JJSlits.xwidth',
+    'JJSlits.xcenter', 'JJSlits.ywidth', 'JJSlits.ycenter'.
     Beckhoff controlled JJSlits are implemented along the beamline in HXR
     for beam attenuation.
 
