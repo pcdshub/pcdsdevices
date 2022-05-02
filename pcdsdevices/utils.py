@@ -13,11 +13,14 @@ import time
 from collections.abc import Iterable
 from functools import reduce
 from types import MethodType
-from typing import Callable, Dict, Iterator, Optional, Union
+from typing import Callable, Dict, Iterator, List, Optional, Union
 
 import ophyd
 import pint
 import prettytable
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
+from ophyd.ophydobj import Kind
 
 from ._html import collapse_list_head, collapse_list_tail
 from .type_hints import Number, OphydDataType
@@ -687,3 +690,242 @@ def post_ophyds_to_elog(objs, allow_child=False, hutch_elog=None):
 
     hutch_elog.post(final_post, tags=['ophyd_status'],
                     title='ophyd status report')
+
+
+def reorder_components(
+    cls: Optional[type[Device]] = None,
+    start_with: Optional[List[Union[str, Cpt]]] = None,
+    end_with: Optional[List[Union[str, Cpt]]] = None,
+) -> Union[type[Device], Callable[[type[Device]], type[Device]]]:
+    """
+    Rearrange the components in cls for typhos displays.
+
+    Internally, this works by switching around the keys in the _sig_attrs
+    OrderedDict.
+
+    Parameters
+    ----------
+    cls : Device subclass
+        The Device subclass that we'd like to rearrange the order of.
+    start_with : list of str, optional
+        The component names to bring to the top of the screen.
+    end_with : list of str, optional
+        The component names to bring to the bottom of the screen.
+
+    Returns
+    -------
+    cls : Device subclass, or function that returns it
+        Decorator-compatible output. When used as a function or as a
+        no-argument decorator, this will return the input device.
+        When used as a decorator with the reverse argument, this will
+        return a function as required by the decorator interface.
+    """
+    # Special decorator handling
+    def inner(cls: type[Device]) -> type[Device]:
+        start_norm = _normalize_reorder_list(cls, start_with)
+        end_norm = _normalize_reorder_list(cls, end_with)
+        for cpt_name in reversed(start_norm):
+            cls._sig_attrs.move_to_end(cpt_name, last=False)
+        for cpt_name in end_norm:
+            cls._sig_attrs.move_to_end(cpt_name, last=True)
+        return cls
+
+    if cls is not None:
+        # For function call or no-args decorator
+        return inner(cls)
+    # For decorator with args
+    return inner
+
+
+def _normalize_reorder_list(
+    cls: type[Device],
+    cpts_or_names: Optional[List[Union[str, Cpt]]],
+) -> List[str]:
+    """
+    Simplify the user's variable arguments for the component reordering.
+    """
+    if cpts_or_names is None:
+        return []
+    reverse_map = {cpt: name for name, cpt in cls._sig_attrs.items()}
+    output = []
+    for obj in cpts_or_names:
+        if isinstance(obj, Cpt):
+            try:
+                output.append(reverse_map[obj])
+            except KeyError as exc:
+                raise ValueError(
+                    f'Received component {obj}, which is not from the device '
+                    f'class {cls}. We have components with the following '
+                    f'names: {", ".join(cls._sig_attrs)}'
+                ) from exc
+        elif isinstance(obj, str):
+            output.append(obj)
+        else:
+            raise TypeError(
+                f'Received object {obj}, which is not a str or Component.'
+            )
+    return output
+
+
+def move_subdevices_to_start(
+    cls: Optional[type[Device]] = None,
+    subdevice_cls: type[Device] = Device,
+) -> Union[type[Device], Callable[[type[Device]], type[Device]]]:
+    """
+    Arrange the component order of a device class to put subdevices first.
+
+    This can be useful to bring e.g. all the motors to the top for the
+    typhos screen.
+
+    The relative ordering of subdevices is preserved.
+
+    Parameters
+    ----------
+    cls : Device subclass
+        The Device subclass that we'd like to rearrange the order of.
+    subdevice_cls: type, optional
+        A specific class type to move to the front. If omitted, all device
+        subclasses will be moved.
+
+    Returns
+    -------
+    cls : Device subclass, or function that returns it
+        Decorator-compatible output. When used as a function or as a
+        no-argument decorator, this will return the input device.
+        When used as a decorator with the subdevice_cls argument, this will
+        return a function as required by the decorator interface.
+    """
+    # Special decorator handling
+    def inner(cls: type[Device]) -> type[Device]:
+        device_names = []
+        for name, cpt in cls._sig_attrs.items():
+            if issubclass(cpt.cls, subdevice_cls):
+                device_names.append(name)
+        reorder_components(cls, start_with=device_names)
+        return cls
+
+    if cls is not None:
+        # For function call or no-args decorator
+        return inner(cls)
+    # For decorator with args
+    return inner
+
+
+def sort_components_by_name(
+    cls: Optional[type[Device]] = None,
+    reverse: bool = False,
+) -> Union[type[Device], Callable[[type[Device]], type[Device]]]:
+    """
+    Arrange the component order of a device class in alphabetical order.
+
+    This can be useful as a first step before bringing specific components
+    to the top of the queue for the typhos screen.
+
+    Parameters
+    ----------
+    cls : Device subclass
+        The Device subclass that we'd like to rearrange the order of.
+    reverse : bool, optional
+        Set to True to sort in descending order instead.
+
+    Returns
+    -------
+    cls : Device subclass, or function that returns it
+        Decorator-compatible output. When used as a function or as a
+        no-argument decorator, this will return the input device.
+        When used as a decorator with the reverse argument, this will
+        return a function as required by the decorator interface.
+    """
+    # Special decorator handling
+    def inner(cls: type[Device]) -> type[Device]:
+        alphabetical = list(sorted(cls._sig_attrs, reverse=reverse))
+        reorder_components(cls, start_with=alphabetical)
+        return cls
+
+    if cls is not None:
+        # For function call or no-args decorator
+        return inner(cls)
+    # For decorator with args
+    return inner
+
+
+def sort_components_by_kind(cls: type[Device]) -> type[Device]:
+    """
+    Arrange the component order of a device class in kind order.
+
+    Kind order is hinted > normal > config > omitted.
+
+    This can be useful because typically the higher kind classes
+    are more important, and therefore should be higher up on the
+    typhos screen.
+
+    The relative ordering of subdevices within a kind is preserved.
+
+    This function makes no attempt to disambiguate or sort
+    combination kinds. For example:
+
+    - "hinted | config" counts as "hinted"
+    - "normal | config" counts as "normal"
+
+    Parameters
+    ----------
+    cls : Device subclass
+        The Device subclass that we'd like to rearrange the order of.
+
+    Returns
+    -------
+    cls : Device subclass
+        The same class from the input, mutated. This is returned so that
+        sort_components_by_kind can be used as a class decorator.
+    """
+    hinted = []
+    normal = []
+    config = []
+    omitted = []
+    for name, cpt in cls._sig_attrs.items():
+        if check_kind_flag(cpt.kind, Kind.hinted):
+            hinted.append(name)
+        elif check_kind_flag(cpt.kind, Kind.normal):
+            normal.append(name)
+        elif check_kind_flag(cpt.kind, Kind.config):
+            config.append(name)
+        else:
+            omitted.append(name)
+    reorder_components(cls, end_with=hinted)
+    reorder_components(cls, end_with=normal)
+    reorder_components(cls, end_with=config)
+    reorder_components(cls, end_with=omitted)
+    return cls
+
+
+def check_kind_flag(kind: int, flag: Kind) -> bool:
+    """Return True if kind contains flag."""
+    return kind & flag == flag
+
+
+def set_standard_ordering(cls: type[Device]) -> type[Device]:
+    """
+    Set a sensible "standard" ordering for use in typhos.
+
+    This ordering is:
+    - Devices first, then signals
+    - Within the above, kind order
+    - Within a kind, alphabetical order
+
+    This is not universally applicable and is just a suggested starting point.
+
+    Parameters
+    ----------
+    cls : Device subclass
+        The Device subclass that we'd like to rearrange the order of.
+
+    Returns
+    -------
+    cls : Device subclass
+        The same class from the input, mutated. This is returned so that
+        set_standard_ordering can be used as a class decorator.
+    """
+    sort_components_by_name(cls)
+    sort_components_by_kind(cls)
+    move_subdevices_to_start(cls)
+    return cls
