@@ -575,26 +575,44 @@ class MultiDerivedSignal(AggregateSignal):
 
     def _check_calculate_on_get_signature(self, func: MdsOnGetFunction):
         """Ensure the ``calculate_on_get`` signature is correct."""
-        if not isinstance(func, MdsOnGetFunction):
-            sig = inspect.signature(func)
+        if func is None:
+            return
+
+        sig = inspect.signature(func)
+        parent_name = getattr(self.parent, "name", "(no parent)")
+        func_name = getattr(func, "__name__", "unknown_function")
+
+        try:
+            sig.bind(mds=None, items=None)
+        except Exception:
             raise ValueError(
                 f"The `calculate_on_get` signature is incorrect for "
                 f"MultiDerivedSignal.  It should take two parameters, "
                 f"'mds' and 'items' as either positional or keyword "
-                f"arguments.\nGot: {sig}"
+                f"arguments. For {parent_name}.{self.attr_name}:"
+                f"{func_name}{sig}"
             )
 
     def _check_calculate_on_put_signature(
         self, func: Optional[MdsOnGetFunction]
     ):
         """Ensure the ``calculate_on_put`` signature is correct."""
-        if func is not None and not isinstance(func, MdsOnPutFunction):
-            sig = inspect.signature(func)
+        if func is None:
+            return
+
+        sig = inspect.signature(func)
+        parent_name = getattr(self.parent, "name", "(no parent)")
+        func_name = getattr(func, "__name__", "unknown_function")
+
+        try:
+            sig.bind(mds=None, value=None)
+        except Exception:
             raise ValueError(
                 f"The `calculate_on_put` signature is incorrect for "
                 f"MultiDerivedSignal.  It should take two parameters, "
                 f"'mds' and 'value' as either positional or keyword "
-                f"arguments.\nGot: {sig}"
+                f"arguments. For {parent_name}.{self.attr_name}:"
+                f"{func_name}{sig}"
             )
 
     @property

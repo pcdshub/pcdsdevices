@@ -271,6 +271,28 @@ def test_multi_derived_ro_no_put_func():
         )
 
 
+def test_multi_derived_bad_get_func():
+    def bad_sig(mds, item, a, b):  # noqa
+        ...
+
+    with pytest.raises(ValueError):
+        MultiDerivedSignalRO(
+            calculate_on_get=bad_sig,
+            name="", attrs=[]
+        )
+
+
+def test_multi_derived_bad_put_func():
+    def bad_sig(mds, values):  # noqa
+        ...
+
+    with pytest.raises(ValueError):
+        MultiDerivedSignal(
+            calculate_on_put=bad_sig,
+            name="", attrs=[]
+        )
+
+
 def test_multi_derived_ro_not_callable():
     class MultiDerivedRO(Device):
         cpt = Cpt(
