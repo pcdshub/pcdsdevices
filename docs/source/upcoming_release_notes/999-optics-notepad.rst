@@ -1,4 +1,4 @@
-959 Added HXRSpectrometer class
+999 optics-notepad
 #################
 
 API Changes
@@ -15,7 +15,8 @@ Device Updates
 
 New Devices
 -----------
-- Class created for the HXR Single Shot Spectrometer.
+- OpticsPitchNotepad - a class for storing pitch positions based on state in a notepad IOC
+  for mr1l0, mr2l0, mr1l4, mr1l3, and mr2l3.
 
 Bugfixes
 --------
@@ -27,4 +28,4 @@ Maintenance
 
 Contributors
 ------------
-- spencera
+- nrwslac

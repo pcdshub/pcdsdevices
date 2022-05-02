@@ -954,7 +954,7 @@ class BeckhoffAxisPLC(Device):
                  string=True, doc='PLC error or warning')
     err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal',
                    doc='Current NC error code')
-    cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='o', kind='normal',
+    cmd_err_reset = Cpt(EpicsSignal, 'bReset', kind='normal',
                         doc='Command to reset an active error')
     cmd_home = Cpt(PytmcSignal, 'bHomeCmd', io='o', kind='normal',
                    doc='Start TwinCAT homing routine.')

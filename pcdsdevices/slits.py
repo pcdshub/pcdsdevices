@@ -28,7 +28,7 @@ from ophyd.status import wait as status_wait
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
-from .epics_motor import BeckhoffAxisNoOffset
+from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutMixin,
                         LightpathMixin, MvInterface)
 from .pmps import TwinCATStatePMPS
@@ -643,3 +643,31 @@ class SimLusiSlits(LusiSlits):
     ywidth = Cpt(FastMotor)
     xcenter = Cpt(FastMotor)
     ycenter = Cpt(FastMotor)
+
+
+class JJSlits(SlitsBase):
+    '''
+    Beckhoff Controlled AT-C8-HV JJ X-Ray Slits.
+    The JJSlits class defines motor components for the specific JJ X-Ray slits
+    model AT-C8-HV. This model of JJSlits holds four in-vacuum motors that set
+    the position and opening of the aperture in two dimensions. For each
+    dimension, one motor defines the aperture opening, and another determines
+    the position of the aperture. This class allows an operator to control
+    and scan the position 'center' and opening 'width' of the aperture. The
+    'JJSlits' class instantiates four sub-devices: 'JJSlits.xwidth',
+    'JJSlits.xcenter', 'JJSlits.ywidth', 'JJSlits.ycenter'.
+    Beckhoff controlled JJSlits are implemented along the beamline in HXR
+    for beam attenuation.
+
+    Parameters
+    ---------
+    prefix : str
+       Base PV for the JJ X-RAY PLC System
+    name : str, keyword-only
+    '''
+
+    # Motor Components
+    xwidth = Cpt(BeckhoffAxis, ':XWIDTH', kind='normal')
+    ywidth = Cpt(BeckhoffAxis, ':YWIDTH', kind='normal')
+    xcenter = Cpt(BeckhoffAxis, ':XCENTER', kind='normal')
+    ycenter = Cpt(BeckhoffAxis, ':YCENTER', kind='normal')

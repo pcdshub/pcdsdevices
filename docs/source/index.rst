@@ -5,6 +5,7 @@
    :caption: Device Types
 
    api.rst
+   signals.rst
    base_classes.rst
    sim_types.rst
 

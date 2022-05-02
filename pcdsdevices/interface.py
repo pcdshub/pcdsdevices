@@ -844,16 +844,21 @@ class FltMvInterface(MvInterface):
         except ophyd.utils.LimitError:
             return
 
-    def tweak(self):
+    def tweak(self, scale=0.1):
         """
         Control this motor using the arrow keys.
 
         Use left arrow to step negative and right arrow to step positive.
         Use up arrow to increase step size and down arrow to decrease step
         size. Press q or ctrl+c to quit.
+
+        Parameters
+        ----------
+        scale : float
+            starting step size, default = 0.1
         """
 
-        return tweak_base(self)
+        return tweak_base(self, scale=scale)
 
     def set_position(self, position):
         """
@@ -1353,7 +1358,7 @@ class PresetPosition:
         return str(self.pos)
 
 
-def tweak_base(*args):
+def tweak_base(*args, scale=0.1):
     """
     Base function to control motors with the arrow keys.
 
@@ -1364,7 +1369,8 @@ def tweak_base(*args):
 
     The scale for the tweak can be doubled by pressing + and halved by pressing
     -. Shift+up and shift+down can also be used, and the up and down keys will
-    also adjust the scaling in one motor mode.
+    also adjust the scaling in one motor mode. The starting scale can be set
+    with the keyword argument `scale`.
 
     Ctrl+c will stop an ongoing move during a tweak without exiting the tweak.
     Both q and ctrl+c will quit the tweak between moves.
@@ -1378,7 +1384,6 @@ def tweak_base(*args):
     shift_down = utils.shift_arrow_down
     plus = utils.plus
     minus = utils.minus
-    scale = 0.1
     abs_status = '{}: {:.4f}'
     exp_status = '{}: {:.4e}'
 

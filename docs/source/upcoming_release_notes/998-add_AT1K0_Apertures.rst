@@ -1,4 +1,4 @@
-952 delay-gen-class
+998 add AT1K0 Apertures
 #################
 
 API Changes
@@ -15,7 +15,8 @@ Device Updates
 
 New Devices
 -----------
-- Dg /DelayGenerator class to handle SRS645 delay generator
+- The X apertures for AT1K0 now have their own device with 1 state, "centered"
+- The Y apertures for AT1K0 now have their own device with 4 states, ["5.5mm","8mm","10mm","13mm"]
 
 Bugfixes
 --------
@@ -27,4 +28,4 @@ Maintenance
 
 Contributors
 ------------
-- espov
+- N/A

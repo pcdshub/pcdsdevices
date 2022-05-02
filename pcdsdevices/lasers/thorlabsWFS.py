@@ -1,8 +1,8 @@
 import logging
 
+from ophyd.areadetector.base import EpicsSignalWithRBV, NDDerivedSignal
 from ophyd.device import Component as Cpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
-from ophyd.areadetector.base import EpicsSignalWithRBV, NDDerivedSignal
 
 from pcdsdevices.areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 

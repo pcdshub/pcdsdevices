@@ -1,4 +1,4 @@
-962 device elog post
+1001 jj-slits
 #################
 
 API Changes
@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- Adds a post_elog_status method to the BaseInterface class, which posts to the registered primary elog if it exists.
+- N/A
 
 Device Updates
 --------------
@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- New `JJSlits` class and typhos screen for controlling JJSlits model AT-C8-HV with Beckhoff controls.
 
 Bugfixes
 --------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tangkong
+- rsmm97

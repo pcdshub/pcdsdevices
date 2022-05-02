@@ -2,11 +2,16 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.5.0
+    rev: v4.2.0
     hooks:
     -   id: no-commit-to-branch
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
+        exclude: |
+                (?x)^(
+                    pcdsdevices/tests/test_lens_sets/.*|
+                    .*\.ui$
+                )$
     -   id: check-ast
     -   id: check-case-conflict
     -   id: check-json
@@ -18,11 +23,11 @@ repos:
     -   id: debug-statements
 
 -   repo: https://gitlab.com/pycqa/flake8.git
-    rev: 3.8.3
+    rev: 3.9.2
     hooks:
     -   id: flake8
 
 -   repo: https://github.com/timothycrosley/isort
-    rev: 5.5.2
+    rev: 5.10.1
     hooks:
     -   id: isort

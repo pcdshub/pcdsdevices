@@ -1,4 +1,4 @@
-949 kbo-fixes
+992 tm1k4
 #################
 
 API Changes
@@ -11,11 +11,11 @@ Features
 
 Device Updates
 --------------
-- Added Y axis to KBOMirror status printout
+- TM1K4 now has its own class with 8 position states (7 targets and and OUT state)
 
 New Devices
 -----------
-- Added KBOMirrorHE class to be used with KBOMirrors with cooling, like MR2K4.
+- N/A
 
 Bugfixes
 --------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- nrwslac
+- Mbosum

@@ -1,5 +1,5 @@
-976 lamp_mbes_3_22
-#################
+997 spec-lightpath
+##################
 
 API Changes
 -----------
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- Commented out GasNeedleTheta motor for 3/22 LAMPMBES configuration.
+- N/A
 
 New Devices
 -----------
@@ -19,7 +19,8 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Fix an issue where the TMO Spectrometer and the HXRSSS would spam errors
+  when loaded in lightpath.
 
 Maintenance
 -----------
@@ -27,4 +28,4 @@ Maintenance
 
 Contributors
 ------------
-- Mbosum
+- zllentz

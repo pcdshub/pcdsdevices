@@ -34,6 +34,7 @@ pcdsdevices.areadetector.detectors
     pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos
     pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats
     pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger
+    pcdsdevices.areadetector.detectors.PCDSHDF5BlueskyTriggerable
 
 pcdsdevices.areadetector.plugins
 --------------------------------
@@ -43,6 +44,7 @@ pcdsdevices.areadetector.plugins
 
     pcdsdevices.areadetector.plugins.ColorConvPlugin
     pcdsdevices.areadetector.plugins.FilePlugin
+    pcdsdevices.areadetector.plugins.HDF5FileStore
     pcdsdevices.areadetector.plugins.HDF5Plugin
     pcdsdevices.areadetector.plugins.ImagePlugin
     pcdsdevices.areadetector.plugins.JPEGPlugin
@@ -160,6 +162,16 @@ pcdsdevices.dc_devices
     pcdsdevices.dc_devices.ICTBus
     pcdsdevices.dc_devices.ICTChannel
 
+pcdsdevices.delay_generator
+---------------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.delay_generator.DelayGenerator
+    pcdsdevices.delay_generator.DelayGeneratorBase
+    pcdsdevices.delay_generator.DgChannel
+
 pcdsdevices.device
 ------------------
 
@@ -169,6 +181,35 @@ pcdsdevices.device
     pcdsdevices.device.GroupDevice
     pcdsdevices.device.InterfaceDevice
     pcdsdevices.device.to_interface
+
+pcdsdevices.digitizers
+----------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.digitizers.Qadc
+    pcdsdevices.digitizers.Qadc134
+    pcdsdevices.digitizers.Qadc134Sparsification
+    pcdsdevices.digitizers.QadcBase
+    pcdsdevices.digitizers.Wave8V2
+    pcdsdevices.digitizers.Wave8V2ADCDelayLanes
+    pcdsdevices.digitizers.Wave8V2ADCRegs
+    pcdsdevices.digitizers.Wave8V2ADCSampleReadout
+    pcdsdevices.digitizers.Wave8V2ADCSamples
+    pcdsdevices.digitizers.Wave8V2AxiVersion
+    pcdsdevices.digitizers.Wave8V2EventBuilder
+    pcdsdevices.digitizers.Wave8V2EvrV2
+    pcdsdevices.digitizers.Wave8V2Integrators
+    pcdsdevices.digitizers.Wave8V2PgpMon
+    pcdsdevices.digitizers.Wave8V2RawBuffers
+    pcdsdevices.digitizers.Wave8V2Sfp
+    pcdsdevices.digitizers.Wave8V2Simple
+    pcdsdevices.digitizers.Wave8V2SystemRegs
+    pcdsdevices.digitizers.Wave8V2Timing
+    pcdsdevices.digitizers.Wave8V2TriggerEventManager
+    pcdsdevices.digitizers.Wave8V2XpmMini
+    pcdsdevices.digitizers.Wave8V2XpmMsg
 
 pcdsdevices.energy_monitor
 --------------------------
@@ -193,6 +234,7 @@ pcdsdevices.epics_motor
     pcdsdevices.epics_motor.BeckhoffAxis_Pre140
     pcdsdevices.epics_motor.EpicsMotorInterface
     pcdsdevices.epics_motor.IMS
+    pcdsdevices.epics_motor.MMC100
     pcdsdevices.epics_motor.Motor
     pcdsdevices.epics_motor.Newport
     pcdsdevices.epics_motor.OffsetIMSWithPreset
@@ -335,6 +377,37 @@ pcdsdevices.lamp_motion
     pcdsdevices.lamp_motion.LAMP
     pcdsdevices.lamp_motion.LAMPFlowCell
     pcdsdevices.lamp_motion.LAMPMagneticBottle
+    pcdsdevices.lamp_motion.LAMP_LV_17
+
+pcdsdevices.lasers.btps
+-----------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.lasers.btps.BtpsState
+    pcdsdevices.lasers.btps.CentroidConfig
+    pcdsdevices.lasers.btps.DestinationConfig
+    pcdsdevices.lasers.btps.GlobalConfig
+    pcdsdevices.lasers.btps.RangeComparison
+    pcdsdevices.lasers.btps.ShutterSafety
+    pcdsdevices.lasers.btps.SourceConfig
+
+pcdsdevices.lasers.counters
+---------------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.lasers.counters.Agilent53210A
+
+pcdsdevices.lasers.dicon
+------------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.lasers.dicon.DiconSwitch
 
 pcdsdevices.lasers.ek9000
 -------------------------
@@ -365,6 +438,15 @@ pcdsdevices.lasers.qmini
 
     pcdsdevices.lasers.qmini.QminiSpectrometer
     pcdsdevices.lasers.qmini.QminiWithEvr
+
+pcdsdevices.lasers.rfof
+-----------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.lasers.rfof.CycleRfofRx
+    pcdsdevices.lasers.rfof.CycleRfofTx
 
 pcdsdevices.lasers.thorlabsWFS
 ------------------------------
@@ -458,6 +540,24 @@ pcdsdevices.lxe
     pcdsdevices.lxe._ScaledUnitConversionDerivedSignal
     pcdsdevices.lxe.load_calibration_file
 
+pcdsdevices.make_ophyd_device
+-----------------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.make_ophyd_device.flatten_list
+    pcdsdevices.make_ophyd_device.get_components
+    pcdsdevices.make_ophyd_device.make_class
+    pcdsdevices.make_ophyd_device.make_class_line
+    pcdsdevices.make_ophyd_device.make_class_name
+    pcdsdevices.make_ophyd_device.make_cpt
+    pcdsdevices.make_ophyd_device.make_signal
+    pcdsdevices.make_ophyd_device.make_signal_wrbv
+    pcdsdevices.make_ophyd_device.print_class
+    pcdsdevices.make_ophyd_device.recurse_record
+    pcdsdevices.make_ophyd_device.write_file
+
 pcdsdevices.mirror
 ------------------
 
@@ -468,6 +568,7 @@ pcdsdevices.mirror
     pcdsdevices.mirror.FFMirror
     pcdsdevices.mirror.Gantry
     pcdsdevices.mirror.KBOMirror
+    pcdsdevices.mirror.KBOMirrorHE
     pcdsdevices.mirror.OMMotor
     pcdsdevices.mirror.OffsetMirror
     pcdsdevices.mirror.Pitch
@@ -532,6 +633,16 @@ pcdsdevices.mrco_motion
     :toctree: generated
 
     pcdsdevices.mrco_motion.MRCO
+
+pcdsdevices.piezo
+-----------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.piezo.SliceDhv
+    pcdsdevices.piezo.SliceDhvChannel
+    pcdsdevices.piezo.SliceDhvController
 
 pcdsdevices.pim
 ---------------
@@ -705,6 +816,8 @@ pcdsdevices.signal
     pcdsdevices.signal.FakePytmcSignalRO
     pcdsdevices.signal.FakePytmcSignalRW
     pcdsdevices.signal.InternalSignal
+    pcdsdevices.signal.MultiDerivedSignal
+    pcdsdevices.signal.MultiDerivedSignalRO
     pcdsdevices.signal.NotImplementedSignal
     pcdsdevices.signal.NotepadLinkedSignal
     pcdsdevices.signal.PVStateSignal
@@ -737,6 +850,7 @@ pcdsdevices.slits
     pcdsdevices.slits.BadSlitPositionerBase
     pcdsdevices.slits.BeckhoffSlitPositioner
     pcdsdevices.slits.BeckhoffSlits
+    pcdsdevices.slits.ExitSlitTarget
     pcdsdevices.slits.ExitSlits
     pcdsdevices.slits.LusiSlitPositioner
     pcdsdevices.slits.LusiSlits
@@ -752,6 +866,7 @@ pcdsdevices.spectrometer
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.spectrometer.HXRSpectrometer
     pcdsdevices.spectrometer.Kmono
     pcdsdevices.spectrometer.Mono
     pcdsdevices.spectrometer.TMOSpectrometer
@@ -777,6 +892,7 @@ pcdsdevices.state
     pcdsdevices.state.TwinCATStatePositioner
     pcdsdevices.state.get_dynamic_state_attr
     pcdsdevices.state.state_config_dotted_names
+    pcdsdevices.state.state_config_dotted_velos
 
 pcdsdevices.stopper
 -------------------
@@ -835,6 +951,7 @@ pcdsdevices.utils
     pcdsdevices.utils.combine_status_info
     pcdsdevices.utils.convert_unit
     pcdsdevices.utils.doc_format_decorator
+    pcdsdevices.utils.format_ophyds_to_html
     pcdsdevices.utils.format_status_table
     pcdsdevices.utils.get_component
     pcdsdevices.utils.get_input
@@ -842,7 +959,10 @@ pcdsdevices.utils
     pcdsdevices.utils.get_status_value
     pcdsdevices.utils.ipm_screen
     pcdsdevices.utils.is_input
+    pcdsdevices.utils.maybe_make_method
+    pcdsdevices.utils.post_ophyds_to_elog
     pcdsdevices.utils.schedule_task
+    pcdsdevices.utils.set_many
 
 pcdsdevices.valve
 -----------------
@@ -858,6 +978,7 @@ pcdsdevices.valve
     pcdsdevices.valve.VGC_2S
     pcdsdevices.valve.VRC
     pcdsdevices.valve.VRCClsLS
+    pcdsdevices.valve.VRCDA
     pcdsdevices.valve.VRCNO
     pcdsdevices.valve.VVC
     pcdsdevices.valve.VVCNO

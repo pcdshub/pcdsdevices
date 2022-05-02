@@ -1,4 +1,4 @@
-971 mirror-tabs
+993 new devices for mirrors
 #################
 
 API Changes
@@ -15,11 +15,12 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- XOffsetMirrorRTDs
+- FFMirrorZ
 
 Bugfixes
 --------
-- Fix issue where mirror devices had overfiltered tab completion results.
+- Fix typhos placement for FFMirrorZ by rearranging `_sig_attrs`
 
 Maintenance
 -----------
@@ -27,4 +28,4 @@ Maintenance
 
 Contributors
 ------------
-- zllentz
+- nrwslac

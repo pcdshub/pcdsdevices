@@ -5,7 +5,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
 from .device import GroupDevice
-from .epics_motor import BeckhoffAxisNoOffset, IMS, BeckhoffAxis
+from .epics_motor import IMS, BeckhoffAxis, BeckhoffAxisNoOffset
 from .interface import BaseInterface, LightpathMixin
 from .signal import InternalSignal, PytmcSignal
 
@@ -319,6 +319,12 @@ class TMOSpectrometer(BaseInterface, GroupDevice):
     yag_z = Cpt(BeckhoffAxis, ':MMS:08', kind='normal')
     yag_theta = Cpt(BeckhoffAxis, ':MMS:09', kind='normal')
 
+    # Lightpath constants
+    inserted = True
+    removed = False
+    transmission = 1
+    SUB_STATE = 'state'
+
 
 class HXRSpectrometer(BaseInterface, GroupDevice):
     """
@@ -349,3 +355,9 @@ class HXRSpectrometer(BaseInterface, GroupDevice):
                doc='camera iris')
     filter = Cpt(IMS, ':446:MOTR', kind='normal',
                  doc='filter wheel, tbd if necessary')
+
+    # Lightpath constants
+    inserted = True
+    removed = False
+    transmission = 1
+    SUB_STATE = 'state'
