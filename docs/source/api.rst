@@ -68,6 +68,8 @@ pcdsdevices.atm
 
     pcdsdevices.atm.ATMTarget
     pcdsdevices.atm.ArrivalTimeMonitor
+    pcdsdevices.atm.TM1K4
+    pcdsdevices.atm.TM1K4Target
     pcdsdevices.atm.TM2K2
     pcdsdevices.atm.TM2K2Target
 
@@ -95,6 +97,8 @@ pcdsdevices.attenuator
     pcdsdevices.attenuator.FeeFilter
     pcdsdevices.attenuator.Filter
     pcdsdevices.attenuator.GasAttenuator
+    pcdsdevices.attenuator.GattApertureX
+    pcdsdevices.attenuator.GattApertureY
     pcdsdevices.attenuator.SXRLadderAttenuatorBlade
     pcdsdevices.attenuator.SXRLadderAttenuatorStates
     pcdsdevices.attenuator.get_blade_enum
@@ -540,24 +544,6 @@ pcdsdevices.lxe
     pcdsdevices.lxe._ScaledUnitConversionDerivedSignal
     pcdsdevices.lxe.load_calibration_file
 
-pcdsdevices.make_ophyd_device
------------------------------
-
-.. autosummary::
-    :toctree: generated
-
-    pcdsdevices.make_ophyd_device.flatten_list
-    pcdsdevices.make_ophyd_device.get_components
-    pcdsdevices.make_ophyd_device.make_class
-    pcdsdevices.make_ophyd_device.make_class_line
-    pcdsdevices.make_ophyd_device.make_class_name
-    pcdsdevices.make_ophyd_device.make_cpt
-    pcdsdevices.make_ophyd_device.make_signal
-    pcdsdevices.make_ophyd_device.make_signal_wrbv
-    pcdsdevices.make_ophyd_device.print_class
-    pcdsdevices.make_ophyd_device.recurse_record
-    pcdsdevices.make_ophyd_device.write_file
-
 pcdsdevices.mirror
 ------------------
 
@@ -566,18 +552,29 @@ pcdsdevices.mirror
 
     pcdsdevices.mirror.CoatingState
     pcdsdevices.mirror.FFMirror
+    pcdsdevices.mirror.FFMirrorZ
     pcdsdevices.mirror.Gantry
     pcdsdevices.mirror.KBOMirror
     pcdsdevices.mirror.KBOMirrorHE
     pcdsdevices.mirror.OMMotor
     pcdsdevices.mirror.OffsetMirror
+    pcdsdevices.mirror.OpticsPitchNotepad
     pcdsdevices.mirror.Pitch
     pcdsdevices.mirror.PointingMirror
     pcdsdevices.mirror.TwinCATMirrorStripe
     pcdsdevices.mirror.XOffsetMirror
     pcdsdevices.mirror.XOffsetMirrorBend
+    pcdsdevices.mirror.XOffsetMirrorRTDs
     pcdsdevices.mirror.XOffsetMirrorState
     pcdsdevices.mirror.XOffsetMirrorSwitch
+
+pcdsdevices.misc
+----------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.misc.MyDevice2
 
 pcdsdevices.movablestand
 ------------------------
@@ -633,6 +630,14 @@ pcdsdevices.mrco_motion
     :toctree: generated
 
     pcdsdevices.mrco_motion.MRCO
+
+pcdsdevices.my_device
+---------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.my_device.MyDevice
 
 pcdsdevices.piezo
 -----------------
@@ -852,6 +857,7 @@ pcdsdevices.slits
     pcdsdevices.slits.BeckhoffSlits
     pcdsdevices.slits.ExitSlitTarget
     pcdsdevices.slits.ExitSlits
+    pcdsdevices.slits.JJSlits
     pcdsdevices.slits.LusiSlitPositioner
     pcdsdevices.slits.LusiSlits
     pcdsdevices.slits.PowerSlits
@@ -948,6 +954,7 @@ pcdsdevices.utils
 .. autosummary::
     :toctree: generated
 
+    pcdsdevices.utils.check_kind_flag
     pcdsdevices.utils.combine_status_info
     pcdsdevices.utils.convert_unit
     pcdsdevices.utils.doc_format_decorator
@@ -960,9 +967,14 @@ pcdsdevices.utils
     pcdsdevices.utils.ipm_screen
     pcdsdevices.utils.is_input
     pcdsdevices.utils.maybe_make_method
+    pcdsdevices.utils.move_subdevices_to_start
     pcdsdevices.utils.post_ophyds_to_elog
+    pcdsdevices.utils.reorder_components
     pcdsdevices.utils.schedule_task
     pcdsdevices.utils.set_many
+    pcdsdevices.utils.set_standard_ordering
+    pcdsdevices.utils.sort_components_by_kind
+    pcdsdevices.utils.sort_components_by_name
 
 pcdsdevices.valve
 -----------------

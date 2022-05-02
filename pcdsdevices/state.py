@@ -717,13 +717,17 @@ class TwinCATStatePositioner(StatePositioner):
         doc='Configuration of state positions, deltas, etc.',
     )
 
-    def _get_state_velo(self, items: SignalToValue) -> float:
+    def _get_state_velo(
+        self, mds: MultiDerivedSignal, items: SignalToValue
+    ) -> float:
         """For state_velo, calculate the velocity to show."""
         return max(value for value in items.values())
 
-    def _set_state_velo(self, value: float) -> SignalToValue:
+    def _set_state_velo(
+        self, mds: MultiDerivedSignal, value: float
+    ) -> SignalToValue:
         """For state_velo, distribute the puts to all fields."""
-        return {sig: value for sig in self.signals}
+        return {sig: value for sig in mds.signals}
 
     state_velo = Cpt(
         MultiDerivedSignal,
@@ -731,7 +735,7 @@ class TwinCATStatePositioner(StatePositioner):
             name for name in
             state_config_dotted_velos(TWINCAT_MAX_STATES)
         ],
-        calculate=_get_state_velo,
+        calculate_on_get=_get_state_velo,
         calculate_on_put=_set_state_velo,
         kind='config',
         # Real PV has no unit info yet, assume mm/s

@@ -4,6 +4,7 @@ Module for `Attenuator` and related classes.
 import enum
 import logging
 import time
+from typing import Generator
 
 import numpy as np
 import prettytable
@@ -1103,7 +1104,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
     num_in = Cpt(InternalSignal, kind='hinted')
     num_out = Cpt(InternalSignal, kind='hinted')
 
-    def _get_blade_error_attrs():
+    def _get_blade_error_attrs() -> Generator[str, None, None]:
         """Get the blade attribute names used for checking errors."""
         for index in range(1, 20):
             yield f"blade_{index:02d}.state.error"
@@ -1112,11 +1113,13 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
             yield f"blade_{index:02d}.motor.plc.err_code"
             yield f"blade_{index:02d}.motor.user_readback"
 
-    def _check_errors(signals: SignalToValue) -> str:
+    def _check_errors(
+        self, mds: MultiDerivedSignal, items: SignalToValue
+    ) -> str:
         """check for errors, return a string indicating any errors verbally"""
         errors = []
         # sort out .motor from .motor.plc signals
-        for sig, value in signals.items():
+        for sig, value in items.items():
             if ("motor" in sig.name) ^ ("plc" in sig.name):
                 value = int(sig.metadata["severity"])
 
@@ -1130,17 +1133,19 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
 
     error_summary = Cpt(
         MultiDerivedSignalRO,
-        calculate=_check_errors,
+        calculate_on_get=_check_errors,
         attrs=list(_get_blade_error_attrs()),
         doc='summarize the errors at any time on any blade via a string',
     )
     set_metadata(error_summary, dict(variety='text-multiline'))
 
-    def _check_errors_bitmask(signals: SignalToValue):
+    def _check_errors_bitmask(
+        self, mds: MultiDerivedSignal, items: SignalToValue
+    ) -> int:
         """check for errors, return an array of binaries 1=error, 0=no error"""
         errors = []
         blade_errors = []
-        for sig, value in signals.items():
+        for sig, value in items.items():
             if ("motor" in sig.name) ^ ("plc" in sig.name):
                 value = int(sig.metadata["severity"])
 
@@ -1167,7 +1172,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
 
     error_summary_bitmask = Cpt(
         MultiDerivedSignalRO,
-        calculate=_check_errors_bitmask,
+        calculate_on_get=_check_errors_bitmask,
         attrs=list(_get_blade_error_attrs()),
         doc='summarize errors at any time on any blade via a bitmask',
     )
@@ -1177,12 +1182,17 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
         """Reset all attenuator errors, making the device ready to move."""
         self.reset_errors.put(1)
 
-    def _reset_errors(self, value: OphydDataType) -> SignalToValue:
+    def _empty_get(self, mds: MultiDerivedSignal, items: SignalToValue) -> int:
+        return 0
+
+    def _reset_errors(
+        self, mds: MultiDerivedSignal, value: OphydDataType
+    ) -> SignalToValue:
         return {sig: 1 for sig in self.parent.reset_errors.signals}
 
     reset_errors = Cpt(
         MultiDerivedSignal,
-        calculate=lambda values: 0,
+        calculate_on_get=_empty_get,
         calculate_on_put=_reset_errors,
         attrs=sum(
             (

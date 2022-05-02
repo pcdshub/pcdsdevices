@@ -233,8 +233,8 @@ In short, these classes represent:
 
 * Multiple source signals may be used to calculate a single
   ``MultiDerivedSignal`` value.  The calculation method used here is
-  ``calculate`` in either a keyword argument to the signal or a method in a
-  subclass.
+  ``calculate_on_get`` in either a keyword argument to the signal or a method
+  in a subclass.
 * A single ``MultiDerivedSignal`` value, when ``set()``, may be used to write
   to those same signals. The calculation method used here is
   ``calculate_on_put`` in either a keyword argument to the signal or a method
@@ -248,14 +248,16 @@ and "c" - and calculates a single value for them.
 
 .. code-block:: python
 
+    from pcdsdevices.type_hints import SignalToValue, OphydDataType
+
     class MdsReadOnlyExample(Device):
-        def _on_get(self, items: SignalToValue) -> int:
+        def _on_get(self, mds: MultiDerivedSignal, items: SignalToValue) -> int:
             return sum(value for value in items.values())
 
         mds = Cpt(
             MultiDerivedSignalRO,
             attrs=["a", "b", "c"],
-            calculate=_on_get,
+            calculate_on_get=_on_get,
         )
         a = Cpt(FakeEpicsSignal, "a")
         b = Cpt(FakeEpicsSignal, "b")
@@ -279,10 +281,10 @@ A read-write MultiDerivedSignal
 .. code-block:: python
 
     class MdsReadWriteExample(Device):
-        def _on_get(self, items: SignalToValue) -> int:
+        def _on_get(self, mds: MultiDerivedSignal, items: SignalToValue) -> int:
             return sum(value for value in items.values())
 
-        def _on_put(self, value: OphydDataType) -> SignalToValue:
+        def _on_put(self, mds: MultiDerivedSignal, value: OphydDataType) -> SignalToValue:
             to_write = float(value / 3.)
             return {
                 self.parent.a: to_write,
@@ -293,7 +295,7 @@ A read-write MultiDerivedSignal
         mds = Cpt(
             MultiDerivedSignal,
             attrs=["a", "b", "c"],
-            calculate=_on_get,
+            calculate_on_get=_on_get,
             calculate_on_put=_on_put,
         )
         a = Cpt(FakeEpicsSignal, "a")
