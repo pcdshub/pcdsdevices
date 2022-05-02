@@ -534,8 +534,8 @@ class PCDSMotorBase(EpicsMotorInterface):
 
         logger.info(f'Opening {executable} for {self.name}...')
         subprocess.run([executable, arg],
-                       stdout=subprocess.PIPE,
-                       stderr=subprocess.PIPE)
+                       stdout=subprocess.DEVNULL,
+                       stderr=subprocess.DEVNULL)
 
     @raise_if_disconnected
     def set_current_position(self, pos):

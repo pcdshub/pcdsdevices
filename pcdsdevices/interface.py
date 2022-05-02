@@ -402,8 +402,8 @@ class BaseInterface:
 
         # capture stdout and stderr
         subprocess.Popen(arglist,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.PIPE)
+                         stdout=subprocess.DEVNULL,
+                         stderr=subprocess.DEVNULL)
 
 
 def get_name(obj, default):

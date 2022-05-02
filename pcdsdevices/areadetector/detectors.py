@@ -64,7 +64,7 @@ class PCDSAreaDetectorBase(DetectorBase):
                           for src, dest in port_edges]
         return port_edges
 
-    def screen(self, main=False):
+    def screen(self, main: bool=False) -> None:
         """
         Open camViewer screen for camera.
 
@@ -74,17 +74,17 @@ class PCDSAreaDetectorBase(DetectorBase):
             Set to True to bring up 'main' edm config screen.
             Defaults to False, which opens python viewer.
         """
-        if shutil.which('camViewer'):
-            arglist = ['camViewer', '-H', str(get_hutch_name()).lower(),
-                       '-c', self.name]
-            if main:
-                arglist.append('-m')
-
-            logger.info('starting camviewer')
-            subprocess.run(arglist, check=False)
-        else:
-            logger.info('no camViewer available')
+        if not shutil.which('camViewer'):
+            logger.error('no camViewer available')
             return
+
+        arglist = ['camViewer', '-H', str(get_hutch_name()).lower(),
+                    '-c', self.name]
+        if main:
+            arglist.append('-m')
+
+        logger.info('starting camviewer')
+        subprocess.run(arglist, check=False)
 
 
 class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
@@ -391,8 +391,9 @@ class PCDSAreaDetectorTyphos(Device):
                    '--oneline',
                    'GE:16,{0}:IMAGE1;{0},,{0}'.format(self.prefix[0:-1])]
 
-        subprocess.run(arglist, stdout=subprocess.PIPE,
-                       stderr=subprocess.PIPE, check=True)
+        self.log.info('Opening python viewer for camera...')
+        subprocess.run(arglist, stdout=subprocess.DEVNULL,
+                       stderr=subprocess.DEVNULL, check=True)
 
     # Make viewer available in Typhos screen
     cam_viewer = Cpt(AttributeSignal, attr='_open_screen', kind='normal')
