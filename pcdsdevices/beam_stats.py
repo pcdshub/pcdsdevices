@@ -85,6 +85,19 @@ class BeamEnergyRequest(PVPositionerDone):
         EpicsSignal,
         '{prefix}:USER:MCC:EPHOT{line_text}:SET{bunch}',
         kind='hinted',
+        doc=(
+            'The setpoint PV that acr listens on to update the '
+            'vernier or undulator PVs as appropriate.'
+        ),
+    )
+    ref = FCpt(
+        EpicsSignal,
+        '{prefix}:USER:MCC:EPHOT{line_text}:REF{bunch}',
+        kind='normal',
+        doc=(
+            'A reference PV for the photon energy at the nominal '
+            'position of the vernier or undulator.'
+        ),
     )
 
     line_text_dict = {
