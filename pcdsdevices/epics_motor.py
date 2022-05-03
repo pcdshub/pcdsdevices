@@ -2,8 +2,8 @@
 Module for LCLS's special motor records.
 """
 import logging
-import os
 import shutil
+import subprocess
 from typing import ClassVar, Optional
 
 from ophyd.device import Component as Cpt
@@ -531,7 +531,11 @@ class PCDSMotorBase(EpicsMotorInterface):
                          executable)
             return
         arg = self.prefix
-        os.system(executable + ' ' + arg)
+
+        logger.info(f'Opening {executable} for {self.name}...')
+        subprocess.run([executable, arg],
+                       stdout=subprocess.DEVNULL,
+                       stderr=subprocess.DEVNULL)
 
     @raise_if_disconnected
     def set_current_position(self, pos):

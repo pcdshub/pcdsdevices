@@ -352,7 +352,7 @@ class IPIMB(BaseInterface, GroupDevice):
 
     def screen(self):
         """Function to call the (pyQT) screen for an IPIMB box."""
-        return ipm_screen('IPIMB', self._prefix, self._prefix_ioc)
+        return ipm_screen('IPIMB', self.prefix, self._prefix_ioc)
 
     @property
     def isum(self):
@@ -447,7 +447,7 @@ class Wave8(BaseInterface, GroupDevice):
 
     def screen(self):
         """Function to call the (pyQT) screen for a Wave8 box."""
-        return ipm_screen('Wave8', self._prefix, self._prefix_ioc)
+        return ipm_screen('Wave8', self.prefix, self._prefix_ioc)
 
     def apply_configuration(self):
         """Put to the 'DO_CONFIG' PV, causing config PVs to be applied."""

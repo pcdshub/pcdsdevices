@@ -5,6 +5,7 @@ All components at the detector level such as plugins or image processing
 functions needed by all instances of a detector are added here.
 """
 import logging
+import shutil
 import subprocess
 import time
 import warnings
@@ -62,6 +63,28 @@ class PCDSAreaDetectorBase(DetectorBase):
             port_edges = [(port_map[src].name, port_map[dest].name)
                           for src, dest in port_edges]
         return port_edges
+
+    def screen(self, main: bool=False) -> None:
+        """
+        Open camViewer screen for camera.
+
+        Parameters
+        ----------
+        main : bool, optional
+            Set to True to bring up 'main' edm config screen.
+            Defaults to False, which opens python viewer.
+        """
+        if not shutil.which('camViewer'):
+            logger.error('no camViewer available')
+            return
+
+        arglist = ['camViewer', '-H', str(get_hutch_name()).lower(),
+                    '-c', self.name]
+        if main:
+            arglist.append('-m')
+
+        logger.info('starting camviewer')
+        subprocess.run(arglist, check=False)
 
 
 class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
@@ -368,8 +391,9 @@ class PCDSAreaDetectorTyphos(Device):
                    '--oneline',
                    'GE:16,{0}:IMAGE1;{0},,{0}'.format(self.prefix[0:-1])]
 
-        subprocess.run(arglist, stdout=subprocess.PIPE,
-                       stderr=subprocess.PIPE, check=True)
+        self.log.info('Opening python viewer for camera...')
+        subprocess.run(arglist, stdout=subprocess.DEVNULL,
+                       stderr=subprocess.DEVNULL, check=True)
 
     # Make viewer available in Typhos screen
     cam_viewer = Cpt(AttributeSignal, attr='_open_screen', kind='normal')
@@ -381,6 +405,10 @@ class PCDSAreaDetectorTyphos(Device):
 
     @_open_screen.setter
     def _open_screen(self, value):
+        self.open_viewer()
+
+    def screen(self):
+        """ Lean on open_viewer method """
         self.open_viewer()
 
 

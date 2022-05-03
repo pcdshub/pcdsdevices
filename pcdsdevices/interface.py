@@ -5,7 +5,9 @@ import functools
 import logging
 import numbers
 import re
+import shutil
 import signal
+import subprocess
 import time
 import typing
 from contextlib import contextmanager
@@ -381,6 +383,27 @@ class BaseInterface:
         final_post = f'<pre>{self.status()}</pre>'
         elog.post(final_post, tags=['ophyd_status'],
                   title=f'{self.name} status report')
+
+    def screen(self):
+        """
+        Open a screen for controlling the device.
+
+        Default behavior is the typhos screen, but this method can
+        be overridden for more specialized screens.
+        """
+
+        if shutil.which('typhos') is None:
+            logger.error('typhos is not installed, ',
+                         'screen cannot be opened')
+            return
+
+        arglist = ['typhos', f'{self.name}']
+        logger.info(f'Opening typhos screen for {self.name}...')
+
+        # capture stdout and stderr
+        subprocess.Popen(arglist,
+                         stdout=subprocess.DEVNULL,
+                         stderr=subprocess.DEVNULL)
 
 
 def get_name(obj, default):

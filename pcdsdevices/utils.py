@@ -4,9 +4,9 @@ import enum
 import inspect
 import logging
 import operator
-import os
 import select
 import shutil
+import subprocess
 import sys
 import threading
 import time
@@ -163,8 +163,11 @@ def ipm_screen(dettype, prefix, prefix_ioc):
     if shutil.which(executable) is None:
         raise EnvironmentError('%s is not on path, we cannot start the screen'
                                % executable)
-    os.system('%s --base %s --ioc %s --evr %s &' %
-              (executable, prefix, prefix_ioc, prefix+':TRIG'))
+
+    logger.info(f'Opening {dettype} screen for {prefix}...')
+    arglist = [executable, '--base', prefix, '--ioc', prefix_ioc,
+               '--evr', prefix+':TRIG']
+    _ = subprocess.Popen(arglist)
 
 
 def get_component(obj):
