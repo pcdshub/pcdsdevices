@@ -17,8 +17,8 @@ API Changes
 
 Features
 --------
-- adds `.screen()` method to BaseInterface, which opens a typhos screen
-- adds AreaDetector specific `.screen()` method, which calls camViewer
+- adds ``.screen()`` method to BaseInterface, which opens a typhos screen
+- adds AreaDetector specific ``.screen()`` method, which calls camViewer
 - Add utilities for rearranging the order of components as seen by typhos.
   This can be helpful for classes that inherit components from other classes
   if they want to slot their new components in at specific places in the
@@ -28,8 +28,6 @@ Device Updates
 --------------
 - Added "ref" signal to "BeamEnergyRequest" to track the energy
   reference PV.
-- ``AT2L0`` has been updated due to underlying ``MultiDerivedSignal`` API
-  changes.
 - ``TwinCATStatePositioner`` has been updated due to underlying
   ``MultiDerivedSignal`` API changes.
 - TM1K4 now has its own class with 8 position states (7 targets and and OUT state)
@@ -40,9 +38,9 @@ Device Updates
 
 New Devices
 -----------
-- New `JJSlits` class and typhos screen for controlling JJSlits model AT-C8-HV with Beckhoff controls.
-- XOffsetMirrorRTDs
-- FFMirrorZ
+- New ``JJSlits`` class and typhos screen for controlling JJSlits model AT-C8-HV with Beckhoff controls.
+- XOffsetMirrorRTDs, offset mirrors with RTDs for measuring temperatures.
+- FFMirrorZ, an extension to FFMirror to add a Z axis.
 - The X apertures for AT1K0 now have their own device with 1 state, "centered"
 - The Y apertures for AT1K0 now have their own device with 4 states, ["5.5mm","8mm","10mm","13mm"]
 - OpticsPitchNotepad - a class for storing pitch positions based on state in a notepad IOC
@@ -50,10 +48,8 @@ New Devices
 
 Bugfixes
 --------
-- fixes calls to ipm_screen
-- Fix typhos placement for FFMirrorZ by rearranging `_sig_attrs`
-- adjusted epics_motor/cmd_err_reset to better accomodate dynamic error updating after the gui has been opened
-- adjusted state/reset_cmd to better acoomodate dynamic error updating after the gui has been opened
+- Fix calls to ipm_screen.
+- Fix an issue where Beckhoff motion error reset signals could not be set twice in the same session.
 - Fix an issue where the TMO Spectrometer and the HXRSSS would spam errors
   when loaded in lightpath.
 
@@ -66,13 +62,13 @@ Maintenance
 
 Contributors
 ------------
-- Mbosum
 - klauer
+- mbosum
+- mkestra
 - nrwslac
 - rsmm97
 - tangkong
 - zllentz
--mkestra
 
 
 v5.2.0 (2022-03-31)
