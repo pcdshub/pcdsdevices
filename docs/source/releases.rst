@@ -1,6 +1,76 @@
 Release History
 ###############
 
+
+v6.0.0 (2022-05-03)
+===================
+
+API Changes
+-----------
+- ``MultiDerivedSignal`` and ``MultiDerivedSignalRO`` calculation functions
+  (``calculate_on_get`` and ``calculate_on_put``) now take new signatures.
+  Calculation functions may be either methods on an ``ophyd.Device`` (with
+  ``self``) or standalone functions with the following signature:
+  .. code::
+    calculate_on_get(mds: MultiDerivedSignal, items: SignalToValue) -> OphydDataType
+    calculate_on_put(mds: MultiDerivedSignal, value: OphydDataType) -> SignalToValue
+
+Features
+--------
+- adds ``.screen()`` method to BaseInterface, which opens a typhos screen
+- adds AreaDetector specific ``.screen()`` method, which calls camViewer
+- Add utilities for rearranging the order of components as seen by typhos.
+  This can be helpful for classes that inherit components from other classes
+  if they want to slot their new components in at specific places in the
+  automatic typhos tree.
+
+Device Updates
+--------------
+- Added "ref" signal to "BeamEnergyRequest" to track the energy
+  reference PV.
+- ``TwinCATStatePositioner`` has been updated due to underlying
+  ``MultiDerivedSignal`` API changes.
+- TM1K4 now has its own class with 8 position states (7 targets and and OUT state)
+- Updated AT2L0 to utilize newly implemented MultiderivedSignal for error checking and clearing in GUI and at the command line
+- Updated AT2L0 Typhos GUI, includes error clearing button and display of error on individual blades
+- clear_errors() method for AT2L0 to clear errors; e.g. at2l0.clear_errors()
+- print_errors() method for AT2l0 to print error summary; e.g. at2l0.print_errors()
+
+New Devices
+-----------
+- New ``JJSlits`` class and typhos screen for controlling JJSlits model AT-C8-HV with Beckhoff controls.
+- XOffsetMirrorRTDs, offset mirrors with RTDs for measuring temperatures.
+- FFMirrorZ, an extension to FFMirror to add a Z axis.
+- The X apertures for AT1K0 now have their own device with 1 state, "centered"
+- The Y apertures for AT1K0 now have their own device with 4 states, ["5.5mm","8mm","10mm","13mm"]
+- OpticsPitchNotepad - a class for storing pitch positions based on state in a notepad IOC
+  for mr1l0, mr2l0, mr1l4, mr1l3, and mr2l3.
+
+Bugfixes
+--------
+- Fix calls to ipm_screen.
+- Fix an issue where Beckhoff motion error reset signals could not be set twice in the same session.
+- Fix an issue where the TMO Spectrometer and the HXRSSS would spam errors
+  when loaded in lightpath.
+
+Maintenance
+-----------
+- Ran pre-commit on all files in the repository, except the ones where it
+  causes issues. Update the CI to require these checks to pass. (passive
+  update, this is the new pcds-ci-helpers master). Notable changes were
+  related to import sorting and removal of trailing whitespace.
+
+Contributors
+------------
+- klauer
+- mbosum
+- mkestra
+- nrwslac
+- rsmm97
+- tangkong
+- zllentz
+
+
 v5.2.0 (2022-03-31)
 ===================
 
