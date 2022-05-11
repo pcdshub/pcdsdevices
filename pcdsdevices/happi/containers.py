@@ -221,7 +221,7 @@ class Stopper(Device):
         "STPR:XRT1:1:S5IN_MPS".
     """
     device_class = copy(Device.device_class)
-    device_class = 'pcdsdevices.device_types.Stopper'
+    device_class.default = 'pcdsdevices.device_types.Stopper'
 
 
 class OffsetMirror(BeamControl):
