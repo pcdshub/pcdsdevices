@@ -34,6 +34,7 @@ requirements:
     - scipy
   run_constrained:
     - pmgr >=2.0.2
+    - pyqt <5.15
 
 test:
   imports:
