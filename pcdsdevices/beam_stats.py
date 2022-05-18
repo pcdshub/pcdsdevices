@@ -1,10 +1,11 @@
 import logging
 import numbers
-import typing
+from typing import Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
+from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
 
 from .interface import BaseInterface
@@ -33,18 +34,28 @@ class BeamStats(BaseInterface, Device):
         super().__init__(prefix=prefix, name=name, **kwargs)
 
 
-class BeamEnergyRequest(PVPositionerDone):
+class BeamEnergyRequest(BaseInterface, Device):
     """
     Positioner to request beam color changes from ACR in eV.
 
     It is up to ACR how to and whether to fulfill these requests. This is often
     fulfilled by moving the Vernier but can also be a more involved process.
 
-    Motion is immedately considered "done", but will not execute unless the
+    There are two variants to this device that are implemented in classes
+    below.
+
+    If we get a reference to an ACR PV to use for waiting, then that can be
+    passed in as the acr_status_suffix kwarg. This PV will be used to determine
+    when motion has completed. This behavior is implemented in the
+    `BeamEnergyRequestACRWait` class.
+
+    If we don't get a reference to an ACR PV to use for waiting, then
+    motion is immedately considered "done", but will not execute unless the
     requested position delta is larger than the tolerance. The default
     tolerance here is 30 eV, but this can be changed on a per-instance basis
     by passing ``atol`` into the initializer, or on a per-subclass basis by
-    overriding the default.
+    overriding the default. This is implemented in the
+    `BeamEnergyRequestNoWait` class.
 
     Parameters
     ----------
@@ -76,6 +87,11 @@ class BeamEnergyRequest(PVPositionerDone):
     bunch: int, optional
         Whether to move the first bunch (1) or the second bunch (2). This is
         only relevant for 2-color mode. Defaults to bunch 1.
+
+    acr_status_suffix: str, optional
+        If provided, we'll wait on the ACR PV specified by
+        SIOC:SYS0:ML07:{suffix}. The selected PV should be 0 while the device
+        is moving and 1 when it is done.
     """
 
     # Default vernier tolerance
@@ -109,23 +125,66 @@ class BeamEnergyRequest(PVPositionerDone):
     for l_hutch in ('l', 'XPP', 'XCS', 'MFX', 'CXI', 'MEC'):
         line_text_dict[l_hutch] = line_text_dict['L']
 
+    def __new__(
+        cls,
+        *args,
+        acr_status_suffix: Optional[str] = None,
+        **kwargs
+    ):
+        if acr_status_suffix is None:
+            return super().__new__(BeamEnergyRequestNoWait, *args, **kwargs)
+        return super().__new__(BeamEnergyRequestACRWait, *args, **kwargs)
+
     def __init__(
         self,
         prefix: str,
         *,
         name: str,
         skip_small_moves: bool = True,
-        atol: typing.Optional[numbers.Real] = None,
-        line: typing.Optional[str] = None,
+        atol: Optional[numbers.Real] = None,
+        line: Optional[str] = None,
         bunch: int = 1,
+        acr_status_suffix: Optional[str] = None,
         **kwargs
     ):
         if atol is not None:
             self.atol = atol
         self.line_text = self.line_text_dict.get(line or prefix, '')
         self.bunch = bunch
+        self.acr_status_suffix = acr_status_suffix
         super().__init__(prefix, name=name, skip_small_moves=skip_small_moves,
                          **kwargs)
+
+
+class BeamEnergyRequestNoWait(BeamEnergyRequest, PVPositionerDone):
+    """
+    BeamEnergyRequest variant that does not wait on a PV.
+
+    It will report done immediately and ignore moves that are smaller than
+    atol.
+    """
+    # All done-related functionality is inherited from PVPositionerDone
+    ...
+
+
+class BeamEnergyRequestACRWait(BeamEnergyRequest, PVPositioner):
+    """
+    BeamEnergyRequest variant that does wait on a PV.
+
+    It will report done when the ACR status PV indicates done and will
+    not use the atol parameter.
+    """
+    done = FCpt(
+        EpicsSignal,
+        'SIOC:SYS0:ML07:{acr_status_suffix}',
+        kind='normal',
+        doc=(
+            'PV that is 0 while the motors are moving and 1 when ACR is '
+            'ready for a new request. ACR can pick which of these PVs '
+            'to use to report status.'
+        )
+    )
+    done_value = 1
 
 
 class LCLS(BaseInterface, Device):
