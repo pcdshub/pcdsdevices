@@ -19,7 +19,9 @@ New Devices
 
 Bugfixes
 --------
-- Remove unusable bunch_charge_2 signal from LCLS beam stats.
+- Remove unusable bunch_charge_2 signal from LCLS beam stats. This PV seems
+  to contain a stale value that disagrees with bunch_charge and causes EPICS
+  errors on certain hosts.
 
 Maintenance
 -----------
