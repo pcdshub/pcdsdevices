@@ -140,8 +140,6 @@ class LCLS(BaseInterface, Device):
 
     bunch_charge = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO470', kind='normal',
                        doc='Bunch charge [nC]')
-    bunch_charge_2 = Cpt(EpicsSignalRO, 'FBCK:BCI0:1:CHRG',
-                         kind='normal', doc='Bunch Charge [nC]')
     beam_event_rate = Cpt(EpicsSignalRO, 'EVNT:SYS0:1:LCLSBEAMRATE',
                           kind='normal', doc='LCLSBEAM Event Rate [Hz]')
     ebeam_energy = Cpt(EpicsSignalRO, 'SIOC:SYS0:ML00:AO500', kind='normal',
