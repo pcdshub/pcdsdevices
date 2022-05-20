@@ -4,6 +4,7 @@ from typing import Optional
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
+from ophyd.positioner import PositionerBase
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
 from ophyd.sim import fake_device_cache, make_fake_device
@@ -34,7 +35,7 @@ class BeamStats(BaseInterface, Device):
         super().__init__(prefix=prefix, name=name, **kwargs)
 
 
-class BeamEnergyRequest(BaseInterface, Device):
+class BeamEnergyRequest(BaseInterface, Device, PositionerBase):
     """
     Positioner to request beam color changes from ACR in eV.
 
