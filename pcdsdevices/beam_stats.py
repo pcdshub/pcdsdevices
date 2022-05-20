@@ -1,5 +1,4 @@
 import logging
-import numbers
 from typing import Optional
 
 from ophyd.device import Component as Cpt
@@ -7,6 +6,7 @@ from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositioner
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
+from ophyd.sim import fake_device_cache, make_fake_device
 
 from .interface import BaseInterface
 from .pv_positioner import PVPositionerDone
@@ -59,13 +59,13 @@ class BeamEnergyRequest(BaseInterface, Device):
 
     Parameters
     ----------
-    prefix: str
+    prefix : str
         PV prefix for the request setpoint. This should always be a hutch name.
 
-    name: str, required keyword
+    name : str, required keyword
         Name to use for this device in log messages, data streams, etc.
 
-    skip_small_moves: bool, optional
+    skip_small_moves : bool, optional
         Has no effect if using the wait-on-PV version of the class, but will
         take effect for the no-wait version of the class.
         Defaults to True, which ignores move requests that are smaller than the
@@ -76,31 +76,27 @@ class BeamEnergyRequest(BaseInterface, Device):
         can skip the small moves here and move the monochromater and beam
         request devices in parallel.
 
-    atol: int, optional
+    atol : int, optional
         Has no effect if using the wait-on-PV version of the class, but will
         take effect for the no-wait version of the class.
         Absolute tolerance that determines when the move is done and when to
         skip moves using the skip_small_moves parameter.
 
-    line: str, optional
+    line : str, optional
         Whether to use the K line or L line PV. If provided this should be a
         string with a single character. The K line PVs have "EPHOTK"
         in them, the L line PVs just have "EPHOT". This will default to the
         line associated with the prefix hutch name, or to L line failing that.
 
-    bunch: int, optional
+    bunch : int, optional
         Whether to move the first bunch (1) or the second bunch (2). This is
         only relevant for 2-color mode. Defaults to bunch 1.
 
-    acr_status_suffix: str, optional
+    acr_status_suffix : str, optional
         If provided, we'll wait on the ACR PV specified by
         SIOC:SYS0:ML07:{suffix}. The selected PV should be 0 while the device
         is moving and 1 when it is done.
     """
-
-    # Default vernier tolerance
-    atol = 5
-
     setpoint = FCpt(
         EpicsSignal,
         '{prefix}:USER:MCC:EPHOT{line_text}:SET{bunch}',
@@ -135,6 +131,8 @@ class BeamEnergyRequest(BaseInterface, Device):
         acr_status_suffix: Optional[str] = None,
         **kwargs
     ):
+        if cls is not BeamEnergyRequest:
+            return super().__new__(cls)
         if acr_status_suffix is None:
             return super().__new__(BeamEnergyRequestNoWait)
         return super().__new__(BeamEnergyRequestACRWait)
@@ -144,14 +142,11 @@ class BeamEnergyRequest(BaseInterface, Device):
         prefix: str,
         *,
         name: str,
-        atol: Optional[numbers.Real] = None,
         line: Optional[str] = None,
         bunch: int = 1,
         acr_status_suffix: Optional[str] = None,
         **kwargs
     ):
-        if atol is not None:
-            self.atol = atol
         self.line_text = self.line_text_dict.get(line or prefix, '')
         self.bunch = bunch
         self.acr_status_suffix = acr_status_suffix
@@ -165,6 +160,8 @@ class BeamEnergyRequestNoWait(BeamEnergyRequest, PVPositionerDone):
     It will report done immediately and ignore moves that are smaller than
     atol.
     """
+    atol = 5
+
     # All done-related functionality is inherited from PVPositionerDone
     # Just implement skip_small_moves's default
     def __init__(self, *args, skip_small_moves: bool = True, **kwargs):
@@ -190,6 +187,47 @@ class BeamEnergyRequestACRWait(BeamEnergyRequest, PVPositioner):
         )
     )
     done_value = 1
+
+
+_FakeBeamEnergyRequestNoWait = make_fake_device(BeamEnergyRequestNoWait)
+_FakeBeamEnergyRequestACRWait = make_fake_device(BeamEnergyRequestACRWait)
+_FakeBeamEnergyRequest = make_fake_device(BeamEnergyRequest)
+
+
+class FakeBeamEnergyRequest(_FakeBeamEnergyRequest):
+    """
+    Required setup for fake classes to work properly with __new__ splitting
+    """
+    def __new__(
+        cls,
+        *args,
+        acr_status_suffix: Optional[str] = None,
+        **kwargs
+    ):
+        if cls is not FakeBeamEnergyRequest:
+            return super().__new__(cls)
+        if acr_status_suffix is None:
+            return super().__new__(FakeBeamEnergyRequestNoWait)
+        return super().__new__(FakeBeamEnergyRequestACRWait)
+
+
+class FakeBeamEnergyRequestNoWait(
+    _FakeBeamEnergyRequestNoWait,
+    FakeBeamEnergyRequest,
+):
+    ...
+
+
+class FakeBeamEnergyRequestACRWait(
+    _FakeBeamEnergyRequestACRWait,
+    FakeBeamEnergyRequest,
+):
+    ...
+
+
+fake_device_cache[BeamEnergyRequestNoWait] = FakeBeamEnergyRequestNoWait
+fake_device_cache[BeamEnergyRequestACRWait] = FakeBeamEnergyRequestACRWait
+fake_device_cache[BeamEnergyRequest] = FakeBeamEnergyRequest
 
 
 class LCLS(BaseInterface, Device):
