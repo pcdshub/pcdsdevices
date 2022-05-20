@@ -91,6 +91,7 @@ def test_get_set_period(fake_lcls):
     assert lcls.bykik_get_period() == 100
 
 
+@pytest.mark.timeout(5)
 def test_beam_energy_request_args():
     # Defaults for xpp and tmo
     xpp_request = BeamEnergyRequest(
@@ -136,6 +137,7 @@ def test_beam_energy_request_args():
     assert 'TSTSUFFIX' in tst_l1_request.done.pvname
 
 
+@pytest.mark.timeout(5)
 def test_beam_energy_request_behavior():
     FakeCls = make_fake_device(BeamEnergyRequest)
 
