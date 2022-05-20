@@ -146,16 +146,16 @@ def test_beam_energy_request_behavior():
     assert isinstance(nowait, FakeBeamEnergyRequestNoWait)
     nowait.setpoint.put(0)
     assert nowait.position == 0
-    nowait.move(0.1).wait(timeout=0.1)
+    nowait.move(0.1, timeout=0.1)
     assert nowait.position == 0
-    nowait.move(1).wait(timeout=0.1)
+    nowait.move(1, timeout=0.1)
     assert nowait.position == 1
 
     # Wait variant: acr needs to put 0 to when moving and 1 back when done
     acrwait = FakeCls('TST', name='acrwait', acr_status_suffix='WAITER')
     assert isinstance(acrwait, FakeBeamEnergyRequestACRWait)
     acrwait.done.sim_put(1)
-    st = acrwait.move(1)
+    st = acrwait.move(1, wait=False)
     try:
         st.wait(timeout=0.1)
     except Exception:
@@ -169,7 +169,7 @@ def test_beam_energy_request_behavior():
     assert not st.done
     acrwait.done.sim_put(1)
     try:
-        st.wait(timeout=0.1)
+        st.wait(timeout=1)
     except Exception:
         ...
     assert st.done
