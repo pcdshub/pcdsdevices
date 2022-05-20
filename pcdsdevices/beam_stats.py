@@ -66,6 +66,8 @@ class BeamEnergyRequest(BaseInterface, Device):
         Name to use for this device in log messages, data streams, etc.
 
     skip_small_moves: bool, optional
+        Has no effect if using the wait-on-PV version of the class, but will
+        take effect for the no-wait version of the class.
         Defaults to True, which ignores move requests that are smaller than the
         atol factor. If False, we'll perform every requested move.
         This can be very useful for synchronized energy scans where the ACR
@@ -75,6 +77,8 @@ class BeamEnergyRequest(BaseInterface, Device):
         request devices in parallel.
 
     atol: int, optional
+        Has no effect if using the wait-on-PV version of the class, but will
+        take effect for the no-wait version of the class.
         Absolute tolerance that determines when the move is done and when to
         skip moves using the skip_small_moves parameter.
 
@@ -132,15 +136,14 @@ class BeamEnergyRequest(BaseInterface, Device):
         **kwargs
     ):
         if acr_status_suffix is None:
-            return super().__new__(BeamEnergyRequestNoWait, *args, **kwargs)
-        return super().__new__(BeamEnergyRequestACRWait, *args, **kwargs)
+            return super().__new__(BeamEnergyRequestNoWait)
+        return super().__new__(BeamEnergyRequestACRWait)
 
     def __init__(
         self,
         prefix: str,
         *,
         name: str,
-        skip_small_moves: bool = True,
         atol: Optional[numbers.Real] = None,
         line: Optional[str] = None,
         bunch: int = 1,
@@ -152,8 +155,7 @@ class BeamEnergyRequest(BaseInterface, Device):
         self.line_text = self.line_text_dict.get(line or prefix, '')
         self.bunch = bunch
         self.acr_status_suffix = acr_status_suffix
-        super().__init__(prefix, name=name, skip_small_moves=skip_small_moves,
-                         **kwargs)
+        super().__init__(prefix, name=name, **kwargs)
 
 
 class BeamEnergyRequestNoWait(BeamEnergyRequest, PVPositionerDone):
@@ -164,7 +166,9 @@ class BeamEnergyRequestNoWait(BeamEnergyRequest, PVPositionerDone):
     atol.
     """
     # All done-related functionality is inherited from PVPositionerDone
-    ...
+    # Just implement skip_small_moves's default
+    def __init__(self, *args, skip_small_moves: bool = True, **kwargs):
+        super().__init__(*args, skip_small_moves=skip_small_moves, **kwargs)
 
 
 class BeamEnergyRequestACRWait(BeamEnergyRequest, PVPositioner):
@@ -174,6 +178,7 @@ class BeamEnergyRequestACRWait(BeamEnergyRequest, PVPositioner):
     It will report done when the ACR status PV indicates done and will
     not use the atol parameter.
     """
+    # All the logic is implemented in parent classes, just pick the PV
     done = FCpt(
         EpicsSignal,
         'SIOC:SYS0:ML07:{acr_status_suffix}',
