@@ -163,7 +163,7 @@ class GlobalConfig(BaseInterface, Device):
         ),
     )
 
-    min_centroid_change = Cpt(
+    min_pixel_sum_change = Cpt(
         PytmcSignal,
         "MinPixelChange",
         io="io",
