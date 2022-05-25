@@ -163,13 +163,13 @@ class GlobalConfig(BaseInterface, Device):
         ),
     )
 
-    min_centroid_change = Cpt(
+    min_pixel_sum_change = Cpt(
         PytmcSignal,
-        "MinCentroidChange",
+        "MinPixelChange",
         io="io",
         kind="normal",
         doc=(
-            "Minimal change (in pixels) for centroid values to be considered "
+            "Minimal change (in pixels) for camera image sum to be considered "
             "valid"
         ),
     )
