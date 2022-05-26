@@ -885,8 +885,9 @@ class TwinCATMirrorStripe(TwinCATStatePMPS):
 
 
 @reorder_components(
-    end_with=['coating', 'x', 'y', 'pitch', 'bender_us', 'bender_ds', 'x_enc_rms', 'y_enc_rms',
-        'pitch_enc_rms', 'bender_us_enc_rms', 'bender_ds_enc_rms', 'us_rtd', 'ds_rtd']
+    end_with=['coating', 'x', 'y', 'pitch', 'bender_us', 'bender_ds',
+        'x_enc_rms', 'y_enc_rms', 'pitch_enc_rms', 'bender_us_enc_rms',
+        'bender_ds_enc_rms', 'us_rtd', 'ds_rtd']
 )
 class KBOMirrorStates(KBOMirror):
     """
@@ -903,15 +904,17 @@ class KBOMirrorStates(KBOMirror):
         Alias for the device.
     """
     coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
-                              doc='Control of the coating states via saved positions.')
+        doc='Control of the coating states via saved positions.')
 
     # Tab config: show components
     tab_component_names = True
 
 
 @reorder_components(
-    end_with=['coating', 'x', 'y', 'pitch', 'bender_us', 'bender_ds', 'x_enc_rms', 'y_enc_rms', 
-        'pitch_enc_rms', 'bender_us_enc_rms', 'bender_ds_enc_rms', 'us_rtd', 'ds_rtd', 'cool_flow1', 'cool_flow2', 'cool_press']
+    end_with=['coating', 'x', 'y', 'pitch', 'bender_us', 'bender_ds',
+        'x_enc_rms', 'y_enc_rms', 'pitch_enc_rms', 'bender_us_enc_rms',
+        'bender_ds_enc_rms', 'us_rtd', 'ds_rtd', 'cool_flow1',
+        'cool_flow2', 'cool_press']
 )
 class KBOMirrorHEStates(KBOMirrorHE):
     """
@@ -928,7 +931,7 @@ class KBOMirrorHEStates(KBOMirrorHE):
         Alias for the device.
     """
     coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
-                              doc='Control of the coating states via saved positions.')
+        doc='Control of the coating states via saved positions.')
     # Tab config: show components
     tab_component_names = True
 
