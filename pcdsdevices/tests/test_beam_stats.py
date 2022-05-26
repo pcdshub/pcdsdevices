@@ -3,7 +3,10 @@ import logging
 import pytest
 from ophyd.sim import make_fake_device
 
-from ..beam_stats import LCLS, BeamEnergyRequest, BeamStats
+from ..beam_stats import (LCLS, BeamEnergyRequest, BeamEnergyRequestACRWait,
+                          BeamEnergyRequestNoWait, BeamStats,
+                          FakeBeamEnergyRequestACRWait,
+                          FakeBeamEnergyRequestNoWait)
 
 logger = logging.getLogger(__name__)
 
@@ -88,11 +91,16 @@ def test_get_set_period(fake_lcls):
     assert lcls.bykik_get_period() == 100
 
 
+@pytest.mark.timeout(5)
 def test_beam_energy_request_args():
     # Defaults for xpp and tmo
-    xpp_request = BeamEnergyRequest('XPP', name='xpp_request')
+    xpp_request = BeamEnergyRequest(
+        'XPP',
+        name='xpp_request',
+        skip_small_moves=True,
+    )
     assert xpp_request.setpoint.pvname == 'XPP:USER:MCC:EPHOT:SET1'
-    tmo_request = BeamEnergyRequest('TMO', name='tmo_request')
+    tmo_request = BeamEnergyRequest('TMO', name='tmo_request', atol=4)
     assert tmo_request.setpoint.pvname == 'TMO:USER:MCC:EPHOTK:SET1'
     # Future TXI and multi-bunch specific options
     tst_k1_request = BeamEnergyRequest(
@@ -109,3 +117,59 @@ def test_beam_energy_request_args():
         bunch=2,
     )
     assert tst_l2_request.setpoint.pvname == 'TST:USER:MCC:EPHOT:SET2'
+    # let's test the class splitting here too
+    for obj in (
+        xpp_request,
+        tmo_request,
+        tst_k1_request,
+        tst_l2_request,
+    ):
+        assert isinstance(obj, BeamEnergyRequestNoWait)
+        assert isinstance(obj, BeamEnergyRequest)
+    # including a done PV
+    tst_l1_request = BeamEnergyRequest(
+        'TST',
+        name='tst_l2_request',
+        acr_status_suffix='TSTSUFFIX',
+    )
+    assert isinstance(tst_l1_request, BeamEnergyRequest)
+    assert isinstance(tst_l1_request, BeamEnergyRequestACRWait)
+    assert 'TSTSUFFIX' in tst_l1_request.done.pvname
+
+
+@pytest.mark.timeout(5)
+def test_beam_energy_request_behavior():
+    FakeCls = make_fake_device(BeamEnergyRequest)
+
+    # No wait variant: reports done immediately, skips moves smaller than atol
+    nowait = FakeCls('TST', name='nowait', skip_small_moves=True, atol=0.9)
+    assert isinstance(nowait, FakeBeamEnergyRequestNoWait)
+    nowait.setpoint.put(0)
+    assert nowait.position == 0
+    nowait.move(0.1, timeout=0.1)
+    assert nowait.position == 0
+    nowait.move(1, timeout=0.1)
+    assert nowait.position == 1
+
+    # Wait variant: acr needs to put 0 to when moving and 1 back when done
+    acrwait = FakeCls('TST', name='acrwait', acr_status_suffix='WAITER')
+    assert isinstance(acrwait, FakeBeamEnergyRequestACRWait)
+    acrwait.done.sim_put(1)
+    st = acrwait.move(1, wait=False)
+    try:
+        st.wait(timeout=0.1)
+    except Exception:
+        ...
+    assert not st.done
+    acrwait.done.sim_put(0)
+    try:
+        st.wait(timeout=0.1)
+    except Exception:
+        ...
+    assert not st.done
+    acrwait.done.sim_put(1)
+    try:
+        st.wait(timeout=1)
+    except Exception:
+        ...
+    assert st.done

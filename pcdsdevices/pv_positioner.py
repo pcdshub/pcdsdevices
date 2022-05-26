@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 from ophyd.device import Component as Cpt
 from ophyd.pv_positioner import PVPositioner
@@ -131,7 +133,17 @@ class PVPositionerDone(FltMvInterface, PVPositioner):
     done = Cpt(InternalSignal, value=0)
     done_value = 1
 
-    def __init__(self, prefix, *, name, skip_small_moves=False, **kwargs):
+    def __init__(
+        self,
+        prefix: str,
+        *,
+        name: str,
+        skip_small_moves: bool = False,
+        atol: Optional[float] = None,
+        **kwargs,
+    ):
+        if atol is not None:
+            self.atol = atol
         self.skip_small_moves = skip_small_moves
         super().__init__(prefix, name=name, **kwargs)
 
