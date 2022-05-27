@@ -17,7 +17,7 @@ New Devices
 -----------
 - `KBOMirrorHEStates` - a class for KBO mirrors with coating states
  and cooling.
-- `KBOMirrorStates` - a class for KBO mirrors with coating states
+-  `KBOMirrorStates` - a class for KBO mirrors with coating states
  and no cooling
 Bugfixes
 --------
