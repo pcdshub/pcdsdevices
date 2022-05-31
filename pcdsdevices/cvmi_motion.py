@@ -10,7 +10,6 @@ from .device import GroupDevice
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface
 
-
 class CVMI(BaseInterface, GroupDevice):
     """
     CVMI Motion Class
@@ -41,6 +40,15 @@ class CVMI(BaseInterface, GroupDevice):
 
     sample_paddle = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
 
+    # LEDs
+    led1_name = Cpt(EpicsSignal, 'CVMI:LED:01:NAME', kind='normal')
+    led1_pct = Cpt(EpicsSignal, 'CVMI:LED:01:ILL:PCT', kind='normal')
+    led1_pwr = Cpt(EpicsSignalRO, 'CVMI:LED:01:PWR', kind='normal') 
+    
+    led2_name = Cpt(EpicsSignal, 'CVMI:LED:02:NAME', kind='normal')
+    led2_pct = Cpt(EpicsSignal, 'CVMI:LED:02:ILL:PCT', kind='normal')
+    led2_pwr = Cpt(EpicsSignalRO, 'CVMI:LED:02:PWR', kind='normal')
+    
 
 class KTOF(BaseInterface, GroupDevice):
     """
