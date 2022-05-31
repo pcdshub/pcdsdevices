@@ -19,6 +19,10 @@ class CVMI(BaseInterface, GroupDevice):
     This class controls motors fixed to the CVMI Motion system for the IP1
     endstation in TMO.
 
+    Added on, are basic control and readback PVs for LED rings attached to
+    the viewports on the vacuum chamber. These include illumination
+    percentage, power ON/OFF, and a naming string field.
+
     Parameters
     ----------
     prefix : str
