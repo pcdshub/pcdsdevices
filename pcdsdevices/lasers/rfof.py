@@ -124,5 +124,3 @@ class rfof_errors(BaseInterface, Device):
     rx_rf_sens_err      = Cpt(EpicsSignalRO, ':RX_RF_SENS_ERR', kind='normal', doc='Rx: RF control sensor failure')
     rx_arm_idn_err      = Cpt(EpicsSignalRO, ':RX_ARM_IDN_ERR', kind='normal', doc='Rx: Arm control identification failed')
     rx_arm_sens_err     = Cpt(EpicsSignalRO, ':RX_ARM_SENS_ERR', kind='normal', doc='Rx: Arm control sensor failure')
-
-
