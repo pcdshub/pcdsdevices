@@ -11,6 +11,18 @@ from .device import GroupDevice
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface
 
+class CvmiLED(BaseInterface, GroupDevice):
+    """
+    Basic control and readback PVs for LED rings attached to the viewports
+    on the vacuum chamber. These include illumination percentage, 
+    power ON/OFF, and a naming string field.
+    """
+
+    # LED variables
+    desc = Cpt(PytmcSignal, ':NAME', kind = 'normal', io='io', string = True)
+    pct = Cpt(PytmcSignal, ':ILL:PCT', kind = 'normal', io='io')
+    pwr = Cpt(PytmcSignal, ':PWR', kind = 'normal', io= 'io')
+    
 
 class CVMI(BaseInterface, GroupDevice):
     """
@@ -19,15 +31,17 @@ class CVMI(BaseInterface, GroupDevice):
     This class controls motors fixed to the CVMI Motion system for the IP1
     endstation in TMO.
 
-    Added on, are basic control and readback PVs for LED rings attached to
-    the viewports on the vacuum chamber. These include illumination
-    percentage, power ON/OFF, and a naming string field.
 
     Parameters
     ----------
     prefix : str
         Base PV for the LAMP motion system
-
+    desc : str
+        Description field for LED.
+    pct : str
+        Illumination percentage of a particular endstation LED.      
+    pwr : str
+        ON/OFF powered boolean of a particular endstation LED>
     name : str
         Alias for the device
     """
@@ -47,13 +61,8 @@ class CVMI(BaseInterface, GroupDevice):
     sample_paddle = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
 
     # LEDs
-    led1_name = Cpt(EpicsSignal, ':LED:01:NAME', kind='normal')
-    led1_pct = Cpt(EpicsSignal, ':LED:01:ILL:PCT', kind='normal')
-    led1_pwr = Cpt(EpicsSignalRO, ':LED:01:PWR', kind='normal')
-
-    led2_name = Cpt(EpicsSignal, ':LED:02:NAME', kind='normal')
-    led2_pct = Cpt(EpicsSignal, ':LED:02:ILL:PCT', kind='normal')
-    led2_pwr = Cpt(EpicsSignalRO, ':LED:02:PWR', kind='normal')
+    led1 = Cpt(CvmiLED, ':LED:01')
+    led2 = Cpt(CvmiLED, ':LED:02')
 
 
 class KTOF(BaseInterface, GroupDevice):
