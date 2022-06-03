@@ -11,29 +11,29 @@ Device Updates
   reflect the latest PLC/IOC changes: the image sum from near and
   far-field cameras is now used instead of centroid positioning.
   The relevant screens have been updated as well.
-- Add an optional "acr_status_suffix" argument to ``BeamEnergyRequest`` that
+- Added an optional ``acr_status_suffix`` argument to ``BeamEnergyRequest`` that
   instantiates an alternate version of the class that waits on an ACR PV to
   know when the motion is done. This is a more suitable version of the class
   for step scans and a less suitable version of the class for fly scans.
 
 New Devices
 -----------
-- `KBOMirrorHEStates` - a class for KBO mirrors with coating states
+- Added ``KBOMirrorHEStates`` - a class for KBO mirrors with coating states
   and cooling.
-- `KBOMirrorStates` - a class for KBO mirrors with coating states
-  and no cooling
+- Added ``KBOMirrorStates`` - a class for KBO mirrors with coating states
+  and no cooling.
 
 Bugfixes
 --------
-- Fix Stopper Happi container definition
-- Remove unusable bunch_charge_2 signal from LCLS beam stats. This PV seems
-  to contain a stale value that disagrees with bunch_charge and causes EPICS
+- Fixed the ``Stopper`` ``happi`` container definition.
+- Removed unusable ``bunch_charge_2`` signal from LCLS beam stats. This PV seems
+  to contain a stale value that disagrees with ``bunch_charge`` and causes EPICS
   errors on certain hosts.
 
 Maintenance
 -----------
-- Add a run constraint for pyqt to avoid latest while we work out testing
-  failures
+- Added a run constraint for pyqt to avoid latest while we work out testing
+  failures.
 
 Contributors
 ------------
@@ -41,7 +41,6 @@ Contributors
 - nrwslac
 - tangkong
 - zllentz
-
 
 
 v6.0.0 (2022-05-03)
