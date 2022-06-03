@@ -29,8 +29,7 @@ class CVMI(BaseInterface, GroupDevice):
     CVMI Motion Class
 
     This class controls motors fixed to the CVMI Motion system for the IP1
-    endstation in TMO.
-
+    endstation in TMO. It also controls LED rings for the endstation.
 
     Parameters
     ----------
