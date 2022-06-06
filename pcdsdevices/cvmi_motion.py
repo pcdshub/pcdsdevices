@@ -5,24 +5,25 @@ This module contains classes related to the TMO-LAMP Motion System
 """
 
 from ophyd import Component as Cpt
-from ophyd.signal import EpicsSignal, EpicsSignalRO
 
-from .device import GroupDevice
+from .device import GroupDevice, Device
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface
+from .signal import PytmcSignal
 
-class CvmiLED(BaseInterface, GroupDevice):
+
+class CvmiLED(Device):
     """
     Basic control and readback PVs for LED rings attached to the viewports
-    on the vacuum chamber. These include illumination percentage, 
+    on the vacuum chamber. These include illumination percentage,
     power ON/OFF, and a naming string field.
     """
 
     # LED variables
-    desc = Cpt(PytmcSignal, ':NAME', kind = 'normal', io='io', string = True)
-    pct = Cpt(PytmcSignal, ':ILL:PCT', kind = 'normal', io='io')
-    pwr = Cpt(PytmcSignal, ':PWR', kind = 'normal', io= 'io')
-    
+    desc = Cpt(PytmcSignal, ':NAME', io='io', kind='normal', string=True)
+    pct = Cpt(PytmcSignal, ':ILL:PCT', kind='normal', io='io')
+    pwr = Cpt(PytmcSignal, ':PWR', kind='normal', io='io')
+
 
 class CVMI(BaseInterface, GroupDevice):
     """
@@ -38,7 +39,7 @@ class CVMI(BaseInterface, GroupDevice):
     desc : str
         Description field for LED.
     pct : str
-        Illumination percentage of a particular endstation LED.      
+        Illumination percentage of a particular endstation LED.
     pwr : str
         ON/OFF powered boolean of a particular endstation LED>
     name : str
