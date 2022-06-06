@@ -22,7 +22,7 @@ class CvmiLED(Device):
     # LED variables
     desc = Cpt(PytmcSignal, ':NAME', io='io', kind='normal', string=True)
     pct = Cpt(PytmcSignal, ':ILL:PCT', kind='normal', io='io')
-    pwr = Cpt(PytmcSignal, ':PWR', kind='normal', io='io')
+    pwr = Cpt(PytmcSignal, ':PWR', kind='normal', io='i')
 
 
 class CVMI(BaseInterface, GroupDevice):
