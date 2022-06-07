@@ -6,7 +6,7 @@ This module contains classes related to the TMO-LAMP Motion System
 
 from ophyd import Component as Cpt
 
-from .device import GroupDevice, Device
+from .device import Device, GroupDevice
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface
 from .signal import PytmcSignal
