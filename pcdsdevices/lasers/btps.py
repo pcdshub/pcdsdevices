@@ -1,6 +1,7 @@
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 
+from ..device import UnrelatedComponent as UCpt
 from ..interface import BaseInterface
 from ..signal import PytmcSignal
 
@@ -175,8 +176,56 @@ class GlobalConfig(BaseInterface, Device):
     )
 
 
+class LssShutterStatus(BaseInterface, Device):
+    """BTPS per-source shutter status per the laser safety system."""
+    open_request = Cpt(
+        PytmcSignal,
+        "REQ",
+        io="i",
+        kind="normal",
+        doc="User request to open/close shutter",
+    )
+
+    opened_status = Cpt(
+        PytmcSignal,
+        "OPN",
+        io="i",
+        kind="normal",
+        doc="Shutter open status",
+    )
+
+    closed_status = Cpt(
+        PytmcSignal,
+        "CLS",
+        io="i",
+        kind="normal",
+        doc="Shutter closed status",
+    )
+
+    permission = Cpt(
+        PytmcSignal,
+        "LSS",
+        io="i",
+        kind="normal",
+        doc="Shutter open permission status",
+    )
+
+
 class ShutterSafety(BaseInterface, Device):
     """BTPS per-source shutter safety status."""
+
+    def __init__(self, prefix: str, **kwargs):
+        # Support simulation mode for UCpt LSS status:
+        lss_prefix = kwargs.get("lss_prefix", "")
+        if prefix.startswith("SIM:"):
+            if not lss_prefix.startswith("SIM:"):
+                kwargs["lss_prefix"] = f"SIM:{lss_prefix}"
+
+        UCpt.collect_prefixes(self, kwargs)
+        super().__init__(prefix, **kwargs)
+
+    lss = UCpt(LssShutterStatus, doc="Laser Safety System Status")
+
     open_request = Cpt(
         PytmcSignal,
         "UserOpen",
@@ -232,9 +281,24 @@ class BtpsState(BaseInterface, Device):
     """
     config = Cpt(GlobalConfig, "Config:", doc="Global configuration")
 
-    shutter1 = Cpt(ShutterSafety, "Shutter:01:", doc="Source Shutter 1")
-    shutter3 = Cpt(ShutterSafety, "Shutter:03:", doc="Source Shutter 3")
-    shutter4 = Cpt(ShutterSafety, "Shutter:04:", doc="Source Shutter 4")
+    shutter1 = Cpt(
+        ShutterSafety,
+        "Shutter:01:",
+        lss_prefix="LTLHN:LS1:LST:",
+        doc="Source Shutter 1"
+    )
+    shutter3 = Cpt(
+        ShutterSafety,
+        "Shutter:03:",
+        lss_prefix="LTLHN:LS5:LST:",
+        doc="Source Shutter 3"
+    )
+    shutter4 = Cpt(
+        ShutterSafety,
+        "Shutter:04:",
+        lss_prefix="LTLHN:LS8:LST:",
+        doc="Source Shutter 4"
+    )
 
     dest1 = Cpt(DestinationConfig, "DEST:01:", doc="Destination 1")
     dest2 = Cpt(DestinationConfig, "DEST:02:", doc="Destination 2")
