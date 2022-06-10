@@ -6,6 +6,7 @@ import logging
 
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
+
 from pcdsdevices.interface import BaseInterface
 
 logger = logging.getLogger(__name__)
