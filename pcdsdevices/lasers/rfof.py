@@ -1,6 +1,6 @@
-"""
-Module for the RF over Fiber systems.
-"""
+
+# Module for the RF over Fiber systems.
+
 
 import logging
 
@@ -10,6 +10,8 @@ from ophyd import Device, EpicsSignal, EpicsSignalRO
 from pcdsdevices.interface import BaseInterface
 
 logger = logging.getLogger(__name__)
+
+# Cycle RFOF classes
 
 
 class CycleRfofRx(BaseInterface, Device):
@@ -29,8 +31,7 @@ class CycleRfofTx(CycleRfofRx):
     enable_laser = Cpt(EpicsSignal, ':ENABLELASER', kind='normal')
 
 
-"""Instrumentation Technologies Low-Jitter Continuous Wave"""
-"""Reference Clock Transfer System"""
+# Instrumentation Technologies Low-Jitter Continuous Wave RCT Classes
 
 
 class ItechRfofRx(BaseInterface, Device):
