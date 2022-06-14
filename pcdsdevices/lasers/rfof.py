@@ -569,3 +569,10 @@ class ItechRfofErrors(BaseInterface, Device):
         kind="normal",
         doc="Rx: Arm control sensor failure",
     )
+
+
+class ItechRfofBase(BaseInterface, Device):
+    transmitter = Cpt(ItechRfofTx, "")
+    receiver = Cpt(ItechRfofRx, "")
+    errors = Cpt(ItechRfofErrors, "")
+    status = Cpt(ItechRfofStatus, "")
