@@ -193,6 +193,8 @@ class BaseInterface:
         List of string regex to show in autocomplete for non-engineering mode.
     """
 
+    lazy_wait_for_connection = False
+
     tab_whitelist = (OphydObject_whitelist + BlueskyInterface_whitelist +
                      Device_whitelist + Signal_whitelist +
                      Positioner_whitelist)
@@ -215,6 +217,13 @@ class BaseInterface:
             )
 
         cls._class_tab = TabCompletionHelperClass(cls)
+        try:
+            cpts = [getattr(cls, name) for name in cls.component_names]
+        except AttributeError:
+            pass
+        else:
+            for cpt in cpts:
+                cpt.lazy = True
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
