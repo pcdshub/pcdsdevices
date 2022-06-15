@@ -632,7 +632,13 @@ class ItechRfofErrors(BaseInterface, Device):
     )
 
 
-class ItechRfofBase(BaseInterface, Device):
+class ItechRfofAll(BaseInterface, Device):
+
+    """
+    Class for including all subclasses
+    For example, for receiver PVs, use object would use object.receiver.<pv>
+    """
+
     transmitter = Cpt(ItechRfofTx, "")
     receiver = Cpt(ItechRfofRx, "")
     errors = Cpt(ItechRfofErrors, "")

@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- Instrumentation Technologies RF over Fiber unit
+- Added ItechRfof class: Instrumentation Technologies RF over Fiber unit
 
 Bugfixes
 --------
