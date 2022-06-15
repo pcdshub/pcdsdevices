@@ -27,6 +27,6 @@ Maintenance
 
 Contributors
 ------------
-- Will Wright
-- Mike Brown
-- Tyler Johnson
+- wwright-slac
+- mcb64
+- slactjohnson
