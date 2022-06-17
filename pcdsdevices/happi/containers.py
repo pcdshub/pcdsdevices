@@ -91,9 +91,9 @@ class LegacyItem(HappiItem):
                               enforce=str)
     parent = EntryInfo('If the device is a component of another, '
                        'enter the name', enforce=str)
-    args = copy.copy(HappiItem.args)
+    args = copy(HappiItem.args)
     args.default = ['{{prefix}}']
-    kwargs = copy.copy(HappiItem.kwargs)
+    kwargs = copy(HappiItem.kwargs)
     kwargs.default = {'name': '{{name}}'}
 
     def __init__(self, *args, **kwargs):
