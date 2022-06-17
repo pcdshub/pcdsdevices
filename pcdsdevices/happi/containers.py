@@ -96,11 +96,6 @@ class LegacyItem(HappiItem):
     kwargs = copy(HappiItem.kwargs)
     kwargs.default = {'name': '{{name}}'}
 
-    def __init__(self, *args, **kwargs):
-        warnings.warn("happi.device.Device is deprecated. Please use "
-                      "OphydItem or LCLSItem.", DeprecationWarning)
-        super().__init__(*args, **kwargs)
-
     def __repr__(self):
         return '{} (name={}, prefix={}, z={})'.format(
                                     self.__class__.__name__,
