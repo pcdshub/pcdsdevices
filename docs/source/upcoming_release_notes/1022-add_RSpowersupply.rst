@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- RSpowersupply
+- Add RohdeSchwarzPowerSupply class for controlling the Rohde Schwarz NGP800 power supply series
 
 Bugfixes
 --------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tongju
+- tongju12
