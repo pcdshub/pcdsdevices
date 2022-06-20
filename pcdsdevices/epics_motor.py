@@ -596,10 +596,6 @@ class IMS(PCDSMotorBase):
     # If we fail to create _pm, set bool to only try once
     _pm_init_error = False
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._setup_pmgr_if_needed()
-
     def stage(self):
         """
         Stage the IMS motor.
@@ -724,7 +720,7 @@ class IMS(PCDSMotorBase):
 
         Returns nothing.
         """
-        self.check_pmgr()
+        self._setup_and_check_pmgr()
         self._pm.apply_config(self.prefix, cfgname)
 
     def get_configuration(self):
@@ -734,7 +730,7 @@ class IMS(PCDSMotorBase):
         Returns the current configuration name as a string or throws an
         exception.
         """
-        self.check_pmgr()
+        self._setup_and_check_pmgr()
         return self._pm.get_config(self.prefix)
 
     @staticmethod
@@ -770,7 +766,7 @@ class IMS(PCDSMotorBase):
                 print("    %s" % m)
 
     @staticmethod
-    def _setup_pmgr():
+    def setup_pmgr():
         try:
             from pmgr import pmgrAPI
         except ImportError:
@@ -795,10 +791,12 @@ class IMS(PCDSMotorBase):
     @staticmethod
     def _setup_pmgr_if_needed():
         if IMS._pm is None and not IMS._pm_init_error:
-            IMS._setup_pmgr()
+            IMS.setup_pmgr()
 
     @staticmethod
     def check_pmgr():
+        if IMS._pm is None:
+            raise RuntimeError('pmgr has not been set up yet, call setup_pmgr')
         if IMS._pm_init_error:
             raise RuntimeError('pmgr not available, initialized with an error')
 
