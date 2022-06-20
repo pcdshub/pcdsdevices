@@ -2,6 +2,40 @@ Release History
 ###############
 
 
+v6.2.0 (2022-06-20)
+===================
+
+Device Updates
+--------------
+- Add IMS.setup_pmgr as a public API for applications that want to initialize
+  pmgr support before the first device uses it. This was previously private
+  API at IMS._setup_pmgr.
+- Added LED control PVs to CVMI motion class.
+
+New Devices
+-----------
+- Added ItechRfof class: Instrumentation Technologies RF over Fiber unit
+
+Bugfixes
+--------
+- Create the pmgr resources when they are first used rather than on IMS
+  init, saving 3 seconds of startup time for users that don't need
+  pmgr resources.
+
+Maintenance
+-----------
+- Vendor happi.device.Device as LegacyItem instead of importing it, pending
+  deprecation of the happi.device module.
+
+Contributors
+------------
+- Mbosum
+- mcb64
+- slactjohnson
+- wwright-slac
+- zllentz
+
+
 v6.1.0 (2022-06-03)
 ===================
 
