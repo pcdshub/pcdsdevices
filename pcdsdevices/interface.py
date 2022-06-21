@@ -11,6 +11,7 @@ import subprocess
 import time
 import typing
 from contextlib import contextmanager
+from dataclasses import dataclass
 from pathlib import Path
 from threading import Event
 from types import MethodType, SimpleNamespace
@@ -20,13 +21,14 @@ from weakref import WeakSet
 import ophyd
 import yaml
 from bluesky.utils import ProgressBar
+from ophyd import Component as Cpt
 from ophyd.device import Device
 from ophyd.ophydobj import Kind, OphydObject
 from ophyd.positioner import PositionerBase
 from ophyd.signal import AttributeSignal, Signal
 
 from . import utils
-from .signal import NotImplementedSignal
+from .signal import NotImplementedSignal, SummarySignal
 
 try:
     import fcntl
@@ -1561,89 +1563,83 @@ class NullFile:
         pass
 
 
+@dataclass
+class LightpathState:
+    inserted: bool
+    removed: bool
+    transmission: float
+    output_branch: str
+
+
 class LightpathMixin(OphydObject):
     """
     Mix-in class that makes it easier to establish a lightpath interface.
 
-    Use this on classes that are not state positioners but would still like to
-    be used as a top-level device in lightpath.
-    """
-    SUB_STATE = 'state'
-    _default_sub = SUB_STATE
+    Gathers relevant signals into a SummarySignal that can be
+    subscribed to for monitoring the lightpath-relevant state.
 
+    Users must implement ``get_lightpath_status``, and return a
+    LightpathStatus object
+    Create an object similar to the following:
+
+    class MyDevice(LightpathMixin, Device):
+        lp_signals = ['sig1', 'sig2']
+
+        def get_lightpath_status(self):
+            # Logic, calculations for transmission, etc
+            status = LightpathStatus(
+                inserted=True, removed=False, transmission=0.0,
+                output_branch='L3'
+            )
+            return status
+    """
     # Component names whose values are relevant for inserted/removed
     lightpath_cpts = []
 
     # Flag to signify that subclass is another mixin, rather than a device
     _lightpath_mixin = False
 
-    def __init__(self, *args, **kwargs):
+    # Mixin holds one summary signal that changes with lightpath_cpts
+    lp_summary = Cpt(SummarySignal, name='lp_summary')
+
+    def __init__(self, *args,
+                 input_branches=[], output_branches=[], **kwargs):
         self._lightpath_values = {}
         self._lightpath_ready = False
         self._retry_lightpath = False
+        self.input_branches = input_branches
+        self.output_branches = output_branches
+        # TODO: grab destination / source lists, if they exist?
         super().__init__(*args, **kwargs)
+        for sig in self.lightpath_cpts:
+            self.lp_summary.add_signal_by_attr_name(sig)
+
+        if not self.input_branches or not self.output_branches:
+            raise NotImplementedError(
+                'Did not implement LightpathMixin properly.  '
+                'Must supply input and output branches.'
+            )
 
     def __init_subclass__(cls, **kwargs):
-        # Magic to subscribe to the list of components
         super().__init_subclass__(**kwargs)
         if cls._lightpath_mixin:
             # Child of cls will inherit this as False
             cls._lightpath_mixin = False
         else:
             if not cls.lightpath_cpts:
-                raise NotImplementedError('Did not implement LightpathMixin')
-            for cpt_name in cls.lightpath_cpts:
-                cpt = getattr(cls, cpt_name)
-                cpt.sub_default(cls._update_lightpath)
+                raise NotImplementedError(
+                    'Did not implement LightpathMixin properly.  '
+                    'Must supply a list of components (lightpath_cpts)'
+                )
 
-    def _set_lightpath_states(self, lightpath_values):
-        # Override based on the use case
-        # update self._inserted, self._removed,
-        # and optionally self._transmission
-        # Should return a dict or None
+    def get_lightpath_status(self) -> LightpathState:
+        """
+        Create and return a LightpathState object containing information needed
+        for lightpath
+
+        Device logic goes here
+        """
         raise NotImplementedError('Did not implement LightpathMixin')
-
-    def _update_lightpath(self, *args, obj, **kwargs):
-        try:
-            # Universally cache values
-            self._lightpath_values[obj] = kwargs
-            # Only do the first lightpath state once all cpts have chimed in
-            if len(self._lightpath_values) >= len(self.lightpath_cpts):
-                self._retry_lightpath = False
-                # Pass user function the full set of values
-                self._set_lightpath_states(self._lightpath_values)
-                self._lightpath_ready = not self._retry_lightpath
-                if self._lightpath_ready:
-                    # Tell lightpath to update
-                    self._run_subs(sub_type=self.SUB_STATE)
-                elif self._retry_lightpath and not self._destroyed:
-                    # Use this when the device wasn't ready to set states
-                    kw = dict(obj=obj)
-                    kw.update(kwargs)
-                    utils.schedule_task(self._update_lightpath,
-                                        args=args, kwargs=kw, delay=1.0)
-        except Exception:
-            # Without this, callbacks fail silently
-            logger.exception('Error in lightpath update callback for %s.',
-                             self.name)
-
-    @property
-    def inserted(self):
-        return self._lightpath_ready and bool(self._inserted)
-
-    @property
-    def removed(self):
-        return self._lightpath_ready and bool(self._removed)
-
-    @property
-    def transmission(self):
-        try:
-            return self._transmission
-        except AttributeError:
-            if self.inserted:
-                return 0
-            else:
-                return 1
 
 
 class LightpathInOutMixin(LightpathMixin):
@@ -1679,3 +1675,11 @@ class LightpathInOutMixin(LightpathMixin):
         self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
         return dict(in_check=in_check, out_check=out_check,
                     trans_check=trans_check)
+
+    def get_lightpath_status(self):
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            transmission=self._transmission,
+            output_branch=self._input_branch
+        )
