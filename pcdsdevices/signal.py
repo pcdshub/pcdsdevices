@@ -422,6 +422,18 @@ class AggregateSignal(Signal):
         return super().destroy()
 
 
+class SummarySignal(AggregateSignal):
+    """
+    Signal that holds a hash of the values of the constituent signals
+
+    Meant to allow tracking of constituent signals via callbacks.
+    The calculated readback value is useless.
+    """
+    def _calc_readback(self):
+        values = (sig.get() for sig in self._signals.values())
+        return hash(values)
+
+
 class PVStateSignal(AggregateSignal):
     """
     Signal that implements the `PVStatePositioner` state logic.
