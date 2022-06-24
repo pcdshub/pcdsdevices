@@ -62,6 +62,25 @@ class TM1K4(ArrivalTimeMonitor):
                  doc='Control of the diagnostic stack via saved positions.')
 
 
+class TM2K4Target(ATMTarget):
+    """
+    Controls TM2K4's states, and ATM in TMO.
+
+    Defines the state count as 5 (OUT and 4 targets), one less than the
+    standard ATM.
+    """
+    config = UpCpt(state_count=5)
+
+
+class TM2K4(ArrivalTimeMonitor):
+    """
+    An ATMin TMO that has one less target state.
+    """
+
+    target = Cpt(TM2K4Target, ':MMS:STATE', kind='hinted',
+                 doc='Control of the diagnostic stack via saved positions.')
+
+
 class TM2K2Target(ATMTarget):
     """
     Controls TM2K2's states, an ATM in RIX.
