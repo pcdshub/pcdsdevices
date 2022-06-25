@@ -1571,7 +1571,92 @@ class LightpathState:
     output_branch: str
 
 
-class LightpathMixin(OphydObject):
+class LegacyLightpathMixin(OphydObject):
+    """
+    Mix-in class that makes it easier to establish a lightpath interface.
+
+    Use this on classes that are not state positioners but would still like to
+    be used as a top-level device in lightpath.
+    """
+    SUB_STATE = 'state'
+    _default_sub = SUB_STATE
+
+    # Component names whose values are relevant for inserted/removed
+    lightpath_cpts = []
+
+    # Flag to signify that subclass is another mixin, rather than a device
+    _lightpath_mixin = False
+
+    def __init__(self, *args, **kwargs):
+        self._lightpath_values = {}
+        self._lightpath_ready = False
+        self._retry_lightpath = False
+        super().__init__(*args, **kwargs)
+
+    def __init_subclass__(cls, **kwargs):
+        # Magic to subscribe to the list of components
+        super().__init_subclass__(**kwargs)
+        if cls._lightpath_mixin:
+            # Child of cls will inherit this as False
+            cls._lightpath_mixin = False
+        else:
+            if not cls.lightpath_cpts:
+                raise NotImplementedError('Did not implement LightpathMixin')
+            for cpt_name in cls.lightpath_cpts:
+                cpt = getattr(cls, cpt_name)
+                cpt.sub_default(cls._update_lightpath)
+
+    def _set_lightpath_states(self, lightpath_values):
+        # Override based on the use case
+        # update self._inserted, self._removed,
+        # and optionally self._transmission
+        # Should return a dict or None
+        raise NotImplementedError('Did not implement LightpathMixin')
+
+    def _update_lightpath(self, *args, obj, **kwargs):
+        try:
+            # Universally cache values
+            self._lightpath_values[obj] = kwargs
+            # Only do the first lightpath state once all cpts have chimed in
+            if len(self._lightpath_values) >= len(self.lightpath_cpts):
+                self._retry_lightpath = False
+                # Pass user function the full set of values
+                self._set_lightpath_states(self._lightpath_values)
+                self._lightpath_ready = not self._retry_lightpath
+                if self._lightpath_ready:
+                    # Tell lightpath to update
+                    self._run_subs(sub_type=self.SUB_STATE)
+                elif self._retry_lightpath and not self._destroyed:
+                    # Use this when the device wasn't ready to set states
+                    kw = dict(obj=obj)
+                    kw.update(kwargs)
+                    utils.schedule_task(self._update_lightpath,
+                                        args=args, kwargs=kw, delay=1.0)
+        except Exception:
+            # Without this, callbacks fail silently
+            logger.exception('Error in lightpath update callback for %s.',
+                             self.name)
+
+    @property
+    def inserted(self):
+        return self._lightpath_ready and bool(self._inserted)
+
+    @property
+    def removed(self):
+        return self._lightpath_ready and bool(self._removed)
+
+    @property
+    def transmission(self):
+        try:
+            return self._transmission
+        except AttributeError:
+            if self.inserted:
+                return 0
+            else:
+                return 1
+
+
+class LightpathMixin(Device, LegacyLightpathMixin):
     """
     Mix-in class that makes it easier to establish a lightpath interface.
 
@@ -1582,7 +1667,7 @@ class LightpathMixin(OphydObject):
     LightpathStatus object
     Create an object similar to the following:
 
-    class MyDevice(LightpathMixin, Device):
+    class MyDevice(LightpathMixin):
         lp_signals = ['sig1', 'sig2']
 
         def get_lightpath_status(self):
@@ -1681,5 +1766,5 @@ class LightpathInOutMixin(LightpathMixin):
             inserted=self._inserted,
             removed=self._removed,
             transmission=self._transmission,
-            output_branch=self._input_branch
+            output_branch=self._input_branches[0]
         )
