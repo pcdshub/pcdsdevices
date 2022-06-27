@@ -74,7 +74,7 @@ class TM2K4Target(ATMTarget):
 
 class TM2K4(ArrivalTimeMonitor):
     """
-    An ATMin TMO that has one less target state.
+    An ATM in TMO that has one fewer target state.
     """
 
     target = Cpt(TM2K4Target, ':MMS:STATE', kind='hinted',
