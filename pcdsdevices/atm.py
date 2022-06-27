@@ -64,7 +64,7 @@ class TM1K4(ArrivalTimeMonitor):
 
 class TM2K4Target(ATMTarget):
     """
-    Controls TM2K4's states, and ATM in TMO.
+    Controls TM2K4's states, an ATM in TMO.
 
     Defines the state count as 5 (OUT and 4 targets), one less than the
     standard ATM.
