@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- TM2K4 now has its own class with 8 position states (4 targets and and OUT state)
+- TM2K4 now has its own class with 5 position states (4 targets and and OUT state)
 
 New Devices
 -----------
