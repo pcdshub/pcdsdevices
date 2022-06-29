@@ -406,18 +406,19 @@ class GroupDevice(Device):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Remove references to parent (in this case, self)
-        for cpt_name in self.component_names:
-            cpt = getattr(self, cpt_name)
-            # The following types break without parents
-            if not isinstance(cpt, tuple(self.needs_parent)):
-                cpt._parent = None
-                cpt.biological_parent = self
         if self.stage_group is None:
             self.stage_group = []
         else:
             # Avoid potential issues from shared mutable class attribute
             self.stage_group = list(self.stage_group)
+
+    def _instantiate_component(self, attr: str) -> OphydObject:
+        obj = super()._instantiate_component(attr)
+        # Remove references to parent (in this case, self)
+        if not isinstance(obj, tuple(self.needs_parent)):
+            obj._parent = None
+            obj.biological_parent = self
+        return obj
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
