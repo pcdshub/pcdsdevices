@@ -10,11 +10,12 @@ import signal
 import subprocess
 import time
 import typing
+from collections import defaultdict
 from contextlib import contextmanager
 from pathlib import Path
 from threading import Event
 from types import MethodType, SimpleNamespace
-from typing import Optional
+from typing import Dict, Optional
 from weakref import WeakSet
 
 import ophyd
@@ -193,11 +194,12 @@ class BaseInterface:
         List of string regex to show in autocomplete for non-engineering mode.
     """
 
-    lazy_wait_for_connection = False
-
     tab_whitelist = (OphydObject_whitelist + BlueskyInterface_whitelist +
                      Device_whitelist + Signal_whitelist +
                      Positioner_whitelist)
+
+    mega_lazy: bool = True
+    _decoy_signals = defaultdict(lambda n: None)
 
     _class_tab: TabCompletionHelperClass
     _tab: TabCompletionHelperInstance
@@ -217,17 +219,32 @@ class BaseInterface:
             )
 
         cls._class_tab = TabCompletionHelperClass(cls)
-        try:
-            cpts = [getattr(cls, name) for name in cls.component_names]
-        except AttributeError:
-            pass
-        else:
-            for cpt in cpts:
+
+    @classmethod
+    def _initialize_device(cls):
+        """
+        Enforce universal mega laziness.
+        """
+        super()._initialize_device()
+        if cls.mega_lazy:
+            for cpt in cls._sig_attrs.values():
                 cpt.lazy = True
 
     def __init__(self, *args, **kwargs):
+        self._no_signal_setup = self.mega_lazy
         super().__init__(*args, **kwargs)
+        self._no_signal_setup = False
         self._tab = self._class_tab.new_instance(self)
+
+    @property
+    def _signals(self) -> Dict[str: Optional[OphydObject]]:
+        if self._no_signal_setup:
+            return self._decoy_signals
+        return self._real_signals
+
+    @_signals.setter
+    def _signals(self, signals: Dict[str: OphydObject]):
+        self._real_signals = signals
 
     def __dir__(self):
         return self._tab.get_dir()
