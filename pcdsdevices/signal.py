@@ -430,7 +430,7 @@ class SummarySignal(AggregateSignal):
     The calculated readback value is useless.
     """
     def _calc_readback(self):
-        values = (sig.get() for sig in self._signals.values())
+        values = tuple(sig.get() for sig in self._signals)
         return hash(values)
 
 
