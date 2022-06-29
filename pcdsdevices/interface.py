@@ -216,6 +216,9 @@ class BaseInterface:
 
         cls._class_tab = TabCompletionHelperClass(cls)
 
+    def init_components(self):
+        ...
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._tab = self._class_tab.new_instance(self)
