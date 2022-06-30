@@ -1,6 +1,6 @@
 import copy
 from collections.abc import Iterator
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from ophyd.areadetector.plugins import PluginBase
 from ophyd.device import Component, Device
@@ -357,6 +357,67 @@ class UpdateComponent(Component):
     def create_component(self, instance):
         # Use our hostage component from __set_name__
         return self.copy_cpt.create_component(instance)
+
+
+class AliasComponent(Component):
+    """
+    A component that is a name alias of another existing component.
+
+    This allows us to have "lazy" loading behavior with aliased components,
+    rather then requiring us to getattr them (and therefore instantiate them).
+
+    This will instantiate the original component if necessarty when
+    accessed, and otherwise it will point to the original component.
+
+    Parameters
+    ----------
+    original : Component or str
+        A reference to the original component we'd like to make an alias for.
+        The easiest way to set this up is typically by using a reference to
+        the actual component object. In some cases of class inheritance this
+        may be cumbersome or impossible, so str assignment where the string
+        is the attribute name of the original component is also acceptable.
+    """
+    def __init__(self, original: Union[Component, str]):
+        if isinstance(original, Component):
+            # Make sure we have normal inspectable attrs on the cpt instance
+            super().__init__(
+                cls=original.cls,
+                suffix=original.suffix,
+                lazy=original.lazy,
+                trigger_value=original.trigger_value,
+                add_prefix=original.add_prefix,
+                doc=original.doc,
+                kind=original.kind,
+            )
+        elif isinstance(original, str):
+            # We can't have particularly useful information in this case
+            # Still support it because in some cases this is easier
+            super().__init__(AliasPlaceholder)
+        else:
+            raise TypeError(
+                'The original component for AliasComponent must be a '
+                'Component or str type. Recieved '
+                f'{original} of type {type(original)} instead.'
+            )
+
+        self._original = original
+
+    def __set_name__(self, *args, **kwargs):
+        super().__set_name__(*args, **kwargs)
+        if isinstance(self._original, Component):
+            # Make sure we look up and instantiate the original instead
+            self.attr = self._original.attr
+        else:
+            # The input is now literally the attr name
+            self.attr = self._original
+
+
+class AliasPlaceholder:
+    """
+    Empty type for when an alias component has no available cls reference.
+    """
+    ...
 
 
 class GroupDevice(Device):
