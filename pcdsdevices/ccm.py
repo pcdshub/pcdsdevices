@@ -13,6 +13,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.status import MoveStatus
 
 from .beam_stats import BeamEnergyRequest
+from .device import AliasComponent as ACpt
 from .device import GroupDevice
 from .device import UnrelatedComponent as UCpt
 from .epics_motor import IMS, EpicsMotorInterface
@@ -497,6 +498,36 @@ class CCMConstantsMixin(Device):
             )
 
 
+class CCMEnergyPseudoSingle(PseudoSingleInterface):
+    """
+    CCM Calculated Motor for Energy
+
+    This class renames the readback to something like
+    xpp_ccmE or xpp_ccmE_Vernier as appropriate and adds
+    some helpful aliases to parent methods.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Alias the readback name here to allow lazy loading
+        if isinstance(self.parent, CCMEnergyWithVernier):
+            alias_name_suffix = 'E_Vernier'
+        else:
+            alias_name_suffix = 'E'
+        try:
+            ccm = self.parent.parent
+        except AttributeError:
+            return
+        if ccm is not None:
+            self.readback.name = f'{ccm.name}{alias_name_suffix}'
+        # Alias the constants signals onto the main energy pseudomotor
+        self.theta0_deg = self.parent.theta0_deg
+        self.dspacing = self.parent.dspacing
+        self.gr = self.parent.gr
+        self.gd = self.parent.gd
+        # Alias the position setter as well
+        self.set_current_position = self.parent.set_current_position
+
+
 class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
     """
     CCM energy motor.
@@ -513,7 +544,7 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
     """
     # Pseudo motor and real motor
     energy = Cpt(
-        PseudoSingleInterface,
+        CCMEnergyPseudoSingle,
         egu='keV',
         kind='hinted',
         limits=(4, 25),
@@ -544,7 +575,6 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Alias the constants signals onto the main energy pseudomotor
         self.energy.theta0_deg = self.theta0_deg
         self.energy.dspacing = self.dspacing
         self.energy.gr = self.gr
@@ -917,6 +947,17 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
     y = UCpt(CCMY, add_prefix=[], kind='normal',
              doc='Combined motion of the CCM Y motors.')
 
+    # Aliases: defined by the scientists
+    x1 = ACpt('x.down')
+    x2 = ACpt('x.up')
+    y1 = ACpt('y.down')
+    y2 = ACpt('y.up_north')
+    y3 = ACpt('y.up_south')
+    E = ACpt('energy.energy')
+    E_Vernier = ACpt('energy_with_vernier.energy')
+    th2coarse = ACpt(theta2coarse)
+    th2fine = ACpt(theta2fine)
+
     lightpath_cpts = ['x']
     tab_whitelist = ['x1', 'x2', 'y1', 'y2', 'y3', 'E', 'E_Vernier',
                      'th2fine', 'alio2E', 'E2alio', 'alio', 'home',
@@ -939,22 +980,23 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
         prefix = prefix or self.unrelated_prefixes['alio_prefix']
         super().__init__(prefix, **kwargs)
 
-        # Aliases: defined by the scientists
-        self.x1 = self.x.down
-        self.x2 = self.x.up
-        self.y1 = self.y.down
-        self.y2 = self.y.up_north
-        self.y3 = self.y.up_south
-        self.E = self.energy.energy
-        self.E.readback.name = f'{self.name}E'
-        self.E_Vernier = self.energy_with_vernier.energy
-        self.E_Vernier.readback.name = f'{self.name}E_Vernier'
-        self.th2coarse = self.theta2coarse
-        self.th2fine = self.theta2fine
-        self.alio2E = self.energy.alio_to_energy
-        self.E2alio = self.energy.energy_to_alio
-        self.home = self.alio.home
-        self.kill = self.alio.kill
+    # Alias methods: defined by the scientists
+    def alio2E(self, alio: float) -> float:
+        return self.energy.alio_to_energy(alio)
+
+    def E2alio(self, energy: float) -> float:
+        return self.energy.energy_to_alio(energy)
+
+    def home(self) -> None:
+        return self.alio.home()
+
+    def kill(self) -> None:
+        return self.alio.kill()
+
+    alio2E.__doc__ = CCMEnergy.alio_to_energy.__doc__
+    E2alio.__doc__ = CCMEnergy.energy_to_alio.__doc__
+    home.__doc__ = CCMAlio.home.__doc__
+    kill.__doc__ = CCMAlio.kill.__doc__
 
     def format_status_info(self, status_info: dict[str, typing.Any]) -> str:
         """
