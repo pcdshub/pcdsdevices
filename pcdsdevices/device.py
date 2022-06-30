@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import copy
 from collections.abc import Iterator
-from typing import Any, Optional, Union
+from typing import Any, Optional, TypeVar, Union
 
 from ophyd.areadetector.plugins import PluginBase
 from ophyd.device import Component, Device
@@ -359,7 +361,10 @@ class UpdateComponent(Component):
         return self.copy_cpt.create_component(instance)
 
 
-class AliasComponent(Component):
+K = TypeVar("K", bound=OphydObject)
+
+
+class AliasComponent(Component[K]):
     """
     A component that is a name alias of another existing component.
 
@@ -377,6 +382,9 @@ class AliasComponent(Component):
         the actual component object. In some cases of class inheritance this
         may be cumbersome or impossible, so str assignment where the string
         is the attribute name of the original component is also acceptable.
+        For example, if we want to make a top-level alias for a subdevice's
+        component, we don't have an easy way to reference the proper
+        component instance.
     """
     def __init__(self, original: Union[Component, str]):
         if isinstance(original, Component):
@@ -403,14 +411,18 @@ class AliasComponent(Component):
 
         self._original = original
 
-    def __set_name__(self, *args, **kwargs):
-        super().__set_name__(*args, **kwargs)
+    def __get__(
+        self,
+        instance: Optional[Device],
+        owner: type,
+    ) -> Union[AliasComponent, K]:
+        if instance is None:
+            return self
         if isinstance(self._original, Component):
-            # Make sure we look up and instantiate the original instead
-            self.attr = self._original.attr
+            get_str = self._original.attr
         else:
-            # The input is now literally the attr name
-            self.attr = self._original
+            get_str = self._original
+        return getattr(instance, get_str)
 
 
 class AliasPlaceholder:
