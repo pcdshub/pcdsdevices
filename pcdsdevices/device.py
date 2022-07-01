@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 from collections.abc import Iterator
-from typing import Any, Optional, TypeVar, Union
+from typing import Any, Optional, Union
 
 from ophyd.areadetector.plugins import PluginBase
 from ophyd.device import Component, Device
@@ -361,10 +361,7 @@ class UpdateComponent(Component):
         return self.copy_cpt.create_component(instance)
 
 
-K = TypeVar("K", bound=OphydObject)
-
-
-class AliasComponent(Component[K]):
+class AliasComponent(Component):
     """
     A component that is a name alias of another existing component.
 
@@ -415,7 +412,7 @@ class AliasComponent(Component[K]):
         self,
         instance: Optional[Device],
         owner: type,
-    ) -> Union[AliasComponent, K]:
+    ):
         if instance is None:
             return self
         if isinstance(self._original, Component):
