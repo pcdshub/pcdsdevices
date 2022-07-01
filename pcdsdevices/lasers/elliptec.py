@@ -7,10 +7,11 @@ from ophyd import Device
 from ophyd import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
-from pcdsdevices.variety import set_metadata
+from ..interface import BaseInterface
+from ..variety import set_metadata
 
 
-class EllBase(Device):
+class EllBase(BaseInterface, Device):
     """
     Base class for Elliptec stages.
     """

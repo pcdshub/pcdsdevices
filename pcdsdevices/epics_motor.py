@@ -22,7 +22,7 @@ from pcdsdevices.pv_positioner import PVPositionerComparator
 
 from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
-from .interface import FltMvInterface
+from .interface import BaseInterface, FltMvInterface
 from .pseudopos import OffsetMotorBase, delay_class_factory
 from .registry import device_registry
 from .signal import EpicsSignalEditMD, EpicsSignalROEditMD, PytmcSignal
@@ -950,7 +950,7 @@ class MMC100(PCDSMotorBase):
     home_reverse = Cpt(EpicsSignal, '.MLN', kind='omitted')
 
 
-class BeckhoffAxisPLC(Device):
+class BeckhoffAxisPLC(BaseInterface, Device):
     """Error handling for the Beckhoff Axis PLC code."""
     status = Cpt(PytmcSignal, 'sErrorMessage', io='i', kind='normal',
                  string=True, doc='PLC error or warning')
@@ -1090,7 +1090,7 @@ class MotorDisabledError(Exception):
     pass
 
 
-class SmarActOpenLoop(Device):
+class SmarActOpenLoop(BaseInterface, Device):
     """
     Class containing the open loop PVs used to control an un-encoded SmarAct
     stage.
@@ -1129,7 +1129,7 @@ class SmarActOpenLoop(Device):
                     doc='Set current piezo voltage (in 16 bit ADC steps)')
 
 
-class SmarActTipTilt(Device):
+class SmarActTipTilt(BaseInterface, Device):
     """
     Class for bundling two SmarActOpenLoop axes arranged in a tip-tilt mirro
     positioning configuration into a single device.

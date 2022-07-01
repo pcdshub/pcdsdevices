@@ -111,7 +111,7 @@ def _as_float(self):
     return float(self[0])
 
 
-class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
+class PseudoPositioner(FltMvInterface, ophyd.pseudopos.PseudoPositioner):
     """
     This is a PCDS-specific PseudoPositioner subclass which has a few notable
     changes/additions:
@@ -222,7 +222,7 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
             motor.set_current_position(pos)
 
 
-class SyncAxesBase(FltMvInterface, PseudoPositioner):
+class SyncAxesBase(PseudoPositioner):
     """
     Synchronized Axes.
 
@@ -320,7 +320,7 @@ class SyncAxisOffsetMode(enum.IntEnum):
     AUTO_FIXED = 1
 
 
-class SyncAxis(FltMvInterface, PseudoPositioner):
+class SyncAxis(PseudoPositioner):
     """
     Pseudomotor class for moving motors with linear relationships.
 
@@ -669,7 +669,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         return info
 
 
-class DelayBase(FltMvInterface, PseudoPositioner):
+class DelayBase(PseudoPositioner):
     """
     Laser delay stage to rescale a physical axis to a time axis.
 
@@ -1019,7 +1019,7 @@ class LookupTablePositioner(PseudoPositioner):
         return self.PseudoPosition(**{pseudo_field: pseudo_value})
 
 
-class OffsetMotorBase(FltMvInterface, PseudoPositioner):
+class OffsetMotorBase(PseudoPositioner):
     """
     Motor with an offset.
     """

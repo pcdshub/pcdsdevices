@@ -12,12 +12,14 @@ from ophyd.areadetector.base import ADBase, ADComponent, EpicsSignalWithRBV
 from ophyd.sim import SynSignal
 from ophyd.utils import enum
 
+from ..interface import BaseInterface
+
 logger = logging.getLogger(__name__)
 
 __all__ = ['FeeOpalCam']
 
 
-class FeeOpalCam(cam.CamBase):
+class FeeOpalCam(BaseInterface, cam.CamBase):
     """Opal camera used in the FEE for the PIMs."""
     # enums?
     # trigger_modes = enum("Internal", "External", start=0)

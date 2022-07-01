@@ -21,6 +21,7 @@ from ophyd.ophydobj import OphydObject
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
 from pcdsutils.ext_scripts import get_hutch_name
 
+from pcdsdevices.interface import BaseInterface
 from pcdsdevices.variety import set_metadata
 
 from .plugins import (ColorConvPlugin, HDF5FileStore, HDF5Plugin, ImagePlugin,
@@ -36,7 +37,7 @@ __all__ = ['PCDSAreaDetectorBase',
            'PCDSAreaDetector']
 
 
-class PCDSAreaDetectorBase(DetectorBase):
+class PCDSAreaDetectorBase(BaseInterface, DetectorBase):
     """Standard area detector with no plugins."""
     cam = ADComponent(cam.CamBase, '')
 

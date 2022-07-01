@@ -175,7 +175,7 @@ class GaugeSetPiraniMks(GaugeSetPirani):
         return self.controller.unit.get()
 
 
-class GaugePLC(Device):
+class GaugePLC(BaseInterface, Device):
     """
     Base class for gauges controlled by PLC.
 
@@ -247,7 +247,7 @@ class GCC500PLC(GCCPLC):
                       doc='discharge current active')
 
 
-class GCT(Device):
+class GCT(BaseInterface, Device):
     """Base class for Gauge Controllers accessed via serial."""
     unit = Cpt(EpicsSignal, ':UNIT', kind='omitted')
     cal = Cpt(EpicsSignal, ':CAL', kind='omitted')
@@ -282,7 +282,7 @@ class MKS937AController(GCT):
     front = Cpt(EpicsSignal, ':FRONT', kind='omitted')
 
 
-class GaugeSerial(Device):
+class GaugeSerial(BaseInterface, Device):
     """Base class for Vacuum Gauges controlled via serial."""
     gastype = Cpt(EpicsSignal, ':GASTYPE', kind='omitted')
     gastypedes = Cpt(EpicsSignal, ':GASTYPEDES', kind='omitted')

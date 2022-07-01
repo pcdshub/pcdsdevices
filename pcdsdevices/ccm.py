@@ -17,7 +17,7 @@ from .device import AliasComponent as ACpt
 from .device import GroupDevice
 from .device import UnrelatedComponent as UCpt
 from .epics_motor import IMS, EpicsMotorInterface
-from .interface import BaseInterface, FltMvInterface, LightpathMixin
+from .interface import BaseInterface, LightpathMixin
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface, SyncAxis,
                         SyncAxisOffsetMode)
 from .pv_positioner import PVPositionerIsClose
@@ -528,7 +528,7 @@ class CCMEnergyPseudoSingle(PseudoSingleInterface):
         self.set_current_position = self.parent.set_current_position
 
 
-class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
+class CCMEnergy(PseudoPositioner, CCMConstantsMixin):
     """
     CCM energy motor.
 
