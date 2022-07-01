@@ -497,7 +497,7 @@ class SXRLadderAttenuatorStates(TwinCATInOutPositioner):
     config = UpCpt(state_count=9)
 
 
-class FEESolidAttenuatorBlade(BaseInterface, Device, LightpathInOutMixin):
+class FEESolidAttenuatorBlade(BaseInterface, LightpathInOutMixin):
     """
     Represents one basic solid attenuator blade.
 

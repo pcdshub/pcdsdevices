@@ -1,7 +1,7 @@
 from enum import IntEnum
 
 from ophyd import Component as Cpt
-from ophyd import Device, EpicsSignal, EpicsSignalRO
+from ophyd import EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 
 from .inout import InOutPositioner, InOutPVStatePositioner
@@ -121,7 +121,7 @@ class PPSStopper(InOutPositioner):
         raise PermissionError("PPSStopper can not be commanded via EPICS")
 
 
-class PPSStopper2PV(LightpathMixin, BaseInterface, Device):
+class PPSStopper2PV(BaseInterface, LightpathMixin):
     """
     PPS Stopper with two PVs defining the state together.
 

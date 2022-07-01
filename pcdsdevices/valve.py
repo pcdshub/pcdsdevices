@@ -380,7 +380,7 @@ class VGC_2S(VRC):
     )
 
 
-class VFS(Device, LightpathMixin):
+class VFS(LightpathMixin):
     """
     VFS = Fast Shutter Valve
 

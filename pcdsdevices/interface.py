@@ -1656,7 +1656,7 @@ class LegacyLightpathMixin(OphydObject):
                 return 1
 
 
-class LightpathMixin(Device, LegacyLightpathMixin):
+class LightpathMixin(Device):
     """
     Mix-in class that makes it easier to establish a lightpath interface.
 
