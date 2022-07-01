@@ -22,6 +22,7 @@ from pcdscalc import common, diffraction
 from pcdsdevices.epics_motor import OffsetIMSWithPreset, OffsetMotor
 from pcdsdevices.sim import FastMotor
 
+from .device import AliasComponent as ACpt
 from .device import GroupDevice
 from .doc_stubs import insert_remove
 from .epics_motor import IMS
@@ -1211,6 +1212,66 @@ class LODCM(BaseInterface, GroupDevice):
 
     energy_si = FCpt(LODCMEnergySi, '{self._prefix}', kind='normal')
     energy_c = FCpt(LODCMEnergyC, '{self._prefix}', kind='normal')
+
+    # Alias Components
+    # first tower
+    z1 = ACpt('tower1.z1')
+    x1 = ACpt('tower1.x1')
+    y1 = ACpt('tower1.y1')
+    th1 = ACpt('tower1.th1')
+    chi1 = ACpt('tower1.chi1')
+    h1n = ACpt('tower1.h1n')
+    h1p = ACpt('tower1.h1p')
+    # second tower
+    z1 = ACpt('tower2.z2')
+    x2 = ACpt('tower2.x2')
+    y2 = ACpt('tower2.y2')
+    th2 = ACpt('tower2.th2')
+    chi2 = ACpt('tower2.chi2')
+    h2n = ACpt('tower2.h2n')
+    diode2 = ACpt('tower2.diode2')
+    # diagnostic tower
+    dh = ACpt('diag_tower.dh')
+    dv = ACpt('diag_tower.dv')
+    dr = ACpt('diag_tower.dr')
+    df = ACpt('diag_tower.df')
+    dd = ACpt('diag_tower.dd')
+    yag_zoom = ACpt('diag_tower.yag_zoom')
+    # states
+    h1n_state = ACpt('tower1.h1n_state')
+    y1_state = ACpt('tower1.y1_state')
+    chi1_state = ACpt('tower1.chi1_state')
+    h2n_state = ACpt('tower2.h2n_state')
+    y2_state = ACpt('tower2.y2_state')
+    chi2_state = ACpt('tower2.chi2_state')
+    # offset positioners - tower 1
+    th1Si = ACpt('energy_si.th1Si')
+    z1Si = ACpt('energy_si.z1Si')
+    th1C = ACpt('energy_c.th1C')
+    z1C = ACpt('energy_c.z1C')
+    x1C = ACpt('tower1.x1C')
+    x1Si = ACpt('tower1.x1Si')
+    y1C = ACpt('tower1.y1C')
+    y1Si = ACpt('tower1.y1Si')
+    chi1C = ACpt('tower1.chi1C')
+    chi1Si = ACpt('tower1.chi1Si')
+    h1nC = ACpt('tower1.h1nC')
+    h1nSi = ACpt('tower1.h1nSi')
+    h1pSi = ACpt('tower1.h1pSi')
+    # offset positioners - tower 2
+    th2Si = ACpt('energy_si.th2Si')
+    z2Si = ACpt('energy_si.z2Si')
+    th2C = ACpt('energy_c.th2C')
+    z2C = ACpt('energy_c.z2C')
+    x2C = ACpt('tower2.x2C')
+    x2Si = ACpt('tower2.x2Si')
+    y2C = ACpt('tower2.y2C')
+    y2Si = ACpt('tower2.y2Si')
+    chi2C = ACpt('tower2.chi2C')
+    chi2Si = ACpt('tower2.chi2Si')
+    h2nC = ACpt('tower2.h2nC')
+    h2nSi = ACpt('tower2.h2nSi')
+
     # QIcon for UX
     _icon = 'fa.share-alt-square'
 
@@ -1230,66 +1291,6 @@ class LODCM(BaseInterface, GroupDevice):
         super().__init__(prefix, name=name, **kwargs)
         self.main_line = main_line
         self.mono_line = mono_line
-        # first tower
-        self.z1 = self.tower1.z1
-        self.x1 = self.tower1.x1
-        self.y1 = self.tower1.y1
-        self.th1 = self.tower1.th1
-        self.chi1 = self.tower1.chi1
-        self.h1n = self.tower1.h1n
-        self.h1p = self.tower1.h1p
-        # second tower
-        self.z2 = self.tower2.z2
-        self.x2 = self.tower2.x2
-        self.y2 = self.tower2.y2
-        self.th2 = self.tower2.th2
-        self.chi2 = self.tower2.chi2
-        self.h2n = self.tower2.h2n
-        self.diode2 = self.tower2.diode2
-        # diagnostic tower
-        self.dh = self.diag_tower.dh
-        self.dv = self.diag_tower.dv
-        self.dr = self.diag_tower.dr
-        self.df = self.diag_tower.df
-        self.dd = self.diag_tower.dd
-        self.yag_zoom = self.diag_tower.yag_zoom
-        # states
-        self.h1n_state = self.tower1.h1n_state
-        self.y1_state = self.tower1.y1_state
-        self.chi1_state = self.tower1.chi1_state
-        self.h2n_state = self.tower2.h2n_state
-        self.y2_state = self.tower2.y2_state
-        self.chi2_state = self.tower2.chi2_state
-        # # offset positioners - tower 1
-        self.th1Si = self.energy_si.th1Si
-        self.z1Si = self.energy_si.z1Si
-        self.th1C = self.energy_c.th1C
-        self.z1C = self.energy_c.z1C
-
-        self.x1C = self.tower1.x1C
-        self.x1Si = self.tower1.x1Si
-        self.y1C = self.tower1.y1C
-        self.y1Si = self.tower1.y1Si
-        self.chi1C = self.tower1.chi1C
-        self.chi1Si = self.tower1.chi1Si
-        self.h1nC = self.tower1.h1nC
-        self.h1nSi = self.tower1.h1nSi
-        self.h1pC = self.tower1.h1pC
-        self.h1pSi = self.tower1.h1pSi
-        # # offset positioners - tower 2
-        self.th2Si = self.energy_si.th2Si
-        self.z2Si = self.energy_si.z2Si
-        self.th2C = self.energy_c.th2C
-        self.z2C = self.energy_c.z2C
-
-        self.x2C = self.tower2.x2C
-        self.x2Si = self.tower2.x2Si
-        self.y2C = self.tower2.y2C
-        self.y2Si = self.tower2.y2Si
-        self.chi2C = self.tower2.chi2C
-        self.chi2Si = self.tower2.chi2Si
-        self.h2nC = self.tower2.h2nC
-        self.h2nSi = self.tower2.h2nSi
 
     @property
     def energy(self):
