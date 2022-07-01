@@ -19,7 +19,7 @@ from ophyd.status import wait as status_wait
 from .device import GroupDevice
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
-from .interface import MvInterface
+from .interface import BaseInterface, MvInterface
 from .signal import (EpicsSignalEditMD, MultiDerivedSignal, PVStateSignal,
                      PytmcSignal)
 from .type_hints import SignalToValue
@@ -486,7 +486,7 @@ class CombinedStateRecordPositioner(StateRecordPositionerBase):
 TWINCAT_MAX_STATES = 9
 
 
-class TwinCATStateConfigOne(Device):
+class TwinCATStateConfigOne(BaseInterface, Device):
     """
     Configuration of a single state position in TwinCAT.
 
@@ -515,7 +515,7 @@ class TwinCATStateConfigOne(Device):
                 doc='True if the state is defined (not empty).')
 
 
-class TwinCATStateConfigDynamic(Device):
+class TwinCATStateConfigDynamic(BaseInterface, Device):
     """
     Configuration of a variable number of TwinCAT states.
 

@@ -17,7 +17,7 @@ from scipy.constants import speed_of_light
 
 from .device import InterfaceComponent as ICpt
 from .device import InterfaceDevice
-from .interface import FltMvInterface
+from .interface import FltMvInterface, MvInterface
 from .signal import NotepadLinkedSignal
 from .sim import FastMotor
 from .utils import convert_unit, get_status_float, get_status_value
@@ -111,7 +111,7 @@ def _as_float(self):
     return float(self[0])
 
 
-class PseudoPositioner(FltMvInterface, ophyd.pseudopos.PseudoPositioner):
+class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
     """
     This is a PCDS-specific PseudoPositioner subclass which has a few notable
     changes/additions:
@@ -222,7 +222,7 @@ class PseudoPositioner(FltMvInterface, ophyd.pseudopos.PseudoPositioner):
             motor.set_current_position(pos)
 
 
-class SyncAxesBase(PseudoPositioner):
+class SyncAxesBase(FltMvInterface, PseudoPositioner):
     """
     Synchronized Axes.
 
@@ -320,7 +320,7 @@ class SyncAxisOffsetMode(enum.IntEnum):
     AUTO_FIXED = 1
 
 
-class SyncAxis(PseudoPositioner):
+class SyncAxis(FltMvInterface, PseudoPositioner):
     """
     Pseudomotor class for moving motors with linear relationships.
 
@@ -669,7 +669,7 @@ class SyncAxis(PseudoPositioner):
         return info
 
 
-class DelayBase(PseudoPositioner):
+class DelayBase(FltMvInterface, PseudoPositioner):
     """
     Laser delay stage to rescale a physical axis to a time axis.
 
@@ -892,7 +892,7 @@ class SimDelayStage(DelayBase):
 delay_classes[FastMotor] = SimDelayStage
 
 
-class LookupTablePositioner(PseudoPositioner):
+class LookupTablePositioner(MvInterface, PseudoPositioner):
     """
     A pseudo positioner which uses a look-up table to compute positions.
 
@@ -1019,7 +1019,7 @@ class LookupTablePositioner(PseudoPositioner):
         return self.PseudoPosition(**{pseudo_field: pseudo_value})
 
 
-class OffsetMotorBase(PseudoPositioner):
+class OffsetMotorBase(FltMvInterface, PseudoPositioner):
     """
     Motor with an offset.
     """

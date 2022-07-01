@@ -8,13 +8,13 @@ from ophyd.pseudopos import pseudo_position_argument, real_position_argument
 
 from .device import GroupDevice
 from .epics_motor import BeckhoffAxis
-from .interface import BaseInterface
+from .interface import BaseInterface, FltMvInterface
 from .pseudopos import PseudoPositioner, PseudoSingleInterface
 from .signal import InternalSignal
 from .sim import FastMotor
 
 
-class QuadraticBeckhoffMotor(PseudoPositioner):
+class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
     """
     Pseudomotor of the form calc = ax^2 + bx + c.
 

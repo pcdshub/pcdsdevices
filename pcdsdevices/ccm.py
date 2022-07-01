@@ -528,7 +528,7 @@ class CCMEnergyPseudoSingle(PseudoSingleInterface):
         self.set_current_position = self.parent.set_current_position
 
 
-class CCMEnergy(PseudoPositioner, CCMConstantsMixin):
+class CCMEnergy(BaseInterface, PseudoPositioner, CCMConstantsMixin):
     """
     CCM energy motor.
 

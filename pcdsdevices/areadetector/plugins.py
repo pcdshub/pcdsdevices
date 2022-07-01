@@ -172,7 +172,7 @@ class MagickPlugin(ophyd.plugins.MagickPlugin, FilePlugin):
     pass
 
 
-class HDF5FileStore(FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
+class HDF5FileStore(BaseInterface, FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
     """
     HDF5 Plugin to use for interactive/in-scan saving at LCLS.
 
