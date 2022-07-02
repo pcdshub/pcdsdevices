@@ -1882,30 +1882,3 @@ class SimLODCM(LODCM):
     diag_tower = Cpt(SimDiagnosticsTower, 'DIAG', name='diag')
     energy_si = Cpt(SimEnergySi, 'ENERGY:SI', name='energy_si')
     energy_c = Cpt(SimEnergyC, 'ENERGY:C', name='energy_c')
-
-    def __init__(self, prefix, *args, **kwargs):
-
-        super().__init__(prefix=prefix, *args, **kwargs)
-        # first tower
-        self.z1 = FastMotor(limits=(-1000, 1000))
-        self.x1 = FastMotor(limits=(-1000, 1000))
-        self.y1 = FastMotor(limits=(-1000, 1000))
-        self.th1 = FastMotor(limits=(-1000, 1000))
-        self.chi1 = FastMotor(limits=(-1000, 1000))
-        self.h1n = FastMotor(limits=(-1000, 1000))
-        self.h1p = FastMotor(limits=(-1000, 1000))
-        # second tower
-        self.z2 = FastMotor(limits=(-1000, 1000))
-        self.x2 = FastMotor(limits=(-1000, 1000))
-        self.y2 = FastMotor(limits=(-1000, 1000))
-        self.th2 = FastMotor(limits=(-1000, 1000))
-        self.chi2 = FastMotor(limits=(-1000, 1000))
-        self.h2n = FastMotor(limits=(-1000, 1000))
-        self.diode2 = FastMotor(limits=(-1000, 1000))
-        # diagnostic tower
-        self.dh = FastMotor(limits=(-1000, 1000))
-        self.dv = FastMotor(limits=(-1000, 1000))
-        self.dr = FastMotor(limits=(-1000, 1000))
-        self.df = FastMotor(limits=(-1000, 1000))
-        self.dd = FastMotor(limits=(-1000, 1000))
-        self.yag_zoom = FastMotor(limits=(-1000, 1000))
