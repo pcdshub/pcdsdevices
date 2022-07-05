@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 from ophyd.sim import make_fake_device
 
+from ..epics_motor import OffsetMotor
 from ..lodcm import (CHI1, CHI2, H1N, H2N, LODCM, Y1, Y2, CrystalTower1,
                      CrystalTower2, Dectris, Diode, Foil, LODCMEnergyC,
                      LODCMEnergySi, YagLom)
@@ -16,7 +17,8 @@ def motor_setup(mot, pos=0, offset=0):
     mot.user_readback.sim_put(pos)
     mot.user_setpoint.sim_put(pos)
     mot.user_setpoint.sim_set_limits((0, 0))
-    mot.user_offset.sim_put(offset)
+    if isinstance(mot.parent, OffsetMotor):
+        mot.parent.user_offset.put(offset)
     mot.motor_spg.sim_put(2)
 
 
@@ -103,6 +105,8 @@ def setup_tower2(tower2, refl):
     tower2.h2n_state.state.sim_put(1)
     tower2.h2n_state.state.sim_set_enum_strs(
         ['Unknown'] + H2N.states_list)
+    motor_setup(tower2.x2)
+    motor_setup(tower2.z2)
     tower2.x2_retry_deadband.sim_put(-1)
     tower2.z2_retry_deadband.sim_put(-1)
 
