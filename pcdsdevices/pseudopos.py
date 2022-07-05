@@ -1091,8 +1091,8 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
             The pseudo position output.
         """
         real_pos = self.RealPosition(*real_pos)
-        offset = real_pos.motor - self.user_offset.get()
-        return self.PseudoPosition(pseudo_motor=offset)
+        pseudo_value = real_pos.motor - self.user_offset.get()
+        return self.PseudoPosition(pseudo_motor=pseudo_value)
 
     def set_current_position(self, position):
         '''
@@ -1104,6 +1104,13 @@ class OffsetMotorBase(FltMvInterface, PseudoPositioner):
         position : number
             The new current position.
         '''
-        self.user_offset.put(0.0)
-        new_offset = position - self.position[0]
+        # How do we pick the sign here? What is the convention?
+        # Well, we need it to be in harmony with the real -> pseudo calc
+        # E.g. after calling this function, the real -> pseudo calc
+        # must match the input that this function had.
+        # The real -> pseudo calc is called inverse
+        # From inverse: pseudo_value = real_pos - user_offset
+        # Therefore: user_offset = real_pos - pseudo_value
+        # And since this is the pseudo motor, the pseudo_value is position
+        new_offset = self.real_position[0] - position
         self.user_offset.put(new_offset)

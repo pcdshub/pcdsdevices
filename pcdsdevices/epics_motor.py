@@ -908,8 +908,7 @@ class OffsetIMSWithPreset(OffsetMotorBase):
         position : number
             The new current position.
         '''
-        self.user_offset.put(0.0)
-        new_offset = position - self.position[0]
+        new_offset = self.real_position[0] - position
         self.offset_set_pv.put(new_offset)
         self.user_offset.put(new_offset)
 
