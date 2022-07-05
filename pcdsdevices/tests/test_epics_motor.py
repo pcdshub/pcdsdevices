@@ -401,6 +401,9 @@ def test_motion_error_filter(fake_epics_motor, caplog):
         msg = "No logs filtered in the observed move."
         assert len(unfiltered) > len(filtered), msg
 
+    # Undo some of the fake motor setup stuff- need more control in this test
+    fake_epics_motor.user_setpoint.unsubscribe_all()
+
     # Initialize the alarm status/severity attributes
     fake_epics_motor.user_readback.alarm_status = AlarmStatus.NO_ALARM
     fake_epics_motor.user_readback.alarm_severity = AlarmSeverity.NO_ALARM
