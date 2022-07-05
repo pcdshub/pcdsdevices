@@ -1223,7 +1223,7 @@ class LODCM(BaseInterface, GroupDevice):
     h1n = ACpt('tower1.h1n')
     h1p = ACpt('tower1.h1p')
     # second tower
-    z1 = ACpt('tower2.z2')
+    z2 = ACpt('tower2.z2')
     x2 = ACpt('tower2.x2')
     y2 = ACpt('tower2.y2')
     th2 = ACpt('tower2.th2')
