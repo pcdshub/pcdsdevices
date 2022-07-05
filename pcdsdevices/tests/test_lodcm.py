@@ -5,51 +5,37 @@ import numpy as np
 import pytest
 from ophyd.sim import make_fake_device
 
-from ..epics_motor import OffsetMotor
-from ..lodcm import (CHI1, CHI2, H1N, H2N, LODCM, Y1, Y2, Dectris, Diode, Foil,
-                     LODCMEnergyC, LODCMEnergySi, SimFirstTower, SimLODCM,
-                     SimSecondTower, YagLom)
+from ..lodcm import (CHI1, CHI2, H1N, H2N, LODCM, Y1, Y2, CrystalTower1,
+                     CrystalTower2, Dectris, Diode, Foil, LODCMEnergyC,
+                     LODCMEnergySi, YagLom)
 
 logger = logging.getLogger(__name__)
 
 
-def motor_setup(mot, pos=0):
-    mot.user_readback.sim_put(0)
-    mot.user_setpoint.sim_put(0)
+def motor_setup(mot, pos=0, offset=0):
+    mot.user_readback.sim_put(pos)
+    mot.user_setpoint.sim_put(pos)
     mot.user_setpoint.sim_set_limits((0, 0))
+    mot.user_offset.sim_put(offset)
     mot.motor_spg.sim_put(2)
-
-
-def make_fake_offset_ims(prefix, motor_pos=0, user_offset=0):
-    class MyOffsetIMS(OffsetMotor):
-        def set_current_position(self, position):
-            # TODO: is this supposed to be:
-            # position - motor.position
-            # or the way i have it here?
-            logger.debug('Set current position to %d', position)
-            new_offset = self.motor.position - position
-            self.user_offset.sim_put(new_offset)
-
-    fake_ims = make_fake_device(MyOffsetIMS)('PREFIX',
-                                             motor_prefix='MOTOR:PREFIX',
-                                             name='fake_ims')
-
-    motor_setup(fake_ims.motor, pos=motor_pos)
-    fake_ims.user_offset.sim_put(user_offset)
-    return fake_ims
 
 
 @pytest.fixture(scope='function')
 def fake_lodcm():
-    FakeLODCM = make_fake_device(SimLODCM)
+    return get_fake_lodcm()
+
+
+def get_fake_lodcm():
+    """
+    Function for interactive testing
+    """
+    FakeLODCM = make_fake_device(LODCM)
 
     # After the fake_lodcm setup:
     # fake_lodcm will have get_material() = 'C' by default
     # and get_reflection() = (1, 1, 1) by default
 
     lodcm = FakeLODCM('FAKE:LOM', name='fake_lom')
-    lodcm.h1n_state.state.sim_put(1)
-    lodcm.h1n_state.state.sim_set_enum_strs(['Unknown'] + H1N.states_list)
     lodcm.yag.state.sim_put(1)
     lodcm.yag.state.sim_set_enum_strs(['Unknown'] + YagLom.states_list)
     lodcm.dectris.state.sim_put(1)
@@ -58,48 +44,11 @@ def fake_lodcm():
     lodcm.diode.state.sim_set_enum_strs(['Unknown'] + Diode.states_list)
     lodcm.foil.state.sim_put(1)
     lodcm.foil.state.sim_set_enum_strs(['Unknown'] + Foil.states_list)
-    lodcm.h1n_state.state.sim_put(1)
 
-    # additional states for Crystal Tower 1
-    # set y1_state and chi1_state to 'C'
-    lodcm.y1_state.state.sim_put(1)
-    lodcm.y1_state.state.sim_set_enum_strs(
-        ['Unknown'] + Y1.states_list)
-    lodcm.chi1_state.state.sim_put(1)
-    lodcm.chi1_state.state.sim_set_enum_strs(
-        ['Unknown'] + CHI1.states_list)
-
-    # additional states for Crystal Tower 2
-    # set y2_state, chi2_state and h2_state to 'C'
-    lodcm.y2_state.state.sim_put(1)
-    lodcm.y2_state.state.sim_set_enum_strs(
-        ['Unknown'] + Y2.states_list)
-    lodcm.chi2_state.state.sim_put(1)
-    lodcm.chi2_state.state.sim_set_enum_strs(
-        ['Unknown'] + CHI2.states_list)
-    lodcm.h2n_state.state.sim_put(1)
-    lodcm.h2n_state.state.sim_set_enum_strs(
-        ['Unknown'] + H2N.states_list)
-
-    # set the reflection to default to (1, 1, 1) for both towers and both
-    # materials
-    lodcm.tower1.diamond_reflection.sim_put((1, 1, 1))
-    lodcm.tower1.silicon_reflection.sim_put((1, 1, 1))
-    lodcm.tower2.diamond_reflection.sim_put((1, 1, 1))
-    lodcm.tower2.silicon_reflection.sim_put((1, 1, 1))
-
-    lodcm.th1Si = make_fake_offset_ims('TH1SI:PREFIX', user_offset=-23)
-    lodcm.th2Si = make_fake_offset_ims('TH2C:PREFIX', user_offset=-23)
-    lodcm.th1C = make_fake_offset_ims('TH1C:PREFIX')
-    lodcm.th2C = make_fake_offset_ims('TH2C:PREFIX')
-
-    lodcm.z1Si = make_fake_offset_ims('TH1SI:PREFIX')
-    lodcm.z2Si = make_fake_offset_ims('TH2C:PREFIX')
-    lodcm.z1C = make_fake_offset_ims('TH1C:PREFIX')
-    lodcm.z2C = make_fake_offset_ims('TH2C:PREFIX')
-
-    lodcm.tower2.x2_retry_deadband.sim_put(-1)
-    lodcm.tower2.z2_retry_deadband.sim_put(-1)
+    setup_tower1(lodcm.tower1)
+    setup_tower2(lodcm.tower2, refl=1)
+    setup_energy_si(lodcm.energy_si)
+    setup_energy_c(lodcm.energy_c)
 
     return lodcm
 
@@ -107,9 +56,13 @@ def fake_lodcm():
 # Crystal Tower 1 Setup - usefull for testing CrystalTower1 independently
 @pytest.fixture(scope='function')
 def fake_tower1():
-    FakeLODCM = make_fake_device(SimFirstTower)
-    tower1 = FakeLODCM('FAKE:TOWER1', name='fake_t1')
+    FakeTower1 = make_fake_device(CrystalTower1)
+    tower1 = FakeTower1('FAKE:TOWER1', name='fake_t1')
+    setup_tower1(tower1)
+    return tower1
 
+
+def setup_tower1(tower1):
     tower1.diamond_reflection.sim_put((1, 1, 1))
     tower1.silicon_reflection.sim_put((1, 1, 1))
     # set h1n_state to 'OUT'
@@ -124,17 +77,20 @@ def fake_tower1():
     tower1.chi1_state.state.sim_put(1)
     tower1.chi1_state.state.sim_set_enum_strs(
         ['Unknown'] + CHI1.states_list)
-    return tower1
 
 
 # Crystal Tower 2 Setup - usefull for testing CrystalTower1 independently
 @pytest.fixture(scope='function')
 def fake_tower2():
-    FakeLODCM = make_fake_device(SimSecondTower)
-    tower2 = FakeLODCM('FAKE:TOWER2', name='fake_t2')
+    FakeTower2 = make_fake_device(CrystalTower2)
+    tower2 = FakeTower2('FAKE:TOWER2', name='fake_t2')
+    setup_tower2(tower2, refl=2)
+    return tower2
 
-    tower2.diamond_reflection.sim_put((2, 2, 2))
-    tower2.silicon_reflection.sim_put((2, 2, 2))
+
+def setup_tower2(tower2, refl):
+    tower2.diamond_reflection.sim_put((refl, refl, refl))
+    tower2.silicon_reflection.sim_put((refl, refl, refl))
     # set y2_state to 'C'
     tower2.y2_state.state.sim_put(1)
     tower2.y2_state.state.sim_set_enum_strs(
@@ -147,8 +103,8 @@ def fake_tower2():
     tower2.h2n_state.state.sim_put(1)
     tower2.h2n_state.state.sim_set_enum_strs(
         ['Unknown'] + H2N.states_list)
-
-    return tower2
+    tower2.x2_retry_deadband.sim_put(-1)
+    tower2.z2_retry_deadband.sim_put(-1)
 
 
 # LODCM Energy Si - usefull for testing LODCMEnergySi independently
@@ -156,14 +112,16 @@ def fake_tower2():
 def fake_energy_si():
     FakeLODCMEnergy = make_fake_device(LODCMEnergySi)
     energy = FakeLODCMEnergy('FAKE:ENERGY:SI', name='fake_energy_si')
+    setup_energy_si(energy)
+    return energy
 
-    motor_setup(energy.th1Si.motor)
-    motor_setup(energy.th2Si.motor)
+
+def setup_energy_si(energy):
+    motor_setup(energy.th1Si.motor, offset=-23)
+    motor_setup(energy.th2Si.motor, offset=-23)
     motor_setup(energy.z1Si.motor)
     motor_setup(energy.z2Si.motor)
     motor_setup(energy.dr)
-
-    return energy
 
 
 # LODCM Energy C - usefull for testing LODCMEnergyC independently
@@ -171,14 +129,16 @@ def fake_energy_si():
 def fake_energy_c():
     FakeLODCMEnergy = make_fake_device(LODCMEnergyC)
     energy = FakeLODCMEnergy('FAKE:ENERGY:C', name='fake_energy_c')
+    setup_energy_c(energy)
+    return energy
 
+
+def setup_energy_c(energy):
     motor_setup(energy.th1C.motor)
     motor_setup(energy.th2C.motor)
     motor_setup(energy.z1C.motor)
     motor_setup(energy.z2C.motor)
     motor_setup(energy.dr)
-
-    return energy
 
 
 def test_lodcm_destination(fake_lodcm):
@@ -244,7 +204,7 @@ def test_move_energy(fake_lodcm):
     # with material 'Si' and reflection as (1, 1, 1)
     with patch('pcdsdevices.lodcm.LODCM.get_material',
                return_value='Si'):
-        lom.energy.move(10, wait=False)
+        lom.energy.move(10, timeout=1)
         assert np.isclose(lom.energy.th1Si.wm(), 11.402710639982848)
         assert np.isclose(lom.energy.th2Si.wm(), 11.402710639982848)
         assert np.isclose(lom.energy.z1Si.wm(), -713.4828146545175)
@@ -529,7 +489,7 @@ def test_lodcm_move_energy_si(fake_lodcm):
                return_value=(1, 1, 1)):
         with patch('pcdsdevices.lodcm.LODCM.get_material',
                    return_value='Si'):
-            lodcm.energy_si.move(10, wait=False)
+            lodcm.energy_si.move(10, timeout=1)
             assert np.isclose(lodcm.energy.th1Si.wm(), 11.402710639982848)
             assert np.isclose(lodcm.energy.th2Si.wm(), 11.402710639982848)
             assert np.isclose(lodcm.energy.dr.wm(), 11.402710639982848*2)
