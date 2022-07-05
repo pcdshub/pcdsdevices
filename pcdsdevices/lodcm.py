@@ -20,9 +20,9 @@ from ophyd.status import wait as status_wait
 from pcdscalc import common, diffraction
 
 from pcdsdevices.epics_motor import OffsetIMSWithPreset, OffsetMotor
-from pcdsdevices.sim import FastMotor
 
 from .device import AliasComponent as ACpt
+from .device import FormattedParentComponent as FPCpt
 from .device import GroupDevice
 from .doc_stubs import insert_remove
 from .epics_motor import IMS
@@ -744,10 +744,10 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
     name : str
         The name of this device.
     """
-    tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
-    tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
-    dr = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:19',
-              kind='normal', doc='LOM Dia Theta')
+    tower1 = FPCpt(CrystalTower1, '{self._prefix}', kind='normal')
+    tower2 = FPCpt(CrystalTower2, '{self._prefix}', kind='normal')
+    dr = FPCpt(IMS, '{self._hutch_prefix}:MON:MMS:19',
+               kind='normal', doc='LOM Dia Theta')
 
     th1Si = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_Si',
                  motor_prefix='{self._hutch_prefix}:MON:MMS:07',
@@ -965,10 +965,10 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
     name : str
         The name of this device.
     """
-    tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
-    tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
-    dr = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:19',
-              kind='normal', doc='LOM Dia Theta')
+    tower1 = FPCpt(CrystalTower1, '{self._prefix}', kind='normal')
+    tower2 = FPCpt(CrystalTower2, '{self._prefix}', kind='normal')
+    dr = FPCpt(IMS, '{self._hutch_prefix}:MON:MMS:19',
+               kind='normal', doc='LOM Dia Theta')
 
     th1C = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_C',
                 name='th1_c',
@@ -1814,71 +1814,3 @@ Photon Energy: {energy} [keV]
 {form(f'navitar zoom [{yag_zoom_units}]',
       f'{yag_zoom_user} ({yag_zoom_dial})', '')}
 """
-
-
-class SimFirstTower(CrystalTower1):
-    """Crystal Tower 1 Simulator for Testing."""
-    # first tower
-    z1 = Cpt(FastMotor, limits=(-1000, 1000))
-    x1 = Cpt(FastMotor, limits=(-1000, 1000))
-    y1 = Cpt(FastMotor, limits=(-1000, 1000))
-    th1 = Cpt(FastMotor, limits=(-1000, 1000))
-    chi1 = Cpt(FastMotor, limits=(-1000, 1000))
-    h1n = Cpt(FastMotor, limits=(-1000, 1000))
-    h1p = Cpt(FastMotor, limits=(-1000, 1000))
-
-
-class SimSecondTower(CrystalTower2):
-    """Crystal Tower 2 Simulator for Testing."""
-    # second tower
-    z2 = Cpt(FastMotor, limits=(-1000, 1000))
-    x2 = Cpt(FastMotor, limits=(-1000, 1000))
-    y2 = Cpt(FastMotor, limits=(-1000, 1000))
-    th2 = Cpt(FastMotor, limits=(-1000, 1000))
-    chi2 = Cpt(FastMotor, limits=(-1000, 1000))
-    h2n = Cpt(FastMotor, limits=(-1000, 1000))
-    diode2 = Cpt(FastMotor, limits=(-1000, 1000))
-
-
-class SimDiagnosticsTower(DiagnosticsTower):
-    """Diagnostics Tower Simulator for Testing."""
-    # diagnostic tower
-    dh = Cpt(FastMotor, limits=(-1000, 1000))
-    dv = Cpt(FastMotor, limits=(-1000, 1000))
-    dr = Cpt(FastMotor, limits=(-1000, 1000))
-    df = Cpt(FastMotor, limits=(-1000, 1000))
-    dd = Cpt(FastMotor, limits=(-1000, 1000))
-    yag_zoom = Cpt(FastMotor, limits=(-1000, 1000))
-
-
-class SimEnergyC(LODCMEnergyC):
-    """Energy C Simulator for Testing"""
-    th1C = Cpt(FastMotor, limits=(-1000, 1000))
-    th2C = Cpt(FastMotor, limits=(-1000, 1000))
-    z1C = Cpt(FastMotor, limits=(-1000, 1000))
-    z2C = Cpt(FastMotor, limits=(-1000, 1000))
-    dr = Cpt(FastMotor, limits=(-1000, 1000))
-
-    def get_reflection(self):
-        return (1, 1, 1)
-
-
-class SimEnergySi(LODCMEnergySi):
-    """Energy Si Simulator for Testing"""
-    th1Si = Cpt(FastMotor, limits=(-1000, 1000))
-    th2Si = Cpt(FastMotor, limits=(-1000, 1000))
-    z1Si = Cpt(FastMotor, limits=(-1000, 1000))
-    z2Si = Cpt(FastMotor, limits=(-1000, 1000))
-    dr = Cpt(FastMotor, limits=(-1000, 1000))
-
-    def get_reflection(self):
-        return (1, 1, 1)
-
-
-class SimLODCM(LODCM):
-    """LODCM Simulator for Testing"""
-    tower1 = Cpt(SimFirstTower, 'TOWER:1', name='tower1')
-    tower2 = Cpt(SimSecondTower, 'TOWER:2', name='tower2')
-    diag_tower = Cpt(SimDiagnosticsTower, 'DIAG', name='diag')
-    energy_si = Cpt(SimEnergySi, 'ENERGY:SI', name='energy_si')
-    energy_c = Cpt(SimEnergyC, 'ENERGY:C', name='energy_c')

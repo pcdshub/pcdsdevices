@@ -5,7 +5,7 @@ from collections.abc import Iterator
 from typing import Any, Optional, Union
 
 from ophyd.areadetector.plugins import PluginBase
-from ophyd.device import Component, Device
+from ophyd.device import Component, Device, FormattedComponent
 from ophyd.ophydobj import Kind, OphydObject
 from ophyd.pseudopos import PseudoSingle
 from ophyd.signal import AttributeSignal, DerivedSignal
@@ -276,14 +276,14 @@ def to_interface(device_class):
 
 class UpdateComponent(Component):
     """
-    A component that copies and updates a parent component in a subclass.
+    A component that copies and updates a component in a subclass.
 
     Use this like any other component, adding it to your device that is a
     subclass of another device, using the same name as the component you'd like
     to update.
 
-    Pass keyword args to this component to update the values from the parent in
-    your subclass.
+    Pass keyword args to this component to update the values from the class
+    parent in your subclass.
 
     Some limitations:
 
@@ -368,7 +368,7 @@ class AliasComponent(Component):
     This allows us to have "lazy" loading behavior with aliased components,
     rather then requiring us to getattr them (and therefore instantiate them).
 
-    This will instantiate the original component if necessarty when
+    This will instantiate the original component if necessary when
     accessed, and otherwise it will point to the original component.
 
     Parameters
@@ -426,6 +426,37 @@ class AliasPlaceholder:
     """
     Empty type for when an alias component has no available cls reference.
     """
+    ...
+
+
+class ParentComponent(Component):
+    """
+    A component to borrow/duplicate from the ophyd device parent.
+
+    That is, there is a device that includes this device as a component,
+    and this device needs a safe reference to a different component owned
+    by the parent device.
+
+    If there is a device parent, we'll give the parent's component instance.
+    Otherwise, we'll create a new instance.
+    """
+    def __get__(
+        self,
+        instance: Optional[Device],
+        owner: type,
+    ):
+        if instance is None:
+            return self
+        try:
+            parent = instance.parent or instance.biological_parent
+        except AttributeError:
+            # No parent, create the device ourselves
+            return super().__get__(instance, owner)
+        # Yes parent, get the parent device that matches our attr
+        return getattr(parent, self.attr)
+
+
+class FormattedParentComponent(ParentComponent, FormattedComponent):
     ...
 
 
