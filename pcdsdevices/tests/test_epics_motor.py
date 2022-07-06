@@ -303,49 +303,41 @@ def test_fake_offset_ims(fake_offset_ims):
 
     # set current position to 5
     off_ims.set_current_position(5)
+    # is the current position what we set it to?
+    assert off_ims.pseudo_motor.position == 5
+    assert off_ims.position[0] == 5
+    assert off_ims.wm() == 5
+
     # new_offset = position - self.position[0]
-    # new_offset = 5 - 1 => 4
-    logger.debug('New Offset: %d', off_ims.user_offset.get())
-    assert off_ims.user_offset.get() == 4
-    logger.debug('Motor position %d', off_ims.motor.position)
-    # if new offset 4, motor pos == 1
-    # pseudo pos = real_pos.motor - self.user_offset.get()
-    # 1 - (4) = -3
-    assert off_ims.pseudo_motor.position == -3
+    # new_offset = 1 - 5 => -4
+    assert off_ims.user_offset.get() == -4
 
     # test moving
-    off_ims.move(7, wait=False)
-    # motor pos =  pseudo_pos.pseudo_motor + self.user_offset.get()
-    # 7 + (4) = 11
-    assert off_ims.motor.user_setpoint.get() == 11
-    # the actuall motor has not move technically, so to trully test the
-    # pseudo motor here, we should put the value of motor at 11:
-    off_ims.motor.user_readback.sim_put(11)
-    # pseudo pos == real_pos.motor - self.user_offset.get()
-    # 11 - 4 = 7
+    off_ims.move(7, timeout=1)
     assert off_ims.pseudo_motor.position == 7
+    # motor pos =  pseudo_pos.pseudo_motor + self.user_offset.get()
+    # 7 + (-4) = 3
+    assert off_ims.motor.user_setpoint.get() == 3
 
     off_ims.motor.user_readback.sim_put(-6)
     # pseudo pos == real_pos.motor - self.user_offset.get()
-    # -6 - 4 = -10
-    assert off_ims.pseudo_motor.position == -10
+    # -6 - (-4) = -2
+    assert off_ims.pseudo_motor.position == -2
 
 
 def test_offset_ims_with_preset(fake_offset_ims_with_preset):
     off_ims = fake_offset_ims_with_preset
     # set current position to 5
     off_ims.set_current_position(5)
+    # is the current position what we set it to?
+    assert off_ims.pseudo_motor.position == 5
+    assert off_ims.position[0] == 5
+    assert off_ims.wm() == 5
     # new_offset = position - self.position[0]
-    # new_offset = 5 - 1 => 4
-    logger.debug('New Offset: %d', off_ims.user_offset.get())
-    assert off_ims.user_offset.get() == 4
+    # new_offset = 1 - 5 => -4
+    assert off_ims.user_offset.get() == -4
     # because use_ims_preset == True we should have the _SET pv with same value
-    assert off_ims.offset_set_pv.get() == 4
-    logger.debug('Motor position %d', off_ims.motor.position)
-    # if new offset 4, motor pos == 1
-    # pseudo pos = real_pos.motor - self.user_offset.get()
-    # 1 - (4) = -3
-    assert off_ims.pseudo_motor.position == -3
+    assert off_ims.offset_set_pv.get() == -4
 
 
 def test_motion_error_filter(fake_epics_motor, caplog):
