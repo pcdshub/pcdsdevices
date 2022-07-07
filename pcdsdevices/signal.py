@@ -424,13 +424,18 @@ class AggregateSignal(Signal):
 
 class SummarySignal(AggregateSignal):
     """
-    Signal that holds a hash of the values of the constituent signals
+    Signal that holds a hash of the values of the constituent signals.
 
     Meant to allow tracking of constituent signals via callbacks.
-    The calculated readback value is useless.
+
+    The calculated readback value is useless, and should not be used
+    in any downstream calculations.  Use the signal/PV you actually
+    care about instead.
     """
     def _calc_readback(self):
         values = tuple(sig.get() for sig in self._signals)
+        # We return a hash here, rather than the tuple, to always provide
+        # an ophyd-compatible datatype.
         return hash(values)
 
 
