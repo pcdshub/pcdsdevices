@@ -7,8 +7,35 @@ from typing import Dict, Union
 logger = logging.getLogger(__name__)
 
 
+POSITION_DIAGRAM = """
+
+             LD8   LD9  LD10  LD11  LD12  LD13  LD14
+            <======================================= LS5
+        LS1 =======================================>
+            <======================================= LS6
+        LS2 =======================================>
+            <======================================= LS7
+        LS3 =======================================>
+            <======================================= LS8
+        LS4 =======================================>
+             LD1   LD2  LD3   LD4   LD5   LD6   LD7
+
+"""
+
+
 class SourcePosition(str, enum.Enum):
-    # Top-bottom sources by where the linear stages are
+    f"""
+    "LS" laser source ports in the switchbox by their official names.
+
+    The order of definition is intentional here: this is top-bottom sources by
+    where the linear stages are as per the top-down drawings that the BTMS user
+    interface utilizes.
+
+    .. code::
+
+        {POSITION_DIAGRAM}
+    """
+
     ls5 = "ls5"
     ls1 = "ls1"
     ls6 = "ls6"
@@ -30,6 +57,16 @@ class SourcePosition(str, enum.Enum):
 
 
 class DestinationPosition(str, enum.Enum):
+    f"""
+    "LD" laser destination ports from the switchbox.
+
+    These are defined left-to-right as per the top-down drawings that the BTMS
+    user interface utilizes.
+
+    .. code::
+
+        {POSITION_DIAGRAM}
+    """
     # Left-right destination ports (top)
     ld8 = "ld8"
     ld9 = "ld9"
