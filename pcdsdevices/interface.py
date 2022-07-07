@@ -11,7 +11,6 @@ import subprocess
 import time
 import typing
 from contextlib import contextmanager
-from dataclasses import dataclass
 from pathlib import Path
 from threading import Event
 from types import MethodType, SimpleNamespace
@@ -21,6 +20,7 @@ from weakref import WeakSet
 import ophyd
 import yaml
 from bluesky.utils import ProgressBar
+from lightpath.path import LightpathState
 from ophyd import Component as Cpt
 from ophyd.device import Device
 from ophyd.ophydobj import Kind, OphydObject
@@ -1563,14 +1563,6 @@ class NullFile:
         pass
 
 
-@dataclass
-class LightpathState:
-    inserted: bool
-    removed: bool
-    transmission: float
-    output_branch: str
-
-
 class LegacyLightpathMixin(OphydObject):
     """
     Mix-in class that makes it easier to establish a lightpath interface.
@@ -1667,37 +1659,42 @@ class LightpathMixin(Device):
     LightpathStatus object
     Create an object similar to the following:
 
-    class MyDevice(LightpathMixin):
-        lp_signals = ['sig1', 'sig2']
+    .. code-block:: python
 
-        def get_lightpath_status(self):
-            # Logic, calculations for transmission, etc
-            status = LightpathStatus(
-                inserted=True, removed=False, transmission=0.0,
-                output_branch='L3'
-            )
-            return status
+        class MyDevice(LightpathMixin):
+            lightpath_signals = ['sig1', 'sig2']
+            sig1 = Cpt(Signal, ':SIG1')
+            sig2 = Cpt(Signal, ':SIG2')
+
+            def calc_lightpath_status(self, sig1=None, sig2=None):
+                # Logic, calculations using sig1, sig2
+                status = LightpathStatus(
+                    inserted=True, removed=False,
+                    transmission=0.0, output_branch='L3'
+                )
+                return status
+
+        dev = MyDevice('PREFIX', name='dev', input_branches=['L0'],
+                       output_branches=['L0'])
     """
     # Component names whose values are relevant for inserted/removed
-    lightpath_cpts = []
+    lightpath_signals = []
 
     # Flag to signify that subclass is another mixin, rather than a device
     _lightpath_mixin = False
 
     # Mixin holds one summary signal that changes with lightpath_cpts
-    lp_summary = Cpt(SummarySignal, name='lp_summary')
+    lightpath_summary = Cpt(SummarySignal, name='lp_summary')
 
     def __init__(self, *args,
                  input_branches=[], output_branches=[], **kwargs):
-        self._lightpath_values = {}
         self._lightpath_ready = False
         self._retry_lightpath = False
         self.input_branches = input_branches
         self.output_branches = output_branches
-        # TODO: grab destination / source lists, if they exist?
         super().__init__(*args, **kwargs)
-        for sig in self.lightpath_cpts:
-            self.lp_summary.add_signal_by_attr_name(sig)
+        for sig in self.lightpath_signals:
+            self.lightpath_summary.add_signal_by_attr_name(sig)
 
         if not self.input_branches or not self.output_branches:
             raise NotImplementedError(
@@ -1711,20 +1708,45 @@ class LightpathMixin(Device):
             # Child of cls will inherit this as False
             cls._lightpath_mixin = False
         else:
-            if not cls.lightpath_cpts:
+            if not cls.lightpath_signals:
                 raise NotImplementedError(
                     'Did not implement LightpathMixin properly.  '
                     'Must supply a list of components (lightpath_cpts)'
                 )
 
-    def get_lightpath_status(self) -> LightpathState:
+    def calc_lightpath_state(self, **kwargs) -> LightpathState:
         """
         Create and return a LightpathState object containing information needed
-        for lightpath
+        for lightpath, given a set of signal values
 
-        Device logic goes here
+        kwargs should be the same as the signal names provided in
+        ``lightpath_signals``
+
+        Device logic goes here.
+
+        Returns
+        -------
+        LightpathState
+            a dataclass containing the Lightpath state
         """
-        raise NotImplementedError('Did not implement LightpathMixin')
+        raise NotImplementedError(
+            'Did not implement LightpathMixin properly.  Must define '
+            'a ``calc_lightpath_state`` method.'
+        )
+
+    def get_lightpath_state(self) -> LightpathState:
+        """
+        Return the current LightpathState
+
+        Returns
+        -------
+        LightpathState
+            a dataclass containing the Lightpath state
+        """
+        kwargs = {sig.name.removeprefix(self.name + '_'): sig.get()
+                  for sig in self.lightpath_summary._signals}
+        status = self.calc_lightpath_state(**kwargs)
+        return status
 
 
 class LightpathInOutMixin(LightpathMixin):
