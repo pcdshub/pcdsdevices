@@ -1662,7 +1662,7 @@ class LightpathMixin(Device):
     .. code-block:: python
 
         class MyDevice(LightpathMixin):
-            lightpath_signals = ['sig1', 'sig2']
+            lightpath_cpts = ['sig1', 'sig2']
             sig1 = Cpt(Signal, ':SIG1')
             sig2 = Cpt(Signal, ':SIG2')
 
@@ -1678,7 +1678,7 @@ class LightpathMixin(Device):
                        output_branches=['L0'])
     """
     # Component names whose values are relevant for inserted/removed
-    lightpath_signals = []
+    lightpath_cpts = []
 
     # Flag to signify that subclass is another mixin, rather than a device
     _lightpath_mixin = False
@@ -1693,7 +1693,7 @@ class LightpathMixin(Device):
         self.input_branches = input_branches
         self.output_branches = output_branches
         super().__init__(*args, **kwargs)
-        for sig in self.lightpath_signals:
+        for sig in self.lightpath_cpts:
             self.lightpath_summary.add_signal_by_attr_name(sig)
 
         if not self.input_branches or not self.output_branches:
@@ -1708,7 +1708,7 @@ class LightpathMixin(Device):
             # Child of cls will inherit this as False
             cls._lightpath_mixin = False
         else:
-            if not cls.lightpath_signals:
+            if not cls.lightpath_cpts:
                 raise NotImplementedError(
                     'Did not implement LightpathMixin properly.  '
                     'Must supply a list of components (lightpath_cpts)'
@@ -1720,7 +1720,7 @@ class LightpathMixin(Device):
         for lightpath, given a set of signal values
 
         kwargs should be the same as the signal names provided in
-        ``lightpath_signals``
+        ``lightpath_cpts``
 
         Device logic goes here.
 
@@ -1755,6 +1755,8 @@ class LightpathInOutMixin(LightpathMixin):
     Also works recursively on other LightpathInOutMixin subclasses.
     """
     _lightpath_mixin = True
+    sig = Cpt(Signal, name='dummy_sig')
+    lightpath_cpts = ['sig']
 
     def _set_lightpath_states(self, lightpath_values):
         in_check = []
