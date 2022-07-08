@@ -47,6 +47,29 @@ class LCLSItem(OphydItem):
                           'the ioc data.'), optional=True, enforce=str)
 
 
+class LCLSLightpathItem(LCLSItem):
+    """
+    LCLS version of a LightpathItem
+
+    Cannot simply mixin with lightpath version since importing
+    lightpath.happi.containers.LightpathItem results in entry points
+    picking up duplicate items.
+    """
+    kwargs = deepcopy(OphydItem.kwargs)
+    kwargs.default = {'name': '{{name}}',
+                      'input_branches': '{{input_branches}}',
+                      'output_branches': '{{output_branches}}',
+                      }
+    active = EntryInfo("If the device is currently active",
+                       optional=False, enforce=bool, default=False)
+    input_branches = EntryInfo(('List of branches the device can receive '
+                                'beam from.'),
+                               optional=False, enforce=list)
+    output_branches = EntryInfo(('List of branches the device can deliver '
+                                'beam to.'),
+                                optional=False, enforce=list)
+
+
 class LegacyItem(HappiItem):
     """
     Formally, happi.device.Device
