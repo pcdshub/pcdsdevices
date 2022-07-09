@@ -5,10 +5,10 @@ import typing
 from collections import namedtuple
 
 import numpy as np
+from lightpath import LightpathState
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.ophydobj import OphydObject
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.status import MoveStatus
 
@@ -1013,23 +1013,26 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
         text += f'x @ (mm): {xavg} [x1,x2={x_down},{x_up}]\n'
         return text
 
-    def _set_lightpath_states(
-        self,
-        lightpath_values: dict[OphydObject, dict[str, typing.Any]],
-    ) -> None:
+    def calc_lightpath_state(self, x: float) -> LightpathState:
         """
         Update the fields used by the lightpath to determine in/out.
 
         Compares the x position with the saved in and out values.
         """
-        x_pos = lightpath_values[self.x]['value']
-        self._inserted = np.isclose(x_pos, self._in_pos)
-        self._removed = np.isclose(x_pos, self._out_pos)
+        self._inserted = np.isclose(x, self._in_pos)
+        self._removed = np.isclose(x, self._out_pos)
         if self._removed:
             self._transmission = 1
         else:
             # Placeholder "small attenuation" value
             self._transmission = 0.9
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            transmission=self._transmission,
+            output_branch=self.output_branches[0]
+        )
 
     def insert(self, wait: bool = False) -> MoveStatus:
         """

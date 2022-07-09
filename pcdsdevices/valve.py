@@ -4,6 +4,7 @@ Standard classes for LCLS Gate Valves.
 import logging
 from enum import IntEnum
 
+from lightpath import LightpathState
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
 
@@ -202,11 +203,22 @@ class VRC(VVC, LightpathMixin):
         doc='Closed limit switch digital input'
     )
 
-    def _set_lightpath_states(self, lightpath_values):
+    def calc_lightpath_state(
+        self, open_limit: int, closed_limit: int
+    ) -> LightpathState:
         """Callback for updating inserted/removed for lightpath."""
 
-        self._inserted = lightpath_values[self.closed_limit]['value']
-        self._removed = lightpath_values[self.open_limit]['value']
+        self._inserted = bool(closed_limit)
+        self._removed = bool(open_limit)
+
+        trans = 0.0 if self._inserted else 1.0
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            transmission=trans,
+            output_branch=self.output_branches[0]
+        )
 
 
 class VRCClsLS(VVC):
@@ -491,9 +503,20 @@ class VFS(LightpathMixin):
         doc='Name of device that can veto this VFS'
     )
 
-    def _set_lightpath_states(self, lightpath_values):
-        self._inserted = lightpath_values[self.position_close]['value']
-        self._removed = lightpath_values[self.position_open]['value']
+    def calc_lightpath_state(self, position_open: int, position_close: int):
+        """Callback for updating inserted/removed for lightpath."""
+
+        self._inserted = bool(position_close)
+        self._removed = bool(position_open)
+
+        trans = 0.0 if self._inserted else 1.0
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            transmission=trans,
+            output_branch=self.output_branches[0]
+        )
 
 
 class VVCNO(Device):
@@ -585,11 +608,20 @@ class VRCNO(VVCNO, LightpathMixin):
         doc='Closed limit switch digital input'
     )
 
-    def _set_lightpath_states(self, lightpath_values):
+    def calc_lightpath_state(self, open_limit: int, closed_limit: int):
         """Callback for updating inserted/removed for lightpath."""
 
-        self._inserted = lightpath_values[self.closed_limit]['value']
-        self._removed = lightpath_values[self.open_limit]['value']
+        self._inserted = bool(closed_limit)
+        self._removed = bool(open_limit)
+
+        trans = 0.0 if self._inserted else 1.0
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            transmission=trans,
+            output_branch=self.output_branches[0]
+        )
 
 
 class VRCDA(VRC, VRCNO):

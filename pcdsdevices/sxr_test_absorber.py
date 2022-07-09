@@ -1,6 +1,9 @@
 """
 Module for the SXR Test Absorbers.
 """
+from typing import Tuple
+
+from lightpath import LightpathState
 from ophyd.device import Component as Cpt
 
 from .epics_motor import BeckhoffAxisNoOffset
@@ -23,10 +26,17 @@ class SxrTestAbsorber(BaseInterface, LightpathMixin):
 
     lightpath_cpts = ['absorber_vert']
 
-    def _set_lightpath_states(self, lightpath_values):
-        pos = lightpath_values[self.absorber_vert]['value']
+    def calc_lightpath_state(self, absorber_vert: Tuple) -> LightpathState:
+        pos = absorber_vert[0]  # user readback in tuple
         # 0 is out, negative is in
         # this device has never been inserted, so we don't know the in pos
         self._inserted = pos < -1
         self._removed = pos > -1
         self._transmission = int(self._removed)
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            transmission=self._transmission,
+            output_branch=self.output_branch[0]
+        )

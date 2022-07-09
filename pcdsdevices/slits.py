@@ -15,6 +15,7 @@ used.
 import logging
 from collections import OrderedDict
 
+from lightpath import LightpathState
 from ophyd import Component as Cpt
 from ophyd import DynamicDeviceComponent as DDCpt
 from ophyd import EpicsSignal, EpicsSignalRO
@@ -296,10 +297,22 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         # Run subscriptions
         self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
-    def _set_lightpath_states(self, lightpath_values):
-        widths = [kw['value'] for kw in lightpath_values.values()]
+    def calc_lightpath_state(
+        self,
+        xwidth: float,
+        ywidth: float
+    ) -> LightpathState:
+        widths = [xwidth, ywidth]
         self._inserted = (min(widths) < self.nominal_aperture.get())
         self._removed = not self._inserted
+        self._transmission = 1.0 if self._inserted else 0.0
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            transmission=self._transmission,
+            output_branch=self.output_branches[0]
+        )
 
 
 class BadSlitPositionerBase(FltMvInterface, PVPositioner):
