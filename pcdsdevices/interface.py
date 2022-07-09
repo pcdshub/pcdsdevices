@@ -20,7 +20,7 @@ from weakref import WeakSet
 import ophyd
 import yaml
 from bluesky.utils import ProgressBar
-from lightpath.path import LightpathState
+from lightpath import LightpathState
 from ophyd import Component as Cpt
 from ophyd.device import Device
 from ophyd.ophydobj import Kind, OphydObject
@@ -1666,7 +1666,7 @@ class LightpathMixin(Device):
             sig1 = Cpt(Signal, ':SIG1')
             sig2 = Cpt(Signal, ':SIG2')
 
-            def calc_lightpath_status(self, sig1=None, sig2=None):
+            def calc_lightpath_state(self, sig1=None, sig2=None):
                 # Logic, calculations using sig1, sig2
                 status = LightpathStatus(
                     inserted=True, removed=False,
@@ -1684,7 +1684,7 @@ class LightpathMixin(Device):
     _lightpath_mixin = False
 
     # Mixin holds one summary signal that changes with lightpath_cpts
-    lightpath_summary = Cpt(SummarySignal, name='lp_summary')
+    lightpath_summary = Cpt(SummarySignal, name='lightpath_summary')
 
     def __init__(self, *args,
                  input_branches=[], output_branches=[], **kwargs):
@@ -1754,15 +1754,15 @@ class LightpathInOutMixin(LightpathMixin):
     LightpathMixin for parent device with InOut subdevices.
     Also works recursively on other LightpathInOutMixin subclasses.
     """
+    # defers the check for lightpath_cpt until next subclass
     _lightpath_mixin = True
-    sig = Cpt(Signal, name='dummy_sig')
-    lightpath_cpts = ['sig']
 
-    def _set_lightpath_states(self, lightpath_values):
+    def calc_lightpath_state(self, **lightpath_kwargs):
         in_check = []
         out_check = []
         trans_check = []
-        for obj, kwarg_dct in lightpath_values.items():
+        for sig_name, sig_value in lightpath_kwargs.items():
+            obj = getattr(self, sig_name)
             if isinstance(obj, LightpathInOutMixin):
                 # The inserted/removed are always just a getattr
                 # Therefore, they are safe to call in a callback
@@ -1776,19 +1776,16 @@ class LightpathInOutMixin(LightpathMixin):
                     return
                 # Inserted/removed are not getattr, they can check EPICS
                 # Instead, check status against the callback kwarg dict
-                in_check.append(obj.check_inserted(kwarg_dct['value']))
-                out_check.append(obj.check_removed(kwarg_dct['value']))
-                trans_check.append(obj.check_transmission(kwarg_dct['value']))
+                in_check.append(obj.check_inserted(sig_value[0]))
+                out_check.append(obj.check_removed(sig_value[0]))
+                trans_check.append(obj.check_transmission(sig_value[0]))
         self._inserted = any(in_check)
         self._removed = all(out_check)
         self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
-        return dict(in_check=in_check, out_check=out_check,
-                    trans_check=trans_check)
 
-    def get_lightpath_status(self):
         return LightpathState(
             inserted=self._inserted,
             removed=self._removed,
             transmission=self._transmission,
-            output_branch=self._input_branches[0]
+            output_branch=self.output_branches[0]
         )
