@@ -681,7 +681,7 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         self.theta0_deg.put(new_theta0_deg)
 
     def move(self, *args, kill=True, wait=True, **kwargs):
-        """ 
+        """
         Overwrite the move method to add a PID kill at the
         end of each move.
 
@@ -693,9 +693,9 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         """
         if kill:
             # Must always wait if we are killing the PID
-            wait=True
+            wait = True
         st = super().move(*args, wait=wait, **kwargs)
-        time.sleep(0.01) # safety wait. Necessary?
+        time.sleep(0.01)  # safety wait. Necessary?
         if kill:
             print('Kill alio PID')
             self.alio.kill()
@@ -772,7 +772,6 @@ class CCMEnergyWithVernier(CCMEnergy):
         alio = real_pos.alio
         energy = self.alio_to_energy(alio)
         return self.PseudoPosition(energy=energy)
-
 
 
 class CCMX(SyncAxis):
