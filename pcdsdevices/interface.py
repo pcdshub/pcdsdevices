@@ -1764,6 +1764,8 @@ class LightpathInOutMixin(LightpathMixin):
         for sig_name, sig_value in lightpath_kwargs.items():
             obj = getattr(self, sig_name)
             if isinstance(obj, LightpathInOutMixin):
+                # TO-DO: deprecate this condition, and rework classes
+                # it applies to.  (attenuators, RTDS)
                 # The inserted/removed are always just a getattr
                 # Therefore, they are safe to call in a callback
                 in_check.append(obj.inserted)
