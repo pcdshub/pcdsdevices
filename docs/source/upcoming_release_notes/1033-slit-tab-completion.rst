@@ -1,4 +1,4 @@
-IssueNumber Title
+1033 Slit Tab Completion
 #################
 
 API Changes
