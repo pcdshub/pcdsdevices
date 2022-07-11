@@ -8,7 +8,7 @@ from ophyd.pseudopos import pseudo_position_argument, real_position_argument
 
 from .device import GroupDevice
 from .epics_motor import BeckhoffAxis
-from .interface import FltMvInterface
+from .interface import BaseInterface, FltMvInterface
 from .pseudopos import PseudoPositioner, PseudoSingleInterface
 from .signal import InternalSignal
 from .sim import FastMotor
@@ -161,7 +161,7 @@ class QuadraticSimMotor(QuadraticBeckhoffMotor):
     real = Cpt(FastMotor, kind='omitted')
 
 
-class VLSOptics(GroupDevice):
+class VLSOptics(BaseInterface, GroupDevice):
     """
     Device that collects the VLS mirror and grating together.
 

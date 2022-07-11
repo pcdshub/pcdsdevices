@@ -13,6 +13,8 @@ from typing import Dict
 import ophyd
 import pytest
 from epics import PV
+from ophyd.epics_motor import EpicsMotor
+from ophyd.ophydobj import OphydObject
 from ophyd.signal import LimitError
 from ophyd.sim import FakeEpicsSignal, make_fake_device
 
@@ -250,3 +252,31 @@ def elog():
             self.posts.append((args, kwargs))
 
     return MockELog('TST')
+
+
+@pytest.fixture(scope='session', autouse=True)
+def patch_epics_motor():
+    """
+    Force the following behavior onto EpicsMotor for the test suite:
+    When setpoint is updated:
+    - also update readback
+    - set dmov to 0 and back to 1
+    """
+    # Missing attribute, set to no alarm
+    FakeEpicsSignal.alarm_severity = 0
+
+    def simulate_move(obj: FakeEpicsSignal, value: float, **kwargs):
+        logger.debug(f'simulating move for {obj}')
+        epics_motor = obj.parent
+        epics_motor.motor_done_move.sim_put(0)
+        epics_motor.motor_is_moving.sim_put(1)
+        epics_motor.user_readback.sim_put(value)
+        epics_motor.motor_is_moving.sim_put(0)
+        epics_motor.motor_done_move.sim_put(1)
+        logger.debug(f'done simulating move for {obj}')
+
+    def install_simulate_move(ophydobj: OphydObject):
+        if isinstance(ophydobj, EpicsMotor):
+            ophydobj.user_setpoint.subscribe(simulate_move)
+
+    OphydObject.add_instantiation_callback(install_simulate_move)

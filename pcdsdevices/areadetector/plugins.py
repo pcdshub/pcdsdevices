@@ -17,10 +17,12 @@ from ophyd.ophydobj import OphydObject
 from ophyd.utils import set_and_wait
 from pcdsutils.ext_scripts import get_current_experiment, get_run_number
 
+from ..interface import BaseInterface
+
 logger = logging.getLogger(__name__)
 
 
-class PluginBase(ophyd.plugins.PluginBase, ADBase):
+class PluginBase(BaseInterface, ophyd.plugins.PluginBase, ADBase):
     """
     Overridden PluginBase to make it work when the root device is not a CamBase
     class.
@@ -170,7 +172,7 @@ class MagickPlugin(ophyd.plugins.MagickPlugin, FilePlugin):
     pass
 
 
-class HDF5FileStore(FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
+class HDF5FileStore(BaseInterface, FileStoreHDF5IterativeWrite, HDF5Plugin_V31):
     """
     HDF5 Plugin to use for interactive/in-scan saving at LCLS.
 

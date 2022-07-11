@@ -8,7 +8,7 @@ from ophyd.positioner import SoftPositioner
 from ophyd.signal import AttributeSignal
 from ophyd.sim import SynAxis
 
-from .interface import FltMvInterface, tweak_base
+from .interface import BaseInterface, FltMvInterface, tweak_base
 
 
 class SynMotor(FltMvInterface, SynAxis):
@@ -92,7 +92,7 @@ class SlowMotor(FastMotor):
         self._stop = True
 
 
-class SimTwoAxis(Device):
+class SimTwoAxis(BaseInterface, Device):
     """Test assembly with two slow motors. Used to test 2D tweak."""
     x = Cpt(SlowMotor)
     y = Cpt(SlowMotor)

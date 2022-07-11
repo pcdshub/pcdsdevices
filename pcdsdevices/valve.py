@@ -7,7 +7,7 @@ from enum import IntEnum
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
 
-from .interface import LightpathMixin
+from .interface import BaseInterface, LightpathMixin
 from .stopper import PPSStopper, Stopper  # noqa import PPS for backcompat
 
 logger = logging.getLogger(__name__)
@@ -82,7 +82,7 @@ class GateValve(Stopper):
         return not bool(self.interlock.get())
 
 
-class ValveBase(Device):
+class ValveBase(BaseInterface, Device):
     """
     Base class for valves.
 
@@ -380,7 +380,7 @@ class VGC_2S(VRC):
     )
 
 
-class VFS(Device, LightpathMixin):
+class VFS(BaseInterface, Device, LightpathMixin):
     """
     VFS = Fast Shutter Valve
 
@@ -496,7 +496,7 @@ class VFS(Device, LightpathMixin):
         self._removed = lightpath_values[self.position_open]['value']
 
 
-class VVCNO(Device):
+class VVCNO(BaseInterface, Device):
     """
     VVCNO = Vent Valve, Controlled, Normally Open.
 
@@ -607,7 +607,7 @@ class VRCDA(VRC, VRCNO):
     ...
 
 
-class VCN(Device):
+class VCN(BaseInterface, Device):
     """
     VCN = Variable Controlled Needle valve
 

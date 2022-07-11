@@ -4,12 +4,13 @@ from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 
-from pcdsdevices.variety import set_metadata
+from ..interface import BaseInterface
+from ..variety import set_metadata
 
 logger = logging.getLogger(__name__)
 
 
-class QminiSpectrometer(Device):
+class QminiSpectrometer(BaseInterface, Device):
     """
     Qmini Spectrometer
 

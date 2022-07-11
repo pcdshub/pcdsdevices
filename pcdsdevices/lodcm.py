@@ -20,8 +20,9 @@ from ophyd.status import wait as status_wait
 from pcdscalc import common, diffraction
 
 from pcdsdevices.epics_motor import OffsetIMSWithPreset, OffsetMotor
-from pcdsdevices.sim import FastMotor
 
+from .device import AliasComponent as ACpt
+from .device import FormattedParentComponent as FPCpt
 from .device import GroupDevice
 from .doc_stubs import insert_remove
 from .epics_motor import IMS
@@ -743,10 +744,10 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
     name : str
         The name of this device.
     """
-    tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
-    tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
-    dr = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:19',
-              kind='normal', doc='LOM Dia Theta')
+    tower1 = FPCpt(CrystalTower1, '{self._prefix}', kind='normal')
+    tower2 = FPCpt(CrystalTower2, '{self._prefix}', kind='normal')
+    dr = FPCpt(IMS, '{self._hutch_prefix}:MON:MMS:19',
+               kind='normal', doc='LOM Dia Theta')
 
     th1Si = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_Si',
                  motor_prefix='{self._hutch_prefix}:MON:MMS:07',
@@ -964,10 +965,10 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
     name : str
         The name of this device.
     """
-    tower1 = FCpt(CrystalTower1, '{self._prefix}', kind='normal')
-    tower2 = FCpt(CrystalTower2, '{self._prefix}', kind='normal')
-    dr = FCpt(IMS, '{self._hutch_prefix}:MON:MMS:19',
-              kind='normal', doc='LOM Dia Theta')
+    tower1 = FPCpt(CrystalTower1, '{self._prefix}', kind='normal')
+    tower2 = FPCpt(CrystalTower2, '{self._prefix}', kind='normal')
+    dr = FPCpt(IMS, '{self._hutch_prefix}:MON:MMS:19',
+               kind='normal', doc='LOM Dia Theta')
 
     th1C = FCpt(OffsetMotor, prefix='{self._prefix}:TH1:OFF_C',
                 name='th1_c',
@@ -1211,6 +1212,66 @@ class LODCM(BaseInterface, GroupDevice):
 
     energy_si = FCpt(LODCMEnergySi, '{self._prefix}', kind='normal')
     energy_c = FCpt(LODCMEnergyC, '{self._prefix}', kind='normal')
+
+    # Alias Components
+    # first tower
+    z1 = ACpt('tower1.z1')
+    x1 = ACpt('tower1.x1')
+    y1 = ACpt('tower1.y1')
+    th1 = ACpt('tower1.th1')
+    chi1 = ACpt('tower1.chi1')
+    h1n = ACpt('tower1.h1n')
+    h1p = ACpt('tower1.h1p')
+    # second tower
+    z2 = ACpt('tower2.z2')
+    x2 = ACpt('tower2.x2')
+    y2 = ACpt('tower2.y2')
+    th2 = ACpt('tower2.th2')
+    chi2 = ACpt('tower2.chi2')
+    h2n = ACpt('tower2.h2n')
+    diode2 = ACpt('tower2.diode2')
+    # diagnostic tower
+    dh = ACpt('diag_tower.dh')
+    dv = ACpt('diag_tower.dv')
+    dr = ACpt('diag_tower.dr')
+    df = ACpt('diag_tower.df')
+    dd = ACpt('diag_tower.dd')
+    yag_zoom = ACpt('diag_tower.yag_zoom')
+    # states
+    h1n_state = ACpt('tower1.h1n_state')
+    y1_state = ACpt('tower1.y1_state')
+    chi1_state = ACpt('tower1.chi1_state')
+    h2n_state = ACpt('tower2.h2n_state')
+    y2_state = ACpt('tower2.y2_state')
+    chi2_state = ACpt('tower2.chi2_state')
+    # offset positioners - tower 1
+    th1Si = ACpt('energy_si.th1Si')
+    z1Si = ACpt('energy_si.z1Si')
+    th1C = ACpt('energy_c.th1C')
+    z1C = ACpt('energy_c.z1C')
+    x1C = ACpt('tower1.x1C')
+    x1Si = ACpt('tower1.x1Si')
+    y1C = ACpt('tower1.y1C')
+    y1Si = ACpt('tower1.y1Si')
+    chi1C = ACpt('tower1.chi1C')
+    chi1Si = ACpt('tower1.chi1Si')
+    h1nC = ACpt('tower1.h1nC')
+    h1nSi = ACpt('tower1.h1nSi')
+    h1pSi = ACpt('tower1.h1pSi')
+    # offset positioners - tower 2
+    th2Si = ACpt('energy_si.th2Si')
+    z2Si = ACpt('energy_si.z2Si')
+    th2C = ACpt('energy_c.th2C')
+    z2C = ACpt('energy_c.z2C')
+    x2C = ACpt('tower2.x2C')
+    x2Si = ACpt('tower2.x2Si')
+    y2C = ACpt('tower2.y2C')
+    y2Si = ACpt('tower2.y2Si')
+    chi2C = ACpt('tower2.chi2C')
+    chi2Si = ACpt('tower2.chi2Si')
+    h2nC = ACpt('tower2.h2nC')
+    h2nSi = ACpt('tower2.h2nSi')
+
     # QIcon for UX
     _icon = 'fa.share-alt-square'
 
@@ -1230,66 +1291,6 @@ class LODCM(BaseInterface, GroupDevice):
         super().__init__(prefix, name=name, **kwargs)
         self.main_line = main_line
         self.mono_line = mono_line
-        # first tower
-        self.z1 = self.tower1.z1
-        self.x1 = self.tower1.x1
-        self.y1 = self.tower1.y1
-        self.th1 = self.tower1.th1
-        self.chi1 = self.tower1.chi1
-        self.h1n = self.tower1.h1n
-        self.h1p = self.tower1.h1p
-        # second tower
-        self.z2 = self.tower2.z2
-        self.x2 = self.tower2.x2
-        self.y2 = self.tower2.y2
-        self.th2 = self.tower2.th2
-        self.chi2 = self.tower2.chi2
-        self.h2n = self.tower2.h2n
-        self.diode2 = self.tower2.diode2
-        # diagnostic tower
-        self.dh = self.diag_tower.dh
-        self.dv = self.diag_tower.dv
-        self.dr = self.diag_tower.dr
-        self.df = self.diag_tower.df
-        self.dd = self.diag_tower.dd
-        self.yag_zoom = self.diag_tower.yag_zoom
-        # states
-        self.h1n_state = self.tower1.h1n_state
-        self.y1_state = self.tower1.y1_state
-        self.chi1_state = self.tower1.chi1_state
-        self.h2n_state = self.tower2.h2n_state
-        self.y2_state = self.tower2.y2_state
-        self.chi2_state = self.tower2.chi2_state
-        # # offset positioners - tower 1
-        self.th1Si = self.energy_si.th1Si
-        self.z1Si = self.energy_si.z1Si
-        self.th1C = self.energy_c.th1C
-        self.z1C = self.energy_c.z1C
-
-        self.x1C = self.tower1.x1C
-        self.x1Si = self.tower1.x1Si
-        self.y1C = self.tower1.y1C
-        self.y1Si = self.tower1.y1Si
-        self.chi1C = self.tower1.chi1C
-        self.chi1Si = self.tower1.chi1Si
-        self.h1nC = self.tower1.h1nC
-        self.h1nSi = self.tower1.h1nSi
-        self.h1pC = self.tower1.h1pC
-        self.h1pSi = self.tower1.h1pSi
-        # # offset positioners - tower 2
-        self.th2Si = self.energy_si.th2Si
-        self.z2Si = self.energy_si.z2Si
-        self.th2C = self.energy_c.th2C
-        self.z2C = self.energy_c.z2C
-
-        self.x2C = self.tower2.x2C
-        self.x2Si = self.tower2.x2Si
-        self.y2C = self.tower2.y2C
-        self.y2Si = self.tower2.y2Si
-        self.chi2C = self.tower2.chi2C
-        self.chi2Si = self.tower2.chi2Si
-        self.h2nC = self.tower2.h2nC
-        self.h2nSi = self.tower2.h2nSi
 
     @property
     def energy(self):
@@ -1813,98 +1814,3 @@ Photon Energy: {energy} [keV]
 {form(f'navitar zoom [{yag_zoom_units}]',
       f'{yag_zoom_user} ({yag_zoom_dial})', '')}
 """
-
-
-class SimFirstTower(CrystalTower1):
-    """Crystal Tower 1 Simulator for Testing."""
-    # first tower
-    z1 = Cpt(FastMotor, limits=(-1000, 1000))
-    x1 = Cpt(FastMotor, limits=(-1000, 1000))
-    y1 = Cpt(FastMotor, limits=(-1000, 1000))
-    th1 = Cpt(FastMotor, limits=(-1000, 1000))
-    chi1 = Cpt(FastMotor, limits=(-1000, 1000))
-    h1n = Cpt(FastMotor, limits=(-1000, 1000))
-    h1p = Cpt(FastMotor, limits=(-1000, 1000))
-
-
-class SimSecondTower(CrystalTower2):
-    """Crystal Tower 2 Simulator for Testing."""
-    # second tower
-    z2 = Cpt(FastMotor, limits=(-1000, 1000))
-    x2 = Cpt(FastMotor, limits=(-1000, 1000))
-    y2 = Cpt(FastMotor, limits=(-1000, 1000))
-    th2 = Cpt(FastMotor, limits=(-1000, 1000))
-    chi2 = Cpt(FastMotor, limits=(-1000, 1000))
-    h2n = Cpt(FastMotor, limits=(-1000, 1000))
-    diode2 = Cpt(FastMotor, limits=(-1000, 1000))
-
-
-class SimDiagnosticsTower(DiagnosticsTower):
-    """Diagnostics Tower Simulator for Testing."""
-    # diagnostic tower
-    dh = Cpt(FastMotor, limits=(-1000, 1000))
-    dv = Cpt(FastMotor, limits=(-1000, 1000))
-    dr = Cpt(FastMotor, limits=(-1000, 1000))
-    df = Cpt(FastMotor, limits=(-1000, 1000))
-    dd = Cpt(FastMotor, limits=(-1000, 1000))
-    yag_zoom = Cpt(FastMotor, limits=(-1000, 1000))
-
-
-class SimEnergyC(LODCMEnergyC):
-    """Energy C Simulator for Testing"""
-    th1C = Cpt(FastMotor, limits=(-1000, 1000))
-    th2C = Cpt(FastMotor, limits=(-1000, 1000))
-    z1C = Cpt(FastMotor, limits=(-1000, 1000))
-    z2C = Cpt(FastMotor, limits=(-1000, 1000))
-    dr = Cpt(FastMotor, limits=(-1000, 1000))
-
-    def get_reflection(self):
-        return (1, 1, 1)
-
-
-class SimEnergySi(LODCMEnergySi):
-    """Energy Si Simulator for Testing"""
-    th1Si = Cpt(FastMotor, limits=(-1000, 1000))
-    th2Si = Cpt(FastMotor, limits=(-1000, 1000))
-    z1Si = Cpt(FastMotor, limits=(-1000, 1000))
-    z2Si = Cpt(FastMotor, limits=(-1000, 1000))
-    dr = Cpt(FastMotor, limits=(-1000, 1000))
-
-    def get_reflection(self):
-        return (1, 1, 1)
-
-
-class SimLODCM(LODCM):
-    """LODCM Simulator for Testing"""
-    tower1 = Cpt(SimFirstTower, 'TOWER:1', name='tower1')
-    tower2 = Cpt(SimSecondTower, 'TOWER:2', name='tower2')
-    diag_tower = Cpt(SimDiagnosticsTower, 'DIAG', name='diag')
-    energy_si = Cpt(SimEnergySi, 'ENERGY:SI', name='energy_si')
-    energy_c = Cpt(SimEnergyC, 'ENERGY:C', name='energy_c')
-
-    def __init__(self, prefix, *args, **kwargs):
-
-        super().__init__(prefix=prefix, *args, **kwargs)
-        # first tower
-        self.z1 = FastMotor(limits=(-1000, 1000))
-        self.x1 = FastMotor(limits=(-1000, 1000))
-        self.y1 = FastMotor(limits=(-1000, 1000))
-        self.th1 = FastMotor(limits=(-1000, 1000))
-        self.chi1 = FastMotor(limits=(-1000, 1000))
-        self.h1n = FastMotor(limits=(-1000, 1000))
-        self.h1p = FastMotor(limits=(-1000, 1000))
-        # second tower
-        self.z2 = FastMotor(limits=(-1000, 1000))
-        self.x2 = FastMotor(limits=(-1000, 1000))
-        self.y2 = FastMotor(limits=(-1000, 1000))
-        self.th2 = FastMotor(limits=(-1000, 1000))
-        self.chi2 = FastMotor(limits=(-1000, 1000))
-        self.h2n = FastMotor(limits=(-1000, 1000))
-        self.diode2 = FastMotor(limits=(-1000, 1000))
-        # diagnostic tower
-        self.dh = FastMotor(limits=(-1000, 1000))
-        self.dv = FastMotor(limits=(-1000, 1000))
-        self.dr = FastMotor(limits=(-1000, 1000))
-        self.df = FastMotor(limits=(-1000, 1000))
-        self.dd = FastMotor(limits=(-1000, 1000))
-        self.yag_zoom = FastMotor(limits=(-1000, 1000))

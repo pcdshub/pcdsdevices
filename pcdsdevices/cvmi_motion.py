@@ -12,7 +12,7 @@ from .interface import BaseInterface
 from .signal import PytmcSignal
 
 
-class CvmiLED(Device):
+class CvmiLED(BaseInterface, Device):
     """
     Basic control and readback PVs for LED rings attached to the viewports
     on the vacuum chamber. These include illumination percentage,

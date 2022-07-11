@@ -146,7 +146,7 @@ class IonPumpWithController(IonPumpBase):
         return self.controller.unit.get()
 
 
-class PIPPLC(Device):
+class PIPPLC(BaseInterface, Device):
     """
     Class for PLC-controlled Ion Pumps.
 
@@ -194,7 +194,7 @@ class PIPPLC(Device):
                            doc='Timer count down to turn on the ion pump ')
 
 
-class PTMPLC(Device):
+class PTMPLC(BaseInterface, Device):
     """Class for PLC-controlled Turbo Pump."""
     switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='normal')
     reset_fault = Cpt(EpicsSignalWithRBV, ':RST_SW', kind='normal')
@@ -212,7 +212,7 @@ class PTMPLC(Device):
                            doc='interlock  is ok when true')
 
 
-class PROPLC(Device):
+class PROPLC(BaseInterface, Device):
     """Class for PLC-controlled Roughing Pump."""
     switch_pump_on = Cpt(EpicsSignalWithRBV, ':RUN_SW', kind='omitted')
     interlock_ok = Cpt(EpicsSignalRO, ':ILK_OK_RBV', kind='normal',
@@ -230,7 +230,7 @@ class Ebara_EV_A03_1(PROPLC):
     run_di = Cpt(EpicsSignalRO, ':RUN_DI_RBV', kind='omitted')
 
 
-class AgilentSerial(Device):
+class AgilentSerial(BaseInterface, Device):
     """Class for Agilent Turbo Pump controlled via serial."""
     run = Cpt(EpicsSignal, ':RUN', kind='omitted')
     config = Cpt(EpicsSignal, ':CONFIG', kind='omitted')
@@ -289,7 +289,7 @@ class Navigator(AgilentSerial):
     ctrl_air_temp = Cpt(EpicsSignalRO, ':CTRL_AIR_TEMP_RBV', kind='omitted')
 
 
-class GammaPCT(Device):
+class GammaPCT(BaseInterface, Device):
     """Class for Gamma Pump Controller accessed via serial."""
     model = Cpt(EpicsSignalRO, ':MODEL_RBV', kind='normal')
     fwversion = Cpt(EpicsSignalRO, ':FWVERSION_RBV', kind='normal')
@@ -306,7 +306,7 @@ class QPCPCT(GammaPCT):
     do_reset = Cpt(EpicsSignal, ':DO_RESET', kind='omitted')
 
 
-class PIPSerial(Device):
+class PIPSerial(BaseInterface, Device):
     """Class for Positive Ion Pump controlled via serial."""
     imon = Cpt(EpicsSignalRO, ':IMON_RBV', kind='hinted')
     pmon = Cpt(EpicsSignalRO, ':PMON_RBV', kind='hinted')

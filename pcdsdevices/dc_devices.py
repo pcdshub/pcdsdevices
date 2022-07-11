@@ -12,7 +12,7 @@ from .interface import BaseInterface
 logger = logging.getLogger(__name__)
 
 
-class ICTChannel(Device):
+class ICTChannel(BaseInterface, Device):
     """
     Class to define a particular channel of the ICT.
 
@@ -50,7 +50,7 @@ class ICTChannel(Device):
         return self.ch_current.get()
 
 
-class ICTBus(Device):
+class ICTBus(BaseInterface, Device):
     """
     Class to define a current bus of the ICT.
 

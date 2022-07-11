@@ -3,10 +3,12 @@ import logging
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 
+from ..interface import BaseInterface
+
 logger = logging.getLogger(__name__)
 
 
-class ZoomTelescope(Device):
+class ZoomTelescope(BaseInterface, Device):
     """
     Zoom telescope
 

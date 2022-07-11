@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import copy
 from collections.abc import Iterator
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from ophyd.areadetector.plugins import PluginBase
-from ophyd.device import Component, Device
+from ophyd.device import Component, Device, FormattedComponent
 from ophyd.ophydobj import Kind, OphydObject
 from ophyd.pseudopos import PseudoSingle
 from ophyd.signal import AttributeSignal, DerivedSignal
@@ -274,14 +276,14 @@ def to_interface(device_class):
 
 class UpdateComponent(Component):
     """
-    A component that copies and updates a parent component in a subclass.
+    A component that copies and updates a component in a subclass.
 
     Use this like any other component, adding it to your device that is a
     subclass of another device, using the same name as the component you'd like
     to update.
 
-    Pass keyword args to this component to update the values from the parent in
-    your subclass.
+    Pass keyword args to this component to update the values from the class
+    parent in your subclass.
 
     Some limitations:
 
@@ -359,6 +361,105 @@ class UpdateComponent(Component):
         return self.copy_cpt.create_component(instance)
 
 
+class AliasComponent(Component):
+    """
+    A component that is a name alias of another existing component.
+
+    This allows us to have "lazy" loading behavior with aliased components,
+    rather then requiring us to getattr them (and therefore instantiate them).
+
+    This will instantiate the original component if necessary when
+    accessed, and otherwise it will point to the original component.
+
+    Parameters
+    ----------
+    original : Component or str
+        A reference to the original component we'd like to make an alias for.
+        The easiest way to set this up is typically by using a reference to
+        the actual component object. In some cases of class inheritance this
+        may be cumbersome or impossible, so str assignment where the string
+        is the attribute name of the original component is also acceptable.
+        For example, if we want to make a top-level alias for a subdevice's
+        component, we don't have an easy way to reference the proper
+        component instance.
+    """
+    def __init__(self, original: Union[Component, str]):
+        if isinstance(original, Component):
+            # Make sure we have normal inspectable attrs on the cpt instance
+            super().__init__(
+                cls=original.cls,
+                suffix=original.suffix,
+                lazy=original.lazy,
+                trigger_value=original.trigger_value,
+                add_prefix=original.add_prefix,
+                doc=original.doc,
+                kind=original.kind,
+            )
+        elif isinstance(original, str):
+            # We can't have particularly useful information in this case
+            # Still support it because in some cases this is easier
+            super().__init__(AliasPlaceholder)
+        else:
+            raise TypeError(
+                'The original component for AliasComponent must be a '
+                'Component or str type. Recieved '
+                f'{original} of type {type(original)} instead.'
+            )
+
+        self._original = original
+
+    def __get__(
+        self,
+        instance: Optional[Device],
+        owner: type,
+    ):
+        if instance is None:
+            return self
+        if isinstance(self._original, Component):
+            get_str = self._original.attr
+        else:
+            get_str = self._original
+        return getattr(instance, get_str)
+
+
+class AliasPlaceholder:
+    """
+    Empty type for when an alias component has no available cls reference.
+    """
+    ...
+
+
+class ParentComponent(Component):
+    """
+    A component to borrow/duplicate from the ophyd device parent.
+
+    That is, there is a device that includes this device as a component,
+    and this device needs a safe reference to a different component owned
+    by the parent device.
+
+    If there is a device parent, we'll give the parent's component instance.
+    Otherwise, we'll create a new instance.
+    """
+    def __get__(
+        self,
+        instance: Optional[Device],
+        owner: type,
+    ):
+        if instance is None:
+            return self
+        try:
+            parent = instance.parent or instance.biological_parent
+        except AttributeError:
+            # No parent, create the device ourselves
+            return super().__get__(instance, owner)
+        # Yes parent, get the parent device that matches our attr
+        return getattr(parent, self.attr)
+
+
+class FormattedParentComponent(ParentComponent, FormattedComponent):
+    ...
+
+
 class GroupDevice(Device):
     """
     A device that is a group of components that will act independently.
@@ -406,18 +507,19 @@ class GroupDevice(Device):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Remove references to parent (in this case, self)
-        for cpt_name in self.component_names:
-            cpt = getattr(self, cpt_name)
-            # The following types break without parents
-            if not isinstance(cpt, tuple(self.needs_parent)):
-                cpt._parent = None
-                cpt.biological_parent = self
         if self.stage_group is None:
             self.stage_group = []
         else:
             # Avoid potential issues from shared mutable class attribute
             self.stage_group = list(self.stage_group)
+
+    def _instantiate_component(self, attr: str) -> OphydObject:
+        obj = super()._instantiate_component(attr)
+        # Remove references to parent (in this case, self)
+        if not isinstance(obj, tuple(self.needs_parent)):
+            obj._parent = None
+            obj.biological_parent = self
+        return obj
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)

@@ -21,6 +21,7 @@ from ophyd.ophydobj import OphydObject
 from ophyd.signal import AttributeSignal, EpicsSignal, EpicsSignalRO
 from pcdsutils.ext_scripts import get_hutch_name
 
+from pcdsdevices.interface import BaseInterface
 from pcdsdevices.variety import set_metadata
 
 from .plugins import (ColorConvPlugin, HDF5FileStore, HDF5Plugin, ImagePlugin,
@@ -36,7 +37,7 @@ __all__ = ['PCDSAreaDetectorBase',
            'PCDSAreaDetector']
 
 
-class PCDSAreaDetectorBase(DetectorBase):
+class PCDSAreaDetectorBase(BaseInterface, DetectorBase):
     """Standard area detector with no plugins."""
     cam = ADComponent(cam.CamBase, '')
 
@@ -340,7 +341,7 @@ class PCDSAreaDetector(PCDSAreaDetectorEmbedded):
     trans1 = Cpt(TransformPlugin, 'Trans1:')
 
 
-class PCDSAreaDetectorTyphos(Device):
+class PCDSAreaDetectorTyphos(BaseInterface, Device):
     """
     A 'bare' PCDS areadetector class specifically for Typhos screens.
     Implements only the most commonly used PVs for areadetector IOCS.
@@ -447,7 +448,7 @@ class PCDSAreaDetectorTyphosBeamStats(PCDSAreaDetectorTyphosTrigger):
     target_y = Cpt(EpicsSignalWithRBV, 'Cross4:MinY', kind='normal')
 
 
-class BaslerBase(Device):
+class BaslerBase(BaseInterface, Device):
     """
     Base class with Basler specific PVs. Intended to be sub-classed, not used
     stand-alone.
