@@ -149,17 +149,22 @@ destination_to_ld_position: Dict[int, DestinationPosition] = {
 }
 
 
-class DestinationInUseError(Exception):
+class MoveError(Exception):
+    """Cannot move according to the request."""
+    ...
+
+
+class DestinationInUseError(MoveError):
     """The target destination is already in use."""
     ...
 
 
-class PathCrossedError(Exception):
+class PathCrossedError(MoveError):
     """Moving to the target destination would cross an active laser."""
     ...
 
 
-class MovingActiveSource(Exception):
+class MovingActiveSource(MoveError):
     """The source is currently in use and should not be moved."""
     ...
 
@@ -205,6 +210,11 @@ class BtmsState:
             one to it.
         target_destination : DestinationPosition
             The target destination for the source to move to.
+
+        Raises
+        ------
+        MoveError
+            Raises specific ``MoveError`` subclass based on the reason.
         """
         self.check_configuration()
 
