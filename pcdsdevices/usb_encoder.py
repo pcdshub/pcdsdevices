@@ -10,7 +10,8 @@ from .interface import BaseInterface
 
 class USBEncoder(BaseInterface, Device):
     """
-    USB encoder class
+    Class for the encoder by US Digital.
+    https://www.usdigital.com/products/accessories/interfaces/usb/usb4
 
     Parameters
     ----------
@@ -28,9 +29,9 @@ class USBEncoder(BaseInterface, Device):
     tab_whitelist = ['pos', 'set_zero', 'set_zero_with_stage',
                      'scale', 'offset']
 
-    def __init__(self, prefix, *, name, stage=None, **kwargs):
+    def __init__(self, prefix, *, name, linked_axis=None, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
-        self.stage = stage
+        self.linked_axis = linked_axis
 
     def set_zero(self):
         """ Resets the encoder counts to 0 """
@@ -44,9 +45,9 @@ class USBEncoder(BaseInterface, Device):
         self.zero.put(1)
         if (
             self.stage is not None or
-            hasattr(self.stage, 'set_current_position')
+            hasattr(self.linked_axis, 'set_current_position')
         ):
-            self.stage.set_current_position(0)
+            self.linked_axis.set_current_position(0)
             print(f'Reset encoder {self.name} and axis {self.stage.name} to 0')
         else:
             print('No stage associated with that encoder,')
