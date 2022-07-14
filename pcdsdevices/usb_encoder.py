@@ -51,9 +51,14 @@ class USBEncoder(BaseInterface, Device):
             hasattr(self.linked_axis, 'set_current_position')
         ):
             self.linked_axis.set_current_position(0)
-            print(f'Reset encoder {self.name} and axis {self.stage.name} to 0')
+            print(
+                f'Reset encoder {self.name} and axis'
+                f' {self.linked_axis.name} to 0.'
+            )
         else:
-            print('No stage associated with that encoder,')
-            print('or stage is not settable.\n')
+            print(
+                'No stage associated with that encoder,'
+                'or stage is not settable.\n'
+            )
             print('Resetting encoder only.')
         return
