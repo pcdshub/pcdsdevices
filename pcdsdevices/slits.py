@@ -53,7 +53,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
     lightpath_cpts = ['xwidth', 'ywidth']
 
     # Tab settings
-    tab_whitelist = ['open', 'close', 'block']
+    tab_whitelist = ['open', 'close', 'block', 'hg', 'ho', 'vg', 'vo']
 
     # Just to hold a value
     nominal_aperture = Cpt(Signal, kind='normal')
