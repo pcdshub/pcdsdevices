@@ -20,13 +20,16 @@ class USBEncoder(BaseInterface, Device):
 
     name: str
         USB encoder name
+
+    linked_axis: device
+        Instance of the axis on which the encoder is mounted
     """
     zero = Cpt(EpicsSignal, ':ZEROCNT', kind='omitted')
     pos = Cpt(EpicsSignal, ':POSITION', kind='hinted')
     scale = Cpt(EpicsSignal, ':SCALE', kind='config')
     offset = Cpt(EpicsSignal, ':OFFSET', kind='config')
 
-    tab_whitelist = ['pos', 'set_zero', 'set_zero_with_stage',
+    tab_whitelist = ['pos', 'set_zero', 'set_zero_with_axis',
                      'scale', 'offset']
 
     def __init__(self, prefix, *, name, linked_axis=None, **kwargs):
@@ -37,7 +40,7 @@ class USBEncoder(BaseInterface, Device):
         """ Resets the encoder counts to 0 """
         self.zero.put(1)
 
-    def set_zero_with_stage(self):
+    def set_zero_with_axis(self):
         """
         Resets the encoder counts to 0 and sets the stage offset
         so that its position is also 0.
