@@ -25,9 +25,11 @@ class USBEncoder(BaseInterface, Device):
     scale = Cpt(EpicsSignal, ':SCALE', kind='config')
     offset = Cpt(EpicsSignal, ':OFFSET', kind='config')
 
-    tab_whitelist = ['pos', 'set_zero', 'scale', 'offset']
+    tab_whitelist = ['pos', 'set_zero', 'set_zero_with_stage',
+                     'scale', 'offset']
 
-    def __init__(self, stage=None):
+    def __init__(self, prefix, *, name, stage=None, **kwargs):
+        super().__init__(prefix, name=name, **kwargs)
         self.stage = stage
 
     def set_zero(self):
@@ -45,8 +47,9 @@ class USBEncoder(BaseInterface, Device):
             hasattr(self.stage, 'set_current_position')
         ):
             self.stage.set_current_position(0)
+            print(f'Reset encoder {self.name} and axis {self.stage.name} to 0')
         else:
             print('No stage associated with that encoder,')
             print('or stage is not settable.\n')
-            print('Resetting endoder only.')
+            print('Resetting encoder only.')
         return
