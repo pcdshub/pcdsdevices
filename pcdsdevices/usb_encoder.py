@@ -10,7 +10,7 @@ from .interface import BaseInterface
 
 class USBEncoder(BaseInterface, Device):
     """
-    Class for the encoder by US Digital.
+    Class for the USB encoder by US Digital.
     https://www.usdigital.com/products/accessories/interfaces/usb/usb4
 
     Parameters
