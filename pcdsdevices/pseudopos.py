@@ -785,7 +785,7 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         return self.PseudoPosition(delay=delay_value + self.user_offset.get())
 
     def set_current_position(self, position):
-        '''
+        """
         Calculate and configure the user_offset value, indicating the provided
         ``position`` as the new current position.
 
@@ -793,10 +793,17 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         ----------
         position
             The new current position.
-        '''
+        """
         self.user_offset.put(0.0)
         new_offset = position - self.position[0]
         self.user_offset.put(new_offset)
+
+    def set_zero(self):
+        """
+        Set current position to 0
+        """
+        self.set_current_position(0)
+        return
 
     def format_status_info(self, status_info):
         """
