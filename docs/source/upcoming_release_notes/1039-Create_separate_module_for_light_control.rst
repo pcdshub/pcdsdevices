@@ -29,4 +29,3 @@ Maintenance
 Contributors
 ------------
 - wwright-slac
-- klauer
