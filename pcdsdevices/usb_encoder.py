@@ -8,7 +8,7 @@ from ophyd import Device, EpicsSignal
 from .interface import BaseInterface
 
 
-class USBEncoder(BaseInterface, Device):
+class UsDigitalUsbEncoder(BaseInterface, Device):
     """
     Class for the USB encoder by US Digital.
     https://www.usdigital.com/products/accessories/interfaces/usb/usb4
