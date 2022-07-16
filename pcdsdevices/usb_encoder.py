@@ -42,7 +42,7 @@ class UsDigitalUsbEncoder(BaseInterface, Device):
 
     def set_zero_with_axis(self):
         """
-        Resets the encoder counts to 0 and sets the stage offset
+        Resets the encoder counts to 0 and sets the linked_axis offset
         so that its position is also 0.
         """
         self.zero.put(1)
@@ -57,8 +57,8 @@ class UsDigitalUsbEncoder(BaseInterface, Device):
             )
         else:
             print(
-                'No stage associated with that encoder,'
-                'or stage is not settable.\n'
+                'No axis associated with that encoder,'
+                'or axis is not settable.\n'
             )
             print('Resetting encoder only.')
         return
