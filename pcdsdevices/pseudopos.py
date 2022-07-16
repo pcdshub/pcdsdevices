@@ -798,13 +798,6 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         new_offset = position - self.position[0]
         self.user_offset.put(new_offset)
 
-    def set_zero(self):
-        """
-        Set current position to 0
-        """
-        self.set_current_position(0)
-        return
-
     def format_status_info(self, status_info):
         """
         Use the renderer from the subdevice

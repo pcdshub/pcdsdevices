@@ -47,7 +47,7 @@ class USBEncoder(BaseInterface, Device):
         """
         self.zero.put(1)
         if (
-            self.stage is not None or
+            self.linked_axis is not None or
             hasattr(self.linked_axis, 'set_current_position')
         ):
             self.linked_axis.set_current_position(0)
