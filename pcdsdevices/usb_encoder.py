@@ -46,10 +46,7 @@ class UsDigitalUsbEncoder(BaseInterface, Device):
         so that its position is also 0.
         """
         self.zero.put(1)
-        if (
-            self.linked_axis is not None or
-            hasattr(self.linked_axis, 'set_current_position')
-        ):
+        if hasattr(self.linked_axis, 'set_current_position'):
             self.linked_axis.set_current_position(0)
             print(
                 f'Reset encoder {self.name} and axis'
@@ -60,5 +57,5 @@ class UsDigitalUsbEncoder(BaseInterface, Device):
                 'No axis associated with that encoder,'
                 'or axis is not settable.\n'
             )
-            print('Resetting encoder only.')
+            print('Reset encoder only.')
         return
