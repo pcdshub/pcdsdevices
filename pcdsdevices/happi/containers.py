@@ -5,6 +5,7 @@ import re
 import warnings
 from copy import copy, deepcopy
 
+import lightpath.happi.containers
 from happi.item import EntryInfo, HappiItem, OphydItem
 
 
@@ -47,27 +48,11 @@ class LCLSItem(OphydItem):
                           'the ioc data.'), optional=True, enforce=str)
 
 
-class LCLSLightpathItem(LCLSItem):
+class LCLSLightpathItem(lightpath.happi.containers.LightpathItem, LCLSItem):
     """
     LCLS version of a LightpathItem
-
-    Cannot simply mixin with lightpath version since importing
-    lightpath.happi.containers.LightpathItem results in entry points
-    picking up duplicate items.
     """
-    kwargs = deepcopy(OphydItem.kwargs)
-    kwargs.default = {'name': '{{name}}',
-                      'input_branches': '{{input_branches}}',
-                      'output_branches': '{{output_branches}}',
-                      }
-    active = EntryInfo("If the device is currently active",
-                       optional=False, enforce=bool, default=False)
-    input_branches = EntryInfo(('List of branches the device can receive '
-                                'beam from.'),
-                               optional=False, enforce=list)
-    output_branches = EntryInfo(('List of branches the device can deliver '
-                                'beam to.'),
-                                optional=False, enforce=list)
+    pass
 
 
 class LegacyItem(HappiItem):
@@ -135,7 +120,7 @@ class LegacyItem(HappiItem):
         return self.detailed_screen
 
 
-class Vacuum(LegacyItem):
+class Vacuum(lightpath.happi.containers.LightpathItem, LegacyItem):
     """
     Parent class for devices in the vacuum system.
     """
@@ -143,7 +128,7 @@ class Vacuum(LegacyItem):
     system.default = 'vacuum'
 
 
-class Diagnostic(LegacyItem):
+class Diagnostic(lightpath.happi.containers.LightpathItem, LegacyItem):
     """
     Parent class for devices that are used as diagnostics.
     """
@@ -153,7 +138,7 @@ class Diagnostic(LegacyItem):
                      enforce=str)
 
 
-class BeamControl(LegacyItem):
+class BeamControl(lightpath.happi.containers.LightpathItem, LegacyItem):
     """
     Parent class for devices that control any beam parameter.
     """
@@ -230,9 +215,9 @@ class PIM(Diagnostic):
     prefix = copy(Diagnostic.prefix)
     prefix.enforce = re.compile(r'.*PIM.*')
     prefix_det = EntryInfo("Prefix for associated camera", enforce=str)
-    device_class = copy(LegacyItem.device_class)
+    device_class = copy(Diagnostic.device_class)
     device_class.default = 'pcdsdevices.device_types.PIM'
-    kwargs = deepcopy(LegacyItem.kwargs)
+    kwargs = deepcopy(Diagnostic.kwargs)
     kwargs.default['prefix_det'] = "{{prefix_det}}"
 
 
@@ -266,7 +251,7 @@ class IPM(Diagnostic):
     """
     prefix = copy(Diagnostic.prefix)
     prefix.enforce = re.compile(r'.*IPM.*')
-    device_class = copy(LegacyItem.device_class)
+    device_class = copy(Diagnostic.device_class)
     device_class.default = 'pcdsdevices.device_types.IPM'
 
 
@@ -290,15 +275,15 @@ class Attenuator(BeamControl):
     """
     prefix = copy(BeamControl.prefix)
     prefix.enforce = re.compile(r'.*ATT.*')
-    device_class = copy(LegacyItem.device_class)
+    device_class = copy(BeamControl.device_class)
     device_class.default = 'pcdsdevices.device_types.Attenuator'
     n_filters = EntryInfo("Number of filters on the Attenuator",
                           enforce=int, optional=False)
-    kwargs = deepcopy(LegacyItem.kwargs)
+    kwargs = deepcopy(BeamControl.kwargs)
     kwargs.default['n_filters'] = "{{n_filters}}"
 
 
-class Stopper(LegacyItem):
+class Stopper(lightpath.happi.containers.LightpathItem, LegacyItem):
     """
     Large devices that prevent beam when it could cause damage to hardware.
 
@@ -386,11 +371,11 @@ class LODCM(BeamControl):
     mono_line : str
         Name of the mono line
     """
-    device_class = copy(LegacyItem.device_class)
+    device_class = copy(BeamControl.device_class)
     device_class.default = 'pcdsdevices.device_types.LODCM'
     mono_line = EntryInfo("Name of the MONO beamline",
                           enforce=str, optional=False)
-    kwargs = deepcopy(LegacyItem.kwargs)
+    kwargs = deepcopy(BeamControl.kwargs)
     kwargs.default.update({'mono_line': '{{mono_line}}',
                            'main_line': '{{beamline}}'})
 
@@ -418,7 +403,7 @@ class MovableStand(LegacyItem):
     system.default = 'changeover'
 
 
-class Motor(LegacyItem):
+class Motor(lightpath.happi.containers.LightpathItem, LegacyItem):
     """
     A Generic EpicsMotor
     """
