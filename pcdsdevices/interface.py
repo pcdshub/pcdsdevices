@@ -1678,6 +1678,7 @@ class LightpathMixin(Device):
                        output_branches=['L0'])
     """
     # Component names whose values are relevant for inserted/removed
+    # can access sub-components with dot notation
     lightpath_cpts = []
 
     # Flag to signify that subclass is another mixin, rather than a device
@@ -1697,12 +1698,6 @@ class LightpathMixin(Device):
         for sig in self.lightpath_cpts:
             self.lightpath_summary.add_signal_by_attr_name(sig)
 
-        if not self.input_branches or not self.output_branches:
-            raise NotImplementedError(
-                'Did not implement LightpathMixin properly.  '
-                'Must supply input and output branches.'
-            )
-
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
         if cls._lightpath_mixin:
@@ -1714,6 +1709,27 @@ class LightpathMixin(Device):
                     'Did not implement LightpathMixin properly.  '
                     'Must supply a list of components (lightpath_cpts)'
                 )
+
+    def _check_valid_lightpath(self):
+        """
+        Checks if the full lightpath interface is implemented.
+        To be run before get_lightpath_state
+
+        Returns
+        -------
+        bool
+            if the lightpath interface is fully implemented
+        """
+        is_valid = (
+            (len(self.lightpath_cpts) > 0) and
+            (len(self.input_branches) > 0) and
+            (len(self.output_branches) > 0)
+        )
+        if not is_valid:
+            raise NotImplementedError(
+                'Lightpath Mixin not fully implemented.  Missing either '
+                'input_branches or output_branches. '
+            )
 
     def calc_lightpath_state(self, **kwargs) -> LightpathState:
         """
@@ -1744,6 +1760,7 @@ class LightpathMixin(Device):
         LightpathState
             a dataclass containing the Lightpath state
         """
+        self._check_valid_lightpath()
         kwargs = {sig.name.removeprefix(self.name + '_'): sig.get()
                   for sig in self.lightpath_summary._signals}
         status = self.calc_lightpath_state(**kwargs)
@@ -1752,11 +1769,47 @@ class LightpathMixin(Device):
 
 class LightpathInOutMixin(LightpathMixin):
     """
-    LightpathMixin for parent device with InOut subdevices.
-    Also works recursively on other LightpathInOutMixin subclasses.
+    LightpathMixin for devices that themselves implement InOut interface
+
+    This device must implement the InOutPositioner interface
+    (check_inserted, check_removed, check_transmission),
+    and have a ``state`` signal (which is its only ``lightpath_cpt``).
+    """
+    _lightpath_mixin = True
+    lightpath_cpts = ['state']
+
+    def calc_lightpath_state(self, state) -> LightpathState:
+        self._inserted = self.check_inserted(state)
+        self._removed = self.check_removed(state)
+        self._transmission = self.check_transmission(state)
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            transmission=self._transmission,
+            output_branch=self.output_branches[0]
+        )
+
+
+class LightpathInOutCptMixin(LightpathMixin):
+    """
+    LightpathMixin for parent device with InOut components.
+
+    The components listed in ``lightpath_cpts`` must implement the
+    InOutPositioner interface (check_inserted, check_removed,
+    check_transmission), and have a ``state`` signal.
+
+    Often seen valid components are ``TwinCATStatePMPS``,
+    ``InOutPositioner``, etc.
     """
     # defers the check for lightpath_cpt until next subclass
     _lightpath_mixin = True
+
+    def get_lightpath_state(self) -> LightpathState:
+        self._check_valid_lightpath()
+        kwargs = {sig.name.removeprefix(self.name + '_'): sig.state.get()
+                  for sig in self.lightpath_summary._signals}
+        status = self.calc_lightpath_state(**kwargs)
+        return status
 
     def calc_lightpath_state(self, **lightpath_kwargs):
         in_check = []
@@ -1764,24 +1817,14 @@ class LightpathInOutMixin(LightpathMixin):
         trans_check = []
         for sig_name, sig_value in lightpath_kwargs.items():
             obj = getattr(self, sig_name)
-            if isinstance(obj, LightpathInOutMixin):
-                # TO-DO: deprecate this condition, and rework classes
-                # it applies to.  (attenuators, RTDS)
-                # The inserted/removed are always just a getattr
-                # Therefore, they are safe to call in a callback
-                in_check.append(obj.inserted)
-                out_check.append(obj.removed)
-                trans_check.append(obj.transmission)
-            else:
-                if not obj._state_initialized:
-                    # This would prevent make check_inserted, etc. fail
-                    self._retry_lightpath = True
-                    return
-                # Inserted/removed are not getattr, they can check EPICS
-                # Instead, check status against the callback kwarg dict
-                in_check.append(obj.check_inserted(sig_value[0]))
-                out_check.append(obj.check_removed(sig_value[0]))
-                trans_check.append(obj.check_transmission(sig_value[0]))
+            if not obj._state_initialized:
+                # This would prevent make check_inserted, etc. fail
+                self._retry_lightpath = True
+                return
+            # get state of the InOutPositioner and check status
+            in_check.append(obj.check_inserted(sig_value))
+            out_check.append(obj.check_removed(sig_value))
+            trans_check.append(obj.check_transmission(sig_value))
         self._inserted = any(in_check)
         self._removed = all(out_check)
         self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
