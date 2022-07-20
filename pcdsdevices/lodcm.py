@@ -10,8 +10,10 @@ no readback into the device's alignment. This is intended for a future update.
 """
 import functools
 import logging
+from typing import Union
 
 import numpy as np
+from lightpath import LightpathState
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignalRO
@@ -26,7 +28,7 @@ from .device import GroupDevice
 from .doc_stubs import insert_remove
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
-from .interface import BaseInterface, FltMvInterface
+from .interface import BaseInterface, FltMvInterface, LightpathMixin
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
 from .utils import get_status_float, get_status_value
@@ -1170,7 +1172,7 @@ Photon Energy: {energy} [keV]
 """
 
 
-class LODCM(BaseInterface, GroupDevice):
+class LODCM(BaseInterface, GroupDevice, LightpathMixin):
     """
     Large Offset Dual Crystal Monochromator.
 
@@ -1217,6 +1219,8 @@ class LODCM(BaseInterface, GroupDevice):
     tab_whitelist = ['h1n_state', 'yag', 'dectris', 'diode', 'foil',
                      'remove_dia', 'tower1', 'tower2',
                      'diag_tower', 'calc']
+
+    lightpath_cpts = ['tower1.h1n_state.state']
 
     def __init__(self, prefix, *, name, main_line='MAIN', mono_line='MONO',
                  **kwargs):
@@ -1302,6 +1306,26 @@ class LODCM(BaseInterface, GroupDevice):
         # TODO consider "energy" proxy motor object that picks where to
         # forward the commands instead of this property
         return self.energy_c
+
+    def calc_lightpath_state(
+        self,
+        tower1_h1n_state_state: Union[int, str]
+    ) -> LightpathState:
+        """
+        TODO: actually figure out the logic for this, this is likely
+        very very wrong.  Currently this would be best suited for
+        a LightpathInOutCptMixin, but I doubt this is all the logic
+        """
+        h1n_state = tower1_h1n_state_state
+        inserted = self.h1n_state.check_inserted(h1n_state)
+        removed = self.h1n_state.check_removed(h1n_state)
+        transmission = self.h1n_state.check_transmission(h1n_state)
+        return LightpathState(
+            inserted=inserted,
+            removed=removed,
+            transmission=transmission,
+            output_branch=self.output_branches[0]
+        )
 
     @property
     def inserted(self):

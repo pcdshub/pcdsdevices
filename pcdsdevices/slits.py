@@ -51,7 +51,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
 
     # Mark as parent class for lightpath interface
     _lightpath_mixin = True
-    lightpath_cpts = ['xwidth.readback', 'ywidth.readback']
+    lightpath_cpts = ['xwidth.user_readback', 'ywidth.user_readback']
 
     # Tab settings
     tab_whitelist = ['open', 'close', 'block', 'hg', 'ho', 'vg', 'vo']
@@ -299,10 +299,10 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
 
     def calc_lightpath_state(
         self,
-        xwidth_readback: float,
-        ywidth_readback: float
+        xwidth: float,
+        ywidth: float
     ) -> LightpathState:
-        widths = [xwidth_readback, ywidth_readback]
+        widths = [xwidth, ywidth]
         self._inserted = (min(widths) < self.nominal_aperture.get())
         self._removed = not self._inserted
         self._transmission = 1.0 if self._inserted else 0.0
@@ -420,6 +420,8 @@ class LusiSlits(SlitsBase):
     close_cmd = Cpt(EpicsSignal, ':CLOSE', kind='omitted')
     block_cmd = Cpt(EpicsSignal, ':BLOCK', kind='omitted')
 
+    lightpath_cpts = ['xwidth.readback', 'ywidth.readback']
+
     def open(self):
         """Uses the built-in 'OPEN' record to move open the aperture."""
         self.open_cmd.put(1)
@@ -431,6 +433,15 @@ class LusiSlits(SlitsBase):
     def block(self):
         """Overlap the slits to block the beam."""
         self.block_cmd.put(1)
+
+    def calc_lightpath_state(
+        self,
+        xwidth_readback: float,
+        ywidth_readback: float
+    ) -> LightpathState:
+        """widths have different names due to different positioner class"""
+        return super().calc_lightpath_state(xwidth=xwidth_readback,
+                                            ywidth=ywidth_readback)
 
 
 class Slits(LusiSlits):
@@ -488,6 +499,8 @@ class BeckhoffSlits(SlitsBase):
     bottom = Cpt(BeckhoffAxisNoOffset, ':MMS:BOTTOM', kind='normal')
     north = Cpt(BeckhoffAxisNoOffset, ':MMS:NORTH', kind='normal')
     south = Cpt(BeckhoffAxisNoOffset, ':MMS:SOUTH', kind='normal')
+
+    lightpath_cpts = ['xwidth.readback', 'ywidth.readback']
 
     def __init__(self, prefix, *, name, **kwargs):
         self._started_move = False
@@ -558,6 +571,15 @@ class BeckhoffSlits(SlitsBase):
                     self._south_done))
         if done != self.done_all.get():
             self.done_all.put(done)
+
+    def calc_lightpath_state(
+        self,
+        xwidth_readback: float,
+        ywidth_readback: float
+    ) -> LightpathState:
+        """widths have different names due to different positioner class"""
+        return super().calc_lightpath_state(xwidth=xwidth_readback,
+                                            ywidth=ywidth_readback)
 
 
 def _rtd_fields(cls, attr_base, range_, **kwargs):

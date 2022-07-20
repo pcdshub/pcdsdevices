@@ -938,7 +938,7 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
     y = UCpt(CCMY, add_prefix=[], kind='normal',
              doc='Combined motion of the CCM Y motors.')
 
-    lightpath_cpts = ['x']
+    lightpath_cpts = ['x.sync.readback']
     tab_whitelist = ['x1', 'x2', 'y1', 'y2', 'y3', 'E', 'E_Vernier',
                      'th2fine', 'alio2E', 'E2alio', 'alio', 'home',
                      'kill', 'insert', 'remove', 'inserted', 'removed']
@@ -1013,14 +1013,14 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
         text += f'x @ (mm): {xavg} [x1,x2={x_down},{x_up}]\n'
         return text
 
-    def calc_lightpath_state(self, x: float) -> LightpathState:
+    def calc_lightpath_state(self, x_sync: float) -> LightpathState:
         """
         Update the fields used by the lightpath to determine in/out.
 
         Compares the x position with the saved in and out values.
         """
-        self._inserted = np.isclose(x, self._in_pos)
-        self._removed = np.isclose(x, self._out_pos)
+        self._inserted = np.isclose(x_sync, self._in_pos)
+        self._removed = np.isclose(x_sync, self._out_pos)
         if self._removed:
             self._transmission = 1
         else:

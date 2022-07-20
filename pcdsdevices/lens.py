@@ -22,7 +22,7 @@ from .sim import FastMotor
 logger = logging.getLogger(__name__)
 
 
-class XFLS(InOutRecordPositioner):
+class XFLS(InOutRecordPositioner, LightpathInOutMixin):
     """
     X-ray Focusing (Be) Lens Stack.
 
