@@ -3,7 +3,7 @@ from ophyd import Component as Cpt
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxis, EpicsMotorInterface
-from .interface import BaseInterface, LightpathInOutMixin
+from .interface import BaseInterface, LightpathInOutCptMixin
 from .pmps import TwinCATStatePMPS
 from .signal import PytmcSignal
 
@@ -18,7 +18,7 @@ class ReflaserL2SIMirror(TwinCATStatePMPS):
     config = UpCpt(state_count=2)
 
 
-class ReflaserL2SI(BaseInterface, GroupDevice, LightpathInOutMixin):
+class ReflaserL2SI(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     """
     The L2SI design for the reference laser.
 

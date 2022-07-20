@@ -217,7 +217,7 @@ class VonHamos4Crystal(VonHamosFE):
                          prefix_energy=prefix_energy, **kwargs)
 
 
-class Mono(BaseInterface, GroupDevice):
+class Mono(BaseInterface, GroupDevice, LightpathMixin):
     """
     L2S-I NEH 2.X Monochromator
 
@@ -295,8 +295,19 @@ class Mono(BaseInterface, GroupDevice):
     transmission = 1
     SUB_STATE = 'state'
 
+    # dummy component, state is always the same
+    lightpath_cpts = ['m_pi']
 
-class TMOSpectrometer(BaseInterface, GroupDevice):
+    def calc_lightpath_state(self, **kwargs) -> LightpathState:
+        return LightpathState(
+            inserted=True,
+            removed=False,
+            transmission=1,
+            output_branch=self.output_branches[0]
+        )
+
+
+class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     """
     TMO Fresnel Photon Spectrometer Motion components class.
 
@@ -331,8 +342,19 @@ class TMOSpectrometer(BaseInterface, GroupDevice):
     transmission = 1
     SUB_STATE = 'state'
 
+    # dummy signal, state is always the same
+    lightpath_cpts = ['yag_x']
 
-class HXRSpectrometer(BaseInterface, GroupDevice):
+    def calc_lightpath_state(self, **kwargs) -> LightpathState:
+        return LightpathState(
+            inserted=True,
+            removed=False,
+            transmission=1,
+            output_branch=self.output_branches[0]
+        )
+
+
+class HXRSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     """
     HXR Single Shot Spectrometer motion components class.
 
@@ -367,3 +389,14 @@ class HXRSpectrometer(BaseInterface, GroupDevice):
     removed = False
     transmission = 1
     SUB_STATE = 'state'
+
+    # dummy signal, state is always the same
+    lightpath_cpts = ['xtaly']
+
+    def calc_lightpath_state(self, **kwargs) -> LightpathState:
+        return LightpathState(
+            inserted=True,
+            removed=False,
+            transmission=1,
+            output_branch=self.output_branches[0]
+        )

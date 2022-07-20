@@ -38,5 +38,5 @@ class SxrTestAbsorber(BaseInterface, LightpathMixin):
             inserted=self._inserted,
             removed=self._removed,
             transmission=self._transmission,
-            output_branch=self.output_branch[0]
+            output_branch=self.output_branches[0]
         )

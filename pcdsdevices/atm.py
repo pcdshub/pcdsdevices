@@ -3,7 +3,7 @@ from ophyd import Component as Cpt
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset
-from .interface import BaseInterface, LightpathInOutMixin
+from .interface import BaseInterface, LightpathInOutCptMixin
 from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATTempSensor
 
@@ -18,7 +18,7 @@ class ATMTarget(TwinCATStatePMPS):
     config = UpCpt(state_count=6)
 
 
-class ArrivalTimeMonitor(BaseInterface, GroupDevice, LightpathInOutMixin):
+class ArrivalTimeMonitor(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     """
     Determines the arrival time of the x-ray relative to the optical laser.
 

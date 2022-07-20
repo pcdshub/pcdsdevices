@@ -6,7 +6,7 @@ from ophyd import EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 
 from .inout import InOutPositioner, InOutPVStatePositioner
-from .interface import BaseInterface, LightpathMixin
+from .interface import BaseInterface, LightpathInOutMixin, LightpathMixin
 
 
 class Commands(IntEnum):
@@ -15,7 +15,7 @@ class Commands(IntEnum):
     open_valve = 1
 
 
-class Stopper(InOutPVStatePositioner):
+class Stopper(InOutPVStatePositioner, LightpathInOutMixin):
     """
     Controls Stopper.
 
@@ -77,7 +77,7 @@ class Stopper(InOutPVStatePositioner):
         return self.insert(**kwargs)
 
 
-class PPSStopper(InOutPositioner):
+class PPSStopper(InOutPositioner, LightpathInOutMixin):
     """
     PPS Stopper.
 

@@ -30,7 +30,7 @@ from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset
-from .interface import (BaseInterface, FltMvInterface, LightpathInOutMixin,
+from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
                         LightpathMixin, MvInterface)
 from .pmps import TwinCATStatePMPS
 from .sensors import RTD, TwinCATTempSensor
@@ -51,7 +51,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
 
     # Mark as parent class for lightpath interface
     _lightpath_mixin = True
-    lightpath_cpts = ['xwidth', 'ywidth']
+    lightpath_cpts = ['xwidth.readback', 'ywidth.readback']
 
     # Tab settings
     tab_whitelist = ['open', 'close', 'block', 'hg', 'ho', 'vg', 'vo']
@@ -299,10 +299,10 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
 
     def calc_lightpath_state(
         self,
-        xwidth: float,
-        ywidth: float
+        xwidth_readback: float,
+        ywidth_readback: float
     ) -> LightpathState:
-        widths = [xwidth, ywidth]
+        widths = [xwidth_readback, ywidth_readback]
         self._inserted = (min(widths) < self.nominal_aperture.get())
         self._removed = not self._inserted
         self._transmission = 1.0 if self._inserted else 0.0
@@ -595,7 +595,7 @@ class ExitSlitTarget(TwinCATStatePMPS):
     config = UpCpt(state_count=3)
 
 
-class ExitSlits(BaseInterface, GroupDevice, LightpathInOutMixin):
+class ExitSlits(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     tab_component_names = True
 
     lightpath_cpts = ['target']

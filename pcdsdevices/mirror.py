@@ -9,6 +9,7 @@ vertical gantries.
 import logging
 
 import numpy as np
+from lightpath import LightpathState
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
@@ -19,7 +20,7 @@ from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
-from .interface import BaseInterface, FltMvInterface
+from .interface import BaseInterface, FltMvInterface, LightpathMixin
 from .pmps import TwinCATStatePMPS
 from .signal import PytmcSignal
 from .utils import get_status_value, reorder_components
@@ -323,7 +324,7 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         return super().check_value(pos)
 
 
-class XOffsetMirror(BaseInterface, GroupDevice):
+class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
     """
     X-ray Offset Mirror.
 
@@ -385,10 +386,22 @@ class XOffsetMirror(BaseInterface, GroupDevice):
     # Lightpath config: implement inserted, removed, transmission, subscribe
     # For now, keep it simple. Some mirrors need more than this, but it is
     # sufficient for MR1L0 and MR2L0 for today.
-    inserted = True
-    removed = False
-    transmission = 1
-    SUB_STATE = 'state'
+
+    # We watch the user_readback here, but the name of its component is
+    # that of the bare signal (x_up.user_readback -> x_up)
+    lightpath_cpts = ['x_up.user_readback', 'y_up.user_readback',
+                      'pitch.user_readback']
+
+    def calc_lightpath_state(
+        self,
+        x_up: float,
+        y_up: float,
+        pitch: float
+    ) -> LightpathState:
+        return LightpathState(
+            inserted=True, removed=False, transmission=1,
+            output_branch=self.output_branches[0]
+        )
 
     # Tab config: show components
     tab_component_names = True
@@ -556,8 +569,21 @@ class XOffsetMirrorSwitch(XOffsetMirror):
     # Tab config: show components
     tab_component_names = True
 
+    # Update for missing components
+    lightpath_cpts = ['x_up.user_readback', 'pitch.user_readback']
 
-class KBOMirror(BaseInterface, GroupDevice):
+    def calc_lightpath_state(
+        self,
+        x_up: float,
+        pitch: float
+    ) -> LightpathState:
+        return LightpathState(
+            inserted=True, removed=False, transmission=1,
+            output_branch=self.output_branches[0]
+        )
+
+
+class KBOMirror(BaseInterface, GroupDevice, LightpathMixin):
     """
     Kirkpatrick-Baez Mirror with Bender Axes.
 
@@ -594,11 +620,18 @@ class KBOMirror(BaseInterface, GroupDevice):
     us_rtd = Cpt(EpicsSignalRO, ':RTD:BEND:US:1_RBV', kind='normal')
     ds_rtd = Cpt(EpicsSignalRO, ':RTD:BEND:DS:1_RBV', kind='normal')
 
+    lightpath_cpts = ['x.user_readback', 'y.user_readback']
     # Lightpath config: implement inserted, removed, transmission, subscribe
-    inserted = True
-    removed = False
-    transmission = 1
-    SUB_STATE = 'state'
+
+    def calc_lightpath_state(
+        self,
+        x: float,
+        y: float
+    ) -> LightpathState:
+        return LightpathState(
+            inserted=True, removed=False, transmission=1,
+            output_branch=self.output_branches[0]
+        )
 
     # Tab config: show components
     tab_component_names = True
@@ -735,7 +768,7 @@ class KBOMirrorHE(KBOMirror):
     tab_component_names = True
 
 
-class FFMirror(BaseInterface, GroupDevice):
+class FFMirror(BaseInterface, GroupDevice, LightpathMixin):
     """
     Fixed Focus Kirkpatrick-Baez Mirror.
 
@@ -763,10 +796,18 @@ class FFMirror(BaseInterface, GroupDevice):
     pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
 
     # Lightpath config: implement inserted, removed, transmission, subscribe
-    inserted = True
-    removed = False
-    transmission = 1
-    SUB_STATE = 'state'
+    lightpath_cpts = ['x.user_readback', 'y.user_readback']
+
+    # Lightpath config: implement inserted, removed, transmission, subscribe
+    def calc_lightpath_state(
+        self,
+        x: float,
+        y: float
+    ) -> LightpathState:
+        return LightpathState(
+            inserted=True, removed=False, transmission=1,
+            output_branch=self.output_branches[0]
+        )
 
     # Tab config: show components
     tab_component_names = True

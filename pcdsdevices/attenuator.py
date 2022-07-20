@@ -2,12 +2,14 @@
 Module for `Attenuator` and related classes.
 """
 import enum
+import functools
 import logging
 import time
 from typing import Generator
 
 import numpy as np
 import prettytable
+from lightpath import LightpathState
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import DynamicDeviceComponent as DDC
@@ -20,7 +22,8 @@ from .device import UnrelatedComponent as UCpt
 from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutPositioner, TwinCATInOutPositioner
-from .interface import BaseInterface, FltMvInterface, LightpathInOutMixin
+from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
+                        LightpathMixin)
 from .pmps import TwinCATStatePMPS
 from .signal import InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO
 from .type_hints import OphydDataType, SignalToValue
@@ -386,7 +389,19 @@ class AttBaseWith3rdHarmonic(AttBase):
     user_energy_3rd = Cpt(EpicsSignal, ':COM:E3DES', kind='omitted')
 
 
-class FeeAtt(AttBase, PVPositionerPC):
+class AttBaseWith3rdHarmonicLP(AttBaseWith3rdHarmonic, LightpathInOutCptMixin):
+    """
+    Base class for Lightpath-compatible attenuators with 3rd
+    harmonic frequency.
+    You should not instantiate this class directly, but instead use the
+    :func:`Attenuator` factory function.
+    """
+    # dummy component list to satisfy Mixin checks
+    lightpath_cpts = ['dummy']
+    pass
+
+
+class FeeAtt(AttBase, PVPositionerPC, LightpathInOutCptMixin):
     """Old attenuator IOC in the FEE."""
     # Positioner Signals
     setpoint = Cpt(EpicsSignal, ':RDES', kind='normal')
@@ -416,6 +431,8 @@ class FeeAtt(AttBase, PVPositionerPC):
     filter9 = FCpt(FeeFilter, '{self._filter_prefix}9')
     num_att = 9
 
+    lightpath_cpts = [f'filter{x}' for x in range(1, 10)]
+
     def __init__(self, prefix='SATT:FEE1:320', *, name='FeeAtt', **kwargs):
         self._filter_prefix = prefix[:-1]
         super().__init__(prefix, name=name, **kwargs)
@@ -425,13 +442,17 @@ def _make_att_classes(max_filters, base_with_3rd_harmonic, name):
     """Generate all possible subclasses."""
     att_classes = {}
     for i in range(1, max_filters + 1):
-        att_filters = {}
+        att_ns = {}
         for n in range(1, i + 1):
             comp = Cpt(Filter, ':{:02}'.format(n))
-            att_filters['filter{}'.format(n)] = comp
+            att_ns['filter{}'.format(n)] = comp
 
+        if issubclass(base_with_3rd_harmonic, LightpathInOutCptMixin):
+            att_ns['lightpath_cpts'] = [
+                f'filter{i}' for i in range(1, i+1)
+            ]
         cls_name = '{}{}'.format(name, i)
-        cls = type(cls_name, (base_with_3rd_harmonic,), att_filters)
+        cls = type(cls_name, (base_with_3rd_harmonic,), att_ns)
         cls.num_att = i
         att_classes[i] = cls
     return att_classes
@@ -439,6 +460,8 @@ def _make_att_classes(max_filters, base_with_3rd_harmonic, name):
 
 _att_classes = _make_att_classes(
     MAX_FILTERS, AttBaseWith3rdHarmonic, 'Attenuator')
+_lightpath_att_classes = _make_att_classes(
+    MAX_FILTERS, AttBaseWith3rdHarmonicLP, 'Attenuator')
 
 
 def Attenuator(prefix, n_filters, *, name, **kwargs):
@@ -462,7 +485,10 @@ def Attenuator(prefix, n_filters, *, name, **kwargs):
     name : str
         An identifying name for the attenuator.
     """
-    cls = _att_classes[n_filters]
+    if 'input_branches' in kwargs:
+        cls = _lightpath_att_classes[n_filters]
+    else:
+        cls = _att_classes[n_filters]
     return cls(prefix, name=name, **kwargs)
 
 
@@ -497,14 +523,12 @@ class SXRLadderAttenuatorStates(TwinCATInOutPositioner):
     config = UpCpt(state_count=9)
 
 
-class FEESolidAttenuatorBlade(BaseInterface, LightpathInOutMixin):
+class FEESolidAttenuatorBlade(BaseInterface, Device):
     """
     Represents one basic solid attenuator blade.
 
     This includes the binary in/out state and a raw motor.
     """
-    lightpath_cpts = ['state']
-
     state = Cpt(FEESolidAttenuatorStates, ':STATE')
     motor = Cpt(BeckhoffAxisNoOffset, '')
 
@@ -919,7 +943,7 @@ class AttenuatorCalculatorSXR_FourBlade(AttenuatorCalculatorBase):
 
 
 class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
-                           LightpathInOutMixin):
+                           LightpathMixin):
     """
     Ladder-style solid attenuator variant from the LCLS-II L2SI project.
 
@@ -984,11 +1008,48 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
         self.calculator.run_calculation.put(1, wait=True)
         return super()._setup_move(position)
 
-    def _set_lightpath_states(self, lightpath_values):
-        info = super()._set_lightpath_states(lightpath_values)
-        if info is not None:
-            self.num_in.put(info['in_check'].count(True), force=True)
-            self.num_out.put(info['out_check'].count(True), force=True)
+    def get_lightpath_state(self) -> LightpathState:
+        """
+        Grab slightly different PV values for use in same inout calc fn
+        The state is nested one device deeper than LightpathInOutCptMixin
+        expects.
+        """
+        self._check_valid_lightpath()
+        lightpath_kwargs = {}
+        for cpt_name in self.lightpath_cpts:
+            sig = getattr(self, cpt_name)
+            sig_state_name = sig.name.removeprefix(self.name + '_')
+            lightpath_kwargs[sig_state_name] = sig.state.state.get()
+
+        return self.calc_lightpath_state(**lightpath_kwargs)
+
+    def calc_lightpath_state(self, **lightpath_kwargs) -> LightpathState:
+        # Repeat lightpath logic to extract num_in, num_out
+        in_check = []
+        out_check = []
+        trans_check = []
+        for sig_name, sig_value in lightpath_kwargs.items():
+            obj = getattr(self, sig_name).state
+            if not obj._state_initialized:
+                # This would prevent make check_inserted, etc. fail
+                self._retry_lightpath = True
+                return
+            # get state of the InOutPositioner and check status
+            in_check.append(obj.check_inserted(sig_value))
+            out_check.append(obj.check_removed(sig_value))
+            trans_check.append(obj.check_transmission(sig_value))
+        self._inserted = any(in_check)
+        self._removed = all(out_check)
+        self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
+
+        self.num_in.put(in_check.count(True), force=True)
+        self.num_out.put(out_check.count(True), force=True)
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            transmission=self._transmission,
+            output_branch=self.output_branches[0]
+        )
 
     def format_status_info(self, status_info):
         """
@@ -1075,7 +1136,7 @@ class AT2K2(AttenuatorSXR_Ladder):
     """
 
 
-class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
+class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
     """
     AT2L0 solid attenuator variant from the LCLS-II XTES project.
 
@@ -1261,11 +1322,44 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathInOutMixin):
         limits = limits or (0.0, 1.0)
         super().__init__(*args, limits=limits, **kwargs)
 
-    def _set_lightpath_states(self, lightpath_values):
-        info = super()._set_lightpath_states(lightpath_values)
-        if info is not None:
-            self.num_in.put(info['in_check'].count(True), force=True)
-            self.num_out.put(info['out_check'].count(True), force=True)
+    def get_lightpath_state(self) -> LightpathState:
+        """Grab slightly different PV values for use in same inout calc fn"""
+        self._check_valid_lightpath()
+        lightpath_kwargs = {}
+        for cpt_name in self.lightpath_cpts:
+            sig = getattr(self, cpt_name)
+            sig_state_name = sig.name.removeprefix(self.name + '_')
+            lightpath_kwargs[sig_state_name] = sig.state.state.get()
+
+        return self.calc_lightpath_state(**lightpath_kwargs)
+
+    def calc_lightpath_state(self, **lightpath_kwargs) -> LightpathState:
+        # Repeat lightpath logic to extract num_in, num_out
+        in_check = []
+        out_check = []
+        trans_check = []
+        for sig_name, sig_value in lightpath_kwargs.items():
+            obj = getattr(self, sig_name).state
+            if not obj._state_initialized:
+                # This would prevent make check_inserted, etc. fail
+                self._retry_lightpath = True
+                return
+            # get state of the InOutPositioner and check status
+            in_check.append(obj.check_inserted(sig_value))
+            out_check.append(obj.check_removed(sig_value))
+            trans_check.append(obj.check_transmission(sig_value))
+        self._inserted = any(in_check)
+        self._removed = all(out_check)
+        self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
+
+        self.num_in.put(in_check.count(True), force=True)
+        self.num_out.put(out_check.count(True), force=True)
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            transmission=self._transmission,
+            output_branch=self.output_branches[0]
+        )
 
     def format_status_info(self, status_info):
         """Override status info handler to render the attenuator."""
