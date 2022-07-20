@@ -324,6 +324,7 @@ pcdsdevices.interface
     pcdsdevices.interface.BaseInterface
     pcdsdevices.interface.FltMvInterface
     pcdsdevices.interface.LightpathInOutMixin
+    pcdsdevices.interface.LightpathInOutCptMixin
     pcdsdevices.interface.LightpathMixin
     pcdsdevices.interface.MvInterface
     pcdsdevices.interface.TabCompletionHelperClass
