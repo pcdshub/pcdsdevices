@@ -8,7 +8,7 @@ from ophyd.ophydobj import Kind, OphydObject
 from ophyd.pseudopos import PseudoSingle
 from ophyd.signal import AttributeSignal, DerivedSignal
 
-from .signal import PVStateSignal
+from .signal import AggregateSignal, PVStateSignal
 
 
 class UnrelatedComponent(Component):
@@ -402,6 +402,7 @@ class GroupDevice(Device):
         PluginBase,
         PseudoSingle,
         PVStateSignal,
+        AggregateSignal
         ]
 
     def __init__(self, *args, **kwargs):
