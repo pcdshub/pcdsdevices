@@ -5,7 +5,7 @@ import re
 import warnings
 from copy import copy, deepcopy
 
-import lightpath.happi.containers
+import lightpath.happi.containers as lp_containers
 from happi.item import EntryInfo, HappiItem, OphydItem
 
 
@@ -48,11 +48,20 @@ class LCLSItem(OphydItem):
                           'the ioc data.'), optional=True, enforce=str)
 
 
-class LCLSLightpathItem(lightpath.happi.containers.LightpathItem, LCLSItem):
+class LCLSLightpathItem(lp_containers.LightpathItem, LCLSItem):
     """
-    LCLS version of a LightpathItem
+    LCLS version of a LightpathItem.  Since some containers serve both
+    lightpath and non-lightpath devices, make branches and kwargs optional
+
+    The default for branches will be None, and omitted from the kwargs
+    dictionary if its option matches said default of None.
     """
-    pass
+    input_branches = copy(lp_containers.LightpathItem.input_branches)
+    input_branches.optional = True
+    input_branches.include_default_as_kwarg = False
+    output_branches = copy(lp_containers.LightpathItem.output_branches)
+    output_branches.optional = True
+    output_branches.include_default_as_kwarg = False
 
 
 class LegacyItem(HappiItem):
@@ -120,7 +129,7 @@ class LegacyItem(HappiItem):
         return self.detailed_screen
 
 
-class Vacuum(lightpath.happi.containers.LightpathItem, LegacyItem):
+class Vacuum(lp_containers.LightpathItem, LegacyItem):
     """
     Parent class for devices in the vacuum system.
     """
@@ -128,7 +137,7 @@ class Vacuum(lightpath.happi.containers.LightpathItem, LegacyItem):
     system.default = 'vacuum'
 
 
-class Diagnostic(lightpath.happi.containers.LightpathItem, LegacyItem):
+class Diagnostic(lp_containers.LightpathItem, LegacyItem):
     """
     Parent class for devices that are used as diagnostics.
     """
@@ -138,7 +147,7 @@ class Diagnostic(lightpath.happi.containers.LightpathItem, LegacyItem):
                      enforce=str)
 
 
-class BeamControl(lightpath.happi.containers.LightpathItem, LegacyItem):
+class BeamControl(lp_containers.LightpathItem, LegacyItem):
     """
     Parent class for devices that control any beam parameter.
     """
@@ -283,7 +292,7 @@ class Attenuator(BeamControl):
     kwargs.default['n_filters'] = "{{n_filters}}"
 
 
-class Stopper(lightpath.happi.containers.LightpathItem, LegacyItem):
+class Stopper(lp_containers.LightpathItem, LegacyItem):
     """
     Large devices that prevent beam when it could cause damage to hardware.
 
@@ -403,7 +412,7 @@ class MovableStand(LegacyItem):
     system.default = 'changeover'
 
 
-class Motor(lightpath.happi.containers.LightpathItem, LegacyItem):
+class Motor(lp_containers.LightpathItem, LegacyItem):
     """
     A Generic EpicsMotor
     """
