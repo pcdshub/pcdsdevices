@@ -81,7 +81,7 @@ class SourceConfig(BaseInterface, Device):
     """BTPS per-(source, destination) configuration settings and state."""
     name_ = Cpt(
         PytmcSignal,
-        "Name",
+        "BTPS:Name",
         io="input",
         kind="normal",
         doc="Source name",
@@ -89,38 +89,48 @@ class SourceConfig(BaseInterface, Device):
     )
     far_field = Cpt(
         CentroidConfig,
-        "FF",
+        "BTPS:FF",
         kind="normal",
         doc="Far field centroid"
     )
     near_field = Cpt(
         CentroidConfig,
-        "NF",
+        "BTPS:NF",
         kind="normal",
         doc="Near field centroid"
     )
     goniometer = Cpt(
         RangeComparison,
-        "Goniometer:",
+        "BTPS:Goniometer:",
         kind="normal",
         doc="Goniometer stage"
     )
-    linear = Cpt(RangeComparison, "Linear:", kind="normal", doc="Linear stage")
-    rotary = Cpt(RangeComparison, "Rotary:", kind="normal", doc="Rotary stage")
+    linear = Cpt(
+        RangeComparison,
+        "BTPS:Linear:",
+        kind="normal",
+        doc="Linear stage",
+    )
+    rotary = Cpt(
+        RangeComparison,
+        "BTPS:Rotary:",
+        kind="normal",
+        doc="Rotary stage",
+    )
     entry_valve_ready = Cpt(
         PytmcSignal,
-        "EntryValveReady",
+        "BTPS:EntryValveReady",
         io="input",
         kind="normal",
         doc="Entry valve is open and ready",
     )
 
     checks_ok = Cpt(
-        PytmcSignal, "ChecksOK", io="input", kind="normal",
+        PytmcSignal, "BTPS:ChecksOK", io="input", kind="normal",
         doc="Check summary"
     )
     data_valid = Cpt(
-        PytmcSignal, "Valid", io="input", kind="normal",
+        PytmcSignal, "BTPS:Valid", io="input", kind="normal",
         doc="Data validity summary"
     )
 
@@ -132,23 +142,22 @@ class DestinationConfig(BaseInterface, Device):
     """BTPS per-destination configuration settings and state."""
     name_ = Cpt(
         PytmcSignal,
-        "Name",
+        "BTPS:Name",
         io="input",
         kind="normal",
         doc="Destination name",
         string=True,
     )
-    source1 = Cpt(SourceConfig, "SRC:01:", doc="Settings for source 1")
-    source3 = Cpt(SourceConfig, "SRC:03:", doc="Settings for source 3")
-    source4 = Cpt(SourceConfig, "SRC:04:", doc="Settings for source 4")
-    # exit_valve = Cpt(VGC, "DestValve", doc="Exit valve for the destination")
     exit_valve_ready = Cpt(
         PytmcSignal,
-        "ExitValveReady",
+        "BTPS:ExitValveReady",
         io="input",
         kind="normal",
         doc="Exit valve is open and ready",
     )
+    ls1 = Cpt(SourceConfig, "LS1:", doc="Settings for source LS1 (bay 1)")
+    ls5 = Cpt(SourceConfig, "LS5:", doc="Settings for source LS5 (bay 3)")
+    ls8 = Cpt(SourceConfig, "LS8:", doc="Settings for source LS8 (bay 4)")
 
 
 class GlobalConfig(BaseInterface, Device):
@@ -215,20 +224,14 @@ class ShutterSafety(BaseInterface, Device):
     """BTPS per-source shutter safety status."""
 
     def __init__(self, prefix: str, **kwargs):
-        # Support simulation mode for UCpt LSS status:
-        lss_prefix = kwargs.get("lss_prefix", "")
-        if prefix.startswith("SIM:"):
-            if not lss_prefix.startswith("SIM:"):
-                kwargs["lss_prefix"] = f"SIM:{lss_prefix}"
-
         UCpt.collect_prefixes(self, kwargs)
         super().__init__(prefix, **kwargs)
 
-    lss = UCpt(LssShutterStatus, doc="Laser Safety System Status")
+    lss = Cpt(LssShutterStatus, "LST:", doc="Laser Safety System Status")
 
     open_request = Cpt(
         PytmcSignal,
-        "UserOpen",
+        "BTPS:UserOpen",
         io="io",
         kind="normal",
         doc="User request to open/close shutter",
@@ -236,7 +239,7 @@ class ShutterSafety(BaseInterface, Device):
 
     latched_error = Cpt(
         PytmcSignal,
-        "Error",
+        "BTPS:Error",
         io="input",
         kind="normal",
         doc="Latched error",
@@ -244,7 +247,7 @@ class ShutterSafety(BaseInterface, Device):
 
     acknowledge = Cpt(
         PytmcSignal,
-        "Acknowledge",
+        "BTPS:Acknowledge",
         io="io",
         kind="normal",
         doc="User acknowledgement of latched fault",
@@ -252,7 +255,7 @@ class ShutterSafety(BaseInterface, Device):
 
     override = Cpt(
         PytmcSignal,
-        "Override",
+        "BTPS:Override",
         io="io",
         kind="normal",
         doc="BTPS advanced override mode",
@@ -260,7 +263,7 @@ class ShutterSafety(BaseInterface, Device):
 
     lss_open_request = Cpt(
         PytmcSignal,
-        "LSS:OpenRequest",
+        "BTPS:LSS:OpenRequest",
         io="input",
         kind="normal",
         doc="Output request to LSS open shutter",
@@ -268,7 +271,7 @@ class ShutterSafety(BaseInterface, Device):
 
     safe_to_open = Cpt(
         PytmcSignal,
-        "Safe",
+        "BTPS:Safe",
         io="input",
         kind="normal",
         doc="BTPS safe to open indicator",
@@ -277,33 +280,41 @@ class ShutterSafety(BaseInterface, Device):
 
 class BtpsState(BaseInterface, Device):
     """
-    Beam Transport Protection System (BTPS) State
+    Beam Transport Protection System (BTPS) State.
     """
-    config = Cpt(GlobalConfig, "Config:", doc="Global configuration")
+    config = Cpt(
+        GlobalConfig,
+        "LTLHN:BTPS:Config:",
+        doc="Global BTPS configuration",
+    )
 
     shutter1 = Cpt(
         ShutterSafety,
-        "Shutter:01:",
-        lss_prefix="LTLHN:LS1:LST:",
-        doc="Source Shutter 1"
+        "LTLHN:LS1:",
+        doc="Source Shutter LS1 (Bay 1)"
     )
-    shutter3 = Cpt(
+    shutter5 = Cpt(
         ShutterSafety,
-        "Shutter:03:",
-        lss_prefix="LTLHN:LS5:LST:",
-        doc="Source Shutter 3"
+        "LTLHN:LS5:",
+        doc="Source Shutter LS5 (Bay 3)"
     )
-    shutter4 = Cpt(
+    shutter8 = Cpt(
         ShutterSafety,
-        "Shutter:04:",
-        lss_prefix="LTLHN:LS8:LST:",
-        doc="Source Shutter 4"
+        "LTLHN:LS8:",
+        doc="Source Shutter LS8 (Bay 4)"
     )
 
-    dest1 = Cpt(DestinationConfig, "DEST:01:", doc="Destination 1")
-    dest2 = Cpt(DestinationConfig, "DEST:02:", doc="Destination 2")
-    dest3 = Cpt(DestinationConfig, "DEST:03:", doc="Destination 3")
-    dest4 = Cpt(DestinationConfig, "DEST:04:", doc="Destination 4")
-    dest5 = Cpt(DestinationConfig, "DEST:05:", doc="Destination 5")
-    dest6 = Cpt(DestinationConfig, "DEST:06:", doc="Destination 6")
-    dest7 = Cpt(DestinationConfig, "DEST:07:", doc="Destination 7")
+    dest1 = Cpt(DestinationConfig, "LTLHN:LD1:", doc="Destination LD1")
+    dest2 = Cpt(DestinationConfig, "LTLHN:LD2:", doc="Destination LD2")
+    dest3 = Cpt(DestinationConfig, "LTLHN:LD3:", doc="Destination LD3")
+    dest4 = Cpt(DestinationConfig, "LTLHN:LD4:", doc="Destination LD4")
+    dest5 = Cpt(DestinationConfig, "LTLHN:LD5:", doc="Destination LD5")
+    dest6 = Cpt(DestinationConfig, "LTLHN:LD6:", doc="Destination LD6")
+    dest7 = Cpt(DestinationConfig, "LTLHN:LD7:", doc="Destination LD7")
+    dest8 = Cpt(DestinationConfig, "LTLHN:LD8:", doc="Destination LD8")
+    dest9 = Cpt(DestinationConfig, "LTLHN:LD9:", doc="Destination LD9")
+    dest10 = Cpt(DestinationConfig, "LTLHN:LD10:", doc="Destination LD10")
+    dest11 = Cpt(DestinationConfig, "LTLHN:LD11:", doc="Destination LD11")
+    dest12 = Cpt(DestinationConfig, "LTLHN:LD12:", doc="Destination LD12")
+    dest13 = Cpt(DestinationConfig, "LTLHN:LD13:", doc="Destination LD13")
+    dest14 = Cpt(DestinationConfig, "LTLHN:LD14:", doc="Destination LD14")
