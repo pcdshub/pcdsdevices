@@ -58,7 +58,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:06:SRC:01:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD14:LS1:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -86,7 +86,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:02:Name_RBV</string>
+        <string>ca://LTLHN:LD10:BTPS:Name_RBV</string>
        </property>
        <property name="displayFormat" stdset="0">
         <enum>PyDMLabel::String</enum>
@@ -105,7 +105,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:01:SRC:04:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD8:LS8:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -134,7 +134,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:Shutter:01:LSS:OpenRequest_RBV</string>
+        <string>ca://LTLHN:LS1:BTPS:LSS:OpenRequest_RBV</string>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -170,7 +170,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:01:SRC:01:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD8:LS1:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -214,7 +214,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:Shutter:03:LSS:OpenRequest_RBV</string>
+        <string>ca://LTLHN:LS5:BTPS:LSS:OpenRequest_RBV</string>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -250,7 +250,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:06:SRC:03:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD14:LS5:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -279,7 +279,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:07:SRC:03:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD9:LS5:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -308,7 +308,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:02:SRC:03:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD10:LS5:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -352,7 +352,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:05:SRC:04:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD4:LS8:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -381,7 +381,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:06:SRC:04:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD14:LS8:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -425,7 +425,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:04:SRC:03:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD6:LS5:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -454,7 +454,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:04:SRC:04:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD6:LS8:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -483,7 +483,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:02:SRC:04:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD10:LS8:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -512,7 +512,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:02:SRC:01:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD10:LS1:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -556,7 +556,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:04:SRC:01:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD6:LS1:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -585,7 +585,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:07:SRC:04:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD9:LS8:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -614,7 +614,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:05:SRC:01:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD4:LS1:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -642,7 +642,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:01:Name_RBV</string>
+        <string>ca://LTLHN:LD8:BTPS:Name_RBV</string>
        </property>
        <property name="displayFormat" stdset="0">
         <enum>PyDMLabel::String</enum>
@@ -661,7 +661,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:05:SRC:03:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD4:LS5:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -690,7 +690,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:03:SRC:03:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD2:LS5:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -718,7 +718,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:04:Name_RBV</string>
+        <string>ca://LTLHN:LD6:BTPS:Name_RBV</string>
        </property>
        <property name="displayFormat" stdset="0">
         <enum>PyDMLabel::String</enum>
@@ -736,7 +736,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:06:Name_RBV</string>
+        <string>ca://LTLHN:LD14:BTPS:Name_RBV</string>
        </property>
        <property name="displayFormat" stdset="0">
         <enum>PyDMLabel::String</enum>
@@ -755,7 +755,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:03:SRC:01:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD2:LS1:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -784,7 +784,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:07:SRC:01:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD9:LS1:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -812,7 +812,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:07:Name_RBV</string>
+        <string>ca://LTLHN:LD9:BTPS:Name_RBV</string>
        </property>
        <property name="displayFormat" stdset="0">
         <enum>PyDMLabel::String</enum>
@@ -830,7 +830,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:05:Name_RBV</string>
+        <string>ca://LTLHN:LD4:BTPS:Name_RBV</string>
        </property>
        <property name="displayFormat" stdset="0">
         <enum>PyDMLabel::String</enum>
@@ -849,7 +849,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:03:SRC:04:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD2:LS8:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -878,7 +878,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:Shutter:04:LSS:OpenRequest_RBV</string>
+        <string>ca://LTLHN:LS8:BTPS:LSS:OpenRequest_RBV</string>
        </property>
        <property name="showLabels" stdset="0">
         <bool>false</bool>
@@ -913,7 +913,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:03:Name_RBV</string>
+        <string>ca://LTLHN:LD2:BTPS:Name_RBV</string>
        </property>
        <property name="displayFormat" stdset="0">
         <enum>PyDMLabel::String</enum>
@@ -932,7 +932,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:DEST:01:SRC:03:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD8:LS5:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -970,7 +970,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:Chk:NF1:IsUpdating_RBV</string>
+        <string>ca://LTLHN:Chk:NF1:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -993,7 +993,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:Chk:NF3:IsUpdating_RBV</string>
+        <string>ca://LTLHN:Chk:NF3:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -1016,7 +1016,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:Chk:NF4:IsUpdating_RBV</string>
+        <string>ca://LTLHN:Chk:NF4:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -1039,7 +1039,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:Chk:FF1:IsUpdating_RBV</string>
+        <string>ca://LTLHN:Chk:FF1:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -1062,7 +1062,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:Chk:FF3:IsUpdating_RBV</string>
+        <string>ca://LTLHN:Chk:FF3:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -1085,7 +1085,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:Chk:FF4:IsUpdating_RBV</string>
+        <string>ca://LTLHN:Chk:FF4:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>

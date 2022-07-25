@@ -70,7 +70,7 @@
          <set>Qt::AlignCenter</set>
         </property>
         <property name="channel" stdset="0">
-         <string>ca://${SOURCE}Name_RBV</string>
+         <string>ca://${SOURCE}BTPS:Name_RBV</string>
         </property>
         <property name="displayFormat" stdset="0">
          <enum>PyDMLabel::String</enum>
@@ -134,7 +134,7 @@
          <set>Qt::AlignCenter</set>
         </property>
         <property name="channel" stdset="0">
-         <string>ca://${DEST}Name_RBV</string>
+         <string>ca://${DEST}BTPS:Name_RBV</string>
         </property>
         <property name="displayFormat" stdset="0">
          <enum>PyDMLabel::String</enum>
@@ -173,7 +173,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SHUTTER}LSS:OpenRequest_RBV</string>
+           <string>ca://${SOURCE}BTPS:LSS:OpenRequest_RBV</string>
           </property>
           <property name="showLabels" stdset="0">
            <bool>false</bool>
@@ -242,7 +242,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}Valid_RBV</string>
+           <string>ca://${SOURCE}BTPS:Valid_RBV</string>
           </property>
           <property name="offColor" stdset="0">
            <color>
@@ -291,7 +291,7 @@
            <bool>true</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}Valid_RBV</string>
+           <string>ca://${SOURCE}BTPS:Valid_RBV</string>
           </property>
          </widget>
         </item>
@@ -327,7 +327,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SHUTTER}UserOpen</string>
+           <string>ca://${SOURCE}BTPS:UserOpen</string>
           </property>
           <property name="passwordProtected" stdset="0">
            <bool>false</bool>
@@ -373,7 +373,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SHUTTER}UserOpen</string>
+           <string>ca://${SOURCE}BTPS:UserOpen</string>
           </property>
           <property name="passwordProtected" stdset="0">
            <bool>false</bool>
@@ -417,7 +417,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}ChecksOK_RBV</string>
+           <string>ca://${SOURCE}BTPS:ChecksOK_RBV</string>
           </property>
           <property name="offColor" stdset="0">
            <color>
@@ -491,7 +491,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}ChecksOK_RBV</string>
+           <string>ca://${SOURCE}BTPS:ChecksOK_RBV</string>
           </property>
          </widget>
         </item>
@@ -695,7 +695,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${DEST}ExitValveReady_RBV</string>
+           <string>ca://${DEST}BTPS:ExitValveReady_RBV</string>
           </property>
           <property name="showLabels" stdset="0">
            <bool>false</bool>
@@ -911,7 +911,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SHUTTER}Error_RBV</string>
+           <string>ca://${SOURCE}BTPS:Error_RBV</string>
           </property>
           <property name="onColor" stdset="0">
            <color>
@@ -986,7 +986,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SHUTTER}Acknowledge</string>
+           <string>ca://${SOURCE}BTPS:Acknowledge</string>
           </property>
           <property name="passwordProtected" stdset="0">
            <bool>false</bool>
@@ -1122,7 +1122,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Linear:&quot;, &quot;DESC&quot;: &quot;Linear stage&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_LINEAR}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:Linear:&quot;, &quot;DESC&quot;: &quot;Linear stage&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_LINEAR}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1162,7 +1162,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Rotary:&quot;, &quot;DESC&quot;: &quot;Rotary stage&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_ROTARY}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:Rotary:&quot;, &quot;DESC&quot;: &quot;Rotary stage&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_ROTARY}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1202,7 +1202,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Goniometer:&quot;, &quot;DESC&quot;: &quot;Goniometer&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_GONIOMETER}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:Goniometer:&quot;, &quot;DESC&quot;: &quot;Goniometer&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_GONIOMETER}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1242,7 +1242,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}NFCenterX:&quot;, &quot;DESC&quot;: &quot;NF Centroid X&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_NF_CAM}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:NFCenterX:&quot;, &quot;DESC&quot;: &quot;NF Centroid X&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_NF_CAM}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1282,7 +1282,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}NFCenterY:&quot;, &quot;DESC&quot;: &quot;NF Centroid Y&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_NF_CAM}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:NFCenterY:&quot;, &quot;DESC&quot;: &quot;NF Centroid Y&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_NF_CAM}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1322,7 +1322,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}FFCenterX:&quot;, &quot;DESC&quot;: &quot;FF Centroid X&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_FF_CAM}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:FFCenterX:&quot;, &quot;DESC&quot;: &quot;FF Centroid X&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_FF_CAM}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1362,7 +1362,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}FFCenterY:&quot;, &quot;DESC&quot;: &quot;FF Centroid Y&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_FF_CAM}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:FFCenterY:&quot;, &quot;DESC&quot;: &quot;FF Centroid Y&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_FF_CAM}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>

@@ -78,7 +78,7 @@
       <bool>false</bool>
      </property>
      <property name="channel" stdset="0">
-      <string>ca://${DEST}ExitValveReady_RBV</string>
+      <string>ca://${DEST}BTPS:ExitValveReady_RBV</string>
      </property>
      <property name="offColor" stdset="0">
       <color>
