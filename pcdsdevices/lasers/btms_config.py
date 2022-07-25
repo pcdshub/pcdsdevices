@@ -132,21 +132,21 @@ AnyPosition = Union[SourcePosition, DestinationPosition]
 PORT_SPACING_MM = 215.9  # 8.5 in
 
 # PV source index (bay) to installed LS port
-source_to_ls_position: Dict[int, SourcePosition] = {
-    1: SourcePosition.ls1,
-    3: SourcePosition.ls5,
-    4: SourcePosition.ls8,
-}
+valid_sources: Tuple[SourcePosition, ...] = (
+    SourcePosition.ls1,  # Bay 1
+    SourcePosition.ls5,  # Bay 3
+    SourcePosition.ls8,  # Bay 4
+)
 # PV destination index (bay) to installed LD port
-destination_to_ld_position: Dict[int, DestinationPosition] = {
-    1: DestinationPosition.ld8,   # TMO IP1
-    2: DestinationPosition.ld10,  # TMO IP2
-    3: DestinationPosition.ld2,   # TMO IP3
-    4: DestinationPosition.ld6,   # RIX QRIXS
-    5: DestinationPosition.ld4,   # RIX ChemRIXS
-    6: DestinationPosition.ld14,  # XPP
-    7: DestinationPosition.ld9,   # Laser Lab
-}
+valid_destinations: Tuple[DestinationPosition, ...] = (
+    DestinationPosition.ld2,   # TMO IP3
+    DestinationPosition.ld4,   # RIX ChemRIXS
+    DestinationPosition.ld6,   # RIX QRIXS
+    DestinationPosition.ld8,   # TMO IP1
+    DestinationPosition.ld9,   # Laser Lab
+    DestinationPosition.ld10,  # TMO IP2
+    DestinationPosition.ld14,  # XPP
+)
 
 
 class MoveError(Exception):

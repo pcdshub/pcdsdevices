@@ -1,5 +1,8 @@
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
+from ophyd.signal import EpicsSignal
+
+from pcdsdevices.valve import VGC
 
 from ..device import UnrelatedComponent as UCpt
 from ..interface import BaseInterface
@@ -134,9 +137,6 @@ class SourceConfig(BaseInterface, Device):
         doc="Data validity summary"
     )
 
-    # TODO: good or bad idea?
-    # entry_valve = Cpt(VGC, "Valve", kind="normal", doc="Source entry valve")
-
 
 class DestinationConfig(BaseInterface, Device):
     """BTPS per-destination configuration settings and state."""
@@ -158,6 +158,7 @@ class DestinationConfig(BaseInterface, Device):
     ls1 = Cpt(SourceConfig, "LS1:", doc="Settings for source LS1 (bay 1)")
     ls5 = Cpt(SourceConfig, "LS5:", doc="Settings for source LS5 (bay 3)")
     ls8 = Cpt(SourceConfig, "LS8:", doc="Settings for source LS8 (bay 4)")
+    exit_valve = Cpt(VGC, "VGC:01", kind="normal", doc="Destination exit valve")
 
 
 class GlobalConfig(BaseInterface, Device):
@@ -190,31 +191,28 @@ class LssShutterStatus(BaseInterface, Device):
     open_request = Cpt(
         PytmcSignal,
         "REQ",
-        io="i",
+        io="io",
         kind="normal",
         doc="User request to open/close shutter",
     )
 
     opened_status = Cpt(
-        PytmcSignal,
-        "OPN",
-        io="i",
+        # PytmcSignal, "OPN", io="i",
+        EpicsSignal, "OPN_RBV",   # TODO: for testing
         kind="normal",
         doc="Shutter open status",
     )
 
     closed_status = Cpt(
-        PytmcSignal,
-        "CLS",
-        io="i",
+        # PytmcSignal, "CLS", io="i",
+        EpicsSignal, "CLS_RBV",   # TODO: for testing
         kind="normal",
         doc="Shutter closed status",
     )
 
     permission = Cpt(
-        PytmcSignal,
-        "LSS",
-        io="i",
+        # PytmcSignal, "LSS", io="i",
+        EpicsSignal, "LSS_RBV",   # TODO: for testing
         kind="normal",
         doc="Shutter open permission status",
     )
@@ -228,6 +226,7 @@ class ShutterSafety(BaseInterface, Device):
         super().__init__(prefix, **kwargs)
 
     lss = Cpt(LssShutterStatus, "LST:", doc="Laser Safety System Status")
+    entry_valve = Cpt(VGC, "VGC:01", kind="normal", doc="Source entry valve")
 
     open_request = Cpt(
         PytmcSignal,
@@ -288,33 +287,34 @@ class BtpsState(BaseInterface, Device):
         doc="Global BTPS configuration",
     )
 
-    shutter1 = Cpt(
+    ls1 = Cpt(
         ShutterSafety,
         "LTLHN:LS1:",
         doc="Source Shutter LS1 (Bay 1)"
     )
-    shutter5 = Cpt(
+    ls5 = Cpt(
         ShutterSafety,
         "LTLHN:LS5:",
         doc="Source Shutter LS5 (Bay 3)"
     )
-    shutter8 = Cpt(
+    ls8 = Cpt(
         ShutterSafety,
         "LTLHN:LS8:",
         doc="Source Shutter LS8 (Bay 4)"
     )
 
-    dest1 = Cpt(DestinationConfig, "LTLHN:LD1:", doc="Destination LD1")
-    dest2 = Cpt(DestinationConfig, "LTLHN:LD2:", doc="Destination LD2")
-    dest3 = Cpt(DestinationConfig, "LTLHN:LD3:", doc="Destination LD3")
-    dest4 = Cpt(DestinationConfig, "LTLHN:LD4:", doc="Destination LD4")
-    dest5 = Cpt(DestinationConfig, "LTLHN:LD5:", doc="Destination LD5")
-    dest6 = Cpt(DestinationConfig, "LTLHN:LD6:", doc="Destination LD6")
-    dest7 = Cpt(DestinationConfig, "LTLHN:LD7:", doc="Destination LD7")
-    dest8 = Cpt(DestinationConfig, "LTLHN:LD8:", doc="Destination LD8")
-    dest9 = Cpt(DestinationConfig, "LTLHN:LD9:", doc="Destination LD9")
-    dest10 = Cpt(DestinationConfig, "LTLHN:LD10:", doc="Destination LD10")
-    dest11 = Cpt(DestinationConfig, "LTLHN:LD11:", doc="Destination LD11")
-    dest12 = Cpt(DestinationConfig, "LTLHN:LD12:", doc="Destination LD12")
-    dest13 = Cpt(DestinationConfig, "LTLHN:LD13:", doc="Destination LD13")
-    dest14 = Cpt(DestinationConfig, "LTLHN:LD14:", doc="Destination LD14")
+    # Commented-out destinations are not currently installed:
+    # ld1 = Cpt(DestinationConfig, "LTLHN:LD1:", doc="Destination LD1")
+    ld2 = Cpt(DestinationConfig, "LTLHN:LD2:", doc="Destination LD2")
+    # ld3 = Cpt(DestinationConfig, "LTLHN:LD3:", doc="Destination LD3")
+    ld4 = Cpt(DestinationConfig, "LTLHN:LD4:", doc="Destination LD4")
+    # ld5 = Cpt(DestinationConfig, "LTLHN:LD5:", doc="Destination LD5")
+    ld6 = Cpt(DestinationConfig, "LTLHN:LD6:", doc="Destination LD6")
+    # ld7 = Cpt(DestinationConfig, "LTLHN:LD7:", doc="Destination LD7")
+    ld8 = Cpt(DestinationConfig, "LTLHN:LD8:", doc="Destination LD8")
+    ld9 = Cpt(DestinationConfig, "LTLHN:LD9:", doc="Destination LD9")
+    ld10 = Cpt(DestinationConfig, "LTLHN:LD10:", doc="Destination LD10")
+    # ld11 = Cpt(DestinationConfig, "LTLHN:LD11:", doc="Destination LD11")
+    # ld12 = Cpt(DestinationConfig, "LTLHN:LD12:", doc="Destination LD12")
+    # ld13 = Cpt(DestinationConfig, "LTLHN:LD13:", doc="Destination LD13")
+    ld14 = Cpt(DestinationConfig, "LTLHN:LD14:", doc="Destination LD14")
