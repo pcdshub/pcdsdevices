@@ -47,7 +47,6 @@ class PneumaticActuator(InOutPositioner):
 class RTDSBase(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     """Rapid Turnaround Diagnostic Station."""
     lightpath_cpts = ['mpa1', 'mpa2', 'mpa3', 'mpa4']
-    _lightpath_mixin = True
 
     _icon = 'fa.stop-circle'
 
