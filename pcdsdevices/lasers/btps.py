@@ -7,6 +7,7 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO
 from pcdsdevices.valve import VGC
 
 from ..device import UnrelatedComponent as UCpt
+from ..epics_motor import SmarAct
 from ..interface import BaseInterface
 from ..signal import PytmcSignal
 from . import btms_config as btms
@@ -83,19 +84,24 @@ class RangeComparison(BaseInterface, Device):
         doc="Is the value comparison exclusive or inclusive?",
     )
 
-    def get_delta(self) -> float:
+    def get_delta(self, value: Optional[float] = None) -> float:
         """
         Get the delta to the nominal value.
+
+        If ``value`` is provided, it will be used in place of the PLC-
+        specified value (i.e., ``self.value``).
 
         Returns
         -------
         float
             (nominal - value)
         """
-        if not self.input_valid.get():
-            raise ValueError("Input invalid: delta not available")
+        if value is None:
+            if not self.input_valid.get():
+                raise ValueError("Input invalid: delta not available")
+            value = self.value.get()
 
-        return self.value.get() - self.nominal.get()
+        return value - self.nominal.get()
 
 
 class CentroidConfig(BaseInterface, Device):
@@ -326,7 +332,8 @@ class BtpsSourceStatus(BaseInterface, Device):
     source_pos: SourcePosition
 
     lss = Cpt(LssShutterStatus, "LST:", doc="Laser Safety System Status")
-    entry_valve = Cpt(BtpsVGC, "VGC:01", kind="normal", doc="Source entry valve")
+    entry_valve = Cpt(BtpsVGC, "VGC:01", doc="Source entry valve")
+    linear = UCpt(SmarAct, doc="Linear Smaract stage")
 
     open_request = Cpt(
         PytmcSignal,
@@ -421,18 +428,21 @@ class BtpsState(BaseInterface, Device):
         BtpsSourceStatus,
         "LTLHN:LS1:",
         source_pos=SourcePosition.ls1,
+        linear_prefix="LAS:BTS:MCS2:01:m1",
         doc="Source status for LS1 (Bay 1)"
     )
     ls5 = Cpt(
         BtpsSourceStatus,
         "LTLHN:LS5:",
         source_pos=SourcePosition.ls5,
+        linear_prefix="LAS:BTS:MCS2:01:m4",
         doc="Source status for LS5 (Bay 3)"
     )
     ls8 = Cpt(
         BtpsSourceStatus,
         "LTLHN:LS8:",
         source_pos=SourcePosition.ls8,
+        linear_prefix="LAS:BTS:MCS2:01:m7",
         doc="Source status for LS8 (Bay 4)"
     )
 
