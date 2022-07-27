@@ -170,6 +170,26 @@ class MovingActiveSource(MoveError):
 
 
 @dataclasses.dataclass
+class BtmsSourceState:
+    """
+    Per-source status.
+
+    Attributes
+    ----------
+    destination : DestinationPosition (or None)
+        Indicates the selected destination for the given source.
+        The "target destination" is the one that the linear stage for the
+        indicated source is aiming at.
+
+    beam_status : bool
+        Indicates if the beam is active for the given source.
+    """
+    source: SourcePosition
+    destination: Optional[DestinationPosition]
+    beam_status: bool
+
+
+@dataclasses.dataclass
 class BtmsState:
     """
     Beam Transport Motion System state summary.
@@ -184,8 +204,9 @@ class BtmsState:
     beam_status : dict of SourcePosition to bool
         Indicates if the beam is active for the given source.
     """
-    positions: Dict[SourcePosition, Optional[DestinationPosition]]
-    beam_status: Dict[SourcePosition, bool]
+    sources: Dict[SourcePosition, BtmsSourceState] = dataclasses.field(
+        default_factory=dict
+    )
 
     def check_configuration(self) -> None:
         """Check the current configuration for any logical errors."""
@@ -219,15 +240,16 @@ class BtmsState:
         self.check_configuration()
 
         dest_to_source = dict(
-            (dest, source) for source, dest in self.positions.items()
+            (source.destination, source.source)
+            for source in self.sources.values()
         )
 
-        if self.beam_status[moving_source]:
+        if self.sources[moving_source].beam_status:
             raise MovingActiveSource(
                 f"{moving_source} is active and should not be moved"
             )
 
-        if self.positions[moving_source] == target_destination:
+        if self.sources[moving_source].destination == target_destination:
             return
 
         for dest in closest_destination.path_to(target_destination):
@@ -235,7 +257,7 @@ class BtmsState:
             if active_source is None:
                 # No source is near this destination
                 continue
-            if not self.beam_status[active_source]:
+            if not self.sources[active_source].beam_status:
                 # The source is near the destination, but the beam isn't ready
                 continue
 

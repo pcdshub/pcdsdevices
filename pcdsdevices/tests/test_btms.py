@@ -2,9 +2,9 @@ from typing import Optional, Tuple
 
 import pytest
 
-from ..lasers.btms_config import (BtmsState, DestinationPosition,
-                                  MovingActiveSource, PathCrossedError,
-                                  SourcePosition)
+from ..lasers.btms_config import (BtmsSourceState, BtmsState,
+                                  DestinationPosition, MovingActiveSource,
+                                  PathCrossedError, SourcePosition)
 
 
 @pytest.mark.parametrize(
@@ -164,19 +164,26 @@ def test_move_scenario_1(
     #          LD1   LD2    LD3  LD4   LD5   LD6   LD7
 
     state = BtmsState(
-        positions={
-            SourcePosition.ls6: DestinationPosition.ld9,
-            SourcePosition.ls7: DestinationPosition.ld14,
-        },
-        beam_status={
-            SourcePosition.ls6: True,
-            SourcePosition.ls7: True,
+        sources={
+            SourcePosition.ls6: BtmsSourceState(
+                source=SourcePosition.ls6,
+                destination=DestinationPosition.ld9,
+                beam_status=True,
+            ),
+            SourcePosition.ls7: BtmsSourceState(
+                source=SourcePosition.ls7,
+                destination=DestinationPosition.ld14,
+                beam_status=True,
+            ),
         }
     )
 
-    if source not in state.positions:
-        state.positions[source] = None
-        state.beam_status[source] = False
+    if source not in state.sources:
+        state.sources[source] = BtmsSourceState(
+            source=source,
+            destination=None,
+            beam_status=False,
+        )
 
     if expected is not None:
         with pytest.raises(type(expected), match=str(expected)):
@@ -233,29 +240,51 @@ def test_move_scenario_2(
     #          LD1   LD2    LD3  LD4   LD5   LD6   LD7
 
     state = BtmsState(
-        positions={
-            SourcePosition.ls1: DestinationPosition.ld4,
-            SourcePosition.ls2: DestinationPosition.ld4,
-            SourcePosition.ls3: DestinationPosition.ld3,
-            SourcePosition.ls4: DestinationPosition.ld13,
-            SourcePosition.ls5: DestinationPosition.ld4,
-            SourcePosition.ls6: DestinationPosition.ld9,
-            SourcePosition.ls7: DestinationPosition.ld4,
-            SourcePosition.ls8: DestinationPosition.ld4,
+        sources={
+            SourcePosition.ls1: BtmsSourceState(
+                source=SourcePosition.ls1,
+                destination=DestinationPosition.ld4,
+                beam_status=False,
+            ),
+            SourcePosition.ls2: BtmsSourceState(
+                source=SourcePosition.ls2,
+                destination=DestinationPosition.ld4,
+                beam_status=False,
+            ),
+            SourcePosition.ls3: BtmsSourceState(
+                source=SourcePosition.ls3,
+                destination=DestinationPosition.ld3,
+                beam_status=True,
+            ),
+            SourcePosition.ls4: BtmsSourceState(
+                source=SourcePosition.ls4,
+                destination=DestinationPosition.ld13,
+                beam_status=True,
+            ),
+            SourcePosition.ls5: BtmsSourceState(
+                source=SourcePosition.ls5,
+                destination=DestinationPosition.ld4,
+                beam_status=False,
+            ),
+            SourcePosition.ls6: BtmsSourceState(
+                source=SourcePosition.ls6,
+                destination=DestinationPosition.ld9,
+                beam_status=True,
+            ),
+            SourcePosition.ls7: BtmsSourceState(
+                source=SourcePosition.ls7,
+                destination=DestinationPosition.ld4,
+                beam_status=False,
+            ),
+            SourcePosition.ls8: BtmsSourceState(
+                source=SourcePosition.ls8,
+                destination=DestinationPosition.ld4,
+                beam_status=False,
+            ),
         },
-        beam_status={
-            SourcePosition.ls1: False,
-            SourcePosition.ls2: False,
-            SourcePosition.ls3: True,
-            SourcePosition.ls4: True,
-            SourcePosition.ls5: False,
-            SourcePosition.ls6: True,
-            SourcePosition.ls7: False,
-            SourcePosition.ls8: False,
-        }
     )
 
-    start_pos = state.positions[source]
+    start_pos = state.sources[source].destination
     assert start_pos is not None
 
     # Move all the way left:

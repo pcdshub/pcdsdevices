@@ -1,12 +1,32 @@
+from typing import Dict, Optional
+
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
-from ophyd.signal import EpicsSignal
+from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from pcdsdevices.valve import VGC
 
 from ..device import UnrelatedComponent as UCpt
 from ..interface import BaseInterface
 from ..signal import PytmcSignal
+from . import btms_config as btms
+from .btms_config import (BtmsSourceState, BtmsState, DestinationPosition,
+                          SourcePosition)
+
+
+class BtpsVGC(VGC):
+    """
+    VGC subclass with 'valve_position' component added.
+    """
+    # TODO: this may be pushed into ValveBase, but need to check with others
+    # first
+    valve_position = Cpt(
+        EpicsSignalRO,
+        ':POS_STATE_RBV',
+        kind='hinted',
+        string=True,
+        doc='Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F'
+    )
 
 
 class RangeComparison(BaseInterface, Device):
@@ -63,6 +83,20 @@ class RangeComparison(BaseInterface, Device):
         doc="Is the value comparison exclusive or inclusive?",
     )
 
+    def get_delta(self) -> float:
+        """
+        Get the delta to the nominal value.
+
+        Returns
+        -------
+        float
+            (nominal - value)
+        """
+        if not self.input_valid.get():
+            raise ValueError("Input invalid: delta not available")
+
+        return self.value.get() - self.nominal.get()
+
 
 class CentroidConfig(BaseInterface, Device):
     """BTPS camera centroid range comparison."""
@@ -80,8 +114,34 @@ class CentroidConfig(BaseInterface, Device):
     )
 
 
-class SourceConfig(BaseInterface, Device):
+class SourceToDestinationConfig(BaseInterface, Device):
     """BTPS per-(source, destination) configuration settings and state."""
+
+    def __init__(
+        self,
+        prefix: str,
+        source_pos: SourcePosition,
+        destination_pos: Optional[btms.DestinationPosition] = None,
+        **kwargs
+    ):
+        self.source_pos = source_pos
+        super().__init__(prefix, **kwargs)
+
+        if destination_pos is None:
+            try:
+                destination_pos = self.parent.destination_pos
+            except AttributeError:
+                raise RuntimeError(
+                    "destination_pos must be passed as a kwarg or available "
+                    "on the parent device"
+                )
+
+        assert isinstance(destination_pos, DestinationPosition)
+        self.destination_pos = destination_pos
+
+    source_pos: SourcePosition
+    destination_pos: btms.DestinationPosition
+
     name_ = Cpt(
         PytmcSignal,
         "BTPS:Name",
@@ -140,6 +200,14 @@ class SourceConfig(BaseInterface, Device):
 
 class DestinationConfig(BaseInterface, Device):
     """BTPS per-destination configuration settings and state."""
+
+    def __init__(
+        self, prefix: str, destination_pos: btms.DestinationPosition, **kwargs
+    ):
+        self.destination_pos = destination_pos
+        super().__init__(prefix, **kwargs)
+
+    destination_pos: btms.DestinationPosition
     name_ = Cpt(
         PytmcSignal,
         "BTPS:Name",
@@ -155,10 +223,39 @@ class DestinationConfig(BaseInterface, Device):
         kind="normal",
         doc="Exit valve is open and ready",
     )
-    ls1 = Cpt(SourceConfig, "LS1:", doc="Settings for source LS1 (bay 1)")
-    ls5 = Cpt(SourceConfig, "LS5:", doc="Settings for source LS5 (bay 3)")
-    ls8 = Cpt(SourceConfig, "LS8:", doc="Settings for source LS8 (bay 4)")
-    exit_valve = Cpt(VGC, "VGC:01", kind="normal", doc="Destination exit valve")
+    ls1 = Cpt(
+        SourceToDestinationConfig,
+        "LS1:",
+        source_pos=SourcePosition.ls1,
+        doc="Settings for source LS1 (bay 1) to this destination",
+    )
+    ls5 = Cpt(
+        SourceToDestinationConfig,
+        "LS5:",
+        source_pos=SourcePosition.ls5,
+        doc="Settings for source LS5 (bay 3) to this destination",
+    )
+    ls8 = Cpt(
+        SourceToDestinationConfig,
+        "LS8:",
+        source_pos=SourcePosition.ls8,
+        doc="Settings for source LS8 (bay 4) to this destination",
+    )
+    exit_valve = Cpt(BtpsVGC, "VGC:01", kind="normal", doc="Destination exit valve")
+
+    @property
+    def sources(self) -> Dict[SourcePosition, SourceToDestinationConfig]:
+        """
+
+        Returns
+        -------
+        Dict[SourcePosition, SourceToDestinationConfig]
+
+        """
+        return {
+            source.source_pos: source
+            for source in (self.ls1, self.ls5, self.ls8)
+        }
 
 
 class GlobalConfig(BaseInterface, Device):
@@ -218,15 +315,18 @@ class LssShutterStatus(BaseInterface, Device):
     )
 
 
-class ShutterSafety(BaseInterface, Device):
+class BtpsSourceStatus(BaseInterface, Device):
     """BTPS per-source shutter safety status."""
 
-    def __init__(self, prefix: str, **kwargs):
+    def __init__(self, prefix: str, source_pos: SourcePosition, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
+        self.source_pos = source_pos
         super().__init__(prefix, **kwargs)
 
+    source_pos: SourcePosition
+
     lss = Cpt(LssShutterStatus, "LST:", doc="Laser Safety System Status")
-    entry_valve = Cpt(VGC, "VGC:01", kind="normal", doc="Source entry valve")
+    entry_valve = Cpt(BtpsVGC, "VGC:01", kind="normal", doc="Source entry valve")
 
     open_request = Cpt(
         PytmcSignal,
@@ -281,6 +381,36 @@ class BtpsState(BaseInterface, Device):
     """
     Beam Transport Protection System (BTPS) State.
     """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sources = {
+            source.source_pos: source
+            for source in (self.ls1, self.ls5, self.ls8)
+        }
+
+        self.destinations = {
+            dest.destination_pos: dest
+            for dest in (
+                self.ld2,
+                # self.ld3,
+                self.ld4,
+                # self.ld5,
+                self.ld6,
+                # self.ld7,
+                self.ld8,
+                self.ld9,
+                self.ld10,
+                # self.ld11,
+                # self.ld12,
+                # self.ld13,
+                self.ld14,
+            )
+        }
+
+    sources: Dict[SourcePosition, BtpsSourceStatus]
+    destinations: Dict[btms.DestinationPosition, DestinationConfig]
+
     config = Cpt(
         GlobalConfig,
         "LTLHN:BTPS:Config:",
@@ -288,33 +418,112 @@ class BtpsState(BaseInterface, Device):
     )
 
     ls1 = Cpt(
-        ShutterSafety,
+        BtpsSourceStatus,
         "LTLHN:LS1:",
-        doc="Source Shutter LS1 (Bay 1)"
+        source_pos=SourcePosition.ls1,
+        doc="Source status for LS1 (Bay 1)"
     )
     ls5 = Cpt(
-        ShutterSafety,
+        BtpsSourceStatus,
         "LTLHN:LS5:",
-        doc="Source Shutter LS5 (Bay 3)"
+        source_pos=SourcePosition.ls5,
+        doc="Source status for LS5 (Bay 3)"
     )
     ls8 = Cpt(
-        ShutterSafety,
+        BtpsSourceStatus,
         "LTLHN:LS8:",
-        doc="Source Shutter LS8 (Bay 4)"
+        source_pos=SourcePosition.ls8,
+        doc="Source status for LS8 (Bay 4)"
     )
 
     # Commented-out destinations are not currently installed:
-    # ld1 = Cpt(DestinationConfig, "LTLHN:LD1:", doc="Destination LD1")
-    ld2 = Cpt(DestinationConfig, "LTLHN:LD2:", doc="Destination LD2")
-    # ld3 = Cpt(DestinationConfig, "LTLHN:LD3:", doc="Destination LD3")
-    ld4 = Cpt(DestinationConfig, "LTLHN:LD4:", doc="Destination LD4")
-    # ld5 = Cpt(DestinationConfig, "LTLHN:LD5:", doc="Destination LD5")
-    ld6 = Cpt(DestinationConfig, "LTLHN:LD6:", doc="Destination LD6")
-    # ld7 = Cpt(DestinationConfig, "LTLHN:LD7:", doc="Destination LD7")
-    ld8 = Cpt(DestinationConfig, "LTLHN:LD8:", doc="Destination LD8")
-    ld9 = Cpt(DestinationConfig, "LTLHN:LD9:", doc="Destination LD9")
-    ld10 = Cpt(DestinationConfig, "LTLHN:LD10:", doc="Destination LD10")
-    # ld11 = Cpt(DestinationConfig, "LTLHN:LD11:", doc="Destination LD11")
-    # ld12 = Cpt(DestinationConfig, "LTLHN:LD12:", doc="Destination LD12")
-    # ld13 = Cpt(DestinationConfig, "LTLHN:LD13:", doc="Destination LD13")
-    ld14 = Cpt(DestinationConfig, "LTLHN:LD14:", doc="Destination LD14")
+    # ld1 = Cpt(DestinationConfig, "LTLHN:LD1:", doc="Destination LD1", destination_pos=DestinationPosition.ld1)
+    ld2 = Cpt(
+        DestinationConfig,
+        "LTLHN:LD2:",
+        doc="Destination LD2",
+        destination_pos=DestinationPosition.ld2,
+    )
+    # ld3 = Cpt(DestinationConfig, "LTLHN:LD3:", doc="Destination LD3", destination_pos=DestinationPosition.ld3)
+    ld4 = Cpt(
+        DestinationConfig,
+        "LTLHN:LD4:",
+        doc="Destination LD4",
+        destination_pos=DestinationPosition.ld4,
+    )
+    # ld5 = Cpt(DestinationConfig, "LTLHN:LD5:", doc="Destination LD5", destination_pos=DestinationPosition.ld5)
+    ld6 = Cpt(
+        DestinationConfig,
+        "LTLHN:LD6:",
+        doc="Destination LD6",
+        destination_pos=DestinationPosition.ld6,
+    )
+    # ld7 = Cpt(DestinationConfig, "LTLHN:LD7:", doc="Destination LD7", destination_pos=DestinationPosition.ld7)
+    ld8 = Cpt(
+        DestinationConfig,
+        "LTLHN:LD8:",
+        doc="Destination LD8",
+        destination_pos=DestinationPosition.ld8,
+    )
+    ld9 = Cpt(
+        DestinationConfig,
+        "LTLHN:LD9:",
+        doc="Destination LD9",
+        destination_pos=DestinationPosition.ld9,
+    )
+    ld10 = Cpt(
+        DestinationConfig,
+        "LTLHN:LD10:",
+        doc="Destination LD10",
+        destination_pos=DestinationPosition.ld10,
+    )
+    # ld11 = Cpt(DestinationConfig, "LTLHN:LD11:", doc="Destination LD11", destination_pos=DestinationPosition.ld11)
+    # ld12 = Cpt(DestinationConfig, "LTLHN:LD12:", doc="Destination LD12", destination_pos=DestinationPosition.ld12)
+    # ld13 = Cpt(DestinationConfig, "LTLHN:LD13:", doc="Destination LD13", destination_pos=DestinationPosition.ld13)
+    ld14 = Cpt(
+        DestinationConfig,
+        "LTLHN:LD14:",
+        doc="Destination LD14",
+        destination_pos=DestinationPosition.ld14,
+    )
+
+    def to_btms_state(self) -> BtmsState:
+        """
+        Determine the state for BTMS, indicating active source/destination pairs.
+
+        Returns
+        -------
+        BtmsState
+        """
+        state = btms.BtmsState()
+        for source in self.sources.values():
+            dest_configs = [
+                dest.sources[source.source_pos]
+                for dest in self.destinations.values()
+            ]
+            try:
+                deltas = {
+                    conf.linear.get_delta(): conf.destination_pos
+                    for conf in dest_configs
+                }
+                dest_pos = deltas[min(deltas)]
+            except ValueError:
+                dest_pos = None
+
+            if dest_pos is not None:
+                dest = self.destinations[dest_pos]
+                dest_valve_ready = bool(dest.exit_valve_ready.get())
+            else:
+                dest_valve_ready = False
+
+            state.sources[source.source_pos] = BtmsSourceState(
+                source=source.source_pos,
+                destination=dest_pos,
+                beam_status=bool(
+                    source.lss.opened_status.get()
+                    and source.entry_valve_ready.get()
+                    and dest_valve_ready
+                ),
+            )
+
+        return state
