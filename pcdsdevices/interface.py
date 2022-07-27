@@ -1695,6 +1695,9 @@ class LightpathMixin(Device):
         self.input_branches = input_branches
         self.output_branches = output_branches
         super().__init__(*args, **kwargs)
+        self._init_summary_signal()
+
+    def _init_summary_signal(self):
         for sig in self.lightpath_cpts:
             self.lightpath_summary.add_signal_by_attr_name(sig)
 
@@ -1804,10 +1807,19 @@ class LightpathInOutCptMixin(LightpathMixin):
     # defers the check for lightpath_cpt until next subclass
     _lightpath_mixin = True
 
+    def _init_summary_signal(self):
+        """ Change summary signal to only watch .state signals """
+        for sig in self.lightpath_cpts:
+            self.lightpath_summary.add_signal_by_attr_name(sig + '.state')
+
     def get_lightpath_state(self) -> LightpathState:
         self._check_valid_lightpath()
-        kwargs = {sig.name.removeprefix(self.name + '_'): sig.state.get()
-                  for sig in self.lightpath_summary._signals}
+        kwargs = {}
+        for sig in self.lightpath_summary._signals:
+            parent = sig.parent or sig.biological_parent
+            sig_name = parent.name.removeprefix(self.name + '_')
+            kwargs[sig_name] = sig.get()
+
         status = self.calc_lightpath_state(**kwargs)
         return status
 
