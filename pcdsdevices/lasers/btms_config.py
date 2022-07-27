@@ -46,6 +46,21 @@ class SourcePosition(str, enum.Enum):
     ls8 = "LS8"
     ls4 = "LS4"
 
+    @property
+    def description(self) -> str:
+        """
+        Description of source.
+
+        Returns
+        -------
+        str
+        """
+        return {
+            SourcePosition.ls1: "Bay 1",
+            SourcePosition.ls5: "Bay 3",
+            SourcePosition.ls8: "Bay 4",
+        }.get(self, "Unknown")
+
     def is_above(self, other: SourcePosition) -> bool:
         """Is ``self`` at or above the ``other`` position?"""
         positions = list(SourcePosition)
@@ -88,6 +103,25 @@ class DestinationPosition(str, enum.Enum):
     ld6 = "LD6"    # bottom
     ld14 = "LD14"  # top
     ld7 = "LD7"    # bottom
+
+    @property
+    def description(self) -> str:
+        """
+        Description of destination.
+
+        Returns
+        -------
+        str
+        """
+        return {
+            DestinationPosition.ld2: "TMO IP3",
+            DestinationPosition.ld4: "RIX ChemRIXS",
+            DestinationPosition.ld6: "RIX QRIXS",
+            DestinationPosition.ld8: "TMO IP1",
+            DestinationPosition.ld9: "Laser Lab",
+            DestinationPosition.ld10: "TMO IP2",
+            DestinationPosition.ld14: "XPP",
+        }.get(self, "Unknown")
 
     def path_to(
         self, target: DestinationPosition
