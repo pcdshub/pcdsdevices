@@ -2,6 +2,40 @@ Release History
 ###############
 
 
+v6.3.0 (2022-07-27)
+===================
+
+Features
+--------
+- New module for controlling intensity of LEDs or Fiber-Lites, light_control.py
+- Removing CvmiLed from cvmi_motion.py
+
+Device Updates
+--------------
+- TM2K4 now has its own class with 5 position states (4 targets and and OUT state)
+- Upgrade BeamEnergyRequest from BaseInterface to FltMvInterface
+  to pick up all the move aliases.
+- slits.py: add 'hg', 'ho', 'vg', 'vo' to tab_whitelist in SlitsBase, upon request from the XPP scientists
+- New set_zero method to DelayBase
+
+New Devices
+-----------
+- usb_encoder
+
+Maintenance
+-----------
+- Delay the import of pint so that sessions with no unit conversions can
+  start up 2 seconds faster.
+
+Contributors
+------------
+- Mbosum
+- espov
+- wwright-slac
+- zllentz
+
+
+
 v6.2.0 (2022-06-20)
 ===================
 
