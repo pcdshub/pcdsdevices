@@ -29,8 +29,8 @@ Maintenance
 
 Contributors
 ------------
-- espov
 - mbosum
+- vespos
 - wwright-slac
 - zllentz
 
