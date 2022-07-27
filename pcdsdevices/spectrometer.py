@@ -343,9 +343,10 @@ class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     SUB_STATE = 'state'
 
     # dummy signal, state is always the same
-    lightpath_cpts = ['yag_x']
+    lightpath_cpts = ['yag_x.user_readback']
 
     def calc_lightpath_state(self, **kwargs) -> LightpathState:
+        # TODO: get real logic here, instead of legacy hard-coding
         return LightpathState(
             inserted=True,
             removed=False,
@@ -391,7 +392,7 @@ class HXRSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     SUB_STATE = 'state'
 
     # dummy signal, state is always the same
-    lightpath_cpts = ['xtaly']
+    lightpath_cpts = ['xtaly.user_readback']
 
     def calc_lightpath_state(self, **kwargs) -> LightpathState:
         return LightpathState(

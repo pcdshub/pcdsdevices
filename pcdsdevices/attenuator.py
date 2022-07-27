@@ -968,7 +968,7 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
     tab_component_names = True
 
     # Register that all blades are needed for lightpath calc
-    lightpath_cpts = [f'blade_{idx:02}' for idx in range(1, 5)]
+    lightpath_cpts = [f'blade_{idx:02}.state.state' for idx in range(1, 5)]
 
     # Summary for lightpath view
     num_in = Cpt(InternalSignal, kind='hinted')
@@ -1016,10 +1016,12 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
         """
         self._check_valid_lightpath()
         lightpath_kwargs = {}
-        for cpt_name in self.lightpath_cpts:
-            sig = getattr(self, cpt_name)
-            sig_state_name = sig.name.removeprefix(self.name + '_')
-            lightpath_kwargs[sig_state_name] = sig.state.state.get()
+        lp_sigs = self.lightpath_summary._signals.keys()
+        for sig in lp_sigs:
+            # want to get name of blade_0x from dev_blade_0x_state_state
+            cpt_name = sig.name.removeprefix(self.name + '_')
+            cpt_name = cpt_name.removesuffix('_state_state')
+            lightpath_kwargs[cpt_name] = sig.get()
 
         return self.calc_lightpath_state(**lightpath_kwargs)
 
@@ -1029,6 +1031,7 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
         out_check = []
         trans_check = []
         for sig_name, sig_value in lightpath_kwargs.items():
+            # InOut positioner is not the parent component, but the .state
             obj = getattr(self, sig_name).state
             if not obj._state_initialized:
                 # This would prevent make check_inserted, etc. fail
@@ -1321,6 +1324,10 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
         UCpt.collect_prefixes(self, dict(calculator_prefix=calculator_prefix))
         limits = limits or (0.0, 1.0)
         super().__init__(*args, limits=limits, **kwargs)
+
+    def _init_summary_signal(self):
+        for sig in self.lightpath_cpts:
+            self.lightpath_summary.add_signal_by_attr_name(sig.state.state)
 
     def get_lightpath_state(self) -> LightpathState:
         """Grab slightly different PV values for use in same inout calc fn"""
