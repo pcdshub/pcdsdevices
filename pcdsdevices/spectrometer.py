@@ -296,7 +296,7 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
     SUB_STATE = 'state'
 
     # dummy component, state is always the same
-    lightpath_cpts = ['m_pi']
+    lightpath_cpts = ['m_pi.user_readback']
 
     def calc_lightpath_state(self, **kwargs) -> LightpathState:
         return LightpathState(
