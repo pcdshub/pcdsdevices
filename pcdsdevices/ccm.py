@@ -680,6 +680,27 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         new_theta0_deg = new_theta0_rad * 180 / np.pi
         self.theta0_deg.put(new_theta0_deg)
 
+    def move(self, *args, kill=True, wait=True, **kwargs):
+        """
+        Overwrite the move method to add a PID kill at the
+        end of each move.
+
+        Context: the PID loop keeps looking for the final position forever.
+        The motor thus runs at too high duty cycles, heats up and causes
+        vacuum spikes in the chamber. This has led to MPS trips.
+        In addition, there is serious potential to fry the motor itself,
+        as it is run too intensively.
+        """
+        if kill:
+            # Must always wait if we are killing the PID
+            wait = True
+        st = super().move(*args, wait=wait, **kwargs)
+        time.sleep(0.01)  # safety wait. Necessary?
+        if kill:
+            print('Kill alio PID')
+            self.alio.kill()
+        return st
+
 
 class CCMEnergyWithVernier(CCMEnergy):
     """
