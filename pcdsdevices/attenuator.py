@@ -1008,22 +1008,25 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
         self.calculator.run_calculation.put(1, wait=True)
         return super()._setup_move(position)
 
-    def get_lightpath_state(self) -> LightpathState:
+    def get_lightpath_state(self, use_cache=True) -> LightpathState:
         """
         Grab slightly different PV values for use in same inout calc fn
         The state is nested one device deeper than LightpathInOutCptMixin
         expects.
         """
         self._check_valid_lightpath()
-        lightpath_kwargs = {}
-        lp_sigs = self.lightpath_summary._signals.keys()
-        for sig in lp_sigs:
-            # want to get name of blade_0x from dev_blade_0x_state_state
-            cpt_name = sig.name.removeprefix(self.name + '_')
-            cpt_name = cpt_name.removesuffix('_state_state')
-            lightpath_kwargs[cpt_name] = sig.get()
+        if (not use_cache) or (self._cached_state is None):
+            lightpath_kwargs = {}
+            lp_sigs = self.lightpath_summary._signals.keys()
+            for sig in lp_sigs:
+                # want to get name of blade_0x from dev_blade_0x_state_state
+                cpt_name = sig.name.removeprefix(self.name + '_')
+                cpt_name = cpt_name.removesuffix('_state_state')
+                lightpath_kwargs[cpt_name] = sig.get()
 
-        return self.calc_lightpath_state(**lightpath_kwargs)
+            self._cached_state = self.calc_lightpath_state(**lightpath_kwargs)
+
+        return self._cached_state
 
     def calc_lightpath_state(self, **lightpath_kwargs) -> LightpathState:
         # Repeat lightpath logic to extract num_in, num_out
@@ -1162,7 +1165,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
     tab_whitelist = ['clear_errors', 'reset_errors']
 
     # Register that all blades are needed for lightpath calc
-    lightpath_cpts = [f'blade_{idx:02}' for idx in range(1, 20)]
+    lightpath_cpts = [f'blade_{idx:02}.state.state' for idx in range(1, 20)]
 
     # Summary for lightpath view
     num_in = Cpt(InternalSignal, kind='hinted')
@@ -1325,20 +1328,25 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
         limits = limits or (0.0, 1.0)
         super().__init__(*args, limits=limits, **kwargs)
 
-    def _init_summary_signal(self):
-        for sig in self.lightpath_cpts:
-            self.lightpath_summary.add_signal_by_attr_name(sig.state.state)
-
-    def get_lightpath_state(self) -> LightpathState:
-        """Grab slightly different PV values for use in same inout calc fn"""
+    def get_lightpath_state(self, use_cache: bool = True) -> LightpathState:
+        """
+        Grab slightly different PV values for use in same inout calc fn
+        The state is nested one device deeper than LightpathInOutCptMixin
+        expects.
+        """
         self._check_valid_lightpath()
-        lightpath_kwargs = {}
-        for cpt_name in self.lightpath_cpts:
-            sig = getattr(self, cpt_name)
-            sig_state_name = sig.name.removeprefix(self.name + '_')
-            lightpath_kwargs[sig_state_name] = sig.state.state.get()
+        if (not use_cache) or (self._cached_state is None):
+            lightpath_kwargs = {}
+            lp_sigs = self.lightpath_summary._signals.keys()
+            for sig in lp_sigs:
+                # want to get name of blade_0x from dev_blade_0x_state_state
+                cpt_name = sig.name.removeprefix(self.name + '_')
+                cpt_name = cpt_name.removesuffix('_state_state')
+                lightpath_kwargs[cpt_name] = sig.get()
 
-        return self.calc_lightpath_state(**lightpath_kwargs)
+            self._cached_state = self.calc_lightpath_state(**lightpath_kwargs)
+
+        return self._cached_state
 
     def calc_lightpath_state(self, **lightpath_kwargs) -> LightpathState:
         # Repeat lightpath logic to extract num_in, num_out

@@ -1692,6 +1692,7 @@ class LightpathMixin(Device):
                  input_branches=[], output_branches=[], **kwargs):
         self._lightpath_ready = False
         self._retry_lightpath = False
+        self._cached_state = None
         self.input_branches = input_branches
         self.output_branches = output_branches
         super().__init__(*args, **kwargs)
@@ -1700,6 +1701,8 @@ class LightpathMixin(Device):
     def _init_summary_signal(self):
         for sig in self.lightpath_cpts:
             self.lightpath_summary.add_signal_by_attr_name(sig)
+
+        self.lightpath_summary.subscribe(self._calc_cache_lightpath_state)
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
@@ -1754,7 +1757,7 @@ class LightpathMixin(Device):
             'a ``calc_lightpath_state`` method.'
         )
 
-    def get_lightpath_state(self) -> LightpathState:
+    def get_lightpath_state(self, use_cache: bool = True) -> LightpathState:
         """
         Return the current LightpathState
 
@@ -1764,10 +1767,21 @@ class LightpathMixin(Device):
             a dataclass containing the Lightpath state
         """
         self._check_valid_lightpath()
-        kwargs = {sig.name.removeprefix(self.name + '_'): sig.get()
-                  for sig in self.lightpath_summary._signals}
-        status = self.calc_lightpath_state(**kwargs)
-        return status
+
+        if (not use_cache) or (self._cached_state is None):
+            self.log.debug('calculating new LightpathState')
+            kwargs = {sig.name.removeprefix(self.name + '_'): sig.get()
+                      for sig in self.lightpath_summary._signals}
+            self._cached_state = self.calc_lightpath_state(**kwargs)
+
+        return self._cached_state
+
+    def _calc_cache_lightpath_state(self, *args, **kwargs) -> None:
+        """
+        Calculate the lightpath state and cache it.
+        Intended for use as a callback subscribed to lightpath_summary
+        """
+        self.get_lightpath_state(use_cache=False)
 
 
 class LightpathInOutMixin(LightpathMixin):
@@ -1812,16 +1826,21 @@ class LightpathInOutCptMixin(LightpathMixin):
         for sig in self.lightpath_cpts:
             self.lightpath_summary.add_signal_by_attr_name(sig + '.state')
 
-    def get_lightpath_state(self) -> LightpathState:
-        self._check_valid_lightpath()
-        kwargs = {}
-        for sig in self.lightpath_summary._signals:
-            parent = sig.parent or sig.biological_parent
-            sig_name = parent.name.removeprefix(self.name + '_')
-            kwargs[sig_name] = sig.get()
+        self.lightpath_summary.subscribe(self._calc_cache_lightpath_state)
 
-        status = self.calc_lightpath_state(**kwargs)
-        return status
+    def get_lightpath_state(self, use_cache: bool = True) -> LightpathState:
+        self._check_valid_lightpath()
+        if (not use_cache) or (self._cached_state is None):
+            kwargs = {}
+            for sig in self.lightpath_summary._signals:
+                parent = sig.parent or sig.biological_parent
+                sig_name = parent.name.removeprefix(self.name + '_')
+                kwargs[sig_name] = sig.get()
+
+            state = self.calc_lightpath_state(**kwargs)
+            self._cached_state = state
+
+        return self._cached_state
 
     def calc_lightpath_state(self, **lightpath_kwargs):
         in_check = []
