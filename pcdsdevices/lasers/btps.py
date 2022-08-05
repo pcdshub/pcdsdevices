@@ -205,6 +205,16 @@ class SourceToDestinationConfig(BaseInterface, Device):
         PytmcSignal, "BTPS:Valid", io="input", kind="normal",
         doc="Data validity summary"
     )
+    in_position = Cpt(
+        PytmcSignal,
+        "BTPS:InPosition",
+        io="input",
+        kind="normal",
+        doc=(
+            "Set if the mirror assembly for this source is in position for "
+            "this laser destination"
+        ),
+    )
 
 
 class DestinationConfig(BaseInterface, Device):
@@ -387,6 +397,14 @@ class BtpsSourceStatus(BaseInterface, Device):
         io="input",
         kind="normal",
         doc="BTPS safe to open indicator",
+    )
+
+    current_destination = Cpt(
+        PytmcSignal,
+        "BTPS:CurrentLD",
+        io="input",
+        kind="normal",
+        doc="BTPS-determined current laser destination",
     )
 
     def set_destination(
