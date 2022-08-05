@@ -303,15 +303,17 @@ class LssShutterStatus(BaseInterface, Device):
     )
 
     opened_status = Cpt(
-        # PytmcSignal, "OPN", io="i",
-        EpicsSignal, "OPN_RBV",   # TODO: for testing
+        PytmcSignal,
+        "OPN",
+        io="i",
         kind="normal",
         doc="Shutter open status",
     )
 
     closed_status = Cpt(
-        # PytmcSignal, "CLS", io="i",
-        EpicsSignal, "CLS_RBV",   # TODO: for testing
+        PytmcSignal,
+        "CLS",
+        io="i",
         kind="normal",
         doc="Shutter closed status",
     )
