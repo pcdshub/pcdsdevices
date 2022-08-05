@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>726</width>
+    <width>741</width>
     <height>102</height>
    </rect>
   </property>
@@ -325,7 +325,7 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="3" column="1" alignment="Qt::AlignLeft">
       <widget class="QLabel" name="label_4">
        <property name="font">
         <font>
@@ -333,7 +333,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Source 1</string>
+        <string>LS1 (Bay 1)</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -406,7 +406,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Source 4</string>
+        <string>LS8 (Bay 4)</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -537,7 +537,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Source 3</string>
+        <string>LS5 (Bay 3)</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
