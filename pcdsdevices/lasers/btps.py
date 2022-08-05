@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 from typing import Dict, Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.status import MoveStatus
 
 from pcdsdevices.valve import VGC
 
@@ -329,6 +332,7 @@ class BtpsSourceStatus(BaseInterface, Device):
         self.source_pos = source_pos
         super().__init__(prefix, **kwargs)
 
+    parent: BtpsState
     source_pos: SourcePosition
 
     lss = Cpt(LssShutterStatus, "LST:", doc="Laser Safety System Status")
@@ -382,6 +386,13 @@ class BtpsSourceStatus(BaseInterface, Device):
         kind="normal",
         doc="BTPS safe to open indicator",
     )
+
+    def set_destination(
+        self, dest: DestinationPosition
+    ) -> MoveStatus:
+        config = self.parent.destinations[dest].sources[self.source_pos]
+        nominal_pos = config.linear.nominal.get()
+        return self.linear.set(nominal_pos)
 
 
 class BtpsState(BaseInterface, Device):
@@ -496,6 +507,11 @@ class BtpsState(BaseInterface, Device):
         doc="Destination LD14",
         destination_pos=DestinationPosition.ld14,
     )
+
+    def set_source_to_destination(
+        self, source: SourcePosition, dest: DestinationPosition
+    ) -> MoveStatus:
+        return self.sources[source].set_destination(dest)
 
     def to_btms_state(self) -> BtmsState:
         """
