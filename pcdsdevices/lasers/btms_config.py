@@ -46,6 +46,20 @@ class SourcePosition(str, enum.Enum):
     ls8 = "LS8"
     ls4 = "LS4"
 
+    @classmethod
+    def from_index(cls, index: int) -> SourcePosition:
+        """"
+        Get a SourcePosition given its integer index.
+        """
+        return getattr(cls, f"ls{index}")
+
+    @property
+    def index(self) -> int:
+        """"
+        Get an integer index from the source position.
+        """
+        return int(self.name.lstrip("ls"))
+
     @property
     def description(self) -> str:
         """
@@ -122,6 +136,20 @@ class DestinationPosition(str, enum.Enum):
             DestinationPosition.ld10: "TMO IP2",
             DestinationPosition.ld14: "XPP",
         }.get(self, "Unknown")
+
+    @classmethod
+    def from_index(cls, index: int) -> DestinationPosition:
+        """"
+        Get a DestinationPosition given its integer index.
+        """
+        return getattr(cls, f"ld{index}")
+
+    @property
+    def index(self) -> int:
+        """"
+        Get an integer index from the source position.
+        """
+        return int(self.name.lstrip("ld"))
 
     def path_to(
         self, target: DestinationPosition
