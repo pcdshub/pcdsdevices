@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, cast
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -148,6 +148,7 @@ class SourceToDestinationConfig(BaseInterface, Device):
         assert isinstance(destination_pos, DestinationPosition)
         self.destination_pos = destination_pos
 
+    parent: DestinationConfig
     source_pos: SourcePosition
     destination_pos: btms.DestinationPosition
 
@@ -216,6 +217,83 @@ class SourceToDestinationConfig(BaseInterface, Device):
         ),
     )
 
+    def summarize_checks(self) -> List[str]:
+        """
+        Summarize all checks into a user-readable form.
+
+        Returns
+        -------
+        list of str
+        """
+        if not self.connected:
+            return ["Disconnected"]
+
+        result = [
+            f"Checks for {self.source_pos} -> {self.dest}:"
+        ]
+
+        if not self.checks_ok.get():
+            result.append("One or more checks are not OK.")
+        if not self.data_valid.get():
+            result.append(
+                "Some data on the PLC is not valid.  "
+                "This could be due to a disconnected PV, unhomed motor, etc."
+            )
+
+        for desc, check in [
+            ("Far field centroid X", self.far_field.centroid_x),
+            ("Far field centroid Y", self.far_field.centroid_y),
+            ("Near field centroid X", self.near_field.centroid_x),
+            ("Near field centroid Y", self.near_field.centroid_y),
+            ("Linear motor", self.linear),
+            ("Rotary motor", self.rotary),
+            ("Goniometer motor", self.goniometer),
+        ]:
+            check = cast(RangeComparison, check)
+            if not check.input_valid.get():
+                result.append(
+                    f"{desc} data is not valid."
+                )
+            elif not check.in_range.get():
+                low = check.low.get()
+                high = check.high.get()
+                value = check.value.get()
+                nominal = check.nominal.get()
+                inclusive = check.inclusive.get()
+                less_than = "<=" if inclusive else "<"
+                range_desc = (
+                    f"{low} {less_than} value {less_than} {high}.  "
+                    f"The nominal value is {nominal}."
+                )
+                if low >= high:
+                    result.append(
+                        f"{desc} range is not properly configured: {range_desc}"
+                    )
+                else:
+                    result.append(
+                        f"{desc} value {value} is not in range: {range_desc}"
+                    )
+
+        if not self.entry_valve_ready.get():
+            result.append(
+                f"The PLC reports the entry valve for {self.source_pos} is not ready"
+            )
+
+        if not self.in_position.get():
+            result.append(
+                f"The PLC reports {self.source_pos} is not in position"
+            )
+
+        if not self.parent.exit_valve_ready.get():
+            result.append(
+                f"The PLC reports the exit valve for {self.dest} is not ready"
+            )
+
+        if len(result) == 1:
+            result.append("All checks are OK.")
+
+        return result
+
 
 class DestinationConfig(BaseInterface, Device):
     """BTPS per-destination configuration settings and state."""
@@ -226,6 +304,7 @@ class DestinationConfig(BaseInterface, Device):
         self.destination_pos = destination_pos
         super().__init__(prefix, **kwargs)
 
+    parent: BtpsState
     destination_pos: btms.DestinationPosition
     name_ = Cpt(
         PytmcSignal,
@@ -646,8 +725,8 @@ class BtpsState(BaseInterface, Device):
 
         return state
 
-    def status_info(self) -> BtmsState:
-        return self.to_btms_state()
+    def status_info(self) -> Dict[str, BtmsState]:
+        return {"state": self.to_btms_state()}
 
-    def format_status_info(self, state: BtmsState):
-        return str(state)
+    def format_status_info(self, state_dict: dict):
+        return str(state_dict["state"])
