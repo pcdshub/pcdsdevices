@@ -24,6 +24,90 @@ POSITION_DIAGRAM = """
 """
 
 
+class _PositionDiagram:
+    """
+    An internal diagram helper for showing the current btps state in
+    hutch-python.
+
+    Used by BtmsState.
+    """
+    COL_WIDTH = 3
+    STAGE_CHAR = "*"
+    BEAM_CHAR_UP = "^"
+    BEAM_CHAR_DOWN = "v"
+
+    def __init__(self):
+        self.text = POSITION_DIAGRAM
+
+    def _find_line_col(self, text: str) -> Tuple[int, int]:
+        """Get the line and column of ``text``."""
+        for lineno, line in enumerate(self.text.splitlines()):
+            if text in line:
+                return lineno, line.index(text)
+        raise ValueError(f"{text} not found")
+
+    def _fill(
+        self, character: str, first_line: int, last_line: int, col1: int, col2: int
+    ) -> str:
+        """Fill lines first_line to last_line from col1 to col2 with ``character``."""
+        assert len(character) == 1
+        results = []
+        if first_line > last_line:
+            first_line, last_line = last_line, first_line
+        if col1 > col2:
+            col1, col2 = col2, col1
+        for lineno, line in enumerate(self.text.splitlines()):
+            if first_line <= lineno <= last_line:
+                line_chars = list(line)
+                line_chars[col1:col2] = [character] * (col2 - col1)
+                line = "".join(line_chars)
+            results.append(line)
+        return "\n".join(results)
+
+    def add_source(
+        self, source: SourcePosition, dest: DestinationPosition, beam_status: bool
+    ) -> None:
+        """
+        Add a source to the diagram.
+
+        Parameters
+        ----------
+        source : SourcePosition
+            The source position.
+        dest : DestinationPosition
+            The destination that the source is positioned at.
+        beam_status : bool
+            True if the beam is reportedly enabled.
+        """
+        source_line, _ = self._find_line_col(source.value)
+        dest_line, dest_col = self._find_line_col(dest.value)
+
+        self.text = self._fill(
+            self.STAGE_CHAR,
+            source_line,
+            source_line,
+            dest_col,
+            dest_col + self.COL_WIDTH,
+        )
+        if not beam_status:
+            return
+
+        if dest.is_top:
+            dest_line += 1
+            beam_line = source_line - 1
+            beam_char = self.BEAM_CHAR_UP
+        else:
+            beam_line = source_line + 1
+            dest_line -= 1
+            beam_char = self.BEAM_CHAR_DOWN
+        self.text = self._fill(
+            beam_char, beam_line, dest_line, dest_col, dest_col + self.COL_WIDTH
+        )
+
+    def __str__(self):
+        return self.text
+
+
 class SourcePosition(str, enum.Enum):
     f"""
     "LS" laser source ports in the switchbox by their official names.
@@ -51,7 +135,10 @@ class SourcePosition(str, enum.Enum):
         """"
         Get a SourcePosition given its integer index.
         """
-        return getattr(cls, f"ls{index}")
+        try:
+            return getattr(cls, f"ls{index}")
+        except AttributeError:
+            raise ValueError(f"Invalid index: {index}") from None
 
     @property
     def index(self) -> int:
@@ -142,7 +229,10 @@ class DestinationPosition(str, enum.Enum):
         """"
         Get a DestinationPosition given its integer index.
         """
-        return getattr(cls, f"ld{index}")
+        try:
+            return getattr(cls, f"ld{index}")
+        except AttributeError:
+            raise ValueError(f"Invalid index: {index}") from None
 
     @property
     def index(self) -> int:
@@ -291,7 +381,7 @@ class BtmsState:
     def check_move_all(
         self,
         moving_source: SourcePosition,
-        closest_destination: DestinationPosition,
+        closest_destination: Optional[DestinationPosition],
         target_destination: DestinationPosition,
     ) -> List[MoveError]:
         """
@@ -304,9 +394,9 @@ class BtmsState:
         ----------
         moving_source : SourcePosition
             The source to attempt to move.
-        closest_destination : DestinationPosition
+        closest_destination : DestinationPosition or None
             The current destination that the source is using, or the closest
-            one to it.
+            one to it.  If None, use the position from the state.
         target_destination : DestinationPosition
             The target destination for the source to move to.
 
@@ -316,6 +406,14 @@ class BtmsState:
             Any detected issues for the given move request.
         """
         self.check_configuration()
+
+        if closest_destination is None:
+            closest_destination = self.sources[moving_source].destination
+
+        if closest_destination is None:
+            return [
+                MoveError(f"Source {moving_source} is not in a valid position")
+            ]
 
         dest_to_source = dict(
             (source.destination, source.source)
@@ -370,7 +468,7 @@ class BtmsState:
     def check_move(
         self,
         moving_source: SourcePosition,
-        closest_destination: DestinationPosition,
+        closest_destination: Optional[DestinationPosition],
         target_destination: DestinationPosition,
     ) -> None:
         """
@@ -381,9 +479,9 @@ class BtmsState:
         ----------
         moving_source : SourcePosition
             The source to attempt to move.
-        closest_destination : DestinationPosition
+        closest_destination : DestinationPosition or None
             The current destination that the source is using, or the closest
-            one to it.
+            one to it.  If None, use the position from the state.
         target_destination : DestinationPosition
             The target destination for the source to move to.
 
@@ -398,3 +496,14 @@ class BtmsState:
         # If there are any conflicts, just raise the first one for now.
         if conflicts:
             raise conflicts[0]
+
+    def get_text_diagram(self) -> str:
+        """A textual representation of the BTMS state."""
+        diagram = _PositionDiagram()
+        for source_pos, source in self.sources.items():
+            if source.destination is not None:
+                diagram.add_source(source_pos, source.destination, source.beam_status)
+        return str(diagram)
+
+    def __str__(self) -> str:
+        return self.get_text_diagram()

@@ -288,6 +288,8 @@ def test_move_scenario_2(
         },
     )
 
+    print(str(state))
+
     start_pos = state.sources[source].destination
     assert start_pos is not None
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -15,7 +15,7 @@ from ..interface import BaseInterface
 from ..signal import PytmcSignal
 from . import btms_config as btms
 from .btms_config import (BtmsSourceState, BtmsState, DestinationPosition,
-                          SourcePosition)
+                          MoveError, SourcePosition)
 
 
 class BtpsVGC(VGC):
@@ -409,19 +409,22 @@ class BtpsSourceStatus(BaseInterface, Device):
         doc="BTPS-determined current laser destination",
     )
 
-    def set(self, dest: DestinationPosition) -> AndStatus:
+    def set(self, dest: DestinationPosition, check: bool = True) -> AndStatus:
         """
         Move to the target destination and return a combined status for all motion.
         """
-        linear_status, rotary_status, goniometer_status = self.set_with_movestatus(dest)
+        linear_status, rotary_status, goniometer_status = self.set_with_movestatus(dest, check=check)
         return AndStatus(AndStatus(linear_status, rotary_status), goniometer_status)
 
     def set_with_movestatus(
-        self, dest: DestinationPosition
+        self, dest: DestinationPosition, check: bool = True
     ) -> Tuple[MoveStatus, MoveStatus, MoveStatus]:
         """
         Move to the target destination and return statuses for each motion.
         """
+        if check:
+            self.check_move(dest)
+
         config = self.parent.destinations[dest].sources[self.source_pos]
 
         nominal_pos = config.linear.nominal.get()
@@ -433,6 +436,40 @@ class BtpsSourceStatus(BaseInterface, Device):
         nominal_pos = config.goniometer.nominal.get()
         goniometer_status = self.goniometer.set(nominal_pos)
         return (linear_status, rotary_status, goniometer_status)
+
+    def check_move(self, dest: DestinationPosition) -> None:
+        """
+        Check for conflicts moving this source to ``dest``.
+
+        Parameters
+        ----------
+        dest : DestinationPosition
+            The target destination for the source to move to.
+
+        Raises
+        ------
+        MoveError
+            Raises specific ``MoveError`` subclass based on the reason.
+        """
+        state = self.parent.to_btms_state()
+        state.check_move(self.source_pos, None, dest)
+
+    def check_move_all(self, dest: DestinationPosition) -> List[MoveError]:
+        """
+        Check for conflicts moving this source to ``dest``.
+
+        Parameters
+        ----------
+        dest : DestinationPosition
+            The target destination for the source to move to.
+
+        Returns
+        -------
+        list of MoveError
+            All conflicts along the motion trajectory.
+        """
+        state = self.parent.to_btms_state()
+        return state.check_move_all(self.source_pos, None, dest)
 
 
 class BtpsState(BaseInterface, Device):
@@ -582,33 +619,35 @@ class BtpsState(BaseInterface, Device):
         """
         state = btms.BtmsState()
         for source in self.sources.values():
-            dest_configs = [
-                dest.sources[source.source_pos]
-                for dest in self.destinations.values()
-            ]
             try:
-                deltas = {
-                    conf.linear.get_delta(): conf.destination_pos
-                    for conf in dest_configs
-                }
-                dest_pos = deltas[min(deltas)]
+                dest_pos = DestinationPosition.from_index(
+                    source.current_destination.get()
+                )
             except ValueError:
                 dest_pos = None
 
             if dest_pos is not None:
                 dest = self.destinations[dest_pos]
-                dest_valve_ready = bool(dest.exit_valve_ready.get())
+                source_to_dest = dest.sources[source.source_pos]
+                beam_status = bool(
+                    source.lss.opened_status.get()
+                    and bool(source_to_dest.entry_valve_ready.get())
+                    and bool(dest.exit_valve_ready.get())
+                )
             else:
-                dest_valve_ready = False
+                source_to_dest = None
+                beam_status = source.lss.opened_status.get()
 
             state.sources[source.source_pos] = BtmsSourceState(
                 source=source.source_pos,
                 destination=dest_pos,
-                beam_status=bool(
-                    source.lss.opened_status.get()
-                    and source.entry_valve_ready.get()
-                    and dest_valve_ready
-                ),
+                beam_status=beam_status,
             )
 
         return state
+
+    def status_info(self) -> BtmsState:
+        return self.to_btms_state()
+
+    def format_status_info(self, state: BtmsState):
+        return str(state)
