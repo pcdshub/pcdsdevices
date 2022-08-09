@@ -140,7 +140,11 @@ def test_source_position_path(
             SourcePosition.ls2,
             DestinationPosition.ld8,
             DestinationPosition.ld7,
-            PathCrossedError("LS7 to LD14"),
+            PathCrossedError(
+                "LS7 to LD14",
+                crosses_source=SourcePosition.ls7,
+                crosses_destination=DestinationPosition.ld14,
+            ),
             id="ls2_move_past_ld14_bad",
         ),
     ],

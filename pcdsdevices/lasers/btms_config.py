@@ -3,7 +3,7 @@ from __future__ import annotations
 import dataclasses
 import enum
 import logging
-from typing import Dict, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 logger = logging.getLogger(__name__)
 
@@ -223,7 +223,21 @@ class DestinationInUseError(MoveError):
 
 class PathCrossedError(MoveError):
     """Moving to the target destination would cross an active laser."""
-    ...
+
+    #: The active source being crossed.
+    crosses_source: SourcePosition
+    #: The active destination being crossed.
+    crosses_destination: DestinationPosition
+
+    def __init__(
+        self,
+        message: str,
+        crosses_source: SourcePosition,
+        crosses_destination: DestinationPosition,
+    ):
+        super().__init__(message)
+        self.crosses_source = crosses_source
+        self.crosses_destination = crosses_destination
 
 
 class MovingActiveSource(MoveError):
@@ -274,6 +288,85 @@ class BtmsState:
         """Check the current configuration for any logical errors."""
         # TODO: anything important to check here?
 
+    def check_move_all(
+        self,
+        moving_source: SourcePosition,
+        closest_destination: DestinationPosition,
+        target_destination: DestinationPosition,
+    ) -> List[MoveError]:
+        """
+        Check motion of ``moving_source`` from ``closest_destination`` to
+        ``target_destination``.
+
+        Returns all conflicts along the way.
+
+        Parameters
+        ----------
+        moving_source : SourcePosition
+            The source to attempt to move.
+        closest_destination : DestinationPosition
+            The current destination that the source is using, or the closest
+            one to it.
+        target_destination : DestinationPosition
+            The target destination for the source to move to.
+
+        Returns
+        -------
+        list of MoveError
+            Any detected issues for the given move request.
+        """
+        self.check_configuration()
+
+        dest_to_source = dict(
+            (source.destination, source.source)
+            for source in self.sources.values()
+        )
+
+        errors = []
+        if self.sources[moving_source].beam_status:
+            errors.append(
+                MovingActiveSource(
+                    f"{moving_source} is active and should not be moved"
+                )
+            )
+
+        if self.sources[moving_source].destination == target_destination:
+            return errors
+
+        for dest in closest_destination.path_to(target_destination):
+            active_source = dest_to_source.get(dest, None)
+            if active_source is None:
+                # No source is near this destination
+                continue
+            if not self.sources[active_source].beam_status:
+                # The source is near the destination, but the beam isn't ready
+                continue
+
+            # If we're here:
+            # * ``moving_source`` will move past ``dest``
+            # * ``dest`` is in use with beam on
+            # * We need to determine if ``moving_source`` will move through the
+            #   beam or not
+            dest_is_bottom = not dest.is_top
+            if dest.is_top and moving_source.is_above(active_source):
+                crosses_beam = True
+            elif dest_is_bottom and active_source.is_above(moving_source):
+                crosses_beam = True
+            else:
+                crosses_beam = False
+
+            if crosses_beam:
+                errors.append(
+                    PathCrossedError(
+                        f"Moving source {moving_source} to {target_destination} "
+                        f"would cross active laser path of "
+                        f"{active_source} to {dest}",
+                        crosses_source=active_source,
+                        crosses_destination=dest,
+                    )
+                )
+        return errors
+
     def check_move(
         self,
         moving_source: SourcePosition,
@@ -299,46 +392,9 @@ class BtmsState:
         MoveError
             Raises specific ``MoveError`` subclass based on the reason.
         """
-        self.check_configuration()
-
-        dest_to_source = dict(
-            (source.destination, source.source)
-            for source in self.sources.values()
+        conflicts = self.check_move_all(
+            moving_source, closest_destination, target_destination
         )
-
-        if self.sources[moving_source].beam_status:
-            raise MovingActiveSource(
-                f"{moving_source} is active and should not be moved"
-            )
-
-        if self.sources[moving_source].destination == target_destination:
-            return
-
-        for dest in closest_destination.path_to(target_destination):
-            active_source = dest_to_source.get(dest, None)
-            if active_source is None:
-                # No source is near this destination
-                continue
-            if not self.sources[active_source].beam_status:
-                # The source is near the destination, but the beam isn't ready
-                continue
-
-            # If we're here:
-            # * ``moving_source`` will move past ``dest``
-            # * ``dest`` is in use with beam on
-            # * We need to determine if ``moving_source`` will move through the
-            #   beam or not
-            dest_is_bottom = not dest.is_top
-            if dest.is_top and moving_source.is_above(active_source):
-                crosses_beam = True
-            elif dest_is_bottom and active_source.is_above(moving_source):
-                crosses_beam = True
-            else:
-                crosses_beam = False
-
-            if crosses_beam:
-                raise PathCrossedError(
-                    f"Moving source {moving_source} to {target_destination} "
-                    f"would cross active laser path of "
-                    f"{active_source} to {dest}"
-                )
+        # If there are any conflicts, just raise the first one for now.
+        if conflicts:
+            raise conflicts[0]
