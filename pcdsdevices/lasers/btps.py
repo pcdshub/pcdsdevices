@@ -350,6 +350,8 @@ class BtpsSourceStatus(BaseInterface, Device):
     lss = Cpt(LssShutterStatus, "LST:", doc="Laser Safety System Status")
     entry_valve = Cpt(BtpsVGC, "VGC:01", doc="Source entry valve")
     linear = UCpt(SmarAct, doc="Linear Smaract stage")
+    rotary = UCpt(SmarAct, doc="Rotary stage")
+    goniometer = UCpt(SmarAct, doc="Goniometer stage")
 
     open_request = Cpt(
         PytmcSignal,
@@ -460,6 +462,8 @@ class BtpsState(BaseInterface, Device):
         "LTLHN:LS1:",
         source_pos=SourcePosition.ls1,
         linear_prefix="LAS:BTS:MCS2:01:m1",
+        rotary_prefix="LAS:BTS:MCS2:01:m2",
+        goniometer_prefix="LAS:BTS:MCS2:01:m3",
         doc="Source status for LS1 (Bay 1)"
     )
     ls5 = Cpt(
@@ -467,6 +471,8 @@ class BtpsState(BaseInterface, Device):
         "LTLHN:LS5:",
         source_pos=SourcePosition.ls5,
         linear_prefix="LAS:BTS:MCS2:01:m4",
+        rotary_prefix="LAS:BTS:MCS2:01:m6",
+        goniometer_prefix="LAS:BTS:MCS2:01:m5",
         doc="Source status for LS5 (Bay 3)"
     )
     ls8 = Cpt(
@@ -474,6 +480,8 @@ class BtpsState(BaseInterface, Device):
         "LTLHN:LS8:",
         source_pos=SourcePosition.ls8,
         linear_prefix="LAS:BTS:MCS2:01:m7",
+        rotary_prefix="LAS:BTS:MCS2:01:m8",
+        goniometer_prefix="LAS:BTS:MCS2:01:m9",
         doc="Source status for LS8 (Bay 4)"
     )
 
