@@ -229,7 +229,7 @@ class SourceToDestinationConfig(BaseInterface, Device):
             return ["Disconnected"]
 
         result = [
-            f"Checks for {self.source_pos} -> {self.dest}:"
+            f"Checks for {self.source_pos} -> {self.destination_pos}:"
         ]
 
         if not self.checks_ok.get():
