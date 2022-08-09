@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import Dict, Optional
+from typing import Dict, Optional, Tuple
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO
-from ophyd.status import MoveStatus
+from ophyd.status import AndStatus, MoveStatus
 
 from pcdsdevices.valve import VGC
 
@@ -409,12 +409,30 @@ class BtpsSourceStatus(BaseInterface, Device):
         doc="BTPS-determined current laser destination",
     )
 
-    def set_destination(
+    def set(self, dest: DestinationPosition) -> AndStatus:
+        """
+        Move to the target destination and return a combined status for all motion.
+        """
+        linear_status, rotary_status, goniometer_status = self.set_with_movestatus(dest)
+        return AndStatus(AndStatus(linear_status, rotary_status), goniometer_status)
+
+    def set_with_movestatus(
         self, dest: DestinationPosition
-    ) -> MoveStatus:
+    ) -> Tuple[MoveStatus, MoveStatus, MoveStatus]:
+        """
+        Move to the target destination and return statuses for each motion.
+        """
         config = self.parent.destinations[dest].sources[self.source_pos]
+
         nominal_pos = config.linear.nominal.get()
-        return self.linear.set(nominal_pos)
+        linear_status = self.linear.set(nominal_pos)
+
+        nominal_pos = config.rotary.nominal.get()
+        rotary_status = self.rotary.set(nominal_pos)
+
+        nominal_pos = config.goniometer.nominal.get()
+        goniometer_status = self.goniometer.set(nominal_pos)
+        return (linear_status, rotary_status, goniometer_status)
 
 
 class BtpsState(BaseInterface, Device):
@@ -538,8 +556,21 @@ class BtpsState(BaseInterface, Device):
 
     def set_source_to_destination(
         self, source: SourcePosition, dest: DestinationPosition
-    ) -> MoveStatus:
-        return self.sources[source].set_destination(dest)
+    ) -> AndStatus:
+        """
+        Move ``source`` to the target destination ``dest`` and return a combined
+        status object.
+        """
+        return self.sources[source].set(dest)
+
+    def set_source_to_destination_with_movestatus(
+        self, source: SourcePosition, dest: DestinationPosition
+    ) -> Tuple[MoveStatus, MoveStatus, MoveStatus]:
+        """
+        Move ``source`` to the target destination ``dest`` and return statuses
+        for each motion.
+        """
+        return self.sources[source].set_with_movestatus(dest)
 
     def to_btms_state(self) -> BtmsState:
         """
