@@ -1,3 +1,4 @@
+import collections
 import copy
 from collections.abc import Iterator
 from typing import Any, Optional
@@ -303,14 +304,17 @@ class UpdateComponent(Component):
     copt_cpt: Optional[Component]
 
     def __init__(self, **kwargs):
+        # Note: this intentionally does not do "everything" from super
         # Store the original kwargs for use later
         self.update_kwargs = kwargs
         # Begin with "something" as the copy_cpt to avoid issues on edge cases.
         self.copy_cpt = None
+        # Create a holding dict for the _subscriptions
+        self._subscriptions = collections.defaultdict(list)
 
     def __set_name__(self, owner: Device, attr_name: str):
         # Find the parent cpt of the same name and copy it
-        parent_cpt = None
+        parent_cpt: Optional[Component] = None
         for cls in owner.mro()[1:]:
             try:
                 parent_cpt = getattr(cls, attr_name)
@@ -325,7 +329,7 @@ class UpdateComponent(Component):
             )
         self.copy_cpt = copy.deepcopy(parent_cpt)
 
-        # Edit this object as needed
+        # Edit this object as per our init args
         for key, value in self.update_kwargs.items():
             # Set the attrs if they exist
             if key == 'kind':
@@ -338,6 +342,12 @@ class UpdateComponent(Component):
             # Add to kwargs if they don't exist
             else:
                 self.copy_cpt.kwargs[key] = value
+
+        # Forward any of the subscriptions we've queued up prior to copy_cpt
+        self.copy_cpt._subscriptions.update(self._subscriptions)
+        # Replace our subs dict with the copy's so we add to the copy's
+        # In case anyone does late subscription additions
+        self._subscriptions = self.copy_cpt._subscriptions
 
         # Defer to the normal component setup for the rest
         super().__set_name__(owner, attr_name)
@@ -357,19 +367,6 @@ class UpdateComponent(Component):
     def create_component(self, instance):
         # Use our hostage component from __set_name__
         return self.copy_cpt.create_component(instance)
-
-    # Defer to copy_cpt for subscription handling
-    def subscriptions(self, event_type):
-        return self.copy_cpt.subscriptions(event_type)
-
-    def sub_default(self, func):
-        return self.copy_cpt.sub_default(func)
-
-    def sub_meta(self, func):
-        return self.copy_cpt.sub_meta(func)
-
-    def sub_value(self, func):
-        return self.copy_cpt.sub_value(func)
 
 
 class GroupDevice(Device):
