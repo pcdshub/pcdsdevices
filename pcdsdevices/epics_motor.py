@@ -61,6 +61,13 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
            keeping track of whether or not a move was caused by this session
            and filtering self.log appropriately.
     """
+    # Allow metadata overrides by replacing the signal classes
+    user_readback = UpCpt(cls=EpicsSignalROEditMD)
+    user_setpoint = UpCpt(cls=EpicsSignalEditMD)
+    # Re-implement cpts for subscription ease
+    high_limit_travel = UpCpt()
+    low_limit_travel = UpCpt()
+
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
     set_metadata(disabled, dict(variety='command-enum'))
@@ -105,6 +112,22 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         super().__init__(*args, **kwargs)
         self._install_motion_error_filter()
         self.motor_egu.subscribe(self._cache_egu)
+
+    @high_limit_travel.sub_value
+    def _update_hlt(self, value, **kwargs):
+        """
+        Update ctrl metadata when the high limit switch position updates.
+        """
+        self.user_readback._override_metadata(upper_ctrl_limit=value)
+        self.user_setpoint._override_metadata(upper_ctrl_limit=value)
+
+    @low_limit_travel.sub_value
+    def _update_llt(self, value, **kwargs):
+        """
+        Update ctrl metadata when the low limit switch position updates.
+        """
+        self.user_readback._override_metadata(lower_ctrl_limit=value)
+        self.user_setpoint._override_metadata(lower_ctrl_limit=value)
 
     def move(self, position: float, wait: bool = True, **kwargs) -> MoveStatus:
         self._moved_in_session = True
@@ -819,24 +842,11 @@ class Newport(PCDSMotorBase):
     __doc__ += basic_positioner_init
     # Overrides are in roughly the same order as from EpicsMotor
 
-    # Override from EpicsMotor to change class for MD update
-    user_readback = Cpt(EpicsSignalROEditMD, '.RBV', kind='hinted',
-                        auto_monitor=True)
-    user_setpoint = Cpt(EpicsSignalEditMD, '.VAL', limits=True,
-                        auto_monitor=True)
-
     # Override from EpicsMotor to disable
     offset_freeze_switch = Cpt(Signal, kind='omitted')
 
     # Override from EpicsMotor to add subscription
-    motor_egu = Cpt(EpicsSignal, '.EGU', kind='config',
-                    auto_monitor=True)
-
-    # Override from EpicsMotor to add subscription
-    high_limit_travel = Cpt(EpicsSignal, '.HLM', kind='omitted',
-                            auto_monitor=True)
-    low_limit_travel = Cpt(EpicsSignal, '.LLM', kind='omitted',
-                           auto_monitor=True)
+    motor_egu = UpCpt()
 
     # Override from EpicsMotor to disable
     home_forward = Cpt(Signal, kind='omitted')
@@ -852,28 +862,19 @@ class Newport(PCDSMotorBase):
         raise NotImplementedError("Homing is not yet implemented for Newport "
                                   "motors")
 
-    # This needs to be re-done if you override user_readback
-    @user_readback.sub_value
-    def _pos_changed(self, *args, **kwargs):
-        super()._pos_changed(*args, **kwargs)
-
     @motor_egu.sub_value
     def _update_units(self, value, **kwargs):
+        """
+        Update ctrl metadata when the units update.
+        """
         self.user_readback._override_metadata(units=value)
         self.user_setpoint._override_metadata(units=value)
 
-    @high_limit_travel.sub_value
-    def _update_hlt(self, value, **kwargs):
-        self.user_readback._override_metadata(upper_ctrl_limit=value)
-        self.user_setpoint._override_metadata(upper_ctrl_limit=value)
-
-    @low_limit_travel.sub_value
-    def _update_llt(self, value, **kwargs):
-        self.user_readback._override_metadata(lower_ctrl_limit=value)
-        self.user_setpoint._override_metadata(lower_ctrl_limit=value)
-
     @motor_prec.sub_value
     def _update_prec(self, value, **kwargs):
+        """
+        Update ctrl metadata when the precision updates.
+        """
         self.user_readback._override_metadata(precision=value)
         self.user_setpoint._override_metadata(precision=value)
 
