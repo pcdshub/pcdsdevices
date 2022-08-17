@@ -308,7 +308,8 @@ class MoveError(Exception):
 
 class DestinationInUseError(MoveError):
     """The target destination is already in use."""
-    ...
+    #: The source at this destination.
+    source: SourcePosition
 
 
 class PathCrossedError(MoveError):

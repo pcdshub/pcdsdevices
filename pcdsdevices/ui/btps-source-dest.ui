@@ -173,7 +173,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}BTPS:LSS:OpenRequest_RBV</string>
+           <string>ca://${SHUTTER}LSS:OpenRequest_RBV</string>
           </property>
           <property name="showLabels" stdset="0">
            <bool>false</bool>
@@ -327,7 +327,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}BTPS:UserOpen</string>
+           <string>ca://${SHUTTER}UserOpen</string>
           </property>
           <property name="passwordProtected" stdset="0">
            <bool>false</bool>
@@ -373,7 +373,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}BTPS:UserOpen</string>
+           <string>ca://${SHUTTER}UserOpen</string>
           </property>
           <property name="passwordProtected" stdset="0">
            <bool>false</bool>
@@ -392,6 +392,9 @@
           </property>
           <property name="pressValue" stdset="0">
            <string>1</string>
+          </property>
+          <property name="releaseValue" stdset="0">
+           <string>None</string>
           </property>
           <property name="relativeChange" stdset="0">
            <bool>false</bool>
@@ -750,7 +753,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}EntryValveReady_RBV</string>
+           <string>ca://${SOURCE}BTPS:EntryValveReady_RBV</string>
           </property>
           <property name="showLabels" stdset="0">
            <bool>false</bool>
@@ -760,6 +763,17 @@
           </property>
           <property name="circles" stdset="0">
            <bool>true</bool>
+          </property>
+          <property name="numBits" stdset="0">
+           <number>1</number>
+          </property>
+          <property name="shift" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="labels" stdset="0">
+           <stringlist>
+            <string>Bit 0</string>
+           </stringlist>
           </property>
          </widget>
         </item>
@@ -911,7 +925,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}BTPS:Error_RBV</string>
+           <string>ca://${SHUTTER}Error_RBV</string>
           </property>
           <property name="onColor" stdset="0">
            <color>
@@ -986,7 +1000,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}BTPS:Acknowledge</string>
+           <string>ca://${SHUTTER}Acknowledge</string>
           </property>
           <property name="passwordProtected" stdset="0">
            <bool>false</bool>
@@ -1063,8 +1077,8 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-249</y>
-        <width>733</width>
+        <y>0</y>
+        <width>741</width>
         <height>708</height>
        </rect>
       </property>
