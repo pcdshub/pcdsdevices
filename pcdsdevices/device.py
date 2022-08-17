@@ -358,6 +358,19 @@ class UpdateComponent(Component):
         # Use our hostage component from __set_name__
         return self.copy_cpt.create_component(instance)
 
+    # Defer to copy_cpt for subscription handling
+    def subscriptions(self, event_type):
+        return self.copy_cpt.subscriptions(event_type)
+
+    def sub_default(self, func):
+        return self.copy_cpt.sub_default(func)
+
+    def sub_meta(self, func):
+        return self.copy_cpt.sub_meta(func)
+
+    def sub_value(self, func):
+        return self.copy_cpt.sub_value(func)
+
 
 class GroupDevice(Device):
     """
