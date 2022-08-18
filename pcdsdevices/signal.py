@@ -428,23 +428,55 @@ class PVStateSignal(AggregateSignal):
 
     See `AggregateSignal` for more information.
     """
+    _metadata_keys = Signal._core_metadata_keys + (
+        'enum_strs',
+    )
 
     def __init__(self, *, name, **kwargs):
         super().__init__(name=name, **kwargs)
         for attr_name in self.parent._state_logic:
             self.add_signal_by_attr_name(attr_name)
+        self._has_setpoint_md = False
+
+    @property
+    def enum_strs(self):
+        return tuple(state.name for state in self.parent.states_enum)
 
     def describe(self):
         # Base description information
         sub_sigs = [sig.name for sig in self._signals]
-        desc = {'source': 'SUM:{}'.format(','.join(sub_sigs)),
-                'dtype': 'string',
-                'shape': [],
-                'enum_strs': tuple(state.name
-                                   for state in self.parent.states_enum)}
+        desc = {
+            'source': 'SUM:{}'.format(','.join(sub_sigs)),
+            'dtype': 'string',
+            'shape': [],
+            'enum_strs': self.enum_strs,
+        }
         return {self.name: desc}
 
     def _calc_readback(self):
+        # Do some one-time setup here
+        # Convenient because we only hit this block when signals are ready
+        if (
+            self._metadata['enum_strs'] is None
+            and self.parent._state_initialized
+        ):
+            # One time setup of the enum strs
+            # Defined by class definition, not by EPICS
+            # Not necessarily available during init though, so do it now
+            self._metadata['enum_strs'] = self.enum_strs
+            self._run_metadata_callbacks()
+        if not self._has_setpoint_md:
+            # One time setup of the setpoint signal's metadata
+            # We need this to apply e.g. write permissions
+            ref_str = self.parent._state_logic_set_ref
+            if isinstance(ref_str, str):
+                setpoint_sig = getattr(self.parent, ref_str)
+                setpoint_sig.subscribe(
+                    self._setpoint_md_update,
+                    setpoint_sig.SUB_META,
+                )
+            self._has_setpoint_md = True
+
         state_value = None
         for states, sig_info in zip(
             self.parent._state_logic.values(), self._signals.values()
@@ -472,6 +504,11 @@ class PVStateSignal(AggregateSignal):
                         break
         # If all states deferred, report as unknown
         return state_value or self.parent._unknown
+
+    def _setpoint_md_update(self, *args, write_access=None, **kwargs):
+        if write_access is not None:
+            self._metadata['write_access'] = write_access
+            self._run_metadata_callbacks()
 
     def put(self, value, **kwargs):
         self.parent.move(value, **kwargs)
