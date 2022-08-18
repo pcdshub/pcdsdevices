@@ -445,7 +445,7 @@ class PVStateSignal(AggregateSignal):
         """
         return tuple(state.name for state in self.parent.states_enum)
 
-    def describe(self) -> Dict[str: Dict[str: Any]]:
+    def describe(self) -> Dict[str, Dict[str, Any]]:
         """
         Make sure a reasonable description exists for bluesky scans.
         """
