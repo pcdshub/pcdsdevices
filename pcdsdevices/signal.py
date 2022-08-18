@@ -17,7 +17,7 @@ import logging
 import numbers
 import typing
 from threading import RLock
-from typing import Dict, Generator, List, Mapping, Optional, Union
+from typing import Any, Dict, Generator, List, Mapping, Optional, Tuple, Union
 
 import numpy as np
 import ophyd
@@ -439,10 +439,16 @@ class PVStateSignal(AggregateSignal):
         self._has_setpoint_md = False
 
     @property
-    def enum_strs(self):
+    def enum_strs(self) -> Tuple[str, ...]:
+        """
+        Mimic the epics signal property for enum strings.
+        """
         return tuple(state.name for state in self.parent.states_enum)
 
-    def describe(self):
+    def describe(self) -> Dict[str: Dict[str: Any]]:
+        """
+        Make sure a reasonable description exists for bluesky scans.
+        """
         # Base description information
         sub_sigs = [sig.name for sig in self._signals]
         desc = {
@@ -453,7 +459,18 @@ class PVStateSignal(AggregateSignal):
         }
         return {self.name: desc}
 
-    def _calc_readback(self):
+    def _calc_readback(self) -> str:
+        """
+        Implements the PVStatePositioner logic.
+
+        This relies on this signal being a component of a PVStatePositioner
+        class with properly-defined class attributes.
+
+        On the first call, we'll do some setup of metadata values, since
+        this first call happens after the signals connect and we're guaranteed
+        that everything is ready. Doing it earlier can run into some
+        race conditions.
+        """
         # Do some one-time setup here
         # Convenient because we only hit this block when signals are ready
         if (
@@ -505,12 +522,27 @@ class PVStateSignal(AggregateSignal):
         # If all states deferred, report as unknown
         return state_value or self.parent._unknown
 
-    def _setpoint_md_update(self, *args, write_access=None, **kwargs):
+    def _setpoint_md_update(
+        self,
+        *args,
+        write_access: Optional[bool] = None,
+        **kwargs
+    ) -> None:
+        """
+        Metadata callback for us to keep track of write access permissions.
+
+        This metadata is used by ophyd and typhos to help give us better
+        feedback about write access without needing to try to put a value
+        first.
+        """
         if write_access is not None:
             self._metadata['write_access'] = write_access
             self._run_metadata_callbacks()
 
-    def put(self, value, **kwargs):
+    def put(self, value: Union[int, str], **kwargs) -> None:
+        """
+        Redirect puts to moving the parent PVStatePositioner device.
+        """
         self.parent.move(value, **kwargs)
 
 

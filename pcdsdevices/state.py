@@ -6,7 +6,7 @@ from __future__ import annotations
 import copy
 import functools
 import logging
-from typing import ClassVar, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device, required_for_connection
@@ -372,9 +372,9 @@ class PVStatePositioner(StatePositioner):
 
     state = Cpt(PVStateSignal, kind='hinted')
 
-    _state_logic = {}
-    _state_logic_mode = 'ALL'
-    _state_logic_set_ref = None
+    _state_logic: ClassVar[Dict[str, Dict[Any, str]]] = {}
+    _state_logic_mode: ClassVar[str] = 'ALL'
+    _state_logic_set_ref: ClassVar[Optional[str]] = None
 
     def __init__(self, prefix, *, name, **kwargs):
         if self.__class__ is PVStatePositioner:
