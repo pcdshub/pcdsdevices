@@ -9,6 +9,9 @@ logger = logging.getLogger(__name__)
 class RSChannel(Device):
     """
     Class to define PVs for a single channel of the RSPowerSupply NGP800.
+
+    Paramters
+    ----------
     prefix: str
         The base PV of the relevant Rohde-Schwarz channel.
     name: str, keyword-only
