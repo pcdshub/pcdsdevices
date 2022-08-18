@@ -1821,6 +1821,10 @@ class LightpathInOutCptMixin(LightpathMixin):
     # defers the check for lightpath_cpt until next subclass
     _lightpath_mixin = True
 
+    def __init__(self, *args, retry_delay=2.0, **kwargs):
+        self.retry_delay = retry_delay
+        super().__init__(*args, **kwargs)
+
     def _init_summary_signal(self):
         """ Change summary signal to only watch .state signals """
         for sig in self.lightpath_cpts:
@@ -1850,8 +1854,20 @@ class LightpathInOutCptMixin(LightpathMixin):
             obj = getattr(self, sig_name)
             if not obj._state_initialized:
                 # This would prevent make check_inserted, etc. fail
-                self._retry_lightpath = True
-                return
+                # if we cannot connect, supply an inconsistent state
+                # and queue up the calculation for later
+                self.log.debug('state not initialized, scheduling '
+                               'lightpath calculations for later')
+                utils.schedule_task(self._calc_cache_lightpath_state,
+                                    delay=self.retry_delay)
+
+                return LightpathState(
+                    inserted=True,
+                    removed=True,
+                    transmission=1,
+                    output_branch=self.output_branches[0]
+                )
+
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))
             out_check.append(obj.check_removed(sig_value))

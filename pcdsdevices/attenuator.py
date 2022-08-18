@@ -1357,8 +1357,15 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
             obj = getattr(self, sig_name).state
             if not obj._state_initialized:
                 # This would prevent make check_inserted, etc. fail
-                self._retry_lightpath = True
-                return
+                utils.schedule_task(self._calc_cache_lightpath_state,
+                                    delay=2.0)
+
+                return LightpathState(
+                    inserted=True,
+                    removed=True,
+                    transmission=1,
+                    output_branch=self.output_branches[0]
+                )
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))
             out_check.append(obj.check_removed(sig_value))
