@@ -932,3 +932,47 @@ def set_standard_ordering(cls: type[Device]) -> type[Device]:
     sort_components_by_kind(cls)
     move_subdevices_to_start(cls)
     return cls
+
+
+def match_stack(
+    stack: List[inspect.FrameInfo],
+    funcs: Iterable[str],
+    module: str,
+):
+    """
+    Return True if the stack matches the specifications.
+
+    The input args identify the functions that were called in
+    order before the stack was generated with inspect.stack().
+
+    So, if a function called "get" calls "read" which calls
+    your function, you'd set funcs to ("get", "read").
+    This is the reverse order that would be read off the stack.
+
+    This is not very precise- the intent is to have a quick
+    check that doesn't incur an extra file read on NFS.
+
+    Parameters
+    ----------
+    stack : list of frame info
+        As returned from inspect.stack()
+        We'll be analyzing list elements 1 and onward, skipping
+        element 0, which should be the inspect.stack() call.
+    funcs : iterable of str
+        The names of the functions that would be called in order
+        to generate the stack.
+    module : str
+        The name of the module that the first function that is
+        called lives in.
+    """
+    # Sanity check
+    if len(stack) <= len(funcs):
+        return False
+    # Check if module matches filename
+    if not sys.modules[module].__file__ == stack[1].filename:
+        return False
+    # Check that the functions were called in order
+    for frame, func_name in zip(stack[1:], reversed(funcs)):
+        if frame.function != func_name:
+            return False
+    return True
