@@ -218,7 +218,7 @@ class BaseInterface:
 
     def __init__(self, *args, **kwargs):
         self._skip_one_load = set()
-        for name, cpt in self._sig_attrs:
+        for name, cpt in self._sig_attrs.items():
             if not cpt.lazy or cpt._subscriptions:
                 self._skip_one_load.add(name)
         super().__init__(*args, **kwargs)
