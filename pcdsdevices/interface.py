@@ -301,11 +301,11 @@ class BaseInterface:
         for cpt in cpts:
             if isinstance(cpt, str):
                 cpt: Component = self._sig_attrs[cpt]
-            if any(
+            if any((
                 cpt._subscriptions and ensure_subs,
                 include_lazy,
                 not cpt.lazy,
-            ):
+            )):
                 objs.append(getattr(self, cpt.attr))
         for obj in objs:
             try:
