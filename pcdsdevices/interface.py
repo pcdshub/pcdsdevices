@@ -2,7 +2,6 @@
 Module for defining bell-and-whistles movement features.
 """
 import functools
-import inspect
 import logging
 import numbers
 import re
@@ -217,25 +216,12 @@ class BaseInterface:
 
         cls._class_tab = TabCompletionHelperClass(cls)
 
+    def init_components(self):
+        ...
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._tab = self._class_tab.new_instance(self)
-
-    def _instantiate_component(self, attr):
-        """
-        Disable Device.__init__ component instantiation.
-
-        Device.__init__ -> listcomp -> Component.__get__
-        -> BaseInterface._instantiate_component
-        """
-        stack = inspect.stack()
-        if utils.match_stack(
-            stack=stack,
-            funcs=('__init__', '<listcomp>', '__get__'),
-            module='ophyd.device',
-        ):
-            return
-        return super()._instantiate_component(attr)
 
     def __dir__(self):
         return self._tab.get_dir()
