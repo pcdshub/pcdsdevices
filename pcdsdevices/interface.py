@@ -314,7 +314,7 @@ class BaseInterface:
                 pass
             if wait_connected:
                 elapsed = time.monotonic() - start
-                remaining = elapsed - timeout
+                remaining = timeout - elapsed
                 if remaining <= 0:
                     raise TimeoutError(
                         'Timeout waiting for cpts to connect.'
