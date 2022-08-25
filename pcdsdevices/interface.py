@@ -217,6 +217,7 @@ class BaseInterface:
         cls._class_tab = TabCompletionHelperClass(cls)
 
     def __init__(self, *args, **kwargs):
+        self._active_flag = False
         self._skip_one_load = set()
         for name, cpt in self._sig_attrs.items():
             if not cpt.lazy or cpt._subscriptions:
@@ -235,23 +236,26 @@ class BaseInterface:
             return
         return super()._instantiate_component(attr)
 
-    @property
-    def active(self):
+    def activate(self, wait_connected=True):
         """
-        True if we've instantiated all the normal signals.
-        """
-        return not self._skip_one_load
+        Instantiate all the normal signals and wait.
 
-    def activate(self):
-        """
-        Instantiate all the normal signals and wait briefly.
+        This is intended to start all the EPICS connections.
+        This might take some time to complete.
 
-        This is intended to start all the EPICS connections without
-        holding up the entire process.
+        This will have no effect if ensure_cpts was already
+        called with the default components.
+
+        Parameters
+        ----------
+        wait_connected : bool, optional
+            If True, wait for the signal connections before
+            proceeding. Set this to False in cases where
+            you don't need the values immediately.
         """
-        if not self.active:
+        if not self._active_flag:
             try:
-                self.ensure_cpts(wait_connected=True)
+                self.ensure_cpts(wait_connected=wait_connected)
             except TimeoutError:
                 pass
 
@@ -292,7 +296,14 @@ class BaseInterface:
             is True. Defaults to 0.005s per component, or at least 1s.
         """
         if cpts is None:
+            activation_call = True
             cpts: Iterable[Component] = self._sig_attrs.values()
+            if wait_connected and timeout is None:
+                timeout = max(1.0, 0.005 * len(list(self.walk_components())))
+        else:
+            activation_call = False
+        if wait_connected and timeout is None:
+            timeout = max(1.0, 0.005 * len(cpts))
         start = time.monotonic()
         objs: List[Union[Device, Signal]] = []
         for cpt in cpts:
@@ -304,8 +315,8 @@ class BaseInterface:
                 not cpt.lazy,
             )):
                 objs.append(getattr(self, cpt.attr))
-        if wait_connected and timeout is None:
-            timeout = max(1.0, 0.005 * len(list(self.walk_components())))
+        if activation_call:
+            self._active_flag = True
         for obj in objs:
             try:
                 obj.ensure_cpts()
@@ -508,8 +519,11 @@ class BaseInterface:
                          stderr=subprocess.DEVNULL)
 
     def stage(self):
-        self.activate()
-        super().stage()
+        """
+        Overwrite bluesky's stage to ensure the late cpt activation is done.
+        """
+        self.activate(wait_connected=False)
+        return super().stage()
 
 
 def get_name(obj, default):
