@@ -251,10 +251,7 @@ class BaseInterface:
         """
         if not self.active:
             try:
-                self.ensure_cpts(
-                    wait_connected=True,
-                    timeout=0.1,
-                )
+                self.ensure_cpts(wait_connected=True)
             except TimeoutError:
                 pass
 
@@ -264,7 +261,7 @@ class BaseInterface:
         include_lazy: bool = False,
         ensure_subs: bool = True,
         wait_connected: bool = False,
-        timeout: float = 1.0,
+        timeout: Optional[float] = None,
     ):
         """
         Make sure that the given components are ready to use.
@@ -292,7 +289,7 @@ class BaseInterface:
             Defaults to False.
         timeout : float, optional
             The maximum time to wait for connections if wait_connected
-            is True.
+            is True. Defaults to 0.005s per component, or at least 1s.
         """
         if cpts is None:
             cpts: Iterable[Component] = self._sig_attrs.values()
@@ -307,6 +304,8 @@ class BaseInterface:
                 not cpt.lazy,
             )):
                 objs.append(getattr(self, cpt.attr))
+        if wait_connected and timeout is None:
+            timeout = max(1.0, 0.005 * len(list(self.walk_components())))
         for obj in objs:
             try:
                 obj.ensure_cpts()
