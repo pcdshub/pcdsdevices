@@ -518,12 +518,58 @@ class BaseInterface:
                          stdout=subprocess.DEVNULL,
                          stderr=subprocess.DEVNULL)
 
+    # Make sure we activate on these ophyd built-ins
     def stage(self):
-        """
-        Overwrite bluesky's stage to ensure the late cpt activation is done.
-        """
-        self.activate(wait_connected=False)
+        self.activate()
         return super().stage()
+
+    def get(self, **kwargs):
+        self.activate()
+        return super().get(**kwargs)
+
+    def read(self):
+        self.activate()
+        return super().read()
+
+    def read_configuration(self):
+        self.activate()
+        return super().read_configuration()
+
+    def describe(self):
+        self.activate()
+        return super().describe()
+
+    def describe_configuration(self):
+        self.activate()
+        return super().describe_configuration()
+
+    def trigger(self):
+        self.activate()
+        return super().trigger()
+
+
+def needs_activate(func):
+    """
+    Decorator to make sure the function calls "activate" prior to running.
+    """
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        self.activate()
+        return func(self, *args, **kwargs)
+    return wrapper
+
+
+def needs_cpts(cpts: Optional[Iterable[Union[Component, str]]]):
+    """
+    Decorator to make sure the function sets up components prior to running.
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(self, *args, **kwargs):
+            self.ensure_cpts(cpts, wait_connected=True)
+            return func(self, *args, **kwargs)
+        return wrapper
+    return decorator
 
 
 def get_name(obj, default):
