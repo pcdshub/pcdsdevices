@@ -216,12 +216,24 @@ class BaseInterface:
 
         cls._class_tab = TabCompletionHelperClass(cls)
 
-    def init_components(self):
-        ...
-
     def __init__(self, *args, **kwargs):
+        self._skip_one_load = set()
+        for name, cpt in self._sig_attrs:
+            if not cpt.lazy or cpt._subscriptions:
+                self._skip_one_load.add(name)
         super().__init__(*args, **kwargs)
         self._tab = self._class_tab.new_instance(self)
+
+    def _instantiate_component(self, attr):
+        """
+        Disable component loads during the first listcomp.
+
+        Works by counting instantiation attempts and skipping the first one.
+        """
+        if attr in self._skip_one_load:
+            self._skip_one_load.remove(attr)
+            return
+        return super()._instantiate_component(attr)
 
     def __dir__(self):
         return self._tab.get_dir()
