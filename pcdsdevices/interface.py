@@ -14,13 +14,13 @@ from contextlib import contextmanager
 from pathlib import Path
 from threading import Event
 from types import MethodType, SimpleNamespace
-from typing import Optional
+from typing import Iterable, List, Optional, Union
 from weakref import WeakSet
 
 import ophyd
 import yaml
 from bluesky.utils import ProgressBar
-from ophyd.device import Device
+from ophyd.device import Component, Device
 from ophyd.ophydobj import Kind, OphydObject
 from ophyd.positioner import PositionerBase
 from ophyd.signal import AttributeSignal, Signal
@@ -235,6 +235,92 @@ class BaseInterface:
             return
         return super()._instantiate_component(attr)
 
+    @property
+    def active(self):
+        """
+        True if we've instantiated all the normal signals.
+        """
+        return not self._skip_one_load
+
+    def activate(self):
+        """
+        Instantiate all the normal signals and wait briefly.
+
+        This is intended to start all the EPICS connections without
+        holding up the entire process.
+        """
+        if not self.active:
+            try:
+                self.ensure_cpts(
+                    wait_connected=True,
+                    timeout=0.1,
+                )
+            except TimeoutError:
+                pass
+
+    def ensure_cpts(
+        self,
+        cpts: Optional[Iterable[Union[Component, str]]] = None,
+        include_lazy: bool = False,
+        ensure_subs: bool = True,
+        wait_connected: bool = False,
+        timeout: float = 1.0,
+    ):
+        """
+        Make sure that the given components are ready to use.
+
+        Calling with no arguments is equivalent to the startup normally
+        done in the base Device.__init__ that is skipped for this interface.
+
+        Parameters
+        ----------
+        cpts : iterable of Components or str, optional
+            Either the component objects themselves or strings that match the
+            attrs of the Components. If omitted, we'll go through all of the
+            Components.
+        include_lazy : bool, optional
+            If True, we'll also ensure the lazy components are ready.
+            Defaults to False, which means ignore the lazy components.
+        ensure_subs : bool, optional
+            If True, we'll instantiate the components that have subs, even if
+            they are lazy.
+            Defaults to True.
+        wait_connected : bool, optional
+            If True, we'll wait for everything to connect and raise a
+            TimeoutError if anything does not connect during the timeout
+            duration.
+            Defaults to False.
+        timeout : float, optional
+            The maximum time to wait for connections if wait_connected
+            is True.
+        """
+        if cpts is None:
+            cpts: Iterable[Component] = self._sig_attrs.values()
+        start = time.monotonic()
+        objs: List[Union[Device, Signal]] = []
+        for cpt in cpts:
+            if isinstance(cpt, str):
+                cpt: Component = self._sig_attrs[cpt]
+            if any(
+                cpt._subscriptions and ensure_subs,
+                include_lazy,
+                not cpt.lazy,
+            ):
+                objs.append(getattr(self, cpt.attr))
+        for obj in objs:
+            try:
+                obj.ensure_cpts()
+            except AttributeError:
+                pass
+            if wait_connected:
+                elapsed = time.monotonic() - start
+                remaining = elapsed - timeout
+                if remaining <= 0:
+                    raise TimeoutError(
+                        'Timeout waiting for cpts to connect.'
+                    )
+                obj.wait_for_connection(timeout=remaining)
+
     def __dir__(self):
         return self._tab.get_dir()
 
@@ -376,6 +462,8 @@ class BaseInterface:
             If is_device is True, subdevice dictionaries may follow. Otherwise,
             the only other key in the dictionary will be value.
         """
+        self.activate()
+
         def subdevice_filter(info):
             return bool(info['kind'] & Kind.normal)
 
@@ -419,6 +507,10 @@ class BaseInterface:
         subprocess.Popen(arglist,
                          stdout=subprocess.DEVNULL,
                          stderr=subprocess.DEVNULL)
+
+    def stage(self):
+        self.activate()
+        super().stage()
 
 
 def get_name(obj, default):
