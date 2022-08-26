@@ -304,7 +304,12 @@ class BaseInterface:
         """
         if cpts is None:
             activation_call = True
-            cpts: Iterable[Component] = self._sig_attrs.values()
+            try:
+                cpts: Iterable[Component] = self._sig_attrs.values()
+            except AttributeError:
+                # No _sig_attrs means not a Device, meaning no cpts
+                self._active_flag = True
+                return
             if wait_connected and timeout is None:
                 timeout = max(1.0, 0.005 * len(list(self.walk_components())))
         else:
