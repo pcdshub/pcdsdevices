@@ -277,6 +277,7 @@ def patch_epics_motor():
 
     def install_simulate_move(ophydobj: OphydObject):
         if isinstance(ophydobj, EpicsMotor):
-            ophydobj.user_setpoint.subscribe(simulate_move)
+            if ophydobj.user_setpoint is not None:
+                ophydobj.user_setpoint.subscribe(simulate_move)
 
     OphydObject.add_instantiation_callback(install_simulate_move)
