@@ -265,7 +265,7 @@ def patch_epics_motor():
     # Missing attribute, set to no alarm
     FakeEpicsSignal.alarm_severity = 0
 
-    def simulate_move(obj: FakeEpicsSignal, value: float, **kwargs):
+    def _tst_simulate_move(obj: FakeEpicsSignal, value: float, **kwargs):
         logger.debug(f'simulating move for {obj}')
         epics_motor = obj.parent
         epics_motor.motor_done_move.sim_put(0)
@@ -277,7 +277,9 @@ def patch_epics_motor():
 
     def install_simulate_move(ophydobj: OphydObject):
         if isinstance(ophydobj, EpicsMotor):
-            if ophydobj.user_setpoint is not None:
-                ophydobj.user_setpoint.subscribe(simulate_move)
+            user_setpoint = ophydobj._sig_attrs['user_setpoint']
+            if _tst_simulate_move not in user_setpoint._subscriptions['value']:
+                user_setpoint.sub_value(_tst_simulate_move)
+            ophydobj._tst_simulate_move = _tst_simulate_move
 
     OphydObject.add_instantiation_callback(install_simulate_move)
