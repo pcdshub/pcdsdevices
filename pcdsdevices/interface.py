@@ -362,6 +362,8 @@ class BaseInterface:
                 exceptions.append(ex)
 
         if exceptions:
+            if len(exceptions) == 1:
+                raise exceptions[0]
             msg = ", ".join(
                 "{} ({})".format(ex.attr, ex.__class__.__name__)
                 for ex in exceptions
