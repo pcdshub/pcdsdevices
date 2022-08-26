@@ -322,7 +322,7 @@ class BaseInterface:
                 obj.ensure_cpts()
             except AttributeError:
                 pass
-            if wait_connected:
+            if not obj.connected and wait_connected:
                 elapsed = time.monotonic() - start
                 remaining = timeout - elapsed
                 if remaining <= 0:
@@ -559,14 +559,14 @@ def needs_activate(func):
     return wrapper
 
 
-def needs_cpts(cpts: Optional[Iterable[Union[Component, str]]]):
+def needs_cpts(*cpts: Union[Component, str]):
     """
     Decorator to make sure the function sets up components prior to running.
     """
     def decorator(func):
         @functools.wraps(func)
         def wrapper(self, *args, **kwargs):
-            self.ensure_cpts(cpts, wait_connected=True)
+            self.ensure_cpts(cpts)
             return func(self, *args, **kwargs)
         return wrapper
     return decorator

@@ -15,14 +15,15 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.status import DeviceStatus, MoveStatus, SubscriptionStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
-from ophyd.utils.epics_pvs import raise_if_disconnected, set_and_wait
+from ophyd.utils.epics_pvs import set_and_wait
 from pcdsutils.ext_scripts import get_hutch_name
 
 from pcdsdevices.pv_positioner import PVPositionerComparator
 
 from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
-from .interface import BaseInterface, FltMvInterface
+from .interface import (BaseInterface, FltMvInterface, needs_activate,
+                        needs_cpts)
 from .pseudopos import OffsetMotorBase, delay_class_factory
 from .registry import device_registry
 from .signal import EpicsSignalEditMD, EpicsSignalROEditMD, PytmcSignal
@@ -106,6 +107,7 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         self._install_motion_error_filter()
         self.motor_egu.subscribe(self._cache_egu)
 
+    @needs_activate
     def move(self, position: float, wait: bool = True, **kwargs) -> MoveStatus:
         self._moved_in_session = True
         return super().move(position, wait=wait, **kwargs)
@@ -156,6 +158,7 @@ Limit Switch: {switch_limits}
         """Override the limits attribute"""
         return self._get_epics_limits()
 
+    @needs_cpts('user_setpoint')
     def _get_epics_limits(self):
         limits = self.user_setpoint.limits
         if limits is None or limits == (None, None):
@@ -163,6 +166,7 @@ Limit Switch: {switch_limits}
             return (0, 0)
         return limits
 
+    @needs_cpts('disabled')
     def enable(self):
         """
         Enables the motor.
@@ -172,6 +176,7 @@ Limit Switch: {switch_limits}
 
         return self.disabled.put(value=0)
 
+    @needs_cpts('disabled')
     def disable(self):
         """
         Disables the motor.
@@ -181,6 +186,7 @@ Limit Switch: {switch_limits}
 
         return self.disabled.put(value=1)
 
+    @needs_activate
     def check_value(self, value):
         """
         Raise an exception if the motor cannot move to value.
@@ -217,6 +223,7 @@ Limit Switch: {switch_limits}
             raise MotorDisabledError("Motor is not enabled. Motion requests "
                                      "ignored")
 
+    @needs_cpts('low_limit_switch', 'high_limit_switch')
     def check_limit_switches(self):
         """
         Check the limits switches.
@@ -237,10 +244,12 @@ Limit Switch: {switch_limits}
         else:
             return "Low [] High []"
 
+    @needs_cpts('low_limit_travel')
     def get_low_limit(self):
         """Get the low limit."""
         return self.low_limit_travel.get()
 
+    @needs_cpts('low_limit_travel')
     def set_low_limit(self, value):
         """
         Set the low limit.
@@ -272,10 +281,12 @@ Limit Switch: {switch_limits}
         # update EPICS limits
         self.low_limit_travel.put(value)
 
+    @needs_cpts('high_limit_travel')
     def get_high_limit(self):
         """Get high limit."""
         return self.high_limit_travel.get()
 
+    @needs_cpts('high_limit_travel')
     def set_high_limit(self, value):
         """
         Limit of travel in the positive direction.
@@ -306,12 +317,13 @@ Limit Switch: {switch_limits}
         # update EPICS limits
         self.high_limit_travel.put(value)
 
+    @needs_cpts('low_limit_travel', 'high_limit_travel')
     def clear_limits(self):
         """Set both low and high limits to 0."""
         self.high_limit_travel.put(0)
         self.low_limit_travel.put(0)
 
-    @raise_if_disconnected
+    @needs_cpts('set_use_switch', 'user_setpoint')
     def set_current_position(self, pos):
         '''Configure the motor user position to the given value
 
@@ -451,6 +463,7 @@ class PCDSMotorBase(EpicsMotorInterface):
         super().__init__(*args, **kwargs)
         self.stage_sigs[self.motor_spg] = 2
 
+    @needs_cpts('motor_spg')
     def spg_stop(self):
         """
         Stops the motor.
@@ -461,6 +474,7 @@ class PCDSMotorBase(EpicsMotorInterface):
 
         return self.motor_spg.put(value='Stop')
 
+    @needs_cpts('motor_spg')
     def spg_pause(self):
         """
         Pauses a move.
@@ -470,10 +484,12 @@ class PCDSMotorBase(EpicsMotorInterface):
 
         return self.motor_spg.put(value='Pause')
 
+    @needs_cpts('motor_spg')
     def spg_go(self):
         """Resumes paused movement."""
         return self.motor_spg.put(value='Go')
 
+    @needs_activate
     def check_value(self, value):
         """
         Raise an exception if the motor cannot move to value.
@@ -506,6 +522,7 @@ class PCDSMotorBase(EpicsMotorInterface):
                                      "motion will resume when motor is set "
                                      "to 'Go'")
 
+    @needs_cpts('direction_of_travel')
     def _pos_changed(self, timestamp=None, old_value=None,
                      value=None, **kwargs):
         # Store the internal travelling direction of the motor to account for
@@ -537,7 +554,7 @@ class PCDSMotorBase(EpicsMotorInterface):
                        stdout=subprocess.DEVNULL,
                        stderr=subprocess.DEVNULL)
 
-    @raise_if_disconnected
+    @needs_cpts('set_use_switch', 'user_setpoint')
     def set_current_position(self, pos):
         """
         Change the offset such that pos is the current position.
@@ -596,6 +613,7 @@ class IMS(PCDSMotorBase):
     # If we fail to create _pm, set bool to only try once
     _pm_init_error = False
 
+    @needs_activate
     def stage(self):
         """
         Stage the IMS motor.
@@ -611,6 +629,7 @@ class IMS(PCDSMotorBase):
         self.clear_all_flags()
         return super().stage()
 
+    @needs_activate
     def auto_setup(self):
         """
         Automated setup of the IMS motor.
@@ -627,6 +646,7 @@ class IMS(PCDSMotorBase):
         # Clear all flags
         self.clear_all_flags()
 
+    @needs_cpts('reinit_command', 'error_severity')
     def reinitialize(self, wait: bool = False,
                      timeout: float = 10.0) -> SubscriptionStatus:
         """
@@ -683,6 +703,7 @@ class IMS(PCDSMotorBase):
         """Clear error flag."""
         return self._clear_flag('error', wait=wait, timeout=timeout)
 
+    @needs_cpts('seq_seln', 'bit_status')
     def _clear_flag(self, flag, wait=False, timeout=10):
         """Clear flag whose information is in :attr:`._bit_flags`"""
         # Gather our flag information
@@ -858,21 +879,25 @@ class Newport(PCDSMotorBase):
         super()._pos_changed(*args, **kwargs)
 
     @motor_egu.sub_value
+    @needs_cpts('user_setpoint', 'user_readback')
     def _update_units(self, value, **kwargs):
         self.user_readback._override_metadata(units=value)
         self.user_setpoint._override_metadata(units=value)
 
     @high_limit_travel.sub_value
+    @needs_cpts('user_setpoint', 'user_readback')
     def _update_hlt(self, value, **kwargs):
         self.user_readback._override_metadata(upper_ctrl_limit=value)
         self.user_setpoint._override_metadata(upper_ctrl_limit=value)
 
     @low_limit_travel.sub_value
+    @needs_cpts('user_setpoint', 'user_readback')
     def _update_llt(self, value, **kwargs):
         self.user_readback._override_metadata(lower_ctrl_limit=value)
         self.user_setpoint._override_metadata(lower_ctrl_limit=value)
 
     @motor_prec.sub_value
+    @needs_cpts('user_setpoint', 'user_readback')
     def _update_prec(self, value, **kwargs):
         self.user_readback._override_metadata(precision=value)
         self.user_setpoint._override_metadata(precision=value)
@@ -895,6 +920,7 @@ class OffsetIMSWithPreset(OffsetMotorBase):
     offset_set_pv = FCpt(EpicsSignal, '{self._prefix}_SET', kind='normal')
 
     # override the set_current_position
+    @needs_cpts('offset_set_pv', 'user_offset')
     def set_current_position(self, position):
         '''
         Override this method defined in OffsetMotorBase to allow setting the
@@ -997,6 +1023,7 @@ class BeckhoffAxis(EpicsMotorInterface):
         """Clear any active motion errors on this axis."""
         self.plc.cmd_err_reset.put(1)
 
+    @needs_activate
     def stage(self):
         """
         Stage the Beckhoff axis.
@@ -1008,7 +1035,7 @@ class BeckhoffAxis(EpicsMotorInterface):
         self.clear_error()
         return super().stage()
 
-    @raise_if_disconnected
+    @needs_activate
     def home(self, direction=None, wait=True, **kwargs):
         """
         Perform the configured homing function.
