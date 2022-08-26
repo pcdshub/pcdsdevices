@@ -24,6 +24,7 @@ from ophyd.device import Component, Device
 from ophyd.ophydobj import Kind, OphydObject
 from ophyd.positioner import PositionerBase
 from ophyd.signal import AttributeSignal, Signal
+from ophyd.utils import ExceptionBundle
 
 from . import utils
 from .signal import NotImplementedSignal
@@ -336,6 +337,35 @@ class BaseInterface:
                         'Timeout waiting for cpts to connect.'
                     )
                 obj.wait_for_connection(timeout=remaining)
+
+    def destroy(self):
+        """
+        Disconnect and destroy all loaded signals and subdevices.
+
+        This is modified from Device.destroy() to consider that some
+        non-lazy signals may not have been created yet, else we risk
+        creating them during the destroy process.
+        """
+        self._destroyed = True
+        exceptions = []
+        for attr, obj in self._signals.items():
+            try:
+                obj.destroy()
+            except Exception as ex:
+                ex.obj = obj
+                ex.attr = attr
+                exceptions.append(ex)
+
+        if exceptions:
+            msg = ", ".join(
+                "{} ({})".format(ex.attr, ex.__class__.__name__)
+                for ex in exceptions
+            )
+            raise ExceptionBundle(
+                "Failed to disconnect all signals ({})".format(msg),
+                exceptions=exceptions,
+            )
+        self.unsubscribe_all()
 
     def __dir__(self):
         return self._tab.get_dir()
