@@ -219,9 +219,15 @@ class BaseInterface:
     def __init__(self, *args, **kwargs):
         self._active_flag = False
         self._skip_one_load = set()
-        for name, cpt in self._sig_attrs.items():
-            if not cpt.lazy or cpt._subscriptions:
-                self._skip_one_load.add(name)
+        try:
+            # Sometimes we aren't a device, so we don't need the cpt stuff
+            cpts = self._sig_attrs
+        except AttributeError:
+            pass
+        else:
+            for name, cpt in cpts.items():
+                if not cpt.lazy or cpt._subscriptions:
+                    self._skip_one_load.add(name)
         super().__init__(*args, **kwargs)
         self._tab = self._class_tab.new_instance(self)
 
