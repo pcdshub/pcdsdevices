@@ -17,7 +17,7 @@ from scipy.constants import speed_of_light
 
 from .device import InterfaceComponent as ICpt
 from .device import InterfaceDevice
-from .interface import FltMvInterface, MvInterface
+from .interface import FltMvInterface, MvInterface, needs_activate
 from .signal import NotepadLinkedSignal
 from .sim import FastMotor
 from .utils import convert_unit, get_status_float, get_status_value
@@ -159,6 +159,7 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
                 self.log.debug('Failed to update notepad %s to position %s',
                                attr, value, exc_info=ex)
 
+    @needs_activate
     @pseudo_position_argument
     def move(self, position, wait=True, timeout=None, moved_cb=None):
         '''
@@ -205,6 +206,7 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         self._update_notepad_ioc(position, 'notepad_readback')
         return position
 
+    @needs_activate
     def set_current_position(self, position):
         """
         Adjust all offsets so that the pseudo position matches the input.
@@ -220,6 +222,12 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         real_pos = self.forward(position)
         for motor, pos in zip(self._real, real_pos):
             motor.set_current_position(pos)
+
+    def activate(self):
+        """
+        Placeholder in case we're not an instance of BaseInterface
+        """
+        pass
 
 
 class SyncAxesBase(FltMvInterface, PseudoPositioner):
