@@ -566,7 +566,7 @@ def needs_cpts(*cpts: Union[Component, str]):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(self, *args, **kwargs):
-            self.ensure_cpts(cpts)
+            self.ensure_cpts(cpts, include_lazy=True)
             return func(self, *args, **kwargs)
         return wrapper
     return decorator

@@ -6,10 +6,13 @@ import time
 
 import ophyd
 import pytest
+from ophyd.device import Component as Cpt
+from ophyd.device import Device
+from ophyd.signal import Signal
 
 from ..interface import (BaseInterface, TabCompletionHelperClass,
-                         get_engineering_mode, set_engineering_mode,
-                         setup_preset_paths)
+                         get_engineering_mode, needs_activate, needs_cpts,
+                         set_engineering_mode, setup_preset_paths)
 from ..sim import FastMotor, SlowMotor
 from . import conftest
 
@@ -333,3 +336,50 @@ def test_tab_helper_class():
     tab.add('foobar')
     tab.reset()
     assert 'foobar' not in tab.get_filtered_dir_list()
+
+
+def test_activation_and_needs_cpt():
+    class Activator(BaseInterface, Device):
+        one = Cpt(Signal)
+        two = Cpt(Signal)
+        three = Cpt(Signal, lazy=True)
+        four = Cpt(Signal, lazy=True)
+        five = Cpt(Signal, lazy=True)
+        six = Cpt(Signal)
+
+        @needs_activate
+        def important_func(self):
+            # Did activate run?
+            assert self._active_flag
+            # Normal signal
+            assert 'one' in self._signals
+            # Normal signal
+            assert 'two' in self._signals
+            # three is lazy and not a sub, skip
+            # four is lazy and not a sub, skip
+            # five is a sub, must be active
+            assert 'five' in self._signals
+            # normal signal, also a sub
+            assert 'six' in self._signals
+
+        @needs_cpts('two', four)
+        def some_other_func(self):
+            assert 'two' in self._signals
+            assert 'four' in self._signals
+
+        @five.sub_value
+        def sub_from_lazy(self, *args, **kwargs):
+            ...
+
+        @six.sub_value
+        def sub_from_not_lazy(self, *args, **kwargs):
+            ...
+
+    act = Activator('ACTION', name='act')
+    assert not act._signals, "expected no signals to load"
+    assert not act._active_flag, "expected to start inactive"
+    act.some_other_func()
+    assert not act._active_flag, "should still be inactive"
+    act.important_func()
+    # Only three should still be unloaded
+    assert 'three' not in act._signals, "three is lazy, should be unloaded"
