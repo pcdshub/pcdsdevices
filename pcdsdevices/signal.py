@@ -412,10 +412,19 @@ class AggregateSignal(Signal):
     def destroy(self):
         for signal, info in self._signals.items():
             if info.value_cbid is not None:
-                signal.unsubscribe(info.value_cbid)
+                try:
+                    signal.unsubscribe(info.value_cbid)
+                except KeyError:
+                    # other signal already destroyed
+                    pass
                 info.value_cbid = None
 
             if info.meta_cbid is not None:
+                try:
+                    signal.unsubscribe(info.meta_cbid)
+                except KeyError:
+                    # other signal already destroyed
+                    pass
                 signal.unsubscribe(info.meta_cbid)
                 info.meta_cbid = None
 
