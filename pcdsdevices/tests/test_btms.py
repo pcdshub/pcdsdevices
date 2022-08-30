@@ -3,8 +3,9 @@ from typing import Optional, Tuple
 import pytest
 
 from ..lasers.btms_config import (BtmsSourceState, BtmsState,
-                                  DestinationPosition, MovingActiveSource,
-                                  PathCrossedError, SourcePosition)
+                                  DestinationInUseError, DestinationPosition,
+                                  MovingActiveSource, PathCrossedError,
+                                  SourcePosition)
 
 
 @pytest.mark.parametrize(
@@ -305,3 +306,77 @@ def test_move_scenario_2(
     # Move all the way right - expect to hit into "right_hits"
     with pytest.raises(PathCrossedError, match=right_hits.value):
         state.check_move(source, start_pos, DestinationPosition.ld7)
+
+
+def test_target_in_use_error():
+    # Scenario 3:
+    #        LD8   LD9  LD10  LD11  LD12  LD13  LD14
+    #       <====================***================== LS5
+    #   LS1 =====================***=================>
+    #       <======***================================ LS6
+    #   LS2 =====================***=================>
+    #       <====================***================== LS7
+    #   LS3 ================***======================>
+    #       <====================***================== LS8
+    #   LS4 ==============================***========>
+    #          LD1   LD2    LD3  LD4   LD5   LD6   LD7
+
+    state = BtmsState(
+        sources={
+            SourcePosition.ls1: BtmsSourceState(
+                source=SourcePosition.ls1,
+                destination=DestinationPosition.ld4,
+                beam_status=False,
+            ),
+            SourcePosition.ls2: BtmsSourceState(
+                source=SourcePosition.ls2,
+                destination=DestinationPosition.ld4,
+                beam_status=False,
+            ),
+            SourcePosition.ls3: BtmsSourceState(
+                source=SourcePosition.ls3,
+                destination=DestinationPosition.ld3,
+                beam_status=False,
+            ),
+            SourcePosition.ls4: BtmsSourceState(
+                source=SourcePosition.ls4,
+                destination=DestinationPosition.ld13,
+                beam_status=False,
+            ),
+            SourcePosition.ls5: BtmsSourceState(
+                source=SourcePosition.ls5,
+                destination=DestinationPosition.ld4,
+                beam_status=False,
+            ),
+            SourcePosition.ls6: BtmsSourceState(
+                source=SourcePosition.ls6,
+                destination=DestinationPosition.ld9,
+                beam_status=False,
+            ),
+            SourcePosition.ls7: BtmsSourceState(
+                source=SourcePosition.ls7,
+                destination=DestinationPosition.ld4,
+                beam_status=False,
+            ),
+            SourcePosition.ls8: BtmsSourceState(
+                source=SourcePosition.ls8,
+                destination=DestinationPosition.ld4,
+                beam_status=False,
+            ),
+        },
+    )
+
+    print(str(state))
+
+    for source in state.sources:
+        start_pos = state.sources[source].destination
+        other_destinations = set(
+            state.sources[other].destination for other in state.sources
+            if state.sources[other].destination != start_pos
+        )
+        assert len(other_destinations) > 1
+        for dest in other_destinations:
+            if dest is not None:
+                print("Checking", source, start_pos, "->", dest)
+                with pytest.raises(DestinationInUseError):
+                    state.check_move(source, start_pos, dest)

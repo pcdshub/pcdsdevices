@@ -335,6 +335,17 @@ class DestinationInUseError(MoveError):
     """The target destination is already in use."""
     #: The source at this destination.
     source: SourcePosition
+    destination: DestinationPosition
+
+    def __init__(
+        self,
+        message: str,
+        source: SourcePosition,
+        destination: DestinationPosition,
+    ):
+        super().__init__(message)
+        self.source = source
+        self.destination = destination
 
 
 class PathCrossedError(MoveError):
@@ -456,6 +467,18 @@ class BtmsState:
 
         if self.sources[moving_source].destination == target_destination:
             return errors
+
+        for other_source in self.sources:
+            if other_source == moving_source:
+                ...
+            elif self.sources[other_source].destination == target_destination:
+                errors.append(
+                    DestinationInUseError(
+                        f"Source {other_source} is positioned at {target_destination}",
+                        source=other_source,
+                        destination=target_destination,
+                    )
+                )
 
         for dest in closest_destination.path_to(target_destination):
             active_source = dest_to_source.get(dest, None)
