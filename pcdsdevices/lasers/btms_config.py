@@ -177,6 +177,31 @@ class SourcePosition(str, enum.Enum):
             SourcePosition.ls4,
         )
 
+    @property
+    def bay(self) -> Optional[int]:
+        """The near field camera prefix associated with this source position."""
+        return {
+            SourcePosition.ls1: 1,
+            SourcePosition.ls5: 3,
+            SourcePosition.ls8: 4,
+        }.get(self, None)
+
+    @property
+    def near_field_camera_prefix(self) -> Optional[str]:
+        """The near field camera prefix associated with this source position."""
+        bay = self.bay
+        if bay is not None:
+            return f"LAS:LHN:BAY{bay}:CAM:01:"
+        return None
+
+    @property
+    def far_field_camera_prefix(self) -> Optional[str]:
+        """The far field camera prefix associated with this source position."""
+        bay = self.bay
+        if bay is not None:
+            return f"LAS:LHN:BAY{bay}:CAM:02:"
+        return None
+
 
 class DestinationPosition(str, enum.Enum):
     f"""
