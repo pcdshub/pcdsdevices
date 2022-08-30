@@ -2,10 +2,12 @@ from typing import Optional, Tuple
 
 import pytest
 
-from ..lasers.btms_config import (BtmsSourceState, BtmsState,
+from ..lasers.btms_config import (BtmsDestinationState, BtmsSourceState,
+                                  BtmsState, DestinationInControlError,
                                   DestinationInUseError, DestinationPosition,
+                                  MaintenanceModeActiveError,
                                   MovingActiveSource, PathCrossedError,
-                                  SourcePosition)
+                                  PositionInvalidError, SourcePosition)
 
 
 @pytest.mark.parametrize(
@@ -186,7 +188,7 @@ def test_move_scenario_1(
     if source not in state.sources:
         state.sources[source] = BtmsSourceState(
             source=source,
-            destination=None,
+            destination=start,
             beam_status=False,
         )
 
@@ -380,3 +382,70 @@ def test_target_in_use_error():
                 print("Checking", source, start_pos, "->", dest)
                 with pytest.raises(DestinationInUseError):
                     state.check_move(source, start_pos, dest)
+
+
+def test_invalid_position_error():
+    state = BtmsState(
+        sources={
+            SourcePosition.ls1: BtmsSourceState(
+                source=SourcePosition.ls1,
+                destination=None,
+                beam_status=False,
+            ),
+        }
+    )
+
+    print(str(state))
+
+    for source in state.sources:
+        with pytest.raises(PositionInvalidError):
+            state.check_move(source, None, DestinationPosition.ld1)
+
+
+def test_maintenance_mode():
+    state = BtmsState(
+        sources={
+            SourcePosition.ls1: BtmsSourceState(
+                source=SourcePosition.ls1,
+                destination=DestinationPosition.ld1,
+                beam_status=False,
+            ),
+        },
+        maintenance_mode=True,
+    )
+
+    print(str(state))
+
+    for source in state.sources:
+        with pytest.raises(MaintenanceModeActiveError):
+            state.check_move(source, None, DestinationPosition.ld1)
+
+
+def test_destination_acknowledgement():
+    state = BtmsState(
+        sources={
+            SourcePosition.ls1: BtmsSourceState(
+                source=SourcePosition.ls1,
+                destination=DestinationPosition.ld1,
+                beam_status=False,
+            ),
+        },
+        destinations={
+            DestinationPosition.ld1: BtmsDestinationState(
+                yields_control=False,
+            )
+        },
+    )
+
+    print(str(state))
+
+    for source in state.sources:
+        with pytest.raises(DestinationInControlError):
+            state.check_move(source, None, DestinationPosition.ld3)
+
+        # To the same destination is OK
+        state.check_move(source, None, DestinationPosition.ld1)
+
+        # Yield control and try again
+        state.destinations[DestinationPosition.ld1].yields_control = True
+        state.check_move(source, None, DestinationPosition.ld1)

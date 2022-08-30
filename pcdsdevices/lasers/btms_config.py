@@ -331,6 +331,24 @@ class MoveError(Exception):
     ...
 
 
+class PositionInvalidError(MoveError):
+    """Source is not at a recognized position for BTMS to function properly."""
+    #: The source that is not in a good position.
+    source: SourcePosition
+
+    def __init__(
+        self,
+        message: str,
+        source: SourcePosition,
+    ):
+        super().__init__(message)
+        self.source = source
+
+
+class MaintenanceModeActiveError(MoveError):
+    """Maintenance mode is active.  Only experts may move sources."""
+
+
 class DestinationInUseError(MoveError):
     """The target destination is already in use."""
     #: The source at this destination.
@@ -372,6 +390,11 @@ class MovingActiveSource(MoveError):
     ...
 
 
+class DestinationInControlError(MoveError):
+    """The destination has not yielded control and does not want the source to be moved."""
+    ...
+
+
 @dataclasses.dataclass
 class BtmsSourceState:
     """
@@ -393,27 +416,66 @@ class BtmsSourceState:
 
 
 @dataclasses.dataclass
+class BtmsDestinationState:
+    """
+    Per-destination status.
+
+    Attributes
+    ----------
+    yields_control : bool
+        If the destination user has acknowledged that the source it is using
+        may be moved: i.e., yielding control to others.
+    """
+    yields_control: bool = True
+
+
+@dataclasses.dataclass
 class BtmsState:
     """
     Beam Transport Motion System state summary.
 
     Attributes
     ----------
-    positions : dict of SourcePosition to DestinationPosition (or None)
+    sources : dict of SourcePosition to BtmsSourceState
         Indicates the selected destination for the given source.
         The "target destination" is the one that the linear stage for the
         indicated source is aiming at.
 
-    beam_status : dict of SourcePosition to bool
-        Indicates if the beam is active for the given source.
     """
     sources: Dict[SourcePosition, BtmsSourceState] = dataclasses.field(
         default_factory=dict
     )
+    destinations: Dict[DestinationPosition, BtmsDestinationState] = dataclasses.field(
+        default_factory=lambda: {
+            pos: BtmsDestinationState()
+            for pos in DestinationPosition
+        }
+    )
+    maintenance_mode: bool = False
 
-    def check_configuration(self) -> None:
-        """Check the current configuration for any logical errors."""
-        # TODO: anything important to check here?
+    def check_configuration(self) -> List[MoveError]:
+        """
+        Check the current configuration for any logical errors/conflicts.
+        """
+        errors = []
+        if self.maintenance_mode:
+            errors.append(
+                MaintenanceModeActiveError(
+                    "Maintenance mode is active"
+                )
+            )
+
+        for pos, source in self.sources.items():
+            if source.destination is None:
+                errors.append(
+                    PositionInvalidError(
+                        f"Source position is not valid {pos} ({pos.description}). "
+                        f"BTMS requires that all sources be at valid destinations to "
+                        f"function properly.",
+                        source=pos,
+                    )
+                )
+        return errors
 
     def check_move_all(
         self,
@@ -442,31 +504,40 @@ class BtmsState:
         list of MoveError
             Any detected issues for the given move request.
         """
-        self.check_configuration()
+        errors = self.check_configuration()
 
         if closest_destination is None:
             closest_destination = self.sources[moving_source].destination
 
         if closest_destination is None:
-            return [
-                MoveError(f"Source {moving_source} is not in a valid position")
-            ]
+            return errors
 
         dest_to_source = dict(
             (source.destination, source.source)
             for source in self.sources.values()
         )
 
-        errors = []
         if self.sources[moving_source].beam_status:
+            dest = self.sources[moving_source].destination
             errors.append(
                 MovingActiveSource(
-                    f"{moving_source} is active and should not be moved"
+                    f"{moving_source} is actively sending beam to "
+                    f"{dest} and should not be moved"
                 )
             )
 
-        if self.sources[moving_source].destination == target_destination:
+        if closest_destination == target_destination:
             return errors
+
+        dest = self.destinations[closest_destination]
+        if not dest.yields_control:
+            errors.append(
+                DestinationInControlError(
+                    f"{moving_source} is under the control of "
+                    f"{closest_destination} ({closest_destination.description}).  "
+                    f"They must yield control before the source can be moved."
+                )
+            )
 
         for other_source in self.sources:
             if other_source == moving_source:
