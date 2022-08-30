@@ -233,7 +233,7 @@ class SourceToDestinationConfig(BaseInterface, Device):
         ]
 
         if not self.checks_ok.get():
-            result.append("One or more checks are not OK.")
+            result.append("One or more checks performed by the BTPS PLC are not OK.")
         if not self.data_valid.get():
             result.append(
                 "Some data on the PLC is not valid.  "
@@ -289,6 +289,11 @@ class SourceToDestinationConfig(BaseInterface, Device):
                 f"The PLC reports the exit valve for {self.dest} is not ready"
             )
 
+        if not self.parent.yields_control.get():
+            result.append(
+                f"The user at {self.dest} has not yielded control of the source"
+            )
+
         if len(result) == 1:
             result.append("All checks are OK.")
 
@@ -320,6 +325,13 @@ class DestinationConfig(BaseInterface, Device):
         io="input",
         kind="normal",
         doc="Exit valve is open and ready",
+    )
+    yields_control = Cpt(
+        PytmcSignal,
+        "BTPS:YieldsControl",
+        io="output",
+        kind="normal",
+        doc="Destination using beam or yielding control",
     )
     ls1 = Cpt(
         SourceToDestinationConfig,
@@ -720,7 +732,13 @@ class BtpsState(BaseInterface, Device):
             state.sources[source.source_pos] = BtmsSourceState(
                 source=source.source_pos,
                 destination=dest_pos,
-                beam_status=beam_status,
+                beam_status=bool(beam_status),
+            )
+
+        for dest in self.destinations.values():
+            dest_state = state.destinations[dest.destination_pos]
+            dest_state.yields_control = bool(
+                dest.yields_control.get()
             )
 
         return state
