@@ -24,6 +24,7 @@ from .lasers.thorlabsWFS import ThorlabsWfs40
 from .lasers.zoomtelescope import ZoomTelescope
 from .lens import XFLS, Prefocus
 from .lic import LaserInCoupling
+from .light_control import LightControl
 from .lodcm import LODCM
 from .mirror import OffsetMirror, PointingMirror
 from .movablestand import MovableStand
