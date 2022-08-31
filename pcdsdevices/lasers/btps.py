@@ -392,6 +392,14 @@ class GlobalConfig(BaseInterface, Device):
         ),
     )
 
+    maintenance_mode = Cpt(
+        PytmcSignal,
+        "Maintenance",
+        io="io",
+        kind="normal",
+        doc="System undergoing maintenance",
+    )
+
 
 class LssShutterStatus(BaseInterface, Device):
     """BTPS per-source shutter status per the laser safety system."""
@@ -741,6 +749,7 @@ class BtpsState(BaseInterface, Device):
                 dest.yields_control.get()
             )
 
+        state.maintenance_mode = bool(self.config.maintenance_mode.get())
         return state
 
     def status_info(self) -> Dict[str, BtmsState]:
