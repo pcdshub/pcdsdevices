@@ -148,6 +148,11 @@ class SourcePosition(str, enum.Enum):
         return int(self.name.lstrip("ls"))
 
     @property
+    def name_and_desc(self) -> str:
+        """Name and description in the form: 'LSx (desc).'"""
+        return f"{self.value} ({self.description})"
+
+    @property
     def description(self) -> str:
         """
         Description of source.
@@ -229,6 +234,11 @@ class DestinationPosition(str, enum.Enum):
     ld6 = "LD6"    # bottom
     ld14 = "LD14"  # top
     ld7 = "LD7"    # bottom
+
+    @property
+    def name_and_desc(self) -> str:
+        """Name and description in the form: 'LDx (desc).'"""
+        return f"{self.value} ({self.description})"
 
     @property
     def description(self) -> str:

@@ -229,7 +229,7 @@ class SourceToDestinationConfig(BaseInterface, Device):
             return ["Disconnected"]
 
         result = [
-            f"Checks for {self.source_pos} -> {self.destination_pos}:"
+            f"Checks for {self.source_pos.name_and_desc} -> {self.destination_pos.name_and_desc}:"
         ]
 
         if not self.checks_ok.get():
@@ -276,22 +276,26 @@ class SourceToDestinationConfig(BaseInterface, Device):
 
         if not self.entry_valve_ready.get():
             result.append(
-                f"The PLC reports the entry valve for {self.source_pos} is not ready"
+                f"The PLC reports the entry valve for {self.source_pos.name_and_desc} "
+                f"is not ready"
             )
 
         if not self.in_position.get():
             result.append(
-                f"The PLC reports {self.source_pos} is not in position"
+                f"The PLC reports {self.source_pos.name_and_desc} "
+                f"is not in position"
             )
 
         if not self.parent.exit_valve_ready.get():
             result.append(
-                f"The PLC reports the exit valve for {self.dest} is not ready"
+                f"The PLC reports the exit valve for {self.destination_pos.name_and_desc} "
+                f"is not ready"
             )
 
         if not self.parent.yields_control.get():
             result.append(
-                f"The user at {self.dest} has not yielded control of the source"
+                f"The user at {self.destination_pos.name_and_desc} "
+                f"has not yielded control of the source"
             )
 
         if len(result) == 1:
