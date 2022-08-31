@@ -437,10 +437,11 @@ class BtmsState:
     Attributes
     ----------
     sources : dict of SourcePosition to BtmsSourceState
-        Indicates the selected destination for the given source.
-        The "target destination" is the one that the linear stage for the
-        indicated source is aiming at.
-
+        Per-source status.
+    destinations : dict of DestinationPosition to BtmsDestinationState
+        Per-destination status.
+    maintenance_mode : bool
+        System-level maintenance mode setting.
     """
     sources: Dict[SourcePosition, BtmsSourceState] = dataclasses.field(
         default_factory=dict
@@ -509,16 +510,28 @@ class BtmsState:
         if closest_destination is None:
             closest_destination = self.sources[moving_source].destination
 
-        if closest_destination is None:
-            return errors
-
         dest_to_source = dict(
             (source.destination, source.source)
             for source in self.sources.values()
         )
 
+        for other_source in self.sources:
+            if other_source == moving_source:
+                ...
+            elif self.sources[other_source].destination == target_destination:
+                errors.append(
+                    DestinationInUseError(
+                        f"Source {other_source} is positioned at {target_destination}",
+                        source=other_source,
+                        destination=target_destination,
+                    )
+                )
+
+        if closest_destination is None:
+            return errors
+
         if self.sources[moving_source].beam_status:
-            dest = self.sources[moving_source].destination
+            dest = self.sources[moving_source].destination or "unknown"
             errors.append(
                 MovingActiveSource(
                     f"{moving_source} is actively sending beam to "
@@ -538,18 +551,6 @@ class BtmsState:
                     f"They must yield control before the source can be moved."
                 )
             )
-
-        for other_source in self.sources:
-            if other_source == moving_source:
-                ...
-            elif self.sources[other_source].destination == target_destination:
-                errors.append(
-                    DestinationInUseError(
-                        f"Source {other_source} is positioned at {target_destination}",
-                        source=other_source,
-                        destination=target_destination,
-                    )
-                )
 
         for dest in closest_destination.path_to(target_destination):
             active_source = dest_to_source.get(dest, None)
