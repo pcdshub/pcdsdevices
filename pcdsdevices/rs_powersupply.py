@@ -10,7 +10,7 @@ class RSChannel(Device):
     """
     Class to define PVs for a single channel of the RSPowerSupply NGP800.
 
-    Paramters
+    Parameters
     ----------
     prefix: str
         The base PV of the relevant Rohde-Schwarz channel.
@@ -43,7 +43,8 @@ class RSChannel(Device):
 class RohdeSchwarzPowerSupply(Device):
     """
     Class to define PVs of all channels of the RSPowerSupply NGP800.
-    Paramters
+
+    Parameters
     ----------
     prefix: str
         The base PV of the relevant RohdeSchwarzPowersupply.
