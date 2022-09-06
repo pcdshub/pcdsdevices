@@ -4,7 +4,7 @@ from typing import Dict, List, Optional, Tuple, cast
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
-from ophyd.signal import EpicsSignal, EpicsSignalRO
+from ophyd.signal import EpicsSignalRO
 from ophyd.status import AndStatus, MoveStatus
 
 from pcdsdevices.valve import VGC
@@ -432,8 +432,7 @@ class LssShutterStatus(BaseInterface, Device):
     )
 
     permission = Cpt(
-        # PytmcSignal, "LSS", io="i",
-        EpicsSignal, "LSS_RBV",   # TODO: for testing
+        PytmcSignal, "LSS", io="i",
         kind="normal",
         doc="Shutter open permission status",
     )
