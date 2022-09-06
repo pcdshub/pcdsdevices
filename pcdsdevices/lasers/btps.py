@@ -539,6 +539,29 @@ class BtpsSourceStatus(BaseInterface, Device):
         goniometer_status = self.goniometer.set(nominal_pos)
         return (linear_status, rotary_status, goniometer_status)
 
+    def set_nominal_to_current(self) -> None:
+        """
+        Set the nominal positions of the BTPS data store for the current
+        destination to the current motor positions.
+        """
+        try:
+            dest_index = int(self.current_destination.get())
+            dest = DestinationPosition.from_index(dest_index)
+        except Exception:
+            raise ValueError("Current destination invalid; unable to set nominal positions")
+
+        config = self.parent.destinations[dest].sources[self.source_pos]
+
+        # The current positions
+        linear = self.linear.get()
+        rotary = self.rotary.get()
+        goniometer = self.goniometer.get()
+
+        # Set the source-to-destination data store values:
+        config.linear.nominal.set(linear)
+        config.rotary.nominal.set(rotary)
+        config.goniometer.nominal.set(goniometer)
+
     def check_move(self, dest: DestinationPosition) -> None:
         """
         Check for conflicts moving this source to ``dest``.
