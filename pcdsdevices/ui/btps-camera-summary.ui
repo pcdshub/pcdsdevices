@@ -130,7 +130,7 @@
           <string/>
          </property>
          <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:FF4:FrameTime_RBV</string>
+          <string>ca://LTLHN:Chk:FF4:FrameTime_RBV</string>
          </property>
         </widget>
        </item>
@@ -155,7 +155,7 @@
           <string/>
          </property>
          <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:FF1:IsUpdating_RBV</string>
+          <string>ca://LTLHN:Chk:FF1:IsUpdating_RBV</string>
          </property>
          <property name="showLabels" stdset="0">
           <bool>false</bool>
@@ -171,7 +171,7 @@
           <string/>
          </property>
          <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:FF4:IsUpdating_RBV</string>
+          <string>ca://LTLHN:Chk:FF4:IsUpdating_RBV</string>
          </property>
          <property name="showLabels" stdset="0">
           <bool>false</bool>
@@ -187,7 +187,7 @@
           <string/>
          </property>
          <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:FF3:IsUpdating_RBV</string>
+          <string>ca://LTLHN:Chk:FF3:IsUpdating_RBV</string>
          </property>
          <property name="showLabels" stdset="0">
           <bool>false</bool>
@@ -218,7 +218,7 @@
           <string/>
          </property>
          <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:FF3:FrameTime_RBV</string>
+          <string>ca://LTLHN:Chk:FF3:FrameTime_RBV</string>
          </property>
         </widget>
        </item>
@@ -243,7 +243,7 @@
           <string/>
          </property>
          <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:FF1:FrameTime_RBV</string>
+          <string>ca://LTLHN:Chk:FF1:FrameTime_RBV</string>
          </property>
         </widget>
        </item>
@@ -352,7 +352,7 @@
           <string/>
          </property>
          <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:NF3:IsUpdating_RBV</string>
+          <string>ca://LTLHN:Chk:NF3:IsUpdating_RBV</string>
          </property>
          <property name="showLabels" stdset="0">
           <bool>false</bool>
@@ -368,7 +368,7 @@
           <string/>
          </property>
          <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:NF3:FrameTime_RBV</string>
+          <string>ca://LTLHN:Chk:NF3:FrameTime_RBV</string>
          </property>
         </widget>
        </item>
@@ -378,7 +378,7 @@
           <string/>
          </property>
          <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:NF4:IsUpdating_RBV</string>
+          <string>ca://LTLHN:Chk:NF4:IsUpdating_RBV</string>
          </property>
          <property name="showLabels" stdset="0">
           <bool>false</bool>
@@ -409,7 +409,7 @@
           <string/>
          </property>
          <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:NF4:FrameTime_RBV</string>
+          <string>ca://LTLHN:Chk:NF4:FrameTime_RBV</string>
          </property>
         </widget>
        </item>
@@ -419,7 +419,7 @@
           <string/>
          </property>
          <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:NF1:IsUpdating_RBV</string>
+          <string>ca://LTLHN:Chk:NF1:IsUpdating_RBV</string>
          </property>
          <property name="showLabels" stdset="0">
           <bool>false</bool>
@@ -435,7 +435,7 @@
           <string/>
          </property>
          <property name="channel" stdset="0">
-          <string>ca://LTLHN:BTPS:Chk:NF1:FrameTime_RBV</string>
+          <string>ca://LTLHN:Chk:NF1:FrameTime_RBV</string>
          </property>
         </widget>
        </item>
