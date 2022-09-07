@@ -1039,7 +1039,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:Chk:FF1:IsUpdating_RBV</string>
+        <string>ca://LTLHN:BTPS:Chk:LS1:FF:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -1062,7 +1062,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:Chk:FF3:IsUpdating_RBV</string>
+        <string>ca://LTLHN:BTPS:Chk:LS5:FF:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -1085,7 +1085,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:Chk:FF4:IsUpdating_RBV</string>
+        <string>ca://LTLHN:BTPS:Chk:LS8:FF:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
