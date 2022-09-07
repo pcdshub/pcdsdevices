@@ -558,9 +558,9 @@ class BtpsSourceStatus(BaseInterface, Device):
         goniometer = self.goniometer.get()
 
         # Set the source-to-destination data store values:
-        config.linear.nominal.set(linear)
-        config.rotary.nominal.set(rotary)
-        config.goniometer.nominal.set(goniometer)
+        config.linear.nominal.put(linear)
+        config.rotary.nominal.put(rotary)
+        config.goniometer.nominal.put(goniometer)
 
     def check_move(self, dest: DestinationPosition) -> None:
         """
