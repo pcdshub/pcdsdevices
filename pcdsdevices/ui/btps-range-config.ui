@@ -43,7 +43,7 @@
      <item row="0" column="1">
       <widget class="PyDMByteIndicator" name="PyDMByteIndicator_2">
        <property name="toolTip">
-        <string>Is the source data updating and valid?</string>
+        <string>Does this pass the range check?</string>
        </property>
        <property name="alarmSensitiveContent" stdset="0">
         <bool>true</bool>
@@ -291,7 +291,7 @@
      <item row="0" column="0">
       <widget class="PyDMByteIndicator" name="PyDMByteIndicator">
        <property name="toolTip">
-        <string>Does this pass the range check?</string>
+        <string>Is the source data updating and valid?</string>
        </property>
        <property name="alarmSensitiveContent" stdset="0">
         <bool>true</bool>
