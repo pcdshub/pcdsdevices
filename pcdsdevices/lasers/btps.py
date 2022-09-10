@@ -553,9 +553,9 @@ class BtpsSourceStatus(BaseInterface, Device):
         config = self.parent.destinations[dest].sources[self.source_pos]
 
         # The current positions
-        linear = self.linear.get()
-        rotary = self.rotary.get()
-        goniometer = self.goniometer.get()
+        linear = self.linear.user_readback.get()
+        rotary = self.rotary.user_readback.get()
+        goniometer = self.goniometer.user_readback.get()
 
         # Set the source-to-destination data store values:
         config.linear.nominal.put(linear)

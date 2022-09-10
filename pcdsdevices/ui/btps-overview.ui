@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>741</width>
-    <height>102</height>
+    <width>788</width>
+    <height>108</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -325,7 +325,7 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1" alignment="Qt::AlignLeft">
+     <item row="3" column="1" alignment="Qt::AlignHCenter">
       <widget class="QLabel" name="label_4">
        <property name="font">
         <font>
@@ -970,7 +970,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:Chk:NF1:IsUpdating_RBV</string>
+        <string>ca://LTLHN:BTPS:Chk:LS1:NF:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -993,7 +993,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:Chk:NF3:IsUpdating_RBV</string>
+        <string>ca://LTLHN:BTPS:Chk:LS5:NF:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -1016,7 +1016,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:Chk:NF4:IsUpdating_RBV</string>
+        <string>ca://LTLHN:BTPS:Chk:LS8:NF:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -1039,7 +1039,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:Chk:FF1:IsUpdating_RBV</string>
+        <string>ca://LTLHN:BTPS:Chk:LS1:FF:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -1062,7 +1062,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:Chk:FF3:IsUpdating_RBV</string>
+        <string>ca://LTLHN:BTPS:Chk:LS5:FF:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -1085,7 +1085,7 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:Chk:FF4:IsUpdating_RBV</string>
+        <string>ca://LTLHN:BTPS:Chk:LS8:FF:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>

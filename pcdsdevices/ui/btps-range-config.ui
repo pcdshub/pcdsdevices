@@ -43,7 +43,7 @@
      <item row="0" column="1">
       <widget class="PyDMByteIndicator" name="PyDMByteIndicator_2">
        <property name="toolTip">
-        <string>Is the source data updating and valid?</string>
+        <string>Does this pass the range check?</string>
        </property>
        <property name="alarmSensitiveContent" stdset="0">
         <bool>true</bool>
@@ -291,7 +291,7 @@
      <item row="0" column="0">
       <widget class="PyDMByteIndicator" name="PyDMByteIndicator">
        <property name="toolTip">
-        <string>Does this pass the range check?</string>
+        <string>Is the source data updating and valid?</string>
        </property>
        <property name="alarmSensitiveContent" stdset="0">
         <bool>true</bool>
@@ -311,6 +311,68 @@
        </property>
        <property name="circles" stdset="0">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="8">
+      <widget class="PyDMLineEdit" name="NominalSetpoint">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Nominal position (setpoint)</string>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${PREFIX}Nominal</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="PyDMLabel" name="NominalReadback">
+       <property name="toolTip">
+        <string>Nominal position (readback)</string>
+       </property>
+       <property name="text">
+        <string>(Value)</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://${PREFIX}Nominal_RBV</string>
        </property>
       </widget>
      </item>
