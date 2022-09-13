@@ -1695,14 +1695,28 @@ class LightpathMixin(Device):
         self._cached_state = None
         self.input_branches = input_branches
         self.output_branches = output_branches
+        is_valid = (
+            (len(self.lightpath_cpts) > 0) and
+            (len(self.input_branches) > 0) and
+            (len(self.output_branches) > 0)
+        )
         super().__init__(*args, **kwargs)
+
+        if not is_valid:
+            # not a valid lightpath device, but this does not prevent
+            # later subscriptions
+            raise NotImplementedError(
+                'did not specify input and/or output branches'
+            )
+
         self._init_summary_signal()
 
     def _init_summary_signal(self):
         for sig in self.lightpath_cpts:
             self.lightpath_summary.add_signal_by_attr_name(sig)
 
-        self.lightpath_summary.subscribe(self._calc_cache_lightpath_state)
+        self.lightpath_summary.subscribe(self._calc_cache_lightpath_state,
+                                         run=False)
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
@@ -1766,8 +1780,6 @@ class LightpathMixin(Device):
         LightpathState
             a dataclass containing the Lightpath state
         """
-        self._check_valid_lightpath()
-
         if (not use_cache) or (self._cached_state is None):
             self.log.debug('calculating new LightpathState')
             kwargs = {sig.name.removeprefix(self.name + '_'): sig.get()
