@@ -336,6 +336,17 @@ class OffsetMirror(BeamControl):
     prefix_xy = EntryInfo("Prefix for X and Y motors", enforce=str)
     xgantry_prefix = EntryInfo("Prefix for the X Gantry", enforce=str)
 
+    # Lightpath relevant settings.  Ranges for various mirror settings
+    pitch_ranges = EntryInfo("valid pitch ranges for each destination",
+                             optional=True, enforce=list,
+                             include_default_as_kwarg=False)
+    x_ranges = EntryInfo("valid x positions, determining insertion",
+                         optional=True, enforce=list,
+                         include_default_as_kwarg=False)
+    y_ranges = EntryInfo("valid y positions, determining coating",
+                         optional=True, enforce=list,
+                         include_default_as_kwarg=False)
+
 
 class PulsePicker(BeamControl):
     """
