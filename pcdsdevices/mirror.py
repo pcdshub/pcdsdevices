@@ -702,6 +702,8 @@ class XOffsetMirrorBend(XOffsetMirror):
 
     1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
 
+    Currently services: mr1k1
+
     Parameters
     ----------
     prefix : str
@@ -734,6 +736,62 @@ class XOffsetMirrorBend(XOffsetMirror):
     # Tab config: show components
     tab_component_names = True
 
+    def calc_lightpath_state(
+        self,
+        x_up: float,
+        y_up: float,
+        pitch: float
+    ) -> LightpathState:
+        """
+        Special lightpath calculation for mr1k1_bend, which only
+        depends on y-range for insertion, rather than x-range
+
+        Parameters
+        ----------
+        x_up : float
+            x position, unused
+        y_up : float
+            y position, used to determine insertion
+        pitch : float
+            pitch position, unused
+
+        Returns
+        -------
+        LightpathState
+            current lightpath state of the device
+        """
+        try:
+            if np.shape(self.y_ranges) != (2, 2):
+                # improper ranges for insertion, fail
+                raise MirrorLogicError(
+                    'Provided x-ranges are the malformed. '
+                    f'got: {np.shape(self.x_ranges)}, expected (2,2)')
+
+            x_out, x_in = ((limit[0] < y_up) and (y_up < limit[1])
+                           for limit in self.y_ranges)
+
+            if x_in and not x_out:
+                out_branch = self.output_branches[1]
+            else:
+                # default to pass through.  in/out state will block
+                # if state is bad.
+                out_branch = self.output_branches[0]
+
+            return LightpathState(
+                inserted=x_in,
+                removed=x_out,
+                transmission=1,
+                output_branch=out_branch
+            )
+        except MirrorLogicError as ex:
+            self.log.debug(ex)
+            return LightpathState(
+                inserted=False,
+                removed=False,
+                transmission=0,
+                output_branch=self.output_branches[0]
+            )
+
 
 # Maintain backward compatibility
 XOffsetMirror2 = XOffsetMirrorBend
@@ -744,6 +802,8 @@ class XOffsetMirrorSwitch(XOffsetMirror):
     X-ray Offset Mirror with Yleft/Yright
 
     1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+
+    currently services: mr1k2
 
     Parameters
     ----------
@@ -779,7 +839,7 @@ class XOffsetMirrorSwitch(XOffsetMirror):
         x_up: float,
         pitch: float
     ) -> LightpathState:
-        # TODO: get real logic
+        # currently always in, no switching
         return LightpathState(
             inserted=True, removed=False, transmission=1,
             output_branch=self.output_branches[0]
