@@ -159,7 +159,7 @@ class Gantry(OMMotor):
         super().check_value(pos)
 
 
-class OffsetMirror(BaseInterface, GroupDevice):
+class OffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
     """
     X-ray Offset Mirror class.
 
@@ -205,6 +205,8 @@ class OffsetMirror(BaseInterface, GroupDevice):
     # Subscription types
     SUB_STATE = 'state'
 
+    lightpath_cpts = ['pitch.user_readback']
+
     # Tab config: show components
     tab_component_names = True
 
@@ -214,6 +216,14 @@ class OffsetMirror(BaseInterface, GroupDevice):
         self._prefix_xy = prefix_xy or prefix
         self._xgantry = xgantry_prefix or 'GANTRY:' + prefix + ':X'
         super().__init__(prefix, **kwargs)
+
+    def calc_lightpath_state(self, **kwargs) -> LightpathState:
+        return LightpathState(
+            inserted=True,
+            removed=False,
+            transmission=1,
+            output_branch=self.output_branches[0]
+        )
 
     @property
     def inserted(self):
