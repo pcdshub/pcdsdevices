@@ -1695,19 +1695,8 @@ class LightpathMixin(Device):
         self._cached_state = None
         self.input_branches = input_branches
         self.output_branches = output_branches
-        is_valid = (
-            (len(self.lightpath_cpts) > 0) and
-            (len(self.input_branches) > 0) and
-            (len(self.output_branches) > 0)
-        )
-        super().__init__(*args, **kwargs)
 
-        if not is_valid:
-            # not a valid lightpath device, but this does not prevent
-            # later subscriptions
-            raise NotImplementedError(
-                'did not specify input and/or output branches'
-            )
+        super().__init__(*args, **kwargs)
 
         self._init_summary_signal()
 
@@ -1729,27 +1718,6 @@ class LightpathMixin(Device):
                     'Did not implement LightpathMixin properly.  '
                     'Must supply a list of components (lightpath_cpts)'
                 )
-
-    def _check_valid_lightpath(self):
-        """
-        Checks if the full lightpath interface is implemented.
-        To be run before get_lightpath_state
-
-        Returns
-        -------
-        bool
-            if the lightpath interface is fully implemented
-        """
-        is_valid = (
-            (len(self.lightpath_cpts) > 0) and
-            (len(self.input_branches) > 0) and
-            (len(self.output_branches) > 0)
-        )
-        if not is_valid:
-            raise NotImplementedError(
-                'Lightpath Mixin not fully implemented.  Missing either '
-                'input_branches or output_branches. '
-            )
 
     def calc_lightpath_state(self, **kwargs) -> LightpathState:
         """
@@ -1845,7 +1813,6 @@ class LightpathInOutCptMixin(LightpathMixin):
         self.lightpath_summary.subscribe(self._calc_cache_lightpath_state)
 
     def get_lightpath_state(self, use_cache: bool = True) -> LightpathState:
-        self._check_valid_lightpath()
         if (not use_cache) or (self._cached_state is None):
             kwargs = {}
             for sig in self.lightpath_summary._signals:
