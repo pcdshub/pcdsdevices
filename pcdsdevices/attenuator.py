@@ -1014,7 +1014,6 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
         The state is nested one device deeper than LightpathInOutCptMixin
         expects.
         """
-        self._check_valid_lightpath()
         if (not use_cache) or (self._cached_state is None):
             lightpath_kwargs = {}
             lp_sigs = self.lightpath_summary._signals.keys()
@@ -1085,16 +1084,17 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
             calc_status, 'energy_actual', 'value',
             scale=3 * 1e-3,
         )
+        blade_names = [cpt.split('.', 1)[0] for cpt in self.lightpath_cpts]
         cpt_states = [
             get_status_value(
                 status_info, cpt, 'state', 'state', 'value',
                 default_value=0
             )
-            for cpt in self.lightpath_cpts
+            for cpt in blade_names
         ]
 
         table = prettytable.PrettyTable()
-        table.field_names = ['State'] + list(self.lightpath_cpts)
+        table.field_names = ['State'] + list(blade_names)
         for state in LadderBladeState:
             row = [state.name] + ['X' if cpt_state == state.value else ''
                                   for cpt_state in cpt_states]
@@ -1341,7 +1341,6 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
         The state is nested one device deeper than LightpathInOutCptMixin
         expects.
         """
-        self._check_valid_lightpath()
         if (not use_cache) or (self._cached_state is None):
             lightpath_kwargs = {}
             lp_sigs = self.lightpath_summary._signals.keys()
@@ -1415,7 +1414,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
         )
         cpt_states = [
             get_status_value(
-                status_info, cpt, 'state', 'state', 'value',
+                status_info, cpt.split('.', 1)[0], 'state', 'state', 'value',
                 default_value=0
             )
             for cpt in self.lightpath_cpts
