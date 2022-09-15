@@ -1,4 +1,4 @@
-1009 stopper_container
+1047 Adding LightControl.ui
 #################
 
 API Changes
@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- N/A
+- New LightControl.ui screen for controlling fiber-lites
 
 Device Updates
 --------------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- Fix Stopper Happi container definition
+- N/A
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tangkong
+- wwright-slac

@@ -9,6 +9,7 @@ from ophyd import Component as Cpt
 from .device import GroupDevice
 from .epics_motor import BeckhoffAxis
 from .interface import BaseInterface
+from .light_control import LightControl
 
 
 class CVMI(BaseInterface, GroupDevice):
@@ -16,13 +17,18 @@ class CVMI(BaseInterface, GroupDevice):
     CVMI Motion Class
 
     This class controls motors fixed to the CVMI Motion system for the IP1
-    endstation in TMO.
+    endstation in TMO. It also controls LED rings for the endstation.
 
     Parameters
     ----------
     prefix : str
         Base PV for the LAMP motion system
-
+    desc : str
+        Description field for LED.
+    pct : str
+        Illumination percentage of a particular endstation LED.
+    pwr : str
+        ON/OFF powered boolean of a particular endstation LED.
     name : str
         Alias for the device
     """
@@ -40,6 +46,10 @@ class CVMI(BaseInterface, GroupDevice):
     gas_needle_z = Cpt(BeckhoffAxis, ':MMS:06', kind='normal')
 
     sample_paddle = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
+
+    # LEDs
+    led1 = Cpt(LightControl, ':LED:01')
+    led2 = Cpt(LightControl, ':LED:02')
 
 
 class KTOF(BaseInterface, GroupDevice):

@@ -17,10 +17,14 @@ from .jet import BeckhoffJet
 from .lasers.ek9000 import El3174AiCh, EnvironmentalMonitor
 from .lasers.elliptec import Ell6, Ell9, EllBase, EllLinear, EllRotation
 from .lasers.qmini import QminiSpectrometer
+from .lasers.rfof import (CycleRfofRx, CycleRfofTx, ItechRfofAll,
+                          ItechRfofErrors, ItechRfofRx, ItechRfofStatus,
+                          ItechRfofTx)
 from .lasers.thorlabsWFS import ThorlabsWfs40
 from .lasers.zoomtelescope import ZoomTelescope
 from .lens import XFLS, Prefocus
 from .lic import LaserInCoupling
+from .light_control import LightControl
 from .lodcm import LODCM
 from .mirror import OffsetMirror, PointingMirror
 from .movablestand import MovableStand

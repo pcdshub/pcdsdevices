@@ -52,8 +52,10 @@ def fake_ccm():
 
 
 class FakeAlio(FastMotor):
-    kill = None
     home = None
+
+    def kill(self):
+        print('Killing alio PID')
 
 
 def make_fake_ccm():
