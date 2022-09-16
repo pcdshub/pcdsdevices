@@ -8,8 +8,8 @@ from ophyd import EpicsSignalRO
 from ophyd.device import Device
 
 
-class HPI6012(Device):
-    """class for reading out HPI 6012 data"""
+class HPI6030(Device):
+    """class for reading out 6030 sensor data"""
     dose_rate = Cpt(EpicsSignalRO, ':DOSE_RATE', kind='hinted')
 
     trip_alarm_a1 = Cpt(EpicsSignalRO, ':TRIP_A1')
