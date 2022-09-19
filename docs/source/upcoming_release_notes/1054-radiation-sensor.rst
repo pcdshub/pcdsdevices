@@ -3,11 +3,11 @@
 
 API Changes
 -----------
-- Added radiation.py
+- N/A
 
 Features
 --------
-- Container for reading out 6030 radiation data
+- N/A
 
 Device Updates
 --------------
@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- HPI6030
+- Added HPI6030 in radiation.py, a device for reading out 6030 radiation data.
 
 Bugfixes
 --------
