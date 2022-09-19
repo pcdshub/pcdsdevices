@@ -10,7 +10,7 @@ from ophyd.device import Device
 
 class HPI6030(Device):
     """
-    The Human Physics Instrument 6030 radation sensor is controlled
+    The Human Physics Instrument 6030 radiation sensor is controlled
     by the HPI 6012 which sends readout data over RS232.
 
     """
