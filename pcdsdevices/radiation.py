@@ -1,5 +1,5 @@
 """
-Radiation Sesnsor Classes.
+Radiation Sensor Classes.
 
 This Module contains all the classes relating to Radiation instrumentation
 """
