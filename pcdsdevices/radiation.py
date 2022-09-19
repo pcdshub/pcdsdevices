@@ -9,7 +9,11 @@ from ophyd.device import Device
 
 
 class HPI6030(Device):
-    """class for reading out 6030 sensor data"""
+    """
+    The Human Physics Instrument 6030 radation sensor is controlled
+    by the HPI 6012 which sends readout data over RS232.
+
+    """
     dose_rate = Cpt(EpicsSignalRO, ':DOSE_RATE', kind='hinted')
 
     trip_alarm_a1 = Cpt(EpicsSignalRO, ':TRIP_A1')
