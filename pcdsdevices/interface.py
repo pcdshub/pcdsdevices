@@ -1775,7 +1775,26 @@ class LightpathInOutMixin(LightpathMixin):
     _lightpath_mixin = True
     lightpath_cpts = ['state']
 
+    def __init__(self, *args, retry_delay=2.0, **kwargs):
+        self.retry_delay = retry_delay
+        super().__init__(*args, **kwargs)
+
     def calc_lightpath_state(self, state) -> LightpathState:
+        if not self._state_initialized:
+            # This would prevent make check_inserted, etc. fail
+            # if we cannot connect, supply an inconsistent state
+            # and queue up the calculation for later
+            self.log.debug('state not initialized, scheduling '
+                           'lightpath calculations for later')
+            utils.schedule_task(self._calc_cache_lightpath_state,
+                                delay=self.retry_delay)
+
+            return LightpathState(
+                inserted=True,
+                removed=True,
+                output={self.output_branches[0]: 1}
+                )
+
         self._inserted = self.check_inserted(state)
         self._removed = self.check_removed(state)
         self._transmission = self.check_transmission(state)
