@@ -31,7 +31,7 @@ from .inout import InOutRecordPositioner
 from .interface import BaseInterface, FltMvInterface, LightpathMixin
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
-from .utils import get_status_float, get_status_value
+from .utils import get_status_float, get_status_value, schedule_task
 
 logger = logging.getLogger(__name__)
 
@@ -1316,15 +1316,10 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         very very wrong.  Currently this would be best suited for
         a LightpathInOutCptMixin, but I doubt this is all the logic
         """
-        h1n_state = tower1_h1n_state_state
-        inserted = self.h1n_state.check_inserted(h1n_state)
-        removed = self.h1n_state.check_removed(h1n_state)
-        transmission = self.h1n_state.check_transmission(h1n_state)
         return LightpathState(
-            inserted=inserted,
-            removed=removed,
-            transmission=transmission,
-            output_branch=self.output_branches[0]
+            inserted=True,
+            removed=True,
+            ouptut={self.output_branches[0]: 0}
         )
 
     @property
@@ -1837,6 +1832,87 @@ Photon Energy: {energy} [keV]
 {form(f'navitar zoom [{yag_zoom_units}]',
       f'{yag_zoom_user} ({yag_zoom_dial})', '')}
 """
+
+
+class XCSLODCM(LODCM):
+    """ holds lightpath logic for xcs lodcm """
+    def calc_lightpath_state(
+        self,
+        tower1_h1n_state_state: Union[int, str]
+    ) -> LightpathState:
+        h1n_state = tower1_h1n_state_state
+        if not self.tower1.h1n_state._state_initialized:
+            self.log.debug('tower1 state not initialized, scheduling '
+                           'lightpath calc for later')
+            schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+            return LightpathState(
+                inserted=True,
+                removed=True,
+                output={self.output_branches[0]: 0}
+            )
+        # avoid extra get calls in this method
+        state_label = self.tower1.h1n_state.get_state(h1n_state).name
+
+        if state_label in ['C', 'Si']:
+            inserted = True
+            removed = False
+            if state_label == 'C':
+                # Diamond crystal, beam is split between outputs
+                output = {self.output_branches[0]: 0.5,
+                          self.output_branches[1]: 0.5}
+            elif state_label == 'Si':
+                # Silicon crystal in, monochromatic beam to XCS
+                output = {self.output_branches[1]: 1}
+        elif state_label == 'OUT':
+            # out, straight through to CXI
+            inserted = False
+            removed = True
+            output = {self.output_branches[0]: 1}
+        else:
+            # unknown state blocks
+            inserted = False
+            removed = False
+            output = {self.output_branches[0]: 0}
+
+        return LightpathState(
+            inserted=inserted,
+            removed=removed,
+            output=output
+        )
+
+
+class XPPLODCM(LODCM):
+    """ holds lightpath logic for xcs lodcm """
+    def calc_lightpath_state(
+        self,
+        tower1_h1n_state_state: Union[int, str]
+    ) -> LightpathState:
+        h1n_state = tower1_h1n_state_state
+        if not self.tower1.h1n_state._state_initialized:
+            self.log.debug('tower1 state not initialized, scheduling '
+                           'lightpath calc for later')
+            schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+            return LightpathState(
+                inserted=True,
+                removed=True,
+                output={self.output_branches[0]: 0}
+            )
+
+        inserted = self.tower1.h1n_state.check_inserted(h1n_state)
+        removed = self.tower1.h1n_state.check_removed(h1n_state)
+
+        if inserted and not removed:
+            output = {self.output_branches[1]: 1}
+        elif not inserted and removed:
+            output = {self.output_branches[0]: 1}
+        else:
+            output = {self.output_branches[0]: 0}
+
+        return LightpathState(
+            inserted=inserted,
+            removed=removed,
+            output=output
+        )
 
 
 class SimFirstTower(CrystalTower1):
