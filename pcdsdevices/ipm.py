@@ -213,8 +213,7 @@ Target Position: {target_pos} [{t_units}]
         return LightpathState(
             inserted=inserted,
             removed=removed,
-            transmission=transmission,
-            output_branch=self.output_branches[0]
+            output={self.output_branches[0]: transmission}
         )
 
     @property

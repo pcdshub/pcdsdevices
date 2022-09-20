@@ -221,8 +221,7 @@ class OffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
         return LightpathState(
             inserted=True,
             removed=False,
-            transmission=1,
-            output_branch=self.output_branches[0]
+            output={self.output_branches[0]: 1}
         )
 
     @property
@@ -477,8 +476,7 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
 
             if x_out:
                 return LightpathState(inserted=x_in, removed=x_out,
-                                      transmission=1,
-                                      output_branch=self.output_branches[0])
+                                      output={self.output_branches[0]: 1})
 
             # if in, check coating
             coating_index = self._get_coating_index(y_info)
@@ -491,8 +489,7 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
             return LightpathState(
                 inserted=x_in,
                 removed=x_out,
-                transmission=trans,
-                output_branch=out_branch
+                output={out_branch: trans}
             )
         except MirrorLogicError as ex:
             # a state for if calculation cannot proceed
@@ -500,8 +497,7 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
             return LightpathState(
                 inserted=False,
                 removed=False,
-                transmission=0,
-                output_branch=self.output_branches[0]
+                output={self.output_branches[0]: 0}
             )
 
     def _get_insertion_state(self, x: float) -> Tuple[bool, bool]:
@@ -790,16 +786,14 @@ class XOffsetMirrorBend(XOffsetMirror):
             return LightpathState(
                 inserted=x_in,
                 removed=x_out,
-                transmission=1,
-                output_branch=out_branch
+                output={out_branch: 1}
             )
         except MirrorLogicError as ex:
             self.log.debug(ex)
             return LightpathState(
                 inserted=False,
                 removed=False,
-                transmission=0,
-                output_branch=self.output_branches[0]
+                output={self.output_branches[0]: 0}
             )
 
 
@@ -851,8 +845,7 @@ class XOffsetMirrorSwitch(XOffsetMirror):
     ) -> LightpathState:
         # currently always in, no switching
         return LightpathState(
-            inserted=True, removed=False, transmission=1,
-            output_branch=self.output_branches[0]
+            inserted=True, removed=False, output={self.output_branches[0]: 1}
         )
 
 
@@ -903,8 +896,7 @@ class KBOMirror(BaseInterface, GroupDevice, LightpathMixin):
     ) -> LightpathState:
         # TODO: get real logic
         return LightpathState(
-            inserted=True, removed=False, transmission=1,
-            output_branch=self.output_branches[0]
+            inserted=True, removed=False, output={self.output_branches[0]: 1}
         )
 
     # Tab config: show components
@@ -1080,8 +1072,7 @@ class FFMirror(BaseInterface, GroupDevice, LightpathMixin):
     ) -> LightpathState:
         # TODO: get real logic
         return LightpathState(
-            inserted=True, removed=False, transmission=1,
-            output_branch=self.output_branches[0]
+            inserted=True, removed=False, output={self.output_branches[0]: 1}
         )
 
     # Tab config: show components

@@ -1043,8 +1043,7 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
                 return LightpathState(
                     inserted=True,
                     removed=True,
-                    transmission=1,
-                    output_branch=self.output_branches[0]
+                    output={self.output_branches[0]: 1}
                 )
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))
@@ -1059,8 +1058,7 @@ class AttenuatorSXR_Ladder(FltMvInterface, PVPositionerPC,
         return LightpathState(
             inserted=self._inserted,
             removed=self._removed,
-            transmission=self._transmission,
-            output_branch=self.output_branches[0]
+            output={self.output_branches[0]: self._transmission}
         )
 
     def format_status_info(self, status_info):
@@ -1369,8 +1367,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
                 return LightpathState(
                     inserted=True,
                     removed=True,
-                    transmission=1,
-                    output_branch=self.output_branches[0]
+                    output={self.output_branches[0]: 1}
                 )
             # get state of the InOutPositioner and check status
             in_check.append(obj.check_inserted(sig_value))
@@ -1385,8 +1382,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
         return LightpathState(
             inserted=self._inserted,
             removed=self._removed,
-            transmission=self._transmission,
-            output_branch=self.output_branches[0]
+            output={self.output_branches[0]: self._transmission}
         )
 
     def format_status_info(self, status_info):

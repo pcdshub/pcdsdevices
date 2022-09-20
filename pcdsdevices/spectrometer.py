@@ -98,8 +98,7 @@ class Kmono(BaseInterface, GroupDevice, LightpathMixin):
         return LightpathState(
             inserted=self._inserted,
             removed=self._removed,
-            transmission=self._transmission,
-            output_branch=self.output_branches[0]
+            output={self.output_branches[0]: self._transmission}
         )
 
 
@@ -302,8 +301,7 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
         return LightpathState(
             inserted=True,
             removed=False,
-            transmission=1,
-            output_branch=self.output_branches[0]
+            output={self.output_branches[0]: 1}
         )
 
 
@@ -350,8 +348,7 @@ class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
         return LightpathState(
             inserted=True,
             removed=False,
-            transmission=1,
-            output_branch=self.output_branches[0]
+            output={self.output_branches[0]: 1}
         )
 
 
@@ -398,6 +395,5 @@ class HXRSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
         return LightpathState(
             inserted=True,
             removed=False,
-            transmission=1,
-            output_branch=self.output_branches[0]
+            output={self.output_branches[0]: 1}
         )

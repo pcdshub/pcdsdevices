@@ -184,8 +184,7 @@ class PPSStopper2PV(BaseInterface, LightpathMixin):
         return LightpathState(
             inserted=self._inserted,
             removed=self._removed,
-            transmission=transmission,
-            output_branch=self.output_branches[0]
+            output={self.output_branches[0]: transmission}
         )
 
 

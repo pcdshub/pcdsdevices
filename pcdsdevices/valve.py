@@ -216,8 +216,7 @@ class VRC(VVC, LightpathMixin):
         return LightpathState(
             inserted=self._inserted,
             removed=self._removed,
-            transmission=trans,
-            output_branch=self.output_branches[0]
+            output={self.output_branches[0]: trans}
         )
 
 
@@ -514,8 +513,7 @@ class VFS(LightpathMixin):
         return LightpathState(
             inserted=self._inserted,
             removed=self._removed,
-            transmission=trans,
-            output_branch=self.output_branches[0]
+            output={self.output_branches[0]: trans}
         )
 
 
@@ -619,8 +617,7 @@ class VRCNO(VVCNO, LightpathMixin):
         return LightpathState(
             inserted=self._inserted,
             removed=self._removed,
-            transmission=trans,
-            output_branch=self.output_branches[0]
+            output={self.output_branches[0]: trans}
         )
 
 

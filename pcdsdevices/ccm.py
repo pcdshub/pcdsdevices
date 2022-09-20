@@ -1030,8 +1030,7 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
         return LightpathState(
             inserted=self._inserted,
             removed=self._removed,
-            transmission=self._transmission,
-            output_branch=self.output_branches[0]
+            output={self.output_branches[0]: self._transmission}
         )
 
     def insert(self, wait: bool = False) -> MoveStatus:

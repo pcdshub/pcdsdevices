@@ -25,7 +25,7 @@ from .lasers.zoomtelescope import ZoomTelescope
 from .lens import XFLS, Prefocus
 from .lic import LaserInCoupling
 from .light_control import LightControl
-from .lodcm import LODCM
+from .lodcm import XCSLODCM, XPPLODCM
 from .mirror import OffsetMirror, PointingMirror
 from .movablestand import MovableStand
 from .mpod import MPOD, MPODChannelHV, MPODChannelLV
