@@ -205,7 +205,7 @@ class OffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
     # Subscription types
     SUB_STATE = 'state'
 
-    lightpath_cpts = ['pitch.user_readback']
+    lightpath_cpts = ['pitch.readback']
 
     # Tab config: show components
     tab_component_names = True

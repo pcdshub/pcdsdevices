@@ -1902,7 +1902,8 @@ class XPPLODCM(LODCM):
         removed = self.tower1.h1n_state.check_removed(h1n_state)
 
         if inserted and not removed:
-            output = {self.output_branches[1]: 1}
+            output = {self.output_branches[0]: 0.5,
+                      self.output_branches[1]: 0.5}
         elif not inserted and removed:
             output = {self.output_branches[0]: 1}
         else:
