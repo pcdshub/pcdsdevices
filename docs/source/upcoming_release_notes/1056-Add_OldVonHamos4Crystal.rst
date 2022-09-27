@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- jortiz
+- jortiz-slac
