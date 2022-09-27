@@ -79,6 +79,9 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         self.vo = self.ycenter
         self._pre_stage_gap: tuple[float, float] = None
 
+        self._inserted = False
+        self._removed = False
+
     def format_status_info(self, status_info):
         """
         Override status info handler to render the slits.
@@ -312,6 +315,14 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
             removed=self._removed,
             output={self.output_branches[0]: self._transmission}
         )
+
+    @property
+    def inserted(self):
+        return self._inserted
+
+    @property
+    def removed(self):
+        return self._removed
 
 
 class BadSlitPositionerBase(FltMvInterface, PVPositioner):
