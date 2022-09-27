@@ -1698,7 +1698,8 @@ class LightpathMixin(Device):
 
         super().__init__(*args, **kwargs)
 
-        self._init_summary_signal()
+        if self.input_branches and self.output_branches:
+            self._init_summary_signal()
 
     def _init_summary_signal(self):
         for sig in self.lightpath_cpts:
