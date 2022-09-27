@@ -42,7 +42,7 @@ from .sample_delivery import (HPLC, PCM, CoolerShaker, FlowIntegrator,
 from .sensors import RTD, TwinCATThermocouple
 from .sequencer import EventSequencer
 from .slits import Slits
-from .spectrometer import Kmono, VonHamos4Crystal
+from .spectrometer import Kmono, VonHamos4Crystal, OldVonHamos4Crystal
 from .timetool import Timetool, TimetoolWithNav
 from .valve import GateValve, Stopper
 from .wfs import WaveFrontSensorTarget
