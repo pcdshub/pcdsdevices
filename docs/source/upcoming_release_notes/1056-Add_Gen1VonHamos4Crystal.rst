@@ -1,4 +1,4 @@
-1056 Add OldVonHamos4Crystal
+1056 Add Gen1VonHamos4Crystal
 #################
 
 API Changes
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- Added OldVonHamos4Crystal and OldVonHamosCrystal to the spectrometer device to support the pre-ADS 4 crystal VonHamos
+- Added Gen1VonHamos4Crystal and Gen1VonHamosCrystal to the spectrometer device to support the pre-ADS 4 crystal VonHamos
 
 New Devices
 -----------

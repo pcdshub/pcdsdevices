@@ -364,7 +364,7 @@ class HXRSpectrometer(BaseInterface, GroupDevice):
     SUB_STATE = 'state'
 
 
-class OldVonHamosCrystal(BaseInterface, GroupDevice):
+class Gen1VonHamosCrystal(BaseInterface, GroupDevice):
     """Pitch, yaw, and translation motors for control of a single crystal."""
 
     tab_component_names = True
@@ -380,7 +380,7 @@ class OldVonHamosCrystal(BaseInterface, GroupDevice):
         super().__init__(prefix, **kwargs)
 
 
-class OldVonHamos4Crystal(BaseInterface, GroupDevice):
+class Gen1VonHamos4Crystal(BaseInterface, GroupDevice):
     """
     Four crystal Von Hamos setup controlled with a Beckhoff PLC.
 
@@ -400,7 +400,7 @@ class OldVonHamos4Crystal(BaseInterface, GroupDevice):
 
     common_yaw = Cpt(EpicsMotorInterface, ':01', kind='normal', name='Common Rotation')
 
-    cr1 = Cpt(OldVonHamosCrystal, '', transAxis=':02', yawAxis=':06', pitchAxis=':10' , kind='normal', name='Crystal 1')
-    cr2 = Cpt(OldVonHamosCrystal, '', transAxis=':03', yawAxis=':07', pitchAxis=':11' , kind='normal', name='Crystal 2')
-    cr3 = Cpt(OldVonHamosCrystal, '', transAxis=':04', yawAxis=':08', pitchAxis=':12' , kind='normal', name='Crystal 3')
-    cr4 = Cpt(OldVonHamosCrystal, '', transAxis=':05', yawAxis=':09', pitchAxis=':13' , kind='normal', name='Crystal 4')
+    cr1 = Cpt(Gen1VonHamosCrystal, '', transAxis=':02', yawAxis=':06', pitchAxis=':10' , kind='normal', name='Crystal 1')
+    cr2 = Cpt(Gen1VonHamosCrystal, '', transAxis=':03', yawAxis=':07', pitchAxis=':11' , kind='normal', name='Crystal 2')
+    cr3 = Cpt(Gen1VonHamosCrystal, '', transAxis=':04', yawAxis=':08', pitchAxis=':12' , kind='normal', name='Crystal 3')
+    cr4 = Cpt(Gen1VonHamosCrystal, '', transAxis=':05', yawAxis=':09', pitchAxis=':13' , kind='normal', name='Crystal 4')
