@@ -369,14 +369,14 @@ class Gen1VonHamosCrystal(BaseInterface, GroupDevice):
 
     tab_component_names = True
 
-    pitch = FCpt(EpicsMotorInterface, '{prefix}{_pitchAxis}', kind='normal')
-    yaw = FCpt(EpicsMotorInterface, '{prefix}{_yawAxis}'  , kind='normal')
-    trans = FCpt(EpicsMotorInterface, '{prefix}{_transAxis}', kind='normal')
+    pitch = FCpt(EpicsMotorInterface, '{prefix}{_pitch_axis}', kind='normal')
+    yaw = FCpt(EpicsMotorInterface, '{prefix}{_yaw_axis}'  , kind='normal')
+    trans = FCpt(EpicsMotorInterface, '{prefix}{_trans_axis}', kind='normal')
 
-    def __init__(self, prefix, pitchAxis, yawAxis, transAxis, **kwargs):
-        self._pitchAxis = pitchAxis
-        self._yawAxis = yawAxis
-        self._transAxis = transAxis
+    def __init__(self, prefix, pitch_axis, yaw_axis, trans_axis, **kwargs):
+        self._pitch_axis = pitch_axis
+        self._yaw_axis = yaw_axis
+        self._trans_axis = trans_axis
         super().__init__(prefix, **kwargs)
 
 
@@ -400,7 +400,7 @@ class Gen1VonHamos4Crystal(BaseInterface, GroupDevice):
 
     common_yaw = Cpt(EpicsMotorInterface, ':01', kind='normal', name='Common Rotation')
 
-    cr1 = Cpt(Gen1VonHamosCrystal, '', transAxis=':02', yawAxis=':06', pitchAxis=':10' , kind='normal', name='Crystal 1')
-    cr2 = Cpt(Gen1VonHamosCrystal, '', transAxis=':03', yawAxis=':07', pitchAxis=':11' , kind='normal', name='Crystal 2')
-    cr3 = Cpt(Gen1VonHamosCrystal, '', transAxis=':04', yawAxis=':08', pitchAxis=':12' , kind='normal', name='Crystal 3')
-    cr4 = Cpt(Gen1VonHamosCrystal, '', transAxis=':05', yawAxis=':09', pitchAxis=':13' , kind='normal', name='Crystal 4')
+    cr1 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':02', yaw_axis=':06', pitch_axis=':10' , kind='normal', name='Crystal 1')
+    cr2 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':03', yaw_axis=':07', pitch_axis=':11' , kind='normal', name='Crystal 2')
+    cr3 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':04', yaw_axis=':08', pitch_axis=':12' , kind='normal', name='Crystal 3')
+    cr4 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':05', yaw_axis=':09', pitch_axis=':13' , kind='normal', name='Crystal 4')
