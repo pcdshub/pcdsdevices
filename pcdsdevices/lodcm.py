@@ -1311,11 +1311,6 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         self,
         tower1_h1n_state_state: Union[int, str]
     ) -> LightpathState:
-        """
-        TODO: actually figure out the logic for this, this is likely
-        very very wrong.  Currently this would be best suited for
-        a LightpathInOutCptMixin, but I doubt this is all the logic
-        """
         return LightpathState(
             inserted=True,
             removed=True,
@@ -1840,6 +1835,25 @@ class XCSLODCM(LODCM):
         self,
         tower1_h1n_state_state: Union[int, str]
     ) -> LightpathState:
+        """
+        Calculates lightpath state for XCS LODCM.  This LODCM has 3
+        operating modes (as of 9/28/2022)
+
+        1. the 1st crystal of the lodcm is OUT then the beam goes to CXI.
+        2. The diamond crystal is IN then the pink beam goes to CXI while
+           a monochromatic beam can go to XCS at the same time.
+        3. The Silicon crystal is IN in which case monochromatic beam
+           only goes to XCS.
+
+        Parameters
+        ----------
+        tower1_h1n_state_state : Union[int, str]
+            The first crystal state.
+
+        Returns
+        -------
+        LightpathState
+        """
         h1n_state = tower1_h1n_state_state
         if not self.tower1.h1n_state._state_initialized:
             self.log.debug('tower1 state not initialized, scheduling '
@@ -1887,6 +1901,21 @@ class XPPLODCM(LODCM):
         self,
         tower1_h1n_state_state: Union[int, str]
     ) -> LightpathState:
+        """
+        Currently (as of 09/28/2022), the XPP LODCM does not consider
+        differing crystal states.  For now we only consider whether the
+        first crystal is in or out.
+
+        Parameters
+        ----------
+        tower1_h1n_state_state : Union[int, str]
+            The insertion state of the first tower crystal
+
+        Returns
+        -------
+        LightpathState
+        """
+
         h1n_state = tower1_h1n_state_state
         if not self.tower1.h1n_state._state_initialized:
             self.log.debug('tower1 state not initialized, scheduling '

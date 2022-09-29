@@ -1685,8 +1685,8 @@ class LightpathMixin(Device):
     _lightpath_mixin = False
 
     # Mixin holds one summary signal that changes with lightpath_cpts
-    lightpath_summary = Cpt(SummarySignal, name='lightpath_summary',
-                            kind='omitted')
+    lightpath_summary: Signal = Cpt(SummarySignal, name='lightpath_summary',
+                                    kind='omitted')
 
     def __init__(self, *args,
                  input_branches=[], output_branches=[], **kwargs):
@@ -1701,7 +1701,7 @@ class LightpathMixin(Device):
         if self.input_branches and self.output_branches:
             self._init_summary_signal()
 
-    def _init_summary_signal(self):
+    def _init_summary_signal(self) -> None:
         for sig in self.lightpath_cpts:
             self.lightpath_summary.add_signal_by_attr_name(sig)
 

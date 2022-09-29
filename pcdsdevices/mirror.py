@@ -708,7 +708,7 @@ class XOffsetMirrorBend(XOffsetMirror):
 
     1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
 
-    Currently services: mr1k1
+    Currently (09/28/2022) services: mr1k1
 
     Parameters
     ----------
@@ -807,7 +807,7 @@ class XOffsetMirrorSwitch(XOffsetMirror):
 
     1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
 
-    currently services: mr1k2
+    currently (09/28/2022) services: mr1k2
 
     Parameters
     ----------
@@ -1328,7 +1328,7 @@ class XOffsetMirrorXYState(XOffsetMirrorState):
     and insertion (x).  Thus, lightpath state calcs only require pitch
     ranges.
 
-    As of 22-09-12, this applies to mr1l3 and mr1l4.
+    Currently (09/28/2022) services: mr1l3, mr1l4.
 
     Parameters
     ----------
