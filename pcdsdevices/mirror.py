@@ -7,7 +7,7 @@ control the pitch, and two pairs of motors to control the horizontal and
 vertical gantries.
 """
 import logging
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import numpy as np
 from lightpath import LightpathState
@@ -27,6 +27,9 @@ from .signal import PytmcSignal
 from .utils import get_status_value, reorder_components, schedule_task
 
 logger = logging.getLogger(__name__)
+
+
+numeric = Union[int, float]
 
 
 class MirrorLogicError(Exception):
@@ -500,6 +503,35 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
                 output={self.output_branches[0]: 0}
             )
 
+    def _find_matching_range_indices(
+        ranges: List[List[numeric, numeric]],
+        value: numeric
+    ) -> List[bool]:
+        """
+        Helper function for finding the range a particular value falls into
+
+
+        Parameters
+        ----------
+        ranges : List[ List[numeric, numeric] ]
+            A list of ranges.  Each range has a max and min value (exclusive)
+        value : numeric
+            Value to compare to each range
+
+        Returns
+        -------
+        List[int]
+            A list of booleans, reporting if the values is in each range
+            in ``ranges``
+        """
+        if len(np.shape(ranges)) < 2:
+            raise MirrorLogicError(
+                "Provided ranges must be a list of ranges (min, max).  "
+                f"Received an array of shape: {np.shape(ranges)}"
+            )
+
+        return [limit[0] < value < limit[1] for limit in ranges]
+
     def _get_insertion_state(self, x: float) -> Tuple[bool, bool]:
         """
         Interpret x-position as inserted or removed, based on ranges
@@ -532,8 +564,7 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
                 'Provided x-ranges are the malformed. '
                 f'got: {np.shape(self.x_ranges)}, expected (2,2)')
 
-        ins_bools = [(limit[0] < x) and (x < limit[1])
-                     for limit in self.x_ranges]
+        ins_bools = self._find_matching_range_indices(self.x_ranges, x)
         return ins_bools[0], ins_bools[1]  # out, in
 
     def _get_coating_index(self, y: float) -> int:
@@ -558,8 +589,8 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
         if self.y_ranges == []:
             return 1
 
-        valid_y_idx = np.where([(limit[0] < y) and (y < limit[1])
-                                for limit in self.y_ranges])[0]
+        y_idxs = self._find_matching_range_indices(self.y_ranges, y)
+        valid_y_idx = np.where(y_idxs)[0]
         if len(valid_y_idx) > 1:
             # should only see one valid y-range, coating unknown
             raise MirrorLogicError('only one y-range should be valid')
@@ -581,6 +612,10 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
             index used to access relevant pitch ranges. First coating
             is 0-indexed
 
+        pitch : float
+            pitch of the mirror, will be compared against provided
+            pitch ranges
+
         Raises
         ------
         MirrorLogicError
@@ -600,8 +635,8 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
         pitch_limit_list = self.pitch_ranges[coating_idx]
 
         # find indices ranges where pitch is valid
-        valid_pitch_idx = np.where([(limit[0] < pitch) and (pitch < limit[1])
-                                    for limit in pitch_limit_list])[0]
+        pitch_idxs = self._find_matching_range_indices(pitch_limit_list, pitch)
+        valid_pitch_idx = np.where(pitch_idxs)[0]
 
         # pitch should only be within one valid range
         if len(valid_pitch_idx) != 1:
@@ -773,8 +808,8 @@ class XOffsetMirrorBend(XOffsetMirror):
                     'Provided x-ranges are the malformed. '
                     f'got: {np.shape(self.x_ranges)}, expected (2,2)')
 
-            x_out, x_in = ((limit[0] < y_up) and (y_up < limit[1])
-                           for limit in self.y_ranges)
+            x_out, x_in = self._find_matching_range_indices(self.y_ranges,
+                                                            y_up)
 
             if x_in and not x_out:
                 out_branch = self.output_branches[1]
