@@ -398,7 +398,6 @@ class AttBaseWith3rdHarmonicLP(AttBaseWith3rdHarmonic, LightpathInOutCptMixin):
     """
     # dummy component list to satisfy Mixin checks
     lightpath_cpts = ['dummy']
-    pass
 
 
 class FeeAtt(AttBase, PVPositionerPC, LightpathInOutCptMixin):

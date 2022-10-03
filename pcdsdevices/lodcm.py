@@ -1830,7 +1830,18 @@ Photon Energy: {energy} [keV]
 
 
 class XCSLODCM(LODCM):
-    """ holds lightpath logic for xcs lodcm """
+    """
+    The XCS implementation of a LODCM.  Currently (as of 09/28/2022),
+    the XCS has 3 operating modes:
+
+    1. the 1st crystal of the lodcm is OUT then the beam goes to CXI.
+    2. The diamond crystal is IN then the pink beam goes to CXI while
+        a monochromatic beam can go to XCS at the same time.
+    3. The Silicon crystal is IN in which case monochromatic beam
+        only goes to XCS.
+    """
+    __doc__ += LODCM.__doc__
+
     def calc_lightpath_state(
         self,
         tower1_h1n_state_state: Union[int, str]
@@ -1862,7 +1873,7 @@ class XCSLODCM(LODCM):
             return LightpathState(
                 inserted=True,
                 removed=True,
-                output={self.output_branches[0]: 0}
+                output={'L0': 0}
             )
         # avoid extra get calls in this method
         state_label = self.tower1.h1n_state.get_state(h1n_state).name
@@ -1872,21 +1883,20 @@ class XCSLODCM(LODCM):
             removed = False
             if state_label == 'C':
                 # Diamond crystal, beam is split between outputs
-                output = {self.output_branches[0]: 0.5,
-                          self.output_branches[1]: 0.5}
+                output = {'L0': 0.5, 'L3': 0.5}
             elif state_label == 'Si':
                 # Silicon crystal in, monochromatic beam to XCS
-                output = {self.output_branches[1]: 1}
+                output = {'L3': 1}
         elif state_label == 'OUT':
             # out, straight through to CXI
             inserted = False
             removed = True
-            output = {self.output_branches[0]: 1}
+            output = {'L0': 1}
         else:
             # unknown state blocks
             inserted = False
             removed = False
-            output = {self.output_branches[0]: 0}
+            output = {'L0': 0}
 
         return LightpathState(
             inserted=inserted,
@@ -1896,7 +1906,13 @@ class XCSLODCM(LODCM):
 
 
 class XPPLODCM(LODCM):
-    """ holds lightpath logic for xcs lodcm """
+    """
+    The XPP implementation of a LODCM.  Currently (as of 09/28/2022), the XPP
+    LODCM does not consider differing crystal states.  For now we only consider
+    whether the first crystal is in or out.
+    """
+    __doc__ += LODCM.__doc__
+
     def calc_lightpath_state(
         self,
         tower1_h1n_state_state: Union[int, str]
@@ -1924,19 +1940,19 @@ class XPPLODCM(LODCM):
             return LightpathState(
                 inserted=True,
                 removed=True,
-                output={self.output_branches[0]: 0}
+                output={'L0': 0}
             )
 
         inserted = self.tower1.h1n_state.check_inserted(h1n_state)
         removed = self.tower1.h1n_state.check_removed(h1n_state)
 
         if inserted and not removed:
-            output = {self.output_branches[0]: 0.5,
-                      self.output_branches[1]: 0.5}
+            output = {'L0': 0.5,
+                      'L1': 0.5}
         elif not inserted and removed:
-            output = {self.output_branches[0]: 1}
+            output = {'L0': 1}
         else:
-            output = {self.output_branches[0]: 0}
+            output = {'L0': 0}
 
         return LightpathState(
             inserted=inserted,

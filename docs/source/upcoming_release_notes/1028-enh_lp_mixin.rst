@@ -3,7 +3,7 @@
 
 API Changes
 -----------
-- Converts LightpathMixin to the new Lightpath API, consilodating
+- Converts LightpathMixin to the new Lightpath API, consolodating
   reporting into a single LightpathState Dataclass.  The lightpath
   subscription system has also been simplified by using an AggregateSignal
   to monitor all relevant components.
