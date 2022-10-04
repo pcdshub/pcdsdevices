@@ -513,14 +513,14 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
 
         Parameters
         ----------
-        ranges : List[ List[numeric, numeric] ]
+        ranges : List[List[numeric]]
             A list of ranges.  Each range has a max and min value (exclusive)
         value : numeric
             Value to compare to each range
 
         Returns
         -------
-        List[int]
+        List[bool]
             A list of booleans, reporting if the values is in each range
             in ``ranges``
         """
