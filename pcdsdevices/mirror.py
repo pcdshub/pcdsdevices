@@ -504,7 +504,7 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
             )
 
     def _find_matching_range_indices(
-        ranges: List[List[numeric, numeric]],
+        ranges: List[List[numeric]],
         value: numeric
     ) -> List[bool]:
         """
