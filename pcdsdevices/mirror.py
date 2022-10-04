@@ -510,7 +510,6 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
         """
         Helper function for finding the range a particular value falls into
 
-
         Parameters
         ----------
         ranges : List[List[numeric]]
@@ -521,7 +520,7 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
         Returns
         -------
         List[bool]
-            A list of booleans, reporting if the values is in each range
+            A list of booleans, reporting if the value is in each range
             in ``ranges``
         """
         if len(np.shape(ranges)) < 2:
