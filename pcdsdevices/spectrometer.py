@@ -319,6 +319,8 @@ class TMOSpectrometer(BaseInterface, GroupDevice):
     yag_y = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
     yag_z = Cpt(BeckhoffAxis, ':MMS:08', kind='normal')
     yag_theta = Cpt(BeckhoffAxis, ':MMS:09', kind='normal')
+    lens_pitch = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
+    lens_yaw = Cpt(BeckhoffAxis, ':MMS:11', kind='normal')
 
     # Lightpath constants
     inserted = True
