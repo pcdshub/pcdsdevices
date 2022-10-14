@@ -7,15 +7,15 @@ API Changes
 
 Features
 --------
-- Add two new thorlabs ZST213 into TMOSpectrometer
+- N/A
 
 Device Updates
 --------------
-- Add Thorlabs ZST213
+- Add two new thorlabs ZST213 into TMOSpectrometer, lens_pitch and lens_yaw.
 
 New Devices
 -----------
-- Thorlabs ZST 213 x 2
+- N/A
 
 Bugfixes
 --------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tongju@slac.stanford.edu
+- tongju12
