@@ -16,7 +16,6 @@ from types import MethodType
 from typing import Callable, Dict, Iterator, List, Optional, Union
 
 import ophyd
-import pint
 import prettytable
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -132,6 +131,7 @@ def convert_unit(value, unit, new_unit):
 
     global ureg
     if ureg is None:
+        import pint
         ureg = pint.UnitRegistry()
 
     expr = ureg.parse_expression(unit)

@@ -1,4 +1,4 @@
-1017 cvmi_led
+1057 Enabling slider on LightControl.ui
 #################
 
 API Changes
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- Added LED control PVs to CVMI motion class.
+- N/A
 
 New Devices
 -----------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- N/A
+- Enabling slider on LightControl.ui
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- Mbosum
+- wwright-slac

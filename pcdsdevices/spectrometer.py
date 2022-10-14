@@ -5,7 +5,8 @@ from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
 from .device import GroupDevice
-from .epics_motor import IMS, BeckhoffAxis, BeckhoffAxisNoOffset
+from .epics_motor import (IMS, BeckhoffAxis, BeckhoffAxisNoOffset,
+                          EpicsMotorInterface)
 from .interface import BaseInterface, LightpathMixin
 from .signal import InternalSignal, PytmcSignal
 
@@ -363,3 +364,45 @@ class HXRSpectrometer(BaseInterface, GroupDevice):
     removed = False
     transmission = 1
     SUB_STATE = 'state'
+
+
+class Gen1VonHamosCrystal(BaseInterface, GroupDevice):
+    """Pitch, yaw, and translation motors for control of a single crystal."""
+
+    tab_component_names = True
+
+    pitch = FCpt(EpicsMotorInterface, '{prefix}{_pitch_axis}', kind='normal')
+    yaw = FCpt(EpicsMotorInterface, '{prefix}{_yaw_axis}'  , kind='normal')
+    trans = FCpt(EpicsMotorInterface, '{prefix}{_trans_axis}', kind='normal')
+
+    def __init__(self, prefix, pitch_axis, yaw_axis, trans_axis, **kwargs):
+        self._pitch_axis = pitch_axis
+        self._yaw_axis = yaw_axis
+        self._trans_axis = trans_axis
+        super().__init__(prefix, **kwargs)
+
+
+class Gen1VonHamos4Crystal(BaseInterface, GroupDevice):
+    """
+    Four crystal Von Hamos setup controlled with a Beckhoff PLC.
+
+    This includes three axes for each crystal manipulator, and a common rotation axis.
+    Each of their PVs will be inferred from the base prefix.
+
+    Parameters
+    ----------
+    prefix : str, optional
+        Von Hamos base PV.
+
+    name : str
+        A name to refer to the device.
+    """
+
+    tab_component_names = True
+
+    common_yaw = Cpt(EpicsMotorInterface, ':01', kind='normal', name='Common Rotation')
+
+    cr1 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':02', yaw_axis=':06', pitch_axis=':10' , kind='normal', name='Crystal 1')
+    cr2 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':03', yaw_axis=':07', pitch_axis=':11' , kind='normal', name='Crystal 2')
+    cr3 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':04', yaw_axis=':08', pitch_axis=':12' , kind='normal', name='Crystal 3')
+    cr4 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':05', yaw_axis=':09', pitch_axis=':13' , kind='normal', name='Crystal 4')

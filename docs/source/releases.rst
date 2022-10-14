@@ -1,6 +1,73 @@
 Release History
 ###############
 
+v6.3.0 (2022-07-27)
+===================
+
+Features
+--------
+- Add new module for controlling intensity of LEDs or Fiber-Lites, ``light_control.py``.
+  CvmiLed from cvmi_motion.py has been moved to this new module and renamed to ``LightControl``.
+
+Device Updates
+--------------
+- ``TM2K4`` now has its own class with 5 position states (4 targets and and OUT state)
+- Upgrade ``BeamEnergyRequest`` from ``BaseInterface`` to ``FltMvInterface``
+  to pick up all the move aliases.
+- slits.py: add 'hg', 'ho', 'vg', 'vo' to tab_whitelist in ``SlitsBase``, upon request from the XPP scientists
+- New ``set_zero`` method to ``DelayBase``
+
+New Devices
+-----------
+- ``UsDigitalUsbEncoder`` in ``pcdsdevices.usb_encoder``.
+  This is the EPICS interface for configuring the scale/offset of these encoders that are used in the DAQ.
+
+Maintenance
+-----------
+- Delay the import of ``pint`` so that sessions with no unit conversions can
+  start up 2 seconds faster.
+
+Contributors
+------------
+- mbosum
+- vespos
+- wwright-slac
+- zllentz
+
+
+v6.2.0 (2022-06-20)
+===================
+
+Device Updates
+--------------
+- Add IMS.setup_pmgr as a public API for applications that want to initialize
+  pmgr support before the first device uses it. This was previously private
+  API at IMS._setup_pmgr.
+- Added LED control PVs to CVMI motion class.
+
+New Devices
+-----------
+- Added ItechRfof class: Instrumentation Technologies RF over Fiber unit
+
+Bugfixes
+--------
+- Create the pmgr resources when they are first used rather than on IMS
+  init, saving 3 seconds of startup time for users that don't need
+  pmgr resources.
+
+Maintenance
+-----------
+- Vendor happi.device.Device as LegacyItem instead of importing it, pending
+  deprecation of the happi.device module.
+
+Contributors
+------------
+- Mbosum
+- mcb64
+- slactjohnson
+- wwright-slac
+- zllentz
+
 
 v6.1.0 (2022-06-03)
 ===================
