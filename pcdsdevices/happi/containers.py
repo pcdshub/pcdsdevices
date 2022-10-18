@@ -5,6 +5,7 @@ import re
 import warnings
 from copy import copy, deepcopy
 
+import lightpath.happi.containers as lp_containers
 from happi.item import EntryInfo, HappiItem, OphydItem
 
 
@@ -45,6 +46,22 @@ class LCLSItem(OphydItem):
                           'device classes can occupy the same controller. Can '
                           'be used to tell higher level code how to interpret '
                           'the ioc data.'), optional=True, enforce=str)
+
+
+class LCLSLightpathItem(lp_containers.LightpathItem, LCLSItem):
+    """
+    LCLS version of a LightpathItem.  Since some containers serve both
+    lightpath and non-lightpath devices, make branches and kwargs optional
+
+    The default for branches will be None, and omitted from the kwargs
+    dictionary if its option matches said default of None.
+    """
+    input_branches = copy(lp_containers.LightpathItem.input_branches)
+    input_branches.optional = True
+    input_branches.include_default_as_kwarg = False
+    output_branches = copy(lp_containers.LightpathItem.output_branches)
+    output_branches.optional = True
+    output_branches.include_default_as_kwarg = False
 
 
 class LegacyItem(HappiItem):
@@ -112,7 +129,7 @@ class LegacyItem(HappiItem):
         return self.detailed_screen
 
 
-class Vacuum(LegacyItem):
+class Vacuum(lp_containers.LightpathItem, LegacyItem):
     """
     Parent class for devices in the vacuum system.
     """
@@ -120,7 +137,7 @@ class Vacuum(LegacyItem):
     system.default = 'vacuum'
 
 
-class Diagnostic(LegacyItem):
+class Diagnostic(lp_containers.LightpathItem, LegacyItem):
     """
     Parent class for devices that are used as diagnostics.
     """
@@ -130,7 +147,7 @@ class Diagnostic(LegacyItem):
                      enforce=str)
 
 
-class BeamControl(LegacyItem):
+class BeamControl(lp_containers.LightpathItem, LegacyItem):
     """
     Parent class for devices that control any beam parameter.
     """
@@ -207,9 +224,9 @@ class PIM(Diagnostic):
     prefix = copy(Diagnostic.prefix)
     prefix.enforce = re.compile(r'.*PIM.*')
     prefix_det = EntryInfo("Prefix for associated camera", enforce=str)
-    device_class = copy(LegacyItem.device_class)
+    device_class = copy(Diagnostic.device_class)
     device_class.default = 'pcdsdevices.device_types.PIM'
-    kwargs = deepcopy(LegacyItem.kwargs)
+    kwargs = deepcopy(Diagnostic.kwargs)
     kwargs.default['prefix_det'] = "{{prefix_det}}"
 
 
@@ -243,7 +260,7 @@ class IPM(Diagnostic):
     """
     prefix = copy(Diagnostic.prefix)
     prefix.enforce = re.compile(r'.*IPM.*')
-    device_class = copy(LegacyItem.device_class)
+    device_class = copy(Diagnostic.device_class)
     device_class.default = 'pcdsdevices.device_types.IPM'
 
 
@@ -267,15 +284,15 @@ class Attenuator(BeamControl):
     """
     prefix = copy(BeamControl.prefix)
     prefix.enforce = re.compile(r'.*ATT.*')
-    device_class = copy(LegacyItem.device_class)
+    device_class = copy(BeamControl.device_class)
     device_class.default = 'pcdsdevices.device_types.Attenuator'
     n_filters = EntryInfo("Number of filters on the Attenuator",
                           enforce=int, optional=False)
-    kwargs = deepcopy(LegacyItem.kwargs)
+    kwargs = deepcopy(BeamControl.kwargs)
     kwargs.default['n_filters'] = "{{n_filters}}"
 
 
-class Stopper(LegacyItem):
+class Stopper(lp_containers.LightpathItem, LegacyItem):
     """
     Large devices that prevent beam when it could cause damage to hardware.
 
@@ -318,6 +335,17 @@ class OffsetMirror(BeamControl):
     device_class.default = 'pcdsdevices.device_types.OffsetMirror'
     prefix_xy = EntryInfo("Prefix for X and Y motors", enforce=str)
     xgantry_prefix = EntryInfo("Prefix for the X Gantry", enforce=str)
+
+    # Lightpath relevant settings.  Ranges for various mirror settings
+    pitch_ranges = EntryInfo("valid pitch ranges for each destination",
+                             optional=True, enforce=list,
+                             include_default_as_kwarg=False)
+    x_ranges = EntryInfo("valid x positions, determining insertion",
+                         optional=True, enforce=list,
+                         include_default_as_kwarg=False)
+    y_ranges = EntryInfo("valid y positions, determining coating",
+                         optional=True, enforce=list,
+                         include_default_as_kwarg=False)
 
 
 class PulsePicker(BeamControl):
@@ -363,11 +391,11 @@ class LODCM(BeamControl):
     mono_line : str
         Name of the mono line
     """
-    device_class = copy(LegacyItem.device_class)
+    device_class = copy(BeamControl.device_class)
     device_class.default = 'pcdsdevices.device_types.LODCM'
     mono_line = EntryInfo("Name of the MONO beamline",
                           enforce=str, optional=False)
-    kwargs = deepcopy(LegacyItem.kwargs)
+    kwargs = deepcopy(BeamControl.kwargs)
     kwargs.default.update({'mono_line': '{{mono_line}}',
                            'main_line': '{{beamline}}'})
 
@@ -395,7 +423,7 @@ class MovableStand(LegacyItem):
     system.default = 'changeover'
 
 
-class Motor(LegacyItem):
+class Motor(lp_containers.LightpathItem, LegacyItem):
     """
     A Generic EpicsMotor
     """

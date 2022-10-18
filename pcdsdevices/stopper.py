@@ -1,11 +1,12 @@
 from enum import IntEnum
 
+from lightpath import LightpathState
 from ophyd import Component as Cpt
-from ophyd import Device, EpicsSignal, EpicsSignalRO
+from ophyd import EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 
 from .inout import InOutPositioner, InOutPVStatePositioner
-from .interface import BaseInterface, LightpathMixin
+from .interface import BaseInterface, LightpathInOutMixin, LightpathMixin
 
 
 class Commands(IntEnum):
@@ -14,7 +15,7 @@ class Commands(IntEnum):
     open_valve = 1
 
 
-class Stopper(InOutPVStatePositioner):
+class Stopper(InOutPVStatePositioner, LightpathInOutMixin):
     """
     Controls Stopper.
 
@@ -76,7 +77,7 @@ class Stopper(InOutPVStatePositioner):
         return self.insert(**kwargs)
 
 
-class PPSStopper(InOutPositioner):
+class PPSStopper(InOutPositioner, LightpathInOutMixin):
     """
     PPS Stopper.
 
@@ -121,7 +122,7 @@ class PPSStopper(InOutPositioner):
         raise PermissionError("PPSStopper can not be commanded via EPICS")
 
 
-class PPSStopper2PV(LightpathMixin, BaseInterface, Device):
+class PPSStopper2PV(BaseInterface, LightpathMixin):
     """
     PPS Stopper with two PVs defining the state together.
 
@@ -172,11 +173,19 @@ class PPSStopper2PV(LightpathMixin, BaseInterface, Device):
         self.out_value = out_value
         super().__init__(prefix, **kwargs)
 
-    def _set_lightpath_states(self, lightpath_values):
-        self._inserted = (lightpath_values[self.in_signal]['value']
-                          == self.in_value)
-        self._removed = (lightpath_values[self.out_signal]['value']
-                         == self.out_value)
+    def calc_lightpath_state(
+        self, in_signal: int, out_signal: int
+    ) -> LightpathState:
+        self._inserted = (in_signal == self.in_value)
+        self._removed = (out_signal == self.out_value)
+
+        transmission = 0. if self._inserted else 1.0
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: transmission}
+        )
 
 
 PPSStopperL2SI = PPSStopper2PV

@@ -1,6 +1,7 @@
 """
 Module for the various spectrometers.
 """
+from lightpath import LightpathState
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
@@ -81,21 +82,25 @@ class Kmono(BaseInterface, GroupDevice, LightpathMixin):
             removed = value > 96.5
             self._update_state(inserted, removed, 'diode')
 
-    def _set_lightpath_states(self, lightpath_values):
-        xtal_in = lightpath_values[self.xtal_in]['value']
-        xtal_out = lightpath_values[self.xtal_out]['value']
-        ret_in = lightpath_values[self.ret_in]['value']
-        ret_out = lightpath_values[self.ret_out]['value']
-        diode_in = lightpath_values[self.diode_in]['value']
-        diode_out = lightpath_values[self.diode_out]['value']
-
+    def calc_lightpath_state(
+        self,
+        xtal_in: bool,
+        xtal_out: bool,
+        ret_in: bool,
+        ret_out: bool,
+        diode_in: bool,
+        diode_out: bool
+    ) -> LightpathState:
         self._inserted = any((xtal_in, ret_in, diode_in))
         self._removed = all((xtal_out, ret_out, diode_out))
 
-        if ret_in:
-            self._transmission = 0
-        else:
-            self._transmission = 1
+        self._transmission = 0. if ret_in else 1.
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: self._transmission}
+        )
 
 
 class VonHamosCrystal(BaseInterface, GroupDevice):
@@ -212,7 +217,7 @@ class VonHamos4Crystal(VonHamosFE):
                          prefix_energy=prefix_energy, **kwargs)
 
 
-class Mono(BaseInterface, GroupDevice):
+class Mono(BaseInterface, GroupDevice, LightpathMixin):
     """
     L2S-I NEH 2.X Monochromator
 
@@ -290,8 +295,18 @@ class Mono(BaseInterface, GroupDevice):
     transmission = 1
     SUB_STATE = 'state'
 
+    # dummy component, state is always the same
+    lightpath_cpts = ['m_pi.user_readback']
 
-class TMOSpectrometer(BaseInterface, GroupDevice):
+    def calc_lightpath_state(self, **kwargs) -> LightpathState:
+        return LightpathState(
+            inserted=True,
+            removed=False,
+            output={self.output_branches[0]: 1}
+        )
+
+
+class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     """
     TMO Fresnel Photon Spectrometer Motion components class.
 
@@ -328,8 +343,19 @@ class TMOSpectrometer(BaseInterface, GroupDevice):
     transmission = 1
     SUB_STATE = 'state'
 
+    # dummy signal, state is always the same
+    lightpath_cpts = ['yag_x.user_readback']
 
-class HXRSpectrometer(BaseInterface, GroupDevice):
+    def calc_lightpath_state(self, **kwargs) -> LightpathState:
+        # TODO: get real logic here, instead of legacy hard-coding
+        return LightpathState(
+            inserted=True,
+            removed=False,
+            output={self.output_branches[0]: 1}
+        )
+
+
+class HXRSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     """
     HXR Single Shot Spectrometer motion components class.
 
@@ -364,6 +390,16 @@ class HXRSpectrometer(BaseInterface, GroupDevice):
     removed = False
     transmission = 1
     SUB_STATE = 'state'
+
+    # dummy signal, state is always the same
+    lightpath_cpts = ['xtaly.user_readback']
+
+    def calc_lightpath_state(self, **kwargs) -> LightpathState:
+        return LightpathState(
+            inserted=True,
+            removed=False,
+            output={self.output_branches[0]: 1}
+        )
 
 
 class Gen1VonHamosCrystal(BaseInterface, GroupDevice):

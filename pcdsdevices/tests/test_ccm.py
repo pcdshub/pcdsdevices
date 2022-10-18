@@ -67,7 +67,8 @@ def make_fake_ccm():
                        x_down_prefix='X:DOWN', x_up_prefix='X:UP',
                        y_down_prefix='Y:DOWN', y_up_north_prefix='Y:UP:NORTH',
                        y_up_south_prefix='Y:UP:SOUTH', in_pos=8, out_pos=0,
-                       name='fake_ccm')
+                       name='fake_ccm',
+                       input_branches=['X0'], output_branches=['X0'])
 
     def init_pos(mot, pos=0):
         mot.user_readback.sim_put(0)

@@ -9,6 +9,8 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO
 from ophyd.status import SubscriptionStatus
 from ophyd.status import wait as status_wait
 
+from pcdsdevices.interface import LightpathInOutMixin
+
 from .device import GroupDevice
 from .doc_stubs import basic_positioner_init
 from .inout import InOutPVStatePositioner, InOutRecordPositioner
@@ -16,7 +18,7 @@ from .inout import InOutPVStatePositioner, InOutRecordPositioner
 logger = logging.getLogger(__name__)
 
 
-class PulsePicker(InOutPVStatePositioner):
+class PulsePicker(InOutPVStatePositioner, LightpathInOutMixin):
     """
     Device that picks which pulses to let through.
 

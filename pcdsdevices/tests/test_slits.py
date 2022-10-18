@@ -12,7 +12,8 @@ logger = logging.getLogger(__name__)
 @pytest.fixture(scope='function')
 def fake_slits():
     FakeSlits = make_fake_device(LusiSlits)
-    slits = FakeSlits("TST:JAWS:", name='Test Slits')
+    slits = FakeSlits("TST:JAWS:", name='Test Slits',
+                      input_branches=['X0'], output_branches=['X0'])
     # Set centers
     slits.xcenter.readback.sim_put(0.0)
     slits.ycenter.readback.sim_put(0.0)
@@ -28,7 +29,8 @@ def fake_slits():
 @pytest.fixture(scope='function')
 def fake_beckhoff_slits():
     FakeBeckhoffSlits = make_fake_device(BeckhoffSlits)
-    slits = FakeBeckhoffSlits('TST:BKSLITS', name='test_slits')
+    slits = FakeBeckhoffSlits('TST:BKSLITS', name='test_slits',
+                              input_branches=['X0'], output_branches=['X0'])
     return slits
 
 
@@ -94,7 +96,7 @@ def test_slit_subscriptions(fake_slits):
     slits = fake_slits
     # Subscribe a pseudo callback
     cb = Mock()
-    slits.subscribe(cb, event_type=slits.SUB_STATE, run=False)
+    slits.xwidth.subscribe(cb, run=False)
     # Change the aperture size
     slits.xwidth.readback.sim_put(40.0)
     assert cb.called
