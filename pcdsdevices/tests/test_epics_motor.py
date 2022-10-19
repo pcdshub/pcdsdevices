@@ -1,3 +1,4 @@
+import itertools
 import logging
 
 import pytest
@@ -6,6 +7,7 @@ from bluesky.plan_stubs import close_run, open_run, stage, unstage
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
 from ophyd.utils.epics_pvs import AlarmSeverity, AlarmStatus
+from ophyd.utils.errors import LimitError
 
 from ..epics_motor import (IMS, MMC100, PMC100, BeckhoffAxis, EpicsMotor,
                            EpicsMotorInterface, Motor, MotorDisabledError,
@@ -20,6 +22,12 @@ def fake_class_setup(cls):
     Make the fake class and modify if needed
     """
     FakeClass = make_fake_device(cls)
+    # Recover subscription decorator behavior on motor class
+    for name, cpt in FakeClass._sig_attrs.items():
+        source_cpt = getattr(FakeClass.mro()[1], name)
+        cpt._subscriptions.update(
+            source_cpt._subscriptions
+        )
     return FakeClass
 
 
@@ -175,6 +183,32 @@ def test_clearing_limits(fake_epics_motor):
     m.clear_limits()
     assert m.get_low_limit() == 0
     assert m.get_high_limit() == 0
+
+
+def test_limits_update_from_epics(fake_epics_motor: EpicsMotorInterface):
+    mot = fake_epics_motor
+    for low, high in (
+        (-10, 10),
+        (-100, 100),
+        (0, 100),
+        (-100, 0),
+    ):
+        mot.high_limit_travel.put(high)
+        mot.low_limit_travel.put(low)
+        for num in range(low + 1, high):
+            mot.check_value(num)
+        for num in itertools.chain(
+            range(low - 10, low),
+            range(high + 1, high + 10),
+        ):
+            with pytest.raises(LimitError):
+                mot.check_value(num)
+                # debug only hit if the check_value doesn't raise
+                logger.debug(f'{low} < {num} < {high}')
+                logger.debug(f'limits are {mot.limits}')
+                logger.debug(f'LLM={mot.low_limit_travel.get()}')
+                logger.debug(f'HLM={mot.high_limit_travel.get()}')
+                logger.debug(f'md={mot.user_setpoint.metadata}')
 
 
 def test_epics_motor_tdir(fake_pcds_motor):

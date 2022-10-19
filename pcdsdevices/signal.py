@@ -1510,7 +1510,7 @@ EpicsSignalROEditMD.__doc__ = (
 )
 
 
-class FakeEpicsSignalEditMD(FakeEpicsSignal):
+class FakeEpicsSignalEditMD(SignalEditMD, FakeEpicsSignal):
     """
     API stand-in for EpicsSignalEditMD
     Add to this if you need it to actually work for your test.
@@ -1534,36 +1534,26 @@ class FakeEpicsSignalEditMD(FakeEpicsSignal):
     def enum_strs(self):
         return self._enum_attrs or self._enum_strs or None
 
-    def _override_metadata(self, **kwargs):
-        ...
+    @property
+    def limits(self) -> tuple[numbers.Real, numbers.Real]:
+        """
+        Override limits because EpicsSignalEditMD overrides the limits.
+
+        If defined in the test, do it like in the real EpicsSignalEditMD.
+        Otherwise, be permissive to avoid false test failures.
+        """
+        lower = self.metadata['lower_ctrl_limit']
+        upper = self.metadata['upper_ctrl_limit']
+        if None in (lower, upper):
+            return (0, 0)
+        else:
+            return (lower, upper)
 
 
-class FakeEpicsSignalROEditMD(FakeEpicsSignalRO):
+class FakeEpicsSignalROEditMD(FakeEpicsSignalEditMD, FakeEpicsSignalRO):
     """
     API stand-in for EpicsSignalROEditMD
-    Add to this if you need it to actually work for your test.
     """
-    def __init__(
-        self,
-        *args,
-        enum_attrs: Optional[list[Optional[str]]] = None,
-        enum_strs: Optional[list[str]] = None,
-        **kwargs
-    ):
-        super().__init__(*args, **kwargs)
-        self._enum_attrs = enum_attrs
-        self._enum_strs = enum_strs
-
-    @property
-    def enum_attrs(self):
-        return self._enum_attrs
-
-    @property
-    def enum_strs(self):
-        return self._enum_attrs or self._enum_strs or None
-
-    def _override_metadata(self, **kwargs):
-        ...
 
 
 fake_device_cache[EpicsSignalEditMD] = FakeEpicsSignalEditMD
