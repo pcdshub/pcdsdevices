@@ -1,11 +1,9 @@
 1062 mnt_lp_branch_property
-#################
+###########################
 
 API Changes
 -----------
-- ``input_branches`` and ``output_branches`` are no longer required
-  for ``LightpathMixin``.  ``LightpathMixin`` will attempt to grab
-  this information from the ``md`` namespace attached by happi.
+- N/A
 
 Features
 --------
@@ -25,7 +23,9 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- ``input_branches`` and ``output_branches`` are no longer required
+  for ``LightpathMixin``.  ``LightpathMixin`` will attempt to grab
+  this information from the ``md`` namespace attached by happi.A
 
 Contributors
 ------------
