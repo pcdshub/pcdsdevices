@@ -1022,8 +1022,8 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
 
         Compares the x position with the saved in and out values.
         """
-        self._inserted = np.isclose(x_up, self._in_pos)
-        self._removed = np.isclose(x_up, self._out_pos)
+        self._inserted = bool(np.isclose(x_up, self._in_pos))
+        self._removed = bool(np.isclose(x_up, self._out_pos))
         if self._removed:
             self._transmission = 1
         else:
