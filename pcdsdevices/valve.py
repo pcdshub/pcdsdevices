@@ -537,11 +537,11 @@ class VVCNO(Device):
         kind='normal',
         doc='Epics command to close valve'
     )
-    close_override = Cpt(
+    override_force_close = Cpt(
         EpicsSignalWithRBV,
         ':FORCE_CLS',
         kind='omitted',
-        doc=('Epics Command for open the valve in override '
+        doc=('Epics Command for close the valve in override '
              'mode')
     )
     override_on = Cpt(
@@ -562,6 +562,13 @@ class VVCNO(Device):
         kind='normal',
         doc='PLC Output to close valve'
     )
+
+    @property
+    def close_override(self):
+        """
+        Fixes potential API breaks with old name
+        """
+        return self.override_force_close
 
 
 class VRCNO(VVCNO, LightpathMixin):
