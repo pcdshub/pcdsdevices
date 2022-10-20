@@ -1767,28 +1767,6 @@ class LightpathMixin(Device):
         self.get_lightpath_state(use_cache=False)
 
     @property
-    def input_branches(self):
-        """
-        return input_branches from happi metadata, unless provided at init
-        """
-        md = getattr(self, 'md', None)
-        if md:
-            return md.get('input_branches')
-        else:
-            return getattr(self, '_input_branches')
-
-    @property
-    def output_branches(self):
-        """
-        return output_branches from happi metadata, unless provided at init
-        """
-        md = getattr(self, 'md', None)
-        if md:
-            return md.get('output_branches')
-        else:
-            return getattr(self, '_output_branches')
-
-    @property
     def md(self):
         if self._md is None:
             raise AttributeError('Device does not have an attached md, '
@@ -1799,6 +1777,8 @@ class LightpathMixin(Device):
     def md(self, new_md):
         """ initialize lightpath when md is set """
         self._md = new_md
+        self.input_branches = self.md.input_branches
+        self.output_branches = self.md.output_branches
         self._init_summary_signal()
 
 
