@@ -1,10 +1,11 @@
 """
 Module for LCLS's special motor records.
 """
+import functools
 import logging
 import shutil
 import subprocess
-from typing import ClassVar, Optional
+from typing import Callable, ClassVar, Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -995,6 +996,90 @@ class BeckhoffAxis(EpicsMotorInterface):
     home_forward = None
     home_reverse = None
 
+    def move(
+        self,
+        position: float,
+        moved_cb: Optional[Callable] = None,
+        timeout: Optional[bool] = None,
+        wait: bool = True,
+    ) -> MoveStatus:
+        """
+        Move to a specified position.
+
+        This is a full re-implementation of move for custom error handling.
+        Unlike EpicsMotor's move, the move status will be set to the
+        Beckhoff error message. The move will be marked as successful
+        otherwise.
+
+        Possibly this was unnecessary with an ophyd PR to allow me to
+        customize the error handling, but without that this seems like
+        the easiest way to sidestep the status._finished call and ignore
+        the error logic in _move_changed.
+
+        See EpicsMotor and PositionerBase for more.
+        """
+        # From EpicsMotor.move until next comment
+        self._started_moving = False
+
+        # From PositionerBase.move until next comment
+        if timeout is None:
+            timeout = self._timeout
+
+        self.check_value(position)
+
+        self._run_subs(sub_type=self._SUB_REQ_DONE, success=False)
+        self._reset_sub(self._SUB_REQ_DONE)
+
+        status = MoveStatus(
+            self, position, timeout=timeout, settle_time=self._settle_time
+        )
+
+        if moved_cb is not None:
+            status.add_callback(functools.partial(moved_cb, obj=self))
+            # the status object will run this callback when finished
+
+        # Custom for BeckhoffAxis
+        self.subscribe(
+            functools.partial(self._end_move_cb, status),
+            event_type=self._SUB_REQ_DONE,
+            run=False,
+        )
+
+        # From EpicsMotor.move through the end
+        self.user_setpoint.put(position, wait=False)
+        try:
+            if wait:
+                status_wait(status)
+        except KeyboardInterrupt:
+            self.stop()
+            raise
+
+        return status
+
+    def _end_move_cb(self, status: MoveStatus, **kwargs) -> None:
+        """
+        Special end of move handling to set the status for BeckhoffAxis.
+
+        If the BeckhoffAxis has an error message, include it and mark failure.
+        Otherwise, set success.
+
+        Parameters
+        ----------
+        status : MoveStatus
+            The status that we need to update.
+        """
+        error_message = self.plc.status.get()
+        if error_message:
+            error_code = self.plc.err_code.get()
+            if error_code > 0:
+                error_message = f"{hex(error_code)}: {error_message}"
+                exc = NCError(error_message)
+            else:
+                exc = RuntimeError(error_message)
+            status.set_exception(exc)
+        else:
+            status.set_finished()
+
     def clear_error(self):
         """Clear any active motion errors on this axis."""
         self.plc.cmd_err_reset.put(1)
@@ -1037,6 +1122,13 @@ class BeckhoffAxis(EpicsMotorInterface):
             raise
 
         return status
+
+
+class NCError(RuntimeError):
+    """
+    An error source from the beckhoff NC error table.
+    """
+    ...
 
 
 class BeckhoffAxisPLC_Pre140(BeckhoffAxisPLC):
