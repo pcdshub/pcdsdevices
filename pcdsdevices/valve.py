@@ -96,6 +96,12 @@ class ValveBase(Device):
     PVs that are omitted in VCGLegacy are instead put in the VVC class.
     """
 
+    valve_position = Cpt(
+        EpicsSignalRO,
+        ':POS_STATE_RBV',
+        kind='hinted',
+        doc='Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F'
+    )
     open_command = Cpt(
         EpicsSignalWithRBV,
         ':OPN_SW',
