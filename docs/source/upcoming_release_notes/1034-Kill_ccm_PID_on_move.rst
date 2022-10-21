@@ -3,8 +3,8 @@
 
 API Changes
 -----------
-Overwrite default move method for the CCMEnergy class to kill the PID loop at the end of each move (default)
-This should prevent the piezo motor from heating up and breaking vacuum or frying itself.
+- Overwrite default move method for the CCMEnergy class to kill the PID loop at the end of each move (default)
+  This should prevent the piezo motor from heating up and breaking vacuum or frying itself.
 
 Features
 --------
@@ -28,4 +28,4 @@ Maintenance
 
 Contributors
 ------------
-espov
+- espov
