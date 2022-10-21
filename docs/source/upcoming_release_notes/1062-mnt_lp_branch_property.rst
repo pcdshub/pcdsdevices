@@ -23,9 +23,9 @@ Bugfixes
 
 Maintenance
 -----------
-- ``input_branches`` and ``output_branches`` are no longer required
+- ``input_branches`` and ``output_branches`` keyword arguments are no longer required
   for ``LightpathMixin``.  ``LightpathMixin`` will attempt to grab
-  this information from the ``md`` namespace attached by happi.A
+  this information from the ``md`` namespace attached by happi.
 
 Contributors
 ------------
