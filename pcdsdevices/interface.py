@@ -1692,21 +1692,26 @@ class LightpathMixin(Device):
                  input_branches=[], output_branches=[], **kwargs):
         self._lightpath_ready = False
         self._retry_lightpath = False
+        self._summary_initialized = False
         self._cached_state = None
-        self.input_branches = input_branches
-        self.output_branches = output_branches
+        self._md = None
 
         super().__init__(*args, **kwargs)
 
-        if self.input_branches and self.output_branches:
+        if input_branches and output_branches:
+            self.input_branches = input_branches
+            self.output_branches = output_branches
             self._init_summary_signal()
 
     def _init_summary_signal(self) -> None:
-        for sig in self.lightpath_cpts:
-            self.lightpath_summary.add_signal_by_attr_name(sig)
+        if self.lightpath_cpts and not self._summary_initialized:
+            for sig in self.lightpath_cpts:
+                self.lightpath_summary.add_signal_by_attr_name(sig)
 
-        self.lightpath_summary.subscribe(self._calc_cache_lightpath_state,
-                                         run=False)
+            self.lightpath_summary.subscribe(self._calc_cache_lightpath_state,
+                                             run=False)
+
+            self._summary_initialized = True
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
@@ -1763,6 +1768,21 @@ class LightpathMixin(Device):
         Intended for use as a callback subscribed to lightpath_summary
         """
         self.get_lightpath_state(use_cache=False)
+
+    @property
+    def md(self):
+        if self._md is None:
+            raise AttributeError('Device does not have an attached md, '
+                                 'and was likely not initialized from happi')
+        return self._md
+
+    @md.setter
+    def md(self, new_md):
+        """ initialize lightpath when md is set """
+        self._md = new_md
+        self.input_branches = self.md.input_branches
+        self.output_branches = self.md.output_branches
+        self._init_summary_signal()
 
 
 class LightpathInOutMixin(LightpathMixin):
