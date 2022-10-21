@@ -1698,8 +1698,8 @@ class LightpathMixin(Device):
         super().__init__(*args, **kwargs)
 
         if input_branches and output_branches:
-            self._input_branches = input_branches
-            self._output_branches = output_branches
+            self.input_branches = input_branches
+            self.output_branches = output_branches
             self._init_summary_signal()
 
     def _init_summary_signal(self) -> None:
