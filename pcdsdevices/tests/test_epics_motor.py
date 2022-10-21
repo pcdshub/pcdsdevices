@@ -5,6 +5,7 @@ import pytest
 from bluesky import RunEngine
 from bluesky.plan_stubs import close_run, open_run, stage, unstage
 from ophyd.sim import make_fake_device
+from ophyd.status import MoveStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils.epics_pvs import AlarmSeverity, AlarmStatus
 from ophyd.utils.errors import LimitError
@@ -315,6 +316,64 @@ def test_beckhoff_error_clear(fake_beckhoff):
     assert m.plc.cmd_err_reset.get() == 1
     m.stage()
     m.unstage()
+
+
+def test_beckhoff_error_status(fake_beckhoff: BeckhoffAxis):
+    # Helper
+    def sim_move(dest: float, error: str = '', code: int = 0) -> MoveStatus:
+        status = fake_beckhoff.move(dest, wait=False)
+        assert fake_beckhoff.user_setpoint.get() == dest
+        fake_beckhoff.motor_done_move.sim_put(0)
+        fake_beckhoff.user_readback.sim_put(dest)
+        fake_beckhoff.plc.status.sim_put(error)
+        fake_beckhoff.plc.err_code.sim_put(code)
+        fake_beckhoff.motor_done_move.sim_put(1)
+        return status
+
+    # Known starting configuration
+    fake_beckhoff.user_readback.sim_put(0)
+    fake_beckhoff.user_setpoint.sim_put(0)
+    fake_beckhoff.plc.status.sim_put("")
+    fake_beckhoff.plc.err_code.sim_put(0)
+    fake_beckhoff.motor_done_move.sim_put(1)
+    fake_beckhoff.direction_of_travel.sim_put(0)
+    fake_beckhoff.low_limit_switch.sim_put(0)
+    fake_beckhoff.high_limit_switch.sim_put(0)
+    fake_beckhoff.user_readback.alarm_severity = AlarmSeverity.NO_ALARM
+    fake_beckhoff.user_readback.alarm_status = AlarmStatus.NO_ALARM
+
+    # No error normal case
+    status = sim_move(dest=1)
+    status.wait(timeout=1)
+
+    # No error from cases that would be error in EpicsMotor
+    # Limit switch case
+    fake_beckhoff.low_limit_switch.sim_put(1)
+    status = sim_move(dest=-2)
+    status.wait(timeout=1)
+    fake_beckhoff.low_limit_switch.sim_put(0)
+    # Alarm severity case
+    fake_beckhoff.user_readback.alarm_severity = AlarmSeverity.MAJOR
+    status = sim_move(dest=3)
+    status.wait(timeout=1)
+    fake_beckhoff.user_readback.alarm_severity = AlarmSeverity.NO_ALARM
+
+    # Yes error, message preserved
+    msg = 'test_error'
+    status = sim_move(dest=4, error=msg)
+    with pytest.raises(RuntimeError):
+        status.wait(timeout=1)
+    status_msg = status.exception().args[0]
+    assert status_msg == msg
+
+    # Yes error, message and error code preserved
+    code = 17056  # Real error code 0x42a0
+    status = sim_move(dest=5, error=msg, code=code)
+    with pytest.raises(RuntimeError):
+        status.wait(timeout=1)
+    status_msg = status.exception().args[0]
+    assert status_msg in status_msg
+    assert hex(code) in status_msg
 
 
 def test_motor_factory():
