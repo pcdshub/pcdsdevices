@@ -17,6 +17,13 @@ API Changes
 
 Features
 --------
+- Made ``LCLSItem`` fully ``lightpath``-compatible, to maintain backcompatibility
+  of happi db, as well as added happi containers that work with the new ``lightpath`` interface.
+  These containers allow ``input_branches`` and ``output_branches``
+  to be optional kwargs.  This lets these containers work with devices
+  that both do and do not implement the ``lightpath`` interface.
+  In a future release the extra containers may be removed and should
+  not be considered a permanent API.
 - Added LightControl.ui screen for controlling fiber-lites.
 - Added useful qmini embedded screen that's been active in dev for over a year.
 
@@ -33,7 +40,7 @@ Device Updates
   convenient for scanning the delay in nanoseconds.
 - Added the missing ``valve_position`` signal to ``ValveBase``,
   making it available for all valve classes. This contains the valve's state,
-  e.g. "OPEN", "CLOSED", "MOVING", "INVALID"
+  e.g. "OPEN", "CLOSED", "MOVING", "INVALID".
 - Made devices that use ``PVStateSignal`` like ``GateValve``
   and ``PulsePicker`` report their enum states and write permissions
   in subscriptions for applications like ``typhos`` and ``lightpath``.
@@ -43,15 +50,17 @@ Device Updates
   ``pcdsdevices.laser.btms_config`` which has utilities to represent the state
   of the BTS in a control system independent way and allows for motion
   verification and other sanity checks.
-- Added ``Gen1VonHamos4Crystal`` and ``Gen1VonHamosCrystal`` to the ``spectrometer`` module to support the pre-ADS 4 crystal VonHamos.
 - Added two new thorlabs ZST213 into ``TMOSpectrometer``, ``lens_pitch`` and ``lens_yaw``.
+- Renamed the valve signal named ``close_override`` to ``override_force_close``
+  for consistency with ``override_force_open``, which is the corresponding "open" signal.
 
 New Devices
 -----------
-- Added ``RohdeSchwarzPowerSupply`` class for controlling the Rohde Schwarz NGP800 power supply series
-- Added ``pcdsdevices.laser.btps.BtpsVGC`` a variant of the VGC class that includes
-  ``valve_position``.
+- Added ``RohdeSchwarzPowerSupply`` class for controlling the Rohde Schwarz NGP800 power supply series.
+- Added ``pcdsdevices.laser.btps.BtpsVGC`` a variant of the VGC class that included
+  ``valve_position`` prior to this being added in ``ValveBase``.
 - Added ``HPI6030`` in radiation.py, a device for reading out 6030 radiation data.
+- Added ``Gen1VonHamos4Crystal`` and ``Gen1VonHamosCrystal`` to the ``spectrometer`` module to support the pre-ADS 4 crystal VonHamos.
 
 Bugfixes
 --------
@@ -60,24 +69,12 @@ Bugfixes
 - Fixed an issue where the ``UpdateComponent`` was incompatible with
   subscription decorators.
 - Fixed PV typos in the ``BeckhoffSlits`` and ``PowerSlits`` typhos ui templates.
-- Enabled the slider on LightControl.ui
 
 Maintenance
 -----------
-- Added happi containers that work with the new Lightpath interface.
-  Notably, these containers allow input_branches and output_branches
-  to be optional kwargs.  This lets these containers work with devices
-  that both do and do not implement the Lightpath interface.
 - Made some of the test motor simulations slightly more accurate.
 - Mark ``test_presets`` as xfail because it has a race condition that is
   slowing down our development.
-- Renamed the valve signal named ``close_override`` to ``override_force_close``
-  for consistency with ``override_force_open``, which is the corresponding "open" signal.
-- ``input_branches`` and ``output_branches`` keyword arguments are no longer required
-  for ``LightpathMixin``.  ``LightpathMixin`` will attempt to grab
-  this information from the ``md`` namespace attached by happi.
-- Made ``LCLSItem`` fully lightpath-compatible, to maintain backcompatibility
-  of happi db.
 
 Contributors
 ------------
