@@ -79,12 +79,12 @@ Maintenance
 Contributors
 ------------
 - christina-pino
-- espov
 - jortiz-slac
 - klauer
 - nrwslac
 - tangkong
 - tongju12
+- vespos
 - wwright-slac
 - zllentz
 
