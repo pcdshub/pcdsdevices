@@ -1692,6 +1692,7 @@ class LightpathMixin(Device):
                  input_branches=[], output_branches=[], **kwargs):
         self._lightpath_ready = False
         self._retry_lightpath = False
+        self._summary_initialized = False
         self._cached_state = None
         self._md = None
 
@@ -1703,12 +1704,14 @@ class LightpathMixin(Device):
             self._init_summary_signal()
 
     def _init_summary_signal(self) -> None:
-        if self.lightpath_cpts:
+        if self.lightpath_cpts and not self._summary_initialized:
             for sig in self.lightpath_cpts:
                 self.lightpath_summary.add_signal_by_attr_name(sig)
 
             self.lightpath_summary.subscribe(self._calc_cache_lightpath_state,
                                              run=False)
+
+            self._summary_initialized = True
 
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
