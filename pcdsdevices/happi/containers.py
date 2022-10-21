@@ -28,6 +28,12 @@ class LCLSItem(OphydItem):
                       enforce=re.compile(r'[A-Z0-9]{3}$|[A-Z][0-9]S[0-9]{2}$'))
     lightpath = EntryInfo("If the device should be included in the "
                           "LCLS Lightpath", enforce=bool, default=False)
+    input_branches = EntryInfo(('List of branches the device can receive '
+                                'beam from.'),
+                               optional=True, enforce=list)
+    output_branches = EntryInfo(('List of branches the device can deliver '
+                                'beam to.'),
+                                optional=True, enforce=list)
     ioc_engineer = EntryInfo(('Engineer for the IOC. Used to build IOC '
                              'configs.'),
                              optional=True, enforce=str)
