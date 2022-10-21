@@ -54,6 +54,8 @@ class Stopper(InOutPVStatePositioner, LightpathInOutMixin):
                                    1: 'OUT'},
                     'closed_limit': {0: 'defer',
                                      1: 'IN'}}
+    _state_logic_set_ref = 'command'
+
     # QIcon for UX
     _icon = 'fa.times-circle'
 

@@ -45,6 +45,7 @@ class PulsePicker(InOutPVStatePositioner, LightpathInOutMixin):
     _state_logic = {'blade': {0: 'OPEN',
                               1: 'CLOSED',
                               2: 'CLOSED'}}
+    _state_logic_set_ref = 'cmd_open'
     # QIcon for UX
     _icon = 'fa.compass'
 
