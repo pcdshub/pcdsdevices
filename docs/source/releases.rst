@@ -1,6 +1,94 @@
 Release History
 ###############
 
+
+v7.0.0 (2022-10-21)
+===================
+
+API Changes
+-----------
+- Now compatible with and expecting ``lightpath`` ``v1.0.0`` for ``lightpath`` support.
+- Converted ``LightpathMixin`` to the new ``lightpath`` API, consolodating
+  reporting into a single ``LightpathState`` Dataclass.  The ``lightpath``
+  subscription system has also been simplified by using an ``AggregateSignal``
+  to monitor all relevant components.
+- Overwrote the default move method for the ``CCMEnergy`` class to kill the PID loop at the end of each move (default).
+  This should prevent the piezo motor from heating up and breaking vacuum or frying itself.
+
+Features
+--------
+- Made ``LCLSItem`` fully ``lightpath``-compatible, to maintain backcompatibility
+  of happi db, as well as added happi containers that work with the new ``lightpath`` interface.
+  These containers allow ``input_branches`` and ``output_branches``
+  to be optional kwargs.  This lets these containers work with devices
+  that both do and do not implement the ``lightpath`` interface.
+  In a future release the extra containers may be removed and should
+  not be considered a permanent API.
+- Added LightControl.ui screen for controlling fiber-lites.
+- Added useful qmini embedded screen that's been active in dev for over a year.
+
+Device Updates
+--------------
+- Updated ``LightpathMixin`` implementation to the new API for all
+  existing ``lightpath``-active devices.  This includes but is not limited to:
+
+  - Mirrors
+  - LODCMs
+  - Attenuators
+
+- Added an ``ns_delay_scan motor`` to the evr ``Trigger`` class that is
+  convenient for scanning the delay in nanoseconds.
+- Added the missing ``valve_position`` signal to ``ValveBase``,
+  making it available for all valve classes. This contains the valve's state,
+  e.g. "OPEN", "CLOSED", "MOVING", "INVALID".
+- Made devices that use ``PVStateSignal`` like ``GateValve``
+  and ``PulsePicker`` report their enum states and write permissions
+  in subscriptions for applications like ``typhos`` and ``lightpath``.
+- Updated ``pcdsdevices.laser.btps`` device classes following a PV rename.
+- Updated ``pcdsdevices.laser.btps`` device classes to support the Laser Beam
+  Transport Motion System (BTMS).  In addition, this includes a module
+  ``pcdsdevices.laser.btms_config`` which has utilities to represent the state
+  of the BTS in a control system independent way and allows for motion
+  verification and other sanity checks.
+- Added two new thorlabs ZST213 into ``TMOSpectrometer``, ``lens_pitch`` and ``lens_yaw``.
+- Renamed the valve signal named ``close_override`` to ``override_force_close``
+  for consistency with ``override_force_open``, which is the corresponding "open" signal.
+
+New Devices
+-----------
+- Added ``RohdeSchwarzPowerSupply`` class for controlling the Rohde Schwarz NGP800 power supply series.
+- Added ``pcdsdevices.laser.btps.BtpsVGC`` a variant of the VGC class that included
+  ``valve_position`` prior to this being added in ``ValveBase``.
+- Added ``HPI6030`` in radiation.py, a device for reading out 6030 radiation data.
+- Added ``Gen1VonHamos4Crystal`` and ``Gen1VonHamosCrystal`` to the ``spectrometer`` module to support the pre-ADS 4 crystal VonHamos.
+
+Bugfixes
+--------
+- Fixed an issue where various types of motors could have inconsistent
+  limits metadata when the IOC or gateway doesn't behave as expected.
+- Fixed an issue where the ``UpdateComponent`` was incompatible with
+  subscription decorators.
+- Fixed PV typos in the ``BeckhoffSlits`` and ``PowerSlits`` typhos ui templates.
+
+Maintenance
+-----------
+- Made some of the test motor simulations slightly more accurate.
+- Mark ``test_presets`` as xfail because it has a race condition that is
+  slowing down our development.
+
+Contributors
+------------
+- christina-pino
+- jortiz-slac
+- klauer
+- nrwslac
+- tangkong
+- tongju12
+- vespos
+- wwright-slac
+- zllentz
+
+
 v6.3.0 (2022-07-27)
 ===================
 
