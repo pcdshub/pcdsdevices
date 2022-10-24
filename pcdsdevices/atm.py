@@ -3,7 +3,7 @@ from ophyd import Component as Cpt
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset
-from .interface import BaseInterface, LightpathInOutMixin
+from .interface import BaseInterface, LightpathInOutCptMixin
 from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATTempSensor
 
@@ -18,7 +18,7 @@ class ATMTarget(TwinCATStatePMPS):
     config = UpCpt(state_count=6)
 
 
-class ArrivalTimeMonitor(BaseInterface, GroupDevice, LightpathInOutMixin):
+class ArrivalTimeMonitor(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     """
     Determines the arrival time of the x-ray relative to the optical laser.
 
@@ -59,6 +59,25 @@ class TM1K4(ArrivalTimeMonitor):
     """
 
     target = Cpt(TM1K4Target, ':MMS:STATE', kind='hinted',
+                 doc='Control of the diagnostic stack via saved positions.')
+
+
+class TM2K4Target(ATMTarget):
+    """
+    Controls TM2K4's states, an ATM in TMO.
+
+    Defines the state count as 5 (OUT and 4 targets), one less than the
+    standard ATM.
+    """
+    config = UpCpt(state_count=5)
+
+
+class TM2K4(ArrivalTimeMonitor):
+    """
+    An ATM in TMO that has one fewer target state.
+    """
+
+    target = Cpt(TM2K4Target, ':MMS:STATE', kind='hinted',
                  doc='Control of the diagnostic stack via saved positions.')
 
 

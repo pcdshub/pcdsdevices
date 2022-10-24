@@ -6,7 +6,7 @@ from __future__ import annotations
 import copy
 import functools
 import logging
-from typing import ClassVar, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device, required_for_connection
@@ -362,14 +362,19 @@ class PVStatePositioner(StatePositioner):
         state. You can set this to 'FIRST' instead to use the first state
         found while traversing the `_state_logic` tree. This means an earlier
         state definition can mask a later state definition.
+
+    _state_logic_set_ref : str or None
+        An optional reference to the component that will be used to set some
+        metadata on the state signal if provided.
     """
 
     __doc__ = __doc__ % basic_positioner_init
 
     state = Cpt(PVStateSignal, kind='hinted')
 
-    _state_logic = {}
-    _state_logic_mode = 'ALL'
+    _state_logic: ClassVar[Dict[str, Dict[Any, str]]] = {}
+    _state_logic_mode: ClassVar[str] = 'ALL'
+    _state_logic_set_ref: ClassVar[Optional[str]] = None
 
     def __init__(self, prefix, *, name, **kwargs):
         if self.__class__ is PVStatePositioner:

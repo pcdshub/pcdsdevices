@@ -1429,7 +1429,7 @@ border-radius: 0px;
         <string>Stop</string>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMS:NORTH.STOP</string>
+        <string>ca://${prefix}:MMS:SOUTH.STOP</string>
        </property>
        <property name="pressValue" stdset="0">
         <string>1</string>
@@ -1518,7 +1518,7 @@ border-radius: 0px;
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://${prefix}:MMS:NORTH.VAL</string>
+        <string>ca://${prefix}:MMS:SOUTH.VAL</string>
        </property>
       </widget>
      </item>

@@ -1,4 +1,5 @@
 import logging
+import threading
 from unittest.mock import Mock
 
 import pytest
@@ -35,7 +36,11 @@ class LimCls(PVStatePositioner):
 
 # Override the setter
 class LimCls2(LimCls):
+    mover = Cpt(PrefixSignal, 'mover', value=0)
+    _state_logic_set_ref = 'mover'
+
     def _do_move(self, value):
+        self.mover.put(1)
         state = value.name
         if state == 'in':
             self.highlim.put(1)
@@ -43,6 +48,7 @@ class LimCls2(LimCls):
         elif state == 'out':
             self.highlim.put(0)
             self.lowlim.put(1)
+        self.mover.put(0)
 
 
 # For additional tests
@@ -107,6 +113,55 @@ def test_pvstate_positioner_describe():
     assert len(desc['enum_strs']) == 3  # In, Out, Unknown
     assert desc['dtype'] == 'string'
     lim_obj.destroy()
+
+
+def test_pvstate_positioner_metadata():
+    logger.debug('test_pvstate_positioner_metadata')
+    lim_basic = LimCls('BASE', name='lim')
+    lim_mover = LimCls2('MOVER', name='mover')
+    objs = (lim_basic, lim_mover)
+
+    cache = {}
+    # Need threading synchronization to avoid potential race conditions
+    # Metadata callbacks run in a background thread
+    events = {obj.state.name: threading.Event() for obj in objs}
+
+    def update_md_cache(*args, obj, **kwargs):
+        cache[obj.name] = kwargs
+        events[obj.name].set()
+
+    # Pick one obj to get its values prior to our sub
+    lim_basic.lowlim.put(1)
+    lim_basic.highlim.put(0)
+
+    for obj in objs:
+        obj.state.subscribe(
+            update_md_cache,
+            event_type=obj.state.SUB_META,
+        )
+
+    # Pick one obj to get its values after our sub
+    lim_mover.lowlim.put(0)
+    lim_mover.highlim.put(1)
+
+    for obj in objs:
+        assert events[obj.state.name].wait(timeout=1.0), 'Did not update md'
+        obj_enums = tuple(obj.states_list)
+        state_enums = obj.state.enum_strs
+        md_enums = obj.state.metadata['enum_strs']
+        cached_enum = cache[obj.state.name]['enum_strs']
+        assert obj_enums == state_enums == md_enums == cached_enum
+
+    assert lim_mover.state.metadata['write_access']
+    assert lim_mover.mover.metadata['write_access']
+
+    events[lim_mover.state.name].clear()
+    lim_mover.mover._metadata['write_access'] = False
+    lim_mover.mover._run_metadata_callbacks()
+    events[lim_mover.state.name].wait(timeout=1.0)
+
+    assert not lim_mover.state.metadata['write_access']
+    assert not lim_mover.mover.metadata['write_access']
 
 
 def test_pvstate_positioner_sets():

@@ -134,10 +134,12 @@ def test_mirror_disconnected():
 @pytest.fixture(scope='function')
 def fake_kbo_mirror():
     FakeKBO = make_fake_device(KBOMirror)
-    return FakeKBO('TST:M1H', name="Test Mirror")
+    return FakeKBO('TST:M1H', name="Test Mirror",
+                   input_branches=['X0'], output_branches=['X0', 'X1'])
 
 
 def test_kbomirror_lighpath(fake_kbo_mirror):
     km = fake_kbo_mirror
-    assert km.inserted
-    assert not km.removed
+    lp_state = km.get_lightpath_state()
+    assert lp_state.inserted
+    assert not lp_state.removed

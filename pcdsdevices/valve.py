@@ -4,6 +4,7 @@ Standard classes for LCLS Gate Valves.
 import logging
 from enum import IntEnum
 
+from lightpath import LightpathState
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
 
@@ -95,6 +96,12 @@ class ValveBase(Device):
     PVs that are omitted in VCGLegacy are instead put in the VVC class.
     """
 
+    valve_position = Cpt(
+        EpicsSignalRO,
+        ':POS_STATE_RBV',
+        kind='hinted',
+        doc='Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F'
+    )
     open_command = Cpt(
         EpicsSignalWithRBV,
         ':OPN_SW',
@@ -202,11 +209,21 @@ class VRC(VVC, LightpathMixin):
         doc='Closed limit switch digital input'
     )
 
-    def _set_lightpath_states(self, lightpath_values):
+    def calc_lightpath_state(
+        self, open_limit: int, closed_limit: int
+    ) -> LightpathState:
         """Callback for updating inserted/removed for lightpath."""
 
-        self._inserted = lightpath_values[self.closed_limit]['value']
-        self._removed = lightpath_values[self.open_limit]['value']
+        self._inserted = bool(closed_limit)
+        self._removed = bool(open_limit)
+
+        trans = 0.0 if self._inserted else 1.0
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: trans}
+        )
 
 
 class VRCClsLS(VVC):
@@ -380,7 +397,7 @@ class VGC_2S(VRC):
     )
 
 
-class VFS(Device, LightpathMixin):
+class VFS(LightpathMixin):
     """
     VFS = Fast Shutter Valve
 
@@ -491,9 +508,19 @@ class VFS(Device, LightpathMixin):
         doc='Name of device that can veto this VFS'
     )
 
-    def _set_lightpath_states(self, lightpath_values):
-        self._inserted = lightpath_values[self.position_close]['value']
-        self._removed = lightpath_values[self.position_open]['value']
+    def calc_lightpath_state(self, position_open: int, position_close: int):
+        """Callback for updating inserted/removed for lightpath."""
+
+        self._inserted = bool(position_close)
+        self._removed = bool(position_open)
+
+        trans = 0.0 if self._inserted else 1.0
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: trans}
+        )
 
 
 class VVCNO(Device):
@@ -516,11 +543,11 @@ class VVCNO(Device):
         kind='normal',
         doc='Epics command to close valve'
     )
-    close_override = Cpt(
+    override_force_close = Cpt(
         EpicsSignalWithRBV,
         ':FORCE_CLS',
         kind='omitted',
-        doc=('Epics Command for open the valve in override '
+        doc=('Epics Command for close the valve in override '
              'mode')
     )
     override_on = Cpt(
@@ -541,6 +568,13 @@ class VVCNO(Device):
         kind='normal',
         doc='PLC Output to close valve'
     )
+
+    @property
+    def close_override(self):
+        """
+        Fixes potential API breaks with old name
+        """
+        return self.override_force_close
 
 
 class VRCNO(VVCNO, LightpathMixin):
@@ -585,11 +619,19 @@ class VRCNO(VVCNO, LightpathMixin):
         doc='Closed limit switch digital input'
     )
 
-    def _set_lightpath_states(self, lightpath_values):
+    def calc_lightpath_state(self, open_limit: int, closed_limit: int):
         """Callback for updating inserted/removed for lightpath."""
 
-        self._inserted = lightpath_values[self.closed_limit]['value']
-        self._removed = lightpath_values[self.open_limit]['value']
+        self._inserted = bool(closed_limit)
+        self._removed = bool(open_limit)
+
+        trans = 0.0 if self._inserted else 1.0
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: trans}
+        )
 
 
 class VRCDA(VRC, VRCNO):

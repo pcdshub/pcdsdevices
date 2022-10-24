@@ -14,7 +14,7 @@ from pcdscalc import be_lens_calcs as calcs
 from .doc_stubs import basic_positioner_init
 from .epics_motor import IMS
 from .inout import CombinedInOutRecordPositioner, InOutRecordPositioner
-from .interface import BaseInterface, tweak_base
+from .interface import BaseInterface, LightpathInOutMixin, tweak_base
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
 from .sim import FastMotor
@@ -22,7 +22,7 @@ from .sim import FastMotor
 logger = logging.getLogger(__name__)
 
 
-class XFLS(InOutRecordPositioner):
+class XFLS(InOutRecordPositioner, LightpathInOutMixin):
     """
     X-ray Focusing (Be) Lens Stack.
 
@@ -45,7 +45,7 @@ class XFLS(InOutRecordPositioner):
         super().__init__(prefix, name=name, **kwargs)
 
 
-class Prefocus(CombinedInOutRecordPositioner):
+class Prefocus(CombinedInOutRecordPositioner, LightpathInOutMixin):
     """
     PreFocussing Lens Stack (PFLS).
 

@@ -2,10 +2,11 @@
 Define subclasses of Device for specific hardware.
 """
 import re
+import warnings
 from copy import copy, deepcopy
 
-from happi.device import Device, EntryInfo
-from happi.item import OphydItem
+import lightpath.happi.containers as lp_containers
+from happi.item import EntryInfo, HappiItem, OphydItem
 
 
 class LCLSItem(OphydItem):
@@ -27,6 +28,12 @@ class LCLSItem(OphydItem):
                       enforce=re.compile(r'[A-Z0-9]{3}$|[A-Z][0-9]S[0-9]{2}$'))
     lightpath = EntryInfo("If the device should be included in the "
                           "LCLS Lightpath", enforce=bool, default=False)
+    input_branches = EntryInfo(('List of branches the device can receive '
+                                'beam from.'),
+                               optional=True, enforce=list)
+    output_branches = EntryInfo(('List of branches the device can deliver '
+                                'beam to.'),
+                                optional=True, enforce=list)
     ioc_engineer = EntryInfo(('Engineer for the IOC. Used to build IOC '
                              'configs.'),
                              optional=True, enforce=str)
@@ -47,29 +54,110 @@ class LCLSItem(OphydItem):
                           'the ioc data.'), optional=True, enforce=str)
 
 
-class Vacuum(Device):
+class LCLSLightpathItem(lp_containers.LightpathItem, LCLSItem):
+    """
+    LCLS version of a LightpathItem.  Since some containers serve both
+    lightpath and non-lightpath devices, make branches and kwargs optional
+
+    The default for branches will be None, and omitted from the kwargs
+    dictionary if its option matches said default of None.
+    """
+    input_branches = copy(lp_containers.LightpathItem.input_branches)
+    input_branches.optional = True
+    input_branches.include_default_as_kwarg = False
+    output_branches = copy(lp_containers.LightpathItem.output_branches)
+    output_branches.optional = True
+    output_branches.include_default_as_kwarg = False
+
+
+class LegacyItem(HappiItem):
+    """
+    Formally, happi.device.Device
+
+    Extracted from happi so that happi can drop support for LCLS-specific
+    deprecated containers.
+
+    This should be removed when we clean up our database
+    """
+    prefix = EntryInfo('A base PV for all related records',
+                       optional=False, enforce=str)
+    beamline = EntryInfo('Section of beamline the device belongs',
+                         optional=False, enforce=str)
+    location_group = EntryInfo('Grouping parameter for device location',
+                               optional=False, enforce=str)
+    functional_group = EntryInfo('Grouping parameter for device function',
+                                 optional=False, enforce=str)
+    z = EntryInfo('Beamline position of the device',
+                  enforce=float, default=-1.0)
+    stand = EntryInfo('Acronym for stand, must be three alphanumeric '
+                      'characters like an LCLSI stand (e.g. DG3) or follow '
+                      'the LCLSII stand naming convention (e.g. L0S04).',
+                      enforce=re.compile(r'[A-Z0-9]{3}$|[A-Z][0-9]S[0-9]{2}$'))
+    detailed_screen = EntryInfo('The absolute path to the main control screen',
+                                enforce=str)
+    embedded_screen = EntryInfo('The absolute path to the '
+                                'embedded control screen',
+                                enforce=str)
+    engineering_screen = EntryInfo('The absolute path to '
+                                   'the engineering control screen',
+                                   enforce=str)
+    system = EntryInfo('The system the device is involved with, i.e '
+                       'Vacuum, Timing e.t.c',
+                       enforce=str)
+    macros = EntryInfo("The EDM macro string asscociated with the "
+                       "with the device. By using a jinja2 template, "
+                       "this can reference other EntryInfo keywords.",
+                       enforce=str)
+    lightpath = EntryInfo("If the device should be included in the "
+                          "LCLS Lightpath", enforce=bool, default=False)
+    documentation = EntryInfo("Relevant documentation for the Device",
+                              enforce=str)
+    parent = EntryInfo('If the device is a component of another, '
+                       'enter the name', enforce=str)
+    args = copy(HappiItem.args)
+    args.default = ['{{prefix}}']
+    kwargs = copy(HappiItem.kwargs)
+    kwargs.default = {'name': '{{name}}'}
+
+    def __repr__(self):
+        return '{} (name={}, prefix={}, z={})'.format(
+                                    self.__class__.__name__,
+                                    self.name,
+                                    self.prefix,
+                                    self.z)
+
+    @property
+    def screen(self):
+        warnings.warn("The 'screen' keyword is no longer used in Happi as it "
+                      "lacks specificity. Use one of detailed_screen, "
+                      "embedded_screen, or engineering screen instead",
+                      DeprecationWarning)
+        return self.detailed_screen
+
+
+class Vacuum(lp_containers.LightpathItem, LegacyItem):
     """
     Parent class for devices in the vacuum system.
     """
-    system = copy(Device.system)
+    system = copy(LegacyItem.system)
     system.default = 'vacuum'
 
 
-class Diagnostic(Device):
+class Diagnostic(lp_containers.LightpathItem, LegacyItem):
     """
     Parent class for devices that are used as diagnostics.
     """
-    system = copy(Device.system)
+    system = copy(LegacyItem.system)
     system.default = 'diagnostic'
     data = EntryInfo('PV that gives us the diagnostic readback in EPICS.',
                      enforce=str)
 
 
-class BeamControl(Device):
+class BeamControl(lp_containers.LightpathItem, LegacyItem):
     """
     Parent class for devices that control any beam parameter.
     """
-    system = copy(Device.system)
+    system = copy(LegacyItem.system)
     system.default = 'beam control'
 
 
@@ -93,7 +181,7 @@ class GateValve(Vacuum):
     """
     prefix = copy(Vacuum.prefix)
     prefix.enforce = re.compile(r'.*VGC.*')
-    device_class = copy(Device.device_class)
+    device_class = copy(LegacyItem.device_class)
     device_class.default = 'pcdsdevices.device_types.GateValve'
 
 
@@ -114,7 +202,7 @@ class Slits(BeamControl):
     """
     prefix = copy(BeamControl.prefix)
     prefix.enforce = re.compile(r'.*JAWS.*')
-    device_class = copy(Device.device_class)
+    device_class = copy(LegacyItem.device_class)
     device_class.default = 'pcdsdevices.device_types.Slits'
 
 
@@ -142,9 +230,9 @@ class PIM(Diagnostic):
     prefix = copy(Diagnostic.prefix)
     prefix.enforce = re.compile(r'.*PIM.*')
     prefix_det = EntryInfo("Prefix for associated camera", enforce=str)
-    device_class = copy(Device.device_class)
+    device_class = copy(Diagnostic.device_class)
     device_class.default = 'pcdsdevices.device_types.PIM'
-    kwargs = deepcopy(Device.kwargs)
+    kwargs = deepcopy(Diagnostic.kwargs)
     kwargs.default['prefix_det'] = "{{prefix_det}}"
 
 
@@ -178,7 +266,7 @@ class IPM(Diagnostic):
     """
     prefix = copy(Diagnostic.prefix)
     prefix.enforce = re.compile(r'.*IPM.*')
-    device_class = copy(Device.device_class)
+    device_class = copy(Diagnostic.device_class)
     device_class.default = 'pcdsdevices.device_types.IPM'
 
 
@@ -202,15 +290,15 @@ class Attenuator(BeamControl):
     """
     prefix = copy(BeamControl.prefix)
     prefix.enforce = re.compile(r'.*ATT.*')
-    device_class = copy(Device.device_class)
+    device_class = copy(BeamControl.device_class)
     device_class.default = 'pcdsdevices.device_types.Attenuator'
     n_filters = EntryInfo("Number of filters on the Attenuator",
                           enforce=int, optional=False)
-    kwargs = deepcopy(Device.kwargs)
+    kwargs = deepcopy(BeamControl.kwargs)
     kwargs.default['n_filters'] = "{{n_filters}}"
 
 
-class Stopper(Device):
+class Stopper(lp_containers.LightpathItem, LegacyItem):
     """
     Large devices that prevent beam when it could cause damage to hardware.
 
@@ -220,7 +308,7 @@ class Stopper(Device):
         The base PV should be the combined mps status PV e.g.
         "STPR:XRT1:1:S5IN_MPS".
     """
-    device_class = copy(Device.device_class)
+    device_class = copy(LegacyItem.device_class)
     device_class.default = 'pcdsdevices.device_types.Stopper'
 
 
@@ -249,10 +337,21 @@ class OffsetMirror(BeamControl):
     xgantry_prefix : str, optional
         Prefix of the X Gantry PVs if different than the standard prefix
     """
-    device_class = copy(Device.device_class)
+    device_class = copy(LegacyItem.device_class)
     device_class.default = 'pcdsdevices.device_types.OffsetMirror'
     prefix_xy = EntryInfo("Prefix for X and Y motors", enforce=str)
     xgantry_prefix = EntryInfo("Prefix for the X Gantry", enforce=str)
+
+    # Lightpath relevant settings.  Ranges for various mirror settings
+    pitch_ranges = EntryInfo("valid pitch ranges for each destination",
+                             optional=True, enforce=list,
+                             include_default_as_kwarg=False)
+    x_ranges = EntryInfo("valid x positions, determining insertion",
+                         optional=True, enforce=list,
+                         include_default_as_kwarg=False)
+    y_ranges = EntryInfo("valid y positions, determining coating",
+                         optional=True, enforce=list,
+                         include_default_as_kwarg=False)
 
 
 class PulsePicker(BeamControl):
@@ -272,7 +371,7 @@ class PulsePicker(BeamControl):
         The additional state should be the states PV associated with the
         pulsepicker in/out. An example of one such PV is "XCS:SB2:PP:Y".
     """
-    device_class = copy(Device.device_class)
+    device_class = copy(LegacyItem.device_class)
     device_class.default = 'pcdsdevices.device_types.PulsePicker'
 
 
@@ -298,16 +397,16 @@ class LODCM(BeamControl):
     mono_line : str
         Name of the mono line
     """
-    device_class = copy(Device.device_class)
+    device_class = copy(BeamControl.device_class)
     device_class.default = 'pcdsdevices.device_types.LODCM'
     mono_line = EntryInfo("Name of the MONO beamline",
                           enforce=str, optional=False)
-    kwargs = deepcopy(Device.kwargs)
+    kwargs = deepcopy(BeamControl.kwargs)
     kwargs.default.update({'mono_line': '{{mono_line}}',
                            'main_line': '{{beamline}}'})
 
 
-class MovableStand(Device):
+class MovableStand(LegacyItem):
     """
     This class stores information about stands that move, like XPP's hand-crank
     that moves SB2 and SB3 from the PINK to XPP lines and back. There is no
@@ -324,49 +423,49 @@ class MovableStand(Device):
     stand : list
         List of stands affected by table movement.
     """
-    stand = copy(Device.stand)
+    stand = copy(LegacyItem.stand)
     stand.enforce = list
-    system = copy(Device.system)
+    system = copy(LegacyItem.system)
     system.default = 'changeover'
 
 
-class Motor(Device):
+class Motor(lp_containers.LightpathItem, LegacyItem):
     """
     A Generic EpicsMotor
     """
-    device_class = copy(Device.device_class)
+    device_class = copy(LegacyItem.device_class)
     device_class.default = 'pcdsdevices.device_types.Motor'
-    system = copy(Device.system)
+    system = copy(LegacyItem.system)
     system.default = 'motion'
 
 
-class AreaDetector(Device):
+class AreaDetector(LegacyItem):
     """
     A Generic EpicsCamera
     """
-    device_class = copy(Device.device_class)
+    device_class = copy(LegacyItem.device_class)
     device_class.default = 'pcdsdevices.device_types.PCDSDetector'
-    system = copy(Device.system)
+    system = copy(LegacyItem.system)
     system.default = 'camera'
 
 
-class Acromag(Device):
+class Acromag(LegacyItem):
     """
     A Generic class for Acromag
     """
-    device_class = copy(Device.device_class)
+    device_class = copy(LegacyItem.device_class)
     device_class.default = 'pcdsdevices.device_types.Acromag'
-    system = copy(Device.system)
+    system = copy(LegacyItem.system)
     system.default = 'acromag'
 
 
-class Trigger(Device):
+class Trigger(LegacyItem):
     """
     A Generic class for Controls Triggers
     """
-    device_class = copy(Device.device_class)
+    device_class = copy(LegacyItem.device_class)
     device_class.default = 'pcdsdevices.device_types.Trigger'
-    system = copy(Device.system)
+    system = copy(LegacyItem.system)
     system.default = 'timing'
 
 
@@ -378,7 +477,7 @@ class Elliptec(LCLSItem):
     device_class.default = 'pcdsdevices.device_types.EllBase'
     ioc_type = copy(LCLSItem.ioc_type)
     ioc_type.default = 'Elliptec'
-    kwargs = deepcopy(Device.kwargs)
+    kwargs = deepcopy(LegacyItem.kwargs)
     kwargs.default['port'] = "0"
     kwargs.default['channel'] = "{{ioc_channel}}"
     ioc_serial = EntryInfo(('Serial number of the stage controller. Used to '
@@ -444,8 +543,8 @@ class SmarActTipTiltMotor(LCLSItem):
     device_class.default = 'pcdsdevices.epics_motor.SmarActTipTilt'
     ioc_type = copy(LCLSItem.ioc_type)
     ioc_type.default = 'SmarAct'
-    kwargs = deepcopy(Device.kwargs)
-    args = deepcopy(Device.args)
+    kwargs = deepcopy(LegacyItem.kwargs)
+    args = deepcopy(LegacyItem.args)
     args = []  # No args for me, thank you
     kwargs.default['tip_pv'] = "{{ioc_tip_suffix}}"
     kwargs.default['tilt_pv'] = "{{ioc_tilt_suffix}}"

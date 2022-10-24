@@ -15,6 +15,7 @@ used.
 import logging
 from collections import OrderedDict
 
+from lightpath import LightpathState
 from ophyd import Component as Cpt
 from ophyd import DynamicDeviceComponent as DDCpt
 from ophyd import EpicsSignal, EpicsSignalRO
@@ -29,7 +30,7 @@ from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset
-from .interface import (BaseInterface, FltMvInterface, LightpathInOutMixin,
+from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
                         LightpathMixin, MvInterface)
 from .pmps import TwinCATStatePMPS
 from .sensors import RTD, TwinCATTempSensor
@@ -50,10 +51,10 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
 
     # Mark as parent class for lightpath interface
     _lightpath_mixin = True
-    lightpath_cpts = ['xwidth', 'ywidth']
+    lightpath_cpts = ['xwidth.user_readback', 'ywidth.user_readback']
 
     # Tab settings
-    tab_whitelist = ['open', 'close', 'block']
+    tab_whitelist = ['open', 'close', 'block', 'hg', 'ho', 'vg', 'vo']
 
     # Just to hold a value
     nominal_aperture = Cpt(Signal, kind='normal')
@@ -77,6 +78,9 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         self.ho = self.xcenter
         self.vo = self.ycenter
         self._pre_stage_gap: tuple[float, float] = None
+
+        self._inserted = False
+        self._removed = False
 
     def format_status_info(self, status_info):
         """
@@ -296,10 +300,29 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         # Run subscriptions
         self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
-    def _set_lightpath_states(self, lightpath_values):
-        widths = [kw['value'] for kw in lightpath_values.values()]
+    def calc_lightpath_state(
+        self,
+        xwidth: float,
+        ywidth: float
+    ) -> LightpathState:
+        widths = [xwidth, ywidth]
         self._inserted = (min(widths) < self.nominal_aperture.get())
         self._removed = not self._inserted
+        self._transmission = 1.0 if self._inserted else 0.0
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: self._transmission}
+        )
+
+    @property
+    def inserted(self):
+        return self._inserted
+
+    @property
+    def removed(self):
+        return self._removed
 
 
 class BadSlitPositionerBase(FltMvInterface, PVPositioner):
@@ -407,6 +430,8 @@ class LusiSlits(SlitsBase):
     close_cmd = Cpt(EpicsSignal, ':CLOSE', kind='omitted')
     block_cmd = Cpt(EpicsSignal, ':BLOCK', kind='omitted')
 
+    lightpath_cpts = ['xwidth.readback', 'ywidth.readback']
+
     def open(self):
         """Uses the built-in 'OPEN' record to move open the aperture."""
         self.open_cmd.put(1)
@@ -418,6 +443,15 @@ class LusiSlits(SlitsBase):
     def block(self):
         """Overlap the slits to block the beam."""
         self.block_cmd.put(1)
+
+    def calc_lightpath_state(
+        self,
+        xwidth_readback: float,
+        ywidth_readback: float
+    ) -> LightpathState:
+        """widths have different names due to different positioner class"""
+        return super().calc_lightpath_state(xwidth=xwidth_readback,
+                                            ywidth=ywidth_readback)
 
 
 class Slits(LusiSlits):
@@ -475,6 +509,8 @@ class BeckhoffSlits(SlitsBase):
     bottom = Cpt(BeckhoffAxisNoOffset, ':MMS:BOTTOM', kind='normal')
     north = Cpt(BeckhoffAxisNoOffset, ':MMS:NORTH', kind='normal')
     south = Cpt(BeckhoffAxisNoOffset, ':MMS:SOUTH', kind='normal')
+
+    lightpath_cpts = ['xwidth.readback', 'ywidth.readback']
 
     def __init__(self, prefix, *, name, **kwargs):
         self._started_move = False
@@ -546,6 +582,15 @@ class BeckhoffSlits(SlitsBase):
         if done != self.done_all.get():
             self.done_all.put(done)
 
+    def calc_lightpath_state(
+        self,
+        xwidth_readback: float,
+        ywidth_readback: float
+    ) -> LightpathState:
+        """widths have different names due to different positioner class"""
+        return super().calc_lightpath_state(xwidth=xwidth_readback,
+                                            ywidth=ywidth_readback)
+
 
 def _rtd_fields(cls, attr_base, range_, **kwargs):
     padding = max(range_)//10 + 2
@@ -582,7 +627,7 @@ class ExitSlitTarget(TwinCATStatePMPS):
     config = UpCpt(state_count=3)
 
 
-class ExitSlits(BaseInterface, GroupDevice, LightpathInOutMixin):
+class ExitSlits(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     tab_component_names = True
 
     lightpath_cpts = ['target']

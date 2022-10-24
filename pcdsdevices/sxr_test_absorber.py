@@ -1,14 +1,14 @@
 """
 Module for the SXR Test Absorbers.
 """
+from lightpath import LightpathState
 from ophyd.device import Component as Cpt
-from ophyd.device import Device
 
 from .epics_motor import BeckhoffAxisNoOffset
 from .interface import BaseInterface, LightpathMixin
 
 
-class SxrTestAbsorber(BaseInterface, LightpathMixin, Device):
+class SxrTestAbsorber(BaseInterface, LightpathMixin):
     """
     SXR Test Absorber: Used for testing the sxr beamline at high pulse rates.
 
@@ -22,12 +22,18 @@ class SxrTestAbsorber(BaseInterface, LightpathMixin, Device):
 
     absorber_vert = Cpt(BeckhoffAxisNoOffset, ':MMS:01', kind='normal')
 
-    lightpath_cpts = ['absorber_vert']
+    lightpath_cpts = ['absorber_vert.user_readback']
 
-    def _set_lightpath_states(self, lightpath_values):
-        pos = lightpath_values[self.absorber_vert]['value']
+    def calc_lightpath_state(self, absorber_vert: float) -> LightpathState:
+        pos = absorber_vert
         # 0 is out, negative is in
         # this device has never been inserted, so we don't know the in pos
         self._inserted = pos < -1
         self._removed = pos > -1
         self._transmission = int(self._removed)
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: self._transmission}
+        )
