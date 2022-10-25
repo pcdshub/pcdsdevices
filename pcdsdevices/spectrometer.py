@@ -326,6 +326,8 @@ class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
 
     # Motor components: can read/write positions
     lens_x = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
+    lens_pitch_up_down = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
+    lens_yaw_left_right = Cpt(BeckhoffAxis, ':MMS:11', kind='normal')
     foil_x = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
     zone_plate_x = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
     zone_plate_y = Cpt(BeckhoffAxis, ':MMS:04', kind='normal')
@@ -334,8 +336,6 @@ class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     yag_y = Cpt(BeckhoffAxis, ':MMS:07', kind='normal')
     yag_z = Cpt(BeckhoffAxis, ':MMS:08', kind='normal')
     yag_theta = Cpt(BeckhoffAxis, ':MMS:09', kind='normal')
-    lens_pitch = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
-    lens_yaw = Cpt(BeckhoffAxis, ':MMS:11', kind='normal')
 
     # Lightpath constants
     inserted = True
