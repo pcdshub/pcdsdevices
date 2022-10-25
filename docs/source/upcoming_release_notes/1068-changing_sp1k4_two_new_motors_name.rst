@@ -1,5 +1,5 @@
 1068 changing sp1k4 two new motors name
-#################
+#######################################
 
 API Changes
 -----------
@@ -11,8 +11,8 @@ Features
 
 Device Updates
 --------------
-lens_pitch to lens_pitch_up_down
-lens_yaw to lens_yaw_left_right
+- Rename ``lens_pitch`` to ``lens_pitch to lens_pitch_up_down`` and ``lens_yaw`` to
+``lens_yaw to lens_yaw_left_right``
 
 New Devices
 -----------
@@ -28,4 +28,4 @@ Maintenance
 
 Contributors
 ------------
-tongju@slac.stanford.edu
+- tongju12
