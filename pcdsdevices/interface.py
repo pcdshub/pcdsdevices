@@ -1782,7 +1782,8 @@ class LightpathMixin(Device):
         self._md = new_md
         self.input_branches = self.md.input_branches
         self.output_branches = self.md.output_branches
-        self._init_summary_signal()
+        if self.input_branches and self.output_branches:
+            self._init_summary_signal()
 
 
 class LightpathInOutMixin(LightpathMixin):
