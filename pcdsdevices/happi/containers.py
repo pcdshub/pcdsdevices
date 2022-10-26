@@ -135,7 +135,7 @@ class LegacyItem(HappiItem):
         return self.detailed_screen
 
 
-class Vacuum(lp_containers.LightpathItem, LegacyItem):
+class Vacuum(LCLSItem, LegacyItem):
     """
     Parent class for devices in the vacuum system.
     """
@@ -143,7 +143,7 @@ class Vacuum(lp_containers.LightpathItem, LegacyItem):
     system.default = 'vacuum'
 
 
-class Diagnostic(lp_containers.LightpathItem, LegacyItem):
+class Diagnostic(LCLSItem, LegacyItem):
     """
     Parent class for devices that are used as diagnostics.
     """
@@ -153,7 +153,7 @@ class Diagnostic(lp_containers.LightpathItem, LegacyItem):
                      enforce=str)
 
 
-class BeamControl(lp_containers.LightpathItem, LegacyItem):
+class BeamControl(LCLSItem, LegacyItem):
     """
     Parent class for devices that control any beam parameter.
     """
@@ -298,7 +298,7 @@ class Attenuator(BeamControl):
     kwargs.default['n_filters'] = "{{n_filters}}"
 
 
-class Stopper(lp_containers.LightpathItem, LegacyItem):
+class Stopper(LCLSItem, LegacyItem):
     """
     Large devices that prevent beam when it could cause damage to hardware.
 
@@ -429,7 +429,7 @@ class MovableStand(LegacyItem):
     system.default = 'changeover'
 
 
-class Motor(lp_containers.LightpathItem, LegacyItem):
+class Motor(LCLSItem, LegacyItem):
     """
     A Generic EpicsMotor
     """
