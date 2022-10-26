@@ -2,6 +2,29 @@ Release History
 ###############
 
 
+v7.0.1 (2022-10-26)
+===================
+
+Device Updates
+--------------
+- Rename ``lens_pitch`` to ``lens_pitch to lens_pitch_up_down`` and ``lens_yaw`` to
+  ``lens_yaw to lens_yaw_left_right``.
+
+Bugfixes
+--------
+- When initializing the lightpath summary signal from a happi load,
+  guard against bad ``input_branches`` or ``output_branches``.
+  This stops us from spamming the terminal when loading from a db without
+  ``input_branches`` and ``output_branches``.
+- Fully removes ``LightpathItem`` from containers that subclassed it.
+
+Contributors
+------------
+- tangkong
+- tongju12
+- zllentz
+
+
 v7.0.0 (2022-10-21)
 ===================
 
