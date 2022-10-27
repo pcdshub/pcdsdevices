@@ -996,65 +996,46 @@ class BeckhoffAxis(EpicsMotorInterface):
     home_forward = None
     home_reverse = None
 
-    def move(
+    def subscribe(
         self,
-        position: float,
-        moved_cb: Optional[Callable] = None,
-        timeout: Optional[bool] = None,
-        wait: bool = True,
-    ) -> MoveStatus:
+        callback: Callable,
+        event_type: Optional[str] = None,
+        run: bool = True,
+    ) -> int:
         """
-        Move to a specified position.
+        Subscribe to events this event_type generates.
 
-        This is a full re-implementation of move for custom error handling.
-        Unlike EpicsMotor's move, the move status will be set to the
-        Beckhoff error message. The move will be marked as successful
-        otherwise.
+        See ophydobj.subscribe for full details.
+
+        This is a full re-implementation of subscribe for custom error
+        handling. Unlike during EpicsMotor's move, the move status will
+        be set to the Beckhoff error message if there is one.
+        The move will be marked as successful otherwise.
 
         Possibly this was unnecessary with an ophyd PR to allow me to
         customize the error handling, but without that this seems like
         the easiest way to sidestep the status._finished call and ignore
         the error logic in _move_changed.
-
-        See EpicsMotor and PositionerBase for more.
         """
-        # From EpicsMotor.move until next comment
-        self._started_moving = False
-
-        # From PositionerBase.move until next comment
-        if timeout is None:
-            timeout = self._timeout
-
-        self.check_value(position)
-
-        self._run_subs(sub_type=self._SUB_REQ_DONE, success=False)
-        self._reset_sub(self._SUB_REQ_DONE)
-
-        status = MoveStatus(
-            self, position, timeout=timeout, settle_time=self._settle_time
-        )
-
-        if moved_cb is not None:
-            status.add_callback(functools.partial(moved_cb, obj=self))
-            # the status object will run this callback when finished
-
-        # Custom for BeckhoffAxis
-        self.subscribe(
+        # Normal subscribe if this isn't the exact sub req done subscription
+        # See PositionerBase.move
+        if (
+            event_type != self._SUB_REQ_DONE
+            or callback.__qualname__ != 'StatusBase._finished'
+            or run
+        ):
+            return super().subscribe(
+                callback=callback,
+                event_type=event_type,
+                run=run,
+            )
+        # Mutate subscribe appropriately to not use status._finished
+        status = callback.__self__
+        return super().subscribe(
             functools.partial(self._end_move_cb, status),
             event_type=self._SUB_REQ_DONE,
             run=False,
         )
-
-        # From EpicsMotor.move through the end
-        self.user_setpoint.put(position, wait=False)
-        try:
-            if wait:
-                status_wait(status)
-        except KeyboardInterrupt:
-            self.stop()
-            raise
-
-        return status
 
     def _end_move_cb(self, status: MoveStatus, **kwargs) -> None:
         """
