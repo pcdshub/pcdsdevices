@@ -1017,24 +1017,26 @@ class BeckhoffAxis(EpicsMotorInterface):
         the easiest way to sidestep the status._finished call and ignore
         the error logic in _move_changed.
         """
-        # Normal subscribe if this isn't the exact sub req done subscription
+        # Mutate subscribe appropriately if this is the exact sub req done
         # See PositionerBase.move
-        if (
-            event_type != self._SUB_REQ_DONE
-            or callback.__qualname__ != 'StatusBase._finished'
-            or run
+        if all(
+            event_type == self._SUB_REQ_DONE,
+            callback.__qualname__ == 'StatusBase._finished',
+            not run,
         ):
+            # Find the actual status object
+            status = callback.__self__
+            # Slip in the more specific end move handler
             return super().subscribe(
-                callback=callback,
-                event_type=event_type,
-                run=run,
+                functools.partial(self._end_move_cb, status),
+                event_type=self._SUB_REQ_DONE,
+                run=False,
             )
-        # Mutate subscribe appropriately to not use status._finished
-        status = callback.__self__
+        # Otherwise, normal subscribe
         return super().subscribe(
-            functools.partial(self._end_move_cb, status),
-            event_type=self._SUB_REQ_DONE,
-            run=False,
+            callback=callback,
+            event_type=event_type,
+            run=run,
         )
 
     def _end_move_cb(self, status: MoveStatus, **kwargs) -> None:
