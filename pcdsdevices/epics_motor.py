@@ -1056,10 +1056,7 @@ class BeckhoffAxis(EpicsMotorInterface):
             error_code = self.plc.err_code.get()
             if error_code > 0:
                 error_message = f"{hex(error_code)}: {error_message}"
-                exc = RuntimeError(error_message)
-            else:
-                exc = RuntimeError(error_message)
-            status.set_exception(exc)
+            status.set_exception(RuntimeError(error_message))
         else:
             status.set_finished()
 
