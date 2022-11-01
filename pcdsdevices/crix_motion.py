@@ -181,7 +181,7 @@ class VLSOptics(GroupDevice):
         cb=18.100,
         cc=27.677,
         pol=1,
-        limits=(5.159, 42.153),
+        limits=(5.278, 41.882),
         kind='hinted',
     )
     grating = Cpt(
