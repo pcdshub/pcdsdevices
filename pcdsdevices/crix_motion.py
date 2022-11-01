@@ -179,9 +179,9 @@ class VLSOptics(GroupDevice):
         "CRIX:VLS:MMS:MP",
         ca=-0.7569,
         cb=18.100,
-        cc=27.677,
+        cc=27.667,
         pol=1,
-        limits=(5.278, 41.882),
+        limits=(5.275, 41.882),
         kind='hinted',
     )
     grating = Cpt(
