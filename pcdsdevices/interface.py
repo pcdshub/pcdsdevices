@@ -1668,11 +1668,12 @@ class LightpathMixin(Device):
 
             def calc_lightpath_state(self, sig1=None, sig2=None):
                 # Logic, calculations using sig1, sig2
-                status = LightpathStatus(
-                    inserted=True, removed=False,
-                    transmission=0.0, output_branch='L3'
+                state = LightpathState(
+                    inserted=True,
+                    removed=False,
+                    output={self.output_branches[0]: 1.0}
                 )
-                return status
+                return state
 
         dev = MyDevice('PREFIX', name='dev', input_branches=['L0'],
                        output_branches=['L0'])
