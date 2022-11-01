@@ -177,11 +177,11 @@ class VLSOptics(GroupDevice):
     mirror = Cpt(
         QuadraticBeckhoffMotor,
         "CRIX:VLS:MMS:MP",
-        ca=-0.2479,
-        cb=18.09,
-        cc=33.85,
+        ca=-0.7569,
+        cb=18.100,
+        cc=27.677,
         pol=1,
-        limits=(-31.99, 41.42),
+        limits=(5.159, 42.153),
         kind='hinted',
     )
     grating = Cpt(
