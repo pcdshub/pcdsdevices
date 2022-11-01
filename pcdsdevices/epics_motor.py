@@ -1009,8 +1009,10 @@ class BeckhoffAxis(EpicsMotorInterface):
 
         See ophydobj.subscribe for full details.
 
-        This is a full re-implementation of subscribe for custom error
-        handling. Unlike during EpicsMotor's move, the move status will
+        This is a thin wrapper over subscribe for custom error handling
+        to intercept the normal end of move handler.
+
+        Unlike during EpicsMotor's move, the move status will
         be set to the Beckhoff error message if there is one.
         The move will be marked as successful otherwise.
 
