@@ -1022,10 +1022,14 @@ class BeckhoffAxis(EpicsMotorInterface):
         the error logic in _move_changed.
         """
         # Mutate subscribe appropriately if this is the exact sub req done
+        # Or if it's a similar one using non-deprecated set_finished
         # See PositionerBase.move
         if all((
             event_type == self._SUB_REQ_DONE,
-            callback.__qualname__ == 'StatusBase._finished',
+            callback.__qualname__ in (
+                'StatusBase._finished',
+                'StatusBase.set_finished',
+            ),
             not run,
         )):
             # Find the actual status object
