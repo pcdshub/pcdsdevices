@@ -326,6 +326,7 @@ def test_beckhoff_error_status(fake_beckhoff: BeckhoffAxis):
         fake_beckhoff.motor_done_move.sim_put(0)
         fake_beckhoff.user_readback.sim_put(dest)
         fake_beckhoff.plc.status.sim_put(error)
+        fake_beckhoff.plc.err_bool.sim_put(bool(error))
         fake_beckhoff.plc.err_code.sim_put(code)
         fake_beckhoff.motor_done_move.sim_put(1)
         return status
