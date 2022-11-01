@@ -7,8 +7,8 @@ from ..crix_motion import VLSOpticsSim
 
 # Calculation answers
 # Component = (mm, mrad)
-vls_mirror_lower = (-3.4743, -31.99)
-vls_mirror_upper = (0.4209, 41.42)
+vls_mirror_lower = (-1.179, 5.159)
+vls_mirror_upper = (0.813, 42.153)
 vls_grating_lower = (-1.74, 51.8462)
 vls_grating_upper = (1.2, 3.5410)
 
