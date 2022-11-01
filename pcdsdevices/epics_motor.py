@@ -956,6 +956,8 @@ class BeckhoffAxisPLC(Device):
     """Error handling for the Beckhoff Axis PLC code."""
     status = Cpt(PytmcSignal, 'sErrorMessage', io='i', kind='normal',
                  string=True, doc='PLC error or warning')
+    err_bool = Cpt(PytmcSignal, 'bError', io='i', kind='normal',
+                   doc='True if there is some sort of error.')
     err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal',
                    doc='Current NC error code')
     cmd_err_reset = Cpt(EpicsSignal, 'bReset', kind='normal',
@@ -1019,11 +1021,11 @@ class BeckhoffAxis(EpicsMotorInterface):
         """
         # Mutate subscribe appropriately if this is the exact sub req done
         # See PositionerBase.move
-        if all(
+        if all((
             event_type == self._SUB_REQ_DONE,
             callback.__qualname__ == 'StatusBase._finished',
             not run,
-        ):
+        )):
             # Find the actual status object
             status = callback.__self__
             # Slip in the more specific end move handler
@@ -1051,8 +1053,11 @@ class BeckhoffAxis(EpicsMotorInterface):
         status : MoveStatus
             The status that we need to update.
         """
-        error_message = self.plc.status.get()
-        if error_message:
+        has_error = self.plc.err_bool.get()
+        if has_error:
+            error_message = self.plc.status.get()
+            if not error_message:
+                error_message = 'Unspecified error'
             error_code = self.plc.err_code.get()
             if error_code > 0:
                 error_message = f"{hex(error_code)}: {error_message}"
