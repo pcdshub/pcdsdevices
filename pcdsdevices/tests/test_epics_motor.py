@@ -40,6 +40,7 @@ def motor_setup(motor):
         motor.high_limit_travel.put(100)
         motor.low_limit_travel.put(-100)
         motor.user_setpoint.sim_set_limits((-100, 100))
+        motor.velocity.sim_put(10)
 
     if isinstance(motor, PCDSMotorBase):
         motor.motor_spg.sim_put(2)
@@ -315,6 +316,20 @@ def test_beckhoff_error_clear(fake_beckhoff):
     assert m.plc.cmd_err_reset.get() == 1
     m.stage()
     m.unstage()
+
+
+def test_beckhoff_velo_error(fake_beckhoff):
+    mot = fake_beckhoff
+    # Zero velo move fails silently if we don't catch it here
+    mot.velocity.sim_put(0)
+    low_limit = mot.low_limit_travel.get()
+    high_limit = mot.high_limit_travel.get()
+    for num in range(low_limit + 1, high_limit):
+        with pytest.raises(RuntimeError):
+            mot.check_value(num)
+
+    with pytest.raises(RuntimeError):
+        mot.move((low_limit + high_limit) / 2, wait=False)
 
 
 def test_motor_factory():
