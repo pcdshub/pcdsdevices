@@ -1054,7 +1054,7 @@ class BeckhoffAxis(EpicsMotorInterface):
         velo = self.velocity.get()
         if velo <= 0:
             raise RuntimeError(
-                f'Motor velocity is {velo}, which is not valid. '
+                f'{self.name} velocity is {velo}, which is not valid. '
                 'Please configure a nonzero, positive velocity.'
             )
 
