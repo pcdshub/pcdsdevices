@@ -1114,6 +1114,26 @@ class BeckhoffAxis(EpicsMotorInterface):
 
         return status
 
+    def check_value(self, pos: float) -> None:
+        """
+        Check that the motor can reach the position.
+
+        Inherits limits and related checks from parent classes.
+        Adds one additional check: the velocity must be nonzero
+        for a move to succeed. Otherwise, the move fails silently.
+
+        Beckhoff EPICS motors at LCLS that have never been initialized
+        before default to a zero velocity for safety. This check
+        lets the user know why the motor does not move.
+        """
+        super().check_value(pos)
+        velo = self.velocity.get()
+        if velo <= 0:
+            raise RuntimeError(
+                f'{self.name} velocity is {velo}, which is not valid. '
+                'Please configure a nonzero, positive velocity.'
+            )
+
 
 class BeckhoffAxisPLC_Pre140(BeckhoffAxisPLC):
     """
