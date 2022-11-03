@@ -1,10 +1,11 @@
 """
 Module for LCLS's special motor records.
 """
+import functools
 import logging
 import shutil
 import subprocess
-from typing import ClassVar, Optional
+from typing import Callable, ClassVar, Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -955,6 +956,8 @@ class BeckhoffAxisPLC(Device):
     """Error handling for the Beckhoff Axis PLC code."""
     status = Cpt(PytmcSignal, 'sErrorMessage', io='i', kind='normal',
                  string=True, doc='PLC error or warning')
+    err_bool = Cpt(PytmcSignal, 'bError', io='i', kind='normal',
+                   doc='True if there is some sort of error.')
     err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal',
                    doc='Current NC error code')
     cmd_err_reset = Cpt(EpicsSignal, 'bReset', kind='normal',
@@ -994,6 +997,79 @@ class BeckhoffAxis(EpicsMotorInterface):
     # Clear the normal homing PVs that don't really work here
     home_forward = None
     home_reverse = None
+
+    def subscribe(
+        self,
+        callback: Callable,
+        event_type: Optional[str] = None,
+        run: bool = True,
+    ) -> int:
+        """
+        Subscribe to events this event_type generates.
+
+        See ophydobj.subscribe for full details.
+
+        This is a thin wrapper over subscribe for custom error handling
+        to intercept the normal end of move handler.
+
+        Unlike during EpicsMotor's move, the move status will
+        be set to the Beckhoff error message if there is one.
+        The move will be marked as successful otherwise.
+
+        Possibly this was unnecessary with an ophyd PR to allow me to
+        customize the error handling, but without that this seems like
+        the easiest way to sidestep the status._finished call and ignore
+        the error logic in _move_changed.
+        """
+        # Mutate subscribe appropriately if this is the exact sub req done
+        # Or if it's a similar one using non-deprecated set_finished
+        # See PositionerBase.move
+        if all((
+            event_type == self._SUB_REQ_DONE,
+            callback.__qualname__ in (
+                'StatusBase._finished',
+                'StatusBase.set_finished',
+            ),
+            not run,
+        )):
+            # Find the actual status object
+            status = callback.__self__
+            # Slip in the more specific end move handler
+            return super().subscribe(
+                functools.partial(self._end_move_cb, status),
+                event_type=self._SUB_REQ_DONE,
+                run=False,
+            )
+        # Otherwise, normal subscribe
+        return super().subscribe(
+            callback=callback,
+            event_type=event_type,
+            run=run,
+        )
+
+    def _end_move_cb(self, status: MoveStatus, **kwargs) -> None:
+        """
+        Special end of move handling to set the status for BeckhoffAxis.
+
+        If the BeckhoffAxis has an error message, include it and mark failure.
+        Otherwise, set success.
+
+        Parameters
+        ----------
+        status : MoveStatus
+            The status that we need to update.
+        """
+        has_error = self.plc.err_bool.get()
+        if has_error:
+            error_message = self.plc.status.get()
+            if not error_message:
+                error_message = 'Unspecified error'
+            error_code = self.plc.err_code.get()
+            if error_code > 0:
+                error_message = f"{hex(error_code)}: {error_message}"
+            status.set_exception(RuntimeError(error_message))
+        else:
+            status.set_finished()
 
     def clear_error(self):
         """Clear any active motion errors on this axis."""

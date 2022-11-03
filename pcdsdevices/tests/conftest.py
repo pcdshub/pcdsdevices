@@ -8,7 +8,7 @@ import sys
 import warnings
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
-from typing import Dict
+from typing import Any, Callable, Dict, List, Optional
 
 import ophyd
 import pytest
@@ -113,14 +113,17 @@ def find_pcdsdevices_submodules() -> Dict[str, ModuleType]:
     return modules
 
 
-def find_all_classes(classes) -> list:
+def find_all_classes(classes, skip: Optional[List[str]] = None) -> List[Any]:
     """Find all device classes in pcdsdevices and return them as a list."""
+    skip = skip or []
+
     def should_include(obj):
         return (
             inspect.isclass(obj) and
             issubclass(obj, classes) and
             not obj.__module__.startswith("ophyd") and
-            not obj.__module__.startswith("pcdsdevices.tests")
+            not obj.__module__.startswith("pcdsdevices.tests") and
+            obj.__name__ not in skip
         )
 
     def sort_key(cls):
@@ -135,12 +138,18 @@ def find_all_classes(classes) -> list:
     return list(sorted(set(devices), key=sort_key))
 
 
-def find_all_device_classes() -> list:
-    """Find all device classes in pcdsdevices and return them as a list."""
-    return find_all_classes(ophyd.Device)
+def find_all_device_classes(
+    skip: Optional[List[str]] = None
+) -> List[ophyd.Device]:
+    """
+    Find all device classes in pcdsdevices and return them as a list.
+    Skip any devices with their name in ``skip``
+    """
+    skip = skip or []
+    return find_all_classes(ophyd.Device, skip=skip)
 
 
-def find_all_callables() -> list:
+def find_all_callables() -> List[Callable]:
     """Find all callables in pcdsdevices and return them as a list."""
     def should_include(obj):
         try:
