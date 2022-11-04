@@ -2,6 +2,36 @@ Release History
 ###############
 
 
+v7.1.0 (2022-11-04)
+===================
+
+Device Updates
+--------------
+- Allow ``BeckhoffAxis`` devices to report the NC error from the
+  beckhoff PLC as part of the move status.
+- Throw a clear error when the user tries to move a ``BeckhoffAxis`` that has
+  the default velocity (zero), rather than failing silently.
+
+Bugfixes
+--------
+- Fix an issue where ``BeckhoffAxis`` devices would show error status
+  after nearly any move, even those that ended normally.
+- fixes _find_matchiing_range_indices method signature to include self
+
+Maintenance
+-----------
+- New quadratic equation and soft limits for VLS focus mirror
+- updates example in docstring of LightpathMixin
+- adds argument to ``conftest.find_all_device_classes`` that allows specified device classes to be skipped.
+
+Contributors
+------------
+- tangkong
+- wwright-slac
+- zllentz
+
+
+
 v7.0.1 (2022-10-26)
 ===================
 
