@@ -11,6 +11,12 @@ Device Updates
   beckhoff PLC as part of the move status.
 - Throw a clear error when the user tries to move a ``BeckhoffAxis`` that has
   the default velocity (zero), rather than failing silently.
+- Adjust the ``BeckhoffAxis`` ``typhos`` templates to only show alarm state
+  from ``hinted`` components instead of all components. This reduces the noise
+  from an unresolved bug with alarm states that get stuck in a fake "major"
+  state for monitors despite being cleared.
+- Slightly adjust the sizing on the ``BeckhoffAxis`` detailed ``typhos``
+  template so that the errors can be read.
 
 Bugfixes
 --------
@@ -28,6 +34,8 @@ Maintenance
 - Add argument to ``conftest.find_all_device_classes`` that allows specified
   device classes to be skipped. This is helpful for skipping interface classes
   that may not behave normally as independent devices.
+- Set ``typhos>=2.4.0`` in run_constrainted to make sure the typhos feature
+  required for the template update is available.
 
 Contributors
 ------------
