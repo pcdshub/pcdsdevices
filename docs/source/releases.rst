@@ -16,20 +16,24 @@ Bugfixes
 --------
 - Fix an issue where ``BeckhoffAxis`` devices would show error status
   after nearly any move, even those that ended normally.
-- fixes _find_matchiing_range_indices method signature to include self
+- Fix ``_find_matching_range_indices`` method signature to include self.
+  This was causing startup errors for the XRT mirrors.
 
 Maintenance
 -----------
-- New quadratic equation and soft limits for VLS focus mirror
-- updates example in docstring of LightpathMixin
-- adds argument to ``conftest.find_all_device_classes`` that allows specified device classes to be skipped.
+- Update quadratic equation and soft limits for VLS focus mirror. These were
+  no longer correct.
+- Update example in docstring of ``LightpathMixin``. The previous example was
+  from an earlier implementation of the ``lightpath`` interface.
+- Add argument to ``conftest.find_all_device_classes`` that allows specified
+  device classes to be skipped. This is helpful for skipping interface classes
+  that may not behave normally as independent devices.
 
 Contributors
 ------------
 - tangkong
 - wwright-slac
 - zllentz
-
 
 
 v7.0.1 (2022-10-26)
