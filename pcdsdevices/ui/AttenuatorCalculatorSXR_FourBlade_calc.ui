@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>661</width>
-    <height>686</height>
+    <width>660</width>
+    <height>503</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_7" stretch="1,1,1">
+  <layout class="QVBoxLayout" name="verticalLayout_7" stretch="1,1,0">
    <property name="spacing">
     <number>10</number>
    </property>
@@ -35,7 +35,7 @@
    <item>
     <widget class="QFrame" name="frame_2">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -43,7 +43,7 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>150</height>
+       <height>125</height>
       </size>
      </property>
      <property name="frameShape">
@@ -74,7 +74,7 @@
          <string>Photon Energy</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
+         <item alignment="Qt::AlignTop">
           <widget class="PyDMLabel" name="ActualEnergy">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -99,7 +99,7 @@
            </property>
           </widget>
          </item>
-         <item>
+         <item alignment="Qt::AlignTop">
           <widget class="PyDMEnumButton" name="EnergyEnum">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -118,7 +118,7 @@
            </property>
           </widget>
          </item>
-         <item>
+         <item alignment="Qt::AlignTop">
           <widget class="PyDMLineEdit" name="CustomPhotonEnergy">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -130,13 +130,25 @@
             <string/>
            </property>
            <property name="rules" stdset="0">
-            <string>[{&quot;name&quot;: &quot;IfCustom&quot;, &quot;property&quot;: &quot;Visible&quot;, &quot;expression&quot;: &quot;ch[0] == 1&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${prefix}:SYS:EnergySource&quot;, &quot;trigger&quot;: true}]}]</string>
+            <string>[]</string>
            </property>
            <property name="precision" stdset="0">
             <number>0</number>
            </property>
            <property name="showUnits" stdset="0">
             <bool>true</bool>
+           </property>
+           <property name="precisionFromPV" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="alarmSensitiveContent" stdset="0">
+            <bool>false</bool>
+           </property>
+           <property name="alarmSensitiveBorder" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="PyDMToolTip" stdset="0">
+            <string/>
            </property>
            <property name="channel" stdset="0">
             <string>ca://${prefix}:SYS:CustomPhotonEnergy</string>
@@ -152,8 +164,27 @@
          <string>Transmission</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
+         <item alignment="Qt::AlignVCenter">
+          <widget class="QLabel" name="DesiredTransmissionLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Desired transmission:</string>
+           </property>
+          </widget>
+         </item>
+         <item alignment="Qt::AlignVCenter">
           <widget class="PyDMLineEdit" name="DesiredTransmission">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="toolTip">
             <string/>
            </property>
@@ -186,8 +217,8 @@
          <bool>false</bool>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <widget class="PyDMEnumButton" name="PyDMEnumButton_2">
+         <item alignment="Qt::AlignVCenter">
+          <widget class="PyDMEnumButton" name="CalculationModeEnumButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -233,7 +264,7 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item alignment="Qt::AlignTop">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Calculation Results</string>
@@ -261,14 +292,14 @@
           <enum>QLayout::SetMinimumSize</enum>
          </property>
          <item>
-          <widget class="QLabel" name="label">
+          <widget class="QLabel" name="label_a">
            <property name="text">
             <string>At</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="PyDMLabel" name="ActualEnergy_2">
+          <widget class="PyDMLabel" name="CalculationEnergyLabel">
            <property name="font">
             <font>
              <weight>75</weight>
@@ -296,7 +327,7 @@
           </widget>
          </item>
          <item alignment="Qt::AlignLeft">
-          <widget class="QLabel" name="label_2">
+          <widget class="QLabel" name="label_best_config">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -309,7 +340,7 @@
           </widget>
          </item>
          <item alignment="Qt::AlignLeft">
-          <widget class="PyDMLabel" name="ActualEnergy_3">
+          <widget class="PyDMLabel" name="CalculationTransmission">
            <property name="font">
             <font>
              <weight>75</weight>
@@ -337,14 +368,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_3">
+          <widget class="QLabel" name="label_with_mode">
            <property name="text">
             <string>with mode</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="PyDMLabel" name="ActualEnergy_4">
+          <widget class="PyDMLabel" name="CalculationMode">
            <property name="font">
             <font>
              <weight>75</weight>
@@ -372,7 +403,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_4">
+          <widget class="QLabel" name="label_is">
            <property name="text">
             <string>is:</string>
            </property>
@@ -393,6 +424,146 @@
          </item>
         </layout>
        </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="PyDMLabel" name="PyDMLabel_7">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="rules" stdset="0">
+           <string>[{&quot;name&quot;: &quot;FilterText&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;True&quot;, &quot;expression&quot;: &quot;ch[0][0] == 1 and \&quot;Removed\&quot; or f\&quot;Insert {ch[0][0] - 1}\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${prefix}:SYS:BestConfiguration_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: false}]}]</string>
+          </property>
+          <property name="precision" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="showUnits" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="precisionFromPV" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="alarmSensitiveContent" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alarmSensitiveBorder" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="PyDMToolTip" stdset="0">
+           <string/>
+          </property>
+          <property name="channel" stdset="0">
+           <string>ca://${prefix}:SYS:BestConfiguration_RBV.[0]</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="PyDMLabel" name="PyDMLabel_8">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="rules" stdset="0">
+           <string>[{&quot;name&quot;: &quot;FilterText&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;True&quot;, &quot;expression&quot;: &quot;ch[0][1] == 1 and \&quot;Removed\&quot; or f\&quot;Insert {ch[0][1] - 1}\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${prefix}:SYS:BestConfiguration_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: false}]}]</string>
+          </property>
+          <property name="precision" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="showUnits" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="precisionFromPV" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="alarmSensitiveContent" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alarmSensitiveBorder" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="PyDMToolTip" stdset="0">
+           <string/>
+          </property>
+          <property name="channel" stdset="0">
+           <string>ca://${prefix}:SYS:BestConfiguration_RBV.[1]</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="PyDMLabel" name="PyDMLabel_9">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="rules" stdset="0">
+           <string>[{&quot;name&quot;: &quot;FilterText&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;True&quot;, &quot;expression&quot;: &quot;ch[0][2] == 1 and \&quot;Removed\&quot; or f\&quot;Insert {ch[0][2] - 1}\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${prefix}:SYS:BestConfiguration_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: false}]}]</string>
+          </property>
+          <property name="precision" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="showUnits" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="precisionFromPV" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="alarmSensitiveContent" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alarmSensitiveBorder" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="PyDMToolTip" stdset="0">
+           <string/>
+          </property>
+          <property name="channel" stdset="0">
+           <string>ca://${prefix}:SYS:BestConfiguration_RBV.[2]</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="PyDMLabel" name="PyDMLabel_10">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="rules" stdset="0">
+           <string>[{&quot;name&quot;: &quot;FilterText&quot;, &quot;property&quot;: &quot;Text&quot;, &quot;initial_value&quot;: &quot;True&quot;, &quot;expression&quot;: &quot;ch[0][3] == 1 and \&quot;Removed\&quot; or f\&quot;Insert {ch[0][3] - 1}\&quot;&quot;, &quot;channels&quot;: [{&quot;channel&quot;: &quot;ca://${prefix}:SYS:BestConfiguration_RBV&quot;, &quot;trigger&quot;: true, &quot;use_enum&quot;: false}]}]</string>
+          </property>
+          <property name="precision" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="showUnits" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="precisionFromPV" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="alarmSensitiveContent" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="alarmSensitiveBorder" stdset="0">
+           <bool>true</bool>
+          </property>
+          <property name="PyDMToolTip" stdset="0">
+           <string/>
+          </property>
+          <property name="channel" stdset="0">
+           <string>ca://${prefix}:SYS:BestConfiguration_RBV.[3]</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="PyDMByteIndicator" name="ActiveConfig_2">
@@ -417,14 +588,29 @@
         <property name="toolTip">
          <string/>
         </property>
+        <property name="alarmSensitiveContent" stdset="0">
+         <bool>false</bool>
+        </property>
+        <property name="alarmSensitiveBorder" stdset="0">
+         <bool>true</bool>
+        </property>
+        <property name="PyDMToolTip" stdset="0">
+         <string/>
+        </property>
         <property name="channel" stdset="0">
          <string>ca://${prefix}:SYS:BestConfigurationBitmask_RBV</string>
         </property>
         <property name="orientation" stdset="0">
          <enum>Qt::Horizontal</enum>
         </property>
+        <property name="showLabels" stdset="0">
+         <bool>true</bool>
+        </property>
         <property name="bigEndian" stdset="0">
          <bool>true</bool>
+        </property>
+        <property name="circles" stdset="0">
+         <bool>false</bool>
         </property>
         <property name="labelPosition" stdset="0">
          <enum>QTabWidget::South</enum>
@@ -432,12 +618,15 @@
         <property name="numBits" stdset="0">
          <number>4</number>
         </property>
+        <property name="shift" stdset="0">
+         <number>0</number>
+        </property>
         <property name="labels" stdset="0">
          <stringlist>
-          <string>04</string>
-          <string>03</string>
-          <string>02</string>
-          <string>01</string>
+          <string>Blade 04</string>
+          <string>Blade 03</string>
+          <string>Blade 02</string>
+          <string>Blade 01</string>
          </stringlist>
         </property>
        </widget>
