@@ -11,12 +11,6 @@ Device Updates
   beckhoff PLC as part of the move status.
 - Throw a clear error when the user tries to move a ``BeckhoffAxis`` that has
   the default velocity (zero), rather than failing silently.
-- Adjust the ``BeckhoffAxis`` ``typhos`` templates to only show alarm state
-  from ``hinted`` components instead of all components. This reduces the noise
-  from an unresolved bug with alarm states that get stuck in a fake "major"
-  state for monitors despite being cleared.
-- Slightly adjust the sizing on the ``BeckhoffAxis`` detailed ``typhos``
-  template so that the errors can be read.
 
 Bugfixes
 --------
@@ -41,6 +35,12 @@ Maintenance
   per-blade filters that the calculator will insert when "Apply Configuration"
   is clicked. The custom energy line edit will now remain visible regardless of
   the "Actual/Custom" Photon Energy selection.
+- Adjust the ``BeckhoffAxis`` ``typhos`` templates to only show alarm state
+  from ``hinted`` components instead of all components. This reduces the noise
+  from an unresolved bug with alarm states that get stuck in a fake "major"
+  state for monitors despite being cleared.
+- Slightly adjust the sizing on the ``BeckhoffAxis`` detailed ``typhos``
+  template so that the errors can be read.
 
 Contributors
 ------------
