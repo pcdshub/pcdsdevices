@@ -36,9 +36,15 @@ Maintenance
   that may not behave normally as independent devices.
 - Set ``typhos>=2.4.0`` in run_constrainted to make sure the typhos feature
   required for the template update is available.
+- Four blade SXR solid attenuator (AT1K4 and AT2K2) screens have been updated
+  to include all of the filters installed on each blade. It will also show the
+  per-blade filters that the calculator will insert when "Apply Configuration"
+  is clicked. The custom energy line edit will now remain visible regardless of
+  the "Actual/Custom" Photon Energy selection.
 
 Contributors
 ------------
+- klauer
 - tangkong
 - wwright-slac
 - zllentz
