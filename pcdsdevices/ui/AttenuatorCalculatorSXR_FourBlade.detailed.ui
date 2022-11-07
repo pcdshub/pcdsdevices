@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>569</width>
-    <height>812</height>
+    <width>659</width>
+    <height>1926</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -118,6 +118,40 @@
     </widget>
    </item>
    <item>
+    <widget class="PyDMEmbeddedDisplay" name="AllFilterInfo">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="macros" stdset="0">
+      <string>{}</string>
+     </property>
+     <property name="filename" stdset="0">
+      <string>AttenuatorCalculatorSXR_FourBlade_all_filters.ui</string>
+     </property>
+     <property name="loadWhenShown" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="disconnectWhenHidden" stdset="0">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -134,14 +168,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TyphosDisplayTitle</class>
-   <extends>QFrame</extends>
-   <header>typhos.display</header>
-  </customwidget>
-  <customwidget>
    <class>PyDMEmbeddedDisplay</class>
    <extends>QFrame</extends>
    <header>pydm.widgets.embedded_display</header>
+  </customwidget>
+  <customwidget>
+   <class>TyphosDisplayTitle</class>
+   <extends>QFrame</extends>
+   <header>typhos.display</header>
   </customwidget>
  </customwidgets>
  <resources/>
