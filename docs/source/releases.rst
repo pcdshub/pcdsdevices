@@ -2,6 +2,54 @@ Release History
 ###############
 
 
+v7.1.0 (2022-11-04)
+===================
+
+Device Updates
+--------------
+- Allow ``BeckhoffAxis`` devices to report the NC error from the
+  beckhoff PLC as part of the move status.
+- Throw a clear error when the user tries to move a ``BeckhoffAxis`` that has
+  the default velocity (zero), rather than failing silently.
+
+Bugfixes
+--------
+- Fix an issue where ``BeckhoffAxis`` devices would show error status
+  after nearly any move, even those that ended normally.
+- Fix ``_find_matching_range_indices`` method signature to include self.
+  This was causing startup errors for the XRT mirrors.
+
+Maintenance
+-----------
+- Update quadratic equation and soft limits for VLS focus mirror. These were
+  no longer correct.
+- Update example in docstring of ``LightpathMixin``. The previous example was
+  from an earlier implementation of the ``lightpath`` interface.
+- Add argument to ``conftest.find_all_device_classes`` that allows specified
+  device classes to be skipped. This is helpful for skipping interface classes
+  that may not behave normally as independent devices.
+- Set ``typhos>=2.4.0`` in run_constrainted to make sure the typhos feature
+  required for the template update is available.
+- Four blade SXR solid attenuator (AT1K4 and AT2K2) screens have been updated
+  to include all of the filters installed on each blade. It will also show the
+  per-blade filters that the calculator will insert when "Apply Configuration"
+  is clicked. The custom energy line edit will now remain visible regardless of
+  the "Actual/Custom" Photon Energy selection.
+- Adjust the ``BeckhoffAxis`` ``typhos`` templates to only show alarm state
+  from ``hinted`` components instead of all components. This reduces the noise
+  from an unresolved bug with alarm states that get stuck in a fake "major"
+  state for monitors despite being cleared.
+- Slightly adjust the sizing on the ``BeckhoffAxis`` detailed ``typhos``
+  template so that the errors can be read.
+
+Contributors
+------------
+- klauer
+- tangkong
+- wwright-slac
+- zllentz
+
+
 v7.0.1 (2022-10-26)
 ===================
 
