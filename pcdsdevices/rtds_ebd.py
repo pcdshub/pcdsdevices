@@ -54,7 +54,7 @@ class RTDSX0ThreeStage(BaseInterface, LightpathMixin):
     mmsz = Cpt(BeckhoffAxis, ':MMS:Z', kind='normal')
 
     # Determine if the y stage is at it's outer limit switch
-    open_limit = Cpt(EpicsSignalRO, ':MMS:Y:PLC:bLimitBackwardEnable_RBV', kind='normal',
+    open_limit = Cpt(EpicsSignalRO, ':MMS:Y.HLS', kind='normal',
                      doc='Reads if the y-stage is at its outer limit.')
     lightpath_cpts = ['open_limit']
 
