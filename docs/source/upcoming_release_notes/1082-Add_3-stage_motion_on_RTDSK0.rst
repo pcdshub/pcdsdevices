@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- Mike Estrada (mkestra)
+- mkestra
