@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 ------------
-- RTDSX0ThreeStage class; 3DoF motion stage for SOlid Drilling experiments 
+- RTDSX0ThreeStage class; 3DoF motion stage for Solid Drilling experiments
 
 Bugfixes
 --------
