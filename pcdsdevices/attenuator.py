@@ -902,6 +902,41 @@ class AttenuatorCalculatorSXR_Blade(AttenuatorCalculatorFilter):
 '''
 
 
+class AttenuatorCalculatorSXR_TwoBlade(AttenuatorCalculatorBase):
+    """
+    2 blade x 8 filter solid attenuator variant from the L2SI project.
+
+    Parameters
+    ----------
+    prefix : str
+        Full Solid Attenuator base PV.
+
+    name : str
+        Alias for the Solid Attenuator.
+    """
+
+    tab_component_names = True
+    first_filter = 1
+    num_filters = 4
+    # Not using "DDC" here, so the parent is `self`:
+    _filter_parent = None
+    _filter_index_to_attr = {
+        1: 'blade_01',
+        2: 'blade_02',
+    }
+
+    blade_01 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:01:', index=1)
+    blade_02 = Cpt(AttenuatorCalculatorSXR_Blade, ':AXIS:02:', index=2)
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the attenuator.
+        """
+        return utils.combine_status_info(
+            self, status_info, self._filter_index_to_attr.values(),
+        )
+
+
 class AttenuatorCalculatorSXR_FourBlade(AttenuatorCalculatorBase):
     """
     4 blade x 8 filter solid attenuator variant from the L2SI project.
@@ -1104,6 +1139,169 @@ Transmission for 3rd harmonic (E={energy_3} keV): {transmission_3}
 """
 
 
+class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC,
+                                      LightpathMixin):
+    """
+    Ladder-style solid attenuator variant from the LCLS-II L2SI project.
+
+    This has 2 blades, each with up to 8 filters each.
+    This class includes a calculator to aid in determining which filters to
+    insert for a given attenuation at a specific energy.
+    This class also includes control for the Kurt J. Lesker LBD stage.
+
+    Parameters
+    ----------
+    prefix : str
+        Solid Attenuator base PV.
+
+    name : str
+        Alias for the Solid Attenuator.
+
+    calculator_prefix : str
+        The prefix for the calculator PVs.
+    """
+
+    # QIcon for UX
+    _icon = 'fa.barcode'
+    tab_component_names = True
+
+    # Register that all blades are needed for lightpath calc
+    lightpath_cpts = [f'blade_{idx:02}.state.state' for idx in range(1, 3)]
+
+    # Summary for lightpath view
+    num_in = Cpt(InternalSignal, kind='hinted')
+    num_out = Cpt(InternalSignal, kind='hinted')
+
+    calculator = UCpt(AttenuatorCalculatorSXR_TwoBlade)
+    blade_01 = Cpt(SXRLadderAttenuatorBlade, ':MMS:01')
+    blade_02 = Cpt(SXRLadderAttenuatorBlade, ':MMS:02')
+    lbd_blade = Cpt(FEESolidAttenuatorBlade, ':MMS:03')
+
+    def __init__(self, *args, limits=None, **kwargs):
+        UCpt.collect_prefixes(self, kwargs)
+        limits = limits or (0.0, 1.0)
+        super().__init__(*args, limits=limits, **kwargs)
+
+    @property
+    def setpoint(self):
+        """(PVPositioner compat) - use desired transmission as setpoint."""
+        return self.calculator.desired_transmission
+
+    @property
+    def readback(self):
+        """(PVPositioner compat) - use actual transmission as readback."""
+        return self.calculator.actual_transmission
+
+    @property
+    def actuate(self):
+        """(PVPositioner compat) - use apply_config as an actuation signal."""
+        return self.calculator.apply_config
+
+    def _setup_move(self, position):
+        """(PVPositioner compat) - calculate, then move."""
+        # Do not call `calculator.calculate()` here to respect the current
+        # calculator settings:
+        self.calculator.desired_transmission.put(position)
+        self.calculator.run_calculation.put(1, wait=True)
+        return super()._setup_move(position)
+
+    def get_lightpath_state(self, use_cache=True) -> LightpathState:
+        """
+        Grab slightly different PV values for use in same inout calc fn
+        The state is nested one device deeper than LightpathInOutCptMixin
+        expects.
+        """
+        if (not use_cache) or (self._cached_state is None):
+            lightpath_kwargs = {}
+            lp_sigs = self.lightpath_summary._signals.keys()
+            for sig in lp_sigs:
+                # want to get name of blade_0x from dev_blade_0x_state_state
+                cpt_name = sig.name.removeprefix(self.name + '_')
+                cpt_name = cpt_name.removesuffix('_state_state')
+                lightpath_kwargs[cpt_name] = sig.get()
+
+            self._cached_state = self.calc_lightpath_state(**lightpath_kwargs)
+
+        return self._cached_state
+
+    def calc_lightpath_state(self, **lightpath_kwargs) -> LightpathState:
+        # Repeat lightpath logic to extract num_in, num_out
+        in_check = []
+        out_check = []
+        trans_check = []
+        for sig_name, sig_value in lightpath_kwargs.items():
+            # InOut positioner is not the parent component, but the .state
+            obj = getattr(self, sig_name).state
+            if not obj._state_initialized:
+                # This would prevent make check_inserted, etc. fail
+                utils.schedule_task(self._calc_cache_lightpath_state,
+                                    delay=2.0)
+
+                return LightpathState(
+                    inserted=True,
+                    removed=True,
+                    output={self.output_branches[0]: 1}
+                )
+            # get state of the InOutPositioner and check status
+            in_check.append(obj.check_inserted(sig_value))
+            out_check.append(obj.check_removed(sig_value))
+            trans_check.append(obj.check_transmission(sig_value))
+        self._inserted = any(in_check)
+        self._removed = all(out_check)
+        self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
+
+        self.num_in.put(in_check.count(True), force=True)
+        self.num_out.put(out_check.count(True), force=True)
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: self._transmission}
+        )
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the attenuator.
+        """
+        calc_status = status_info.get('calculator', {})
+        transmission = get_status_float(
+            calc_status, 'actual_transmission', 'value',
+            format='E', precision=3,
+        )
+        transmission_3 = get_status_float(
+            calc_status, 'actual_transmission_3omega', 'value',
+            format='E', precision=3,
+        )
+        energy = get_status_float(
+            calc_status, 'energy_actual', 'value',
+            scale=1e-3,
+        )
+        energy_3 = get_status_float(
+            calc_status, 'energy_actual', 'value',
+            scale=3 * 1e-3,
+        )
+        blade_names = [cpt.split('.', 1)[0] for cpt in self.lightpath_cpts]
+        cpt_states = [
+            get_status_value(
+                status_info, cpt, 'state', 'state', 'value',
+                default_value=0
+            )
+            for cpt in blade_names
+        ]
+
+        table = prettytable.PrettyTable()
+        table.field_names = ['State'] + list(blade_names)
+        for state in LadderBladeState:
+            row = [state.name] + ['X' if cpt_state == state.value else ''
+                                  for cpt_state in cpt_states]
+            table.add_row(row)
+
+        return f"""
+{table}
+Transmission (E={energy} keV): {transmission}
+Transmission for 3rd harmonic (E={energy_3} keV): {transmission_3}
+"""
+
+
 class AT1K4(AttenuatorSXR_Ladder):
     """
     AT1K4 solid attenuator variant from the LCLS-II L2SI project.
@@ -1111,6 +1309,29 @@ class AT1K4(AttenuatorSXR_Ladder):
     This has 4 blades, each with up to 8 filters each.
     This class includes a calculator to aid in determining which filters to
     insert for a given attenuation at a specific energy.
+
+    Parameters
+    ----------
+    prefix : str
+        Solid Attenuator base PV.
+
+    name : str
+        Alias for the Solid Attenuator.
+
+    calculator_prefix : str
+        The prefix for the calculator PVs.
+    """
+
+
+class AT1K2(AttenuatorSXR_LadderTwoBladeLBD):
+    """
+    AT1K2 solid attenuator variant from the LCLS-II L2SI project.
+
+    This has 2 blades, each with up to 8 filters each.
+    This class includes a calculator to aid in determining which filters to
+    insert for a given attenuation at a specific energy.
+    This class also includes control for the Kurt J. Lesker LBD system,
+    allowing IN/OUT state for mirror mount.
 
     Parameters
     ----------
