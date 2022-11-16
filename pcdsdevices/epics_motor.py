@@ -794,7 +794,7 @@ class IMS(PCDSMotorBase):
     def save_configuration(self, cfgname=None):
         """
         Save the current motor settings into the database.
-        
+
         Parameters
         ----------
 
@@ -804,7 +804,7 @@ class IMS(PCDSMotorBase):
             None, change the motor entry to use the new configuration
             after it is saved. Default is None to save the settings to the
             current configuration.
-        
+
         Returns
         -------
         Nothing.  Raises an exception if the this fails for any reason.
