@@ -455,19 +455,32 @@ class LusiSlits(SlitsBase):
 
 
 class LusiSlitsWithBlades(LusiSlits):
+    """
+    LusiSlits with additional components for individual blade control.
 
-    # blade motors, eg. `XPP:SB3:MMS:01
-    blade_up = FCpt(IMS,'{self._mms_prefix}:{self._blade_pvs[0]}')
-    blade_down = FCpt(IMS,'{self._mms_prefix}:{self._blade_pvs[1]}')
-    blade_north = FCpt(IMS,'{self._mms_prefix}:{self._blade_pvs[2]}')
-    blade_south = FCpt(IMS,'{self._mms_prefix}:{self._blade_pvs[3]}')
+    Additional parameters to LusiSlits:
+    blade_pvs_idx: list
+        index of the MMS motor of the blade in the following order:
+            up, down, north, south
 
-    def __init__(self, prefix, blade_pvs, **kwargs):
-        self._blade_pvs = blade_pvs
+    The blades are assumend to have the same prefix as the Jaws, with the ":JAWS"
+    suffix replaced by ":MMS".
+
+    Example for xpp_sb3_slits: blade_pvs_idx = ['08','10,'08,'07']
+    """
+
+    # blade motors, eg. `XPP:SB3:MMS:08
+    blade_up = FCpt(IMS, '{self._mms_prefix}:{self._blade_pvs[0]}')
+    blade_down = FCpt(IMS, '{self._mms_prefix}:{self._blade_pvs[1]}')
+    blade_north = FCpt(IMS, '{self._mms_prefix}:{self._blade_pvs[2]}')
+    blade_south = FCpt(IMS, '{self._mms_prefix}:{self._blade_pvs[3]}')
+
+    def __init__(self, prefix, blade_pvs_idx, **kwargs):
+        self._blade_pvs = blade_pvs_idx
         self._mms_prefix = prefix.removesuffix(':JAWS')+':MMS'
         # initialize combined motors (width, center) via `JAWS`
         super().__init__(prefix, **kwargs)
-        
+
 
 class Slits(LusiSlits):
     # Should Probably Deprecate this name
