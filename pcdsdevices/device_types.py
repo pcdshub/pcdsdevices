@@ -41,7 +41,7 @@ from .sample_delivery import (HPLC, PCM, CoolerShaker, FlowIntegrator,
                               GasManifold, Selector)
 from .sensors import RTD, TwinCATThermocouple
 from .sequencer import EventSequencer
-from .slits import Slits
+from .slits import Slits, LusiSlitsWithBlades
 from .spectrometer import Gen1VonHamos4Crystal, Kmono, VonHamos4Crystal
 from .timetool import Timetool, TimetoolWithNav
 from .valve import GateValve, Stopper

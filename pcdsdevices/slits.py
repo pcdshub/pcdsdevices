@@ -475,6 +475,8 @@ class LusiSlitsWithBlades(LusiSlits):
     blade_north = FCpt(IMS, '{self._mms_prefix}:{self._blade_pvs[2]}')
     blade_south = FCpt(IMS, '{self._mms_prefix}:{self._blade_pvs[3]}')
 
+    tab_whitelist = ['blade_up', 'blade_down', 'blade_north', 'blade_south']
+
     def __init__(self, prefix, blade_pvs_idx, **kwargs):
         self._blade_pvs = blade_pvs_idx
         self._mms_prefix = prefix.removesuffix(':JAWS')+':MMS'
