@@ -791,28 +791,6 @@ class IMS(PCDSMotorBase):
         IMS._setup_and_check_pmgr()
         return self._pm.diff_config(self.prefix, cfgname)
 
-    def save_configuration(self, cfgname=None):
-        """
-        Save the current motor settings into the database.
-
-        Parameters
-        ----------
-
-        cfgname : str
-            The name of the configuration to save.  If this is None, use
-            the default configuration in the database.  If this is not
-            None, change the motor entry to use the new configuration
-            after it is saved. Default is None to save the settings to the
-            current configuration.
-
-        Returns
-        -------
-        Nothing.  Raises an exception if the this fails for any reason.
-        """
-
-        self._setup_and_check_pmgr()
-        self._pm.save_config(self.prefix, cfgname, parent='USR')
-
     @staticmethod
     def setup_pmgr():
         try:
