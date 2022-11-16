@@ -16,7 +16,6 @@ import logging
 from collections import OrderedDict
 
 from lightpath import LightpathState
-from ophyd import Device
 from ophyd import Component as Cpt
 from ophyd import DynamicDeviceComponent as DDCpt
 from ophyd import EpicsSignal, EpicsSignalRO
@@ -30,7 +29,6 @@ from ophyd.status import wait as status_wait
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
-from .device import UnrelatedComponent as UCpt
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
                         LightpathMixin, MvInterface)
 from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset, IMS
@@ -433,7 +431,7 @@ class LusiSlits(SlitsBase):
     block_cmd = Cpt(EpicsSignal, ':BLOCK', kind='omitted')
 
     lightpath_cpts = ['xwidth.readback', 'ywidth.readback']
- 
+
     def open(self):
         """Uses the built-in 'OPEN' record to move open the aperture."""
         self.open_cmd.put(1)
@@ -455,36 +453,19 @@ class LusiSlits(SlitsBase):
         return super().calc_lightpath_state(xwidth=xwidth_readback,
                                             ywidth=ywidth_readback)
 
-class SlitsBlades(BaseInterface, GroupDevice):
-
-    up = FCpt(IMS,'{self._pv_up}')
-    down = FCpt(IMS,'{self._pv_down}')
-    north = FCpt(IMS,'{self._pv_north}')
-    south = FCpt(IMS,'{self._pv_south}')
-
-    def __init__(self, blade_pvs, **kwargs):
-        """
-        blade_pvs: list of the blades' PVs in the following order:
-            up, down, north, south
-        """
-        #self._pv_up = blade_pvs[0] 
-        #self._pv_down = blade_pvs[1]
-        #self._pv_north = blade_pvs[2]
-        #self._pv_south = blade_pvs[3]
-        self._pv_up = blade_pvs.split('\'')[1]
-        self._pv_down = blade_pvs.split('\'')[3]
-        self._pv_north = blade_pvs.split('\'')[5]
-        self._pv_south = blade_pvs.split('\'')[7]
-        super().__init__('', **kwargs)
-
 
 class LusiSlitsWithBlades(LusiSlits):
-    
-    # blade motors
-    blades = FCpt(SlitsBlades, '{self._blade_pvs}')
-    
+
+    # blade motors, eg. `XPP:SB3:MMS:01
+    blade_up = FCpt(IMS,'{self._mms_prefix}:{self._blade_pvs[0]}')
+    blade_down = FCpt(IMS,'{self._mms_prefix}:{self._blade_pvs[1]}')
+    blade_north = FCpt(IMS,'{self._mms_prefix}:{self._blade_pvs[2]}')
+    blade_south = FCpt(IMS,'{self._mms_prefix}:{self._blade_pvs[3]}')
+
     def __init__(self, prefix, blade_pvs, **kwargs):
         self._blade_pvs = blade_pvs
+        self._mms_prefix = prefix.removesuffix(':JAWS')+':MMS'
+        # initialize combined motors (width, center) via `JAWS`
         super().__init__(prefix, **kwargs)
         
 
