@@ -1166,7 +1166,7 @@ class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC,
     tab_component_names = True
 
     # Register that all blades are needed for lightpath calc
-    lightpath_cpts = [f'blade_{idx:02}.state.state' for idx in range(1, 3)]
+    lightpath_cpts = [f'blade_{idx:02}.state.state' for idx in range(1, 4)]
 
     # Summary for lightpath view
     num_in = Cpt(InternalSignal, kind='hinted')
@@ -1175,7 +1175,8 @@ class AttenuatorSXR_LadderTwoBladeLBD(FltMvInterface, PVPositionerPC,
     calculator = UCpt(AttenuatorCalculatorSXR_TwoBlade)
     blade_01 = Cpt(SXRLadderAttenuatorBlade, ':MMS:01')
     blade_02 = Cpt(SXRLadderAttenuatorBlade, ':MMS:02')
-    lbd_blade = Cpt(FEESolidAttenuatorBlade, ':MMS:03')
+    # LBD Stage
+    blade_03 = Cpt(FEESolidAttenuatorBlade, ':MMS:03')
 
     def __init__(self, *args, limits=None, **kwargs):
         UCpt.collect_prefixes(self, kwargs)
