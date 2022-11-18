@@ -11,11 +11,11 @@ Features
 
 Device Updates
 --------------
-- N/A
+- Update LusiSlits to include individual blade controls.
 
 New Devices
 -----------
-- LusiSlitsWithBlades
+- N/A
 
 Bugfixes
 --------
