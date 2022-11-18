@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- espov, Robert Tang-Kong
+- espov, tangkong
