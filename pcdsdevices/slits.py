@@ -29,7 +29,7 @@ from ophyd.status import wait as status_wait
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
-from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset
+from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset, PCDSMotorBase
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
                         LightpathMixin, MvInterface)
 from .pmps import TwinCATStatePMPS
@@ -424,12 +424,19 @@ class LusiSlits(SlitsBase):
     xcenter = Cpt(LusiSlitPositioner, '', slit_type='XCENTER', kind='normal')
     ycenter = Cpt(LusiSlitPositioner, '', slit_type='YCENTER', kind='normal')
 
+    # Individual blade aliases
+    blade_top = Cpt(PCDSMotorBase, ':TOP', kind='normal')
+    blade_bottom = Cpt(PCDSMotorBase, ':BOTTOM', kind='normal')
+    blade_north = Cpt(PCDSMotorBase, ':NORTH', kind='normal')
+    blade_south = Cpt(PCDSMotorBase, ':SOUTH', kind='normal')
+
     # Local PVs
     blocked = Cpt(EpicsSignalRO, ':BLOCKED', kind='omitted')
     open_cmd = Cpt(EpicsSignal, ':OPEN', kind='omitted')
     close_cmd = Cpt(EpicsSignal, ':CLOSE', kind='omitted')
     block_cmd = Cpt(EpicsSignal, ':BLOCK', kind='omitted')
 
+    tab_whitelist = ['blade_top', 'blade_bottom', 'blade_north', 'blade_south']
     lightpath_cpts = ['xwidth.readback', 'ywidth.readback']
 
     def open(self):
