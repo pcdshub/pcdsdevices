@@ -29,9 +29,9 @@ from ophyd.status import wait as status_wait
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
+from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset, PCDSMotorBase
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
                         LightpathMixin, MvInterface)
-from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset, IMS
 from .pmps import TwinCATStatePMPS
 from .sensors import RTD, TwinCATTempSensor
 from .signal import NotImplementedSignal, PytmcSignal
@@ -424,12 +424,19 @@ class LusiSlits(SlitsBase):
     xcenter = Cpt(LusiSlitPositioner, '', slit_type='XCENTER', kind='normal')
     ycenter = Cpt(LusiSlitPositioner, '', slit_type='YCENTER', kind='normal')
 
+    # Individual blade aliases
+    blade_top = Cpt(PCDSMotorBase, ':TOP', kind='normal')
+    blade_bottom = Cpt(PCDSMotorBase, ':BOTTOM', kind='normal')
+    blade_north = Cpt(PCDSMotorBase, ':NORTH', kind='normal')
+    blade_south = Cpt(PCDSMotorBase, ':SOUTH', kind='normal')
+
     # Local PVs
     blocked = Cpt(EpicsSignalRO, ':BLOCKED', kind='omitted')
     open_cmd = Cpt(EpicsSignal, ':OPEN', kind='omitted')
     close_cmd = Cpt(EpicsSignal, ':CLOSE', kind='omitted')
     block_cmd = Cpt(EpicsSignal, ':BLOCK', kind='omitted')
 
+    tab_whitelist = ['blade_top', 'blade_bottom', 'blade_north', 'blade_south']
     lightpath_cpts = ['xwidth.readback', 'ywidth.readback']
 
     def open(self):
@@ -452,36 +459,6 @@ class LusiSlits(SlitsBase):
         """widths have different names due to different positioner class"""
         return super().calc_lightpath_state(xwidth=xwidth_readback,
                                             ywidth=ywidth_readback)
-
-
-class LusiSlitsWithBlades(LusiSlits):
-    """
-    LusiSlits with additional components for individual blade control.
-
-    Additional parameters to LusiSlits:
-    blade_pvs_idx: list
-        index of the MMS motor of the blade in the following order:
-            up, down, north, south
-
-    The blades are assumend to have the same prefix as the Jaws, with the ":JAWS"
-    suffix replaced by ":MMS".
-
-    Example for xpp_sb3_slits: blade_pvs_idx = ['08','10,'08,'07']
-    """
-
-    # blade motors, eg. `XPP:SB3:MMS:08
-    blade_up = FCpt(IMS, '{self._mms_prefix}:{self._blade_pvs[0]}')
-    blade_down = FCpt(IMS, '{self._mms_prefix}:{self._blade_pvs[1]}')
-    blade_north = FCpt(IMS, '{self._mms_prefix}:{self._blade_pvs[2]}')
-    blade_south = FCpt(IMS, '{self._mms_prefix}:{self._blade_pvs[3]}')
-
-    tab_whitelist = ['blade_up', 'blade_down', 'blade_north', 'blade_south']
-
-    def __init__(self, prefix, blade_pvs_idx, **kwargs):
-        self._blade_pvs = blade_pvs_idx
-        self._mms_prefix = prefix.removesuffix(':JAWS')+':MMS'
-        # initialize combined motors (width, center) via `JAWS`
-        super().__init__(prefix, **kwargs)
 
 
 class Slits(LusiSlits):
