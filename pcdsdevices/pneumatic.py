@@ -64,7 +64,7 @@ class BeckhoffPneumatic(LightpathMixin):
 		status = LightpathState(
 			inserted=limit_switch_in and not limit_switch_out,
 			removed=limit_switch_out and not limit_switch_in,
-			output=trans
+			output={self.output_branches[0]: trans}
 		)
 
 
