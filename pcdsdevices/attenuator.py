@@ -917,7 +917,7 @@ class AttenuatorCalculatorSXR_TwoBlade(AttenuatorCalculatorBase):
 
     tab_component_names = True
     first_filter = 1
-    num_filters = 4
+    num_filters = 2
     # Not using "DDC" here, so the parent is `self`:
     _filter_parent = None
     _filter_index_to_attr = {
