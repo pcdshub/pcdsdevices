@@ -58,9 +58,10 @@ class BeckhoffPneumatic(LightpathMixin):
 			pass
 			#throw?
 
-	trans = 0.0 if limit_switch_in and not limit_switch_out else 1.0
 
 	def calc_lightpath_state(self, limit_switch_in=None, limit_switch_out=None):
+		trans = 0.0 if limit_switch_in and not limit_switch_out else 1.0
+
 		status = LightpathState(
 			inserted=limit_switch_in and not limit_switch_out,
 			removed=limit_switch_out and not limit_switch_in,
