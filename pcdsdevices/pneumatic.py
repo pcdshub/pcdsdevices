@@ -47,14 +47,14 @@ class BeckhoffPneumatic(LightpathMixin):
         """
         Method for inserting Beckhoff Pneumatic Actuator
         """
-        if self.insert_ok:
+        if self.insert_ok.get():
             self.insert_signal.put(1)
         else:
             pass
             # throw?
 
     def remove(self):
-        if self.retract_ok:
+        if self.retract_ok.get():
             self.retract_signal.put(1)
         else:
             pass
