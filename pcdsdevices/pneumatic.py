@@ -40,7 +40,7 @@ class BeckhoffPneumatic(BaseInterface, LightpathMixin):
     error = Cpt(EpicsSignalRO, ':PLC:bError')
     error_id = Cpt(EpicsSignalRO, ':PLC:nErrorId')
     error_message = Cpt(EpicsSignalRO, ':PLC:sErrorMessage')
-    position_state = Cpt(EpicsSignalRO, ':nPositionState', kinda='hinted')
+    position_state = Cpt(EpicsSignalRO, ':nPositionState', kind='hinted')
 
     def insert(self):
         """
