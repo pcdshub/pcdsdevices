@@ -61,7 +61,7 @@ class BeckhoffPneumatic(BaseInterface, LightpathMixin):
                     break
             if self.error.get():
                 raise RuntimeError(self.error_message.get())
-            if time_elapsed == time_out:
+            if time_elapsed > time_out:
                 raise RuntimeError("Insertion Failed Timed Out")
 
         else:
