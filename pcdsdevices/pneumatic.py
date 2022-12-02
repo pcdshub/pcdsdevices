@@ -1,4 +1,3 @@
-
 """
 Pneumatic Classes.
 
@@ -9,10 +8,10 @@ from lightpath import LightpathState
 from ophyd import Component as Cpt
 from ophyd import EpicsSignal, EpicsSignalRO
 
-from pcdsdevices.interface import LightpathMixin
+from pcdsdevices.interface import BaseInterface, LightpathMixin
 
 
-class BeckhoffPneumatic(LightpathMixin):
+class BeckhoffPneumatic(BaseInterface, LightpathMixin):
     """
     Class containing basic Beckhoff Pneumatic support
     """
@@ -41,7 +40,7 @@ class BeckhoffPneumatic(LightpathMixin):
     error = Cpt(EpicsSignalRO, ':PLC:bError')
     error_id = Cpt(EpicsSignalRO, ':PLC:nErrorId')
     error_message = Cpt(EpicsSignalRO, ':PLC:sErrorMessage')
-    position_state = Cpt(EpicsSignalRO, ':nPositionState')
+    position_state = Cpt(EpicsSignalRO, ':nPositionState', kinda='hinted')
 
     def insert(self):
         """
@@ -50,13 +49,13 @@ class BeckhoffPneumatic(LightpathMixin):
         if self.insert_ok.get():
             self.insert_signal.put(1)
         else:
-            raise RuntimeError("Insertion not allowed")
+            raise RuntimeError("Insertion not permitted by PLC")
 
     def remove(self):
         if self.retract_ok.get():
             self.retract_signal.put(1)
         else:
-            raise RuntimeError("Removal not allowed")
+            raise RuntimeError("Removal not permitted by PLC")
 
     def calc_lightpath_state(self, limit_switch_in=None, limit_switch_out=None):
         trans = 0.0 if limit_switch_in and not limit_switch_out else 1.0
