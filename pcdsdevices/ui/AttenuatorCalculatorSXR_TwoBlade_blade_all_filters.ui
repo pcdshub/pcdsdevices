@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>704</width>
+    <height>316</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_4">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <property name="macros" stdset="0">
+      <string>{&quot;FILTER&quot;: &quot;01&quot;, &quot;BLADE&quot;: &quot;${BLADE}&quot;}</string>
+     </property>
+     <property name="filename" stdset="0">
+      <string>AttenuatorCalculatorSXR_Blade_config.embedded.ui</string>
+     </property>
+     <property name="loadWhenShown" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="disconnectWhenHidden" stdset="0">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_12">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <property name="macros" stdset="0">
+      <string>{&quot;FILTER&quot;: &quot;02&quot;, &quot;BLADE&quot;: &quot;${BLADE}&quot;}</string>
+     </property>
+     <property name="filename" stdset="0">
+      <string>AttenuatorCalculatorSXR_Blade_config.embedded.ui</string>
+     </property>
+     <property name="loadWhenShown" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="disconnectWhenHidden" stdset="0">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PyDMEmbeddedDisplay</class>
+   <extends>QFrame</extends>
+   <header>pydm.widgets.embedded_display</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
