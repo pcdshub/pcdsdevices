@@ -667,13 +667,8 @@ class EnvironmentalMonitor(LCLSItem):
                          enforce=str)
 
 
-from pcdsdevices.happi.containers import LCLSItem
-  
 class Leviton(LCLSItem):
     kwargs = deepcopy(LCLSItem.kwargs)
     kwargs.default['elevations'] = "{{elevations}}"
-    elevations = EntryInfo(doc = 'List of elevation numbers for rack',
-                            optional = False, enforce=list)
-
-
-
+    elevations = EntryInfo(doc='List of elevation numbers for rack',
+                           optional=False, enforce=list)
