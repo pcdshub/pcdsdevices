@@ -46,28 +46,28 @@ class BeckhoffPneumatic(BaseInterface, LightpathMixin):
     def insert(self, wait: bool = False, timeout: float = 10.0) -> Status:
         """
         Method for inserting Beckhoff Pneumatic Actuator
-        default times out at 10 seconds, setting wait to true
-        will block indefinietly until the PLC marks not busy and
-        done or errors.
         """
-        status = Status(timeout=timeout) if not wait else Status()
+        status = Status(self, timeout)
 
-        if self.insert_ok.get():
-            self.insert_signal.put(1)
-            # three ways to leave this loop
-            # 1 true done and not busy
-            # 2 error
-            # 3 timeout
-            while (not self.done.get() and self.busy.get()):
+        def callback(value):
+            if value:
                 if self.error.get():
                     error = Exception(self.error_message.get())
                     status.set_exception(error)
-                    return status
-            # if we get here, insertion was successful
-            status.set_finished()
+                else:
+                    status.set_finished()
+                    self.done.clear_sub(callback)
+
+        self.done.subscribe(callback)
+
+        if self.insert_ok.get():
+            self.insert_signal.put(1)
         else:
             error = Exception("Insertion not permitted by PLC")
             status.set_exception(error)
+
+        if wait:
+            status.wait()
         return status
 
     def remove(self):
