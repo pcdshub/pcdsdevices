@@ -11,7 +11,8 @@ Features
 
 Device Updates
 --------------
-- Attenuator module now has classes for two blade attenuators
+- Adds a preliminary attenuator class AT1K2 and base classes for similar
+   two-blade ladder attenuators designed by JJ X-ray.
 
 New Devices
 -----------
