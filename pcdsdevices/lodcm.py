@@ -913,6 +913,16 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
         energy = common.wavelength_to_energy(length) / 1000
         return self.PseudoPosition(energy=energy)
 
+    def setE(self, energy):
+        self.set_current_position(energy)
+        return
+
+    def status_info(self):
+        """ Overwrites interface status_info to make things
+        faster.
+        """
+        return None
+
     def format_status_info(self, status_info):
         """Override status info handler to render the energy si."""
         hutch = ''
@@ -945,7 +955,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
         except Exception:
             ref = 'Unknown'
 
-            return f"""\
+        return f"""\
 {hutch}LODCM Energy Si
 Current Configuration: {configuration} ({ref})
 Photon Energy: {energy} [keV]
@@ -1133,6 +1143,16 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
         energy = common.wavelength_to_energy(length) / 1000
         return self.PseudoPosition(energy=energy)
 
+    def setE(self, energy):
+        self.set_current_position(energy)
+        return
+
+    def status_info(self):
+        """ Overwrites interface status_info to make things
+        faster.
+        """
+        return None
+
     def format_status_info(self, status_info):
         """Override status info handler to render the energy c."""
         hutch = ''
@@ -1165,7 +1185,7 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
         except Exception:
             ref = 'Unknown'
 
-            return f"""\
+        return f"""\
 {hutch}LODCM Energy C
 Current Configuration: {configuration} ({ref})
 Photon Energy: {energy} [keV]
@@ -1264,7 +1284,7 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         self.h2n_state = self.tower2.h2n_state
         self.y2_state = self.tower2.y2_state
         self.chi2_state = self.tower2.chi2_state
-        # # offset positioners - tower 1
+        # offset positioners - tower 1
         self.th1Si = self.energy_si.th1Si
         self.z1Si = self.energy_si.z1Si
         self.th1C = self.energy_c.th1C
@@ -1280,7 +1300,7 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         self.h1nSi = self.tower1.h1nSi
         self.h1pC = self.tower1.h1pC
         self.h1pSi = self.tower1.h1pSi
-        # # offset positioners - tower 2
+        # offset positioners - tower 2
         self.th2Si = self.energy_si.th2Si
         self.z2Si = self.energy_si.z2Si
         self.th2C = self.energy_c.th2C
@@ -1294,6 +1314,11 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         self.chi2Si = self.tower2.chi2Si
         self.h2nC = self.tower2.h2nC
         self.h2nSi = self.tower2.h2nSi
+
+        # energy aliases
+        self.E = self.energy
+        self.EC = self.energy_c
+        self.ESi = self.energy_si
 
     @property
     def energy(self):
