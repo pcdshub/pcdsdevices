@@ -1,80 +1,35 @@
-"""
-CXI:SETRA:01:PERIODS_RBV 60 monitor
-CXI:SETRA:01:DELAY_TIME_RBV 60 monitor
-CXI:SETRA:01:SAMPLE_TIME_RBV 60 monitor
-CXI:SETRA:01:HOLD_TIME_RBV 60 monitor
-CXI:SETRA:01:SAMPLE_MODE_RBV 60 monitor
-CXI:SETRA:01:MASS_MODE_RBV 60 monitor
-CXI:SETRA:01:RECIPE_MODE_RBV 60 monitor
-CXI:SETRA:01:RECORD_REQ 60 monitor
-CXI:SETRA:01:RH 60 monitor
-CXI:SETRA:01:BP 60 monitor
-CXI:SETRA:01:TEMP 60 monitor
-CXI:SETRA:01:DATE 60 monitor
-CXI:SETRA:01:TIME 60 monitor
-CXI:SETRA:01:TVOC 60 monitor
-CXI:SETRA:01:CO2 60 monitor
-CXI:SETRA:01:FLOW_RATE 60 monitor
-CXI:SETRA:01:SAMPLE_DURATION 60 monitor
-CXI:SETRA:01:CH0_SIZE 60 monitor
-CXI:SETRA:01:CH0_MASS 60 monitor
-CXI:SETRA:01:CH1_SIZE 60 monitor
-CXI:SETRA:01:CH1_MASS 60 monitor
-CXI:SETRA:01:CH2_SIZE 60 monitor
-CXI:SETRA:01:CH2_MASS 60 monitor
-CXI:SETRA:01:CH3_SIZE 60 monitor
-CXI:SETRA:01:CH3_MASS 60 monitor
-CXI:SETRA:01:CH4_SIZE 60 monitor
-CXI:SETRA:01:CH4_MASS 60 monitor
-CXI:SETRA:01:CH5_SIZE 60 monitor
-CXI:SETRA:01:CH5_MASS 60 monitor
-"""
-
-
+'''
+Module to define classes for the Facility Monitoring System (FMS), CURRENTLY including Setra5000, levitons, and LCPs
+'''
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
 
 
 class Setra5000(Device):
-    Timestamp = Cpt(EpicsSignalRO, ':TIME', kind='hinted')
+    Time_Stamp = Cpt(EpicsSignalRO, ':TIME', kind='hinted')
     Date = Cpt(EpicsSignalRO, ':DATE', kind='hinted')
 
-    SampleState = Cpt(EpicsSignalRO, ':SAMP_STATE', kind='hinted')
-    SampleDuration = Cpt(EpicsSignalRO, ':SAMPLE_TIME_RBV', kind='hinted')
-    SampleMode = Cpt(EpicsSignalRO, ':SAMPLE_MODE_RBV', kind='hinted')
-    MassMode = Cpt(EpicsSignalRO, ':MASS_MODE_RBV', kind='hinted')
+    Sample_State = Cpt(EpicsSignalRO, ':SAMP_STATE', kind='hinted')
+    Sample_Duration = Cpt(EpicsSignalRO, ':SAMPLE_TIME_RBV', kind='hinted')
+    Sample_Mode = Cpt(EpicsSignalRO, ':SAMPLE_MODE_RBV', kind='hinted')
+    Mass_Mode = Cpt(EpicsSignalRO, ':MASS_MODE_RBV', kind='hinted')
 
     Temperature = Cpt(EpicsSignalRO, ':TEMP', kind='hinted')
     RH = Cpt(EpicsSignalRO, ':RH', kind='hinted')
-    BarometricPressure = Cpt(EpicsSignalRO, ':BP', kind='hinted')
-    FlowRate = Cpt(EpicsSignalRO, ':FLOW_RATE', kind='hinted')
+    Barometric_Pressure = Cpt(EpicsSignalRO, ':BP', kind='hinted')
+    Flow_Rate = Cpt(EpicsSignalRO, ':FLOW_RATE', kind='hinted')
     CO2 = Cpt(EpicsSignalRO, ':CO2', kind='hinted')
     TVOC = Cpt(EpicsSignalRO, ':TVOC', kind='hinted')
-
-    '''
-    ch0_size = Cpt(EpicsSignalRO, ':CH0_SIZE', kind='normal')
-    ch0_mass = Cpt(EpicsSignalRO, ':CH0_MASS', kind='normal')
-    ch1_size = Cpt(EpicsSignalRO, ':CH1_SIZE', kind='normal')
-    ch1_mass = Cpt(EpicsSignalRO, ':CH1_MASS', kind='normal')
-    ch2_size = Cpt(EpicsSignalRO, ':CH2_SIZE', kind='normal')
-    ch2_mass = Cpt(EpicsSignalRO, ':CH2_MASS', kind='normal')
-    ch3_size = Cpt(EpicsSignalRO, ':CH3_SIZE', kind='normal')
-    ch3_mass = Cpt(EpicsSignalRO, ':CH3_MASS', kind='normal')
-    ch4_size = Cpt(EpicsSignalRO, ':CH4_SIZE', kind='normal')
-    ch4_mass = Cpt(EpicsSignalRO, ':CH4_MASS', kind='normal')
-    ch5_size = Cpt(EpicsSignalRO, ':CH5_SIZE', kind='normal')
-    ch5_mass = Cpt(EpicsSignalRO, ':CH5_MASS', kind='normal')
-    Total_Mass = Cpt(EpicsSignalRO, ':TOT_MASS', kind='normal')
-    '''
-
     # kind, doc are important keywords for later
     # kind=hinted, normal, config, omitted
+    # Power Distribution Units: Temperature, Humidity, and Load Feed
 
 
-# Power Distribution Units: Temperature, Humidity, and Load Feed
-# PDU_Temp1: Will be for racks with 2 PDUs, with total of 3 sensors for monitoring purposes
-class PDU_Temp1(Device):
+class PDU_Temp4(Device):
+
+    """ For racks with 2 PDUs, with total of 4 sensors for monitoring purposes """
+
     Sensor1 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[0]}:Sensor:1:GetTempValue', kind='hinted')
     Sensor2 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[1]}:Sensor:2:GetTempValue', kind='hinted')
     Sensor3 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[2]}:Sensor:1:GetTempValue', kind='hinted')
@@ -85,8 +40,10 @@ class PDU_Temp1(Device):
         super().__init__(*args, **kwargs)
 
 
-# PDU_Temp2: Will be for portable racks or Racks that have a single PDU, with a total of 2 sensors for monitoring
 class PDU_Temp2(Device):
+
+    """ Will be for portable racks or Racks that have a single PDU, with a total of 2 sensors for monitoring"""
+
     Sensor1 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[0]}Sensor:1:GetTempValue', kind='hinted')
     Sensor2 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[1]}Sensor:2:GetTempValue', kind='hinted')
 
@@ -95,8 +52,10 @@ class PDU_Temp2(Device):
         super().__init__(*args, **kwargs)
 
 
-# PDU_Temp3: Will be for PDUs that are linked, 1=Master, 2=Child
-class PDU_Temp3(Device):
+class PDU_Temp6(Device):
+
+    """ Will be for PDUs that are linked, 1=Master, 2=Child (4 sensors) plus a single PDU (2 sensors), 6 total sensors """
+
     Sensor1 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[0]}:Sensor:1:GetTempValue', kind='hinted')
     Sensor2 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[1]}:Sensor:2:GetTempValue', kind='hinted')
     Sensor3 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[2]}:Sensor:1:GetTempValue', kind='hinted')
@@ -109,7 +68,10 @@ class PDU_Temp3(Device):
         super().__init__(*args, **kwargs)
 
 
-class PDU_Temp4(Device):
+class PDU_Temp8(Device):
+
+    """ Will be for PDUs that are linked, 1=Master, 2=Child (4 Sensors) plus 2 single PDUs (4 Sensors), 8 sensors total """
+
     Sensor1 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[0]}:Sensor:1:GetTempValue', kind='hinted')
     Sensor2 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[1]}:Sensor:2:GetTempValue', kind='hinted')
     Sensor3 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[2]}:Sensor:1:GetTempValue', kind='hinted')
@@ -124,7 +86,10 @@ class PDU_Temp4(Device):
         super().__init__(*args, **kwargs)
 
 
-class PDU_Humidity1(Device):
+class PDU_Humidity4(Device):
+
+    """ For racks with 2 PDUs, with total of 4 sensors for monitoring purposes """
+
     Sensor1 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[0]}:Sensor:1:GetHumidValue', kind='hinted')
     Sensor2 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[1]}:Sensor:2:GetHumidValue', kind='hinted')
     Sensor3 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[2]}:Sensor:1:GetHumidValue', kind='hinted')
@@ -135,8 +100,10 @@ class PDU_Humidity1(Device):
         super().__init__(*args, **kwargs)
 
 
-# PDU_Temp2: Will be for portable racks or Racks that have a single PDU, with a total of 2 sensors for monitoring
 class PDU_Humidity2(Device):
+
+    """ Will be for portable racks or Racks that have a single PDU, with a total of 2 sensors for monitoring """
+
     Sensor1 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[0]}Sensor:1:GetHumidValue', kind='hinted')
     Sensor2 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[1]}Sensor:2:GetHumidValue', kind='hinted')
 
@@ -145,7 +112,10 @@ class PDU_Humidity2(Device):
         super().__init__(*args, **kwargs)
 
 
-class PDU_Humidity3(Device):
+class PDU_Humidity6(Device):
+
+    """ Will be for PDUs that are linked, 1=Master, 2=Child (4 sensors) plus a single PDU (2 sensors), 6 total sensors """
+
     Sensor1 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[0]}:Sensor:1:GetHumidValue', kind='hinted')
     Sensor2 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[1]}:Sensor:2:GetHumidValue', kind='hinted')
     Sensor3 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[2]}:Sensor:1:GetHumidValue', kind='hinted')
@@ -158,7 +128,10 @@ class PDU_Humidity3(Device):
         super().__init__(*args, **kwargs)
 
 
-class PDU_Humidity4(Device):
+class PDU_Humidity8(Device):
+
+    """ Will be for PDUs that are linked, 1=Master, 2=Child (4 Sensors) plus 2 single PDUs (4 Sensors), 8 sensors total """
+
     Sensor1 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[0]}:Sensor:1:GetHumidValue', kind='hinted')
     Sensor2 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[1]}:Sensor:2:GetHumidValue', kind='hinted')
     Sensor3 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[2]}:Sensor:1:GetHumidValue', kind='hinted')
@@ -174,6 +147,9 @@ class PDU_Humidity4(Device):
 
 
 class PDU_Load1(Device):
+
+    """ For racks with 1 PDU """
+
     Sensor1 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[0]}GetInfeedLoadValue', kind='hinted')
 
     def __init__(self, *args, elevations=[], **kwargs):
@@ -182,6 +158,9 @@ class PDU_Load1(Device):
 
 
 class PDU_Load2(Device):
+
+    """ For racks with 2 PDUs """
+
     Sensor1 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[0]}:GetInfeedLoadValue', kind='hinted')
     Sensor2 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[1]}:GetInfeedLoadValue', kind='hinted')
     # Sensor3 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[2]}:Sensor:1:GetInfeedLoadValue', kind='hinted')
@@ -193,6 +172,9 @@ class PDU_Load2(Device):
 
 
 class PDU_Load3(Device):
+
+    """ For racks with 3 PDUs """
+
     Sensor1 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[0]}:GetInfeedLoadValue', kind='hinted')
     Sensor2 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[1]}:GetInfeedLoadValue', kind='hinted')
     Sensor3 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[2]}:GetInfeedLoadValue', kind='hinted')
@@ -203,6 +185,9 @@ class PDU_Load3(Device):
 
 
 class PDU_Load4(Device):
+
+    """ For racks with 4 PDUs """
+
     Sensor1 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[0]}:GetInfeedLoadValue', kind='hinted')
     Sensor2 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[1]}:GetInfeedLoadValue', kind='hinted')
     Sensor3 = FCpt(EpicsSignalRO, '{self.prefix}:{self.elevation[2]}:GetInfeedLoadValue', kind='hinted')
@@ -216,6 +201,9 @@ class PDU_Load4(Device):
 
 
 class LCP1(Device):
+
+    """ For LCPs with CMC-III PU, with Door Module off """
+
     Temperature_F = Cpt(EpicsSignalRO, ':Temperature_CALC', kind='hinted')
     Power_Vsupply_V = Cpt(EpicsSignalRO, ':24Vsupply_CALC', kind='hinted')
     AirFan1Rpm_Percent = Cpt(EpicsSignalRO, ':AirFan1Rpm_CALC', kind='hinted')
@@ -236,6 +224,9 @@ class LCP1(Device):
 
 
 class LCP2(Device):
+
+    """ For LCPs with CMC-III PU, with Door Module working """
+
     Temperature_F = Cpt(EpicsSignalRO, ':Temperature_CALC', kind='hinted')
     Power_Vsupply_V = Cpt(EpicsSignalRO, ':24Vsupply_CALC', kind='hinted')
     AirFan1Rpm_Percent = Cpt(EpicsSignalRO, ':AirFan1Rpm_CALC', kind='hinted')
