@@ -43,38 +43,48 @@ class BeckhoffPneumatic(BaseInterface, LightpathMixin):
     error_message = Cpt(EpicsSignalRO, ':PLC:sErrorMessage')
     position_state = Cpt(EpicsSignalRO, ':nPositionState', kind='hinted')
 
+    def callback(self, *, old_value, value, **kwargs):
+        if value:
+            self.done.clear_sub(self.callback)
+            if self.error.get():
+                error = Exception(self.error_message.get())
+                self.status.set_exception(error)
+            else:
+                self.status.set_finished()
+
     def insert(self, wait: bool = False, timeout: float = 10.0) -> Status:
         """
         Method for inserting Beckhoff Pneumatic Actuator
         """
-        status = Status(self, timeout)
-
-        def callback(value):
-            if value:
-                if self.error.get():
-                    error = Exception(self.error_message.get())
-                    status.set_exception(error)
-                else:
-                    status.set_finished()
-                    self.done.clear_sub(callback)
-
-        self.done.subscribe(callback)
+        self.status = Status(timeout)
 
         if self.insert_ok.get():
+            self.done.subscribe(self.callback)
             self.insert_signal.put(1)
         else:
             error = Exception("Insertion not permitted by PLC")
-            status.set_exception(error)
+            self.status.set_exception(error)
 
         if wait:
-            status.wait()
-        return status
+            self.status.wait()
+        return self.status
 
-    def remove(self):
+    def remove(self, wait: bool = False, timeout: float = 10.0) -> Status:
+        """
+        Method for removing Beckhoff Pneumatic Actuator
+        """
+        self.status = Status(timeout)
+
         if self.retract_ok.get():
+            self.done.subscribe(self.callback)
             self.retract_signal.put(1)
         else:
-            raise RuntimeError("Removal not permitted by PLC")
+            error = Exception("Removal not permitted by PLC")
+            self.status.set_exception(error)
+
+        if wait:
+            self.status.wait()
+        return self.status
 
     def calc_lightpath_state(self, limit_switch_in=None, limit_switch_out=None):
         trans = 0.0 if limit_switch_in and not limit_switch_out else 1.0
