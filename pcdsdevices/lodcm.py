@@ -447,11 +447,11 @@ class CrystalTower2(BaseInterface, GroupDevice):
                   motor_prefix='{self._hutch_prefix}:MON:MMS:14',
                   add_prefix=('prefix', 'motor_prefix'), kind='normal',
                   doc='Chi 2 motor offset for Si [deg]')
-    h2nC = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:H2N:OFF_C',
+    h2nC = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_C',
                 name='h2n_c', motor_prefix='{self._hutch_prefix}:MON:MMS:15',
                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
                 doc=' H2n motor offset for C [mm]')
-    h2nSi = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:H2N:OFF_Si',
+    h2nSi = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_Si',
                  name='h2n_si', motor_prefix='{self._hutch_prefix}:MON:MMS:15',
                  add_prefix=('prefix', 'motor_prefix'), kind='normal',
                  doc='H2n motor offset for Si [mm]')
@@ -1238,7 +1238,7 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
 
     tab_whitelist = ['h1n_state', 'yag', 'dectris', 'diode', 'foil',
                      'remove_dia', 'tower1', 'tower2',
-                     'diag_tower', 'calc']
+                     'diag_tower', 'calc', 'E', 'EC', 'ESi']
 
     lightpath_cpts = ['tower1.h1n_state.state']
 
