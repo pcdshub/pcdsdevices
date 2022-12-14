@@ -665,3 +665,10 @@ class EnvironmentalMonitor(LCLSItem):
                        optional=True, enforce=str)
     ioc_base = EntryInfo('Base PV of the EK9000 IOC', optional=True,
                          enforce=str)
+
+
+class Leviton(LCLSItem):
+    kwargs = deepcopy(LCLSItem.kwargs)
+    kwargs.default['elevations'] = "{{elevations}}"
+    elevations = EntryInfo(doc='List of elevation numbers for rack',
+                           optional=False, enforce=list)
