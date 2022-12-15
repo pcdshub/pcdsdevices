@@ -1238,7 +1238,8 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
 
     tab_whitelist = ['h1n_state', 'yag', 'dectris', 'diode', 'foil',
                      'remove_dia', 'tower1', 'tower2',
-                     'diag_tower', 'calc', 'E', 'EC', 'ESi']
+                     'diag_tower', 'calc', 'E', 'EC', 'ESi', 'tweak_x',
+                     'tweakXC']
 
     lightpath_cpts = ['tower1.h1n_state.state']
 
@@ -1316,7 +1317,6 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         self.h2nSi = self.tower2.h2nSi
 
         # energy aliases
-        self.E = self.energy
         self.EC = self.energy_c
         self.ESi = self.energy_si
 
@@ -1331,6 +1331,10 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         # TODO consider "energy" proxy motor object that picks where to
         # forward the commands instead of this property
         return self.energy_c
+
+    @property
+    def E(self):
+        return self.energy
 
     def calc_lightpath_state(
         self,
@@ -1595,6 +1599,9 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
             logger.warning("z2 did not reach the desired position of %f! "
                            "Check the motors, now at %f, deadband %f" % (
                                start_z + z_value, end_z, self.z2.position))
+
+    def tweakXC(self, x, wait=False):
+        self.tweak_x(x, material='C', wait=wait)
 
     def tweak_parallel(self, p_value, material=None, wait=False):
         """
