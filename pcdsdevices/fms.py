@@ -31,20 +31,20 @@ class PDU_Temp4(Device):
     """ For racks with 2 PDUs, with total of 4 sensors for monitoring purposes """
 
     sensor1 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[0]}:Sensor:1:GetTempValue',
+                   '{prefix}:{elevation[0]}:Sensor:1:GetTempValue',
                    kind='hinted')
     sensor2 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[1]}:Sensor:2:GetTempValue',
+                   '{prefix}:{elevation[1]}:Sensor:2:GetTempValue',
                    kind='hinted')
     sensor3 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[2]}:Sensor:1:GetTempValue',
+                   '{prefix}:{elevation[2]}:Sensor:1:GetTempValue',
                    kind='hinted')
     sensor4 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[3]}:Sensor:2:GetTempValue',
+                   '{prefix}:{elevation[3]}:Sensor:2:GetTempValue',
                    kind='hinted')
 
-    def __init__(self, *args, elevations=[], **kwargs):
-        self.elevation = elevations
+    def __init__(self, *args, elevations=None, **kwargs):
+        self.elevation = elevations or []
         super().__init__(*args, **kwargs)
 
 
@@ -55,14 +55,14 @@ class PDU_Temp2(Device):
     """
 
     sensor1 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[0]}Sensor:1:GetTempValue',
+                   '{prefix}:{elevation[0]}Sensor:1:GetTempValue',
                    kind='hinted')
     sensor2 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[1]}Sensor:2:GetTempValue',
+                   '{prefix}:{elevation[1]}Sensor:2:GetTempValue',
                    kind='hinted')
 
-    def __init__(self, *args, elevations=[], **kwargs):
-        self.elevation = elevations
+    def __init__(self, *args, elevations=None, **kwargs):
+        self.elevation = elevations or []
         super().__init__(*args, **kwargs)
 
 
@@ -73,26 +73,26 @@ class PDU_Temp6(Device):
     """
 
     sensor1 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[0]}:Sensor:1:GetTempValue',
+                   '{prefix}:{elevation[0]}:Sensor:1:GetTempValue',
                    kind='hinted')
     sensor2 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[1]}:Sensor:2:GetTempValue',
+                   '{prefix}:{elevation[1]}:Sensor:2:GetTempValue',
                    kind='hinted')
     sensor3 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[2]}:Sensor:1:GetTempValue',
+                   '{prefix}:{elevation[2]}:Sensor:1:GetTempValue',
                    kind='hinted')
     sensor4 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[3]}:Sensor:2:GetTempValue',
+                   '{prefix}:{elevation[3]}:Sensor:2:GetTempValue',
                    kind='hinted')
     sensor5 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[4]}:Sensor:1:GetTempValue',
+                   '{prefix}:{elevation[4]}:Sensor:1:GetTempValue',
                    kind='hinted')
     sensor6 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[5]}:Sensor:2:GetTempValue',
+                   '{prefix}:{elevation[5]}:Sensor:2:GetTempValue',
                    kind='hinted')
 
-    def __init__(self, *args, elevations=[], **kwargs):
-        self.elevation = elevations
+    def __init__(self, *args, elevations=None, **kwargs):
+        self.elevation = elevations or []
         super().__init__(*args, **kwargs)
 
 
@@ -103,32 +103,32 @@ class PDU_Temp8(Device):
     """
 
     sensor1 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[0]}:Sensor:1:GetTempValue',
+                   '{prefix}:{elevation[0]}:Sensor:1:GetTempValue',
                    kind='hinted')
     sensor2 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[1]}:Sensor:2:GetTempValue',
+                   '{prefix}:{elevation[1]}:Sensor:2:GetTempValue',
                    kind='hinted')
     sensor3 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[2]}:Sensor:1:GetTempValue',
+                   '{prefix}:{elevation[2]}:Sensor:1:GetTempValue',
                    kind='hinted')
     sensor4 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[3]}:Sensor:2:GetTempValue',
+                   '{prefix}:{elevation[3]}:Sensor:2:GetTempValue',
                    kind='hinted')
     sensor5 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[4]}:Sensor:1:GetTempValue',
+                   '{prefix}:{elevation[4]}:Sensor:1:GetTempValue',
                    kind='hinted')
     sensor6 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[5]}:Sensor:2:GetTempValue',
+                   '{prefix}:{elevation[5]}:Sensor:2:GetTempValue',
                    kind='hinted')
     sensor7 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[6]}:Sensor:2:GetTempValue',
+                   '{prefix}:{elevation[6]}:Sensor:2:GetTempValue',
                    kind='hinted')
     sensor8 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[7]}:Sensor:2:GetTempValue',
+                   '{prefix}:{elevation[7]}:Sensor:2:GetTempValue',
                    kind='hinted')
 
-    def __init__(self, *args, elevations=[], **kwargs):
-        self.elevation = elevations
+    def __init__(self, *args, elevations=None, **kwargs):
+        self.elevation = elevations or []
         super().__init__(*args, **kwargs)
 
 
@@ -136,20 +136,20 @@ class PDU_Humidity4(Device):
     """ For racks with 2 PDUs, with total of 4 sensors for monitoring purposes """
 
     sensor1 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[0]}:Sensor:1:GetHumidValue',
+                   '{prefix}:{elevation[0]}:Sensor:1:GetHumidValue',
                    kind='hinted')
     sensor2 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[1]}:Sensor:2:GetHumidValue',
+                   '{prefix}:{elevation[1]}:Sensor:2:GetHumidValue',
                    kind='hinted')
     sensor3 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[2]}:Sensor:1:GetHumidValue',
+                   '{prefix}:{elevation[2]}:Sensor:1:GetHumidValue',
                    kind='hinted')
     sensor4 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[3]}:Sensor:2:GetHumidValue',
+                   '{prefix}:{elevation[3]}:Sensor:2:GetHumidValue',
                    kind='hinted')
 
-    def __init__(self, *args, elevations=[], **kwargs):
-        self.elevation = elevations
+    def __init__(self, *args, elevations=None, **kwargs):
+        self.elevation = elevations or []
         super().__init__(*args, **kwargs)
 
 
@@ -160,14 +160,14 @@ class PDU_Humidity2(Device):
     """
 
     sensor1 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[0]}Sensor:1:GetHumidValue',
+                   '{prefix}:{elevation[0]}Sensor:1:GetHumidValue',
                    kind='hinted')
     sensor2 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[1]}Sensor:2:GetHumidValue',
+                   '{prefix}:{elevation[1]}Sensor:2:GetHumidValue',
                    kind='hinted')
 
-    def __init__(self, *args, elevations=[], **kwargs):
-        self.elevation = elevations
+    def __init__(self, *args, elevations=None, **kwargs):
+        self.elevation = elevations or []
         super().__init__(*args, **kwargs)
 
 
@@ -178,26 +178,26 @@ class PDU_Humidity6(Device):
     """
 
     sensor1 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[0]}:Sensor:1:GetHumidValue',
+                   '{prefix}:{elevation[0]}:Sensor:1:GetHumidValue',
                    kind='hinted')
     sensor2 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[1]}:Sensor:2:GetHumidValue',
+                   '{prefix}:{elevation[1]}:Sensor:2:GetHumidValue',
                    kind='hinted')
     sensor3 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[2]}:Sensor:1:GetHumidValue',
+                   '{prefix}:{elevation[2]}:Sensor:1:GetHumidValue',
                    kind='hinted')
     sensor4 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[3]}:Sensor:2:GetHumidValue',
+                   '{prefix}:{elevation[3]}:Sensor:2:GetHumidValue',
                    kind='hinted')
     sensor5 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[4]}:Sensor:1:GetHumidValue',
+                   '{prefix}:{elevation[4]}:Sensor:1:GetHumidValue',
                    kind='hinted')
     sensor6 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[5]}:Sensor:2:GetHumidValue',
+                   '{prefix}:{elevation[5]}:Sensor:2:GetHumidValue',
                    kind='hinted')
 
-    def __init__(self, *args, elevations=[], **kwargs):
-        self.elevation = elevations
+    def __init__(self, *args, elevations=None, **kwargs):
+        self.elevation = elevations or []
         super().__init__(*args, **kwargs)
 
 
@@ -208,32 +208,32 @@ class PDU_Humidity8(Device):
     """
 
     sensor1 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[0]}:Sensor:1:GetHumidValue',
+                   '{prefix}:{elevation[0]}:Sensor:1:GetHumidValue',
                    kind='hinted')
     sensor2 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[1]}:Sensor:2:GetHumidValue',
+                   '{prefix}:{elevation[1]}:Sensor:2:GetHumidValue',
                    kind='hinted')
     sensor3 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[2]}:Sensor:1:GetHumidValue',
+                   '{prefix}:{elevation[2]}:Sensor:1:GetHumidValue',
                    kind='hinted')
     sensor4 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[3]}:Sensor:2:GetHumidValue',
+                   '{prefix}:{elevation[3]}:Sensor:2:GetHumidValue',
                    kind='hinted')
     sensor5 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[4]}:Sensor:1:GetHumidValue',
+                   '{prefix}:{elevation[4]}:Sensor:1:GetHumidValue',
                    kind='hinted')
     sensor6 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[5]}:Sensor:2:GetHumidValue',
+                   '{prefix}:{elevation[5]}:Sensor:2:GetHumidValue',
                    kind='hinted')
     sensor7 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[6]}:Sensor:2:GetHumidValue',
+                   '{prefix}:{elevation[6]}:Sensor:2:GetHumidValue',
                    kind='hinted')
     Sensor8 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[7]}:Sensor:2:GetHumidValue',
+                   '{prefix}:{elevation[7]}:Sensor:2:GetHumidValue',
                    kind='hinted')
 
-    def __init__(self, *args, elevations=[], **kwargs):
-        self.elevation = elevations
+    def __init__(self, *args, elevations=None, **kwargs):
+        self.elevation = elevations or []
         super().__init__(*args, **kwargs)
 
 
@@ -241,11 +241,11 @@ class PDU_Load1(Device):
     """ For racks with 1 PDU """
 
     sensor1 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[0]}GetInfeedLoadValue',
+                   '{prefix}:{elevation[0]}GetInfeedLoadValue',
                    kind='hinted')
 
-    def __init__(self, *args, elevations=[], **kwargs):
-        self.elevation = elevations
+    def __init__(self, *args, elevations=None, **kwargs):
+        self.elevation = elevations or []
         super().__init__(*args, **kwargs)
 
 
@@ -253,20 +253,20 @@ class PDU_Load2(Device):
     """ For racks with 2 PDUs """
 
     sensor1 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[0]}:GetInfeedLoadValue',
+                   '{prefix}:{elevation[0]}:GetInfeedLoadValue',
                    kind='hinted')
     sensor2 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[1]}:GetInfeedLoadValue',
+                   '{prefix}:{elevation[1]}:GetInfeedLoadValue',
                    kind='hinted')
     # sensor3 = FCpt(EpicsSignalRO,
-    #                '{self.prefix}:{self.elevation[2]}:Sensor:1:GetInfeedLoadValue',
+    #                '{prefix}:{elevation[2]}:Sensor:1:GetInfeedLoadValue',
     #                kind='hinted')
     # sensor4 = FCpt(EpicsSignalRO,
-    #                '{self.prefix}:{self.elevation[3]}:Sensor:2:GetInfeedLoadValue',
+    #                '{prefix}:{elevation[3]}:Sensor:2:GetInfeedLoadValue',
     #                kind='hinted')
 
-    def __init__(self, *args, elevations=[], **kwargs):
-        self.elevation = elevations
+    def __init__(self, *args, elevations=None, **kwargs):
+        self.elevation = elevations or []
         super().__init__(*args, **kwargs)
 
 
@@ -274,17 +274,17 @@ class PDU_Load3(Device):
     """ For racks with 3 PDUs """
 
     sensor1 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[0]}:GetInfeedLoadValue',
+                   '{prefix}:{elevation[0]}:GetInfeedLoadValue',
                    kind='hinted')
     sensor2 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[1]}:GetInfeedLoadValue',
+                   '{prefix}:{elevation[1]}:GetInfeedLoadValue',
                    kind='hinted')
     sensor3 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[2]}:GetInfeedLoadValue',
+                   '{prefix}:{elevation[2]}:GetInfeedLoadValue',
                    kind='hinted')
 
-    def __init__(self, *args, elevations=[], **kwargs):
-        self.elevation = elevations
+    def __init__(self, *args, elevations=None, **kwargs):
+        self.elevation = elevations or []
         super().__init__(*args, **kwargs)
 
 
@@ -292,20 +292,20 @@ class PDU_Load4(Device):
     """ For racks with 4 PDUs """
 
     sensor1 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[0]}:GetInfeedLoadValue',
+                   '{prefix}:{elevation[0]}:GetInfeedLoadValue',
                    kind='hinted')
     sensor2 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[1]}:GetInfeedLoadValue',
+                   '{prefix}:{elevation[1]}:GetInfeedLoadValue',
                    kind='hinted')
     sensor3 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[2]}:GetInfeedLoadValue',
+                   '{prefix}:{elevation[2]}:GetInfeedLoadValue',
                    kind='hinted')
     sensor4 = FCpt(EpicsSignalRO,
-                   '{self.prefix}:{self.elevation[3]}:GetInfeedLoadValue',
+                   '{prefix}:{elevation[3]}:GetInfeedLoadValue',
                    kind='hinted')
 
-    def __init__(self, *args, elevations=[], **kwargs):
-        self.elevation = elevations
+    def __init__(self, *args, elevations=None, **kwargs):
+        self.elevation = elevations or []
         super().__init__(*args, **kwargs)
 
 # FEE ALCOVE LCPs
