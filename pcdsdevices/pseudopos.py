@@ -136,6 +136,8 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         if len(self.PseudoPosition._fields) == 1:
             self.PseudoPosition.__float__ = _as_float
 
+        self._sub_our_move_checks()
+
     def _update_notepad_ioc(self, position, attr):
         """
         Update the notepad IOC with a fully-specified ``PseudoPos``.
