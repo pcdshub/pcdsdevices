@@ -125,6 +125,9 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
     """ + ophyd.pseudopos.PseudoPositioner.__doc__
 
     def __init__(self, *args, **kwargs):
+        self.my_move = False
+        self._move_time = 0
+        self._my_move_timeout = 10
         super().__init__(*args, **kwargs)
 
         if len(self.RealPosition._fields) == 1:
@@ -132,10 +135,6 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
 
         if len(self.PseudoPosition._fields) == 1:
             self.PseudoPosition.__float__ = _as_float
-
-        self.my_move = False
-        self._move_time = 0
-        self._my_move_timeout = 10
 
     def _update_notepad_ioc(self, position, attr):
         """
