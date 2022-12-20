@@ -697,7 +697,6 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         st = super().move(*args, wait=wait, **kwargs)
         time.sleep(0.01)  # safety wait. Necessary?
         if kill:
-            print('Kill alio PID')
             self.alio.kill()
         return st
 
