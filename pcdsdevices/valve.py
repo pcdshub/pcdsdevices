@@ -8,7 +8,7 @@ from lightpath import LightpathState
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
 
-from .interface import LightpathMixin
+from .interface import BaseInterface, LightpathMixin
 from .signal import PytmcSignal
 from .stopper import PPSStopper, Stopper  # noqa import PPS for backcompat
 
@@ -779,7 +779,7 @@ class VCN_VAT590_Status(Device):
     )
 
 
-class VCN_VAT590(Device):
+class VCN_VAT590(BaseInterface, Device):
     """
     VCN_VAT590 = Variable Controlled Needle Valve using the VAT590
 
@@ -791,6 +791,8 @@ class VCN_VAT590(Device):
     This corresponds to the ST_VCN_VAT590 and ST_VAT590_STATUS
     data types in the lcls-twincat-vacuum library.
     """
+    tab_component_names = True
+
     pos_raw = Cpt(
         PytmcSignal, 'POS_RAW', io='i', kind='hinted',
         doc='Position readback',
