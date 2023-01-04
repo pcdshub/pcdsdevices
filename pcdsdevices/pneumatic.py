@@ -4,9 +4,10 @@ Pneumatic Classes.
 This Module contains all the classes relating to Pneumatic Actuators
 """
 
+from signal import PytmcSignal
+
 from lightpath import LightpathState
 from ophyd import Component as Cpt
-from ophyd import EpicsSignal, EpicsSignalRO
 from ophyd.status import Status
 
 from pcdsdevices.interface import BaseInterface, LightpathMixin
@@ -19,29 +20,29 @@ class BeckhoffPneumatic(BaseInterface, LightpathMixin):
     lightpath_cpts = ['limit_switch_in', 'limit_switch_out']
 
     # readouts
-    limit_switch_in = Cpt(EpicsSignalRO, ':PLC:bInLimitSwitch')
-    limit_switch_out = Cpt(EpicsSignalRO, ':PLC:bOutLimitSwitch')
+    limit_switch_in = Cpt(PytmcSignal, ':PLC:bInLimitSwitch')
+    limit_switch_out = Cpt(PytmcSignal, ':PLC:bOutLimitSwitch')
 
-    retract_status = Cpt(EpicsSignalRO, ':bRetractDigitalOutput')
-    insert_status = Cpt(EpicsSignalRO, ':bInsertDigitalOutput')
+    retract_status = Cpt(PytmcSignal, ':bRetractDigitalOutput')
+    insert_status = Cpt(PytmcSignal, ':bInsertDigitalOutput')
 
     # logic and supervisory
-    interlock_ok = Cpt(EpicsSignalRO, 'bInterlockOK')
-    insert_ok = Cpt(EpicsSignalRO, 'bInsertEnable')
-    retract_ok = Cpt(EpicsSignalRO, 'bretractEnable')
+    interlock_ok = Cpt(PytmcSignal, 'bInterlockOK')
+    insert_ok = Cpt(PytmcSignal, 'bInsertEnable')
+    retract_ok = Cpt(PytmcSignal, 'bretractEnable')
 
     # commands
-    insert_signal = Cpt(EpicsSignal, 'CMD:IN')
-    retract_signal = Cpt(EpicsSignal, 'CMD:OUT')
+    insert_signal = Cpt(PytmcSignal, 'CMD:IN')
+    retract_signal = Cpt(PytmcSignal, 'CMD:OUT')
 
     # returns
-    busy = Cpt(EpicsSignalRO, ':bBusy')
-    done = Cpt(EpicsSignalRO, ':bDone')
-    reset = Cpt(EpicsSignal, ':bReset')
-    error = Cpt(EpicsSignalRO, ':PLC:bError')
-    error_id = Cpt(EpicsSignalRO, ':PLC:nErrorId')
-    error_message = Cpt(EpicsSignalRO, ':PLC:sErrorMessage')
-    position_state = Cpt(EpicsSignalRO, ':nPositionState', kind='hinted')
+    busy = Cpt(PytmcSignal, ':bBusy')
+    done = Cpt(PytmcSignal, ':bDone')
+    reset = Cpt(PytmcSignal, ':bReset')
+    error = Cpt(PytmcSignal, ':PLC:bError')
+    error_id = Cpt(PytmcSignal, ':PLC:nErrorId')
+    error_message = Cpt(PytmcSignal, ':PLC:sErrorMessage')
+    position_state = Cpt(PytmcSignal, ':nPositionState', kind='hinted')
 
     def callback(self, *, old_value, value, **kwargs):
         if value:
