@@ -125,7 +125,7 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
     """ + ophyd.pseudopos.PseudoPositioner.__doc__
 
     def __init__(self, *args, **kwargs):
-        self.my_move = False
+        self._my_move = False
         self._move_time = 0
         self._my_move_timeout = 10
         super().__init__(*args, **kwargs)
@@ -200,7 +200,7 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         RuntimeError
             If motion fails other than timing out.
         '''
-        self.my_move = True
+        self._my_move = True
         self._move_time = time.monotonic()
         status = super().move(position, wait=wait, timeout=timeout,
                               moved_cb=moved_cb)
@@ -210,7 +210,7 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
     def _update_position(self):
         """Update the pseudo position based on that of the real positioners."""
         position = super()._update_position()
-        if self.my_move:
+        if self._my_move:
             self._update_notepad_ioc(position, 'notepad_readback')
         return position
 
@@ -234,14 +234,14 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         """
         If a different session moves this device, it's not our move!
 
-        This callback will set the self.my_move flag to False if the setpoint
+        This callback will set the self._my_move flag to False if the setpoint
         updates far apart in time from our last move.
 
         This will stop this instance from updating the notepad_readback
         signals.
         """
         if time.monotonic() - self._move_time > self._my_move_timeout:
-            self.my_move = False
+            self._my_move = False
 
     def _sub_our_move_checks(self):
         """
