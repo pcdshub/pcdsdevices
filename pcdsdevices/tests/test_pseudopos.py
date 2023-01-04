@@ -292,34 +292,34 @@ def test_implicit_mutex(linked_delays: Tuple[FakeDelay, FakeDelay]):
     def assert_no_updates():
         value1 = delay_one.delay.notepad_readback.get()
         value2 = delay_two.delay.notepad_readback.get()
-        if not delay_one.my_move:
+        if not delay_one._my_move:
             delay_one._update_position()
-        if not delay_two.my_move:
+        if not delay_two._my_move:
             delay_two._update_position()
         assert delay_one.delay.notepad_readback.get() == value1
         assert delay_two.delay.notepad_readback.get() == value2
 
-    # Let's do moves and check my_move attribute
-    assert not delay_one.my_move
-    assert not delay_two.my_move
+    # Let's do moves and check _my_move attribute
+    assert not delay_one._my_move
+    assert not delay_two._my_move
     assert_no_updates()
 
-    # First move: delay_one should immediately grab my_move
+    # First move: delay_one should immediately grab _my_move
     delay_one.move(1, wait=False)
-    assert delay_one.my_move
-    assert not delay_two.my_move
+    assert delay_one._my_move
+    assert not delay_two._my_move
     assert_no_updates()
 
-    # Second move: after _my_move_tomeout, delay_one should drop my_move
+    # Second move: after _my_move_tomeout, delay_one should drop _my_move
     time.sleep(delay_one._my_move_timeout)
     delay_two.move(2, wait=False)
-    assert delay_two.my_move
-    wait_for(delay_one, 'my_move', False)
+    assert delay_two._my_move
+    wait_for(delay_one, '_my_move', False)
     assert_no_updates()
 
     # Do it again but the other way
     time.sleep(delay_two._my_move_timeout)
     delay_one.move(3, wait=False)
-    assert delay_one.my_move
-    wait_for(delay_two, 'my_move', False)
+    assert delay_one._my_move
+    wait_for(delay_two, '_my_move', False)
     assert_no_updates()
