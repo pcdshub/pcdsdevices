@@ -19,7 +19,7 @@ env:
     - CONDA_RECIPE_FOLDER="conda-recipe"
     # Extra dependencies needed to run the tests which are not included
     # at the recipe and dev-requirements.txt. E.g. PyQt
-    - CONDA_EXTRAS="pip"
+    - CONDA_EXTRAS="pip numpy=1.23"
     # Requirements file with contents for tests dependencies
     - CONDA_REQUIREMENTS="dev-requirements.txt"
 
