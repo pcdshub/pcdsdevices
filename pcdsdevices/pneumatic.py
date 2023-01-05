@@ -4,13 +4,13 @@ Pneumatic Classes.
 This Module contains all the classes relating to Pneumatic Actuators
 """
 
-from signal import PytmcSignal
-
 from lightpath import LightpathState
 from ophyd import Component as Cpt
 from ophyd.status import Status
 
 from pcdsdevices.interface import BaseInterface, LightpathMixin
+
+from .signal import PytmcSignal
 
 
 class BeckhoffPneumatic(BaseInterface, LightpathMixin):
