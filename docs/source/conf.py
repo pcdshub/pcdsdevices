@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # PCDS Devices documentation build configuration file, created by
 # sphinx-quickstart on Mon Apr  3 21:34:53 2017.
@@ -71,7 +70,7 @@ master_doc = 'index'
 # General information about the project.
 project = 'PCDS Devices'
 year = datetime.datetime.now().year
-copyright = '{}, SLAC National Accelerator Laboratory'.format(year)
+copyright = f'{year}, SLAC National Accelerator Laboratory'
 author = 'SLAC National Accelerator Laboratory'
 
 # The version info for the project you're documenting, acts as replacement for

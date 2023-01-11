@@ -161,7 +161,7 @@ def ipm_screen(dettype, prefix, prefix_ioc):
     else:
         raise ValueError('Unknown detector type')
     if shutil.which(executable) is None:
-        raise EnvironmentError('%s is not on path, we cannot start the screen'
+        raise OSError('%s is not on path, we cannot start the screen'
                                % executable)
 
     logger.info(f'Opening {dettype} screen for {prefix}...')
@@ -471,11 +471,11 @@ class HelpfulIntEnum(enum.IntEnum, metaclass=HelpfulIntEnumMeta):
 
 
 def set_many(
-    to_set: Dict[ophyd.Signal, OphydDataType],
+    to_set: dict[ophyd.Signal, OphydDataType],
     *,
-    owner: Optional[ophyd.ophydobj.OphydObject] = None,
-    timeout: Optional[Number] = None,
-    settle_time: Optional[Number] = None,
+    owner: ophyd.ophydobj.OphydObject | None = None,
+    timeout: Number | None = None,
+    settle_time: Number | None = None,
     raise_on_set_failure: bool = False
 ) -> ophyd.status.StatusBase:
     """
@@ -533,8 +533,8 @@ def set_many(
 
 
 def maybe_make_method(
-    func: Optional[Callable], owner: object
-) -> Optional[Callable]:
+    func: Callable | None, owner: object
+) -> Callable | None:
     """
     Bind ``func`` as a method of ``owner`` if ``self`` is the first parameter.
 
@@ -696,10 +696,10 @@ def post_ophyds_to_elog(objs, allow_child=False, hutch_elog=None):
 
 
 def reorder_components(
-    cls: Optional[type[Device]] = None,
-    start_with: Optional[List[Union[str, Cpt]]] = None,
-    end_with: Optional[List[Union[str, Cpt]]] = None,
-) -> Union[type[Device], Callable[[type[Device]], type[Device]]]:
+    cls: type[Device] | None = None,
+    start_with: list[str | Cpt] | None = None,
+    end_with: list[str | Cpt] | None = None,
+) -> type[Device] | Callable[[type[Device]], type[Device]]:
     """
     Rearrange the components in cls for typhos displays.
 
@@ -742,8 +742,8 @@ def reorder_components(
 
 def _normalize_reorder_list(
     cls: type[Device],
-    cpts_or_names: Optional[List[Union[str, Cpt]]],
-) -> List[str]:
+    cpts_or_names: list[str | Cpt] | None,
+) -> list[str]:
     """
     Simplify the user's variable arguments for the component reordering.
     """
@@ -771,9 +771,9 @@ def _normalize_reorder_list(
 
 
 def move_subdevices_to_start(
-    cls: Optional[type[Device]] = None,
+    cls: type[Device] | None = None,
     subdevice_cls: type[Device] = Device,
-) -> Union[type[Device], Callable[[type[Device]], type[Device]]]:
+) -> type[Device] | Callable[[type[Device]], type[Device]]:
     """
     Arrange the component order of a device class to put subdevices first.
 
@@ -815,9 +815,9 @@ def move_subdevices_to_start(
 
 
 def sort_components_by_name(
-    cls: Optional[type[Device]] = None,
+    cls: type[Device] | None = None,
     reverse: bool = False,
-) -> Union[type[Device], Callable[[type[Device]], type[Device]]]:
+) -> type[Device] | Callable[[type[Device]], type[Device]]:
     """
     Arrange the component order of a device class in alphabetical order.
 

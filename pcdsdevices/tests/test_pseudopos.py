@@ -285,7 +285,7 @@ def wait_for(
     assert getattr(obj, attr) == value
 
 
-def test_implicit_mutex(linked_delays: Tuple[FakeDelay, FakeDelay]):
+def test_implicit_mutex(linked_delays: tuple[FakeDelay, FakeDelay]):
     # Previous bug: two delays could fight over control of ophyd_readback
     delay_one, delay_two = linked_delays
 

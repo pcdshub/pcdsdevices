@@ -603,8 +603,8 @@ def _rtd_fields(cls, attr_base, range_, **kwargs):
     padding = max(range_)//10 + 2
     defn = OrderedDict()
     for i in range_:
-        attr = '{attr}{i}'.format(attr=attr_base, i=i)
-        suffix = ':RTD:{i}'.format(i=str(i).zfill(padding))
+        attr = f'{attr_base}{i}'
+        suffix = f':RTD:{str(i).zfill(padding)}'
         defn[attr] = (cls, suffix, kwargs)
     return defn
 

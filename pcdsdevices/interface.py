@@ -57,7 +57,7 @@ class _TabCompletionHelper:
     Base class for `TabCompletionHelperClass`, `TabCompletionHelperInstance`.
     """
 
-    _includes: typing.Set[str]
+    _includes: set[str]
     _regex: typing.Optional[typing.Pattern]
 
     def __init__(self):
@@ -99,7 +99,7 @@ class TabCompletionHelperClass(_TabCompletionHelper):
         Class type object to generate tab completion information from.
     """
 
-    cls: typing.Type['BaseInterface']
+    cls: type['BaseInterface']
 
     def __init__(self, cls):
         self.cls = cls
@@ -146,7 +146,7 @@ class TabCompletionHelperInstance(_TabCompletionHelper):
 
     class_helper: TabCompletionHelperClass
     instance: 'BaseInterface'
-    super_dir: typing.Callable[[], typing.List[str]]
+    super_dir: typing.Callable[[], list[str]]
 
     def __init__(self, instance, class_helper):
         assert isinstance(instance, BaseInterface), 'Must mix in BaseInterface'
@@ -161,7 +161,7 @@ class TabCompletionHelperInstance(_TabCompletionHelper):
         super().reset()
         self._includes = set(self.class_helper._includes)
 
-    def get_filtered_dir_list(self) -> typing.List[str]:
+    def get_filtered_dir_list(self) -> list[str]:
         """Get the dir list, filtered based on the whitelist."""
         if self._regex is None:
             self.build_regex()
@@ -172,7 +172,7 @@ class TabCompletionHelperInstance(_TabCompletionHelper):
             if self._regex.fullmatch(elem)
         ]
 
-    def get_dir(self) -> typing.List[str]:
+    def get_dir(self) -> list[str]:
         """Get the dir list based on the engineering mode settings."""
         if get_engineering_mode():
             return self.super_dir()
@@ -702,7 +702,7 @@ class MvInterface(BaseInterface):
         try:
             self._mov_ev.clear()
             while not self._mov_ev.is_set():
-                print("\r {0:4f}".format(self.wm()), end=" ")
+                print(f"\r {self.wm():4f}", end=" ")
                 self._mov_ev.wait(0.1)
         except KeyboardInterrupt:
             pass
@@ -850,8 +850,8 @@ class FltMvInterface(MvInterface):
 
         # Importing forces backend selection, so do inside method
         import matplotlib.pyplot as plt  # NOQA
-        logger.info(("Select new motor x-position in current plot "
-                     "by mouseclick"))
+        logger.info("Select new motor x-position in current plot "
+                     "by mouseclick")
         if not plt.get_fignums():
             upper_limit = 0
             lower_limit = self.limits[0]
@@ -1038,11 +1038,11 @@ class Presets:
                       'active=%s)'), self._device.name, preset_type, name,
                      value, comment, active)
         if not isinstance(name, str):
-            raise TypeError(('name must be of type <str>, not type'
-                             '{}'.format(type(name))))
+            raise TypeError('name must be of type <str>, not type'
+                             '{}'.format(type(name)))
         if value is not None and not isinstance(value, numbers.Real):
-            raise TypeError(('value must be a real numeric type, not type'
-                             '{}'.format(type(value))))
+            raise TypeError('value must be a real numeric type, not type'
+                             '{}'.format(type(value)))
         try:
             path = self._path(preset_type)
             if not path.exists():
@@ -1062,7 +1062,7 @@ class Presets:
                         comment = ' ' + comment
                     else:
                         comment = ''
-                    history[ts] = '{:10.4f}{}'.format(value, comment)
+                    history[ts] = f'{value:10.4f}{comment}'
                     data[name]['history'] = history
                 if active:
                     data[name]['active'] = True
@@ -1469,7 +1469,7 @@ def tweak_base(*args, scale=0.1):
             logger.error('Error in tweak move: %s', exc)
             logger.debug('', exc_info=True)
 
-    start_text = ['{} at {:.4f}'.format(mot.name, mot.wm()) for mot in args]
+    start_text = [f'{mot.name} at {mot.wm():.4f}' for mot in args]
     logger.info('Started tweak of ' + ', '.join(start_text))
 
     # Loop takes in user key input and stops when 'q' is pressed

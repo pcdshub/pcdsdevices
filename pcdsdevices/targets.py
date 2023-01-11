@@ -631,10 +631,10 @@ class XYGridStage():
             xx = data['xx']
             yy = data['yy']
 
-            x_index = next((index for (index, d) in enumerate(xx)
-                            if np.isclose(d["pos"], x_pos)))
-            y_index = next((index for (index, d) in enumerate(yy)
-                            if np.isclose(d["pos"], y_pos)))
+            x_index = next(index for (index, d) in enumerate(xx)
+                            if np.isclose(d["pos"], x_pos))
+            y_index = next(index for (index, d) in enumerate(yy)
+                            if np.isclose(d["pos"], y_pos))
         except Exception:
             logger.warning('Could not determine the m n points from position.')
         n_points = self.m_n_points[1]

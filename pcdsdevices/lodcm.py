@@ -935,7 +935,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
 
         try:
             energy = self.get_energy()
-            energy = "{:.4f}".format(energy)
+            energy = f"{energy:.4f}"
         except Exception:
             energy = 'Unknown'
 
@@ -1155,7 +1155,7 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
 
         try:
             energy = self.get_energy()
-            energy = "{:.4f}".format(energy)
+            energy = f"{energy:.4f}"
         except Exception:
             energy = 'Unknown'
 
@@ -1643,7 +1643,7 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
 
         try:
             energy = self.get_energy()
-            energy = "{:.4f}".format(energy)
+            energy = f"{energy:.4f}"
         except Exception:
             energy = 'Unknown'
 

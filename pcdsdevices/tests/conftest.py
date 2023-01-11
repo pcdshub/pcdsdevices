@@ -93,7 +93,7 @@ def presets():
     shutil.rmtree(folder)
 
 
-def find_pcdsdevices_submodules() -> Dict[str, ModuleType]:
+def find_pcdsdevices_submodules() -> dict[str, ModuleType]:
     """Find all pcdsdevices submodules, as a dictionary of name to module."""
     modules = {}
     package_root = str(MODULE_PATH.parent)
@@ -113,7 +113,7 @@ def find_pcdsdevices_submodules() -> Dict[str, ModuleType]:
     return modules
 
 
-def find_all_classes(classes, skip: Optional[List[str]] = None) -> List[Any]:
+def find_all_classes(classes, skip: Optional[list[str]] = None) -> list[Any]:
     """Find all device classes in pcdsdevices and return them as a list."""
     skip = skip or []
 
@@ -139,8 +139,8 @@ def find_all_classes(classes, skip: Optional[List[str]] = None) -> List[Any]:
 
 
 def find_all_device_classes(
-    skip: Optional[List[str]] = None
-) -> List[ophyd.Device]:
+    skip: Optional[list[str]] = None
+) -> list[ophyd.Device]:
     """
     Find all device classes in pcdsdevices and return them as a list.
     Skip any devices with their name in ``skip``
@@ -149,7 +149,7 @@ def find_all_device_classes(
     return find_all_classes(ophyd.Device, skip=skip)
 
 
-def find_all_callables() -> List[Callable]:
+def find_all_callables() -> list[Callable]:
     """Find all callables in pcdsdevices and return them as a list."""
     def should_include(obj):
         try:
