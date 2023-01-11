@@ -228,15 +228,13 @@ class InterfaceDevice(Device):
                 try:
                     obj = kwargs.pop(cpt_name)
                 except KeyError:
-                    raise TypeError(
-                        f'Missing required kwarg {cpt_name}'
-                        ) from None
+                    raise TypeError(f'Missing required kwarg {cpt_name}') from None
                 if isinstance(obj, cpt.cls):
                     self._interface_obj[cpt_name] = obj
                 else:
                     raise TypeError(
                         f'{cpt_name} must be of type {cpt.cls}'
-                        )
+                    )
 
         super().__init__(*args, **kwargs)
 
@@ -270,7 +268,7 @@ def to_interface(device_class):
         device_class.__name__ + 'Interface',
         (InterfaceDevice, device_class),
         interface_cpts
-        )
+    )
 
 
 class UpdateComponent(Component):
@@ -413,7 +411,7 @@ class GroupDevice(Device):
         PseudoSingle,
         PVStateSignal,
         AggregateSignal
-        ]
+    ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -436,7 +434,7 @@ class GroupDevice(Device):
             raise TypeError(
                 f"Must specify a stage_group in {cls.__name__} because it "
                 "is a movable device. See the GroupDevice docs."
-                )
+            )
         if cls.stage_group is not None:
             for cpt in cls.stage_group:
                 if not isinstance(cpt, Component):

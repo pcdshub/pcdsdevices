@@ -235,10 +235,7 @@ class ItechRfofTx(BaseInterface, Device):
         EpicsSignalRO,
         ":TX_PD1_RF",
         kind="normal",
-        doc=(
-            "PD1 RF power - returned "
-            "optical signal (dBm)"
-            )
+        doc="PD1 RF power - returned optical signal (dBm)"
     )
     pd2_rf_power_transmit = Cpt(
         EpicsSignalRO,

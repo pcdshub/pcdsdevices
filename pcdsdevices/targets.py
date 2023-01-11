@@ -631,10 +631,14 @@ class XYGridStage():
             xx = data['xx']
             yy = data['yy']
 
-            x_index = next(index for (index, d) in enumerate(xx)
-                            if np.isclose(d["pos"], x_pos))
-            y_index = next(index for (index, d) in enumerate(yy)
-                            if np.isclose(d["pos"], y_pos))
+            x_index = next(
+                index for (index, d) in enumerate(xx)
+                if np.isclose(d["pos"], x_pos)
+            )
+            y_index = next(
+                index for (index, d) in enumerate(yy)
+                if np.isclose(d["pos"], y_pos)
+            )
         except Exception:
             logger.warning('Could not determine the m n points from position.')
         n_points = self.m_n_points[1]
@@ -693,8 +697,7 @@ class XYGridStage():
         """
         path = path or self._path
         entry = os.path.join(path, sample_name + '.yml')
-        m_points, n_points, coeffs = self.get_sample_map_info(
-                                            str(sample_name), path=entry)
+        m_points, n_points, coeffs = self.get_sample_map_info(str(sample_name), path=entry)
         self.m_n_points = m_points, n_points
         self.coefficients = coeffs
         # make this sample the current one

@@ -17,7 +17,7 @@ import logging
 import numbers
 import typing
 from threading import RLock
-from typing import Any, Dict, Generator, List, Mapping, Optional, Tuple, Union
+from typing import Any, Generator, Mapping, Optional, Union
 
 import numpy as np
 import ophyd
@@ -1122,13 +1122,16 @@ class UnitConversionDerivedSignal(DerivedSignal):
     derived_units: str
     original_units: str
 
-    def __init__(self, derived_from, *,
-                 derived_units: str,
-                 original_units: typing.Optional[str] = None,
-                 user_offset: typing.Optional[numbers.Real] = 0,
-                 limits: typing.Optional[tuple[numbers.Real,
-                                                      numbers.Real]] = None,
-                 **kwargs):
+    def __init__(
+        self,
+        derived_from,
+        *,
+        derived_units: str,
+        original_units: typing.Optional[str] = None,
+        user_offset: typing.Optional[numbers.Real] = 0,
+        limits: typing.Optional[tuple[numbers.Real, numbers.Real]] = None,
+        **kwargs
+    ):
         self.derived_units = derived_units
         self.original_units = original_units
         self._user_offset = user_offset
@@ -1258,7 +1261,7 @@ class SignalEditMD(Signal):
                     f'Tried to override metadata key {key} in {self.name}, '
                     'but this is not one of the metadata keys: '
                     f'{self._metadata_keys}'
-                    )
+                )
         try:
             self._metadata_override.update(**md)
         except AttributeError:

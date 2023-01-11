@@ -2,7 +2,6 @@ import copy
 import enum
 import logging
 import time
-import typing
 import warnings
 
 import numpy as np
@@ -295,9 +294,9 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
             'release. Please switch to SyncAxis.',
             DeprecationWarning)
         if self.__class__ is SyncAxesBase:
-            raise TypeError('SyncAxesBase must be subclassed with '
-                             'the axes to synchronize included as '
-                             'components')
+            raise TypeError(
+                "SyncAxesBase must be subclassed with the axes to synchronize included as components"
+            )
         super().__init__(*args, **kwargs)
         self._offsets = None
 
@@ -480,27 +479,22 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         """Mostly just a typo check."""
         if self.__class__ is SyncAxis:
             raise TypeError(
-                'SyncAxis must be subclassed with '
-                'the axes to synchronize included as '
-                'components'
-                )
+                "SyncAxis must be subclassed with the axes to synchronize included as components"
+            )
         try:
             self.offset_mode = SyncAxisOffsetMode(self.offset_mode)
         except ValueError:
             try:
                 self.offset_mode = SyncAxisOffsetMode[self.offset_mode]
             except KeyError:
-                raise ValueError(
-                    f'Invalid offset_mode: {self.offset_mode}'
-                    ) from None
+                raise ValueError(f'Invalid offset_mode: {self.offset_mode}') from None
         self._check_info_dict(self.offsets, 'offsets')
         self._check_info_dict(self.scales, 'scales')
         if (self.fix_sync_keep_still is not None
                 and self.fix_sync_keep_still not in self.component_names):
             raise ValueError(
-                f'Invalid fix_sync_keep_still == {self.fix_sync_keep_still}. '
-                'Must match a motor.'
-                )
+                f'Invalid fix_sync_keep_still == {self.fix_sync_keep_still}. Must match a motor.'
+            )
 
     def _check_info_dict(self, setting, info_kind):
         """Helper function to check that all keys in the dict are Cpts"""
@@ -508,9 +502,8 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
             for attr, _ in setting.items():
                 if attr not in self.component_names:
                     raise ValueError(
-                        f'Invalid key {attr} in {info_kind}. '
-                        'Must match a motor.'
-                        )
+                        f'Invalid key {attr} in {info_kind}. Must match a motor.'
+                    )
 
     def _fill_info_dict(self, setting, default, info_kind):
         """Helper function to fill default values into the dict"""
@@ -622,10 +615,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         """
         Return the consistency warning text
         """
-        return (
-            f'{self.name} is in an inconsistent state. Call '
-            'set_current_position or fix_sync to resolve.'
-            )
+        return f'{self.name} is in an inconsistent state. Call set_current_position or fix_sync to resolve.'
 
     def fix_sync(self, confirm=True, wait=True, timeout=10):
         """
@@ -759,8 +749,9 @@ class DelayBase(FltMvInterface, PseudoPositioner):
 
     def __init__(self, *args, egu='s', n_bounces=2, invert=False, **kwargs):
         if self.__class__ is DelayBase:
-            raise TypeError('DelayBase must be subclassed with '
-                             'a "motor" component, the real motor to move.')
+            raise TypeError(
+                'DelayBase must be subclassed with a "motor" component, the real motor to move.'
+            )
         self.n_bounces = n_bounces
         if invert:
             self.n_bounces *= -1
@@ -866,8 +857,8 @@ def delay_class_factory(motor_class):
 
 
 def delay_instance_factory(
-        prefix, motor_class, egu='s', n_bounces=2, invert=False, **kwargs
-        ):
+    prefix, motor_class, egu='s', n_bounces=2, invert=False, **kwargs
+):
     cls = delay_class_factory(motor_class)
     return cls(prefix, egu=egu, n_bounces=n_bounces, invert=invert, **kwargs)
 
@@ -911,16 +902,16 @@ class DelayMotor(InterfaceDevice, DelayBase):
     motor = ICpt(PositionerBase)
 
     def __init__(
-            self, motor, name=None, egu='s', n_bounces=2, invert=False,
-            **kwargs,
-            ):
+        self, motor, name=None, egu='s', n_bounces=2, invert=False,
+        **kwargs,
+    ):
         if name is None:
             name = motor.name + '_delay_motor'
         super().__init__(
             motor.prefix, name=name,
             egu=egu, n_bounces=n_bounces, invert=invert,
             motor=motor, **kwargs,
-            )
+        )
 
 
 class SimDelayStage(DelayBase):

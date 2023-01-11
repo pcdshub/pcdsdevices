@@ -195,9 +195,13 @@ class BaseInterface:
         List of string regex to show in autocomplete for non-engineering mode.
     """
 
-    tab_whitelist = (OphydObject_whitelist + BlueskyInterface_whitelist +
-                     Device_whitelist + Signal_whitelist +
-                     Positioner_whitelist)
+    tab_whitelist = (
+        OphydObject_whitelist
+        + BlueskyInterface_whitelist
+        + Device_whitelist
+        + Signal_whitelist
+        + Positioner_whitelist
+    )
 
     _class_tab: TabCompletionHelperClass
     _tab: TabCompletionHelperInstance
@@ -850,8 +854,7 @@ class FltMvInterface(MvInterface):
 
         # Importing forces backend selection, so do inside method
         import matplotlib.pyplot as plt  # NOQA
-        logger.info("Select new motor x-position in current plot "
-                     "by mouseclick")
+        logger.info("Select new motor x-position in current plot by mouseclick")
         if not plt.get_fignums():
             upper_limit = 0
             lower_limit = self.limits[0]
@@ -1038,11 +1041,13 @@ class Presets:
                       'active=%s)'), self._device.name, preset_type, name,
                      value, comment, active)
         if not isinstance(name, str):
-            raise TypeError('name must be of type <str>, not type'
-                             '{}'.format(type(name)))
+            raise TypeError(
+                "name must be of type <str>, not type {}".format(type(name))
+            )
         if value is not None and not isinstance(value, numbers.Real):
-            raise TypeError('value must be a real numeric type, not type'
-                             '{}'.format(type(value)))
+            raise TypeError(
+                "value must be a real numeric type, not type {}".format(type(value))
+            )
         try:
             path = self._path(preset_type)
             if not path.exists():
@@ -1817,7 +1822,7 @@ class LightpathInOutMixin(LightpathMixin):
                 inserted=True,
                 removed=True,
                 output={self.output_branches[0]: 1}
-                )
+            )
 
         self._inserted = self.check_inserted(state)
         self._removed = self.check_removed(state)

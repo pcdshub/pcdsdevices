@@ -683,7 +683,7 @@ class IMS(PCDSMotorBase):
             initialize_complete,
             timeout=timeout,
             settle_time=0.5,
-            )
+        )
         # Wait on status if requested
         if wait:
             status_wait(st)

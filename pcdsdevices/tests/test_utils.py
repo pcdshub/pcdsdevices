@@ -42,7 +42,7 @@ def input_later(sim_input, inp, delay=0.1):
 @pytest.mark.skipif(
     sys.platform == "win32",
     reason=pty_missing,
-    )
+)
 def test_is_input(sim_input):
     logger.debug('test_is_input')
     sim_input.write('a\n')
@@ -52,7 +52,7 @@ def test_is_input(sim_input):
 @pytest.mark.skipif(
     sys.platform == "win32",
     reason=pty_missing,
-    )
+)
 @pytest.mark.timeout(5)
 def test_get_input_waits(sim_input):
     logger.debug('test_get_input_waits')
@@ -63,7 +63,7 @@ def test_get_input_waits(sim_input):
 @pytest.mark.skipif(
     sys.platform == "win32",
     reason=pty_missing,
-    )
+)
 @pytest.mark.timeout(0.5)
 def test_get_input_arrow(sim_input):
     logger.debug('test_get_input_arrow')
@@ -74,7 +74,7 @@ def test_get_input_arrow(sim_input):
 @pytest.mark.skipif(
     sys.platform == "win32",
     reason=pty_missing,
-    )
+)
 @pytest.mark.timeout(0.5)
 def test_get_input_shift_arrow(sim_input):
     logger.debug('test_get_input_arrow')
@@ -85,7 +85,7 @@ def test_get_input_shift_arrow(sim_input):
 @pytest.mark.skipif(
     sys.platform == "win32",
     reason=pty_missing,
-    )
+)
 @pytest.mark.timeout(0.5)
 def test_cbreak(sim_input):
     logger.debug('test_cbreak')

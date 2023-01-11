@@ -52,9 +52,7 @@ if typing.TYPE_CHECKING:
     import matplotlib  # noqa
 
 
-def load_calibration_file(
-        filename: typing.Union[pathlib.Path, str]
-        ) -> np.ndarray:
+def load_calibration_file(filename: typing.Union[pathlib.Path, str]) -> np.ndarray:
     """
     Load a calibration file.
 

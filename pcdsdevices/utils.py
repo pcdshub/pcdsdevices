@@ -13,7 +13,7 @@ import time
 from collections.abc import Iterable
 from functools import reduce
 from types import MethodType
-from typing import Callable, Dict, Iterator, List, Optional, Union
+from typing import Callable, Iterator, Union
 
 import ophyd
 import prettytable
@@ -161,8 +161,7 @@ def ipm_screen(dettype, prefix, prefix_ioc):
     else:
         raise ValueError('Unknown detector type')
     if shutil.which(executable) is None:
-        raise OSError('%s is not on path, we cannot start the screen'
-                               % executable)
+        raise OSError(f"{executable} is not on path, we cannot start the screen")
 
     logger.info(f'Opening {dettype} screen for {prefix}...')
     arglist = [executable, '--base', prefix, '--ioc', prefix_ioc,

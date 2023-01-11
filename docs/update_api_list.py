@@ -36,7 +36,6 @@ def create_api_list() -> list[str]:
         "",
     ]
 
-
     for module_name in sorted(modules):
         underline = "-" * len(module_name)
         output.append(module_name)
@@ -46,8 +45,7 @@ def create_api_list() -> list[str]:
         objects = [
             obj
             for obj in list(classes) + list(callables)
-            if obj.__module__ == module_name and
-            hasattr(module, obj.__name__)
+            if obj.__module__ == module_name and hasattr(module, obj.__name__)
         ]
 
         if objects:
@@ -59,7 +57,6 @@ def create_api_list() -> list[str]:
                 output.append(f"    {obj.__module__}.{obj.__name__}")
 
             output.append("")
-
 
     while output[-1] == "":
         output.pop(-1)

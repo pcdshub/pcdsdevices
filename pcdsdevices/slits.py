@@ -265,7 +265,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
                 self._pre_stage_gap[0],
                 self._pre_stage_gap[1],
                 wait=True
-                )
+            )
         self._pre_stage_gap = None
         return super().unstage()
 
@@ -296,7 +296,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         """Callback run when slit size is adjusted."""
         # Avoid duplicate keywords
         kwargs.pop('sub_type', None)
-        kwargs.pop('obj',      None)
+        kwargs.pop('obj', None)
         # Run subscriptions
         self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 

@@ -448,7 +448,7 @@ def _make_att_classes(max_filters, base_with_3rd_harmonic, name):
 
         if issubclass(base_with_3rd_harmonic, LightpathInOutCptMixin):
             att_ns['lightpath_cpts'] = [
-                f'filter{i}' for i in range(1, i+1)
+                f'filter{i}' for i in range(1, i + 1)
             ]
         cls_name = f'{name}{i}'
         cls = type(cls_name, (base_with_3rd_harmonic,), att_ns)
@@ -593,7 +593,7 @@ class AttenuatorCalculatorFilter(BaseInterface, Device):
     transmission_3omega = Cpt(
         EpicsSignalRO, 'Transmission3Omega_RBV', kind='normal',
         doc='Normalized transmission at 3 * the reported energy',
-                              )
+    )
     set_metadata(transmission_3omega, dict(variety='scalar',
                                            display_format='exponential'))
 
@@ -1637,7 +1637,7 @@ class AT2L0(FltMvInterface, PVPositionerPC, LightpathMixin):
             for cpt in self.lightpath_cpts
         ]
 
-        table = '\n'.join(render_ascii_att(cpt_states,  start_index=1))
+        table = '\n'.join(render_ascii_att(cpt_states, start_index=1))
 
         return f"""
 {table}

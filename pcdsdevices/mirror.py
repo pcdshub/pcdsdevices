@@ -7,7 +7,7 @@ control the pitch, and two pairs of motors to control the horizontal and
 vertical gantries.
 """
 import logging
-from typing import List, Tuple, Union
+from typing import Union
 
 import numpy as np
 from lightpath import LightpathState

@@ -102,8 +102,10 @@ class PIM(BaseInterface, GroupDevice, LightpathInOutCptMixin):
         """Pulls out the first two segments of the prefix PV, if not already
            done"""
         if not self._prefix_start:
-            self._prefix_start = '{}:{}:'.format(prefix.split(':')[0],
-                                                   prefix.split(':')[1])
+            self._prefix_start = '{}:{}:'.format(
+                prefix.split(':')[0],
+                prefix.split(':')[1],
+            )
 
     def format_status_info(self, status_info):
         """
