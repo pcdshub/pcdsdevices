@@ -3,3 +3,5 @@ exclude = .git,__pycache__,build,dist,pcdsdevices/_version.py,docs/source/conf.p
 max-line-length = 88
 select = C,E,F,W,B,B950
 extend-ignore = E203, E501
+per-file-ignores =
+    pcdsdevices/signal.py:E402
