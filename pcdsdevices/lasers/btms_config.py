@@ -130,6 +130,9 @@ class SourcePosition(str, enum.Enum):
     ls8 = "LS8"
     ls4 = "LS4"
 
+    def __str__(self) -> str:
+        return self.value
+
     @classmethod
     def from_index(cls, index: int) -> SourcePosition:
         """"
@@ -234,6 +237,9 @@ class DestinationPosition(str, enum.Enum):
     ld6 = "LD6"    # bottom
     ld14 = "LD14"  # top
     ld7 = "LD7"    # bottom
+
+    def __str__(self) -> str:
+        return self.value
 
     @property
     def name_and_desc(self) -> str:
