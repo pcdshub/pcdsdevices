@@ -1042,11 +1042,11 @@ class Presets:
                      value, comment, active)
         if not isinstance(name, str):
             raise TypeError(
-                "name must be of type <str>, not type {}".format(type(name))
+                f"name must be of type <str>, not type {type(name)}"
             )
         if value is not None and not isinstance(value, numbers.Real):
             raise TypeError(
-                "value must be a real numeric type, not type {}".format(type(value))
+                f"value must be a real numeric type, not type {type(value)}"
             )
         try:
             path = self._path(preset_type)
