@@ -2,6 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 exclude: |
   (?x)^(
+    docs/source/conf.py|
     pcdsdevices/_version.py|
   )$
 
