@@ -1,7 +1,9 @@
-{% set data = load_setup_py_data() %}
+{% set package_name = "pcdsdevices" %}
+{% set import_name = "pcdsdevices" %}
+{% set version = load_file_regex(load_file=os.path.join(import_name, "_version.py"), regex_pattern=".*version = '(\S+)'").group(1) %}
 
 package:
-  name: pcdsdevices
+  name: {{ package_name }}
   version : {{ data.get('version') }}
 
 source:
@@ -40,7 +42,7 @@ requirements:
 
 test:
   imports:
-    - pcdsdevices
+    - {{ import_name }}
 
 about:
   home: https://github.com/pcdshub/pcdsdevices
