@@ -1,5 +1,7 @@
 [flake8]
-exclude = .git,__pycache__,build,dist,pcdsdevices/_version.py,docs/source/conf.py
+exclude = .git,__pycache__,build,dist,pcdsdevices/_version.py
 max-line-length = 88
 select = C,E,F,W,B,B950
-extend-ignore = E203, E501
+extend-ignore = E203, E501, E226, W503, W504
+per-file-ignores =
+    pcdsdevices/signal.py:E402
