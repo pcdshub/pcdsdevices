@@ -3,6 +3,7 @@ import epics.ca
 from ophyd.device import Device
 
 from .registry import device_registry  # NOQA
+from .version import __version__  # noqa: F401
 
 
 def __contains__(self, value):
@@ -32,4 +33,3 @@ except AttributeError:
 
 del epics
 del make_new_bts
-from .version import __version__
