@@ -33,7 +33,7 @@ pcdsdevices = "pcdsdevices.ui:path"
 
 [tool.setuptools.packages.find]
 where = [ ".",]
-include = [ "pcdsdevices",]
+include = [ "pcdsdevices*", ]
 namespaces = false
 
 [tool.setuptools.dynamic.readme]
