@@ -10,13 +10,14 @@ source:
   path: ..
 
 build:
-  number: 1
+  number: 0
   noarch: python
 
 requirements:
   build:
     - python >=3.9
-    - setuptools
+    - pip
+    - setuptools_scm
   run:
     - python >=3.9
     - bluesky >=1.6.4
