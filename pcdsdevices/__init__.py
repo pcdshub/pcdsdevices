@@ -1,9 +1,9 @@
-from .version import __version__  # noqa: F401
 # Hacky ophyd and pyepics hotfixes
 import epics.ca
 from ophyd.device import Device
 
 from .registry import device_registry  # NOQA
+from .version import __version__  # noqa: F401
 
 
 def __contains__(self, value):

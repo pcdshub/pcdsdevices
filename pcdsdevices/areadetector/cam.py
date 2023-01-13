@@ -5,8 +5,7 @@ All components (EPICS PVs) associated with a specific camera are added here.
 """
 import logging
 
-from ophyd import (Component, EpicsSignal,
-                   EpicsSignalRO, cam)
+from ophyd import Component, EpicsSignal, EpicsSignalRO, cam
 from ophyd.areadetector.base import ADComponent, EpicsSignalWithRBV
 from ophyd.sim import SynSignal
 
