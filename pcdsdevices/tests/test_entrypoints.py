@@ -16,7 +16,7 @@ def entry_points() -> dict[str, importlib.metadata.EntryPoints]:
 
 def test_typhos_entrypoint(entry_points):
     assert "typhos.ui" in entry_points, "No typhos entrypoints"
-    values = set(entry.value for entry in entry_points["typhos.ui"])
+    values = {entry.value for entry in entry_points["typhos.ui"]}
     assert "pcdsdevices.ui:path" in values
 
 
@@ -27,5 +27,5 @@ def test_typhos_paths():
 
 def test_happi_entrypoint(entry_points):
     assert "happi.containers" in entry_points, "No happi entrypoints"
-    values = set(entry.value for entry in entry_points["happi.containers"])
+    values = {entry.value for entry in entry_points["happi.containers"]}
     assert "pcdsdevices.happi.containers" in values
