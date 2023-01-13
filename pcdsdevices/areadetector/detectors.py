@@ -8,12 +8,10 @@ import logging
 import shutil
 import subprocess
 import time
-import warnings
 
 from ophyd import Device
 from ophyd.areadetector import cam
-from ophyd.areadetector.base import (ADComponent, EpicsSignalWithRBV,
-                                     NDDerivedSignal)
+from ophyd.areadetector.base import (ADComponent, EpicsSignalWithRBV)
 from ophyd.areadetector.detectors import DetectorBase
 from ophyd.areadetector.trigger_mixins import SingleTrigger
 from ophyd.device import Component as Cpt

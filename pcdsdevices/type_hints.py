@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, Optional, Protocol, Union, runtime_checkable
+from typing import Protocol, Union, runtime_checkable
 
 import numpy.typing as npt
 import ophyd

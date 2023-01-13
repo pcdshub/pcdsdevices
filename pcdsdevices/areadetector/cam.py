@@ -5,12 +5,10 @@ All components (EPICS PVs) associated with a specific camera are added here.
 """
 import logging
 
-import ophyd
-from ophyd import (Component, DynamicDeviceComponent, EpicsSignal,
-                   EpicsSignalRO, FormattedComponent, cam)
-from ophyd.areadetector.base import ADBase, ADComponent, EpicsSignalWithRBV
+from ophyd import (Component, EpicsSignal,
+                   EpicsSignalRO, cam)
+from ophyd.areadetector.base import ADComponent, EpicsSignalWithRBV
 from ophyd.sim import SynSignal
-from ophyd.utils import enum
 
 logger = logging.getLogger(__name__)
 

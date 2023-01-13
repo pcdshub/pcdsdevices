@@ -6,7 +6,7 @@ from __future__ import annotations
 import copy
 import functools
 import logging
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device, required_for_connection

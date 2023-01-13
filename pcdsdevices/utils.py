@@ -13,7 +13,7 @@ import time
 from collections.abc import Iterable
 from functools import reduce
 from types import MethodType
-from typing import Callable, Dict, Iterator, List, Optional, Union
+from typing import Callable, Iterator, Union
 
 import ophyd
 import prettytable

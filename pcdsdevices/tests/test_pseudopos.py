@@ -1,6 +1,6 @@
 import logging
 import time
-from typing import Any, Tuple
+from typing import Any
 
 import numpy as np
 import pytest

@@ -17,7 +17,7 @@ import logging
 import numbers
 import typing
 from threading import RLock
-from typing import Any, Dict, Generator, List, Mapping, Optional, Tuple, Union
+from typing import Any, Generator, Mapping, Optional, Union
 
 import numpy as np
 import ophyd

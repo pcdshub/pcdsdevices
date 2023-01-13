@@ -13,14 +13,10 @@
 # serve to show the default.
 
 import datetime
-import enum
 import os
-import re
 import sys
-import typing
 
 import ophyd
-import sphinx_rtd_theme
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the

@@ -8,7 +8,7 @@ import sys
 import warnings
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Optional
 
 import ophyd
 import pytest
