@@ -19,9 +19,6 @@ include_package_data = true
 [project.license]
 file = "LICENSE.md"
 
-[project.scripts]
-"{{ cookiecutter.repo_name }}" = "{{ cookiecutter.import_name }}.bin.main:main"
-
 [tool.setuptools_scm]
 write_to = "pcdsdevices/_version.py"
 
