@@ -27,7 +27,7 @@ import sphinx_rtd_theme
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),'../../')
+module_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../")
 sys.path.insert(0, module_path)
 
 import pcdsdevices  # isort: skip
@@ -46,33 +46,33 @@ from ophyd.docs import get_device_info
 # ones.
 extensions = [
     "sphinxcontrib.jquery",
-'sphinx.ext.autodoc',
-              'sphinx.ext.todo',
-              'sphinx.ext.autosummary',
-              'sphinx.ext.intersphinx',
-              'sphinx.ext.napoleon',
-              'IPython.sphinxext.ipython_directive',
-              'IPython.sphinxext.ipython_console_highlighting',
-              'sphinx.ext.autosectionlabel'
-             ]
+    "sphinx.ext.autodoc",
+    "sphinx.ext.todo",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.napoleon",
+    "IPython.sphinxext.ipython_directive",
+    "IPython.sphinxext.ipython_console_highlighting",
+    "sphinx.ext.autosectionlabel",
+]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 autosummary_generate = True
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = 'PCDS Devices'
+project = "PCDS Devices"
 year = datetime.datetime.now().year
-copyright = '{}, SLAC National Accelerator Laboratory'.format(year)
-author = 'SLAC National Accelerator Laboratory'
+copyright = "{}, SLAC National Accelerator Laboratory".format(year)
+author = "SLAC National Accelerator Laboratory"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -96,10 +96,10 @@ language = "en"
 exclude_patterns = []
 
 # The reST default role (used for this markup: `text`)
-default_role = 'any'
+default_role = "any"
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
@@ -112,7 +112,7 @@ napoleon_use_rtype = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_rtd_theme"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -128,14 +128,14 @@ html_static_path = []
 
 
 suppress_warnings = [
-    'autosectionlabel.releases',
+    "autosectionlabel.releases",
 ]
 
 
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'PCDSDevicesdoc'
+htmlhelp_basename = "PCDSDevicesdoc"
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -144,15 +144,12 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
     # 'preamble': '',
-
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
@@ -162,8 +159,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'PCDSDevices.tex', 'PCDS Devices Documentation',
-     'SLAC National Accelerator Laboratory', 'manual'),
+    (
+        master_doc,
+        "PCDSDevices.tex",
+        "PCDS Devices Documentation",
+        "SLAC National Accelerator Laboratory",
+        "manual",
+    ),
 ]
 
 
@@ -171,10 +173,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'pcdsdevices', 'PCDS Devices Documentation',
-     [author], 1)
-]
+man_pages = [(master_doc, "pcdsdevices", "PCDS Devices Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -183,9 +182,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'PCDSDevices', 'PCDS Devices Documentation',
-     author, 'PCDSDevices', 'ophyd Devices used at the LCLS',
-     'Miscellaneous'),
+    (
+        master_doc,
+        "PCDSDevices",
+        "PCDS Devices Documentation",
+        author,
+        "PCDSDevices",
+        "ophyd Devices used at the LCLS",
+        "Miscellaneous",
+    ),
 ]
 
 # -- Sources of external documentation to cross-referencing----------------
@@ -199,72 +204,71 @@ intersphinx_mapping = {
 
 OPHYD_SKIP = {
     # Methods
-    'add_instantiation_callback',
-    'check_value',
-    'clear_sub',
+    "add_instantiation_callback",
+    "check_value",
+    "clear_sub",
     # 'configure',
     # 'describe',
-    'describe_configuration',
-    'destroy',
-    'format_status_info',
+    "describe_configuration",
+    "destroy",
+    "format_status_info",
     # 'get',
-    'get_device_tuple',
-    'get_instantiated_signals',
-    'pause',
-    'put',  # prefer `set`
+    "get_device_tuple",
+    "get_instantiated_signals",
+    "pause",
+    "put",  # prefer `set`
     # 'read',
     # 'read_configuration',
-    'resume',
-    'stage',
-    'status_info',
+    "resume",
+    "stage",
+    "status_info",
     # 'stop',
-    'subscribe',
+    "subscribe",
     # 'summary',
     # 'trigger',
-    'unstage',
-    'unsubscribe',
-    'unsubscribe_all',
-    'wait_for_connection',
-    'walk_components',
-    'walk_signals',
-    'walk_subdevice_classes',
-    'walk_subdevices',
-
+    "unstage",
+    "unsubscribe",
+    "unsubscribe_all",
+    "wait_for_connection",
+    "walk_components",
+    "walk_signals",
+    "walk_subdevice_classes",
+    "walk_subdevices",
     # Attributes
-    'SUB_ACQ_DONE',
-    'SUB_STATE',
-    'SUB_DONE',
-    'SUB_READBACK',
-    'SUB_START',
-    'SUB_VALUE',
-    'attr_name',
-    'component_names',
+    "SUB_ACQ_DONE",
+    "SUB_STATE",
+    "SUB_DONE",
+    "SUB_READBACK",
+    "SUB_START",
+    "SUB_VALUE",
+    "attr_name",
+    "component_names",
     # 'configuration_attrs',
     # 'connected',
-    'dotted_name',
-    'event_types',
+    "dotted_name",
+    "event_types",
     # 'hints',
-    'inserted',
+    "inserted",
     # 'kind',
-    'lazy_wait_for_connection',
+    "lazy_wait_for_connection",
     # 'lightpath_cpts',
-    'name',
-    'parent',
-    'read_attrs',
-    'removed',
-    'report',
-    'root',
-    'signal_names',
-    'tab_component_names',
-    'tab_whitelist',
-    'trigger_signals',
+    "name",
+    "parent",
+    "read_attrs",
+    "removed",
+    "report",
+    "root",
+    "signal_names",
+    "tab_component_names",
+    "tab_whitelist",
+    "trigger_signals",
 }
 
 
 def skip_components_and_ophyd_stuff(app, what, name, obj, skip, options):
     if isinstance(obj, ophyd.Component):
         return True
-    if name.startswith('_'):
+    if name.startswith("_"):
         # It's unclear if I broke this or if it's always been broken,
         # but for our use case we never want to document `_` items with
         # autoclass.
@@ -275,19 +279,19 @@ def skip_components_and_ophyd_stuff(app, what, name, obj, skip, options):
 
 
 short_component_names = {
-    ophyd.Component: '',
-    ophyd.DynamicDeviceComponent: 'DDC',
-    ophyd.FormattedComponent: 'FCpt',
-    pcdsdevices.device.UnrelatedComponent: 'UCpt',
+    ophyd.Component: "",
+    ophyd.DynamicDeviceComponent: "DDC",
+    ophyd.FormattedComponent: "FCpt",
+    pcdsdevices.device.UnrelatedComponent: "UCpt",
 }
 
 autosummary_context = {
     # Allow autosummary/class.rst to do its magic:
-    'get_device_info': get_device_info,
+    "get_device_info": get_device_info,
 }
 
 html_css_files = [
-    '_static/theme_overrides.css',  # override wide tables in RTD theme
+    "_static/theme_overrides.css",  # override wide tables in RTD theme
 ]
 
 
@@ -298,15 +302,14 @@ def rstjinja(app, docname, source):
     # Borrowed from
     # https://www.ericholscher.com/blog/2016/jul/25/integrating-jinja-rst-sphinx/
     # Make sure we're outputting HTML
-    if app.builder.format != 'html':
+    if app.builder.format != "html":
         return
 
     src = source[0]
-    rendered = app.builder.templates.render_string(src,
-                                                   app.config.html_context)
+    rendered = app.builder.templates.render_string(src, app.config.html_context)
     source[0] = rendered
 
 
 def setup(app):
-    app.connect('autodoc-skip-member', skip_components_and_ophyd_stuff)
+    app.connect("autodoc-skip-member", skip_components_and_ophyd_stuff)
     app.connect("source-read", rstjinja)
