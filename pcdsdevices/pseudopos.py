@@ -295,9 +295,9 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
             'release. Please switch to SyncAxis.',
             DeprecationWarning)
         if self.__class__ is SyncAxesBase:
-            raise TypeError(('SyncAxesBase must be subclassed with '
+            raise TypeError('SyncAxesBase must be subclassed with '
                              'the axes to synchronize included as '
-                             'components'))
+                             'components')
         super().__init__(*args, **kwargs)
         self._offsets = None
 
@@ -759,8 +759,8 @@ class DelayBase(FltMvInterface, PseudoPositioner):
 
     def __init__(self, *args, egu='s', n_bounces=2, invert=False, **kwargs):
         if self.__class__ is DelayBase:
-            raise TypeError(('DelayBase must be subclassed with '
-                             'a "motor" component, the real motor to move.'))
+            raise TypeError('DelayBase must be subclassed with '
+                             'a "motor" component, the real motor to move.')
         self.n_bounces = n_bounces
         if invert:
             self.n_bounces *= -1
@@ -957,12 +957,12 @@ class LookupTablePositioner(PseudoPositioner):
     """
 
     table: np.ndarray
-    column_names: typing.Tuple[str, ...]
-    _table_data_by_name: typing.Dict[str, np.ndarray]
+    column_names: tuple[str, ...]
+    _table_data_by_name: dict[str, np.ndarray]
 
     def __init__(self, *args,
                  table: np.ndarray,
-                 column_names: typing.List[str],
+                 column_names: list[str],
                  **kwargs):
         super().__init__(*args, **kwargs)
         self.table = table

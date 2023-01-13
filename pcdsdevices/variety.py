@@ -204,7 +204,7 @@ def expand_dotted_dict(root):
         return dct
 
     def set_values(dct, value):
-        dotted_keys = set(key for key in value if '.' in key)
+        dotted_keys = {key for key in value if '.' in key}
         non_dotted = set(value) - dotted_keys
 
         for key in non_dotted:

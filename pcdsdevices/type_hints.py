@@ -26,7 +26,7 @@ class OphydCallback(Protocol):
         ...
 
 
-SignalToValue = Dict[ophyd.Signal, OphydDataType]
+SignalToValue = dict[ophyd.Signal, OphydDataType]
 
 
 @runtime_checkable
@@ -43,5 +43,5 @@ class MdsOnPutFunction(Protocol):
     """Put handler for MultiDerivedSignal."""
     def __call__(
         self, mds: ophyd.Signal, value: OphydDataType
-    ) -> Optional[SignalToValue]:
+    ) -> SignalToValue | None:
         ...

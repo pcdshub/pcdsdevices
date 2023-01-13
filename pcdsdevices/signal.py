@@ -157,7 +157,7 @@ class AggregateSignal(Signal):
 
     _update_only_on_change: bool = True
     _has_subscribed: bool
-    _signals: Dict[Signal, _AggregateSignalState]
+    _signals: dict[Signal, _AggregateSignalState]
 
     def __init__(self, *, name, value=None, **kwargs):
         super().__init__(name=name, value=value, **kwargs)
@@ -320,7 +320,7 @@ class AggregateSignal(Signal):
         return all(signal.connected for signal in self._signals)
 
     @contextlib.contextmanager
-    def _check_connectivity(self) -> Generator[Dict[str, bool], None, None]:
+    def _check_connectivity(self) -> Generator[dict[str, bool], None, None]:
         """
         Context manager for checking connectivity.
 
@@ -456,13 +456,13 @@ class PVStateSignal(AggregateSignal):
         self._has_setpoint_md = False
 
     @property
-    def enum_strs(self) -> Tuple[str, ...]:
+    def enum_strs(self) -> tuple[str, ...]:
         """
         Mimic the epics signal property for enum strings.
         """
         return tuple(state.name for state in self.parent.states_enum)
 
-    def describe(self) -> Dict[str, Dict[str, Any]]:
+    def describe(self) -> dict[str, dict[str, Any]]:
         """
         Make sure a reasonable description exists for bluesky scans.
         """
@@ -702,7 +702,7 @@ class MultiDerivedSignal(AggregateSignal):
             )
 
     @property
-    def signals(self) -> List[Signal]:
+    def signals(self) -> list[Signal]:
         """The signals used to calculate_on_get this MultiDerivedSignal."""
         return list(self._signals)
 
@@ -1126,7 +1126,7 @@ class UnitConversionDerivedSignal(DerivedSignal):
                  derived_units: str,
                  original_units: typing.Optional[str] = None,
                  user_offset: typing.Optional[numbers.Real] = 0,
-                 limits: typing.Optional[typing.Tuple[numbers.Real,
+                 limits: typing.Optional[tuple[numbers.Real,
                                                       numbers.Real]] = None,
                  **kwargs):
         self.derived_units = derived_units

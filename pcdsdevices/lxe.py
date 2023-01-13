@@ -85,7 +85,7 @@ class LaserEnergyPlotContext:
     table: np.ndarray
     figure: 'matplotlib.figure.Figure'
     pyplot: types.ModuleType  # matplotlib.pyplot
-    column_names: typing.Tuple[str, ...]
+    column_names: tuple[str, ...]
     _subplot: 'matplotlib.axes._subplots.AxesSubplot'
 
     def __init__(self, *,

@@ -26,7 +26,7 @@ pty_missing = "Fails on Windows, pty not supported in Windows Python."
 @pytest.fixture(scope='function')
 def sim_input(monkeypatch):
     master, slave = pty.openpty()
-    with open(slave, 'r') as fake_stdin:
+    with open(slave) as fake_stdin:
         with open(master, 'w') as sim_input:
             monkeypatch.setattr(sys, 'stdin', fake_stdin)
             yield sim_input

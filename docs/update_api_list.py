@@ -21,11 +21,11 @@ classes = conftest.find_all_classes(
 
 callables = conftest.find_all_callables()
 
-modules = set(
+modules = {
     obj.__module__
     for obj in list(classes) + list(callables)
     if obj.__module__.startswith("pcdsdevices.")
-)
+}
 
 
 def create_api_list() -> list[str]:
