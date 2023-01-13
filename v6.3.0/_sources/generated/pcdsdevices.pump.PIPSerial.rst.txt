@@ -1,0 +1,242 @@
+﻿pcdsdevices.pump.PIPSerial
+==========================
+
+.. currentmodule:: pcdsdevices.pump
+
+.. autoclass:: PIPSerial
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - imon
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:IMON_RBV``
+          - 
+          - hinted
+          - 
+    
+        * - pmon
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PMON_RBV``
+          - 
+          - hinted
+          - 
+    
+        * - pmonlog
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PMONLOG_RBV``
+          - 
+          - normal
+          - 
+    
+        * - vmon
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VMON_RBV``
+          - 
+          - normal
+          - 
+    
+        * - statusraw
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUSRAW_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - statuscalc
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUSCALC_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUS_RBV``
+          - 
+          - normal
+          - 
+    
+        * - statuscodecl
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUSCODECL_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - statuscode
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUSCODE_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - pumpsizedes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PUMPSIZEDES``
+          - 
+          - omitted
+          - 
+    
+        * - pumpsize
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PUMPSIZE``
+          - 
+          - omitted
+          - 
+    
+        * - calfactordes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CALFACTORDES``
+          - 
+          - omitted
+          - 
+    
+        * - calfactor
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CALFACTOR``
+          - 
+          - omitted
+          - 
+    
+        * - aomodedes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AOMODEDES``
+          - 
+          - omitted
+          - 
+    
+        * - aomode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AOMODE``
+          - 
+          - omitted
+          - 
+    
+        * - statedes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATEDES``
+          - 
+          - omitted
+          - 
+    
+        * - statemon
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATEMON_RBV``
+          - 
+          - normal
+          - 
+    
+        * - dispdes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DISPDES``
+          - 
+          - omitted
+          - 
+    
+        * - pname
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PNAME_RBV``
+          - 
+          - normal
+          - 
+    
+        * - pnamedes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PNAMEDES``
+          - 
+          - omitted
+          - 
+    
+        * - vpcname
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VPCNAME``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

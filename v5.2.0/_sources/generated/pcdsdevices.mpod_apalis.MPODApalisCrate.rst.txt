@@ -1,0 +1,65 @@
+﻿pcdsdevices.mpod\_apalis.MPODApalisCrate
+========================================
+
+.. currentmodule:: pcdsdevices.mpod_apalis
+
+.. autoclass:: MPODApalisCrate
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - power
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Crate:PowerOn``
+          - Crate power status and control
+          - normal
+          - 
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: power_cycle
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

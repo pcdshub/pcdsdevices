@@ -1,0 +1,1183 @@
+﻿pcdsdevices.areadetector.cam.FeeOpalCam
+=======================================
+
+.. currentmodule:: pcdsdevices.areadetector.cam
+
+.. autoclass:: FeeOpalCam
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - configuration_names
+          - :class:`~ophyd.signal.ArrayAttributeSignal`
+          - 
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - array_counter
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - array_rate
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``FrameRate``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - asyn_io (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``AsynIO``
+          - [AsynIO N/A asyn] asyn record to control debugging (asynTrace)
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - nd_attributes_file
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - pool_alloc_buffers
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - pool_free_buffers
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - pool_max_buffers
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - pool_max_mem
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - pool_used_buffers
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - pool_used_mem
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - port_name
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - acquire
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Acquire``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - acquire_period (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AcquirePeriod``
+          - [AcquirePeriod r/w ao] Acquisition period between images
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - acquire_time (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AcquireTime``
+          - [AcquireTime r/w ao] Acquisition time per image
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - array_callbacks
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - array_size
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - array_size_bytes
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - bin_x (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BinX``
+          - [BinX r/w longout] Binning in the X direction
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - bin_y (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BinY``
+          - [BinY r/w longout] Binning in the Y direction
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - color_mode
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - data_type
+          - :class:`~ophyd.sim.SynSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - detector_state (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``DetectorState_RBV``
+          - [DetectorState_RBV r/o mbbi] Acquisition status (ADStatus_t)
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - frame_type (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FrameType``
+          - [FrameType r/w mbbo] Frame type (ADFrameType_t).
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - gain (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Gain``
+          - [Gain r/w ao] Detector gain
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - image_mode (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ImageMode``
+          - [ImageMode r/w mbbo] Image mode (ADImageMode_t).
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - manufacturer (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Manufacturer_RBV``
+          - [Manufacturer_RBV r/o stringin] Detector manufacturer name
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - max_size (DDC)
+          - :class:`~ophyd.device.MaxSize`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - min_x (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``MinX``
+          - [MinX r/w longout]
+              First pixel to read in the X direction.
+
+              0 is the first pixel on the detector.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - min_y (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``MinY``
+          - [MinY r/w longout]
+              First pixel to read in the Y direction.
+              0 is the first pixel on the detector.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - model (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Model_RBV``
+          - [Model_RBV r/o stringin] Detector model name
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - num_exposures (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumExposures``
+          - [NumExposures r/w longout] Number of exposures per image to acquire
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - num_exposures_counter (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``NumExposuresCounter_RBV``
+          - [NumExposuresCounter_RBV r/o longin]
+              Counter that increments by 1 each time an exposure is acquired for the current image.
+              Driver resets to 0 when acquisition is started.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - num_images (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumImages``
+          - [NumImages r/w longout] Number of images to acquire in one acquisition sequence
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - num_images_counter (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``NumImagesCounter_RBV``
+          - [NumImagesCounter_RBV r/o longin]
+              Counter that increments by 1 each time an image is acquired in the current acquisition
+              sequence. Driver resets to 0 when acquisition is started. Drivers can use this as
+              the loop counter when ADImageMode=ADImageMultiple.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - read_status (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``ReadStatus``
+          - [ReadStatus r/w bo]
+              Write a 1 to this parameter to force a read of the detector status. Detector drivers
+              normally read the status as required, so this is usually not necessary, but there
+              may be some circumstances under which forcing a status read may be needed.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - reverse (DDC)
+          - :class:`~ophyd.device.Reverse`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - shutter_close_delay (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ShutterCloseDelay``
+          - [ShutterCloseDelay r/w ao] Time required for the shutter to actually close (ADShutterStatus_t)
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - shutter_close_epics (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``ShutterCloseEPICS``
+          - [ShutterCloseEPICS r/w calcout]
+              This record writes its OVAL field to its OUT field when the EPICS shutter is told
+              to close. The OCAL (and hence OVAL) and OUT fields are user-configurable, so any
+              EPICS-controllable shutter can be used.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - shutter_control (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ShutterControl``
+          - [ShutterControl r/w bo] Shutter control for the selected (detector or EPICS) shutter (ADShutterStatus_t)
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - shutter_control_epics (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``ShutterControlEPICS``
+          - [ShutterControlEPICS r/w bi]
+              This record processes when it receives a callback from the driver to open or close
+              the EPICS shutter. It triggers the records below to actually open or close the EPICS
+              shutter.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - shutter_fanout (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``ShutterFanout``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - shutter_mode (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ShutterMode``
+          - [ShutterMode r/w mbbo] Shutter mode (None, detector-controlled or EPICS-controlled) (ADShutterMode_t)
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - shutter_open_delay (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ShutterOpenDelay``
+          - [ShutterOpenDelay r/w ao] Time required for the shutter to actually open (ADShutterStatus_t)
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - shutter_open_epics (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``ShutterOpenEPICS``
+          - [ShutterOpenEPICS r/w calcout]
+              This record writes its OVAL field to its OUT field when the EPICS shutter is told
+              to open. The OCAL (and hence OVAL) and OUT fields are user-configurable, so any
+              EPICS-controllable shutter can be used.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - shutter_status_epics (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ShutterStatusEPICS_RBV``
+          - [ShutterStatusEPICS_RBV r/o mbbi]
+              Status of the EPICS-controlled shutter. This record should have its input link (INP)
+              set to a record that contains the open/close status information for the shutter.
+              The link should have the "CP" attribute, so this record processes when the input
+              changes. The ZRVL field should be set to the value of the input link when the shutter
+              is closed, and the ONVL field should be set to the value of the input link when
+              the shutter is open.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - shutter_status (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ShutterStatus_RBV``
+          - [ShutterStatus_RBV r/o bi] Status of the detector-controlled shutter (ADShutterStatus_t)
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - size (DDC)
+          - :class:`~ophyd.device.Size`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - status_message (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``StatusMessage_RBV``
+          - [StatusMessage_RBV r/o waveform] Status message string
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - string_from_server (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``StringFromServer_RBV``
+          - [StringFromServer_RBV r/o waveform] String from string-based vendor server to driver
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - string_to_server (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``StringToServer_RBV``
+          - [StringToServer_RBV r/o waveform] String from driver to string-based vendor server
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - temperature (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Temperature``
+          - [Temperature r/w ao] Detector temperature
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - temperature_actual (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TemperatureActual``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - time_remaining (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``TimeRemaining_RBV``
+          - [TimeRemaining_RBV r/o ai]
+              Time remaining for current image. Drivers should update this value if they are doing
+              the exposure timing internally, rather than in the detector hardware.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - trigger_mode (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``TriggerMode``
+          - [TriggerMode r/w mbbo] Trigger mode (ADTriggerMode_t).
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.cam.CamBase`
+    
+        * - min_callback_time (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``MinCallbackTime``
+          - 
+          - normal
+          - 
+    
+        * - blocking_callbacks (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BlockingCallbacks``
+          - 
+          - normal
+          - 
+    
+        * - enable_callbacks (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``EnableCallbacks``
+          - 
+          - normal
+          - 
+    
+        * - dropped_arrays (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DroppedArrays``
+          - 
+          - normal
+          - 
+    
+        * - nd_array_address (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NDArrayAddress``
+          - 
+          - normal
+          - 
+    
+        * - queue_size (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``QueueSize``
+          - 
+          - normal
+          - 
+    
+        * - nd_array_port (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NDArrayPort``
+          - 
+          - normal
+          - 
+    
+        * - pixel_size (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``PixelSize``
+          - 
+          - normal
+          - 
+    
+        * - exposure_mode (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``ExposureMode``
+          - 
+          - normal
+          - 
+    
+        * - test_pattern (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TestPattern``
+          - 
+          - normal
+          - 
+    
+        * - trg_polarity (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TrgPolarity``
+          - 
+          - normal
+          - 
+    
+        * - queue_use (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUse``
+          - 
+          - normal
+          - 
+    
+        * - queue_free_low (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueFreeLow``
+          - 
+          - normal
+          - 
+    
+        * - queue_use_high (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUseHIGH``
+          - 
+          - normal
+          - 
+    
+        * - queue_use_hihi (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUseHIHI``
+          - 
+          - normal
+          - 
+    
+        * - num_col (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NumCol``
+          - 
+          - normal
+          - 
+    
+        * - num_cycles (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NumCycles``
+          - 
+          - normal
+          - 
+    
+        * - num_row (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NumRow``
+          - 
+          - normal
+          - 
+    
+        * - num_trains (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NumTrains``
+          - 
+          - normal
+          - 
+    
+        * - queue_free (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueFree``
+          - 
+          - normal
+          - 
+    
+        * - status_word (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``StatusWord``
+          - 
+          - normal
+          - 
+    
+        * - trg2_frame (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Trg2Frame``
+          - 
+          - normal
+          - 
+    
+        * - bl_set (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``BL_SET``
+          - 
+          - normal
+          - 
+    
+        * - fp_set (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``FP_SET``
+          - 
+          - normal
+          - 
+    
+        * - full_col (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``FullCol``
+          - 
+          - normal
+          - 
+    
+        * - full_row (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``FullRow``
+          - 
+          - normal
+          - 
+    
+        * - ga_set (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``GA_SET``
+          - 
+          - normal
+          - 
+    
+        * - it_set (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``IT_SET``
+          - 
+          - normal
+          - 
+    
+        * - ssus (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SSUS``
+          - 
+          - normal
+          - 
+    
+        * - skip_col (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SkipCol``
+          - 
+          - normal
+          - 
+    
+        * - skip_row (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SkipRow``
+          - 
+          - normal
+          - 
+    
+        * - trg_code (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TrgCode``
+          - 
+          - normal
+          - 
+    
+        * - trg_delay (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TrgDelay``
+          - 
+          - normal
+          - 
+    
+        * - trg_width (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TrgWidth``
+          - 
+          - normal
+          - 
+    
+        * - baud (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Baud``
+          - 
+          - normal
+          - 
+    
+        * - evr_prescale (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``EvrPrescale``
+          - 
+          - normal
+          - 
+    
+        * - v_out (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``VOut``
+          - 
+          - normal
+          - 
+    
+        * - resp (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Resp``
+          - 
+          - normal
+          - 
+    
+        * - cmd (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``CMD``
+          - 
+          - normal
+          - 
+    
+        * - cmd_evr (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``CmdEVR``
+          - 
+          - normal
+          - 
+    
+        * - cmd_free (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``CmdFree``
+          - 
+          - normal
+          - 
+    
+        * - cmd_full (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``CmdFull``
+          - 
+          - normal
+          - 
+    
+        * - cmd_init (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``CmdInit``
+          - 
+          - normal
+          - 
+    
+        * - cmd_roi (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``CmdROI``
+          - 
+          - normal
+          - 
+    
+        * - cmd_t_ptn (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``CmdTPtn``
+          - 
+          - normal
+          - 
+    
+        * - array_data (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArrayData``
+          - 
+          - normal
+          - 
+    
+        * - execution_time (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ExecutionTime_RBV``
+          - 
+          - normal
+          - 
+    
+        * - temp_f (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``TempF_RBV``
+          - 
+          - normal
+          - 
+    
+        * - bl (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``BL_RBV``
+          - 
+          - normal
+          - 
+    
+        * - bits_per_pixel (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``BitsPerPixel_RBV``
+          - 
+          - normal
+          - 
+    
+        * - fp (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``FP_RBV``
+          - 
+          - normal
+          - 
+    
+        * - ga (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``GA_RBV``
+          - 
+          - normal
+          - 
+    
+        * - err (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ERR_RBV``
+          - 
+          - normal
+          - 
+    
+        * - mid (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MID_RBV``
+          - 
+          - normal
+          - 
+    
+        * - plugin_type (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PluginType_RBV``
+          - 
+          - normal
+          - 
+    
+        * - sdk_version (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SDKVersion_RBV``
+          - 
+          - normal
+          - 
+    
+        * - ufdt (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``UFDT_RBV``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: FeeOpalCam.max_size (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - max_size_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxSizeX_RBV``
+            
+          - 
+          - normal
+          - 
+    
+        * - max_size_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxSizeY_RBV``
+            
+          - 
+          - normal
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: FeeOpalCam.reverse (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - reverse_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ReverseX``
+            
+          - 
+          - normal
+          - 
+    
+        * - reverse_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ReverseY``
+            
+          - 
+          - normal
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: FeeOpalCam.size (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - size_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SizeX``
+            
+          - 
+          - normal
+          - 
+    
+        * - size_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SizeY``
+            
+          - 
+          - normal
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: find_signal
+    .. automethod:: get
+    .. automethod:: get_asyn_digraph
+    .. automethod:: get_asyn_port_dictionary
+    .. automethod:: get_plugin_by_asyn_port
+    .. automethod:: missing_plugins
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: validate_asyn_ports
+    .. automethod:: visualize_asyn_digraph
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: ad_root
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

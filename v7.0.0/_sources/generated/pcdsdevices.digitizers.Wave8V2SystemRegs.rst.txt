@@ -1,0 +1,219 @@
+﻿pcdsdevices.digitizers.Wave8V2SystemRegs
+========================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2SystemRegs
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - trigger_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TrigEn_RBV``
+          - 
+          - config
+          - 
+    
+        * - trigger_source
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TrigSrcSel_RBV``
+          - 
+          - config
+          - 
+    
+        * - trigger_delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TrigDelay_RBV``
+          - 
+          - config
+          - 
+    
+        * - a0p3v3_en
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:A0p3V3En_RBV``
+          - 
+          - config
+          - 
+    
+        * - a1p3v3_en
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:A1p3V3En_RBV``
+          - 
+          - config
+          - 
+    
+        * - ap1v8_en
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Ap1V8En_RBV``
+          - 
+          - config
+          - 
+    
+        * - ap5v0_en
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Ap5V0En_RBV``
+          - 
+          - config
+          - 
+    
+        * - ap5v5_en
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Ap5V5En_RBV``
+          - 
+          - config
+          - 
+    
+        * - avcc_en0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AvccEn0_RBV``
+          - 
+          - config
+          - 
+    
+        * - avcc_en1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AvccEn1_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_ctrl1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcCtrl1_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_ctrl2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcCtrl2_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReset_RBV``
+          - 
+          - config
+          - 
+    
+        * - fpga_tmp_critlatch
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FpgaTmpCritLatch_RBV``
+          - 
+          - config
+          - 
+    
+        * - temp_ana_raw0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TempAnaRaw0``
+          - 
+          - config
+          - 
+    
+        * - temp_ana_raw1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TempAnaRaw1``
+          - 
+          - config
+          - 
+    
+        * - temp_dig_raw0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TempDigRaw0``
+          - 
+          - config
+          - 
+    
+        * - temp_dig_raw1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TempDigRaw1``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

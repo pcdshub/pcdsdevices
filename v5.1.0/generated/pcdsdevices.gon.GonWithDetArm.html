@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pcdsdevices.gon.GonWithDetArm &mdash; PCDS Devices 5.1.0+0.g43d8438.dirty documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pcdsdevices.gon.Goniometer" href="pcdsdevices.gon.Goniometer.html" />
+    <link rel="prev" title="pcdsdevices.gon.BaseGon" href="pcdsdevices.gon.BaseGon.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PCDS Devices
+          </a>
+              <div class="version">
+                5.1.0+0.g43d8438.dirty
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Device Types</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-analog-signals">pcdsdevices.analog_signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-cam">pcdsdevices.areadetector.cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-detectors">pcdsdevices.areadetector.detectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-plugins">pcdsdevices.areadetector.plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-atm">pcdsdevices.atm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-attenuator">pcdsdevices.attenuator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-beam-stats">pcdsdevices.beam_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ccm">pcdsdevices.ccm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-crix-motion">pcdsdevices.crix_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-cvmi-motion">pcdsdevices.cvmi_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-dc-devices">pcdsdevices.dc_devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-device">pcdsdevices.device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-digitizers">pcdsdevices.digitizers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-energy-monitor">pcdsdevices.energy_monitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-epics-motor">pcdsdevices.epics_motor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-evr">pcdsdevices.evr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gauge">pcdsdevices.gauge</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#pcdsdevices-gon">pcdsdevices.gon</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.gon.BaseGon.html">pcdsdevices.gon.BaseGon</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pcdsdevices.gon.GonWithDetArm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.gon.Goniometer.html">pcdsdevices.gon.Goniometer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.gon.Kappa.html">pcdsdevices.gon.Kappa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.gon.KappaXYZStage.html">pcdsdevices.gon.KappaXYZStage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.gon.SamPhi.html">pcdsdevices.gon.SamPhi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.gon.SimKappa.html">pcdsdevices.gon.SimKappa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.gon.SimSampleStage.html">pcdsdevices.gon.SimSampleStage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.gon.XYZStage.html">pcdsdevices.gon.XYZStage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-inout">pcdsdevices.inout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-interface">pcdsdevices.interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ipm">pcdsdevices.ipm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-jet">pcdsdevices.jet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lamp-motion">pcdsdevices.lamp_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-counters">pcdsdevices.lasers.counters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-dicon">pcdsdevices.lasers.dicon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-ek9000">pcdsdevices.lasers.ek9000</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-elliptec">pcdsdevices.lasers.elliptec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-qmini">pcdsdevices.lasers.qmini</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-rfof">pcdsdevices.lasers.rfof</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-thorlabswfs">pcdsdevices.lasers.thorlabsWFS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-tuttifrutti">pcdsdevices.lasers.tuttifrutti</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-zoomtelescope">pcdsdevices.lasers.zoomtelescope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lens">pcdsdevices.lens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lic">pcdsdevices.lic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lodcm">pcdsdevices.lodcm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lxe">pcdsdevices.lxe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mirror">pcdsdevices.mirror</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-movablestand">pcdsdevices.movablestand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mpod">pcdsdevices.mpod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mpod-apalis">pcdsdevices.mpod_apalis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mps">pcdsdevices.mps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mrco-motion">pcdsdevices.mrco_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-piezo">pcdsdevices.piezo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pim">pcdsdevices.pim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pmps">pcdsdevices.pmps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-positioner">pcdsdevices.positioner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pseudopos">pcdsdevices.pseudopos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pulsepicker">pcdsdevices.pulsepicker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pump">pcdsdevices.pump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pv-positioner">pcdsdevices.pv_positioner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ref">pcdsdevices.ref</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-rtds-ebd">pcdsdevices.rtds_ebd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sample-delivery">pcdsdevices.sample_delivery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sensors">pcdsdevices.sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sequencer">pcdsdevices.sequencer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-signal">pcdsdevices.signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sim">pcdsdevices.sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-slits">pcdsdevices.slits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-spectrometer">pcdsdevices.spectrometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-state">pcdsdevices.state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-stopper">pcdsdevices.stopper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sxr-test-absorber">pcdsdevices.sxr_test_absorber</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-tags">pcdsdevices.tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-targets">pcdsdevices.targets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-timetool">pcdsdevices.timetool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-utils">pcdsdevices.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-valve">pcdsdevices.valve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-variety">pcdsdevices.variety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-wfs">pcdsdevices.wfs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../base_classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sim_types.html">Simulated Devices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../mv.html">Shortcuts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../presets.html">Preset Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tab.html">IPython Tab Curation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">UI Templates</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upcoming_changes.html">Upcoming Changes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PCDS Devices</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">API</a> &raquo;</li>
+      <li>pcdsdevices.gon.GonWithDetArm</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/generated/pcdsdevices.gon.GonWithDetArm.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pcdsdevices-gon-gonwithdetarm">
+<h1>pcdsdevices.gon.GonWithDetArm<a class="headerlink" href="#pcdsdevices-gon-gonwithdetarm" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.gon.</span></span><span class="sig-name descname"><span class="pre">GonWithDetArm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_2theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_dettilt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_detver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_hor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_ver</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_rot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_tip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix_tilt</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm" title="Permalink to this definition"></a></dt>
+<dd><p>Goniometer with a detector arm, as present in XCS.</p>
+<p>This requires eleven motor PV prefixes to be passed in as keyword
+arguments, and they are all labelled accordingly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – A name to refer to the goniometer device.</p></li>
+<li><p><strong>prefix_hor</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The EPICS base PV of the common-horizontal motor.</p></li>
+<li><p><strong>prefix_ver</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The EPICS base PV of the common-vertical motor.</p></li>
+<li><p><strong>prefix_rot</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The EPICS base PV of the common-rotation motor.</p></li>
+<li><p><strong>prefix_tip</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The EPICS base PV of the sample-stage’s tip motor.</p></li>
+<li><p><strong>prefix_tilt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The EPICS base PV of the sample-stage’s tilt motor.</p></li>
+<li><p><strong>prefix_2theta</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The EPICS base PV of the detector arm’s 2theta rotation motor.</p></li>
+<li><p><strong>prefix_dettilt</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The EPICS base PV of the detector stage’s tilt motor.</p></li>
+<li><p><strong>prefix_detver</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The EPICS base PV of the detector stage’s vertical motor.</p></li>
+</ul>
+</dd>
+</dl>
+<table class="colwidths-auto docutils align-default" id="id1">
+<caption><span class="caption-text">Ophyd Device Components</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Attribute</p></th>
+<th class="head"><p>Class</p></th>
+<th class="head"><p>Suffix</p></th>
+<th class="head"><p>Docs</p></th>
+<th class="head"><p>Kind</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hor (FCpt)</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.epics_motor.IMS.html#pcdsdevices.epics_motor.IMS" title="pcdsdevices.epics_motor.IMS"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMS</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{self._prefix_hor}</span></code></p></td>
+<td></td>
+<td><p>normal</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.gon.BaseGon.html#pcdsdevices.gon.BaseGon" title="pcdsdevices.gon.BaseGon"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGon</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>ver (FCpt)</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.epics_motor.IMS.html#pcdsdevices.epics_motor.IMS" title="pcdsdevices.epics_motor.IMS"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMS</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{self._prefix_ver}</span></code></p></td>
+<td></td>
+<td><p>normal</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.gon.BaseGon.html#pcdsdevices.gon.BaseGon" title="pcdsdevices.gon.BaseGon"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGon</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>rot (FCpt)</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.epics_motor.IMS.html#pcdsdevices.epics_motor.IMS" title="pcdsdevices.epics_motor.IMS"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMS</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{self._prefix_rot}</span></code></p></td>
+<td></td>
+<td><p>normal</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.gon.BaseGon.html#pcdsdevices.gon.BaseGon" title="pcdsdevices.gon.BaseGon"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGon</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>tip (FCpt)</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.epics_motor.IMS.html#pcdsdevices.epics_motor.IMS" title="pcdsdevices.epics_motor.IMS"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMS</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{self._prefix_tip}</span></code></p></td>
+<td></td>
+<td><p>normal</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.gon.BaseGon.html#pcdsdevices.gon.BaseGon" title="pcdsdevices.gon.BaseGon"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGon</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>tilt (FCpt)</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.epics_motor.IMS.html#pcdsdevices.epics_motor.IMS" title="pcdsdevices.epics_motor.IMS"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMS</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{self._prefix_tilt}</span></code></p></td>
+<td></td>
+<td><p>normal</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.gon.BaseGon.html#pcdsdevices.gon.BaseGon" title="pcdsdevices.gon.BaseGon"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGon</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>rot_2theta (FCpt)</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.epics_motor.IMS.html#pcdsdevices.epics_motor.IMS" title="pcdsdevices.epics_motor.IMS"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMS</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{self._prefix_2theta}</span></code></p></td>
+<td></td>
+<td><p>normal</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>det_tilt (FCpt)</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.epics_motor.IMS.html#pcdsdevices.epics_motor.IMS" title="pcdsdevices.epics_motor.IMS"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMS</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{self._prefix_dettilt}</span></code></p></td>
+<td></td>
+<td><p>normal</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>det_ver (FCpt)</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.epics_motor.IMS.html#pcdsdevices.epics_motor.IMS" title="pcdsdevices.epics_motor.IMS"><code class="xref py py-class docutils literal notranslate"><span class="pre">IMS</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">{self._prefix_detver}</span></code></p></td>
+<td></td>
+<td><p>normal</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.configure" title="Permalink to this definition"></a></dt>
+<dd><p>Configure the device for something during a run</p>
+<p>This default implementation allows the user to change any of the
+<a class="reference internal" href="#pcdsdevices.gon.GonWithDetArm.configuration_attrs" title="pcdsdevices.gon.GonWithDetArm.configuration_attrs"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">configuration_attrs</span></code></a>. Subclasses might override this to perform
+additional input validation, cleanup, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The configuration dictionary. To specify the order that
+the changes should be made, use an OrderedDict.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>(old, new) tuple of dictionaries</em></p></li>
+<li><p><em>Where old and new are pre- and post-configure configuration states.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ophyd.device.OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.describe" title="Permalink to this definition"></a></dt>
+<dd><p>Provide schema and meta-data for <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code>.</p>
+<p>This keys in the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> this method returns must match the
+keys in the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> return by <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code>.</p>
+<p>This provides schema related information, (ex shape, dtype), the
+source (ex PV name), and if available, units, limits, precision etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>data_keys</strong> (<em>OrderedDict</em>) – The keys must be strings and the values must be dict-like
+with the <code class="docutils literal notranslate"><span class="pre">event_model.event_descriptor.data_key</span></code> schema.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.get" title="Permalink to this definition"></a></dt>
+<dd><p>Get the value of all components in the device</p>
+<p>Keyword arguments are passed onto each signal.get(). Components
+beginning with an underscore will not be included.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ophyd.device.OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.read" title="Permalink to this definition"></a></dt>
+<dd><p>Read data from the device.</p>
+<p>This method is expected to be as instantaneous as possible,
+with any substantial acquisition time taken care of in
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">trigger()</span></code>.</p>
+<p>The <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> returned by this method must have identical
+keys (in the same order) as the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> returned by
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">describe()</span></code>.</p>
+<p>By convention, the first key in the return is the ‘primary’ key
+and maybe used by heuristics in <code class="xref py py-mod docutils literal notranslate"><span class="pre">bluesky</span></code>.</p>
+<p>The values in the ordered dictionary must be dict (-likes) with the
+keys <code class="docutils literal notranslate"><span class="pre">{'value',</span> <span class="pre">'timestamp'}</span></code>.  The <code class="docutils literal notranslate"><span class="pre">'value'</span></code> may have any type,
+the timestamp must be a float UNIX epoch timestamp in UTC.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>OrderedDict</em>) – The keys must be strings and the values must be dict-like
+with the keys <code class="docutils literal notranslate"><span class="pre">{'value',</span> <span class="pre">'timestamp'}</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.read_configuration">
+<span class="sig-name descname"><span class="pre">read_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ophyd.device.OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.read_configuration" title="Permalink to this definition"></a></dt>
+<dd><p>Dictionary mapping names to value dicts with keys: value, timestamp</p>
+<p>To control which fields are included, change the Component kinds on the
+device, or modify the <code class="docutils literal notranslate"><span class="pre">configuration_attrs</span></code> list.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.stage_group_instances">
+<span class="sig-name descname"><span class="pre">stage_group_instances</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.10)"><span class="pre">collections.abc.Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://blueskyproject.io/ophyd/generated/ophyd.ophydobj.OphydObject.html#ophyd.ophydobj.OphydObject" title="(in ophyd v1.6.3.post7+gdf60483)"><span class="pre">ophyd.ophydobj.OphydObject</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.stage_group_instances" title="Permalink to this definition"></a></dt>
+<dd><p>Yields an iterator of subdevices that should be staged.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.status">
+<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.status" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a str with the current pv values for the device.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">success</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.stop" title="Permalink to this definition"></a></dt>
+<dd><p>Stop the Device and all (instantiated) subdevices</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.summary" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.trigger">
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.6.3.post7+gdf60483)"><span class="pre">ophyd.status.StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.trigger" title="Permalink to this definition"></a></dt>
+<dd><p>Trigger the device and return status object.</p>
+<p>This method is responsible for implementing ‘trigger’ or
+‘acquire’ functionality of this device.</p>
+<p>If there is an appreciable time between triggering the device
+and it being able to be read (via the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> method) then this method is
+also responsible for arranging that the
+<a class="reference external" href="https://blueskyproject.io/ophyd/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.6.3.post7+gdf60483)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
+is notified when the device is ready to be read.</p>
+<p>If there is no delay between triggering and being readable,
+then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.6.3.post7+gdf60483)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
+object which is already completed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.6.3.post7+gdf60483)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
+as complete when the device is ready to be read.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Attributes</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.configuration_attrs">
+<span class="sig-name descname"><span class="pre">configuration_attrs</span></span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.configuration_attrs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.connected">
+<span class="sig-name descname"><span class="pre">connected</span></span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.connected" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.hints">
+<span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.hints" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.kind">
+<span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.kind" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.needs_parent">
+<span class="sig-name descname"><span class="pre">needs_parent</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.10)"><span class="pre">type</span></a><span class="p"><span class="pre">[</span></span><span class="pre">OphydObject</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[&lt;class</span> <span class="pre">'ophyd.signal.AttributeSignal'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'ophyd.signal.DerivedSignal'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'ophyd.areadetector.plugins.PluginBase'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'ophyd.pseudopos.PseudoSingle'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'pcdsdevices.signal.PVStateSignal'&gt;]</span></em><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.needs_parent" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.gon.GonWithDetArm.stage_group">
+<span class="sig-name descname"><span class="pre">stage_group</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Component</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pcdsdevices.gon.GonWithDetArm.stage_group" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pcdsdevices.gon.BaseGon.html" class="btn btn-neutral float-left" title="pcdsdevices.gon.BaseGon" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pcdsdevices.gon.Goniometer.html" class="btn btn-neutral float-right" title="pcdsdevices.gon.Goniometer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

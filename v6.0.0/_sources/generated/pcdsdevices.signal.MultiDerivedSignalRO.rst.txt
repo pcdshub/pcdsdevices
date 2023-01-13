@@ -1,0 +1,50 @@
+﻿pcdsdevices.signal.MultiDerivedSignalRO
+=======================================
+
+.. currentmodule:: pcdsdevices.signal
+
+.. autoclass:: MultiDerivedSignalRO
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: add_signal_by_attr_name
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: SUB_META
+    .. autoattribute:: connected
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: metadata
+    .. autoattribute:: metadata_keys
+    .. autoattribute:: read_access
+    .. autoattribute:: signals
+    .. autoattribute:: timestamp
+    .. autoattribute:: tolerance
+    .. autoattribute:: value
+    .. autoattribute:: write_access
+    .. autoattribute:: calculate_on_get
+    .. autoattribute:: calculate_on_put
+    
+    

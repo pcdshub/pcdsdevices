@@ -1,0 +1,136 @@
+﻿pcdsdevices.ref.ReflaserL2SI
+============================
+
+.. currentmodule:: pcdsdevices.ref
+
+.. autoclass:: ReflaserL2SI
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathInOutCptMixin`
+    
+        * - las_pct
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:LAS:PCT``
+          - 
+          - hinted
+          - 
+    
+        * - mirror
+          - :class:`~pcdsdevices.ref.ReflaserL2SIMirror`
+          - ``:MMS:STATE``
+          - In/Out control of Reflaser Mirror
+          - hinted
+          - 
+    
+        * - y_motor
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS``
+          - Direct control of mirror motor.
+          - normal
+          - 
+    
+        * - pico1
+          - :class:`~pcdsdevices.epics_motor.EpicsMotorInterface`
+          - ``:MCP:01``
+          - Laser alignment 01
+          - config
+          - 
+    
+        * - pico2
+          - :class:`~pcdsdevices.epics_motor.EpicsMotorInterface`
+          - ``:MCP:02``
+          - Laser alignment 02
+          - config
+          - 
+    
+        * - pico3
+          - :class:`~pcdsdevices.epics_motor.EpicsMotorInterface`
+          - ``:MCP:03``
+          - Laser alignment 03
+          - config
+          - 
+    
+        * - pico4
+          - :class:`~pcdsdevices.epics_motor.EpicsMotorInterface`
+          - ``:MCP:04``
+          - Laser alignment 04
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

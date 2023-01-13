@@ -1,0 +1,195 @@
+﻿pcdsdevices.slits.ExitSlits
+===========================
+
+.. currentmodule:: pcdsdevices.slits
+
+.. autoclass:: ExitSlits
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - target
+          - :class:`~pcdsdevices.slits.ExitSlitTarget`
+          - ``:YAG:STATE``
+          - Control of the YAG  stack via saved positions.
+          - hinted
+          - 
+    
+        * - yag_motor
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:YAG``
+          - Direct control of the Yag Stack motor.
+          - normal
+          - 
+    
+        * - pitch_motor
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:PITCH``
+          - Direct control of the slits assembly pitch  motor.
+          - normal
+          - 
+    
+        * - vert_motor
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:VERT``
+          - Direct control of the slits assembly vertical motor.
+          - normal
+          - 
+    
+        * - roll_motor
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:ROLL``
+          - Direct control of the slits assembly roll motor.
+          - normal
+          - 
+    
+        * - gap_motor
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:GAP``
+          - Direct control of the slits gap  motor.
+          - normal
+          - 
+    
+        * - detector
+          - :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+          - ``:CAM:``
+          - Area detector settings and readbacks.
+          - normal
+          - 
+    
+        * - cam_power
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CAM:PWR``
+          - Camera power supply controls.
+          - config
+          - 
+    
+        * - fan_power
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:FAN:PWR``
+          - Fan power supply controls.
+          - config
+          - 
+    
+        * - led_power
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:LED:PWR``
+          - LED power supply controls.
+          - config
+          - 
+    
+        * - led
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CAM:CIL:PCT``
+          - Percent of light from the dimmable illuminatior.
+          - config
+          - 
+    
+        * - yag_thermocouple
+          - :class:`~pcdsdevices.sensors.TwinCATTempSensor`
+          - ``:RTD:YAG``
+          - Thermocouple on the YAG holder.
+          - normal
+          - 
+    
+        * - upper_crystal_thermocouple
+          - :class:`~pcdsdevices.sensors.TwinCATTempSensor`
+          - ``:RTD:CRYSTAL_TOP``
+          - Thermocouple on the TOP CRYSTAL.
+          - normal
+          - 
+    
+        * - lower_crystal_thermocouple
+          - :class:`~pcdsdevices.sensors.TwinCATTempSensor`
+          - ``:RTD:CRYSTAL_BOTTOM``
+          - Thermocouple on the BOTTOM CRYSTAL.
+          - normal
+          - 
+    
+        * - heatsync_thermocouple
+          - :class:`~pcdsdevices.sensors.TwinCATTempSensor`
+          - ``:RTD:HeatSync``
+          - Thermocouple on the Heat Sync.
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: transmission
+    .. autoattribute:: y_states
+    
+    

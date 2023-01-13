@@ -1,0 +1,108 @@
+﻿pcdsdevices.gauge.BaseGauge
+===========================
+
+.. currentmodule:: pcdsdevices.gauge
+
+.. autoclass:: BaseGauge
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - pressure
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PMON``
+          - 
+          - hinted
+          - 
+    
+        * - egu
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PMON.EGU``
+          - 
+          - normal
+          - 
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATE``
+          - 
+          - normal
+          - 
+    
+        * - status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUSMON``
+          - 
+          - normal
+          - 
+    
+        * - pressure_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PSTATMON``
+          - 
+          - normal
+          - 
+    
+        * - pressure_status_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATMSP``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

@@ -1,0 +1,112 @@
+﻿pcdsdevices.mrco\_motion.MRCO
+=============================
+
+.. currentmodule:: pcdsdevices.mrco_motion
+
+.. autoclass:: MRCO
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - gas_nozzle_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:01``
+          - 
+          - normal
+          - 
+    
+        * - gas_nozzle_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:02``
+          - 
+          - normal
+          - 
+    
+        * - gas_nozzle_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:03``
+          - 
+          - normal
+          - 
+    
+        * - sample_paddle_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:04``
+          - 
+          - normal
+          - 
+    
+        * - sample_paddle_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:05``
+          - 
+          - normal
+          - 
+    
+        * - sample_paddle_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:06``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

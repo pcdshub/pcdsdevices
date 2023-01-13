@@ -1,0 +1,216 @@
+﻿pcdsdevices.digitizers.Wave8V2EventBuilder
+==========================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2EventBuilder
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - cnt_rst
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CntRst``
+          - 
+          - config
+          - 
+    
+        * - hard_rst
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:HardRst``
+          - 
+          - config
+          - 
+    
+        * - soft_rst
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SoftRst``
+          - 
+          - config
+          - 
+    
+        * - timer_rst
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TimerRst``
+          - 
+          - config
+          - 
+    
+        * - blowoff_ext
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:BlowoffExt``
+          - 
+          - config
+          - 
+    
+        * - blowoff
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Blowoff_RBV``
+          - 
+          - config
+          - 
+    
+        * - bypass
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Bypass_RBV``
+          - 
+          - config
+          - 
+    
+        * - datacnt0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:DataCnt0``
+          - 
+          - config
+          - 
+    
+        * - datacnt10
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:DataCnt10``
+          - 
+          - config
+          - 
+    
+        * - nullcnt0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:NullCnt0``
+          - 
+          - config
+          - 
+    
+        * - nullcnt10
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:NullCnt10``
+          - 
+          - config
+          - 
+    
+        * - timeout_dropcnt0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:NullCnt0``
+          - 
+          - config
+          - 
+    
+        * - timeout_dropcnt10
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:NullCnt10``
+          - 
+          - config
+          - 
+    
+        * - timeout
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Timeout_RBV``
+          - 
+          - config
+          - 
+    
+        * - num_slaves_g
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:NUM_SLAVES_G``
+          - 
+          - config
+          - 
+    
+        * - trans_tdest_g
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TRANS_TDEST_G``
+          - 
+          - config
+          - 
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:State``
+          - 
+          - config
+          - 
+    
+        * - transaction_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TransactionCnt``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

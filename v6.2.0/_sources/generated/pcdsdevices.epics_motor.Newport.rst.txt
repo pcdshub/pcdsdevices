@@ -1,0 +1,311 @@
+﻿pcdsdevices.epics\_motor.Newport
+================================
+
+.. currentmodule:: pcdsdevices.epics_motor
+
+.. autoclass:: Newport
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - user_readback
+          - :class:`~pcdsdevices.signal.EpicsSignalROEditMD`
+          - ``.RBV``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - user_setpoint
+          - :class:`~pcdsdevices.signal.EpicsSignalEditMD`
+          - ``.VAL``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - user_offset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.OFF``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - user_offset_dir
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.DIR``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - offset_freeze_switch
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - set_use_switch
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.SET``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - velocity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VELO``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - acceleration
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.ACCL``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - motor_egu
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.EGU``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - motor_is_moving
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.MOVN``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - motor_done_move
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.DMOV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - high_limit_switch
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.HLS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - low_limit_switch
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.LLS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - high_limit_travel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.HLM``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - low_limit_travel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.LLM``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - direction_of_travel
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - motor_stop
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.STOP``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - home_forward
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - home_reverse
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - disabled
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.DISP``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - description
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.DESC``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - dial_position
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.DRBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - motor_spg
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.SPG``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+    
+        * - motor_prec
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.PREC``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_limit_switches
+    .. automethod:: clear_limits
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: disable
+    .. automethod:: enable
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_high_limit
+    .. automethod:: get_lim
+    .. automethod:: get_low_limit
+    .. automethod:: home
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_current_position
+    .. automethod:: set_high_limit
+    .. automethod:: set_lim
+    .. automethod:: set_low_limit
+    .. automethod:: set_position
+    .. automethod:: spg_go
+    .. automethod:: spg_pause
+    .. automethod:: spg_stop
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: precision
+    .. autoattribute:: settle_time
+    .. autoattribute:: timeout
+    .. autoattribute:: tolerated_alarm
+    
+    

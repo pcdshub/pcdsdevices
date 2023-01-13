@@ -1,0 +1,128 @@
+﻿pcdsdevices.epics\_motor.OffsetIMSWithPreset
+============================================
+
+.. currentmodule:: pcdsdevices.epics_motor
+
+.. autoclass:: OffsetIMSWithPreset
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - pseudo_motor
+          - :class:`~pcdsdevices.pseudopos.PseudoSingleInterface`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pseudopos.OffsetMotorBase`
+    
+        * - user_offset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pseudopos.OffsetMotorBase`
+    
+        * - motor (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._motor_prefix}``
+          - 
+          - normal
+          - 
+    
+        * - offset_set_pv (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self._prefix}_SET``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_single
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: forward
+    .. automethod:: get
+    .. automethod:: inverse
+    .. automethod:: move
+    .. automethod:: move_single
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_current_position
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: to_pseudo_tuple
+    .. automethod:: to_real_tuple
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: composite_egu
+    .. autoattribute:: concurrent
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: pseudo_positioners
+    .. autoattribute:: real_position
+    .. autoattribute:: real_positioners
+    .. autoattribute:: sequential
+    .. autoattribute:: settle_time
+    .. autoattribute:: target
+    .. autoattribute:: timeout
+    
+    

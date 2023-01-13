@@ -1,0 +1,100 @@
+﻿pcdsdevices.pim.XPIMFilterWheel
+===============================
+
+.. currentmodule:: pcdsdevices.pim
+
+.. autoclass:: XPIMFilterWheel
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_RBV``
+          - Control of the filter wheel state by preset transmission percentages.
+          - normal
+          - 
+    
+        * - reset_cmd
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERR:RESET``
+          - Command to reset a filter wheel error.
+          - omitted
+          - 
+    
+        * - error_message
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERR:MSG``
+          - Error text for a filter wheel error.
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_state
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: status
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: states_list
+    .. autoattribute:: stop
+    .. autoattribute:: timeout
+    
+    

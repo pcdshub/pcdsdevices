@@ -1,0 +1,218 @@
+﻿pcdsdevices.digitizers.Wave8V2ADCRegs
+=====================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2ADCRegs
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - adc_reg_x0006
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x0006_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x0007
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x0007_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x0008
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x0008_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x000B
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x000B_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x000C
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x000C_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x000D
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x000D_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x000F
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x000F_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x0010
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x0010_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x0011
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x0011_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x0012
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x0012_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x0013
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x0013_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x0014
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x0014_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x0015
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x0015_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x0016
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x0016_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x0017
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x0017_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x0018
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x0018_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x001F
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x001F_RBV``
+          - 
+          - config
+          - 
+    
+        * - adc_reg_x0020
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AdcReg_0x0020_RBV``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

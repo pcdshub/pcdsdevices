@@ -1,0 +1,712 @@
+﻿pcdsdevices.areadetector.plugins.TIFFPlugin
+===========================================
+
+.. currentmodule:: pcdsdevices.areadetector.plugins
+
+.. autoclass:: TIFFPlugin
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - configuration_names
+          - :class:`~ophyd.signal.ArrayAttributeSignal`
+          - 
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - array_counter (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArrayCounter``
+          - [ArrayCounter r/w longout] Counter that increments by 1 each time an NDArray callback is processed
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - array_rate (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArrayRate_RBV``
+          - [ArrayRate_RBV r/o calc] Rate (Hz) at which ArrayCounter is incrementing. Computed in database.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - asyn_io (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``AsynIO``
+          - [AsynIO N/A asyn] asyn record to control debugging (asynTrace)
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - nd_attributes_file (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NDAttributesFile``
+          - [NDAttributesFile r/w waveform]
+              The name of an XML file defining the PVAttributes and paramAttributes to be added
+              to each NDArray by this plugin. The format of the XML file is described in the documentation
+              for asynNDArrayDriver::readNDAttributesFile().
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - pool_alloc_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolAllocBuffers``
+          - [PoolAllocBuffers r/o longin] The number of NDArrays this plugin has currently allocated.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - pool_free_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolFreeBuffers``
+          - [PoolFreeBuffers r/o longin] The number of free NDArrays this plugin has in its NDArrayPool.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - pool_max_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolMaxBuffers``
+          - [PoolMaxBuffers r/o longin] The maximum number of NDArrays this plugin is allowed to allocate.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - pool_max_mem (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolMaxMem``
+          - [PoolMaxMem r/o ai] The maximum amount of NDArrayPool memory this plugin is allowed to allocate.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - pool_used_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolUsedBuffers``
+          - [PoolUsedBuffers N/A calc]
+              The number of used NDArrays this plugin has in its NDArrayPool. Calculated from
+              PoolAllocBuffers and PoolFreeBuffers.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - pool_used_mem (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolUsedMem``
+          - [PoolUsedMem r/o ai] The actual amount of NDArrayPool memory this plugin is currently using.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - port_name (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PortName_RBV``
+          - [PortName_RBV r/o stringin] asyn port name
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - asyn_pipeline_config
+          - :class:`~ophyd.signal.ArrayAttributeSignal`
+          - 
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - width (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize0_RBV``
+          - [ArraySize0_RBV r/o longin] First dimension of NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - height (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize1_RBV``
+          - [ArraySize1_RBV r/o longin] Second dimension of NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - depth (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize2_RBV``
+          - [ArraySize2_RBV r/o longin] Third dimension of NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - array_size (DDC)
+          - :class:`~ophyd.device.ArraySize`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - bayer_pattern (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``BayerPattern_RBV``
+          - [BayerPattern_RBV r/o mbbi] BayerPattern of last NDArray callback data (NDBayerPattern_t).
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - blocking_callbacks (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BlockingCallbacks``
+          - [BlockingCallbacks r/w bo]
+              0 = callbacks from the driver do not block; the NDArray data is put on a queue and
+              the callback processes in its own thread.
+
+              1 = callbacks from the driver block; the callback processes in the driver callback
+              thread.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - color_mode (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ColorMode_RBV``
+          - [ColorMode_RBV r/o mbbi] Color mode of last NDArray callback data (NDColorMode_t).
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - data_type (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``DataType_RBV``
+          - [DataType_RBV r/o mbbi] Data type of last NDArray callback data (NDDataType_t).
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - dim0_sa (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim0SA``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - dim1_sa (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim1SA``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - dim2_sa (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim2SA``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - dim_sa (DDC)
+          - :class:`~ophyd.device.DimSa`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - dimensions (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Dimensions_RBV``
+          - [Dimensions_RBV r/o waveform] Dimensions in last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - dropped_arrays (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DroppedArrays``
+          - [DroppedArrays r/w longout]
+              Counter that increments by 1 each time an NDArray callback occurs when NDPluginDriverBlockingCallbacks=0
+              and the plugin driver queue is full, so the callback cannot be processed.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - enable (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``EnableCallbacks``
+          - [EnableCallbacks r/w bo]
+              Enable (1) or disable (0) callbacks from the driver to this plugin. If callbacks
+              are disabled then the plugin will normally be idle and consume no CPU resources.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - min_callback_time (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``MinCallbackTime``
+          - [MinCallbackTime r/w ao]
+              The minimum time in seconds between calls to processCallbacks. Any callbacks occuring
+              before this minimum time has elapsed will be ignored. 0 means no minimum time, i.e.
+              process all callbacks.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - nd_array_address (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NDArrayAddress``
+          - [NDArrayAddress r/w longout]
+              asyn port address for NDArray driver that will make callbacks to this plugin. This
+              address can be changed at run time, connecting the plugin to a different address
+              in the NDArray driver.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - nd_array_port (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NDArrayPort``
+          - [NDArrayPort r/w stringout]
+              asyn port name for NDArray driver that will make callbacks to this plugin. This
+              port can be changed at run time, connecting the plugin to a different NDArray driver.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - ndimensions (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``NDimensions_RBV``
+          - [NDimensions_RBV r/o longin] Number of dimensions in last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - plugin_type (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PluginType_RBV``
+          - [PluginType_RBV r/o stringin] A string describing the plugin type.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - queue_free (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueFree``
+          - [QueueFree r/o longin] The number of free queue elements.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - queue_free_low (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueFreeLow``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - queue_size (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueSize``
+          - [QueueSize r/o longin] The total queue size for callbacks when BlockingCallbacks=0.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - queue_use (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUse``
+          - [QueueUse r/o calc] The number of used queue elements.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - queue_use_high (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUseHIGH``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - queue_use_hihi (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUseHIHI``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - time_stamp (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``TimeStamp_RBV``
+          - [TimeStamp_RBV r/o ai] Time stamp number of last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - unique_id (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``UniqueId_RBV``
+          - [UniqueId_RBV r/o longin] Unique ID number of last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - auto_increment (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AutoIncrement``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - auto_save (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AutoSave``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - capture (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Capture``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - delete_driver_file (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DeleteDriverFile``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - file_format (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FileFormat``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - file_name (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FileName``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - file_number (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FileNumber``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - file_number_sync (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``FileNumber_Sync``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - file_number_write (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``FileNumber_write``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - file_path (ADComponent)
+          - :class:`~ophyd.areadetector.paths.EpicsPathSignal`
+          - ``FilePath``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - file_path_exists (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``FilePathExists_RBV``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - file_template (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FileTemplate``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - file_write_mode (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FileWriteMode``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - full_file_name (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``FullFileName_RBV``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - num_capture (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumCapture``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - num_captured (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``NumCaptured_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - read_file (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ReadFile``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - write_file (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``WriteFile``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - write_message (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``WriteMessage``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - write_status (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``WriteStatus``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: TIFFPlugin.array_size (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - depth
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize2_RBV``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - height
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize1_RBV``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+        * - width
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize0_RBV``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.TIFFPlugin`
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: TIFFPlugin.dim_sa (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - dim0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim0SA``
+            
+          - 
+          - config
+          - 
+    
+        * - dim1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim1SA``
+            
+          - 
+          - config
+          - 
+    
+        * - dim2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim2SA``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: disable_on_stage
+    .. automethod:: enable_on_stage
+    .. automethod:: ensure_blocking
+    .. automethod:: ensure_nonblocking
+    .. automethod:: find_signal
+    .. automethod:: generate_datum
+    .. automethod:: get
+    .. automethod:: get_asyn_digraph
+    .. automethod:: get_asyn_port_dictionary
+    .. automethod:: get_plugin_by_asyn_port
+    .. automethod:: missing_plugins
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: validate_asyn_ports
+    .. automethod:: visualize_asyn_digraph
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: ad_root
+    .. autoattribute:: array_pixels
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: source_plugin
+    .. autoattribute:: subscriptions
+    
+    

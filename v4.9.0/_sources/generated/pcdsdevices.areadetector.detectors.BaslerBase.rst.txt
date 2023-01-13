@@ -1,0 +1,80 @@
+﻿pcdsdevices.areadetector.detectors.BaslerBase
+=============================================
+
+.. currentmodule:: pcdsdevices.areadetector.detectors
+
+.. autoclass:: BaslerBase
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``RESET.PROC``
+          - Reset the camera
+          - config
+          - 
+    
+        * - packet_size
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``GevSCPSPacketSiz_RBV``
+          - Set Ethernet Packet Size (typ. 9000)
+          - config
+          - 
+    
+        * - enet_bw
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``GevSCDCT_RBV``
+          - Current Ethernet bandwidth
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

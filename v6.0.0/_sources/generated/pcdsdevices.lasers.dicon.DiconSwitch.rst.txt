@@ -1,0 +1,164 @@
+﻿pcdsdevices.lasers.dicon.DiconSwitch
+====================================
+
+.. currentmodule:: pcdsdevices.lasers.dicon
+
+.. autoclass:: DiconSwitch
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - chan1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:getChan1``
+          - 
+          - normal
+          - 
+    
+        * - chan2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:getChan2``
+          - 
+          - normal
+          - 
+    
+        * - chan3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:getChan3``
+          - 
+          - normal
+          - 
+    
+        * - chan4
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:getChan4``
+          - 
+          - normal
+          - 
+    
+        * - chan5
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:getChan5``
+          - 
+          - normal
+          - 
+    
+        * - chan6
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:getChan6``
+          - 
+          - normal
+          - 
+    
+        * - chan7
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:getChan7``
+          - 
+          - normal
+          - 
+    
+        * - chan8
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:getChan8``
+          - 
+          - normal
+          - 
+    
+        * - version
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:getVers``
+          - 
+          - config
+          - 
+    
+        * - error_str
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ErrStr``
+          - 
+          - config
+          - 
+    
+        * - error_num
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ErrorNum``
+          - 
+          - config
+          - 
+    
+        * - reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:reset``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

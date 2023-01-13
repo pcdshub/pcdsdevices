@@ -1,0 +1,152 @@
+﻿pcdsdevices.gon.SimKappa
+========================
+
+.. currentmodule:: pcdsdevices.gon
+
+.. autoclass:: SimKappa
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - sample_stage
+          - :class:`~pcdsdevices.gon.SimSampleStage`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.Kappa`
+    
+        * - eta
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.Kappa`
+    
+        * - kappa
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.Kappa`
+    
+        * - phi
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.Kappa`
+    
+        * - e_eta (FCpt)
+          - :class:`~pcdsdevices.pseudopos.PseudoSingleInterface`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.Kappa`
+    
+        * - e_chi (FCpt)
+          - :class:`~pcdsdevices.pseudopos.PseudoSingleInterface`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.Kappa`
+    
+        * - e_phi (FCpt)
+          - :class:`~pcdsdevices.pseudopos.PseudoSingleInterface`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.Kappa`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: check_motor_step
+    .. automethod:: check_single
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: e_to_k
+    .. automethod:: forward
+    .. automethod:: get
+    .. automethod:: inverse
+    .. automethod:: k_to_e
+    .. automethod:: move
+    .. automethod:: move_single
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: set_current_position
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: to_pseudo_tuple
+    .. automethod:: to_real_tuple
+    .. automethod:: trigger
+    .. automethod:: wait
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: composite_egu
+    .. autoattribute:: concurrent
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: e_chi_coord
+    .. autoattribute:: e_eta_coord
+    .. autoattribute:: e_phi_coord
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: needs_parent
+    .. autoattribute:: position
+    .. autoattribute:: pseudo_positioners
+    .. autoattribute:: real_position
+    .. autoattribute:: real_positioners
+    .. autoattribute:: sequential
+    .. autoattribute:: settle_time
+    .. autoattribute:: stage_group
+    .. autoattribute:: target
+    .. autoattribute:: timeout
+    
+    

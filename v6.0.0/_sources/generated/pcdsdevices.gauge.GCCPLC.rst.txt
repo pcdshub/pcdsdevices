@@ -1,0 +1,161 @@
+﻿pcdsdevices.gauge.GCCPLC
+========================
+
+.. currentmodule:: pcdsdevices.gauge
+
+.. autoclass:: GCCPLC
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - pressure
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PRESS_RBV``
+          - gauge pressure reading
+          - hinted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugePLC`
+    
+        * - gauge_at_vac
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AT_VAC_RBV``
+          - gauge is at VAC
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.GaugePLC`
+    
+        * - pressure_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PRESS_OK_RBV``
+          - pressure reading ok
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.GaugePLC`
+    
+        * - at_vac_setpoint
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:VAC_SP``
+          - At vacuum setpoint for all gauges
+          - config
+          - Inherited from :class:`~pcdsdevices.gauge.GaugePLC`
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATE_RBV``
+          - state of the gauge
+          - hinted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugePLC`
+    
+        * - high_voltage_on
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:HV_SW``
+          - command to switch the high voltage on
+          - normal
+          - 
+    
+        * - high_voltage_disable
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HV_DIS_DO_RBV``
+          - enables the high voltage on the cold cathode gauge
+          - normal
+          - 
+    
+        * - protection_setpoint
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:PRO_SP``
+          - Protection setpoint for ion gauges at which the gauge turns off
+          - normal
+          - 
+    
+        * - setpoint_hysterisis
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:SP_HYS``
+          - Protection setpoint hysteresis
+          - config
+          - 
+    
+        * - interlock_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ILK_OK_RBV``
+          - Interlock is ok
+          - normal
+          - 
+    
+        * - auto_on
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:Auto_On``
+          - Setting to automatically turn on the gauge when thereference gauge pressure is below protection setpoint
+          - config
+          - 
+    
+        * - autoOn_countdown
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AutoOn_timer_RBV``
+          - timer count down to turn on the gauge 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

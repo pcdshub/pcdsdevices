@@ -1,0 +1,2500 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Release History &mdash; PCDS Devices 6.0.0+0.g82de60f.dirty documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Upcoming Changes" href="upcoming_changes.html" />
+    <link rel="prev" title="UI Templates" href="ui.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> PCDS Devices
+          </a>
+              <div class="version">
+                6.0.0+0.g82de60f.dirty
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Device Types</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signals.html">Signal Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base_classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sim_types.html">Simulated Devices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mv.html">Shortcuts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="presets.html">Preset Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tab.html">IPython Tab Curation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">UI Templates</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Release History</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v6-0-0-2022-05-03">v6.0.0 (2022-05-03)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#api-changes">API Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#device-updates">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new-devices">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bugfixes">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#maintenance">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#contributors">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v5-2-0-2022-03-31">v5.2.0 (2022-03-31)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v5-1-0-2022-02-07">v5.1.0 (2022-02-07)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v5-0-2-2021-12-02">v5.0.2 (2021-12-02)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v5-0-1-2021-11-19">v5.0.1 (2021-11-19)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id15">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v5-0-0-2021-11-15">v5.0.0 (2021-11-15)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id17">API Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id21">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id22">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v4-9-0-2021-10-19">v4.9.0 (2021-10-19)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id24">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id25">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id26">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id27">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id28">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v4-8-0-2021-09-28">v4.8.0 (2021-09-28)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id29">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id30">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id31">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id32">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id33">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id34">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v4-7-1-2021-08-11">v4.7.1 (2021-08-11)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id35">Maintenance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v4-7-0-2021-08-09">v4.7.0 (2021-08-09)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id36">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id37">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id38">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id39">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v4-6-0-2021-07-09">v4.6.0 (2021-07-09)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id40">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id41">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id42">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id43">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id44">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v4-5-0-2021-06-03">v4.5.0 (2021-06-03)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id45">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id46">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id47">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id48">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id49">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v4-4-0-2021-04-15">v4.4.0 (2021-04-15)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id50">API Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id51">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id52">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id53">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id54">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v4-3-2-2021-04-05">v4.3.2 (2021-04-05)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id55">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id56">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v4-3-1-2021-04-02">v4.3.1 (2021-04-02)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id57">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id58">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id59">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v4-3-0-2021-04-02">v4.3.0 (2021-04-02)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id60">API Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id61">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id62">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id63">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id64">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id65">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id66">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v4-2-0-2021-03-03">v4.2.0 (2021-03-03)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id67">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id68">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id69">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id70">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id71">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v4-1-0-2021-02-10">v4.1.0 (2021-02-10)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id72">API Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id73">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id74">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id75">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id76">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id77">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id78">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v4-0-0-2020-12-22">v4.0.0 (2020-12-22)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id79">API Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id80">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id81">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id82">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id83">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id84">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v3-3-0-2020-11-17">v3.3.0 (2020-11-17)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id85">API Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id86">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id87">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id88">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id89">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id90">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id91">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v3-2-0-2020-10-23">v3.2.0 (2020-10-23)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id92">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id93">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id94">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v3-1-0-2020-10-21">v3.1.0 (2020-10-21)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id95">API Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id96">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id97">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id98">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id99">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id100">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v3-0-0-2020-10-07">v3.0.0 (2020-10-07)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id101">API Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id102">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id103">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id104">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id105">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id106">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id107">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-11-0-2020-09-21">v2.11.0 (2020-09-21)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id108">API Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id109">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id110">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id111">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id112">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id113">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id114">Contributors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-10-0-2020-08-21">v2.10.0 (2020-08-21)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id115">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id116">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id117">New Devices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-9-0-2020-08-18">v2.9.0 (2020-08-18)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id118">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id119">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id120">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id121">Bugfixes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-8-0-2020-07-24">v2.8.0 (2020-07-24)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id122">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id123">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id124">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id125">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id126">Maintenance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-7-0-2020-07-01">v2.7.0 (2020-07-01)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id127">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id128">Device Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id129">New Devices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id130">Maintenance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-6-0-2020-05-21">v2.6.0 (2020-05-21)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id131">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id132">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#docs">Docs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-5-0-2020-04-15">v2.5.0 (2020-04-15)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id133">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id134">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#misc">Misc</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-4-0-2020-03-12">v2.4.0 (2020-03-12)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id135">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id136">API Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id137">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id138">Misc</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-3-0-2020-02-05">v2.3.0 (2020-02-05)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id139">Features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-2-0-2020-01-22">v2.2.0 (2020-01-22)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id140">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id141">Misc</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-1-0-2020-01-10">v2.1.0 (2020-01-10)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id142">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id143">Misc</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-0-0-2019-06-28">v2.0.0 (2019-06-28)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id144">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-breaks">API Breaks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id145">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id146">Misc</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-2-0-2019-03-08">v1.2.0 (2019-03-08)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id147">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fixes">Fixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id148">Misc</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-1-0-2018-10-26">v1.1.0 (2018-10-26)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id149">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id150">Bugfixes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v1-0-0-2018-10-12">v1.0.0 (2018-10-12)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id151">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id152">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id153">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id154">API Breaks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-8-0-2018-05-27">v0.8.0 (2018-05-27)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id155">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id156">Bugfixes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-7-0-2018-05-08">v0.7.0 (2018-05-08)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id157">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id158">Bugfixes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-6-0-2018-04-05">v0.6.0 (2018-04-05)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id159">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id160">Bugfixes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ci">CI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-5-0-2018-03-08">v0.5.0 (2018-03-08)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id161">API Changes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="upcoming_changes.html">Upcoming Changes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PCDS Devices</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Release History</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/releases.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="release-history">
+<h1>Release History<a class="headerlink" href="#release-history" title="Permalink to this headline"></a></h1>
+<section id="v6-0-0-2022-05-03">
+<h2>v6.0.0 (2022-05-03)<a class="headerlink" href="#v6-0-0-2022-05-03" title="Permalink to this headline"></a></h2>
+<section id="api-changes">
+<h3>API Changes<a class="headerlink" href="#api-changes" title="Permalink to this headline"></a></h3>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">MultiDerivedSignal</span></code> and <code class="docutils literal notranslate"><span class="pre">MultiDerivedSignalRO</span></code> calculation functions
+(<code class="docutils literal notranslate"><span class="pre">calculate_on_get</span></code> and <code class="docutils literal notranslate"><span class="pre">calculate_on_put</span></code>) now take new signatures.
+Calculation functions may be either methods on an <code class="docutils literal notranslate"><span class="pre">ophyd.Device</span></code> (with
+<code class="docutils literal notranslate"><span class="pre">self</span></code>) or standalone functions with the following signature:
+.. code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">calculate_on_get</span><span class="p">(</span><span class="n">mds</span><span class="p">:</span> <span class="n">MultiDerivedSignal</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">SignalToValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OphydDataType</span>
+<span class="n">calculate_on_put</span><span class="p">(</span><span class="n">mds</span><span class="p">:</span> <span class="n">MultiDerivedSignal</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">OphydDataType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SignalToValue</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="features">
+<h3>Features<a class="headerlink" href="#features" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>adds <code class="docutils literal notranslate"><span class="pre">.screen()</span></code> method to BaseInterface, which opens a typhos screen</p></li>
+<li><p>adds AreaDetector specific <code class="docutils literal notranslate"><span class="pre">.screen()</span></code> method, which calls camViewer</p></li>
+<li><p>Add utilities for rearranging the order of components as seen by typhos.
+This can be helpful for classes that inherit components from other classes
+if they want to slot their new components in at specific places in the
+automatic typhos tree.</p></li>
+</ul>
+</section>
+<section id="device-updates">
+<h3>Device Updates<a class="headerlink" href="#device-updates" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Added “ref” signal to “BeamEnergyRequest” to track the energy
+reference PV.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TwinCATStatePositioner</span></code> has been updated due to underlying
+<code class="docutils literal notranslate"><span class="pre">MultiDerivedSignal</span></code> API changes.</p></li>
+<li><p>TM1K4 now has its own class with 8 position states (7 targets and and OUT state)</p></li>
+<li><p>Updated AT2L0 to utilize newly implemented MultiderivedSignal for error checking and clearing in GUI and at the command line</p></li>
+<li><p>Updated AT2L0 Typhos GUI, includes error clearing button and display of error on individual blades</p></li>
+<li><p>clear_errors() method for AT2L0 to clear errors; e.g. at2l0.clear_errors()</p></li>
+<li><p>print_errors() method for AT2l0 to print error summary; e.g. at2l0.print_errors()</p></li>
+</ul>
+</section>
+<section id="new-devices">
+<h3>New Devices<a class="headerlink" href="#new-devices" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>New <code class="docutils literal notranslate"><span class="pre">JJSlits</span></code> class and typhos screen for controlling JJSlits model AT-C8-HV with Beckhoff controls.</p></li>
+<li><p>XOffsetMirrorRTDs, offset mirrors with RTDs for measuring temperatures.</p></li>
+<li><p>FFMirrorZ, an extension to FFMirror to add a Z axis.</p></li>
+<li><p>The X apertures for AT1K0 now have their own device with 1 state, “centered”</p></li>
+<li><p>The Y apertures for AT1K0 now have their own device with 4 states, [“5.5mm”,”8mm”,”10mm”,”13mm”]</p></li>
+<li><p>OpticsPitchNotepad - a class for storing pitch positions based on state in a notepad IOC
+for mr1l0, mr2l0, mr1l4, mr1l3, and mr2l3.</p></li>
+</ul>
+</section>
+<section id="bugfixes">
+<h3>Bugfixes<a class="headerlink" href="#bugfixes" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix calls to ipm_screen.</p></li>
+<li><p>Fix an issue where Beckhoff motion error reset signals could not be set twice in the same session.</p></li>
+<li><p>Fix an issue where the TMO Spectrometer and the HXRSSS would spam errors
+when loaded in lightpath.</p></li>
+</ul>
+</section>
+<section id="maintenance">
+<h3>Maintenance<a class="headerlink" href="#maintenance" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Ran pre-commit on all files in the repository, except the ones where it
+causes issues. Update the CI to require these checks to pass. (passive
+update, this is the new pcds-ci-helpers master). Notable changes were
+related to import sorting and removal of trailing whitespace.</p></li>
+</ul>
+</section>
+<section id="contributors">
+<h3>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>klauer</p></li>
+<li><p>mbosum</p></li>
+<li><p>mkestra</p></li>
+<li><p>nrwslac</p></li>
+<li><p>rsmm97</p></li>
+<li><p>tangkong</p></li>
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v5-2-0-2022-03-31">
+<h2>v5.2.0 (2022-03-31)<a class="headerlink" href="#v5-2-0-2022-03-31" title="Permalink to this headline"></a></h2>
+<section id="id1">
+<h3>Features<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Added a post_elog_status method to the <code class="docutils literal notranslate"><span class="pre">BaseInterface</span></code> class, which posts to the registered primary elog if it exists.</p></li>
+<li><p>Added a function for posting ophyd object status (and lists of objects) to the ELog as html.</p></li>
+<li><p>Added new <code class="docutils literal notranslate"><span class="pre">AggregateSignal</span></code> variant <code class="docutils literal notranslate"><span class="pre">MultiDerivedSignal</span></code>.  With a list of
+signal names and a calculation function, it is now possible to create a new
+signal derived from the values of the provided signals. For example, if a
+hutch has many temperature sensors - each with their own corresponding
+<code class="docutils literal notranslate"><span class="pre">EpicsSignal</span></code> instance - a signal that shows the maximum value from all of
+those temperatures would be easy to implement.</p></li>
+<li><p>Added the scale keyword argument to tweak() method, allowing the user to pick the initial step size.</p></li>
+</ul>
+</section>
+<section id="id2">
+<h3>Device Updates<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Added the Y axis to the <code class="docutils literal notranslate"><span class="pre">KBOMirror</span></code> status printout</p></li>
+<li><p>TwinCAT state devices now have a top-level “state_velo” summary signal.
+This can be used to view the highest speed of all the configured state
+speeds, and it can also be used to do a bulk edit. These are stored per
+state destination in the IOC.</p></li>
+<li><p>Added a biological parent attribute to <code class="docutils literal notranslate"><span class="pre">GroupDevice</span></code>, for tracking parents without alerting stage() methods</p></li>
+<li><p>Added the current monitoring PV to <code class="docutils literal notranslate"><span class="pre">pcdsdevices.pump.PTMPLC</span></code>.</p></li>
+<li><p>Allow for user offsets to TMO Spectrometer motors.</p></li>
+<li><p>Commented out the GasNeedleTheta motor for 3/22 LAMPMBES configuration.</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3>New Devices<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">PCDSHDF5BlueskyTriggerable</span></code>, a variant of area detector
+specialized for doing <code class="docutils literal notranslate"><span class="pre">bluesky</span></code> scans.</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">KBOMirrorHE</span></code> class to be used with KBO mirrors with cooling, like MR2K4.</p></li>
+<li><p>Added the laser beam transport protection system device classes and related
+screens.</p></li>
+<li><p>Added the Dg /DelayGenerator class to handle SRS645 delay generator</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">MMC100</span></code> class, for motors controlled by Micronix MMC100 controllers</p></li>
+<li><p>Added a class for the HXR Single Shot Spectrometer.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">VRCDA</span></code>, a dual-acting valve class.</p></li>
+</ul>
+</section>
+<section id="id4">
+<h3>Bugfixes<a class="headerlink" href="#id4" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fixed an issue in sim.slow_motor classes where threading behavior could fail.</p></li>
+<li><p>State readbacks from preset positions are now correct.</p></li>
+<li><p>Fixed a race condition on initialization of new <code class="docutils literal notranslate"><span class="pre">EpicsSignalEditMD</span></code> and
+<code class="docutils literal notranslate"><span class="pre">EpicsSignalROEditMD</span></code>. (#963, #978)</p></li>
+<li><p>Fix an issue where mirror devices had overfiltered tab completion results.</p></li>
+</ul>
+</section>
+<section id="id5">
+<h3>Maintenance<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Removed the instantiation of a status object at motor startup to help
+improve the performance of loading large sessions. This object was not
+strictly needed.</p></li>
+<li><p>Removed the deprecation warning from <code class="docutils literal notranslate"><span class="pre">pcdsdevices.utils</span></code> import.</p></li>
+<li><p>Updated the docstrings in the valve submodule with detailed descriptions.</p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>Contributors<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>klauer</p></li>
+<li><p>mbosum</p></li>
+<li><p>nrwslac</p></li>
+<li><p>spenc333</p></li>
+<li><p>vespos</p></li>
+<li><p>tangkong</p></li>
+<li><p>zrylettc</p></li>
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v5-1-0-2022-02-07">
+<h2>v5.1.0 (2022-02-07)<a class="headerlink" href="#v5-1-0-2022-02-07" title="Permalink to this headline"></a></h2>
+<section id="id7">
+<h3>Features<a class="headerlink" href="#id7" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Adds a new script, make_ophyd_device.py, that helps with autogeneration of
+an ophyd device class from an IOC db file. Includes a helper script.</p></li>
+<li><p>State names are no longer case-sensitive.</p></li>
+</ul>
+</section>
+<section id="id8">
+<h3>Device Updates<a class="headerlink" href="#id8" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add pmgr methods to the IMS class’s tab whitelist.</p></li>
+</ul>
+</section>
+<section id="id9">
+<h3>New Devices<a class="headerlink" href="#id9" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>SliceDhvChannel: a device for controlling a single channel on a Vescent
+Photonics Slice-DHV controller.</p></li>
+<li><p>SliceDhvController: a device for controlling the controller of a Vescent
+Photonics Slice-DHV controller.</p></li>
+<li><p>SliceDhv: a top-level device for controlling a complete 2-channel Vescent
+Photonics Slice-DHV controller.</p></li>
+<li><p>QadcBase: Base class for qadc digitizers</p></li>
+<li><p>Qadc: Class for FMC126 (old) digitizers</p></li>
+<li><p>QadcSparsification: Class for holding FMC134 sparsification PVs.</p></li>
+<li><p>Qadc134: Class for FMC134 (new) digitizers</p></li>
+<li><p>Wave8V2Simple: A simple class for the LCLS-II Wave8. Provides waveforms
+and acquisition start/stop buttons.</p></li>
+<li><p>Wave8V2: A complete top-level class for the LCLS-II Wave8. Includes many
+configuration and diagnostic PVs, in addition to what is provided by
+Wave8V2Simple.</p></li>
+<li><p>DiconSwitch: new device class for the DiCon fiber switch.</p></li>
+<li><p>CycleRfofRx: class for Cycle RFoF receiver.</p></li>
+<li><p>CycleRfofTx: class for Cycle RFoF transmitter.</p></li>
+<li><p>Agilent53210A: Device for controlling frequency counters by the same name.</p></li>
+<li><p>Adds a new class to interface with the LAMP motion configuration for LV17.</p></li>
+</ul>
+</section>
+<section id="id10">
+<h3>Bugfixes<a class="headerlink" href="#id10" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>EpicsSignalEditMD will be more lenient for cases where we have unset
+metadata strings (“Invalid”) from TwinCAT. This fixes recent issues
+involving terminal spam and failure to update enum strings for
+devices like the solid attenuators.</p></li>
+<li><p>EpicsSignalEditMD will not send metadata updates until all composite
+signals have connected and updated us with their values.</p></li>
+<li><p>Fix SL1K2 target count (2 states + out instead of default).</p></li>
+<li><p>Fixed mr1l0_homs and mr2l0_homs state counts in TwinCATMirrorStripe.
+This should be set to 2 for mr1l0 (B4C, B4C/Ni) and mr2l0 (B4C, Ni).</p></li>
+</ul>
+</section>
+<section id="id11">
+<h3>Maintenance<a class="headerlink" href="#id11" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">detailed_tree.ui</span></code> was vendored from typhos. The default attenuator screens
+AT2L0, AT1K4, and AT2K2 will now default to <code class="docutils literal notranslate"><span class="pre">detailed_tree.ui</span></code>.</p></li>
+<li><p>HelpfulIntEnum has been vendored from pcdsutils. This will be
+switched to an import in a future release.</p></li>
+</ul>
+</section>
+<section id="id12">
+<h3>Contributors<a class="headerlink" href="#id12" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>mbosum</p></li>
+<li><p>klauer</p></li>
+<li><p>slactjohnson</p></li>
+<li><p>tangkong</p></li>
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v5-0-2-2021-12-02">
+<h2>v5.0.2 (2021-12-02)<a class="headerlink" href="#v5-0-2-2021-12-02" title="Permalink to this headline"></a></h2>
+<section id="id13">
+<h3>Bugfixes<a class="headerlink" href="#id13" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix issue where EpicsSignalEditMD could log enum error messages
+for signals that did not edit their enum metadata.</p></li>
+</ul>
+</section>
+<section id="id14">
+<h3>Contributors<a class="headerlink" href="#id14" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v5-0-1-2021-11-19">
+<h2>v5.0.1 (2021-11-19)<a class="headerlink" href="#v5-0-1-2021-11-19" title="Permalink to this headline"></a></h2>
+<section id="id15">
+<h3>Bugfixes<a class="headerlink" href="#id15" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>CCM status representation fixed in certain situations. (#908)</p></li>
+<li><p>Exceptions will no longer be raised when generating device status
+representations. (#909)</p></li>
+</ul>
+</section>
+<section id="id16">
+<h3>Contributors<a class="headerlink" href="#id16" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>klauer</p></li>
+</ul>
+</section>
+</section>
+<section id="v5-0-0-2021-11-15">
+<h2>v5.0.0 (2021-11-15)<a class="headerlink" href="#v5-0-0-2021-11-15" title="Permalink to this headline"></a></h2>
+<section id="id17">
+<h3>API Changes<a class="headerlink" href="#id17" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TwinCATStateConfigAll</span></code> has been removed. This was considered an
+internal API.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">isum</span></code> components have been renamed to <code class="docutils literal notranslate"><span class="pre">sum</span></code> in IPM detector classes.</p></li>
+<li><p>The motor components for PIM classes have been shortened by removing
+<code class="docutils literal notranslate"><span class="pre">_motor</span></code> from their names (e.g. <code class="docutils literal notranslate"><span class="pre">zoom_motor</span></code> is now <code class="docutils literal notranslate"><span class="pre">zoom</span></code>).</p></li>
+<li><p>Switch the target PVs for <code class="docutils literal notranslate"><span class="pre">BeamEnergyRequest</span></code> from e.g. “XPP:USR:MCC:EPHOT” to
+e.g. “XPP:USR:MCC:EPHOT:SET1”, “RIX:USR:MCC:EPHOTK:SET1”.</p></li>
+</ul>
+</section>
+<section id="id18">
+<h3>Features<a class="headerlink" href="#id18" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">EpicsSignalEditMD</span></code> and <code class="docutils literal notranslate"><span class="pre">EpicsSignalROEditMD</span></code> now allow for overriding of
+enumeration strings (<code class="docutils literal notranslate"><span class="pre">enum_strs</span></code>) by way of a static list of strings
+(<code class="docutils literal notranslate"><span class="pre">enum_strs</span></code> kwarg) or a list of signal attribute names (<code class="docutils literal notranslate"><span class="pre">enum_attrs</span></code>
+kwarg).</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">TwinCATStatePositioner</span></code> to have a configurable and variable number
+of state configuration PVs. These are the structures that allow you to
+check and change state setpoints, deltas, velocities, etc. This is
+implemented through the new <code class="docutils literal notranslate"><span class="pre">TwinCATStateConfigDynamic</span></code> class.</p></li>
+<li><p>Increase the maximum number of connected state configuration records to
+match the current motion library limit (9)</p></li>
+</ul>
+</section>
+<section id="id19">
+<h3>Device Updates<a class="headerlink" href="#id19" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Using the new <code class="docutils literal notranslate"><span class="pre">TwinCATStateConfigDynamic</span></code> mechanisms and the <code class="docutils literal notranslate"><span class="pre">UpdateComponent</span></code>,
+update the following classes to contain exactly the correct number of
+twincat configuration states in their component state records.
+Note that the number of states here does not include the “Unknown”
+or “Moving” state associated with index 0. A device with n states will have
+typically have 1 out state and n-1 target states by this count, and the
+EPICS record will have n+1 possible enum values.
+- <code class="docutils literal notranslate"><span class="pre">ArrivalTimeMonitor</span></code> (6)
+- <code class="docutils literal notranslate"><span class="pre">AttenuatorSXR_Ladder</span></code> (9)
+- <code class="docutils literal notranslate"><span class="pre">AT2L0</span></code> (2)
+- <code class="docutils literal notranslate"><span class="pre">FEESolidAttenuatorBlade</span></code> (2)
+- <code class="docutils literal notranslate"><span class="pre">LaserInCoupling</span></code> (2)
+- <code class="docutils literal notranslate"><span class="pre">PPM</span></code> (4)
+- <code class="docutils literal notranslate"><span class="pre">ReflaserL2SI</span></code> (2)
+- <code class="docutils literal notranslate"><span class="pre">WavefrontSensorTarget</span></code> (6)
+- <code class="docutils literal notranslate"><span class="pre">XPIM</span></code> (4)</p></li>
+<li><p>The default <code class="docutils literal notranslate"><span class="pre">theta0</span></code> values for CCM objects has been changed from
+<code class="docutils literal notranslate"><span class="pre">14.9792</span></code> to <code class="docutils literal notranslate"><span class="pre">15.1027</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IPM</span></code> objects now have short aliases for their motors (<code class="xref any docutils literal notranslate"><span class="pre">ty</span></code>, <code class="xref any docutils literal notranslate"><span class="pre">dx</span></code>, <code class="xref any docutils literal notranslate"><span class="pre">dy</span></code>).</p></li>
+<li><p>Reorganized the sample delivery <code class="docutils literal notranslate"><span class="pre">Selector</span></code> class to be composed of two
+<code class="docutils literal notranslate"><span class="pre">Sensiron</span></code> devices instead of a flat collection of PVs.</p></li>
+<li><p>In <code class="docutils literal notranslate"><span class="pre">VGC_2S</span></code>, allow for the user to change the <code class="docutils literal notranslate"><span class="pre">at_vac</span></code> setpoint value
+for upstream and downstream gauges separately.</p></li>
+<li><p>Add the <code class="docutils literal notranslate"><span class="pre">user_enable</span></code> signal (<code class="docutils literal notranslate"><span class="pre">bUserEnable</span></code>) to the <code class="docutils literal notranslate"><span class="pre">BeckhoffAxisPLC</span></code> class.
+This is a signal that allows the user to unilaterally disable a
+running motor’s power. When enabled, it is up to the controller
+whether or not to actually power the motor, but when disabled the
+power will be shut off.</p></li>
+<li><p>Add the ability for <code class="docutils literal notranslate"><span class="pre">BeamEnergyRequest</span></code> to write to PVs for either
+the K or the L line and for either bunch 1 or bunch 2 in two bunch mode.</p></li>
+</ul>
+</section>
+<section id="id20">
+<h3>New Devices<a class="headerlink" href="#id20" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">TM2K2</span></code>, a variant of the <code class="docutils literal notranslate"><span class="pre">ArrivalTimeMonitor</span></code> class that has an extra
+state (7). The real <code class="docutils literal notranslate"><span class="pre">TM2K2</span></code> has one extra target holder compared to the
+standard <code class="docutils literal notranslate"><span class="pre">ArrivalTimeMonitor</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BeckhoffAxis_Pre140</span></code> has been added to support versions of <code class="docutils literal notranslate"><span class="pre">lcls-twincat-motion</span></code>
+prior to <code class="docutils literal notranslate"><span class="pre">v1.4.0</span></code>. This has been aliased to <code class="docutils literal notranslate"><span class="pre">OldBeckhoffAxis</span></code> for backcompat.</p></li>
+<li><p>Created <code class="docutils literal notranslate"><span class="pre">Bronkhorst</span></code> and <code class="docutils literal notranslate"><span class="pre">Sensiron</span></code> flow meter devices for sample delivery.</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">crix_motion.VLSOptics</span></code> Device, which contains calculated
+axes for the VLS optical components. The rotation state of these
+crystals is approximated by a best-fit 2nd order polynomial.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">VRCClsLS</span></code>, a class for gate valves with control and closed limit switch readback.</p></li>
+</ul>
+</section>
+<section id="id21">
+<h3>Bugfixes<a class="headerlink" href="#id21" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix subtle bugs related to the <code class="docutils literal notranslate"><span class="pre">UpdateComponent</span></code> and using copy vs deepcopy.
+This was needed to make the dynamic state classes easy to customize.</p></li>
+<li><p>Add an extra error state in <code class="docutils literal notranslate"><span class="pre">UpdateComponent</span></code> for when you’ve made a typo
+in your component name. Previously this would give a confusing <code class="docutils literal notranslate"><span class="pre">NameError</span></code>.</p></li>
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">LODCM</span></code> “inverse” calculations, return a NaN energy instead of
+raising an exception when there is a problem determining the crystal
+orientation. This prevents the calculated value from going stale when
+it has become invalid, and it prevents logger spam when this is
+called in the pseudopositioner update position callback.</p></li>
+</ul>
+</section>
+<section id="id22">
+<h3>Maintenance<a class="headerlink" href="#id22" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add various missing docstrings and type annotations.</p></li>
+<li><p>Tab whitelists have been cut down to make things simpler for non-expert users.</p></li>
+</ul>
+</section>
+<section id="id23">
+<h3>Contributors<a class="headerlink" href="#id23" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>cymel123</p></li>
+<li><p>jyin999</p></li>
+<li><p>klauer</p></li>
+<li><p>mbosum</p></li>
+<li><p>zllentz</p></li>
+<li><p>zrylettc</p></li>
+</ul>
+</section>
+</section>
+<section id="v4-9-0-2021-10-19">
+<h2>v4.9.0 (2021-10-19)<a class="headerlink" href="#v4-9-0-2021-10-19" title="Permalink to this headline"></a></h2>
+<section id="id24">
+<h3>Device Updates<a class="headerlink" href="#id24" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Changed pv names for flow cell xyz-theta</p></li>
+</ul>
+</section>
+<section id="id25">
+<h3>New Devices<a class="headerlink" href="#id25" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>LAMPFlowCell class for new 4 axis flow cell manipulator replacing cVMI on LAMP.</p></li>
+</ul>
+</section>
+<section id="id26">
+<h3>Bugfixes<a class="headerlink" href="#id26" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>All stop methods now use the ophyd-defined signature, including a
+keyword-only <code class="docutils literal notranslate"><span class="pre">success</span></code> boolean.</p></li>
+<li><p>Test suite utility <code class="docutils literal notranslate"><span class="pre">find_all_classes</span></code> will no longer report test suite
+classes.</p></li>
+</ul>
+</section>
+<section id="id27">
+<h3>Maintenance<a class="headerlink" href="#id27" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Removed prototype-grade documentation helpers in favor of those in ophyd.docs</p></li>
+<li><p>Added similar <code class="docutils literal notranslate"><span class="pre">find_all_callables</span></code> for the purposes of documentation and
+testing.</p></li>
+<li><p>Added documentation helper for auto-generating <code class="docutils literal notranslate"><span class="pre">docs/source/api.rst</span></code>.  This
+should be run when devices are added, removed, or moved.</p></li>
+<li><p>Docstring fixup on CCM class.</p></li>
+<li><p>Imports changed to relative in test suite.</p></li>
+<li><p>Miscellaneous floating point comparison fixes for test suite.</p></li>
+<li><p>Fixed CCM test failure when run individually or quickly (failure when run
+less than 10 seconds after Python starts up)</p></li>
+<li><p>Linux-only <code class="docutils literal notranslate"><span class="pre">test_presets</span></code> now skips macOS as well.</p></li>
+</ul>
+</section>
+<section id="id28">
+<h3>Contributors<a class="headerlink" href="#id28" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Mbosum</p></li>
+<li><p>klauer</p></li>
+</ul>
+</section>
+</section>
+<section id="v4-8-0-2021-09-28">
+<h2>v4.8.0 (2021-09-28)<a class="headerlink" href="#v4-8-0-2021-09-28" title="Permalink to this headline"></a></h2>
+<section id="id29">
+<h3>Features<a class="headerlink" href="#id29" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">GroupDevice</span></code>: A device that is a group of components that will act
+independently. This has some performance improvements and small optimizations
+for when we expect the different subdevices to act fully independently.</p></li>
+<li><p>Add a <code class="docutils literal notranslate"><span class="pre">status</span></code> method to <code class="docutils literal notranslate"><span class="pre">BaseInterface</span></code> to return the device’s status
+string. This is useful for recording device status in the elog.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">typhos</span></code> templates for <code class="docutils literal notranslate"><span class="pre">BeckhoffSlits</span></code> and <code class="docutils literal notranslate"><span class="pre">PowerSlits</span></code> using existing
+elements from their normal <code class="docutils literal notranslate"><span class="pre">pydm</span></code> screens.</p></li>
+</ul>
+</section>
+<section id="id30">
+<h3>Device Updates<a class="headerlink" href="#id30" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>The following devices have become group devices:
+- Acromag
+- ArrivalTimeMonitor
+- BaseGon
+- BeckhoffJet
+- BeckhoffJetManipulator
+- BeckhoffJetSlits
+- CCM
+- CrystalTower1
+- CrystalTower2
+- CVMI
+- DiagnosticTower
+- ExitSlits
+- FFMirror
+- FlowIntegrator
+- GasManifold
+- ICT
+- Injector
+- IPIMB
+- IPMDiode
+- IPMMotion
+- Kappa
+- KBOMirror
+- KMono
+- KTOF
+- LAMP
+- LAMPMagneticBottle
+- LaserInCoupling
+- LCLS2ImagerBase
+- LODCM
+- LODCMEnergyC
+- LODCMEnergySi
+- Mono
+- MPODApalisModule
+- MRCO
+- OffsetMirror
+- PCM
+- PIM
+- PulsePickerInOut
+- ReflaserL2SI
+- RTDSBase
+- SamPhi
+- Selector
+- SlitsBase
+- StateRecordPositionerBase
+- VonHamosCrystal
+- VonHamosFE
+- Wave8
+- WaveFrontSensorTarget
+- XOffsetMirror
+- XYZStage</p></li>
+<li><p>Clean up pmgr loading on the IMS class.</p></li>
+<li><p>Edit stage/unstage on <code class="docutils literal notranslate"><span class="pre">PIMY</span></code> to be compatible with <code class="docutils literal notranslate"><span class="pre">GroupDevice</span></code>.</p></li>
+<li><p>Edit stage/unstage and the class definition on <code class="docutils literal notranslate"><span class="pre">SlitsBase</span></code> to be
+compatible with <code class="docutils literal notranslate"><span class="pre">GroupDevice</span></code></p></li>
+<li><p>Change <code class="docutils literal notranslate"><span class="pre">CCM</span></code> from a <code class="docutils literal notranslate"><span class="pre">InOutPositioner</span></code> to a normal device with a
+<code class="docutils literal notranslate"><span class="pre">LightpathMixin</span></code> interface. Being a positioner that contained a bunch
+of other positioners, methods like <code class="docutils literal notranslate"><span class="pre">move</span></code> were extremely ambiguous
+and confusing. The <code class="docutils literal notranslate"><span class="pre">insert</span></code> and <code class="docutils literal notranslate"><span class="pre">remove</span></code> methods are re-implemented
+as they are useful enough to keep.</p></li>
+<li><p>Split <code class="docutils literal notranslate"><span class="pre">CCMCalc</span></code> into <code class="docutils literal notranslate"><span class="pre">CCMEnergy</span></code> and <code class="docutils literal notranslate"><span class="pre">CCMEnergyWithVernier</span></code> to
+make the code easier to follow</p></li>
+<li><p>Remove unused <code class="docutils literal notranslate"><span class="pre">CCMCalc</span></code> feature to move to wavelength or theta
+to make the code simpler to debug</p></li>
+<li><p>Add aliases to the <code class="docutils literal notranslate"><span class="pre">CCM</span></code> for each of the motors.</p></li>
+<li><p>Adjust the <code class="docutils literal notranslate"><span class="pre">CCM</span></code> status to be identical to that from the old python code.</p></li>
+<li><p>Add functions and PVs to kill and home the <code class="docutils literal notranslate"><span class="pre">CCM</span></code> alio</p></li>
+<li><p>Calculate intermediate quantities in the <code class="docutils literal notranslate"><span class="pre">CCM</span></code> energy calc and make them
+available in both the status and as read-only signals.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EpicsMotorInterface</span></code> subclasses will no longer spam logger errors and
+warnings about alarm issues encountered by other users. These log messages
+will only be shown if they were the result of moves in the current session.
+Note that this log filtering assumes that all epics motors will have unique
+ophyd names.</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">GFS</span></code> fault setpoint, <code class="docutils literal notranslate"><span class="pre">GCC</span></code>, <code class="docutils literal notranslate"><span class="pre">PIP</span></code> auto-on and countdown timer</p></li>
+<li><p>Switch the <code class="docutils literal notranslate"><span class="pre">CCM</span></code> energy devices to use user PVs as the canonical source
+of calculation constants. This allows the constants to be consistent
+between sessions and keeps different sessions in sync with each other.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">CCM.energy.set_current_position</span></code> utility for adjusting the <code class="docutils literal notranslate"><span class="pre">CCM</span></code>
+theta0 offset in order to synchronize the calculation with a known
+photon energy values.</p></li>
+</ul>
+</section>
+<section id="id31">
+<h3>New Devices<a class="headerlink" href="#id31" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>TMO Fresnel Photon Spectrometer Motion components class,
+<code class="docutils literal notranslate"><span class="pre">TMOSpectrometer</span></code></p></li>
+</ul>
+</section>
+<section id="id32">
+<h3>Bugfixes<a class="headerlink" href="#id32" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix some race conditions in <code class="docutils literal notranslate"><span class="pre">FuncPositioner</span></code></p></li>
+<li><p>Fix a race condition in schedule_task that could cause a task to never be run</p></li>
+<li><p>Add a timeout parameter to <code class="docutils literal notranslate"><span class="pre">IMS.reinitialize</span></code>, and set it as the default
+arg for use in the stage method, which is run during scans. This avoids
+a bug where the stage method could hang forever instead of erroring out,
+halting a scan in its tracks.</p></li>
+<li><p>Fix an issue where epics motors could time out on the getting of
+the <code class="docutils literal notranslate"><span class="pre">egu</span></code> property, which was causing issues with the displaying
+of device status.</p></li>
+</ul>
+</section>
+<section id="id33">
+<h3>Maintenance<a class="headerlink" href="#id33" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Move <code class="docutils literal notranslate"><span class="pre">PVStateSignal</span></code> from state.py to signal.py to avoid a circular import</p></li>
+<li><p>Make the tests importable and runnable on Windows</p></li>
+<li><p>Require Python 3.9 for type annotations</p></li>
+<li><p>Make pmgr optional, but if installed make sure it has a compatible version.</p></li>
+<li><p>Update to 3.9-only CI</p></li>
+<li><p>Fix the CI PIP test build</p></li>
+<li><p>Include the pcdsdevices test suite in the package distribution.</p></li>
+<li><p>Add missing docstrings in the <code class="docutils literal notranslate"><span class="pre">ccm</span></code> module where appropriate.</p></li>
+<li><p>Add doc kwarg to all components in the <code class="docutils literal notranslate"><span class="pre">ccm</span></code> module.</p></li>
+<li><p>Add type hints to all method signatures in the <code class="docutils literal notranslate"><span class="pre">ccm</span></code> module.</p></li>
+<li><p>Adjust the <code class="docutils literal notranslate"><span class="pre">CCM</span></code> unit tests appropriately.</p></li>
+</ul>
+</section>
+<section id="id34">
+<h3>Contributors<a class="headerlink" href="#id34" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>ghalym</p></li>
+<li><p>jyin999</p></li>
+<li><p>mbosum</p></li>
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v4-7-1-2021-08-11">
+<h2>v4.7.1 (2021-08-11)<a class="headerlink" href="#v4-7-1-2021-08-11" title="Permalink to this headline"></a></h2>
+<section id="id35">
+<h3>Maintenance<a class="headerlink" href="#id35" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix a packaging issue where the ui files were not included in the
+distribution.</p></li>
+</ul>
+</section>
+</section>
+<section id="v4-7-0-2021-08-09">
+<h2>v4.7.0 (2021-08-09)<a class="headerlink" href="#v4-7-0-2021-08-09" title="Permalink to this headline"></a></h2>
+<section id="id36">
+<h3>Features<a class="headerlink" href="#id36" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Added a typhos.ui entry point, so we can version control our typhos
+templates in the same place as our device definitions. This also
+allows us to remove pcds-specific assumptions from typhos to make
+the library more community-friendly.</p></li>
+<li><p>Added the pcds typhos templates from typhos.</p></li>
+</ul>
+</section>
+<section id="id37">
+<h3>New Devices<a class="headerlink" href="#id37" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add classes for controlling the new apalis mpods. The new apalis mpod
+PVs differ from previous model PVs and needed new classes to
+accommodate those changes. Features:</p>
+<ul>
+<li><p>Turn on/off HV channels</p></li>
+<li><p>Set current/voltage</p></li>
+<li><p>Get max current/voltage</p></li>
+<li><p>Clear module faults</p></li>
+<li><p>Obtain module temperature</p></li>
+<li><p>Power cycle mpod crate.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id38">
+<h3>Maintenance<a class="headerlink" href="#id38" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add missing jsonschema dependency.</p></li>
+</ul>
+</section>
+<section id="id39">
+<h3>Contributors<a class="headerlink" href="#id39" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>klauer</p></li>
+<li><p>spenc333</p></li>
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v4-6-0-2021-07-09">
+<h2>v4.6.0 (2021-07-09)<a class="headerlink" href="#v4-6-0-2021-07-09" title="Permalink to this headline"></a></h2>
+<section id="id40">
+<h3>Features<a class="headerlink" href="#id40" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add pmgr support to the <a class="reference internal" href="generated/pcdsdevices.epics_motor.IMS.html#pcdsdevices.epics_motor.IMS" title="pcdsdevices.epics_motor.IMS"><code class="xref any py py-class docutils literal notranslate"><span class="pre">IMS</span></code></a> class! There are three new methods on IMS
+for interacting with pmgr: <code class="docutils literal notranslate"><span class="pre">configure</span></code>, <code class="docutils literal notranslate"><span class="pre">get_configuration</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">find_configuration</span></code>.</p></li>
+</ul>
+</section>
+<section id="id41">
+<h3>Device Updates<a class="headerlink" href="#id41" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>User changes to offset/dir on python or UI level to MRCO motion have been disabled.</p></li>
+<li><p>Add the veto_device signal (:VETO_DEVICE_RBV) to the VFS class.</p></li>
+<li><p><code class="xref any docutils literal notranslate"><span class="pre">XYGridStage</span></code> now uses one file per sample instead of
+one giant file for all samples, and it writes to these files less often.
+This speeds up operations. Various additional improvements to the class.</p></li>
+</ul>
+</section>
+<section id="id42">
+<h3>New Devices<a class="headerlink" href="#id42" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add special IM2K0 device for the new configuration of IM2K0, where we
+swapped its XTES style camera setup for a L2SI style camera setup.</p></li>
+</ul>
+</section>
+<section id="id43">
+<h3>Bugfixes<a class="headerlink" href="#id43" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix an issue where DelayBase subclasses could spam the terminal at
+startup if we load too many devices at once.</p></li>
+<li><p>Fix a typo in the KBO DS Bender RMS PV.</p></li>
+<li><p>Fix issue where motor presets would not load until the first access of the
+presets object.</p></li>
+<li><p>Fix an issue where an epics motor could get stuck with a bad state of its
+set_use_switch after a call to set_current_position with a bad value.</p></li>
+</ul>
+</section>
+<section id="id44">
+<h3>Contributors<a class="headerlink" href="#id44" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>cristinasewell</p></li>
+<li><p>jsheppard95</p></li>
+<li><p>jyotiphy</p></li>
+<li><p>Mbosum</p></li>
+<li><p>mcb64</p></li>
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v4-5-0-2021-06-03">
+<h2>v4.5.0 (2021-06-03)<a class="headerlink" href="#v4-5-0-2021-06-03" title="Permalink to this headline"></a></h2>
+<section id="id45">
+<h3>Features<a class="headerlink" href="#id45" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add UpdateComponent, a component class to update component args
+in subclasses.</p></li>
+</ul>
+</section>
+<section id="id46">
+<h3>Device Updates<a class="headerlink" href="#id46" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Update kmono threshold for showing beam passing in lightpath</p></li>
+<li><p>Rename PPSStopperL2SI to PPSStopper2PV and generalize to all PPS stoppers
+whose states are determined by the combination of two PVs. The old name and
+old defaults are retained for backcompatibility and have not yet been
+deprecated. This was done to support the PVs for ST1K2 which do not follow
+any existing pattern.</p></li>
+<li><p>Set various beamline component motor offset signals to read-only, using the
+new BeckhoffAxisNoOffset class,  to prevent  accidental changes.
+These are static components that have no need for this level of
+customization, which tends to just cause confusion.</p></li>
+</ul>
+</section>
+<section id="id47">
+<h3>New Devices<a class="headerlink" href="#id47" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>MRCO motion class for MRCO IP1 endstation in TMO.</p></li>
+<li><p>Added a class for the RIX ladder-style solid attenuator <code class="docutils literal notranslate"><span class="pre">AT2K2</span></code>.</p></li>
+<li><p>Add BeckhoffAxisNoOffset, a varition on BeckhoffAxis that uses
+UpdateComponent to remove write access on the user offset signals.</p></li>
+</ul>
+</section>
+<section id="id48">
+<h3>Bugfixes<a class="headerlink" href="#id48" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix issue where BeckhoffSlits devices could show metadata errors on startup
+by cleaning up the done moving handling. This would typically spam the
+terminal in cases where we were making large numbers of PV connections in
+the session at once, such as at the start of a hutch-python load.</p></li>
+</ul>
+</section>
+<section id="id49">
+<h3>Contributors<a class="headerlink" href="#id49" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Mbosum</p></li>
+<li><p>ZLLentz</p></li>
+<li><p>jsheppard95</p></li>
+<li><p>klauer</p></li>
+</ul>
+</section>
+</section>
+<section id="v4-4-0-2021-04-15">
+<h2>v4.4.0 (2021-04-15)<a class="headerlink" href="#v4-4-0-2021-04-15" title="Permalink to this headline"></a></h2>
+<section id="id50">
+<h3>API Changes<a class="headerlink" href="#id50" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Move stoppers into stopper.py, but keep reverse imports for
+backwards compatibility. This will be deprecated and then removed
+at a later date.</p></li>
+</ul>
+</section>
+<section id="id51">
+<h3>Device Updates<a class="headerlink" href="#id51" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add “confirm” variety metadata tag to <code class="docutils literal notranslate"><span class="pre">EpicsMotorInterface</span></code> and
+<code class="docutils literal notranslate"><span class="pre">BeckhoffAxisPLC</span></code> home commands, requiring user confirmation prior to
+performing the homing motion in auto-generated Typhos screens.</p></li>
+<li><p>Slits objects now have vo, vg, ho, and hg aliases.</p></li>
+<li><p>Motor objects now print out values with a precision of 3 places.</p></li>
+<li><p>Remove mpa3 and mpa4 from rtdsk0, they do not have filters and are always
+in invalid states that confuse the lightpath.</p></li>
+<li><p>Update the mono spectrometer class to provide status to lightpath.</p></li>
+<li><p>Make sim devices hinted by default so they show up in the
+best-effort callback in bluesky.</p></li>
+</ul>
+</section>
+<section id="id52">
+<h3>New Devices<a class="headerlink" href="#id52" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add PPSStopperL2SI for having readbacks of the new PPS stoppers inside
+of lightpath.</p></li>
+</ul>
+</section>
+<section id="id53">
+<h3>Bugfixes<a class="headerlink" href="#id53" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix issue where the mirror coating states were expecting the default
+‘OUT’ position, which does not exist on the real device.</p></li>
+<li><p>Fix an issue where <code class="docutils literal notranslate"><span class="pre">ObjectComponent</span></code> instances did not have proper class
+information.</p></li>
+<li><p>Increase the retry delay in lightpath state updater to avoid issue where
+long lightpaths would fail to update the first few devices in the path.</p></li>
+<li><p>Fix issue where LICMirror would appear blocking in the mirror states on
+lightpath.</p></li>
+<li><p>Fix issue where PowerSlits would appear blocking on lightpath for some
+positions reached by fulfilling normal PMPS requests.</p></li>
+<li><p>Fix issue where SxtTestAbsorber would report no status on lightpath.</p></li>
+</ul>
+</section>
+<section id="id54">
+<h3>Contributors<a class="headerlink" href="#id54" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>ZryletTC</p></li>
+<li><p>klauer</p></li>
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v4-3-2-2021-04-05">
+<h2>v4.3.2 (2021-04-05)<a class="headerlink" href="#v4-3-2-2021-04-05" title="Permalink to this headline"></a></h2>
+<section id="id55">
+<h3>Bugfixes<a class="headerlink" href="#id55" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix an issue where pcdsdevices would break pyepics and ophyd in such a
+way to cause thousands of lines of teardown spam at exit.</p></li>
+</ul>
+</section>
+<section id="id56">
+<h3>Contributors<a class="headerlink" href="#id56" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v4-3-1-2021-04-02">
+<h2>v4.3.1 (2021-04-02)<a class="headerlink" href="#v4-3-1-2021-04-02" title="Permalink to this headline"></a></h2>
+<section id="id57">
+<h3>Features<a class="headerlink" href="#id57" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>New functions have been added to the LODCM object: <a class="reference internal" href="generated/pcdsdevices.lodcm.LODCM.html#pcdsdevices.lodcm.LODCM.tweak_x" title="pcdsdevices.lodcm.LODCM.tweak_x"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">tweak_x</span></code></a>, <a class="reference internal" href="generated/pcdsdevices.lodcm.LODCM.html#pcdsdevices.lodcm.LODCM.tweak_parallel" title="pcdsdevices.lodcm.LODCM.tweak_parallel"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">tweak_parallel</span></code></a>, <a class="reference internal" href="generated/pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase.set_energy" title="pcdsdevices.attenuator.AttBase.set_energy"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">set_energy</span></code></a>, <a class="reference internal" href="generated/pcdsdevices.lodcm.LODCM.html#pcdsdevices.lodcm.LODCM.wait_energy" title="pcdsdevices.lodcm.LODCM.wait_energy"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">wait_energy</span></code></a>.</p></li>
+<li><p>Custom status print has been added for the 3 towers as well as the energy classes.</p></li>
+<li><p>Added the <a class="reference internal" href="generated/pcdsdevices.epics_motor.OffsetIMSWithPreset.html#pcdsdevices.epics_motor.OffsetIMSWithPreset" title="pcdsdevices.epics_motor.OffsetIMSWithPreset"><code class="xref any py py-class docutils literal notranslate"><span class="pre">OffsetIMSWithPreset</span></code></a> subclass of <a class="reference internal" href="generated/pcdsdevices.pseudopos.OffsetMotorBase.html#pcdsdevices.pseudopos.OffsetMotorBase" title="pcdsdevices.pseudopos.OffsetMotorBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">OffsetMotorBase</span></code></a> that has an additional <code class="xref any docutils literal notranslate"><span class="pre">_SET</span></code> offset pv, and puts to this pv during <a class="reference internal" href="generated/pcdsdevices.ccm.CCMEnergy.html#pcdsdevices.ccm.CCMEnergy.set_current_position" title="pcdsdevices.ccm.CCMEnergy.set_current_position"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">set_current_position</span></code></a>.</p></li>
+</ul>
+</section>
+<section id="id58">
+<h3>Maintenance<a class="headerlink" href="#id58" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Have cleaned up some docstring and changed the naming for the offset motors to the old style.</p></li>
+</ul>
+</section>
+<section id="id59">
+<h3>Contributors<a class="headerlink" href="#id59" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>cristinasewell</p></li>
+</ul>
+</section>
+</section>
+<section id="v4-3-0-2021-04-02">
+<h2>v4.3.0 (2021-04-02)<a class="headerlink" href="#v4-3-0-2021-04-02" title="Permalink to this headline"></a></h2>
+<section id="id60">
+<h3>API Changes<a class="headerlink" href="#id60" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Deprecate <code class="docutils literal notranslate"><span class="pre">pcdsdevices.component</span></code> in favor of <code class="docutils literal notranslate"><span class="pre">pcdsdevices.device</span></code>
+to avoid circular imports and to more closely mirror the structure of
+<code class="docutils literal notranslate"><span class="pre">ophyd</span></code>.</p></li>
+</ul>
+</section>
+<section id="id61">
+<h3>Features<a class="headerlink" href="#id61" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add FuncPositioner as a replacement for VirtualMotor.
+This is a “dirty” positioner intended for quick hacks
+in the beamline setup files, instantiated via handing
+various functions to the init.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">EpicsSignalEditMD</span></code> and <code class="docutils literal notranslate"><span class="pre">EpicsSignalROEditMD</span></code> classes for
+situations where you need to override the control system’s
+discovered metadata.</p></li>
+<li><p>Adding a normally open class (VRCNO) for VRC gate valves to valve module. VRCNO extends VVCNO and adds VRC functionality.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">SyncAxis</span></code> to replace deprecated <code class="docutils literal notranslate"><span class="pre">SyncAxesBase</span></code> with expanded
+feature set, more sensible defaults, and more solid foundation.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">set_current_position</span></code> to all <code class="docutils literal notranslate"><span class="pre">PseudoPositioner</span></code> classes.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">invert</span></code> parameter to <code class="docutils literal notranslate"><span class="pre">DelayBase</span></code> for inverting any delay stage.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">set_position</span></code> as an alias to <code class="docutils literal notranslate"><span class="pre">set_current_position</span></code></p></li>
+<li><p>New motor configuration for LAMP.  Hoping we only have two configurations to switch between</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">InterfaceDevice</span></code> and <code class="docutils literal notranslate"><span class="pre">InterfaceComponent</span></code> as a tool for
+including pre-build objects in a device at init time.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">to_interface</span></code> helper function for converting normal <code class="docutils literal notranslate"><span class="pre">Device</span></code>
+classes into <code class="docutils literal notranslate"><span class="pre">InterfaceDevice</span></code> classes.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">ObjectComponent</span></code> as a tool for including pre-build objects in
+a device at class definition time.</p></li>
+</ul>
+</section>
+<section id="id62">
+<h3>Device Updates<a class="headerlink" href="#id62" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add custom status prints for DelayBase and SyncAxis</p></li>
+<li><p>QminiSpectrometer: A few variety metadata updates for Typhos screens.</p></li>
+<li><p>Set EpicsMotor soft limit kinds to “config” for use in typhos.</p></li>
+</ul>
+</section>
+<section id="id63">
+<h3>New Devices<a class="headerlink" href="#id63" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>QminiWithEvr: A new class with added PVs for controlling an EVR from a
+Typhos screen.</p></li>
+<li><p>LAMPMagneticBottle</p></li>
+<li><p>XOffsetMirrorState for mirror coatings</p></li>
+</ul>
+</section>
+<section id="id64">
+<h3>Bugfixes<a class="headerlink" href="#id64" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Include hacky fix from XPP/XCS that allows LaserTiming to complete moves
+in all situations. The real cause and ideas for a clean fix are not
+currently known/explored.</p></li>
+<li><p>Fix issue where Newport motors would not show units in their status prints.</p></li>
+<li><p>Fix issue where SyncAxis was not compatible with PseudoPositioners as
+its synchronized “real” motors.</p></li>
+<li><p>Fix an issue where calling <code class="docutils literal notranslate"><span class="pre">set_current_position</span></code> on certain motors would
+cause the ipython session to freeze, leaving the motor in the <code class="docutils literal notranslate"><span class="pre">set</span></code> state
+instead of bringing it back to the <code class="docutils literal notranslate"><span class="pre">use</span></code> state.</p></li>
+<li><p>Hacky workaround for IMS motor part number strings being unable to be read
+through pyepics when they contain invalid utf-8 characters.</p></li>
+<li><p>Fix issue where <code class="docutils literal notranslate"><span class="pre">Newport</span></code> user_readback had incorrect metadata.</p></li>
+<li><p><a class="reference internal" href="generated/pcdsdevices.signal.UnitConversionDerivedSignal.html#pcdsdevices.signal.UnitConversionDerivedSignal" title="pcdsdevices.signal.UnitConversionDerivedSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnitConversionDerivedSignal</span></code></a> will now pass
+through the <code class="docutils literal notranslate"><span class="pre">units</span></code> keyword argument in its metadata (<code class="docutils literal notranslate"><span class="pre">SUB_META</span></code> or
+<code class="docutils literal notranslate"><span class="pre">'meta'</span></code>) callbacks.  It will be included even if the original signal
+did not include <code class="docutils literal notranslate"><span class="pre">units</span></code> in metadata callbacks. (#767)</p></li>
+<li><p>Fix an issue where various special Signal classes had their kinds
+improperly reported as “hinted”.</p></li>
+</ul>
+</section>
+<section id="id65">
+<h3>Maintenance<a class="headerlink" href="#id65" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Make unit handling in status_info more consistent to improve reliability of
+status printouts.</p></li>
+</ul>
+</section>
+<section id="id66">
+<h3>Contributors<a class="headerlink" href="#id66" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Mbosum</p></li>
+<li><p>ghalym</p></li>
+<li><p>klauer</p></li>
+<li><p>tjohnson</p></li>
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v4-2-0-2021-03-03">
+<h2>v4.2.0 (2021-03-03)<a class="headerlink" href="#v4-2-0-2021-03-03" title="Permalink to this headline"></a></h2>
+<section id="id67">
+<h3>Features<a class="headerlink" href="#id67" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Happi IOC Data: added new EntryInfo to happi.containers.LCLSItem  for ioc
+configuration data including engineer, location, hutch, release, arch, name,
+and ioc type.</p></li>
+<li><p>New containers: added new Happi containers with device specific metadata for
+building MODS IOCs.</p></li>
+<li><p>Custom status print for <a class="reference internal" href="generated/pcdsdevices.lodcm.LODCM.html#pcdsdevices.lodcm.LODCM" title="pcdsdevices.lodcm.LODCM"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LODCM</span></code></a> object.</p></li>
+<li><p>Added the <a class="reference internal" href="generated/pcdsdevices.mpod.MPOD.html#pcdsdevices.mpod.MPOD" title="pcdsdevices.mpod.MPOD"><code class="xref any py py-func docutils literal notranslate"><span class="pre">MPOD</span></code></a> class that determines the appropriate MPOD Channel classes. This is to help support the happi entry creation from the questionnaire.</p></li>
+<li><p>Add custom status for LaserTiming and for PseudoSingleInterface</p></li>
+<li><p>Add verbose_name attribute to PseudoSingleInterface and caclulated dial position</p></li>
+<li><p>Add verbose_name property to LaserTiming</p></li>
+</ul>
+</section>
+<section id="id68">
+<h3>Device Updates<a class="headerlink" href="#id68" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="generated/pcdsdevices.lodcm.LODCM.html#pcdsdevices.lodcm.LODCM" title="pcdsdevices.lodcm.LODCM"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LODCM</span></code></a> object has been updated to contain the Energy motors as well as the other motors and offsets.</p></li>
+<li><p>Update various signal kinds on PTMPLC from omitted to normal or config as
+appropriate.</p></li>
+<li><p>ThorlabsWfs40: Added wavefront PV and viewer, added some docs</p></li>
+</ul>
+</section>
+<section id="id69">
+<h3>New Devices<a class="headerlink" href="#id69" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="generated/pcdsdevices.epics_motor.OffsetMotor.html#pcdsdevices.epics_motor.OffsetMotor" title="pcdsdevices.epics_motor.OffsetMotor"><code class="xref any py py-class docutils literal notranslate"><span class="pre">OffsetMotor</span></code></a> - PseudoPositioner with an offset</p></li>
+<li><p>Add GHCPLC (Hot Cathode) class as a counterpart to the GCCPLC (Cold Cathode)
+class.</p></li>
+</ul>
+</section>
+<section id="id70">
+<h3>Bugfixes<a class="headerlink" href="#id70" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix issue where the Kappa had an incorrect e_phi calculation
+in certain situations.</p></li>
+<li><p>Fix issue where the Kappa used the calculated motors for the
+safety check instead of the real motors.</p></li>
+<li><p>Fix issue where legacy attenuator classes would break bluesky scans.</p></li>
+<li><p>Fix Kappa behavior for kappa angles above 180 degrees.</p></li>
+</ul>
+</section>
+<section id="id71">
+<h3>Contributors<a class="headerlink" href="#id71" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>cristinasewell</p></li>
+<li><p>klauer</p></li>
+<li><p>slacAdpai</p></li>
+<li><p>slactjohnson</p></li>
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v4-1-0-2021-02-10">
+<h2>v4.1.0 (2021-02-10)<a class="headerlink" href="#v4-1-0-2021-02-10" title="Permalink to this headline"></a></h2>
+<section id="id72">
+<h3>API Changes<a class="headerlink" href="#id72" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Update twincat motors to use the correct homing PV.
+This is an alternative PV to the normal motor record PVs for IOC/PLC
+management reasons.
+It is possible that this will break devices that have not updated to the
+latest motion PLC library.</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">format</span></code> and <code class="docutils literal notranslate"><span class="pre">scale</span></code> arguments to
+<a class="reference internal" href="generated/pcdsdevices.utils.get_status_float.html#pcdsdevices.utils.get_status_float" title="pcdsdevices.utils.get_status_float"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_status_float()</span></code></a>, which affect floating point
+formatting of values available in the <code class="docutils literal notranslate"><span class="pre">status_info</span></code> dictionary.</p></li>
+<li><p>CVMI Motion System Prefix: ‘TMO:CVMI’</p></li>
+<li><p>KTOF Motion System Prefix: ‘TMO:KTOF’</p></li>
+</ul>
+</section>
+<section id="id73">
+<h3>Features<a class="headerlink" href="#id73" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Added <a class="reference internal" href="generated/pcdsdevices.utils.format_status_table.html#pcdsdevices.utils.format_status_table" title="pcdsdevices.utils.format_status_table"><code class="xref py py-func docutils literal notranslate"><span class="pre">format_status_table()</span></code></a> for ease of generating
+status tables from <code class="docutils literal notranslate"><span class="pre">status_info</span></code> dictionaries.</p></li>
+<li><p>Added <a class="reference internal" href="generated/pcdsdevices.utils.combine_status_info.html#pcdsdevices.utils.combine_status_info" title="pcdsdevices.utils.combine_status_info"><code class="xref py py-func docutils literal notranslate"><span class="pre">combine_status_info()</span></code></a> to simplify joining
+status information of child components.</p></li>
+</ul>
+</section>
+<section id="id74">
+<h3>Device Updates<a class="headerlink" href="#id74" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>VCN upper limit can be changed from epics.</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">active</span></code> component to
+<a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculatorFilter.html#pcdsdevices.attenuator.AttenuatorCalculatorFilter" title="pcdsdevices.attenuator.AttenuatorCalculatorFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttenuatorCalculatorFilter</span></code></a>, indicating
+whether or not the filter should be used in calculations.</p></li>
+<li><p>Multiple devices have been modified to include explicit argument and keyword
+argument names in <code class="docutils literal notranslate"><span class="pre">__init__</span></code> for clarity and introspectability.</p></li>
+</ul>
+</section>
+<section id="id75">
+<h3>New Devices<a class="headerlink" href="#id75" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>XYGridStage - maps targets from grids to x,y positions, and supports multiple samples on a stage.</p></li>
+<li><p>Added <a class="reference internal" href="generated/pcdsdevices.attenuator.AT1K4.html#pcdsdevices.attenuator.AT1K4" title="pcdsdevices.attenuator.AT1K4"><code class="xref py py-class docutils literal notranslate"><span class="pre">AT1K4</span></code></a> and supporting SXR solid
+attenuator classes, including
+<a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade.html#pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade" title="pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttenuatorCalculatorSXR_Blade</span></code></a>,
+<a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade.html#pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade" title="pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttenuatorCalculatorSXR_FourBlade</span></code></a>, and
+<a class="reference internal" href="generated/pcdsdevices.attenuator.AttenuatorSXR_Ladder.html#pcdsdevices.attenuator.AttenuatorSXR_Ladder" title="pcdsdevices.attenuator.AttenuatorSXR_Ladder"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttenuatorSXR_Ladder</span></code></a>.</p></li>
+<li><p>pcdsdevices.cvmi_motion.CVMI</p></li>
+<li><p>pcdsdevices.cvmi_motion.KTOF</p></li>
+</ul>
+</section>
+<section id="id76">
+<h3>Bugfixes<a class="headerlink" href="#id76" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>The transmission status value for the 3rd harmonic has been fixed, it was previously using the wrong value.</p></li>
+</ul>
+</section>
+<section id="id77">
+<h3>Maintenance<a class="headerlink" href="#id77" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>The test suite will now find all devices in pcdsdevices submodules at
+arbitrary import depth.</p></li>
+<li><p>Minor cleanup of the pcds-tag conda recipe</p></li>
+<li><p>Relocate happi name length restriction for lcls devices to this package
+as a requirement on LCLSItem</p></li>
+<li><p>Updated AT2L0 to use newer status formatting utilities.</p></li>
+<li><p>Added prettytable as an explicit dependency.  It was previously assumed to
+be installed with a sub-dependency.</p></li>
+<li><p>Added test suite to try to instantiate all device classes with
+<code class="docutils literal notranslate"><span class="pre">make_fake_device</span></code> and perform status print formatting checks on them.</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">include_plus_sign</span></code> option for <code class="docutils literal notranslate"><span class="pre">get_status_float</span></code>.</p></li>
+<li><p>Perform continuous integration tests with pip-based installs, with
+dependencies installed from PyPI.</p></li>
+</ul>
+</section>
+<section id="id78">
+<h3>Contributors<a class="headerlink" href="#id78" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>cristinasewell</p></li>
+<li><p>ghalym</p></li>
+<li><p>jsheppard95</p></li>
+<li><p>klauer</p></li>
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v4-0-0-2020-12-22">
+<h2>v4.0.0 (2020-12-22)<a class="headerlink" href="#v4-0-0-2020-12-22" title="Permalink to this headline"></a></h2>
+<section id="id79">
+<h3>API Changes<a class="headerlink" href="#id79" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>On our EPICS motor classes, remove the ability to use setattr for
+<a class="reference internal" href="generated/pcdsdevices.atm.ATMTarget.html#pcdsdevices.atm.ATMTarget.low_limit" title="pcdsdevices.atm.ATMTarget.low_limit"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">low_limit</span></code></a> and <a class="reference internal" href="generated/pcdsdevices.atm.ATMTarget.html#pcdsdevices.atm.ATMTarget.high_limit" title="pcdsdevices.atm.ATMTarget.high_limit"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">high_limit</span></code></a>.</p></li>
+<li><p>SmarActOpenLoop: Combined scan_move_cmd and scan_pos into single EpicsSignal,
+scan_move, with separate read and write PVs.</p></li>
+</ul>
+</section>
+<section id="id80">
+<h3>Features<a class="headerlink" href="#id80" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Added pseudo motors and related calculations to the <a class="reference internal" href="generated/pcdsdevices.gon.Kappa.html#pcdsdevices.gon.Kappa" title="pcdsdevices.gon.Kappa"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Kappa</span></code></a> object.</p></li>
+<li><p>Added two methods to <a class="reference internal" href="generated/pcdsdevices.epics_motor.EpicsMotorInterface.html#pcdsdevices.epics_motor.EpicsMotorInterface" title="pcdsdevices.epics_motor.EpicsMotorInterface"><code class="xref any py py-class docutils literal notranslate"><span class="pre">EpicsMotorInterface</span></code></a>: <a class="reference internal" href="generated/pcdsdevices.ccm.CCMPico.html#pcdsdevices.ccm.CCMPico.set_high_limit" title="pcdsdevices.ccm.CCMPico.set_high_limit"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">set_high_limit()</span></code></a> and <a class="reference internal" href="generated/pcdsdevices.ccm.CCMPico.html#pcdsdevices.ccm.CCMPico.set_low_limit" title="pcdsdevices.ccm.CCMPico.set_low_limit"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">set_low_limit()</span></code></a>, as well as <a class="reference internal" href="generated/pcdsdevices.ccm.CCMPico.html#pcdsdevices.ccm.CCMPico.get_low_limit" title="pcdsdevices.ccm.CCMPico.get_low_limit"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">get_low_limit()</span></code></a> and <a class="reference internal" href="generated/pcdsdevices.ccm.CCMPico.html#pcdsdevices.ccm.CCMPico.get_high_limit" title="pcdsdevices.ccm.CCMPico.get_high_limit"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">get_high_limit()</span></code></a>.</p></li>
+<li><p>Added a little method to clear limits: <a class="reference internal" href="generated/pcdsdevices.ccm.CCMPico.html#pcdsdevices.ccm.CCMPico.clear_limits" title="pcdsdevices.ccm.CCMPico.clear_limits"><code class="xref any py py-meth docutils literal notranslate"><span class="pre">clear_limits</span></code></a> - by EPICS convention, this sets both limits to 0.</p></li>
+<li><p>Added 3rd harmonic frequncy transmission info to the status print for the Attenuator.</p></li>
+<li><p>Added custom status print for <a class="reference internal" href="generated/pcdsdevices.mirror.XOffsetMirror.html#pcdsdevices.mirror.XOffsetMirror" title="pcdsdevices.mirror.XOffsetMirror"><code class="xref any py py-class docutils literal notranslate"><span class="pre">XOffsetMirror</span></code></a>, <a class="reference internal" href="generated/pcdsdevices.mirror.OffsetMirror.html#pcdsdevices.mirror.OffsetMirror" title="pcdsdevices.mirror.OffsetMirror"><code class="xref any py py-class docutils literal notranslate"><span class="pre">OffsetMirror</span></code></a>, <a class="reference internal" href="generated/pcdsdevices.mirror.KBOMirror.html#pcdsdevices.mirror.KBOMirror" title="pcdsdevices.mirror.KBOMirror"><code class="xref any py py-class docutils literal notranslate"><span class="pre">KBOMirror</span></code></a>, and <a class="reference internal" href="generated/pcdsdevices.mirror.FFMirror.html#pcdsdevices.mirror.FFMirror" title="pcdsdevices.mirror.FFMirror"><code class="xref any py py-class docutils literal notranslate"><span class="pre">FFMirror</span></code></a>.</p></li>
+<li><p>Add custom status print for <code class="xref any docutils literal notranslate"><span class="pre">gon</span></code> classes: <a class="reference internal" href="generated/pcdsdevices.gon.BaseGon.html#pcdsdevices.gon.BaseGon" title="pcdsdevices.gon.BaseGon"><code class="xref any py py-class docutils literal notranslate"><span class="pre">BaseGon</span></code></a>, and <a class="reference internal" href="generated/pcdsdevices.gon.XYZStage.html#pcdsdevices.gon.XYZStage" title="pcdsdevices.gon.XYZStage"><code class="xref any py py-class docutils literal notranslate"><span class="pre">XYZStage</span></code></a> class.</p></li>
+<li><p>Add notepad signals to <a class="reference internal" href="generated/pcdsdevices.lxe.LaserTiming.html#pcdsdevices.lxe.LaserTiming" title="pcdsdevices.lxe.LaserTiming"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LaserTiming</span></code></a> and <a class="reference internal" href="generated/pcdsdevices.pseudopos.DelayBase.html#pcdsdevices.pseudopos.DelayBase" title="pcdsdevices.pseudopos.DelayBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">DelayBase</span></code></a> classes</p></li>
+</ul>
+</section>
+<section id="id81">
+<h3>Device Updates<a class="headerlink" href="#id81" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Instead of creating separated devices for Fundamental Frequency and 3rd Harmonic Frequency, we are now creating Attenuators that have both frequencies.</p></li>
+<li><p>EpicsMotorInterface: Add metadata to various upstream Ophyd methods to clean
+up screens generated via Typhos.</p></li>
+<li><p>Allow negative positions in <a class="reference internal" href="generated/pcdsdevices.lxe.LaserTiming.html#pcdsdevices.lxe.LaserTiming" title="pcdsdevices.lxe.LaserTiming"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LaserTiming</span></code></a> and <a class="reference internal" href="generated/pcdsdevices.lxe.LaserTimingCompensation.html#pcdsdevices.lxe.LaserTimingCompensation" title="pcdsdevices.lxe.LaserTimingCompensation"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LaserTimingCompensation</span></code></a>
+devices</p></li>
+<li><p>Add LED power to the Mono device.</p></li>
+<li><p>led metadata scalar range</p></li>
+</ul>
+</section>
+<section id="id82">
+<h3>New Devices<a class="headerlink" href="#id82" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Added <a class="reference internal" href="generated/pcdsdevices.slits.ExitSlits.html#pcdsdevices.slits.ExitSlits" title="pcdsdevices.slits.ExitSlits"><code class="xref any py py-class docutils literal notranslate"><span class="pre">ExitSlits</span></code></a> device.</p></li>
+</ul>
+</section>
+<section id="id83">
+<h3>Bugfixes<a class="headerlink" href="#id83" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>sequencer.EventSequencer.EventSequence: Add an explicit put to SEQ.PROC to
+force the event sequencer to update with the new sequence.</p></li>
+<li><p>Fix position handling in <code class="xref any docutils literal notranslate"><span class="pre">ReversedTimeToolDelay</span></code></p></li>
+<li><p>AvgSignal will no longer spam exceptions text to the terminal when the signal
+it is averaging is disconnected. This will primarily be noticed in the
+BeamStats class, loaded in every hutch-python session.</p></li>
+</ul>
+</section>
+<section id="id84">
+<h3>Contributors<a class="headerlink" href="#id84" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>ZryletTC</p></li>
+<li><p>cristinasewell</p></li>
+<li><p>ghalym</p></li>
+<li><p>tjohnson</p></li>
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v3-3-0-2020-11-17">
+<h2>v3.3.0 (2020-11-17)<a class="headerlink" href="#v3-3-0-2020-11-17" title="Permalink to this headline"></a></h2>
+<section id="id85">
+<h3>API Changes<a class="headerlink" href="#id85" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>The belens classes use <code class="docutils literal notranslate"><span class="pre">pcdscalc</span></code> to handle their calculations,
+changing the lens file specifications as follows:</p>
+<ul>
+<li><p>Changed the <code class="docutils literal notranslate"><span class="pre">read_lens</span></code> to open a normal file instead of a <code class="docutils literal notranslate"><span class="pre">.yaml</span></code>
+file, and to be able to read one lens set at the time from a file
+with multiple lens sets.</p></li>
+<li><p>Changed the <code class="docutils literal notranslate"><span class="pre">create_lens</span></code> methods to use a normal file instead of
+<code class="docutils literal notranslate"><span class="pre">.yaml</span></code> file, and also to be able to create a set with multiple sets of lens.</p></li>
+</ul>
+</li>
+<li><p>This is not expected to be breaking, as this feature
+is underused in the deployed environments.</p></li>
+</ul>
+</section>
+<section id="id86">
+<h3>Features<a class="headerlink" href="#id86" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Added a <code class="docutils literal notranslate"><span class="pre">LensStack.set_lens_set</span></code> method to allow the user
+to choose what set from the file to use for calculations.</p></li>
+<li><p>Added a factory function <code class="docutils literal notranslate"><span class="pre">acromag_ch_factory_func</span></code> to
+support the creation of happi entries from the questionnaire
+for a single acromag channel.</p>
+<ul>
+<li><p>Added an alias for this function <code class="docutils literal notranslate"><span class="pre">AcromagChannel</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Added a custom status print for motors by overriding the status info handler.</p></li>
+<li><p>Added a new component for <code class="docutils literal notranslate"><span class="pre">EpicsMotorInterface.dial_position</span></code></p></li>
+<li><p>Added a new method <code class="docutils literal notranslate"><span class="pre">EpicsMotorInterface.check_limit_switches</span></code> to return a
+string visualization of the limit switch state.</p></li>
+<li><p>Added a custom status print for slits by overriding the status info handler.</p></li>
+<li><p>Added a helper function in <code class="docutils literal notranslate"><span class="pre">utils.get_status_value</span></code> to support getting
+a value from a dictionary.</p></li>
+<li><p>Added a custom status print for PIM by overriding the status info handler.</p></li>
+<li><p>Added a custom status print for IPM by overriding the status info handler.</p></li>
+</ul>
+</section>
+<section id="id87">
+<h3>Device Updates<a class="headerlink" href="#id87" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">SmarActOpenLoop</span></code>: open loop steps signal changed to RO.
+Added some docs.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PCDSAreaDetectorTyphosBeamStats</span></code> Now sub-classes
+<code class="docutils literal notranslate"><span class="pre">PCDSAreaDetectorTyphosTrigger</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TuttiFrutti</span></code>: Change camera class to <code class="docutils literal notranslate"><span class="pre">LasBasler</span></code></p></li>
+</ul>
+</section>
+<section id="id88">
+<h3>New Devices<a class="headerlink" href="#id88" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BaslerBase</span></code>: Base class for inheriting some Basler-specific PVs.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Basler</span></code>: Class for “typical” Basler deployed in a hutch.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LasBasler</span></code>: Class for more laser-specific Basler cameras.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MPODChannelHV</span></code>, and <code class="docutils literal notranslate"><span class="pre">MPODChannelLV</span></code> for MPOD high voltage and
+low voltage channels, respectively.</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">AcromagChannel</span></code> that supports the creation of an Acromag Channel signal</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">mirror.XOffsetMirrorBend</span></code> class for offset mirrors with benders.</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">mirror.XOffsetMirrorSwitch</span></code>.
+This is nearly identical to mirror.XOffsetMirror but with no Bender and
+vertical axes YLEFT/YRIGHT instead of YUP/YDWN.</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">spectrometer.Mono</span></code>,
+this includes all motion axes and Pytmc signals for SP1K1-MONO system</p></li>
+</ul>
+</section>
+<section id="id89">
+<h3>Bugfixes<a class="headerlink" href="#id89" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">lasers/elliptec.py</span></code>: Fix conflict with BlueSky interface and ‘stop’
+signal.</p></li>
+<li><p>For event scheduling, ensure that we only try to put into the queue
+if event_thread is not None. This resolves some of the startup terminal spam
+in lucid.</p></li>
+<li><p>PTMPLC ilk pv was incorrect, changed from ILK_STATUS_RBV to ILK_OK_RBV</p></li>
+<li><p>Create a default status info message for devices that have
+errors in constructing their status.</p></li>
+</ul>
+</section>
+<section id="id90">
+<h3>Maintenance<a class="headerlink" href="#id90" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Added more documentation to methods and <code class="docutils literal notranslate"><span class="pre">LensStack</span></code> class.</p></li>
+<li><p>Refactored be lens classes to use <code class="docutils literal notranslate"><span class="pre">pcdscalc.be_lens_calcs</span></code></p></li>
+<li><p>Add laser imports to <code class="xref py py-mod docutils literal notranslate"><span class="pre">pcdsdevices.device_types</span></code>.  Test fixtures now
+verify imported laser devices’ tab completion settings.</p></li>
+</ul>
+</section>
+<section id="id91">
+<h3>Contributors<a class="headerlink" href="#id91" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>cristinasewell</p></li>
+<li><p>ghalym</p></li>
+<li><p>hhslepicka</p></li>
+<li><p>jsheppard95</p></li>
+<li><p>klauer</p></li>
+<li><p>sfsyunus</p></li>
+<li><p>tjohnson</p></li>
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v3-2-0-2020-10-23">
+<h2>v3.2.0 (2020-10-23)<a class="headerlink" href="#v3-2-0-2020-10-23" title="Permalink to this headline"></a></h2>
+<section id="id92">
+<h3>Device Updates<a class="headerlink" href="#id92" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>PCDSAreaDetectorTyphos: Added a camera viewer button to the class to open a
+python camera viewer for the camera. Removed the old ‘cam_image’ viewer in
+favor of this new viewer.</p></li>
+<li><p>El3174AiCh: Added ESLO, EOFF fields, removed EGUH, EGUL</p></li>
+</ul>
+</section>
+<section id="id93">
+<h3>New Devices<a class="headerlink" href="#id93" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>SmarActTipTilt: Class for bundling two SmarActOpenLoop axis classes together
+into a single device for Typhos screen generation and interactive use.</p></li>
+<li><p>Added VGC_2S, a new valve class that extends the VGC
+with the addition of a second setpoint and hysteresis.</p></li>
+</ul>
+</section>
+<section id="id94">
+<h3>Contributors<a class="headerlink" href="#id94" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>ghalym</p></li>
+<li><p>tjohnson</p></li>
+</ul>
+</section>
+</section>
+<section id="v3-1-0-2020-10-21">
+<h2>v3.1.0 (2020-10-21)<a class="headerlink" href="#v3-1-0-2020-10-21" title="Permalink to this headline"></a></h2>
+<section id="id95">
+<h3>API Changes<a class="headerlink" href="#id95" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>The <code class="xref any docutils literal notranslate"><span class="pre">SxrGmD</span></code> device has been removed from <code class="xref any docutils literal notranslate"><span class="pre">beam_stats</span></code> module. SXR has been
+disassembled and the GMD was moved into the EBD. Its MJ PVs was not working
+anymore.</p></li>
+</ul>
+</section>
+<section id="id96">
+<h3>Device Updates<a class="headerlink" href="#id96" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Added RTD PVs to KBOMirror class for bender actuators</p></li>
+<li><p>Added PTYPE PV to SmarAct class</p></li>
+<li><p>Added metadata to SmarAct jog pvs for better screens</p></li>
+<li><p>Added additional PVs to lasers/elliptec.py classes</p></li>
+<li><p>TuttiFruttiCls: Added an option to specify the controller channel for
+Thorlabs Elliptec sliders.</p></li>
+<li><p>Added the Thorlabs WFS class to the TuttiFrutti class.</p></li>
+</ul>
+</section>
+<section id="id97">
+<h3>New Devices<a class="headerlink" href="#id97" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add XYTargetGrid, an interactive utility class for managing a target grid
+oriented normal to the beam, with regular X-Y spacing between targets.</p></li>
+<li><p>PCDSAreaDetectorTyphosBeamStats, a variant of PCSDAreaDetectorTyphos that
+includes centroid information and the crosshair PVs.</p></li>
+<li><p>KBOMirror Class: Kirkpatrick-Baez Mirror class, X, Y, Pitch, Bender axes</p></li>
+<li><p>FFMirror Class: Kirkpatrick-Baez Mirror without Bender axes. (Fixed focus)</p></li>
+<li><p>LAMP motion Class for the LAMP endstation TMO. This includes the following motion axes:</p>
+<ul>
+<li><p>Gas Jet X/Y/Z Axes</p></li>
+<li><p>Gas Needle X/Y/Z Axes</p></li>
+<li><p>Sample Paddle X/Y/Z Axes</p></li>
+</ul>
+</li>
+<li><p>A new LCLS class has been added to the <code class="xref any docutils literal notranslate"><span class="pre">beam_stats</span></code> module that contains PVs
+related to the Lcls Linac Status, as well as a few functions to support with
+checking the BYKIK status, turning it On and Off, and setting the period.</p></li>
+<li><p>SmarActOpenLoopPositioner: Class intended for performing Bluesky scans using
+open-loop SmarAct motors.</p></li>
+</ul>
+</section>
+<section id="id98">
+<h3>Bugfixes<a class="headerlink" href="#id98" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Corrected X/Y error in KBOMirror and FFMirror classes</p></li>
+<li><p>Fix issues with L2SI Reflaser Picos being unable to successfully move.
+This was because they were using the wrong motor class, which had extra
+PVs that would never connect.</p></li>
+<li><p>Fixed a bug preventing instantiation of the Elliptec sliders in the
+TuttiFrutti device.</p></li>
+</ul>
+</section>
+<section id="id99">
+<h3>Maintenance<a class="headerlink" href="#id99" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add prefix and lightpath tests for KBOMirror.</p></li>
+</ul>
+</section>
+<section id="id100">
+<h3>Contributors<a class="headerlink" href="#id100" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>cristinasewell</p></li>
+<li><p>jsheppard95</p></li>
+<li><p>sfsyunus</p></li>
+<li><p>tjohnson</p></li>
+<li><p>zllentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v3-0-0-2020-10-07">
+<h2>v3.0.0 (2020-10-07)<a class="headerlink" href="#v3-0-0-2020-10-07" title="Permalink to this headline"></a></h2>
+<section id="id101">
+<h3>API Changes<a class="headerlink" href="#id101" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>The calculations for <a class="reference internal" href="generated/pcdsdevices.ccm.alio_to_theta.html#pcdsdevices.ccm.alio_to_theta" title="pcdsdevices.ccm.alio_to_theta"><code class="xref any py py-func docutils literal notranslate"><span class="pre">alio_to_theta</span></code></a> and <a class="reference internal" href="generated/pcdsdevices.ccm.theta_to_alio.html#pcdsdevices.ccm.theta_to_alio" title="pcdsdevices.ccm.theta_to_alio"><code class="xref any py py-func docutils literal notranslate"><span class="pre">theta_to_alio</span></code></a> in <code class="xref any docutils literal notranslate"><span class="pre">ccm.py</span></code>
+have been reverted to the old calculations.</p></li>
+<li><p>User-facing move functions will not be able to catch the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">LimitError</span></code> exception.  These interactive methods are
+not meant to be used in scans, as that is the role of bluesky.</p></li>
+</ul>
+</section>
+<section id="id102">
+<h3>Features<a class="headerlink" href="#id102" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AT2L0.html#pcdsdevices.attenuator.AT2L0" title="pcdsdevices.attenuator.AT2L0"><code class="xref py py-class docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AT2L0</span></code></a> now has a textual representation of
+filter status, and supports the move interface by way of transmission values.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">SyncAxes</span></code> has been adjusted to support
+scalar-valued pseudopositioners, allowing for more complex devices to be kept
+in lock-step motion.</p></li>
+<li><p><a class="reference internal" href="generated/pcdsdevices.pseudopos.PseudoPositioner.html#pcdsdevices.pseudopos.PseudoPositioner" title="pcdsdevices.pseudopos.PseudoPositioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">PseudoPositioner</span></code></a> position tuples, when of
+length 1, now support casting to floating point, meaning they can be used
+in many functions which only support floating point values.</p></li>
+<li><p>Added signal annotations for auto-generated notepad IOC support.</p></li>
+</ul>
+</section>
+<section id="id103">
+<h3>Device Updates<a class="headerlink" href="#id103" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add event/trigger information to PPM, XPIM.</p></li>
+<li><p>Reclassify twincat motor and states error resets as “normal” for
+accessibility.</p></li>
+<li><p>Add PMPS maintenance/config PVs class for TwinCAT states devices,
+propagating this to all consumers.</p></li>
+</ul>
+</section>
+<section id="id104">
+<h3>New Devices<a class="headerlink" href="#id104" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Adds <a class="reference internal" href="generated/pcdsdevices.lxe.LaserTimingCompensation.html#pcdsdevices.lxe.LaserTimingCompensation" title="pcdsdevices.lxe.LaserTimingCompensation"><code class="xref py py-class docutils literal notranslate"><span class="pre">LaserTimingCompensation</span></code></a> (<code class="docutils literal notranslate"><span class="pre">lxt_ttc</span></code>) which
+synchronously moves <code class="xref py py-class docutils literal notranslate"><span class="pre">LaserTiming</span></code> (<code class="docutils literal notranslate"><span class="pre">lxt</span></code>) with
+<a class="reference internal" href="generated/pcdsdevices.lxe.TimeToolDelay.html#pcdsdevices.lxe.TimeToolDelay" title="pcdsdevices.lxe.TimeToolDelay"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeToolDelay</span></code></a> (<code class="docutils literal notranslate"><span class="pre">txt</span></code>) to compensate so that the
+true laser x-ray delay by using the <code class="docutils literal notranslate"><span class="pre">lxt</span></code>-value and the result of time tool
+data analysis, avoiding double-counting.</p></li>
+<li><p>Adds <a class="reference internal" href="generated/pcdsdevices.lxe.TimeToolDelay.html#pcdsdevices.lxe.TimeToolDelay" title="pcdsdevices.lxe.TimeToolDelay"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeToolDelay</span></code></a>, an alias for
+<code class="xref py py-class docutils literal notranslate"><span class="pre">DelayNewport</span></code> with additional contextual
+information and room for future development.</p></li>
+<li><p>Add LaserInCoupling device for TMO.</p></li>
+<li><p>Add ArrivalTimeMonitor device for TMO.</p></li>
+<li><p>Add ReflaserL2SI device for TMO.</p></li>
+</ul>
+</section>
+<section id="id105">
+<h3>Bugfixes<a class="headerlink" href="#id105" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fixed a typo in a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> exception in
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">pcdsdevices.state.StatePositioner.check_value()</span></code>.</p></li>
+<li><p>A read-only PV was erroneously marked as read-write in
+<a class="reference internal" href="generated/pcdsdevices.gauge.GaugeSerialGPI.html#pcdsdevices.gauge.GaugeSerialGPI" title="pcdsdevices.gauge.GaugeSerialGPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">pcdsdevices.gauge.GaugeSerialGPI</span></code></a>, component <code class="docutils literal notranslate"><span class="pre">autozero</span></code>.
+All other devices were audited, finding no other RBV-related read-only items.</p></li>
+<li><p>The direction of <code class="xref py py-class docutils literal notranslate"><span class="pre">LaserTiming</span></code> (<code class="docutils literal notranslate"><span class="pre">lxt</span></code>) was inverted and is now
+fixed.</p></li>
+<li><p>Allow setting of <code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsMotor</span></code> limits when unset in the motor
+record (i.e., <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0)</span></code>) when using
+<a class="reference internal" href="generated/pcdsdevices.epics_motor.EpicsMotorInterface.html#pcdsdevices.epics_motor.EpicsMotorInterface" title="pcdsdevices.epics_motor.EpicsMotorInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsMotorInterface</span></code></a>.</p></li>
+</ul>
+</section>
+<section id="id106">
+<h3>Maintenance<a class="headerlink" href="#id106" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Added a copy-pastable example to
+<code class="xref py py-class docutils literal notranslate"><span class="pre">UnrelatedComponent</span></code> to ease creation of new
+devices.</p></li>
+<li><p>Catch <code class="xref py py-class docutils literal notranslate"><span class="pre">LimitError</span></code> in all
+<a class="reference internal" href="generated/pcdsdevices.interface.MvInterface.html#pcdsdevices.interface.MvInterface" title="pcdsdevices.interface.MvInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">pcdsdevices.interface.MvInterface</span></code></a> moves, reporting a simple error by
+way of the interface module-level logger.</p></li>
+</ul>
+</section>
+<section id="id107">
+<h3>Contributors<a class="headerlink" href="#id107" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>cristinasewell</p></li>
+<li><p>klauer</p></li>
+<li><p>zlentz</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-11-0-2020-09-21">
+<h2>v2.11.0 (2020-09-21)<a class="headerlink" href="#v2-11-0-2020-09-21" title="Permalink to this headline"></a></h2>
+<section id="id108">
+<h3>API Changes<a class="headerlink" href="#id108" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseInterface</span></code> no longer inherits from <code class="xref py py-class docutils literal notranslate"><span class="pre">ophyd.OphydObject</span></code>.</p></li>
+<li><p>The order of multiple inheritance for many devices using the LCLS-enhanced
+<code class="xref py py-class docutils literal notranslate"><span class="pre">BaseInterface</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MvInterface</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">FltMvInterface</span></code> has
+been changed.</p></li>
+<li><p>Added <a class="reference internal" href="generated/pcdsdevices.interface.TabCompletionHelperClass.html#pcdsdevices.interface.TabCompletionHelperClass" title="pcdsdevices.interface.TabCompletionHelperClass"><code class="xref py py-class docutils literal notranslate"><span class="pre">pcdsdevices.interface.TabCompletionHelperClass</span></code></a> to help hold
+tab completion information state and also allow for tab-completion
+customization on a per-instance level.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Presets</span></code> <code class="docutils literal notranslate"><span class="pre">add_hutch</span></code> (and all similar
+<code class="docutils literal notranslate"><span class="pre">add_*</span></code>) methods no longer require a position.  When unspecified, the
+current position is used.</p></li>
+</ul>
+</section>
+<section id="id109">
+<h3>Features<a class="headerlink" href="#id109" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>For <a class="reference internal" href="generated/pcdsdevices.pseudopos.DelayBase.html#pcdsdevices.pseudopos.DelayBase" title="pcdsdevices.pseudopos.DelayBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">pcdsdevices.pseudopos.DelayBase</span></code></a>, added
+<a class="reference internal" href="generated/pcdsdevices.pseudopos.DelayBase.html#pcdsdevices.pseudopos.DelayBase.set_current_position" title="pcdsdevices.pseudopos.DelayBase.set_current_position"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_current_position()</span></code></a> and its related
+component <a class="reference internal" href="generated/pcdsdevices.lxe._ScaledUnitConversionDerivedSignal.html#pcdsdevices.lxe._ScaledUnitConversionDerivedSignal.user_offset" title="pcdsdevices.lxe._ScaledUnitConversionDerivedSignal.user_offset"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">user_offset</span></code></a>, allowing for custom offsets.</p></li>
+<li><p>Epics motors can now have local limits updated per-session, rather than
+only having the option of the EPICS limits. Setting limits attributes will
+update the python limits, putting to the limits PVs will update the limits
+PVs.</p></li>
+<li><p>Add PVPositionerDone, a setpoint-only PVPositioner class that is done moving
+immediately. This is not much more useful than just using a PV, but it is
+compatibile with pseudopositioners and has a built-in filter for ignoring
+small moves.</p></li>
+<li><p>Moves using mv and umv will log their moves at info level for interactive
+use to keep track of the sessions.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">user_offset</span></code> to <a class="reference internal" href="generated/pcdsdevices.signal.UnitConversionDerivedSignal.html#pcdsdevices.signal.UnitConversionDerivedSignal" title="pcdsdevices.signal.UnitConversionDerivedSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnitConversionDerivedSignal</span></code></a>,
+allowing for an arbitrary user offset in user-facing units.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">user_offset</span></code> signal to the <a class="reference internal" href="generated/pcdsdevices.lxe.LaserTiming.html#pcdsdevices.lxe.LaserTiming" title="pcdsdevices.lxe.LaserTiming"><code class="xref py py-class docutils literal notranslate"><span class="pre">pcdsdevices.lxe.LaserTiming</span></code></a>, by
+way of <a class="reference internal" href="generated/pcdsdevices.signal.UnitConversionDerivedSignal.html#pcdsdevices.signal.UnitConversionDerivedSignal" title="pcdsdevices.signal.UnitConversionDerivedSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnitConversionDerivedSignal</span></code></a>, offset
+support.</p></li>
+</ul>
+</section>
+<section id="id110">
+<h3>Device Updates<a class="headerlink" href="#id110" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>CCM energy limited to the range of 4 to 25 keV</p></li>
+<li><p>CCM theta2fine done moving tolerance raised to 0.01</p></li>
+<li><p>Beam request default move start tolerance dropped to 5eV</p></li>
+</ul>
+</section>
+<section id="id111">
+<h3>New Devices<a class="headerlink" href="#id111" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add WaveFrontSensorTarget for the wavefront sensor targets (PF1K0, PF1L0).</p></li>
+<li><p>Add TwinCATTempSensor for the updated twincat FB with corrected PV pragmas.</p></li>
+</ul>
+</section>
+<section id="id112">
+<h3>Bugfixes<a class="headerlink" href="#id112" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Adds hints to the <a class="reference internal" href="generated/pcdsdevices.lxe.LaserTiming.html#pcdsdevices.lxe.LaserTiming" title="pcdsdevices.lxe.LaserTiming"><code class="xref py py-class docutils literal notranslate"><span class="pre">pcdsdevices.lxe.LaserTiming</span></code></a> class for
+<code class="docutils literal notranslate"><span class="pre">LiveTable</span></code> support.</p></li>
+<li><p>umv will now properly display position and completion status after a move.</p></li>
+<li><p>Tab completion for many devices has been fixed. Regression tests have been
+added.</p></li>
+<li><p>Fix bug in PulsePickerInOut where it would grab only the first section of
+of the PV instead of the first two</p></li>
+<li><p>Tweak will feel less “janky” now and give useful feedback.</p></li>
+<li><p>Tweak now accepts + and - as valid inputs for changing the step size.</p></li>
+<li><p>Tweak properly clears lines between prints.</p></li>
+<li><p>Fix issue where putting to the limits property would update live PVs,
+contrary to the behavior of all other limits attributes in ophyd.</p></li>
+<li><p>Fix issue where doing a getattr on the limits properties would fetch
+live PVs, which can cause slowdowns and instabilities.</p></li>
+<li><p>Preset methods are now visible when not in engineering mode. (#576)</p></li>
+<li><p>Rework BeamEnergyPositioner to be setpoint-only to work properly
+with the behavior of the energy PVs.</p></li>
+<li><p>FltMvPositioner.wm will now return numeric values if the position
+value is a tuple. This value is the first element of the tuple, which
+for pseudo positioners is a value that can be passed into move and have
+it do the right thing. This resolves consistency issues and fixes bugs
+where mvr and umvr would fail.</p></li>
+<li><p>Fixed a race condition in the EventSequencer device’s status objects. Waiting
+on these statuses will now be more reliable.</p></li>
+<li><p>Fix issue where converting units could incur time penalties of up to
+7 seconds. This should take around 10ms now.</p></li>
+<li><p>Fix bug on beam request where you could not override the tolerance
+via init kwarg, despite docstring’s indication.</p></li>
+</ul>
+</section>
+<section id="id113">
+<h3>Maintenance<a class="headerlink" href="#id113" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Establish DOC conventions for accumulating release notes from every
+pull request.</p></li>
+<li><p>Tweak refactored for maintainability.</p></li>
+<li><p>Use more of the built-in ophyd mechanisms for limits rather than
+relying on local overrides.</p></li>
+</ul>
+</section>
+<section id="id114">
+<h3>Contributors<a class="headerlink" href="#id114" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>klauer</p></li>
+<li><p>zllentz</p></li>
+<li><p>zrylettc</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-10-0-2020-08-21">
+<h2>v2.10.0 (2020-08-21)<a class="headerlink" href="#v2-10-0-2020-08-21" title="Permalink to this headline"></a></h2>
+<section id="id115">
+<h3>Features<a class="headerlink" href="#id115" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add LookupTablePositioner PseudoPositioner base class for moves
+based on a calibration table.</p></li>
+<li><p>Add UnitConversionDerivedSignal as a Signal class for converting
+EPICS units to more desirable units for the user.</p></li>
+<li><p>Add units to the IPython prettyprint repr.</p></li>
+</ul>
+</section>
+<section id="id116">
+<h3>Device Updates<a class="headerlink" href="#id116" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add Vernier integration into the CCM class using BeamEnergyRequest.</p></li>
+</ul>
+</section>
+<section id="id117">
+<h3>New Devices<a class="headerlink" href="#id117" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add support for Thorlabs WFS40 USB Wavefront Sensor Camera.</p></li>
+<li><p>Add LaserEnergyPositioner PseudoPositioner (lxe) using
+LookupTablePositioner.</p></li>
+<li><p>Add LaserTiming PVPositioner (lxt) using UnitConversionDerivedSignal.</p></li>
+<li><p>Add BeamEnergyRequest PVPositioner for requesting beam energies in eV from
+ACR.</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-9-0-2020-08-18">
+<h2>v2.9.0 (2020-08-18)<a class="headerlink" href="#v2-9-0-2020-08-18" title="Permalink to this headline"></a></h2>
+<section id="id118">
+<h3>Features<a class="headerlink" href="#id118" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Devices will now show detailed status information when returned
+in the ipython terminal.</p></li>
+</ul>
+</section>
+<section id="id119">
+<h3>Device Updates<a class="headerlink" href="#id119" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Update docs on FSV fast shutter valve</p></li>
+<li><p>Update AT2L0 with state positioners and calculator</p></li>
+<li><p>Update Elliptec classes for cleaner implementation</p></li>
+<li><p>Add missing CCM motors and fix the energy motion (no vernier yet)</p></li>
+<li><p>Add HDF5 plugin to PCDSAreaDetectorEmbedded</p></li>
+</ul>
+</section>
+<section id="id120">
+<h3>New Devices<a class="headerlink" href="#id120" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add support for SmarAct motors</p></li>
+<li><p>Add attenuator calculator device for Ken’s new calculator</p></li>
+<li><p>Add support for TuttiFruitti diagnostic stack</p></li>
+</ul>
+</section>
+<section id="id121">
+<h3>Bugfixes<a class="headerlink" href="#id121" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix typo in PV name of BeckhoffJet slits</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-8-0-2020-07-24">
+<h2>v2.8.0 (2020-07-24)<a class="headerlink" href="#v2-8-0-2020-07-24" title="Permalink to this headline"></a></h2>
+<section id="id122">
+<h3>Features<a class="headerlink" href="#id122" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Expand variety schema support and add dotted dictionary access.</p></li>
+</ul>
+</section>
+<section id="id123">
+<h3>Device Updates<a class="headerlink" href="#id123" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Update various vacuum char waveforms with <code class="docutils literal notranslate"><span class="pre">string=True</span></code> for proper
+handling in <code class="docutils literal notranslate"><span class="pre">typhos</span></code>.</p></li>
+<li><p>Add various missing vacuum PVs to various vacuum devices.</p></li>
+<li><p>Switch twincat state device error reset to <code class="docutils literal notranslate"><span class="pre">kind=config</span></code> so it shows up
+by default in <code class="docutils literal notranslate"><span class="pre">typhos</span></code>.</p></li>
+<li><p>Update LCLS-II imagers to use the new <code class="docutils literal notranslate"><span class="pre">AreaDetectorTyphos</span></code>.</p></li>
+<li><p>The following devices now have <code class="docutils literal notranslate"><span class="pre">lightpath</span></code> support:
+- <code class="docutils literal notranslate"><span class="pre">FeeAtt</span></code>
+- <code class="docutils literal notranslate"><span class="pre">FEESolidAttenuator</span></code>
+- <code class="docutils literal notranslate"><span class="pre">XOffsetMirror</span></code>
+- <code class="docutils literal notranslate"><span class="pre">PPM</span></code>
+- <code class="docutils literal notranslate"><span class="pre">XPIM</span></code>
+- <code class="docutils literal notranslate"><span class="pre">PowerSlits</span></code>
+- <code class="docutils literal notranslate"><span class="pre">Kmono</span></code>
+- <code class="docutils literal notranslate"><span class="pre">VRC</span></code> and all subclasses, such as <code class="docutils literal notranslate"><span class="pre">VGC</span></code>
+- <code class="docutils literal notranslate"><span class="pre">VFS</span></code></p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">XOffsetMirror</span></code> <code class="docutils literal notranslate"><span class="pre">y_up</span></code>, <code class="docutils literal notranslate"><span class="pre">x_up</span></code>, and <code class="docutils literal notranslate"><span class="pre">pitch</span></code> to
+<code class="docutils literal notranslate"><span class="pre">kind=hinted</span></code> (previously <code class="docutils literal notranslate"><span class="pre">normal</span></code>). These axes are usually the
+most important.</p></li>
+<li><p>Rename <code class="docutils literal notranslate"><span class="pre">PPM.y_states</span></code> and <code class="docutils literal notranslate"><span class="pre">XPIM.y_states</span></code> to <code class="docutils literal notranslate"><span class="pre">target</span></code> for reduced
+redundancy in screens. The only name is aliased via a property.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PowerSlits</span></code> now have a feature set on par with the old slits.</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">VFS</span></code> <code class="docutils literal notranslate"><span class="pre">valve_position</span></code> and <code class="docutils literal notranslate"><span class="pre">vfs_state</span></code> to <code class="docutils literal notranslate"><span class="pre">kind=hinted</span></code>
+(previously <code class="docutils literal notranslate"><span class="pre">normal</span></code>) for more focused statuses.</p></li>
+</ul>
+</section>
+<section id="id124">
+<h3>New Devices<a class="headerlink" href="#id124" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add support for Qmini Spectrometer.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">AreaDetectorTyphos</span></code> class for optimized screen view of most used
+area detector signals.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">RTDSL0</span></code> and <code class="docutils literal notranslate"><span class="pre">RTDSK0</span></code> to support the rapid turnaround diagnostic
+station configurations.</p></li>
+</ul>
+</section>
+<section id="id125">
+<h3>Bugfixes<a class="headerlink" href="#id125" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix issue with failing callback in <code class="docutils literal notranslate"><span class="pre">IMS</span></code> from upstream <code class="docutils literal notranslate"><span class="pre">ophyd</span></code> change.</p></li>
+</ul>
+</section>
+<section id="id126">
+<h3>Maintenance<a class="headerlink" href="#id126" title="Permalink to this headline"></a></h3>
+<ul>
+<li><p>Switch from using <code class="docutils literal notranslate"><span class="pre">cf-units</span></code> to <code class="docutils literal notranslate"><span class="pre">pint</span></code> for portability.</p></li>
+<li><p>Add the following helpers:
+- <code class="docutils literal notranslate"><span class="pre">interface.LightpathMixin</span></code> to help establish <code class="docutils literal notranslate"><span class="pre">lightpath</span></code> support.
+- <code class="docutils literal notranslate"><span class="pre">signal.NotImplementedSignal</span></code> to help devices that will expand later.
+- <code class="docutils literal notranslate"><span class="pre">signal.InternalSignal</span></code> to help implement read-only signals that can</p>
+<blockquote>
+<div><p>be updated by the parent class.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">utils.schedule_task</span></code> to help interface with the <code class="docutils literal notranslate"><span class="pre">ophyd</span></code> callback
+queues.</p></li>
+</ul>
+</li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">slits</span></code> module has been refactored to accomodate both old and new
+slits.</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-7-0-2020-07-01">
+<h2>v2.7.0 (2020-07-01)<a class="headerlink" href="#v2-7-0-2020-07-01" title="Permalink to this headline"></a></h2>
+<section id="id127">
+<h3>Features<a class="headerlink" href="#id127" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add component variety metadata and schema validation.</p></li>
+</ul>
+</section>
+<section id="id128">
+<h3>Device Updates<a class="headerlink" href="#id128" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add many components to <code class="docutils literal notranslate"><span class="pre">PIPPLC</span></code> class, adjust component
+<code class="docutils literal notranslate"><span class="pre">kinds</span></code> to be more appropriate, and fix errant PV names.</p></li>
+<li><p>Update component names on <code class="docutils literal notranslate"><span class="pre">VVC</span></code> for clarity, and pvnames for accuracy.</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">XPIM</span></code> class to reflect additional IOC features.</p></li>
+<li><p>Update docs and metadata on all LCLS 2 imager classes.</p></li>
+<li><p>Update spammy TwinCAT state config parameters to omitted.</p></li>
+<li><p>Add interlock device information to <code class="docutils literal notranslate"><span class="pre">VGC</span></code>.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">SPMG</span></code> field to <code class="docutils literal notranslate"><span class="pre">BeckhoffAxis</span></code>.</p></li>
+</ul>
+</section>
+<section id="id129">
+<h3>New Devices<a class="headerlink" href="#id129" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">SxrTestAbsorber</span></code> class.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">ZoomTelescope</span></code> to support MODS zoom telescope.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">El3174AiCh</span></code> to support EK9000 module.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">EnvironmentalMonitor</span></code> to support MODS environmental monitors.</p></li>
+<li><p>Add support for ThorLabs Elliptec motors for MODS.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">Ebara_EV_A03_1</span></code> class for specific roughing pump support.</p></li>
+<li><p>Migrate SDS jet tracking classes into this repo.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">VFS</span></code> class to support fast shutters.</p></li>
+</ul>
+</section>
+<section id="id130">
+<h3>Maintenance<a class="headerlink" href="#id130" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Remove monkeypatch of <code class="docutils literal notranslate"><span class="pre">EventSequence</span></code> in tests, as it was no longer needed.</p></li>
+<li><p>Update dependency from <code class="docutils literal notranslate"><span class="pre">cf_units</span></code> to its renamed <code class="docutils literal notranslate"><span class="pre">cf-units</span></code>.</p></li>
+<li><p>xfail test that fails with <code class="docutils literal notranslate"><span class="pre">bluesky=1.6.2</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="v2-6-0-2020-05-21">
+<h2>v2.6.0 (2020-05-21)<a class="headerlink" href="#v2-6-0-2020-05-21" title="Permalink to this headline"></a></h2>
+<section id="id131">
+<h3>Features<a class="headerlink" href="#id131" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">happi</span></code> entry points have been moved to this library for proper
+modularization.</p></li>
+<li><p>Area detectors embedded inside of larger devices have been made
+considerably smaller to improve performance in other applications,
+for example in <code class="docutils literal notranslate"><span class="pre">typhos</span></code>.</p></li>
+</ul>
+</section>
+<section id="id132">
+<h3>Bugfixes<a class="headerlink" href="#id132" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Provide <code class="docutils literal notranslate"><span class="pre">FakePytmcSignal</span></code> for testing in external libraries. This
+fixes issues with fake devices not working if they contain <code class="docutils literal notranslate"><span class="pre">PytmcSignal</span></code>
+instances outside of the <code class="docutils literal notranslate"><span class="pre">pcdsdevices</span></code> testing suite.</p></li>
+<li><p>Fix various issues related to moving to <code class="docutils literal notranslate"><span class="pre">ophyd</span></code> <code class="docutils literal notranslate"><span class="pre">v1.5.0</span></code>.</p></li>
+<li><p>This library is now importable on win32.</p></li>
+</ul>
+</section>
+<section id="docs">
+<h3>Docs<a class="headerlink" href="#docs" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Docstrings now conform to the new pcds standards.</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-5-0-2020-04-15">
+<h2>v2.5.0 (2020-04-15)<a class="headerlink" href="#v2-5-0-2020-04-15" title="Permalink to this headline"></a></h2>
+<section id="id133">
+<h3>Features<a class="headerlink" href="#id133" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add classes for Goniometers, Von Hamos spectrometers, Beckhoff liquid jets, TimeTools, and PFLSs</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">UnrelatedComponent</span></code> as a helper for writing devices with many prefixes</p></li>
+</ul>
+</section>
+<section id="id134">
+<h3>Bugfixes<a class="headerlink" href="#id134" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix TwinCAT states enum states</p></li>
+<li><p>Add missing packages to requirements file</p></li>
+<li><p>Compatibility with newest <code class="docutils literal notranslate"><span class="pre">ophyd</span></code></p></li>
+</ul>
+</section>
+<section id="misc">
+<h3>Misc<a class="headerlink" href="#misc" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add pre-commit hooks to help with development flow</p></li>
+<li><p>Add license file to manifest</p></li>
+<li><p>Eliminate <code class="docutils literal notranslate"><span class="pre">m2r</span></code> docs dependency</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-4-0-2020-03-12">
+<h2>v2.4.0 (2020-03-12)<a class="headerlink" href="#v2-4-0-2020-03-12" title="Permalink to this headline"></a></h2>
+<section id="id135">
+<h3>Features<a class="headerlink" href="#id135" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">PytmcSignal</span></code></p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">PPM</span></code>, <code class="docutils literal notranslate"><span class="pre">XPIM</span></code>, <code class="docutils literal notranslate"><span class="pre">XOffsetMirror</span></code>, and <code class="docutils literal notranslate"><span class="pre">Kmono</span></code> classes</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">IPM</span></code> and <code class="docutils literal notranslate"><span class="pre">PIM</span></code> modules to better match physical devices</p></li>
+<li><p>Add various helper classes for TwinCAT devices</p></li>
+<li><p>Stubs created for attenuators, <code class="docutils literal notranslate"><span class="pre">RTD</span></code>, and <code class="docutils literal notranslate"><span class="pre">PowerSlit</span></code></p></li>
+<li><p>Make <code class="docutils literal notranslate"><span class="pre">cmd_err_reset</span></code> in <code class="docutils literal notranslate"><span class="pre">BeckhoffAxisPLC</span></code> accessible in Typhos</p></li>
+</ul>
+</section>
+<section id="id136">
+<h3>API Changes<a class="headerlink" href="#id136" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Changed <code class="docutils literal notranslate"><span class="pre">set_point_relay</span></code> to <code class="docutils literal notranslate"><span class="pre">pump_on_status</span></code>, <code class="docutils literal notranslate"><span class="pre">at_vac_sp</span></code> to
+<code class="docutils literal notranslate"><span class="pre">at_vac_setpoint</span></code> and added <code class="docutils literal notranslate"><span class="pre">pump_state</span></code> to <code class="docutils literal notranslate"><span class="pre">PIPPLC</span></code></p></li>
+<li><p>Changed <code class="docutils literal notranslate"><span class="pre">at_vac_sp</span></code> to <code class="docutils literal notranslate"><span class="pre">at_vac_setpoint</span></code>, <code class="docutils literal notranslate"><span class="pre">at_vac_hysterisis</span></code>
+to <code class="docutils literal notranslate"><span class="pre">setpoint_hysterisis</span></code>, and added mps_state to <code class="docutils literal notranslate"><span class="pre">VGC</span></code></p></li>
+</ul>
+</section>
+<section id="id137">
+<h3>Bugfixes<a class="headerlink" href="#id137" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Make <code class="docutils literal notranslate"><span class="pre">protection_setpoint</span></code> writeable in <code class="docutils literal notranslate"><span class="pre">GCCPLC</span></code></p></li>
+<li><p>Make <code class="docutils literal notranslate"><span class="pre">state</span></code> writeable in <code class="docutils literal notranslate"><span class="pre">VCN</span></code></p></li>
+</ul>
+</section>
+<section id="id138">
+<h3>Misc<a class="headerlink" href="#id138" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Allow build docs failure to speed up overall CI</p></li>
+<li><p>Specify old working conda version as temporary solution for
+build failures</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-3-0-2020-02-05">
+<h2>v2.3.0 (2020-02-05)<a class="headerlink" href="#v2-3-0-2020-02-05" title="Permalink to this headline"></a></h2>
+<section id="id139">
+<h3>Features<a class="headerlink" href="#id139" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Make everything compatible with the upcoming <code class="docutils literal notranslate"><span class="pre">ophyd</span></code> <code class="docutils literal notranslate"><span class="pre">v1.4.0</span></code></p></li>
+<li><p>Add be lens calculations port from old python system</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-2-0-2020-01-22">
+<h2>v2.2.0 (2020-01-22)<a class="headerlink" href="#v2-2-0-2020-01-22" title="Permalink to this headline"></a></h2>
+<section id="id140">
+<h3>Features<a class="headerlink" href="#id140" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add a bunch vacuum-related classes for L2SI</p></li>
+</ul>
+</section>
+<section id="id141">
+<h3>Misc<a class="headerlink" href="#id141" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix an issue with the doctr deploy key</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-1-0-2020-01-10">
+<h2>v2.1.0 (2020-01-10)<a class="headerlink" href="#v2-1-0-2020-01-10" title="Permalink to this headline"></a></h2>
+<section id="id142">
+<h3>Features<a class="headerlink" href="#id142" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">screen</span></code> method to <code class="docutils literal notranslate"><span class="pre">PCDSMotorBase</span></code> to open the motor expert screen</p></li>
+<li><p>Add tab completion filtering via whitelists as the first feature of the
+<code class="docutils literal notranslate"><span class="pre">engineering_mode</span></code> switch. This was implemented because the tab
+completion on ophyd devices is extremely overwhelming.
+Use <code class="docutils literal notranslate"><span class="pre">set_engineering_mode(bool)</span></code> to turn <code class="docutils literal notranslate"><span class="pre">engineering_mode</span></code> on or off.
+The default is “on”, which means “everything is normal”.
+Turning <code class="docutils literal notranslate"><span class="pre">engineering_mode</span></code> off enables the whitelist filtering,
+and in the future may also have other effects on the user interface.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">dc_devices</span></code> module for components from the new DC power system.
+This currently contains the <code class="docutils literal notranslate"><span class="pre">ICT</span></code> and related classes.</p></li>
+</ul>
+</section>
+<section id="id143">
+<h3>Misc<a class="headerlink" href="#id143" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fixed a race condition in the tests</p></li>
+<li><p>Clean up the Travis CI configuration</p></li>
+<li><p>Pin pyepics to &gt;=3.4.1 due to a breaking change from python 3.7.6</p></li>
+</ul>
+</section>
+</section>
+<section id="v2-0-0-2019-06-28">
+<h2>v2.0.0 (2019-06-28)<a class="headerlink" href="#v2-0-0-2019-06-28" title="Permalink to this headline"></a></h2>
+<section id="id144">
+<h3>Features<a class="headerlink" href="#id144" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">gauge</span></code> and <code class="docutils literal notranslate"><span class="pre">pump</span></code> modules</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">Acromag</span></code> and <code class="docutils literal notranslate"><span class="pre">Mesh</span></code> classes</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">motor</span></code> subdevice to state record devices</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">status</span></code> string to <code class="docutils literal notranslate"><span class="pre">BeckhoffAxis</span></code></p></li>
+</ul>
+</section>
+<section id="api-breaks">
+<h3>API Breaks<a class="headerlink" href="#api-breaks" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>State devices no longer have the <code class="docutils literal notranslate"><span class="pre">readback</span></code> signal, as it is redundant
+with the new <code class="docutils literal notranslate"><span class="pre">motor</span></code> subdevice</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PCDSDetector</span></code> has been renamed to <code class="docutils literal notranslate"><span class="pre">PCDSAreaDetector</span></code> for clarity.
+<code class="docutils literal notranslate"><span class="pre">PCDSDetectorBase</span></code> is also renamed to <code class="docutils literal notranslate"><span class="pre">PCDSAreaDetectorBase</span></code>.</p></li>
+</ul>
+</section>
+<section id="id145">
+<h3>Bugfixes<a class="headerlink" href="#id145" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix PVs in <code class="docutils literal notranslate"><span class="pre">BeckhoffAxis</span></code></p></li>
+</ul>
+</section>
+<section id="id146">
+<h3>Misc<a class="headerlink" href="#id146" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Officially build for <code class="docutils literal notranslate"><span class="pre">python=3.7</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="v1-2-0-2019-03-08">
+<h2>v1.2.0 (2019-03-08)<a class="headerlink" href="#v1-2-0-2019-03-08" title="Permalink to this headline"></a></h2>
+<section id="id147">
+<h3>Features<a class="headerlink" href="#id147" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add all common plugins to <code class="docutils literal notranslate"><span class="pre">PCDSDetector</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EventSequencer</span></code> now accepts human-readable sequences</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h3>Fixes<a class="headerlink" href="#fixes" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix debug PV names in <code class="docutils literal notranslate"><span class="pre">BeckhoffAxis</span></code></p></li>
+</ul>
+</section>
+<section id="id148">
+<h3>Misc<a class="headerlink" href="#id148" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Add a py37 build to the CI</p></li>
+<li><p>Remove outdated hotfix for <code class="docutils literal notranslate"><span class="pre">FakeEpicsSignal</span></code> in tests</p></li>
+<li><p>Fix misc testing errors</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-1-0-2018-10-26">
+<h2>v1.1.0 (2018-10-26)<a class="headerlink" href="#v1-1-0-2018-10-26" title="Permalink to this headline"></a></h2>
+<section id="id149">
+<h3>Features<a class="headerlink" href="#id149" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Support for reading and writing sequences to and from the <code class="docutils literal notranslate"><span class="pre">EventSequencer</span></code></p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">Motor</span></code> factory function for choosing which motor class to use based
+on the text in the <code class="docutils literal notranslate"><span class="pre">prefix</span></code>.</p></li>
+</ul>
+</section>
+<section id="id150">
+<h3>Bugfixes<a class="headerlink" href="#id150" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">IMS</span></code> class will no longer get its <code class="docutils literal notranslate"><span class="pre">.SPG</span></code> field stuck on <code class="docutils literal notranslate"><span class="pre">paused</span></code> or
+<code class="docutils literal notranslate"><span class="pre">stopped</span></code> when a scan is interrupted. Scans will start even if these
+fields are blocked.</p></li>
+<li><p>Update out-of-date <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file for <code class="docutils literal notranslate"><span class="pre">pip</span></code></p></li>
+<li><p>Pin <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> to <code class="docutils literal notranslate"><span class="pre">&lt;3</span></code> to avoid import incompatibility pitfalls, and
+confine the <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> imports to function scope instead of module scope
+to avoid having a backend be set on import.</p></li>
+</ul>
+</section>
+</section>
+<section id="v1-0-0-2018-10-12">
+<h2>v1.0.0 (2018-10-12)<a class="headerlink" href="#v1-0-0-2018-10-12" title="Permalink to this headline"></a></h2>
+<section id="id151">
+<h3>Features<a class="headerlink" href="#id151" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Display current position in <code class="docutils literal notranslate"><span class="pre">umv</span></code> progress bars</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">ophyd</span></code> <code class="docutils literal notranslate"><span class="pre">Kind</span></code> specification to every device in the library</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">.DESC</span></code> field to standard motor interface</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">trigger</span></code> to event sequencer and other changes to make it more
+useful in scans</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">CCM</span></code> class</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">BeckhoffAxis</span></code> class for the Beckhoff ADS-based motor record</p></li>
+<li><p>Added evr <code class="docutils literal notranslate"><span class="pre">Trigger</span></code> class for configuring evr triggers</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">FeeAtt</span></code> class for the wonky FEE attenuator</p></li>
+<li><p>Clean up <code class="docutils literal notranslate"><span class="pre">Reflaser</span></code> classes</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">LensStack</span></code> class python2 port for the xyz focusing assembly
+(not fully complete)</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">DelayStage</span></code> class for laser delay stages</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">SyncAxes</span></code> class for synchronizing axes e.g. tables, ccm</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">keypress</span></code> utilities python2 port</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">wm_update</span></code> python2 port to <code class="docutils literal notranslate"><span class="pre">FltMvInterface</span></code>. This is essentially a
+<code class="docutils literal notranslate"><span class="pre">camonitor</span></code>.</p></li>
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">mv_ginput</span></code> python2 port to <code class="docutils literal notranslate"><span class="pre">FltMvInterface</span></code></p></li>
+<li><p>Added per-class icons to be picked up by <code class="docutils literal notranslate"><span class="pre">lightpath</span></code> and other
+applications</p></li>
+</ul>
+</section>
+<section id="id152">
+<h3>Bugfixes<a class="headerlink" href="#id152" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">IMAGE2</span></code> instead of <code class="docutils literal notranslate"><span class="pre">IMAGE1</span></code> as the area detector default, because
+this is the low rate or binned image. Avoid sending huge images quickly
+through python processes.</p></li>
+<li><p>Prevent issue where presets from same-named device would interfere with
+eachother.</p></li>
+<li><p>Attenuator subclasses now have sane names
+(previously <code class="docutils literal notranslate"><span class="pre">Attenuator1234567</span></code>, for example).</p></li>
+<li><p>Split the XPP and XCS lodcm foils (they are different).</p></li>
+<li><p>Warn the user about using certain classes directly when they need to be
+subclassed.</p></li>
+<li><p>Raise errors for any invalid state in a state positioner, not just the
+<code class="docutils literal notranslate"><span class="pre">Unknown</span></code> state.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">SUB_STATE</span></code> subscription types for <code class="docutils literal notranslate"><span class="pre">OffsetMirror</span></code> and <code class="docutils literal notranslate"><span class="pre">Attenuator</span></code></p></li>
+<li><p>Valve interlock had inverted logic</p></li>
+</ul>
+</section>
+<section id="id153">
+<h3>Maintenance<a class="headerlink" href="#id153" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Standardize component imports as <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">Component</span> <span class="pre">as</span> <span class="pre">Cpt</span></code></p></li>
+<li><p>Move some interlocks into <code class="docutils literal notranslate"><span class="pre">check_value</span></code> instead of ad-hoc locations</p></li>
+<li><p>Misc travis fixes and improvements</p></li>
+<li><p>State devices are more forgiving with certain inputs</p></li>
+<li><p>Clean up the <code class="xref any docutils literal notranslate"><span class="pre">Slit</span></code> interface for <code class="docutils literal notranslate"><span class="pre">lightpath</span></code></p></li>
+</ul>
+</section>
+<section id="id154">
+<h3>API Breaks<a class="headerlink" href="#id154" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Rework and improve various simulated hardware, removing old <code class="docutils literal notranslate"><span class="pre">sim</span></code> modules.</p></li>
+<li><p>Require some newer modules</p></li>
+</ul>
+</section>
+</section>
+<section id="v0-8-0-2018-05-27">
+<h2>v0.8.0 (2018-05-27)<a class="headerlink" href="#v0-8-0-2018-05-27" title="Permalink to this headline"></a></h2>
+<section id="id155">
+<h3>Features<a class="headerlink" href="#id155" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Added <a class="reference internal" href="signals.html#avgsignal"><span class="std std-ref">AvgSignal</span></a> class. This can be used when you want to
+run a callback on a rolling average of a <code class="docutils literal notranslate"><span class="pre">Signal</span></code>. (#227)</p></li>
+<li><p>Added an average of the gas detector energy to the <a class="reference internal" href="generated/pcdsdevices.beam_stats.BeamStats.html#pcdsdevices.beam_stats.BeamStats" title="pcdsdevices.beam_stats.BeamStats"><code class="xref any py py-class docutils literal notranslate"><span class="pre">BeamStats</span></code></a> class (#227)</p></li>
+<li><p>Implemented motor <code class="xref any docutils literal notranslate"><span class="pre">.SPG</span></code> field from LCLS motor record into PCDSMotorBase (#236)</p></li>
+</ul>
+</section>
+<section id="id156">
+<h3>Bugfixes<a class="headerlink" href="#id156" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix a bug where the <a class="reference internal" href="generated/pcdsdevices.lodcm.LODCM.html#pcdsdevices.lodcm.LODCM" title="pcdsdevices.lodcm.LODCM"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LODCM</span></code></a> class had a <code class="docutils literal notranslate"><span class="pre">readback</span></code> signal with an invalid PV. (#232)</p></li>
+<li><p>Fix a bug where the tests would never pass, ever (#238)</p></li>
+</ul>
+</section>
+</section>
+<section id="v0-7-0-2018-05-08">
+<h2>v0.7.0 (2018-05-08)<a class="headerlink" href="#v0-7-0-2018-05-08" title="Permalink to this headline"></a></h2>
+<section id="id157">
+<h3>Features<a class="headerlink" href="#id157" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Revamp states handling for devices like IPM and XFLS (#205)</p></li>
+<li><p>Add a <a class="reference internal" href="generated/pcdsdevices.beam_stats.BeamStats.html#pcdsdevices.beam_stats.BeamStats" title="pcdsdevices.beam_stats.BeamStats"><code class="xref any py py-class docutils literal notranslate"><span class="pre">BeamStats</span></code></a> class (#200)</p></li>
+<li><p>Add an <a class="reference internal" href="generated/pcdsdevices.sequencer.EventSequencer.html#pcdsdevices.sequencer.EventSequencer" title="pcdsdevices.sequencer.EventSequencer"><code class="xref any py py-class docutils literal notranslate"><span class="pre">EventSequencer</span></code></a> class (#196)</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">DISP</span></code> field to <a class="reference internal" href="generated/pcdsdevices.epics_motor.PCDSMotorBase.html#pcdsdevices.epics_motor.PCDSMotorBase" title="pcdsdevices.epics_motor.PCDSMotorBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">PCDSMotorBase</span></code></a> (#192)</p></li>
+</ul>
+</section>
+<section id="id158">
+<h3>Bugfixes<a class="headerlink" href="#id158" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fix a bug where preset saving could break the session if passed bad arguments (#218)</p></li>
+<li><p>Fix a bug where malformed states could fail silently or cryptically (#216)</p></li>
+<li><p>Fix a bug where the mirror states were reversed (#215)</p></li>
+<li><p>Fix a bug where IMS velocity limits were ignored (#209)</p></li>
+</ul>
+</section>
+</section>
+<section id="v0-6-0-2018-04-05">
+<h2>v0.6.0 (2018-04-05)<a class="headerlink" href="#v0-6-0-2018-04-05" title="Permalink to this headline"></a></h2>
+<section id="id159">
+<h3>Features<a class="headerlink" href="#id159" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Improved documentation (#170)</p></li>
+<li><p>Recreated the presets feature from existing hutch_python deployments.
+This allows operators to record the positions of anything that implements
+the <a class="reference internal" href="generated/pcdsdevices.interface.FltMvInterface.html#pcdsdevices.interface.FltMvInterface" title="pcdsdevices.interface.FltMvInterface"><code class="xref any py py-class docutils literal notranslate"><span class="pre">FltMvInterface</span></code></a> to a <code class="docutils literal notranslate"><span class="pre">YAML</span></code> file. This helps keep track of various
+important experimental motor positions that are too dynamic to place in EPICS. (#187)</p></li>
+</ul>
+</section>
+<section id="id160">
+<h3>Bugfixes<a class="headerlink" href="#id160" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Fixed a rare race condition in the testing suite (#189)</p></li>
+</ul>
+</section>
+<section id="ci">
+<h3>CI<a class="headerlink" href="#ci" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>Testing suite now uses the conda-forge build of ophyd instead of NSLS-II lightsource2-tag (#191)</p></li>
+</ul>
+</section>
+</section>
+<section id="v0-5-0-2018-03-08">
+<h2>v0.5.0 (2018-03-08)<a class="headerlink" href="#v0-5-0-2018-03-08" title="Permalink to this headline"></a></h2>
+<section id="id161">
+<h3>API Changes<a class="headerlink" href="#id161" title="Permalink to this headline"></a></h3>
+<ul class="simple">
+<li><p>The <code class="xref any docutils literal notranslate"><span class="pre">pcdsdevices.EpicsMotor</span></code> has been replaced by
+<code class="xref any docutils literal notranslate"><span class="pre">pcdsdevices.PCDSMotorBase</span></code> and three child classes
+<a class="reference internal" href="generated/pcdsdevices.epics_motor.IMS.html#pcdsdevices.epics_motor.IMS" title="pcdsdevices.epics_motor.IMS"><code class="xref any py py-class docutils literal notranslate"><span class="pre">IMS</span></code></a>, <a class="reference internal" href="generated/pcdsdevices.epics_motor.Newport.html#pcdsdevices.epics_motor.Newport" title="pcdsdevices.epics_motor.Newport"><code class="xref any py py-class docutils literal notranslate"><span class="pre">Newport</span></code></a> and <a class="reference internal" href="generated/pcdsdevices.epics_motor.PMC100.html#pcdsdevices.epics_motor.PMC100" title="pcdsdevices.epics_motor.PMC100"><code class="xref any py py-class docutils literal notranslate"><span class="pre">PMC100</span></code></a>. This is an attempt to have a reasonable MRO
+for the discrepenacies between all our different implementations
+of the EPICS Motor Record (#167)</p></li>
+<li><p>Due to the growing complication of the Daq class and related utilities,
+all related functions were moved to <a class="reference external" href="https://pcdshub.github.io/pcdsdaq">https://pcdshub.github.io/pcdsdaq</a> (#168)</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ui.html" class="btn btn-neutral float-left" title="UI Templates" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="upcoming_changes.html" class="btn btn-neutral float-right" title="Upcoming Changes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

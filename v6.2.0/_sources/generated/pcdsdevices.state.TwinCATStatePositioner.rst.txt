@@ -1,0 +1,156 @@
+﻿pcdsdevices.state.TwinCATStatePositioner
+========================================
+
+.. currentmodule:: pcdsdevices.state
+
+.. autoclass:: TwinCATStatePositioner
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - state
+          - :class:`~pcdsdevices.signal.EpicsSignalEditMD`
+          - ``:GET_RBV``
+          - Setpoint and readback for TwinCAT state position.
+          - hinted
+          - 
+    
+        * - error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERR``
+          - True if we have an error.
+          - normal
+          - 
+    
+        * - error_id
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERRID``
+          - Error code.
+          - normal
+          - 
+    
+        * - error_message
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERRMSG``
+          - Error message
+          - normal
+          - 
+    
+        * - busy
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BUSY``
+          - True if we have an ongoing move.
+          - normal
+          - 
+    
+        * - done
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:DONE``
+          - True if we completed the last move.
+          - normal
+          - 
+    
+        * - reset_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RESET``
+          - Command to reset an error.
+          - normal
+          - 
+    
+        * - config
+          - :class:`~pcdsdevices.state.TwinCATStateConfigDynamic`
+          - 
+          - Configuration of state positions, deltas, etc.
+          - omitted
+          - 
+    
+        * - state_velo
+          - :class:`~pcdsdevices.signal.MultiDerivedSignal`
+          - 
+          - State mover velocity. Displays the highest velocity of all the state move destinations and allows bulk writes to all of these velocity settings. Note that this velocity only applies to moves done using the state selector box.
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: clear_error
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_state
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: status
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: states_list
+    .. autoattribute:: stop
+    .. autoattribute:: timeout
+    
+    

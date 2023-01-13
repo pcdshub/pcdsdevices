@@ -1,0 +1,6 @@
+﻿pcdsdevices.attenuator.Attenuator
+=================================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autofunction:: Attenuator

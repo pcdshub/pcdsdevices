@@ -1,0 +1,108 @@
+﻿pcdsdevices.epics\_motor.BeckhoffAxisPLC
+========================================
+
+.. currentmodule:: pcdsdevices.epics_motor
+
+.. autoclass:: BeckhoffAxisPLC
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``sErrorMessage``
+          - PLC error or warning
+          - normal
+          - 
+    
+        * - err_code
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``nErrorId``
+          - Current NC error code
+          - normal
+          - 
+    
+        * - cmd_err_reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``bReset``
+          - Command to reset an active error
+          - normal
+          - 
+    
+        * - cmd_home
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bHomeCmd``
+          - Start TwinCAT homing routine.
+          - normal
+          - 
+    
+        * - home_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``fHomePosition``
+          - Numeric position of home.
+          - config
+          - 
+    
+        * - user_enable
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bUserEnable``
+          - Power enable/disable
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

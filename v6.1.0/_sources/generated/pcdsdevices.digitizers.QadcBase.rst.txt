@@ -1,0 +1,101 @@
+﻿pcdsdevices.digitizers.QadcBase
+===============================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: QadcBase
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - ch0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH0``
+          - 
+          - normal
+          - 
+    
+        * - ch1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH1``
+          - 
+          - normal
+          - 
+    
+        * - ch2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH2``
+          - 
+          - normal
+          - 
+    
+        * - ch3
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH3``
+          - 
+          - normal
+          - 
+    
+        * - config
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CONFIG``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

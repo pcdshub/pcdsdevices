@@ -1,0 +1,209 @@
+﻿pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger
+================================================================
+
+.. currentmodule:: pcdsdevices.areadetector.detectors
+
+.. autoclass:: PCDSAreaDetectorTyphosTrigger
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - manufacturer
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Manufacturer_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - camera_model
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Model_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - sensor_size_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxSizeX_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - sensor_size_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxSizeY_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - data_type
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DataType``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - exposure
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AcquireTime``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - gain
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Gain``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - num_images
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumImages``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - image_mode
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ImageMode``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - trigger_mode
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``TriggerMode``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - acquisition_period
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AcquirePeriod``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - acquire
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Acquire``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - acquire_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``DetectorState_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - image_counter
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``NumImagesCounter_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - cam_viewer
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos`
+    
+        * - event_code
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``CamEventCode``
+          - Code to determine beam synchronization rate.
+          - config
+          - 
+    
+        * - event_rate
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``CamRepRate_RBV``
+          - Current rate of the incoming triggers. Determined by event_code and the accelerator state.
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: open_viewer
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

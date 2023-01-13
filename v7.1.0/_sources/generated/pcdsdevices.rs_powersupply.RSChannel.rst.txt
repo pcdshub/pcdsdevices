@@ -1,0 +1,180 @@
+﻿pcdsdevices.rs\_powersupply.RSChannel
+=====================================
+
+.. currentmodule:: pcdsdevices.rs_powersupply
+
+.. autoclass:: RSChannel
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - current
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``CURR``
+          - Current Setpoint in Amps
+          - normal
+          - 
+    
+        * - current_step
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``CURR_STEP``
+          - Step size for Current in Amps
+          - hinted
+          - 
+    
+        * - current_twk
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``CURR_TWK``
+          - 
+          - normal
+          - 
+    
+        * - select
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SELECT``
+          - 
+          - normal
+          - 
+    
+        * - set_current
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SET_CURR``
+          - Current Setpoint in Amps
+          - hinted
+          - 
+    
+        * - set_voltage
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SET_VOLT``
+          - Voltage Setpoint in Volts
+          - hinted
+          - 
+    
+        * - voltage
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``VOLT``
+          - Actual Voltage in Volts
+          - normal
+          - 
+    
+        * - voltage_step
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``VOLT_STEP``
+          - Step size for Voltage in Volts
+          - hinted
+          - 
+    
+        * - voltage_twk
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``VOLT_TWK``
+          - 
+          - normal
+          - 
+    
+        * - curr_step_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``CURR_STEP_RBV``
+          - 
+          - hinted
+          - 
+    
+        * - volt_step_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``VOLT_STEP_RBV``
+          - 
+          - hinted
+          - 
+    
+        * - set_current_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SET_CURR_RBV``
+          - 
+          - hinted
+          - 
+    
+        * - set_voltage_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SET_VOLT_RBV``
+          - 
+          - hinted
+          - 
+    
+        * - status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``STATUS``
+          - 
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

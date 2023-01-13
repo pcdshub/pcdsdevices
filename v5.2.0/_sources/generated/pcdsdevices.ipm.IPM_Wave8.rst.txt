@@ -1,0 +1,94 @@
+﻿pcdsdevices.ipm.IPM\_Wave8
+==========================
+
+.. currentmodule:: pcdsdevices.ipm
+
+.. autoclass:: IPM_Wave8
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - target
+          - :class:`~pcdsdevices.ipm.IPMTarget`
+          - ``:TARGET``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.ipm.IPMMotion`
+    
+        * - diode
+          - :class:`~pcdsdevices.ipm.IPMDiode`
+          - ``:DIODE``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.ipm.IPMMotion`
+    
+        * - wave8 (FCpt)
+          - :class:`~pcdsdevices.ipm.Wave8`
+          - ``{self.prefix_wave8}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: channel
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: insert
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: sum
+    .. automethod:: summary
+    .. automethod:: target_in
+    .. automethod:: trigger
+    .. automethod:: xpos
+    .. automethod:: ypos
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: channels
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: transmission
+    
+    

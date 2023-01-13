@@ -1,0 +1,174 @@
+﻿pcdsdevices.digitizers.Wave8V2Timing
+====================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2Timing
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - clk_sel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ClkSel_RBV``
+          - 
+          - config
+          - 
+    
+        * - c_rx_reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:C_RxReset``
+          - 
+          - config
+          - 
+    
+        * - eof_count
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:eofCount``
+          - 
+          - config
+          - 
+    
+        * - fid_count
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FidCount``
+          - 
+          - config
+          - 
+    
+        * - mode_sel_en
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ModeSelEn_RBV``
+          - 
+          - config
+          - 
+    
+        * - mode_sel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ModeSel_RBV``
+          - 
+          - config
+          - 
+    
+        * - rx_down
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RxDown_RBV``
+          - 
+          - config
+          - 
+    
+        * - rx_link_up
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxLinkUp``
+          - 
+          - config
+          - 
+    
+        * - rx_pll_rst
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RxPllReset_RBV``
+          - 
+          - config
+          - 
+    
+        * - sof_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:sofCount``
+          - 
+          - config
+          - 
+    
+        * - rx_user_rst
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:timingRxUserRst``
+          - 
+          - config
+          - 
+    
+        * - tx_user_rst
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:timingTxUserRst``
+          - 
+          - config
+          - 
+    
+        * - use_mini_tpg
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:UseMiniTpg_RBV``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

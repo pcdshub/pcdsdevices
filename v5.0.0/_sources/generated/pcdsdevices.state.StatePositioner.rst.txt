@@ -1,0 +1,58 @@
+﻿pcdsdevices.state.StatePositioner
+=================================
+
+.. currentmodule:: pcdsdevices.state
+
+.. autoclass:: StatePositioner
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_state
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: status
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: state
+    .. autoattribute:: states_list
+    .. autoattribute:: stop
+    .. autoattribute:: timeout
+    
+    

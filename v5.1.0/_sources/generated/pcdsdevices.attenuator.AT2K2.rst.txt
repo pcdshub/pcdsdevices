@@ -1,0 +1,150 @@
+﻿pcdsdevices.attenuator.AT2K2
+============================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: AT2K2
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - num_in
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorSXR_Ladder`
+    
+        * - num_out
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorSXR_Ladder`
+    
+        * - calculator (UnrelatedComponent)
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorSXR_Ladder`
+    
+        * - blade_01
+          - :class:`~pcdsdevices.attenuator.SXRLadderAttenuatorBlade`
+          - ``:MMS:01``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorSXR_Ladder`
+    
+        * - blade_02
+          - :class:`~pcdsdevices.attenuator.SXRLadderAttenuatorBlade`
+          - ``:MMS:02``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorSXR_Ladder`
+    
+        * - blade_03
+          - :class:`~pcdsdevices.attenuator.SXRLadderAttenuatorBlade`
+          - ``:MMS:03``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorSXR_Ladder`
+    
+        * - blade_04
+          - :class:`~pcdsdevices.attenuator.SXRLadderAttenuatorBlade`
+          - ``:MMS:04``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorSXR_Ladder`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate
+    .. autoattribute:: actuate_value
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: done
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: readback
+    .. autoattribute:: setpoint
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    

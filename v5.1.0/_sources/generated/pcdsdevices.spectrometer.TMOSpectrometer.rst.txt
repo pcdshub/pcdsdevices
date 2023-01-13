@@ -1,0 +1,138 @@
+﻿pcdsdevices.spectrometer.TMOSpectrometer
+========================================
+
+.. currentmodule:: pcdsdevices.spectrometer
+
+.. autoclass:: TMOSpectrometer
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lens_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:01``
+          - 
+          - normal
+          - 
+    
+        * - foil_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:02``
+          - 
+          - normal
+          - 
+    
+        * - zone_plate_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:03``
+          - 
+          - normal
+          - 
+    
+        * - zone_plate_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:04``
+          - 
+          - normal
+          - 
+    
+        * - zone_plate_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:05``
+          - 
+          - normal
+          - 
+    
+        * - yag_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:06``
+          - 
+          - normal
+          - 
+    
+        * - yag_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:07``
+          - 
+          - normal
+          - 
+    
+        * - yag_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:08``
+          - 
+          - normal
+          - 
+    
+        * - yag_theta
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:09``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

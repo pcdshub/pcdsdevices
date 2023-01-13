@@ -1,0 +1,78 @@
+﻿pcdsdevices.ipm.IPMDiode
+========================
+
+.. currentmodule:: pcdsdevices.ipm
+
+.. autoclass:: IPMDiode
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x_motor
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``:X_MOTOR``
+          - 
+          - normal
+          - 
+    
+        * - state
+          - :class:`~pcdsdevices.inout.InOutRecordPositioner`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: insert
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: transmission
+    
+    

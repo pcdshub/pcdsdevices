@@ -1,0 +1,155 @@
+﻿pcdsdevices.lasers.counters.Agilent53210A
+=========================================
+
+.. currentmodule:: pcdsdevices.lasers.counters
+
+.. autoclass:: Agilent53210A
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - protocol
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PROTOCOL_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - freq_rbck
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FREQ_RBCK``
+          - 
+          - normal
+          - 
+    
+        * - freq_rbck_raw
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FREQ_RBCK_RAW``
+          - 
+          - omitted
+          - 
+    
+        * - auto_level
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_AUTO_LEVEL``
+          - 
+          - config
+          - 
+    
+        * - coupling
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_COUPLING``
+          - 
+          - config
+          - 
+    
+        * - impedance
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_IMPEDANCE``
+          - 
+          - config
+          - 
+    
+        * - noise_rej
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_NOISE_REJ``
+          - 
+          - config
+          - 
+    
+        * - trig_level
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_TRIG_LEVEL``
+          - 
+          - config
+          - 
+    
+        * - trig_percent
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_TRIG_PERCENT``
+          - 
+          - config
+          - 
+    
+        * - identity
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:IDENTITY``
+          - 
+          - omitted
+          - 
+    
+        * - reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RESET``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

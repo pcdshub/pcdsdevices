@@ -1,0 +1,1068 @@
+﻿pcdsdevices.areadetector.plugins.ProcessPlugin
+==============================================
+
+.. currentmodule:: pcdsdevices.areadetector.plugins
+
+.. autoclass:: ProcessPlugin
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - configuration_names
+          - :class:`~ophyd.signal.ArrayAttributeSignal`
+          - 
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - array_counter (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArrayCounter``
+          - [ArrayCounter r/w longout] Counter that increments by 1 each time an NDArray callback is processed
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - array_rate (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArrayRate_RBV``
+          - [ArrayRate_RBV r/o calc] Rate (Hz) at which ArrayCounter is incrementing. Computed in database.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - asyn_io (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``AsynIO``
+          - [AsynIO N/A asyn] asyn record to control debugging (asynTrace)
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - nd_attributes_file (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NDAttributesFile``
+          - [NDAttributesFile r/w waveform]
+              The name of an XML file defining the PVAttributes and paramAttributes to be added
+              to each NDArray by this plugin. The format of the XML file is described in the documentation
+              for asynNDArrayDriver::readNDAttributesFile().
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - pool_alloc_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolAllocBuffers``
+          - [PoolAllocBuffers r/o longin] The number of NDArrays this plugin has currently allocated.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - pool_free_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolFreeBuffers``
+          - [PoolFreeBuffers r/o longin] The number of free NDArrays this plugin has in its NDArrayPool.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - pool_max_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolMaxBuffers``
+          - [PoolMaxBuffers r/o longin] The maximum number of NDArrays this plugin is allowed to allocate.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - pool_max_mem (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolMaxMem``
+          - [PoolMaxMem r/o ai] The maximum amount of NDArrayPool memory this plugin is allowed to allocate.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - pool_used_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolUsedBuffers``
+          - [PoolUsedBuffers N/A calc]
+              The number of used NDArrays this plugin has in its NDArrayPool. Calculated from
+              PoolAllocBuffers and PoolFreeBuffers.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - pool_used_mem (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolUsedMem``
+          - [PoolUsedMem r/o ai] The actual amount of NDArrayPool memory this plugin is currently using.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - port_name (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PortName_RBV``
+          - [PortName_RBV r/o stringin] asyn port name
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - asyn_pipeline_config
+          - :class:`~ophyd.signal.ArrayAttributeSignal`
+          - 
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - width (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize0_RBV``
+          - [ArraySize0_RBV r/o longin] First dimension of NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - height (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize1_RBV``
+          - [ArraySize1_RBV r/o longin] Second dimension of NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - depth (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize2_RBV``
+          - [ArraySize2_RBV r/o longin] Third dimension of NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - array_size (DDC)
+          - :class:`~ophyd.device.ArraySize`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - bayer_pattern (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``BayerPattern_RBV``
+          - [BayerPattern_RBV r/o mbbi] BayerPattern of last NDArray callback data (NDBayerPattern_t).
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - blocking_callbacks (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BlockingCallbacks``
+          - [BlockingCallbacks r/w bo]
+              0 = callbacks from the driver do not block; the NDArray data is put on a queue and
+              the callback processes in its own thread.
+
+              1 = callbacks from the driver block; the callback processes in the driver callback
+              thread.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - color_mode (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ColorMode_RBV``
+          - [ColorMode_RBV r/o mbbi] Color mode of last NDArray callback data (NDColorMode_t).
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - data_type (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``DataType_RBV``
+          - [DataType_RBV r/o mbbi] Data type of last NDArray callback data (NDDataType_t).
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - dim0_sa (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim0SA``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - dim1_sa (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim1SA``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - dim2_sa (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim2SA``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - dim_sa (DDC)
+          - :class:`~ophyd.device.DimSa`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - dimensions (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Dimensions_RBV``
+          - [Dimensions_RBV r/o waveform] Dimensions in last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - dropped_arrays (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DroppedArrays``
+          - [DroppedArrays r/w longout]
+              Counter that increments by 1 each time an NDArray callback occurs when NDPluginDriverBlockingCallbacks=0
+              and the plugin driver queue is full, so the callback cannot be processed.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - enable (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``EnableCallbacks``
+          - [EnableCallbacks r/w bo]
+              Enable (1) or disable (0) callbacks from the driver to this plugin. If callbacks
+              are disabled then the plugin will normally be idle and consume no CPU resources.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - min_callback_time (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``MinCallbackTime``
+          - [MinCallbackTime r/w ao]
+              The minimum time in seconds between calls to processCallbacks. Any callbacks occuring
+              before this minimum time has elapsed will be ignored. 0 means no minimum time, i.e.
+              process all callbacks.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - nd_array_address (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NDArrayAddress``
+          - [NDArrayAddress r/w longout]
+              asyn port address for NDArray driver that will make callbacks to this plugin. This
+              address can be changed at run time, connecting the plugin to a different address
+              in the NDArray driver.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - nd_array_port (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NDArrayPort``
+          - [NDArrayPort r/w stringout]
+              asyn port name for NDArray driver that will make callbacks to this plugin. This
+              port can be changed at run time, connecting the plugin to a different NDArray driver.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - ndimensions (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``NDimensions_RBV``
+          - [NDimensions_RBV r/o longin] Number of dimensions in last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - plugin_type (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PluginType_RBV``
+          - [PluginType_RBV r/o stringin] A string describing the plugin type.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - queue_free (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueFree``
+          - [QueueFree r/o longin] The number of free queue elements.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - queue_free_low (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueFreeLow``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - queue_size (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueSize``
+          - [QueueSize r/o longin] The total queue size for callbacks when BlockingCallbacks=0.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - queue_use (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUse``
+          - [QueueUse r/o calc] The number of used queue elements.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - queue_use_high (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUseHIGH``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - queue_use_hihi (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUseHIHI``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - time_stamp (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``TimeStamp_RBV``
+          - [TimeStamp_RBV r/o ai] Time stamp number of last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - unique_id (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``UniqueId_RBV``
+          - [UniqueId_RBV r/o longin] Unique ID number of last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - auto_offset_scale (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``AutoOffsetScale``
+          - [AutoOffsetScale r/w busy]
+              Processing this record will enable Offset and Scale calculations, and set the Offset=-min(Array)
+              and Scale=MaxScale/(max(Array)-min(Array)), where MaxScale is the maximum value
+              of the output data type. The output array will thus be scaled to completely fill
+              the range of the output data type. Note that the calculation of the offset and scale
+              factors is only done once when this record is processed, and these values are used
+              for subsequent array callbacks, i.e. it does not autoscale on each array callback.
+              Thanks to Tom Cobb for this addition.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - auto_reset_filter (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AutoResetFilter``
+          - [AutoResetFilter r/w bo]
+              If enabled then when NumFiltered=NumFilter the filter automatically resets. This
+              can be very useful when using the Average or Sum filter modes. As soon as N sums
+              or averages have been performed the filter resets, so the next sum or average is
+              computed.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - average_seq (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``AverageSeq``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - copy_to_filter_seq (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``CopyToFilterSeq``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - data_type_out (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DataTypeOut``
+          - [DataTypeOut r/w mbbo]
+              Data type of the output array (NDDataType_t). This can be different from the data
+              type of the NDArray callback data.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - difference_seq (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``DifferenceSeq``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - enable_background (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``EnableBackground``
+          - [EnableBackground r/w bo]
+              Flag indicating whether the background array acquired with SaveBackground should
+              be subtracted when processing the array. If ValidBackground=0 then no background
+              subtraction is done even if EnableBackground=Enable.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - enable_filter (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``EnableFilter``
+          - [EnableFilter r/w bo]
+              Flag indicating whether the array should be processed with a recursive filter. The
+              details of the filter operation are explained below.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - enable_flat_field (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``EnableFlatField``
+          - [EnableFlatField r/w bo]
+              Flag indicating whether the array should be divided by the flat field array (acquired
+              with SaveFlatField) when processing the array. If ValidFlatField=0 then no flat
+              field normalization is done even if EnableBackground=Enable. The processing step
+              consists of:
+
+              Array = Array / FlatField * ScaleFlatField
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - enable_high_clip (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``EnableHighClip``
+          - [EnableHighClip r/w bo]
+              Flag to control whether to clip values to the HighClip value for this array (0=Disable,
+              1=Enable).
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - enable_low_clip (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``EnableLowClip``
+          - [EnableLowClip r/w bo]
+              Flag to control whether to clip values to the LowClip value for this array (0=Disable,
+              1=Enable).
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - enable_offset_scale (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``EnableOffsetScale``
+          - [EnableOffsetScale r/w bo]
+              Flag indicating whether the array should be multiplied by Scale and then summed
+              with Offset when processing the array. The processing step consists of:
+
+              Array = Array * Scale + Offset
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - fc (DDC)
+          - :class:`~ophyd.device.Fc`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - foffset (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FOffset``
+          - [FOffset r/w ao] Filter offset coefficient.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - fscale (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FScale``
+          - [FScale r/w ao] Filter scale coefficient.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - filter_callbacks (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FilterCallbacks``
+          - [FilterCallbacks r/w bo]
+              Choices are "Every array" and "Array N only". If "Every array" is selected then
+              the plugin does callbacks for every incoming array it receives. If "Array N only"
+              is selected then the plugin only does callbacks when NumFiltered=NumFilter. This
+              can be very useful when using the Sum or Average filter modes. Callbacks are then
+              done only when N sums or averages have been performed. If used with AutoResetFilter
+              then as input arrays arrive the plugin will continually output one summed or averaged
+              array after every N incoming arrays.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - filter_type (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``FilterType``
+          - [FilterType r/w mbbo] The filter type, chosen from a predefined list, as described below.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - filter_type_seq (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``FilterTypeSeq``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - high_clip (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``HighClip``
+          - [HighClip r/w ao]
+              The maximum allowed value for this array. If EnableHighClip=1, then all values in
+              the array greater than HighClip will be replaced by HighClip.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - low_clip (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``LowClip``
+          - [LowClip r/w ao]
+              The minimum allowed value for this array. If EnableLowClip=1, then all values in
+              the array less than LowClip will be replaced by LowClip.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - num_filter (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumFilter``
+          - [NumFilter r/w longout]
+              The characteristic number of arrays to use when filtering. The value of NumFiltered
+              will increase as each array is processed, until it reaches the value of NumFilter,
+              when it will no longer increase. The value of NumFiltered is used in the filter
+              equations, as explained below.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - num_filter_recip (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NumFilterRecip``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - num_filtered (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``NumFiltered_RBV``
+          - [NumFiltered_RBV r/o longin]
+              The number of arrays that have been processed by the filter since the filter was
+              last reset. The value of NumFiltered is incremented as each array is processed,
+              until it reaches the value of NumFilter, when it will cease incrementing. The value
+              of NumFiltered is used in the filter equations, as explained below.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - oc (DDC)
+          - :class:`~ophyd.device.Oc`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - o_offset (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``OOffset``
+          - [OOffset r/w ao] Output offset coefficient.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - o_scale (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``OScale``
+          - [OScale r/w ao] Output scale coefficient.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - offset (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Offset``
+          - [Offset r/w ao] The offset to add.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - rc (DDC)
+          - :class:`~ophyd.device.Rc`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - roffset (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ROffset``
+          - [ROffset r/w ao] Reset offset coefficient.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - recursive_ave_diff_seq (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``RecursiveAveDiffSeq``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - recursive_ave_seq (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``RecursiveAveSeq``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - reset_filter (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ResetFilter``
+          - [ResetFilter r/w bo] Command to reset the filter back to its initial state.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - save_background (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SaveBackground``
+          - [SaveBackground r/w bo]
+              Command to use the most recently acquired array as a background. Note that this
+              recently acquired array should have been acquired with EnableBackground=0, or else
+              that array will already have had the background subtracted, which is probably not
+              what was intended!
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - save_flat_field (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SaveFlatField``
+          - [SaveFlatField r/w bo]
+              Command to use the most recently acquired array as a flat field. Note that this
+              recently acquired array should have been acquired with EnableFlatField=0, or else
+              that array will already have been flat field normalized, which is probably not what
+              was intended!
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - scale (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Scale``
+          - [Scale r/w ao] The scale factor to multiply by.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - scale_flat_field (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ScaleFlatField``
+          - [ScaleFlatField r/w ao]
+              The scale factor to multiply by after dividing the array by the flat field array.
+              This scale factor is normally chosen so that the data after scaling fills the dynamic
+              range of the output data type.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - sum_seq (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SumSeq``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - valid_background (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ValidBackground_RBV``
+          - [ValidBackground_RBV r/o bi]
+              Flag indicating whether there is a valid background array that has been acquired
+              for this array using SaveBackground. This flag will be Invalid (0) if no background
+              has been acquired, or if the size of the array has changed since the background
+              was last acquired.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - valid_flat_field (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ValidFlatField_RBV``
+          - [ValidFlatField_RBV r/o bi]
+              Flag indicating whether there is a valid flat field array that has been acquired
+              for this array using SaveFlatField. This flag will be Invalid (0) if no flat field
+              has been acquired, or if the size of the array has changed since the flat field
+              was last acquired.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: ProcessPlugin.array_size (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - depth
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize2_RBV``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - height
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize1_RBV``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+        * - width
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize0_RBV``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.ProcessPlugin`
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: ProcessPlugin.dim_sa (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - dim0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim0SA``
+            
+          - 
+          - config
+          - 
+    
+        * - dim1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim1SA``
+            
+          - 
+          - config
+          - 
+    
+        * - dim2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim2SA``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: ProcessPlugin.fc (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - fc1
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FC1``
+            
+          - 
+          - config
+          - 
+    
+        * - fc2
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FC2``
+            
+          - 
+          - config
+          - 
+    
+        * - fc3
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FC3``
+            
+          - 
+          - config
+          - 
+    
+        * - fc4
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FC4``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: ProcessPlugin.oc (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - oc1
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``OC1``
+            
+          - 
+          - config
+          - 
+    
+        * - oc2
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``OC2``
+            
+          - 
+          - config
+          - 
+    
+        * - oc3
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``OC3``
+            
+          - 
+          - config
+          - 
+    
+        * - oc4
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``OC4``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: ProcessPlugin.rc (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - rc1
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``RC1``
+            
+          - 
+          - config
+          - 
+    
+        * - rc2
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``RC2``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: disable_on_stage
+    .. automethod:: enable_on_stage
+    .. automethod:: ensure_blocking
+    .. automethod:: ensure_nonblocking
+    .. automethod:: find_signal
+    .. automethod:: get
+    .. automethod:: get_asyn_digraph
+    .. automethod:: get_asyn_port_dictionary
+    .. automethod:: get_plugin_by_asyn_port
+    .. automethod:: missing_plugins
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: validate_asyn_ports
+    .. automethod:: visualize_asyn_digraph
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: ad_root
+    .. autoattribute:: array_pixels
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: source_plugin
+    .. autoattribute:: subscriptions
+    
+    

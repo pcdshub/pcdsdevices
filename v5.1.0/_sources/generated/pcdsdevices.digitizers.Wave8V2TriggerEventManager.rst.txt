@@ -1,0 +1,198 @@
+﻿pcdsdevices.digitizers.Wave8V2TriggerEventManager
+=================================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2TriggerEventManager
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - master_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:MasterEnable_RBV``
+          - 
+          - config
+          - 
+    
+        * - fifo_overflow
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FifoOverflow``
+          - 
+          - config
+          - 
+    
+        * - fifo_pause
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FifoPause``
+          - 
+          - config
+          - 
+    
+        * - fifo_reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FifoReset``
+          - 
+          - config
+          - 
+    
+        * - fifo_wr_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FifoWrCnt``
+          - 
+          - config
+          - 
+    
+        * - l0_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:L0Count``
+          - 
+          - config
+          - 
+    
+        * - l1_accept_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:L1AcceptCount``
+          - 
+          - config
+          - 
+    
+        * - l1_reject_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:L1RejectCount``
+          - 
+          - config
+          - 
+    
+        * - partition
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Partition_RBV``
+          - 
+          - config
+          - 
+    
+        * - pause_threshold
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PauseThreshold_RBV``
+          - 
+          - config
+          - 
+    
+        * - pause_to_trig
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PauseToTrig``
+          - 
+          - config
+          - 
+    
+        * - not_pause_to_trig
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:NotPauseToTrig``
+          - 
+          - config
+          - 
+    
+        * - reset_counters
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ResetCounters``
+          - 
+          - config
+          - 
+    
+        * - transition_count
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TransitionCount``
+          - 
+          - config
+          - 
+    
+        * - trigger_count
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TriggerCount``
+          - 
+          - config
+          - 
+    
+        * - trigger_delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TriggerDelay_RBV``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

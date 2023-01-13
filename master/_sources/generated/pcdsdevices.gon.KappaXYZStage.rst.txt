@@ -1,0 +1,87 @@
+﻿pcdsdevices.gon.KappaXYZStage
+=============================
+
+.. currentmodule:: pcdsdevices.gon
+
+.. autoclass:: KappaXYZStage
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_x}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.XYZStage`
+    
+        * - y (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_y}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.XYZStage`
+    
+        * - z (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_z}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.XYZStage`
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

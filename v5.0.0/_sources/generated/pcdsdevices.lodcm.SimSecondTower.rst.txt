@@ -1,0 +1,259 @@
+﻿pcdsdevices.lodcm.SimSecondTower
+================================
+
+.. currentmodule:: pcdsdevices.lodcm
+
+.. autoclass:: SimSecondTower
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - z2
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - x2
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - y2
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - th2
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - chi2
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - h2n
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - diode2
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - x2_retry_deadband (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self._hutch_prefix}:MON:MMS:11.RDBD``
+          - Retry Deadband for x2
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - z2_retry_deadband (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self._hutch_prefix}:MON:MMS:10.RDBD``
+          - Retry Deadband for z2
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - h2n_state
+          - :class:`~pcdsdevices.lodcm.H2N`
+          - ``:H2N``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - y2_state
+          - :class:`~pcdsdevices.lodcm.Y2`
+          - ``:Y2``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - chi2_state
+          - :class:`~pcdsdevices.lodcm.CHI2`
+          - ``:CHI2``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - diamond_reflection
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:T2C:REF``
+          - Tower 2 Diamond crystal reflection
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - silicon_reflection
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:T2Si:REF``
+          - Tower 2 Silicon crystal reflection
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - x2C (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          - X2 motor offset for C [mm]
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - x2Si (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          - X2 motor offset for Si [mm]
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - y2C (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - Y2 motor offset for C [mm]
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - y2Si (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - Y2 motor offset for Si [mm]
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - chi2C (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - Chi 2 motor offset for C [deg]
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - chi2Si (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - Chi 2 motor offset for Si [deg]
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - h2nC (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          -  H2n motor offset for C [mm]
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+        * - h2nSi (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - H2n motor offset for Si [mm]
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.CrystalTower2`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_material
+    .. automethod:: get_reflection
+    .. automethod:: is_diamond
+    .. automethod:: is_silicon
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

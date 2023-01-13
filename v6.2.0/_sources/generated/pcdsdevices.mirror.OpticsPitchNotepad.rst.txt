@@ -1,0 +1,164 @@
+﻿pcdsdevices.mirror.OpticsPitchNotepad
+=====================================
+
+.. currentmodule:: pcdsdevices.mirror
+
+.. autoclass:: OpticsPitchNotepad
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - mr1l0_pitch_b4c
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR1L0:PITCH:Coating1``
+          - 
+          - normal
+          - 
+    
+        * - mr1l0_pitch_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR1L0:PITCH:Coating2``
+          - 
+          - normal
+          - 
+    
+        * - mr2l0_pitch_b4c
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR2L0:PITCH:Coating1``
+          - 
+          - normal
+          - 
+    
+        * - mr2l0_pitch_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR2L0:PITCH:Coating2``
+          - 
+          - normal
+          - 
+    
+        * - mr1l4_pitch_mec_sic
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR1L4:PITCH:MEC:Coating1``
+          - 
+          - normal
+          - 
+    
+        * - mr1l4_pitch_mec_w
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR1L4:PITCH:MEC:Coating2``
+          - 
+          - normal
+          - 
+    
+        * - mr1l4_pitch_mfx_sic
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR1L4:PITCH:MFX:Coating1``
+          - 
+          - normal
+          - 
+    
+        * - mr1l4_pitch_mfx_w
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR1L4:PITCH:MFX:Coating2``
+          - 
+          - normal
+          - 
+    
+        * - mr1l3_pitch_sic
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR1L3:PITCH:Coating1``
+          - 
+          - normal
+          - 
+    
+        * - mr1l3_pitch_w
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR1L3:PITCH:Coating2``
+          - 
+          - normal
+          - 
+    
+        * - mr2l3_pitch_sic
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR2L3:PITCH:Coating1``
+          - 
+          - normal
+          - 
+    
+        * - mr2l3_pitch_w
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR2L3:PITCH:Coating2``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

@@ -1,0 +1,270 @@
+﻿pcdsdevices.digitizers.Wave8V2PgpMon
+====================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2PgpMon
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - count_reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CountReset``
+          - 
+          - config
+          - 
+    
+        * - rx_eb_overflow_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:EbOverflowCnt``
+          - 
+          - config
+          - 
+    
+        * - rx_frame_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:FrameCnt``
+          - 
+          - config
+          - 
+    
+        * - rx_link_down_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:LinkDownCnt``
+          - 
+          - config
+          - 
+    
+        * - rx_link_error_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:LinkErrorCnt``
+          - 
+          - config
+          - 
+    
+        * - rx_link_ready_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:LinkReadyCnt``
+          - 
+          - config
+          - 
+    
+        * - rx_link_ready
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:LinkReady``
+          - 
+          - config
+          - 
+    
+        * - rx_phy_active_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:PhyActiveCnt``
+          - 
+          - config
+          - 
+    
+        * - rx_phy_active
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:PhyActive``
+          - 
+          - config
+          - 
+    
+        * - rx_rem_overflow_cnt0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:RemOverflowCnt0``
+          - 
+          - config
+          - 
+    
+        * - rx_rem_overflow_cnt1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:RemOverflowCnt1``
+          - 
+          - config
+          - 
+    
+        * - rx_rem_overflow_cnt2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:RemOverflowCnt2``
+          - 
+          - config
+          - 
+    
+        * - rx_rem_overflow_cnt3
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:RemOverflowCnt3``
+          - 
+          - config
+          - 
+    
+        * - rx_rem_link_ready_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:RemRxLinkReadyCnt``
+          - 
+          - config
+          - 
+    
+        * - rx_rem_link_ready
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxStatus:RemRxLinkReady``
+          - 
+          - config
+          - 
+    
+        * - tx_frame_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TxStatus:FrameCnt``
+          - 
+          - config
+          - 
+    
+        * - tx_link_ready_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TxStatus:LinkReadyCnt``
+          - 
+          - config
+          - 
+    
+        * - tx_link_ready
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TxStatus:LinkReady``
+          - 
+          - config
+          - 
+    
+        * - tx_loc_overflow_cnt0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TxStatus:LocOverflowCnt0``
+          - 
+          - config
+          - 
+    
+        * - tx_loc_overflow_cnt1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TxStatus:LocOverflowCnt1``
+          - 
+          - config
+          - 
+    
+        * - tx_loc_overflow_cnt2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TxStatus:LocOverflowCnt2``
+          - 
+          - config
+          - 
+    
+        * - tx_loc_overflow_cnt3
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TxStatus:LocOverflowCnt3``
+          - 
+          - config
+          - 
+    
+        * - tx_phy_active_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TxStatus:PhyActiveCnt``
+          - 
+          - config
+          - 
+    
+        * - tx_phy_active
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TxStatus:PhyActive``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

@@ -1,0 +1,347 @@
+﻿pcdsdevices.analog\_signals.Acromag
+===================================
+
+.. currentmodule:: pcdsdevices.analog_signals
+
+.. autoclass:: Acromag
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - ao1_0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:0``
+          - 
+          - normal
+          - 
+    
+        * - ao1_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:1``
+          - 
+          - normal
+          - 
+    
+        * - ao1_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:2``
+          - 
+          - normal
+          - 
+    
+        * - ao1_3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:3``
+          - 
+          - normal
+          - 
+    
+        * - ao1_4
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:4``
+          - 
+          - normal
+          - 
+    
+        * - ao1_5
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:5``
+          - 
+          - normal
+          - 
+    
+        * - ao1_6
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:6``
+          - 
+          - normal
+          - 
+    
+        * - ao1_7
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:7``
+          - 
+          - normal
+          - 
+    
+        * - ao1_8
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:8``
+          - 
+          - normal
+          - 
+    
+        * - ao1_9
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:9``
+          - 
+          - normal
+          - 
+    
+        * - ao1_10
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:10``
+          - 
+          - normal
+          - 
+    
+        * - ao1_11
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:11``
+          - 
+          - normal
+          - 
+    
+        * - ao1_12
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:12``
+          - 
+          - normal
+          - 
+    
+        * - ao1_13
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:13``
+          - 
+          - normal
+          - 
+    
+        * - ao1_14
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:14``
+          - 
+          - normal
+          - 
+    
+        * - ao1_15
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ao1:15``
+          - 
+          - normal
+          - 
+    
+        * - ai1_0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:0``
+          - 
+          - normal
+          - 
+    
+        * - ai1_1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:1``
+          - 
+          - normal
+          - 
+    
+        * - ai1_2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:2``
+          - 
+          - normal
+          - 
+    
+        * - ai1_3
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:3``
+          - 
+          - normal
+          - 
+    
+        * - ai1_4
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:4``
+          - 
+          - normal
+          - 
+    
+        * - ai1_5
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:5``
+          - 
+          - normal
+          - 
+    
+        * - ai1_6
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:6``
+          - 
+          - normal
+          - 
+    
+        * - ai1_7
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:7``
+          - 
+          - normal
+          - 
+    
+        * - ai1_8
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:8``
+          - 
+          - normal
+          - 
+    
+        * - ai1_9
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:9``
+          - 
+          - normal
+          - 
+    
+        * - ai1_10
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:10``
+          - 
+          - normal
+          - 
+    
+        * - ai1_11
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:11``
+          - 
+          - normal
+          - 
+    
+        * - ai1_12
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:12``
+          - 
+          - normal
+          - 
+    
+        * - ai1_13
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:13``
+          - 
+          - normal
+          - 
+    
+        * - ai1_14
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:14``
+          - 
+          - normal
+          - 
+    
+        * - ai1_15
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ai1:15``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

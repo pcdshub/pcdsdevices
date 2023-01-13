@@ -1,0 +1,68 @@
+﻿pcdsdevices.signal.EpicsSignalEditMD
+====================================
+
+.. currentmodule:: pcdsdevices.signal
+
+.. autoclass:: EpicsSignalEditMD
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_setpoint
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: set_default_timeout
+    .. automethod:: set_defaults
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: SUB_META
+    .. autoattribute:: SUB_SETPOINT
+    .. autoattribute:: SUB_SETPOINT_META
+    .. autoattribute:: alarm_severity
+    .. autoattribute:: alarm_status
+    .. autoattribute:: as_string
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: enum_attrs
+    .. autoattribute:: enum_strs
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: metadata
+    .. autoattribute:: metadata_keys
+    .. autoattribute:: precision
+    .. autoattribute:: put_complete
+    .. autoattribute:: pvname
+    .. autoattribute:: read_access
+    .. autoattribute:: setpoint
+    .. autoattribute:: setpoint_alarm_severity
+    .. autoattribute:: setpoint_alarm_status
+    .. autoattribute:: setpoint_pvname
+    .. autoattribute:: setpoint_ts
+    .. autoattribute:: timeout
+    .. autoattribute:: timestamp
+    .. autoattribute:: tolerance
+    .. autoattribute:: use_limits
+    .. autoattribute:: value
+    .. autoattribute:: write_access
+    .. autoattribute:: write_timeout
+    
+    

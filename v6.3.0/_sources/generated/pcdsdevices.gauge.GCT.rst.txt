@@ -1,0 +1,80 @@
+﻿pcdsdevices.gauge.GCT
+=====================
+
+.. currentmodule:: pcdsdevices.gauge
+
+.. autoclass:: GCT
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - unit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:UNIT``
+          - 
+          - omitted
+          - 
+    
+        * - cal
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CAL``
+          - 
+          - omitted
+          - 
+    
+        * - version
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VERSION_RBV``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

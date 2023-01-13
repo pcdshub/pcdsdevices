@@ -1,0 +1,117 @@
+﻿pcdsdevices.slits.SlitsBase
+===========================
+
+.. currentmodule:: pcdsdevices.slits
+
+.. autoclass:: SlitsBase
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - nominal_aperture
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - xwidth
+          - :class:`~ophyd.signal.SignalRO`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ywidth
+          - :class:`~ophyd.signal.SignalRO`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - xcenter
+          - :class:`~ophyd.signal.SignalRO`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ycenter
+          - :class:`~ophyd.signal.SignalRO`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: current_aperture
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: needs_parent
+    .. autoattribute:: position
+    .. autoattribute:: stage_group
+    .. autoattribute:: transmission
+    
+    

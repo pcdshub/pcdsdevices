@@ -1,0 +1,109 @@
+﻿pcdsdevices.lasers.btps.ShutterSafety
+=====================================
+
+.. currentmodule:: pcdsdevices.lasers.btps
+
+.. autoclass:: ShutterSafety
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - open_request
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``UserOpen``
+          - User request to open/close shutter
+          - normal
+          - 
+    
+        * - latched_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``Error``
+          - Latched error
+          - normal
+          - 
+    
+        * - acknowledge
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``Acknowledge``
+          - User acknowledgement of latched fault
+          - normal
+          - 
+    
+        * - override
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``Override``
+          - BTPS advanced override mode
+          - normal
+          - 
+    
+        * - lss_open_request
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``LSS:OpenRequest``
+          - Output request to LSS open shutter
+          - normal
+          - 
+    
+        * - safe_to_open
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``Safe``
+          - BTPS safe to open indicator
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

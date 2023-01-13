@@ -1,0 +1,137 @@
+﻿pcdsdevices.gauge.MKS937a
+=========================
+
+.. currentmodule:: pcdsdevices.gauge
+
+.. autoclass:: MKS937a
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - frequence
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FREQ``
+          - 
+          - normal
+          - 
+    
+        * - unit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:UNIT``
+          - 
+          - normal
+          - 
+    
+        * - version
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VERSION``
+          - 
+          - config
+          - 
+    
+        * - cc_delay
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:DELAY``
+          - 
+          - config
+          - 
+    
+        * - A1_A2_slot
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODA``
+          - 
+          - config
+          - 
+    
+        * - B1_B2_slot
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODB``
+          - 
+          - config
+          - 
+    
+        * - user_calibration
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CAL``
+          - 
+          - config
+          - 
+    
+        * - frontpanel
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FRONT``
+          - 
+          - config
+          - 
+    
+        * - command
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:COM``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

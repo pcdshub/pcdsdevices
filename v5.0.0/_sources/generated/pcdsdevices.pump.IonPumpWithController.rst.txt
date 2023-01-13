@@ -1,0 +1,184 @@
+﻿pcdsdevices.pump.IonPumpWithController
+======================================
+
+.. currentmodule:: pcdsdevices.pump
+
+.. autoclass:: IonPumpWithController
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - _pressure
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PMON``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pump.IonPumpBase`
+    
+        * - _egu
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PMON.EGU``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pump.IonPumpBase`
+    
+        * - current
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:IMON``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pump.IonPumpBase`
+    
+        * - voltage
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VMON``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pump.IonPumpBase`
+    
+        * - status_code
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUSCODE``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pump.IonPumpBase`
+    
+        * - status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pump.IonPumpBase`
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATEMON``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pump.IonPumpBase`
+    
+        * - pumpsize
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PUMPSIZEDES``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pump.IonPumpBase`
+    
+        * - controllername
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VPCNAME``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pump.IonPumpBase`
+    
+        * - hvstrapping
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VDESRBCK``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pump.IonPumpBase`
+    
+        * - supplysize
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SUPPLYSIZE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pump.IonPumpBase`
+    
+        * - aomode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AOMODEDES``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.pump.IonPumpBase`
+    
+        * - calfactor
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CALFACTORDES``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.pump.IonPumpBase`
+    
+        * - controller (FCpt)
+          - :class:`~pcdsdevices.pump.GammaController`
+          - ``{self.prefix_controller}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: egu
+    .. automethod:: get
+    .. automethod:: info
+    .. automethod:: off
+    .. automethod:: on
+    .. automethod:: pressure
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

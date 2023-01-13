@@ -1,0 +1,452 @@
+﻿pcdsdevices.lasers.thorlabsWFS.ThorlabsWfs40
+============================================
+
+.. currentmodule:: pcdsdevices.lasers.thorlabsWFS
+
+.. autoclass:: ThorlabsWfs40
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - manufacturer
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Manufacturer_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - camera_model
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Model_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - sensor_size_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxSizeX_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - sensor_size_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxSizeY_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - data_type
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DataType``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - exposure
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AcquireTime``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - gain
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Gain``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - num_images
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumImages``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - image_mode
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ImageMode``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - trigger_mode
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``TriggerMode``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - acquisition_period
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AcquirePeriod``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - acquire
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Acquire``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - acquire_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``DetectorState_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - image_counter
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``NumImagesCounter_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - cam_viewer
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - event_code
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``CamEventCode``
+          - Code to determine beam synchronization rate.
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - event_rate
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``CamRepRate_RBV``
+          - Current rate of the incoming triggers. Determined by event_code and the accelerator state.
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - ambient_light
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``StatHighAmbientLight``
+          - Status: Ambient light too high
+          - config
+          - 
+    
+        * - power_high
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``StatPowerHigh``
+          - Status: power too high status
+          - config
+          - 
+    
+        * - power_low
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``StatPowerLow``
+          - Status: power too low
+          - config
+          - 
+    
+        * - low_contrast
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``StatLowSpotContrast``
+          - Status: contrast too low
+          - config
+          - 
+    
+        * - low_spots
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``StatNotEnoughSpots``
+          - Status: too few spots
+          - config
+          - 
+    
+        * - high_spots
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``StatTooMuchSpots``
+          - Status: too many spots
+          - config
+          - 
+    
+        * - trigger_wait
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``StatTriggerWait``
+          - Status: waiting for trigger
+          - config
+          - 
+    
+        * - cam_ready
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``StatCameraReady``
+          - Status: camera ready
+          - config
+          - 
+    
+        * - pupil_defined
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``StatPupilDefined``
+          - Status: pupil defined
+          - config
+          - 
+    
+        * - pupil_centroid_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PupilCentroidX``
+          - Est. pupil centroid X
+          - config
+          - 
+    
+        * - pupil_centroid_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PupilCentroidY``
+          - Est. pupil centroid Y
+          - config
+          - 
+    
+        * - pupil_diameter_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PupilDiameterX``
+          - Pupil diameter X
+          - config
+          - 
+    
+        * - pupil_diameter_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PupilDiameterY``
+          - Pupil diameter Y
+          - config
+          - 
+    
+        * - use_beam_centroid
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``UseBeamCentroid``
+          - Flag to use beam centroid
+          - config
+          - 
+    
+        * - use_beam_diameter
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``UseBeamDiameter``
+          - Flag to use beam diameter
+          - config
+          - 
+    
+        * - use_circular_pupil
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``UseCircularPupil``
+          - Flag to use circular pupil
+          - config
+          - 
+    
+        * - beam_centroid_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``BeamCentroidX_RBV``
+          - Measured beam centroid X
+          - normal
+          - 
+    
+        * - beam_centroid_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``BeamCentroidY_RBV``
+          - Measured beam centroid Y
+          - normal
+          - 
+    
+        * - beam_diameter_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``BeamDiameterX_RBV``
+          - Measured beam diameter in X
+          - normal
+          - 
+    
+        * - beam_diameter_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``BeamDiameterY_RBV``
+          - Measured beam diameter in Y
+          - normal
+          - 
+    
+        * - radius_of_curvature
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``RadiusOfCurvature_RBV``
+          - Measured beam radius of curvature
+          - normal
+          - 
+    
+        * - fourier_m
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``FourierM_RBV``
+          - Fourier M component
+          - config
+          - 
+    
+        * - fourier_j0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``FourierJ0_RBV``
+          - Fourier J0 component
+          - config
+          - 
+    
+        * - fourier_j45
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``FourierJ45_RBV``
+          - Fourier J45 component
+          - config
+          - 
+    
+        * - number_of_exposures
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NumExposures``
+          - Number of images to average for calcs
+          - config
+          - 
+    
+        * - wavefront_data
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Wavefront_RBV``
+          - Raw wavefront data array
+          - omitted
+          - 
+    
+        * - wavefront
+          - :class:`~ophyd.areadetector.base.NDDerivedSignal`
+          - 
+          - Shaped wavefront image
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: open_viewer
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

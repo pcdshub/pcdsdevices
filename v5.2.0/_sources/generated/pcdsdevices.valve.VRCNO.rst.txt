@@ -1,0 +1,136 @@
+﻿pcdsdevices.valve.VRCNO
+=======================
+
+.. currentmodule:: pcdsdevices.valve
+
+.. autoclass:: VRCNO
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - close_command
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:CLS_SW``
+          - Epics command to close valve
+          - normal
+          - Inherited from :class:`~pcdsdevices.valve.VVCNO`
+    
+        * - close_override
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:FORCE_CLS``
+          - Epics Command for open the valve in override mode
+          - omitted
+          - Inherited from :class:`~pcdsdevices.valve.VVCNO`
+    
+        * - override_on
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:OVRD_ON``
+          - Epics Command to set/reset Override mode
+          - omitted
+          - Inherited from :class:`~pcdsdevices.valve.VVCNO`
+    
+        * - close_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CLS_OK_RBV``
+          - used for normally open valves
+          - normal
+          - Inherited from :class:`~pcdsdevices.valve.VVCNO`
+    
+        * - close_do
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CLS_DO_RBV``
+          - PLC Output to close valve
+          - normal
+          - Inherited from :class:`~pcdsdevices.valve.VVCNO`
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATE_RBV``
+          - Valve state
+          - normal
+          - 
+    
+        * - error_reset
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:ALM_RST``
+          - Reset Error state to valid by toggling this
+          - normal
+          - 
+    
+        * - open_limit
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OPN_DI_RBV``
+          - Open limit switch digital input
+          - hinted
+          - 
+    
+        * - closed_limit
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CLS_DI_RBV``
+          - Closed limit switch digital input
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: transmission
+    
+    

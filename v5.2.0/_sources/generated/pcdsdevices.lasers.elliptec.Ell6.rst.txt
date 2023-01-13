@@ -1,0 +1,161 @@
+﻿pcdsdevices.lasers.elliptec.Ell6
+================================
+
+.. currentmodule:: pcdsdevices.lasers.elliptec
+
+.. autoclass:: Ell6
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - set_position (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CURPOS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
+        * - jog_fwd (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE_FWD``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
+        * - jog_bwd (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE_BWD``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
+        * - status (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:M{self._channel}:STATUS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
+        * - optimize (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:OPTIMIZE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
+        * - _from_addr (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:FROM_ADDR``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
+        * - _to_addr (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:TO_ADDR``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
+        * - _save (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:SAVE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
+        * - _command (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:CMD``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
+        * - _response (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:PORT{self._port}:RESPONSE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
+        * - name_0 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:NAME0``
+          - 
+          - config
+          - 
+    
+        * - name_1 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:NAME1``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

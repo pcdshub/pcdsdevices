@@ -1,0 +1,84 @@
+﻿pcdsdevices.spectrometer.VonHamosCrystal
+========================================
+
+.. currentmodule:: pcdsdevices.spectrometer
+
+.. autoclass:: VonHamosCrystal
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - pitch
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:Pitch``
+          - 
+          - normal
+          - 
+    
+        * - yaw
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:Yaw``
+          - 
+          - normal
+          - 
+    
+        * - trans
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:Translation``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

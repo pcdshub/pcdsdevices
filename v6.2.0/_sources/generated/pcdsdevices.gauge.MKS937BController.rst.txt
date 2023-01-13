@@ -1,0 +1,161 @@
+﻿pcdsdevices.gauge.MKS937BController
+===================================
+
+.. currentmodule:: pcdsdevices.gauge
+
+.. autoclass:: MKS937BController
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - unit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:UNIT``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GCT`
+    
+        * - cal
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CAL``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GCT`
+    
+        * - version
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VERSION_RBV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GCT`
+    
+        * - addr
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ADDR``
+          - 
+          - omitted
+          - 
+    
+        * - modtype_a
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODTYPE_A_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - modtype_b
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODTYPE_B_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - modtype_c
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODTYPE_C_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - pstatall
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PSTATALL_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - pstatenall
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PSTATENALL_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - slota
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SLOTA``
+          - 
+          - omitted
+          - 
+    
+        * - slotb
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SLOTB``
+          - 
+          - omitted
+          - 
+    
+        * - slotc
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SLOTC``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

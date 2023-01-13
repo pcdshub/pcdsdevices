@@ -1,0 +1,101 @@
+﻿pcdsdevices.lasers.btps.DestinationConfig
+=========================================
+
+.. currentmodule:: pcdsdevices.lasers.btps
+
+.. autoclass:: DestinationConfig
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - name_
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``Name``
+          - Destination name
+          - normal
+          - 
+    
+        * - source1
+          - :class:`~pcdsdevices.lasers.btps.SourceConfig`
+          - ``SRC:01:``
+          - Settings for source 1
+          - normal
+          - 
+    
+        * - source3
+          - :class:`~pcdsdevices.lasers.btps.SourceConfig`
+          - ``SRC:03:``
+          - Settings for source 3
+          - normal
+          - 
+    
+        * - source4
+          - :class:`~pcdsdevices.lasers.btps.SourceConfig`
+          - ``SRC:04:``
+          - Settings for source 4
+          - normal
+          - 
+    
+        * - exit_valve_ready
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``ExitValveReady``
+          - Exit valve is open and ready
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

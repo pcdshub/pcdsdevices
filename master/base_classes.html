@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Base Classes &mdash; PCDS Devices 7.1.0+55.g8cbc0b7.dirty documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/_static/theme_overrides.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Simulated Devices" href="sim_types.html" />
+    <link rel="prev" title="Signal Classes" href="signals.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> PCDS Devices
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                7.1.0+55.g8cbc0b7.dirty
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Device Types</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="signals.html">Signal Classes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Base Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#synchronized-axes">Synchronized Axes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#offset-motor">Offset Motor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#laser-delay-stages">Laser delay stages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#look-up-tables">Look-up Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pv-positioners">PV Positioners</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sim_types.html">Simulated Devices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mv.html">Shortcuts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="presets.html">Preset Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tab.html">IPython Tab Curation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">UI Templates</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upcoming_changes.html">Upcoming Changes</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PCDS Devices</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Base Classes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/base_classes.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="base-classes">
+<h1>Base Classes<a class="headerlink" href="#base-classes" title="Permalink to this heading">¶</a></h1>
+<section id="synchronized-axes">
+<h2>Synchronized Axes<a class="headerlink" href="#synchronized-axes" title="Permalink to this heading">¶</a></h2>
+<p>The <a class="reference internal" href="generated/pcdsdevices.pseudopos.SyncAxis.html#pcdsdevices.pseudopos.SyncAxis" title="pcdsdevices.pseudopos.SyncAxis"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SyncAxis</span></code></a> class is provided as a shortcut for creating classes that need
+to move multiple positioners at the same time with the same scale. This is
+useful for things like stands that have multiple motors.</p>
+<p>You can create a class as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Parallel</span><span class="p">(</span><span class="n">SyncAxis</span><span class="p">):</span>
+    <span class="n">left</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s1">&#39;:01&#39;</span><span class="p">)</span>
+    <span class="n">right</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsMotor</span><span class="p">,</span> <span class="s1">&#39;:02&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>There are different modes for how to keep the offset between the motors.  See
+the <a class="reference internal" href="generated/pcdsdevices.pseudopos.SyncAxis.html#pcdsdevices.pseudopos.SyncAxis" title="pcdsdevices.pseudopos.SyncAxis"><code class="xref any py py-class docutils literal notranslate"><span class="pre">full</span> <span class="pre">API</span> <span class="pre">of</span> <span class="pre">SyncAxis</span></code></a> for more information.</p>
+<p>Previous documentation indicated to use <a class="reference internal" href="generated/pcdsdevices.pseudopos.SyncAxesBase.html#pcdsdevices.pseudopos.SyncAxesBase" title="pcdsdevices.pseudopos.SyncAxesBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">SyncAxesBase</span></code></a>, but this has since been
+deprecated and we no longer suggest for it to be used.</p>
+</section>
+<section id="offset-motor">
+<h2>Offset Motor<a class="headerlink" href="#offset-motor" title="Permalink to this heading">¶</a></h2>
+<p>A pseudopositioner base class that supports adding an offset to an existing
+motor is <a class="reference internal" href="generated/pcdsdevices.pseudopos.OffsetMotorBase.html#pcdsdevices.pseudopos.OffsetMotorBase" title="pcdsdevices.pseudopos.OffsetMotorBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">OffsetMotorBase</span></code></a>.</p>
+</section>
+<section id="laser-delay-stages">
+<h2>Laser delay stages<a class="headerlink" href="#laser-delay-stages" title="Permalink to this heading">¶</a></h2>
+<p>pcdsdevices provides a laser delay stage base class that helps rescale a
+physical axis to a time axis.</p>
+<p>The optical laser travels along the motor’s axis and bounces off a number of
+mirrors, then continues to the destination. In this way, the path length of the
+laser changes, which introduces a variable delay. This delay is a simple
+multiplier based on the speed of light.</p>
+<p>For more details, see <a class="reference internal" href="generated/pcdsdevices.pseudopos.DelayBase.html#pcdsdevices.pseudopos.DelayBase" title="pcdsdevices.pseudopos.DelayBase"><code class="xref any py py-class docutils literal notranslate"><span class="pre">DelayBase</span></code></a> (<a class="reference internal" href="generated/pcdsdevices.pseudopos.delay_class_factory.html#pcdsdevices.pseudopos.delay_class_factory" title="pcdsdevices.pseudopos.delay_class_factory"><code class="xref any py py-func docutils literal notranslate"><span class="pre">delay_class_factory</span></code></a>,
+<a class="reference internal" href="generated/pcdsdevices.pseudopos.delay_instance_factory.html#pcdsdevices.pseudopos.delay_instance_factory" title="pcdsdevices.pseudopos.delay_instance_factory"><code class="xref any py py-func docutils literal notranslate"><span class="pre">delay_instance_factory</span></code></a>).</p>
+<p>An “Interface” class is also provided which does not require subclassing.
+See <a class="reference internal" href="generated/pcdsdevices.pseudopos.DelayMotor.html#pcdsdevices.pseudopos.DelayMotor" title="pcdsdevices.pseudopos.DelayMotor"><code class="xref any py py-class docutils literal notranslate"><span class="pre">DelayMotor</span></code></a> for more information.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">stage</span> <span class="o">=</span> <span class="n">SynMotor</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;stage&quot;</span><span class="p">)</span>
+<span class="n">delay</span> <span class="o">=</span> <span class="n">DelayMotor</span><span class="p">(</span><span class="n">motor</span><span class="o">=</span><span class="n">stage</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;delay&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="look-up-tables">
+<h2>Look-up Tables<a class="headerlink" href="#look-up-tables" title="Permalink to this heading">¶</a></h2>
+<p>pcdsdevices provides a base class for pseudo positioners which need a look-up
+table to compute positions.</p>
+<p>Currently it supports a single pseudo positioner and single “real” positioner,
+which should be mapped to columns of a 2D numpy.ndarray <code class="docutils literal notranslate"><span class="pre">table</span></code>.</p>
+<p>See <a class="reference internal" href="generated/pcdsdevices.pseudopos.LookupTablePositioner.html#pcdsdevices.pseudopos.LookupTablePositioner" title="pcdsdevices.pseudopos.LookupTablePositioner"><code class="xref any py py-class docutils literal notranslate"><span class="pre">LookupTablePositioner</span></code></a> for more information.</p>
+</section>
+<section id="pv-positioners">
+<h2>PV Positioners<a class="headerlink" href="#pv-positioners" title="Permalink to this heading">¶</a></h2>
+<p>pcdsdevices offers several flavors of “PV Positioners” - building on the
+ophyd concept of <code class="xref any docutils literal notranslate"><span class="pre">PVPositioner</span></code>.  These allow the user to group disparate
+EPICS signals into a single ophyd device, in order to make it conform to the
+same interface as a standard <code class="xref any docutils literal notranslate"><span class="pre">EpicsMotor</span></code>.</p>
+<p>The following options are available:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="generated/pcdsdevices.pv_positioner.PVPositionerComparator.html#pcdsdevices.pv_positioner.PVPositionerComparator" title="pcdsdevices.pv_positioner.PVPositionerComparator"><code class="xref any py py-class docutils literal notranslate"><span class="pre">PVPositionerComparator</span></code></a> - a PV Positioner with a software done moving
+signal; i.e., you supply the comparison function to say when the motion has
+completed.</p></li>
+<li><p><a class="reference internal" href="generated/pcdsdevices.pv_positioner.PVPositionerIsClose.html#pcdsdevices.pv_positioner.PVPositionerIsClose" title="pcdsdevices.pv_positioner.PVPositionerIsClose"><code class="xref any py py-class docutils literal notranslate"><span class="pre">PVPositionerIsClose</span></code></a> - a PV Positioner that is considered done moving when
+the readback and setpoint are within a certain relative/absolute tolerance.</p></li>
+<li><p><a class="reference internal" href="generated/pcdsdevices.pv_positioner.PVPositionerDone.html#pcdsdevices.pv_positioner.PVPositionerDone" title="pcdsdevices.pv_positioner.PVPositionerDone"><code class="xref any py py-class docutils literal notranslate"><span class="pre">PVPositionerDone</span></code></a> - a PV positioner that is solely comprised of a setpoint
+signal and assumes motion has completed.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="sim_types.html" class="btn btn-neutral float-right" title="Simulated Devices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="signals.html" class="btn btn-neutral float-left" title="Signal Classes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2023, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

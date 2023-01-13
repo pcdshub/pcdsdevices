@@ -1,0 +1,119 @@
+﻿pcdsdevices.digitizers.Wave8V2ADCSampleReadout
+==============================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2ADCSampleReadout
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - convert
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Convert_RBV``
+          - 
+          - config
+          - 
+    
+        * - dmode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DMode_RBV``
+          - 
+          - config
+          - 
+    
+        * - invert
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Invert_RBV``
+          - 
+          - config
+          - 
+    
+        * - adcA_samples
+          - :class:`~pcdsdevices.digitizers.Wave8V2ADCSamples`
+          - ``:AdcA``
+          - 
+          - normal
+          - 
+    
+        * - adcB_samples
+          - :class:`~pcdsdevices.digitizers.Wave8V2ADCSamples`
+          - ``:AdcB``
+          - 
+          - normal
+          - 
+    
+        * - adcA_delay_lanes
+          - :class:`~pcdsdevices.digitizers.Wave8V2ADCDelayLanes`
+          - ``:DelayAdcA``
+          - 
+          - normal
+          - 
+    
+        * - adcB_delay_lanes
+          - :class:`~pcdsdevices.digitizers.Wave8V2ADCDelayLanes`
+          - ``:DelayAdcB``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

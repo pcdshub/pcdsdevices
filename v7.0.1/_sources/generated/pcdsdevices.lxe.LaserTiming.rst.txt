@@ -1,0 +1,143 @@
+﻿pcdsdevices.lxe.LaserTiming
+===========================
+
+.. currentmodule:: pcdsdevices.lxe
+
+.. autoclass:: LaserTiming
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - _fs_tgt_time
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VIT:FS_TGT_TIME``
+          - The internal nanosecond-expecting signal.
+          - omitted
+          - 
+    
+        * - setpoint
+          - :class:`~pcdsdevices.lxe._ScaledUnitConversionDerivedSignal`
+          - 
+          - Setpoint which handles the timing conversion.
+          - hinted
+          - 
+    
+        * - notepad_setpoint
+          - :class:`~pcdsdevices.signal.NotepadLinkedSignal`
+          - ``:lxt:OphydSetpoint``
+          - 
+          - omitted
+          - 
+    
+        * - notepad_readback
+          - :class:`~pcdsdevices.signal.NotepadLinkedSignal`
+          - ``:lxt:OphydReadback``
+          - 
+          - omitted
+          - 
+    
+        * - user_offset
+          - :class:`~pcdsdevices.signal.NotepadLinkedSignal`
+          - ``:lxt:OphydOffset``
+          - A Python-level user offset.
+          - normal
+          - 
+    
+        * - done
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:MMS:PH.DMOV``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_current_position
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate
+    .. autoattribute:: actuate_value
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: dial_pos
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: readback
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    .. autoattribute:: verbose_name
+    
+    

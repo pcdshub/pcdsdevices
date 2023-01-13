@@ -1,0 +1,171 @@
+﻿pcdsdevices.lic.LICMirror
+=========================
+
+.. currentmodule:: pcdsdevices.lic
+
+.. autoclass:: LICMirror
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - state
+          - :class:`~pcdsdevices.signal.EpicsSignalEditMD`
+          - ``:GET_RBV``
+          - Setpoint and readback for TwinCAT state position.
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pmps.TwinCATStatePMPS`
+    
+        * - error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERR``
+          - True if we have an error.
+          - normal
+          - Inherited from :class:`~pcdsdevices.pmps.TwinCATStatePMPS`
+    
+        * - error_id
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERRID``
+          - Error code.
+          - normal
+          - Inherited from :class:`~pcdsdevices.pmps.TwinCATStatePMPS`
+    
+        * - error_message
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERRMSG``
+          - Error message
+          - normal
+          - Inherited from :class:`~pcdsdevices.pmps.TwinCATStatePMPS`
+    
+        * - busy
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BUSY``
+          - True if we have an ongoing move.
+          - normal
+          - Inherited from :class:`~pcdsdevices.pmps.TwinCATStatePMPS`
+    
+        * - done
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:DONE``
+          - True if we completed the last move.
+          - normal
+          - Inherited from :class:`~pcdsdevices.pmps.TwinCATStatePMPS`
+    
+        * - reset_cmd
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RESET``
+          - Command to reset an error.
+          - normal
+          - Inherited from :class:`~pcdsdevices.pmps.TwinCATStatePMPS`
+    
+        * - config (UpdateComponent)
+          - :class:`~pcdsdevices.state.TwinCATStateConfigDynamic`
+          - 
+          - Configuration of state positions, deltas, etc.
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pmps.TwinCATStatePMPS`
+    
+        * - arb_enable
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PMPS:ARB:ENABLE``
+          - Enables PMPS pre-emptive protections. This can be disabled to fall back on fast-fault-only protections. Disabling this will also clear arbiter requests.
+          - config
+          - Inherited from :class:`~pcdsdevices.pmps.TwinCATStatePMPS`
+    
+        * - maint_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PMPS:MAINT``
+          - If this is on, we trip a fast fault and then can move the motor freely. Useful for debugging motion issues.
+          - config
+          - Inherited from :class:`~pcdsdevices.pmps.TwinCATStatePMPS`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_inserted
+    .. automethod:: check_removed
+    .. automethod:: check_transmission
+    .. automethod:: clear_error
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_state
+    .. automethod:: insert
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: set
+    .. automethod:: status
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: in_states
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: out_states
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: states_list
+    .. autoattribute:: stop
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    

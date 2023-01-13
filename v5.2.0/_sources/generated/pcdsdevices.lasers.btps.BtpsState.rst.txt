@@ -1,0 +1,154 @@
+﻿pcdsdevices.lasers.btps.BtpsState
+=================================
+
+.. currentmodule:: pcdsdevices.lasers.btps
+
+.. autoclass:: BtpsState
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - config
+          - :class:`~pcdsdevices.lasers.btps.GlobalConfig`
+          - ``Config:``
+          - Global configuration
+          - normal
+          - 
+    
+        * - shutter1
+          - :class:`~pcdsdevices.lasers.btps.ShutterSafety`
+          - ``Shutter:01:``
+          - Source Shutter 1
+          - normal
+          - 
+    
+        * - shutter3
+          - :class:`~pcdsdevices.lasers.btps.ShutterSafety`
+          - ``Shutter:03:``
+          - Source Shutter 3
+          - normal
+          - 
+    
+        * - shutter4
+          - :class:`~pcdsdevices.lasers.btps.ShutterSafety`
+          - ``Shutter:04:``
+          - Source Shutter 4
+          - normal
+          - 
+    
+        * - dest1
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``DEST:01:``
+          - Destination 1
+          - normal
+          - 
+    
+        * - dest2
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``DEST:02:``
+          - Destination 2
+          - normal
+          - 
+    
+        * - dest3
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``DEST:03:``
+          - Destination 3
+          - normal
+          - 
+    
+        * - dest4
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``DEST:04:``
+          - Destination 4
+          - normal
+          - 
+    
+        * - dest5
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``DEST:05:``
+          - Destination 5
+          - normal
+          - 
+    
+        * - dest6
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``DEST:06:``
+          - Destination 6
+          - normal
+          - 
+    
+        * - dest7
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``DEST:07:``
+          - Destination 7
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

@@ -1,0 +1,163 @@
+﻿pcdsdevices.piezo.SliceDhvController
+====================================
+
+.. currentmodule:: pcdsdevices.piezo
+
+.. autoclass:: SliceDhvController
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - _command
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD``
+          - 
+          - omitted
+          - 
+    
+        * - _reply
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:REPLY``
+          - 
+          - omitted
+          - 
+    
+        * - version
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VERSION``
+          - 
+          - omitted
+          - 
+    
+        * - reset_ch1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FACTORY_RESET_CH1``
+          - 
+          - omitted
+          - 
+    
+        * - reset_ch2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FACTORY_RESET_CH2``
+          - 
+          - omitted
+          - 
+    
+        * - save_config
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SAVE_CONFIG``
+          - 
+          - config
+          - 
+    
+        * - save_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SAVE_STATUS``
+          - 
+          - config
+          - 
+    
+        * - manufacturer
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MANUFACTURER``
+          - 
+          - omitted
+          - 
+    
+        * - model
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODEL``
+          - 
+          - omitted
+          - 
+    
+        * - serial
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SERIAL``
+          - 
+          - omitted
+          - 
+    
+        * - ctl_fw
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CTL_FW``
+          - 
+          - omitted
+          - 
+    
+        * - dhv_fw
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:DHV_FW``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

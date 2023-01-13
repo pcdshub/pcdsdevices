@@ -1,0 +1,144 @@
+﻿pcdsdevices.digitizers.Wave8V2Simple
+====================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2Simple
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - run_start
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SeqStartRun.PROC``
+          - 
+          - normal
+          - 
+    
+        * - run_stop
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SeqStopRun.PROC``
+          - 
+          - normal
+          - 
+    
+        * - ch0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH0:ArrayData``
+          - 
+          - normal
+          - 
+    
+        * - ch1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH1:ArrayData``
+          - 
+          - normal
+          - 
+    
+        * - ch2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH2:ArrayData``
+          - 
+          - normal
+          - 
+    
+        * - ch3
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH3:ArrayData``
+          - 
+          - normal
+          - 
+    
+        * - ch4
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH4:ArrayData``
+          - 
+          - normal
+          - 
+    
+        * - ch5
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH5:ArrayData``
+          - 
+          - normal
+          - 
+    
+        * - ch6
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH6:ArrayData``
+          - 
+          - normal
+          - 
+    
+        * - ch7
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH7:ArrayData``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

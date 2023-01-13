@@ -1,0 +1,316 @@
+﻿pcdsdevices.attenuator.AT2L0
+============================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: AT2L0
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - num_in
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - hinted
+          - 
+    
+        * - num_out
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - hinted
+          - 
+    
+        * - error_summary
+          - :class:`~pcdsdevices.signal.MultiDerivedSignalRO`
+          - 
+          - summarize the errors at any time on any blade via a string
+          - normal
+          - 
+    
+        * - error_summary_bitmask
+          - :class:`~pcdsdevices.signal.MultiDerivedSignalRO`
+          - 
+          - summarize errors at any time on any blade via a bitmask
+          - normal
+          - 
+    
+        * - reset_errors
+          - :class:`~pcdsdevices.signal.MultiDerivedSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - calculator (UnrelatedComponent)
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculator_AT2L0`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - blade_01
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:01``
+          - 
+          - normal
+          - 
+    
+        * - blade_02
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:02``
+          - 
+          - normal
+          - 
+    
+        * - blade_03
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:03``
+          - 
+          - normal
+          - 
+    
+        * - blade_04
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:04``
+          - 
+          - normal
+          - 
+    
+        * - blade_05
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:05``
+          - 
+          - normal
+          - 
+    
+        * - blade_06
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:06``
+          - 
+          - normal
+          - 
+    
+        * - blade_07
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:07``
+          - 
+          - normal
+          - 
+    
+        * - blade_08
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:08``
+          - 
+          - normal
+          - 
+    
+        * - blade_09
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:09``
+          - 
+          - normal
+          - 
+    
+        * - blade_10
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:10``
+          - 
+          - normal
+          - 
+    
+        * - blade_11
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:11``
+          - 
+          - normal
+          - 
+    
+        * - blade_12
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:12``
+          - 
+          - normal
+          - 
+    
+        * - blade_13
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:13``
+          - 
+          - normal
+          - 
+    
+        * - blade_14
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:14``
+          - 
+          - normal
+          - 
+    
+        * - blade_15
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:15``
+          - 
+          - normal
+          - 
+    
+        * - blade_16
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:16``
+          - 
+          - normal
+          - 
+    
+        * - blade_17
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:17``
+          - 
+          - normal
+          - 
+    
+        * - blade_18
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:18``
+          - 
+          - normal
+          - 
+    
+        * - blade_19
+          - :class:`~pcdsdevices.attenuator.FEESolidAttenuatorBlade`
+          - ``:MMS:19``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: clear_errors
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: print_errors
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate
+    .. autoattribute:: actuate_value
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: done
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: readback
+    .. autoattribute:: setpoint
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    

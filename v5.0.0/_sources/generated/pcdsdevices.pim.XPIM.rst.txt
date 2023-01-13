@@ -1,0 +1,150 @@
+﻿pcdsdevices.pim.XPIM
+====================
+
+.. currentmodule:: pcdsdevices.pim
+
+.. autoclass:: XPIM
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - target
+          - :class:`~pcdsdevices.pim.LCLS2Target`
+          - ``:MMS:STATE``
+          - Control of the diagnostic stack via saved positions.
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pim.LCLS2ImagerBase`
+    
+        * - y_motor
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS``
+          - Direct control of the diagnostic stack motor.
+          - normal
+          - Inherited from :class:`~pcdsdevices.pim.LCLS2ImagerBase`
+    
+        * - detector
+          - :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+          - ``:CAM:``
+          - Area detector settings and readbacks.
+          - normal
+          - Inherited from :class:`~pcdsdevices.pim.LCLS2ImagerBase`
+    
+        * - cam_power
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CAM:PWR``
+          - Camera power supply controls.
+          - config
+          - Inherited from :class:`~pcdsdevices.pim.LCLS2ImagerBase`
+    
+        * - zoom_motor
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:CLZ``
+          - Motorized zoom.
+          - normal
+          - 
+    
+        * - focus_motor
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:CLF``
+          - Motorized focus.
+          - normal
+          - 
+    
+        * - zoom_lock
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CLZ:LOCK``
+          - Lockout to prevent zoom motion.
+          - config
+          - 
+    
+        * - focus_lock
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CLF:LOCK``
+          - Lockout to prevent focus motion.
+          - config
+          - 
+    
+        * - led
+          - :class:`~pcdsdevices.pim.XPIMLED`
+          - ``:CIL``
+          - LED for viewing the reticle.
+          - config
+          - 
+    
+        * - filter_wheel
+          - :class:`~pcdsdevices.pim.XPIMFilterWheel`
+          - ``:MFW``
+          - Optical filter wheel in front of the camera to prevent saturation.
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: transmission
+    .. autoattribute:: y_states
+    
+    

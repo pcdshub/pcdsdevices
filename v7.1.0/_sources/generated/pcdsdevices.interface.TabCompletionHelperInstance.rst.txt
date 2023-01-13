@@ -1,0 +1,35 @@
+﻿pcdsdevices.interface.TabCompletionHelperInstance
+=================================================
+
+.. currentmodule:: pcdsdevices.interface
+
+.. autoclass:: TabCompletionHelperInstance
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: add
+    .. automethod:: build_regex
+    .. automethod:: get_dir
+    .. automethod:: get_filtered_dir_list
+    .. automethod:: remove
+    .. automethod:: reset
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: class_helper
+    .. autoattribute:: instance
+    .. autoattribute:: super_dir
+    
+    

@@ -1,0 +1,109 @@
+﻿pcdsdevices.slits.SlitPositioner
+================================
+
+.. currentmodule:: pcdsdevices.slits
+
+.. autoclass:: SlitPositioner
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - readback (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:ACTUAL_{_dirlong}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.LusiSlitPositioner`
+    
+        * - setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:{_dirshort}_REQ``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.LusiSlitPositioner`
+    
+        * - done
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:DMOV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.LusiSlitPositioner`
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate
+    .. autoattribute:: actuate_value
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: timeout
+    
+    

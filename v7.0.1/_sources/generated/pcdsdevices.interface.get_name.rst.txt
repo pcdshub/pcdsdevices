@@ -1,0 +1,6 @@
+﻿pcdsdevices.interface.get\_name
+===============================
+
+.. currentmodule:: pcdsdevices.interface
+
+.. autofunction:: get_name

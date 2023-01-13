@@ -1,0 +1,146 @@
+﻿pcdsdevices.pump.GammaController
+================================
+
+.. currentmodule:: pcdsdevices.pump
+
+.. autoclass:: GammaController
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - channel1name
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CHAN1NAME``
+          - 
+          - config
+          - 
+    
+        * - channel2name
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CHAN2NAME``
+          - 
+          - config
+          - 
+    
+        * - model
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODEL``
+          - 
+          - config
+          - 
+    
+        * - firmwareversion
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FWVERSION``
+          - 
+          - config
+          - 
+    
+        * - linevoltage
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:LINEV``
+          - 
+          - omitted
+          - 
+    
+        * - linefrequency
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:LINEFREQ``
+          - 
+          - omitted
+          - 
+    
+        * - cooling_fan_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FAN``
+          - 
+          - omitted
+          - 
+    
+        * - power_autosave
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ASPOWERE``
+          - 
+          - config
+          - 
+    
+        * - high_voltage_enable_autosave
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ASHVE``
+          - 
+          - normal
+          - 
+    
+        * - unit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PEGUDES``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

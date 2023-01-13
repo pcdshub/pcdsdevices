@@ -1,0 +1,96 @@
+﻿pcdsdevices.rtds\_ebd.RTDSBase
+==============================
+
+.. currentmodule:: pcdsdevices.rtds_ebd
+
+.. autoclass:: RTDSBase
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - mpa1
+          - :class:`~pcdsdevices.rtds_ebd.PneumaticActuator`
+          - ``:MPA:01``
+          - 
+          - normal
+          - 
+    
+        * - mpa2
+          - :class:`~pcdsdevices.rtds_ebd.PneumaticActuator`
+          - ``:MPA:02``
+          - 
+          - normal
+          - 
+    
+        * - mpa3
+          - :class:`~pcdsdevices.rtds_ebd.PneumaticActuator`
+          - ``:MPA:03``
+          - 
+          - normal
+          - 
+    
+        * - mpa4
+          - :class:`~pcdsdevices.rtds_ebd.PneumaticActuator`
+          - ``:MPA:04``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: transmission
+    
+    

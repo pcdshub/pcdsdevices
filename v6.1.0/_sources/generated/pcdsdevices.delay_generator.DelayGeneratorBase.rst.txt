@@ -1,0 +1,80 @@
+﻿pcdsdevices.delay\_generator.DelayGeneratorBase
+===============================================
+
+.. currentmodule:: pcdsdevices.delay_generator
+
+.. autoclass:: DelayGeneratorBase
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - trig_source
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:triggerSourceMI``
+          - 
+          - config
+          - 
+    
+        * - trig_inhibit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:triggerInhibitMI``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_trigger_inhibit
+    .. automethod:: get_trigger_source
+    .. automethod:: post_elog_status
+    .. automethod:: print_trigger_inhibit
+    .. automethod:: print_trigger_sources
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_trigger_inhibit
+    .. automethod:: set_trigger_source
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

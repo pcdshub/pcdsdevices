@@ -1,0 +1,72 @@
+﻿pcdsdevices.epics\_motor.SmarActTipTilt
+=======================================
+
+.. currentmodule:: pcdsdevices.epics_motor
+
+.. autoclass:: SmarActTipTilt
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - tip (FCpt)
+          - :class:`~pcdsdevices.epics_motor.SmarActOpenLoop`
+          - ``{prefix}{self._tip_pv}``
+          - 
+          - normal
+          - 
+    
+        * - tilt (FCpt)
+          - :class:`~pcdsdevices.epics_motor.SmarActOpenLoop`
+          - ``{prefix}{self._tilt_pv}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

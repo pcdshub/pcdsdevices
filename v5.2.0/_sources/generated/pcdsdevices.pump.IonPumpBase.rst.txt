@@ -1,0 +1,176 @@
+﻿pcdsdevices.pump.IonPumpBase
+============================
+
+.. currentmodule:: pcdsdevices.pump
+
+.. autoclass:: IonPumpBase
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - _pressure
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PMON``
+          - 
+          - hinted
+          - 
+    
+        * - _egu
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PMON.EGU``
+          - 
+          - omitted
+          - 
+    
+        * - current
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:IMON``
+          - 
+          - normal
+          - 
+    
+        * - voltage
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VMON``
+          - 
+          - normal
+          - 
+    
+        * - status_code
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUSCODE``
+          - 
+          - normal
+          - 
+    
+        * - status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUS``
+          - 
+          - normal
+          - 
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATEMON``
+          - 
+          - normal
+          - 
+    
+        * - pumpsize
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PUMPSIZEDES``
+          - 
+          - omitted
+          - 
+    
+        * - controllername
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VPCNAME``
+          - 
+          - omitted
+          - 
+    
+        * - hvstrapping
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VDESRBCK``
+          - 
+          - omitted
+          - 
+    
+        * - supplysize
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SUPPLYSIZE``
+          - 
+          - omitted
+          - 
+    
+        * - aomode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AOMODEDES``
+          - 
+          - config
+          - 
+    
+        * - calfactor
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CALFACTORDES``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: egu
+    .. automethod:: get
+    .. automethod:: info
+    .. automethod:: off
+    .. automethod:: on
+    .. automethod:: post_elog_status
+    .. automethod:: pressure
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

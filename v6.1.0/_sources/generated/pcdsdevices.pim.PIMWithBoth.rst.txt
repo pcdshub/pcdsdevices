@@ -1,0 +1,108 @@
+﻿pcdsdevices.pim.PIMWithBoth
+===========================
+
+.. currentmodule:: pcdsdevices.pim
+
+.. autoclass:: PIMWithBoth
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - state
+          - :class:`~pcdsdevices.pim.PIMY`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pim.PIMWithFocus`
+    
+        * - zoom (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_zoom}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pim.PIMWithFocus`
+    
+        * - detector (FCpt)
+          - :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorEmbedded`
+          - ``{self._prefix_det}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pim.PIMWithFocus`
+    
+        * - led (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self._prefix_led}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pim.PIMWithLED`
+    
+        * - focus (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_focus}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pim.PIMWithFocus`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: infer_prefix
+    .. automethod:: insert
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: prefix_start
+    .. autoattribute:: stage_group
+    
+    

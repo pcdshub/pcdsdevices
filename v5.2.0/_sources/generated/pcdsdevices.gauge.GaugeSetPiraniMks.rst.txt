@@ -1,0 +1,84 @@
+﻿pcdsdevices.gauge.GaugeSetPiraniMks
+===================================
+
+.. currentmodule:: pcdsdevices.gauge
+
+.. autoclass:: GaugeSetPiraniMks
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - gcc (FCpt)
+          - :class:`~pcdsdevices.gauge.GaugeColdCathode`
+          - ``{self.prefix}:GCC:{self.index}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSetPirani`
+    
+        * - gpi (FCpt)
+          - :class:`~pcdsdevices.gauge.GaugePirani`
+          - ``{self.prefix}:GPI:{self.index}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSetPirani`
+    
+        * - controller (FCpt)
+          - :class:`~pcdsdevices.gauge.MKS937a`
+          - ``{self.prefix_controller}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: egu
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: pressure
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

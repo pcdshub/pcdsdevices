@@ -1,0 +1,201 @@
+﻿pcdsdevices.mirror.Gantry
+=========================
+
+.. currentmodule:: pcdsdevices.mirror
+
+.. autoclass:: Gantry
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - readback
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RBV``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.OMMotor`
+    
+        * - setpoint
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VAL``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.OMMotor`
+    
+        * - done
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:DMOV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.mirror.OMMotor`
+    
+        * - motor_egu
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RBV.EGU``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.mirror.OMMotor`
+    
+        * - interlock
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:INTERLOCK``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.mirror.OMMotor`
+    
+        * - enabled
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ENABLED``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.mirror.OMMotor`
+    
+        * - low_limit_switch
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:LLS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.mirror.OMMotor`
+    
+        * - high_limit_switch
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HLS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.mirror.OMMotor`
+    
+        * - gantry_difference (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.gantry_prefix}:GDIF``
+          - 
+          - normal
+          - 
+    
+        * - decoupled (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.gantry_prefix}:DECOUPLE``
+          - 
+          - config
+          - 
+    
+        * - follower_readback (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.follow_prefix}:RBV``
+          - 
+          - normal
+          - 
+    
+        * - follower_low_limit_switch (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.follow_prefix}:LLS``
+          - 
+          - omitted
+          - 
+    
+        * - follower_high_limit_switch (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.follow_prefix}:HLS``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate
+    .. autoattribute:: actuate_value
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: timeout
+    
+    

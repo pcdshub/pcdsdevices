@@ -1,0 +1,81 @@
+﻿pcdsdevices.piezo.SliceDhv
+==========================
+
+.. currentmodule:: pcdsdevices.piezo
+
+.. autoclass:: SliceDhv
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - channel_1
+          - :class:`~pcdsdevices.piezo.SliceDhvChannel`
+          - ``:CH1``
+          - 
+          - normal
+          - 
+    
+        * - channel_2
+          - :class:`~pcdsdevices.piezo.SliceDhvChannel`
+          - ``:CH2``
+          - 
+          - normal
+          - 
+    
+        * - controller
+          - :class:`~pcdsdevices.piezo.SliceDhvController`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

@@ -1,0 +1,90 @@
+﻿pcdsdevices.lasers.rfof.CycleRfofTx
+===================================
+
+.. currentmodule:: pcdsdevices.lasers.rfof
+
+.. autoclass:: CycleRfofTx
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - rf_temperature
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RFTEMPERATURE``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.rfof.CycleRfofRx`
+    
+        * - rf_power
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RFPOWER``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.rfof.CycleRfofRx`
+    
+        * - optical_power
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OPTICALPOWER``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.rfof.CycleRfofRx`
+    
+        * - enable_laser
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ENABLELASER``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

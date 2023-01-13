@@ -1,0 +1,93 @@
+﻿pcdsdevices.sample\_delivery.ManifoldValve
+==========================================
+
+.. currentmodule:: pcdsdevices.sample_delivery
+
+.. autoclass:: ManifoldValve
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - open
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Open``
+          - 
+          - normal
+          - 
+    
+        * - open_do
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:OpenDO``
+          - 
+          - normal
+          - 
+    
+        * - open_sw
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:OpenSW``
+          - 
+          - normal
+          - 
+    
+        * - interlocked
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Ilk``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

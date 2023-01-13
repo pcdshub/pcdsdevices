@@ -1,0 +1,96 @@
+﻿pcdsdevices.pim.LCLS2ImagerBase
+===============================
+
+.. currentmodule:: pcdsdevices.pim
+
+.. autoclass:: LCLS2ImagerBase
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - target
+          - :class:`~pcdsdevices.pim.LCLS2Target`
+          - ``:MMS:STATE``
+          - Control of the diagnostic stack via saved positions.
+          - hinted
+          - 
+    
+        * - y_motor
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS``
+          - Direct control of the diagnostic stack motor.
+          - normal
+          - 
+    
+        * - detector
+          - :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+          - ``:CAM:``
+          - Area detector settings and readbacks.
+          - normal
+          - 
+    
+        * - cam_power
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CAM:PWR``
+          - Camera power supply controls.
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: transmission
+    .. autoattribute:: y_states
+    
+    

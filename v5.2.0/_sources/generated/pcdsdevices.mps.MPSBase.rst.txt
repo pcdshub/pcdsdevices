@@ -1,0 +1,30 @@
+﻿pcdsdevices.mps.MPSBase
+=======================
+
+.. currentmodule:: pcdsdevices.mps
+
+.. autoclass:: MPSBase
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: post_elog_status
+    .. automethod:: status
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: SUB_FAULT_CH
+    .. autoattribute:: tripped
+    
+    

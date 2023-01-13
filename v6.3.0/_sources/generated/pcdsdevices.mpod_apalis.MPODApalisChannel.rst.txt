@@ -1,0 +1,105 @@
+﻿pcdsdevices.mpod\_apalis.MPODApalisChannel
+==========================================
+
+.. currentmodule:: pcdsdevices.mpod_apalis
+
+.. autoclass:: MPODApalisChannel
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - voltage
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VoltageMeasure``
+          - MPOD Channel Voltage Measurement [V]
+          - normal
+          - 
+    
+        * - max_voltage
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VoltageNominal``
+          - MPOD Channel Maximum Voltage [V]
+          - normal
+          - 
+    
+        * - current
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CurrentMeasure``
+          - MPOD Channel Current Measure
+          - normal
+          - 
+    
+        * - max_current
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CurrentNominal``
+          - MPOD Channel Current Maximum
+          - normal
+          - 
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:isOn``
+          - MPOD Channel State [Off/On]
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: off
+    .. automethod:: on
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_current
+    .. automethod:: set_voltage
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

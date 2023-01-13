@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.get\_status\_value
+====================================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: get_status_value

@@ -1,0 +1,87 @@
+﻿pcdsdevices.delay\_generator.DgChannel
+======================================
+
+.. currentmodule:: pcdsdevices.delay_generator
+
+.. autoclass:: DgChannel
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``DelayAO``
+          - 
+          - hinted
+          - 
+    
+        * - delay_str
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``DelaySI``
+          - 
+          - normal
+          - 
+    
+        * - reference
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``ReferenceMO``
+          - Reference channel from which the delay taken.
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_str
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_reference
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

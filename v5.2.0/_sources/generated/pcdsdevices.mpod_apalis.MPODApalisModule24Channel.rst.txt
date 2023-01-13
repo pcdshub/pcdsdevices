@@ -1,0 +1,313 @@
+﻿pcdsdevices.mpod\_apalis.MPODApalisModule24Channel
+==================================================
+
+.. currentmodule:: pcdsdevices.mpod_apalis
+
+.. autoclass:: MPODApalisModule24Channel
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - voltage_ramp_speed
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VoltageRampSpeed``
+          - MPOD module Voltage Ramp Rate [%/sec*Vnom]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - current_ramp_speed
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CurrentRampSpeed``
+          - MPOD module current Ramp  Rate [%/sec*Inom]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - temperature
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Temperature``
+          - MPOD Temperature [C]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - faults
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:isEventActive``
+          - Clears all MPOD module faults
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - c0
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C0``
+          - 
+          - normal
+          - 
+    
+        * - c1
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C1``
+          - 
+          - normal
+          - 
+    
+        * - c2
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C2``
+          - 
+          - normal
+          - 
+    
+        * - c3
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C3``
+          - 
+          - normal
+          - 
+    
+        * - c4
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C4``
+          - 
+          - normal
+          - 
+    
+        * - c5
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C5``
+          - 
+          - normal
+          - 
+    
+        * - c6
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C6``
+          - 
+          - normal
+          - 
+    
+        * - c7
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C7``
+          - 
+          - normal
+          - 
+    
+        * - c8
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C8``
+          - 
+          - normal
+          - 
+    
+        * - c9
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C9``
+          - 
+          - normal
+          - 
+    
+        * - c10
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C10``
+          - 
+          - normal
+          - 
+    
+        * - c11
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C11``
+          - 
+          - normal
+          - 
+    
+        * - c12
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C12``
+          - 
+          - normal
+          - 
+    
+        * - c13
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C13``
+          - 
+          - normal
+          - 
+    
+        * - c14
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C14``
+          - 
+          - normal
+          - 
+    
+        * - c15
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C15``
+          - 
+          - normal
+          - 
+    
+        * - c16
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C16``
+          - 
+          - normal
+          - 
+    
+        * - c17
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C17``
+          - 
+          - normal
+          - 
+    
+        * - c18
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C18``
+          - 
+          - normal
+          - 
+    
+        * - c19
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C19``
+          - 
+          - normal
+          - 
+    
+        * - c20
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C20``
+          - 
+          - normal
+          - 
+    
+        * - c21
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C21``
+          - 
+          - normal
+          - 
+    
+        * - c22
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C22``
+          - 
+          - normal
+          - 
+    
+        * - c23
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C23``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: clear_faults
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set_current_ramp_speed
+    .. automethod:: set_voltage_ramp_speed
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

@@ -1,0 +1,64 @@
+﻿pcdsdevices.pseudopos.LookupTablePositioner
+===========================================
+
+.. currentmodule:: pcdsdevices.pseudopos
+
+.. autoclass:: LookupTablePositioner
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: check_single
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: forward
+    .. automethod:: get
+    .. automethod:: inverse
+    .. automethod:: move
+    .. automethod:: move_single
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: set_current_position
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: to_pseudo_tuple
+    .. automethod:: to_real_tuple
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: composite_egu
+    .. autoattribute:: concurrent
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: pseudo_positioners
+    .. autoattribute:: real_position
+    .. autoattribute:: real_positioners
+    .. autoattribute:: sequential
+    .. autoattribute:: settle_time
+    .. autoattribute:: target
+    .. autoattribute:: timeout
+    .. autoattribute:: table
+    .. autoattribute:: column_names
+    
+    

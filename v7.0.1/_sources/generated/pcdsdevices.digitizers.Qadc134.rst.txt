@@ -1,0 +1,228 @@
+﻿pcdsdevices.digitizers.Qadc134
+==============================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Qadc134
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - ch0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH0``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.QadcBase`
+    
+        * - ch1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH1``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.QadcBase`
+    
+        * - ch2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH2``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.QadcBase`
+    
+        * - ch3
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH3``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.QadcBase`
+    
+        * - config
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CONFIG``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.digitizers.QadcBase`
+    
+        * - sparsification
+          - :class:`~pcdsdevices.digitizers.Qadc134Sparsification`
+          - 
+          - 
+          - omitted
+          - 
+    
+        * - full_en
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FULL_EN_RBV``
+          - Enable full size output arrays
+          - config
+          - 
+    
+        * - ichan
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ICHAN_RBV``
+          - Interleave channel
+          - config
+          - 
+    
+        * - interleave
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:INTERLEAVE_RBV``
+          - Enable interleaving on ichan
+          - config
+          - 
+    
+        * - length
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:LENGTH_RBV``
+          - 
+          - config
+          - 
+    
+        * - prescale
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PRESCALE_RBV``
+          - 
+          - config
+          - 
+    
+        * - trig_delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_DELAY_RBV``
+          - Delay in 156.17 MHz ticks
+          - config
+          - 
+    
+        * - trig_event
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_EVENT_RBV``
+          - 
+          - config
+          - 
+    
+        * - clear_config
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CLEAR_CONFIG``
+          - 
+          - config
+          - 
+    
+        * - out0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OUT0``
+          - Signal in Volts
+          - normal
+          - 
+    
+        * - out1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OUT1``
+          - Signal in Volts
+          - normal
+          - 
+    
+        * - rawdata0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RAWDATA0``
+          - Signal in ADU
+          - normal
+          - 
+    
+        * - rawdata1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RAWDATA1``
+          - Signal in ADU
+          - normal
+          - 
+    
+        * - start
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:START``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

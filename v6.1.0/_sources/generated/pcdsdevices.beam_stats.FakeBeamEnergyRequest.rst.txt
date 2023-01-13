@@ -1,0 +1,87 @@
+﻿pcdsdevices.beam\_stats.FakeBeamEnergyRequest
+=============================================
+
+.. currentmodule:: pcdsdevices.beam_stats
+
+.. autoclass:: FakeBeamEnergyRequest
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - setpoint (FCpt)
+          - :class:`~ophyd.sim.FakeEpicsSignal`
+          - ``{prefix}:USER:MCC:EPHOT{line_text}:SET{bunch}``
+          - The setpoint PV that acr listens on to update the vernier or undulator PVs as appropriate.
+          - hinted
+          - Inherited from :class:`~ophyd.sim.FakeBeamEnergyRequest`
+    
+        * - ref (FCpt)
+          - :class:`~ophyd.sim.FakeEpicsSignal`
+          - ``{prefix}:USER:MCC:EPHOT{line_text}:REF{bunch}``
+          - A reference PV for the photon energy at the nominal position of the vernier or undulator.
+          - normal
+          - Inherited from :class:`~ophyd.sim.FakeBeamEnergyRequest`
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: k_hutch
+    .. autoattribute:: kind
+    .. autoattribute:: l_hutch
+    .. autoattribute:: limits
+    .. autoattribute:: line_text_dict
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: timeout
+    
+    

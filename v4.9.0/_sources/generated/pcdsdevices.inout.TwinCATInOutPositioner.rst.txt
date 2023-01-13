@@ -1,0 +1,153 @@
+﻿pcdsdevices.inout.TwinCATInOutPositioner
+========================================
+
+.. currentmodule:: pcdsdevices.inout
+
+.. autoclass:: TwinCATInOutPositioner
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_RBV``
+          - Setpoint and readback for TwinCAT state position.
+          - hinted
+          - Inherited from :class:`~pcdsdevices.state.TwinCATStatePositioner`
+    
+        * - error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERR``
+          - True if we have an error.
+          - normal
+          - Inherited from :class:`~pcdsdevices.state.TwinCATStatePositioner`
+    
+        * - error_id
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERRID``
+          - Error code.
+          - normal
+          - Inherited from :class:`~pcdsdevices.state.TwinCATStatePositioner`
+    
+        * - error_message
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERRMSG``
+          - Error message
+          - normal
+          - Inherited from :class:`~pcdsdevices.state.TwinCATStatePositioner`
+    
+        * - busy
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BUSY``
+          - True if we have an ongoing move.
+          - normal
+          - Inherited from :class:`~pcdsdevices.state.TwinCATStatePositioner`
+    
+        * - done
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:DONE``
+          - True if we completed the last move.
+          - normal
+          - Inherited from :class:`~pcdsdevices.state.TwinCATStatePositioner`
+    
+        * - reset_cmd
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RESET``
+          - Command to reset an error.
+          - normal
+          - Inherited from :class:`~pcdsdevices.state.TwinCATStatePositioner`
+    
+        * - config
+          - :class:`~pcdsdevices.state.TwinCATStateConfigAll`
+          - 
+          - Configuration of state positions, deltas, etc.
+          - omitted
+          - Inherited from :class:`~pcdsdevices.state.TwinCATStatePositioner`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_inserted
+    .. automethod:: check_removed
+    .. automethod:: check_transmission
+    .. automethod:: clear_error
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_state
+    .. automethod:: insert
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: set
+    .. automethod:: status
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: in_states
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: out_states
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: states_list
+    .. autoattribute:: stop
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    

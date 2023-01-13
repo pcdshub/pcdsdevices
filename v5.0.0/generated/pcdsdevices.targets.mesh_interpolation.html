@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pcdsdevices.targets.mesh_interpolation &mdash; PCDS Devices 5.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pcdsdevices.targets.snake_grid_list" href="pcdsdevices.targets.snake_grid_list.html" />
+    <link rel="prev" title="pcdsdevices.targets.get_unit_meshgrid" href="pcdsdevices.targets.get_unit_meshgrid.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PCDS Devices
+          </a>
+              <div class="version">
+                5.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Device Types</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-analog-signals">pcdsdevices.analog_signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-cam">pcdsdevices.areadetector.cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-detectors">pcdsdevices.areadetector.detectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-plugins">pcdsdevices.areadetector.plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-atm">pcdsdevices.atm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-attenuator">pcdsdevices.attenuator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-beam-stats">pcdsdevices.beam_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ccm">pcdsdevices.ccm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-crix-motion">pcdsdevices.crix_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-cvmi-motion">pcdsdevices.cvmi_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-dc-devices">pcdsdevices.dc_devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-device">pcdsdevices.device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-energy-monitor">pcdsdevices.energy_monitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-epics-motor">pcdsdevices.epics_motor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-evr">pcdsdevices.evr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gauge">pcdsdevices.gauge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gon">pcdsdevices.gon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-inout">pcdsdevices.inout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-interface">pcdsdevices.interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ipm">pcdsdevices.ipm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-jet">pcdsdevices.jet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lamp-motion">pcdsdevices.lamp_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-ek9000">pcdsdevices.lasers.ek9000</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-elliptec">pcdsdevices.lasers.elliptec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-qmini">pcdsdevices.lasers.qmini</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-thorlabswfs">pcdsdevices.lasers.thorlabsWFS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-tuttifrutti">pcdsdevices.lasers.tuttifrutti</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-zoomtelescope">pcdsdevices.lasers.zoomtelescope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lens">pcdsdevices.lens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lic">pcdsdevices.lic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lodcm">pcdsdevices.lodcm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lxe">pcdsdevices.lxe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mirror">pcdsdevices.mirror</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-movablestand">pcdsdevices.movablestand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mpod">pcdsdevices.mpod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mpod-apalis">pcdsdevices.mpod_apalis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mps">pcdsdevices.mps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mrco-motion">pcdsdevices.mrco_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pim">pcdsdevices.pim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pmps">pcdsdevices.pmps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-positioner">pcdsdevices.positioner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pseudopos">pcdsdevices.pseudopos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pulsepicker">pcdsdevices.pulsepicker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pump">pcdsdevices.pump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pv-positioner">pcdsdevices.pv_positioner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ref">pcdsdevices.ref</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-rtds-ebd">pcdsdevices.rtds_ebd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sample-delivery">pcdsdevices.sample_delivery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sensors">pcdsdevices.sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sequencer">pcdsdevices.sequencer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-signal">pcdsdevices.signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sim">pcdsdevices.sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-slits">pcdsdevices.slits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-spectrometer">pcdsdevices.spectrometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-state">pcdsdevices.state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-stopper">pcdsdevices.stopper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sxr-test-absorber">pcdsdevices.sxr_test_absorber</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-tags">pcdsdevices.tags</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#pcdsdevices-targets">pcdsdevices.targets</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.targets.StageStack.html">pcdsdevices.targets.StageStack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.targets.convert_to_physical.html">pcdsdevices.targets.convert_to_physical</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.targets.get_unit_meshgrid.html">pcdsdevices.targets.get_unit_meshgrid</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pcdsdevices.targets.mesh_interpolation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.targets.snake_grid_list.html">pcdsdevices.targets.snake_grid_list</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-timetool">pcdsdevices.timetool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-utils">pcdsdevices.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-valve">pcdsdevices.valve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-variety">pcdsdevices.variety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-wfs">pcdsdevices.wfs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../base_classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sim_types.html">Simulated Devices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../mv.html">Shortcuts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../presets.html">Preset Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tab.html">IPython Tab Curation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">UI Templates</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upcoming_changes.html">Upcoming Changes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PCDS Devices</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">API</a> &raquo;</li>
+      <li>pcdsdevices.targets.mesh_interpolation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/generated/pcdsdevices.targets.mesh_interpolation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pcdsdevices-targets-mesh-interpolation">
+<h1>pcdsdevices.targets.mesh_interpolation<a class="headerlink" href="#pcdsdevices-targets-mesh-interpolation" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pcdsdevices.targets.mesh_interpolation">
+<span class="sig-prename descclassname"><span class="pre">pcdsdevices.targets.</span></span><span class="sig-name descname"><span class="pre">mesh_interpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_left</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.targets.mesh_interpolation" title="Permalink to this definition"></a></dt>
+<dd><p>Mapping functions for an arbitrary quadrilateral.</p>
+<p>Reference: <a class="reference external" href="https://www.particleincell.com/2012/quad-interpolation/">https://www.particleincell.com/2012/quad-interpolation/</a></p>
+<p>In order to perform the interpolation on an arbitrary quad, we need to
+obtain a mapping function. Our goal is to come up with a function such
+as (x, y) = f(l, m) where l = [0, 1] and m = [0, 1] describes the
+entire point space enclosed by the quadrilateral. In addition, we want
+f(0, 0) = (x1, y1), f(1, 0) = (x2, y2) and so on to correspond to the
+polygon vertices. This function forms a map that allows us to
+transform the quad from the physical coordinates set to a logical
+coordinate space. In the logical coordinates, the polygon morphs into
+a square, regardless of its physical form. Once the logical
+coordinates are obtained, we perform the scatter and find the
+physical x, y values.</p>
+<p>To find the map, we assume a bilinear mapping function given by:
+x = alpha_1 + alpha_2*l + alpha_3*m + alpha_4 * l _ m
+y = beta_1 + beta_2 * l + beta_3 * m + beta_4 * l * m</p>
+<p>Next we use these experessions to solve for the 4 coefficients:
+x1    1  0  0  0   alpha_1
+x2    1  1  0  0   alpha_2
+x3    1  1  1  1   alpha_3
+x4    1  0  1  0   alpha_4</p>
+<p>We do the same for the beta coefficients.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>top_left</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a>) – (x, y) coordinates of the top left corner</p></li>
+<li><p><strong>top_right</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a>) – (x, y) coordinates of the top right corner</p></li>
+<li><p><strong>bottom_right</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a>) – (x, y) coordinates of the bottom right corner</p></li>
+<li><p><strong>bottom_left</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a>) – (x, y) coordinates of the bottom left corner</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>a_coeffs, b_coeffs</strong> (<em>tuple</em>) – List of tuples with the alpha and beta coefficients for projective
+transformation. They are used to find x and y.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pcdsdevices.targets.get_unit_meshgrid.html" class="btn btn-neutral float-left" title="pcdsdevices.targets.get_unit_meshgrid" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pcdsdevices.targets.snake_grid_list.html" class="btn btn-neutral float-right" title="pcdsdevices.targets.snake_grid_list" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

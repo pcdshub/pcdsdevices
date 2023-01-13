@@ -1,0 +1,139 @@
+﻿pcdsdevices.sample\_delivery.GasManifold
+========================================
+
+.. currentmodule:: pcdsdevices.sample_delivery
+
+.. autoclass:: GasManifold
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:IO:SyncUnitOK``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.sample_delivery.M3BasePLCDevice`
+    
+        * - valve1
+          - :class:`~pcdsdevices.sample_delivery.ManifoldValve`
+          - ``:Valve:01``
+          - 
+          - normal
+          - 
+    
+        * - valve2
+          - :class:`~pcdsdevices.sample_delivery.ManifoldValve`
+          - ``:Valve:02``
+          - 
+          - normal
+          - 
+    
+        * - valve3
+          - :class:`~pcdsdevices.sample_delivery.ManifoldValve`
+          - ``:Valve:03``
+          - 
+          - normal
+          - 
+    
+        * - valve4
+          - :class:`~pcdsdevices.sample_delivery.ManifoldValve`
+          - ``:Valve:04``
+          - 
+          - normal
+          - 
+    
+        * - valve5
+          - :class:`~pcdsdevices.sample_delivery.ManifoldValve`
+          - ``:Valve:05``
+          - 
+          - normal
+          - 
+    
+        * - valve6
+          - :class:`~pcdsdevices.sample_delivery.ManifoldValve`
+          - ``:Valve:06``
+          - 
+          - normal
+          - 
+    
+        * - valve7
+          - :class:`~pcdsdevices.sample_delivery.ManifoldValve`
+          - ``:Valve:07``
+          - 
+          - normal
+          - 
+    
+        * - valve8
+          - :class:`~pcdsdevices.sample_delivery.ManifoldValve`
+          - ``:Valve:08``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

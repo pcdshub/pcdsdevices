@@ -1,0 +1,154 @@
+﻿pcdsdevices.slits.SimLusiSlits
+==============================
+
+.. currentmodule:: pcdsdevices.slits
+
+.. autoclass:: SimLusiSlits
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - nominal_aperture
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.LusiSlits`
+    
+        * - xwidth
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.LusiSlits`
+    
+        * - ywidth
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.LusiSlits`
+    
+        * - xcenter
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.LusiSlits`
+    
+        * - ycenter
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.LusiSlits`
+    
+        * - blocked
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:BLOCKED``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.LusiSlits`
+    
+        * - open_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OPEN``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.LusiSlits`
+    
+        * - close_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CLOSE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.LusiSlits`
+    
+        * - block_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BLOCK``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.LusiSlits`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: block
+    .. automethod:: camonitor
+    .. automethod:: close
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: open
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: set
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: current_aperture
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: needs_parent
+    .. autoattribute:: position
+    .. autoattribute:: stage_group
+    .. autoattribute:: transmission
+    
+    

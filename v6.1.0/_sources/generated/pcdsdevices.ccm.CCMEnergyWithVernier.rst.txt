@@ -1,0 +1,192 @@
+﻿pcdsdevices.ccm.CCMEnergyWithVernier
+====================================
+
+.. currentmodule:: pcdsdevices.ccm
+
+.. autoclass:: CCMEnergyWithVernier
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - theta0_deg (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{_constants_prefix}:THETA0``
+          - Reference angle for the first crystal in deg.
+          - config
+          - Inherited from :class:`~pcdsdevices.ccm.CCMEnergy`
+    
+        * - dspacing (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{_constants_prefix}:DSPACING``
+          - Crystal lattice spacing.
+          - config
+          - Inherited from :class:`~pcdsdevices.ccm.CCMEnergy`
+    
+        * - gr (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{_constants_prefix}:GR``
+          - The radius of the sapphire ball connected to the Alio stage in mm.
+          - config
+          - Inherited from :class:`~pcdsdevices.ccm.CCMEnergy`
+    
+        * - gd (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{_constants_prefix}:GD``
+          - Distance between the rotation axis and the center of the sapphire sphere located on the Alio stage in mm.
+          - config
+          - Inherited from :class:`~pcdsdevices.ccm.CCMEnergy`
+    
+        * - energy
+          - :class:`~pcdsdevices.pseudopos.PseudoSingleInterface`
+          - 
+          - PseudoSingle that moves the calculated CCM selected energy in keV.
+          - hinted
+          - Inherited from :class:`~pcdsdevices.ccm.CCMEnergy`
+    
+        * - alio
+          - :class:`~pcdsdevices.ccm.CCMAlio`
+          - 
+          - The motor that rotates the CCM crystal.
+          - normal
+          - Inherited from :class:`~pcdsdevices.ccm.CCMEnergy`
+    
+        * - theta_deg
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - The crystal angle in degrees.
+          - normal
+          - Inherited from :class:`~pcdsdevices.ccm.CCMEnergy`
+    
+        * - wavelength
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - The wavelength picked by the CCM in Angstroms.
+          - normal
+          - Inherited from :class:`~pcdsdevices.ccm.CCMEnergy`
+    
+        * - resolution
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - A measure of how finely we can control the ccm output at this position in eV/um.
+          - normal
+          - Inherited from :class:`~pcdsdevices.ccm.CCMEnergy`
+    
+        * - vernier (FCpt)
+          - :class:`~pcdsdevices.beam_stats.BeamEnergyRequest`
+          - ``{hutch}``
+          - Requests ACR to move the Vernier.
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: alio_to_energy
+    .. automethod:: camonitor
+    .. automethod:: check_single
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: energy_to_alio
+    .. automethod:: forward
+    .. automethod:: get
+    .. automethod:: inverse
+    .. automethod:: move
+    .. automethod:: move_single
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: reset_calc_constant_defaults
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_current_position
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: to_pseudo_tuple
+    .. automethod:: to_real_tuple
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: warn_invalid_constants
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: composite_egu
+    .. autoattribute:: concurrent
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: dspacing_val
+    .. autoattribute:: egu
+    .. autoattribute:: gd_val
+    .. autoattribute:: gr_val
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: pseudo_positioners
+    .. autoattribute:: real_position
+    .. autoattribute:: real_positioners
+    .. autoattribute:: sequential
+    .. autoattribute:: settle_time
+    .. autoattribute:: target
+    .. autoattribute:: theta0_deg_val
+    .. autoattribute:: theta0_rad_val
+    .. autoattribute:: timeout
+    .. autoattribute:: hutch
+    
+    

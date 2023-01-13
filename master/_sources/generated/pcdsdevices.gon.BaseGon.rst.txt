@@ -1,0 +1,105 @@
+﻿pcdsdevices.gon.BaseGon
+=======================
+
+.. currentmodule:: pcdsdevices.gon
+
+.. autoclass:: BaseGon
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - hor (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_hor}``
+          - 
+          - normal
+          - 
+    
+        * - ver (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_ver}``
+          - 
+          - normal
+          - 
+    
+        * - rot (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_rot}``
+          - 
+          - normal
+          - 
+    
+        * - tip (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_tip}``
+          - 
+          - normal
+          - 
+    
+        * - tilt (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_tilt}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

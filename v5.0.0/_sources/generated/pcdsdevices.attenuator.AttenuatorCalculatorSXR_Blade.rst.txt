@@ -1,0 +1,198 @@
+﻿pcdsdevices.attenuator.AttenuatorCalculatorSXR\_Blade
+=====================================================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: AttenuatorCalculatorSXR_Blade
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - material
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Material``
+          - The material formula (e.g., Si, C)
+          - hinted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+    
+        * - thickness
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Thickness``
+          - Thickness in micron
+          - hinted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+    
+        * - active
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Active``
+          - Should the filter be used in calculations?
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+    
+        * - is_stuck
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``IsStuck``
+          - Is the filter stuck / unusable?
+          - hinted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+    
+        * - closest_energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ClosestEnergy_RBV``
+          - Closest tabulated energy available to the requested one
+          - config
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+    
+        * - transmission
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Transmission_RBV``
+          - Normalized transmission at the reported energy
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+    
+        * - transmission_3omega
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Transmission3Omega_RBV``
+          - Normalized transmission at 3 * the reported energy
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+    
+        * - filter_01
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+          - ``FILTER:01:``
+          - 
+          - normal
+          - 
+    
+        * - filter_02
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+          - ``FILTER:02:``
+          - 
+          - normal
+          - 
+    
+        * - filter_03
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+          - ``FILTER:03:``
+          - 
+          - normal
+          - 
+    
+        * - filter_04
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+          - ``FILTER:04:``
+          - 
+          - normal
+          - 
+    
+        * - filter_05
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+          - ``FILTER:05:``
+          - 
+          - normal
+          - 
+    
+        * - filter_06
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+          - ``FILTER:06:``
+          - 
+          - normal
+          - 
+    
+        * - filter_07
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+          - ``FILTER:07:``
+          - 
+          - normal
+          - 
+    
+        * - filter_08
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorFilter`
+          - ``FILTER:08:``
+          - 
+          - normal
+          - 
+    
+        * - inserted_filter_index
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``InsertedFilter_RBV``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

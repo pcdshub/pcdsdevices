@@ -1,0 +1,103 @@
+﻿pcdsdevices.sequencer.EventSequence
+===================================
+
+.. currentmodule:: pcdsdevices.sequencer
+
+.. autoclass:: EventSequence
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - ec_array
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SEQ.A``
+          - 
+          - normal
+          - 
+    
+        * - bd_array
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SEQ.B``
+          - 
+          - normal
+          - 
+    
+        * - fd_array
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SEQ.C``
+          - 
+          - normal
+          - 
+    
+        * - bc_array
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SEQ.D``
+          - 
+          - normal
+          - 
+    
+        * - seq_proc
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SEQ.PROC``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_seq
+    .. automethod:: post_elog_status
+    .. automethod:: put_seq
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: show
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

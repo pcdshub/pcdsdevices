@@ -1,0 +1,85 @@
+﻿pcdsdevices.mirror.OffsetMirror
+===============================
+
+.. currentmodule:: pcdsdevices.mirror
+
+.. autoclass:: OffsetMirror
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - pitch (FCpt)
+          - :class:`~pcdsdevices.mirror.Pitch`
+          - ``MIRR:{self.prefix}``
+          - 
+          - hinted
+          - 
+    
+        * - xgantry (FCpt)
+          - :class:`~pcdsdevices.mirror.Gantry`
+          - ``{self._prefix_xy}:X``
+          - 
+          - normal
+          - 
+    
+        * - ygantry (FCpt)
+          - :class:`~pcdsdevices.mirror.Gantry`
+          - ``{self._prefix_xy}:Y``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: transmission
+    
+    

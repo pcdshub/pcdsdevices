@@ -1,0 +1,109 @@
+﻿pcdsdevices.beam\_stats.BeamStats
+=================================
+
+.. currentmodule:: pcdsdevices.beam_stats
+
+.. autoclass:: BeamStats
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - mj
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``GDET:FEE1:241:ENRC``
+          - Pulse energy [mJ]
+          - hinted
+          - 
+    
+        * - ev
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``BLD:SYS0:500:PHOTONENERGY``
+          - Photon Energy [eV]
+          - normal
+          - 
+    
+        * - rate
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``EVNT:SYS0:1:LCLSBEAMRATE``
+          - LCLSBEAM Event Rate [Hz]
+          - normal
+          - 
+    
+        * - owner
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ECS:SYS0:0:BEAM_OWNER_ID``
+          - BEAM_OWNER ID
+          - omitted
+          - 
+    
+        * - mj_avg
+          - :class:`~pcdsdevices.signal.AvgSignal`
+          - ``mj``
+          - 
+          - normal
+          - 
+    
+        * - mj_buffersize
+          - :class:`~ophyd.signal.AttributeSignal`
+          - ``mj_avg.averages``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

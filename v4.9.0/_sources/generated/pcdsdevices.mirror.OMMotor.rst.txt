@@ -1,0 +1,154 @@
+﻿pcdsdevices.mirror.OMMotor
+==========================
+
+.. currentmodule:: pcdsdevices.mirror
+
+.. autoclass:: OMMotor
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - readback
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RBV``
+          - 
+          - hinted
+          - 
+    
+        * - setpoint
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VAL``
+          - 
+          - normal
+          - 
+    
+        * - done
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:DMOV``
+          - 
+          - omitted
+          - 
+    
+        * - motor_egu
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RBV.EGU``
+          - 
+          - omitted
+          - 
+    
+        * - interlock
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:INTERLOCK``
+          - 
+          - omitted
+          - 
+    
+        * - enabled
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ENABLED``
+          - 
+          - omitted
+          - 
+    
+        * - low_limit_switch
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:LLS``
+          - 
+          - omitted
+          - 
+    
+        * - high_limit_switch
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HLS``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate
+    .. autoattribute:: actuate_value
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: timeout
+    
+    

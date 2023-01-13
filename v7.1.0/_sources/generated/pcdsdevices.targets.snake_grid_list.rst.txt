@@ -1,0 +1,6 @@
+﻿pcdsdevices.targets.snake\_grid\_list
+=====================================
+
+.. currentmodule:: pcdsdevices.targets
+
+.. autofunction:: snake_grid_list

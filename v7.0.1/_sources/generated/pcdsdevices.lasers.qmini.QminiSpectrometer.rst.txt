@@ -1,0 +1,360 @@
+﻿pcdsdevices.lasers.qmini.QminiSpectrometer
+==========================================
+
+.. currentmodule:: pcdsdevices.lasers.qmini
+
+.. autoclass:: QminiSpectrometer
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUS``
+          - 
+          - normal
+          - 
+    
+        * - temperature
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TEMP``
+          - 
+          - config
+          - 
+    
+        * - exposure
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_EXPOSURE_TIME``
+          - 
+          - config
+          - 
+    
+        * - trig_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_MODE_RBV``
+          - 
+          - config
+          - 
+    
+        * - trig_delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_TRIG_DELAY``
+          - 
+          - config
+          - 
+    
+        * - trig_pin
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_PIN_RBV``
+          - 
+          - config
+          - 
+    
+        * - trig_edge
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_EDGE_RBV``
+          - 
+          - config
+          - 
+    
+        * - trig_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_TRIG_ENABLE``
+          - 
+          - config
+          - 
+    
+        * - scan_rate
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_SPECTRUM.SCAN``
+          - 
+          - config
+          - 
+    
+        * - reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CLEAR_SPECTROMETER``
+          - 
+          - config
+          - 
+    
+        * - spectrum
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SPECTRUM``
+          - 
+          - normal
+          - 
+    
+        * - wavelengths
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:WAVELENGTHS``
+          - 
+          - normal
+          - 
+    
+        * - model
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODEL_CODE``
+          - 
+          - config
+          - 
+    
+        * - serial_number
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SERIAL_NUMBER``
+          - 
+          - config
+          - 
+    
+        * - adjust_offset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ADJUST_OFFSET``
+          - 
+          - omitted
+          - 
+    
+        * - correct_nonlinearity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CORRECT_NONLINEARITY``
+          - 
+          - omitted
+          - 
+    
+        * - remove_bad_pixels
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:REMOVE_BAD_PIXELS``
+          - 
+          - omitted
+          - 
+    
+        * - subtract_dark
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SUBTRACT_DARK``
+          - 
+          - omitted
+          - 
+    
+        * - remove_temp_bad_pixels
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:REMOVE_TEMP_BAD_PIXELS``
+          - 
+          - omitted
+          - 
+    
+        * - normalize_exposure
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:NORMALIZE_EXPOSURE``
+          - 
+          - omitted
+          - 
+    
+        * - sensitivity_cal
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SENSITIVITY_CAL``
+          - 
+          - omitted
+          - 
+    
+        * - correct_prnu
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CORRECT_PRNU``
+          - 
+          - omitted
+          - 
+    
+        * - additional_filtering
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ADDITIONAL_FILTERING``
+          - 
+          - omitted
+          - 
+    
+        * - scale_to_16_bit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SCALE_TO_16BIT``
+          - 
+          - omitted
+          - 
+    
+        * - set_processing_steps
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SET_PROCESSING_STEPS``
+          - 
+          - omitted
+          - 
+    
+        * - get_processing_steps
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GET_PROCESSING_STEPS``
+          - 
+          - omitted
+          - 
+    
+        * - fit_on
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FIT_ON``
+          - 
+          - config
+          - 
+    
+        * - fit_width
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:WIDTH``
+          - 
+          - config
+          - 
+    
+        * - w0_guess
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:W0_GUESS``
+          - 
+          - config
+          - 
+    
+        * - w0_fit
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:W0_FIT``
+          - 
+          - normal
+          - 
+    
+        * - fit_fwhm
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FWHM``
+          - 
+          - config
+          - 
+    
+        * - fit_amplitude
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AMPLITUDE``
+          - 
+          - config
+          - 
+    
+        * - fit_stdev
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STDEV``
+          - 
+          - config
+          - 
+    
+        * - fit_chisq
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CHISQ``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

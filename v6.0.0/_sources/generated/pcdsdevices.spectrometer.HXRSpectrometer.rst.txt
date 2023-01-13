@@ -1,0 +1,123 @@
+﻿pcdsdevices.spectrometer.HXRSpectrometer
+========================================
+
+.. currentmodule:: pcdsdevices.spectrometer
+
+.. autoclass:: HXRSpectrometer
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - xtaly
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``:441:MOTR``
+          - crystal y
+          - normal
+          - 
+    
+        * - th
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``:442:MOTR``
+          - crystal angle
+          - normal
+          - 
+    
+        * - tth
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``:443:MOTR``
+          - camera angle
+          - normal
+          - 
+    
+        * - camd
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``:444:MOTR``
+          - camera distance
+          - normal
+          - 
+    
+        * - camy
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``:447:MOTR``
+          - camera y
+          - normal
+          - 
+    
+        * - iris
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``:445:MOTR``
+          - camera iris
+          - normal
+          - 
+    
+        * - filter
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``:446:MOTR``
+          - filter wheel, tbd if necessary
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: transmission
+    
+    

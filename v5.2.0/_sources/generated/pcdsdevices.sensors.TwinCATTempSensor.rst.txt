@@ -1,0 +1,82 @@
+﻿pcdsdevices.sensors.TwinCATTempSensor
+=====================================
+
+.. currentmodule:: pcdsdevices.sensors
+
+.. autoclass:: TwinCATTempSensor
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - temperature
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:TEMP``
+          - 
+          - normal
+          - 
+    
+        * - sensor_connected
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CONN``
+          - 
+          - normal
+          - 
+    
+        * - error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERR``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

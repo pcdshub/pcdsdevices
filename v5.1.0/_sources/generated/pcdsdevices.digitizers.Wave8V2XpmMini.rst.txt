@@ -1,0 +1,99 @@
+﻿pcdsdevices.digitizers.Wave8V2XpmMini
+=====================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2XpmMini
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - config_l0select_destsel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Config_L0Select_DestSel_RBV``
+          - 
+          - config
+          - 
+    
+        * - config_l0select_enabled
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Config_L0Select_Enabled_RBV``
+          - 
+          - config
+          - 
+    
+        * - config_l0select_ratesel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Config_L0Select_RateSel_RBV``
+          - 
+          - config
+          - 
+    
+        * - hw_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:HwEnable_RBV``
+          - 
+          - config
+          - 
+    
+        * - link
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Link_RBV``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

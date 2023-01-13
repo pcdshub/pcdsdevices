@@ -1,0 +1,90 @@
+﻿pcdsdevices.fms.PDU\_Load4
+==========================
+
+.. currentmodule:: pcdsdevices.fms
+
+.. autoclass:: PDU_Load4
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - sensor1 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:{elevation[0]}:GetInfeedLoadValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor2 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:{elevation[1]}:GetInfeedLoadValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor3 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:{elevation[2]}:GetInfeedLoadValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor4 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:{elevation[3]}:GetInfeedLoadValue``
+          - 
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

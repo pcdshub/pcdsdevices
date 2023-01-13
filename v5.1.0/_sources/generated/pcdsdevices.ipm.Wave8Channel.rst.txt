@@ -1,0 +1,90 @@
+﻿pcdsdevices.ipm.Wave8Channel
+============================
+
+.. currentmodule:: pcdsdevices.ipm
+
+.. autoclass:: Wave8Channel
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - amplitude (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.prefix}:AMPL_{self.channel_index}``
+          - 
+          - hinted
+          - 
+    
+        * - tpos (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.prefix}:TPOS_{self.channel_index}``
+          - 
+          - normal
+          - 
+    
+        * - number_of_samples (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}:NumberOfSamples{self.channel_index}_RBV``
+          - 
+          - config
+          - 
+    
+        * - delay (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}:Delay{self.channel_index}_RBV``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

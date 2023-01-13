@@ -1,0 +1,145 @@
+﻿pcdsdevices.digitizers.Wave8V2EvrV2
+===================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2EvrV2
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - count
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Count``
+          - 
+          - config
+          - 
+    
+        * - delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Delay_RBV``
+          - 
+          - config
+          - 
+    
+        * - dest_sel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DestSel_RBV``
+          - 
+          - config
+          - 
+    
+        * - dest_type
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DestType_RBV``
+          - 
+          - config
+          - 
+    
+        * - enable_reg
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:EnableReg_RBV``
+          - 
+          - config
+          - 
+    
+        * - enable_trig
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:EnableTrig_RBV``
+          - 
+          - config
+          - 
+    
+        * - event_code
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:EventCode_RBV``
+          - 
+          - config
+          - 
+    
+        * - polarity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Polarity_RBV``
+          - 
+          - config
+          - 
+    
+        * - rate_type
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RateType_RBV``
+          - 
+          - config
+          - 
+    
+        * - source
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:Source_RBV``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

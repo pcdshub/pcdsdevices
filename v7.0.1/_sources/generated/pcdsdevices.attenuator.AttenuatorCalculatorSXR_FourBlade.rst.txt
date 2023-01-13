@@ -1,0 +1,261 @@
+﻿pcdsdevices.attenuator.AttenuatorCalculatorSXR\_FourBlade
+=========================================================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: AttenuatorCalculatorSXR_FourBlade
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - calc_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYS:CalcMode``
+          - Floor or Ceiling calculation
+          - config
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - energy_source
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYS:EnergySource``
+          - Use beamline photon energy or custom energy?
+          - config
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - energy_custom
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYS:CustomPhotonEnergy``
+          - Custom energy to use for calculations [eV]
+          - config
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - energy_actual
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:ActualPhotonEnergy_RBV``
+          - The reported beamline photon energy [eV]
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - actual_transmission
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:ActualTransmission_RBV``
+          - Actual normalized transmission value
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - actual_transmission_3omega
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:Actual3OmegaTransmission_RBV``
+          - Actual 3 omega normalized transmission value
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - desired_transmission
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYS:DesiredTransmission``
+          - Desired normalized transmission value
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - last_energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:LastPhotonEnergy_RBV``
+          - The photon energy used for the previous calculation; i.e., the one that goes along with `best_config`.
+          - config
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - best_config
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:BestConfiguration_RBV``
+          - The best configuration of filters for the desired transmission
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - best_config_bitmask
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:BestConfigurationBitmask_RBV``
+          - The best configuration of filters for the desired transmission.
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - best_config_error
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:BestConfigError_RBV``
+          - Desired to calculated transmission error
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - active_config
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:ActiveConfiguration_RBV``
+          - Where the filters are now
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - active_config_bitmask
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:ActiveConfigurationBitmask_RBV``
+          - Where the filters are now (as an integer)
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - filters_moving
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:FiltersMoving_RBV``
+          - Filter-by-filter motion status (1 if moving)
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - filters_moving_bitmask
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:FiltersMovingBitmask_RBV``
+          - Filter-by-filter motion status as a bitmask
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - run_calculation
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYS:Run``
+          - Start the calculation
+          - config
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - apply_config
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYS:ApplyConfiguration``
+          - Apply the best configuration (i.e., move the filters)
+          - config
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - moving
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:Moving_RBV``
+          - Are filters being moved in/out?
+          - config
+          - Inherited from :class:`~pcdsdevices.attenuator.AttenuatorCalculatorBase`
+    
+        * - blade_01
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade`
+          - ``:AXIS:01:``
+          - 
+          - normal
+          - 
+    
+        * - blade_02
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade`
+          - ``:AXIS:02:``
+          - 
+          - normal
+          - 
+    
+        * - blade_03
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade`
+          - ``:AXIS:03:``
+          - 
+          - normal
+          - 
+    
+        * - blade_04
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade`
+          - ``:AXIS:04:``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calculate
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_active_config
+    .. automethod:: get_best_config
+    .. automethod:: get_moving_status
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: first_filter
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: num_filters
+    .. autoattribute:: subscriptions
+    
+    

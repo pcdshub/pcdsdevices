@@ -1,0 +1,324 @@
+﻿pcdsdevices.digitizers.Qadc
+===========================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Qadc
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - ch0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH0``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.QadcBase`
+    
+        * - ch1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH1``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.QadcBase`
+    
+        * - ch2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH2``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.QadcBase`
+    
+        * - ch3
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CH3``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.digitizers.QadcBase`
+    
+        * - config
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CONFIG``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.digitizers.QadcBase`
+    
+        * - gain0_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN0_I``
+          - 
+          - omitted
+          - 
+    
+        * - gain0_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN0_NI``
+          - 
+          - omitted
+          - 
+    
+        * - gain1_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN1_I``
+          - 
+          - omitted
+          - 
+    
+        * - gain1_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN1_NI``
+          - 
+          - omitted
+          - 
+    
+        * - gain2_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN2_I``
+          - 
+          - omitted
+          - 
+    
+        * - gain2_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN2_NI``
+          - 
+          - omitted
+          - 
+    
+        * - gain3_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN3_I``
+          - 
+          - omitted
+          - 
+    
+        * - gain3_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GAIN3_NI``
+          - 
+          - omitted
+          - 
+    
+        * - ichan
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ICHAN``
+          - 
+          - config
+          - 
+    
+        * - interleave
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:INTERLEAVE``
+          - 
+          - config
+          - 
+    
+        * - length
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:LENGTH``
+          - 
+          - config
+          - 
+    
+        * - off0_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF0_I``
+          - 
+          - omitted
+          - 
+    
+        * - off0_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF0_NI``
+          - 
+          - omitted
+          - 
+    
+        * - off1_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF1_I``
+          - 
+          - omitted
+          - 
+    
+        * - off1_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF1_NI``
+          - 
+          - omitted
+          - 
+    
+        * - off2_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF2_I``
+          - 
+          - omitted
+          - 
+    
+        * - off2_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF2_NI``
+          - 
+          - omitted
+          - 
+    
+        * - off3_i
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF3_I``
+          - 
+          - omitted
+          - 
+    
+        * - off3_ni
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFF3_NI``
+          - 
+          - omitted
+          - 
+    
+        * - out
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OUT``
+          - 
+          - normal
+          - 
+    
+        * - rawdata
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RAWDATA``
+          - 
+          - normal
+          - 
+    
+        * - start
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:START``
+          - 
+          - normal
+          - 
+    
+        * - train
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRAIN``
+          - 
+          - omitted
+          - 
+    
+        * - trig_delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_DELAY``
+          - 
+          - config
+          - 
+    
+        * - trig_event
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_EVENT``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

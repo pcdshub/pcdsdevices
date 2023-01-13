@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pcdsdevices.analog_signals.acromag_ch_factory_func &mdash; PCDS Devices 6.2.0+0.gfcda7d9.dirty documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pcdsdevices.areadetector.cam.FeeOpalCam" href="pcdsdevices.areadetector.cam.FeeOpalCam.html" />
+    <link rel="prev" title="pcdsdevices.analog_signals.Mesh" href="pcdsdevices.analog_signals.Mesh.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PCDS Devices
+          </a>
+              <div class="version">
+                6.2.0+0.gfcda7d9.dirty
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Device Types</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#pcdsdevices-analog-signals">pcdsdevices.analog_signals</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.analog_signals.Acromag.html">pcdsdevices.analog_signals.Acromag</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.analog_signals.Mesh.html">pcdsdevices.analog_signals.Mesh</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pcdsdevices.analog_signals.acromag_ch_factory_func</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-cam">pcdsdevices.areadetector.cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-detectors">pcdsdevices.areadetector.detectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-plugins">pcdsdevices.areadetector.plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-atm">pcdsdevices.atm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-attenuator">pcdsdevices.attenuator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-beam-stats">pcdsdevices.beam_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ccm">pcdsdevices.ccm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-crix-motion">pcdsdevices.crix_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-cvmi-motion">pcdsdevices.cvmi_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-dc-devices">pcdsdevices.dc_devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-delay-generator">pcdsdevices.delay_generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-device">pcdsdevices.device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-digitizers">pcdsdevices.digitizers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-energy-monitor">pcdsdevices.energy_monitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-epics-motor">pcdsdevices.epics_motor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-evr">pcdsdevices.evr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gauge">pcdsdevices.gauge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gon">pcdsdevices.gon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-inout">pcdsdevices.inout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-interface">pcdsdevices.interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ipm">pcdsdevices.ipm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-jet">pcdsdevices.jet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lamp-motion">pcdsdevices.lamp_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-btps">pcdsdevices.lasers.btps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-counters">pcdsdevices.lasers.counters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-dicon">pcdsdevices.lasers.dicon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-ek9000">pcdsdevices.lasers.ek9000</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-elliptec">pcdsdevices.lasers.elliptec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-qmini">pcdsdevices.lasers.qmini</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-rfof">pcdsdevices.lasers.rfof</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-thorlabswfs">pcdsdevices.lasers.thorlabsWFS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-tuttifrutti">pcdsdevices.lasers.tuttifrutti</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-zoomtelescope">pcdsdevices.lasers.zoomtelescope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lens">pcdsdevices.lens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lic">pcdsdevices.lic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lodcm">pcdsdevices.lodcm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lxe">pcdsdevices.lxe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mirror">pcdsdevices.mirror</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-movablestand">pcdsdevices.movablestand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mpod">pcdsdevices.mpod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mpod-apalis">pcdsdevices.mpod_apalis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mps">pcdsdevices.mps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mrco-motion">pcdsdevices.mrco_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-piezo">pcdsdevices.piezo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pim">pcdsdevices.pim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pmps">pcdsdevices.pmps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-positioner">pcdsdevices.positioner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pseudopos">pcdsdevices.pseudopos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pulsepicker">pcdsdevices.pulsepicker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pump">pcdsdevices.pump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pv-positioner">pcdsdevices.pv_positioner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ref">pcdsdevices.ref</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-rtds-ebd">pcdsdevices.rtds_ebd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sample-delivery">pcdsdevices.sample_delivery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sensors">pcdsdevices.sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sequencer">pcdsdevices.sequencer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-signal">pcdsdevices.signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sim">pcdsdevices.sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-slits">pcdsdevices.slits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-spectrometer">pcdsdevices.spectrometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-state">pcdsdevices.state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-stopper">pcdsdevices.stopper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sxr-test-absorber">pcdsdevices.sxr_test_absorber</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-tags">pcdsdevices.tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-targets">pcdsdevices.targets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-timetool">pcdsdevices.timetool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-utils">pcdsdevices.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-valve">pcdsdevices.valve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-variety">pcdsdevices.variety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-wfs">pcdsdevices.wfs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../signals.html">Signal Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../base_classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sim_types.html">Simulated Devices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../mv.html">Shortcuts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../presets.html">Preset Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tab.html">IPython Tab Curation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">UI Templates</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upcoming_changes.html">Upcoming Changes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PCDS Devices</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">API</a> &raquo;</li>
+      <li>pcdsdevices.analog_signals.acromag_ch_factory_func</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/generated/pcdsdevices.analog_signals.acromag_ch_factory_func.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pcdsdevices-analog-signals-acromag-ch-factory-func">
+<h1>pcdsdevices.analog_signals.acromag_ch_factory_func<a class="headerlink" href="#pcdsdevices-analog-signals-acromag-ch-factory-func" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pcdsdevices.analog_signals.acromag_ch_factory_func">
+<span class="sig-prename descclassname"><span class="pre">pcdsdevices.analog_signals.</span></span><span class="sig-name descname"><span class="pre">acromag_ch_factory_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.analog_signals.acromag_ch_factory_func" title="Permalink to this definition"></a></dt>
+<dd><p>This is a factory function for creating an Acromag output or input signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The base EPICS PV for the Acromag. E.g.: <code class="xref any docutils literal notranslate"><span class="pre">XPP:USR:ai1</span></code></p></li>
+<li><p><strong>channel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The channel number. E.g.: <code class="xref any docutils literal notranslate"><span class="pre">1</span></code> [0-15]</p></li>
+<li><p><strong>signal_class</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Signal Class to use. E.g.: <code class="xref any docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code>, <code class="xref any docutils literal notranslate"><span class="pre">EpicsSignal</span></code>. If <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref any docutils literal notranslate"><span class="pre">None</span></code></a>
+provided, it will use the prefix to try to generate the appropriate
+signal class.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – A name to refer to the Acromag Channel, if <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref any docutils literal notranslate"><span class="pre">None</span></code></a> it will use the
+prefix and channel to generate a name. E.g.: <code class="xref any docutils literal notranslate"><span class="pre">ai_1</span></code> or <code class="xref any docutils literal notranslate"><span class="pre">ao_1</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pcdsdevices.analog_signals.Mesh.html" class="btn btn-neutral float-left" title="pcdsdevices.analog_signals.Mesh" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pcdsdevices.areadetector.cam.FeeOpalCam.html" class="btn btn-neutral float-right" title="pcdsdevices.areadetector.cam.FeeOpalCam" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

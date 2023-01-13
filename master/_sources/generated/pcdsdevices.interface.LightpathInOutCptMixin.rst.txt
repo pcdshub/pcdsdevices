@@ -1,0 +1,67 @@
+﻿pcdsdevices.interface.LightpathInOutCptMixin
+============================================
+
+.. currentmodule:: pcdsdevices.interface
+
+.. autoclass:: LightpathInOutCptMixin
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: subscriptions
+    
+    

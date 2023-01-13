@@ -1,0 +1,81 @@
+﻿pcdsdevices.sample\_delivery.Bronkhorst
+=======================================
+
+.. currentmodule:: pcdsdevices.sample_delivery
+
+.. autoclass:: Bronkhorst
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - unit
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Unit``
+          - 
+          - normal
+          - 
+    
+        * - flow
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Flow``
+          - 
+          - normal
+          - 
+    
+        * - setpoint
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Setpoint``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

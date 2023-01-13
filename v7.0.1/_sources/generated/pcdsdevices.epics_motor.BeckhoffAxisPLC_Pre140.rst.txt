@@ -1,0 +1,84 @@
+﻿pcdsdevices.epics\_motor.BeckhoffAxisPLC\_Pre140
+================================================
+
+.. currentmodule:: pcdsdevices.epics_motor
+
+.. autoclass:: BeckhoffAxisPLC_Pre140
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``sErrorMessage``
+          - PLC error or warning
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxisPLC`
+    
+        * - err_code
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``nErrorId``
+          - Current NC error code
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxisPLC`
+    
+        * - cmd_err_reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``bReset``
+          - Command to reset an active error
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxisPLC`
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: cmd_home
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: home_pos
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    .. autoattribute:: user_enable
+    
+    

@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.is\_input
+===========================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: is_input

@@ -1,0 +1,59 @@
+﻿pcdsdevices.signal.EpicsSignalBaseEditMD
+========================================
+
+.. currentmodule:: pcdsdevices.signal
+
+.. autoclass:: EpicsSignalBaseEditMD
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: set_default_timeout
+    .. automethod:: set_defaults
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: SUB_META
+    .. autoattribute:: alarm_severity
+    .. autoattribute:: alarm_status
+    .. autoattribute:: as_string
+    .. autoattribute:: connected
+    .. autoattribute:: connection_timeout
+    .. autoattribute:: enum_attrs
+    .. autoattribute:: enum_strs
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: metadata
+    .. autoattribute:: metadata_keys
+    .. autoattribute:: precision
+    .. autoattribute:: pvname
+    .. autoattribute:: read_access
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    .. autoattribute:: timestamp
+    .. autoattribute:: tolerance
+    .. autoattribute:: value
+    .. autoattribute:: write_access
+    .. autoattribute:: write_timeout
+    
+    

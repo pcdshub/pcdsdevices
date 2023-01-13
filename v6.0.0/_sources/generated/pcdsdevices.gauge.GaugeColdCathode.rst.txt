@@ -1,0 +1,172 @@
+﻿pcdsdevices.gauge.GaugeColdCathode
+==================================
+
+.. currentmodule:: pcdsdevices.gauge
+
+.. autoclass:: GaugeColdCathode
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - pressure
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PMON``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.gauge.BaseGauge`
+    
+        * - egu
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PMON.EGU``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.BaseGauge`
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATE``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.BaseGauge`
+    
+        * - status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUSMON``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.BaseGauge`
+    
+        * - pressure_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PSTATMON``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.BaseGauge`
+    
+        * - pressure_status_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATMSP``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.BaseGauge`
+    
+        * - enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ENBL_SW``
+          - 
+          - normal
+          - 
+    
+        * - relay_setpoint
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPRBCK``
+          - 
+          - normal
+          - 
+    
+        * - relay_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENRBCK``
+          - 
+          - normal
+          - 
+    
+        * - control_setpoint
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PCTRLSPRBCK``
+          - 
+          - normal
+          - 
+    
+        * - control_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PCTRLENRBCK``
+          - 
+          - normal
+          - 
+    
+        * - protection_setpoint
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PPROTSPRBCK``
+          - 
+          - normal
+          - 
+    
+        * - protection_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PPROTENRBCK``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

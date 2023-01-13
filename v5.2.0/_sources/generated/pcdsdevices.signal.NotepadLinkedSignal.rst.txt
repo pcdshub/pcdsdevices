@@ -1,0 +1,50 @@
+﻿pcdsdevices.signal.NotepadLinkedSignal
+======================================
+
+.. currentmodule:: pcdsdevices.signal
+
+.. autoclass:: NotepadLinkedSignal
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: create_notepad_metadata
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: should_use_epics_signal
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: SUB_META
+    .. autoattribute:: connected
+    .. autoattribute:: enum_strs
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: metadata
+    .. autoattribute:: metadata_keys
+    .. autoattribute:: precision
+    .. autoattribute:: read_access
+    .. autoattribute:: timestamp
+    .. autoattribute:: tolerance
+    .. autoattribute:: value
+    .. autoattribute:: write_access
+    
+    

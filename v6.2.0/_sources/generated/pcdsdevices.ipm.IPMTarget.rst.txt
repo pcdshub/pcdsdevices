@@ -1,0 +1,140 @@
+﻿pcdsdevices.ipm.IPMTarget
+=========================
+
+.. currentmodule:: pcdsdevices.ipm
+
+.. autoclass:: IPMTarget
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.inout.InOutRecordPositioner`
+    
+        * - motor
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``:MOTOR``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.inout.InOutRecordPositioner`
+    
+        * - t1_composition
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TARGET1.DESC``
+          - 
+          - omitted
+          - 
+    
+        * - t2_composition
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TARGET2.DESC``
+          - 
+          - omitted
+          - 
+    
+        * - t3_composition
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TARGET3.DESC``
+          - 
+          - omitted
+          - 
+    
+        * - t4_composition
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TARGET4.DESC``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_inserted
+    .. automethod:: check_removed
+    .. automethod:: check_transmission
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_composition
+    .. automethod:: get_state
+    .. automethod:: insert
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: in_states
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: needs_parent
+    .. autoattribute:: out_states
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: stage_group
+    .. autoattribute:: states_list
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    

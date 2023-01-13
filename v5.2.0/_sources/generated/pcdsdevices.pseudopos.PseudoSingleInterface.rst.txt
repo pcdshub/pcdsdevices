@@ -1,0 +1,116 @@
+﻿pcdsdevices.pseudopos.PseudoSingleInterface
+===========================================
+
+.. currentmodule:: pcdsdevices.pseudopos
+
+.. autoclass:: PseudoSingleInterface
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - readback
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - hinted
+          - Inherited from :class:`~ophyd.pseudopos.PseudoSingle`
+    
+        * - setpoint
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.pseudopos.PseudoSingle`
+    
+        * - notepad_setpoint
+          - :class:`~pcdsdevices.signal.NotepadLinkedSignal`
+          - ``:OphydSetpoint``
+          - 
+          - normal
+          - 
+    
+        * - notepad_readback
+          - :class:`~pcdsdevices.signal.NotepadLinkedSignal`
+          - ``:OphydReadback``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: sync
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: calculated_dial_pos
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: target
+    .. autoattribute:: timeout
+    
+    

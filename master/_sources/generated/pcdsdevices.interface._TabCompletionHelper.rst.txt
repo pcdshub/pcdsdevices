@@ -1,0 +1,26 @@
+﻿pcdsdevices.interface.\_TabCompletionHelper
+===========================================
+
+.. currentmodule:: pcdsdevices.interface
+
+.. autoclass:: _TabCompletionHelper
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: add
+    .. automethod:: build_regex
+    .. automethod:: remove
+    .. automethod:: reset
+    
+    
+
+    
+    
+    

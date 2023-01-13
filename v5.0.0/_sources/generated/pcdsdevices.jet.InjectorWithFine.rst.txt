@@ -1,0 +1,111 @@
+﻿pcdsdevices.jet.InjectorWithFine
+================================
+
+.. currentmodule:: pcdsdevices.jet
+
+.. autoclass:: InjectorWithFine
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x (UnrelatedComponent)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.jet.Injector`
+    
+        * - y (UnrelatedComponent)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.jet.Injector`
+    
+        * - z (UnrelatedComponent)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.jet.Injector`
+    
+        * - fine_x (UnrelatedComponent)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - fine_y (UnrelatedComponent)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - fine_z (UnrelatedComponent)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

@@ -1,0 +1,46 @@
+﻿pcdsdevices.signal.AggregateSignal
+==================================
+
+.. currentmodule:: pcdsdevices.signal
+
+.. autoclass:: AggregateSignal
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: SUB_META
+    .. autoattribute:: connected
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: metadata
+    .. autoattribute:: metadata_keys
+    .. autoattribute:: read_access
+    .. autoattribute:: timestamp
+    .. autoattribute:: tolerance
+    .. autoattribute:: value
+    .. autoattribute:: write_access
+    
+    

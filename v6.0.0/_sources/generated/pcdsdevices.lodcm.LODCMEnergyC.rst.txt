@@ -1,0 +1,170 @@
+﻿pcdsdevices.lodcm.LODCMEnergyC
+==============================
+
+.. currentmodule:: pcdsdevices.lodcm
+
+.. autoclass:: LODCMEnergyC
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - tower1 (FCpt)
+          - :class:`~pcdsdevices.lodcm.CrystalTower1`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - 
+    
+        * - tower2 (FCpt)
+          - :class:`~pcdsdevices.lodcm.CrystalTower2`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - 
+    
+        * - dr (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:19``
+          - LOM Dia Theta
+          - normal
+          - 
+    
+        * - th1C (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          - Th1 motor offset for C [deg]
+          - normal
+          - 
+    
+        * - th2C (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          - Th2 motor offset for C [deg]
+          - normal
+          - 
+    
+        * - z1C (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          - Z1 motor offset for C [mm]
+          - normal
+          - 
+    
+        * - z2C (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          - Z2 motor offset for C [mm]
+          - normal
+          - 
+    
+        * - energy
+          - :class:`~pcdsdevices.pseudopos.PseudoSingleInterface`
+          - 
+          - 
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_geometry
+    .. automethod:: camonitor
+    .. automethod:: check_single
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: forward
+    .. automethod:: get
+    .. automethod:: get_energy
+    .. automethod:: get_reflection
+    .. automethod:: inverse
+    .. automethod:: move
+    .. automethod:: move_single
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_current_position
+    .. automethod:: set_position
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: to_pseudo_tuple
+    .. automethod:: to_real_tuple
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: composite_egu
+    .. autoattribute:: concurrent
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: needs_parent
+    .. autoattribute:: position
+    .. autoattribute:: pseudo_positioners
+    .. autoattribute:: real_position
+    .. autoattribute:: real_positioners
+    .. autoattribute:: sequential
+    .. autoattribute:: settle_time
+    .. autoattribute:: stage_group
+    .. autoattribute:: target
+    .. autoattribute:: timeout
+    
+    

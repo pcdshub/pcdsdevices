@@ -1,0 +1,96 @@
+﻿pcdsdevices.ccm.CCMConstantsMixin
+=================================
+
+.. currentmodule:: pcdsdevices.ccm
+
+.. autoclass:: CCMConstantsMixin
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - theta0_deg (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{_constants_prefix}:THETA0``
+          - Reference angle for the first crystal in deg.
+          - config
+          - 
+    
+        * - dspacing (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{_constants_prefix}:DSPACING``
+          - Crystal lattice spacing.
+          - config
+          - 
+    
+        * - gr (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{_constants_prefix}:GR``
+          - The radius of the sapphire ball connected to the Alio stage in mm.
+          - config
+          - 
+    
+        * - gd (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{_constants_prefix}:GD``
+          - Distance between the rotation axis and the center of the sapphire sphere located on the Alio stage in mm.
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: reset_calc_constant_defaults
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: warn_invalid_constants
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: dspacing_val
+    .. autoattribute:: gd_val
+    .. autoattribute:: gr_val
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: theta0_deg_val
+    .. autoattribute:: theta0_rad_val
+    
+    

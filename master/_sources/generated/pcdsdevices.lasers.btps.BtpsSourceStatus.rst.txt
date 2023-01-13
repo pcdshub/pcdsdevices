@@ -1,0 +1,171 @@
+﻿pcdsdevices.lasers.btps.BtpsSourceStatus
+========================================
+
+.. currentmodule:: pcdsdevices.lasers.btps
+
+.. autoclass:: BtpsSourceStatus
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lss
+          - :class:`~pcdsdevices.lasers.btps.LssShutterStatus`
+          - ``LST:``
+          - Laser Safety System Status
+          - normal
+          - 
+    
+        * - entry_valve
+          - :class:`~pcdsdevices.lasers.btps.BtpsVGC`
+          - ``VGC:01``
+          - Source entry valve
+          - normal
+          - 
+    
+        * - linear (UnrelatedComponent)
+          - :class:`~pcdsdevices.epics_motor.SmarAct`
+          - 
+          - Linear Smaract stage
+          - normal
+          - 
+    
+        * - rotary (UnrelatedComponent)
+          - :class:`~pcdsdevices.epics_motor.SmarAct`
+          - 
+          - Rotary stage
+          - normal
+          - 
+    
+        * - goniometer (UnrelatedComponent)
+          - :class:`~pcdsdevices.epics_motor.SmarAct`
+          - 
+          - Goniometer stage
+          - normal
+          - 
+    
+        * - open_request
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:UserOpen``
+          - User request to open/close shutter
+          - normal
+          - 
+    
+        * - latched_error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:Error``
+          - Latched error
+          - normal
+          - 
+    
+        * - acknowledge
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:Acknowledge``
+          - User acknowledgement of latched fault
+          - normal
+          - 
+    
+        * - override
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:Override``
+          - BTPS advanced override mode
+          - normal
+          - 
+    
+        * - lss_open_request
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:LSS:OpenRequest``
+          - Output request to LSS open shutter
+          - normal
+          - 
+    
+        * - safe_to_open
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:Safe``
+          - BTPS safe to open indicator
+          - normal
+          - 
+    
+        * - current_destination
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:CurrentLD``
+          - BTPS-determined current laser destination
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: check_move
+    .. automethod:: check_move_all
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_nominal_to_current
+    .. automethod:: set_with_movestatus
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    .. autoattribute:: source_pos
+    
+    

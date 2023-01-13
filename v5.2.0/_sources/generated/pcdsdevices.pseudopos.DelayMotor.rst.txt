@@ -1,0 +1,118 @@
+﻿pcdsdevices.pseudopos.DelayMotor
+================================
+
+.. currentmodule:: pcdsdevices.pseudopos
+
+.. autoclass:: DelayMotor
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - delay (FCpt)
+          - :class:`~pcdsdevices.pseudopos.PseudoSingleInterface`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pseudopos.DelayBase`
+    
+        * - user_offset
+          - :class:`~pcdsdevices.signal.NotepadLinkedSignal`
+          - ``:OphydOffset``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pseudopos.DelayBase`
+    
+        * - motor (InterfaceComponent)
+          - :class:`~ophyd.positioner.PositionerBase`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_single
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: forward
+    .. automethod:: get
+    .. automethod:: inverse
+    .. automethod:: move
+    .. automethod:: move_single
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: set_current_position
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: to_pseudo_tuple
+    .. automethod:: to_real_tuple
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: composite_egu
+    .. autoattribute:: concurrent
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: pseudo_positioners
+    .. autoattribute:: real_position
+    .. autoattribute:: real_positioners
+    .. autoattribute:: sequential
+    .. autoattribute:: settle_time
+    .. autoattribute:: target
+    .. autoattribute:: timeout
+    
+    

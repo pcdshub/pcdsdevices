@@ -1,0 +1,281 @@
+﻿pcdsdevices.sample\_delivery.Selector
+=====================================
+
+.. currentmodule:: pcdsdevices.sample_delivery
+
+.. autoclass:: Selector
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:IO:SyncUnitOK``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.sample_delivery.M3BasePLCDevice`
+    
+        * - sampleFM_flow
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SampleFM:Flow``
+          - 
+          - normal
+          - 
+    
+        * - sampleFM_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SampleFM:State``
+          - 
+          - normal
+          - 
+    
+        * - sampleFM_reset
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SampleFM:Reset``
+          - 
+          - normal
+          - 
+    
+        * - sampleFM_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SampleFM:Mode``
+          - 
+          - normal
+          - 
+    
+        * - sampleFM_mode_rb
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SampleFM:ModeRb``
+          - 
+          - normal
+          - 
+    
+        * - sheathFM_flow
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SheathFM:Flow``
+          - 
+          - normal
+          - 
+    
+        * - sheathFM_state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SheathFM:State``
+          - 
+          - normal
+          - 
+    
+        * - sheathFM_reset
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SheathFM:Reset``
+          - 
+          - normal
+          - 
+    
+        * - sheathFM_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SheathFM:Mode``
+          - 
+          - normal
+          - 
+    
+        * - sheathFM_mode_rb
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SheathFM:ModeRb``
+          - 
+          - normal
+          - 
+    
+        * - massFM_unit
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MassFM:Unit``
+          - 
+          - normal
+          - 
+    
+        * - massFM_flow
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MassFM:Flow``
+          - 
+          - normal
+          - 
+    
+        * - shaker1
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Shaker:01:Ctrl``
+          - 
+          - normal
+          - 
+    
+        * - shaker2
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Shaker:02:Ctrl``
+          - 
+          - normal
+          - 
+    
+        * - shaker3
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Shaker:03:Ctrl``
+          - 
+          - normal
+          - 
+    
+        * - shaker4
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Shaker:04:Ctrl``
+          - 
+          - normal
+          - 
+    
+        * - valve1
+          - :class:`~pcdsdevices.sample_delivery.ViciValve`
+          - ``:Valve:01``
+          - 
+          - normal
+          - 
+    
+        * - valve2
+          - :class:`~pcdsdevices.sample_delivery.ViciValve`
+          - ``:Valve:02``
+          - 
+          - normal
+          - 
+    
+        * - lock
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ValvesLockRequest``
+          - 
+          - normal
+          - 
+    
+        * - unlock
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ValvesUnlockRequest``
+          - 
+          - normal
+          - 
+    
+        * - locked
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ValvesLocked``
+          - 
+          - normal
+          - 
+    
+        * - synced
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ValvesSynced``
+          - 
+          - normal
+          - 
+    
+        * - sync_req_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ValveSyncReqPos``
+          - 
+          - normal
+          - 
+    
+        * - sync_curr_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ValveSyncCurrentPos``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

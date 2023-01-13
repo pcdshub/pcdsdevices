@@ -1,0 +1,120 @@
+﻿pcdsdevices.stopper.Stopper
+===========================
+
+.. currentmodule:: pcdsdevices.stopper
+
+.. autoclass:: Stopper
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - state
+          - :class:`~pcdsdevices.signal.PVStateSignal`
+          - 
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.inout.InOutPVStatePositioner`
+    
+        * - open_limit
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OPEN``
+          - Reads 1 if the stopper is out, at the open limit.
+          - normal
+          - 
+    
+        * - closed_limit
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CLOSE``
+          - Reads 1 if the stopper is in, at the closed limit.
+          - normal
+          - 
+    
+        * - command
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CMD``
+          - Put here to command a stopper move.
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_inserted
+    .. automethod:: check_removed
+    .. automethod:: check_transmission
+    .. automethod:: close
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_state
+    .. automethod:: insert
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: open
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: status
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: in_states
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: out_states
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: states_list
+    .. autoattribute:: stop
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    

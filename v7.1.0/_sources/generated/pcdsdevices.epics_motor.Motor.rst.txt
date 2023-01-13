@@ -1,0 +1,6 @@
+﻿pcdsdevices.epics\_motor.Motor
+==============================
+
+.. currentmodule:: pcdsdevices.epics_motor
+
+.. autofunction:: Motor

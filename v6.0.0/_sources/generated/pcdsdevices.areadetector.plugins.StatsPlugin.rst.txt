@@ -1,0 +1,1396 @@
+﻿pcdsdevices.areadetector.plugins.StatsPlugin
+============================================
+
+.. currentmodule:: pcdsdevices.areadetector.plugins
+
+.. autoclass:: StatsPlugin
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - configuration_names
+          - :class:`~ophyd.signal.ArrayAttributeSignal`
+          - 
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - array_counter (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArrayCounter``
+          - [ArrayCounter r/w longout] Counter that increments by 1 each time an NDArray callback is processed
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - array_rate (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArrayRate_RBV``
+          - [ArrayRate_RBV r/o calc] Rate (Hz) at which ArrayCounter is incrementing. Computed in database.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - asyn_io (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``AsynIO``
+          - [AsynIO N/A asyn] asyn record to control debugging (asynTrace)
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - nd_attributes_file (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NDAttributesFile``
+          - [NDAttributesFile r/w waveform]
+              The name of an XML file defining the PVAttributes and paramAttributes to be added
+              to each NDArray by this plugin. The format of the XML file is described in the documentation
+              for asynNDArrayDriver::readNDAttributesFile().
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - pool_alloc_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolAllocBuffers``
+          - [PoolAllocBuffers r/o longin] The number of NDArrays this plugin has currently allocated.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - pool_free_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolFreeBuffers``
+          - [PoolFreeBuffers r/o longin] The number of free NDArrays this plugin has in its NDArrayPool.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - pool_max_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolMaxBuffers``
+          - [PoolMaxBuffers r/o longin] The maximum number of NDArrays this plugin is allowed to allocate.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - pool_max_mem (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolMaxMem``
+          - [PoolMaxMem r/o ai] The maximum amount of NDArrayPool memory this plugin is allowed to allocate.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - pool_used_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolUsedBuffers``
+          - [PoolUsedBuffers N/A calc]
+              The number of used NDArrays this plugin has in its NDArrayPool. Calculated from
+              PoolAllocBuffers and PoolFreeBuffers.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - pool_used_mem (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolUsedMem``
+          - [PoolUsedMem r/o ai] The actual amount of NDArrayPool memory this plugin is currently using.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - port_name (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PortName_RBV``
+          - [PortName_RBV r/o stringin] asyn port name
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - asyn_pipeline_config
+          - :class:`~ophyd.signal.ArrayAttributeSignal`
+          - 
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - width (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize0_RBV``
+          - [ArraySize0_RBV r/o longin] First dimension of NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - height (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize1_RBV``
+          - [ArraySize1_RBV r/o longin] Second dimension of NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - depth (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize2_RBV``
+          - [ArraySize2_RBV r/o longin] Third dimension of NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - array_size (DDC)
+          - :class:`~ophyd.device.ArraySize`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - bayer_pattern (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``BayerPattern_RBV``
+          - [BayerPattern_RBV r/o mbbi] BayerPattern of last NDArray callback data (NDBayerPattern_t).
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - blocking_callbacks (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BlockingCallbacks``
+          - [BlockingCallbacks r/w bo]
+              0 = callbacks from the driver do not block; the NDArray data is put on a queue and
+              the callback processes in its own thread.
+
+              1 = callbacks from the driver block; the callback processes in the driver callback
+              thread.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - color_mode (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ColorMode_RBV``
+          - [ColorMode_RBV r/o mbbi] Color mode of last NDArray callback data (NDColorMode_t).
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - data_type (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``DataType_RBV``
+          - [DataType_RBV r/o mbbi] Data type of last NDArray callback data (NDDataType_t).
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - dim0_sa (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim0SA``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - dim1_sa (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim1SA``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - dim2_sa (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim2SA``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - dim_sa (DDC)
+          - :class:`~ophyd.device.DimSa`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - dimensions (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Dimensions_RBV``
+          - [Dimensions_RBV r/o waveform] Dimensions in last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - dropped_arrays (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DroppedArrays``
+          - [DroppedArrays r/w longout]
+              Counter that increments by 1 each time an NDArray callback occurs when NDPluginDriverBlockingCallbacks=0
+              and the plugin driver queue is full, so the callback cannot be processed.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - enable (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``EnableCallbacks``
+          - [EnableCallbacks r/w bo]
+              Enable (1) or disable (0) callbacks from the driver to this plugin. If callbacks
+              are disabled then the plugin will normally be idle and consume no CPU resources.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - min_callback_time (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``MinCallbackTime``
+          - [MinCallbackTime r/w ao]
+              The minimum time in seconds between calls to processCallbacks. Any callbacks occuring
+              before this minimum time has elapsed will be ignored. 0 means no minimum time, i.e.
+              process all callbacks.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - nd_array_address (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NDArrayAddress``
+          - [NDArrayAddress r/w longout]
+              asyn port address for NDArray driver that will make callbacks to this plugin. This
+              address can be changed at run time, connecting the plugin to a different address
+              in the NDArray driver.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - nd_array_port (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NDArrayPort``
+          - [NDArrayPort r/w stringout]
+              asyn port name for NDArray driver that will make callbacks to this plugin. This
+              port can be changed at run time, connecting the plugin to a different NDArray driver.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ndimensions (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``NDimensions_RBV``
+          - [NDimensions_RBV r/o longin] Number of dimensions in last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - plugin_type (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PluginType_RBV``
+          - [PluginType_RBV r/o stringin] A string describing the plugin type.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - queue_free (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueFree``
+          - [QueueFree r/o longin] The number of free queue elements.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - queue_free_low (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueFreeLow``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - queue_size (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueSize``
+          - [QueueSize r/o longin] The total queue size for callbacks when BlockingCallbacks=0.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - queue_use (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUse``
+          - [QueueUse r/o calc] The number of used queue elements.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - queue_use_high (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUseHIGH``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - queue_use_hihi (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUseHIHI``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - time_stamp (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``TimeStamp_RBV``
+          - [TimeStamp_RBV r/o ai] Time stamp number of last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - unique_id (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``UniqueId_RBV``
+          - [UniqueId_RBV r/o longin] Unique ID number of last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - bgd_width (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BgdWidth``
+          - [BgdWidth r/w longout]
+              Width of the background in pixels to use when computing net counts. 0=no background
+              subtraction, so the net counts is the same as the total counts.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - centroid_threshold (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``CentroidThreshold``
+          - [CentroidThreshold r/w ao]
+              Threshold used when computing the centroid statistics. All array elements less than
+              this value are set to 0 for computing the centroid statistics. It is important to
+              set this value to ignore the "background" when computing the position and size of
+              a "beam" image, for example.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - centroid (DDC)
+          - :class:`~ophyd.device.Centroid`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - compute_centroid (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ComputeCentroid``
+          - [ComputeCentroid r/w bo]
+              Flag to control whether to compute the centroid statistics (0=No, 1=Yes). The centroids
+              are computed from the average row and column profiles above the centroid threshold.
+              These calculations are also quite fast, since they just involve addition operations
+              for each array element.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - compute_histogram (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ComputeHistogram``
+          - [ComputeHistogram r/w bo]
+              Flag to control whether to compute the histogram for this array (0=No, 1=Yes). Not
+              computing the histogram reduces CPU load.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - compute_profiles (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ComputeProfiles``
+          - [ComputeProfiles r/w bo] Flag to control whether to compute the profiles for this array (0=No, 1=Yes).
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - compute_statistics (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ComputeStatistics``
+          - [ComputeStatistics r/w bo]
+              Flag to control whether to compute statistics for this array (0=No, 1=Yes). Not
+              computing statistics reduces CPU load. Basic statistics computations are quite fast,
+              since they involve mostly double precision addition, with 1 multiply to compute
+              sigma, per array element.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - cursor (DDC)
+          - :class:`~ophyd.device.Cursor`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - hist_entropy (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``HistEntropy_RBV``
+          - [HistEntropy_RBV r/o ai]
+              Entropy of the image. This is a measure of the sharpness of the histogram, and is
+              often a useful figure of merit for determining sharpness of focus, etc. It is defined
+              as -SUM(BIN[i]*log(BIN[i]), where the sum is over the number of bins in the histogram
+              and BIN[i] is the number of elements in bin i.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - hist_max (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``HistMax``
+          - [HistMax r/w ao]
+              Maximum value for the histogram. All values greater than or equal to this will be
+              in the last bin of the histogram.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - hist_min (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``HistMin``
+          - [HistMin r/w ao]
+              Minimum value for the histogram. All values less than or equal to this will be in
+              the first bin of the histogram.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - hist_size (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``HistSize``
+          - [HistSize r/w longout] Number of elements (bins) in the histogram
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - histogram (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Histogram_RBV``
+          - [Histogram_RBV r/o waveform] Histogram array, i.e. counts in each histogram bin.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - max_size (DDC)
+          - :class:`~ophyd.device.MaxSize`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - max_value (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxValue_RBV``
+          - [MaxValue_RBV r/o ai] Maximum value in any element in the array
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - max_xy (DDC)
+          - :class:`~ophyd.device.MaxXy`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - mean_value (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MeanValue_RBV``
+          - [MeanValue_RBV r/o ai] Mean value in the array
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - min_value (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MinValue_RBV``
+          - [MinValue_RBV r/o ai] Minimum value in any element in the array
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - min_xy (DDC)
+          - :class:`~ophyd.device.MinXy`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - net (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Net_RBV``
+          - [Net_RBV r/o ai]
+              Net (background subtracted) total of all elements in the array. The background is
+              calculated by determining the average counts per array element in a border around
+              the array of width NDPluginStatsBgdWidth. This average background counts per element
+              is then subtracted from all elements inside the array. If NDPluginStatsBgdWidth
+              is ≤ 0 then no background is computed. The net counts is available as an ai record.
+              The net counts is also available as epicsInt32 values in an mca record via callbacks
+              to the drvFastSweep driver. The mca record is very useful for on-the-fly data acquisition
+              of the net counts in the detector or in an ROI.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - profile_average (DDC)
+          - :class:`~ophyd.device.ProfileAverage`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - profile_centroid (DDC)
+          - :class:`~ophyd.device.ProfileCentroid`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - profile_cursor (DDC)
+          - :class:`~ophyd.device.ProfileCursor`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - profile_size (DDC)
+          - :class:`~ophyd.device.ProfileSize`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - profile_threshold (DDC)
+          - :class:`~ophyd.device.ProfileThreshold`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - set_xhopr (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SetXHOPR``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - set_yhopr (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SetYHOPR``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - sigma_xy (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SigmaXY_RBV``
+          - [SigmaXY_RBV r/o ai]
+              This is the normalized value of sigmaXY, i.e. sigmaXY/(sigmaX * sigmaY). This is
+              often called the correlation coefficient, r. It is zero if the X and Y profiles
+              are not correlated, meaning that the distribution is not tilted with respect to
+              the X and Y axes.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - sigma_x (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SigmaX_RBV``
+          - [SigmaX_RBV r/o ai] Sigma X (width) of the distribution above the centroid threshold.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - sigma_y (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SigmaY_RBV``
+          - [SigmaY_RBV r/o ai] Sigma Y (height) of the distribution above the centroid threshold.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - sigma (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Sigma_RBV``
+          - [Sigma_RBV r/o ai] Sigma (standard deviation) of all elements in the array
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_acquiring (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSAcquiring``
+          - [TSAcquiring r/o bi] Indicates status of time-series data acquisition. Values are 0=Done and 1=Acquiring.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_centroid (DDC)
+          - :class:`~ophyd.device.TsCentroid`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_control (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSControl``
+          - [TSControl r/w mbbo]
+              Controls time-series data collection. The enum choices are:
+
+                Erase/Start: Clears all time-series arrays, sets TS_CURRENT_POINT=0, and starts
+                  time-series data collection.
+                Start: Starts time-series data collection without clearing arrays or modifying
+                  TS_CURRENT_POINT. Used to restart collection after a Stop operation.
+                Stop: Stops times-series data collection. Performs callbacks on all time-series
+                  waveform records.
+
+                Read: Performs callbacks on all time-series waveform records, updating the values.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_current_point (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSCurrentPoint``
+          - [TSCurrentPoint r/o longin]
+              The current time-series point. If TSCurrentPoint reaches TSNumPoints then time-series
+              acquisition is automatically stopped, and callbacks are done on all time-series
+              waveform records, updating the values. This means that even if TSRead has SCAN=Passive
+              that the waveform records will update when time-series acquisition is complete.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_max_value (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSMaxValue``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_max (DDC)
+          - :class:`~ophyd.device.TsMax`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_mean_value (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSMeanValue``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_min_value (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSMinValue``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_min (DDC)
+          - :class:`~ophyd.device.TsMin`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_net (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSNet``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_num_points (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSNumPoints``
+          - [TSNumPoints r/w longout]
+              Controls the number of time-series points to collect. There is no maximum value,
+              the time-series arrays in the plugin are freed and reallocated each time this value
+              is changed. However, the size of the waveform records is fixed when the IOC is started,
+              so NELM in those records must be large enough for the largest time-series needed.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_read (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSRead``
+          - [TSRead r/w longout]
+              Sends the "Read" command to the TSControl record above. This record can be periodically
+              processed to update the time-series waveform records. It is scan disabled if TSAcquiring=Done,
+              so that updates are only performed when time-series acquisition is in progress.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_sigma (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSSigma``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_sigma_x (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSSigmaX``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_sigma_xy (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSSigmaXY``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_sigma_y (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSSigmaY``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - ts_total (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSTotal``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - total (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Total_RBV``
+          - [Total_RBV r/o ai]
+              Sum (total) of all elements in the array. This is available as an ai record. The
+              total counts are also available as epicsInt32 values in an mca record via callbacks
+              to the drvFastSweep driver. The mca record is very useful for on-the-fly data acquisition
+              of the total counts in the detector or in an ROI.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.array_size (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - depth
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize2_RBV``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - height
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize1_RBV``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+        * - width
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize0_RBV``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.StatsPlugin`
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.dim_sa (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - dim0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim0SA``
+            
+          - 
+          - config
+          - 
+    
+        * - dim1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim1SA``
+            
+          - 
+          - config
+          - 
+    
+        * - dim2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim2SA``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.centroid (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``CentroidX_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``CentroidY_RBV``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.cursor (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``CursorX``
+            
+          - 
+          - config
+          - 
+    
+        * - y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``CursorY``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.max_size (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MaxSizeX``
+            
+          - 
+          - config
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MaxSizeY``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.max_xy (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxX_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxY_RBV``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.min_xy (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MinX_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MinY_RBV``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.profile_average (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ProfileAverageX_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ProfileAverageY_RBV``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.profile_centroid (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ProfileCentroidX_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ProfileCentroidY_RBV``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.profile_cursor (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ProfileCursorX_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ProfileCursorY_RBV``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.profile_size (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ProfileSizeX_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ProfileSizeY_RBV``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.profile_threshold (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ProfileThresholdX_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ProfileThresholdY_RBV``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.ts_centroid (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSCentroidX``
+            
+          - 
+          - config
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSCentroidY``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.ts_max (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSMaxX``
+            
+          - 
+          - config
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSMaxY``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: StatsPlugin.ts_min (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSMinX``
+            
+          - 
+          - config
+          - 
+    
+        * - y
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``TSMinY``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: disable_on_stage
+    .. automethod:: enable_on_stage
+    .. automethod:: ensure_blocking
+    .. automethod:: ensure_nonblocking
+    .. automethod:: find_signal
+    .. automethod:: get
+    .. automethod:: get_asyn_digraph
+    .. automethod:: get_asyn_port_dictionary
+    .. automethod:: get_plugin_by_asyn_port
+    .. automethod:: missing_plugins
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: validate_asyn_ports
+    .. automethod:: visualize_asyn_digraph
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: ad_root
+    .. autoattribute:: array_pixels
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: source_plugin
+    
+    

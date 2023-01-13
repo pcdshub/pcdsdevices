@@ -1,0 +1,630 @@
+﻿pcdsdevices.gauge.GaugeSerialGCC
+================================
+
+.. currentmodule:: pcdsdevices.gauge
+
+.. autoclass:: GaugeSerialGCC
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - gastype
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GASTYPE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - gastypedes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GASTYPEDES``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - hystsprbck_1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HYSTSPRBCK_1_RBV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - hystsprbck_2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HYSTSPRBCK_2_RBV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - p
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:P``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - padel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PADEL``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - plog
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PLOG``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pmon
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PMON``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pmonraw
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PMONRAW``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstat_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTAT_1``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstat_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTAT_2``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstat_calc
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTAT_CALC``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstat_sum
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTAT_SUM``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstatdirdes_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATDIRDES_1``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstatdirdes_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATDIRDES_2``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstatenable_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENABLE_1``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstatenable_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENABLE_2``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstatenades_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENADES_1``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstatenades_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENADES_2``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstatspdes_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPDES_1``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstatspdes_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPDES_2``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstatspdir_1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPDIR_1``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstatspdir_2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPDIR_2``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstatsprbck_1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PSTATSPRBCK_1_RBV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pstatsprbck_2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PSTATSPRBCK_2_RBV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - statedes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATEDES``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - staterbck
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATERBCK_RBV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - status_rs
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - status_rs_calc1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RS_CALC1``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - status_rs_calc2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RS_CALC2``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - status_rscalc
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RSCALC``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - status_rscalc2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RSCALC2``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - status_rsmon
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RSMON``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - status_rsout
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATUS_RSOUT``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSerial`
+    
+        * - pctrl_ch_des
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PCTRL_CH_DES``
+          - 
+          - omitted
+          - 
+    
+        * - pctrl_ch_rbck
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PCTRL_CH_RBCK_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - pctrldes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PCTRLDES``
+          - 
+          - omitted
+          - 
+    
+        * - pctrlen
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PCTRLEN``
+          - 
+          - omitted
+          - 
+    
+        * - pctrlencalc
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PCTRLENCALC``
+          - 
+          - omitted
+          - 
+    
+        * - pctrlenrbck
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PCTRLENRBCK_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - pctrlrbck
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PCTRLRBCK_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - pctrlspdes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PCTRLSPDES``
+          - 
+          - omitted
+          - 
+    
+        * - pctrlsprbck
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PCTRLSPRBCK_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - pprotencalc
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PPROTENCALC``
+          - 
+          - omitted
+          - 
+    
+        * - pprotenrbck
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PPROTENRBCK_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - pprotspdes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PPROTSPDES``
+          - 
+          - omitted
+          - 
+    
+        * - pprotsprbck
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PPROTSPRBCK_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - pstat_3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTAT_3``
+          - 
+          - omitted
+          - 
+    
+        * - pstat_4
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTAT_4``
+          - 
+          - omitted
+          - 
+    
+        * - pstatdirdes_3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATDIRDES_3``
+          - 
+          - omitted
+          - 
+    
+        * - pstatdirdes_4
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATDIRDES_4``
+          - 
+          - omitted
+          - 
+    
+        * - pstatenable_3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENABLE_3``
+          - 
+          - omitted
+          - 
+    
+        * - pstatenable_4
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENABLE_4``
+          - 
+          - omitted
+          - 
+    
+        * - pstatenades_3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENADES_3``
+          - 
+          - omitted
+          - 
+    
+        * - pstatenades_4
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENADES_4``
+          - 
+          - omitted
+          - 
+    
+        * - pstatspdes_3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPDES_3``
+          - 
+          - omitted
+          - 
+    
+        * - pstatspdes_4
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPDES_4``
+          - 
+          - omitted
+          - 
+    
+        * - pstatspdes_fs
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPDES_FS``
+          - 
+          - omitted
+          - 
+    
+        * - pstatspdir_3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPDIR_3``
+          - 
+          - omitted
+          - 
+    
+        * - pstatspdir_4
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPDIR_4``
+          - 
+          - omitted
+          - 
+    
+        * - pstatsprbck_3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPRBCK_3``
+          - 
+          - omitted
+          - 
+    
+        * - pstatsprbck_4
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPRBCK_4``
+          - 
+          - omitted
+          - 
+    
+        * - pstatsprbck_fs
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPRBCK_FS``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

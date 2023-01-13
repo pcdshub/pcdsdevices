@@ -1,0 +1,179 @@
+﻿pcdsdevices.gauge.MKS937AController
+===================================
+
+.. currentmodule:: pcdsdevices.gauge
+
+.. autoclass:: MKS937AController
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - unit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:UNIT``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GCT`
+    
+        * - cal
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CAL``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GCT`
+    
+        * - version
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VERSION_RBV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.gauge.GCT`
+    
+        * - pstatenout
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATENOUT``
+          - 
+          - omitted
+          - 
+    
+        * - pstatspout
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATSPOUT``
+          - 
+          - omitted
+          - 
+    
+        * - freq
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FREQ``
+          - 
+          - omitted
+          - 
+    
+        * - gauges
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GAUGES_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - modcc
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODCC_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - moda
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODA_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - modb
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODB_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - com_des
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:COM_DES``
+          - 
+          - omitted
+          - 
+    
+        * - com
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:COM``
+          - 
+          - omitted
+          - 
+    
+        * - delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DELAY``
+          - 
+          - omitted
+          - 
+    
+        * - front
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FRONT``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

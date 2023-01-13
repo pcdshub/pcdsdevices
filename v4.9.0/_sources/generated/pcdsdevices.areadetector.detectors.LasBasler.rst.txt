@@ -1,0 +1,315 @@
+﻿pcdsdevices.areadetector.detectors.LasBasler
+============================================
+
+.. currentmodule:: pcdsdevices.areadetector.detectors
+
+.. autoclass:: LasBasler
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``RESET.PROC``
+          - Reset the camera
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.BaslerBase`
+    
+        * - packet_size
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``GevSCPSPacketSiz_RBV``
+          - Set Ethernet Packet Size (typ. 9000)
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.BaslerBase`
+    
+        * - enet_bw
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``GevSCDCT_RBV``
+          - Current Ethernet bandwidth
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.BaslerBase`
+    
+        * - manufacturer
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Manufacturer_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - camera_model
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Model_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - sensor_size_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxSizeX_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - sensor_size_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxSizeY_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - data_type
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DataType``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - exposure
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AcquireTime``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - gain
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Gain``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - num_images
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumImages``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - image_mode
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ImageMode``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - trigger_mode
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``TriggerMode``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - acquisition_period
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AcquirePeriod``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - acquire
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Acquire``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - acquire_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``DetectorState_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - image_counter
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``NumImagesCounter_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - cam_viewer
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - event_code
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``CamEventCode``
+          - Code to determine beam synchronization rate.
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - event_rate
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``CamRepRate_RBV``
+          - Current rate of the incoming triggers. Determined by event_code and the accelerator state.
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - stats_enable
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Stats2:EnableCallbacks``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - centroid_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Stats2:CentroidX_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - centroid_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Stats2:CentroidY_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - sigma_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Stats2:SigmaX_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - sigma_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Stats2:SigmaY_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - centroid_threshold
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Stats2:CentroidThreshold``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - centroid_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Stats2:ComputeCentroid``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - target_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Cross4:MinX``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+        * - target_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Cross4:MinY``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosBeamStats`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: open_viewer
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

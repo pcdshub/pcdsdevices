@@ -1,0 +1,92 @@
+﻿pcdsdevices.dc\_devices.ICTChannel
+==================================
+
+.. currentmodule:: pcdsdevices.dc_devices
+
+.. autoclass:: ICTChannel
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - ch_current (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.prefix}:Output{self._ch}:Current``
+          - 
+          - hinted
+          - 
+    
+        * - ch_status (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}:Output{self._ch}:GetState``
+          - 
+          - hinted
+          - 
+    
+        * - ch_name (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}:Output{self._ch}.DESC``
+          - 
+          - hinted
+          - 
+    
+        * - breaker_status (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.prefix}:Output{self._ch}:BreakerStatus``
+          - 
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: current
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: off
+    .. automethod:: on
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

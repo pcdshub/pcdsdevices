@@ -1,0 +1,120 @@
+﻿pcdsdevices.evr.Trigger
+=======================
+
+.. currentmodule:: pcdsdevices.evr
+
+.. autoclass:: Trigger
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - eventcode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:EC_RBV``
+          - 
+          - config
+          - 
+    
+        * - eventrate
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RATE``
+          - 
+          - normal
+          - 
+    
+        * - label
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TCTL.DESC``
+          - 
+          - omitted
+          - 
+    
+        * - ns_delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BW_TDES``
+          - 
+          - hinted
+          - 
+    
+        * - polarity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TPOL``
+          - 
+          - config
+          - 
+    
+        * - width
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BW_TWIDCALC``
+          - 
+          - normal
+          - 
+    
+        * - enable_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TCTL``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: disable
+    .. automethod:: enable
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

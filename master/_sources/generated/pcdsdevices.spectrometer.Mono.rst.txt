@@ -1,0 +1,272 @@
+﻿pcdsdevices.spectrometer.Mono
+=============================
+
+.. currentmodule:: pcdsdevices.spectrometer
+
+.. autoclass:: Mono
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
+    
+        * - m_pi
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:M_PI``
+          - mirror pitch [urad]
+          - normal
+          - 
+    
+        * - g_pi
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:G_PI``
+          - grating pitch [urad]
+          - normal
+          - 
+    
+        * - m_h
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:M_H``
+          - mirror horizontal [um]
+          - normal
+          - 
+    
+        * - g_h
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:G_H``
+          - grating horizontal [um]
+          - normal
+          - 
+    
+        * - sd_v
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:SD_V``
+          - screwdriver vertical (in/out) [um]
+          - normal
+          - 
+    
+        * - sd_rot
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:SD_ROT``
+          - screwdriver rotation [urad]
+          - normal
+          - 
+    
+        * - m_pi_up_enc
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:M_PI:02``
+          - mirror pitch upstream encoder [urad]
+          - normal
+          - 
+    
+        * - g_pi_up_enc
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:G_PI:02``
+          - grating pitch upstream encoder [urad]
+          - normal
+          - 
+    
+        * - led_power_1
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:LED:01:PWR``
+          - LED power supply controls.
+          - config
+          - 
+    
+        * - led_power_2
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:LED:02:PWR``
+          - LED power supply controls.
+          - config
+          - 
+    
+        * - led_power_3
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:LED:03:PWR``
+          - LED power supply controls.
+          - config
+          - 
+    
+        * - flow_1
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:FSW:01``
+          - flow switch 1
+          - normal
+          - 
+    
+        * - flow_2
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:FSW:02``
+          - flow switch 2
+          - normal
+          - 
+    
+        * - pres_1
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:P1``
+          - pressure sensor 1
+          - normal
+          - 
+    
+        * - rtd_1
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:01:TEMP``
+          - RTD 1 [deg C]
+          - normal
+          - 
+    
+        * - rtd_2
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:02:TEMP``
+          - RTD 2 [deg C]
+          - normal
+          - 
+    
+        * - rtd_3
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:03:TEMP``
+          - RTD 3 [deg C]
+          - normal
+          - 
+    
+        * - rtd_4
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:04:TEMP``
+          - RTD 4 [deg C]
+          - normal
+          - 
+    
+        * - rtd_5
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:05:TEMP``
+          - RTD 5 [deg C]
+          - normal
+          - 
+    
+        * - rtd_6
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:06:TEMP``
+          - RTD 6 [deg C]
+          - normal
+          - 
+    
+        * - rtd_7
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:07:TEMP``
+          - RTD 7 [deg C]
+          - normal
+          - 
+    
+        * - rtd_8
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:08:TEMP``
+          - RTD 8 [deg C]
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    .. autoattribute:: transmission
+    
+    

@@ -1,0 +1,168 @@
+﻿pcdsdevices.spectrometer.Kmono
+==============================
+
+.. currentmodule:: pcdsdevices.spectrometer
+
+.. autoclass:: Kmono
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - xtal_angle
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:XTAL_ANGLE``
+          - 
+          - normal
+          - 
+    
+        * - xtal_vert
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:XTAL_VERT``
+          - 
+          - normal
+          - 
+    
+        * - ret_horiz
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:RET_HORIZ``
+          - 
+          - normal
+          - 
+    
+        * - ret_vert
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:RET_VERT``
+          - 
+          - normal
+          - 
+    
+        * - diode_horiz
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:DIODE_HORIZ``
+          - 
+          - normal
+          - 
+    
+        * - diode_vert
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:DIODE_VERT``
+          - 
+          - normal
+          - 
+    
+        * - xtal_in
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - omitted
+          - 
+    
+        * - xtal_out
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - omitted
+          - 
+    
+        * - ret_in
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - omitted
+          - 
+    
+        * - ret_out
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - omitted
+          - 
+    
+        * - diode_in
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - omitted
+          - 
+    
+        * - diode_out
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: transmission
+    
+    

@@ -1,0 +1,222 @@
+﻿pcdsdevices.attenuator.AttenuatorCalculatorBase
+===============================================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: AttenuatorCalculatorBase
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - calc_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYS:CalcMode``
+          - Floor or Ceiling calculation
+          - config
+          - 
+    
+        * - energy_source
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYS:EnergySource``
+          - Use beamline photon energy or custom energy?
+          - config
+          - 
+    
+        * - energy_custom
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYS:CustomPhotonEnergy``
+          - Custom energy to use for calculations [eV]
+          - config
+          - 
+    
+        * - energy_actual
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:ActualPhotonEnergy_RBV``
+          - The reported beamline photon energy [eV]
+          - normal
+          - 
+    
+        * - actual_transmission
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:ActualTransmission_RBV``
+          - Actual normalized transmission value
+          - normal
+          - 
+    
+        * - actual_transmission_3omega
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:Actual3OmegaTransmission_RBV``
+          - Actual 3 omega normalized transmission value
+          - normal
+          - 
+    
+        * - desired_transmission
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYS:DesiredTransmission``
+          - Desired normalized transmission value
+          - normal
+          - 
+    
+        * - last_energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:LastPhotonEnergy_RBV``
+          - The photon energy used for the previous calculation; i.e., the one that goes along with `best_config`.
+          - config
+          - 
+    
+        * - best_config
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:BestConfiguration_RBV``
+          - The best configuration of filters for the desired transmission
+          - normal
+          - 
+    
+        * - best_config_bitmask
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:BestConfigurationBitmask_RBV``
+          - The best configuration of filters for the desired transmission.
+          - normal
+          - 
+    
+        * - best_config_error
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:BestConfigError_RBV``
+          - Desired to calculated transmission error
+          - normal
+          - 
+    
+        * - active_config
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:ActiveConfiguration_RBV``
+          - Where the filters are now
+          - omitted
+          - 
+    
+        * - active_config_bitmask
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:ActiveConfigurationBitmask_RBV``
+          - Where the filters are now (as an integer)
+          - normal
+          - 
+    
+        * - filters_moving
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:FiltersMoving_RBV``
+          - Filter-by-filter motion status (1 if moving)
+          - normal
+          - 
+    
+        * - filters_moving_bitmask
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:FiltersMovingBitmask_RBV``
+          - Filter-by-filter motion status as a bitmask
+          - normal
+          - 
+    
+        * - run_calculation
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYS:Run``
+          - Start the calculation
+          - config
+          - 
+    
+        * - apply_config
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYS:ApplyConfiguration``
+          - Apply the best configuration (i.e., move the filters)
+          - config
+          - 
+    
+        * - moving
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SYS:Moving_RBV``
+          - Are filters being moved in/out?
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calculate
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_active_config
+    .. automethod:: get_best_config
+    .. automethod:: get_moving_status
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pcdsdevices.signal.FakePytmcSignalRO &mdash; PCDS Devices 5.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pcdsdevices.signal.FakePytmcSignalRW" href="pcdsdevices.signal.FakePytmcSignalRW.html" />
+    <link rel="prev" title="pcdsdevices.signal.FakePytmcSignal" href="pcdsdevices.signal.FakePytmcSignal.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PCDS Devices
+          </a>
+              <div class="version">
+                5.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Device Types</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-analog-signals">pcdsdevices.analog_signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-cam">pcdsdevices.areadetector.cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-detectors">pcdsdevices.areadetector.detectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-plugins">pcdsdevices.areadetector.plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-atm">pcdsdevices.atm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-attenuator">pcdsdevices.attenuator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-beam-stats">pcdsdevices.beam_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ccm">pcdsdevices.ccm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-crix-motion">pcdsdevices.crix_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-cvmi-motion">pcdsdevices.cvmi_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-dc-devices">pcdsdevices.dc_devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-device">pcdsdevices.device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-energy-monitor">pcdsdevices.energy_monitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-epics-motor">pcdsdevices.epics_motor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-evr">pcdsdevices.evr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gauge">pcdsdevices.gauge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gon">pcdsdevices.gon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-inout">pcdsdevices.inout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-interface">pcdsdevices.interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ipm">pcdsdevices.ipm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-jet">pcdsdevices.jet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lamp-motion">pcdsdevices.lamp_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-ek9000">pcdsdevices.lasers.ek9000</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-elliptec">pcdsdevices.lasers.elliptec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-qmini">pcdsdevices.lasers.qmini</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-thorlabswfs">pcdsdevices.lasers.thorlabsWFS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-tuttifrutti">pcdsdevices.lasers.tuttifrutti</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-zoomtelescope">pcdsdevices.lasers.zoomtelescope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lens">pcdsdevices.lens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lic">pcdsdevices.lic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lodcm">pcdsdevices.lodcm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lxe">pcdsdevices.lxe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mirror">pcdsdevices.mirror</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-movablestand">pcdsdevices.movablestand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mpod">pcdsdevices.mpod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mpod-apalis">pcdsdevices.mpod_apalis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mps">pcdsdevices.mps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mrco-motion">pcdsdevices.mrco_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pim">pcdsdevices.pim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pmps">pcdsdevices.pmps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-positioner">pcdsdevices.positioner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pseudopos">pcdsdevices.pseudopos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pulsepicker">pcdsdevices.pulsepicker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pump">pcdsdevices.pump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pv-positioner">pcdsdevices.pv_positioner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ref">pcdsdevices.ref</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-rtds-ebd">pcdsdevices.rtds_ebd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sample-delivery">pcdsdevices.sample_delivery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sensors">pcdsdevices.sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sequencer">pcdsdevices.sequencer</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#pcdsdevices-signal">pcdsdevices.signal</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.AggregateSignal.html">pcdsdevices.signal.AggregateSignal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.AvgSignal.html">pcdsdevices.signal.AvgSignal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.EpicsSignalBaseEditMD.html">pcdsdevices.signal.EpicsSignalBaseEditMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.EpicsSignalEditMD.html">pcdsdevices.signal.EpicsSignalEditMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.EpicsSignalROEditMD.html">pcdsdevices.signal.EpicsSignalROEditMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.FakeEpicsSignalEditMD.html">pcdsdevices.signal.FakeEpicsSignalEditMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.FakeEpicsSignalROEditMD.html">pcdsdevices.signal.FakeEpicsSignalROEditMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.FakeNotepadLinkedSignal.html">pcdsdevices.signal.FakeNotepadLinkedSignal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.FakePytmcSignal.html">pcdsdevices.signal.FakePytmcSignal</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pcdsdevices.signal.FakePytmcSignalRO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.FakePytmcSignalRW.html">pcdsdevices.signal.FakePytmcSignalRW</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.InternalSignal.html">pcdsdevices.signal.InternalSignal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.NotImplementedSignal.html">pcdsdevices.signal.NotImplementedSignal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.NotepadLinkedSignal.html">pcdsdevices.signal.NotepadLinkedSignal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.PVStateSignal.html">pcdsdevices.signal.PVStateSignal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.PytmcSignal.html">pcdsdevices.signal.PytmcSignal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.PytmcSignalRO.html">pcdsdevices.signal.PytmcSignalRO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.PytmcSignalRW.html">pcdsdevices.signal.PytmcSignalRW</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.SignalEditMD.html">pcdsdevices.signal.SignalEditMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.UnitConversionDerivedSignal.html">pcdsdevices.signal.UnitConversionDerivedSignal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal._OptionalEpicsSignal.html">pcdsdevices.signal._OptionalEpicsSignal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.pytmc_writable.html">pcdsdevices.signal.pytmc_writable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.signal.select_pytmc_class.html">pcdsdevices.signal.select_pytmc_class</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sim">pcdsdevices.sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-slits">pcdsdevices.slits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-spectrometer">pcdsdevices.spectrometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-state">pcdsdevices.state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-stopper">pcdsdevices.stopper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sxr-test-absorber">pcdsdevices.sxr_test_absorber</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-tags">pcdsdevices.tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-targets">pcdsdevices.targets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-timetool">pcdsdevices.timetool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-utils">pcdsdevices.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-valve">pcdsdevices.valve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-variety">pcdsdevices.variety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-wfs">pcdsdevices.wfs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../base_classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sim_types.html">Simulated Devices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../mv.html">Shortcuts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../presets.html">Preset Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tab.html">IPython Tab Curation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">UI Templates</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upcoming_changes.html">Upcoming Changes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PCDS Devices</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">API</a> &raquo;</li>
+      <li>pcdsdevices.signal.FakePytmcSignalRO</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/generated/pcdsdevices.signal.FakePytmcSignalRO.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pcdsdevices-signal-fakepytmcsignalro">
+<h1>pcdsdevices.signal.FakePytmcSignalRO<a class="headerlink" href="#pcdsdevices-signal-fakepytmcsignalro" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.signal.</span></span><span class="sig-name descname"><span class="pre">FakePytmcSignalRO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">io</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO" title="Permalink to this definition"></a></dt>
+<dd><p class="rubric">Methods</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.describe" title="Permalink to this definition"></a></dt>
+<dd><p>Provide schema and meta-data for <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code></p>
+<p>This keys in the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> this method returns must match the
+keys in the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> return by <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code>.</p>
+<p>This provides schema related information, (ex shape, dtype), the
+source (ex PV name), and if available, units, limits, precision etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>data_keys</strong> (<em>OrderedDict</em>) – The keys must be strings and the values must be dict-like
+with the <code class="docutils literal notranslate"><span class="pre">event_model.event_descriptor.data_key</span></code> schema.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_string</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connection_timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.get" title="Permalink to this definition"></a></dt>
+<dd><p>Implement getting as enum strings</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.read" title="Permalink to this definition"></a></dt>
+<dd><p>Put the status of the signal into a simple dictionary format
+for data acquisition</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>dict</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.read_configuration">
+<span class="sig-name descname"><span class="pre">read_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.read_configuration" title="Permalink to this definition"></a></dt>
+<dd><p>Dictionary mapping names to value dicts with keys: value, timestamp</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.set" title="Permalink to this definition"></a></dt>
+<dd><p>Set is like <code class="xref any docutils literal notranslate"><span class="pre">put</span></code>, but is here for bluesky compatibility</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>st</strong> (<em>Status</em>) – This status object will be finished upon return in the
+case of basic soft Signals</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.sim_put">
+<span class="sig-name descname"><span class="pre">sim_put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.sim_put" title="Permalink to this definition"></a></dt>
+<dd><p>Update the read-only signal’s value.</p>
+<p>Implement here instead of FakeEpicsSignalRO so you can call it with
+every fake signal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.sim_set_enum_strs">
+<span class="sig-name descname"><span class="pre">sim_set_enum_strs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enums</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.sim_set_enum_strs" title="Permalink to this definition"></a></dt>
+<dd><p>Set the enum_strs for a fake device</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>enums</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em> or </em><em>tuple of str</em>) – The enums will be accessed by array index, e.g. the first item in
+enums will be 0, the next will be 1, etc.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.sim_set_func">
+<span class="sig-name descname"><span class="pre">sim_set_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.sim_set_func" title="Permalink to this definition"></a></dt>
+<dd><p>Update the SynSignal function to set a new value on trigger.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.sim_set_limits">
+<span class="sig-name descname"><span class="pre">sim_set_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limits</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.sim_set_limits" title="Permalink to this definition"></a></dt>
+<dd><p>Set the fake signal’s limits.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.sim_set_putter">
+<span class="sig-name descname"><span class="pre">sim_set_putter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">putter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.sim_set_putter" title="Permalink to this definition"></a></dt>
+<dd><p>Define arbirary behavior on signal put.</p>
+<p>This can be used to emulate basic IOC behavior.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.trigger">
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.trigger" title="Permalink to this definition"></a></dt>
+<dd><p>Call that is used by bluesky prior to read()</p>
+</dd></dl>
+
+<p class="rubric">Attributes</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.SUB_META">
+<span class="sig-name descname"><span class="pre">SUB_META</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'meta'</span></em><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.SUB_META" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.connected">
+<span class="sig-name descname"><span class="pre">connected</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.connected" title="Permalink to this definition"></a></dt>
+<dd><p>Is the signal connected to its associated hardware, and ready to use?</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.enum_strs">
+<span class="sig-name descname"><span class="pre">enum_strs</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.enum_strs" title="Permalink to this definition"></a></dt>
+<dd><p>Simulated enum strings.</p>
+<p>Use sim_set_enum_strs during setup to set the enum strs.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.high_limit">
+<span class="sig-name descname"><span class="pre">high_limit</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.high_limit" title="Permalink to this definition"></a></dt>
+<dd><p>The high, inclusive control limit for the Signal</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.hints">
+<span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.hints" title="Permalink to this definition"></a></dt>
+<dd><p>Field hints for plotting</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.kind">
+<span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.kind" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.limits">
+<span class="sig-name descname"><span class="pre">limits</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.limits" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.low_limit">
+<span class="sig-name descname"><span class="pre">low_limit</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.low_limit" title="Permalink to this definition"></a></dt>
+<dd><p>The low, inclusive control limit for the Signal</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.metadata" title="Permalink to this definition"></a></dt>
+<dd><p>A copy of the metadata dictionary associated with the signal</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.metadata_keys">
+<span class="sig-name descname"><span class="pre">metadata_keys</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.metadata_keys" title="Permalink to this definition"></a></dt>
+<dd><p>Metadata keys that will be passed along on value subscriptions</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.read_access">
+<span class="sig-name descname"><span class="pre">read_access</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.read_access" title="Permalink to this definition"></a></dt>
+<dd><p>Can the signal be read?</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.timestamp" title="Permalink to this definition"></a></dt>
+<dd><p>Timestamp of the readback value</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.tolerance">
+<span class="sig-name descname"><span class="pre">tolerance</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.tolerance" title="Permalink to this definition"></a></dt>
+<dd><p>The absolute tolerance associated with the value.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.value">
+<span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.value" title="Permalink to this definition"></a></dt>
+<dd><p>The signal’s value</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.signal.FakePytmcSignalRO.write_access">
+<span class="sig-name descname"><span class="pre">write_access</span></span><a class="headerlink" href="#pcdsdevices.signal.FakePytmcSignalRO.write_access" title="Permalink to this definition"></a></dt>
+<dd><p>Can the signal be written to?</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pcdsdevices.signal.FakePytmcSignal.html" class="btn btn-neutral float-left" title="pcdsdevices.signal.FakePytmcSignal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pcdsdevices.signal.FakePytmcSignalRW.html" class="btn btn-neutral float-right" title="pcdsdevices.signal.FakePytmcSignalRW" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

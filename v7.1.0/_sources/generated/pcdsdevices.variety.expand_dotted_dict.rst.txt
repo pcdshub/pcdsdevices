@@ -1,0 +1,6 @@
+﻿pcdsdevices.variety.expand\_dotted\_dict
+========================================
+
+.. currentmodule:: pcdsdevices.variety
+
+.. autofunction:: expand_dotted_dict

@@ -1,0 +1,146 @@
+﻿pcdsdevices.pim.PPMPowerMeter
+=============================
+
+.. currentmodule:: pcdsdevices.pim
+
+.. autoclass:: PPMPowerMeter
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - raw_voltage
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:VOLT``
+          - Raw readback from the power meter.
+          - normal
+          - 
+    
+        * - dimensionless
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CALIB``
+          - Calibrated dimensionless readback for cross-meter comparisons.
+          - normal
+          - 
+    
+        * - calibrated_mj
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MJ``
+          - Calibrated absolute measurement of beam power in physics units.
+          - normal
+          - 
+    
+        * - thermocouple
+          - :class:`~pcdsdevices.sensors.TwinCATThermocouple`
+          - 
+          - Thermocouple on the power meter holder.
+          - normal
+          - 
+    
+        * - calib_offset
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CALIB:OFFSET``
+          - Calibration parameter to offset raw voltage to zero for the calibrated quantities. Unique per power meter.
+          - config
+          - 
+    
+        * - calib_ratio
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CALIB:RATIO``
+          - Calibration multiplier to convert to the dimensionless constant. Unique per power meter.
+          - config
+          - 
+    
+        * - calib_mj_ratio
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CALIB:MJ_RATIO``
+          - Calibration multiplier to convert from the dimensionless constant to calibrated scientific quantity. Same for every power meter.
+          - config
+          - 
+    
+        * - raw_voltage_buffer
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:VOLT_BUFFER``
+          - Array of the last 1000 raw measurements. Polls faster than the EPICS updates.
+          - omitted
+          - 
+    
+        * - dimensionless_buffer
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CALIB_BUFFER``
+          - Array of the last 1000 dimensionless measurements. Polls faster than the EPICS updates.
+          - omitted
+          - 
+    
+        * - calibrated_mj_buffer
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MJ_BUFFER``
+          - Array of the last 1000 fully calibrated measurements. Polls faster than the EPICS updates.
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

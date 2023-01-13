@@ -1,0 +1,118 @@
+﻿pcdsdevices.digitizers.Qadc134Sparsification
+============================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Qadc134Sparsification
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - hi_thresh
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:HI_THRESH_RBV``
+          - 
+          - config
+          - 
+    
+        * - lo_thresh
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:LO_THRESH_RBV``
+          - 
+          - config
+          - 
+    
+        * - sparse_en
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SPARSE_EN_RBV``
+          - Enable sparse output arrays
+          - config
+          - 
+    
+        * - rows_after
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ROWS_AFTER_RBV``
+          - 
+          - config
+          - 
+    
+        * - rows_before
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ROWS_BEFORE_RBV``
+          - 
+          - config
+          - 
+    
+        * - sparse0
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SPARSE0``
+          - 
+          - config
+          - 
+    
+        * - sparse1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SPARSE1``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

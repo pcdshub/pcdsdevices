@@ -1,0 +1,153 @@
+﻿pcdsdevices.delay\_generator.DelayGenerator
+===========================================
+
+.. currentmodule:: pcdsdevices.delay_generator
+
+.. autoclass:: DelayGenerator
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - trig_source
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:triggerSourceMI``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.delay_generator.DelayGeneratorBase`
+    
+        * - trig_inhibit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:triggerInhibitMI``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.delay_generator.DelayGeneratorBase`
+    
+        * - chA
+          - :class:`~pcdsdevices.delay_generator.DgChannel`
+          - ``:a``
+          - 
+          - normal
+          - 
+    
+        * - chB
+          - :class:`~pcdsdevices.delay_generator.DgChannel`
+          - ``:b``
+          - 
+          - normal
+          - 
+    
+        * - chC
+          - :class:`~pcdsdevices.delay_generator.DgChannel`
+          - ``:c``
+          - 
+          - normal
+          - 
+    
+        * - chD
+          - :class:`~pcdsdevices.delay_generator.DgChannel`
+          - ``:d``
+          - 
+          - normal
+          - 
+    
+        * - chE
+          - :class:`~pcdsdevices.delay_generator.DgChannel`
+          - ``:e``
+          - 
+          - normal
+          - 
+    
+        * - chF
+          - :class:`~pcdsdevices.delay_generator.DgChannel`
+          - ``:f``
+          - 
+          - normal
+          - 
+    
+        * - chG
+          - :class:`~pcdsdevices.delay_generator.DgChannel`
+          - ``:g``
+          - 
+          - normal
+          - 
+    
+        * - chH
+          - :class:`~pcdsdevices.delay_generator.DgChannel`
+          - ``:h``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_trigger_inhibit
+    .. automethod:: get_trigger_source
+    .. automethod:: post_elog_status
+    .. automethod:: print_trigger_inhibit
+    .. automethod:: print_trigger_sources
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_trigger_inhibit
+    .. automethod:: set_trigger_source
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

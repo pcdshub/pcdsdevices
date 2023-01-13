@@ -1,0 +1,63 @@
+﻿pcdsdevices.mirror.CoatingState
+===============================
+
+.. currentmodule:: pcdsdevices.mirror
+
+.. autoclass:: CoatingState
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - coating
+          - :class:`~pcdsdevices.mirror.TwinCATMirrorStripe`
+          - ``:COATING:STATE``
+          - Control of the coating states via saved positions.
+          - hinted
+          - 
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

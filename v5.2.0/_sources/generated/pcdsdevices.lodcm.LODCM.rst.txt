@@ -1,0 +1,153 @@
+﻿pcdsdevices.lodcm.LODCM
+=======================
+
+.. currentmodule:: pcdsdevices.lodcm
+
+.. autoclass:: LODCM
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - yag
+          - :class:`~pcdsdevices.lodcm.YagLom`
+          - ``:DV``
+          - 
+          - omitted
+          - 
+    
+        * - dectris
+          - :class:`~pcdsdevices.lodcm.Dectris`
+          - ``:DH``
+          - 
+          - omitted
+          - 
+    
+        * - diode
+          - :class:`~pcdsdevices.lodcm.Diode`
+          - ``:DIODE``
+          - 
+          - omitted
+          - 
+    
+        * - foil
+          - :class:`~pcdsdevices.lodcm.Foil`
+          - ``:FOIL``
+          - 
+          - omitted
+          - 
+    
+        * - tower1 (FCpt)
+          - :class:`~pcdsdevices.lodcm.CrystalTower1`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - 
+    
+        * - tower2 (FCpt)
+          - :class:`~pcdsdevices.lodcm.CrystalTower2`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - 
+    
+        * - diag_tower (FCpt)
+          - :class:`~pcdsdevices.lodcm.DiagnosticsTower`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - 
+    
+        * - energy_si (FCpt)
+          - :class:`~pcdsdevices.lodcm.LODCMEnergySi`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - 
+    
+        * - energy_c (FCpt)
+          - :class:`~pcdsdevices.lodcm.LODCMEnergyC`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_geometry
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_energy
+    .. automethod:: get_material
+    .. automethod:: get_reflection
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: remove_dia
+    .. automethod:: set_energy
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak_parallel
+    .. automethod:: tweak_x
+    .. automethod:: wait_energy
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: branches
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: destination
+    .. autoattribute:: energy
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: transmission
+    
+    

@@ -1,0 +1,175 @@
+﻿pcdsdevices.attenuator.AttBase
+==============================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: AttBase
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - setpoint
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:COM:R_DES``
+          - 
+          - normal
+          - 
+    
+        * - readback
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:R_CUR``
+          - 
+          - hinted
+          - 
+    
+        * - actuate
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:COM:GO``
+          - 
+          - omitted
+          - 
+    
+        * - done
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:STATUS``
+          - 
+          - omitted
+          - 
+    
+        * - energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:T_CALC.VALE``
+          - 
+          - normal
+          - 
+    
+        * - trans_ceil
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:R_CEIL``
+          - 
+          - omitted
+          - 
+    
+        * - trans_floor
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:R_FLOOR``
+          - 
+          - omitted
+          - 
+    
+        * - user_energy
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:COM:EDES``
+          - 
+          - omitted
+          - 
+    
+        * - eget_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:COM:EACT.SCAN``
+          - 
+          - omitted
+          - 
+    
+        * - calcpend
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:COM:CALCP``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: insert
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: set
+    .. automethod:: set_energy
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate_value
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    

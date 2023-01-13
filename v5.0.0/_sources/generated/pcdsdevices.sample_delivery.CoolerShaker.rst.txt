@@ -1,0 +1,135 @@
+﻿pcdsdevices.sample\_delivery.CoolerShaker
+=========================================
+
+.. currentmodule:: pcdsdevices.sample_delivery
+
+.. autoclass:: CoolerShaker
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - temperature1 (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - SP1 (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - set_SP1 (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - current1 (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - temperature2 (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - SP2 (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - set_SP2 (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - current2 (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - reboot (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

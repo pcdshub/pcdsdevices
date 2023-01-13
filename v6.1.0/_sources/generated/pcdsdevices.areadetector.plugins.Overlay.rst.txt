@@ -1,0 +1,289 @@
+﻿pcdsdevices.areadetector.plugins.Overlay
+========================================
+
+.. currentmodule:: pcdsdevices.areadetector.plugins
+
+.. autoclass:: Overlay
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - configuration_names
+          - :class:`~ophyd.signal.ArrayAttributeSignal`
+          - 
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - blue (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Blue``
+          - [Blue r/w longout] The blue value to use when drawing the overlay. This is only used for color images.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - draw_mode (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DrawMode``
+          - [DrawMode r/w mbbo]
+              The operation to use when drawing this overlay. Choices are:
+
+                0="Set"
+                1="XOR"
+
+              In Set mode the Red, Green, and Blue values (Green for mono images) are written
+              directly into the pixel values. In XOR mode the value in the pixel is XOR'ed with
+              the Red, Green, and Blue values. XOR operation typically results in an overlay that
+              has better visibility no matter what the values of the surrounding pixels, while
+              Set mode with Green=255, for example, will show up well on dark areas of the image,
+              but will be hard to see in bright areas of the image. Note that XOR is not supported
+              for NDFloat32 or NDFloat64 data types directly, but they are cast to int if XOR
+              is selected for arrays with those data types.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - green (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Green``
+          - [Green r/w longout]
+              The green value to use when drawing the overlay. This is the value that is used
+              for monochrome images as well.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - max_size_x (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MaxSizeX``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - max_size_y (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MaxSizeY``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - overlay_portname (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Name``
+          - [Name r/w stringout] Name for this overlay.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - position_x (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PositionX``
+          - [PositionX r/w longout] The X position of this overlay.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - position_y (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PositionY``
+          - [PositionY r/w longout] The Y position of this overlay.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - position_xlink (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``PositionXLink``
+          - [PositionXLink r/w longout]
+              Link to fetch the desired X position of this overlay. The .DOL field of this record
+              can be set to another record which will then change PositionX whenever the other
+              record updates. The link must have the "CP" attribute, so that this record
+              processes whenever the record it is linked to changes. For example, the link could
+              be set to "13PS1:Stats1:CentroidX_RBV CP NMS" to fetch its position from the X centroid
+              calculated by an NDPluginStats plugin, or to "13PS1:ROI1:MinX_RBV CP MS" to fetch
+              its position from the X position of an ROI. If this link field is blank or points
+              to a non-existent record then the X position of the overlay can be manually controlled.
+              Note that this linking is done entirely in the EPICS database, and not in the plugin
+              code.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - position_ylink (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``PositionYLink``
+          - [PositionYLink r/w longout]
+              Link to fetch the desired Y position of this overlay. See the notes for PositionXLink
+              above.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - red (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Red``
+          - [Red r/w longout] The red value to use when drawing the overlay. This is only used for color images.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - set_xhopr (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SetXHOPR``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - set_yhopr (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SetYHOPR``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - shape (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Shape``
+          - [Shape r/w mbbo]
+              The shape of this overlay. Choices are:
+
+                0="Cross"
+                1="Rectangle"
+                2="Text"
+
+              Other shapes may be added in the future. The PositionX and PositionY position of
+              a cross defines the location of the center of the cross. The SizeX and SizeY of
+              a cross is the size on either side of the center, i.e. the total width = 2*OverlaySizeX.
+              This is done so when HOPR for the SizeX and SizeY records is set to the total image
+              size, the cross can be the total size of the image no matter where it is positioned.
+              The PositionX and PositionY of a rectangle defines the lower left corner of the
+              rectangle. SizeX and SizeY of a rectangle define total width and height. These definitions
+              are consistent with the way ROIs are defined in the NDPluginROI plugin. The XPosition
+              and YPosition of the text overlay defines the lower left corner of the text. The
+              SizeX and SizeY are ignored for the text overlay, the size is defined by the text
+              string and the font.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - size_x (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SizeX``
+          - [SizeX r/w longout] The X size of this overlay.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - size_y (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SizeY``
+          - [SizeY r/w longout] The Y size of this overlay.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - size_xlink (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SizeXLink``
+          - [SizeXLink r/w longout]
+              Link to fetch the desired X size of this overlay. See the notes for PositionXLink
+              above.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - size_ylink (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SizeYLink``
+          - [SizeYLink r/w longout]
+              Link to fetch the desired Y size of this overlay. See the notes for PositionXLink
+              above.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+        * - use (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Use``
+          - [Use r/w bo] Flag indicating whether to use (enable) this overlay. 0=No, 1=Yes.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.Overlay`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: find_signal
+    .. automethod:: get
+    .. automethod:: get_asyn_digraph
+    .. automethod:: get_asyn_port_dictionary
+    .. automethod:: get_plugin_by_asyn_port
+    .. automethod:: missing_plugins
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: validate_asyn_ports
+    .. automethod:: visualize_asyn_digraph
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: ad_root
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

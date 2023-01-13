@@ -1,0 +1,105 @@
+﻿pcdsdevices.stopper.PPSStopper
+==============================
+
+.. currentmodule:: pcdsdevices.stopper
+
+.. autoclass:: PPSStopper
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathInOutMixin`
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - 
+          - Stopper state summary PV that tells us if it is in, out, or inconsistent.
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: camonitor
+    .. automethod:: check_inserted
+    .. automethod:: check_removed
+    .. automethod:: check_transmission
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: get_state
+    .. automethod:: insert
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: status
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: in_states
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: md
+    .. autoattribute:: moving
+    .. autoattribute:: out_states
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: states_list
+    .. autoattribute:: stop
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    

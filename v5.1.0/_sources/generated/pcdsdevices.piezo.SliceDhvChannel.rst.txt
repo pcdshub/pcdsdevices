@@ -1,0 +1,153 @@
+﻿pcdsdevices.piezo.SliceDhvChannel
+=================================
+
+.. currentmodule:: pcdsdevices.piezo
+
+.. autoclass:: SliceDhvChannel
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - voltage_limit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VLIM_GET``
+          - 
+          - config
+          - 
+    
+        * - control_settings
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CTL_SETTINGS_GET``
+          - 
+          - config
+          - 
+    
+        * - bias_voltage
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VMEAS_GET``
+          - 
+          - normal
+          - 
+    
+        * - sweep_voltage
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VSWEEP_GET``
+          - 
+          - config
+          - 
+    
+        * - sweep_freq
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FSWEEP_GET``
+          - 
+          - config
+          - 
+    
+        * - sweep_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SWEEP_MODE_GET``
+          - 
+          - config
+          - 
+    
+        * - error_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ERROR``
+          - 
+          - config
+          - 
+    
+        * - trigger_in
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIGIN_STATUS_GET``
+          - 
+          - config
+          - 
+    
+        * - trigger_out
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIGOUT_STATUS_GET``
+          - 
+          - config
+          - 
+    
+        * - modulation
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:MODULATION_GET``
+          - 
+          - config
+          - 
+    
+        * - output_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OUTPUT_MODE_GET``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

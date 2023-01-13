@@ -1,0 +1,250 @@
+﻿pcdsdevices.ipm.Wave8
+=====================
+
+.. currentmodule:: pcdsdevices.ipm
+
+.. autoclass:: Wave8
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - sum
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SUM``
+          - 
+          - normal
+          - 
+    
+        * - xpos
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:XPOS``
+          - 
+          - normal
+          - 
+    
+        * - ypos
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:YPOS``
+          - 
+          - normal
+          - 
+    
+        * - evr_channel
+          - :class:`~pcdsdevices.evr.Trigger`
+          - ``:TRIG:TRIG0``
+          - 
+          - normal
+          - 
+    
+        * - do_config
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DO_CONFIG.PROC``
+          - 
+          - config
+          - 
+    
+        * - ch0
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch1
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch2
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch3
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch4
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch5
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch6
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch7
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch8
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch9
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch10
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch11
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch12
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch13
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch14
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - ch15
+          - :class:`~pcdsdevices.ipm.Wave8Channel`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: apply_configuration
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

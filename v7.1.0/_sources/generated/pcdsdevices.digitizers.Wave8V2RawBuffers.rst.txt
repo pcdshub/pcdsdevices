@@ -1,0 +1,201 @@
+﻿pcdsdevices.digitizers.Wave8V2RawBuffers
+========================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2RawBuffers
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - buffer0_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BuffEn0_RBV``
+          - 
+          - config
+          - 
+    
+        * - buffer1_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BuffEn1_RBV``
+          - 
+          - config
+          - 
+    
+        * - buffer2_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BuffEn2_RBV``
+          - 
+          - config
+          - 
+    
+        * - buffer3_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BuffEn3_RBV``
+          - 
+          - config
+          - 
+    
+        * - buffer4_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BuffEn4_RBV``
+          - 
+          - config
+          - 
+    
+        * - buffer5_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BuffEn5_RBV``
+          - 
+          - config
+          - 
+    
+        * - buffer6_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BuffEn6_RBV``
+          - 
+          - config
+          - 
+    
+        * - buffer7_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BuffEn7_RBV``
+          - 
+          - config
+          - 
+    
+        * - overflow_cnt_buffer0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OvflCntBuff0_RBV``
+          - 
+          - config
+          - 
+    
+        * - overflow_cnt_buffer7
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OvflCntBuff7_RBV``
+          - 
+          - config
+          - 
+    
+        * - buffer_length
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BuffLen_RBV``
+          - 
+          - config
+          - 
+    
+        * - trigger_prescale
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TrigPrescale_RBV``
+          - 
+          - config
+          - 
+    
+        * - counter_reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CntRst_RBV``
+          - 
+          - config
+          - 
+    
+        * - fifo_pause_threshold
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FifoPauseThreshold_RBV``
+          - 
+          - config
+          - 
+    
+        * - fifo_pause_count
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FifoPauseCnt``
+          - 
+          - config
+          - 
+    
+        * - trigger_count
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TrigCnt``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

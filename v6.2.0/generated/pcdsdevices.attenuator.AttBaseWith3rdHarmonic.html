@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pcdsdevices.attenuator.AttBaseWith3rdHarmonic &mdash; PCDS Devices 6.2.0+0.gfcda7d9.dirty documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pcdsdevices.attenuator.Attenuator" href="pcdsdevices.attenuator.Attenuator.html" />
+    <link rel="prev" title="pcdsdevices.attenuator.AttBase" href="pcdsdevices.attenuator.AttBase.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> PCDS Devices
+          </a>
+              <div class="version">
+                6.2.0+0.gfcda7d9.dirty
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Device Types</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-analog-signals">pcdsdevices.analog_signals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-cam">pcdsdevices.areadetector.cam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-detectors">pcdsdevices.areadetector.detectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-areadetector-plugins">pcdsdevices.areadetector.plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-atm">pcdsdevices.atm</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#pcdsdevices-attenuator">pcdsdevices.attenuator</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.AT1K4.html">pcdsdevices.attenuator.AT1K4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.AT2K2.html">pcdsdevices.attenuator.AT2K2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.AT2L0.html">pcdsdevices.attenuator.AT2L0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.AttBase.html">pcdsdevices.attenuator.AttBase</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">pcdsdevices.attenuator.AttBaseWith3rdHarmonic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.Attenuator.html">pcdsdevices.attenuator.Attenuator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.AttenuatorCalculatorBase.html">pcdsdevices.attenuator.AttenuatorCalculatorBase</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.AttenuatorCalculatorFilter.html">pcdsdevices.attenuator.AttenuatorCalculatorFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade.html">pcdsdevices.attenuator.AttenuatorCalculatorSXR_Blade</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade.html">pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.AttenuatorCalculator_AT2L0.html">pcdsdevices.attenuator.AttenuatorCalculator_AT2L0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.AttenuatorSXR_Ladder.html">pcdsdevices.attenuator.AttenuatorSXR_Ladder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.FEESolidAttenuatorBlade.html">pcdsdevices.attenuator.FEESolidAttenuatorBlade</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.FEESolidAttenuatorStates.html">pcdsdevices.attenuator.FEESolidAttenuatorStates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.FeeAtt.html">pcdsdevices.attenuator.FeeAtt</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.FeeFilter.html">pcdsdevices.attenuator.FeeFilter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.Filter.html">pcdsdevices.attenuator.Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.GasAttenuator.html">pcdsdevices.attenuator.GasAttenuator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.GattApertureX.html">pcdsdevices.attenuator.GattApertureX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.GattApertureY.html">pcdsdevices.attenuator.GattApertureY</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.SXRLadderAttenuatorBlade.html">pcdsdevices.attenuator.SXRLadderAttenuatorBlade</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.SXRLadderAttenuatorStates.html">pcdsdevices.attenuator.SXRLadderAttenuatorStates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.get_blade_enum.html">pcdsdevices.attenuator.get_blade_enum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.attenuator.render_ascii_att.html">pcdsdevices.attenuator.render_ascii_att</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-beam-stats">pcdsdevices.beam_stats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ccm">pcdsdevices.ccm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-crix-motion">pcdsdevices.crix_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-cvmi-motion">pcdsdevices.cvmi_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-dc-devices">pcdsdevices.dc_devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-delay-generator">pcdsdevices.delay_generator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-device">pcdsdevices.device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-digitizers">pcdsdevices.digitizers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-energy-monitor">pcdsdevices.energy_monitor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-epics-motor">pcdsdevices.epics_motor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-evr">pcdsdevices.evr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gauge">pcdsdevices.gauge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gon">pcdsdevices.gon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-inout">pcdsdevices.inout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-interface">pcdsdevices.interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ipm">pcdsdevices.ipm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-jet">pcdsdevices.jet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lamp-motion">pcdsdevices.lamp_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-btps">pcdsdevices.lasers.btps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-counters">pcdsdevices.lasers.counters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-dicon">pcdsdevices.lasers.dicon</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-ek9000">pcdsdevices.lasers.ek9000</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-elliptec">pcdsdevices.lasers.elliptec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-qmini">pcdsdevices.lasers.qmini</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-rfof">pcdsdevices.lasers.rfof</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-thorlabswfs">pcdsdevices.lasers.thorlabsWFS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-tuttifrutti">pcdsdevices.lasers.tuttifrutti</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lasers-zoomtelescope">pcdsdevices.lasers.zoomtelescope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lens">pcdsdevices.lens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lic">pcdsdevices.lic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lodcm">pcdsdevices.lodcm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-lxe">pcdsdevices.lxe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mirror">pcdsdevices.mirror</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-movablestand">pcdsdevices.movablestand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mpod">pcdsdevices.mpod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mpod-apalis">pcdsdevices.mpod_apalis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mps">pcdsdevices.mps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-mrco-motion">pcdsdevices.mrco_motion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-piezo">pcdsdevices.piezo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pim">pcdsdevices.pim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pmps">pcdsdevices.pmps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-positioner">pcdsdevices.positioner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pseudopos">pcdsdevices.pseudopos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pulsepicker">pcdsdevices.pulsepicker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pump">pcdsdevices.pump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-pv-positioner">pcdsdevices.pv_positioner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-ref">pcdsdevices.ref</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-rtds-ebd">pcdsdevices.rtds_ebd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sample-delivery">pcdsdevices.sample_delivery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sensors">pcdsdevices.sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sequencer">pcdsdevices.sequencer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-signal">pcdsdevices.signal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sim">pcdsdevices.sim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-slits">pcdsdevices.slits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-spectrometer">pcdsdevices.spectrometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-state">pcdsdevices.state</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-stopper">pcdsdevices.stopper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sxr-test-absorber">pcdsdevices.sxr_test_absorber</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-tags">pcdsdevices.tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-targets">pcdsdevices.targets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-timetool">pcdsdevices.timetool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-utils">pcdsdevices.utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-valve">pcdsdevices.valve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-variety">pcdsdevices.variety</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-wfs">pcdsdevices.wfs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../signals.html">Signal Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../base_classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sim_types.html">Simulated Devices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../mv.html">Shortcuts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../presets.html">Preset Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tab.html">IPython Tab Curation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ui.html">UI Templates</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../releases.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upcoming_changes.html">Upcoming Changes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PCDS Devices</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">API</a> &raquo;</li>
+      <li>pcdsdevices.attenuator.AttBaseWith3rdHarmonic</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/generated/pcdsdevices.attenuator.AttBaseWith3rdHarmonic.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pcdsdevices-attenuator-attbasewith3rdharmonic">
+<h1>pcdsdevices.attenuator.AttBaseWith3rdHarmonic<a class="headerlink" href="#pcdsdevices-attenuator-attbasewith3rdharmonic" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.attenuator.</span></span><span class="sig-name descname"><span class="pre">AttBaseWith3rdHarmonic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic" title="Permalink to this definition"></a></dt>
+<dd><p>Base class for attenuators with 3rd harmonic frequency.</p>
+<p>This base class contains 3rd harmonic frequncy components.
+You should not instantiate this class directly, but instead use the
+<a class="reference internal" href="pcdsdevices.attenuator.Attenuator.html#pcdsdevices.attenuator.Attenuator" title="pcdsdevices.attenuator.Attenuator"><code class="xref py py-func docutils literal notranslate"><span class="pre">Attenuator()</span></code></a> factory function.</p>
+<table class="colwidths-auto docutils align-default" id="id1">
+<caption><span class="caption-text">Ophyd Device Components</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<thead>
+<tr class="row-odd"><th class="head"><p>Attribute</p></th>
+<th class="head"><p>Class</p></th>
+<th class="head"><p>Suffix</p></th>
+<th class="head"><p>Docs</p></th>
+<th class="head"><p>Kind</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>setpoint</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:R_DES</span></code></p></td>
+<td></td>
+<td><p>normal</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase" title="pcdsdevices.attenuator.AttBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttBase</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>readback</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:R_CUR</span></code></p></td>
+<td></td>
+<td><p>hinted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase" title="pcdsdevices.attenuator.AttBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttBase</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>actuate</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:GO</span></code></p></td>
+<td></td>
+<td><p>omitted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase" title="pcdsdevices.attenuator.AttBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttBase</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>done</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:STATUS</span></code></p></td>
+<td></td>
+<td><p>omitted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase" title="pcdsdevices.attenuator.AttBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttBase</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>energy</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:T_CALC.VALE</span></code></p></td>
+<td></td>
+<td><p>normal</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase" title="pcdsdevices.attenuator.AttBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttBase</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>trans_ceil</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:R_CEIL</span></code></p></td>
+<td></td>
+<td><p>omitted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase" title="pcdsdevices.attenuator.AttBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttBase</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>trans_floor</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:R_FLOOR</span></code></p></td>
+<td></td>
+<td><p>omitted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase" title="pcdsdevices.attenuator.AttBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttBase</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>user_energy</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:EDES</span></code></p></td>
+<td></td>
+<td><p>omitted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase" title="pcdsdevices.attenuator.AttBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttBase</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>eget_cmd</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:EACT.SCAN</span></code></p></td>
+<td></td>
+<td><p>omitted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase" title="pcdsdevices.attenuator.AttBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttBase</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>calcpend</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:CALCP</span></code></p></td>
+<td></td>
+<td><p>omitted</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase" title="pcdsdevices.attenuator.AttBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttBase</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>setpoint_3rd</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:R3_DES</span></code></p></td>
+<td></td>
+<td><p>normal</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>readback_3rd</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:R3_CUR</span></code></p></td>
+<td></td>
+<td><p>hinted</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>energy_3rd</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:T_CALC.VALH</span></code></p></td>
+<td></td>
+<td><p>normal</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>trans_ceil_3rd</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:R3_CEIL</span></code></p></td>
+<td></td>
+<td><p>omitted</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>trans_floor_3rd</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalRO</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:R3_FLOOR</span></code></p></td>
+<td></td>
+<td><p>omitted</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>user_energy_3rd</p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">:COM:E3DES</span></code></p></td>
+<td></td>
+<td><p>omitted</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.camonitor">
+<span class="sig-name descname"><span class="pre">camonitor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.camonitor" title="Permalink to this definition"></a></dt>
+<dd><p>Shows a live-updating motor position in the terminal.</p>
+<p>This will be the value that is returned by the <a class="reference internal" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.position" title="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.position"><code class="xref py py-attr docutils literal notranslate"><span class="pre">position</span></code></a>
+attribute.</p>
+<p>This method ends cleanly at a ctrl+c or after a call to
+<a class="reference internal" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.end_monitor_thread" title="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.end_monitor_thread"><code class="xref py py-meth docutils literal notranslate"><span class="pre">end_monitor_thread()</span></code></a>, which may be useful when this is called in
+a background thread.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.configure">
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.configure" title="Permalink to this definition"></a></dt>
+<dd><p>Configure the device for something during a run</p>
+<p>This default implementation allows the user to change any of the
+<a class="reference internal" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.configuration_attrs" title="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.configuration_attrs"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">configuration_attrs</span></code></a>. Subclasses might override this to perform
+additional input validation, cleanup, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The configuration dictionary. To specify the order that
+the changes should be made, use an OrderedDict.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>(old, new) tuple of dictionaries</em></p></li>
+<li><p><em>Where old and new are pre- and post-configure configuration states.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.describe" title="Permalink to this definition"></a></dt>
+<dd><p>Provide schema and meta-data for <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code>.</p>
+<p>This keys in the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> this method returns must match the
+keys in the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> return by <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code>.</p>
+<p>This provides schema related information, (ex shape, dtype), the
+source (ex PV name), and if available, units, limits, precision etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>data_keys</strong> (<em>OrderedDict</em>) – The keys must be strings and the values must be dict-like
+with the <code class="docutils literal notranslate"><span class="pre">event_model.event_descriptor.data_key</span></code> schema.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.end_monitor_thread">
+<span class="sig-name descname"><span class="pre">end_monitor_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.end_monitor_thread" title="Permalink to this definition"></a></dt>
+<dd><p>Stop a <a class="reference internal" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.camonitor" title="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.camonitor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">camonitor()</span></code></a> or <a class="reference internal" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.wm_update" title="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.wm_update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wm_update()</span></code></a> that is running in
+another thread.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.get" title="Permalink to this definition"></a></dt>
+<dd><p>Get the value of all components in the device</p>
+<p>Keyword arguments are passed onto each signal.get(). Components
+beginning with an underscore will not be included.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.insert">
+<span class="sig-name descname"><span class="pre">insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moved_cb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.insert" title="Permalink to this definition"></a></dt>
+<dd><p>Block the beam by setting transmission to zero.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.move">
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.move" title="Permalink to this definition"></a></dt>
+<dd><p>Move to a specified position, optionally waiting for motion to
+complete.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – Position to move to</p></li>
+<li><p><strong>moved_cb</strong> (<em>callable</em>) – Call this callback when movement has finished. This callback must
+accept one keyword argument: ‘obj’ which will be set to this
+positioner instance.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – Maximum time to wait for the motion. If None, the default timeout
+for this positioner is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>status</strong> (<em>MoveStatus</em>)</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TimeoutError" title="(in Python v3.10)"><strong>TimeoutError</strong></a> – When motion takes longer than <a class="reference internal" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.timeout" title="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.timeout"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">timeout</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – On invalid positions</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.10)"><strong>RuntimeError</strong></a> – If motion fails other than timing out</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.mv">
+<span class="sig-name descname"><span class="pre">mv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.mv" title="Permalink to this definition"></a></dt>
+<dd><p>Absolute move to a position.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – Desired end position.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
+than timeout to complete. If omitted, the mover’s default timeout
+will be use.</p></li>
+<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, wait for motion completion before returning.
+Defaults to <code class="xref std std-keyword docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, logs the move at INFO level.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.mv_ginput">
+<span class="sig-name descname"><span class="pre">mv_ginput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.mv_ginput" title="Permalink to this definition"></a></dt>
+<dd><p>Moves to a location the user clicks on.</p>
+<p>If there are existing plots, this will be the position on the most
+recently active plot. If there are no existing plots, an empty plot
+will be created with the motor’s limits as the range.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.mvr">
+<span class="sig-name descname"><span class="pre">mvr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.mvr" title="Permalink to this definition"></a></dt>
+<dd><p>Relative move from this position.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Desired change in position.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
+than timeout to complete. If omitted, the mover’s default timeout
+will be use.</p></li>
+<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, wait for motion completion before returning.
+Defaults to <code class="xref std std-keyword docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.10)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, logs the move at INFO level.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.post_elog_status">
+<span class="sig-name descname"><span class="pre">post_elog_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.post_elog_status" title="Permalink to this definition"></a></dt>
+<dd><p>Post device status to the primary elog, if possible.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.read" title="Permalink to this definition"></a></dt>
+<dd><p>Read data from the device.</p>
+<p>This method is expected to be as instantaneous as possible,
+with any substantial acquisition time taken care of in
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">trigger()</span></code>.</p>
+<p>The <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> returned by this method must have identical
+keys (in the same order) as the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> returned by
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">describe()</span></code>.</p>
+<p>By convention, the first key in the return is the ‘primary’ key
+and maybe used by heuristics in <code class="xref py py-mod docutils literal notranslate"><span class="pre">bluesky</span></code>.</p>
+<p>The values in the ordered dictionary must be dict (-likes) with the
+keys <code class="docutils literal notranslate"><span class="pre">{'value',</span> <span class="pre">'timestamp'}</span></code>.  The <code class="docutils literal notranslate"><span class="pre">'value'</span></code> may have any type,
+the timestamp must be a float UNIX epoch timestamp in UTC.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>OrderedDict</em>) – The keys must be strings and the values must be dict-like
+with the keys <code class="docutils literal notranslate"><span class="pre">{'value',</span> <span class="pre">'timestamp'}</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.read_configuration">
+<span class="sig-name descname"><span class="pre">read_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.read_configuration" title="Permalink to this definition"></a></dt>
+<dd><p>Dictionary mapping names to value dicts with keys: value, timestamp</p>
+<p>To control which fields are included, change the Component kinds on the
+device, or modify the <code class="docutils literal notranslate"><span class="pre">configuration_attrs</span></code> list.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moved_cb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.remove" title="Permalink to this definition"></a></dt>
+<dd><p>Bring the attenuator fully out of the beam.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.screen">
+<span class="sig-name descname"><span class="pre">screen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.screen" title="Permalink to this definition"></a></dt>
+<dd><p>Open a screen for controlling the device.</p>
+<p>Default behavior is the typhos screen, but this method can
+be overridden for more specialized screens.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moved_cb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.6.4.post81+gd5fc722)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.set" title="Permalink to this definition"></a></dt>
+<dd><p>Set a value and return a Status object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_position</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><em>object</em></a>) – The input here is whatever the device requires (this
+should be over-ridden by the implementation.  For example
+a motor would take a float, a shutter the strings {‘Open’,
+‘Close’}, and a goineometer (h, k, l) tuples</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – Maximum time to wait for the motion. If None, the default timeout
+for this positioner is used.</p></li>
+<li><p><strong>moved_cb</strong> (<em>callable</em><em>, </em><em>optional</em>) – <p>Deprecated</p>
+<p>Call this callback when movement has finished. This callback
+must accept one keyword argument: ‘obj’ which will be set to
+this positioner instance.</p>
+</p></li>
+<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – <p>Deprecated</p>
+<p>If the method should block until the Status object reports
+it is done.</p>
+<p>Defaults to False</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>status</strong> (<em>StatusBase</em>) – Status object to indicate when the motion / set is done.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.set_energy">
+<span class="sig-name descname"><span class="pre">set_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.set_energy" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the energy to use for transmission calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>energy</strong> (<em>number</em><em>, </em><em>optional</em>) – If provided, this is the energy we’ll use for the transmission
+calcluations. If omitted, we’ll clear any set energy and use the
+current beam energy instead.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.set_position">
+<span class="sig-name descname"><span class="pre">set_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.set_position" title="Permalink to this definition"></a></dt>
+<dd><p>Alias for set_current_position.</p>
+<p>Will fail if the motor does not have set_current_position.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.status">
+<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.status" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a str with the current pv values for the device.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">success</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.stop" title="Permalink to this definition"></a></dt>
+<dd><p>Stop the Device and all (instantiated) subdevices</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.summary">
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.summary" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.trigger">
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.6.4.post81+gd5fc722)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.trigger" title="Permalink to this definition"></a></dt>
+<dd><p>Trigger the device and return status object.</p>
+<p>This method is responsible for implementing ‘trigger’ or
+‘acquire’ functionality of this device.</p>
+<p>If there is an appreciable time between triggering the device
+and it being able to be read (via the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> method) then this method is
+also responsible for arranging that the
+<a class="reference external" href="https://blueskyproject.io/ophyd/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.6.4.post81+gd5fc722)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
+is notified when the device is ready to be read.</p>
+<p>If there is no delay between triggering and being readable,
+then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.6.4.post81+gd5fc722)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
+object which is already completed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.6.4.post81+gd5fc722)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
+as complete when the device is ready to be read.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.tweak">
+<span class="sig-name descname"><span class="pre">tweak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.tweak" title="Permalink to this definition"></a></dt>
+<dd><p>Control this motor using the arrow keys.</p>
+<p>Use left arrow to step negative and right arrow to step positive.
+Use up arrow to increase step size and down arrow to decrease step
+size. Press q or ctrl+c to quit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – starting step size, default = 0.1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.umv">
+<span class="sig-name descname"><span class="pre">umv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.umv" title="Permalink to this definition"></a></dt>
+<dd><p>Move to a position, wait, and update with a progress bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Desired end position.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
+than timeout to complete. If omitted, the mover’s default timeout
+will be use.</p></li>
+<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, logs the move at INFO level.</p></li>
+<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, inserts a newline after the updates.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.umvr">
+<span class="sig-name descname"><span class="pre">umvr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.umvr" title="Permalink to this definition"></a></dt>
+<dd><p>Relative move from this position, wait, and update with a progress bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – Desired change in position.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
+than timeout to complete. If omitted, the mover’s default timeout
+will be use.</p></li>
+<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, logs the move at INFO level.</p></li>
+<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, inserts a newline after the updates.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.wait">
+<span class="sig-name descname"><span class="pre">wait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.wait" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.wm">
+<span class="sig-name descname"><span class="pre">wm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.wm" title="Permalink to this definition"></a></dt>
+<dd><p>Get the mover’s current positon (where motor).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.wm_update">
+<span class="sig-name descname"><span class="pre">wm_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.wm_update" title="Permalink to this definition"></a></dt>
+<dd><p>Shows a live-updating motor position in the terminal.</p>
+<p>This will be the value that is returned by the <a class="reference internal" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.position" title="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.position"><code class="xref py py-attr docutils literal notranslate"><span class="pre">position</span></code></a>
+attribute.</p>
+<p>This method ends cleanly at a ctrl+c or after a call to
+<a class="reference internal" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.end_monitor_thread" title="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.end_monitor_thread"><code class="xref py py-meth docutils literal notranslate"><span class="pre">end_monitor_thread()</span></code></a>, which may be useful when this is called in
+a background thread.</p>
+</dd></dl>
+
+<p class="rubric">Attributes</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.actuate_value">
+<span class="sig-name descname"><span class="pre">actuate_value</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.actuate_value" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the value we use in the ‘GO’ command.</p>
+<p>This command will return 3 if the setpoint is closer to the ceiling
+than the floor, or 2 otherwise. In the unlikely event of a tie, we
+choose the floor.</p>
+<p>This will wait until a pending calculation completes before returning.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.configuration_attrs">
+<span class="sig-name descname"><span class="pre">configuration_attrs</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.configuration_attrs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.connected">
+<span class="sig-name descname"><span class="pre">connected</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.connected" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.done_value">
+<span class="sig-name descname"><span class="pre">done_value</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.done_value" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.egu">
+<span class="sig-name descname"><span class="pre">egu</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.egu" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.high_limit">
+<span class="sig-name descname"><span class="pre">high_limit</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.high_limit" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.hints">
+<span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.hints" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.kind">
+<span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.kind" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.limits">
+<span class="sig-name descname"><span class="pre">limits</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.limits" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.low_limit">
+<span class="sig-name descname"><span class="pre">low_limit</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.low_limit" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.moving">
+<span class="sig-name descname"><span class="pre">moving</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.moving" title="Permalink to this definition"></a></dt>
+<dd><p>Whether or not the motor is moving</p>
+<p>If a <a class="reference internal" href="pcdsdevices.attenuator.AT1K4.html#pcdsdevices.attenuator.AT1K4.done" title="pcdsdevices.attenuator.AT1K4.done"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">done</span></code></a> PV is specified, it will be read directly to get the motion
+status. If not, it determined from the internal state of PVPositioner.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>bool</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.position">
+<span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.position" title="Permalink to this definition"></a></dt>
+<dd><p>The current position of the motor in its engineering units</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>position</strong> (<em>any</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.put_complete">
+<span class="sig-name descname"><span class="pre">put_complete</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.put_complete" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.settle_time">
+<span class="sig-name descname"><span class="pre">settle_time</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.settle_time" title="Permalink to this definition"></a></dt>
+<dd><p>Amount of time to wait after moves to report status completion</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.stop_signal">
+<span class="sig-name descname"><span class="pre">stop_signal</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.stop_signal" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.stop_value">
+<span class="sig-name descname"><span class="pre">stop_value</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.stop_value" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.timeout" title="Permalink to this definition"></a></dt>
+<dd><p>Amount of time to wait before to considering a motion as failed</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.attenuator.AttBaseWith3rdHarmonic.transmission">
+<span class="sig-name descname"><span class="pre">transmission</span></span><a class="headerlink" href="#pcdsdevices.attenuator.AttBaseWith3rdHarmonic.transmission" title="Permalink to this definition"></a></dt>
+<dd><p>Ratio of pass-through beam to incoming beam as a value between
+1 (full beam) and 0 (no beam).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pcdsdevices.attenuator.AttBase.html" class="btn btn-neutral float-left" title="pcdsdevices.attenuator.AttBase" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pcdsdevices.attenuator.Attenuator.html" class="btn btn-neutral float-right" title="pcdsdevices.attenuator.Attenuator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

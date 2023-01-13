@@ -1,0 +1,173 @@
+﻿pcdsdevices.digitizers.Wave8V2XpmMsg
+====================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2XpmMsg
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - xpm_message_cnt
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:XpmMessageCount``
+          - 
+          - config
+          - 
+    
+        * - xpm_overflow
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:XpmOverflow``
+          - 
+          - config
+          - 
+    
+        * - xpm_pause
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:XpmPause``
+          - 
+          - config
+          - 
+    
+        * - xpmmsg_partition_delay0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:XpmMsg:PartitionDelay0``
+          - 
+          - config
+          - 
+    
+        * - xpmmsg_partition_delay1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:XpmMsg:PartitionDelay1``
+          - 
+          - config
+          - 
+    
+        * - xpmmsg_partition_delay2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:XpmMsg:PartitionDelay2``
+          - 
+          - config
+          - 
+    
+        * - xpmmsg_partition_delay3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:XpmMsg:PartitionDelay3``
+          - 
+          - config
+          - 
+    
+        * - xpmmsg_partition_delay4
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:XpmMsg:PartitionDelay4``
+          - 
+          - config
+          - 
+    
+        * - xpmmsg_partition_delay5
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:XpmMsg:PartitionDelay5``
+          - 
+          - config
+          - 
+    
+        * - xpmmsg_partition_delay6
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:XpmMsg:PartitionDelay6``
+          - 
+          - config
+          - 
+    
+        * - xpmmsg_partition_delay7
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:XpmMsg:PartitionDelay7``
+          - 
+          - config
+          - 
+    
+        * - xpmmsg_rx_id
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:XpmMsg:RxId``
+          - 
+          - config
+          - 
+    
+        * - xpmmsg_tx_id
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:XpmMsg:TxId_RBV``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

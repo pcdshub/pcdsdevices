@@ -1,0 +1,113 @@
+﻿pcdsdevices.spectrometer.VonHamos4Crystal
+=========================================
+
+.. currentmodule:: pcdsdevices.spectrometer
+
+.. autoclass:: VonHamos4Crystal
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - f (FCpt)
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``{self._prefix_focus}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.spectrometer.VonHamosFE`
+    
+        * - e (FCpt)
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``{self._prefix_energy}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.spectrometer.VonHamosFE`
+    
+        * - c1
+          - :class:`~pcdsdevices.spectrometer.VonHamosCrystal`
+          - ``:1``
+          - 
+          - normal
+          - 
+    
+        * - c2
+          - :class:`~pcdsdevices.spectrometer.VonHamosCrystal`
+          - ``:2``
+          - 
+          - normal
+          - 
+    
+        * - c3
+          - :class:`~pcdsdevices.spectrometer.VonHamosCrystal`
+          - ``:3``
+          - 
+          - normal
+          - 
+    
+        * - c4
+          - :class:`~pcdsdevices.spectrometer.VonHamosCrystal`
+          - ``:4``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

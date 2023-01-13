@@ -1,0 +1,152 @@
+﻿pcdsdevices.rtds\_ebd.PneumaticActuator
+=======================================
+
+.. currentmodule:: pcdsdevices.rtds_ebd
+
+.. autoclass:: PneumaticActuator
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:POS_STATE``
+          - 
+          - hinted
+          - 
+    
+        * - in_sw
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:IN``
+          - 
+          - normal
+          - 
+    
+        * - out_sw
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:OUT``
+          - 
+          - normal
+          - 
+    
+        * - error
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ERROR``
+          - 
+          - normal
+          - 
+    
+        * - in_cmd
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:IN_CMD``
+          - 
+          - config
+          - 
+    
+        * - out_cmd
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:OUT_CMD``
+          - 
+          - config
+          - 
+    
+        * - filter_type
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - config
+          - 
+    
+        * - done
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MOT_DONE``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_inserted
+    .. automethod:: check_removed
+    .. automethod:: check_transmission
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_state
+    .. automethod:: insert
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: set
+    .. automethod:: status
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: in_states
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: out_states
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: states_list
+    .. autoattribute:: stop
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    

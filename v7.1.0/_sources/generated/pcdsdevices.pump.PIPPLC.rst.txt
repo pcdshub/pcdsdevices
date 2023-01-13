@@ -1,0 +1,207 @@
+﻿pcdsdevices.pump.PIPPLC
+=======================
+
+.. currentmodule:: pcdsdevices.pump
+
+.. autoclass:: PIPPLC
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - pressure
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PRESS_RBV``
+          - pressure reading
+          - hinted
+          - 
+    
+        * - high_voltage_do
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HV_DO_RBV``
+          - high voltage digital output
+          - normal
+          - 
+    
+        * - interlock_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ILK_OK_RBV``
+          - interlock  is ok when true
+          - normal
+          - 
+    
+        * - protection_setpoint
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:AT_VAC_SP``
+          - Protection/At Vacuum Setpoint
+          - config
+          - 
+    
+        * - setpoint_hysteresis
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:SP_HYS``
+          - Protection Setpoint Hysteresis
+          - config
+          - 
+    
+        * - pump_on_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HV_DI_RBV``
+          - ion pump output state
+          - normal
+          - 
+    
+        * - pump_state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATE_RBV``
+          - 
+          - hinted
+          - 
+    
+        * - at_vac_setpoint
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:AT_VAC_SP``
+          - at vacuum set point
+          - omitted
+          - 
+    
+        * - high_voltage_switch
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:HV_SW``
+          - epics command to switch on the high voltage
+          - config
+          - 
+    
+        * - plc_ai_offset
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AI_Offset_RBV``
+          - Analog input offset must match ion pump analog ouput offset. Default: 13
+          - config
+          - 
+    
+        * - auto_on
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:Auto_On``
+          - Setting to automatically turn on the ion pump when thereference gauge pressure is below protection setpoint
+          - config
+          - 
+    
+        * - override_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OVRD_ON``
+          - Regional Override Status
+          - omitted
+          - 
+    
+        * - override_force_on
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:FORCE_START``
+          - Force Ion Pump to turn on
+          - omitted
+          - 
+    
+        * - qpc_name
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:VPCNAME``
+          - Quad Ion Pump Controller Name
+          - config
+          - 
+    
+        * - qpc_pumpsize
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PUMPSIZE``
+          - Ion Pump Size (L/s)
+          - config
+          - 
+    
+        * - interlock_device
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ILK_DEVICE_RBV``
+          - Vacuum device used for interlocking this pump
+          - config
+          - 
+    
+        * - autoOn_countdown
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AutoOn_timer_RBV``
+          - Timer count down to turn on the ion pump 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

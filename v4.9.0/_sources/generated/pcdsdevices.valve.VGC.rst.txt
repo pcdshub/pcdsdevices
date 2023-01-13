@@ -1,0 +1,217 @@
+﻿pcdsdevices.valve.VGC
+=====================
+
+.. currentmodule:: pcdsdevices.valve
+
+.. autoclass:: VGC
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - open_command
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:OPN_SW``
+          - Epics command to Open valve
+          - normal
+          - Inherited from :class:`~pcdsdevices.valve.VRC`
+    
+        * - interlock_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OPN_OK_RBV``
+          - Valve is OK to Open interlock 
+          - normal
+          - Inherited from :class:`~pcdsdevices.valve.VRC`
+    
+        * - open_do
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OPN_DO_RBV``
+          - PLC Output to Open valve, 1 means 24V on command cable
+          - normal
+          - Inherited from :class:`~pcdsdevices.valve.VRC`
+    
+        * - error_reset
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:ALM_RST``
+          - Reset Error state to valid by toggling this
+          - normal
+          - Inherited from :class:`~pcdsdevices.valve.VRC`
+    
+        * - override_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OVRD_ON_RBV``
+          - Epics Readback on Override mode
+          - omitted
+          - Inherited from :class:`~pcdsdevices.valve.VRC`
+    
+        * - override_force_open
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:FORCE_OPN``
+          - Epics Command to force open the valve inoverride mode
+          - omitted
+          - Inherited from :class:`~pcdsdevices.valve.VRC`
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATE_RBV``
+          - Valve state
+          - normal
+          - Inherited from :class:`~pcdsdevices.valve.VRC`
+    
+        * - open_limit
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OPN_DI_RBV``
+          - Open limit switch digital input
+          - hinted
+          - Inherited from :class:`~pcdsdevices.valve.VRC`
+    
+        * - closed_limit
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CLS_DI_RBV``
+          - Closed limit switch digital input
+          - hinted
+          - Inherited from :class:`~pcdsdevices.valve.VRC`
+    
+        * - diff_press_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:DP_OK_RBV``
+          - Differential pressure interlock ok
+          - normal
+          - 
+    
+        * - ext_ilk_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:EXT_ILK_OK_RBV``
+          - External interlock ok
+          - normal
+          - 
+    
+        * - at_vac_setpoint
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:AT_VAC_SP``
+          - AT VAC Set point value
+          - config
+          - 
+    
+        * - setpoint_hysterisis
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:AT_VAC_HYS``
+          - AT VAC Hysterisis
+          - config
+          - 
+    
+        * - at_vac
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AT_VAC_RBV``
+          - at vacuum sp is reached
+          - normal
+          - 
+    
+        * - error
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ERROR_RBV``
+          - Error Present
+          - normal
+          - 
+    
+        * - mps_state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MPS_FAULT_OK_RBV``
+          - individual valve MPS state for debugging
+          - omitted
+          - 
+    
+        * - interlock_device_upstream
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ILK_DEVICE_US_RBV``
+          - Upstream vacuum device used forinterlocking this valve
+          - config
+          - 
+    
+        * - interlock_device_downstream
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ILK_DEVICE_DS_RBV``
+          - Downstream vacuum device used forinterlocking this valve
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: transmission
+    
+    

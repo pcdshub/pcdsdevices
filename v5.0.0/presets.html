@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preset Positions &mdash; PCDS Devices 5.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="IPython Tab Curation" href="tab.html" />
+    <link rel="prev" title="Shortcuts" href="mv.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> PCDS Devices
+          </a>
+              <div class="version">
+                5.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Device Types</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base_classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sim_types.html">Simulated Devices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Features</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="mv.html">Shortcuts</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Preset Positions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-preset">Creating a Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-a-preset">Using a Preset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#manage-existing-presets">Manage Existing Presets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuring-presets">Configuring Presets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tab.html">IPython Tab Curation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">UI Templates</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upcoming_changes.html">Upcoming Changes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PCDS Devices</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Preset Positions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/presets.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="preset-positions">
+<h1>Preset Positions<a class="headerlink" href="#preset-positions" title="Permalink to this headline"></a></h1>
+<p>All <code class="docutils literal notranslate"><span class="pre">pcdsdevices</span></code> objects that involve moving positioners across a
+continuum of positions can save preset positions. See <code class="xref any docutils literal notranslate"><span class="pre">Presets</span></code> for a
+full API description, or stay here for the user guide.</p>
+<section id="creating-a-preset">
+<h2>Creating a Preset<a class="headerlink" href="#creating-a-preset" title="Permalink to this headline"></a></h2>
+<p>A device that can save and load presets will have a <code class="docutils literal notranslate"><span class="pre">presets</span></code> attribute.
+This is the interface that is used to create new presets. The module is
+configurable to have differing presets catagories, and these are typically
+used to have “permanent” and “temporary” presets, and in <code class="docutils literal notranslate"><span class="pre">hutch-python</span></code>
+are laid out as such:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>add_hutch(name, value[, comment])</p></td>
+<td><p>Add a permenant preset</p></td>
+</tr>
+<tr class="row-odd"><td><p>add_exp(name, value[, comment])</p></td>
+<td><p>Add a temporary preset</p></td>
+</tr>
+<tr class="row-even"><td><p>add_hutch_here(name[, comment])</p></td>
+<td><p>Add a permenant preset with this spot as the value</p></td>
+</tr>
+<tr class="row-odd"><td><p>add_exp_here(name[, comment])</p></td>
+<td><p>Add a temporary preset with this spot as the value</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="using-a-preset">
+<h2>Using a Preset<a class="headerlink" href="#using-a-preset" title="Permalink to this headline"></a></h2>
+<p>After a preset is created, you can use the preset using three special methods.
+These will be added directly to the object, not to the <code class="docutils literal notranslate"><span class="pre">presets</span></code> attribute:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 58%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mv_presetname([timeout, wait])</p></td>
+<td><p>Move to this preset position</p></td>
+</tr>
+<tr class="row-odd"><td><p>umv_presetname([timeout])</p></td>
+<td><p>Move to thie preset position and update</p></td>
+</tr>
+<tr class="row-even"><td><p>wm_presetname()</p></td>
+<td><p>Check the offset from this preset position</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="manage-existing-presets">
+<h2>Manage Existing Presets<a class="headerlink" href="#manage-existing-presets" title="Permalink to this headline"></a></h2>
+<p>You can see all existing presets via checking <code class="docutils literal notranslate"><span class="pre">my_motor.presets.positions</span></code>.
+In <code class="xref any docutils literal notranslate"><span class="pre">IPython</span></code>, this will show you all the current presets. You can also use
+this <code class="docutils literal notranslate"><span class="pre">presets.positions</span></code> object to manage the set positions. Each attribute
+is an instance of <code class="xref any docutils literal notranslate"><span class="pre">PresetPosition</span></code> that can be managed. See <code class="xref any docutils literal notranslate"><span class="pre">PresetPosition</span></code>
+for the full API.</p>
+</section>
+<section id="configuring-presets">
+<h2>Configuring Presets<a class="headerlink" href="#configuring-presets" title="Permalink to this headline"></a></h2>
+<p>Presets are configured in <code class="docutils literal notranslate"><span class="pre">hutch-python</span></code> to use <code class="docutils literal notranslate"><span class="pre">add_hutch</span></code> and <code class="docutils literal notranslate"><span class="pre">add_exp</span></code>
+as the preset-adding methods, with the <code class="docutils literal notranslate"><span class="pre">add_hutch</span></code> method saving to a hutch
+directory and <code class="docutils literal notranslate"><span class="pre">add_exp</span></code> saving to an experiment directory. This can be
+changed for other applications using the <a class="reference internal" href="generated/pcdsdevices.interface.setup_preset_paths.html#pcdsdevices.interface.setup_preset_paths" title="pcdsdevices.interface.setup_preset_paths"><code class="xref any py py-func docutils literal notranslate"><span class="pre">setup_preset_paths</span></code></a> method.
+This method must be called for the presets to be saved and loaded.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="mv.html" class="btn btn-neutral float-left" title="Shortcuts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tab.html" class="btn btn-neutral float-right" title="IPython Tab Curation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

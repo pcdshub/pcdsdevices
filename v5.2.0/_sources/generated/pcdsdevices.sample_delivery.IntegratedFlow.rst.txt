@@ -1,0 +1,82 @@
+﻿pcdsdevices.sample\_delivery.IntegratedFlow
+===========================================
+
+.. currentmodule:: pcdsdevices.sample_delivery
+
+.. autoclass:: IntegratedFlow
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - start (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - used (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - time (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

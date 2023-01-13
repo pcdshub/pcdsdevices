@@ -1,0 +1,83 @@
+﻿pcdsdevices.sample\_delivery.PCM
+================================
+
+.. currentmodule:: pcdsdevices.sample_delivery
+
+.. autoclass:: PCM
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:IO:SyncUnitOK``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.sample_delivery.M3BasePLCDevice`
+    
+        * - propair1
+          - :class:`~pcdsdevices.sample_delivery.PropAir`
+          - ``:PropAir:01``
+          - 
+          - normal
+          - 
+    
+        * - propair2
+          - :class:`~pcdsdevices.sample_delivery.PropAir`
+          - ``:PropAir:02``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

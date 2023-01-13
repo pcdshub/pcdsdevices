@@ -1,0 +1,314 @@
+﻿pcdsdevices.pump.AgilentSerial
+==============================
+
+.. currentmodule:: pcdsdevices.pump
+
+.. autoclass:: AgilentSerial
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - run
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RUN``
+          - 
+          - omitted
+          - 
+    
+        * - config
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CONFIG``
+          - 
+          - omitted
+          - 
+    
+        * - softstart
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SOFTSTART``
+          - 
+          - omitted
+          - 
+    
+        * - sp_type
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SP_TYPE``
+          - 
+          - omitted
+          - 
+    
+        * - sp_calcdis
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SP_CALCDIS``
+          - 
+          - omitted
+          - 
+    
+        * - sp_dis
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SP_DIS``
+          - 
+          - omitted
+          - 
+    
+        * - sp_writeval
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SP_WRITEVAL``
+          - 
+          - omitted
+          - 
+    
+        * - sp_freq
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SP_FREQ``
+          - 
+          - omitted
+          - 
+    
+        * - sp_current
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SP_CURRENT``
+          - 
+          - omitted
+          - 
+    
+        * - sp_time
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SP_TIME``
+          - 
+          - omitted
+          - 
+    
+        * - sp_delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SP_DELAY``
+          - 
+          - omitted
+          - 
+    
+        * - sp_polarity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SP_POLARITY``
+          - 
+          - omitted
+          - 
+    
+        * - sp_hys
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SP_HYS``
+          - 
+          - omitted
+          - 
+    
+        * - water_cooling
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:WATER_COOLING``
+          - 
+          - normal
+          - 
+    
+        * - active_stop
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ACTIVE_STOP``
+          - 
+          - normal
+          - 
+    
+        * - interlock_type
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:INTERLOCK_TYPE``
+          - 
+          - omitted
+          - 
+    
+        * - ao_type
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:AO_TYPE``
+          - 
+          - omitted
+          - 
+    
+        * - rot_freq
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ROT_FREQ``
+          - 
+          - normal
+          - 
+    
+        * - vent_valve
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VENT_VALVE``
+          - 
+          - omitted
+          - 
+    
+        * - vent_valve_operation
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VENT_VALVE_OPERATION``
+          - 
+          - omitted
+          - 
+    
+        * - vent_valve_delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VENT_VALVE_DELAY``
+          - 
+          - omitted
+          - 
+    
+        * - vent_valve_raw
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VENT_VALVE_RAW``
+          - 
+          - omitted
+          - 
+    
+        * - pump_current
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PUMP_CURRENT_RBV``
+          - 
+          - omitted
+          - 
+    
+        * - pump_voltage
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PUMP_VOLTAGE_RBV``
+          - 
+          - normal
+          - 
+    
+        * - pump_power
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PUMP_POWER_RBV``
+          - 
+          - normal
+          - 
+    
+        * - pump_drive_freq
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PUMP_DRIVE_FREQ_RBV``
+          - 
+          - normal
+          - 
+    
+        * - pump_temp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PUMP_TEMP_RBV``
+          - 
+          - normal
+          - 
+    
+        * - pump_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PUMP_STATUS_RBV``
+          - 
+          - normal
+          - 
+    
+        * - pump_error
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PUMP_ERROR_RBV``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

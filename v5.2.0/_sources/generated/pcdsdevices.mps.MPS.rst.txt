@@ -1,0 +1,77 @@
+﻿pcdsdevices.mps.MPS
+===================
+
+.. currentmodule:: pcdsdevices.mps
+
+.. autoclass:: MPS
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - fault
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``_MPSC``
+          - 
+          - hinted
+          - 
+    
+        * - bypass
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``_BYPS``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: SUB_FAULT_CH
+    .. autoattribute:: bypassed
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: faulted
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: tripped
+    
+    

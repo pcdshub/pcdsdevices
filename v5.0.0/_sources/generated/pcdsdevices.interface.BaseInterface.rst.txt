@@ -1,0 +1,23 @@
+﻿pcdsdevices.interface.BaseInterface
+===================================
+
+.. currentmodule:: pcdsdevices.interface
+
+.. autoclass:: BaseInterface
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: status
+    
+    
+
+    
+    
+    

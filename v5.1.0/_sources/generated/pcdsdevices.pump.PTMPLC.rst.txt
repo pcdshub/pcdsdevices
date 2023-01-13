@@ -1,0 +1,161 @@
+﻿pcdsdevices.pump.PTMPLC
+=======================
+
+.. currentmodule:: pcdsdevices.pump
+
+.. autoclass:: PTMPLC
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - switch_pump_on
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:RUN_SW``
+          - 
+          - normal
+          - 
+    
+        * - reset_fault
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:RST_SW``
+          - 
+          - normal
+          - 
+    
+        * - run_do
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RUN_DO_RBV``
+          - 
+          - normal
+          - 
+    
+        * - pump_at_speed
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AT_SPD_RBV``
+          - 
+          - normal
+          - 
+    
+        * - pump_accelerating
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ACCEL_RBV``
+          - 
+          - normal
+          - 
+    
+        * - pump_speed
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SPEED_RBV``
+          - 
+          - normal
+          - 
+    
+        * - fault
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FAULT_RBV``
+          - 
+          - normal
+          - 
+    
+        * - warn
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:WARN_RBV``
+          - 
+          - normal
+          - 
+    
+        * - alarm
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ALARM_RBV``
+          - 
+          - normal
+          - 
+    
+        * - backingpressure_sp
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:BP_SP``
+          - 
+          - config
+          - 
+    
+        * - inletpressure_sp
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:IP_SP``
+          - 
+          - config
+          - 
+    
+        * - interlock_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ILK_OK_RBV``
+          - interlock  is ok when true
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

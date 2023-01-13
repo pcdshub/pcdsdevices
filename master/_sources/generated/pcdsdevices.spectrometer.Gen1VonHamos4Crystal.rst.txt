@@ -1,0 +1,105 @@
+﻿pcdsdevices.spectrometer.Gen1VonHamos4Crystal
+=============================================
+
+.. currentmodule:: pcdsdevices.spectrometer
+
+.. autoclass:: Gen1VonHamos4Crystal
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - common_yaw
+          - :class:`~pcdsdevices.epics_motor.EpicsMotorInterface`
+          - ``:01``
+          - 
+          - normal
+          - 
+    
+        * - cr1
+          - :class:`~pcdsdevices.spectrometer.Gen1VonHamosCrystal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - cr2
+          - :class:`~pcdsdevices.spectrometer.Gen1VonHamosCrystal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - cr3
+          - :class:`~pcdsdevices.spectrometer.Gen1VonHamosCrystal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - cr4
+          - :class:`~pcdsdevices.spectrometer.Gen1VonHamosCrystal`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

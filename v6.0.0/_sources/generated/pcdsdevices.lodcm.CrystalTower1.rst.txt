@@ -1,0 +1,261 @@
+﻿pcdsdevices.lodcm.CrystalTower1
+===============================
+
+.. currentmodule:: pcdsdevices.lodcm
+
+.. autoclass:: CrystalTower1
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - z1 (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:04``
+          - LOM Xtal1 Z
+          - normal
+          - 
+    
+        * - x1 (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:05``
+          - LOM Xtal1 X
+          - normal
+          - 
+    
+        * - y1 (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:06``
+          - LOM Xtal1 Y
+          - normal
+          - 
+    
+        * - th1 (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:07``
+          - LOM Xtal1 Theta
+          - normal
+          - 
+    
+        * - chi1 (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:08``
+          - LOM Xtal1 Chi
+          - normal
+          - 
+    
+        * - h1n (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:09``
+          - LOM Xtal1 Hn
+          - normal
+          - 
+    
+        * - h1p (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:20``
+          - LOM Xtal1 Hp
+          - normal
+          - 
+    
+        * - h1n_state
+          - :class:`~pcdsdevices.lodcm.H1N`
+          - ``:H1N``
+          - 
+          - hinted
+          - 
+    
+        * - y1_state
+          - :class:`~pcdsdevices.lodcm.Y1`
+          - ``:Y1``
+          - 
+          - normal
+          - 
+    
+        * - chi1_state
+          - :class:`~pcdsdevices.lodcm.CHI1`
+          - ``:CHI1``
+          - 
+          - normal
+          - 
+    
+        * - diamond_reflection
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:T1C:REF``
+          - Tower 1 Diamond crystal reflection
+          - normal
+          - 
+    
+        * - silicon_reflection
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:T1Si:REF``
+          - Tower 1 Silicon crystal reflection
+          - normal
+          - 
+    
+        * - x1C (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          - X1 motor offset for C [mm]
+          - normal
+          - 
+    
+        * - x1Si (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          - X1 motor offset for Si [mm]
+          - normal
+          - 
+    
+        * - y1C (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - Y1 motor offset for C [mm]
+          - normal
+          - 
+    
+        * - y1Si (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - Y1 motor offset for Si [mm]
+          - normal
+          - 
+    
+        * - chi1C (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - Chi 1 motor offset for C [deg]
+          - normal
+          - 
+    
+        * - chi1Si (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - Chi 1 motor offset for Si [deg]
+          - normal
+          - 
+    
+        * - h1nC (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - H1n motor offset for C [mm]
+          - normal
+          - 
+    
+        * - h1nSi (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - H1n motor offset for Si [mm]
+          - normal
+          - 
+    
+        * - h1pC (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          - H1p motor offset for C [mm]
+          - normal
+          - 
+    
+        * - h1pSi (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          - H1p motor offset for Si [mm]
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_material
+    .. automethod:: get_reflection
+    .. automethod:: is_diamond
+    .. automethod:: is_silicon
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

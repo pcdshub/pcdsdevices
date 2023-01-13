@@ -1,0 +1,164 @@
+﻿pcdsdevices.mpod.MPODChannelHV
+==============================
+
+.. currentmodule:: pcdsdevices.mpod
+
+.. autoclass:: MPODChannelHV
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - voltage
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GetVoltageMeasurement``
+          - MPOD Channel Voltage Measurement [V]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod.MPODChannel`
+    
+        * - max_voltage
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GetMaxVoltage``
+          - MPOD Channel Maximum Voltage [V]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod.MPODChannel`
+    
+        * - terminal_voltage
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GetTerminalVoltageMeasurement``
+          - MPOD Terminal Voltage [V]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod.MPODChannel`
+    
+        * - current
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GetCurrentMeasurement``
+          - MPOD Channel Current Measurement [A]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod.MPODChannel`
+    
+        * - max_current
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GetMaxCurrent``
+          - MPOD Channel Max Current [A]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod.MPODChannel`
+    
+        * - temperature
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GetTemperature``
+          - MPOD Temperature [C]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod.MPODChannel`
+    
+        * - status_string
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GetStatusString``
+          - MPOD Channel Status String
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod.MPODChannel`
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GetSwitch``
+          - MPOD Channel State [Off/On/Reset/EmerOff/ClrEvnt]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod.MPODChannel`
+    
+        * - voltage_high_limit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SetVoltage.DRVH``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod.MPODChannel`
+    
+        * - voltage_rise_rate (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self._card_prefix}:GetVoltageRiseRate``
+          - MPOD Channel Voltage Rise Rate [V/sec]
+          - normal
+          - 
+    
+        * - voltage_fall_rate (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self._card_prefix}:GetVoltageFallRate``
+          - MPOD Channel Set Voltage Fall Rate [V/sec]
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: clr_evnt
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: emer_off
+    .. automethod:: get
+    .. automethod:: get_max_voltage
+    .. automethod:: off
+    .. automethod:: on
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: reset
+    .. automethod:: set_current
+    .. automethod:: set_voltage
+    .. automethod:: set_voltage_fall_rate
+    .. automethod:: set_voltage_rise_rate
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

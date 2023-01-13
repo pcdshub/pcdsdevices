@@ -1,0 +1,98 @@
+﻿pcdsdevices.state.TwinCATStateConfigAll
+=======================================
+
+.. currentmodule:: pcdsdevices.state
+
+.. autoclass:: TwinCATStateConfigAll
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - state01
+          - :class:`~pcdsdevices.state.TwinCATStateConfigOne`
+          - ``:01``
+          - 
+          - omitted
+          - 
+    
+        * - state02
+          - :class:`~pcdsdevices.state.TwinCATStateConfigOne`
+          - ``:02``
+          - 
+          - omitted
+          - 
+    
+        * - state03
+          - :class:`~pcdsdevices.state.TwinCATStateConfigOne`
+          - ``:03``
+          - 
+          - omitted
+          - 
+    
+        * - state04
+          - :class:`~pcdsdevices.state.TwinCATStateConfigOne`
+          - ``:04``
+          - 
+          - omitted
+          - 
+    
+        * - state05
+          - :class:`~pcdsdevices.state.TwinCATStateConfigOne`
+          - ``:05``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

@@ -1,0 +1,178 @@
+﻿pcdsdevices.sequencer.EventSequencer
+====================================
+
+.. currentmodule:: pcdsdevices.sequencer
+
+.. autoclass:: EventSequencer
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - play_control
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PLYCTL``
+          - 
+          - omitted
+          - 
+    
+        * - sequence_length
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:LEN``
+          - 
+          - config
+          - 
+    
+        * - current_step
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CURSTP``
+          - 
+          - normal
+          - 
+    
+        * - play_count
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PLYCNT``
+          - 
+          - normal
+          - 
+    
+        * - total_play_count
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TPLCNT``
+          - 
+          - normal
+          - 
+    
+        * - play_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PLSTAT``
+          - 
+          - normal
+          - 
+    
+        * - play_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PLYMOD``
+          - 
+          - config
+          - 
+    
+        * - sync_marker
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYNCMARKER``
+          - 
+          - config
+          - 
+    
+        * - next_sync
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SYNCNEXTTICK``
+          - 
+          - config
+          - 
+    
+        * - pulse_req
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BEAMPULSEREQ``
+          - 
+          - config
+          - 
+    
+        * - rep_count
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:REPCNT``
+          - 
+          - config
+          - 
+    
+        * - sequence_owner
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:HUTCH_NAME``
+          - 
+          - omitted
+          - 
+    
+        * - sequence
+          - :class:`~pcdsdevices.sequencer.EventSequence`
+          - 
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: collect
+    .. automethod:: collect_tables
+    .. automethod:: complete
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: describe_collect
+    .. automethod:: get
+    .. automethod:: kickoff
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: start
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

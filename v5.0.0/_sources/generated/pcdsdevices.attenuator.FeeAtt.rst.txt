@@ -1,0 +1,249 @@
+﻿pcdsdevices.attenuator.FeeAtt
+=============================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: FeeAtt
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - setpoint
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RDES``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBase`
+    
+        * - readback
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RACT``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBase`
+    
+        * - actuate
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GO``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBase`
+    
+        * - energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ETOA.E``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBase`
+    
+        * - trans_ceil
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:R_CEIL``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBase`
+    
+        * - trans_floor
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:R_FLOOR``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBase`
+    
+        * - user_energy
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:EDES``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBase`
+    
+        * - eget_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:EACT.SCAN``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBase`
+    
+        * - calcpend
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.attenuator.AttBase`
+    
+        * - filter1 (FCpt)
+          - :class:`~pcdsdevices.attenuator.FeeFilter`
+          - ``{self._filter_prefix}1``
+          - 
+          - normal
+          - 
+    
+        * - filter2 (FCpt)
+          - :class:`~pcdsdevices.attenuator.FeeFilter`
+          - ``{self._filter_prefix}2``
+          - 
+          - normal
+          - 
+    
+        * - filter3 (FCpt)
+          - :class:`~pcdsdevices.attenuator.FeeFilter`
+          - ``{self._filter_prefix}3``
+          - 
+          - normal
+          - 
+    
+        * - filter4 (FCpt)
+          - :class:`~pcdsdevices.attenuator.FeeFilter`
+          - ``{self._filter_prefix}4``
+          - 
+          - normal
+          - 
+    
+        * - filter5 (FCpt)
+          - :class:`~pcdsdevices.attenuator.FeeFilter`
+          - ``{self._filter_prefix}5``
+          - 
+          - normal
+          - 
+    
+        * - filter6 (FCpt)
+          - :class:`~pcdsdevices.attenuator.FeeFilter`
+          - ``{self._filter_prefix}6``
+          - 
+          - normal
+          - 
+    
+        * - filter7 (FCpt)
+          - :class:`~pcdsdevices.attenuator.FeeFilter`
+          - ``{self._filter_prefix}7``
+          - 
+          - normal
+          - 
+    
+        * - filter8 (FCpt)
+          - :class:`~pcdsdevices.attenuator.FeeFilter`
+          - ``{self._filter_prefix}8``
+          - 
+          - normal
+          - 
+    
+        * - filter9 (FCpt)
+          - :class:`~pcdsdevices.attenuator.FeeFilter`
+          - ``{self._filter_prefix}9``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: insert
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: set
+    .. automethod:: set_energy
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate_value
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: done
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: num_att
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    

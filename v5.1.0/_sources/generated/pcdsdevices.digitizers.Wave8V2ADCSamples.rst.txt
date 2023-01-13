@@ -1,0 +1,126 @@
+﻿pcdsdevices.digitizers.Wave8V2ADCSamples
+========================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2ADCSamples
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - sample0
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Sample[0]``
+          - 
+          - config
+          - 
+    
+        * - sample1
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Sample[1]``
+          - 
+          - config
+          - 
+    
+        * - sample2
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Sample[2]``
+          - 
+          - config
+          - 
+    
+        * - sample3
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Sample[3]``
+          - 
+          - config
+          - 
+    
+        * - sample4
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Sample[4]``
+          - 
+          - config
+          - 
+    
+        * - sample5
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Sample[5]``
+          - 
+          - config
+          - 
+    
+        * - sample6
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Sample[6]``
+          - 
+          - config
+          - 
+    
+        * - sample7
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Sample[7]``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

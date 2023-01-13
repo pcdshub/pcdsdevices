@@ -1,0 +1,1872 @@
+﻿pcdsdevices.areadetector.plugins.HDF5FileStore
+==============================================
+
+.. currentmodule:: pcdsdevices.areadetector.plugins
+
+.. autoclass:: HDF5FileStore
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - auto_increment (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AutoIncrement``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - auto_save (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AutoSave``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - capture (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Capture``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - delete_driver_file (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DeleteDriverFile``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - file_format (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FileFormat``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - file_name (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FileName``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - file_number (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FileNumber``
+          - [FileNumber r/w longout] File number
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - file_path (ADComponent)
+          - :class:`~ophyd.areadetector.paths.EpicsPathSignal`
+          - ``FilePath``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - file_path_exists (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``FilePathExists_RBV``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - file_template (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FileTemplate``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - file_write_mode (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FileWriteMode``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - full_file_name (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``FullFileName_RBV``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - num_capture (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumCapture``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - num_captured (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``NumCaptured_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - read_file (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ReadFile``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - write_file (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``WriteFile``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - write_message (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``WriteMessage``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - write_status (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``WriteStatus``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - configuration_names
+          - :class:`~ophyd.signal.ArrayAttributeSignal`
+          - 
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - array_counter (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArrayCounter``
+          - [ArrayCounter r/w longout] Counter that increments by 1 each time an NDArray callback is processed
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - array_rate (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArrayRate_RBV``
+          - [ArrayRate_RBV r/o calc] Rate (Hz) at which ArrayCounter is incrementing. Computed in database.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - asyn_io (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``AsynIO``
+          - [AsynIO N/A asyn] asyn record to control debugging (asynTrace)
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - nd_attributes_file (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NDAttributesFile``
+          - [NDAttributesFile r/w waveform]
+              The name of an XML file defining the PVAttributes and paramAttributes to be added
+              to each NDArray by this plugin. The format of the XML file is described in the documentation
+              for asynNDArrayDriver::readNDAttributesFile().
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - pool_alloc_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolAllocBuffers``
+          - [PoolAllocBuffers r/o longin] The number of NDArrays this plugin has currently allocated.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - pool_free_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolFreeBuffers``
+          - [PoolFreeBuffers r/o longin] The number of free NDArrays this plugin has in its NDArrayPool.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - pool_max_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolMaxBuffers``
+          - [PoolMaxBuffers r/o longin] The maximum number of NDArrays this plugin is allowed to allocate.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - pool_max_mem (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolMaxMem``
+          - [PoolMaxMem r/o ai] The maximum amount of NDArrayPool memory this plugin is allowed to allocate.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - pool_used_buffers (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolUsedBuffers``
+          - [PoolUsedBuffers N/A calc]
+              The number of used NDArrays this plugin has in its NDArrayPool. Calculated from
+              PoolAllocBuffers and PoolFreeBuffers.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - pool_used_mem (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PoolUsedMem``
+          - [PoolUsedMem r/o ai] The actual amount of NDArrayPool memory this plugin is currently using.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - port_name (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PortName_RBV``
+          - [PortName_RBV r/o stringin] asyn port name
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - asyn_pipeline_config
+          - :class:`~ophyd.signal.ArrayAttributeSignal`
+          - 
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - width (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize0_RBV``
+          - [ArraySize0_RBV r/o longin] First dimension of NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - height (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize1_RBV``
+          - [ArraySize1_RBV r/o longin] Second dimension of NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - depth (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize2_RBV``
+          - [ArraySize2_RBV r/o longin] Third dimension of NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - array_size (DDC)
+          - :class:`~ophyd.device.ArraySize`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - bayer_pattern (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``BayerPattern_RBV``
+          - [BayerPattern_RBV r/o mbbi] BayerPattern of last NDArray callback data (NDBayerPattern_t).
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - blocking_callbacks (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BlockingCallbacks``
+          - [BlockingCallbacks r/w bo]
+              0 = callbacks from the driver do not block; the NDArray data is put on a queue and
+              the callback processes in its own thread.
+
+              1 = callbacks from the driver block; the callback processes in the driver callback
+              thread.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - color_mode (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ColorMode``
+          - 0=Mono 1=Bayer 2=RGB1 3=RGB2 4=RGB3 5=YUV444 6=YUV422 7=YUV421
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - data_type (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DataType``
+          - 0=Int8 1=UInt8 2=Int16 3=UInt16 4=Int32 5=UInt32 6=Float32 7=Float64
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - dim0_sa (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim0SA``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - dim1_sa (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim1SA``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - dim2_sa (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Dim2SA``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - dim_sa (DDC)
+          - :class:`~ophyd.device.DimSa`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - dimensions (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Dimensions``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - dropped_arrays (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DroppedArrays``
+          - [DroppedArrays r/w longout]
+              Counter that increments by 1 each time an NDArray callback occurs when NDPluginDriverBlockingCallbacks=0
+              and the plugin driver queue is full, so the callback cannot be processed.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - enable (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``EnableCallbacks``
+          - [EnableCallbacks r/w bo]
+              Enable (1) or disable (0) callbacks from the driver to this plugin. If callbacks
+              are disabled then the plugin will normally be idle and consume no CPU resources.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - min_callback_time (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``MinCallbackTime``
+          - [MinCallbackTime r/w ao]
+              The minimum time in seconds between calls to processCallbacks. Any callbacks occuring
+              before this minimum time has elapsed will be ignored. 0 means no minimum time, i.e.
+              process all callbacks.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - nd_array_address (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NDArrayAddress``
+          - [NDArrayAddress r/w longout]
+              asyn port address for NDArray driver that will make callbacks to this plugin. This
+              address can be changed at run time, connecting the plugin to a different address
+              in the NDArray driver.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - nd_array_port (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NDArrayPort``
+          - [NDArrayPort r/w stringout]
+              asyn port name for NDArray driver that will make callbacks to this plugin. This
+              port can be changed at run time, connecting the plugin to a different NDArray driver.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - ndimensions (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NDimensions``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - plugin_type (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PluginType_RBV``
+          - [PluginType_RBV r/o stringin] A string describing the plugin type.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - queue_free (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueFree``
+          - [QueueFree r/o longin] The number of free queue elements.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - queue_free_low (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueFreeLow``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - queue_size (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``QueueSize``
+          - [QueueSize r/o longin] The total queue size for callbacks when BlockingCallbacks=0.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - queue_use (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUse``
+          - [QueueUse r/o calc] The number of used queue elements.
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - queue_use_high (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUseHIGH``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - queue_use_hihi (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``QueueUseHIHI``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - time_stamp (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``TimeStamp_RBV``
+          - [TimeStamp_RBV r/o ai] Time stamp number of last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - unique_id (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``UniqueId_RBV``
+          - [UniqueId_RBV r/o longin] Unique ID number of last NDArray callback data
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - boundary_align (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BoundaryAlign``
+          - [BoundaryAlign r/w longout]
+              Set the disk boundary alignment in bytes. This parameter can be used to optimise
+              file I/O performance on some file systems. For instance on the Lustre file system
+              where the it is optimal to align data to the 'stripe size' (default 1MB).
+
+              This parameter applies to all datasets in the file.
+
+              Setting this parameter to 0 disables use of disk boundary alignment.
+
+              Warning: setting this parameter to a larger size than the size of a single chunk
+                will cause datafiles to grow larger than the actual contained data.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - boundary_threshold (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BoundaryThreshold``
+          - [BoundaryThreshold r/w longout]
+              Set a minimum size (bytes) of chunk or dataset where boundary alignment is to be
+              applied. This can be used to filter out small datasets like NDAttributes from the
+              boundary alignment as it could blow up the file size.
+
+              Setting this parameter to 0 will disable the use of boundary alignment
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - compression (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Compression``
+          - [Compression r/w mbbo] Select or switch off compression filter
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - data_bits_offset (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DataBitsOffset``
+          - [DataBitsOffset r/w longout] N-bit compression filter: dataword bit-offset in pixel
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - extra_dim_name (DDC)
+          - :class:`~ophyd.device.ExtraDimName`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - extra_dim_size (DDC)
+          - :class:`~ophyd.device.ExtraDimSize`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - io_speed (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``IOSpeed``
+          - [IOSpeed r/o ai] Overall IO write speed in megabit per second from first frame to file closed
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - num_col_chunks (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumColChunks``
+          - [NumColChunks r/w longout]
+              Configure HDF5 "chunking" to approriate size for the filesystem: sets
+              number of columns to use per chunk
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - num_data_bits (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumDataBits``
+          - [NumDataBits r/w longout] N-bit compression filter: number of data bits per pixel
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - num_extra_dims (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumExtraDims``
+          - [NumExtraDims r/w mbbo] Number of extra dimensions [0..2]
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - num_frames_chunks (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumFramesChunks``
+          - [NumFramesChunks r/w longout]
+              Configure HDF5 "chunking" to approriate size for the filesystem: sets
+              number of frames to use per chunk. For a 2D image, setting this parameter > 1 essentially
+              implies using in-memory cache as HDF5 only writes full chunks to disk.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - num_frames_flush (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumFramesFlush``
+          - [NumFramesFlush r/w longout]
+              Flush the file metadata to disk every N'th frame. Image data is written to disk
+              on every write operation, but HDF5 internal metadata to describe the data layout
+              and indices is normally only written at close time.
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - num_row_chunks (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumRowChunks``
+          - [NumRowChunks r/w longout]
+              Configure HDF5 "chunking" to approriate size for the filesystem: sets
+              number of rows to use per chunk
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - run_time (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``RunTime``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - szip_num_pixels (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SZipNumPixels``
+          - [SZipNumPixels r/w longout] szip compression filter: number of pixels in filter [1..32]
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - store_attr (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``StoreAttr``
+          - 0='No' 1='Yes'
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - store_perform (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``StorePerform``
+          - 0='No' 1='Yes'
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - zlevel (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ZLevel``
+          - [ZLevel r/w longout] zlib compression filter: compression level [1..9]
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - epics_ts_sec (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``EpicsTSSec_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - epics_ts_nsec (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``EpicsTSNsec_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - lazy_open (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``LazyOpen``
+          - 0='No' 1='Yes'
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - xml_error_msg (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``XMLErrorMsg_RBV``
+          - [XMLErrorMsg_RBV r/o waveform] XML parser error message
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - xml_file_name (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``XMLFileName``
+          - [XMLFileName r/w waveform]
+              XML filename, pointing to an XML HDF5 Layout Definition
+              This waveform also supports loading raw XML code directly; up to a maximum of 1MB
+              long (NELM=1MB)
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - xml_valid (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``XMLValid_RBV``
+          - 0='No' 1='Yes'
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - ad_core_version (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ADCoreVersion_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - array_callbacks (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArrayCallbacks``
+          - 0='Disable' 1='Enable'
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - array_size_int (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize_RBV``
+          - [ArraySize_RBV r/o longin] Total size of the array data in bytes
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - array_size_xyz (DDC)
+          - :class:`~ophyd.device.ArraySizeXyz`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - create_directory (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``CreateDirectory``
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - temp_suffix (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``TempSuffix``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - nd_attribute_chunk (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NDAttributeChunk``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - dim_att_datasets (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DimAttDatasets``
+          - 0='No' 1='Yes'
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - fill_value (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``FillValue``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - position_mode (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PositionMode``
+          - 0='Off' 1='On'
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - swmr_active (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SWMRActive_RBV``
+          - 0='Off' 1='Active'
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - swmr_cb_counter (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SWMRCbCounter_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - swmr_mode (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SWMRMode``
+          - 0='Off' 1='On'
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - swmr_supported (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SWMRSupported_RBV``
+          - 0='Not Supported' 1='Supported'
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - extra_dim_chunk (DDC)
+          - :class:`~ophyd.device.ExtraDimChunk`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - pos_index_dim (DDC)
+          - :class:`~ophyd.device.PosIndexDim`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - pos_name_dim (DDC)
+          - :class:`~ophyd.device.PosNameDim`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - driver_version (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``DriverVersion_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - execution_time (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ExecutionTime_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - array_size_all (DDC)
+          - :class:`~ophyd.device.ArraySizeAll`
+          - (See below)
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - disordered_arrays (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DisorderedArrays``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - dropped_output_arrays (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DroppedOutputArrays``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - max_threads (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxThreads_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - nd_attributes_macros (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NDAttributesMacros``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - nd_attributes_status (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``NDAttributesStatus``
+          - 0='Attributes file OK' 1='File not found' 2='XML syntax error' 3='Macro substitution error'
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - num_threads (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumThreads``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - process_plugin (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``ProcessPlugin``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - sort_free (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SortFree``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - sort_free_low (ADComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``SortFreeLow``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - sort_mode (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SortMode``
+          - 0=Unsorted 1=Sorted
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - sort_size (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SortSize``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - sort_time (ADComponent)
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SortTime``
+          - 
+          - normal
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: HDF5FileStore.array_size (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - depth
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize2_RBV``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - height
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize1_RBV``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - width
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySize0_RBV``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: HDF5FileStore.dim_sa (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - dim0_sa
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Dim0SA``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - dim1_sa
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Dim1SA``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - dim2_sa
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Dim2SA``
+            
+          - 
+          - config
+          - Inherited from :class:`~ophyd.areadetector.plugins.HDF5Plugin_V31`
+    
+        * - dim3_sa
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Dim3SA``
+            
+          - 
+          - config
+          - 
+    
+        * - dim4_sa
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Dim4SA``
+            
+          - 
+          - config
+          - 
+    
+        * - dim5_sa
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Dim5SA``
+            
+          - 
+          - config
+          - 
+    
+        * - dim6_sa
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Dim6SA``
+            
+          - 
+          - config
+          - 
+    
+        * - dim7_sa
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Dim7SA``
+            
+          - 
+          - config
+          - 
+    
+        * - dim8_sa
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Dim8SA``
+            
+          - 
+          - config
+          - 
+    
+        * - dim9_sa
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Dim9SA``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: HDF5FileStore.extra_dim_name (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - name_3
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ExtraDimName3_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - name_4
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ExtraDimName4_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - name_5
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ExtraDimName5_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - name_6
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ExtraDimName6_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - name_7
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ExtraDimName7_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - name_8
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ExtraDimName8_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - name_9
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ExtraDimName9_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - name_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ExtraDimNameX_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - name_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ExtraDimNameY_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - name_n
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ExtraDimNameN_RBV``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    .. list-table:: HDF5FileStore.extra_dim_size (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - size_3
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimSize3``
+            
+          - 
+          - config
+          - 
+    
+        * - size_4
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimSize4``
+            
+          - 
+          - config
+          - 
+    
+        * - size_5
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimSize5``
+            
+          - 
+          - config
+          - 
+    
+        * - size_6
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimSize6``
+            
+          - 
+          - config
+          - 
+    
+        * - size_7
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimSize7``
+            
+          - 
+          - config
+          - 
+    
+        * - size_8
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimSize8``
+            
+          - 
+          - config
+          - 
+    
+        * - size_9
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimSize9``
+            
+          - 
+          - config
+          - 
+    
+        * - size_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimSizeX``
+            
+          - 
+          - config
+          - 
+    
+        * - size_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimSizeY``
+            
+          - 
+          - config
+          - 
+    
+        * - size_n
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimSizeN``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: HDF5FileStore.array_size_xyz (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - array_size_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySizeX_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - array_size_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySizeY_RBV``
+            
+          - 
+          - config
+          - 
+    
+        * - array_size_z
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``ArraySizeZ_RBV``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: HDF5FileStore.extra_dim_chunk (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - chunk_3
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimChunk3``
+            
+          - 
+          - config
+          - 
+    
+        * - chunk_4
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimChunk4``
+            
+          - 
+          - config
+          - 
+    
+        * - chunk_5
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimChunk5``
+            
+          - 
+          - config
+          - 
+    
+        * - chunk_6
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimChunk6``
+            
+          - 
+          - config
+          - 
+    
+        * - chunk_7
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimChunk7``
+            
+          - 
+          - config
+          - 
+    
+        * - chunk_8
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimChunk8``
+            
+          - 
+          - config
+          - 
+    
+        * - chunk_9
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimChunk9``
+            
+          - 
+          - config
+          - 
+    
+        * - chunk_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimChunkX``
+            
+          - 
+          - config
+          - 
+    
+        * - chunk_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ExtraDimChunkY``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    .. list-table:: HDF5FileStore.pos_index_dim (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - dim_3
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosIndexDim3``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_4
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosIndexDim4``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_5
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosIndexDim5``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_6
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosIndexDim6``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_7
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosIndexDim7``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_8
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosIndexDim8``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_9
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosIndexDim9``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosIndexDimX``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosIndexDimY``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_n
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosIndexDimN``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    .. list-table:: HDF5FileStore.pos_name_dim (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - dim_3
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosNameDim3``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_4
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosNameDim4``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_5
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosNameDim5``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_6
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosNameDim6``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_7
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosNameDim7``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_8
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosNameDim8``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_9
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosNameDim9``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosNameDimX``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosNameDimY``
+            
+          - 
+          - config
+          - 
+    
+        * - dim_n
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``PosNameDimN``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: HDF5FileStore.array_size_all (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - array_size0
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArraySize0``
+            
+          - 
+          - config
+          - 
+    
+        * - array_size1
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArraySize1``
+            
+          - 
+          - config
+          - 
+    
+        * - array_size2
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArraySize2``
+            
+          - 
+          - config
+          - 
+    
+        * - array_size3
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArraySize3``
+            
+          - 
+          - config
+          - 
+    
+        * - array_size4
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArraySize4``
+            
+          - 
+          - config
+          - 
+    
+        * - array_size5
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArraySize5``
+            
+          - 
+          - config
+          - 
+    
+        * - array_size6
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArraySize6``
+            
+          - 
+          - config
+          - 
+    
+        * - array_size7
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArraySize7``
+            
+          - 
+          - config
+          - 
+    
+        * - array_size8
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArraySize8``
+            
+          - 
+          - config
+          - 
+    
+        * - array_size9
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ArraySize9``
+            
+          - 
+          - config
+          - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: collect_asset_docs
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: disable_on_stage
+    .. automethod:: enable_on_stage
+    .. automethod:: ensure_blocking
+    .. automethod:: ensure_nonblocking
+    .. automethod:: find_signal
+    .. automethod:: generate_datum
+    .. automethod:: get
+    .. automethod:: get_asyn_digraph
+    .. automethod:: get_asyn_port_dictionary
+    .. automethod:: get_frames_per_point
+    .. automethod:: get_plugin_by_asyn_port
+    .. automethod:: make_filename
+    .. automethod:: missing_plugins
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: validate_asyn_ports
+    .. automethod:: visualize_asyn_digraph
+    .. automethod:: warmup
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: ad_root
+    .. autoattribute:: array_pixels
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: file_number_sync
+    .. autoattribute:: file_number_write
+    .. autoattribute:: fs_root
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: read_path_template
+    .. autoattribute:: reg_root
+    .. autoattribute:: source_plugin
+    .. autoattribute:: subscriptions
+    .. autoattribute:: write_path_template
+    
+    

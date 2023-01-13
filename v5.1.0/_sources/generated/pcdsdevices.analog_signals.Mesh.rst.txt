@@ -1,0 +1,77 @@
+﻿pcdsdevices.analog\_signals.Mesh
+================================
+
+.. currentmodule:: pcdsdevices.analog_signals
+
+.. autoclass:: Mesh
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - write_sig (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}:ao1:{self.sp_ch}``
+          - 
+          - normal
+          - 
+    
+        * - read_sig (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.prefix}:ai1:{self.rb_ch}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_mesh_voltage
+    .. automethod:: get_raw_mesh_voltage
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set_mesh_voltage
+    .. automethod:: set_rel_mesh_voltage
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak_mesh_voltage
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

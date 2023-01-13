@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signal Classes &mdash; PCDS Devices 7.1.0+0.g2dfb218.dirty documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/_static/theme_overrides.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Base Classes" href="base_classes.html" />
+    <link rel="prev" title="pcdsdevices.wfs.WaveFrontSensorTarget" href="generated/pcdsdevices.wfs.WaveFrontSensorTarget.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> PCDS Devices
+          </a>
+              <div class="version">
+                7.1.0+0.g2dfb218.dirty
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Device Types</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Signal Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#aggregatesignal">AggregateSignal</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#why-not-just-use-self-parent-cpt-get">Why not just use self.parent.cpt.get()?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#avgsignal">AvgSignal</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pvstatesignal">PVStateSignal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pytmcsignal">PytmcSignal</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pytmcsignal-for-outputs">PytmcSignal for Outputs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pytmcsignal-for-inputs">PytmcSignal for Inputs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#multiderivedsignal-and-multiderivedsignalro">MultiDerivedSignal and MultiDerivedSignalRO</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-read-only-multiderivedsignalro">A read-only MultiDerivedSignalRO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#a-read-write-multiderivedsignal">A read-write MultiDerivedSignal</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#unitconversionderivedsignal">UnitConversionDerivedSignal</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#unitconversionderivedsignal-example">UnitConversionDerivedSignal Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-signal-types">Advanced Signal Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fake-signal-types">Fake Signal Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#internalsignal">InternalSignal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#notepadlinkedsignal">NotepadLinkedSignal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#notimplementedsignal">NotImplementedSignal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#signaleditmd-and-epicssignaleditmd-and-epicssignalroeditmd">SignalEditMD, and EpicsSignalEditMD and EpicsSignalROEditMD</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="base_classes.html">Base Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sim_types.html">Simulated Devices</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="mv.html">Shortcuts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="presets.html">Preset Positions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tab.html">IPython Tab Curation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ui.html">UI Templates</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Developer Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="releases.html">Release History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upcoming_changes.html">Upcoming Changes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PCDS Devices</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Signal Classes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/signals.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="signal-classes">
+<h1>Signal Classes<a class="headerlink" href="#signal-classes" title="Permalink to this heading"></a></h1>
+<section id="aggregatesignal">
+<h2>AggregateSignal<a class="headerlink" href="#aggregatesignal" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="generated/pcdsdevices.signal.AggregateSignal.html#pcdsdevices.signal.AggregateSignal" title="pcdsdevices.signal.AggregateSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">AggregateSignal</span></code></a> is a signal class that allows you to calculate a
+readback value from multiple other signals.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>While this class requires subclassing in order to use, see also the
+<a class="reference internal" href="generated/pcdsdevices.signal.MultiDerivedSignal.html#pcdsdevices.signal.MultiDerivedSignal" title="pcdsdevices.signal.MultiDerivedSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiDerivedSignal</span></code></a> described below which can be more easily
+embedded in Device class hierarchies.</p>
+</div>
+<p>AggregateSignal handles configuring callbacks for you such that you will only
+need to define a single calculation function in order to use it.</p>
+<p>In your subclass, you should define a method such as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_calc_readback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The calculation method you should implement.&quot;&quot;&quot;</span>
+    <span class="c1"># Access `._signals` here to calculate your value.</span>
+    <span class="k">return</span> <span class="mf">10.0</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">_signals</span></code> attribute includes access to all signals you have defined
+in the attribute list.  You should use this dictionary in order to calculate
+the aggregated value.</p>
+<section id="why-not-just-use-self-parent-cpt-get">
+<h3>Why not just use self.parent.cpt.get()?<a class="headerlink" href="#why-not-just-use-self-parent-cpt-get" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>The AggregateSignal handles caching of values from callbacks.  It will only
+call your calculation method once everything is ready.</p></li>
+<li><p>Your signal should perform better and faster.  Network connections and EPICS
+Channel Access calls will not be necessary when using the provided cache.</p></li>
+</ul>
+</section>
+<section id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this heading"></a></h3>
+<p>The following example defines a new Signal class called <code class="docutils literal notranslate"><span class="pre">MySummingSignal</span></code>
+which will sum its sibling component values “a” “b” and “c”.  This assumes
+it’s used in a Device hierarchy with those components defined appropriately.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MySummingSignal</span><span class="p">(</span><span class="n">AggregateSignal</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_signal_by_attr_name</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_calc_readback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">sig</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">sig</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signals</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+
+<span class="k">class</span> <span class="nc">MyDevice</span><span class="p">(</span><span class="n">ophyd</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+    <span class="n">summer</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">MySummingSignal</span><span class="p">)</span>
+    <span class="c1"># summer.get() is a.get() + b.get() + c.get()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="avgsignal">
+<h2>AvgSignal<a class="headerlink" href="#avgsignal" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="generated/pcdsdevices.signal.AvgSignal.html#pcdsdevices.signal.AvgSignal" title="pcdsdevices.signal.AvgSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">AvgSignal</span></code></a> is a signal that calculates the rolling average of another
+signal.</p>
+<p>It uses ophyd subscriptions to populate a list of values of length <code class="docutils literal notranslate"><span class="pre">average</span></code>.</p>
+<section id="id1">
+<h3>Example<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<p>Acquire up to 10 data points from <code class="docutils literal notranslate"><span class="pre">raw_signal</span></code>, perform the arithmetic mean,
+and show its value in <code class="docutils literal notranslate"><span class="pre">averaged</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyDevice</span><span class="p">(</span><span class="n">ophyd</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="n">raw_signal</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">EpicsSignalRO</span><span class="p">,</span> <span class="s2">&quot;OTHER:SIGNAL&quot;</span><span class="p">)</span>
+    <span class="n">averaged</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">AvgSignal</span><span class="p">,</span> <span class="n">signal</span><span class="o">=</span><span class="s2">&quot;raw_signal&quot;</span><span class="p">,</span> <span class="n">averages</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For this setting, after 10 data points, the first data point will be
+overwritten.</p>
+</section>
+</section>
+<section id="pvstatesignal">
+<h2>PVStateSignal<a class="headerlink" href="#pvstatesignal" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="generated/pcdsdevices.signal.PVStateSignal.html#pcdsdevices.signal.PVStateSignal" title="pcdsdevices.signal.PVStateSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">PVStateSignal</span></code></a> is a signal class that implements the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PVStatePositioner</span></code> logic.  It’s part of that class hierarchy, and
+you should not have to use it yourself.</p>
+<p>It uses <a class="reference internal" href="generated/pcdsdevices.signal.AggregateSignal.html#pcdsdevices.signal.AggregateSignal" title="pcdsdevices.signal.AggregateSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">AggregateSignal</span></code></a> in order to match up attributes from the
+Device and map their values onto state positions.  A sample dictionary
+that is usually in <code class="docutils literal notranslate"><span class="pre">sig._state_logic</span></code> might be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;signal_name&quot;</span><span class="p">:</span> <span class="p">{</span>
+                   <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;OUT&quot;</span><span class="p">,</span>
+                   <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;IN&quot;</span><span class="p">,</span>
+                   <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;Unknown&quot;</span><span class="p">,</span>
+                   <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;defer&quot;</span>
+                 <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>For more information, see <a href="#id2"><span class="problematic" id="id3">:clas:`PVStatePositioner`</span></a>.</p>
+</section>
+<section id="pytmcsignal">
+<h2>PytmcSignal<a class="headerlink" href="#pytmcsignal" title="Permalink to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Use this signal class if you are using
+[pytmc](<a class="reference external" href="https://github.com/pcdshub/pytmc/">https://github.com/pcdshub/pytmc/</a>) in your device’s corresponding
+EPICS IOC.</p>
+</div>
+<p>A <a class="reference internal" href="generated/pcdsdevices.signal.PytmcSignal.html#pcdsdevices.signal.PytmcSignal" title="pcdsdevices.signal.PytmcSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">PytmcSignal</span></code></a> uses information about the pytmc convention to determine
+which signal class should be used automatically (either <a class="reference internal" href="generated/pcdsdevices.signal.PytmcSignalRW.html#pcdsdevices.signal.PytmcSignalRW" title="pcdsdevices.signal.PytmcSignalRW"><code class="xref py py-class docutils literal notranslate"><span class="pre">PytmcSignalRW</span></code></a>
+and <a class="reference internal" href="generated/pcdsdevices.signal.PytmcSignalRO.html#pcdsdevices.signal.PytmcSignalRO" title="pcdsdevices.signal.PytmcSignalRO"><code class="xref py py-class docutils literal notranslate"><span class="pre">PytmcSignalRO</span></code></a>).</p>
+<ol class="arabic simple">
+<li><p>A symbol marked as “input” (or “ro”) will have <code class="docutils literal notranslate"><span class="pre">&quot;_RBV&quot;</span></code> as a PV suffix.
+This will be mapped onto the <a class="reference internal" href="generated/pcdsdevices.signal.PytmcSignalRW.html#pcdsdevices.signal.PytmcSignalRW" title="pcdsdevices.signal.PytmcSignalRW"><code class="xref py py-class docutils literal notranslate"><span class="pre">PytmcSignalRW</span></code></a> signal class.</p></li>
+<li><p>A symbol marked as “output” (or “rw”) will <strong>both</strong> a setpoint PV and a
+readback PV, with <code class="docutils literal notranslate"><span class="pre">&quot;_RBV&quot;</span></code> as its suffix.
+This will be mapped onto the <a class="reference internal" href="generated/pcdsdevices.signal.PytmcSignalRO.html#pcdsdevices.signal.PytmcSignalRO" title="pcdsdevices.signal.PytmcSignalRO"><code class="xref py py-class docutils literal notranslate"><span class="pre">PytmcSignalRO</span></code></a> signal class.</p></li>
+</ol>
+<p>Usage examples are in the following sections.</p>
+<section id="pytmcsignal-for-outputs">
+<h3>PytmcSignal for Outputs<a class="headerlink" href="#pytmcsignal-for-outputs" title="Permalink to this heading"></a></h3>
+<p>Let’s say you have a pragma as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">attribute</span> <span class="s1">&#39;pytmc&#39;</span> <span class="o">:=</span> <span class="s1">&#39;</span>
+    <span class="n">pv</span><span class="p">:</span> <span class="n">PREFIX</span><span class="p">:</span><span class="n">fValue</span>
+    <span class="n">io</span><span class="p">:</span> <span class="n">output</span>
+<span class="s1">&#39;}</span>
+<span class="n">fValue</span><span class="p">:</span> <span class="n">LREAL</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>If found in a PLC program, this would create two top-level PVs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PREFIX:fValue</span></code> - a setpoint value the user could caput to change the value of</p></li>
+</ul>
+<p>fValue on the PLC</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PREFIX:fValue_RBV</span></code> - a “Read-Back Value” (RBV) that reflects the current
+value held in fValue on the PLC.</p></li>
+</ul>
+<p>You would use the following component to match this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyDevice</span><span class="p">(</span><span class="n">ophyd</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">ophyd</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span>
+        <span class="n">PytmcSignal</span><span class="p">,</span>
+        <span class="s2">&quot;:fValue&quot;</span><span class="p">,</span>    <span class="c1"># &lt;-- copy in &quot;:fValue&quot; from above</span>
+        <span class="n">io</span><span class="o">=</span><span class="s2">&quot;output&quot;</span><span class="p">,</span>  <span class="c1"># &lt;-- copy in &quot;output&quot; from above</span>
+        <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Something useful about the &#39;fValue&#39; signal&quot;</span>
+    <span class="p">)</span>
+
+<span class="n">dev</span> <span class="o">=</span> <span class="n">MyDevice</span><span class="p">(</span><span class="s2">&quot;PREFIX&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dev&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Once instantiated, your device will have a readable and writable
+<code class="docutils literal notranslate"><span class="pre">PytmcSignalRW</span></code> instance available from the <code class="docutils literal notranslate"><span class="pre">.value</span></code> attribute that talks
+to the PLC <code class="docutils literal notranslate"><span class="pre">fValue</span></code> symbol.</p>
+<p>The corresponding readback PV will be <code class="docutils literal notranslate"><span class="pre">PREFIX:fValue_RBV</span></code> (which you can
+check with <code class="docutils literal notranslate"><span class="pre">dev.value.pvname</span></code>) and the setpoint PV will be <code class="docutils literal notranslate"><span class="pre">PREFIX:fValue</span></code>
+(which you can check with <code class="docutils literal notranslate"><span class="pre">dev.value.setpoint_pvname</span></code>).</p>
+</section>
+<section id="pytmcsignal-for-inputs">
+<h3>PytmcSignal for Inputs<a class="headerlink" href="#pytmcsignal-for-inputs" title="Permalink to this heading"></a></h3>
+<p>Let’s say you have a pragma as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">attribute</span> <span class="s1">&#39;pytmc&#39;</span> <span class="o">:=</span> <span class="s1">&#39;</span>
+    <span class="n">pv</span><span class="p">:</span> <span class="n">PREFIX</span><span class="p">:</span><span class="n">fValue</span>
+    <span class="n">io</span><span class="p">:</span> <span class="nb">input</span>
+<span class="s1">&#39;}</span>
+<span class="n">fValue</span><span class="p">:</span> <span class="n">LREAL</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>If found in a program, this would create a single top-level PVs:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PREFIX:fValue</span></code> - a “read-back value” that reflects the current value held
+in fValue on the PLC.</p></li>
+</ul>
+<p>You would use the following component to match this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyDevice</span><span class="p">(</span><span class="n">ophyd</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">ophyd</span><span class="o">.</span><span class="n">Component</span><span class="p">(</span>
+        <span class="n">PytmcSignal</span><span class="p">,</span>
+        <span class="s2">&quot;:fValue&quot;</span><span class="p">,</span>   <span class="c1"># &lt;-- copy in &quot;:fValue&quot; from above</span>
+        <span class="n">io</span><span class="o">=</span><span class="s2">&quot;input&quot;</span><span class="p">,</span>  <span class="c1"># &lt;-- copy in &quot;input&quot; from above</span>
+        <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Something useful about the &#39;fValue&#39; signal&quot;</span>
+    <span class="p">)</span>
+
+<span class="n">dev</span> <span class="o">=</span> <span class="n">MyDevice</span><span class="p">(</span><span class="s2">&quot;PREFIX&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;dev&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Once instantiated, your device will have a read-only <code class="docutils literal notranslate"><span class="pre">PytmcSignalRO</span></code> instance
+available from the <code class="docutils literal notranslate"><span class="pre">.value</span></code> attribute that talks to the PLC <code class="docutils literal notranslate"><span class="pre">fValue</span></code>
+symbol. The corresponding PV will be <code class="docutils literal notranslate"><span class="pre">PREFIX:fValue_RBV</span></code> (which you can check
+with <code class="docutils literal notranslate"><span class="pre">dev.value.pvname</span></code>).</p>
+</section>
+</section>
+<section id="multiderivedsignal-and-multiderivedsignalro">
+<h2>MultiDerivedSignal and MultiDerivedSignalRO<a class="headerlink" href="#multiderivedsignal-and-multiderivedsignalro" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="generated/pcdsdevices.signal.MultiDerivedSignal.html#pcdsdevices.signal.MultiDerivedSignal" title="pcdsdevices.signal.MultiDerivedSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiDerivedSignal</span></code></a> and <a class="reference internal" href="generated/pcdsdevices.signal.MultiDerivedSignalRO.html#pcdsdevices.signal.MultiDerivedSignalRO" title="pcdsdevices.signal.MultiDerivedSignalRO"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiDerivedSignalRO</span></code></a> are signal
+classes that allow you to calculate a readback value from multiple other
+signals.  Optionally, you can also take a single value from the user and
+write to multiple other signals.</p>
+<p>In short, these classes represent:</p>
+<ul class="simple">
+<li><p>Multiple source signals may be used to calculate a single
+<code class="docutils literal notranslate"><span class="pre">MultiDerivedSignal</span></code> value.  The calculation method used here is
+<code class="docutils literal notranslate"><span class="pre">calculate_on_get</span></code> in either a keyword argument to the signal or a method
+in a subclass.</p></li>
+<li><p>A single <code class="docutils literal notranslate"><span class="pre">MultiDerivedSignal</span></code> value, when <code class="docutils literal notranslate"><span class="pre">set()</span></code>, may be used to write
+to those same signals. The calculation method used here is
+<code class="docutils literal notranslate"><span class="pre">calculate_on_put</span></code> in either a keyword argument to the signal or a method
+in a subclass.</p></li>
+</ul>
+<section id="a-read-only-multiderivedsignalro">
+<h3>A read-only MultiDerivedSignalRO<a class="headerlink" href="#a-read-only-multiderivedsignalro" title="Permalink to this heading"></a></h3>
+<p>This read-only example takes three signals from its parent device - “a”, “b”,
+and “c” - and calculates a single value for them.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pcdsdevices.type_hints</span> <span class="kn">import</span> <span class="n">SignalToValue</span><span class="p">,</span> <span class="n">OphydDataType</span>
+
+<span class="k">class</span> <span class="nc">MdsReadOnlyExample</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mds</span><span class="p">:</span> <span class="n">MultiDerivedSignal</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">SignalToValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">items</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="n">mds</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">MultiDerivedSignalRO</span><span class="p">,</span>
+        <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">],</span>
+        <span class="n">calculate_on_get</span><span class="o">=</span><span class="n">_on_get</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">FakeEpicsSignal</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">FakeEpicsSignal</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">FakeEpicsSignal</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">device</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">device</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">device</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">device</span><span class="o">.</span><span class="n">mds</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">6</span>
+</pre></div>
+</div>
+</section>
+<section id="a-read-write-multiderivedsignal">
+<h3>A read-write MultiDerivedSignal<a class="headerlink" href="#a-read-write-multiderivedsignal" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MdsReadWriteExample</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_on_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mds</span><span class="p">:</span> <span class="n">MultiDerivedSignal</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">SignalToValue</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">value</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">items</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_on_put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mds</span><span class="p">:</span> <span class="n">MultiDerivedSignal</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">OphydDataType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SignalToValue</span><span class="p">:</span>
+        <span class="n">to_write</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">a</span><span class="p">:</span> <span class="n">to_write</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">b</span><span class="p">:</span> <span class="n">to_write</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">c</span><span class="p">:</span> <span class="n">to_write</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="n">mds</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">MultiDerivedSignal</span><span class="p">,</span>
+        <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">],</span>
+        <span class="n">calculate_on_get</span><span class="o">=</span><span class="n">_on_get</span><span class="p">,</span>
+        <span class="n">calculate_on_put</span><span class="o">=</span><span class="n">_on_put</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">FakeEpicsSignal</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">FakeEpicsSignal</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span><span class="n">FakeEpicsSignal</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">device</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">device</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">device</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">device</span><span class="o">.</span><span class="n">mds</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">6</span>
+<span class="go">&gt;&gt; device.mds.set(24).wait()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">device</span><span class="o">.</span><span class="n">a</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">device</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">device</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">8</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="unitconversionderivedsignal">
+<h2>UnitConversionDerivedSignal<a class="headerlink" href="#unitconversionderivedsignal" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="generated/pcdsdevices.signal.UnitConversionDerivedSignal.html#pcdsdevices.signal.UnitConversionDerivedSignal" title="pcdsdevices.signal.UnitConversionDerivedSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnitConversionDerivedSignal</span></code></a> is a derived signal class (i.e., one that
+sources its information from another existing signal) which allows you to
+change the units of the source signal into the units of your choice.</p>
+<section id="unitconversionderivedsignal-example">
+<h3>UnitConversionDerivedSignal Example<a class="headerlink" href="#unitconversionderivedsignal-example" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">UcdsExample</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+    <span class="n">original</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">EpicsSignal</span><span class="p">,</span>
+        <span class="s2">&quot;PV&quot;</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;PV with units of mm&quot;</span>
+    <span class="p">)</span>
+    <span class="n">converted</span> <span class="o">=</span> <span class="n">Cpt</span><span class="p">(</span>
+        <span class="n">UnitConversionDerivedSignal</span><span class="p">,</span>
+        <span class="n">derived_from</span><span class="o">=</span><span class="n">orig</span><span class="p">,</span>
+        <span class="n">original_units</span><span class="o">=</span><span class="s1">&#39;mm&#39;</span><span class="p">,</span>
+        <span class="n">derived_units</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;Converted signal with units of &#39;m&#39;&quot;</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">device</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">device</span><span class="o">.</span><span class="n">converted</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="go">0.01</span>
+</pre></div>
+</div>
+<p>Put 0.1m and note that it’s 100mm:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">device</span><span class="o">.</span><span class="n">converted</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">device</span><span class="o">.</span><span class="n">original</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="mi">100</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-signal-types">
+<h2>Advanced Signal Types<a class="headerlink" href="#advanced-signal-types" title="Permalink to this heading"></a></h2>
+<p>There are additional signal types which will not be discussed in depth here
+because their usage is uncommon or advanced.  For more details, see the
+associated source code.</p>
+<section id="fake-signal-types">
+<h3>Fake Signal Types<a class="headerlink" href="#fake-signal-types" title="Permalink to this heading"></a></h3>
+<p>Fake signal classes are used in the test suite.  For each of the signal classes
+here, we provide a “fake” version of them.</p>
+<p>Users should mostly be concerned with using <code class="docutils literal notranslate"><span class="pre">make_fake_device</span></code> on the
+whole device and should not need to concern themselves with the details of
+the fake signals directly.</p>
+</section>
+<section id="internalsignal">
+<h3>InternalSignal<a class="headerlink" href="#internalsignal" title="Permalink to this heading"></a></h3>
+<p><a class="reference internal" href="generated/pcdsdevices.signal.InternalSignal.html#pcdsdevices.signal.InternalSignal" title="pcdsdevices.signal.InternalSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">InternalSignal</span></code></a> is a signal that is intended to be used internally
+by a class and not presented to the end-user.  Similar to NotImplementedSignal,
+it is generally an advanced signal type.</p>
+</section>
+<section id="notepadlinkedsignal">
+<h3>NotepadLinkedSignal<a class="headerlink" href="#notepadlinkedsignal" title="Permalink to this heading"></a></h3>
+<p>Creates a notepad metadata dict for usage by pcdsdevices-notepad.</p>
+</section>
+<section id="notimplementedsignal">
+<h3>NotImplementedSignal<a class="headerlink" href="#notimplementedsignal" title="Permalink to this heading"></a></h3>
+<p><a class="reference internal" href="generated/pcdsdevices.signal.NotImplementedSignal.html#pcdsdevices.signal.NotImplementedSignal" title="pcdsdevices.signal.NotImplementedSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">NotImplementedSignal</span></code></a> is primarily a placeholder for when you are
+creating abstract ophyd device classes with the intent of subclassing and
+updating them by way of <code class="xref py py-class docutils literal notranslate"><span class="pre">UpdateComponent</span></code>.</p>
+<p>If the above doesn’t make sense to you, you are probably not the target
+audience of this.  Consider this an “advanced” signal type.</p>
+</section>
+<section id="signaleditmd-and-epicssignaleditmd-and-epicssignalroeditmd">
+<h3>SignalEditMD, and EpicsSignalEditMD and EpicsSignalROEditMD<a class="headerlink" href="#signaleditmd-and-epicssignaleditmd-and-epicssignalroeditmd" title="Permalink to this heading"></a></h3>
+<p><a class="reference internal" href="generated/pcdsdevices.signal.SignalEditMD.html#pcdsdevices.signal.SignalEditMD" title="pcdsdevices.signal.SignalEditMD"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalEditMD</span></code></a>, and <a class="reference internal" href="generated/pcdsdevices.signal.EpicsSignalEditMD.html#pcdsdevices.signal.EpicsSignalEditMD" title="pcdsdevices.signal.EpicsSignalEditMD"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalEditMD</span></code></a> and
+<a class="reference internal" href="generated/pcdsdevices.signal.EpicsSignalROEditMD.html#pcdsdevices.signal.EpicsSignalROEditMD" title="pcdsdevices.signal.EpicsSignalROEditMD"><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignalROEditMD</span></code></a> are variants of a signal type that allow you
+to edit <strong>metadata</strong> coming from an existing signal.  This metadata
+can include timestamps, units, enum information, and so on.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="generated/pcdsdevices.wfs.WaveFrontSensorTarget.html" class="btn btn-neutral float-left" title="pcdsdevices.wfs.WaveFrontSensorTarget" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="base_classes.html" class="btn btn-neutral float-right" title="Base Classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

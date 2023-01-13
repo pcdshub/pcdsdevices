@@ -1,0 +1,107 @@
+﻿pcdsdevices.gauge.GaugePirani
+=============================
+
+.. currentmodule:: pcdsdevices.gauge
+
+.. autoclass:: GaugePirani
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - pressure
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PMON``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.gauge.BaseGauge`
+    
+        * - egu
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PMON.EGU``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.BaseGauge`
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATE``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.BaseGauge`
+    
+        * - status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUSMON``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.BaseGauge`
+    
+        * - pressure_status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PSTATMON``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.BaseGauge`
+    
+        * - pressure_status_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PSTATMSP``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.BaseGauge`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

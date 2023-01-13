@@ -1,0 +1,161 @@
+﻿pcdsdevices.lasers.btps.BtpsState
+=================================
+
+.. currentmodule:: pcdsdevices.lasers.btps
+
+.. autoclass:: BtpsState
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - config
+          - :class:`~pcdsdevices.lasers.btps.GlobalConfig`
+          - ``LTLHN:BTPS:Config:``
+          - Global BTPS configuration
+          - normal
+          - 
+    
+        * - ls1
+          - :class:`~pcdsdevices.lasers.btps.BtpsSourceStatus`
+          - ``LTLHN:LS1:``
+          - Source status for LS1 (Bay 1)
+          - normal
+          - 
+    
+        * - ls5
+          - :class:`~pcdsdevices.lasers.btps.BtpsSourceStatus`
+          - ``LTLHN:LS5:``
+          - Source status for LS5 (Bay 3)
+          - normal
+          - 
+    
+        * - ls8
+          - :class:`~pcdsdevices.lasers.btps.BtpsSourceStatus`
+          - ``LTLHN:LS8:``
+          - Source status for LS8 (Bay 4)
+          - normal
+          - 
+    
+        * - ld2
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``LTLHN:LD2:``
+          - Destination LD2
+          - normal
+          - 
+    
+        * - ld4
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``LTLHN:LD4:``
+          - Destination LD4
+          - normal
+          - 
+    
+        * - ld6
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``LTLHN:LD6:``
+          - Destination LD6
+          - normal
+          - 
+    
+        * - ld8
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``LTLHN:LD8:``
+          - Destination LD8
+          - normal
+          - 
+    
+        * - ld9
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``LTLHN:LD9:``
+          - Destination LD9
+          - normal
+          - 
+    
+        * - ld10
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``LTLHN:LD10:``
+          - Destination LD10
+          - normal
+          - 
+    
+        * - ld14
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``LTLHN:LD14:``
+          - Destination LD14
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_source_to_destination
+    .. automethod:: set_source_to_destination_with_movestatus
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: to_btms_state
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    .. autoattribute:: sources
+    .. autoattribute:: destinations
+    
+    

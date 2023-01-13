@@ -1,0 +1,170 @@
+﻿pcdsdevices.lodcm.SimEnergyC
+============================
+
+.. currentmodule:: pcdsdevices.lodcm
+
+.. autoclass:: SimEnergyC
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - tower1 (FCpt)
+          - :class:`~pcdsdevices.lodcm.CrystalTower1`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCMEnergyC`
+    
+        * - tower2 (FCpt)
+          - :class:`~pcdsdevices.lodcm.CrystalTower2`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCMEnergyC`
+    
+        * - dr
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCMEnergyC`
+    
+        * - th1C
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCMEnergyC`
+    
+        * - th2C
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCMEnergyC`
+    
+        * - z1C
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCMEnergyC`
+    
+        * - z2C
+          - :class:`~pcdsdevices.sim.FastMotor`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCMEnergyC`
+    
+        * - energy
+          - :class:`~pcdsdevices.pseudopos.PseudoSingleInterface`
+          - 
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCMEnergyC`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_geometry
+    .. automethod:: camonitor
+    .. automethod:: check_single
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: forward
+    .. automethod:: get
+    .. automethod:: get_energy
+    .. automethod:: get_reflection
+    .. automethod:: inverse
+    .. automethod:: move
+    .. automethod:: move_single
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_current_position
+    .. automethod:: set_position
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: to_pseudo_tuple
+    .. automethod:: to_real_tuple
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: composite_egu
+    .. autoattribute:: concurrent
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: needs_parent
+    .. autoattribute:: position
+    .. autoattribute:: pseudo_positioners
+    .. autoattribute:: real_position
+    .. autoattribute:: real_positioners
+    .. autoattribute:: sequential
+    .. autoattribute:: settle_time
+    .. autoattribute:: stage_group
+    .. autoattribute:: target
+    .. autoattribute:: timeout
+    
+    

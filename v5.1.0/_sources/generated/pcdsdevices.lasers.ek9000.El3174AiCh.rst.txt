@@ -1,0 +1,116 @@
+﻿pcdsdevices.lasers.ek9000.El3174AiCh
+====================================
+
+.. currentmodule:: pcdsdevices.lasers.ek9000
+
+.. autoclass:: El3174AiCh
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - measured
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.VAL``
+          - Converted value
+          - normal
+          - 
+    
+        * - raw_adc
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.RVAL``
+          - Raw ADC count
+          - config
+          - 
+    
+        * - egu
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.EGU``
+          - Engineering units
+          - config
+          - 
+    
+        * - slope
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.ESLO``
+          - EGU per ADC count
+          - config
+          - 
+    
+        * - offset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.EOFF``
+          - Offset in EGU
+          - config
+          - 
+    
+        * - conversion
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.LINR``
+          - 
+          - config
+          - 
+    
+        * - precision
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.PREC``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

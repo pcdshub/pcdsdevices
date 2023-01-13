@@ -1,0 +1,134 @@
+﻿pcdsdevices.mpod\_apalis.MPODApalisModule4Channel
+=================================================
+
+.. currentmodule:: pcdsdevices.mpod_apalis
+
+.. autoclass:: MPODApalisModule4Channel
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - voltage_ramp_speed
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:VoltageRampSpeed``
+          - MPOD module Voltage Ramp Rate [%/sec*Vnom]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - current_ramp_speed
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CurrentRampSpeed``
+          - MPOD module current Ramp  Rate [%/sec*Inom]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - temperature
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Temperature``
+          - MPOD Temperature [C]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - faults
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:isEventActive``
+          - Clears all MPOD module faults
+          - normal
+          - Inherited from :class:`~pcdsdevices.mpod_apalis.MPODApalisModule`
+    
+        * - c0
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C0``
+          - 
+          - normal
+          - 
+    
+        * - c1
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C1``
+          - 
+          - normal
+          - 
+    
+        * - c2
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C2``
+          - 
+          - normal
+          - 
+    
+        * - c3
+          - :class:`~pcdsdevices.mpod_apalis.MPODApalisChannel`
+          - ``:C3``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: clear_faults
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_current_ramp_speed
+    .. automethod:: set_voltage_ramp_speed
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

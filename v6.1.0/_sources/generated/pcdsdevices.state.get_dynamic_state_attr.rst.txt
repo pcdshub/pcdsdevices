@@ -1,0 +1,6 @@
+﻿pcdsdevices.state.get\_dynamic\_state\_attr
+===========================================
+
+.. currentmodule:: pcdsdevices.state
+
+.. autofunction:: get_dynamic_state_attr

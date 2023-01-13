@@ -1,0 +1,150 @@
+﻿pcdsdevices.lasers.btps.SourceToDestinationConfig
+=================================================
+
+.. currentmodule:: pcdsdevices.lasers.btps
+
+.. autoclass:: SourceToDestinationConfig
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - name_
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:Name``
+          - Source name
+          - normal
+          - 
+    
+        * - far_field
+          - :class:`~pcdsdevices.lasers.btps.CentroidConfig`
+          - ``BTPS:FF``
+          - Far field centroid
+          - normal
+          - 
+    
+        * - near_field
+          - :class:`~pcdsdevices.lasers.btps.CentroidConfig`
+          - ``BTPS:NF``
+          - Near field centroid
+          - normal
+          - 
+    
+        * - goniometer
+          - :class:`~pcdsdevices.lasers.btps.RangeComparison`
+          - ``BTPS:Goniometer:``
+          - Goniometer stage
+          - normal
+          - 
+    
+        * - linear
+          - :class:`~pcdsdevices.lasers.btps.RangeComparison`
+          - ``BTPS:Linear:``
+          - Linear stage
+          - normal
+          - 
+    
+        * - rotary
+          - :class:`~pcdsdevices.lasers.btps.RangeComparison`
+          - ``BTPS:Rotary:``
+          - Rotary stage
+          - normal
+          - 
+    
+        * - entry_valve_ready
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:EntryValveReady``
+          - Entry valve is open and ready
+          - normal
+          - 
+    
+        * - checks_ok
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:ChecksOK``
+          - Check summary
+          - normal
+          - 
+    
+        * - data_valid
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:Valid``
+          - Data validity summary
+          - normal
+          - 
+    
+        * - in_position
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:InPosition``
+          - Set if the mirror assembly for this source is in position for this laser destination
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summarize_checks
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    .. autoattribute:: source_pos
+    .. autoattribute:: destination_pos
+    
+    

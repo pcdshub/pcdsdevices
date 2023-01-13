@@ -1,0 +1,145 @@
+﻿pcdsdevices.sample\_delivery.HPLC
+=================================
+
+.. currentmodule:: pcdsdevices.sample_delivery
+
+.. autoclass:: HPLC
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - status (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - run (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - flowrate (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - set_flowrate (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - flowrate_SP (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - pressure (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - pressure_units (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - set_max_pressure (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - max_pressure (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - clear_error (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

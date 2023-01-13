@@ -1,0 +1,150 @@
+﻿pcdsdevices.lamp\_motion.LAMPFlowCell
+=====================================
+
+.. currentmodule:: pcdsdevices.lamp_motion
+
+.. autoclass:: LAMPFlowCell
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - gas_jet_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:01``
+          - 
+          - normal
+          - 
+    
+        * - gas_jet_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:02``
+          - 
+          - normal
+          - 
+    
+        * - gas_jet_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:03``
+          - 
+          - normal
+          - 
+    
+        * - sample_paddle_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:07``
+          - 
+          - normal
+          - 
+    
+        * - sample_paddle_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:08``
+          - 
+          - normal
+          - 
+    
+        * - sample_paddle_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:09``
+          - 
+          - normal
+          - 
+    
+        * - flow_cell_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:10``
+          - 
+          - normal
+          - 
+    
+        * - flow_cell_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:11``
+          - 
+          - normal
+          - 
+    
+        * - flow_cell_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:12``
+          - 
+          - normal
+          - 
+    
+        * - flow_cell_theta
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:13``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

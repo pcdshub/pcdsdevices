@@ -1,0 +1,82 @@
+﻿pcdsdevices.dc\_devices.ICTBus
+==============================
+
+.. currentmodule:: pcdsdevices.dc_devices
+
+.. autoclass:: ICTBus
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - bus_current (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.prefix}:Bus{self._bus}:Current``
+          - 
+          - hinted
+          - 
+    
+        * - bus_voltage (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self.prefix}:Bus{self._bus}:Voltage``
+          - 
+          - hinted
+          - 
+    
+        * - bus_name (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self.prefix}:Bus{self._bus}.DESC``
+          - 
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: current
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: voltage
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

@@ -1,0 +1,99 @@
+﻿pcdsdevices.valve.ValveBase
+===========================
+
+.. currentmodule:: pcdsdevices.valve
+
+.. autoclass:: ValveBase
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - valve_position
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:POS_STATE_RBV``
+          - Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F
+          - hinted
+          - 
+    
+        * - open_command
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:OPN_SW``
+          - Epics command to Open valve
+          - normal
+          - 
+    
+        * - interlock_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OPN_OK_RBV``
+          - Valve is OK to Open interlock 
+          - normal
+          - 
+    
+        * - open_do
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:OPN_DO_RBV``
+          - PLC Output to Open valve, 1 means 24V on command cable
+          - normal
+          - 
+    
+        * - error_reset
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:ALM_RST``
+          - Reset Error state to valid by toggling this
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

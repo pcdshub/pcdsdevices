@@ -1,0 +1,36 @@
+﻿pcdsdevices.interface.FltMvInterface
+====================================
+
+.. currentmodule:: pcdsdevices.interface
+
+.. autoclass:: FltMvInterface
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: end_monitor_thread
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    

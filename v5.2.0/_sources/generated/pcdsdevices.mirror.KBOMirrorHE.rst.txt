@@ -1,0 +1,194 @@
+﻿pcdsdevices.mirror.KBOMirrorHE
+==============================
+
+.. currentmodule:: pcdsdevices.mirror
+
+.. autoclass:: KBOMirrorHE
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:X``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirror`
+    
+        * - y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:Y``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirror`
+    
+        * - pitch
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:PITCH``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirror`
+    
+        * - bender_us
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:BEND:US``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirror`
+    
+        * - bender_ds
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:BEND:DS``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirror`
+    
+        * - x_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:X:RMS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirror`
+    
+        * - y_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:Y:RMS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirror`
+    
+        * - pitch_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:PITCH:RMS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirror`
+    
+        * - bender_us_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:BEND:US:RMS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirror`
+    
+        * - bender_ds_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:BEND:DS:RMS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirror`
+    
+        * - us_rtd
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RTD:BEND:US:1_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirror`
+    
+        * - ds_rtd
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RTD:BEND:DS:1_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirror`
+    
+        * - cool_flow1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FLOW:1_RBV``
+          - 
+          - normal
+          - 
+    
+        * - cool_flow2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FLOW:2_RBV``
+          - 
+          - normal
+          - 
+    
+        * - cool_press
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PRESS:1_RBV``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: transmission
+    
+    

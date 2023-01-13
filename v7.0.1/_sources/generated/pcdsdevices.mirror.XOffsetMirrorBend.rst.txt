@@ -1,0 +1,273 @@
+﻿pcdsdevices.mirror.XOffsetMirrorBend
+====================================
+
+.. currentmodule:: pcdsdevices.mirror
+
+.. autoclass:: XOffsetMirrorBend
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - y_up
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:YUP``
+          - Yupstream master axis [um]
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - x_up
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:XUP``
+          - Xupstream master [um]
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - pitch
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:PITCH``
+          - Pitch stepper and piezo axes [urad]
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - y_dwn
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:YDWN``
+          - Ydwnstream slave axis [um]
+          - config
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - x_dwn
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:XDWN``
+          - Xdwnstream slave axis [um]
+          - config
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - gantry_x
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:GANTRY_X``
+          - X gantry difference [um]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - gantry_y
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:GANTRY_Y``
+          - Y gantry difference [um]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - couple_y
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:COUPLE_Y``
+          - Couple Y motors [bool]
+          - config
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - couple_x
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:COUPLE_X``
+          - Couple X motors [bool]
+          - config
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - decouple_y
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:DECOUPLE_Y``
+          - Decouple Y motors [bool]
+          - config
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - decouple_x
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:DECOUPLE_X``
+          - Decouple X motors [bool]
+          - config
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - couple_status_y
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ALREADY_COUPLED_Y``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - couple_status_x
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ALREADY_COUPLED_X``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - y_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:Y:RMS``
+          - Yup encoder RMS deviation [um]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - x_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:X:RMS``
+          - Xup encoder RMS deviation [um]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - pitch_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:PITCH:RMS``
+          - Pitch encoder RMS deviation [urad]
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
+    
+        * - bender_us
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:US``
+          - 
+          - hinted
+          - 
+    
+        * - bender_ds
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:DS``
+          - 
+          - hinted
+          - 
+    
+        * - bender_us_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:US:RMS``
+          - 
+          - normal
+          - 
+    
+        * - bender_ds_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:DS:RMS``
+          - 
+          - normal
+          - 
+    
+        * - us_rtd
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RTD:US:1_RBV``
+          - 
+          - normal
+          - 
+    
+        * - ds_rtd
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RTD:DS:1_RBV``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: bender
+    .. autoattribute:: bender_enc_rms
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

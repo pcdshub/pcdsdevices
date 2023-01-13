@@ -1,0 +1,125 @@
+﻿pcdsdevices.epics\_motor.SmarActOpenLoop
+========================================
+
+.. currentmodule:: pcdsdevices.epics_motor
+
+.. autoclass:: SmarActOpenLoop
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - step_voltage
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STEP_VOLTAGE``
+          - Voltage for sawtooth (0-100V)
+          - omitted
+          - 
+    
+        * - step_freq
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STEP_FREQ``
+          - Sawtooth drive frequency
+          - config
+          - 
+    
+        * - jog_step_size
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STEP_COUNT``
+          - Number of steps per FWD/BWD command
+          - normal
+          - 
+    
+        * - jog_fwd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STEP_FORWARD``
+          - Jog the stage forward
+          - normal
+          - 
+    
+        * - jog_rev
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STEP_REVERSE``
+          - Jog the stage backward
+          - normal
+          - 
+    
+        * - total_step_count
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TOTAL_STEP_COUNT``
+          - Current open loop step count
+          - normal
+          - 
+    
+        * - step_clear_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CLEAR_COUNT``
+          - Clear the current step count
+          - config
+          - 
+    
+        * - scan_move
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SCAN_POS``
+          - Set current piezo voltage (in 16 bit ADC steps)
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

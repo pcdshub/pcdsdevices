@@ -1,0 +1,102 @@
+﻿pcdsdevices.digitizers.Wave8V2Sfp
+=================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2Sfp
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - sfp_type
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Type_RBV``
+          - 
+          - config
+          - 
+    
+        * - sfp_connector
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Connector_RBV``
+          - 
+          - config
+          - 
+    
+        * - rx_watts
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxWatts_RBV``
+          - 
+          - config
+          - 
+    
+        * - rx_power
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RxPower_RBV``
+          - 
+          - config
+          - 
+    
+        * - tx_power
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TxPower_RBV``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

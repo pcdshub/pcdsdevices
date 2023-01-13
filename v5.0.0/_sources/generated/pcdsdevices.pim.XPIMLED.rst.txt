@@ -1,0 +1,90 @@
+﻿pcdsdevices.pim.XPIMLED
+=======================
+
+.. currentmodule:: pcdsdevices.pim
+
+.. autoclass:: XPIMLED
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - power
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PWR``
+          - LED power state, either on or off.
+          - normal
+          - 
+    
+        * - power_timeout
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CLK:TIMEOUT``
+          - Configured auto-shutdown timeout for the led.
+          - config
+          - 
+    
+        * - time_remaining
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CLK:REMAINING``
+          - Remaining time before auto-shutoff.
+          - config
+          - 
+    
+        * - auto_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:AUTO``
+          - Configure auto mode vs manual mode for turning the LED on and off.
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

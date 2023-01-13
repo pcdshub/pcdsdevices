@@ -1,0 +1,112 @@
+﻿pcdsdevices.lodcm.DiagnosticsTower
+==================================
+
+.. currentmodule:: pcdsdevices.lodcm
+
+.. autoclass:: DiagnosticsTower
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - dh (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:16``
+          - LOM Dia H
+          - normal
+          - 
+    
+        * - dv (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:17``
+          - LOM Dia V
+          - normal
+          - 
+    
+        * - dr (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:19``
+          - LOM Dia Theta
+          - normal
+          - 
+    
+        * - df (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:{self._df_suffix}``
+          - LOM Dia Filter Wheel
+          - normal
+          - 
+    
+        * - dd (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:18``
+          - LOM Dia PIPS
+          - normal
+          - 
+    
+        * - yag_zoom (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:CLZ:01``
+          - LOM Zoom
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    

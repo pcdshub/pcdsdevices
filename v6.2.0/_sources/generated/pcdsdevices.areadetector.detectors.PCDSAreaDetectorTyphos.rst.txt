@@ -1,0 +1,190 @@
+﻿pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphos
+=========================================================
+
+.. currentmodule:: pcdsdevices.areadetector.detectors
+
+.. autoclass:: PCDSAreaDetectorTyphos
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - manufacturer
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Manufacturer_RBV``
+          - 
+          - config
+          - 
+    
+        * - camera_model
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Model_RBV``
+          - 
+          - normal
+          - 
+    
+        * - sensor_size_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxSizeX_RBV``
+          - 
+          - config
+          - 
+    
+        * - sensor_size_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxSizeY_RBV``
+          - 
+          - config
+          - 
+    
+        * - data_type
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DataType``
+          - 
+          - config
+          - 
+    
+        * - exposure
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AcquireTime``
+          - 
+          - config
+          - 
+    
+        * - gain
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Gain``
+          - 
+          - config
+          - 
+    
+        * - num_images
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumImages``
+          - 
+          - config
+          - 
+    
+        * - image_mode
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ImageMode``
+          - 
+          - config
+          - 
+    
+        * - trigger_mode
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``TriggerMode``
+          - 
+          - config
+          - 
+    
+        * - acquisition_period
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AcquirePeriod``
+          - 
+          - config
+          - 
+    
+        * - acquire
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Acquire``
+          - 
+          - normal
+          - 
+    
+        * - acquire_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``DetectorState_RBV``
+          - 
+          - normal
+          - 
+    
+        * - image_counter
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``NumImagesCounter_RBV``
+          - 
+          - normal
+          - 
+    
+        * - cam_viewer
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: open_viewer
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    
+    

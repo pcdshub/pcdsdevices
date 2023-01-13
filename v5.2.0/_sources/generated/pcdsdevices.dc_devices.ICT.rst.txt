@@ -1,0 +1,184 @@
+﻿pcdsdevices.dc\_devices.ICT
+===========================
+
+.. currentmodule:: pcdsdevices.dc_devices
+
+.. autoclass:: ICT
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - bus_A (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTBus`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+        * - bus_B (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTBus`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+        * - ch_1A (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTChannel`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+        * - ch_2A (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTChannel`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+        * - ch_3A (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTChannel`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+        * - ch_4A (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTChannel`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+        * - ch_5A (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTChannel`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+        * - ch_6A (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTChannel`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+        * - ch_1B (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTChannel`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+        * - ch_2B (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTChannel`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+        * - ch_3B (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTChannel`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+        * - ch_4B (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTChannel`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+        * - ch_5B (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTChannel`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+        * - ch_6B (FCpt)
+          - :class:`~pcdsdevices.dc_devices.ICTChannel`
+          - ``{self.prefix}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    
+    
