@@ -1,8 +1,8 @@
+from .version import __version__  # noqa: F401
 # Hacky ophyd and pyepics hotfixes
 import epics.ca
 from ophyd.device import Device
 
-from ._version import get_versions
 from .registry import device_registry  # NOQA
 
 
@@ -33,6 +33,3 @@ except AttributeError:
 
 del epics
 del make_new_bts
-
-__version__ = get_versions()['version']
-del get_versions
