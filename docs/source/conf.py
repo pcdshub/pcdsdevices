@@ -41,7 +41,6 @@ from ophyd.docs import get_device_info  # noqa: E402
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinxcontrib.jquery",
     "sphinx.ext.autodoc",
     "sphinx.ext.todo",
     "sphinx.ext.autosummary",
@@ -50,6 +49,10 @@ extensions = [
     "IPython.sphinxext.ipython_directive",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx.ext.autosectionlabel",
+    # jquery removed in sphinx 6.0 and used in docs_versions_menu.
+    # See: https://www.sphinx-doc.org/en/master/changes.html
+    "sphinxcontrib.jquery",
+    "docs_versions_menu",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
