@@ -589,8 +589,7 @@ class IMS(PCDSMotorBase):
         'configure',
         'get_configuration',
         'find_configuration',
-        'diff_configuration',
-        'save_configuration',
+        'diff_configuration'
     ]
 
     # The singleton parameter manager object.
@@ -755,7 +754,6 @@ class IMS(PCDSMotorBase):
         Returns a list of strings if display is None, and nothing otherwise.
         """
         IMS._setup_and_check_pmgr()
-        # matches = IMS._pm.match_config(pattern, ci=case_insensitive)
         matches = IMS._pm.match_config(pattern, ci=case_insensitive, parent='USR')
         if display is None:
             return matches
@@ -775,7 +773,6 @@ class IMS(PCDSMotorBase):
 
         Parameters
         ----------
-
         cfgname : str
             The name of the configuration to compare the settings to.  If
             this is None, use the current configuration.
