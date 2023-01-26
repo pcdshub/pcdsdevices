@@ -20,29 +20,29 @@ class BeckhoffPneumatic(BaseInterface, LightpathMixin):
     lightpath_cpts = ['limit_switch_in', 'limit_switch_out']
 
     # readouts
-    limit_switch_in = Cpt(PytmcSignal, ':PLC:bInLimitSwitch')
-    limit_switch_out = Cpt(PytmcSignal, ':PLC:bOutLimitSwitch')
+    limit_switch_in = Cpt(PytmcSignal, ':PLC:bInLimitSwitch', io="i")
+    limit_switch_out = Cpt(PytmcSignal, ':PLC:bOutLimitSwitch', io="i")
 
-    retract_status = Cpt(PytmcSignal, ':bRetractDigitalOutput')
-    insert_status = Cpt(PytmcSignal, ':bInsertDigitalOutput')
+    retract_status = Cpt(PytmcSignal, ':bRetractDigitalOutput', io="i")
+    insert_status = Cpt(PytmcSignal, ':bInsetDigitalOutput', io="i")
 
     # logic and supervisory
-    interlock_ok = Cpt(PytmcSignal, 'bInterlockOK')
-    insert_ok = Cpt(PytmcSignal, 'bInsertEnable')
-    retract_ok = Cpt(PytmcSignal, 'bretractEnable')
+    interlock_ok = Cpt(PytmcSignal, ':bInterlockOK', io="i")
+    insert_ok = Cpt(PytmcSignal, ':bInsertEnable', io="i")
+    retract_ok = Cpt(PytmcSignal, ':bRetractEnable', io="i")
 
     # commands
-    insert_signal = Cpt(PytmcSignal, 'CMD:IN')
-    retract_signal = Cpt(PytmcSignal, 'CMD:OUT')
+    insert_signal = Cpt(PytmcSignal, ':CMD:IN', io="io")
+    retract_signal = Cpt(PytmcSignal, ':CMD:OUT', io="io")
 
     # returns
-    busy = Cpt(PytmcSignal, ':bBusy')
-    done = Cpt(PytmcSignal, ':bDone')
-    reset = Cpt(PytmcSignal, ':bReset')
-    error = Cpt(PytmcSignal, ':PLC:bError')
-    error_id = Cpt(PytmcSignal, ':PLC:nErrorId')
-    error_message = Cpt(PytmcSignal, ':PLC:sErrorMessage')
-    position_state = Cpt(PytmcSignal, ':nPositionState', kind='hinted')
+    busy = Cpt(PytmcSignal, ':bBusy', io="i")
+    done = Cpt(PytmcSignal, ':bDone', io="i")
+    reset = Cpt(PytmcSignal, ':bReset', io="io")
+    error = Cpt(PytmcSignal, ':PLC:bError', io="i")
+    error_id = Cpt(PytmcSignal, ':PLC:nErrorId', io="i")
+    error_message = Cpt(PytmcSignal, ':PLC:sErrorMessage', io="i")
+    position_state = Cpt(PytmcSignal, ':nPositionState', kind='hinted', io="i")
 
     def callback(self, *, old_value, value, **kwargs):
         if value:
