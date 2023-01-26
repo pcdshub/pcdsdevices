@@ -24,7 +24,7 @@ class BeckhoffPneumatic(BaseInterface, LightpathMixin):
     limit_switch_out = Cpt(PytmcSignal, ':PLC:bOutLimitSwitch', io="i")
 
     retract_status = Cpt(PytmcSignal, ':bRetractDigitalOutput', io="i")
-    insert_status = Cpt(PytmcSignal, ':bInsetDigitalOutput', io="i")
+    insert_status = Cpt(PytmcSignal, ':bInsertDigitalOutput', io="i")
 
     # logic and supervisory
     interlock_ok = Cpt(PytmcSignal, ':bInterlockOK', io="i")
