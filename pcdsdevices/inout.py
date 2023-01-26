@@ -11,6 +11,8 @@ import math
 from ophyd.device import required_for_connection
 from ophyd.sim import NullStatus
 
+from pcdsdevices.interface import LightpathInOutMixin
+
 from .doc_stubs import basic_positioner_init, insert_remove
 from .state import (CombinedStateRecordPositioner, PVStatePositioner,
                     StatePositioner, StateRecordPositioner,
@@ -183,6 +185,12 @@ class CombinedInOutRecordPositioner(CombinedStateRecordPositioner,
     """
 
     __doc__ += basic_positioner_init
+
+
+class LightpathInOutRecordPositioner(InOutRecordPositioner,
+                                     LightpathInOutMixin):
+    """Lightpath-compatible InOutRecordPositioner"""
+    pass
 
 
 class Reflaser(InOutRecordPositioner):

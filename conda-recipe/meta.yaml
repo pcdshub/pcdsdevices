@@ -20,6 +20,7 @@ requirements:
     - bluesky >=1.6.4
     - happi
     - jsonschema
+    - lightpath >=1.0.0
     - matplotlib-base
     - numpy
     - ophyd >=1.5.1
@@ -35,6 +36,7 @@ requirements:
   run_constrained:
     - pmgr >=2.0.2
     - pyqt <5.15
+    - typhos >=2.4.0
 
 test:
   imports:

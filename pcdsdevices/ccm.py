@@ -5,10 +5,10 @@ import typing
 from collections import namedtuple
 
 import numpy as np
+from lightpath import LightpathState
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.ophydobj import OphydObject
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
 from ophyd.status import MoveStatus
 
@@ -697,7 +697,6 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         st = super().move(*args, wait=wait, **kwargs)
         time.sleep(0.01)  # safety wait. Necessary?
         if kill:
-            print('Kill alio PID')
             self.alio.kill()
         return st
 
@@ -938,7 +937,7 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
     y = UCpt(CCMY, add_prefix=[], kind='normal',
              doc='Combined motion of the CCM Y motors.')
 
-    lightpath_cpts = ['x']
+    lightpath_cpts = ['x.up.user_readback']
     tab_whitelist = ['x1', 'x2', 'y1', 'y2', 'y3', 'E', 'E_Vernier',
                      'th2fine', 'alio2E', 'E2alio', 'alio', 'home',
                      'kill', 'insert', 'remove', 'inserted', 'removed']
@@ -977,6 +976,9 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
         self.home = self.alio.home
         self.kill = self.alio.kill
 
+        self._inserted = False
+        self._removed = False
+
     def format_status_info(self, status_info: dict[str, typing.Any]) -> str:
         """
         Define how we're going to format the state of the CCM for the user.
@@ -1013,23 +1015,33 @@ class CCM(BaseInterface, GroupDevice, LightpathMixin, CCMConstantsMixin):
         text += f'x @ (mm): {xavg} [x1,x2={x_down},{x_up}]\n'
         return text
 
-    def _set_lightpath_states(
-        self,
-        lightpath_values: dict[OphydObject, dict[str, typing.Any]],
-    ) -> None:
+    def calc_lightpath_state(self, x_up: float) -> LightpathState:
         """
         Update the fields used by the lightpath to determine in/out.
 
         Compares the x position with the saved in and out values.
         """
-        x_pos = lightpath_values[self.x]['value']
-        self._inserted = np.isclose(x_pos, self._in_pos)
-        self._removed = np.isclose(x_pos, self._out_pos)
+        self._inserted = bool(np.isclose(x_up, self._in_pos))
+        self._removed = bool(np.isclose(x_up, self._out_pos))
         if self._removed:
             self._transmission = 1
         else:
             # Placeholder "small attenuation" value
             self._transmission = 0.9
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: self._transmission}
+        )
+
+    @property
+    def inserted(self):
+        return self._inserted
+
+    @property
+    def removed(self):
+        return self._removed
 
     def insert(self, wait: bool = False) -> MoveStatus:
         """

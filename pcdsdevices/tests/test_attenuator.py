@@ -7,8 +7,8 @@ import pytest
 from ophyd.sim import make_fake_device
 from ophyd.status import wait as status_wait
 
-from ..attenuator import (AT1K4, AT2L0, MAX_FILTERS, AttBase, Attenuator,
-                          _att_classes)
+from ..attenuator import (AT1K2, AT1K4, AT2K2, AT2L0, MAX_FILTERS, AttBase,
+                          Attenuator, _att_classes)
 
 logger = logging.getLogger(__name__)
 
@@ -169,16 +169,27 @@ def test_attenuator_disconnected():
 
 
 @pytest.fixture(
-    params=['at2l0', 'at1k4']
+    params=['at2l0', 'at1k4', 'at1k2', 'at2k2']
 )
 def fake_new_attenuator(request):
-    """AT2L0, AT1K4 - attenuators new to LCLS-II."""
-    if request.param == 'at2l0':
+    """Attenuators new to LCLS-II."""
+    attname = request.param
+    if attname == 'at2l0':
         FakeAT2L0 = make_fake_device(AT2L0)
         return FakeAT2L0('AT2L0:', name='fake_at2l0')
-    FakeAT1K4 = make_fake_device(AT1K4)
-    return FakeAT1K4('AT1K4:', calculator_prefix='AT1K4:CALC',
-                     name='fake_at1k4')
+    if attname == 'at1k4':
+        FakeAT1K4 = make_fake_device(AT1K4)
+        return FakeAT1K4('AT1K4:', calculator_prefix='AT1K4:CALC',
+                         name='fake_at1k4')
+    if attname == 'at1k2':
+        FakeAT1K2 = make_fake_device(AT1K2)
+        return FakeAT1K2('AT1K2:', calculator_prefix='AT1K2:CALC',
+                         name='fake_at1k2')
+    if attname == 'at2k2':
+        FakeAT2K2 = make_fake_device(AT2K2)
+        return FakeAT2K2('AT2K2:', calculator_prefix='AT2K2:CALC',
+                         name='fake_at2k2')
+    raise RuntimeError(f'Unknown attenuator {attname}')
 
 
 def test_new_attenuator_smoke(fake_new_attenuator):

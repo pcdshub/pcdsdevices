@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>348</width>
-    <height>195</height>
+    <width>525</width>
+    <height>237</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -51,17 +51,32 @@
      <property name="showUnits" stdset="0">
       <bool>true</bool>
      </property>
+     <property name="precisionFromPV" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="alarmSensitiveContent" stdset="0">
+      <bool>false</bool>
+     </property>
      <property name="channel" stdset="0">
-      <string>sig://${name}.pct</string>
+      <string>sig://${name}_pct</string>
+     </property>
+     <property name="ignoreMouseWheel" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="tickPosition" stdset="0">
+      <enum>QSlider::NoTicks</enum>
      </property>
      <property name="userDefinedLimits" stdset="0">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="userMinimum" stdset="0">
       <double>0.000000000000000</double>
      </property>
      <property name="userMaximum" stdset="0">
       <double>100.000000000000000</double>
+     </property>
+     <property name="step_size" stdset="0">
+      <number>0</number>
      </property>
     </widget>
    </item>
@@ -100,6 +115,25 @@
        <property name="wordWrap">
         <bool>false</bool>
        </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextEditorInteraction</set>
+       </property>
+       <property name="channel" stdset="0">
+        <string>sig://${name}.pct</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="PyDMLineEdit" name="PyDMLineEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
        <property name="channel" stdset="0">
         <string>sig://${name}.pct</string>
        </property>
@@ -127,19 +161,24 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TyphosDisplayTitle</class>
-   <extends>QFrame</extends>
-   <header>typhos.display</header>
-  </customwidget>
-  <customwidget>
    <class>PyDMLabel</class>
    <extends>QLabel</extends>
    <header>pydm.widgets.label</header>
   </customwidget>
   <customwidget>
+   <class>PyDMLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>pydm.widgets.line_edit</header>
+  </customwidget>
+  <customwidget>
    <class>PyDMSlider</class>
    <extends>QFrame</extends>
    <header>pydm.widgets.slider</header>
+  </customwidget>
+  <customwidget>
+   <class>TyphosDisplayTitle</class>
+   <extends>QFrame</extends>
+   <header>typhos.display</header>
   </customwidget>
  </customwidgets>
  <resources/>

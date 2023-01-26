@@ -1,11 +1,14 @@
+import itertools
 import logging
 
 import pytest
 from bluesky import RunEngine
 from bluesky.plan_stubs import close_run, open_run, stage, unstage
 from ophyd.sim import make_fake_device
+from ophyd.status import MoveStatus
 from ophyd.status import wait as status_wait
 from ophyd.utils.epics_pvs import AlarmSeverity, AlarmStatus
+from ophyd.utils.errors import LimitError
 
 from ..epics_motor import (IMS, MMC100, PMC100, BeckhoffAxis, EpicsMotor,
                            EpicsMotorInterface, Motor, MotorDisabledError,
@@ -20,6 +23,12 @@ def fake_class_setup(cls):
     Make the fake class and modify if needed
     """
     FakeClass = make_fake_device(cls)
+    # Recover subscription decorator behavior on motor class
+    for name, cpt in FakeClass._sig_attrs.items():
+        source_cpt = getattr(FakeClass.mro()[1], name)
+        cpt._subscriptions.update(
+            source_cpt._subscriptions
+        )
     return FakeClass
 
 
@@ -32,6 +41,7 @@ def motor_setup(motor):
         motor.high_limit_travel.put(100)
         motor.low_limit_travel.put(-100)
         motor.user_setpoint.sim_set_limits((-100, 100))
+        motor.velocity.sim_put(10)
 
     if isinstance(motor, PCDSMotorBase):
         motor.motor_spg.sim_put(2)
@@ -177,6 +187,32 @@ def test_clearing_limits(fake_epics_motor):
     assert m.get_high_limit() == 0
 
 
+def test_limits_update_from_epics(fake_epics_motor: EpicsMotorInterface):
+    mot = fake_epics_motor
+    for low, high in (
+        (-10, 10),
+        (-100, 100),
+        (0, 100),
+        (-100, 0),
+    ):
+        mot.high_limit_travel.put(high)
+        mot.low_limit_travel.put(low)
+        for num in range(low + 1, high):
+            mot.check_value(num)
+        for num in itertools.chain(
+            range(low - 10, low),
+            range(high + 1, high + 10),
+        ):
+            with pytest.raises(LimitError):
+                mot.check_value(num)
+                # debug only hit if the check_value doesn't raise
+                logger.debug(f'{low} < {num} < {high}')
+                logger.debug(f'limits are {mot.limits}')
+                logger.debug(f'LLM={mot.low_limit_travel.get()}')
+                logger.debug(f'HLM={mot.high_limit_travel.get()}')
+                logger.debug(f'md={mot.user_setpoint.metadata}')
+
+
 def test_epics_motor_tdir(fake_pcds_motor):
     logger.debug('test_epics_motor_tdir')
     m = fake_pcds_motor
@@ -281,6 +317,79 @@ def test_beckhoff_error_clear(fake_beckhoff):
     assert m.plc.cmd_err_reset.get() == 1
     m.stage()
     m.unstage()
+
+
+def test_beckhoff_velo_error(fake_beckhoff):
+    mot = fake_beckhoff
+    # Zero velo move fails silently if we don't catch it here
+    mot.velocity.sim_put(0)
+    low_limit = mot.low_limit_travel.get()
+    high_limit = mot.high_limit_travel.get()
+    for num in range(low_limit + 1, high_limit):
+        with pytest.raises(RuntimeError):
+            mot.check_value(num)
+
+    with pytest.raises(RuntimeError):
+        mot.move((low_limit + high_limit) / 2, wait=False)
+
+
+def test_beckhoff_error_status(fake_beckhoff: BeckhoffAxis):
+    # Helper
+    def sim_move(dest: float, error: str = '', code: int = 0) -> MoveStatus:
+        status = fake_beckhoff.move(dest, wait=False)
+        assert fake_beckhoff.user_setpoint.get() == dest
+        fake_beckhoff.motor_done_move.sim_put(0)
+        fake_beckhoff.user_readback.sim_put(dest)
+        fake_beckhoff.plc.status.sim_put(error)
+        fake_beckhoff.plc.err_bool.sim_put(bool(error))
+        fake_beckhoff.plc.err_code.sim_put(code)
+        fake_beckhoff.motor_done_move.sim_put(1)
+        return status
+
+    # Known starting configuration
+    fake_beckhoff.user_readback.sim_put(0)
+    fake_beckhoff.user_setpoint.sim_put(0)
+    fake_beckhoff.plc.status.sim_put("")
+    fake_beckhoff.plc.err_code.sim_put(0)
+    fake_beckhoff.motor_done_move.sim_put(1)
+    fake_beckhoff.direction_of_travel.sim_put(0)
+    fake_beckhoff.low_limit_switch.sim_put(0)
+    fake_beckhoff.high_limit_switch.sim_put(0)
+    fake_beckhoff.user_readback.alarm_severity = AlarmSeverity.NO_ALARM
+    fake_beckhoff.user_readback.alarm_status = AlarmStatus.NO_ALARM
+
+    # No error normal case
+    status = sim_move(dest=1)
+    status.wait(timeout=1)
+
+    # No error from cases that would be error in EpicsMotor
+    # Limit switch case
+    fake_beckhoff.low_limit_switch.sim_put(1)
+    status = sim_move(dest=-2)
+    status.wait(timeout=1)
+    fake_beckhoff.low_limit_switch.sim_put(0)
+    # Alarm severity case
+    fake_beckhoff.user_readback.alarm_severity = AlarmSeverity.MAJOR
+    status = sim_move(dest=3)
+    status.wait(timeout=1)
+    fake_beckhoff.user_readback.alarm_severity = AlarmSeverity.NO_ALARM
+
+    # Yes error, message preserved
+    msg = 'test_error'
+    status = sim_move(dest=4, error=msg)
+    with pytest.raises(RuntimeError):
+        status.wait(timeout=1)
+    status_msg = status.exception().args[0]
+    assert status_msg == msg
+
+    # Yes error, message and error code preserved
+    code = 17056  # Real error code 0x42a0
+    status = sim_move(dest=5, error=msg, code=code)
+    with pytest.raises(RuntimeError):
+        status.wait(timeout=1)
+    status_msg = status.exception().args[0]
+    assert status_msg in status_msg
+    assert hex(code) in status_msg
 
 
 def test_motor_factory():

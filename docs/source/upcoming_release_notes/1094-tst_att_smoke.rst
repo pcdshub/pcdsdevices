@@ -1,5 +1,5 @@
-1047 Adding LightControl.ui
-#################
+1094 tst_att_smoke
+##################
 
 API Changes
 -----------
@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- New LightControl.ui screen for controlling fiber-lites
+- N/A
 
 Device Updates
 --------------
@@ -23,8 +23,8 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Add AT1K2 and AT2K2 to the attenuator smoke tests.
 
 Contributors
 ------------
-- wwright-slac
+- zllentz

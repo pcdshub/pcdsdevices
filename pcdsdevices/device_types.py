@@ -25,7 +25,7 @@ from .lasers.zoomtelescope import ZoomTelescope
 from .lens import XFLS, Prefocus
 from .lic import LaserInCoupling
 from .light_control import LightControl
-from .lodcm import LODCM
+from .lodcm import XCSLODCM, XPPLODCM
 from .mirror import OffsetMirror, PointingMirror
 from .movablestand import MovableStand
 from .mpod import MPOD, MPODChannelHV, MPODChannelLV
@@ -42,7 +42,7 @@ from .sample_delivery import (HPLC, PCM, CoolerShaker, FlowIntegrator,
 from .sensors import RTD, TwinCATThermocouple
 from .sequencer import EventSequencer
 from .slits import Slits
-from .spectrometer import Kmono, VonHamos4Crystal
+from .spectrometer import Gen1VonHamos4Crystal, Kmono, VonHamos4Crystal
 from .timetool import Timetool, TimetoolWithNav
 from .valve import GateValve, Stopper
 from .wfs import WaveFrontSensorTarget

@@ -7,8 +7,10 @@ control the pitch, and two pairs of motors to control the horizontal and
 vertical gantries.
 """
 import logging
+from typing import List, Tuple, Union
 
 import numpy as np
+from lightpath import LightpathState
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO
 from ophyd import FormattedComponent as FCpt
@@ -19,12 +21,19 @@ from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
-from .interface import BaseInterface, FltMvInterface
+from .interface import BaseInterface, FltMvInterface, LightpathMixin
 from .pmps import TwinCATStatePMPS
 from .signal import PytmcSignal
-from .utils import get_status_value, reorder_components
+from .utils import get_status_value, reorder_components, schedule_task
 
 logger = logging.getLogger(__name__)
+
+
+numeric = Union[int, float]
+
+
+class MirrorLogicError(Exception):
+    """ An error in mirror pointing logic """
 
 
 class OMMotor(FltMvInterface, PVPositioner):
@@ -153,7 +162,7 @@ class Gantry(OMMotor):
         super().check_value(pos)
 
 
-class OffsetMirror(BaseInterface, GroupDevice):
+class OffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
     """
     X-ray Offset Mirror class.
 
@@ -199,6 +208,8 @@ class OffsetMirror(BaseInterface, GroupDevice):
     # Subscription types
     SUB_STATE = 'state'
 
+    lightpath_cpts = ['pitch.readback']
+
     # Tab config: show components
     tab_component_names = True
 
@@ -208,6 +219,13 @@ class OffsetMirror(BaseInterface, GroupDevice):
         self._prefix_xy = prefix_xy or prefix
         self._xgantry = xgantry_prefix or 'GANTRY:' + prefix + ':X'
         super().__init__(prefix, **kwargs)
+
+    def calc_lightpath_state(self, **kwargs) -> LightpathState:
+        return LightpathState(
+            inserted=True,
+            removed=False,
+            output={self.output_branches[0]: 1}
+        )
 
     @property
     def inserted(self):
@@ -323,7 +341,7 @@ class PointingMirror(InOutRecordPositioner, OffsetMirror):
         return super().check_value(pos)
 
 
-class XOffsetMirror(BaseInterface, GroupDevice):
+class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
     """
     X-ray Offset Mirror.
 
@@ -385,10 +403,248 @@ class XOffsetMirror(BaseInterface, GroupDevice):
     # Lightpath config: implement inserted, removed, transmission, subscribe
     # For now, keep it simple. Some mirrors need more than this, but it is
     # sufficient for MR1L0 and MR2L0 for today.
-    inserted = True
-    removed = False
-    transmission = 1
-    SUB_STATE = 'state'
+
+    # We watch the user_readback here, but the name of its component is
+    # that of the bare signal (x_up.user_readback -> x_up)
+    lightpath_cpts = ['x_up.user_readback', 'y_up.user_readback',
+                      'pitch.user_readback']
+
+    def __init__(
+        self,
+        *args,
+        x_ranges: List[List[int]] = [],
+        y_ranges: List[List[int]] = [],
+        pitch_ranges: List[List[List[int]]] = [],
+        **kwargs
+    ) -> None:
+        # insertion status, [[min_x_out, max_x_out], [min_x_in, max_x_in]]
+        self.x_ranges = x_ranges
+        # coating status.  (n_coatings * 2) array
+        # [ [min_y_coat1, max_y_coat1],
+        #   [min_y_coat2, max_y_coat2],
+        #   ... ]
+        self.y_ranges = y_ranges
+        # pitch (output branch) status.
+        # (n_coatings * n_destination * 2) array
+        # [
+        #  [ [min_p_coat1out1, max_p_coat1out1], [coat1out2_ranges], ...],
+        #  [ [min_p_coat2out1, max_p_coat2out1], [coat1out2_ranges], ...],
+        #  ...
+        # ]
+        self.pitch_ranges = pitch_ranges
+        super().__init__(*args, **kwargs)
+
+    def calc_lightpath_state(
+        self,
+        x_up: float,
+        y_up: float,
+        pitch: float
+    ) -> LightpathState:
+        # all mirrors have roughly the same logic, but some may have
+        # relevant information in state-PV's, so argument names may not
+        # be the same.
+        # here we convert to positional arguments to try and re-use logic
+        return self._calc_lightpath_state(x_up, y_up, pitch)
+
+    def _calc_lightpath_state(
+        self,
+        x_info: float,
+        y_info: float,
+        pitch_info: float
+    ) -> LightpathState:
+        """
+        Calculate the lightpath-state information by dispatching to
+        helper methods.  These methods may change in later subclasses,
+        as may the types of the arguments.
+
+        However, the base logic will remain the same.
+        (the way we walk the decision tree does not change)
+
+        We assume that in every case, we receive the following info
+        - x-position --> insertion status
+        - y-position --> coating information
+        - pitch      --> output branch
+
+        Roughly speaking the decision tree goes as follows:
+        - Determine if mirror is inserted:
+            - if removed, beam goes straight through, return
+            - if inserted, continue
+        - Determine which coating is being used, and use coating to
+          determine which set of pitch ranges to use
+        - Determine which destination the mirror is delivering beam to
+          based on the pitch
+        """
+        try:
+            x_out, x_in = self._get_insertion_state(x_info)
+
+            if x_out:
+                return LightpathState(inserted=x_in, removed=x_out,
+                                      output={self.output_branches[0]: 1})
+
+            # if in, check coating
+            coating_index = self._get_coating_index(y_info)
+
+            out_branch = self._get_output_branch(coating_index, pitch_info)
+
+            # transmission is always 1 if miror is configured properly
+            trans = 1
+
+            return LightpathState(
+                inserted=x_in,
+                removed=x_out,
+                output={out_branch: trans}
+            )
+        except MirrorLogicError as ex:
+            # a state for if calculation cannot proceed
+            self.log.debug(ex)
+            return LightpathState(
+                inserted=False,
+                removed=False,
+                output={self.output_branches[0]: 0}
+            )
+
+    def _find_matching_range_indices(
+        self,
+        ranges: List[List[numeric]],
+        value: numeric
+    ) -> List[bool]:
+        """
+        Helper function for finding the range a particular value falls into
+
+        Parameters
+        ----------
+        ranges : List[List[numeric]]
+            A list of ranges.  Each range has a max and min value (exclusive)
+        value : numeric
+            Value to compare to each range
+
+        Returns
+        -------
+        List[bool]
+            A list of booleans, reporting if the value is in each range
+            in ``ranges``
+        """
+        if len(np.shape(ranges)) < 2:
+            raise MirrorLogicError(
+                "Provided ranges must be a list of ranges (min, max).  "
+                f"Received an array of shape: {np.shape(ranges)}"
+            )
+
+        return [limit[0] < value < limit[1] for limit in ranges]
+
+    def _get_insertion_state(self, x: float) -> Tuple[bool, bool]:
+        """
+        Interpret x-position as inserted or removed, based on ranges
+        provided at init.
+
+        Assumes first range is OUT, second range is IN
+
+        Parameters
+        ----------
+        x : float
+            x-position
+
+        Raises
+        ------
+        MirrorLogicError
+            if the provided insertion ranges are malformed (wrong shape)
+
+        Returns
+        -------
+        is_out, is_in : Tuple[bool, bool]
+            tuple of booleans describing the inserted and removed status
+        """
+        if self.x_ranges == []:
+            # default case for always-in mirrors
+            return False, True
+
+        if np.shape(self.x_ranges) != (2, 2):
+            # improper ranges for insertion, fail
+            raise MirrorLogicError(
+                'Provided x-ranges are the malformed. '
+                f'got: {np.shape(self.x_ranges)}, expected (2,2)')
+
+        ins_bools = self._find_matching_range_indices(self.x_ranges, x)
+        return ins_bools[0], ins_bools[1]  # out, in
+
+    def _get_coating_index(self, y: float) -> int:
+        """
+        Convert y-position to coating index
+
+        Parameters
+        ----------
+        y : float
+            y-position
+
+        Raises
+        ------
+        MirrorLogicError
+            if y is found to be in more than one y-range
+
+        Returns
+        -------
+        index : int
+            The coating state
+        """
+        if self.y_ranges == []:
+            return 1
+
+        y_idxs = self._find_matching_range_indices(self.y_ranges, y)
+        valid_y_idx = np.where(y_idxs)[0]
+        if len(valid_y_idx) > 1:
+            # should only see one valid y-range, coating unknown
+            raise MirrorLogicError('only one y-range should be valid')
+        elif len(valid_y_idx) == 0:
+            # coating state is unknown
+            raise MirrorLogicError('Coating state is unknown, mirror '
+                                   'is not aligned given provided '
+                                   'y-ranges')
+
+        return valid_y_idx[0] + 1
+
+    def _get_output_branch(self, coating_idx: int, pitch: float) -> str:
+        """
+        get output branch given coating state and pitch
+
+        Parameters
+        ----------
+        coating_idx : int
+            index used to access relevant pitch ranges. First coating
+            is 0-indexed
+
+        pitch : float
+            pitch of the mirror, will be compared against provided
+            pitch ranges
+
+        Raises
+        ------
+        MirrorLogicError
+            if number of valid pitch ranges is not 1.  If no valid
+            ranges are found, mirror is not
+
+        Returns
+        -------
+        output_branch : str
+            the name of the current beam destination
+        """
+        if self.pitch_ranges == []:
+            return self.output_branches[0]
+
+        # use coating to pick proper pitch ranges
+        # 0 state is unknown, 1 is the first coating.  decrement to get index
+        pitch_limit_list = self.pitch_ranges[coating_idx]
+
+        # find indices ranges where pitch is valid
+        pitch_idxs = self._find_matching_range_indices(pitch_limit_list, pitch)
+        valid_pitch_idx = np.where(pitch_idxs)[0]
+
+        # pitch should only be within one valid range
+        if len(valid_pitch_idx) != 1:
+            raise MirrorLogicError('only one pitch-range should be valid')
+
+        # index of valid range = index of output_branch + 1
+        # assuming first output_branch is through line
+        return self.output_branches[valid_pitch_idx[0] + 1]
 
     # Tab config: show components
     tab_component_names = True
@@ -487,6 +743,8 @@ class XOffsetMirrorBend(XOffsetMirror):
 
     1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
 
+    Currently (09/28/2022) services: mr1k1
+
     Parameters
     ----------
     prefix : str
@@ -519,6 +777,60 @@ class XOffsetMirrorBend(XOffsetMirror):
     # Tab config: show components
     tab_component_names = True
 
+    def calc_lightpath_state(
+        self,
+        x_up: float,
+        y_up: float,
+        pitch: float
+    ) -> LightpathState:
+        """
+        Special lightpath calculation for mr1k1_bend, which only
+        depends on y-range for insertion, rather than x-range
+
+        Parameters
+        ----------
+        x_up : float
+            x position, unused
+        y_up : float
+            y position, used to determine insertion
+        pitch : float
+            pitch position, unused
+
+        Returns
+        -------
+        LightpathState
+            current lightpath state of the device
+        """
+        try:
+            if np.shape(self.y_ranges) != (2, 2):
+                # improper ranges for insertion, fail
+                raise MirrorLogicError(
+                    'Provided x-ranges are the malformed. '
+                    f'got: {np.shape(self.x_ranges)}, expected (2,2)')
+
+            x_out, x_in = self._find_matching_range_indices(self.y_ranges,
+                                                            y_up)
+
+            if x_in and not x_out:
+                out_branch = self.output_branches[1]
+            else:
+                # default to pass through.  in/out state will block
+                # if state is bad.
+                out_branch = self.output_branches[0]
+
+            return LightpathState(
+                inserted=x_in,
+                removed=x_out,
+                output={out_branch: 1}
+            )
+        except MirrorLogicError as ex:
+            self.log.debug(ex)
+            return LightpathState(
+                inserted=False,
+                removed=False,
+                output={self.output_branches[0]: 0}
+            )
+
 
 # Maintain backward compatibility
 XOffsetMirror2 = XOffsetMirrorBend
@@ -529,6 +841,8 @@ class XOffsetMirrorSwitch(XOffsetMirror):
     X-ray Offset Mirror with Yleft/Yright
 
     1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+
+    currently (09/28/2022) services: mr1k2
 
     Parameters
     ----------
@@ -556,8 +870,21 @@ class XOffsetMirrorSwitch(XOffsetMirror):
     # Tab config: show components
     tab_component_names = True
 
+    # Update for missing components
+    lightpath_cpts = ['x_up.user_readback', 'pitch.user_readback']
 
-class KBOMirror(BaseInterface, GroupDevice):
+    def calc_lightpath_state(
+        self,
+        x_up: float,
+        pitch: float
+    ) -> LightpathState:
+        # currently always in, no switching
+        return LightpathState(
+            inserted=True, removed=False, output={self.output_branches[0]: 1}
+        )
+
+
+class KBOMirror(BaseInterface, GroupDevice, LightpathMixin):
     """
     Kirkpatrick-Baez Mirror with Bender Axes.
 
@@ -594,11 +921,18 @@ class KBOMirror(BaseInterface, GroupDevice):
     us_rtd = Cpt(EpicsSignalRO, ':RTD:BEND:US:1_RBV', kind='normal')
     ds_rtd = Cpt(EpicsSignalRO, ':RTD:BEND:DS:1_RBV', kind='normal')
 
+    lightpath_cpts = ['x.user_readback', 'y.user_readback']
     # Lightpath config: implement inserted, removed, transmission, subscribe
-    inserted = True
-    removed = False
-    transmission = 1
-    SUB_STATE = 'state'
+
+    def calc_lightpath_state(
+        self,
+        x: float,
+        y: float
+    ) -> LightpathState:
+        # TODO: get real logic
+        return LightpathState(
+            inserted=True, removed=False, output={self.output_branches[0]: 1}
+        )
 
     # Tab config: show components
     tab_component_names = True
@@ -735,7 +1069,7 @@ class KBOMirrorHE(KBOMirror):
     tab_component_names = True
 
 
-class FFMirror(BaseInterface, GroupDevice):
+class FFMirror(BaseInterface, GroupDevice, LightpathMixin):
     """
     Fixed Focus Kirkpatrick-Baez Mirror.
 
@@ -763,10 +1097,18 @@ class FFMirror(BaseInterface, GroupDevice):
     pitch_enc_rms = Cpt(PytmcSignal, ':ENC:PITCH:RMS', io='i', kind='normal')
 
     # Lightpath config: implement inserted, removed, transmission, subscribe
-    inserted = True
-    removed = False
-    transmission = 1
-    SUB_STATE = 'state'
+    lightpath_cpts = ['x.user_readback', 'y.user_readback']
+
+    # Lightpath config: implement inserted, removed, transmission, subscribe
+    def calc_lightpath_state(
+        self,
+        x: float,
+        y: float
+    ) -> LightpathState:
+        # TODO: get real logic
+        return LightpathState(
+            inserted=True, removed=False, output={self.output_branches[0]: 1}
+        )
 
     # Tab config: show components
     tab_component_names = True
@@ -968,6 +1310,116 @@ class XOffsetMirrorState(XOffsetMirror, CoatingState):
     """
     # UI representation
     _icon = 'fa.minus-square'
+
+    lightpath_cpts = ['x_up.user_readback', 'coating.state',
+                      'pitch.user_readback']
+
+    def _get_coating_index(self, y: int) -> int:
+        """
+        return coating index, essentially just passing through the
+        provided argument decremented by one.  (0 is unknown)
+
+        Parameters
+        ----------
+        y : int
+            coating state
+
+        Returns
+        -------
+        int
+            coating index
+
+        Raises
+        ------
+        MirrorLogicError
+            if mirror coating state is not valid or unknown
+        """
+        if y < 1:
+            raise MirrorLogicError('coating state not valid or unknown')
+        return y - 1
+
+    def calc_lightpath_state(
+        self,
+        x_up: float,
+        coating_state: int,
+        pitch: float
+    ) -> LightpathState:
+        return self._calc_lightpath_state(x_up, coating_state, pitch)
+
+
+class MirrorInsertState(TwinCATStatePMPS):
+    """
+    A state positioner with two states (3 including Unknown) representing
+    insertion state of mirror
+    """
+    _in_if_not_out = True
+
+    config = UpCpt(state_count=2)
+
+
+class XOffsetMirrorXYState(XOffsetMirrorState):
+    """
+    X-ray Offset Mirror with state positioners for both coating (y)
+    and insertion (x).  Thus, lightpath state calcs only require pitch
+    ranges.
+
+    Currently (09/28/2022) services: mr1l3, mr1l4.
+
+    Parameters
+    ----------
+    pitch_thresholds
+    """
+
+    insertion = Cpt(MirrorInsertState, ':MMS:XUP:STATE',
+                    doc='Control of mirror insertion via saved positions')
+
+    lightpath_cpts = ['insertion.state', 'coating.state',
+                      'pitch.user_readback']
+
+    def _get_insertion_state(
+        self,
+        insertion_state: int
+    ) -> Tuple[bool, bool]:
+        """
+        return insertion state, given presence of state PV's
+
+        Parameters
+        ----------
+        insertion_state : int
+            insertion state (0: unknown, 1: out, 2: in)
+
+        Returns
+        -------
+        Tuple[bool, bool]
+            is_out, is_in
+
+        Raises
+        ------
+        MirrorLogicError
+            if insertion state is not initialized.  re-calculation
+            will be scheduled.
+        """
+        if not self.insertion._state_initialized:
+            self.log.debug('insertion state not initialized, '
+                           'scheduling lightpath calcs for later')
+
+            schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+            raise MirrorLogicError('insertion state not initialized')
+
+        x_in = self.insertion.check_inserted(insertion_state)
+        x_out = self.insertion.check_removed(insertion_state)
+
+        return x_out, x_in
+
+    def calc_lightpath_state(
+        self,
+        insertion_state: int,
+        coating_state: int,
+        pitch: float
+    ) -> LightpathState:
+        return super()._calc_lightpath_state(insertion_state,
+                                             coating_state,
+                                             pitch)
 
 
 class OpticsPitchNotepad(BaseInterface, Device):
