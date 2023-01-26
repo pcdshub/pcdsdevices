@@ -1,6 +1,7 @@
 import copy
 import enum
 import logging
+import time
 import typing
 import warnings
 
@@ -124,6 +125,9 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
     """ + ophyd.pseudopos.PseudoPositioner.__doc__
 
     def __init__(self, *args, **kwargs):
+        self._my_move = False
+        self._move_time = 0
+        self._my_move_timeout = 10
         super().__init__(*args, **kwargs)
 
         if len(self.RealPosition._fields) == 1:
@@ -131,6 +135,8 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
 
         if len(self.PseudoPosition._fields) == 1:
             self.PseudoPosition.__float__ = _as_float
+
+        self._sub_our_move_checks()
 
     def _update_notepad_ioc(self, position, attr):
         """
@@ -194,6 +200,8 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         RuntimeError
             If motion fails other than timing out.
         '''
+        self._my_move = True
+        self._move_time = time.monotonic()
         status = super().move(position, wait=wait, timeout=timeout,
                               moved_cb=moved_cb)
         self._update_notepad_ioc(position, 'notepad_setpoint')
@@ -202,7 +210,8 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
     def _update_position(self):
         """Update the pseudo position based on that of the real positioners."""
         position = super()._update_position()
-        self._update_notepad_ioc(position, 'notepad_readback')
+        if self._my_move:
+            self._update_notepad_ioc(position, 'notepad_readback')
         return position
 
     def set_current_position(self, position):
@@ -220,6 +229,35 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         real_pos = self.forward(position)
         for motor, pos in zip(self._real, real_pos):
             motor.set_current_position(pos)
+
+    def _our_move_check(self, **kwargs):
+        """
+        If a different session moves this device, it's not our move!
+
+        This callback will set the self._my_move flag to False if the setpoint
+        updates far apart in time from our last move.
+
+        This will stop this instance from updating the notepad_readback
+        signals.
+        """
+        if time.monotonic() - self._move_time > self._my_move_timeout:
+            self._my_move = False
+
+    def _sub_our_move_checks(self):
+        """
+        Set up subscriptions for self._our_move_check
+        """
+        for positioner in self._pseudo:
+            try:
+                signal = getattr(positioner, 'notepad_setpoint', None)
+                if signal is None:
+                    continue
+                signal.subscribe(self._our_move_check)
+            except Exception as ex:
+                self.log.debug(
+                    'Failed to set up _our_move_check subscriptions.',
+                    exc_info=ex,
+                )
 
 
 class SyncAxesBase(FltMvInterface, PseudoPositioner):
