@@ -1,17 +1,20 @@
 import pytest
 from ophyd.sim import make_fake_device
 
-from ..Pneumatic import BeckhoffPneumatic
+from ..pneumatic import BeckhoffPneumatic
 
 
 @pytest.fixture(scope='function')
 def fake_stopper():
     FakeStopper = make_fake_device(BeckhoffPneumatic)
-    return FakeStopper('TST:ST1', name="Test Stopper")
+    stopper = FakeStopper('TST:ST1', name="Test Stopper")
+    stopper.insert_ok.sim_put(1)
+    stopper.retract_ok.sim_put(1)
+    return stopper
 
 
 def test_stopper_inserted(fake_stopper):
-    status = fake_stopper.insert(wait=True)
+    status = fake_stopper.insert()
     assert status.success
     assert status.done
     assert fake_stopper.limit_switch_in
@@ -19,7 +22,7 @@ def test_stopper_inserted(fake_stopper):
 
 
 def test_stopper_removed(fake_stopper):
-    status = fake_stopper.remove(wait=True)
+    status = fake_stopper.remove()
     assert status.success
     assert status.done
     assert fake_stopper.limit_switch_out
