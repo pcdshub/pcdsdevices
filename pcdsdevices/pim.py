@@ -40,8 +40,9 @@ class PIMY(InOutRecordPositioner, BaseInterface):
     beam path.
     """
 
-    states_list = ['DIODE', 'YAG', 'OUT']
-    in_states = ['YAG', 'DIODE']
+    # Automatically discover states (not all PIMs have DIODE)
+    states_list = []
+    _in_if_not_out = True
 
     _states_alias = {'YAG': 'IN'}
     # QIcon for UX
