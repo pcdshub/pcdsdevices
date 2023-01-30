@@ -1,4 +1,4 @@
-1106 maint_autoupdate_precommit
+1107 maint_autoupdate_precommit
 ###############################
 
 API Changes
