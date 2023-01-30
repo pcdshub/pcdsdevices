@@ -774,6 +774,11 @@ class XOffsetMirrorBend(XOffsetMirror):
     us_rtd = Cpt(EpicsSignalRO, ':RTD:US:1_RBV', kind='normal')
     ds_rtd = Cpt(EpicsSignalRO, ':RTD:DS:1_RBV', kind='normal')
 
+    # Cooling
+    cool_flow1 = Cpt(EpicsSignalRO, ':FLOW:1_RBV', kind='normal')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FLOW:2_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PRESS:1_RBV', kind='normal')
+
     # Tab config: show components
     tab_component_names = True
 
