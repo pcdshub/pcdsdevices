@@ -104,22 +104,22 @@
     
         * - flow_1
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:FSW:01``
-          - flow switch 1
+          - ``:FWM:1``
+          - flow meter 1
           - normal
           - 
     
         * - flow_2
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:FSW:02``
-          - flow switch 2
+          - ``:FWM:2``
+          - flow meter 2
           - normal
           - 
     
         * - pres_1
           - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:P1``
-          - pressure sensor 1
+          - ``:PRSM:1``
+          - pressure meter 1
           - normal
           - 
     

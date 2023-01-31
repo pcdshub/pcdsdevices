@@ -598,13 +598,30 @@ pcdsdevices.lxe
     pcdsdevices.lxe._ScaledUnitConversionDerivedSignal
     pcdsdevices.lxe.load_calibration_file
 
+pcdsdevices.make_ophyd_device
+-----------------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.make_ophyd_device.flatten_list
+    pcdsdevices.make_ophyd_device.get_components
+    pcdsdevices.make_ophyd_device.make_class
+    pcdsdevices.make_ophyd_device.make_class_line
+    pcdsdevices.make_ophyd_device.make_class_name
+    pcdsdevices.make_ophyd_device.make_cpt
+    pcdsdevices.make_ophyd_device.make_signal
+    pcdsdevices.make_ophyd_device.make_signal_wrbv
+    pcdsdevices.make_ophyd_device.print_class
+    pcdsdevices.make_ophyd_device.recurse_record
+    pcdsdevices.make_ophyd_device.write_file
+
 pcdsdevices.mirror
 ------------------
 
 .. autosummary::
     :toctree: generated
 
-    pcdsdevices.mirror.CoatingState
     pcdsdevices.mirror.FFMirror
     pcdsdevices.mirror.FFMirrorZ
     pcdsdevices.mirror.Gantry
@@ -623,6 +640,7 @@ pcdsdevices.mirror
     pcdsdevices.mirror.XOffsetMirrorBend
     pcdsdevices.mirror.XOffsetMirrorRTDs
     pcdsdevices.mirror.XOffsetMirrorState
+    pcdsdevices.mirror.XOffsetMirrorStateCool
     pcdsdevices.mirror.XOffsetMirrorSwitch
     pcdsdevices.mirror.XOffsetMirrorXYState
 
@@ -718,6 +736,14 @@ pcdsdevices.pmps
     :toctree: generated
 
     pcdsdevices.pmps.TwinCATStatePMPS
+
+pcdsdevices.pneumatic
+---------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.pneumatic.BeckhoffPneumatic
 
 pcdsdevices.positioner
 ----------------------

@@ -18,6 +18,34 @@
           - Kind
           - Notes
     
+        * - re_connect
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RECONNECT``
+          - Connect button
+          - normal
+          - 
+    
+        * - id
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:IDN``
+          - Device ID
+          - hinted
+          - 
+    
+        * - remote_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:MODE``
+          - Remote mode
+          - normal
+          - 
+    
+        * - output
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OUTPUT``
+          - Turn on/off all channel outputs
+          - normal
+          - 
+    
         * - ch1
           - :class:`~pcdsdevices.rs_powersupply.RSChannel`
           - ``:1:``
@@ -47,6 +75,14 @@
           - 
     
 
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

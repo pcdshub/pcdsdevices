@@ -1,0 +1,6 @@
+﻿pcdsdevices.make\_ophyd\_device.make\_class\_line
+=================================================
+
+.. currentmodule:: pcdsdevices.make_ophyd_device
+
+.. autofunction:: make_class_line

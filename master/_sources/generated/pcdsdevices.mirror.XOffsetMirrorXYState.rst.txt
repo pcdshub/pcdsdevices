@@ -18,18 +18,18 @@
           - Kind
           - Notes
     
-        * - coating
-          - :class:`~pcdsdevices.mirror.TwinCATMirrorStripe`
-          - ``:COATING:STATE``
-          - Control of the coating states via saved positions.
-          - hinted
-          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirrorState`
-    
         * - lightpath_summary
           - :class:`~pcdsdevices.signal.SummarySignal`
           - 
           - 
           - omitted
+          - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirrorState`
+    
+        * - coating
+          - :class:`~pcdsdevices.mirror.TwinCATMirrorStripe`
+          - ``:COATING:STATE``
+          - Control of the coating states via saved positions.
+          - hinted
           - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirrorState`
     
         * - y_up

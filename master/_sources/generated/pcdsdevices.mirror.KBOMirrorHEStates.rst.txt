@@ -118,21 +118,21 @@
     
         * - cool_flow1
           - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:FLOW:1_RBV``
+          - ``:FWM:1_RBV``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
     
         * - cool_flow2
           - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:FLOW:2_RBV``
+          - ``:FWM:2_RBV``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
     
         * - cool_press
           - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:PRESS:1_RBV``
+          - ``:PRSM:1_RBV``
           - 
           - normal
           - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`

@@ -18,6 +18,13 @@
           - Kind
           - Notes
     
+        * - done
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
         * - set_position (FCpt)
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{prefix}:M{self._channel}:CURPOS``
@@ -88,6 +95,34 @@
           - omitted
           - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
     
+        * - setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
+        * - readback (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CURPOS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
+        * - user_setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
+        * - user_readback (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CURPOS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllBase`
+    
         * - name_0 (FCpt)
           - :class:`~ophyd.signal.EpicsSignal`
           - ``{prefix}:M{self._channel}:NAME0``
@@ -128,6 +163,16 @@
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     
     
@@ -137,14 +182,30 @@
     .. rubric:: Methods
 
     
+    .. automethod:: camonitor
     .. automethod:: configure
     .. automethod:: describe
+    .. automethod:: done_comparator
+    .. automethod:: end_monitor_thread
     .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
     .. automethod:: read
     .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
     .. automethod:: stop
     .. automethod:: summary
     .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
     
     
 
@@ -153,10 +214,26 @@
     .. rubric:: Attributes
 
     
+    .. autoattribute:: actuate
+    .. autoattribute:: actuate_value
+    .. autoattribute:: atol
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
     .. autoattribute:: hints
     .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: rtol
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
     .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
     
     

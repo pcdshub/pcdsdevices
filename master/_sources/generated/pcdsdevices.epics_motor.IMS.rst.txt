@@ -326,6 +326,7 @@
     .. automethod:: clear_stall
     .. automethod:: configure
     .. automethod:: describe
+    .. automethod:: diff_configuration
     .. automethod:: disable
     .. automethod:: enable
     .. automethod:: end_monitor_thread
