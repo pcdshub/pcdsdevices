@@ -613,6 +613,7 @@ class IMS(PCDSMotorBase):
         'configure',
         'get_configuration',
         'find_configuration',
+        'diff_configuration'
     ]
 
     # The singleton parameter manager object.
@@ -758,7 +759,7 @@ class IMS(PCDSMotorBase):
         return self._pm.get_config(self.prefix)
 
     @staticmethod
-    def find_configuration(pattern, case_insensitive=True, display=20):
+    def find_configuration(pattern, case_insensitive=True, display=30):
         """
         Find parameter manager configurations that match the pattern.
 
@@ -777,7 +778,7 @@ class IMS(PCDSMotorBase):
         Returns a list of strings if display is None, and nothing otherwise.
         """
         IMS._setup_and_check_pmgr()
-        matches = IMS._pm.match_config(pattern, ci=case_insensitive)
+        matches = IMS._pm.match_config(pattern, ci=case_insensitive, parent='USR')
         if display is None:
             return matches
         if len(matches) >= display:
@@ -788,6 +789,28 @@ class IMS(PCDSMotorBase):
             print("Matches for '%s':" % pattern)
             for m in matches:
                 print("    %s" % m)
+
+    def diff_configuration(self, cfgname=None):
+        """
+        Find the differences between the actual motor settings and the
+        current parameter manager configuration.
+
+        Parameters
+        ----------
+        cfgname : str
+            The name of the configuration to compare the settings to.  If
+            this is None, use the current configuration.
+
+        Returns
+        -------
+        diff : dict
+            A dictionary mapping field names to (actual, config) tuples of
+            differing values.
+
+        Raises an exception if the comparison fails for any reason.
+        """
+        IMS._setup_and_check_pmgr()
+        return self._pm.diff_config(self.prefix, cfgname)
 
     @staticmethod
     def setup_pmgr():
