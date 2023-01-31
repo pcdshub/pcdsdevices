@@ -41,7 +41,7 @@ class BeckhoffPneumatic(BaseInterface, LightpathMixin):
     reset = Cpt(PytmcSignal, ':bReset', io="io")
     error = Cpt(PytmcSignal, ':PLC:bError', io="i")
     error_id = Cpt(PytmcSignal, ':PLC:nErrorId', io="i")
-    error_message = Cpt(PytmcSignal, ':PLC:sErrorMessage', io="i")
+    error_message = Cpt(PytmcSignal, ':PLC:sErrorMessage', io="i", string=True)
     position_state = Cpt(PytmcSignal, ':nPositionState', kind='hinted', io="i")
 
     def callback(self, *, old_value, value, **kwargs):
