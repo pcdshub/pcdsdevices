@@ -1287,17 +1287,15 @@ class KBOMirrorHEStates(KBOMirrorHE):
     tab_component_names = True
 
 
-class CoatingState(Device):
-    """
-    Extra parent class to put "coating" as the first device in order.
-
-    This makes it appear at the top of the screen in typhos.
-    """
-    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
-                  doc='Control of the coating states via saved positions.')
-
-
-class XOffsetMirrorState(XOffsetMirror, CoatingState):
+@reorder_components(
+    end_with=[
+        'coating', 'y_up', 'x_up', 'pitch', 'bender', 'y_dwn',
+        'x_dwn', 'gantry_x', 'gantry_y', 'couple_y', 'couple_x', 'decouple_y',
+        'decouple_x', 'couple_status_y', 'couple_status_x', 'y_enc_rms',
+        'x_enc_rms', 'pitch_enc_rms', 'bender_enc_rms'
+    ]
+)
+class XOffsetMirrorState(XOffsetMirror):
     """
     X-ray Offset Mirror with Yleft/Yright
 
@@ -1313,6 +1311,9 @@ class XOffsetMirrorState(XOffsetMirror, CoatingState):
     name : str
         Alias for the device.
     """
+    coating = Cpt(TwinCATMirrorStripe, ':COATING:STATE', kind='hinted',
+                  doc='Control of the coating states via saved positions.')
+
     # UI representation
     _icon = 'fa.minus-square'
 
@@ -1350,6 +1351,30 @@ class XOffsetMirrorState(XOffsetMirror, CoatingState):
         pitch: float
     ) -> LightpathState:
         return self._calc_lightpath_state(x_up, coating_state, pitch)
+
+
+class XOffsetMirrorStateCool(XOffsetMirrorState):
+    """
+    X-ray Offset Mirror with Yleft/Yright
+
+    1st and 2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+
+    With Coating State selection implemented.
+
+    With cooling and pressure sensors installed.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    # Cooling
+    cool_flow1 = Cpt(EpicsSignalRO, ':FLOW:1_RBV', kind='normal')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FLOW:2_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PRESS:1_RBV', kind='normal')
 
 
 class MirrorInsertState(TwinCATStatePMPS):
