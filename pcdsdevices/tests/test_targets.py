@@ -305,12 +305,12 @@ def test_set_m_n_points(fake_grid_stage):
 def test_mesh_interpolation():
     a_coeffs, b_coeffs = mesh_interpolation((0, 0), (4, 0), (4, 4),
                                             (0, 4))
-    assert np.isclose(a_coeffs, [0.0, 4.0,  0.0, 0.0]).all()
+    assert np.isclose(a_coeffs, [0.0, 4.0, 0.0, 0.0]).all()
     assert np.isclose(b_coeffs, [0.0, 0.0, 4.0, 0.0]).all()
     # test with slope -0.25
     a_coeffs, b_coeffs = mesh_interpolation((0, 0), (4, -1), (5, 3),
                                             (1, 4))
-    assert np.isclose(a_coeffs, [0.0, 4.0,  1.0, 0.0]).all()
+    assert np.isclose(a_coeffs, [0.0, 4.0, 1.0, 0.0]).all()
     assert np.isclose(b_coeffs, [0.0, -1.0, 4.0, 0.0]).all()
 
 

@@ -577,28 +577,28 @@ class CrystalTower2(BaseInterface, GroupDevice):
         th_user = get_status_float(
             status_info, 'th2', 'position')
         th_dial = get_status_float(
-            status_info,  'th2', 'dial_position', 'value')
+            status_info, 'th2', 'dial_position', 'value')
 
         chi_units = get_status_value(
             status_info, 'chi2', 'user_setpoint', 'units')
         chi_user = get_status_float(
-            status_info,  'chi2', 'position')
+            status_info, 'chi2', 'position')
         chi_dial = get_status_float(
-            status_info,  'chi2', 'dial_position', 'value')
+            status_info, 'chi2', 'dial_position', 'value')
 
         y_units = get_status_value(
             status_info, 'y2', 'user_setpoint', 'units')
         y_user = get_status_float(
-            status_info,  'y2', 'position')
+            status_info, 'y2', 'position')
         y_dial = get_status_float(
-            status_info,  'y2', 'dial_position', 'value')
+            status_info, 'y2', 'dial_position', 'value')
 
         hn_units = get_status_value(
             status_info, 'h2n', 'user_setpoint', 'units')
         hn_user = get_status_float(
-            status_info,  'h2n', 'position')
+            status_info, 'h2n', 'position')
         hn_dial = get_status_float(
-            status_info,  'h2n', 'dial_position', 'value')
+            status_info, 'h2n', 'dial_position', 'value')
 
         diode_units = get_status_value(
             status_info, 'diode2', 'user_setpoint', 'units')
@@ -689,7 +689,7 @@ class DiagnosticsTower(BaseInterface, GroupDevice):
         dv_units = get_status_value(
             status_info, 'dv', 'user_setpoint', 'units')
         dv_user = get_status_float(
-            status_info,  'dv', 'position')
+            status_info, 'dv', 'position')
         dv_dial = get_status_float(
             status_info, 'dv', 'dial_position', 'value')
 
@@ -935,7 +935,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
 
         try:
             energy = self.get_energy()
-            energy = "{:.4f}".format(energy)
+            energy = f"{energy:.4f}"
         except Exception:
             energy = 'Unknown'
 
@@ -1155,7 +1155,7 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
 
         try:
             energy = self.get_energy()
-            energy = "{:.4f}".format(energy)
+            energy = f"{energy:.4f}"
         except Exception:
             energy = 'Unknown'
 
@@ -1643,7 +1643,7 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
 
         try:
             energy = self.get_energy()
-            energy = "{:.4f}".format(energy)
+            energy = f"{energy:.4f}"
         except Exception:
             energy = 'Unknown'
 

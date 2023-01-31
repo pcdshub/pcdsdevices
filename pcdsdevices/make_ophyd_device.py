@@ -44,7 +44,7 @@ def make_class_name(pv):
     """
     Make a class name based on a given PV.
     """
-    return '{}'.format(pv.title())
+    return f'{pv.title()}'
 
 
 def make_class_line(name, lines):
@@ -52,7 +52,7 @@ def make_class_line(name, lines):
     Make the first line of a class definition, based on a given PV or name.
     Appends the generated line to a list of lines.
     """
-    s = 'class {}(BaseInterface, Device):'.format(make_class_name(name))
+    s = f'class {make_class_name(name)}(BaseInterface, Device):'
     lines.append(s)
 
 

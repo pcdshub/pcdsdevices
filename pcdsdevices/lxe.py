@@ -52,9 +52,7 @@ if typing.TYPE_CHECKING:
     import matplotlib  # noqa
 
 
-def load_calibration_file(
-        filename: typing.Union[pathlib.Path, str]
-        ) -> np.ndarray:
+def load_calibration_file(filename: typing.Union[pathlib.Path, str]) -> np.ndarray:
     """
     Load a calibration file.
 
@@ -85,7 +83,7 @@ class LaserEnergyPlotContext:
     table: np.ndarray
     figure: 'matplotlib.figure.Figure'
     pyplot: types.ModuleType  # matplotlib.pyplot
-    column_names: typing.Tuple[str, ...]
+    column_names: tuple[str, ...]
     _subplot: 'matplotlib.axes._subplots.AxesSubplot'
 
     def __init__(self, *,

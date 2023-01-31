@@ -6,7 +6,7 @@ from __future__ import annotations
 import copy
 import functools
 import logging
-from typing import Any, ClassVar, Dict, List, Optional
+from typing import Any, ClassVar
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device, required_for_connection
@@ -84,8 +84,7 @@ class StatePositioner(MvInterface, Device, PositionerBase):
 
     def __init__(self, prefix, *, name, **kwargs):
         if self.__class__ is StatePositioner:
-            raise TypeError(('StatePositioner must be subclassed with at '
-                             'least a state signal'))
+            raise TypeError('StatePositioner must be subclassed with at least a state signal')
         self._state_initialized = False
         self._has_subscribed_state = False
         super().__init__(prefix, name=name, **kwargs)
@@ -113,7 +112,7 @@ class StatePositioner(MvInterface, Device, PositionerBase):
     def _late_state_init(
         self,
         *args,
-        enum_strs: Optional[List[str]] = None,
+        enum_strs: list[str] | None = None,
         **kwargs
     ):
         if enum_strs is not None and not self.states_list:
@@ -312,9 +311,10 @@ class StatePositioner(MvInterface, Device, PositionerBase):
         enum_name = self.__class__.__name__ + 'States'
         enum = HelpfulIntEnum(enum_name, state_def, start=0, module=__name__)
         if len(enum) != state_count:
-            raise ValueError(('Bad states definition! Inconsistency in '
-                              'states_list {} or _states_alias {}'
-                              ''.format(self.states_list, self._states_alias)))
+            raise ValueError(
+                'Bad states definition! Inconsistency in states_list {} or _states_alias {}'
+                ''.format(self.states_list, self._states_alias)
+            )
         return enum
 
     @property
@@ -372,15 +372,16 @@ class PVStatePositioner(StatePositioner):
 
     state = Cpt(PVStateSignal, kind='hinted')
 
-    _state_logic: ClassVar[Dict[str, Dict[Any, str]]] = {}
+    _state_logic: ClassVar[dict[str, dict[Any, str]]] = {}
     _state_logic_mode: ClassVar[str] = 'ALL'
-    _state_logic_set_ref: ClassVar[Optional[str]] = None
+    _state_logic_set_ref: ClassVar[str | None] = None
 
     def __init__(self, prefix, *, name, **kwargs):
         if self.__class__ is PVStatePositioner:
-            raise TypeError(('PVStatePositioner must be subclassed, '
-                             'adding signals and filling in the '
-                             '_state_logic dict.'))
+            raise TypeError(
+                "PVStatePositioner must be subclassed, adding signals and filling in the "
+                "_state_logic dict."
+            )
         if self._state_logic and not self.states_list:
             self.states_list = []
             for state_mapping in self._state_logic.values():
@@ -391,8 +392,9 @@ class PVStatePositioner(StatePositioner):
         super().__init__(prefix, name=name, **kwargs)
 
     def _do_move(self, state):
-        raise NotImplementedError(('Class must implement a _do_move method or '
-                                   'override the move and set methods'))
+        raise NotImplementedError(
+            "Class must implement a _do_move method or override the move and set methods"
+        )
 
 
 class StateRecordPositionerBase(StatePositioner, GroupDevice):
@@ -615,7 +617,7 @@ def get_dynamic_state_attr(state_index: int) -> str:
     return f'state{state_index:02}'
 
 
-def state_config_dotted_names(state_count: int) -> list[Optional[str]]:
+def state_config_dotted_names(state_count: int) -> list[str | None]:
     """
     Returns the full dotted names of the state config state_name components.
 
@@ -639,7 +641,7 @@ def state_config_dotted_names(state_count: int) -> list[Optional[str]]:
     ]
 
 
-def state_config_dotted_velos(state_count: int) -> list[Optional[str]]:
+def state_config_dotted_velos(state_count: int) -> list[str | None]:
     """
     Returns the full dotted names of the state config velo components.
 
