@@ -3,8 +3,7 @@
 
 API Changes
 -----------
-- Add module pneumatic.py
-- Add test test_pneumatic.py
+- N/A
 
 Features
 --------
