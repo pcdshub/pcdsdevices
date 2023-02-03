@@ -47,6 +47,11 @@ requirements:
     - xraydb <4.5.0
 
 test:
+  requirements:
+    - pytest
+    - pytest-timeout
+    - matplotlib
+    - typhos
   imports:
     - {{ import_name }}
 
