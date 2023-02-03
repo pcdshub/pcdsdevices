@@ -43,6 +43,11 @@ requirements:
     - typhos >=2.4.0
 
 test:
+  requirements:
+    - pytest
+    - pytest-timeout
+    - matplotlib
+    - typhos
   imports:
     - {{ import_name }}
 
