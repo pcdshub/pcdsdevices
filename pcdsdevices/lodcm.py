@@ -1947,11 +1947,14 @@ class XPPLODCM(LODCM):
         removed = self.tower1.h1n_state.check_removed(h1n_state)
 
         if inserted and not removed:
-            output = {'L0': 0.5,
-                      'L1': 0.5}
+            # ignore attenuation from the LODCM splitting beam
+            output = {'L0': 1,
+                      'L2': 1}
         elif not inserted and removed:
+            # if removed, full transmission through L
             output = {'L0': 1}
         else:
+            # for unknown states, mark as blocking
             output = {'L0': 0}
 
         return LightpathState(
