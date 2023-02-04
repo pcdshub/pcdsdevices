@@ -1951,7 +1951,7 @@ class XPPLODCM(LODCM):
             output = {'L0': 1,
                       'L2': 1}
         elif not inserted and removed:
-            # if removed, full transmission through L
+            # if removed, full transmission through L0
             output = {'L0': 1}
         else:
             # for unknown states, mark as blocking
