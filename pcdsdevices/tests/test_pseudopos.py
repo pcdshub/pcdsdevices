@@ -1,9 +1,12 @@
 import logging
+import time
+from typing import Any
 
 import numpy as np
 import pytest
 from ophyd.device import Component as Cpt
 from ophyd.positioner import SoftPositioner
+from ophyd.sim import make_fake_device
 
 from ..pseudopos import (DelayBase, LookupTablePositioner, OffsetMotorBase,
                          PseudoSingleInterface, SimDelayStage, SyncAxesBase,
@@ -228,3 +231,95 @@ def test_lut_positioner():
 
     assert lut.real.limits == (0, 9)
     assert lut.pseudo.limits == (40, 400)
+
+
+FakeDelayBase = make_fake_device(DelayBase)
+
+
+class FakeDelay(FakeDelayBase):
+    motor = Cpt(FastMotor, egu='mm')
+
+
+def link_two_signals(signal1, signal2):
+    def put_to_1(value, old_value, **kwargs):
+        if value != old_value:
+            signal1.put(value)
+
+    def put_to_2(value, old_value, **kwargs):
+        if value != old_value:
+            signal2.put(value)
+
+    signal1.subscribe(put_to_2)
+    signal2.subscribe(put_to_1)
+
+
+@pytest.fixture(scope='function')
+def linked_delays():
+    delay_one = FakeDelay('SIM', name='delay_one', n_bounces=1)
+    delay_two = FakeDelay('SIM', name='delay_two', n_bounces=2)
+    link_two_signals(
+        delay_one.delay.notepad_readback,
+        delay_two.delay.notepad_readback,
+    )
+    link_two_signals(
+        delay_one.delay.notepad_setpoint,
+        delay_two.delay.notepad_setpoint,
+    )
+    delay_one._my_move_timeout = 0.4
+    delay_two._my_move_timeout = 0.4
+    return delay_one, delay_two
+
+
+def wait_for(
+    obj: Any,
+    attr: str,
+    value: Any,
+    timeout: float = 1,
+    dt: float = 0.1,
+):
+    start_time = time.monotonic()
+    while time.monotonic() - start_time > timeout:
+        if getattr(obj, attr) == value:
+            return
+        time.sleep(dt)
+    assert getattr(obj, attr) == value
+
+
+def test_implicit_mutex(linked_delays: tuple[FakeDelay, FakeDelay]):
+    # Previous bug: two delays could fight over control of ophyd_readback
+    delay_one, delay_two = linked_delays
+
+    def assert_no_updates():
+        value1 = delay_one.delay.notepad_readback.get()
+        value2 = delay_two.delay.notepad_readback.get()
+        if not delay_one._my_move:
+            delay_one._update_position()
+        if not delay_two._my_move:
+            delay_two._update_position()
+        assert delay_one.delay.notepad_readback.get() == value1
+        assert delay_two.delay.notepad_readback.get() == value2
+
+    # Let's do moves and check _my_move attribute
+    assert not delay_one._my_move
+    assert not delay_two._my_move
+    assert_no_updates()
+
+    # First move: delay_one should immediately grab _my_move
+    delay_one.move(1, wait=False)
+    assert delay_one._my_move
+    assert not delay_two._my_move
+    assert_no_updates()
+
+    # Second move: after _my_move_tomeout, delay_one should drop _my_move
+    time.sleep(delay_one._my_move_timeout)
+    delay_two.move(2, wait=False)
+    assert delay_two._my_move
+    wait_for(delay_one, '_my_move', False)
+    assert_no_updates()
+
+    # Do it again but the other way
+    time.sleep(delay_two._my_move_timeout)
+    delay_one.move(3, wait=False)
+    assert delay_one._my_move
+    wait_for(delay_two, '_my_move', False)
+    assert_no_updates()

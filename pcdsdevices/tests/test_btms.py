@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Optional
 
 import pytest
 
@@ -48,7 +48,7 @@ from ..lasers.btms_config import (BtmsDestinationState, BtmsSourceState,
 def test_destination_position_path(
     dest1: DestinationPosition,
     dest2: DestinationPosition,
-    path: Tuple[DestinationPosition, ...],
+    path: tuple[DestinationPosition, ...],
 ):
     assert dest1.path_to(dest2) == path
 
@@ -372,10 +372,10 @@ def test_target_in_use_error():
 
     for source in state.sources:
         start_pos = state.sources[source].destination
-        other_destinations = set(
+        other_destinations = {
             state.sources[other].destination for other in state.sources
             if state.sources[other].destination != start_pos
-        )
+        }
         assert len(other_destinations) > 1
         for dest in other_destinations:
             if dest is not None:

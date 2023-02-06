@@ -124,7 +124,7 @@ channel_cpts = {}
 for channel in CHANNELS[:-1]:
     channel_cpts[f'ch{channel}'] = Cpt(
         DgChannel, f":{channel.lower()}", name=f"ch{channel}"
-        )
+    )
 
 DelayGenerator = type('DelayGenerator', (DelayGeneratorBase, ), channel_cpts)
 Dg = DelayGenerator

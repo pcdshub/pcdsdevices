@@ -204,7 +204,7 @@ def test_moving(fake_kappa):
     (0, 0, 0), (1, 2, 3), (10, 20, 30), (45, 45, 45),
     (6, 2, 6), (42, 0, 0), (0, 42, 0), (0, 0, 42),
     (7, 7, 7), (-1, -2, -3), (-10, 25, -30), (9, -1, 1),
-    ])
+])
 def test_kappa_calculations(fake_kappa, eta, kappa, phi):
     e_eta, e_chi, e_phi = fake_kappa.k_to_e(eta, kappa, phi)
     k_eta, k_kap, k_phi = fake_kappa.e_to_k(e_eta, e_chi, e_phi)
@@ -217,7 +217,7 @@ def test_kappa_calculations(fake_kappa, eta, kappa, phi):
     (0, 225, 0), (1, 227, 3), (10, 245, 30), (45, 270, 45),
     (6, 227, 6), (42, 225, 0), (0, 267, 0), (0, 225, 42),
     (7, 232, 7), (-1, 223, -3), (-10, 250, -30), (9, 224, 1),
-    ])
+])
 def test_kappa_calculations_big_kap(fake_kappa, eta, kappa, phi):
     fake_kappa.kappa.move(225, wait=True)
     e_eta, e_chi, e_phi = fake_kappa.k_to_e(eta, kappa, phi)

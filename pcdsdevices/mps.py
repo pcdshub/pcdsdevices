@@ -105,7 +105,7 @@ class MPS(MPSBase, Device):
 
     # Signals
     fault = Cpt(EpicsSignalRO, '_MPSC', kind='hinted')
-    bypass = Cpt(EpicsSignal,   '_BYPS', kind='config')
+    bypass = Cpt(EpicsSignal, '_BYPS', kind='config')
 
     tab_whitelist = ['faulted', 'bypassed']
 
@@ -127,7 +127,7 @@ class MPS(MPSBase, Device):
         self.bypass.subscribe(self._fault_change, run=False)
 
 
-def mps_factory(clsname, cls,  *args, mps_prefix, veto=False,  **kwargs):
+def mps_factory(clsname, cls, *args, mps_prefix, veto=False, **kwargs):
     """
     Create a new object of arbitrary class capable of storing MPS information.
 
