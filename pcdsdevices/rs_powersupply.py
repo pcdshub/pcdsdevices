@@ -17,7 +17,16 @@ class RSChannel(Device):
     name: str, keyword-only
         A name to refer to the relevant Rohde-Schwarz channel.
     """
-
+    connect = Cpt(EpicsSignal, 'RECONNECT', kind='normal',
+                  doc='Connect button')
+    device_id = Cpt(EpicsSignal, 'IDN', kind='normal',
+                    doc='Device ID')
+    device_desc = Cpt(EpicsSignal, 'DESC', kind='normal',
+                      doc='Device description')
+    device_mode = Cpt(EpicsSignal, 'MODE', kind='normal',
+                      doc='Remote mode')
+    output = Cpt(EpicsSignal, 'OUTPUT', kind='normal',
+                 doc='Turn on/off all channel outputs')
     current = Cpt(EpicsSignal, 'CURR', kind='normal',
                   doc='Current Setpoint in Amps')
     current_step = Cpt(EpicsSignal, 'CURR_STEP', write_pv='CURR_STEP',
