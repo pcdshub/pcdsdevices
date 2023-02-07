@@ -1,11 +1,13 @@
 """
 Module for the various spectrometers.
 """
+from lightpath import LightpathState
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
 from .device import GroupDevice
-from .epics_motor import IMS, BeckhoffAxis, BeckhoffAxisNoOffset
+from .epics_motor import (IMS, BeckhoffAxis, BeckhoffAxisNoOffset,
+                          EpicsMotorInterface)
 from .interface import BaseInterface, LightpathMixin
 from .signal import InternalSignal, PytmcSignal
 
@@ -80,21 +82,25 @@ class Kmono(BaseInterface, GroupDevice, LightpathMixin):
             removed = value > 96.5
             self._update_state(inserted, removed, 'diode')
 
-    def _set_lightpath_states(self, lightpath_values):
-        xtal_in = lightpath_values[self.xtal_in]['value']
-        xtal_out = lightpath_values[self.xtal_out]['value']
-        ret_in = lightpath_values[self.ret_in]['value']
-        ret_out = lightpath_values[self.ret_out]['value']
-        diode_in = lightpath_values[self.diode_in]['value']
-        diode_out = lightpath_values[self.diode_out]['value']
-
+    def calc_lightpath_state(
+        self,
+        xtal_in: bool,
+        xtal_out: bool,
+        ret_in: bool,
+        ret_out: bool,
+        diode_in: bool,
+        diode_out: bool
+    ) -> LightpathState:
         self._inserted = any((xtal_in, ret_in, diode_in))
         self._removed = all((xtal_out, ret_out, diode_out))
 
-        if ret_in:
-            self._transmission = 0
-        else:
-            self._transmission = 1
+        self._transmission = 0. if ret_in else 1.
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: self._transmission}
+        )
 
 
 class VonHamosCrystal(BaseInterface, GroupDevice):
@@ -211,7 +217,7 @@ class VonHamos4Crystal(VonHamosFE):
                          prefix_energy=prefix_energy, **kwargs)
 
 
-class Mono(BaseInterface, GroupDevice):
+class Mono(BaseInterface, GroupDevice, LightpathMixin):
     """
     L2S-I NEH 2.X Monochromator
 
@@ -289,8 +295,18 @@ class Mono(BaseInterface, GroupDevice):
     transmission = 1
     SUB_STATE = 'state'
 
+    # dummy component, state is always the same
+    lightpath_cpts = ['m_pi.user_readback']
 
-class TMOSpectrometer(BaseInterface, GroupDevice):
+    def calc_lightpath_state(self, **kwargs) -> LightpathState:
+        return LightpathState(
+            inserted=True,
+            removed=False,
+            output={self.output_branches[0]: 1}
+        )
+
+
+class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     """
     TMO Fresnel Photon Spectrometer Motion components class.
 
@@ -310,6 +326,8 @@ class TMOSpectrometer(BaseInterface, GroupDevice):
 
     # Motor components: can read/write positions
     lens_x = Cpt(BeckhoffAxis, ':MMS:01', kind='normal')
+    lens_pitch_up_down = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
+    lens_yaw_left_right = Cpt(BeckhoffAxis, ':MMS:11', kind='normal')
     foil_x = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
     zone_plate_x = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
     zone_plate_y = Cpt(BeckhoffAxis, ':MMS:04', kind='normal')
@@ -325,8 +343,19 @@ class TMOSpectrometer(BaseInterface, GroupDevice):
     transmission = 1
     SUB_STATE = 'state'
 
+    # dummy signal, state is always the same
+    lightpath_cpts = ['yag_x.user_readback']
 
-class HXRSpectrometer(BaseInterface, GroupDevice):
+    def calc_lightpath_state(self, **kwargs) -> LightpathState:
+        # TODO: get real logic here, instead of legacy hard-coding
+        return LightpathState(
+            inserted=True,
+            removed=False,
+            output={self.output_branches[0]: 1}
+        )
+
+
+class HXRSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     """
     HXR Single Shot Spectrometer motion components class.
 
@@ -361,3 +390,55 @@ class HXRSpectrometer(BaseInterface, GroupDevice):
     removed = False
     transmission = 1
     SUB_STATE = 'state'
+
+    # dummy signal, state is always the same
+    lightpath_cpts = ['xtaly.user_readback']
+
+    def calc_lightpath_state(self, **kwargs) -> LightpathState:
+        return LightpathState(
+            inserted=True,
+            removed=False,
+            output={self.output_branches[0]: 1}
+        )
+
+
+class Gen1VonHamosCrystal(BaseInterface, GroupDevice):
+    """Pitch, yaw, and translation motors for control of a single crystal."""
+
+    tab_component_names = True
+
+    pitch = FCpt(EpicsMotorInterface, '{prefix}{_pitch_axis}', kind='normal')
+    yaw = FCpt(EpicsMotorInterface, '{prefix}{_yaw_axis}'  , kind='normal')
+    trans = FCpt(EpicsMotorInterface, '{prefix}{_trans_axis}', kind='normal')
+
+    def __init__(self, prefix, pitch_axis, yaw_axis, trans_axis, **kwargs):
+        self._pitch_axis = pitch_axis
+        self._yaw_axis = yaw_axis
+        self._trans_axis = trans_axis
+        super().__init__(prefix, **kwargs)
+
+
+class Gen1VonHamos4Crystal(BaseInterface, GroupDevice):
+    """
+    Four crystal Von Hamos setup controlled with a Beckhoff PLC.
+
+    This includes three axes for each crystal manipulator, and a common rotation axis.
+    Each of their PVs will be inferred from the base prefix.
+
+    Parameters
+    ----------
+    prefix : str, optional
+        Von Hamos base PV.
+
+    name : str
+        A name to refer to the device.
+    """
+
+    tab_component_names = True
+
+    common_yaw = Cpt(EpicsMotorInterface, ':01', kind='normal', name='Common Rotation')
+
+    cr1 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':02', yaw_axis=':06', pitch_axis=':10' , kind='normal', name='Crystal 1')
+    cr2 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':03', yaw_axis=':07', pitch_axis=':11' , kind='normal', name='Crystal 2')
+    cr3 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':04', yaw_axis=':08', pitch_axis=':12' , kind='normal', name='Crystal 3')
+    cr4 = Cpt(Gen1VonHamosCrystal, '', trans_axis=':05', yaw_axis=':09', pitch_axis=':13' , kind='normal', name='Crystal 4')

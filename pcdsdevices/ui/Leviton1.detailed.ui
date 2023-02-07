@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>525</width>
+    <height>779</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="TyphosCompositeSignalPanel" name="TyphosCompositeSignalPanel_2">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>80</y>
+     <width>361</width>
+     <height>391</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string/>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+border-color: rgb(158, 158, 158);</string>
+   </property>
+   <property name="showHints" stdset="0">
+    <bool>true</bool>
+   </property>
+   <property name="nameFilter" stdset="0">
+    <string/>
+   </property>
+   <property name="sortBy" stdset="0">
+    <enum>TyphosSignalPanel::byName</enum>
+   </property>
+  </widget>
+  <widget class="PyDMTimePlot" name="PyDMTimePlot">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>70</x>
+     <y>460</y>
+     <width>401</width>
+     <height>251</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string/>
+   </property>
+   <property name="whatsThis">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;CXI:R51:PWR:15:TEMP&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="rules" stdset="0">
+    <string>[]</string>
+   </property>
+   <property name="showXGrid">
+    <bool>false</bool>
+   </property>
+   <property name="showYGrid">
+    <bool>false</bool>
+   </property>
+   <property name="backgroundColor">
+    <color>
+     <red>223</red>
+     <green>223</green>
+     <blue>223</blue>
+    </color>
+   </property>
+   <property name="yAxes">
+    <stringlist>
+     <string>{&quot;name&quot;: &quot;Mass (um)&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: null, &quot;minRange&quot;: 0.0, &quot;maxRange&quot;: 10.0, &quot;autoRange&quot;: true}</string>
+     <string>{&quot;name&quot;: &quot;Axis 1&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: null, &quot;minRange&quot;: -1.0, &quot;maxRange&quot;: 1.0, &quot;autoRange&quot;: true}</string>
+    </stringlist>
+   </property>
+   <property name="curves">
+    <stringlist>
+     <string>{&quot;channel&quot;: &quot;ca://$CXI:SETRA:01:CH0_MASS&quot;, &quot;plot_style&quot;: &quot;Line&quot;, &quot;name&quot;: &quot;CH0: 0.3um&quot;, &quot;color&quot;: &quot;#020202&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 1, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10, &quot;yAxisName&quot;: &quot;Axis 1&quot;, &quot;barWidth&quot;: null, &quot;upperThreshold&quot;: null, &quot;lowerThreshold&quot;: null, &quot;thresholdColor&quot;: &quot;white&quot;}</string>
+     <string>{&quot;channel&quot;: &quot;ca://$CXI:SETRA:01:CH0_MASS&quot;, &quot;plot_style&quot;: &quot;Line&quot;, &quot;name&quot;: &quot;CH1: 0.5um&quot;, &quot;color&quot;: &quot;red&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 1, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10, &quot;yAxisName&quot;: &quot;Axis 1&quot;, &quot;barWidth&quot;: null, &quot;upperThreshold&quot;: null, &quot;lowerThreshold&quot;: null, &quot;thresholdColor&quot;: &quot;white&quot;}</string>
+     <string>{&quot;channel&quot;: &quot;ca://${prefix}:CH2_MASS&quot;, &quot;plot_style&quot;: &quot;Line&quot;, &quot;name&quot;: &quot;CH2: 1um&quot;, &quot;color&quot;: &quot;dodgerblue&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 1, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10, &quot;yAxisName&quot;: &quot;Axis 1&quot;, &quot;barWidth&quot;: null, &quot;upperThreshold&quot;: null, &quot;lowerThreshold&quot;: null, &quot;thresholdColor&quot;: &quot;white&quot;}</string>
+    </stringlist>
+   </property>
+   <property name="updatesAsynchronously">
+    <bool>true</bool>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TyphosSignalPanel</class>
+   <extends>QWidget</extends>
+   <header>typhos.panel</header>
+  </customwidget>
+  <customwidget>
+   <class>TyphosCompositeSignalPanel</class>
+   <extends>TyphosSignalPanel</extends>
+   <header>typhos.panel</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMTimePlot</class>
+   <extends>QGraphicsView</extends>
+   <header>pydm.widgets.timeplot</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -124,7 +124,7 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
         real = (
             -self.cb
             + self.pol * np.sqrt(self.cb**2 - 4*self.ca*(self.cc - calc))
-            ) / (2*self.ca)
+        ) / (2*self.ca)
         return self.RealPosition(real=real)
 
     @real_position_argument
@@ -177,11 +177,11 @@ class VLSOptics(GroupDevice):
     mirror = Cpt(
         QuadraticBeckhoffMotor,
         "CRIX:VLS:MMS:MP",
-        ca=-0.2479,
-        cb=18.09,
-        cc=33.85,
+        ca=-0.7569,
+        cb=18.100,
+        cc=27.667,
         pol=1,
-        limits=(-31.99, 41.42),
+        limits=(5.275, 41.882),
         kind='hinted',
     )
     grating = Cpt(

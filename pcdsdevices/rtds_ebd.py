@@ -1,10 +1,12 @@
+from lightpath import LightpathState
 from ophyd import Component as Cpt
 from ophyd import Signal
 
 from .device import GroupDevice
+from .epics_motor import BeckhoffAxis
 from .inout import InOutPositioner
-from .interface import BaseInterface, LightpathInOutMixin
-from .signal import PytmcSignal
+from .interface import BaseInterface, LightpathInOutCptMixin, LightpathMixin
+from .signal import EpicsSignalRO, PytmcSignal
 
 
 class PneumaticActuator(InOutPositioner):
@@ -44,10 +46,30 @@ class PneumaticActuator(InOutPositioner):
             self.out_cmd.put(1)
 
 
-class RTDSBase(BaseInterface, GroupDevice, LightpathInOutMixin):
+class RTDSX0ThreeStage(BaseInterface, LightpathMixin):
+    """Three stages X,Y,Z, for solid drilling experiments"""
+
+    mmsx = Cpt(BeckhoffAxis, ':MMS:X', kind='normal')
+    mmsy = Cpt(BeckhoffAxis, ':MMS:Y', kind='normal')
+    mmsz = Cpt(BeckhoffAxis, ':MMS:Z', kind='normal')
+
+    # Determine if the y stage is at it's outer limit switch
+    open_limit = Cpt(EpicsSignalRO, ':MMS:Y.HLS', kind='normal',
+                     doc='Reads if the y-stage is at its outer limit.')
+    lightpath_cpts = ['open_limit']
+
+    def calc_lightpath_state(self, open_limit=None):
+        # Logic, calculations using open_limit for y-stage
+        status = LightpathState(
+            inserted=not open_limit, removed=open_limit,
+            output={'K0' : 0.0}
+        )
+        return status
+
+
+class RTDSBase(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     """Rapid Turnaround Diagnostic Station."""
     lightpath_cpts = ['mpa1', 'mpa2', 'mpa3', 'mpa4']
-    _lightpath_mixin = True
 
     _icon = 'fa.stop-circle'
 

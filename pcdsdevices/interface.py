@@ -20,13 +20,15 @@ from weakref import WeakSet
 import ophyd
 import yaml
 from bluesky.utils import ProgressBar
+from lightpath import LightpathState
+from ophyd import Component as Cpt
 from ophyd.device import Device
 from ophyd.ophydobj import Kind, OphydObject
 from ophyd.positioner import PositionerBase
 from ophyd.signal import AttributeSignal, Signal
 
 from . import utils
-from .signal import NotImplementedSignal
+from .signal import NotImplementedSignal, SummarySignal
 
 try:
     import fcntl
@@ -55,7 +57,7 @@ class _TabCompletionHelper:
     Base class for `TabCompletionHelperClass`, `TabCompletionHelperInstance`.
     """
 
-    _includes: typing.Set[str]
+    _includes: set[str]
     _regex: typing.Optional[typing.Pattern]
 
     def __init__(self):
@@ -97,7 +99,7 @@ class TabCompletionHelperClass(_TabCompletionHelper):
         Class type object to generate tab completion information from.
     """
 
-    cls: typing.Type['BaseInterface']
+    cls: type['BaseInterface']
 
     def __init__(self, cls):
         self.cls = cls
@@ -144,7 +146,7 @@ class TabCompletionHelperInstance(_TabCompletionHelper):
 
     class_helper: TabCompletionHelperClass
     instance: 'BaseInterface'
-    super_dir: typing.Callable[[], typing.List[str]]
+    super_dir: typing.Callable[[], list[str]]
 
     def __init__(self, instance, class_helper):
         assert isinstance(instance, BaseInterface), 'Must mix in BaseInterface'
@@ -159,7 +161,7 @@ class TabCompletionHelperInstance(_TabCompletionHelper):
         super().reset()
         self._includes = set(self.class_helper._includes)
 
-    def get_filtered_dir_list(self) -> typing.List[str]:
+    def get_filtered_dir_list(self) -> list[str]:
         """Get the dir list, filtered based on the whitelist."""
         if self._regex is None:
             self.build_regex()
@@ -170,7 +172,7 @@ class TabCompletionHelperInstance(_TabCompletionHelper):
             if self._regex.fullmatch(elem)
         ]
 
-    def get_dir(self) -> typing.List[str]:
+    def get_dir(self) -> list[str]:
         """Get the dir list based on the engineering mode settings."""
         if get_engineering_mode():
             return self.super_dir()
@@ -193,9 +195,13 @@ class BaseInterface:
         List of string regex to show in autocomplete for non-engineering mode.
     """
 
-    tab_whitelist = (OphydObject_whitelist + BlueskyInterface_whitelist +
-                     Device_whitelist + Signal_whitelist +
-                     Positioner_whitelist)
+    tab_whitelist = (
+        OphydObject_whitelist
+        + BlueskyInterface_whitelist
+        + Device_whitelist
+        + Signal_whitelist
+        + Positioner_whitelist
+    )
 
     _class_tab: TabCompletionHelperClass
     _tab: TabCompletionHelperInstance
@@ -700,7 +706,7 @@ class MvInterface(BaseInterface):
         try:
             self._mov_ev.clear()
             while not self._mov_ev.is_set():
-                print("\r {0:4f}".format(self.wm()), end=" ")
+                print(f"\r {self.wm():4f}", end=" ")
                 self._mov_ev.wait(0.1)
         except KeyboardInterrupt:
             pass
@@ -848,8 +854,7 @@ class FltMvInterface(MvInterface):
 
         # Importing forces backend selection, so do inside method
         import matplotlib.pyplot as plt  # NOQA
-        logger.info(("Select new motor x-position in current plot "
-                     "by mouseclick"))
+        logger.info("Select new motor x-position in current plot by mouseclick")
         if not plt.get_fignums():
             upper_limit = 0
             lower_limit = self.limits[0]
@@ -1036,11 +1041,13 @@ class Presets:
                       'active=%s)'), self._device.name, preset_type, name,
                      value, comment, active)
         if not isinstance(name, str):
-            raise TypeError(('name must be of type <str>, not type'
-                             '{}'.format(type(name))))
+            raise TypeError(
+                f"name must be of type <str>, not type {type(name)}"
+            )
         if value is not None and not isinstance(value, numbers.Real):
-            raise TypeError(('value must be a real numeric type, not type'
-                             '{}'.format(type(value))))
+            raise TypeError(
+                f"value must be a real numeric type, not type {type(value)}"
+            )
         try:
             path = self._path(preset_type)
             if not path.exists():
@@ -1060,7 +1067,7 @@ class Presets:
                         comment = ' ' + comment
                     else:
                         comment = ''
-                    history[ts] = '{:10.4f}{}'.format(value, comment)
+                    history[ts] = f'{value:10.4f}{comment}'
                     data[name]['history'] = history
                 if active:
                     data[name]['active'] = True
@@ -1467,7 +1474,7 @@ def tweak_base(*args, scale=0.1):
             logger.error('Error in tweak move: %s', exc)
             logger.debug('', exc_info=True)
 
-    start_text = ['{} at {:.4f}'.format(mot.name, mot.wm()) for mot in args]
+    start_text = [f'{mot.name} at {mot.wm():.4f}' for mot in args]
     logger.info('Started tweak of ' + ', '.join(start_text))
 
     # Loop takes in user key input and stops when 'q' is pressed
@@ -1561,7 +1568,7 @@ class NullFile:
         pass
 
 
-class LightpathMixin(OphydObject):
+class LegacyLightpathMixin(OphydObject):
     """
     Mix-in class that makes it easier to establish a lightpath interface.
 
@@ -1646,36 +1653,256 @@ class LightpathMixin(OphydObject):
                 return 1
 
 
+class LightpathMixin(Device):
+    """
+    Mix-in class that makes it easier to establish a lightpath interface.
+
+    Gathers relevant signals into a SummarySignal that can be
+    subscribed to for monitoring the lightpath-relevant state.
+
+    Users must implement ``get_lightpath_status``, and return a
+    LightpathStatus object
+    Create an object similar to the following:
+
+    .. code-block:: python
+
+        class MyDevice(LightpathMixin):
+            lightpath_cpts = ['sig1', 'sig2']
+            sig1 = Cpt(Signal, ':SIG1')
+            sig2 = Cpt(Signal, ':SIG2')
+
+            def calc_lightpath_state(self, sig1=None, sig2=None):
+                # Logic, calculations using sig1, sig2
+                # self.output_branches assigned by LightpathMixin at __init__
+                state = LightpathState(
+                    inserted=True,
+                    removed=False,
+                    output={self.output_branches[0]: 0.0}
+                )
+                return state
+
+        dev = MyDevice('PREFIX', name='dev', input_branches=['L0'],
+                       output_branches=['L0'])
+    """
+    # Component names whose values are relevant for inserted/removed
+    # can access sub-components with dot notation
+    lightpath_cpts = []
+
+    # Flag to signify that subclass is another mixin, rather than a device
+    _lightpath_mixin = False
+
+    # Mixin holds one summary signal that changes with lightpath_cpts
+    lightpath_summary: Signal = Cpt(SummarySignal, name='lightpath_summary',
+                                    kind='omitted')
+
+    def __init__(self, *args,
+                 input_branches=[], output_branches=[], **kwargs):
+        self._lightpath_ready = False
+        self._retry_lightpath = False
+        self._summary_initialized = False
+        self._cached_state = None
+        self._md = None
+
+        super().__init__(*args, **kwargs)
+
+        if input_branches and output_branches:
+            self.input_branches = input_branches
+            self.output_branches = output_branches
+            self._init_summary_signal()
+
+    def _init_summary_signal(self) -> None:
+        if self.lightpath_cpts and not self._summary_initialized:
+            for sig in self.lightpath_cpts:
+                self.lightpath_summary.add_signal_by_attr_name(sig)
+
+            self.lightpath_summary.subscribe(self._calc_cache_lightpath_state,
+                                             run=False)
+
+            self._summary_initialized = True
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if cls._lightpath_mixin:
+            # Child of cls will inherit this as False
+            cls._lightpath_mixin = False
+        else:
+            if not cls.lightpath_cpts:
+                raise NotImplementedError(
+                    'Did not implement LightpathMixin properly.  '
+                    'Must supply a list of components (lightpath_cpts)'
+                )
+
+    def calc_lightpath_state(self, **kwargs) -> LightpathState:
+        """
+        Create and return a LightpathState object containing information needed
+        for lightpath, given a set of signal values
+
+        kwargs should be the same as the signal names provided in
+        ``lightpath_cpts``
+
+        Device logic goes here.
+
+        Returns
+        -------
+        LightpathState
+            a dataclass containing the Lightpath state
+        """
+        raise NotImplementedError(
+            'Did not implement LightpathMixin properly.  Must define '
+            'a ``calc_lightpath_state`` method.'
+        )
+
+    def get_lightpath_state(self, use_cache: bool = True) -> LightpathState:
+        """
+        Return the current LightpathState
+
+        Returns
+        -------
+        LightpathState
+            a dataclass containing the Lightpath state
+        """
+        if (not use_cache) or (self._cached_state is None):
+            self.log.debug('calculating new LightpathState')
+            kwargs = {sig.name.removeprefix(self.name + '_'): sig.get()
+                      for sig in self.lightpath_summary._signals}
+            self._cached_state = self.calc_lightpath_state(**kwargs)
+
+        return self._cached_state
+
+    def _calc_cache_lightpath_state(self, *args, **kwargs) -> None:
+        """
+        Calculate the lightpath state and cache it.
+        Intended for use as a callback subscribed to lightpath_summary
+        """
+        self.get_lightpath_state(use_cache=False)
+
+    @property
+    def md(self):
+        if self._md is None:
+            raise AttributeError('Device does not have an attached md, '
+                                 'and was likely not initialized from happi')
+        return self._md
+
+    @md.setter
+    def md(self, new_md):
+        """ initialize lightpath when md is set """
+        self._md = new_md
+        self.input_branches = self.md.input_branches
+        self.output_branches = self.md.output_branches
+        if self.input_branches and self.output_branches:
+            self._init_summary_signal()
+
+
 class LightpathInOutMixin(LightpathMixin):
     """
-    LightpathMixin for parent device with InOut subdevices.
-    Also works recursively on other LightpathInOutMixin subclasses.
+    LightpathMixin for devices that themselves implement InOut interface
+
+    This device must implement the InOutPositioner interface
+    (check_inserted, check_removed, check_transmission),
+    and have a ``state`` signal (which is its only ``lightpath_cpt``).
     """
     _lightpath_mixin = True
+    lightpath_cpts = ['state']
 
-    def _set_lightpath_states(self, lightpath_values):
+    def __init__(self, *args, retry_delay=2.0, **kwargs):
+        self.retry_delay = retry_delay
+        super().__init__(*args, **kwargs)
+
+    def calc_lightpath_state(self, state) -> LightpathState:
+        if not self._state_initialized:
+            # This would prevent make check_inserted, etc. fail
+            # if we cannot connect, supply an inconsistent state
+            # and queue up the calculation for later
+            self.log.debug('state not initialized, scheduling '
+                           'lightpath calculations for later')
+            utils.schedule_task(self._calc_cache_lightpath_state,
+                                delay=self.retry_delay)
+
+            return LightpathState(
+                inserted=True,
+                removed=True,
+                output={self.output_branches[0]: 1}
+            )
+
+        self._inserted = self.check_inserted(state)
+        self._removed = self.check_removed(state)
+        self._transmission = self.check_transmission(state)
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: self._transmission}
+        )
+
+
+class LightpathInOutCptMixin(LightpathMixin):
+    """
+    LightpathMixin for parent device with InOut components.
+
+    The components listed in ``lightpath_cpts`` must implement the
+    InOutPositioner interface (check_inserted, check_removed,
+    check_transmission), and have a ``state`` signal.
+
+    Often seen valid components are ``TwinCATStatePMPS``,
+    ``InOutPositioner``, etc.
+    """
+    # defers the check for lightpath_cpt until next subclass
+    _lightpath_mixin = True
+
+    def __init__(self, *args, retry_delay=2.0, **kwargs):
+        self.retry_delay = retry_delay
+        super().__init__(*args, **kwargs)
+
+    def _init_summary_signal(self):
+        """ Change summary signal to only watch .state signals """
+        for sig in self.lightpath_cpts:
+            self.lightpath_summary.add_signal_by_attr_name(sig + '.state')
+
+        self.lightpath_summary.subscribe(self._calc_cache_lightpath_state)
+
+    def get_lightpath_state(self, use_cache: bool = True) -> LightpathState:
+        if (not use_cache) or (self._cached_state is None):
+            kwargs = {}
+            for sig in self.lightpath_summary._signals:
+                parent = sig.parent or sig.biological_parent
+                sig_name = parent.name.removeprefix(self.name + '_')
+                kwargs[sig_name] = sig.get()
+
+            state = self.calc_lightpath_state(**kwargs)
+            self._cached_state = state
+
+        return self._cached_state
+
+    def calc_lightpath_state(self, **lightpath_kwargs):
         in_check = []
         out_check = []
         trans_check = []
-        for obj, kwarg_dct in lightpath_values.items():
-            if isinstance(obj, LightpathInOutMixin):
-                # The inserted/removed are always just a getattr
-                # Therefore, they are safe to call in a callback
-                in_check.append(obj.inserted)
-                out_check.append(obj.removed)
-                trans_check.append(obj.transmission)
-            else:
-                if not obj._state_initialized:
-                    # This would prevent make check_inserted, etc. fail
-                    self._retry_lightpath = True
-                    return
-                # Inserted/removed are not getattr, they can check EPICS
-                # Instead, check status against the callback kwarg dict
-                in_check.append(obj.check_inserted(kwarg_dct['value']))
-                out_check.append(obj.check_removed(kwarg_dct['value']))
-                trans_check.append(obj.check_transmission(kwarg_dct['value']))
+        for sig_name, sig_value in lightpath_kwargs.items():
+            obj = getattr(self, sig_name)
+            if not obj._state_initialized:
+                # This would prevent make check_inserted, etc. fail
+                # if we cannot connect, supply an inconsistent state
+                # and queue up the calculation for later
+                self.log.debug('state not initialized, scheduling '
+                               'lightpath calculations for later')
+                utils.schedule_task(self._calc_cache_lightpath_state,
+                                    delay=self.retry_delay)
+
+                return LightpathState(
+                    inserted=True,
+                    removed=True,
+                    output={self.output_branches[0]: 1}
+                )
+
+            # get state of the InOutPositioner and check status
+            in_check.append(obj.check_inserted(sig_value))
+            out_check.append(obj.check_removed(sig_value))
+            trans_check.append(obj.check_transmission(sig_value))
         self._inserted = any(in_check)
         self._removed = all(out_check)
         self._transmission = functools.reduce(lambda a, b: a*b, trans_check)
-        return dict(in_check=in_check, out_check=out_check,
-                    trans_check=trans_check)
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: self._transmission}
+        )

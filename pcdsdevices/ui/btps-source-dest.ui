@@ -70,7 +70,7 @@
          <set>Qt::AlignCenter</set>
         </property>
         <property name="channel" stdset="0">
-         <string>ca://${SOURCE}Name_RBV</string>
+         <string>ca://${SOURCE}BTPS:Name_RBV</string>
         </property>
         <property name="displayFormat" stdset="0">
          <enum>PyDMLabel::String</enum>
@@ -134,7 +134,7 @@
          <set>Qt::AlignCenter</set>
         </property>
         <property name="channel" stdset="0">
-         <string>ca://${DEST}Name_RBV</string>
+         <string>ca://${DEST}BTPS:Name_RBV</string>
         </property>
         <property name="displayFormat" stdset="0">
          <enum>PyDMLabel::String</enum>
@@ -242,7 +242,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}Valid_RBV</string>
+           <string>ca://${SOURCE}BTPS:Valid_RBV</string>
           </property>
           <property name="offColor" stdset="0">
            <color>
@@ -291,7 +291,7 @@
            <bool>true</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}Valid_RBV</string>
+           <string>ca://${SOURCE}BTPS:Valid_RBV</string>
           </property>
          </widget>
         </item>
@@ -393,6 +393,9 @@
           <property name="pressValue" stdset="0">
            <string>1</string>
           </property>
+          <property name="releaseValue" stdset="0">
+           <string>None</string>
+          </property>
           <property name="relativeChange" stdset="0">
            <bool>false</bool>
           </property>
@@ -417,7 +420,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}ChecksOK_RBV</string>
+           <string>ca://${SOURCE}BTPS:ChecksOK_RBV</string>
           </property>
           <property name="offColor" stdset="0">
            <color>
@@ -491,7 +494,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}ChecksOK_RBV</string>
+           <string>ca://${SOURCE}BTPS:ChecksOK_RBV</string>
           </property>
          </widget>
         </item>
@@ -695,7 +698,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${DEST}ExitValveReady_RBV</string>
+           <string>ca://${DEST}BTPS:ExitValveReady_RBV</string>
           </property>
           <property name="showLabels" stdset="0">
            <bool>false</bool>
@@ -750,7 +753,7 @@
            <bool>false</bool>
           </property>
           <property name="channel" stdset="0">
-           <string>ca://${SOURCE}EntryValveReady_RBV</string>
+           <string>ca://${SOURCE}BTPS:EntryValveReady_RBV</string>
           </property>
           <property name="showLabels" stdset="0">
            <bool>false</bool>
@@ -760,6 +763,17 @@
           </property>
           <property name="circles" stdset="0">
            <bool>true</bool>
+          </property>
+          <property name="numBits" stdset="0">
+           <number>1</number>
+          </property>
+          <property name="shift" stdset="0">
+           <number>0</number>
+          </property>
+          <property name="labels" stdset="0">
+           <stringlist>
+            <string>Bit 0</string>
+           </stringlist>
           </property>
          </widget>
         </item>
@@ -1063,8 +1077,8 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-249</y>
-        <width>733</width>
+        <y>0</y>
+        <width>741</width>
         <height>708</height>
        </rect>
       </property>
@@ -1122,7 +1136,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Linear:&quot;, &quot;DESC&quot;: &quot;Linear stage&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_LINEAR}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:Linear:&quot;, &quot;DESC&quot;: &quot;Linear stage&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_LINEAR}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1162,7 +1176,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Rotary:&quot;, &quot;DESC&quot;: &quot;Rotary stage&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_ROTARY}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:Rotary:&quot;, &quot;DESC&quot;: &quot;Rotary stage&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_ROTARY}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1202,7 +1216,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}Goniometer:&quot;, &quot;DESC&quot;: &quot;Goniometer&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_GONIOMETER}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:Goniometer:&quot;, &quot;DESC&quot;: &quot;Goniometer&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_GONIOMETER}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1242,7 +1256,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}NFCenterX:&quot;, &quot;DESC&quot;: &quot;NF Centroid X&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_NF_CAM}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:NFCenterX:&quot;, &quot;DESC&quot;: &quot;NF Centroid X&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_NF_CAM}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1282,7 +1296,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}NFCenterY:&quot;, &quot;DESC&quot;: &quot;NF Centroid Y&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_NF_CAM}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:NFCenterY:&quot;, &quot;DESC&quot;: &quot;NF Centroid Y&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_NF_CAM}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1322,7 +1336,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}FFCenterX:&quot;, &quot;DESC&quot;: &quot;FF Centroid X&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_FF_CAM}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:FFCenterX:&quot;, &quot;DESC&quot;: &quot;FF Centroid X&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_FF_CAM}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>
@@ -1362,7 +1376,7 @@
             <enum>QFrame::NoFrame</enum>
            </property>
            <property name="macros" stdset="0">
-            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}FFCenterY:&quot;, &quot;DESC&quot;: &quot;FF Centroid Y&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_FF_CAM}&quot;}</string>
+            <string>{&quot;PREFIX&quot;: &quot;${SOURCE}BTPS:FFCenterY:&quot;, &quot;DESC&quot;: &quot;FF Centroid Y&quot;, &quot;HAPPI_DEVICE&quot;: &quot;${HAPPI_FF_CAM}&quot;}</string>
            </property>
            <property name="filename" stdset="0">
             <string>${RANGE_SCREEN}</string>

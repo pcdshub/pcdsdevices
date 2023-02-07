@@ -1,3 +1,8 @@
-doctr
+docs-versions-menu
 sphinx >=3.3.1
 sphinx_rtd_theme
+whatrecord
+# Required for compatibility with Sphinx 6.0+:
+sphinxcontrib-jquery
+# Required for update_api_list
+PyQt5

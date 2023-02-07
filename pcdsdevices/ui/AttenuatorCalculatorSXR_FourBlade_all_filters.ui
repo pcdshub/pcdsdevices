@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>910</width>
+    <height>1058</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="bladenum">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>Blade #</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="filternum">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>Filter #</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="material">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>Material</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="thickness">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>Thickness</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="active">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Active: blade (or specific filter) should be included in calculations.</string>
+       </property>
+       <property name="text">
+        <string>Active</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="stuck">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Stuck: filters marked as stuck in a certain position will be forced to that state and included in calculations (if active)</string>
+       </property>
+       <property name="text">
+        <string>Stuck</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="PyDMEmbeddedDisplay" name="blade1">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <property name="macros" stdset="0">
+      <string>{&quot;BLADE&quot;: &quot;01&quot;}</string>
+     </property>
+     <property name="filename" stdset="0">
+      <string>AttenuatorCalculatorSXR_FourBlade_blade_all_filters.ui</string>
+     </property>
+     <property name="loadWhenShown" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="disconnectWhenHidden" stdset="0">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="PyDMEmbeddedDisplay" name="blade2">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <property name="macros" stdset="0">
+      <string>{&quot;BLADE&quot;: &quot;02&quot;}</string>
+     </property>
+     <property name="filename" stdset="0">
+      <string>AttenuatorCalculatorSXR_FourBlade_blade_all_filters.ui</string>
+     </property>
+     <property name="loadWhenShown" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="disconnectWhenHidden" stdset="0">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="PyDMEmbeddedDisplay" name="blade3">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <property name="macros" stdset="0">
+      <string>{&quot;BLADE&quot;: &quot;03&quot;}</string>
+     </property>
+     <property name="filename" stdset="0">
+      <string>AttenuatorCalculatorSXR_FourBlade_blade_all_filters.ui</string>
+     </property>
+     <property name="loadWhenShown" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="disconnectWhenHidden" stdset="0">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="PyDMEmbeddedDisplay" name="blade4">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <property name="macros" stdset="0">
+      <string>{&quot;BLADE&quot;: &quot;04&quot;}</string>
+     </property>
+     <property name="filename" stdset="0">
+      <string>AttenuatorCalculatorSXR_FourBlade_blade_all_filters.ui</string>
+     </property>
+     <property name="loadWhenShown" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="disconnectWhenHidden" stdset="0">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PyDMEmbeddedDisplay</class>
+   <extends>QFrame</extends>
+   <header>pydm.widgets.embedded_display</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

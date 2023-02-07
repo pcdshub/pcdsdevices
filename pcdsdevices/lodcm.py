@@ -10,8 +10,10 @@ no readback into the device's alignment. This is intended for a future update.
 """
 import functools
 import logging
+from typing import Union
 
 import numpy as np
+from lightpath import LightpathState
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignalRO
@@ -26,10 +28,10 @@ from .device import GroupDevice
 from .doc_stubs import insert_remove
 from .epics_motor import IMS
 from .inout import InOutRecordPositioner
-from .interface import BaseInterface, FltMvInterface
+from .interface import BaseInterface, FltMvInterface, LightpathMixin
 from .pseudopos import (PseudoPositioner, PseudoSingleInterface,
                         pseudo_position_argument, real_position_argument)
-from .utils import get_status_float, get_status_value
+from .utils import get_status_float, get_status_value, schedule_task
 
 logger = logging.getLogger(__name__)
 
@@ -575,28 +577,28 @@ class CrystalTower2(BaseInterface, GroupDevice):
         th_user = get_status_float(
             status_info, 'th2', 'position')
         th_dial = get_status_float(
-            status_info,  'th2', 'dial_position', 'value')
+            status_info, 'th2', 'dial_position', 'value')
 
         chi_units = get_status_value(
             status_info, 'chi2', 'user_setpoint', 'units')
         chi_user = get_status_float(
-            status_info,  'chi2', 'position')
+            status_info, 'chi2', 'position')
         chi_dial = get_status_float(
-            status_info,  'chi2', 'dial_position', 'value')
+            status_info, 'chi2', 'dial_position', 'value')
 
         y_units = get_status_value(
             status_info, 'y2', 'user_setpoint', 'units')
         y_user = get_status_float(
-            status_info,  'y2', 'position')
+            status_info, 'y2', 'position')
         y_dial = get_status_float(
-            status_info,  'y2', 'dial_position', 'value')
+            status_info, 'y2', 'dial_position', 'value')
 
         hn_units = get_status_value(
             status_info, 'h2n', 'user_setpoint', 'units')
         hn_user = get_status_float(
-            status_info,  'h2n', 'position')
+            status_info, 'h2n', 'position')
         hn_dial = get_status_float(
-            status_info,  'h2n', 'dial_position', 'value')
+            status_info, 'h2n', 'dial_position', 'value')
 
         diode_units = get_status_value(
             status_info, 'diode2', 'user_setpoint', 'units')
@@ -687,7 +689,7 @@ class DiagnosticsTower(BaseInterface, GroupDevice):
         dv_units = get_status_value(
             status_info, 'dv', 'user_setpoint', 'units')
         dv_user = get_status_float(
-            status_info,  'dv', 'position')
+            status_info, 'dv', 'position')
         dv_dial = get_status_float(
             status_info, 'dv', 'dial_position', 'value')
 
@@ -933,7 +935,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
 
         try:
             energy = self.get_energy()
-            energy = "{:.4f}".format(energy)
+            energy = f"{energy:.4f}"
         except Exception:
             energy = 'Unknown'
 
@@ -1153,7 +1155,7 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
 
         try:
             energy = self.get_energy()
-            energy = "{:.4f}".format(energy)
+            energy = f"{energy:.4f}"
         except Exception:
             energy = 'Unknown'
 
@@ -1170,7 +1172,7 @@ Photon Energy: {energy} [keV]
 """
 
 
-class LODCM(BaseInterface, GroupDevice):
+class LODCM(BaseInterface, GroupDevice, LightpathMixin):
     """
     Large Offset Dual Crystal Monochromator.
 
@@ -1217,6 +1219,8 @@ class LODCM(BaseInterface, GroupDevice):
     tab_whitelist = ['h1n_state', 'yag', 'dectris', 'diode', 'foil',
                      'remove_dia', 'tower1', 'tower2',
                      'diag_tower', 'calc']
+
+    lightpath_cpts = ['tower1.h1n_state.state']
 
     def __init__(self, prefix, *, name, main_line='MAIN', mono_line='MONO',
                  **kwargs):
@@ -1302,6 +1306,16 @@ class LODCM(BaseInterface, GroupDevice):
         # TODO consider "energy" proxy motor object that picks where to
         # forward the commands instead of this property
         return self.energy_c
+
+    def calc_lightpath_state(
+        self,
+        tower1_h1n_state_state: Union[int, str]
+    ) -> LightpathState:
+        return LightpathState(
+            inserted=True,
+            removed=True,
+            ouptut={self.output_branches[0]: 0}
+        )
 
     @property
     def inserted(self):
@@ -1629,7 +1643,7 @@ class LODCM(BaseInterface, GroupDevice):
 
         try:
             energy = self.get_energy()
-            energy = "{:.4f}".format(energy)
+            energy = f"{energy:.4f}"
         except Exception:
             energy = 'Unknown'
 
@@ -1813,6 +1827,141 @@ Photon Energy: {energy} [keV]
 {form(f'navitar zoom [{yag_zoom_units}]',
       f'{yag_zoom_user} ({yag_zoom_dial})', '')}
 """
+
+
+class XCSLODCM(LODCM):
+    """
+    The XCS implementation of a LODCM.  Currently (as of 09/28/2022),
+    the XCS has 3 operating modes:
+
+    1. the 1st crystal of the lodcm is OUT then the beam goes to CXI.
+    2. The diamond crystal is IN then the pink beam goes to CXI while
+        a monochromatic beam can go to XCS at the same time.
+    3. The Silicon crystal is IN in which case monochromatic beam
+        only goes to XCS.
+    """
+    __doc__ += LODCM.__doc__
+
+    def calc_lightpath_state(
+        self,
+        tower1_h1n_state_state: Union[int, str]
+    ) -> LightpathState:
+        """
+        Calculates lightpath state for XCS LODCM.  This LODCM has 3
+        operating modes (as of 9/28/2022)
+
+        1. the 1st crystal of the lodcm is OUT then the beam goes to CXI.
+        2. The diamond crystal is IN then the pink beam goes to CXI while
+           a monochromatic beam can go to XCS at the same time.
+        3. The Silicon crystal is IN in which case monochromatic beam
+           only goes to XCS.
+
+        Parameters
+        ----------
+        tower1_h1n_state_state : Union[int, str]
+            The first crystal state.
+
+        Returns
+        -------
+        LightpathState
+        """
+        h1n_state = tower1_h1n_state_state
+        if not self.tower1.h1n_state._state_initialized:
+            self.log.debug('tower1 state not initialized, scheduling '
+                           'lightpath calc for later')
+            schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+            return LightpathState(
+                inserted=True,
+                removed=True,
+                output={'L0': 0}
+            )
+        # avoid extra get calls in this method
+        state_label = self.tower1.h1n_state.get_state(h1n_state).name
+
+        if state_label in ['C', 'Si']:
+            inserted = True
+            removed = False
+            if state_label == 'C':
+                # Diamond crystal, beam is split between outputs
+                output = {'L0': 0.5, 'L3': 0.5}
+            elif state_label == 'Si':
+                # Silicon crystal in, monochromatic beam to XCS
+                output = {'L3': 1}
+        elif state_label == 'OUT':
+            # out, straight through to CXI
+            inserted = False
+            removed = True
+            output = {'L0': 1}
+        else:
+            # unknown state blocks
+            inserted = False
+            removed = False
+            output = {'L0': 0}
+
+        return LightpathState(
+            inserted=inserted,
+            removed=removed,
+            output=output
+        )
+
+
+class XPPLODCM(LODCM):
+    """
+    The XPP implementation of a LODCM.  Currently (as of 09/28/2022), the XPP
+    LODCM does not consider differing crystal states.  For now we only consider
+    whether the first crystal is in or out.
+    """
+    __doc__ += LODCM.__doc__
+
+    def calc_lightpath_state(
+        self,
+        tower1_h1n_state_state: Union[int, str]
+    ) -> LightpathState:
+        """
+        Currently (as of 09/28/2022), the XPP LODCM does not consider
+        differing crystal states.  For now we only consider whether the
+        first crystal is in or out.
+
+        Parameters
+        ----------
+        tower1_h1n_state_state : Union[int, str]
+            The insertion state of the first tower crystal
+
+        Returns
+        -------
+        LightpathState
+        """
+
+        h1n_state = tower1_h1n_state_state
+        if not self.tower1.h1n_state._state_initialized:
+            self.log.debug('tower1 state not initialized, scheduling '
+                           'lightpath calc for later')
+            schedule_task(self._calc_cache_lightpath_state, delay=2.0)
+            return LightpathState(
+                inserted=True,
+                removed=True,
+                output={'L0': 0}
+            )
+
+        inserted = self.tower1.h1n_state.check_inserted(h1n_state)
+        removed = self.tower1.h1n_state.check_removed(h1n_state)
+
+        if inserted and not removed:
+            # ignore attenuation from the LODCM splitting beam
+            output = {'L0': 1,
+                      'L2': 1}
+        elif not inserted and removed:
+            # if removed, full transmission through L0
+            output = {'L0': 1}
+        else:
+            # for unknown states, mark as blocking
+            output = {'L0': 0}
+
+        return LightpathState(
+            inserted=inserted,
+            removed=removed,
+            output=output
+        )
 
 
 class SimFirstTower(CrystalTower1):

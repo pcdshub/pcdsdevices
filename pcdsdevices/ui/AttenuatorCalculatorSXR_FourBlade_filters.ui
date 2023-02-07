@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>656</width>
-    <height>442</height>
+    <width>847</width>
+    <height>664</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Filter #</string>
+        <string>Blade #</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -42,7 +42,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Material</string>
+        <string>Inserted Material</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

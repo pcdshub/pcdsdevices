@@ -1,4 +1,4 @@
-1017 cvmi_led
+1082 Add 3-stage motion on RTDSK0
 #################
 
 API Changes
@@ -11,11 +11,11 @@ Features
 
 Device Updates
 --------------
-- Added LED control PVs to CVMI motion class.
+- N/A
 
 New Devices
------------
-- N/A
+------------
+- RTDSX0ThreeStage class; 3DoF motion stage for Solid Drilling experiments
 
 Bugfixes
 --------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- Mbosum
+- mkestra

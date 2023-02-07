@@ -1,3 +1,4 @@
+import collections
 import copy
 from collections.abc import Iterator
 from typing import Any, Optional
@@ -8,7 +9,7 @@ from ophyd.ophydobj import Kind, OphydObject
 from ophyd.pseudopos import PseudoSingle
 from ophyd.signal import AttributeSignal, DerivedSignal
 
-from .signal import PVStateSignal
+from .signal import AggregateSignal, PVStateSignal
 
 
 class UnrelatedComponent(Component):
@@ -227,15 +228,13 @@ class InterfaceDevice(Device):
                 try:
                     obj = kwargs.pop(cpt_name)
                 except KeyError:
-                    raise TypeError(
-                        f'Missing required kwarg {cpt_name}'
-                        ) from None
+                    raise TypeError(f'Missing required kwarg {cpt_name}') from None
                 if isinstance(obj, cpt.cls):
                     self._interface_obj[cpt_name] = obj
                 else:
                     raise TypeError(
                         f'{cpt_name} must be of type {cpt.cls}'
-                        )
+                    )
 
         super().__init__(*args, **kwargs)
 
@@ -269,7 +268,7 @@ def to_interface(device_class):
         device_class.__name__ + 'Interface',
         (InterfaceDevice, device_class),
         interface_cpts
-        )
+    )
 
 
 class UpdateComponent(Component):
@@ -303,14 +302,17 @@ class UpdateComponent(Component):
     copt_cpt: Optional[Component]
 
     def __init__(self, **kwargs):
+        # Note: this intentionally does not do "everything" from super
         # Store the original kwargs for use later
         self.update_kwargs = kwargs
         # Begin with "something" as the copy_cpt to avoid issues on edge cases.
         self.copy_cpt = None
+        # Create a holding dict for the _subscriptions
+        self._subscriptions = collections.defaultdict(list)
 
     def __set_name__(self, owner: Device, attr_name: str):
         # Find the parent cpt of the same name and copy it
-        parent_cpt = None
+        parent_cpt: Optional[Component] = None
         for cls in owner.mro()[1:]:
             try:
                 parent_cpt = getattr(cls, attr_name)
@@ -325,7 +327,7 @@ class UpdateComponent(Component):
             )
         self.copy_cpt = copy.deepcopy(parent_cpt)
 
-        # Edit this object as needed
+        # Edit this object as per our init args
         for key, value in self.update_kwargs.items():
             # Set the attrs if they exist
             if key == 'kind':
@@ -338,6 +340,12 @@ class UpdateComponent(Component):
             # Add to kwargs if they don't exist
             else:
                 self.copy_cpt.kwargs[key] = value
+
+        # Forward any of the subscriptions we've queued up prior to copy_cpt
+        self.copy_cpt._subscriptions.update(self._subscriptions)
+        # Replace our subs dict with the copy's so we add to the copy's
+        # In case anyone does late subscription additions
+        self._subscriptions = self.copy_cpt._subscriptions
 
         # Defer to the normal component setup for the rest
         super().__set_name__(owner, attr_name)
@@ -402,7 +410,8 @@ class GroupDevice(Device):
         PluginBase,
         PseudoSingle,
         PVStateSignal,
-        ]
+        AggregateSignal
+    ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -425,7 +434,7 @@ class GroupDevice(Device):
             raise TypeError(
                 f"Must specify a stage_group in {cls.__name__} because it "
                 "is a movable device. See the GroupDevice docs."
-                )
+            )
         if cls.stage_group is not None:
             for cpt in cls.stage_group:
                 if not isinstance(cpt, Component):

@@ -3,7 +3,9 @@ Module for the `IPM` intensity position monitor classes.
 """
 import logging
 import warnings
+from typing import Union
 
+from lightpath import LightpathState
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
@@ -14,7 +16,7 @@ from .doc_stubs import IPM_base, basic_positioner_init, insert_remove
 from .epics_motor import IMS
 from .evr import Trigger
 from .inout import InOutRecordPositioner
-from .interface import BaseInterface
+from .interface import BaseInterface, LightpathMixin
 from .utils import get_status_float, get_status_value, ipm_screen
 
 logger = logging.getLogger(__name__)
@@ -85,7 +87,7 @@ class IPMDiode(BaseInterface, GroupDevice):
     x_motor = Cpt(IMS, ':X_MOTOR', kind='normal')
     state = Cpt(InOutRecordPositioner, '', kind='normal')
 
-    def __init__(self, prefix, *, name,  **kwargs):
+    def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
         self.y_motor = self.state.motor
 
@@ -120,7 +122,7 @@ class IPMDiode(BaseInterface, GroupDevice):
     remove.__doc__ += insert_remove
 
 
-class IPMMotion(BaseInterface, GroupDevice):
+class IPMMotion(BaseInterface, GroupDevice, LightpathMixin):
     """
     Standard intensity position monitor.
 
@@ -135,6 +137,8 @@ class IPMMotion(BaseInterface, GroupDevice):
 
     tab_whitelist = ['target', 'diode', 'insert', 'remove', 'inserted',
                      'removed', 'ty', 'dx', 'dy']
+
+    lightpath_cpts = ['target.state', 'diode.state.state']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -190,6 +194,27 @@ Target Position: {target_pos} [{t_units}]
 {diode_type}Diode Position(x, y): \
 {x_motor_pos}, {y_motor_pos} [{d_units}]
 """
+
+    def calc_lightpath_state(
+        self,
+        target_state: Union[int, str],
+        diode_state_state: Union[int, str],
+    ) -> LightpathState:
+        target_cpt = self.target
+        diode_cpt = self.diode.state
+        inserted = (target_cpt.check_inserted(target_state) and
+                    diode_cpt.check_inserted(diode_state_state))
+        removed = (target_cpt.check_removed(target_state) and
+                   (diode_cpt.check_inserted(diode_state_state) or
+                   diode_cpt.check_removed(diode_state_state)))
+        transmission = (target_cpt.check_transmission(target_state) *
+                        diode_cpt.check_transmission(diode_state_state))
+
+        return LightpathState(
+            inserted=inserted,
+            removed=removed,
+            output={self.output_branches[0]: transmission}
+        )
 
     @property
     def inserted(self):
@@ -292,7 +317,7 @@ class IPIMBChannel(BaseInterface, Device):
     scale = FCpt(EpicsSignal, '{self.prefix}:CH{self.channel_index}_SCALE',
                  kind='config')
 
-    def __init__(self, prefix, *, name, channel_index,  **kwargs):
+    def __init__(self, prefix, *, name, channel_index, **kwargs):
         self.channel_index = channel_index
         super().__init__(prefix, name=name, **kwargs)
 
@@ -396,7 +421,7 @@ class Wave8Channel(BaseInterface, Device):
         EpicsSignal, '{self.prefix}:Delay{self.channel_index}_RBV',
         write_pv='{self.prefix}:Delay{self.channel_index}', kind='config')
 
-    def __init__(self, prefix, *, name, channel_index,  **kwargs):
+    def __init__(self, prefix, *, name, channel_index, **kwargs):
         self.channel_index = channel_index
         super().__init__(prefix, name=name, **kwargs)
 
@@ -568,4 +593,4 @@ def IPM(prefix, *, name, **kwargs):
         return IPM_Wave8(prefix, name=name,
                          prefix_wave8=kwargs.pop('prefix_wave8'), **kwargs)
     else:
-        return IPMMotion(prefix, name=name)
+        return IPMMotion(prefix, name=name, **kwargs)

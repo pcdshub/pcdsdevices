@@ -1,6 +1,7 @@
 bluesky>=1.6.4
 happi
 jsonschema
+lightpath>=1.0.0
 numpy
 ophyd>=1.5.1
 pcdscalc>=0.2.0
@@ -12,3 +13,5 @@ pytmc>=2.7.0
 pyyaml
 schema
 scipy
+sqlalchemy<2.0.0
+xraydb<4.5.0

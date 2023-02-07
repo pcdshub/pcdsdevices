@@ -17,7 +17,7 @@ import logging
 import numbers
 import typing
 from threading import RLock
-from typing import Dict, Generator, List, Mapping, Optional, Union
+from typing import Any, Generator, Mapping, Optional, Union
 
 import numpy as np
 import ophyd
@@ -157,7 +157,7 @@ class AggregateSignal(Signal):
 
     _update_only_on_change: bool = True
     _has_subscribed: bool
-    _signals: Dict[Signal, _AggregateSignalState]
+    _signals: dict[Signal, _AggregateSignalState]
 
     def __init__(self, *, name, value=None, **kwargs):
         super().__init__(name=name, value=value, **kwargs)
@@ -320,7 +320,7 @@ class AggregateSignal(Signal):
         return all(signal.connected for signal in self._signals)
 
     @contextlib.contextmanager
-    def _check_connectivity(self) -> Generator[Dict[str, bool], None, None]:
+    def _check_connectivity(self) -> Generator[dict[str, bool], None, None]:
         """
         Context manager for checking connectivity.
 
@@ -422,29 +422,95 @@ class AggregateSignal(Signal):
         return super().destroy()
 
 
+class SummarySignal(AggregateSignal):
+    """
+    Signal that holds a hash of the values of the constituent signals.
+
+    Meant to allow tracking of constituent signals via callbacks.
+
+    The calculated readback value is useless, and should not be used
+    in any downstream calculations.  Use the signal/PV you actually
+    care about instead.
+    """
+    def _calc_readback(self):
+        values = tuple(sig.get() for sig in self._signals)
+        # We return a hash here, rather than the tuple, to always provide
+        # an ophyd-compatible datatype.
+        return hash(values)
+
+
 class PVStateSignal(AggregateSignal):
     """
     Signal that implements the `PVStatePositioner` state logic.
 
     See `AggregateSignal` for more information.
     """
+    _metadata_keys = Signal._core_metadata_keys + (
+        'enum_strs',
+    )
 
     def __init__(self, *, name, **kwargs):
         super().__init__(name=name, **kwargs)
         for attr_name in self.parent._state_logic:
             self.add_signal_by_attr_name(attr_name)
+        self._has_setpoint_md = False
 
-    def describe(self):
+    @property
+    def enum_strs(self) -> tuple[str, ...]:
+        """
+        Mimic the epics signal property for enum strings.
+        """
+        return tuple(state.name for state in self.parent.states_enum)
+
+    def describe(self) -> dict[str, dict[str, Any]]:
+        """
+        Make sure a reasonable description exists for bluesky scans.
+        """
         # Base description information
         sub_sigs = [sig.name for sig in self._signals]
-        desc = {'source': 'SUM:{}'.format(','.join(sub_sigs)),
-                'dtype': 'string',
-                'shape': [],
-                'enum_strs': tuple(state.name
-                                   for state in self.parent.states_enum)}
+        desc = {
+            'source': 'SUM:{}'.format(','.join(sub_sigs)),
+            'dtype': 'string',
+            'shape': [],
+            'enum_strs': self.enum_strs,
+        }
         return {self.name: desc}
 
-    def _calc_readback(self):
+    def _calc_readback(self) -> str:
+        """
+        Implements the PVStatePositioner logic.
+
+        This relies on this signal being a component of a PVStatePositioner
+        class with properly-defined class attributes.
+
+        On the first call, we'll do some setup of metadata values, since
+        this first call happens after the signals connect and we're guaranteed
+        that everything is ready. Doing it earlier can run into some
+        race conditions.
+        """
+        # Do some one-time setup here
+        # Convenient because we only hit this block when signals are ready
+        if (
+            self._metadata['enum_strs'] is None
+            and self.parent._state_initialized
+        ):
+            # One time setup of the enum strs
+            # Defined by class definition, not by EPICS
+            # Not necessarily available during init though, so do it now
+            self._metadata['enum_strs'] = self.enum_strs
+            self._run_metadata_callbacks()
+        if not self._has_setpoint_md:
+            # One time setup of the setpoint signal's metadata
+            # We need this to apply e.g. write permissions
+            ref_str = self.parent._state_logic_set_ref
+            if isinstance(ref_str, str):
+                setpoint_sig = getattr(self.parent, ref_str)
+                setpoint_sig.subscribe(
+                    self._setpoint_md_update,
+                    setpoint_sig.SUB_META,
+                )
+            self._has_setpoint_md = True
+
         state_value = None
         for states, sig_info in zip(
             self.parent._state_logic.values(), self._signals.values()
@@ -473,7 +539,27 @@ class PVStateSignal(AggregateSignal):
         # If all states deferred, report as unknown
         return state_value or self.parent._unknown
 
-    def put(self, value, **kwargs):
+    def _setpoint_md_update(
+        self,
+        *args,
+        write_access: Optional[bool] = None,
+        **kwargs
+    ) -> None:
+        """
+        Metadata callback for us to keep track of write access permissions.
+
+        This metadata is used by ophyd and typhos to help give us better
+        feedback about write access without needing to try to put a value
+        first.
+        """
+        if write_access is not None:
+            self._metadata['write_access'] = write_access
+            self._run_metadata_callbacks()
+
+    def put(self, value: Union[int, str], **kwargs) -> None:
+        """
+        Redirect puts to moving the parent PVStatePositioner device.
+        """
         self.parent.move(value, **kwargs)
 
 
@@ -616,7 +702,7 @@ class MultiDerivedSignal(AggregateSignal):
             )
 
     @property
-    def signals(self) -> List[Signal]:
+    def signals(self) -> list[Signal]:
         """The signals used to calculate_on_get this MultiDerivedSignal."""
         return list(self._signals)
 
@@ -1036,13 +1122,16 @@ class UnitConversionDerivedSignal(DerivedSignal):
     derived_units: str
     original_units: str
 
-    def __init__(self, derived_from, *,
-                 derived_units: str,
-                 original_units: typing.Optional[str] = None,
-                 user_offset: typing.Optional[numbers.Real] = 0,
-                 limits: typing.Optional[typing.Tuple[numbers.Real,
-                                                      numbers.Real]] = None,
-                 **kwargs):
+    def __init__(
+        self,
+        derived_from,
+        *,
+        derived_units: str,
+        original_units: typing.Optional[str] = None,
+        user_offset: typing.Optional[numbers.Real] = 0,
+        limits: typing.Optional[tuple[numbers.Real, numbers.Real]] = None,
+        **kwargs
+    ):
         self.derived_units = derived_units
         self.original_units = original_units
         self._user_offset = user_offset
@@ -1172,7 +1261,7 @@ class SignalEditMD(Signal):
                     f'Tried to override metadata key {key} in {self.name}, '
                     'but this is not one of the metadata keys: '
                     f'{self._metadata_keys}'
-                    )
+                )
         try:
             self._metadata_override.update(**md)
         except AttributeError:
@@ -1493,7 +1582,7 @@ EpicsSignalROEditMD.__doc__ = (
 )
 
 
-class FakeEpicsSignalEditMD(FakeEpicsSignal):
+class FakeEpicsSignalEditMD(SignalEditMD, FakeEpicsSignal):
     """
     API stand-in for EpicsSignalEditMD
     Add to this if you need it to actually work for your test.
@@ -1517,36 +1606,26 @@ class FakeEpicsSignalEditMD(FakeEpicsSignal):
     def enum_strs(self):
         return self._enum_attrs or self._enum_strs or None
 
-    def _override_metadata(self, **kwargs):
-        ...
+    @property
+    def limits(self) -> tuple[numbers.Real, numbers.Real]:
+        """
+        Override limits because EpicsSignalEditMD overrides the limits.
+
+        If defined in the test, do it like in the real EpicsSignalEditMD.
+        Otherwise, be permissive to avoid false test failures.
+        """
+        lower = self.metadata['lower_ctrl_limit']
+        upper = self.metadata['upper_ctrl_limit']
+        if None in (lower, upper):
+            return (0, 0)
+        else:
+            return (lower, upper)
 
 
-class FakeEpicsSignalROEditMD(FakeEpicsSignalRO):
+class FakeEpicsSignalROEditMD(FakeEpicsSignalEditMD, FakeEpicsSignalRO):
     """
     API stand-in for EpicsSignalROEditMD
-    Add to this if you need it to actually work for your test.
     """
-    def __init__(
-        self,
-        *args,
-        enum_attrs: Optional[list[Optional[str]]] = None,
-        enum_strs: Optional[list[str]] = None,
-        **kwargs
-    ):
-        super().__init__(*args, **kwargs)
-        self._enum_attrs = enum_attrs
-        self._enum_strs = enum_strs
-
-    @property
-    def enum_attrs(self):
-        return self._enum_attrs
-
-    @property
-    def enum_strs(self):
-        return self._enum_attrs or self._enum_strs or None
-
-    def _override_metadata(self, **kwargs):
-        ...
 
 
 fake_device_cache[EpicsSignalEditMD] = FakeEpicsSignalEditMD

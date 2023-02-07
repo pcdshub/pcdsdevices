@@ -4,10 +4,12 @@ Standard classes for LCLS Gate Valves.
 import logging
 from enum import IntEnum
 
+from lightpath import LightpathState
 from ophyd import Component as Cpt
 from ophyd import Device, EpicsSignal, EpicsSignalRO, EpicsSignalWithRBV
 
-from .interface import LightpathMixin
+from .interface import BaseInterface, LightpathMixin
+from .signal import PytmcSignal
 from .stopper import PPSStopper, Stopper  # noqa import PPS for backcompat
 
 logger = logging.getLogger(__name__)
@@ -59,7 +61,7 @@ class GateValve(Stopper):
         EpicsSignalRO,
         ':OPN_OK',
         kind='normal'
-     )
+    )
 
     # QIcon for UX
     _icon = 'fa.hourglass'
@@ -95,6 +97,12 @@ class ValveBase(Device):
     PVs that are omitted in VCGLegacy are instead put in the VVC class.
     """
 
+    valve_position = Cpt(
+        EpicsSignalRO,
+        ':POS_STATE_RBV',
+        kind='hinted',
+        doc='Ex: OPEN, CLOSED, MOVING, INVALID, OPEN_F'
+    )
     open_command = Cpt(
         EpicsSignalWithRBV,
         ':OPN_SW',
@@ -202,11 +210,21 @@ class VRC(VVC, LightpathMixin):
         doc='Closed limit switch digital input'
     )
 
-    def _set_lightpath_states(self, lightpath_values):
+    def calc_lightpath_state(
+        self, open_limit: int, closed_limit: int
+    ) -> LightpathState:
         """Callback for updating inserted/removed for lightpath."""
 
-        self._inserted = lightpath_values[self.closed_limit]['value']
-        self._removed = lightpath_values[self.open_limit]['value']
+        self._inserted = bool(closed_limit)
+        self._removed = bool(open_limit)
+
+        trans = 0.0 if self._inserted else 1.0
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: trans}
+        )
 
 
 class VRCClsLS(VVC):
@@ -380,7 +398,7 @@ class VGC_2S(VRC):
     )
 
 
-class VFS(Device, LightpathMixin):
+class VFS(LightpathMixin):
     """
     VFS = Fast Shutter Valve
 
@@ -491,9 +509,19 @@ class VFS(Device, LightpathMixin):
         doc='Name of device that can veto this VFS'
     )
 
-    def _set_lightpath_states(self, lightpath_values):
-        self._inserted = lightpath_values[self.position_close]['value']
-        self._removed = lightpath_values[self.position_open]['value']
+    def calc_lightpath_state(self, position_open: int, position_close: int):
+        """Callback for updating inserted/removed for lightpath."""
+
+        self._inserted = bool(position_close)
+        self._removed = bool(position_open)
+
+        trans = 0.0 if self._inserted else 1.0
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: trans}
+        )
 
 
 class VVCNO(Device):
@@ -516,11 +544,11 @@ class VVCNO(Device):
         kind='normal',
         doc='Epics command to close valve'
     )
-    close_override = Cpt(
+    override_force_close = Cpt(
         EpicsSignalWithRBV,
         ':FORCE_CLS',
         kind='omitted',
-        doc=('Epics Command for open the valve in override '
+        doc=('Epics Command for close the valve in override '
              'mode')
     )
     override_on = Cpt(
@@ -541,6 +569,13 @@ class VVCNO(Device):
         kind='normal',
         doc='PLC Output to close valve'
     )
+
+    @property
+    def close_override(self):
+        """
+        Fixes potential API breaks with old name
+        """
+        return self.override_force_close
 
 
 class VRCNO(VVCNO, LightpathMixin):
@@ -585,11 +620,19 @@ class VRCNO(VVCNO, LightpathMixin):
         doc='Closed limit switch digital input'
     )
 
-    def _set_lightpath_states(self, lightpath_values):
+    def calc_lightpath_state(self, open_limit: int, closed_limit: int):
         """Callback for updating inserted/removed for lightpath."""
 
-        self._inserted = lightpath_values[self.closed_limit]['value']
-        self._removed = lightpath_values[self.open_limit]['value']
+        self._inserted = bool(closed_limit)
+        self._removed = bool(open_limit)
+
+        trans = 0.0 if self._inserted else 1.0
+
+        return LightpathState(
+            inserted=self._inserted,
+            removed=self._removed,
+            output={self.output_branches[0]: trans}
+        )
 
 
 class VRCDA(VRC, VRCNO):
@@ -659,3 +702,159 @@ class VCN(Device):
         ':POS_AO_RBV',
         kind='hinted'
     )
+
+
+class VCN_VAT590_Status(Device):
+    """
+    See `VCN_VAT590`
+
+    Corresponds to just ST_VAT590_STATUS in the
+    lcls-twincat-vacuum library.
+    """
+    ctrl_mode = Cpt(
+        PytmcSignal, 'CTRL_MODE', io='i', kind='normal',
+        doc='Valve control mode readback',
+    )
+    fatal_err = Cpt(
+        PytmcSignal, 'FATAL_ERR', io='i', kind='normal',
+        doc='Valve fatal error status readback',
+    )
+
+    ecat_data_valid = Cpt(
+        PytmcSignal, 'GEN_STATUS:ECAT_DATA_VALID', io='i', kind='omitted',
+    )
+    zero_executed = Cpt(
+        PytmcSignal, 'GEN_STATUS:ZERO_EXECUTED', io='i', kind='omitted',
+    )
+    ecat_rxbit = Cpt(
+        PytmcSignal, 'GEN_STATUS:ECAT_RxBIT', io='i', kind='omitted',
+    )
+    pres_sim = Cpt(
+        PytmcSignal, 'GEN_STATUS:PRES_SIM', io='i', kind='omitted',
+    )
+    pres_sp_reached = Cpt(
+        PytmcSignal, 'GEN_STATUS:PRES_SP_REACHED', io='i', kind='omitted',
+    )
+    warn_status = Cpt(
+        PytmcSignal, 'GEN_STATUS:WARN_STATUS', io='i', kind='omitted',
+    )
+    rem_ctrl = Cpt(
+        PytmcSignal, 'GEN_STATUS:REM_CTRL', io='i', kind='omitted',
+    )
+    service_req = Cpt(
+        PytmcSignal, 'GEN_WARN:SERVICE_REQ', io='i', kind='omitted',
+    )
+    power_fail_bait = Cpt(
+        PytmcSignal, 'GEN_WARN:POWER_FAIL_BATT', io='i', kind='omitted',
+    )
+    adc_unit_status = Cpt(
+        PytmcSignal, 'GEN_WARN:ADC_UNIT_STATUS', io='i', kind='omitted',
+    )
+    rem_not_possible = Cpt(
+        PytmcSignal, 'EXT_WARN:REM_NOT_POSSIBLE', io='i', kind='omitted',
+    )
+    ctrl_sp_not_allowed = Cpt(
+        PytmcSignal, 'EXT_WARN:CTRL_SP_NOT_ALLOWED', io='i', kind='omitted',
+    )
+    zero_status = Cpt(
+        PytmcSignal, 'EXT_WARN:ZERO_STATUS', io='i', kind='omitted',
+    )
+    pfo_status = Cpt(
+        PytmcSignal, 'EXT_WARN:PFO_STATUS', io='i', kind='omitted',
+    )
+    pres_sp_oor = Cpt(
+        PytmcSignal, 'EXT_WARN:PRES_SP_OOR', io='i', kind='omitted',
+    )
+    pos_sp_oor = Cpt(
+        PytmcSignal, 'EXT_WARN:POS_SP_OOR', io='i', kind='omitted',
+    )
+    ctrl_sp_oor = Cpt(
+        PytmcSignal, 'EXT_WARN:CTRL_SP_OOR', io='i', kind='omitted',
+    )
+    genctrl_sp_oor = Cpt(
+        PytmcSignal, 'EXT_WARN:GENCTRL_SP_OOR', io='i', kind='omitted',
+    )
+    proc_data_not_valid = Cpt(
+        PytmcSignal, 'EXT_WARN:PROC_DATA_NOT_VALID', io='i', kind='omitted',
+    )
+
+
+class VCN_VAT590(BaseInterface, Device):
+    """
+    VCN_VAT590 = Variable Controlled Needle Valve using the VAT590
+
+    VAT590 = series 590 valve from the company, VAT
+    VAT = company that manufactures vacuum valves, among other things
+
+    This has different PVs than the normal VCN class.
+
+    This corresponds to the ST_VCN_VAT590 and ST_VAT590_STATUS
+    data types in the lcls-twincat-vacuum library.
+    """
+    tab_component_names = True
+
+    pos_raw = Cpt(
+        PytmcSignal, 'POS_RAW', io='i', kind='hinted',
+        doc='Position readback',
+    )
+    pres_torr = Cpt(
+        PytmcSignal, 'PRES_TORR', io='i', kind='hinted',
+        doc='Pressure readback in torr units',
+    )
+
+    pres_raw = Cpt(
+        PytmcSignal, 'PRES_RAW', io='i', kind='normal',
+        doc='Pressure readback',
+    )
+    pos_sp = Cpt(
+        PytmcSignal, 'POS_SP', io='i', kind='normal',
+        doc='Position setpoint readback',
+    )
+    pres_sp = Cpt(
+        PytmcSignal, 'PRES_SP', io='i', kind='normal',
+        doc='Pressure setpoint readback',
+    )
+    ilk_ok = Cpt(
+        PytmcSignal, 'ILK_OK', io='i', kind='normal',
+        doc='Interlock bit status'
+    )
+
+    pos_req = Cpt(
+        PytmcSignal, 'POS_REQ', io='io', kind='config',
+        doc='Requested position (0.0-100%)',
+    )
+    pres_req = Cpt(
+        PytmcSignal, 'PRES_REQ', io='io', kind='config',
+        doc='Requested pressure in torr units',
+    )
+    state = Cpt(
+        PytmcSignal, 'STATE', io='io', kind='config',
+        doc='Valve control mode',
+    )
+
+    pos_limit = Cpt(
+        PytmcSignal, 'POS_LIMIT', io='io', kind='config',
+        doc='Percentage upper limit on valve open',
+    )
+    pres_set_limit = Cpt(
+        PytmcSignal, 'PRES_SET_LIMIT', io='io', kind='config',
+        doc='Upper limit for pressure control',
+    )
+    pres_rdbk_limit = Cpt(
+        PytmcSignal, 'PRES_RDBK_LIMIT', io='io', kind='config',
+        doc='Upper limit for pressure reading before valve close'
+    )
+    pres_sens = Cpt(
+        PytmcSignal, 'PRES_SENS', io='io', kind='config',
+        doc='Select pressure sensor',
+    )
+    rem_ctrl = Cpt(
+        PytmcSignal, 'REM_CTRL', io='o', kind='config',
+        doc='Select remote control mode',
+    )
+    zero = Cpt(
+        PytmcSignal, 'ZERO', io='o', kind='config',
+        doc='Activate zero function bit'
+    )
+
+    status = Cpt(VCN_VAT590_Status, '',)

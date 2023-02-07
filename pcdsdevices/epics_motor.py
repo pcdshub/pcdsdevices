@@ -1,10 +1,11 @@
 """
 Module for LCLS's special motor records.
 """
+import functools
 import logging
 import shutil
 import subprocess
-from typing import ClassVar, Optional
+from typing import Callable, ClassVar, Optional
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -61,6 +62,13 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
            keeping track of whether or not a move was caused by this session
            and filtering self.log appropriately.
     """
+    # Allow metadata overrides by replacing the signal classes
+    user_readback = UpCpt(cls=EpicsSignalROEditMD)
+    user_setpoint = UpCpt(cls=EpicsSignalEditMD)
+    # Re-implement cpts for subscription ease
+    high_limit_travel = UpCpt()
+    low_limit_travel = UpCpt()
+
     # Enable/Disable puts
     disabled = Cpt(EpicsSignal, ".DISP", kind='omitted')
     set_metadata(disabled, dict(variety='command-enum'))
@@ -105,6 +113,22 @@ class EpicsMotorInterface(FltMvInterface, EpicsMotor):
         super().__init__(*args, **kwargs)
         self._install_motion_error_filter()
         self.motor_egu.subscribe(self._cache_egu)
+
+    @high_limit_travel.sub_value
+    def _update_hlt(self, value, **kwargs):
+        """
+        Update ctrl metadata when the high limit switch position updates.
+        """
+        self.user_readback._override_metadata(upper_ctrl_limit=value)
+        self.user_setpoint._override_metadata(upper_ctrl_limit=value)
+
+    @low_limit_travel.sub_value
+    def _update_llt(self, value, **kwargs):
+        """
+        Update ctrl metadata when the low limit switch position updates.
+        """
+        self.user_readback._override_metadata(lower_ctrl_limit=value)
+        self.user_setpoint._override_metadata(lower_ctrl_limit=value)
 
     def move(self, position: float, wait: bool = True, **kwargs) -> MoveStatus:
         self._moved_in_session = True
@@ -589,16 +613,13 @@ class IMS(PCDSMotorBase):
         'configure',
         'get_configuration',
         'find_configuration',
+        'diff_configuration'
     ]
 
     # The singleton parameter manager object.
     _pm = None
     # If we fail to create _pm, set bool to only try once
     _pm_init_error = False
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._setup_pmgr_if_needed()
 
     def stage(self):
         """
@@ -663,7 +684,7 @@ class IMS(PCDSMotorBase):
             initialize_complete,
             timeout=timeout,
             settle_time=0.5,
-            )
+        )
         # Wait on status if requested
         if wait:
             status_wait(st)
@@ -724,7 +745,7 @@ class IMS(PCDSMotorBase):
 
         Returns nothing.
         """
-        self.check_pmgr()
+        self._setup_and_check_pmgr()
         self._pm.apply_config(self.prefix, cfgname)
 
     def get_configuration(self):
@@ -734,11 +755,11 @@ class IMS(PCDSMotorBase):
         Returns the current configuration name as a string or throws an
         exception.
         """
-        self.check_pmgr()
+        self._setup_and_check_pmgr()
         return self._pm.get_config(self.prefix)
 
     @staticmethod
-    def find_configuration(pattern, case_insensitive=True, display=20):
+    def find_configuration(pattern, case_insensitive=True, display=30):
         """
         Find parameter manager configurations that match the pattern.
 
@@ -757,7 +778,7 @@ class IMS(PCDSMotorBase):
         Returns a list of strings if display is None, and nothing otherwise.
         """
         IMS._setup_and_check_pmgr()
-        matches = IMS._pm.match_config(pattern, ci=case_insensitive)
+        matches = IMS._pm.match_config(pattern, ci=case_insensitive, parent='USR')
         if display is None:
             return matches
         if len(matches) >= display:
@@ -769,8 +790,30 @@ class IMS(PCDSMotorBase):
             for m in matches:
                 print("    %s" % m)
 
+    def diff_configuration(self, cfgname=None):
+        """
+        Find the differences between the actual motor settings and the
+        current parameter manager configuration.
+
+        Parameters
+        ----------
+        cfgname : str
+            The name of the configuration to compare the settings to.  If
+            this is None, use the current configuration.
+
+        Returns
+        -------
+        diff : dict
+            A dictionary mapping field names to (actual, config) tuples of
+            differing values.
+
+        Raises an exception if the comparison fails for any reason.
+        """
+        IMS._setup_and_check_pmgr()
+        return self._pm.diff_config(self.prefix, cfgname)
+
     @staticmethod
-    def _setup_pmgr():
+    def setup_pmgr():
         try:
             from pmgr import pmgrAPI
         except ImportError:
@@ -795,10 +838,12 @@ class IMS(PCDSMotorBase):
     @staticmethod
     def _setup_pmgr_if_needed():
         if IMS._pm is None and not IMS._pm_init_error:
-            IMS._setup_pmgr()
+            IMS.setup_pmgr()
 
     @staticmethod
     def check_pmgr():
+        if IMS._pm is None:
+            raise RuntimeError('pmgr has not been set up yet, call setup_pmgr')
         if IMS._pm_init_error:
             raise RuntimeError('pmgr not available, initialized with an error')
 
@@ -821,24 +866,11 @@ class Newport(PCDSMotorBase):
     __doc__ += basic_positioner_init
     # Overrides are in roughly the same order as from EpicsMotor
 
-    # Override from EpicsMotor to change class for MD update
-    user_readback = Cpt(EpicsSignalROEditMD, '.RBV', kind='hinted',
-                        auto_monitor=True)
-    user_setpoint = Cpt(EpicsSignalEditMD, '.VAL', limits=True,
-                        auto_monitor=True)
-
     # Override from EpicsMotor to disable
     offset_freeze_switch = Cpt(Signal, kind='omitted')
 
     # Override from EpicsMotor to add subscription
-    motor_egu = Cpt(EpicsSignal, '.EGU', kind='config',
-                    auto_monitor=True)
-
-    # Override from EpicsMotor to add subscription
-    high_limit_travel = Cpt(EpicsSignal, '.HLM', kind='omitted',
-                            auto_monitor=True)
-    low_limit_travel = Cpt(EpicsSignal, '.LLM', kind='omitted',
-                           auto_monitor=True)
+    motor_egu = UpCpt()
 
     # Override from EpicsMotor to disable
     home_forward = Cpt(Signal, kind='omitted')
@@ -854,28 +886,19 @@ class Newport(PCDSMotorBase):
         raise NotImplementedError("Homing is not yet implemented for Newport "
                                   "motors")
 
-    # This needs to be re-done if you override user_readback
-    @user_readback.sub_value
-    def _pos_changed(self, *args, **kwargs):
-        super()._pos_changed(*args, **kwargs)
-
     @motor_egu.sub_value
     def _update_units(self, value, **kwargs):
+        """
+        Update ctrl metadata when the units update.
+        """
         self.user_readback._override_metadata(units=value)
         self.user_setpoint._override_metadata(units=value)
 
-    @high_limit_travel.sub_value
-    def _update_hlt(self, value, **kwargs):
-        self.user_readback._override_metadata(upper_ctrl_limit=value)
-        self.user_setpoint._override_metadata(upper_ctrl_limit=value)
-
-    @low_limit_travel.sub_value
-    def _update_llt(self, value, **kwargs):
-        self.user_readback._override_metadata(lower_ctrl_limit=value)
-        self.user_setpoint._override_metadata(lower_ctrl_limit=value)
-
     @motor_prec.sub_value
     def _update_prec(self, value, **kwargs):
+        """
+        Update ctrl metadata when the precision updates.
+        """
         self.user_readback._override_metadata(precision=value)
         self.user_setpoint._override_metadata(precision=value)
 
@@ -956,6 +979,8 @@ class BeckhoffAxisPLC(Device):
     """Error handling for the Beckhoff Axis PLC code."""
     status = Cpt(PytmcSignal, 'sErrorMessage', io='i', kind='normal',
                  string=True, doc='PLC error or warning')
+    err_bool = Cpt(PytmcSignal, 'bError', io='i', kind='normal',
+                   doc='True if there is some sort of error.')
     err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal',
                    doc='Current NC error code')
     cmd_err_reset = Cpt(EpicsSignal, 'bReset', kind='normal',
@@ -995,6 +1020,79 @@ class BeckhoffAxis(EpicsMotorInterface):
     # Clear the normal homing PVs that don't really work here
     home_forward = None
     home_reverse = None
+
+    def subscribe(
+        self,
+        callback: Callable,
+        event_type: Optional[str] = None,
+        run: bool = True,
+    ) -> int:
+        """
+        Subscribe to events this event_type generates.
+
+        See ophydobj.subscribe for full details.
+
+        This is a thin wrapper over subscribe for custom error handling
+        to intercept the normal end of move handler.
+
+        Unlike during EpicsMotor's move, the move status will
+        be set to the Beckhoff error message if there is one.
+        The move will be marked as successful otherwise.
+
+        Possibly this was unnecessary with an ophyd PR to allow me to
+        customize the error handling, but without that this seems like
+        the easiest way to sidestep the status._finished call and ignore
+        the error logic in _move_changed.
+        """
+        # Mutate subscribe appropriately if this is the exact sub req done
+        # Or if it's a similar one using non-deprecated set_finished
+        # See PositionerBase.move
+        if all((
+            event_type == self._SUB_REQ_DONE,
+            callback.__qualname__ in (
+                'StatusBase._finished',
+                'StatusBase.set_finished',
+            ),
+            not run,
+        )):
+            # Find the actual status object
+            status = callback.__self__
+            # Slip in the more specific end move handler
+            return super().subscribe(
+                functools.partial(self._end_move_cb, status),
+                event_type=self._SUB_REQ_DONE,
+                run=False,
+            )
+        # Otherwise, normal subscribe
+        return super().subscribe(
+            callback=callback,
+            event_type=event_type,
+            run=run,
+        )
+
+    def _end_move_cb(self, status: MoveStatus, **kwargs) -> None:
+        """
+        Special end of move handling to set the status for BeckhoffAxis.
+
+        If the BeckhoffAxis has an error message, include it and mark failure.
+        Otherwise, set success.
+
+        Parameters
+        ----------
+        status : MoveStatus
+            The status that we need to update.
+        """
+        has_error = self.plc.err_bool.get()
+        if has_error:
+            error_message = self.plc.status.get()
+            if not error_message:
+                error_message = 'Unspecified error'
+            error_code = self.plc.err_code.get()
+            if error_code > 0:
+                error_message = f"{hex(error_code)}: {error_message}"
+            status.set_exception(RuntimeError(error_message))
+        else:
+            status.set_finished()
 
     def clear_error(self):
         """Clear any active motion errors on this axis."""
@@ -1038,6 +1136,26 @@ class BeckhoffAxis(EpicsMotorInterface):
             raise
 
         return status
+
+    def check_value(self, pos: float) -> None:
+        """
+        Check that the motor can reach the position.
+
+        Inherits limits and related checks from parent classes.
+        Adds one additional check: the velocity must be nonzero
+        for a move to succeed. Otherwise, the move fails silently.
+
+        Beckhoff EPICS motors at LCLS that have never been initialized
+        before default to a zero velocity for safety. This check
+        lets the user know why the motor does not move.
+        """
+        super().check_value(pos)
+        velo = self.velocity.get()
+        if velo <= 0:
+            raise RuntimeError(
+                f'{self.name} velocity is {velo}, which is not valid. '
+                'Please configure a nonzero, positive velocity.'
+            )
 
 
 class BeckhoffAxisPLC_Pre140(BeckhoffAxisPLC):

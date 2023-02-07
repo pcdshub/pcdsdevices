@@ -11,6 +11,8 @@ import math
 from ophyd.device import required_for_connection
 from ophyd.sim import NullStatus
 
+from pcdsdevices.interface import LightpathInOutMixin
+
 from .doc_stubs import basic_positioner_init, insert_remove
 from .state import (CombinedStateRecordPositioner, PVStatePositioner,
                     StatePositioner, StateRecordPositioner,
@@ -60,8 +62,9 @@ class InOutPositioner(StatePositioner):
 
     def __init__(self, prefix, *, name, **kwargs):
         if self.__class__ is InOutPositioner:
-            raise TypeError(('InOutPositioner must be subclassed with at '
-                             'least a state signal'))
+            raise TypeError(
+                'InOutPositioner must be subclassed with at least a state signal'
+            )
         super().__init__(prefix, name=name, **kwargs)
 
     @required_for_connection
@@ -185,6 +188,12 @@ class CombinedInOutRecordPositioner(CombinedStateRecordPositioner,
     __doc__ += basic_positioner_init
 
 
+class LightpathInOutRecordPositioner(InOutRecordPositioner,
+                                     LightpathInOutMixin):
+    """Lightpath-compatible InOutRecordPositioner"""
+    pass
+
+
 class Reflaser(InOutRecordPositioner):
     """Simple ReferenceLaser with In/Out States."""
     _icon = 'fa.empire'
@@ -212,9 +221,11 @@ class InOutPVStatePositioner(PVStatePositioner, InOutPositioner):
 
     def __init__(self, *args, **kwargs):
         if self.__class__ is InOutPVStatePositioner:
-            raise TypeError(('InOutPVStatePositioner must be subclassed, '
-                             'adding signals and filling in the '
-                             '_state_logic dict.'))
+            raise TypeError(
+                'InOutPVStatePositioner must be subclassed, '
+                'adding signals and filling in the '
+                '_state_logic dict.'
+            )
         super().__init__(*args, **kwargs)
 
 

@@ -1,7 +1,7 @@
 import copy
 import enum
 import logging
-import typing
+import time
 import warnings
 
 import numpy as np
@@ -124,6 +124,9 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
     """ + ophyd.pseudopos.PseudoPositioner.__doc__
 
     def __init__(self, *args, **kwargs):
+        self._my_move = False
+        self._move_time = 0
+        self._my_move_timeout = 10
         super().__init__(*args, **kwargs)
 
         if len(self.RealPosition._fields) == 1:
@@ -131,6 +134,8 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
 
         if len(self.PseudoPosition._fields) == 1:
             self.PseudoPosition.__float__ = _as_float
+
+        self._sub_our_move_checks()
 
     def _update_notepad_ioc(self, position, attr):
         """
@@ -194,6 +199,8 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         RuntimeError
             If motion fails other than timing out.
         '''
+        self._my_move = True
+        self._move_time = time.monotonic()
         status = super().move(position, wait=wait, timeout=timeout,
                               moved_cb=moved_cb)
         self._update_notepad_ioc(position, 'notepad_setpoint')
@@ -202,7 +209,8 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
     def _update_position(self):
         """Update the pseudo position based on that of the real positioners."""
         position = super()._update_position()
-        self._update_notepad_ioc(position, 'notepad_readback')
+        if self._my_move:
+            self._update_notepad_ioc(position, 'notepad_readback')
         return position
 
     def set_current_position(self, position):
@@ -220,6 +228,35 @@ class PseudoPositioner(ophyd.pseudopos.PseudoPositioner):
         real_pos = self.forward(position)
         for motor, pos in zip(self._real, real_pos):
             motor.set_current_position(pos)
+
+    def _our_move_check(self, **kwargs):
+        """
+        If a different session moves this device, it's not our move!
+
+        This callback will set the self._my_move flag to False if the setpoint
+        updates far apart in time from our last move.
+
+        This will stop this instance from updating the notepad_readback
+        signals.
+        """
+        if time.monotonic() - self._move_time > self._my_move_timeout:
+            self._my_move = False
+
+    def _sub_our_move_checks(self):
+        """
+        Set up subscriptions for self._our_move_check
+        """
+        for positioner in self._pseudo:
+            try:
+                signal = getattr(positioner, 'notepad_setpoint', None)
+                if signal is None:
+                    continue
+                signal.subscribe(self._our_move_check)
+            except Exception as ex:
+                self.log.debug(
+                    'Failed to set up _our_move_check subscriptions.',
+                    exc_info=ex,
+                )
 
 
 class SyncAxesBase(FltMvInterface, PseudoPositioner):
@@ -257,9 +294,9 @@ class SyncAxesBase(FltMvInterface, PseudoPositioner):
             'release. Please switch to SyncAxis.',
             DeprecationWarning)
         if self.__class__ is SyncAxesBase:
-            raise TypeError(('SyncAxesBase must be subclassed with '
-                             'the axes to synchronize included as '
-                             'components'))
+            raise TypeError(
+                "SyncAxesBase must be subclassed with the axes to synchronize included as components"
+            )
         super().__init__(*args, **kwargs)
         self._offsets = None
 
@@ -442,27 +479,22 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         """Mostly just a typo check."""
         if self.__class__ is SyncAxis:
             raise TypeError(
-                'SyncAxis must be subclassed with '
-                'the axes to synchronize included as '
-                'components'
-                )
+                "SyncAxis must be subclassed with the axes to synchronize included as components"
+            )
         try:
             self.offset_mode = SyncAxisOffsetMode(self.offset_mode)
         except ValueError:
             try:
                 self.offset_mode = SyncAxisOffsetMode[self.offset_mode]
             except KeyError:
-                raise ValueError(
-                    f'Invalid offset_mode: {self.offset_mode}'
-                    ) from None
+                raise ValueError(f'Invalid offset_mode: {self.offset_mode}') from None
         self._check_info_dict(self.offsets, 'offsets')
         self._check_info_dict(self.scales, 'scales')
         if (self.fix_sync_keep_still is not None
                 and self.fix_sync_keep_still not in self.component_names):
             raise ValueError(
-                f'Invalid fix_sync_keep_still == {self.fix_sync_keep_still}. '
-                'Must match a motor.'
-                )
+                f'Invalid fix_sync_keep_still == {self.fix_sync_keep_still}. Must match a motor.'
+            )
 
     def _check_info_dict(self, setting, info_kind):
         """Helper function to check that all keys in the dict are Cpts"""
@@ -470,9 +502,8 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
             for attr, _ in setting.items():
                 if attr not in self.component_names:
                     raise ValueError(
-                        f'Invalid key {attr} in {info_kind}. '
-                        'Must match a motor.'
-                        )
+                        f'Invalid key {attr} in {info_kind}. Must match a motor.'
+                    )
 
     def _fill_info_dict(self, setting, default, info_kind):
         """Helper function to fill default values into the dict"""
@@ -584,10 +615,7 @@ class SyncAxis(FltMvInterface, PseudoPositioner):
         """
         Return the consistency warning text
         """
-        return (
-            f'{self.name} is in an inconsistent state. Call '
-            'set_current_position or fix_sync to resolve.'
-            )
+        return f'{self.name} is in an inconsistent state. Call set_current_position or fix_sync to resolve.'
 
     def fix_sync(self, confirm=True, wait=True, timeout=10):
         """
@@ -721,8 +749,9 @@ class DelayBase(FltMvInterface, PseudoPositioner):
 
     def __init__(self, *args, egu='s', n_bounces=2, invert=False, **kwargs):
         if self.__class__ is DelayBase:
-            raise TypeError(('DelayBase must be subclassed with '
-                             'a "motor" component, the real motor to move.'))
+            raise TypeError(
+                'DelayBase must be subclassed with a "motor" component, the real motor to move.'
+            )
         self.n_bounces = n_bounces
         if invert:
             self.n_bounces *= -1
@@ -785,7 +814,7 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         return self.PseudoPosition(delay=delay_value + self.user_offset.get())
 
     def set_current_position(self, position):
-        '''
+        """
         Calculate and configure the user_offset value, indicating the provided
         ``position`` as the new current position.
 
@@ -793,7 +822,7 @@ class DelayBase(FltMvInterface, PseudoPositioner):
         ----------
         position
             The new current position.
-        '''
+        """
         self.user_offset.put(0.0)
         new_offset = position - self.position[0]
         self.user_offset.put(new_offset)
@@ -828,8 +857,8 @@ def delay_class_factory(motor_class):
 
 
 def delay_instance_factory(
-        prefix, motor_class, egu='s', n_bounces=2, invert=False, **kwargs
-        ):
+    prefix, motor_class, egu='s', n_bounces=2, invert=False, **kwargs
+):
     cls = delay_class_factory(motor_class)
     return cls(prefix, egu=egu, n_bounces=n_bounces, invert=invert, **kwargs)
 
@@ -873,16 +902,16 @@ class DelayMotor(InterfaceDevice, DelayBase):
     motor = ICpt(PositionerBase)
 
     def __init__(
-            self, motor, name=None, egu='s', n_bounces=2, invert=False,
-            **kwargs,
-            ):
+        self, motor, name=None, egu='s', n_bounces=2, invert=False,
+        **kwargs,
+    ):
         if name is None:
             name = motor.name + '_delay_motor'
         super().__init__(
             motor.prefix, name=name,
             egu=egu, n_bounces=n_bounces, invert=invert,
             motor=motor, **kwargs,
-            )
+        )
 
 
 class SimDelayStage(DelayBase):
@@ -919,12 +948,12 @@ class LookupTablePositioner(PseudoPositioner):
     """
 
     table: np.ndarray
-    column_names: typing.Tuple[str, ...]
-    _table_data_by_name: typing.Dict[str, np.ndarray]
+    column_names: tuple[str, ...]
+    _table_data_by_name: dict[str, np.ndarray]
 
     def __init__(self, *args,
                  table: np.ndarray,
-                 column_names: typing.List[str],
+                 column_names: list[str],
                  **kwargs):
         super().__init__(*args, **kwargs)
         self.table = table

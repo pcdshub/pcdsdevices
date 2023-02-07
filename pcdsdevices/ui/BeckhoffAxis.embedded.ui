@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>337</width>
-    <height>258</height>
+    <width>369</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -89,6 +89,9 @@
      <property name="error_message_attribute" stdset="0">
       <string>plc.status</string>
      </property>
+     <property name="alarmKindLevel" stdset="0">
+      <enum>TyphosPositionerWidget::HINTED</enum>
+     </property>
     </widget>
    </item>
    <item>
@@ -121,14 +124,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TyphosPositionerWidget</class>
-   <extends>QWidget</extends>
-   <header>typhos.positioner</header>
-  </customwidget>
-  <customwidget>
    <class>TyphosDisplayTitle</class>
    <extends>QFrame</extends>
    <header>typhos.display</header>
+  </customwidget>
+  <customwidget>
+   <class>TyphosPositionerWidget</class>
+   <extends>QWidget</extends>
+   <header>typhos.positioner</header>
   </customwidget>
  </customwidgets>
  <resources/>

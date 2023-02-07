@@ -96,6 +96,7 @@ def test_mv_ginput(monkeypatch, fast_motor):
     inner_test()
 
 
+@pytest.mark.xfail(reason='annoying race condition, see #1050')
 @pytest.mark.skipif(
     sys.platform in ("win32", "darwin"),
     reason="Fails on Windows, no fcntl and different signal handling",

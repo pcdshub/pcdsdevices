@@ -3,7 +3,7 @@ from ophyd import Component as Cpt
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxisNoOffset
-from .interface import BaseInterface, LightpathInOutMixin
+from .interface import BaseInterface, LightpathInOutCptMixin
 from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATTempSensor
 
@@ -18,7 +18,8 @@ class WaveFrontSensorStates(TwinCATStatePMPS):
     config = UpCpt(state_count=6)
 
 
-class WaveFrontSensorTarget(BaseInterface, GroupDevice, LightpathInOutMixin):
+class WaveFrontSensorTarget(BaseInterface, GroupDevice,
+                            LightpathInOutCptMixin):
     """
     An array of targets used to determine the beam's wavefront.
 

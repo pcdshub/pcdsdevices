@@ -1,5 +1,5 @@
-1022 add RSpowersupply
-#################
+1094 tst_att_smoke
+##################
 
 API Changes
 -----------
@@ -15,7 +15,7 @@ Device Updates
 
 New Devices
 -----------
-- Add RohdeSchwarzPowerSupply class for controlling the Rohde Schwarz NGP800 power supply series
+- N/A
 
 Bugfixes
 --------
@@ -23,8 +23,8 @@ Bugfixes
 
 Maintenance
 -----------
-- N/A
+- Add AT1K2 and AT2K2 to the attenuator smoke tests.
 
 Contributors
 ------------
-- tongju12
+- zllentz

@@ -21,7 +21,7 @@ from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
 from .epics_motor import IMS, BeckhoffAxisNoOffset
 from .inout import InOutRecordPositioner
-from .interface import BaseInterface, LightpathInOutMixin
+from .interface import BaseInterface, LightpathInOutCptMixin
 from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATThermocouple
 from .signal import PytmcSignal
@@ -40,8 +40,9 @@ class PIMY(InOutRecordPositioner, BaseInterface):
     beam path.
     """
 
-    states_list = ['DIODE', 'YAG', 'OUT']
-    in_states = ['YAG', 'DIODE']
+    # Automatically discover states (not all PIMs have DIODE)
+    states_list = []
+    _in_if_not_out = True
 
     _states_alias = {'YAG': 'IN'}
     # QIcon for UX
@@ -63,7 +64,7 @@ class PIMY(InOutRecordPositioner, BaseInterface):
         return super().unstage()
 
 
-class PIM(BaseInterface, GroupDevice):
+class PIM(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     """
     Profile Intensity Monitor.
 
@@ -96,12 +97,16 @@ class PIM(BaseInterface, GroupDevice):
     tab_whitelist = ['y', 'remove', 'insert', 'removed', 'inserted']
     tab_component_names = True
 
+    lightpath_cpts = ['state']
+
     def infer_prefix(self, prefix):
         """Pulls out the first two segments of the prefix PV, if not already
            done"""
         if not self._prefix_start:
-            self._prefix_start = '{0}:{1}:'.format(prefix.split(':')[0],
-                                                   prefix.split(':')[1])
+            self._prefix_start = '{}:{}:'.format(
+                prefix.split(':')[0],
+                prefix.split(':')[1],
+            )
 
     def format_status_info(self, status_info):
         """
@@ -182,13 +187,13 @@ Y Position: {y_pos} [{y_units}]
         if prefix_det:
             self._prefix_det = prefix_det
         else:
-            self._prefix_det = self.prefix_start+'CVV:01'
+            self._prefix_det = self.prefix_start+'CVV:01:'
 
         # Infer the zoom motor PV from the base prefix
         if prefix_zoom:
             self._prefix_zoom = prefix_zoom
         else:
-            self._prefix_zoom = self.prefix_start+'CLZ:01'
+            self._prefix_zoom = self.prefix_start+'CLZ:01:'
 
         super().__init__(prefix, name=name, **kwargs)
         self.y = self.state.motor
@@ -327,7 +332,7 @@ class LCLS2Target(TwinCATStatePMPS):
     config = UpCpt(state_count=4)
 
 
-class LCLS2ImagerBase(BaseInterface, GroupDevice, LightpathInOutMixin):
+class LCLS2ImagerBase(BaseInterface, GroupDevice, LightpathInOutCptMixin):
     """
     Shared PVs and components from the LCLS2 imagers.
 

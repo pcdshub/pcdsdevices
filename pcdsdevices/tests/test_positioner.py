@@ -18,7 +18,7 @@ def basic():
         move=pos.put,
         get_pos=pos.get,
         update_rate=0.1,
-        )
+    )
 
 
 @pytest.fixture(scope='function')
@@ -58,7 +58,7 @@ def slow():
         get_pos=lambda: pos.position,
         update_rate=0.1,
         timeout=0.1,
-        )
+    )
 
 
 def move_and_check(positioner, points):
