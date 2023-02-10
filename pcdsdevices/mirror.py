@@ -775,9 +775,9 @@ class XOffsetMirrorBend(XOffsetMirror):
     ds_rtd = Cpt(EpicsSignalRO, ':RTD:DS:1_RBV', kind='normal')
 
     # Cooling
-    cool_flow1 = Cpt(EpicsSignalRO, ':FLOW:1_RBV', kind='normal')
-    cool_flow2 = Cpt(EpicsSignalRO, ':FLOW:2_RBV', kind='normal')
-    cool_press = Cpt(EpicsSignalRO, ':PRESS:1_RBV', kind='normal')
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PSM:1_RBV', kind='normal')
 
     # Tab config: show components
     tab_component_names = True
@@ -1066,9 +1066,9 @@ class KBOMirrorHE(KBOMirror):
         Alias for the device.
     """
     # Cooling water flow and pressure sensors
-    cool_flow1 = Cpt(EpicsSignalRO, ':FLOW:1_RBV', kind='normal')
-    cool_flow2 = Cpt(EpicsSignalRO, ':FLOW:2_RBV', kind='normal')
-    cool_press = Cpt(EpicsSignalRO, ':PRESS:1_RBV', kind='normal')
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PSM:1_RBV', kind='normal')
 
     # Tab config: show components
     tab_component_names = True
@@ -1372,9 +1372,9 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
         Alias for the device.
     """
     # Cooling
-    cool_flow1 = Cpt(EpicsSignalRO, ':FLOW:1_RBV', kind='normal')
-    cool_flow2 = Cpt(EpicsSignalRO, ':FLOW:2_RBV', kind='normal')
-    cool_press = Cpt(EpicsSignalRO, ':PRESS:1_RBV', kind='normal')
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PSM:1_RBV', kind='normal')
 
 
 class MirrorInsertState(TwinCATStatePMPS):
