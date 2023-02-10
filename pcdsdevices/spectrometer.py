@@ -268,7 +268,7 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
                  doc='flow meter 1')
     flow_2 = Cpt(PytmcSignal, ':FWM:2', io='i', kind='normal',
                  doc='flow meter 2')
-    pres_1 = Cpt(PytmcSignal, ':PSM:1', io='i', kind='normal',
+    pres_1 = Cpt(PytmcSignal, ':PRSM:1', io='i', kind='normal',
                  doc='pressure sensor 1')
 
     # RTDs

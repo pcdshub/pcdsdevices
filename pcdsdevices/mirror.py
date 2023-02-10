@@ -777,7 +777,7 @@ class XOffsetMirrorBend(XOffsetMirror):
     # Cooling
     cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
     cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
-    cool_press = Cpt(EpicsSignalRO, ':PSM:1_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
 
     # Tab config: show components
     tab_component_names = True
@@ -1068,7 +1068,7 @@ class KBOMirrorHE(KBOMirror):
     # Cooling water flow and pressure sensors
     cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
     cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
-    cool_press = Cpt(EpicsSignalRO, ':PSM:1_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
 
     # Tab config: show components
     tab_component_names = True
@@ -1374,7 +1374,7 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
     # Cooling
     cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
     cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
-    cool_press = Cpt(EpicsSignalRO, ':PSM:1_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
 
 
 class MirrorInsertState(TwinCATStatePMPS):
