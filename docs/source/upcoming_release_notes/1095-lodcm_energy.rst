@@ -7,11 +7,11 @@ API Changes
 
 Features
 --------
-- Set energy directly
+- Set LODCM energy directly
 
 Device Updates
 --------------
-- lodcm.py
+- lodcm.py: fix energy functionality, add commonly used aliases
 
 New Devices
 -----------
@@ -27,4 +27,6 @@ Maintenance
 
 Contributors
 ------------
-- espov, tangkong
+- espov
+- tangkong
+- zlentz
