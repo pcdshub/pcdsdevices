@@ -918,9 +918,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
         return
 
     def status_info(self):
-        """ Overwrites interface status_info to make things
-        faster.
-        """
+        """Overwrites interface status_info to make things faster."""
         return None
 
     def format_status_info(self, status_info):
