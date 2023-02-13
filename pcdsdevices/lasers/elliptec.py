@@ -3,7 +3,6 @@ Classes for ThorLabs Elliptec motors.
 """
 
 
-from ophyd import Device
 from pcdsdevices.pv_positioner import PVPositionerIsClose
 from ophyd import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
@@ -51,9 +50,9 @@ class EllBase(PVPositionerIsClose):
     readback = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS',
                     kind='omitted')
     user_setpoint = FCpt(EpicsSignal, '{prefix}:M{self._channel}:MOVE',
-                    kind='omitted')
+                         kind='omitted')
     user_readback = FCpt(EpicsSignal, '{prefix}:M{self._channel}:CURPOS',
-                    kind='omitted')
+                         kind='omitted')
 
     def __init__(self, prefix, port=0, channel=1, **kwargs):
         self._port = port
