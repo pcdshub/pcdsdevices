@@ -87,7 +87,7 @@ class IPMDiode(BaseInterface, GroupDevice):
     x_motor = Cpt(IMS, ':X_MOTOR', kind='normal')
     state = Cpt(InOutRecordPositioner, '', kind='normal')
 
-    def __init__(self, prefix, *, name,  **kwargs):
+    def __init__(self, prefix, *, name, **kwargs):
         super().__init__(prefix, name=name, **kwargs)
         self.y_motor = self.state.motor
 
@@ -317,7 +317,7 @@ class IPIMBChannel(BaseInterface, Device):
     scale = FCpt(EpicsSignal, '{self.prefix}:CH{self.channel_index}_SCALE',
                  kind='config')
 
-    def __init__(self, prefix, *, name, channel_index,  **kwargs):
+    def __init__(self, prefix, *, name, channel_index, **kwargs):
         self.channel_index = channel_index
         super().__init__(prefix, name=name, **kwargs)
 
@@ -421,7 +421,7 @@ class Wave8Channel(BaseInterface, Device):
         EpicsSignal, '{self.prefix}:Delay{self.channel_index}_RBV',
         write_pv='{self.prefix}:Delay{self.channel_index}', kind='config')
 
-    def __init__(self, prefix, *, name, channel_index,  **kwargs):
+    def __init__(self, prefix, *, name, channel_index, **kwargs):
         self.channel_index = channel_index
         super().__init__(prefix, name=name, **kwargs)
 

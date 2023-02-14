@@ -3,7 +3,7 @@ from __future__ import annotations
 import dataclasses
 import enum
 import logging
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Union
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ class _PositionDiagram:
     def __init__(self):
         self.text = POSITION_DIAGRAM
 
-    def _find_line_col(self, text: str) -> Tuple[int, int]:
+    def _find_line_col(self, text: str) -> tuple[int, int]:
         """Get the line and column of ``text``."""
         for lineno, line in enumerate(self.text.splitlines()):
             if text in line:
@@ -130,6 +130,9 @@ class SourcePosition(str, enum.Enum):
     ls8 = "LS8"
     ls4 = "LS4"
 
+    def __str__(self) -> str:
+        return self.value
+
     @classmethod
     def from_index(cls, index: int) -> SourcePosition:
         """"
@@ -183,7 +186,7 @@ class SourcePosition(str, enum.Enum):
         )
 
     @property
-    def bay(self) -> Optional[int]:
+    def bay(self) -> int | None:
         """The near field camera prefix associated with this source position."""
         return {
             SourcePosition.ls1: 1,
@@ -192,7 +195,7 @@ class SourcePosition(str, enum.Enum):
         }.get(self, None)
 
     @property
-    def near_field_camera_prefix(self) -> Optional[str]:
+    def near_field_camera_prefix(self) -> str | None:
         """The near field camera prefix associated with this source position."""
         bay = self.bay
         if bay is not None:
@@ -200,7 +203,7 @@ class SourcePosition(str, enum.Enum):
         return None
 
     @property
-    def far_field_camera_prefix(self) -> Optional[str]:
+    def far_field_camera_prefix(self) -> str | None:
         """The far field camera prefix associated with this source position."""
         bay = self.bay
         if bay is not None:
@@ -234,6 +237,9 @@ class DestinationPosition(str, enum.Enum):
     ld6 = "LD6"    # bottom
     ld14 = "LD14"  # top
     ld7 = "LD7"    # bottom
+
+    def __str__(self) -> str:
+        return self.value
 
     @property
     def name_and_desc(self) -> str:
@@ -278,7 +284,7 @@ class DestinationPosition(str, enum.Enum):
 
     def path_to(
         self, target: DestinationPosition
-    ) -> Tuple[DestinationPosition, ...]:
+    ) -> tuple[DestinationPosition, ...]:
         """
         Get crossed destinations on the path from ``self`` to ``target``.
 
@@ -319,13 +325,13 @@ AnyPosition = Union[SourcePosition, DestinationPosition]
 PORT_SPACING_MM = 215.9  # 8.5 in
 
 # PV source index (bay) to installed LS port
-valid_sources: Tuple[SourcePosition, ...] = (
+valid_sources: tuple[SourcePosition, ...] = (
     SourcePosition.ls1,  # Bay 1
     SourcePosition.ls5,  # Bay 3
     SourcePosition.ls8,  # Bay 4
 )
 # PV destination index (bay) to installed LD port
-valid_destinations: Tuple[DestinationPosition, ...] = (
+valid_destinations: tuple[DestinationPosition, ...] = (
     DestinationPosition.ld2,   # TMO IP3
     DestinationPosition.ld4,   # RIX ChemRIXS
     DestinationPosition.ld6,   # RIX QRIXS
@@ -421,7 +427,7 @@ class BtmsSourceState:
         Indicates if the beam is active for the given source.
     """
     source: SourcePosition
-    destination: Optional[DestinationPosition]
+    destination: DestinationPosition | None
     beam_status: bool
 
 
@@ -453,10 +459,10 @@ class BtmsState:
     maintenance_mode : bool
         System-level maintenance mode setting.
     """
-    sources: Dict[SourcePosition, BtmsSourceState] = dataclasses.field(
+    sources: dict[SourcePosition, BtmsSourceState] = dataclasses.field(
         default_factory=dict
     )
-    destinations: Dict[DestinationPosition, BtmsDestinationState] = dataclasses.field(
+    destinations: dict[DestinationPosition, BtmsDestinationState] = dataclasses.field(
         default_factory=lambda: {
             pos: BtmsDestinationState()
             for pos in DestinationPosition
@@ -464,7 +470,7 @@ class BtmsState:
     )
     maintenance_mode: bool = False
 
-    def check_configuration(self) -> List[MoveError]:
+    def check_configuration(self) -> list[MoveError]:
         """
         Check the current configuration for any logical errors/conflicts.
         """
@@ -491,9 +497,9 @@ class BtmsState:
     def check_move_all(
         self,
         moving_source: SourcePosition,
-        closest_destination: Optional[DestinationPosition],
+        closest_destination: DestinationPosition | None,
         target_destination: DestinationPosition,
-    ) -> List[MoveError]:
+    ) -> list[MoveError]:
         """
         Check motion of ``moving_source`` from ``closest_destination`` to
         ``target_destination``.
@@ -520,10 +526,10 @@ class BtmsState:
         if closest_destination is None:
             closest_destination = self.sources[moving_source].destination
 
-        dest_to_source = dict(
-            (source.destination, source.source)
+        dest_to_source = {
+            source.destination: source.source
             for source in self.sources.values()
-        )
+        }
 
         for other_source in self.sources:
             if other_source == moving_source:
@@ -599,7 +605,7 @@ class BtmsState:
     def check_move(
         self,
         moving_source: SourcePosition,
-        closest_destination: Optional[DestinationPosition],
+        closest_destination: DestinationPosition | None,
         target_destination: DestinationPosition,
     ) -> None:
         """

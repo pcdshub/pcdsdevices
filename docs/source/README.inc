@@ -23,18 +23,6 @@
 
 
 
-.. raw:: html
-
-   <div align="center">
-     <!-- Build Status -->
-     <a href="https://travis-ci.org/pcdshub/pcdsdevices">
-       <img
-   src="https://img.shields.io/travis/pcdshub/pcdsdevices/master.svg?style=flat-square"
-         alt="Build Status" />
-     </a>
-   </div>
-
-
 Motivation
 ----------
 

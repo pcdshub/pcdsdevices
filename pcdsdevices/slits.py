@@ -29,7 +29,7 @@ from ophyd.status import wait as status_wait
 from .areadetector.detectors import PCDSAreaDetectorTyphosTrigger
 from .device import GroupDevice
 from .device import UpdateComponent as UpCpt
-from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset
+from .epics_motor import BeckhoffAxis, BeckhoffAxisNoOffset, PCDSMotorBase
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
                         LightpathMixin, MvInterface)
 from .pmps import TwinCATStatePMPS
@@ -265,7 +265,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
                 self._pre_stage_gap[0],
                 self._pre_stage_gap[1],
                 wait=True
-                )
+            )
         self._pre_stage_gap = None
         return super().unstage()
 
@@ -296,7 +296,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         """Callback run when slit size is adjusted."""
         # Avoid duplicate keywords
         kwargs.pop('sub_type', None)
-        kwargs.pop('obj',      None)
+        kwargs.pop('obj', None)
         # Run subscriptions
         self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
@@ -424,12 +424,19 @@ class LusiSlits(SlitsBase):
     xcenter = Cpt(LusiSlitPositioner, '', slit_type='XCENTER', kind='normal')
     ycenter = Cpt(LusiSlitPositioner, '', slit_type='YCENTER', kind='normal')
 
+    # Individual blade aliases
+    blade_top = Cpt(PCDSMotorBase, ':TOP', kind='normal')
+    blade_bottom = Cpt(PCDSMotorBase, ':BOTTOM', kind='normal')
+    blade_north = Cpt(PCDSMotorBase, ':NORTH', kind='normal')
+    blade_south = Cpt(PCDSMotorBase, ':SOUTH', kind='normal')
+
     # Local PVs
     blocked = Cpt(EpicsSignalRO, ':BLOCKED', kind='omitted')
     open_cmd = Cpt(EpicsSignal, ':OPEN', kind='omitted')
     close_cmd = Cpt(EpicsSignal, ':CLOSE', kind='omitted')
     block_cmd = Cpt(EpicsSignal, ':BLOCK', kind='omitted')
 
+    tab_whitelist = ['blade_top', 'blade_bottom', 'blade_north', 'blade_south']
     lightpath_cpts = ['xwidth.readback', 'ywidth.readback']
 
     def open(self):
@@ -596,8 +603,8 @@ def _rtd_fields(cls, attr_base, range_, **kwargs):
     padding = max(range_)//10 + 2
     defn = OrderedDict()
     for i in range_:
-        attr = '{attr}{i}'.format(attr=attr_base, i=i)
-        suffix = ':RTD:{i}'.format(i=str(i).zfill(padding))
+        attr = f'{attr_base}{i}'
+        suffix = f':RTD:{str(i).zfill(padding)}'
         defn[attr] = (cls, suffix, kwargs)
     return defn
 

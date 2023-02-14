@@ -81,18 +81,18 @@ def test_pvstate_positioner_logic():
     # Limits are defered
     lim_obj.lowlim.put(1)
     lim_obj.highlim.put(1)
-    assert(lim_obj.position == 'Unknown')
+    assert lim_obj.position == 'Unknown'
     # Limits are out
     lim_obj.highlim.put(0)
-    assert(lim_obj.position == 'OUT')
+    assert lim_obj.position == 'OUT'
     # Limits are in
     lim_obj.lowlim.put(0)
     lim_obj.highlim.put(1)
-    assert(lim_obj.position == 'IN')
+    assert lim_obj.position == 'IN'
     # Limits are in conflicting state
     lim_obj.lowlim.put(0)
     lim_obj.highlim.put(0)
-    assert(lim_obj.position == 'Unknown')
+    assert lim_obj.position == 'Unknown'
 
     with pytest.raises(NotImplementedError):
         lim_obj.move('IN')
@@ -173,19 +173,19 @@ def test_pvstate_positioner_sets():
         lim_obj2.move('Unknown')
     cb = Mock()
     lim_obj2.move('OUT', moved_cb=cb).wait(timeout=1)
-    assert(cb.called)
-    assert(lim_obj2.position == 'OUT')
+    assert cb.called
+    assert lim_obj2.position == 'OUT'
     lim_obj2.move('IN', wait=True)
-    assert(lim_obj2.position == 'IN')
+    assert lim_obj2.position == 'IN'
 
     lim_obj2.move(2)
-    assert(lim_obj2.position == 'OUT')
+    assert lim_obj2.position == 'OUT'
 
     with pytest.raises(TypeError):
         lim_obj2.move(123.456)
 
     lim_obj2.state.put('IN')
-    assert(lim_obj2.position == 'IN')
+    assert lim_obj2.position == 'IN'
     lim_obj2.destroy()
 
 

@@ -697,7 +697,6 @@ class CCMEnergy(FltMvInterface, PseudoPositioner, CCMConstantsMixin):
         st = super().move(*args, wait=wait, **kwargs)
         time.sleep(0.01)  # safety wait. Necessary?
         if kill:
-            print('Kill alio PID')
             self.alio.kill()
         return st
 
@@ -1114,8 +1113,8 @@ def alio_to_theta(alio: float, theta0: float, gr: float, gd: float) -> float:
     Note that for x = −R, θ = 2 arctan(−R/D)
     """
     return theta0 + 2 * np.arctan(
-         (np.sqrt(alio ** 2 + gd ** 2 + 2 * gr * alio) - gd) / (2 * gr + alio)
-     )
+        (np.sqrt(alio ** 2 + gd ** 2 + 2 * gr * alio) - gd) / (2 * gr + alio)
+    )
 
 
 def wavelength_to_theta(wavelength: float, dspacing: float) -> float:
