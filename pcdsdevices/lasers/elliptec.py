@@ -3,10 +3,10 @@ Classes for ThorLabs Elliptec motors.
 """
 
 
-from pcdsdevices.pv_positioner import PVPositionerIsClose
 from ophyd import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
+from pcdsdevices.pv_positioner import PVPositionerIsClose
 from pcdsdevices.variety import set_metadata
 
 

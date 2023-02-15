@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- EllBase: Change the base class of EllBase to enable scanning via BlueSky. 
+- EllBase: Change the base class of EllBase to enable scanning via BlueSky.
 
 New Devices
 -----------
