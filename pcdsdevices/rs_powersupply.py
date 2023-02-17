@@ -50,15 +50,13 @@ class RohdeSchwarzPowerSupply(Device):
     name: str, keyword-only
         A name to refer to the relevant RohdeSchwazPowersupply.
     """
-    re_connect = Cpt(EpicsSignal, 'RECONNECT', kind='normal',
+    re_connect = Cpt(EpicsSignal, ':RECONNECT', kind='normal',
                      doc='Connect button')
-    id = Cpt(EpicsSignal, 'IDN', kind='normal',
+    id = Cpt(EpicsSignal, ':IDN', kind='hinted',
              doc='Device ID')
-    desc = Cpt(EpicsSignal, 'DESC', kind='normal',
-               doc='Device description')
-    remote_mode = Cpt(EpicsSignal, 'MODE', kind='normal',
+    remote_mode = Cpt(EpicsSignal, ':MODE', kind='normal',
                       doc='Remote mode')
-    output = Cpt(EpicsSignal, 'OUTPUT', kind='normal',
+    output = Cpt(EpicsSignal, ':OUTPUT', kind='normal',
                  doc='Turn on/off all channel outputs')
 
     ch1 = Cpt(RSChannel, ':1:', kind='normal')
