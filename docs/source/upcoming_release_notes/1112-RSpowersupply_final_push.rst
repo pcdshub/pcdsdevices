@@ -3,7 +3,7 @@
 
 API Changes
 -----------
-- remove one PV desc and modify the format
+- N/A
 
 Features
 --------
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- updating some  PVs format
+- Add some PVs for RSPowersupply
 
 New Devices
 -----------
@@ -19,7 +19,7 @@ New Devices
 
 Bugfixes
 --------
-- yes
+- N/A
 
 Maintenance
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- @tongju12
+- tongju12
