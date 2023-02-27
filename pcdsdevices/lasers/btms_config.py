@@ -332,6 +332,7 @@ valid_sources: tuple[SourcePosition, ...] = (
 )
 # PV destination index (bay) to installed LD port
 valid_destinations: tuple[DestinationPosition, ...] = (
+    DestinationPosition.ld1,   # Diagnostics box
     DestinationPosition.ld2,   # TMO IP3
     DestinationPosition.ld4,   # RIX ChemRIXS
     DestinationPosition.ld6,   # RIX QRIXS
