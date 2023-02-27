@@ -255,7 +255,9 @@ class DestinationPosition(str, enum.Enum):
         -------
         str
         """
+        # NOTE: Add new descriptions here.
         return {
+            DestinationPosition.ld1: "Diagnostics",
             DestinationPosition.ld2: "TMO IP3",
             DestinationPosition.ld4: "RIX ChemRIXS",
             DestinationPosition.ld6: "RIX QRIXS",
@@ -324,6 +326,9 @@ AnyPosition = Union[SourcePosition, DestinationPosition]
 
 PORT_SPACING_MM = 215.9  # 8.5 in
 
+# NOTE: This is the primary location where valid ports are listed.
+#       Modify this section if you want the BTPS/BTMS to know about more ports.
+#
 # PV source index (bay) to installed LS port
 valid_sources: tuple[SourcePosition, ...] = (
     SourcePosition.ls1,  # Bay 1
