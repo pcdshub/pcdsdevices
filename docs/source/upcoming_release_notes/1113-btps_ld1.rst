@@ -12,7 +12,8 @@ Features
 Device Updates
 --------------
 - Added laser destination 1 (LD1), where a diagnostics box is installed, to
-  the Laser Beam Transport System (BTPS) state configuration.
+  the Laser Beam Transport System (BTPS) state configuration.  Updated
+  overview and configuration screens to display LD1.
 
 New Devices
 -----------
