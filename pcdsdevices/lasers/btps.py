@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Tuple, cast
+from typing import cast
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -87,7 +87,7 @@ class RangeComparison(BaseInterface, Device):
         doc="Is the value comparison exclusive or inclusive?",
     )
 
-    def get_delta(self, value: Optional[float] = None) -> float:
+    def get_delta(self, value: float | None = None) -> float:
         """
         Get the delta to the nominal value.
 
@@ -130,7 +130,7 @@ class SourceToDestinationConfig(BaseInterface, Device):
         self,
         prefix: str,
         source_pos: SourcePosition,
-        destination_pos: Optional[btms.DestinationPosition] = None,
+        destination_pos: btms.DestinationPosition | None = None,
         **kwargs
     ):
         self.source_pos = source_pos
@@ -217,7 +217,7 @@ class SourceToDestinationConfig(BaseInterface, Device):
         ),
     )
 
-    def summarize_checks(self) -> List[str]:
+    def summarize_checks(self) -> list[str]:
         """
         Summarize all checks into a user-readable form.
 
@@ -358,7 +358,7 @@ class DestinationConfig(BaseInterface, Device):
     exit_valve = Cpt(BtpsVGC, "VGC:01", kind="normal", doc="Destination exit valve")
 
     @property
-    def sources(self) -> Dict[SourcePosition, SourceToDestinationConfig]:
+    def sources(self) -> dict[SourcePosition, SourceToDestinationConfig]:
         """
 
         Returns
@@ -520,7 +520,7 @@ class BtpsSourceStatus(BaseInterface, Device):
 
     def set_with_movestatus(
         self, dest: DestinationPosition, check: bool = True
-    ) -> Tuple[MoveStatus, MoveStatus, MoveStatus]:
+    ) -> tuple[MoveStatus, MoveStatus, MoveStatus]:
         """
         Move to the target destination and return statuses for each motion.
         """
@@ -579,7 +579,7 @@ class BtpsSourceStatus(BaseInterface, Device):
         state = self.parent.to_btms_state()
         state.check_move(self.source_pos, None, dest)
 
-    def check_move_all(self, dest: DestinationPosition) -> List[MoveError]:
+    def check_move_all(self, dest: DestinationPosition) -> list[MoveError]:
         """
         Check for conflicts moving this source to ``dest``.
 
@@ -628,8 +628,8 @@ class BtpsState(BaseInterface, Device):
             )
         }
 
-    sources: Dict[SourcePosition, BtpsSourceStatus]
-    destinations: Dict[btms.DestinationPosition, DestinationConfig]
+    sources: dict[SourcePosition, BtpsSourceStatus]
+    destinations: dict[btms.DestinationPosition, DestinationConfig]
 
     config = Cpt(
         GlobalConfig,
@@ -727,7 +727,7 @@ class BtpsState(BaseInterface, Device):
 
     def set_source_to_destination_with_movestatus(
         self, source: SourcePosition, dest: DestinationPosition
-    ) -> Tuple[MoveStatus, MoveStatus, MoveStatus]:
+    ) -> tuple[MoveStatus, MoveStatus, MoveStatus]:
         """
         Move ``source`` to the target destination ``dest`` and return statuses
         for each motion.
@@ -778,7 +778,7 @@ class BtpsState(BaseInterface, Device):
         state.maintenance_mode = bool(self.config.maintenance_mode.get())
         return state
 
-    def status_info(self) -> Dict[str, BtmsState]:
+    def status_info(self) -> dict[str, BtmsState]:
         return {"state": self.to_btms_state()}
 
     def format_status_info(self, state_dict: dict):

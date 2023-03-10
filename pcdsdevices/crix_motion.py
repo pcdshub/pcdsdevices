@@ -124,7 +124,7 @@ class QuadraticBeckhoffMotor(FltMvInterface, PseudoPositioner):
         real = (
             -self.cb
             + self.pol * np.sqrt(self.cb**2 - 4*self.ca*(self.cc - calc))
-            ) / (2*self.ca)
+        ) / (2*self.ca)
         return self.RealPosition(real=real)
 
     @real_position_argument

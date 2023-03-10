@@ -5,12 +5,9 @@ All components (EPICS PVs) associated with a specific camera are added here.
 """
 import logging
 
-import ophyd
-from ophyd import (Component, DynamicDeviceComponent, EpicsSignal,
-                   EpicsSignalRO, FormattedComponent, cam)
-from ophyd.areadetector.base import ADBase, ADComponent, EpicsSignalWithRBV
+from ophyd import Component, EpicsSignal, EpicsSignalRO, cam
+from ophyd.areadetector.base import ADComponent, EpicsSignalWithRBV
 from ophyd.sim import SynSignal
-from ophyd.utils import enum
 
 logger = logging.getLogger(__name__)
 
@@ -100,21 +97,17 @@ class FeeOpalCam(cam.CamBase):
     acquire = Component(EpicsSignal, 'Acquire')
 
     # Attrs that arent in the fee opal
-    array_counter = Component(SynSignal) # C(SignalWithRBV, 'ArrayCounter')
-    nd_attributes_file = Component(SynSignal) # C(EpicsSignal, 'NDAttributesFile', string=True)
-    pool_alloc_buffers = Component(SynSignal) # C(EpicsSignalRO, 'PoolAllocBuffers')
-    pool_free_buffers = Component(SynSignal) # C(EpicsSignalRO, 'PoolFreeBuffers')
-    pool_max_buffers = Component(SynSignal) # C(EpicsSignalRO, 'PoolMaxBuffers')
-    pool_max_mem = Component(SynSignal) # C(EpicsSignalRO, 'PoolMaxMem')
-    pool_used_buffers = Component(SynSignal) # C(EpicsSignalRO, 'PoolUsedBuffers')
-    pool_used_mem = Component(SynSignal) # C(EpicsSignalRO, 'PoolUsedMem')
-    port_name = Component(SynSignal) # C(EpicsSignalRO, 'PortName_RBV', string=True)
-    array_callbacks = Component(SynSignal) # C(SignalWithRBV, 'ArrayCallbacks')
-    array_size = Component(SynSignal) # DDC(ad_group(EpicsSignalRO,
-                 #              (('array_size_x', 'ArraySizeX_RBV'),
-                 #               ('array_size_y', 'ArraySizeY_RBV'),
-                 #               ('array_size_z', 'ArraySizeZ_RBV'))),
-                 #     doc='Size of the array in the XYZ dimensions')
-    color_mode = Component(SynSignal) # C(SignalWithRBV, 'ColorMode')
-    data_type = Component(SynSignal) # C(SignalWithRBV, 'DataType')
-    array_size_bytes = Component(SynSignal) # C(EpicsSignalRO, 'ArraySize_RBV')
+    array_counter = Component(SynSignal)
+    nd_attributes_file = Component(SynSignal)
+    pool_alloc_buffers = Component(SynSignal)
+    pool_free_buffers = Component(SynSignal)
+    pool_max_buffers = Component(SynSignal)
+    pool_max_mem = Component(SynSignal)
+    pool_used_buffers = Component(SynSignal)
+    pool_used_mem = Component(SynSignal)
+    port_name = Component(SynSignal)
+    array_callbacks = Component(SynSignal)
+    array_size = Component(SynSignal)
+    color_mode = Component(SynSignal)
+    data_type = Component(SynSignal)
+    array_size_bytes = Component(SynSignal)

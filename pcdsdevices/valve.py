@@ -61,7 +61,7 @@ class GateValve(Stopper):
         EpicsSignalRO,
         ':OPN_OK',
         kind='normal'
-     )
+    )
 
     # QIcon for UX
     _icon = 'fa.hourglass'

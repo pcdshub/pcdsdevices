@@ -265,7 +265,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
                 self._pre_stage_gap[0],
                 self._pre_stage_gap[1],
                 wait=True
-                )
+            )
         self._pre_stage_gap = None
         return super().unstage()
 
@@ -296,7 +296,7 @@ class SlitsBase(MvInterface, GroupDevice, LightpathMixin):
         """Callback run when slit size is adjusted."""
         # Avoid duplicate keywords
         kwargs.pop('sub_type', None)
-        kwargs.pop('obj',      None)
+        kwargs.pop('obj', None)
         # Run subscriptions
         self._run_subs(sub_type=self.SUB_STATE, obj=self, **kwargs)
 
@@ -603,8 +603,8 @@ def _rtd_fields(cls, attr_base, range_, **kwargs):
     padding = max(range_)//10 + 2
     defn = OrderedDict()
     for i in range_:
-        attr = '{attr}{i}'.format(attr=attr_base, i=i)
-        suffix = ':RTD:{i}'.format(i=str(i).zfill(padding))
+        attr = f'{attr_base}{i}'
+        suffix = f':RTD:{str(i).zfill(padding)}'
         defn[attr] = (cls, suffix, kwargs)
     return defn
 

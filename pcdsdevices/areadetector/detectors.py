@@ -8,12 +8,10 @@ import logging
 import shutil
 import subprocess
 import time
-import warnings
 
 from ophyd import Device
 from ophyd.areadetector import cam
-from ophyd.areadetector.base import (ADComponent, EpicsSignalWithRBV,
-                                     NDDerivedSignal)
+from ophyd.areadetector.base import ADComponent, EpicsSignalWithRBV
 from ophyd.areadetector.detectors import DetectorBase
 from ophyd.areadetector.trigger_mixins import SingleTrigger
 from ophyd.device import Component as Cpt
@@ -64,7 +62,7 @@ class PCDSAreaDetectorBase(DetectorBase):
                           for src, dest in port_edges]
         return port_edges
 
-    def screen(self, main: bool=False) -> None:
+    def screen(self, main: bool = False) -> None:
         """
         Open camViewer screen for camera.
 
@@ -78,8 +76,13 @@ class PCDSAreaDetectorBase(DetectorBase):
             logger.error('no camViewer available')
             return
 
-        arglist = ['camViewer', '-H', str(get_hutch_name()).lower(),
-                    '-c', self.name]
+        arglist = [
+            'camViewer',
+            '-H',
+            str(get_hutch_name()).lower(),
+            '-c',
+            self.name,
+        ]
         if main:
             arglist.append('-m')
 
@@ -155,6 +158,7 @@ class PCDSHDF5BlueskyTriggerable(SingleTrigger, PCDSAreaDetectorBase):
         kind='normal',
         doc='Save output as an HDF5 file'
     )
+
     def __init__(
         self,
         *args,

@@ -120,11 +120,12 @@ class LegacyItem(HappiItem):
     kwargs.default = {'name': '{{name}}'}
 
     def __repr__(self):
-        return '{} (name={}, prefix={}, z={})'.format(
-                                    self.__class__.__name__,
-                                    self.name,
-                                    self.prefix,
-                                    self.z)
+        return "{} (name={}, prefix={}, z={})".format(
+            self.__class__.__name__,
+            self.name,
+            self.prefix,
+            self.z,
+        )
 
     @property
     def screen(self):

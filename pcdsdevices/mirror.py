@@ -7,7 +7,7 @@ control the pitch, and two pairs of motors to control the horizontal and
 vertical gantries.
 """
 import logging
-from typing import List, Tuple, Union
+from typing import Union
 
 import numpy as np
 from lightpath import LightpathState
@@ -82,7 +82,7 @@ class OMMotor(FltMvInterface, PVPositioner):
         # Check that we do not have a NaN or an Inf as those will
         # will make the PLC very unhappy ...
         if position is None or np.isnan(position) or np.isinf(position):
-            raise ValueError("Invalid value inputted: '{0}'".format(position))
+            raise ValueError(f"Invalid value inputted: '{position}'")
         # Use the built-in PVPositioner check_value
         super().check_value(position)
 
@@ -412,9 +412,9 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
     def __init__(
         self,
         *args,
-        x_ranges: List[List[int]] = [],
-        y_ranges: List[List[int]] = [],
-        pitch_ranges: List[List[List[int]]] = [],
+        x_ranges: list[list[int]] = [],
+        y_ranges: list[list[int]] = [],
+        pitch_ranges: list[list[list[int]]] = [],
         **kwargs
     ) -> None:
         # insertion status, [[min_x_out, max_x_out], [min_x_in, max_x_in]]
@@ -505,9 +505,9 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
 
     def _find_matching_range_indices(
         self,
-        ranges: List[List[numeric]],
+        ranges: list[list[numeric]],
         value: numeric
-    ) -> List[bool]:
+    ) -> list[bool]:
         """
         Helper function for finding the range a particular value falls into
 
@@ -532,7 +532,7 @@ class XOffsetMirror(BaseInterface, GroupDevice, LightpathMixin):
 
         return [limit[0] < value < limit[1] for limit in ranges]
 
-    def _get_insertion_state(self, x: float) -> Tuple[bool, bool]:
+    def _get_insertion_state(self, x: float) -> tuple[bool, bool]:
         """
         Interpret x-position as inserted or removed, based on ranges
         provided at init.
@@ -1409,7 +1409,7 @@ class XOffsetMirrorXYState(XOffsetMirrorState):
     def _get_insertion_state(
         self,
         insertion_state: int
-    ) -> Tuple[bool, bool]:
+    ) -> tuple[bool, bool]:
         """
         return insertion state, given presence of state PV's
 

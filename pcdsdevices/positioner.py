@@ -82,11 +82,25 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         doing.
     """
     def __init__(
-            self, *, name, move, get_pos, set_pos=None, stop=None, done=None,
-            check_value=None, info=None, egu='', limits=None, update_rate=1,
-            timeout=60, notepad_pv=None, parent=None, kind=None,
-            **kwargs
-            ):
+        self,
+        *,
+        name,
+        move,
+        get_pos,
+        set_pos=None,
+        stop=None,
+        done=None,
+        check_value=None,
+        info=None,
+        egu="",
+        limits=None,
+        update_rate=1,
+        timeout=60,
+        notepad_pv=None,
+        parent=None,
+        kind=None,
+        **kwargs
+    ):
         self._check_signature('move', move, 1)
         self._move = move
         self._check_signature('get_pos', get_pos, 0)
@@ -123,7 +137,7 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
             raise ValueError(
                 f'FuncPositioner recieved {name} with an incorrect. '
                 f'signature. Must be able to take {nargs} args.'
-                ) from None
+            ) from None
 
     def _setup_move(self, position, status):
         self._run_subs(sub_type=self.SUB_START, timestamp=time.time())
@@ -137,7 +151,7 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
     def _new_update(self, status):
         schedule_task(
             self._update_task, args=(status,), delay=self.update_rate
-            )
+        )
 
     def _update_task(self, status):
         self._update_position()
@@ -176,9 +190,8 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
     def set_position(self, position):
         if self._set_pos is None:
             raise NotImplementedError(
-                f'FuncPositioner {self.name} was not '
-                'given a set_pos argument.'
-                )
+                f'FuncPositioner {self.name} was not given a set_pos argument.'
+            )
         else:
             self._set_pos(position)
 
@@ -186,9 +199,8 @@ class FuncPositioner(FltMvInterface, SoftPositioner):
         if self._stop is None:
             # Often called by bluesky, don't throw an exception
             self.log.warning(
-                f'Called stop on FuncPositioner {self.name}, '
-                'but was not given a stop argument.'
-                )
+                f'Called stop on FuncPositioner {self.name}, but was not given a stop argument.'
+            )
         else:
             self._stop()
         super().stop(*args, **kwargs)

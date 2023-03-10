@@ -135,7 +135,7 @@ def test_lensstack_beamsize(monkeypatch, fake_lensstack):
 @pytest.mark.skipif(
     sys.platform == "win32",
     reason="Fails on Windows, presets needed and not supported.",
-    )
+)
 def test_lensstack_align(presets, monkeypatch, fake_lensstack):
     logger.debug('test_lensstack_align')
 
