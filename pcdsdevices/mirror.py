@@ -1065,7 +1065,7 @@ class KBOMirrorHE(KBOMirror):
     name : str
         Alias for the device.
     """
-    # Cooling water flow and pressure sensors
+    # Cooling water flow and pressure meters
     cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
     cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
     cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
@@ -1361,7 +1361,7 @@ class XOffsetMirrorStateCool(XOffsetMirrorState):
 
     With Coating State selection implemented.
 
-    With cooling and pressure sensors installed.
+    With cooling and pressure meters installed.
 
     Parameters
     ----------
