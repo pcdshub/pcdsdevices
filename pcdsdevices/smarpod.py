@@ -1,19 +1,52 @@
 """
 Module for the SmarPod and related devices.
 """
-from ophyd import PVPositioner
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 
-class SmarPod(PVPositioner):
+class SmarPodPose(Device):
+    pose_name = Cpt(EpicsSignal, ':NAME_RBV', write_pv=':NAME', kind='normal', doc='Pose name input')
+    x = Cpt(EpicsSignal, ':X', kind='normal', doc='Pose X Position Data')
+    y = Cpt(EpicsSignal, ':Y', kind='normal', doc='Pose Y Position Data')
+    z = Cpt(EpicsSignal, ':Z', kind='normal', doc='Pose Z Position Data')
+    rx = Cpt(EpicsSignal, ':RX', kind='normal', doc='Pose RX Position Data')
+    ry = Cpt(EpicsSignal, ':RY', kind='normal', doc='Pose RY Position Data')
+    rz = Cpt(EpicsSignal, ':RZ', kind='normal', doc='Pose RZ Position Data')
+    record = Cpt(EpicsSignal, ':RECORD', kind='normal', doc='Fanout for pose')
+    execute = Cpt(EpicsSignal, ':EXECUTE', kind='normal', doc='Enacts Pose Positions')
+
+
+class SmarPodStatus(Device):
+    temp = Cpt(EpicsSignalRO, ':TEMP', kind='omitted')
+    load = Cpt(EpicsSignalRO, ':LOAD', kind='omitted')
+    memory = Cpt(EpicsSignalRO, ':MEMORY', kind='omitted')
+    net_bytes_in = Cpt(EpicsSignalRO, ':NET_BYTES_IN', kind='omitted')
+    net_bytes_out = Cpt(EpicsSignalRO, ':NET_BYTES_OUT', kind='omitted')
+    net = Cpt(EpicsSignalRO, ':NET', kind='omitted')
+    status = Cpt(EpicsSignalRO, ':STATUS', kind='omitted')
+    bootcnt = Cpt(EpicsSignalRO, ':BOOTCNT', kind='omitted')
+    uptime = Cpt(EpicsSignalRO, ':UPTIME', kind='omitted')
+    ip = Cpt(EpicsSignalRO, ':IP', kind='omitted')
+    client_ip = Cpt(EpicsSignalRO, ':CLIENT_IP', kind='omitted')
+    ser_status = Cpt(EpicsSignalRO, ':SER_STATUS', kind='omitted')
+    ser_bytes_in = Cpt(EpicsSignalRO, ':SER_BYTES_IN', kind='omitted')
+    ser_bytes_out = Cpt(EpicsSignalRO, ':SER_BYTES_OUT', kind='omitted')
+    display = Cpt(EpicsSignalRO, ':DISPLAY', kind='omitted')
+
+
+class SmarPod(Device):
     # A base class for a SmarPod controller.
     init = Cpt(EpicsSignal, ':CMD:INIT', kind='normal')
     status = Cpt(EpicsSignal, ':CMD:ALL_STATUS', kind='normal', doc='SmarPod status code')
     # Controlling unit number
     cmd_unit = Cpt(EpicsSignal, ':CMD:UNIT', kind='normal')
     unit = Cpt(EpicsSignal, ':UNIT', kind='normal', doc='Selected SmarPod unit')
+    # Device Info
+    ver_sn = Cpt(EpicsSignalRO, ':VER:SN', kind='omitted')
+    ver_product = Cpt(EpicsSignalRO, ':VER:PRODUCT', kind='omitted')
+    ver_firmware = Cpt(EpicsSignalRO, ':VER:FIRMWARE', kind='omitted')
     # Reference
     cmd_ref = Cpt(EpicsSignal, ':CMD:REF', kind='normal')
     ref = Cpt(EpicsSignalRO, ':REF', kind='normal', doc='Readback referenced state')
@@ -73,31 +106,6 @@ class SmarPod(PVPositioner):
     cmd_px = Cpt(EpicsSignal, ':CMD:PX', kind='normal')
     cmd_py = Cpt(EpicsSignal, ':CMD:PY', kind='normal')
     cmd_pz = Cpt(EpicsSignal, ':CMD:PZ', kind='normal')
-    # Miscellaneous
-    cmd_calibrate = Cpt(EpicsSignal, ':CMD:CALIBRATE', kind='normal')
-    cmd_read_ver = Cpt(EpicsSignal, ':CMD:READ_VER', kind='normal')
-    ver_sys = Cpt(EpicsSignalRO, ':VER:SYS', kind='omitted')
-    # Device Info
-    ver_sn = Cpt(EpicsSignalRO, ':VER:SN', kind='omitted')
-    ver_product = Cpt(EpicsSignalRO, ':VER:PRODUCT', kind='omitted')
-    ver_firmware = Cpt(EpicsSignalRO, ':VER:FIRMWARE', kind='omitted')
-    # Status
-    cmd_read_status = Cpt(EpicsSignal, ':CMD:READ_STATUS', kind='normal')
-    status_temp = Cpt(EpicsSignalRO, ':STATUS:TEMP', kind='omitted')
-    status_load = Cpt(EpicsSignalRO, ':STATUS:LOAD', kind='omitted')
-    status_memory = Cpt(EpicsSignalRO, ':STATUS:MEMORY', kind='omitted')
-    status_net_bytes_in = Cpt(EpicsSignalRO, ':STATUS:NET_BYTES_IN', kind='omitted')
-    status_net_bytes_out = Cpt(EpicsSignalRO, ':STATUS:NET_BYTES_OUT', kind='omitted')
-    status_net = Cpt(EpicsSignalRO, ':STATUS:NET', kind='omitted')
-    status_status = Cpt(EpicsSignalRO, ':STATUS:STATUS', kind='omitted')
-    status_bootcnt = Cpt(EpicsSignalRO, ':STATUS:BOOTCNT', kind='omitted')
-    status_uptime = Cpt(EpicsSignalRO, ':STATUS:UPTIME', kind='omitted')
-    status_ip = Cpt(EpicsSignalRO, ':STATUS:IP', kind='omitted')
-    status_client_ip = Cpt(EpicsSignalRO, ':STATUS:CLIENT_IP', kind='omitted')
-    status_ser_status = Cpt(EpicsSignalRO, ':STATUS:SER_STATUS', kind='omitted')
-    status_ser_bytes_in = Cpt(EpicsSignalRO, ':STATUS:SER_BYTES_IN', kind='omitted')
-    status_ser_bytes_out = Cpt(EpicsSignalRO, ':STATUS:SER_BYTES_OUT', kind='omitted')
-    status_display = Cpt(EpicsSignalRO, ':STATUS:DISPLAY', kind='omitted')
     # Sensor mode
     cmd_sensor_mode = Cpt(EpicsSignal, ':CMD:SENSOR_MODE', kind='normal')
     sensor_mode = Cpt(EpicsSignal, ':SENSOR_MODE', kind='normal', doc='Sensor mode')
@@ -110,24 +118,16 @@ class SmarPod(PVPositioner):
     # Maximum acceleration
     cmd_accel = Cpt(EpicsSignal, ':CMD:ACCEL', kind='normal', doc='sets movement acceleration')
     accel = Cpt(EpicsSignal, ':ACCEL', kind='normal', doc='current acceleration-control and acceleration settings')
-# Read and Set Poses, Pose 1-5:
-
-
-class SmarpodPose(Device):
-    pose_name = Cpt(EpicsSignal, ':NAME_RBV', write_pv=':NAME', kind='normal', doc='Pose name input')
-    x = Cpt(EpicsSignal, ':X', kind='normal', doc='Pose X Position Data')
-    y = Cpt(EpicsSignal, ':Y', kind='normal', doc='Pose Y Position Data')
-    z = Cpt(EpicsSignal, ':Z', kind='normal', doc='Pose Z Position Data')
-    rx = Cpt(EpicsSignal, ':RX', kind='normal', doc='Pose RX Position Data')
-    ry = Cpt(EpicsSignal, ':RY', kind='normal', doc='Pose RY Position Data')
-    rz = Cpt(EpicsSignal, ':RZ', kind='normal', doc='Pose RZ Position Data')
-    record = Cpt(EpicsSignal, ':RECORD', kind='normal', doc='Fanout for pose')
-    execute = Cpt(EpicsSignal, ':EXECUTE', kind='normal', doc='Enacts Pose Positions')
-
-
-class Smarpod(Device):
-    pose_1 = Cpt(SmarpodPose, ":POSE_1")
-    pose_2 = Cpt(SmarpodPose, ":POSE_2")
-    pose_3 = Cpt(SmarpodPose, ":POSE_3")
-    pose_4 = Cpt(SmarpodPose, ":POSE_4")
-    pose_5 = Cpt(SmarpodPose, ":POSE_5")
+    # Read and Set Poses, Pose 1-5:
+    pose_1 = Cpt(SmarPodPose, ':POSE_1')
+    pose_2 = Cpt(SmarPodPose, ':POSE_2')
+    pose_3 = Cpt(SmarPodPose, ':POSE_3')
+    pose_4 = Cpt(SmarPodPose, ':POSE_4')
+    pose_5 = Cpt(SmarPodPose, ':POSE_5')
+    # Status
+    cmd_read_status = Cpt(EpicsSignal, ':CMD:READ_STATUS', kind='normal')
+    status = Cpt(SmarPodStatus, ":STATUS")
+    # Miscellaneous
+    cmd_calibrate = Cpt(EpicsSignal, ':CMD:CALIBRATE', kind='normal')
+    cmd_read_ver = Cpt(EpicsSignal, ':CMD:READ_VER', kind='normal')
+    ver_sys = Cpt(EpicsSignalRO, ':VER:SYS', kind='omitted')
