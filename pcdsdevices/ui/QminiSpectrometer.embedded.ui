@@ -126,7 +126,7 @@
        <x>0.000000000000000</x>
        <y>0.000000000000000</y>
        <width>522.000000000000000</width>
-       <height>279.000000000000000</height>
+       <height>280.000000000000000</height>
       </rectf>
      </property>
      <property name="alignment">
@@ -170,11 +170,6 @@
        <string>Wavelength</string>
       </stringlist>
      </property>
-     <property name="yLabels">
-      <stringlist>
-       <string>Spectrum</string>
-      </stringlist>
-     </property>
      <property name="showLegend">
       <bool>false</bool>
      </property>
@@ -186,7 +181,7 @@
      </property>
      <property name="curves">
       <stringlist>
-       <string>{&quot;y_channel&quot;: &quot;ca://$prefix:SPECTRUM&quot;, &quot;x_channel&quot;: &quot;ca://$prefix:WAVELENGTHS&quot;, &quot;name&quot;: &quot;&quot;, &quot;color&quot;: &quot;#0055ff&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 1, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10, &quot;redraw_mode&quot;: 1}</string>
+       <string>{&quot;y_channel&quot;: &quot;ca://$prefix:SPECTRUM&quot;, &quot;x_channel&quot;: &quot;ca://$prefix:WAVELENGTHS&quot;, &quot;plot_style&quot;: null, &quot;name&quot;: &quot;&quot;, &quot;color&quot;: &quot;#0055ff&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 1, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10, &quot;yAxisName&quot;: &quot;Axis 1&quot;, &quot;barWidth&quot;: null, &quot;upperThreshold&quot;: null, &quot;lowerThreshold&quot;: null, &quot;thresholdColor&quot;: &quot;white&quot;, &quot;redraw_mode&quot;: 1}</string>
       </stringlist>
      </property>
      <property name="autoRangeX">
@@ -194,6 +189,11 @@
      </property>
      <property name="autoRangeY">
       <bool>true</bool>
+     </property>
+     <property name="yLabels" stdset="0">
+      <stringlist>
+       <string>Spectrum</string>
+      </stringlist>
      </property>
     </widget>
    </item>
@@ -226,8 +226,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>520</width>
-        <height>251</height>
+        <width>571</width>
+        <height>236</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -311,13 +311,31 @@
              <string/>
             </property>
             <property name="text">
-             <string>Status</string>
+             <string>ca://$prefix:STATUS</string>
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
             </property>
+            <property name="precision" stdset="0">
+             <number>0</number>
+            </property>
+            <property name="showUnits" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="precisionFromPV" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="alarmSensitiveContent" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="alarmSensitiveBorder" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="PyDMToolTip" stdset="0">
+             <string/>
+            </property>
             <property name="channel" stdset="0">
-             <string>ca://${prefix}:STATUS</string>
+             <string>ca://$prefix:STATUS</string>
             </property>
            </widget>
           </item>
@@ -334,10 +352,28 @@
              <string/>
             </property>
             <property name="text">
-             <string>Scan_Rate</string>
+             <string>ca://$prefix:SOFT_TRIGGER_MODE</string>
+            </property>
+            <property name="precision" stdset="0">
+             <number>0</number>
+            </property>
+            <property name="showUnits" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="precisionFromPV" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="alarmSensitiveContent" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="alarmSensitiveBorder" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="PyDMToolTip" stdset="0">
+             <string/>
             </property>
             <property name="channel" stdset="0">
-             <string>ca://$prefix:GET_SPECTRUM.SCAN</string>
+             <string>ca://$prefix:SOFT_TRIGGER_MODE</string>
             </property>
            </widget>
           </item>
@@ -352,8 +388,17 @@
             <property name="toolTip">
              <string/>
             </property>
+            <property name="alarmSensitiveContent" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="alarmSensitiveBorder" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="PyDMToolTip" stdset="0">
+             <string/>
+            </property>
             <property name="channel" stdset="0">
-             <string>ca://$prefix:GET_SPECTRUM.SCAN</string>
+             <string>ca://$prefix:SOFT_TRIGGER_MODE</string>
             </property>
            </widget>
           </item>
@@ -370,7 +415,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>Trig_Enable</string>
+             <string>ca://$prefix:SET_TRIG_ENABLE</string>
             </property>
             <property name="channel" stdset="0">
              <string>ca://$prefix:SET_TRIG_ENABLE</string>
@@ -406,7 +451,25 @@
              <string/>
             </property>
             <property name="text">
-             <string>Temperature</string>
+             <string/>
+            </property>
+            <property name="precision" stdset="0">
+             <number>0</number>
+            </property>
+            <property name="showUnits" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="precisionFromPV" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="alarmSensitiveContent" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="alarmSensitiveBorder" stdset="0">
+             <bool>true</bool>
+            </property>
+            <property name="PyDMToolTip" stdset="0">
+             <string/>
             </property>
             <property name="channel" stdset="0">
              <string>ca://$prefix:TEMP</string>
@@ -482,7 +545,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>fit_on</string>
+             <string>ca://$prefix:FIT_ON</string>
             </property>
             <property name="channel" stdset="0">
              <string>ca://$prefix:FIT_ON</string>
@@ -514,7 +577,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>w0_guess</string>
+             <string>ca://$prefix:W0_GUESS</string>
             </property>
             <property name="channel" stdset="0">
              <string>ca://$prefix:W0_GUESS</string>
@@ -552,7 +615,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>w0_fit</string>
+             <string>ca://$prefix:W0_FIT</string>
             </property>
             <property name="channel" stdset="0">
              <string>ca://$prefix:W0_FIT</string>
@@ -584,7 +647,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>width</string>
+             <string>ca://$prefix:WIDTH</string>
             </property>
             <property name="channel" stdset="0">
              <string>ca://$prefix:WIDTH</string>
@@ -616,7 +679,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>amplitude</string>
+             <string>ca://$prefix:AMPLITUDE</string>
             </property>
             <property name="channel" stdset="0">
              <string>ca://$prefix:AMPLITUDE</string>
@@ -648,7 +711,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>fwhm</string>
+             <string>ca://$prefix:FWHM</string>
             </property>
             <property name="channel" stdset="0">
              <string>ca://$prefix:FWHM</string>
@@ -680,7 +743,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>stdev</string>
+             <string>ca://$prefix:STDEV</string>
             </property>
             <property name="channel" stdset="0">
              <string>ca://$prefix:STDEV</string>
@@ -712,7 +775,7 @@
              <string/>
             </property>
             <property name="text">
-             <string>chisq</string>
+             <string>ca://$prefix:CHISQ</string>
             </property>
             <property name="channel" stdset="0">
              <string>ca://$prefix:CHISQ</string>
