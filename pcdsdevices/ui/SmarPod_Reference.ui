@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>734</width>
+    <height>370</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>30</y>
+     <width>452</width>
+     <height>291</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="value_layout" stretch="0,0,0,0,0,0,0,0,0,0,0,0">
+    <property name="spacing">
+     <number>10</number>
+    </property>
+    <item>
+     <widget class="PyDMLineEdit" name="user_setpoint">
+      <property name="maximumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="toolTip">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="frame_5" native="true">
+      <layout class="QHBoxLayout" name="tweak_layout_5" stretch="0,0,0">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_3">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Reference Method:</string>
+         </property>
+         <property name="indent">
+          <number>6</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>ca://${BASE}:REF_METHOD</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:REF_METHOD</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMShellCommand" name="PyDMShellCommand">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="environmentVariables" stdset="0">
+          <string/>
+         </property>
+         <property name="showIcon" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="redirectCommandOutput" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="allowMultipleExecutions" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="titles" stdset="0">
+          <stringlist/>
+         </property>
+         <property name="commands" stdset="0">
+          <stringlist>
+           <string>caput ${BASE}:CMD:REF_METHOD 0;</string>
+           <string>caput ${BASE}:CMD:REF_METHOD 1;</string>
+           <string>caput ${BASE}:CMD:REF_METHOD 2;</string>
+           <string>caput ${BASE}:CMD:REF_METHOD 3;</string>
+          </stringlist>
+         </property>
+         <property name="passwordProtected" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="password" stdset="0">
+          <string/>
+         </property>
+         <property name="protectedPassword" stdset="0">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="Line" name="line_5">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="frame_7" native="true">
+      <layout class="QHBoxLayout" name="tweak_layout_6" stretch="0,0,0">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_4">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Reference X-Direction:</string>
+         </property>
+         <property name="indent">
+          <number>6</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:REF_X_DIRECT</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMShellCommand" name="PyDMShellCommand_2">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="environmentVariables" stdset="0">
+          <string/>
+         </property>
+         <property name="showIcon" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="redirectCommandOutput" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="allowMultipleExecutions" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="titles" stdset="0">
+          <stringlist/>
+         </property>
+         <property name="commands" stdset="0">
+          <stringlist>
+           <string>caput ${BASE}:CMD:REF_X_DIRECT 0;</string>
+           <string>caput ${BASE}:CMD:REF_X_DIRECT 1;</string>
+           <string>caput ${BASE}:CMD:REF_X_DIRECT 2;</string>
+           <string>caput ${BASE}:CMD:REF_X_DIRECT 3;</string>
+           <string>caput ${BASE}:CMD:REF_X_DIRECT 4;</string>
+          </stringlist>
+         </property>
+         <property name="passwordProtected" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="password" stdset="0">
+          <string/>
+         </property>
+         <property name="protectedPassword" stdset="0">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="Line" name="line_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="frame_8" native="true">
+      <layout class="QHBoxLayout" name="tweak_layout_8" stretch="0,0,0">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_5">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Reference Y-Direction:</string>
+         </property>
+         <property name="indent">
+          <number>6</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_6">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:CMD:REF_Y_DIRECT</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMShellCommand" name="PyDMShellCommand_3">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="environmentVariables" stdset="0">
+          <string/>
+         </property>
+         <property name="showIcon" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="redirectCommandOutput" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="allowMultipleExecutions" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="titles" stdset="0">
+          <stringlist/>
+         </property>
+         <property name="commands" stdset="0">
+          <stringlist>
+           <string>caput ${BASE}:CMD:REF_Y_DIRECT 0;</string>
+           <string>caput ${BASE}:CMD:REF_Y_DIRECT 1;</string>
+           <string>caput ${BASE}:CMD:REF_Y_DIRECT 2;</string>
+           <string>caput ${BASE}:CMD:REF_Y_DIRECT 3;</string>
+           <string>caput ${BASE}:CMD:REF_Y_DIRECT 4;</string>
+          </stringlist>
+         </property>
+         <property name="passwordProtected" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="password" stdset="0">
+          <string/>
+         </property>
+         <property name="protectedPassword" stdset="0">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="Line" name="line_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="frame_9" native="true">
+      <layout class="QHBoxLayout" name="tweak_layout_10" stretch="0,0,0">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_9">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Reference Z-Direction:</string>
+         </property>
+         <property name="indent">
+          <number>6</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_10">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:CMD:REF_Y_DIRECT</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMShellCommand" name="PyDMShellCommand_4">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="environmentVariables" stdset="0">
+          <string/>
+         </property>
+         <property name="showIcon" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="redirectCommandOutput" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="allowMultipleExecutions" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="titles" stdset="0">
+          <stringlist/>
+         </property>
+         <property name="commands" stdset="0">
+          <stringlist>
+           <string>caput ${BASE}:CMD:REF_Z_DIRECT 0;</string>
+           <string>caput ${BASE}:CMD:REF_Z_DIRECT 1;</string>
+           <string>caput ${BASE}:CMD:REF_Z_DIRECT 2;</string>
+           <string>caput ${BASE}:CMD:REF_Z_DIRECT 3;</string>
+           <string>caput ${BASE}:CMD:REF_Z_DIRECT 4;</string>
+          </stringlist>
+         </property>
+         <property name="passwordProtected" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="password" stdset="0">
+          <string/>
+         </property>
+         <property name="protectedPassword" stdset="0">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="Line" name="line_4">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="frame_10" native="true">
+      <layout class="QHBoxLayout" name="tweak_layout_11" stretch="0,0,0">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="PyDMLabel" name="PyDMLabel_11">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Execute:</string>
+         </property>
+         <property name="indent">
+          <number>6</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMPushButton" name="PyDMPushButton">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Reference</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:CMD:REF</string>
+         </property>
+         <property name="confirmMessage" stdset="0">
+          <string/>
+         </property>
+         <property name="releaseValue" stdset="0">
+          <string>1</string>
+         </property>
+         <property name="writeWhenRelease" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="PyDMPushButton" name="PyDMPushButton_2">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="text">
+          <string>Calibration</string>
+         </property>
+         <property name="channel" stdset="0">
+          <string>ca://${BASE}:CMD:CALIBRATE</string>
+         </property>
+         <property name="confirmMessage" stdset="0">
+          <string>Are you sure you want to proceed? Only units that have been replaced require calibration.</string>
+         </property>
+         <property name="releaseValue" stdset="0">
+          <string>1</string>
+         </property>
+         <property name="writeWhenRelease" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QWidget" name="frame_6" native="true">
+      <layout class="QHBoxLayout" name="tweak_layout_7">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PyDMLabel</class>
+   <extends>QLabel</extends>
+   <header>pydm.widgets.label</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>pydm.widgets.line_edit</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMPushButton</class>
+   <extends>QPushButton</extends>
+   <header>pydm.widgets.pushbutton</header>
+  </customwidget>
+  <customwidget>
+   <class>PyDMShellCommand</class>
+   <extends>QPushButton</extends>
+   <header>pydm.widgets.shell_command</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

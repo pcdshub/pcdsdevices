@@ -7,6 +7,11 @@ from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 
 class SmarPodPose(Device):
+    """
+    The translation and orientation of the SmarPod stage is called the pose. The translation part of a pose is
+    the offset of the stage in X, Y and Z direction relative to the zero position. The angles Θx, Θy and Θz
+    define the rotation around the respective axis.
+    """
     pose_name = Cpt(EpicsSignal, ':NAME_RBV', write_pv=':NAME', kind='normal', doc='Pose name input')
     x = Cpt(EpicsSignal, ':X', kind='normal', doc='Pose X Position Data')
     y = Cpt(EpicsSignal, ':Y', kind='normal', doc='Pose Y Position Data')
