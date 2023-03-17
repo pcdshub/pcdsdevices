@@ -263,13 +263,13 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
     led_power_3 = Cpt(PytmcSignal, ':LED:03:PWR', io='io', kind='config',
                       doc='LED power supply controls.')
 
-    # Flow switches
-    flow_1 = Cpt(PytmcSignal, ':FSW:01', io='i', kind='normal',
-                 doc='flow switch 1')
-    flow_2 = Cpt(PytmcSignal, ':FSW:02', io='i', kind='normal',
-                 doc='flow switch 2')
-    pres_1 = Cpt(PytmcSignal, ':P1', io='i', kind='normal',
-                 doc='pressure sensor 1')
+    # Flow meters
+    flow_1 = Cpt(PytmcSignal, ':FWM:1', io='i', kind='normal',
+                 doc='flow meter 1')
+    flow_2 = Cpt(PytmcSignal, ':FWM:2', io='i', kind='normal',
+                 doc='flow meter 2')
+    pres_1 = Cpt(PytmcSignal, ':PRSM:1', io='i', kind='normal',
+                 doc='pressure meter 1')
 
     # RTDs
     rtd_1 = Cpt(PytmcSignal, ':RTD:01:TEMP', io='i', kind='normal',
