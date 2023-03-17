@@ -2,12 +2,12 @@
 Ophyd class for square-one tri-sphere motion system (https://www.sqr-1.com/tsp.html)
 """
 
-from ophyd.pv_positioner import PVPositionerIsClose
-from ophyd.device import FormattedComponent as FCpt
-from ophyd.device import Device
-from ophyd.signal import EpicsSignal, EpicsSignalRO
-
 import logging
+
+from ophyd.device import Device
+from ophyd.device import FormattedComponent as FCpt
+from ophyd.pv_positioner import PVPositionerIsClose
+from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 logger = logging.getLogger(__name__)
 
