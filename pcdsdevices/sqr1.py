@@ -23,9 +23,9 @@ class SQR1Axis(PVPositionerIsClose):
     llm = FCpt(EpicsSignalRO, '{self.prefix}:TARGET:{self._axis}:LLM', kind='normal')
     hlm = FCpt(EpicsSignalRO, '{self.prefix}:TARGET:{self._axis}:HLM', kind='normal')
 
-    def __init__(self, axis, **kwargs):
+    def __init__(self, prefix, axis, **kwargs):
         self._axis = axis  # axis values {X,Y,Z,rX, rY, rZ}
-        super().__init__(**kwargs)
+        super().__init__(prefix, **kwargs)
 
         self.setpoint.put(self.readback.get())  # sync position setpoint with readback
         self._limits = ((self.llm.get(), self.hlm.get()))
