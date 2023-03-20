@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class SQR1Axis(PVPositionerIsClose):
-    setpoint = FCpt(EpicsSignal, '{self.prefix}:TARGET:{self._axis}', kind='normal')
+    setpoint = FCpt(EpicsSignal, '{prefix}:TARGET:{_axis}', kind='normal')
     readback = FCpt(EpicsSignal, '{self.prefix}:TARGET:{self._axis}:RBV', kind='normal')
     actuate = FCpt(EpicsSignal, '{self.prefix}:MOV', kind='normal')
     actuate_value = 1
