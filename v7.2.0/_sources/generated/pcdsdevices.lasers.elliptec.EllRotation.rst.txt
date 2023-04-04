@@ -1,0 +1,275 @@
+﻿pcdsdevices.lasers.elliptec.EllRotation
+=======================================
+
+.. currentmodule:: pcdsdevices.lasers.elliptec
+
+.. autoclass:: EllRotation
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - done
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - set_position (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CURPOS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - jog_fwd (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE_FWD``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - jog_bwd (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE_BWD``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - status (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:M{self._channel}:STATUS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - optimize (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:OPTIMIZE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - _from_addr (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:FROM_ADDR``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - _to_addr (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:TO_ADDR``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - _save (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:SAVE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - _command (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:CMD``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - _response (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:PORT{self._port}:RESPONSE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - readback (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CURPOS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - user_setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - user_readback (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CURPOS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - home (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:HOME``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - jog_step (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:GET_JOG``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - clean (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CLEAN_MECH``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - stop_optimize (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:STOP``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - current_egu (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CURPOS.EGU``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+        * - target_egu (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE.EGU``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.EllLinear`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: done_comparator
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate
+    .. autoattribute:: actuate_value
+    .. autoattribute:: atol
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: rtol
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    
+    

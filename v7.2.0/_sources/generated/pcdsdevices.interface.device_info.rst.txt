@@ -1,0 +1,6 @@
+﻿pcdsdevices.interface.device\_info
+==================================
+
+.. currentmodule:: pcdsdevices.interface
+
+.. autofunction:: device_info

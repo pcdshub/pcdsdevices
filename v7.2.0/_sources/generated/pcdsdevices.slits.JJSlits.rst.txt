@@ -1,0 +1,129 @@
+﻿pcdsdevices.slits.JJSlits
+=========================
+
+.. currentmodule:: pcdsdevices.slits
+
+.. autoclass:: JJSlits
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.SlitsBase`
+    
+        * - nominal_aperture
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.SlitsBase`
+    
+        * - xwidth
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:XWIDTH``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.SlitsBase`
+    
+        * - ywidth
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:YWIDTH``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.SlitsBase`
+    
+        * - xcenter
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:XCENTER``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.SlitsBase`
+    
+        * - ycenter
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:YCENTER``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.SlitsBase`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: current_aperture
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: needs_parent
+    .. autoattribute:: position
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

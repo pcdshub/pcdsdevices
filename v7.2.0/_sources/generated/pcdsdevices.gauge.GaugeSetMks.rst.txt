@@ -1,0 +1,77 @@
+﻿pcdsdevices.gauge.GaugeSetMks
+=============================
+
+.. currentmodule:: pcdsdevices.gauge
+
+.. autoclass:: GaugeSetMks
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - gcc (FCpt)
+          - :class:`~pcdsdevices.gauge.GaugeColdCathode`
+          - ``{self.prefix}:GCC:{self.index}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gauge.GaugeSetBase`
+    
+        * - controller (FCpt)
+          - :class:`~pcdsdevices.gauge.MKS937a`
+          - ``{self.prefix_controller}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: egu
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: pressure
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

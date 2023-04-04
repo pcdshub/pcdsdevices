@@ -1,0 +1,95 @@
+﻿pcdsdevices.usb\_encoder.UsDigitalUsbEncoder
+============================================
+
+.. currentmodule:: pcdsdevices.usb_encoder
+
+.. autoclass:: UsDigitalUsbEncoder
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - zero
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ZEROCNT``
+          - 
+          - omitted
+          - 
+    
+        * - pos
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:POSITION``
+          - 
+          - hinted
+          - 
+    
+        * - scale
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SCALE``
+          - 
+          - config
+          - 
+    
+        * - offset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OFFSET``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set_zero
+    .. automethod:: set_zero_with_axis
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

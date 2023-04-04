@@ -1,0 +1,6 @@
+﻿pcdsdevices.make\_ophyd\_device.flatten\_list
+=============================================
+
+.. currentmodule:: pcdsdevices.make_ophyd_device
+
+.. autofunction:: flatten_list

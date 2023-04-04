@@ -1,0 +1,266 @@
+﻿pcdsdevices.lasers.elliptec.Ell9
+================================
+
+.. currentmodule:: pcdsdevices.lasers.elliptec
+
+.. autoclass:: Ell9
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - done
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - set_position (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CURPOS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - jog_fwd (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE_FWD``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - jog_bwd (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE_BWD``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - status (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:M{self._channel}:STATUS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - optimize (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:OPTIMIZE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - _from_addr (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:FROM_ADDR``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - _to_addr (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:TO_ADDR``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - _save (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:SAVE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - _command (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:CMD``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - _response (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:PORT{self._port}:RESPONSE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - readback (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CURPOS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - user_setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - user_readback (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CURPOS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - name_0 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:NAME0``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - name_1 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:NAME1``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.elliptec.Ell6`
+    
+        * - home (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:HOME``
+          - 
+          - config
+          - 
+    
+        * - name_2 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:NAME2``
+          - 
+          - config
+          - 
+    
+        * - name_3 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:NAME3``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: done_comparator
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate
+    .. autoattribute:: actuate_value
+    .. autoattribute:: atol
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: rtol
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    
+    

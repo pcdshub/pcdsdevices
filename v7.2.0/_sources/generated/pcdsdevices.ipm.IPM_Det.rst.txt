@@ -1,0 +1,47 @@
+﻿pcdsdevices.ipm.IPM\_Det
+========================
+
+.. currentmodule:: pcdsdevices.ipm
+
+.. autoclass:: IPM_Det
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: channel
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: sum
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: xpos
+    .. automethod:: ypos
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: channels
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

@@ -1,0 +1,114 @@
+﻿pcdsdevices.lamp\_motion.LAMPMagneticBottle
+===========================================
+
+.. currentmodule:: pcdsdevices.lamp_motion
+
+.. autoclass:: LAMPMagneticBottle
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - gas_needle_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:02``
+          - 
+          - normal
+          - 
+    
+        * - gas_needle_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:01``
+          - 
+          - normal
+          - 
+    
+        * - gas_needle_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:03``
+          - 
+          - normal
+          - 
+    
+        * - magnet_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:05``
+          - 
+          - normal
+          - 
+    
+        * - magnet_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:06``
+          - 
+          - normal
+          - 
+    
+        * - magnet_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:04``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

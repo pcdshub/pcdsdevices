@@ -1,0 +1,81 @@
+﻿pcdsdevices.light\_control.LightControl
+=======================================
+
+.. currentmodule:: pcdsdevices.light_control
+
+.. autoclass:: LightControl
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - desc
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:NAME``
+          - 
+          - normal
+          - 
+    
+        * - pct
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ILL:PCT``
+          - Illuminator percentage
+          - normal
+          - 
+    
+        * - pwr
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:PWR``
+          - Illuminator power boolean (ON/OFF)
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

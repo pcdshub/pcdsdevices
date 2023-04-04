@@ -1,0 +1,195 @@
+﻿pcdsdevices.pulsepicker.PulsePickerInOut
+========================================
+
+.. currentmodule:: pcdsdevices.pulsepicker
+
+.. autoclass:: PulsePickerInOut
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pulsepicker.PulsePicker`
+    
+        * - state
+          - :class:`~pcdsdevices.signal.PVStateSignal`
+          - 
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.pulsepicker.PulsePicker`
+    
+        * - blade
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:READ_DF``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pulsepicker.PulsePicker`
+    
+        * - mode
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SD_SIMPLE``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.pulsepicker.PulsePicker`
+    
+        * - cmd_reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RESET_PG``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pulsepicker.PulsePicker`
+    
+        * - cmd_open
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:S_OPEN``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pulsepicker.PulsePicker`
+    
+        * - cmd_close
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:S_CLOSE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pulsepicker.PulsePicker`
+    
+        * - cmd_flipflop
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RUN_FLIPFLOP``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pulsepicker.PulsePicker`
+    
+        * - cmd_burst
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RUN_BURSTMODE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pulsepicker.PulsePicker`
+    
+        * - cmd_follower
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:RUN_FOLLOWERMODE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pulsepicker.PulsePicker`
+    
+        * - inout (FCpt)
+          - :class:`~pcdsdevices.inout.InOutRecordPositioner`
+          - ``{self._inout}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: burst
+    .. automethod:: calc_lightpath_state
+    .. automethod:: camonitor
+    .. automethod:: check_inserted
+    .. automethod:: check_removed
+    .. automethod:: check_transmission
+    .. automethod:: close
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: flipflop
+    .. automethod:: follower
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: get_state
+    .. automethod:: insert
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: open
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: reset
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: in_states
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: md
+    .. autoattribute:: moving
+    .. autoattribute:: needs_parent
+    .. autoattribute:: out_states
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: stage_group
+    .. autoattribute:: states_list
+    .. autoattribute:: stop
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    
