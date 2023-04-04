@@ -7,16 +7,16 @@ v7.2.0 (2023-04-04)
 
 Features
 --------
-- Added a ``diff_configuration`` function to the ``IMS`` class in
+- Added a ``diff_configuration`` function to the `IMS` class in
   ``epics_motor.py`` that compares the desired motor pv settings with the
   current configuration assigned in the parameter manager.
-- Made ``IMS`` pmgr only search through ``USR`` objects.
+- Made `IMS` pmgr only search through ``USR`` objects.
 
 Device Updates
 --------------
 - Adds a preliminary attenuator class `AT1K2` and base classes for similar
   two-blade ladder attenuators designed by JJ X-ray.
-- Adds some PVs for `RSPowersupply`.
+- Adds some PVs for `RohdeSchwarzPowerSupply`.
 - Update `LusiSlits` to include individual blade controls.
 - Add cooling PVs for `XOffsetMirrorBend`: ``FWM:*_RBV`` and ``PRSM:*_RBV``.
 - For `KBOMirrorHE`, set PVs to ``FWM`` and ``PRSM`` to match the ccc list.
@@ -69,7 +69,7 @@ Maintenance
 - ``docs-versions-menu`` replaces ``doctr-versions-menu`` and ``doctr`` usage
   for documentation deployment on GitHub Actions.  The deployment key is now
   no longer required.
-- Removed ``CoatingState`` class, used `@reorder_components` instead.
+- Removed ``CoatingState`` class, used `reorder_components` instead.
 - Specified compatible xraydb and sqlalchemy versions in requirements files.
 - Testing dependencies are now specified in the conda recipe for conda-based
   installations. ``dev-requirements.txt`` continues to be used for pip-based
