@@ -77,16 +77,16 @@ Maintenance
 
 Contributors
 ------------
-- espov
 - klauer
 - ljansen7
-- mcbrowne
+- mcb64
 - mkestra
 - nrwslac
-- spencera
+- slactjohnson
+- spenc333
 - tangkong
-- tjohnson
 - tongju12
+- vespos
 - wwright-slac
 - zllentz
 
