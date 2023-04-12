@@ -2,6 +2,96 @@ Release History
 ###############
 
 
+v7.2.0 (2023-04-04)
+===================
+
+Features
+--------
+- Added a ``diff_configuration`` function to the `IMS` class in
+  ``epics_motor.py`` that compares the desired motor pv settings with the
+  current configuration assigned in the parameter manager.
+- Made `IMS` pmgr only search through ``USR`` objects.
+
+Device Updates
+--------------
+- Adds a preliminary attenuator class `AT1K2` and base classes for similar
+  two-blade ladder attenuators designed by JJ X-ray.
+- Adds some PVs for `RohdeSchwarzPowerSupply`.
+- Update `LusiSlits` to include individual blade controls.
+- Add cooling PVs for `XOffsetMirrorBend`: ``FWM:*_RBV`` and ``PRSM:*_RBV``.
+- For `KBOMirrorHE`, set PVs to ``FWM`` and ``PRSM`` to match the ccc list.
+- For `Mono`, set PVs to ``FWM`` and ``PRSM`` to match the ccc list.
+- For `EllBase`, change the base class to enable scanning via ``bluesky``.
+- `CCM` energy moves no longer print about the PID loop being killed.
+  This was a leftover debug print.
+
+New Devices
+-----------
+- Adds Leviton device classes and corresponding happi container for use in the
+  Facility Monitoring System (fms).
+- Adds `XOffsetMirrorStateCool` for offset mirrors with state and cooling.
+- Adds Device support for stoppers using ``FB_MotionPneumaticActuator`` on the PLC.
+  Users can now interface with these stoppers using the `BeckhoffPneumatic` class.
+- Adds `VCN_VAT590` class for controlling the ``VAT590`` variant of the variable
+  controlled needle valve.
+- Adds `RTDSX0ThreeStage` class, a 3DoF motion stage for Solid Drilling experiments
+  in the EBD's RTDS chambers.
+
+Bugfixes
+--------
+- Fixes lightpath logic for `XPPLODCM` to use the correct line and show full
+  transmission when splitting beam.
+- Fix an issue where `PseudoPositioner` devices defined in this module
+  but running from separate terminals would fight over control of the
+  ``ophyd_readback`` helper signal, a PV that can be used to monitor
+  progress of the calculated readback.
+- Certain PIMs, such as ``cxi_dg1_pim``, did not work properly because pcdsdevices
+  assumed that these devices had a "DIODE" state, which is not necessarily
+  true. This has been fixed by making all `PIM` objects autodiscover their states from
+  EPICS.
+
+Maintenance
+-----------
+- Fix an issue with the pre-commit config pointing to a missing mirror.
+- Add `AT1K2` and `AT2K2` to the attenuator smoke tests.
+- Adding symbolic links for `AT1K2` so that screens generate in a nice,
+  organized way (like other SXR Attenuators)
+- Pinning numpy to 1.23 to temporarily fix CI test suite.
+- ``pcdsdevices`` no longer uses Travis CI and has migrated to GitHub Actions for
+  continuous integration, testing, and documentation deployment.
+- ``pcdsdevices`` has been migrated to use setuptools-scm, replacing versioneer, as
+  its version-string management tool of choice.
+- ``pcdsdevices`` has been migrated to use the modern ``pyproject.toml``, replacing
+  ``setup.py`` and related files.
+- Older language features and syntax found in the repository have been updated
+  to Python 3.9+ standards by way of ``pyupgrade``.
+- Sphinx 6.0 is now supported for documentation building.
+- ``docs-versions-menu`` replaces ``doctr-versions-menu`` and ``doctr`` usage
+  for documentation deployment on GitHub Actions.  The deployment key is now
+  no longer required.
+- Removed ``CoatingState`` class, used `reorder_components` instead.
+- Specified compatible xraydb and sqlalchemy versions in requirements files.
+- Testing dependencies are now specified in the conda recipe for conda-based
+  installations. ``dev-requirements.txt`` continues to be used for pip-based
+  installations.
+
+Contributors
+------------
+- klauer
+- ljansen7
+- mcb64
+- mkestra
+- nrwslac
+- slactjohnson
+- spenc333
+- tangkong
+- tongju12
+- vespos
+- wwright-slac
+- zllentz
+
+
+
 v7.1.0 (2022-11-04)
 ===================
 
