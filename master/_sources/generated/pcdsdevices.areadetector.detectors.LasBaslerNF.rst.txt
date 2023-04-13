@@ -1,0 +1,380 @@
+﻿pcdsdevices.areadetector.detectors.LasBaslerNF
+==============================================
+
+.. currentmodule:: pcdsdevices.areadetector.detectors
+
+.. autoclass:: LasBaslerNF
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``RESET.PROC``
+          - Reset the camera
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - packet_size
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``GevSCPSPacketSiz_RBV``
+          - Set Ethernet Packet Size (typ. 9000)
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - enet_bw
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``GevSCDCT_RBV``
+          - Current Ethernet bandwidth
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - manufacturer
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Manufacturer_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - camera_model
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Model_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - sensor_size_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxSizeX_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - sensor_size_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``MaxSizeY_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - data_type
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``DataType``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - exposure
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AcquireTime``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - gain
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Gain``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - num_images
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``NumImages``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - image_mode
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``ImageMode``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - trigger_mode
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``TriggerMode``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - acquisition_period
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``AcquirePeriod``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - bin_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BinX``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - bin_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BinY``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - region_start_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``MinX``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - region_size_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SizeX``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - region_start_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``MinY``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - region_size_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SizeY``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - acquire
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Acquire``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - acquire_rbv
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``DetectorState_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - image_counter
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``NumImagesCounter_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - cam_viewer
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - event_code
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``CamEventCode``
+          - Code to determine beam synchronization rate.
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - event_rate
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``CamRepRate_RBV``
+          - Current rate of the incoming triggers. Determined by event_code and the accelerator state.
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - stats_enable
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Stats2:EnableCallbacks``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - centroid_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Stats2:CentroidX_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - centroid_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Stats2:CentroidY_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - sigma_x
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Stats2:SigmaX_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - sigma_y
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``Stats2:SigmaY_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - centroid_threshold
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Stats2:CentroidThreshold``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - centroid_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``Stats2:ComputeCentroid``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - target_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Cross4:MinX``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - target_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``Cross4:MinY``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+        * - auto_configure
+          - :class:`~ophyd.signal.AttributeSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.LasBasler`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: open_viewer
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

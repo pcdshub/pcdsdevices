@@ -95,6 +95,48 @@
           - config
           - 
     
+        * - bin_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BinX``
+          - 
+          - config
+          - 
+    
+        * - bin_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BinY``
+          - 
+          - config
+          - 
+    
+        * - region_start_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``MinX``
+          - 
+          - config
+          - 
+    
+        * - region_size_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SizeX``
+          - 
+          - config
+          - 
+    
+        * - region_start_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``MinY``
+          - 
+          - config
+          - 
+    
+        * - region_size_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SizeY``
+          - 
+          - config
+          - 
+    
         * - acquire
           - :class:`~ophyd.signal.EpicsSignal`
           - ``Acquire``
@@ -124,6 +166,18 @@
           - 
     
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

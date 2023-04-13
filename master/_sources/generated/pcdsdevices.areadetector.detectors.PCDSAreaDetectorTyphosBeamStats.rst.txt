@@ -95,6 +95,48 @@
           - config
           - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
     
+        * - bin_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BinX``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - bin_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``BinY``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - region_start_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``MinX``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - region_size_x
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SizeX``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - region_start_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``MinY``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
+        * - region_size_y
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``SizeY``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.areadetector.detectors.PCDSAreaDetectorTyphosTrigger`
+    
         * - acquire
           - :class:`~ophyd.signal.EpicsSignal`
           - ``Acquire``
@@ -201,6 +243,18 @@
           - 
     
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

@@ -1,6 +1,28 @@
 Release History
 ###############
 
+v7.3.0 (2023-04-17)
+===================
+
+Device Updates
+--------------
+- LODCM: Add energy setpoint and tweakXC.
+- LODCM: fix energy functionality and add commonly used aliases.
+- LasBasler: Add a new signal that can be used to auto-configure a camera based on an internal dictionary.
+
+New Devices
+-----------
+- PCDSAreaDetectorTyphos class: Add in signals for camera binning and region size control.
+- LasBaslerNF: A Basler camera intended to be used as a near-field diagnostic.
+- LasBaslerFF: A Basler camera intended to be used as a far-field diagnostic.
+
+Contributors
+------------
+- slactjohnson
+- tangkong
+- vespos
+- zllentz
+
 
 v7.2.0 (2023-04-04)
 ===================

@@ -28,6 +28,8 @@ pcdsdevices.areadetector.detectors
     pcdsdevices.areadetector.detectors.Basler
     pcdsdevices.areadetector.detectors.BaslerBase
     pcdsdevices.areadetector.detectors.LasBasler
+    pcdsdevices.areadetector.detectors.LasBaslerFF
+    pcdsdevices.areadetector.detectors.LasBaslerNF
     pcdsdevices.areadetector.detectors.PCDSAreaDetector
     pcdsdevices.areadetector.detectors.PCDSAreaDetectorBase
     pcdsdevices.areadetector.detectors.PCDSAreaDetectorEmbedded

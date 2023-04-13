@@ -159,14 +159,14 @@
           - 
     
         * - h2nC (FCpt)
-          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
           - 
           -  H2n motor offset for C [mm]
           - normal
           - 
     
         * - h2nSi (FCpt)
-          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
           - 
           - H2n motor offset for Si [mm]
           - normal

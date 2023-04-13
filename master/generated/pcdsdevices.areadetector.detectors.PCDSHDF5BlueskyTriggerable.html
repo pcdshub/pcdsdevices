@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.areadetector.detectors.PCDSHDF5BlueskyTriggerable &mdash; PCDS Devices 7.2.0 documentation</title>
+  <title>pcdsdevices.areadetector.detectors.PCDSHDF5BlueskyTriggerable &mdash; PCDS Devices 7.2.1.dev27+gf891ad49 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/_static/theme_overrides.css" type="text/css" />
@@ -37,7 +37,7 @@
             PCDS Devices
           </a>
               <div class="version">
-                7.2.0
+                7.2.1.dev27+gf891ad49
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -56,6 +56,8 @@
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.areadetector.detectors.Basler.html">pcdsdevices.areadetector.detectors.Basler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.areadetector.detectors.BaslerBase.html">pcdsdevices.areadetector.detectors.BaslerBase</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.areadetector.detectors.LasBasler.html">pcdsdevices.areadetector.detectors.LasBasler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.areadetector.detectors.LasBaslerFF.html">pcdsdevices.areadetector.detectors.LasBaslerFF</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.areadetector.detectors.LasBaslerNF.html">pcdsdevices.areadetector.detectors.LasBaslerNF</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.areadetector.detectors.PCDSAreaDetector.html">pcdsdevices.areadetector.detectors.PCDSAreaDetector</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.areadetector.detectors.PCDSAreaDetectorBase.html">pcdsdevices.areadetector.detectors.PCDSAreaDetectorBase</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.areadetector.detectors.PCDSAreaDetectorEmbedded.html">pcdsdevices.areadetector.detectors.PCDSAreaDetectorEmbedded</a></li>
@@ -271,7 +273,7 @@ function.</p>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.areadetector.detectors.PCDSAreaDetectorBase.html#pcdsdevices.areadetector.detectors.PCDSAreaDetectorBase" title="pcdsdevices.areadetector.detectors.PCDSAreaDetectorBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">PCDSAreaDetectorBase</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>cam (ADComponent)</p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.7.1.dev76+g215bd0a)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.areadetector.cam.CamBase.html#ophyd.areadetector.cam.CamBase" title="(in ophyd v1.7.1.dev92+gd9d3331)"><code class="xref py py-class docutils literal notranslate"><span class="pre">CamBase</span></code></a></p></td>
 <td></td>
 <td></td>
 <td><p>normal</p></td>
@@ -339,7 +341,7 @@ key which is a label like ‘light’, ‘dark’, or ‘gain8’.</p>
 <p>It in turn calls <code class="docutils literal notranslate"><span class="pre">generate_datum</span></code> on all of the plugins that have
 that method.</p>
 <p>File plugins are identified by searching for a
-<a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum.html#ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum" title="(in ophyd v1.7.1.dev76+g215bd0a)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_datum()</span></code></a>
+<a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum.html#ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum" title="(in ophyd v1.7.1.dev92+gd9d3331)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_datum()</span></code></a>
 method that must have the signature</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_datum</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">datum_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
    <span class="o">...</span>
@@ -384,7 +386,7 @@ key which is a label like ‘light’, ‘dark’, or ‘gain8’.</p>
 <p>It in turn calls <code class="docutils literal notranslate"><span class="pre">generate_datum</span></code> on all of the plugins that have
 that method.</p>
 <p>File plugins are identified by searching for a
-<a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum.html#ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum" title="(in ophyd v1.7.1.dev76+g215bd0a)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_datum()</span></code></a>
+<a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum.html#ophyd.areadetector.filestore_mixins.FileStoreBase.generate_datum" title="(in ophyd v1.7.1.dev92+gd9d3331)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_datum()</span></code></a>
 method that must have the signature</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generate_datum</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">datum_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
    <span class="o">...</span>

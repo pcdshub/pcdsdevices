@@ -140,6 +140,7 @@
     .. automethod:: stop
     .. automethod:: summary
     .. automethod:: trigger
+    .. automethod:: tweakXC
     .. automethod:: tweak_parallel
     .. automethod:: tweak_x
     .. automethod:: wait_energy
@@ -151,6 +152,7 @@
     .. rubric:: Attributes
 
     
+    .. autoattribute:: E
     .. autoattribute:: branches
     .. autoattribute:: configuration_attrs
     .. autoattribute:: connected

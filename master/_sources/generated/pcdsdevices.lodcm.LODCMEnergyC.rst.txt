@@ -122,6 +122,7 @@
     .. automethod:: read_configuration
     .. automethod:: screen
     .. automethod:: set
+    .. automethod:: setE
     .. automethod:: set_current_position
     .. automethod:: set_position
     .. automethod:: stage_group_instances
