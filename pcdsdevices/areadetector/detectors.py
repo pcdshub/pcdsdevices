@@ -487,4 +487,35 @@ class LasBasler(PCDSAreaDetectorTyphosBeamStats, BaslerBase):
     """
     Class for the Basler cameras used in the laser control system.
     """
-    pass
+    # Configuration dictionary for camera
+    _conf_d = {}
+
+    # Make button available in Typhos screen
+    auto_configure = Cpt(AttributeSignal, attr='_auto_configure', kind='normal')
+    set_metadata(auto_configure, dict(variety='command-proc', value=1))
+
+    @property
+    def _auto_configure(self):
+        return 0
+
+    @_auto_configure.setter
+    def _auto_configure(self, value):
+        self.configure(self._conf_d)
+
+
+class LasBaslerNF(LasBasler):
+    """
+    Class for the near-field Basler cameras used in the laser control system.
+    """
+    _conf_d = {'data_type': 1, 'exposure': 0.005, 'trigger_mode': 0,
+               'acquisition_period': 0.5, 'centroid_enable': 1, 'bin_x': 2,
+               'bin_y': 2, 'stats_enable': 1, 'centroid_threshold': 1000}
+
+
+class LasBaslerFF(LasBasler):
+    """
+    Class for the far-field Basler cameras used in the laser control system.
+    """
+    _conf_d = {'data_type': 1, 'exposure': 0.010, 'trigger_mode': 0,
+               'acquisition_period': 0.5, 'centroid_enable': 1, 'bin_x': 1,
+               'bin_y': 1, 'stats_enable': 1, 'centroid_threshold': 50}
