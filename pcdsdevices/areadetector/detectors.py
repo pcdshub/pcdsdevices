@@ -365,6 +365,12 @@ class PCDSAreaDetectorTyphos(Device):
     image_mode = Cpt(EpicsSignalWithRBV, 'ImageMode', kind='config')
     trigger_mode = Cpt(EpicsSignalWithRBV, 'TriggerMode', kind='config')
     acquisition_period = Cpt(EpicsSignalWithRBV, 'AcquirePeriod', kind='config')
+    bin_x = Cpt(EpicsSignalWithRBV, 'BinX', kind='config')
+    bin_y = Cpt(EpicsSignalWithRBV, 'BinY', kind='config')
+    region_start_x = Cpt(EpicsSignalWithRBV, 'MinX', kind='config')
+    region_size_x = Cpt(EpicsSignalWithRBV, 'SizeX', kind='config')
+    region_start_y = Cpt(EpicsSignalWithRBV, 'MinY', kind='config')
+    region_size_y = Cpt(EpicsSignalWithRBV, 'SizeY', kind='config')
 
     # Image collection settings
     acquire = Cpt(EpicsSignal, 'Acquire', kind='normal')
