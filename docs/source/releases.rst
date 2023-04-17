@@ -18,9 +18,9 @@ New Devices
 
 Contributors
 ------------
-- espov
+- slactjohnson
 - tangkong
-- tjohnson
+- vespos
 - zllentz
 
 
