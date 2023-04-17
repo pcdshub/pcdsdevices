@@ -1,21 +1,13 @@
 Release History
 ###############
 
-
 v7.2.1 (2023-04-17)
 ===================
 
-API Changes
------------
-- Add energy setpoint and tweakX to the LODCM class
-
-Features
---------
-- Set LODCM energy directly
-
 Device Updates
 --------------
-- lodcm.py: fix energy functionality, add commonly used aliases
+- LODCM: Add energy setpoint and tweakXC.
+- LODCM: fix energy functionality and add commonly used aliases.
 - LasBasler: Add a new signal that can be used to auto-configure a camera based on an internal dictionary.
 
 New Devices
@@ -30,7 +22,6 @@ Contributors
 - tangkong
 - tjohnson
 - zllentz
-
 
 
 v7.2.0 (2023-04-04)
