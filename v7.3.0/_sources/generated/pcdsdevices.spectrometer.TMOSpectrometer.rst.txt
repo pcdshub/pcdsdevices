@@ -1,0 +1,173 @@
+﻿pcdsdevices.spectrometer.TMOSpectrometer
+========================================
+
+.. currentmodule:: pcdsdevices.spectrometer
+
+.. autoclass:: TMOSpectrometer
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
+    
+        * - lens_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:01``
+          - 
+          - normal
+          - 
+    
+        * - lens_pitch_up_down
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:10``
+          - 
+          - normal
+          - 
+    
+        * - lens_yaw_left_right
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:11``
+          - 
+          - normal
+          - 
+    
+        * - foil_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:02``
+          - 
+          - normal
+          - 
+    
+        * - zone_plate_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:03``
+          - 
+          - normal
+          - 
+    
+        * - zone_plate_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:04``
+          - 
+          - normal
+          - 
+    
+        * - zone_plate_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:05``
+          - 
+          - normal
+          - 
+    
+        * - yag_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:06``
+          - 
+          - normal
+          - 
+    
+        * - yag_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:07``
+          - 
+          - normal
+          - 
+    
+        * - yag_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:08``
+          - 
+          - normal
+          - 
+    
+        * - yag_theta
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:09``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    .. autoattribute:: transmission
+    
+    

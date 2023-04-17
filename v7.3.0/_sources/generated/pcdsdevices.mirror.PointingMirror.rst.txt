@@ -1,0 +1,146 @@
+﻿pcdsdevices.mirror.PointingMirror
+=================================
+
+.. currentmodule:: pcdsdevices.mirror
+
+.. autoclass:: PointingMirror
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.mirror.OffsetMirror`
+    
+        * - pitch (FCpt)
+          - :class:`~pcdsdevices.mirror.Pitch`
+          - ``MIRR:{self.prefix}``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.OffsetMirror`
+    
+        * - xgantry (FCpt)
+          - :class:`~pcdsdevices.mirror.Gantry`
+          - ``{self._prefix_xy}:X``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.OffsetMirror`
+    
+        * - ygantry (FCpt)
+          - :class:`~pcdsdevices.mirror.Gantry`
+          - ``{self._prefix_xy}:Y``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.mirror.OffsetMirror`
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.inout.InOutRecordPositioner`
+    
+        * - motor
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``:MOTOR``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.inout.InOutRecordPositioner`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: camonitor
+    .. automethod:: check_inserted
+    .. automethod:: check_removed
+    .. automethod:: check_transmission
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: get_state
+    .. automethod:: insert
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: branches
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: destination
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: in_states
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: md
+    .. autoattribute:: moving
+    .. autoattribute:: needs_parent
+    .. autoattribute:: out_states
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: stage_group
+    .. autoattribute:: states_list
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    

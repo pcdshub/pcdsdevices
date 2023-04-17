@@ -1,0 +1,121 @@
+﻿pcdsdevices.lasers.btps.RangeComparison
+=======================================
+
+.. currentmodule:: pcdsdevices.lasers.btps
+
+.. autoclass:: RangeComparison
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - value
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``Value``
+          - Current value from the control system
+          - hinted
+          - 
+    
+        * - in_range
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``InRange``
+          - Is the value currently in range?
+          - hinted
+          - 
+    
+        * - input_valid
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``Valid``
+          - Is the value considered valid?
+          - normal
+          - 
+    
+        * - low
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``Low``
+          - Configurable lower bound for the value range
+          - normal
+          - 
+    
+        * - nominal
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``Nominal``
+          - The nominal value
+          - normal
+          - 
+    
+        * - high
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``High``
+          - Configurable upper bound for the value range
+          - normal
+          - 
+    
+        * - inclusive
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``Inclusive``
+          - Is the value comparison exclusive or inclusive?
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_delta
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

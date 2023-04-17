@@ -1,0 +1,170 @@
+﻿pcdsdevices.lodcm.XPPLODCM
+==========================
+
+.. currentmodule:: pcdsdevices.lodcm
+
+.. autoclass:: XPPLODCM
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCM`
+    
+        * - yag
+          - :class:`~pcdsdevices.lodcm.YagLom`
+          - ``:DV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCM`
+    
+        * - dectris
+          - :class:`~pcdsdevices.lodcm.Dectris`
+          - ``:DH``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCM`
+    
+        * - diode
+          - :class:`~pcdsdevices.lodcm.Diode`
+          - ``:DIODE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCM`
+    
+        * - foil
+          - :class:`~pcdsdevices.lodcm.Foil`
+          - ``:FOIL``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCM`
+    
+        * - tower1 (FCpt)
+          - :class:`~pcdsdevices.lodcm.CrystalTower1`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCM`
+    
+        * - tower2 (FCpt)
+          - :class:`~pcdsdevices.lodcm.CrystalTower2`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCM`
+    
+        * - diag_tower (FCpt)
+          - :class:`~pcdsdevices.lodcm.DiagnosticsTower`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCM`
+    
+        * - energy_si (FCpt)
+          - :class:`~pcdsdevices.lodcm.LODCMEnergySi`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCM`
+    
+        * - energy_c (FCpt)
+          - :class:`~pcdsdevices.lodcm.LODCMEnergyC`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCM`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_geometry
+    .. automethod:: calc_lightpath_state
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_energy
+    .. automethod:: get_lightpath_state
+    .. automethod:: get_material
+    .. automethod:: get_reflection
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: remove_dia
+    .. automethod:: screen
+    .. automethod:: set_energy
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweakXC
+    .. automethod:: tweak_parallel
+    .. automethod:: tweak_x
+    .. automethod:: wait_energy
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: E
+    .. autoattribute:: branches
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: destination
+    .. autoattribute:: energy
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    .. autoattribute:: transmission
+    
+    

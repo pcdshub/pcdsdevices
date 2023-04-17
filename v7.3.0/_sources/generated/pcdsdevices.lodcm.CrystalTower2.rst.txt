@@ -1,0 +1,262 @@
+﻿pcdsdevices.lodcm.CrystalTower2
+===============================
+
+.. currentmodule:: pcdsdevices.lodcm
+
+.. autoclass:: CrystalTower2
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - z2 (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:10``
+          - LOM Xtal2 Z
+          - normal
+          - 
+    
+        * - x2 (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:11``
+          - LOM Xtal2 X
+          - normal
+          - 
+    
+        * - y2 (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:12``
+          - LOM Xtal2 Y
+          - normal
+          - 
+    
+        * - th2 (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:13``
+          - LOM Xtal2 Theta
+          - normal
+          - 
+    
+        * - chi2 (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:14``
+          - LOM Xtal2 Chi
+          - normal
+          - 
+    
+        * - h2n (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:15``
+          - LOM Xtal2 Hn
+          - normal
+          - 
+    
+        * - diode2 (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._hutch_prefix}:MON:MMS:21``
+          - LOM Xtal2 PIPS
+          - normal
+          - 
+    
+        * - x2_retry_deadband (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self._hutch_prefix}:MON:MMS:11.RDBD``
+          - Retry Deadband for x2
+          - omitted
+          - 
+    
+        * - z2_retry_deadband (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{self._hutch_prefix}:MON:MMS:10.RDBD``
+          - Retry Deadband for z2
+          - omitted
+          - 
+    
+        * - h2n_state
+          - :class:`~pcdsdevices.lodcm.H2N`
+          - ``:H2N``
+          - 
+          - hinted
+          - 
+    
+        * - y2_state
+          - :class:`~pcdsdevices.lodcm.Y2`
+          - ``:Y2``
+          - 
+          - normal
+          - 
+    
+        * - chi2_state
+          - :class:`~pcdsdevices.lodcm.CHI2`
+          - ``:CHI2``
+          - 
+          - normal
+          - 
+    
+        * - diamond_reflection
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:T2C:REF``
+          - Tower 2 Diamond crystal reflection
+          - normal
+          - 
+    
+        * - silicon_reflection
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:T2Si:REF``
+          - Tower 2 Silicon crystal reflection
+          - normal
+          - 
+    
+        * - x2C (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          - X2 motor offset for C [mm]
+          - normal
+          - 
+    
+        * - x2Si (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          - X2 motor offset for Si [mm]
+          - normal
+          - 
+    
+        * - y2C (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - Y2 motor offset for C [mm]
+          - normal
+          - 
+    
+        * - y2Si (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - Y2 motor offset for Si [mm]
+          - normal
+          - 
+    
+        * - chi2C (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - Chi 2 motor offset for C [deg]
+          - normal
+          - 
+    
+        * - chi2Si (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetIMSWithPreset`
+          - 
+          - Chi 2 motor offset for Si [deg]
+          - normal
+          - 
+    
+        * - h2nC (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          -  H2n motor offset for C [mm]
+          - normal
+          - 
+    
+        * - h2nSi (FCpt)
+          - :class:`~pcdsdevices.epics_motor.OffsetMotor`
+          - 
+          - H2n motor offset for Si [mm]
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_material
+    .. automethod:: get_reflection
+    .. automethod:: is_diamond
+    .. automethod:: is_silicon
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

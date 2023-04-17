@@ -1,0 +1,96 @@
+﻿pcdsdevices.jet.BeckhoffJetSlits
+================================
+
+.. currentmodule:: pcdsdevices.jet
+
+.. autoclass:: BeckhoffJetSlits
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - top_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis_Pre140`
+          - ``:TOP_X``
+          - 
+          - normal
+          - 
+    
+        * - top_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis_Pre140`
+          - ``:TOP_Y``
+          - 
+          - normal
+          - 
+    
+        * - bot_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis_Pre140`
+          - ``:BOT_X``
+          - 
+          - normal
+          - 
+    
+        * - bot_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis_Pre140`
+          - ``:BOT_Y``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

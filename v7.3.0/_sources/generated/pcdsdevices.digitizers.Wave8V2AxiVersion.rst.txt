@@ -1,0 +1,111 @@
+﻿pcdsdevices.digitizers.Wave8V2AxiVersion
+========================================
+
+.. currentmodule:: pcdsdevices.digitizers
+
+.. autoclass:: Wave8V2AxiVersion
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - build_stamp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:BuildStamp``
+          - 
+          - config
+          - 
+    
+        * - fpga_reload
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FpgaReload``
+          - 
+          - config
+          - 
+    
+        * - fpga_version
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FpgaVersion``
+          - 
+          - config
+          - 
+    
+        * - scratch_pad
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ScratchPad_RBV``
+          - 
+          - config
+          - 
+    
+        * - user_reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:UserReset_RBV``
+          - 
+          - config
+          - 
+    
+        * - uptime
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:UpTime``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

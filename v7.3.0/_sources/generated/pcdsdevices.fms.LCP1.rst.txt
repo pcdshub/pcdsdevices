@@ -1,0 +1,207 @@
+﻿pcdsdevices.fms.LCP1
+====================
+
+.. currentmodule:: pcdsdevices.fms
+
+.. autoclass:: LCP1
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - temperature_f
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:Temperature_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - power_v_supply_v
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:24Vsupply_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - air_fan_1_rpm_percent
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AirFan1Rpm_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - air_fan_2_rpm_percent
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AirFan2Rpm_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - air_fan_3_rpm_percent
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AirFan3Rpm_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - air_fan_4_rpm_percent
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AirFan4Rpm_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - air_fan_5_rpm_percent
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AirFan5Rpm_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - air_fan_6_rpm_percent
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AirFan6Rpm_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - water_temp_in_f
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:WaterTempIn_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - water_temp_out_f
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:WaterTempOut_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - water_flow_rate_gpm
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:WaterFlowRate_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - air_temp_in_top_f
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AirTempInTop_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - air_temp_in_mid_f
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AirTempInMid_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - air_temp_in_bot_f
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AirTempInBot_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - air_temp_out_top_f
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AirTempOutTop_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - air_temp_out_mid_f
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AirTempOutMid_CALC``
+          - 
+          - hinted
+          - 
+    
+        * - air_temp_out_bot_f
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AirTempOutBot_CALC``
+          - 
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

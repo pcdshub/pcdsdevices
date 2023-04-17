@@ -1,0 +1,221 @@
+﻿pcdsdevices.lasers.elliptec.EllBase
+===================================
+
+.. currentmodule:: pcdsdevices.lasers.elliptec
+
+.. autoclass:: EllBase
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - done
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pv_positioner.PVPositionerIsClose`
+    
+        * - set_position (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CURPOS``
+          - 
+          - normal
+          - 
+    
+        * - jog_fwd (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE_FWD``
+          - 
+          - normal
+          - 
+    
+        * - jog_bwd (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE_BWD``
+          - 
+          - normal
+          - 
+    
+        * - status (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:M{self._channel}:STATUS``
+          - 
+          - normal
+          - 
+    
+        * - optimize (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:OPTIMIZE``
+          - 
+          - omitted
+          - 
+    
+        * - _from_addr (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:FROM_ADDR``
+          - 
+          - omitted
+          - 
+    
+        * - _to_addr (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:TO_ADDR``
+          - 
+          - omitted
+          - 
+    
+        * - _save (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:SAVE``
+          - 
+          - omitted
+          - 
+    
+        * - _command (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:PORT{self._port}:CMD``
+          - 
+          - omitted
+          - 
+    
+        * - _response (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:PORT{self._port}:RESPONSE``
+          - 
+          - omitted
+          - 
+    
+        * - setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE``
+          - 
+          - omitted
+          - 
+    
+        * - readback (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CURPOS``
+          - 
+          - omitted
+          - 
+    
+        * - user_setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:MOVE``
+          - 
+          - omitted
+          - 
+    
+        * - user_readback (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:M{self._channel}:CURPOS``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: done_comparator
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate
+    .. autoattribute:: actuate_value
+    .. autoattribute:: atol
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: rtol
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    
+    

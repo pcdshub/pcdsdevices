@@ -1,0 +1,122 @@
+﻿pcdsdevices.lasers.btps.DestinationConfig
+=========================================
+
+.. currentmodule:: pcdsdevices.lasers.btps
+
+.. autoclass:: DestinationConfig
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - name_
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:Name``
+          - Destination name
+          - normal
+          - 
+    
+        * - exit_valve_ready
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:ExitValveReady``
+          - Exit valve is open and ready
+          - normal
+          - 
+    
+        * - yields_control
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``BTPS:YieldsControl``
+          - Destination using beam or yielding control
+          - normal
+          - 
+    
+        * - ls1
+          - :class:`~pcdsdevices.lasers.btps.SourceToDestinationConfig`
+          - ``LS1:``
+          - Settings for source LS1 (bay 1) to this destination
+          - normal
+          - 
+    
+        * - ls5
+          - :class:`~pcdsdevices.lasers.btps.SourceToDestinationConfig`
+          - ``LS5:``
+          - Settings for source LS5 (bay 3) to this destination
+          - normal
+          - 
+    
+        * - ls8
+          - :class:`~pcdsdevices.lasers.btps.SourceToDestinationConfig`
+          - ``LS8:``
+          - Settings for source LS8 (bay 4) to this destination
+          - normal
+          - 
+    
+        * - exit_valve
+          - :class:`~pcdsdevices.lasers.btps.BtpsVGC`
+          - ``VGC:01``
+          - Destination exit valve
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: sources
+    .. autoattribute:: subscriptions
+    .. autoattribute:: destination_pos
+    
+    

@@ -1,0 +1,106 @@
+﻿pcdsdevices.rtds\_ebd.RTDSX0ThreeStage
+======================================
+
+.. currentmodule:: pcdsdevices.rtds_ebd
+
+.. autoclass:: RTDSX0ThreeStage
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
+    
+        * - mmsx
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:X``
+          - 
+          - normal
+          - 
+    
+        * - mmsy
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:Y``
+          - 
+          - normal
+          - 
+    
+        * - mmsz
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:Z``
+          - 
+          - normal
+          - 
+    
+        * - open_limit
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MMS:Y.HLS``
+          - Reads if the y-stage is at its outer limit.
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: subscriptions
+    
+    

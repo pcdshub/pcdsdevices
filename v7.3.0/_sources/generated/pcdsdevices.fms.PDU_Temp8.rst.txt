@@ -1,0 +1,126 @@
+﻿pcdsdevices.fms.PDU\_Temp8
+==========================
+
+.. currentmodule:: pcdsdevices.fms
+
+.. autoclass:: PDU_Temp8
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - sensor1 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:{elevation[0]}:Sensor:1:GetTempValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor2 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:{elevation[1]}:Sensor:2:GetTempValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor3 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:{elevation[2]}:Sensor:1:GetTempValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor4 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:{elevation[3]}:Sensor:2:GetTempValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor5 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:{elevation[4]}:Sensor:1:GetTempValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor6 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:{elevation[5]}:Sensor:2:GetTempValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor7 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:{elevation[6]}:Sensor:2:GetTempValue``
+          - 
+          - hinted
+          - 
+    
+        * - sensor8 (FCpt)
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``{prefix}:{elevation[7]}:Sensor:2:GetTempValue``
+          - 
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

@@ -1,0 +1,217 @@
+﻿pcdsdevices.mirror.KBOMirrorHEStates
+====================================
+
+.. currentmodule:: pcdsdevices.mirror
+
+.. autoclass:: KBOMirrorHEStates
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - coating
+          - :class:`~pcdsdevices.mirror.TwinCATMirrorStripe`
+          - ``:COATING:STATE``
+          - Control of the coating states via saved positions.
+          - hinted
+          - 
+    
+        * - x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:X``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:Y``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - pitch
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:PITCH``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - bender_us
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:BEND:US``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - bender_ds
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:BEND:DS``
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - x_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:X:RMS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - y_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:Y:RMS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - pitch_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:PITCH:RMS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - bender_us_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:BEND:US:RMS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - bender_ds_enc_rms
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ENC:BEND:DS:RMS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - us_rtd
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RTD:BEND:US:1_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - ds_rtd
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RTD:BEND:DS:1_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - cool_flow1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FWM:1_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - cool_flow2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FWM:2_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+        * - cool_press
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PRSM:1_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    
