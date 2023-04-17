@@ -2,6 +2,37 @@ Release History
 ###############
 
 
+v7.2.1 (2023-04-17)
+===================
+
+API Changes
+-----------
+- Add energy setpoint and tweakX to the LODCM class
+
+Features
+--------
+- Set LODCM energy directly
+
+Device Updates
+--------------
+- lodcm.py: fix energy functionality, add commonly used aliases
+- LasBasler: Add a new signal that can be used to auto-configure a camera based on an internal dictionary.
+
+New Devices
+-----------
+- PCDSAreaDetectorTyphos class: Add in signals for camera binning and region size control.
+- LasBaslerNF: A Basler camera intended to be used as a near-field diagnostic.
+- LasBaslerFF: A Basler camera intended to be used as a far-field diagnostic.
+
+Contributors
+------------
+- espov
+- tangkong
+- tjohnson
+- zllentz
+
+
+
 v7.2.0 (2023-04-04)
 ===================
 
