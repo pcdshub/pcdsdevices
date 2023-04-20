@@ -67,10 +67,10 @@
           - normal
           - 
     
-        * - filter
-          - :class:`~pcdsdevices.epics_motor.IMS`
-          - ``:446:MOTR``
-          - filter wheel, tbd if necessary
+        * - filter (FCpt)
+          - :class:`~pcdsdevices.state.StateRecordPositioner`
+          - ``XRT:HXS:FILTER``
+          - filter wheel
           - normal
           - 
     
