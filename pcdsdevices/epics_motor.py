@@ -612,6 +612,8 @@ class IMS(PCDSMotorBase):
         'clear_.*',
         'configure',
         'get_configuration',
+        'get_configuration_values',
+        'get_current_values',
         'find_configuration',
         'diff_configuration'
     ]
