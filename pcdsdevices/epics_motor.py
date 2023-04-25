@@ -781,6 +781,47 @@ class IMS(PCDSMotorBase):
         self._setup_and_check_pmgr()
         return self._pm.get_config(self.prefix)
 
+    def get_configuration_values(self, cfgname=None):
+        """
+        Return the current configuration parameters of the motor
+        in the parameter manager
+
+        Parameters
+        ----------
+        cfgname : str
+               The name of the configuration
+
+        Returns
+        _______
+        A dictionary mapping field names to the configured values
+        """
+        self._setup_and_check_pmgr()
+        if not cfgname:
+            cfgname = self.get_configuration()
+        return self._pm.get_config_values(cfgname)
+
+    def get_current_values(self, pv=None):
+        """
+        Returns the current parameters for a given pv.
+
+        Parameters
+        ----------
+        pv : str
+          Default is None
+
+        Returns
+        -------
+        cdict : dict
+            A dictionary mapping field names (str) to values.
+        """
+
+        pv = self.prefix
+        self._setup_and_check_pmgr()
+
+        self._pm.update_db()
+        o = self._pm._search(self._pm.pm.objs, 'rec_base', pv)
+        return self._pm.pm.getActualConfig(o['id'])
+
     @staticmethod
     def find_configuration(pattern, case_insensitive=True, display=30):
         """
