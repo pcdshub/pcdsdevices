@@ -874,6 +874,7 @@ class IMS(PCDSMotorBase):
         Raises an exception if the comparison fails for any reason.
         """
         IMS._setup_and_check_pmgr()
+        print("Actual Values, Configuration Values")
         return self._pm.diff_config(self.prefix, cfgname)
 
     @staticmethod
