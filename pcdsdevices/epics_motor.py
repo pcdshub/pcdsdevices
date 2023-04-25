@@ -737,6 +737,27 @@ class IMS(PCDSMotorBase):
             status_wait(st, timeout=timeout)
         return st
 
+    @property
+    def md(self):
+        if self._md is None:
+            raise AttributeError('Device does not have an attached md, '
+                                 'and was likely not initialized from happi')
+        return self._md
+
+    @md.setter
+    def md(self, new_md):
+        """ initialize attributes when md is set """
+        self._md = new_md
+        self._extra = self._md.extraneous
+        self._id = self._extra['_id']
+        self._stageidentity = self._extra['stageidentity']
+        self._pvbase = self._extra['pvbase']
+        if self._stageidentity == "NEW":
+            print(f"This is a new stage, parameter configuration does not exist yet. Please manually configure {self._id}.")
+        else:
+            IMS._setup_and_check_pmgr()
+            self._pm.set_config(self._pvbase, self._stageidentity)
+
     def configure(self, cfgname=None):
         """
         Use the parameter manager to configure the motor.
