@@ -754,7 +754,7 @@ class IMS(PCDSMotorBase):
         self._stageidentity = self._extra['stageidentity']
         self._pvbase = self._extra['pvbase']
         if self._stageidentity == "NEW":
-            print(f"This is a new stage, parameter configuration does not exist yet. Please manually configure {self._id}.")
+            logger.warning(f"This is a new stage, parameter manager configuration does not exist yet. Please manually configure {self._id}")
         else:
             IMS._setup_and_check_pmgr()
             self._pm.set_config(self._pvbase, self._stageidentity)
