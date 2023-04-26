@@ -18,6 +18,7 @@ from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
 from ophyd.utils.epics_pvs import raise_if_disconnected, set_and_wait
 from pcdsutils.ext_scripts import get_hutch_name
+from prettytable import PrettyTable
 
 from pcdsdevices.pv_positioner import PVPositionerComparator
 
@@ -874,8 +875,15 @@ class IMS(PCDSMotorBase):
         Raises an exception if the comparison fails for any reason.
         """
         IMS._setup_and_check_pmgr()
-        print("Actual Values, Configuration Values")
-        return self._pm.diff_config(self.prefix, cfgname)
+
+        d = self._pm.diff_config(self.prefix, cfgname)
+        table = PrettyTable()
+        table.field_names = ["Parameter", "Actual", "Configuration"]
+        for key, value in d.items():
+            actual = d[key][0]
+            configuration = d[key][1]
+            table.add_row([key, actual, configuration])
+        return table
 
     @staticmethod
     def setup_pmgr():
