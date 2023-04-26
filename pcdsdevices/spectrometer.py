@@ -2,6 +2,7 @@
 Module for the various spectrometers.
 """
 from lightpath import LightpathState
+from ophyd import EpicsSignal
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
@@ -382,8 +383,8 @@ class HXRSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
                doc='camera y')
     iris = Cpt(IMS, ':445:MOTR', kind='normal',
                doc='camera iris')
-    filter = Cpt(IMS, ':446:MOTR', kind='normal',
-                 doc='filter wheel, tbd if necessary')
+    filter = EpicsSignal(write_pv='XRT:HXS:FILTER:GO', read_pv='XRT:HXS:FILTER',
+                         kind='normal', name='filter wheel')
 
     # Lightpath constants
     inserted = True
