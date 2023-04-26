@@ -793,7 +793,7 @@ class IMS(PCDSMotorBase):
                The name of the configuration
 
         Returns
-        _______
+        -------
         A dictionary mapping field names to the configured values
         """
         self._setup_and_check_pmgr()
