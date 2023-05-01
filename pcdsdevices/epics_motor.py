@@ -754,7 +754,7 @@ class IMS(PCDSMotorBase):
         self._pvbase = self._extra['pvbase']
         self._stageidentity = self._extra.get('stageidentity')
         if self._stageidentity is None:
-            logger.warning("Stage Identity has not been set for this object. Configure manually.")
+            logger.warning(f"Stage Identity has not been set for this object: {self._id}. Configure manually.")
             return
         elif self._stageidentity == "NEW":
             logger.warning(f"This is a new stage, parameter manager configuration does not exist yet. Please manually configure {self._id}")
