@@ -750,11 +750,15 @@ class IMS(PCDSMotorBase):
         """ initialize attributes when md is set """
         self._md = new_md
         self._extra = self._md.extraneous
-        self._id = self._extra['_id']
-        self._stageidentity = self._extra['stageidentity']
+        self._id = self._extra.get('_id')
         self._pvbase = self._extra['pvbase']
-        if self._stageidentity == "NEW":
+        self._stageidentity = self._extra.get('stageidentity')
+        if self._stageidentity is None:
+            logger.warning("Stage Identity has not been set for this object. Configure manually.")
+            return
+        elif self._stageidentity == "NEW":
             logger.warning(f"This is a new stage, parameter manager configuration does not exist yet. Please manually configure {self._id}")
+            return
         else:
             IMS._setup_and_check_pmgr()
             self._pm.set_config(self._pvbase, self._stageidentity)
