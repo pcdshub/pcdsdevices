@@ -884,8 +884,8 @@ class IMS(PCDSMotorBase):
         table = PrettyTable()
         table.field_names = ["Parameter", "Actual", "Configuration"]
         for key, value in d.items():
-            actual = d[key][0]
-            configuration = d[key][1]
+            actual = value[0]
+            configuration = value[1]
             table.add_row([key, actual, configuration])
         return table
 
