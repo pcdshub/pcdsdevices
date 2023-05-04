@@ -2,7 +2,6 @@
 Module for the various spectrometers.
 """
 from lightpath import LightpathState
-from ophyd import EpicsSignal
 from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
@@ -11,6 +10,7 @@ from .epics_motor import (IMS, BeckhoffAxis, BeckhoffAxisNoOffset,
                           EpicsMotorInterface)
 from .interface import BaseInterface, LightpathMixin
 from .signal import InternalSignal, PytmcSignal
+from .state import StateRecordPositioner
 
 
 class Kmono(BaseInterface, GroupDevice, LightpathMixin):
@@ -383,8 +383,7 @@ class HXRSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
                doc='camera y')
     iris = Cpt(IMS, ':445:MOTR', kind='normal',
                doc='camera iris')
-    filter = EpicsSignal(write_pv='XRT:HXS:FILTER:GO', read_pv='XRT:HXS:FILTER',
-                         kind='normal', name='filter wheel')
+    filter = FCpt(StateRecordPositioner, 'XRT:HXS:FILTER')
 
     # Lightpath constants
     inserted = True
