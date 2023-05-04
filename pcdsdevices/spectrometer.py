@@ -10,6 +10,7 @@ from .epics_motor import (IMS, BeckhoffAxis, BeckhoffAxisNoOffset,
                           EpicsMotorInterface)
 from .interface import BaseInterface, LightpathMixin
 from .signal import InternalSignal, PytmcSignal
+from .state import StateRecordPositioner
 
 
 class Kmono(BaseInterface, GroupDevice, LightpathMixin):
@@ -382,8 +383,7 @@ class HXRSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
                doc='camera y')
     iris = Cpt(IMS, ':445:MOTR', kind='normal',
                doc='camera iris')
-    filter = Cpt(IMS, ':446:MOTR', kind='normal',
-                 doc='filter wheel, tbd if necessary')
+    filter = FCpt(StateRecordPositioner, 'XRT:HXS:FILTER', doc='filter wheel')
 
     # Lightpath constants
     inserted = True
