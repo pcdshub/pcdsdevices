@@ -383,7 +383,7 @@ class HXRSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
                doc='camera y')
     iris = Cpt(IMS, ':445:MOTR', kind='normal',
                doc='camera iris')
-    filter = FCpt(StateRecordPositioner, 'XRT:HXS:FILTER')
+    filter = FCpt(StateRecordPositioner, 'XRT:HXS:FILTER', doc='filter wheel')
 
     # Lightpath constants
     inserted = True
