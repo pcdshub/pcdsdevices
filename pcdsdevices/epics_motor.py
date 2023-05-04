@@ -751,7 +751,7 @@ class IMS(PCDSMotorBase):
         self._md = new_md
         self._extra = self._md.extraneous
         self._id = self._extra.get('_id')
-        self._pvbase = self._extra['pvbase']
+        self._pvbase = self._extra.get('pvbase')
         self._stageidentity = self._extra.get('stageidentity')
         if self._stageidentity is None:
             logger.warning(f"Stage Identity has not been set for this object: {self._id}. Configure manually.")
