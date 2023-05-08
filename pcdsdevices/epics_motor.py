@@ -875,9 +875,10 @@ class IMS(PCDSMotorBase):
 
         Returns
         -------
-        diff : dict
-            A dictionary mapping field names to (actual, config) tuples of
-            differing values.
+        diff : PrettyTable
+            A table with headers "Parameter", "Actual", and "Configuration",
+            showing the differences between the live values and the configured
+            values.
 
         Raises an exception if the comparison fails for any reason.
         """
