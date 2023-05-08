@@ -22,9 +22,9 @@ Device Updates
 
 Contributors
 ------------
-- roberttk
-- spencera
-- zlentz
+- spenc333
+- tangkong
+- zllentz
 
 
 v7.3.0 (2023-04-17)
