@@ -1,6 +1,25 @@
 Release History
 ###############
 
+
+v7.4.0 (2023-05-08)
+===================
+
+Features
+--------
+- Added to the IMS class in epics_motor.py the ability to grab questionnaire stage identities and apply them to happi created motor objects that then applies it to the parameter manager for the given PV. Also added were functions that allow the user to see the given configuration parameters or the current parameters of that base PV.
+
+Device Updates
+--------------
+- Updated HXRSpectrometer filter wheel with its state PV
+
+Contributors
+------------
+- roberttk
+- spencera
+- zlentz
+
+
 v7.3.0 (2023-04-17)
 ===================
 
