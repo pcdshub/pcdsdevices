@@ -1,0 +1,387 @@
+﻿pcdsdevices.lasers.qmini.QminiWithEvr
+=====================================
+
+.. currentmodule:: pcdsdevices.lasers.qmini
+
+.. autoclass:: QminiWithEvr
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - status
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATUS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - temperature
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TEMP``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - exposure
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_EXPOSURE_TIME``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - trig_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_MODE_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - trig_delay
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_TRIG_DELAY``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - trig_pin
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_PIN_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - trig_edge
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_EDGE_RBV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - trig_enable
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_TRIG_ENABLE``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - scan_rate
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:GET_SPECTRUM.SCAN``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CLEAR_SPECTROMETER``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - spectrum
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SPECTRUM``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - wavelengths
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:WAVELENGTHS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - model
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODEL_CODE``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - serial_number
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SERIAL_NUMBER``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - adjust_offset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ADJUST_OFFSET``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - correct_nonlinearity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CORRECT_NONLINEARITY``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - remove_bad_pixels
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:REMOVE_BAD_PIXELS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - subtract_dark
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SUBTRACT_DARK``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - remove_temp_bad_pixels
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:REMOVE_TEMP_BAD_PIXELS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - normalize_exposure
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:NORMALIZE_EXPOSURE``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - sensitivity_cal
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SENSITIVITY_CAL``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - correct_prnu
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CORRECT_PRNU``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - additional_filtering
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ADDITIONAL_FILTERING``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - scale_to_16_bit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SCALE_TO_16BIT``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - set_processing_steps
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SET_PROCESSING_STEPS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - get_processing_steps
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:GET_PROCESSING_STEPS``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - fit_on
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FIT_ON``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - fit_width
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:WIDTH``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - w0_guess
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:W0_GUESS``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - w0_fit
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:W0_FIT``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - fit_fwhm
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FWHM``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - fit_amplitude
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AMPLITUDE``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - fit_stdev
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STDEV``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - fit_chisq
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CHISQ``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - event_code (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self._evr_pv}:TRIG{self._evr_ch}:EC_RBV``
+          - 
+          - config
+          - 
+    
+        * - evr_width (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self._evr_pv}:TRIG{self._evr_ch}:BW_TWIDCALC``
+          - 
+          - config
+          - 
+    
+        * - evr_delay (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{self._evr_pv}:TRIG{self._evr_ch}:BW_TDES``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

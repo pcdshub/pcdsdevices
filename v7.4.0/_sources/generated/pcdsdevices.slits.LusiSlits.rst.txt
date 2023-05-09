@@ -1,0 +1,204 @@
+﻿pcdsdevices.slits.LusiSlits
+===========================
+
+.. currentmodule:: pcdsdevices.slits
+
+.. autoclass:: LusiSlits
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.SlitsBase`
+    
+        * - nominal_aperture
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.SlitsBase`
+    
+        * - xwidth
+          - :class:`~pcdsdevices.slits.LusiSlitPositioner`
+          - 
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.slits.SlitsBase`
+    
+        * - ywidth
+          - :class:`~pcdsdevices.slits.LusiSlitPositioner`
+          - 
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.slits.SlitsBase`
+    
+        * - xcenter
+          - :class:`~pcdsdevices.slits.LusiSlitPositioner`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.SlitsBase`
+    
+        * - ycenter
+          - :class:`~pcdsdevices.slits.LusiSlitPositioner`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.SlitsBase`
+    
+        * - blade_top
+          - :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+          - ``:TOP``
+          - 
+          - normal
+          - 
+    
+        * - blade_bottom
+          - :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+          - ``:BOTTOM``
+          - 
+          - normal
+          - 
+    
+        * - blade_north
+          - :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+          - ``:NORTH``
+          - 
+          - normal
+          - 
+    
+        * - blade_south
+          - :class:`~pcdsdevices.epics_motor.PCDSMotorBase`
+          - ``:SOUTH``
+          - 
+          - normal
+          - 
+    
+        * - blocked
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:BLOCKED``
+          - 
+          - omitted
+          - 
+    
+        * - open_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OPEN``
+          - 
+          - omitted
+          - 
+    
+        * - close_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:CLOSE``
+          - 
+          - omitted
+          - 
+    
+        * - block_cmd
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:BLOCK``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: block
+    .. automethod:: calc_lightpath_state
+    .. automethod:: camonitor
+    .. automethod:: close
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: open
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: current_aperture
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: needs_parent
+    .. autoattribute:: position
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

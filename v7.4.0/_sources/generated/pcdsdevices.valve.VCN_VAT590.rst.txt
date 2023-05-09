@@ -1,0 +1,200 @@
+﻿pcdsdevices.valve.VCN\_VAT590
+=============================
+
+.. currentmodule:: pcdsdevices.valve
+
+.. autoclass:: VCN_VAT590
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - pos_raw
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``POS_RAW``
+          - Position readback
+          - hinted
+          - 
+    
+        * - pres_torr
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``PRES_TORR``
+          - Pressure readback in torr units
+          - hinted
+          - 
+    
+        * - pres_raw
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``PRES_RAW``
+          - Pressure readback
+          - normal
+          - 
+    
+        * - pos_sp
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``POS_SP``
+          - Position setpoint readback
+          - normal
+          - 
+    
+        * - pres_sp
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``PRES_SP``
+          - Pressure setpoint readback
+          - normal
+          - 
+    
+        * - ilk_ok
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``ILK_OK``
+          - Interlock bit status
+          - normal
+          - 
+    
+        * - pos_req
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``POS_REQ``
+          - Requested position (0.0-100%)
+          - config
+          - 
+    
+        * - pres_req
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``PRES_REQ``
+          - Requested pressure in torr units
+          - config
+          - 
+    
+        * - state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``STATE``
+          - Valve control mode
+          - config
+          - 
+    
+        * - pos_limit
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``POS_LIMIT``
+          - Percentage upper limit on valve open
+          - config
+          - 
+    
+        * - pres_set_limit
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``PRES_SET_LIMIT``
+          - Upper limit for pressure control
+          - config
+          - 
+    
+        * - pres_rdbk_limit
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``PRES_RDBK_LIMIT``
+          - Upper limit for pressure reading before valve close
+          - config
+          - 
+    
+        * - pres_sens
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``PRES_SENS``
+          - Select pressure sensor
+          - config
+          - 
+    
+        * - rem_ctrl
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``REM_CTRL``
+          - Select remote control mode
+          - config
+          - 
+    
+        * - zero
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``ZERO``
+          - Activate zero function bit
+          - config
+          - 
+    
+        * - status
+          - :class:`~pcdsdevices.valve.VCN_VAT590_Status`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

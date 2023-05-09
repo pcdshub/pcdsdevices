@@ -1,0 +1,242 @@
+﻿pcdsdevices.beam\_stats.LCLS
+============================
+
+.. currentmodule:: pcdsdevices.beam_stats
+
+.. autoclass:: LCLS
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - bunch_charge
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SIOC:SYS0:ML00:AO470``
+          - Bunch charge [nC]
+          - normal
+          - 
+    
+        * - beam_event_rate
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``EVNT:SYS0:1:LCLSBEAMRATE``
+          - LCLSBEAM Event Rate [Hz]
+          - normal
+          - 
+    
+        * - ebeam_energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SIOC:SYS0:ML00:AO500``
+          - Final electron energy [ GeV]
+          - normal
+          - 
+    
+        * - ebeam_energy_user_req
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SIOC:SYS0:ML01:CALC036``
+          - Beam energy request from Users [GeV]
+          - normal
+          - 
+    
+        * - bunch_length
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SIOC:SYS0:ML00:AO820``
+          - estimated FEL Pulse Duration (FWHM) [fs]
+          - normal
+          - 
+    
+        * - bc2_peak_current
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SIOC:SYS0:ML00:AO195``
+          - Peak current after BC2 [A]
+          - normal
+          - 
+    
+        * - eloss_energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``PHYS:SYS0:1:ELOSSENERGY``
+          - Last Eloss sxray energy [mJ]
+          - normal
+          - 
+    
+        * - vernier_energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``FBCK:FB04:LG01:DL2VERNIER``
+          - Fast Feedback 6x6 Vernier [MeV]
+          - normal
+          - 
+    
+        * - photon_ev_hxr
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SIOC:SYS0:ML00:AO627``
+          - Photon eV HXR [eV]
+          - normal
+          - 
+    
+        * - bykik_abort
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``IOC:IN20:EV01:BYKIK_ABTACT``
+          - BYKIK: Abort Active
+          - normal
+          - 
+    
+        * - bykik_period
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``IOC:IN20:EV01:BYKIK_ABTPRD``
+          - BYKIK: Abort Period [beam shots]
+          - normal
+          - 
+    
+        * - undulator_k_line
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``USEG:UNDS:2650:KAct``
+          - Most upstream undulator K value (K-line)
+          - normal
+          - 
+    
+        * - undulator_l_line
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``USEG:UNDH:1850:KAct``
+          - Most upstream undulator K value (L-line)
+          - normal
+          - 
+    
+        * - fbck_vernier
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SIOC:SYS0:ML00:CALC209``
+          - FBCK Vernier [MeV]
+          - normal
+          - 
+    
+        * - dl2_energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``FBCK:FB04:LG01:DL2VERNIER``
+          - DL2 Energy [MeV]
+          - normal
+          - 
+    
+        * - vernier_percent_of_bend_energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SIOC:SYS0:ML01:AO151``
+          - Vernier Scan Range [%]
+          - normal
+          - 
+    
+        * - vernier_limit
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SIOC:SYS0:ML01:CALC034``
+          - Vernier Limit [MeV]
+          - normal
+          - 
+    
+        * - vernier_ctrl_with_limits
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``SIOC:SYS0:ML01:CALC033``
+          - Vernier Ctrl w/ limits [MeV]
+          - normal
+          - 
+    
+        * - hard_e_energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``BEND:DMPH:400:BDES``
+          - Desired B-Field, Hard e-Energy [GeV/c]
+          - normal
+          - 
+    
+        * - soft_e_energy
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``BEND:DMPS:400:BDES``
+          - Desired B-Field, Soft e-Energy [GeV/c]
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: bykik_disable
+    .. automethod:: bykik_enable
+    .. automethod:: bykik_get_period
+    .. automethod:: bykik_set_period
+    .. automethod:: bykik_status
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

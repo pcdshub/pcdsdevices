@@ -1,0 +1,165 @@
+﻿pcdsdevices.lasers.rfof.ItechRfofStatus
+=======================================
+
+.. currentmodule:: pcdsdevices.lasers.rfof
+
+.. autoclass:: ItechRfofStatus
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - locked
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:LOCKED``
+          - Binary showing if device is locked
+          - normal
+          - 
+    
+        * - semi_locked
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SEMI_LOCKED``
+          - Binary showing if device is semi-locked
+          - normal
+          - 
+    
+        * - unlocked
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:UNLOCKED``
+          - Binary showing if device is unlocked
+          - normal
+          - 
+    
+        * - start
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:START``
+          - Binary showing if device is starting
+          - normal
+          - 
+    
+        * - shutdown
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SHUTDOWN``
+          - Binary showing if device is shutdown
+          - normal
+          - 
+    
+        * - init
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:INIT``
+          - Binary showing if device is initiating
+          - normal
+          - 
+    
+        * - warming_up
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:WARMING_UP``
+          - Binary showing if device is warming up
+          - normal
+          - 
+    
+        * - tuning
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TUNING``
+          - Binary showing if device is tuning
+          - normal
+          - 
+    
+        * - ready
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:READY``
+          - Binary showing if device is ready
+          - normal
+          - 
+    
+        * - opt_link_length
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:OPT_RBV``
+          - View and set optical length (m)
+          - normal
+          - 
+    
+        * - power
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATE``
+          - View and set power state of the device
+          - normal
+          - 
+    
+        * - fan_speed
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:FAN_SPD_RBV``
+          - Get and set fan speed
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

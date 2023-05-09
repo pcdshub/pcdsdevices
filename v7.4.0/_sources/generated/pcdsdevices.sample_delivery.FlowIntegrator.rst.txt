@@ -1,0 +1,177 @@
+﻿pcdsdevices.sample\_delivery.FlowIntegrator
+===========================================
+
+.. currentmodule:: pcdsdevices.sample_delivery
+
+.. autoclass:: FlowIntegrator
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - integrator_source (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - flow_source (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - names (UnrelatedComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - flow1 (UnrelatedComponent)
+          - :class:`~pcdsdevices.sample_delivery.IntegratedFlow`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - flow2 (UnrelatedComponent)
+          - :class:`~pcdsdevices.sample_delivery.IntegratedFlow`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - flow3 (UnrelatedComponent)
+          - :class:`~pcdsdevices.sample_delivery.IntegratedFlow`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - flow4 (UnrelatedComponent)
+          - :class:`~pcdsdevices.sample_delivery.IntegratedFlow`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - flow5 (UnrelatedComponent)
+          - :class:`~pcdsdevices.sample_delivery.IntegratedFlow`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - flow6 (UnrelatedComponent)
+          - :class:`~pcdsdevices.sample_delivery.IntegratedFlow`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - flow7 (UnrelatedComponent)
+          - :class:`~pcdsdevices.sample_delivery.IntegratedFlow`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - flow8 (UnrelatedComponent)
+          - :class:`~pcdsdevices.sample_delivery.IntegratedFlow`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - flow9 (UnrelatedComponent)
+          - :class:`~pcdsdevices.sample_delivery.IntegratedFlow`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - flow10 (UnrelatedComponent)
+          - :class:`~pcdsdevices.sample_delivery.IntegratedFlow`
+          - 
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

@@ -1,0 +1,164 @@
+﻿pcdsdevices.attenuator.AttenuatorSXR\_Ladder
+============================================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: AttenuatorSXR_Ladder
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
+    
+        * - num_in
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - hinted
+          - 
+    
+        * - num_out
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - hinted
+          - 
+    
+        * - calculator (UnrelatedComponent)
+          - :class:`~pcdsdevices.attenuator.AttenuatorCalculatorSXR_FourBlade`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - blade_01
+          - :class:`~pcdsdevices.attenuator.SXRLadderAttenuatorBlade`
+          - ``:MMS:01``
+          - 
+          - normal
+          - 
+    
+        * - blade_02
+          - :class:`~pcdsdevices.attenuator.SXRLadderAttenuatorBlade`
+          - ``:MMS:02``
+          - 
+          - normal
+          - 
+    
+        * - blade_03
+          - :class:`~pcdsdevices.attenuator.SXRLadderAttenuatorBlade`
+          - ``:MMS:03``
+          - 
+          - normal
+          - 
+    
+        * - blade_04
+          - :class:`~pcdsdevices.attenuator.SXRLadderAttenuatorBlade`
+          - ``:MMS:04``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate
+    .. autoattribute:: actuate_value
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: done
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: md
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: readback
+    .. autoattribute:: setpoint
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    
+    

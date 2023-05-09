@@ -1,0 +1,100 @@
+﻿pcdsdevices.beam\_stats.BeamEnergyRequest
+=========================================
+
+.. currentmodule:: pcdsdevices.beam_stats
+
+.. autoclass:: BeamEnergyRequest
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:USER:MCC:EPHOT{line_text}:SET{bunch}``
+          - The setpoint PV that acr listens on to update the vernier or undulator PVs as appropriate.
+          - hinted
+          - 
+    
+        * - ref (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:USER:MCC:EPHOT{line_text}:REF{bunch}``
+          - A reference PV for the photon energy at the nominal position of the vernier or undulator.
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: k_hutch
+    .. autoattribute:: kind
+    .. autoattribute:: l_hutch
+    .. autoattribute:: limits
+    .. autoattribute:: line_text_dict
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    
+    

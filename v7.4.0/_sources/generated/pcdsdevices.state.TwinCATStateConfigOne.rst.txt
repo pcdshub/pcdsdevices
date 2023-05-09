@@ -1,0 +1,135 @@
+﻿pcdsdevices.state.TwinCATStateConfigOne
+=======================================
+
+.. currentmodule:: pcdsdevices.state
+
+.. autoclass:: TwinCATStateConfigOne
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - state_name
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:NAME``
+          - The defined state name.
+          - config
+          - 
+    
+        * - setpoint
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SETPOINT``
+          - The corresponding motor set position.
+          - config
+          - 
+    
+        * - delta
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:DELTA``
+          - The deviation from setpoint that still counts as at the position.
+          - config
+          - 
+    
+        * - velo
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:VELO``
+          - Velocity to move to the state at.
+          - config
+          - 
+    
+        * - accl
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ACCL``
+          - Acceleration to move to the state with.
+          - omitted
+          - 
+    
+        * - dccl
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:DCCL``
+          - Deceleration to move to the state with.
+          - omitted
+          - 
+    
+        * - move_ok
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:MOVE_OK``
+          - True if a move to this state is allowed.
+          - omitted
+          - 
+    
+        * - locked
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:LOCKED``
+          - True if the PLC will not permit config edits here.
+          - omitted
+          - 
+    
+        * - valid
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:VALID``
+          - True if the state is defined (not empty).
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    
