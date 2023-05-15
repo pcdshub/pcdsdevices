@@ -2,6 +2,24 @@ Release History
 ###############
 
 
+v7.4.1 (2023-06-30)
+===================
+
+Device Updates
+--------------
+- QminiSpectrometer: Added some new PVs and modified others related to recent
+  IOC changes. Embedded UI was updated to reflect this.
+
+Maintenance
+-----------
+- unpin pyqt, with the hope of supporting py3.11
+
+Contributors
+------------
+- slactjohnson
+- tangkong
+
+
 v7.4.0 (2023-05-08)
 ===================
 

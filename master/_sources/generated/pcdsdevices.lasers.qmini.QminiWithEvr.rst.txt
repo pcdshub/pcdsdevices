@@ -74,9 +74,23 @@
           - config
           - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
     
-        * - scan_rate
+        * - acquisition_mode
           - :class:`~ophyd.signal.EpicsSignal`
-          - ``:GET_SPECTRUM.SCAN``
+          - ``:SOFT_TRIGGER_MODE``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - exposures_to_average
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SET_AVG_CNT``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
+    
+        * - force_trig
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:START_EXPOSURE.PROC``
           - 
           - config
           - Inherited from :class:`~pcdsdevices.lasers.qmini.QminiSpectrometer`
@@ -278,6 +292,10 @@
           - 
     
 
+    
+    
+    
+    
     
     
     

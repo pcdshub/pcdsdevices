@@ -74,9 +74,23 @@
           - config
           - 
     
-        * - scan_rate
+        * - acquisition_mode
           - :class:`~ophyd.signal.EpicsSignal`
-          - ``:GET_SPECTRUM.SCAN``
+          - ``:SOFT_TRIGGER_MODE``
+          - 
+          - config
+          - 
+    
+        * - exposures_to_average
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:SET_AVG_CNT``
+          - 
+          - config
+          - 
+    
+        * - force_trig
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:START_EXPOSURE.PROC``
           - 
           - config
           - 
@@ -257,6 +271,10 @@
           - 
     
 
+    
+    
+    
+    
     
     
     
