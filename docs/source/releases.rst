@@ -2,6 +2,58 @@ Release History
 ###############
 
 
+v7.4.0 (2023-05-08)
+===================
+
+Device Updates
+--------------
+- `IMS` class:
+
+  - Added special parameter manager/questionnaire handling.
+    On load from the questionnaire, grab questionnaire stage identities
+    and apply them to the parameter manager for the given PV.
+  - Added functions that allow the user to see the given configuration
+    parameters or the current parameters of that base PV.
+
+    - See `IMS.get_configuration_values`
+    - See `IMS.get_current_values`
+
+  - Return the output of `IMS.diff_configuration` as a ``PrettyTable``
+    instead of as a dictionary, making it much easier to understand.
+
+- Updated `HXRSpectrometer` filter wheel with its state PV.
+  Previously, only the raw motor device was available.
+
+Contributors
+------------
+- spenc333
+- tangkong
+- zllentz
+
+
+v7.3.0 (2023-04-17)
+===================
+
+Device Updates
+--------------
+- LODCM: Add energy setpoint and tweakXC.
+- LODCM: fix energy functionality and add commonly used aliases.
+- LasBasler: Add a new signal that can be used to auto-configure a camera based on an internal dictionary.
+
+New Devices
+-----------
+- PCDSAreaDetectorTyphos class: Add in signals for camera binning and region size control.
+- LasBaslerNF: A Basler camera intended to be used as a near-field diagnostic.
+- LasBaslerFF: A Basler camera intended to be used as a far-field diagnostic.
+
+Contributors
+------------
+- slactjohnson
+- tangkong
+- vespos
+- zllentz
+
+
 v7.2.0 (2023-04-04)
 ===================
 

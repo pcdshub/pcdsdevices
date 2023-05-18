@@ -18,6 +18,7 @@ from ophyd.status import wait as status_wait
 from ophyd.utils import LimitError
 from ophyd.utils.epics_pvs import raise_if_disconnected, set_and_wait
 from pcdsutils.ext_scripts import get_hutch_name
+from prettytable import PrettyTable
 
 from pcdsdevices.pv_positioner import PVPositionerComparator
 
@@ -612,6 +613,8 @@ class IMS(PCDSMotorBase):
         'clear_.*',
         'configure',
         'get_configuration',
+        'get_configuration_values',
+        'get_current_values',
         'find_configuration',
         'diff_configuration'
     ]
@@ -735,6 +738,34 @@ class IMS(PCDSMotorBase):
             status_wait(st, timeout=timeout)
         return st
 
+    @property
+    def md(self):
+        if self._md is None:
+            raise AttributeError('Device does not have an attached md, '
+                                 'and was likely not initialized from happi')
+        return self._md
+
+    @md.setter
+    def md(self, new_md):
+        """ initialize attributes when md is set """
+        self._md = new_md
+        self._extra = self._md.extraneous
+        self._id = self._extra.get('_id')
+        self._pvbase = self._extra.get('pvbase')
+        self._stageidentity = self._extra.get('stageidentity')
+        if self._stageidentity is None:
+            logger.warning(f"Stage Identity has not been set for this object: {self._id}. Configure manually.")
+            return
+        elif self._stageidentity == "NEW":
+            logger.warning(f"This is a new stage, parameter manager configuration does not exist yet. Please manually configure {self._id}")
+            return
+        else:
+            try:
+                IMS._setup_and_check_pmgr()
+                self._pm.set_config(self._pvbase, self._stageidentity)
+            except Exception:
+                return
+
     def configure(self, cfgname=None):
         """
         Use the parameter manager to configure the motor.
@@ -757,6 +788,47 @@ class IMS(PCDSMotorBase):
         """
         self._setup_and_check_pmgr()
         return self._pm.get_config(self.prefix)
+
+    def get_configuration_values(self, cfgname=None):
+        """
+        Return the current configuration parameters of the motor
+        in the parameter manager
+
+        Parameters
+        ----------
+        cfgname : str
+               The name of the configuration
+
+        Returns
+        -------
+        A dictionary mapping field names to the configured values
+        """
+        self._setup_and_check_pmgr()
+        if not cfgname:
+            cfgname = self.get_configuration()
+        return self._pm.get_config_values(cfgname)
+
+    def get_current_values(self, pv=None):
+        """
+        Returns the current parameters for a given pv.
+
+        Parameters
+        ----------
+        pv : str
+          Default is None
+
+        Returns
+        -------
+        cdict : dict
+            A dictionary mapping field names (str) to values.
+        """
+
+        pv = self.prefix
+        self._setup_and_check_pmgr()
+
+        self._pm.update_db()
+        o = self._pm._search(self._pm.pm.objs, 'rec_base', pv)
+        return self._pm.pm.getActualConfig(o['id'])
 
     @staticmethod
     def find_configuration(pattern, case_insensitive=True, display=30):
@@ -803,14 +875,23 @@ class IMS(PCDSMotorBase):
 
         Returns
         -------
-        diff : dict
-            A dictionary mapping field names to (actual, config) tuples of
-            differing values.
+        diff : PrettyTable
+            A table with headers "Parameter", "Actual", and "Configuration",
+            showing the differences between the live values and the configured
+            values.
 
         Raises an exception if the comparison fails for any reason.
         """
         IMS._setup_and_check_pmgr()
-        return self._pm.diff_config(self.prefix, cfgname)
+
+        d = self._pm.diff_config(self.prefix, cfgname)
+        table = PrettyTable()
+        table.field_names = ["Parameter", "Actual", "Configuration"]
+        for key, value in d.items():
+            actual = value[0]
+            configuration = value[1]
+            table.add_row([key, actual, configuration])
+        return table
 
     @staticmethod
     def setup_pmgr():
