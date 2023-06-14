@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>572</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="TyphosDisplayTitle" name="TyphosDisplayTitle">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="label_text" stdset="0">
+      <string>${name} at z=${z}</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="PneumaticValve" name="PneumaticValve">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="controlsLocation" stdset="0">
+      <enum>PCDSSymbolBase::Right</enum>
+     </property>
+     <property name="channelsPrefix" stdset="0">
+      <string>ca://${prefix}</string>
+     </property>
+     <property name="iconSize" stdset="0">
+      <number>128</number>
+     </property>
+     <property name="rotateIcon" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="controlButtonHorizontal" stdset="0">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="PyDMLabel" name="PyDMLabel">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="channel" stdset="0">
+      <string>sig://${name}.at_vac</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="PyDMLabel" name="PyDMLabel_2">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="channel" stdset="0">
+      <string>sig://${name}.error</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="TyphosAlarmCircle" name="TyphosAlarmCircle">
+       <property name="toolTip">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="TyphosMethodButton" name="TyphosMethodButton">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="text">
+        <string>button</string>
+       </property>
+       <property name="method_name" stdset="0">
+        <string>summary</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="TyphosSignalPanel" name="TyphosSignalPanel">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="showOmitted" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="sortBy" stdset="0">
+      <enum>TyphosSignalPanel::byName</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="TyphosPositionerWidget" name="TyphosPositionerWidget">
+     <property name="toolTip">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PyDMLabel</class>
+   <extends>QLabel</extends>
+   <header>pydm.widgets.label</header>
+  </customwidget>
+  <customwidget>
+   <class>TyphosAlarmCircle</class>
+   <extends>QWidget</extends>
+   <header>typhos.alarm</header>
+  </customwidget>
+  <customwidget>
+   <class>TyphosDisplayTitle</class>
+   <extends>QFrame</extends>
+   <header>typhos.display</header>
+  </customwidget>
+  <customwidget>
+   <class>TyphosMethodButton</class>
+   <extends>QPushButton</extends>
+   <header>typhos.func</header>
+  </customwidget>
+  <customwidget>
+   <class>TyphosPositionerWidget</class>
+   <extends>QWidget</extends>
+   <header>typhos.positioner</header>
+  </customwidget>
+  <customwidget>
+   <class>TyphosSignalPanel</class>
+   <extends>QWidget</extends>
+   <header>typhos.panel</header>
+  </customwidget>
+  <customwidget>
+   <class>PneumaticValve</class>
+   <extends>PCDSSymbolBase</extends>
+   <header>pcdswidgets.vacuum.valves</header>
+  </customwidget>
+  <customwidget>
+   <class>PCDSSymbolBase</class>
+   <extends>QWidget</extends>
+   <header>pcdswidgets.vacuum.base</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
