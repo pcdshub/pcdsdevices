@@ -61,7 +61,7 @@ class ExampleL2LStates(TwinCATInOutPositioner):
     config = UpCpt(state_count=2, motor_count=1)
 
 
-class ExampleL2L(TwinCATInOutPositioner):
+class ExampleL2L(BaseInterface, Device):
     """
     Full device for the limit to limit sim
 
