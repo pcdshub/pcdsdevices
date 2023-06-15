@@ -44,7 +44,7 @@ class Example3D(BaseInterface, Device):
     ysp = Cpt(EpicsSignal, "Y.RBV", write_pv="Y.VAL")
     zsp = Cpt(EpicsSignal, "Z.RBV", write_pv="Z.VAL")
     # The core states object
-    states = Cpt(Example3DStates, "STATES")
+    states = Cpt(Example3DStates, "STATE")
     # Full motor widgets for the bottom of the demo typhos display
     xmot = Cpt(BeckhoffAxis, "X")
     ymot = Cpt(BeckhoffAxis, "Y")
@@ -70,7 +70,7 @@ class ExampleL2L(BaseInterface, Device):
     # Standalone setpoints for the top of the demo typhos display
     sp = Cpt(EpicsSignal, "MOT.RBV", write_pv="MOT.VAL")
     # The core states object
-    states = Cpt(ExampleL2LStates, "STATES")
+    states = Cpt(ExampleL2LStates, "STATE")
     # Full motor widgets for the bottom of the demo typhos display
     mot = Cpt(BeckhoffAxis, "MOT")
 
