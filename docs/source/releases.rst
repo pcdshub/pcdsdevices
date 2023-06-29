@@ -2,7 +2,7 @@ Release History
 ###############
 
 
-v7.4.1 (2023-06-29)
+v7.4.1 (2023-06-30)
 ===================
 
 Device Updates
@@ -16,9 +16,8 @@ Maintenance
 
 Contributors
 ------------
+- slactjohnson
 - tangkong
-- tjohnson
-
 
 
 v7.4.0 (2023-05-08)
