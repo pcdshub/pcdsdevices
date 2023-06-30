@@ -8,7 +8,7 @@ v7.4.1 (2023-06-30)
 Device Updates
 --------------
 - QminiSpectrometer: Added some new PVs and modified others related to recent
-                     IOC changes. Embedded UI was updated to reflect this.
+  IOC changes. Embedded UI was updated to reflect this.
 
 Maintenance
 -----------
