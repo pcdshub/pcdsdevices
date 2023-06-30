@@ -1,0 +1,102 @@
+﻿pcdsdevices.sample\_delivery.Sensirion
+======================================
+
+.. currentmodule:: pcdsdevices.sample_delivery
+
+.. autoclass:: Sensirion
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - flow
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Flow``
+          - 
+          - normal
+          - 
+    
+        * - state
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:State``
+          - 
+          - normal
+          - 
+    
+        * - reset
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Reset``
+          - 
+          - normal
+          - 
+    
+        * - mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:Mode``
+          - 
+          - normal
+          - 
+    
+        * - mode_rb
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ModeRb``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

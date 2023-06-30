@@ -1,0 +1,243 @@
+﻿pcdsdevices.valve.VCN\_VAT590\_Status
+=====================================
+
+.. currentmodule:: pcdsdevices.valve
+
+.. autoclass:: VCN_VAT590_Status
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - ctrl_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``CTRL_MODE``
+          - Valve control mode readback
+          - normal
+          - 
+    
+        * - fatal_err
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``FATAL_ERR``
+          - Valve fatal error status readback
+          - normal
+          - 
+    
+        * - ecat_data_valid
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``GEN_STATUS:ECAT_DATA_VALID``
+          - 
+          - omitted
+          - 
+    
+        * - zero_executed
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``GEN_STATUS:ZERO_EXECUTED``
+          - 
+          - omitted
+          - 
+    
+        * - ecat_rxbit
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``GEN_STATUS:ECAT_RxBIT``
+          - 
+          - omitted
+          - 
+    
+        * - pres_sim
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``GEN_STATUS:PRES_SIM``
+          - 
+          - omitted
+          - 
+    
+        * - pres_sp_reached
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``GEN_STATUS:PRES_SP_REACHED``
+          - 
+          - omitted
+          - 
+    
+        * - warn_status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``GEN_STATUS:WARN_STATUS``
+          - 
+          - omitted
+          - 
+    
+        * - rem_ctrl
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``GEN_STATUS:REM_CTRL``
+          - 
+          - omitted
+          - 
+    
+        * - service_req
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``GEN_WARN:SERVICE_REQ``
+          - 
+          - omitted
+          - 
+    
+        * - power_fail_bait
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``GEN_WARN:POWER_FAIL_BATT``
+          - 
+          - omitted
+          - 
+    
+        * - adc_unit_status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``GEN_WARN:ADC_UNIT_STATUS``
+          - 
+          - omitted
+          - 
+    
+        * - rem_not_possible
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``EXT_WARN:REM_NOT_POSSIBLE``
+          - 
+          - omitted
+          - 
+    
+        * - ctrl_sp_not_allowed
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``EXT_WARN:CTRL_SP_NOT_ALLOWED``
+          - 
+          - omitted
+          - 
+    
+        * - zero_status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``EXT_WARN:ZERO_STATUS``
+          - 
+          - omitted
+          - 
+    
+        * - pfo_status
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``EXT_WARN:PFO_STATUS``
+          - 
+          - omitted
+          - 
+    
+        * - pres_sp_oor
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``EXT_WARN:PRES_SP_OOR``
+          - 
+          - omitted
+          - 
+    
+        * - pos_sp_oor
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``EXT_WARN:POS_SP_OOR``
+          - 
+          - omitted
+          - 
+    
+        * - ctrl_sp_oor
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``EXT_WARN:CTRL_SP_OOR``
+          - 
+          - omitted
+          - 
+    
+        * - genctrl_sp_oor
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``EXT_WARN:GENCTRL_SP_OOR``
+          - 
+          - omitted
+          - 
+    
+        * - proc_data_not_valid
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``EXT_WARN:PROC_DATA_NOT_VALID``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

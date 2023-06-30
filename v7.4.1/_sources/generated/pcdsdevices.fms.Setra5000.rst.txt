@@ -1,0 +1,162 @@
+﻿pcdsdevices.fms.Setra5000
+=========================
+
+.. currentmodule:: pcdsdevices.fms
+
+.. autoclass:: Setra5000
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - time_stamp
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TIME``
+          - 
+          - hinted
+          - 
+    
+        * - date
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:DATE``
+          - 
+          - hinted
+          - 
+    
+        * - sample_state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SAMP_STATE``
+          - 
+          - hinted
+          - 
+    
+        * - sample_duration
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SAMPLE_TIME_RBV``
+          - 
+          - hinted
+          - 
+    
+        * - sample_mode
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:SAMPLE_MODE_RBV``
+          - 
+          - hinted
+          - 
+    
+        * - mass_mode
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MASS_MODE_RBV``
+          - 
+          - hinted
+          - 
+    
+        * - temperature
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TEMP``
+          - 
+          - hinted
+          - 
+    
+        * - rh
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RH``
+          - 
+          - hinted
+          - 
+    
+        * - barometric_pressure
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:BP``
+          - 
+          - hinted
+          - 
+    
+        * - flow_rate
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FLOW_RATE``
+          - 
+          - hinted
+          - 
+    
+        * - CO2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:CO2``
+          - 
+          - hinted
+          - 
+    
+        * - TVOC
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:TVOC``
+          - 
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    
