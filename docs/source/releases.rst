@@ -2,6 +2,19 @@ Release History
 ###############
 
 
+v7.4.2 (2023-07-07)
+===================
+
+Device Updates
+--------------
+- ``.screen()`` and ``.post_elog_status()`` methods were added to the
+  BaseInterface whitelist for tab completion.
+
+Contributors
+------------
+- klauer
+
+
 v7.4.1 (2023-06-30)
 ===================
 
