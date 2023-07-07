@@ -50,6 +50,7 @@ Device_whitelist = ["stop"]
 Signal_whitelist = ["value", "put", "get"]
 Positioner_whitelist = ["settle_time", "timeout", "egu", "limits", "move",
                         "position", "moving", "set_current_position"]
+Interface_whitelist = ["screen", "post_elog_status"]
 
 
 class _TabCompletionHelper:
@@ -201,6 +202,7 @@ class BaseInterface:
         + Device_whitelist
         + Signal_whitelist
         + Positioner_whitelist
+        + Interface_whitelist
     )
 
     _class_tab: TabCompletionHelperClass

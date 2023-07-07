@@ -246,6 +246,13 @@ def test_tab_completion(cls):
     for name in getattr(cls, 'tab_whitelist', []):
         assert regex.match(name) is not None
 
+    # Make sure we're not letting through dunder methods unintentionally:
+    assert regex.match("__repr__") is None
+
+    # And check a couple specific ones that users will always want:
+    assert regex.match("screen") is not None
+    assert regex.match("post_elog_status") is not None
+
 
 _STATUS_PRINT_IGNORES = {
     '.AttenuatorCalculatorBase',
