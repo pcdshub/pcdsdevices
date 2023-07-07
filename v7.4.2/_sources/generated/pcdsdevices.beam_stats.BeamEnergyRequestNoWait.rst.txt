@@ -1,0 +1,117 @@
+﻿pcdsdevices.beam\_stats.BeamEnergyRequestNoWait
+===============================================
+
+.. currentmodule:: pcdsdevices.beam_stats
+
+.. autoclass:: BeamEnergyRequestNoWait
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - done
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pv_positioner.PVPositionerDone`
+    
+        * - setpoint (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:USER:MCC:EPHOT{line_text}:SET{bunch}``
+          - The setpoint PV that acr listens on to update the vernier or undulator PVs as appropriate.
+          - hinted
+          - Inherited from :class:`~pcdsdevices.beam_stats.BeamEnergyRequest`
+    
+        * - ref (FCpt)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``{prefix}:USER:MCC:EPHOT{line_text}:REF{bunch}``
+          - A reference PV for the photon energy at the nominal position of the vernier or undulator.
+          - normal
+          - Inherited from :class:`~pcdsdevices.beam_stats.BeamEnergyRequest`
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: actuate
+    .. autoattribute:: actuate_value
+    .. autoattribute:: atol
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: done_value
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: k_hutch
+    .. autoattribute:: kind
+    .. autoattribute:: l_hutch
+    .. autoattribute:: limits
+    .. autoattribute:: line_text_dict
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: put_complete
+    .. autoattribute:: readback
+    .. autoattribute:: settle_time
+    .. autoattribute:: stop_signal
+    .. autoattribute:: stop_value
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    
+    

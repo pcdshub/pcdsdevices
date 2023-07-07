@@ -1,0 +1,75 @@
+﻿pcdsdevices.sample\_delivery.ViciValve
+======================================
+
+.. currentmodule:: pcdsdevices.sample_delivery
+
+.. autoclass:: ViciValve
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - req_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:ReqPos``
+          - 
+          - normal
+          - 
+    
+        * - curr_pos
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:CurrentPos``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

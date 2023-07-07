@@ -1,0 +1,310 @@
+﻿pcdsdevices.epics\_motor.BeckhoffAxis\_Pre140
+=============================================
+
+.. currentmodule:: pcdsdevices.epics_motor
+
+.. autoclass:: BeckhoffAxis_Pre140
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - user_readback (UpdateComponent)
+          - :class:`~pcdsdevices.signal.EpicsSignalROEditMD`
+          - ``.RBV``
+          - Component attribute
+              ::
+
+                  Component(EpicsSignalRO, '.RBV', auto_monitor=True, kind='hinted')
+
+          - hinted
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - user_setpoint (UpdateComponent)
+          - :class:`~pcdsdevices.signal.EpicsSignalEditMD`
+          - ``.VAL``
+          - Component attribute
+              ::
+
+                  Component(EpicsSignal, '.VAL', limits=True, auto_monitor=True, kind='normal')
+
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - user_offset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.OFF``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - user_offset_dir
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.DIR``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - offset_freeze_switch
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.FOFF``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - set_use_switch
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.SET``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - velocity
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.VELO``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - acceleration
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.ACCL``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - motor_egu
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.EGU``
+          - 
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - motor_is_moving
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.MOVN``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - motor_done_move
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.DMOV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - high_limit_switch
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.HLS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - low_limit_switch
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.LLS``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - high_limit_travel (UpdateComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.HLM``
+          - Component attribute
+              ::
+
+                  Component(EpicsSignal, '.HLM', auto_monitor=True, kind='omitted')
+
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - low_limit_travel (UpdateComponent)
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.LLM``
+          - Component attribute
+              ::
+
+                  Component(EpicsSignal, '.LLM', auto_monitor=True, kind='omitted')
+
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - direction_of_travel
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.TDIR``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - motor_stop
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.STOP``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - disabled
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.DISP``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - description
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.DESC``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - dial_position
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``.DRBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - plc
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140`
+          - ``:PLC:``
+          - PLC error handling.
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+        * - motor_spmg
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``.SPMG``
+          - Stop, Pause, Move, Go
+          - config
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_limit_switches
+    .. automethod:: clear_error
+    .. automethod:: clear_limits
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: disable
+    .. automethod:: enable
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_high_limit
+    .. automethod:: get_lim
+    .. automethod:: get_low_limit
+    .. automethod:: home
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: mv_ginput
+    .. automethod:: mvr
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: set_current_position
+    .. automethod:: set_high_limit
+    .. automethod:: set_lim
+    .. automethod:: set_low_limit
+    .. automethod:: set_position
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: tweak
+    .. automethod:: umv
+    .. automethod:: umvr
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: home_forward
+    .. autoattribute:: home_reverse
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: position
+    .. autoattribute:: precision
+    .. autoattribute:: settle_time
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    .. autoattribute:: tolerated_alarm
+    
+    

@@ -1,0 +1,108 @@
+﻿pcdsdevices.pump.PROPLC
+=======================
+
+.. currentmodule:: pcdsdevices.pump
+
+.. autoclass:: PROPLC
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - switch_pump_on
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:RUN_SW``
+          - 
+          - omitted
+          - 
+    
+        * - interlock_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ILK_OK_RBV``
+          - interlock is ok when true
+          - normal
+          - 
+    
+        * - run_do
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:RUN_DO_RBV``
+          - 
+          - normal
+          - 
+    
+        * - error
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ERROR_RBV``
+          - 
+          - normal
+          - 
+    
+        * - warn
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:WARN_RBV``
+          - 
+          - normal
+          - 
+    
+        * - pump_at_speed
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:AT_SPD_RBV``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

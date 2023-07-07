@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.reorder\_components
+=====================================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: reorder_components
