@@ -2,6 +2,23 @@ Release History
 ###############
 
 
+v7.4.3 (2023-07-10)
+===================
+
+Bugfixes
+--------
+- Fix typo in zoom motor prefix for PIM devices.
+
+Maintenance
+-----------
+- Fix conda recipe test-requires.
+
+Contributors
+------------
+- tangkong
+- vespos
+
+
 v7.4.2 (2023-07-07)
 ===================
 
