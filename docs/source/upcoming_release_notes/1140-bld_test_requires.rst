@@ -1,5 +1,5 @@
-1135 bld_unpin_qtpy
-###################
+1140 bld_test_requires
+######################
 
 API Changes
 -----------
@@ -23,7 +23,7 @@ Bugfixes
 
 Maintenance
 -----------
-- unpin pyqt, with the hope of supporting py3.11
+- fix conda recipe test-requires
 
 Contributors
 ------------
