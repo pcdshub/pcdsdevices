@@ -2,7 +2,7 @@ Release History
 ###############
 
 
-v7.4.3 (2023-07-10)
+v7.4.3 (2023-07-11)
 ===================
 
 Bugfixes
@@ -12,11 +12,15 @@ Bugfixes
 Maintenance
 -----------
 - Fix conda recipe test-requires.
+- Remove sqlalchemy and xraydb pins from requirements.txt.
+  These were pinned because the most recent versions of these packages
+  were previously incompatible with each other. This has since been resolved.
 
 Contributors
 ------------
 - tangkong
 - vespos
+- zllentz
 
 
 v7.4.2 (2023-07-07)
