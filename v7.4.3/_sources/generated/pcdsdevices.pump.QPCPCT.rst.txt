@@ -1,0 +1,135 @@
+﻿pcdsdevices.pump.QPCPCT
+=======================
+
+.. currentmodule:: pcdsdevices.pump
+
+.. autoclass:: QPCPCT
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - model
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:MODEL_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pump.GammaPCT`
+    
+        * - fwversion
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FWVERSION_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pump.GammaPCT`
+    
+        * - ashvedes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ASHVEDES``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pump.GammaPCT`
+    
+        * - ashve
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ASHVE_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pump.GammaPCT`
+    
+        * - aspowerdes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:ASPOWERDES``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pump.GammaPCT`
+    
+        * - aspower
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ASPOWER_RBV``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.pump.GammaPCT`
+    
+        * - pegudes
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:PEGUDES``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pump.GammaPCT`
+    
+        * - masterreset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:MASTERRESET``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.pump.GammaPCT`
+    
+        * - do_reset
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DO_RESET``
+          - 
+          - omitted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

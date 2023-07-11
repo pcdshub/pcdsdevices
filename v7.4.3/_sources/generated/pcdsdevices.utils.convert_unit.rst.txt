@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.convert\_unit
+===============================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: convert_unit

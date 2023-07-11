@@ -1,0 +1,79 @@
+﻿pcdsdevices.mps.MPSLimits
+=========================
+
+.. currentmodule:: pcdsdevices.mps
+
+.. autoclass:: MPSLimits
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - in_limit
+          - :class:`~pcdsdevices.mps.MPS`
+          - ``_IN``
+          - 
+          - normal
+          - 
+    
+        * - out_limit
+          - :class:`~pcdsdevices.mps.MPS`
+          - ``_OUT``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: SUB_FAULT_CH
+    .. autoattribute:: bypassed
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: faulted
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    .. autoattribute:: tripped
+    
+    
