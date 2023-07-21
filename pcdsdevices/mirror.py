@@ -1478,3 +1478,5 @@ class OpticsPitchNotepad(BaseInterface, Device):
 
     mr2l3_pitch_sic = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating1')
     mr2l3_pitch_w = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating2')
+    mr2l3_pitch_ccm_sic = Cpt(EpicsSignal, 'MR2L3:PITCH:CCM:Coating1')
+    mr2l3_pitch_ccm_w = Cpt(EpicsSignal, 'MR2L3:PITCH:CCM:Coating2')
