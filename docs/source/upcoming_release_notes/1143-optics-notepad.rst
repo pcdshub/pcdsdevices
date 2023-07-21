@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- added two new PVS
+- added two new PVS to `OpticsPitchNotepad`
 - `MR2L3:PITCH:CCM:Coating1`
 - `MR2L3:PITCH:CCM:Coating2`
 
