@@ -40,13 +40,31 @@
           - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxisPLC`
     
         * - cmd_err_reset
-          - :class:`~ophyd.signal.EpicsSignal`
+          - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``bReset``
           - Command to reset an active error
           - normal
           - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxisPLC`
     
+        * - enc_count
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``nEncoderCount``
+          - Raw encoder count for this motor.
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxisPLC`
+    
+        * - hardware_enable
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bHardwareEnable``
+          - TRUE if motor has its hardware enable.
+          - normal
+          - Inherited from :class:`~pcdsdevices.epics_motor.BeckhoffAxisPLC`
+    
 
+    
+    
+    
+    
     
     
     
@@ -87,6 +105,7 @@
     .. autoattribute:: hints
     .. autoattribute:: home_pos
     .. autoattribute:: kind
+    .. autoattribute:: posdiff
     .. autoattribute:: subscriptions
     .. autoattribute:: user_enable
     

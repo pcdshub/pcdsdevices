@@ -60,7 +60,34 @@
           - normal
           - 
     
+        * - tixel_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:14``
+          - Tixel manipulator x-axis
+          - normal
+          - 
+    
+        * - tixel_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:15``
+          - Tixel manipulator y-axis
+          - normal
+          - 
+    
+        * - tixel_z
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:16``
+          - Tixel manipulator z-axis
+          - normal
+          - 
+    
 
+    
+    
+    
+    
+    
+    
     
     
     

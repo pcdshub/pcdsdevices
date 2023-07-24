@@ -195,6 +195,20 @@
           - config
           - 
     
+        * - needs_calib
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:NEED_CALIB``
+          - 
+          - config
+          - 
+    
+        * - do_calib
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:DO_CALIB.PROC``
+          - 
+          - config
+          - 
+    
         * - open_loop
           - :class:`~pcdsdevices.epics_motor.SmarActOpenLoop`
           - 
@@ -203,6 +217,10 @@
           - 
     
 
+    
+    
+    
+    
     
     
     

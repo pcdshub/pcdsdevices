@@ -32,32 +32,11 @@
           - config
           - 
     
-        * - delta
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:DELTA``
-          - The deviation from setpoint that still counts as at the position.
-          - config
-          - 
-    
         * - velo
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:VELO``
           - Velocity to move to the state at.
           - config
-          - 
-    
-        * - accl
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:ACCL``
-          - Acceleration to move to the state with.
-          - omitted
-          - 
-    
-        * - dccl
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:DCCL``
-          - Deceleration to move to the state with.
-          - omitted
           - 
     
         * - move_ok
@@ -67,31 +46,7 @@
           - omitted
           - 
     
-        * - locked
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:LOCKED``
-          - True if the PLC will not permit config edits here.
-          - omitted
-          - 
-    
-        * - valid
-          - :class:`~pcdsdevices.signal.PytmcSignal`
-          - ``:VALID``
-          - True if the state is defined (not empty).
-          - omitted
-          - 
-    
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     

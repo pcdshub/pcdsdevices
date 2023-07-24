@@ -116,13 +116,6 @@
           - normal
           - 
     
-        * - cool_flow2
-          - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:FWM:2_RBV``
-          - 
-          - normal
-          - 
-    
         * - cool_press
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:PRSM:1_RBV``
@@ -131,8 +124,6 @@
           - 
     
 
-    
-    
     
     
     

@@ -177,7 +177,7 @@
         * - plc
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxisPLC`
           - ``:PLC:``
-          - PLC error handling.
+          - PLC error handling and aux functions.
           - normal
           - 
     

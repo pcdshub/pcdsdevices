@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.sequencer.EventSequencer &mdash; PCDS Devices 7.4.3.dev10+g8fd22bd7 documentation</title>
+  <title>pcdsdevices.sequencer.EventSequencer &mdash; PCDS Devices 7.4.4.dev168+gd2e1c8e4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/_static/theme_overrides.css" type="text/css" />
@@ -12,12 +12,12 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script src="../_static/docs-versions-menu.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=331437d4"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -37,7 +37,7 @@
             PCDS Devices
           </a>
               <div class="version">
-                7.4.3.dev10+g8fd22bd7
+                7.4.4.dev168+gd2e1c8e4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -66,7 +66,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-digitizers">pcdsdevices.digitizers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-energy-monitor">pcdsdevices.energy_monitor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-epics-motor">pcdsdevices.epics_motor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-eps">pcdsdevices.eps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-evr">pcdsdevices.evr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-example">pcdsdevices.example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-fms">pcdsdevices.fms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gauge">pcdsdevices.gauge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gon">pcdsdevices.gon</a></li>
@@ -124,6 +126,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sim">pcdsdevices.sim</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-slits">pcdsdevices.slits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-spectrometer">pcdsdevices.spectrometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sqr1">pcdsdevices.sqr1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-state">pcdsdevices.state</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-stopper">pcdsdevices.stopper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sxr-test-absorber">pcdsdevices.sxr_test_absorber</a></li>
@@ -180,10 +183,10 @@
            <div itemprop="articleBody">
              
   <section id="pcdsdevices-sequencer-eventsequencer">
-<h1>pcdsdevices.sequencer.EventSequencer<a class="headerlink" href="#pcdsdevices-sequencer-eventsequencer" title="Permalink to this heading"></a></h1>
+<h1>pcdsdevices.sequencer.EventSequencer<a class="headerlink" href="#pcdsdevices-sequencer-eventsequencer" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.sequencer.</span></span><span class="sig-name descname"><span class="pre">EventSequencer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitor_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.sequencer.</span></span><span class="sig-name descname"><span class="pre">EventSequencer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitor_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer" title="Link to this definition"></a></dt>
 <dd><p>Event Sequencer.</p>
 <p>The LCLS Event Sequencer implemented as an Flyer; i.e. it has the methods
 <a class="reference internal" href="#pcdsdevices.sequencer.EventSequencer.kickoff" title="pcdsdevices.sequencer.EventSequencer.kickoff"><code class="xref py py-meth docutils literal notranslate"><span class="pre">kickoff()</span></code></a>, <a class="reference internal" href="#pcdsdevices.sequencer.EventSequencer.complete" title="pcdsdevices.sequencer.EventSequencer.complete"><code class="xref py py-meth docutils literal notranslate"><span class="pre">complete()</span></code></a> and <a class="reference internal" href="#pcdsdevices.sequencer.EventSequencer.collect" title="pcdsdevices.sequencer.EventSequencer.collect"><code class="xref py py-meth docutils literal notranslate"><span class="pre">collect()</span></code></a>. This allows the
@@ -212,7 +215,7 @@ applications which depend on a long single looped sequence running through
 out the scan.</p>
 </div>
 <table class="docutils align-default" id="id1">
-<caption><span class="caption-text">Ophyd Device Components</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">Ophyd Device Components</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Attribute</p></th>
 <th class="head"><p>Class</p></th>
@@ -319,13 +322,13 @@ out the scan.</p>
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.collect">
-<span class="sig-name descname"><span class="pre">collect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.collect" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">collect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.collect" title="Link to this definition"></a></dt>
 <dd><p>Retrieve all collected data</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.collect_tables">
-<span class="sig-name descname"><span class="pre">collect_tables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.11)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.collect_tables" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">collect_tables</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.11)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.collect_tables" title="Link to this definition"></a></dt>
 <dd><p>Retrieve data from flyer as tables</p>
 <p>PROPOSED</p>
 <dl class="field-list simple">
@@ -341,7 +344,7 @@ out the scan.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.complete">
-<span class="sig-name descname"><span class="pre">complete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.complete" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">complete</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.complete" title="Link to this definition"></a></dt>
 <dd><p>Complete the EventSequencer’s current sequence.</p>
 <p>The result of this method varies on the mode that the EventSequencer is
 configured. If the EventSequencer is either set to ‘Run Once’ or ‘Run N
@@ -362,7 +365,7 @@ configuration use the <a class="reference internal" href="#pcdsdevices.sequencer
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.configure">
-<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.configure" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.configure" title="Link to this definition"></a></dt>
 <dd><p>Configure the device for something during a run</p>
 <p>This default implementation allows the user to change any of the
 <a class="reference internal" href="#pcdsdevices.sequencer.EventSequencer.configuration_attrs" title="pcdsdevices.sequencer.EventSequencer.configuration_attrs"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">configuration_attrs</span></code></a>. Subclasses might override this to perform
@@ -384,7 +387,7 @@ the changes should be made, use an OrderedDict.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.describe">
-<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.describe" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.describe" title="Link to this definition"></a></dt>
 <dd><p>Provide schema and meta-data for <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code>.</p>
 <p>This keys in the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> this method returns must match the
 keys in the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> return by <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code>.</p>
@@ -400,13 +403,13 @@ with the <code class="docutils literal notranslate"><span class="pre">event_mode
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.describe_collect">
-<span class="sig-name descname"><span class="pre">describe_collect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.describe_collect" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">describe_collect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.describe_collect" title="Link to this definition"></a></dt>
 <dd><p>Description of monitored attributes retrieved by collect</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.get" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.get" title="Link to this definition"></a></dt>
 <dd><p>Get the value of all components in the device</p>
 <p>Keyword arguments are passed onto each signal.get(). Components
 beginning with an underscore will not be included.</p>
@@ -414,7 +417,7 @@ beginning with an underscore will not be included.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.kickoff">
-<span class="sig-name descname"><span class="pre">kickoff</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.kickoff" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">kickoff</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.kickoff" title="Link to this definition"></a></dt>
 <dd><p>Start the EventSequencer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -425,13 +428,13 @@ beginning with an underscore will not be included.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.post_elog_status">
-<span class="sig-name descname"><span class="pre">post_elog_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.post_elog_status" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">post_elog_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.post_elog_status" title="Link to this definition"></a></dt>
 <dd><p>Post device status to the primary elog, if possible.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.read">
-<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.read" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.read" title="Link to this definition"></a></dt>
 <dd><p>Read data from the device.</p>
 <p>This method is expected to be as instantaneous as possible,
 with any substantial acquisition time taken care of in
@@ -454,7 +457,7 @@ with the keys <code class="docutils literal notranslate"><span class="pre">{'val
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.read_configuration">
-<span class="sig-name descname"><span class="pre">read_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.read_configuration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.read_configuration" title="Link to this definition"></a></dt>
 <dd><p>Dictionary mapping names to value dicts with keys: value, timestamp</p>
 <p>To control which fields are included, change the Component kinds on the
 device, or modify the <code class="docutils literal notranslate"><span class="pre">configuration_attrs</span></code> list.</p>
@@ -462,7 +465,7 @@ device, or modify the <code class="docutils literal notranslate"><span class="pr
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.screen">
-<span class="sig-name descname"><span class="pre">screen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.screen" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">screen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.screen" title="Link to this definition"></a></dt>
 <dd><p>Open a screen for controlling the device.</p>
 <p>Default behavior is the typhos screen, but this method can
 be overridden for more specialized screens.</p>
@@ -470,30 +473,30 @@ be overridden for more specialized screens.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.start">
-<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.start" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.start" title="Link to this definition"></a></dt>
 <dd><p>Start the EventSequencer.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.status">
-<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.status" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.status" title="Link to this definition"></a></dt>
 <dd><p>Returns a str with the current pv values for the device.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">success</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.stop" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">success</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.stop" title="Link to this definition"></a></dt>
 <dd><p>Stop the EventSequencer.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.summary">
-<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.summary" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.summary" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.trigger">
-<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.trigger" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.trigger" title="Link to this definition"></a></dt>
 <dd><p>Trigger the EventSequencer.</p>
 <p>This method reconfigures the EventSequencer to take a new reading. This
 means:</p>
@@ -513,27 +516,27 @@ when the sequence we have set it to play is complete.</p>
 <p class="rubric">Attributes</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.configuration_attrs">
-<span class="sig-name descname"><span class="pre">configuration_attrs</span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.configuration_attrs" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">configuration_attrs</span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.configuration_attrs" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.connected">
-<span class="sig-name descname"><span class="pre">connected</span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.connected" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">connected</span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.connected" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.hints">
-<span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.hints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.hints" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.kind">
-<span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.kind" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.kind" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.sequencer.EventSequencer.subscriptions">
-<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'acq_done'})</span></em><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.subscriptions" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'acq_done'})</span></em><a class="headerlink" href="#pcdsdevices.sequencer.EventSequencer.subscriptions" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>

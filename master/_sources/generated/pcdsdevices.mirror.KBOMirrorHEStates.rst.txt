@@ -123,13 +123,6 @@
           - normal
           - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
     
-        * - cool_flow2
-          - :class:`~ophyd.signal.EpicsSignalRO`
-          - ``:FWM:2_RBV``
-          - 
-          - normal
-          - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
-    
         * - cool_press
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:PRSM:1_RBV``
@@ -138,8 +131,6 @@
           - Inherited from :class:`~pcdsdevices.mirror.KBOMirrorHE`
     
 
-    
-    
     
     
     

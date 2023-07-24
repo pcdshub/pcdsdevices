@@ -40,9 +40,30 @@
           - 
     
         * - cmd_err_reset
-          - :class:`~ophyd.signal.EpicsSignal`
+          - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``bReset``
           - Command to reset an active error
+          - normal
+          - 
+    
+        * - enc_count
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``nEncoderCount``
+          - Raw encoder count for this motor.
+          - normal
+          - 
+    
+        * - posdiff
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``fPosDiff``
+          - Difference between trajectory setpoint and readback.
+          - normal
+          - 
+    
+        * - hardware_enable
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``bHardwareEnable``
+          - TRUE if motor has its hardware enable.
           - normal
           - 
     
@@ -68,6 +89,12 @@
           - 
     
 
+    
+    
+    
+    
+    
+    
     
     
     

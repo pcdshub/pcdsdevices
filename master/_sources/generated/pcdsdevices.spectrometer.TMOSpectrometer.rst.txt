@@ -25,30 +25,9 @@
           - omitted
           - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
     
-        * - lens_x
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
-          - ``:MMS:01``
-          - 
-          - normal
-          - 
-    
-        * - lens_pitch_up_down
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
-          - ``:MMS:10``
-          - 
-          - normal
-          - 
-    
-        * - lens_yaw_left_right
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
-          - ``:MMS:11``
-          - 
-          - normal
-          - 
-    
-        * - foil_x
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
-          - ``:MMS:02``
+        * - zone_plate
+          - :class:`~pcdsdevices.spectrometer.FZPStates`
+          - ``SP1K4:FZP:STATE``
           - 
           - normal
           - 
@@ -56,53 +35,83 @@
         * - zone_plate_x
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
           - ``:MMS:03``
-          - 
+          - x-axis of FZP to define 15 targets position
           - normal
           - 
     
         * - zone_plate_y
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
           - ``:MMS:04``
-          - 
+          - y-axis of FZP to define 15 targets position
           - normal
           - 
     
         * - zone_plate_z
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
           - ``:MMS:05``
+          - z-axis of FZP to define 15 targets position
+          - normal
           - 
+    
+        * - solid_att
+          - :class:`~pcdsdevices.spectrometer.TMOSpectrometerSOLIDATTStates`
+          - ``SP1K4:ATT:STATE``
+          - 
+          - normal
+          - 
+    
+        * - solid_att_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:02``
+          - X-axis of solid attenuator(FOIL) which protects FZP
+          - normal
+          - 
+    
+        * - solid_att_y
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:13``
+          - Y-axis of solid attenuator(FOIL) which protects FZP
+          - normal
+          - 
+    
+        * - thorlab_lens_x
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
+          - ``:MMS:12``
+          - axis to move spectrometer intensifier
           - normal
           - 
     
         * - yag_x
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
           - ``:MMS:06``
-          - 
+          - x-axis of spectrometer detector
           - normal
           - 
     
         * - yag_y
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
           - ``:MMS:07``
-          - 
+          - y-axis of spectrometer detector
           - normal
           - 
     
         * - yag_z
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
           - ``:MMS:08``
-          - 
+          - z-axis of spectrometer detector
           - normal
           - 
     
         * - yag_theta
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxis`
           - ``:MMS:09``
-          - 
+          - theta axis to rotate spectrometer detector
           - normal
           - 
     
 
+    
+    
     
     
     

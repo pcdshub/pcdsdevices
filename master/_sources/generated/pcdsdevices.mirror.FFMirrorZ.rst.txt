@@ -53,6 +53,27 @@
           - hinted
           - 
     
+        * - chin_left_rtd
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:CHIN:L:TEMP``
+          - 
+          - normal
+          - 
+    
+        * - chin_right_rtd
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:CHIN:R:TEMP``
+          - 
+          - normal
+          - 
+    
+        * - chin_tail_rtd
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:TAIL:TEMP``
+          - 
+          - normal
+          - 
+    
         * - x_enc_rms
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:ENC:X:RMS``
@@ -82,6 +103,12 @@
           - Inherited from :class:`~pcdsdevices.mirror.FFMirror`
     
 
+    
+    
+    
+    
+    
+    
     
     
     

@@ -46,6 +46,13 @@
           - normal
           - 
     
+        * - ld1
+          - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
+          - ``LTLHN:LD1:``
+          - Destination LD1
+          - normal
+          - 
+    
         * - ld2
           - :class:`~pcdsdevices.lasers.btps.DestinationConfig`
           - ``LTLHN:LD2:``
@@ -96,6 +103,8 @@
           - 
     
 
+    
+    
     
     
     

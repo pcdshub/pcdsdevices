@@ -67,7 +67,7 @@
           - normal
           - Inherited from :class:`~pcdsdevices.state.TwinCATStatePositioner`
     
-        * - config
+        * - config (UpdateComponent)
           - :class:`~pcdsdevices.state.TwinCATStateConfigDynamic`
           - 
           - Configuration of state positions, deltas, etc.

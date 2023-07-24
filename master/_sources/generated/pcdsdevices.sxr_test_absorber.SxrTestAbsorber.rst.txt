@@ -23,7 +23,14 @@
           - 
           - 
           - omitted
-          - Inherited from :class:`~pcdsdevices.interface.LightpathMixin`
+          - Inherited from :class:`~pcdsdevices.interface.LightpathInOutCptMixin`
+    
+        * - state
+          - :class:`~pcdsdevices.sxr_test_absorber.SxrTestAbsorberStates`
+          - ``:MMS:STATE``
+          - 
+          - hinted
+          - 
     
         * - absorber_vert
           - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
@@ -33,6 +40,8 @@
           - 
     
 
+    
+    
     
     
     

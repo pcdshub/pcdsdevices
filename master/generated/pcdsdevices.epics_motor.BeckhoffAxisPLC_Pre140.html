@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140 &mdash; PCDS Devices 7.4.3.dev10+g8fd22bd7 documentation</title>
+  <title>pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140 &mdash; PCDS Devices 7.4.4.dev168+gd2e1c8e4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/_static/theme_overrides.css" type="text/css" />
@@ -12,17 +12,17 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script src="../_static/docs-versions-menu.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=331437d4"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="pcdsdevices.epics_motor.BeckhoffAxis_Pre140" href="pcdsdevices.epics_motor.BeckhoffAxis_Pre140.html" />
-    <link rel="prev" title="pcdsdevices.epics_motor.BeckhoffAxisPLC" href="pcdsdevices.epics_motor.BeckhoffAxisPLC.html" /> 
+    <link rel="prev" title="pcdsdevices.epics_motor.BeckhoffAxisPLCEPS" href="pcdsdevices.epics_motor.BeckhoffAxisPLCEPS.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -37,7 +37,7 @@
             PCDS Devices
           </a>
               <div class="version">
-                7.4.3.dev10+g8fd22bd7
+                7.4.4.dev168+gd2e1c8e4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -67,8 +67,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-energy-monitor">pcdsdevices.energy_monitor</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../api.html#pcdsdevices-epics-motor">pcdsdevices.epics_motor</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.epics_motor.BeckhoffAxis.html">pcdsdevices.epics_motor.BeckhoffAxis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.epics_motor.BeckhoffAxisEPS.html">pcdsdevices.epics_motor.BeckhoffAxisEPS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.epics_motor.BeckhoffAxisNoOffset.html">pcdsdevices.epics_motor.BeckhoffAxisNoOffset</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.epics_motor.BeckhoffAxisPLC.html">pcdsdevices.epics_motor.BeckhoffAxisPLC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pcdsdevices.epics_motor.BeckhoffAxisPLCEPS.html">pcdsdevices.epics_motor.BeckhoffAxisPLCEPS</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140"><code class="docutils literal notranslate"><span class="pre">BeckhoffAxisPLC_Pre140</span></code></a></li>
 </ul>
@@ -89,7 +91,9 @@
 <li class="toctree-l3"><a class="reference internal" href="pcdsdevices.epics_motor.SmarActTipTilt.html">pcdsdevices.epics_motor.SmarActTipTilt</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-eps">pcdsdevices.eps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-evr">pcdsdevices.evr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-example">pcdsdevices.example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-fms">pcdsdevices.fms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gauge">pcdsdevices.gauge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gon">pcdsdevices.gon</a></li>
@@ -140,6 +144,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sim">pcdsdevices.sim</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-slits">pcdsdevices.slits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-spectrometer">pcdsdevices.spectrometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sqr1">pcdsdevices.sqr1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-state">pcdsdevices.state</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-stopper">pcdsdevices.stopper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sxr-test-absorber">pcdsdevices.sxr_test_absorber</a></li>
@@ -196,13 +201,13 @@
            <div itemprop="articleBody">
              
   <section id="pcdsdevices-epics-motor-beckhoffaxisplc-pre140">
-<h1>pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140<a class="headerlink" href="#pcdsdevices-epics-motor-beckhoffaxisplc-pre140" title="Permalink to this heading"></a></h1>
+<h1>pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140<a class="headerlink" href="#pcdsdevices-epics-motor-beckhoffaxisplc-pre140" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.epics_motor.</span></span><span class="sig-name descname"><span class="pre">BeckhoffAxisPLC_Pre140</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.epics_motor.</span></span><span class="sig-name descname"><span class="pre">BeckhoffAxisPLC_Pre140</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">read_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configuration_attrs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140" title="Link to this definition"></a></dt>
 <dd><p>Disable some newly introduced signals.</p>
 <table class="docutils align-default" id="id1">
-<caption><span class="caption-text">Ophyd Device Components</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">Ophyd Device Components</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
 <thead>
 <tr class="row-odd"><th class="head"><p>Attribute</p></th>
 <th class="head"><p>Class</p></th>
@@ -235,9 +240,23 @@
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.epics_motor.BeckhoffAxisPLC.html#pcdsdevices.epics_motor.BeckhoffAxisPLC" title="pcdsdevices.epics_motor.BeckhoffAxisPLC"><code class="xref py py-class docutils literal notranslate"><span class="pre">BeckhoffAxisPLC</span></code></a></p></td>
 </tr>
 <tr class="row-odd"><td><p>cmd_err_reset</p></td>
-<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">EpicsSignal</span></code></p></td>
+<td><p><a class="reference internal" href="pcdsdevices.signal.PytmcSignal.html#pcdsdevices.signal.PytmcSignal" title="pcdsdevices.signal.PytmcSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">PytmcSignal</span></code></a></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">bReset</span></code></p></td>
 <td><p>Command to reset an active error</p></td>
+<td><p>normal</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.epics_motor.BeckhoffAxisPLC.html#pcdsdevices.epics_motor.BeckhoffAxisPLC" title="pcdsdevices.epics_motor.BeckhoffAxisPLC"><code class="xref py py-class docutils literal notranslate"><span class="pre">BeckhoffAxisPLC</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p>enc_count</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.signal.PytmcSignal.html#pcdsdevices.signal.PytmcSignal" title="pcdsdevices.signal.PytmcSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">PytmcSignal</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nEncoderCount</span></code></p></td>
+<td><p>Raw encoder count for this motor.</p></td>
+<td><p>normal</p></td>
+<td><p>Inherited from <a class="reference internal" href="pcdsdevices.epics_motor.BeckhoffAxisPLC.html#pcdsdevices.epics_motor.BeckhoffAxisPLC" title="pcdsdevices.epics_motor.BeckhoffAxisPLC"><code class="xref py py-class docutils literal notranslate"><span class="pre">BeckhoffAxisPLC</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>hardware_enable</p></td>
+<td><p><a class="reference internal" href="pcdsdevices.signal.PytmcSignal.html#pcdsdevices.signal.PytmcSignal" title="pcdsdevices.signal.PytmcSignal"><code class="xref py py-class docutils literal notranslate"><span class="pre">PytmcSignal</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bHardwareEnable</span></code></p></td>
+<td><p>TRUE if motor has its hardware enable.</p></td>
 <td><p>normal</p></td>
 <td><p>Inherited from <a class="reference internal" href="pcdsdevices.epics_motor.BeckhoffAxisPLC.html#pcdsdevices.epics_motor.BeckhoffAxisPLC" title="pcdsdevices.epics_motor.BeckhoffAxisPLC"><code class="xref py py-class docutils literal notranslate"><span class="pre">BeckhoffAxisPLC</span></code></a></p></td>
 </tr>
@@ -246,7 +265,7 @@
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.configure">
-<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.configure" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.configure" title="Link to this definition"></a></dt>
 <dd><p>Configure the device for something during a run</p>
 <p>This default implementation allows the user to change any of the
 <a class="reference internal" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.configuration_attrs" title="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.configuration_attrs"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">configuration_attrs</span></code></a>. Subclasses might override this to perform
@@ -268,7 +287,7 @@ the changes should be made, use an OrderedDict.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.describe">
-<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.describe" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.describe" title="Link to this definition"></a></dt>
 <dd><p>Provide schema and meta-data for <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code>.</p>
 <p>This keys in the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> this method returns must match the
 keys in the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> return by <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code>.</p>
@@ -284,7 +303,7 @@ with the <code class="docutils literal notranslate"><span class="pre">event_mode
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.get" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.get" title="Link to this definition"></a></dt>
 <dd><p>Get the value of all components in the device</p>
 <p>Keyword arguments are passed onto each signal.get(). Components
 beginning with an underscore will not be included.</p>
@@ -292,7 +311,7 @@ beginning with an underscore will not be included.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.read">
-<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.read" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.read" title="Link to this definition"></a></dt>
 <dd><p>Read data from the device.</p>
 <p>This method is expected to be as instantaneous as possible,
 with any substantial acquisition time taken care of in
@@ -315,7 +334,7 @@ with the keys <code class="docutils literal notranslate"><span class="pre">{'val
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.read_configuration">
-<span class="sig-name descname"><span class="pre">read_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.read_configuration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.read_configuration" title="Link to this definition"></a></dt>
 <dd><p>Dictionary mapping names to value dicts with keys: value, timestamp</p>
 <p>To control which fields are included, change the Component kinds on the
 device, or modify the <code class="docutils literal notranslate"><span class="pre">configuration_attrs</span></code> list.</p>
@@ -323,18 +342,18 @@ device, or modify the <code class="docutils literal notranslate"><span class="pr
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">success</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.stop" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">success</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.stop" title="Link to this definition"></a></dt>
 <dd><p>Stop the Device and all (instantiated) subdevices</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.summary">
-<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.summary" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">summary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.summary" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.trigger">
-<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.8.1.dev2+g5c413cc0)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.trigger" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.0)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.trigger" title="Link to this definition"></a></dt>
 <dd><p>Trigger the device and return status object.</p>
 <p>This method is responsible for implementing ‘trigger’ or
 ‘acquire’ functionality of this device.</p>
@@ -342,14 +361,14 @@ device, or modify the <code class="docutils literal notranslate"><span class="pr
 and it being able to be read (via the
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> method) then this method is
 also responsible for arranging that the
-<a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.8.1.dev2+g5c413cc0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
+<a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
 is notified when the device is ready to be read.</p>
 <p>If there is no delay between triggering and being readable,
-then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.8.1.dev2+g5c413cc0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
+then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
 object which is already completed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.8.1.dev2+g5c413cc0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
+<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
 as complete when the device is ready to be read.</p>
 </dd>
 </dl>
@@ -358,42 +377,47 @@ as complete when the device is ready to be read.</p>
 <p class="rubric">Attributes</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.cmd_home">
-<span class="sig-name descname"><span class="pre">cmd_home</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.cmd_home" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">cmd_home</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.cmd_home" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.configuration_attrs">
-<span class="sig-name descname"><span class="pre">configuration_attrs</span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.configuration_attrs" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">configuration_attrs</span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.configuration_attrs" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.connected">
-<span class="sig-name descname"><span class="pre">connected</span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.connected" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">connected</span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.connected" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.hints">
-<span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.hints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.hints" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.home_pos">
-<span class="sig-name descname"><span class="pre">home_pos</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.home_pos" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">home_pos</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.home_pos" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.kind">
-<span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.kind" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.kind" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.posdiff">
+<span class="sig-name descname"><span class="pre">posdiff</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.posdiff" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.subscriptions">
-<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.11)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.FrozenSet" title="(in Python v3.11)"><span class="pre">FrozenSet</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'acq_done'})</span></em><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.subscriptions" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.ClassVar" title="(in Python v3.11)"><span class="pre">ClassVar</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.FrozenSet" title="(in Python v3.11)"><span class="pre">FrozenSet</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'acq_done'})</span></em><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.subscriptions" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.user_enable">
-<span class="sig-name descname"><span class="pre">user_enable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.user_enable" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">user_enable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxisPLC_Pre140.user_enable" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -404,7 +428,7 @@ as complete when the device is ready to be read.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pcdsdevices.epics_motor.BeckhoffAxisPLC.html" class="btn btn-neutral float-left" title="pcdsdevices.epics_motor.BeckhoffAxisPLC" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pcdsdevices.epics_motor.BeckhoffAxisPLCEPS.html" class="btn btn-neutral float-left" title="pcdsdevices.epics_motor.BeckhoffAxisPLCEPS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pcdsdevices.epics_motor.BeckhoffAxis_Pre140.html" class="btn btn-neutral float-right" title="pcdsdevices.epics_motor.BeckhoffAxis_Pre140" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

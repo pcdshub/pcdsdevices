@@ -46,6 +46,20 @@
           - config
           - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
     
+        * - y_left
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:YLEFT``
+          - Yleft master axis [um]
+          - hinted
+          - 
+    
+        * - y_right
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:YRIGHT``
+          - Yright slave axis [um]
+          - config
+          - 
+    
         * - gantry_x
           - :class:`~pcdsdevices.signal.PytmcSignal`
           - ``:GANTRY_X``
@@ -123,21 +137,34 @@
           - normal
           - Inherited from :class:`~pcdsdevices.mirror.XOffsetMirror`
     
-        * - y_left
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
-          - ``:MMS:YLEFT``
-          - Yleft master axis [um]
-          - hinted
+        * - cool_flow1
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FWM:1_RBV``
+          - 
+          - normal
           - 
     
-        * - y_right
-          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
-          - ``:MMS:YRIGHT``
-          - Yright slave axis [um]
-          - config
+        * - cool_flow2
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:FWM:2_RBV``
+          - 
+          - normal
+          - 
+    
+        * - cool_press
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:PRSM:1_RBV``
+          - 
+          - normal
           - 
     
 
+    
+    
+    
+    
+    
+    
     
     
     

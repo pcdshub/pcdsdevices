@@ -102,7 +102,25 @@
           - normal
           - 
     
+        * - mr2l3_pitch_ccm_sic
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR2L3:PITCH:CCM:Coating1``
+          - MR2L3 pitch coating 1 (Silicon) setpoint with CCM inserted
+          - normal
+          - 
+    
+        * - mr2l3_pitch_ccm_w
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``MR2L3:PITCH:CCM:Coating2``
+          - MR2L3 pitch coating 2 (Tungsten) setpoint with CCM inserted
+          - normal
+          - 
+    
 
+    
+    
+    
+    
     
     
     

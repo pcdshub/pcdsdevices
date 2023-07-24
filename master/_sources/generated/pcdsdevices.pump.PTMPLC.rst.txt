@@ -39,6 +39,13 @@
           - normal
           - 
     
+        * - pump_state
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:STATE_RBV``
+          - 
+          - hinted
+          - 
+    
         * - pump_at_speed
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:AT_SPD_RBV``
@@ -110,6 +117,8 @@
           - 
     
 
+    
+    
     
     
     

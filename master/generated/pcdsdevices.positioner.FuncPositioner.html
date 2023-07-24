@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.positioner.FuncPositioner &mdash; PCDS Devices 7.4.3.dev10+g8fd22bd7 documentation</title>
+  <title>pcdsdevices.positioner.FuncPositioner &mdash; PCDS Devices 7.4.4.dev168+gd2e1c8e4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/_static/theme_overrides.css" type="text/css" />
@@ -12,12 +12,12 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
-        <script src="../_static/docs-versions-menu.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=331437d4"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -37,7 +37,7 @@
             PCDS Devices
           </a>
               <div class="version">
-                7.4.3.dev10+g8fd22bd7
+                7.4.4.dev168+gd2e1c8e4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -66,7 +66,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-digitizers">pcdsdevices.digitizers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-energy-monitor">pcdsdevices.energy_monitor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-epics-motor">pcdsdevices.epics_motor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-eps">pcdsdevices.eps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-evr">pcdsdevices.evr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-example">pcdsdevices.example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-fms">pcdsdevices.fms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gauge">pcdsdevices.gauge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-gon">pcdsdevices.gon</a></li>
@@ -123,6 +125,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sim">pcdsdevices.sim</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-slits">pcdsdevices.slits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-spectrometer">pcdsdevices.spectrometer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sqr1">pcdsdevices.sqr1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-state">pcdsdevices.state</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-stopper">pcdsdevices.stopper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api.html#pcdsdevices-sxr-test-absorber">pcdsdevices.sxr_test_absorber</a></li>
@@ -179,10 +182,10 @@
            <div itemprop="articleBody">
              
   <section id="pcdsdevices-positioner-funcpositioner">
-<h1>pcdsdevices.positioner.FuncPositioner<a class="headerlink" href="#pcdsdevices-positioner-funcpositioner" title="Permalink to this heading"></a></h1>
+<h1>pcdsdevices.positioner.FuncPositioner<a class="headerlink" href="#pcdsdevices-positioner-funcpositioner" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.positioner.</span></span><span class="sig-name descname"><span class="pre">FuncPositioner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">move</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">egu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notepad_pv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pcdsdevices.positioner.</span></span><span class="sig-name descname"><span class="pre">FuncPositioner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">move</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set_pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">egu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">60</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notepad_pv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner" title="Link to this definition"></a></dt>
 <dd><p>Class for hacking together a positioner-like object.</p>
 <p>Before you use this, make sure your use case cannot be easily handled by a
 <code class="xref any docutils literal notranslate"><span class="pre">PVPositioner</span></code> or by a <a class="reference internal" href="pcdsdevices.pseudopos.PseudoPositioner.html#pcdsdevices.pseudopos.PseudoPositioner" title="pcdsdevices.pseudopos.PseudoPositioner"><code class="xref any py py-class docutils literal notranslate"><span class="pre">PseudoPositioner</span></code></a>.</p>
@@ -234,7 +237,7 @@ doing.</p></li>
 <p class="rubric">Methods</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.camonitor">
-<span class="sig-name descname"><span class="pre">camonitor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.camonitor" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">camonitor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.camonitor" title="Link to this definition"></a></dt>
 <dd><p>Shows a live-updating motor position in the terminal.</p>
 <p>This will be the value that is returned by the <a class="reference internal" href="#pcdsdevices.positioner.FuncPositioner.position" title="pcdsdevices.positioner.FuncPositioner.position"><code class="xref py py-attr docutils literal notranslate"><span class="pre">position</span></code></a>
 attribute.</p>
@@ -245,7 +248,7 @@ a background thread.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.describe">
-<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.describe" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.describe" title="Link to this definition"></a></dt>
 <dd><p>Return the description as a dictionary</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -256,14 +259,14 @@ a background thread.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.end_monitor_thread">
-<span class="sig-name descname"><span class="pre">end_monitor_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.end_monitor_thread" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">end_monitor_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.end_monitor_thread" title="Link to this definition"></a></dt>
 <dd><p>Stop a <a class="reference internal" href="#pcdsdevices.positioner.FuncPositioner.camonitor" title="pcdsdevices.positioner.FuncPositioner.camonitor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">camonitor()</span></code></a> or <a class="reference internal" href="#pcdsdevices.positioner.FuncPositioner.wm_update" title="pcdsdevices.positioner.FuncPositioner.wm_update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">wm_update()</span></code></a> that is running in
 another thread.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.move">
-<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.move" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.move" title="Link to this definition"></a></dt>
 <dd><p>Move to a specified position, optionally waiting for motion to
 complete.</p>
 <dl class="field-list simple">
@@ -292,7 +295,7 @@ this positioner instance.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.mv">
-<span class="sig-name descname"><span class="pre">mv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.mv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">mv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.mv" title="Link to this definition"></a></dt>
 <dd><p>Absolute move to a position.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -311,7 +314,7 @@ Defaults to <code class="xref std std-keyword docutils literal notranslate"><spa
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.mv_ginput">
-<span class="sig-name descname"><span class="pre">mv_ginput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.mv_ginput" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">mv_ginput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.mv_ginput" title="Link to this definition"></a></dt>
 <dd><p>Moves to a location the user clicks on.</p>
 <p>If there are existing plots, this will be the position on the most
 recently active plot. If there are no existing plots, an empty plot
@@ -320,7 +323,7 @@ will be created with the motor’s limits as the range.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.mvr">
-<span class="sig-name descname"><span class="pre">mvr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.mvr" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">mvr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.mvr" title="Link to this definition"></a></dt>
 <dd><p>Relative move from this position.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -339,23 +342,23 @@ Defaults to <code class="xref std std-keyword docutils literal notranslate"><spa
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.post_elog_status">
-<span class="sig-name descname"><span class="pre">post_elog_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.post_elog_status" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">post_elog_status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.post_elog_status" title="Link to this definition"></a></dt>
 <dd><p>Post device status to the primary elog, if possible.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.read">
-<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.read" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.read" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.read_configuration">
-<span class="sig-name descname"><span class="pre">read_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.read_configuration" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.read_configuration" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.screen">
-<span class="sig-name descname"><span class="pre">screen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.screen" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">screen</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.screen" title="Link to this definition"></a></dt>
 <dd><p>Open a screen for controlling the device.</p>
 <p>Default behavior is the typhos screen, but this method can
 be overridden for more specialized screens.</p>
@@ -363,7 +366,7 @@ be overridden for more specialized screens.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.set">
-<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moved_cb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.8.1.dev2+g5c413cc0)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.set" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moved_cb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.0)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.set" title="Link to this definition"></a></dt>
 <dd><p>Set a value and return a Status object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -394,20 +397,20 @@ it is done.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.set_position">
-<span class="sig-name descname"><span class="pre">set_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.set_position" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.set_position" title="Link to this definition"></a></dt>
 <dd><p>Alias for set_current_position.</p>
 <p>Will fail if the motor does not have set_current_position.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.status">
-<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.status" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.status" title="Link to this definition"></a></dt>
 <dd><p>Returns a str with the current pv values for the device.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.stop">
-<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.stop" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.stop" title="Link to this definition"></a></dt>
 <dd><p>Stops motion.</p>
 <p>Sub-classes must extend this method to _actually_ stop the device.</p>
 <dl class="field-list simple">
@@ -421,7 +424,7 @@ it is done.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.tweak">
-<span class="sig-name descname"><span class="pre">tweak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.tweak" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">tweak</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.tweak" title="Link to this definition"></a></dt>
 <dd><p>Control this motor using the arrow keys.</p>
 <p>Use left arrow to step negative and right arrow to step positive.
 Use up arrow to increase step size and down arrow to decrease step
@@ -435,7 +438,7 @@ size. Press q or ctrl+c to quit.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.umv">
-<span class="sig-name descname"><span class="pre">umv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.umv" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">umv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.umv" title="Link to this definition"></a></dt>
 <dd><p>Move to a position, wait, and update with a progress bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -453,7 +456,7 @@ will be use.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.umvr">
-<span class="sig-name descname"><span class="pre">umvr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.umvr" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">umvr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.umvr" title="Link to this definition"></a></dt>
 <dd><p>Relative move from this position, wait, and update with a progress bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -471,18 +474,18 @@ will be use.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.wait">
-<span class="sig-name descname"><span class="pre">wait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.wait" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">wait</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.wait" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.wm">
-<span class="sig-name descname"><span class="pre">wm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.wm" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">wm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.wm" title="Link to this definition"></a></dt>
 <dd><p>Get the mover’s current positon (where motor).</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.wm_update">
-<span class="sig-name descname"><span class="pre">wm_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.wm_update" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">wm_update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.wm_update" title="Link to this definition"></a></dt>
 <dd><p>Shows a live-updating motor position in the terminal.</p>
 <p>This will be the value that is returned by the <a class="reference internal" href="#pcdsdevices.positioner.FuncPositioner.position" title="pcdsdevices.positioner.FuncPositioner.position"><code class="xref py py-attr docutils literal notranslate"><span class="pre">position</span></code></a>
 attribute.</p>
@@ -494,45 +497,45 @@ a background thread.</p>
 <p class="rubric">Attributes</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.connected">
-<span class="sig-name descname"><span class="pre">connected</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.connected" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">connected</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.connected" title="Link to this definition"></a></dt>
 <dd><p>If the device is connected.</p>
 <p>Subclasses should override this</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.egu">
-<span class="sig-name descname"><span class="pre">egu</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.egu" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">egu</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.egu" title="Link to this definition"></a></dt>
 <dd><p>The engineering units (EGU) for positions</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.high_limit">
-<span class="sig-name descname"><span class="pre">high_limit</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.high_limit" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">high_limit</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.high_limit" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.hints">
-<span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.hints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hints</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.hints" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.kind">
-<span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.kind" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.kind" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.limits">
-<span class="sig-name descname"><span class="pre">limits</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.limits" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">limits</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.limits" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.low_limit">
-<span class="sig-name descname"><span class="pre">low_limit</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.low_limit" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">low_limit</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.low_limit" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.moving">
-<span class="sig-name descname"><span class="pre">moving</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.moving" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">moving</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.moving" title="Link to this definition"></a></dt>
 <dd><p>Whether or not the motor is moving</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -543,23 +546,23 @@ a background thread.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.position">
-<span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.position" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.position" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.settle_time">
-<span class="sig-name descname"><span class="pre">settle_time</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.settle_time" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">settle_time</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.settle_time" title="Link to this definition"></a></dt>
 <dd><p>Amount of time to wait after moves to report status completion</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.subscriptions">
-<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'_req_done',</span> <span class="pre">'done_moving',</span> <span class="pre">'readback',</span> <span class="pre">'start_moving'})</span></em><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.subscriptions" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'_req_done',</span> <span class="pre">'done_moving',</span> <span class="pre">'readback',</span> <span class="pre">'start_moving'})</span></em><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.subscriptions" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.positioner.FuncPositioner.timeout">
-<span class="sig-name descname"><span class="pre">timeout</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.timeout" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">timeout</span></span><a class="headerlink" href="#pcdsdevices.positioner.FuncPositioner.timeout" title="Link to this definition"></a></dt>
 <dd><p>Amount of time to wait before to considering a motion as failed</p>
 </dd></dl>
 

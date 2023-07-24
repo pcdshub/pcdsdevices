@@ -88,7 +88,16 @@
           - normal
           - Inherited from :class:`~pcdsdevices.lodcm.LODCM`
     
+        * - energy_c1 (FCpt)
+          - :class:`~pcdsdevices.lodcm.LODCMEnergyC1`
+          - ``{self._prefix}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.lodcm.LODCM`
+    
 
+    
+    
     
     
     
