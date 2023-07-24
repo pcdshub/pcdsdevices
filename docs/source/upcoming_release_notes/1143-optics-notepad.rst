@@ -11,9 +11,7 @@ Features
 
 Device Updates
 --------------
-- added two new PVS to `OpticsPitchNotepad`
-- `MR2L3:PITCH:CCM:Coating1`
-- `MR2L3:PITCH:CCM:Coating2`
+- Added new PVS to ``OpticsPitchNotepad`` for storing the MR2L3 channel-cut monochromator (CCM) pitch position setpoints for its two coatings.
 
 New Devices
 -----------
