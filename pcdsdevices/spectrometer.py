@@ -218,6 +218,31 @@ class VonHamos4Crystal(VonHamosFE):
                          prefix_energy=prefix_energy, **kwargs)
 
 
+class VonHamosCrystal_2(BaseInterface, GroupDevice):
+    """Translation, rotation and tilt motors for control of a single crystal."""
+    tab_component_names = True
+
+    x = Cpt(BeckhoffAxis, ':X', kind='normal')
+    rot = Cpt(BeckhoffAxis, ':ROT', kind='normal')
+    tilt = Cpt(BeckhoffAxis, ':TILT', kind='normal')
+
+
+class VonHamos6Crystal(BaseInterface, GroupDevice):
+    """ MFX 6-crystal VonHamos """
+
+    c1 = Cpt(VonHamosCrystal_2, ':C1', kind='normal')
+    c2 = Cpt(VonHamosCrystal_2, ':C2', kind='normal')
+    c3 = Cpt(VonHamosCrystal_2, ':C3', kind='normal')
+    c4 = Cpt(VonHamosCrystal_2, ':C4', kind='normal')
+    c5 = Cpt(VonHamosCrystal_2, ':C5', kind='normal')
+    c6 = Cpt(VonHamosCrystal_2, ':C6', kind='normal')
+
+    rot = Cpt(BeckhoffAxis, ':ROT', kind='normal')
+    t1 = Cpt(BeckhoffAxis, ':T1', kind='normal')
+    t2 = Cpt(BeckhoffAxis, ':T2', kind='normal')
+    t3 = Cpt(BeckhoffAxis, ':T3', kind='normal')
+
+
 class Mono(BaseInterface, GroupDevice, LightpathMixin):
     """
     L2S-I NEH 2.X Monochromator
