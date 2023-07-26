@@ -1,4 +1,4 @@
-1117 Adding symbolic links for AT1K2
+1143 optics-notepad
 #################
 
 API Changes
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- N/A
+- Added new PVS to ``OpticsPitchNotepad`` for storing the MR2L3 channel-cut monochromator (CCM) pitch position setpoints for its two coatings.
 
 New Devices
 -----------
@@ -23,8 +23,8 @@ Bugfixes
 
 Maintenance
 -----------
-- Adding symbolic links for AT1K2 so that screens generate in a nice, organized way (like other SXR Attenuators)
+- N/A
 
 Contributors
 ------------
-- wwright-slac
+- nrwslac

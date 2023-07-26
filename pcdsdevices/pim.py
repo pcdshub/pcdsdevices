@@ -193,7 +193,7 @@ Y Position: {y_pos} [{y_units}]
         if prefix_zoom:
             self._prefix_zoom = prefix_zoom
         else:
-            self._prefix_zoom = self.prefix_start+'CLZ:01:'
+            self._prefix_zoom = self.prefix_start+'CLZ:01'
 
         super().__init__(prefix, name=name, **kwargs)
         self.y = self.state.motor

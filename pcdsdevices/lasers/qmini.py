@@ -39,7 +39,10 @@ class QminiSpectrometer(Device):
                     kind='config')
     trig_enable = Cpt(EpicsSignal, ':GET_TRIG_ENABLE',
                       write_pv=':SET_TRIG_ENABLE', kind='config')
-    scan_rate = Cpt(EpicsSignal, ':GET_SPECTRUM.SCAN', kind='config')
+    acquisition_mode = Cpt(EpicsSignal, ':SOFT_TRIGGER_MODE', kind='config')
+    exposures_to_average = Cpt(EpicsSignal, ':SET_AVG_CNT', kind='config')
+    force_trig = Cpt(EpicsSignal, ':START_EXPOSURE.PROC', kind='config')
+    set_metadata(force_trig, dict(variety='command-proc', value=1))
     reset = Cpt(EpicsSignal, ':CLEAR_SPECTROMETER', kind='config')
     set_metadata(reset, dict(variety='command-proc', value=1))
     spectrum = Cpt(EpicsSignalRO, ':SPECTRUM', kind='normal')
