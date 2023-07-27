@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>789</width>
+    <width>837</width>
     <height>1000</height>
    </rect>
   </property>
@@ -99,7 +99,7 @@
     </layout>
    </item>
    <item>
-    <widget class="PyDMTabWidget" name="PyDMTabWidget">
+    <widget class="PyDMTabWidget" name="source_dest_tabwidget">
      <property name="toolTip">
       <string/>
      </property>
@@ -118,9 +118,10 @@
        <string></string>
        <string></string>
        <string></string>
+       <string></string>
       </stringlist>
      </property>
-     <widget class="QWidget" name="dest1">
+     <widget class="QWidget" name="ld8_tmo_ip1_tab">
       <attribute name="title">
        <string>TMO IP1</string>
       </attribute>
@@ -141,7 +142,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay">
+        <widget class="PyDMEmbeddedDisplay" name="ld8_tmo_ip1_embed">
          <property name="toolTip">
           <string/>
          </property>
@@ -161,7 +162,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="dest2">
+     <widget class="QWidget" name="ld10_tmo_ip2_tab">
       <attribute name="title">
        <string>TMO IP2</string>
       </attribute>
@@ -179,7 +180,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_2">
+        <widget class="PyDMEmbeddedDisplay" name="ld10_tmo_ip2_embed">
          <property name="toolTip">
           <string/>
          </property>
@@ -199,7 +200,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="dest3">
+     <widget class="QWidget" name="ld2_tmo_ip3_tab">
       <attribute name="title">
        <string>TMO IP3</string>
       </attribute>
@@ -217,7 +218,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_3">
+        <widget class="PyDMEmbeddedDisplay" name="ld2_tmo_ip3_embed">
          <property name="toolTip">
           <string/>
          </property>
@@ -237,7 +238,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="dest4">
+     <widget class="QWidget" name="ld6_qrixs_tab">
       <attribute name="title">
        <string>qRIXS</string>
       </attribute>
@@ -255,7 +256,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_5">
+        <widget class="PyDMEmbeddedDisplay" name="ld6_qrixs_embed">
          <property name="toolTip">
           <string/>
          </property>
@@ -275,7 +276,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="dest5">
+     <widget class="QWidget" name="ld4_chemrixs_tab">
       <attribute name="title">
        <string>ChemRIXS</string>
       </attribute>
@@ -293,7 +294,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_6">
+        <widget class="PyDMEmbeddedDisplay" name="ld4_chemrixs_embed">
          <property name="toolTip">
           <string/>
          </property>
@@ -313,7 +314,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="dest6">
+     <widget class="QWidget" name="ld14_xpp_tab">
       <attribute name="title">
        <string>XPP</string>
       </attribute>
@@ -331,7 +332,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_8">
+        <widget class="PyDMEmbeddedDisplay" name="ld14_xpp_embed">
          <property name="toolTip">
           <string/>
          </property>
@@ -351,7 +352,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="dest7">
+     <widget class="QWidget" name="ld9_laser_lab_tab">
       <attribute name="title">
        <string>Laser Lab</string>
       </attribute>
@@ -369,12 +370,38 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_9">
+        <widget class="PyDMEmbeddedDisplay" name="ld9_laser_lab_embed">
          <property name="toolTip">
           <string/>
          </property>
          <property name="macros" stdset="0">
           <string>{&quot;DEST&quot;: &quot;LTLHN:LD9:&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-tabs.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="ld1_diagnostics_tab">
+      <attribute name="title">
+       <string>Diagnostics</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="ld1_diagnostics_embed">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;DEST&quot;: &quot;LTLHN:LD1:&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-tabs.ui</string>
@@ -398,11 +425,13 @@
    <class>PyDMTabWidget</class>
    <extends>QTabWidget</extends>
    <header>pydm.widgets.tab_bar</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>PyDMEmbeddedDisplay</class>
    <extends>QFrame</extends>
    <header>pydm.widgets.embedded_display</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>PyDMRelatedDisplayButton</class>
