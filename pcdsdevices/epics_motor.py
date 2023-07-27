@@ -177,16 +177,42 @@ Limit Switch: {switch_limits}
 """
 
     @property
-    def limits(self):
+    def limits(self) -> tuple[float, float]:
         """Override the limits attribute"""
         return self._get_epics_limits()
 
-    def _get_epics_limits(self):
+    def _get_epics_limits(self) -> tuple[float, float]:
         limits = self.user_setpoint.limits
         if limits is None or limits == (None, None):
             # Not initialized
             return (0, 0)
         return limits
+
+    @limits.setter
+    def limits(self, lims: tuple[float, float]):
+        """
+        Write to the epics limits on setattr
+
+        Expects a tuple of two elements, the low and high limits to set.
+        """
+        # Wrong len is probably a bigger mistake
+        if len(lims) != 2:
+            raise ValueError("Limits should be a tuple of 2 values.")
+        # Adjust for moment of dsylexia
+        low = min(lims)
+        high = max(lims)
+        if low == high:
+            # User probably meant to disable limits
+            low = 0
+            high = 0
+        orig_high = self.high_limit_travel.get()
+        if low > orig_high:
+            # Set high first so we make room for low
+            self.high_limit_travel.put(high)
+            self.low_limit_travel.put(low)
+        else:
+            self.low_limit_travel.put(low)
+            self.high_limit_travel.put(high)
 
     def enable(self):
         """
