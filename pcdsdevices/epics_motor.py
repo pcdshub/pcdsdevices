@@ -195,8 +195,24 @@ Limit Switch: {switch_limits}
 
         Expects a tuple of two elements, the low and high limits to set.
         """
-        self.low_limit_travel.put(min(lims))
-        self.high_limit_travel.put(max(lims))
+        # Wrong len is probably a bigger mistake
+        if len(lims) != 2:
+            raise ValueError("Limits should be a tuple of 2 values.")
+        # Adjust for moment of dsylexia
+        low = min(lims)
+        high = max(lims)
+        if low == high:
+            # User probably meant to disable limits
+            low = 0
+            high = 0
+        orig_high = self.high_limit_travel.get()
+        if low > orig_high:
+            # Set high first so we make room for low
+            self.high_limit_travel.put(high)
+            self.low_limit_travel.put(low)
+        else:
+            self.low_limit_travel.put(low)
+            self.high_limit_travel.put(high)
 
     def enable(self):
         """
