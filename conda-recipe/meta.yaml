@@ -40,13 +40,9 @@ requirements:
   run_constrained:
     - pmgr >=2.0.2
     - typhos >=2.4.0
-    # Note: these should be removed once a newer xraylib is available on conda-forge
-    # or moved to pcdscalc after testing
-    - sqlalchemy <2.0.0
-    - xraydb <4.5.0
 
 test:
-  requirements:
+  requires:
     - pytest
     - pytest-timeout
     - matplotlib
