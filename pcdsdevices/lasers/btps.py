@@ -15,7 +15,8 @@ from ..interface import BaseInterface
 from ..signal import PytmcSignal
 from . import btms_config as btms
 from .btms_config import (BtmsSourceState, BtmsState, DestinationPosition,
-                          MoveError, SourcePosition)
+                          MoveError, SourcePosition, valid_destinations,
+                          valid_sources)
 
 
 class BtpsVGC(VGC):
@@ -604,29 +605,29 @@ class BtpsState(BaseInterface, Device):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.sources = {
-            source.source_pos: source
-            for source in (self.ls1, self.ls5, self.ls8)
-        }
+        try:
+            self.sources = {
+                source: getattr(self, source.name)
+                for source in valid_sources
+            }
+        except AttributeError as ex:
+            raise RuntimeError(
+                "Missing a component for a source.  If adding a new valid "
+                "laser source, please be sure to add a corresponding "
+                "``ls[N]`` component in BtpsState."
+            ) from ex
 
-        self.destinations = {
-            dest.destination_pos: dest
-            for dest in (
-                self.ld2,
-                # self.ld3,
-                self.ld4,
-                # self.ld5,
-                self.ld6,
-                # self.ld7,
-                self.ld8,
-                self.ld9,
-                self.ld10,
-                # self.ld11,
-                # self.ld12,
-                # self.ld13,
-                self.ld14,
-            )
-        }
+        try:
+            self.destinations = {
+                dest: getattr(self, dest.name)
+                for dest in valid_destinations
+            }
+        except AttributeError as ex:
+            raise RuntimeError(
+                "Missing a component for a destination.  If adding a new valid "
+                "destination, please be sure to uncomment the corresponding "
+                "``ld[N]`` component in BtpsState."
+            ) from ex
 
     sources: dict[SourcePosition, BtpsSourceStatus]
     destinations: dict[btms.DestinationPosition, DestinationConfig]
@@ -665,8 +666,13 @@ class BtpsState(BaseInterface, Device):
         doc="Source status for LS8 (Bay 4)"
     )
 
-    # Commented-out destinations are not currently installed:
-    # ld1 = Cpt(DestinationConfig, "LTLHN:LD1:", doc="Destination LD1", destination_pos=DestinationPosition.ld1)
+    # NOTE: Commented-out destinations are not currently installed:
+    ld1 = Cpt(
+        DestinationConfig,
+        "LTLHN:LD1:",
+        doc="Destination LD1",
+        destination_pos=DestinationPosition.ld1,
+    )
     ld2 = Cpt(
         DestinationConfig,
         "LTLHN:LD2:",

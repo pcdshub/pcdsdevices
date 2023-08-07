@@ -1,5 +1,5 @@
-1135 bld_unpin_qtpy
-###################
+1145 enh_ptmplc_status
+#################
 
 API Changes
 -----------
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- N/A
+- Add missing ``pump_state`` (``:STATE_RBV``) signal to ``PTMPLC``.
 
 New Devices
 -----------
@@ -23,8 +23,8 @@ Bugfixes
 
 Maintenance
 -----------
-- unpin pyqt, with the hope of supporting py3.11
+- N/A
 
 Contributors
 ------------
-- tangkong
+- zllentz

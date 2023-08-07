@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_7">
+    <widget class="PyDMEmbeddedDisplay" name="camera_summary_embed">
      <property name="toolTip">
       <string/>
      </property>
@@ -29,12 +29,12 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="system_override_title">
       <property name="text">
        <string>BTPS System Override</string>
       </property>
      </widget>
-     <widget class="PyDMEnumComboBox" name="Inclusive_Setpoint_2">
+     <widget class="PyDMEnumComboBox" name="system_override_combobox">
       <property name="minimumSize">
        <size>
         <width>0</width>
@@ -54,7 +54,7 @@
        <string>ca://LTLHN:BTPS:Config:SystemOverride</string>
       </property>
      </widget>
-     <widget class="PyDMLabel" name="PyDMLabel_2">
+     <widget class="PyDMLabel" name="system_override_label">
       <property name="toolTip">
        <string/>
       </property>
@@ -80,7 +80,7 @@
     </widget>
    </item>
    <item>
-    <widget class="PyDMTabWidget" name="PyDMTabWidget">
+    <widget class="PyDMTabWidget" name="destination_config_tabs">
      <property name="toolTip">
       <string/>
      </property>
@@ -88,7 +88,7 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>7</number>
      </property>
      <property name="alarmChannels">
       <stringlist>
@@ -99,9 +99,10 @@
        <string></string>
        <string></string>
        <string></string>
+       <string></string>
       </stringlist>
      </property>
-     <widget class="QWidget" name="dest1_2">
+     <widget class="QWidget" name="tmo_ip1_tab">
       <attribute name="title">
        <string>TMO IP1</string>
       </attribute>
@@ -122,7 +123,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_4">
+        <widget class="PyDMEmbeddedDisplay" name="tmo_ip1_embed">
          <property name="toolTip">
           <string/>
          </property>
@@ -142,7 +143,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="dest2_2">
+     <widget class="QWidget" name="tmo_ip2_tab">
       <attribute name="title">
        <string>TMO IP2</string>
       </attribute>
@@ -160,7 +161,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_10">
+        <widget class="PyDMEmbeddedDisplay" name="tmo_ip2_embed">
          <property name="toolTip">
           <string/>
          </property>
@@ -180,7 +181,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="dest3_2">
+     <widget class="QWidget" name="tmo_ip3_tab">
       <attribute name="title">
        <string>TMO IP3</string>
       </attribute>
@@ -198,7 +199,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_11">
+        <widget class="PyDMEmbeddedDisplay" name="tmo_ip3_embed">
          <property name="toolTip">
           <string/>
          </property>
@@ -218,7 +219,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="dest4_2">
+     <widget class="QWidget" name="qrixs_tab">
       <attribute name="title">
        <string>qRIXS</string>
       </attribute>
@@ -236,7 +237,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_12">
+        <widget class="PyDMEmbeddedDisplay" name="qrixs_embed">
          <property name="toolTip">
           <string/>
          </property>
@@ -256,7 +257,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="dest5_2">
+     <widget class="QWidget" name="chemrixs_tab">
       <attribute name="title">
        <string>ChemRIXS</string>
       </attribute>
@@ -274,7 +275,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_13">
+        <widget class="PyDMEmbeddedDisplay" name="chemrixs_embed">
          <property name="toolTip">
           <string/>
          </property>
@@ -294,7 +295,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="dest6_2">
+     <widget class="QWidget" name="xpp_tab">
       <attribute name="title">
        <string>XPP</string>
       </attribute>
@@ -312,7 +313,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_14">
+        <widget class="PyDMEmbeddedDisplay" name="xpp_embed">
          <property name="toolTip">
           <string/>
          </property>
@@ -332,7 +333,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="dest7_2">
+     <widget class="QWidget" name="laser_lab_tab">
       <attribute name="title">
        <string>Laser Lab</string>
       </attribute>
@@ -350,12 +351,38 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="PyDMEmbeddedDisplay" name="PyDMEmbeddedDisplay_15">
+        <widget class="PyDMEmbeddedDisplay" name="laser_lab_embed">
          <property name="toolTip">
           <string/>
          </property>
          <property name="macros" stdset="0">
           <string>{&quot;DEST&quot;: &quot;LTLHN:LD9:&quot;}</string>
+         </property>
+         <property name="filename" stdset="0">
+          <string>btps-source-tabs-config.ui</string>
+         </property>
+         <property name="loadWhenShown" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="disconnectWhenHidden" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="diagnostic_tab">
+      <attribute name="title">
+       <string>Diagnostics</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="PyDMEmbeddedDisplay" name="diagnostic_embed">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="macros" stdset="0">
+          <string>{&quot;DEST&quot;: &quot;LTLHN:LD1:&quot;}</string>
          </property>
          <property name="filename" stdset="0">
           <string>btps-source-tabs-config.ui</string>
@@ -379,6 +406,7 @@
    <class>PyDMTabWidget</class>
    <extends>QTabWidget</extends>
    <header>pydm.widgets.tab_bar</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>PyDMLabel</class>
@@ -389,6 +417,7 @@
    <class>PyDMEmbeddedDisplay</class>
    <extends>QFrame</extends>
    <header>pydm.widgets.embedded_display</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>PyDMEnumComboBox</class>

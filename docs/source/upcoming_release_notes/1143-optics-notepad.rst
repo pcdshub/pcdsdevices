@@ -1,4 +1,4 @@
-1120 Qmini updates for modified IOC
+1143 optics-notepad
 #################
 
 API Changes
@@ -11,8 +11,7 @@ Features
 
 Device Updates
 --------------
-- QminiSpectrometer: Added some new PVs and modified others related to recent
-                     IOC changes. Embedded UI was updated to reflect this.
+- Added new PVS to ``OpticsPitchNotepad`` for storing the MR2L3 channel-cut monochromator (CCM) pitch position setpoints for its two coatings.
 
 New Devices
 -----------
@@ -28,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- tjohnson
+- nrwslac
