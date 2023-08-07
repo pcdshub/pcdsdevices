@@ -6,9 +6,11 @@ from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 
 from .device import GroupDevice
+from .device import UpdateComponent as UpCpt
 from .epics_motor import (IMS, BeckhoffAxis, BeckhoffAxisNoOffset,
                           EpicsMotorInterface)
 from .interface import BaseInterface, LightpathMixin
+from .pmps import TwinCATStatePMPS
 from .signal import InternalSignal, PytmcSignal
 from .state import StateRecordPositioner
 
@@ -307,6 +309,13 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
         )
 
 
+class FZPStates(TwinCATStatePMPS):
+    """
+    FZP ND States Setup
+    """
+    config = UpCpt(state_count=15, motor_count=3)
+
+
 class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     """
     TMO Fresnel Photon Spectrometer Motion components class.
@@ -330,6 +339,7 @@ class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     lens_pitch_up_down = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
     lens_yaw_left_right = Cpt(BeckhoffAxis, ':MMS:11', kind='normal')
     foil_x = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
+    zone_plate = Cpt(FZPStates, 'SP1K4:FZP:STATE', add_prefix=(), kind='normal')
     zone_plate_x = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
     zone_plate_y = Cpt(BeckhoffAxis, ':MMS:04', kind='normal')
     zone_plate_z = Cpt(BeckhoffAxis, ':MMS:05', kind='normal')
