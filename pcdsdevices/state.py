@@ -554,10 +554,13 @@ class TwinCATStateConfigDynamic(Device):
         **kwargs
     ):
         try:
+            # Check if the dynamic class already exists
             new_cls = cls._state_config_registry[(state_count, motor_count)]
         except KeyError:
+            # Commit to making a new class
             cls_name = f'{cls._class_prefix}m{motor_count}s{state_count}'
             if motor_count == 1:
+                # Backwards compatibility with existing 1d states: no motor count
                 new_cls = type(
                     cls_name,
                     (cls,),
@@ -572,6 +575,7 @@ class TwinCATStateConfigDynamic(Device):
                     }
                 )
             else:
+                # More than one motor: must include motor count in cpt name
                 new_cls = type(
                     cls_name,
                     (cls,),
