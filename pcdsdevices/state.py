@@ -662,7 +662,7 @@ def state_config_dotted_attribute(
     state_count: int,
     motor_count: int = 1,
     first_motor_only: bool = False,
-) -> list[str | None]:
+) -> list[str]:
     """
     Returns the full dotted name of all associated state config components.
 
@@ -682,7 +682,7 @@ def state_config_dotted_attribute(
 
     Returns
     -------
-    dotted_names : list of str or None
+    dotted_names : list of str
         The full dotted names in state enum order, going through all the states
         of each motor before moving onto the next.
     """
@@ -734,7 +734,7 @@ def state_config_dotted_names(
 def state_config_dotted_velos(
     state_count: int,
     motor_count: int = 1,
-) -> list[str | None]:
+) -> list[str]:
     """
     Returns the full dotted names of the state config velo components.
 
