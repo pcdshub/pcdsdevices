@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- ND TwinCAT states are now supported.
+- ND (N-dimensional) TwinCAT states are now supported.
 
 Device Updates
 --------------
@@ -16,7 +16,7 @@ Device Updates
 New Devices
 -----------
 - Included example devices and components that correspond to
-  lcls-plc-example-motion.
+  `lcls-plc-example-motion <https://github.com/pcdshub/lcls-plc-example-motion>`_.
 
 Bugfixes
 --------

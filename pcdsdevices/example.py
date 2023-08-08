@@ -102,7 +102,7 @@ class PLCExampleMotion(BaseInterface, Device):
         """
         Get all the pvnames that should be included in the IOC.
 
-        This is to help with debug.
+        This is to help with debugging.
         """
         return list(
             walk.item.pvname for walk in self.walk_signals() if hasattr(walk.item, "pvname")
@@ -112,7 +112,7 @@ class PLCExampleMotion(BaseInterface, Device):
         """
         Get all of the pvnames that are currently disconnected.
 
-        This is to help with debug.
+        This is to help with debugging.
         """
         return list(
             walk.item.pvname for walk in self.walk_signals() if hasattr(walk.item, "pvname") and not walk.item.connected
