@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- Included the FZP 3D states on the TMOSpectrometer device.
+- Included the Fresnel Zone Plate (FZP) 3D states on the TMOSpectrometer device.
 
 New Devices
 -----------

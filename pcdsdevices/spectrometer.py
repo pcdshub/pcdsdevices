@@ -311,7 +311,11 @@ class Mono(BaseInterface, GroupDevice, LightpathMixin):
 
 class FZPStates(TwinCATStatePMPS):
     """
-    FZP ND States Setup
+    Fresnel Zone Plate (FZP) 3D States Setup
+
+    Here, we specify 15 states, which is the max we can support in an EPICS
+    enum (after adding an Unknown state), and 3 motors, for the X, Y, and Z
+    axes.
     """
     config = UpCpt(state_count=15, motor_count=3)
 
