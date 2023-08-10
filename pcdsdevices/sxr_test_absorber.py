@@ -6,6 +6,29 @@ from ophyd.device import Component as Cpt
 from .epics_motor import BeckhoffAxisNoOffset
 from .inout import TwinCATInOutPositioner
 from .interface import BaseInterface, LightpathInOutCptMixin
+from .signal import PytmcSignal
+
+
+class ST3K4AutoError(RuntimeError):
+    ...
+
+
+class SxrTestAbsorberStates(TwinCATInOutPositioner):
+    """
+    SXR Test absorber states
+
+    This has some automation where it tracks the position of ST3K4.
+    Accordingly, it has a configuration parameter for enabling/disabling this.
+    """
+    st3k4_auto = Cpt(PytmcSignal, ':ST3K4_AUTO', io='io', kind='config')
+
+    def check_value(self, pos):
+        rval = super().check_value(pos)
+        if self.st3k4_auto.get():
+            raise ST3K4AutoError(
+                "ST1K4 must follow ST3K4. Move rejected."
+            )
+        return rval
 
 
 class SxrTestAbsorber(BaseInterface, LightpathInOutCptMixin):
@@ -22,7 +45,7 @@ class SxrTestAbsorber(BaseInterface, LightpathInOutCptMixin):
 
     tab_component_names = True
 
-    state = Cpt(TwinCATInOutPositioner, ':MMS:STATE', kind='hinted')
+    state = Cpt(SxrTestAbsorberStates, ':MMS:STATE', kind='hinted')
     absorber_vert = Cpt(BeckhoffAxisNoOffset, ':MMS:01', kind='normal')
 
     lightpath_cpts = ['state']
