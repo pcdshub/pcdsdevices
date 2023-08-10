@@ -1,6 +1,10 @@
 """
 Module for the SXR Test Absorbers.
 """
+from __future__ import annotations
+
+from typing import Callable
+
 from ophyd.device import Component as Cpt
 
 from .epics_motor import BeckhoffAxisNoOffset
@@ -20,9 +24,15 @@ class SxrTestAbsorberStates(TwinCATInOutPositioner):
     This has some automation where it tracks the position of ST3K4.
     Accordingly, it has a configuration parameter for enabling/disabling this.
     """
+
     st3k4_auto = Cpt(PytmcSignal, ':ST3K4_AUTO', io='io', kind='config')
 
-    def set(self, position, moved_cb=None, timeout=None):
+    def set(
+        self,
+        position: str | int,
+        moved_cb: Callable | None = None,
+        timeout: float | None = None,
+    ):
         if self.st3k4_auto.get():
             raise ST3K4AutoError(
                 "ST1K4 must follow ST3K4. Move rejected."
