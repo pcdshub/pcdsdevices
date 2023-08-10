@@ -22,13 +22,12 @@ class SxrTestAbsorberStates(TwinCATInOutPositioner):
     """
     st3k4_auto = Cpt(PytmcSignal, ':ST3K4_AUTO', io='io', kind='config')
 
-    def check_value(self, pos):
-        rval = super().check_value(pos)
+    def set(self, position, moved_cb=None, timeout=None):
         if self.st3k4_auto.get():
             raise ST3K4AutoError(
                 "ST1K4 must follow ST3K4. Move rejected."
             )
-        return rval
+        return super().set(position, moved_cb=moved_cb, timeout=timeout)
 
 
 class SxrTestAbsorber(BaseInterface, LightpathInOutCptMixin):
