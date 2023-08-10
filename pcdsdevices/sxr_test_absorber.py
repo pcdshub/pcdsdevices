@@ -40,6 +40,9 @@ class SxrTestAbsorber(BaseInterface, LightpathInOutCptMixin):
     the +/- y direction.
 
     It has a state selector that can be used to move in and out by state name.
+
+    Instantiate me with:
+    st1k4 = SxrTestAbsorber("ST1K4:TEST", name="st1k4")
     """
 
     tab_component_names = True
