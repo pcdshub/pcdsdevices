@@ -1417,6 +1417,12 @@ class SmarAct(EpicsMotorInterface):
     # Positioner type - only useful for encoded stages
     pos_type = Cpt(EpicsSignal, ':PTYPE_RBV', write_pv=':PTYPE', kind='config')
 
+    # Calibration - only works for encoded stages
+    needs_calib = Cpt(EpicsSignalRO, ':NEED_CALIB', kind='config')
+
+    do_calib = Cpt(EpicsSignal, ':DO_CALIB.PROC', kind='config')
+    set_metadata(do_calib, dict(variety='command-proc', value=1))
+
     # These PVs will probably not be needed for most encoded motors, but can be
     # useful
     open_loop = Cpt(SmarActOpenLoop, '', kind='omitted')
