@@ -320,7 +320,7 @@ class FZPStates(TwinCATStatePMPS):
     config = UpCpt(state_count=15, motor_count=3)
 
 
-class SOLIDATTStates(TwinCATStatePMPS):
+class TMOSpectrometerSOLIDATTStates(TwinCATStatePMPS):
     """
     Spectrometer Solid Attenuator(FOIL X and Y) 2D States Setup
 
@@ -353,10 +353,10 @@ class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
     zone_plate_x = Cpt(BeckhoffAxis, ':MMS:03', kind='normal')
     zone_plate_y = Cpt(BeckhoffAxis, ':MMS:04', kind='normal')
     zone_plate_z = Cpt(BeckhoffAxis, ':MMS:05', kind='normal')
-    solid_att = Cpt(SOLIDATTStates, 'SP1K4:ATT:STATE', add_prefix=(), kind='normal')
+    solid_att = Cpt(TMOSpectrometerSOLIDATTStates, 'SP1K4:ATT:STATE', add_prefix=(), kind='normal')
     # Solid_att x and Y are FOIL x and y
-    solid_att_x = Cpt(BeckhoffAxis, ':MMS:02', kind='normal')
-    solid_att_y = Cpt(BeckhoffAxis, ':MMS:13', kind='normal')
+    solid_att_x = Cpt(BeckhoffAxis, ':MMS:02', doc="X-axis of solid attenuator(FOIL) which protects FZP", kind='normal')
+    solid_att_y = Cpt(BeckhoffAxis, ':MMS:13', doc="Y-axis of solid attenuator(FOIL) which protects FZP", kind='normal')
     thorlab_lens_x = Cpt(BeckhoffAxis, ':MMS:12', kind='normal')
     # lens_pitch_up_down = Cpt(BeckhoffAxis, ':MMS:10', kind='normal')
     # lens_yaw_left_right = Cpt(BeckhoffAxis, ':MMS:11', kind='normal')
