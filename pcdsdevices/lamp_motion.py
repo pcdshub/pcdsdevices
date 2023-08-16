@@ -73,6 +73,10 @@ class LAMPMagneticBottle(BaseInterface, GroupDevice):
     magnet_y = Cpt(BeckhoffAxis, ':MMS:06', kind='normal')
     magnet_z = Cpt(BeckhoffAxis, ':MMS:04', kind='normal')
 
+    tixel_x = Cpt(BeckhoffAxis, ':MMS:14', kind='normal')
+    tixel_y = Cpt(BeckhoffAxis, ':MMS:15', kind='normal')
+    tixel_z = Cpt(BeckhoffAxis, ':MMS:16', kind='normal')
+
 
 class LAMPFlowCell(BaseInterface, GroupDevice):
     """
