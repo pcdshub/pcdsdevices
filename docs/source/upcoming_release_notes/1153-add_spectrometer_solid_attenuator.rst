@@ -1,30 +1,23 @@
 1153 add spectrometer solid attenuator
 #################
-
 API Changes
 -----------
-Adding new TMOSpectrometerSOLIDATTStates class and thorlab_len_X axis in TMOSpectrometer
-
+- Remove lens motors
 Features
 --------
-Add three more new motors in GUI(two are spectrometer att and one is thorlab_len_x)
-
+- Add a new TMOSpectrometerSOLIDATTStates class
 Device Updates
 --------------
-SPectrometer SP1K4
-
+- Spectrometer SP1K4 add two new motors for solid attenuator and modify len x to thorlab len x
 New Devices
 -----------
 - N/A
-
 Bugfixes
 --------
 - N/A
-
 Maintenance
 -----------
 - N/A
-
 Contributors
 ------------
 @tongju12
