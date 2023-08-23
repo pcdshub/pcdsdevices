@@ -76,8 +76,10 @@ class LAMPMagneticBottle(BaseInterface, GroupDevice):
     # TIXEL Manipulator Motors
     tixel_x = Cpt(BeckhoffAxis, ':MMS:14', kind='normal',
                   doc='Tixel manipulator x-axis')
-    tixel_y = Cpt(BeckhoffAxis, ':MMS:15', kind='normal')
-    tixel_z = Cpt(BeckhoffAxis, ':MMS:16', kind='normal')
+    tixel_y = Cpt(BeckhoffAxis, ':MMS:15', kind='normal',
+                  doc='Tixel manipulator y-axis')
+    tixel_z = Cpt(BeckhoffAxis, ':MMS:16', kind='normal',
+                  doc='Tixel manipulator z-axis')
 
 
 class LAMPFlowCell(BaseInterface, GroupDevice):
