@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-Added TIXEL Manipulator motors to LAMPMagneticBottle
+- Added TIXEL Manipulator motors to LAMPMagneticBottle
 
 New Devices
 -----------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- jozamudi
