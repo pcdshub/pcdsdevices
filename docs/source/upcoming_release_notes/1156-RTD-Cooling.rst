@@ -21,7 +21,7 @@ New Devices
 
 Bugfixes
 --------
-- `KBOMirrorHE` in `mirror.py` only has 1 flow sensor per mirror.
+- `KBOMirrorHE` in `mirror.py` only has 1 flow sensor per mirror, so remove one.
 
 Maintenance
 -----------
