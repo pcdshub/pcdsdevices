@@ -1206,7 +1206,7 @@ class FFMirrorZ(FFMirror):
     # RMS Cpts:
     z_enc_rms = Cpt(PytmcSignal, ':ENC:Z:RMS', io='i', kind='normal')
 
-    # RTDs
+    # Chin Guard RTDs
     chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L', io='i',
                         kind='normal')
     chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R', io='i',
