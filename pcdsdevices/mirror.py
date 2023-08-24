@@ -1209,7 +1209,7 @@ class FFMirrorZ(FFMirror):
     # RTDs
     chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L', io='i',
                         kind='normal')
-    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L', io='i',
+    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R', io='i',
                          kind='normal')
     chin_tail_rtd = Cpt(PytmcSignal, ':RTD:TAIL', io='i',
                         kind='normal')
