@@ -1497,7 +1497,7 @@ class KBOMirrorChin(KBOMirror):
 
     With 2 RTDs installed on the chin guard.
 
-  Parameters
+    Parameters
     ----------
     prefix : str
         Base PV for the mirror.

@@ -225,7 +225,7 @@ class Mesh(BaseInterface, Device):
 
 class FDQ(BaseInterface, Device):
     """
-        A collection of PVs to inteface python with a Keyance FDQ Flow Meter.
+    A collection of PVs to inteface python with a Keyence FDQ Flow Meter.
     """
     tab_whitelist = ['get_flow_rate', 'get_flow_offset',
                      'set_flow_offset']
