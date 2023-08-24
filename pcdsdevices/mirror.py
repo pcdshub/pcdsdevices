@@ -1067,7 +1067,6 @@ class KBOMirrorHE(KBOMirror):
     """
     # Cooling water flow and pressure meters
     cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
-    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
     cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
 
     # Tab config: show components
