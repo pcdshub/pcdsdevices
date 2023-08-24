@@ -1207,11 +1207,11 @@ class FFMirrorZ(FFMirror):
     z_enc_rms = Cpt(PytmcSignal, ':ENC:Z:RMS', io='i', kind='normal')
 
     # Chin Guard RTDs
-    chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L', io='i',
+    chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L:TEMP', io='i',
                         kind='normal')
-    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R', io='i',
+    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R:TEMP', io='i',
                          kind='normal')
-    chin_tail_rtd = Cpt(PytmcSignal, ':RTD:TAIL', io='i',
+    chin_tail_rtd = Cpt(PytmcSignal, ':RTD:TAIL:TEMP', io='i',
                         kind='normal')
 
 
@@ -1505,7 +1505,7 @@ class KBOMirrorChin(KBOMirror):
     name : str
         Alias for the device.
     """
-    chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L', io='i',
+    chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L:TEMP', io='i',
                         kind='normal')
-    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R', io='i',
+    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R:TEMP', io='i',
                          kind='normal')
