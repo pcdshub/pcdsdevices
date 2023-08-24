@@ -1487,3 +1487,25 @@ class OpticsPitchNotepad(BaseInterface, Device):
     mr2l3_pitch_w = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating2')
     mr2l3_pitch_ccm_sic = Cpt(EpicsSignal, 'MR2L3:PITCH:CCM:Coating1', doc="MR2L3 pitch coating 1 (Silicon) setpoint with CCM inserted")
     mr2l3_pitch_ccm_w = Cpt(EpicsSignal, 'MR2L3:PITCH:CCM:Coating2', doc="MR2L3 pitch coating 2 (Tungsten) setpoint with CCM inserted")
+
+
+class KBOMirrorChin(KBOMirror):
+    """
+    Kirkpatrick-Baez Mirror with Bender Axes.
+
+    1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
+
+    With 2 RTDs installed on the chin guard.
+
+  Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L', io='i',
+                        kind='normal')
+    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R', io='i',
+                         kind='normal')
