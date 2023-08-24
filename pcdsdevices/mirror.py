@@ -1505,7 +1505,7 @@ class KBOMirrorChin(KBOMirror):
     name : str
         Alias for the device.
     """
-    chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L:TEMP', io='i',
+    chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L', io='i',
                         kind='normal')
-    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R:TEMP', io='i',
+    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R', io='i',
                          kind='normal')
