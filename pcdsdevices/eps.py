@@ -19,7 +19,7 @@ class EPS(BaseInterface, Device):
     why their motor cannot move, why their valve cannot open,
     etc.
     """
-    eps_ok = Cpt(PytmcSignal, "bEPS_OK", io="io", kind="normal",
+    eps_ok = Cpt(PytmcSignal, "bEPS_OK", io="i", kind="normal",
                  doc="EPS summary: true if everything is OK")
     message = Cpt(PytmcSignal, "sMessage", io="i", kind="normal",
                   doc="Message from EPS to the user.")

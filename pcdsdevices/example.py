@@ -8,7 +8,7 @@ from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal
 
 from .device import UpdateComponent as UpCpt
-from .epics_motor import BeckhoffAxis
+from .epics_motor import BeckhoffAxis, BeckhoffAxisEPS
 from .inout import TwinCATInOutPositioner
 from .interface import BaseInterface
 from .pim import XPIM
@@ -90,7 +90,7 @@ class PLCExampleMotion(BaseInterface, Device):
     """
     mot1 = Cpt(BeckhoffAxis, "01")
     mot2 = Cpt(BeckhoffAxis, "02")
-    mot3 = Cpt(BeckhoffAxis, "03")
+    mot3 = Cpt(BeckhoffAxisEPS, "03")
     xpim = FCpt(PLCOnlyXPIM, "IMTST:XTES")
     sim3d = Cpt(Example3D, "3D:")
     siml2l = Cpt(ExampleL2L, "L2L:")

@@ -1095,11 +1095,11 @@ class BeckhoffAxisPLC(Device):
                    doc='Current NC error code')
     cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='io', kind='normal',
                         doc='Command to reset an active error')
-    enc_count = Cpt(PytmcSignal, 'nEncoderCount', io='io', kind='normal',
+    enc_count = Cpt(PytmcSignal, 'nEncoderCount', io='i', kind='normal',
                     doc='Raw encoder count for this motor.')
-    posdiff = Cpt(PytmcSignal, 'fPosDiff', io='io', kind='normal',
+    posdiff = Cpt(PytmcSignal, 'fPosDiff', io='i', kind='normal',
                   doc='Difference between trajectory setpoint and readback.')
-    hardware_enable = Cpt(PytmcSignal, 'bHardwareEnable', io='io', kind='normal',
+    hardware_enable = Cpt(PytmcSignal, 'bHardwareEnable', io='i', kind='normal',
                           doc='TRUE if motor has its hardware enable.')
     cmd_home = Cpt(PytmcSignal, 'bHomeCmd', io='o', kind='normal',
                    doc='Start TwinCAT homing routine.')
