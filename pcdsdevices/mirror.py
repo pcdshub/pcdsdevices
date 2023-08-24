@@ -1271,7 +1271,7 @@ class KBOMirrorStates(KBOMirror):
         'coating', 'x', 'y', 'pitch', 'bender_us', 'bender_ds',
         'x_enc_rms', 'y_enc_rms', 'pitch_enc_rms', 'bender_us_enc_rms',
         'bender_ds_enc_rms', 'us_rtd', 'ds_rtd', 'cool_flow1',
-        'cool_flow2', 'cool_press'
+        'cool_press'
     ]
 )
 class KBOMirrorHEStates(KBOMirrorHE):
