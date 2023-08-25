@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>788</width>
+    <width>798</width>
     <height>108</height>
    </rect>
   </property>
@@ -31,23 +31,8 @@
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="2" column="2">
-      <widget class="QLabel" name="label_8">
-       <property name="font">
-        <font>
-         <underline>true</underline>
-        </font>
-       </property>
-       <property name="text">
-        <string>Shutter</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="10">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_30">
+     <item row="5" column="11">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_22">
        <property name="toolTip">
         <string/>
        </property>
@@ -58,403 +43,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD14:LS1:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="6">
-      <widget class="PyDMLabel" name="PyDMLabel_2">
-       <property name="font">
-        <font>
-         <underline>true</underline>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD10:BTPS:Name_RBV</string>
-       </property>
-       <property name="displayFormat" stdset="0">
-        <enum>PyDMLabel::String</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="5">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_37">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD8:LS8:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_43">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LS1:BTPS:LSS:OpenRequest_RBV</string>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="bigEndian" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="numBits" stdset="0">
-        <number>1</number>
-       </property>
-       <property name="shift" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="labels" stdset="0">
-        <stringlist>
-         <string>Bit 0</string>
-        </stringlist>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="5">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_39">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD8:LS1:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="3">
-      <widget class="QLabel" name="label_9">
-       <property name="font">
-        <font>
-         <underline>true</underline>
-        </font>
-       </property>
-       <property name="text">
-        <string>NF Cam</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="2">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_44">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LS5:BTPS:LSS:OpenRequest_RBV</string>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="bigEndian" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="numBits" stdset="0">
-        <number>1</number>
-       </property>
-       <property name="shift" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="labels" stdset="0">
-        <stringlist>
-         <string>Bit 0</string>
-        </stringlist>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="10">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_31">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD14:LS5:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="11">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_29">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD9:LS5:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="6">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_28">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD10:LS5:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1" alignment="Qt::AlignHCenter">
-      <widget class="QLabel" name="label_4">
-       <property name="font">
-        <font>
-         <underline>true</underline>
-        </font>
-       </property>
-       <property name="text">
-        <string>LS1 (Bay 1)</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="9">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_40">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD4:LS8:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="10">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_24">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD14:LS8:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QLabel" name="label_7">
-       <property name="font">
-        <font>
-         <underline>true</underline>
-        </font>
-       </property>
-       <property name="text">
-        <string>LS8 (Bay 4)</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="8">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_27">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD6:LS5:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="8">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_33">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD6:LS8:BTPS:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD9:LS8:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -500,134 +89,36 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="6">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_23">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD10:LS1:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QLabel" name="label_5">
+     <item row="2" column="3">
+      <widget class="QLabel" name="label_9">
        <property name="font">
         <font>
          <underline>true</underline>
         </font>
        </property>
        <property name="text">
-        <string>LS5 (Bay 3)</string>
+        <string>NF Cam</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
-     <item row="3" column="8">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_42">
+     <item row="2" column="11">
+      <widget class="PyDMLabel" name="PyDMLabel_7">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
        <property name="toolTip">
         <string/>
        </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD6:LS1:BTPS:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD9:BTPS:Name_RBV</string>
        </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="11">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_22">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD9:LS8:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="9">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_35">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD4:LS1:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
+       <property name="displayFormat" stdset="0">
+        <enum>PyDMLabel::String</enum>
        </property>
       </widget>
      </item>
@@ -649,19 +140,13 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="9">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_36">
+     <item row="3" column="4">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_5">
        <property name="toolTip">
         <string/>
        </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD4:LS5:BTPS:ChecksOK_RBV</string>
+        <string>ca://LTLHN:BTPS:Chk:LS1:FF:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -678,8 +163,8 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="7">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_41">
+     <item row="4" column="11">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_29">
        <property name="toolTip">
         <string/>
        </property>
@@ -690,7 +175,7 @@
         <bool>false</bool>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD2:LS5:BTPS:ChecksOK_RBV</string>
+        <string>ca://LTLHN:LD9:LS5:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -725,8 +210,73 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="10">
-      <widget class="PyDMLabel" name="PyDMLabel_6">
+     <item row="5" column="8">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_33">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD6:LS8:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="12">
+      <widget class="PyDMLabel" name="PyDMLabel_8">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="precision" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="showUnits" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="precisionFromPV" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD1:BTPS:Name_RBV</string>
+       </property>
+       <property name="displayFormat" stdset="0">
+        <enum>PyDMLabel::String</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="7">
+      <widget class="PyDMLabel" name="PyDMLabel_3">
        <property name="font">
         <font>
          <underline>true</underline>
@@ -736,10 +286,46 @@
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD14:BTPS:Name_RBV</string>
+        <string>ca://LTLHN:LD2:BTPS:Name_RBV</string>
        </property>
        <property name="displayFormat" stdset="0">
         <enum>PyDMLabel::String</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_44">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LS5:BTPS:LSS:OpenRequest_RBV</string>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
        </property>
       </widget>
      </item>
@@ -772,205 +358,13 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="11">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_32">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD9:LS1:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="11">
-      <widget class="PyDMLabel" name="PyDMLabel_7">
-       <property name="font">
-        <font>
-         <underline>true</underline>
-        </font>
-       </property>
+     <item row="4" column="4">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_4">
        <property name="toolTip">
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD9:BTPS:Name_RBV</string>
-       </property>
-       <property name="displayFormat" stdset="0">
-        <enum>PyDMLabel::String</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="9">
-      <widget class="PyDMLabel" name="PyDMLabel_5">
-       <property name="font">
-        <font>
-         <underline>true</underline>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD4:BTPS:Name_RBV</string>
-       </property>
-       <property name="displayFormat" stdset="0">
-        <enum>PyDMLabel::String</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="7">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_25">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD2:LS8:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="2">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_45">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LS8:BTPS:LSS:OpenRequest_RBV</string>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="bigEndian" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-       <property name="numBits" stdset="0">
-        <number>1</number>
-       </property>
-       <property name="shift" stdset="0">
-        <number>0</number>
-       </property>
-       <property name="labels" stdset="0">
-        <stringlist>
-         <string>Bit 0</string>
-        </stringlist>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="7">
-      <widget class="PyDMLabel" name="PyDMLabel_3">
-       <property name="font">
-        <font>
-         <underline>true</underline>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD2:BTPS:Name_RBV</string>
-       </property>
-       <property name="displayFormat" stdset="0">
-        <enum>PyDMLabel::String</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="5">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_34">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="alarmSensitiveContent" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="alarmSensitiveBorder" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:LD8:LS5:BTPS:ChecksOK_RBV</string>
-       </property>
-       <property name="offColor" stdset="0">
-        <color>
-         <red>255</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="showLabels" stdset="0">
-        <bool>false</bool>
-       </property>
-       <property name="circles" stdset="0">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="4">
-      <widget class="QLabel" name="label_10">
-       <property name="font">
-        <font>
-         <underline>true</underline>
-        </font>
-       </property>
-       <property name="text">
-        <string>FF Cam</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="3">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator">
-       <property name="toolTip">
-        <string/>
-       </property>
-       <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:Chk:LS1:NF:IsUpdating_RBV</string>
+        <string>ca://LTLHN:BTPS:Chk:LS5:FF:IsUpdating_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -1033,13 +427,19 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="4">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_5">
+     <item row="3" column="5">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_39">
        <property name="toolTip">
         <string/>
        </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:Chk:LS1:FF:IsUpdating_RBV</string>
+        <string>ca://LTLHN:LD8:LS1:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -1056,13 +456,639 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="4">
-      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_4">
+     <item row="5" column="10">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_24">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD14:LS8:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLabel" name="label_5">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>LS5 (Bay 3)</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator">
        <property name="toolTip">
         <string/>
        </property>
        <property name="channel" stdset="0">
-        <string>ca://LTLHN:BTPS:Chk:LS5:FF:IsUpdating_RBV</string>
+        <string>ca://LTLHN:BTPS:Chk:LS1:NF:IsUpdating_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLabel" name="label_7">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>LS8 (Bay 4)</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="10">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_31">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD14:LS5:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="7">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_41">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD2:LS5:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="5">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_34">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD8:LS5:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="8">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_42">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD6:LS1:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="label_4">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>LS1 (Bay 1)</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="9">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_35">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD4:LS1:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="6">
+      <widget class="PyDMLabel" name="PyDMLabel_2">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD10:BTPS:Name_RBV</string>
+       </property>
+       <property name="displayFormat" stdset="0">
+        <enum>PyDMLabel::String</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="2">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_45">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LS8:BTPS:LSS:OpenRequest_RBV</string>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="12">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_47">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD1:LS5:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="9">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_36">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD4:LS5:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="4">
+      <widget class="QLabel" name="label_10">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>FF Cam</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_43">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LS1:BTPS:LSS:OpenRequest_RBV</string>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="6">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_28">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD10:LS5:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="7">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_25">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD2:LS8:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="12">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_46">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD1:LS1:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="10">
+      <widget class="PyDMLabel" name="PyDMLabel_6">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD14:BTPS:Name_RBV</string>
+       </property>
+       <property name="displayFormat" stdset="0">
+        <enum>PyDMLabel::String</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="10">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_30">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD14:LS1:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="9">
+      <widget class="PyDMLabel" name="PyDMLabel_5">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD4:BTPS:Name_RBV</string>
+       </property>
+       <property name="displayFormat" stdset="0">
+        <enum>PyDMLabel::String</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="6">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_23">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD10:LS1:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="11">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_32">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD9:LS1:BTPS:ChecksOK_RBV</string>
        </property>
        <property name="offColor" stdset="0">
         <color>
@@ -1099,6 +1125,154 @@
        </property>
        <property name="circles" stdset="0">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QLabel" name="label_8">
+       <property name="font">
+        <font>
+         <underline>true</underline>
+        </font>
+       </property>
+       <property name="text">
+        <string>Shutter</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="5">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_37">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD8:LS8:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="9">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_40">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD4:LS8:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="8">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_27">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD6:LS5:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="12">
+      <widget class="PyDMByteIndicator" name="PyDMByteIndicator_48">
+       <property name="toolTip">
+        <string/>
+       </property>
+       <property name="alarmSensitiveContent" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="alarmSensitiveBorder" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="PyDMToolTip" stdset="0">
+        <string/>
+       </property>
+       <property name="channel" stdset="0">
+        <string>ca://LTLHN:LD1:LS8:BTPS:ChecksOK_RBV</string>
+       </property>
+       <property name="offColor" stdset="0">
+        <color>
+         <red>255</red>
+         <green>0</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="showLabels" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="bigEndian" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="circles" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="numBits" stdset="0">
+        <number>1</number>
+       </property>
+       <property name="shift" stdset="0">
+        <number>0</number>
+       </property>
+       <property name="labels" stdset="0">
+        <stringlist>
+         <string>Bit 0</string>
+        </stringlist>
        </property>
       </widget>
      </item>

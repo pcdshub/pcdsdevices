@@ -447,11 +447,11 @@ class CrystalTower2(BaseInterface, GroupDevice):
                   motor_prefix='{self._hutch_prefix}:MON:MMS:14',
                   add_prefix=('prefix', 'motor_prefix'), kind='normal',
                   doc='Chi 2 motor offset for Si [deg]')
-    h2nC = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:H2N:OFF_C',
+    h2nC = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_C',
                 name='h2n_c', motor_prefix='{self._hutch_prefix}:MON:MMS:15',
                 add_prefix=('prefix', 'motor_prefix'), kind='normal',
                 doc=' H2n motor offset for C [mm]')
-    h2nSi = FCpt(OffsetIMSWithPreset, prefix='{self._prefix}:H2N:OFF_Si',
+    h2nSi = FCpt(OffsetMotor, prefix='{self._prefix}:H2N:OFF_Si',
                  name='h2n_si', motor_prefix='{self._hutch_prefix}:MON:MMS:15',
                  add_prefix=('prefix', 'motor_prefix'), kind='normal',
                  doc='H2n motor offset for Si [mm]')
@@ -913,6 +913,14 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
         energy = common.wavelength_to_energy(length) / 1000
         return self.PseudoPosition(energy=energy)
 
+    def setE(self, energy):
+        self.set_current_position(energy)
+        return
+
+    def status_info(self):
+        """Overwrites interface status_info to make things faster."""
+        return None
+
     def format_status_info(self, status_info):
         """Override status info handler to render the energy si."""
         hutch = ''
@@ -945,7 +953,7 @@ class LODCMEnergySi(FltMvInterface, PseudoPositioner, GroupDevice):
         except Exception:
             ref = 'Unknown'
 
-            return f"""\
+        return f"""\
 {hutch}LODCM Energy Si
 Current Configuration: {configuration} ({ref})
 Photon Energy: {energy} [keV]
@@ -1133,6 +1141,14 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
         energy = common.wavelength_to_energy(length) / 1000
         return self.PseudoPosition(energy=energy)
 
+    def setE(self, energy):
+        self.set_current_position(energy)
+        return
+
+    def status_info(self):
+        """Overwrites interface status_info to make things faster."""
+        return None
+
     def format_status_info(self, status_info):
         """Override status info handler to render the energy c."""
         hutch = ''
@@ -1165,7 +1181,7 @@ class LODCMEnergyC(FltMvInterface, PseudoPositioner, GroupDevice):
         except Exception:
             ref = 'Unknown'
 
-            return f"""\
+        return f"""\
 {hutch}LODCM Energy C
 Current Configuration: {configuration} ({ref})
 Photon Energy: {energy} [keV]
@@ -1218,7 +1234,8 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
 
     tab_whitelist = ['h1n_state', 'yag', 'dectris', 'diode', 'foil',
                      'remove_dia', 'tower1', 'tower2',
-                     'diag_tower', 'calc']
+                     'diag_tower', 'calc', 'E', 'EC', 'ESi', 'tweak_x',
+                     'tweakXC']
 
     lightpath_cpts = ['tower1.h1n_state.state']
 
@@ -1264,7 +1281,7 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         self.h2n_state = self.tower2.h2n_state
         self.y2_state = self.tower2.y2_state
         self.chi2_state = self.tower2.chi2_state
-        # # offset positioners - tower 1
+        # offset positioners - tower 1
         self.th1Si = self.energy_si.th1Si
         self.z1Si = self.energy_si.z1Si
         self.th1C = self.energy_c.th1C
@@ -1280,7 +1297,7 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         self.h1nSi = self.tower1.h1nSi
         self.h1pC = self.tower1.h1pC
         self.h1pSi = self.tower1.h1pSi
-        # # offset positioners - tower 2
+        # offset positioners - tower 2
         self.th2Si = self.energy_si.th2Si
         self.z2Si = self.energy_si.z2Si
         self.th2C = self.energy_c.th2C
@@ -1295,6 +1312,10 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         self.h2nC = self.tower2.h2nC
         self.h2nSi = self.tower2.h2nSi
 
+        # energy aliases
+        self.EC = self.energy_c
+        self.ESi = self.energy_si
+
     @property
     def energy(self):
         material = self.get_material()
@@ -1306,6 +1327,10 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
         # TODO consider "energy" proxy motor object that picks where to
         # forward the commands instead of this property
         return self.energy_c
+
+    @property
+    def E(self):
+        return self.energy
 
     def calc_lightpath_state(
         self,
@@ -1570,6 +1595,9 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
             logger.warning("z2 did not reach the desired position of %f! "
                            "Check the motors, now at %f, deadband %f" % (
                                start_z + z_value, end_z, self.z2.position))
+
+    def tweakXC(self, x, wait=False):
+        self.tweak_x(x, material='C', wait=wait)
 
     def tweak_parallel(self, p_value, material=None, wait=False):
         """

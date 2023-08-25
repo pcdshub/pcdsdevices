@@ -2,6 +2,110 @@ Release History
 ###############
 
 
+v7.4.3 (2023-07-11)
+===================
+
+Bugfixes
+--------
+- Fix typo in zoom motor prefix for PIM devices.
+
+Maintenance
+-----------
+- Fix conda recipe test-requires.
+- Remove sqlalchemy and xraydb pins from requirements.txt.
+  These were pinned because the most recent versions of these packages
+  were previously incompatible with each other. This has since been resolved.
+
+Contributors
+------------
+- tangkong
+- vespos
+- zllentz
+
+
+v7.4.2 (2023-07-07)
+===================
+
+Device Updates
+--------------
+- ``.screen()`` and ``.post_elog_status()`` methods were added to the
+  BaseInterface whitelist for tab completion.
+
+Contributors
+------------
+- klauer
+
+
+v7.4.1 (2023-06-30)
+===================
+
+Device Updates
+--------------
+- QminiSpectrometer: Added some new PVs and modified others related to recent
+  IOC changes. Embedded UI was updated to reflect this.
+
+Maintenance
+-----------
+- unpin pyqt, with the hope of supporting py3.11
+
+Contributors
+------------
+- slactjohnson
+- tangkong
+
+
+v7.4.0 (2023-05-08)
+===================
+
+Device Updates
+--------------
+- `IMS` class:
+
+  - Added special parameter manager/questionnaire handling.
+    On load from the questionnaire, grab questionnaire stage identities
+    and apply them to the parameter manager for the given PV.
+  - Added functions that allow the user to see the given configuration
+    parameters or the current parameters of that base PV.
+
+    - See `IMS.get_configuration_values`
+    - See `IMS.get_current_values`
+
+  - Return the output of `IMS.diff_configuration` as a ``PrettyTable``
+    instead of as a dictionary, making it much easier to understand.
+
+- Updated `HXRSpectrometer` filter wheel with its state PV.
+  Previously, only the raw motor device was available.
+
+Contributors
+------------
+- spenc333
+- tangkong
+- zllentz
+
+
+v7.3.0 (2023-04-17)
+===================
+
+Device Updates
+--------------
+- LODCM: Add energy setpoint and tweakXC.
+- LODCM: fix energy functionality and add commonly used aliases.
+- LasBasler: Add a new signal that can be used to auto-configure a camera based on an internal dictionary.
+
+New Devices
+-----------
+- PCDSAreaDetectorTyphos class: Add in signals for camera binning and region size control.
+- LasBaslerNF: A Basler camera intended to be used as a near-field diagnostic.
+- LasBaslerFF: A Basler camera intended to be used as a far-field diagnostic.
+
+Contributors
+------------
+- slactjohnson
+- tangkong
+- vespos
+- zllentz
+
+
 v7.2.0 (2023-04-04)
 ===================
 
