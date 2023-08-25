@@ -1,5 +1,9 @@
 """
-Classes for EPS readbacks.
+Classes for Equipment Protection System (EPS) readbacks.
+
+This covers generalized ways that we can protect hardware from
+damaging itself. For example: we can prevent a motor from moving
+forward if moving forward would collide with another motor.
 """
 from ophyd import Component as Cpt
 from ophyd import Device
