@@ -4,6 +4,7 @@
 """
 
 import logging
+import typing
 
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
@@ -25,8 +26,8 @@ class SQR1Axis(PVPositionerIsClose):
 
     def __init__(self,
                  prefix,
-                 axis,
-                 sync_setpoints=None,
+                 axis: str,
+                 sync_setpoints: typing.function = None,
                  **kwargs
                  ):
         self.prefix = prefix
@@ -35,13 +36,13 @@ class SQR1Axis(PVPositionerIsClose):
         super().__init__(prefix, **kwargs)
 
     def move(self,
-             position,
-             wait=True,
-             timeout=None,
-             moved_cb=None,
-             sync_rb=True
+             position: float,
+             wait: bool = True,
+             timeout: float = None,
+             moved_cb: float = None,
+             sync_enable: bool = True,
              ):
-        if sync_rb and self._sync_setpoints:
+        if sync_enable and self._sync_setpoints:
             self._sync_setpoints()
         return super().move(position, wait, timeout, moved_cb)
 
@@ -88,14 +89,14 @@ class SQR1(Device):
         self.rz.setpoint.put(self.rz.readback.get())
 
     def multi_axis_move(self,
-                        x_sp=None,
-                        y_sp=None,
-                        z_sp=None,
-                        rx_sp=None,
-                        ry_sp=None,
-                        rz_sp=None,
-                        wait=True,
-                        timeout=10.0
+                        x_sp: float = None,
+                        y_sp: float = None,
+                        z_sp: float = None,
+                        rx_sp: float = None,
+                        ry_sp: float = None,
+                        rz_sp: float = None,
+                        wait: bool = True,
+                        timeout: float = 10.0
                         ):
         x_sp = x_sp or self.x.readback.get()
         y_sp = y_sp or self.y.readback.get()
@@ -107,28 +108,28 @@ class SQR1(Device):
         x_status = self.x.move(x_sp,
                                wait=False,
                                timeout=timeout,
-                               sync_rb=False)
+                               sync_enable=False)
         y_status = self.y.move(y_sp,
                                wait=False,
                                timeout=timeout,
-                               sync_rb=False)
+                               sync_enable=False)
         z_status = self.z.move(z_sp,
                                wait=False,
                                timeout=timeout,
-                               sync_rb=False
+                               sync_enable=False
                                )
         rx_status = self.rx.move(rx_sp,
                                  wait=False,
                                  timeout=timeout,
-                                 sync_rb=False)
+                                 sync_enable=False)
         ry_status = self.ry.move(ry_sp,
                                  wait=False,
                                  timeout=timeout,
-                                 sync_rb=False)
+                                 sync_enable=False)
         rz_status = self.rz.move(rz_sp,
                                  wait=False,
                                  timeout=timeout,
-                                 sync_rb=False)
+                                 sync_enable=False)
 
         status = AndStatus(
             x_status,
