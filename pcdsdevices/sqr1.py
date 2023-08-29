@@ -98,12 +98,12 @@ class SQR1(Device):
                         wait: bool = True,
                         timeout: float = 10.0
                         ):
-        x_sp = x_sp or self.x.readback.get()
-        y_sp = y_sp or self.y.readback.get()
-        z_sp = z_sp or self.z.readback.get()
-        rx_sp = rx_sp or self.rx.readback.get()
-        ry_sp = ry_sp or self.ry.readback.get()
-        rz_sp = rz_sp or self.rz.readback.get()
+        x_sp = self.x.readback.get() if x_sp is None else x_sp
+        y_sp = self.y.readback.get() if y_sp is None else y_sp
+        z_sp = self.z.readback.get() if z_sp is None else z_sp
+        rx_sp = self.rx.readback.get() if rx_sp is None else rx_sp
+        ry_sp = self.ry.readback.get() if ry_sp is None else ry_sp
+        rz_sp = self.rz.readback.get() if rz_sp is None else rz_sp
 
         x_status = self.x.move(x_sp,
                                wait=False,
