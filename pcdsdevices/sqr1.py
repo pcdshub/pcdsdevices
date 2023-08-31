@@ -4,13 +4,12 @@
 """
 
 import logging
-import typing
 
 from ophyd.device import Device
+from ophyd.device import Component as Cpt
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositionerIsClose
 from ophyd.signal import EpicsSignal
-from ophyd.status import AndStatus
 from ophyd.status import wait as status_wait
 
 logger = logging.getLogger(__name__)
@@ -23,17 +22,6 @@ class SQR1Axis(PVPositionerIsClose):
     actuate_value = 1
     stop_signal = FCpt(EpicsSignal, '{prefix}:KILL', kind='normal')
     stop_value = 1
-
-    def __init__(self,
-                 prefix,
-                 axis: str,
-                 sync_setpoints: typing.function = None,
-                 **kwargs
-                 ):
-        self.prefix = prefix
-        self._axis = axis  # axis values {X, Y, Z, rX, rY, rZ}
-        self._sync_setpoints = sync_setpoints
-        super().__init__(prefix, **kwargs)
 
     def move(self,
              position: float,
@@ -48,12 +36,13 @@ class SQR1Axis(PVPositionerIsClose):
 
 
 class SQR1(Device):
-    x = FCpt(SQR1Axis, '{prefix}', axis="X", rtol=0.001)
-    y = FCpt(SQR1Axis, '{prefix}', axis="Y", rtol=0.001)
-    z = FCpt(SQR1Axis, '{prefix}', axis="Z", rtol=0.001)
-    rx = FCpt(SQR1Axis, '{prefix}', axis="rX", rtol=0.001)
-    ry = FCpt(SQR1Axis, '{prefix}', axis="rY", rtol=0.001)
-    rz = FCpt(SQR1Axis, '{prefix}', axis="rZ", rtol=0.001)
+    x = Cpt(SQR1Axis, '{prefix}', axis="X", rtol=0.001)
+    y = Cpt(SQR1Axis, '{prefix}', axis="Y", rtol=0.001)
+    z = Cpt(SQR1Axis, '{prefix}', axis="Z", rtol=0.001)
+    rx = Cpt(SQR1Axis, '{prefix}', axis="rX", rtol=0.001)
+    ry = Cpt(SQR1Axis, '{prefix}', axis="rY", rtol=0.001)
+    rz = Cpt(SQR1Axis, '{prefix}', axis="rZ", rtol=0.001)
+    stop_signal = Cpt(EpicsSignal, '{prefix}:KILL', kind='normal')
 
     def __init__(self,
                  prefix="",
@@ -80,7 +69,7 @@ class SQR1(Device):
         self.rz._sync_setpoints = self.sync_setpoints
 
     def sync_setpoints(self):
-        print("sync_setpoint")
+        logger.debug("sync_setpoint")
         self.x.setpoint.put(self.x.readback.get())
         self.y.setpoint.put(self.y.readback.get())
         self.z.setpoint.put(self.z.readback.get())
@@ -131,11 +120,10 @@ class SQR1(Device):
                                  timeout=timeout,
                                  sync_enable=False)
 
-        status = AndStatus(
-            x_status,
-            AndStatus(y_status,
-                      AndStatus(z_status,
-                                AndStatus(rx_status,
-                                          AndStatus(ry_status,
-                                                    rz_status)))))
+        status = x_status & y_status & z_status & rx_status & +\
+            ry_status & rz_status
+
         return status_wait(status) if wait else status
+
+    def stop(self):
+        self.stop_signal.put(1)
