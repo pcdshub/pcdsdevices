@@ -5,8 +5,8 @@
 
 import logging
 
-from ophyd.device import Device
 from ophyd.device import Component as Cpt
+from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.pv_positioner import PVPositionerIsClose
 from ophyd.signal import EpicsSignal
