@@ -1067,7 +1067,6 @@ class KBOMirrorHE(KBOMirror):
     """
     # Cooling water flow and pressure meters
     cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
-    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
     cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
 
     # Tab config: show components
@@ -1207,6 +1206,14 @@ class FFMirrorZ(FFMirror):
     # RMS Cpts:
     z_enc_rms = Cpt(PytmcSignal, ':ENC:Z:RMS', io='i', kind='normal')
 
+    # Chin Guard RTDs
+    chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L:TEMP', io='i',
+                        kind='normal')
+    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R:TEMP', io='i',
+                         kind='normal')
+    chin_tail_rtd = Cpt(PytmcSignal, ':RTD:TAIL:TEMP', io='i',
+                        kind='normal')
+
 
 class TwinCATMirrorStripe(TwinCATStatePMPS):
     """
@@ -1264,7 +1271,7 @@ class KBOMirrorStates(KBOMirror):
         'coating', 'x', 'y', 'pitch', 'bender_us', 'bender_ds',
         'x_enc_rms', 'y_enc_rms', 'pitch_enc_rms', 'bender_us_enc_rms',
         'bender_ds_enc_rms', 'us_rtd', 'ds_rtd', 'cool_flow1',
-        'cool_flow2', 'cool_press'
+        'cool_press'
     ]
 )
 class KBOMirrorHEStates(KBOMirrorHE):
@@ -1478,3 +1485,27 @@ class OpticsPitchNotepad(BaseInterface, Device):
 
     mr2l3_pitch_sic = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating1')
     mr2l3_pitch_w = Cpt(EpicsSignal, 'MR2L3:PITCH:Coating2')
+    mr2l3_pitch_ccm_sic = Cpt(EpicsSignal, 'MR2L3:PITCH:CCM:Coating1', doc="MR2L3 pitch coating 1 (Silicon) setpoint with CCM inserted")
+    mr2l3_pitch_ccm_w = Cpt(EpicsSignal, 'MR2L3:PITCH:CCM:Coating2', doc="MR2L3 pitch coating 2 (Tungsten) setpoint with CCM inserted")
+
+
+class KBOMirrorChin(KBOMirror):
+    """
+    Kirkpatrick-Baez Mirror with Bender Axes.
+
+    1st gen Toyama designs with LCLS-II Beckhoff motion architecture.
+
+    With 2 RTDs installed on the chin guard.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+        Alias for the device.
+    """
+    chin_left_rtd = Cpt(PytmcSignal, ':RTD:CHIN:L', io='i',
+                        kind='normal')
+    chin_right_rtd = Cpt(PytmcSignal, ':RTD:CHIN:R', io='i',
+                         kind='normal')

@@ -15,6 +15,7 @@ from ophyd.device import FormattedComponent as FCpt
 from ophyd.ophydobj import OphydObject
 from ophyd.signal import EpicsSignal
 
+from .analog_signals import FDQ
 from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
                                      PCDSAreaDetectorTyphosTrigger)
 from .device import GroupDevice
@@ -556,3 +557,11 @@ class IM2K0(LCLS2ImagerBase):
     led = Cpt(XPIMLED, ':CIL', kind='config',
               doc='LED for viewing the reticle.')
     # Nothing else! No power meter, no zoom/focus, no filter wheel...
+
+
+class PPMCOOL(PPM):
+    """
+    L2SI's Power and Profile Monitor design with cooling.
+    """
+    flow_meter = Cpt(FDQ, '', kind='normal',
+                     doc='Device that measures PCW Flow Rate.')

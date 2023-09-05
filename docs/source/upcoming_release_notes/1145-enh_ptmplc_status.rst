@@ -1,5 +1,5 @@
-1140 bld_test_requires
-######################
+1145 enh_ptmplc_status
+#################
 
 API Changes
 -----------
@@ -11,7 +11,7 @@ Features
 
 Device Updates
 --------------
-- N/A
+- Add missing ``pump_state`` (``:STATE_RBV``) signal to ``PTMPLC``.
 
 New Devices
 -----------
@@ -23,8 +23,8 @@ Bugfixes
 
 Maintenance
 -----------
-- fix conda recipe test-requires
+- N/A
 
 Contributors
 ------------
-- tangkong
+- zllentz

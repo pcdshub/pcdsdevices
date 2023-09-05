@@ -489,8 +489,12 @@ class CombinedStateRecordPositioner(StateRecordPositionerBase):
         return cid
 
 
-# See MOTION_GVL.MAX_STATES in lcls-twincat-motion
-TWINCAT_MAX_STATES = 9
+# See GeneralConstants.MAX_STATES in lcls-twincat-general
+# This is just the default value, in practice this is only used
+# When the python class does not specify a state count.
+# Note that the actual value here is configurabale
+# And can vary from PLC to PLC
+TWINCAT_MAX_STATES = 15
 
 
 class TwinCATStateConfigOne(Device):
@@ -505,21 +509,10 @@ class TwinCATStateConfigOne(Device):
                      doc='The defined state name.')
     setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='config',
                    doc='The corresponding motor set position.')
-    delta = Cpt(PytmcSignal, ':DELTA', io='io', kind='config',
-                doc='The deviation from setpoint that still counts '
-                    'as at the position.')
     velo = Cpt(PytmcSignal, ':VELO', io='io', kind='config',
                doc='Velocity to move to the state at.')
-    accl = Cpt(PytmcSignal, ':ACCL', io='io', kind='omitted',
-               doc='Acceleration to move to the state with.')
-    dccl = Cpt(PytmcSignal, ':DCCL', io='io', kind='omitted',
-               doc='Deceleration to move to the state with.')
     move_ok = Cpt(PytmcSignal, ':MOVE_OK', io='i', kind='omitted',
                   doc='True if a move to this state is allowed.')
-    locked = Cpt(PytmcSignal, ':LOCKED', io='i', kind='omitted',
-                 doc='True if the PLC will not permit config edits here.')
-    valid = Cpt(PytmcSignal, ':VALID', io='i', kind='omitted',
-                doc='True if the state is defined (not empty).')
 
 
 class TwinCATStateConfigDynamic(Device):
@@ -527,15 +520,16 @@ class TwinCATStateConfigDynamic(Device):
     Configuration of a variable number of TwinCAT states.
 
     This will become an instance with a number of config states based on the
-    input "count" keyword-only required argument.
+    input "state_count" and "motor_count" keyword-only required arguments.
 
     Under the hood, this creates classes dynamically and stores them for later
     use. Classes created here will pass an
     isinstance(cls, TwinCATStateConfigDynamic) check, and two devices with
-    the same number of states will use the same class from the registry.
+    the same number of states and motors will use the same class from the
+    registry.
     """
     _state_config_registry: ClassVar[
-        dict[int, TwinCATStateConfigDynamic]
+        dict[tuple[int, int], TwinCATStateConfigDynamic]
     ] = {}
     _config_cls: ClassVar[type] = TwinCATStateConfigOne
     _class_prefix: ClassVar[str] = 'StateConfig'
@@ -545,30 +539,53 @@ class TwinCATStateConfigDynamic(Device):
         prefix: str,
         *,
         state_count: int,
+        motor_count: int,
         **kwargs
     ):
         try:
-            new_cls = cls._state_config_registry[state_count]
+            # Check if the dynamic class already exists
+            new_cls = cls._state_config_registry[(state_count, motor_count)]
         except KeyError:
-            new_cls = type(
-                f'{cls._class_prefix}{state_count}',
-                (cls,),
-                {
-                    get_dynamic_state_attr(num):
-                    Cpt(
-                        cls._config_cls,
-                        f':{num:02}',
-                        kind='config',
-                    )
-                    for num in range(1, state_count + 1)
-                }
-            )
+            # Commit to making a new class
+            cls_name = f'{cls._class_prefix}m{motor_count}s{state_count}'
+            if motor_count == 1:
+                # Backwards compatibility with existing 1d states: no motor count
+                new_cls = type(
+                    cls_name,
+                    (cls,),
+                    {
+                        get_dynamic_state_attr(state_index=snum):
+                        Cpt(
+                            cls._config_cls,
+                            f':{snum:02}',
+                            kind='config',
+                        )
+                        for snum in range(1, state_count + 1)
+                    }
+                )
+            else:
+                # More than one motor: must include motor count in cpt name
+                new_cls = type(
+                    cls_name,
+                    (cls,),
+                    {
+                        get_dynamic_state_attr(state_index=snum, motor_index=mnum):
+                        Cpt(
+                            cls._config_cls,
+                            f':M{mnum}:{snum:02}',
+                            kind='config',
+                        )
+                        for snum in range(1, state_count + 1)
+                        for mnum in range(1, motor_count + 1)
+                    }
+                )
             cls._state_config_registry[state_count] = new_cls
         return super().__new__(new_cls)
 
-    def __init__(self, *args, state_count, **kwargs):
-        # This is unused, but it can't be allowed to pass into **kwargs
+    def __init__(self, *args, state_count, motor_count, **kwargs):
+        # These are unused, but can't be allowed to pass into **kwargs
         self.state_count = state_count
+        self.motor_count = motor_count
         super().__init__(*args, **kwargs)
 
 
@@ -593,7 +610,10 @@ class FakeTwinCATStateConfigDynamic(TwinCATStateConfigDynamic):
 fake_device_cache[TwinCATStateConfigDynamic] = FakeTwinCATStateConfigDynamic
 
 
-def get_dynamic_state_attr(state_index: int) -> str:
+def get_dynamic_state_attr(
+    state_index: int,
+    motor_index: int = 0,
+) -> str:
     """
     Get the attr string associated with a single state index.
 
@@ -601,23 +621,77 @@ def get_dynamic_state_attr(state_index: int) -> str:
     TwinCATStateConfigDynamic called "state05". Therefore,
     get_dynamic_state_attr(5) == "state05".
 
-    This is only applicable for integers between 1
-    and the TWINCAT_MAX_STATES global variable, inclusive.
+    For a multi-dimensional states class, the motor index would
+    be nonzero and included in the attribute name. For example,
+    motor 3's state 2 should be
+    get_dynamic_state_attr(2, 3) == "m03_state02"
 
     Parameters
     ----------
     state_index : int
         The index of the state.
+    motor_index : int
+        The index of the motor. Zero has a special meaning here of
+        "there is only one motor".
 
     Returns
     -------
     state_attr : str
         The corresponding attribute name.
     """
-    return f'state{state_index:02}'
+    state_attr = f"state{state_index:02}"
+    if motor_index == 0:
+        return state_attr
+    else:
+        return f"m{motor_index}_{state_attr}"
 
 
-def state_config_dotted_names(state_count: int) -> list[str | None]:
+def state_config_dotted_attribute(
+    config_attr: str,
+    state_count: int,
+    motor_count: int = 1,
+    first_motor_only: bool = False,
+) -> list[str]:
+    """
+    Returns the full dotted name of all associated state config components.
+
+    Parameters
+    ----------
+    config_attr : str
+        The attribute of TwinCATStateConfigOne to target.
+    state_count : int
+        The number of known states used by the device.
+    motor_count : int, optional
+        The number of motors associated with the states config.
+    first_motor_only : bool, optional
+        If switched to True, only return the dotted names associated with the first
+        motor instead of from all of them. Only valid if motor_count is greater
+        than 1. This is useful in cases where we need to locate specific attributes
+        but only need one set, e.g. state names.
+
+    Returns
+    -------
+    dotted_names : list of str
+        The full dotted names in state enum order, going through all the states
+        of each motor before moving onto the next.
+    """
+    if motor_count == 1:
+        motor_indices = [0]
+    elif first_motor_only:
+        motor_indices = [1]
+    else:
+        motor_indices = range(1, motor_count + 1)
+    return [
+        f"config.{get_dynamic_state_attr(nstate, nmot)}.{config_attr}"
+        for nstate in range(1, state_count + 1)
+        for nmot in motor_indices
+    ]
+
+
+def state_config_dotted_names(
+    state_count: int,
+    motor_count: int = 1,
+) -> list[str | None]:
     """
     Returns the full dotted names of the state config state_name components.
 
@@ -629,19 +703,27 @@ def state_config_dotted_names(state_count: int) -> list[str | None]:
     ----------
     state_count : int
         The number of known states used by the device.
+    motor_count : int, optional
+        The number of motors associated with the states config.
 
     Returns
     -------
     dotted_names : list of str or None
-        The full dotted names in state enum order.
+        The full dotted names in state enum order, going through all the states
+        of each motor before moving onto the next.
     """
-    return [None] + [
-        f'config.{get_dynamic_state_attr(num)}.state_name'
-        for num in range(1, state_count + 1)
-    ]
+    return [None] + state_config_dotted_attribute(
+        config_attr="state_name",
+        state_count=state_count,
+        motor_count=motor_count,
+        first_motor_only=True,
+    )
 
 
-def state_config_dotted_velos(state_count: int) -> list[str | None]:
+def state_config_dotted_velos(
+    state_count: int,
+    motor_count: int = 1,
+) -> list[str]:
     """
     Returns the full dotted names of the state config velo components.
 
@@ -652,16 +734,20 @@ def state_config_dotted_velos(state_count: int) -> list[str | None]:
     ----------
     state_count : int
         The number of known states used by the device.
+    motor_count : int, optional
+        The number of motors associated with the states config.
 
     Returns
     -------
     dotted_names : list of str
-        The full dotted names in state enum order.
+        The full dotted names in state enum order, going through all the states
+        of each motor before moving onto the next.
     """
-    return [
-        f'config.{get_dynamic_state_attr(num)}.velo'
-        for num in range(1, state_count + 1)
-    ]
+    return state_config_dotted_attribute(
+        config_attr="velo",
+        state_count=state_count,
+        motor_count=motor_count,
+    )
 
 
 class TwinCATStatePositioner(StatePositioner):
@@ -675,7 +761,11 @@ class TwinCATStatePositioner(StatePositioner):
     Use `TwinCATInOutPositioner` instead if the device has clear inserted and
     removed states.
 
-    Does not need to be subclassed to be used.
+    Does not need to be subclassed to be used, unless you would like to
+    customize the number of states by adjusting config's state_count.
+    See `Example3DStates` in example.py for an example on how to adjust the
+    state_count and motor_count.
+
     `states_list` does not have to be provided in a subclass.
 
     Parameters
@@ -697,7 +787,7 @@ class TwinCATStatePositioner(StatePositioner):
         EpicsSignalEditMD,
         ":GET_RBV",
         write_pv=":SET",
-        enum_attrs=state_config_dotted_names(TWINCAT_MAX_STATES),
+        enum_attrs=state_config_dotted_names(state_count=TWINCAT_MAX_STATES, motor_count=1),
         kind="hinted",
         doc="Setpoint and readback for TwinCAT state position.",
     )
@@ -720,6 +810,7 @@ class TwinCATStatePositioner(StatePositioner):
         TwinCATStateConfigDynamic,
         '',
         state_count=TWINCAT_MAX_STATES,
+        motor_count=1,
         kind='omitted',
         doc='Configuration of state positions, deltas, etc.',
     )
@@ -762,16 +853,18 @@ class TwinCATStatePositioner(StatePositioner):
         # We need to adjust the state enum_attrs appropriately if
         # state_count was updated.
         state_count = cls.config.kwargs['state_count']
-        parent_count = cls.mro()[1].config.kwargs['state_count']
-        if state_count != parent_count:
+        parent_state_count = cls.mro()[1].config.kwargs['state_count']
+        motor_count = cls.config.kwargs['motor_count']
+        parent_motor_count = cls.mro()[1].config.kwargs['motor_count']
+        if state_count != parent_state_count or motor_count != parent_motor_count:
             cls.state = copy.deepcopy(cls.state)
             cls.state.kwargs['enum_attrs'] = (
-                state_config_dotted_names(state_count)
+                state_config_dotted_names(state_count=state_count, motor_count=motor_count)
             )
             cls.state_velo = copy.deepcopy(cls.state_velo)
             cls.state_velo.kwargs['attrs'] = [
                 name for name in
-                state_config_dotted_velos(state_count)
+                state_config_dotted_velos(state_count=state_count, motor_count=motor_count)
             ]
         # This includes the Device initialization, which assumes our
         # Component instances are finalized.
