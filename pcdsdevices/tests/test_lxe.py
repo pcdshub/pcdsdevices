@@ -175,12 +175,12 @@ def test_laser_timing_delay(lxt):
 
 def test_laser_timing_limits(lxt):
     logger.debug('test_laser_timing_limits')
-    assert lxt.limits == (-10e-6, 10e-6)
+    assert lxt.limits == (-100e-6, 100e-6)
 
     with pytest.raises(ValueError):
-        lxt.mv(11e-6)
+        lxt.mv(110e-6)
     with pytest.raises(ValueError):
-        lxt.mv(-11e-6)
+        lxt.mv(-110e-6)
 
     with pytest.raises(TypeError):
         lxt.limits = 1
