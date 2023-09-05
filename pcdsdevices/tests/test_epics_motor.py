@@ -4,6 +4,8 @@ import logging
 import pytest
 from bluesky import RunEngine
 from bluesky.plan_stubs import close_run, open_run, stage, unstage
+from ophyd.device import Component as Cpt
+from ophyd.signal import AttributeSignal
 from ophyd.sim import make_fake_device
 from ophyd.status import MoveStatus
 from ophyd.status import wait as status_wait
@@ -551,3 +553,83 @@ def test_disconnected_motors(cls):
 @pytest.mark.timeout(5)
 def test_disconnected_offset_motors(cls):
     cls('MOTOR', motor_prefix='MOTOR:PREFIX', name='motor')
+
+
+class LimSetterMotor(fake_class_setup(EpicsMotorInterface)):
+    """
+    Partially fake motor that is picky about its limits
+
+    Simulates some common motor ioc limit setting constraints
+    """
+    # Redirect these signals in a way that gives us easy control
+    low_limit_travel = Cpt(AttributeSignal, '_lim_low')
+    high_limit_travel = Cpt(AttributeSignal, '_lim_high')
+
+    def __init__(self, *args, **kwargs):
+        self._sim_limits = [0, 0]
+        super().__init__(*args, **kwargs)
+
+    @property
+    def _lim_low(self):
+        """
+        Route low_limit_travel.get to our sim limits
+        """
+        return self._sim_limits[0]
+
+    @_lim_low.setter
+    def _lim_low(self, val):
+        """
+        Clamp low limit to <= high limit
+        """
+        if val <= self._sim_limits[1]:
+            self._sim_limits[0] = val
+        else:
+            self._sim_limits[0] = self._sim_limits[1]
+
+    @property
+    def _lim_high(self):
+        """
+        Route high_limit_travel.get to our sim limits
+        """
+        return self._sim_limits[1]
+
+    @_lim_high.setter
+    def _lim_high(self, val):
+        """
+        Clamp high limit to >= low limit
+        """
+        if val >= self._sim_limits[0]:
+            self._sim_limits[1] = val
+        else:
+            self._sim_limits[1] = self._sim_limits[0]
+
+
+def test_limits_setter():
+    mot = LimSetterMotor('', name='mot')
+
+    def lims():
+        return (mot.low_limit_travel.get(), mot.high_limit_travel.get())
+
+    # Default
+    assert lims() == (0, 0)
+    # Basic
+    mot.limits = (-10, 10)
+    assert lims() == (-10, 10)
+    # Metacheck of LimSetterMotor
+    mot.low_limit_travel.put(30)
+    assert lims() == (10, 10)
+    mot.high_limit_travel.put(0)
+    assert lims() == (10, 10)
+    # Swapped + above range
+    mot.limits = (-10, 10)
+    mot.limits = (40, 20)
+    assert lims() == (20, 40)
+    # 3 elems
+    with pytest.raises(ValueError):
+        mot.limits = (20, 30, 40)
+    # Below range
+    mot.limits = (-100, -50)
+    assert lims() == (-100, -50)
+    # Same twice
+    mot.limits = (90, 90)
+    assert lims() == (0, 0)

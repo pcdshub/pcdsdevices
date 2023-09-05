@@ -24,6 +24,7 @@ from pcdsdevices.pv_positioner import PVPositionerComparator
 
 from .device import UpdateComponent as UpCpt
 from .doc_stubs import basic_positioner_init
+from .eps import EPS
 from .interface import FltMvInterface
 from .pseudopos import OffsetMotorBase, delay_class_factory
 from .registry import device_registry
@@ -177,16 +178,42 @@ Limit Switch: {switch_limits}
 """
 
     @property
-    def limits(self):
+    def limits(self) -> tuple[float, float]:
         """Override the limits attribute"""
         return self._get_epics_limits()
 
-    def _get_epics_limits(self):
+    def _get_epics_limits(self) -> tuple[float, float]:
         limits = self.user_setpoint.limits
         if limits is None or limits == (None, None):
             # Not initialized
             return (0, 0)
         return limits
+
+    @limits.setter
+    def limits(self, lims: tuple[float, float]):
+        """
+        Write to the epics limits on setattr
+
+        Expects a tuple of two elements, the low and high limits to set.
+        """
+        # Wrong len is probably a bigger mistake
+        if len(lims) != 2:
+            raise ValueError("Limits should be a tuple of 2 values.")
+        # Adjust for moment of dsylexia
+        low = min(lims)
+        high = max(lims)
+        if low == high:
+            # User probably meant to disable limits
+            low = 0
+            high = 0
+        orig_high = self.high_limit_travel.get()
+        if low > orig_high:
+            # Set high first so we make room for low
+            self.high_limit_travel.put(high)
+            self.low_limit_travel.put(low)
+        else:
+            self.low_limit_travel.put(low)
+            self.high_limit_travel.put(high)
 
     def enable(self):
         """
@@ -1057,15 +1084,23 @@ class MMC100(PCDSMotorBase):
 
 
 class BeckhoffAxisPLC(Device):
-    """Error handling for the Beckhoff Axis PLC code."""
+    """
+    Error handling, debug, and aux functions for the Beckhoff Axis PLC code.
+    """
     status = Cpt(PytmcSignal, 'sErrorMessage', io='i', kind='normal',
                  string=True, doc='PLC error or warning')
     err_bool = Cpt(PytmcSignal, 'bError', io='i', kind='normal',
                    doc='True if there is some sort of error.')
     err_code = Cpt(PytmcSignal, 'nErrorId', io='i', kind='normal',
                    doc='Current NC error code')
-    cmd_err_reset = Cpt(EpicsSignal, 'bReset', kind='normal',
+    cmd_err_reset = Cpt(PytmcSignal, 'bReset', io='io', kind='normal',
                         doc='Command to reset an active error')
+    enc_count = Cpt(PytmcSignal, 'nEncoderCount', io='i', kind='normal',
+                    doc='Raw encoder count for this motor.')
+    posdiff = Cpt(PytmcSignal, 'fPosDiff', io='i', kind='normal',
+                  doc='Difference between trajectory setpoint and readback.')
+    hardware_enable = Cpt(PytmcSignal, 'bHardwareEnable', io='i', kind='normal',
+                          doc='TRUE if motor has its hardware enable.')
     cmd_home = Cpt(PytmcSignal, 'bHomeCmd', io='o', kind='normal',
                    doc='Start TwinCAT homing routine.')
     home_pos = Cpt(PytmcSignal, 'fHomePosition', io='io', kind='config',
@@ -1078,6 +1113,19 @@ class BeckhoffAxisPLC(Device):
     set_metadata(cmd_home, dict(variety='command-proc',
                                 value=1,
                                 tags={"confirm"}))
+
+
+class BeckhoffAxisPLCEPS(BeckhoffAxisPLC):
+    """
+    Extended BeckhoffAxisPLC with relevant EPS fields.
+
+    This is to be used in BeckhoffAxisEPS for cases when the motor
+    has EPS considerations. Otherwise, these fields are not active
+    in PLC logic and are distracting or confusing.
+    """
+    eps_forward = Cpt(EPS, "stEPSF:", doc="EPS forward enables.")
+    eps_backward = Cpt(EPS, "stEPSB:", doc="EPS backward enables.")
+    eps_power = Cpt(EPS, "stEPSP:", doc="EPS power enables.")
 
 
 class BeckhoffAxis(EpicsMotorInterface):
@@ -1094,7 +1142,7 @@ class BeckhoffAxis(EpicsMotorInterface):
     tab_whitelist = ['clear_error']
 
     plc = Cpt(BeckhoffAxisPLC, ':PLC:', kind='normal',
-              doc='PLC error handling.')
+              doc='PLC error handling and aux functions.')
     motor_spmg = Cpt(EpicsSignal, '.SPMG', kind='config',
                      doc='Stop, Pause, Move, Go')
 
@@ -1239,10 +1287,23 @@ class BeckhoffAxis(EpicsMotorInterface):
             )
 
 
+class BeckhoffAxisEPS(BeckhoffAxis):
+    """
+    A beckhoff axis where the EPS indicators are relevant.
+
+    This is to be used for cases when the motor has EPS considerations.
+    Otherwise, these fields are not active in PLC logic and are distracting
+    or confusing.
+    """
+    plc = Cpt(BeckhoffAxisPLCEPS, ':PLC:', kind='normal',
+              doc='PLC error handling, aux functions, and EPS.')
+
+
 class BeckhoffAxisPLC_Pre140(BeckhoffAxisPLC):
     """
     Disable some newly introduced signals.
     """
+    posdiff = None
     cmd_home = None
     home_pos = None
     user_enable = None
@@ -1257,7 +1318,7 @@ class BeckhoffAxis_Pre140(BeckhoffAxis):
     introduced.
     """
     plc = Cpt(BeckhoffAxisPLC_Pre140, ':PLC:', kind='normal',
-              doc='PLC error handling.')
+              doc='PLC error handling and aux functions.')
 
     def home(self, *args, **kwargs):
         """
@@ -1390,6 +1451,12 @@ class SmarAct(EpicsMotorInterface):
     """
     # Positioner type - only useful for encoded stages
     pos_type = Cpt(EpicsSignal, ':PTYPE_RBV', write_pv=':PTYPE', kind='config')
+
+    # Calibration - only works for encoded stages
+    needs_calib = Cpt(EpicsSignalRO, ':NEED_CALIB', kind='config')
+
+    do_calib = Cpt(EpicsSignal, ':DO_CALIB.PROC', kind='config')
+    set_metadata(do_calib, dict(variety='command-proc', value=1))
 
     # These PVs will probably not be needed for most encoded motors, but can be
     # useful

@@ -280,9 +280,13 @@ def test_auto_states():
 def test_twincat_state_config_dynamic():
     logger.debug('test_twincat_state_config_dynamic')
 
-    def check_class(cls, state_count):
+    def check_class(cls, state_count, motor_count=1):
         assert cls.config.kwargs['state_count'] == state_count, (
             f"Found the wrong state count for {cls}, "
+            "must be some error related to UpdateComponent."
+        )
+        assert cls.config.kwargs['motor_count'] == motor_count, (
+            f"Found the wrong motor count for {cls}, "
             "must be some error related to UpdateComponent."
         )
         assert len(cls.state.kwargs['enum_attrs']) == state_count + 1, (
@@ -306,11 +310,17 @@ def test_twincat_state_config_dynamic():
 
     check_class(EmbStates, 3)
 
+    class State2D(TwinCATStatePositioner):
+        config = UpCpt(state_count=2, motor_count=2)
+
+    check_class(State2D, 2, 2)
+
     class DeviceWithStates(Device):
         state = Cpt(EmbStates, 'TST', kind='normal')
 
     FakeStandaloneStates = make_fake_device(StandaloneStates)
     FakeDeviceWithStates = make_fake_device(DeviceWithStates)
+    FakeState2D = make_fake_device(State2D)
 
     all_states = TwinCATStatePositioner('ALL:STATES', name='all_states')
     for name in state_config_dotted_names(TWINCAT_MAX_STATES):
@@ -334,6 +344,15 @@ def test_twincat_state_config_dynamic():
     with pytest.raises(AttributeError):
         states3.state.config.state04
 
+    states_2d = State2D('STATES:2D:', name='states_2d')
+    for name in ('m1_state01', 'm2_state01', 'm1_state02', 'm2_state02'):
+        assert name in states_2d.config.component_names
+        getattr(states_2d.config, name)
+    with pytest.raises(AttributeError):
+        states_2d.config.m3_state01
+    with pytest.raises(AttributeError):
+        states_2d.config.m1_state03
+
     fake_states2 = FakeStandaloneStates('STATES2:', name='fake_states2')
     for name in ('state01', 'state02'):
         assert name in fake_states2.config.component_names
@@ -347,5 +366,14 @@ def test_twincat_state_config_dynamic():
         getattr(fake_states3.state.config, name)
     with pytest.raises(AttributeError):
         fake_states3.state.config.state04
+
+    fake_states_2d = FakeState2D('STATES:2D:', name='states_2d')
+    for name in ('m1_state01', 'm2_state01', 'm1_state02', 'm2_state02'):
+        assert name in fake_states_2d.config.component_names
+        getattr(fake_states_2d.config, name)
+    with pytest.raises(AttributeError):
+        fake_states_2d.config.m3_state01
+    with pytest.raises(AttributeError):
+        fake_states_2d.config.m1_state03
 
     all_states.destroy()

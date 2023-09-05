@@ -7,6 +7,7 @@ from ophyd import FormattedComponent as FCpt
 from . import utils as key_press
 from .device import GroupDevice
 from .interface import BaseInterface
+from .signal import PytmcSignal
 
 
 class Acromag(BaseInterface, GroupDevice):
@@ -220,3 +221,28 @@ class Mesh(BaseInterface, Device):
                 self.set_rel_mesh_voltage(-delta_hv_sp, wait=False)
             if test_flag:
                 return
+
+
+class FDQ(BaseInterface, Device):
+    """
+    A collection of PVs to inteface python with a Keyence FDQ Flow Meter.
+    """
+    tab_whitelist = ['get_flow_rate', 'get_flow_offset',
+                     'set_flow_offset']
+    flow_res = Cpt(PytmcSignal, ':FWM:RES', io='i', kind='config',
+                   doc='Flow meter resolution')
+    flow_off = Cpt(PytmcSignal, ':FWM:OFF', io='io', kind='config',
+                   doc='Flow meter offset')
+    flow_val = Cpt(PytmcSignal, ':FWM:VAL', io='i', kind='normal',
+                   doc='Flow meter value')
+
+    @property
+    def get_flow_rate(self):
+        return self.flow_val.get()
+
+    def set_flow_offset(self, offset):
+        return self.flow_off.put(offset)
+
+    @property
+    def get_flow_offset(self):
+        return self.flow_off.get()
