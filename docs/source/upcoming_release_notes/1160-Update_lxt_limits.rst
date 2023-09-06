@@ -23,7 +23,7 @@ Bugfixes
 
 Maintenance
 -----------
-- Update limits from +/-10us to +/-100us
+- N/A
 
 Contributors
 ------------
