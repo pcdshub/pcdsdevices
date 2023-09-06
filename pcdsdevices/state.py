@@ -509,21 +509,10 @@ class TwinCATStateConfigOne(Device):
                      doc='The defined state name.')
     setpoint = Cpt(PytmcSignal, ':SETPOINT', io='io', kind='config',
                    doc='The corresponding motor set position.')
-    delta = Cpt(PytmcSignal, ':DELTA', io='io', kind='config',
-                doc='The deviation from setpoint that still counts '
-                    'as at the position.')
     velo = Cpt(PytmcSignal, ':VELO', io='io', kind='config',
                doc='Velocity to move to the state at.')
-    accl = Cpt(PytmcSignal, ':ACCL', io='io', kind='omitted',
-               doc='Acceleration to move to the state with.')
-    dccl = Cpt(PytmcSignal, ':DCCL', io='io', kind='omitted',
-               doc='Deceleration to move to the state with.')
     move_ok = Cpt(PytmcSignal, ':MOVE_OK', io='i', kind='omitted',
                   doc='True if a move to this state is allowed.')
-    locked = Cpt(PytmcSignal, ':LOCKED', io='i', kind='omitted',
-                 doc='True if the PLC will not permit config edits here.')
-    valid = Cpt(PytmcSignal, ':VALID', io='i', kind='omitted',
-                doc='True if the state is defined (not empty).')
 
 
 class TwinCATStateConfigDynamic(Device):
