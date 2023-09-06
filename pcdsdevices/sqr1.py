@@ -4,6 +4,7 @@
 """
 
 import logging
+import typing
 
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -22,6 +23,16 @@ class SQR1Axis(PVPositionerIsClose):
     actuate_value = 1
     stop_signal = FCpt(EpicsSignal, '{prefix}:KILL', kind='normal')
     stop_value = 1
+
+    def __init__(self,
+                 prefix,
+                 axis: str,
+                 sync_setpoints: typing.Callable = None,
+                 **kwargs
+                 ):
+        self._axis = axis  # axis values {X, Y, Z, rX, rY, rZ}
+        self._sync_setpoints = sync_setpoints
+        super().__init__(prefix, **kwargs)
 
     def move(self,
              position: float,
@@ -122,8 +133,10 @@ class SQR1(Device):
 
         status = x_status & y_status & z_status & rx_status & +\
             ry_status & rz_status
+        if wait:
+            status_wait(status)
 
-        return status_wait(status) if wait else status
+        return status
 
     def stop(self):
         self.stop_signal.put(1)
