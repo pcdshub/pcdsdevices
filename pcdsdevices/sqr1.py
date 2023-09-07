@@ -19,15 +19,15 @@ logger = logging.getLogger(__name__)
 class SQR1Axis(PVPositionerIsClose):
     setpoint = FCpt(EpicsSignal, '{prefix}:TARGET:{_axis}', kind='normal')
     readback = FCpt(EpicsSignal, '{prefix}:TARGET:{_axis}:RBV', kind='hinted')
-    actuate = FCpt(EpicsSignal, '{prefix}:MOV', kind='normal')
+    actuate = Cpt(EpicsSignal, '{prefix}:MOV', kind='normal')
     actuate_value = 1
-    stop_signal = FCpt(EpicsSignal, '{prefix}:KILL', kind='normal')
+    stop_signal = Cpt(EpicsSignal, '{prefix}:KILL', kind='normal')
     stop_value = 1
 
     def __init__(self,
                  prefix,
                  axis: str,
-                 sync_setpoints: typing.Callable = None,
+                 sync_setpoints: typing.Callable | None = None,
                  **kwargs
                  ):
         self._axis = axis  # axis values {X, Y, Z, rX, rY, rZ}
