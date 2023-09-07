@@ -269,7 +269,7 @@ class LaserTiming(FltMvInterface, PVPositioner):
                    original_units='ns',
                    kind='hinted',
                    doc='Setpoint which handles the timing conversion.',
-                   limits=(-10e-6, 10e-6),
+                   limits=(-100e-6, 100e-6),
                    )
     notepad_setpoint = Cpt(NotepadLinkedSignal, ':lxt:OphydSetpoint',
                            notepad_metadata={'record': 'ao',
@@ -464,7 +464,7 @@ class LaserTimingCompensation(SyncAxesBase):
     ``txt`` and ``lxt``, respectively.
     """
     tab_component_names = True
-    pseudo = Cpt(PseudoSingleInterface, limits=(-10e-6, 10e-6))
+    pseudo = Cpt(PseudoSingleInterface, limits=(-100e-6, 100e-6))
     delay = UCpt(_ReversedTimeToolDelay, doc='The **reversed** txt motor')
     laser = UCpt(LaserTiming, doc='The lxt motor')
 
@@ -489,7 +489,7 @@ class LxtTtcExample(SyncAxis):
     scales = {'txt': -1}
     warn_deadband = 5e-14
     fix_sync_keep_still = 'lxt'
-    sync_limits = (-10e-6, 10e-6)
+    sync_limits = (-100e-6, 100e-6)
 
 
 class FakeLxtTtc(LxtTtcExample):
