@@ -138,19 +138,19 @@ class SQR1(Device):
 
     Attributes:
         x (SQR1Axis): An instance of the `SQR1Axis` class representing
-        the X-axis.
+                      the X-axis.
         y (SQR1Axis): An instance of the `SQR1Axis` class representing
-        the Y-axis.
+                      the Y-axis.
         z (SQR1Axis): An instance of the `SQR1Axis` class representing
-        the Z-axis.
+                      the Z-axis.
         rx (SQR1Axis): An instance of the `SQR1Axis` class representing
-        the rX-axis.
+                       the rX-axis.
         ry (SQR1Axis): An instance of the `SQR1Axis` class representing
-        the rY-axis.
+                       the rY-axis.
         rz (SQR1Axis): An instance of the `SQR1Axis` class representing
-        the rZ-axis.
-        stop_signal (EpicsSignal): An EPICS signal for stopping the motion
-        of the entire tri-sphere motion system.
+                       the rZ-axis.
+        stop_signal (EpicsSignal): An EPICS signal for stopping the motion of
+                                   the entire tri-sphere motion system.
 
     Args:
         prefix (str): The EPICS PV prefix for the motion system.
