@@ -156,14 +156,15 @@ class SQR1(Device):
         prefix (str): The EPICS PV prefix for the motion system.
         name (str): The name for this device.
         kind (str or None, optional): The kind of device
-        (e.g., 'detector', 'motor').
+                                      (e.g., 'detector', 'motor').
         read_attrs (list or None, optional): List of attribute names to be
-        read when reading this device.
+                                             read when reading this device.
         configuration_attrs (list or None, optional): List of attribute names
-        to be configured when configuring this device.
+                                                      to be configured when
+                                                      configuring this device.
         parent (Device or None, optional): The parent device, if applicable.
         **kwargs: Additional keyword arguments to pass to the base
-        class constructor.
+                  class constructor.
 
     Methods:
         sync_setpoints(): Synchronize the setpoints of all axes to their
