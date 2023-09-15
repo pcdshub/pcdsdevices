@@ -11,9 +11,7 @@ Features
 
 Device Updates
 --------------
-- LaserTiming
-- LaserTimingCompensation
-- LxtTtcExample
+- Updates limits for LaserTiming, LaserTimingCompensation, and LxtTtcExample from +/-10us to +/-100us
 
 New Devices
 -----------
@@ -25,8 +23,8 @@ Bugfixes
 
 Maintenance
 -----------
-- Update limits from +/-10us to +/-100us
+- N/A
 
 Contributors
 ------------
-- espov
+- vespos
