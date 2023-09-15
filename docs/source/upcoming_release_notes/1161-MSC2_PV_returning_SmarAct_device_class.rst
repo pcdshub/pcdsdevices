@@ -7,7 +7,7 @@ API Changes
 
 Features
 --------
-- _GetMotorClass: Add MSC2 PV to motor_types and link it to SmarAct device class
+- _GetMotorClass: Add MCS2 PV to motor_types and link it to SmarAct device class
 
 Device Updates
 --------------
