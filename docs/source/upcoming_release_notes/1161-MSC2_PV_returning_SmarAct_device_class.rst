@@ -1,4 +1,4 @@
-1161 MSC2 PV returning SmarAct device class
+1161 MCS2 PV returning SmarAct device class
 #################
 
 API Changes
