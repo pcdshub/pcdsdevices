@@ -1,4 +1,4 @@
-1162 IM3L0_class_and_detailed_screen
+B1162 IM3L0_class_and_detailed_screen
 #################
 
 API Changes
@@ -8,7 +8,7 @@ API Changes
 Features
 --------
 - Added blank subclass of PPM, IM3L0, to allow for screens specific to this device that don't interfere with other PPM devices
-- Added IM3L0.detailed.ui template to add embedded Keithley readout screen to detailed screen for IM3L0 
+- Added IM3L0.detailed.ui template to add embedded Keithley readout screen to detailed screen for IM3L0
 
 Device Updates
 --------------
