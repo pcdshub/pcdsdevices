@@ -1476,7 +1476,8 @@ def _GetMotorClass(basepv):
                    ('MMC', MMC100),
                    ('MMB', BeckhoffAxis),
                    ('PIC', PCDSMotorBase),
-                   ('MCS', SmarAct))
+                   ('MCS', SmarAct),
+                   ('MCS2', SmarAct))
     # Search for component type in prefix
     for cpt_abbrev, _type in motor_types:
         if f':{cpt_abbrev}:' in basepv:
@@ -1516,6 +1517,8 @@ def Motor(prefix, **kwargs):
     | PIC           | :class:`.PCDSMotorBase` |
     +---------------+-------------------------+
     | MCS           | :class:`.SmarAct`       |
+    +---------------+-------------------------+
+    | MCS2          | :class:`.SmarAct`       |
     +---------------+-------------------------+
 
     Parameters
