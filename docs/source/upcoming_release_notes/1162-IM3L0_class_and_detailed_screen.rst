@@ -12,7 +12,6 @@ Features
 
 Device Updates
 --------------
-- No updates at time of commit, but will change device_type of im3l0 from PPM to IM3L0
 
 New Devices
 -----------
