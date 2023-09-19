@@ -559,6 +559,17 @@ class IM2K0(LCLS2ImagerBase):
     # Nothing else! No power meter, no zoom/focus, no filter wheel...
 
 
+class IM3L0(PPM):
+    """
+    One-off subclass of PPM to add Keithley readout to this device's detailed screen.
+
+    Identical to PPM class, but has an altered detailed screen that adds an embedded
+    pydm display that allows acces to the Keithley monitoring this device; subclass
+    allows for adding Keithley readout to only this device instead of all PPM instances.
+    """
+    pass
+
+
 class PPMCOOL(PPM):
     """
     L2SI's Power and Profile Monitor design with cooling.
