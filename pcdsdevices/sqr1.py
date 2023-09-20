@@ -1,22 +1,13 @@
 """
-Ophyd class for square-one tri-sphere motion system
-(https://www.sqr-1.com/tsp.html)
+Module for square-one tri-sphere motion system.
 
-This module defines Ophyd (python based hardware abstraction and
-interfacing library) classes for controlling a square-one tri-sphere motion
+An Ophyd classes for controlling a square-one tri-sphere motion
 system. The motion system consists of multiple axes, each of which can be
-controlled individually. The axes include X, Y, Z, rX, rY, and rZ.
+controlled individually or collectively.
+The axes include X, Y, Z, rX, rY, and rZ.
 
-Classes:
-- SQR1Axis: A class representing a single axis of the tri-sphere motion system.
-It inherits from PVPositionerIsClose and includes attributes for setpoint,
-readback, actuation, and stopping the motion.
-
-- SQR1: A class representing the entire tri-sphere motion system.
-It is a Device that aggregates multiple SQR1Axis instances for each axis.
-It also includes methods for multi-axis movement and stopping the motion.
+Reference: https://www.sqr-1.com/tsp.html
 """
-
 from __future__ import annotations
 
 import enum
@@ -36,61 +27,56 @@ logger = logging.getLogger(__name__)
 class Axis(str, enum.Enum):
     """
     An enumeration representing axes available in tri-sphere table stage.
-    This enumeration defines the following axes:
-    - `X`: X-axis translation
-    - `Y`: Y-axis translation
-    - `Z`: Z-axis translation
-    - `rX`: X-axis rotation
-    - `rY`: Y-axis rotation
-    - `rZ`: Z-axis rotation
+
+    - 'X': X-axis translation
+    - 'Y': Y-axis translation
+    - 'Z': Z-axis translation
+    - 'rX': X-axis rotation
+    - 'rY': Y-axis rotation
+    - 'rZ': Z-axis rotation
     """
 
-    X = "X"
-    Y = "Y"
-    Z = "Z"
-    rX = "rX"
-    rY = "rY"
-    rZ = "rZ"
+    X = 'X'
+    Y = 'Y'
+    Z = 'Z'
+    rX = 'rX'
+    rY = 'rY'
+    rZ = 'rZ'
 
 
 class SQR1Axis(PVPositionerIsClose):
     """
-    This class represents and controls a single axis of the square-one
-    tri-sphere motion system using EPICS PVs (Process Variables).
-    It is a subclass of PVPositionerIsClose and includes attributes for setting
-    the setpoint, reading back the current position,
-    actuating the motion, and stopping the motion.
+    Single axis of the square-one tri-sphere motion system.
 
-    Attributes:
-        setpoint (EpicsSignal): An EPICS signal for setting the desired
-        position of the axis.
-        readback (EpicsSignal): An EPICS signal for reading back the current
-        position of the axis.
-        actuate (EpicsSignal): An EPICS signal for initiating the motion of
-        the axis.
-        actuate_value (any, optional): The value to be set on the 'actuate'
-        signal to initiate motion (default is 1).
-        stop_signal (EpicsSignal): An EPICS signal for stopping the motion of
-        the axis.
-        stop_value (any, optional): The value to be set on the 'stop_signal'
-        to stop motion (default is 1).
+    A PVPositionerIsClose subclass that includes attributes for setting
+    the setpoint, reading back the current position, actuating the motion,
+    and stopping the motion.
 
-    Args:
-        prefix (str): The EPICS PV prefix for this axis.
-        axis (str): The axis identifier ('X', 'Y', 'Z', 'rX', 'rY', 'rZ').
-        sync_setpoints (callable or None): A callback function to synchronize
-            setpoints before moving the axis (default is None).
-        **kwargs: Additional keyword arguments to pass to the base class
-        constructor.
+    Parameters
+    ----------
+    prefix : str
+        The EPICS PV prefix for this axis.
+    axis : str
+        The axis identifier ('X', 'Y', 'Z', 'rX', 'rY', 'rZ').
+    sync_setpoints : callable or None, optional
+        A callback function to synchronize setpoints before moving the axis.
+    ``**kwargs`` : dict
+        Additional keyword arguments to pass to the base class constructor
 
-    Methods:
-        move(position,
-             wait=True,
-             timeout=None,
-             moved_cb=None,
-             sync_enable=True
-             ):
-            Move the axis to the specified position.
+    Attributes
+    ----------
+    setpoint : `ophyd.signal.EpicsSignal`
+        An EPICS signal for setting the desired position of the axis.
+    readback : `ophyd.signal.EpicsSignal`
+        An EPICS signal for reading back the current position of the axis.
+    actuate : `ophyd.signal.EpicsSignal`
+        An EPICS signal for initiating the motion of the axis.
+    actuate_value : any, optional
+        The value to be set on the 'actuate' signal to initiate motion.
+    stop_signal : `ophyd.signal.EpicsSignal`
+        An EPICS signal for stopping the motion of the axis.
+    stop_value : any, optional
+        The value to be set on the 'stop_signal' to stop motion.
 
     Example:
         >>> axis_x = SQR1Axis(prefix="SQR1:AXIS_X", axis="X")
@@ -123,6 +109,33 @@ class SQR1Axis(PVPositionerIsClose):
         moved_cb: typing.Callable | None = None,
         sync_enable: bool = True,
     ):
+        """
+        Move the axis to the specified position.
+
+        Parameters
+        ----------
+        position : float
+            The desired position to move the axis to.
+        wait : bool, optional
+            If `True` (default), wait for motion to complete before returning.
+            If `False`, return immediately after initiating the motion.
+        timeout : float, optional
+            The maximum time (in seconds) to wait for the motion to complete.
+        moved_cb : callable or None, optional
+            A callback function to execute when the motion has completed.
+        sync_enable : bool, optional
+            If `True` (default) synchronize setpoints before moving the axis.
+
+        Returns
+        -------
+        MoveStatus
+            Track the state of a movement from some initial to final position.
+
+        Example
+        -------
+        >>> axis_x = SQR1Axis(prefix="SQR1:AXIS_X", axis="X")
+        >>> axis_x.move(5.0)  # Move the X-axis to position 5.0
+        """
         if sync_enable and self._sync_setpoints:
             self._sync_setpoints()
         return super().move(position, wait, timeout, moved_cb)
@@ -130,55 +143,48 @@ class SQR1Axis(PVPositionerIsClose):
 
 class SQR1(Device):
     """
-    This class represents the entire square-one tri-sphere motion system,
-    which consists of multiple axes (X, Y, Z, rX, rY, rZ) that can be
-    controlled individually. It aggregates instances of the `SQR1Axis` class
-    for each axis and provides methods for multi-axis movement and
+    Ophyd device represents the entire square-one tri-sphere motion system.
+
+    It consists of multiple axes (X, Y, Z, rX, rY, rZ) that can be controlled
+    individually or simultaneously.It aggregates instances of the `SQR1Axis`
+    class for each axis and provides methods for multi-axis movement and
     stopping the motion.
 
-    Attributes:
-        x (SQR1Axis): An instance of the `SQR1Axis` class representing
-                      the X-axis.
-        y (SQR1Axis): An instance of the `SQR1Axis` class representing
-                      the Y-axis.
-        z (SQR1Axis): An instance of the `SQR1Axis` class representing
-                      the Z-axis.
-        rx (SQR1Axis): An instance of the `SQR1Axis` class representing
-                       the rX-axis.
-        ry (SQR1Axis): An instance of the `SQR1Axis` class representing
-                       the rY-axis.
-        rz (SQR1Axis): An instance of the `SQR1Axis` class representing
-                       the rZ-axis.
-        stop_signal (EpicsSignal): An EPICS signal for stopping the motion of
-                                   the entire tri-sphere motion system.
+    Parameters
+    ----------
+    prefix : str, optional
+        The PV prefix for all components of the device
+    name : str, keyword only
+        The name of the device (as will be reported via read()`
+    kind : a member of the :class:`~ophydobj.Kind` :class:`~enum.IntEnum`
+        (or equivalent integer), optional
+        Default is ``Kind.normal``. See :class:`~ophydobj.Kind` for options.
+    read_attrs : sequence of attribute names
+        DEPRECATED: the components to include in a normal reading
+        (i.e., in ``read()``)
+    configuration_attrs : sequence of attribute names
+        DEPRECATED: the components to be read less often (i.e., in
+        ``read_configuration()``) and to adjust via ``configure()``
+    parent : instance or None, optional
+        The instance of the parent device, if applicable
 
-    Args:
-        prefix (str): The EPICS PV prefix for the motion system.
-        name (str): The name for this device.
-        kind (str or None, optional): The kind of device
-                                      (e.g., 'detector', 'motor').
-        read_attrs (list or None, optional): List of attribute names to be
-                                             read when reading this device.
-        configuration_attrs (list or None, optional): List of attribute names
-                                                      to be configured when
-                                                      configuring this device.
-        parent (Device or None, optional): The parent device, if applicable.
-        **kwargs: Additional keyword arguments to pass to the base
-                  class constructor.
-
-    Methods:
-        sync_setpoints(): Synchronize the setpoints of all axes to their
-        respective readback values.
-        multi_axis_move(x_sp=None,
-                        y_sp=None,
-                        z_sp=None,
-                        rx_sp=None,
-                        ry_sp=None,
-                        rz_sp=None,
-                        wait=True,
-                        timeout=10.0):Move multiple axes simultaneously
-        to specified setpoints.
-        stop(): Stop the motion of the entire tri-sphere motion system.
+    Attributes
+    ----------
+    x : `SQR1Axis`
+        An instance of the `SQR1Axis` class representing the X-axis.
+    y : `SQR1Axis`
+        An instance of the `SQR1Axis` class representing the Y-axis.
+    z : `SQR1Axis`
+        An instance of the `SQR1Axis` class representing the Z-axis.
+    rx : `SQR1Axis`
+        An instance of the `SQR1Axis` class representing the rX-axis.
+    ry : `SQR1Axis`
+        An instance of the `SQR1Axis` class representing the rY-axis.
+    rz : `SQR1Axis`
+        An instance of the `SQR1Axis` class representing the rZ-axis.
+    stop_signal : `ophyd.signal.EpicsSignal`
+        An EPICS signal for stopping the motion of the entire tri-sphere
+        motion system.
 
     Example:
         >>> tri_sphere = SQR1(prefix="SQR1:", name="tri_sphere")
@@ -226,10 +232,10 @@ class SQR1(Device):
 
     def sync_setpoints(self):
         """
-        This method has to be called at tri-sphere motion system startup to
-        synchronize the setpoints of multiple axes with their respective
-        readback values to avoid moving uninitialized axes to
-        zero unintentionally.
+        Synchronize setpoints of multiple axes with their respective readback values.
+
+        This method has to be called at tri-sphere motion system startup or
+        to avoid moving uninitialized axes to zero unintentionally.
         """
         logger.debug("sync_setpoint")
         self.x.setpoint.put(self.x.readback.get())
@@ -250,6 +256,50 @@ class SQR1(Device):
         wait: bool = True,
         timeout: float = 30.0,
     ):
+        """
+        Move one or multiple axes simultaneously to specified positions.
+
+        Parameters
+        ----------
+        x_sp : float or None, optional
+            The desired position for the X-axis.If None (default), the current
+            position is used.
+        y_sp : float or None, optional
+            The desired position for the Y-axis.If None (default), the current
+            position is used.
+        z_sp : float or None, optional
+            The desired position for the Z-axis.If None (default), the current
+            position is used.
+        rx_sp : float or None, optional
+            The desired position for the rX-axis.If None (default), the current
+            position is used.
+        ry_sp : float or None, optional
+            The desired position for the rY-axis.If None (default), the current
+            position is used.
+        rz_sp : float or None, optional
+            The desired position for the rZ-axis.If None (default), the current
+            position is used.
+        wait : bool, optional
+            If True (default), wait for motion to complete before returning.
+            If False, return immediately after initiating the motion.
+        timeout : float, optional
+            The maximum time (in seconds) to wait for the motion to complete.
+            Default is 30.0 seconds.
+
+        Returns
+        -------
+        status: MoveStatus
+            status object that combins the motion of all axes.
+
+        Notes
+        -----
+        If any of axes fail to initiate motion, the overall status is False.
+
+        Example
+        -------
+        >>> tri_sphere = SQR1(prefix="SQR1:", name="tri_sphere")
+        >>> status = tri_sphere.multi_axis_move(x_sp=1.0, y_sp=2.0, z_sp=3.0)
+        """
         x_sp = self.x.readback.get() if x_sp is None else x_sp
         y_sp = self.y.readback.get() if y_sp is None else y_sp
         z_sp = self.z.readback.get() if z_sp is None else z_sp
@@ -278,4 +328,5 @@ class SQR1(Device):
         return status
 
     def stop(self):
+        """stop command for all axes."""
         self.stop_signal.put(self.stop_value)
