@@ -1446,7 +1446,7 @@ class LODCM(BaseInterface, GroupDevice, LightpathMixin):
 
     tab_whitelist = ['h1n_state', 'yag', 'dectris', 'diode', 'foil',
                      'remove_dia', 'tower1', 'tower2',
-                     'diag_tower', 'calc', 'E', 'EC', 'ESi', 'tweak_x',
+                     'diag_tower', 'calc', 'E', 'EC', 'ESi', 'E1C', 'tweak_x',
                      'tweakXC']
 
     lightpath_cpts = ['tower1.h1n_state.state']
