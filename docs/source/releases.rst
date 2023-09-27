@@ -7,96 +7,96 @@ v8.0.0 (2023-09-27)
 
 API Breaks
 ----------
-- self.E1C now available to move first tower energy only on LODCMs
-- Remove lens motors
-- Remove rarely-used TwinCAT state config PVs from `TwinCATStateConfigOne`
+- Removes rarely-used TwinCAT state config PVs from `TwinCATStateConfigOne`
   that are also being removed from the IOCs.
   These are still available on the PLC itself.
+
   - ``delta``
   - ``accl``
   - ``dccl``
   - ``locked``
   - ``valid``
 
+- Removes lens motors from `TMOSpectrometer` (``SP1K4``).
+
 Features
 --------
 - EPICS motors now support setattr on their ``limits`` attribute.
   That is, you can do e.g. ``motor.limits = (0, 100)`` to set
   the low limit to 0 and the high limit to 100.
-- Added blank subclass of PPM, IM3L0, to allow for screens specific to this device that don't interfere with other PPM devices
-- Added IM3L0.detailed.ui template to add embedded Keithley readout screen to detailed screen for IM3L0
+- Adds a blank subclass of `PPM`, `IM3L0`, to allow for screens specific to this device that don't interfere with other `PPM` devices.
+- Adds a ``IM3L0.detailed.ui`` template to add embedded Keithley readout screen to detailed screen for `IM3L0`.
+  `IM3L0` has a Keithley multimeter added to it for higher-resolution readouts of its power meter.
 - ND (N-dimensional) TwinCAT states are now supported.
-- Add a new TMOSpectrometerSOLIDATTStates class
-- Updated supported positioner typhos templates to use the new row widget -
+- Updates supported positioner typhos templates to use the new row widget,
   ``TyphosPositionerRowWidget``.
-- _GetMotorClass: Add MCS2 PV to motor_types and link it to SmarAct device class
 
 Device Updates
 --------------
-- Updates limits for LaserTiming, LaserTimingCompensation, and LxtTtcExample from +/-10us to +/-100us
-- Add missing ``pump_state`` (``:STATE_RBV``) signal to ``PTMPLC``.
-- added chin guard RTDs to `FFMirrorZ` in `mirror.py`
-- LODCM: Add the E1C pseudo-interface
-- SmarAct: Add signals for performing axis calibration and checking
-           calibration status.
-- Added laser destination 1 (LD1), where a diagnostics box is installed, to
-  the Laser Beam Transport System (BTPS) state configuration.  Updated
+- Updates limits for `LaserTiming`, `LaserTimingCompensation`, and `LxtTtcExample` from +/-10us to +/-100us.
+- Adds missing ``pump_state`` (``:STATE_RBV``) signal to `PTMPLC`.
+- Adds chin guard RTDs to `FFMirrorZ` in `mirror.py`.
+- `LODCM`: Adds the ``E1C`` pseudo-interface for moving only the first tower energy.
+- `SmarAct`: Adds signals for performing axis calibration and checking calibration status.
+- Adds laser destination 1 (LD1), where a diagnostics box is installed, to
+  the Laser Beam Transport System (BTPS) state configuration.  Updates
   overview and configuration screens to display LD1.
 - ``TwinCATInOutPositioner`` by default now uses 2 states as its name implies
   (excluding the "unknown" transition sate), with one representing the "out"
   state and one representing the "in" state.
-- `XOffsetMirrorSwitch` gets `cool_flow1`, `cool_flow2`, `cool_press`
+- `XOffsetMirrorSwitch`: adds ``cool_flow1``, ``cool_flow2``, and ``cool_press``.
 - `XOffsetMirrorSwitch` gets component reordering.
-- Added TIXEL Manipulator motors to LAMPMagneticBottle
-- Add twincat states and the ST3K4 automation switch to the SXR test absorber.
+- Adds TIXEL Manipulator motors to `LAMPMagneticBottle`.
+- Adds twincat states and the ST3K4 automation switch to the SXR test absorber.
   This device is ``pcdsdevices.sxr_test_absorber.SxrTestAbsorber`` and is named ST1K4.
-- Included the Fresnel Zone Plate (FZP) 3D states on the TMOSpectrometer device.
-- Spectrometer SP1K4 add two new motors for solid attenuator and modify len x to thorlab len x
+- Includes the Fresnel Zone Plate (FZP) 3D states on the `TMOSpectrometer` device.
+- `TMOSpectrometer` (``SP1K4``): adds two new motors for solid attenuator and one for thorlabs lens x.
 - Add the following signals to `BeckhoffAxis`:
   - ``enc_count``: the raw encoder count.
   - ``pos_diff``: the distance between the readback and trajectory setpoint.
   - ``hardware_enable``: an indicator for hardware enable signals, such as STO buttons.
-- Added new PVS to ``OpticsPitchNotepad`` for storing the MR2L3 channel-cut monochromator (CCM) pitch position setpoints for its two coatings.
+- Added new PVS to `OpticsPitchNotepad` for storing the ``MR2L3`` channel-cut monochromator (CCM) pitch position setpoints for its two coatings.
 
 New Devices
 -----------
-- `FDQ` Flow meter implemented in `analog_signals.py`
-- `PPMCOOL` added to `pim.py`
-- `KBOMirrorChin` added to `mirror.py`
-- SQR1Axis: A class representing a single axis of the tri-sphere motion system. It inherits
+- `FDQ` flow meter implemented in ``analog_signals.py``.
+- `PPMCOOL` added to ``pim.py``.
+- `KBOMirrorChin` added to ``mirror.py``
+- `SQR1Axis`: A class representing a single axis of the tri-sphere motion system. It inherits
   from PVPositionerIsClose and includes attributes for setpoint, readback, actuation, and
   stopping the motion.
-- SQR1: A class representing the entire tri-sphere motion system. It is a Device that
+- `SQR1`: A class representing the entire tri-sphere motion system. It is a Device that
   aggregates multiple SQR1Axis instances for each axis. It also includes methods for
   multi-axis movement and stopping the motion.
-- Included example devices and components that correspond to
+- Includes example devices and components that correspond to
   `lcls-plc-example-motion <https://github.com/pcdshub/lcls-plc-example-motion>`_.
-- Add `BeckhoffAxisEPS`, which has the new-style EPS PVs on its directional and power enables.
+- Adds `BeckhoffAxisEPS`, which has the new-style EPS PVs on its directional and power enables.
   These correspond to structured EPS logic on the PLC that can be inspected from higher level applications.
 
 Bugfixes
 --------
 - `KBOMirrorHE` in `mirror.py` only has 1 flow sensor per mirror, so remove one.
+- Fixes an issue where the generic `Motor` factory function would not recognize devices with
+  ``MCS2`` in the PV name. These are now recognized as `SmarAct` devices.
 
 Maintenance
 -----------
-- Updated ``BtpsState`` comments and logic to help guide future port additions.
-- TwinCAT state devices now properly report that their state_velo
+- Updates `BtpsState` comments and logic to help guide future port additions.
+- TwinCAT state devices now properly report that their ``state_velo``
   should be visualized with 3 decimal places instead of with 0.
   This caused no issues in hutch-python and was patched as a bug in
   typhos, and is done for completeness here.
 
 Contributors
 ------------
-- KaushikMalapati
 - baljamal
 - jozamudi
+- kaushikmalapati
 - klauer
 - nrwslac
 - slactjohnson
 - vespos
 - zllentz
-
 
 
 v7.4.3 (2023-07-11)
