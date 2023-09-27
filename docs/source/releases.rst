@@ -5,8 +5,8 @@ Release History
 v8.0.0 (2023-09-27)
 ===================
 
-API Changes
------------
+API Breaks
+----------
 - self.E1C now available to move first tower energy only on LODCMs
 - Remove lens motors
 - Remove rarely-used TwinCAT state config PVs from `TwinCATStateConfigOne`
