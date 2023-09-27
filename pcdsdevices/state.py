@@ -837,7 +837,11 @@ class TwinCATStatePositioner(StatePositioner):
         calculate_on_put=_set_state_velo,
         kind='config',
         # Real PV has no unit info yet, assume mm/s
-        metadata={'units': 'mm/s'},
+        # Set precision to 3 so UI shows 3 digits
+        metadata={
+            'units': 'mm/s',
+            'precision': 3,
+        },
         doc=(
             'State mover velocity. Displays the highest velocity of all the '
             'state move destinations and allows bulk writes to all of these '
