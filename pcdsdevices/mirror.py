@@ -841,6 +841,14 @@ class XOffsetMirrorBend(XOffsetMirror):
 XOffsetMirror2 = XOffsetMirrorBend
 
 
+@reorder_components(
+    end_with=[
+        'x_up', 'pitch', 'x_dwn', 'y_left', 'y_right',
+        'gantry_x', 'gantry_y', 'couple_y', 'couple_x', 'decouple_y',
+        'decouple_x', 'couple_status_y', 'couple_status_x', 'y_enc_rms',
+        'x_enc_rms', 'pitch_enc_rms' , 'cool_flow1', 'cool_flow2', 'cool_press'
+    ]
+)
 class XOffsetMirrorSwitch(XOffsetMirror):
     """
     X-ray Offset Mirror with Yleft/Yright
@@ -871,6 +879,10 @@ class XOffsetMirrorSwitch(XOffsetMirror):
                  doc='Yleft master axis [um]')
     y_right = Cpt(BeckhoffAxisNoOffset, ':MMS:YRIGHT', kind='config',
                   doc='Yright slave axis [um]')
+    # Cooling
+    cool_flow1 = Cpt(EpicsSignalRO, ':FWM:1_RBV', kind='normal')
+    cool_flow2 = Cpt(EpicsSignalRO, ':FWM:2_RBV', kind='normal')
+    cool_press = Cpt(EpicsSignalRO, ':PRSM:1_RBV', kind='normal')
 
     # Tab config: show components
     tab_component_names = True
