@@ -1,0 +1,6 @@
+﻿pcdsdevices.utils.maybe\_make\_method
+=====================================
+
+.. currentmodule:: pcdsdevices.utils
+
+.. autofunction:: maybe_make_method

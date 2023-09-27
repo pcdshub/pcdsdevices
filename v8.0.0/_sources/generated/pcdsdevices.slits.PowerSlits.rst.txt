@@ -1,0 +1,322 @@
+﻿pcdsdevices.slits.PowerSlits
+============================
+
+.. currentmodule:: pcdsdevices.slits
+
+.. autoclass:: PowerSlits
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - lightpath_summary
+          - :class:`~pcdsdevices.signal.SummarySignal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - nominal_aperture
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - xwidth
+          - :class:`~pcdsdevices.slits.BeckhoffSlitPositioner`
+          - 
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - ywidth
+          - :class:`~pcdsdevices.slits.BeckhoffSlitPositioner`
+          - 
+          - 
+          - hinted
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - xcenter
+          - :class:`~pcdsdevices.slits.BeckhoffSlitPositioner`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - ycenter
+          - :class:`~pcdsdevices.slits.BeckhoffSlitPositioner`
+          - 
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - exec_queue
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - exec_move
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:GO``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - done_all
+          - :class:`~ophyd.signal.Signal`
+          - 
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - done_top
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:TOP:DMOV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - done_bottom
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:BOTTOM:DMOV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - done_north
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:NORTH:DMOV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - done_south
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:SOUTH:DMOV``
+          - 
+          - omitted
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - top
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:TOP``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - bottom
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:BOTTOM``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - north
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:NORTH``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - south
+          - :class:`~pcdsdevices.epics_motor.BeckhoffAxisNoOffset`
+          - ``:MMS:SOUTH``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.slits.BeckhoffSlits`
+    
+        * - rtds (DDC)
+          - :class:`~ophyd.device.Rtds`
+          - (See below)
+          - 
+          - normal
+          - 
+    
+        * - fsw
+          - :class:`~pcdsdevices.signal.NotImplementedSignal`
+          - ``:FSW``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    .. list-table:: PowerSlits.rtds (DDC) Dynamic Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - rtd1
+          - :class:`~pcdsdevices.sensors.RTD`
+          - ``:RTD:01``
+            
+          - 
+          - normal
+          - 
+    
+        * - rtd2
+          - :class:`~pcdsdevices.sensors.RTD`
+          - ``:RTD:02``
+            
+          - 
+          - normal
+          - 
+    
+        * - rtd3
+          - :class:`~pcdsdevices.sensors.RTD`
+          - ``:RTD:03``
+            
+          - 
+          - normal
+          - 
+    
+        * - rtd4
+          - :class:`~pcdsdevices.sensors.RTD`
+          - ``:RTD:04``
+            
+          - 
+          - normal
+          - 
+    
+        * - rtd5
+          - :class:`~pcdsdevices.sensors.RTD`
+          - ``:RTD:05``
+            
+          - 
+          - normal
+          - 
+    
+        * - rtd6
+          - :class:`~pcdsdevices.sensors.RTD`
+          - ``:RTD:06``
+            
+          - 
+          - normal
+          - 
+    
+        * - rtd7
+          - :class:`~pcdsdevices.sensors.RTD`
+          - ``:RTD:07``
+            
+          - 
+          - normal
+          - 
+    
+        * - rtd8
+          - :class:`~pcdsdevices.sensors.RTD`
+          - ``:RTD:08``
+            
+          - 
+          - normal
+          - 
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: calc_lightpath_state
+    .. automethod:: camonitor
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_lightpath_state
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: current_aperture
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: lightpath_cpts
+    .. autoattribute:: md
+    .. autoattribute:: needs_parent
+    .. autoattribute:: position
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

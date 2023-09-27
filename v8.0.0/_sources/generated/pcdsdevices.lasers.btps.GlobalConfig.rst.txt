@@ -1,0 +1,84 @@
+﻿pcdsdevices.lasers.btps.GlobalConfig
+====================================
+
+.. currentmodule:: pcdsdevices.lasers.btps
+
+.. autoclass:: GlobalConfig
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - max_frame_time
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``MaxFrameTime``
+          - Maximum time between frame updates in seconds to be considered 'valid' data
+          - normal
+          - 
+    
+        * - min_pixel_sum_change
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``MinPixelChange``
+          - Minimal change (in pixels) for camera image sum to be considered valid
+          - normal
+          - 
+    
+        * - maintenance_mode
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``Maintenance``
+          - System undergoing maintenance
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    
