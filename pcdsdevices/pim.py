@@ -568,12 +568,18 @@ class K2700(BaseInterface, Device):
     (resistance, temperature), have configurable range and integration
     time, and allow for remote control of a K2700.
     """
-    idn = Cpt(EpicsSignalRO, ":Identity", kind="normal")
-    reading = Cpt(EpicsSignalRO, ":Reading", kind="normal")
-    dcv = Cpt(EpicsSignalRO, ":GetDCV", kind="normal")
-    acv = Cpt(EpicsSignalRO, ":GetACV", kind="normal")
-    dci = Cpt(EpicsSignalRO, ":GetDCI", kind="normal")
-    aci = Cpt(EpicsSignalRO, ":GetACI", kind="normal")
+    idn = Cpt(EpicsSignalRO, ":Identity", kind="normal",
+              doc='Identity (name) of this device')
+    reading = Cpt(EpicsSignalRO, ":Reading", kind="normal",
+                  doc='Trigger and return a new measurement')
+    dcv = Cpt(EpicsSignalRO, ":GetDCV", kind="normal",
+              doc='DC voltage')
+    acv = Cpt(EpicsSignalRO, ":GetACV", kind="normal",
+              doc='AC voltage')
+    dci = Cpt(EpicsSignalRO, ":GetDCI", kind="normal",
+              doc='DC current')
+    aci = Cpt(EpicsSignalRO, ":GetACI", kind="normal",
+              doc='AC current')
 
 
 class IM3L0_K2700(K2700):
