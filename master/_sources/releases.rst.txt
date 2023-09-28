@@ -1,6 +1,38 @@
 Release History
 ###############
 
+v8.1.0 (2023-10-16)
+===================
+
+Device Updates
+--------------
+- Adds a `K2700` component to `IM3L0`.
+- Reorders the `IM3L0` components to make the `K2700` and power meter adjacent in the UI. The Keithley 2700 here is also measuring the power meter, but with a higher resolution.
+- Removes the `IM3L0` detailed screen in favor of an embedded `IM3L0_K2700` screen.
+
+New Devices
+-----------
+- Adds the new (Keithley) `K2700` class and one-off `IM3L0_K2700` instance for the `IM3L0` Keithley that uses a pydm screen instead of the default detailed screen.
+- Adds `XOffsetMirrorNoBend`: an `XOffsetMirror` that has no bender motors, like MR1L1.
+
+Bugfixes
+--------
+- The TMO Spectrometer (SP1K4) now correctly has 6 attenuator states
+  instead of 7, which was causing a myriad of issues due to other
+  internal bugs.
+
+Maintenance
+-----------
+- Fixes documentation building due to missing IPython dependency in
+  docs-extras.
+
+Contributors
+------------
+- kaushikmalapati
+- klauer
+- nrwslac
+- zllentz
+
 
 v8.0.0 (2023-09-27)
 ===================

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.interface.FltMvInterface &mdash; PCDS Devices 7.4.4.dev168+gd2e1c8e4 documentation</title>
+  <title>pcdsdevices.interface.FltMvInterface &mdash; PCDS Devices 8.0.1.dev26+g15141e44 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/_static/theme_overrides.css" type="text/css" />
@@ -14,7 +14,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=331437d4"></script>
+        <script src="../_static/documentation_options.js?v=ad3aba6a"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -37,7 +37,7 @@
             PCDS Devices
           </a>
               <div class="version">
-                7.4.4.dev168+gd2e1c8e4
+                8.0.1.dev26+g15141e44
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -252,12 +252,12 @@ another thread.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>position</strong> – Desired end position.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
 than timeout to complete. If omitted, the mover’s default timeout
 will be use.</p></li>
-<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, wait for motion completion before returning.
+<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, wait for motion completion before returning.
 Defaults to <code class="xref std std-keyword docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, logs the move at INFO level.</p></li>
+<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, logs the move at INFO level.</p></li>
 </ul>
 </dd>
 </dl>
@@ -279,13 +279,13 @@ will be created with the motor’s limits as the range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Desired change in position.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Desired change in position.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
 than timeout to complete. If omitted, the mover’s default timeout
 will be use.</p></li>
-<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, wait for motion completion before returning.
+<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, wait for motion completion before returning.
 Defaults to <code class="xref std std-keyword docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, logs the move at INFO level.</p></li>
+<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, logs the move at INFO level.</p></li>
 </ul>
 </dd>
 </dl>
@@ -314,7 +314,7 @@ be overridden for more specialized screens.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.interface.FltMvInterface.status">
-<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pcdsdevices.interface.FltMvInterface.status" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pcdsdevices.interface.FltMvInterface.status" title="Link to this definition"></a></dt>
 <dd><p>Returns a str with the current pv values for the device.</p>
 </dd></dl>
 
@@ -327,7 +327,7 @@ Use up arrow to increase step size and down arrow to decrease step
 size. Press q or ctrl+c to quit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – starting step size, default = 0.1</p>
+<dd class="field-odd"><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – starting step size, default = 0.1</p>
 </dd>
 </dl>
 </dd></dl>
@@ -339,12 +339,12 @@ size. Press q or ctrl+c to quit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>position</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Desired end position.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
+<li><p><strong>position</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Desired end position.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
 than timeout to complete. If omitted, the mover’s default timeout
 will be use.</p></li>
-<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, logs the move at INFO level.</p></li>
-<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, inserts a newline after the updates.</p></li>
+<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, logs the move at INFO level.</p></li>
+<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, inserts a newline after the updates.</p></li>
 </ul>
 </dd>
 </dl>
@@ -357,12 +357,12 @@ will be use.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Desired change in position.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Desired change in position.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
 than timeout to complete. If omitted, the mover’s default timeout
 will be use.</p></li>
-<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, logs the move at INFO level.</p></li>
-<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, inserts a newline after the updates.</p></li>
+<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, logs the move at INFO level.</p></li>
+<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, inserts a newline after the updates.</p></li>
 </ul>
 </dd>
 </dl>

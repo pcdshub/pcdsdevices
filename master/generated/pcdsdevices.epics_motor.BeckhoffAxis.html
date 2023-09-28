@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.epics_motor.BeckhoffAxis &mdash; PCDS Devices 7.4.4.dev168+gd2e1c8e4 documentation</title>
+  <title>pcdsdevices.epics_motor.BeckhoffAxis &mdash; PCDS Devices 8.0.1.dev26+g15141e44 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/_static/theme_overrides.css" type="text/css" />
@@ -14,7 +14,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=331437d4"></script>
+        <script src="../_static/documentation_options.js?v=ad3aba6a"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -37,7 +37,7 @@
             PCDS Devices
           </a>
               <div class="version">
-                7.4.4.dev168+gd2e1c8e4
+                8.0.1.dev26+g15141e44
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -212,10 +212,10 @@ sure to call it on stage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The EPICS PV prefix for this motor.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – An identifying name for this motor.</p></li>
-<li><p><strong>settle_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – The amount of extra time to wait before interpreting a move as done.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – The amount of time to wait before automatically marking a long
+<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The EPICS PV prefix for this motor.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – An identifying name for this motor.</p></li>
+<li><p><strong>settle_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – The amount of extra time to wait before interpreting a move as done.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – The amount of time to wait before automatically marking a long
 in-progress move as failed.</p></li>
 </ul>
 </dd>
@@ -449,14 +449,14 @@ a background thread.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxis.configure">
-<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.configure" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.12)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.configure" title="Link to this definition"></a></dt>
 <dd><p>Configure the device for something during a run</p>
 <p>This default implementation allows the user to change any of the
 <a class="reference internal" href="#pcdsdevices.epics_motor.BeckhoffAxis.configuration_attrs" title="pcdsdevices.epics_motor.BeckhoffAxis.configuration_attrs"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">configuration_attrs</span></code></a>. Subclasses might override this to perform
 additional input validation, cleanup, etc.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>) – The configuration dictionary. To specify the order that
+<dd class="field-odd"><p><strong>d</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a>) – The configuration dictionary. To specify the order that
 the changes should be made, use an OrderedDict.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -471,7 +471,7 @@ the changes should be made, use an OrderedDict.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxis.describe">
-<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.describe" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.describe" title="Link to this definition"></a></dt>
 <dd><p>Provide schema and meta-data for <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code>.</p>
 <p>This keys in the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> this method returns must match the
 keys in the <code class="xref any docutils literal notranslate"><span class="pre">OrderedDict</span></code> return by <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code>.</p>
@@ -533,8 +533,8 @@ beginning with an underscore will not be included.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>high</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Limit of travel in the positive direction.</p></li>
-<li><p><strong>low</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Limit of travel in the negative direction.</p></li>
+<li><p><strong>high</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Limit of travel in the positive direction.</p></li>
+<li><p><strong>low</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Limit of travel in the negative direction.</p></li>
 </ul>
 </dd>
 </dl>
@@ -557,7 +557,7 @@ the single pre-programmed homing routine can be used, so the
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxis.move">
-<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.MoveStatus.html#ophyd.status.MoveStatus" title="(in ophyd v1.9.0)"><span class="pre">MoveStatus</span></a></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.move" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">move</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.MoveStatus.html#ophyd.status.MoveStatus" title="(in ophyd v1.9.1.dev11+g9a0bf3f5)"><span class="pre">MoveStatus</span></a></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.move" title="Link to this definition"></a></dt>
 <dd><p>Move to a specified position, optionally waiting for motion to
 complete.</p>
 <dl class="field-list simple">
@@ -567,7 +567,7 @@ complete.</p>
 <li><p><strong>moved_cb</strong> (<em>callable</em>) – Call this callback when movement has finished. This callback must
 accept one keyword argument: ‘obj’ which will be set to this
 positioner instance.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – Maximum time to wait for the motion. If None, the default timeout
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Maximum time to wait for the motion. If None, the default timeout
 for this positioner is used.</p></li>
 </ul>
 </dd>
@@ -576,9 +576,9 @@ for this positioner is used.</p></li>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TimeoutError" title="(in Python v3.11)"><strong>TimeoutError</strong></a> – When motion takes longer than <a class="reference internal" href="#pcdsdevices.epics_motor.BeckhoffAxis.timeout" title="pcdsdevices.epics_motor.BeckhoffAxis.timeout"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">timeout</span></code></a></p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – On invalid positions</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><strong>RuntimeError</strong></a> – If motion fails other than timing out</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TimeoutError" title="(in Python v3.12)"><strong>TimeoutError</strong></a> – When motion takes longer than <a class="reference internal" href="#pcdsdevices.epics_motor.BeckhoffAxis.timeout" title="pcdsdevices.epics_motor.BeckhoffAxis.timeout"><code class="xref any py py-attr docutils literal notranslate"><span class="pre">timeout</span></code></a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – On invalid positions</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.12)"><strong>RuntimeError</strong></a> – If motion fails other than timing out</p></li>
 </ul>
 </dd>
 </dl>
@@ -592,12 +592,12 @@ for this positioner is used.</p></li>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>position</strong> – Desired end position.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
 than timeout to complete. If omitted, the mover’s default timeout
 will be use.</p></li>
-<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, wait for motion completion before returning.
+<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, wait for motion completion before returning.
 Defaults to <code class="xref std std-keyword docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, logs the move at INFO level.</p></li>
+<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, logs the move at INFO level.</p></li>
 </ul>
 </dd>
 </dl>
@@ -619,13 +619,13 @@ will be created with the motor’s limits as the range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Desired change in position.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Desired change in position.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
 than timeout to complete. If omitted, the mover’s default timeout
 will be use.</p></li>
-<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, wait for motion completion before returning.
+<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, wait for motion completion before returning.
 Defaults to <code class="xref std std-keyword docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.11)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, logs the move at INFO level.</p></li>
+<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If <a class="reference external" href="https://docs.python.org/3/library/constants.html#True" title="(in Python v3.12)"><code class="xref any docutils literal notranslate"><span class="pre">True</span></code></a>, logs the move at INFO level.</p></li>
 </ul>
 </dd>
 </dl>
@@ -639,7 +639,7 @@ Defaults to <code class="xref std std-keyword docutils literal notranslate"><spa
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxis.read">
-<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.read" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.read" title="Link to this definition"></a></dt>
 <dd><p>Read data from the device.</p>
 <p>This method is expected to be as instantaneous as possible,
 with any substantial acquisition time taken care of in
@@ -662,7 +662,7 @@ with the keys <code class="docutils literal notranslate"><span class="pre">{'val
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxis.read_configuration">
-<span class="sig-name descname"><span class="pre">read_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.read_configuration" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">read_configuration</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">OrderedDictType</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.read_configuration" title="Link to this definition"></a></dt>
 <dd><p>Dictionary mapping names to value dicts with keys: value, timestamp</p>
 <p>To control which fields are included, change the Component kinds on the
 device, or modify the <code class="docutils literal notranslate"><span class="pre">configuration_attrs</span></code> list.</p>
@@ -678,23 +678,23 @@ be overridden for more specialized screens.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxis.set">
-<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moved_cb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.11)"><span class="pre">Callable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.0)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.set" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_position</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.12)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moved_cb</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.12)"><span class="pre">Callable</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.12)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wait</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.1.dev11+g9a0bf3f5)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.set" title="Link to this definition"></a></dt>
 <dd><p>Set a value and return a Status object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>new_position</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><em>object</em></a>) – The input here is whatever the device requires (this
+<li><p><strong>new_position</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><em>object</em></a>) – The input here is whatever the device requires (this
 should be over-ridden by the implementation.  For example
 a motor would take a float, a shutter the strings {‘Open’,
 ‘Close’}, and a goineometer (h, k, l) tuples</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – Maximum time to wait for the motion. If None, the default timeout
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – Maximum time to wait for the motion. If None, the default timeout
 for this positioner is used.</p></li>
 <li><p><strong>moved_cb</strong> (<em>callable</em><em>, </em><em>optional</em>) – <p>Deprecated</p>
 <p>Call this callback when movement has finished. This callback
 must accept one keyword argument: ‘obj’ which will be set to
 this positioner instance.</p>
 </p></li>
-<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – <p>Deprecated</p>
+<li><p><strong>wait</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – <p>Deprecated</p>
 <p>If the method should block until the Status object reports
 it is done.</p>
 <p>Defaults to False</p>
@@ -725,10 +725,10 @@ it is done.</p>
 <dd><p>Limit of travel in the positive direction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – High limit value to be set.</p>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – High limit value to be set.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – When motor in motion or position outside of limit.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – When motor in motion or position outside of limit.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -746,8 +746,8 @@ it is done.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>high</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Limit of travel in the positive direction.</p></li>
-<li><p><strong>low</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Limit of travel in the negative direction.</p></li>
+<li><p><strong>high</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Limit of travel in the positive direction.</p></li>
+<li><p><strong>low</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Limit of travel in the negative direction.</p></li>
 </ul>
 </dd>
 </dl>
@@ -759,10 +759,10 @@ it is done.</p>
 <dd><p>Set the low limit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Limit of travel in the negative direction.</p>
+<dd class="field-odd"><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Limit of travel in the negative direction.</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.11)"><strong>ValueError</strong></a> – When motor in motion or position outside of limit.</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.12)"><strong>ValueError</strong></a> – When motor in motion or position outside of limit.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -776,7 +776,7 @@ it is done.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxis.status">
-<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.status" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.status" title="Link to this definition"></a></dt>
 <dd><p>Returns a str with the current pv values for the device.</p>
 </dd></dl>
 
@@ -793,7 +793,7 @@ it is done.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxis.trigger">
-<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.0)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.trigger" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">trigger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.1.dev11+g9a0bf3f5)"><span class="pre">StatusBase</span></a></span></span><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.trigger" title="Link to this definition"></a></dt>
 <dd><p>Trigger the device and return status object.</p>
 <p>This method is responsible for implementing ‘trigger’ or
 ‘acquire’ functionality of this device.</p>
@@ -801,14 +801,14 @@ it is done.</p>
 and it being able to be read (via the
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code> method) then this method is
 also responsible for arranging that the
-<a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
+<a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.1.dev11+g9a0bf3f5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object returned by this method
 is notified when the device is ready to be read.</p>
 <p>If there is no delay between triggering and being readable,
-then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
+then this method must return a <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.1.dev11+g9a0bf3f5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a>
 object which is already completed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user_v1/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
+<dd class="field-odd"><p><strong>status</strong> (<em>StatusBase</em>) – <a class="reference external" href="https://blueskyproject.io/ophyd/user/generated/ophyd.status.StatusBase.html#ophyd.status.StatusBase" title="(in ophyd v1.9.1.dev11+g9a0bf3f5)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StatusBase</span></code></a> object which will be marked
 as complete when the device is ready to be read.</p>
 </dd>
 </dl>
@@ -823,7 +823,7 @@ Use up arrow to increase step size and down arrow to decrease step
 size. Press q or ctrl+c to quit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – starting step size, default = 0.1</p>
+<dd class="field-odd"><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – starting step size, default = 0.1</p>
 </dd>
 </dl>
 </dd></dl>
@@ -835,12 +835,12 @@ size. Press q or ctrl+c to quit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>position</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Desired end position.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
+<li><p><strong>position</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Desired end position.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
 than timeout to complete. If omitted, the mover’s default timeout
 will be use.</p></li>
-<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, logs the move at INFO level.</p></li>
-<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, inserts a newline after the updates.</p></li>
+<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, logs the move at INFO level.</p></li>
+<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, inserts a newline after the updates.</p></li>
 </ul>
 </dd>
 </dl>
@@ -853,12 +853,12 @@ will be use.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Desired change in position.</p></li>
-<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
+<li><p><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a>) – Desired change in position.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.12)"><em>float</em></a><em>, </em><em>optional</em>) – If provided, the mover will throw an error if motion takes longer
 than timeout to complete. If omitted, the mover’s default timeout
 will be use.</p></li>
-<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, logs the move at INFO level.</p></li>
-<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, inserts a newline after the updates.</p></li>
+<li><p><strong>log</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, logs the move at INFO level.</p></li>
+<li><p><strong>newline</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, inserts a newline after the updates.</p></li>
 </ul>
 </dd>
 </dl>
@@ -976,7 +976,7 @@ a background thread.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pcdsdevices.epics_motor.BeckhoffAxis.subscriptions">
-<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'_req_done',</span> <span class="pre">'acq_done',</span> <span class="pre">'done_moving',</span> <span class="pre">'readback',</span> <span class="pre">'start_moving'})</span></em><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.subscriptions" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">subscriptions</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">FrozenSet</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">frozenset({'_req_done',</span> <span class="pre">'acq_done',</span> <span class="pre">'done_moving',</span> <span class="pre">'readback',</span> <span class="pre">'start_moving'})</span></em><a class="headerlink" href="#pcdsdevices.epics_motor.BeckhoffAxis.subscriptions" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">

@@ -666,6 +666,7 @@ pcdsdevices.mirror
     pcdsdevices.mirror.TwinCATMirrorStripe
     pcdsdevices.mirror.XOffsetMirror
     pcdsdevices.mirror.XOffsetMirrorBend
+    pcdsdevices.mirror.XOffsetMirrorNoBend
     pcdsdevices.mirror.XOffsetMirrorRTDs
     pcdsdevices.mirror.XOffsetMirrorState
     pcdsdevices.mirror.XOffsetMirrorStateCool
@@ -745,6 +746,8 @@ pcdsdevices.pim
 
     pcdsdevices.pim.IM2K0
     pcdsdevices.pim.IM3L0
+    pcdsdevices.pim.IM3L0_K2700
+    pcdsdevices.pim.K2700
     pcdsdevices.pim.LCLS2ImagerBase
     pcdsdevices.pim.LCLS2Target
     pcdsdevices.pim.PIM

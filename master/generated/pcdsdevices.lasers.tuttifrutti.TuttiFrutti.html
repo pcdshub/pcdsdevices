@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pcdsdevices.lasers.tuttifrutti.TuttiFrutti &mdash; PCDS Devices 7.4.4.dev168+gd2e1c8e4 documentation</title>
+  <title>pcdsdevices.lasers.tuttifrutti.TuttiFrutti &mdash; PCDS Devices 8.0.1.dev26+g15141e44 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../_static/_static/theme_overrides.css" type="text/css" />
@@ -14,7 +14,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=331437d4"></script>
+        <script src="../_static/documentation_options.js?v=ad3aba6a"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -37,7 +37,7 @@
             PCDS Devices
           </a>
               <div class="version">
-                7.4.4.dev168+gd2e1c8e4
+                8.0.1.dev26+g15141e44
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -193,9 +193,9 @@ based on the specified components.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The PV base of the tuttifrutti diagnostic stack. All consituent
+<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The PV base of the tuttifrutti diagnostic stack. All consituent
 diagnostics have regimented PV suffixes based on this prefix.</p></li>
-<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – The name of the TuttiFrutti device.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the TuttiFrutti device.</p></li>
 <li><p><strong>nf</strong> (<em>bool &lt;False&gt;</em>) – Flag indicating if a near-field camera is installed.</p></li>
 <li><p><strong>ff</strong> (<em>bool &lt;False&gt;</em>) – Flag indicating if a far-field camera is installed.</p></li>
 <li><p><strong>spec</strong> (<em>bool &lt;False&gt;</em>) – Flag indicating if a spectrometer is installed.</p></li>
@@ -209,7 +209,7 @@ diagnostics have regimented PV suffixes based on this prefix.</p></li>
 installed.</p></li>
 <li><p><strong>ellch</strong> (<em>int &lt;0x1&gt;</em>) – The integer channel that the slider is assigned to on the controller.
 Typically between 0x1 and 0x3, up to 0xF.</p></li>
-<li><p><strong>misc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a><em> of </em><em>ophyd.Component</em><em> or </em><em>ophyd.FormattedComponent &lt;empty&gt;</em>) – <p>Dictionary of Cpt and/or FCpt for providing miscellaneous Ophyd
+<li><p><strong>misc</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)"><em>dict</em></a><em> of </em><em>ophyd.Component</em><em> or </em><em>ophyd.FormattedComponent &lt;empty&gt;</em>) – <p>Dictionary of Cpt and/or FCpt for providing miscellaneous Ophyd
 Component objects to the TuttiFrutti. Used for non-standard devices or
 when you need to hack in a component that hasn’t made it into a
 released version of TuttiFrutti object yet (can you say
