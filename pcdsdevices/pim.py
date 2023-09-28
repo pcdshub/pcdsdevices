@@ -597,7 +597,7 @@ class IM3L0(PPM):
     Includes a Keithley 2700 digital multimeter on top of the PPM class, mainly
     so it shows up on this device's detailed screen.
     """
-    k2700 = Cpt(IM3L0_K2700, ':SPM:K2700', kind='normal',
+    k2700 = Cpt(IM3L0_K2700, ':SPM:K2700',
                 doc='Digital multimeter to get power readouts for this device.')
 
 
