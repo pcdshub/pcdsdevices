@@ -592,7 +592,7 @@ class IM3L0_K2700(K2700):
 )
 class IM3L0(PPM):
     """
-    One-off subclass of PPM to include this device's Keithely 2700
+    One-off subclass of PPM to include this device's Keithley 2700
 
     Includes a Keithley 2700 digital multimeter on top of the PPM class, mainly
     so it shows up on this device's detailed screen.
