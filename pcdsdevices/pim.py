@@ -13,7 +13,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.ophydobj import OphydObject
-from ophyd.signal import EpicsSignal
+from ophyd.signal import EpicsSignal, EpicsSignalRO
 
 from .analog_signals import FDQ
 from .areadetector.detectors import (PCDSAreaDetectorEmbedded,
@@ -27,7 +27,7 @@ from .pmps import TwinCATStatePMPS
 from .sensors import TwinCATThermocouple
 from .signal import PytmcSignal
 from .state import StatePositioner
-from .utils import get_status_float, get_status_value
+from .utils import get_status_float, get_status_value, reorder_components
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -559,15 +559,52 @@ class IM2K0(LCLS2ImagerBase):
     # Nothing else! No power meter, no zoom/focus, no filter wheel...
 
 
-class IM3L0(PPM):
+class K2700(BaseInterface, Device):
     """
-    One-off subclass of PPM to add Keithley readout to this device's detailed screen.
+    Keithley 2700 digital multimeter.
 
-    Identical to PPM class, but has an altered detailed screen that adds an embedded
-    pydm display that allows acces to the Keithley monitoring this device; subclass
-    allows for adding Keithley readout to only this device instead of all PPM instances.
+    Currently supports reading voltage and current, direct and
+    alternating, but can be extended to measure other quantities
+    (resistance, temperature), have configurable range and integration
+    time, and allow for remote control of a K2700.
+    """
+    idn = Cpt(EpicsSignalRO, ":Identity", kind="normal",
+              doc='Identity (name) of this device')
+    reading = Cpt(EpicsSignalRO, ":Reading", kind="normal",
+                  doc='Trigger and return a new measurement')
+    dcv = Cpt(EpicsSignalRO, ":GetDCV", kind="normal",
+              doc='DC voltage')
+    acv = Cpt(EpicsSignalRO, ":GetACV", kind="normal",
+              doc='AC voltage')
+    dci = Cpt(EpicsSignalRO, ":GetDCI", kind="normal",
+              doc='DC current')
+    aci = Cpt(EpicsSignalRO, ":GetACI", kind="normal",
+              doc='AC current')
+
+
+class IM3L0_K2700(K2700):
+    """
+    One-off subclass of K2700 to use a pydm screen specific to this device.
+
+    Identical to K2700 class, but uses a pydm screen for this particular device
+    in place of the default detailed screen. To be used in conjunction with
+    IM3L0 as this Keithley is added to that imager for detailed power readouts.
     """
     pass
+
+
+@reorder_components(
+    end_with=['k2700', 'power_meter', 'yag_thermocouple', 'led']
+)
+class IM3L0(PPM):
+    """
+    One-off subclass of PPM to include this device's Keithley 2700
+
+    Includes a Keithley 2700 digital multimeter on top of the PPM class, mainly
+    so it shows up on this device's detailed screen.
+    """
+    k2700 = Cpt(IM3L0_K2700, ':SPM:K2700',
+                doc='Digital multimeter to get power readouts for this device.')
 
 
 class PPMCOOL(PPM):
