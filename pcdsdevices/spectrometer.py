@@ -324,10 +324,10 @@ class TMOSpectrometerSOLIDATTStates(TwinCATStatePMPS):
     """
     Spectrometer Solid Attenuator(FOIL X and Y) 2D States Setup
 
-    Here, we specify 7 states,(after adding an Unknown state), and 2 motors, for the X and Y
+    Here, we specify 6 states,(after adding an Unknown state), and 2 motors, for the X and Y
     axes.
     """
-    config = UpCpt(state_count=7, motor_count=2)
+    config = UpCpt(state_count=6, motor_count=2)
 
 
 class TMOSpectrometer(BaseInterface, GroupDevice, LightpathMixin):
