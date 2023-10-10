@@ -3,7 +3,10 @@
 
 API Breaks
 ----------
-- N/A
+- K2700.dcv renamed to K2700.dcv_range
+- K2700.acv renamed to K2700.acv_range
+- K2700.dci renamed to K2700.dci_range
+- K2700.aci renamed to K2700.aci_range
 
 Features
 --------
