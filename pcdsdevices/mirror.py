@@ -737,6 +737,26 @@ class XOffsetMirrorRTDs(XOffsetMirror):
     rtd_3 = Cpt(PytmcSignal, ':RTD:3', io='i', kind='normal')
 
 
+class XOffsetMirrorNoBend(XOffsetMirror):
+    """
+    X-ray Offset Mirror with no bender.
+
+    2nd gen Axilon designs with LCLS-II Beckhoff motion architecture.
+
+    Parameters
+    ----------
+    prefix : str
+        Base PV for the mirror.
+
+    name : str
+
+    Currently (10/11/2023) services: mr1l1
+
+    """
+    bender = None
+    bender_enc_rms = None
+
+
 class XOffsetMirrorBend(XOffsetMirror):
     """
     X-ray Offset Mirror with 2 bender acutators.
