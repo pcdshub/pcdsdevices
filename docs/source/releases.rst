@@ -2,6 +2,51 @@ Release History
 ###############
 
 
+v8.1.0 (2023-10-16)
+===================
+
+API Breaks
+----------
+- K2700.dcv renamed to K2700.dcv_range
+- K2700.acv renamed to K2700.acv_range
+- K2700.dci renamed to K2700.dci_range
+- K2700.aci renamed to K2700.aci_range
+
+Features
+--------
+- new (Keithley) K2700 class and one-off instance for the IM3L0 Keithley that uses a pydm screen instead of the default detailed screen.
+
+Device Updates
+--------------
+- Renamed IM3L0_K2700.detailed.ui to IM3L0_K2700.embedded.ui
+- Added 'range' to names/docs of dcv, acv, dci, and aci components of K2700
+- Removed IM3L0 detailed screen and added a K2700 component to it; also reordered components to make K2700 and power meter adjacent.
+
+New Devices
+-----------
+- `XOffsetMirrorNoBend`
+
+Bugfixes
+--------
+- IM3L0_K2700 now uses custom template when embedded, such as in IM3L0's detailed screen
+- The TMO Spectrometer (SP1K4) now correctly has 6 attenuator states
+  instead of 7, which was causing a myriad of issues due to other
+  internal bugs.
+
+Maintenance
+-----------
+- Fixed documentation building due to missing IPython dependency in
+  docs-extras.
+
+Contributors
+------------
+- KaushikMalapati
+- klauer
+- nrwslac
+- zllentz
+
+
+
 v8.0.0 (2023-09-27)
 ===================
 
