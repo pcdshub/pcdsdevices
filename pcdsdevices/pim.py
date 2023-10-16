@@ -572,14 +572,14 @@ class K2700(BaseInterface, Device):
               doc='Identity (name) of this device')
     reading = Cpt(EpicsSignalRO, ":Reading", kind="normal",
                   doc='Trigger and return a new measurement')
-    dcv = Cpt(EpicsSignalRO, ":GetDCV", kind="normal",
-              doc='DC voltage')
-    acv = Cpt(EpicsSignalRO, ":GetACV", kind="normal",
-              doc='AC voltage')
-    dci = Cpt(EpicsSignalRO, ":GetDCI", kind="normal",
-              doc='DC current')
-    aci = Cpt(EpicsSignalRO, ":GetACI", kind="normal",
-              doc='AC current')
+    dcv_range = Cpt(EpicsSignalRO, ":GetDCV", kind="normal",
+                    doc='DC voltage range')
+    acv_range = Cpt(EpicsSignalRO, ":GetACV", kind="normal",
+                    doc='AC voltage range')
+    dci_range = Cpt(EpicsSignalRO, ":GetDCI", kind="normal",
+                    doc='DC current range')
+    aci_range = Cpt(EpicsSignalRO, ":GetACI", kind="normal",
+                    doc='AC current range')
 
 
 class IM3L0_K2700(K2700):
