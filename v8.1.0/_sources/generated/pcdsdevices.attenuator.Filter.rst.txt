@@ -1,0 +1,127 @@
+﻿pcdsdevices.attenuator.Filter
+=============================
+
+.. currentmodule:: pcdsdevices.attenuator
+
+.. autoclass:: Filter
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - status
+          - :class:`~pcdsdevices.signal.InternalSignal`
+          - 
+          - 
+          - normal
+          - 
+    
+        * - state
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:STATE``
+          - 
+          - normal
+          - 
+    
+        * - stuck
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:IS_STUCK``
+          - 
+          - normal
+          - 
+    
+        * - thickness
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:THICK``
+          - 
+          - config
+          - 
+    
+        * - material
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:MATERIAL``
+          - 
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: camonitor
+    .. automethod:: check_inserted
+    .. automethod:: check_removed
+    .. automethod:: check_transmission
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: end_monitor_thread
+    .. automethod:: get
+    .. automethod:: get_state
+    .. automethod:: insert
+    .. automethod:: move
+    .. automethod:: mv
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: remove
+    .. automethod:: screen
+    .. automethod:: set
+    .. automethod:: summary
+    .. automethod:: trigger
+    .. automethod:: wait
+    .. automethod:: wm
+    .. automethod:: wm_update
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: egu
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: in_states
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: moving
+    .. autoattribute:: out_states
+    .. autoattribute:: position
+    .. autoattribute:: settle_time
+    .. autoattribute:: states_list
+    .. autoattribute:: stop
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timeout
+    .. autoattribute:: transmission
+    
+    

@@ -1,0 +1,117 @@
+﻿pcdsdevices.valve.VCN
+=====================
+
+.. currentmodule:: pcdsdevices.valve
+
+.. autoclass:: VCN
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - position_readback
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:POS_RDBK_RBV``
+          - valve position readback
+          - hinted
+          - 
+    
+        * - position_control
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:POS_REQ``
+          - requested positition to control the valve 0-100%
+          - normal
+          - 
+    
+        * - upper_limit
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:Limit``
+          - max upper limit position to open the valve 0-100%
+          - normal
+          - 
+    
+        * - interlock_ok
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:ILK_OK_RBV``
+          - interlock ok status
+          - normal
+          - 
+    
+        * - open_command
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:OPN_SW``
+          - Epics command to Open valve
+          - normal
+          - 
+    
+        * - state
+          - :class:`~ophyd.areadetector.base.EpicsSignalWithRBV`
+          - ``:STATE``
+          - Valve state
+          - hinted
+          - 
+    
+        * - pos_ao
+          - :class:`~ophyd.signal.EpicsSignalRO`
+          - ``:POS_AO_RBV``
+          - 
+          - hinted
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

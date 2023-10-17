@@ -1,0 +1,132 @@
+﻿pcdsdevices.gon.GonWithDetArm
+=============================
+
+.. currentmodule:: pcdsdevices.gon
+
+.. autoclass:: GonWithDetArm
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - hor (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_hor}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.BaseGon`
+    
+        * - ver (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_ver}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.BaseGon`
+    
+        * - rot (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_rot}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.BaseGon`
+    
+        * - tip (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_tip}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.BaseGon`
+    
+        * - tilt (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_tilt}``
+          - 
+          - normal
+          - Inherited from :class:`~pcdsdevices.gon.BaseGon`
+    
+        * - rot_2theta (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_2theta}``
+          - 
+          - normal
+          - 
+    
+        * - det_tilt (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_dettilt}``
+          - 
+          - normal
+          - 
+    
+        * - det_ver (FCpt)
+          - :class:`~pcdsdevices.epics_motor.IMS`
+          - ``{self._prefix_detver}``
+          - 
+          - normal
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: stage_group_instances
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: needs_parent
+    .. autoattribute:: stage_group
+    .. autoattribute:: subscriptions
+    
+    

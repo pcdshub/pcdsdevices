@@ -1,0 +1,53 @@
+﻿pcdsdevices.signal.UnitConversionDerivedSignal
+==============================================
+
+.. currentmodule:: pcdsdevices.signal
+
+.. autoclass:: UnitConversionDerivedSignal
+
+    
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: describe
+    .. automethod:: forward
+    .. automethod:: get
+    .. automethod:: inverse
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: set
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: SUB_META
+    .. autoattribute:: connected
+    .. autoattribute:: derived_from
+    .. autoattribute:: high_limit
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: limits
+    .. autoattribute:: low_limit
+    .. autoattribute:: metadata
+    .. autoattribute:: metadata_keys
+    .. autoattribute:: read_access
+    .. autoattribute:: subscriptions
+    .. autoattribute:: timestamp
+    .. autoattribute:: tolerance
+    .. autoattribute:: user_offset
+    .. autoattribute:: value
+    .. autoattribute:: write_access
+    .. autoattribute:: derived_units
+    .. autoattribute:: original_units
+    
+    
