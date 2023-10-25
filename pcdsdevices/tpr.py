@@ -12,14 +12,17 @@ TPR_TAP_NS = 0.08
 
 
 def _get_delay(mds: MultiDerivedSignal, items: SignalToValue) -> float:
+    """Calculates delay in ns from ticks and taps"""
     return items[mds.attrs[0]] * TPR_TICK_NS + items[mds.attrs[1] * TPR_TAP_NS]
 
 
 def _get_width(mds: MultiDerivedSignal, items: SignalToValue) -> float:
+    """Calculates width in ns from ticks"""
     return items[mds.attrs[0]] * TPR_TICK_NS
 
 
 def _put_last(mds: MultiDerivedSignal, value: float) -> SignalToValue:
+    """Only writes value to last attr"""
     return {mds.attrs[-1]: value}
 
 
