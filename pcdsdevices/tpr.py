@@ -4,7 +4,7 @@ from ophyd import FormattedComponent as FCpt
 
 from .interface import BaseInterface
 from .pv_positioner import PVPositionerIsClose
-from .signal import MultiDerivedSignal
+from .signal import MultiDerivedSignal, MultiDerivedSignalRO
 from .type_hints import SignalToValue
 
 TPR_TICK_NS = 5.384
@@ -31,33 +31,68 @@ class TprMotor(PVPositionerIsClose):
     are considered immediately complete.
     """
     setpoint = FCpt(EpicsSignal, "{self.prefix}{self.sys}TDES", kind="normal")
-    readback = Cpt(EpicsSignalRO, ":BW_TDES", kind="hinted")
+    delay_ticks = FCpt(EpicsSignal, '{self.prefix}{self.trg}TDESTICKS', kind="omitted")
+    delay_taps = FCpt(EpicsSignal, '{self.prefix}{self.trg}TDESTAPS', kind="omitted")
+    readback = Cpt(
+        MultiDerivedSignalRO,
+        attrs=['delay_ticks', 'delay_taps'],
+        calculate_on_get=_get_delay
+    )
     atol = TPR_TICK_NS
     rtol = 0
 
-    def __init__(self, prefix, *, sys, name, **kwargs):
+    def __init__(self, prefix, *, sys, trg, name, **kwargs):
+        self.prefix = prefix
         self.sys = sys
+        self.trg = trg
         super().__init__(prefix, name=name, **kwargs)
 
 
 class TprTrigger(BaseInterface, Device):
     """Class for an individual TprTrigger."""
+    ratemode = FCpt(EpicsSignal, '{self.prefix}{self.ch}RATECODE', kind="config")
+    group = FCpt(EpicsSignal, '{self.prefix}{self.ch}GROUP', kind="omitted")
+    seqcode = FCpt(EpicsSignal, '{self.prefix}{self.ch}SEQCODE', kind="omitted")
+    fixedrate = FCpt(EpicsSignal, '{self.prefix}{self.ch}FIXEDRATE', kind="omitted")
+    count = FCpt(EpicsSignal, '{self.prefix}{self.ch}COUNT', kind="omitted")
+    destmask = FCpt(EpicsSignal, '{self.prefix}{self.ch}DESTMASK', kind="omitted")
+    destmode = FCpt(EpicsSignal, '{self.prefix}{self.ch}DESTMODE', kind="omitted")
+    src = FCpt(EpicsSignal, '{self.prefix}{self.trg}SOURCE', kind="omitted")
     eventcode = FCpt(EpicsSignal, '{self.prefix}{self.ch}EVCODE', kind="config")
     eventrate = FCpt(EpicsSignalRO, '{self.prefix}{self.ch}RATE', kind="normal")
     label = FCpt(EpicsSignal, '{self.prefix}{self.ch}{self.sys}TCTL.DESC', kind="omitted")
     label2 = FCpt(EpicsSignal, '{self.prefix}{self.ch}{self.sys2}TCTL.DESC', kind="omitted")
-    ns_delay = FCpt(
-        EpicsSignal,
-        ':BW_TDES',
-        write_pv=':TDES',
-        tolerance=TPR_TICK_NS,
-        kind="hinted",
-    )
-    ns_delay_scan = FCpt(TprMotor, '', sys='{self.sys}', kind="omitted")
-    polarity = FCpt(EpicsSignal, '{self.prefix}{self.trg}TPOL', kind="config")
-    width = FCpt(
+    delay_ticks = FCpt(EpicsSignal, '{self.prefix}{self.trg}TDESTICKS', kind="omitted")
+    delay_taps = FCpt(EpicsSignal, '{self.prefix}{self.trg}TDESTAPS', kind="omitted")
+    delay_setpoint = FCpt(EpicsSignal, '{self.prefix}{self.sys}TDES', kind="omitted")
+    delay_setpoint2 = FCpt(EpicsSignal, '{self.prefix}{self.sys2}TDES', kind="omitted")
+    ns_delay = Cpt(
         MultiDerivedSignal,
-        attrs=['{self.prefix}{self.trg}TWIDTICKS', '{self.prefix}{self.sys}TWID'],
+        attrs=['delay_ticks', 'delay_taps', 'delay_setpoint'],
+        calculate_on_get=_get_delay,
+        calculate_on_put=_put_last,
+    )
+    ns_delay2 = Cpt(
+        MultiDerivedSignal,
+        attrs=['delay_ticks', 'delay_taps', 'delay_setpoint2'],
+        calculate_on_get=_get_delay,
+        calculate_on_put=_put_last,
+    )
+    ns_delay_scan = FCpt(TprMotor, '{self.prefix}', sys='{self.sys}', trg='{self.trg}', kind="omitted")
+    ns_delay_scan2 = FCpt(TprMotor, '{self.prefix}', sys='{self.sys2}', trg='{self.trg}', kind="omitted")
+    polarity = FCpt(EpicsSignal, '{self.prefix}{self.trg}TPOL', kind="config")
+    width_setpoint = FCpt(EpicsSignal, '{self.prefix}{self.sys}TWID', kind="omitted")
+    width_setpoint2 = FCpt(EpicsSignal, '{self.prefix}{self.sys2}TWID', kind="omitted")
+    width_ticks = FCpt(EpicsSignalRO, '{self.prefix}{self.trg}TWIDTICKS', kind="omitted")
+    width = Cpt(
+        MultiDerivedSignal,
+        attrs=['width_ticks', 'width_setpoint'],
+        calculate_on_get=_get_width,
+        calculate_on_put=_put_last,
+    )
+    width2 = Cpt(
+        MultiDerivedSignal,
+        attrs=['width_ticks', 'width_setpoint2'],
         calculate_on_get=_get_width,
         calculate_on_put=_put_last,
     )
@@ -68,10 +103,10 @@ class TprTrigger(BaseInterface, Device):
     tab_component_names = True
 
     def __init__(self, prefix, *, channel, name, **kwargs):
-        self.ch = f':CH{channel:02}_'
-        self.trg = f':TRG{channel:02}_'
         self.sys = 'SYS0_'
         self.sys2 = 'SYS2_'
+        self.ch = f':CH{channel:02}_'
+        self.trg = f':TRG{channel:02}_'
         super().__init__(prefix, name=name, **kwargs)
 
     def enable(self):
