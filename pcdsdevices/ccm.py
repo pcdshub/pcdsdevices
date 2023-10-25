@@ -6,11 +6,12 @@ from collections import namedtuple
 
 import numpy as np
 from lightpath import LightpathState
+from ophyd import OphydObject
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import FormattedComponent as FCpt
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal
-from ophyd.status import MoveStatus
+from ophyd.status import MoveStatus, Status
 
 from .beam_stats import BeamEnergyRequest
 from .device import GroupDevice
@@ -771,6 +772,199 @@ class CCMEnergyWithVernier(CCMEnergy):
         alio = real_pos.alio
         energy = self.alio_to_energy(alio)
         return self.PseudoPosition(energy=energy)
+
+
+class CCMEnergyWithSelfSeed(CCMEnergy):
+    """
+    CCM energy motor with the self-seeding scheme.
+
+    Moves the alio to the requested energy, while also writing to the
+    BeamEnergyRequest PV so that ACR can set the self-seed energy accordingly.
+
+    The goal is to optimize the CCM energy around the self-seed energy. The
+    process is as follow:
+        1. Pass a setpoint energy to both the CCM and self-seeding.
+        2. Wait for self-seeding to stabilize.
+        3. Optimize the CCM throughput at the new energy.
+    There can be several implementations of the optimization step. Look at
+    the specific implementation methods for detailed information.
+
+    Parameters
+    ----------
+    prefix : str
+        The PV prefix of the Alio motor, e.g. XPP:MON:MPZ:07A
+    ipms_prefix : str
+        The EventBuilder PV containing the IPMs information
+    ipm_idx : dict
+        Indices in the EventBuilder array PV that contains the upstream
+        and downstream IPM. Format: {'upstream': 0, 'downstream': 1}
+    hutch : str, optional
+        The hutch we're in. This informs us as to which vernier
+        PVs to write to. If omitted, we can guess this from the
+        prefix.
+    """
+    self_seed = FCpt(BeamEnergyRequest, '{hutch}', kind='normal',
+                     doc='Requests ACR to move the self-seed energy.')
+
+    # IPMs intensities from the EventBuilder IOC. We need beam-synchronous IPM
+    # information, hence the use of the EventBuilder PV.
+    # See https://confluence.slac.stanford.edu/display/PCDS/Notes+on+the+Timetool+IOC
+    ipms = UCpt(EpicsSignalRO)
+
+    # These are duplicate warnings with main energy motor
+    _enable_warn_constants: bool = False
+    hutch: str
+
+    tab_component_names = True
+
+    def __init__(
+        self,
+        prefix: str,
+        ipms_prefix: str = None,
+        ipm_idx: typing.Optional[dict] = None,
+        hutch: typing.Optional[str] = None,
+        **kwargs
+    ):
+        # Put some effort into filling this automatically
+        # CCM exists only in two hutches
+        if hutch is not None:
+            self.hutch = hutch
+        elif 'XPP' in prefix:
+            self.hutch = 'XPP'
+        elif 'XCS' in prefix:
+            self.hutch = 'XCS'
+        else:
+            self.hutch = 'TST'
+
+        prefixes = {'ipms_prefix': ipms_prefix}
+        UCpt.collect_prefixes(self, prefixes)
+        super().__init__(prefix, **kwargs)
+
+        self.ipm_idx = ipm_idx or {'upstream': 0, 'downstream': 1}
+
+        # Optimization methods and arguments
+        # See function definitions for details on arguments
+        self.method = 'monotonic'
+        self.method_map = {
+            'monotonic' : self.monotonic_increase_search,
+        }
+        self.optimization_args = {}
+        self.optimization_args['monotonic'] = {
+            'offset': 5,
+            'n_average': 50,
+            'threshold_ratio': 2.5,
+            'stepsize': 0.5,
+            'max_step': 10
+        }
+
+    def monotonic_increase_search(
+        self,
+        setpoint: float,
+        offset: float,
+        n_average: int,
+        threshold_ratio: float,
+        stepsize: float,
+        max_steps: int
+    ):
+        """
+        Simple monotonic search for the CCM energy position:
+        Move CCM slightly under the setpoint and check if the downstream/upstream IPM
+        average is above a given threshold. If not, move the CCM energy up a bit and check
+        again.
+
+        Parameters
+        ----------
+        setpoint : float
+            Energy setpoint
+        offset: float
+            Energy offset. The initial CCM energy will be setpoint-offset.
+        n_average: int
+            Number of data points in the IPM average.
+        threshold_ratio: float
+            If mean(IPM downstream)/mean(IPM upstream)>threshold_ratio, the optimization
+            finishes.
+        stepsize: float
+            Energy increment after a failed check on the IPM ratio. Should be smaller
+            than the self-seed bandwidth for good results.
+        max_steps: int
+            If no good point is reached after max_step points, the optimization is
+            aborted.
+        """
+        self.self_seed.move(setpoint)
+        # move slightly below the setpoint
+        status = super().move(setpoint-offset, wait=True)
+        # wait for self-seed to settle
+        time.sleep(1)
+
+        for step in range(max_steps):
+            intensities = self.get_ipms_intensities(n_average)
+            ipm_ratio = self.ipm_ratio(intensities)
+            if ipm_ratio > self.ipm_ratio_threshold:
+                print('Optimization complete!\n')
+                break
+            new_pos = self.energy.get().readback + stepsize
+            status = super().move(new_pos, wait=True)
+        return status
+
+    def get_ipms_intensities(self, n_shots=10):
+        intensities = []
+        status = Status(timeout=5)
+
+        def cb(*args, obj: OphydObject, sub_type: str, **kwargs) -> None:
+            intensities.append(obj.value)
+            if len(intensities) >= n_shots:
+                status.set_finished()
+
+        cid = self.ipms.subscribe(cb)
+        status.wait(5)
+        self.ipms.unsubscribe(cid)
+
+        # for ii in range(nn):
+        #     intensities.append(self.ipms.get())
+        #     time.sleep(sleep)
+        return np.asarray(intensities)
+
+    def ipm_ratio(self, intensities):
+        """ Calculate the mean(downstream)/mean(upstream) IPMs """
+        ratio = np.average(intensities, axis=0)
+        ratio = ratio[self.ipm_idx['downstream']] / ratio[self.ipm_idx['upstream']]
+        return ratio
+
+    def setup_method_monotonic(self):
+        """ Helps the user throught the setup of the parameters for the monotonic
+        search algorithm. This should be handled by someone who knows what they
+        are doing.
+        """
+        print('Setting up monotonic search parameters.')
+
+        s = 'Offset (eV) (default: TBD): '
+        offset = float(input(s) or 5)
+
+        s = 'Number of shots for the IPMs average (default: 50): '
+        n = int(input(s) or 50)
+
+        s = 'IPM ratio threshold (default: TBD): '
+        ratio_th = float(input(s) or 2.5)
+
+        s = 'Energy increment (eV) (default: TBD): '
+        step_size = float(input(s) or 0.5)
+
+        s = 'Maximum number of optimization steps (default: 10): '
+        max_step = int(input(s) or 10)
+
+        self.optimization_args['monotonic'] = {
+            'energy_offset' : offset,
+            'n_average' : n,
+            'ipm_ratio_threshold' : ratio_th,
+            'energy_step_size' : step_size,
+            'max_step' : max_step
+        }
+        self.method = 'monotonic'
+        return
+
+    def move(self, new_pos , *args, **kwargs):
+        status = self.method_map[self.method](new_pos, **self.optimization_args[self.method])
+        return status
 
 
 class CCMX(SyncAxis):
