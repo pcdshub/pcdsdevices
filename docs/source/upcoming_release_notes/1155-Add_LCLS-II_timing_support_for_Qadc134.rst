@@ -11,7 +11,8 @@ Features
 
 Device Updates
 --------------
-- Restructure Qadc134
+- Restructured Qadc134 with new Qadc134Common and QadcLcls1Timing parent
+  classes.
 
 New Devices
 -----------
@@ -27,4 +28,4 @@ Maintenance
 
 Contributors
 ------------
-- tjohnson
+- slactjohnson
