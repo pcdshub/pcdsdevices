@@ -16,6 +16,7 @@ class QadcCommon(BaseInterface, Device):
     ch3 = Cpt(EpicsSignal, ":CH3", kind="normal", doc="Input 3 of the ADC")
     config = Cpt(EpicsSignal, ":CONFIG", kind="config",
                  doc="Write the current config to the QADC")
+    set_metadata(config, dict(variety='command-proc', value=1))
     start = Cpt(EpicsSignal, ":START", kind="normal",
                 doc="Start/stop acquisition")
 
