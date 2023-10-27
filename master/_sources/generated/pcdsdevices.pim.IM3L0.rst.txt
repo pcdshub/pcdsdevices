@@ -54,7 +54,7 @@
           - Inherited from :class:`~pcdsdevices.pim.PPM`
     
         * - k2700
-          - :class:`~pcdsdevices.pim.IM3L0_K2700`
+          - :class:`~pcdsdevices.keithley.IM3L0_K2700`
           - ``:SPM:K2700``
           - Digital multimeter to get power readouts for this device.
           - normal

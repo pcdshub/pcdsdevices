@@ -88,7 +88,16 @@
           - config
           - Inherited from :class:`~pcdsdevices.pim.XPIM`
     
+        * - flow_switch
+          - :class:`~pcdsdevices.digital_signals.J120K`
+          - 
+          - Device that indicates nominal PCW Flow Rate.
+          - normal
+          - Inherited from :class:`~pcdsdevices.pim.XPIM`
+    
 
+    
+    
     
     
     

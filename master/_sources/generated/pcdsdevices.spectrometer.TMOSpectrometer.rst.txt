@@ -109,7 +109,25 @@
           - normal
           - 
     
+        * - att_rtd_01
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:01:TEMP``
+          - solid attenuator 01 PT100
+          - normal
+          - 
+    
+        * - att_rtd_02
+          - :class:`~pcdsdevices.signal.PytmcSignal`
+          - ``:RTD:02:TEMP``
+          - solid attenuator 02 PT100
+          - normal
+          - 
+    
 
+    
+    
+    
+    
     
     
     

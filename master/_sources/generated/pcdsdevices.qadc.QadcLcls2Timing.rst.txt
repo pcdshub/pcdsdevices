@@ -1,0 +1,120 @@
+﻿pcdsdevices.qadc.QadcLcls2Timing
+================================
+
+.. currentmodule:: pcdsdevices.qadc
+
+.. autoclass:: QadcLcls2Timing
+
+    
+    
+    .. list-table:: Ophyd Device Components
+        :header-rows: 1
+        :widths: auto
+
+        * - Attribute
+          - Class
+          - Suffix
+          - Docs
+          - Kind
+          - Notes
+    
+        * - trig_rate_mode
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_RATEMODE``
+          - LCLS-II trigger mode
+          - config
+          - 
+    
+        * - trig_fixed_rate
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_FIXEDRATE``
+          - Rate to use for fixed trigger mode
+          - config
+          - 
+    
+        * - trig_ac_rate
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_ACRATE``
+          - Rate to use for AC trigger mode
+          - config
+          - 
+    
+        * - trig_ts_mask
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_TSMASK``
+          - Trigger mask
+          - config
+          - 
+    
+        * - trig_seq_num
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_SEQNUM``
+          - Trigger sequence number
+          - config
+          - 
+    
+        * - trig_seq_bit
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_SEQBIT``
+          - Trigger sequence bit
+          - config
+          - 
+    
+        * - trig_partition
+          - :class:`~ophyd.signal.EpicsSignal`
+          - ``:TRIG_PARTITION``
+          - Trigger partition number
+          - config
+          - 
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    .. rubric:: Methods
+
+    
+    .. automethod:: configure
+    .. automethod:: describe
+    .. automethod:: get
+    .. automethod:: post_elog_status
+    .. automethod:: read
+    .. automethod:: read_configuration
+    .. automethod:: screen
+    .. automethod:: status
+    .. automethod:: stop
+    .. automethod:: summary
+    .. automethod:: trigger
+    
+    
+
+    
+    
+    .. rubric:: Attributes
+
+    
+    .. autoattribute:: configuration_attrs
+    .. autoattribute:: connected
+    .. autoattribute:: hints
+    .. autoattribute:: kind
+    .. autoattribute:: subscriptions
+    
+    

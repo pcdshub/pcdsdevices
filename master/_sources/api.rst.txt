@@ -108,6 +108,7 @@ pcdsdevices.attenuator
     pcdsdevices.attenuator.GasAttenuator
     pcdsdevices.attenuator.GattApertureX
     pcdsdevices.attenuator.GattApertureY
+    pcdsdevices.attenuator.SXRGasAtt
     pcdsdevices.attenuator.SXRLadderAttenuatorBlade
     pcdsdevices.attenuator.SXRLadderAttenuatorStates
     pcdsdevices.attenuator.get_blade_enum
@@ -200,6 +201,14 @@ pcdsdevices.device
     pcdsdevices.device.InterfaceDevice
     pcdsdevices.device.to_interface
 
+pcdsdevices.digital_signals
+---------------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.digital_signals.J120K
+
 pcdsdevices.digitizers
 ----------------------
 
@@ -237,6 +246,7 @@ pcdsdevices.energy_monitor
 
     pcdsdevices.energy_monitor.GEM
     pcdsdevices.energy_monitor.GMD
+    pcdsdevices.energy_monitor.GMDPreAmp
     pcdsdevices.energy_monitor.XGMD
 
 pcdsdevices.epics_motor
@@ -434,6 +444,16 @@ pcdsdevices.jet
     pcdsdevices.jet.BeckhoffJetSlits
     pcdsdevices.jet.Injector
     pcdsdevices.jet.InjectorWithFine
+
+pcdsdevices.keithley
+--------------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.keithley.IM3L0_K2700
+    pcdsdevices.keithley.K2700
+    pcdsdevices.keithley.K6514
 
 pcdsdevices.lamp_motion
 -----------------------
@@ -746,8 +766,6 @@ pcdsdevices.pim
 
     pcdsdevices.pim.IM2K0
     pcdsdevices.pim.IM3L0
-    pcdsdevices.pim.IM3L0_K2700
-    pcdsdevices.pim.K2700
     pcdsdevices.pim.LCLS2ImagerBase
     pcdsdevices.pim.LCLS2Target
     pcdsdevices.pim.PIM
@@ -757,6 +775,7 @@ pcdsdevices.pim
     pcdsdevices.pim.PIMY
     pcdsdevices.pim.PPM
     pcdsdevices.pim.PPMCOOL
+    pcdsdevices.pim.PPMCoolSwitch
     pcdsdevices.pim.PPMPowerMeter
     pcdsdevices.pim.XPIM
     pcdsdevices.pim.XPIMFilterWheel
@@ -844,6 +863,21 @@ pcdsdevices.pv_positioner
     pcdsdevices.pv_positioner.PVPositionerComparator
     pcdsdevices.pv_positioner.PVPositionerDone
     pcdsdevices.pv_positioner.PVPositionerIsClose
+    pcdsdevices.pv_positioner.PVPositionerNoInterrupt
+
+pcdsdevices.qadc
+----------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.qadc.Qadc
+    pcdsdevices.qadc.Qadc134
+    pcdsdevices.qadc.Qadc134Common
+    pcdsdevices.qadc.Qadc134Lcls2
+    pcdsdevices.qadc.QadcCommon
+    pcdsdevices.qadc.QadcLcls1Timing
+    pcdsdevices.qadc.QadcLcls2Timing
 
 pcdsdevices.radiation
 ---------------------
@@ -1083,6 +1117,15 @@ pcdsdevices.timetool
     pcdsdevices.timetool.Timetool
     pcdsdevices.timetool.TimetoolWithNav
 
+pcdsdevices.tpr
+---------------
+
+.. autosummary::
+    :toctree: generated
+
+    pcdsdevices.tpr.TprMotor
+    pcdsdevices.tpr.TprTrigger
+
 pcdsdevices.usb_encoder
 -----------------------
 
@@ -1160,3 +1203,4 @@ pcdsdevices.wfs
 
     pcdsdevices.wfs.WaveFrontSensorStates
     pcdsdevices.wfs.WaveFrontSensorTarget
+    pcdsdevices.wfs.WaveFrontSensorTargetCool

@@ -1,20 +1,22 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API &mdash; PCDS Devices 8.0.1.dev26+g15141e44 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/_static/theme_overrides.css" type="text/css" />
+  <title>API &mdash; PCDS Devices 8.1.1.dev47+g78834aee documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/_static/theme_overrides.css" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=ad3aba6a"></script>
+        <script src="_static/documentation_options.js?v=e49b8f72"></script>
         <script src="_static/doctools.js?v=888ff710"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/docs-versions-menu.js?v=3d6a1aea"></script>
@@ -37,7 +39,7 @@
             PCDS Devices
           </a>
               <div class="version">
-                8.0.1.dev26+g15141e44
+                8.1.1.dev47+g78834aee
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -132,6 +134,7 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.GasAttenuator.html">pcdsdevices.attenuator.GasAttenuator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.GattApertureX.html">pcdsdevices.attenuator.GattApertureX</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.GattApertureY.html">pcdsdevices.attenuator.GattApertureY</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRGasAtt.html">pcdsdevices.attenuator.SXRGasAtt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorBlade.html">pcdsdevices.attenuator.SXRLadderAttenuatorBlade</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorStates.html">pcdsdevices.attenuator.SXRLadderAttenuatorStates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.attenuator.get_blade_enum.html">pcdsdevices.attenuator.get_blade_enum</a></li>
@@ -197,6 +200,10 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.device.to_interface.html">pcdsdevices.device.to_interface</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-digital-signals">pcdsdevices.digital_signals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.digital_signals.J120K.html">pcdsdevices.digital_signals.J120K</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-digitizers">pcdsdevices.digitizers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.digitizers.Qadc.html">pcdsdevices.digitizers.Qadc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.digitizers.Qadc134.html">pcdsdevices.digitizers.Qadc134</a></li>
@@ -225,6 +232,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-energy-monitor">pcdsdevices.energy_monitor</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.energy_monitor.GEM.html">pcdsdevices.energy_monitor.GEM</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.energy_monitor.GMD.html">pcdsdevices.energy_monitor.GMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.energy_monitor.GMDPreAmp.html">pcdsdevices.energy_monitor.GMDPreAmp</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.energy_monitor.XGMD.html">pcdsdevices.energy_monitor.XGMD</a></li>
 </ul>
 </li>
@@ -378,6 +386,12 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.jet.BeckhoffJetSlits.html">pcdsdevices.jet.BeckhoffJetSlits</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.jet.Injector.html">pcdsdevices.jet.Injector</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.jet.InjectorWithFine.html">pcdsdevices.jet.InjectorWithFine</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-keithley">pcdsdevices.keithley</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.keithley.IM3L0_K2700.html">pcdsdevices.keithley.IM3L0_K2700</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.keithley.K2700.html">pcdsdevices.keithley.K2700</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.keithley.K6514.html">pcdsdevices.keithley.K6514</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-lamp-motion">pcdsdevices.lamp_motion</a><ul>
@@ -590,8 +604,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-pim">pcdsdevices.pim</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.IM2K0.html">pcdsdevices.pim.IM2K0</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.IM3L0.html">pcdsdevices.pim.IM3L0</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.IM3L0_K2700.html">pcdsdevices.pim.IM3L0_K2700</a></li>
-<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.K2700.html">pcdsdevices.pim.K2700</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.LCLS2ImagerBase.html">pcdsdevices.pim.LCLS2ImagerBase</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.LCLS2Target.html">pcdsdevices.pim.LCLS2Target</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.PIM.html">pcdsdevices.pim.PIM</a></li>
@@ -601,6 +613,7 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.PIMY.html">pcdsdevices.pim.PIMY</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.PPM.html">pcdsdevices.pim.PPM</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.PPMCOOL.html">pcdsdevices.pim.PPMCOOL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.PPMCoolSwitch.html">pcdsdevices.pim.PPMCoolSwitch</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.PPMPowerMeter.html">pcdsdevices.pim.PPMPowerMeter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.XPIM.html">pcdsdevices.pim.XPIM</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pim.XPIMFilterWheel.html">pcdsdevices.pim.XPIMFilterWheel</a></li>
@@ -660,6 +673,17 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pv_positioner.PVPositionerComparator.html">pcdsdevices.pv_positioner.PVPositionerComparator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pv_positioner.PVPositionerDone.html">pcdsdevices.pv_positioner.PVPositionerDone</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pv_positioner.PVPositionerIsClose.html">pcdsdevices.pv_positioner.PVPositionerIsClose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.pv_positioner.PVPositionerNoInterrupt.html">pcdsdevices.pv_positioner.PVPositionerNoInterrupt</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-qadc">pcdsdevices.qadc</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.qadc.Qadc.html">pcdsdevices.qadc.Qadc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.qadc.Qadc134.html">pcdsdevices.qadc.Qadc134</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.qadc.Qadc134Common.html">pcdsdevices.qadc.Qadc134Common</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.qadc.Qadc134Lcls2.html">pcdsdevices.qadc.Qadc134Lcls2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.qadc.QadcCommon.html">pcdsdevices.qadc.QadcCommon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.qadc.QadcLcls1Timing.html">pcdsdevices.qadc.QadcLcls1Timing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.qadc.QadcLcls2Timing.html">pcdsdevices.qadc.QadcLcls2Timing</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-radiation">pcdsdevices.radiation</a><ul>
@@ -828,6 +852,11 @@
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.timetool.TimetoolWithNav.html">pcdsdevices.timetool.TimetoolWithNav</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-tpr">pcdsdevices.tpr</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.tpr.TprMotor.html">pcdsdevices.tpr.TprMotor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.tpr.TprTrigger.html">pcdsdevices.tpr.TprTrigger</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-usb-encoder">pcdsdevices.usb_encoder</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.usb_encoder.UsDigitalUsbEncoder.html">pcdsdevices.usb_encoder.UsDigitalUsbEncoder</a></li>
 </ul>
@@ -884,6 +913,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#pcdsdevices-wfs">pcdsdevices.wfs</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.wfs.WaveFrontSensorStates.html">pcdsdevices.wfs.WaveFrontSensorStates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.wfs.WaveFrontSensorTarget.html">pcdsdevices.wfs.WaveFrontSensorTarget</a></li>
+<li class="toctree-l3"><a class="reference internal" href="generated/pcdsdevices.wfs.WaveFrontSensorTargetCool.html">pcdsdevices.wfs.WaveFrontSensorTargetCool</a></li>
 </ul>
 </li>
 </ul>
@@ -1109,7 +1139,7 @@
 <td><p>AT2L0 solid attenuator variant from the LCLS-II XTES project.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttBase.html#pcdsdevices.attenuator.AttBase" title="pcdsdevices.attenuator.AttBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttBase</span></code></a>(prefix, *, ...)</p></td>
-<td><p>Base class for attenuators with fundamental frequency.</p></td>
+<td><p>Base class for pre-L2SI beam power attenuators.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.AttBaseWith3rdHarmonic.html#pcdsdevices.attenuator.AttBaseWith3rdHarmonic" title="pcdsdevices.attenuator.AttBaseWith3rdHarmonic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.AttBaseWith3rdHarmonic</span></code></a>(...)</p></td>
 <td><p>Base class for attenuators with 3rd harmonic frequency.</p></td>
@@ -1168,16 +1198,19 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.GattApertureY.html#pcdsdevices.attenuator.GattApertureY" title="pcdsdevices.attenuator.GattApertureY"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.GattApertureY</span></code></a>(prefix, ...)</p></td>
 <td><p>AT1K0 is a gas attenuator containing 4 discrete aperture arrays, each with 4 discrete aperture sizes to attenuate the intensity of the beam.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorBlade.html#pcdsdevices.attenuator.SXRLadderAttenuatorBlade" title="pcdsdevices.attenuator.SXRLadderAttenuatorBlade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRLadderAttenuatorBlade</span></code></a>(...)</p></td>
-<td><p>Represents one ladder solid attenuator blade.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorStates.html#pcdsdevices.attenuator.SXRLadderAttenuatorStates" title="pcdsdevices.attenuator.SXRLadderAttenuatorStates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRLadderAttenuatorStates</span></code></a>(...)</p></td>
-<td><p>The states class for the SXR Ladder-style attenuators.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.get_blade_enum.html#pcdsdevices.attenuator.get_blade_enum" title="pcdsdevices.attenuator.get_blade_enum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.get_blade_enum</span></code></a>(value)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRGasAtt.html#pcdsdevices.attenuator.SXRGasAtt" title="pcdsdevices.attenuator.SXRGasAtt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRGasAtt</span></code></a>(*args, **kwargs)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.render_ascii_att.html#pcdsdevices.attenuator.render_ascii_att" title="pcdsdevices.attenuator.render_ascii_att"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.render_ascii_att</span></code></a>(...)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorBlade.html#pcdsdevices.attenuator.SXRLadderAttenuatorBlade" title="pcdsdevices.attenuator.SXRLadderAttenuatorBlade"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRLadderAttenuatorBlade</span></code></a>(...)</p></td>
+<td><p>Represents one ladder solid attenuator blade.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.SXRLadderAttenuatorStates.html#pcdsdevices.attenuator.SXRLadderAttenuatorStates" title="pcdsdevices.attenuator.SXRLadderAttenuatorStates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.SXRLadderAttenuatorStates</span></code></a>(...)</p></td>
+<td><p>The states class for the SXR Ladder-style attenuators.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.get_blade_enum.html#pcdsdevices.attenuator.get_blade_enum" title="pcdsdevices.attenuator.get_blade_enum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.get_blade_enum</span></code></a>(value)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.attenuator.render_ascii_att.html#pcdsdevices.attenuator.render_ascii_att" title="pcdsdevices.attenuator.render_ascii_att"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.attenuator.render_ascii_att</span></code></a>(...)</p></td>
 <td><p>Creates the attenuator ascii art.</p></td>
 </tr>
 </tbody>
@@ -1346,6 +1379,16 @@
 </tbody>
 </table>
 </section>
+<section id="pcdsdevices-digital-signals">
+<h2>pcdsdevices.digital_signals<a class="headerlink" href="#pcdsdevices-digital-signals" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.digital_signals.J120K.html#pcdsdevices.digital_signals.J120K" title="pcdsdevices.digital_signals.J120K"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.digital_signals.J120K</span></code></a>(*args, ...)</p></td>
+<td><p>A class representing the J120K 24V dry contact cooling flow switch.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="pcdsdevices-digitizers">
 <h2>pcdsdevices.digitizers<a class="headerlink" href="#pcdsdevices-digitizers" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
@@ -1429,7 +1472,10 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.energy_monitor.GMD.html#pcdsdevices.energy_monitor.GMD" title="pcdsdevices.energy_monitor.GMD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.energy_monitor.GMD</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Gas Monitor Detector, installed in the LCLS-II XTES project.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.energy_monitor.XGMD.html#pcdsdevices.energy_monitor.XGMD" title="pcdsdevices.energy_monitor.XGMD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.energy_monitor.XGMD</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.energy_monitor.GMDPreAmp.html#pcdsdevices.energy_monitor.GMDPreAmp" title="pcdsdevices.energy_monitor.GMDPreAmp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.energy_monitor.GMDPreAmp</span></code></a>(*args, ...)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.energy_monitor.XGMD.html#pcdsdevices.energy_monitor.XGMD" title="pcdsdevices.energy_monitor.XGMD"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.energy_monitor.XGMD</span></code></a>(*args, **kwargs)</p></td>
 <td><p>X Gas Monitor Detector (2nd generation GMD).</p></td>
 </tr>
 </tbody>
@@ -1865,6 +1911,22 @@
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.jet.InjectorWithFine.html#pcdsdevices.jet.InjectorWithFine" title="pcdsdevices.jet.InjectorWithFine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.jet.InjectorWithFine</span></code></a>(*, name, ...)</p></td>
 <td><p>Positioner for liquid jet Injector, with fine control.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="pcdsdevices-keithley">
+<h2>pcdsdevices.keithley<a class="headerlink" href="#pcdsdevices-keithley" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.keithley.IM3L0_K2700.html#pcdsdevices.keithley.IM3L0_K2700" title="pcdsdevices.keithley.IM3L0_K2700"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.keithley.IM3L0_K2700</span></code></a>(*args, **kwargs)</p></td>
+<td><p>One-off subclass of K2700 to use a pydm screen specific to this device.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.keithley.K2700.html#pcdsdevices.keithley.K2700" title="pcdsdevices.keithley.K2700"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.keithley.K2700</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Keithley 2700 digital multimeter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.keithley.K6514.html#pcdsdevices.keithley.K6514" title="pcdsdevices.keithley.K6514"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.keithley.K6514</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Keithley 6514 electrometer.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2452,12 +2514,6 @@
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.IM3L0.html#pcdsdevices.pim.IM3L0" title="pcdsdevices.pim.IM3L0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.IM3L0</span></code></a>(*args, **kwargs)</p></td>
 <td><p>One-off subclass of PPM to include this device's Keithley 2700</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.IM3L0_K2700.html#pcdsdevices.pim.IM3L0_K2700" title="pcdsdevices.pim.IM3L0_K2700"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.IM3L0_K2700</span></code></a>(*args, **kwargs)</p></td>
-<td><p>One-off subclass of K2700 to use a pydm screen specific to this device.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.K2700.html#pcdsdevices.pim.K2700" title="pcdsdevices.pim.K2700"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.K2700</span></code></a>(*args, **kwargs)</p></td>
-<td><p>Keithley 2700 digital multimeter.</p></td>
-</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.LCLS2ImagerBase.html#pcdsdevices.pim.LCLS2ImagerBase" title="pcdsdevices.pim.LCLS2ImagerBase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.LCLS2ImagerBase</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Shared PVs and components from the LCLS2 imagers.</p></td>
 </tr>
@@ -2485,16 +2541,19 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.PPMCOOL.html#pcdsdevices.pim.PPMCOOL" title="pcdsdevices.pim.PPMCOOL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.PPMCOOL</span></code></a>(*args, **kwargs)</p></td>
 <td><p>L2SI's Power and Profile Monitor design with cooling.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.PPMPowerMeter.html#pcdsdevices.pim.PPMPowerMeter" title="pcdsdevices.pim.PPMPowerMeter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.PPMPowerMeter</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.PPMCoolSwitch.html#pcdsdevices.pim.PPMCoolSwitch" title="pcdsdevices.pim.PPMCoolSwitch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.PPMCoolSwitch</span></code></a>(*args, **kwargs)</p></td>
+<td><p>L2SI's Power and Profile Monitor design with cooling switch.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.PPMPowerMeter.html#pcdsdevices.pim.PPMPowerMeter" title="pcdsdevices.pim.PPMPowerMeter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.PPMPowerMeter</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Analog measurement tool for beam energy as part of the PPM assembly.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.XPIM.html#pcdsdevices.pim.XPIM" title="pcdsdevices.pim.XPIM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.XPIM</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.XPIM.html#pcdsdevices.pim.XPIM" title="pcdsdevices.pim.XPIM"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.XPIM</span></code></a>(*args, **kwargs)</p></td>
 <td><p>XTES's Imager design.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.XPIMFilterWheel.html#pcdsdevices.pim.XPIMFilterWheel" title="pcdsdevices.pim.XPIMFilterWheel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.XPIMFilterWheel</span></code></a>(prefix, *, ...)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.XPIMFilterWheel.html#pcdsdevices.pim.XPIMFilterWheel" title="pcdsdevices.pim.XPIMFilterWheel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.XPIMFilterWheel</span></code></a>(prefix, *, ...)</p></td>
 <td><p>Controllable optical filters to prevent camera saturation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.XPIMLED.html#pcdsdevices.pim.XPIMLED" title="pcdsdevices.pim.XPIMLED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.XPIMLED</span></code></a>(*args, **kwargs)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.pim.XPIMLED.html#pcdsdevices.pim.XPIMLED" title="pcdsdevices.pim.XPIMLED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pim.XPIMLED</span></code></a>(*args, **kwargs)</p></td>
 <td><p>Controllable illumination with auto-on, auto-off, and shutdown timer.</p></td>
 </tr>
 </tbody>
@@ -2647,6 +2706,37 @@
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.pv_positioner.PVPositionerIsClose.html#pcdsdevices.pv_positioner.PVPositionerIsClose" title="pcdsdevices.pv_positioner.PVPositionerIsClose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pv_positioner.PVPositionerIsClose</span></code></a>(...)</p></td>
 <td><p>PV Positioner that updates done state based on np.isclose.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.pv_positioner.PVPositionerNoInterrupt.html#pcdsdevices.pv_positioner.PVPositionerNoInterrupt" title="pcdsdevices.pv_positioner.PVPositionerNoInterrupt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.pv_positioner.PVPositionerNoInterrupt</span></code></a>(...)</p></td>
+<td><p>A PV positioner whose moves cannot be interrupted.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="pcdsdevices-qadc">
+<h2>pcdsdevices.qadc<a class="headerlink" href="#pcdsdevices-qadc" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.qadc.Qadc.html#pcdsdevices.qadc.Qadc" title="pcdsdevices.qadc.Qadc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.qadc.Qadc</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Class for an older Abaco FMC PCIe digitzer, used in the LCLS-I hutches.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.qadc.Qadc134.html#pcdsdevices.qadc.Qadc134" title="pcdsdevices.qadc.Qadc134"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.qadc.Qadc134</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Class for LCLS-I FMC134 digitizers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.qadc.Qadc134Common.html#pcdsdevices.qadc.Qadc134Common" title="pcdsdevices.qadc.Qadc134Common"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.qadc.Qadc134Common</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Common class for FMC134 digitizers.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.qadc.Qadc134Lcls2.html#pcdsdevices.qadc.Qadc134Lcls2" title="pcdsdevices.qadc.Qadc134Lcls2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.qadc.Qadc134Lcls2</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Class for LCLS-2 FMC134 digitizers.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.qadc.QadcCommon.html#pcdsdevices.qadc.QadcCommon" title="pcdsdevices.qadc.QadcCommon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.qadc.QadcCommon</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Common class for Abaco FMC digitizers.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.qadc.QadcLcls1Timing.html#pcdsdevices.qadc.QadcLcls1Timing" title="pcdsdevices.qadc.QadcLcls1Timing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.qadc.QadcLcls1Timing</span></code></a>(*args, **kwargs)</p></td>
+<td><p>LCLS-I timing interface for FMC134 QADCs.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.qadc.QadcLcls2Timing.html#pcdsdevices.qadc.QadcLcls2Timing" title="pcdsdevices.qadc.QadcLcls2Timing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.qadc.QadcLcls2Timing</span></code></a>(*args, **kwargs)</p></td>
+<td><p>LCLS-II timing interface for FMC134 QADCs.</p></td>
 </tr>
 </tbody>
 </table>
@@ -3113,6 +3203,19 @@
 </tbody>
 </table>
 </section>
+<section id="pcdsdevices-tpr">
+<h2>pcdsdevices.tpr<a class="headerlink" href="#pcdsdevices-tpr" title="Link to this heading"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.tpr.TprMotor.html#pcdsdevices.tpr.TprMotor" title="pcdsdevices.tpr.TprMotor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.tpr.TprMotor</span></code></a>(prefix, *, sys, ...)</p></td>
+<td><p>PV Positioner for adjusting an TPR channel.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.tpr.TprTrigger.html#pcdsdevices.tpr.TprTrigger" title="pcdsdevices.tpr.TprTrigger"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.tpr.TprTrigger</span></code></a>(prefix, *, ...)</p></td>
+<td><p>Class for an individual TprTrigger.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="pcdsdevices-usb-encoder">
 <h2>pcdsdevices.usb_encoder<a class="headerlink" href="#pcdsdevices-usb-encoder" title="Link to this heading"></a></h2>
 <table class="autosummary longtable docutils align-default">
@@ -3272,6 +3375,9 @@
 <td><p>Controls the WFS (Wavefront Sensor)'s target states.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/pcdsdevices.wfs.WaveFrontSensorTarget.html#pcdsdevices.wfs.WaveFrontSensorTarget" title="pcdsdevices.wfs.WaveFrontSensorTarget"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.wfs.WaveFrontSensorTarget</span></code></a>(*args, ...)</p></td>
+<td><p>An array of targets used to determine the beam's wavefront.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/pcdsdevices.wfs.WaveFrontSensorTargetCool.html#pcdsdevices.wfs.WaveFrontSensorTargetCool" title="pcdsdevices.wfs.WaveFrontSensorTargetCool"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pcdsdevices.wfs.WaveFrontSensorTargetCool</span></code></a>(...)</p></td>
 <td><p>An array of targets used to determine the beam's wavefront.</p></td>
 </tr>
 </tbody>

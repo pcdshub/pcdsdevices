@@ -1,9 +1,9 @@
-﻿pcdsdevices.pim.IM3L0\_K2700
-============================
+﻿pcdsdevices.keithley.K2700
+==========================
 
-.. currentmodule:: pcdsdevices.pim
+.. currentmodule:: pcdsdevices.keithley
 
-.. autoclass:: IM3L0_K2700
+.. autoclass:: K2700
 
     
     
@@ -23,42 +23,42 @@
           - ``:Identity``
           - Identity (name) of this device
           - normal
-          - Inherited from :class:`~pcdsdevices.pim.K2700`
+          - 
     
         * - reading
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:Reading``
           - Trigger and return a new measurement
           - normal
-          - Inherited from :class:`~pcdsdevices.pim.K2700`
+          - 
     
         * - dcv_range
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:GetDCV``
           - DC voltage range
           - normal
-          - Inherited from :class:`~pcdsdevices.pim.K2700`
+          - 
     
         * - acv_range
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:GetACV``
           - AC voltage range
           - normal
-          - Inherited from :class:`~pcdsdevices.pim.K2700`
+          - 
     
         * - dci_range
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:GetDCI``
           - DC current range
           - normal
-          - Inherited from :class:`~pcdsdevices.pim.K2700`
+          - 
     
         * - aci_range
           - :class:`~ophyd.signal.EpicsSignalRO`
           - ``:GetACI``
           - AC current range
           - normal
-          - Inherited from :class:`~pcdsdevices.pim.K2700`
+          - 
     
 
     
