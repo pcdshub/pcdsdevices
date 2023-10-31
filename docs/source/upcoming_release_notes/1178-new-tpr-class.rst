@@ -7,8 +7,7 @@ API Breaks
 
 Features
 --------
-- New TprTrigger and TprMotor device classes in tpr.py
-- Analogous to Trigger and EvrMotor from evr.py
+- N/A
 
 Device Updates
 --------------
@@ -16,7 +15,8 @@ Device Updates
 
 New Devices
 -----------
-- N/A
+- New TprTrigger and TprMotor device classes in tpr.py
+- Analogous to Trigger and EvrMotor from evr.py
 
 Bugfixes
 --------
