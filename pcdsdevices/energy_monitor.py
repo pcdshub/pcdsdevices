@@ -34,14 +34,14 @@ class GEM(BaseInterface, Device):
 
 class GMDPreAmp(BaseInterface, Device):
     tab_component_names = True
-    ion_pre_att = Cpt(EpicsSignal, ':AMP_PREATTN1_RBV', write_pv=':AMP_PREATTN1', string=True, kind='hinted', doc='Channel 1 PRE attenuator')
-    ion_post_att = Cpt(EpicsSignal, ':AMP_POSATTN1_RBV', write_pv=':AMP_POSATTN1', string=True, kind='hinted', doc='Channel 1 POS attenuator')
-    elec1_pre_att = Cpt(EpicsSignal, ':AMP_PREATTN2_RBV', write_pv=':AMP_PREATTN2', string=True, kind='hinted', doc='Channel 2 PRE attenuator')
-    elec1_post_att = Cpt(EpicsSignal, ':AMP_POSATTN2_RBV', write_pv=':AMP_POSATTN2', string=True, kind='hinted', doc='Channel 2 POS attenuator')
-    elec2_pre_att = Cpt(EpicsSignal, ':AMP_PREATTN3_RBV', write_pv=':AMP_PREATTN3', string=True, kind='hinted', doc='Channel 3 PRE attenuator')
-    elec2_post_att = Cpt(EpicsSignal, ':AMP_POSATTN3_RBV', write_pv=':AMP_POSATTN3', string=True, kind='hinted', doc='Channel 3 POS attenuator')
-    spare_pre_att = Cpt(EpicsSignal, ':AMP_PREATTN4_RBV', write_pv=':AMP_PREATTN4', string=True, kind='hinted', doc='Channel 4 PRE attenuator')
-    spare_post_att = Cpt(EpicsSignal, ':AMP_POSATTN4_RBV', write_pv=':AMP_POSATTN4', string=True, kind='hinted', doc='Channel 4 POS attenuator')
+    ion_pre_att = Cpt(EpicsSignal, ':AMP_PREATTN1_RBV', write_pv=':AMP_PREATTN1', string=True, kind='normal', doc='Channel 1 PRE attenuator')
+    ion_post_att = Cpt(EpicsSignal, ':AMP_POSATTN1_RBV', write_pv=':AMP_POSATTN1', string=True, kind='normal', doc='Channel 1 POS attenuator')
+    elec1_pre_att = Cpt(EpicsSignal, ':AMP_PREATTN2_RBV', write_pv=':AMP_PREATTN2', string=True, kind='normal', doc='Channel 2 PRE attenuator')
+    elec1_post_att = Cpt(EpicsSignal, ':AMP_POSATTN2_RBV', write_pv=':AMP_POSATTN2', string=True, kind='normal', doc='Channel 2 POS attenuator')
+    elec2_pre_att = Cpt(EpicsSignal, ':AMP_PREATTN3_RBV', write_pv=':AMP_PREATTN3', string=True, kind='normal', doc='Channel 3 PRE attenuator')
+    elec2_post_att = Cpt(EpicsSignal, ':AMP_POSATTN3_RBV', write_pv=':AMP_POSATTN3', string=True, kind='normal', doc='Channel 3 POS attenuator')
+    spare_pre_att = Cpt(EpicsSignal, ':AMP_PREATTN4_RBV', write_pv=':AMP_PREATTN4', string=True, kind='normal', doc='Channel 4 PRE attenuator')
+    spare_post_att = Cpt(EpicsSignal, ':AMP_POSATTN4_RBV', write_pv=':AMP_POSATTN4', string=True, kind='normal', doc='Channel 4 POS attenuator')
 
 
 class GMD(BaseInterface, Device):
