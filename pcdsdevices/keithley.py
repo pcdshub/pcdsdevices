@@ -1,5 +1,5 @@
 """
-Module for Keithely power meter classes.
+Module for Keithely classes.
 """
 from ophyd.device import Component as Cpt
 from ophyd.device import Device
@@ -9,19 +9,24 @@ from .interface import BaseInterface
 
 
 class K6514(BaseInterface, Device):
+    """
+    Keithley 6514 electrometer.
+
+    Used by GMD.
+    """
     tab_component_names = True
 
-    avg_enable = Cpt(EpicsSignal, ':AvgEnable', kind='hinted', doc='')
-    avg_count = Cpt(EpicsSignal, ':GetAvgCount', write_pv='PutAvgCount', kind='hinted', doc='')
-    avg_mode = Cpt(EpicsSignal, ':PutAvgType', string=True, kind='hinted', doc='')
-    auto_range = Cpt(EpicsSignal, ':PutAutoRange', kind='hinted', doc='')
-    current_range = Cpt(EpicsSignal, ':SelectCurrentRange', string=True, kind='hinted', doc='')
-    damping = Cpt(EpicsSignal, ':PutDamping', string=True, kind='hinted', doc='')
-    integration_time = Cpt(EpicsSignal, ':GetIntCycles', write_pv=':PutIntCycles', kind='hinted', doc='')
-    measurement_function = Cpt(EpicsSignal, ':PutFunction', string=True, kind='hinted', doc='')
-    reading_rate = Cpt(EpicsSignal, ':Reading.SCAN', string=True, kind='hinted', doc='')
-    reading = Cpt(EpicsSignalRO, ':Reading', kind='hinted', doc='')
-    zero_correct = Cpt(EpicsSignal, ':ZeroCorrect', kind='hinted', doc='')
+    avg_enable = Cpt(EpicsSignal, ':AvgEnable', kind='hinted', doc='Enable/disable the average function')
+    avg_count = Cpt(EpicsSignal, ':GetAvgCount', write_pv='PutAvgCount', kind='hinted', doc='Get the averaging factor')
+    avg_mode = Cpt(EpicsSignal, ':PutAvgType', string=True, kind='hinted', doc='Select filter control: Moving or Repeated')
+    auto_range = Cpt(EpicsSignal, ':PutAutoRange', kind='hinted', doc='Enable/disable autorange')
+    current_range = Cpt(EpicsSignal, ':SelectCurrentRange', string=True, kind='hinted', doc='Set range in amps')
+    damping = Cpt(EpicsSignal, ':PutDamping', string=True, kind='hinted', doc='Enable/disable current damping')
+    integration_time = Cpt(EpicsSignal, ':GetIntCycles', write_pv=':PutIntCycles', kind='hinted', doc='Set integration time')
+    measurement_function = Cpt(EpicsSignal, ':PutFunction', string=True, kind='hinted', doc='Select function - Voltage, Current, Resistance, or Charge')
+    reading_rate = Cpt(EpicsSignal, ':Reading.SCAN', string=True, kind='hinted', doc='Reading scan rate/type')
+    reading = Cpt(EpicsSignalRO, ':Reading', kind='hinted', doc='Trigger and return a new measurement')
+    zero_correct = Cpt(EpicsSignal, ':ZeroCorrect', kind='hinted', doc='Run zero-zorrect')
 
 
 class K2700(BaseInterface, Device):
