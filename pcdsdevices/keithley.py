@@ -16,17 +16,17 @@ class K6514(BaseInterface, Device):
     """
     tab_component_names = True
 
-    avg_enable = Cpt(EpicsSignal, ':AvgEnable', kind='hinted', doc='Enable/disable the average function')
-    avg_count = Cpt(EpicsSignal, ':GetAvgCount', write_pv='PutAvgCount', kind='hinted', doc='Get the averaging factor')
-    avg_mode = Cpt(EpicsSignal, ':PutAvgType', string=True, kind='hinted', doc='Select filter control: Moving or Repeated')
-    auto_range = Cpt(EpicsSignal, ':PutAutoRange', kind='hinted', doc='Enable/disable autorange')
-    current_range = Cpt(EpicsSignal, ':SelectCurrentRange', string=True, kind='hinted', doc='Set range in amps')
-    damping = Cpt(EpicsSignal, ':PutDamping', string=True, kind='hinted', doc='Enable/disable current damping')
+    avg_enable = Cpt(EpicsSignal, ':AvgEnable', kind='normal', doc='Enable/disable the average function')
+    avg_count = Cpt(EpicsSignal, ':GetAvgCount', write_pv='PutAvgCount', kind='normal', doc='Get the averaging factor')
+    avg_mode = Cpt(EpicsSignal, ':PutAvgType', string=True, kind='normal', doc='Select filter control: Moving or Repeated')
+    auto_range = Cpt(EpicsSignal, ':PutAutoRange', kind='normal', doc='Enable/disable autorange')
+    current_range = Cpt(EpicsSignal, ':SelectCurrentRange', string=True, kind='normal', doc='Set range in amps')
+    damping = Cpt(EpicsSignal, ':PutDamping', string=True, kind='normal', doc='Enable/disable current damping')
     integration_time = Cpt(EpicsSignal, ':GetIntCycles', write_pv=':PutIntCycles', kind='hinted', doc='Set integration time')
     measurement_function = Cpt(EpicsSignal, ':PutFunction', string=True, kind='hinted', doc='Select function - Voltage, Current, Resistance, or Charge')
-    reading_rate = Cpt(EpicsSignal, ':Reading.SCAN', string=True, kind='hinted', doc='Reading scan rate/type')
+    reading_rate = Cpt(EpicsSignal, ':Reading.SCAN', string=True, kind='normal', doc='Reading scan rate/type')
     reading = Cpt(EpicsSignalRO, ':Reading', kind='hinted', doc='Trigger and return a new measurement')
-    zero_correct = Cpt(EpicsSignal, ':ZeroCorrect', kind='hinted', doc='Run zero-zorrect')
+    zero_correct = Cpt(EpicsSignal, ':ZeroCorrect', kind='normal', doc='Run zero-correct')
 
 
 class K2700(BaseInterface, Device):
