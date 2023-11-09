@@ -18,6 +18,7 @@ from ophyd.pv_positioner import PVPositioner, PVPositionerPC
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
 from . import utils
+from .device import GroupDevice
 from .device import UnrelatedComponent as UCpt
 from .device import UpdateComponent as UpCpt
 from .epics_motor import BeckhoffAxisNoOffset
@@ -28,6 +29,7 @@ from .pmps import TwinCATStatePMPS
 from .signal import InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO
 from .type_hints import OphydDataType, SignalToValue
 from .utils import get_status_float, get_status_value
+from .valve import VCN, VVC
 from .variety import set_metadata
 
 logger = logging.getLogger(__name__)
@@ -1714,6 +1716,88 @@ class LadderBladeState(enum.IntEnum):
     def is_moving(self) -> bool:
         """Is the blade moving?"""
         return self == LadderBladeState.Moving
+
+
+class SXRGasAtt(BaseInterface, GroupDevice):
+    tab_component_names = True
+    tab_whitelist = ['setup_mode']
+
+    transmission = Cpt(EpicsSignal, ':TRANS_RBV', write_pv=':TRANS_SP', kind='hinted',
+                       doc='Transmission')
+    arb_req = Cpt(EpicsSignalRO, ':TRANS_REQ_RBV', kind='hinted',
+                  doc='Requested transmission')
+    pressure = Cpt(EpicsSignal, ':GCM:82:PRESS_RBV', write_pv=':CNTRL:SP', kind='hinted',
+                   doc='Pressure')
+    pressure_setpoint_rbv = Cpt(EpicsSignalRO, ':CNTRL:SP_RBV', kind='omitted',
+                                doc='Pressure setpoint')
+    mode = Cpt(EpicsSignal, ':MODE_RBV', write_pv=':MODE', string=True, kind='hinted',
+               doc='PMPS mode')
+    control_enable = Cpt(EpicsSignal, ':CNTRL:ON_RBV', write_pv=':CNTRL:ON', kind='hinted',
+                         doc='')
+    pressure_control_enable = Cpt(EpicsSignal, ':MODE:PressureControl_RBV', write_pv=':MODE:PressureControl', kind='hinted',
+                                  doc='Pressure control mode')
+    gas_type = Cpt(EpicsSignalRO, ':GAS_TYPE_RBV', string=True, kind='hinted',
+                   doc='Selected gas')
+    at_target = Cpt(EpicsSignalRO, ':AtTarget_RBV', string=True, kind='hinted',
+                    doc='At target')
+    moving = Cpt(EpicsSignalRO, ':Moving_RBV', string=True, kind='hinted',
+                 doc='Moving')
+    gas_att_ok = Cpt(EpicsSignalRO, ':OK_RBV', string=True, kind='hinted',
+                     doc='Ok')
+    transmission_setpoint_rbv = Cpt(EpicsSignalRO, ':TRANS_SP_RBV', kind='omitted',
+                                    doc='Transmission setpoint')
+    pressure_control_valve = Cpt(EpicsSignalRO, ':VCN:70:POS_REQ_RBV', kind='omitted',
+                                 doc='Requested position')
+    valve_n2 = Cpt(VVC, ':VVC:72', kind='hinted', doc='Valve n2')
+    valve_ar = Cpt(VVC, ':VVC:71', kind='hinted', doc='Valve ar')
+    valve_pressure_control = Cpt(VCN, ':VCN:70', kind='omitted', doc='Pressure control valve')
+
+    def setup_mode(self, mode, control_type='transmission', gas_type=None):
+        """
+        Setup gas attenuator to work in "PMPS" or "Local" mode, with either "transmission control" or "pressure control"
+
+        Parameters
+        ----------
+        mode : str, either "PMPS" or "Local"
+        Mode for attenuator.
+        control_type : str, optional
+            Set control type in "Local" mode, either "transmission" or "pressure" control. The default is 'transmission'.
+        gas_type : str, optional
+            Change gas type to "N2" or "Ar". The default is None.If None is passed the attenuator uses the current gas.
+
+        """
+        if mode is not ('PMPS' or 'Local'):
+            print('unrecognizied mode, options are "PMPS" or "Local"')
+            return
+        elif mode == "Local":
+            if control_type is not ('transmission' or 'pressure'):
+                print('unrecognizied control type, options are "transmission" or "pressure"')
+                return
+        if gas_type is not ('N2' or 'Ar' or None):
+            print('unrecognizied gas type, options are "N2", "Ar", or None')
+            return
+
+        if mode == 'PMPS':
+            self.mode.put('PMPS')
+        elif mode == 'Local':
+            self.mode.put('Local')
+
+        if gas_type is not None:
+            self.valve_ar.open_command.put(0)
+            self.valve_n2.open_command.put(0)
+            if gas_type == 'N2':
+                self.valve_n2.open_command.put(1)
+            elif gas_type == 'Ar':
+                self.valve_ar.open_command.put(1)
+
+        elif mode == 'Local':
+            if control_type == 'transmission':
+                self.transmission.put(1)
+                self.control_enable.put(1)
+            elif control_type == 'pressure':
+                self.pressure_control_enable.put(1)
+                self.control_enable.put(1)
+                self.pressure.put(0)
 
 
 def get_blade_enum(value):
