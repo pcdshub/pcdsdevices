@@ -14,7 +14,7 @@ from ophyd.device import Component as Cpt
 from ophyd.device import Device
 from ophyd.device import DynamicDeviceComponent as DDC
 from ophyd.device import FormattedComponent as FCpt
-from ophyd.pv_positioner import PVPositioner, PVPositionerPC
+from ophyd.pv_positioner import PVPositionerPC
 from ophyd.signal import EpicsSignal, EpicsSignalRO, Signal, SignalRO
 
 from . import utils
@@ -26,6 +26,7 @@ from .inout import InOutPositioner, TwinCATInOutPositioner
 from .interface import (BaseInterface, FltMvInterface, LightpathInOutCptMixin,
                         LightpathMixin)
 from .pmps import TwinCATStatePMPS
+from .pv_positioner import PVPositionerNoInterrupt
 from .signal import InternalSignal, MultiDerivedSignal, MultiDerivedSignalRO
 from .type_hints import OphydDataType, SignalToValue
 from .utils import get_status_float, get_status_value
@@ -134,9 +135,9 @@ class FeeFilter(InOutPositioner):
             self.status.put(BladeStateEnum.Unknown, force=True)
 
 
-class AttBase(FltMvInterface, PVPositioner):
+class AttBase(FltMvInterface, PVPositionerNoInterrupt):
     """
-    Base class for attenuators with fundamental frequency.
+    Base class for pre-L2SI beam power attenuators.
 
     This is a device that puts an array of filters in or out to achieve a
     desired transmission ratio.

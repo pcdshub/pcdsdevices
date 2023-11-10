@@ -83,6 +83,16 @@ def test_attenuator_motion(fake_att):
 
 
 @pytest.mark.timeout(5)
+def test_attenuator_no_interrupt(fake_att):
+    logger.debug('test_attenuator_no_interrupt')
+    att = fake_att
+    # Set as already moving
+    att.done.sim_put(1)
+    with pytest.raises(RuntimeError):
+        att.move(0.5)
+
+
+@pytest.mark.timeout(5)
 def test_attenuator_subscriptions(fake_att):
     logger.debug('test_attenuator_subscriptions')
     att = fake_att
