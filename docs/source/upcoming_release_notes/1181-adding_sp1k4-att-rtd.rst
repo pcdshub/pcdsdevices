@@ -7,7 +7,7 @@ API Breaks
 
 Features
 --------
-- Adding sp1k4-att-rtd on the sp1k4 gui
+- Adds attenuator RTD temperatures to sp1k4, for display in GUI.
 
 Device Updates
 --------------
@@ -27,4 +27,4 @@ Maintenance
 
 Contributors
 ------------
-- @tongju12
+- tongju12
