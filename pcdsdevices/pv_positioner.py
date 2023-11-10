@@ -186,6 +186,31 @@ class PVPositionerNoInterrupt(PVPositioner):
         The amount of time to wait after moves to report status completion
     timeout : float, optional
         The default timeout to use for motion requests, in seconds.
+
+    Attributes
+    ----------
+    setpoint : Signal
+        The setpoint (request) signal
+    readback : Signal or None
+        The readback PV (e.g., encoder position PV)
+    actuate : Signal or None
+        The actuation PV to set when movement is requested
+    actuate_value : any, optional
+        The actuation value, sent to the actuate signal when motion is
+        requested
+    stop_signal : Signal or None
+        The stop PV to set when motion should be stopped
+    stop_value : any, optional
+        The value sent to stop_signal when a stop is requested
+    done : Signal
+        A readback value indicating whether motion is finished
+    done_value : any, optional
+        The value that the done pv should be when motion has completed
+    put_complete : bool, optional
+        If set, the specified PV should allow for asynchronous put completion
+        to indicate motion has finished.  If ``actuate`` is specified, it will be
+        used for put completion.  Otherwise, the ``setpoint`` will be used.  See
+        the `-c` option from ``caput`` for more information.
     """
     def __init__(self, *args, **kwargs):
         if self.__class__ is PVPositionerNoInterrupt:
@@ -204,11 +229,12 @@ class PVPositionerNoInterrupt(PVPositioner):
     ):
         """
         Move to a specified position, optionally waiting for motion to
-        complete.
+        complete. Unlike the standard move, this will fail with a clear
+        error message when a move is already in progress.
 
         Parameters
         ----------
-        position
+        position : float
             Position to move to
         moved_cb : callable
             Call this callback when movement has finished. This callback must
@@ -221,6 +247,16 @@ class PVPositionerNoInterrupt(PVPositioner):
         Returns
         -------
         status : MoveStatus
+
+        Raises
+        ------
+        TimeoutError
+            When motion takes longer than ``timeout``
+        ValueError
+            On invalid positions
+        RuntimeError
+            If motion fails other than timing out, including when a move is
+            attempted while another move is already in progress.
         """
         if self.moving:
             try:
