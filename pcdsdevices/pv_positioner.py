@@ -1,4 +1,6 @@
-from typing import Optional
+from __future__ import annotations
+
+from typing import Callable, Optional
 
 import numpy as np
 from ophyd.device import Component as Cpt
@@ -160,3 +162,76 @@ class PVPositionerDone(FltMvInterface, PVPositioner):
     def _toggle_done(self):
         self.done.put(0, force=True)
         self.done.put(1, force=True)
+
+
+class PVPositionerNoInterrupt(PVPositioner):
+    """
+    A PV positioner whose moves cannot be interrupted.
+
+    If we try to start a new move before the previous move completes,
+    instead we will get a clear error advising us to wait.
+
+    Parameters
+    ----------
+    prefix : str, optional
+        The device prefix used for all sub-positioners. This is optional as it
+        may be desirable to specify full PV names for PVPositioners.
+    limits : 2-element sequence, optional
+        (low_limit, high_limit)
+    name : str
+        The device name
+    egu : str, optional
+        The engineering units (EGU) for the position
+    settle_time : float, optional
+        The amount of time to wait after moves to report status completion
+    timeout : float, optional
+        The default timeout to use for motion requests, in seconds.
+    """
+    def __init__(self, *args, **kwargs):
+        if self.__class__ is PVPositionerNoInterrupt:
+            raise TypeError(
+                "PVPositionerNoInterrupt must be subclassed with the correct "
+                "signals set in the class definition."
+            )
+        super().__init__(*args, **kwargs)
+
+    def move(
+        self,
+        position: float,
+        wait: bool = True,
+        timeout: float | None = None,
+        moved_cb: Callable[[PVPositionerNoInterrupt], None] | None = None,
+    ):
+        """
+        Move to a specified position, optionally waiting for motion to
+        complete.
+
+        Parameters
+        ----------
+        position
+            Position to move to
+        moved_cb : callable
+            Call this callback when movement has finished. This callback must
+            accept one keyword argument: 'obj' which will be set to this
+            positioner instance.
+        timeout : float, optional
+            Maximum time to wait for the motion. If None, the default timeout
+            for this positioner is used.
+
+        Returns
+        -------
+        status : MoveStatus
+        """
+        if self.moving:
+            try:
+                progress = f"Position = {self.position}, goal = {self.setpoint.get()}."
+            except Exception:
+                progress = ""
+            raise RuntimeError(
+                f"The {self.name} device cannot start a new move because the "
+                "previous move has not completed. This is not an "
+                "interruptable positioner. Try waiting after the previous "
+                f"move or for the move's status to complete. {progress}"
+            )
+        else:
+            return super().move(position, wait=wait, timeout=timeout, moved_cb=moved_cb)
