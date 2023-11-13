@@ -414,6 +414,170 @@ Current position (user, dial): {position} [{units}] {dial_pos} [s]
 """
 
 
+class Lcls2LaserTiming(FltMvInterface, PVPositioner):
+    """
+    A "lxt" motor for the LCLS-II laser locker, AKA the OPCPA laser locker.
+    """
+
+    tab_component_names = True
+
+    verbose_name = 'Laser X-ray Timing'
+
+    _tgt_time = Cpt(EpicsSignal, ':PHASCTL:DELAY_SET', auto_monitor=True,
+                    kind='omitted',
+                    doc='The internal nanosecond-expecting signal.'
+                    )
+    setpoint = Cpt(_ScaledUnitConversionDerivedSignal,
+                   derived_from='_tgt_time',
+                   derived_units='s',
+                   original_units='ns',
+                   kind='hinted',
+                   doc='Setpoint which handles the timing conversion.',
+                   limits=(-100e-6, 100e-6),
+                   )
+    notepad_setpoint = Cpt(NotepadLinkedSignal, ':lxt:OphydSetpoint',
+                           notepad_metadata={'record': 'ao',
+                                             'default_value': 0.0},
+                           kind='omitted'
+                           )
+    notepad_readback = Cpt(NotepadLinkedSignal, ':lxt:OphydReadback',
+                           notepad_metadata={'record': 'ao',
+                                             'default_value': 0.0},
+                           kind='omitted'
+                           )
+    user_offset = Cpt(NotepadLinkedSignal, ':lxt:OphydOffset',
+                      notepad_metadata={'record': 'ao', 'default_value': 0.0},
+                      kind='normal',
+                      doc='A Python-level user offset.'
+                      )
+
+    # The phase shifter will be moved after the above record is touched, so
+    # use its done status:
+    done = Cpt(EpicsSignal, ':PHASCTL:DELAY_MOVING', auto_monitor=True, kind='omitted')
+    done_value = 0
+
+    def __init__(self, prefix='', *, egu=None, **kwargs):
+        if egu not in (None, 's'):
+            raise ValueError(
+                f'{self.__class__.__name__} is pre-configured to work in units'
+                f' of seconds.'
+            )
+        super().__init__(prefix, egu='s', **kwargs)
+
+    @user_offset.sub_value
+    def _offset_changed(self, value, **kwargs):
+        """
+        The user offset was changed.  Update the setpoint attribute.
+        """
+        self.setpoint.user_offset = value
+
+    def _setup_move(self, position):
+        """Update the notepad setpoint, move, and do not wait."""
+        try:
+            signal = self.notepad_setpoint
+            if signal.connected and signal.write_access:
+                if signal.get(use_monitor=True) != position:
+                    signal.put(position, wait=False)
+        except Exception as ex:
+            self.log.debug('Failed to update notepad setpoint to position %s',
+                           position, exc_info=ex)
+        super()._setup_move(position)
+
+        # Something is wrong with done signal, just sleep and pretend
+        time.sleep(1)
+        self._move_changed(value=1-self.done_value)
+        self._move_changed(value=self.done_value)
+
+    @done.sub_value
+    def _update_position(self, old_value=None, value=None, **kwargs):
+        """The move was completed. Update the notepad readback."""
+        if value == self.done_value and old_value == 0:
+            try:
+                signal = self.notepad_readback
+                position = self.setpoint.get()
+                if signal.connected and signal.write_access:
+                    if signal.get(use_monitor=True) != position:
+                        signal.put(position, wait=False)
+            except Exception as ex:
+                self.log.debug('Failed to update notepad readback to position'
+                               ' %s', position, exc_info=ex)
+
+    @property
+    def limits(self):
+        """
+        Limits as (low_limit, high_limit).
+
+        These Python-only user limits are mirrored from `setpoint`.
+        """
+        return self.setpoint.limits
+
+    @limits.setter
+    def limits(self, limits):
+        # Update the setpoint limits
+        self.setpoint.limits = limits
+
+    def set_current_position(self, position):
+        '''
+        Calculate and configure the user_offset value, indicating the provided
+        ``position`` as the new current position.
+
+        Parameters
+        ----------
+        position
+            The new current position.
+        '''
+        self.user_offset.put(0.0)
+        new_offset = position - self.setpoint.get()
+        self.user_offset.put(new_offset)
+
+    @property
+    def dial_pos(self):
+        """
+        Calculate the dial position.
+
+        The _tgt_time is the actual dial_position in ns.
+
+        Returns
+        -------
+        dial_pos : number
+            The dial position in [s] seconds, or 'N/A' if the dial position is
+            0 or None.
+        """
+        try:
+            dial_pos = self._tgt_time.get()
+            # convert from ns to s
+            return f'{(dial_pos * 1e-9):.3e}'
+        except Exception:
+            return 'N/A'
+
+    def format_status_info(self, status_info):
+        """
+        Override status info handler to render the LXT motor.
+
+        Display lxt motor status info in the ipython terminal.
+
+        Parameters
+        ----------
+        status_info: dict
+            Nested dictionary. Each level has keys name, kind, and is_device.
+            If is_device is True, subdevice dictionaries may follow. Otherwise,
+            the only other key in the dictionary will be value.
+
+        Returns
+        -------
+        status: str
+            Formatted string with all relevant status information.
+        """
+        dial_pos = self.dial_pos
+        position = get_status_float(
+            status_info, 'position', precision=3, format='e')
+        units = get_status_value(status_info, 'setpoint', 'units')
+        return f"""\
+Virtual Motor {self.verbose_name} {self.prefix}
+Current position (user, dial): {position} [{units}] {dial_pos} [s]
+"""
+
+
 class TimeToolDelay(DelayNewport):
     """
     Laser delay stage to rescale the physical time tool delay stage to units of
