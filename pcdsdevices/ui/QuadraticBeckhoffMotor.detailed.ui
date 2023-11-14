@@ -74,6 +74,9 @@
      <property name="error_message_attribute" stdset="0">
       <string>real.plc.status</string>
      </property>
+     <property name="alarmKindLevel" stdset="0">
+      <enum>TyphosPositionerWidget::HINTED</enum>
+     </property>
     </widget>
    </item>
    <item>
@@ -333,9 +336,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>TyphosSignalPanel</class>
-   <extends>QWidget</extends>
-   <header>typhos.panel</header>
+   <class>TyphosDisplayTitle</class>
+   <extends>QFrame</extends>
+   <header>typhos.display</header>
   </customwidget>
   <customwidget>
    <class>TyphosPositionerWidget</class>
@@ -343,9 +346,9 @@
    <header>typhos.positioner</header>
   </customwidget>
   <customwidget>
-   <class>TyphosDisplayTitle</class>
-   <extends>QFrame</extends>
-   <header>typhos.display</header>
+   <class>TyphosSignalPanel</class>
+   <extends>QWidget</extends>
+   <header>typhos.panel</header>
   </customwidget>
  </customwidgets>
  <resources/>
