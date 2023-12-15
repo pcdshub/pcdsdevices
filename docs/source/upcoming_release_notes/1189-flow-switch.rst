@@ -7,7 +7,7 @@ API Breaks
 
 Features
 --------
-- N/A
+- pcdsdevices now has a `digital_signals.py` module for simple digital io.
 
 Device Updates
 --------------
