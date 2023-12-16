@@ -7,7 +7,7 @@ API Breaks
 
 Features
 --------
-- pcdsdevices now has a `digital_signals.py` module for simple digital io.
+- pcdsdevices now has a `digital_signals` module for simple digital io.
 
 Device Updates
 --------------
@@ -16,7 +16,7 @@ Device Updates
 New Devices
 -----------
 - `PPMCoolSwitch` ppms with cooling switch not a meter.
-- `WavefrontSensorTargetCool` WaveFrontSensors with a cooling switch.
+- `WaveFrontSensorTargetCool` WaveFrontSensors with a cooling switch.
 - `J120K` a device class for a cooling switch.
 
 Bugfixes
@@ -29,4 +29,4 @@ Maintenance
 
 Contributors
 ------------
-- N/A
+- nrwslac
